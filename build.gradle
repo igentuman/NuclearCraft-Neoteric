@@ -1,0 +1,125 @@
+plugins {
+    id 'net.minecraftforge.gradle' version '5.1.+'
+    id 'org.parchmentmc.librarian.forgegradle' version '1.+'
+}
+
+version = "${mod_version}"
+group = 'igentuman.nc'
+archivesBaseName = "NuclearCraft-${mc_version}"
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+
+println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
+minecraft {
+    mappings channel: 'parchment', version: "${mappings_version}-${mc_version}"
+    // accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+
+    runs {
+        client {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            property 'mixin.env.disableRefMap', 'true'
+            property 'forge.enabledGameTestNamespaces', 'nuclearcraft'
+
+            mods {
+                nuclearcraft {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        server {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            property 'mixin.env.disableRefMap', 'true'
+            property 'forge.enabledGameTestNamespaces', 'nuclearcraft'
+
+            mods {
+                nuclearcraft {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        gameTestServer {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            property 'mixin.env.disableRefMap', 'true'
+            property 'forge.enabledGameTestNamespaces', 'nuclearcraft'
+
+            mods {
+                nuclearcraft {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        data {
+            workingDirectory project.file('run')
+            property 'mixin.env.disableRefMap', 'true'
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            args '--mod', 'nuclearcraft', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+            mods {
+                nuclearcraft {
+                    source sourceSets.main
+                }
+            }
+        }
+    }
+}
+
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+repositories {
+    maven { url "https://minecraft.curseforge.com/api/maven/" }
+    maven { url "https://maven.blamejared.com" }
+    maven { url "https://dvs1.progwml6.com/files/maven" }
+    maven { url "https://jitpack.io" }
+    maven { url "https://www.cursemaven.com" }
+    maven { url "https://squiddev.cc/maven/" }
+    maven { url "https://maven.mcmoddev.com" }
+    maven { url "https://modmaven.dev/" }
+}
+
+dependencies {
+
+    minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
+
+    compileOnly fg.deobf("mezz.jei:jei-${mc_version}-common-api:${jei_version}")
+    compileOnly fg.deobf("mezz.jei:jei-${mc_version}-forge-api:${jei_version}")
+    runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}-forge:${jei_version}")
+
+    //runtimeOnly fg.deobf("mekanism:Mekanism:${mc_version}-${mekanism_version}")
+    //compileOnly fg.deobf("mekanism:Mekanism:${mc_version}-${mekanism_version}:api")
+
+    //compileOnly("cc.tweaked:cc-tweaked-${mc_version}-core-api:${cc_version}")
+    //compileOnly(fg.deobf("cc.tweaked:cc-tweaked-${mc_version}-forge-api:${cc_version}"))
+    //runtimeOnly(fg.deobf("cc.tweaked:cc-tweaked-${mc_version}-forge:${cc_version}"))
+
+    //compileOnly fg.deobf("vazkii.patchouli:Patchouli:${mc_version}-${patchouli_version}:api")
+    //runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:${mc_version}-${patchouli_version}")
+}
+
+jar {
+    manifest {
+        attributes([
+                "Specification-Title"     : "nuclearcraft",
+                "Specification-Vendor"    : "nuclearcraftsareus",
+                "Specification-Version"   : "1",
+                "Implementation-Title"    : project.name,
+                "Implementation-Version"  : project.jar.archiveVersion,
+                "Implementation-Vendor"   : "nuclearcraftsareus",
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
+    }
+}
+
+jar.finalizedBy('reobfJar')
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+}

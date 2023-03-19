@@ -1,0 +1,13 @@
+{
+  "block.nuclearcraft.boron_ore": "Boron Ore",
+  "block.nuclearcraft.cobalt_ore": "Cobalt Ore",
+  "block.nuclearcraft.lead_ore": "Lead Ore",
+  "block.nuclearcraft.lithium_ore": "Lithium Ore",
+  "block.nuclearcraft.magnesium_ore": "Magnesium Ore",
+  "block.nuclearcraft.platinum_ore": "Platinum Ore",
+  "block.nuclearcraft.thorium_ore": "Thorium Ore",
+  "block.nuclearcraft.tin_ore": "Tin Ore",
+  "block.nuclearcraft.uranium_ore": "Uranium Ore",
+  "block.nuclearcraft.zinc_ore": "Zinc Ore",
+  "itemGroup.nuclearcraft": "NuclearCraft"
+}

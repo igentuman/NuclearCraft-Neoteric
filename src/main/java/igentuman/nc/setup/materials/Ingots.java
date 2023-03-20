@@ -37,7 +37,7 @@ public class Ingots {
         return all;
     }
 
-    public static List<Boolean> initialIngotsRegistration()
+    public static List<Boolean> initialRegistration()
     {
         List<Boolean> tmp = new ArrayList<>();
         for(NCMaterialProduct ingot: all().values()) {
@@ -45,6 +45,7 @@ public class Ingots {
         }
         return tmp;
     }
+
 
 
 }

@@ -1,5 +1,6 @@
 package igentuman.nc.datagen;
 
+import igentuman.nc.NuclearCraft;
 import igentuman.nc.setup.NCBlocks;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
@@ -22,6 +23,13 @@ public class NCBlockStates extends BlockStateProvider {
     protected void registerStatesAndModels() {
         registerPortal();
         registerOres();
+        registerBlocks();
+    }
+
+    private void registerBlocks() {
+        for(String ore: NCBlocks.NC_BLOCKS.keySet()) {
+            simpleBlock(NCBlocks.NC_BLOCKS.get(ore).get(), model(NCBlocks.NC_BLOCKS.get(ore).get(), "material/block"));
+        }
     }
 
     private void registerOres() {

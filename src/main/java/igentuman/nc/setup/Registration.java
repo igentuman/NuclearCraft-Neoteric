@@ -53,6 +53,7 @@ public class Registration {
         BLOCKS.register(bus);
         ITEMS.register(bus);
         NCBlocks.init();
+        NCItems.init();
         BLOCK_ENTITIES.register(bus);
         CONTAINERS.register(bus);
         ENTITIES.register(bus);

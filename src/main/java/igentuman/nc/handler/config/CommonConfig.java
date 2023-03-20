@@ -1,6 +1,6 @@
 package igentuman.nc.handler.config;
 
-import igentuman.nc.setup.materials.Ores;
+import igentuman.nc.setup.materials.*;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 import java.util.ArrayList;
@@ -49,28 +49,28 @@ public class CommonConfig {
             builder.comment("Settings for items registration").push("material_products");
 
             CHUNKS = builder
-                    .comment("Enable chunk registration: " + String.join(", ", Ores.all().keySet()))
-                    .define("register_chunk", Ores.initialOreRegistration());
+                    .comment("Enable chunk registration: " + String.join(", ", Chunks.all().keySet()))
+                    .define("register_chunk", Chunks.initialRegistration());
 
             INGOTS = builder
-                    .comment("Enable ingots registration: " + String.join(", ", Ores.all().keySet()))
-                    .define("register_ingot", Ores.initialOreRegistration());
+                    .comment("Enable ingots registration: " + String.join(", ", Ingots.all().keySet()))
+                    .define("register_ingot", Ingots.initialRegistration());
 
             PLATES = builder
-                    .comment("Enable plate registration: " + String.join(", ", Ores.all().keySet()))
-                    .define("register_plate", Ores.initialOreRegistration());
+                    .comment("Enable plate registration: " + String.join(", ", Plates.all().keySet()))
+                    .define("register_plate", Plates.initialRegistration());
 
             DUSTS = builder
-                    .comment("Enable dust registration: " + String.join(", ", Ores.all().keySet()))
-                    .define("register_dust", Ores.initialOreRegistration());
+                    .comment("Enable dust registration: " + String.join(", ", Dusts.all().keySet()))
+                    .define("register_dust", Dusts.initialRegistration());
 
             NUGGET = builder
-                    .comment("Enable nuggets registration: " + String.join(", ", Ores.all().keySet()))
-                    .define("register_nugget", Ores.initialOreRegistration());
+                    .comment("Enable nuggets registration: " + String.join(", ", Nuggets.all().keySet()))
+                    .define("register_nugget", Nuggets.initialRegistration());
 
             BLOCK = builder
-                    .comment("Enable blocks registration: " + String.join(", ", Ores.all().keySet()))
-                    .define("register_block", Ores.initialOreRegistration());
+                    .comment("Enable blocks registration: " + String.join(", ", Blocks.all().keySet()))
+                    .define("register_block", Blocks.initialRegistration());
 
 
             builder.pop();

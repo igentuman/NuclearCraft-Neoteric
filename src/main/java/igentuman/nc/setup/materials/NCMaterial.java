@@ -39,7 +39,15 @@ public class NCMaterial {
     {
         return get(name)
                 .ores(false, false, false, false)
-                .products(true, true, true, true, true, true)
+                .products(false, true, true, true, true, true)
+                .fluid(true, 1000);
+    }
+
+    public static NCMaterial alloy(String name)
+    {
+        return get(name)
+                .ores(false, false, false, false)
+                .products(false, true, true, true, true, true)
                 .fluid(true, 1000);
     }
 
@@ -60,6 +68,24 @@ public class NCMaterial {
         this.nugget = nugget;
         this.block = block;
         this.plate = plate;
+        return this;
+    }
+
+    public NCMaterial define(String... args)  {
+        normal_ore = false;
+        deepslate_ore = false;
+        chunk = false;
+        ingot = false;
+        nugget = false;
+        block = false;
+        fluid = false;
+        plate = false;
+        dust = false;
+        for(String str: args) {
+            try {
+                getClass().getDeclaredField(str).set(this, true);
+            } catch (NoSuchFieldException|IllegalAccessException ignored) {}
+        }
         return this;
     }
 

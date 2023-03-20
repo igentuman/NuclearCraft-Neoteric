@@ -24,7 +24,29 @@ public class Materials extends MaterialsManager {
             all.put("platinum", NCMaterial.ore("platinum").ores(false, true, false, false));
 
             //ingots, nuggets, dusts...
-            all.put("tough_alloy", NCMaterial.metal("tough_alloy"));
+            all.put("tough_alloy", NCMaterial.get("tough_alloy").define("ingot", "plate", "dust", "fluid"));
+            all.put("hard_carbon", NCMaterial.get("hard_carbon").define("ingot", "plate", "dust", "fluid"));
+            all.put("tin_silver", NCMaterial.get("tin_silver").define("ingot", "dust", "fluid"));
+            all.put("steel", NCMaterial.alloy("steel"));
+            all.put("thermoconducting", NCMaterial.alloy("thermoconducting").define("ingot", "plate", "dust", "fluid"));
+            all.put("zircaloy", NCMaterial.alloy("zircaloy").define("ingot", "dust", "fluid"));
+            all.put("zirconium", NCMaterial.alloy("zirconium"));
+            all.put("zirconium_molybdenum", NCMaterial.alloy("zirconium_molybdenum").define("ingot", "dust", "fluid"));
+            all.put("extreme", NCMaterial.alloy("extreme").define("ingot", "plate", "dust", "fluid"));
+            all.put("manganese", NCMaterial.alloy("manganese").define("ingot", "plate", "dust", "fluid"));
+            all.put("manganese_oxide", NCMaterial.alloy("manganese_oxide").define("ingot", "dust", "fluid"));
+            all.put("manganese_dioxide", NCMaterial.alloy("manganese_dioxide").define("ingot", "dust", "fluid"));
+            all.put("sic_sic_cmc", NCMaterial.alloy("sic_sic_cmc").define("ingot", "plate", "dust", "fluid"));
+            all.put("lithium_manganese_dioxide", NCMaterial.alloy("lithium_manganese_dioxide").define("ingot", "dust", "fluid"));
+            all.put("silicon_carbide", NCMaterial.alloy("silicon_carbide").define("ingot", "dust", "fluid"));
+            all.put("shibuichi", NCMaterial.alloy("shibuichi").define("ingot", "dust", "fluid"));
+            all.put("beryllium", NCMaterial.alloy("beryllium"));
+            all.put("bronze", NCMaterial.alloy("bronze"));
+            all.put("electrum", NCMaterial.alloy("electrum"));
+            all.put("aluminum", NCMaterial.alloy("aluminum"));
+            all.put("graphite", NCMaterial.get("graphite").define("ingot", "dust", "block", "plate"));
+            all.put("hsla_steel", NCMaterial.alloy("hsla_steel").define("ingot", "plate", "dust", "fluid"));
+
 
         }
         return all;

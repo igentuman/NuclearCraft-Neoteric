@@ -8,6 +8,7 @@ public class MaterialsManager {
     protected static HashMap<String, NCMaterial> all;
     protected static HashMap<String, NCMaterial> ores;
     protected static HashMap<String, NCMaterial> ingots;
+    protected static HashMap<String, NCMaterial> chunks;
     protected static HashMap<String, NCMaterial> nuggets;
     protected static HashMap<String, NCMaterial> plates;
     protected static HashMap<String, NCMaterial> blocks;
@@ -42,6 +43,19 @@ public class MaterialsManager {
             }
         }
         return ores;
+    }
+
+    public static HashMap<String, NCMaterial> chunks()
+    {
+        if(chunks == null) {
+            chunks = new HashMap<>();
+            for(NCMaterial m: all().values()) {
+                if(m.chunk) {
+                    chunks.put(m.name, m);
+                }
+            }
+        }
+        return chunks;
     }
 
     public static HashMap<String, NCMaterial> ingots()

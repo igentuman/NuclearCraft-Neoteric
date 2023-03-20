@@ -2,6 +2,7 @@ package igentuman.nc.setup;
 
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.network.NCMessages;
+import igentuman.nc.world.dimension.Dimensions;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -29,6 +30,9 @@ public class ModSetup {
     }
 
     public static void init(FMLCommonSetupEvent event) {
+        event.enqueueWork(() -> {
+            Dimensions.register();
+        });
         NCMessages.register();
     }
 }

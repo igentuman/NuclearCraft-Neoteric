@@ -17,15 +17,15 @@ import java.util.List;
 public class Generator {
     @NotNull
     public static PlacedFeature createOregen(String ore) {
-
-            OreConfiguration config = new OreConfiguration(OreFeatures.STONE_ORE_REPLACEABLES, NCBlocks.ORE_BLOCKS.get(ore).get().defaultBlockState(), Ores.registered().get(ore).config().veinSize);
+            String materialName = ore.replaceAll("_deepslate|_nether|_end", "");
+            OreConfiguration config = new OreConfiguration(OreFeatures.STONE_ORE_REPLACEABLES, NCBlocks.ORE_BLOCKS.get(ore).get().defaultBlockState(), Ores.all().get(materialName).config().veinSize);
             return createPlacedFeature(new ConfiguredFeature<>(Feature.ORE, config),
-                    CountPlacement.of(Ores.registered().get(ore).config().veinAmount),
+                    CountPlacement.of(Ores.all().get(materialName).config().veinAmount),
                     InSquarePlacement.spread(),
-                    new DimensionBiomeFilter(key -> Ores.registered().get(ore).config().dimensions.contains(key)),
+                    new DimensionBiomeFilter(key -> Ores.all().get(materialName).config().dimensions.contains(key)),
                     HeightRangePlacement.uniform(
-                            VerticalAnchor.absolute(Ores.registered().get(ore).config().height[0]),
-                            VerticalAnchor.absolute(Ores.registered().get(ore).config().height[1])));
+                            VerticalAnchor.absolute(Ores.all().get(materialName).config().height[0]),
+                            VerticalAnchor.absolute(Ores.all().get(materialName).config().height[1])));
 
     }
 

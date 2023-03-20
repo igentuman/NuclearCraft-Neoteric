@@ -13,6 +13,8 @@ public class NCMaterial {
     public boolean block = true;
     public boolean fluid = true;
     public int temperature = 1000;
+    public int density = 200;
+    public boolean isGas = false;
 
     public boolean plate = true;
     public boolean dust = true;
@@ -31,6 +33,14 @@ public class NCMaterial {
     public static NCMaterial ore(String name)
     {
         return get(name);
+    }
+
+    public static NCMaterial metal(String name)
+    {
+        return get(name)
+                .ores(false, false, false, false)
+                .products(true, true, true, true, true, true)
+                .fluid(true, 1000);
     }
 
     public NCMaterial ores(boolean normal_ore, boolean deepslate_ore, boolean nether_ore, boolean end_ore)

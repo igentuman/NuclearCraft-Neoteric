@@ -12,6 +12,7 @@ public class CommonConfig {
     private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
     public static final ProcessorConfig PROCESSOR_CONFIG = new ProcessorConfig(BUILDER);
     public static final OresConfig ORE_CONFIG = new OresConfig(BUILDER);
+    public static final MaterialProductsConfig MATERIAL_PRODUCTS = new MaterialProductsConfig(BUILDER);
     public static final DimensionConfig DIMENSION_CONFIG = new DimensionConfig(BUILDER);
     public static final ForgeConfigSpec spec = BUILDER.build();
 
@@ -34,6 +35,48 @@ public class CommonConfig {
         else
             loadActions.add(action);
     }
+
+
+    public static class MaterialProductsConfig {
+        public static ForgeConfigSpec.ConfigValue<List<Boolean>> INGOTS;
+        public static ForgeConfigSpec.ConfigValue<List<Boolean>> NUGGET;
+        public static ForgeConfigSpec.ConfigValue<List<Boolean>> BLOCK;
+        public static ForgeConfigSpec.ConfigValue<List<Boolean>> CHUNKS;
+        public static ForgeConfigSpec.ConfigValue<List<Boolean>> PLATES;
+        public static ForgeConfigSpec.ConfigValue<List<Boolean>> DUSTS;
+
+        public MaterialProductsConfig(ForgeConfigSpec.Builder builder) {
+            builder.comment("Settings for items registration").push("material_products");
+
+            CHUNKS = builder
+                    .comment("Enable chunk registration: " + String.join(", ", Ores.all().keySet()))
+                    .define("register_chunk", Ores.initialOreRegistration());
+
+            INGOTS = builder
+                    .comment("Enable ingots registration: " + String.join(", ", Ores.all().keySet()))
+                    .define("register_ingot", Ores.initialOreRegistration());
+
+            PLATES = builder
+                    .comment("Enable plate registration: " + String.join(", ", Ores.all().keySet()))
+                    .define("register_plate", Ores.initialOreRegistration());
+
+            DUSTS = builder
+                    .comment("Enable dust registration: " + String.join(", ", Ores.all().keySet()))
+                    .define("register_dust", Ores.initialOreRegistration());
+
+            NUGGET = builder
+                    .comment("Enable nuggets registration: " + String.join(", ", Ores.all().keySet()))
+                    .define("register_nugget", Ores.initialOreRegistration());
+
+            BLOCK = builder
+                    .comment("Enable blocks registration: " + String.join(", ", Ores.all().keySet()))
+                    .define("register_block", Ores.initialOreRegistration());
+
+
+            builder.pop();
+        }
+    }
+
     public static class OresConfig {
 
         public static ForgeConfigSpec.ConfigValue<List<Integer>> ORE_AMOUNT;

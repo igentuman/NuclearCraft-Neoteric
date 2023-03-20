@@ -22,6 +22,10 @@ public class Materials extends MaterialsManager {
             all.put("lithium", NCMaterial.ore("lithium"));
             all.put("cobalt", NCMaterial.ore("cobalt"));
             all.put("platinum", NCMaterial.ore("platinum").ores(false, true, false, false));
+
+            //ingots, nuggets, dusts...
+            all.put("tough_alloy", NCMaterial.metal("tough_alloy"));
+
         }
         return all;
     }

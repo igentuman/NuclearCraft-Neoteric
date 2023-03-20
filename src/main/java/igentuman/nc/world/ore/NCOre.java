@@ -47,11 +47,15 @@ public class NCOre {
     public NCOre config()
     {
         if(!initialized) {
+            if(!CommonConfig.isLoaded()) {
+                return this;
+            }
             int id = Ores.all().keySet().stream().toList().indexOf(name);
             registered = CommonConfig.OresConfig.REGISTER_ORE.get().get(id);
             height[0] = CommonConfig.OresConfig.ORE_MIN_HEIGHT.get().get(id);
             height[1] = CommonConfig.OresConfig.ORE_MAX_HEIGHT.get().get(id);
             dimensions = CommonConfig.OresConfig.ORE_DIMENSIONS.get().get(id);
+            initialized = true;
         }
         return this;
     }

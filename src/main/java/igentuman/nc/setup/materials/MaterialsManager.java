@@ -10,6 +10,7 @@ public class MaterialsManager {
     protected static HashMap<String, NCMaterial> ingots;
     protected static HashMap<String, NCMaterial> chunks;
     protected static HashMap<String, NCMaterial> nuggets;
+    protected static HashMap<String, NCMaterial> gems;
     protected static HashMap<String, NCMaterial> plates;
     protected static HashMap<String, NCMaterial> blocks;
     protected static HashMap<String, NCMaterial> dusts;
@@ -43,6 +44,19 @@ public class MaterialsManager {
             }
         }
         return ores;
+    }
+
+    public static HashMap<String, NCMaterial> gems()
+    {
+        if(gems == null) {
+            gems = new HashMap<>();
+            for(NCMaterial m: all().values()) {
+                if(m.gem) {
+                    gems.put(m.name, m);
+                }
+            }
+        }
+        return gems;
     }
 
     public static HashMap<String, NCMaterial> chunks()

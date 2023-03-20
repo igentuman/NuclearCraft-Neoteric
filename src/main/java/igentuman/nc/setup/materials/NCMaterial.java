@@ -5,6 +5,7 @@ public class NCMaterial {
     public boolean normal_ore = true;
     public boolean nether_ore = false;
     public boolean end_ore = false;
+    public boolean gem = false;
     public boolean deepslate_ore = true;
 
     public boolean chunk = true;
@@ -51,6 +52,24 @@ public class NCMaterial {
                 .fluid(true, 1000);
     }
 
+
+    public static NCMaterial gem(String name)
+    {
+        return get(name)
+                .ores(false, false, false, false)
+                .products(false, false, false, false, false, false)
+                .fluid(false, 1000);
+    }
+
+
+    public static NCMaterial dust(String name)
+    {
+        return get(name)
+                .ores(false, false, false, false)
+                .products(false, true, false, false, false, false)
+                .fluid(false, 1000);
+    }
+
     public NCMaterial ores(boolean normal_ore, boolean deepslate_ore, boolean nether_ore, boolean end_ore)
     {
         this.normal_ore = normal_ore;
@@ -68,6 +87,15 @@ public class NCMaterial {
         this.nugget = nugget;
         this.block = block;
         this.plate = plate;
+        return this;
+    }
+
+    public NCMaterial with(String... args)  {
+        for(String str: args) {
+            try {
+                getClass().getDeclaredField(str).set(this, true);
+            } catch (NoSuchFieldException|IllegalAccessException ignored) {}
+        }
         return this;
     }
 

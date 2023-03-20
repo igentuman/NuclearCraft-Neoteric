@@ -1,7 +1,9 @@
 package igentuman.nc.datagen;
 
+import igentuman.nc.setup.NCArmor;
 import igentuman.nc.setup.NCBlocks;
 import igentuman.nc.setup.NCItems;
+import igentuman.nc.setup.NCTools;
 import igentuman.nc.setup.materials.Ores;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.LanguageProvider;
@@ -23,8 +25,16 @@ public class NCLanguageProvider extends LanguageProvider {
         addPlates();
         addDusts();
         addNuggets();
+        addGems();
+        addParts();
         addChunks();
         addBlocks();
+        addFood();
+        addArmor();
+        addRecords();
+        addTools();
+        addItems();
+
     }
 
     private String convertToName(String key)
@@ -44,6 +54,61 @@ public class NCLanguageProvider extends LanguageProvider {
     private void addOres() {
         for(String ore: NCBlocks.ORE_BLOCKS.keySet()) {
             add(NCBlocks.ORE_BLOCKS.get(ore).get().getName().getString(), convertToName(ore)+" Ore");
+        }
+    }
+
+    private void addItems() {
+        for(String name: NCItems.NC_ITEMS.keySet()) {
+            add(NCItems.NC_ITEMS.get(name).get().getDescription().getString(), convertToName(name));
+        }
+    }
+
+    private void addRecords() {
+        for(String name: NCItems.NC_RECORDS.keySet()) {
+            add(NCItems.NC_RECORDS.get(name).get().getDescription().getString(), convertToName(name));
+        }
+    }
+
+    private void addTools()
+    {
+        add(NCTools.QNP.get(), "QNP");
+        add(NCTools.MULTITOOL.get(), "Multitool");
+        add(NCTools.GEIGER_COUNTER.get(), "Geiger Counter");
+        add(NCTools.SPAXELHOE_TOUGH.get(), "Tough Spaxel");
+    }
+
+    private void addArmor() {
+        add(NCArmor.TOUGH_HELMET.get(), "Tough Helmet");
+        add(NCArmor.TOUGH_PANTS.get(), "Tough Pants");
+        add(NCArmor.TOUGH_BOOTS.get(), "Tough Boots");
+        add(NCArmor.TOUGH_CHEST.get(), "Tough Chest");
+        
+        add(NCArmor.HEV_HELMET.get(), "HEV Helmet");
+        add(NCArmor.HEV_PANTS.get(), "HEV Pants");
+        add(NCArmor.HEV_BOOTS.get(), "HEV Boots");
+        add(NCArmor.HEV_CHEST.get(), "HEV Chest");
+
+        add(NCArmor.HAZMAT_MASK.get(), "Hazmat Mask");
+        add(NCArmor.HAZMAT_PANTS.get(), "Hazmat Pants");
+        add(NCArmor.HAZMAT_BOOTS.get(), "Hazmat Boots");
+        add(NCArmor.HAZMAT_CHEST.get(), "Hazmat Chest");
+    }
+    
+    private void addFood() {
+        for(String name: NCItems.NC_FOOD.keySet()) {
+            add(NCItems.NC_FOOD.get(name).get().getDescription().getString(), convertToName(name));
+        }
+    }
+
+    private void addParts() {
+        for(String name: NCItems.NC_PARTS.keySet()) {
+            add(NCItems.NC_PARTS.get(name).get().getDescription().getString(), convertToName(name));
+        }
+    }
+
+    private void addGems() {
+        for(String name: NCItems.NC_GEMS.keySet()) {
+            add(NCItems.NC_GEMS.get(name).get().getDescription().getString(), convertToName(name)+" Gem");
         }
     }
 

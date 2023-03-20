@@ -46,7 +46,30 @@ public class Materials extends MaterialsManager {
             all.put("aluminum", NCMaterial.alloy("aluminum"));
             all.put("graphite", NCMaterial.get("graphite").define("ingot", "dust", "block", "plate"));
             all.put("hsla_steel", NCMaterial.alloy("hsla_steel").define("ingot", "plate", "dust", "fluid"));
-
+            //dusts only
+            all.put("bismuth", NCMaterial.dust("bismuth"));
+            all.put("caesium_137", NCMaterial.dust("caesium_137"));
+            all.put("europium_155", NCMaterial.dust("europium_155"));
+            all.put("molybdenum", NCMaterial.dust("molybdenum"));
+            all.put("polonium", NCMaterial.dust("polonium"));
+            all.put("promethium_147", NCMaterial.dust("promethium_147"));
+            all.put("protactinium_233", NCMaterial.dust("protactinium_233"));
+            all.put("radium", NCMaterial.dust("radium"));
+            all.put("ruthenium_106", NCMaterial.dust("ruthenium_106"));
+            all.put("strontium_90", NCMaterial.dust("strontium_90"));
+            all.put("tbp", NCMaterial.dust("tbp"));
+            all.put("arsenic", NCMaterial.dust("arsenic"));
+            all.put("boron_nitride", NCMaterial.dust("boron_nitride").with("gem"));
+            all.put("carobbiite", NCMaterial.dust("carobbiite").with("gem"));
+            all.put("coal", NCMaterial.dust("coal"));
+            all.put("diamond", NCMaterial.dust("diamond"));
+            all.put("end_stone", NCMaterial.dust("end_stone"));
+            all.put("fluorite", NCMaterial.dust("fluorite").with("gem"));
+            all.put("obsidian", NCMaterial.dust("obsidian"));
+            all.put("quartz", NCMaterial.dust("quartz"));
+            all.put("rhodochrosite", NCMaterial.dust("rhodochrosite").with("gem"));
+            all.put("sulfur", NCMaterial.dust("sulfur"));
+            all.put("villiaumite", NCMaterial.dust("villiaumite").with("gem"));
 
         }
         return all;

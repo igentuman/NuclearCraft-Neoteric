@@ -44,6 +44,7 @@ public class CommonConfig {
         public static ForgeConfigSpec.ConfigValue<List<Boolean>> CHUNKS;
         public static ForgeConfigSpec.ConfigValue<List<Boolean>> PLATES;
         public static ForgeConfigSpec.ConfigValue<List<Boolean>> DUSTS;
+        public static ForgeConfigSpec.ConfigValue<List<Boolean>> GEMS;
 
         public MaterialProductsConfig(ForgeConfigSpec.Builder builder) {
             builder.comment("Settings for items registration").push("material_products");
@@ -72,6 +73,9 @@ public class CommonConfig {
                     .comment("Enable blocks registration: " + String.join(", ", Blocks.all().keySet()))
                     .define("register_block", Blocks.initialRegistration());
 
+            GEMS = builder
+                    .comment("Enable gems registration: " + String.join(", ", Gems.all().keySet()))
+                    .define("register_block", Gems.initialRegistration());
 
             builder.pop();
         }

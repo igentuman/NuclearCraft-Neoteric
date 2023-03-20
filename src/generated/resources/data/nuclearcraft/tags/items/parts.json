@@ -1,0 +1,23 @@
+{
+  "values": [
+    "nuclearcraft:chassis2",
+    "nuclearcraft:steel_frame2",
+    "nuclearcraft:motor",
+    "nuclearcraft:plate_basic",
+    "nuclearcraft:empty_frame",
+    "nuclearcraft:coil_copper",
+    "nuclearcraft:plate_du",
+    "nuclearcraft:chassis",
+    "nuclearcraft:plate_advanced",
+    "nuclearcraft:actuator",
+    "nuclearcraft:coil_magnesium_diboride",
+    "nuclearcraft:steel_frame",
+    "nuclearcraft:plate_extreme",
+    "nuclearcraft:sic_fiber",
+    "nuclearcraft:basic_electric_circuit",
+    "nuclearcraft:bioplastic",
+    "nuclearcraft:empty_sink",
+    "nuclearcraft:servo",
+    "nuclearcraft:plate_elite"
+  ]
+}

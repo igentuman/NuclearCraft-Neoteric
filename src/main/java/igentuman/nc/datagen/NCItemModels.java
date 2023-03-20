@@ -1,8 +1,10 @@
 package igentuman.nc.datagen;
 
 import igentuman.nc.NuclearCraft;
+import igentuman.nc.setup.NCArmor;
 import igentuman.nc.setup.NCBlocks;
 import igentuman.nc.setup.NCItems;
+import igentuman.nc.setup.NCTools;
 import igentuman.nc.setup.materials.Nuggets;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
@@ -26,7 +28,102 @@ public class NCItemModels extends ItemModelProvider {
         registerNuggets();
         registerPlates();
         registerDusts();
+        registerGems();
+        registerParts();
+        registerRecords();
+        registerFood();
+        registerArmor();
+        registerItems();
         withExistingParent(NCBlocks.PORTAL_ITEM.getId().getPath(), modLoc("block/portal"));
+
+        singleTexture(NCTools.MULTITOOL.getId().getPath(),
+                mcLoc("item/generated"),
+                "layer0", modLoc("item/tool/"+NCTools.MULTITOOL.getId().getPath()));
+
+        singleTexture(NCTools.SPAXELHOE_TOUGH.getId().getPath(),
+                mcLoc("item/generated"),
+                "layer0", modLoc("item/tool/"+NCTools.SPAXELHOE_TOUGH.getId().getPath()));
+    }
+
+    private void registerItems() {
+        for(String name: NCItems.NC_ITEMS.keySet()) {
+            singleTexture(NCItems.NC_ITEMS.get(name).getId().getPath(),
+                    mcLoc("item/generated"),
+                    "layer0", modLoc("item/"+name));
+        }
+    }
+
+    private void registerRecords() {
+        for(String name: NCItems.NC_RECORDS.keySet()) {
+            singleTexture(NCItems.NC_RECORDS.get(name).getId().getPath(),
+                    mcLoc("item/generated"),
+                    "layer0", modLoc("item/record/"+name));
+        }
+    }
+
+    private void registerArmor() {
+        singleTexture(NCArmor.HEV_BOOTS.getId().getPath(),
+                mcLoc("item/generated"),
+                "layer0", modLoc("item/armor/"+NCArmor.HEV_BOOTS.getId().getPath()));
+        singleTexture(NCArmor.HEV_CHEST.getId().getPath(),
+                mcLoc("item/generated"),
+                "layer0", modLoc("item/armor/"+NCArmor.HEV_CHEST.getId().getPath()));
+        singleTexture(NCArmor.HEV_PANTS.getId().getPath(),
+                mcLoc("item/generated"),
+                "layer0", modLoc("item/armor/"+NCArmor.HEV_PANTS.getId().getPath()));
+        singleTexture(NCArmor.HEV_HELMET.getId().getPath(),
+                mcLoc("item/generated"),
+                "layer0", modLoc("item/armor/"+NCArmor.HEV_HELMET.getId().getPath()));
+
+        singleTexture(NCArmor.HAZMAT_BOOTS.getId().getPath(),
+                mcLoc("item/generated"),
+                "layer0", modLoc("item/armor/"+NCArmor.HAZMAT_BOOTS.getId().getPath()));
+        singleTexture(NCArmor.HAZMAT_CHEST.getId().getPath(),
+                mcLoc("item/generated"),
+                "layer0", modLoc("item/armor/"+NCArmor.HAZMAT_CHEST.getId().getPath()));
+        singleTexture(NCArmor.HAZMAT_MASK.getId().getPath(),
+                mcLoc("item/generated"),
+                "layer0", modLoc("item/armor/"+NCArmor.HAZMAT_MASK.getId().getPath()));
+        singleTexture(NCArmor.HAZMAT_PANTS.getId().getPath(),
+                mcLoc("item/generated"),
+                "layer0", modLoc("item/armor/"+NCArmor.HAZMAT_PANTS.getId().getPath()));
+
+        singleTexture(NCArmor.TOUGH_BOOTS.getId().getPath(),
+                mcLoc("item/generated"),
+                "layer0", modLoc("item/armor/"+NCArmor.TOUGH_BOOTS.getId().getPath()));
+        singleTexture(NCArmor.TOUGH_CHEST.getId().getPath(),
+                mcLoc("item/generated"),
+                "layer0", modLoc("item/armor/"+NCArmor.TOUGH_CHEST.getId().getPath()));
+        singleTexture(NCArmor.TOUGH_PANTS.getId().getPath(),
+                mcLoc("item/generated"),
+                "layer0", modLoc("item/armor/"+NCArmor.TOUGH_PANTS.getId().getPath()));
+        singleTexture(NCArmor.TOUGH_HELMET.getId().getPath(),
+                mcLoc("item/generated"),
+                "layer0", modLoc("item/armor/"+NCArmor.TOUGH_HELMET.getId().getPath()));
+
+    }
+    private void registerFood() {
+        for(String name: NCItems.NC_FOOD.keySet()) {
+            singleTexture(NCItems.NC_FOOD.get(name).getId().getPath(),
+                    mcLoc("item/generated"),
+                    "layer0", modLoc("item/food/"+name));
+        }
+    }
+
+    private void registerParts() {
+        for(String name: NCItems.NC_PARTS.keySet()) {
+            singleTexture(NCItems.NC_PARTS.get(name).getId().getPath(),
+                    mcLoc("item/generated"),
+                    "layer0", modLoc("item/part/"+name));
+        }
+    }
+
+    private void registerGems() {
+        for(String name: NCItems.NC_GEMS.keySet()) {
+            singleTexture(NCItems.NC_GEMS.get(name).getId().getPath(),
+                    mcLoc("item/generated"),
+                    "layer0", modLoc("item/material/gem/"+name));
+        }
     }
 
     private void registerChunks() {

@@ -26,7 +26,21 @@ public class NCItemTags extends ItemTagsProvider {
         addDusts();
         addPlates();
         addNuggets();
+        addGems();
+        addParts();
+    }
 
+    private void addParts() {
+        for(String name: NCItems.NC_PARTS.keySet()) {
+            tag(NCItems.PARTS_TAG).add(NCItems.NC_PARTS.get(name).get());
+        }
+    }
+
+    private void addGems() {
+        for(String name: NCItems.NC_GEMS.keySet()) {
+            tag(Tags.Items.GEMS).add(NCItems.NC_GEMS.get(name).get());
+            tag(NCItems.GEMS_TAG.get(name)).add(NCItems.NC_GEMS.get(name).get());
+        }
     }
 
     private void addIngots() {

@@ -46,7 +46,7 @@ public class Materials extends MaterialsManager {
             all.put("aluminum", NCMaterial.alloy("aluminum"));
             all.put("graphite", NCMaterial.get("graphite").define("ingot", "dust", "block", "plate"));
             all.put("hsla_steel", NCMaterial.alloy("hsla_steel").define("ingot", "plate", "dust", "fluid"));
-            //dusts only
+            //dusts
             all.put("bismuth", NCMaterial.dust("bismuth"));
             all.put("caesium_137", NCMaterial.dust("caesium_137"));
             all.put("europium_155", NCMaterial.dust("europium_155"));
@@ -70,6 +70,18 @@ public class Materials extends MaterialsManager {
             all.put("rhodochrosite", NCMaterial.dust("rhodochrosite").with("gem"));
             all.put("sulfur", NCMaterial.dust("sulfur"));
             all.put("villiaumite", NCMaterial.dust("villiaumite").with("gem"));
+            all.put("alugentum", NCMaterial.dust("alugentum"));
+            all.put("borax", NCMaterial.dust("borax"));
+            all.put("c_mn_blend", NCMaterial.dust("c_mn_blend"));
+            all.put("calcium_sulfate", NCMaterial.dust("calcium_sulfate"));
+            all.put("crystal_binder", NCMaterial.dust("crystal_binder"));
+            all.put("dimensional_blend", NCMaterial.dust("dimensional_blend"));
+            all.put("energetic_blend", NCMaterial.dust("energetic_blend"));
+            all.put("irradiated_borax", NCMaterial.dust("irradiated_borax"));
+            all.put("potassium_fluoride", NCMaterial.dust("potassium_fluoride"));
+            all.put("potassium_hydroxide", NCMaterial.dust("potassium_hydroxide"));
+            all.put("sodium_fluoride", NCMaterial.dust("sodium_fluoride"));
+            all.put("sodium_hydroxide", NCMaterial.dust("sodium_hydroxide"));
 
         }
         return all;

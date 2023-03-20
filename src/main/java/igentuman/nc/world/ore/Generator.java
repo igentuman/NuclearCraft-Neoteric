@@ -1,8 +1,7 @@
 package igentuman.nc.world.ore;
 
 import igentuman.nc.setup.NCBlocks;
-import igentuman.nc.setup.Registration;
-import igentuman.nc.world.dimension.Dimensions;
+import igentuman.nc.setup.materials.Ores;
 import net.minecraft.core.Holder;
 import net.minecraft.data.worldgen.features.OreFeatures;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
@@ -13,7 +12,6 @@ import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguratio
 import net.minecraft.world.level.levelgen.placement.*;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Generator {

@@ -1,10 +1,9 @@
 package igentuman.nc.handler.config;
 
-import igentuman.nc.world.ore.Ores;
+import igentuman.nc.setup.materials.Ores;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static igentuman.nc.world.dimension.Dimensions.WASTELAIND_ID;

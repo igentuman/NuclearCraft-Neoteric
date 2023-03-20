@@ -1,6 +1,6 @@
 package igentuman.nc.setup;
 
-import igentuman.nc.world.ore.Ores;
+import igentuman.nc.setup.materials.Ores;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -22,6 +22,7 @@ public class NCBlocks {
     private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
     private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
     public static final BlockBehaviour.Properties ORE_BLOCK_PROPERTIES = BlockBehaviour.Properties.of(Material.STONE).strength(2f).requiresCorrectToolForDrops();
+    public static final BlockBehaviour.Properties ORE_DEEPSLATE_BLOCK_PROPERTIES = BlockBehaviour.Properties.of(Material.STONE).strength(4f).requiresCorrectToolForDrops();
     public static HashMap<String, RegistryObject<Block>> ORE_BLOCKS = new HashMap<>();
     public static HashMap<String, RegistryObject<Item>> ORE_BLOCK_ITEMS = new HashMap<>();
     public static final Item.Properties ORE_ITEM_PROPERTIES = new Item.Properties().tab(ModSetup.ITEM_GROUP);
@@ -37,8 +38,22 @@ public class NCBlocks {
 
     private static void registerOres() {
         for(String name: Ores.registered().keySet()) {
-            ORE_BLOCKS.put(name, BLOCKS.register(name+"_ore", () -> new Block(ORE_BLOCK_PROPERTIES)));
-            ORE_BLOCK_ITEMS.put(name, fromBlock(ORE_BLOCKS.get(name)));
+            if(Materials.ores().get(name).normal_ore) {
+                ORE_BLOCKS.put(name, BLOCKS.register(name + "_ore", () -> new Block(ORE_BLOCK_PROPERTIES)));
+                ORE_BLOCK_ITEMS.put(name, fromBlock(ORE_BLOCKS.get(name)));
+            }
+            if(Materials.ores().get(name).deepslate_ore) {
+                ORE_BLOCKS.put(name+"_deepslate", BLOCKS.register(name + "_deepslate_ore", () -> new Block(ORE_DEEPSLATE_BLOCK_PROPERTIES)));
+                ORE_BLOCK_ITEMS.put(name+"_deepslate", fromBlock(ORE_BLOCKS.get(name+"_deepslate")));
+            }
+            if(Materials.ores().get(name).nether_ore) {
+                ORE_BLOCKS.put(name+"_nether", BLOCKS.register(name + "_nether_ore", () -> new Block(ORE_BLOCK_PROPERTIES)));
+                ORE_BLOCK_ITEMS.put(name+"_nether", fromBlock(ORE_BLOCKS.get(name+"_nether")));
+            }
+            if(Materials.ores().get(name).end_ore) {
+                ORE_BLOCKS.put(name+"_end", BLOCKS.register(name + "_end_ore", () -> new Block(ORE_BLOCK_PROPERTIES)));
+                ORE_BLOCK_ITEMS.put(name+"_end", fromBlock(ORE_BLOCKS.get(name+"_end")));
+            }
         }
     }
 

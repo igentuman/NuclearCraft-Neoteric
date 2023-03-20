@@ -1,9 +1,9 @@
-package igentuman.nc.world.ore;
+package igentuman.nc.setup.materials;
 
-import igentuman.nc.handler.config.CommonConfig;
+import igentuman.nc.setup.Materials;
+import igentuman.nc.world.ore.NCOre;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -32,16 +32,17 @@ public class Ores {
         if(all == null) {
             int wasteland = WASTELAIND_ID;
             all = new HashMap<>();
-            all.put("uranium", NCOre.get("uranium").vein(7, 3).height(-10, 40).dim(0, wasteland));
-            all.put("thorium", NCOre.get("thorium").vein(7, 3).height(-10, 40).dim(0, wasteland));
-            all.put("boron", NCOre.get("boron").vein(7, 3).height(-10, 40).dim(0, wasteland));
-            all.put("lead", NCOre.get("lead").vein(7, 3).height(-10, 40).dim(0, wasteland));
-            all.put("tin", NCOre.get("tin").vein(7, 3).height(-10, 40).dim(0, wasteland));
-            all.put("zinc", NCOre.get("zinc").vein(7, 3).height(-10, 40).dim(0, wasteland));
-            all.put("magnesium", NCOre.get("magnesium").vein(7, 3).height(-10, 40).dim(0, wasteland));
-            all.put("lithium", NCOre.get("lithium").vein(7, 3).height(-10, 40).dim(0, wasteland));
-            all.put("cobalt", NCOre.get("cobalt").vein(7, 3).height(-10, 40).dim(0, wasteland));
-            all.put("platinum", NCOre.get("platinum").vein(7, 3).height(-10, 40).dim(0, wasteland));
+            for (NCMaterial m: Materials.ores().values()) {
+                int min = 4;
+                int max = 60;
+                if(m.deepslate_ore) {
+                    min = -60;
+                }
+                if(!m.normal_ore && !m.nether_ore && !m.end_ore) {
+                    max = 0;
+                }
+                all.put(m.name, NCOre.get(m.name).vein(7, 3).height(min, max).dim(0, wasteland));
+            }
         }
         return all;
     }

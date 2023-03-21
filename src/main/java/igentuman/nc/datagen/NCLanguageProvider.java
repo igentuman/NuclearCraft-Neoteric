@@ -38,6 +38,14 @@ public class NCLanguageProvider extends LanguageProvider {
         addTools();
         addItems();
         addFuel();
+        addTooltips();
+    }
+
+    private void addTooltips() {
+        add("fuel.heat.descr","Base Heat Gen: %s H/t");
+        add("fuel.depletion.descr","Base Depletion Time: %s sec");
+        add("fuel.criticality.descr","Criticality Factor: %s N/t");
+        add("fuel.efficiency.descr","Base Efficiency: %s%%");
 
     }
 

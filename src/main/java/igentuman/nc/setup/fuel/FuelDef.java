@@ -24,6 +24,10 @@ public class FuelDef {
 
     public Integer efficiency;
 
+    public FuelDef(String name, double heat, double criticality, double depletion, double efficiency) {
+        this(name, (int)heat, (int)criticality, (int)depletion, (int)efficiency);
+    }
+
     public FuelDef config()
     {
         if(!initialized) {

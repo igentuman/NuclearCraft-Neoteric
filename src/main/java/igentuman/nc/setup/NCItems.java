@@ -1,6 +1,7 @@
 package igentuman.nc.setup;
 
 import com.electronwill.nightconfig.core.io.ParsingMode;
+import igentuman.nc.item.ItemFuel;
 import igentuman.nc.setup.fuel.FuelManager;
 import igentuman.nc.setup.materials.*;
 import net.minecraft.core.Registry;
@@ -66,26 +67,36 @@ public class NCItems {
         for (String name: FuelManager.all().keySet()) {
             for(String subType: FuelManager.all().get(name).keySet()) {
                 NC_FUEL.put(List.of("fuel", name, subType, ""),
-                        ITEMS.register("fuel_"+name+"_"+subType.replace("-","_"), () -> new Item(ITEM_PROPERTIES)));
+                        ITEMS.register("fuel_"+name+"_"+subType.replace("-","_"),
+                                () -> new ItemFuel(ITEM_PROPERTIES, FuelManager.all().get(name).get(subType).getDefault())));
                 NC_FUEL.put(List.of("fuel", name, subType, "ox"),
-                        ITEMS.register("fuel_"+name+"_"+subType.replace("-","_")+"_ox", () -> new Item(ITEM_PROPERTIES)));
+                        ITEMS.register("fuel_"+name+"_"+subType.replace("-","_")+"_ox",
+                                () -> new ItemFuel(ITEM_PROPERTIES, FuelManager.all().get(name).get(subType).getOxide())));
                 NC_FUEL.put(List.of("fuel", name, subType, "ni"),
-                        ITEMS.register("fuel_"+name+"_"+subType.replace("-","_")+"_ni", () -> new Item(ITEM_PROPERTIES)));
+                        ITEMS.register("fuel_"+name+"_"+subType.replace("-","_")+"_ni",
+                                () -> new ItemFuel(ITEM_PROPERTIES, FuelManager.all().get(name).get(subType).getNitride())));
                 NC_FUEL.put(List.of("fuel", name, subType, "za"),
-                        ITEMS.register("fuel_"+name+"_"+subType.replace("-","_")+"_za", () -> new Item(ITEM_PROPERTIES)));
+                        ITEMS.register("fuel_"+name+"_"+subType.replace("-","_")+"_za",
+                                () -> new ItemFuel(ITEM_PROPERTIES, FuelManager.all().get(name).get(subType).getZirconiumAlloy())));
                 NC_FUEL.put(List.of("fuel", name, subType, "tr"),
-                        ITEMS.register("fuel_"+name+"_"+subType.replace("-","_")+"_tr", () -> new Item(ITEM_PROPERTIES)));
+                        ITEMS.register("fuel_"+name+"_"+subType.replace("-","_")+"_tr",
+                                () -> new ItemFuel(ITEM_PROPERTIES, FuelManager.all().get(name).get(subType).getTriso())));
 
                 NC_FUEL.put(List.of("depleted", name, subType, ""),
-                        ITEMS.register("depleted_fuel_"+name+"_"+subType.replace("-","_"), () -> new Item(ITEM_PROPERTIES)));
+                        ITEMS.register("depleted_fuel_"+name+"_"+subType.replace("-","_"),
+                                () -> new Item(ITEM_PROPERTIES)));
                 NC_FUEL.put(List.of("depleted", name, subType, "ox"),
-                        ITEMS.register("depleted_fuel_"+name+"_"+subType.replace("-","_")+"_ox", () -> new Item(ITEM_PROPERTIES)));
+                        ITEMS.register("depleted_fuel_"+name+"_"+subType.replace("-","_")+"_ox",
+                                () -> new Item(ITEM_PROPERTIES)));
                 NC_FUEL.put(List.of("depleted", name, subType, "ni"),
-                        ITEMS.register("depleted_fuel_"+name+"_"+subType.replace("-","_")+"_ni", () -> new Item(ITEM_PROPERTIES)));
+                        ITEMS.register("depleted_fuel_"+name+"_"+subType.replace("-","_")+"_ni",
+                                () -> new Item(ITEM_PROPERTIES)));
                 NC_FUEL.put(List.of("depleted", name, subType, "za"),
-                        ITEMS.register("depleted_fuel_"+name+"_"+subType.replace("-","_")+"_za", () -> new Item(ITEM_PROPERTIES)));
+                        ITEMS.register("depleted_fuel_"+name+"_"+subType.replace("-","_")+"_za",
+                                () -> new Item(ITEM_PROPERTIES)));
                 NC_FUEL.put(List.of("depleted", name, subType, "tr"),
-                        ITEMS.register("depleted_fuel_"+name+"_"+subType.replace("-","_")+"_tr", () -> new Item(ITEM_PROPERTIES)));
+                        ITEMS.register("depleted_fuel_"+name+"_"+subType.replace("-","_")+"_tr",
+                                () -> new Item(ITEM_PROPERTIES)));
             }
         }
     }

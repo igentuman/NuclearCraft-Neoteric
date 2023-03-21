@@ -46,7 +46,9 @@ public class FuelDef {
         return this;
     }
 
-    public int getHeatBoiling() {
+
+    public int getHeatRFMode()
+    {
         double mult = heatMult();
         try {
             if(name.substring(0,1).equalsIgnoreCase("l")) {
@@ -54,6 +56,10 @@ public class FuelDef {
             }
         } catch (NullPointerException ignore) {}
 
-        return (int) (heat*mult);
+        return (int) (heat/mult);
+    }
+
+    public int getHeatBoilingMode() {
+       return heat;
     }
 }

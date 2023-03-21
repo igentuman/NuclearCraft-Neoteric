@@ -38,8 +38,8 @@ public class ItemFuel extends Item {
     public ItemFuel setDefinition(FuelDef definition)
     {
         def = definition;
-        heat = def.heat;
-        heat_boiling = def.getHeatBoiling();
+        heat = def.getHeatRFMode();
+        heat_boiling = def.getHeatBoilingMode();
         criticality = def.criticality;
         depletion = def.depletion;
         efficiency = def.efficiency;

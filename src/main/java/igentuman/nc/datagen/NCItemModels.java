@@ -1,10 +1,7 @@
 package igentuman.nc.datagen;
 
 import igentuman.nc.NuclearCraft;
-import igentuman.nc.setup.NCArmor;
-import igentuman.nc.setup.NCBlocks;
-import igentuman.nc.setup.NCItems;
-import igentuman.nc.setup.NCTools;
+import igentuman.nc.setup.*;
 import igentuman.nc.setup.materials.Nuggets;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
@@ -23,21 +20,23 @@ public class NCItemModels extends ItemModelProvider {
     @Override
     protected void registerModels() {
 
-        registerOres();
-        registerBlocks();
-        registerChunks();
-        registerIngots();
-        registerNuggets();
-        registerPlates();
-        registerDusts();
-        registerGems();
-        registerParts();
-        registerRecords();
-        registerFood();
-        registerArmor();
-        registerItems();
-        registerFuel();
-        registerIsotopes();
+        ores();
+        blocks();
+        chunks();
+        ingots();
+        nuggets();
+        plates();
+        dusts();
+        gems();
+        parts();
+        records();
+        food();
+        armor();
+        items();
+        shielding();
+        fuel();
+        isotopes();
+        
         withExistingParent(NCBlocks.PORTAL_ITEM.getId().getPath(), modLoc("block/portal"));
 
         singleTexture(NCTools.MULTITOOL.getId().getPath(),
@@ -49,8 +48,16 @@ public class NCItemModels extends ItemModelProvider {
                 "layer0", modLoc("item/tool/"+NCTools.SPAXELHOE_TOUGH.getId().getPath()));
     }
 
-    private void registerFuel() {
-        for(List<String> name: NCItems.NC_FUEL.keySet()) {
+    private void shielding() {
+        for(String name: NCItems.NC_SHIELDING.keySet()) {
+            singleTexture(NCItems.NC_SHIELDING.get(name).getId().getPath(),
+                    mcLoc("item/generated"),
+                    "layer0", modLoc("item/rad_shielding/"+name));
+        }
+    }
+
+    private void fuel() {
+        for(List<String> name: Fuel.NC_FUEL.keySet()) {
             String depleted = "/";
             if(name.get(0).equals("depleted")) {
                 depleted = "/depleted/";
@@ -60,21 +67,36 @@ public class NCItemModels extends ItemModelProvider {
             if(!name.get(3).isEmpty()) {
                 subPath+="_"+name.get(3);
             }
-            singleTexture(NCItems.NC_FUEL.get(name).getId().getPath(),
+            singleTexture(Fuel.NC_FUEL.get(name).getId().getPath(),
+                    mcLoc("item/generated"),
+                    "layer0", modLoc("item/fuel/"+subPath));
+        }
+
+        for(List<String> name: Fuel.NC_DEPLETED_FUEL.keySet()) {
+            String depleted = "/";
+            if(name.get(0).equals("depleted")) {
+                depleted = "/depleted/";
+            }
+
+            String subPath = name.get(1)+depleted+name.get(2).replace("-","_");
+            if(!name.get(3).isEmpty()) {
+                subPath+="_"+name.get(3);
+            }
+            singleTexture(Fuel.NC_DEPLETED_FUEL.get(name).getId().getPath(),
                     mcLoc("item/generated"),
                     "layer0", modLoc("item/fuel/"+subPath));
         }
     }
 
-    private void registerIsotopes() {
-        for(String name: NCItems.NC_ISOTOPES.keySet()) {
-            singleTexture(NCItems.NC_ISOTOPES.get(name).getId().getPath(),
+    private void isotopes() {
+        for(String name: Fuel.NC_ISOTOPES.keySet()) {
+            singleTexture(Fuel.NC_ISOTOPES.get(name).getId().getPath(),
                     mcLoc("item/generated"),
                     "layer0", modLoc("item/material/isotope/"+name));
         }
     }
 
-    private void registerItems() {
+    private void items() {
         for(String name: NCItems.NC_ITEMS.keySet()) {
             singleTexture(NCItems.NC_ITEMS.get(name).getId().getPath(),
                     mcLoc("item/generated"),
@@ -82,7 +104,7 @@ public class NCItemModels extends ItemModelProvider {
         }
     }
 
-    private void registerRecords() {
+    private void records() {
         for(String name: NCItems.NC_RECORDS.keySet()) {
             singleTexture(NCItems.NC_RECORDS.get(name).getId().getPath(),
                     mcLoc("item/generated"),
@@ -90,7 +112,7 @@ public class NCItemModels extends ItemModelProvider {
         }
     }
 
-    private void registerArmor() {
+    private void armor() {
         singleTexture(NCArmor.HEV_BOOTS.getId().getPath(),
                 mcLoc("item/generated"),
                 "layer0", modLoc("item/armor/"+NCArmor.HEV_BOOTS.getId().getPath()));
@@ -131,7 +153,7 @@ public class NCItemModels extends ItemModelProvider {
                 "layer0", modLoc("item/armor/"+NCArmor.TOUGH_HELMET.getId().getPath()));
 
     }
-    private void registerFood() {
+    private void food() {
         for(String name: NCItems.NC_FOOD.keySet()) {
             singleTexture(NCItems.NC_FOOD.get(name).getId().getPath(),
                     mcLoc("item/generated"),
@@ -139,7 +161,7 @@ public class NCItemModels extends ItemModelProvider {
         }
     }
 
-    private void registerParts() {
+    private void parts() {
         for(String name: NCItems.NC_PARTS.keySet()) {
             singleTexture(NCItems.NC_PARTS.get(name).getId().getPath(),
                     mcLoc("item/generated"),
@@ -147,7 +169,7 @@ public class NCItemModels extends ItemModelProvider {
         }
     }
 
-    private void registerGems() {
+    private void gems() {
         for(String name: NCItems.NC_GEMS.keySet()) {
             singleTexture(NCItems.NC_GEMS.get(name).getId().getPath(),
                     mcLoc("item/generated"),
@@ -155,7 +177,7 @@ public class NCItemModels extends ItemModelProvider {
         }
     }
 
-    private void registerChunks() {
+    private void chunks() {
         for(String name: NCItems.NC_CHUNKS.keySet()) {
             singleTexture(NCItems.NC_CHUNKS.get(name).getId().getPath(),
                     mcLoc("item/generated"),
@@ -163,7 +185,7 @@ public class NCItemModels extends ItemModelProvider {
         }
     }
 
-    private void registerIngots() {
+    private void ingots() {
         for(String name: NCItems.NC_INGOTS.keySet()) {
             singleTexture(NCItems.NC_INGOTS.get(name).getId().getPath(),
                     mcLoc("item/generated"),
@@ -171,7 +193,7 @@ public class NCItemModels extends ItemModelProvider {
         }
     }
 
-    private void registerNuggets() {
+    private void nuggets() {
         for(String name: NCItems.NC_NUGGETS.keySet()) {
             singleTexture(NCItems.NC_NUGGETS.get(name).getId().getPath(),
                     mcLoc("item/generated"),
@@ -179,7 +201,7 @@ public class NCItemModels extends ItemModelProvider {
         }
     }
 
-    private void registerPlates() {
+    private void plates() {
         for(String name: NCItems.NC_PLATES.keySet()) {
             singleTexture(NCItems.NC_PLATES.get(name).getId().getPath(),
                     mcLoc("item/generated"),
@@ -187,20 +209,20 @@ public class NCItemModels extends ItemModelProvider {
         }
     }
 
-    private void registerDusts() {
+    private void dusts() {
         for(String name: NCItems.NC_DUSTS.keySet()) {
             singleTexture(NCItems.NC_DUSTS.get(name).getId().getPath(),
                     mcLoc("item/generated"),
                     "layer0", modLoc("item/material/dust/"+name));
         }
     }
-    private void registerOres() {
+    private void ores() {
         for(String ore: NCBlocks.ORE_BLOCK_ITEMS.keySet()) {
             withExistingParent(NCBlocks.ORE_BLOCK_ITEMS.get(ore).getId().getPath(), modLoc("block/"+ore+"_ore"));
         }
     }
 
-    private void registerBlocks() {
+    private void blocks() {
         for(String name: NCBlocks.NC_BLOCKS_ITEMS.keySet()) {
             withExistingParent(NCBlocks.NC_BLOCKS_ITEMS.get(name).getId().getPath(), modLoc("block/"+name+"_block"));
         }

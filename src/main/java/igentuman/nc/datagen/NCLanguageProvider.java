@@ -1,9 +1,6 @@
 package igentuman.nc.datagen;
 
-import igentuman.nc.setup.NCArmor;
-import igentuman.nc.setup.NCBlocks;
-import igentuman.nc.setup.NCItems;
-import igentuman.nc.setup.NCTools;
+import igentuman.nc.setup.*;
 import igentuman.nc.setup.fuel.NCFuel;
 import igentuman.nc.setup.materials.Ores;
 import net.minecraft.data.DataGenerator;
@@ -23,26 +20,33 @@ public class NCLanguageProvider extends LanguageProvider {
     @Override
     protected void addTranslations() {
         add("itemGroup." + TAB_NAME, "NuclearCraft");
-        addOres();
-        addIngots();
-        addPlates();
-        addDusts();
-        addNuggets();
-        addGems();
-        addParts();
-        addChunks();
-        addBlocks();
-        addFood();
-        addArmor();
-        addRecords();
-        addTools();
-        addItems();
-        addFuel();
-        addTooltips();
-        addIsotopes();
+        ores();
+        ingots();
+        plates();
+        dusts();
+        nuggets();
+        gems();
+        parts();
+        chunks();
+        blocks();
+        food();
+        armor();
+        records();
+        tools();
+        items();
+        fuel();
+        tooltips();
+        isotopes();
+        shielding();
     }
 
-    private void addTooltips() {
+    private void shielding() {
+        for(String name: NCItems.NC_SHIELDING.keySet()) {
+            add(NCItems.NC_SHIELDING.get(name).get(), convertToName(name));
+        }
+    }
+
+    private void tooltips() {
         add("fuel.heat.descr","Base Heat Gen: %s H/t");
         add("fuel.heat_boiling.descr","Boiling Reactor Heat: %s H/t");
         add("fuel.depletion.descr","Base Depletion Time: %s sec");
@@ -50,9 +54,12 @@ public class NCLanguageProvider extends LanguageProvider {
         add("fuel.efficiency.descr","Base Efficiency: %s%%");
     }
 
-    private void addFuel() {
-        for(List<String> name: NCItems.NC_FUEL.keySet()) {
-            add(NCItems.NC_FUEL.get(name).get(), convertToName(name.get(0))+" "+convertToName(name.get(1))+" "+name.get(2).toUpperCase()+" "+name.get(3).toUpperCase());
+    private void fuel() {
+        for(List<String> name: Fuel.NC_FUEL.keySet()) {
+            add(Fuel.NC_FUEL.get(name).get(), convertToName(name.get(0))+" "+convertToName(name.get(1))+" "+name.get(2).toUpperCase()+" "+name.get(3).toUpperCase());
+        }
+        for(List<String> name: Fuel.NC_DEPLETED_FUEL.keySet()) {
+            add(Fuel.NC_DEPLETED_FUEL.get(name).get(), convertToName(name.get(0))+" "+convertToName(name.get(1))+" "+name.get(2).toUpperCase()+" "+name.get(3).toUpperCase());
         }
     }
 
@@ -70,31 +77,31 @@ public class NCLanguageProvider extends LanguageProvider {
         return result.toString();
     }
 
-    private void addOres() {
+    private void ores() {
         for(String ore: NCBlocks.ORE_BLOCKS.keySet()) {
             add(NCBlocks.ORE_BLOCKS.get(ore).get(), convertToName(ore)+" Ore");
         }
     }
 
-    private void addItems() {
+    private void items() {
         for(String name: NCItems.NC_ITEMS.keySet()) {
             add(NCItems.NC_ITEMS.get(name).get(), convertToName(name));
         }
     }
 
-    private void addIsotopes() {
-        for(String name: NCItems.NC_ISOTOPES.keySet()) {
-            add(NCItems.NC_ISOTOPES.get(name).get(), convertToName(name));
+    private void isotopes() {
+        for(String name: Fuel.NC_ISOTOPES.keySet()) {
+            add(Fuel.NC_ISOTOPES.get(name).get(), convertToName(name));
         }
     }
 
-    private void addRecords() {
+    private void records() {
         for(String name: NCItems.NC_RECORDS.keySet()) {
             add(NCItems.NC_RECORDS.get(name).get(), convertToName(name));
         }
     }
 
-    private void addTools()
+    private void tools()
     {
         add(NCTools.QNP.get(), "QNP");
         add(NCTools.MULTITOOL.get(), "Multitool");
@@ -102,7 +109,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add(NCTools.SPAXELHOE_TOUGH.get(), "Tough Spaxel");
     }
 
-    private void addArmor() {
+    private void armor() {
         add(NCArmor.TOUGH_HELMET.get(), "Tough Helmet");
         add(NCArmor.TOUGH_PANTS.get(), "Tough Pants");
         add(NCArmor.TOUGH_BOOTS.get(), "Tough Boots");
@@ -119,55 +126,55 @@ public class NCLanguageProvider extends LanguageProvider {
         add(NCArmor.HAZMAT_CHEST.get(), "Hazmat Chest");
     }
     
-    private void addFood() {
+    private void food() {
         for(String name: NCItems.NC_FOOD.keySet()) {
             add(NCItems.NC_FOOD.get(name).get(), convertToName(name));
         }
     }
 
-    private void addParts() {
+    private void parts() {
         for(String name: NCItems.NC_PARTS.keySet()) {
             add(NCItems.NC_PARTS.get(name).get(), convertToName(name));
         }
     }
 
-    private void addGems() {
+    private void gems() {
         for(String name: NCItems.NC_GEMS.keySet()) {
             add(NCItems.NC_GEMS.get(name).get(), convertToName(name)+" Gem");
         }
     }
 
-    private void addIngots() {
+    private void ingots() {
         for(String ingot: NCItems.NC_INGOTS.keySet()) {
             add(NCItems.NC_INGOTS.get(ingot).get(), convertToName(ingot)+" Ingot");
         }
     }
 
-    private void addPlates() {
+    private void plates() {
         for(String name: NCItems.NC_PLATES.keySet()) {
             add(NCItems.NC_PLATES.get(name).get(), convertToName(name)+" Plate");
         }
     }
 
-    private void addDusts() {
+    private void dusts() {
         for(String name: NCItems.NC_DUSTS.keySet()) {
             add(NCItems.NC_DUSTS.get(name).get(), convertToName(name)+" Dust");
         }
     }
 
-    private void addNuggets() {
+    private void nuggets() {
         for(String name: NCItems.NC_NUGGETS.keySet()) {
             add(NCItems.NC_NUGGETS.get(name).get(), convertToName(name)+" Nugget");
         }
     }
 
-    private void addChunks() {
+    private void chunks() {
         for(String name: NCItems.NC_CHUNKS.keySet()) {
             add(NCItems.NC_CHUNKS.get(name).get(), convertToName(name)+" Chunk");
         }
     }
 
-    private void addBlocks() {
+    private void blocks() {
         for(String name: NCBlocks.NC_BLOCKS.keySet()) {
             add(NCBlocks.NC_BLOCKS.get(name).get(), convertToName(name)+" Block");
         }

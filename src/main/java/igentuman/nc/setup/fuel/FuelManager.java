@@ -1,12 +1,6 @@
 package igentuman.nc.setup.fuel;
 
-import igentuman.nc.setup.materials.NCMaterialProduct;
-import net.minecraftforge.common.ForgeConfigSpec;
-
-import javax.annotation.concurrent.Immutable;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class FuelManager {
     protected static HashMap<String, HashMap<String, NCFuel>> all;
@@ -52,7 +46,7 @@ public class FuelManager {
             all.put("mixed", mix);
 
             HashMap<String, NCFuel> neptunium = new HashMap<>();
-            neptunium.put("hen-236", NCFuel.of(new FuelDef("hen-236", 786, 35, 99, 115)));
+            neptunium.put("hen-236", NCFuel.of(new FuelDef("hen-236", 876, 35, 99, 115)));
             neptunium.put("len-236", NCFuel.of(new FuelDef("len-236", 292, 70, 99, 110)));
             all.put("neptunium", neptunium);
 

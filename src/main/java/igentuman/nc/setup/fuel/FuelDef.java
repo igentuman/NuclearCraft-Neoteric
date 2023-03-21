@@ -1,6 +1,6 @@
 package igentuman.nc.setup.fuel;
 
-import igentuman.nc.handler.config.CommonConfig;
+import static igentuman.nc.handler.config.CommonConfig.FuelConfig.H_MULTIPLIER;
 
 public class FuelDef {
 
@@ -28,6 +28,15 @@ public class FuelDef {
         this(name, (int)heat, (int)criticality, (int)depletion, (int)efficiency);
     }
 
+    private Double heatMult()
+    {
+        try {
+            return H_MULTIPLIER.get();
+        } catch (IllegalStateException ignored)
+        {}
+        return 3.24444444;
+    }
+
     public FuelDef config()
     {
         if(!initialized) {
@@ -35,5 +44,16 @@ public class FuelDef {
            // efficiency = CommonConfig.FUEL_CONFIG.EFFICIENCY.get(FuelManager.all().get(name).).get("efficiency").get();
         }
         return this;
+    }
+
+    public int getHeatBoiling() {
+        double mult = heatMult();
+        try {
+            if(name.substring(0,1).equalsIgnoreCase("l")) {
+                mult *=2;
+            }
+        } catch (NullPointerException ignore) {}
+
+        return (int) (heat*mult);
     }
 }

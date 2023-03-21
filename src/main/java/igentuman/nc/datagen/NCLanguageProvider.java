@@ -39,14 +39,15 @@ public class NCLanguageProvider extends LanguageProvider {
         addItems();
         addFuel();
         addTooltips();
+        addIsotopes();
     }
 
     private void addTooltips() {
         add("fuel.heat.descr","Base Heat Gen: %s H/t");
+        add("fuel.heat_boiling.descr","Boiling Reactor Heat: %s H/t");
         add("fuel.depletion.descr","Base Depletion Time: %s sec");
         add("fuel.criticality.descr","Criticality Factor: %s N/t");
         add("fuel.efficiency.descr","Base Efficiency: %s%%");
-
     }
 
     private void addFuel() {
@@ -57,33 +58,39 @@ public class NCLanguageProvider extends LanguageProvider {
 
     private String convertToName(String key)
     {
-        String result = "";
-        String[] parts = key.split("_");
+        StringBuilder result = new StringBuilder();
+        String[] parts = key.split("_|/");
         for(String l: parts) {
-            if(result.isEmpty()) {
-                result = l.substring(0, 1).toUpperCase() + l.substring(1);
+            if(result.length() == 0) {
+                result = new StringBuilder(l.substring(0, 1).toUpperCase() + l.substring(1));
             } else {
-                result += " " + l.substring(0, 1).toUpperCase() + l.substring(1);
+                result.append(" ").append(l.substring(0, 1).toUpperCase()).append(l.substring(1));
             }
         }
-        return result;
+        return result.toString();
     }
 
     private void addOres() {
         for(String ore: NCBlocks.ORE_BLOCKS.keySet()) {
-            add(NCBlocks.ORE_BLOCKS.get(ore).get().getName().getString(), convertToName(ore)+" Ore");
+            add(NCBlocks.ORE_BLOCKS.get(ore).get(), convertToName(ore)+" Ore");
         }
     }
 
     private void addItems() {
         for(String name: NCItems.NC_ITEMS.keySet()) {
-            add(NCItems.NC_ITEMS.get(name).get().getDescription().getString(), convertToName(name));
+            add(NCItems.NC_ITEMS.get(name).get(), convertToName(name));
+        }
+    }
+
+    private void addIsotopes() {
+        for(String name: NCItems.NC_ISOTOPES.keySet()) {
+            add(NCItems.NC_ISOTOPES.get(name).get(), convertToName(name));
         }
     }
 
     private void addRecords() {
         for(String name: NCItems.NC_RECORDS.keySet()) {
-            add(NCItems.NC_RECORDS.get(name).get().getDescription().getString(), convertToName(name));
+            add(NCItems.NC_RECORDS.get(name).get(), convertToName(name));
         }
     }
 
@@ -114,55 +121,55 @@ public class NCLanguageProvider extends LanguageProvider {
     
     private void addFood() {
         for(String name: NCItems.NC_FOOD.keySet()) {
-            add(NCItems.NC_FOOD.get(name).get().getDescription().getString(), convertToName(name));
+            add(NCItems.NC_FOOD.get(name).get(), convertToName(name));
         }
     }
 
     private void addParts() {
         for(String name: NCItems.NC_PARTS.keySet()) {
-            add(NCItems.NC_PARTS.get(name).get().getDescription().getString(), convertToName(name));
+            add(NCItems.NC_PARTS.get(name).get(), convertToName(name));
         }
     }
 
     private void addGems() {
         for(String name: NCItems.NC_GEMS.keySet()) {
-            add(NCItems.NC_GEMS.get(name).get().getDescription().getString(), convertToName(name)+" Gem");
+            add(NCItems.NC_GEMS.get(name).get(), convertToName(name)+" Gem");
         }
     }
 
     private void addIngots() {
         for(String ingot: NCItems.NC_INGOTS.keySet()) {
-            add(NCItems.NC_INGOTS.get(ingot).get().getDescription().getString(), convertToName(ingot)+" Ingot");
+            add(NCItems.NC_INGOTS.get(ingot).get(), convertToName(ingot)+" Ingot");
         }
     }
 
     private void addPlates() {
         for(String name: NCItems.NC_PLATES.keySet()) {
-            add(NCItems.NC_PLATES.get(name).get().getDescription().getString(), convertToName(name)+" Plate");
+            add(NCItems.NC_PLATES.get(name).get(), convertToName(name)+" Plate");
         }
     }
 
     private void addDusts() {
         for(String name: NCItems.NC_DUSTS.keySet()) {
-            add(NCItems.NC_DUSTS.get(name).get().getDescription().getString(), convertToName(name)+" Dust");
+            add(NCItems.NC_DUSTS.get(name).get(), convertToName(name)+" Dust");
         }
     }
 
     private void addNuggets() {
         for(String name: NCItems.NC_NUGGETS.keySet()) {
-            add(NCItems.NC_NUGGETS.get(name).get().getDescription().getString(), convertToName(name)+" Nugget");
+            add(NCItems.NC_NUGGETS.get(name).get(), convertToName(name)+" Nugget");
         }
     }
 
     private void addChunks() {
         for(String name: NCItems.NC_CHUNKS.keySet()) {
-            add(NCItems.NC_CHUNKS.get(name).get().getDescription().getString(), convertToName(name)+" Chunk");
+            add(NCItems.NC_CHUNKS.get(name).get(), convertToName(name)+" Chunk");
         }
     }
 
     private void addBlocks() {
         for(String name: NCBlocks.NC_BLOCKS.keySet()) {
-            add(NCBlocks.NC_BLOCKS.get(name).get().getName().getString(), convertToName(name)+" Block");
+            add(NCBlocks.NC_BLOCKS.get(name).get(), convertToName(name)+" Block");
         }
     }
 }

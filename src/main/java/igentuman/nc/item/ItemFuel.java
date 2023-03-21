@@ -17,6 +17,9 @@ public class ItemFuel extends Item {
 
     public FuelDef def;
     public int heat = 0;
+
+    public int heat_boiling = 0;
+
     public Integer criticality = 0;
 
     public Integer depletion = 0;
@@ -36,6 +39,7 @@ public class ItemFuel extends Item {
     {
         def = definition;
         heat = def.heat;
+        heat_boiling = def.getHeatBoiling();
         criticality = def.criticality;
         depletion = def.depletion;
         efficiency = def.efficiency;
@@ -46,6 +50,7 @@ public class ItemFuel extends Item {
     public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
     {
         list.add(TextUtils.applyFormat(Component.translatable("fuel.heat.descr", heat), ChatFormatting.GOLD));
+        list.add(TextUtils.applyFormat(Component.translatable("fuel.heat_boiling.descr", heat_boiling), ChatFormatting.YELLOW));
         list.add(TextUtils.applyFormat(Component.translatable("fuel.criticality.descr", criticality), ChatFormatting.RED));
         list.add(TextUtils.applyFormat(Component.translatable("fuel.depletion.descr", depletion), ChatFormatting.GREEN));
         list.add(TextUtils.applyFormat(Component.translatable("fuel.efficiency.descr", efficiency), ChatFormatting.DARK_PURPLE));

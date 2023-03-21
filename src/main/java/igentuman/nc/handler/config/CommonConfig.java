@@ -43,13 +43,22 @@ public class CommonConfig {
 
     public static class FuelConfig
     {
+
         public static ForgeConfigSpec.ConfigValue<List<Integer>> HEAT;
         public static ForgeConfigSpec.ConfigValue<List<Integer>> EFFICIENCY;
         public static ForgeConfigSpec.ConfigValue<List<Integer>> DEPLETION;
         public static ForgeConfigSpec.ConfigValue<List<Integer>> CRITICALITY;
 
+        public static ForgeConfigSpec.ConfigValue<Double> H_MULTIPLIER;
+
+
         public FuelConfig(ForgeConfigSpec.Builder builder) {
             builder.comment("Settings for reactor fuel").push("reactor_fuel");
+
+            H_MULTIPLIER = builder
+                    .comment("Heat multiplier for boiling reactor.")
+                    .define("heat_multiplier", 3.24444444);
+
             HEAT = builder
                     .comment("Base Fuel Heat: " + String.join(", ",FuelManager.initialHeat().keySet()))
                     .define("base_heat", toList(FuelManager.initialHeat().values()));

@@ -37,6 +37,7 @@ public class NCItemModels extends ItemModelProvider {
         registerArmor();
         registerItems();
         registerFuel();
+        registerIsotopes();
         withExistingParent(NCBlocks.PORTAL_ITEM.getId().getPath(), modLoc("block/portal"));
 
         singleTexture(NCTools.MULTITOOL.getId().getPath(),
@@ -62,6 +63,14 @@ public class NCItemModels extends ItemModelProvider {
             singleTexture(NCItems.NC_FUEL.get(name).getId().getPath(),
                     mcLoc("item/generated"),
                     "layer0", modLoc("item/fuel/"+subPath));
+        }
+    }
+
+    private void registerIsotopes() {
+        for(String name: NCItems.NC_ISOTOPES.keySet()) {
+            singleTexture(NCItems.NC_ISOTOPES.get(name).getId().getPath(),
+                    mcLoc("item/generated"),
+                    "layer0", modLoc("item/material/isotope/"+name));
         }
     }
 

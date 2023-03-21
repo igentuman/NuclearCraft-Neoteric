@@ -1,10 +1,14 @@
 package igentuman.nc.handler.config;
 
+import igentuman.nc.setup.fuel.FuelManager;
 import igentuman.nc.setup.materials.*;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static igentuman.nc.world.dimension.Dimensions.WASTELAIND_ID;
 
@@ -12,6 +16,7 @@ public class CommonConfig {
     private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
     public static final ProcessorConfig PROCESSOR_CONFIG = new ProcessorConfig(BUILDER);
     public static final OresConfig ORE_CONFIG = new OresConfig(BUILDER);
+    public static final FuelConfig FUEL_CONFIG = new FuelConfig(BUILDER);
     public static final MaterialProductsConfig MATERIAL_PRODUCTS = new MaterialProductsConfig(BUILDER);
     public static final DimensionConfig DIMENSION_CONFIG = new DimensionConfig(BUILDER);
     public static final ForgeConfigSpec spec = BUILDER.build();
@@ -34,6 +39,37 @@ public class CommonConfig {
             action.run();
         else
             loadActions.add(action);
+    }
+
+    public static class FuelConfig
+    {
+        public static ForgeConfigSpec.ConfigValue<List<Integer>> HEAT;
+        public static ForgeConfigSpec.ConfigValue<List<Integer>> EFFICIENCY;
+        public static ForgeConfigSpec.ConfigValue<List<Integer>> DEPLETION;
+        public static ForgeConfigSpec.ConfigValue<List<Integer>> CRITICALITY;
+
+        public FuelConfig(ForgeConfigSpec.Builder builder) {
+            builder.comment("Settings for reactor fuel").push("reactor_fuel");
+            HEAT = builder
+                    .comment("Base Fuel Heat: " + String.join(", ",FuelManager.initialHeat().keySet()))
+                    .define("base_heat", toList(FuelManager.initialHeat().values()));
+            EFFICIENCY = builder
+                    .comment("Base Fuel Efficiency: " + String.join(", ",FuelManager.initialEfficiency().keySet()))
+                    .define("base_efficiency", toList(FuelManager.initialEfficiency().values()));
+            DEPLETION = builder
+                    .comment("Base Fuel Depletion Time (seconds): " + String.join(", ",FuelManager.initialDepletion().keySet()))
+                    .define("base_depletion", toList(FuelManager.initialDepletion().values()));
+            CRITICALITY = builder
+                    .comment("Fuel Criticality: " + String.join(", ",FuelManager.initialCriticality().keySet()))
+                    .define("base_criticallity", toList(FuelManager.initialCriticality().values()));
+            builder.pop();
+        }
+
+    }
+
+    public static List<Integer> toList(Collection<Integer> vals)
+    {
+        return new ArrayList<>(vals);
     }
 
 

@@ -10,6 +10,8 @@ import net.minecraft.data.DataGenerator;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
+import java.util.List;
+
 import static igentuman.nc.NuclearCraft.MODID;
 
 public class NCItemModels extends ItemModelProvider {
@@ -34,6 +36,7 @@ public class NCItemModels extends ItemModelProvider {
         registerFood();
         registerArmor();
         registerItems();
+        registerFuel();
         withExistingParent(NCBlocks.PORTAL_ITEM.getId().getPath(), modLoc("block/portal"));
 
         singleTexture(NCTools.MULTITOOL.getId().getPath(),
@@ -43,6 +46,23 @@ public class NCItemModels extends ItemModelProvider {
         singleTexture(NCTools.SPAXELHOE_TOUGH.getId().getPath(),
                 mcLoc("item/generated"),
                 "layer0", modLoc("item/tool/"+NCTools.SPAXELHOE_TOUGH.getId().getPath()));
+    }
+
+    private void registerFuel() {
+        for(List<String> name: NCItems.NC_FUEL.keySet()) {
+            String depleted = "/";
+            if(name.get(0).equals("depleted")) {
+                depleted = "/depleted/";
+            }
+
+            String subPath = name.get(1)+depleted+name.get(2).replace("-","_");
+            if(!name.get(3).isEmpty()) {
+                subPath+="_"+name.get(3);
+            }
+            singleTexture(NCItems.NC_FUEL.get(name).getId().getPath(),
+                    mcLoc("item/generated"),
+                    "layer0", modLoc("item/fuel/"+subPath));
+        }
     }
 
     private void registerItems() {

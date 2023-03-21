@@ -4,9 +4,12 @@ import igentuman.nc.setup.NCArmor;
 import igentuman.nc.setup.NCBlocks;
 import igentuman.nc.setup.NCItems;
 import igentuman.nc.setup.NCTools;
+import igentuman.nc.setup.fuel.NCFuel;
 import igentuman.nc.setup.materials.Ores;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.LanguageProvider;
+
+import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.setup.ModSetup.TAB_NAME;
@@ -34,7 +37,14 @@ public class NCLanguageProvider extends LanguageProvider {
         addRecords();
         addTools();
         addItems();
+        addFuel();
 
+    }
+
+    private void addFuel() {
+        for(List<String> name: NCItems.NC_FUEL.keySet()) {
+            add(NCItems.NC_FUEL.get(name).get(), convertToName(name.get(0))+" "+convertToName(name.get(1))+" "+name.get(2).toUpperCase()+" "+name.get(3).toUpperCase());
+        }
     }
 
     private String convertToName(String key)

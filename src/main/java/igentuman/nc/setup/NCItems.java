@@ -1,6 +1,7 @@
 package igentuman.nc.setup;
 
 import com.electronwill.nightconfig.core.io.ParsingMode;
+import igentuman.nc.setup.fuel.FuelManager;
 import igentuman.nc.setup.materials.*;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
@@ -24,6 +25,7 @@ public class NCItems {
 
     private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
     public static HashMap<String, RegistryObject<Item>> NC_FOOD = new HashMap<>();
+    public static HashMap<List<String>, RegistryObject<Item>> NC_FUEL = new HashMap<>();
     public static HashMap<String, RegistryObject<Item>> NC_RECORDS = new HashMap<>();
     public static HashMap<String, RegistryObject<Item>> NC_PARTS = new HashMap<>();
     public static HashMap<String, RegistryObject<Item>> NC_ITEMS = new HashMap<>();
@@ -57,6 +59,35 @@ public class NCItems {
         registerItems();
         registerFood();
         registerRecords();
+        registerFuel();
+    }
+
+    private static void registerFuel() {
+        for (String name: FuelManager.all().keySet()) {
+            for(String subType: FuelManager.all().get(name).keySet()) {
+                NC_FUEL.put(List.of("fuel", name, subType, ""),
+                        ITEMS.register("fuel_"+name+"_"+subType.replace("-","_"), () -> new Item(ITEM_PROPERTIES)));
+                NC_FUEL.put(List.of("fuel", name, subType, "ox"),
+                        ITEMS.register("fuel_"+name+"_"+subType.replace("-","_")+"_ox", () -> new Item(ITEM_PROPERTIES)));
+                NC_FUEL.put(List.of("fuel", name, subType, "ni"),
+                        ITEMS.register("fuel_"+name+"_"+subType.replace("-","_")+"_ni", () -> new Item(ITEM_PROPERTIES)));
+                NC_FUEL.put(List.of("fuel", name, subType, "za"),
+                        ITEMS.register("fuel_"+name+"_"+subType.replace("-","_")+"_za", () -> new Item(ITEM_PROPERTIES)));
+                NC_FUEL.put(List.of("fuel", name, subType, "tr"),
+                        ITEMS.register("fuel_"+name+"_"+subType.replace("-","_")+"_tr", () -> new Item(ITEM_PROPERTIES)));
+
+                NC_FUEL.put(List.of("depleted", name, subType, ""),
+                        ITEMS.register("depleted_fuel_"+name+"_"+subType.replace("-","_"), () -> new Item(ITEM_PROPERTIES)));
+                NC_FUEL.put(List.of("depleted", name, subType, "ox"),
+                        ITEMS.register("depleted_fuel_"+name+"_"+subType.replace("-","_")+"_ox", () -> new Item(ITEM_PROPERTIES)));
+                NC_FUEL.put(List.of("depleted", name, subType, "ni"),
+                        ITEMS.register("depleted_fuel_"+name+"_"+subType.replace("-","_")+"_ni", () -> new Item(ITEM_PROPERTIES)));
+                NC_FUEL.put(List.of("depleted", name, subType, "za"),
+                        ITEMS.register("depleted_fuel_"+name+"_"+subType.replace("-","_")+"_za", () -> new Item(ITEM_PROPERTIES)));
+                NC_FUEL.put(List.of("depleted", name, subType, "tr"),
+                        ITEMS.register("depleted_fuel_"+name+"_"+subType.replace("-","_")+"_tr", () -> new Item(ITEM_PROPERTIES)));
+            }
+        }
     }
 
     private static void registerRecords() {

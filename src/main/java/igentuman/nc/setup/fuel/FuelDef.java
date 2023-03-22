@@ -1,13 +1,18 @@
 package igentuman.nc.setup.fuel;
 
-import static igentuman.nc.handler.config.CommonConfig.FuelConfig.H_MULTIPLIER;
+import igentuman.nc.handler.config.CommonConfig;
+
+import static igentuman.nc.handler.config.CommonConfig.FUEL_CONFIG;
+import static igentuman.nc.handler.config.CommonConfig.FuelConfig.HEAT_MULTIPLIER;
 
 public class FuelDef {
 
-    public FuelDef(String name, int heat, int criticality, int depletion, int efficiency)
+    public FuelDef(String group, String name, int forge_energy, double heat, int criticality, int depletion, int efficiency)
     {
+        this.group = group;
         this.name = name;
         this.heat = heat;
+        this.forge_energy = forge_energy;
         this.criticality = criticality;
         this.depletion = depletion;
         this.efficiency = efficiency;
@@ -15,40 +20,53 @@ public class FuelDef {
 
     private boolean initialized = false;
 
-    public String name;
-    public Integer heat;
+    public String name = "";
 
-    public Integer criticality;
+    public String group = "";
+    public double heat = 0;
 
-    public Integer depletion;
+    public int criticality = 0;
 
-    public Integer efficiency;
+    public int depletion = 0;
 
-    public FuelDef(String name, double heat, double criticality, double depletion, double efficiency) {
-        this(name, (int)heat, (int)criticality, (int)depletion, (int)efficiency);
+    public int efficiency = 0;
+    public int forge_energy = 0;
+
+    public FuelDef(String group, String name, int forge_energy, double heat, double criticality, double depletion, double efficiency) {
+        this(group, name, forge_energy, heat, (int)criticality, (int)depletion, (int)efficiency);
     }
 
     private Double heatMult()
     {
-        try {
-            return H_MULTIPLIER.get();
-        } catch (IllegalStateException ignored)
-        {}
-        return 3.24444444;
+        if(!CommonConfig.isLoaded()) {
+            return 3.24444444;
+        }
+        return HEAT_MULTIPLIER.get();
     }
 
     public FuelDef config()
     {
+        if(!CommonConfig.isLoaded()) {
+            return this;
+        }
         if(!initialized) {
             initialized = true;
-           // efficiency = CommonConfig.FUEL_CONFIG.EFFICIENCY.get(FuelManager.all().get(name).).get("efficiency").get();
+            int id = FuelManager.all().get(group).keySet().stream().toList().indexOf(name);
+            efficiency = FUEL_CONFIG.EFFICIENCY.get().get(id);
+            criticality = FUEL_CONFIG.CRITICALITY.get().get(id);
+            heat = FUEL_CONFIG.HEAT.get().get(id);
+            depletion = (int) (FUEL_CONFIG.DEPLETION.get().get(id)*FUEL_CONFIG.DEPLETION_MULTIPLIER.get());
         }
         return this;
     }
 
 
-    public int getHeatRFMode()
+    public double getHeatFEMode()
     {
+        return config().heat;
+    }
+
+    public double getHeatBoilingMode() {
         double mult = heatMult();
         try {
             if(name.substring(0,1).equalsIgnoreCase("l")) {
@@ -56,10 +74,6 @@ public class FuelDef {
             }
         } catch (NullPointerException ignore) {}
 
-        return (int) (heat/mult);
-    }
-
-    public int getHeatBoilingMode() {
-       return heat;
+        return Math.ceil(config().heat*mult);
     }
 }

@@ -35,6 +35,7 @@
   "fuel.criticality.descr": "Criticality Factor: %s N/t",
   "fuel.depletion.descr": "Base Depletion Time: %s sec",
   "fuel.efficiency.descr": "Base Efficiency: %s%%",
+  "fuel.forge_energy.descr": "Forge Energy: %s FE/t",
   "fuel.heat.descr": "Base Heat Gen: %s H/t",
   "fuel.heat_boiling.descr": "Boiling Reactor Heat: %s H/t",
   "item.nuclearcraft.actuator": "Actuator",

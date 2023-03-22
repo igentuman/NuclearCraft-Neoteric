@@ -6,9 +6,7 @@ import net.minecraftforge.common.ForgeConfigSpec;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static igentuman.nc.world.dimension.Dimensions.WASTELAIND_ID;
 
@@ -43,21 +41,23 @@ public class CommonConfig {
 
     public static class FuelConfig
     {
-
-        public static ForgeConfigSpec.ConfigValue<List<Integer>> HEAT;
+        public static ForgeConfigSpec.ConfigValue<List<Double>> HEAT;
         public static ForgeConfigSpec.ConfigValue<List<Integer>> EFFICIENCY;
         public static ForgeConfigSpec.ConfigValue<List<Integer>> DEPLETION;
         public static ForgeConfigSpec.ConfigValue<List<Integer>> CRITICALITY;
-
-        public static ForgeConfigSpec.ConfigValue<Double> H_MULTIPLIER;
-
+        public static ForgeConfigSpec.ConfigValue<Double> HEAT_MULTIPLIER;
+        public static ForgeConfigSpec.ConfigValue<Double> DEPLETION_MULTIPLIER;
 
         public FuelConfig(ForgeConfigSpec.Builder builder) {
             builder.comment("Settings for reactor fuel").push("reactor_fuel");
 
-            H_MULTIPLIER = builder
+            HEAT_MULTIPLIER = builder
                     .comment("Heat multiplier for boiling reactor.")
                     .define("heat_multiplier", 3.24444444);
+
+            DEPLETION_MULTIPLIER = builder
+                    .comment("Depletion multiplier. Affects how long fuel lasts.")
+                    .defineInRange("depletion_multiplier", 10D, 0D, 100D);
 
             HEAT = builder
                     .comment("Base Fuel Heat: " + String.join(", ",FuelManager.initialHeat().keySet()))
@@ -76,7 +76,7 @@ public class CommonConfig {
 
     }
 
-    public static List<Integer> toList(Collection<Integer> vals)
+    public static <T> List<T> toList(Collection<T> vals)
     {
         return new ArrayList<>(vals);
     }

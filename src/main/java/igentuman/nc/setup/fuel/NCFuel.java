@@ -1,6 +1,8 @@
 package igentuman.nc.setup.fuel;
 
 public class NCFuel {
+    public String group;
+
     public String name;
     private FuelDef def;
     private FuelDef oxide;
@@ -9,48 +11,52 @@ public class NCFuel {
     private FuelDef triso;
 
     public void setDef(FuelDef def) {
-        this.oxide = def;
+        this.def = def;
     }
 
     public FuelDef getDefault()
     {
-        if(def == null) {
-            def = new FuelDef(name,
-                    (float)oxide.heat/1.4, (float)oxide.criticality*1.1,
-                    (float)oxide.depletion/1.1, (float)oxide.efficiency/1.05);
-        }
         return def;
     }
 
     public FuelDef getZirconiumAlloy()
     {
         if(zirconium == null) {
-            zirconium = new FuelDef(name,
-                    (float)oxide.heat*1.25, (float)oxide.criticality/1.25,
-                    (float)oxide.depletion/1.25, (float)oxide.efficiency/1.01);
+            zirconium = new FuelDef(group, name,
+                    (int) (def.forge_energy*1.25),
+                    Math.ceil((float)oxide.heat*1.1), (float)oxide.criticality/1.25,
+                    (float)oxide.depletion*1.05, (float)oxide.efficiency/1.01);
         }
         return zirconium;
     }
 
     public FuelDef getOxide()
     {
+        if(oxide == null) {
+            oxide = new FuelDef(group, name,
+                    (int) (def.forge_energy*1.4),
+                    Math.ceil((float)def.heat*1.25), (float)def.criticality*1.1,
+                    (float)def.depletion/1.1, (float)def.efficiency/1.05);
+        }
         return oxide;
     }
 
     public FuelDef getNitride()
     {
         if(nitride == null) {
-            nitride = new FuelDef(name,
-                    (float)oxide.heat/1.25, (float)oxide.criticality*1.25,
-                    (float)oxide.depletion*1.25, (float)oxide.efficiency/1.01);
+            nitride = new FuelDef(group, name,
+                    (int) (def.forge_energy*1.6),
+                    Math.ceil((float)oxide.heat*1.5), (float)oxide.criticality*1.25,
+                    (float)oxide.depletion/1.25, (float)oxide.efficiency/1.01);
         }
         return nitride;
     }
 
     public FuelDef getTriso() {
         if(triso == null) {
-            triso = new FuelDef(name,
-                    (float)oxide.heat*1.5, (float)oxide.criticality/1.5,
+            triso = new FuelDef(group, name,
+                    0,
+                    Math.ceil((float)oxide.heat*1.5), (float)oxide.criticality/1.5,
                     (float)oxide.depletion/1.25, (float)oxide.efficiency*1.5);
         }
         return triso;

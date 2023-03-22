@@ -48,6 +48,7 @@ public class NCLanguageProvider extends LanguageProvider {
 
     private void tooltips() {
         add("fuel.heat.descr","Base Heat Gen: %s H/t");
+        add("fuel.forge_energy.descr","Forge Energy: %s FE/t");
         add("fuel.heat_boiling.descr","Boiling Reactor Heat: %s H/t");
         add("fuel.depletion.descr","Base Depletion Time: %s sec");
         add("fuel.criticality.descr","Criticality Factor: %s N/t");

@@ -2,6 +2,7 @@ package igentuman.nc;
 
 import igentuman.nc.handler.command.CommandNcPlayerRadiation;
 import igentuman.nc.handler.config.CommonConfig;
+import igentuman.nc.handler.event.client.InputEvents;
 import igentuman.nc.setup.ClientSetup;
 import igentuman.nc.setup.ModSetup;
 import igentuman.nc.setup.Registration;
@@ -15,7 +16,9 @@ import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.RegisterEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -30,9 +33,11 @@ public class NuclearCraft {
         ModSetup.setup();
         Registration.init();
         IEventBus modbus = FMLJavaModLoadingContext.get().getModEventBus();
+
         MinecraftForge.EVENT_BUS.addListener(this::registerCommands);
         modbus.addListener(ModSetup::init);
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> modbus.addListener(ClientSetup::init));
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> modbus.addListener(this::registerClientEventHandlers));
     }
 
     @SubscribeEvent
@@ -43,5 +48,8 @@ public class NuclearCraft {
 
     private void registerCommands(RegisterCommandsEvent event) {
         event.getDispatcher().register(CommandNcPlayerRadiation.register());
+    }
+    private void registerClientEventHandlers(FMLClientSetupEvent event) {
+        InputEvents.register(event);
     }
 }

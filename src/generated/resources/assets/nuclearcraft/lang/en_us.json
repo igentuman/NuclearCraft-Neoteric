@@ -34,6 +34,7 @@
   "block.nuclearcraft.zirconium_block": "Zirconium Block",
   "fuel.criticality.descr": "Criticality Factor: %s N/t",
   "fuel.depletion.descr": "Base Depletion Time: %s sec",
+  "fuel.description": "Used in Fission Reactors. Use Fuel Ports to Load/Unload. \nActual FE generation depends on Reactor Efficiency.",
   "fuel.efficiency.descr": "Base Efficiency: %s%%",
   "fuel.forge_energy.descr": "Forge Energy: %s FE/t",
   "fuel.heat.descr": "Base Heat Gen: %s H/t",
@@ -638,5 +639,6 @@
   "item.nuclearcraft.zirconium_molybdenum_ingot": "Zirconium Molybdenum Ingot",
   "item.nuclearcraft.zirconium_nugget": "Zirconium Nugget",
   "item.nuclearcraft.zirconium_plate": "Zirconium Plate",
-  "itemGroup.nuclearcraft": "NuclearCraft"
+  "itemGroup.nuclearcraft": "NuclearCraft",
+  "tooltip.press_shift_for_description": "Press SHIFT for description"
 }

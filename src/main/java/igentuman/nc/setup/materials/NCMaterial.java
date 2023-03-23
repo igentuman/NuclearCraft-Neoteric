@@ -19,7 +19,7 @@ public class NCMaterial {
 
     public boolean plate = true;
     public boolean dust = true;
-    public int color = 0;
+    public int color = 0xFFFFFFFF;
 
     private NCMaterial(String name)
     {

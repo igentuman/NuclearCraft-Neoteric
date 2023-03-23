@@ -1,5 +1,8 @@
 package igentuman.nc.datagen;
 
+import igentuman.nc.datagen.blockstates.NCBlockStates;
+import igentuman.nc.datagen.blockstates.NCFluidBlockStates;
+import igentuman.nc.datagen.models.NCItemModels;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -21,6 +24,7 @@ public class DataGenerators {
         generator.addProvider(event.includeServer(), new NCBiomeTags(generator, event.getExistingFileHelper()));
         generator.addProvider(event.includeServer(), new NCStructureSetTags(generator, event.getExistingFileHelper()));
         generator.addProvider(event.includeClient(), new NCBlockStates(generator, event.getExistingFileHelper()));
+        generator.addProvider(event.includeClient(), new NCFluidBlockStates(generator, event.getExistingFileHelper()));
         generator.addProvider(event.includeClient(), new NCItemModels(generator, event.getExistingFileHelper()));
         generator.addProvider(event.includeClient(), new NCLanguageProvider(generator, "en_us"));
         BiomeModifierProvider.addTo(generator, event.getExistingFileHelper(), d -> generator.addProvider(true, d));

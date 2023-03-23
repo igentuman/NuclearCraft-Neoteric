@@ -35,7 +35,7 @@ public class NCFuel {
         if(oxide == null) {
             oxide = new FuelDef(group, name,
                     (int) (def.forge_energy*1.4),
-                    Math.ceil((float)def.heat*1.25), (float)def.criticality*1.1,
+                    (float)def.heat*1.25, (float)def.criticality*1.1,
                     (float)def.depletion/1.1, (float)def.efficiency/1.05);
         }
         return oxide;

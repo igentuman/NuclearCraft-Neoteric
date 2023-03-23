@@ -57,6 +57,7 @@ public class Registration {
         NCTools.init();
         NCArmor.init();
         Fuel.init();
+        NCFluids.init();
         BLOCK_ENTITIES.register(bus);
         CONTAINERS.register(bus);
         ENTITIES.register(bus);

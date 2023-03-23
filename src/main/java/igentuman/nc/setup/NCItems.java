@@ -26,7 +26,7 @@ import static igentuman.nc.NuclearCraft.MODID;
 
 public class NCItems {
 
-    private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
+    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
     public static HashMap<String, RegistryObject<Item>> NC_FOOD = new HashMap<>();
 
     public static HashMap<String, RegistryObject<Item>> NC_RECORDS = new HashMap<>();

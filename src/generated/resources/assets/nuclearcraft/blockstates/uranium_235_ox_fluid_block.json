@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "nuclearcraft:block/fluid/uranium_235_ox"
+    }
+  }
+}

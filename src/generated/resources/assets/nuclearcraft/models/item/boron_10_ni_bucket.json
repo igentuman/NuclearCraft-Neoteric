@@ -1,0 +1,6 @@
+{
+  "parent": "forge:item/bucket",
+  "apply_tint": true,
+  "fluid": "nuclearcraft:boron_10_ni",
+  "loader": "forge:fluid_container"
+}

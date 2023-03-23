@@ -2,10 +2,12 @@ package igentuman.nc;
 
 import igentuman.nc.handler.command.CommandNcPlayerRadiation;
 import igentuman.nc.handler.config.CommonConfig;
+import igentuman.nc.handler.event.client.ColorHandler;
 import igentuman.nc.handler.event.client.InputEvents;
 import igentuman.nc.setup.ClientSetup;
 import igentuman.nc.setup.ModSetup;
 import igentuman.nc.setup.Registration;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -51,5 +53,11 @@ public class NuclearCraft {
     }
     private void registerClientEventHandlers(FMLClientSetupEvent event) {
         InputEvents.register(event);
+        ColorHandler.register(event);
+    }
+
+    public static ResourceLocation rl(String path)
+    {
+        return new ResourceLocation(MODID, path);
     }
 }

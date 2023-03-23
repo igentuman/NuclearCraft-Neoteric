@@ -3,7 +3,9 @@ package igentuman.nc.setup;
 import igentuman.nc.setup.materials.MaterialsManager;
 import igentuman.nc.setup.materials.NCMaterial;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 
 public class Materials extends MaterialsManager {
@@ -12,40 +14,40 @@ public class Materials extends MaterialsManager {
         if(all == null) {
             all = new HashMap<>();
             //ores and all basic stuff by default
-            all.put("uranium", NCMaterial.ore("uranium"));
-            all.put("thorium", NCMaterial.ore("thorium"));
-            all.put("boron", NCMaterial.ore("boron"));
-            all.put("lead", NCMaterial.ore("lead").ores(true, false, false, false));
-            all.put("tin", NCMaterial.ore("tin").ores(true, false, false, false));
-            all.put("zinc", NCMaterial.ore("zinc").ores(true, false, false, false));
-            all.put("magnesium", NCMaterial.ore("magnesium"));
+            all.put("uranium", NCMaterial.ore("uranium").color(0xFF476447));
+            all.put("thorium", NCMaterial.ore("thorium").color(0xFF2E2E2E));
+            all.put("boron", NCMaterial.ore("boron").color(0xFF999999));
+            all.put("lead", NCMaterial.ore("lead").ores(true, false, false, false).color(0xFF778887));
+            all.put("tin", NCMaterial.ore("tin").ores(true, false, false, false).color(0xFFDFDFE8));
+            all.put("zinc", NCMaterial.ore("zinc").ores(true, false, false, false).color(0xFFAFB0A6));
+            all.put("magnesium", NCMaterial.ore("magnesium").color(0xFFF0D0ED));
             all.put("lithium", NCMaterial.ore("lithium"));
-            all.put("cobalt", NCMaterial.ore("cobalt"));
-            all.put("platinum", NCMaterial.ore("platinum").ores(false, true, false, false));
+            all.put("cobalt", NCMaterial.ore("cobalt").color(0xFF5A6691));
+            all.put("platinum", NCMaterial.ore("platinum").ores(false, true, false, false).color(0xFF6C939B));
 
             //ingots, nuggets, dusts...
-            all.put("tough_alloy", NCMaterial.get("tough_alloy").define("ingot", "plate", "dust", "fluid"));
-            all.put("hard_carbon", NCMaterial.get("hard_carbon").define("ingot", "plate", "dust", "fluid"));
-            all.put("tin_silver", NCMaterial.get("tin_silver").define("ingot", "dust", "fluid"));
-            all.put("steel", NCMaterial.alloy("steel"));
-            all.put("thermoconducting", NCMaterial.alloy("thermoconducting").define("ingot", "plate", "dust", "fluid"));
-            all.put("zircaloy", NCMaterial.alloy("zircaloy").define("ingot", "dust", "fluid"));
-            all.put("zirconium", NCMaterial.alloy("zirconium"));
-            all.put("zirconium_molybdenum", NCMaterial.alloy("zirconium_molybdenum").define("ingot", "dust", "fluid"));
-            all.put("extreme", NCMaterial.alloy("extreme").define("ingot", "plate", "dust", "fluid"));
-            all.put("manganese", NCMaterial.alloy("manganese").define("ingot", "plate", "dust", "fluid"));
-            all.put("manganese_oxide", NCMaterial.alloy("manganese_oxide").define("ingot", "dust", "fluid"));
-            all.put("manganese_dioxide", NCMaterial.alloy("manganese_dioxide").define("ingot", "dust", "fluid"));
-            all.put("sic_sic_cmc", NCMaterial.alloy("sic_sic_cmc").define("ingot", "plate", "dust", "fluid"));
-            all.put("lithium_manganese_dioxide", NCMaterial.alloy("lithium_manganese_dioxide").define("ingot", "dust", "fluid"));
-            all.put("silicon_carbide", NCMaterial.alloy("silicon_carbide").define("ingot", "dust", "fluid"));
-            all.put("shibuichi", NCMaterial.alloy("shibuichi").define("ingot", "dust", "fluid"));
-            all.put("beryllium", NCMaterial.alloy("beryllium"));
-            all.put("bronze", NCMaterial.alloy("bronze"));
-            all.put("electrum", NCMaterial.alloy("electrum"));
-            all.put("aluminum", NCMaterial.alloy("aluminum"));
-            all.put("graphite", NCMaterial.get("graphite").define("ingot", "dust", "block", "plate"));
-            all.put("hsla_steel", NCMaterial.alloy("hsla_steel").define("ingot", "plate", "dust", "fluid"));
+            all.put("tough_alloy", NCMaterial.get("tough_alloy").define("ingot", "plate", "dust", "fluid").color(0xFF181322));
+            all.put("hard_carbon", NCMaterial.get("hard_carbon").define("ingot", "plate", "dust", "fluid").color(0xFF164C5F));
+            all.put("tin_silver", NCMaterial.get("tin_silver").define("ingot", "dust", "fluid").color(0xFFD3D3E9));
+            all.put("steel", NCMaterial.alloy("steel").color(0xFF997B74));
+            all.put("thermoconducting", NCMaterial.alloy("thermoconducting").define("ingot", "plate", "dust", "fluid").color(0xFF515C3C));
+            all.put("zircaloy", NCMaterial.alloy("zircaloy").define("ingot", "dust", "fluid").color(0xFFD8D8D8));
+            all.put("zirconium", NCMaterial.alloy("zirconium").color(0xFFC6C77F));
+            all.put("zirconium_molybdenum", NCMaterial.alloy("zirconium_molybdenum").define("ingot", "dust", "fluid").color(0xFFB3B7BC));
+            all.put("extreme", NCMaterial.alloy("extreme").define("ingot", "plate", "dust", "fluid").color(0xFF70293C));
+            all.put("manganese", NCMaterial.alloy("manganese").define("ingot", "plate", "dust", "fluid").color(0xFF7284CC));
+            all.put("manganese_oxide", NCMaterial.alloy("manganese_oxide").define("ingot", "dust", "fluid").color(0xFF7E9D7E));
+            all.put("manganese_dioxide", NCMaterial.alloy("manganese_dioxide").define("ingot", "dust", "fluid").color(0xFF28211E));
+            all.put("sic_sic_cmc", NCMaterial.alloy("sic_sic_cmc").define("ingot", "plate", "dust", "fluid").color(0xFF7A766C));
+            all.put("lithium_manganese_dioxide", NCMaterial.alloy("lithium_manganese_dioxide").define("ingot", "dust", "fluid").color(0xFF696969));
+            all.put("silicon_carbide", NCMaterial.alloy("silicon_carbide").define("ingot", "dust", "fluid").color(0xFF716E63));
+            all.put("shibuichi", NCMaterial.alloy("shibuichi").define("ingot", "dust", "fluid").color(0xFFB9B3AE));
+            all.put("beryllium", NCMaterial.alloy("beryllium").color(0xFFD7DFC6));
+            all.put("bronze", NCMaterial.alloy("bronze").color(0xFFC78C47));
+            all.put("electrum", NCMaterial.alloy("electrum").color(0xFFA0A15D));
+            all.put("aluminum", NCMaterial.alloy("aluminum").color(0xFFABEBCB));
+            all.put("graphite", NCMaterial.get("graphite").define("ingot", "dust", "block", "plate").color(0xFF292929));
+            all.put("hsla_steel", NCMaterial.alloy("hsla_steel").define("ingot", "plate", "dust", "fluid").color(0xFF8174B0));
             //dusts
             all.put("bismuth", NCMaterial.dust("bismuth"));
             all.put("caesium_137", NCMaterial.dust("caesium_137"));
@@ -85,6 +87,40 @@ public class Materials extends MaterialsManager {
 
         }
         return all;
+    }
+
+    public static List<String> isotopes()
+    {
+        return  Arrays.asList(
+                "americium/241",
+                "americium/242",
+                "americium/243",
+                "berkelium/247",
+                "berkelium/248",
+                "boron/10",
+                "boron/11",
+                "californium/249",
+                "californium/250",
+                "californium/251",
+                "californium/252",
+                "curium/243",
+                "curium/245",
+                "curium/246",
+                "curium/247",
+                "lithium/6",
+                "lithium/7",
+                "neptunium/236",
+                "neptunium/237",
+                "plutonium/238",
+                "plutonium/239",
+                "plutonium/241",
+                "plutonium/242",
+                "thorium/tbu",
+                "thorium/232",
+                "uranium/233",
+                "uranium/235",
+                "uranium/238"
+        );
     }
 
 }

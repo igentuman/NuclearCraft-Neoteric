@@ -1,10 +1,14 @@
-package igentuman.nc.datagen;
+package igentuman.nc.datagen.models;
 
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.setup.*;
 import igentuman.nc.setup.materials.Nuggets;
+import net.minecraft.core.Registry;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
+import net.minecraftforge.client.model.generators.loaders.DynamicFluidContainerModelBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 import java.util.List;
@@ -46,7 +50,27 @@ public class NCItemModels extends ItemModelProvider {
         singleTexture(NCTools.SPAXELHOE_TOUGH.getId().getPath(),
                 mcLoc("item/generated"),
                 "layer0", modLoc("item/tool/"+NCTools.SPAXELHOE_TOUGH.getId().getPath()));
+        NCFluids.ALL_ENTRIES.forEach(this::createBucket);
     }
+
+    private String name(ItemLike item)
+    {
+        return Registry.ITEM.getKey(item.asItem()).getPath();
+    }
+
+    private ResourceLocation forgeLoc(String s)
+    {
+        return new ResourceLocation("forge", s);
+    }
+
+    private void createBucket(NCFluids.FluidEntry entry)
+    {
+        withExistingParent(name(entry.getBucket()), forgeLoc("item/bucket"))
+                .customLoader(DynamicFluidContainerModelBuilder::begin)
+                .fluid(entry.getStill())
+                .applyTint(true);
+    }
+
 
     private void shielding() {
         for(String name: NCItems.NC_SHIELDING.keySet()) {

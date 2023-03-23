@@ -81,37 +81,7 @@ public class Fuel {
     }
 
     private static void registerIsotopes() {
-        List<String> parts = Arrays.asList(
-                "americium/241",
-                "americium/242",
-                "americium/243",
-                "berkelium/247",
-                "berkelium/248",
-                "boron/10",
-                "boron/11",
-                "californium/249",
-                "californium/250",
-                "californium/251",
-                "californium/252",
-                "curium/243",
-                "curium/245",
-                "curium/246",
-                "curium/247",
-                "lithium/6",
-                "lithium/7",
-                "neptunium/236",
-                "neptunium/237",
-                "plutonium/238",
-                "plutonium/239",
-                "plutonium/241",
-                "plutonium/242",
-                "thorium/tbu",
-                "thorium/232",
-                "uranium/233",
-                "uranium/235",
-                "uranium/238"
-        );
-        for(String name: parts) {
+        for(String name: Materials.isotopes()) {
             for(String type: new String[]{"", "_za", "_ox","_ni"}) {
                 NC_ISOTOPES.put(name+type, ITEMS.register(name.replace("/", "_")+type, () -> new Item(ITEM_PROPERTIES)));
             }

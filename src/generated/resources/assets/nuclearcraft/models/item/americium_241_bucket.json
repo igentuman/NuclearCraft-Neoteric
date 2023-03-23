@@ -1,0 +1,7 @@
+{
+  "parent": "forge:item/bucket",
+  "apply_tint": true,
+  "fluid": "nuclearcraft:americium_241",
+  "loader": "forge:fluid_container",
+  "tint": "0xFFFF3831"
+}

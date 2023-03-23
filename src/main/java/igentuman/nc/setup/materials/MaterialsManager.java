@@ -14,7 +14,19 @@ public class MaterialsManager {
     protected static HashMap<String, NCMaterial> plates;
     protected static HashMap<String, NCMaterial> blocks;
     protected static HashMap<String, NCMaterial> dusts;
+    protected static HashMap<String, NCMaterial> fluids;
 
+    public static HashMap<String, NCMaterial> fluids() {
+        if(fluids == null) {
+            fluids = new HashMap<>();
+            for(NCMaterial m: all().values()) {
+                if(m.fluid) {
+                    fluids.put(m.name, m);
+                }
+            }
+        }
+        return fluids;
+    }
 
     public static HashMap<String, NCMaterial> blocks()
     {

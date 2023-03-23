@@ -1,4 +1,4 @@
-package igentuman.nc.datagen;
+package igentuman.nc.datagen.blockstates;
 
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.setup.NCBlocks;
@@ -21,24 +21,30 @@ public class NCBlockStates extends BlockStateProvider {
 
     @Override
     protected void registerStatesAndModels() {
-        registerPortal();
-        registerOres();
-        registerBlocks();
+        portal();
+        ores();
+        blocks();
+        materialFluidBlocks();
     }
 
-    private void registerBlocks() {
+    private void materialFluidBlocks() {
+        for(String name: NCBlocks.NC_MATERIAL_BLOCKS.keySet()) {
+            simpleBlock(NCBlocks.NC_MATERIAL_BLOCKS.get(name).get(), model(NCBlocks.NC_MATERIAL_BLOCKS.get(name).get(), "material/fluid"));
+        }
+    }
+    private void blocks() {
         for(String ore: NCBlocks.NC_BLOCKS.keySet()) {
             simpleBlock(NCBlocks.NC_BLOCKS.get(ore).get(), model(NCBlocks.NC_BLOCKS.get(ore).get(), "material/block"));
         }
     }
 
-    private void registerOres() {
+    private void ores() {
         for(String ore: NCBlocks.ORE_BLOCKS.keySet()) {
             simpleBlock(NCBlocks.ORE_BLOCKS.get(ore).get(), model(NCBlocks.ORE_BLOCKS.get(ore).get(), "ore"));
         }
     }
 
-    private void registerPortal() {
+    private void portal() {
         Block block = NCBlocks.PORTAL_BLOCK.get();
         ResourceLocation side = modLoc("block/portal");
         ResourceLocation top = modLoc("block/portal");

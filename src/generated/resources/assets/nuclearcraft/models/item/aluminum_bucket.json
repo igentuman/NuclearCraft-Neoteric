@@ -1,0 +1,5 @@
+{
+  "parent": "forge:item/bucket",
+  "fluid": "nuclearcraft:aluminum",
+  "loader": "forge:bucket"
+}

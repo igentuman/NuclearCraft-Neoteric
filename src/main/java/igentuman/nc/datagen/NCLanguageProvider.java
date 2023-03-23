@@ -38,6 +38,20 @@ public class NCLanguageProvider extends LanguageProvider {
         tooltips();
         isotopes();
         shielding();
+        buckets();
+        fluids();
+    }
+
+    private void buckets() {
+        for(String name: NCFluids.NC_MATERIALS.keySet()) {
+            add(NCFluids.NC_MATERIALS.get(name).getBucket(), "Bucket of Melted " + convertToName(name));
+        }
+    }
+
+    private void fluids() {
+        for(String name: NCFluids.NC_MATERIALS.keySet()) {
+            add("fluid_type."+NCFluids.NC_MATERIALS.get(name).type().getId().toLanguageKey(), "Melted " + convertToName(name));
+        }
     }
 
     private void shielding() {

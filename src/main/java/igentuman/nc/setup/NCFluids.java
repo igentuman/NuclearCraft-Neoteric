@@ -5,6 +5,7 @@ import igentuman.nc.item.NCBucketItem;
 import igentuman.nc.setup.fluid.NCFluid;
 import igentuman.nc.setup.fluid.NCFluidBlock;
 import igentuman.nc.setup.fuel.FuelManager;
+import igentuman.nc.util.TextureUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BucketItem;
@@ -30,7 +31,9 @@ import org.apache.commons.lang3.mutable.Mutable;
 import org.apache.commons.lang3.mutable.MutableObject;
 
 import javax.annotation.Nullable;
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -123,7 +126,8 @@ public class NCFluids {
         for(String name: Materials.isotopes()) {
             for(String type: new String[]{"", "_za", "_ox","_ni"}) {
                 if(NC_MATERIALS.containsKey(name+type)) continue;
-                NC_MATERIALS.put(name+type, FluidEntry.makeMoltenLiquid(name.replace("/", "_")+type,0xFF42784C));
+                NC_MATERIALS.put(name+type, FluidEntry.makeMoltenLiquid(name.replace("/", "_")+type,
+                        TextureUtil.getAverageColor("textures/item/material/isotope/"+name+type+".png")));
             }
         }
     }

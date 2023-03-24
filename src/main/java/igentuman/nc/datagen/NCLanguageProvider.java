@@ -44,7 +44,7 @@ public class NCLanguageProvider extends LanguageProvider {
 
     private void buckets() {
         for(String name: NCFluids.NC_MATERIALS.keySet()) {
-            add(NCFluids.NC_MATERIALS.get(name).getBucket(), "Bucket of Melted " + convertToName(name));
+            add(NCFluids.NC_MATERIALS.get(name).getBucket(), "Bucket of Molten " + convertToName(name));
         }
         for(String name: NCFluids.NC_GASES.keySet()) {
             add(NCFluids.NC_GASES.get(name).getBucket(), "Bucket of " + convertToName(name));
@@ -53,7 +53,7 @@ public class NCLanguageProvider extends LanguageProvider {
 
     private void fluids() {
         for(String name: NCFluids.NC_MATERIALS.keySet()) {
-            add("fluid_type."+NCFluids.NC_MATERIALS.get(name).type().getId().toLanguageKey(), "Melted " + convertToName(name));
+            add("fluid_type."+NCFluids.NC_MATERIALS.get(name).type().getId().toLanguageKey(), "Molten " + convertToName(name));
         }
         for(String name: NCFluids.NC_GASES.keySet()) {
             add("fluid_type."+NCFluids.NC_GASES.get(name).type().getId().toLanguageKey(), convertToName(name));

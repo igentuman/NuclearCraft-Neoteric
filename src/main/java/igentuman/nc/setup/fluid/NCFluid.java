@@ -1,5 +1,6 @@
 package igentuman.nc.setup.fluid;
 
+import igentuman.nc.block.NCFluidBlock;
 import igentuman.nc.setup.NCFluids;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockSource;
@@ -25,6 +26,7 @@ import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 
@@ -41,7 +43,16 @@ public class NCFluid extends FlowingFluid
 		entryStatic = entry;
 		NCFluid result = make.apply(entry);
 		entryStatic = null;
+
 		return result;
+	}
+
+	@Override
+	public Vec3 getFlow(BlockGetter pBlockReader, BlockPos pPos, FluidState pFluidState) {
+		if(getFluidType().getDensity() < 0) {
+			return new Vec3(0, 0.1D, 0);
+		}
+		return super.getFlow(pBlockReader, pPos, pFluidState);
 	}
 
 	public NCFluid(NCFluids.FluidEntry entry)

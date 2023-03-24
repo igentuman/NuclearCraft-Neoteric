@@ -21,6 +21,7 @@ public class DataGenerators {
         NCBlockTags blockTags = new NCBlockTags(generator, event.getExistingFileHelper());
         generator.addProvider(event.includeServer(), blockTags);
         generator.addProvider(event.includeServer(), new NCItemTags(generator, blockTags, event.getExistingFileHelper()));
+        generator.addProvider(event.includeServer(), new FluidTags(generator, event.getExistingFileHelper()));
         generator.addProvider(event.includeServer(), new NCBiomeTags(generator, event.getExistingFileHelper()));
         generator.addProvider(event.includeServer(), new NCStructureSetTags(generator, event.getExistingFileHelper()));
         generator.addProvider(event.includeClient(), new NCBlockStates(generator, event.getExistingFileHelper()));

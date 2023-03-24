@@ -1,0 +1,7 @@
+{
+  "parent": "forge:item/bucket",
+  "apply_tint": true,
+  "flip_gas": true,
+  "fluid": "nuclearcraft:argon",
+  "loader": "forge:fluid_container"
+}

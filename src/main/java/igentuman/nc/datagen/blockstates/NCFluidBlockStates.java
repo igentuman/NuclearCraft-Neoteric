@@ -2,6 +2,7 @@ package igentuman.nc.datagen.blockstates;
 
 import igentuman.nc.datagen.blockstates.ExtendedBlockstateProvider;
 import igentuman.nc.setup.NCFluids;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Registry;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
@@ -29,9 +30,13 @@ public class NCFluidBlockStates extends ExtendedBlockstateProvider {
             Mutable<IClientFluidTypeExtensions> box = new MutableObject<>();
             still.getFluidType().initializeClient(box::setValue);
             ResourceLocation stillTexture = box.getValue().getStillTexture();
+            String renderType = "minecraft:solid";
+            if(still.getFluidType().getDensity() < 1000) {
+                renderType = "minecraft:translucent";
+            }
             ModelFile model = models().getBuilder("block/fluid/"+ Registry.FLUID.getKey(still).getPath())
                     .texture("particle", stillTexture);
-            getVariantBuilder(entry.getBlock()).partialState().setModels(new ConfiguredModel(model));
+            simpleBlock(entry.getBlock(), model);
         }
     }
 }

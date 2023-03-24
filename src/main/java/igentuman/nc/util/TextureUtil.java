@@ -38,7 +38,7 @@ public class TextureUtil {
             int blueSum;
             int pixelCount;
             String path = "assets/"+resourceLocation.getNamespace()+"/"+resourceLocation.getPath();
-            InputStream texStream = mc.getClass().getClassLoader().getResourceAsStream(path);
+            InputStream texStream = resourceLocation.getClass().getClassLoader().getResourceAsStream(path);
             try (NativeImage nativeImage = NativeImage.read(texStream)) {
                 int textureWidth = nativeImage.getWidth();
                 int textureHeight = nativeImage.getHeight();
@@ -51,9 +51,9 @@ public class TextureUtil {
                 for (int x = (textureWidth/2)-4; x < (textureWidth/2)+4; x++) {
                     for (int y = (textureHeight/2)-4; y < (textureHeight/2)+4; y++) {
                         Color pixel = new Color(nativeImage.getPixelRGBA(x, y));
-                        redSum += Math.min(254 ,pixel.getRed()+30);//adding some shift to match with item color
+                        redSum += Math.min(254 ,pixel.getRed()+20);//adding some shift to match with item color
                         greenSum += pixel.getGreen();
-                        blueSum += Math.max(0, pixel.getBlue()-40);
+                        blueSum += Math.max(0, pixel.getBlue()-30);
                         pixelCount++;
                     }
                 }
@@ -63,8 +63,9 @@ public class TextureUtil {
             int blueAvg = blueSum / pixelCount;
 
             return rgbaToIntHex(new int[]{redAvg, greenAvg, blueAvg, 255});
-        } catch (IOException e) {
+        } catch (NullPointerException|IOException e) {
             e.printStackTrace();
+            System.out.print("assets/"+resourceLocation.getNamespace()+"/"+resourceLocation.getPath());
             return rgbaToIntHex(new int[]{0, 0, 0, 0});
         }
     }

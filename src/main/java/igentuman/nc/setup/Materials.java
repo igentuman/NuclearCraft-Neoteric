@@ -44,6 +44,7 @@ public class Materials extends MaterialsManager {
             all.put("shibuichi", NCMaterial.alloy("shibuichi").define("ingot", "dust", "fluid").color(0xFFB9B3AE));
             all.put("beryllium", NCMaterial.alloy("beryllium").color(0xFFD7DFC6));
             all.put("bronze", NCMaterial.alloy("bronze").color(0xFFC78C47));
+            all.put("corium", NCMaterial.alloy("corium").define("fluid").fluid(true, 3000).color(0xFF7C7C6F));
             all.put("electrum", NCMaterial.alloy("electrum").color(0xFFA0A15D));
             all.put("aluminum", NCMaterial.alloy("aluminum").color(0xFFABEBCB));
             all.put("graphite", NCMaterial.get("graphite").define("ingot", "dust", "block", "plate").color(0xFF292929));
@@ -70,7 +71,7 @@ public class Materials extends MaterialsManager {
             all.put("obsidian", NCMaterial.dust("obsidian"));
             all.put("quartz", NCMaterial.dust("quartz"));
             all.put("rhodochrosite", NCMaterial.dust("rhodochrosite").with("gem"));
-            all.put("sulfur", NCMaterial.dust("sulfur"));
+            all.put("sulfur", NCMaterial.dust("sulfur").fluid(true, 500).color(0xFFDEDE7A));
             all.put("villiaumite", NCMaterial.dust("villiaumite").with("gem"));
             all.put("alugentum", NCMaterial.dust("alugentum"));
             all.put("borax", NCMaterial.dust("borax"));

@@ -68,6 +68,7 @@ public class NCItemModels extends ItemModelProvider {
         withExistingParent(name(entry.getBucket()), forgeLoc("item/bucket"))
                 .customLoader(DynamicFluidContainerModelBuilder::begin)
                 .fluid(entry.getStill())
+                .flipGas(entry.flowing().get().getFluidType().getDensity() < 0)
                 .applyTint(true);
     }
 

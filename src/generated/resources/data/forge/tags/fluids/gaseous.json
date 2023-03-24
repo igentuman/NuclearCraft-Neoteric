@@ -1,0 +1,32 @@
+{
+  "values": [
+    "nuclearcraft:radon",
+    "nuclearcraft:low_pressure_steam",
+    "nuclearcraft:nitrogen_dioxide",
+    "nuclearcraft:ammonia",
+    "nuclearcraft:diborane",
+    "nuclearcraft:hydrogen",
+    "nuclearcraft:nitric_oxide",
+    "nuclearcraft:ethene",
+    "nuclearcraft:deuterium",
+    "nuclearcraft:low_quality_steam",
+    "nuclearcraft:steam",
+    "nuclearcraft:fluoromethane",
+    "nuclearcraft:high_pressure_steam",
+    "nuclearcraft:oxygen",
+    "nuclearcraft:helium_3",
+    "nuclearcraft:fluorine",
+    "nuclearcraft:exhaust_steam",
+    "nuclearcraft:tritium",
+    "nuclearcraft:neon",
+    "nuclearcraft:nitrogen",
+    "nuclearcraft:sulfur_dioxide",
+    "nuclearcraft:helium",
+    "nuclearcraft:oxygen_difluoride",
+    "nuclearcraft:chlorine",
+    "nuclearcraft:sulfur_trioxide",
+    "nuclearcraft:carbon_dioxide",
+    "nuclearcraft:argon",
+    "nuclearcraft:carbon_monoxide"
+  ]
+}

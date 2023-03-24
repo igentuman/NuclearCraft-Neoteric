@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "nuclearcraft:block/fluid/depleted_fuel_uranium_heu_235_ni"
+    }
+  }
+}

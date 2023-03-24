@@ -62,14 +62,9 @@ public class NCBlocks {
         ITEMS.register(bus);
         registerOres();
         registerBlocks();
-        registerMaterialFluidBlocks();
     }
 
-    private static void registerMaterialFluidBlocks() {
-        for(String name: Materials.fluids().keySet()) {
-//            NC_MATERIAL_BLOCKS.put(name, BLOCKS.register("flowing_"+name, () -> new LiquidBlock(NCFluids.NC_MATERIALS.get("flowing_"+name), BlockBehaviour.Properties.copy(LAVA))));
-        }
-    }
+
 
     private static void registerOres() {
         for(String name: Ores.registered().keySet()) {

@@ -27,6 +27,8 @@ public class NCBlockStates extends BlockStateProvider {
         materialFluidBlocks();
     }
 
+
+
     private void materialFluidBlocks() {
         for(String name: NCBlocks.NC_MATERIAL_BLOCKS.keySet()) {
             simpleBlock(NCBlocks.NC_MATERIAL_BLOCKS.get(name).get(), model(NCBlocks.NC_MATERIAL_BLOCKS.get(name).get(), "material/fluid"));

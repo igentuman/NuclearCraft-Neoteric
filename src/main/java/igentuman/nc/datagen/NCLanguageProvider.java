@@ -46,11 +46,17 @@ public class NCLanguageProvider extends LanguageProvider {
         for(String name: NCFluids.NC_MATERIALS.keySet()) {
             add(NCFluids.NC_MATERIALS.get(name).getBucket(), "Bucket of Melted " + convertToName(name));
         }
+        for(String name: NCFluids.NC_GASES.keySet()) {
+            add(NCFluids.NC_GASES.get(name).getBucket(), "Bucket of " + convertToName(name));
+        }
     }
 
     private void fluids() {
         for(String name: NCFluids.NC_MATERIALS.keySet()) {
             add("fluid_type."+NCFluids.NC_MATERIALS.get(name).type().getId().toLanguageKey(), "Melted " + convertToName(name));
+        }
+        for(String name: NCFluids.NC_GASES.keySet()) {
+            add("fluid_type."+NCFluids.NC_GASES.get(name).type().getId().toLanguageKey(), convertToName(name));
         }
     }
 
@@ -85,6 +91,7 @@ public class NCLanguageProvider extends LanguageProvider {
         StringBuilder result = new StringBuilder();
         String[] parts = key.split("_|/");
         for(String l: parts) {
+            if(l.isEmpty()) continue;
             if(result.length() == 0) {
                 result = new StringBuilder(l.substring(0, 1).toUpperCase() + l.substring(1));
             } else {

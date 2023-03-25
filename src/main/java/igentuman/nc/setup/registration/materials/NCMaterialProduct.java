@@ -1,4 +1,4 @@
-package igentuman.nc.setup.materials;
+package igentuman.nc.setup.registration.materials;
 
 import igentuman.nc.handler.config.CommonConfig;
 

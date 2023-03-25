@@ -1,10 +1,7 @@
 package igentuman.nc.handler.event.client;
 
-import igentuman.nc.setup.NCFluids;
-import net.minecraft.client.color.block.BlockColor;
-import net.minecraft.client.color.block.BlockColors;
+import igentuman.nc.setup.registration.NCFluids;
 import net.minecraft.client.color.item.ItemColor;
-import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.client.model.DynamicFluidContainerModel;

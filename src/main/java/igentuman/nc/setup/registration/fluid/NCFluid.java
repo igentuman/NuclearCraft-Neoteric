@@ -1,7 +1,7 @@
-package igentuman.nc.setup.fluid;
+package igentuman.nc.setup.registration.fluid;
 
 import igentuman.nc.block.NCFluidBlock;
-import igentuman.nc.setup.NCFluids;
+import igentuman.nc.setup.registration.NCFluids;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockSource;
 import net.minecraft.core.Direction;

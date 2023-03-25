@@ -1,6 +1,6 @@
 package igentuman.nc.datagen;
 
-import igentuman.nc.setup.NCFluids;
+import igentuman.nc.setup.registration.NCFluids;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.FluidTagsProvider;
 import net.minecraftforge.common.Tags.Fluids;

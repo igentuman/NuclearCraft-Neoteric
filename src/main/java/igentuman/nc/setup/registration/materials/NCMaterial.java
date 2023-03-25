@@ -1,4 +1,4 @@
-package igentuman.nc.setup.materials;
+package igentuman.nc.setup.registration.materials;
 
 public class NCMaterial {
     public String name;

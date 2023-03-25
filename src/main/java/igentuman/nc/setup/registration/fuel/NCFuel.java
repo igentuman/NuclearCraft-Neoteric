@@ -1,4 +1,4 @@
-package igentuman.nc.setup.fuel;
+package igentuman.nc.setup.registration.fuel;
 
 public class NCFuel {
     public String group;

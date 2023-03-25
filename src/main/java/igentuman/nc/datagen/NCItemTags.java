@@ -1,9 +1,8 @@
 package igentuman.nc.datagen;
 
-import igentuman.nc.setup.Fuel;
-import igentuman.nc.setup.NCBlocks;
-import igentuman.nc.setup.NCItems;
-import igentuman.nc.setup.materials.Ingots;
+import igentuman.nc.setup.registration.Fuel;
+import igentuman.nc.setup.registration.NCBlocks;
+import igentuman.nc.setup.registration.NCItems;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraft.data.tags.ItemTagsProvider;

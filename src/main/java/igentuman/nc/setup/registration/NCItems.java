@@ -1,23 +1,17 @@
-package igentuman.nc.setup;
+package igentuman.nc.setup.registration;
 
-import com.electronwill.nightconfig.core.io.ParsingMode;
-import igentuman.nc.item.ItemFuel;
-import igentuman.nc.setup.fuel.FuelManager;
-import igentuman.nc.setup.materials.*;
+import igentuman.nc.setup.ModSetup;
+import igentuman.nc.setup.registration.materials.*;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.PackType;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
-import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;

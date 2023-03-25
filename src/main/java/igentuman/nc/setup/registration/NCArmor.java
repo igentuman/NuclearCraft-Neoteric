@@ -1,5 +1,6 @@
-package igentuman.nc.setup;
+package igentuman.nc.setup.registration;
 
+import igentuman.nc.setup.ModSetup;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;

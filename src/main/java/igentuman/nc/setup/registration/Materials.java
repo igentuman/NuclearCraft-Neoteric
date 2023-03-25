@@ -1,7 +1,7 @@
-package igentuman.nc.setup;
+package igentuman.nc.setup.registration;
 
-import igentuman.nc.setup.materials.MaterialsManager;
-import igentuman.nc.setup.materials.NCMaterial;
+import igentuman.nc.setup.registration.materials.MaterialsManager;
+import igentuman.nc.setup.registration.materials.NCMaterial;
 
 import java.util.Arrays;
 import java.util.HashMap;

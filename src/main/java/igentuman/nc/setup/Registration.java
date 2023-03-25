@@ -1,6 +1,7 @@
 package igentuman.nc.setup;
 
 import com.mojang.serialization.Codec;
+import igentuman.nc.setup.registration.*;
 import igentuman.nc.world.dimension.WastelandChunkGenerator;
 import igentuman.nc.world.ore.Generator;
 import igentuman.nc.world.structure.LaboratoryStructure;
@@ -22,11 +23,8 @@ import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureSet;
 import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraft.world.level.material.Material;
-import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.common.world.BiomeModifier;
-import net.minecraftforge.eventbus.EventBus;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;

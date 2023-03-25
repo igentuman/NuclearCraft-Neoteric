@@ -1,6 +1,6 @@
 package igentuman.nc.datagen;
 
-import igentuman.nc.setup.NCBlocks;
+import igentuman.nc.setup.registration.NCBlocks;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraft.tags.BlockTags;

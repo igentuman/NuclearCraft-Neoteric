@@ -1,4 +1,4 @@
-package igentuman.nc.setup.fuel;
+package igentuman.nc.setup.registration.fuel;
 
 import java.util.HashMap;
 

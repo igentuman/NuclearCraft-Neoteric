@@ -1,13 +1,13 @@
-package igentuman.nc.setup.materials;
+package igentuman.nc.setup.registration.materials;
 
-import igentuman.nc.setup.Materials;
+import igentuman.nc.setup.registration.Materials;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 
-public class Nuggets {
+public class Dusts {
 
     private static HashMap<String, NCMaterialProduct> all;
     private static HashMap<String, NCMaterialProduct> registered;
@@ -30,8 +30,8 @@ public class Nuggets {
     {
         if(all == null) {
             all = new HashMap<>();
-            for (NCMaterial m: Materials.nuggets().values()) {
-                all.put(m.name, NCMaterialProduct.get(m.name, "nugget"));
+            for (NCMaterial m: Materials.dusts().values()) {
+                all.put(m.name, NCMaterialProduct.get(m.name, "dust"));
             }
         }
         return all;
@@ -40,7 +40,7 @@ public class Nuggets {
     public static List<Boolean> initialRegistration()
     {
         List<Boolean> tmp = new ArrayList<>();
-        for(NCMaterialProduct nugget: all().values()) {
+        for(NCMaterialProduct dust: all().values()) {
             tmp.add(true);
         }
         return tmp;

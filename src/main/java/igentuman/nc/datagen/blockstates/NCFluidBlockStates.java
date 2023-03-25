@@ -1,14 +1,11 @@
 package igentuman.nc.datagen.blockstates;
 
-import igentuman.nc.datagen.blockstates.ExtendedBlockstateProvider;
-import igentuman.nc.setup.NCFluids;
-import net.minecraft.client.renderer.RenderType;
+import igentuman.nc.setup.registration.NCFluids;
 import net.minecraft.core.Registry;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
-import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import org.apache.commons.lang3.mutable.Mutable;

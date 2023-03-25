@@ -1,13 +1,13 @@
-package igentuman.nc.setup;
+package igentuman.nc.setup.registration;
 
 import com.google.common.collect.ImmutableList;
 import igentuman.nc.item.NCBucketItem;
-import igentuman.nc.setup.fluid.AcidDefinition;
-import igentuman.nc.setup.fluid.GasDefinition;
-import igentuman.nc.setup.fluid.LiquidDefinition;
-import igentuman.nc.setup.fluid.NCFluid;
+import igentuman.nc.setup.registration.fluid.AcidDefinition;
+import igentuman.nc.setup.registration.fluid.GasDefinition;
+import igentuman.nc.setup.registration.fluid.LiquidDefinition;
+import igentuman.nc.setup.registration.fluid.NCFluid;
 import igentuman.nc.block.NCFluidBlock;
-import igentuman.nc.setup.fuel.FuelManager;
+import igentuman.nc.setup.registration.fuel.FuelManager;
 import igentuman.nc.util.TextureUtil;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;

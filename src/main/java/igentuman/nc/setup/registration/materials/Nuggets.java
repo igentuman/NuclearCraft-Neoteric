@@ -1,13 +1,13 @@
-package igentuman.nc.setup.materials;
+package igentuman.nc.setup.registration.materials;
 
-import igentuman.nc.setup.Materials;
+import igentuman.nc.setup.registration.Materials;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 
-public class Gems {
+public class Nuggets {
 
     private static HashMap<String, NCMaterialProduct> all;
     private static HashMap<String, NCMaterialProduct> registered;
@@ -30,8 +30,8 @@ public class Gems {
     {
         if(all == null) {
             all = new HashMap<>();
-            for (NCMaterial m: Materials.gems().values()) {
-                all.put(m.name, NCMaterialProduct.get(m.name, "gem"));
+            for (NCMaterial m: Materials.nuggets().values()) {
+                all.put(m.name, NCMaterialProduct.get(m.name, "nugget"));
             }
         }
         return all;
@@ -40,7 +40,7 @@ public class Gems {
     public static List<Boolean> initialRegistration()
     {
         List<Boolean> tmp = new ArrayList<>();
-        for(NCMaterialProduct item: all().values()) {
+        for(NCMaterialProduct nugget: all().values()) {
             tmp.add(true);
         }
         return tmp;

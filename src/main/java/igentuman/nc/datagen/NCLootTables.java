@@ -1,6 +1,6 @@
 package igentuman.nc.datagen;
 
-import igentuman.nc.setup.NCBlocks;
+import igentuman.nc.setup.registration.NCBlocks;
 import net.minecraft.data.DataGenerator;
 
 public class NCLootTables extends BaseLootTableProvider {

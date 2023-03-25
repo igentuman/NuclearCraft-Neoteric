@@ -1,6 +1,6 @@
-package igentuman.nc.setup.materials;
+package igentuman.nc.setup.registration.materials;
 
-import igentuman.nc.setup.Materials;
+import igentuman.nc.setup.registration.Materials;
 import igentuman.nc.world.ore.NCOre;
 
 import java.util.ArrayList;

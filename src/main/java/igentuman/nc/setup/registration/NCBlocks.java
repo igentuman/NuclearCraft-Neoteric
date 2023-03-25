@@ -1,7 +1,8 @@
-package igentuman.nc.setup;
+package igentuman.nc.setup.registration;
 
-import igentuman.nc.setup.materials.Blocks;
-import igentuman.nc.setup.materials.Ores;
+import igentuman.nc.setup.ModSetup;
+import igentuman.nc.setup.registration.materials.Blocks;
+import igentuman.nc.setup.registration.materials.Ores;
 import net.minecraft.Util;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
@@ -11,10 +12,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.FenceBlock;
-import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Material;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -32,7 +31,6 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static igentuman.nc.NuclearCraft.MODID;
-import static net.minecraft.world.level.block.Blocks.LAVA;
 
 public class NCBlocks {
 

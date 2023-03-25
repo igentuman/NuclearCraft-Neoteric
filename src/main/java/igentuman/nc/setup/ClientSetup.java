@@ -1,5 +1,6 @@
 package igentuman.nc.setup;
 
+import igentuman.nc.setup.registration.NCFluids;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.level.material.Fluid;

@@ -1,7 +1,7 @@
 package igentuman.nc.world.ore;
 
-import igentuman.nc.setup.NCBlocks;
-import igentuman.nc.setup.materials.Ores;
+import igentuman.nc.setup.registration.NCBlocks;
+import igentuman.nc.setup.registration.materials.Ores;
 import net.minecraft.core.Holder;
 import net.minecraft.data.worldgen.features.OreFeatures;
 import net.minecraft.world.level.levelgen.VerticalAnchor;

@@ -1,7 +1,7 @@
 package igentuman.nc.handler.config;
 
-import igentuman.nc.setup.fuel.FuelManager;
-import igentuman.nc.setup.materials.*;
+import igentuman.nc.setup.registration.fuel.FuelManager;
+import igentuman.nc.setup.registration.materials.*;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 import java.util.ArrayList;

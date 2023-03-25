@@ -1,6 +1,6 @@
 package igentuman.nc.block;
 
-import igentuman.nc.setup.NCFluids;
+import igentuman.nc.setup.registration.NCFluids;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -18,7 +18,6 @@ import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.StateHolder;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.level.material.MaterialColor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

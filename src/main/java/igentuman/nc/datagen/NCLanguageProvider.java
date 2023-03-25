@@ -1,8 +1,6 @@
 package igentuman.nc.datagen;
 
-import igentuman.nc.setup.*;
-import igentuman.nc.setup.fuel.NCFuel;
-import igentuman.nc.setup.materials.Ores;
+import igentuman.nc.setup.registration.*;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.LanguageProvider;
 

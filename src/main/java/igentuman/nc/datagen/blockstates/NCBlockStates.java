@@ -1,7 +1,6 @@
 package igentuman.nc.datagen.blockstates;
 
-import igentuman.nc.NuclearCraft;
-import igentuman.nc.setup.NCBlocks;
+import igentuman.nc.setup.registration.NCBlocks;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;

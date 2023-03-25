@@ -1,8 +1,6 @@
 package igentuman.nc.datagen.models;
 
-import igentuman.nc.NuclearCraft;
-import igentuman.nc.setup.*;
-import igentuman.nc.setup.materials.Nuggets;
+import igentuman.nc.setup.registration.*;
 import net.minecraft.core.Registry;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;

@@ -1,4 +1,4 @@
-package igentuman.nc.setup.fluid;
+package igentuman.nc.setup.registration.fluid;
 
 public class AcidDefinition {
     public String name;

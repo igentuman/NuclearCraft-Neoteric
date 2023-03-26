@@ -38,6 +38,13 @@ public class NCLanguageProvider extends LanguageProvider {
         shielding();
         buckets();
         fluids();
+        processors();
+    }
+
+    private void processors() {
+        for(String name: NCProcessors.PROCESSORS.keySet()) {
+            add(NCProcessors.PROCESSORS.get(name).get(), convertToName(name));
+        }
     }
 
     private void buckets() {

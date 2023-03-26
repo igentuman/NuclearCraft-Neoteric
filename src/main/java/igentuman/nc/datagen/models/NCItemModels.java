@@ -24,6 +24,7 @@ public class NCItemModels extends ItemModelProvider {
 
         ores();
         blocks();
+        processors();
         chunks();
         ingots();
         nuggets();
@@ -49,6 +50,12 @@ public class NCItemModels extends ItemModelProvider {
                 mcLoc("item/generated"),
                 "layer0", modLoc("item/tool/"+NCTools.SPAXELHOE_TOUGH.getId().getPath()));
         NCFluids.ALL_ENTRIES.forEach(this::createBucket);
+    }
+
+    private void processors() {
+        for(String name: NCProcessors.PROCESSORS.keySet()) {
+            withExistingParent(NCProcessors.PROCESSOR_BLOCKS_ITEMS.get(name).getId().getPath(), modLoc("block/"+name));
+        }
     }
 
     private String name(ItemLike item)

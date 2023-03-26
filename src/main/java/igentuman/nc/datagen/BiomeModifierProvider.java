@@ -34,7 +34,6 @@ public class BiomeModifierProvider
 			DataGenerator dataGenerator, ExistingFileHelper existingFileHelper, Consumer<DataProvider> add
 	)
 	{
-		Registration.initLate();
 
 		RegistryAccess registryAccess = RegistryAccess.builtinCopy();
 		RegistryOps<JsonElement> jsonOps = RegistryOps.create(JsonOps.INSTANCE, registryAccess);

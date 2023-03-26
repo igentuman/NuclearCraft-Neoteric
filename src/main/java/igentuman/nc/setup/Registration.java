@@ -46,6 +46,7 @@ public class Registration {
     private static final DeferredRegister<StructureType<?>> STRUCTURES = DeferredRegister.create(Registry.STRUCTURE_TYPE_REGISTRY, MODID);
     private static final DeferredRegister<PlacedFeature> PLACED_FEATURES = DeferredRegister.create(Registry.PLACED_FEATURE_REGISTRY, MODID);
     private static final DeferredRegister<Feature<?>> FEATURE_REGISTER = DeferredRegister.create(ForgeRegistries.FEATURES, MODID);
+
     public static void init() {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         BLOCKS.register(bus);
@@ -56,12 +57,16 @@ public class Registration {
         NCArmor.init();
         Fuel.init();
         NCFluids.init();
+        NCProcessors.init();
         BLOCK_ENTITIES.register(bus);
         CONTAINERS.register(bus);
         ENTITIES.register(bus);
         STRUCTURES.register(bus);
         BIOME_MODIFIERS.register(bus);
         PLACED_FEATURES.register(bus);
+        FEATURE_REGISTER.register(bus);
+        CONTAINERS.register(bus);
+
         initOreGeneration();
     }
 
@@ -100,9 +105,5 @@ public class Registration {
 
     private static <S extends Structure> StructureType<S> typeConvert(Codec<S> codec) {
         return () -> codec;
-    }
-
-    public static void initLate() {
-        //registerOreGenerators();
     }
 }

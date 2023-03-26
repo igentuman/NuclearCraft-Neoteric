@@ -1,12 +1,12 @@
 package igentuman.nc.datagen.blockstates;
 
 import igentuman.nc.setup.registration.NCBlocks;
+import igentuman.nc.setup.registration.NCProcessors;
+import net.minecraft.core.Direction;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.client.model.generators.BlockStateProvider;
-import net.minecraftforge.client.model.generators.ModelFile;
-import net.minecraftforge.client.model.generators.ModelProvider;
+import net.minecraftforge.client.model.generators.*;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -23,9 +23,18 @@ public class NCBlockStates extends BlockStateProvider {
         portal();
         ores();
         blocks();
+        processors();
         materialFluidBlocks();
     }
 
+    private void processors() {
+        for(String ore: NCProcessors.PROCESSORS.keySet()) {
+            horizontalBlock(
+                    NCProcessors.PROCESSORS.get(ore).get(),
+                    processorModel(NCProcessors.PROCESSORS.get(ore).get(),
+                            "processor"));
+        }
+    }
 
 
     private void materialFluidBlocks() {
@@ -61,6 +70,21 @@ public class NCBlockStates extends BlockStateProvider {
         return models().cubeAll(
                         key(block).getPath(),
                         new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/" + name.getPath()));
+    }
+
+
+    public ModelFile processorModel(Block block, String subPath) {
+        ResourceLocation name = key(block);
+
+        return models().cube(
+                key(block).getPath(),
+                new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/top"),
+                new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/bottom"),
+                new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/" + name.getPath()),
+                new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/back"),
+                new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/side"),
+                new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/side")
+        );
     }
 
 }

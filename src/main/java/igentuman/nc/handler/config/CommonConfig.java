@@ -1,5 +1,6 @@
 package igentuman.nc.handler.config;
 
+import igentuman.nc.setup.processors.Processors;
 import igentuman.nc.setup.registration.fuel.FuelManager;
 import igentuman.nc.setup.registration.materials.*;
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -183,8 +184,11 @@ public class CommonConfig {
     }
 
     public static class ProcessorConfig {
-        public final ForgeConfigSpec.ConfigValue<Integer> base_time;
-        public final ForgeConfigSpec.ConfigValue<Integer> base_power;
+        public static ForgeConfigSpec.ConfigValue<Integer> base_time;
+        public static ForgeConfigSpec.ConfigValue<Integer> base_power;
+        public static ForgeConfigSpec.ConfigValue<List<Boolean>> REGISTER_PROCESSOR;
+        public static ForgeConfigSpec.ConfigValue<List<Integer>> PROCESSOR_POWER;
+        public static ForgeConfigSpec.ConfigValue<List<Integer>> PROCESSOR_TIME;
 
 
         public ProcessorConfig(ForgeConfigSpec.Builder builder) {
@@ -195,7 +199,21 @@ public class CommonConfig {
             base_power = builder
                     .comment("FE per Tick")
                     .define("base_power", 100);
+
+            REGISTER_PROCESSOR = builder
+                    .comment("Allow processor registration: " + String.join(", ", Processors.all().keySet()))
+                    .define("register_processor", Processors.initialRegistered());
+
+            PROCESSOR_POWER = builder
+                    .comment("Processor power: " + String.join(", ", Processors.all().keySet()))
+                    .define("register_processor", Processors.initialPower());
+
+            PROCESSOR_TIME = builder
+                    .comment("Processor time: " + String.join(", ", Processors.all().keySet()))
+                    .define("register_processor", Processors.initialTime());
             builder.pop();
+
+
         }
     }
 }

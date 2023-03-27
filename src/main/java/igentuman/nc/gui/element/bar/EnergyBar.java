@@ -25,6 +25,6 @@ public class EnergyBar extends NCGuiElement {
         super.draw(transform, mX, mY, pTicks);
         int stored = (int)(86*(energy.getEnergyStored()/(float)energy.getMaxEnergyStored()));
         blit(transform, X(), Y(), 36, 0,  18, 88);
-        blit(transform, X()+1, Y()+1, 54, 0,  17, stored);
+        blit(transform, X()+1, Y()+1+86-stored, 54, 0,  16, stored);
     }
 }

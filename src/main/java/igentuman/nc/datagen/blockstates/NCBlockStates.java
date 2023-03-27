@@ -1,6 +1,7 @@
 package igentuman.nc.datagen.blockstates;
 
 import igentuman.nc.setup.registration.NCBlocks;
+import igentuman.nc.setup.registration.NCEnergyBlocks;
 import igentuman.nc.setup.registration.NCProcessors;
 import net.minecraft.core.Direction;
 import net.minecraft.data.DataGenerator;
@@ -24,14 +25,25 @@ public class NCBlockStates extends BlockStateProvider {
         ores();
         blocks();
         processors();
+        solarPanels();
         materialFluidBlocks();
     }
 
+    private void solarPanels() {
+        for(String name: NCEnergyBlocks.ENERGY_BLOCKS.keySet()) {
+            if(!name.contains("solar_panel")) continue;
+            simpleBlock(
+                    NCEnergyBlocks.ENERGY_BLOCKS.get(name).get(),
+                    energyModel(NCEnergyBlocks.ENERGY_BLOCKS.get(name).get(),
+                            name));
+        }
+    }
+
     private void processors() {
-        for(String ore: NCProcessors.PROCESSORS.keySet()) {
+        for(String name: NCProcessors.PROCESSORS.keySet()) {
             horizontalBlock(
-                    NCProcessors.PROCESSORS.get(ore).get(),
-                    processorModel(NCProcessors.PROCESSORS.get(ore).get(),
+                    NCProcessors.PROCESSORS.get(name).get(),
+                    processorModel(NCProcessors.PROCESSORS.get(name).get(),
                             "processor"));
         }
     }
@@ -84,6 +96,20 @@ public class NCBlockStates extends BlockStateProvider {
                 new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/back"),
                 new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/side"),
                 new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/side")
+        );
+    }
+
+    public ModelFile energyModel(Block block, String subPath) {
+        ResourceLocation name = key(block);
+
+        return models().cube(
+                key(block).getPath(),
+                new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"_side"),
+                new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"_top"),
+                new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"_side"),
+                new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"_side"),
+                new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"_side"),
+                new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"_side")
         );
     }
 

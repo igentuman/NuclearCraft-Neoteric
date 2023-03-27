@@ -8,8 +8,12 @@ import igentuman.nc.util.CustomEnergyStorage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -23,6 +27,7 @@ import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Objects;
 
 public class NCProcessor extends BlockEntity {
 
@@ -73,7 +78,7 @@ public class NCProcessor extends BlockEntity {
     }
 
     private CustomEnergyStorage createEnergy() {
-        return new CustomEnergyStorage(prefab().config().getPower()*500, 0) {
+        return new CustomEnergyStorage(prefab().config().getPower()*500, 10000, 0) {
             @Override
             protected void onEnergyChanged() {
                 setChanged();
@@ -107,6 +112,8 @@ public class NCProcessor extends BlockEntity {
     }
 
     public void tickServer() {
+
+        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
     }
 
     public String getName() {
@@ -147,5 +154,52 @@ public class NCProcessor extends BlockEntity {
 
     public int getProgress() {
         return timeProcessed/(processTime/100);
+    }
+
+    @Override
+    public void handleUpdateTag(CompoundTag tag) {
+        if (tag != null) {
+            loadClientData(tag);
+        }
+    }
+
+    private void loadClientData(CompoundTag tag) {
+        if (tag.contains("Info")) {
+            CompoundTag infoTag = tag.getCompound("Info");
+            energyStorage.setEnergy(infoTag.getInt("energy"));
+        }
+    }
+
+    @Override
+    public CompoundTag getUpdateTag() {
+        CompoundTag tag = super.getUpdateTag();
+        saveClientData(tag);
+        return tag;
+    }
+
+    private void saveClientData(CompoundTag tag) {
+        CompoundTag infoTag = new CompoundTag();
+        tag.put("Info", infoTag);
+        infoTag.putInt("energy", energyStorage.getEnergyStored());
+    }
+
+    @Nullable
+    @Override
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
+    }
+
+    @Override
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
+        int oldEnergy = energyStorage.getEnergyStored();
+
+
+        CompoundTag tag = pkt.getTag();
+        handleUpdateTag(tag);
+
+        if (oldEnergy != energyStorage.getEnergyStored()) {
+            //requestModelDataUpdate();
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+        }
     }
 }

@@ -7,6 +7,9 @@ public class CustomEnergyStorage extends EnergyStorage {
     public CustomEnergyStorage(int capacity, int maxTransfer) {
         super(capacity, maxTransfer, 0);
     }
+    public CustomEnergyStorage(int capacity, int maxTransfer, int maxExtract) {
+        super(capacity, maxTransfer, maxExtract);
+    }
 
     protected void onEnergyChanged() {
     }

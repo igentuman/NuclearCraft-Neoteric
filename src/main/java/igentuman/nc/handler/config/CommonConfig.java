@@ -1,5 +1,6 @@
 package igentuman.nc.handler.config;
 
+import igentuman.nc.setup.energy.SolarPanels;
 import igentuman.nc.setup.processors.Processors;
 import igentuman.nc.setup.registration.fuel.FuelManager;
 import igentuman.nc.setup.registration.materials.*;
@@ -16,6 +17,7 @@ public class CommonConfig {
     public static final ProcessorConfig PROCESSOR_CONFIG = new ProcessorConfig(BUILDER);
     public static final OresConfig ORE_CONFIG = new OresConfig(BUILDER);
     public static final FuelConfig FUEL_CONFIG = new FuelConfig(BUILDER);
+    public static final EnergyGenerationConfig ENERGY_GENERATION = new EnergyGenerationConfig(BUILDER);
     public static final MaterialProductsConfig MATERIAL_PRODUCTS = new MaterialProductsConfig(BUILDER);
     public static final DimensionConfig DIMENSION_CONFIG = new DimensionConfig(BUILDER);
     public static final ForgeConfigSpec spec = BUILDER.build();
@@ -216,4 +218,27 @@ public class CommonConfig {
 
         }
     }
+
+        public static class EnergyGenerationConfig {
+            public static ForgeConfigSpec.ConfigValue<List<Boolean>> REGISTER_SOLAR_PANELS;
+            public static ForgeConfigSpec.ConfigValue<List<Integer>> SOLAR_PANELS_GENERATION;
+
+
+            public EnergyGenerationConfig(ForgeConfigSpec.Builder builder) {
+                builder.push("Energy Generation");
+
+                REGISTER_SOLAR_PANELS = builder
+                        .comment("Allow processor registration: " + String.join(", ", SolarPanels.all().keySet()))
+                        .define("register_processor", SolarPanels.initialRegistered());
+
+                SOLAR_PANELS_GENERATION = builder
+                        .comment("Processor power: " + String.join(", ", SolarPanels.all().keySet()))
+                        .define("processor_power", SolarPanels.initialPower());
+
+
+                builder.pop();
+
+            }
+        }
+
 }

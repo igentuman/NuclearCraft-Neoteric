@@ -1,6 +1,8 @@
 package igentuman.nc.datagen;
 
 import igentuman.nc.setup.registration.NCBlocks;
+import igentuman.nc.setup.registration.NCEnergyBlocks;
+import igentuman.nc.setup.registration.NCProcessors;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraft.tags.BlockTags;
@@ -17,12 +19,12 @@ public class NCBlockTags extends BlockTagsProvider {
 
     @Override
     protected void addTags() {
-        addOres();
-        addBlocks();
-
+        ores();
+        blocks();
+        machines();
     }
 
-    private void addOres() {
+    private void ores() {
         for(String ore: NCBlocks.ORE_BLOCKS.keySet()) {
             tag(BlockTags.MINEABLE_WITH_PICKAXE).add(NCBlocks.ORE_BLOCKS.get(ore).get());
             tag(BlockTags.NEEDS_IRON_TOOL).add(NCBlocks.ORE_BLOCKS.get(ore).get());
@@ -32,12 +34,23 @@ public class NCBlockTags extends BlockTagsProvider {
         }
     }
 
-    private void addBlocks() {
+    private void blocks() {
         for(String block: NCBlocks.NC_BLOCKS.keySet()) {
             tag(BlockTags.MINEABLE_WITH_PICKAXE).add(NCBlocks.NC_BLOCKS.get(block).get());
             tag(BlockTags.NEEDS_IRON_TOOL).add(NCBlocks.NC_BLOCKS.get(block).get());
             tag(Tags.Blocks.STORAGE_BLOCKS).add(NCBlocks.NC_BLOCKS.get(block).get());
             tag(NCBlocks.BLOCK_TAGS.get(block)).add(NCBlocks.NC_BLOCKS.get(block).get());
+        }
+    }
+
+    private void machines() {
+        for(String block: NCEnergyBlocks.ENERGY_BLOCKS.keySet()) {
+            tag(BlockTags.MINEABLE_WITH_PICKAXE).add(NCEnergyBlocks.ENERGY_BLOCKS.get(block).get());
+            tag(BlockTags.NEEDS_IRON_TOOL).add(NCEnergyBlocks.ENERGY_BLOCKS.get(block).get());
+        }
+        for(String block: NCProcessors.PROCESSORS.keySet()) {
+            tag(BlockTags.MINEABLE_WITH_PICKAXE).add(NCProcessors.PROCESSORS.get(block).get());
+            tag(BlockTags.NEEDS_IRON_TOOL).add(NCProcessors.PROCESSORS.get(block).get());
         }
     }
 

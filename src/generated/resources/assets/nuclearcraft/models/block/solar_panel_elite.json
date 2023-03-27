@@ -1,0 +1,11 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "nuclearcraft:block/energy/solar_panel/elite_side",
+    "east": "nuclearcraft:block/energy/solar_panel/elite_side",
+    "north": "nuclearcraft:block/energy/solar_panel/elite_side",
+    "south": "nuclearcraft:block/energy/solar_panel/elite_side",
+    "up": "nuclearcraft:block/energy/solar_panel/elite_top",
+    "west": "nuclearcraft:block/energy/solar_panel/elite_side"
+  }
+}

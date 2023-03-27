@@ -39,6 +39,14 @@ public class NCLanguageProvider extends LanguageProvider {
         buckets();
         fluids();
         processors();
+        energyBlocks();
+    }
+
+    private void energyBlocks() {
+        for(String name: NCEnergyBlocks.ENERGY_BLOCKS.keySet()) {
+            String title = convertToName(name);
+            add(NCEnergyBlocks.ENERGY_BLOCKS.get(name).get(), title);
+        }
     }
 
     private void processors() {

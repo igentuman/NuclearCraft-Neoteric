@@ -25,6 +25,7 @@ public class NCItemModels extends ItemModelProvider {
         ores();
         blocks();
         processors();
+        energyBlocks();
         chunks();
         ingots();
         nuggets();
@@ -55,6 +56,12 @@ public class NCItemModels extends ItemModelProvider {
     private void processors() {
         for(String name: NCProcessors.PROCESSORS.keySet()) {
             withExistingParent(NCProcessors.PROCESSOR_BLOCKS_ITEMS.get(name).getId().getPath(), modLoc("block/"+name));
+        }
+    }
+
+    private void energyBlocks() {
+        for(String name: NCEnergyBlocks.ENERGY_BLOCKS.keySet()) {
+            withExistingParent(NCEnergyBlocks.ENERGY_BLOCKS.get(name).getId().getPath(), modLoc("block/"+name.replace("/","_")));
         }
     }
 

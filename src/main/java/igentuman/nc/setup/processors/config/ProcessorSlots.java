@@ -5,8 +5,8 @@ import java.util.List;
 
 public class ProcessorSlots {
 
-    public static int[] inputSlotPos = new int[] {32, 30};
-    public static int[] outputSlotPos = new int[] {110, 30};
+    public static int[] inputSlotPos = new int[] {31, 30};
+    public static int[] outputSlotPos = new int[] {115, 30};
     public static int margin = 20;
 
     private int input_items;
@@ -67,6 +67,9 @@ public class ProcessorSlots {
                 }
             } else {
                 for (int i = 0; i < input_fluids+input_items; i++) {
+                    if(input_fluids+input_items == 1) {
+                        x += margin;
+                    }
                     int itemX = x + margin*i;
                     int itemY = y + margin / 2;
                     slotPositions.add(new int[]{itemX, itemY});

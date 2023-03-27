@@ -17,6 +17,24 @@ import java.lang.reflect.Constructor;
 
 public class ProcessorPrefab <M extends NCProcessorContainer, U extends Screen & MenuAccess<M>> {
 
+    private  Class  container;
+    private  MenuScreens.ScreenConstructor<M, U>  screenConstructor;
+    private boolean initialized;
+    private Boolean registered = true;
+
+    protected String name;
+
+    public boolean supportSpeedUpgrade = true;
+    protected int power = 200;
+    protected int time = 200;
+
+    public boolean supportEnergyUpgrade = true;
+
+    protected boolean supportCatalyst = false;
+
+    protected Class recipeManager;
+
+
     public BlockEntityType.BlockEntitySupplier<? extends NCProcessor>  getBlockEntity() {
         return blockEntity;
     }
@@ -25,7 +43,6 @@ public class ProcessorPrefab <M extends NCProcessorContainer, U extends Screen &
         this.blockEntity = blockEntity;
         return this;
     }
-
     private BlockEntityType.BlockEntitySupplier<? extends NCProcessor>  blockEntity;
 
     public MenuScreens.ScreenConstructor<M, U> getScreenConstructor() {
@@ -39,12 +56,6 @@ public class ProcessorPrefab <M extends NCProcessorContainer, U extends Screen &
     public void setContainer(Class container) {
         this.container = container;
     }
-
-    private  Class  container;
-    private  MenuScreens.ScreenConstructor<M, U>  screenConstructor;
-
-    private boolean initialized;
-    private Boolean registered = true;
 
     public ProcessorPrefab(String name)
     {
@@ -62,9 +73,6 @@ public class ProcessorPrefab <M extends NCProcessorContainer, U extends Screen &
                 .setOutputItems(outItems);
     }
 
-    protected String name;
-
-    protected boolean supportSpeedUpgrade = true;
 
     public int getPower() {
         return power;
@@ -84,17 +92,17 @@ public class ProcessorPrefab <M extends NCProcessorContainer, U extends Screen &
         return this;
     }
 
-    protected int power = 200;
-    protected int time = 200;
-
-    protected boolean supportEnergyUpgrade = true;
-    
-    protected boolean supportCatalyst = false;
-    
-    protected Class recipeManager;
 
     public ProcessorSlots getSlotsConfig() {
         return slotsConfig;
+    }
+
+    public int getTotalItemSlots()
+    {
+        return getSlotsConfig().getInputItems()
+                +getSlotsConfig().getOutputItems()
+                +(supportSpeedUpgrade ? 1 : 0)
+                +(supportEnergyUpgrade ? 1 : 0);
     }
 
     protected ProcessorSlots slotsConfig;

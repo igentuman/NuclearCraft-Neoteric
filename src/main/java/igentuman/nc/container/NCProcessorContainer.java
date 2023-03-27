@@ -1,6 +1,7 @@
 package igentuman.nc.container;
 
 import igentuman.nc.block.entity.processor.NCProcessor;
+import igentuman.nc.gui.element.slot.NormalSlot;
 import igentuman.nc.setup.processors.ProcessorPrefab;
 import igentuman.nc.setup.processors.Processors;
 import igentuman.nc.setup.registration.NCProcessors;
@@ -63,6 +64,23 @@ public class NCProcessorContainer extends AbstractContainerMenu {
                 });
                 itemIdx++;
             }
+        }
+        int ux = 154;
+        if(getProcessor().supportSpeedUpgrade) {
+            int idx = itemIdx;
+            int finalUx = ux;
+            blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
+                addSlot(new SlotItemHandler(h, idx, finalUx, 77));
+            });
+            itemIdx++;
+            ux -= 18;
+        }
+        if(getProcessor().supportEnergyUpgrade) {
+            int idx = itemIdx;
+            int finalUx = ux;
+            blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
+                addSlot(new SlotItemHandler(h, idx, finalUx, 77));
+            });
         }
     }
 
@@ -127,7 +145,7 @@ public class NCProcessorContainer extends AbstractContainerMenu {
 
     protected void layoutPlayerInventorySlots() {
         int leftCol = 10;
-        int topRow = 95;
+        int topRow = 96;
         // Player inventory
         addSlotBox(playerInventory, leftCol, topRow, 9, 18, 3, 18);
         // Hotbar
@@ -150,5 +168,9 @@ public class NCProcessorContainer extends AbstractContainerMenu {
 
     public IEnergyStorage getEnergy() {
         return blockEntity.getEnergy().orElse(null);
+    }
+
+    public int getProgress() {
+        return blockEntity.getProgress();
     }
 }

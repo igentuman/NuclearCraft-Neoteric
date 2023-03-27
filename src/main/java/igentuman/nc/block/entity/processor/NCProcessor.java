@@ -28,10 +28,10 @@ public class NCProcessor extends BlockEntity {
 
     protected String name;
     public static String NAME;
-
+    protected int processTime = prefab().config().getTime();
+    protected int timeProcessed = 0;
     protected final ItemStackHandler itemHandler = createHandler();
     protected final LazyOptional<IItemHandler> handler = LazyOptional.of(() -> itemHandler);
-
     protected final CustomEnergyStorage energyStorage = createEnergy();
 
     public LazyOptional<IEnergyStorage> getEnergy() {
@@ -52,7 +52,7 @@ public class NCProcessor extends BlockEntity {
     protected ProcessorPrefab prefab;
 
     private ItemStackHandler createHandler() {
-        return new ItemStackHandler(prefab().getSlotsConfig().getInputItems()+prefab().getSlotsConfig().getOutputItems()) {
+        return new ItemStackHandler(prefab().getTotalItemSlots()) {
 
             @Override
             protected void onContentsChanged(int slot) {
@@ -143,5 +143,9 @@ public class NCProcessor extends BlockEntity {
         CompoundTag infoTag = new CompoundTag();
         infoTag.putInt("Counter", counter);
         tag.put("Info", infoTag);
+    }
+
+    public int getProgress() {
+        return timeProcessed/(processTime/100);
     }
 }

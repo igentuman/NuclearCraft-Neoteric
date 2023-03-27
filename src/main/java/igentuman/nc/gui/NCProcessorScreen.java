@@ -5,6 +5,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import igentuman.nc.container.NCProcessorContainer;
 import igentuman.nc.gui.element.NCGuiElement;
 import igentuman.nc.gui.element.bar.EnergyBar;
+import igentuman.nc.gui.element.bar.ProgressBar;
+import igentuman.nc.gui.element.button.Button;
 import igentuman.nc.gui.element.slot.BigSlot;
 import igentuman.nc.gui.element.slot.NormalSlot;
 import igentuman.nc.setup.processors.config.ProcessorSlots;
@@ -50,6 +52,7 @@ public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractC
         slots = menu.getProcessor().getSlotsConfig();
         updateRelativeCords();
         energyBar = new EnergyBar(9, 4,  menu.getEnergy());
+        widgets.clear();
         widgets.add(energyBar);
         for(int i = 0; i < slots.slotsCount();i++) {
             if(slots.getOutputItems()+slots.getOutputFluids() == 1 && slots.getSlotType(i).contains("_out")) {
@@ -58,6 +61,17 @@ public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractC
                 widgets.add(new NormalSlot(slots.getSlotPos(i), slots.getSlotType(i)));
             }
         }
+        widgets.add(new ProgressBar(71, 40, menu));
+        int ux = 154;
+        if(menu.getProcessor().supportSpeedUpgrade) {
+            widgets.add(new NormalSlot(ux, 77, "speed_upgrade"));
+            ux -= 18;
+        }
+        if(menu.getProcessor().supportEnergyUpgrade) {
+            widgets.add(new NormalSlot(ux, 77, "energy_upgrade"));
+        }
+        widgets.add(new Button.SideConfig(29, 74, menu));
+        widgets.add(new Button.RedstoneConfig(48, 74, menu));
     }
 
     public NCProcessorScreen(AbstractContainerMenu abstractContainerMenu, Inventory inventory, Component component) {
@@ -72,12 +86,11 @@ public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractC
         this.renderTooltip(matrixStack, mouseX, mouseY);
     }
 
-    private void renderWidgets(PoseStack matrix) {
+    private void renderWidgets(PoseStack matrix, float partialTicks, int mouseX, int mouseY) {
         for(NCGuiElement widget: widgets) {
-            widget.draw(matrix);
+            widget.draw(matrix, mouseX, mouseY, partialTicks);
         }
     }
-
 
     @Override
     protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
@@ -89,8 +102,13 @@ public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractC
         RenderSystem.setShaderTexture(0, GUI);
         updateRelativeCords();
         this.blit(matrixStack, relX, relY, 0, 0, this.imageWidth, this.imageHeight);
-        renderWidgets(matrixStack);
+        renderWidgets(matrixStack, partialTicks, mouseX, mouseY);
     }
 
+    private void renderTooltips(PoseStack pPoseStack, int pMouseX, int pMouseY, int x, int y) {
+        for(NCGuiElement widget: widgets) {
+            //renderTooltip(pPoseStack, widget.renderToolTip(), x, y);
+        }
+    }
 
 }

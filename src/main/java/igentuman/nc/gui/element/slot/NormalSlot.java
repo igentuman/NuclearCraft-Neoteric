@@ -20,13 +20,19 @@ public class NormalSlot extends NCGuiElement {
     }
 
     @Override
-    public void draw(PoseStack transform) {
-        super.draw(transform);
+    public void draw(PoseStack transform, int mX, int mY, float pTicks) {
+        super.draw(transform, mX, mY, pTicks);
         if(type.contains("fluid")) {
             xOffset = 18;
         }
         if(type.contains("_out")) {
             yOffset = 36;
+        }
+        if(type.equals("energy_upgrade")) {
+            yOffset = 90;
+        }
+        if(type.equals("speed_upgrade")) {
+            yOffset = 72;
         }
         //-1 because of border
         blit(transform, X()-1, Y()-1, xOffset, yOffset,  18, 18);

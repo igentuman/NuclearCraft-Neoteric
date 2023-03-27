@@ -20,13 +20,13 @@ public class BigSlot extends NCGuiElement {
     }
 
     @Override
-    public void draw(PoseStack transform) {
-        super.draw(transform);
+    public void draw(PoseStack transform, int mX, int mY, float pTicks) {
+        super.draw(transform, mX, mY, pTicks);
         if(type.contains("fluid")) {
             yOffset = 26;
         }
 
-        //-1 because of border
+        //-5 because of padding
         blit(transform, X()-5, Y()-5, xOffset, yOffset,  26, 26);
     }
 }

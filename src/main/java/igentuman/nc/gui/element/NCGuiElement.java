@@ -66,6 +66,7 @@ public class NCGuiElement extends GuiComponent implements Widget, GuiEventListen
     }
 
     public void renderToolTip(PoseStack pPoseStack, int pMouseX, int pMouseY) {
+
     }
 
     public void playDownSound(SoundManager pHandler) {
@@ -169,7 +170,7 @@ public class NCGuiElement extends GuiComponent implements Widget, GuiEventListen
         }
     }
 
-    public void draw(PoseStack transform) {
+    public void draw(PoseStack transform, int mX, int mY, float pTicks) {
         RenderSystem.setShaderTexture(0, TEXTURE);
     }
 }

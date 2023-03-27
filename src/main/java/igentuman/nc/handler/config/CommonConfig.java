@@ -206,11 +206,11 @@ public class CommonConfig {
 
             PROCESSOR_POWER = builder
                     .comment("Processor power: " + String.join(", ", Processors.all().keySet()))
-                    .define("register_processor", Processors.initialPower());
+                    .define("processor_power", Processors.initialPower());
 
             PROCESSOR_TIME = builder
-                    .comment("Processor time: " + String.join(", ", Processors.all().keySet()))
-                    .define("register_processor", Processors.initialTime());
+                    .comment("Time for processor to proceed recipe: " + String.join(", ", Processors.all().keySet()))
+                    .define("processor_time", Processors.initialTime());
             builder.pop();
 
 

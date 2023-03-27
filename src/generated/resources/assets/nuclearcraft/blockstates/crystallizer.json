@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "nuclearcraft:block/crystallizer",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "nuclearcraft:block/crystallizer"
+    },
+    "facing=south": {
+      "model": "nuclearcraft:block/crystallizer",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "nuclearcraft:block/crystallizer",
+      "y": 270
+    }
+  }
+}

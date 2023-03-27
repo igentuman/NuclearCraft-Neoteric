@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "nuclearcraft:block/melter",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "nuclearcraft:block/melter"
+    },
+    "facing=south": {
+      "model": "nuclearcraft:block/melter",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "nuclearcraft:block/melter",
+      "y": 270
+    }
+  }
+}

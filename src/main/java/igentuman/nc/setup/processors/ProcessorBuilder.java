@@ -1,6 +1,6 @@
 package igentuman.nc.setup.processors;
 
-import igentuman.nc.block.entity.NCProcessor;
+import igentuman.nc.block.entity.processor.NCProcessor;
 import igentuman.nc.container.NCProcessorContainer;
 import igentuman.nc.gui.NCProcessorScreen;
 import igentuman.nc.setup.processors.config.ProcessorSlots;

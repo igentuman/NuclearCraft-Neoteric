@@ -1,26 +1,17 @@
 package igentuman.nc.setup.registration;
 
-import igentuman.nc.block.NCBaseBlock;
 import igentuman.nc.block.NCProcessorBlock;
-import igentuman.nc.block.PortalBlock;
-import igentuman.nc.block.entity.ManufactoryBE;
-import igentuman.nc.block.entity.NCProcessor;
+import igentuman.nc.block.entity.processor.NCProcessor;
 import igentuman.nc.container.NCProcessorContainer;
 import igentuman.nc.setup.ModSetup;
 import igentuman.nc.setup.processors.Processors;
-import igentuman.nc.setup.registration.materials.Blocks;
-import igentuman.nc.setup.registration.materials.Ores;
-import net.minecraft.Util;
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.FenceBlock;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
@@ -32,13 +23,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
-import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 import static igentuman.nc.NuclearCraft.MODID;
 
@@ -97,4 +82,9 @@ public class NCProcessors {
     public static <B extends Block> RegistryObject<Item> fromBlock(RegistryObject<B> block) {
         return ITEMS.register(block.getId().getPath(), () -> new BlockItem(block.get(), PROCESSOR_ITEM_PROPERTIES));
     }
+    @FunctionalInterface
+    public interface BlockEntitySupplier<T extends BlockEntity> {
+        T create(BlockPos pPos, BlockState pState, String name);
+    }
+
 }

@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "nuclearcraft:block/rock_crusher",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "nuclearcraft:block/rock_crusher"
+    },
+    "facing=south": {
+      "model": "nuclearcraft:block/rock_crusher",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "nuclearcraft:block/rock_crusher",
+      "y": 270
+    }
+  }
+}

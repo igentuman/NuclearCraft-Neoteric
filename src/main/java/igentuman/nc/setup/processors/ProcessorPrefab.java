@@ -1,8 +1,7 @@
 package igentuman.nc.setup.processors;
 
-import igentuman.nc.block.entity.NCProcessor;
+import igentuman.nc.block.entity.processor.NCProcessor;
 import igentuman.nc.container.NCProcessorContainer;
-import igentuman.nc.gui.NCProcessorScreen;
 import igentuman.nc.handler.config.CommonConfig;
 import igentuman.nc.setup.processors.config.ProcessorSlots;
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -93,6 +92,11 @@ public class ProcessorPrefab <M extends NCProcessorContainer, U extends Screen &
     protected boolean supportCatalyst = false;
     
     protected Class recipeManager;
+
+    public ProcessorSlots getSlotsConfig() {
+        return slotsConfig;
+    }
+
     protected ProcessorSlots slotsConfig;
 
     public ProcessorPrefab config()

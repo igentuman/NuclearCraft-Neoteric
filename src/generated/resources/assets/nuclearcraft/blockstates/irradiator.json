@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "nuclearcraft:block/irradiator",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "nuclearcraft:block/irradiator"
+    },
+    "facing=south": {
+      "model": "nuclearcraft:block/irradiator",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "nuclearcraft:block/irradiator",
+      "y": 270
+    }
+  }
+}

@@ -43,7 +43,8 @@ public class NCLanguageProvider extends LanguageProvider {
 
     private void processors() {
         for(String name: NCProcessors.PROCESSORS.keySet()) {
-            add(NCProcessors.PROCESSORS.get(name).get(), convertToName(name));
+            String title = convertToName(name);
+            add(NCProcessors.PROCESSORS.get(name).get(), title);
         }
     }
 

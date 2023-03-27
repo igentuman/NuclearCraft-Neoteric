@@ -1,7 +1,6 @@
 package igentuman.nc.block;
 
-import igentuman.nc.block.entity.NCProcessor;
-import igentuman.nc.container.NCProcessorContainer;
+import igentuman.nc.block.entity.processor.NCProcessor;
 import igentuman.nc.setup.processors.Processors;
 import igentuman.nc.setup.registration.NCProcessors;
 import net.minecraft.core.BlockPos;
@@ -14,8 +13,6 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -31,7 +28,6 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 
@@ -47,7 +43,7 @@ public class NCProcessorBlock extends HorizontalDirectionalBlock implements Enti
                 .requiresCorrectToolForDrops());
     }
     public NCProcessorBlock(Properties pProperties) {
-        super(pProperties);
+        super(pProperties.sound(SoundType.METAL));
         this.registerDefaultState(
                 this.stateDefinition.any()
                         .setValue(HORIZONTAL_FACING, Direction.NORTH)

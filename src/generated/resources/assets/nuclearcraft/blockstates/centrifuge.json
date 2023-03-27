@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "nuclearcraft:block/centrifuge",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "nuclearcraft:block/centrifuge"
+    },
+    "facing=south": {
+      "model": "nuclearcraft:block/centrifuge",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "nuclearcraft:block/centrifuge",
+      "y": 270
+    }
+  }
+}

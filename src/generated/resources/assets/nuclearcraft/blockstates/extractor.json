@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "nuclearcraft:block/extractor",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "nuclearcraft:block/extractor"
+    },
+    "facing=south": {
+      "model": "nuclearcraft:block/extractor",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "nuclearcraft:block/extractor",
+      "y": 270
+    }
+  }
+}

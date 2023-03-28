@@ -129,4 +129,8 @@ public class NCMaterial {
         this.temperature = temperature;
         return this;
     }
+
+    public boolean hasOre() {
+        return deepslate_ore || normal_ore || nether_ore || end_ore;
+    }
 }

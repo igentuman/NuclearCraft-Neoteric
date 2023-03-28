@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "nuclearcraft_blocks",
+  "ingredients": [
+    {
+      "tag": "forge:ingots/bronze"
+    },
+    {
+      "tag": "forge:ingots/bronze"
+    },
+    {
+      "tag": "forge:ingots/bronze"
+    },
+    {
+      "tag": "forge:ingots/bronze"
+    },
+    {
+      "tag": "forge:ingots/bronze"
+    },
+    {
+      "tag": "forge:ingots/bronze"
+    },
+    {
+      "tag": "forge:ingots/bronze"
+    },
+    {
+      "tag": "forge:ingots/bronze"
+    },
+    {
+      "tag": "forge:ingots/bronze"
+    }
+  ],
+  "result": {
+    "item": "nuclearcraft:bronze_block"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "nuclearcraft_machines",
+  "key": {
+    "A": {
+      "item": "nuclearcraft:actuator"
+    },
+    "C": {
+      "item": "nuclearcraft:chassis"
+    },
+    "H": {
+      "tag": "forge:ingots/hard_carbon"
+    },
+    "M": {
+      "item": "nuclearcraft:motor"
+    },
+    "P": {
+      "item": "nuclearcraft:plate_basic"
+    }
+  },
+  "pattern": [
+    "PHP",
+    "ACA",
+    "PMP"
+  ],
+  "result": {
+    "item": "nuclearcraft:assembler"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "nuclearcraft_blocks",
+  "ingredients": [
+    {
+      "tag": "forge:ingots/uranium"
+    },
+    {
+      "tag": "forge:ingots/uranium"
+    },
+    {
+      "tag": "forge:ingots/uranium"
+    },
+    {
+      "tag": "forge:ingots/uranium"
+    },
+    {
+      "tag": "forge:ingots/uranium"
+    },
+    {
+      "tag": "forge:ingots/uranium"
+    },
+    {
+      "tag": "forge:ingots/uranium"
+    },
+    {
+      "tag": "forge:ingots/uranium"
+    },
+    {
+      "tag": "forge:ingots/uranium"
+    }
+  ],
+  "result": {
+    "item": "nuclearcraft:uranium_block"
+  }
+}

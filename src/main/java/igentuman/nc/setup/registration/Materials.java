@@ -27,6 +27,7 @@ public class Materials extends MaterialsManager {
 
             //ingots, nuggets, dusts...
             all.put("tough_alloy", NCMaterial.get("tough_alloy").define("ingot", "plate", "dust", "fluid").color(0xFF181322));
+            all.put("ferroboron", NCMaterial.get("ferroboron").define("ingot", "fluid").color(0xFF543636));
             all.put("hard_carbon", NCMaterial.get("hard_carbon").define("ingot", "plate", "dust", "fluid").color(0xFF164C5F));
             all.put("tin_silver", NCMaterial.get("tin_silver").define("ingot", "dust", "fluid").color(0xFFD3D3E9));
             all.put("steel", NCMaterial.alloy("steel").color(0xFF997B74));
@@ -36,6 +37,7 @@ public class Materials extends MaterialsManager {
             all.put("zirconium_molybdenum", NCMaterial.alloy("zirconium_molybdenum").define("ingot", "dust", "fluid").color(0xFFB3B7BC));
             all.put("extreme", NCMaterial.alloy("extreme").define("ingot", "plate", "dust", "fluid").color(0xFF70293C));
             all.put("manganese", NCMaterial.alloy("manganese").define("ingot", "plate", "dust", "fluid").color(0xFF7284CC));
+            all.put("magnesium_diboride", NCMaterial.alloy("magnesium_diboride").define("ingot", "fluid").color(0xFF26303D));
             all.put("manganese_oxide", NCMaterial.alloy("manganese_oxide").define("ingot", "dust", "fluid").color(0xFF7E9D7E));
             all.put("manganese_dioxide", NCMaterial.alloy("manganese_dioxide").define("ingot", "dust", "fluid").color(0xFF28211E));
             all.put("sic_sic_cmc", NCMaterial.alloy("sic_sic_cmc").define("ingot", "plate", "dust", "fluid").color(0xFF7A766C));

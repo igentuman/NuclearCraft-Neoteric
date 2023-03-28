@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "nuclearcraft_blocks",
+  "ingredients": [
+    {
+      "tag": "forge:storage_blocks/uranium"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "item": "nuclearcraft:uranium_ingot"
+  }
+}

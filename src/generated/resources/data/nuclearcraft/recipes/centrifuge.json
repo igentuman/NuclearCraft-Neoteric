@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "nuclearcraft_processors",
+  "key": {
+    "F": {
+      "item": "nuclearcraft:motor"
+    },
+    "L": {
+      "item": "nuclearcraft:plate_advanced"
+    },
+    "P": {
+      "item": "nuclearcraft:chassis"
+    },
+    "R": {
+      "item": "nuclearcraft:servo"
+    },
+    "S": {
+      "tag": "forge:ingots/ferroboron"
+    }
+  },
+  "pattern": [
+    "LSL",
+    "FPF",
+    "LRL"
+  ],
+  "result": {
+    "item": "nuclearcraft:centrifuge"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "nuclearcraft_solar_panels",
+  "key": {
+    "C": {
+      "item": "nuclearcraft:coil_copper"
+    },
+    "G": {
+      "tag": "forge:dusts/graphite"
+    },
+    "L": {
+      "tag": "forge:gems/lapis"
+    },
+    "P": {
+      "item": "minecraft:heavy_weighted_pressure_plate"
+    },
+    "Q": {
+      "tag": "forge:dusts/quartz"
+    }
+  },
+  "pattern": [
+    "GQG",
+    "PLP",
+    "CPC"
+  ],
+  "result": {
+    "item": "nuclearcraft:solar_panel_basic"
+  }
+}

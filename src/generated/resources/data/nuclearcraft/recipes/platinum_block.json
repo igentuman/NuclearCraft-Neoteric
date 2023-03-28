@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "nuclearcraft_blocks",
+  "ingredients": [
+    {
+      "tag": "forge:ingots/platinum"
+    },
+    {
+      "tag": "forge:ingots/platinum"
+    },
+    {
+      "tag": "forge:ingots/platinum"
+    },
+    {
+      "tag": "forge:ingots/platinum"
+    },
+    {
+      "tag": "forge:ingots/platinum"
+    },
+    {
+      "tag": "forge:ingots/platinum"
+    },
+    {
+      "tag": "forge:ingots/platinum"
+    },
+    {
+      "tag": "forge:ingots/platinum"
+    },
+    {
+      "tag": "forge:ingots/platinum"
+    }
+  ],
+  "result": {
+    "item": "nuclearcraft:platinum_block"
+  }
+}

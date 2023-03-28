@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "nuclearcraft_blocks",
+  "ingredients": [
+    {
+      "tag": "forge:ingots/lithium"
+    },
+    {
+      "tag": "forge:ingots/lithium"
+    },
+    {
+      "tag": "forge:ingots/lithium"
+    },
+    {
+      "tag": "forge:ingots/lithium"
+    },
+    {
+      "tag": "forge:ingots/lithium"
+    },
+    {
+      "tag": "forge:ingots/lithium"
+    },
+    {
+      "tag": "forge:ingots/lithium"
+    },
+    {
+      "tag": "forge:ingots/lithium"
+    },
+    {
+      "tag": "forge:ingots/lithium"
+    }
+  ],
+  "result": {
+    "item": "nuclearcraft:lithium_block"
+  }
+}

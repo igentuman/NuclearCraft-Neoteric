@@ -3,6 +3,7 @@ package igentuman.nc.datagen;
 import igentuman.nc.datagen.blockstates.NCBlockStates;
 import igentuman.nc.datagen.blockstates.NCFluidBlockStates;
 import igentuman.nc.datagen.models.NCItemModels;
+import igentuman.nc.datagen.recipes.NCRecipes;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;

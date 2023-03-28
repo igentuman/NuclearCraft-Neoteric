@@ -1,14 +1,20 @@
 {
   "values": [
-    "nuclearcraft:lithium_chunk",
-    "nuclearcraft:platinum_chunk",
-    "nuclearcraft:thorium_chunk",
-    "nuclearcraft:tin_chunk",
-    "nuclearcraft:magnesium_chunk",
-    "nuclearcraft:cobalt_chunk",
-    "nuclearcraft:uranium_chunk",
-    "nuclearcraft:zinc_chunk",
-    "nuclearcraft:boron_chunk",
-    "nuclearcraft:lead_chunk"
+    "nuclearcraft:steel_nugget",
+    "nuclearcraft:electrum_nugget",
+    "nuclearcraft:magnesium_nugget",
+    "nuclearcraft:cobalt_nugget",
+    "nuclearcraft:aluminum_nugget",
+    "nuclearcraft:lead_nugget",
+    "nuclearcraft:bronze_nugget",
+    "nuclearcraft:lithium_nugget",
+    "nuclearcraft:platinum_nugget",
+    "nuclearcraft:thorium_nugget",
+    "nuclearcraft:tin_nugget",
+    "nuclearcraft:beryllium_nugget",
+    "nuclearcraft:uranium_nugget",
+    "nuclearcraft:zirconium_nugget",
+    "nuclearcraft:zinc_nugget",
+    "nuclearcraft:boron_nugget"
   ]
 }

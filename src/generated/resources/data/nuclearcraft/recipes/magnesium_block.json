@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "nuclearcraft_blocks",
+  "ingredients": [
+    {
+      "tag": "forge:ingots/magnesium"
+    },
+    {
+      "tag": "forge:ingots/magnesium"
+    },
+    {
+      "tag": "forge:ingots/magnesium"
+    },
+    {
+      "tag": "forge:ingots/magnesium"
+    },
+    {
+      "tag": "forge:ingots/magnesium"
+    },
+    {
+      "tag": "forge:ingots/magnesium"
+    },
+    {
+      "tag": "forge:ingots/magnesium"
+    },
+    {
+      "tag": "forge:ingots/magnesium"
+    },
+    {
+      "tag": "forge:ingots/magnesium"
+    }
+  ],
+  "result": {
+    "item": "nuclearcraft:magnesium_block"
+  }
+}

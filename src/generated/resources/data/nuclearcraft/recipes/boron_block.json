@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "nuclearcraft_blocks",
+  "ingredients": [
+    {
+      "tag": "forge:ingots/boron"
+    },
+    {
+      "tag": "forge:ingots/boron"
+    },
+    {
+      "tag": "forge:ingots/boron"
+    },
+    {
+      "tag": "forge:ingots/boron"
+    },
+    {
+      "tag": "forge:ingots/boron"
+    },
+    {
+      "tag": "forge:ingots/boron"
+    },
+    {
+      "tag": "forge:ingots/boron"
+    },
+    {
+      "tag": "forge:ingots/boron"
+    },
+    {
+      "tag": "forge:ingots/boron"
+    }
+  ],
+  "result": {
+    "item": "nuclearcraft:boron_block"
+  }
+}

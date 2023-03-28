@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "nuclearcraft",
+  "key": {
+    "C": {
+      "item": "nuclearcraft:chassis2"
+    },
+    "F": {
+      "item": "minecraft:furnace"
+    },
+    "P": {
+      "item": "nuclearcraft:plate_advanced"
+    },
+    "S": {
+      "item": "nuclearcraft:coil_magnesium_diboride"
+    },
+    "U": {
+      "item": "minecraft:chest"
+    }
+  },
+  "pattern": [
+    "PUP",
+    "SCS",
+    "PFP"
+  ],
+  "result": {
+    "item": "nuclearcraft:irradiator"
+  }
+}

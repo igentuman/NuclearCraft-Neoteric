@@ -73,9 +73,9 @@ public class NCItemTags extends ItemTagsProvider {
     }
 
     private void nuggets() {
-        for(String name: NCItems.NC_CHUNKS.keySet()) {
-            tag(Tags.Items.NUGGETS).add(NCItems.NC_CHUNKS.get(name).get());
-            tag(NCItems.CHUNKS_TAG.get(name)).add(NCItems.NC_CHUNKS.get(name).get());
+        for(String name: NCItems.NC_NUGGETS.keySet()) {
+            tag(Tags.Items.NUGGETS).add(NCItems.NC_NUGGETS.get(name).get());
+            tag(NCItems.NUGGETS_TAG.get(name)).add(NCItems.NC_NUGGETS.get(name).get());
         }
     }
 

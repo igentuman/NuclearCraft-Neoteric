@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "nuclearcraft_blocks",
+  "ingredients": [
+    {
+      "tag": "forge:ingots/thorium"
+    },
+    {
+      "tag": "forge:ingots/thorium"
+    },
+    {
+      "tag": "forge:ingots/thorium"
+    },
+    {
+      "tag": "forge:ingots/thorium"
+    },
+    {
+      "tag": "forge:ingots/thorium"
+    },
+    {
+      "tag": "forge:ingots/thorium"
+    },
+    {
+      "tag": "forge:ingots/thorium"
+    },
+    {
+      "tag": "forge:ingots/thorium"
+    },
+    {
+      "tag": "forge:ingots/thorium"
+    }
+  ],
+  "result": {
+    "item": "nuclearcraft:thorium_block"
+  }
+}

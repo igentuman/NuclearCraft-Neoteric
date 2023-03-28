@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "nuclearcraft_ingots",
+  "ingredients": [
+    {
+      "tag": "forge:ingots/lead"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "item": "nuclearcraft:lead_nugget"
+  }
+}

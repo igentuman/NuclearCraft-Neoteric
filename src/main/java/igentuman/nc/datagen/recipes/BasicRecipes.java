@@ -1,4 +1,4 @@
-package igentuman.nc.datagen;
+package igentuman.nc.datagen.recipes;
 
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.advancements.critereon.ItemPredicate;
@@ -9,10 +9,12 @@ import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.Tags;
-import java.util.function.Consumer;
-public class NCRecipes extends RecipeProvider {
 
-    public NCRecipes(DataGenerator generatorIn) {
+import java.util.function.Consumer;
+
+public class BasicRecipes extends RecipeProvider {
+
+    public BasicRecipes(DataGenerator generatorIn) {
         super(generatorIn);
     }
 

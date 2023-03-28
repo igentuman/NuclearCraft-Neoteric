@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "nuclearcraft_blocks",
+  "ingredients": [
+    {
+      "tag": "forge:ingots/cobalt"
+    },
+    {
+      "tag": "forge:ingots/cobalt"
+    },
+    {
+      "tag": "forge:ingots/cobalt"
+    },
+    {
+      "tag": "forge:ingots/cobalt"
+    },
+    {
+      "tag": "forge:ingots/cobalt"
+    },
+    {
+      "tag": "forge:ingots/cobalt"
+    },
+    {
+      "tag": "forge:ingots/cobalt"
+    },
+    {
+      "tag": "forge:ingots/cobalt"
+    },
+    {
+      "tag": "forge:ingots/cobalt"
+    }
+  ],
+  "result": {
+    "item": "nuclearcraft:cobalt_block"
+  }
+}

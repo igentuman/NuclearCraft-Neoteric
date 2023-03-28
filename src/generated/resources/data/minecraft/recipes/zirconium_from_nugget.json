@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "nuclearcraft_ingots",
+  "ingredients": [
+    {
+      "tag": "forge:nuggets/zirconium"
+    },
+    {
+      "tag": "forge:nuggets/zirconium"
+    },
+    {
+      "tag": "forge:nuggets/zirconium"
+    },
+    {
+      "tag": "forge:nuggets/zirconium"
+    },
+    {
+      "tag": "forge:nuggets/zirconium"
+    },
+    {
+      "tag": "forge:nuggets/zirconium"
+    },
+    {
+      "tag": "forge:nuggets/zirconium"
+    },
+    {
+      "tag": "forge:nuggets/zirconium"
+    },
+    {
+      "tag": "forge:nuggets/zirconium"
+    }
+  ],
+  "result": {
+    "item": "nuclearcraft:zirconium_ingot"
+  }
+}

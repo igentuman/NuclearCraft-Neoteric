@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "nuclearcraft",
+  "key": {
+    "A": {
+      "item": "nuclearcraft:actuator"
+    },
+    "C": {
+      "item": "nuclearcraft:chassis"
+    },
+    "M": {
+      "item": "nuclearcraft:motor"
+    },
+    "P": {
+      "item": "nuclearcraft:plate_advanced"
+    },
+    "T": {
+      "tag": "forge:ingots/tough_alloy"
+    }
+  },
+  "pattern": [
+    "PMP",
+    "ACA",
+    "PTP"
+  ],
+  "result": {
+    "item": "nuclearcraft:rock_crusher"
+  }
+}

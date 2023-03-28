@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "nuclearcraft_ingots",
+  "ingredients": [
+    {
+      "tag": "forge:nuggets/steel"
+    },
+    {
+      "tag": "forge:nuggets/steel"
+    },
+    {
+      "tag": "forge:nuggets/steel"
+    },
+    {
+      "tag": "forge:nuggets/steel"
+    },
+    {
+      "tag": "forge:nuggets/steel"
+    },
+    {
+      "tag": "forge:nuggets/steel"
+    },
+    {
+      "tag": "forge:nuggets/steel"
+    },
+    {
+      "tag": "forge:nuggets/steel"
+    },
+    {
+      "tag": "forge:nuggets/steel"
+    }
+  ],
+  "result": {
+    "item": "nuclearcraft:steel_ingot"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "nuclearcraft:block/quartz_heat_sink"
+    }
+  }
+}

@@ -1,9 +1,10 @@
 package igentuman.nc.datagen.blockstates;
 
+import igentuman.nc.setup.multiblocks.FissionBlocks;
 import igentuman.nc.setup.registration.NCBlocks;
 import igentuman.nc.setup.registration.NCEnergyBlocks;
 import igentuman.nc.setup.registration.NCProcessors;
-import net.minecraft.core.Direction;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
@@ -27,6 +28,20 @@ public class NCBlockStates extends BlockStateProvider {
         processors();
         solarPanels();
         materialFluidBlocks();
+        heatSinks();
+        fissionReactor();
+    }
+
+    private void heatSinks() {
+        for (String name: FissionBlocks.heatsinks.keySet()) {
+            simpleBlock(NCBlocks.MULTI_BLOCKS.get(name+"_heat_sink").get(), multiBlockModel(NCBlocks.MULTI_BLOCKS.get(name+"_heat_sink").get(), "heat_sink/"+name));
+        }
+    }
+
+    private void fissionReactor() {
+        for (String name: FissionBlocks.reactor) {
+            simpleBlock(NCBlocks.MULTI_BLOCKS.get("fission_reactor_"+name).get(), multiBlockModel(NCBlocks.MULTI_BLOCKS.get("fission_reactor_"+name).get(), "fission/"+name));
+        }
     }
 
     private void solarPanels() {
@@ -43,7 +58,7 @@ public class NCBlockStates extends BlockStateProvider {
         for(String name: NCProcessors.PROCESSORS.keySet()) {
             horizontalBlock(
                     NCProcessors.PROCESSORS.get(name).get(),
-                    processorModel(NCProcessors.PROCESSORS.get(name).get(),
+                    sidedModel(NCProcessors.PROCESSORS.get(name).get(),
                             "processor"));
         }
     }
@@ -55,8 +70,8 @@ public class NCBlockStates extends BlockStateProvider {
         }
     }
     private void blocks() {
-        for(String ore: NCBlocks.NC_BLOCKS.keySet()) {
-            simpleBlock(NCBlocks.NC_BLOCKS.get(ore).get(), model(NCBlocks.NC_BLOCKS.get(ore).get(), "material/block"));
+        for(String name: NCBlocks.NC_BLOCKS.keySet()) {
+            simpleBlock(NCBlocks.NC_BLOCKS.get(name).get(), model(NCBlocks.NC_BLOCKS.get(name).get(), "material/block"));
         }
     }
 
@@ -84,8 +99,22 @@ public class NCBlockStates extends BlockStateProvider {
                         new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/" + name.getPath()));
     }
 
+    public ModelFile multiBlockModel(Block block, String subPath) {
+        ResourceLocation name = key(block);
+        if(subPath.matches(".*controller|.*port.*")) {
+            return sidedModel(block, subPath);
+        }
+        BlockModelBuilder m = models().cubeAll(
+                key(block).getPath(),
+                new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath));
+        if(subPath.matches(".*glass|.*cell.*")) {
+            m.renderType(new ResourceLocation("translucent"));
+        }
+        return m;
+    }
 
-    public ModelFile processorModel(Block block, String subPath) {
+
+    public ModelFile sidedModel(Block block, String subPath) {
         ResourceLocation name = key(block);
 
         return models().cube(

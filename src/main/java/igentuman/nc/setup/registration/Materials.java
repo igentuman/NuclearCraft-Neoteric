@@ -17,6 +17,7 @@ public class Materials extends MaterialsManager {
             all.put("uranium", NCMaterial.ore("uranium").color(0xFF476447));
             all.put("thorium", NCMaterial.ore("thorium").color(0xFF2E2E2E));
             all.put("boron", NCMaterial.ore("boron").color(0xFF999999));
+            all.put("silver", NCMaterial.ore("silver").color(0xFFA49CA6));
             all.put("lead", NCMaterial.ore("lead").ores(true, false, false, false).color(0xFF778887));
             all.put("tin", NCMaterial.ore("tin").ores(true, false, false, false).color(0xFFDFDFE8));
             all.put("zinc", NCMaterial.ore("zinc").ores(true, false, false, false).color(0xFFAFB0A6));
@@ -27,7 +28,13 @@ public class Materials extends MaterialsManager {
 
             //ingots, nuggets, dusts...
             all.put("tough_alloy", NCMaterial.get("tough_alloy").define("ingot", "plate", "dust", "fluid").color(0xFF181322));
+            all.put("copper", NCMaterial.get("copper").define("dust", "plate", "fluid").color(0xFFA86F32));
+            all.put("iron", NCMaterial.get("iron").define("dust", "plate", "fluid").color(0xFF7D0707));
+            all.put("purpur", NCMaterial.get("purpur").define("dust", "fluid").color(0xFF7E0399));
+            all.put("gold", NCMaterial.get("gold").define("dust", "fluid").color(0xFFD4CD08));
             all.put("ferroboron", NCMaterial.get("ferroboron").define("ingot", "fluid").color(0xFF543636));
+            all.put("enderium", NCMaterial.get("enderium").define("dust", "fluid").color(0xFF00856C));
+            all.put("lapis", NCMaterial.get("lapis").define("dust", "fluid").color(0xFF04128F));
             all.put("hard_carbon", NCMaterial.get("hard_carbon").define("ingot", "plate", "dust", "fluid").color(0xFF164C5F));
             all.put("tin_silver", NCMaterial.get("tin_silver").define("ingot", "dust", "fluid").color(0xFFD3D3E9));
             all.put("steel", NCMaterial.alloy("steel").color(0xFF997B74));
@@ -68,6 +75,7 @@ public class Materials extends MaterialsManager {
             all.put("carobbiite", NCMaterial.dust("carobbiite").with("gem"));
             all.put("coal", NCMaterial.dust("coal"));
             all.put("diamond", NCMaterial.dust("diamond"));
+            all.put("emerald", NCMaterial.dust("emerald"));
             all.put("end_stone", NCMaterial.dust("end_stone"));
             all.put("fluorite", NCMaterial.dust("fluorite").with("gem"));
             all.put("obsidian", NCMaterial.dust("obsidian"));
@@ -118,7 +126,7 @@ public class Materials extends MaterialsManager {
                 "plutonium/239",
                 "plutonium/241",
                 "plutonium/242",
-                "thorium/tbu",
+                "thorium/230",
                 "thorium/232",
                 "uranium/233",
                 "uranium/235",

@@ -2,15 +2,11 @@
   "values": [
     "nuclearcraft:tough_alloy_plate",
     "nuclearcraft:steel_plate",
-    "nuclearcraft:electrum_plate",
-    "nuclearcraft:magnesium_plate",
     "nuclearcraft:cobalt_plate",
     "nuclearcraft:aluminum_plate",
     "nuclearcraft:graphite_plate",
     "nuclearcraft:manganese_plate",
     "nuclearcraft:sic_sic_cmc_plate",
-    "nuclearcraft:lead_plate",
-    "nuclearcraft:bronze_plate",
     "nuclearcraft:lithium_plate",
     "nuclearcraft:platinum_plate",
     "nuclearcraft:thermoconducting_plate",
@@ -18,11 +14,18 @@
     "nuclearcraft:hard_carbon_plate",
     "nuclearcraft:tin_plate",
     "nuclearcraft:beryllium_plate",
-    "nuclearcraft:hsla_steel_plate",
-    "nuclearcraft:uranium_plate",
+    "nuclearcraft:copper_plate",
     "nuclearcraft:zirconium_plate",
     "nuclearcraft:zinc_plate",
-    "nuclearcraft:boron_plate",
-    "nuclearcraft:extreme_plate"
+    "nuclearcraft:extreme_plate",
+    "nuclearcraft:electrum_plate",
+    "nuclearcraft:magnesium_plate",
+    "nuclearcraft:lead_plate",
+    "nuclearcraft:bronze_plate",
+    "nuclearcraft:iron_plate",
+    "nuclearcraft:silver_plate",
+    "nuclearcraft:hsla_steel_plate",
+    "nuclearcraft:uranium_plate",
+    "nuclearcraft:boron_plate"
   ]
 }

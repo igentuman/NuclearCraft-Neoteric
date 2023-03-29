@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smelting",
+  "cookingtime": 100,
+  "experience": 1.0,
+  "ingredient": {
+    "item": "nuclearcraft:americium_241_za"
+  },
+  "result": "nuclearcraft:americium_241"
+}

@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "nuclearcraft_ingots",
+  "ingredients": [
+    {
+      "item": "nuclearcraft:californium_251_za"
+    },
+    {
+      "item": "nuclearcraft:californium_252_za"
+    },
+    {
+      "item": "nuclearcraft:californium_252_za"
+    },
+    {
+      "item": "nuclearcraft:californium_252_za"
+    },
+    {
+      "item": "nuclearcraft:californium_252_za"
+    },
+    {
+      "item": "nuclearcraft:californium_252_za"
+    },
+    {
+      "item": "nuclearcraft:californium_252_za"
+    },
+    {
+      "item": "nuclearcraft:californium_252_za"
+    },
+    {
+      "item": "nuclearcraft:californium_252_za"
+    }
+  ],
+  "result": {
+    "item": "nuclearcraft:fuel_californium_lecf_251_za"
+  }
+}

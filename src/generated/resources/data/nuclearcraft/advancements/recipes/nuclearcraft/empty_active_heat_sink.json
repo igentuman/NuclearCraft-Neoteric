@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "nuclearcraft:empty_active_heat_sink"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "item": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "nuclearcraft:fission_reactor_casing"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "item",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "nuclearcraft:empty_active_heat_sink"
+    ]
+  }
+}

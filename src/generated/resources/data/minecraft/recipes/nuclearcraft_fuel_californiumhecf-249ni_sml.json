@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smelting",
+  "cookingtime": 100,
+  "experience": 1.0,
+  "ingredient": {
+    "item": "nuclearcraft:fuel_californium_hecf_249_ni"
+  },
+  "result": "nuclearcraft:fuel_californium_hecf_249"
+}

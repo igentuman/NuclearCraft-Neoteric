@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smelting",
+  "cookingtime": 100,
+  "experience": 1.0,
+  "ingredient": {
+    "item": "nuclearcraft:berkelium_247_za"
+  },
+  "result": "nuclearcraft:berkelium_247"
+}

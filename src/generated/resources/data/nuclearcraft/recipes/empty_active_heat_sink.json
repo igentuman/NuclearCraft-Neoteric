@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "nuclearcraft_fission",
+  "key": {
+    "B": {
+      "item": "minecraft:bucket"
+    },
+    "I": {
+      "tag": "forge:plates/thermoconducting"
+    },
+    "T": {
+      "tag": "forge:ingots/tough_alloy"
+    }
+  },
+  "pattern": [
+    "TIT",
+    "IBI",
+    "TIT"
+  ],
+  "result": {
+    "item": "nuclearcraft:empty_active_heat_sink"
+  }
+}

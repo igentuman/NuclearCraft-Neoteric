@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "nuclearcraft_fission",
+  "key": {
+    "B": {
+      "item": "nuclearcraft:empty_heat_sink"
+    },
+    "I": {
+      "tag": "forge:dusts/liquid_helium"
+    }
+  },
+  "pattern": [
+    " I ",
+    "IBI",
+    " I "
+  ],
+  "result": {
+    "item": "nuclearcraft:liquid_helium_heat_sink"
+  }
+}

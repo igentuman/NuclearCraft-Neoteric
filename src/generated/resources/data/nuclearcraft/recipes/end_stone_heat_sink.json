@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "nuclearcraft_fission",
+  "key": {
+    "B": {
+      "item": "nuclearcraft:empty_heat_sink"
+    },
+    "I": {
+      "tag": "forge:dusts/end_stone"
+    }
+  },
+  "pattern": [
+    " I ",
+    "IBI",
+    " I "
+  ],
+  "result": {
+    "item": "nuclearcraft:end_stone_heat_sink"
+  }
+}

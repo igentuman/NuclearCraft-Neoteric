@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "nuclearcraft_fission",
+  "key": {
+    "G": {
+      "tag": "forge:glass"
+    },
+    "T": {
+      "tag": "forge:ingots/tough_alloy"
+    }
+  },
+  "pattern": [
+    "TGT",
+    "G G",
+    "TGT"
+  ],
+  "result": {
+    "item": "nuclearcraft:fission_reactor_solid_fuel_cell"
+  }
+}

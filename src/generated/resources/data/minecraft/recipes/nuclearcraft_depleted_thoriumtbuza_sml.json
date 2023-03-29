@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smelting",
+  "cookingtime": 100,
+  "experience": 1.0,
+  "ingredient": {
+    "item": "nuclearcraft:depleted_fuel_thorium_tbu_za"
+  },
+  "result": "nuclearcraft:depleted_fuel_thorium_tbu"
+}

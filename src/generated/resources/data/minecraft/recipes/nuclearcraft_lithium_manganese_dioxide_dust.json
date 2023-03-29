@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smelting",
+  "cookingtime": 100,
+  "experience": 1.0,
+  "ingredient": {
+    "tag": "forge:dusts/lithium_manganese_dioxide"
+  },
+  "result": "nuclearcraft:lithium_manganese_dioxide_ingot"
+}

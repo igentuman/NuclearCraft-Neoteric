@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "nuclearcraft_ingots",
+  "ingredients": [
+    {
+      "item": "nuclearcraft:curium_247_ox"
+    },
+    {
+      "item": "nuclearcraft:curium_246_ox"
+    },
+    {
+      "item": "nuclearcraft:curium_246_ox"
+    },
+    {
+      "item": "nuclearcraft:curium_246_ox"
+    },
+    {
+      "item": "nuclearcraft:curium_246_ox"
+    },
+    {
+      "item": "nuclearcraft:curium_246_ox"
+    },
+    {
+      "item": "nuclearcraft:curium_246_ox"
+    },
+    {
+      "item": "nuclearcraft:curium_246_ox"
+    },
+    {
+      "item": "nuclearcraft:curium_246_ox"
+    }
+  ],
+  "result": {
+    "item": "nuclearcraft:fuel_curium_lecm_247_ox"
+  }
+}

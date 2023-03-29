@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smelting",
+  "cookingtime": 100,
+  "experience": 1.0,
+  "ingredient": {
+    "tag": "forge:plates/extreme"
+  },
+  "result": "nuclearcraft:extreme_ingot"
+}

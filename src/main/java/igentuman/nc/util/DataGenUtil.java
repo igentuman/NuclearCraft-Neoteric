@@ -1,9 +1,12 @@
 package igentuman.nc.util;
 
 import com.google.common.base.Preconditions;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import org.apache.commons.io.IOUtils;
 
@@ -74,5 +77,39 @@ public class DataGenUtil
 		String basePath = base.getPath();
 		String lastDir = basePath.substring(0, basePath.lastIndexOf('/')+1);
 		return new ResourceLocation(base.getNamespace(), lastDir+relativePath);
+	}
+
+	public static TagKey<Item> forgeIngot(String name)
+	{
+		return TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("forge:ingots/"+name));
+	}
+
+	public static TagKey<Item> forgeNugget(String name)
+	{
+		return TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("forge:nuggets/"+name));
+	}
+
+	public static TagKey<Item> forgeBlock(String name)
+	{
+		return TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("forge:storage_blocks/"+name));
+	}
+
+	public static TagKey<Item> forgeOre(String name)
+	{
+		return TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("forge:ores/"+name));
+	}
+
+	public static TagKey<Item> forgeChunk(String name)
+	{
+		return TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("forge:raw_materials/"+name));
+	}
+
+	public static TagKey<Item> forgeDust(String name)
+	{
+		return TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("forge:dusts/"+name));
+	}
+
+	public static TagKey<Item> forgePlate(String name) {
+		return TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("forge:plates/"+name));
 	}
 }

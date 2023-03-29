@@ -18,6 +18,13 @@ public class FuelDef {
         this.efficiency = efficiency;
     }
 
+    public FuelDef isotopes(int... isotopes) {
+        this.isotopes = isotopes;
+        return this;
+    }
+
+    public int[] isotopes;
+
     private boolean initialized = false;
 
     public String name = "";

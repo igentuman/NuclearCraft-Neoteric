@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smelting",
+  "cookingtime": 100,
+  "experience": 1.0,
+  "ingredient": {
+    "item": "nuclearcraft:fuel_neptunium_hen_236_za"
+  },
+  "result": "nuclearcraft:fuel_neptunium_hen_236"
+}

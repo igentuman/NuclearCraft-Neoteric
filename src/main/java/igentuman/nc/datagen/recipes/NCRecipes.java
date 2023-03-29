@@ -1,64 +1,108 @@
 package igentuman.nc.datagen.recipes;
 
+import igentuman.nc.setup.multiblocks.FissionBlocks;
 import igentuman.nc.setup.registration.*;
-import igentuman.nc.setup.registration.materials.NCMaterial;
+import igentuman.nc.setup.registration.fuel.FuelManager;
+import igentuman.nc.setup.registration.fuel.NCFuel;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.core.Registry;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.*;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.Tags;
+
+import java.util.List;
 import java.util.function.Consumer;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static net.minecraft.world.item.Items.*;
-
+import static igentuman.nc.util.DataGenUtil.*;
 public class NCRecipes extends RecipeProvider {
 
     public NCRecipes(DataGenerator generatorIn) {
         super(generatorIn);
     }
 
-    private TagKey<Item> forgeIngot(String name)
-    {
-        return TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("forge:ingots/"+name));
-    }
 
-    private TagKey<Item> forgeNugget(String name)
-    {
-        return TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("forge:nuggets/"+name));
-    }
-
-    private TagKey<Item> forgeBlock(String name)
-    {
-        return TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("forge:storage_blocks/"+name));
-    }
-
-    private TagKey<Item> forgeOre(String name)
-    {
-        return TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("forge:ores/"+name));
-    }
-
-    private TagKey<Item> forgeChunk(String name)
-    {
-        return TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("forge:raw_materials/"+name));
-    }
-
-    private TagKey<Item> forgeDust(String name)
-    {
-        return TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("forge:dusts/"+name));
-    }
 
     @Override
     protected void buildCraftingRecipes(Consumer<FinishedRecipe> consumer) {
         materials(consumer);
         processors(consumer);
         solarPanels(consumer);
+        fissionBlocks(consumer);
+        FuelRecipes.generate(consumer);
     }
+
+    private void fissionBlocks(Consumer<FinishedRecipe> consumer) {
+        ShapedRecipeBuilder.shaped(NCBlocks.MULTI_BLOCKS.get("fission_reactor_casing").get(), 4)
+                .pattern("LPL")
+                .pattern("PTP")
+                .pattern("LPL")
+                .define('P', NCItems.NC_PARTS.get("plate_advanced").get())
+                .define('T', forgeIngot("tough_alloy"))
+                .define('L', forgePlate("lead"))
+                .group(MODID+"_fission")
+                .unlockedBy("item", InventoryChangeTrigger.TriggerInstance.hasItems(NCItems.NC_PARTS.get("plate_advanced").get()))
+                .save(consumer);
+
+        ShapedRecipeBuilder.shaped(NCBlocks.MULTI_BLOCKS.get("fission_reactor_glass").get())
+                .pattern(" P ")
+                .pattern("PTP")
+                .pattern(" P ")
+                .define('P', Tags.Items.GLASS)
+                .define('T', NCBlocks.MULTI_BLOCKS.get("fission_reactor_casing").get())
+                .group(MODID+"_fission")
+                .unlockedBy("item", InventoryChangeTrigger.TriggerInstance.hasItems(NCItems.NC_PARTS.get("plate_advanced").get()))
+                .save(consumer);
+
+        ShapedRecipeBuilder.shaped(NCBlocks.MULTI_BLOCKS.get("fission_reactor_solid_fuel_cell").get())
+                .pattern("TGT")
+                .pattern("G G")
+                .pattern("TGT")
+                .define('G', Tags.Items.GLASS)
+                .define('T', forgeIngot("tough_alloy"))
+                .group(MODID+"_fission")
+                .unlockedBy("item", InventoryChangeTrigger.TriggerInstance.hasItems(NCBlocks.MULTI_BLOCKS.get("fission_reactor_casing").get()))
+                .save(consumer);
+
+        ShapedRecipeBuilder.shaped(NCBlocks.MULTI_BLOCKS.get("empty_active_heat_sink").get())
+                .pattern("TIT")
+                .pattern("IBI")
+                .pattern("TIT")
+                .define('I', forgePlate("thermoconducting"))
+                .define('B', BUCKET)
+                .define('T', forgeIngot("tough_alloy"))
+                .group(MODID+"_fission")
+                .unlockedBy("item", InventoryChangeTrigger.TriggerInstance.hasItems(NCBlocks.MULTI_BLOCKS.get("fission_reactor_casing").get()))
+                .save(consumer);
+
+        for(String name: FissionBlocks.heatsinks.keySet()) {
+            if(!FissionBlocks.heatsinks.get(name).isActive) {
+                if(name.contains("empty")) continue;
+                TagKey<Item> i = forgeDust(name);
+                if(name.contains("slime")) {
+                    i = Tags.Items.SLIMEBALLS;
+                }
+                ShapedRecipeBuilder.shaped(NCBlocks.MULTI_BLOCKS.get(name+"_heat_sink").get())
+                        .pattern(" I ")
+                        .pattern("IBI")
+                        .pattern(" I ")
+                        .define('I', Ingredient.of(i))
+                        .define('B', NCBlocks.MULTI_BLOCKS.get("empty_heat_sink").get())
+                        .group(MODID+"_fission")
+                        .unlockedBy("item", InventoryChangeTrigger.TriggerInstance.hasItems(NCBlocks.MULTI_BLOCKS.get("empty_heat_sink").get()))
+                        .save(consumer);
+            }
+        }
+    }
+
+
 
     private void solarPanels(Consumer<FinishedRecipe> consumer) {
         ShapedRecipeBuilder.shaped(NCEnergyBlocks.ENERGY_BLOCKS.get("solar_panel/basic").get())
@@ -152,7 +196,20 @@ public class NCRecipes extends RecipeProvider {
                         .unlockedBy("has_ore", inventoryTrigger(ItemPredicate.Builder.item().of(forgeChunk(name)).build()))
                         .save(consumer, MODID+"_"+name+"_raw");
             }
+            if(Materials.ingots().get(name).dust) {
+                SimpleCookingRecipeBuilder.smelting(Ingredient.of(forgeDust(name)),
+                                NCItems.NC_INGOTS.get(name).get(), 1.0f, 100)
+                        .unlockedBy("has_ore", inventoryTrigger(ItemPredicate.Builder.item().of(forgeDust(name)).build()))
+                        .save(consumer, MODID+"_"+name+"_dust");
+            }
+            if(Materials.ingots().get(name).plate) {
+                SimpleCookingRecipeBuilder.smelting(Ingredient.of(forgePlate(name)),
+                                NCItems.NC_INGOTS.get(name).get(), 1.0f, 100)
+                        .unlockedBy("has_ore", inventoryTrigger(ItemPredicate.Builder.item().of(forgePlate(name)).build()))
+                        .save(consumer, MODID+"_"+name+"_plate");
+            }
         }
+
     }
 
     private void processors(Consumer<FinishedRecipe> consumer)

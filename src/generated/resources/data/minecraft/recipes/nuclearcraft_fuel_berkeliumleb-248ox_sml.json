@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smelting",
+  "cookingtime": 100,
+  "experience": 1.0,
+  "ingredient": {
+    "item": "nuclearcraft:fuel_berkelium_leb_248_ox"
+  },
+  "result": "nuclearcraft:fuel_berkelium_leb_248"
+}

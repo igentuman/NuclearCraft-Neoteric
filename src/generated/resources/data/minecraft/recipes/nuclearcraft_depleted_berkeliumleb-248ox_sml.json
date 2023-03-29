@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smelting",
+  "cookingtime": 100,
+  "experience": 1.0,
+  "ingredient": {
+    "item": "nuclearcraft:depleted_fuel_berkelium_leb_248_ox"
+  },
+  "result": "nuclearcraft:depleted_fuel_berkelium_leb_248"
+}

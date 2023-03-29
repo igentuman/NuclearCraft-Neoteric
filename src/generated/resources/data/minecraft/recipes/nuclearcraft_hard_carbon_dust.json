@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smelting",
+  "cookingtime": 100,
+  "experience": 1.0,
+  "ingredient": {
+    "tag": "forge:dusts/hard_carbon"
+  },
+  "result": "nuclearcraft:hard_carbon_ingot"
+}

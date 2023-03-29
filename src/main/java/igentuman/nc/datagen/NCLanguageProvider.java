@@ -40,6 +40,14 @@ public class NCLanguageProvider extends LanguageProvider {
         fluids();
         processors();
         energyBlocks();
+        multiblocks();
+    }
+
+    private void multiblocks() {
+        for(String name: NCBlocks.MULTI_BLOCKS.keySet()) {
+            String title = convertToName(name);
+            add(NCBlocks.MULTI_BLOCKS.get(name).get(), title);
+        }
     }
 
     private void energyBlocks() {

@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "nuclearcraft_ingots",
+  "ingredients": [
+    {
+      "tag": "forge:nuggets/silver"
+    },
+    {
+      "tag": "forge:nuggets/silver"
+    },
+    {
+      "tag": "forge:nuggets/silver"
+    },
+    {
+      "tag": "forge:nuggets/silver"
+    },
+    {
+      "tag": "forge:nuggets/silver"
+    },
+    {
+      "tag": "forge:nuggets/silver"
+    },
+    {
+      "tag": "forge:nuggets/silver"
+    },
+    {
+      "tag": "forge:nuggets/silver"
+    },
+    {
+      "tag": "forge:nuggets/silver"
+    }
+  ],
+  "result": {
+    "item": "nuclearcraft:silver_ingot"
+  }
+}

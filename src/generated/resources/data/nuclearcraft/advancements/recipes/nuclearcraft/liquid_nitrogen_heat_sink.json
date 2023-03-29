@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "nuclearcraft:liquid_nitrogen_heat_sink"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "item": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "nuclearcraft:empty_heat_sink"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "item",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "nuclearcraft:liquid_nitrogen_heat_sink"
+    ]
+  }
+}

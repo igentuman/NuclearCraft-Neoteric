@@ -16,12 +16,15 @@
     },
     "Q": {
       "tag": "forge:dusts/quartz"
+    },
+    "S": {
+      "item": "minecraft:daylight_detector"
     }
   },
   "pattern": [
     "GQG",
     "PLP",
-    "CPC"
+    "CSC"
   ],
   "result": {
     "item": "nuclearcraft:solar_panel_basic"

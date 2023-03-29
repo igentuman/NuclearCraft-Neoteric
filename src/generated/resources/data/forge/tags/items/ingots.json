@@ -30,8 +30,10 @@
     "nuclearcraft:bronze_ingot",
     "nuclearcraft:tin_silver_ingot",
     "nuclearcraft:manganese_dioxide_ingot",
+    "nuclearcraft:silver_ingot",
     "nuclearcraft:hsla_steel_ingot",
     "nuclearcraft:uranium_ingot",
-    "nuclearcraft:boron_ingot"
+    "nuclearcraft:boron_ingot",
+    "nuclearcraft:magnesium_diboride_ingot"
   ]
 }

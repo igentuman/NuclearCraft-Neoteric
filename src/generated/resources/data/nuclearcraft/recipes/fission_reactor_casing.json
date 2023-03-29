@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "nuclearcraft_fission",
+  "key": {
+    "L": {
+      "tag": "forge:plates/lead"
+    },
+    "P": {
+      "item": "nuclearcraft:plate_advanced"
+    },
+    "T": {
+      "tag": "forge:ingots/tough_alloy"
+    }
+  },
+  "pattern": [
+    "LPL",
+    "PTP",
+    "LPL"
+  ],
+  "result": {
+    "count": 4,
+    "item": "nuclearcraft:fission_reactor_casing"
+  }
+}

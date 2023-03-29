@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smelting",
+  "cookingtime": 100,
+  "experience": 1.0,
+  "ingredient": {
+    "item": "nuclearcraft:fuel_plutonium_lep_241_ox"
+  },
+  "result": "nuclearcraft:fuel_plutonium_lep_241"
+}

@@ -1,6 +1,12 @@
 package igentuman.nc.setup.registration;
 
+import igentuman.nc.block.entity.fission.FissionBE;
+import igentuman.nc.block.fission.FissionBlock;
+import igentuman.nc.block.fission.FissionControllerBlock;
+import igentuman.nc.block.fission.FissionPort;
+import igentuman.nc.block.fission.HeatSinkBlock;
 import igentuman.nc.setup.ModSetup;
+import igentuman.nc.setup.multiblocks.FissionBlocks;
 import igentuman.nc.setup.registration.materials.Blocks;
 import igentuman.nc.setup.registration.materials.Ores;
 import net.minecraft.Util;
@@ -12,6 +18,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.FenceBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
@@ -31,6 +39,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.setup.multiblocks.FissionBlocks.REACTOR_BLOCKS_PROPERTIES;
 
 public class NCBlocks {
 
@@ -41,10 +50,15 @@ public class NCBlocks {
     public static final BlockBehaviour.Properties ORE_DEEPSLATE_BLOCK_PROPERTIES = BlockBehaviour.Properties.of(Material.STONE).strength(4f).requiresCorrectToolForDrops();
     public static HashMap<String, RegistryObject<Block>> ORE_BLOCKS = new HashMap<>();
     public static HashMap<String, RegistryObject<Block>> NC_BLOCKS = new HashMap<>();
+    public static HashMap<String, RegistryObject<Block>> MULTI_BLOCKS = new HashMap<>();
     public static HashMap<String, RegistryObject<Block>> NC_MATERIAL_BLOCKS = new HashMap<>();
     public static HashMap<String, RegistryObject<Item>> ORE_BLOCK_ITEMS = new HashMap<>();
     public static HashMap<String, RegistryObject<Item>> NC_BLOCKS_ITEMS = new HashMap<>();
+    public static HashMap<String, RegistryObject<Item>> MULTIBLOCK_ITEMS = new HashMap<>();
     public static final Item.Properties ORE_ITEM_PROPERTIES = new Item.Properties().tab(ModSetup.ITEM_GROUP);
+    public static final Item.Properties MULTIBLOCK_ITEM_PROPERTIES = new Item.Properties().tab(ModSetup.ITEM_GROUP);
+    private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, MODID);
+    public static HashMap<String, RegistryObject<BlockEntityType<? extends BlockEntity>>> MULTIBLOCK_BE = new HashMap<>();
 
     public static final RegistryObject<Block> PORTAL_BLOCK = BLOCKS.register("portal", PortalBlock::new);
     public static final RegistryObject<Item> PORTAL_ITEM = fromBlock(PORTAL_BLOCK);
@@ -58,10 +72,34 @@ public class NCBlocks {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         BLOCKS.register(bus);
         ITEMS.register(bus);
+        BLOCK_ENTITIES.register(bus);
         registerOres();
         registerBlocks();
+        multiblocks();
     }
 
+    private static void multiblocks() {
+        for(String name: FissionBlocks.reactor) {
+            String key = "fission_reactor_"+name;
+            if(name.contains("controller")) {
+                MULTI_BLOCKS.put(key, BLOCKS.register(key, () -> new FissionControllerBlock(REACTOR_BLOCKS_PROPERTIES)));
+            } else if(name.contains("port")) {
+                MULTI_BLOCKS.put(key, BLOCKS.register(key, () -> new FissionPort(REACTOR_BLOCKS_PROPERTIES)));
+            } else {
+                MULTI_BLOCKS.put(key, BLOCKS.register(key, () -> new FissionBlock(REACTOR_BLOCKS_PROPERTIES)));
+            }
+            MULTIBLOCK_ITEMS.put(key, fromMultiblock(MULTI_BLOCKS.get(key)));
+        }
+        for(String name: FissionBlocks.heatsinks.keySet()) {
+            MULTI_BLOCKS.put(name+"_heat_sink", BLOCKS.register(name+"_heat_sink", () -> new HeatSinkBlock(REACTOR_BLOCKS_PROPERTIES)));
+            MULTIBLOCK_ITEMS.put(name+"_heat_sink", fromMultiblock(MULTI_BLOCKS.get(name+"_heat_sink")));
+        }
+
+        MULTIBLOCK_BE.put("fission_be", BLOCK_ENTITIES.register("fission_be",
+                () -> BlockEntityType.Builder
+                        .of(FissionBE::new, MULTI_BLOCKS.get("fission_reactor_casing").get())
+                        .build(null)));
+    }
 
 
     private static void registerOres() {
@@ -98,6 +136,10 @@ public class NCBlocks {
 
     public static <B extends Block> RegistryObject<Item> fromBlock(RegistryObject<B> block) {
         return ITEMS.register(block.getId().getPath(), () -> new BlockItem(block.get(), ORE_ITEM_PROPERTIES));
+    }
+
+    public static <B extends Block> RegistryObject<Item> fromMultiblock(RegistryObject<B> block) {
+        return ITEMS.register(block.getId().getPath(), () -> new BlockItem(block.get(), MULTIBLOCK_ITEM_PROPERTIES));
     }
 
 

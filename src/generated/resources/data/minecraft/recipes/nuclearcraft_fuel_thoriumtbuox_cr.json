@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "nuclearcraft_ingots",
+  "ingredients": [
+    {
+      "item": "nuclearcraft:thorium_232_ox"
+    },
+    {
+      "item": "nuclearcraft:thorium_232_ox"
+    },
+    {
+      "item": "nuclearcraft:thorium_232_ox"
+    },
+    {
+      "item": "nuclearcraft:thorium_232_ox"
+    },
+    {
+      "item": "nuclearcraft:thorium_232_ox"
+    },
+    {
+      "item": "nuclearcraft:thorium_232_ox"
+    },
+    {
+      "item": "nuclearcraft:thorium_232_ox"
+    },
+    {
+      "item": "nuclearcraft:thorium_232_ox"
+    },
+    {
+      "item": "nuclearcraft:thorium_232_ox"
+    }
+  ],
+  "result": {
+    "item": "nuclearcraft:fuel_thorium_tbu_ox"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "nuclearcraft_fission",
+  "key": {
+    "B": {
+      "item": "nuclearcraft:empty_heat_sink"
+    },
+    "I": {
+      "tag": "forge:dusts/boron"
+    }
+  },
+  "pattern": [
+    " I ",
+    "IBI",
+    " I "
+  ],
+  "result": {
+    "item": "nuclearcraft:boron_heat_sink"
+  }
+}

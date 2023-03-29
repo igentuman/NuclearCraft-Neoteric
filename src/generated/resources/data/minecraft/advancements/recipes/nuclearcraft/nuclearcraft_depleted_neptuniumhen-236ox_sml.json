@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_ore": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "nuclearcraft:depleted_fuel_neptunium_hen_236"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "minecraft:nuclearcraft_depleted_neptuniumhen-236ox_sml"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_ore",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "minecraft:nuclearcraft_depleted_neptuniumhen-236ox_sml"
+    ]
+  }
+}

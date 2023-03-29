@@ -91,7 +91,7 @@ public class NCBlocks {
             MULTIBLOCK_ITEMS.put(key, fromMultiblock(MULTI_BLOCKS.get(key)));
         }
         for(String name: FissionBlocks.heatsinks.keySet()) {
-            MULTI_BLOCKS.put(name+"_heat_sink", BLOCKS.register(name+"_heat_sink", () -> new HeatSinkBlock(REACTOR_BLOCKS_PROPERTIES)));
+            MULTI_BLOCKS.put(name+"_heat_sink", BLOCKS.register(name+"_heat_sink", () -> new HeatSinkBlock(REACTOR_BLOCKS_PROPERTIES, FissionBlocks.heatsinks.get(name))));
             MULTIBLOCK_ITEMS.put(name+"_heat_sink", fromMultiblock(MULTI_BLOCKS.get(name+"_heat_sink")));
         }
 
@@ -99,6 +99,7 @@ public class NCBlocks {
                 () -> BlockEntityType.Builder
                         .of(FissionBE::new, MULTI_BLOCKS.get("fission_reactor_casing").get())
                         .build(null)));
+
     }
 
 

@@ -1,5 +1,6 @@
 package igentuman.nc.datagen;
 
+import igentuman.nc.setup.multiblocks.FissionBlocks;
 import igentuman.nc.setup.registration.NCBlocks;
 import igentuman.nc.setup.registration.NCEnergyBlocks;
 import igentuman.nc.setup.registration.NCProcessors;
@@ -22,6 +23,16 @@ public class NCBlockTags extends BlockTagsProvider {
         ores();
         blocks();
         machines();
+        tag(FissionBlocks.MODERATORS_BLOCKS).add(NCBlocks.NC_BLOCKS.get("graphite").get(), NCBlocks.NC_BLOCKS.get("beryllium").get());
+        tag(FissionBlocks.CASING_BLOCKS).add(
+                NCBlocks.MULTI_BLOCKS.get("fission_reactor_casing").get(),
+                NCBlocks.MULTI_BLOCKS.get("fission_reactor_controller").get(),
+                NCBlocks.MULTI_BLOCKS.get("fission_reactor_glass").get(),
+                NCBlocks.MULTI_BLOCKS.get("fission_reactor_buffer").get(),
+                NCBlocks.MULTI_BLOCKS.get("fission_reactor_port").get(),
+                NCBlocks.MULTI_BLOCKS.get("fission_reactor_control_port").get()
+                );
+
     }
 
     private void ores() {
@@ -41,6 +52,7 @@ public class NCBlockTags extends BlockTagsProvider {
             tag(Tags.Blocks.STORAGE_BLOCKS).add(NCBlocks.NC_BLOCKS.get(block).get());
             tag(NCBlocks.BLOCK_TAGS.get(block)).add(NCBlocks.NC_BLOCKS.get(block).get());
         }
+
     }
 
     private void machines() {

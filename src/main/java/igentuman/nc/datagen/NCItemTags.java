@@ -1,5 +1,6 @@
 package igentuman.nc.datagen;
 
+import igentuman.nc.setup.multiblocks.FissionBlocks;
 import igentuman.nc.setup.registration.Fuel;
 import igentuman.nc.setup.registration.NCBlocks;
 import igentuman.nc.setup.registration.NCItems;
@@ -32,6 +33,15 @@ public class NCItemTags extends ItemTagsProvider {
         parts();
         fuel();
         isotopes();
+        tag(FissionBlocks.MODERATORS_ITEMS).add(NCBlocks.NC_BLOCKS_ITEMS.get("graphite").get(), NCBlocks.NC_BLOCKS_ITEMS.get("beryllium").get());
+        tag(FissionBlocks.CASING_ITEMS).add(
+                NCBlocks.MULTIBLOCK_ITEMS.get("fission_reactor_casing").get(),
+                NCBlocks.MULTIBLOCK_ITEMS.get("fission_reactor_controller").get(),
+                NCBlocks.MULTIBLOCK_ITEMS.get("fission_reactor_glass").get(),
+                NCBlocks.MULTIBLOCK_ITEMS.get("fission_reactor_buffer").get(),
+                NCBlocks.MULTIBLOCK_ITEMS.get("fission_reactor_port").get(),
+                NCBlocks.MULTIBLOCK_ITEMS.get("fission_reactor_control_port").get()
+        );
     }
 
     private void isotopes() {

@@ -83,7 +83,7 @@ public class NCRecipes extends RecipeProvider {
                 .save(consumer);
 
         for(String name: FissionBlocks.heatsinks.keySet()) {
-            if(!FissionBlocks.heatsinks.get(name).isActive) {
+            if(!name.contains("active")) {
                 if(name.contains("empty")) continue;
                 TagKey<Item> i = forgeDust(name);
                 if(name.contains("slime")) {

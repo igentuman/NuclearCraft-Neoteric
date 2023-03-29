@@ -1,6 +1,7 @@
 package igentuman.nc.handler.config;
 
 import igentuman.nc.setup.energy.SolarPanels;
+import igentuman.nc.setup.multiblocks.FissionBlocks;
 import igentuman.nc.setup.processors.Processors;
 import igentuman.nc.setup.registration.fuel.FuelManager;
 import igentuman.nc.setup.registration.materials.*;
@@ -17,6 +18,7 @@ public class CommonConfig {
     public static final ProcessorConfig PROCESSOR_CONFIG = new ProcessorConfig(BUILDER);
     public static final OresConfig ORE_CONFIG = new OresConfig(BUILDER);
     public static final FuelConfig FUEL_CONFIG = new FuelConfig(BUILDER);
+    public static final HeatSinkConfig HEAT_SINK_CONFIG = new HeatSinkConfig(BUILDER);
     public static final EnergyGenerationConfig ENERGY_GENERATION = new EnergyGenerationConfig(BUILDER);
     public static final MaterialProductsConfig MATERIAL_PRODUCTS = new MaterialProductsConfig(BUILDER);
     public static final DimensionConfig DIMENSION_CONFIG = new DimensionConfig(BUILDER);
@@ -78,6 +80,25 @@ public class CommonConfig {
         }
 
     }
+
+
+    public static class HeatSinkConfig
+    {
+        public static ForgeConfigSpec.ConfigValue<List<Double>> HEAT;
+        public static ForgeConfigSpec.ConfigValue<Double> DEPLETION_MULTIPLIER;
+
+        public HeatSinkConfig(ForgeConfigSpec.Builder builder) {
+            builder.comment("Settings for heat sink").push("heat_sink");
+
+            HEAT = builder
+                    .comment("Heat adsorbtion: " + String.join(", ", FissionBlocks.initialHeat().keySet()))
+                    .define("heat", toList(FissionBlocks.initialHeat().values()));
+
+            builder.pop();
+        }
+
+    }
+
 
     public static <T> List<T> toList(Collection<T> vals)
     {

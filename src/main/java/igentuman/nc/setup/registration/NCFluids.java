@@ -26,6 +26,7 @@ import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -152,13 +153,18 @@ public class NCFluids {
                 for(String type: new String[]{"", "_za", "_ox","_ni"}) {
                     String key = "fuel_"+name +"_"+ subType+type;
                     if (NC_MATERIALS.containsKey(key)) continue;
+                    int colorDepleted = 0xFFCCCCCC;
+                    int colorFuel = 0xFFCCCCCC;
+                    if(FMLEnvironment.dist.isClient()) {
+                        colorDepleted = TextureUtil.getAverageColor("textures/item/fuel/" + name + "/depleted/" + subType.replace("-", "_") + type + ".png");
+                        colorFuel = TextureUtil.getAverageColor("textures/item/fuel/" + name + "/" + subType.replace("-", "_") + type + ".png");
+                    }
                     NC_MATERIALS.put(key,
                             FluidEntry.makeMoltenLiquid(key.replace("-","_"),
-                                    TextureUtil.getAverageColor("textures/item/fuel/" + name +"/"+subType.replace("-","_")+ type + ".png")));
+                                    colorFuel));
                     LIQUIDS_TAG.put(key, TagKey.create(Registry.FLUID_REGISTRY, new ResourceLocation("forge", key.replace("-","_"))));
                     NC_MATERIALS.put("depleted_"+key,
-                            FluidEntry.makeMoltenLiquid("depleted_"+key.replace("-","_"),
-                                    TextureUtil.getAverageColor("textures/item/fuel/" + name +"/depleted/"+subType.replace("-","_")+ type + ".png")));
+                            FluidEntry.makeMoltenLiquid("depleted_"+key.replace("-","_"), colorDepleted));
                     LIQUIDS_TAG.put("depleted_"+key, TagKey.create(Registry.FLUID_REGISTRY, new ResourceLocation("forge", "depleted_"+key.replace("-","_"))));
                 }
             }
@@ -209,9 +215,12 @@ public class NCFluids {
         for(String name: Materials.isotopes()) {
             for(String type: new String[]{"", "_za", "_ox","_ni"}) {
                 if(NC_MATERIALS.containsKey(name+type)) continue;
+                int color = 0xFFCCCCCC;
+                if(FMLEnvironment.dist.isClient()) {
+                    color = TextureUtil.getAverageColor("textures/item/material/isotope/" + name + type + ".png");
+                }
                 NC_MATERIALS.put(name+type,
-                        FluidEntry.makeMoltenLiquid(name.replace("/", "_")+type,
-                        TextureUtil.getAverageColor("textures/item/material/isotope/"+name+type+".png")));
+                        FluidEntry.makeMoltenLiquid(name.replace("/", "_")+type,color));
                 LIQUIDS_TAG.put(name+type, TagKey.create(Registry.FLUID_REGISTRY,  new ResourceLocation("forge", name+type)));
 
             }

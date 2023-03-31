@@ -1,9 +1,9 @@
 package igentuman.nc.util;
 
 import com.mojang.blaze3d.platform.NativeImage;
-import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.awt.*;
 import java.io.IOException;
@@ -29,8 +29,8 @@ public class TextureUtil {
         return color;
     }
 
+    @OnlyIn(Dist.CLIENT)
     public static int getAverageColor(String textureLocation) {
-        Minecraft mc = Minecraft.getInstance();
         ResourceLocation resourceLocation = new ResourceLocation(MODID, textureLocation);
         try {
             int redSum;

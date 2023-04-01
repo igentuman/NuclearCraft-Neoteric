@@ -25,4 +25,19 @@ public class TextUtils
 		}
 		return  df.format(value);
 	}
+
+	public static String convertToName(String key)
+	{
+		StringBuilder result = new StringBuilder();
+		String[] parts = key.split("_|/");
+		for(String l: parts) {
+			if(l.isEmpty()) continue;
+			if(result.length() == 0) {
+				result = new StringBuilder(l.substring(0, 1).toUpperCase() + l.substring(1));
+			} else {
+				result.append(" ").append(l.substring(0, 1).toUpperCase()).append(l.substring(1));
+			}
+		}
+		return result.toString();
+	}
 }

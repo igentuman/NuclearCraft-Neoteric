@@ -8,6 +8,7 @@ import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.setup.ModSetup.TAB_NAME;
+import static igentuman.nc.util.TextUtils.convertToName;
 
 public class NCLanguageProvider extends LanguageProvider {
 
@@ -118,21 +119,6 @@ public class NCLanguageProvider extends LanguageProvider {
         for(List<String> name: Fuel.NC_DEPLETED_FUEL.keySet()) {
             add(Fuel.NC_DEPLETED_FUEL.get(name).get(), convertToName(name.get(0))+" "+convertToName(name.get(1))+" "+name.get(2).toUpperCase()+" "+name.get(3).toUpperCase());
         }
-    }
-
-    private String convertToName(String key)
-    {
-        StringBuilder result = new StringBuilder();
-        String[] parts = key.split("_|/");
-        for(String l: parts) {
-            if(l.isEmpty()) continue;
-            if(result.length() == 0) {
-                result = new StringBuilder(l.substring(0, 1).toUpperCase() + l.substring(1));
-            } else {
-                result.append(" ").append(l.substring(0, 1).toUpperCase()).append(l.substring(1));
-            }
-        }
-        return result.toString();
     }
 
     private void ores() {

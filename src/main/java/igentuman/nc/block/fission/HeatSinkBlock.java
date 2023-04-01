@@ -39,6 +39,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 
@@ -50,6 +51,7 @@ import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.handler.event.client.InputEvents.SHIFT_PRESSED;
+import static igentuman.nc.util.TextUtils.convertToName;
 
 public class HeatSinkBlock extends Block implements EntityBlock {
 
@@ -85,11 +87,11 @@ public class HeatSinkBlock extends Block implements EntityBlock {
             List<String> lines = new ArrayList<>();
             int i = 0;
             if (def.getValidator() instanceof HeatSinkDef.Validator) {
-                for (String[] condition : def.getValidator().blocks().keySet()) {
+                for (String[] condition : def.getValidator().blockLines().keySet()) {
                     if (i > 0) {
                         lines.add(Component.translatable("heat_sink.and").getString());
                     }
-                    String blocksLine = "("+String.join(" "+Component.translatable("heat_sink.or").getString()+" ", getBlockNames(def.getValidator().blocks().get(condition)))+")";
+                    String blocksLine = String.join(" "+Component.translatable("heat_sink.or").getString()+" ", getBlockNames(condition[2]));
                     switch (condition[0]) {
                         case ">":
                             lines.add(Component.translatable("heat_sink.atleast"+(condition[1].equals("1") ? "":"s") , condition[1], blocksLine).getString());
@@ -114,15 +116,24 @@ public class HeatSinkBlock extends Block implements EntityBlock {
         return placementRule;
     }
 
-    private List<String> getBlockNames(List<String> strings) {
+
+
+
+    private List<String> getBlockNames(String rawLine) {
+
         List<String> names = new ArrayList<>();
-        for(String code: strings) {
+        String[] conditionParts = rawLine.split("=|-|>|<");
+        String[] blocks = conditionParts[0].split("\\|");
+
+        for(String code: blocks) {
             String id = code;
             if(!id.contains(":")) {
                 id = MODID+":"+id;
+                Block block = Registry.BLOCK.get(new ResourceLocation(id));
+                names.add(block.getName().getString());
+            } else {
+                names.add(convertToName(id.split(":")[1]));
             }
-            Block block = Registry.BLOCK.get(new ResourceLocation(id));
-            names.add(block.getName().getString());
         }
         return names;
     }

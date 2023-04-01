@@ -1,14 +1,13 @@
 package igentuman.nc.setup.multiblocks;
 
 import igentuman.nc.handler.config.CommonConfig;
-import igentuman.nc.setup.registration.fuel.FuelDef;
-import igentuman.nc.setup.registration.fuel.FuelManager;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.block.Block;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,8 +15,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
-
-import static igentuman.nc.handler.config.CommonConfig.FUEL_CONFIG;
 
 public class HeatSinkDef {
     public double heat = 0;
@@ -45,30 +42,34 @@ public class HeatSinkDef {
     }
 
     private void initCondition(String[] rules) {
+
         HashMap<String[], List<String>> conditions = new HashMap<>();
         for(String rule: rules) {
-            Pattern func = Pattern.compile("=|-|>|<");
-            Matcher matcher = func.matcher(rule);
-            List<String> matches = new ArrayList<>();
             int cnt = 1;
             try {
                 cnt = Math.max(Integer.parseInt(rule.substring(rule.length()-1)), 1);
-            } catch (NumberFormatException ignore) {
-            }
-            String funcType = ">";
-            while (matcher.find()) {
-                matches.add(matcher.group());
-            }
-            if(!matches.isEmpty()) {
-                funcType = matches.get(0);
-            }
+            } catch (NumberFormatException ignore) {  }
             String[] conditionParts = rule.split("=|-|>|<");
             String[] blocks = conditionParts[0].split("\\|");
             List<String> actualBlocks = collectBlocks(blocks);
-            conditions.put(new String[] {funcType, String.valueOf(cnt)}, actualBlocks);
+            conditions.put(new String[] {getConditionFunc(rule), String.valueOf(cnt), rule}, actualBlocks);
         }
         validator = new Validator();
-        validator.blocks = conditions;
+        validator.blockLines = conditions;
+    }
+
+    private String getConditionFunc(String rule) {
+        Pattern func = Pattern.compile("=|-|>|<");
+        Matcher matcher = func.matcher(rule);
+        List<String> matches = new ArrayList<>();
+        String funcType = ">";
+        while (matcher.find()) {
+            matches.add(matcher.group());
+        }
+        if(!matches.isEmpty()) {
+            funcType = matches.get(0);
+        }
+        return funcType;
     }
 
     private List<String> getItemsByTagKey(String key)
@@ -117,15 +118,26 @@ public class HeatSinkDef {
 
     public static class Validator {
 
-        private HashMap<String[], List<String>> blocks = new HashMap<>();
+        private HashMap<String[], List<String>> blockLines = new HashMap<>();
+        private HashMap<String[], List<Block>> blocks = new HashMap<>();
 
         public boolean isValid()
         {
             return true;
         }
 
-        public HashMap<String[], List<String>> blocks()
+        public HashMap<String[], List<String>> blockLines()
         {
+            return blockLines;
+        }
+
+        public HashMap<String[], List<Block>> blocks()
+        {
+            if(blocks.isEmpty()) {
+                for (String[] condition: blockLines().keySet()) {
+
+                }
+            }
             return blocks;
         }
 

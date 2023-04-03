@@ -1,5 +1,6 @@
 package igentuman.nc.block.entity.fission;
 
+import igentuman.nc.setup.multiblocks.FissionReactor;
 import igentuman.nc.setup.registration.NCBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -24,8 +25,8 @@ public class FissionBE extends BlockEntity {
         super(pType, pPos, pBlockState);
     }
 
-    public FissionBE(BlockPos pPos, BlockState pBlockState) {
-        super(NCBlocks.MULTIBLOCK_BE.get("fission_be").get(), pPos, pBlockState);
+    public FissionBE(BlockPos pPos, BlockState pBlockState, String name) {
+        super(FissionReactor.MULTIBLOCK_BE.get(name).get(), pPos, pBlockState);
     }
 
     public void tickClient() {

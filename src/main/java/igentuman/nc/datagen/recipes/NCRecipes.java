@@ -1,6 +1,7 @@
 package igentuman.nc.datagen.recipes;
 
 import igentuman.nc.setup.multiblocks.FissionBlocks;
+import igentuman.nc.setup.multiblocks.FissionReactor;
 import igentuman.nc.setup.registration.*;
 import igentuman.nc.setup.registration.fuel.FuelManager;
 import igentuman.nc.setup.registration.fuel.NCFuel;
@@ -40,7 +41,7 @@ public class NCRecipes extends RecipeProvider {
     }
 
     private void fissionBlocks(Consumer<FinishedRecipe> consumer) {
-        ShapedRecipeBuilder.shaped(NCBlocks.MULTI_BLOCKS.get("fission_reactor_casing").get(), 4)
+        ShapedRecipeBuilder.shaped(FissionReactor.MULTI_BLOCKS.get("fission_reactor_casing").get(), 4)
                 .pattern("LPL")
                 .pattern("PTP")
                 .pattern("LPL")
@@ -51,27 +52,27 @@ public class NCRecipes extends RecipeProvider {
                 .unlockedBy("item", InventoryChangeTrigger.TriggerInstance.hasItems(NCItems.NC_PARTS.get("plate_advanced").get()))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(NCBlocks.MULTI_BLOCKS.get("fission_reactor_glass").get())
+        ShapedRecipeBuilder.shaped(FissionReactor.MULTI_BLOCKS.get("fission_reactor_glass").get())
                 .pattern(" P ")
                 .pattern("PTP")
                 .pattern(" P ")
                 .define('P', Tags.Items.GLASS)
-                .define('T', NCBlocks.MULTI_BLOCKS.get("fission_reactor_casing").get())
+                .define('T', FissionReactor.MULTI_BLOCKS.get("fission_reactor_casing").get())
                 .group(MODID+"_fission")
                 .unlockedBy("item", InventoryChangeTrigger.TriggerInstance.hasItems(NCItems.NC_PARTS.get("plate_advanced").get()))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(NCBlocks.MULTI_BLOCKS.get("fission_reactor_solid_fuel_cell").get())
+        ShapedRecipeBuilder.shaped(FissionReactor.MULTI_BLOCKS.get("fission_reactor_solid_fuel_cell").get())
                 .pattern("TGT")
                 .pattern("G G")
                 .pattern("TGT")
                 .define('G', Tags.Items.GLASS)
                 .define('T', forgeIngot("tough_alloy"))
                 .group(MODID+"_fission")
-                .unlockedBy("item", InventoryChangeTrigger.TriggerInstance.hasItems(NCBlocks.MULTI_BLOCKS.get("fission_reactor_casing").get()))
+                .unlockedBy("item", InventoryChangeTrigger.TriggerInstance.hasItems(FissionReactor.MULTI_BLOCKS.get("fission_reactor_casing").get()))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(NCBlocks.MULTI_BLOCKS.get("empty_active_heat_sink").get())
+        ShapedRecipeBuilder.shaped(FissionReactor.MULTI_BLOCKS.get("empty_active_heat_sink").get())
                 .pattern("TIT")
                 .pattern("IBI")
                 .pattern("TIT")
@@ -79,7 +80,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('B', BUCKET)
                 .define('T', forgeIngot("tough_alloy"))
                 .group(MODID+"_fission")
-                .unlockedBy("item", InventoryChangeTrigger.TriggerInstance.hasItems(NCBlocks.MULTI_BLOCKS.get("fission_reactor_casing").get()))
+                .unlockedBy("item", InventoryChangeTrigger.TriggerInstance.hasItems(FissionReactor.MULTI_BLOCKS.get("fission_reactor_casing").get()))
                 .save(consumer);
 
         for(String name: FissionBlocks.heatsinks.keySet()) {
@@ -89,14 +90,14 @@ public class NCRecipes extends RecipeProvider {
                 if(name.contains("slime")) {
                     i = Tags.Items.SLIMEBALLS;
                 }
-                ShapedRecipeBuilder.shaped(NCBlocks.MULTI_BLOCKS.get(name+"_heat_sink").get())
+                ShapedRecipeBuilder.shaped(FissionReactor.MULTI_BLOCKS.get(name+"_heat_sink").get())
                         .pattern(" I ")
                         .pattern("IBI")
                         .pattern(" I ")
                         .define('I', Ingredient.of(i))
-                        .define('B', NCBlocks.MULTI_BLOCKS.get("empty_heat_sink").get())
+                        .define('B', FissionReactor.MULTI_BLOCKS.get("empty_heat_sink").get())
                         .group(MODID+"_fission")
-                        .unlockedBy("item", InventoryChangeTrigger.TriggerInstance.hasItems(NCBlocks.MULTI_BLOCKS.get("empty_heat_sink").get()))
+                        .unlockedBy("item", InventoryChangeTrigger.TriggerInstance.hasItems(FissionReactor.MULTI_BLOCKS.get("empty_heat_sink").get()))
                         .save(consumer);
             }
         }

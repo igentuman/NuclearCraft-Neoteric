@@ -1,6 +1,7 @@
 package igentuman.nc.datagen;
 
 import igentuman.nc.block.entity.energy.NCEnergy;
+import igentuman.nc.setup.multiblocks.FissionReactor;
 import igentuman.nc.setup.registration.NCBlocks;
 import igentuman.nc.setup.registration.NCEnergyBlocks;
 import igentuman.nc.setup.registration.NCProcessors;
@@ -27,6 +28,9 @@ public class NCLootTables extends BaseLootTableProvider {
     private void blocks() {
         for(String name: NCBlocks.NC_BLOCKS.keySet()) {
             lootTables.put(NCBlocks.NC_BLOCKS.get(name).get(), createSimpleTable("block", NCBlocks.NC_BLOCKS.get(name).get()));
+        }
+        for(String name: FissionReactor.MULTI_BLOCKS.keySet()) {
+            lootTables.put(FissionReactor.MULTI_BLOCKS.get(name).get(), createSimpleTable("block", FissionReactor.MULTI_BLOCKS.get(name).get()));
         }
     }
 

@@ -1,5 +1,6 @@
 package igentuman.nc.datagen;
 
+import igentuman.nc.setup.multiblocks.FissionReactor;
 import igentuman.nc.setup.registration.*;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.LanguageProvider;
@@ -42,12 +43,18 @@ public class NCLanguageProvider extends LanguageProvider {
         processors();
         energyBlocks();
         multiblocks();
+        labels();
+    }
+
+    private void labels() {
+        add("reactor.size", "Reactor size: %sx%sx%s");
+        add("fission.casing.wrong.block", "Wrong block at: %s");
     }
 
     private void multiblocks() {
-        for(String name: NCBlocks.MULTI_BLOCKS.keySet()) {
+        for(String name: FissionReactor.MULTI_BLOCKS.keySet()) {
             String title = convertToName(name);
-            add(NCBlocks.MULTI_BLOCKS.get(name).get(), title);
+            add(FissionReactor.MULTI_BLOCKS.get(name).get(), title);
         }
     }
 
@@ -109,6 +116,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("heat_sink.or", "or");
         add("heat_sink.and", "and");
         add("heat_sink.placement.error", "Error during placement rule generation");
+
 
     }
 

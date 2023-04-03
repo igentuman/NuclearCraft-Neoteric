@@ -1,18 +1,12 @@
 package igentuman.nc.block.fission;
 
-import igentuman.nc.block.entity.processor.NCProcessor;
-import igentuman.nc.setup.processors.Processors;
-import igentuman.nc.setup.registration.NCProcessors;
+import igentuman.nc.block.entity.fission.FissionBE;
+import igentuman.nc.setup.multiblocks.FissionReactor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.MenuProvider;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -28,10 +22,8 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 
-import java.lang.reflect.InvocationTargetException;
 
 public class FissionPort extends HorizontalDirectionalBlock implements EntityBlock {
     public static final DirectionProperty HORIZONTAL_FACING = FACING;
@@ -61,12 +53,7 @@ public class FissionPort extends HorizontalDirectionalBlock implements EntityBlo
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
-        return NCProcessors.PROCESSORS_BE.get(processorCode()).get().create(pPos, pState);
-    }
-
-    public String processorCode()
-    {
-        return asItem().toString();
+        return FissionReactor.MULTIBLOCK_BE.get("port").get().create(pPos, pState);
     }
 
     @Override
@@ -84,13 +71,13 @@ public class FissionPort extends HorizontalDirectionalBlock implements EntityBlo
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         if (level.isClientSide()) {
             return (lvl, pos, blockState, t) -> {
-                if (t instanceof NCProcessor tile) {
+                if (t instanceof FissionBE tile) {
                     tile.tickClient();
                 }
             };
         }
         return (lvl, pos, blockState, t)-> {
-            if (t instanceof NCProcessor tile) {
+            if (t instanceof FissionBE tile) {
                 tile.tickServer();
             }
         };

@@ -1,6 +1,8 @@
 package igentuman.nc.setup.registration;
 
-import igentuman.nc.block.entity.fission.FissionBE;
+import igentuman.nc.block.entity.fission.FissionCasingBE;
+import igentuman.nc.block.entity.fission.FissionControllerBE;
+import igentuman.nc.block.entity.fission.HeatSinkBE;
 import igentuman.nc.block.fission.FissionBlock;
 import igentuman.nc.block.fission.FissionControllerBlock;
 import igentuman.nc.block.fission.FissionPort;
@@ -31,9 +33,7 @@ import net.minecraftforge.registries.RegistryObject;
 import igentuman.nc.block.*;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -79,28 +79,12 @@ public class NCBlocks {
     }
 
     private static void multiblocks() {
-        for(String name: FissionBlocks.reactor) {
-            String key = "fission_reactor_"+name;
-            if(name.contains("controller")) {
-                MULTI_BLOCKS.put(key, BLOCKS.register(key, () -> new FissionControllerBlock(REACTOR_BLOCKS_PROPERTIES)));
-            } else if(name.contains("port")) {
-                MULTI_BLOCKS.put(key, BLOCKS.register(key, () -> new FissionPort(REACTOR_BLOCKS_PROPERTIES)));
-            } else {
-                MULTI_BLOCKS.put(key, BLOCKS.register(key, () -> new FissionBlock(REACTOR_BLOCKS_PROPERTIES)));
-            }
-            MULTIBLOCK_ITEMS.put(key, fromMultiblock(MULTI_BLOCKS.get(key)));
-        }
-        for(String name: FissionBlocks.heatsinks.keySet()) {
-            MULTI_BLOCKS.put(name+"_heat_sink", BLOCKS.register(name+"_heat_sink", () -> new HeatSinkBlock(REACTOR_BLOCKS_PROPERTIES, FissionBlocks.heatsinks.get(name))));
-            MULTIBLOCK_ITEMS.put(name+"_heat_sink", fromMultiblock(MULTI_BLOCKS.get(name+"_heat_sink")));
-        }
 
-        MULTIBLOCK_BE.put("fission_be", BLOCK_ENTITIES.register("fission_be",
-                () -> BlockEntityType.Builder
-                        .of(FissionBE::new, MULTI_BLOCKS.get("fission_reactor_casing").get())
-                        .build(null)));
+
 
     }
+
+
 
 
     private static void registerOres() {

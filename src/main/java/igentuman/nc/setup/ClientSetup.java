@@ -1,5 +1,7 @@
 package igentuman.nc.setup;
 
+import igentuman.nc.gui.fission.FissionControllerScreen;
+import igentuman.nc.setup.multiblocks.FissionReactor;
 import igentuman.nc.setup.processors.Processors;
 import igentuman.nc.setup.registration.NCFluids;
 import igentuman.nc.setup.registration.NCProcessors;
@@ -19,9 +21,12 @@ public class ClientSetup {
 
     public static void init(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
+            MenuScreens.register(FissionReactor.FISSION_CONTROLLER_CONTAINER.get(), FissionControllerScreen::new);
+
             for(String name: NCProcessors.PROCESSORS_CONTAINERS.keySet()) {
                 MenuScreens.register(NCProcessors.PROCESSORS_CONTAINERS.get(name).get(), Processors.all().get(name).getScreenConstructor());
             }
+
         });
         for(RegistryObject<Fluid> f : NCFluids.FLUIDS.getEntries())
             if(NCFluids.NC_GASES.containsKey(f.getId().getPath()))

@@ -1,5 +1,6 @@
 package igentuman.nc.datagen.models;
 
+import igentuman.nc.setup.multiblocks.FissionReactor;
 import igentuman.nc.setup.registration.*;
 import net.minecraft.core.Registry;
 import net.minecraft.data.DataGenerator;
@@ -57,6 +58,9 @@ public class NCItemModels extends ItemModelProvider {
     private void multiblocks() {
         for(String name: NCBlocks.MULTI_BLOCKS.keySet()) {
             withExistingParent(NCBlocks.MULTIBLOCK_ITEMS.get(name).getId().getPath(), modLoc("block/"+name));
+        }
+        for(String name: FissionReactor.MULTI_BLOCKS.keySet()) {
+            withExistingParent(FissionReactor.MULTIBLOCK_ITEMS.get(name).getId().getPath(), modLoc("block/"+name));
         }
     }
 

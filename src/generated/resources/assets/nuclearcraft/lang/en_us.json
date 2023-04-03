@@ -100,6 +100,7 @@
   "block.nuclearcraft.zinc_block": "Zinc Block",
   "block.nuclearcraft.zinc_ore": "Zinc Ore",
   "block.nuclearcraft.zirconium_block": "Zirconium Block",
+  "fission.casing.wrong.block": "Expected Reactor Casing block at: %s",
   "fluid_type.nuclearcraft.aluminum": "Molten Aluminum",
   "fluid_type.nuclearcraft.americium_241": "Molten Americium 241",
   "fluid_type.nuclearcraft.americium_241_ni": "Molten Americium 241 Ni",
@@ -1603,5 +1604,6 @@
   "item.nuclearcraft.zirconium_nugget": "Zirconium Nugget",
   "item.nuclearcraft.zirconium_plate": "Zirconium Plate",
   "itemGroup.nuclearcraft": "NuclearCraft",
+  "reactor.size": "Reactor size: %sx%sx%s",
   "tooltip.press_shift_for_description": "Press SHIFT for description"
 }

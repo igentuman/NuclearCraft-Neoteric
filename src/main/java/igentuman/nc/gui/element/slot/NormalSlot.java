@@ -34,6 +34,9 @@ public class NormalSlot extends NCGuiElement {
         if(type.equals("speed_upgrade")) {
             yOffset = 72;
         }
+        if(type.equals("fission_cell")) {
+            yOffset = 108;
+        }
         //-1 because of border
         blit(transform, X()-1, Y()-1, xOffset, yOffset,  18, 18);
     }

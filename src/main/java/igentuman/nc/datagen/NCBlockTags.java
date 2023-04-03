@@ -1,6 +1,7 @@
 package igentuman.nc.datagen;
 
 import igentuman.nc.setup.multiblocks.FissionBlocks;
+import igentuman.nc.setup.multiblocks.FissionReactor;
 import igentuman.nc.setup.registration.NCBlocks;
 import igentuman.nc.setup.registration.NCEnergyBlocks;
 import igentuman.nc.setup.registration.NCProcessors;
@@ -25,12 +26,12 @@ public class NCBlockTags extends BlockTagsProvider {
         machines();
         tag(FissionBlocks.MODERATORS_BLOCKS).add(NCBlocks.NC_BLOCKS.get("graphite").get(), NCBlocks.NC_BLOCKS.get("beryllium").get());
         tag(FissionBlocks.CASING_BLOCKS).add(
-                NCBlocks.MULTI_BLOCKS.get("fission_reactor_casing").get(),
-                NCBlocks.MULTI_BLOCKS.get("fission_reactor_controller").get(),
-                NCBlocks.MULTI_BLOCKS.get("fission_reactor_glass").get(),
-                NCBlocks.MULTI_BLOCKS.get("fission_reactor_buffer").get(),
-                NCBlocks.MULTI_BLOCKS.get("fission_reactor_port").get(),
-                NCBlocks.MULTI_BLOCKS.get("fission_reactor_control_port").get()
+                FissionReactor.MULTI_BLOCKS.get("fission_reactor_casing").get(),
+                FissionReactor.MULTI_BLOCKS.get("fission_reactor_controller").get(),
+                FissionReactor.MULTI_BLOCKS.get("fission_reactor_glass").get(),
+                FissionReactor.MULTI_BLOCKS.get("fission_reactor_buffer").get(),
+                FissionReactor.MULTI_BLOCKS.get("fission_reactor_port").get(),
+                FissionReactor.MULTI_BLOCKS.get("fission_reactor_control_port").get()
                 );
 
     }

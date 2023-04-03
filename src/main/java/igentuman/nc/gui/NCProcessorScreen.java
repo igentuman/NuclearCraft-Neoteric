@@ -21,7 +21,7 @@ import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
 
-public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractContainerScreen<T> {
+public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractContainerScreen<T> implements IProgressScreen {
     protected final ResourceLocation GUI = new ResourceLocation(MODID, "textures/gui/processor.png");
     protected int relX;
     protected int relY;
@@ -61,7 +61,7 @@ public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractC
                 widgets.add(new NormalSlot(slots.getSlotPos(i), slots.getSlotType(i)));
             }
         }
-        widgets.add(new ProgressBar(71, 40, menu));
+        widgets.add(new ProgressBar(71, 40, this));
         int ux = 154;
         if(menu.getProcessor().supportSpeedUpgrade) {
             widgets.add(new NormalSlot(ux, 77, "speed_upgrade"));
@@ -111,4 +111,8 @@ public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractC
         }
     }
 
+    @Override
+    public int getProgress() {
+        return menu.getProgress();
+    }
 }

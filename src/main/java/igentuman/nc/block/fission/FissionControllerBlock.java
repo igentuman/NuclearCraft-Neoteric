@@ -1,9 +1,10 @@
 package igentuman.nc.block.fission;
 
+import igentuman.nc.block.entity.fission.FissionControllerBE;
 import igentuman.nc.block.entity.processor.NCProcessor;
+import igentuman.nc.container.FissionControllerContainer;
+import igentuman.nc.setup.multiblocks.FissionReactor;
 import igentuman.nc.setup.processors.Processors;
-import igentuman.nc.setup.registration.NCBlocks;
-import igentuman.nc.setup.registration.NCProcessors;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -62,12 +63,7 @@ public class FissionControllerBlock extends HorizontalDirectionalBlock implement
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
-        return NCBlocks.MULTIBLOCK_BE.get("fission_be").get().create(pPos, pState);
-    }
-
-    public String processorCode()
-    {
-        return asItem().toString();
+        return FissionReactor.MULTIBLOCK_BE.get("fission_reactor_controller").get().create(pPos, pState);
     }
 
     @Override
@@ -76,26 +72,16 @@ public class FissionControllerBlock extends HorizontalDirectionalBlock implement
         if (!level.isClientSide()) {
             BlockEntity be = level.getBlockEntity(pos);
 
-            if (be instanceof NCProcessor)  {
+            if (be instanceof FissionControllerBE)  {
                 MenuProvider containerProvider = new MenuProvider() {
                     @Override
                     public Component getDisplayName() {
-                        return Component.translatable(processorCode());
+                        return Component.translatable("fission_reactor_controller");
                     }
 
                     @Override
                     public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity) {
-                        try {
-                            return (AbstractContainerMenu) Processors.all()
-                                    .get(processorCode()).getContainerConstructor()
-                                    .newInstance(windowId, pos, playerInventory, playerEntity, processorCode());
-                        } catch (InstantiationException e) {
-                            throw new RuntimeException(e);
-                        } catch (IllegalAccessException e) {
-                            throw new RuntimeException(e);
-                        } catch (InvocationTargetException e) {
-                            throw new RuntimeException(e);
-                        }
+                            return new FissionControllerContainer(windowId, pos, playerInventory);
                     }
                 };
                 NetworkHooks.openScreen((ServerPlayer) player, containerProvider, be.getBlockPos());
@@ -109,13 +95,13 @@ public class FissionControllerBlock extends HorizontalDirectionalBlock implement
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         if (level.isClientSide()) {
             return (lvl, pos, blockState, t) -> {
-                if (t instanceof NCProcessor tile) {
+                if (t instanceof FissionControllerBE tile) {
                     tile.tickClient();
                 }
             };
         }
         return (lvl, pos, blockState, t)-> {
-            if (t instanceof NCProcessor tile) {
+            if (t instanceof FissionControllerBE tile) {
                 tile.tickServer();
             }
         };

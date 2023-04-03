@@ -4,8 +4,8 @@ import net.minecraft.core.BlockPos;
 
 public class ValidationResult {
     public boolean isValid = false;
-    public String messageKey;
-    public BlockPos errorBlock;
+    public String messageKey = "";
+    public BlockPos errorBlock = BlockPos.ZERO;
 
     public ValidationResult(boolean isValid) {
         this.isValid = isValid;

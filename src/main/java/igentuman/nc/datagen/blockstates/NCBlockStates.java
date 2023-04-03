@@ -1,6 +1,7 @@
 package igentuman.nc.datagen.blockstates;
 
 import igentuman.nc.setup.multiblocks.FissionBlocks;
+import igentuman.nc.setup.multiblocks.FissionReactor;
 import igentuman.nc.setup.registration.NCBlocks;
 import igentuman.nc.setup.registration.NCEnergyBlocks;
 import igentuman.nc.setup.registration.NCProcessors;
@@ -34,13 +35,17 @@ public class NCBlockStates extends BlockStateProvider {
 
     private void heatSinks() {
         for (String name: FissionBlocks.heatsinks.keySet()) {
-            simpleBlock(NCBlocks.MULTI_BLOCKS.get(name+"_heat_sink").get(), multiBlockModel(NCBlocks.MULTI_BLOCKS.get(name+"_heat_sink").get(), "heat_sink/"+name));
+            simpleBlock(FissionReactor.MULTI_BLOCKS.get(name+"_heat_sink").get(), multiBlockModel(FissionReactor.MULTI_BLOCKS.get(name+"_heat_sink").get(), "heat_sink/"+name));
         }
     }
 
     private void fissionReactor() {
         for (String name: FissionBlocks.reactor) {
-            simpleBlock(NCBlocks.MULTI_BLOCKS.get("fission_reactor_"+name).get(), multiBlockModel(NCBlocks.MULTI_BLOCKS.get("fission_reactor_"+name).get(), "fission/"+name));
+            if(name.contains("controller")) {
+                horizontalBlock(FissionReactor.MULTI_BLOCKS.get("fission_reactor_" + name).get(), multiBlockModel(FissionReactor.MULTI_BLOCKS.get("fission_reactor_" + name).get(), "fission/" + name));
+            } else {
+                simpleBlock(FissionReactor.MULTI_BLOCKS.get("fission_reactor_" + name).get(), multiBlockModel(FissionReactor.MULTI_BLOCKS.get("fission_reactor_" + name).get(), "fission/" + name));
+            }
         }
     }
 

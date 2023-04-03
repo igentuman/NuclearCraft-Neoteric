@@ -1,5 +1,6 @@
 package igentuman.nc.block.fission;
 
+import igentuman.nc.block.entity.fission.HeatSinkBE;
 import igentuman.nc.block.entity.processor.NCProcessor;
 import igentuman.nc.setup.multiblocks.FissionBlocks;
 import igentuman.nc.setup.multiblocks.HeatSinkDef;
@@ -159,7 +160,7 @@ public class HeatSinkBlock extends Block implements EntityBlock {
     @Override
     public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
         def.getValidator();
-        return NCBlocks.MULTIBLOCK_BE.get("fission_be").get().create(pPos, pState);
+        return NCBlocks.MULTIBLOCK_BE.get("fission_heat_sink").get().create(pPos, pState);
     }
 
     @javax.annotation.Nullable
@@ -167,13 +168,13 @@ public class HeatSinkBlock extends Block implements EntityBlock {
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         if (level.isClientSide()) {
             return (lvl, pos, blockState, t) -> {
-                if (t instanceof NCProcessor tile) {
+                if (t instanceof HeatSinkBE tile) {
                     tile.tickClient();
                 }
             };
         }
         return (lvl, pos, blockState, t)-> {
-            if (t instanceof NCProcessor tile) {
+            if (t instanceof HeatSinkBE tile) {
                 tile.tickServer();
             }
         };

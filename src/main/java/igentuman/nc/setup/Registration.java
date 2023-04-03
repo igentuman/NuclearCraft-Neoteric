@@ -1,6 +1,7 @@
 package igentuman.nc.setup;
 
 import com.mojang.serialization.Codec;
+import igentuman.nc.setup.multiblocks.FissionReactor;
 import igentuman.nc.setup.registration.*;
 import igentuman.nc.world.dimension.WastelandChunkGenerator;
 import igentuman.nc.world.ore.Generator;
@@ -59,6 +60,7 @@ public class Registration {
         NCFluids.init();
         NCEnergyBlocks.init();
         NCProcessors.init();
+        FissionReactor.init();
         BLOCK_ENTITIES.register(bus);
         CONTAINERS.register(bus);
         ENTITIES.register(bus);

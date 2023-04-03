@@ -17,6 +17,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static igentuman.nc.NuclearCraft.MODID;
 
 public class NCGuiElement extends GuiComponent implements Widget, GuiEventListener, NarratableEntry {
@@ -27,6 +30,7 @@ public class NCGuiElement extends GuiComponent implements Widget, GuiEventListen
     protected int height;
     public int x;
     public int y;
+    protected List<Component> tooltips = new ArrayList<>();
 
     public int X()
     {
@@ -172,5 +176,14 @@ public class NCGuiElement extends GuiComponent implements Widget, GuiEventListen
 
     public void draw(PoseStack transform, int mX, int mY, float pTicks) {
         RenderSystem.setShaderTexture(0, TEXTURE);
+    }
+
+    public List<Component> getTooltips() {
+        return tooltips;
+    }
+
+    public void addTooltip(Component tooltip)
+    {
+        tooltips.add(tooltip);
     }
 }

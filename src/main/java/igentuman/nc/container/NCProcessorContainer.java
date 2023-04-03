@@ -145,12 +145,10 @@ public class NCProcessorContainer extends AbstractContainerMenu {
 
     protected void layoutPlayerInventorySlots() {
         int leftCol = 10;
-        int topRow = 96;
-        // Player inventory
-        addSlotBox(playerInventory, leftCol, topRow, 9, 18, 3, 18);
-        // Hotbar
-        topRow += 58;
+        int topRow = 154;
         addSlotRange(playerInventory, leftCol, topRow, 9, 18);
+        topRow -= 58;
+        addSlotBox(playerInventory, leftCol, topRow, 9, 18, 3, 18);
     }
 
     @Override

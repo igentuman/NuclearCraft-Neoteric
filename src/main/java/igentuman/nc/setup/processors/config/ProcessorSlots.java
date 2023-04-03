@@ -59,7 +59,8 @@ public class ProcessorSlots {
             slotPositions = new ArrayList<>();
             int x = inputSlotPos[0];
             int y = inputSlotPos[1];
-            if((input_items+input_fluids) % 2 == 0) {
+
+            if((input_items+input_fluids) % 2 == 0 && (input_items+input_fluids) != 2) {
                 for (int i = 0; i < input_fluids+input_items; i++) {
                     int itemX = x + (i / 2) * margin;
                     int itemY = y + (i % 2) * margin;
@@ -67,7 +68,7 @@ public class ProcessorSlots {
                 }
             } else {
                 for (int i = 0; i < input_fluids+input_items; i++) {
-                    if(input_fluids+input_items == 1) {
+                    if(input_fluids+input_items == 1 && output_items+output_fluids < 8) {
                         x += margin;
                     }
                     int itemX = x + margin*i;
@@ -77,6 +78,12 @@ public class ProcessorSlots {
             }
             x = outputSlotPos[0];
             y = outputSlotPos[1];
+            if(input_fluids+input_items > 6) {
+                x += margin;
+            }
+            if(output_fluids+output_items > 6) {
+                x -= margin;
+            }
             if((output_items+output_fluids) % 2 == 0) {
                 for (int i = 0; i < output_fluids+output_items; i++) {
                     int itemX = x + (i / 2) * margin;

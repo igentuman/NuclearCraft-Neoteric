@@ -7,6 +7,8 @@ import net.minecraftforge.energy.IEnergyStorage;
 
 import java.util.List;
 
+import static igentuman.nc.util.TextUtils.scaledFormat;
+
 public class EnergyBar extends NCGuiElement {
     private final IEnergyStorage energy;
 
@@ -14,10 +16,12 @@ public class EnergyBar extends NCGuiElement {
         this.energy = energy;
         x = xMin;
         y = yMin;
+        width = 16;
+        height = 88;
     }
 
     public List<Component> getTooltips() {
-        return List.of(Component.literal(energy.getEnergyStored()+"/"+energy.getMaxEnergyStored()+" FE"));
+        return List.of(Component.literal(scaledFormat(energy.getEnergyStored())+"/"+scaledFormat(energy.getMaxEnergyStored())+" FE"));
     }
 
     @Override

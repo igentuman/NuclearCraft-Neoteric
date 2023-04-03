@@ -13,6 +13,7 @@ import igentuman.nc.gui.element.button.Checkbox;
 import igentuman.nc.gui.element.slot.BigSlot;
 import igentuman.nc.gui.element.slot.NormalSlot;
 import igentuman.nc.setup.processors.config.ProcessorSlots;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -22,8 +23,10 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.util.TextUtils.applyFormat;
 
 public class FissionControllerScreen extends AbstractContainerScreen<FissionControllerContainer> implements IProgressScreen {
     protected final ResourceLocation GUI = new ResourceLocation(MODID, "textures/gui/fission/controller.png");
@@ -44,6 +47,9 @@ public class FissionControllerScreen extends AbstractContainerScreen<FissionCont
     private VerticalBar coolantBar;
     private VerticalBar hotCoolantBar;
 
+    public Component casingTootip = Component.empty();
+    public Component interiorTootip = Component.empty();
+
     public FissionControllerScreen(FissionControllerContainer container, Inventory inv, Component name) {
         super(container, inv, name);
         imageWidth = 176;
@@ -62,8 +68,8 @@ public class FissionControllerScreen extends AbstractContainerScreen<FissionCont
         super.init();
         updateRelativeCords();
         widgets.clear();
-        checkboxCasing = new Checkbox(imageWidth-19, 70, this,  isCasingValid());
-        checkboxInterior =  new Checkbox(imageWidth-32, 70, this,  isInteriorValid());
+        checkboxCasing = new Checkbox(imageWidth-19, 80, this,  isCasingValid());
+        checkboxInterior =  new Checkbox(imageWidth-32, 80, this,  isInteriorValid());
         energyBar = new VerticalBar.Energy(17, 16,  menu.getEnergy(), 1000000);
         heatBar = new VerticalBar.Heat(8, 16,  menu.getHeat(), 1000000);
         coolantBar = new VerticalBar.Coolant(17, 16,  menu.getEnergy(), 1000000);
@@ -93,7 +99,20 @@ public class FissionControllerScreen extends AbstractContainerScreen<FissionCont
             widget.draw(matrix, mouseX, mouseY, partialTicks);
         }
         checkboxCasing.setChecked(isCasingValid()).draw(matrix, mouseX, mouseY, partialTicks);
+        if(isCasingValid()) {
+            checkboxCasing.setTooltipKey("reactor.casing.complete");
+        } else {
+            checkboxCasing.setTooltipKey("reactor.casing.incomplete");
+        }
+        checkboxCasing.addTooltip(casingTootip);
+
         checkboxInterior.setChecked(isInteriorValid()).draw(matrix, mouseX, mouseY, partialTicks);
+        if(isInteriorValid()) {
+            checkboxInterior.setTooltipKey("reactor.interior.complete");
+        } else {
+            checkboxInterior.setTooltipKey("reactor.interior.incomplete");
+        }
+        checkboxInterior.addTooltip(interiorTootip);
         energyBar.draw(matrix, mouseX, mouseY, partialTicks);
     }
 
@@ -101,14 +120,11 @@ public class FissionControllerScreen extends AbstractContainerScreen<FissionCont
     protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
         drawCenteredString(matrixStack, font,  menu.getTitle(), imageWidth/2, titleLabelY, 0xffffff);
         if(isCasingValid()) {
-            Component pText = Component.translatable("reactor.size", getMultiblockHeight(), getMultiblockWidth(), getMultiblockDepth());
-            FormattedCharSequence dimensionsFormatted = pText.getVisualOrderText();
-            drawString(matrixStack, font, pText,  imageWidth-font.width(dimensionsFormatted)-8, 85, 0xffffff);
+            casingTootip = applyFormat(Component.translatable("reactor.size", getMultiblockHeight(), getMultiblockWidth(), getMultiblockDepth()), ChatFormatting.GOLD);
         } else {
-            Component pText = Component.translatable(getValidationResultKey(), getValidationResultData());
-            FormattedCharSequence dimensionsFormatted = pText.getVisualOrderText();
-            drawString(matrixStack, font, pText,  imageWidth-font.width(dimensionsFormatted)-8, 85, 0xff0000);
+            casingTootip = applyFormat(Component.translatable(getValidationResultKey(), getValidationResultData()), ChatFormatting.RED);
         }
+        renderTooltips(matrixStack, mouseX-relX, mouseY-relY);
     }
 
     private Object getValidationResultData() {
@@ -139,9 +155,20 @@ public class FissionControllerScreen extends AbstractContainerScreen<FissionCont
         renderWidgets(matrixStack, partialTicks, mouseX, mouseY);
     }
 
-    private void renderTooltips(PoseStack pPoseStack, int pMouseX, int pMouseY, int x, int y) {
+    private void renderTooltips(PoseStack pPoseStack, int pMouseX, int pMouseY) {
         for(NCGuiElement widget: widgets) {
-            //renderTooltip(pPoseStack, widget.renderToolTip(), x, y);
+           if(widget.isMouseOver(pMouseX, pMouseY)) {
+               renderTooltip(pPoseStack, widget.getTooltips(),
+                       Optional.empty(), pMouseX, pMouseY);
+           }
+        }
+        if(checkboxCasing.isMouseOver(pMouseX, pMouseY)) {
+            renderTooltip(pPoseStack, checkboxCasing.getTooltips(),
+                    Optional.empty(), pMouseX, pMouseY);
+        }
+        if(checkboxInterior.isMouseOver(pMouseX, pMouseY)) {
+            renderTooltip(pPoseStack, checkboxInterior.getTooltips(),
+                    Optional.empty(), pMouseX, pMouseY);
         }
     }
 

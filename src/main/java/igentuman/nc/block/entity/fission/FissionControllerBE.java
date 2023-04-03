@@ -1,16 +1,25 @@
 package igentuman.nc.block.entity.fission;
 
+import igentuman.nc.util.CustomEnergyStorage;
 import igentuman.nc.util.ValidationResult;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 
@@ -38,7 +47,58 @@ public class FissionControllerBE extends FissionBE {
     public int leftCasing = 0;
     public int rightCasing = 0;
 
-    public int energy = 0;
+
+    protected final ItemStackHandler itemHandler = createHandler();
+    protected final LazyOptional<IItemHandler> handler = LazyOptional.of(() -> itemHandler);
+    public final CustomEnergyStorage energyStorage = createEnergy();
+
+    public LazyOptional<IEnergyStorage> getEnergy() {
+        return energy;
+    }
+
+    protected final LazyOptional<IEnergyStorage> energy = LazyOptional.of(() -> energyStorage);
+
+    private ItemStackHandler createHandler() {
+        return new ItemStackHandler(2) {
+
+            @Override
+            protected void onContentsChanged(int slot) {
+                setChanged();
+            }
+
+            @Override
+            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+                return true;//todo recipe validator
+            }
+
+            @Nonnull
+            @Override
+            public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+                return super.insertItem(slot, stack, simulate);
+            }
+        };
+    }
+
+    private CustomEnergyStorage createEnergy() {
+        return new CustomEnergyStorage(10000000, 1000000, 0) {
+            @Override
+            protected void onEnergyChanged() {
+                setChanged();
+            }
+        };
+    }
+
+    @Nonnull
+    @Override
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
+        if (cap == ForgeCapabilities.ITEM_HANDLER) {
+            return handler.cast();
+        }
+        if (cap == ForgeCapabilities.ENERGY) {
+            return energy.cast();
+        }
+        return super.getCapability(cap, side);
+    }
 
     public void tickClient() {
     }
@@ -185,9 +245,14 @@ public class FissionControllerBE extends FissionBE {
 
     @Override
     public void load(CompoundTag tag) {
+        if (tag.contains("Inventory")) {
+            itemHandler.deserializeNBT(tag.getCompound("Inventory"));
+        }
+        if (tag.contains("Energy")) {
+            energyStorage.deserializeNBT(tag.get("Energy"));
+        }
         if (tag.contains("Info")) {
             CompoundTag infoTag = tag.getCompound("Info");
-            energy = infoTag.getInt("energy");
             height = infoTag.getInt("height");
             width = infoTag.getInt("width");
             depth = infoTag.getInt("depth");
@@ -209,7 +274,8 @@ public class FissionControllerBE extends FissionBE {
     @Override
     public void saveAdditional(CompoundTag tag) {
         CompoundTag infoTag = new CompoundTag();
-        infoTag.putInt("energy", energy);
+        tag.put("Inventory", itemHandler.serializeNBT());
+        tag.put("Energy", energyStorage.serializeNBT());
         infoTag.putBoolean("isCasingValid", isCasingValid);
         infoTag.putString("validationKey", validationResult.messageKey);
         infoTag.putLong("erroredBlock", validationResult.errorBlock.asLong());
@@ -236,7 +302,7 @@ public class FissionControllerBE extends FissionBE {
     private void loadClientData(CompoundTag tag) {
         if (tag.contains("Info")) {
             CompoundTag infoTag = tag.getCompound("Info");
-            energy = infoTag.getInt("energy");
+            energyStorage.setEnergy(infoTag.getInt("energy"));
             isCasingValid = infoTag.getBoolean("isCasingValid");
             height = infoTag.getInt("height");
             width = infoTag.getInt("width");
@@ -263,7 +329,7 @@ public class FissionControllerBE extends FissionBE {
     private void saveClientData(CompoundTag tag) {
         CompoundTag infoTag = new CompoundTag();
         tag.put("Info", infoTag);
-        infoTag.putInt("energy", energy);
+        infoTag.putInt("energy", energyStorage.getEnergyStored());
         infoTag.putBoolean("isCasingValid", isCasingValid);
         infoTag.putInt("height", getHeight());
         infoTag.putInt("width", getWidth());
@@ -280,8 +346,15 @@ public class FissionControllerBE extends FissionBE {
 
     @Override
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
+        int oldEnergy = energyStorage.getEnergyStored();
+
+
         CompoundTag tag = pkt.getTag();
         handleUpdateTag(tag);
+
+        if (oldEnergy != energyStorage.getEnergyStored()) {
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+        }
     }
 
     public int getDepletionProgress() {

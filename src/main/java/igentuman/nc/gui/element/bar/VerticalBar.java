@@ -5,12 +5,15 @@ import igentuman.nc.gui.element.NCGuiElement;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.energy.IEnergyStorage;
 
+import java.util.Arrays;
 import java.util.List;
 
+import static igentuman.nc.util.TextUtils.scaledFormat;
+
 public class VerticalBar extends NCGuiElement {
-    private int barValue;
-    private int maxValue;
-    private String hintKey = "";
+    protected int barValue;
+    protected int maxValue;
+    protected String hintKey = "";
     protected int xOffset;
 
     public VerticalBar(int x, int y, int barValue, int max)  {
@@ -19,10 +22,12 @@ public class VerticalBar extends NCGuiElement {
         xOffset = 96;
         this.barValue = barValue;
         this.maxValue = max;
+        width = 8;
+        height = 88;
     }
 
     public List<Component> getTooltips() {
-        return List.of(Component.translatable(hintKey, barValue, maxValue));
+        return List.of(Component.translatable(hintKey, scaledFormat(barValue), scaledFormat(maxValue)));
     }
 
     @Override
@@ -45,12 +50,14 @@ public class VerticalBar extends NCGuiElement {
         public Energy(int x, int y, int energy, int maxEnergy) {
             super(x, y, energy, maxEnergy);
             xOffset = 96;
+            hintKey = "energy.bar.amount";
         }
     }
     public static class Coolant extends VerticalBar {
         public Coolant(int x, int y, int energy, int maxEnergy) {
             super(x, y, energy, maxEnergy);
             xOffset = 108;
+            hintKey = "coolant.bar.amount";
         }
     }
 
@@ -58,6 +65,7 @@ public class VerticalBar extends NCGuiElement {
         public HotCoolant(int x, int y, int energy, int maxEnergy) {
             super(x, y, energy, maxEnergy);
             xOffset = 114;
+            hintKey = "hot_coolant.bar.amount";
         }
     }
 }

@@ -18,6 +18,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static igentuman.nc.NuclearCraft.MODID;
 
@@ -61,7 +62,11 @@ public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractC
                 widgets.add(new NormalSlot(slots.getSlotPos(i), slots.getSlotType(i)));
             }
         }
-        widgets.add(new ProgressBar(71, 40, this));
+        int progressBarX = 71;
+        if(slots.getOutputItems()+slots.getOutputFluids() > 6) {
+            progressBarX -= ProcessorSlots.margin;
+        }
+        widgets.add(new ProgressBar(progressBarX, 40, this));
         int ux = 154;
         if(menu.getProcessor().supportSpeedUpgrade) {
             widgets.add(new NormalSlot(ux, 77, "speed_upgrade"));
@@ -95,6 +100,7 @@ public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractC
     @Override
     protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
         drawCenteredString(matrixStack, font,  menu.getTitle(), imageWidth/2, titleLabelY, 0xffffff);
+        renderTooltips(matrixStack, mouseX-relX, mouseY-relY);
     }
 
     @Override
@@ -105,9 +111,12 @@ public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractC
         renderWidgets(matrixStack, partialTicks, mouseX, mouseY);
     }
 
-    private void renderTooltips(PoseStack pPoseStack, int pMouseX, int pMouseY, int x, int y) {
+    private void renderTooltips(PoseStack pPoseStack, int pMouseX, int pMouseY) {
         for(NCGuiElement widget: widgets) {
-            //renderTooltip(pPoseStack, widget.renderToolTip(), x, y);
+            if(widget.isMouseOver(pMouseX, pMouseY)) {
+                renderTooltip(pPoseStack, widget.getTooltips(),
+                        Optional.empty(), pMouseX, pMouseY);
+            }
         }
     }
 

@@ -33,14 +33,12 @@ public class Checkbox extends NCGuiElement {
     public Checkbox(int xPos, int yPos, AbstractContainerScreen screen, boolean checked)  {
         x = xPos;
         y = yPos;
+        width = 12;
+        height = 12;
         this.screen = screen;
         this.isChecked = checked;
         xTexStart = checked ? 11 : 0;
         btn = new ImageButton(X(), Y(), 11, 11, xTexStart, 178, 11, TEXTURE, (net.minecraft.client.gui.components.Button.OnPress)null);
-    }
-
-    public List<Component> getTooltips() {
-        return List.of(Component.literal(" FE"));
     }
 
     @Override
@@ -68,6 +66,13 @@ public class Checkbox extends NCGuiElement {
 
     public NCGuiElement setChecked(boolean checked) {
         isChecked = checked;
+        return this;
+    }
+
+
+    public NCGuiElement setTooltipKey(String key) {
+        tooltips.clear();
+        tooltips.add(Component.translatable(key));
         return this;
     }
 }

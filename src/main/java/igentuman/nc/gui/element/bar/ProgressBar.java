@@ -28,6 +28,8 @@ public class ProgressBar extends NCGuiElement {
     public ProgressBar(int xMin, int yMin, IProgressScreen container)  {
         x = xMin;
         y = yMin;
+        width = 40;
+        height = 15;
         this.container = container;
         bars.add(new int[] {0, 16});
         bars.add(new int[] {0, 47});
@@ -45,7 +47,7 @@ public class ProgressBar extends NCGuiElement {
 
 
     public List<Component> getTooltips() {
-        return List.of(Component.translatable("tooltip.processor.progress", container.getProgress()));
+        return List.of(Component.translatable("tooltip.machine.progress", container.getProgress()));
     }
 
     @Override

@@ -124,7 +124,13 @@ public class NCLanguageProvider extends LanguageProvider {
         add("reactor.interior.complete", "Reactor Interior Complete");
         add("reactor.casing.complete", "Reactor Casing Complete");
         add("reactor.casing.incomplete", "Reactor Casing Incomplete");
+        add("reactor.casing.to_many_controllers", "Reactor Has To Many Controllers");
+        add("reactor.casing.no_ports", "Reactor Has No Ports");
         add("tooltip.machine.progress", "Progress: %s%%");
+        add("reactor.fuel_cells", "Fuel Cells: %s");
+        add("fission.interior.no_fuel_cells", "No Fuel Cells Found");
+        add("fission.interior.no_moderators", "No Moderators Found");
+        add("fission.interior.no_heat_sink", "No Heat Sinks Found");
 
     }
 

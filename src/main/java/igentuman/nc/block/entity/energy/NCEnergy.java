@@ -1,5 +1,6 @@
 package igentuman.nc.block.entity.energy;
 
+import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.handler.config.CommonConfig;
 import igentuman.nc.setup.energy.SolarPanels;
 import igentuman.nc.setup.registration.NCEnergyBlocks;
@@ -19,7 +20,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class NCEnergy extends BlockEntity {
+public class NCEnergy extends NuclearCraftBE {
 
     protected String name;
     public static String NAME;

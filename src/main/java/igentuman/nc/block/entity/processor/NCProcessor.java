@@ -1,5 +1,6 @@
 package igentuman.nc.block.entity.processor;
 
+import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.handler.config.CommonConfig;
 import igentuman.nc.setup.processors.ProcessorPrefab;
 import igentuman.nc.setup.processors.Processors;
@@ -29,7 +30,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Objects;
 
-public class NCProcessor extends BlockEntity {
+public class NCProcessor extends NuclearCraftBE {
 
     protected String name;
     public static String NAME;

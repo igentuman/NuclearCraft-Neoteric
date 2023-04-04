@@ -124,7 +124,19 @@ public class FissionControllerScreen extends AbstractContainerScreen<FissionCont
         } else {
             casingTootip = applyFormat(Component.translatable(getValidationResultKey(), getValidationResultData()), ChatFormatting.RED);
         }
+
+        if(isCasingValid()) {
+            if (isInteriorValid()) {
+                interiorTootip = applyFormat(Component.translatable("reactor.fuel_cells", getFuelCellsCount()), ChatFormatting.GOLD);
+            } else {
+                interiorTootip = applyFormat(Component.translatable(getValidationResultKey(), getValidationResultData()), ChatFormatting.RED);
+            }
+        }
         renderTooltips(matrixStack, mouseX-relX, mouseY-relY);
+    }
+
+    private int getFuelCellsCount() {
+        return container().getFuelCellsCount();
     }
 
     private Object getValidationResultData() {

@@ -1,14 +1,6 @@
 package igentuman.nc.setup.registration;
 
-import igentuman.nc.block.entity.fission.FissionCasingBE;
-import igentuman.nc.block.entity.fission.FissionControllerBE;
-import igentuman.nc.block.entity.fission.HeatSinkBE;
-import igentuman.nc.block.fission.FissionBlock;
-import igentuman.nc.block.fission.FissionControllerBlock;
-import igentuman.nc.block.fission.FissionPort;
-import igentuman.nc.block.fission.HeatSinkBlock;
 import igentuman.nc.setup.ModSetup;
-import igentuman.nc.setup.multiblocks.FissionBlocks;
 import igentuman.nc.setup.registration.materials.Blocks;
 import igentuman.nc.setup.registration.materials.Ores;
 import net.minecraft.Util;

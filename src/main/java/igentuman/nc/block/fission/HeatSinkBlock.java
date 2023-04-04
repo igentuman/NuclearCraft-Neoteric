@@ -3,6 +3,7 @@ package igentuman.nc.block.fission;
 import igentuman.nc.block.entity.fission.HeatSinkBE;
 import igentuman.nc.block.entity.processor.NCProcessor;
 import igentuman.nc.setup.multiblocks.FissionBlocks;
+import igentuman.nc.setup.multiblocks.FissionReactor;
 import igentuman.nc.setup.multiblocks.HeatSinkDef;
 import igentuman.nc.setup.processors.Processors;
 import igentuman.nc.setup.registration.NCBlocks;
@@ -160,7 +161,9 @@ public class HeatSinkBlock extends Block implements EntityBlock {
     @Override
     public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
         def.getValidator();
-        return NCBlocks.MULTIBLOCK_BE.get("fission_heat_sink").get().create(pPos, pState);
+        BlockEntity be = FissionReactor.MULTIBLOCK_BE.get("fission_heat_sink").get().create(pPos, pState);
+        ((HeatSinkBE)be).setHeatSinkDef(def);
+        return be;
     }
 
     @javax.annotation.Nullable

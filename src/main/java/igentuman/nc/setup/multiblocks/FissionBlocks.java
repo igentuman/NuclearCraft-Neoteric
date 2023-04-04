@@ -35,7 +35,7 @@ public class FissionBlocks {
     public static final HashMap<String, HeatSinkDef> heatsinks = heatsinks();
     private static HashMap<String, Double> heat;
 
-    private static HashMap<String, HeatSinkDef> heatsinks() {
+    public static HashMap<String, HeatSinkDef> heatsinks() {
         HashMap<String, HeatSinkDef> tmp = new HashMap<>();
         tmp.put("empty_active", new HeatSinkDef());
         tmp.put("empty", new HeatSinkDef());

@@ -167,4 +167,7 @@ public class FissionControllerContainer extends AbstractContainerMenu {
         addSlotBox(playerInventory, leftCol, topRow, 9, 18, 3, 18);
     }
 
+    public int getFuelCellsCount() {
+        return blockEntity.fuelCellsCount;
+    }
 }

@@ -38,6 +38,7 @@ public class NCRecipes extends RecipeProvider {
         solarPanels(consumer);
         fissionBlocks(consumer);
         FuelRecipes.generate(consumer);
+        CustomRecipes.generate(consumer);
     }
 
     private void fissionBlocks(Consumer<FinishedRecipe> consumer) {

@@ -1,0 +1,9 @@
+{
+  "type": "nuclearcraft:fission_reactor",
+  "input": {
+    "item": "nuclearcraft:fuel_neptunium_hen_236_ox"
+  },
+  "output": {
+    "item": "nuclearcraft:depleted_fuel_neptunium_hen_236_ox"
+  }
+}

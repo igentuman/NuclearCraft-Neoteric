@@ -29,11 +29,8 @@ public class NCBlockTags extends BlockTagsProvider {
                 FissionReactor.MULTI_BLOCKS.get("fission_reactor_casing").get(),
                 FissionReactor.MULTI_BLOCKS.get("fission_reactor_controller").get(),
                 FissionReactor.MULTI_BLOCKS.get("fission_reactor_glass").get(),
-                FissionReactor.MULTI_BLOCKS.get("fission_reactor_buffer").get(),
-                FissionReactor.MULTI_BLOCKS.get("fission_reactor_port").get(),
-                FissionReactor.MULTI_BLOCKS.get("fission_reactor_control_port").get()
+                FissionReactor.MULTI_BLOCKS.get("fission_reactor_port").get()
                 );
-
     }
 
     private void ores() {

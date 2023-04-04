@@ -1,0 +1,9 @@
+{
+  "type": "nuclearcraft:fission_reactor",
+  "input": {
+    "item": "nuclearcraft:fuel_neptunium_len_236_tr"
+  },
+  "output": {
+    "item": "nuclearcraft:depleted_fuel_neptunium_len_236_tr"
+  }
+}

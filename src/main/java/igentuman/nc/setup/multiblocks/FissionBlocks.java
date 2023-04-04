@@ -25,10 +25,8 @@ public class FissionBlocks {
     public static final List<String> reactor =  Arrays.asList(
             "casing",
             "controller",
-            "buffer",
             "port",
             "glass",
-            "control_port",
             "solid_fuel_cell"
     );
 

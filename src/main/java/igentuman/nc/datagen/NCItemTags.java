@@ -39,9 +39,7 @@ public class NCItemTags extends ItemTagsProvider {
                 FissionReactor.MULTIBLOCK_ITEMS.get("fission_reactor_casing").get(),
                 FissionReactor.MULTIBLOCK_ITEMS.get("fission_reactor_controller").get(),
                 FissionReactor.MULTIBLOCK_ITEMS.get("fission_reactor_glass").get(),
-                FissionReactor.MULTIBLOCK_ITEMS.get("fission_reactor_buffer").get(),
-                FissionReactor.MULTIBLOCK_ITEMS.get("fission_reactor_port").get(),
-                FissionReactor.MULTIBLOCK_ITEMS.get("fission_reactor_control_port").get()
+                FissionReactor.MULTIBLOCK_ITEMS.get("fission_reactor_port").get()
         );
     }
 

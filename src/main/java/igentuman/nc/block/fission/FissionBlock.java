@@ -58,10 +58,21 @@ public class FissionBlock extends Block implements EntityBlock {
         builder.add(BlockStateProperties.HORIZONTAL_FACING);
     }
 
+    private String blockEntityCode()
+    {
+        if(asItem().toString().matches(".*reactor_glass|.*reactor_casing.*")) {
+            return "fission_casing";
+        }
+        if(asItem().toString().contains("fuel_cell")) {
+            return "fission_reactor_fuel_cell";
+        }
+        return asItem().toString();
+    }
+
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
-        return FissionReactor.MULTIBLOCK_BE.get("fission_casing").get().create(pPos, pState);
+        return FissionReactor.MULTIBLOCK_BE.get(blockEntityCode()).get().create(pPos, pState);
     }
 
     @javax.annotation.Nullable

@@ -1,0 +1,9 @@
+{
+  "type": "nuclearcraft:fission_reactor",
+  "input": {
+    "item": "nuclearcraft:fuel_plutonium_hep_241_tr"
+  },
+  "output": {
+    "item": "nuclearcraft:depleted_fuel_plutonium_hep_241_tr"
+  }
+}

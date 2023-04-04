@@ -1,14 +1,11 @@
 package igentuman.nc.setup.multiblocks;
 
-import igentuman.nc.block.entity.fission.FissionCasingBE;
-import igentuman.nc.block.entity.fission.FissionControllerBE;
-import igentuman.nc.block.entity.fission.HeatSinkBE;
+import igentuman.nc.block.entity.fission.*;
 import igentuman.nc.block.fission.FissionBlock;
 import igentuman.nc.block.fission.FissionControllerBlock;
 import igentuman.nc.block.fission.FissionPort;
 import igentuman.nc.block.fission.HeatSinkBlock;
 import igentuman.nc.container.FissionControllerContainer;
-import igentuman.nc.container.NCProcessorContainer;
 import igentuman.nc.setup.ModSetup;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
@@ -63,12 +60,16 @@ public class FissionReactor {
             String key = "fission_reactor_"+name;
             if(name.contains("controller")) {
                 MULTI_BLOCKS.put(key, BLOCKS.register(key, () -> new FissionControllerBlock(REACTOR_BLOCKS_PROPERTIES)));
-                MULTIBLOCK_BE.put("fission_reactor_"+name, BLOCK_ENTITIES.register("fission_reactor_"+name,
+                MULTIBLOCK_BE.put(key, BLOCK_ENTITIES.register(key,
                         () -> BlockEntityType.Builder
-                                .of(FissionControllerBE::new, MULTI_BLOCKS.get("fission_reactor_"+name).get())
+                                .of(FissionControllerBE::new, MULTI_BLOCKS.get(key).get())
                                 .build(null)));
             } else if(name.contains("port")) {
                 MULTI_BLOCKS.put(key, BLOCKS.register(key, () -> new FissionPort(REACTOR_BLOCKS_PROPERTIES)));
+                MULTIBLOCK_BE.put(key, BLOCK_ENTITIES.register(key,
+                        () -> BlockEntityType.Builder
+                                .of(FissionPortBE::new, MULTI_BLOCKS.get(key).get())
+                                .build(null)));
             } else {
                 MULTI_BLOCKS.put(key, BLOCKS.register(key, () -> new FissionBlock(REACTOR_BLOCKS_PROPERTIES)));
             }
@@ -84,7 +85,7 @@ public class FissionReactor {
 
         MULTIBLOCK_BE.put("fission_heat_sink", BLOCK_ENTITIES.register("fission_heat_sink",
                 () -> BlockEntityType.Builder
-                        .of(HeatSinkBE::new, getHSBlocks())
+                        .of(FissionHeatSinkBE::new, getHSBlocks())
                         .build(null)));
 
         MULTIBLOCK_BE.put("fission_casing", BLOCK_ENTITIES.register("fission_casing",
@@ -92,6 +93,12 @@ public class FissionReactor {
                         .of(FissionCasingBE::new,
                                 MULTI_BLOCKS.get("fission_reactor_casing").get(),
                                 MULTI_BLOCKS.get("fission_reactor_glass").get())
+                        .build(null)));
+
+        MULTIBLOCK_BE.put("fission_reactor_fuel_cell", BLOCK_ENTITIES.register("fission_reactor_fuel_cell",
+                () -> BlockEntityType.Builder
+                        .of(FissionFuelCellBE::new,
+                                MULTI_BLOCKS.get("fission_reactor_solid_fuel_cell").get())
                         .build(null)));
     }
 

@@ -1,6 +1,6 @@
 package igentuman.nc.setup.multiblocks;
 
-import igentuman.nc.block.entity.fission.HeatSinkBE;
+import igentuman.nc.block.entity.fission.FissionHeatSinkBE;
 import igentuman.nc.handler.config.CommonConfig;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
@@ -10,7 +10,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.registries.ForgeRegistry;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -122,12 +121,12 @@ public class HeatSinkDef {
 
     public static class Validator {
 
-        private HeatSinkBE be;
+        private FissionHeatSinkBE be;
 
         private HashMap<String[], List<String>> blockLines = new HashMap<>();
         private HashMap<String[], List<Block>> blocks = new HashMap<>();
 
-        public boolean isValid(HeatSinkBE be)
+        public boolean isValid(FissionHeatSinkBE be)
         {
             this.be = be;
             boolean result = false;

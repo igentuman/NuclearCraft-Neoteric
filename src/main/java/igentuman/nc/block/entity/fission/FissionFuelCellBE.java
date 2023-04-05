@@ -3,6 +3,7 @@ package igentuman.nc.block.entity.fission;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.Objects;
@@ -21,8 +22,17 @@ public class FissionFuelCellBE extends FissionBE {
 
     public int attachedModerators = 0;
 
+    public void setAttachedToFuelCell(BlockPos pos)
+    {
+        for (Direction dir : Direction.values()) {
+            BlockEntity be = getLevel().getBlockEntity(pos.relative(dir));
+            if(be instanceof FissionBE) {
+                ((FissionBE) be).attachedToFuelCell = true;
+            }
+        }
+    }
     public void tickServer() {
-
+        setAttachedToFuelCell(getBlockPos());
         level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
     }
 
@@ -41,6 +51,8 @@ public class FissionFuelCellBE extends FissionBE {
         for (Direction dir : Direction.values()) {
             if (isModerator(getBlockPos().relative(dir), getLevel())) {
                 attachedModerators++;
+                setAttachedToFuelCell(getBlockPos().relative(dir));//moderators doesn't have BE's, so we tell all blocks around moderators what they are attached
+
             }
         }
         return attachedModerators;

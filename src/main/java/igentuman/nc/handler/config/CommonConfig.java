@@ -104,6 +104,7 @@ public class CommonConfig {
     public static class FissionConfig
     {
         public static ForgeConfigSpec.ConfigValue<Double> HEAT_MULTIPLIER;
+        public static ForgeConfigSpec.ConfigValue<Double> HEAT_MULTIPLIER_CAP;
         public static ForgeConfigSpec.ConfigValue<Double> MODERATOR_FE_MULTIPLIER;
         public static ForgeConfigSpec.ConfigValue<Double> MODERATOR_HEAT_MULTIPLIER;
 
@@ -119,6 +120,10 @@ public class CommonConfig {
             HEAT_MULTIPLIER = builder
                     .comment("Affects how relation of reactor cooling and heating affects to FE generation.")
                     .defineInRange("heat_multiplier", 1, 0.01D, 20D);
+
+            HEAT_MULTIPLIER_CAP = builder
+                    .comment("Limit for heat_multiplier max value.")
+                    .defineInRange("heat_multiplier_cap", 3D, 0.01D, 3D);
 
             MODERATOR_FE_MULTIPLIER = builder
                     .comment("Each attachment of moderator to fuel cell will increase fuel FE generation by given percent value.")

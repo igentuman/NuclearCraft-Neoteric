@@ -1,10 +1,9 @@
 package igentuman.nc.block.entity.fission;
 
-import igentuman.nc.item.ItemFuel;
+import igentuman.nc.handler.NCItemStackHandler;
 import igentuman.nc.recipes.FissionRecipe;
 import igentuman.nc.recipes.RecipeInfo;
 import igentuman.nc.setup.multiblocks.FissionBlocks;
-import igentuman.nc.setup.registration.NCBlocks;
 import igentuman.nc.setup.registration.NCFluids;
 import igentuman.nc.util.CustomEnergyStorage;
 import igentuman.nc.util.NBTField;
@@ -32,10 +31,12 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static igentuman.nc.handler.config.CommonConfig.FissionConfig.*;
 
@@ -70,6 +71,8 @@ public class FissionControllerBE extends FissionBE {
     public double heatPerTick = 0;
     @NBTField
     public int energyPerTick = 0;
+    @NBTField
+    public double heatMultiplier = 0;
 
 
     private Direction facing;
@@ -85,7 +88,7 @@ public class FissionControllerBE extends FissionBE {
     public int bottomCasing = 0;
     public int leftCasing = 0;
     public int rightCasing = 0;
-    protected final ItemStackHandler itemHandler = createHandler();
+    public final NCItemStackHandler itemHandler = createHandler();
     protected final LazyOptional<IItemHandler> handler = LazyOptional.of(() -> itemHandler);
     public final CustomEnergyStorage energyStorage = createEnergy();
     public RecipeInfo recipeInfo = new RecipeInfo();
@@ -102,8 +105,8 @@ public class FissionControllerBE extends FissionBE {
 
     protected final LazyOptional<IEnergyStorage> energy = LazyOptional.of(() -> energyStorage);
 
-    private ItemStackHandler createHandler() {
-        return new ItemStackHandler(3) {
+    private NCItemStackHandler createHandler() {
+        return new NCItemStackHandler(3) {
 
             @Override
             protected void onContentsChanged(int slot) {
@@ -115,9 +118,19 @@ public class FissionControllerBE extends FissionBE {
                 return true;//todo recipe validator
             }
 
+            @Override
+            @NotNull
+            public ItemStack extractItem(int slot, int amount, boolean simulate)
+            {
+                if(slot != 1) return ItemStack.EMPTY;
+                return super.extractItem(slot, amount, simulate);
+            }
+
+
             @Nonnull
             @Override
             public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+                if(slot != 0) return ItemStack.EMPTY;
                 return super.insertItem(slot, stack, simulate);
             }
         };
@@ -156,6 +169,7 @@ public class FissionControllerBE extends FissionBE {
         validationResult = validateStructure();
         processReaction();
         coolDown();
+        sendOutPower();
         handleMeltdown();
         level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
     }
@@ -188,6 +202,7 @@ public class FissionControllerBE extends FissionBE {
         if(!isCasingValid || !isInternalValid) {
             return false;
         }
+        heatMultiplier = heatMultiplier()+collectedHeatMultiplier()-1;
         if(!hasRecipe() && !itemHandler.getStackInSlot(0).equals(ItemStack.EMPTY)) {
             updateRecipe();
         }
@@ -198,10 +213,9 @@ public class FissionControllerBE extends FissionBE {
     }
 
     private boolean process() {
-        recipeInfo.process(fuelCellsCount*heatMultiplier());
+        recipeInfo.process(fuelCellsCount*(heatMultiplier()+collectedHeatMultiplier()-1));
         if(!recipeInfo.isCompleted()) {
             energyStorage.addEnergy((int) calculateEnergy());
-
             heat += calculateHeat();
         }
 
@@ -211,15 +225,41 @@ public class FissionControllerBE extends FissionBE {
         return true;
     }
 
+    protected void sendOutPower() {
+        AtomicInteger capacity = new AtomicInteger(energyStorage.getEnergyStored());
+        if (capacity.get() > 0) {
+            for (Direction direction : Direction.values()) {
+                BlockEntity be = level.getBlockEntity(worldPosition.relative(direction));
+                if (be != null) {
+                    boolean doContinue = be.getCapability(ForgeCapabilities.ENERGY, direction.getOpposite()).map(handler -> {
+                                if (handler.canReceive()) {
+                                    int received = handler.receiveEnergy(Math.min(capacity.get(), energyStorage.getMaxEnergyStored()), false);
+                                    capacity.addAndGet(-received);
+                                    energyStorage.consumeEnergy(received);
+                                    setChanged();
+                                    return capacity.get() > 0;
+                                } else {
+                                    return true;
+                                }
+                            }
+                    ).orElse(true);
+                    if (!doContinue) {
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
     private void handleRecipeOutput() {
         if(recipeInfo.recipe!=null) {
-            if(itemHandler.insertItem(1, recipeInfo.recipe.getResultItem(), true).isEmpty()) {
-                itemHandler.insertItem(1, recipeInfo.recipe.getResultItem(), false);
-                itemHandler.extractItem(2, 1, false);
+            if(itemHandler.insertItemInternal(1, recipeInfo.recipe.getResultItem(), true).isEmpty()) {
+                itemHandler.insertItemInternal(1, recipeInfo.recipe.getResultItem(), false);
+                itemHandler.extractItemInternal(2, 1, false);
                 recipeInfo.reset();
             }
         } else {
-            itemHandler.extractItem(2, 1, false);
+            itemHandler.extractItemInternal(2, 1, false);
             recipeInfo.reset();
         }
 
@@ -231,12 +271,18 @@ public class FissionControllerBE extends FissionBE {
         return Math.log10(h/c)/(1+Math.exp(h/c*HEAT_MULTIPLIER.get()))+1;
     }
 
+    //hotter reactor gives some advantage in FE generation
+    public double collectedHeatMultiplier()
+    {
+        return Math.min(HEAT_MULTIPLIER_CAP.get(), Math.pow((heat+getMaxHeat()/8)/getMaxHeat(),5)+0.9999694824);
+    }
+
     public double coolingPerTick() {
         return heatSinksCooling()+environmentCooling();
     }
 
     public double environmentCooling() {
-        return getLevel().getBiome(getBlockPos()).get().getBaseTemperature();
+        return getLevel().getBiome(getBlockPos()).get().getBaseTemperature()*10;
     }
 
 
@@ -275,7 +321,7 @@ public class FissionControllerBE extends FissionBE {
     }
 
     private int calculateEnergy() {
-        energyPerTick = (int) ((recipeInfo.energy*fuelCellsCount+moderatorsFE())*heatMultiplier());
+        energyPerTick = (int) ((recipeInfo.energy*fuelCellsCount+moderatorsFE())*(heatMultiplier()+collectedHeatMultiplier()-1));
         return energyPerTick;
     }
 
@@ -300,8 +346,8 @@ public class FissionControllerBE extends FissionBE {
         if(recipe.isPresent() && itemHandler.getStackInSlot(2).isEmpty()) {
             ItemStack input = itemHandler.getStackInSlot(0).copy();
             input.setCount(1);
-            itemHandler.extractItem(0, 1, false);
-            itemHandler.insertItem(2, input, false);
+            itemHandler.extractItemInternal(0, 1, false);
+            itemHandler.insertItemInternal(2, input, false);
             recipeInfo.setRecipe(recipe.get());
             recipeInfo.ticks = ((FissionRecipe)recipeInfo.recipe).getDepletionTime();
             recipeInfo.energy = ((FissionRecipe)recipeInfo.recipe).getEnergy();
@@ -428,11 +474,19 @@ public class FissionControllerBE extends FissionBE {
                                     getSidePos(x - leftCasing).above(y - bottomCasing).relative(getFacing(), -z)
                             );
                         }
+                        setControllerToBlock(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getFacing(), -z));
                     }
                 }
             }
         }
         return new ValidationResult(true);
+    }
+
+    private void setControllerToBlock(BlockPos pos) {
+        BlockEntity be = getLevel().getBlockEntity(pos);
+        if(be instanceof FissionBE) {
+            ((FissionBE) be).controller = this;
+        }
     }
 
     public boolean isFissionCasing(BlockPos pos)
@@ -655,12 +709,12 @@ public class FissionControllerBE extends FissionBE {
         return recipeInfo.getProgress();
     }
 
-    public int getMaxHeat() {
+    public double getMaxHeat() {
         return 1000000;
     }
 
     public double getEfficiency() {
-        return (double)calculateEnergy()/(double)recipeInfo.energy/100;
+        return (double)calculateEnergy()/((double)recipeInfo.energy/100);
     }
 
     public double getNetHeat() {

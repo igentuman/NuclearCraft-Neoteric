@@ -41,7 +41,7 @@ public class NCBlockStates extends BlockStateProvider {
 
     private void fissionReactor() {
         for (String name: FissionBlocks.reactor) {
-            if(name.contains("controller")) {
+            if(name.matches(".*controller|.*port.*")) {
                 horizontalBlock(FissionReactor.MULTI_BLOCKS.get("fission_reactor_" + name).get(), multiBlockModel(FissionReactor.MULTI_BLOCKS.get("fission_reactor_" + name).get(), "fission/" + name));
             } else {
                 simpleBlock(FissionReactor.MULTI_BLOCKS.get("fission_reactor_" + name).get(), multiBlockModel(FissionReactor.MULTI_BLOCKS.get("fission_reactor_" + name).get(), "fission/" + name));

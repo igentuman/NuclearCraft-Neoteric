@@ -9,7 +9,7 @@ import static igentuman.nc.recipes.NcRecipe.getRecipeFromTag;
 public class RecipeInfo implements INBTSerializable<Tag> {
     public int ticks = 0;
     public double ticksProcessed = 0;
-    public int energy = 0;
+    public double energy = 0;
     public double heat = 0;
     public double radiation = 0;
 
@@ -28,7 +28,7 @@ public class RecipeInfo implements INBTSerializable<Tag> {
         CompoundTag data = new CompoundTag();
         data.putInt("ticks", ticks);
         data.putDouble("ticksProcessed", ticksProcessed);
-        data.putInt("energy", energy);
+        data.putDouble("energy", energy);
         data.putDouble("heat", heat);
         data.putDouble("radiation", radiation);
         if(recipe != null) {
@@ -42,7 +42,7 @@ public class RecipeInfo implements INBTSerializable<Tag> {
         if(nbt instanceof CompoundTag) {
             ticks = ((CompoundTag) nbt).getInt("ticks");
             ticksProcessed = ((CompoundTag) nbt).getDouble("ticksProcessed");
-            energy = ((CompoundTag) nbt).getInt("energy");
+            energy = ((CompoundTag) nbt).getDouble("energy");
             heat = ((CompoundTag) nbt).getDouble("heat");
             radiation = ((CompoundTag) nbt).getDouble("radiation");
             recipe = getRecipeFromTag((CompoundTag) ((CompoundTag) nbt).get("recipe"));

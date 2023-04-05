@@ -4,7 +4,9 @@ import igentuman.nc.setup.multiblocks.FissionBlocks;
 import igentuman.nc.setup.multiblocks.FissionReactor;
 import igentuman.nc.setup.multiblocks.HeatSinkDef;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class FissionHeatSinkBE extends FissionBE {
@@ -26,8 +28,10 @@ public class FissionHeatSinkBE extends FissionBE {
         if(forceCheck) {
             isValid = def.getValidator().isValid(this);
         }
-       return isValid();
+       return isValid() && isAttachedToFuelCell();
     }
+
+
 
     private boolean isValid() {
         return isValid;
@@ -37,7 +41,14 @@ public class FissionHeatSinkBE extends FissionBE {
     }
 
     public void tickServer() {
-
+        if(attachedToFuelCell) {
+            for (Direction dir : Direction.values()) {
+                BlockEntity be = getLevel().getBlockEntity(getBlockPos().relative(dir));
+                if (be instanceof FissionBE) {
+                    ((FissionBE) be).attachedToFuelCell = true;
+                }
+            }
+        }
         level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
     }
 

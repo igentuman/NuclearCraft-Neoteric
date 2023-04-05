@@ -52,6 +52,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("fission_reactor.efficiency", "Efficiency: %s%%");
         add("fission_reactor.net_heat", "Net Heat: %s H/t");
         add("fission.casing.reactor_incomplete", "Reactor Incomplete");
+        add("fission_reactor.heat_multiplier", "Heat Multiplier: %sx");
     }
 
     private void multiblocks() {
@@ -108,7 +109,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("fuel.criticality.descr","Criticality Factor: %s N/t");
         add("fuel.efficiency.descr","Base Efficiency: %s%%");
         add("fuel.description","Used in Fission Reactors. Use Fuel Ports to Load/Unload. \nActual FE generation depends on Reactor Efficiency.");
-        add("heat_sink.heat.descr", "Heat Adsorb: %s H/t");
+        add("heat_sink.heat.descr", "Cooling Rate: %s H/t");
         add("heat_sink.placement.rule", "Must be placed %s");
         add("heat_sink.between", "between %s and %s");
         add("heat_sink.atleast", "next to at least %s %s");

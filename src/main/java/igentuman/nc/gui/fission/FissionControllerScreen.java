@@ -65,7 +65,7 @@ public class FissionControllerScreen extends AbstractContainerScreen<FissionCont
         checkboxCasing = new Checkbox(imageWidth-19, 80, this,  isCasingValid());
         checkboxInterior =  new Checkbox(imageWidth-32, 80, this,  isInteriorValid());
         energyBar = new VerticalBar.Energy(17, 16,  this, container().getMaxEnergy());
-        heatBar = new VerticalBar.Heat(8, 16,  this,  container().getMaxHeat());
+        heatBar = new VerticalBar.Heat(8, 16,this,  (int) container().getMaxHeat());
         coolantBar = new VerticalBar.Coolant(17, 16,  this, 1000000);
         hotCoolantBar = new VerticalBar.HotCoolant(26, 16,  this, 1000000);
         widgets.add(heatBar);
@@ -131,6 +131,7 @@ public class FissionControllerScreen extends AbstractContainerScreen<FissionCont
                 if(!container().getResultStack().isEmpty()) {
                     drawString(matrixStack, font, Component.translatable("fission_reactor.efficiency", container().getEfficiency()), 46, 62, 0x8AFF8A);
                     drawString(matrixStack, font, Component.translatable("fission_reactor.net_heat", container().getNetHeat()), 46, 72, 0x8AFF8A);
+                    drawString(matrixStack, font, Component.translatable("fission_reactor.heat_multiplier", container().getHeatMultiplier()), 46, 82, 0x8AFF8A);
                 }
             } else {
                 interiorTootip = applyFormat(Component.translatable(getValidationResultKey(), getValidationResultData()), ChatFormatting.RED);

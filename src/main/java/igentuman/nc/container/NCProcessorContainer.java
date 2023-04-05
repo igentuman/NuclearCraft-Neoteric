@@ -168,7 +168,7 @@ public class NCProcessorContainer extends AbstractContainerMenu {
         return blockEntity.getEnergy().orElse(null);
     }
 
-    public int getProgress() {
+    public double getProgress() {
         return blockEntity.getProgress();
     }
 }

@@ -153,8 +153,8 @@ public class NCProcessor extends NuclearCraftBE {
         tag.put("Info", infoTag);
     }
 
-    public int getProgress() {
-        return timeProcessed/(processTime/100);
+    public double getProgress() {
+        return ((double)timeProcessed)/processTime;
     }
 
     @Override

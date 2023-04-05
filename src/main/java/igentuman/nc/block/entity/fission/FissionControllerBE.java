@@ -1,5 +1,8 @@
 package igentuman.nc.block.entity.fission;
 
+import igentuman.nc.item.ItemFuel;
+import igentuman.nc.recipes.FissionRecipe;
+import igentuman.nc.recipes.RecipeInfo;
 import igentuman.nc.setup.multiblocks.FissionBlocks;
 import igentuman.nc.util.CustomEnergyStorage;
 import igentuman.nc.util.NBTField;
@@ -13,6 +16,7 @@ import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -30,6 +34,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 
 public class FissionControllerBE extends FissionBE {
@@ -57,8 +62,7 @@ public class FissionControllerBE extends FissionBE {
     private List<BlockPos> heatSinks = new ArrayList<>();
     public List<BlockPos> fuelCells = new ArrayList<>();
 
-
-    public ValidationResult validationResult;
+    public ValidationResult validationResult = new ValidationResult(false, "", BlockPos.ZERO);
     public int topCasing = 0;
     public int bottomCasing = 0;
     public int leftCasing = 0;
@@ -66,6 +70,9 @@ public class FissionControllerBE extends FissionBE {
     protected final ItemStackHandler itemHandler = createHandler();
     protected final LazyOptional<IItemHandler> handler = LazyOptional.of(() -> itemHandler);
     public final CustomEnergyStorage energyStorage = createEnergy();
+    public RecipeInfo recipeInfo = new RecipeInfo();
+
+
     public FissionControllerBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, NAME);
     }
@@ -77,7 +84,7 @@ public class FissionControllerBE extends FissionBE {
     protected final LazyOptional<IEnergyStorage> energy = LazyOptional.of(() -> energyStorage);
 
     private ItemStackHandler createHandler() {
-        return new ItemStackHandler(2) {
+        return new ItemStackHandler(3) {
 
             @Override
             protected void onContentsChanged(int slot) {
@@ -98,7 +105,7 @@ public class FissionControllerBE extends FissionBE {
     }
 
     private CustomEnergyStorage createEnergy() {
-        return new CustomEnergyStorage(10000000, 1000000, 0) {
+        return new CustomEnergyStorage(10000000, 1000000, 0) {//todo depends on reactor size and fuel cells
             @Override
             protected void onEnergyChanged() {
                 setChanged();
@@ -123,7 +130,78 @@ public class FissionControllerBE extends FissionBE {
 
     public void tickServer() {
         validationResult = validateStructure();
+        processReaction();
+        coolDown();
         level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+    }
+
+    private void coolDown() {
+        //todo calculate from heat sinks
+        heat -= 10;
+    }
+
+    private boolean processReaction() {
+        if(!isCasingValid || !isInternalValid) {
+            return false;
+        }
+        if(!hasRecipe() && !itemHandler.getStackInSlot(0).equals(ItemStack.EMPTY)) {
+            updateRecipe();
+        }
+        if(hasRecipe()) {
+            return process();
+        }
+        return false;
+    }
+
+    private boolean process() {
+        recipeInfo.process(1);
+        energyStorage.addEnergy(calculateEnergy());
+        heat += calculateHeat();
+        if(recipeInfo.isCompleted()) {
+            itemHandler.extractItem(2, 1, false);
+            ItemStack result = itemHandler.insertItem(1, recipeInfo.recipe.getResultItem(), true);
+            if(result.isEmpty()) {
+                result = recipeInfo.recipe.getResultItem().copy();
+            }
+            //todo handle full slot
+            itemHandler.insertItem(1, result, false);
+            recipeInfo.reset();
+        }
+        return true;
+    }
+
+    private double calculateHeat() {
+        return recipeInfo.heat;
+    }
+
+    private int calculateEnergy() {
+        return recipeInfo.energy;
+    }
+
+    private void updateRecipe() {
+
+        SimpleContainer inventory = new SimpleContainer(itemHandler.getSlots());
+
+        inventory.setItem(0, itemHandler.getStackInSlot(0));
+
+        Optional<FissionRecipe> recipe = level.getRecipeManager()
+                .getRecipeFor(FissionRecipe.Type.INSTANCE, inventory, level);
+        if(recipe.isPresent() && itemHandler.getStackInSlot(2).isEmpty()) {
+
+            ItemStack input = itemHandler.getStackInSlot(0).copy();
+            input.setCount(1);
+            itemHandler.extractItem(0, 1, false);
+            itemHandler.insertItem(2, input, false);
+            recipeInfo.setRecipe(recipe.get());
+            recipeInfo.ticks = ((FissionRecipe)recipeInfo.recipe).getDepletionTime();
+            recipeInfo.energy = ((FissionRecipe)recipeInfo.recipe).getEnergy();
+            recipeInfo.heat = ((FissionRecipe)recipeInfo.recipe).getHeat();
+            recipeInfo.radiation = ((FissionRecipe)recipeInfo.recipe).getRadiation();
+        }
+    }
+
+    public boolean hasRecipe() {
+        return recipeInfo.recipe != null && !itemHandler.getStackInSlot(2).isEmpty();
     }
 
 
@@ -326,13 +404,16 @@ public class FissionControllerBE extends FissionBE {
         if (tag.contains("Inventory")) {
             itemHandler.deserializeNBT(tag.getCompound("Inventory"));
         }
+
         if (tag.contains("Energy")) {
             energyStorage.deserializeNBT(tag.get("Energy"));
         }
         if (tag.contains("Info")) {
             CompoundTag infoTag = tag.getCompound("Info");
             readTagData(infoTag);
-
+            if (infoTag.contains("recipeInfo")) {
+                recipeInfo.deserializeNBT(infoTag.getCompound("recipeInfo"));
+            }
             if(!isCasingValid || !isInternalValid) {
                 validationResult = new ValidationResult(
                         false,
@@ -351,6 +432,7 @@ public class FissionControllerBE extends FissionBE {
         CompoundTag infoTag = new CompoundTag();
         tag.put("Inventory", itemHandler.serializeNBT());
         tag.put("Energy", energyStorage.serializeNBT());
+        infoTag.put("recipeInfo", recipeInfo.serializeNBT());
         infoTag.putString("validationKey", validationResult.messageKey);
         infoTag.putLong("erroredBlock", validationResult.errorBlock.asLong());
         saveTagData(infoTag);
@@ -374,6 +456,9 @@ public class FissionControllerBE extends FissionBE {
     private void loadClientData(CompoundTag tag) {
         if (tag.contains("Info")) {
             CompoundTag infoTag = tag.getCompound("Info");
+            if (infoTag.contains("recipeInfo")) {
+                recipeInfo.deserializeNBT(infoTag.getCompound("recipeInfo"));
+            }
             energyStorage.setEnergy(infoTag.getInt("energy"));
             readTagData(infoTag);
             if(!isCasingValid || !isInternalValid) {
@@ -386,6 +471,7 @@ public class FissionControllerBE extends FissionBE {
                 validationResult = new ValidationResult(true);
             }
         }
+
     }
 
     @Override
@@ -400,6 +486,8 @@ public class FissionControllerBE extends FissionBE {
         tag.put("Info", infoTag);
         infoTag.putInt("energy", energyStorage.getEnergyStored());
         saveTagData(infoTag);
+        infoTag.put("recipeInfo", recipeInfo.serializeNBT());
+
         infoTag.putString("validationKey", validationResult.messageKey);
         infoTag.putLong("erroredBlock", validationResult.errorBlock.asLong());
     }
@@ -422,7 +510,19 @@ public class FissionControllerBE extends FissionBE {
         }
     }
 
-    public int getDepletionProgress() {
-        return 0;
+    public double getDepletionProgress() {
+        return recipeInfo.getProgress();
+    }
+
+    public int getMaxHeat() {
+        return 1000000;
+    }
+
+    public double getEfficiency() {
+        return 0.5; //todo calculation
+    }
+
+    public double getNetHeat() {
+        return recipeInfo.heat-10;//todo heatsinks calculation
     }
 }

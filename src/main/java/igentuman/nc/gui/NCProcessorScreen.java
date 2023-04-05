@@ -121,7 +121,7 @@ public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractC
     }
 
     @Override
-    public int getProgress() {
+    public double getProgress() {
         return menu.getProgress();
     }
 }

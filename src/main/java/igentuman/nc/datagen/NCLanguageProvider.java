@@ -49,6 +49,8 @@ public class NCLanguageProvider extends LanguageProvider {
     private void labels() {
         add("reactor.size", "Reactor size: %sx%sx%s");
         add("fission.casing.wrong.block", "Wrong block at: %s");
+        add("fission_reactor.efficiency", "Efficiency: %s%%");
+        add("fission_reactor.net_heat", "Net Heat: %s H/t");
     }
 
     private void multiblocks() {

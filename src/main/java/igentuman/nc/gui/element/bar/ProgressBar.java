@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.util.TextUtils.numberFormat;
 
 public class ProgressBar extends NCGuiElement {
 
@@ -47,7 +48,7 @@ public class ProgressBar extends NCGuiElement {
 
 
     public List<Component> getTooltips() {
-        return List.of(Component.translatable("tooltip.machine.progress", container.getProgress()));
+        return List.of(Component.translatable("tooltip.machine.progress", numberFormat(container.getProgress()*100)));
     }
 
     @Override
@@ -57,6 +58,6 @@ public class ProgressBar extends NCGuiElement {
         int texOffset = bars.get(bar)[0];
         int teyOffset = bars.get(bar)[1];
         blit(transform, X(), Y(), texOffset, teyOffset,  36, 15);
-        blit(transform, X(), Y(), texOffset, teyOffset-16,  container.getProgress()/100*36, 15);
+        blit(transform, X(), Y(), texOffset, teyOffset-15, (int) (container.getProgress()*36), 15);
     }
 }

@@ -104,6 +104,8 @@
   "fission.interior.no_fuel_cells": "No Fuel Cells Found",
   "fission.interior.no_heat_sink": "No Heat Sinks Found",
   "fission.interior.no_moderators": "No Moderators Found",
+  "fission_reactor.efficiency": "Efficiency: %s%%",
+  "fission_reactor.net_heat": "Net Heat: %s H/t",
   "fluid_type.nuclearcraft.aluminum": "Molten Aluminum",
   "fluid_type.nuclearcraft.americium_241": "Molten Americium 241",
   "fluid_type.nuclearcraft.americium_241_ni": "Molten Americium 241 Ni",

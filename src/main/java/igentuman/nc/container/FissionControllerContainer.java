@@ -19,6 +19,7 @@ import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.util.TextUtils.numberFormat;
 
 public class FissionControllerContainer extends AbstractContainerMenu {
     protected FissionControllerBE blockEntity;
@@ -40,6 +41,10 @@ public class FissionControllerContainer extends AbstractContainerMenu {
         });
         blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
             addSlot(new SlotItemHandler(h, 1, 116, 35));
+        });
+
+        blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
+            //addSlot(new SlotItemHandler(h, 2, 116, 55));
         });
     }
 
@@ -139,7 +144,7 @@ public class FissionControllerContainer extends AbstractContainerMenu {
         return blockEntity.heat;
     }
 
-    public int getProgress() {
+    public double getProgress() {
         return blockEntity.getDepletionProgress();
     }
 
@@ -169,5 +174,29 @@ public class FissionControllerContainer extends AbstractContainerMenu {
 
     public int getFuelCellsCount() {
         return blockEntity.fuelCellsCount;
+    }
+
+    public ItemStack getResultStack()
+    {
+        if(blockEntity.recipeInfo.recipe != null) {
+            return blockEntity.recipeInfo.recipe.getResultItem();
+        }
+        return ItemStack.EMPTY;
+    }
+
+    public int getMaxEnergy() {
+        return blockEntity.energyStorage.getMaxEnergyStored();
+    }
+
+    public int getMaxHeat() {
+        return blockEntity.getMaxHeat();
+    }
+
+    public String getEfficiency() {
+        return numberFormat(blockEntity.getEfficiency());
+    }
+
+    public String getNetHeat() {
+        return numberFormat(blockEntity.getNetHeat());
     }
 }

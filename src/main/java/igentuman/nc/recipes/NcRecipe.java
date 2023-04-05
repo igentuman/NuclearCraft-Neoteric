@@ -1,6 +1,7 @@
 package igentuman.nc.recipes;
 
 import igentuman.nc.util.IgnoredIInventory;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -62,5 +63,18 @@ public abstract class NcRecipe implements Recipe<IgnoredIInventory> {
     @Override
     public ItemStack getResultItem() {
         return ItemStack.EMPTY;
+    }
+
+    public static INCRecipe getRecipeFromTag(CompoundTag tag)
+    {
+        if(tag == null) return null;
+        String recipeType = tag.getString("type");
+        switch (recipeType) {
+            case "fission_reactor":
+                return new FissionRecipe(
+                        ItemStack.of(tag.getCompound("input")),
+                        ItemStack.of(tag.getCompound("output")));
+        }
+        return null;
     }
 }

@@ -1,6 +1,7 @@
 package igentuman.nc.setup;
 
 import com.mojang.serialization.Codec;
+import igentuman.nc.recipes.FissionRecipe;
 import igentuman.nc.setup.multiblocks.FissionReactor;
 import igentuman.nc.setup.registration.*;
 import igentuman.nc.world.dimension.WastelandChunkGenerator;
@@ -14,6 +15,8 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -47,11 +50,28 @@ public class Registration {
     private static final DeferredRegister<StructureType<?>> STRUCTURES = DeferredRegister.create(Registry.STRUCTURE_TYPE_REGISTRY, MODID);
     private static final DeferredRegister<PlacedFeature> PLACED_FEATURES = DeferredRegister.create(Registry.PLACED_FEATURE_REGISTRY, MODID);
     private static final DeferredRegister<Feature<?>> FEATURE_REGISTER = DeferredRegister.create(ForgeRegistries.FEATURES, MODID);
+    private static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = DeferredRegister.create(ForgeRegistries.RECIPE_TYPES, MODID);
 
+    public static final DeferredRegister<RecipeSerializer<?>> SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, MODID);
+
+    public static final RegistryObject<RecipeSerializer<FissionRecipe>> FISSION_RECIPE_SERIALIZER =
+            SERIALIZERS.register("fission_reactor", () -> FissionRecipe.Serializer.INSTANCE);
     public static void init() {
+
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         BLOCKS.register(bus);
         ITEMS.register(bus);
+        BLOCK_ENTITIES.register(bus);
+        CONTAINERS.register(bus);
+        ENTITIES.register(bus);
+        STRUCTURES.register(bus);
+        BIOME_MODIFIERS.register(bus);
+        PLACED_FEATURES.register(bus);
+        FEATURE_REGISTER.register(bus);
+        CONTAINERS.register(bus);
+        RECIPE_TYPES.register(bus);
+        SERIALIZERS.register(bus);
+
         NCBlocks.init();
         NCItems.init();
         NCTools.init();
@@ -61,15 +81,6 @@ public class Registration {
         NCEnergyBlocks.init();
         NCProcessors.init();
         FissionReactor.init();
-        BLOCK_ENTITIES.register(bus);
-        CONTAINERS.register(bus);
-        ENTITIES.register(bus);
-        STRUCTURES.register(bus);
-        BIOME_MODIFIERS.register(bus);
-        PLACED_FEATURES.register(bus);
-        FEATURE_REGISTER.register(bus);
-        CONTAINERS.register(bus);
-
         initOreGeneration();
     }
 

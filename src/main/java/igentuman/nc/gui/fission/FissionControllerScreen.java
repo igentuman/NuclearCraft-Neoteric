@@ -108,6 +108,10 @@ public class FissionControllerScreen extends AbstractContainerScreen<FissionCont
             checkboxInterior.setTooltipKey("reactor.interior.incomplete");
         }
         checkboxInterior.addTooltip(interiorTootip);
+        if(isInteriorValid()) {
+            checkboxInterior.addTooltip(Component.translatable("reactor.heat_sinks_count", container().getHeatSinksCount()));
+            checkboxInterior.addTooltip(Component.translatable("reactor.moderators_count", container().getModeratorsCount()));
+        }
         energyBar.draw(matrix, mouseX, mouseY, partialTicks);
     }
 
@@ -169,6 +173,10 @@ public class FissionControllerScreen extends AbstractContainerScreen<FissionCont
     }
 
     private void renderTooltips(PoseStack pPoseStack, int pMouseX, int pMouseY) {
+        heatBar.clearTooltips();
+        heatBar.addTooltip(Component.translatable("reactor.cooling", container().getCooling()));
+        heatBar.addTooltip(Component.translatable("reactor.heating", container().getHeating()));
+        heatBar.addTooltip(Component.translatable("reactor.net_heat", container().getNetHeat()));
         for(NCGuiElement widget: widgets) {
            if(widget.isMouseOver(pMouseX, pMouseY)) {
                renderTooltip(pPoseStack, widget.getTooltips(),
@@ -184,6 +192,8 @@ public class FissionControllerScreen extends AbstractContainerScreen<FissionCont
                     Optional.empty(), pMouseX, pMouseY);
         }
         if(container().getMaxEnergy() > 0) {
+            energyBar.clearTooltips();
+            energyBar.addTooltip(Component.translatable("reactor.forge_energy_per_tick", container().energyPerTick()));
             if(energyBar.isMouseOver(pMouseX, pMouseY)) {
                 renderTooltip(pPoseStack, energyBar.getTooltips(),
                         Optional.empty(), pMouseX, pMouseY);

@@ -199,4 +199,24 @@ public class FissionControllerContainer extends AbstractContainerMenu {
     public String getNetHeat() {
         return numberFormat(blockEntity.getNetHeat());
     }
+
+    public double getCooling() {
+        return blockEntity.heatSinkCooling;
+    }
+
+    public double getHeating() {
+        return blockEntity.heatPerTick;
+    }
+
+    public int getHeatSinksCount() {
+        return blockEntity.activeHeatSinksCount;
+    }
+
+    public int getModeratorsCount() {
+        return blockEntity.activeModeratorsCount;
+    }
+
+    public int energyPerTick() {
+        return blockEntity.energyPerTick;
+    }
 }

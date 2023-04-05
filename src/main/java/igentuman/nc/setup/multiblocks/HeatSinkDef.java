@@ -3,6 +3,7 @@ package igentuman.nc.setup.multiblocks;
 import igentuman.nc.block.entity.fission.FissionHeatSinkBE;
 import igentuman.nc.handler.config.CommonConfig;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -18,6 +19,8 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
+
+import static igentuman.nc.NuclearCraft.MODID;
 
 public class HeatSinkDef {
     public double heat = 0;
@@ -75,13 +78,23 @@ public class HeatSinkDef {
         return funcType;
     }
 
-    private List<String> getItemsByTagKey(String key)
+    public List<String> getItemsByTagKey(String key)
     {
         List<String> tmp = new ArrayList<>();
         TagKey<Item> tag = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(key));
         Ingredient ing = Ingredient.fromValues(Stream.of(new Ingredient.TagValue(tag)));
         for (ItemStack item: ing.getItems()) {
             tmp.add(item.getItem().toString());
+        }
+        return tmp;
+    }
+
+    public static List<Block> getBlocksByTagKey(String key)
+    {
+        List<Block> tmp = new ArrayList<>();
+        TagKey<Block> tag = TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(key));
+        for(Holder<Block> holder : Registry.BLOCK.getTagOrEmpty(tag)) {
+            tmp.add(holder.get());
         }
         return tmp;
     }
@@ -146,10 +159,10 @@ public class HeatSinkDef {
                         break;
                 }
                 if(!result) {
-                    return result;
+                    return false;
                 }
             }
-            return result;
+            return result ;
         }
 
         private boolean isExact(int s, List<Block> blocks) {
@@ -172,7 +185,7 @@ public class HeatSinkDef {
                     return true;
                 }
             }
-            return true;
+            return false;
         }
 
         private boolean isLessThan(int s, List<Block> blocks) {
@@ -187,14 +200,14 @@ public class HeatSinkDef {
         }
 
         private boolean isMoreThan(int s, List<Block> blocks) {
-            int counter = 1;
+            int counter = 0;
             for (Direction dir: Direction.values()) {
                 if(blocks.contains(Objects.requireNonNull(be.getLevel()).getBlockState(be.getBlockPos().relative(dir)).getBlock())) {
                     counter++;
-                    if(counter >= s) return false;
+                    if(counter >= s) return true;
                 }
             }
-            return counter < s;
+            return counter >= s;
         }
 
         public HashMap<String[], List<String>> blockLines()
@@ -208,8 +221,14 @@ public class HeatSinkDef {
                 for (String[] condition: blockLines().keySet()) {
                     List<Block> tmp = new ArrayList<>();
                     for(String bStr: blockLines().get(condition)) {
-                        tmp.add(Registry.BLOCK.get(new ResourceLocation(bStr)));
+                        if(!bStr.contains(":")) {
+                            bStr = MODID+":"+bStr;
+                            tmp.add(Registry.BLOCK.get(new ResourceLocation(bStr)));
+                        } else {
+                            tmp.addAll(getBlocksByTagKey(bStr));
+                        }
                     }
+                    blocks.put(condition, tmp);
                 }
             }
             return blocks;

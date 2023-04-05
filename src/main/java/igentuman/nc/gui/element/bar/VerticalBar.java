@@ -31,7 +31,8 @@ public class VerticalBar extends NCGuiElement {
     }
 
     public List<Component> getTooltips() {
-        return List.of(Component.translatable(hintKey, scaledFormat(barValue), scaledFormat(maxValue)));
+        tooltips.add(Component.translatable(hintKey, scaledFormat(barValue), scaledFormat(maxValue)));
+        return tooltips;
     }
 
     @Override

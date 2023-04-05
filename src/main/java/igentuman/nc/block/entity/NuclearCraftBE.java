@@ -27,7 +27,6 @@ public class NuclearCraftBE extends BlockEntity {
             try {
                 fieldValue = field.get(this);
             } catch (IllegalAccessException ignore) { }
-
             if (field.getType() == int.class) {
                 tag.putInt(fieldName, (int) fieldValue);
             } else if (field.getType() == double.class) {

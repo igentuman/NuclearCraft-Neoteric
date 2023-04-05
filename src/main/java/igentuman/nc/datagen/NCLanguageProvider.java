@@ -51,6 +51,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("fission.casing.wrong.block", "Wrong block at: %s");
         add("fission_reactor.efficiency", "Efficiency: %s%%");
         add("fission_reactor.net_heat", "Net Heat: %s H/t");
+        add("fission.casing.reactor_incomplete", "Reactor Incomplete");
     }
 
     private void multiblocks() {
@@ -118,10 +119,10 @@ public class NCLanguageProvider extends LanguageProvider {
         add("heat_sink.or", "or");
         add("heat_sink.and", "and");
         add("heat_sink.placement.error", "Error during placement rule generation");
-        add("energy.bar.amount", "Forge Energy: %s / %s");
+        add("energy.bar.amount", "Total FE: %s / %s");
         add("coolant.bar.amount", "Coolant: %s / %s mB");
         add("hot_coolant.bar.amount", "Heated Coolant: %s / %s mB");
-        add("heat.bar.amount", "Heat: %s / %s K");
+        add("heat.bar.amount", "Total Heat: %s / %s K");
         add("reactor.interior.incomplete", "Reactor Interior Incomplete");
         add("reactor.interior.complete", "Reactor Interior Complete");
         add("reactor.casing.complete", "Reactor Casing Complete");
@@ -133,6 +134,13 @@ public class NCLanguageProvider extends LanguageProvider {
         add("fission.interior.no_fuel_cells", "No Fuel Cells Found");
         add("fission.interior.no_moderators", "No Moderators Found");
         add("fission.interior.no_heat_sink", "No Heat Sinks Found");
+        add("reactor.cooling", "Cooling: %s H/t");
+        add("reactor.heating", "Heat Gen: %s H/t");
+        add("reactor.net_heat", "Net Heat: %s H/t");
+        add("reactor.forge_energy_per_tick", "FE Gen: %s FE/t");
+        add("reactor.heat_sinks_count", "Active Heat Sinks: %s");
+        add("reactor.moderators_count", "Active Moderators: %s");
+
 
     }
 

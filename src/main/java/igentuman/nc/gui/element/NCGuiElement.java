@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
@@ -185,5 +186,9 @@ public class NCGuiElement extends GuiComponent implements Widget, GuiEventListen
     public void addTooltip(Component tooltip)
     {
         tooltips.add(tooltip);
+    }
+
+    public void clearTooltips() {
+        tooltips.clear();
     }
 }

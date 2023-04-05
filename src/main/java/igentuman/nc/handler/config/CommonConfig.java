@@ -19,6 +19,8 @@ public class CommonConfig {
     public static final OresConfig ORE_CONFIG = new OresConfig(BUILDER);
     public static final FuelConfig FUEL_CONFIG = new FuelConfig(BUILDER);
     public static final HeatSinkConfig HEAT_SINK_CONFIG = new HeatSinkConfig(BUILDER);
+
+    public static final FissionConfig FISSION_CONFIG = new FissionConfig(BUILDER);
     public static final EnergyGenerationConfig ENERGY_GENERATION = new EnergyGenerationConfig(BUILDER);
     public static final MaterialProductsConfig MATERIAL_PRODUCTS = new MaterialProductsConfig(BUILDER);
     public static final DimensionConfig DIMENSION_CONFIG = new DimensionConfig(BUILDER);
@@ -93,6 +95,38 @@ public class CommonConfig {
             HEAT = builder
                     .comment("Heat adsorbtion: " + String.join(", ", FissionBlocks.initialHeat().keySet()))
                     .define("heat", toList(FissionBlocks.initialHeat().values()));
+
+            builder.pop();
+        }
+
+    }
+
+    public static class FissionConfig
+    {
+        public static ForgeConfigSpec.ConfigValue<Double> HEAT_MULTIPLIER;
+        public static ForgeConfigSpec.ConfigValue<Double> MODERATOR_FE_MULTIPLIER;
+        public static ForgeConfigSpec.ConfigValue<Double> MODERATOR_HEAT_MULTIPLIER;
+
+        public static ForgeConfigSpec.ConfigValue<Double> EXPLOSION_RADIUS;
+
+        public FissionConfig(ForgeConfigSpec.Builder builder) {
+            builder.comment("Settings for Fission Reactor").push("fission_reactor");
+
+            EXPLOSION_RADIUS = builder
+                    .comment("Explosion size if reactor overheats. 4 - TNT size. Set to 0 to disable explosion.")
+                    .defineInRange("reactor_explosion_radius", 4f, 0.0f, 20f);
+
+            HEAT_MULTIPLIER = builder
+                    .comment("Affects how relation of reactor cooling and heating affects to FE generation.")
+                    .defineInRange("heat_multiplier", 1, 0.01D, 20D);
+
+            MODERATOR_FE_MULTIPLIER = builder
+                    .comment("Each attachment of moderator to fuel cell will increase fuel FE generation by given percent value.")
+                    .defineInRange("moderator_fe_multiplier", 16.7D, 0D, 1000D);
+
+            MODERATOR_HEAT_MULTIPLIER = builder
+                    .comment("Each attachment of moderator to fuel cell will increase fuel heat generation by given percent value.")
+                    .defineInRange("moderator_heat_multiplier", 33.4D, 0D, 1000D);
 
             builder.pop();
         }

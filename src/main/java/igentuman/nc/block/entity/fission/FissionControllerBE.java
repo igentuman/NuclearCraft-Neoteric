@@ -4,6 +4,8 @@ import igentuman.nc.item.ItemFuel;
 import igentuman.nc.recipes.FissionRecipe;
 import igentuman.nc.recipes.RecipeInfo;
 import igentuman.nc.setup.multiblocks.FissionBlocks;
+import igentuman.nc.setup.registration.NCBlocks;
+import igentuman.nc.setup.registration.NCFluids;
 import igentuman.nc.util.CustomEnergyStorage;
 import igentuman.nc.util.NBTField;
 import igentuman.nc.util.ValidationResult;
@@ -18,8 +20,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.common.capabilities.Capability;
@@ -31,10 +35,9 @@ import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+
+import static igentuman.nc.handler.config.CommonConfig.FissionConfig.*;
 
 
 public class FissionControllerBE extends FissionBE {
@@ -45,6 +48,13 @@ public class FissionControllerBE extends FissionBE {
     @NBTField
     public int fuelCellsCount = 0;
     @NBTField
+    public int activeModeratorsCount = 0;
+
+    @NBTField
+    public int activeHeatSinksCount = 0;
+    @NBTField
+    public int activeModeratorsAttachmentsCount = 0;
+    @NBTField
     public boolean isCasingValid = false;
     @NBTField
     public boolean isInternalValid = false;
@@ -54,13 +64,21 @@ public class FissionControllerBE extends FissionBE {
     public int width = 1;
     @NBTField
     public int depth = 1;
+    @NBTField
+    public double heatSinkCooling = 0;
+    @NBTField
+    public double heatPerTick = 0;
+    @NBTField
+    public int energyPerTick = 0;
 
 
     private Direction facing;
-    private List<Block> moderatorBlocks = new ArrayList<>();
+    private static List<Block> moderatorBlocks = new ArrayList<>();
     private List<BlockPos> moderators = new ArrayList<>();
     private List<BlockPos> heatSinks = new ArrayList<>();
     public List<BlockPos> fuelCells = new ArrayList<>();
+
+    public HashMap<BlockPos, FissionHeatSinkBE> activeHeatSinks = new HashMap<>();
 
     public ValidationResult validationResult = new ValidationResult(false, "", BlockPos.ZERO);
     public int topCasing = 0;
@@ -71,6 +89,7 @@ public class FissionControllerBE extends FissionBE {
     protected final LazyOptional<IItemHandler> handler = LazyOptional.of(() -> itemHandler);
     public final CustomEnergyStorage energyStorage = createEnergy();
     public RecipeInfo recipeInfo = new RecipeInfo();
+
 
 
     public FissionControllerBE(BlockPos pPos, BlockState pBlockState) {
@@ -105,12 +124,17 @@ public class FissionControllerBE extends FissionBE {
     }
 
     private CustomEnergyStorage createEnergy() {
-        return new CustomEnergyStorage(10000000, 1000000, 0) {//todo depends on reactor size and fuel cells
+        return new CustomEnergyStorage(1000000, 0, 1000000) {
             @Override
             protected void onEnergyChanged() {
                 setChanged();
             }
         };
+    }
+
+    private void updateEnergyStorage() {
+        energyStorage.setMaxCapacity(Math.max(fuelCellsCount,1)*1000000);
+        energyStorage.setMaxExtract(Math.max(fuelCellsCount,1)*1000000);
     }
 
     @Nonnull
@@ -132,12 +156,32 @@ public class FissionControllerBE extends FissionBE {
         validationResult = validateStructure();
         processReaction();
         coolDown();
+        handleMeltdown();
         level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
     }
 
+    private void handleMeltdown() {
+        if(heat >= getMaxHeat()) {
+            if(EXPLOSION_RADIUS.get() == 0) {
+                getLevel().explode(null, getForwardPos(2).getX(), getForwardPos(2).getY(), getForwardPos(2).getZ(), 2F, true, Explosion.BlockInteraction.NONE);
+            } else {
+                getLevel().explode(null, getForwardPos(2).getX(), getForwardPos(2).getY(), getForwardPos(2).getZ(), EXPLOSION_RADIUS.get().floatValue(), true, Explosion.BlockInteraction.DESTROY);
+            }
+            for(BlockPos pos: fuelCells) {
+                getLevel().setBlock(pos, NCFluids.NC_MATERIALS.get("corium").getBlock().defaultBlockState(), 1);
+            }
+            getLevel().setBlock(getBlockPos(), NCFluids.NC_MATERIALS.get("corium").getBlock().defaultBlockState(), 1);
+            setRemoved();
+            //at any case if reactor still works we punish player
+            //heat = getMaxHeat();
+            //energyStorage.setEnergy((int) (energyStorage.getEnergyStored() - calculateEnergy()));
+        }
+
+    }
+
     private void coolDown() {
-        //todo calculate from heat sinks
-        heat -= 10;
+        heat -= coolingPerTick();
+        heat = Math.max(0, heat);
     }
 
     private boolean processReaction() {
@@ -154,40 +198,106 @@ public class FissionControllerBE extends FissionBE {
     }
 
     private boolean process() {
-        recipeInfo.process(1);
-        energyStorage.addEnergy(calculateEnergy());
-        heat += calculateHeat();
+        recipeInfo.process(fuelCellsCount*heatMultiplier());
+        if(!recipeInfo.isCompleted()) {
+            energyStorage.addEnergy((int) calculateEnergy());
+
+            heat += calculateHeat();
+        }
+
         if(recipeInfo.isCompleted()) {
-            itemHandler.extractItem(2, 1, false);
-            ItemStack result = itemHandler.insertItem(1, recipeInfo.recipe.getResultItem(), true);
-            if(result.isEmpty()) {
-                result = recipeInfo.recipe.getResultItem().copy();
-            }
-            //todo handle full slot
-            itemHandler.insertItem(1, result, false);
-            recipeInfo.reset();
+            handleRecipeOutput();
         }
         return true;
     }
 
+    private void handleRecipeOutput() {
+        if(recipeInfo.recipe!=null) {
+            if(itemHandler.insertItem(1, recipeInfo.recipe.getResultItem(), true).isEmpty()) {
+                itemHandler.insertItem(1, recipeInfo.recipe.getResultItem(), false);
+                itemHandler.extractItem(2, 1, false);
+                recipeInfo.reset();
+            }
+        } else {
+            itemHandler.extractItem(2, 1, false);
+            recipeInfo.reset();
+        }
+
+    }
+
+    public double heatMultiplier() {
+        double h = heatPerTick();
+        double c = Math.max(1, coolingPerTick());
+        return Math.log10(h/c)/(1+Math.exp(h/c*HEAT_MULTIPLIER.get()))+1;
+    }
+
+    public double coolingPerTick() {
+        return heatSinksCooling()+environmentCooling();
+    }
+
+    public double environmentCooling() {
+        return getLevel().getBiome(getBlockPos()).get().getBaseTemperature();
+    }
+
+
+    public double heatSinksCooling() {
+        if(heatSinkCooling == 0) {
+            for (FissionHeatSinkBE hs : activeHeatSinks().values()) {
+                heatSinkCooling+=hs.getHeat();
+            }
+        }
+        return heatSinkCooling;
+    }
+
+    public Map<BlockPos, FissionHeatSinkBE> activeHeatSinks() {
+        if(activeHeatSinks.isEmpty()) {
+            for(BlockPos hpos: heatSinks) {
+                BlockEntity be = getLevel().getBlockEntity(hpos);
+                if(be instanceof FissionHeatSinkBE) {
+                    FissionHeatSinkBE hs = (FissionHeatSinkBE) be;
+                    if(hs.isValid(true)) {
+                        activeHeatSinks.put(hpos, hs);
+                    }
+                }
+            }
+        }
+        activeHeatSinksCount = activeHeatSinks.size();
+        return activeHeatSinks;
+    }
+
+    public double heatPerTick() {
+        heatPerTick = recipeInfo.heat*fuelCellsCount+moderatorsHeat();
+        return heatPerTick;
+    }
+
     private double calculateHeat() {
-        return recipeInfo.heat;
+        return heatPerTick();
     }
 
     private int calculateEnergy() {
-        return recipeInfo.energy;
+        energyPerTick = (int) ((recipeInfo.energy*fuelCellsCount+moderatorsFE())*heatMultiplier());
+        return energyPerTick;
     }
 
-    private void updateRecipe() {
+    public double moderatorsHeat() {
+        return recipeInfo.heat*activeModeratorsAttachmentsCount*(MODERATOR_HEAT_MULTIPLIER.get()/100);
+    }
 
+    public double moderatorsFE() {
+        return recipeInfo.energy*activeModeratorsAttachmentsCount*(MODERATOR_FE_MULTIPLIER.get()/100);
+    }
+
+
+    private void updateRecipe() {
+        if(recipeIsStuck()) return;
         SimpleContainer inventory = new SimpleContainer(itemHandler.getSlots());
 
         inventory.setItem(0, itemHandler.getStackInSlot(0));
 
         Optional<FissionRecipe> recipe = level.getRecipeManager()
                 .getRecipeFor(FissionRecipe.Type.INSTANCE, inventory, level);
-        if(recipe.isPresent() && itemHandler.getStackInSlot(2).isEmpty()) {
 
+        if(recipe.isPresent() && itemHandler.getStackInSlot(2).isEmpty()) {
             ItemStack input = itemHandler.getStackInSlot(0).copy();
             input.setCount(1);
             itemHandler.extractItem(0, 1, false);
@@ -200,8 +310,16 @@ public class FissionControllerBE extends FissionBE {
         }
     }
 
+    public boolean recipeIsStuck() {
+        if(recipeInfo.isCompleted() || recipeInfo.recipe == null) {
+            handleRecipeOutput();
+            return !itemHandler.getStackInSlot(2).isEmpty();
+        }
+        return false;
+    }
+
     public boolean hasRecipe() {
-        return recipeInfo.recipe != null && !itemHandler.getStackInSlot(2).isEmpty();
+        return !recipeIsStuck() && recipeInfo.recipe != null;
     }
 
 
@@ -230,6 +348,10 @@ public class FissionControllerBE extends FissionBE {
         fuelCells.clear();
         heatSinks.clear();
         moderators.clear();
+        activeHeatSinks.clear();
+        activeModeratorsAttachmentsCount = 0;
+        activeModeratorsCount = 0;
+        heatSinkCooling = 0;
         for(int y = 1; y < getHeight()-1; y++) {
             for(int x = 1; x < getWidth()-1; x++) {
                 for (int z = 1; z < getDepth()-1; z++) {
@@ -242,9 +364,13 @@ public class FissionControllerBE extends FissionBE {
                         );
                     }
                     if(isFuelCell(toCheck)) {
-                        fuelCells.add(toCheck);
+                        BlockEntity be = getLevel().getBlockEntity(toCheck);
+                        if(be instanceof FissionFuelCellBE) {
+                            fuelCells.add(toCheck);
+                            activeModeratorsAttachmentsCount += ((FissionFuelCellBE) be).getAttachedModeratorsCount();
+                        }
                     }
-                    if(isModerator(toCheck)) {
+                    if(isModerator(toCheck, getLevel())) {
                         moderators.add(toCheck);
                     }
                     if(isHeatSink(toCheck)) {
@@ -254,17 +380,20 @@ public class FissionControllerBE extends FissionBE {
             }
         }
         fuelCellsCount = fuelCells.size();
+        updateEnergyStorage();
+        energyStorage.addEnergy(0);
+        activeModeratorsCount = moderators.size();
         if(fuelCellsCount == 0) {
             return new ValidationResult(false, "fission.interior.no_fuel_cells", BlockPos.ZERO);
         }
         return new ValidationResult(true);
     }
 
-    private boolean isModerator(BlockPos pos) {
+    public static boolean isModerator(BlockPos pos, Level world) {
         if(moderatorBlocks.isEmpty()) {
             moderatorBlocks = getBlocksByTagKey(FissionBlocks.MODERATORS_BLOCKS.location().toString());
         }
-        return  moderatorBlocks.contains(Objects.requireNonNull(getLevel()).getBlockState(pos).getBlock());
+        return  moderatorBlocks.contains(Objects.requireNonNull(world).getBlockState(pos).getBlock());
     }
 
     private boolean isHeatSink(BlockPos pos) {
@@ -283,6 +412,14 @@ public class FissionControllerBE extends FissionBE {
         for(int y = 0; y < getHeight(); y++) {
             for(int x = 0; x < getWidth(); x++) {
                 for (int z = 0; z < getDepth(); z++) {
+                    if(width < 3 || height < 3 || depth < 3)
+                    {
+                        return new ValidationResult(
+                                false,
+                                "fission.casing.reactor_incomplete",
+                                getBlockPos()
+                        );
+                    }
                     if(y == 0 || x == 0 || z == 0 || y == getHeight()-1 || x == getWidth()-1 || z == getDepth()-1) {
                         if (!isFissionCasing(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getFacing(), -z))) {
                             return new ValidationResult(
@@ -300,15 +437,19 @@ public class FissionControllerBE extends FissionBE {
 
     public boolean isFissionCasing(BlockPos pos)
     {
+        if(getLevel() == null) return false;
         if(casingBlocks.isEmpty()) {
             casingBlocks = getBlocksByTagKey(FissionBlocks.CASING_BLOCKS.location().toString());
         }
-       return  casingBlocks.contains(Objects.requireNonNull(getLevel()).getBlockState(pos).getBlock());
+        try {
+            return  casingBlocks.contains(getLevel().getBlockState(pos).getBlock());
+        } catch (NullPointerException ignored) { }
+        return false;
     }
 
     protected List<Block> casingBlocks = new ArrayList<>();
 
-    private List<Block> getBlocksByTagKey(String key)
+    private static List<Block> getBlocksByTagKey(String key)
     {
         List<Block> tmp = new ArrayList<>();
         TagKey<Block> tag = TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(key));
@@ -390,10 +531,10 @@ public class FissionControllerBE extends FissionBE {
 
     public BlockPos getSidePos(int i) {
         return switch (getFacing().ordinal()) {
-            case 0 -> getBlockPos().east(i);
-            case 1 -> getBlockPos().north(i);
+            case 3 -> getBlockPos().east(i);
+            case 5 -> getBlockPos().north(i);
             case 2 -> getBlockPos().west(i);
-            case 3 -> getBlockPos().south(i);
+            case 4 -> getBlockPos().south(i);
             default -> null;
         };
     }
@@ -519,10 +660,10 @@ public class FissionControllerBE extends FissionBE {
     }
 
     public double getEfficiency() {
-        return 0.5; //todo calculation
+        return (double)calculateEnergy()/(double)recipeInfo.energy/100;
     }
 
     public double getNetHeat() {
-        return recipeInfo.heat-10;//todo heatsinks calculation
+        return heatPerTick - heatSinkCooling;
     }
 }

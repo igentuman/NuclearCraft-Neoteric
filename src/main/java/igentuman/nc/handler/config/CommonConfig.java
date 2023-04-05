@@ -64,7 +64,7 @@ public class CommonConfig {
 
             DEPLETION_MULTIPLIER = builder
                     .comment("Depletion multiplier. Affects how long fuel lasts.")
-                    .defineInRange("depletion_multiplier", 10D, 0D, 100D);
+                    .defineInRange("depletion_multiplier", 100D, 0D, 1000D);
 
             HEAT = builder
                     .comment("Base Fuel Heat: " + String.join(", ",FuelManager.initialHeat().keySet()))

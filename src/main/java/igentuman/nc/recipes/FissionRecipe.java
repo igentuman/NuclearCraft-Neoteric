@@ -16,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 
 import static igentuman.nc.NuclearCraft.MODID;
 
-public class FissionRecipe implements Recipe<SimpleContainer>, INCRecipe {
+public class FissionRecipe extends NcRecipe {
 
     private final ResourceLocation id;
     private final Ingredient input;
@@ -86,11 +86,6 @@ public class FissionRecipe implements Recipe<SimpleContainer>, INCRecipe {
         data.put("input", getInputStack().serializeNBT());
         data.put("output", getOutput().serializeNBT());
         return data;
-    }
-
-    @Override
-    public INCRecipe deserialize(CompoundTag tag) {
-        return null;
     }
 
     @NotNull

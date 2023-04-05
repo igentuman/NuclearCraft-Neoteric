@@ -2,6 +2,8 @@ package igentuman.nc.recipes;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import static igentuman.nc.recipes.NcRecipe.getRecipeFromTag;
@@ -13,11 +15,11 @@ public class RecipeInfo implements INBTSerializable<Tag> {
     public double heat = 0;
     public double radiation = 0;
 
-    public void setRecipe(INCRecipe recipe) {
+    public void setRecipe(NcRecipe recipe) {
         this.recipe = recipe;
     }
 
-    public INCRecipe recipe;
+    public NcRecipe recipe;
 
     public boolean isCompleted() {
         return ticksProcessed >= ticks && ticks != 0;

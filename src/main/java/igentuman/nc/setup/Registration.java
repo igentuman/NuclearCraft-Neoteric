@@ -1,6 +1,7 @@
 package igentuman.nc.setup;
 
 import com.mojang.serialization.Codec;
+import igentuman.nc.phosphophyllite.MultiblockRegistry;
 import igentuman.nc.recipes.FissionRecipe;
 import igentuman.nc.setup.multiblocks.FissionReactor;
 import igentuman.nc.setup.registration.*;
@@ -72,6 +73,8 @@ public class Registration {
         RECIPE_TYPES.register(bus);
         SERIALIZERS.register(bus);
 
+
+        MultiblockRegistry.init();
         NCBlocks.init();
         NCItems.init();
         NCTools.init();

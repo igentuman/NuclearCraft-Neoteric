@@ -23,7 +23,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class FissionBlock extends ReactorBaseBlock {
+public class FissionBlock extends Block implements EntityBlock {
 
     public FissionBlock() {
         this(Properties.of(Material.METAL)
@@ -53,6 +53,11 @@ public class FissionBlock extends ReactorBaseBlock {
         return adjacentBlockState.getBlock().equals(this) && asItem().toString().matches(".*glass|.*cell.*");
     }
 
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(BlockStateProperties.HORIZONTAL_FACING);
+    }
+
     private String blockEntityCode()
     {
         if(asItem().toString().matches(".*reactor_glass|.*reactor_casing.*")) {
@@ -68,16 +73,6 @@ public class FissionBlock extends ReactorBaseBlock {
     @Override
     public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
         return FissionReactor.MULTIBLOCK_BE.get(blockEntityCode()).get().create(pPos, pState);
-    }
-
-    @Override
-    public boolean isGoodForInterior() {
-        return false;
-    }
-
-    @Override
-    public boolean isGoodForExterior() {
-        return false;
     }
 
     @javax.annotation.Nullable
@@ -96,4 +91,5 @@ public class FissionBlock extends ReactorBaseBlock {
             }
         };
     }
+
 }

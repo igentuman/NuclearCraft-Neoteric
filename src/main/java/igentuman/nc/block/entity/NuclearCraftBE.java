@@ -1,6 +1,6 @@
 package igentuman.nc.block.entity;
 
-import igentuman.nc.util.annotation.NBTField;
+import igentuman.nc.util.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;

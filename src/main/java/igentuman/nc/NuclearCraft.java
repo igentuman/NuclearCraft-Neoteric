@@ -4,21 +4,13 @@ import igentuman.nc.handler.command.CommandNcPlayerRadiation;
 import igentuman.nc.handler.config.CommonConfig;
 import igentuman.nc.handler.event.client.ColorHandler;
 import igentuman.nc.handler.event.client.InputEvents;
-import igentuman.nc.phosphophyllite.multiblock.MultiblockController;
-import igentuman.nc.phosphophyllite.threading.Queues;
-import igentuman.nc.phosphophyllite.util.Util;
 import igentuman.nc.setup.ClientSetup;
 import igentuman.nc.setup.ModSetup;
 import igentuman.nc.setup.Registration;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.level.LevelEvent;
-import net.minecraftforge.event.server.ServerStoppedEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
@@ -28,21 +20,15 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.RegisterEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.ArrayList;
-import java.util.HashMap;
-
-@MethodsReturnNonnullByDefault
-@ParametersAreNonnullByDefault
 @Mod(NuclearCraft.MODID)
 public class NuclearCraft {
 
     public static final Logger LOGGER = LogManager.getLogger();
     public static final String MODID = "nuclearcraft";
-    private static long tick = 0;
 
     public NuclearCraft() {
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, CommonConfig.spec);
@@ -73,74 +59,5 @@ public class NuclearCraft {
     public static ResourceLocation rl(String path)
     {
         return new ResourceLocation(MODID, path);
-    }
-
-    public static long tickNumber() {
-        return tick;
-    }
-
-    private static final HashMap<ServerLevel, ArrayList<MultiblockController<?, ?>>> controllersToTick = new HashMap<>();
-    private static final ArrayList<MultiblockController<?, ?>> newControllers = new ArrayList<>();
-    private static final ArrayList<MultiblockController<?, ?>> oldControllers = new ArrayList<>();
-
-    public static void addController(MultiblockController<?, ?> controller) {
-        newControllers.add(controller);
-    }
-
-    public static void removeController(MultiblockController<?, ?> controller) {
-        oldControllers.add(controller);
-    }
-
-    @SubscribeEvent
-    void onWorldUnload(final LevelEvent.Unload worldUnloadEvent) {
-        if (!worldUnloadEvent.getLevel().isClientSide()) {
-            //noinspection SuspiciousMethodCalls
-            ArrayList<MultiblockController<?, ?>> controllersToTick = NuclearCraft.controllersToTick.remove(worldUnloadEvent.getLevel());
-            if (controllersToTick != null) {
-                for (MultiblockController<?, ?> multiblockController : controllersToTick) {
-                    multiblockController.suicide();
-                }
-            }
-            // apparently, stragglers can exist
-            newControllers.removeIf(multiblockController -> multiblockController.getWorld() == worldUnloadEvent.getLevel());
-            oldControllers.removeIf(multiblockController -> multiblockController.getWorld() == worldUnloadEvent.getLevel());
-        }
-    }
-
-    @SubscribeEvent
-    void onServerStop(final ServerStoppedEvent serverStoppedEvent) {
-        controllersToTick.clear();
-        newControllers.clear();
-        oldControllers.clear();
-    }
-    
-    @SubscribeEvent
-    public void advanceTick(TickEvent.ServerTickEvent e) {
-        if (!e.side.isServer()) {
-            return;
-        }
-        if (e.phase != TickEvent.Phase.END) {
-            return;
-        }
-        tick++;
-        // prevents deadlock
-        final boolean[] run = {true};
-        Queues.serverThread.enqueue(() -> run[0] = false);
-        while (run[0]) {
-            Queues.serverThread.runOne();
-        }
-
-        for (MultiblockController<?, ?> newController : newControllers) {
-            controllersToTick.computeIfAbsent((ServerLevel) newController.getWorld(), k -> new ArrayList<>()).add(newController);
-        }
-        newControllers.clear();
-        for (MultiblockController<?, ?> oldController : oldControllers) {
-            //noinspection SuspiciousMethodCalls
-            ArrayList<MultiblockController<?, ?>> controllers = controllersToTick.get(oldController.getWorld());
-            controllers.remove(oldController);
-        }
-        oldControllers.clear();
-
-        Util.serverTick();
     }
 }

@@ -6,7 +6,7 @@ import igentuman.nc.recipes.RecipeInfo;
 import igentuman.nc.setup.multiblocks.FissionBlocks;
 import igentuman.nc.setup.registration.NCFluids;
 import igentuman.nc.util.CustomEnergyStorage;
-import igentuman.nc.util.annotation.NBTField;
+import igentuman.nc.util.NBTField;
 import igentuman.nc.util.ValidationResult;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -30,6 +30,7 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;

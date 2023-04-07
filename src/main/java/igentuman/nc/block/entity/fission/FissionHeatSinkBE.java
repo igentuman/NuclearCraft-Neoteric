@@ -1,11 +1,9 @@
 package igentuman.nc.block.entity.fission;
 
 import igentuman.nc.setup.multiblocks.FissionBlocks;
-import igentuman.nc.setup.multiblocks.FissionReactor;
 import igentuman.nc.setup.multiblocks.HeatSinkDef;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -23,7 +21,7 @@ public class FissionHeatSinkBE extends FissionBE {
     public boolean isValid(boolean forceCheck)
     {
         if(def == null) {
-            def = FissionBlocks.heatsinks().get(getBlockState().getBlock().asItem().toString().replace("_heat_sink", ""));
+            setHeatSinkDef(FissionBlocks.heatsinks().get(getBlockState().getBlock().asItem().toString().replace("_heat_sink", "")));
         }
         if(forceCheck) {
             isValid = def.getValidator().isValid(this);
@@ -31,35 +29,24 @@ public class FissionHeatSinkBE extends FissionBE {
        return isValid() && isAttachedToFuelCell();
     }
 
-
-
     private boolean isValid() {
         return isValid;
     }
 
-    public void tickClient() {
-    }
-
+    @Override
     public void tickServer() {
-        if(attachedToFuelCell) {
-            for (Direction dir : Direction.values()) {
-                BlockEntity be = getLevel().getBlockEntity(getBlockPos().relative(dir));
-                if (be instanceof FissionBE) {
-                    ((FissionBE) be).attachedToFuelCell = true;
+        if(multiblock() != null) {
+            if (attachedToFuelCell || refreshCacheFlag) {
+                for (Direction dir : Direction.values()) {
+                    BlockEntity be = getLevel().getBlockEntity(getBlockPos().relative(dir));
+                    if (be instanceof FissionBE) {
+                        ((FissionBE) be).attachedToFuelCell = true;
+                    }
                 }
+                isValid(true);
+                refreshCacheFlag = false;
             }
         }
-        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
-    }
-
-    @Override
-    public String getName() {
-        return NAME;
-    }
-
-    @Override
-    public void setRemoved() {
-        super.setRemoved();
     }
 
     public void setHeatSinkDef(HeatSinkDef def) {

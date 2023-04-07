@@ -17,9 +17,12 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.block.AirBlock;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
@@ -71,6 +74,14 @@ public class NCFluids {
         acids();
         liquidGases();
         liquids();
+    }
+
+    public static BlockState getBlock(String name)
+    {
+        if(NC_MATERIALS.containsKey(name)) {
+            return NC_MATERIALS.get(name).getBlock().defaultBlockState();
+        }
+        return Blocks.AIR.defaultBlockState();
     }
 
     private static void liquids() {

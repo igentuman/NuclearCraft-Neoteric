@@ -17,82 +17,134 @@ public class NuclearCraftBE extends BlockEntity {
     public NuclearCraftBE(BlockEntityType<?> pType, BlockPos pPos, BlockState pBlockState) {
         super(pType, pPos, pBlockState);
     }
+    private boolean initFlag = false;
+    private List<Field> booleanFields = new ArrayList<>();
+    private List<Field> intFields = new ArrayList<>();
+    private List<Field> intArrayFields = new ArrayList<>();
+    private List<Field> doubleFields = new ArrayList<>();
+    private List<Field> stringFields = new ArrayList<>();
+    private List<Field> stringArrayFields = new ArrayList<>();
+    private List<Field> floatFields = new ArrayList<>();
+    private List<Field> byteFields = new ArrayList<>();
+    private List<Field> longFields = new ArrayList<>();
 
-    public void saveTagData(CompoundTag tag)
-    {
-        List<Field> networkedFields = getNetworkedFields();
-        for (Field field : networkedFields) {
-            String fieldName = field.getName();
-            Object fieldValue = null;
-            try {
-                fieldValue = field.get(this);
-            } catch (IllegalAccessException ignore) { }
-            if (field.getType() == int.class) {
-                tag.putInt(fieldName, (int) fieldValue);
-            } else if (field.getType() == double.class) {
-                tag.putDouble(fieldName, (double) fieldValue);
-            } else if (field.getType() == boolean.class) {
-                tag.putBoolean(fieldName, (boolean) fieldValue);
-            }  else if (field.getType() == String.class) {
-                tag.putString(fieldName, (String) fieldValue);
-            } else if (field.getType() == byte.class) {
-                tag.putByte(fieldName, (byte) fieldValue);
-            } else if (field.getType() == int[].class) {
-                tag.putIntArray(fieldName, (int[]) fieldValue);
-            } else if (field.getType() == String[].class) {
-                String[] stringArray = (String[]) fieldValue;
+    public void saveTagData(CompoundTag tag) {
+        initFields();
+        try {
+            for (Field f : booleanFields) {
+                tag.putBoolean(f.getName(), f.getBoolean(this));
+            }
+            for (Field f : intFields) {
+                tag.putInt(f.getName(), f.getInt(this));
+            }
+            for (Field f : stringFields) {
+                tag.putString(f.getName(), (String) f.get(this));
+            }
+            for (Field f : doubleFields) {
+                tag.putDouble(f.getName(), f.getDouble(this));
+            }
+            for (Field f : floatFields) {
+                tag.putFloat(f.getName(), f.getFloat(this));
+            }
+            for (Field f : byteFields) {
+                tag.putByte(f.getName(), f.getByte(this));
+            }
+            for (Field f : longFields) {
+                tag.putLong(f.getName(), f.getLong(this));
+            }
+            for (Field f : intArrayFields) {
+                tag.putIntArray(f.getName(), (int[]) f.get(this));
+            }
+            for (Field f : stringArrayFields) {
+                String[] stringArray = (String[]) f.get(this);
                 ListTag tagList = new ListTag();
                 for (String string : stringArray) {
                     tagList.add(StringTag.valueOf(string));
                 }
-                tag.put(fieldName, tagList);
+                tag.put(f.getName(), tagList);
             }
-        }
+        } catch (IllegalAccessException ignore) { }
     }
 
-    public void readTagData(CompoundTag tag)
-    {
-        List<Field> networkedFields = getNetworkedFields();
-        for (Field field : networkedFields) {
-            String fieldName = field.getName();
-            try {
-                if (field.getType() == int.class) {
-                    int fieldValue = tag.getInt(fieldName);
-                    field.set(this, fieldValue);
-                } else if (field.getType() == double.class) {
-                    double fieldValue = tag.getDouble(fieldName);
-                    field.set(this, fieldValue);
-                } else if (field.getType() == boolean.class) {
-                    boolean fieldValue = tag.getBoolean(fieldName);
-                    field.set(this, fieldValue);
-                } else if (field.getType() == String.class) {
-                    String fieldValue = tag.getString(fieldName);
-                    field.set(this, fieldValue);
-                } else if (field.getType() == byte.class) {
-                    byte fieldValue = tag.getByte(fieldName);
-                    field.set(this, fieldValue);
-                } else if (field.getType() == int[].class) {
-                    int[] fieldValue = tag.getIntArray(fieldName);
-                    field.set(this, fieldValue);
-                } else if (field.getType() == String[].class) {
-                    ListTag tagList = tag.getList(fieldName, 8);
-                    String[] stringArray = new String[tagList.size()];
-                    for (int i = 0; i < tagList.size(); i++) {
-                        stringArray[i] = tagList.getString(i);
-                    }
-                    field.set(this, stringArray);
+    public void readTagData(CompoundTag tag) {
+        initFields();
+        try {
+            for(Field f: booleanFields) {
+                f.setBoolean(this, tag.getBoolean(f.getName()));
+            }
+            for(Field f: intFields) {
+                f.setInt(this, tag.getInt(f.getName()));
+            }
+            for(Field f: stringFields) {
+                f.set(this, tag.getString(f.getName()));
+            }
+            for(Field f: doubleFields) {
+                f.setDouble(this, tag.getDouble(f.getName()));
+            }
+            for(Field f: floatFields) {
+                f.setFloat(this, tag.getFloat(f.getName()));
+            }
+            for(Field f: byteFields) {
+                f.setByte(this, tag.getByte(f.getName()));
+            }
+            for(Field f: longFields) {
+                f.setLong(this, tag.getLong(f.getName()));
+            }
+            for(Field f: intArrayFields) {
+                f.set(this, tag.getIntArray(f.getName()));
+            }
+            for(Field f: intArrayFields) {
+                ListTag tagList = tag.getList(f.getName(), 8);
+                String[] stringArray = new String[tagList.size()];
+                for (int i = 0; i < tagList.size(); i++) {
+                    stringArray[i] = tagList.getString(i);
                 }
-            } catch (IllegalAccessException ignore) { }
-        }
+                f.set(this, stringArray);
+            }
+        } catch (IllegalAccessException ignore) { }
     }
 
-    private List<Field> getNetworkedFields() {
-        List<Field> networkedFields = new ArrayList<>();
+    private void initFields() {
+        if(initFlag) return;
         for (Field field : getClass().getDeclaredFields()) {
             if (field.isAnnotationPresent(NBTField.class)) {
-                networkedFields.add(field);
+                if(field.getType().equals(int.class)) {
+                    intFields.add(field);
+                    continue;
+                }
+                if(field.getType().equals(String.class)) {
+                    stringFields.add(field);
+                    continue;
+                }
+                if(field.getType().equals(boolean.class)) {
+                    booleanFields.add(field);
+                    continue;
+                }
+                if(field.getType().equals(byte.class)) {
+                    byteFields.add(field);
+                    continue;
+                }
+                if(field.getType().equals(double.class)) {
+                    doubleFields.add(field);
+                    continue;
+                }
+                if(field.getType().equals(float.class)) {
+                    floatFields.add(field);
+                    continue;
+                }
+                if(field.getType().equals(long.class)) {
+                    longFields.add(field);
+                    continue;
+                }
+                if(field.getType().equals(int[].class)) {
+                    intArrayFields.add(field);
+                    continue;
+                }
+                if(field.getType().equals(String[].class)) {
+                    stringArrayFields.add(field);
+                }
             }
         }
-        return networkedFields;
+        initFlag = true;
     }
 }

@@ -10,6 +10,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
@@ -26,6 +29,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Material;
+import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -87,6 +91,9 @@ public class HeatSinkBlock extends Block implements EntityBlock {
                         case "<":
                             lines.add(Component.translatable("heat_sink.less_than", condition[1], blocksLine).getString());
                             break;
+                        case "^":
+                            lines.add(Component.translatable("heat_sink.in_corner", condition[1], blocksLine).getString());
+                            break;
                     }
                     i++;
                 }
@@ -104,7 +111,7 @@ public class HeatSinkBlock extends Block implements EntityBlock {
     private List<String> getBlockNames(String rawLine) {
 
         List<String> names = new ArrayList<>();
-        String[] conditionParts = rawLine.split("=|-|>|<");
+        String[] conditionParts = rawLine.split("=|-|>|<\\^");
         String[] blocks = conditionParts[0].split("\\|");
 
         for(String code: blocks) {
@@ -144,6 +151,22 @@ public class HeatSinkBlock extends Block implements EntityBlock {
         BlockEntity be = FissionReactor.MULTIBLOCK_BE.get("fission_heat_sink").get().create(pPos, pState);
         ((FissionHeatSinkBE)be).setHeatSinkDef(def);
         return be;
+    }
+
+    @Override
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
+        if(!player.getItemInHand(hand).isEmpty()) return InteractionResult.FAIL;
+        if (!level.isClientSide()) {
+            BlockEntity be = level.getBlockEntity(pos);
+            if(be instanceof FissionHeatSinkBE) {
+                if(((FissionHeatSinkBE) be).isValid(true)) {
+                    player.sendSystemMessage(Component.translatable("message.heat_sink.valid"));
+                } else {
+                    player.sendSystemMessage(Component.translatable("message.heat_sink.invalid"));
+                }
+            }
+        }
+        return InteractionResult.SUCCESS;
     }
 
     @javax.annotation.Nullable

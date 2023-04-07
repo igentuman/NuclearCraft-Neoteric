@@ -31,6 +31,14 @@ public class NCBlockTags extends BlockTagsProvider {
                 FissionReactor.MULTI_BLOCKS.get("fission_reactor_glass").get(),
                 FissionReactor.MULTI_BLOCKS.get("fission_reactor_port").get()
                 );
+        tag(FissionBlocks.HEAT_SINK_BLOCKS).add(FissionReactor.getHSBlocks());
+        tag(FissionBlocks.INNER_REACTOR_BLOCKS)
+                .add(FissionReactor.getHSBlocks())
+                .add(
+                        NCBlocks.NC_BLOCKS.get("graphite").get(),
+                        NCBlocks.NC_BLOCKS.get("beryllium").get(),
+                        FissionReactor.MULTI_BLOCKS.get("fission_reactor_solid_fuel_cell").get()
+                );
     }
 
     private void ores() {

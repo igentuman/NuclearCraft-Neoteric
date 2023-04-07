@@ -53,6 +53,9 @@ public class NCLanguageProvider extends LanguageProvider {
         add("fission_reactor.net_heat", "Net Heat: %s H/t");
         add("fission.casing.reactor_incomplete", "Reactor Incomplete");
         add("fission_reactor.heat_multiplier", "Heat Multiplier: %sx");
+        add("message.heat_sink.valid", "This one is looking good");
+        add("message.heat_sink.invalid", "Not sure if it's valid");
+
     }
 
     private void multiblocks() {
@@ -117,19 +120,16 @@ public class NCLanguageProvider extends LanguageProvider {
         add("heat_sink.exact", "next to exact %s %s");
         add("heat_sink.exacts", "next to exact %s %s blocks");
         add("heat_sink.less_than", "next to less than %s %s blocks");
+        add("heat_sink.in_corner", "in corner of %s %s blocks");
         add("heat_sink.or", "or");
         add("heat_sink.and", "and");
         add("heat_sink.placement.error", "Error during placement rule generation");
+        add("reactor.interior.incomplete", "Interior Incomplete");
+        add("reactor.casing.incomplete", "Reactor Casing Incomplete");
         add("energy.bar.amount", "Total FE: %s / %s");
         add("coolant.bar.amount", "Coolant: %s / %s mB");
         add("hot_coolant.bar.amount", "Heated Coolant: %s / %s mB");
         add("heat.bar.amount", "Total Heat: %s / %s K");
-        add("reactor.interior.incomplete", "Reactor Interior Incomplete");
-        add("reactor.interior.complete", "Reactor Interior Complete");
-        add("reactor.casing.complete", "Reactor Casing Complete");
-        add("reactor.casing.incomplete", "Reactor Casing Incomplete");
-        add("reactor.casing.to_many_controllers", "Reactor Has To Many Controllers");
-        add("reactor.casing.no_ports", "Reactor Has No Ports");
         add("tooltip.machine.progress", "Progress: %s%%");
         add("reactor.fuel_cells", "Fuel Cells: %s");
         add("fission.interior.no_fuel_cells", "No Fuel Cells Found");
@@ -141,8 +141,17 @@ public class NCLanguageProvider extends LanguageProvider {
         add("reactor.forge_energy_per_tick", "FE Gen: %s FE/t");
         add("reactor.heat_sinks_count", "Active Heat Sinks: %s");
         add("reactor.moderators_count", "Active Moderators: %s");
-
-
+        add("validation.structure.too_big", "Structure is too big");
+        add("validation.structure.too_small", "Structure is too small");
+        add("validation.structure.incomplete", "Incomplete");
+        add("validation.structure.wrong_outer", "Wrong Casing at: %s");
+        add("validation.structure.wrong_inner", "Wrong Block at: %s");
+        add("validation.structure.too_many_controllers", "Too many controllers");
+        add("validation.structure.no_controller", "No controllers");
+        add("validation.structure.no_port", "No port found");
+        add("validation.structure.valid", "Structure is Valid");
+        add("solar_panel.fe_generation", "Daytime Gen: %s FE/t");
+        add("fission_port.descr", "Used to transfer items/fluids/energy, for redstone control/output and computers.");
     }
 
     private void fuel() {

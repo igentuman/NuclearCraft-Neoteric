@@ -60,7 +60,7 @@ public class RecipeInfo implements INBTSerializable<Tag> {
     }
 
     public void process(double multiplier) {
-        ticksProcessed+=1*multiplier;
+        ticksProcessed+=1*Math.abs(multiplier);
         ticksProcessed = Math.min(ticks, ticksProcessed);
     }
 

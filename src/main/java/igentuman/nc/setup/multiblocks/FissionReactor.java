@@ -105,7 +105,7 @@ public class FissionReactor {
     private static List<RegistryObject<Block>> hsBlocks = new ArrayList<>();
 
 
-    private static Block[] getHSBlocks() {
+    public static Block[] getHSBlocks() {
         Block[] blocks = new Block[hsBlocks.size()];
         int i = 0;
         for (RegistryObject<Block> b: hsBlocks) {

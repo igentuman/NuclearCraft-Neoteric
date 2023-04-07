@@ -1,5 +1,6 @@
 package igentuman.nc.block.fission;
 
+import igentuman.nc.block.entity.fission.FissionBE;
 import igentuman.nc.block.entity.fission.FissionCasingBE;
 import igentuman.nc.setup.multiblocks.FissionReactor;
 import net.minecraft.core.BlockPos;
@@ -7,6 +8,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.SoundType;
@@ -80,16 +82,21 @@ public class FissionBlock extends Block implements EntityBlock {
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         if (level.isClientSide()) {
             return (lvl, pos, blockState, t) -> {
-                if (t instanceof FissionCasingBE tile) {
+                if (t instanceof FissionBE tile) {
                     tile.tickClient();
                 }
             };
         }
         return (lvl, pos, blockState, t)-> {
-            if (t instanceof FissionCasingBE tile) {
+            if (t instanceof FissionBE tile) {
                 tile.tickServer();
             }
         };
     }
+
+    public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor){
+        ((FissionBE)level.getBlockEntity(pos)).invalidateCache();
+    }
+
 
 }

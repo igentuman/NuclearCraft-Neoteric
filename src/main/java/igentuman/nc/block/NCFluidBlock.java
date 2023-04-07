@@ -17,14 +17,16 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.StateHolder;
 import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
+import net.minecraftforge.fluids.capability.wrappers.FluidBlockWrapper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class NCFluidBlock extends LiquidBlock
 {
-	private static NCFluids.FluidEntry entryStatic;
+    private static NCFluids.FluidEntry entryStatic;
 	private final NCFluids.FluidEntry entry;
 	@Nullable
 	private MobEffect effect;

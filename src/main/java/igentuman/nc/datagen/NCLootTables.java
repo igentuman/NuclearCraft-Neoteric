@@ -1,9 +1,9 @@
 package igentuman.nc.datagen;
 
-import igentuman.nc.block.entity.energy.NCEnergy;
 import igentuman.nc.setup.multiblocks.FissionReactor;
 import igentuman.nc.setup.registration.NCBlocks;
 import igentuman.nc.setup.registration.NCEnergyBlocks;
+import igentuman.nc.setup.registration.NCItems;
 import igentuman.nc.setup.registration.NCProcessors;
 import net.minecraft.data.DataGenerator;
 
@@ -22,7 +22,11 @@ public class NCLootTables extends BaseLootTableProvider {
 
     private void ores() {
         for(String ore: NCBlocks.ORE_BLOCKS.keySet()) {
-            lootTables.put(NCBlocks.ORE_BLOCKS.get(ore).get(), createSimpleTable("ore", NCBlocks.ORE_BLOCKS.get(ore).get()));
+            if(NCItems.NC_CHUNKS.containsKey(ore)) {
+                lootTables.put(NCBlocks.ORE_BLOCKS.get(ore).get(), createSilkTouchTable("ore", NCBlocks.ORE_BLOCKS.get(ore).get(), NCItems.NC_CHUNKS.get(ore).get(), 1, 1));
+            } else {
+                lootTables.put(NCBlocks.ORE_BLOCKS.get(ore).get(), createSimpleTable("ore", NCBlocks.ORE_BLOCKS.get(ore).get()));
+            }
         }
     }
     private void blocks() {

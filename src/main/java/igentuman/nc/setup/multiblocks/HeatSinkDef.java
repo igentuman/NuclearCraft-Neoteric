@@ -21,6 +21,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.handler.config.CommonConfig.HeatSinkConfig.PLACEMENT_RULES;
 
 public class HeatSinkDef {
     public double heat = 0;
@@ -29,6 +30,8 @@ public class HeatSinkDef {
 
     public Validator getValidator() {
         if(validator == null) {
+            rules = PLACEMENT_RULES.get(name).get()
+                    .toArray(new String[PLACEMENT_RULES.get(name).get().size()]);
             initCondition(rules);
         }
         return validator;
@@ -55,7 +58,7 @@ public class HeatSinkDef {
             try {
                 cnt = Math.max(Integer.parseInt(rule.substring(rule.length()-1)), 1);
             } catch (NumberFormatException ignore) {  }
-            String[] conditionParts = rule.split("=|-|>|<");
+            String[] conditionParts = rule.split("=|-|>|<|\\^");
             String[] blocks = conditionParts[0].split("\\|");
             List<String> actualBlocks = collectBlocks(blocks);
             conditions.put(new String[] {getConditionFunc(rule), String.valueOf(cnt), rule}, actualBlocks);
@@ -65,7 +68,7 @@ public class HeatSinkDef {
     }
 
     private String getConditionFunc(String rule) {
-        Pattern func = Pattern.compile("=|-|>|<");
+        Pattern func = Pattern.compile("=|-|>|<|\\^");
         Matcher matcher = func.matcher(rule);
         List<String> matches = new ArrayList<>();
         String funcType = ">";
@@ -102,9 +105,12 @@ public class HeatSinkDef {
     private List<String> collectBlocks(String[] blocks) {
         List<String> tmp = new ArrayList<>();
         for(String block: blocks) {
-            if(block.contains(":")) {
-                tmp.addAll(getItemsByTagKey(block));
+            if(block.contains("#")) {
+                tmp.addAll(getItemsByTagKey(block.replace("#","")));
             } else {
+                if(!block.contains(":")) {
+                    block = MODID+":"+block;
+                }
                 tmp.add(block);
             }
         }
@@ -157,12 +163,36 @@ public class HeatSinkDef {
                     case "=":
                         result = isExact(Integer.parseInt(condition[1]), blocks().get(condition));
                         break;
+                    case "^":
+                        result = inCorner(Integer.parseInt(condition[1]), blocks().get(condition));
+                        break;
                 }
                 if(!result) {
                     return false;
                 }
             }
             return result ;
+        }
+
+        private boolean inCorner(int qty, List<Block> blocks) {
+
+            int initial = blocks.contains(Objects.requireNonNull(be.getLevel()).getBlockState(be.getBlockPos().above(1)).getBlock()) ? 1 : 0;
+            initial = blocks.contains(Objects.requireNonNull(be.getLevel()).getBlockState(be.getBlockPos().below(1)).getBlock()) ? 1 : initial;
+            int counter = 0;
+            int i = 0;
+            for (Direction dir: Direction.values()) {
+                if(dir.getAxis().isVertical()) continue;
+                i++;
+                if(blocks.contains(Objects.requireNonNull(be.getLevel()).getBlockState(be.getBlockPos().relative(dir)).getBlock())) {
+                    counter++;
+                    if(counter+initial >= qty) return true;
+                }
+                if(i == 2) {
+                    i = 0;
+                    counter = 0;
+                }
+            }
+            return counter+initial >= qty;
         }
 
         private boolean isExact(int s, List<Block> blocks) {
@@ -221,11 +251,13 @@ public class HeatSinkDef {
                 for (String[] condition: blockLines().keySet()) {
                     List<Block> tmp = new ArrayList<>();
                     for(String bStr: blockLines().get(condition)) {
-                        if(!bStr.contains(":")) {
-                            bStr = MODID+":"+bStr;
-                            tmp.add(Registry.BLOCK.get(new ResourceLocation(bStr)));
-                        } else {
+                        if(bStr.contains("#")) {
                             tmp.addAll(getBlocksByTagKey(bStr));
+                        } else {
+                            if (!bStr.contains(":")) {
+                                bStr = MODID + ":" + bStr;
+                            }
+                            tmp.add(Registry.BLOCK.get(new ResourceLocation(bStr)));
                         }
                     }
                     blocks.put(condition, tmp);

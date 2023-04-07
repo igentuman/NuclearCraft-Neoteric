@@ -1,13 +1,21 @@
 package igentuman.nc.block.fission;
 
 import igentuman.nc.block.entity.fission.FissionBE;
+import igentuman.nc.block.entity.fission.FissionPortBE;
+import igentuman.nc.setup.energy.SolarPanels;
 import igentuman.nc.setup.multiblocks.FissionReactor;
+import igentuman.nc.util.TextUtils;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
@@ -23,6 +31,8 @@ import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 
 public class FissionPort extends HorizontalDirectionalBlock implements EntityBlock {
@@ -71,16 +81,21 @@ public class FissionPort extends HorizontalDirectionalBlock implements EntityBlo
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         if (level.isClientSide()) {
             return (lvl, pos, blockState, t) -> {
-                if (t instanceof FissionBE tile) {
+                if (t instanceof FissionPortBE tile) {
                     tile.tickClient();
                 }
             };
         }
         return (lvl, pos, blockState, t)-> {
-            if (t instanceof FissionBE tile) {
+            if (t instanceof FissionPortBE tile) {
                 tile.tickServer();
             }
         };
+    }
+
+    public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag)
+    {
+        list.add(TextUtils.applyFormat(Component.translatable("fission_port.descr"), ChatFormatting.GOLD));
     }
 
 }

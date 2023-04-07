@@ -13,7 +13,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
@@ -129,7 +128,7 @@ public class FissionControllerContainer extends AbstractContainerMenu {
     }
 
     public BlockPos getValidationResultData() {
-        return  blockEntity.validationResult.errorBlock;
+        return  blockEntity.errorBlockPos;
     }
 
     public String getValidationResultKey() {
@@ -140,7 +139,7 @@ public class FissionControllerContainer extends AbstractContainerMenu {
         return blockEntity.energyStorage.getEnergyStored();
     }
 
-    public int getHeat() {
+    public double getHeat() {
         return blockEntity.heat;
     }
 

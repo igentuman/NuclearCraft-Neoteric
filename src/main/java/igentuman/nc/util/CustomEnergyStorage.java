@@ -34,6 +34,8 @@ public class CustomEnergyStorage extends EnergyStorage {
 
     public void setEnergy(int energy) {
         this.energy = energy;
+        this.energy = Math.max(this.energy, 0);
+        this.energy = Math.min(this.energy, getMaxEnergyStored());
         onEnergyChanged();
     }
 
@@ -42,7 +44,8 @@ public class CustomEnergyStorage extends EnergyStorage {
         if (this.energy > getMaxEnergyStored()) {
             this.energy = getEnergyStored();
         }
-        setEnergy(Math.min(getEnergyStored(), getMaxEnergyStored()));
+        this.energy = Math.max(this.energy, 0);
+        this.energy = Math.min(this.energy, getMaxEnergyStored());
         onEnergyChanged();
     }
 

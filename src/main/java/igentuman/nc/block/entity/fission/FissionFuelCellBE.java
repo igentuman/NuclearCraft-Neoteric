@@ -8,16 +8,13 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.Objects;
 
-import static igentuman.nc.block.entity.fission.FissionControllerBE.isModerator;
+import static igentuman.nc.multiblock.fission.FissionReactorMultiblock.isModerator;
 
 public class FissionFuelCellBE extends FissionBE {
     public static String NAME = "fission_reactor_fuel_cell";
 
     public FissionFuelCellBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, NAME);
-    }
-
-    public void tickClient() {
     }
 
     public int attachedModerators = 0;
@@ -31,28 +28,23 @@ public class FissionFuelCellBE extends FissionBE {
             }
         }
     }
+    @Override
     public void tickServer() {
-        setAttachedToFuelCell(getBlockPos());
-        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
-    }
-
-    @Override
-    public String getName() {
-        return NAME;
-    }
-
-    @Override
-    public void setRemoved() {
-        super.setRemoved();
+        if(refreshCacheFlag || validationRuns < 2) {
+            validationRuns++;
+            getAttachedModeratorsCount();
+            if(validationRuns > 1) refreshCacheFlag = false;
+        }
     }
 
     public int getAttachedModeratorsCount() {
-        attachedModerators = 0; //todo add caching and invalidation
-        for (Direction dir : Direction.values()) {
-            if (isModerator(getBlockPos().relative(dir), getLevel())) {
-                attachedModerators++;
-                setAttachedToFuelCell(getBlockPos().relative(dir));//moderators doesn't have BE's, so we tell all blocks around moderators what they are attached
-
+        if(refreshCacheFlag) {
+            attachedModerators = 0;
+            for (Direction dir : Direction.values()) {
+                if (isModerator(getBlockPos().relative(dir), getLevel())) {
+                    attachedModerators++;
+                    setAttachedToFuelCell(getBlockPos().relative(dir));
+                }
             }
         }
         return attachedModerators;

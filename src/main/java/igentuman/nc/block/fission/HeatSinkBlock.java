@@ -159,10 +159,11 @@ public class HeatSinkBlock extends Block implements EntityBlock {
         if (!level.isClientSide()) {
             BlockEntity be = level.getBlockEntity(pos);
             if(be instanceof FissionHeatSinkBE) {
+                int id = level.random.nextInt(10);
                 if(((FissionHeatSinkBE) be).isValid(true)) {
-                    player.sendSystemMessage(Component.translatable("message.heat_sink.valid"));
+                    player.sendSystemMessage(Component.translatable("message.heat_sink.valid"+id));
                 } else {
-                    player.sendSystemMessage(Component.translatable("message.heat_sink.invalid"));
+                    player.sendSystemMessage(Component.translatable("message.heat_sink.invalid"+id));
                 }
             }
         }

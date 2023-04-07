@@ -59,4 +59,10 @@ public class FissionBE extends NuclearCraftBE {
         }
         return attachedToFuelCell;
     }
+
+    public void onNeighborChange(BlockState state, BlockPos pos, BlockPos neighbor) {
+        if(multiblock() != null) {
+            multiblock().onNeighborChange(state, pos, neighbor);
+        }
+    }
 }

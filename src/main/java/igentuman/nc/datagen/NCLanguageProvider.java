@@ -53,9 +53,28 @@ public class NCLanguageProvider extends LanguageProvider {
         add("fission_reactor.net_heat", "Net Heat: %s H/t");
         add("fission.casing.reactor_incomplete", "Reactor Incomplete");
         add("fission_reactor.heat_multiplier", "Heat Multiplier: %sx");
-        add("message.heat_sink.valid", "This one is looking good");
-        add("message.heat_sink.invalid", "Not sure if it's valid");
 
+        add("message.heat_sink.valid0", "This one is looking good");
+        add("message.heat_sink.valid1", "I like this one");
+        add("message.heat_sink.valid2", "This heat sink design shows promise");
+        add("message.heat_sink.valid3", "The heat dissipation capability looks good");
+        add("message.heat_sink.valid4", "The thermal conductivity appears to be efficient");
+        add("message.heat_sink.valid5", "Attention to detail is evident in this design");
+        add("message.heat_sink.valid6", "This heat sink design seems promising for our project");
+        add("message.heat_sink.valid7", "Attention to detail is impressive");
+        add("message.heat_sink.valid8", "This is a perfect fit for our application");
+        add("message.heat_sink.valid9", "This meets our standards very well");
+
+        add("message.heat_sink.invalid0", "Not sure if it's valid");
+        add("message.heat_sink.invalid1", "Maybe you should check it again");
+        add("message.heat_sink.invalid2", "Hm...");
+        add("message.heat_sink.invalid3", "Will it explode? -Shouldn't");
+        add("message.heat_sink.invalid4", "This doesn't seem to meet our standards.");
+        add("message.heat_sink.invalid5", "There are some concerns about the validity of this.");
+        add("message.heat_sink.invalid6", "I have some reservations about this.");
+        add("message.heat_sink.invalid7", "This may not be suitable for our project.");
+        add("message.heat_sink.invalid8", "This may need some significant revisions before it can be considered valid.");
+        add("message.heat_sink.invalid9", "More work may be needed before this can be considered valid.");
     }
 
     private void multiblocks() {

@@ -12,6 +12,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.*;
 
@@ -56,6 +57,14 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
     @Override
     public List<Block> validInnerBlocks() { return validInnerBlocks; }
 
+    public BlockPos getBottomLeftBlock() {
+        return getSidePos(leftCasing).above(bottomCasing).relative(getFacing(), -depth + 1);
+    }
+
+    public BlockPos getTopRightBlock() {
+        return getSidePos(width - rightCasing - 1).above(height - topCasing - 1).relative(getFacing(), -1);
+    }
+
     @Override
     public void validateOuter() {
         for(int y = 0; y < resolveHeight(); y++) {
@@ -73,6 +82,7 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
                             return;
                         }
                         attachMultiblock(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getFacing(), -z));
+                        allBlocks.add(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getFacing(), -z));
                     }
                 }
             }
@@ -124,9 +134,11 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
                     if(isHeatSink(toCheck)) {
                         heatSinks.add(toCheck);
                     }
+                    allBlocks.add(toCheck);
                 }
             }
         }
+        activeHeatSinks();
         ((FissionControllerBE)controller().controllerBE()).fuelCellsCount = fuelCells.size();
         ((FissionControllerBE)controller().controllerBE()).updateEnergyStorage();
         ((FissionControllerBE)controller().controllerBE()).activeModeratorsCount = moderators.size();
@@ -204,7 +216,9 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
         ((FissionControllerBE)controller().controllerBE()).activeModeratorsAttachmentsCount = 0;
         ((FissionControllerBE)controller().controllerBE()).activeModeratorsCount = 0;
         ((FissionControllerBE)controller().controllerBE()).heatSinkCooling = 0;
+        ((FissionControllerBE)controller().controllerBE()).fuelCellsCount = 0;
         moderators.clear();
+        fuelCells.clear();
         heatSinks.clear();
         activeHeatSinks.clear();
     }
@@ -239,10 +253,20 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
     }
 
     public double getHeatSinkCooling() {
-        heatSinkCooling = 0;
-        for (FissionHeatSinkBE hs : activeHeatSinks().values()) {
-            heatSinkCooling+=hs.getHeat();
+        if(refreshInnerCacheFlag || heatSinkCooling == 0) {
+            heatSinkCooling = 0;
+            for (FissionHeatSinkBE hs : activeHeatSinks().values()) {
+                heatSinkCooling += hs.getHeat();
+            }
         }
         return heatSinkCooling;
+    }
+
+    public void onNeighborChange(BlockState state, BlockPos pos, BlockPos neighbor) {
+        //neighbor inside box
+        if(neighbor.equals(controllerPos()) || !allBlocks.contains(neighbor)) return;
+        refreshInnerCacheFlag = true;
+        refreshOuterCacheFlag = true;
+        isFormed = false;
     }
 }

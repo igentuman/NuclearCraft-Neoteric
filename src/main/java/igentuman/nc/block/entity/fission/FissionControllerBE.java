@@ -35,8 +35,6 @@ import static igentuman.nc.handler.config.CommonConfig.FissionConfig.*;
 public class FissionControllerBE extends FissionBE {
     public static String NAME = "fission_reactor_controller";
 
-    public boolean isFormed = false;
-
     public BlockPos errorBlockPos = BlockPos.ZERO;
 
     @NBTField
@@ -105,7 +103,7 @@ public class FissionControllerBE extends FissionBE {
             @NotNull
             public ItemStack extractItem(int slot, int amount, boolean simulate)
             {
-                if(slot != 1) return ItemStack.EMPTY;
+                //if(slot != 1) return ItemStack.EMPTY;
                 return super.extractItem(slot, amount, simulate);
             }
 
@@ -113,7 +111,7 @@ public class FissionControllerBE extends FissionBE {
             @Nonnull
             @Override
             public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-                if(slot != 0) return ItemStack.EMPTY;
+                //if(slot != 0) return ItemStack.EMPTY;
                 return super.insertItem(slot, stack, simulate);
             }
         };

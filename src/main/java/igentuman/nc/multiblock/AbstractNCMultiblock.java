@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AbstractNCMultiblock implements INCMultiblock {
@@ -22,7 +23,7 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
     protected boolean outerValid = false;
     public boolean refreshOuterCacheFlag = true;
     public boolean refreshInnerCacheFlag = true;
-    private boolean isFormed = false;
+    protected boolean isFormed = false;
     private boolean innerValid = false;
 
     public int height() {
@@ -55,6 +56,7 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
     public boolean isFormed() {
         return isFormed;
     }
+    protected List<BlockPos> allBlocks = new ArrayList<>();
 
     public List<Block> validOuterBlocks() {
         return List.of();
@@ -83,6 +85,7 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
     public void validate() {
         refreshOuterCacheFlag = true;
         refreshInnerCacheFlag = true;
+        allBlocks.clear();
 
         isOuterValid();
         validateInner();

@@ -12,7 +12,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.*;
 
@@ -47,7 +46,7 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
                 }
             }
         }
-        ((FissionControllerBE)controller().controllerBE()).activeHeatSinksCount = activeHeatSinks.size();
+        ((FissionControllerBE)controller().controllerBE()).heatSinksCount = activeHeatSinks.size();
         return activeHeatSinks;
     }
 
@@ -125,11 +124,13 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
                         BlockEntity be = getLevel().getBlockEntity(toCheck);
                         if(be instanceof FissionFuelCellBE) {
                             fuelCells.add(toCheck);
-                            ((FissionControllerBE)controller().controllerBE()).activeModeratorsAttachmentsCount += ((FissionFuelCellBE) be).getAttachedModeratorsCount();
+                            ((FissionControllerBE)controller().controllerBE()).moderatorAttacmentsCount += ((FissionFuelCellBE) be).getAttachedModeratorsCount();
                         }
                     }
                     if(isModerator(toCheck, getLevel())) {
-                        moderators.add(toCheck);
+                        if(isAttachedToFuelCell(toCheck)) {
+                            moderators.add(toCheck);
+                        }
                     }
                     if(isHeatSink(toCheck)) {
                         heatSinks.add(toCheck);
@@ -138,12 +139,21 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
                 }
             }
         }
-        activeHeatSinks();
+        heatSinkCooling = getHeatSinkCooling(true);
         ((FissionControllerBE)controller().controllerBE()).fuelCellsCount = fuelCells.size();
         ((FissionControllerBE)controller().controllerBE()).updateEnergyStorage();
-        ((FissionControllerBE)controller().controllerBE()).activeModeratorsCount = moderators.size();
+        ((FissionControllerBE)controller().controllerBE()).moderatorsCount = moderators.size();
 
         validationResult =  ValidationResult.VALID;
+    }
+
+    private boolean isAttachedToFuelCell(BlockPos toCheck) {
+        for(Direction d : Direction.values()) {
+            if(isFuelCell(toCheck.relative(d))) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean isValidForOuter(BlockPos pos)
@@ -213,8 +223,8 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
 
     public void invalidateStats()
     {
-        ((FissionControllerBE)controller().controllerBE()).activeModeratorsAttachmentsCount = 0;
-        ((FissionControllerBE)controller().controllerBE()).activeModeratorsCount = 0;
+        ((FissionControllerBE)controller().controllerBE()).moderatorAttacmentsCount = 0;
+        ((FissionControllerBE)controller().controllerBE()).moderatorsCount = 0;
         ((FissionControllerBE)controller().controllerBE()).heatSinkCooling = 0;
         ((FissionControllerBE)controller().controllerBE()).fuelCellsCount = 0;
         moderators.clear();
@@ -252,8 +262,8 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
         return ((FissionControllerBE)controller().controllerBE()).getFacing();
     }
 
-    public double getHeatSinkCooling() {
-        if(refreshInnerCacheFlag || heatSinkCooling == 0) {
+    public double getHeatSinkCooling(boolean forceCheck) {
+        if(refreshInnerCacheFlag || forceCheck) {
             heatSinkCooling = 0;
             for (FissionHeatSinkBE hs : activeHeatSinks().values()) {
                 heatSinkCooling += hs.getHeat();
@@ -262,11 +272,14 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
         return heatSinkCooling;
     }
 
-    public void onNeighborChange(BlockState state, BlockPos pos, BlockPos neighbor) {
-        //neighbor inside box
-        if(neighbor.equals(controllerPos()) || !allBlocks.contains(neighbor)) return;
-        refreshInnerCacheFlag = true;
-        refreshOuterCacheFlag = true;
-        isFormed = false;
+
+    public void onControllerRemoved() {
+        for(BlockPos b: allBlocks) {
+            BlockEntity be = getLevel().getBlockEntity(b);
+            if(be instanceof FissionBE) {
+                ((FissionBE) be).setMultiblock(null);
+                ((FissionBE) be).controller = null;
+            }
+        }
     }
 }

@@ -1,6 +1,7 @@
 package igentuman.nc.setup;
 
 import igentuman.nc.NuclearCraft;
+import igentuman.nc.handler.radiation.RadiationManager;
 import igentuman.nc.network.NCMessages;
 import igentuman.nc.world.dimension.Dimensions;
 import net.minecraft.world.item.CreativeModeTab;
@@ -32,7 +33,11 @@ public class ModSetup {
     public static void init(FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
             Dimensions.register();
+            MinecraftForge.EVENT_BUS.register(RadiationManager.INSTANCE);
+
         });
         NCMessages.register();
+        NuclearCraft.packetHandler().initialize();
+
     }
 }

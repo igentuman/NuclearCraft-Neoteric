@@ -143,7 +143,9 @@ public class NCLanguageProvider extends LanguageProvider {
         add("heat_sink.or", "or");
         add("heat_sink.and", "and");
         add("heat_sink.placement.error", "Error during placement rule generation");
+        add("reactor.interior.complete", "Interior Complete");
         add("reactor.interior.incomplete", "Interior Incomplete");
+        add("reactor.casing.complete", "Reactor Casing Complete");
         add("reactor.casing.incomplete", "Reactor Casing Incomplete");
         add("energy.bar.amount", "Total FE: %s / %s");
         add("coolant.bar.amount", "Coolant: %s / %s mB");

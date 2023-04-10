@@ -23,6 +23,7 @@ public class CommonConfig {
     public static final HeatSinkConfig HEAT_SINK_CONFIG = new HeatSinkConfig(BUILDER);
 
     public static final FissionConfig FISSION_CONFIG = new FissionConfig(BUILDER);
+    public static final RadiationConfig RADIATION_CONFIG = new RadiationConfig(BUILDER);
     public static final EnergyGenerationConfig ENERGY_GENERATION = new EnergyGenerationConfig(BUILDER);
     public static final MaterialProductsConfig MATERIAL_PRODUCTS = new MaterialProductsConfig(BUILDER);
     public static final DimensionConfig DIMENSION_CONFIG = new DimensionConfig(BUILDER);
@@ -164,6 +165,38 @@ public class CommonConfig {
             MODERATOR_HEAT_MULTIPLIER = builder
                     .comment("Each attachment of moderator to fuel cell will increase fuel heat generation by given percent value.")
                     .defineInRange("moderator_heat_multiplier", 33.34D, 0D, 1000D);
+
+            builder.pop();
+        }
+
+    }
+
+
+    public static class RadiationConfig
+    {
+        public static ForgeConfigSpec.ConfigValue<Boolean> ENABLED;
+        public static ForgeConfigSpec.ConfigValue<Integer> RADIUS;
+        public static ForgeConfigSpec.ConfigValue<Double> SPREAD_SPEED;
+        public static ForgeConfigSpec.ConfigValue<Double> DECAY_SPEED;
+
+        public RadiationConfig(ForgeConfigSpec.Builder builder) {
+            builder.comment("Settings for Radiation").push("radiation");
+
+            ENABLED = builder
+                    .comment("If radiation is enabled.")
+                    .define("enabled", true);
+
+            RADIUS = builder
+                    .comment("Spread radius in chunks")
+                    .defineInRange("spread_radius", 8, 1, 20);
+
+            SPREAD_SPEED = builder
+                    .comment("How fast contamination spreads around.")
+                    .defineInRange("spread_speed", 0.99d, 0.0d, 20d);
+
+            DECAY_SPEED = builder
+                    .comment("How fast contamination decays.")
+                    .defineInRange("decay_speed", 0.1d, 0.0d, 20d);
 
             builder.pop();
         }

@@ -1,8 +1,10 @@
 package igentuman.nc.setup;
 
 import com.mojang.serialization.Codec;
-import igentuman.nc.recipes.FissionRecipe;
+import igentuman.nc.recipes.NcRecipeType;
+import igentuman.nc.recipes.multiblock.FissionRecipe;
 import igentuman.nc.setup.multiblocks.FissionReactor;
+import igentuman.nc.setup.recipes.NcRecipeSerializers;
 import igentuman.nc.setup.registration.*;
 import igentuman.nc.world.dimension.WastelandChunkGenerator;
 import igentuman.nc.world.ore.Generator;
@@ -54,8 +56,6 @@ public class Registration {
 
     public static final DeferredRegister<RecipeSerializer<?>> SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, MODID);
 
-    public static final RegistryObject<RecipeSerializer<FissionRecipe>> FISSION_RECIPE_SERIALIZER =
-            SERIALIZERS.register("fission_reactor", () -> FissionRecipe.Serializer.INSTANCE);
     public static void init() {
 
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -71,6 +71,9 @@ public class Registration {
         CONTAINERS.register(bus);
         RECIPE_TYPES.register(bus);
         SERIALIZERS.register(bus);
+        NcRecipeType.RECIPE_TYPES.register(bus);
+        NcRecipeSerializers.RECIPE_SERIALIZERS.register(bus);
+        NcParticleTypes.PARTICLE_TYPES.register(bus);
 
         NCBlocks.init();
         NCItems.init();
@@ -97,7 +100,6 @@ public class Registration {
     public static final RegistryObject<StructureType<?>> LABORATORY = STRUCTURES.register("nc_laboratory", () -> typeConvert(LaboratoryStructure.CODEC));
 
     // Some common properties for our blocks and items
-    public static final BlockBehaviour.Properties PROCESSOR_BLOCK_PROPERTIES = BlockBehaviour.Properties.of(Material.METAL).strength(2f).requiresCorrectToolForDrops();
     public static final Item.Properties ITEM_PROPERTIES = new Item.Properties().tab(ModSetup.ITEM_GROUP);
 
     public static List<RegistryObject<PlacedFeature>> ORE_GENERATION = registerOreGenerators();

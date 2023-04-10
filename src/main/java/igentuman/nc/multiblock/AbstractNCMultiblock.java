@@ -1,14 +1,18 @@
 package igentuman.nc.multiblock;
 
+import igentuman.nc.block.entity.fission.FissionBE;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AbstractNCMultiblock implements INCMultiblock {
 
+    protected Class parentBe;
     protected int height;
     protected int width;
     protected int depth;
@@ -115,5 +119,13 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
 
     public INCMultiblockController controller() {
         return controller;
+    }
+
+    public void onNeighborChange(BlockState state, BlockPos pos, BlockPos neighbor) {
+        //neighbor inside box
+        if(neighbor.equals(controllerPos()) || !allBlocks.contains(neighbor)) return;
+        refreshInnerCacheFlag = true;
+        refreshOuterCacheFlag = true;
+        isFormed = false;
     }
 }

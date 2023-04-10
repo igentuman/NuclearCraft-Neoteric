@@ -1,4 +1,4 @@
-package igentuman.nc.util;
+package igentuman.nc.util.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

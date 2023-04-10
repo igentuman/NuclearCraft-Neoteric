@@ -192,7 +192,7 @@ public class FissionControllerContainer extends AbstractContainerMenu {
     }
 
     public String getEfficiency() {
-        return numberFormat(blockEntity.getEfficiency());
+        return numberFormat(blockEntity.efficiency);
     }
 
     public String getNetHeat() {
@@ -208,11 +208,11 @@ public class FissionControllerContainer extends AbstractContainerMenu {
     }
 
     public int getHeatSinksCount() {
-        return blockEntity.activeHeatSinksCount;
+        return blockEntity.heatSinksCount;
     }
 
     public int getModeratorsCount() {
-        return blockEntity.activeModeratorsCount;
+        return blockEntity.moderatorsCount;
     }
 
     public int energyPerTick() {

@@ -1,18 +1,11 @@
-package igentuman.nc.gui.element.button;
+package igentuman.nc.client.gui.element.button;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import igentuman.nc.container.NCProcessorContainer;
-import igentuman.nc.gui.element.NCGuiElement;
-import net.minecraft.client.Minecraft;
+import igentuman.nc.client.gui.element.NCGuiElement;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-
-import java.util.List;
 
 public class Checkbox extends NCGuiElement {
     protected AbstractContainerScreen screen;

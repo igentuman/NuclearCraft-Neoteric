@@ -1,15 +1,18 @@
-package igentuman.nc.gui.fission;
+package igentuman.nc.client.gui.fission;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import igentuman.nc.client.gui.IVerticalBarScreen;
+import igentuman.nc.client.gui.element.bar.ProgressBar;
+import igentuman.nc.client.gui.element.bar.VerticalBar;
 import igentuman.nc.container.FissionControllerContainer;
-import igentuman.nc.gui.IProgressScreen;
-import igentuman.nc.gui.IVerticalBarScreen;
-import igentuman.nc.gui.element.NCGuiElement;
-import igentuman.nc.gui.element.bar.ProgressBar;
-import igentuman.nc.gui.element.bar.VerticalBar;
-import igentuman.nc.gui.element.button.Checkbox;
+import igentuman.nc.client.gui.IProgressScreen;
+import igentuman.nc.client.gui.element.NCGuiElement;
+import igentuman.nc.client.gui.element.button.Checkbox;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.color.block.BlockColors;
+import net.minecraft.client.color.item.ItemColors;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -60,6 +63,7 @@ public class FissionControllerScreen extends AbstractContainerScreen<FissionCont
 
     protected void init() {
         super.init();
+        Minecraft mc = Minecraft.getInstance();
         updateRelativeCords();
         widgets.clear();
         checkboxCasing = new Checkbox(imageWidth-19, 80, this,  isCasingValid());

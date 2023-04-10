@@ -1,4 +1,4 @@
-package igentuman.nc.gui;
+package igentuman.nc.client.gui;
 
 public interface IVerticalBarScreen {
     double getEnergy();

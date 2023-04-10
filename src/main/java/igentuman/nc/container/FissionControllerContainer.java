@@ -1,6 +1,7 @@
 package igentuman.nc.container;
 
 import igentuman.nc.block.entity.fission.FissionControllerBE;
+import igentuman.nc.container.elements.NCSlotItemHandler;
 import igentuman.nc.setup.multiblocks.FissionReactor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -36,14 +37,14 @@ public class FissionControllerContainer extends AbstractContainerMenu {
         blockEntity = (FissionControllerBE) playerEntity.getCommandSenderWorld().getBlockEntity(pos);
         layoutPlayerInventorySlots();
         blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
-            addSlot(new SlotItemHandler(h, 0, 56, 35));
+            addSlot(new NCSlotItemHandler.Input(h, 0, 56, 35));
         });
         blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
-            addSlot(new SlotItemHandler(h, 1, 116, 35));
+            addSlot(new NCSlotItemHandler.Output(h, 1, 116, 35));
         });
 
         blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
-            //addSlot(new SlotItemHandler(h, 2, 116, 55));
+            addSlot(new NCSlotItemHandler.ReadOnly(h, 2, 77, 22));
         });
     }
 

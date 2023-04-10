@@ -1,14 +1,14 @@
-package igentuman.nc.gui;
+package igentuman.nc.client.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import igentuman.nc.client.gui.element.NCGuiElement;
+import igentuman.nc.client.gui.element.bar.EnergyBar;
+import igentuman.nc.client.gui.element.bar.ProgressBar;
+import igentuman.nc.client.gui.element.button.Button;
+import igentuman.nc.client.gui.element.slot.BigSlot;
 import igentuman.nc.container.NCProcessorContainer;
-import igentuman.nc.gui.element.NCGuiElement;
-import igentuman.nc.gui.element.bar.EnergyBar;
-import igentuman.nc.gui.element.bar.ProgressBar;
-import igentuman.nc.gui.element.button.Button;
-import igentuman.nc.gui.element.slot.BigSlot;
-import igentuman.nc.gui.element.slot.NormalSlot;
+import igentuman.nc.client.gui.element.slot.NormalSlot;
 import igentuman.nc.setup.processors.config.ProcessorSlots;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;

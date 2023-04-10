@@ -1,4 +1,4 @@
-package igentuman.nc.gui;
+package igentuman.nc.client.gui;
 
 import igentuman.nc.container.NCProcessorContainer;
 import net.minecraft.network.chat.Component;

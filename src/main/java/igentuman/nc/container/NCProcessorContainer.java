@@ -1,7 +1,6 @@
 package igentuman.nc.container;
 
 import igentuman.nc.block.entity.processor.NCProcessor;
-import igentuman.nc.gui.element.slot.NormalSlot;
 import igentuman.nc.setup.processors.ProcessorPrefab;
 import igentuman.nc.setup.processors.Processors;
 import igentuman.nc.setup.registration.NCProcessors;

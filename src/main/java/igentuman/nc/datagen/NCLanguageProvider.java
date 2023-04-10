@@ -173,6 +173,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("validation.structure.valid", "Structure is Valid");
         add("solar_panel.fe_generation", "Daytime Gen: %s FE/t");
         add("fission_port.descr", "Used to transfer items/fluids/energy, for redstone control/output and computers.");
+        add("irradiation_chamber.descr", "Used to irradiate items with neutron flux. \nHas to be placed in one line with moderator and fuel cell behind it.");
     }
 
     private void fuel() {

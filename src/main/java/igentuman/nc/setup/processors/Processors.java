@@ -16,6 +16,12 @@ public class Processors {
 
     public static HashMap<String, ProcessorPrefab> all() {
         if(all.isEmpty()) {
+            all.put("nuclear_furnace",
+                    ProcessorBuilder
+                            .make("nuclear_furnace", 0, 1, 0, 1)
+                            .blockEntity(NuclearFurnaceBE::new)
+                            .build()
+            );
             all.put("manufactory",
                     ProcessorBuilder
                             .make("manufactory", 0, 1, 0, 1)

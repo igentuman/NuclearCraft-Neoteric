@@ -9,6 +9,7 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -65,5 +66,10 @@ public abstract class NcRecipe implements Recipe<IgnoredIInventory> {
     @Override
     public ItemStack getResultItem() {
         return ItemStack.EMPTY;
+    }
+
+    @NotNull
+    public FluidStack getResultFluid() {
+        return FluidStack.EMPTY;
     }
 }

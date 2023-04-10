@@ -124,7 +124,7 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
                         BlockEntity be = getLevel().getBlockEntity(toCheck);
                         if(be instanceof FissionFuelCellBE) {
                             fuelCells.add(toCheck);
-                            ((FissionControllerBE)controller().controllerBE()).moderatorAttacmentsCount += ((FissionFuelCellBE) be).getAttachedModeratorsCount();
+                            ((FissionControllerBE)controller().controllerBE()).moderatorAttacmentsCount += ((FissionFuelCellBE) be).getAttachedModeratorsCount(true);
                         }
                     }
                     if(isModerator(toCheck, getLevel())) {

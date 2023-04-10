@@ -1,11 +1,13 @@
 package igentuman.nc.block.entity.processor;
 
+import igentuman.nc.block.NCProcessorBlock;
 import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.handler.config.CommonConfig;
 import igentuman.nc.setup.processors.ProcessorPrefab;
 import igentuman.nc.setup.processors.Processors;
 import igentuman.nc.setup.registration.NCProcessors;
 import igentuman.nc.util.CustomEnergyStorage;
+import igentuman.nc.util.inventory.WrappedHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -28,6 +30,7 @@ import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Map;
 import java.util.Objects;
 
 public class NCProcessor extends NuclearCraftBE {
@@ -39,12 +42,32 @@ public class NCProcessor extends NuclearCraftBE {
     protected final ItemStackHandler itemHandler = createHandler();
     protected final LazyOptional<IItemHandler> handler = LazyOptional.of(() -> itemHandler);
     protected final CustomEnergyStorage energyStorage = createEnergy();
-
+    protected LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.empty();
     public LazyOptional<IEnergyStorage> getEnergy() {
         return energy;
     }
 
     protected final LazyOptional<IEnergyStorage> energy = LazyOptional.of(() -> energyStorage);
+
+    protected final Map<Direction, LazyOptional<WrappedHandler>> directionWrappedHandlerMap = initDirectionalHandler();
+
+    protected Map<Direction, LazyOptional<WrappedHandler>> initDirectionalHandler() {
+        Map<Direction, LazyOptional<WrappedHandler>> map = new java.util.HashMap<>();
+        map.put(Direction.UP, LazyOptional.of(() -> new WrappedHandler(itemHandler, (index) -> index != 12321,
+                (index, stack) -> itemHandler.isItemValid(1, stack))));
+        map.put(Direction.DOWN, LazyOptional.of(() -> new WrappedHandler(itemHandler, (index) -> index != 12321,
+                (index, stack) -> itemHandler.isItemValid(1, stack))));
+        map.put(Direction.NORTH, LazyOptional.of(() -> new WrappedHandler(itemHandler, (index) -> index != 12321,
+                (index, stack) -> itemHandler.isItemValid(1, stack))));
+        map.put(Direction.SOUTH, LazyOptional.of(() -> new WrappedHandler(itemHandler, (index) -> index != 12321,
+                (index, stack) -> itemHandler.isItemValid(1, stack))));
+        map.put(Direction.WEST, LazyOptional.of(() -> new WrappedHandler(itemHandler, (index) -> index != 12321,
+                (index, stack) -> itemHandler.isItemValid(1, stack))));
+        map.put(Direction.EAST, LazyOptional.of(() -> new WrappedHandler(itemHandler, (index) -> index != 12321,
+                (index, stack) -> itemHandler.isItemValid(1, stack))));
+        return map;
+    }
+
 
     protected int counter;
 
@@ -87,10 +110,29 @@ public class NCProcessor extends NuclearCraftBE {
         };
     }
 
+
+
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if (cap == ForgeCapabilities.ITEM_HANDLER) {
+            if(side == null) {
+                return lazyItemHandler.cast();
+            }
+            if(directionWrappedHandlerMap.containsKey(side)) {
+                Direction localDir = getBlockState().getValue(NCProcessorBlock.FACING);
+
+                if(side == Direction.UP || side == Direction.DOWN) {
+                    return directionWrappedHandlerMap.get(side).cast();
+                }
+
+                return switch (localDir) {
+                    default -> directionWrappedHandlerMap.get(side.getOpposite()).cast();
+                    case EAST -> directionWrappedHandlerMap.get(side.getClockWise()).cast();
+                    case SOUTH -> directionWrappedHandlerMap.get(side).cast();
+                    case WEST -> directionWrappedHandlerMap.get(side.getCounterClockWise()).cast();
+                };
+            }
             return handler.cast();
         }
         if (cap == ForgeCapabilities.ENERGY) {

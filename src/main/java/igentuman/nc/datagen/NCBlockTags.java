@@ -29,7 +29,8 @@ public class NCBlockTags extends BlockTagsProvider {
                 FissionReactor.MULTI_BLOCKS.get("fission_reactor_casing").get(),
                 FissionReactor.MULTI_BLOCKS.get("fission_reactor_controller").get(),
                 FissionReactor.MULTI_BLOCKS.get("fission_reactor_glass").get(),
-                FissionReactor.MULTI_BLOCKS.get("fission_reactor_port").get()
+                FissionReactor.MULTI_BLOCKS.get("fission_reactor_port").get(),
+                NCProcessors.PROCESSORS.get("irradiator").get()
                 );
         tag(FissionBlocks.HEAT_SINK_BLOCKS).add(FissionReactor.getHSBlocks());
         tag(FissionBlocks.INNER_REACTOR_BLOCKS)
@@ -37,6 +38,7 @@ public class NCBlockTags extends BlockTagsProvider {
                 .add(
                         NCBlocks.NC_BLOCKS.get("graphite").get(),
                         NCBlocks.NC_BLOCKS.get("beryllium").get(),
+                        FissionReactor.MULTI_BLOCKS.get("fission_reactor_irradiation_chamber").get(),
                         FissionReactor.MULTI_BLOCKS.get("fission_reactor_solid_fuel_cell").get()
                 );
     }

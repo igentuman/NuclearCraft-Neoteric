@@ -1,10 +1,7 @@
 package igentuman.nc.setup.multiblocks;
 
 import igentuman.nc.block.entity.fission.*;
-import igentuman.nc.block.fission.FissionBlock;
-import igentuman.nc.block.fission.FissionControllerBlock;
-import igentuman.nc.block.fission.FissionPort;
-import igentuman.nc.block.fission.HeatSinkBlock;
+import igentuman.nc.block.fission.*;
 import igentuman.nc.container.FissionControllerContainer;
 import igentuman.nc.setup.ModSetup;
 import net.minecraft.world.inventory.MenuType;
@@ -70,6 +67,12 @@ public class FissionReactor {
                         () -> BlockEntityType.Builder
                                 .of(FissionPortBE::new, MULTI_BLOCKS.get(key).get())
                                 .build(null)));
+            } else if(name.contains("irradiation")) {
+                MULTI_BLOCKS.put(key, BLOCKS.register(key, () -> new IrradiationChamberBlock(REACTOR_BLOCKS_PROPERTIES)));
+                MULTIBLOCK_BE.put(key, BLOCK_ENTITIES.register(key,
+                        () -> BlockEntityType.Builder
+                                .of(FissionIrradiationChamberBE::new, MULTI_BLOCKS.get(key).get())
+                                .build(null)));
             } else {
                 MULTI_BLOCKS.put(key, BLOCKS.register(key, () -> new FissionBlock(REACTOR_BLOCKS_PROPERTIES)));
             }
@@ -100,6 +103,7 @@ public class FissionReactor {
                         .of(FissionFuelCellBE::new,
                                 MULTI_BLOCKS.get("fission_reactor_solid_fuel_cell").get())
                         .build(null)));
+
     }
 
     private static List<RegistryObject<Block>> hsBlocks = new ArrayList<>();

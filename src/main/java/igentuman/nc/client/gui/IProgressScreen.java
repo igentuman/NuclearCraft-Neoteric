@@ -1,4 +1,4 @@
-package igentuman.nc.gui;
+package igentuman.nc.client.gui;
 
 public interface IProgressScreen {
     double getProgress();

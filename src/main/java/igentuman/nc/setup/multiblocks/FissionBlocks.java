@@ -25,6 +25,7 @@ public class FissionBlocks {
     public static final List<String> reactor =  Arrays.asList(
             "casing",
             "controller",
+            "irradiation_chamber",
             "port",
             "glass",
             "solid_fuel_cell"

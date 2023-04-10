@@ -1,8 +1,8 @@
-package igentuman.nc.gui.element.button;
+package igentuman.nc.client.gui.element.button;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import igentuman.nc.container.NCProcessorContainer;
-import igentuman.nc.gui.element.NCGuiElement;
+import igentuman.nc.client.gui.element.NCGuiElement;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.network.chat.Component;
 

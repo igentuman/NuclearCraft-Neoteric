@@ -1,18 +1,13 @@
-package igentuman.nc.gui.element.bar;
+package igentuman.nc.client.gui.element.bar;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import igentuman.nc.container.NCProcessorContainer;
-import igentuman.nc.gui.IProgressScreen;
-import igentuman.nc.gui.NCProcessorScreen;
-import igentuman.nc.gui.element.NCGuiElement;
+import igentuman.nc.client.gui.IProgressScreen;
+import igentuman.nc.client.gui.element.NCGuiElement;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraftforge.energy.IEnergyStorage;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;

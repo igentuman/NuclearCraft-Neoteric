@@ -1,7 +1,7 @@
 package igentuman.nc.setup;
 
 import igentuman.nc.client.particle.RadiationParticle;
-import igentuman.nc.gui.fission.FissionControllerScreen;
+import igentuman.nc.client.gui.fission.FissionControllerScreen;
 import igentuman.nc.setup.multiblocks.FissionReactor;
 import igentuman.nc.setup.processors.Processors;
 import igentuman.nc.setup.registration.NCFluids;

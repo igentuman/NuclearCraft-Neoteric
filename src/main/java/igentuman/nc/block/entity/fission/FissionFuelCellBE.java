@@ -32,13 +32,13 @@ public class FissionFuelCellBE extends FissionBE {
     public void tickServer() {
         if(refreshCacheFlag || validationRuns < 2) {
             validationRuns++;
-            getAttachedModeratorsCount();
+            getAttachedModeratorsCount(false);
             if(validationRuns > 1) refreshCacheFlag = false;
         }
     }
 
-    public int getAttachedModeratorsCount() {
-        if(refreshCacheFlag) {
+    public int getAttachedModeratorsCount(boolean forceRefresh) {
+        if(refreshCacheFlag || forceRefresh) {
             attachedModerators = 0;
             for (Direction dir : Direction.values()) {
                 if (isModerator(getBlockPos().relative(dir), getLevel())) {

@@ -1,7 +1,7 @@
-package igentuman.nc.gui.element.bar;
+package igentuman.nc.client.gui.element.bar;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import igentuman.nc.gui.element.NCGuiElement;
+import igentuman.nc.client.gui.element.NCGuiElement;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.energy.IEnergyStorage;
 

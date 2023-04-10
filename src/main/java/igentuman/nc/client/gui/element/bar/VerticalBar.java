@@ -1,13 +1,10 @@
-package igentuman.nc.gui.element.bar;
+package igentuman.nc.client.gui.element.bar;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import igentuman.nc.gui.IVerticalBarScreen;
-import igentuman.nc.gui.element.NCGuiElement;
+import igentuman.nc.client.gui.IVerticalBarScreen;
+import igentuman.nc.client.gui.element.NCGuiElement;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.energy.IEnergyStorage;
 
-import java.awt.*;
-import java.util.Arrays;
 import java.util.List;
 
 import static igentuman.nc.util.TextUtils.scaledFormat;

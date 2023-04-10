@@ -1,7 +1,7 @@
-package igentuman.nc.gui.element.slot;
+package igentuman.nc.client.gui.element.slot;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import igentuman.nc.gui.element.NCGuiElement;
+import igentuman.nc.client.gui.element.NCGuiElement;
 
 public class NormalSlot extends NCGuiElement {
     public int xOffset = 0;

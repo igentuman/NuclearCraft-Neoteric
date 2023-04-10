@@ -1,4 +1,4 @@
-package igentuman.nc.gui.element;
+package igentuman.nc.client.gui.element;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;

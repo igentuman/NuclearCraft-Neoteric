@@ -1,9 +1,8 @@
 package igentuman.nc.setup.processors;
 
-import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.processor.NCProcessor;
 import igentuman.nc.container.NCProcessorContainer;
-import igentuman.nc.gui.NCProcessorScreen;
+import igentuman.nc.client.gui.NCProcessorScreen;
 import igentuman.nc.setup.processors.config.ProcessorSlots;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
@@ -11,8 +10,6 @@ import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 
 public class ProcessorBuilder <M extends NCProcessorContainer, U extends Screen & MenuAccess<M>>{

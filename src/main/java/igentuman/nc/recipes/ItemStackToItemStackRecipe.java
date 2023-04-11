@@ -16,9 +16,6 @@ import java.util.function.Predicate;
 @NothingNullByDefault
 public abstract class ItemStackToItemStackRecipe extends NcRecipe implements Predicate<@NotNull ItemStack> {
 
-    private final ItemStackIngredient input;
-    private final ItemStack output;
-
     public ItemStackToItemStackRecipe(ResourceLocation id, ItemStackIngredient input, ItemStack output) {
         super(id);
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
@@ -27,6 +24,8 @@ public abstract class ItemStackToItemStackRecipe extends NcRecipe implements Pre
             throw new IllegalArgumentException("Output cannot be empty.");
         }
         this.output = output.copy();
+        inputItems = new ItemStackIngredient[]{input};
+        outputItems = new ItemStack[]{output};
     }
 
     @Override

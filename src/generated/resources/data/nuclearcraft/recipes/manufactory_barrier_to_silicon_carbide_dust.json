@@ -1,0 +1,12 @@
+{
+  "type": "nuclearcraft:manufactory",
+  "input": {
+    "tag": "forge:ingots/silicon_carbide"
+  },
+  "output": {
+    "item": "nuclearcraft:silicon_carbide_dust"
+  },
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

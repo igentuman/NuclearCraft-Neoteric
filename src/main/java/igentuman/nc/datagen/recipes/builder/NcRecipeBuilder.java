@@ -11,6 +11,7 @@ import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.crafting.CraftingHelper;
@@ -183,5 +184,9 @@ public abstract class NcRecipeBuilder<BUILDER extends NcRecipeBuilder<BUILDER>> 
             json.addProperty("nbt", stack.getTag().toString());
         }
         return json;
+    }
+
+    public static JsonElement serializeIngredient(@NotNull Ingredient ingredient) {
+        return ingredient.toJson();
     }
 }

@@ -90,7 +90,7 @@ public class FissionControllerBE extends FissionBE implements ItemRecipeLookupHa
     @NotNull
     @Override
     public INcRecipeTypeProvider<ItemStackToItemStackRecipe, SingleItem<ItemStackToItemStackRecipe>> getRecipeType() {
-        return NcRecipeType.FISSION;
+        return NcRecipeType.RECIPES.get("fission_reactor");
     }
 
     @Nullable

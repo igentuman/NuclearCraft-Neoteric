@@ -1,9 +1,0 @@
-{
-  "type": "nuclearcraft:fission_reactor",
-  "input": {
-    "item": "nuclearcraft:fuel_americium_hea_242_ox"
-  },
-  "output": {
-    "item": "nuclearcraft:depleted_fuel_americium_hea_242_ox"
-  }
-}

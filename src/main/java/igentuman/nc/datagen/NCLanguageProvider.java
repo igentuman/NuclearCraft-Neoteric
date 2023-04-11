@@ -75,6 +75,8 @@ public class NCLanguageProvider extends LanguageProvider {
         add("message.heat_sink.invalid7", "This may not be suitable for our project.");
         add("message.heat_sink.invalid8", "This may need some significant revisions before it can be considered valid.");
         add("message.heat_sink.invalid9", "More work may be needed before this can be considered valid.");
+
+        add("nc_jei_cat.fission_reactor", "Fission Reactor Fuel Depletion");
     }
 
     private void multiblocks() {
@@ -95,6 +97,7 @@ public class NCLanguageProvider extends LanguageProvider {
         for(String name: NCProcessors.PROCESSORS.keySet()) {
             String title = convertToName(name);
             add(NCProcessors.PROCESSORS.get(name).get(), title);
+            add("nc_jei_cat."+name, title);
         }
     }
 

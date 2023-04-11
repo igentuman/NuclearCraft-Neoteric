@@ -117,7 +117,7 @@ public class NCProcessor extends NuclearCraftBE {
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if (cap == ForgeCapabilities.ITEM_HANDLER) {
             if(side == null) {
-                return lazyItemHandler.cast();
+                return handler.cast();
             }
             if(directionWrappedHandlerMap.containsKey(side)) {
                 Direction localDir = getBlockState().getValue(NCProcessorBlock.FACING);

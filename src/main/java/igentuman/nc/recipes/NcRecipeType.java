@@ -7,6 +7,10 @@ import igentuman.nc.recipes.cache.InputRecipeCache;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.ingredient.creator.IItemStackIngredientCreator;
 import igentuman.nc.recipes.ingredient.creator.IngredientCreatorAccess;
+import igentuman.nc.recipes.multiblock.FissionRecipe;
+import igentuman.nc.recipes.processors.DecayHastenerRecipe;
+import igentuman.nc.recipes.processors.ManufactoryRecipe;
+import igentuman.nc.recipes.processors.PressurizerRecipe;
 import igentuman.nc.recipes.processors.SmeltingIRecipe;
 import igentuman.nc.setup.recipes.RecipeTypeDeferredRegister;
 import igentuman.nc.setup.recipes.RecipeTypeRegistryObject;
@@ -21,10 +25,7 @@ import net.minecraftforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 
 import static igentuman.nc.NuclearCraft.MODID;
@@ -34,8 +35,18 @@ public class NcRecipeType<RECIPE extends NcRecipe, INPUT_CACHE extends IInputRec
 
     public static final RecipeTypeDeferredRegister RECIPE_TYPES = new RecipeTypeDeferredRegister(MODID);
 
-    public static final RecipeTypeRegistryObject<ItemStackToItemStackRecipe, InputRecipeCache.SingleItem<ItemStackToItemStackRecipe>> FISSION =
-          register("fission_reactor", recipeType -> new InputRecipeCache.SingleItem<>(recipeType, ItemStackToItemStackRecipe::getInput));
+    public static HashMap<String, RecipeTypeRegistryObject<ItemStackToItemStackRecipe, InputRecipeCache.SingleItem<ItemStackToItemStackRecipe>>> RECIPES = initializeRecipes();
+
+    private static HashMap<String, RecipeTypeRegistryObject<ItemStackToItemStackRecipe, InputRecipeCache.SingleItem<ItemStackToItemStackRecipe>>> initializeRecipes() {
+        HashMap<String, RecipeTypeRegistryObject<ItemStackToItemStackRecipe, InputRecipeCache.SingleItem<ItemStackToItemStackRecipe>>> recipes = new HashMap<>();
+        recipes.put("fission_reactor", register("fission_reactor", recipeType -> new InputRecipeCache.SingleItem<>(recipeType, ItemStackToItemStackRecipe::getInput)));
+        recipes.put("manufactory", register("manufactory", recipeType -> new InputRecipeCache.SingleItem<>(recipeType, ItemStackToItemStackRecipe::getInput)));
+        recipes.put("pressurizer", register("pressurizer", recipeType -> new InputRecipeCache.SingleItem<>(recipeType, ItemStackToItemStackRecipe::getInput)));
+        recipes.put("decay_hastener", register("decay_hastener", recipeType -> new InputRecipeCache.SingleItem<>(recipeType, ItemStackToItemStackRecipe::getInput)));
+        recipes.put("smelting", SMELTING);
+        return recipes;
+    }
+
     public static final RecipeTypeRegistryObject<ItemStackToItemStackRecipe, InputRecipeCache.SingleItem<ItemStackToItemStackRecipe>> SMELTING =
             register("smelting", recipeType -> new InputRecipeCache.SingleItem<>(recipeType, ItemStackToItemStackRecipe::getInput));
 

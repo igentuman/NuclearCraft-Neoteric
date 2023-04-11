@@ -1,9 +1,0 @@
-{
-  "type": "nuclearcraft:fission_reactor",
-  "input": {
-    "item": "nuclearcraft:fuel_mixed_mix_239_ox"
-  },
-  "output": {
-    "item": "nuclearcraft:depleted_fuel_mixed_mix_239_ox"
-  }
-}

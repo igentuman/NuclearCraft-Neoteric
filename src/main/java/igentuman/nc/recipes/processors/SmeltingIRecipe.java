@@ -11,12 +11,19 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 
+import java.util.List;
+
+import static igentuman.nc.compat.jei.JEIPlugin.*;
+
 
 @NothingNullByDefault
 public class SmeltingIRecipe extends ItemStackToItemStackRecipe {
+    public static String ID = "smelting";
 
     public SmeltingIRecipe(ResourceLocation id, ItemStackIngredient input, ItemStack output) {
         super(id, input, output);
+        RECIPE_CLASSES.put(ID, this.getClass());
+        CATALYSTS.put(ID, List.of(getToastSymbol()));
     }
 
     @Override
@@ -26,7 +33,7 @@ public class SmeltingIRecipe extends ItemStackToItemStackRecipe {
 
     @Override
     public RecipeSerializer<ItemStackToItemStackRecipe> getSerializer() {
-        return NcRecipeSerializers.SMELTING.get();
+        return NcRecipeSerializers.SERIALIZERS.get(ID).get();
     }
 
     @Override

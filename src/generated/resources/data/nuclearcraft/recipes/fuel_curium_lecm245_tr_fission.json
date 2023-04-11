@@ -1,9 +1,0 @@
-{
-  "type": "nuclearcraft:fission_reactor",
-  "input": {
-    "item": "nuclearcraft:fuel_curium_lecm_245_tr"
-  },
-  "output": {
-    "item": "nuclearcraft:depleted_fuel_curium_lecm_245_tr"
-  }
-}

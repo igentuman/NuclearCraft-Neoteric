@@ -1,27 +1,33 @@
 package igentuman.nc.client.gui.element.button;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import igentuman.nc.client.gui.side.NCProcessorSideConfigScreen;
 import igentuman.nc.container.NCProcessorContainer;
 import igentuman.nc.client.gui.element.NCGuiElement;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.ImageButton;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
 
-public class Button extends NCGuiElement {
+public class Button<T extends AbstractContainerScreen> extends NCGuiElement {
     protected NCProcessorContainer container;
+    protected AbstractContainerScreen screen;
     protected int bId;
 
     protected ImageButton btn;
-    public Button(int xPos, int yPos, NCProcessorContainer container, int id)  {
+    public Button(int xPos, int yPos, T screen, int id)  {
         x = xPos;
         y = yPos;
-        this.container = container;
+        this.container = (NCProcessorContainer) screen.getMenu();
+        this.screen = screen;
         bId = id;
     }
 
     public List<Component> getTooltips() {
-        return List.of(Component.literal(" FE"));
+        return List.of(Component.empty());
     }
 
     @Override
@@ -30,17 +36,40 @@ public class Button extends NCGuiElement {
         btn.render(transform, mX, mY, pTicks);
     }
 
+    @Override
+    public void onPress() {
+        btn.onPress();
+    }
+
     public static class SideConfig extends Button {
-        public SideConfig(int xPos, int yPos, NCProcessorContainer container) {
-            super(xPos, yPos, container, 69);//nice
-            btn = new ImageButton(X(), Y(), 18, 18, 220, 220, 18, TEXTURE, (net.minecraft.client.gui.components.Button.OnPress)null);
+        public SideConfig(int xPos, int yPos, AbstractContainerScreen screen) {
+            super(xPos, yPos, screen, 69);//nice
+            height = 18;
+            width = 18;
+            btn = new ImageButton(X(), Y(), width, height, 220, 220, 18, TEXTURE, pButton -> {
+                //NCMessages.sendToServer(new PacketGuiButtonPress(container.getPosition(), bId));
+                Minecraft.getInstance().forceSetScreen(new NCProcessorSideConfigScreen<>(screen));
+            });
         }
     }
 
     public static class RedstoneConfig extends Button {
-        public RedstoneConfig(int xPos, int yPos, NCProcessorContainer container) {
-            super(xPos, yPos, container, 70);
-            btn = new ImageButton(X(), Y(), 18, 18, 238, 220, 18, TEXTURE, (net.minecraft.client.gui.components.Button.OnPress)null);
+        public RedstoneConfig(int xPos, int yPos, AbstractContainerScreen screen) {
+            super(xPos, yPos, screen, 70);
+            height = 18;
+            width = 18;
+            btn = new ImageButton(X(), Y(), width, height, 238, 220, 18, TEXTURE, (net.minecraft.client.gui.components.Button.OnPress)null);
+        }
+    }
+
+    public static class CloseConfig extends Button {
+        public <T extends NCProcessorContainer> CloseConfig(int xPos, int yPos, AbstractContainerScreen<T> screen) {
+            super(xPos, yPos, screen, 71);
+            height = 18;
+            width = 18;
+            btn = new ImageButton(X(), Y(), width, height, 202, 220, 18, TEXTURE, pButton -> {
+                this.screen.onClose();
+            });
         }
     }
 }

@@ -2,7 +2,6 @@ package igentuman.nc.setup;
 
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.handler.radiation.RadiationManager;
-import igentuman.nc.network.NCMessages;
 import igentuman.nc.world.dimension.Dimensions;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
@@ -36,8 +35,6 @@ public class ModSetup {
             MinecraftForge.EVENT_BUS.register(RadiationManager.INSTANCE);
 
         });
-        NCMessages.register();
         NuclearCraft.packetHandler().initialize();
-
     }
 }

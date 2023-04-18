@@ -5,10 +5,12 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Widget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.sounds.SoundManager;
@@ -31,7 +33,10 @@ public class NCGuiElement extends GuiComponent implements Widget, GuiEventListen
     protected int height;
     public int x;
     public int y;
+    public boolean configFlag = false;
     protected List<Component> tooltips = new ArrayList<>();
+    protected AbstractContainerScreen screen;
+    protected int slotId;
 
     public int X()
     {
@@ -49,6 +54,19 @@ public class NCGuiElement extends GuiComponent implements Widget, GuiEventListen
     public boolean visible = true;
     protected float alpha = 1.0F;
     protected boolean focused;
+
+    public void onPress() {
+    }
+
+    @Override
+    public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
+        if(X() <= pMouseX && pMouseX < X() + width && Y() <= pMouseY && pMouseY < Y() + height) {
+            onPress();
+            this.playDownSound(Minecraft.getInstance().getSoundManager());
+            return true;
+        }
+        return false;
+    }
 
     @Override
     public void updateNarration(NarrationElementOutput pNarrationElementOutput) {
@@ -190,5 +208,12 @@ public class NCGuiElement extends GuiComponent implements Widget, GuiEventListen
 
     public void clearTooltips() {
         tooltips.clear();
+    }
+
+    public NCGuiElement forConfig(AbstractContainerScreen screen, int slotId) {
+        this.configFlag = true;
+        this.screen = screen;
+        this.slotId = slotId;
+        return this;
     }
 }

@@ -4,6 +4,7 @@ import igentuman.nc.block.entity.processor.NCProcessor;
 import igentuman.nc.setup.processors.ProcessorPrefab;
 import igentuman.nc.setup.processors.Processors;
 import igentuman.nc.setup.registration.NCProcessors;
+import igentuman.nc.util.sided.SlotModePair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -65,21 +66,18 @@ public class NCProcessorContainer extends AbstractContainerMenu {
             }
         }
         int ux = 154;
+        itemIdx = 0;
         if(getProcessor().supportSpeedUpgrade) {
             int idx = itemIdx;
             int finalUx = ux;
-            blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
-                addSlot(new SlotItemHandler(h, idx, finalUx, 77));
-            });
+            addSlot(new SlotItemHandler(blockEntity.upgradesHandler, idx, finalUx, 77));
             itemIdx++;
             ux -= 18;
         }
         if(getProcessor().supportEnergyUpgrade) {
             int idx = itemIdx;
             int finalUx = ux;
-            blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
-                addSlot(new SlotItemHandler(h, idx, finalUx, 77));
-            });
+            addSlot(new SlotItemHandler(blockEntity.upgradesHandler, idx, finalUx, 77));
         }
     }
 
@@ -164,10 +162,18 @@ public class NCProcessorContainer extends AbstractContainerMenu {
     }
 
     public IEnergyStorage getEnergy() {
-        return blockEntity.getEnergy().orElse(null);
+        return (IEnergyStorage) blockEntity.getEnergy().orElse(null);
     }
 
     public double getProgress() {
         return blockEntity.getProgress();
+    }
+
+    public BlockPos getPosition() {
+        return blockEntity.getBlockPos();
+    }
+
+    public SlotModePair.SlotMode getSlotMode(int direction, int slotId) {
+        return blockEntity.getSlotMode(direction, slotId);
     }
 }

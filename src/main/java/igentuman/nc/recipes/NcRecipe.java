@@ -87,14 +87,17 @@ public abstract class NcRecipe implements Recipe<IgnoredIInventory> {
     public ItemStack getResultItem() {
         return ItemStack.EMPTY;
     }
+    public List<ItemStack> getResultItems() {
+        return List.of(getResultItem());
+    }
 
     @NotNull
     public FluidStack getResultFluid() {
         return FluidStack.EMPTY;
     }
 
-    public List<ItemStack> getResultItems() {
-        return List.of(getResultItem());
+    public List<FluidStack> getResultFluids() {
+        return List.of(getResultFluid());
     }
 
     public List<FluidStack> getInputFluids(int id) {
@@ -116,4 +119,17 @@ public abstract class NcRecipe implements Recipe<IgnoredIInventory> {
         }
         return ingredients;
     }
+
+    public int getTicks() {
+        return 0;
+    }
+
+    public double getEnergy() {
+        return 0;
+    }
+
+    public double getRadiation() {
+        return 0;
+    }
+
 }

@@ -133,4 +133,8 @@ public class ProcessorPrefab <M extends NCProcessorContainer, U extends Screen &
             return null;
         }
     }
+
+    public int getUpgradesSlots() {
+        return (supportSpeedUpgrade ? 1 : 0) + (supportEnergyUpgrade ? 1 : 0);
+    }
 }

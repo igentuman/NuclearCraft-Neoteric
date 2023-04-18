@@ -50,7 +50,7 @@ public class FissionRecipe extends ItemStackToItemStackRecipe {
         return ((ItemFuel)getFirstInputStack().getItem()).depletion*20;
     }
 
-    public int getEnergy() {
+    public double getEnergy() {
         return ((ItemFuel)getFirstInputStack().getItem()).forge_energy;
     }
 

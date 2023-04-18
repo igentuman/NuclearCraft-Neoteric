@@ -1,41 +1,39 @@
-package igentuman.nc.client.gui;
+package igentuman.nc.client.gui.side;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import igentuman.nc.client.NcClient;
 import igentuman.nc.client.gui.element.NCGuiElement;
 import igentuman.nc.client.gui.element.bar.EnergyBar;
-import igentuman.nc.client.gui.element.bar.ProgressBar;
 import igentuman.nc.client.gui.element.button.Button;
 import igentuman.nc.client.gui.element.slot.BigSlot;
-import igentuman.nc.container.NCProcessorContainer;
 import igentuman.nc.client.gui.element.slot.NormalSlot;
+import igentuman.nc.container.NCProcessorContainer;
 import igentuman.nc.setup.processors.config.ProcessorSlots;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.Widget;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static igentuman.nc.NuclearCraft.MODID;
 
-public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractContainerScreen<T> implements IProgressScreen {
-    protected final ResourceLocation GUI = new ResourceLocation(MODID, "textures/gui/processor.png");
+public class NCProcessorSideConfigScreen<T extends NCProcessorContainer> extends AbstractContainerScreen<T> {
+    protected final ResourceLocation GUI = new ResourceLocation(MODID, "textures/gui/window_no_inventory.png");
     protected int relX;
     protected int relY;
 
-    private int xCenter;
+    protected AbstractContainerScreen parentScreen;
+
 
     private ProcessorSlots slots;
 
     public List<NCGuiElement> widgets = new ArrayList<>();
-    private EnergyBar energyBar;
-
-    public NCProcessorScreen(T container, Inventory inv, Component name) {
+    public NCProcessorSideConfigScreen(T container, Inventory inv, Component name) {
         super(container, inv, name);
         imageWidth = 180;
         imageHeight = 180;
@@ -48,6 +46,24 @@ public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractC
         NCGuiElement.RELATIVE_X = relX;
         NCGuiElement.RELATIVE_Y = relY;
     }
+
+
+
+    protected void init() {
+        super.init();
+        slots = menu.getProcessor().getSlotsConfig();
+        updateRelativeCords();
+        widgets.clear();
+        for(int i = 0; i < slots.slotsCount();i++) {
+            if(slots.getOutputItems()+slots.getOutputFluids() == 1 && slots.getSlotType(i).contains("_out")) {
+                widgets.add(new BigSlot(slots.getSlotPos(i), slots.getSlotType(i)).forConfig(this,  i));
+            } else {
+                widgets.add(new NormalSlot(slots.getSlotPos(i), slots.getSlotType(i)).forConfig(this,  i));
+            }
+        }
+        widgets.add(new Button.CloseConfig(29, 74, this));
+    }
+
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
         for(NCGuiElement widget : widgets) {
             if(widget.mouseClicked(pMouseX, pMouseY, pButton)) {
@@ -57,46 +73,38 @@ public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractC
         return super.mouseClicked(pMouseX, pMouseY, pButton);
     }
 
-    protected void init() {
-        super.init();
-        slots = menu.getProcessor().getSlotsConfig();
-        updateRelativeCords();
-        energyBar = new EnergyBar(9, 4,  menu.getEnergy());
-        widgets.clear();
-        widgets.add(energyBar);
-        for(int i = 0; i < slots.slotsCount();i++) {
-            if(slots.getOutputItems()+slots.getOutputFluids() == 1 && slots.getSlotType(i).contains("_out")) {
-                widgets.add(new BigSlot(slots.getSlotPos(i), slots.getSlotType(i)));
-            } else {
-                widgets.add(new NormalSlot(slots.getSlotPos(i), slots.getSlotType(i)));
-            }
-        }
-        int progressBarX = 71;
-        if(slots.getOutputItems()+slots.getOutputFluids() > 6) {
-            progressBarX -= ProcessorSlots.margin;
-        }
-        widgets.add(new ProgressBar(progressBarX, 40, this));
-        int ux = 154;
-        if(menu.getProcessor().supportSpeedUpgrade) {
-            widgets.add(new NormalSlot(ux, 77, "speed_upgrade"));
-            ux -= 18;
-        }
-        if(menu.getProcessor().supportEnergyUpgrade) {
-            widgets.add(new NormalSlot(ux, 77, "energy_upgrade"));
-        }
-        widgets.add(new Button.SideConfig(29, 74, this));
-        widgets.add(new Button.RedstoneConfig(48, 74, this));
+    @Override
+    public void onClose() {
+        Minecraft.getInstance().forceSetScreen(parentScreen);
     }
 
-    public NCProcessorScreen(AbstractContainerMenu abstractContainerMenu, Inventory inventory, Component component) {
-        this((T)abstractContainerMenu, inventory, component);
+    public NCProcessorSideConfigScreen(AbstractContainerScreen parentScreen) {
+        this((T)parentScreen.getMenu(), NcClient.tryGetClientPlayer().getInventory(), Component.empty());
+        this.parentScreen = parentScreen;
     }
 
     @Override
     public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-        xCenter = getGuiLeft()-imageWidth/2;
         this.renderBackground(matrixStack);
-        super.render(matrixStack, mouseX, mouseY, partialTicks);
+        int i = this.leftPos;
+        int j = this.topPos;
+        this.renderBg(matrixStack, partialTicks, mouseX, mouseY);
+        net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.client.event.ContainerScreenEvent.Render.Background(this, matrixStack, mouseX, mouseY));
+        RenderSystem.disableDepthTest();
+        for(Widget widget : this.renderables) {
+            widget.render(matrixStack, mouseX, mouseY, partialTicks);
+        }
+        PoseStack posestack = RenderSystem.getModelViewStack();
+        posestack.pushPose();
+        posestack.translate((double)i, (double)j, 0.0D);
+        RenderSystem.applyModelViewMatrix();
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        this.hoveredSlot = null;
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        this.renderLabels(matrixStack, mouseX, mouseY);
+        posestack.popPose();
+        RenderSystem.applyModelViewMatrix();
+        RenderSystem.enableDepthTest();
         this.renderTooltip(matrixStack, mouseX, mouseY);
     }
 
@@ -109,7 +117,6 @@ public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractC
     @Override
     protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
         drawCenteredString(matrixStack, font,  menu.getTitle(), imageWidth/2, titleLabelY, 0xffffff);
-        renderTooltips(matrixStack, mouseX-relX, mouseY-relY);
     }
 
     @Override
@@ -120,17 +127,5 @@ public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractC
         renderWidgets(matrixStack, partialTicks, mouseX, mouseY);
     }
 
-    private void renderTooltips(PoseStack pPoseStack, int pMouseX, int pMouseY) {
-        for(NCGuiElement widget: widgets) {
-            if(widget.isMouseOver(pMouseX, pMouseY)) {
-                renderTooltip(pPoseStack, widget.getTooltips(),
-                        Optional.empty(), pMouseX, pMouseY);
-            }
-        }
-    }
 
-    @Override
-    public double getProgress() {
-        return menu.getProgress();
-    }
 }

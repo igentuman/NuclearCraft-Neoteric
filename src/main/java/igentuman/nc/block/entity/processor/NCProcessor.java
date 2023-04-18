@@ -1,26 +1,25 @@
 package igentuman.nc.block.entity.processor;
 
-import igentuman.nc.block.NCProcessorBlock;
 import igentuman.nc.block.entity.NuclearCraftBE;
-import igentuman.nc.handler.config.CommonConfig;
+import igentuman.nc.recipes.NcRecipe;
+import igentuman.nc.recipes.RecipeInfo;
 import igentuman.nc.setup.processors.ProcessorPrefab;
 import igentuman.nc.setup.processors.Processors;
 import igentuman.nc.setup.registration.NCProcessors;
 import igentuman.nc.util.CustomEnergyStorage;
-import igentuman.nc.util.inventory.WrappedHandler;
+import igentuman.nc.util.annotation.NBTField;
+import igentuman.nc.util.sided.SidedContentHandler;
+import igentuman.nc.util.sided.SlotModePair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.ForgeHooks;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
@@ -30,46 +29,27 @@ import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Map;
-import java.util.Objects;
 
-public class NCProcessor extends NuclearCraftBE {
+public class NCProcessor <RECIPE extends NcRecipe> extends NuclearCraftBE {
 
     protected String name;
     public static String NAME;
-    protected int processTime = prefab().config().getTime();
-    protected int timeProcessed = 0;
-    protected final ItemStackHandler itemHandler = createHandler();
-    protected final LazyOptional<IItemHandler> handler = LazyOptional.of(() -> itemHandler);
-    protected final CustomEnergyStorage energyStorage = createEnergy();
-    protected LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.empty();
+    public final SidedContentHandler contentHandler;
+    protected final CustomEnergyStorage energyStorage;
+
+    public final ItemStackHandler upgradesHandler = createHandler();
+    protected final LazyOptional<IItemHandler> handler = LazyOptional.of(() -> upgradesHandler);
+
+    private RECIPE recipe;
+
     public LazyOptional<IEnergyStorage> getEnergy() {
         return energy;
     }
 
-    protected final LazyOptional<IEnergyStorage> energy = LazyOptional.of(() -> energyStorage);
-
-    protected final Map<Direction, LazyOptional<WrappedHandler>> directionWrappedHandlerMap = initDirectionalHandler();
-
-    protected Map<Direction, LazyOptional<WrappedHandler>> initDirectionalHandler() {
-        Map<Direction, LazyOptional<WrappedHandler>> map = new java.util.HashMap<>();
-        map.put(Direction.UP, LazyOptional.of(() -> new WrappedHandler(itemHandler, (index) -> index != 12321,
-                (index, stack) -> itemHandler.isItemValid(1, stack))));
-        map.put(Direction.DOWN, LazyOptional.of(() -> new WrappedHandler(itemHandler, (index) -> index != 12321,
-                (index, stack) -> itemHandler.isItemValid(1, stack))));
-        map.put(Direction.NORTH, LazyOptional.of(() -> new WrappedHandler(itemHandler, (index) -> index != 12321,
-                (index, stack) -> itemHandler.isItemValid(1, stack))));
-        map.put(Direction.SOUTH, LazyOptional.of(() -> new WrappedHandler(itemHandler, (index) -> index != 12321,
-                (index, stack) -> itemHandler.isItemValid(1, stack))));
-        map.put(Direction.WEST, LazyOptional.of(() -> new WrappedHandler(itemHandler, (index) -> index != 12321,
-                (index, stack) -> itemHandler.isItemValid(1, stack))));
-        map.put(Direction.EAST, LazyOptional.of(() -> new WrappedHandler(itemHandler, (index) -> index != 12321,
-                (index, stack) -> itemHandler.isItemValid(1, stack))));
-        return map;
-    }
+    protected final LazyOptional<IEnergyStorage> energy;
 
 
-    protected int counter;
+    public RecipeInfo recipeInfo = new RecipeInfo();
 
     public ProcessorPrefab prefab() {
         if(prefab == null) {
@@ -80,25 +60,36 @@ public class NCProcessor extends NuclearCraftBE {
 
     protected ProcessorPrefab prefab;
 
-    private ItemStackHandler createHandler() {
-        return new ItemStackHandler(prefab().getTotalItemSlots()) {
+    private void updateRecipe() {
+        recipe = (RECIPE) getRecipe();
+        if (recipeIsStuck()) return;
 
-            @Override
-            protected void onContentsChanged(int slot) {
-                setChanged();
-            }
+    }
 
-            @Override
-            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-                return true;//todo recipe validator
-            }
+    public RECIPE getRecipe() {
+        return recipe;
+    }
 
-            @Nonnull
-            @Override
-            public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-                return super.insertItem(slot, stack, simulate);
-            }
-        };
+    private void handleRecipeOutput() {
+
+    }
+
+    public boolean canProcessRecipeOutputs() {
+        boolean canProcess = true;
+
+
+        return canProcess;
+    }
+
+    public boolean recipeIsStuck() {
+        if (recipeInfo.isCompleted() || recipeInfo.recipe == null) {
+            handleRecipeOutput();
+        }
+        return false;
+    }
+
+    public boolean hasRecipe() {
+        return !recipeIsStuck() && recipeInfo.recipe != null;
     }
 
     private CustomEnergyStorage createEnergy() {
@@ -110,30 +101,35 @@ public class NCProcessor extends NuclearCraftBE {
         };
     }
 
+    private ItemStackHandler createHandler() {
+        return new ItemStackHandler(prefab().getUpgradesSlots()) {
 
+            @Override
+            protected void onContentsChanged(int slot) {
+                setChanged();
+            }
+
+            @Override
+            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+                return true;
+            }
+
+            @Nonnull
+            @Override
+            public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+                return super.insertItem(slot, stack, simulate);
+            }
+        };
+    }
 
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if (cap == ForgeCapabilities.ITEM_HANDLER) {
-            if(side == null) {
-                return handler.cast();
-            }
-            if(directionWrappedHandlerMap.containsKey(side)) {
-                Direction localDir = getBlockState().getValue(NCProcessorBlock.FACING);
-
-                if(side == Direction.UP || side == Direction.DOWN) {
-                    return directionWrappedHandlerMap.get(side).cast();
-                }
-
-                return switch (localDir) {
-                    default -> directionWrappedHandlerMap.get(side.getOpposite()).cast();
-                    case EAST -> directionWrappedHandlerMap.get(side.getClockWise()).cast();
-                    case SOUTH -> directionWrappedHandlerMap.get(side).cast();
-                    case WEST -> directionWrappedHandlerMap.get(side.getCounterClockWise()).cast();
-                };
-            }
-            return handler.cast();
+            return contentHandler.getItemCapability(side);
+        }
+        if (cap == ForgeCapabilities.FLUID_HANDLER) {
+            return contentHandler.getFluidCapability(side);
         }
         if (cap == ForgeCapabilities.ENERGY) {
             return energy.cast();
@@ -141,14 +137,16 @@ public class NCProcessor extends NuclearCraftBE {
         return super.getCapability(cap, side);
     }
 
-    public NCProcessor(BlockEntityType<?> pType, BlockPos pPos, BlockState pBlockState, String name) {
-        super(pType, pPos, pBlockState);
-    }
-
     public NCProcessor(BlockPos pPos, BlockState pBlockState, String name) {
         super(NCProcessors.PROCESSORS_BE.get(name).get(), pPos, pBlockState);
         this.name = name;
         prefab = Processors.all().get(name);
+        contentHandler = new SidedContentHandler(
+                prefab().getSlotsConfig().getInputItems(), prefab().getSlotsConfig().getOutputItems(),
+                prefab().getSlotsConfig().getInputFluids(), prefab().getSlotsConfig().getOutputFluids());
+        contentHandler.setProcessor(this);
+        energyStorage = createEnergy();
+        energy = LazyOptional.of(() -> energyStorage);
     }
 
     public void tickClient() {
@@ -166,37 +164,39 @@ public class NCProcessor extends NuclearCraftBE {
     @Override
     public void setRemoved() {
         super.setRemoved();
-        handler.invalidate();
+        contentHandler.invalidate();
         energy.invalidate();
     }
 
-
     @Override
     public void load(CompoundTag tag) {
-        if (tag.contains("Inventory")) {
-            itemHandler.deserializeNBT(tag.getCompound("Inventory"));
-        }
         if (tag.contains("Energy")) {
             energyStorage.deserializeNBT(tag.get("Energy"));
         }
+        if (tag.contains("Content")) {
+            contentHandler.deserializeNBT(tag.getCompound("Content"));
+        }
         if (tag.contains("Info")) {
-            counter = tag.getCompound("Info").getInt("Counter");
+            CompoundTag infoTag = tag.getCompound("Info");
+            readTagData(infoTag);
+            upgradesHandler.deserializeNBT((CompoundTag) (infoTag).get("upgrades"));
         }
         super.load(tag);
     }
 
     @Override
     public void saveAdditional(CompoundTag tag) {
-        tag.put("Inventory", itemHandler.serializeNBT());
+        tag.put("Content", contentHandler.serializeNBT());
         tag.put("Energy", energyStorage.serializeNBT());
 
         CompoundTag infoTag = new CompoundTag();
-        infoTag.putInt("Counter", counter);
+        saveTagData(infoTag);
+        infoTag.put("upgrades", upgradesHandler.serializeNBT());
         tag.put("Info", infoTag);
     }
 
     public double getProgress() {
-        return ((double)timeProcessed)/processTime;
+        return recipeInfo.getProgress();
     }
 
     @Override
@@ -209,7 +209,12 @@ public class NCProcessor extends NuclearCraftBE {
     private void loadClientData(CompoundTag tag) {
         if (tag.contains("Info")) {
             CompoundTag infoTag = tag.getCompound("Info");
+            readTagData(infoTag);
             energyStorage.setEnergy(infoTag.getInt("energy"));
+            upgradesHandler.deserializeNBT((CompoundTag) (infoTag).get("upgrades"));
+        }
+        if (tag.contains("Content")) {
+            contentHandler.deserializeNBT(tag.getCompound("Content"));
         }
     }
 
@@ -222,7 +227,12 @@ public class NCProcessor extends NuclearCraftBE {
 
     private void saveClientData(CompoundTag tag) {
         CompoundTag infoTag = new CompoundTag();
+        saveTagData(infoTag);
+        infoTag.put("upgrades", upgradesHandler.serializeNBT());
         tag.put("Info", infoTag);
+        tag.put("Content", contentHandler.serializeNBT());
+
+
         infoTag.putInt("energy", energyStorage.getEnergyStored());
     }
 
@@ -236,7 +246,6 @@ public class NCProcessor extends NuclearCraftBE {
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
         int oldEnergy = energyStorage.getEnergyStored();
 
-
         CompoundTag tag = pkt.getTag();
         handleUpdateTag(tag);
 
@@ -244,5 +253,18 @@ public class NCProcessor extends NuclearCraftBE {
             //requestModelDataUpdate();
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
         }
+    }
+
+    public void toggleSideConfig(int slotId, int direction) {
+        contentHandler.toggleSideConfig(slotId, direction);
+        setChanged();
+    }
+
+    public Direction getFacing() {
+        return getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);
+    }
+
+    public SlotModePair.SlotMode getSlotMode(int direction, int slotId) {
+        return contentHandler.getSlotMode(direction, slotId);
     }
 }

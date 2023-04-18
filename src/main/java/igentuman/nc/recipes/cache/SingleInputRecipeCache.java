@@ -1,11 +1,10 @@
 package igentuman.nc.recipes.cache;
 
-import igentuman.nc.handler.NCItemStackHandler;
+import igentuman.nc.util.sided.capability.NCItemStackHandler;
 import igentuman.nc.recipes.NcRecipe;
 import igentuman.nc.recipes.NcRecipeType;
 import igentuman.nc.recipes.cache.type.IInputCache;
 import igentuman.nc.recipes.ingredient.InputIngredient;
-import igentuman.nc.recipes.ingredient.creator.ItemStackIngredientCreator;
 import igentuman.nc.util.functions.ConstantPredicates;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;

@@ -1,6 +1,6 @@
 package igentuman.nc.recipes.lookup;
 
-import igentuman.nc.handler.NCItemStackHandler;
+import igentuman.nc.util.sided.capability.NCItemStackHandler;
 import igentuman.nc.recipes.NcRecipe;
 import igentuman.nc.recipes.cache.InputRecipeCache;
 import igentuman.nc.recipes.cache.SingleInputRecipeCache;

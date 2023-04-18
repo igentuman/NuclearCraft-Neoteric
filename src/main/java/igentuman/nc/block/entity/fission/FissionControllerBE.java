@@ -1,17 +1,11 @@
 package igentuman.nc.block.entity.fission;
 
-import igentuman.nc.handler.NCItemStackHandler;
+import igentuman.nc.util.sided.capability.NCItemStackHandler;
 import igentuman.nc.multiblock.fission.FissionReactorMultiblock;
 import igentuman.nc.recipes.*;
-import igentuman.nc.recipes.cache.CachedRecipe;
 import igentuman.nc.recipes.cache.InputRecipeCache.SingleItem;
-import igentuman.nc.recipes.cache.OneInputCachedRecipe;
-import igentuman.nc.recipes.inputs.IInputHandler;
-import igentuman.nc.recipes.inputs.InputHelper;
 import igentuman.nc.recipes.lookup.ISingleRecipeLookupHandler.ItemRecipeLookupHandler;
-import igentuman.nc.recipes.lookup.monitor.RecipeCacheLookupMonitor;
 import igentuman.nc.recipes.multiblock.FissionRecipe;
-import igentuman.nc.recipes.outputs.IOutputHandler;
 import igentuman.nc.setup.registration.NCFluids;
 import igentuman.nc.util.CustomEnergyStorage;
 import igentuman.nc.util.annotation.NBTField;
@@ -21,7 +15,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.block.Block;
@@ -36,8 +29,6 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import java.util.Optional;
 
 import static igentuman.nc.handler.config.CommonConfig.FissionConfig.*;
 
@@ -112,7 +103,7 @@ public class FissionControllerBE extends FissionBE implements ItemRecipeLookupHa
     }
 
     private NCItemStackHandler createHandler() {
-        return new NCItemStackHandler(3) {
+        return new NCItemStackHandler(2,1) {
 
             @Override
             protected void onContentsChanged(int slot) {

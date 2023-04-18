@@ -10,6 +10,16 @@ import net.minecraftforge.network.NetworkEvent;
 public class PacketGuiButtonPress implements INcPacket {
 
     private BlockPos tilePosition;
+    private int buttonId;
+
+    public PacketGuiButtonPress(Object position, int bId) {
+        this.tilePosition = (BlockPos) position;
+        buttonId = bId;
+    }
+
+    public PacketGuiButtonPress() {
+
+    }
 
 
     @Override
@@ -29,6 +39,7 @@ public class PacketGuiButtonPress implements INcPacket {
     public static PacketGuiButtonPress decode(FriendlyByteBuf buffer) {
          PacketGuiButtonPress packet = new PacketGuiButtonPress();
           packet.tilePosition = buffer.readBlockPos();
+          packet.buttonId = buffer.readInt();
           return packet;
     }
 

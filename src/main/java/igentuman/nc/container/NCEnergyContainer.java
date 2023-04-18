@@ -166,7 +166,7 @@ public class NCEnergyContainer extends AbstractContainerMenu {
     }
 
     public IEnergyStorage getEnergy() {
-        return blockEntity.getEnergy().orElse(null);
+        return (IEnergyStorage) blockEntity.getEnergy().orElse(null);
     }
 
     public double getProgress() {

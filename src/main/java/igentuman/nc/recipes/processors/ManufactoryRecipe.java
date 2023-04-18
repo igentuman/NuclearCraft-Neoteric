@@ -52,7 +52,7 @@ public class ManufactoryRecipe extends ItemStackToItemStackRecipe {
         return new ItemStack(NCProcessors.PROCESSORS.get(ID).get());
     }
 
-    public int getEnergy() {
+    public double getEnergy() {
         return Processors.all().get(ID).config().getPower();
     }
 

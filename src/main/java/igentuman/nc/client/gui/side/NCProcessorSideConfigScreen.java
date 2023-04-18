@@ -4,7 +4,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import igentuman.nc.client.NcClient;
 import igentuman.nc.client.gui.element.NCGuiElement;
-import igentuman.nc.client.gui.element.bar.EnergyBar;
 import igentuman.nc.client.gui.element.button.Button;
 import igentuman.nc.client.gui.element.slot.BigSlot;
 import igentuman.nc.client.gui.element.slot.NormalSlot;
@@ -46,7 +45,6 @@ public class NCProcessorSideConfigScreen<T extends NCProcessorContainer> extends
         NCGuiElement.RELATIVE_X = relX;
         NCGuiElement.RELATIVE_Y = relY;
     }
-
 
 
     protected void init() {

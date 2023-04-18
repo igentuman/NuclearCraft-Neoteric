@@ -104,15 +104,14 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
     }
 
     public void toggleSideConfig(int slotId, int direction) {
-        int relativeDir = relativeDirection(direction);
         if(slotId < inputItemSlots) {
-            itemHandler.toggleSideConfig(slotId, relativeDir);
+            itemHandler.toggleMode(slotId, direction);
         } else if(slotId < inputItemSlots+outputItemSlots) {
-            itemHandler.toggleSideConfig(slotId, relativeDir);
+            itemHandler.toggleMode(slotId, direction);
         } else if(slotId < inputItemSlots+outputItemSlots+inputFluidSlots) {
-            fluidCapability.toggleSideConfig(slotId-inputItemSlots-outputItemSlots, relativeDir);
+            fluidCapability.toggleMode(slotId-inputItemSlots-outputItemSlots, direction);
         } else if(slotId < inputItemSlots+outputItemSlots+inputFluidSlots+outputFluidSlots) {
-            fluidCapability.toggleSideConfig(slotId-inputItemSlots-outputItemSlots, relativeDir);
+            fluidCapability.toggleMode(slotId-inputItemSlots-outputItemSlots, direction);
         }
     }
 
@@ -121,15 +120,14 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
     }
 
     public SlotModePair.SlotMode getSlotMode(int direction, int slotId) {
-        int relativeDir = relativeDirection(direction);
         if(slotId < inputItemSlots) {
-            return itemHandler.getSlotMode(slotId, relativeDir);
+            return itemHandler.getMode(slotId, direction);
         } else if(slotId < inputItemSlots+outputItemSlots) {
-            return itemHandler.getSlotMode(slotId, relativeDir);
+            return itemHandler.getMode(slotId, direction);
         } else if(slotId < inputItemSlots+outputItemSlots+inputFluidSlots) {
-            return fluidCapability.getSlotMode(slotId-inputItemSlots-outputItemSlots, relativeDir);
+            return fluidCapability.getMode(slotId-inputItemSlots-outputItemSlots, direction);
         } else if(slotId < inputItemSlots+outputItemSlots+inputFluidSlots+outputFluidSlots) {
-            return fluidCapability.getSlotMode(slotId-inputItemSlots-outputItemSlots, relativeDir);
+            return fluidCapability.getMode(slotId-inputItemSlots-outputItemSlots, direction);
         }
         return null;
     }
@@ -137,5 +135,46 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
     public enum SlotType {
         INPUT,
         OUTPUT;
+    }
+
+    public enum RelativeDirection {
+        FRONT,
+        BACK,
+        LEFT,
+        RIGHT,
+        UP,
+        DOWN;
+
+        public static Direction toAbsolute(RelativeDirection relativeDirection, Direction facing) {
+            switch (relativeDirection) {
+                case FRONT:
+                    return facing;
+                case BACK:
+                    return facing.getOpposite();
+                case LEFT:
+                    return facing.getClockWise();
+                case RIGHT:
+                    return facing.getCounterClockWise();
+                case UP:
+                    return Direction.UP;
+                case DOWN:
+                    return Direction.DOWN;
+            }
+            return null;
+        }
+
+        public static RelativeDirection toRelative(Direction absoluteDirection, Direction facing) {
+            if(absoluteDirection == facing) return FRONT;
+            if(absoluteDirection == facing.getOpposite()) return BACK;
+            if(absoluteDirection == facing.getClockWise()) return LEFT;
+            if(absoluteDirection == facing.getCounterClockWise()) return RIGHT;
+            if(absoluteDirection == Direction.UP) return UP;
+            if(absoluteDirection == Direction.DOWN) return DOWN;
+            return null;
+        }
+
+        public static String getDirectionName(int direction) {
+            return values()[direction].name().toUpperCase();
+        }
     }
 }

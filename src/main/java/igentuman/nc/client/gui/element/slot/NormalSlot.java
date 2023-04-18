@@ -4,13 +4,14 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import igentuman.nc.client.gui.element.NCGuiElement;
 import igentuman.nc.client.gui.side.NCProcessorSideConfigScreen;
 import igentuman.nc.client.gui.side.SideConfigWindowScreen;
+import igentuman.nc.util.sided.SlotModePair;
 import net.minecraft.client.Minecraft;
 
 public class NormalSlot extends NCGuiElement {
     public int xOffset = 0;
     public int yOffset = 0;
     String type;
-    public int color = 0x804A0404;
+    public int color = SlotModePair.SlotMode.OUTPUT.getColor();
 
     public NormalSlot(int[] pos, String pType)  {
         this(pos[0], pos[1], pType);
@@ -23,7 +24,7 @@ public class NormalSlot extends NCGuiElement {
         height = 18;
         type = pType;
         if(type.contains("_in")) {
-            color = 0x8004224a;
+            color = SlotModePair.SlotMode.INPUT.getColor();
         }
     }
 

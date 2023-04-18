@@ -22,7 +22,7 @@ public class ProcessorPrefab <M extends NCProcessorContainer, U extends Screen &
     private boolean initialized;
     private Boolean registered = true;
 
-    protected String name;
+    public String name;
 
     public boolean supportSpeedUpgrade = true;
     protected int power = 200;

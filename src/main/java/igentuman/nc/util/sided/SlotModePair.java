@@ -47,26 +47,32 @@ public class SlotModePair {
 
     // pack slotMode and slot into one int
     public int pack() {
-        return Integer.parseInt(String.format("%d%d",slotMode.ordinal(), slot));
+        return slotMode.ordinal()*100+slot;
     }
 
     public static SlotModePair unpack(int packedValue) {
-        String val = String.valueOf(packedValue);//first digit is always slot mode, the rest is slot
-        return new SlotModePair(Integer.parseInt(val.substring(0, 1)), Integer.parseInt(val.substring(1, val.length())));
+        int slotMode = packedValue/100;
+        int slot = packedValue%100;
+        return new SlotModePair(slotMode, slot);
     }
 
     public enum SlotMode {
-        DEFAULT("default", 0x000000),
-        INPUT("input", 0x0000FF),
-        OUTPUT("output", 0xFF0000),
-        DISABLED("disabled", 0x000000);
+        DEFAULT(0x80808080),
+        INPUT(0x80007BFF),
+        PULL(0x802A28C9),
+        OUTPUT(0x80FF7B2C),
+        PUSH(0x80C9BF38),
+        PUSH_EXCESS(0x80C9221C),
+        DISABLED(0x80000000);
 
-        private String name;
         private int color;
 
-        SlotMode(String name, int color) {
-            this.name = name;
+        SlotMode(int color) {
             this.color = color;
+        }
+
+        public int getColor() {
+            return color;
         }
     }
 }

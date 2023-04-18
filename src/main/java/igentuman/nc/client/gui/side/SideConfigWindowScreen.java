@@ -7,6 +7,7 @@ import igentuman.nc.client.gui.element.NCGuiElement;
 import igentuman.nc.client.gui.element.button.Button;
 import igentuman.nc.client.gui.element.button.SideConfig;
 import igentuman.nc.container.NCProcessorContainer;
+import igentuman.nc.util.sided.SidedContentHandler;
 import igentuman.nc.util.sided.SlotModePair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Widget;
@@ -19,8 +20,10 @@ import net.minecraft.world.entity.player.Inventory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.NuclearCraft.rl;
 
 public class SideConfigWindowScreen<T extends NCProcessorContainer> extends AbstractContainerScreen<T> {
     protected final ResourceLocation GUI = new ResourceLocation(MODID, "textures/gui/small_window.png");
@@ -28,7 +31,6 @@ public class SideConfigWindowScreen<T extends NCProcessorContainer> extends Abst
     protected int relY;
 
     protected AbstractContainerScreen parentScreen;
-
 
     private int slotId;
 
@@ -53,14 +55,15 @@ public class SideConfigWindowScreen<T extends NCProcessorContainer> extends Abst
         super.init();
         updateRelativeCords();
         widgets.clear();
-        int x = 30;
-        int y = 10;
-        widgets.add(new SideConfig(x, y, slotId, this, Direction.UP.ordinal()));
-        widgets.add(new SideConfig(x-22, y+22, slotId, this, Direction.WEST.ordinal()));
-        widgets.add(new SideConfig(x, y+22, slotId, this, Direction.NORTH.ordinal()));
-        widgets.add(new SideConfig(x+22, y+22, slotId, this, Direction.EAST.ordinal()));
-        widgets.add(new SideConfig(x-22, y+44, slotId, this, Direction.SOUTH.ordinal()));
-        widgets.add(new SideConfig(x, y+44, slotId, this, Direction.DOWN.ordinal()));
+        int x = 40;
+        int y = 20;
+        String processor = menu.getProcessor().name;
+        widgets.add(new SideConfig(x, y, slotId, this, SidedContentHandler.RelativeDirection.UP.ordinal(), rl("textures/block/processor/top.png")));
+        widgets.add(new SideConfig(x-20, y+20, slotId, this,  SidedContentHandler.RelativeDirection.LEFT.ordinal(), rl("textures/block/processor/side.png")));
+        widgets.add(new SideConfig(x, y+20, slotId, this,  SidedContentHandler.RelativeDirection.FRONT.ordinal(), rl("textures/block/processor/"+processor+".png")));
+        widgets.add(new SideConfig(x+20, y+20, slotId, this,  SidedContentHandler.RelativeDirection.RIGHT.ordinal(), rl("textures/block/processor/side.png")));
+        widgets.add(new SideConfig(x-20, y+40, slotId, this,  SidedContentHandler.RelativeDirection.BACK.ordinal(), rl("textures/block/processor/back.png")));
+        widgets.add(new SideConfig(x, y+40, slotId, this,  SidedContentHandler.RelativeDirection.DOWN.ordinal(), rl("textures/block/processor/bottom.png")));
         widgets.add(new Button.CloseConfig(6, 6, this));
     }
 
@@ -103,6 +106,7 @@ public class SideConfigWindowScreen<T extends NCProcessorContainer> extends Abst
         this.hoveredSlot = null;
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         this.renderLabels(matrixStack, mouseX, mouseY);
+        renderTooltips(matrixStack, mouseX-relX, mouseY-relY);
         posestack.popPose();
         RenderSystem.applyModelViewMatrix();
         RenderSystem.enableDepthTest();
@@ -112,6 +116,14 @@ public class SideConfigWindowScreen<T extends NCProcessorContainer> extends Abst
     private void renderWidgets(PoseStack matrix, float partialTicks, int mouseX, int mouseY) {
         for(NCGuiElement widget: widgets) {
             widget.draw(matrix, mouseX, mouseY, partialTicks);
+        }
+    }
+
+    private void renderTooltips(PoseStack pPoseStack, int pMouseX, int pMouseY) {
+        for(NCGuiElement widget: widgets) {
+            if(widget.isMouseOver(pMouseX, pMouseY)) {
+                renderTooltip(pPoseStack, widget.getTooltips(),Optional.empty(), pMouseX, pMouseY);
+            }
         }
     }
 

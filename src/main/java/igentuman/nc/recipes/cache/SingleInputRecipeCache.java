@@ -1,6 +1,6 @@
 package igentuman.nc.recipes.cache;
 
-import igentuman.nc.util.sided.capability.NCItemStackHandler;
+import igentuman.nc.util.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.recipes.NcRecipe;
 import igentuman.nc.recipes.NcRecipeType;
 import igentuman.nc.recipes.cache.type.IInputCache;
@@ -71,7 +71,7 @@ public abstract class SingleInputRecipeCache<INPUT, INGREDIENT extends InputIngr
     }
 
     @Nullable
-    public RECIPE findFirstRecipe(@Nullable Level world, NCItemStackHandler input) {
+    public RECIPE findFirstRecipe(@Nullable Level world, ItemCapabilityHandler input) {
 /*        if (cache.isEmpty((INPUT) ItemStackIngredientCreator.INSTANCE.from(input.getStackInSlot(0)))) {
             //Don't allow empty inputs
             return null;

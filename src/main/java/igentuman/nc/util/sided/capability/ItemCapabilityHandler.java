@@ -15,16 +15,15 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
-import java.util.HashMap;
 
-public class NCItemStackHandler extends AbscractCapabilityHandler implements IItemHandler, IItemHandlerModifiable, INBTSerializable<CompoundTag> {
+public class ItemCapabilityHandler extends AbscractCapabilityHandler implements IItemHandler, IItemHandlerModifiable, INBTSerializable<CompoundTag> {
 
-    public HashMap<Integer, SlotModePair[]> sideMap = new HashMap<>();
     protected NonNullList<ItemStack> stacks;
 
-    public NCItemStackHandler(int input, int output) {
+    public ItemCapabilityHandler(int input, int output) {
         this.inputSlots = input;
         this.outputSlots = output;
+        stacks = NonNullList.withSize(input+output, ItemStack.EMPTY);
         initDefault();
     }
 
@@ -190,41 +189,6 @@ public class NCItemStackHandler extends AbscractCapabilityHandler implements IIt
         return 0;
     }
 
-
-    public SidedContentHandler.SlotType getType(int slot) {
-        return slot < inputSlots ? SidedContentHandler.SlotType.INPUT : SidedContentHandler.SlotType.OUTPUT;
-    }
-
-    public SlotModePair.SlotMode getMode(int slot, int side) {
-        return sideMap.get(side)[slot].getMode();
-    }
-
-    public void toggleMode(int slot, int side) {
-        SlotModePair[] sideSlots = sideMap.get(side);
-        SlotModePair slotModePair = sideSlots[slot];
-        SlotModePair.SlotMode mode = slotModePair.getMode();
-
-        if(getType(slot) == SidedContentHandler.SlotType.INPUT) {
-            if (mode == SlotMode.DISABLED) {
-                sideSlots[slot] = new SlotModePair(SlotMode.INPUT, slot);
-            } else if (mode == SlotMode.INPUT) {
-                sideSlots[slot] = new SlotModePair(SlotMode.PULL, slot);
-            } else if (mode == SlotMode.PULL) {
-                sideSlots[slot] = new SlotModePair(SlotMode.DISABLED, slot);
-            }
-        } else {
-            if (mode == SlotModePair.SlotMode.DISABLED) {
-                sideSlots[slot] = new SlotModePair(SlotMode.OUTPUT, slot);
-            } else if (mode == SlotMode.OUTPUT) {
-                sideSlots[slot] = new SlotModePair(SlotMode.PUSH, slot);
-            } else if (mode == SlotMode.PUSH) {
-                sideSlots[slot] = new SlotModePair(SlotMode.PUSH_EXCESS, slot);
-            } else if (mode == SlotMode.PUSH_EXCESS) {
-                sideSlots[slot] = new SlotModePair(SlotMode.DISABLED, slot);
-            }
-        }
-    }
-
     @Override
     public CompoundTag serializeNBT()
     {
@@ -242,7 +206,10 @@ public class NCItemStackHandler extends AbscractCapabilityHandler implements IIt
         CompoundTag nbt = new CompoundTag();
         nbt.put("Items", nbtTagList);
         nbt.putInt("Size", stacks.size());
-        nbt.put("sideMap", SidedContentHandler.serializeSideMap(sideMap));
+        if(sideMapUpdated) {
+            sideMapUpdated = false;
+            nbt.put("sideMap", SidedContentHandler.serializeSideMap(sideMap));
+        }
         return nbt;
     }
 
@@ -266,7 +233,9 @@ public class NCItemStackHandler extends AbscractCapabilityHandler implements IIt
                 stacks.set(slot, ItemStack.of(itemTags));
             }
         }
-        sideMap = SidedContentHandler.deserializeSideMap(nbt.getCompound("sideMap"));
+        if(!nbt.getCompound("sideMap").isEmpty()) {
+            sideMap = SidedContentHandler.deserializeSideMap(nbt.getCompound("sideMap"));
+        }
         onLoad();
 
     }

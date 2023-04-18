@@ -14,13 +14,12 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import java.util.HashMap;
 
-public class FluidMultiTank extends AbscractCapabilityHandler implements INBTSerializable<CompoundTag> {
+public class FluidCapabilityHandler extends AbscractCapabilityHandler implements INBTSerializable<CompoundTag> {
     private final int CAPACITY;
     public final NonNullList<FluidTank> tanks;
     public final NonNullList<LazyOptional<IFluidHandler>> fluidCapabilites;
-    public HashMap<Integer, SlotModePair[]> sideMap;
 
-    public FluidMultiTank(int inputSlots, int outputSlots, int amount) {
+    public FluidCapabilityHandler(int inputSlots, int outputSlots, int amount) {
         CAPACITY = amount;
         tanks = NonNullList.withSize(inputSlots + outputSlots, new FluidTank(CAPACITY));
 
@@ -34,7 +33,7 @@ public class FluidMultiTank extends AbscractCapabilityHandler implements INBTSer
         initDefault();
     }
 
-    public FluidMultiTank(int inputSlots, int outputSlots) {
+    public FluidCapabilityHandler(int inputSlots, int outputSlots) {
         this(inputSlots, outputSlots, FluidType.BUCKET_VOLUME*10);
     }
 
@@ -64,7 +63,10 @@ public class FluidMultiTank extends AbscractCapabilityHandler implements INBTSer
             tag.put("tank" + i, tanks.get(i).writeToNBT(new CompoundTag()));
         }
         tag.putInt("size", tanks.size());
-        tag.put("sideMap", SidedContentHandler.serializeSideMap(sideMap));
+        if(sideMapUpdated) {
+            sideMapUpdated = false;
+            tag.put("sideMap", SidedContentHandler.serializeSideMap(sideMap));
+        }
         return tag;
     }
 
@@ -73,6 +75,8 @@ public class FluidMultiTank extends AbscractCapabilityHandler implements INBTSer
         for (int i = 0; i < size; i++) {
             tanks.get(i).readFromNBT(nbt.getCompound("tank" + i));
         }
-        sideMap = SidedContentHandler.deserializeSideMap(nbt.getCompound("sideMap"));
+        if(!nbt.getCompound("sideMap").isEmpty()) {
+            sideMap = SidedContentHandler.deserializeSideMap(nbt.getCompound("sideMap"));
+        }
     }
 }

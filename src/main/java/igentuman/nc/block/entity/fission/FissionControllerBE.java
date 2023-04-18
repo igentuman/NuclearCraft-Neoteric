@@ -1,6 +1,6 @@
 package igentuman.nc.block.entity.fission;
 
-import igentuman.nc.util.sided.capability.NCItemStackHandler;
+import igentuman.nc.util.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.multiblock.fission.FissionReactorMultiblock;
 import igentuman.nc.recipes.*;
 import igentuman.nc.recipes.cache.InputRecipeCache.SingleItem;
@@ -35,7 +35,7 @@ import static igentuman.nc.handler.config.CommonConfig.FissionConfig.*;
 public class FissionControllerBE extends FissionBE implements ItemRecipeLookupHandler<ItemStackToItemStackRecipe> {
 
     public static String NAME = "fission_reactor_controller";
-    public final NCItemStackHandler itemHandler = createHandler();
+    public final ItemCapabilityHandler itemHandler = createHandler();
     public final CustomEnergyStorage energyStorage = createEnergy();
     protected final LazyOptional<IItemHandler> handler = LazyOptional.of(() -> itemHandler);
     protected final LazyOptional<IEnergyStorage> energy = LazyOptional.of(() -> energyStorage);
@@ -102,8 +102,8 @@ public class FissionControllerBE extends FissionBE implements ItemRecipeLookupHa
         return energy;
     }
 
-    private NCItemStackHandler createHandler() {
-        return new NCItemStackHandler(2,1) {
+    private ItemCapabilityHandler createHandler() {
+        return new ItemCapabilityHandler(2,1) {
 
             @Override
             protected void onContentsChanged(int slot) {

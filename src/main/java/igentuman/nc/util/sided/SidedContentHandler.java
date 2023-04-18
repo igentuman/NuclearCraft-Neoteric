@@ -2,16 +2,14 @@ package igentuman.nc.util.sided;
 
 import igentuman.nc.block.entity.processor.NCProcessor;
 import igentuman.nc.recipes.NcRecipe;
-import igentuman.nc.util.sided.capability.FluidMultiTank;
-import igentuman.nc.util.sided.capability.NCItemStackHandler;
+import igentuman.nc.util.sided.capability.FluidCapabilityHandler;
+import igentuman.nc.util.sided.capability.ItemCapabilityHandler;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 
-import javax.annotation.Nonnull;
 import java.util.HashMap;
 
 public class SidedContentHandler implements INBTSerializable<Tag> {
@@ -20,9 +18,9 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
     public final int outputItemSlots;
     public final int inputFluidSlots;
     public final int outputFluidSlots;
-    public final NCItemStackHandler itemHandler;
-    public final LazyOptional<NCItemStackHandler> itemCapability;
-    public final FluidMultiTank fluidCapability;
+    public final ItemCapabilityHandler itemHandler;
+    public final LazyOptional<ItemCapabilityHandler> itemCapability;
+    public final FluidCapabilityHandler fluidCapability;
 
     public NCProcessor processor;
 
@@ -31,9 +29,18 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
         this.outputItemSlots = outputItemSlots;
         this.inputFluidSlots = inputFluidSlots;
         this.outputFluidSlots = outputFluidSlots;
-        itemHandler = new NCItemStackHandler(inputItemSlots, outputItemSlots);
-        itemCapability = LazyOptional.of(() -> itemHandler);
-        fluidCapability = new FluidMultiTank(inputFluidSlots, outputFluidSlots);
+        if(inputItemSlots + outputItemSlots > 0) {
+            itemHandler = new ItemCapabilityHandler(inputItemSlots, outputItemSlots);
+            itemCapability = LazyOptional.of(() -> itemHandler);
+        } else {
+            itemHandler = null;
+            itemCapability = LazyOptional.empty();
+        }
+        if(inputFluidSlots + outputFluidSlots > 0) {
+            fluidCapability = new FluidCapabilityHandler(inputFluidSlots, outputFluidSlots);
+        } else {
+            fluidCapability = null;
+        }
     }
 
     public static Tag serializeSideMap(HashMap<Integer, SlotModePair[]> sideMap) {
@@ -55,15 +62,23 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
     @Override
     public Tag serializeNBT() {
         CompoundTag nbt = new CompoundTag();
-        nbt.put("itemHandler", itemHandler.serializeNBT());
-        nbt.put("fluidHandler", fluidCapability.serializeNBT());
+        if(itemHandler != null) {
+            nbt.put("itemHandler", itemHandler.serializeNBT());
+        }
+        if(fluidCapability != null) {
+            nbt.put("fluidHandler", fluidCapability.serializeNBT());
+        }
         return nbt;
     }
 
     @Override
     public void deserializeNBT(Tag nbt) {
-        itemHandler.deserializeNBT(((CompoundTag) nbt).getCompound("itemHandler"));
-        fluidCapability.deserializeNBT(((CompoundTag) nbt).getCompound("fluidHandler"));
+        if(itemHandler != null) {
+            itemHandler.deserializeNBT(((CompoundTag) nbt).getCompound("itemHandler"));
+        }
+        if(fluidCapability != null) {
+            fluidCapability.deserializeNBT(((CompoundTag) nbt).getCompound("fluidHandler"));
+        }
     }
 
     public <T> LazyOptional<T> getItemCapability(Direction side) {
@@ -87,20 +102,6 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
     }
     public void invalidate() {
         itemCapability.invalidate();
-    }
-
-    public int relativeDirection(int dir)
-    {
-        if(dir == Direction.UP.ordinal() || dir == Direction.DOWN.ordinal())
-            return dir;
-        Direction facing = processor.getFacing();
-        if(dir == Direction.NORTH.ordinal())
-            return facing.ordinal();
-        if(dir == Direction.SOUTH.ordinal())
-            return facing.getOpposite().ordinal();
-        if(dir == Direction.WEST.ordinal())
-            return facing.getClockWise().ordinal();
-        return facing.getCounterClockWise().ordinal();
     }
 
     public void toggleSideConfig(int slotId, int direction) {

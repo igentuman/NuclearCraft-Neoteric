@@ -1,6 +1,6 @@
 package igentuman.nc.recipes.lookup;
 
-import igentuman.nc.util.sided.capability.NCItemStackHandler;
+import igentuman.nc.util.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.recipes.NcRecipe;
 import igentuman.nc.recipes.cache.InputRecipeCache;
 import igentuman.nc.recipes.cache.SingleInputRecipeCache;
@@ -41,7 +41,7 @@ public interface ISingleRecipeLookupHandler<INPUT, RECIPE extends NcRecipe & Pre
     }
 
     @Nullable
-    default RECIPE findFirstRecipe(NCItemStackHandler input) {
+    default RECIPE findFirstRecipe(ItemCapabilityHandler input) {
         return getRecipeType().getInputCache().findFirstRecipe(getHandlerWorld(), input);
     }
 

@@ -10,6 +10,8 @@ import java.util.HashMap;
 public abstract class AbscractCapabilityHandler {
     protected int inputSlots;
     protected int outputSlots;
+    
+    protected boolean sideMapUpdated = true;
     public HashMap<Integer, SlotModePair[]> sideMap;
 
     protected void initDefault() {
@@ -38,7 +40,7 @@ public abstract class AbscractCapabilityHandler {
         SlotModePair[] sideSlots = sideMap.get(side);
         SlotModePair slotModePair = sideSlots[slot];
         SlotMode mode = slotModePair.getMode();
-
+        sideMapUpdated = true;
         if(getType(slot) == SlotType.INPUT) {
             if (mode == SlotMode.DISABLED) {
                 sideSlots[slot] = new SlotModePair(SlotMode.INPUT, slot);

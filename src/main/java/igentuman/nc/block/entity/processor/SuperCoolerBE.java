@@ -1,10 +1,9 @@
 package igentuman.nc.block.entity.processor;
 
-import igentuman.nc.setup.registration.NCProcessors;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class SuperCoolerBE extends NCProcessor {
+public class SuperCoolerBE extends NCProcessorBE {
     public static String NAME = "super_cooler";
     public SuperCoolerBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, NAME);

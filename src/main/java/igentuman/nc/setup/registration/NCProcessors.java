@@ -1,7 +1,7 @@
 package igentuman.nc.setup.registration;
 
 import igentuman.nc.block.NCProcessorBlock;
-import igentuman.nc.block.entity.processor.NCProcessor;
+import igentuman.nc.block.entity.processor.NCProcessorBE;
 import igentuman.nc.container.NCProcessorContainer;
 import igentuman.nc.setup.ModSetup;
 import igentuman.nc.setup.processors.Processors;
@@ -60,7 +60,7 @@ public class NCProcessors {
 
     public static HashMap<String, RegistryObject<MenuType<? extends NCProcessorContainer>>> PROCESSORS_CONTAINERS = new HashMap<>();
 
-    public static HashMap<String, RegistryObject<BlockEntityType<? extends NCProcessor>>> PROCESSORS_BE = new HashMap<>();
+    public static HashMap<String, RegistryObject<BlockEntityType<? extends NCProcessorBE>>> PROCESSORS_BE = new HashMap<>();
 
 
     private static void registerBlockEntities() {

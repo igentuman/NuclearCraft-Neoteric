@@ -1,10 +1,8 @@
 package igentuman.nc.block.fission;
 
 import igentuman.nc.block.entity.fission.FissionControllerBE;
-import igentuman.nc.block.entity.processor.NCProcessor;
 import igentuman.nc.container.FissionControllerContainer;
 import igentuman.nc.setup.multiblocks.FissionReactor;
-import igentuman.nc.setup.processors.Processors;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -32,8 +30,6 @@ import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
-
-import java.lang.reflect.InvocationTargetException;
 
 public class FissionControllerBlock extends HorizontalDirectionalBlock implements EntityBlock {
     public static final DirectionProperty HORIZONTAL_FACING = FACING;

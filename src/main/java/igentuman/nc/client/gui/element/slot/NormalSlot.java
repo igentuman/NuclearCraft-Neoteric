@@ -2,16 +2,16 @@ package igentuman.nc.client.gui.element.slot;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import igentuman.nc.client.gui.element.NCGuiElement;
-import igentuman.nc.client.gui.side.NCProcessorSideConfigScreen;
-import igentuman.nc.client.gui.side.SideConfigWindowScreen;
-import igentuman.nc.util.sided.SlotModePair;
+import igentuman.nc.client.gui.processor.side.SideConfigScreen;
 import net.minecraft.client.Minecraft;
+
+import static igentuman.nc.util.sided.SlotModePair.SlotMode.*;
 
 public class NormalSlot extends NCGuiElement {
     public int xOffset = 0;
     public int yOffset = 0;
     String type;
-    public int color = SlotModePair.SlotMode.OUTPUT.getColor();
+    public int color = OUTPUT.getColor();
 
     public NormalSlot(int[] pos, String pType)  {
         this(pos[0], pos[1], pType);
@@ -24,14 +24,18 @@ public class NormalSlot extends NCGuiElement {
         height = 18;
         type = pType;
         if(type.contains("_in")) {
-            color = SlotModePair.SlotMode.INPUT.getColor();
+            color = INPUT.getColor();
         }
     }
 
-    public void onPress()
+    public boolean onPress()
     {
         if(configFlag) {
-            Minecraft.getInstance().forceSetScreen(new SideConfigWindowScreen<>(screen, slotId));
+            this.playDownSound(Minecraft.getInstance().getSoundManager());
+            Minecraft.getInstance().forceSetScreen(new SideConfigScreen<>(screen, slotId));
+            return true;
+        } else {
+           return super.onPress();
         }
     }
 

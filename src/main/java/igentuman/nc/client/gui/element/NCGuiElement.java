@@ -55,15 +55,14 @@ public class NCGuiElement extends GuiComponent implements Widget, GuiEventListen
     protected float alpha = 1.0F;
     protected boolean focused;
 
-    public void onPress() {
+    public boolean onPress() {
+        return false;
     }
 
     @Override
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
         if(X() <= pMouseX && pMouseX < X() + width && Y() <= pMouseY && pMouseY < Y() + height) {
-            onPress();
-            this.playDownSound(Minecraft.getInstance().getSoundManager());
-            return true;
+            return onPress();
         }
         return false;
     }
@@ -171,7 +170,6 @@ public class NCGuiElement extends GuiComponent implements Widget, GuiEventListen
         return this.message;
     }
 
-
     protected int getYImage(boolean pIsHovered) {
         int i = 1;
         if (!this.active) {
@@ -182,7 +180,6 @@ public class NCGuiElement extends GuiComponent implements Widget, GuiEventListen
 
         return i;
     }
-
 
     @Override
     public NarratableEntry.NarrationPriority narrationPriority() {

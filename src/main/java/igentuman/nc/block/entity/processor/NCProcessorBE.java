@@ -7,12 +7,10 @@ import igentuman.nc.setup.processors.ProcessorPrefab;
 import igentuman.nc.setup.processors.Processors;
 import igentuman.nc.setup.registration.NCProcessors;
 import igentuman.nc.util.CustomEnergyStorage;
-import igentuman.nc.util.annotation.NBTField;
 import igentuman.nc.util.sided.SidedContentHandler;
 import igentuman.nc.util.sided.SlotModePair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -30,7 +28,7 @@ import net.minecraftforge.items.ItemStackHandler;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class NCProcessor <RECIPE extends NcRecipe> extends NuclearCraftBE {
+public class NCProcessorBE<RECIPE extends NcRecipe> extends NuclearCraftBE {
 
     protected String name;
     public static String NAME;
@@ -103,7 +101,6 @@ public class NCProcessor <RECIPE extends NcRecipe> extends NuclearCraftBE {
 
     private ItemStackHandler createHandler() {
         return new ItemStackHandler(prefab().getUpgradesSlots()) {
-
             @Override
             protected void onContentsChanged(int slot) {
                 setChanged();
@@ -112,12 +109,6 @@ public class NCProcessor <RECIPE extends NcRecipe> extends NuclearCraftBE {
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
                 return true;
-            }
-
-            @Nonnull
-            @Override
-            public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-                return super.insertItem(slot, stack, simulate);
             }
         };
     }
@@ -137,7 +128,7 @@ public class NCProcessor <RECIPE extends NcRecipe> extends NuclearCraftBE {
         return super.getCapability(cap, side);
     }
 
-    public NCProcessor(BlockPos pPos, BlockState pBlockState, String name) {
+    public NCProcessorBE(BlockPos pPos, BlockState pBlockState, String name) {
         super(NCProcessors.PROCESSORS_BE.get(name).get(), pPos, pBlockState);
         this.name = name;
         prefab = Processors.all().get(name);
@@ -153,7 +144,7 @@ public class NCProcessor <RECIPE extends NcRecipe> extends NuclearCraftBE {
     }
 
     public void tickServer() {
-
+        contentHandler.tick();
         level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
     }
 

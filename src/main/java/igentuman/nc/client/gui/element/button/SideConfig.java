@@ -4,11 +4,10 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.client.gui.element.NCGuiElement;
-import igentuman.nc.client.gui.side.SideConfigWindowScreen;
+import igentuman.nc.client.gui.processor.side.SideConfigScreen;
 import igentuman.nc.network.toServer.PacketSideConfigToggle;
 import igentuman.nc.util.sided.SidedContentHandler;
 import net.minecraft.client.gui.components.ImageButton;
-import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -18,13 +17,13 @@ import static igentuman.nc.util.TextUtils.applyFormat;
 import static net.minecraft.ChatFormatting.*;
 
 public class SideConfig extends NCGuiElement {
-    protected SideConfigWindowScreen screen;
+    protected SideConfigScreen screen;
     private int color;
     protected SideBtn btn;
     private int slotId;
     private int direction;
 
-    public SideConfig(int xPos, int yPos, int slotId, SideConfigWindowScreen screen, int direction, ResourceLocation btnTexture)  {
+    public SideConfig(int xPos, int yPos, int slotId, SideConfigScreen screen, int direction, ResourceLocation btnTexture)  {
         x = xPos;
         y = yPos;
         width = 16;
@@ -38,8 +37,9 @@ public class SideConfig extends NCGuiElement {
         this.direction = direction;
     }
 
-    public void onPress() {
+    public boolean onPress() {
         btn.onPress();
+        return true;
     }
 
     @Override

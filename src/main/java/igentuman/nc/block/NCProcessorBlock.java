@@ -1,6 +1,6 @@
 package igentuman.nc.block;
 
-import igentuman.nc.block.entity.processor.NCProcessor;
+import igentuman.nc.block.entity.processor.NCProcessorBE;
 import igentuman.nc.setup.processors.Processors;
 import igentuman.nc.setup.registration.NCProcessors;
 import net.minecraft.core.BlockPos;
@@ -74,7 +74,7 @@ public class NCProcessorBlock extends HorizontalDirectionalBlock implements Enti
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
         if (!level.isClientSide()) {
             BlockEntity be = level.getBlockEntity(pos);
-            if (be instanceof NCProcessor)  {
+            if (be instanceof NCProcessorBE)  {
                 MenuProvider containerProvider = new MenuProvider() {
                     @Override
                     public Component getDisplayName() {
@@ -107,13 +107,13 @@ public class NCProcessorBlock extends HorizontalDirectionalBlock implements Enti
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         if (level.isClientSide()) {
             return (lvl, pos, blockState, t) -> {
-                if (t instanceof NCProcessor tile) {
+                if (t instanceof NCProcessorBE tile) {
                     tile.tickClient();
                 }
             };
         }
         return (lvl, pos, blockState, t)-> {
-            if (t instanceof NCProcessor tile) {
+            if (t instanceof NCProcessorBE tile) {
                 tile.tickServer();
             }
         };

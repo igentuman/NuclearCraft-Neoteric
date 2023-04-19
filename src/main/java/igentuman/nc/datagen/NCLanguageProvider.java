@@ -54,6 +54,9 @@ public class NCLanguageProvider extends LanguageProvider {
         add("fission.casing.reactor_incomplete", "Reactor Incomplete");
         add("fission_reactor.heat_multiplier", "Heat Multiplier: %sx");
 
+        add("processor_side_config.title", "Select Slot");
+        add("processor_slot_mode.title", "Slot Mode");
+
         add("message.heat_sink.valid0", "This one is looking good");
         add("message.heat_sink.valid1", "I like this one");
         add("message.heat_sink.valid2", "This heat sink design shows promise");
@@ -172,6 +175,8 @@ public class NCLanguageProvider extends LanguageProvider {
         add("side_config.push_excess", "PUSH EXCESS");
         add("side_config.disabled", "DISABLED");
         add("side_config.default", "DEFAULT");
+        add("gui.nc.side_config.tooltip", "Side Config");
+
         add("reactor.cooling", "Cooling: %s H/t");
         add("reactor.heating", "Heat Gen: %s H/t");
         add("reactor.net_heat", "Net Heat: %s H/t");

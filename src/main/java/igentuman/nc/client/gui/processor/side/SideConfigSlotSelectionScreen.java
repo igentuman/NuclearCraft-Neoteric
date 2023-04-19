@@ -1,14 +1,18 @@
-package igentuman.nc.client.gui.side;
+package igentuman.nc.client.gui.processor.side;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import igentuman.nc.client.NcClient;
+import igentuman.nc.client.gui.IProgressScreen;
 import igentuman.nc.client.gui.element.NCGuiElement;
+import igentuman.nc.client.gui.element.bar.EnergyBar;
+import igentuman.nc.client.gui.element.bar.ProgressBar;
 import igentuman.nc.client.gui.element.button.Button;
 import igentuman.nc.client.gui.element.slot.BigSlot;
 import igentuman.nc.client.gui.element.slot.NormalSlot;
 import igentuman.nc.container.NCProcessorContainer;
 import igentuman.nc.setup.processors.config.ProcessorSlots;
+import igentuman.nc.util.CustomEnergyStorage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Widget;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -21,18 +25,19 @@ import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
 
-public class NCProcessorSideConfigScreen<T extends NCProcessorContainer> extends AbstractContainerScreen<T> {
+public class SideConfigSlotSelectionScreen<T extends NCProcessorContainer> extends AbstractContainerScreen<T> implements IProgressScreen {
     protected final ResourceLocation GUI = new ResourceLocation(MODID, "textures/gui/window_no_inventory.png");
     protected int relX;
     protected int relY;
 
     protected AbstractContainerScreen parentScreen;
 
-
     private ProcessorSlots slots;
 
     public List<NCGuiElement> widgets = new ArrayList<>();
-    public NCProcessorSideConfigScreen(T container, Inventory inv, Component name) {
+    private EnergyBar energyBar;
+
+    public SideConfigSlotSelectionScreen(T container, Inventory inv, Component name) {
         super(container, inv, name);
         imageWidth = 180;
         imageHeight = 180;
@@ -52,6 +57,13 @@ public class NCProcessorSideConfigScreen<T extends NCProcessorContainer> extends
         slots = menu.getProcessor().getSlotsConfig();
         updateRelativeCords();
         widgets.clear();
+        energyBar = new EnergyBar(9, 4, menu.getEnergy());
+        widgets.add(energyBar);
+        int progressBarX = 71;
+        if(slots.getOutputItems()+slots.getOutputFluids() > 6) {
+            progressBarX -= ProcessorSlots.margin;
+        }
+        widgets.add(new ProgressBar(progressBarX, 40, this, menu.getProcessor().progressBar));
         for(int i = 0; i < slots.slotsCount();i++) {
             if(slots.getOutputItems()+slots.getOutputFluids() == 1 && slots.getSlotType(i).contains("_out")) {
                 widgets.add(new BigSlot(slots.getSlotPos(i), slots.getSlotType(i)).forConfig(this,  i));
@@ -76,7 +88,7 @@ public class NCProcessorSideConfigScreen<T extends NCProcessorContainer> extends
         Minecraft.getInstance().forceSetScreen(parentScreen);
     }
 
-    public NCProcessorSideConfigScreen(AbstractContainerScreen parentScreen) {
+    public SideConfigSlotSelectionScreen(AbstractContainerScreen parentScreen) {
         this((T)parentScreen.getMenu(), NcClient.tryGetClientPlayer().getInventory(), Component.empty());
         this.parentScreen = parentScreen;
     }
@@ -114,7 +126,7 @@ public class NCProcessorSideConfigScreen<T extends NCProcessorContainer> extends
 
     @Override
     protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
-        drawCenteredString(matrixStack, font,  menu.getTitle(), imageWidth/2, titleLabelY, 0xffffff);
+        drawCenteredString(matrixStack, font,  Component.translatable("processor_side_config.title"), imageWidth/2, titleLabelY, 0xffffff);
     }
 
     @Override
@@ -125,5 +137,8 @@ public class NCProcessorSideConfigScreen<T extends NCProcessorContainer> extends
         renderWidgets(matrixStack, partialTicks, mouseX, mouseY);
     }
 
-
+    @Override
+    public double getProgress() {
+        return menu.getProgress();
+    }
 }

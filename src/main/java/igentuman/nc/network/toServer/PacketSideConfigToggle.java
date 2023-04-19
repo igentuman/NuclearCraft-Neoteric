@@ -1,6 +1,6 @@
 package igentuman.nc.network.toServer;
 
-import igentuman.nc.block.entity.processor.NCProcessor;
+import igentuman.nc.block.entity.processor.NCProcessorBE;
 import igentuman.nc.network.INcPacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -32,10 +32,10 @@ public class PacketSideConfigToggle implements INcPacket {
             return;
         }
         BlockEntity be = player.level.getBlockEntity(tilePosition);
-        if(!(be instanceof NCProcessor)) {
+        if(!(be instanceof NCProcessorBE)) {
             return;
         }
-        NCProcessor processor = (NCProcessor) be;
+        NCProcessorBE processor = (NCProcessorBE) be;
         processor.toggleSideConfig(slotId, direction);
     }
 

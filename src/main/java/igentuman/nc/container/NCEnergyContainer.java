@@ -1,6 +1,6 @@
 package igentuman.nc.container;
 
-import igentuman.nc.block.entity.processor.NCProcessor;
+import igentuman.nc.block.entity.processor.NCProcessorBE;
 import igentuman.nc.setup.processors.ProcessorPrefab;
 import igentuman.nc.setup.processors.Processors;
 import igentuman.nc.setup.registration.NCProcessors;
@@ -25,7 +25,7 @@ import org.jetbrains.annotations.Nullable;
 import static igentuman.nc.NuclearCraft.MODID;
 
 public class NCEnergyContainer extends AbstractContainerMenu {
-    protected NCProcessor blockEntity;
+    protected NCProcessorBE blockEntity;
     protected Player playerEntity;
     protected IItemHandler playerInventory;
 
@@ -44,7 +44,7 @@ public class NCEnergyContainer extends AbstractContainerMenu {
 
     public NCEnergyContainer(int windowId, BlockPos pos, Inventory playerInventory, Player player, String name) {
         this(NCProcessors.PROCESSORS_CONTAINERS.get(name).get(), windowId);
-        blockEntity = (NCProcessor) player.getCommandSenderWorld().getBlockEntity(pos);
+        blockEntity = (NCProcessorBE) player.getCommandSenderWorld().getBlockEntity(pos);
         this.playerEntity = player;
         this.playerInventory = new InvWrapper(playerInventory);
         this.name = name;

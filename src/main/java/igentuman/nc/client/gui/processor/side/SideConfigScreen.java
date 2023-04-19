@@ -1,4 +1,4 @@
-package igentuman.nc.client.gui.side;
+package igentuman.nc.client.gui.processor.side;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -13,7 +13,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Widget;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -25,7 +24,7 @@ import java.util.Optional;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
 
-public class SideConfigWindowScreen<T extends NCProcessorContainer> extends AbstractContainerScreen<T> {
+public class SideConfigScreen<T extends NCProcessorContainer> extends AbstractContainerScreen<T> {
     protected final ResourceLocation GUI = new ResourceLocation(MODID, "textures/gui/small_window.png");
     protected int relX;
     protected int relY;
@@ -35,7 +34,7 @@ public class SideConfigWindowScreen<T extends NCProcessorContainer> extends Abst
     private int slotId;
 
     public List<NCGuiElement> widgets = new ArrayList<>();
-    public SideConfigWindowScreen(T container, Inventory inv, Component name) {
+    public SideConfigScreen(T container, Inventory inv, Component name) {
         super(container, inv, name);
         imageWidth = 180;
         imageHeight = 180;
@@ -49,8 +48,6 @@ public class SideConfigWindowScreen<T extends NCProcessorContainer> extends Abst
         NCGuiElement.RELATIVE_Y = relY;
     }
 
-
-
     protected void init() {
         super.init();
         updateRelativeCords();
@@ -59,12 +56,12 @@ public class SideConfigWindowScreen<T extends NCProcessorContainer> extends Abst
         int y = 20;
         String processor = menu.getProcessor().name;
         widgets.add(new SideConfig(x, y, slotId, this, SidedContentHandler.RelativeDirection.UP.ordinal(), rl("textures/block/processor/top.png")));
-        widgets.add(new SideConfig(x-20, y+20, slotId, this,  SidedContentHandler.RelativeDirection.LEFT.ordinal(), rl("textures/block/processor/side.png")));
-        widgets.add(new SideConfig(x, y+20, slotId, this,  SidedContentHandler.RelativeDirection.FRONT.ordinal(), rl("textures/block/processor/"+processor+".png")));
-        widgets.add(new SideConfig(x+20, y+20, slotId, this,  SidedContentHandler.RelativeDirection.RIGHT.ordinal(), rl("textures/block/processor/side.png")));
-        widgets.add(new SideConfig(x-20, y+40, slotId, this,  SidedContentHandler.RelativeDirection.BACK.ordinal(), rl("textures/block/processor/back.png")));
-        widgets.add(new SideConfig(x, y+40, slotId, this,  SidedContentHandler.RelativeDirection.DOWN.ordinal(), rl("textures/block/processor/bottom.png")));
-        widgets.add(new Button.CloseConfig(6, 6, this));
+        widgets.add(new SideConfig(x-19, y+19, slotId, this,  SidedContentHandler.RelativeDirection.LEFT.ordinal(), rl("textures/block/processor/side.png")));
+        widgets.add(new SideConfig(x, y+19, slotId, this,  SidedContentHandler.RelativeDirection.FRONT.ordinal(), rl("textures/block/processor/"+processor+".png")));
+        widgets.add(new SideConfig(x+19, y+19, slotId, this,  SidedContentHandler.RelativeDirection.RIGHT.ordinal(), rl("textures/block/processor/side.png")));
+        widgets.add(new SideConfig(x-19, y+38, slotId, this,  SidedContentHandler.RelativeDirection.BACK.ordinal(), rl("textures/block/processor/back.png")));
+        widgets.add(new SideConfig(x, y+38, slotId, this,  SidedContentHandler.RelativeDirection.DOWN.ordinal(), rl("textures/block/processor/bottom.png")));
+        widgets.add(new Button.CloseConfig(16, 16, this));
     }
 
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
@@ -81,7 +78,7 @@ public class SideConfigWindowScreen<T extends NCProcessorContainer> extends Abst
         Minecraft.getInstance().forceSetScreen(parentScreen);
     }
 
-    public SideConfigWindowScreen(AbstractContainerScreen parentScreen, int slotId) {
+    public SideConfigScreen(AbstractContainerScreen parentScreen, int slotId) {
         this((T)parentScreen.getMenu(), NcClient.tryGetClientPlayer().getInventory(), Component.empty());
         this.parentScreen = parentScreen;
         this.slotId = slotId;
@@ -129,6 +126,7 @@ public class SideConfigWindowScreen<T extends NCProcessorContainer> extends Abst
 
     @Override
     protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
+        drawCenteredString(matrixStack, font,  Component.translatable("processor_slot_mode.title"), imageWidth/4, titleLabelY, 0xffffff);
     }
 
     @Override

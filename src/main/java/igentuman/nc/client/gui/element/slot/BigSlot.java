@@ -2,24 +2,28 @@ package igentuman.nc.client.gui.element.slot;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import igentuman.nc.client.gui.element.NCGuiElement;
-import igentuman.nc.client.gui.side.SideConfigWindowScreen;
+import igentuman.nc.client.gui.processor.side.SideConfigScreen;
 import net.minecraft.client.Minecraft;
+
+import static igentuman.nc.util.sided.SlotModePair.SlotMode.*;
 
 public class BigSlot extends NCGuiElement {
     public int xOffset = 70;
     public int yOffset = 0;
     String type;
-    public int color = 0x804A0404;
+    public int color = OUTPUT.getColor();
 
     public BigSlot(int[] pos, String pType)  {
         this(pos[0], pos[1], pType);
     }
 
-    public void onPress()
+    public boolean onPress()
     {
         if(configFlag) {
-            Minecraft.getInstance().forceSetScreen(new SideConfigWindowScreen<>(screen, slotId));
+            Minecraft.getInstance().forceSetScreen(new SideConfigScreen<>(screen, slotId));
+            return true;
         }
+        return false;
     }
 
     public BigSlot(int xMin, int yMin, String pType)  {
@@ -29,7 +33,7 @@ public class BigSlot extends NCGuiElement {
         height = 26;
         type = pType;
         if(type.contains("_in")) {
-            color = 0x8004224a;
+            color = INPUT.getColor();
         }
     }
 

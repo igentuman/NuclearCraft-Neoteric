@@ -6,18 +6,18 @@ import igentuman.nc.util.sided.SlotModePair.*;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
-import java.util.HashMap;
-
 public class FluidCapabilityHandler extends AbscractCapabilityHandler implements INBTSerializable<CompoundTag> {
     private final int CAPACITY;
     public final NonNullList<FluidTank> tanks;
     public final NonNullList<LazyOptional<IFluidHandler>> fluidCapabilites;
+    public BlockEntity tile;
 
     public FluidCapabilityHandler(int inputSlots, int outputSlots, int amount) {
         CAPACITY = amount;
@@ -78,5 +78,13 @@ public class FluidCapabilityHandler extends AbscractCapabilityHandler implements
         if(!nbt.getCompound("sideMap").isEmpty()) {
             sideMap = SidedContentHandler.deserializeSideMap(nbt.getCompound("sideMap"));
         }
+    }
+
+    public void pushFluids(Direction dir) {
+
+    }
+
+    public void pullFluids(Direction dir) {
+
     }
 }

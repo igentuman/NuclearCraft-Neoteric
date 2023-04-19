@@ -1,5 +1,6 @@
-package igentuman.nc.client.gui;
+package igentuman.nc.client.gui.processor;
 
+import igentuman.nc.client.gui.processor.NCProcessorScreen;
 import igentuman.nc.container.NCProcessorContainer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;

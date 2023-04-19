@@ -1,6 +1,6 @@
 package igentuman.nc.setup.processors;
 
-import igentuman.nc.block.entity.processor.NCProcessor;
+import igentuman.nc.block.entity.processor.NCProcessorBE;
 import igentuman.nc.container.NCProcessorContainer;
 import igentuman.nc.handler.config.CommonConfig;
 import igentuman.nc.setup.processors.config.ProcessorSlots;
@@ -17,6 +17,7 @@ import java.lang.reflect.Constructor;
 
 public class ProcessorPrefab <M extends NCProcessorContainer, U extends Screen & MenuAccess<M>> {
 
+    public int progressBar = 0;
     private  Class  container;
     private  MenuScreens.ScreenConstructor<M, U>  screenConstructor;
     private boolean initialized;
@@ -35,15 +36,15 @@ public class ProcessorPrefab <M extends NCProcessorContainer, U extends Screen &
     protected Class recipeManager;
 
 
-    public BlockEntityType.BlockEntitySupplier<? extends NCProcessor>  getBlockEntity() {
+    public BlockEntityType.BlockEntitySupplier<? extends NCProcessorBE>  getBlockEntity() {
         return blockEntity;
     }
 
-    public ProcessorPrefab setBlockEntity(BlockEntityType.BlockEntitySupplier<? extends NCProcessor>  blockEntity) {
+    public ProcessorPrefab setBlockEntity(BlockEntityType.BlockEntitySupplier<? extends NCProcessorBE>  blockEntity) {
         this.blockEntity = blockEntity;
         return this;
     }
-    private BlockEntityType.BlockEntitySupplier<? extends NCProcessor>  blockEntity;
+    private BlockEntityType.BlockEntitySupplier<? extends NCProcessorBE>  blockEntity;
 
     public MenuScreens.ScreenConstructor<M, U> getScreenConstructor() {
         return screenConstructor;

@@ -1,8 +1,8 @@
-package igentuman.nc.client.gui;
+package igentuman.nc.client.gui.processor;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import igentuman.nc.client.NcClient;
+import igentuman.nc.client.gui.IProgressScreen;
 import igentuman.nc.client.gui.element.NCGuiElement;
 import igentuman.nc.client.gui.element.bar.EnergyBar;
 import igentuman.nc.client.gui.element.bar.ProgressBar;
@@ -75,7 +75,7 @@ public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractC
         if(slots.getOutputItems()+slots.getOutputFluids() > 6) {
             progressBarX -= ProcessorSlots.margin;
         }
-        widgets.add(new ProgressBar(progressBarX, 40, this));
+        widgets.add(new ProgressBar(progressBarX, 40, this, menu.getProcessor().progressBar));
         int ux = 154;
         if(menu.getProcessor().supportSpeedUpgrade) {
             widgets.add(new NormalSlot(ux, 77, "speed_upgrade"));

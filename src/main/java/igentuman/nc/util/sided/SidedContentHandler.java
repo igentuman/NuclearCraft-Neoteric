@@ -1,6 +1,6 @@
 package igentuman.nc.util.sided;
 
-import igentuman.nc.block.entity.processor.NCProcessor;
+import igentuman.nc.block.entity.processor.NCProcessorBE;
 import igentuman.nc.recipes.NcRecipe;
 import igentuman.nc.util.sided.capability.FluidCapabilityHandler;
 import igentuman.nc.util.sided.capability.ItemCapabilityHandler;
@@ -22,7 +22,7 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
     public final LazyOptional<ItemCapabilityHandler> itemCapability;
     public final FluidCapabilityHandler fluidCapability;
 
-    public NCProcessor processor;
+    public NCProcessorBE processor;
 
     public SidedContentHandler(int inputItemSlots, int outputItemSlots, int inputFluidSlots, int outputFluidSlots) {
         this.inputItemSlots = inputItemSlots;
@@ -38,6 +38,7 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
         }
         if(inputFluidSlots + outputFluidSlots > 0) {
             fluidCapability = new FluidCapabilityHandler(inputFluidSlots, outputFluidSlots);
+            fluidCapability.tile = processor;
         } else {
             fluidCapability = null;
         }
@@ -82,7 +83,7 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
     }
 
     public <T> LazyOptional<T> getItemCapability(Direction side) {
-        if(hasItemCapability(side)) return itemCapability.cast();
+        if(hasItemCapability(side)) return itemHandler.getCapability(side).cast();
         return LazyOptional.empty();
     }
 
@@ -116,8 +117,14 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
         }
     }
 
-    public <RECIPE extends NcRecipe> void setProcessor(NCProcessor<RECIPE> recipencProcessor) {
-        processor = recipencProcessor;
+    public <RECIPE extends NcRecipe> void setProcessor(NCProcessorBE<RECIPE> recipencProcessorBE) {
+        processor = recipencProcessorBE;
+        if(fluidCapability != null) {
+            fluidCapability.tile = processor;
+        }
+        if(itemHandler != null) {
+            itemHandler.tile = processor;
+        }
     }
 
     public SlotModePair.SlotMode getSlotMode(int direction, int slotId) {
@@ -131,6 +138,19 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
             return fluidCapability.getMode(slotId-inputItemSlots-outputItemSlots, direction);
         }
         return null;
+    }
+
+    public void tick() {
+        for(Direction dir: Direction.values()) {
+            if(itemHandler != null) {
+                itemHandler.pushItems(dir);
+                itemHandler.pullItems(dir);
+            }
+            if(fluidCapability != null) {
+                fluidCapability.pushFluids(dir);
+                fluidCapability.pullFluids(dir);
+            }
+        }
     }
 
     public enum SlotType {

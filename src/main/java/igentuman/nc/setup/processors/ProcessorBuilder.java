@@ -1,8 +1,8 @@
 package igentuman.nc.setup.processors;
 
-import igentuman.nc.block.entity.processor.NCProcessor;
+import igentuman.nc.block.entity.processor.NCProcessorBE;
 import igentuman.nc.container.NCProcessorContainer;
-import igentuman.nc.client.gui.NCProcessorScreen;
+import igentuman.nc.client.gui.processor.NCProcessorScreen;
 import igentuman.nc.setup.processors.config.ProcessorSlots;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
@@ -39,7 +39,7 @@ public class ProcessorBuilder <M extends NCProcessorContainer, U extends Screen 
         return this;
     }
 
-    public ProcessorBuilder blockEntity(BlockEntityType.BlockEntitySupplier<? extends NCProcessor> be)
+    public ProcessorBuilder blockEntity(BlockEntityType.BlockEntitySupplier<? extends NCProcessorBE> be)
     {
         processor.setBlockEntity(be);
         return this;
@@ -70,4 +70,8 @@ public class ProcessorBuilder <M extends NCProcessorContainer, U extends Screen 
         return this;
     }
 
+    public ProcessorBuilder progressBar(int i) {
+        processor.progressBar = i;
+        return this;
+    }
 }

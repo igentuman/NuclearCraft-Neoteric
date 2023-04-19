@@ -26,6 +26,7 @@ public class Processors {
                     ProcessorBuilder
                             .make("manufactory", 0, 1, 0, 1)
                             .blockEntity(ManufactoryBE::new)
+                            .progressBar(1)
                             .build()
             );
             all.put("alloy_smelter",

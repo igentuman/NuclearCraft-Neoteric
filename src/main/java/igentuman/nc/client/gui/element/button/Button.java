@@ -1,14 +1,13 @@
 package igentuman.nc.client.gui.element.button;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import igentuman.nc.client.gui.side.NCProcessorSideConfigScreen;
+import igentuman.nc.client.gui.processor.side.SideConfigSlotSelectionScreen;
 import igentuman.nc.container.NCProcessorContainer;
 import igentuman.nc.client.gui.element.NCGuiElement;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
 
@@ -18,6 +17,8 @@ public class Button<T extends AbstractContainerScreen> extends NCGuiElement {
     protected int bId;
 
     protected ImageButton btn;
+    protected Component tooltipKey;
+
     public Button(int xPos, int yPos, T screen, int id)  {
         x = xPos;
         y = yPos;
@@ -27,7 +28,7 @@ public class Button<T extends AbstractContainerScreen> extends NCGuiElement {
     }
 
     public List<Component> getTooltips() {
-        return List.of(Component.empty());
+        return List.of(tooltipKey);
     }
 
     @Override
@@ -37,8 +38,9 @@ public class Button<T extends AbstractContainerScreen> extends NCGuiElement {
     }
 
     @Override
-    public void onPress() {
+    public boolean onPress() {
         btn.onPress();
+        return true;
     }
 
     public static class SideConfig extends Button {
@@ -48,8 +50,9 @@ public class Button<T extends AbstractContainerScreen> extends NCGuiElement {
             width = 18;
             btn = new ImageButton(X(), Y(), width, height, 220, 220, 18, TEXTURE, pButton -> {
                 //NCMessages.sendToServer(new PacketGuiButtonPress(container.getPosition(), bId));
-                Minecraft.getInstance().forceSetScreen(new NCProcessorSideConfigScreen<>(screen));
+                Minecraft.getInstance().forceSetScreen(new SideConfigSlotSelectionScreen<>(screen));
             });
+            tooltipKey = Component.translatable("gui.nc.side_config.tooltip");
         }
     }
 

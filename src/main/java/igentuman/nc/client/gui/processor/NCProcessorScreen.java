@@ -7,6 +7,7 @@ import igentuman.nc.client.gui.element.NCGuiElement;
 import igentuman.nc.client.gui.element.bar.EnergyBar;
 import igentuman.nc.client.gui.element.bar.ProgressBar;
 import igentuman.nc.client.gui.element.button.Button;
+import igentuman.nc.client.gui.element.fluid.FluidTankRenderer;
 import igentuman.nc.client.gui.element.slot.BigSlot;
 import igentuman.nc.container.NCProcessorContainer;
 import igentuman.nc.client.gui.element.slot.NormalSlot;
@@ -16,6 +17,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,8 +69,15 @@ public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractC
         for(int i = 0; i < slots.slotsCount();i++) {
             if(slots.getOutputItems()+slots.getOutputFluids() == 1 && slots.getSlotType(i).contains("_out")) {
                 widgets.add(new BigSlot(slots.getSlotPos(i), slots.getSlotType(i)));
+                if(slots.getSlotType(i).contains("fluid")) {
+                    widgets.add(new FluidTankRenderer(getFluidTank(i), 24, 24, slots.getSlotPos(i)[0]-4, slots.getSlotPos(i)[1]-4));
+                }
             } else {
                 widgets.add(new NormalSlot(slots.getSlotPos(i), slots.getSlotType(i)));
+                if(slots.getSlotType(i).contains("fluid")) {
+                    widgets.add(new FluidTankRenderer(getFluidTank(i), 16, 16, slots.getSlotPos(i)));
+                }
+
             }
         }
         int progressBarX = 71;
@@ -86,6 +95,10 @@ public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractC
         }
         widgets.add(new Button.SideConfig(29, 74, this));
         widgets.add(new Button.RedstoneConfig(48, 74, this));
+    }
+
+    private FluidTank getFluidTank(int i) {
+        return menu.getFluidTank(i);
     }
 
     public NCProcessorScreen(AbstractContainerMenu abstractContainerMenu, Inventory inventory, Component component) {

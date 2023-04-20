@@ -141,14 +141,15 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
     }
 
     public void tick() {
+        boolean updated = false;
         for(Direction dir: Direction.values()) {
             if(itemHandler != null) {
-                itemHandler.pushItems(dir);
-                itemHandler.pullItems(dir);
+                updated = itemHandler.pushItems(dir) || updated;
+                updated = itemHandler.pullItems(dir) || updated;
             }
             if(fluidCapability != null) {
-                fluidCapability.pushFluids(dir);
-                fluidCapability.pullFluids(dir);
+                updated = fluidCapability.pushFluids(dir) || updated;
+                updated = fluidCapability.pullFluids(dir) || updated;
             }
         }
     }

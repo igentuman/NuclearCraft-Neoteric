@@ -1,4 +1,4 @@
-package igentuman.nc.util.inventory;
+package igentuman.nc.util.sided.capability;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -12,13 +12,13 @@ import java.util.function.Predicate;
  * under https://github.com/ModdingX/LibX/blob/1.19/LICENSE
  *
  */
-public class WrappedHandler implements IItemHandlerModifiable {
+public class ItemHandlerWrapper implements IItemHandlerModifiable {
     private final IItemHandlerModifiable handler;
     private final Predicate<Integer> extract;
     private final BiPredicate<Integer, ItemStack> insert;
 
-    public WrappedHandler(IItemHandlerModifiable handler, Predicate<Integer> extract,
-                          BiPredicate<Integer, ItemStack> insert) {
+    public ItemHandlerWrapper(IItemHandlerModifiable handler, Predicate<Integer> extract,
+                              BiPredicate<Integer, ItemStack> insert) {
         this.handler = handler;
         this.extract = extract;
         this.insert = insert;

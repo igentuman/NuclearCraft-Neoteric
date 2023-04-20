@@ -1,6 +1,5 @@
 package igentuman.nc.util.sided.capability;
 
-import igentuman.nc.util.inventory.WrappedHandler;
 import igentuman.nc.util.sided.SidedContentHandler;
 import igentuman.nc.util.sided.SlotModePair;
 import net.minecraft.core.Direction;
@@ -11,12 +10,9 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.common.capabilities.CapabilityToken;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -24,7 +20,6 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static igentuman.nc.util.sided.SlotModePair.SlotMode.*;
@@ -246,13 +241,13 @@ public class ItemCapabilityHandler extends AbscractCapabilityHandler implements 
 
     }
 
-    private Map<Direction, LazyOptional<WrappedHandler>> handlerCache = new HashMap<>();
+    private Map<Direction, LazyOptional<ItemHandlerWrapper>> handlerCache = new HashMap<>();
 
-    public LazyOptional<WrappedHandler> getCapability(Direction side) {
-        if(side == null) return LazyOptional.of(() -> new WrappedHandler(this, (i) -> true, (i, s) -> true));
+    public LazyOptional<ItemHandlerWrapper> getCapability(Direction side) {
+        if(side == null) return LazyOptional.of(() -> new ItemHandlerWrapper(this, (i) -> true, (i, s) -> true));
         if(!handlerCache.containsKey(side)) {
             handlerCache.put(side, LazyOptional.of(
-                    () -> new WrappedHandler(this, (i) -> outputAllowed(i, side), (i, s) -> inputAllowed(i, s, side))));
+                    () -> new ItemHandlerWrapper(this, (i) -> outputAllowed(i, side), (i, s) -> inputAllowed(i, s, side))));
         }
         return handlerCache.get(side);
     }

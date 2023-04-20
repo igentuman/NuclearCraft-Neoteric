@@ -9,15 +9,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
@@ -65,6 +63,7 @@ public class NCProcessorContainer extends AbstractContainerMenu {
                 itemIdx++;
             }
         }
+
         int ux = 154;
         itemIdx = 0;
         if(getProcessor().supportSpeedUpgrade) {
@@ -175,5 +174,9 @@ public class NCProcessorContainer extends AbstractContainerMenu {
 
     public SlotModePair.SlotMode getSlotMode(int direction, int slotId) {
         return blockEntity.getSlotMode(direction, slotId);
+    }
+
+    public FluidTank getFluidTank(int i) {
+        return blockEntity.getFluidTank(i);
     }
 }

@@ -95,7 +95,7 @@ dependencies {
 
     //runtimeOnly fg.deobf("com.blamejared.crafttweaker:CraftTweaker-forge-${mc_version}:${ct_version}")
 
-    //runtimeOnly fg.deobf("mekanism:Mekanism:${mc_version}-${mekanism_version}")
+    runtimeOnly fg.deobf("mekanism:Mekanism:${mc_version}-${mekanism_version}")
     //compileOnly fg.deobf("mekanism:Mekanism:${mc_version}-${mekanism_version}:api")
 
     //compileOnly("cc.tweaked:cc-tweaked-${mc_version}-core-api:${cc_version}")

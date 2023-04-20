@@ -22,6 +22,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
@@ -257,5 +258,9 @@ public class NCProcessorBE<RECIPE extends NcRecipe> extends NuclearCraftBE {
 
     public SlotModePair.SlotMode getSlotMode(int direction, int slotId) {
         return contentHandler.getSlotMode(direction, slotId);
+    }
+
+    public FluidTank getFluidTank(int i) {
+        return contentHandler.fluidCapability.tanks.get(i);
     }
 }

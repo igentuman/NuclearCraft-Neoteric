@@ -11,6 +11,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import java.lang.reflect.Constructor;
 
@@ -138,4 +139,5 @@ public class ProcessorPrefab <M extends NCProcessorContainer, U extends Screen &
     public int getUpgradesSlots() {
         return (supportSpeedUpgrade ? 1 : 0) + (supportEnergyUpgrade ? 1 : 0);
     }
+
 }

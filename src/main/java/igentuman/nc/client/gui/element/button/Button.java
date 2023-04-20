@@ -17,7 +17,7 @@ public class Button<T extends AbstractContainerScreen> extends NCGuiElement {
     protected int bId;
 
     protected ImageButton btn;
-    protected Component tooltipKey;
+    protected Component tooltipKey = Component.empty();
 
     public Button(int xPos, int yPos, T screen, int id)  {
         x = xPos;

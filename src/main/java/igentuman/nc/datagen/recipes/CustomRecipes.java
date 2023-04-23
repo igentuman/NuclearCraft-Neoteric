@@ -1,5 +1,7 @@
 package igentuman.nc.datagen.recipes;
 
+import igentuman.nc.block.entity.fission.FissionControllerBE;
+import igentuman.nc.block.entity.processor.ManufactoryBE;
 import igentuman.nc.datagen.recipes.builder.ItemToItemRecipeBuilder;
 import igentuman.nc.setup.registration.Fuel;
 import igentuman.nc.setup.registration.Materials;
@@ -32,7 +34,7 @@ public class CustomRecipes extends NCRecipes {
     private static void manufactoryRecipes() {
         for(String name: Materials.all().keySet()) {
             if(NCItems.NC_DUSTS.containsKey(name) && NCItems.INGOTS_TAG.containsKey(name)) {
-                itemToItemRecipe("manufactory",
+                itemToItemRecipe(ManufactoryBE.NAME,
                         Ingredient.of(NCItems.INGOTS_TAG.get(name)),
                         NCItems.NC_DUSTS.get(name).get());
             }
@@ -55,7 +57,7 @@ public class CustomRecipes extends NCRecipes {
             if(name.contains("tr")) continue;
             List<String> depleted = new ArrayList<>(name);
             depleted.set(0, "depleted");
-            itemToItemRecipe("fission_reactor",
+            itemToItemRecipe(FissionControllerBE.NAME,
                     Ingredient.of(Fuel.NC_FUEL.get(name).get()),
                     Fuel.NC_DEPLETED_FUEL.get(depleted).get(),
                     1.0, 1.1, 1.0);

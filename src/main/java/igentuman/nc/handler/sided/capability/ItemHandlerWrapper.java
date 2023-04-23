@@ -1,4 +1,4 @@
-package igentuman.nc.util.sided.capability;
+package igentuman.nc.handler.sided.capability;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;

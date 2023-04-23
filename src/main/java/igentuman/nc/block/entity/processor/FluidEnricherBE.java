@@ -1,15 +1,15 @@
 package igentuman.nc.block.entity.processor;
 
+import igentuman.nc.setup.processors.Processors;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class FluidEnricherBE extends NCProcessorBE {
-    public static String NAME = "fluid_enricher";
     public FluidEnricherBE(BlockPos pPos, BlockState pBlockState) {
-        super(pPos, pBlockState, NAME);
+        super(pPos, pBlockState, Processors.FLUID_ENRICHER);
     }
     @Override
     public String getName() {
-        return NAME;
+        return Processors.FLUID_ENRICHER;
     }
 }

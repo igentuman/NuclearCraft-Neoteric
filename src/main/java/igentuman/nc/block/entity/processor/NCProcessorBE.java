@@ -3,14 +3,12 @@ package igentuman.nc.block.entity.processor;
 import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.recipes.NcRecipe;
 import igentuman.nc.recipes.RecipeInfo;
-import igentuman.nc.recipes.lookup.ISingleRecipeLookupHandler;
-import igentuman.nc.recipes.lookup.ISingleRecipeLookupHandler.*;
 import igentuman.nc.setup.processors.ProcessorPrefab;
 import igentuman.nc.setup.processors.Processors;
 import igentuman.nc.setup.registration.NCProcessors;
 import igentuman.nc.util.CustomEnergyStorage;
-import igentuman.nc.util.sided.SidedContentHandler;
-import igentuman.nc.util.sided.SlotModePair;
+import igentuman.nc.handler.sided.SidedContentHandler;
+import igentuman.nc.handler.sided.SlotModePair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -33,7 +31,6 @@ import javax.annotation.Nullable;
 
 public class NCProcessorBE<RECIPE extends NcRecipe> extends NuclearCraftBE {
 
-    protected String name;
     public static String NAME;
     public final SidedContentHandler contentHandler;
     protected final CustomEnergyStorage energyStorage;
@@ -140,7 +137,7 @@ public class NCProcessorBE<RECIPE extends NcRecipe> extends NuclearCraftBE {
         contentHandler = new SidedContentHandler(
                 prefab().getSlotsConfig().getInputItems(), prefab().getSlotsConfig().getOutputItems(),
                 prefab().getSlotsConfig().getInputFluids(), prefab().getSlotsConfig().getOutputFluids());
-        contentHandler.setProcessor(this);
+        contentHandler.setBlockEntity(this);
         energyStorage = createEnergy();
         energy = LazyOptional.of(() -> energyStorage);
     }
@@ -160,10 +157,6 @@ public class NCProcessorBE<RECIPE extends NcRecipe> extends NuclearCraftBE {
         }
         if(!hasRecipe()) return;
        // getRecipe().
-    }
-
-    public String getName() {
-        return name;
     }
 
     @Override

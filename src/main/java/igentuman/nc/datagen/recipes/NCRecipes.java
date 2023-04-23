@@ -408,7 +408,7 @@ public class NCRecipes extends RecipeProvider {
                 .unlockedBy("item", InventoryChangeTrigger.TriggerInstance.hasItems(NCItems.NC_PARTS.get("actuator").get()))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(NCProcessors.PROCESSORS.get("super_cooler").get())
+        ShapedRecipeBuilder.shaped(NCProcessors.PROCESSORS.get("supercooler").get())
                 .pattern("PDP")
                 .pattern("HCH")
                 .pattern("PSP")

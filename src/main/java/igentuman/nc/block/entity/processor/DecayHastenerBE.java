@@ -1,15 +1,15 @@
 package igentuman.nc.block.entity.processor;
 
+import igentuman.nc.setup.processors.Processors;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class DecayHastenerBE extends NCProcessorBE {
-    public static String NAME = "decay_hastener";
     public DecayHastenerBE(BlockPos pPos, BlockState pBlockState) {
-        super(pPos, pBlockState, NAME);
+        super(pPos, pBlockState, Processors.DECAY_HASTENER);
     }
     @Override
     public String getName() {
-        return NAME;
+        return Processors.DECAY_HASTENER;
     }
 }

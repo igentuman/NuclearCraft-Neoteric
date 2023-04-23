@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "nuclearcraft:super_cooler"
+        "recipe": "nuclearcraft:super_supercooler"
       },
       "trigger": "minecraft:recipe_unlocked"
     },
@@ -28,7 +28,7 @@
   ],
   "rewards": {
     "recipes": [
-      "nuclearcraft:super_cooler"
+      "nuclearcraft:super_supercooler"
     ]
   }
 }

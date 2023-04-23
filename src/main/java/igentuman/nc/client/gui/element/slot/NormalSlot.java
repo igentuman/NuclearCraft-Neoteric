@@ -5,7 +5,7 @@ import igentuman.nc.client.gui.element.NCGuiElement;
 import igentuman.nc.client.gui.processor.side.SideConfigScreen;
 import net.minecraft.client.Minecraft;
 
-import static igentuman.nc.util.sided.SlotModePair.SlotMode.*;
+import static igentuman.nc.handler.sided.SlotModePair.SlotMode.*;
 
 public class NormalSlot extends NCGuiElement {
     public int xOffset = 0;

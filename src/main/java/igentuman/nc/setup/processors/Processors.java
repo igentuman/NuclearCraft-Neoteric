@@ -13,139 +13,161 @@ public class Processors {
 
     private static HashMap<String, ProcessorPrefab> all = new HashMap<>();
     private static HashMap<String, ProcessorPrefab> registered = new HashMap<>();
+    public static String NUCLEAR_FURNACE = "nuclear_furnace";
+    public static String MANUFACTORY = "manufactory";
+    public static String ALLOY_SMELTER = "alloy_smelter";
+    public static String ASSEMBLER = "assembler";
+    public static String CENTRIFUGE = "centrifuge";
+    public static String CHEMICAL_REACTOR = "chemical_reactor";
+    public static String CRYSTALLIZER = "crystallizer";
+    public static String FUEL_REPROCESSOR = "fuel_reprocessor";
+    public static String DECAY_HASTENER = "decay_hastener";
+    public static String ELECTROLYZER = "electrolyzer";
+    public static String EXTRACTOR = "extractor";
+    public static String FLUID_ENRICHER = "fluid_enricher";
+    public static String FLUID_INFUSER = "fluid_infuser";
+    public static String INGOT_FORMER = "ingot_former";
+    public static String IRRADIATOR = "irradiator";
+    public static String ISOTOPE_SEPARATOR = "isotope_separator";
+    public static String MELTER = "melter";
+    public static String PRESSURIZER = "pressurizer";
+    public static String ROCK_CRUSHER = "rock_crusher";
+    public static String STEAM_TURBINE = "steam_turbine";
+    public static String SUPERCOOLER = "supercooler";
+    public static String QUANTUM_TRANSFORMER = "quantum_transformer";
 
     public static HashMap<String, ProcessorPrefab> all() {
         if(all.isEmpty()) {
-            all.put("nuclear_furnace",
+            all.put(NUCLEAR_FURNACE,
                     ProcessorBuilder
-                            .make("nuclear_furnace", 0, 1, 0, 1)
+                            .make(NUCLEAR_FURNACE, 0, 1, 0, 1)
                             .blockEntity(NuclearFurnaceBE::new)
                             .build()
             );
-            all.put("manufactory",
+            all.put(MANUFACTORY,
                     ProcessorBuilder
-                            .make("manufactory", 0, 1, 0, 1)
+                            .make(MANUFACTORY, 0, 1, 0, 1)
                             .blockEntity(ManufactoryBE::new)
                             .progressBar(1)
                             .build()
             );
-            all.put("alloy_smelter",
+            all.put(ALLOY_SMELTER,
                     ProcessorBuilder
-                            .make("alloy_smelter", 0, 2, 0, 1)
+                            .make(ALLOY_SMELTER, 0, 2, 0, 1)
                             .blockEntity(AlloySmelterBE::new)
                             .build()
             );
-            all.put("assembler",
+            all.put(ASSEMBLER,
                     ProcessorBuilder
-                            .make("assembler", 0, 4, 0, 1)
+                            .make(ASSEMBLER, 0, 4, 0, 1)
                             .blockEntity(AssemblerBE::new)
                             .build()
             );
-            all.put("centrifuge",
+            all.put(CENTRIFUGE,
                     ProcessorBuilder
-                            .make("centrifuge", 1, 0, 6, 0)
+                            .make(CENTRIFUGE, 1, 0, 6, 0)
                             .blockEntity(CentrifugeBE::new)
                             .build()
             );
-            all.put("chemical_reactor",
+            all.put(CHEMICAL_REACTOR,
                     ProcessorBuilder
-                            .make("chemical_reactor", 2, 0, 2, 0)
+                            .make(CHEMICAL_REACTOR, 2, 0, 2, 0)
                             .blockEntity(ChemicalReactorBE::new)
                             .build()
             );
-            all.put("crystallizer",
+            all.put(CRYSTALLIZER,
                     ProcessorBuilder
-                            .make("crystallizer", 1, 0, 0, 1)
+                            .make(CRYSTALLIZER, 1, 0, 0, 1)
                             .blockEntity(CrystalizerBE::new)
                             .build()
             );
-            all.put("decay_hastener",
+            all.put(DECAY_HASTENER,
                     ProcessorBuilder
-                            .make("decay_hastener", 0, 1, 0, 1)
+                            .make(DECAY_HASTENER, 0, 1, 0, 1)
                             .blockEntity(DecayHastenerBE::new)
                             .build()
             );
-            all.put("electrolyzer",
+            all.put(ELECTROLYZER,
                     ProcessorBuilder
-                            .make("electrolyzer", 1, 0, 4, 0)
+                            .make(ELECTROLYZER, 1, 0, 4, 0)
                             .blockEntity(ElectrolyzerBE::new)
                             .build()
             );
-            all.put("extractor",
+            all.put(EXTRACTOR,
                     ProcessorBuilder
-                            .make("extractor", 0, 1, 0, 1)
+                            .make(EXTRACTOR, 0, 1, 0, 1)
                             .blockEntity(ExtractorBE::new)
                             .build()
             );
-            all.put("fluid_enricher",
+            all.put(FLUID_ENRICHER,
                     ProcessorBuilder
-                            .make("fluid_enricher", 0, 1, 1, 1)
+                            .make(FLUID_ENRICHER, 0, 1, 1, 1)
                             .blockEntity(FluidEnricherBE::new)
                             .build()
             );
-            all.put("fluid_infuser",
+            all.put(FLUID_INFUSER,
                     ProcessorBuilder
-                            .make("fluid_infuser", 1, 1, 0, 1)
+                            .make(FLUID_INFUSER, 1, 1, 0, 1)
                             .blockEntity(FluidInfuserBE::new)
                             .build()
             );
-            all.put("fuel_reprocessor",
+            all.put(FUEL_REPROCESSOR,
                     ProcessorBuilder
-                            .make("fuel_reprocessor", 0, 1, 0, 8)
+                            .make(FUEL_REPROCESSOR, 0, 1, 0, 8)
                             .blockEntity(FuelReprocessorBE::new)
                             .build()
             );
-            all.put("ingot_former",
+            all.put(INGOT_FORMER,
                     ProcessorBuilder
-                            .make("ingot_former", 1, 0, 0, 1)
+                            .make(INGOT_FORMER, 1, 0, 0, 1)
                             .blockEntity(IngotFormerBE::new)
                             .build()
             );
-            all.put("irradiator",
+            all.put(IRRADIATOR,
                     ProcessorBuilder
-                            .make("irradiator", 0, 1, 0, 1)
+                            .make(IRRADIATOR, 0, 1, 0, 1)
                             .blockEntity(IrradiatorBE::new)
                             .build()
             );
-            all.put("isotope_separator",
+            all.put(ISOTOPE_SEPARATOR,
                     ProcessorBuilder
-                            .make("isotope_separator", 0, 1, 0, 2)
+                            .make(ISOTOPE_SEPARATOR, 0, 1, 0, 2)
                             .blockEntity(IsotopeSeparatorBE::new)
                             .build()
             );
-            all.put("melter",
+            all.put(MELTER,
                     ProcessorBuilder
-                            .make("melter", 0, 1, 1, 0)
+                            .make(MELTER, 0, 1, 1, 0)
                             .blockEntity(MelterBE::new)
                             .build()
             );
-            all.put("pressurizer",
+            all.put(PRESSURIZER,
                     ProcessorBuilder
-                            .make("pressurizer", 0, 1, 0, 1)
+                            .make(PRESSURIZER, 0, 1, 0, 1)
                             .blockEntity(PressurizerBE::new)
                             .build()
             );
-            all.put("rock_crusher",
+            all.put(ROCK_CRUSHER,
                     ProcessorBuilder
-                            .make("rock_crusher", 0, 1, 0, 3)
+                            .make(ROCK_CRUSHER, 0, 1, 0, 3)
                             .blockEntity(RockCrusherBE::new)
                             .build()
             );
-            all.put("steam_turbine",
+            all.put(STEAM_TURBINE,
                     ProcessorBuilder
-                            .make("steam_turbine", 1, 0, 1, 0)
+                            .make(STEAM_TURBINE, 1, 0, 1, 0)
                             .blockEntity(SteamTurbineBE::new)
                             .build()
             );
-            all.put("super_cooler",
+            all.put(SUPERCOOLER,
                     ProcessorBuilder
-                            .make("super_cooler", 1, 0, 1, 0)
+                            .make(SUPERCOOLER, 1, 0, 1, 0)
                             .blockEntity(SuperCoolerBE::new)
                             .build()
             );
-/*            all.put("quantum_transformer",
+/*            all.put(QUANTUM_TRANSFORMER,
                     ProcessorBuilder
-                            .make("quantum_transformer", 1, 0, 1, 0)
+                            .make(QUANTUM_TRANSFORMER, 1, 0, 1, 0)
                             .blockEntity(QuantumTransformerBE::new)
                             .build()
             );*/

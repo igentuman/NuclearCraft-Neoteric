@@ -1,15 +1,15 @@
 package igentuman.nc.block.entity.processor;
 
+import igentuman.nc.setup.processors.Processors;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class NuclearFurnaceBE extends NCProcessorBE {
-    public static String NAME = "nuclear_furnace";
     public NuclearFurnaceBE(BlockPos pPos, BlockState pBlockState) {
-        super(pPos, pBlockState, NAME);
+        super(pPos, pBlockState, Processors.NUCLEAR_FURNACE);
     }
     @Override
     public String getName() {
-        return NAME;
+        return Processors.NUCLEAR_FURNACE;
     }
 }

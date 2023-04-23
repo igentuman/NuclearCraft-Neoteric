@@ -1,7 +1,7 @@
-package igentuman.nc.util.sided.capability;
+package igentuman.nc.handler.sided.capability;
 
-import igentuman.nc.util.sided.SidedContentHandler;
-import igentuman.nc.util.sided.SlotModePair;
+import igentuman.nc.handler.sided.SidedContentHandler;
+import igentuman.nc.handler.sided.SlotModePair;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;

@@ -1,8 +1,8 @@
-package igentuman.nc.util.sided.capability;
+package igentuman.nc.handler.sided.capability;
 
-import igentuman.nc.util.sided.SidedContentHandler;
-import igentuman.nc.util.sided.SlotModePair;
-import igentuman.nc.util.sided.SlotModePair.*;
+import igentuman.nc.handler.sided.SidedContentHandler;
+import igentuman.nc.handler.sided.SlotModePair;
+import igentuman.nc.handler.sided.SlotModePair.*;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -11,19 +11,22 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
-import java.util.function.Supplier;
+import java.util.ArrayList;
+import java.util.List;
 
-import static igentuman.nc.util.sided.SlotModePair.SlotMode.*;
+import static igentuman.nc.handler.sided.SlotModePair.SlotMode.*;
 
 public class FluidCapabilityHandler extends AbscractCapabilityHandler implements INBTSerializable<CompoundTag> {
     private final int CAPACITY;
     public final NonNullList<FluidTank> tanks;
     public final NonNullList<LazyOptional<IFluidHandler>> fluidCapabilites;
     public BlockEntity tile;
+    public List<FluidStack> holdedInputs = new ArrayList<>();
 
     public FluidCapabilityHandler(int inputSlots, int outputSlots, int amount) {
         CAPACITY = amount;

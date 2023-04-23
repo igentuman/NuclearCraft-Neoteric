@@ -1,11 +1,11 @@
 package igentuman.nc.block.entity.fission;
 
-import igentuman.nc.recipes.cache.CachedRecipe;
-import igentuman.nc.recipes.inputs.InputHelper;
-import igentuman.nc.util.sided.capability.ItemCapabilityHandler;
+import igentuman.nc.handler.sided.SidedContentHandler;
+import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.multiblock.fission.FissionReactorMultiblock;
 import igentuman.nc.recipes.*;
 import igentuman.nc.recipes.cache.InputRecipeCache.SingleItem;
+import igentuman.nc.recipes.handler.ItemToItemRecipeHandler;
 import igentuman.nc.recipes.lookup.ISingleRecipeLookupHandler.ItemRecipeLookupHandler;
 import igentuman.nc.recipes.multiblock.FissionRecipe;
 import igentuman.nc.setup.registration.NCFluids;
@@ -26,7 +26,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -34,12 +33,12 @@ import javax.annotation.Nullable;
 
 import static igentuman.nc.handler.config.CommonConfig.FissionConfig.*;
 
-public class FissionControllerBE extends FissionBE implements ItemRecipeLookupHandler<ItemStackToItemStackRecipe> {
+public class FissionControllerBE extends FissionBE  {
 
     public static String NAME = "fission_reactor_controller";
-    public final ItemCapabilityHandler itemHandler = createHandler();
+    public final SidedContentHandler contentHandler;
     public final CustomEnergyStorage energyStorage = createEnergy();
-    protected final LazyOptional<IItemHandler> handler = LazyOptional.of(() -> itemHandler);
+
     protected final LazyOptional<IEnergyStorage> energy = LazyOptional.of(() -> energyStorage);
     public BlockPos errorBlockPos = BlockPos.ZERO;
     @NBTField
@@ -76,58 +75,39 @@ public class FissionControllerBE extends FissionBE implements ItemRecipeLookupHa
     public RecipeInfo recipeInfo = new RecipeInfo();
     private Direction facing;
     public FissionRecipe recipe;
-
+    public final ItemToItemRecipeHandler recipeHandler;
 
     @NotNull
-    @Override
     public INcRecipeTypeProvider<ItemStackToItemStackRecipe, SingleItem<ItemStackToItemStackRecipe>> getRecipeType() {
-        return NcRecipeType.RECIPES.get("fission_reactor");
+        return recipeHandler.getRecipeType();
     }
 
     @Nullable
-    @Override
     public ItemStackToItemStackRecipe getRecipe() {
-        return findFirstRecipe(itemHandler);
+        return recipeHandler.getRecipe();
     }
 
 
     public FissionControllerBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, NAME);
         multiblock = new FissionReactorMultiblock(this);
+        contentHandler = new SidedContentHandler(
+                1, 1,
+                1, 1);
+        contentHandler.setBlockEntity(this);
+        recipeHandler = new ItemToItemRecipeHandler(this);
+    }
+
+    @Override
+    public ItemCapabilityHandler getItemInventory()
+    {
+        return contentHandler.itemHandler;
     }
 
     public LazyOptional<IEnergyStorage> getEnergy() {
         return energy;
     }
 
-    private ItemCapabilityHandler createHandler() {
-        return new ItemCapabilityHandler(2,1) {
-
-            @Override
-            protected void onContentsChanged(int slot) {
-                setChanged();
-            }
-
-            @Override
-            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-                return true;//todo recipe validator
-            }
-
-            @Override
-            @NotNull
-            public ItemStack extractItem(int slot, int amount, boolean simulate) {
-                //if(slot != 1) return ItemStack.EMPTY;
-                return super.extractItem(slot, amount, simulate);
-            }
-
-            @Nonnull
-            @Override
-            public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-                if(slot != 0) return ItemStack.EMPTY;
-                return super.insertItem(slot, stack, simulate);
-            }
-        };
-    }
 
     private CustomEnergyStorage createEnergy() {
         return new CustomEnergyStorage(1000000, 0, 1000000) {
@@ -147,7 +127,10 @@ public class FissionControllerBE extends FissionBE implements ItemRecipeLookupHa
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if (cap == ForgeCapabilities.ITEM_HANDLER) {
-            return handler.cast();
+            return contentHandler.getItemCapability(side);
+        }
+        if (cap == ForgeCapabilities.FLUID_HANDLER) {
+            return contentHandler.getFluidCapability(side);
         }
         if (cap == ForgeCapabilities.ENERGY) {
             return energy.cast();
@@ -236,14 +219,14 @@ public class FissionControllerBE extends FissionBE implements ItemRecipeLookupHa
 
     private void handleRecipeOutput() {
         if (recipeInfo.recipe != null) {
-            if (itemHandler.insertItemInternal(1, recipeInfo.recipe.getResultItem(), true).isEmpty()) {
-                itemHandler.insertItemInternal(1, recipeInfo.recipe.getResultItem(), false);
-                itemHandler.extractItemInternal(2, 1, false);
-                recipeInfo.reset();
+            if (contentHandler.itemHandler.insertItemInternal(1, recipeInfo.recipe.getResultItem(), true).isEmpty()) {
+                contentHandler.itemHandler.insertItemInternal(1, recipeInfo.recipe.getResultItem(), false);
+                contentHandler.itemHandler.extractItemInternal(2, 1, false);
+                recipeInfo.clear();
             }
         } else {
-            itemHandler.extractItemInternal(2, 1, false);
-            recipeInfo.reset();
+            contentHandler.itemHandler.extractItemInternal(2, 1, false);
+            recipeInfo.clear();
         }
 
     }
@@ -297,26 +280,26 @@ public class FissionControllerBE extends FissionBE implements ItemRecipeLookupHa
 
     private void updateRecipe() {
         recipe = (FissionRecipe) getRecipe();
-        if (recipeIsStuck() || itemHandler.getStackInSlot(0).isEmpty()) return;
+        if (recipeIsStuck() || contentHandler.itemHandler.getStackInSlot(0).isEmpty()) return;
 
 
-        if (recipe != null && itemHandler.getStackInSlot(2).isEmpty()) {
-            ItemStack input = itemHandler.getStackInSlot(0).copy();
+        if (recipe != null && contentHandler.itemHandler.getStackInSlot(2).isEmpty()) {
+            ItemStack input = contentHandler.itemHandler.getStackInSlot(0).copy();
             input.setCount(1);
-            itemHandler.extractItemInternal(0, 1, false);
-            itemHandler.insertItemInternal(2, input, false);
+            contentHandler.itemHandler.extractItemInternal(0, 1, false);
+            contentHandler.itemHandler.insertItemInternal(2, input, false);
             recipeInfo.setRecipe(recipe);
             recipeInfo.ticks = ((FissionRecipe) recipeInfo.recipe).getDepletionTime();
-            recipeInfo.energy = ((FissionRecipe) recipeInfo.recipe).getEnergy();
+            recipeInfo.energy = recipeInfo.recipe.getEnergy();
             recipeInfo.heat = ((FissionRecipe) recipeInfo.recipe).getHeat();
-            recipeInfo.radiation = ((FissionRecipe) recipeInfo.recipe).getRadiation();
+            recipeInfo.radiation = recipeInfo.recipe.getRadiation();
         }
     }
 
     public boolean recipeIsStuck() {
         if (recipeInfo.isCompleted() || recipeInfo.recipe == null) {
             handleRecipeOutput();
-            return !itemHandler.getStackInSlot(2).isEmpty();
+            return !contentHandler.itemHandler.getStackInSlot(2).isEmpty();
         }
         return false;
     }
@@ -328,7 +311,7 @@ public class FissionControllerBE extends FissionBE implements ItemRecipeLookupHa
     @Override
     public void load(CompoundTag tag) {
         if (tag.contains("Inventory")) {
-            itemHandler.deserializeNBT(tag.getCompound("Inventory"));
+            contentHandler.deserializeNBT(tag.getCompound("Inventory"));
         }
 
         if (tag.contains("Energy")) {
@@ -353,7 +336,7 @@ public class FissionControllerBE extends FissionBE implements ItemRecipeLookupHa
     @Override
     public void saveAdditional(CompoundTag tag) {
         CompoundTag infoTag = new CompoundTag();
-        tag.put("Inventory", itemHandler.serializeNBT());
+        tag.put("Inventory", contentHandler.serializeNBT());
         tag.put("Energy", energyStorage.serializeNBT());
         infoTag.put("recipeInfo", recipeInfo.serializeNBT());
         infoTag.putInt("validationId", validationResult.id);
@@ -456,8 +439,4 @@ public class FissionControllerBE extends FissionBE implements ItemRecipeLookupHa
         return height;
     }
 
-    @Override
-    public void onContentsChanged() {
-
-    }
 }

@@ -1,15 +1,15 @@
 package igentuman.nc.block.entity.processor;
 
+import igentuman.nc.setup.processors.Processors;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class IsotopeSeparatorBE extends NCProcessorBE {
-    public static String NAME = "isotope_separator";
     public IsotopeSeparatorBE(BlockPos pPos, BlockState pBlockState) {
-        super(pPos, pBlockState, NAME);
+        super(pPos, pBlockState, Processors.ISOTOPE_SEPARATOR);
     }
     @Override
     public String getName() {
-        return NAME;
+        return Processors.ISOTOPE_SEPARATOR;
     }
 }

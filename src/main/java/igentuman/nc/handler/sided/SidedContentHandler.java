@@ -1,9 +1,10 @@
-package igentuman.nc.util.sided;
+package igentuman.nc.handler.sided;
 
+import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.block.entity.processor.NCProcessorBE;
 import igentuman.nc.recipes.NcRecipe;
-import igentuman.nc.util.sided.capability.FluidCapabilityHandler;
-import igentuman.nc.util.sided.capability.ItemCapabilityHandler;
+import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;
+import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -22,7 +23,7 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
     public final LazyOptional<ItemCapabilityHandler> itemCapability;
     public final FluidCapabilityHandler fluidCapability;
 
-    public NCProcessorBE processor;
+    public NuclearCraftBE blockEntity;
 
     public SidedContentHandler(int inputItemSlots, int outputItemSlots, int inputFluidSlots, int outputFluidSlots) {
         this.inputItemSlots = inputItemSlots;
@@ -38,7 +39,7 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
         }
         if(inputFluidSlots + outputFluidSlots > 0) {
             fluidCapability = new FluidCapabilityHandler(inputFluidSlots, outputFluidSlots);
-            fluidCapability.tile = processor;
+            fluidCapability.tile = blockEntity;
         } else {
             fluidCapability = null;
         }
@@ -117,13 +118,13 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
         }
     }
 
-    public <RECIPE extends NcRecipe> void setProcessor(NCProcessorBE<RECIPE> recipencProcessorBE) {
-        processor = recipencProcessorBE;
+    public <RECIPE extends NcRecipe> void setBlockEntity(NuclearCraftBE blockEntity) {
+        this.blockEntity = blockEntity;
         if(fluidCapability != null) {
-            fluidCapability.tile = processor;
+            fluidCapability.tile = blockEntity;
         }
         if(itemHandler != null) {
-            itemHandler.tile = processor;
+            itemHandler.tile = blockEntity;
         }
     }
 

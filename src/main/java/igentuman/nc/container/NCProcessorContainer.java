@@ -4,7 +4,7 @@ import igentuman.nc.block.entity.processor.NCProcessorBE;
 import igentuman.nc.setup.processors.ProcessorPrefab;
 import igentuman.nc.setup.processors.Processors;
 import igentuman.nc.setup.registration.NCProcessors;
-import igentuman.nc.util.sided.SlotModePair;
+import igentuman.nc.handler.sided.SlotModePair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;

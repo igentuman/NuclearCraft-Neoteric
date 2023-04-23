@@ -1,17 +1,19 @@
 package igentuman.nc.recipes;
 
 import igentuman.nc.client.NcClient;
-import igentuman.nc.recipes.ingredient.ItemStackIngredient;
-import igentuman.nc.recipes.multiblock.FissionRecipe;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.server.ServerLifecycleHooks;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class RecipeInfo <RECIPE extends NcRecipe> implements INBTSerializable<Tag> {
@@ -21,6 +23,7 @@ public class RecipeInfo <RECIPE extends NcRecipe> implements INBTSerializable<Ta
     public double heat = 0;
     public double radiation = 0;
     public RECIPE recipe;
+    public BlockEntity be;
     public ItemStack[] inputItems;
     public ItemStack[] outputItems;
 
@@ -59,19 +62,26 @@ public class RecipeInfo <RECIPE extends NcRecipe> implements INBTSerializable<Ta
             //String recipeType = ((CompoundTag) nbt).getString("recipeType");
             if(!recipeId.isEmpty()) {
                 recipe = getRecipeFromTag(recipeId);
+
             }
         }
     }
 
+    private Level getLevel()
+    {
+        return DistExecutor.unsafeRunForDist(
+                () -> NcClient::tryGetClientWorld,
+                () -> () -> ServerLifecycleHooks.getCurrentServer().overworld());
+    }
+
     private RECIPE getRecipeFromTag(String recipe) {
         ResourceLocation id = new ResourceLocation(recipe);
-        Level world = DistExecutor.unsafeRunForDist(() -> NcClient::tryGetClientWorld, () -> () -> ServerLifecycleHooks.getCurrentServer().overworld());
-        return (RECIPE) world.getRecipeManager().byKey(id).get();
+        return (RECIPE) getLevel().getRecipeManager().byKey(id).get();
     }
 
     public double getProgress() {
         if(ticks > 0) {
-            return ((double)ticksProcessed)/ticks;
+            return ticksProcessed/ticks;
         }
         return 0;
     }
@@ -81,7 +91,7 @@ public class RecipeInfo <RECIPE extends NcRecipe> implements INBTSerializable<Ta
         ticksProcessed = Math.min(ticks, ticksProcessed);
     }
 
-    public void reset() {
+    public void clear() {
         this.recipe = null;
         ticks = 0;
         heat = 0;

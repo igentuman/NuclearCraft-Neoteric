@@ -6,7 +6,7 @@ import igentuman.nc.NuclearCraft;
 import igentuman.nc.client.gui.element.NCGuiElement;
 import igentuman.nc.client.gui.processor.side.SideConfigScreen;
 import igentuman.nc.network.toServer.PacketSideConfigToggle;
-import igentuman.nc.util.sided.SidedContentHandler;
+import igentuman.nc.handler.sided.SidedContentHandler;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;

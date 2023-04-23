@@ -1,5 +1,6 @@
 package igentuman.nc.block.entity;
 
+import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -14,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class NuclearCraftBE extends BlockEntity {
+    protected String name;
+
     public NuclearCraftBE(BlockEntityType<?> pType, BlockPos pPos, BlockState pBlockState) {
         super(pType, pPos, pBlockState);
     }
@@ -146,5 +149,13 @@ public class NuclearCraftBE extends BlockEntity {
             }
         }
         initFlag = true;
+    }
+
+    public ItemCapabilityHandler getItemInventory() {
+        return null;
+    }
+
+    public String getName() {
+        return name;
     }
 }

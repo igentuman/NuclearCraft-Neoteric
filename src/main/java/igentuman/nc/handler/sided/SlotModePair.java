@@ -1,4 +1,4 @@
-package igentuman.nc.util.sided;
+package igentuman.nc.handler.sided;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;

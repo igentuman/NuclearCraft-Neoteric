@@ -1,14 +1,12 @@
 package igentuman.nc.recipes;
 
+import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
-import igentuman.nc.recipes.multiblock.FissionRecipe;
 import igentuman.nc.util.IgnoredIInventory;
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
@@ -16,7 +14,6 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -34,6 +31,8 @@ public abstract class NcRecipe implements Recipe<IgnoredIInventory> {
 
     protected ItemStackIngredient[] inputItems;
     protected ItemStack[] outputItems;
+
+    protected SidedContentHandler contentHandler;
 
     /**
      * @param id Recipe name.

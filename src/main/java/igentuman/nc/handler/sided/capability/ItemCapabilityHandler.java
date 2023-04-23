@@ -1,7 +1,7 @@
-package igentuman.nc.util.sided.capability;
+package igentuman.nc.handler.sided.capability;
 
-import igentuman.nc.util.sided.SidedContentHandler;
-import igentuman.nc.util.sided.SlotModePair;
+import igentuman.nc.handler.sided.SidedContentHandler;
+import igentuman.nc.handler.sided.SlotModePair;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -19,16 +19,18 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import static igentuman.nc.util.sided.SlotModePair.SlotMode.*;
+import static igentuman.nc.handler.sided.SlotModePair.SlotMode.*;
 
 public class ItemCapabilityHandler extends AbscractCapabilityHandler implements IItemHandlerModifiable, INBTSerializable<CompoundTag> {
 
     protected NonNullList<ItemStack> stacks;
     public BlockEntity tile;
-    protected Map<Integer, int[]> slotOutputSides = new HashMap<>();
+    public List<ItemStack> holdedInputs = new ArrayList<>();
 
     public ItemCapabilityHandler(int input, int output) {
         this.inputSlots = input;
@@ -99,15 +101,8 @@ public class ItemCapabilityHandler extends AbscractCapabilityHandler implements 
     }
 
     public ItemStack insertItemInternal(int slot, @Nonnull ItemStack stack, boolean simulate) {
-        return insertItem(slot, stack, simulate);
-    }
-
-    @Override
-    @NotNull
-    public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
         if (stack.isEmpty())
             return ItemStack.EMPTY;
-
         if (!isItemValid(slot, stack))
             return stack;
 
@@ -139,6 +134,14 @@ public class ItemCapabilityHandler extends AbscractCapabilityHandler implements 
         }
 
         return reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, stack.getCount() - limit) : ItemStack.EMPTY;
+    }
+
+    @Override
+    @NotNull
+    public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
+        if(getType(slot).equals(SidedContentHandler.SlotType.OUTPUT))
+            return stack;
+        return insertItemInternal(slot, stack, simulate);
     }
 
     @Override

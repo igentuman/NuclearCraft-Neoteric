@@ -2,7 +2,6 @@ package igentuman.nc.compat.jei;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import igentuman.nc.recipes.NcRecipe;
-import igentuman.nc.setup.processors.Processors;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -17,9 +16,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
-import static igentuman.nc.NuclearCraft.MODID;
-import static igentuman.nc.NuclearCraft.rl;
-import static igentuman.nc.compat.jei.JEIPlugin.CATALYSTS;
+import static igentuman.nc.NuclearCraft.*;
+import static igentuman.nc.compat.GlobalVars.*;
 
 public class FissionCategoryWrapper<T extends NcRecipe> implements IRecipeCategory<T> {
     public final static ResourceLocation TEXTURE =

@@ -17,12 +17,11 @@ import java.util.HashMap;
 import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.compat.GlobalVars.*;
 
 @JeiPlugin
 public  class JEIPlugin implements IModPlugin {
-    public static HashMap<String, Class> RECIPE_CLASSES = new HashMap<>();
     public  static HashMap<String, RecipeType<NcRecipe>>  recipeTypes;
-    public static HashMap<String, List<ItemStack>>  CATALYSTS = new HashMap<>();
 
     public static RecipeType<NcRecipe> FISSION = new RecipeType<NcRecipe>(new ResourceLocation(MODID, "fission_reactor"), FissionRecipe.class);
     private static HashMap<String, RecipeType<NcRecipe>> getRecipeTypes() {

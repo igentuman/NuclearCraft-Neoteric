@@ -14,7 +14,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 
 import java.util.List;
 
-import static igentuman.nc.compat.jei.JEIPlugin.CATALYSTS;
+import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 
 @NothingNullByDefault
 public class FissionRecipe extends ItemStackToItemStackRecipe {

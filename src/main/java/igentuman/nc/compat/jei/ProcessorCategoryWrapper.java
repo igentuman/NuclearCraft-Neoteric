@@ -19,11 +19,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
-import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
-import static igentuman.nc.compat.jei.JEIPlugin.CATALYSTS;
-import static igentuman.nc.compat.jei.JEIPlugin.RECIPE_CLASSES;
-import static igentuman.nc.handler.config.CommonConfig.ProcessorConfig.PROCESSOR_TIME;
+import static igentuman.nc.compat.GlobalVars.*;
 
 public class ProcessorCategoryWrapper<T extends NcRecipe> implements IRecipeCategory<T> {
     public final static ResourceLocation TEXTURE = rl("textures/gui/processor_jei.png");

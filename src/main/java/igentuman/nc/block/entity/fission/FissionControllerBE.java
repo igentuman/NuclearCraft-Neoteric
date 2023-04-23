@@ -1,5 +1,7 @@
 package igentuman.nc.block.entity.fission;
 
+import igentuman.nc.recipes.cache.CachedRecipe;
+import igentuman.nc.recipes.inputs.InputHelper;
 import igentuman.nc.util.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.multiblock.fission.FissionReactorMultiblock;
 import igentuman.nc.recipes.*;
@@ -75,8 +77,6 @@ public class FissionControllerBE extends FissionBE implements ItemRecipeLookupHa
     private Direction facing;
     public FissionRecipe recipe;
 
-    //protected final IInputHandler<@NotNull ItemStack> inputHandler;
-    //protected final IOutputHandler<@NotNull ItemStack> outputHandler;
 
     @NotNull
     @Override
@@ -94,8 +94,6 @@ public class FissionControllerBE extends FissionBE implements ItemRecipeLookupHa
     public FissionControllerBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, NAME);
         multiblock = new FissionReactorMultiblock(this);
-        //inputHandler = InputHelper.getInputHandler(mainInputSlot, CachedRecipe.OperationTracker.RecipeError.NOT_ENOUGH_INPUT);
-
     }
 
     public LazyOptional<IEnergyStorage> getEnergy() {
@@ -213,7 +211,7 @@ public class FissionControllerBE extends FissionBE implements ItemRecipeLookupHa
 
     private boolean processReaction() {
         heatMultiplier = heatMultiplier() + collectedHeatMultiplier() - 1;
-        if (!hasRecipe() && !itemHandler.getStackInSlot(0).equals(ItemStack.EMPTY)) {
+        if (!hasRecipe()) {
             updateRecipe();
         }
         if (hasRecipe()) {
@@ -299,7 +297,7 @@ public class FissionControllerBE extends FissionBE implements ItemRecipeLookupHa
 
     private void updateRecipe() {
         recipe = (FissionRecipe) getRecipe();
-        if (recipeIsStuck()) return;
+        if (recipeIsStuck() || itemHandler.getStackInSlot(0).isEmpty()) return;
 
 
         if (recipe != null && itemHandler.getStackInSlot(2).isEmpty()) {

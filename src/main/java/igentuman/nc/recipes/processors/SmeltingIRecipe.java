@@ -12,10 +12,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 
 import java.util.List;
-
-import static igentuman.nc.compat.jei.JEIPlugin.*;
-
-
+import static igentuman.nc.compat.GlobalVars.*;
 @NothingNullByDefault
 public class SmeltingIRecipe extends ItemStackToItemStackRecipe {
     public static String ID = "smelting";

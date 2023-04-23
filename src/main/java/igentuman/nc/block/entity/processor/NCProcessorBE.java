@@ -3,6 +3,8 @@ package igentuman.nc.block.entity.processor;
 import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.recipes.NcRecipe;
 import igentuman.nc.recipes.RecipeInfo;
+import igentuman.nc.recipes.lookup.ISingleRecipeLookupHandler;
+import igentuman.nc.recipes.lookup.ISingleRecipeLookupHandler.*;
 import igentuman.nc.setup.processors.ProcessorPrefab;
 import igentuman.nc.setup.processors.Processors;
 import igentuman.nc.setup.registration.NCProcessors;
@@ -35,7 +37,6 @@ public class NCProcessorBE<RECIPE extends NcRecipe> extends NuclearCraftBE {
     public static String NAME;
     public final SidedContentHandler contentHandler;
     protected final CustomEnergyStorage energyStorage;
-
     public final ItemStackHandler upgradesHandler = createHandler();
     protected final LazyOptional<IItemHandler> handler = LazyOptional.of(() -> upgradesHandler);
 
@@ -60,13 +61,16 @@ public class NCProcessorBE<RECIPE extends NcRecipe> extends NuclearCraftBE {
     protected ProcessorPrefab prefab;
 
     private void updateRecipe() {
-        recipe = (RECIPE) getRecipe();
+        recipe = getRecipe();
         if (recipeIsStuck()) return;
+        if (recipe != null) {
+            recipeInfo.setRecipe(recipe);
+        }
 
     }
 
     public RECIPE getRecipe() {
-        return recipe;
+        return null;
     }
 
     private void handleRecipeOutput() {
@@ -145,8 +149,17 @@ public class NCProcessorBE<RECIPE extends NcRecipe> extends NuclearCraftBE {
     }
 
     public void tickServer() {
+        processRecipe();
         contentHandler.tick();
         level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+    }
+
+    private void processRecipe() {
+        if(!hasRecipe()) {
+            updateRecipe();
+        }
+        if(!hasRecipe()) return;
+       // getRecipe().
     }
 
     public String getName() {

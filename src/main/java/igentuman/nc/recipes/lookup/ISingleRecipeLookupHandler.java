@@ -42,6 +42,7 @@ public interface ISingleRecipeLookupHandler<INPUT, RECIPE extends NcRecipe & Pre
 
     @Nullable
     default RECIPE findFirstRecipe(ItemCapabilityHandler input) {
+        if(getRecipeType() == null) return null;
         return getRecipeType().getInputCache().findFirstRecipe(getHandlerWorld(), input);
     }
 

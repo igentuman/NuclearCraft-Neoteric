@@ -48,11 +48,9 @@ public class CustomRecipes extends NCRecipes {
         double timeModifier = params.length>0 ? params[0] : 1.0;
         double radiation = params.length>1 ? params[1] : 1.0;
         double powerModifier = params.length>2 ? params[2] : 1.0;
-        Item item = input.getItems()[0].getItem();
-        if(item.equals(Items.BARRIER)) return;
         ItemToItemRecipeBuilder.create(id, input, new ItemStack(output))
                 .modifiers(timeModifier, radiation, powerModifier)
-                .build(consumer, rl(id+"_"+item));
+                .build(consumer, rl(id+"_"+output.toString()));
     }
 
     private static void fissionReactorRecipes() {

@@ -45,7 +45,7 @@ public class ProcessorCategoryWrapper<T extends NcRecipe> implements IRecipeCate
         } else{
             this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, ItemStack.EMPTY);
         }
-        arrow = guiHelper.drawableBuilder(rl("textures/gui/progress_jei.png"), 0, 0, 36, 15)
+        arrow = guiHelper.drawableBuilder(rl("textures/gui/progress.png"), 0, 0, 36, 15)
                 .buildAnimated(Processors.all().get(getRecipeType().getUid().getPath()).config().getTime(),
                 IDrawableAnimated.StartDirection.LEFT, false);
     }

@@ -179,4 +179,16 @@ public class NCProcessorContainer extends AbstractContainerMenu {
     public FluidTank getFluidTank(int i) {
         return blockEntity.getFluidTank(i);
     }
+
+    public int speedMultiplier() {
+        return blockEntity.speedMultiplier;
+    }
+
+    public int energyMultiplier() {
+        return blockEntity.energyMultiplier;
+    }
+
+    public int energyPerTick() {
+        return blockEntity.energyPerTick;
+    }
 }

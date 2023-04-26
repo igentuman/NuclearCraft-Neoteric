@@ -177,6 +177,11 @@ public class NCLanguageProvider extends LanguageProvider {
         add("side_config.default", "DEFAULT");
         add("gui.nc.side_config.tooltip", "Side Config");
 
+        add("speed.multiplier", "Speed Multiplier: x%s");
+        add("energy.multiplier", "Energy Multiplier: x%s");
+        add("energy.per_tick", "Energy Per Tick: %s FE/t");
+
+
         add("reactor.cooling", "Cooling: %s H/t");
         add("reactor.heating", "Heat Gen: %s H/t");
         add("reactor.net_heat", "Net Heat: %s H/t");

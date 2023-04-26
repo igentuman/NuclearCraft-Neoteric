@@ -13,10 +13,13 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Objects;
+
+import static net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE;
 
 public abstract class NcRecipe implements Recipe<IgnoredIInventory> {
     private final ResourceLocation id;
@@ -35,8 +38,6 @@ public abstract class NcRecipe implements Recipe<IgnoredIInventory> {
 
     protected ItemStackIngredient[] inputItems;
     protected ItemStack[] outputItems;
-
-    protected SidedContentHandler contentHandler;
 
     /**
      * @param id Recipe name.
@@ -123,12 +124,12 @@ public abstract class NcRecipe implements Recipe<IgnoredIInventory> {
         return ingredients;
     }
 
-    public int getTicks() {
-        return 0;
+    public double getTimeModifier() {
+        return timeModifier*20;
     }
 
     public double getEnergy() {
-        return 0;
+        return powerModifier;
     }
 
     public double getRadiation() {
@@ -155,5 +156,30 @@ public abstract class NcRecipe implements Recipe<IgnoredIInventory> {
         }
         contentHandler.clearHolded();
         return true;
+    }
+
+    public void extractInputs(SidedContentHandler contentHandler) {
+        int i = 0;
+        if(contentHandler.hasFluidCapability(null)) {
+            for (FluidStackIngredient inputFluid : inputFluids) {
+                for (FluidStack fluidStack : inputFluid.getRepresentations()) {
+                    if (fluidStack.isFluidEqual(contentHandler.fluidCapability.tanks.get(i).getFluid())) {
+                        contentHandler.fluidCapability.holdedInputs.add(fluidStack.copy());
+                        contentHandler.fluidCapability.tanks.get(i).drain(fluidStack, EXECUTE);
+                    }
+                }
+                i++;
+            }
+        }
+        i=0;
+        if(contentHandler.hasItemCapability(null)) {
+            for (ItemStackIngredient inputItem : inputItems) {
+                for (ItemStack itemStack : inputItem.getRepresentations()) {
+                    contentHandler.itemHandler.holdedInputs.add(itemStack.copy());
+                    contentHandler.itemHandler.extractItemInternal(i, itemStack.getCount(), false);
+                }
+                i++;
+            }
+        }
     }
 }

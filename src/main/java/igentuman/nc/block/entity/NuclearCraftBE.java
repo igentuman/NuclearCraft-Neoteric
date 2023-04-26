@@ -109,7 +109,7 @@ public class NuclearCraftBE extends BlockEntity {
 
     private void initFields() {
         if(initFlag) return;
-        for (Field field : getClass().getDeclaredFields()) {
+        for (Field field : getClass().getFields()) {
             if (field.isAnnotationPresent(NBTField.class)) {
                 if(field.getType().equals(int.class)) {
                     intFields.add(field);

@@ -19,7 +19,7 @@ import static igentuman.nc.compat.GlobalVars.*;
 @NothingNullByDefault
 public class DecayHastenerRecipe extends ItemStackToItemStackRecipe {
 
-    public static String ID = "decay_hastener";
+    public static String ID = Processors.DECAY_HASTENER;
     public DecayHastenerRecipe(ResourceLocation id, ItemStackIngredient input, ItemStack output, double timeModifier, double powerModifier, double heatModifier) {
         super(id, input, output, timeModifier, powerModifier, heatModifier);
         RECIPE_CLASSES.put(ID, this.getClass());

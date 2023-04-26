@@ -1,8 +1,12 @@
 package igentuman.nc.setup.processors;
 
+import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.block.entity.processor.NCProcessorBE;
 import igentuman.nc.container.NCProcessorContainer;
 import igentuman.nc.handler.config.CommonConfig;
+import igentuman.nc.recipes.NcRecipe;
+import igentuman.nc.recipes.handler.ItemToItemRecipeHandler;
+import igentuman.nc.recipes.lookup.IRecipeLookupHandler;
 import igentuman.nc.setup.processors.config.ProcessorSlots;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
@@ -14,6 +18,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 
 
 public class ProcessorPrefab <M extends NCProcessorContainer, U extends Screen & MenuAccess<M>> {
@@ -27,7 +32,7 @@ public class ProcessorPrefab <M extends NCProcessorContainer, U extends Screen &
     public String name;
 
     public boolean supportSpeedUpgrade = true;
-    protected int power = 200;
+    protected int power = 20;
     protected int time = 200;
 
     public boolean supportEnergyUpgrade = true;
@@ -35,6 +40,7 @@ public class ProcessorPrefab <M extends NCProcessorContainer, U extends Screen &
     protected boolean supportCatalyst = false;
 
     protected Class recipeManager;
+    private Class recipeLookupHandler = ItemToItemRecipeHandler.class;
 
 
     public BlockEntityType.BlockEntitySupplier<? extends NCProcessorBE>  getBlockEntity() {
@@ -140,4 +146,17 @@ public class ProcessorPrefab <M extends NCProcessorContainer, U extends Screen &
         return (supportSpeedUpgrade ? 1 : 0) + (supportEnergyUpgrade ? 1 : 0);
     }
 
+    public <RECIPE extends NcRecipe> IRecipeLookupHandler getRecipeLookupHandler(NCProcessorBE<RECIPE> recipencProcessorBE) {
+        try {
+            return (IRecipeLookupHandler) recipeLookupHandler.getConstructor(NuclearCraftBE.class).newInstance(recipencProcessorBE);
+        } catch (InstantiationException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

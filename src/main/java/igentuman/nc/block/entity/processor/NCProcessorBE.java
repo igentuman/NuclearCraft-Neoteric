@@ -1,14 +1,17 @@
 package igentuman.nc.block.entity.processor;
 
 import igentuman.nc.block.entity.NuclearCraftBE;
+import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.recipes.NcRecipe;
 import igentuman.nc.recipes.RecipeInfo;
+import igentuman.nc.recipes.lookup.IRecipeLookupHandler;
 import igentuman.nc.setup.processors.ProcessorPrefab;
 import igentuman.nc.setup.processors.Processors;
 import igentuman.nc.setup.registration.NCProcessors;
 import igentuman.nc.util.CustomEnergyStorage;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.SlotModePair;
+import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -38,13 +41,21 @@ public class NCProcessorBE<RECIPE extends NcRecipe> extends NuclearCraftBE {
     protected final LazyOptional<IItemHandler> handler = LazyOptional.of(() -> upgradesHandler);
 
     private RECIPE recipe;
+    @NBTField
+    public int speedMultiplier = 1;
+    @NBTField
+    public int energyPerTick = 0;
+    @NBTField
+    public int energyMultiplier = 1;
 
     public LazyOptional<IEnergyStorage> getEnergy() {
         return energy;
     }
 
     protected final LazyOptional<IEnergyStorage> energy;
+    public IRecipeLookupHandler recipeHandler;
 
+    protected ProcessorPrefab prefab;
 
     public RecipeInfo recipeInfo = new RecipeInfo();
 
@@ -55,30 +66,55 @@ public class NCProcessorBE<RECIPE extends NcRecipe> extends NuclearCraftBE {
         return prefab;
     }
 
-    protected ProcessorPrefab prefab;
+    @Override
+    public ItemCapabilityHandler getItemInventory() {
+        return contentHandler.itemHandler;
+    }
 
     private void updateRecipe() {
         recipe = getRecipe();
-        if (recipeIsStuck()) return;
         if (recipe != null) {
             recipeInfo.setRecipe(recipe);
+            recipeInfo.ticks = (int) (getBaseProcessTime() * recipe.getTimeModifier());
+            recipeInfo.energy = getBasePower() * recipe.getEnergy();
+            recipeInfo.radiation = recipeInfo.recipe.getRadiation();
+            recipeInfo.be = this;
+            recipe.extractInputs(contentHandler);
         }
+    }
 
+    private int getBaseProcessTime() {
+        return prefab().config().getTime();
+    }
+
+    private int getBasePower() {
+        return prefab().config().getPower();
     }
 
     public RECIPE getRecipe() {
-        return null;
+        return (RECIPE) recipeHandler.getRecipe();
     }
 
     private void handleRecipeOutput() {
-
+        if (hasRecipe() && recipeInfo.isCompleted()) {
+            if (recipe.handleOutputs(contentHandler)) {
+                recipeInfo.clear();
+            } else {
+                recipeInfo.stuck = true;
+            }
+        }
     }
 
-    public boolean canProcessRecipeOutputs() {
-        boolean canProcess = true;
+    public double speedMultiplier()
+    {
+        speedMultiplier = upgradesHandler.getStackInSlot(0).getCount()+1;
+        return speedMultiplier;
+    }
 
-
-        return canProcess;
+    public int energyPerTick()
+    {
+        energyPerTick = (int) (recipe.getEnergy()*energyMultiplier()*prefab().config().getPower());
+        return energyPerTick;
     }
 
     public boolean recipeIsStuck() {
@@ -89,11 +125,11 @@ public class NCProcessorBE<RECIPE extends NcRecipe> extends NuclearCraftBE {
     }
 
     public boolean hasRecipe() {
-        return !recipeIsStuck() && recipeInfo.recipe != null;
+        return recipeInfo.recipe != null;
     }
 
     private CustomEnergyStorage createEnergy() {
-        return new CustomEnergyStorage(prefab().config().getPower()*500, 10000, 0) {
+        return new CustomEnergyStorage(prefab().config().getPower()*5000, 100000, 0) {
             @Override
             protected void onEnergyChanged() {
                 setChanged();
@@ -140,6 +176,7 @@ public class NCProcessorBE<RECIPE extends NcRecipe> extends NuclearCraftBE {
         contentHandler.setBlockEntity(this);
         energyStorage = createEnergy();
         energy = LazyOptional.of(() -> energyStorage);
+        recipeHandler = prefab().getRecipeLookupHandler(this);
     }
 
     public void tickClient() {
@@ -147,6 +184,7 @@ public class NCProcessorBE<RECIPE extends NcRecipe> extends NuclearCraftBE {
 
     public void tickServer() {
         processRecipe();
+        handleRecipeOutput();
         contentHandler.tick();
         level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
     }
@@ -156,8 +194,19 @@ public class NCProcessorBE<RECIPE extends NcRecipe> extends NuclearCraftBE {
             updateRecipe();
         }
         if(!hasRecipe()) return;
-       // getRecipe().
+
+        if(energyStorage.getEnergyStored() < energyPerTick()) return;
+        recipeInfo.process(speedMultiplier());
+        if(!recipeInfo.isCompleted()) {
+            energyStorage.consumeEnergy(energyPerTick());
+        }
     }
+
+    public int energyMultiplier() {
+        energyMultiplier = (int) Math.max(speedMultiplier()-1, Math.pow(speedMultiplier()-1, 2)+speedMultiplier()-Math.pow(upgradesHandler.getStackInSlot(1).getCount(),2));
+        return energyMultiplier;
+    }
+
 
     @Override
     public void setRemoved() {
@@ -177,6 +226,9 @@ public class NCProcessorBE<RECIPE extends NcRecipe> extends NuclearCraftBE {
         if (tag.contains("Info")) {
             CompoundTag infoTag = tag.getCompound("Info");
             readTagData(infoTag);
+            if (infoTag.contains("recipeInfo")) {
+                recipeInfo.deserializeNBT(infoTag.getCompound("recipeInfo"));
+            }
             upgradesHandler.deserializeNBT((CompoundTag) (infoTag).get("upgrades"));
         }
         super.load(tag);
@@ -190,6 +242,7 @@ public class NCProcessorBE<RECIPE extends NcRecipe> extends NuclearCraftBE {
         CompoundTag infoTag = new CompoundTag();
         saveTagData(infoTag);
         infoTag.put("upgrades", upgradesHandler.serializeNBT());
+        infoTag.put("recipeInfo", recipeInfo.serializeNBT());
         tag.put("Info", infoTag);
     }
 
@@ -208,6 +261,9 @@ public class NCProcessorBE<RECIPE extends NcRecipe> extends NuclearCraftBE {
         if (tag.contains("Info")) {
             CompoundTag infoTag = tag.getCompound("Info");
             readTagData(infoTag);
+            if (infoTag.contains("recipeInfo")) {
+                recipeInfo.deserializeNBT(infoTag.getCompound("recipeInfo"));
+            }
             energyStorage.setEnergy(infoTag.getInt("energy"));
             upgradesHandler.deserializeNBT((CompoundTag) (infoTag).get("upgrades"));
         }
@@ -227,10 +283,9 @@ public class NCProcessorBE<RECIPE extends NcRecipe> extends NuclearCraftBE {
         CompoundTag infoTag = new CompoundTag();
         saveTagData(infoTag);
         infoTag.put("upgrades", upgradesHandler.serializeNBT());
+        infoTag.put("recipeInfo", recipeInfo.serializeNBT());
         tag.put("Info", infoTag);
         tag.put("Content", contentHandler.serializeNBT());
-
-
         infoTag.putInt("energy", energyStorage.getEnergyStored());
     }
 

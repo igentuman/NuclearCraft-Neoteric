@@ -1,5 +1,6 @@
 package igentuman.nc.compat.jei;
 
+import igentuman.nc.block.entity.fission.FissionControllerBE;
 import igentuman.nc.client.NcClient;
 import igentuman.nc.recipes.NcRecipe;
 import igentuman.nc.recipes.NcRecipeType;
@@ -23,7 +24,7 @@ import static igentuman.nc.compat.GlobalVars.*;
 public  class JEIPlugin implements IModPlugin {
     public  static HashMap<String, RecipeType<NcRecipe>>  recipeTypes;
 
-    public static RecipeType<NcRecipe> FISSION = new RecipeType<NcRecipe>(new ResourceLocation(MODID, "fission_reactor"), FissionRecipe.class);
+    public static RecipeType<NcRecipe> FISSION = new RecipeType<NcRecipe>(new ResourceLocation(MODID, FissionControllerBE.NAME), FissionRecipe.class);
     private static HashMap<String, RecipeType<NcRecipe>> getRecipeTypes() {
         if(recipeTypes == null) {
             recipeTypes = new HashMap<>();
@@ -63,7 +64,7 @@ public  class JEIPlugin implements IModPlugin {
         }
         registration.addRecipes(
                 getRecipeType(FISSION),
-                NcRecipeType.RECIPES.get("fission_reactor").getRecipes(NcClient.tryGetClientWorld()));
+                NcRecipeType.RECIPES.get(FissionControllerBE.NAME).getRecipes(NcClient.tryGetClientWorld()));
     }
 
     @Override
@@ -74,6 +75,6 @@ public  class JEIPlugin implements IModPlugin {
                 registry.addRecipeCatalyst(stack, getRecipeType(name));
             }
         }
-        registry.addRecipeCatalyst(CATALYSTS.get("fission_reactor").get(0), FISSION);
+        registry.addRecipeCatalyst(CATALYSTS.get(FissionControllerBE.NAME).get(0), FISSION);
     }
 }

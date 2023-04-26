@@ -216,15 +216,14 @@ public class FissionControllerBE extends FissionBE  {
             heat += calculateHeat();
         }
 
-        if (recipeInfo.isCompleted()) {
-            handleRecipeOutput();
-        }
+        handleRecipeOutput();
+
         efficiency = calculateEfficiency();
         return true;
     }
 
     private void handleRecipeOutput() {
-        if (hasRecipe()) {
+        if (hasRecipe() && recipeInfo.isCompleted()) {
             if (recipe.handleOutputs(contentHandler)) {
                 recipeInfo.clear();
             } else {
@@ -285,8 +284,6 @@ public class FissionControllerBE extends FissionBE  {
         if (recipe != null) {
             ItemStack input = contentHandler.itemHandler.getStackInSlot(0).copy();
             input.setCount(recipe.getInput().getRepresentations().get(0).getCount());
-            contentHandler.itemHandler.extractItemInternal(0, 1, false);
-            contentHandler.itemHandler.holdedInputs.add(input);
             recipeInfo.setRecipe(recipe);
             recipeInfo.ticks = ((FissionRecipe) recipeInfo.recipe).getDepletionTime();
             recipeInfo.energy = recipeInfo.recipe.getEnergy();

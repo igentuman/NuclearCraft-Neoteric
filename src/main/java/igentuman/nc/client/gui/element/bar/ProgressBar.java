@@ -24,21 +24,38 @@ public class ProgressBar extends NCGuiElement {
     public ProgressBar(int xMin, int yMin, IProgressScreen container)  {
         x = xMin;
         y = yMin;
-        width = 40;
+        width = 36;
         height = 15;
         this.container = container;
         bars.add(new int[] {0, 16});
+
+        bars.add(new int[] {0, 16});
         bars.add(new int[] {0, 47});
         bars.add(new int[] {0, 78});
-        bars.add(new int[] {0, 107});
-        bars.add(new int[] {0, 138});
-        bars.add(new int[] {0, 169});
+        bars.add(new int[] {0, 109});
+        bars.add(new int[] {0, 140});
+        bars.add(new int[] {0, 171});
         bars.add(new int[] {0, 201});
+
+        bars.add(new int[] {40, 16});
+        bars.add(new int[] {40, 47});
+        bars.add(new int[] {40, 78});
+        bars.add(new int[] {40, 109});
+        bars.add(new int[] {40, 138});
+        bars.add(new int[] {40, 169});
+        bars.add(new int[] {40, 201});
+
+        bars.add(new int[] {74, 38});
+        bars.add(new int[] {111, 38});
     }
 
     public ProgressBar(int xMin, int yMin, IProgressScreen container, int barNumber)  {
         this(xMin, yMin, container);
         bar = barNumber;
+        if(bar > 14) {
+            height = 36;
+            y -= 10;
+        }
     }
 
 
@@ -52,7 +69,7 @@ public class ProgressBar extends NCGuiElement {
         RenderSystem.setShaderTexture(0, ATLAS);
         int texOffset = bars.get(bar)[0];
         int teyOffset = bars.get(bar)[1];
-        blit(transform, X(), Y(), texOffset, teyOffset,  36, 15);
-        blit(transform, X(), Y(), texOffset, teyOffset-15, (int) (container.getProgress()*36), 15);
+        blit(transform, X(), Y(), texOffset, teyOffset,  width, height);
+        blit(transform, X(), Y(), texOffset, teyOffset-height, (int) (container.getProgress()*width), height);
     }
 }

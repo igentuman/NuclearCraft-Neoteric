@@ -12,6 +12,7 @@ import igentuman.nc.client.gui.element.slot.BigSlot;
 import igentuman.nc.container.NCProcessorContainer;
 import igentuman.nc.client.gui.element.slot.NormalSlot;
 import igentuman.nc.setup.processors.config.ProcessorSlots;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -24,6 +25,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.util.TextUtils.applyFormat;
+import static igentuman.nc.util.TextUtils.scaledFormat;
 
 public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractContainerScreen<T> implements IProgressScreen {
     protected final ResourceLocation GUI = new ResourceLocation(MODID, "textures/gui/processor.png");
@@ -136,6 +139,12 @@ public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractC
     private void renderTooltips(PoseStack pPoseStack, int pMouseX, int pMouseY) {
         for(NCGuiElement widget: widgets) {
             if(widget.isMouseOver(pMouseX, pMouseY)) {
+                if(widget instanceof EnergyBar) {
+                    widget.clearTooltips();
+                    widget.addTooltip(applyFormat(Component.translatable("speed.multiplier", menu.speedMultiplier()), ChatFormatting.RED));
+                    widget.addTooltip(applyFormat(Component.translatable("energy.multiplier", menu.energyMultiplier()), ChatFormatting.GOLD));
+                    widget.addTooltip(applyFormat(Component.translatable("energy.per_tick", scaledFormat(menu.energyPerTick())), ChatFormatting.YELLOW));
+                }
                 renderTooltip(pPoseStack, widget.getTooltips(),
                         Optional.empty(), pMouseX, pMouseY);
             }

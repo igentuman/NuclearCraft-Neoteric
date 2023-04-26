@@ -19,7 +19,7 @@ import static igentuman.nc.compat.GlobalVars.*;
 @NothingNullByDefault
 public class PressurizerRecipe extends ItemStackToItemStackRecipe {
 
-    public static String ID = "pressurizer";
+    public static String ID = Processors.PRESSURIZER;
     public PressurizerRecipe(ResourceLocation id, ItemStackIngredient input, ItemStack output, double timeModifier, double powerModifier, double heatModifier) {
         super(id, input, output, timeModifier, powerModifier, heatModifier);
         RECIPE_CLASSES.put(ID, this.getClass());

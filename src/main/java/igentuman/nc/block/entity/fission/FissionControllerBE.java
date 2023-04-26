@@ -157,6 +157,7 @@ public class FissionControllerBE extends FissionBE  {
             height = multiblock().height();
             width = multiblock().width();
             depth = multiblock().depth();
+            contentHandler.tick();
             processReaction();
             coolDown();
             handleMeltdown();
@@ -417,7 +418,7 @@ public class FissionControllerBE extends FissionBE  {
     }
 
     public double calculateEfficiency() {
-        return (double) calculateEnergy() / ((double) recipeInfo.energy / 100);
+        return (double) calculateEnergy() / (recipeInfo.energy / 100);
     }
 
     public double getNetHeat() {

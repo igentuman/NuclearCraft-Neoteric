@@ -352,7 +352,6 @@ public class ItemCapabilityHandler extends AbscractCapabilityHandler implements 
                     if(pair.getMode() == PUSH) {
                         ItemStack remainder = ItemHandlerHelper.insertItem(handler, outputItem, true);
                         if(remainder.isEmpty()) {
-                            //ItemHandlerHelper.insertItem(handler, outputItem, false);
                             return true;
                         }
                     }

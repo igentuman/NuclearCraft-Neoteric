@@ -31,10 +31,13 @@ public class ItemStackToItemStackRecipeSerializer<RECIPE extends ItemStackToItem
                             GsonHelper.getAsJsonObject(json, JsonConstants.INPUT);
         ItemStackIngredient inputIngredient = IngredientCreatorAccess.item().deserialize(input);
         ItemStack output = SerializerHelper.getItemStack(json, JsonConstants.OUTPUT);
+        Double timeModifier = GsonHelper.getAsDouble(json, "timeModifier", 1.0);
+        Double powerModifier = GsonHelper.getAsDouble(json, "powerModifier", 1.0);
+        Double radiation = GsonHelper.getAsDouble(json, "radiation", 1.0);
         if (output.isEmpty()) {
             throw new JsonSyntaxException("Recipe output must not be empty.");
         }
-        return this.factory.create(recipeId, inputIngredient, output);
+        return this.factory.create(recipeId, inputIngredient, output, timeModifier, powerModifier, radiation);
     }
 
     @Override
@@ -42,7 +45,10 @@ public class ItemStackToItemStackRecipeSerializer<RECIPE extends ItemStackToItem
         try {
             ItemStackIngredient inputIngredient = IngredientCreatorAccess.item().read(buffer);
             ItemStack output = buffer.readItem();
-            return this.factory.create(recipeId, inputIngredient, output);
+            Double timeModifier = buffer.readDouble();
+            Double powerModifier = buffer.readDouble();
+            Double radiation = buffer.readDouble();
+            return this.factory.create(recipeId, inputIngredient, output, timeModifier, powerModifier, radiation);
         } catch (Exception e) {
             NuclearCraft.LOGGER.error("Error reading itemstack to itemstack recipe from packet.", e);
             throw e;
@@ -61,7 +67,6 @@ public class ItemStackToItemStackRecipeSerializer<RECIPE extends ItemStackToItem
 
     @FunctionalInterface
     public interface IFactory<RECIPE extends ItemStackToItemStackRecipe> {
-
-        RECIPE create(ResourceLocation id, ItemStackIngredient input, ItemStack output);
+        RECIPE create(ResourceLocation id, ItemStackIngredient input, ItemStack output, double timeMultiplier, double powerMultiplier, double radiationMultiplier);
     }
 }

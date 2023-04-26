@@ -22,8 +22,8 @@ public class FissionRecipe extends ItemStackToItemStackRecipe {
 
     public static String ID = FissionControllerBE.NAME;
 
-    public FissionRecipe(ResourceLocation id, ItemStackIngredient input, ItemStack output) {
-        super(id, input, output);
+    public FissionRecipe(ResourceLocation id, ItemStackIngredient input, ItemStack output, double timeModifier, double powerModifier, double heatModifier) {
+        super(id, input, output, timeModifier, powerModifier, heatModifier);
         CATALYSTS.put(ID, List.of(getToastSymbol()));
     }
 
@@ -48,7 +48,7 @@ public class FissionRecipe extends ItemStackToItemStackRecipe {
     }
 
     public int getDepletionTime() {
-        return ((ItemFuel)getFirstInputStack().getItem()).depletion*20;
+        return (int) (((ItemFuel)getFirstInputStack().getItem()).depletion*20*timeModifier);
     }
 
     public double getEnergy() {

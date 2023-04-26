@@ -15,7 +15,6 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -27,6 +26,9 @@ public abstract class NcRecipe implements Recipe<IgnoredIInventory> {
     protected FluidStack outFluid;
 
     protected ItemStack output;
+    protected double timeModifier = 1;
+    protected double powerModifier = 1;
+    protected double radiationModifier = 1;
 
     protected FluidStackIngredient[] inputFluids;
     protected FluidStack[] outputFluids;
@@ -132,8 +134,6 @@ public abstract class NcRecipe implements Recipe<IgnoredIInventory> {
     public double getRadiation() {
         return 0;
     }
-
-
 
     public boolean handleOutputs(SidedContentHandler contentHandler) {
         int i = contentHandler.inputItemSlots;

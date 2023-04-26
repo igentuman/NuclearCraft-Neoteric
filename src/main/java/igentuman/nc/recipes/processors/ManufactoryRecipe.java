@@ -19,15 +19,15 @@ import static igentuman.nc.compat.GlobalVars.*;
 @NothingNullByDefault
 public class ManufactoryRecipe extends ItemStackToItemStackRecipe {
 
-    public static String ID = "manufactory";
-    public ManufactoryRecipe(ResourceLocation id, ItemStackIngredient input, ItemStack output) {
-        super(id, input, output);
+    public static String ID = Processors.MANUFACTORY;
+    public ManufactoryRecipe(ResourceLocation id, ItemStackIngredient input, ItemStack output, double timeModifier, double powerModifier, double heatModifier) {
+        super(id, input, output, timeModifier, powerModifier, heatModifier);
         RECIPE_CLASSES.put(ID, this.getClass());
         CATALYSTS.put(ID, List.of(getToastSymbol()));
     }
 
     public ManufactoryRecipe(ResourceLocation id) {
-        super(id, ItemStackIngredientCreator.INSTANCE.from(Ingredient.EMPTY, 1), ItemStack.EMPTY);
+        super(id, ItemStackIngredientCreator.INSTANCE.from(Ingredient.EMPTY, 1), ItemStack.EMPTY, 1, 1, 1);
     }
 
     @Override

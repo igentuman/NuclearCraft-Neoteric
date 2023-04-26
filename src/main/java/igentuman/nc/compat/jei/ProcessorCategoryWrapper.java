@@ -1,11 +1,13 @@
 package igentuman.nc.compat.jei;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import igentuman.nc.compat.jei.util.TickTimer;
 import igentuman.nc.recipes.NcRecipe;
 import igentuman.nc.setup.processors.ProcessorPrefab;
 import igentuman.nc.setup.processors.Processors;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.forge.ForgeTypes;
+import mezz.jei.api.gui.ITickTimer;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
@@ -33,21 +35,27 @@ public class ProcessorCategoryWrapper<T extends NcRecipe> implements IRecipeCate
     private IGuiHelper guiHelper;
     private final ProcessorPrefab processor;
     private int xShift = -25;
-    private int yShift = -25;
-
+    private int yShift = -38;
+    TickTimer timer;
+    int height = 22;
     public ProcessorCategoryWrapper(IGuiHelper guiHelper, RecipeType<T> recipeType) {
         this.recipeType = recipeType;
         this.guiHelper = guiHelper;
         processor = Processors.all().get(getRecipeType().getUid().getPath());
-        this.background = guiHelper.createDrawable(TEXTURE, 0, 0, 140, 45);
+        if(processor.getSlotsConfig().isDoubleSlotHeight()) {
+            height = 45;
+            yShift+= 23;
+        }
+        this.background = guiHelper.createDrawable(TEXTURE, 0, 0, 140, height);
         if(CATALYSTS.containsKey(getRecipeType().getUid().getPath())) {
             this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, CATALYSTS.get(getRecipeType().getUid().getPath()).get(0));
         } else{
             this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, ItemStack.EMPTY);
         }
+        timer = new TickTimer(processor.config().getTime()/5, 36, true);
+
         arrow = guiHelper.drawableBuilder(rl("textures/gui/progress.png"), 0, 0, 36, 15)
-                .buildAnimated(Processors.all().get(getRecipeType().getUid().getPath()).config().getTime(),
-                IDrawableAnimated.StartDirection.LEFT, false);
+                .buildAnimated(timer, IDrawableAnimated.StartDirection.LEFT);
     }
 
     @Override
@@ -72,7 +80,7 @@ public class ProcessorCategoryWrapper<T extends NcRecipe> implements IRecipeCate
     @Override
     public void draw(T recipe, IRecipeSlotsView recipeSlotsView, PoseStack stack, double mouseX,
                      double mouseY) {
-        arrow.draw(stack, 48, 15);
+        arrow.draw(stack, 48, height-20);
         for(int i = 0; i < slots.length; i++) {
             if(slots[i] != null) {
                 int[] pos = processor.getSlotsConfig().getSlotPositions().get(i);
@@ -89,7 +97,7 @@ public class ProcessorCategoryWrapper<T extends NcRecipe> implements IRecipeCate
         int inputFluidCounter = 0;
         int putFluidCounter = 0;
         int outputCounter = 0;
-
+        timer.setTicksPerCycle((int) (recipe.getTimeModifier()*processor.config().getTime())/5);
 
         slots = new IDrawable[processor.getSlotsConfig().getSlotPositions().size()];
         for(int[] pos: processor.getSlotsConfig().getSlotPositions()) {

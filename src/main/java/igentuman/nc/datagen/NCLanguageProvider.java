@@ -79,7 +79,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("message.heat_sink.invalid8", "This may need some significant revisions before it can be considered valid.");
         add("message.heat_sink.invalid9", "More work may be needed before this can be considered valid.");
 
-        add("nc_jei_cat.fission_reactor", "Fission Reactor Fuel Depletion");
+        add("nc_jei_cat.fission_reactor_controller", "Fission Reactor Fuel Depletion");
     }
 
     private void multiblocks() {

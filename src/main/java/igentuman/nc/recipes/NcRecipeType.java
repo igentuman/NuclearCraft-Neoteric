@@ -1,6 +1,7 @@
 package igentuman.nc.recipes;
 
 import igentuman.nc.NuclearCraft;
+import igentuman.nc.block.entity.fission.FissionControllerBE;
 import igentuman.nc.client.NcClient;
 import igentuman.nc.recipes.cache.IInputRecipeCache;
 import igentuman.nc.recipes.cache.InputRecipeCache;
@@ -12,6 +13,7 @@ import igentuman.nc.recipes.processors.DecayHastenerRecipe;
 import igentuman.nc.recipes.processors.ManufactoryRecipe;
 import igentuman.nc.recipes.processors.PressurizerRecipe;
 import igentuman.nc.recipes.processors.SmeltingIRecipe;
+import igentuman.nc.setup.processors.Processors;
 import igentuman.nc.setup.recipes.RecipeTypeDeferredRegister;
 import igentuman.nc.setup.recipes.RecipeTypeRegistryObject;
 import net.minecraft.core.NonNullList;
@@ -39,10 +41,10 @@ public class NcRecipeType<RECIPE extends NcRecipe, INPUT_CACHE extends IInputRec
 
     private static HashMap<String, RecipeTypeRegistryObject<ItemStackToItemStackRecipe, InputRecipeCache.SingleItem<ItemStackToItemStackRecipe>>> initializeRecipes() {
         HashMap<String, RecipeTypeRegistryObject<ItemStackToItemStackRecipe, InputRecipeCache.SingleItem<ItemStackToItemStackRecipe>>> recipes = new HashMap<>();
-        recipes.put("fission_reactor", register("fission_reactor", recipeType -> new InputRecipeCache.SingleItem<>(recipeType, ItemStackToItemStackRecipe::getInput)));
-        recipes.put("manufactory", register("manufactory", recipeType -> new InputRecipeCache.SingleItem<>(recipeType, ItemStackToItemStackRecipe::getInput)));
-        recipes.put("pressurizer", register("pressurizer", recipeType -> new InputRecipeCache.SingleItem<>(recipeType, ItemStackToItemStackRecipe::getInput)));
-        recipes.put("decay_hastener", register("decay_hastener", recipeType -> new InputRecipeCache.SingleItem<>(recipeType, ItemStackToItemStackRecipe::getInput)));
+        recipes.put(FissionControllerBE.NAME, register(FissionControllerBE.NAME, recipeType -> new InputRecipeCache.SingleItem<>(recipeType, ItemStackToItemStackRecipe::getInput)));
+        recipes.put(Processors.MANUFACTORY, register(Processors.MANUFACTORY, recipeType -> new InputRecipeCache.SingleItem<>(recipeType, ItemStackToItemStackRecipe::getInput)));
+        recipes.put(Processors.PRESSURIZER, register(Processors.PRESSURIZER, recipeType -> new InputRecipeCache.SingleItem<>(recipeType, ItemStackToItemStackRecipe::getInput)));
+        recipes.put(Processors.DECAY_HASTENER, register(Processors.DECAY_HASTENER, recipeType -> new InputRecipeCache.SingleItem<>(recipeType, ItemStackToItemStackRecipe::getInput)));
         recipes.put("smelting", SMELTING);
         return recipes;
     }

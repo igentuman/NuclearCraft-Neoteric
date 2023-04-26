@@ -72,10 +72,10 @@ public abstract class SingleInputRecipeCache<INPUT, INGREDIENT extends InputIngr
 
     @Nullable
     public RECIPE findFirstRecipe(@Nullable Level world, ItemCapabilityHandler input) {
-/*        if (cache.isEmpty((INPUT) ItemStackIngredientCreator.INSTANCE.from(input.getStackInSlot(0)))) {
+    /* if (cache.isEmpty((INPUT) ItemStackIngredientCreator.INSTANCE.from(input.getStackInSlot(0)))) {
             //Don't allow empty inputs
             return null;
-        }*/
+        } */
         initCacheIfNeeded(world);
         Predicate<RECIPE> matchPredicate = recipe -> recipe.test((INPUT) input.getStackInSlot(0));
         return findFirstRecipe(complexRecipes, matchPredicate);

@@ -1,5 +1,6 @@
 package igentuman.nc.recipes.multiblock;
 
+import igentuman.nc.block.entity.fission.FissionControllerBE;
 import igentuman.nc.item.ItemFuel;
 import igentuman.nc.recipes.ItemStackToItemStackRecipe;
 import igentuman.nc.recipes.NcRecipeType;
@@ -19,7 +20,7 @@ import static igentuman.nc.compat.GlobalVars.*;
 @NothingNullByDefault
 public class FissionRecipe extends ItemStackToItemStackRecipe {
 
-    public static String ID = "fission_reactor";
+    public static String ID = FissionControllerBE.NAME;
 
     public FissionRecipe(ResourceLocation id, ItemStackIngredient input, ItemStack output) {
         super(id, input, output);
@@ -38,12 +39,12 @@ public class FissionRecipe extends ItemStackToItemStackRecipe {
 
     @Override
     public String getGroup() {
-        return FissionReactor.MULTI_BLOCKS.get("fission_reactor_controller").get().getName().getString();
+        return FissionReactor.MULTI_BLOCKS.get(ID).get().getName().getString();
     }
 
     @Override
     public ItemStack getToastSymbol() {
-        return new ItemStack(FissionReactor.MULTI_BLOCKS.get("fission_reactor_controller").get());
+        return new ItemStack(FissionReactor.MULTI_BLOCKS.get(ID).get());
     }
 
     public int getDepletionTime() {

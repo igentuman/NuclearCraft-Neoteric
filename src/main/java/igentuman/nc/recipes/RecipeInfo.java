@@ -22,10 +22,9 @@ public class RecipeInfo <RECIPE extends NcRecipe> implements INBTSerializable<Ta
     public double energy = 0;
     public double heat = 0;
     public double radiation = 0;
+    public boolean stuck = false;
     public RECIPE recipe;
     public BlockEntity be;
-    public ItemStack[] inputItems;
-    public ItemStack[] outputItems;
 
     public void setRecipe(RECIPE recipe) {
         this.recipe = recipe;
@@ -43,6 +42,7 @@ public class RecipeInfo <RECIPE extends NcRecipe> implements INBTSerializable<Ta
         data.putDouble("energy", energy);
         data.putDouble("heat", heat);
         data.putDouble("radiation", radiation);
+        data.putBoolean("stuck", stuck);
         if(recipe != null) {
             data.putString("recipe", recipe.getId().toString());
             //data.putString("recipeType", recipe.getType().toString());
@@ -58,6 +58,7 @@ public class RecipeInfo <RECIPE extends NcRecipe> implements INBTSerializable<Ta
             energy = ((CompoundTag) nbt).getDouble("energy");
             heat = ((CompoundTag) nbt).getDouble("heat");
             radiation = ((CompoundTag) nbt).getDouble("radiation");
+            stuck = ((CompoundTag) nbt).getBoolean("stuck");
             String recipeId = ((CompoundTag) nbt).getString("recipe");
             //String recipeType = ((CompoundTag) nbt).getString("recipeType");
             if(!recipeId.isEmpty()) {
@@ -87,6 +88,7 @@ public class RecipeInfo <RECIPE extends NcRecipe> implements INBTSerializable<Ta
     }
 
     public void process(double multiplier) {
+        if(isStuck()) return;
         ticksProcessed+=1*Math.abs(multiplier);
         ticksProcessed = Math.min(ticks, ticksProcessed);
     }
@@ -97,6 +99,11 @@ public class RecipeInfo <RECIPE extends NcRecipe> implements INBTSerializable<Ta
         heat = 0;
         energy = 0;
         radiation = 0;
+        stuck = false;
         ticksProcessed = 0;
+    }
+
+    public boolean isStuck() {
+        return stuck;
     }
 }

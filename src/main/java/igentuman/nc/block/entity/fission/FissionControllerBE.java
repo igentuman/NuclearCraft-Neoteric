@@ -77,6 +77,11 @@ public class FissionControllerBE extends FissionBE  {
     public FissionRecipe recipe;
     public final ItemToItemRecipeHandler recipeHandler;
 
+    @Override
+    public String getName() {
+        return NAME;
+    }
+
     @NotNull
     public INcRecipeTypeProvider<ItemStackToItemStackRecipe, SingleItem<ItemStackToItemStackRecipe>> getRecipeType() {
         return recipeHandler.getRecipeType();
@@ -93,7 +98,7 @@ public class FissionControllerBE extends FissionBE  {
         multiblock = new FissionReactorMultiblock(this);
         contentHandler = new SidedContentHandler(
                 1, 1,
-                1, 1);
+                0, 0);
         contentHandler.setBlockEntity(this);
         recipeHandler = new ItemToItemRecipeHandler(this);
     }
@@ -206,7 +211,7 @@ public class FissionControllerBE extends FissionBE  {
     private boolean process() {
         recipeInfo.process(fuelCellsCount * (heatMultiplier() + collectedHeatMultiplier() - 1));
         if (!recipeInfo.isCompleted()) {
-            energyStorage.addEnergy((int) calculateEnergy());
+            energyStorage.addEnergy(calculateEnergy());
             heat += calculateHeat();
         }
 
@@ -218,17 +223,13 @@ public class FissionControllerBE extends FissionBE  {
     }
 
     private void handleRecipeOutput() {
-        if (recipeInfo.recipe != null) {
-            if (contentHandler.itemHandler.insertItemInternal(1, recipeInfo.recipe.getResultItem(), true).isEmpty()) {
-                contentHandler.itemHandler.insertItemInternal(1, recipeInfo.recipe.getResultItem(), false);
-                contentHandler.itemHandler.extractItemInternal(2, 1, false);
+        if (hasRecipe()) {
+            if (recipe.handleOutputs(contentHandler)) {
                 recipeInfo.clear();
+            } else {
+                recipeInfo.stuck = true;
             }
-        } else {
-            contentHandler.itemHandler.extractItemInternal(2, 1, false);
-            recipeInfo.clear();
         }
-
     }
 
     public double heatMultiplier() {
@@ -280,14 +281,11 @@ public class FissionControllerBE extends FissionBE  {
 
     private void updateRecipe() {
         recipe = (FissionRecipe) getRecipe();
-        if (recipeIsStuck() || contentHandler.itemHandler.getStackInSlot(0).isEmpty()) return;
-
-
-        if (recipe != null && contentHandler.itemHandler.getStackInSlot(2).isEmpty()) {
+        if (recipe != null) {
             ItemStack input = contentHandler.itemHandler.getStackInSlot(0).copy();
-            input.setCount(1);
+            input.setCount(recipe.getInput().getRepresentations().get(0).getCount());
             contentHandler.itemHandler.extractItemInternal(0, 1, false);
-            contentHandler.itemHandler.insertItemInternal(2, input, false);
+            contentHandler.itemHandler.holdedInputs.add(input);
             recipeInfo.setRecipe(recipe);
             recipeInfo.ticks = ((FissionRecipe) recipeInfo.recipe).getDepletionTime();
             recipeInfo.energy = recipeInfo.recipe.getEnergy();
@@ -297,23 +295,15 @@ public class FissionControllerBE extends FissionBE  {
     }
 
     public boolean recipeIsStuck() {
-        if (recipeInfo.isCompleted() || recipeInfo.recipe == null) {
-            handleRecipeOutput();
-            return !contentHandler.itemHandler.getStackInSlot(2).isEmpty();
-        }
-        return false;
+        return recipeInfo.isStuck();
     }
 
     public boolean hasRecipe() {
-        return !recipeIsStuck() && recipeInfo.recipe != null;
+        return recipeInfo.recipe != null;
     }
 
     @Override
     public void load(CompoundTag tag) {
-        if (tag.contains("Inventory")) {
-            contentHandler.deserializeNBT(tag.getCompound("Inventory"));
-        }
-
         if (tag.contains("Energy")) {
             energyStorage.deserializeNBT(tag.get("Energy"));
         }
@@ -330,14 +320,17 @@ public class FissionControllerBE extends FissionBE  {
                 validationResult = ValidationResult.VALID;
             }
         }
+        if (tag.contains("Content")) {
+            contentHandler.deserializeNBT(tag.getCompound("Content"));
+        }
         super.load(tag);
     }
 
     @Override
     public void saveAdditional(CompoundTag tag) {
         CompoundTag infoTag = new CompoundTag();
-        tag.put("Inventory", contentHandler.serializeNBT());
         tag.put("Energy", energyStorage.serializeNBT());
+        tag.put("Content", contentHandler.serializeNBT());
         infoTag.put("recipeInfo", recipeInfo.serializeNBT());
         infoTag.putInt("validationId", validationResult.id);
         infoTag.putLong("erroredBlock", errorBlockPos.asLong());
@@ -373,6 +366,9 @@ public class FissionControllerBE extends FissionBE  {
             } else {
                 validationResult = ValidationResult.VALID;
             }
+            if (tag.contains("Content")) {
+                contentHandler.deserializeNBT(tag.getCompound("Content"));
+            }
         }
     }
 
@@ -391,6 +387,7 @@ public class FissionControllerBE extends FissionBE  {
         infoTag.put("recipeInfo", recipeInfo.serializeNBT());
         infoTag.putInt("validationId", validationResult.id);
         infoTag.putLong("erroredBlock", errorBlockPos.asLong());
+        tag.put("Content", contentHandler.serializeNBT());
     }
 
     @Nullable

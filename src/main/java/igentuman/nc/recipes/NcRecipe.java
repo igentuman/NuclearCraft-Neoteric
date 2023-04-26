@@ -1,5 +1,6 @@
 package igentuman.nc.recipes;
 
+import igentuman.nc.NuclearCraft;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
@@ -14,6 +15,7 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -131,4 +133,27 @@ public abstract class NcRecipe implements Recipe<IgnoredIInventory> {
         return 0;
     }
 
+
+
+    public boolean handleOutputs(SidedContentHandler contentHandler) {
+        int i = contentHandler.inputItemSlots;
+        for(ItemStack outputItem: getResultItems()) {
+            if(!contentHandler.itemHandler.isValidForOutputSlot(i, outputItem)) {
+                if(!contentHandler.itemHandler.canPushExcessItems(i, outputItem)) return false;
+            }
+            i++;
+        }
+        i = contentHandler.inputItemSlots;
+        for(ItemStack outputItem: getResultItems()) {
+            if(!contentHandler.itemHandler.insertItemInternal(i, outputItem, false).isEmpty()) {
+                if(!contentHandler.itemHandler.pushExcessItems(i, outputItem).isEmpty()) {
+                    NuclearCraft.LOGGER.error("Failed to push excess items from recipe output.");
+                    return false;
+                }
+            }
+            i++;
+        }
+        contentHandler.clearHolded();
+        return true;
+    }
 }

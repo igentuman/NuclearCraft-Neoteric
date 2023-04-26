@@ -31,10 +31,13 @@ public class FissionPortBE extends FissionBE {
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if(multiblock() == null) return super.getCapability(cap, side);
         if (cap == ForgeCapabilities.ITEM_HANDLER) {
-            return controller().handler.cast();
+            return controller().contentHandler.itemCapability.cast();
+        }
+        if (cap == ForgeCapabilities.FLUID_HANDLER) {
+            return LazyOptional.of(() -> controller().contentHandler.fluidCapability).cast();
         }
         if (cap == ForgeCapabilities.ENERGY) {
-            return  controller().energy.cast();
+            return controller().energy.cast();
         }
         return super.getCapability(cap, side);
     }

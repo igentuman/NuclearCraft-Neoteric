@@ -35,7 +35,7 @@ public abstract class AbstractInputRecipeCache<RECIPE extends NcRecipe> implemen
      * Initializes the cache if it hasn't already been initialized.
      */
     protected void initCacheIfNeeded(@Nullable Level world) {
-        if (!initialized) {
+        if (!initialized && world != null) {
             initialized = true;
             initCache(recipeType.getRecipes(world));
         }

@@ -3,6 +3,7 @@ package igentuman.nc.datagen.recipes;
 import igentuman.nc.block.entity.fission.FissionControllerBE;
 import igentuman.nc.block.entity.processor.ManufactoryBE;
 import igentuman.nc.datagen.recipes.builder.ItemToItemRecipeBuilder;
+import igentuman.nc.setup.processors.Processors;
 import igentuman.nc.setup.registration.Fuel;
 import igentuman.nc.setup.registration.Materials;
 import igentuman.nc.setup.registration.NCItems;
@@ -10,6 +11,7 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 
 import java.util.ArrayList;
@@ -34,7 +36,7 @@ public class CustomRecipes extends NCRecipes {
     private static void manufactoryRecipes() {
         for(String name: Materials.all().keySet()) {
             if(NCItems.NC_DUSTS.containsKey(name) && NCItems.INGOTS_TAG.containsKey(name)) {
-                itemToItemRecipe(ManufactoryBE.NAME,
+                itemToItemRecipe(Processors.MANUFACTORY,
                         Ingredient.of(NCItems.INGOTS_TAG.get(name)),
                         NCItems.NC_DUSTS.get(name).get());
             }
@@ -46,10 +48,11 @@ public class CustomRecipes extends NCRecipes {
         double timeModifier = params.length>0 ? params[0] : 1.0;
         double radiation = params.length>1 ? params[1] : 1.0;
         double powerModifier = params.length>2 ? params[2] : 1.0;
-
+        Item item = input.getItems()[0].getItem();
+        if(item.equals(Items.BARRIER)) return;
         ItemToItemRecipeBuilder.create(id, input, new ItemStack(output))
                 .modifiers(timeModifier, radiation, powerModifier)
-                .build(consumer, rl(id+"_"+input.getItems()[0].getItem().toString()+"_to_"+output.toString()));
+                .build(consumer, rl(id+"_"+item));
     }
 
     private static void fissionReactorRecipes() {

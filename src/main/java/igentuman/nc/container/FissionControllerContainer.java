@@ -42,10 +42,6 @@ public class FissionControllerContainer extends AbstractContainerMenu {
         blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
             addSlot(new NCSlotItemHandler.Output(h, 1, 116, 35));
         });
-
-        blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
-            addSlot(new NCSlotItemHandler.ReadOnly(h, 2, 77, 22));
-        });
     }
 
     @Override

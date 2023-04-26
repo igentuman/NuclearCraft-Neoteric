@@ -155,6 +155,15 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
         }
     }
 
+    public void clearHolded() {
+        if(hasItemCapability(null)) {
+            itemHandler.holdedInputs.clear();
+        }
+        if(hasFluidCapability(null)) {
+            fluidCapability.holdedInputs.clear();
+        }
+    }
+
     public enum SlotType {
         INPUT,
         OUTPUT;

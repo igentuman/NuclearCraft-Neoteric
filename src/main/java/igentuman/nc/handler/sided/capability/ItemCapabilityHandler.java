@@ -260,6 +260,7 @@ public class ItemCapabilityHandler extends AbscractCapabilityHandler implements 
     }
 
     private boolean outputAllowed(Integer i, Direction side) {
+            if(side == null) return true;
             SidedContentHandler.RelativeDirection relativeDirection = SidedContentHandler.RelativeDirection.toRelative(side, getFacing());
             SlotModePair.SlotMode mode = sideMap.get(relativeDirection.ordinal())[i].getMode();
             return mode == OUTPUT || mode == PUSH || mode == PUSH_EXCESS;
@@ -320,5 +321,66 @@ public class ItemCapabilityHandler extends AbscractCapabilityHandler implements 
             }
         }
         return false;
+    }
+
+    public boolean isValidForOutputSlots(ItemStack outputItem) {
+        for(int i = inputSlots; i < getSlots(); i++) {
+            if(isValidForOutputSlot(i, outputItem)) return true;
+        }
+        return false;
+    }
+
+    public boolean isValidForOutputSlot(int i, ItemStack outputItem) {
+        if(outputAllowed(i, null)) {
+            ItemStack stack = getStackInSlot(i);
+            if(stack.isEmpty()) return true;
+            if(ItemHandlerHelper.canItemStacksStack(stack, outputItem)) return true;
+        }
+        return false;
+    }
+
+    public boolean canPushExcessItems(int i, ItemStack outputItem) {
+        for(Direction dir: Direction.values()) {
+            BlockEntity be = tile.getLevel().getBlockEntity(tile.getBlockPos().relative(dir));
+            if(be == null) continue;
+            LazyOptional<IItemHandler> cap = be.getCapability(ForgeCapabilities.ITEM_HANDLER, dir.getOpposite());
+            if(cap.isPresent()) {
+                IItemHandler handler = cap.orElse(null);
+                SidedContentHandler.RelativeDirection relativeDirection = SidedContentHandler.RelativeDirection.toRelative(dir, getFacing());
+                for(SlotModePair pair : sideMap.get(relativeDirection.ordinal())) {
+                    if(pair.getSlot() != i) continue;
+                    if(pair.getMode() == PUSH) {
+                        ItemStack remainder = ItemHandlerHelper.insertItem(handler, outputItem, true);
+                        if(remainder.isEmpty()) {
+                            //ItemHandlerHelper.insertItem(handler, outputItem, false);
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    public ItemStack pushExcessItems(int i, ItemStack outputItem) {
+        for(Direction dir: Direction.values()) {
+            BlockEntity be = tile.getLevel().getBlockEntity(tile.getBlockPos().relative(dir));
+            if(be == null) continue;
+            LazyOptional<IItemHandler> cap = be.getCapability(ForgeCapabilities.ITEM_HANDLER, dir.getOpposite());
+            if(cap.isPresent()) {
+                IItemHandler handler = cap.orElse(null);
+                SidedContentHandler.RelativeDirection relativeDirection = SidedContentHandler.RelativeDirection.toRelative(dir, getFacing());
+                for(SlotModePair pair : sideMap.get(relativeDirection.ordinal())) {
+                    if(pair.getSlot() != i) continue;
+                    if(pair.getMode() == PUSH) {
+                        ItemStack remainder = ItemHandlerHelper.insertItem(handler, outputItem, true);
+                        if(remainder.isEmpty()) {
+                            return ItemHandlerHelper.insertItem(handler, outputItem, false);
+                        }
+                    }
+                }
+            }
+        }
+        return outputItem;
     }
 }

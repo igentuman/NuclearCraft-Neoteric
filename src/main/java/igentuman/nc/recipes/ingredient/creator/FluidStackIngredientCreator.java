@@ -97,10 +97,10 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
             }
             return from(stack);
         } else if (jsonObject.has("tag")) {
-            if (!jsonObject.has("amount")) {
+            if (!jsonObject.has("count")) {
                 throw new JsonSyntaxException("Expected to receive a amount that is greater than zero.");
             }
-            JsonElement count = jsonObject.get("amount");
+            JsonElement count = jsonObject.get("count");
             if (!GsonHelper.isNumberValue(count)) {
                 throw new JsonSyntaxException("Expected amount to be a number greater than zero.");
             }
@@ -203,7 +203,7 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
         @Override
         public JsonElement serialize() {
             JsonObject json = new JsonObject();
-            json.addProperty("amount", fluidInstance.getAmount());
+            json.addProperty("count", fluidInstance.getAmount());
             json.addProperty("fluid", NcUtils.getName(fluidInstance.getFluid()).toString());
             if (fluidInstance.hasTag()) {
                 json.addProperty("nbt", fluidInstance.getTag().toString());
@@ -300,7 +300,7 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
         @Override
         public JsonElement serialize() {
             JsonObject json = new JsonObject();
-            json.addProperty("amount", amount);
+            json.addProperty("count", amount);
             json.addProperty("tag", tag.getKey().location().toString());
             return json;
         }

@@ -1,0 +1,12 @@
+{
+  "type": "nuclearcraft:manufactory",
+  "input": {
+    "item": "minecraft:obsidian"
+  },
+  "output": {
+    "item": "nuclearcraft:obsidian_dust"
+  },
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 2.0
+}

@@ -77,8 +77,8 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
         }
         JsonObject jsonObject = json.getAsJsonObject();
         int amount = 1;
-        if (jsonObject.has(JsonConstants.AMOUNT)) {
-            JsonElement count = jsonObject.get(JsonConstants.AMOUNT);
+        if (jsonObject.has("count")) {
+            JsonElement count = jsonObject.get("count");
             if (!GsonHelper.isNumberValue(count)) {
                 throw new JsonSyntaxException("Expected amount to be a number that is one or larger.");
             }
@@ -205,7 +205,7 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
         public JsonElement serialize() {
             JsonObject json = new JsonObject();
             if (amount > 1) {
-                json.addProperty(JsonConstants.AMOUNT, amount);
+                json.addProperty("count", amount);
             }
             json.add(JsonConstants.INGREDIENT, ingredient.toJson());
             return json;

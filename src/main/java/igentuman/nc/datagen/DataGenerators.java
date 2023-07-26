@@ -4,6 +4,7 @@ import igentuman.nc.datagen.blockstates.NCBlockStates;
 import igentuman.nc.datagen.blockstates.NCFluidBlockStates;
 import igentuman.nc.datagen.models.NCItemModels;
 import igentuman.nc.datagen.recipes.NCRecipes;
+import igentuman.nc.recipes.ingredient.NcIngredient;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -17,6 +18,7 @@ public class DataGenerators {
     @SubscribeEvent
     public static void gatherData(GatherDataEvent event) {
         DataGenerator generator = event.getGenerator();
+        NcIngredient.ping();
         generator.addProvider(event.includeServer(), new NCRecipes(generator));
         generator.addProvider(event.includeServer(), new NCLootTables(generator));
         NCBlockTags blockTags = new NCBlockTags(generator, event.getExistingFileHelper());

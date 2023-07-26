@@ -1,6 +1,7 @@
 package igentuman.nc.datagen.recipes.builder;
 
 import com.google.gson.JsonObject;
+import igentuman.nc.recipes.ingredient.NcIngredient;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -48,7 +49,7 @@ public class ItemToItemRecipeBuilder extends NcRecipeBuilder<ItemToItemRecipeBui
         this.powerModifier = 1.0;
     }
 
-    protected ItemToItemRecipeBuilder(String id, Ingredient input, ItemStack output, double timeModifier) {
+    protected ItemToItemRecipeBuilder(String id, NcIngredient input, ItemStack output, double timeModifier) {
         super(ncSerializer(id));
         this.input = input;
         this.output = output;
@@ -70,6 +71,8 @@ public class ItemToItemRecipeBuilder extends NcRecipeBuilder<ItemToItemRecipeBui
         }
         return new ItemToItemRecipeBuilder(id, Ingredient.of(mainInput),  output);
     }
+
+
 
     public static ItemToItemRecipeBuilder create(String id, Ingredient inputItem, Item outputItem) {
         ItemStack output = new ItemStack(outputItem);

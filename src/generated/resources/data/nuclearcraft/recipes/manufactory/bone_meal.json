@@ -1,0 +1,13 @@
+{
+  "type": "nuclearcraft:manufactory",
+  "input": {
+    "item": "minecraft:bone"
+  },
+  "output": {
+    "count": 6,
+    "item": "minecraft:bone_meal"
+  },
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

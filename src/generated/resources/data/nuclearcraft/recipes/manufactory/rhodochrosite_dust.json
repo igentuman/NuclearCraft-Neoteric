@@ -1,0 +1,12 @@
+{
+  "type": "nuclearcraft:manufactory",
+  "input": {
+    "tag": "forge:gems/rhodochrosite"
+  },
+  "output": {
+    "item": "nuclearcraft:rhodochrosite_dust"
+  },
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.5
+}

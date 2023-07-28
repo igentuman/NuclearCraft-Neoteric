@@ -46,19 +46,4 @@ public class DecayHastenerRecipe extends ItemStackToItemStackRecipe {
         return new ItemStack(NCProcessors.PROCESSORS.get(ID).get());
     }
 
-    public double getEnergy() {
-        return Processors.all().get(ID).config().getPower();
-    }
-
-    public int getDuration() {
-        return Processors.all().get(ID).config().getTime();
-    }
-
-    public double getHeat() {
-        return 0;
-    }
-
-    public double getRadiation() {
-        return 0;
-    }
 }

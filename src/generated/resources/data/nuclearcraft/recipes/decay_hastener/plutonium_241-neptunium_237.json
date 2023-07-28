@@ -1,0 +1,12 @@
+{
+  "type": "nuclearcraft:decay_hastener",
+  "input": {
+    "item": "nuclearcraft:plutonium_241"
+  },
+  "output": {
+    "item": "nuclearcraft:neptunium_237"
+  },
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

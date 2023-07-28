@@ -74,4 +74,5 @@ public abstract class ItemStackToItemStackRecipe extends NcRecipe implements Pre
         input.write(buffer);
         buffer.writeItem(output);
     }
+
 }

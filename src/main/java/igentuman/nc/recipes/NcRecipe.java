@@ -133,7 +133,7 @@ public abstract class NcRecipe implements Recipe<IgnoredIInventory> {
     }
 
     public double getRadiation() {
-        return 0;
+        return radiationModifier;
     }
 
     public boolean handleOutputs(SidedContentHandler contentHandler) {

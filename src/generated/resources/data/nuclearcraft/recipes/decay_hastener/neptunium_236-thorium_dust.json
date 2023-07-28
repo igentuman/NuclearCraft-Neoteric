@@ -1,0 +1,12 @@
+{
+  "type": "nuclearcraft:decay_hastener",
+  "input": {
+    "item": "nuclearcraft:neptunium_236"
+  },
+  "output": {
+    "item": "nuclearcraft:thorium_dust"
+  },
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

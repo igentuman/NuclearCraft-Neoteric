@@ -41,11 +41,21 @@ public class NcIngredient extends Ingredient {
    private IntList stackingIds;
    private int invalidationCounter;
 
+   private String name;
+
    protected NcIngredient(Stream<? extends NcIngredient.Value> pValues) {
       super(Stream.empty());
       this.values = pValues.toArray((p_43933_) -> {
          return new NcIngredient.Value[p_43933_];
       });
+
+   }
+
+   public String getName() {
+      if(name == null) {
+         name = getItems()[0].getItem().toString();
+      }
+      return name;
    }
 
    public static void ping() {

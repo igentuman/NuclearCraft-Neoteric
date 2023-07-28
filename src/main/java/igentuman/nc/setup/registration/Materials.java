@@ -15,6 +15,7 @@ public class Materials extends MaterialsManager {
     public final static  String boron = "boron";
     public final static  String silver = "silver";
     public final static  String lead = "lead";
+    public final static  String thallium = "thallium";
     public final static  String tin = "tin";
     public final static  String zinc = "zinc";
     public final static  String magnesium = "magnesium";
@@ -35,6 +36,7 @@ public class Materials extends MaterialsManager {
     public final static  String thermoconducting = "thermoconducting";
     public final static  String zircaloy = "zircaloy";
     public final static  String zirconium = "zirconium";
+    public final static  String palladium = "palladium";
     public final static  String zirconium_molybdenum = "zirconium_molybdenum";
     public final static  String extreme = "extreme";
     public final static  String manganese = "manganese";
@@ -53,6 +55,7 @@ public class Materials extends MaterialsManager {
     public final static  String graphite = "graphite";
     public final static  String hsla_steel = "hsla_steel";
     public final static  String bismuth = "bismuth";
+    public final static  String gadolinium = "gadolinium";
     public final static  String caesium_137 = "caesium_137";
     public final static  String europium_155 = "europium_155";
     public final static  String molybdenum = "molybdenum";
@@ -74,11 +77,13 @@ public class Materials extends MaterialsManager {
     public final static  String fluorite = "fluorite";
     public final static  String obsidian = "obsidian";
     public final static  String quartz = "quartz";
+    public final static  String barium = "barium";
     public final static  String rhodochrosite = "rhodochrosite";
     public final static  String sulfur = "sulfur";
     public final static  String villiaumite = "villiaumite";
     public final static  String alugentum = "alugentum";
     public final static  String borax = "borax";
+    public final static  String neodymium = "neodymium";
     public final static  String c_mn_blend = "c_mn_blend";
     public final static  String calcium_sulfate = "calcium_sulfate";
     public final static  String crystal_binder = "crystal_binder";
@@ -108,6 +113,7 @@ public class Materials extends MaterialsManager {
 
             //ingots, nuggets, dusts...
             all.put(tough_alloy, NCMaterial.get(tough_alloy).define("ingot", "plate", "dust", "fluid").color(0xFF181322));
+            all.put(palladium, NCMaterial.get(palladium).define("ingot", "plate", "dust", "fluid").color(0xFF181322));
             all.put(copper, NCMaterial.get(copper).define("dust", "plate", "fluid").color(0xFFA86F32));
             all.put(iron, NCMaterial.get(iron).define("dust", "plate", "fluid").color(0xFF7D0707));
             all.put(purpur, NCMaterial.get(purpur).define("dust", "fluid").color(0xFF7E0399));
@@ -139,9 +145,13 @@ public class Materials extends MaterialsManager {
             all.put(graphite, NCMaterial.get(graphite).define("ingot", "dust", "block", "plate").color(0xFF292929));
             all.put(hsla_steel, NCMaterial.alloy(hsla_steel).define("ingot", "plate", "dust", "fluid").color(0xFF8174B0));
             //dusts
+            all.put(neodymium, NCMaterial.dust(neodymium));
+            all.put(barium, NCMaterial.dust(barium));
             all.put(bismuth, NCMaterial.dust(bismuth));
+            all.put(thallium, NCMaterial.dust(thallium));
             all.put(caesium_137, NCMaterial.dust(caesium_137));
             all.put(europium_155, NCMaterial.dust(europium_155));
+            all.put(gadolinium, NCMaterial.dust(gadolinium));
             all.put(molybdenum, NCMaterial.dust(molybdenum));
             all.put(polonium, NCMaterial.dust(polonium));
             all.put(promethium_147, NCMaterial.dust(promethium_147));

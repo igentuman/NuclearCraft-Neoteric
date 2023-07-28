@@ -53,7 +53,7 @@ public class NcIngredient extends Ingredient {
 
    public String getName() {
       if(name == null) {
-         name = getItems()[0].getItem().toString();
+         name = values[0].getName();
       }
       return name;
    }
@@ -183,7 +183,9 @@ public class NcIngredient extends Ingredient {
 
    public static class ItemValue implements NcIngredient.Value {
       private final ItemStack item;
-
+      public String getName() {
+         return item.getItem().toString();
+      }
       public ItemValue(ItemStack pItem) {
          this.item = pItem;
       }
@@ -208,6 +210,10 @@ public class NcIngredient extends Ingredient {
       public TagValue(TagKey<Item> pTag) {
          this.tag = pTag;
       }
+      
+      public String getName() {
+         return tag.location().getPath().replace("/","_");
+      }
 
       public Collection<ItemStack> getItems() {
          List<ItemStack> list = Lists.newArrayList();
@@ -230,5 +236,6 @@ public class NcIngredient extends Ingredient {
    }
 
    public interface Value  extends Ingredient.Value{
+      String getName();
    }
 }

@@ -4,6 +4,7 @@ import igentuman.nc.datagen.recipes.builder.ItemToItemRecipeBuilder;
 import igentuman.nc.datagen.recipes.recipes.DecayHastenerRecipes;
 import igentuman.nc.datagen.recipes.recipes.FissionRecipes;
 import igentuman.nc.datagen.recipes.recipes.ManufactoryRecipes;
+import igentuman.nc.datagen.recipes.recipes.PressurizerRecipes;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.Item;
@@ -26,6 +27,7 @@ public class CustomRecipes extends NCRecipes {
         FissionRecipes.generate(consumer);
         ManufactoryRecipes.generate(consumer);
         DecayHastenerRecipes.generate(consumer);
+        PressurizerRecipes.generate(consumer);
     }
 
     private static void itemToItemRecipe(String id, Ingredient input, Item output, double... params) {

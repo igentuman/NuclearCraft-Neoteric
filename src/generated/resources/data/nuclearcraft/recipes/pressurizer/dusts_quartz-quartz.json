@@ -1,0 +1,12 @@
+{
+  "type": "nuclearcraft:pressurizer",
+  "input": {
+    "tag": "forge:dusts/quartz"
+  },
+  "output": {
+    "item": "minecraft:quartz"
+  },
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

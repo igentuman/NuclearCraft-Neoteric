@@ -1,0 +1,12 @@
+{
+  "type": "nuclearcraft:pressurizer",
+  "input": {
+    "tag": "forge:ingots/graphite"
+  },
+  "output": {
+    "item": "nuclearcraft:pyrolitic_carbon_ingot"
+  },
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

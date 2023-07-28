@@ -1,96 +1,44 @@
 package igentuman.nc.datagen.recipes.recipes;
 
-import igentuman.nc.block.entity.fission.FissionControllerBE;
-import igentuman.nc.datagen.recipes.CustomRecipes;
-import igentuman.nc.datagen.recipes.NCRecipes;
-import igentuman.nc.datagen.recipes.builder.ItemToItemRecipeBuilder;
-import igentuman.nc.recipes.ingredient.NcIngredient;
 import igentuman.nc.setup.processors.Processors;
-import igentuman.nc.setup.registration.Fuel;
 import igentuman.nc.setup.registration.Materials;
 import igentuman.nc.setup.registration.NCItems;
-import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Consumer;
 
-import static igentuman.nc.NuclearCraft.rl;
 import static net.minecraft.world.item.Items.*;
 
-public class ManufactoryRecipes {
+public class ManufactoryRecipes extends AbstractRecipeProvider {
 
-
-    public static Consumer<FinishedRecipe> consumer;
     public static void generate(Consumer<FinishedRecipe> consumer) {
         ManufactoryRecipes.consumer = consumer;
+        ID = Processors.MANUFACTORY;
         for(String name: Materials.all().keySet()) {
             if(NCItems.NC_DUSTS.containsKey(name) && NCItems.INGOTS_TAG.containsKey(name)) {
-                manufactory(NCItems.INGOTS_TAG.get(name), NCItems.NC_DUSTS.get(name).get());
+                add(NCItems.INGOTS_TAG.get(name), dustItem(name));
                 continue;
             }
             if(NCItems.GEMS_TAG.containsKey(name) && NCItems.NC_DUSTS.containsKey(name)) {
-                manufactory(NCItems.GEMS_TAG.get(name), NCItems.NC_DUSTS.get(name).get(), 1.5D);
+                add(NCItems.GEMS_TAG.get(name), dustItem(name), 1.5D);
             }
         }
-        manufactory(COAL, NCItems.NC_DUSTS.get(Materials.coal).get(), 0.5D, 1D);
-        manufactory(CHARCOAL, NCItems.NC_DUSTS.get(Materials.charcoal).get(), 0.5D, 0.5D);
+        add(COAL, dustItem(Materials.coal), 0.5D, 1D);
+        add(CHARCOAL, dustItem(Materials.charcoal), 0.5D, 0.5D);
 
-        manufactory(DIAMOND, NCItems.NC_DUSTS.get(Materials.diamond).get(), 1.5D, 1.5D);
-        manufactory(LAPIS_LAZULI, NCItems.NC_DUSTS.get(Materials.lapis).get(), 1D, 1D);
-        manufactory(NCItems.DUSTS_TAG.get(Materials.villiaumite), NCItems.NC_DUSTS.get(Materials.sodium_fluoride).get(), 1D, 1D);
-        manufactory(NCItems.DUSTS_TAG.get(Materials.carobbiite), NCItems.NC_DUSTS.get(Materials.potassium_fluoride).get(), 1D, 1D);
-        manufactory(OBSIDIAN, NCItems.NC_DUSTS.get(Materials.obsidian).get(), 2D, 1D);
-        manufactory(COBBLESTONE, SAND);
-        manufactory(GRAVEL, FLINT);
-        manufactory(END_STONE, NCItems.NC_DUSTS.get(Materials.end_stone).get());
+        add(DIAMOND, dustItem(Materials.diamond), 1.5D, 1.5D);
+        add(LAPIS_LAZULI, dustItem(Materials.lapis));
+        add(dustTag(Materials.villiaumite), dustItem(Materials.sodium_fluoride));
+        add(NCItems.DUSTS_TAG.get(Materials.carobbiite), dustItem(Materials.potassium_fluoride));
+        add(OBSIDIAN, dustItem(Materials.obsidian), 2D, 1D);
+        add(COBBLESTONE, SAND);
+        add(GRAVEL, FLINT);
+        add(END_STONE, dustItem(Materials.end_stone));
 
-        manufactory(BLAZE_ROD, new ItemStack(BLAZE_POWDER, 4));
-        manufactory(BONE, new ItemStack(BONE_MEAL, 6));
-        manufactory(new ItemStack(ROTTEN_FLESH, 4), LEATHER, 0.5D, 1D);
-        manufactory(new ItemStack(SUGAR_CANE, 2), NCItems.NC_PARTS.get("bioplastic").get(), 1D, 0.5D);
-    }
-
-    private static void manufactory(Item input, ItemStack output, double... params) {
-        itemToItemRecipe(Processors.MANUFACTORY, Ingredient.of(input), output, params);
-
-    }
-
-    private static void manufactory(ItemStack itemStack, Item out, double... params) {
-        NcIngredient in = NcIngredient.stack(itemStack);
-        itemToItemRecipe(Processors.MANUFACTORY, in, out, params);
-    }
-
-    private static void manufactory(TagKey<Item> itemTagKey, Item item, double... params) {
-        itemToItemRecipe(Processors.MANUFACTORY, Ingredient.of(itemTagKey), item, params);
-    }
-
-    public static void manufactory(Item input, Item output, double... params)
-    {
-        itemToItemRecipe(Processors.MANUFACTORY, Ingredient.of(input), output, params);
-    }
-
-    public static void manufactory(Ingredient input, Item output, double... params)
-    {
-        itemToItemRecipe(Processors.MANUFACTORY, input, output, params);
-    }
-
-    private static void itemToItemRecipe(String id, Ingredient input, Item output, double... params) {
-        itemToItemRecipe(id, input, new ItemStack(output), params);
-    }
-
-    private static void itemToItemRecipe(String id, Ingredient input, ItemStack output, double... params) {
-
-        double timeModifier = params.length>0 ? params[0] : 1.0;
-        double powerModifier = params.length>1 ? params[1] : 1.0;
-        double radiation = params.length>2 ? params[2] : 1.0;
-        ItemToItemRecipeBuilder.create(id, input, output)
-                .modifiers(timeModifier, radiation, powerModifier)
-                .build(consumer, rl(id+"/"+output.getItem().toString()));
+        add(BLAZE_ROD, new ItemStack(BLAZE_POWDER, 4));
+        add(BONE, new ItemStack(BONE_MEAL, 6));
+        add(new ItemStack(ROTTEN_FLESH, 4), LEATHER, 0.5D, 1D);
+        add(new ItemStack(SUGAR_CANE, 2), NCItems.NC_PARTS.get("bioplastic").get(), 1D, 0.5D);
     }
 }

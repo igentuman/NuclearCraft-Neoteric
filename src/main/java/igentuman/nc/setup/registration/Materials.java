@@ -53,6 +53,7 @@ public class Materials extends MaterialsManager {
     public final static  String electrum = "electrum";
     public final static  String aluminum = "aluminum";
     public final static  String graphite = "graphite";
+    public final static  String pyrolitic_carbon = "pyrolitic_carbon";
     public final static  String hsla_steel = "hsla_steel";
     public final static  String bismuth = "bismuth";
     public final static  String gadolinium = "gadolinium";
@@ -143,6 +144,7 @@ public class Materials extends MaterialsManager {
             all.put(electrum, NCMaterial.alloy(electrum).color(0xFFA0A15D));
             all.put(aluminum, NCMaterial.alloy(aluminum).color(0xFFABEBCB));
             all.put(graphite, NCMaterial.get(graphite).define("ingot", "dust", "block", "plate").color(0xFF292929));
+            all.put(pyrolitic_carbon, NCMaterial.get(pyrolitic_carbon).define("ingot", "dust").color(0xFF292929));
             all.put(hsla_steel, NCMaterial.alloy(hsla_steel).define("ingot", "plate", "dust", "fluid").color(0xFF8174B0));
             //dusts
             all.put(neodymium, NCMaterial.dust(neodymium));

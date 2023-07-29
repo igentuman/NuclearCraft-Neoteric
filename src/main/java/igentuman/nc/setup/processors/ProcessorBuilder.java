@@ -3,14 +3,21 @@ package igentuman.nc.setup.processors;
 import igentuman.nc.block.entity.processor.NCProcessorBE;
 import igentuman.nc.container.NCProcessorContainer;
 import igentuman.nc.client.gui.processor.NCProcessorScreen;
+import igentuman.nc.recipes.NcRecipe;
+import igentuman.nc.recipes.NcRecipeType;
+import igentuman.nc.recipes.cache.IInputRecipeCache;
 import igentuman.nc.setup.processors.config.ProcessorSlots;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.loading.FMLEnvironment;
+
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class ProcessorBuilder <M extends NCProcessorContainer, U extends Screen & MenuAccess<M>>{
     public ProcessorPrefab processor;
@@ -72,6 +79,11 @@ public class ProcessorBuilder <M extends NCProcessorContainer, U extends Screen 
 
     public ProcessorBuilder progressBar(int i) {
         processor.progressBar = i;
+        return this;
+    }
+
+    public ProcessorBuilder recipeSerializer(Supplier<RecipeSerializer<? extends NcRecipe>> sup) {
+        processor.recipeSerializerSupplier = sup;
         return this;
     }
 }

@@ -23,7 +23,7 @@ import static net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.EXE
 
 public abstract class NcRecipe implements Recipe<IgnoredIInventory> {
     private final ResourceLocation id;
-
+    public static String ID;
     protected ItemStackIngredient input;
     protected FluidStackIngredient inputFluid;
     protected FluidStack outFluid;

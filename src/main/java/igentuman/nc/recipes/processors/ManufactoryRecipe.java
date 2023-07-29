@@ -18,36 +18,10 @@ import java.util.List;
 import static igentuman.nc.compat.GlobalVars.*;
 @NothingNullByDefault
 public class ManufactoryRecipe extends ItemStackToItemStackRecipe {
-
-    public static String ID = Processors.MANUFACTORY;
     public ManufactoryRecipe(ResourceLocation id, ItemStackIngredient input, ItemStack output, double timeModifier, double powerModifier, double heatModifier) {
         super(id, input, output, timeModifier, powerModifier, heatModifier);
+        ID = Processors.MANUFACTORY;
         RECIPE_CLASSES.put(ID, this.getClass());
         CATALYSTS.put(ID, List.of(getToastSymbol()));
     }
-
-    public ManufactoryRecipe(ResourceLocation id) {
-        super(id, ItemStackIngredientCreator.INSTANCE.from(Ingredient.EMPTY, 1), ItemStack.EMPTY, 1, 1, 1);
-    }
-
-    @Override
-    public RecipeType<ItemStackToItemStackRecipe> getType() {
-        return NcRecipeType.RECIPES.get(ID).get();
-    }
-
-    @Override
-    public RecipeSerializer<ItemStackToItemStackRecipe> getSerializer() {
-        return NcRecipeSerializers.SERIALIZERS.get(ID).get();
-    }
-
-    @Override
-    public String getGroup() {
-        return NCProcessors.PROCESSORS.get(ID).get().getName().getString();
-    }
-
-    @Override
-    public ItemStack getToastSymbol() {
-        return new ItemStack(NCProcessors.PROCESSORS.get(ID).get());
-    }
-
 }

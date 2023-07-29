@@ -37,7 +37,7 @@ public class NcRecipeType<RECIPE extends NcRecipe, INPUT_CACHE extends IInputRec
 
     public static final RecipeTypeDeferredRegister RECIPE_TYPES = new RecipeTypeDeferredRegister(MODID);
 
-    public static HashMap<String, RecipeTypeRegistryObject<ItemStackToItemStackRecipe, InputRecipeCache.SingleItem<ItemStackToItemStackRecipe>>> RECIPES = initializeRecipes();
+    public static final HashMap<String, RecipeTypeRegistryObject<ItemStackToItemStackRecipe, InputRecipeCache.SingleItem<ItemStackToItemStackRecipe>>> RECIPES = initializeRecipes();
 
     private static HashMap<String, RecipeTypeRegistryObject<ItemStackToItemStackRecipe, InputRecipeCache.SingleItem<ItemStackToItemStackRecipe>>> initializeRecipes() {
         HashMap<String, RecipeTypeRegistryObject<ItemStackToItemStackRecipe, InputRecipeCache.SingleItem<ItemStackToItemStackRecipe>>> recipes = new HashMap<>();
@@ -52,7 +52,7 @@ public class NcRecipeType<RECIPE extends NcRecipe, INPUT_CACHE extends IInputRec
     public static final RecipeTypeRegistryObject<ItemStackToItemStackRecipe, InputRecipeCache.SingleItem<ItemStackToItemStackRecipe>> SMELTING =
             register("smelting", recipeType -> new InputRecipeCache.SingleItem<>(recipeType, ItemStackToItemStackRecipe::getInput));
 
-    private static <RECIPE extends NcRecipe, INPUT_CACHE extends IInputRecipeCache> RecipeTypeRegistryObject<RECIPE, INPUT_CACHE> register(String name,
+    public static <RECIPE extends NcRecipe, INPUT_CACHE extends IInputRecipeCache> RecipeTypeRegistryObject<RECIPE, INPUT_CACHE> register(String name,
                                                                                                                                            Function<NcRecipeType<RECIPE, INPUT_CACHE>, INPUT_CACHE> inputCacheCreator) {
         return RECIPE_TYPES.register(name, () -> new NcRecipeType<>(name, inputCacheCreator));
     }

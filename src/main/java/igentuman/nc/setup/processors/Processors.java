@@ -2,6 +2,12 @@ package igentuman.nc.setup.processors;
 
 
 import igentuman.nc.block.entity.processor.*;
+import igentuman.nc.recipes.ItemStackToItemStackRecipe;
+import igentuman.nc.recipes.cache.InputRecipeCache;
+import igentuman.nc.recipes.processors.DecayHastenerRecipe;
+import igentuman.nc.recipes.processors.ManufactoryRecipe;
+import igentuman.nc.recipes.processors.PressurizerRecipe;
+import igentuman.nc.recipes.serializers.ItemStackToItemStackRecipeSerializer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,6 +55,7 @@ public class Processors {
                             .make(MANUFACTORY, 0, 1, 0, 1)
                             .blockEntity(ManufactoryBE::new)
                             .progressBar(13)
+                            .recipeSerializer(() -> new ItemStackToItemStackRecipeSerializer<>(ManufactoryRecipe::new))
                             .build()
             );
             all.put(ALLOY_SMELTER,
@@ -90,6 +97,7 @@ public class Processors {
                             .make(DECAY_HASTENER, 0, 1, 0, 1)
                             .blockEntity(DecayHastenerBE::new)
                             .progressBar(0)
+                            .recipeSerializer(() -> new ItemStackToItemStackRecipeSerializer<>(DecayHastenerRecipe::new))
                             .build()
             );
             all.put(ELECTROLYZER,
@@ -158,6 +166,7 @@ public class Processors {
                             .make(PRESSURIZER, 0, 1, 0, 1)
                             .blockEntity(PressurizerBE::new)
                             .progressBar(9)
+                            .recipeSerializer(() -> new ItemStackToItemStackRecipeSerializer<>(PressurizerRecipe::new))
                             .build()
             );
             all.put(ROCK_CRUSHER,

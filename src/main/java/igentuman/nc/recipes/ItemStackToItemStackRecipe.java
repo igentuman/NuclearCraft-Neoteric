@@ -1,10 +1,14 @@
 package igentuman.nc.recipes;
 
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
+import igentuman.nc.setup.recipes.NcRecipeSerializers;
+import igentuman.nc.setup.registration.NCProcessors;
 import igentuman.nc.util.annotation.NothingNullByDefault;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -31,6 +35,22 @@ public abstract class ItemStackToItemStackRecipe extends NcRecipe implements Pre
         this.timeModifier = timeModifier;
         this.powerModifier = powerModifier;
         this.radiationModifier = radiationModifier;
+    }
+
+
+    @Override
+    public RecipeSerializer<ItemStackToItemStackRecipe> getSerializer() {
+        return NcRecipeSerializers.SERIALIZERS.get(ID).get();
+    }
+
+    @Override
+    public String getGroup() {
+        return NCProcessors.PROCESSORS.get(ID).get().getName().getString();
+    }
+
+    @Override
+    public ItemStack getToastSymbol() {
+        return new ItemStack(NCProcessors.PROCESSORS.get(ID).get());
     }
 
     @Override
@@ -67,6 +87,11 @@ public abstract class ItemStackToItemStackRecipe extends NcRecipe implements Pre
     @Override
     public boolean isIncomplete() {
         return input.hasNoMatchingInstances();
+    }
+
+    @Override
+    public RecipeType<ItemStackToItemStackRecipe> getType() {
+        return NcRecipeType.RECIPES.get(ID).get();
     }
 
     @Override

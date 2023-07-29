@@ -19,31 +19,10 @@ import static igentuman.nc.compat.GlobalVars.*;
 @NothingNullByDefault
 public class DecayHastenerRecipe extends ItemStackToItemStackRecipe {
 
-    public static String ID = Processors.DECAY_HASTENER;
     public DecayHastenerRecipe(ResourceLocation id, ItemStackIngredient input, ItemStack output, double timeModifier, double powerModifier, double heatModifier) {
         super(id, input, output, timeModifier, powerModifier, heatModifier);
+        ID = Processors.DECAY_HASTENER;
         RECIPE_CLASSES.put(ID, this.getClass());
         CATALYSTS.put(ID, List.of(getToastSymbol()));
     }
-
-    @Override
-    public RecipeType<ItemStackToItemStackRecipe> getType() {
-        return NcRecipeType.RECIPES.get(ID).get();
-    }
-
-    @Override
-    public RecipeSerializer<ItemStackToItemStackRecipe> getSerializer() {
-        return NcRecipeSerializers.SERIALIZERS.get(ID).get();
-    }
-
-    @Override
-    public String getGroup() {
-        return NCProcessors.PROCESSORS.get(ID).get().getName().getString();
-    }
-
-    @Override
-    public ItemStack getToastSymbol() {
-        return new ItemStack(NCProcessors.PROCESSORS.get(ID).get());
-    }
-
 }

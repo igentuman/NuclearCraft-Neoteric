@@ -26,9 +26,11 @@ public class NcRecipeSerializers {
     private static HashMap<String, RecipeSerializerRegistryObject<ItemStackToItemStackRecipe>> initSerializers() {
         HashMap<String, RecipeSerializerRegistryObject<ItemStackToItemStackRecipe>> map = new HashMap<>();
         map.put(FissionControllerBE.NAME, RECIPE_SERIALIZERS.register(FissionControllerBE.NAME, () -> new ItemStackToItemStackRecipeSerializer<>(FissionRecipe::new)));
-        map.put(Processors.MANUFACTORY, RECIPE_SERIALIZERS.register(Processors.MANUFACTORY, () -> new ItemStackToItemStackRecipeSerializer<>(ManufactoryRecipe::new)));
-        map.put(Processors.PRESSURIZER, RECIPE_SERIALIZERS.register(Processors.PRESSURIZER, () -> new ItemStackToItemStackRecipeSerializer<>(PressurizerRecipe::new)));
-        map.put(Processors.DECAY_HASTENER, RECIPE_SERIALIZERS.register(Processors.DECAY_HASTENER, () -> new ItemStackToItemStackRecipeSerializer<>(DecayHastenerRecipe::new)));
+        for(String key : Processors.all().keySet()) {
+           if( Processors.all().get(key).recipeSerializerSupplier != null) {
+               map.put(key, RECIPE_SERIALIZERS.register(key, Processors.all().get(key).recipeSerializerSupplier));
+           }
+        }
         map.put("smelting", RECIPE_SERIALIZERS.register("smelting", () -> new ItemStackToItemStackRecipeSerializer<>(SmeltingIRecipe::new)));
         return map;
     }

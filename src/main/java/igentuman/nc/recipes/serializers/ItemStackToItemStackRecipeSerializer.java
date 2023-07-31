@@ -16,6 +16,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ItemStackToItemStackRecipeSerializer<RECIPE extends ItemStackToItemStackRecipe> implements RecipeSerializer<RECIPE> {
 
     private final IFactory<RECIPE> factory;
@@ -30,25 +33,40 @@ public class ItemStackToItemStackRecipeSerializer<RECIPE extends ItemStackToItem
         JsonElement input = GsonHelper.isArrayNode(json, JsonConstants.INPUT) ? GsonHelper.getAsJsonArray(json, JsonConstants.INPUT) :
                             GsonHelper.getAsJsonObject(json, JsonConstants.INPUT);
         ItemStackIngredient inputIngredient = IngredientCreatorAccess.item().deserialize(input);
-        ItemStack output = SerializerHelper.getItemStack(json, JsonConstants.OUTPUT);
-        Double timeModifier = GsonHelper.getAsDouble(json, "timeModifier", 1.0);
-        Double powerModifier = GsonHelper.getAsDouble(json, "powerModifier", 1.0);
-        Double radiation = GsonHelper.getAsDouble(json, "radiation", 1.0);
-        if (output.isEmpty()) {
+        ItemStack[] outputItems;
+        if(GsonHelper.isArrayNode(json, JsonConstants.OUTPUT)) {
+            JsonElement output = GsonHelper.getAsJsonArray(json, JsonConstants.OUTPUT);
+            outputItems = new ItemStack[output.getAsJsonArray().size()];
+            int i = 0;
+            for (JsonElement out : output.getAsJsonArray()) {
+                outputItems[i] = SerializerHelper.getItemStack(out.getAsJsonObject(), JsonConstants.OUTPUT);
+                i++;
+            }
+        } else {
+           outputItems = new ItemStack[]{SerializerHelper.getItemStack(json, JsonConstants.OUTPUT)};
+        }
+        double timeModifier = GsonHelper.getAsDouble(json, "timeModifier", 1.0);
+        double powerModifier = GsonHelper.getAsDouble(json, "powerModifier", 1.0);
+        double radiation = GsonHelper.getAsDouble(json, "radiation", 1.0);
+        if (outputItems.length == 0) {
             throw new JsonSyntaxException("Recipe output must not be empty.");
         }
-        return this.factory.create(recipeId, inputIngredient, output, timeModifier, powerModifier, radiation);
+        return this.factory.create(recipeId, inputIngredient, outputItems, timeModifier, powerModifier, radiation);
     }
 
     @Override
     public RECIPE fromNetwork(@NotNull ResourceLocation recipeId, @NotNull FriendlyByteBuf buffer) {
         try {
             ItemStackIngredient inputIngredient = IngredientCreatorAccess.item().read(buffer);
-            ItemStack output = buffer.readItem();
-            Double timeModifier = buffer.readDouble();
-            Double powerModifier = buffer.readDouble();
-            Double radiation = buffer.readDouble();
-            return this.factory.create(recipeId, inputIngredient, output, timeModifier, powerModifier, radiation);
+            int outputSize = buffer.readInt();
+            ItemStack[] outputList = new ItemStack[outputSize];
+            for(int i = 0; i < outputSize; i++) {
+                outputList[i] = buffer.readItem();
+            }
+            double timeModifier = buffer.readDouble();
+            double powerModifier = buffer.readDouble();
+            double radiation = buffer.readDouble();
+            return this.factory.create(recipeId, inputIngredient, outputList, timeModifier, powerModifier, radiation);
         } catch (Exception e) {
             NuclearCraft.LOGGER.error("Error reading itemstack to itemstack recipe from packet.", e);
             throw e;
@@ -67,6 +85,6 @@ public class ItemStackToItemStackRecipeSerializer<RECIPE extends ItemStackToItem
 
     @FunctionalInterface
     public interface IFactory<RECIPE extends ItemStackToItemStackRecipe> {
-        RECIPE create(ResourceLocation id, ItemStackIngredient input, ItemStack output, double timeMultiplier, double powerMultiplier, double radiationMultiplier);
+        RECIPE create(ResourceLocation id, ItemStackIngredient input, ItemStack[] output, double timeMultiplier, double powerMultiplier, double radiationMultiplier);
     }
 }

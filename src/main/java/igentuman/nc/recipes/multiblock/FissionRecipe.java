@@ -23,8 +23,8 @@ public class FissionRecipe extends ItemStackToItemStackRecipe {
 
     public static String ID = FissionControllerBE.NAME;
 
-    public FissionRecipe(ResourceLocation id, ItemStackIngredient input, ItemStack output, double timeModifier, double powerModifier, double heatModifier) {
-        super(id, input, new ItemStack[]{output}, timeModifier, powerModifier, heatModifier);
+    public FissionRecipe(ResourceLocation id, ItemStackIngredient input, ItemStack[] output, double timeModifier, double powerModifier, double heatModifier) {
+        super(id, new ItemStackIngredient[] {input}, output, timeModifier, powerModifier, heatModifier);
         CATALYSTS.put(ID, List.of(getToastSymbol()));
     }
 

@@ -24,12 +24,13 @@ import java.util.function.Predicate;
 public abstract class ItemStackToItemStackRecipe extends NcRecipe implements Predicate<@NotNull ItemStack> {
 
     public ItemStackToItemStackRecipe(
-            ResourceLocation id, ItemStackIngredient input, ItemStack[] output,
+            ResourceLocation id, ItemStackIngredient[] input, ItemStack[] output,
             double timeModifier, double powerModifier, double radiationModifier) {
         super(id);
-        inputItems = new ItemStackIngredient[1];
-        inputItems[0] = Objects.requireNonNull(input, "Input cannot be null.");
-        Objects.requireNonNull(output, "Output cannot be null.");
+        if (input.length == 0) {
+            throw new IllegalArgumentException("Input cannot be empty.");
+        }
+        inputItems = input;
         if (output.length == 0) {
             throw new IllegalArgumentException("Output cannot be empty.");
         }
@@ -77,6 +78,7 @@ public abstract class ItemStackToItemStackRecipe extends NcRecipe implements Pre
     @Override
     public void write(FriendlyByteBuf buffer) {
         inputItems[0].write(buffer);
+        buffer.writeInt(outputItems.length);
         for (ItemStack output : outputItems) {
             buffer.writeItem(output);
         }

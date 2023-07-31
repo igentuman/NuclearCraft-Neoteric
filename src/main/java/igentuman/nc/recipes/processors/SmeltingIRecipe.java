@@ -18,8 +18,8 @@ import static igentuman.nc.compat.GlobalVars.*;
 public class SmeltingIRecipe extends ItemStackToItemStackRecipe {
     public static String ID = "smelting";
 
-    public SmeltingIRecipe(ResourceLocation id, ItemStackIngredient input, ItemStack output, double timeModifier, double powerModifier, double heatModifier) {
-        super(id, input, new ItemStack[]{output}, timeModifier, powerModifier, heatModifier);
+    public SmeltingIRecipe(ResourceLocation id, ItemStackIngredient input, ItemStack[] output, double timeModifier, double powerModifier, double heatModifier) {
+        super(id, new ItemStackIngredient[] {input}, output, timeModifier, powerModifier, heatModifier);
         RECIPE_CLASSES.put(ID, this.getClass());
         CATALYSTS.put(ID, List.of(getToastSymbol()));
     }

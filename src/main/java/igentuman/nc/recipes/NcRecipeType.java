@@ -126,7 +126,7 @@ public class NcRecipeType<RECIPE extends NcRecipe, INPUT_CACHE extends IInputRec
                             IItemStackIngredientCreator ingredientCreator = IngredientCreatorAccess.item();
                             input = ingredientCreator.from(ingredients.stream().map(ingredientCreator::from));
                         }
-                        recipes.add((RECIPE) new SmeltingIRecipe(smeltingRecipe.getId(), input, recipeOutput, 1, 1, 1));
+                        recipes.add((RECIPE) new SmeltingIRecipe(smeltingRecipe.getId(), input, new ItemStack[]{recipeOutput}, 1, 1, 1));
                     }
                 }
             }

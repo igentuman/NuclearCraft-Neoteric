@@ -77,6 +77,7 @@ public class RecipeInfo <RECIPE extends NcRecipe> implements INBTSerializable<Ta
 
     private RECIPE getRecipeFromTag(String recipe) {
         ResourceLocation id = new ResourceLocation(recipe);
+        if(getLevel() == null) return null;
         return (RECIPE) getLevel().getRecipeManager().byKey(id).get();
     }
 

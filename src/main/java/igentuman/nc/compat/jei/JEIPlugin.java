@@ -24,7 +24,7 @@ import static igentuman.nc.compat.GlobalVars.*;
 public  class JEIPlugin implements IModPlugin {
     public  static HashMap<String, RecipeType<NcRecipe>>  recipeTypes;
 
-    public static RecipeType<NcRecipe> FISSION = new RecipeType<NcRecipe>(new ResourceLocation(MODID, FissionControllerBE.NAME), FissionRecipe.class);
+    public static RecipeType<FissionRecipe> FISSION = new RecipeType<FissionRecipe>(new ResourceLocation(MODID, FissionControllerBE.NAME), FissionRecipe.class);
     private static HashMap<String, RecipeType<NcRecipe>> getRecipeTypes() {
         if(recipeTypes == null) {
             recipeTypes = new HashMap<>();
@@ -51,7 +51,7 @@ public  class JEIPlugin implements IModPlugin {
         return (RecipeType<TYPE>) recipeTypes.get(name);
     }
 
-    public <TYPE> RecipeType<TYPE> getRecipeType(RecipeType<NcRecipe> in) {
+    public <TYPE> RecipeType<TYPE> getRecipeType(RecipeType<? extends NcRecipe> in) {
         return (RecipeType<TYPE>) in;
     }
 

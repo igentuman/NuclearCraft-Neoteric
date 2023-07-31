@@ -1,15 +1,11 @@
 package igentuman.nc.recipes.lookup;
 
 import igentuman.nc.block.entity.IBlockEntityHandler;
-import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.recipes.INcRecipeTypeProvider;
-import igentuman.nc.recipes.ItemStackToItemStackRecipe;
 import igentuman.nc.recipes.NcRecipe;
 import igentuman.nc.recipes.cache.CachedRecipe;
 import igentuman.nc.recipes.cache.IInputRecipeCache;
-import igentuman.nc.recipes.handler.ItemToItemRecipeHandler;
 import igentuman.nc.util.inventory.IContentsListener;
-import io.netty.util.ResourceLeakDetector;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;

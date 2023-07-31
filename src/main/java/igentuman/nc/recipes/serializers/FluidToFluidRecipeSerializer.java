@@ -4,7 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import igentuman.nc.NuclearCraft;
-import igentuman.nc.recipes.FluidToFluidRecipe;
+import igentuman.nc.recipes.type.FluidToFluidRecipe;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.creator.IngredientCreatorAccess;
 import igentuman.nc.util.JsonConstants;

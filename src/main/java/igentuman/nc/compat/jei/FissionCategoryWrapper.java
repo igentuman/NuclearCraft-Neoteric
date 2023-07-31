@@ -18,17 +18,21 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.HashMap;
+
 import static igentuman.nc.NuclearCraft.*;
 import static igentuman.nc.compat.GlobalVars.*;
 
-public class FissionCategoryWrapper<T extends NcRecipe> implements IRecipeCategory<T> {
+public class FissionCategoryWrapper<T extends FissionRecipe> implements IRecipeCategory<T> {
     public final static ResourceLocation TEXTURE =
             new ResourceLocation(MODID, "textures/gui/fission/jei.png");
 
     private final IDrawable background;
     private final IDrawable icon;
     protected RecipeType<T> recipeType;
-    TickTimer timer;
+    HashMap<Integer, TickTimer> timer = new HashMap<>();
+    HashMap<Integer, IDrawable> arrow = new HashMap<>();
+
     IGuiHelper guiHelper;
 
     public FissionCategoryWrapper(IGuiHelper guiHelper, RecipeType<T> recipeType) {
@@ -62,19 +66,25 @@ public class FissionCategoryWrapper<T extends NcRecipe> implements IRecipeCatego
     public IDrawable getIcon() {
         return icon;
     }
-    private IDrawable arrow;
 
     @Override
     public void draw(T recipe, IRecipeSlotsView recipeSlotsView, PoseStack stack, double mouseX,
                      double mouseY) {
-        arrow.draw(stack, 30, 8);
+        if(arrow.containsKey(recipe.getDepletionTime())) {
+            arrow.get(recipe.getDepletionTime()).draw(stack, 30, 8);
+        }
     }
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, T recipe, IFocusGroup focuses) {
-        timer = new TickTimer((int) (recipe.getTimeModifier()*((FissionRecipe)recipe).getDepletionTime())/100, 36, true);
-        arrow = guiHelper.drawableBuilder(rl("textures/gui/progress_jei.png"), 0, 186, 36, 15)
-                .buildAnimated(timer, IDrawableAnimated.StartDirection.LEFT);
+        int d = recipe.getDepletionTime();
+        if(!timer.containsKey(d)) {
+            timer.put(d, new TickTimer((int) (recipe.getTimeModifier() * d) / 100, 36, true));
+        }
+        if(!arrow.containsKey(d)) {
+            arrow.put(d, guiHelper.drawableBuilder(rl("textures/gui/progress_jei.png"), 0, 186, 36, 15)
+                    .buildAnimated(timer.get(d), IDrawableAnimated.StartDirection.LEFT));
+        }
         for(int i = 0; i < recipe.getItemIngredients().size(); i++) {
             builder.addSlot(RecipeIngredientRole.INPUT, 11+18*i, 7).addIngredients(recipe.getItemIngredients().get(i));
         }

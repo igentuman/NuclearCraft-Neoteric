@@ -2,8 +2,6 @@ package igentuman.nc.setup.processors;
 
 
 import igentuman.nc.block.entity.processor.*;
-import igentuman.nc.recipes.ItemStackToItemStackRecipe;
-import igentuman.nc.recipes.cache.InputRecipeCache;
 import igentuman.nc.recipes.processors.DecayHastenerRecipe;
 import igentuman.nc.recipes.processors.ManufactoryRecipe;
 import igentuman.nc.recipes.processors.PressurizerRecipe;

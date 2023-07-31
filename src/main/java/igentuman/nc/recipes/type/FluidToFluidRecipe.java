@@ -1,5 +1,6 @@
-package igentuman.nc.recipes;
+package igentuman.nc.recipes.type;
 
+import igentuman.nc.recipes.NcRecipe;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.util.annotation.NothingNullByDefault;
 import net.minecraft.network.FriendlyByteBuf;

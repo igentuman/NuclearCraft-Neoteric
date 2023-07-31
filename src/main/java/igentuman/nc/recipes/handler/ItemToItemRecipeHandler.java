@@ -3,7 +3,7 @@ package igentuman.nc.recipes.handler;
 import igentuman.nc.block.entity.IBlockEntityHandler;
 import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.recipes.INcRecipeTypeProvider;
-import igentuman.nc.recipes.ItemStackToItemStackRecipe;
+import igentuman.nc.recipes.type.ItemStackToItemStackRecipe;
 import igentuman.nc.recipes.NcRecipeType;
 import igentuman.nc.recipes.cache.InputRecipeCache.*;
 import igentuman.nc.recipes.lookup.ISingleRecipeLookupHandler.ItemRecipeLookupHandler;

@@ -2,11 +2,8 @@ package igentuman.nc.setup.recipes;
 
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.fission.FissionControllerBE;
-import igentuman.nc.recipes.ItemStackToItemStackRecipe;
+import igentuman.nc.recipes.type.ItemStackToItemStackRecipe;
 import igentuman.nc.recipes.multiblock.FissionRecipe;
-import igentuman.nc.recipes.processors.DecayHastenerRecipe;
-import igentuman.nc.recipes.processors.ManufactoryRecipe;
-import igentuman.nc.recipes.processors.PressurizerRecipe;
 import igentuman.nc.recipes.processors.SmeltingIRecipe;
 import igentuman.nc.recipes.serializers.ItemStackToItemStackRecipeSerializer;
 import igentuman.nc.setup.processors.Processors;

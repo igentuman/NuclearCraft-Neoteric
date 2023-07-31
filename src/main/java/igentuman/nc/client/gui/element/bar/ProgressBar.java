@@ -37,13 +37,13 @@ public class ProgressBar extends NCGuiElement {
         bars.add(new int[] {0, 171});
         bars.add(new int[] {0, 201});
 
-        bars.add(new int[] {40, 16});
-        bars.add(new int[] {40, 47});
-        bars.add(new int[] {40, 78});
-        bars.add(new int[] {40, 109});
-        bars.add(new int[] {40, 138});
-        bars.add(new int[] {40, 169});
-        bars.add(new int[] {40, 201});
+        bars.add(new int[] {37, 16});
+        bars.add(new int[] {37, 47});
+        bars.add(new int[] {37, 78});
+        bars.add(new int[] {37, 109});
+        bars.add(new int[] {37, 138});
+        bars.add(new int[] {37, 169});
+        bars.add(new int[] {37, 201});
 
         bars.add(new int[] {74, 38});
         bars.add(new int[] {111, 38});

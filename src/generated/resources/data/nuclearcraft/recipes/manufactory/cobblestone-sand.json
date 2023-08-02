@@ -1,11 +1,15 @@
 {
   "type": "nuclearcraft:manufactory",
-  "input": {
-    "item": "minecraft:cobblestone"
-  },
-  "output": {
-    "item": "minecraft:sand"
-  },
+  "input": [
+    {
+      "item": "minecraft:cobblestone"
+    }
+  ],
+  "output": [
+    {
+      "item": "minecraft:sand"
+    }
+  ],
   "powerModifier": 1.0,
   "radiation": 1.0,
   "timeModifier": 1.0

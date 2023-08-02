@@ -1,11 +1,15 @@
 {
   "type": "nuclearcraft:decay_hastener",
-  "input": {
-    "item": "nuclearcraft:curium_245"
-  },
-  "output": {
-    "item": "nuclearcraft:plutonium_241"
-  },
+  "input": [
+    {
+      "item": "nuclearcraft:curium_245"
+    }
+  ],
+  "output": [
+    {
+      "item": "nuclearcraft:plutonium_241"
+    }
+  ],
   "powerModifier": 1.0,
   "radiation": 1.0,
   "timeModifier": 1.0

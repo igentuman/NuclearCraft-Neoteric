@@ -1,10 +1,8 @@
 package igentuman.nc.datagen.recipes;
 
 import igentuman.nc.datagen.recipes.builder.ItemToItemRecipeBuilder;
-import igentuman.nc.datagen.recipes.recipes.DecayHastenerRecipes;
-import igentuman.nc.datagen.recipes.recipes.FissionRecipes;
-import igentuman.nc.datagen.recipes.recipes.ManufactoryRecipes;
-import igentuman.nc.datagen.recipes.recipes.PressurizerRecipes;
+import igentuman.nc.datagen.recipes.recipes.*;
+import igentuman.nc.recipes.ingredient.NcIngredient;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.Item;
@@ -28,13 +26,14 @@ public class CustomRecipes extends NCRecipes {
         ManufactoryRecipes.generate(consumer);
         DecayHastenerRecipes.generate(consumer);
         PressurizerRecipes.generate(consumer);
+        AlloySmelterRecipeProvider.generate(consumer);
     }
 
-    private static void itemToItemRecipe(String id, Ingredient input, Item output, double... params) {
+    private static void itemToItemRecipe(String id, NcIngredient input, Item output, double... params) {
         itemToItemRecipe(id, input, new ItemStack(output), params);
     }
 
-    private static void itemToItemRecipe(String id, Ingredient input, ItemStack output, double... params) {
+    private static void itemToItemRecipe(String id, NcIngredient input, ItemStack output, double... params) {
 
         double timeModifier = params.length>0 ? params[0] : 1.0;
         double powerModifier = params.length>1 ? params[1] : 1.0;

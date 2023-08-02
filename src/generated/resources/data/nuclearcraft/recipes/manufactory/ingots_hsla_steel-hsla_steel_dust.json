@@ -1,11 +1,15 @@
 {
   "type": "nuclearcraft:manufactory",
-  "input": {
-    "tag": "forge:ingots/hsla_steel"
-  },
-  "output": {
-    "item": "nuclearcraft:hsla_steel_dust"
-  },
+  "input": [
+    {
+      "tag": "forge:ingots/hsla_steel"
+    }
+  ],
+  "output": [
+    {
+      "item": "nuclearcraft:hsla_steel_dust"
+    }
+  ],
   "powerModifier": 1.0,
   "radiation": 1.0,
   "timeModifier": 1.0

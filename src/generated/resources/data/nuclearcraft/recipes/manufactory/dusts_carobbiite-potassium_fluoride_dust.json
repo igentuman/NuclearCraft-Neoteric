@@ -1,11 +1,15 @@
 {
   "type": "nuclearcraft:manufactory",
-  "input": {
-    "tag": "forge:dusts/carobbiite"
-  },
-  "output": {
-    "item": "nuclearcraft:potassium_fluoride_dust"
-  },
+  "input": [
+    {
+      "tag": "forge:dusts/carobbiite"
+    }
+  ],
+  "output": [
+    {
+      "item": "nuclearcraft:potassium_fluoride_dust"
+    }
+  ],
   "powerModifier": 1.0,
   "radiation": 1.0,
   "timeModifier": 1.0

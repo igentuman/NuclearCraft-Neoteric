@@ -2,10 +2,13 @@ package igentuman.nc.setup.processors;
 
 
 import igentuman.nc.block.entity.processor.*;
+import igentuman.nc.recipes.processors.AlloySmelterRecipe;
 import igentuman.nc.recipes.processors.DecayHastenerRecipe;
 import igentuman.nc.recipes.processors.ManufactoryRecipe;
 import igentuman.nc.recipes.processors.PressurizerRecipe;
 import igentuman.nc.recipes.serializers.ItemStackToItemStackRecipeSerializer;
+import igentuman.nc.recipes.serializers.TwoItemStackToItemStackRecipeSerializer;
+import igentuman.nc.recipes.type.TwoItemStackToItemStackRecipe;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -59,6 +62,7 @@ public class Processors {
             all.put(ALLOY_SMELTER,
                     ProcessorBuilder
                             .make(ALLOY_SMELTER, 0, 2, 0, 1)
+                            .recipeSerializer(() -> new TwoItemStackToItemStackRecipeSerializer<>(AlloySmelterRecipe::new))
                             .blockEntity(AlloySmelterBE::new)
                             .build()
             );

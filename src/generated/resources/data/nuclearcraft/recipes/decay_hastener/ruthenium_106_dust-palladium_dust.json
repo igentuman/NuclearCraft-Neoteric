@@ -1,11 +1,15 @@
 {
   "type": "nuclearcraft:decay_hastener",
-  "input": {
-    "item": "nuclearcraft:ruthenium_106_dust"
-  },
-  "output": {
-    "item": "nuclearcraft:palladium_dust"
-  },
+  "input": [
+    {
+      "item": "nuclearcraft:ruthenium_106_dust"
+    }
+  ],
+  "output": [
+    {
+      "item": "nuclearcraft:palladium_dust"
+    }
+  ],
   "powerModifier": 1.0,
   "radiation": 1.0,
   "timeModifier": 1.0

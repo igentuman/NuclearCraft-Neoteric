@@ -1,11 +1,15 @@
 {
   "type": "nuclearcraft:manufactory",
-  "input": {
-    "tag": "forge:ingots/graphite"
-  },
-  "output": {
-    "item": "nuclearcraft:graphite_dust"
-  },
+  "input": [
+    {
+      "tag": "forge:ingots/graphite"
+    }
+  ],
+  "output": [
+    {
+      "item": "nuclearcraft:graphite_dust"
+    }
+  ],
   "powerModifier": 1.0,
   "radiation": 1.0,
   "timeModifier": 1.0

@@ -2,6 +2,8 @@ package igentuman.nc.recipes;
 
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.handler.sided.SidedContentHandler;
+import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;
+import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.type.ItemStackToItemStackRecipe;
@@ -18,10 +20,8 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -35,10 +35,10 @@ public abstract class NcRecipe implements Recipe<IgnoredIInventory> {
     protected double powerModifier = 1;
     protected double radiationModifier = 1;
 
-    protected FluidStackIngredient[] inputFluids;
-    protected FluidStack[] outputFluids;
-    protected ItemStackIngredient[] inputItems;
-    protected ItemStack[] outputItems;
+    protected FluidStackIngredient[] inputFluids = new FluidStackIngredient[0];
+    protected FluidStack[] outputFluids = new FluidStack[0];
+    protected ItemStackIngredient[] inputItems = new ItemStackIngredient[0];
+    protected ItemStack[] outputItems = new ItemStack[0];
 
     protected List<FluidStack> resolvedInputFluids;
     protected List<FluidStack> resolvedOutputFluids;
@@ -74,8 +74,8 @@ public abstract class NcRecipe implements Recipe<IgnoredIInventory> {
     }
 
     @Override
-    public @NotNull RecipeType<ItemStackToItemStackRecipe> getType() {
-        return NcRecipeType.RECIPES.get(ID).get();
+    public @NotNull RecipeType<? extends NcRecipe> getType() {
+        return NcRecipeType.ALL_RECIPES.get(ID).get();
     }
 
     public abstract void write(FriendlyByteBuf buffer);
@@ -196,5 +196,43 @@ public abstract class NcRecipe implements Recipe<IgnoredIInventory> {
                 i++;
             }
         }
+    }
+
+    public boolean test(SidedContentHandler contentHandler) {
+        if(inputItems.length > 0 && inputFluids.length == 0) {
+            return testItems(contentHandler.itemHandler);
+        }
+        if(inputFluids.length > 0 && inputItems.length == 0) {
+            return testFluids(contentHandler.fluidCapability);
+        }
+        return testFluids(contentHandler.fluidCapability) && testItems(contentHandler.itemHandler);
+    }
+
+    private boolean testFluids(FluidCapabilityHandler fluidHandler) {
+        for (int i = 0; i < inputFluids.length; i++) {
+            if(!hasFluidInSlots(fluidHandler, inputFluids[i])) return false;
+        }
+        return true;
+    }
+
+    private boolean hasFluidInSlots(FluidCapabilityHandler fluidHandler, FluidStackIngredient fluid) {
+        for(int i = 0; i < fluidHandler.inputSlots; i++) {
+            if(fluid.test(fluidHandler.getFluidInSlot(i))) return true;
+        }
+        return false;
+    }
+
+    private boolean testItems(ItemCapabilityHandler itemHandler) {
+        for (int i = 0; i < inputItems.length; i++) {
+            if(!hasItemInSlots(itemHandler, inputItems[i])) return false;
+        }
+        return true;
+    }
+
+    private boolean hasItemInSlots(ItemCapabilityHandler itemHandler, ItemStackIngredient item) {
+        for(int i = 0; i < itemHandler.inputSlots; i++) {
+            if(item.test(itemHandler.getStackInSlot(i))) return true;
+        }
+        return false;
     }
 }

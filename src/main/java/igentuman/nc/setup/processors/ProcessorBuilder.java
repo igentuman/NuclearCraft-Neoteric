@@ -6,6 +6,7 @@ import igentuman.nc.client.gui.processor.NCProcessorScreen;
 import igentuman.nc.recipes.NcRecipe;
 import igentuman.nc.recipes.NcRecipeType;
 import igentuman.nc.recipes.cache.IInputRecipeCache;
+import igentuman.nc.recipes.type.TwoItemStackToItemStackRecipe;
 import igentuman.nc.setup.processors.config.ProcessorSlots;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
@@ -41,7 +42,7 @@ public class ProcessorBuilder <M extends NCProcessorContainer, U extends Screen 
         return builder;
     }
 
-    public ProcessorBuilder container(Class container) {
+    public ProcessorBuilder<M, U> container(Class container) {
         processor.setContainer(container);
         return this;
     }
@@ -60,29 +61,29 @@ public class ProcessorBuilder <M extends NCProcessorContainer, U extends Screen 
     }
 
     @OnlyIn(Dist.DEDICATED_SERVER)
-    public ProcessorBuilder screen(Object screenConstructor)
+    public ProcessorBuilder<M, U> screen(Object screenConstructor)
     {
         return this;
     }
 
-    public ProcessorPrefab build()
+    public ProcessorPrefab<M, U> build()
     {
         return processor;
     }
 
 
-    public ProcessorBuilder slotsConfig(ProcessorSlots config)
+    public ProcessorBuilder<M, U> slotsConfig(ProcessorSlots config)
     {
         processor.slotsConfig = config;
         return this;
     }
 
-    public ProcessorBuilder progressBar(int i) {
+    public ProcessorBuilder<M, U> progressBar(int i) {
         processor.progressBar = i;
         return this;
     }
 
-    public ProcessorBuilder recipeSerializer(Supplier<RecipeSerializer<? extends NcRecipe>> sup) {
+    public ProcessorBuilder<M, U> recipeSerializer(Supplier<RecipeSerializer<? extends NcRecipe>> sup) {
         processor.recipeSerializerSupplier = sup;
         return this;
     }

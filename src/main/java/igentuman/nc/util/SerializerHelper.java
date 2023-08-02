@@ -70,6 +70,10 @@ public class SerializerHelper {
         return ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, key));
     }
 
+    public static ItemStack getItemStack(@NotNull JsonObject json) {
+        return ShapedRecipe.itemStackFromJson(json);
+    }
+
     /**
      * Helper to get and deserialize a Fluid Stack from a specific sub-element in a Json Object.
      *

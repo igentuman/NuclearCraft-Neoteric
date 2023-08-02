@@ -3,6 +3,7 @@ package igentuman.nc.block.entity.processor;
 import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.recipes.NcRecipe;
+import igentuman.nc.recipes.NcRecipeType;
 import igentuman.nc.recipes.RecipeInfo;
 import igentuman.nc.recipes.lookup.IRecipeLookupHandler;
 import igentuman.nc.setup.processors.ProcessorPrefab;
@@ -31,12 +32,15 @@ import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.HashMap;
 
 public class NCProcessorBE<RECIPE extends NcRecipe> extends NuclearCraftBE {
 
     public static String NAME;
     public final SidedContentHandler contentHandler;
     protected final CustomEnergyStorage energyStorage;
+    public HashMap<String, RECIPE> cachedRecipes = new HashMap<>();
+
     public final ItemStackHandler upgradesHandler = createHandler();
     protected final LazyOptional<IItemHandler> handler = LazyOptional.of(() -> upgradesHandler);
 
@@ -53,11 +57,11 @@ public class NCProcessorBE<RECIPE extends NcRecipe> extends NuclearCraftBE {
     }
 
     protected final LazyOptional<IEnergyStorage> energy;
-    public IRecipeLookupHandler recipeHandler;
+    protected IRecipeLookupHandler recipeHandler;
 
     protected ProcessorPrefab prefab;
 
-    public RecipeInfo recipeInfo = new RecipeInfo();
+    public RecipeInfo<RECIPE> recipeInfo = new RecipeInfo<RECIPE>();
 
     public ProcessorPrefab prefab() {
         if(prefab == null) {
@@ -83,16 +87,43 @@ public class NCProcessorBE<RECIPE extends NcRecipe> extends NuclearCraftBE {
         }
     }
 
+    private void addToCache(RECIPE recipe) {
+        String key = contentHandler.getCacheKey();
+        if(cachedRecipes.containsKey(key)) {
+            cachedRecipes.replace(key, recipe);
+        } else {
+            cachedRecipes.put(key, recipe);
+        }
+    }
+    public RECIPE getRecipe() {
+        RECIPE cachedRecipe = getCachedRecipe();
+        if(cachedRecipe != null) return cachedRecipe;
+        if(!NcRecipeType.ALL_RECIPES.containsKey(getName())) return null;
+        for(NcRecipe recipe: NcRecipeType.ALL_RECIPES.get(getName()).getRecipeType().getRecipes(getLevel())) {
+            if(recipe.test(contentHandler)) {
+                addToCache((RECIPE)recipe);
+                return (RECIPE)recipe;
+            }
+        }
+        return null;
+    }
+
+    public RECIPE getCachedRecipe() {
+        String key = contentHandler.getCacheKey();
+        if(cachedRecipes.containsKey(key)) {
+            if(cachedRecipes.get(key).test(contentHandler)) {
+                return cachedRecipes.get(key);
+            }
+        }
+        return (RECIPE) null;
+    }
+
     private int getBaseProcessTime() {
         return prefab().config().getTime();
     }
 
     private int getBasePower() {
         return prefab().config().getPower();
-    }
-
-    public RECIPE getRecipe() {
-        return (RECIPE) recipeHandler.getRecipe();
     }
 
     private void handleRecipeOutput() {
@@ -176,7 +207,6 @@ public class NCProcessorBE<RECIPE extends NcRecipe> extends NuclearCraftBE {
         contentHandler.setBlockEntity(this);
         energyStorage = createEnergy();
         energy = LazyOptional.of(() -> energyStorage);
-        recipeHandler = prefab().getRecipeLookupHandler(this);
     }
 
     public void tickClient() {

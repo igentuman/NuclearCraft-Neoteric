@@ -1,11 +1,15 @@
 {
   "type": "nuclearcraft:manufactory",
-  "input": {
-    "item": "minecraft:diamond"
-  },
-  "output": {
-    "item": "nuclearcraft:diamond_dust"
-  },
+  "input": [
+    {
+      "item": "minecraft:diamond"
+    }
+  ],
+  "output": [
+    {
+      "item": "nuclearcraft:diamond_dust"
+    }
+  ],
   "powerModifier": 1.5,
   "radiation": 1.0,
   "timeModifier": 1.5

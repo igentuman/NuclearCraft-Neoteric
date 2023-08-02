@@ -39,7 +39,7 @@ public class ItemStackToItemStackRecipeSerializer<RECIPE extends ItemStackToItem
             outputItems = new ItemStack[output.getAsJsonArray().size()];
             int i = 0;
             for (JsonElement out : output.getAsJsonArray()) {
-                outputItems[i] = SerializerHelper.getItemStack(out.getAsJsonObject(), JsonConstants.OUTPUT);
+                outputItems[i] = SerializerHelper.getItemStack(out.getAsJsonObject());
                 i++;
             }
         } else {

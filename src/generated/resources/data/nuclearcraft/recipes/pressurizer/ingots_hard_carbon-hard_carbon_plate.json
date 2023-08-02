@@ -1,11 +1,15 @@
 {
   "type": "nuclearcraft:pressurizer",
-  "input": {
-    "tag": "forge:ingots/hard_carbon"
-  },
-  "output": {
-    "item": "nuclearcraft:hard_carbon_plate"
-  },
+  "input": [
+    {
+      "tag": "forge:ingots/hard_carbon"
+    }
+  ],
+  "output": [
+    {
+      "item": "nuclearcraft:hard_carbon_plate"
+    }
+  ],
   "powerModifier": 1.0,
   "radiation": 1.0,
   "timeModifier": 1.0

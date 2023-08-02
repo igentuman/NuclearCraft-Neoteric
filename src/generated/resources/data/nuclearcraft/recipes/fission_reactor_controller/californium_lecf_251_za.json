@@ -1,11 +1,15 @@
 {
   "type": "nuclearcraft:fission_reactor_controller",
-  "input": {
-    "item": "nuclearcraft:fuel_californium_lecf_251_za"
-  },
-  "output": {
-    "item": "nuclearcraft:depleted_fuel_californium_lecf_251_za"
-  },
+  "input": [
+    {
+      "item": "nuclearcraft:fuel_californium_lecf_251_za"
+    }
+  ],
+  "output": [
+    {
+      "item": "nuclearcraft:depleted_fuel_californium_lecf_251_za"
+    }
+  ],
   "powerModifier": 1.0,
   "radiation": 1.0,
   "timeModifier": 1.0

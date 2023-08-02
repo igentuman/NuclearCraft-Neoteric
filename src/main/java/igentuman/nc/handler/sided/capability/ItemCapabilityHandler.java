@@ -19,10 +19,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static igentuman.nc.handler.sided.SlotModePair.SlotMode.*;
 
@@ -30,6 +27,9 @@ public class ItemCapabilityHandler extends AbscractCapabilityHandler implements 
 
     protected NonNullList<ItemStack> stacks;
     public BlockEntity tile;
+    protected ItemStack[] sortedStacks;
+    private Map<Direction, LazyOptional<ItemHandlerWrapper>> handlerCache = new HashMap<>();
+
     public List<ItemStack> holdedInputs = new ArrayList<>();
 
     public ItemCapabilityHandler(int input, int output) {
@@ -241,10 +241,10 @@ public class ItemCapabilityHandler extends AbscractCapabilityHandler implements 
     }
 
     protected void onContentsChanged(int slot) {
-
+        if(slot > inputSlots-1) {
+            sortedStacks = null;
+        }
     }
-
-    private Map<Direction, LazyOptional<ItemHandlerWrapper>> handlerCache = new HashMap<>();
 
     public LazyOptional<ItemHandlerWrapper> getCapability(Direction side) {
         if(side == null) return LazyOptional.of(() -> new ItemHandlerWrapper(this, (i) -> true, (i, s) -> true));
@@ -381,5 +381,23 @@ public class ItemCapabilityHandler extends AbscractCapabilityHandler implements 
             }
         }
         return outputItem;
+    }
+
+    public String getCacheKey() {
+        String key = "";
+        if(sortedStacks == null) {
+            sortedStacks = new ItemStack[inputSlots];
+            for(int i = 0; i < inputSlots; i++) {
+                sortedStacks[i] = getStackInSlot(i);
+            }
+            Arrays.sort(sortedStacks, Comparator.comparing(itemStack -> itemStack.getItem().toString()));
+        }
+
+        for(ItemStack stack : sortedStacks) {
+            if(!stack.isEmpty()) {
+                key += stack.getItem().toString();
+            }
+        }
+        return key;
     }
 }

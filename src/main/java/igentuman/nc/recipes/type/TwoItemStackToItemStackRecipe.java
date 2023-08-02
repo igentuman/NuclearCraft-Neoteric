@@ -13,9 +13,9 @@ import java.util.Objects;
 import java.util.function.BiPredicate;
 
 @NothingNullByDefault
-public abstract class TwoItemStackToOneItemStackRecipe extends NcRecipe implements BiPredicate<@NotNull ItemStack, @NotNull ItemStack> {
+public abstract class TwoItemStackToItemStackRecipe extends NcRecipe implements BiPredicate<@NotNull ItemStack, @NotNull ItemStack> {
 
-    public TwoItemStackToOneItemStackRecipe(ResourceLocation id, ItemStackIngredient[] input, ItemStack[] output, double timeModifier, double powerModifier, double radiationModifier) {
+    public TwoItemStackToItemStackRecipe(ResourceLocation id, ItemStackIngredient[] input, ItemStack[] output, double timeModifier, double powerModifier, double radiationModifier) {
         super(id);
         this.inputItems = input;
         Objects.requireNonNull(output, "Output cannot be null.");
@@ -31,6 +31,14 @@ public abstract class TwoItemStackToOneItemStackRecipe extends NcRecipe implemen
     @Override
     public boolean test(ItemStack input, ItemStack extra) {
         return inputItems[0].test(input) && inputItems[1].test(extra);
+    }
+
+    public ItemStackIngredient getInput1() {
+        return inputItems[0];
+    }
+
+    public ItemStackIngredient getInput2() {
+        return inputItems[0];
     }
 
     @Contract(value = "_, _ -> new", pure = true)

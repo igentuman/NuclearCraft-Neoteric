@@ -1,11 +1,15 @@
 {
   "type": "nuclearcraft:manufactory",
-  "input": {
-    "item": "minecraft:lapis_lazuli"
-  },
-  "output": {
-    "item": "nuclearcraft:lapis_dust"
-  },
+  "input": [
+    {
+      "item": "minecraft:lapis_lazuli"
+    }
+  ],
+  "output": [
+    {
+      "item": "nuclearcraft:lapis_dust"
+    }
+  ],
   "powerModifier": 1.0,
   "radiation": 1.0,
   "timeModifier": 1.0

@@ -116,8 +116,8 @@ public abstract class NcRecipeBuilder<BUILDER extends NcRecipeBuilder<BUILDER>> 
      * @param consumer Finished Recipe Consumer.
      * @param output       Output to base the recipe name off of.
      */
-    protected void build(Consumer<FinishedRecipe> consumer, ItemLike output) {
-        ResourceLocation registryName = ForgeRegistries.ITEMS.getKey(output.asItem());
+    protected void build(Consumer<FinishedRecipe> consumer, ItemLike... output) {
+        ResourceLocation registryName = ForgeRegistries.ITEMS.getKey(output[0].asItem());
         if (registryName == null) {
             throw new IllegalStateException("Could not retrieve registry name for output.");
         }

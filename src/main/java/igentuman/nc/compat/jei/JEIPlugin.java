@@ -15,7 +15,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.HashMap;
-import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.compat.GlobalVars.*;
@@ -60,11 +59,11 @@ public  class JEIPlugin implements IModPlugin {
         for(String  name: getRecipeTypes().keySet()) {
             registration.addRecipes(
                     getRecipeType(name),
-                    NcRecipeType.RECIPES.get(name).getRecipes(NcClient.tryGetClientWorld()));
+                    NcRecipeType.ALL_RECIPES.get(name).getRecipes(NcClient.tryGetClientWorld()));
         }
         registration.addRecipes(
                 getRecipeType(FISSION),
-                NcRecipeType.RECIPES.get(FissionControllerBE.NAME).getRecipes(NcClient.tryGetClientWorld()));
+                NcRecipeType.ALL_RECIPES.get(FissionControllerBE.NAME).getRecipes(NcClient.tryGetClientWorld()));
     }
 
     @Override

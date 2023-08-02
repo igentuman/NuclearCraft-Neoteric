@@ -5,6 +5,7 @@ import igentuman.nc.block.entity.fission.FissionControllerBE;
 import igentuman.nc.datagen.recipes.CustomRecipes;
 import igentuman.nc.datagen.recipes.NCRecipes;
 import igentuman.nc.datagen.recipes.builder.ItemToItemRecipeBuilder;
+import igentuman.nc.recipes.ingredient.NcIngredient;
 import igentuman.nc.setup.registration.Fuel;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -27,11 +28,11 @@ public class FissionRecipes {
         solidFissionRecipes();
     }
 
-    private static void itemToItemRecipe(String id, Ingredient input, Item output, double... params) {
+    private static void itemToItemRecipe(String id, NcIngredient input, Item output, double... params) {
         itemToItemRecipe(id, input, new ItemStack(output), params);
     }
 
-    private static void itemToItemRecipe(String id, Ingredient input, ItemStack output, double... params) {
+    private static void itemToItemRecipe(String id, NcIngredient input, ItemStack output, double... params) {
 
         double timeModifier = params.length>0 ? params[0] : 1.0;
         double powerModifier = params.length>1 ? params[1] : 1.0;
@@ -47,7 +48,7 @@ public class FissionRecipes {
             List<String> depleted = new ArrayList<>(name);
             depleted.set(0, "depleted");
             itemToItemRecipe(FissionControllerBE.NAME,
-                    Ingredient.of(Fuel.NC_FUEL.get(name).get()),
+                    NcIngredient.of(Fuel.NC_FUEL.get(name).get()),
                     Fuel.NC_DEPLETED_FUEL.get(depleted).get());
         }
     }

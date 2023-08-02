@@ -164,6 +164,17 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
         }
     }
 
+    public String getCacheKey() {
+        String key = "";
+        if(itemHandler != null) {
+            key += itemHandler.getCacheKey();
+        }
+        if(fluidCapability != null) {
+            key += fluidCapability.getCacheKey();
+        }
+        return key;
+    }
+
     public enum SlotType {
         INPUT,
         OUTPUT;

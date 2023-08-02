@@ -10,6 +10,7 @@ import igentuman.nc.recipes.ingredient.creator.IItemStackIngredientCreator;
 import igentuman.nc.recipes.ingredient.creator.IngredientCreatorAccess;
 import igentuman.nc.recipes.processors.SmeltingIRecipe;
 import igentuman.nc.recipes.type.ItemStackToItemStackRecipe;
+import igentuman.nc.recipes.type.TwoItemStackToItemStackRecipe;
 import igentuman.nc.setup.processors.Processors;
 import igentuman.nc.setup.recipes.RecipeTypeDeferredRegister;
 import igentuman.nc.setup.recipes.RecipeTypeRegistryObject;
@@ -34,8 +35,10 @@ public class NcRecipeType<RECIPE extends NcRecipe, INPUT_CACHE extends IInputRec
 
     public static final RecipeTypeDeferredRegister RECIPE_TYPES = new RecipeTypeDeferredRegister(MODID);
 
-    public static final HashMap<String, RecipeTypeRegistryObject<ItemStackToItemStackRecipe, InputRecipeCache.SingleItem<ItemStackToItemStackRecipe>>> RECIPES = initializeRecipes();
+    public static final HashMap<String, RecipeTypeRegistryObject<ItemStackToItemStackRecipe, InputRecipeCache.SingleItem<ItemStackToItemStackRecipe>>> ONE_ITEM_RECIPES = initializeRecipes();
+    public static final HashMap<String, RecipeTypeRegistryObject<TwoItemStackToItemStackRecipe, InputRecipeCache.DoubleItem<TwoItemStackToItemStackRecipe>>> TWO_ITEM_RECIPES = initializeTwoItemRecipes();
 
+    public static HashMap<String, RecipeTypeRegistryObject<? extends NcRecipe, ? extends IInputRecipeCache>> ALL_RECIPES;
     private static HashMap<String, RecipeTypeRegistryObject<ItemStackToItemStackRecipe, InputRecipeCache.SingleItem<ItemStackToItemStackRecipe>>> initializeRecipes() {
         HashMap<String, RecipeTypeRegistryObject<ItemStackToItemStackRecipe, InputRecipeCache.SingleItem<ItemStackToItemStackRecipe>>> recipes = new HashMap<>();
         recipes.put(FissionControllerBE.NAME, register(FissionControllerBE.NAME, recipeType -> new InputRecipeCache.SingleItem<>(recipeType, ItemStackToItemStackRecipe::getInput)));
@@ -43,6 +46,24 @@ public class NcRecipeType<RECIPE extends NcRecipe, INPUT_CACHE extends IInputRec
         recipes.put(Processors.PRESSURIZER, register(Processors.PRESSURIZER, recipeType -> new InputRecipeCache.SingleItem<>(recipeType, ItemStackToItemStackRecipe::getInput)));
         recipes.put(Processors.DECAY_HASTENER, register(Processors.DECAY_HASTENER, recipeType -> new InputRecipeCache.SingleItem<>(recipeType, ItemStackToItemStackRecipe::getInput)));
         recipes.put("smelting", SMELTING);
+        if(ALL_RECIPES == null) {
+            ALL_RECIPES = new HashMap<>();
+        }
+        for (String name: recipes.keySet()) {
+            ALL_RECIPES.put(name, recipes.get(name));
+        }
+        return recipes;
+    }
+
+    private static HashMap<String, RecipeTypeRegistryObject<TwoItemStackToItemStackRecipe, InputRecipeCache.DoubleItem<TwoItemStackToItemStackRecipe>>> initializeTwoItemRecipes() {
+        HashMap<String, RecipeTypeRegistryObject<TwoItemStackToItemStackRecipe, InputRecipeCache.DoubleItem<TwoItemStackToItemStackRecipe>>> recipes = new HashMap<>();
+        recipes.put(Processors.ALLOY_SMELTER, register(Processors.ALLOY_SMELTER, recipeType -> new InputRecipeCache.DoubleItem<>(recipeType, TwoItemStackToItemStackRecipe::getInput1, TwoItemStackToItemStackRecipe::getInput2)));
+        if(ALL_RECIPES == null) {
+            ALL_RECIPES = new HashMap<>();
+        }
+        for (String name: recipes.keySet()) {
+            ALL_RECIPES.put(name, recipes.get(name));
+        }
         return recipes;
     }
 

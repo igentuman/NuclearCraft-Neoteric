@@ -6,6 +6,7 @@ import igentuman.nc.handler.sided.SlotModePair.*;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -17,6 +18,8 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 import static igentuman.nc.handler.sided.SlotModePair.SlotMode.*;
@@ -26,6 +29,7 @@ public class FluidCapabilityHandler extends AbscractCapabilityHandler implements
     public final NonNullList<FluidTank> tanks;
     public final NonNullList<LazyOptional<IFluidHandler>> fluidCapabilites;
     public BlockEntity tile;
+    protected FluidStack[] sortedFluids;
     public List<FluidStack> holdedInputs = new ArrayList<>();
 
     public FluidCapabilityHandler(int inputSlots, int outputSlots, int amount) {
@@ -142,5 +146,24 @@ public class FluidCapabilityHandler extends AbscractCapabilityHandler implements
             }
         }
         return false;
+    }
+
+    public FluidStack getFluidInSlot(int i) {
+        return tanks.get(i).getFluid();
+    }
+
+    public String getCacheKey() {
+        String key = "";
+        if(sortedFluids == null) {
+            sortedFluids = new FluidStack[inputSlots];
+            for(int i = 0; i < inputSlots; i++) {
+                sortedFluids[i] = getFluidInSlot(i);
+            }
+            Arrays.sort(sortedFluids, Comparator.comparing(fluidStack -> fluidStack.getFluid().toString()));
+        }
+        for (FluidStack tank : sortedFluids) {
+            key += tank.getFluid().toString();
+        }
+        return key;
     }
 }

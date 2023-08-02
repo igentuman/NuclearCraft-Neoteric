@@ -22,6 +22,7 @@ public class InputRecipeCache {
         public SingleItem(NcRecipeType<RECIPE, ?> recipeType, Function<RECIPE, ItemStackIngredient> inputExtractor) {
             super(recipeType, inputExtractor, new ItemInputCache<>());
         }
+
     }
 
     public static class SingleFluid<RECIPE extends NcRecipe & Predicate<FluidStack>>

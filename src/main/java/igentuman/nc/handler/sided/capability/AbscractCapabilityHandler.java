@@ -6,8 +6,8 @@ import igentuman.nc.handler.sided.SlotModePair;
 import java.util.HashMap;
 
 public abstract class AbscractCapabilityHandler {
-    protected int inputSlots;
-    protected int outputSlots;
+    public int inputSlots;
+    public int outputSlots;
     
     protected boolean sideMapUpdated = true;
     public HashMap<Integer, SlotModePair[]> sideMap;

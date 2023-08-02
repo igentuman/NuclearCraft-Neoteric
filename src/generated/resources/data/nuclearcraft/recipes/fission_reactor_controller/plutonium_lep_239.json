@@ -1,11 +1,15 @@
 {
   "type": "nuclearcraft:fission_reactor_controller",
-  "input": {
-    "item": "nuclearcraft:fuel_plutonium_lep_239"
-  },
-  "output": {
-    "item": "nuclearcraft:depleted_fuel_plutonium_lep_239"
-  },
+  "input": [
+    {
+      "item": "nuclearcraft:fuel_plutonium_lep_239"
+    }
+  ],
+  "output": [
+    {
+      "item": "nuclearcraft:depleted_fuel_plutonium_lep_239"
+    }
+  ],
   "powerModifier": 1.0,
   "radiation": 1.0,
   "timeModifier": 1.0

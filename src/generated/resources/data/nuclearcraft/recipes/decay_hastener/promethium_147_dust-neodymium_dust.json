@@ -1,11 +1,15 @@
 {
   "type": "nuclearcraft:decay_hastener",
-  "input": {
-    "item": "nuclearcraft:promethium_147_dust"
-  },
-  "output": {
-    "item": "nuclearcraft:neodymium_dust"
-  },
+  "input": [
+    {
+      "item": "nuclearcraft:promethium_147_dust"
+    }
+  ],
+  "output": [
+    {
+      "item": "nuclearcraft:neodymium_dust"
+    }
+  ],
   "powerModifier": 1.0,
   "radiation": 1.0,
   "timeModifier": 1.0

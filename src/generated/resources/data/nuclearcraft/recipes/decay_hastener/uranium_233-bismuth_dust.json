@@ -1,11 +1,15 @@
 {
   "type": "nuclearcraft:decay_hastener",
-  "input": {
-    "item": "nuclearcraft:uranium_233"
-  },
-  "output": {
-    "item": "nuclearcraft:bismuth_dust"
-  },
+  "input": [
+    {
+      "item": "nuclearcraft:uranium_233"
+    }
+  ],
+  "output": [
+    {
+      "item": "nuclearcraft:bismuth_dust"
+    }
+  ],
   "powerModifier": 1.0,
   "radiation": 1.0,
   "timeModifier": 1.0

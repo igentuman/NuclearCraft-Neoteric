@@ -46,14 +46,13 @@ public class ProcessorPrefab <M extends NCProcessorContainer, U extends Screen &
     protected boolean supportCatalyst = false;
 
     protected Class recipeManager;
-    private Class recipeLookupHandler = ItemToItemRecipeHandler.class;
 
 
     public BlockEntityType.BlockEntitySupplier<? extends NCProcessorBE>  getBlockEntity() {
         return blockEntity;
     }
 
-    public ProcessorPrefab setBlockEntity(BlockEntityType.BlockEntitySupplier<? extends NCProcessorBE>  blockEntity) {
+    public ProcessorPrefab<M, U> setBlockEntity(BlockEntityType.BlockEntitySupplier<? extends NCProcessorBE>  blockEntity) {
         this.blockEntity = blockEntity;
         return this;
     }
@@ -101,7 +100,7 @@ public class ProcessorPrefab <M extends NCProcessorContainer, U extends Screen &
         return time;
     }
 
-    public ProcessorPrefab time(int time) {
+    public ProcessorPrefab<M, U> time(int time) {
         this.time = time;
         return this;
     }
@@ -121,7 +120,7 @@ public class ProcessorPrefab <M extends NCProcessorContainer, U extends Screen &
 
     protected ProcessorSlots slotsConfig;
 
-    public ProcessorPrefab config()
+    public ProcessorPrefab<M, U> config()
     {
         if(!initialized) {
             if(!CommonConfig.isLoaded()) {
@@ -152,17 +151,4 @@ public class ProcessorPrefab <M extends NCProcessorContainer, U extends Screen &
         return (supportSpeedUpgrade ? 1 : 0) + (supportEnergyUpgrade ? 1 : 0);
     }
 
-    public <RECIPE extends NcRecipe> IRecipeLookupHandler getRecipeLookupHandler(NCProcessorBE<RECIPE> recipencProcessorBE) {
-        try {
-            return (IRecipeLookupHandler) recipeLookupHandler.getConstructor(NuclearCraftBE.class).newInstance(recipencProcessorBE);
-        } catch (InstantiationException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        } catch (InvocationTargetException e) {
-            throw new RuntimeException(e);
-        } catch (NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        }
-    }
 }

@@ -1,5 +1,6 @@
 package igentuman.nc.recipes.lookup;
 
+import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.recipes.NcRecipe;
 import igentuman.nc.recipes.cache.DoubleInputRecipeCache;
 import igentuman.nc.recipes.cache.InputRecipeCache;
@@ -81,6 +82,12 @@ public interface IDoubleRecipeLookupHandler<INPUT_A, INPUT_B, RECIPE extends NcR
     @Nullable
     default RECIPE findFirstRecipe(INPUT_A inputA, INPUT_B inputB) {
         return getRecipeType().getInputCache().findFirstRecipe(getHandlerWorld(), inputA, inputB);
+    }
+
+    @Nullable
+    default RECIPE findFirstRecipe(ItemCapabilityHandler itemHandler) {
+        if(getRecipeType() == null) return null;
+        return findFirstRecipe((INPUT_A) itemHandler.getStackInSlot(0), (INPUT_B) itemHandler.getStackInSlot(1));
     }
 
     /**

@@ -30,7 +30,7 @@ public class FissionRecipe extends ItemStackToItemStackRecipe {
 
     @Override
     public @NotNull RecipeType<ItemStackToItemStackRecipe> getType() {
-        return NcRecipeType.RECIPES.get(ID).get();
+        return NcRecipeType.ONE_ITEM_RECIPES.get(ID).get();
     }
 
     @Override

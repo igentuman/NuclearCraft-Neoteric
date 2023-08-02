@@ -28,6 +28,9 @@ public class ManufactoryRecipes extends AbstractRecipeProvider {
         add(CHARCOAL, dustItem(Materials.charcoal), 0.5D, 0.5D);
 
         add(DIAMOND, dustItem(Materials.diamond), 1.5D, 1.5D);
+        add(IRON_INGOT, dustItem(Materials.iron), 1.2D);
+        add(GOLD_INGOT, dustItem(Materials.gold), 1.2D);
+        add(COPPER_INGOT, dustItem(Materials.copper), 1.2D);
         add(LAPIS_LAZULI, dustItem(Materials.lapis));
         add(dustTag(Materials.villiaumite), dustItem(Materials.sodium_fluoride));
         add(NCItems.DUSTS_TAG.get(Materials.carobbiite), dustItem(Materials.potassium_fluoride));

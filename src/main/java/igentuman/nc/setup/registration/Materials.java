@@ -15,6 +15,7 @@ public class Materials extends MaterialsManager {
     public final static  String boron = "boron";
     public final static  String silver = "silver";
     public final static  String lead = "lead";
+    public final static  String lead_platinum = "lead_platinum";
     public final static  String thallium = "thallium";
     public final static  String tin = "tin";
     public final static  String zinc = "zinc";
@@ -69,6 +70,7 @@ public class Materials extends MaterialsManager {
     public final static  String tbp = "tbp";
     public final static  String arsenic = "arsenic";
     public final static  String boron_nitride = "boron_nitride";
+    public final static  String boron_arsenide = "boron_arsenide";
     public final static  String carobbiite = "carobbiite";
     public final static  String coal = "coal";
     public final static  String charcoal = "charcoal";
@@ -95,6 +97,9 @@ public class Materials extends MaterialsManager {
     public final static  String potassium_hydroxide = "potassium_hydroxide";
     public final static  String sodium_fluoride = "sodium_fluoride";
     public final static  String sodium_hydroxide = "sodium_hydroxide";
+    public final static  String carbon_manganese = "carbon_manganese";
+    public static String silicon = "silicon";
+
     public static HashMap<String, NCMaterial> all()
     {
         if(all == null) {
@@ -118,10 +123,12 @@ public class Materials extends MaterialsManager {
             all.put(copper, NCMaterial.get(copper).define("dust", "plate", "fluid").color(0xFFA86F32));
             all.put(iron, NCMaterial.get(iron).define("dust", "plate", "fluid").color(0xFF7D0707));
             all.put(purpur, NCMaterial.get(purpur).define("dust", "fluid").color(0xFF7E0399));
+            all.put(carbon_manganese, NCMaterial.get(carbon_manganese).define("dust", "fluid", "ingot").color(0xFF7E0399));
             all.put(gold, NCMaterial.get(gold).define("dust", "fluid").color(0xFFD4CD08));
-            all.put(ferroboron, NCMaterial.get(ferroboron).define("ingot", "fluid").color(0xFF543636));
+            all.put(ferroboron, NCMaterial.get(ferroboron).define("dust","ingot", "fluid").color(0xFF543636));
             all.put(enderium, NCMaterial.get(enderium).define("dust", "fluid").color(0xFF00856C));
             all.put(lapis, NCMaterial.get(lapis).define("dust", "fluid").color(0xFF04128F));
+            all.put(lead_platinum, NCMaterial.get(lead_platinum).define("dust", "fluid", "ingot").color(0xFF04118F));
             all.put(hard_carbon, NCMaterial.get(hard_carbon).define("ingot", "plate", "dust", "fluid").color(0xFF164C5F));
             all.put(tin_silver, NCMaterial.get(tin_silver).define("ingot", "dust", "fluid").color(0xFFD3D3E9));
             all.put(steel, NCMaterial.alloy(steel).color(0xFF997B74));
@@ -164,6 +171,8 @@ public class Materials extends MaterialsManager {
             all.put(tbp, NCMaterial.dust(tbp));
             all.put(arsenic, NCMaterial.dust(arsenic));
             all.put(boron_nitride, NCMaterial.dust(boron_nitride).with("gem"));
+            all.put(silicon, NCMaterial.gem(silicon));
+            all.put(boron_arsenide, NCMaterial.dust(boron_arsenide).with("gem"));
             all.put(carobbiite, NCMaterial.dust(carobbiite).with("gem"));
             all.put(coal, NCMaterial.dust(coal));
             all.put(charcoal, NCMaterial.dust(charcoal));

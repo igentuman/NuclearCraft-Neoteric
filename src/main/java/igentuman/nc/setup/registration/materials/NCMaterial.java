@@ -58,6 +58,7 @@ public class NCMaterial {
         return get(name)
                 .ores(false, false, false, false)
                 .products(false, false, false, false, false, false)
+                .with("gem")
                 .fluid(false, 1000);
     }
 

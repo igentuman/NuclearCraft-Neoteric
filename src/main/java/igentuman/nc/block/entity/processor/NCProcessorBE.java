@@ -115,7 +115,7 @@ public class NCProcessorBE<RECIPE extends NcRecipe> extends NuclearCraftBE {
                 return cachedRecipes.get(key);
             }
         }
-        return (RECIPE) null;
+        return null;
     }
 
     private int getBaseProcessTime() {

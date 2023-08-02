@@ -70,6 +70,6 @@ public class ProgressBar extends NCGuiElement {
         int texOffset = bars.get(bar)[0];
         int teyOffset = bars.get(bar)[1];
         blit(transform, X(), Y(), texOffset, teyOffset,  width, height);
-        blit(transform, X(), Y(), texOffset, teyOffset-height, (int) (container.getProgress()*width), height);
+        blit(transform, X(), Y(), texOffset, teyOffset-height-1, (int) (container.getProgress()*width), height);
     }
 }

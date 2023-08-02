@@ -21,6 +21,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.HashMap;
+
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.compat.GlobalVars.*;
 
@@ -29,14 +31,14 @@ public class ProcessorCategoryWrapper<T extends NcRecipe> implements IRecipeCate
 
     private final IDrawable background;
     private final IDrawable icon;
-    private final IDrawable arrow;
     private  IDrawable[] slots;
     protected RecipeType<T> recipeType;
     private IGuiHelper guiHelper;
     private final ProcessorPrefab processor;
     private int xShift = -25;
     private int yShift = -38;
-    TickTimer timer;
+    HashMap<Integer, TickTimer> timer = new HashMap<>();
+    HashMap<Integer, IDrawable> arrow = new HashMap<>();
     int height = 22;
     public ProcessorCategoryWrapper(IGuiHelper guiHelper, RecipeType<T> recipeType) {
         this.recipeType = recipeType;
@@ -52,10 +54,6 @@ public class ProcessorCategoryWrapper<T extends NcRecipe> implements IRecipeCate
         } else{
             this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, ItemStack.EMPTY);
         }
-        timer = new TickTimer(processor.config().getTime()/5, 36, true);
-
-        arrow = guiHelper.drawableBuilder(rl("textures/gui/progress.png"), 0, 0, 36, 15)
-                .buildAnimated(timer, IDrawableAnimated.StartDirection.LEFT);
     }
 
     @Override
@@ -80,7 +78,10 @@ public class ProcessorCategoryWrapper<T extends NcRecipe> implements IRecipeCate
     @Override
     public void draw(T recipe, IRecipeSlotsView recipeSlotsView, PoseStack stack, double mouseX,
                      double mouseY) {
-        arrow.draw(stack, 48, height-20);
+        int d = (int) ((recipe.getTimeModifier()*(double) processor.config().getTime())/2);
+        if(arrow.containsKey(d)) {
+            arrow.get(d).draw(stack, 48, height-20);
+        }
         for(int i = 0; i < slots.length; i++) {
             if(slots[i] != null) {
                 int[] pos = processor.getSlotsConfig().getSlotPositions().get(i);
@@ -97,7 +98,14 @@ public class ProcessorCategoryWrapper<T extends NcRecipe> implements IRecipeCate
         int inputFluidCounter = 0;
         int putFluidCounter = 0;
         int outputCounter = 0;
-        timer.setTicksPerCycle((int) (recipe.getTimeModifier()*processor.config().getTime())/5);
+        int d = (int) ((recipe.getTimeModifier()*(double)processor.config().getTime())/2);
+        if(!timer.containsKey(d)) {
+            timer.put(d, new TickTimer(d, 36, true));
+        }
+        if(!arrow.containsKey(d)) {
+            arrow.put(d, guiHelper.drawableBuilder(rl("textures/gui/progress_jei.png"), 0, 0, 36, 15)
+                    .buildAnimated(timer.get(d), IDrawableAnimated.StartDirection.LEFT));
+        }
 
         slots = new IDrawable[processor.getSlotsConfig().getSlotPositions().size()];
         for(int[] pos: processor.getSlotsConfig().getSlotPositions()) {

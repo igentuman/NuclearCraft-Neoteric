@@ -79,7 +79,7 @@ public class FissionCategoryWrapper<T extends FissionRecipe> implements IRecipeC
     public void setRecipe(IRecipeLayoutBuilder builder, T recipe, IFocusGroup focuses) {
         int d = recipe.getDepletionTime();
         if(!timer.containsKey(d)) {
-            timer.put(d, new TickTimer((int) (recipe.getTimeModifier() * d) / 100, 36, true));
+            timer.put(d, new TickTimer((int) (recipe.getTimeModifier() * d) / 50, 36, true));
         }
         if(!arrow.containsKey(d)) {
             arrow.put(d, guiHelper.drawableBuilder(rl("textures/gui/progress_jei.png"), 0, 186, 36, 15)
@@ -89,6 +89,6 @@ public class FissionCategoryWrapper<T extends FissionRecipe> implements IRecipeC
             builder.addSlot(RecipeIngredientRole.INPUT, 11+18*i, 7).addIngredients(recipe.getItemIngredients().get(i));
         }
 
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 71, 7).addItemStack(recipe.getResultItem());
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 74, 7).addItemStack(recipe.getResultItem());
     }
 }

@@ -113,12 +113,12 @@ public class ProcessorCategoryWrapper<T extends NcRecipe> implements IRecipeCate
         slots = new IDrawable[processor.getSlotsConfig().getSlotPositions().size()];
         for(int[] pos: processor.getSlotsConfig().getSlotPositions()) {
             if(processor.getSlotsConfig().getSlotType(itemIdx).contains("item_in")) {
-                builder.addSlot(RecipeIngredientRole.INPUT, pos[0]+xShift, pos[1]+yShift).addIngredients(recipe.getItemIngredients().get(inputCounter));
+                builder.addSlot(RecipeIngredientRole.INPUT, pos[0]+xShift, pos[1]+yShift).addIngredients(recipe.getInputIngredient(inputCounter));
                 slots[itemIdx] = guiHelper.createDrawable(rl("textures/gui/widgets.png"), 0, 0, 18, 18);
                 itemIdx++;
                 inputCounter++;
             } else if(processor.getSlotsConfig().getSlotType(itemIdx).contains("item_out")) {
-                builder.addSlot(RecipeIngredientRole.OUTPUT, pos[0]+xShift, pos[1]+yShift).addItemStack(recipe.getResultItems().get(outputCounter));
+                builder.addSlot(RecipeIngredientRole.OUTPUT, pos[0]+xShift, pos[1]+yShift).addItemStack(recipe.getOutputItem(outputCounter));
                 slots[itemIdx] = guiHelper.createDrawable(rl("textures/gui/widgets.png"), 0, 36, 18, 18);
                 itemIdx++;
                 outputCounter++;

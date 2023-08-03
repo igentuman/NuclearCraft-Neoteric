@@ -235,4 +235,14 @@ public abstract class NcRecipe implements Recipe<IgnoredIInventory> {
         }
         return false;
     }
+
+    public ItemStack getOutputItem(int id) {
+        if(getResultItems().size() > id) return getResultItems().get(id);
+        return ItemStack.EMPTY;
+    }
+
+    public Ingredient getInputIngredient(int inputCounter) {
+        if(getItemIngredients().size() > inputCounter) return getItemIngredients().get(inputCounter);
+        return Ingredient.EMPTY;
+    }
 }

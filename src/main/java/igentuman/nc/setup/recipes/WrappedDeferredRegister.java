@@ -1,6 +1,5 @@
 package igentuman.nc.setup.recipes;
 
-import igentuman.nc.NuclearCraft;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraftforge.eventbus.api.IEventBus;

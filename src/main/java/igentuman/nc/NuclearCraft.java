@@ -3,6 +3,7 @@ package igentuman.nc;
 import igentuman.nc.handler.command.CommandNcPlayerRadiation;
 import igentuman.nc.handler.config.CommonConfig;
 import igentuman.nc.handler.event.client.ColorHandler;
+import igentuman.nc.handler.event.client.ServerLoad;
 import igentuman.nc.handler.event.client.InputEvents;
 import igentuman.nc.handler.radiation.RadiationManager;
 import igentuman.nc.network.PacketHandler;
@@ -23,7 +24,6 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.RegisterEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -67,6 +67,7 @@ public class NuclearCraft {
     private void registerClientEventHandlers(FMLClientSetupEvent event) {
         InputEvents.register(event);
         ColorHandler.register(event);
+        ServerLoad.register(event);
     }
 
     public static ResourceLocation rl(String path)

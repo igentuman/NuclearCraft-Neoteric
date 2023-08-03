@@ -10,6 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
@@ -24,36 +25,17 @@ public class NcRecipeType<RECIPE extends NcRecipe> implements RecipeType<RECIPE>
 
     public static final RecipeTypeDeferredRegister RECIPE_TYPES = new RecipeTypeDeferredRegister(MODID);
 
-    public static final HashMap<String, RecipeTypeRegistryObject<NcRecipe>> ONE_ITEM_RECIPES = initializeRecipes();
-    public static final HashMap<String, RecipeTypeRegistryObject<NcRecipe>> TWO_ITEM_RECIPES = initializeTwoItemRecipes();
-
-    public static HashMap<String, RecipeTypeRegistryObject<? extends NcRecipe>> ALL_RECIPES;
-    private static HashMap<String, RecipeTypeRegistryObject<NcRecipe>> initializeRecipes() {
-        HashMap<String, RecipeTypeRegistryObject<NcRecipe>> recipes = new HashMap<>();
+    public static final HashMap<String, RecipeTypeRegistryObject<? extends NcRecipe>> ALL_RECIPES = initializeRecipes();
+    private static HashMap<String, RecipeTypeRegistryObject<? extends NcRecipe>> initializeRecipes() {
+        HashMap<String, RecipeTypeRegistryObject<? extends NcRecipe>> recipes = new HashMap<>();
         recipes.put(FissionControllerBE.NAME, register(FissionControllerBE.NAME));
         recipes.put(Processors.MANUFACTORY, register(Processors.MANUFACTORY));
         recipes.put(Processors.PRESSURIZER, register(Processors.PRESSURIZER));
         recipes.put(Processors.DECAY_HASTENER, register(Processors.DECAY_HASTENER));
         recipes.put(Processors.ROCK_CRUSHER, register(Processors.ROCK_CRUSHER));
-        //recipes.put("smelting", SMELTING);
-        if(ALL_RECIPES == null) {
-            ALL_RECIPES = new HashMap<>();
-        }
-        for (String name: recipes.keySet()) {
-            ALL_RECIPES.put(name, recipes.get(name));
-        }
-        return recipes;
-    }
-
-    private static HashMap<String, RecipeTypeRegistryObject<NcRecipe>> initializeTwoItemRecipes() {
-        HashMap<String, RecipeTypeRegistryObject<NcRecipe>> recipes = new HashMap<>();
         recipes.put(Processors.ALLOY_SMELTER, register(Processors.ALLOY_SMELTER));
-        if(ALL_RECIPES == null) {
-            ALL_RECIPES = new HashMap<>();
-        }
-        for (String name: recipes.keySet()) {
-            ALL_RECIPES.put(name, recipes.get(name));
-        }
+
+        //recipes.put("smelting", SMELTING);
         return recipes;
     }
 
@@ -63,8 +45,6 @@ public class NcRecipeType<RECIPE extends NcRecipe> implements RecipeType<RECIPE>
     public static <RECIPE extends NcRecipe> RecipeTypeRegistryObject<RECIPE> register(String name) {
         return RECIPE_TYPES.register(name, () -> new NcRecipeType<>(name));
     }
-
-
     private List<RECIPE> cachedRecipes = Collections.emptyList();
     private final ResourceLocation registryName;
 
@@ -92,21 +72,15 @@ public class NcRecipeType<RECIPE extends NcRecipe> implements RecipeType<RECIPE>
     @Override
     public List<RECIPE> getRecipes(@Nullable Level world) {
         if (world == null) {
-            //Try to get a fallback world if we are in a context that may not have one
-            //If we are on the client get the client's world, if we are on the server get the current server's world
             world = DistExecutor.unsafeRunForDist(() -> NcClient::tryGetClientWorld, () -> () -> ServerLifecycleHooks.getCurrentServer().overworld());
             if (world == null) {
-                //If we failed, then return no recipes
                 return Collections.emptyList();
             }
         }
         if (cachedRecipes.isEmpty()) {
             RecipeManager recipeManager = world.getRecipeManager();
-            //Note: This is a fresh mutable list that gets returned
             List<RECIPE> recipes = recipeManager.getAllRecipesFor(this);
-
             cachedRecipes = recipes.stream()
-                  .filter(recipe -> !recipe.isIncomplete())
                   .toList();
         }
         return cachedRecipes;
@@ -116,7 +90,6 @@ public class NcRecipeType<RECIPE extends NcRecipe> implements RecipeType<RECIPE>
      * Helper for getting a recipe from a world's recipe manager.
      */
     public static <C extends Container, RECIPE_TYPE extends Recipe<C>> Optional<RECIPE_TYPE> getRecipeFor(RecipeType<RECIPE_TYPE> recipeType, C inventory, Level level) {
-        //Only allow looking up complete recipes
         return level.getRecipeManager().getRecipeFor(recipeType, inventory, level)
               .filter(recipe -> !recipe.isIncomplete());
     }
@@ -125,8 +98,13 @@ public class NcRecipeType<RECIPE extends NcRecipe> implements RecipeType<RECIPE>
      * Helper for getting a recipe from a world's recipe manager.
      */
     public static Optional<? extends Recipe<?>> byKey(Level level, ResourceLocation id) {
-        //Only allow looking up complete recipes
         return level.getRecipeManager().byKey(id)
               .filter(recipe -> !recipe.isIncomplete());
+    }
+    public boolean isLoaded = false;
+    public void loadRecipes(Level level) {
+        if(isLoaded) return;
+        getRecipes(level);
+        isLoaded = true;
     }
 }

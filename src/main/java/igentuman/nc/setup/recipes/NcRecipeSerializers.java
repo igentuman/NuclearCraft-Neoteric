@@ -10,7 +10,6 @@ import igentuman.nc.setup.processors.Processors;
 
 import java.util.HashMap;
 
-
 public class NcRecipeSerializers {
 
     private NcRecipeSerializers() {

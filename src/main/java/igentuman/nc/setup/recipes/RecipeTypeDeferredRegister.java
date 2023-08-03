@@ -18,8 +18,7 @@ public class RecipeTypeDeferredRegister extends WrappedDeferredRegister<RecipeTy
         super(modid, ForgeRegistries.RECIPE_TYPES);
     }
 
-    public <RECIPE extends NcRecipe> RecipeTypeRegistryObject<RECIPE> register(String name,
-                                                                                                                                   Supplier<? extends NcRecipeType<RECIPE>> sup) {
+    public <RECIPE extends NcRecipe> RecipeTypeRegistryObject<RECIPE> register(String name,  Supplier<? extends NcRecipeType<RECIPE>> sup) {
         RecipeTypeRegistryObject<RECIPE> registeredRecipeType = register(name, sup, RecipeTypeRegistryObject::new);
         recipeTypes.add(registeredRecipeType);
         return registeredRecipeType;

@@ -53,7 +53,6 @@ public class Registration {
     private static final DeferredRegister<PlacedFeature> PLACED_FEATURES = DeferredRegister.create(Registry.PLACED_FEATURE_REGISTRY, MODID);
     private static final DeferredRegister<Feature<?>> FEATURE_REGISTER = DeferredRegister.create(ForgeRegistries.FEATURES, MODID);
     private static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = DeferredRegister.create(ForgeRegistries.RECIPE_TYPES, MODID);
-
     public static final DeferredRegister<RecipeSerializer<?>> SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, MODID);
 
     public static void init() {
@@ -69,10 +68,12 @@ public class Registration {
         PLACED_FEATURES.register(bus);
         FEATURE_REGISTER.register(bus);
         CONTAINERS.register(bus);
-        RECIPE_TYPES.register(bus);
         SERIALIZERS.register(bus);
-        NcRecipeType.RECIPE_TYPES.register(bus);
+        RECIPE_TYPES.register(bus);
+
         NcRecipeSerializers.RECIPE_SERIALIZERS.register(bus);
+        NcRecipeType.RECIPE_TYPES.register(bus);
+
         NcParticleTypes.PARTICLE_TYPES.register(bus);
 
         NCBlocks.init();

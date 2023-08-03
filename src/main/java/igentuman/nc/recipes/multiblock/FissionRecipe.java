@@ -21,21 +21,10 @@ import static igentuman.nc.compat.GlobalVars.*;
 @NothingNullByDefault
 public class FissionRecipe extends ItemStackToItemStackRecipe {
 
-    public static String ID = FissionControllerBE.NAME;
-
     public FissionRecipe(ResourceLocation id, ItemStackIngredient input, ItemStack[] output, double timeModifier, double powerModifier, double heatModifier) {
         super(id, new ItemStackIngredient[] {input}, output, timeModifier, powerModifier, heatModifier);
+        ID = FissionControllerBE.NAME;
         CATALYSTS.put(ID, List.of(getToastSymbol()));
-    }
-
-    @Override
-    public @NotNull RecipeType<ItemStackToItemStackRecipe> getType() {
-        return NcRecipeType.ONE_ITEM_RECIPES.get(ID).get();
-    }
-
-    @Override
-    public @NotNull RecipeSerializer<ItemStackToItemStackRecipe> getSerializer() {
-        return NcRecipeSerializers.SERIALIZERS.get(ID).get();
     }
 
     @Override

@@ -59,7 +59,7 @@ public abstract class NcRecipe implements Recipe<IgnoredIInventory> {
     }
 
     @Override
-    public @NotNull RecipeSerializer<ItemStackToItemStackRecipe> getSerializer() {
+    public @NotNull RecipeSerializer<?> getSerializer() {
         return NcRecipeSerializers.SERIALIZERS.get(ID).get();
     }
 

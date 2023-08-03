@@ -28,7 +28,7 @@ public class NcRecipeSerializers {
                map.put(key, RECIPE_SERIALIZERS.register(key, Processors.all().get(key).recipeSerializerSupplier));
            }
         }
-        map.put("smelting", RECIPE_SERIALIZERS.register("smelting", () -> new ItemStackToItemStackRecipeSerializer<>(SmeltingIRecipe::new)));
+        //map.put("smelting", RECIPE_SERIALIZERS.register("smelting", () -> new ItemStackToItemStackRecipeSerializer<>(SmeltingIRecipe::new)));
         return map;
     }
 }

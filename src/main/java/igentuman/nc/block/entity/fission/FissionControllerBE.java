@@ -4,10 +4,7 @@ import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.multiblock.fission.FissionReactorMultiblock;
 import igentuman.nc.recipes.*;
-import igentuman.nc.recipes.cache.InputRecipeCache.SingleItem;
-import igentuman.nc.recipes.handler.ItemToItemRecipeHandler;
 import igentuman.nc.recipes.multiblock.FissionRecipe;
-import igentuman.nc.recipes.type.ItemStackToItemStackRecipe;
 import igentuman.nc.setup.registration.NCFluids;
 import igentuman.nc.util.CustomEnergyStorage;
 import igentuman.nc.util.annotation.NBTField;
@@ -26,14 +23,15 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
-import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import java.util.HashMap;
+
 import static igentuman.nc.handler.config.CommonConfig.FissionConfig.*;
 
-public class FissionControllerBE extends FissionBE  {
+public class FissionControllerBE <RECIPE extends NcRecipe> extends FissionBE  {
 
     public static String NAME = "fission_reactor_controller";
     public final SidedContentHandler contentHandler;
@@ -75,21 +73,12 @@ public class FissionControllerBE extends FissionBE  {
     public RecipeInfo recipeInfo = new RecipeInfo();
     private Direction facing;
     public FissionRecipe recipe;
-    public final ItemToItemRecipeHandler recipeHandler;
+    public HashMap<String, RECIPE> cachedRecipes = new HashMap<>();
+
 
     @Override
     public String getName() {
         return NAME;
-    }
-
-    @NotNull
-    public INcRecipeTypeProvider<ItemStackToItemStackRecipe, SingleItem<ItemStackToItemStackRecipe>> getRecipeType() {
-        return recipeHandler.getRecipeType();
-    }
-
-    @Nullable
-    public ItemStackToItemStackRecipe getRecipe() {
-        return recipeHandler.getRecipe();
     }
 
 
@@ -100,7 +89,6 @@ public class FissionControllerBE extends FissionBE  {
                 1, 1,
                 0, 0);
         contentHandler.setBlockEntity(this);
-        recipeHandler = new ItemToItemRecipeHandler(this);
     }
 
     @Override
@@ -121,6 +109,37 @@ public class FissionControllerBE extends FissionBE  {
                 setChanged();
             }
         };
+    }
+
+    private void addToCache(RECIPE recipe) {
+        String key = contentHandler.getCacheKey();
+        if(cachedRecipes.containsKey(key)) {
+            cachedRecipes.replace(key, recipe);
+        } else {
+            cachedRecipes.put(key, recipe);
+        }
+    }
+    public RECIPE getRecipe() {
+        RECIPE cachedRecipe = getCachedRecipe();
+        if(cachedRecipe != null) return cachedRecipe;
+        if(!NcRecipeType.ALL_RECIPES.containsKey(getName())) return null;
+        for(NcRecipe recipe: NcRecipeType.ALL_RECIPES.get(getName()).getRecipeType().getRecipes(getLevel())) {
+            if(recipe.test(contentHandler)) {
+                addToCache((RECIPE)recipe);
+                return (RECIPE)recipe;
+            }
+        }
+        return null;
+    }
+
+    public RECIPE getCachedRecipe() {
+        String key = contentHandler.getCacheKey();
+        if(cachedRecipes.containsKey(key)) {
+            if(cachedRecipes.get(key).test(contentHandler)) {
+                return cachedRecipes.get(key);
+            }
+        }
+        return null;
     }
 
     public void updateEnergyStorage() {

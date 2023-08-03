@@ -3,21 +3,11 @@ package igentuman.nc.recipes;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.fission.FissionControllerBE;
 import igentuman.nc.client.NcClient;
-import igentuman.nc.recipes.cache.IInputRecipeCache;
-import igentuman.nc.recipes.cache.InputRecipeCache;
-import igentuman.nc.recipes.ingredient.ItemStackIngredient;
-import igentuman.nc.recipes.ingredient.creator.IItemStackIngredientCreator;
-import igentuman.nc.recipes.ingredient.creator.IngredientCreatorAccess;
-import igentuman.nc.recipes.processors.SmeltingIRecipe;
-import igentuman.nc.recipes.type.ItemStackToItemStackRecipe;
-import igentuman.nc.recipes.type.TwoItemStackToItemStackRecipe;
 import igentuman.nc.setup.processors.Processors;
 import igentuman.nc.setup.recipes.RecipeTypeDeferredRegister;
 import igentuman.nc.setup.recipes.RecipeTypeRegistryObject;
-import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.DistExecutor;
@@ -26,26 +16,25 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.function.Function;
 
 import static igentuman.nc.NuclearCraft.MODID;
 
-public class NcRecipeType<RECIPE extends NcRecipe, INPUT_CACHE extends IInputRecipeCache> implements RecipeType<RECIPE>,
-        INcRecipeTypeProvider<RECIPE, INPUT_CACHE> {
+public class NcRecipeType<RECIPE extends NcRecipe> implements RecipeType<RECIPE>,
+        INcRecipeTypeProvider<RECIPE> {
 
     public static final RecipeTypeDeferredRegister RECIPE_TYPES = new RecipeTypeDeferredRegister(MODID);
 
-    public static final HashMap<String, RecipeTypeRegistryObject<ItemStackToItemStackRecipe, InputRecipeCache.SingleItem<ItemStackToItemStackRecipe>>> ONE_ITEM_RECIPES = initializeRecipes();
-    public static final HashMap<String, RecipeTypeRegistryObject<TwoItemStackToItemStackRecipe, InputRecipeCache.DoubleItem<TwoItemStackToItemStackRecipe>>> TWO_ITEM_RECIPES = initializeTwoItemRecipes();
+    public static final HashMap<String, RecipeTypeRegistryObject<NcRecipe>> ONE_ITEM_RECIPES = initializeRecipes();
+    public static final HashMap<String, RecipeTypeRegistryObject<NcRecipe>> TWO_ITEM_RECIPES = initializeTwoItemRecipes();
 
-    public static HashMap<String, RecipeTypeRegistryObject<? extends NcRecipe, ? extends IInputRecipeCache>> ALL_RECIPES;
-    private static HashMap<String, RecipeTypeRegistryObject<ItemStackToItemStackRecipe, InputRecipeCache.SingleItem<ItemStackToItemStackRecipe>>> initializeRecipes() {
-        HashMap<String, RecipeTypeRegistryObject<ItemStackToItemStackRecipe, InputRecipeCache.SingleItem<ItemStackToItemStackRecipe>>> recipes = new HashMap<>();
-        recipes.put(FissionControllerBE.NAME, register(FissionControllerBE.NAME, recipeType -> new InputRecipeCache.SingleItem<>(recipeType, ItemStackToItemStackRecipe::getInput)));
-        recipes.put(Processors.MANUFACTORY, register(Processors.MANUFACTORY, recipeType -> new InputRecipeCache.SingleItem<>(recipeType, ItemStackToItemStackRecipe::getInput)));
-        recipes.put(Processors.PRESSURIZER, register(Processors.PRESSURIZER, recipeType -> new InputRecipeCache.SingleItem<>(recipeType, ItemStackToItemStackRecipe::getInput)));
-        recipes.put(Processors.DECAY_HASTENER, register(Processors.DECAY_HASTENER, recipeType -> new InputRecipeCache.SingleItem<>(recipeType, ItemStackToItemStackRecipe::getInput)));
-        recipes.put("smelting", SMELTING);
+    public static HashMap<String, RecipeTypeRegistryObject<? extends NcRecipe>> ALL_RECIPES;
+    private static HashMap<String, RecipeTypeRegistryObject<NcRecipe>> initializeRecipes() {
+        HashMap<String, RecipeTypeRegistryObject<NcRecipe>> recipes = new HashMap<>();
+        recipes.put(FissionControllerBE.NAME, register(FissionControllerBE.NAME));
+        recipes.put(Processors.MANUFACTORY, register(Processors.MANUFACTORY));
+        recipes.put(Processors.PRESSURIZER, register(Processors.PRESSURIZER));
+        recipes.put(Processors.DECAY_HASTENER, register(Processors.DECAY_HASTENER));
+        //recipes.put("smelting", SMELTING);
         if(ALL_RECIPES == null) {
             ALL_RECIPES = new HashMap<>();
         }
@@ -55,9 +44,9 @@ public class NcRecipeType<RECIPE extends NcRecipe, INPUT_CACHE extends IInputRec
         return recipes;
     }
 
-    private static HashMap<String, RecipeTypeRegistryObject<TwoItemStackToItemStackRecipe, InputRecipeCache.DoubleItem<TwoItemStackToItemStackRecipe>>> initializeTwoItemRecipes() {
-        HashMap<String, RecipeTypeRegistryObject<TwoItemStackToItemStackRecipe, InputRecipeCache.DoubleItem<TwoItemStackToItemStackRecipe>>> recipes = new HashMap<>();
-        recipes.put(Processors.ALLOY_SMELTER, register(Processors.ALLOY_SMELTER, recipeType -> new InputRecipeCache.DoubleItem<>(recipeType, TwoItemStackToItemStackRecipe::getInput1, TwoItemStackToItemStackRecipe::getInput2)));
+    private static HashMap<String, RecipeTypeRegistryObject<NcRecipe>> initializeTwoItemRecipes() {
+        HashMap<String, RecipeTypeRegistryObject<NcRecipe>> recipes = new HashMap<>();
+        recipes.put(Processors.ALLOY_SMELTER, register(Processors.ALLOY_SMELTER));
         if(ALL_RECIPES == null) {
             ALL_RECIPES = new HashMap<>();
         }
@@ -67,27 +56,19 @@ public class NcRecipeType<RECIPE extends NcRecipe, INPUT_CACHE extends IInputRec
         return recipes;
     }
 
-    public static final RecipeTypeRegistryObject<ItemStackToItemStackRecipe, InputRecipeCache.SingleItem<ItemStackToItemStackRecipe>> SMELTING =
-            register("smelting", recipeType -> new InputRecipeCache.SingleItem<>(recipeType, ItemStackToItemStackRecipe::getInput));
+  //  public static final RecipeTypeRegistryObject<ItemStackToItemStackRecipe> SMELTING =
+ //           register("smelting", recipeType -> new ItemStackToItemStackRecipe(recipeType));
 
-    public static <RECIPE extends NcRecipe, INPUT_CACHE extends IInputRecipeCache> RecipeTypeRegistryObject<RECIPE, INPUT_CACHE> register(String name,
-                                                                                                                                           Function<NcRecipeType<RECIPE, INPUT_CACHE>, INPUT_CACHE> inputCacheCreator) {
-        return RECIPE_TYPES.register(name, () -> new NcRecipeType<>(name, inputCacheCreator));
+    public static <RECIPE extends NcRecipe> RecipeTypeRegistryObject<RECIPE> register(String name) {
+        return RECIPE_TYPES.register(name, () -> new NcRecipeType<>(name));
     }
 
-    public static void clearCache() {
-        for (INcRecipeTypeProvider<?, ?> recipeTypeProvider : RECIPE_TYPES.getAllRecipeTypes()) {
-            recipeTypeProvider.getRecipeType().clearCaches();
-        }
-    }
 
     private List<RECIPE> cachedRecipes = Collections.emptyList();
     private final ResourceLocation registryName;
-    private final INPUT_CACHE inputCache;
 
-    private NcRecipeType(String name, Function<NcRecipeType<RECIPE, INPUT_CACHE>, INPUT_CACHE> inputCacheCreator) {
+    private NcRecipeType(String name) {
         this.registryName = NuclearCraft.rl(name);
-        this.inputCache = inputCacheCreator.apply(this);
     }
 
     @Override
@@ -101,19 +82,10 @@ public class NcRecipeType<RECIPE extends NcRecipe, INPUT_CACHE extends IInputRec
     }
 
     @Override
-    public NcRecipeType<RECIPE, INPUT_CACHE> getRecipeType() {
+    public NcRecipeType<RECIPE> getRecipeType() {
         return this;
     }
 
-    private void clearCaches() {
-        cachedRecipes = Collections.emptyList();
-        inputCache.clear();
-    }
-
-    @Override
-    public INPUT_CACHE getInputCache() {
-        return inputCache;
-    }
 
     @NotNull
     @Override
@@ -131,29 +103,7 @@ public class NcRecipeType<RECIPE extends NcRecipe, INPUT_CACHE extends IInputRec
             RecipeManager recipeManager = world.getRecipeManager();
             //Note: This is a fresh mutable list that gets returned
             List<RECIPE> recipes = recipeManager.getAllRecipesFor(this);
-            if (this == SMELTING.get()) {
-                //Ensure the recipes can be modified
-                recipes = new ArrayList<>(recipes);
-                for (SmeltingRecipe smeltingRecipe : recipeManager.getAllRecipesFor(RecipeType.SMELTING)) {
-                    ItemStack recipeOutput = smeltingRecipe.getResultItem();
-                    if (!smeltingRecipe.isSpecial() && !smeltingRecipe.isIncomplete() && !recipeOutput.isEmpty()) {
-                        //TODO: Can Smelting recipes even be "special", if so can we add some sort of checker to make getOutput return the correct result
-                        NonNullList<Ingredient> ingredients = smeltingRecipe.getIngredients();
-                        ItemStackIngredient input;
-                        if (ingredients.isEmpty()) {
-                            //Something went wrong
-                            continue;
-                        } else {
-                            IItemStackIngredientCreator ingredientCreator = IngredientCreatorAccess.item();
-                            input = ingredientCreator.from(ingredients.stream().map(ingredientCreator::from));
-                        }
-                        recipes.add((RECIPE) new SmeltingIRecipe(smeltingRecipe.getId(), input, new ItemStack[]{recipeOutput}, 1, 1, 1));
-                    }
-                }
-            }
-            //Make the list of cached recipes immutable and filter out any incomplete recipes
-            // as there is no reason to potentially look the partial complete piece up if
-            // the other portion of the recipe is incomplete
+
             cachedRecipes = recipes.stream()
                   .filter(recipe -> !recipe.isIncomplete())
                   .toList();

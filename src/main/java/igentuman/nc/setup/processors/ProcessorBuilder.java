@@ -4,9 +4,6 @@ import igentuman.nc.block.entity.processor.NCProcessorBE;
 import igentuman.nc.container.NCProcessorContainer;
 import igentuman.nc.client.gui.processor.NCProcessorScreen;
 import igentuman.nc.recipes.NcRecipe;
-import igentuman.nc.recipes.NcRecipeType;
-import igentuman.nc.recipes.cache.IInputRecipeCache;
-import igentuman.nc.recipes.type.TwoItemStackToItemStackRecipe;
 import igentuman.nc.setup.processors.config.ProcessorSlots;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
@@ -17,7 +14,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class ProcessorBuilder <M extends NCProcessorContainer, U extends Screen & MenuAccess<M>>{

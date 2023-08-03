@@ -1,14 +1,9 @@
 package igentuman.nc.setup.processors;
 
-import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.block.entity.processor.NCProcessorBE;
 import igentuman.nc.container.NCProcessorContainer;
 import igentuman.nc.handler.config.CommonConfig;
 import igentuman.nc.recipes.NcRecipe;
-import igentuman.nc.recipes.NcRecipeType;
-import igentuman.nc.recipes.cache.IInputRecipeCache;
-import igentuman.nc.recipes.handler.ItemToItemRecipeHandler;
-import igentuman.nc.recipes.lookup.IRecipeLookupHandler;
 import igentuman.nc.setup.processors.config.ProcessorSlots;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
@@ -18,11 +13,8 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 

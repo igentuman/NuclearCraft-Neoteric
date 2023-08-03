@@ -5,7 +5,6 @@ import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.recipes.NcRecipe;
 import igentuman.nc.recipes.NcRecipeType;
 import igentuman.nc.recipes.RecipeInfo;
-import igentuman.nc.recipes.lookup.IRecipeLookupHandler;
 import igentuman.nc.setup.processors.ProcessorPrefab;
 import igentuman.nc.setup.processors.Processors;
 import igentuman.nc.setup.registration.NCProcessors;
@@ -57,7 +56,6 @@ public class NCProcessorBE<RECIPE extends NcRecipe> extends NuclearCraftBE {
     }
 
     protected final LazyOptional<IEnergyStorage> energy;
-    protected IRecipeLookupHandler recipeHandler;
 
     protected ProcessorPrefab prefab;
 

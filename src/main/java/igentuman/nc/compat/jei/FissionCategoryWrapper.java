@@ -17,6 +17,7 @@ import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 
@@ -48,22 +49,22 @@ public class FissionCategoryWrapper<T extends FissionRecipe> implements IRecipeC
     }
 
     @Override
-    public RecipeType<T> getRecipeType() {
+    public @NotNull RecipeType<T> getRecipeType() {
         return recipeType;
     }
 
     @Override
-    public Component getTitle() {
+    public @NotNull Component getTitle() {
         return Component.translatable("nc_jei_cat."+getRecipeType().getUid().getPath());
     }
 
     @Override
-    public IDrawable getBackground() {
+    public @NotNull IDrawable getBackground() {
         return background;
     }
 
     @Override
-    public IDrawable getIcon() {
+    public @NotNull IDrawable getIcon() {
         return icon;
     }
 

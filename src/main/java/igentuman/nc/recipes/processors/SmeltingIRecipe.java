@@ -1,5 +1,6 @@
 package igentuman.nc.recipes.processors;
 
+import igentuman.nc.recipes.NcRecipe;
 import igentuman.nc.recipes.type.ItemStackToItemStackRecipe;
 import igentuman.nc.recipes.NcRecipeType;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
@@ -22,16 +23,6 @@ public class SmeltingIRecipe extends ItemStackToItemStackRecipe {
         super(id, new ItemStackIngredient[] {input}, output, timeModifier, powerModifier, heatModifier);
         RECIPE_CLASSES.put(ID, this.getClass());
         CATALYSTS.put(ID, List.of(getToastSymbol()));
-    }
-
-    @Override
-    public @NotNull RecipeType<ItemStackToItemStackRecipe> getType() {
-        return NcRecipeType.SMELTING.get();
-    }
-
-    @Override
-    public @NotNull RecipeSerializer<ItemStackToItemStackRecipe> getSerializer() {
-        return NcRecipeSerializers.SERIALIZERS.get(ID).get();
     }
 
     @Override

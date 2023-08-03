@@ -21,10 +21,10 @@ import static igentuman.nc.compat.GlobalVars.*;
 
 @JeiPlugin
 public  class JEIPlugin implements IModPlugin {
-    public  static HashMap<String, RecipeType<NcRecipe>>  recipeTypes;
+    public  static HashMap<String, RecipeType<? extends NcRecipe>>  recipeTypes;
 
     public static RecipeType<FissionRecipe> FISSION = new RecipeType<FissionRecipe>(new ResourceLocation(MODID, FissionControllerBE.NAME), FissionRecipe.class);
-    private static HashMap<String, RecipeType<NcRecipe>> getRecipeTypes() {
+    private static HashMap<String, RecipeType<? extends NcRecipe>> getRecipeTypes() {
         if(recipeTypes == null) {
             recipeTypes = new HashMap<>();
             for (String name : RECIPE_CLASSES.keySet()) {

@@ -69,11 +69,11 @@ public class ItemToItemRecipeBuilder extends NcRecipeBuilder<ItemToItemRecipeBui
         this.powerModifier = 1.0;
     }
 
-    protected ItemToItemRecipeBuilder(String id, List<NcIngredient> input, ItemStack[] output, double timeModifier) {
+    protected ItemToItemRecipeBuilder(String id, List<NcIngredient> input, ItemStack[] output) {
         super(ncSerializer(id));
         this.input = input;
         this.output = output;
-        this.timeModifier = timeModifier;
+        this.timeModifier = 1.0;
         this.radiation = 0.0;
         this.powerModifier = 1.0;
     }
@@ -97,6 +97,10 @@ public class ItemToItemRecipeBuilder extends NcRecipeBuilder<ItemToItemRecipeBui
     public static ItemToItemRecipeBuilder create(String id, NcIngredient inputItem, Item outputItem) {
         ItemStack output = new ItemStack(outputItem);
         return new ItemToItemRecipeBuilder(id, inputItem,  output);
+    }
+
+    public static ItemToItemRecipeBuilder create(String id, NcIngredient stack, ItemStack[] itemStacks) {
+        return new ItemToItemRecipeBuilder(id, List.of(stack), itemStacks);
     }
 
     public ItemToItemRecipeBuilder modifiers(double timeModifier, double radiation, double powerModifier) {

@@ -90,6 +90,15 @@ public abstract class AbstractRecipeProvider {
         return NC_GEMS.get(name).get();
     }
 
+    protected static void add(NcIngredient stack, ItemStack[] itemStacks, double... params) {
+        double timeModifier = params.length>0 ? params[0] : 1.0;
+        double powerModifier = params.length>1 ? params[1] : 1.0;
+        double radiation = params.length>2 ? params[2] : 1.0;
+        ItemToItemRecipeBuilder.create(ID, stack, itemStacks)
+                .modifiers(timeModifier, radiation, powerModifier)
+                .build(consumer, rl(ID+"/"+stack.getName()));
+    }
+
 
     protected static void add(Item input, ItemStack output, double... params) {
         itemToItemRecipe(ID, NcIngredient.of(input), output, params);

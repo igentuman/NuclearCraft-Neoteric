@@ -2,10 +2,7 @@ package igentuman.nc.setup.processors;
 
 
 import igentuman.nc.block.entity.processor.*;
-import igentuman.nc.recipes.processors.AlloySmelterRecipe;
-import igentuman.nc.recipes.processors.DecayHastenerRecipe;
-import igentuman.nc.recipes.processors.ManufactoryRecipe;
-import igentuman.nc.recipes.processors.PressurizerRecipe;
+import igentuman.nc.recipes.processors.*;
 import igentuman.nc.recipes.serializers.ItemStackToItemStackRecipeSerializer;
 import igentuman.nc.recipes.serializers.TwoItemStackToItemStackRecipeSerializer;
 import igentuman.nc.recipes.type.TwoItemStackToItemStackRecipe;
@@ -175,6 +172,7 @@ public class Processors {
                     ProcessorBuilder
                             .make(ROCK_CRUSHER, 0, 1, 0, 3)
                             .blockEntity(RockCrusherBE::new)
+                            .recipeSerializer(() -> new ItemStackToItemStackRecipeSerializer<>(RockCrusherRecipe::new))
                             .progressBar(12)
                             .build()
             );

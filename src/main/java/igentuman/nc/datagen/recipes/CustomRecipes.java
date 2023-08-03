@@ -27,6 +27,7 @@ public class CustomRecipes extends NCRecipes {
         DecayHastenerRecipes.generate(consumer);
         PressurizerRecipes.generate(consumer);
         AlloySmelterRecipeProvider.generate(consumer);
+        RockCrusherRecipes.generate(consumer);
     }
 
     private static void itemToItemRecipe(String id, NcIngredient input, Item output, double... params) {

@@ -34,6 +34,7 @@ public class NcRecipeType<RECIPE extends NcRecipe> implements RecipeType<RECIPE>
         recipes.put(Processors.MANUFACTORY, register(Processors.MANUFACTORY));
         recipes.put(Processors.PRESSURIZER, register(Processors.PRESSURIZER));
         recipes.put(Processors.DECAY_HASTENER, register(Processors.DECAY_HASTENER));
+        recipes.put(Processors.ROCK_CRUSHER, register(Processors.ROCK_CRUSHER));
         //recipes.put("smelting", SMELTING);
         if(ALL_RECIPES == null) {
             ALL_RECIPES = new HashMap<>();

@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "P": {
+      "item": "nuclearcraft:plate_basic"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "T": {
+      "tag": "forge:ingots/tough_alloy"
+    }
+  },
+  "pattern": [
+    " R ",
+    "TPT",
+    " R "
+  ],
+  "result": {
+    "item": "nuclearcraft:plate_advanced"
+  }
+}

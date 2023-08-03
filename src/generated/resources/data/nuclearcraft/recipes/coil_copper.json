@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:ingots/copper"
+    },
+    "I": {
+      "tag": "forge:ingots/iron"
+    }
+  },
+  "pattern": [
+    "CC ",
+    "II ",
+    "CC "
+  ],
+  "result": {
+    "item": "nuclearcraft:coil_copper"
+  }
+}

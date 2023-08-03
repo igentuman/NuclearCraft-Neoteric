@@ -72,7 +72,7 @@ public class FissionCategoryWrapper<T extends FissionRecipe> implements IRecipeC
     public void draw(T recipe, IRecipeSlotsView recipeSlotsView, PoseStack stack, double mouseX,
                      double mouseY) {
         if(arrow.containsKey(recipe.getDepletionTime())) {
-            arrow.get(recipe.getDepletionTime()).draw(stack, 30, 8);
+            arrow.get(recipe.getDepletionTime()).draw(stack, 29, 8);
         }
     }
 

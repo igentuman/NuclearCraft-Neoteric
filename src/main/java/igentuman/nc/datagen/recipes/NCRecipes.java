@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.setup.registration.Fuel.NC_ISOTOPES;
 import static net.minecraft.world.item.Items.*;
 import static igentuman.nc.util.DataGenUtil.*;
 public class NCRecipes extends RecipeProvider {
@@ -34,11 +35,153 @@ public class NCRecipes extends RecipeProvider {
     @Override
     protected void buildCraftingRecipes(Consumer<FinishedRecipe> consumer) {
         materials(consumer);
+        parts(consumer);
         processors(consumer);
         solarPanels(consumer);
         fissionBlocks(consumer);
+        turbineBlocks(consumer);
         FuelRecipes.generate(consumer);
         CustomRecipes.generate(consumer);
+    }
+
+    private void parts(Consumer<FinishedRecipe> consumer) {
+        ShapedRecipeBuilder.shaped(NCItems.NC_PARTS.get("plate_basic").get())
+                .pattern("LG")
+                .pattern("GL")
+                .define('L', forgeIngot(Materials.lead))
+                .define('G', forgeDust(Materials.graphite))
+                .unlockedBy("item", has(forgeIngot(Materials.lead)))
+                .save(consumer, new ResourceLocation(MODID, "plate_basic"));
+
+        ShapedRecipeBuilder.shaped(NCItems.NC_PARTS.get("plate_basic").get())
+                .pattern("GL")
+                .pattern("LG")
+                .define('L', forgeIngot(Materials.lead))
+                .define('G', forgeDust(Materials.graphite))
+                .unlockedBy("item", has(forgeIngot(Materials.lead)))
+                .save(consumer, new ResourceLocation(MODID, "plate_basic2"));
+
+        ShapedRecipeBuilder.shaped(NCItems.NC_PARTS.get("plate_advanced").get())
+                .pattern(" R ")
+                .pattern("TPT")
+                .pattern(" R ")
+                .define('R', REDSTONE)
+                .define('P', NCItems.NC_PARTS.get("plate_basic").get())
+                .define('T', forgeIngot(Materials.tough_alloy))
+                .unlockedBy("item", has(NCItems.NC_PARTS.get("plate_basic").get()))
+                .save(consumer, new ResourceLocation(MODID, "plate_advanced"));
+
+        ShapedRecipeBuilder.shaped(NCItems.NC_PARTS.get("plate_du").get())
+                .pattern("SUS")
+                .pattern("UPU")
+                .pattern("SUS")
+                .define('U', NC_ISOTOPES.get("uranium/238").get())
+                .define('P', NCItems.NC_PARTS.get("plate_advanced").get())
+                .define('S', forgeDust(Materials.sulfur))
+                .unlockedBy("item", has(NCItems.NC_PARTS.get("plate_advanced").get()))
+                .save(consumer, new ResourceLocation(MODID, "plate_du"));
+
+        ShapedRecipeBuilder.shaped(NCItems.NC_PARTS.get("plate_elite").get())
+                .pattern("RBR")
+                .pattern("BPB")
+                .pattern("RBR")
+                .define('R', forgeDust(Materials.crystal_binder))
+                .define('P', NCItems.NC_PARTS.get("plate_du").get())
+                .define('B', forgeIngot(Materials.boron))
+                .unlockedBy("item", has(NCItems.NC_PARTS.get("plate_du").get()))
+                .save(consumer, new ResourceLocation(MODID, "plate_elite"));
+
+        ShapedRecipeBuilder.shaped(NCItems.NC_PARTS.get("plate_extreme").get())
+                .pattern("RBR")
+                .pattern("BPB")
+                .pattern("RBR")
+                .define('R', forgeDust(Materials.hsla_steel))
+                .define('P', NCItems.NC_PARTS.get("plate_elite").get())
+                .define('B', forgeIngot(Materials.extreme))
+                .unlockedBy("item", has(NCItems.NC_PARTS.get("plate_elite").get()))
+                .save(consumer, new ResourceLocation(MODID, "plate_extreme"));
+
+        ShapedRecipeBuilder.shaped(NCItems.NC_PARTS.get("coil_copper").get())
+                .pattern("CC ")
+                .pattern("II ")
+                .pattern("CC ")
+                .define('C', forgeIngot(Materials.copper))
+                .define('I', forgeIngot(Materials.iron))
+                .unlockedBy("item", has(forgeIngot(Materials.copper)))
+                .save(consumer, new ResourceLocation(MODID, "coil_copper"));
+
+        ShapedRecipeBuilder.shaped(NCItems.NC_PARTS.get("coil_magnesium_diboride").get())
+                .pattern("MM ")
+                .pattern("TT ")
+                .pattern("MM ")
+                .define('M', forgeIngot(Materials.magnesium_diboride))
+                .define('T', forgeIngot(Materials.tough_alloy))
+                .unlockedBy("item", has(forgeIngot(Materials.magnesium_diboride)))
+                .save(consumer, new ResourceLocation(MODID, "coil_magnesium_diboride"));
+
+        ShapedRecipeBuilder.shaped(NCItems.NC_PARTS.get("servo").get())
+                .pattern("F F")
+                .pattern("RSR")
+                .pattern("SCS")
+                .define('F', forgeIngot(Materials.ferroboron))
+                .define('S', forgeIngot(Materials.steel))
+                .define('R', REDSTONE)
+                .define('C', forgeIngot(Materials.copper))
+                .unlockedBy("item", has(forgeIngot(Materials.ferroboron)))
+                .save(consumer, new ResourceLocation(MODID, "servo"));
+
+        ShapedRecipeBuilder.shaped(NCItems.NC_PARTS.get("motor").get())
+                .pattern("SSG")
+                .pattern("CCI")
+                .pattern("SSG")
+                .define('G', forgeNugget(Materials.gold))
+                .define('S', forgeIngot(Materials.steel))
+                .define('I', forgeIngot(Materials.iron))
+                .define('C', NCItems.NC_PARTS.get("coil_copper").get())
+                .unlockedBy("item", has(NCItems.NC_PARTS.get("coil_copper").get()))
+                .save(consumer, new ResourceLocation(MODID, "motor"));
+
+        ShapedRecipeBuilder.shaped(NCItems.NC_PARTS.get("actuator").get())
+                .pattern("  S")
+                .pattern("FP ")
+                .pattern("CF ")
+                .define('F', forgeIngot(Materials.ferroboron))
+                .define('S', forgeIngot(Materials.steel))
+                .define('C', forgeIngot(Materials.copper))
+                .define('P', PISTON)
+                .unlockedBy("item", has(PISTON))
+                .save(consumer, new ResourceLocation(MODID, "actuator"));
+
+        ShapedRecipeBuilder.shaped(NCItems.NC_PARTS.get("chassis").get())
+                .pattern("LSL")
+                .pattern("STS")
+                .pattern("LSL")
+                .define('S', forgeIngot(Materials.steel))
+                .define('L', forgeIngot(Materials.lead))
+                .define('T', forgeIngot(Materials.tough_alloy))
+                .unlockedBy("item", has(forgeIngot(Materials.tough_alloy)))
+                .save(consumer, new ResourceLocation(MODID, "chassis"));
+
+        ShapedRecipeBuilder.shaped(NCItems.NC_PARTS.get("empty_frame").get())
+                .pattern("PTP")
+                .pattern("I I")
+                .pattern("PTP")
+                .define('I', forgeIngot(Materials.iron))
+                .define('P', NCItems.NC_PARTS.get("plate_basic").get())
+                .define('T', forgeIngot(Materials.tin))
+                .unlockedBy("item", has(NCItems.NC_PARTS.get("plate_basic").get()))
+                .save(consumer, new ResourceLocation(MODID, "empty_frame"));
+
+        ShapedRecipeBuilder.shaped(NCItems.NC_PARTS.get("steel_frame").get())
+                .pattern("STS")
+                .pattern("TBT")
+                .pattern("STS")
+                .define('S', forgeIngot(Materials.steel))
+                .define('T', forgeIngot(Materials.tough_alloy))
+                .define('B', forgeIngot(Materials.bronze))
+                .unlockedBy("item", has(forgeIngot(Materials.tough_alloy)))
+                .save(consumer, new ResourceLocation(MODID, "steel_frame"));
+
     }
 
     private void fissionBlocks(Consumer<FinishedRecipe> consumer) {
@@ -52,6 +195,18 @@ public class NCRecipes extends RecipeProvider {
                 .group(MODID+"_fission")
                 .unlockedBy("item", InventoryChangeTrigger.TriggerInstance.hasItems(NCItems.NC_PARTS.get("plate_advanced").get()))
                 .save(consumer);
+
+        ShapedRecipeBuilder.shaped(FissionReactor.MULTI_BLOCKS.get("fission_reactor_controller").get(), 4)
+                .pattern("LPL")
+                .pattern("PTP")
+                .pattern("LPL")
+                .define('P', NCItems.NC_PARTS.get("plate_advanced").get())
+                .define('T', COMPARATOR)
+                .define('L', FissionReactor.MULTI_BLOCKS.get("fission_reactor_casing").get())
+                .group(MODID+"_fission")
+                .unlockedBy("item", InventoryChangeTrigger.TriggerInstance.hasItems(NCItems.NC_PARTS.get("plate_advanced").get()))
+                .save(consumer);
+
 
         ShapedRecipeBuilder.shaped(FissionReactor.MULTI_BLOCKS.get("fission_reactor_glass").get())
                 .pattern(" P ")
@@ -104,7 +259,9 @@ public class NCRecipes extends RecipeProvider {
         }
     }
 
+    private void turbineBlocks(Consumer<FinishedRecipe> consumer) {
 
+    }
 
     private void solarPanels(Consumer<FinishedRecipe> consumer) {
         ShapedRecipeBuilder.shaped(NCEnergyBlocks.ENERGY_BLOCKS.get("solar_panel/basic").get())

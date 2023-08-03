@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:ingots/copper"
+    },
+    "F": {
+      "tag": "forge:ingots/ferroboron"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "S": {
+      "tag": "forge:ingots/steel"
+    }
+  },
+  "pattern": [
+    "F F",
+    "RSR",
+    "SCS"
+  ],
+  "result": {
+    "item": "nuclearcraft:servo"
+  }
+}

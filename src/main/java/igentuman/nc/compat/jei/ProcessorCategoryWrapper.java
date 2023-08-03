@@ -48,6 +48,9 @@ public class ProcessorCategoryWrapper<T extends NcRecipe> implements IRecipeCate
             height = 45;
             yShift+= 23;
         }
+        if(processor.getSlotsConfig().hasThreeRows()) {
+            xShift -= 8;
+        }
         this.background = guiHelper.createDrawable(TEXTURE, 0, 0, 140, height);
         if(CATALYSTS.containsKey(getRecipeType().getUid().getPath())) {
             this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, CATALYSTS.get(getRecipeType().getUid().getPath()).get(0));
@@ -80,7 +83,7 @@ public class ProcessorCategoryWrapper<T extends NcRecipe> implements IRecipeCate
                      double mouseY) {
         int d = (int) ((recipe.getTimeModifier()*(double) processor.config().getTime())/2);
         if(arrow.containsKey(d)) {
-            arrow.get(d).draw(stack, 48, height-20);
+            arrow.get(d).draw(stack, 47, height-20);
         }
         for(int i = 0; i < slots.length; i++) {
             if(slots[i] != null) {

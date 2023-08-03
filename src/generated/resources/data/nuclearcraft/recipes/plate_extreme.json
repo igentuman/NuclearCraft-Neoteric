@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "tag": "forge:ingots/extreme"
+    },
+    "P": {
+      "item": "nuclearcraft:plate_elite"
+    },
+    "R": {
+      "tag": "forge:dusts/hsla_steel"
+    }
+  },
+  "pattern": [
+    "RBR",
+    "BPB",
+    "RBR"
+  ],
+  "result": {
+    "item": "nuclearcraft:plate_extreme"
+  }
+}

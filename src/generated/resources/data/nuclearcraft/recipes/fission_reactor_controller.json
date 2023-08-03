@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "nuclearcraft_fission",
+  "key": {
+    "L": {
+      "item": "nuclearcraft:fission_reactor_casing"
+    },
+    "P": {
+      "item": "nuclearcraft:plate_advanced"
+    },
+    "T": {
+      "item": "minecraft:comparator"
+    }
+  },
+  "pattern": [
+    "LPL",
+    "PTP",
+    "LPL"
+  ],
+  "result": {
+    "count": 4,
+    "item": "nuclearcraft:fission_reactor_controller"
+  }
+}

@@ -2,7 +2,7 @@
   "type": "nuclearcraft:rock_crusher",
   "input": [
     {
-      "count": 3,
+      "count": 4,
       "item": "minecraft:andesite"
     }
   ],

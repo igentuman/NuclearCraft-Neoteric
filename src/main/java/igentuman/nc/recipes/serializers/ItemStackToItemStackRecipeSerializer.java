@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import igentuman.nc.NuclearCraft;
+import igentuman.nc.handler.config.CommonConfig;
 import igentuman.nc.recipes.type.ItemStackToItemStackRecipe;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.ingredient.creator.IngredientCreatorAccess;
@@ -12,12 +13,16 @@ import igentuman.nc.util.SerializerHelper;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 public class ItemStackToItemStackRecipeSerializer<RECIPE extends ItemStackToItemStackRecipe> implements RecipeSerializer<RECIPE> {
 
@@ -27,7 +32,19 @@ public class ItemStackToItemStackRecipeSerializer<RECIPE extends ItemStackToItem
         this.factory = factory;
     }
 
-    @NotNull
+    public ItemStack getFirstMatchingItemStackFromIngredient(ItemStackIngredient ingredient) {
+        List<ItemStack> stacks = ingredient.getRepresentations();
+        if(stacks.size() == 1) return stacks.get(0);
+        HashMap<String, ItemStack> mappedStacks = new HashMap<>();
+        for(ItemStack stack: stacks) {
+            mappedStacks.put(Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(stack.getItem())).getNamespace(), stack);
+        }
+        for(String modid: CommonConfig.MaterialProductsConfig.MODS_PRIORITY.get()) {
+            if(mappedStacks.containsKey(modid)) return mappedStacks.get(modid);
+        }
+        return stacks.get(0);
+    }
+
     @Override
     public RECIPE fromJson(@NotNull ResourceLocation recipeId, @NotNull JsonObject json) {
         JsonElement input = GsonHelper.isArrayNode(json, JsonConstants.INPUT) ? GsonHelper.getAsJsonArray(json, JsonConstants.INPUT) :
@@ -39,7 +56,11 @@ public class ItemStackToItemStackRecipeSerializer<RECIPE extends ItemStackToItem
             outputItems = new ItemStack[output.getAsJsonArray().size()];
             int i = 0;
             for (JsonElement out : output.getAsJsonArray()) {
-                outputItems[i] = SerializerHelper.getItemStack(out.getAsJsonObject());
+                ItemStack stack = getFirstMatchingItemStackFromIngredient(IngredientCreatorAccess.item().deserialize(out));
+                if (stack.isEmpty()) {
+                    return null;
+                }
+                outputItems[i] = stack;
                 i++;
             }
         } else {

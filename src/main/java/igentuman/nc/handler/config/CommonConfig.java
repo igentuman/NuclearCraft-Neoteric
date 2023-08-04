@@ -219,6 +219,8 @@ public class CommonConfig {
         public static ForgeConfigSpec.ConfigValue<List<Boolean>> DUSTS;
         public static ForgeConfigSpec.ConfigValue<List<Boolean>> GEMS;
 
+        public static ForgeConfigSpec.ConfigValue<List<String>> MODS_PRIORITY;
+
         public MaterialProductsConfig(ForgeConfigSpec.Builder builder) {
             builder.comment("Settings for items registration").push("material_products");
 
@@ -251,6 +253,15 @@ public class CommonConfig {
                     .define("register_block", Gems.initialRegistration());
 
             builder.pop();
+
+            builder.comment("Forge Tag priority").push("forge_tag_priority");
+
+            MODS_PRIORITY = builder
+                    .comment("Priority of mods to resolve forge tags to itemstack.")
+                    .define("mods_priority", List.of("nuclearcraft", "mekanism", "immersiveengineering", "tconstruct"));
+
+            builder.pop();
+
         }
     }
 

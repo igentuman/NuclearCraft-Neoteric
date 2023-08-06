@@ -41,6 +41,8 @@ public class NcIngredient extends Ingredient {
    private IntList stackingIds;
    private int invalidationCounter;
 
+   protected int count = 1;
+
    private String name;
 
    protected NcIngredient(Stream<? extends NcIngredient.Value> pValues) {
@@ -162,23 +164,19 @@ public class NcIngredient extends Ingredient {
       }).map(NcIngredient.ItemValue::new));
    }
 
-   public static NcIngredient of(TagKey<Item> pTag) {
-      return fromVals(Stream.of(new NcIngredient.TagValue(pTag)));
+   public static NcIngredient of(TagKey<Item> pTag, int ... pCounts) {
+      return  fromVals(Stream.of(new NcIngredient.TagValue(pTag, pCounts)))
+              .withCount(pCounts);
    }
 
-   public static NcIngredient.Value valueFromJson(JsonObject pJson) {
-      if (pJson.has("item") && pJson.has("tag")) {
-         throw new JsonParseException("An ingredient entry is either a tag or an item, not both");
-      } else if (pJson.has("item")) {
-         Item item = ShapedRecipe.itemFromJson(pJson);
-         return new NcIngredient.ItemValue(new ItemStack(item));
-      } else if (pJson.has("tag")) {
-         ResourceLocation resourcelocation = new ResourceLocation(GsonHelper.getAsString(pJson, "tag"));
-         TagKey<Item> tagkey = TagKey.create(Registry.ITEM_REGISTRY, resourcelocation);
-         return new NcIngredient.TagValue(tagkey);
-      } else {
-         throw new JsonParseException("An ingredient entry needs either a tag or an item");
-      }
+   public NcIngredient withCount(int[] pCounts) {
+        if(pCounts.length == 0) {
+             return this;
+        }
+        if(pCounts.length == 1) {
+             this.count = pCounts[0];
+        }
+        return this;
    }
 
    public static class ItemValue implements NcIngredient.Value {
@@ -206,9 +204,15 @@ public class NcIngredient extends Ingredient {
 
    public static class TagValue implements NcIngredient.Value {
       private final TagKey<Item> tag;
+      private final int count;
 
-      public TagValue(TagKey<Item> pTag) {
+      public TagValue(TagKey<Item> pTag, int...pCount) {
          this.tag = pTag;
+         if(pCount.length > 0) {
+            count = pCount[0];
+         } else {
+            count = 1;
+         }
       }
       
       public String getName() {
@@ -231,6 +235,9 @@ public class NcIngredient extends Ingredient {
       public JsonObject serialize() {
          JsonObject jsonobject = new JsonObject();
          jsonobject.addProperty("tag", this.tag.location().toString());
+         if(count>1) {
+            jsonobject.addProperty("count", this.count);
+         }
          return jsonobject;
       }
    }

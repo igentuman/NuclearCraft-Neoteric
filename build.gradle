@@ -19,7 +19,7 @@ minecraft {
             workingDirectory project.file('run')
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
-            //property 'mixin.env.disableRefMap', 'true'
+            property 'mixin.env.disableRefMap', 'true'
             property 'forge.enabledGameTestNamespaces', 'nuclearcraft'
 
             mods {
@@ -33,21 +33,7 @@ minecraft {
             workingDirectory project.file('run')
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
-            //property 'mixin.env.disableRefMap', 'true'
-            property 'forge.enabledGameTestNamespaces', 'nuclearcraft'
-
-            mods {
-                nuclearcraft {
-                    source sourceSets.main
-                }
-            }
-        }
-
-        gameTestServer {
-            workingDirectory project.file('run')
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-            //property 'mixin.env.disableRefMap', 'true'
+            property 'mixin.env.disableRefMap', 'true'
             property 'forge.enabledGameTestNamespaces', 'nuclearcraft'
 
             mods {
@@ -59,7 +45,7 @@ minecraft {
 
         data {
             workingDirectory project.file('run')
-            //property 'mixin.env.disableRefMap', 'true'
+            property 'mixin.env.disableRefMap', 'true'
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
             args '--mod', 'nuclearcraft', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')

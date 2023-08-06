@@ -1,23 +1,75 @@
 package igentuman.nc.datagen.recipes.recipes;
 
-import igentuman.nc.datagen.recipes.builder.ItemToItemRecipeBuilder;
+import igentuman.nc.datagen.recipes.builder.NcRecipeBuilder;
 import igentuman.nc.recipes.ingredient.NcIngredient;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 
+import java.util.List;
 import java.util.function.Consumer;
 
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.setup.registration.Fuel.NC_ISOTOPES;
 import static igentuman.nc.setup.registration.NCItems.*;
+import static igentuman.nc.util.DataGenUtil.*;
 
 public abstract class AbstractRecipeProvider {
 
     public static String ID;
 
     public static Consumer<FinishedRecipe> consumer;
+
+    protected static NcIngredient ingredient(TagKey<Item> item, int...count) {
+        return NcIngredient.of(item, count);
+    }
+
+    protected static NcIngredient ingredient(Item item, int...pCount) {
+        int count = 1;
+        if(pCount.length > 0) count = pCount[0];
+        return NcIngredient.stack(stack(item, count));
+    }
+
+    protected static ItemStack stack(Item item, int count) {
+        return new ItemStack(item, count);
+    }
+
+    public static ItemStack[] stackArray(ItemStack... stacks) {
+        return stacks;
+    }
+
+    protected static void doubleToItem(String id, NcIngredient input1, NcIngredient input2, NcIngredient output, double... params) {
+
+        double timeModifier = params.length>0 ? params[0] : 1.0;
+        double powerModifier = params.length>1 ? params[1] : 1.0;
+        double radiation = params.length>2 ? params[2] : 1.0;
+        NcRecipeBuilder.get(id)
+                .items(List.of(input1, input2), List.of(output))
+                .modifiers(timeModifier, radiation, powerModifier)
+                .build(consumer);
+    }
+
+    public static void itemToItem(NcIngredient input, NcIngredient output, double...params) {
+        double timeModifier = params.length>0 ? params[0] : 1.0;
+        double powerModifier = params.length>1 ? params[1] : 1.0;
+        double radiation = params.length>2 ? params[2] : 1.0;
+        NcRecipeBuilder.get(ID)
+                .items(List.of(input), List.of(output))
+                .modifiers(timeModifier, radiation, powerModifier)
+                .build(consumer);
+    }
+
+    public static void itemsToItems(List<NcIngredient> input, List<NcIngredient> output, double...params) {
+        double timeModifier = params.length>0 ? params[0] : 1.0;
+        double powerModifier = params.length>1 ? params[1] : 1.0;
+        double radiation = params.length>2 ? params[2] : 1.0;
+        NcRecipeBuilder.get(ID)
+                .items(input, output)
+                .modifiers(timeModifier, radiation, powerModifier)
+                .build(consumer);
+    }
 
     public static Item dustItem(String name)
     {
@@ -33,6 +85,70 @@ public abstract class AbstractRecipeProvider {
             System.out.println("null dust tag: " + name);
         }
         return DUSTS_TAG.get(name);
+    }
+
+    public static NcIngredient dustStack(String name, int...pCount)
+    {
+        int count = 1;
+        if(pCount.length > 0) count = pCount[0];
+        return NcIngredient.stack(stack(dustItem(name), count));
+    }
+
+    public static NcIngredient ingotStack(String name, int...pCount)
+    {
+        int count = 1;
+        if(pCount.length > 0) count = pCount[0];
+        return NcIngredient.stack(stack(ingotItem(name), count));
+    }
+
+    public static NcIngredient gemStack(String name, int...pCount)
+    {
+        int count = 1;
+        if(pCount.length > 0) count = pCount[0];
+        return NcIngredient.stack(stack(gemItem(name), count));
+    }
+
+    public static NcIngredient plateStack(String name, int...pCount)
+    {
+        int count = 1;
+        if(pCount.length > 0) count = pCount[0];
+        return NcIngredient.stack(stack(plateItem(name), count));
+    }
+
+    public static NcIngredient isotopeStack(String name, int...pCount)
+    {
+        int count = 1;
+        if(pCount.length > 0) count = pCount[0];
+        return NcIngredient.stack(stack(isotopeItem(name), count));
+    }
+
+    public static NcIngredient dustIngredient(String name, int...pCount)
+    {
+        int count = 1;
+        if(pCount.length > 0) count = pCount[0];
+        return ingredient(forgeDust(name), count);
+    }
+
+    public static NcIngredient isotopeIngredient(String name, int...pCount)
+    {
+        int count = 1;
+        if(pCount.length > 0) count = pCount[0];
+        return ingredient(isotopeItem(name), count);
+    }
+
+    public static NcIngredient ingotIngredient(String name, int...pCount)
+    {
+        int count = 1;
+        if(pCount.length > 0) count = pCount[0];
+        return ingredient(forgeIngot(name), count);
+    }
+
+
+    public static NcIngredient gemIngredient(String name, int...pCount)
+    {
+        int count = 1;
+        if(pCount.length > 0) count = pCount[0];
+        return ingredient(forgeGem(name), count);
     }
 
     public static Item isotopeItem(String name)
@@ -90,51 +206,4 @@ public abstract class AbstractRecipeProvider {
         return NC_GEMS.get(name).get();
     }
 
-    protected static void add(NcIngredient stack, ItemStack[] itemStacks, double... params) {
-        double timeModifier = params.length>0 ? params[0] : 1.0;
-        double powerModifier = params.length>1 ? params[1] : 1.0;
-        double radiation = params.length>2 ? params[2] : 1.0;
-        ItemToItemRecipeBuilder.create(ID, stack, itemStacks)
-                .modifiers(timeModifier, radiation, powerModifier)
-                .build(consumer, rl(ID+"/"+stack.getName()));
-    }
-
-
-    protected static void add(Item input, ItemStack output, double... params) {
-        itemToItemRecipe(ID, NcIngredient.of(input), output, params);
-
-    }
-
-    protected static void add(ItemStack itemStack, Item out, double... params) {
-        NcIngredient in = NcIngredient.stack(itemStack);
-        itemToItemRecipe(ID, in, out, params);
-    }
-
-    protected static void add(TagKey<Item> itemTagKey, Item item, double... params) {
-        itemToItemRecipe(ID, NcIngredient.of(itemTagKey), item, params);
-    }
-
-    public static void add(Item input, Item output, double... params)
-    {
-        itemToItemRecipe(ID, NcIngredient.of(input), output, params);
-    }
-
-    public static void add(NcIngredient input, Item output, double... params)
-    {
-        itemToItemRecipe(ID, input, output, params);
-    }
-
-    protected static void itemToItemRecipe(String id, NcIngredient input, Item output, double... params) {
-        itemToItemRecipe(id, input, new ItemStack(output), params);
-    }
-
-    protected static void itemToItemRecipe(String id, NcIngredient input, ItemStack output, double... params) {
-
-        double timeModifier = params.length>0 ? params[0] : 1.0;
-        double powerModifier = params.length>1 ? params[1] : 1.0;
-        double radiation = params.length>2 ? params[2] : 1.0;
-        ItemToItemRecipeBuilder.create(id, input, output)
-                .modifiers(timeModifier, radiation, powerModifier)
-                .build(consumer, rl(id+"/"+input.getName()+"-"+output.getItem().toString()));
-    }
 }

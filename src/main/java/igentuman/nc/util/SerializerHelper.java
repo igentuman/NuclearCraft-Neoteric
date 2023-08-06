@@ -87,6 +87,10 @@ public class SerializerHelper {
         return deserializeFluid(GsonHelper.getAsJsonObject(json, key));
     }
 
+    public static FluidStack getFluidStack(@NotNull JsonObject json) {
+        return deserializeFluid(json);
+    }
+
     /**
      * Helper to deserialize a Json Object into a Fluid Stack.
      *

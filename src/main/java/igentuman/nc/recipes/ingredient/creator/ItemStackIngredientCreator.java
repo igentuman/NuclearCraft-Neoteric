@@ -11,9 +11,13 @@ import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.util.JsonConstants;
 import igentuman.nc.util.StackUtils;
 import igentuman.nc.util.annotation.NothingNullByDefault;
+import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.contents.LiteralContents;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -164,9 +168,19 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
             return false;
         }
 
+        public List<String> getItemsByTagKey(String key)
+        {
+            List<String> tmp = new ArrayList<>();
+            TagKey<Item> tag = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(key));
+            Ingredient ing = Ingredient.fromValues(Stream.of(new Ingredient.TagValue(tag)));
+            for (ItemStack item: ing.getItems()) {
+                tmp.add(item.getItem().toString());
+            }
+            return tmp;
+        }
+
         @Override
         public List<@NotNull ItemStack> getRepresentations() {
-            //TODO: Can this be cached some how
             List<@NotNull ItemStack> representations = new ArrayList<>();
             for (ItemStack stack : ingredient.getItems()) {
                 if (stack.getCount() == amount) {

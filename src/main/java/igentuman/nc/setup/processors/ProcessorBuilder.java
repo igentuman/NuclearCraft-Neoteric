@@ -3,7 +3,7 @@ package igentuman.nc.setup.processors;
 import igentuman.nc.block.entity.processor.NCProcessorBE;
 import igentuman.nc.container.NCProcessorContainer;
 import igentuman.nc.client.gui.processor.NCProcessorScreen;
-import igentuman.nc.recipes.NcRecipe;
+import igentuman.nc.recipes.AbstractRecipe;
 import igentuman.nc.setup.processors.config.ProcessorSlots;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
@@ -79,7 +79,7 @@ public class ProcessorBuilder <M extends NCProcessorContainer, U extends Screen 
         return this;
     }
 
-    public ProcessorBuilder<M, U> recipeSerializer(Supplier<RecipeSerializer<? extends NcRecipe>> sup) {
+    public ProcessorBuilder<M, U> recipeSerializer(Supplier<RecipeSerializer<? extends AbstractRecipe>> sup) {
         processor.recipeSerializerSupplier = sup;
         return this;
     }

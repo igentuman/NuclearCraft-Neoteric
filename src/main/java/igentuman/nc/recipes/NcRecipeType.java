@@ -10,7 +10,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
@@ -20,14 +19,14 @@ import java.util.*;
 
 import static igentuman.nc.NuclearCraft.MODID;
 
-public class NcRecipeType<RECIPE extends NcRecipe> implements RecipeType<RECIPE>,
+public class NcRecipeType<RECIPE extends AbstractRecipe> implements RecipeType<RECIPE>,
         INcRecipeTypeProvider<RECIPE> {
 
     public static final RecipeTypeDeferredRegister RECIPE_TYPES = new RecipeTypeDeferredRegister(MODID);
 
-    public static final HashMap<String, RecipeTypeRegistryObject<? extends NcRecipe>> ALL_RECIPES = initializeRecipes();
-    private static HashMap<String, RecipeTypeRegistryObject<? extends NcRecipe>> initializeRecipes() {
-        HashMap<String, RecipeTypeRegistryObject<? extends NcRecipe>> recipes = new HashMap<>();
+    public static final HashMap<String, RecipeTypeRegistryObject<? extends AbstractRecipe>> ALL_RECIPES = initializeRecipes();
+    private static HashMap<String, RecipeTypeRegistryObject<? extends AbstractRecipe>> initializeRecipes() {
+        HashMap<String, RecipeTypeRegistryObject<? extends AbstractRecipe>> recipes = new HashMap<>();
         recipes.put(FissionControllerBE.NAME, register(FissionControllerBE.NAME));
         recipes.put(Processors.MANUFACTORY, register(Processors.MANUFACTORY));
         recipes.put(Processors.PRESSURIZER, register(Processors.PRESSURIZER));
@@ -42,7 +41,7 @@ public class NcRecipeType<RECIPE extends NcRecipe> implements RecipeType<RECIPE>
   //  public static final RecipeTypeRegistryObject<ItemStackToItemStackRecipe> SMELTING =
  //           register("smelting", recipeType -> new ItemStackToItemStackRecipe(recipeType));
 
-    public static <RECIPE extends NcRecipe> RecipeTypeRegistryObject<RECIPE> register(String name) {
+    public static <RECIPE extends AbstractRecipe> RecipeTypeRegistryObject<RECIPE> register(String name) {
         return RECIPE_TYPES.register(name, () -> new NcRecipeType<>(name));
     }
     private List<RECIPE> cachedRecipes = Collections.emptyList();

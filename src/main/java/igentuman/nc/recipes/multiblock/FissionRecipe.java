@@ -2,29 +2,35 @@ package igentuman.nc.recipes.multiblock;
 
 import igentuman.nc.block.entity.fission.FissionControllerBE;
 import igentuman.nc.item.ItemFuel;
-import igentuman.nc.recipes.type.ItemStackToItemStackRecipe;
-import igentuman.nc.recipes.NcRecipeType;
+import igentuman.nc.recipes.ingredient.FluidStackIngredient;
+import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.setup.multiblocks.FissionReactor;
-import igentuman.nc.setup.recipes.NcRecipeSerializers;
 import igentuman.nc.util.annotation.NothingNullByDefault;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 import static igentuman.nc.compat.GlobalVars.*;
 
-@NothingNullByDefault
-public class FissionRecipe extends ItemStackToItemStackRecipe {
+public class FissionRecipe extends NcRecipe {
 
-    public FissionRecipe(ResourceLocation id, ItemStackIngredient input, ItemStack[] output, double timeModifier, double powerModifier, double heatModifier) {
-        super(id, new ItemStackIngredient[] {input}, output, timeModifier, powerModifier, heatModifier);
+    public FissionRecipe(ResourceLocation id, ItemStackIngredient[] input, ItemStack[] output, FluidStackIngredient[] inputFluids, FluidStack[] outputFluids, double timeModifier, double powerModifier, double heatModifier) {
+        super(id, input, output, timeModifier, powerModifier, heatModifier);
         ID = FissionControllerBE.NAME;
         CATALYSTS.put(ID, List.of(getToastSymbol()));
+    }
+
+    protected ItemFuel fuelItem;
+
+    public ItemFuel getFuelItem() {
+        if(fuelItem == null) {
+            fuelItem = (ItemFuel) getFirstItemStackIngredient(0).getItem();
+        }
+        return fuelItem;
     }
 
     @Override
@@ -38,15 +44,15 @@ public class FissionRecipe extends ItemStackToItemStackRecipe {
     }
 
     public int getDepletionTime() {
-        return (int) (((ItemFuel)getFirstInputStack().getItem()).depletion*20*timeModifier);
+        return (int) (getFuelItem().depletion*20*timeModifier);
     }
 
     public double getEnergy() {
-        return ((ItemFuel)getFirstInputStack().getItem()).forge_energy;
+        return getFuelItem().forge_energy;
     }
 
     public double getHeat() {
-        return ((ItemFuel)getFirstInputStack().getItem()).heat;
+        return getFuelItem().heat;
     }
 
     public double getRadiation() {

@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-public interface INcRecipeTypeProvider<RECIPE extends NcRecipe> {
+public interface INcRecipeTypeProvider<RECIPE extends AbstractRecipe> {
 
     /**
      * Gets the registry name of the element represented by this provider.

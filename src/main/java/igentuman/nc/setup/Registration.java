@@ -68,11 +68,6 @@ public class Registration {
         PLACED_FEATURES.register(bus);
         FEATURE_REGISTER.register(bus);
         CONTAINERS.register(bus);
-        SERIALIZERS.register(bus);
-        RECIPE_TYPES.register(bus);
-
-        NcRecipeSerializers.RECIPE_SERIALIZERS.register(bus);
-        NcRecipeType.RECIPE_TYPES.register(bus);
 
         NcParticleTypes.PARTICLE_TYPES.register(bus);
 
@@ -86,6 +81,13 @@ public class Registration {
         NCProcessors.init();
         FissionReactor.init();
         initOreGeneration();
+
+        SERIALIZERS.register(bus);
+        RECIPE_TYPES.register(bus);
+
+        NcRecipeSerializers.RECIPE_SERIALIZERS.register(bus);
+        NcRecipeType.RECIPE_TYPES.register(bus);
+
     }
 
     private static void initOreGeneration() {

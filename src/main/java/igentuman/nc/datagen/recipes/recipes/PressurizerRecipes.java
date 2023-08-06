@@ -19,20 +19,20 @@ public class PressurizerRecipes extends AbstractRecipeProvider {
         PressurizerRecipes.consumer = consumer;
         for (String name : Materials.all().keySet()) {
             if(INGOTS_TAG.get(name) != null && NC_PLATES.get(name) != null) {
-                add(INGOTS_TAG.get(name), plateItem(name));
+                itemToItem(ingredient(ingotTag(name)), plateStack(name));
             }
         }
 
-        add(dustTag(Materials.graphite), Items.COAL);
-        add(ingotTag(Materials.graphite), ingotItem(Materials.pyrolitic_carbon));
-        add(dustTag(Materials.diamond), Items.DIAMOND);
-        add(dustTag(Materials.rhodochrosite), gemItem(Materials.rhodochrosite));
-        add(dustTag(Materials.quartz), Items.QUARTZ);
-        add(new ItemStack(dustItem(Materials.obsidian), 4), Item.byBlock(Blocks.OBSIDIAN));
-        add(dustTag(Materials.boron_nitride), gemItem(Materials.boron_nitride));
-        add(dustTag(Materials.fluorite), gemItem(Materials.fluorite));
-        add(dustTag(Materials.villiaumite), gemItem(Materials.villiaumite));
-        add(dustTag(Materials.carobbiite), gemItem(Materials.carobbiite));
+        itemToItem(dustIngredient(Materials.graphite), ingredient(Items.COAL));
+        itemToItem(ingredient(ingotTag(Materials.graphite)), ingotStack(Materials.pyrolitic_carbon));
+        itemToItem(dustIngredient(Materials.diamond), ingredient(Items.DIAMOND));
+        itemToItem(dustIngredient(Materials.rhodochrosite), gemStack(Materials.rhodochrosite));
+        itemToItem(dustIngredient(Materials.quartz), ingredient(Items.QUARTZ));
+        itemToItem(dustIngredient(Materials.obsidian, 4), ingredient(Item.byBlock(Blocks.OBSIDIAN)));
+        itemToItem(dustIngredient(Materials.boron_nitride), gemStack(Materials.boron_nitride));
+        itemToItem(dustIngredient(Materials.fluorite), gemStack(Materials.fluorite));
+        itemToItem(dustIngredient(Materials.villiaumite), gemStack(Materials.villiaumite));
+        itemToItem(dustIngredient(Materials.carobbiite), gemStack(Materials.carobbiite));
 
     }
 }

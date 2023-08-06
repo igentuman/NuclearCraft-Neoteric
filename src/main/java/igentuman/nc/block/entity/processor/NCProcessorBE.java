@@ -2,7 +2,7 @@ package igentuman.nc.block.entity.processor;
 
 import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
-import igentuman.nc.recipes.NcRecipe;
+import igentuman.nc.recipes.AbstractRecipe;
 import igentuman.nc.recipes.NcRecipeType;
 import igentuman.nc.recipes.RecipeInfo;
 import igentuman.nc.setup.processors.ProcessorPrefab;
@@ -33,7 +33,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 
-public class NCProcessorBE<RECIPE extends NcRecipe> extends NuclearCraftBE {
+public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE {
 
     public static String NAME;
     public final SidedContentHandler contentHandler;
@@ -97,7 +97,7 @@ public class NCProcessorBE<RECIPE extends NcRecipe> extends NuclearCraftBE {
         RECIPE cachedRecipe = getCachedRecipe();
         if(cachedRecipe != null) return cachedRecipe;
         if(!NcRecipeType.ALL_RECIPES.containsKey(getName())) return null;
-        for(NcRecipe recipe: NcRecipeType.ALL_RECIPES.get(getName()).getRecipeType().getRecipes(getLevel())) {
+        for(AbstractRecipe recipe: NcRecipeType.ALL_RECIPES.get(getName()).getRecipeType().getRecipes(getLevel())) {
             if(recipe.test(contentHandler)) {
                 addToCache((RECIPE)recipe);
                 return (RECIPE)recipe;

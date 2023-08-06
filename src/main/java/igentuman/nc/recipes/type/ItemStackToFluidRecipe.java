@@ -1,6 +1,6 @@
 package igentuman.nc.recipes.type;
 
-import igentuman.nc.recipes.NcRecipe;
+import igentuman.nc.recipes.AbstractRecipe;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.util.annotation.NothingNullByDefault;
 import net.minecraft.network.FriendlyByteBuf;
@@ -28,7 +28,7 @@ import java.util.function.Predicate;
  * </ul>
  */
 @NothingNullByDefault
-public abstract class ItemStackToFluidRecipe extends NcRecipe implements Predicate<@NotNull ItemStack> {
+public abstract class ItemStackToFluidRecipe extends AbstractRecipe implements Predicate<@NotNull ItemStack> {
 
     protected final ItemStackIngredient input;
     protected final FluidStack output;

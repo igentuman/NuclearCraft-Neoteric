@@ -193,7 +193,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('T', forgeIngot("tough_alloy"))
                 .define('L', forgePlate("lead"))
                 .group(MODID+"_fission")
-                .unlockedBy("item", InventoryChangeTrigger.TriggerInstance.hasItems(NCItems.NC_PARTS.get("plate_advanced").get()))
+                .unlockedBy("item", has(NCItems.NC_PARTS.get("plate_advanced").get()))
                 .save(consumer);
 
         ShapedRecipeBuilder.shaped(FissionReactor.MULTI_BLOCKS.get("fission_reactor_controller").get(), 4)
@@ -204,7 +204,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('T', COMPARATOR)
                 .define('L', FissionReactor.MULTI_BLOCKS.get("fission_reactor_casing").get())
                 .group(MODID+"_fission")
-                .unlockedBy("item", InventoryChangeTrigger.TriggerInstance.hasItems(NCItems.NC_PARTS.get("plate_advanced").get()))
+                .unlockedBy("item", has(NCItems.NC_PARTS.get("plate_advanced").get()))
                 .save(consumer);
 
 
@@ -215,7 +215,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('P', Tags.Items.GLASS)
                 .define('T', FissionReactor.MULTI_BLOCKS.get("fission_reactor_casing").get())
                 .group(MODID+"_fission")
-                .unlockedBy("item", InventoryChangeTrigger.TriggerInstance.hasItems(NCItems.NC_PARTS.get("plate_advanced").get()))
+                .unlockedBy("item", has(NCItems.NC_PARTS.get("plate_advanced").get()))
                 .save(consumer);
 
         ShapedRecipeBuilder.shaped(FissionReactor.MULTI_BLOCKS.get("fission_reactor_solid_fuel_cell").get())
@@ -225,7 +225,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('G', Tags.Items.GLASS)
                 .define('T', forgeIngot("tough_alloy"))
                 .group(MODID+"_fission")
-                .unlockedBy("item", InventoryChangeTrigger.TriggerInstance.hasItems(FissionReactor.MULTI_BLOCKS.get("fission_reactor_casing").get()))
+                .unlockedBy("item", has(FissionReactor.MULTI_BLOCKS.get("fission_reactor_casing").get()))
                 .save(consumer);
 
         ShapedRecipeBuilder.shaped(FissionReactor.MULTI_BLOCKS.get("empty_active_heat_sink").get())
@@ -236,7 +236,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('B', BUCKET)
                 .define('T', forgeIngot("tough_alloy"))
                 .group(MODID+"_fission")
-                .unlockedBy("item", InventoryChangeTrigger.TriggerInstance.hasItems(FissionReactor.MULTI_BLOCKS.get("fission_reactor_casing").get()))
+                .unlockedBy("item", has(FissionReactor.MULTI_BLOCKS.get("fission_reactor_casing").get()))
                 .save(consumer);
 
         for(String name: FissionBlocks.heatsinks.keySet()) {
@@ -253,13 +253,14 @@ public class NCRecipes extends RecipeProvider {
                         .define('I', Ingredient.of(i))
                         .define('B', FissionReactor.MULTI_BLOCKS.get("empty_heat_sink").get())
                         .group(MODID+"_fission")
-                        .unlockedBy("item", InventoryChangeTrigger.TriggerInstance.hasItems(FissionReactor.MULTI_BLOCKS.get("empty_heat_sink").get()))
+                        .unlockedBy("item", has(FissionReactor.MULTI_BLOCKS.get("empty_heat_sink").get()))
                         .save(consumer);
             }
         }
     }
 
     private void turbineBlocks(Consumer<FinishedRecipe> consumer) {
+
 
     }
 
@@ -275,7 +276,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('S', DAYLIGHT_DETECTOR)
                 .define('C', NCItems.NC_PARTS.get("coil_copper").get())
                 .group(MODID+"_solar_panels")
-                .unlockedBy("item", InventoryChangeTrigger.TriggerInstance.hasItems(NCItems.NC_PARTS.get("coil_copper").get()))
+                .unlockedBy("item", has(NCItems.NC_PARTS.get("coil_copper").get()))
                 .save(consumer);
 
         ShapedRecipeBuilder.shaped(NCEnergyBlocks.ENERGY_BLOCKS.get("solar_panel/advanced").get())
@@ -287,7 +288,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('G', forgeDust("graphite"))
                 .define('C', NCItems.NC_PARTS.get("coil_copper").get())
                 .group(MODID+"_solar_panels")
-                .unlockedBy("item", InventoryChangeTrigger.TriggerInstance.hasItems(NCEnergyBlocks.ENERGY_BLOCKS.get("solar_panel/basic").get()))
+                .unlockedBy("item", has(NCEnergyBlocks.ENERGY_BLOCKS.get("solar_panel/basic").get()))
                 .save(consumer);
 
         ShapedRecipeBuilder.shaped(NCEnergyBlocks.ENERGY_BLOCKS.get("solar_panel/du").get())
@@ -299,7 +300,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('G', forgeDust("graphite"))
                 .define('M', NCItems.NC_PARTS.get("coil_magnesium_diboride").get())
                 .group(MODID+"_solar_panels")
-                .unlockedBy("item", InventoryChangeTrigger.TriggerInstance.hasItems(NCEnergyBlocks.ENERGY_BLOCKS.get("solar_panel/advanced").get()))
+                .unlockedBy("item", has(NCEnergyBlocks.ENERGY_BLOCKS.get("solar_panel/advanced").get()))
                 .save(consumer);
 
         ShapedRecipeBuilder.shaped(NCEnergyBlocks.ENERGY_BLOCKS.get("solar_panel/elite").get())
@@ -311,7 +312,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('G', forgeDust("graphite"))
                 .define('M', NCItems.NC_PARTS.get("coil_magnesium_diboride").get())
                 .group(MODID+"_solar_panels")
-                .unlockedBy("item", InventoryChangeTrigger.TriggerInstance.hasItems(NCEnergyBlocks.ENERGY_BLOCKS.get("solar_panel/advanced").get()))
+                .unlockedBy("item", has(NCEnergyBlocks.ENERGY_BLOCKS.get("solar_panel/advanced").get()))
                 .save(consumer);
 
     }
@@ -322,24 +323,24 @@ public class NCRecipes extends RecipeProvider {
                 ShapelessRecipeBuilder.shapeless(NCBlocks.NC_BLOCKS.get(name).get())
                         .requires(Ingredient.of(forgeIngot(name)), 9)
                         .group(MODID+"_blocks")
-                        .unlockedBy("ingot", InventoryChangeTrigger.TriggerInstance.hasItems(NCItems.NC_INGOTS.get(name).get()))
+                        .unlockedBy("ingot", has(NCItems.NC_INGOTS.get(name).get()))
                         .save(consumer);
                 ShapelessRecipeBuilder.shapeless(NCItems.NC_INGOTS.get(name).get(), 9)
                         .requires(Ingredient.of(forgeBlock(name)))
                         .group(MODID+"_blocks")
-                        .unlockedBy("ingot", InventoryChangeTrigger.TriggerInstance.hasItems(NCItems.NC_INGOTS.get(name).get()))
+                        .unlockedBy("ingot", has(NCItems.NC_INGOTS.get(name).get()))
                         .save(consumer, name+"_from_block");
             }
             if(Materials.ingots().get(name).nugget) {
                 ShapelessRecipeBuilder.shapeless(NCItems.NC_INGOTS.get(name).get())
                         .requires(Ingredient.of(forgeNugget(name)), 9)
                         .group(MODID+"_ingots")
-                        .unlockedBy("ingot", InventoryChangeTrigger.TriggerInstance.hasItems(NCItems.NC_INGOTS.get(name).get()))
+                        .unlockedBy("ingot", has(NCItems.NC_INGOTS.get(name).get()))
                         .save(consumer,name+"_from_nugget");
                 ShapelessRecipeBuilder.shapeless(NCItems.NC_NUGGETS.get(name).get(), 9)
                         .requires(Ingredient.of(forgeIngot(name)), 1)
                         .group(MODID+"_ingots")
-                        .unlockedBy("ingot", InventoryChangeTrigger.TriggerInstance.hasItems(NCItems.NC_INGOTS.get(name).get()))
+                        .unlockedBy("ingot", has(NCItems.NC_INGOTS.get(name).get()))
                         .save(consumer);
             }
             if(Materials.ingots().get(name).hasOre()) {
@@ -381,7 +382,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('P', NCItems.NC_PLATES.get("basic").get())
                 .define('F', Blocks.FURNACE)
                 .group(MODID+"_machines")
-                .unlockedBy("item", InventoryChangeTrigger.TriggerInstance.hasItems(NCItems.NC_PLATES.get("basic").get()))
+                .unlockedBy("item", has(NCItems.NC_PLATES.get("basic").get()))
                 .save(consumer);*/
 
         ShapedRecipeBuilder.shaped(NCProcessors.PROCESSORS.get("manufactory").get())
@@ -394,7 +395,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('L', forgeIngot("lead"))
                 .define('R', Tags.Items.DUSTS_REDSTONE)
                 .group(MODID+"_processors")
-                .unlockedBy("item", InventoryChangeTrigger.TriggerInstance.hasItems(FLINT))
+                .unlockedBy("item", has(FLINT))
                 .save(consumer);
 
         ShapedRecipeBuilder.shaped(NCProcessors.PROCESSORS.get("centrifuge").get())
@@ -407,7 +408,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('L', NCItems.NC_PARTS.get("plate_advanced").get())
                 .define('R', NCItems.NC_PARTS.get("servo").get())
                 .group(MODID+"_processors")
-                .unlockedBy("item", InventoryChangeTrigger.TriggerInstance.hasItems(NCItems.NC_PARTS.get("chassis").get()))
+                .unlockedBy("item", has(NCItems.NC_PARTS.get("chassis").get()))
                 .save(consumer);
 
         ShapedRecipeBuilder.shaped(NCProcessors.PROCESSORS.get("chemical_reactor").get())
@@ -420,7 +421,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('L', NCItems.NC_PARTS.get("plate_advanced").get())
                 .define('X', Tags.Items.DUSTS_GLOWSTONE)
                 .group(MODID+"_processors")
-                .unlockedBy("item", InventoryChangeTrigger.TriggerInstance.hasItems(NCItems.NC_PARTS.get("chassis").get()))
+                .unlockedBy("item", has(NCItems.NC_PARTS.get("chassis").get()))
                 .save(consumer);
 
         ShapedRecipeBuilder.shaped(NCProcessors.PROCESSORS.get("alloy_smelter").get())
@@ -433,7 +434,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('L', NCItems.NC_PARTS.get("plate_basic").get())
                 .define('X', Tags.Items.INGOTS_BRICK)
                 .group(MODID+"_processors")
-                .unlockedBy("item", InventoryChangeTrigger.TriggerInstance.hasItems(NCItems.NC_PARTS.get("chassis").get()))
+                .unlockedBy("item", has(NCItems.NC_PARTS.get("chassis").get()))
                 .save(consumer);
 
         ShapedRecipeBuilder.shaped(NCProcessors.PROCESSORS.get("melter").get())
@@ -445,7 +446,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('L', NCItems.NC_PARTS.get("plate_advanced").get())
                 .define('X', Tags.Items.INGOTS_NETHER_BRICK)
                 .group(MODID+"_processors")
-                .unlockedBy("item", InventoryChangeTrigger.TriggerInstance.hasItems(NCItems.NC_PARTS.get("plate_advanced").get()))
+                .unlockedBy("item", has(NCItems.NC_PARTS.get("plate_advanced").get()))
                 .save(consumer);
 
         ShapedRecipeBuilder.shaped(NCProcessors.PROCESSORS.get("ingot_former").get())
@@ -458,7 +459,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('L', NCItems.NC_PARTS.get("plate_basic").get())
                 .define('X', forgeIngot("ferroboron"))
                 .group(MODID+"_processors")
-                .unlockedBy("item", InventoryChangeTrigger.TriggerInstance.hasItems(NCItems.NC_PARTS.get("chassis").get()))
+                .unlockedBy("item", has(NCItems.NC_PARTS.get("chassis").get()))
                 .save(consumer);
 
         ShapedRecipeBuilder.shaped(NCProcessors.PROCESSORS.get("fuel_reprocessor").get())
@@ -471,7 +472,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('E', ENDER_PEARL)
                 .define('C', NCItems.NC_PARTS.get("chassis").get())
                 .group(MODID+"_machines")
-                .unlockedBy("item", InventoryChangeTrigger.TriggerInstance.hasItems(NCItems.NC_PARTS.get("chassis").get()))
+                .unlockedBy("item", has(NCItems.NC_PARTS.get("chassis").get()))
                 .save(consumer);
 
         ShapedRecipeBuilder.shaped(NCProcessors.PROCESSORS.get("decay_hastener").get())
@@ -484,7 +485,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('T', forgeIngot("tough_alloy"))
                 .define('B', forgeBlock("boron"))
                 .group(MODID+"_machines")
-                .unlockedBy("item", InventoryChangeTrigger.TriggerInstance.hasItems(NCItems.NC_PARTS.get("actuator").get()))
+                .unlockedBy("item", has(NCItems.NC_PARTS.get("actuator").get()))
                 .save(consumer);
 
 
@@ -497,7 +498,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('R', Tags.Items.DUSTS_REDSTONE)
                 .define('C', NCItems.NC_PARTS.get("chassis").get())
                 .group(MODID+"_machines")
-                .unlockedBy("item", InventoryChangeTrigger.TriggerInstance.hasItems(NCItems.NC_PARTS.get("chassis").get()))
+                .unlockedBy("item", has(NCItems.NC_PARTS.get("chassis").get()))
                 .save(consumer);
 
         ShapedRecipeBuilder.shaped(NCProcessors.PROCESSORS.get("pressurizer").get())
@@ -523,7 +524,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('M', NCItems.NC_PARTS.get("motor").get())
                 .define('C', NCItems.NC_PARTS.get("chassis").get())
                 .group(MODID+"_machines")
-                .unlockedBy("item", InventoryChangeTrigger.TriggerInstance.hasItems(Items.BUCKET))
+                .unlockedBy("item", has(Items.BUCKET))
                 .save(consumer);*/
 
         ShapedRecipeBuilder.shaped(NCProcessors.PROCESSORS.get("fluid_enricher").get())
@@ -536,7 +537,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('M', NCItems.NC_PARTS.get("motor").get())
                 .define('H', HOPPER)
                 .group(MODID+"_machines")
-                .unlockedBy("item", InventoryChangeTrigger.TriggerInstance.hasItems(NCItems.NC_PARTS.get("plate_advanced").get()))
+                .unlockedBy("item", has(NCItems.NC_PARTS.get("plate_advanced").get()))
                 .save(consumer);
 
         ShapedRecipeBuilder.shaped(NCProcessors.PROCESSORS.get("electrolyzer").get())
@@ -549,7 +550,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('M', NCItems.NC_PARTS.get("motor").get())
                 .define('C', NCItems.NC_PARTS.get("chassis").get())
                 .group(MODID+"_machines")
-                .unlockedBy("item", InventoryChangeTrigger.TriggerInstance.hasItems(NCItems.NC_PARTS.get("motor").get()))
+                .unlockedBy("item", has(NCItems.NC_PARTS.get("motor").get()))
                 .save(consumer);
 
         ShapedRecipeBuilder.shaped(NCProcessors.PROCESSORS.get("assembler").get())
@@ -562,7 +563,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('C', NCItems.NC_PARTS.get("chassis").get())
                 .define('M', NCItems.NC_PARTS.get("motor").get())
                 .group(MODID+"_machines")
-                .unlockedBy("item", InventoryChangeTrigger.TriggerInstance.hasItems(NCItems.NC_PARTS.get("actuator").get()))
+                .unlockedBy("item", has(NCItems.NC_PARTS.get("actuator").get()))
                 .save(consumer);
 
         ShapedRecipeBuilder.shaped(NCProcessors.PROCESSORS.get("supercooler").get())
@@ -575,7 +576,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('S', NCItems.NC_PARTS.get("servo").get())
                 .define('C', NCItems.NC_PARTS.get("chassis").get())
                 .group(MODID+"_machines")
-                .unlockedBy("item", InventoryChangeTrigger.TriggerInstance.hasItems(NCItems.NC_PARTS.get("servo").get()))
+                .unlockedBy("item", has(NCItems.NC_PARTS.get("servo").get()))
                 .save(consumer);
 
         ShapedRecipeBuilder.shaped(NCProcessors.PROCESSORS.get("extractor").get())
@@ -654,7 +655,5 @@ public class NCRecipes extends RecipeProvider {
                 .group("nuclearcraft")
                 .unlockedBy("has_item", has(NCItems.NC_PARTS.get("motor").get()))
                 .save(consumer);
-
-
     }
 }

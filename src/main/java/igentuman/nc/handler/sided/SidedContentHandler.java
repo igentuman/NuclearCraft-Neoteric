@@ -1,8 +1,7 @@
 package igentuman.nc.handler.sided;
 
 import igentuman.nc.block.entity.NuclearCraftBE;
-import igentuman.nc.block.entity.processor.NCProcessorBE;
-import igentuman.nc.recipes.NcRecipe;
+import igentuman.nc.recipes.AbstractRecipe;
 import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import net.minecraft.core.Direction;
@@ -118,7 +117,7 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
         }
     }
 
-    public <RECIPE extends NcRecipe> void setBlockEntity(NuclearCraftBE blockEntity) {
+    public <RECIPE extends AbstractRecipe> void setBlockEntity(NuclearCraftBE blockEntity) {
         this.blockEntity = blockEntity;
         if(fluidCapability != null) {
             fluidCapability.tile = blockEntity;

@@ -31,7 +31,7 @@ import java.util.HashMap;
 
 import static igentuman.nc.handler.config.CommonConfig.FissionConfig.*;
 
-public class FissionControllerBE <RECIPE extends NcRecipe> extends FissionBE  {
+public class FissionControllerBE <RECIPE extends AbstractRecipe> extends FissionBE  {
 
     public static String NAME = "fission_reactor_controller";
     public final SidedContentHandler contentHandler;
@@ -123,7 +123,7 @@ public class FissionControllerBE <RECIPE extends NcRecipe> extends FissionBE  {
         RECIPE cachedRecipe = getCachedRecipe();
         if(cachedRecipe != null) return cachedRecipe;
         if(!NcRecipeType.ALL_RECIPES.containsKey(getName())) return null;
-        for(NcRecipe recipe: NcRecipeType.ALL_RECIPES.get(getName()).getRecipeType().getRecipes(getLevel())) {
+        for(AbstractRecipe recipe: NcRecipeType.ALL_RECIPES.get(getName()).getRecipeType().getRecipes(getLevel())) {
             if(recipe.test(contentHandler)) {
                 addToCache((RECIPE)recipe);
                 return (RECIPE)recipe;
@@ -302,7 +302,7 @@ public class FissionControllerBE <RECIPE extends NcRecipe> extends FissionBE  {
         recipe = (FissionRecipe) getRecipe();
         if (recipe != null) {
             ItemStack input = contentHandler.itemHandler.getStackInSlot(0).copy();
-            input.setCount(recipe.getInput().getRepresentations().get(0).getCount());
+            input.setCount(recipe.getFirstItemStackIngredient(0).getCount());
             recipeInfo.setRecipe(recipe);
             recipeInfo.ticks = ((FissionRecipe) recipeInfo.recipe).getDepletionTime();
             recipeInfo.energy = recipeInfo.recipe.getEnergy();

@@ -2,7 +2,6 @@ package igentuman.nc.compat.jei;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import igentuman.nc.compat.jei.util.TickTimer;
-import igentuman.nc.recipes.NcRecipe;
 import igentuman.nc.recipes.multiblock.FissionRecipe;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;

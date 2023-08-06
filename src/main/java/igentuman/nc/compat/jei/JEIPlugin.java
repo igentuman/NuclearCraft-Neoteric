@@ -2,7 +2,7 @@ package igentuman.nc.compat.jei;
 
 import igentuman.nc.block.entity.fission.FissionControllerBE;
 import igentuman.nc.client.NcClient;
-import igentuman.nc.recipes.NcRecipe;
+import igentuman.nc.recipes.AbstractRecipe;
 import igentuman.nc.recipes.NcRecipeType;
 import igentuman.nc.recipes.multiblock.FissionRecipe;
 import mezz.jei.api.IModPlugin;
@@ -21,14 +21,14 @@ import static igentuman.nc.compat.GlobalVars.*;
 
 @JeiPlugin
 public  class JEIPlugin implements IModPlugin {
-    public  static HashMap<String, RecipeType<? extends NcRecipe>>  recipeTypes;
+    public  static HashMap<String, RecipeType<? extends AbstractRecipe>>  recipeTypes;
 
     public static RecipeType<FissionRecipe> FISSION = new RecipeType<FissionRecipe>(new ResourceLocation(MODID, FissionControllerBE.NAME), FissionRecipe.class);
-    private static HashMap<String, RecipeType<? extends NcRecipe>> getRecipeTypes() {
+    private static HashMap<String, RecipeType<? extends AbstractRecipe>> getRecipeTypes() {
         if(recipeTypes == null) {
             recipeTypes = new HashMap<>();
             for (String name : RECIPE_CLASSES.keySet()) {
-                recipeTypes.put(name, new RecipeType<NcRecipe>(new ResourceLocation(MODID, name), RECIPE_CLASSES.get(name)));
+                recipeTypes.put(name, new RecipeType<AbstractRecipe>(new ResourceLocation(MODID, name), RECIPE_CLASSES.get(name)));
             }
         }
         return recipeTypes;
@@ -50,7 +50,7 @@ public  class JEIPlugin implements IModPlugin {
         return (RecipeType<TYPE>) recipeTypes.get(name);
     }
 
-    public <TYPE> RecipeType<TYPE> getRecipeType(RecipeType<? extends NcRecipe> in) {
+    public <TYPE> RecipeType<TYPE> getRecipeType(RecipeType<? extends AbstractRecipe> in) {
         return (RecipeType<TYPE>) in;
     }
 

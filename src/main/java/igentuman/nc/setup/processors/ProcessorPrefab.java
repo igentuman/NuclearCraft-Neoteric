@@ -3,7 +3,7 @@ package igentuman.nc.setup.processors;
 import igentuman.nc.block.entity.processor.NCProcessorBE;
 import igentuman.nc.container.NCProcessorContainer;
 import igentuman.nc.handler.config.CommonConfig;
-import igentuman.nc.recipes.NcRecipe;
+import igentuman.nc.recipes.AbstractRecipe;
 import igentuman.nc.setup.processors.config.ProcessorSlots;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
@@ -21,7 +21,7 @@ import java.util.function.Supplier;
 public class ProcessorPrefab <M extends NCProcessorContainer, U extends Screen & MenuAccess<M>> {
 
     public int progressBar = 0;
-    public Supplier<RecipeSerializer<? extends NcRecipe>> recipeSerializerSupplier;
+    public Supplier<RecipeSerializer<? extends AbstractRecipe>> recipeSerializerSupplier;
     private  Class  container;
     private  MenuScreens.ScreenConstructor<M, U>  screenConstructor;
     private boolean initialized;

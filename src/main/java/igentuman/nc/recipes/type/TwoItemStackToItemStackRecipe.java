@@ -1,6 +1,6 @@
 package igentuman.nc.recipes.type;
 
-import igentuman.nc.recipes.NcRecipe;
+import igentuman.nc.recipes.AbstractRecipe;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.util.annotation.NothingNullByDefault;
 import net.minecraft.network.FriendlyByteBuf;
@@ -13,7 +13,7 @@ import java.util.Objects;
 import java.util.function.BiPredicate;
 
 @NothingNullByDefault
-public abstract class TwoItemStackToItemStackRecipe extends NcRecipe implements BiPredicate<@NotNull ItemStack, @NotNull ItemStack> {
+public abstract class TwoItemStackToItemStackRecipe extends AbstractRecipe implements BiPredicate<@NotNull ItemStack, @NotNull ItemStack> {
 
     public TwoItemStackToItemStackRecipe(ResourceLocation id, ItemStackIngredient[] input, ItemStack[] output, double timeModifier, double powerModifier, double radiationModifier) {
         super(id);

@@ -1,0 +1,21 @@
+{
+  "type": "nuclearcraft:alloy_smelter",
+  "input": [
+    {
+      "count": 15,
+      "tag": "forge:dusts/iron"
+    },
+    {
+      "tag": "forge:dusts/carbon_manganese"
+    }
+  ],
+  "output": [
+    {
+      "count": 16,
+      "item": "nuclearcraft:hsla_steel_ingot"
+    }
+  ],
+  "powerModifier": 2.0,
+  "radiation": 1.0,
+  "timeModifier": 8.0
+}

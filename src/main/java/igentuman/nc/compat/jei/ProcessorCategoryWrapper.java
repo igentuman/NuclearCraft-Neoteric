@@ -2,12 +2,11 @@ package igentuman.nc.compat.jei;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import igentuman.nc.compat.jei.util.TickTimer;
-import igentuman.nc.recipes.NcRecipe;
+import igentuman.nc.recipes.AbstractRecipe;
 import igentuman.nc.setup.processors.ProcessorPrefab;
 import igentuman.nc.setup.processors.Processors;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.forge.ForgeTypes;
-import mezz.jei.api.gui.ITickTimer;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
@@ -26,7 +25,7 @@ import java.util.HashMap;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.compat.GlobalVars.*;
 
-public class ProcessorCategoryWrapper<T extends NcRecipe> implements IRecipeCategory<T> {
+public class ProcessorCategoryWrapper<T extends AbstractRecipe> implements IRecipeCategory<T> {
     public final static ResourceLocation TEXTURE = rl("textures/gui/processor_jei.png");
 
     private final IDrawable background;

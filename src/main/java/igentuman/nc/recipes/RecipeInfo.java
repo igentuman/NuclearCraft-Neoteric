@@ -4,19 +4,14 @@ import igentuman.nc.client.NcClient;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.util.INBTSerializable;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
-import java.util.ArrayList;
-import java.util.List;
 
-
-public class RecipeInfo <RECIPE extends NcRecipe> implements INBTSerializable<Tag> {
+public class RecipeInfo <RECIPE extends AbstractRecipe> implements INBTSerializable<Tag> {
     public int ticks = 0;
     public double ticksProcessed = 0;
     public double energy = 0;

@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:pressurizer",
+  "input": [
+    {
+      "count": 4,
+      "tag": "forge:dusts/obsidian"
+    }
+  ],
+  "output": [
+    {
+      "item": "minecraft:obsidian"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

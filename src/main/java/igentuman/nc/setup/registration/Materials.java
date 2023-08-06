@@ -98,7 +98,36 @@ public class Materials extends MaterialsManager {
     public final static  String sodium_fluoride = "sodium_fluoride";
     public final static  String sodium_hydroxide = "sodium_hydroxide";
     public final static  String carbon_manganese = "carbon_manganese";
-    public static String silicon = "silicon";
+    public final static String silicon = "silicon";
+    public final static String americium241 = "americium/241";
+    public final static String americium242 = "americium/242";
+    public final static String americium243 = "americium/243";
+    public final static String berkelium247 = "berkelium/247";
+    public final static String berkelium248 = "berkelium/248";
+    public final static String boron10 = "boron/10";
+    public final static String boron11 = "boron/11";
+    public final static String californium249 = "californium/249";
+    public final static String californium250 = "californium/250";
+    public final static String californium251 = "californium/251";
+    public final static String californium252 = "californium/252";
+    public final static String curium243 = "curium/243";
+    public final static String curium245 = "curium/245";
+    public final static String curium246 = "curium/246";
+    public final static String curium247 = "curium/247";
+    public final static String lithium6 = "lithium/6";
+    public final static String lithium7 = "lithium/7";
+    public final static String neptunium236 = "neptunium/236";
+    public final static String neptunium237 = "neptunium/237";
+    public final static String plutonium238 = "plutonium/238";
+    public final static String plutonium239 = "plutonium/239";
+    public final static String plutonium241 = "plutonium/241";
+    public final static String plutonium242 = "plutonium/242";
+    public final static String thorium230 = "thorium/230";
+    public final static String thorium232 = "thorium/232";
+    public final static String uranium233 = "uranium/233";
+    public final static String uranium235 = "uranium/235";
+    public final static String uranium238 = "uranium/238";
+
 
     public static HashMap<String, NCMaterial> all()
     {
@@ -204,35 +233,35 @@ public class Materials extends MaterialsManager {
 
     public static List<String> isotopes()
     {
-        return  Arrays.asList(
-                "americium/241",
-                "americium/242",
-                "americium/243",
-                "berkelium/247",
-                "berkelium/248",
-                "boron/10",
-                "boron/11",
-                "californium/249",
-                "californium/250",
-                "californium/251",
-                "californium/252",
-                "curium/243",
-                "curium/245",
-                "curium/246",
-                "curium/247",
-                "lithium/6",
-                "lithium/7",
-                "neptunium/236",
-                "neptunium/237",
-                "plutonium/238",
-                "plutonium/239",
-                "plutonium/241",
-                "plutonium/242",
-                "thorium/230",
-                "thorium/232",
-                "uranium/233",
-                "uranium/235",
-                "uranium/238"
+        return List.of(
+                americium241,
+                americium242,
+                americium243,
+                berkelium247,
+                berkelium248,
+                boron10,
+                boron11,
+                californium249,
+                californium250,
+                californium251,
+                californium252,
+                curium243,
+                curium245,
+                curium246,
+                curium247,
+                lithium6,
+                lithium7,
+                neptunium236,
+                neptunium237,
+                plutonium238,
+                plutonium239,
+                plutonium241,
+                plutonium242,
+                thorium230,
+                thorium232,
+                uranium233,
+                uranium235,
+                uranium238
         );
     }
 

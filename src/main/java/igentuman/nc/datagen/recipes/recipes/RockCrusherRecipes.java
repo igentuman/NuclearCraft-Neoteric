@@ -5,8 +5,8 @@ import igentuman.nc.setup.processors.Processors;
 import igentuman.nc.setup.registration.Materials;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.Tags;
 
+import java.util.List;
 import java.util.function.Consumer;
 
 import static net.minecraft.world.item.Items.*;
@@ -17,21 +17,24 @@ public class RockCrusherRecipes extends AbstractRecipeProvider {
         RockCrusherRecipes.consumer = consumer;
         ID = Processors.ROCK_CRUSHER;
         add(
-                NcIngredient.stack(new ItemStack(GRANITE, 4)),
-                new ItemStack[]{new ItemStack(dustItem(Materials.rhodochrosite), 2), new ItemStack(dustItem(Materials.villiaumite))}
+                (ingredient(GRANITE, 4)),
+                List.of(dustStack(Materials.rhodochrosite, 2), dustStack(Materials.villiaumite))
         );
 
         add(
-                NcIngredient.stack(new ItemStack(DIORITE, 4)),
-                new ItemStack[]{new ItemStack(dustItem(Materials.zirconium), 1), new ItemStack(dustItem(Materials.fluorite)), new ItemStack(dustItem(Materials.carobbiite))}
+                ingredient(DIORITE, 4),
+                List.of(dustStack(Materials.zirconium, 2), dustStack(Materials.fluorite), dustStack(Materials.carobbiite))
         );
 
         add(
-                NcIngredient.stack(new ItemStack(ANDESITE, 4)),
-                new ItemStack[]{new ItemStack(dustItem(Materials.beryllium), 1), new ItemStack(dustItem(Materials.arsenic))}
+                ingredient(ANDESITE, 4),
+                List.of(dustStack(Materials.beryllium, 2), dustStack(Materials.arsenic))
         );
 
     }
 
+    private static void add(NcIngredient input, List<NcIngredient> output, double...modifiers) {
+        itemsToItems(List.of(input), output, modifiers);
+    }
 
 }

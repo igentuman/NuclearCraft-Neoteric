@@ -25,5 +25,6 @@ public class CustomRecipes extends NCRecipes {
         PressurizerRecipes.generate(consumer);
         AlloySmelterRecipeProvider.generate(consumer);
         RockCrusherRecipes.generate(consumer);
+        IsotopeSeparatorRecipes.generate(consumer);
     }
 }

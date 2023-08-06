@@ -82,7 +82,7 @@ public class FissionCategoryWrapper<T extends FissionRecipe> implements IRecipeC
             timer.put(d, new TickTimer((int) (recipe.getTimeModifier() * d) / 50, 36, true));
         }
         if(!arrow.containsKey(d)) {
-            arrow.put(d, guiHelper.drawableBuilder(rl("textures/gui/progress_jei.png"), 0, 186, 36, 15)
+            arrow.put(d, guiHelper.drawableBuilder(rl("textures/gui/progress.png"), 0, 186, 36, 15)
                     .buildAnimated(timer.get(d), IDrawableAnimated.StartDirection.LEFT));
         }
         for(int i = 0; i < recipe.getItemIngredients().size(); i++) {

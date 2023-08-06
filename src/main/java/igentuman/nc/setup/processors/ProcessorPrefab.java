@@ -25,6 +25,7 @@ public class ProcessorPrefab <M extends NCProcessorContainer, U extends Screen &
     private  Class  container;
     private  MenuScreens.ScreenConstructor<M, U>  screenConstructor;
     private boolean initialized;
+    private boolean has_recipes = true;
     private Boolean registered = true;
 
     public String name;
@@ -143,4 +144,7 @@ public class ProcessorPrefab <M extends NCProcessorContainer, U extends Screen &
         return (supportSpeedUpgrade ? 1 : 0) + (supportEnergyUpgrade ? 1 : 0);
     }
 
+    public boolean hasRecipes() {
+        return has_recipes;
+    }
 }

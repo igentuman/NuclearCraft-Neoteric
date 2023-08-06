@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.datagen.recipes.recipes.AbstractRecipeProvider.getIsotope;
 
 public class FuelRecipes extends NCRecipes {
 
@@ -31,7 +32,7 @@ public class FuelRecipes extends NCRecipes {
                 String key = name+type;
                 SimpleCookingRecipeBuilder.smelting(Ingredient.of(Fuel.NC_ISOTOPES.get(key).get()),
                                 Fuel.NC_ISOTOPES.get(name).get(), 1.0f, 100)
-                        .unlockedBy("has_ore", inventoryTrigger(ItemPredicate.Builder.item().of(Fuel.NC_ISOTOPES.get(name).get()).build()))
+                        .unlockedBy("item", inventoryTrigger(ItemPredicate.Builder.item().of(Fuel.NC_ISOTOPES.get(name).get()).build()))
                         .save(consumer, MODID+"_"+name+type+"_sml");
             }
         }
@@ -42,13 +43,13 @@ public class FuelRecipes extends NCRecipes {
                     List<String> key = List.of("fuel", name, subType, type);
                     SimpleCookingRecipeBuilder.smelting(Ingredient.of(Fuel.NC_FUEL.get(key).get()),
                                     Fuel.NC_FUEL.get(List.of("fuel", name, subType, "")).get(), 1.0f, 100)
-                            .unlockedBy("has_ore", inventoryTrigger(ItemPredicate.Builder.item().of( Fuel.NC_FUEL.get(List.of("fuel", name, subType, "")).get()).build()))
+                            .unlockedBy("item", inventoryTrigger(ItemPredicate.Builder.item().of( Fuel.NC_FUEL.get(List.of("fuel", name, subType, "")).get()).build()))
                             .save(consumer, MODID + "_fuel_" + name+subType + type + "_sml");
 
                     key = List.of("depleted", name, subType, type);
                     SimpleCookingRecipeBuilder.smelting(Ingredient.of(Fuel.NC_DEPLETED_FUEL.get(key).get()),
                                     Fuel.NC_DEPLETED_FUEL.get(List.of("depleted", name, subType, "")).get(), 1.0f, 100)
-                            .unlockedBy("has_ore", inventoryTrigger(ItemPredicate.Builder.item().of( Fuel.NC_DEPLETED_FUEL.get(List.of("depleted", name, subType, "")).get()).build()))
+                            .unlockedBy("item", inventoryTrigger(ItemPredicate.Builder.item().of( Fuel.NC_DEPLETED_FUEL.get(List.of("depleted", name, subType, "")).get()).build()))
                             .save(consumer, MODID + "_depleted_" + name+subType + type + "_sml");
                 }
 
@@ -89,18 +90,5 @@ public class FuelRecipes extends NCRecipes {
                 .save(consumer, MODID + "_fuel_" + name+subType + type+"_cr");
     }
 
-    private static Item getIsotope(String name, String id, String type)
-    {
-        if(!type.isEmpty()) {
-            type = "_"+type;
-        }
-        if(!Fuel.NC_ISOTOPES.containsKey(name+"/"+id+type)) {
-            for(String isotope: Fuel.NC_ISOTOPES.keySet()) {
-                if(isotope.contains(id)) {
-                    return  Fuel.NC_ISOTOPES.get(isotope).get();
-                }
-            }
-        }
-        return Fuel.NC_ISOTOPES.get(name+"/"+id+type).get();
-    }
+
 }

@@ -1,0 +1,22 @@
+{
+  "type": "nuclearcraft:isotope_separator",
+  "input": [
+    {
+      "count": 9,
+      "item": "nuclearcraft:fuel_plutonium_hep_239"
+    }
+  ],
+  "output": [
+    {
+      "count": 3,
+      "item": "nuclearcraft:plutonium_239"
+    },
+    {
+      "count": 6,
+      "item": "nuclearcraft:plutonium_242"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 2.0
+}

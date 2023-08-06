@@ -1,7 +1,13 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_ore": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "minecraft:nuclearcraft_depleted_americiumhea-242ox_sml"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "item": {
       "conditions": {
         "items": [
           {
@@ -12,17 +18,11 @@
         ]
       },
       "trigger": "minecraft:inventory_changed"
-    },
-    "has_the_recipe": {
-      "conditions": {
-        "recipe": "minecraft:nuclearcraft_depleted_americiumhea-242ox_sml"
-      },
-      "trigger": "minecraft:recipe_unlocked"
     }
   },
   "requirements": [
     [
-      "has_ore",
+      "item",
       "has_the_recipe"
     ]
   ],

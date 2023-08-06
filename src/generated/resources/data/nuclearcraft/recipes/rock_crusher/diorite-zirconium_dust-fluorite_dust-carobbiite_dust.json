@@ -1,0 +1,24 @@
+{
+  "type": "nuclearcraft:rock_crusher",
+  "input": [
+    {
+      "count": 4,
+      "item": "minecraft:diorite"
+    }
+  ],
+  "output": [
+    {
+      "count": 2,
+      "item": "nuclearcraft:zirconium_dust"
+    },
+    {
+      "item": "nuclearcraft:fluorite_dust"
+    },
+    {
+      "item": "nuclearcraft:carobbiite_dust"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

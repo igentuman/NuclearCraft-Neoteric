@@ -19,7 +19,10 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Objects;
 
 import static igentuman.nc.NuclearCraft.MODID;
 
@@ -148,9 +151,9 @@ public class NCProcessorContainer extends AbstractContainerMenu {
     }
 
     @Override
-    public boolean stillValid(Player playerIn) {
+    public boolean stillValid(@NotNull Player playerIn) {
         return stillValid(
-                ContainerLevelAccess.create(blockEntity.getLevel(), blockEntity.getBlockPos()),
+                ContainerLevelAccess.create(Objects.requireNonNull(blockEntity.getLevel()), blockEntity.getBlockPos()),
                 playerEntity,
                 NCProcessors.PROCESSORS.get(name).get()
         );

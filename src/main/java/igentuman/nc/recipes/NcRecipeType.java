@@ -28,11 +28,12 @@ public class NcRecipeType<RECIPE extends AbstractRecipe> implements RecipeType<R
     private static HashMap<String, RecipeTypeRegistryObject<? extends AbstractRecipe>> initializeRecipes() {
         HashMap<String, RecipeTypeRegistryObject<? extends AbstractRecipe>> recipes = new HashMap<>();
         recipes.put(FissionControllerBE.NAME, register(FissionControllerBE.NAME));
-        recipes.put(Processors.MANUFACTORY, register(Processors.MANUFACTORY));
-        recipes.put(Processors.PRESSURIZER, register(Processors.PRESSURIZER));
-        recipes.put(Processors.DECAY_HASTENER, register(Processors.DECAY_HASTENER));
-        recipes.put(Processors.ROCK_CRUSHER, register(Processors.ROCK_CRUSHER));
-        recipes.put(Processors.ALLOY_SMELTER, register(Processors.ALLOY_SMELTER));
+
+        for(String processorName: Processors.registered().keySet()) {
+            if(Processors.registered().get(processorName).hasRecipes()) {
+                recipes.put(processorName, register(processorName));
+            }
+        }
 
         //recipes.put("smelting", SMELTING);
         return recipes;

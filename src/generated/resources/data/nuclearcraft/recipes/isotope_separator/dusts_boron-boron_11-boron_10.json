@@ -1,0 +1,22 @@
+{
+  "type": "nuclearcraft:isotope_separator",
+  "input": [
+    {
+      "count": 12,
+      "tag": "forge:dusts/boron"
+    }
+  ],
+  "output": [
+    {
+      "count": 9,
+      "item": "nuclearcraft:boron_11"
+    },
+    {
+      "count": 3,
+      "item": "nuclearcraft:boron_10"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 6.0
+}

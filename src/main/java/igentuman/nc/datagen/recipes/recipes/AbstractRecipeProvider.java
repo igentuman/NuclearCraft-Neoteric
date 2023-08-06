@@ -2,6 +2,7 @@ package igentuman.nc.datagen.recipes.recipes;
 
 import igentuman.nc.datagen.recipes.builder.NcRecipeBuilder;
 import igentuman.nc.recipes.ingredient.NcIngredient;
+import igentuman.nc.setup.registration.Fuel;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import static igentuman.nc.NuclearCraft.rl;
+import static igentuman.nc.setup.registration.Fuel.NC_FUEL;
 import static igentuman.nc.setup.registration.Fuel.NC_ISOTOPES;
 import static igentuman.nc.setup.registration.NCItems.*;
 import static igentuman.nc.util.DataGenUtil.*;
@@ -129,6 +131,21 @@ public abstract class AbstractRecipeProvider {
         return ingredient(forgeDust(name), count);
     }
 
+    public static NcIngredient fuelIngredient(String name, int...pCount)
+    {
+        int count = 1;
+        if(pCount.length > 0) count = pCount[0];
+        return ingredient(fuelItem(name), count);
+    }
+
+    public static Item fuelItem(String name) {
+        if(NC_FUEL.get(name) == null) {
+            System.out.println("null fuel: " + name);
+        }
+        return NC_FUEL.get(name).get();
+    }
+
+
     public static NcIngredient isotopeIngredient(String name, int...pCount)
     {
         int count = 1;
@@ -206,4 +223,18 @@ public abstract class AbstractRecipeProvider {
         return NC_GEMS.get(name).get();
     }
 
+    public static Item getIsotope(String name, String id, String type)
+    {
+        if(!type.isEmpty()) {
+            type = "_"+type;
+        }
+        if(!Fuel.NC_ISOTOPES.containsKey(name+"/"+id+type)) {
+            for(String isotope: Fuel.NC_ISOTOPES.keySet()) {
+                if(isotope.contains(id)) {
+                    return  Fuel.NC_ISOTOPES.get(isotope).get();
+                }
+            }
+        }
+        return Fuel.NC_ISOTOPES.get(name+"/"+id+type).get();
+    }
 }

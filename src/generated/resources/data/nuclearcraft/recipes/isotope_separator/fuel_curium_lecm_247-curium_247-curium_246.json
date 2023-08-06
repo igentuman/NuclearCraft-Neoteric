@@ -1,0 +1,21 @@
+{
+  "type": "nuclearcraft:isotope_separator",
+  "input": [
+    {
+      "count": 9,
+      "item": "nuclearcraft:fuel_curium_lecm_247"
+    }
+  ],
+  "output": [
+    {
+      "item": "nuclearcraft:curium_247"
+    },
+    {
+      "count": 8,
+      "item": "nuclearcraft:curium_246"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 2.0
+}

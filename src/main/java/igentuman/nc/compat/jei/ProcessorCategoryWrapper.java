@@ -23,12 +23,14 @@ import net.minecraft.world.item.ItemStack;
 import java.util.HashMap;
 
 import static igentuman.nc.NuclearCraft.rl;
+import static igentuman.nc.client.gui.element.bar.ProgressBar.bars;
 import static igentuman.nc.compat.GlobalVars.*;
 
 public class ProcessorCategoryWrapper<T extends AbstractRecipe> implements IRecipeCategory<T> {
     public final static ResourceLocation TEXTURE = rl("textures/gui/processor_jei.png");
 
     private final IDrawable background;
+    private IDrawable progressBackground;
     private final IDrawable icon;
     private  IDrawable[] slots;
     protected RecipeType<T> recipeType;
@@ -45,7 +47,7 @@ public class ProcessorCategoryWrapper<T extends AbstractRecipe> implements IReci
         processor = Processors.all().get(getRecipeType().getUid().getPath());
         if(processor.getSlotsConfig().isDoubleSlotHeight()) {
             height = 45;
-            yShift+= 23;
+            yShift+= 11;
         }
         if(processor.getSlotsConfig().hasThreeRows()) {
             xShift -= 8;
@@ -81,13 +83,20 @@ public class ProcessorCategoryWrapper<T extends AbstractRecipe> implements IReci
     public void draw(T recipe, IRecipeSlotsView recipeSlotsView, PoseStack stack, double mouseX,
                      double mouseY) {
         int d = (int) ((recipe.getTimeModifier()*(double) processor.config().getTime())/2);
+        int fluidsOut = processor.getSlotsConfig().getOutputFluids();
+        int itemsOut = processor.getSlotsConfig().getOutputItems();
         if(arrow.containsKey(d)) {
-            arrow.get(d).draw(stack, 47, height-20);
+            progressBackground.draw(stack, 47, height/2-8);
+            arrow.get(d).draw(stack, 47, height/2-8);
+        }
+        int barXshift = 0;
+        if(fluidsOut + itemsOut == 3 || fluidsOut + itemsOut == 6) {
+            barXshift = -8;
         }
         for(int i = 0; i < slots.length; i++) {
             if(slots[i] != null) {
                 int[] pos = processor.getSlotsConfig().getSlotPositions().get(i);
-                slots[i].draw(stack, pos[0]+xShift-1, pos[1]+yShift-1);
+                slots[i].draw(stack, pos[0]+xShift-1+barXshift, pos[1]+yShift-1);
             }
         }
     }
@@ -100,12 +109,17 @@ public class ProcessorCategoryWrapper<T extends AbstractRecipe> implements IReci
         int inputFluidCounter = 0;
         int putFluidCounter = 0;
         int outputCounter = 0;
+
+
         int d = (int) ((recipe.getTimeModifier()*(double)processor.config().getTime())/2);
         if(!timer.containsKey(d)) {
             timer.put(d, new TickTimer(d, 36, true));
         }
         if(!arrow.containsKey(d)) {
-            arrow.put(d, guiHelper.drawableBuilder(rl("textures/gui/progress_jei.png"), 0, 0, 36, 15)
+            int xoffset = bars.get(processor.progressBar)[0];
+            int yoffset = bars.get(processor.progressBar)[1];
+            this.progressBackground = guiHelper.createDrawable(rl("textures/gui/progress.png"), xoffset, yoffset, 36, 15);
+            arrow.put(d, guiHelper.drawableBuilder(rl("textures/gui/progress.png"), xoffset, yoffset-16, 36, 15)
                     .buildAnimated(timer.get(d), IDrawableAnimated.StartDirection.LEFT));
         }
 

@@ -1,0 +1,21 @@
+{
+  "type": "nuclearcraft:isotope_separator",
+  "input": [
+    {
+      "count": 10,
+      "tag": "forge:dusts/uranium"
+    }
+  ],
+  "output": [
+    {
+      "count": 9,
+      "item": "nuclearcraft:uranium_238"
+    },
+    {
+      "item": "nuclearcraft:uranium_235"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 4.0
+}

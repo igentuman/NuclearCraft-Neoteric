@@ -132,7 +132,7 @@ public class ProcessorSlots {
     }
 
     public boolean isDoubleSlotHeight() {
-        return input_fluids > 3 || output_fluids > 3 || input_items > 3 || output_items > 3;
+        return input_fluids > 3 || output_fluids > 3 || input_items > 3 || output_items == 2 || output_items > 3;
     }
 
     public boolean hasThreeRows() {

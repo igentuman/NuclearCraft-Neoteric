@@ -148,6 +148,7 @@ public class Processors {
                     ProcessorBuilder
                             .make(ISOTOPE_SEPARATOR, 0, 1, 0, 2)
                             .blockEntity(IsotopeSeparatorBE::new)
+                            .recipeSerializer(() -> new NcRecipeSerializer<>(IsotopeSeparatorRecipe::new))
                             .progressBar(10)
                             .build()
             );

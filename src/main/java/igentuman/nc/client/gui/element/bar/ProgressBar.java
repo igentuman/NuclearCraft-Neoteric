@@ -19,7 +19,25 @@ public class ProgressBar extends NCGuiElement {
     protected static ResourceLocation ATLAS = new ResourceLocation(MODID, "textures/gui/progress.png");
     IProgressScreen container;
 
-    public List<int[]> bars = new ArrayList<>();
+    public static List<int[]> bars = List.of(
+            new int[] {0, 16},
+            new int[] {0, 16},
+            new int[] {0, 47},
+            new int[] {0, 78},
+            new int[] {0, 109},
+            new int[] {0, 140},
+            new int[] {0, 171},
+            new int[] {0, 201},
+            new int[] {37, 16},
+            new int[] {37, 47},
+            new int[] {37, 78},
+            new int[] {37, 109},
+            new int[] {37, 140},
+            new int[] {37, 171},
+            new int[] {37, 201},
+            new int[] {74, 38},
+            new int[] {111, 38}
+    );
 
     public ProgressBar(int xMin, int yMin, IProgressScreen container)  {
         x = xMin;
@@ -27,26 +45,7 @@ public class ProgressBar extends NCGuiElement {
         width = 36;
         height = 15;
         this.container = container;
-        bars.add(new int[] {0, 16});
 
-        bars.add(new int[] {0, 16});
-        bars.add(new int[] {0, 47});
-        bars.add(new int[] {0, 78});
-        bars.add(new int[] {0, 109});
-        bars.add(new int[] {0, 140});
-        bars.add(new int[] {0, 171});
-        bars.add(new int[] {0, 201});
-
-        bars.add(new int[] {37, 16});
-        bars.add(new int[] {37, 47});
-        bars.add(new int[] {37, 78});
-        bars.add(new int[] {37, 109});
-        bars.add(new int[] {37, 138});
-        bars.add(new int[] {37, 169});
-        bars.add(new int[] {37, 201});
-
-        bars.add(new int[] {74, 38});
-        bars.add(new int[] {111, 38});
     }
 
     public ProgressBar(int xMin, int yMin, IProgressScreen container, int barNumber)  {

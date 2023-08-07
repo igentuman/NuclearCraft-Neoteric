@@ -200,4 +200,8 @@ public class NCProcessorContainer extends AbstractContainerMenu {
     public int energyPerTick() {
         return blockEntity.energyPerTick;
     }
+
+    public int getRedstoneMode() {
+        return blockEntity.redstoneMode;
+    }
 }

@@ -33,6 +33,7 @@ import net.minecraftforge.items.ItemStackHandler;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE {
 
@@ -51,6 +52,9 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
     public int energyPerTick = 0;
     @NBTField
     public int energyMultiplier = 1;
+
+    @NBTField
+    public int redstoneMode = 0;
 
     public LazyOptional<IEnergyStorage> getEnergy() {
         return energy;
@@ -220,10 +224,15 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
     }
 
     public void tickServer() {
+        if(redstoneMode == 1 && !hasRedstoneSignal()) return;
         processRecipe();
         handleRecipeOutput();
         contentHandler.tick();
         level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+    }
+
+    public boolean hasRedstoneSignal() {
+        return Objects.requireNonNull(getLevel()).hasNeighborSignal(worldPosition);
     }
 
     private void processRecipe() {
@@ -360,5 +369,11 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
 
     public FluidTank getFluidTank(int i) {
         return contentHandler.fluidCapability.tanks.get(i);
+    }
+
+    public void toggleRedstoneMode() {
+        redstoneMode++;
+        if (redstoneMode > 1) redstoneMode = 0;
+        setChanged();
     }
 }

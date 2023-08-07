@@ -1,14 +1,20 @@
 package igentuman.nc.client.gui.element.button;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import igentuman.nc.NuclearCraft;
+import igentuman.nc.client.gui.processor.NCProcessorScreen;
 import igentuman.nc.client.gui.processor.side.SideConfigSlotSelectionScreen;
 import igentuman.nc.container.NCProcessorContainer;
 import igentuman.nc.client.gui.element.NCGuiElement;
+import igentuman.nc.network.toServer.PacketGuiButtonPress;
+import igentuman.nc.network.toServer.PacketSideConfigToggle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 public class Button<T extends AbstractContainerScreen> extends NCGuiElement {
@@ -49,7 +55,6 @@ public class Button<T extends AbstractContainerScreen> extends NCGuiElement {
             height = 18;
             width = 18;
             btn = new ImageButton(X(), Y(), width, height, 220, 220, 18, TEXTURE, pButton -> {
-                //NCMessages.sendToServer(new PacketGuiButtonPress(container.getPosition(), bId));
                 Minecraft.getInstance().forceSetScreen(new SideConfigSlotSelectionScreen<>(screen));
             });
             tooltipKey = Component.translatable("gui.nc.side_config.tooltip");
@@ -57,11 +62,33 @@ public class Button<T extends AbstractContainerScreen> extends NCGuiElement {
     }
 
     public static class RedstoneConfig extends Button {
-        public RedstoneConfig(int xPos, int yPos, AbstractContainerScreen screen) {
+        private final BlockPos pos;
+        public static int BTN_ID = 70;
+
+        public int mode = 0;
+
+        public RedstoneConfig(int xPos, int yPos, AbstractContainerScreen screen, BlockPos pos) {
             super(xPos, yPos, screen, 70);
+            this.pos = pos;
             height = 18;
             width = 18;
-            btn = new ImageButton(X(), Y(), width, height, 238, 220, 18, TEXTURE, (net.minecraft.client.gui.components.Button.OnPress)null);
+            btn = new ImageButton(X(), Y(), width, height, 238, 220, 18, TEXTURE, pButton -> {
+                NuclearCraft.packetHandler().sendToServer(new PacketGuiButtonPress(pos, BTN_ID));
+            });
+        }
+
+        public List<Component> getTooltips() {
+            return List.of(Component.translatable("gui.nc.redstone_config.tooltip_"+mode));
+        }
+
+        public void setMode(int redstoneMode) {
+            mode = redstoneMode;
+            try {
+                Field f = btn.getClass().getDeclaredField("yTexStart");
+                f.setAccessible(true);
+                f.set(btn, 220 - redstoneMode * 36);
+            } catch (NoSuchFieldException | IllegalAccessException ignore) {
+            }
         }
     }
 

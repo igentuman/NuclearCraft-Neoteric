@@ -7,6 +7,7 @@ import igentuman.nc.client.gui.element.NCGuiElement;
 import igentuman.nc.client.gui.element.bar.EnergyBar;
 import igentuman.nc.client.gui.element.bar.ProgressBar;
 import igentuman.nc.client.gui.element.button.Button;
+import igentuman.nc.client.gui.element.button.SideConfig;
 import igentuman.nc.client.gui.element.fluid.FluidTankRenderer;
 import igentuman.nc.client.gui.element.slot.BigSlot;
 import igentuman.nc.container.NCProcessorContainer;
@@ -36,6 +37,8 @@ public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractC
     private int xCenter;
 
     private ProcessorSlots slots;
+    private Button.SideConfig sideConfigBtn;
+    private Button.RedstoneConfig redstoneConfigBtn;
 
     public List<NCGuiElement> widgets = new ArrayList<>();
     private EnergyBar energyBar;
@@ -97,8 +100,10 @@ public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractC
         if(menu.getProcessor().supportSpeedUpgrade) {
             widgets.add(new NormalSlot(ux, 77, "speed_upgrade"));
         }
-        widgets.add(new Button.SideConfig(29, 74, this));
-        widgets.add(new Button.RedstoneConfig(48, 74, this));
+        sideConfigBtn = new Button.SideConfig(29, 74, this);
+        widgets.add(sideConfigBtn);
+        redstoneConfigBtn = new Button.RedstoneConfig(48, 74, this, menu.getPosition());
+        widgets.add(redstoneConfigBtn);
     }
 
     private FluidTank getFluidTank(int i) {
@@ -118,6 +123,7 @@ public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractC
     }
 
     private void renderWidgets(PoseStack matrix, float partialTicks, int mouseX, int mouseY) {
+        redstoneConfigBtn.setMode(getMenu().getRedstoneMode());
         for(NCGuiElement widget: widgets) {
             widget.draw(matrix, mouseX, mouseY, partialTicks);
         }

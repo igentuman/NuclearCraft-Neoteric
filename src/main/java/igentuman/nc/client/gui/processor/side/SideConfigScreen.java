@@ -90,7 +90,8 @@ public class SideConfigScreen<T extends NCProcessorContainer> extends AbstractCo
         int i = this.leftPos;
         int j = this.topPos;
         this.renderBg(matrixStack, partialTicks, mouseX, mouseY);
-        net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.client.event.ContainerScreenEvent.Render.Background(this, matrixStack, mouseX, mouseY));
+        net.minecraftforge.common.MinecraftForge.EVENT_BUS
+                .post(new net.minecraftforge.client.event.ContainerScreenEvent.Render.Background(this, matrixStack, mouseX, mouseY));
         RenderSystem.disableDepthTest();
         for(Widget widget : this.renderables) {
             widget.render(matrixStack, mouseX, mouseY, partialTicks);

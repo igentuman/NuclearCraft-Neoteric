@@ -131,6 +131,8 @@ public class NCLanguageProvider extends LanguageProvider {
     private void tooltips() {
         add("tooltip.press_shift_for_description","Press SHIFT for description");
         add("fuel.heat.descr","Base Heat Gen: %s H/t");
+        add("gui.nc.redstone_config.tooltip_0","WORK MODE: IGNORE SIGNAL");
+        add("gui.nc.redstone_config.tooltip_1","WORK MODE: ON SIGNAL");
         add("fuel.forge_energy.descr","Forge Energy: %s FE/t");
         add("fuel.heat_boiling.descr","Boiling Reactor Heat: %s H/t");
         add("fuel.depletion.descr","Base Depletion Time: %s sec");

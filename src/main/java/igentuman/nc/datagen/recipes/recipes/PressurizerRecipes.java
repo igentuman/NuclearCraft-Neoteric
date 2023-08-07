@@ -18,6 +18,7 @@ public class PressurizerRecipes extends AbstractRecipeProvider {
         PressurizerRecipes.consumer = consumer;
         for (String name : Materials.all().keySet()) {
             if(INGOTS_TAG.get(name) != null && NC_PLATES.get(name) != null) {
+                if(Materials.graphite.equals(name)) continue;
                 itemToItem(ingredient(ingotTag(name)), plateStack(name));
             }
         }

@@ -74,6 +74,8 @@ public  class JEIPlugin implements IModPlugin {
                 registry.addRecipeCatalyst(stack, getRecipeType(name));
             }
         }
-        registry.addRecipeCatalyst(CATALYSTS.get(FissionControllerBE.NAME).get(0), FISSION);
+        if(CATALYSTS.containsKey(FissionControllerBE.NAME)) {
+            registry.addRecipeCatalyst(CATALYSTS.get(FissionControllerBE.NAME).get(0), FISSION);
+        }
     }
 }

@@ -176,27 +176,27 @@ public class FluidTankRenderer extends NCGuiElement {
         tessellator.end();
     }
 
-    public List<Component> getTooltip(FluidStack fluidStack, TooltipFlag tooltipFlag) {
+    public List<Component> getTooltips() {
         List<Component> tooltip = new ArrayList<>();
 
-        Fluid fluidType = fluidStack.getFluid();
+        Fluid fluidType = tank.getFluid().getFluid();
         try {
             if (fluidType.isSame(Fluids.EMPTY)) {
                 return tooltip;
             }
 
-            Component displayName = fluidStack.getDisplayName();
-            tooltip.add(displayName);
+            MutableComponent displayName = MutableComponent.create(tank.getFluid().getDisplayName().getContents());
+            tooltip.add(displayName.withStyle(ChatFormatting.AQUA));
 
-            long amount = fluidStack.getAmount();
+            long amount = tank.getFluid().getAmount();
             long milliBuckets = (amount * 1000) / FluidType.BUCKET_VOLUME;
 
             if (tooltipMode == TooltipMode.SHOW_AMOUNT_AND_CAPACITY) {
-                MutableComponent amountString = Component.translatable("tutorialmod.tooltip.liquid.amount.with.capacity", nf.format(milliBuckets), nf.format(tank.getCapacity()));
-                tooltip.add(amountString.withStyle(ChatFormatting.GRAY));
+                MutableComponent amountString = Component.translatable("gui.nc.fluid_tank_renderer.amount_capacity", nf.format(milliBuckets), nf.format(tank.getCapacity()));
+                tooltip.add(amountString.withStyle(ChatFormatting.WHITE));
             } else if (tooltipMode == TooltipMode.SHOW_AMOUNT) {
-                MutableComponent amountString = Component.translatable("tutorialmod.tooltip.liquid.amount", nf.format(milliBuckets));
-                tooltip.add(amountString.withStyle(ChatFormatting.GRAY));
+                MutableComponent amountString = Component.translatable("gui.nc.fluid_tank_renderer.amount", nf.format(milliBuckets));
+                tooltip.add(amountString.withStyle(ChatFormatting.WHITE));
             }
         } catch (RuntimeException e) {
             LOGGER.error("Failed to get tooltip for fluid: " + e);

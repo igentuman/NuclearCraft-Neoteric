@@ -10,8 +10,10 @@ import net.minecraftforge.fluids.FluidStack;
 public interface IFluidStackIngredientCreator extends IIngredientCreator<Fluid, FluidStack, FluidStackIngredient> {
 
     default FluidStackIngredient from(String name, int amount) {
-
-        return from(NCFluids.NC_MATERIALS.get(name).getStill(), amount);
+        if(NCFluids.NC_MATERIALS.get(name) != null) {
+            return from(NCFluids.NC_MATERIALS.get(name).getStill(), amount);
+        }
+        return from(NCFluids.NC_GASES.get(name).getStill(), amount);
     }
 
     @Override

@@ -20,6 +20,7 @@ public class ManufactoryRecipes extends AbstractRecipeProvider {
                 continue;
             }
             if(NCItems.GEMS_TAG.containsKey(name) && NCItems.NC_DUSTS.containsKey(name)) {
+                if(Materials.villiaumite.equals(name) || Materials.carobbiite.equals(name)) continue;
                 itemToItem(gemIngredient(name), dustStack(name), 1.5D);
             }
         }

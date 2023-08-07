@@ -84,34 +84,35 @@ public class NCFluids {
 
     private static void liquids() {
         HashMap<String, LiquidDefinition> items = new HashMap<>();
-        items.put("radaway", new LiquidDefinition("radaway", 0x3DB37AC4));
-        items.put("radaway_slow", new LiquidDefinition("radaway_slow", 0x3DA0EFFF));
-        items.put("redstone_ethanol", new LiquidDefinition("redstone_ethanol", 0x3D7E8CC8));
-        items.put("boron_nitride_solution", new LiquidDefinition("boron_nitride_solution", 0x3D6F8E5C));
-        items.put("fluorite_water", new LiquidDefinition("fluorite_water", 0x3D8AB492));
-        items.put("calcium_sulfate_solution", new LiquidDefinition("calcium_sulfate_solution", 0x3DB8B0A6));
-        items.put("sodium_fluoride_solution", new LiquidDefinition("sodium_fluoride_solution", 0x3DC2B1A1));
-        items.put("potassium_fluoride_solution", new LiquidDefinition("potassium_fluoride_solution", 0x3DC1C99D));
-        items.put("sodium_hydroxide_solution", new LiquidDefinition("sodium_hydroxide_solution", 0x3DC2B7BB));
-        items.put("potassium_hydroxide_solution", new LiquidDefinition("potassium_hydroxide_solution", 0x3DB8C6B0));
-        items.put("borax_solution", new LiquidDefinition("borax_solution", 0x3DEEEEEE));
-        items.put("irradiated_borax_solution", new LiquidDefinition("irradiated_borax_solution", 0x3DFFD0A3));
-        items.put("ice", new LiquidDefinition("ice", 0x3DAFF1FF));
-        items.put("slurry_ice", new LiquidDefinition("slurry_ice", 0x3D7EAEB7));
-        items.put("chocolate_liquor", new LiquidDefinition("chocolate_liquor", 0x3D41241C));
-        items.put("cocoa_butter", new LiquidDefinition("cocoa_butter", 0x3DF6EEBF));
-        items.put("unsweetened_chocolate", new LiquidDefinition("unsweetened_chocolate", 0x3D2C0A08));
-        items.put("dark_chocolate", new LiquidDefinition("dark_chocolate", 0x3D2C0B06));
-        items.put("milk_chocolate", new LiquidDefinition("milk_chocolate", 0x3D884121));
-        items.put("sugar", new LiquidDefinition("sugar", 0x3DFFD59A));
-        items.put("gelatin", new LiquidDefinition("gelatin", 0x3DDDD09C));
-        items.put("hydrated_gelatin", new LiquidDefinition("hydrated_gelatin", 0x3DDDD09C));
-        items.put("marshmallow", new LiquidDefinition("marshmallow", 0x3DE1E1E3));
-        items.put("milk", new LiquidDefinition("milk", 0x3D31C23A));
-        items.put("technical_water", new LiquidDefinition("technical_water", 0x3D2F43F4));
-        items.put("condensate_water", new LiquidDefinition("condensate_water", 0x3D2F43F4));
-        items.put("emergency_coolant", new LiquidDefinition("emergency_coolant", 0x3D6DD0E7));
-        items.put("emergency_coolant_heated", new LiquidDefinition("emergency_coolant_heated", 0x3DCDBEE7));
+        items.put("radaway", new LiquidDefinition("radaway", 0x50B37AC4));
+        items.put("radaway_slow", new LiquidDefinition("radaway_slow", 0x50A0EFFF));
+        items.put("redstone_ethanol", new LiquidDefinition("redstone_ethanol", 0x507E8CC8));
+        items.put("boron_nitride_solution", new LiquidDefinition("boron_nitride_solution", 0x506F8E5C));
+        items.put("fluorite_water", new LiquidDefinition("fluorite_water", 0x508AB492));
+        items.put("calcium_sulfate_solution", new LiquidDefinition("calcium_sulfate_solution", 0x50B8B0A6));
+        items.put("sodium_fluoride_solution", new LiquidDefinition("sodium_fluoride_solution", 0x50C2B1A1));
+        items.put("potassium_fluoride_solution", new LiquidDefinition("potassium_fluoride_solution", 0x50C1C99D));
+        items.put("sodium_hydroxide_solution", new LiquidDefinition("sodium_hydroxide_solution", 0x50C2B7BB));
+        items.put("potassium_hydroxide_solution", new LiquidDefinition("potassium_hydroxide_solution", 0x50B8C6B0));
+        items.put("borax_solution", new LiquidDefinition("borax_solution", 0x50EEEEEE));
+        items.put("irradiated_borax_solution", new LiquidDefinition("irradiated_borax_solution", 0x50FFD0A3));
+        items.put("ice", new LiquidDefinition("ice", 0x50AFF1FF));
+        items.put("slurry_ice", new LiquidDefinition("slurry_ice", 0x507EAEB7));
+        items.put("heavy_water", new LiquidDefinition("heavy_water", 0x507EAEB7));
+        items.put("chocolate_liquor", new LiquidDefinition("chocolate_liquor", 0x5041241C));
+        items.put("cocoa_butter", new LiquidDefinition("cocoa_butter", 0x50F6EEBF));
+        items.put("unsweetened_chocolate", new LiquidDefinition("unsweetened_chocolate", 0x502C0A08));
+        items.put("dark_chocolate", new LiquidDefinition("dark_chocolate", 0x502C0B06));
+        items.put("milk_chocolate", new LiquidDefinition("milk_chocolate", 0x50884121));
+        items.put("sugar", new LiquidDefinition("sugar", 0x50FFD59A));
+        items.put("gelatin", new LiquidDefinition("gelatin", 0x50DDD09C));
+        items.put("hydrated_gelatin", new LiquidDefinition("hydrated_gelatin", 0x50DDD09C));
+        items.put("marshmallow", new LiquidDefinition("marshmallow", 0x50E1E1E3));
+        items.put("milk", new LiquidDefinition("milk", 0x5031C23A));
+        items.put("technical_water", new LiquidDefinition("technical_water", 0x502F43F4));
+        items.put("condensate_water", new LiquidDefinition("condensate_water", 0x502F43F4));
+        items.put("emergency_coolant", new LiquidDefinition("emergency_coolant", 0x506DD0E7));
+        items.put("emergency_coolant_heated", new LiquidDefinition("emergency_coolant_heated", 0x50CDBEE7));
 
         for(LiquidDefinition liquid: items.values()) {
             LIQUIDS_TAG.put(liquid.name, TagKey.create(Registry.FLUID_REGISTRY,  new ResourceLocation("forge", liquid.name)));
@@ -122,10 +123,10 @@ public class NCFluids {
 
     private static void liquidGases() {
         HashMap<String, LiquidDefinition> items = new HashMap<>();
-        items.put("liquid_hydrogen", new LiquidDefinition("liquid_hydrogen", 0x3DB37AC4));
-        items.put("liquid_helium", new LiquidDefinition("liquid_helium", 0x3DA0EFFF));
-        items.put("liquid_oxygen", new LiquidDefinition("liquid_oxygen", 0x3D7E8CC8));
-        items.put("liquid_nitrogen", new LiquidDefinition("liquid_nitrogen", 0x3D31C23A));
+        items.put("liquid_hydrogen", new LiquidDefinition("liquid_hydrogen", 0x50B37AC4));
+        items.put("liquid_helium", new LiquidDefinition("liquid_helium", 0x50A0EFFF));
+        items.put("liquid_oxygen", new LiquidDefinition("liquid_oxygen", 0x507E8CC8));
+        items.put("liquid_nitrogen", new LiquidDefinition("liquid_nitrogen", 0x5031C23A));
 
         for(LiquidDefinition liquid: items.values()) {
             LIQUIDS_TAG.put(liquid.name, TagKey.create(Registry.FLUID_REGISTRY,  new ResourceLocation("forge", liquid.name)));

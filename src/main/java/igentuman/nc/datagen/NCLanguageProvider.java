@@ -9,6 +9,7 @@ import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.setup.ModSetup.TAB_NAME;
+import static igentuman.nc.setup.registration.NCItems.NC_INGOTS;
 import static igentuman.nc.util.TextUtils.convertToName;
 
 public class NCLanguageProvider extends LanguageProvider {
@@ -106,7 +107,11 @@ public class NCLanguageProvider extends LanguageProvider {
 
     private void buckets() {
         for(String name: NCFluids.NC_MATERIALS.keySet()) {
-            add(NCFluids.NC_MATERIALS.get(name).getBucket(), "Bucket of Molten " + convertToName(name));
+            String molten = "";
+            if(NC_INGOTS.containsKey(name)) {
+                molten = "Molten ";
+            }
+            add(NCFluids.NC_MATERIALS.get(name).getBucket(), "Bucket of " + molten + convertToName(name));
         }
         for(String name: NCFluids.NC_GASES.keySet()) {
             add(NCFluids.NC_GASES.get(name).getBucket(), "Bucket of " + convertToName(name));
@@ -115,7 +120,11 @@ public class NCLanguageProvider extends LanguageProvider {
 
     private void fluids() {
         for(String name: NCFluids.NC_MATERIALS.keySet()) {
-            add("fluid_type."+NCFluids.NC_MATERIALS.get(name).type().getId().toLanguageKey(), "Molten " + convertToName(name));
+            String molten = "";
+            if(NC_INGOTS.containsKey(name)) {
+                molten = "Molten ";
+            }
+            add("fluid_type."+NCFluids.NC_MATERIALS.get(name).type().getId().toLanguageKey(), molten + convertToName(name));
         }
         for(String name: NCFluids.NC_GASES.keySet()) {
             add("fluid_type."+NCFluids.NC_GASES.get(name).type().getId().toLanguageKey(), convertToName(name));
@@ -133,6 +142,8 @@ public class NCLanguageProvider extends LanguageProvider {
         add("fuel.heat.descr","Base Heat Gen: %s H/t");
         add("gui.nc.redstone_config.tooltip_0","WORK MODE: IGNORE SIGNAL");
         add("gui.nc.redstone_config.tooltip_1","WORK MODE: ON SIGNAL");
+        add("gui.nc.fluid_tank_renderer.amount_capacity","%s/%s mB");
+        add("gui.nc.fluid_tank_renderer.amount","%s mB");
         add("fuel.forge_energy.descr","Forge Energy: %s FE/t");
         add("fuel.heat_boiling.descr","Boiling Reactor Heat: %s H/t");
         add("fuel.depletion.descr","Base Depletion Time: %s sec");
@@ -281,8 +292,8 @@ public class NCLanguageProvider extends LanguageProvider {
     }
 
     private void ingots() {
-        for(String ingot: NCItems.NC_INGOTS.keySet()) {
-            add(NCItems.NC_INGOTS.get(ingot).get(), convertToName(ingot)+" Ingot");
+        for(String ingot: NC_INGOTS.keySet()) {
+            add(NC_INGOTS.get(ingot).get(), convertToName(ingot)+" Ingot");
         }
     }
 

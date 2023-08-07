@@ -102,6 +102,7 @@ public class Processors {
                     ProcessorBuilder
                             .make(ELECTROLYZER, 1, 0, 4, 0)
                             .blockEntity(ElectrolyzerBE::new)
+                            .recipe(ElectrolyzerRecipe::new)
                             .build()
             );
             all.put(EXTRACTOR,

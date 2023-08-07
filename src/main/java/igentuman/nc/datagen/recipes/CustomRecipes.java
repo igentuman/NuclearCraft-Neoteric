@@ -29,5 +29,6 @@ public class CustomRecipes extends NCRecipes {
         MelterRecipes.generate(consumer);
         IngotFormerRecipes.generate(consumer);
         FuelReprocessorRecipes.generate(consumer);
+        ElectrolyzerRecipes.generate(consumer);
     }
 }

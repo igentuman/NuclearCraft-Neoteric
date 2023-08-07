@@ -145,15 +145,8 @@ public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
     }
 
     public List<FluidStack> getOutputFluids(int id) {
-        if(resolvedOutputFluids == null) {
-            resolvedOutputFluids = NonNullList.create();
-            int i = 0;
-            for (FluidStack outFluid : outputFluids) {
-                if (i == id) resolvedOutputFluids.add(outFluid);
-                i++;
-            }
-        }
-        return resolvedOutputFluids;
+        if(outputFluids.length > id) return List.of(outputFluids[id]);
+        return List.of(FluidStack.EMPTY);
     }
 
     public double getTimeModifier() {

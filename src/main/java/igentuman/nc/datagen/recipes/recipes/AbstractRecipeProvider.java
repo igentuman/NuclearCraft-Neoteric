@@ -10,11 +10,13 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.List;
 import java.util.function.Consumer;
 
+import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.setup.registration.Fuel.*;
 import static igentuman.nc.setup.registration.NCItems.*;
@@ -56,8 +58,20 @@ public abstract class AbstractRecipeProvider {
                 .build(consumer);
     }
 
+    protected static FluidStack fluidStack(Fluid fluid, int amount) {
+        try {
+            return IngredientCreatorAccess.fluid().from(fluid, amount).getRepresentations().get(0);
+        } catch (NullPointerException e) {
+            throw new NullPointerException("Fluid " + fluid.getFluidType().toString() + " does not exist");
+        }
+    }
+
     protected static FluidStack fluidStack(String name, int amount) {
-        return IngredientCreatorAccess.fluid().from(name, amount).getRepresentations().get(0);
+        try {
+            return IngredientCreatorAccess.fluid().from(name, amount).getRepresentations().get(0);
+        } catch (NullPointerException e) {
+            throw new NullPointerException("Fluid " + name + " does not exist");
+        }
     }
 
     public static void itemToItem(NcIngredient input, NcIngredient output, double...params) {
@@ -79,6 +93,18 @@ public abstract class AbstractRecipeProvider {
                 .modifiers(timeModifier, radiation, powerModifier)
                 .build(consumer);
     }
+
+    public static void fluidsAndFluids(List<FluidStackIngredient> input, List<FluidStack> output, double...params) {
+        double timeModifier = params.length>0 ? params[0] : 1.0;
+        double powerModifier = params.length>1 ? params[1] : 1.0;
+        double radiation = params.length>2 ? params[2] : 1.0;
+        NcRecipeBuilder.get(ID)
+                .fluids(input, output)
+                .modifiers(timeModifier, radiation, powerModifier)
+                .build(consumer);
+    }
+
+
 
     public static void itemsAndFluids(
             List<NcIngredient> inputItems, List<NcIngredient> outputItems,

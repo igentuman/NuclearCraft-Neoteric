@@ -1,0 +1,22 @@
+{
+  "type": "nuclearcraft:electrolyzer",
+  "inputFluids": [
+    {
+      "amount": 250,
+      "fluid": "nuclearcraft:hydrofluoric_acid"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 250,
+      "fluid": "nuclearcraft:hydrogen"
+    },
+    {
+      "amount": 250,
+      "fluid": "nuclearcraft:fluorine"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 0.5
+}

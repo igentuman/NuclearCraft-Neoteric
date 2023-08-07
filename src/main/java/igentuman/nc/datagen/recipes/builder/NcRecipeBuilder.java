@@ -74,14 +74,8 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
         for (NcIngredient in: inputItems) {
             name.append(in.getName()).append("-");
         }
-        for(NcIngredient out: outputItems) {
-            name.append(out.getName()).append("-");
-        }
         for(FluidStackIngredient in: inputFluids) {
             name.append(in.getRepresentations().get(0).getFluid().getFluidType().toString().split(":")[1]).append("-");
-        }
-        for(FluidStack out: outputFluids) {
-            name.append(out.getFluid().getFluidType().toString().split(":")[1]).append("-");
         }
         name.replace(name.length()-1, name.length(), "");
         return new ResourceLocation(MODID, ID+"/"+name);

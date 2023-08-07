@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:ingot_former",
+  "inputFluids": [
+    {
+      "amount": 144,
+      "fluid": "nuclearcraft:plutonium_238_ox"
+    }
+  ],
+  "output": [
+    {
+      "item": "nuclearcraft:plutonium_238_ox"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

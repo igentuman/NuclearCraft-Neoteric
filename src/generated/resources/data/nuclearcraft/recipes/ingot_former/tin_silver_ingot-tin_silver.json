@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:ingot_former",
+  "inputFluids": [
+    {
+      "amount": 144,
+      "fluid": "nuclearcraft:tin_silver"
+    }
+  ],
+  "output": [
+    {
+      "item": "nuclearcraft:tin_silver_ingot"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

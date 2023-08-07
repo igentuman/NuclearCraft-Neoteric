@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:ingot_former",
+  "inputFluids": [
+    {
+      "amount": 144,
+      "fluid": "nuclearcraft:neptunium_236"
+    }
+  ],
+  "output": [
+    {
+      "item": "nuclearcraft:neptunium_236"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

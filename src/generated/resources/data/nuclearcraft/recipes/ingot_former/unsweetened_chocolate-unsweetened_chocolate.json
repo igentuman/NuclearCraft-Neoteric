@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:ingot_former",
+  "inputFluids": [
+    {
+      "amount": 144,
+      "fluid": "nuclearcraft:unsweetened_chocolate"
+    }
+  ],
+  "output": [
+    {
+      "item": "nuclearcraft:unsweetened_chocolate"
+    }
+  ],
+  "powerModifier": 0.5,
+  "radiation": 1.0,
+  "timeModifier": 0.25
+}

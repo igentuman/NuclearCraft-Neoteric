@@ -203,7 +203,7 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
         @Override
         public JsonElement serialize() {
             JsonObject json = new JsonObject();
-            json.addProperty("count", fluidInstance.getAmount());
+            json.addProperty("amount", fluidInstance.getAmount());
             json.addProperty("fluid", NcUtils.getName(fluidInstance.getFluid()).toString());
             if (fluidInstance.hasTag()) {
                 json.addProperty("nbt", fluidInstance.getTag().toString());
@@ -300,7 +300,7 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
         @Override
         public JsonElement serialize() {
             JsonObject json = new JsonObject();
-            json.addProperty("count", amount);
+            json.addProperty("amount", amount);
             json.addProperty("tag", tag.getKey().location().toString());
             return json;
         }

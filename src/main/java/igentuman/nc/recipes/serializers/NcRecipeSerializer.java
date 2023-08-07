@@ -73,7 +73,7 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerial
                 inputFluids = new FluidStackIngredient[input.getAsJsonArray().size()];
                 int i = 0;
                 for (JsonElement in : input.getAsJsonArray()) {
-                    inputFluids[i] = IngredientCreatorAccess.fluid().deserialize(in);
+                    inputFluids[i] = IngredientCreatorAccess.fluid().deserialize(in.getAsJsonObject());
                     i++;
                 }
             } else {

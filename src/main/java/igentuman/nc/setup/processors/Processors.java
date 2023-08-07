@@ -134,6 +134,7 @@ public class Processors {
                     ProcessorBuilder
                             .make(INGOT_FORMER, 1, 0, 0, 1)
                             .blockEntity(IngotFormerBE::new)
+                            .recipeSerializer(() -> new NcRecipeSerializer<>(IngotFormerRecipe::new))
                             .progressBar(4)
                             .build()
             );

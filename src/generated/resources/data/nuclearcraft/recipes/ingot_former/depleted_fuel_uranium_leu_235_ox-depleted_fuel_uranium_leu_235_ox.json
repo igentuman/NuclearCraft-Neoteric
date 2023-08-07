@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:ingot_former",
+  "inputFluids": [
+    {
+      "amount": 144,
+      "fluid": "nuclearcraft:depleted_fuel_uranium_leu_235_ox"
+    }
+  ],
+  "output": [
+    {
+      "item": "nuclearcraft:depleted_fuel_uranium_leu_235_ox"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

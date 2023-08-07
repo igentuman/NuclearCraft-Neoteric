@@ -2,8 +2,13 @@ package igentuman.nc.datagen.recipes.builder;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import igentuman.nc.container.elements.NCSlotItemHandler;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
+import igentuman.nc.recipes.ingredient.InputIngredient;
+import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.ingredient.NcIngredient;
+import igentuman.nc.recipes.ingredient.creator.FluidStackIngredientCreator;
+import igentuman.nc.recipes.ingredient.creator.IngredientCreatorAccess;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -115,7 +120,7 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
                 inputJson.add(in.serialize());
             }
             if(!inputFluids.isEmpty()) {
-                json.add("inputFluids", outJson);
+                json.add("inputFluids", inputJson);
             }
 
             outJson = new JsonArray();

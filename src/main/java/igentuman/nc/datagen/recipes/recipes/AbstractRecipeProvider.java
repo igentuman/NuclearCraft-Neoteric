@@ -180,6 +180,12 @@ public abstract class AbstractRecipeProvider {
         if(pCount.length > 0) count = pCount[0];
         return ingredient(forgeOre(name), count);
     }
+    public static NcIngredient chunkIngredient(String name, int...pCount)
+    {
+        int count = 1;
+        if(pCount.length > 0) count = pCount[0];
+        return ingredient(forgeChunk(name), count);
+    }
 
     public static NcIngredient ingotIngredient(String name, int...pCount)
     {

@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:melter",
+  "input": [
+    {
+      "tag": "forge:raw_materials/platinum"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 216,
+      "fluid": "nuclearcraft:platinum"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

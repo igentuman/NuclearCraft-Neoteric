@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:melter",
+  "input": [
+    {
+      "tag": "forge:raw_materials/hsla_steel"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 216,
+      "fluid": "nuclearcraft:hsla_steel"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

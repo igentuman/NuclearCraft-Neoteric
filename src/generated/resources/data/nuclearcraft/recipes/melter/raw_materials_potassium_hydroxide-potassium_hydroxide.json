@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:melter",
+  "input": [
+    {
+      "tag": "forge:raw_materials/potassium_hydroxide"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 216,
+      "fluid": "nuclearcraft:potassium_hydroxide"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:melter",
+  "input": [
+    {
+      "tag": "forge:raw_materials/manganese"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 216,
+      "fluid": "nuclearcraft:manganese"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

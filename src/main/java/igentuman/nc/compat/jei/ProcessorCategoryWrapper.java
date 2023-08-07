@@ -19,6 +19,7 @@ import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 
@@ -61,22 +62,22 @@ public class ProcessorCategoryWrapper<T extends AbstractRecipe> implements IReci
     }
 
     @Override
-    public RecipeType<T> getRecipeType() {
+    public @NotNull RecipeType<T> getRecipeType() {
         return recipeType;
     }
 
     @Override
-    public Component getTitle() {
+    public @NotNull Component getTitle() {
         return Component.translatable("nc_jei_cat."+getRecipeType().getUid().getPath());
     }
 
     @Override
-    public IDrawable getBackground() {
+    public @NotNull IDrawable getBackground() {
         return background;
     }
 
     @Override
-    public IDrawable getIcon() {
+    public @NotNull IDrawable getIcon() {
         return icon;
     }
     @Override
@@ -102,7 +103,7 @@ public class ProcessorCategoryWrapper<T extends AbstractRecipe> implements IReci
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, T recipe, IFocusGroup focuses) {
+    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, T recipe, @NotNull IFocusGroup focuses) {
 
         int itemIdx = 0;
         int inputCounter = 0;
@@ -138,14 +139,14 @@ public class ProcessorCategoryWrapper<T extends AbstractRecipe> implements IReci
             } else if(processor.getSlotsConfig().getSlotType(itemIdx).contains("fluid_in")) {
                 builder.addSlot(RecipeIngredientRole.INPUT, pos[0]+xShift, pos[1]+yShift)
                         .addIngredients(ForgeTypes.FLUID_STACK, recipe.getInputFluids(inputFluidCounter))
-                        .setFluidRenderer(8000, false, 16, 16);
+                        .setFluidRenderer(recipe.getInputFluids(inputFluidCounter).get(0).getAmount(), false, 16, 16);
                 slots[itemIdx] = guiHelper.createDrawable(rl("textures/gui/widgets.png"), 18, 0, 18, 18);
                 itemIdx++;
                 inputFluidCounter++;
             } else if(processor.getSlotsConfig().getSlotType(itemIdx).contains("fluid_out")) {
                 builder.addSlot(RecipeIngredientRole.OUTPUT, pos[0]+xShift, pos[1]+yShift)
                         .addIngredients(ForgeTypes.FLUID_STACK, recipe.getOutputFluids(putFluidCounter))
-                        .setFluidRenderer(8000, false, 16, 16);
+                        .setFluidRenderer(recipe.getOutputFluids(putFluidCounter).get(0).getAmount(), false, 16, 16);
                 slots[itemIdx] = guiHelper.createDrawable(rl("textures/gui/widgets.png"), 18, 36, 18, 18);
                 itemIdx++;
                 putFluidCounter++;

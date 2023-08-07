@@ -24,6 +24,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.Objects;
 
+import static net.minecraft.world.item.Items.BARRIER;
 import static net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE;
 
 public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
@@ -103,7 +104,8 @@ public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
         boolean empty = inputFluids.length == 0 && outputFluids.length == 0 && inputItems.length == 0 && outputItems.length == 0;
         if(empty) return true;
         for(ItemStackIngredient inputItem: inputItems) {
-            if(inputItem.getRepresentations().isEmpty()) {
+            if(inputItem.getRepresentations().isEmpty()
+                    || inputItem.getRepresentations().get(0).getItem().equals(BARRIER)) {
                 return true;
             }
         }
@@ -179,12 +181,30 @@ public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
             ItemStack toOutput = outputItem.copy();
             if(!contentHandler.itemHandler.insertItemInternal(i, toOutput, false).isEmpty()) {
                 if(!contentHandler.itemHandler.pushExcessItems(i, toOutput).isEmpty()) {
-                    NuclearCraft.LOGGER.error("Failed to push excess items from recipe output.");
                     return false;
                 }
             }
             i++;
         }
+
+        i = contentHandler.inputFluidSlots;
+        for(FluidStack outputFluid: outputFluids) {
+            if(!contentHandler.fluidCapability.isValidForOutputSlot(i, outputFluid)) {
+                if(!contentHandler.fluidCapability.canPushExcessFluid(i, outputFluid)) return false;
+            }
+            i++;
+        }
+        i = contentHandler.inputFluidSlots;
+        for(FluidStack outputFluid: outputFluids) {
+            FluidStack toOutput = outputFluid.copy();
+            if(!contentHandler.fluidCapability.insertFluidInternal(i, toOutput, false).isEmpty()) {
+                if(!contentHandler.fluidCapability.pushExcessFluid(i, toOutput).isEmpty()) {
+                    return false;
+                }
+            }
+            i++;
+        }
+
         contentHandler.clearHolded();
         return true;
     }

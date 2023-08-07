@@ -7,6 +7,7 @@ import igentuman.nc.recipes.NcRecipeType;
 import igentuman.nc.recipes.RecipeInfo;
 import igentuman.nc.setup.processors.ProcessorPrefab;
 import igentuman.nc.setup.processors.Processors;
+import igentuman.nc.setup.registration.NCItems;
 import igentuman.nc.setup.registration.NCProcessors;
 import igentuman.nc.util.CustomEnergyStorage;
 import igentuman.nc.handler.sided.SidedContentHandler;
@@ -175,7 +176,13 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
 
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-                return true;
+                if(prefab().supportSpeedUpgrade && slot == 0) {
+                    return stack.getItem().equals(NCItems.NC_ITEMS.get("upgrade_speed").get());
+                }
+                if(prefab().supportEnergyUpgrade && slot == 1) {
+                    return stack.getItem().equals(NCItems.NC_ITEMS.get("upgrade_energy").get());
+                }
+                return prefab().getUpgradesSlots() == 1 && stack.getItem().equals(NCItems.NC_ITEMS.get("upgrade_energy").get());
             }
         };
     }

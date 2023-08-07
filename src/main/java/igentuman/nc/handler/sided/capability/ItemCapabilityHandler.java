@@ -23,7 +23,7 @@ import java.util.*;
 
 import static igentuman.nc.handler.sided.SlotModePair.SlotMode.*;
 
-public class ItemCapabilityHandler extends AbscractCapabilityHandler implements IItemHandlerModifiable, INBTSerializable<CompoundTag> {
+public class ItemCapabilityHandler extends AbstractCapabilityHandler implements IItemHandlerModifiable, INBTSerializable<CompoundTag> {
 
     protected NonNullList<ItemStack> stacks;
     public BlockEntity tile;

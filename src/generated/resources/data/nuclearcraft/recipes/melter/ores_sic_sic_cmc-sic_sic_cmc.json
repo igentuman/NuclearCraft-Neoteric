@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:melter",
+  "input": [
+    {
+      "tag": "forge:ores/sic_sic_cmc"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 288,
+      "fluid": "nuclearcraft:sic_sic_cmc"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

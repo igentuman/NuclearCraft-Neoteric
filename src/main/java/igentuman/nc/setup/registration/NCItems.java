@@ -81,6 +81,7 @@ public class NCItems {
                 "graham_cracker",
                 "marshmallow",
                 "milk_chocolate",
+                "dark_chocolate",
                 "moresmore",
                 "rad_x",
                 "radaway",
@@ -148,6 +149,7 @@ public class NCItems {
         );
         for(String name: parts) {
             NC_PARTS.put(name, ITEMS.register(name, () -> new Item(ITEM_PROPERTIES)));
+
         }
     }
 

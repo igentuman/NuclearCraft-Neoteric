@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:melter",
+  "input": [
+    {
+      "item": "minecraft:obsidian"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 288,
+      "fluid": "nuclearcraft:obsidian"
+    }
+  ],
+  "powerModifier": 2.0,
+  "radiation": 1.0,
+  "timeModifier": 2.0
+}

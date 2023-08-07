@@ -156,6 +156,7 @@ public class Processors {
                     ProcessorBuilder
                             .make(MELTER, 0, 1, 1, 0)
                             .blockEntity(MelterBE::new)
+                            .recipeSerializer(() -> new NcRecipeSerializer<>(MelterRecipe::new))
                             .progressBar(0)
                             .build()
             );

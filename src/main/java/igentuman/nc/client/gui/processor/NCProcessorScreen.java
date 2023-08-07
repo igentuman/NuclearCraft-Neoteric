@@ -73,12 +73,12 @@ public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractC
             if(slots.getOutputItems()+slots.getOutputFluids() == 1 && slots.getSlotType(i).contains("_out")) {
                 widgets.add(new BigSlot(slots.getSlotPos(i), slots.getSlotType(i)));
                 if(slots.getSlotType(i).contains("fluid")) {
-                    widgets.add(new FluidTankRenderer(getFluidTank(i), 24, 24, slots.getSlotPos(i)[0]-4, slots.getSlotPos(i)[1]-4));
+                    widgets.add(new FluidTankRenderer(getFluidTank(i-slots.getInputItems()-slots.getOutputItems()), 24, 24, slots.getSlotPos(i)[0]-4, slots.getSlotPos(i)[1]-4));
                 }
             } else {
                 widgets.add(new NormalSlot(slots.getSlotPos(i), slots.getSlotType(i)));
                 if(slots.getSlotType(i).contains("fluid")) {
-                    widgets.add(new FluidTankRenderer(getFluidTank(i), 16, 16, slots.getSlotPos(i)));
+                    widgets.add(new FluidTankRenderer(getFluidTank(i-slots.getInputItems()), 16, 16, slots.getSlotPos(i)));
                 }
 
             }

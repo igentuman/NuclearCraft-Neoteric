@@ -1,13 +1,16 @@
 package igentuman.nc.datagen.recipes.recipes;
 
 import igentuman.nc.datagen.recipes.builder.NcRecipeBuilder;
+import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.NcIngredient;
+import igentuman.nc.recipes.ingredient.creator.IngredientCreatorAccess;
 import igentuman.nc.setup.registration.Fuel;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraftforge.fluids.FluidStack;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -53,6 +56,10 @@ public abstract class AbstractRecipeProvider {
                 .build(consumer);
     }
 
+    protected static FluidStack fluidStack(String name, int amount) {
+        return IngredientCreatorAccess.fluid().from(name, amount).getRepresentations().get(0);
+    }
+
     public static void itemToItem(NcIngredient input, NcIngredient output, double...params) {
         double timeModifier = params.length>0 ? params[0] : 1.0;
         double powerModifier = params.length>1 ? params[1] : 1.0;
@@ -69,6 +76,20 @@ public abstract class AbstractRecipeProvider {
         double radiation = params.length>2 ? params[2] : 1.0;
         NcRecipeBuilder.get(ID)
                 .items(input, output)
+                .modifiers(timeModifier, radiation, powerModifier)
+                .build(consumer);
+    }
+
+    public static void itemsAndFluids(
+            List<NcIngredient> inputItems, List<NcIngredient> outputItems,
+            List<FluidStackIngredient> inputFluids, List<FluidStack> outputFluids,
+            double...params) {
+        double timeModifier = params.length>0 ? params[0] : 1.0;
+        double powerModifier = params.length>1 ? params[1] : 1.0;
+        double radiation = params.length>2 ? params[2] : 1.0;
+        NcRecipeBuilder.get(ID)
+                .items(inputItems, outputItems)
+                .fluids(inputFluids, outputFluids)
                 .modifiers(timeModifier, radiation, powerModifier)
                 .build(consumer);
     }
@@ -151,6 +172,13 @@ public abstract class AbstractRecipeProvider {
         int count = 1;
         if(pCount.length > 0) count = pCount[0];
         return ingredient(isotopeItem(name), count);
+    }
+
+    public static NcIngredient oreIngredient(String name, int...pCount)
+    {
+        int count = 1;
+        if(pCount.length > 0) count = pCount[0];
+        return ingredient(forgeOre(name), count);
     }
 
     public static NcIngredient ingotIngredient(String name, int...pCount)

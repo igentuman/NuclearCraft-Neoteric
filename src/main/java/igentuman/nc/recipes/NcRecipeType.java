@@ -81,7 +81,8 @@ public class NcRecipeType<RECIPE extends AbstractRecipe> implements RecipeType<R
             RecipeManager recipeManager = world.getRecipeManager();
             List<RECIPE> recipes = recipeManager.getAllRecipesFor(this);
             cachedRecipes = recipes.stream()
-                  .toList();
+                    .filter(recipe -> !recipe.isIncomplete())
+                    .toList();
         }
         return cachedRecipes;
     }

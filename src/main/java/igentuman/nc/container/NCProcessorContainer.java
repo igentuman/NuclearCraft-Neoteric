@@ -1,8 +1,10 @@
 package igentuman.nc.container;
 
 import igentuman.nc.block.entity.processor.NCProcessorBE;
+import igentuman.nc.container.elements.NCSlotItemHandler;
 import igentuman.nc.setup.processors.ProcessorPrefab;
 import igentuman.nc.setup.processors.Processors;
+import igentuman.nc.setup.registration.NCItems;
 import igentuman.nc.setup.registration.NCProcessors;
 import igentuman.nc.handler.sided.SlotModePair;
 import net.minecraft.core.BlockPos;
@@ -72,14 +74,16 @@ public class NCProcessorContainer extends AbstractContainerMenu {
         if(getProcessor().supportSpeedUpgrade) {
             int idx = itemIdx;
             int finalUx = ux;
-            addSlot(new SlotItemHandler(blockEntity.upgradesHandler, idx, finalUx, 77));
+            addSlot(new NCSlotItemHandler(blockEntity.upgradesHandler, idx, finalUx, 77)
+                    .allowed(NCItems.NC_ITEMS.get("upgrade_speed").get()));
             itemIdx++;
             ux -= 18;
         }
         if(getProcessor().supportEnergyUpgrade) {
             int idx = itemIdx;
             int finalUx = ux;
-            addSlot(new SlotItemHandler(blockEntity.upgradesHandler, idx, finalUx, 77));
+            addSlot(new NCSlotItemHandler(blockEntity.upgradesHandler, idx, finalUx, 77)
+                    .allowed(NCItems.NC_ITEMS.get("upgrade_energy").get()));
         }
     }
 

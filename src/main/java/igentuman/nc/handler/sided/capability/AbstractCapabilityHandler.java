@@ -5,7 +5,7 @@ import igentuman.nc.handler.sided.SlotModePair;
 
 import java.util.HashMap;
 
-public abstract class AbscractCapabilityHandler {
+public abstract class AbstractCapabilityHandler {
     public int inputSlots;
     public int outputSlots;
     

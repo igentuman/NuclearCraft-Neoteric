@@ -32,7 +32,7 @@ public class IngredientCreatorAccess {
      */
     public static IFluidStackIngredientCreator fluid() {
         if (FLUID_STACK_INGREDIENT_CREATOR == null) {
-            lookupInstance(IFluidStackIngredientCreator.class, "igentuman.nc.recipe.ingredient.creator.FluidStackIngredientCreator",
+            lookupInstance(IFluidStackIngredientCreator.class, "igentuman.nc.recipes.ingredient.creator.FluidStackIngredientCreator",
                   helper -> FLUID_STACK_INGREDIENT_CREATOR = helper);
         }
         return FLUID_STACK_INGREDIENT_CREATOR;

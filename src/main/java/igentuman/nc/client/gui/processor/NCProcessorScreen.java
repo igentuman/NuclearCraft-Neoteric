@@ -89,12 +89,13 @@ public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractC
         }
         widgets.add(new ProgressBar(progressBarX, 40, this, menu.getProcessor().progressBar));
         int ux = 154;
-        if(menu.getProcessor().supportSpeedUpgrade) {
-            widgets.add(new NormalSlot(ux, 77, "speed_upgrade"));
-            ux -= 18;
-        }
+
         if(menu.getProcessor().supportEnergyUpgrade) {
             widgets.add(new NormalSlot(ux, 77, "energy_upgrade"));
+            ux -= 18;
+        }
+        if(menu.getProcessor().supportSpeedUpgrade) {
+            widgets.add(new NormalSlot(ux, 77, "speed_upgrade"));
         }
         widgets.add(new Button.SideConfig(29, 74, this));
         widgets.add(new Button.RedstoneConfig(48, 74, this));

@@ -176,13 +176,15 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
 
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-                if(prefab().supportSpeedUpgrade && slot == 0) {
-                    return stack.getItem().equals(NCItems.NC_ITEMS.get("upgrade_speed").get());
-                }
-                if(prefab().supportEnergyUpgrade && slot == 1) {
+                if(prefab().supportEnergyUpgrade && slot == 0) {
                     return stack.getItem().equals(NCItems.NC_ITEMS.get("upgrade_energy").get());
                 }
-                return prefab().getUpgradesSlots() == 1 && stack.getItem().equals(NCItems.NC_ITEMS.get("upgrade_energy").get());
+
+                if(prefab().supportSpeedUpgrade && slot == 1) {
+                    return stack.getItem().equals(NCItems.NC_ITEMS.get("upgrade_speed").get());
+                }
+
+                return prefab().getUpgradesSlots() == 1 && stack.getItem().equals(NCItems.NC_ITEMS.get("upgrade_speed").get());
             }
         };
     }

@@ -53,7 +53,7 @@ public class ProcessorCategoryWrapper<T extends AbstractRecipe> implements IReci
         if(processor.getSlotsConfig().hasThreeRows()) {
             xShift -= 8;
         }
-        this.background = guiHelper.createDrawable(TEXTURE, 0, 0, 140, height);
+        this.background = guiHelper.createDrawable(TEXTURE, 0, 0, 150, height);
         if(CATALYSTS.containsKey(getRecipeType().getUid().getPath())) {
             this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, CATALYSTS.get(getRecipeType().getUid().getPath()).get(0));
         } else{
@@ -86,14 +86,25 @@ public class ProcessorCategoryWrapper<T extends AbstractRecipe> implements IReci
         int d = (int) ((recipe.getTimeModifier()*(double) processor.config().getTime())/2);
         int fluidsOut = processor.getSlotsConfig().getOutputFluids();
         int itemsOut = processor.getSlotsConfig().getOutputItems();
-        if(arrow.containsKey(d)) {
-            progressBackground.draw(stack, 47, height/2-8);
-            arrow.get(d).draw(stack, 47, height/2-8);
-        }
+
         int barXshift = 0;
         if(fluidsOut + itemsOut == 3 || fluidsOut + itemsOut == 6) {
             barXshift = -8;
         }
+        int extraXshift = 0;
+        if(fluidsOut + itemsOut > 6) {
+            extraXshift = -20;
+        }
+
+        if(arrow.containsKey(d)) {
+            int barHeight = 16;
+            if(processor.progressBar > 14) {
+                barHeight = 36;
+            }
+            progressBackground.draw(stack, 47+xShift+25+barXshift+extraXshift, height/2-barHeight/2);
+            arrow.get(d).draw(stack, 47+xShift+25+barXshift+extraXshift, height/2-barHeight/2);
+        }
+
         for(int i = 0; i < slots.length; i++) {
             if(slots[i] != null) {
                 int[] pos = processor.getSlotsConfig().getSlotPositions().get(i);
@@ -110,7 +121,8 @@ public class ProcessorCategoryWrapper<T extends AbstractRecipe> implements IReci
         int inputFluidCounter = 0;
         int putFluidCounter = 0;
         int outputCounter = 0;
-
+        int fluidsOut = processor.getSlotsConfig().getOutputFluids();
+        int itemsOut = processor.getSlotsConfig().getOutputItems();
 
         int d = (int) ((recipe.getTimeModifier()*(double)processor.config().getTime())/2);
         if(!timer.containsKey(d)) {
@@ -119,32 +131,41 @@ public class ProcessorCategoryWrapper<T extends AbstractRecipe> implements IReci
         if(!arrow.containsKey(d)) {
             int xoffset = bars.get(processor.progressBar)[0];
             int yoffset = bars.get(processor.progressBar)[1];
-            this.progressBackground = guiHelper.createDrawable(rl("textures/gui/progress.png"), xoffset, yoffset, 36, 15);
-            arrow.put(d, guiHelper.drawableBuilder(rl("textures/gui/progress.png"), xoffset, yoffset-16, 36, 15)
+            int barHeight = 15;
+            if(processor.progressBar > 14) {
+                barHeight = 36;
+            }
+            this.progressBackground = guiHelper.createDrawable(rl("textures/gui/progress.png"), xoffset, yoffset, 36, barHeight);
+            arrow.put(d, guiHelper.drawableBuilder(rl("textures/gui/progress.png"), xoffset, yoffset-barHeight-1, 36, barHeight)
                     .buildAnimated(timer.get(d), IDrawableAnimated.StartDirection.LEFT));
+        }
+        int barXshift = 0;
+        if(fluidsOut + itemsOut == 3 || fluidsOut + itemsOut == 6) {
+            barXshift = -8;
         }
 
         slots = new IDrawable[processor.getSlotsConfig().getSlotPositions().size()];
         for(int[] pos: processor.getSlotsConfig().getSlotPositions()) {
             if(processor.getSlotsConfig().getSlotType(itemIdx).contains("item_in")) {
-                builder.addSlot(RecipeIngredientRole.INPUT, pos[0]+xShift, pos[1]+yShift).addIngredients(recipe.getInputIngredient(inputCounter));
+
+                builder.addSlot(RecipeIngredientRole.INPUT, pos[0]+xShift+barXshift, pos[1]+yShift).addIngredients(recipe.getInputIngredient(inputCounter));
                 slots[itemIdx] = guiHelper.createDrawable(rl("textures/gui/widgets.png"), 0, 0, 18, 18);
                 itemIdx++;
                 inputCounter++;
             } else if(processor.getSlotsConfig().getSlotType(itemIdx).contains("item_out")) {
-                builder.addSlot(RecipeIngredientRole.OUTPUT, pos[0]+xShift, pos[1]+yShift).addItemStack(recipe.getOutputItem(outputCounter));
+                builder.addSlot(RecipeIngredientRole.OUTPUT, pos[0]+xShift+barXshift, pos[1]+yShift).addItemStack(recipe.getOutputItem(outputCounter));
                 slots[itemIdx] = guiHelper.createDrawable(rl("textures/gui/widgets.png"), 0, 36, 18, 18);
                 itemIdx++;
                 outputCounter++;
             } else if(processor.getSlotsConfig().getSlotType(itemIdx).contains("fluid_in")) {
-                builder.addSlot(RecipeIngredientRole.INPUT, pos[0]+xShift, pos[1]+yShift)
+                builder.addSlot(RecipeIngredientRole.INPUT, pos[0]+xShift+barXshift, pos[1]+yShift)
                         .addIngredients(ForgeTypes.FLUID_STACK, recipe.getInputFluids(inputFluidCounter))
                         .setFluidRenderer(recipe.getInputFluids(inputFluidCounter).get(0).getAmount(), false, 16, 16);
                 slots[itemIdx] = guiHelper.createDrawable(rl("textures/gui/widgets.png"), 18, 0, 18, 18);
                 itemIdx++;
                 inputFluidCounter++;
             } else if(processor.getSlotsConfig().getSlotType(itemIdx).contains("fluid_out")) {
-                builder.addSlot(RecipeIngredientRole.OUTPUT, pos[0]+xShift, pos[1]+yShift)
+                builder.addSlot(RecipeIngredientRole.OUTPUT, pos[0]+xShift+barXshift, pos[1]+yShift)
                         .addIngredients(ForgeTypes.FLUID_STACK, recipe.getOutputFluids(putFluidCounter))
                         .setFluidRenderer(recipe.getOutputFluids(putFluidCounter).get(0).getAmount(), false, 16, 16);
                 slots[itemIdx] = guiHelper.createDrawable(rl("textures/gui/widgets.png"), 18, 36, 18, 18);

@@ -71,19 +71,21 @@ public class NCProcessorContainer extends AbstractContainerMenu {
 
         int ux = 154;
         itemIdx = 0;
-        if(getProcessor().supportSpeedUpgrade) {
-            int idx = itemIdx;
-            int finalUx = ux;
-            addSlot(new NCSlotItemHandler(blockEntity.upgradesHandler, idx, finalUx, 77)
-                    .allowed(NCItems.NC_ITEMS.get("upgrade_speed").get()));
-            itemIdx++;
-            ux -= 18;
-        }
+
         if(getProcessor().supportEnergyUpgrade) {
             int idx = itemIdx;
             int finalUx = ux;
             addSlot(new NCSlotItemHandler(blockEntity.upgradesHandler, idx, finalUx, 77)
                     .allowed(NCItems.NC_ITEMS.get("upgrade_energy").get()));
+            itemIdx++;
+            ux -= 18;
+        }
+
+        if(getProcessor().supportSpeedUpgrade) {
+            int idx = itemIdx;
+            int finalUx = ux;
+            addSlot(new NCSlotItemHandler(blockEntity.upgradesHandler, idx, finalUx, 77)
+                    .allowed(NCItems.NC_ITEMS.get("upgrade_speed").get()));
         }
     }
 

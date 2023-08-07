@@ -127,6 +127,7 @@ public class Processors {
                     ProcessorBuilder
                             .make(FUEL_REPROCESSOR, 0, 1, 0, 8)
                             .blockEntity(FuelReprocessorBE::new)
+                            .recipeSerializer(() -> new NcRecipeSerializer<>(FuelReprocessorRecipe::new))
                             .progressBar(16)
                             .build()
             );

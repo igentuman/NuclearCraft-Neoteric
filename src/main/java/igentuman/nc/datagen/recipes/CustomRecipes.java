@@ -28,5 +28,6 @@ public class CustomRecipes extends NCRecipes {
         IsotopeSeparatorRecipes.generate(consumer);
         MelterRecipes.generate(consumer);
         IngotFormerRecipes.generate(consumer);
+        FuelReprocessorRecipes.generate(consumer);
     }
 }

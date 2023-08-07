@@ -1,0 +1,33 @@
+{
+  "type": "nuclearcraft:fuel_reprocessor",
+  "input": [
+    {
+      "count": 9,
+      "item": "nuclearcraft:depleted_fuel_thorium_tbu"
+    }
+  ],
+  "output": [
+    {
+      "item": "nuclearcraft:uranium_233"
+    },
+    {
+      "count": 5,
+      "item": "nuclearcraft:uranium_238"
+    },
+    {
+      "item": "nuclearcraft:neptunium_236"
+    },
+    {
+      "item": "nuclearcraft:neptunium_237"
+    },
+    {
+      "item": "nuclearcraft:strontium_90_dust"
+    },
+    {
+      "item": "nuclearcraft:caesium_137_dust"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 0.5
+}

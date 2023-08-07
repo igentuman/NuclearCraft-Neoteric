@@ -1,7 +1,7 @@
 package igentuman.nc.block.entity.processor;
 
 import igentuman.nc.recipes.AbstractRecipe;
-import igentuman.nc.setup.processors.Processors;
+import igentuman.nc.content.processors.Processors;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 

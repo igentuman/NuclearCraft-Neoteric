@@ -3,21 +3,15 @@ package igentuman.nc.datagen.recipes;
 import igentuman.nc.setup.multiblocks.FissionBlocks;
 import igentuman.nc.setup.multiblocks.FissionReactor;
 import igentuman.nc.setup.registration.*;
-import igentuman.nc.setup.registration.fuel.FuelManager;
-import igentuman.nc.setup.registration.fuel.NCFuel;
-import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.advancements.critereon.ItemPredicate;
-import net.minecraft.core.Registry;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.*;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.Tags;
 
-import java.util.List;
 import java.util.function.Consumer;
 
 import static igentuman.nc.NuclearCraft.MODID;

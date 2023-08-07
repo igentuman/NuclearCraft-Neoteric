@@ -1,26 +1,19 @@
 package igentuman.nc.datagen.recipes.recipes;
 
-import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.NcIngredient;
-import igentuman.nc.recipes.ingredient.creator.FluidStackIngredientCreator;
-import igentuman.nc.recipes.ingredient.creator.IngredientCreatorAccess;
-import igentuman.nc.setup.processors.Processors;
+import igentuman.nc.content.processors.Processors;
 import igentuman.nc.setup.registration.Fuel;
 import igentuman.nc.setup.registration.Materials;
 import igentuman.nc.setup.registration.NCItems;
-import igentuman.nc.setup.registration.fuel.FuelManager;
-import igentuman.nc.setup.registration.materials.NCMaterial;
-import net.minecraft.advancements.critereon.ItemPredicate;
+import igentuman.nc.content.fuel.FuelManager;
+import igentuman.nc.content.materials.NCMaterial;
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static igentuman.nc.NuclearCraft.MODID;
 import static net.minecraft.world.item.Items.*;
 
 public class MelterRecipes extends AbstractRecipeProvider {

@@ -3,7 +3,7 @@ package igentuman.nc.recipes.processors;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
-import igentuman.nc.setup.processors.Processors;
+import igentuman.nc.content.processors.Processors;
 import igentuman.nc.util.annotation.NothingNullByDefault;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;

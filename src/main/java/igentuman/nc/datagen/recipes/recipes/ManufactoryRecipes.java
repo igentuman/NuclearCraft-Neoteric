@@ -1,13 +1,12 @@
 package igentuman.nc.datagen.recipes.recipes;
 
-import igentuman.nc.setup.processors.Processors;
+import igentuman.nc.content.processors.Processors;
 import igentuman.nc.setup.registration.Materials;
 import igentuman.nc.setup.registration.NCItems;
 import net.minecraft.data.recipes.FinishedRecipe;
 
 import java.util.function.Consumer;
 
-import static igentuman.nc.util.DataGenUtil.forgeIngot;
 import static net.minecraft.world.item.Items.*;
 
 public class ManufactoryRecipes extends AbstractRecipeProvider {

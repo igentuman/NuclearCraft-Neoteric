@@ -3,7 +3,7 @@ package igentuman.nc.recipes;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.fission.FissionControllerBE;
 import igentuman.nc.client.NcClient;
-import igentuman.nc.setup.processors.Processors;
+import igentuman.nc.content.processors.Processors;
 import igentuman.nc.setup.recipes.RecipeTypeDeferredRegister;
 import igentuman.nc.setup.recipes.RecipeTypeRegistryObject;
 import net.minecraft.resources.ResourceLocation;

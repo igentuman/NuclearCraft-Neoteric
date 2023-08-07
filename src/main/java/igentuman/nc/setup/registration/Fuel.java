@@ -2,7 +2,7 @@ package igentuman.nc.setup.registration;
 
 import igentuman.nc.item.ItemFuel;
 import igentuman.nc.setup.ModSetup;
-import igentuman.nc.setup.registration.fuel.FuelManager;
+import igentuman.nc.content.fuel.FuelManager;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;

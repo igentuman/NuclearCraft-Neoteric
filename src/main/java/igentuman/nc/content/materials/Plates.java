@@ -1,4 +1,4 @@
-package igentuman.nc.setup.registration.materials;
+package igentuman.nc.content.materials;
 
 import igentuman.nc.setup.registration.Materials;
 
@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 
 
-public class Ingots {
+public class Plates {
 
     private static HashMap<String, NCMaterialProduct> all;
     private static HashMap<String, NCMaterialProduct> registered;
@@ -30,8 +30,8 @@ public class Ingots {
     {
         if(all == null) {
             all = new HashMap<>();
-            for (NCMaterial m: Materials.ingots().values()) {
-                all.put(m.name, NCMaterialProduct.get(m.name, "ingot"));
+            for (NCMaterial m: Materials.plates().values()) {
+                all.put(m.name, NCMaterialProduct.get(m.name, "plate"));
             }
         }
         return all;
@@ -40,7 +40,7 @@ public class Ingots {
     public static List<Boolean> initialRegistration()
     {
         List<Boolean> tmp = new ArrayList<>();
-        for(NCMaterialProduct ingot: all().values()) {
+        for(NCMaterialProduct plate: all().values()) {
             tmp.add(true);
         }
         return tmp;

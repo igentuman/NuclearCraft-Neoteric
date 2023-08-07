@@ -1,5 +1,5 @@
 package igentuman.nc.item;
-import igentuman.nc.setup.registration.fuel.FuelDef;
+import igentuman.nc.content.fuel.FuelDef;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;

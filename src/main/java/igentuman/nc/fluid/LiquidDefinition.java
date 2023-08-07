@@ -1,4 +1,4 @@
-package igentuman.nc.setup.registration.fluid;
+package igentuman.nc.fluid;
 
 public class LiquidDefinition {
     public String name;

@@ -1,10 +1,13 @@
-package igentuman.nc.setup.processors;
+package igentuman.nc.content.processors;
 
 import igentuman.nc.block.entity.processor.NCProcessorBE;
 import igentuman.nc.container.NCProcessorContainer;
 import igentuman.nc.client.gui.processor.NCProcessorScreen;
+import igentuman.nc.content.processors.config.ProcessorSlots;
 import igentuman.nc.recipes.AbstractRecipe;
-import igentuman.nc.setup.processors.config.ProcessorSlots;
+import igentuman.nc.recipes.processors.FuelReprocessorRecipe;
+import igentuman.nc.recipes.serializers.NcRecipeSerializer;
+import igentuman.nc.recipes.type.NcRecipe;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
@@ -81,6 +84,11 @@ public class ProcessorBuilder <M extends NCProcessorContainer, U extends Screen 
 
     public ProcessorBuilder<M, U> recipeSerializer(Supplier<RecipeSerializer<? extends AbstractRecipe>> sup) {
         processor.recipeSerializerSupplier = sup;
+        return this;
+    }
+
+    public ProcessorBuilder<M, U> recipe(NcRecipeSerializer.IFactory<? extends NcRecipe> factory) {
+        processor.recipeSerializerSupplier = () -> new NcRecipeSerializer<>(factory);
         return this;
     }
 }

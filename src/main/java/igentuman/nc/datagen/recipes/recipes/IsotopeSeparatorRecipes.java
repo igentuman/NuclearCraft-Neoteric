@@ -1,22 +1,14 @@
 package igentuman.nc.datagen.recipes.recipes;
 
 import igentuman.nc.recipes.ingredient.NcIngredient;
-import igentuman.nc.setup.processors.Processors;
+import igentuman.nc.content.processors.Processors;
 import igentuman.nc.setup.registration.Fuel;
 import igentuman.nc.setup.registration.Materials;
-import igentuman.nc.setup.registration.fuel.FuelManager;
-import net.minecraft.advancements.critereon.ItemPredicate;
+import igentuman.nc.content.fuel.FuelManager;
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 
 import java.util.List;
 import java.util.function.Consumer;
-
-import static igentuman.nc.NuclearCraft.MODID;
-import static net.minecraft.world.item.Items.*;
 
 public class IsotopeSeparatorRecipes extends AbstractRecipeProvider {
 

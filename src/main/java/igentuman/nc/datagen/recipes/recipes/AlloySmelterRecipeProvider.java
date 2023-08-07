@@ -1,13 +1,9 @@
 package igentuman.nc.datagen.recipes.recipes;
 
-import igentuman.nc.datagen.recipes.builder.NcRecipeBuilder;
-import igentuman.nc.recipes.ingredient.NcIngredient;
-import igentuman.nc.setup.processors.Processors;
+import igentuman.nc.content.processors.Processors;
 import igentuman.nc.setup.registration.Materials;
 import net.minecraft.data.recipes.FinishedRecipe;
 import java.util.function.Consumer;
-
-import static igentuman.nc.util.DataGenUtil.forgeIngot;
 
 public class AlloySmelterRecipeProvider extends AbstractRecipeProvider {
 

@@ -2,7 +2,7 @@ package igentuman.nc.setup.energy;
 
 import igentuman.nc.block.entity.energy.NCEnergy;
 import igentuman.nc.handler.config.CommonConfig;
-import igentuman.nc.setup.processors.Processors;
+import igentuman.nc.content.processors.Processors;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
 public class SolarPanelPrefab {

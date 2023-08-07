@@ -2,8 +2,8 @@ package igentuman.nc.container;
 
 import igentuman.nc.block.entity.processor.NCProcessorBE;
 import igentuman.nc.container.elements.NCSlotItemHandler;
-import igentuman.nc.setup.processors.ProcessorPrefab;
-import igentuman.nc.setup.processors.Processors;
+import igentuman.nc.content.processors.ProcessorPrefab;
+import igentuman.nc.content.processors.Processors;
 import igentuman.nc.setup.registration.NCItems;
 import igentuman.nc.setup.registration.NCProcessors;
 import igentuman.nc.handler.sided.SlotModePair;

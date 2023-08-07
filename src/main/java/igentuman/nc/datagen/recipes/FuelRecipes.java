@@ -2,14 +2,12 @@ package igentuman.nc.datagen.recipes;
 
 import igentuman.nc.setup.registration.Fuel;
 import igentuman.nc.setup.registration.Materials;
-import igentuman.nc.setup.registration.fuel.FuelManager;
+import igentuman.nc.content.fuel.FuelManager;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 
 import java.util.List;

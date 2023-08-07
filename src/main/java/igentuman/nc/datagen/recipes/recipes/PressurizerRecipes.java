@@ -1,10 +1,9 @@
 package igentuman.nc.datagen.recipes.recipes;
 
-import igentuman.nc.setup.processors.Processors;
+import igentuman.nc.content.processors.Processors;
 import igentuman.nc.setup.registration.Materials;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 

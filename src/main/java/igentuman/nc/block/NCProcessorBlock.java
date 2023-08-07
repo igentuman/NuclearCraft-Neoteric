@@ -1,7 +1,7 @@
 package igentuman.nc.block;
 
 import igentuman.nc.block.entity.processor.NCProcessorBE;
-import igentuman.nc.setup.processors.Processors;
+import igentuman.nc.content.processors.Processors;
 import igentuman.nc.setup.registration.NCProcessors;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

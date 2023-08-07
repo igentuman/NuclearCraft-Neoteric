@@ -1,4 +1,4 @@
-package igentuman.nc.setup.registration.fluid;
+package igentuman.nc.fluid;
 
 import igentuman.nc.block.NCFluidBlock;
 import igentuman.nc.setup.registration.NCFluids;

@@ -1,4 +1,4 @@
-package igentuman.nc.setup.registration.materials;
+package igentuman.nc.content.materials;
 
 import igentuman.nc.setup.registration.Materials;
 

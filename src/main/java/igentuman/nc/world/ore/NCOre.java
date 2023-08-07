@@ -1,7 +1,7 @@
 package igentuman.nc.world.ore;
 
 import igentuman.nc.handler.config.CommonConfig;
-import igentuman.nc.setup.registration.materials.Ores;
+import igentuman.nc.content.materials.Ores;
 
 import java.util.List;
 

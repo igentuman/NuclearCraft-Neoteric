@@ -4,7 +4,7 @@ import igentuman.nc.block.NCProcessorBlock;
 import igentuman.nc.block.entity.processor.NCProcessorBE;
 import igentuman.nc.container.NCProcessorContainer;
 import igentuman.nc.setup.ModSetup;
-import igentuman.nc.setup.processors.Processors;
+import igentuman.nc.content.processors.Processors;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;

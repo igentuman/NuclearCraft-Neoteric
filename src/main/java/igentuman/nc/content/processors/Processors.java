@@ -1,4 +1,4 @@
-package igentuman.nc.setup.processors;
+package igentuman.nc.content.processors;
 
 
 import igentuman.nc.block.entity.processor.*;
@@ -50,15 +50,15 @@ public class Processors {
                     ProcessorBuilder
                             .make(MANUFACTORY, 0, 1, 0, 1)
                             .blockEntity(ManufactoryBE::new)
+                            .recipe(ManufactoryRecipe::new)
                             .progressBar(13)
-                            .recipeSerializer(() -> new NcRecipeSerializer<>(ManufactoryRecipe::new))
                             .build()
             );
             all.put(ALLOY_SMELTER,
                     ProcessorBuilder
                             .make(ALLOY_SMELTER, 0, 2, 0, 1)
-                            .recipeSerializer(() -> new NcRecipeSerializer<>(AlloySmelterRecipe::new))
                             .blockEntity(AlloySmelterBE::new)
+                            .recipe(AlloySmelterRecipe::new)
                             .build()
             );
             all.put(ASSEMBLER,
@@ -93,8 +93,9 @@ public class Processors {
                     ProcessorBuilder
                             .make(DECAY_HASTENER, 0, 1, 0, 1)
                             .blockEntity(DecayHastenerBE::new)
+                            .recipe(DecayHastenerRecipe::new)
                             .progressBar(0)
-                            .recipeSerializer(() -> new NcRecipeSerializer<>(DecayHastenerRecipe::new))
+
                             .build()
             );
             all.put(ELECTROLYZER,
@@ -127,7 +128,7 @@ public class Processors {
                     ProcessorBuilder
                             .make(FUEL_REPROCESSOR, 0, 1, 0, 8)
                             .blockEntity(FuelReprocessorBE::new)
-                            .recipeSerializer(() -> new NcRecipeSerializer<>(FuelReprocessorRecipe::new))
+                            .recipe(FuelReprocessorRecipe::new)
                             .progressBar(16)
                             .build()
             );
@@ -135,7 +136,7 @@ public class Processors {
                     ProcessorBuilder
                             .make(INGOT_FORMER, 1, 0, 0, 1)
                             .blockEntity(IngotFormerBE::new)
-                            .recipeSerializer(() -> new NcRecipeSerializer<>(IngotFormerRecipe::new))
+                            .recipe(IngotFormerRecipe::new)
                             .progressBar(4)
                             .build()
             );
@@ -150,7 +151,7 @@ public class Processors {
                     ProcessorBuilder
                             .make(ISOTOPE_SEPARATOR, 0, 1, 0, 2)
                             .blockEntity(IsotopeSeparatorBE::new)
-                            .recipeSerializer(() -> new NcRecipeSerializer<>(IsotopeSeparatorRecipe::new))
+                            .recipe(IsotopeSeparatorRecipe::new)
                             .progressBar(10)
                             .build()
             );
@@ -158,7 +159,7 @@ public class Processors {
                     ProcessorBuilder
                             .make(MELTER, 0, 1, 1, 0)
                             .blockEntity(MelterBE::new)
-                            .recipeSerializer(() -> new NcRecipeSerializer<>(MelterRecipe::new))
+                            .recipe(MelterRecipe::new)
                             .progressBar(0)
                             .build()
             );
@@ -166,15 +167,15 @@ public class Processors {
                     ProcessorBuilder
                             .make(PRESSURIZER, 0, 1, 0, 1)
                             .blockEntity(PressurizerBE::new)
+                            .recipe(PressurizerRecipe::new)
                             .progressBar(9)
-                            .recipeSerializer(() -> new NcRecipeSerializer<>(PressurizerRecipe::new))
                             .build()
             );
             all.put(ROCK_CRUSHER,
                     ProcessorBuilder
                             .make(ROCK_CRUSHER, 0, 1, 0, 3)
                             .blockEntity(RockCrusherBE::new)
-                            .recipeSerializer(() -> new NcRecipeSerializer<>(RockCrusherRecipe::new))
+                            .recipe(RockCrusherRecipe::new)
                             .progressBar(12)
                             .build()
             );

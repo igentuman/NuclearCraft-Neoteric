@@ -1,8 +1,8 @@
 package igentuman.nc.setup.registration;
 
 import igentuman.nc.setup.ModSetup;
-import igentuman.nc.setup.registration.materials.Blocks;
-import igentuman.nc.setup.registration.materials.Ores;
+import igentuman.nc.content.materials.Blocks;
+import igentuman.nc.content.materials.Ores;
 import net.minecraft.Util;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
@@ -31,7 +31,6 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static igentuman.nc.NuclearCraft.MODID;
-import static igentuman.nc.setup.multiblocks.FissionBlocks.REACTOR_BLOCKS_PROPERTIES;
 
 public class NCBlocks {
 

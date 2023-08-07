@@ -1,4 +1,4 @@
-package igentuman.nc.setup.processors.config;
+package igentuman.nc.content.processors.config;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:irradiator",
+  "input": [
+    {
+      "tag": "forge:dusts/thorium"
+    }
+  ],
+  "output": [
+    {
+      "item": "nuclearcraft:tbp_dust"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.5
+}

@@ -4,7 +4,6 @@ import igentuman.nc.block.entity.fission.FissionControllerBE;
 import igentuman.nc.client.NcClient;
 import igentuman.nc.recipes.AbstractRecipe;
 import igentuman.nc.recipes.NcRecipeType;
-import igentuman.nc.recipes.multiblock.FissionRecipe;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.recipe.RecipeType;
@@ -23,7 +22,7 @@ import static igentuman.nc.compat.GlobalVars.*;
 public  class JEIPlugin implements IModPlugin {
     public  static HashMap<String, RecipeType<? extends AbstractRecipe>>  recipeTypes;
 
-    public static RecipeType<FissionRecipe> FISSION = new RecipeType<FissionRecipe>(new ResourceLocation(MODID, FissionControllerBE.NAME), FissionRecipe.class);
+    public static RecipeType<FissionControllerBE.Recipe> FISSION = new RecipeType<>(new ResourceLocation(MODID, FissionControllerBE.NAME), FissionControllerBE.Recipe.class);
     private static HashMap<String, RecipeType<? extends AbstractRecipe>> getRecipeTypes() {
         if(recipeTypes == null) {
             recipeTypes = new HashMap<>();

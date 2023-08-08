@@ -5,8 +5,6 @@ import igentuman.nc.container.NCProcessorContainer;
 import igentuman.nc.content.processors.config.ProcessorSlots;
 import igentuman.nc.handler.config.CommonConfig;
 import igentuman.nc.recipes.AbstractRecipe;
-import igentuman.nc.recipes.processors.FuelReprocessorRecipe;
-import igentuman.nc.recipes.serializers.NcRecipeSerializer;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;

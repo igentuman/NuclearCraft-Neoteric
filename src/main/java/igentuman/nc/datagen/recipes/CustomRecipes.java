@@ -27,5 +27,6 @@ public class CustomRecipes extends NCRecipes {
         ChemicalReactorRecipes.generate(consumer);
         AssemblerRecipes.generate(consumer);
         CentrifugeRecipes.generate(consumer);
+        IrradiatorRecipes.generate(consumer);
     }
 }

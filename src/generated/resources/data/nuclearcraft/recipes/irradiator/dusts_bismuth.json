@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:irradiator",
+  "input": [
+    {
+      "tag": "forge:dusts/bismuth"
+    }
+  ],
+  "output": [
+    {
+      "item": "nuclearcraft:polonium_dust"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 2.0
+}

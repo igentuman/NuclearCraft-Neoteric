@@ -2,9 +2,13 @@ package igentuman.nc.block.entity.fission;
 
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
+import igentuman.nc.item.ItemFuel;
 import igentuman.nc.multiblock.fission.FissionReactorMultiblock;
 import igentuman.nc.recipes.*;
-import igentuman.nc.recipes.multiblock.FissionRecipe;
+import igentuman.nc.recipes.ingredient.FluidStackIngredient;
+import igentuman.nc.recipes.ingredient.ItemStackIngredient;
+import igentuman.nc.recipes.type.NcRecipe;
+import igentuman.nc.setup.multiblocks.FissionReactor;
 import igentuman.nc.setup.registration.NCFluids;
 import igentuman.nc.util.CustomEnergyStorage;
 import igentuman.nc.util.annotation.NBTField;
@@ -14,6 +18,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.block.Block;
@@ -23,15 +28,19 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.fluids.FluidStack;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import java.util.HashMap;
+import java.util.List;
 
+import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.handler.config.CommonConfig.FissionConfig.*;
 
-public class FissionControllerBE <RECIPE extends AbstractRecipe> extends FissionBE  {
+public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> extends FissionBE  {
 
     public static String NAME = "fission_reactor_controller";
     public final SidedContentHandler contentHandler;
@@ -72,7 +81,7 @@ public class FissionControllerBE <RECIPE extends AbstractRecipe> extends Fission
     public ValidationResult validationResult = ValidationResult.INCOMPLETE;
     public RecipeInfo recipeInfo = new RecipeInfo();
     private Direction facing;
-    public FissionRecipe recipe;
+    public RECIPE recipe;
     public HashMap<String, RECIPE> cachedRecipes = new HashMap<>();
 
 
@@ -299,14 +308,14 @@ public class FissionControllerBE <RECIPE extends AbstractRecipe> extends Fission
 
 
     private void updateRecipe() {
-        recipe = (FissionRecipe) getRecipe();
+        recipe = getRecipe();
         if (recipe != null) {
             ItemStack input = contentHandler.itemHandler.getStackInSlot(0).copy();
             input.setCount(recipe.getFirstItemStackIngredient(0).getCount());
             recipeInfo.setRecipe(recipe);
-            recipeInfo.ticks = ((FissionRecipe) recipeInfo.recipe).getDepletionTime();
+            recipeInfo.ticks = ((RECIPE) recipeInfo.recipe).getDepletionTime();
             recipeInfo.energy = recipeInfo.recipe.getEnergy();
-            recipeInfo.heat = ((FissionRecipe) recipeInfo.recipe).getHeat();
+            recipeInfo.heat = ((RECIPE) recipeInfo.recipe).getHeat();
             recipeInfo.radiation = recipeInfo.recipe.getRadiation();
         }
     }
@@ -453,4 +462,48 @@ public class FissionControllerBE <RECIPE extends AbstractRecipe> extends Fission
         return height;
     }
 
+
+    public static class Recipe extends NcRecipe {
+
+        public Recipe(ResourceLocation id, ItemStackIngredient[] input, ItemStack[] output, FluidStackIngredient[] inputFluids, FluidStack[] outputFluids, double timeModifier, double powerModifier, double heatModifier) {
+            super(id, input, output, timeModifier, powerModifier, heatModifier);
+            ID = FissionControllerBE.NAME;
+            CATALYSTS.put(ID, List.of(getToastSymbol()));
+        }
+
+        protected ItemFuel fuelItem;
+
+        public ItemFuel getFuelItem() {
+            if(fuelItem == null) {
+                fuelItem = (ItemFuel) getFirstItemStackIngredient(0).getItem();
+            }
+            return fuelItem;
+        }
+
+        @Override
+        public @NotNull String getGroup() {
+            return FissionReactor.MULTI_BLOCKS.get(ID).get().getName().getString();
+        }
+
+        @Override
+        public @NotNull ItemStack getToastSymbol() {
+            return new ItemStack(FissionReactor.MULTI_BLOCKS.get(ID).get());
+        }
+
+        public int getDepletionTime() {
+            return (int) (getFuelItem().depletion*20*timeModifier);
+        }
+
+        public double getEnergy() {
+            return getFuelItem().forge_energy;
+        }
+
+        public double getHeat() {
+            return getFuelItem().heat;
+        }
+
+        public double getRadiation() {
+            return 0;
+        }
+    }
 }

@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:irradiator",
+  "input": [
+    {
+      "tag": "forge:dusts/tbp"
+    }
+  ],
+  "output": [
+    {
+      "item": "nuclearcraft:protactinium_233_dust"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 2.5
+}

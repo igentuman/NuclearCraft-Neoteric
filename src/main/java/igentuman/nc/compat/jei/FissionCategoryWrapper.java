@@ -1,8 +1,8 @@
 package igentuman.nc.compat.jei;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import igentuman.nc.block.entity.fission.FissionControllerBE;
 import igentuman.nc.compat.jei.util.TickTimer;
-import igentuman.nc.recipes.multiblock.FissionRecipe;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -23,7 +23,7 @@ import java.util.HashMap;
 import static igentuman.nc.NuclearCraft.*;
 import static igentuman.nc.compat.GlobalVars.*;
 
-public class FissionCategoryWrapper<T extends FissionRecipe> implements IRecipeCategory<T> {
+public class FissionCategoryWrapper<T extends FissionControllerBE.Recipe> implements IRecipeCategory<T> {
     public final static ResourceLocation TEXTURE =
             new ResourceLocation(MODID, "textures/gui/fission/jei.png");
 

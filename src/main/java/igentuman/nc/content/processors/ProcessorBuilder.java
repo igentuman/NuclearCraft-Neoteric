@@ -90,4 +90,10 @@ public class ProcessorBuilder <M extends NCProcessorContainer, U extends Screen 
         processor.recipeSerializerSupplier = () -> new NcRecipeSerializer<>(factory);
         return this;
     }
+
+    public ProcessorBuilder upgrades(boolean energy, boolean speed) {
+        processor.supportEnergyUpgrade = energy;
+        processor.supportSpeedUpgrade = speed;
+        return this;
+    }
 }

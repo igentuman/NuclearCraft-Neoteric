@@ -1,0 +1,18 @@
+{
+  "type": "nuclearcraft:steam_turbine",
+  "inputFluids": [
+    {
+      "amount": 10,
+      "tag": "forge:steam"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 10,
+      "fluid": "nuclearcraft:exhaust_steam"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 0.5
+}

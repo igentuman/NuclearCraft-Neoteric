@@ -191,7 +191,9 @@ public class Processors {
                             .blockEntity(SteamTurbineBE::new)
                             .recipe(SteamTurbineBE.Recipe::new)
                             .progressBar(4)
+                            .upgrades(false, false)
                             .build()
+
             );
             all.put(SUPERCOOLER,
                     ProcessorBuilder

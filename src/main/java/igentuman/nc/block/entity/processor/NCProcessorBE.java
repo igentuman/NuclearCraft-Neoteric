@@ -45,7 +45,7 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
     public final ItemStackHandler upgradesHandler = createHandler();
     protected final LazyOptional<IItemHandler> handler = LazyOptional.of(() -> upgradesHandler);
 
-    private RECIPE recipe;
+    protected RECIPE recipe;
     @NBTField
     public int speedMultiplier = 1;
     @NBTField
@@ -78,7 +78,7 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
         return contentHandler.itemHandler;
     }
 
-    private void updateRecipe() {
+    protected void updateRecipe() {
         recipe = getRecipe();
         if (recipe != null) {
             recipeInfo.setRecipe(recipe);
@@ -90,7 +90,7 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
         }
     }
 
-    private void addToCache(RECIPE recipe) {
+    protected void addToCache(RECIPE recipe) {
         String key = contentHandler.getCacheKey();
         if(cachedRecipes.containsKey(key)) {
             cachedRecipes.replace(key, recipe);
@@ -121,15 +121,15 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
         return null;
     }
 
-    private int getBaseProcessTime() {
+    protected int getBaseProcessTime() {
         return prefab().config().getTime();
     }
 
-    private int getBasePower() {
+    protected int getBasePower() {
         return prefab().config().getPower();
     }
 
-    private void handleRecipeOutput() {
+    protected void handleRecipeOutput() {
         if (hasRecipe() && recipeInfo.isCompleted()) {
             if (recipe.handleOutputs(contentHandler)) {
                 recipeInfo.clear();
@@ -162,7 +162,7 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
         return recipeInfo.recipe != null;
     }
 
-    private CustomEnergyStorage createEnergy() {
+    protected CustomEnergyStorage createEnergy() {
         return new CustomEnergyStorage(prefab().config().getPower()*5000, 100000, 0) {
             @Override
             protected void onEnergyChanged() {
@@ -171,7 +171,7 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
         };
     }
 
-    private ItemStackHandler createHandler() {
+    protected ItemStackHandler createHandler() {
         return new ItemStackHandler(prefab().getUpgradesSlots()) {
             @Override
             protected void onContentsChanged(int slot) {
@@ -235,7 +235,7 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
         return Objects.requireNonNull(getLevel()).hasNeighborSignal(worldPosition);
     }
 
-    private void processRecipe() {
+    protected void processRecipe() {
         if(!hasRecipe()) {
             updateRecipe();
         }
@@ -303,7 +303,7 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
         }
     }
 
-    private void loadClientData(CompoundTag tag) {
+    protected void loadClientData(CompoundTag tag) {
         if (tag.contains("Info")) {
             CompoundTag infoTag = tag.getCompound("Info");
             readTagData(infoTag);
@@ -325,7 +325,7 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
         return tag;
     }
 
-    private void saveClientData(CompoundTag tag) {
+    protected void saveClientData(CompoundTag tag) {
         CompoundTag infoTag = new CompoundTag();
         saveTagData(infoTag);
         infoTag.put("upgrades", upgradesHandler.serializeNBT());

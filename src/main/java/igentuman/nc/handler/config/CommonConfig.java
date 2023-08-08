@@ -357,6 +357,7 @@ public class CommonConfig {
         public static class EnergyGenerationConfig {
             public static ForgeConfigSpec.ConfigValue<List<Boolean>> REGISTER_SOLAR_PANELS;
             public static ForgeConfigSpec.ConfigValue<List<Integer>> SOLAR_PANELS_GENERATION;
+            public static ForgeConfigSpec.ConfigValue<Integer> STEAM_TURBINE;
 
 
             public EnergyGenerationConfig(ForgeConfigSpec.Builder builder) {
@@ -369,7 +370,9 @@ public class CommonConfig {
                 SOLAR_PANELS_GENERATION = builder
                         .comment("Processor power: " + String.join(", ", SolarPanels.all().keySet()))
                         .define("processor_power", SolarPanels.initialPower());
-
+                STEAM_TURBINE = builder
+                        .comment("Steam turbine (one block) base power gen")
+                        .define("steam_turbine_power_gen", 50);
 
                 builder.pop();
 

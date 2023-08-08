@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:crystallizer",
+  "inputFluids": [
+    {
+      "amount": 144,
+      "tag": "forge:potassium_fluoride_solution"
+    }
+  ],
+  "output": [
+    {
+      "item": "nuclearcraft:potassium_fluoride_dust"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

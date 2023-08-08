@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:crystallizer",
+  "inputFluids": [
+    {
+      "amount": 144,
+      "tag": "forge:potassium_hydroxide_solution"
+    }
+  ],
+  "output": [
+    {
+      "item": "nuclearcraft:potassium_hydroxide_dust"
+    }
+  ],
+  "powerModifier": 0.5,
+  "radiation": 1.0,
+  "timeModifier": 0.5
+}

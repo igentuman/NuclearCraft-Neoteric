@@ -4,6 +4,10 @@ import igentuman.nc.datagen.recipes.recipes.*;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
 
+import java.io.File;
+import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
 public class CustomRecipes extends NCRecipes {
@@ -11,6 +15,7 @@ public class CustomRecipes extends NCRecipes {
         super(generatorIn);
     }
     public static Consumer<FinishedRecipe> consumer;
+
     public static void generate(Consumer<FinishedRecipe> consumer) {
         CustomRecipes.consumer = consumer;
         FissionRecipes.generate(consumer);
@@ -28,5 +33,6 @@ public class CustomRecipes extends NCRecipes {
         AssemblerRecipes.generate(consumer);
         CentrifugeRecipes.generate(consumer);
         IrradiatorRecipes.generate(consumer);
+        CrystalizerRecipes.generate(consumer);
     }
 }

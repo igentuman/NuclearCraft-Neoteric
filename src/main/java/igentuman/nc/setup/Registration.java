@@ -2,7 +2,6 @@ package igentuman.nc.setup;
 
 import com.mojang.serialization.Codec;
 import igentuman.nc.recipes.NcRecipeType;
-import igentuman.nc.recipes.multiblock.FissionRecipe;
 import igentuman.nc.setup.multiblocks.FissionReactor;
 import igentuman.nc.setup.recipes.NcRecipeSerializers;
 import igentuman.nc.setup.registration.*;

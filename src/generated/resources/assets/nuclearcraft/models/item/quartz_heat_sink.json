@@ -1,3 +1,3 @@
 {
-  "parent": "nuclearcraft:block/quartz_heat_sink"
+  "parent": "nuclearcraft:block/multiblock/quartz_heat_sink"
 }

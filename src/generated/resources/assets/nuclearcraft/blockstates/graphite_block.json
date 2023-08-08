@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/graphite_block"
+      "model": "nuclearcraft:block/material/graphite_block"
     }
   }
 }

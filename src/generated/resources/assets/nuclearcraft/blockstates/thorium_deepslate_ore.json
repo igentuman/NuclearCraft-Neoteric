@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/thorium_deepslate_ore"
+      "model": "nuclearcraft:block/ore/thorium_deepslate_ore"
     }
   }
 }

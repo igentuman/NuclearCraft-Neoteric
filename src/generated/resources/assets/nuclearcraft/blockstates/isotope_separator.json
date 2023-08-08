@@ -1,18 +1,18 @@
 {
   "variants": {
     "facing=east": {
-      "model": "nuclearcraft:block/isotope_separator",
+      "model": "nuclearcraft:block/processor/isotope_separator",
       "y": 90
     },
     "facing=north": {
-      "model": "nuclearcraft:block/isotope_separator"
+      "model": "nuclearcraft:block/processor/isotope_separator"
     },
     "facing=south": {
-      "model": "nuclearcraft:block/isotope_separator",
+      "model": "nuclearcraft:block/processor/isotope_separator",
       "y": 180
     },
     "facing=west": {
-      "model": "nuclearcraft:block/isotope_separator",
+      "model": "nuclearcraft:block/processor/isotope_separator",
       "y": 270
     }
   }

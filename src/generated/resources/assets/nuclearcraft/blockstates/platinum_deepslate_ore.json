@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/platinum_deepslate_ore"
+      "model": "nuclearcraft:block/ore/platinum_deepslate_ore"
     }
   }
 }

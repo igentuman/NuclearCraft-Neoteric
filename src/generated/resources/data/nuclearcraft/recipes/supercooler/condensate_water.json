@@ -8,8 +8,8 @@
   ],
   "outputFluids": [
     {
-      "amount": 0,
-      "fluid": "minecraft:empty"
+      "amount": 1000,
+      "fluid": "nuclearcraft:technical_water"
     }
   ],
   "powerModifier": 1.0,

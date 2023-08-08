@@ -1,18 +1,18 @@
 {
   "variants": {
     "facing=east": {
-      "model": "nuclearcraft:block/ingot_former",
+      "model": "nuclearcraft:block/processor/ingot_former",
       "y": 90
     },
     "facing=north": {
-      "model": "nuclearcraft:block/ingot_former"
+      "model": "nuclearcraft:block/processor/ingot_former"
     },
     "facing=south": {
-      "model": "nuclearcraft:block/ingot_former",
+      "model": "nuclearcraft:block/processor/ingot_former",
       "y": 180
     },
     "facing=west": {
-      "model": "nuclearcraft:block/ingot_former",
+      "model": "nuclearcraft:block/processor/ingot_former",
       "y": 270
     }
   }

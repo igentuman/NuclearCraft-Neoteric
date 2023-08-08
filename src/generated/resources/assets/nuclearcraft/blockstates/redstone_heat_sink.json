@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/redstone_heat_sink"
+      "model": "nuclearcraft:block/multiblock/redstone_heat_sink"
     }
   }
 }

@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/supercold_ice_block"
+      "model": "nuclearcraft:block/material/supercold_ice_block"
     }
   }
 }

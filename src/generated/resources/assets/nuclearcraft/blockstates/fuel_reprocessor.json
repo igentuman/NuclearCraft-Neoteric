@@ -1,18 +1,18 @@
 {
   "variants": {
     "facing=east": {
-      "model": "nuclearcraft:block/fuel_reprocessor",
+      "model": "nuclearcraft:block/processor/fuel_reprocessor",
       "y": 90
     },
     "facing=north": {
-      "model": "nuclearcraft:block/fuel_reprocessor"
+      "model": "nuclearcraft:block/processor/fuel_reprocessor"
     },
     "facing=south": {
-      "model": "nuclearcraft:block/fuel_reprocessor",
+      "model": "nuclearcraft:block/processor/fuel_reprocessor",
       "y": 180
     },
     "facing=west": {
-      "model": "nuclearcraft:block/fuel_reprocessor",
+      "model": "nuclearcraft:block/processor/fuel_reprocessor",
       "y": 270
     }
   }

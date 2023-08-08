@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/boron_ore"
+      "model": "nuclearcraft:block/ore/boron_ore"
     }
   }
 }

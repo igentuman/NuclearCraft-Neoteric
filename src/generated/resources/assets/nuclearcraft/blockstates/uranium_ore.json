@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/uranium_ore"
+      "model": "nuclearcraft:block/ore/uranium_ore"
     }
   }
 }

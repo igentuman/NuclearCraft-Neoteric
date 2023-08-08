@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/liquid_nitrogen_heat_sink"
+      "model": "nuclearcraft:block/multiblock/liquid_nitrogen_heat_sink"
     }
   }
 }

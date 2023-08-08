@@ -1,18 +1,18 @@
 {
   "variants": {
     "facing=east": {
-      "model": "nuclearcraft:block/steam_turbine",
+      "model": "nuclearcraft:block/processor/steam_turbine",
       "y": 90
     },
     "facing=north": {
-      "model": "nuclearcraft:block/steam_turbine"
+      "model": "nuclearcraft:block/processor/steam_turbine"
     },
     "facing=south": {
-      "model": "nuclearcraft:block/steam_turbine",
+      "model": "nuclearcraft:block/processor/steam_turbine",
       "y": 180
     },
     "facing=west": {
-      "model": "nuclearcraft:block/steam_turbine",
+      "model": "nuclearcraft:block/processor/steam_turbine",
       "y": 270
     }
   }

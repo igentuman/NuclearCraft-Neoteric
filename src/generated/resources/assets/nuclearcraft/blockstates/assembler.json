@@ -1,18 +1,18 @@
 {
   "variants": {
     "facing=east": {
-      "model": "nuclearcraft:block/assembler",
+      "model": "nuclearcraft:block/processor/assembler",
       "y": 90
     },
     "facing=north": {
-      "model": "nuclearcraft:block/assembler"
+      "model": "nuclearcraft:block/processor/assembler"
     },
     "facing=south": {
-      "model": "nuclearcraft:block/assembler",
+      "model": "nuclearcraft:block/processor/assembler",
       "y": 180
     },
     "facing=west": {
-      "model": "nuclearcraft:block/assembler",
+      "model": "nuclearcraft:block/processor/assembler",
       "y": 270
     }
   }

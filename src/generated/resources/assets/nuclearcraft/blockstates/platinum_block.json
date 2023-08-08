@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/platinum_block"
+      "model": "nuclearcraft:block/material/platinum_block"
     }
   }
 }

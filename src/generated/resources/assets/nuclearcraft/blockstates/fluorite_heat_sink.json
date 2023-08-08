@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/fluorite_heat_sink"
+      "model": "nuclearcraft:block/multiblock/fluorite_heat_sink"
     }
   }
 }

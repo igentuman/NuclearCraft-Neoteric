@@ -1,18 +1,18 @@
 {
   "variants": {
     "facing=east": {
-      "model": "nuclearcraft:block/irradiator",
+      "model": "nuclearcraft:block/processor/irradiator",
       "y": 90
     },
     "facing=north": {
-      "model": "nuclearcraft:block/irradiator"
+      "model": "nuclearcraft:block/processor/irradiator"
     },
     "facing=south": {
-      "model": "nuclearcraft:block/irradiator",
+      "model": "nuclearcraft:block/processor/irradiator",
       "y": 180
     },
     "facing=west": {
-      "model": "nuclearcraft:block/irradiator",
+      "model": "nuclearcraft:block/processor/irradiator",
       "y": 270
     }
   }

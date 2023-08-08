@@ -33,5 +33,6 @@ public class CustomRecipes extends NCRecipes {
         FluidInfuserRecipes.generate(consumer);
         SupercoolerRecipes.generate(consumer);
         FluidEnricherRecipes.generate(consumer);
+        ExtractorRecipes.generate(consumer);
     }
 }

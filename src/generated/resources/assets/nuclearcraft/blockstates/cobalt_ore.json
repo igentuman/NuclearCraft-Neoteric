@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/cobalt_ore"
+      "model": "nuclearcraft:block/ore/cobalt_ore"
     }
   }
 }

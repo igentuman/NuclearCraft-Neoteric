@@ -1,18 +1,18 @@
 {
   "variants": {
     "facing=east": {
-      "model": "nuclearcraft:block/pressurizer",
+      "model": "nuclearcraft:block/processor/pressurizer",
       "y": 90
     },
     "facing=north": {
-      "model": "nuclearcraft:block/pressurizer"
+      "model": "nuclearcraft:block/processor/pressurizer"
     },
     "facing=south": {
-      "model": "nuclearcraft:block/pressurizer",
+      "model": "nuclearcraft:block/processor/pressurizer",
       "y": 180
     },
     "facing=west": {
-      "model": "nuclearcraft:block/pressurizer",
+      "model": "nuclearcraft:block/processor/pressurizer",
       "y": 270
     }
   }

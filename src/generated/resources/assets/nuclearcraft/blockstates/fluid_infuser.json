@@ -1,18 +1,18 @@
 {
   "variants": {
     "facing=east": {
-      "model": "nuclearcraft:block/fluid_infuser",
+      "model": "nuclearcraft:block/processor/fluid_infuser",
       "y": 90
     },
     "facing=north": {
-      "model": "nuclearcraft:block/fluid_infuser"
+      "model": "nuclearcraft:block/processor/fluid_infuser"
     },
     "facing=south": {
-      "model": "nuclearcraft:block/fluid_infuser",
+      "model": "nuclearcraft:block/processor/fluid_infuser",
       "y": 180
     },
     "facing=west": {
-      "model": "nuclearcraft:block/fluid_infuser",
+      "model": "nuclearcraft:block/processor/fluid_infuser",
       "y": 270
     }
   }

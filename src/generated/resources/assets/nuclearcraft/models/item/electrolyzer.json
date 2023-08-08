@@ -1,3 +1,3 @@
 {
-  "parent": "nuclearcraft:block/electrolyzer"
+  "parent": "nuclearcraft:block/processor/electrolyzer"
 }

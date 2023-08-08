@@ -1,3 +1,3 @@
 {
-  "parent": "nuclearcraft:block/fluid_enricher"
+  "parent": "nuclearcraft:block/processor/fluid_enricher"
 }

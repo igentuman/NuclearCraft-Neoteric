@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/nether_brick_heat_sink"
+      "model": "nuclearcraft:block/multiblock/nether_brick_heat_sink"
     }
   }
 }

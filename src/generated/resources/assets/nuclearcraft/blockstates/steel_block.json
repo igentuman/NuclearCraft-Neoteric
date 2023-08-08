@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/steel_block"
+      "model": "nuclearcraft:block/material/steel_block"
     }
   }
 }

@@ -1,18 +1,18 @@
 {
   "variants": {
     "facing=east": {
-      "model": "nuclearcraft:block/supercooler",
+      "model": "nuclearcraft:block/processor/supercooler",
       "y": 90
     },
     "facing=north": {
-      "model": "nuclearcraft:block/supercooler"
+      "model": "nuclearcraft:block/processor/supercooler"
     },
     "facing=south": {
-      "model": "nuclearcraft:block/supercooler",
+      "model": "nuclearcraft:block/processor/supercooler",
       "y": 180
     },
     "facing=west": {
-      "model": "nuclearcraft:block/supercooler",
+      "model": "nuclearcraft:block/processor/supercooler",
       "y": 270
     }
   }

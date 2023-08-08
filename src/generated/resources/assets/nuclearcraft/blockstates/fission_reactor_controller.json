@@ -1,18 +1,18 @@
 {
   "variants": {
     "facing=east": {
-      "model": "nuclearcraft:block/fission_reactor_controller",
+      "model": "nuclearcraft:block/multiblock/fission_reactor_controller",
       "y": 90
     },
     "facing=north": {
-      "model": "nuclearcraft:block/fission_reactor_controller"
+      "model": "nuclearcraft:block/multiblock/fission_reactor_controller"
     },
     "facing=south": {
-      "model": "nuclearcraft:block/fission_reactor_controller",
+      "model": "nuclearcraft:block/multiblock/fission_reactor_controller",
       "y": 180
     },
     "facing=west": {
-      "model": "nuclearcraft:block/fission_reactor_controller",
+      "model": "nuclearcraft:block/multiblock/fission_reactor_controller",
       "y": 270
     }
   }

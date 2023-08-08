@@ -108,7 +108,7 @@ public class Processors {
             );
             all.put(EXTRACTOR,
                     ProcessorBuilder
-                            .make(EXTRACTOR, 0, 1, 0, 1)
+                            .make(EXTRACTOR, 0, 1, 1, 1)
                             .blockEntity(ExtractorBE::new)
                             .recipe(ExtractorBE.Recipe::new)
                             .progressBar(7)

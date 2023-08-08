@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/lithium_heat_sink"
+      "model": "nuclearcraft:block/multiblock/lithium_heat_sink"
     }
   }
 }

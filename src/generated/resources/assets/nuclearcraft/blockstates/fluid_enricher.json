@@ -1,18 +1,18 @@
 {
   "variants": {
     "facing=east": {
-      "model": "nuclearcraft:block/fluid_enricher",
+      "model": "nuclearcraft:block/processor/fluid_enricher",
       "y": 90
     },
     "facing=north": {
-      "model": "nuclearcraft:block/fluid_enricher"
+      "model": "nuclearcraft:block/processor/fluid_enricher"
     },
     "facing=south": {
-      "model": "nuclearcraft:block/fluid_enricher",
+      "model": "nuclearcraft:block/processor/fluid_enricher",
       "y": 180
     },
     "facing=west": {
-      "model": "nuclearcraft:block/fluid_enricher",
+      "model": "nuclearcraft:block/processor/fluid_enricher",
       "y": 270
     }
   }

@@ -99,8 +99,20 @@ public class NCBlockStates extends BlockStateProvider {
 
     public ModelFile model(Block block, String subPath) {
         ResourceLocation name = key(block);
+        String blockPath = "";
+        switch (subPath) {
+            case "ore":
+                blockPath = "block/ore/";
+                break;
+            case "material/block":
+                blockPath = "block/material/";
+                break;
+            case "processor":
+                blockPath = "block/processor/";
+                break;
+        }
         return models().cubeAll(
-                        key(block).getPath(),
+                blockPath+key(block).getPath(),
                         new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/" + name.getPath()));
     }
 
@@ -110,7 +122,7 @@ public class NCBlockStates extends BlockStateProvider {
             return sidedModel(block, subPath);
         }
         BlockModelBuilder m = models().cubeAll(
-                key(block).getPath(),
+                "block/multiblock/"+key(block).getPath(),
                 new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath));
         if(subPath.matches(".*glass|.*cell.*")) {
             m.renderType(new ResourceLocation("translucent"));
@@ -121,9 +133,23 @@ public class NCBlockStates extends BlockStateProvider {
 
     public ModelFile sidedModel(Block block, String subPath) {
         ResourceLocation name = key(block);
-
+        String blockPath = "";
+        switch (subPath) {
+            case "ore":
+                blockPath = "block/ore/";
+                break;
+            case "material/block":
+                blockPath = "block/material/";
+                break;
+            case "processor":
+                blockPath = "block/processor/";
+                break;
+        }
+        if (subPath.matches(".*fission.*|.*fusion.*")) {
+            blockPath = "block/multiblock/";
+        }
         return models().cube(
-                key(block).getPath(),
+                blockPath+key(block).getPath(),
                 new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/top"),
                 new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/bottom"),
                 new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/" + name.getPath()),
@@ -136,8 +162,20 @@ public class NCBlockStates extends BlockStateProvider {
     public ModelFile energyModel(Block block, String subPath) {
         ResourceLocation name = key(block);
 
+        String blockPath = "";
+        switch (subPath) {
+            case "ore":
+                blockPath = "block/ore/";
+                break;
+            case "material/block":
+                blockPath = "block/material/";
+                break;
+            case "processor":
+                blockPath = "block/processor/";
+                break;
+        }
         return models().cube(
-                key(block).getPath(),
+                blockPath+key(block).getPath(),
                 new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"_side"),
                 new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"_top"),
                 new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"_side"),

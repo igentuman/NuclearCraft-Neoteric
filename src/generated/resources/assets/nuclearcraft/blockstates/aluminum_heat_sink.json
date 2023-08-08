@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/aluminum_heat_sink"
+      "model": "nuclearcraft:block/multiblock/aluminum_heat_sink"
     }
   }
 }

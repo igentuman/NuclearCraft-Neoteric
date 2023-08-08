@@ -1,18 +1,18 @@
 {
   "variants": {
     "facing=east": {
-      "model": "nuclearcraft:block/nuclear_furnace",
+      "model": "nuclearcraft:block/processor/nuclear_furnace",
       "y": 90
     },
     "facing=north": {
-      "model": "nuclearcraft:block/nuclear_furnace"
+      "model": "nuclearcraft:block/processor/nuclear_furnace"
     },
     "facing=south": {
-      "model": "nuclearcraft:block/nuclear_furnace",
+      "model": "nuclearcraft:block/processor/nuclear_furnace",
       "y": 180
     },
     "facing=west": {
-      "model": "nuclearcraft:block/nuclear_furnace",
+      "model": "nuclearcraft:block/processor/nuclear_furnace",
       "y": 270
     }
   }

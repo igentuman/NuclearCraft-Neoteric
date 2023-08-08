@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/arsenic_heat_sink"
+      "model": "nuclearcraft:block/multiblock/arsenic_heat_sink"
     }
   }
 }

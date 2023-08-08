@@ -1,3 +1,3 @@
 {
-  "parent": "nuclearcraft:block/liquid_helium_heat_sink"
+  "parent": "nuclearcraft:block/multiblock/liquid_helium_heat_sink"
 }

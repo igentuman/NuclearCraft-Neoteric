@@ -1,18 +1,18 @@
 {
   "variants": {
     "facing=east": {
-      "model": "nuclearcraft:block/electrolyzer",
+      "model": "nuclearcraft:block/processor/electrolyzer",
       "y": 90
     },
     "facing=north": {
-      "model": "nuclearcraft:block/electrolyzer"
+      "model": "nuclearcraft:block/processor/electrolyzer"
     },
     "facing=south": {
-      "model": "nuclearcraft:block/electrolyzer",
+      "model": "nuclearcraft:block/processor/electrolyzer",
       "y": 180
     },
     "facing=west": {
-      "model": "nuclearcraft:block/electrolyzer",
+      "model": "nuclearcraft:block/processor/electrolyzer",
       "y": 270
     }
   }

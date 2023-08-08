@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/prismarine_heat_sink"
+      "model": "nuclearcraft:block/multiblock/prismarine_heat_sink"
     }
   }
 }

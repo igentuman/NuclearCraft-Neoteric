@@ -35,7 +35,7 @@ public class SupercoolerRecipes extends AbstractRecipeProvider {
 
         add(
                 fluidIngredient("condensate_water", 1000),
-                fluidStack("technological_water", 1000)
+                fluidStack("technical_water", 1000)
         );
 
         add(

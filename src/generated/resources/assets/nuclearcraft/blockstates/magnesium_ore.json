@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/magnesium_ore"
+      "model": "nuclearcraft:block/ore/magnesium_ore"
     }
   }
 }

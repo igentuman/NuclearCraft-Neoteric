@@ -1,6 +1,7 @@
 {
 	"credit": "Made with Blockbench",
 	"ambientocclusion": false,
+	"render_type": "minecraft:translucent",
 	"textures": {
 		"0": "nuclearcraft:block/glowing_mushroom",
 		"particle": "nuclearcraft:block/glowing_mushroom"

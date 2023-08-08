@@ -57,16 +57,16 @@ public class NCItemModels extends ItemModelProvider {
 
     private void multiblocks() {
         for(String name: NCBlocks.MULTI_BLOCKS.keySet()) {
-            withExistingParent(NCBlocks.MULTIBLOCK_ITEMS.get(name).getId().getPath(), modLoc("block/"+name));
+            withExistingParent(NCBlocks.MULTIBLOCK_ITEMS.get(name).getId().getPath(), modLoc("block/multiblock/"+name));
         }
         for(String name: FissionReactor.MULTI_BLOCKS.keySet()) {
-            withExistingParent(FissionReactor.MULTIBLOCK_ITEMS.get(name).getId().getPath(), modLoc("block/"+name));
+            withExistingParent(FissionReactor.MULTIBLOCK_ITEMS.get(name).getId().getPath(), modLoc("block/multiblock/"+name));
         }
     }
 
     private void processors() {
         for(String name: NCProcessors.PROCESSORS.keySet()) {
-            withExistingParent(NCProcessors.PROCESSOR_BLOCKS_ITEMS.get(name).getId().getPath(), modLoc("block/"+name));
+            withExistingParent(NCProcessors.PROCESSOR_BLOCKS_ITEMS.get(name).getId().getPath(), modLoc("block/processor/"+name));
         }
     }
 
@@ -266,13 +266,13 @@ public class NCItemModels extends ItemModelProvider {
     }
     private void ores() {
         for(String ore: NCBlocks.ORE_BLOCK_ITEMS.keySet()) {
-            withExistingParent(NCBlocks.ORE_BLOCK_ITEMS.get(ore).getId().getPath(), modLoc("block/"+ore+"_ore"));
+            withExistingParent(NCBlocks.ORE_BLOCK_ITEMS.get(ore).getId().getPath(), modLoc("block/ore/"+ore+"_ore"));
         }
     }
 
     private void blocks() {
         for(String name: NCBlocks.NC_BLOCKS_ITEMS.keySet()) {
-            withExistingParent(NCBlocks.NC_BLOCKS_ITEMS.get(name).getId().getPath(), modLoc("block/"+name+"_block"));
+            withExistingParent(NCBlocks.NC_BLOCKS_ITEMS.get(name).getId().getPath(), modLoc("block/material/"+name+"_block"));
         }
     }
 }

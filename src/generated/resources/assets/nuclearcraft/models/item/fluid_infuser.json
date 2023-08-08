@@ -1,3 +1,3 @@
 {
-  "parent": "nuclearcraft:block/fluid_infuser"
+  "parent": "nuclearcraft:block/processor/fluid_infuser"
 }

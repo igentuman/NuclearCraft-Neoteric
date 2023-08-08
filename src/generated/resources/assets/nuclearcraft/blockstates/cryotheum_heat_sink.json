@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/cryotheum_heat_sink"
+      "model": "nuclearcraft:block/multiblock/cryotheum_heat_sink"
     }
   }
 }

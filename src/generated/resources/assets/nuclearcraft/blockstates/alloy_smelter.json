@@ -1,18 +1,18 @@
 {
   "variants": {
     "facing=east": {
-      "model": "nuclearcraft:block/alloy_smelter",
+      "model": "nuclearcraft:block/processor/alloy_smelter",
       "y": 90
     },
     "facing=north": {
-      "model": "nuclearcraft:block/alloy_smelter"
+      "model": "nuclearcraft:block/processor/alloy_smelter"
     },
     "facing=south": {
-      "model": "nuclearcraft:block/alloy_smelter",
+      "model": "nuclearcraft:block/processor/alloy_smelter",
       "y": 180
     },
     "facing=west": {
-      "model": "nuclearcraft:block/alloy_smelter",
+      "model": "nuclearcraft:block/processor/alloy_smelter",
       "y": 270
     }
   }

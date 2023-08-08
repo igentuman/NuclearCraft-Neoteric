@@ -1,18 +1,18 @@
 {
   "variants": {
     "facing=east": {
-      "model": "nuclearcraft:block/manufactory",
+      "model": "nuclearcraft:block/processor/manufactory",
       "y": 90
     },
     "facing=north": {
-      "model": "nuclearcraft:block/manufactory"
+      "model": "nuclearcraft:block/processor/manufactory"
     },
     "facing=south": {
-      "model": "nuclearcraft:block/manufactory",
+      "model": "nuclearcraft:block/processor/manufactory",
       "y": 180
     },
     "facing=west": {
-      "model": "nuclearcraft:block/manufactory",
+      "model": "nuclearcraft:block/processor/manufactory",
       "y": 270
     }
   }

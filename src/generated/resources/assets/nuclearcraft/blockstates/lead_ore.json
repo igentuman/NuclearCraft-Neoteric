@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/lead_ore"
+      "model": "nuclearcraft:block/ore/lead_ore"
     }
   }
 }

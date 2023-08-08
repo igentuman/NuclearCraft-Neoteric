@@ -1,18 +1,18 @@
 {
   "variants": {
     "facing=east": {
-      "model": "nuclearcraft:block/chemical_reactor",
+      "model": "nuclearcraft:block/processor/chemical_reactor",
       "y": 90
     },
     "facing=north": {
-      "model": "nuclearcraft:block/chemical_reactor"
+      "model": "nuclearcraft:block/processor/chemical_reactor"
     },
     "facing=south": {
-      "model": "nuclearcraft:block/chemical_reactor",
+      "model": "nuclearcraft:block/processor/chemical_reactor",
       "y": 180
     },
     "facing=west": {
-      "model": "nuclearcraft:block/chemical_reactor",
+      "model": "nuclearcraft:block/processor/chemical_reactor",
       "y": 270
     }
   }

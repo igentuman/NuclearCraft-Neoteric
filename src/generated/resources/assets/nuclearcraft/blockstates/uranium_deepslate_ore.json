@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/uranium_deepslate_ore"
+      "model": "nuclearcraft:block/ore/uranium_deepslate_ore"
     }
   }
 }

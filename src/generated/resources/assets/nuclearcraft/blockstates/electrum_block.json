@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/electrum_block"
+      "model": "nuclearcraft:block/material/electrum_block"
     }
   }
 }

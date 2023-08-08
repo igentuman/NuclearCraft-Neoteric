@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/fission_reactor_casing"
+      "model": "nuclearcraft:block/multiblock/fission_reactor_casing"
     }
   }
 }

@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/villiaumite_heat_sink"
+      "model": "nuclearcraft:block/multiblock/villiaumite_heat_sink"
     }
   }
 }

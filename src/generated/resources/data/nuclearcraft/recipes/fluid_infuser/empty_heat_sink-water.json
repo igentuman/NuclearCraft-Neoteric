@@ -1,0 +1,22 @@
+{
+  "type": "nuclearcraft:fluid_infuser",
+  "input": [
+    {
+      "item": "nuclearcraft:empty_heat_sink"
+    }
+  ],
+  "inputFluids": [
+    {
+      "amount": 1000,
+      "tag": "forge:water"
+    }
+  ],
+  "output": [
+    {
+      "item": "nuclearcraft:water_heat_sink"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

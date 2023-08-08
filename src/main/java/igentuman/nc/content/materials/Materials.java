@@ -128,6 +128,7 @@ public class Materials extends MaterialsManager {
     public final static String uranium233 = "uranium/233";
     public final static String uranium235 = "uranium/235";
     public final static String uranium238 = "uranium/238";
+    public final static String supercold_ice = "supercold_ice";
 
 
     public static HashMap<String, NCMaterial> all()
@@ -148,6 +149,7 @@ public class Materials extends MaterialsManager {
             all.put(platinum, NCMaterial.ore(platinum).ores(false, true, false, false).color(0xFF6C939B));
 
             //ingots, nuggets, dusts...
+            all.put(supercold_ice, NCMaterial.dust(supercold_ice).define("block"));
             all.put(tough_alloy, NCMaterial.get(tough_alloy).define("ingot", "plate", "dust", "fluid").color(0xFF181322));
             all.put(palladium, NCMaterial.get(palladium).define("ingot", "plate", "dust", "fluid").color(0xFF181322));
             all.put(copper, NCMaterial.get(copper).define("dust", "plate", "fluid").color(0xFFA86F32));

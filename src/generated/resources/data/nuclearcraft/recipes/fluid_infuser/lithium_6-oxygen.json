@@ -1,0 +1,22 @@
+{
+  "type": "nuclearcraft:fluid_infuser",
+  "input": [
+    {
+      "item": "nuclearcraft:lithium_6"
+    }
+  ],
+  "inputFluids": [
+    {
+      "amount": 100,
+      "tag": "forge:oxygen"
+    }
+  ],
+  "output": [
+    {
+      "item": "nuclearcraft:lithium_6_ox"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

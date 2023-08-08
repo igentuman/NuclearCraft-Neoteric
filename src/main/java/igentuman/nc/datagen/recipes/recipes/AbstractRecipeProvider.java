@@ -21,11 +21,13 @@ import java.util.function.Consumer;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.setup.registration.Fuel.*;
+import static igentuman.nc.setup.registration.NCBlocks.NC_BLOCKS;
 import static igentuman.nc.setup.registration.NCFluids.ALL_FLUID_ENTRIES;
 import static igentuman.nc.setup.registration.NCFluids.NC_MATERIALS;
 import static igentuman.nc.setup.registration.NCItems.*;
 import static igentuman.nc.util.DataGenUtil.*;
 import static net.minecraft.world.item.Items.AIR;
+import static net.minecraft.world.item.Items.BARRIER;
 
 public abstract class AbstractRecipeProvider {
 
@@ -41,6 +43,12 @@ public abstract class AbstractRecipeProvider {
         int count = 1;
         if(pCount.length > 0) count = pCount[0];
         return NcIngredient.stack(stack(item, count));
+    }
+
+    protected static NcIngredient blockStack(String name, int...pCount) {
+        int count = 1;
+        if(pCount.length > 0) count = pCount[0];
+        return NcIngredient.stack(stack(blockItem(name), count));
     }
 
     protected static ItemStack stack(Item item, int count) {
@@ -140,6 +148,17 @@ public abstract class AbstractRecipeProvider {
             name = name.split(":")[1];
         }
         return TagKey.create(Registry.FLUID_REGISTRY, new ResourceLocation(key, name));
+    }
+
+    public static Item blockItem(String name)
+    {
+        for(String key: List.of(name, "block_"+name, name+"_block")) {
+            if(ALL_NC_ITEMS.get(name) != null) {
+                return ALL_NC_ITEMS.get(key).get();
+            }
+        }
+        System.out.println("null block: " + name);
+        return BARRIER;
     }
 
     public static Item dustItem(String name)

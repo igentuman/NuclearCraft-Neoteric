@@ -24,6 +24,7 @@ import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.setup.multiblocks.FissionBlocks.REACTOR_BLOCKS_PROPERTIES;
+import static igentuman.nc.setup.registration.NCItems.ALL_NC_ITEMS;
 
 public class FissionReactor {
     public static final Item.Properties MULTIBLOCK_ITEM_PROPERTIES = new Item.Properties().tab(ModSetup.ITEM_GROUP);
@@ -77,12 +78,14 @@ public class FissionReactor {
                 MULTI_BLOCKS.put(key, BLOCKS.register(key, () -> new FissionBlock(REACTOR_BLOCKS_PROPERTIES)));
             }
             MULTIBLOCK_ITEMS.put(key, fromMultiblock(MULTI_BLOCKS.get(key)));
+            ALL_NC_ITEMS.put(key, MULTIBLOCK_ITEMS.get(key));
         }
 
         for(String name: FissionBlocks.heatsinks.keySet()) {
             MULTI_BLOCKS.put(name+"_heat_sink", BLOCKS.register(name+"_heat_sink", () -> new HeatSinkBlock(REACTOR_BLOCKS_PROPERTIES, FissionBlocks.heatsinks.get(name))));
             MULTIBLOCK_ITEMS.put(name+"_heat_sink", fromMultiblock(MULTI_BLOCKS.get(name+"_heat_sink")));
             hsBlocks.add(MULTI_BLOCKS.get(name+"_heat_sink"));
+            ALL_NC_ITEMS.put(name+"_heat_sink", MULTIBLOCK_ITEMS.get(name+"_heat_sink"));
         }
 
 

@@ -1,0 +1,22 @@
+{
+  "type": "nuclearcraft:fluid_infuser",
+  "input": [
+    {
+      "item": "minecraft:ice"
+    }
+  ],
+  "inputFluids": [
+    {
+      "amount": 50,
+      "tag": "forge:liquid_helium"
+    }
+  ],
+  "output": [
+    {
+      "item": "minecraft:barrier"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

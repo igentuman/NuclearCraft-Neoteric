@@ -30,5 +30,6 @@ public class CustomRecipes extends NCRecipes {
         IrradiatorRecipes.generate(consumer);
         CrystalizerRecipes.generate(consumer);
         SteamTurbineRecipes.generate(consumer);
+        FluidInfuserRecipes.generate(consumer);
     }
 }

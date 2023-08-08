@@ -1,0 +1,23 @@
+{
+  "type": "nuclearcraft:fluid_infuser",
+  "input": [
+    {
+      "count": 2,
+      "item": "nuclearcraft:bioplastic"
+    }
+  ],
+  "inputFluids": [
+    {
+      "amount": 250,
+      "tag": "forge:radaway_slow"
+    }
+  ],
+  "output": [
+    {
+      "item": "nuclearcraft:radaway_slow"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

@@ -1,0 +1,22 @@
+{
+  "type": "nuclearcraft:fluid_infuser",
+  "input": [
+    {
+      "item": "nuclearcraft:fuel_californium_hecf_249"
+    }
+  ],
+  "inputFluids": [
+    {
+      "amount": 1000,
+      "tag": "forge:nitrogen"
+    }
+  ],
+  "output": [
+    {
+      "item": "nuclearcraft:fuel_californium_hecf_249_ni"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

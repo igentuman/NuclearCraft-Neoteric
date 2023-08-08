@@ -1,0 +1,22 @@
+{
+  "type": "nuclearcraft:fluid_infuser",
+  "input": [
+    {
+      "item": "nuclearcraft:fuel_berkelium_heb_248"
+    }
+  ],
+  "inputFluids": [
+    {
+      "amount": 1000,
+      "tag": "forge:oxygen"
+    }
+  ],
+  "output": [
+    {
+      "item": "nuclearcraft:fuel_berkelium_heb_248_ox"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

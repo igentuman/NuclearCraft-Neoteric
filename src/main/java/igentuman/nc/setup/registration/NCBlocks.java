@@ -32,6 +32,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.setup.registration.NCItems.ALL_NC_ITEMS;
 
 public class NCBlocks {
 
@@ -77,8 +78,6 @@ public class NCBlocks {
     }
 
 
-
-
     private static void registerOres() {
         for(String name: Ores.registered().keySet()) {
             ORE_TAGS.put(name, TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation("forge", "ores/"+name)));
@@ -86,18 +85,22 @@ public class NCBlocks {
             if(Materials.ores().get(name).normal_ore) {
                 ORE_BLOCKS.put(name, BLOCKS.register(name + "_ore", () -> new Block(ORE_BLOCK_PROPERTIES)));
                 ORE_BLOCK_ITEMS.put(name, fromBlock(ORE_BLOCKS.get(name)));
+                ALL_NC_ITEMS.put("ore_"+name, ORE_BLOCK_ITEMS.get(name));
             }
             if(Materials.ores().get(name).deepslate_ore) {
                 ORE_BLOCKS.put(name+"_deepslate", BLOCKS.register(name + "_deepslate_ore", () -> new Block(ORE_DEEPSLATE_BLOCK_PROPERTIES)));
                 ORE_BLOCK_ITEMS.put(name+"_deepslate", fromBlock(ORE_BLOCKS.get(name+"_deepslate")));
+                ALL_NC_ITEMS.put("ore_"+name+"_deepslate", ORE_BLOCK_ITEMS.get(name+"_deepslate"));
             }
             if(Materials.ores().get(name).nether_ore) {
                 ORE_BLOCKS.put(name+"_nether", BLOCKS.register(name + "_nether_ore", () -> new Block(ORE_BLOCK_PROPERTIES)));
                 ORE_BLOCK_ITEMS.put(name+"_nether", fromBlock(ORE_BLOCKS.get(name+"_nether")));
+                ALL_NC_ITEMS.put("ore_"+name+"_nether", ORE_BLOCK_ITEMS.get(name+"_nether"));
             }
             if(Materials.ores().get(name).end_ore) {
                 ORE_BLOCKS.put(name+"_end", BLOCKS.register(name + "_end_ore", () -> new Block(ORE_BLOCK_PROPERTIES)));
                 ORE_BLOCK_ITEMS.put(name+"_end", fromBlock(ORE_BLOCKS.get(name+"_end")));
+                ALL_NC_ITEMS.put("ore_"+name+"_end", ORE_BLOCK_ITEMS.get(name+"_end"));
             }
         }
     }
@@ -108,6 +111,7 @@ public class NCBlocks {
             BLOCK_ITEM_TAGS.put(name, TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("forge", "storage_blocks/"+name)));
             NC_BLOCKS.put(name, BLOCKS.register(name + "_block", () -> new Block(NC_BLOCKS_PROPERTIES)));
             NC_BLOCKS_ITEMS.put(name, fromBlock(NC_BLOCKS.get(name)));
+            ALL_NC_ITEMS.put(name+"_block", NC_BLOCKS_ITEMS.get(name));
         }
     }
 

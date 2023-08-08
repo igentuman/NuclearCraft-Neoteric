@@ -1,0 +1,23 @@
+{
+  "type": "nuclearcraft:fluid_enricher",
+  "input": [
+    {
+      "tag": "forge:dusts/sodium_fluoride"
+    }
+  ],
+  "inputFluids": [
+    {
+      "amount": 1000,
+      "tag": "minecraft:water"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 250,
+      "fluid": "nuclearcraft:sodium_fluoride_solution"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

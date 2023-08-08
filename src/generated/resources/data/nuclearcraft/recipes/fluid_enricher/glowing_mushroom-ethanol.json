@@ -1,0 +1,24 @@
+{
+  "type": "nuclearcraft:fluid_enricher",
+  "input": [
+    {
+      "count": 3,
+      "item": "nuclearcraft:glowing_mushroom"
+    }
+  ],
+  "inputFluids": [
+    {
+      "amount": 250,
+      "tag": "forge:ethanol"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 250,
+      "fluid": "nuclearcraft:radaway"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

@@ -54,6 +54,9 @@ public class NCBlocks {
     public static HashMap<String, RegistryObject<BlockEntityType<? extends BlockEntity>>> MULTIBLOCK_BE = new HashMap<>();
 
     public static final RegistryObject<Block> PORTAL_BLOCK = BLOCKS.register("portal", PortalBlock::new);
+
+    public static final RegistryObject<Block> MUSHROOM_BLOCK = BLOCKS.register("glowing_mushroom", () -> new Block(BlockBehaviour.Properties.of(Material.PLANT).noCollission().lightLevel($ -> 10)));
+    public static final RegistryObject<Item> MUSHROOM_ITEM = fromBlock(MUSHROOM_BLOCK);
     public static final RegistryObject<Item> PORTAL_ITEM = fromBlock(PORTAL_BLOCK);
 
     public static HashMap<String, TagKey<Block>> ORE_TAGS = new HashMap<>();
@@ -113,6 +116,8 @@ public class NCBlocks {
             NC_BLOCKS_ITEMS.put(name, fromBlock(NC_BLOCKS.get(name)));
             ALL_NC_ITEMS.put(name+"_block", NC_BLOCKS_ITEMS.get(name));
         }
+
+        ALL_NC_ITEMS.put("glowing_mushroom", NC_BLOCKS_ITEMS.get("glowing_mushroom"));
     }
 
     public static <B extends Block> RegistryObject<Item> fromBlock(RegistryObject<B> block) {

@@ -1,0 +1,18 @@
+{
+  "type": "nuclearcraft:supercooler",
+  "inputFluids": [
+    {
+      "amount": 1000,
+      "tag": "forge:exhaust_steam"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 1000,
+      "fluid": "nuclearcraft:condensate_water"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

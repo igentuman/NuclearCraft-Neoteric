@@ -1,0 +1,58 @@
+{
+	"credit": "Made with Blockbench",
+	"ambientocclusion": false,
+	"textures": {
+		"0": "nuclearcraft:block/glowing_mushroom",
+		"particle": "nuclearcraft:block/glowing_mushroom"
+	},
+	"elements": [
+		{
+			"from": [7.2, 0, 4],
+			"to": [7.2, 7, 11],
+			"faces": {
+				"north": {"uv": [0, 0, 0, 7], "texture": "#missing"},
+				"east": {"uv": [0, 0, 7, 7], "texture": "#0"},
+				"south": {"uv": [0, 0, 0, 7], "texture": "#missing"},
+				"west": {"uv": [0, 0, 7, 7], "texture": "#0"},
+				"up": {"uv": [0, 0, 0, 7], "texture": "#missing"},
+				"down": {"uv": [0, 0, 0, 7], "texture": "#missing"}
+			}
+		},
+		{
+			"from": [3.7, 0, 7.5],
+			"to": [10.7, 7, 7.5],
+			"rotation": {"angle": 0, "axis": "y", "origin": [7.2, 3.5, 7.5]},
+			"faces": {
+				"north": {"uv": [0, 0, 7, 7], "texture": "#0"},
+				"east": {"uv": [0, 0, 0, 7], "texture": "#missing"},
+				"south": {"uv": [0, 0, 7, 7], "texture": "#0"},
+				"west": {"uv": [0, 0, 0, 7], "texture": "#missing"},
+				"up": {"uv": [0, 0, 0, 7], "rotation": 270, "texture": "#missing"},
+				"down": {"uv": [0, 0, 0, 7], "rotation": 90, "texture": "#missing"}
+			}
+		}
+	],
+	"display": {
+		"thirdperson_righthand": {
+			"translation": [0, 4.75, 0]
+		},
+		"thirdperson_lefthand": {
+			"translation": [0, 5.75, 0]
+		},
+		"firstperson_righthand": {
+			"translation": [0, 2.25, 0]
+		},
+		"firstperson_lefthand": {
+			"translation": [0, 3, 0]
+		},
+		"ground": {
+			"translation": [0, 5.75, 0]
+		},
+		"gui": {
+			"translation": [0.75, 4.25, 0]
+		},
+		"fixed": {
+			"translation": [0, 3.5, 0]
+		}
+	}
+}

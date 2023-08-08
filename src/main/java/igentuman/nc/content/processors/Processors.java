@@ -116,7 +116,7 @@ public class Processors {
             );
             all.put(FLUID_ENRICHER,
                     ProcessorBuilder
-                            .make(FLUID_ENRICHER, 0, 1, 1, 1)
+                            .make(FLUID_ENRICHER, 1, 1, 1, 0)
                             .blockEntity(FluidEnricherBE::new)
                             .recipe(FluidEnricherBE.Recipe::new)
                             .build()

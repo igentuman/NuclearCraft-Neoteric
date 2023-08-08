@@ -119,7 +119,9 @@ public class NCItemTags extends ItemTagsProvider {
     private void blocks() {
         for(String name: NCBlocks.NC_BLOCKS_ITEMS.keySet()) {
             tag(Tags.Items.STORAGE_BLOCKS).add(NCBlocks.NC_BLOCKS_ITEMS.get(name).get());
-            tag(NCBlocks.BLOCK_ITEM_TAGS.get(name)).add(NCBlocks.NC_BLOCKS_ITEMS.get(name).get());
+            if(NCBlocks.BLOCK_ITEM_TAGS.get(name) != null) {
+                tag(NCBlocks.BLOCK_ITEM_TAGS.get(name)).add(NCBlocks.NC_BLOCKS_ITEMS.get(name).get());
+            }
         }
     }
 

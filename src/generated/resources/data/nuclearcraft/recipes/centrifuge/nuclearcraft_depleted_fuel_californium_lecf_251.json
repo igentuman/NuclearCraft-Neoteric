@@ -1,0 +1,26 @@
+{
+  "type": "nuclearcraft:centrifuge",
+  "inputFluids": [
+    {
+      "amount": 1296,
+      "fluid": "nuclearcraft:depleted_fuel_californium_lecf_251"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 1152,
+      "fluid": "nuclearcraft:californium_252"
+    },
+    {
+      "amount": 144,
+      "fluid": "nuclearcraft:ruthenium_106"
+    },
+    {
+      "amount": 144,
+      "fluid": "nuclearcraft:promethium_147"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 0.5
+}

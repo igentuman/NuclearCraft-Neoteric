@@ -1,7 +1,7 @@
 package igentuman.nc.datagen.recipes;
 
 import igentuman.nc.setup.registration.Fuel;
-import igentuman.nc.setup.registration.Materials;
+import igentuman.nc.content.materials.Materials;
 import igentuman.nc.content.fuel.FuelManager;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.data.DataGenerator;

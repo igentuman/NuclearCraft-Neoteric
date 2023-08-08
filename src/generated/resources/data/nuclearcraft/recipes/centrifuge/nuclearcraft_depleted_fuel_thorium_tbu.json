@@ -1,0 +1,38 @@
+{
+  "type": "nuclearcraft:centrifuge",
+  "inputFluids": [
+    {
+      "amount": 1296,
+      "fluid": "nuclearcraft:depleted_fuel_thorium_tbu"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 144,
+      "fluid": "nuclearcraft:uranium_233"
+    },
+    {
+      "amount": 720,
+      "fluid": "nuclearcraft:uranium_238"
+    },
+    {
+      "amount": 144,
+      "fluid": "nuclearcraft:neptunium_236"
+    },
+    {
+      "amount": 144,
+      "fluid": "nuclearcraft:neptunium_237"
+    },
+    {
+      "amount": 144,
+      "fluid": "nuclearcraft:strontium_90"
+    },
+    {
+      "amount": 144,
+      "fluid": "nuclearcraft:caesium_137"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 0.5
+}

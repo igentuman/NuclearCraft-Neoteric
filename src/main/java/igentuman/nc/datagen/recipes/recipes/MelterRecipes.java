@@ -3,7 +3,7 @@ package igentuman.nc.datagen.recipes.recipes;
 import igentuman.nc.recipes.ingredient.NcIngredient;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.setup.registration.Fuel;
-import igentuman.nc.setup.registration.Materials;
+import igentuman.nc.content.materials.Materials;
 import igentuman.nc.setup.registration.NCItems;
 import igentuman.nc.content.fuel.FuelManager;
 import igentuman.nc.content.materials.NCMaterial;

@@ -2,7 +2,7 @@ package igentuman.nc.datagen.recipes.recipes;
 
 import igentuman.nc.recipes.ingredient.NcIngredient;
 import igentuman.nc.content.processors.Processors;
-import igentuman.nc.setup.registration.Materials;
+import igentuman.nc.content.materials.Materials;
 import net.minecraft.data.recipes.FinishedRecipe;
 
 import java.util.List;

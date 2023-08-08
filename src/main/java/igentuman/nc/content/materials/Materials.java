@@ -1,4 +1,4 @@
-package igentuman.nc.setup.registration;
+package igentuman.nc.content.materials;
 
 import igentuman.nc.content.materials.MaterialsManager;
 import igentuman.nc.content.materials.NCMaterial;
@@ -183,26 +183,31 @@ public class Materials extends MaterialsManager {
             all.put(graphite, NCMaterial.get(graphite).define("ingot", "dust", "block", "plate").color(0xFF292929));
             all.put(pyrolitic_carbon, NCMaterial.get(pyrolitic_carbon).define("ingot", "dust").color(0xFF292929));
             all.put(hsla_steel, NCMaterial.alloy(hsla_steel).define("ingot", "plate", "dust", "fluid").color(0xFF8174B0));
+            all.put(ruthenium_106, NCMaterial.dust(ruthenium_106).fluid(true, 600).color(0xFF8174B0));
+            all.put(strontium_90, NCMaterial.dust(strontium_90).fluid(true, 600).color(0xFF8174B0));
+            all.put(promethium_147, NCMaterial.dust(promethium_147).fluid(true, 600).color(0xFF8174B0));
+            all.put(molybdenum, NCMaterial.dust(molybdenum).fluid(true, 600).color(0xFF8174B0));
+            all.put(caesium_137, NCMaterial.dust(caesium_137).fluid(true, 600).color(0xFF8174B0));
+            all.put(arsenic, NCMaterial.dust(arsenic).fluid(true, 500).color(0xFFDEDE7A));
+            all.put(boron_arsenide, NCMaterial.dust(boron_arsenide).with("gem").fluid(true, 500).color(0xFFDEDE7A));
+            all.put(obsidian, NCMaterial.dust(obsidian).fluid(true, 600).color(0xFFDEDE7A));
+            all.put(sulfur, NCMaterial.dust(sulfur).fluid(true, 700).color(0xFFDEDE7A));
+            all.put(potassium_hydroxide, NCMaterial.dust(potassium_hydroxide).fluid(true, 500).color(0xFFDEDE7A));
+            all.put(sodium_hydroxide, NCMaterial.dust(sodium_hydroxide).fluid(true, 500).color(0xFFDEDE7A));
+            all.put(europium_155, NCMaterial.dust(europium_155).fluid(true, 600).color(0xFF8174B0));
+
             //dusts
             all.put(neodymium, NCMaterial.dust(neodymium));
             all.put(barium, NCMaterial.dust(barium));
             all.put(bismuth, NCMaterial.dust(bismuth));
             all.put(thallium, NCMaterial.dust(thallium));
-            all.put(caesium_137, NCMaterial.dust(caesium_137));
-            all.put(europium_155, NCMaterial.dust(europium_155));
             all.put(gadolinium, NCMaterial.dust(gadolinium));
-            all.put(molybdenum, NCMaterial.dust(molybdenum));
             all.put(polonium, NCMaterial.dust(polonium));
-            all.put(promethium_147, NCMaterial.dust(promethium_147));
             all.put(protactinium_233, NCMaterial.dust(protactinium_233));
             all.put(radium, NCMaterial.dust(radium));
-            all.put(ruthenium_106, NCMaterial.dust(ruthenium_106));
-            all.put(strontium_90, NCMaterial.dust(strontium_90));
             all.put(tbp, NCMaterial.dust(tbp));
-            all.put(arsenic, NCMaterial.dust(arsenic).fluid(true, 500).color(0xFFDEDE7A));
             all.put(boron_nitride, NCMaterial.dust(boron_nitride).with("gem"));
             all.put(silicon, NCMaterial.gem(silicon));
-            all.put(boron_arsenide, NCMaterial.dust(boron_arsenide).with("gem").fluid(true, 500).color(0xFFDEDE7A));
             all.put(carobbiite, NCMaterial.dust(carobbiite).with("gem"));
             all.put(coal, NCMaterial.dust(coal));
             all.put(charcoal, NCMaterial.dust(charcoal));
@@ -210,10 +215,8 @@ public class Materials extends MaterialsManager {
             all.put(emerald, NCMaterial.dust(emerald));
             all.put(end_stone, NCMaterial.dust(end_stone));
             all.put(fluorite, NCMaterial.dust(fluorite).with("gem"));
-            all.put(obsidian, NCMaterial.dust(obsidian).fluid(true, 600).color(0xFFDEDE7A));
             all.put(quartz, NCMaterial.dust(quartz));
             all.put(rhodochrosite, NCMaterial.dust(rhodochrosite).with("gem"));
-            all.put(sulfur, NCMaterial.dust(sulfur).fluid(true, 700).color(0xFFDEDE7A));
             all.put(villiaumite, NCMaterial.dust(villiaumite).with("gem"));
             all.put(alugentum, NCMaterial.dust(alugentum));
             all.put(borax, NCMaterial.dust(borax));
@@ -224,10 +227,8 @@ public class Materials extends MaterialsManager {
             all.put(energetic_blend, NCMaterial.dust(energetic_blend));
             all.put(irradiated_borax, NCMaterial.dust(irradiated_borax));
             all.put(potassium_fluoride, NCMaterial.dust(potassium_fluoride));
-            all.put(potassium_hydroxide, NCMaterial.dust(potassium_hydroxide).fluid(true, 500).color(0xFFDEDE7A));
             all.put(sodium_fluoride, NCMaterial.dust(sodium_fluoride));
             all.put(yellowcake, NCMaterial.dust(yellowcake));
-            all.put(sodium_hydroxide, NCMaterial.dust(sodium_hydroxide).fluid(true, 500).color(0xFFDEDE7A));
 
         }
         return all;

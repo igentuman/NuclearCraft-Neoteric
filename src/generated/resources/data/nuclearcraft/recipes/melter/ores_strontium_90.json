@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:melter",
+  "input": [
+    {
+      "tag": "forge:ores/strontium_90"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 288,
+      "fluid": "nuclearcraft:strontium_90"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

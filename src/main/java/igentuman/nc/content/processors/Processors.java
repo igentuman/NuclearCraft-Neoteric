@@ -73,6 +73,7 @@ public class Processors {
                     ProcessorBuilder
                             .make(CENTRIFUGE, 1, 0, 6, 0)
                             .blockEntity(CentrifugeBE::new)
+                            .recipe(CentrifugeRecipe::new)
                             .progressBar(16)
                             .build()
             );

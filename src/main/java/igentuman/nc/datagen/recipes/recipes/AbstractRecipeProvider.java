@@ -200,6 +200,13 @@ public abstract class AbstractRecipeProvider {
         return ingredient(forgeDust(name), count);
     }
 
+    public static FluidStackIngredient moltenFuelIngredient(List<String> name, int...pCount)
+    {
+        int count = 1;
+        if(pCount.length > 0) count = pCount[0];
+        return fluidStackIngredient(fuelItem(name).toString(), count);
+    }
+
     public static NcIngredient fuelIngredient(List<String> name, int...pCount)
     {
         int count = 1;

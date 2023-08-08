@@ -239,8 +239,7 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
     @NothingNullByDefault
     public static class TaggedFluidStackIngredient extends FluidStackIngredient {
 
-        private final ITag<Fluid> tag;
-        private final int amount;
+        protected final ITag<Fluid> tag;
 
         private TaggedFluidStackIngredient(TagKey<Fluid> tag, int amount) {
             this(TagUtil.tag(ForgeRegistries.FLUIDS, tag), amount);

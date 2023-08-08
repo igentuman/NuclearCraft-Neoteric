@@ -1,0 +1,38 @@
+{
+  "type": "nuclearcraft:centrifuge",
+  "inputFluids": [
+    {
+      "amount": 1296,
+      "fluid": "nuclearcraft:depleted_fuel_berkelium_heb_248"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 144,
+      "fluid": "nuclearcraft:berkelium_248"
+    },
+    {
+      "amount": 144,
+      "fluid": "nuclearcraft:californium_249"
+    },
+    {
+      "amount": 288,
+      "fluid": "nuclearcraft:californium_251"
+    },
+    {
+      "amount": 3,
+      "fluid": "nuclearcraft:californium_252"
+    },
+    {
+      "amount": 144,
+      "fluid": "nuclearcraft:ruthenium_106"
+    },
+    {
+      "amount": 144,
+      "fluid": "nuclearcraft:promethium_147"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.5
+}

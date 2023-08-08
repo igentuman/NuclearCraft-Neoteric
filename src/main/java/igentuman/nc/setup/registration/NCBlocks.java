@@ -1,5 +1,6 @@
 package igentuman.nc.setup.registration;
 
+import igentuman.nc.content.materials.Materials;
 import igentuman.nc.setup.ModSetup;
 import igentuman.nc.content.materials.Blocks;
 import igentuman.nc.content.materials.Ores;

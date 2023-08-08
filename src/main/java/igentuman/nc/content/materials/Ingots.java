@@ -1,7 +1,5 @@
 package igentuman.nc.content.materials;
 
-import igentuman.nc.setup.registration.Materials;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

@@ -1,6 +1,7 @@
 package igentuman.nc.setup.registration;
 
 import com.google.common.collect.ImmutableList;
+import igentuman.nc.content.materials.Materials;
 import igentuman.nc.item.NCBucketItem;
 import igentuman.nc.fluid.AcidDefinition;
 import igentuman.nc.fluid.GasDefinition;

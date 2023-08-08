@@ -1,16 +1,10 @@
 package igentuman.nc.datagen.recipes;
 
-import igentuman.nc.datagen.recipes.builder.NcRecipeBuilder;
 import igentuman.nc.datagen.recipes.recipes.*;
-import igentuman.nc.recipes.ingredient.NcIngredient;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 
 import java.util.function.Consumer;
-
-import static igentuman.nc.NuclearCraft.rl;
 
 public class CustomRecipes extends NCRecipes {
     public CustomRecipes(DataGenerator generatorIn) {
@@ -23,7 +17,7 @@ public class CustomRecipes extends NCRecipes {
         ManufactoryRecipes.generate(consumer);
         DecayHastenerRecipes.generate(consumer);
         PressurizerRecipes.generate(consumer);
-        AlloySmelterRecipeProvider.generate(consumer);
+        AlloySmelterRecipes.generate(consumer);
         RockCrusherRecipes.generate(consumer);
         IsotopeSeparatorRecipes.generate(consumer);
         MelterRecipes.generate(consumer);
@@ -31,6 +25,7 @@ public class CustomRecipes extends NCRecipes {
         FuelReprocessorRecipes.generate(consumer);
         ElectrolyzerRecipes.generate(consumer);
         ChemicalReactorRecipes.generate(consumer);
-        AssemblerRecipeProvider.generate(consumer);
+        AssemblerRecipes.generate(consumer);
+        CentrifugeRecipes.generate(consumer);
     }
 }

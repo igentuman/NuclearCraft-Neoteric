@@ -1,7 +1,5 @@
 package igentuman.nc.content.materials;
 
-import igentuman.nc.setup.registration.Materials;
-
 import java.util.HashMap;
 
 public class MaterialsManager {

@@ -5,6 +5,7 @@ import igentuman.nc.compat.jei.util.TickTimer;
 import igentuman.nc.recipes.AbstractRecipe;
 import igentuman.nc.content.processors.ProcessorPrefab;
 import igentuman.nc.content.processors.Processors;
+import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -147,6 +148,13 @@ public class ProcessorCategoryWrapper<T extends AbstractRecipe> implements IReci
         }
 
         slots = new IDrawable[processor.getSlotsConfig().getSlotPositions().size()];
+        int fluidTankCapacity = 16;
+        for(FluidStackIngredient fluidStack: recipe.getInputFluids()) {
+            fluidTankCapacity = Math.max(fluidTankCapacity, fluidStack.getAmount());
+        }
+        for(FluidStack fluidStack: recipe.getOutputFluids()) {
+            fluidTankCapacity = Math.max(fluidTankCapacity, fluidStack.getAmount());
+        }
         for(int[] pos: processor.getSlotsConfig().getSlotPositions()) {
             if(processor.getSlotsConfig().getSlotType(itemIdx).contains("item_in")) {
 
@@ -163,7 +171,7 @@ public class ProcessorCategoryWrapper<T extends AbstractRecipe> implements IReci
                 if(!recipe.getInputFluids(inputFluidCounter).get(0).equals(FluidStack.EMPTY)) {
                     builder.addSlot(RecipeIngredientRole.INPUT, pos[0]+xShift+barXshift, pos[1]+yShift)
                         .addIngredients(ForgeTypes.FLUID_STACK, recipe.getInputFluids(inputFluidCounter))
-                        .setFluidRenderer(recipe.getInputFluids(inputFluidCounter).get(0).getAmount(), false, 16, 16);;
+                        .setFluidRenderer((fluidTankCapacity+recipe.getInputFluids()[inputFluidCounter].getAmount())/2, false, 16, 16);;
                 }
                 slots[itemIdx] = guiHelper.createDrawable(rl("textures/gui/widgets.png"), 18, 0, 18, 18);
                 itemIdx++;
@@ -172,7 +180,7 @@ public class ProcessorCategoryWrapper<T extends AbstractRecipe> implements IReci
                 if (!recipe.getOutputFluids(putFluidCounter).get(0).equals(FluidStack.EMPTY)) {
                     builder.addSlot(RecipeIngredientRole.OUTPUT, pos[0] + xShift + barXshift, pos[1] + yShift)
                             .addIngredients(ForgeTypes.FLUID_STACK, recipe.getOutputFluids(putFluidCounter))
-                            .setFluidRenderer(recipe.getOutputFluids(putFluidCounter).get(0).getAmount(), false, 16, 16);
+                            .setFluidRenderer((fluidTankCapacity+recipe.getOutputFluids()[putFluidCounter].getAmount())/2, false, 16, 16);
                 }
                 slots[itemIdx] = guiHelper.createDrawable(rl("textures/gui/widgets.png"), 18, 36, 18, 18);
                 itemIdx++;

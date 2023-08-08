@@ -1,5 +1,6 @@
 package igentuman.nc.datagen.recipes;
 
+import igentuman.nc.content.materials.Materials;
 import igentuman.nc.setup.multiblocks.FissionBlocks;
 import igentuman.nc.setup.multiblocks.FissionReactor;
 import igentuman.nc.setup.registration.*;

@@ -35,6 +35,14 @@ public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
     protected double powerModifier = 1;
     protected double radiationModifier = 1;
 
+    public FluidStackIngredient[] getInputFluids() {
+        return inputFluids;
+    }
+
+    public FluidStack[] getOutputFluids() {
+        return outputFluids;
+    }
+
     protected FluidStackIngredient[] inputFluids = new FluidStackIngredient[0];
     protected FluidStack[] outputFluids = new FluidStack[0];
     protected ItemStackIngredient[] inputItems = new ItemStackIngredient[0];

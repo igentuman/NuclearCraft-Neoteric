@@ -1,0 +1,27 @@
+{
+  "type": "nuclearcraft:assembler",
+  "input": [
+    {
+      "count": 9,
+      "item": "nuclearcraft:fuel_californium_hecf_251"
+    },
+    {
+      "tag": "forge:dusts/graphite"
+    },
+    {
+      "tag": "forge:ingots/pyrolitic_carbon"
+    },
+    {
+      "tag": "forge:ingots/silicon_carbide"
+    }
+  ],
+  "output": [
+    {
+      "count": 9,
+      "item": "nuclearcraft:fuel_californium_hecf_251_tr"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

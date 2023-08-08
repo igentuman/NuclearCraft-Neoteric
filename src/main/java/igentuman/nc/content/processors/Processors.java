@@ -65,6 +65,7 @@ public class Processors {
                     ProcessorBuilder
                             .make(ASSEMBLER, 0, 4, 0, 1)
                             .blockEntity(AssemblerBE::new)
+                            .recipe(AssemblerRecipe::new)
                             .progressBar(15)
                             .build()
             );

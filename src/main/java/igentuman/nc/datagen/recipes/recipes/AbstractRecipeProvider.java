@@ -5,7 +5,9 @@ import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.NcIngredient;
 import igentuman.nc.recipes.ingredient.creator.IngredientCreatorAccess;
 import igentuman.nc.setup.registration.Fuel;
+import net.minecraft.core.Registry;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -19,6 +21,8 @@ import java.util.function.Consumer;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.setup.registration.Fuel.*;
+import static igentuman.nc.setup.registration.NCFluids.ALL_FLUID_ENTRIES;
+import static igentuman.nc.setup.registration.NCFluids.NC_MATERIALS;
 import static igentuman.nc.setup.registration.NCItems.*;
 import static igentuman.nc.util.DataGenUtil.*;
 import static net.minecraft.world.item.Items.AIR;
@@ -70,8 +74,17 @@ public abstract class AbstractRecipeProvider {
         try {
             return IngredientCreatorAccess.fluid().from(name, amount).getRepresentations().get(0);
         } catch (NullPointerException e) {
-            throw new NullPointerException("Fluid " + name + " does not exist");
+            System.out.println("Fluid " + name + " does not exist");
         }
+        return FluidStack.EMPTY;
+    }
+
+    protected static FluidStackIngredient fluidIngredient(String name, int amount) {
+        return IngredientCreatorAccess.fluid().from(forgeFluid(name), amount);
+    }
+
+    protected static FluidStackIngredient fluidStackIngredient(String name, int amount) {
+        return IngredientCreatorAccess.fluid().from(ALL_FLUID_ENTRIES.get(name).getStill(), amount);
     }
 
     public static void itemToItem(NcIngredient input, NcIngredient output, double...params) {
@@ -118,6 +131,15 @@ public abstract class AbstractRecipeProvider {
                 .fluids(inputFluids, outputFluids)
                 .modifiers(timeModifier, radiation, powerModifier)
                 .build(consumer);
+    }
+
+    public static TagKey<Fluid> forgeFluid(String name) {
+        String key = "forge";
+        if(name.contains(":")) {
+            key = name.split(":")[0];
+            name = name.split(":")[1];
+        }
+        return TagKey.create(Registry.FLUID_REGISTRY, new ResourceLocation(key, name));
     }
 
     public static Item dustItem(String name)

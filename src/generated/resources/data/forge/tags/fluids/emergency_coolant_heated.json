@@ -1,5 +1,6 @@
 {
   "values": [
-    "nuclearcraft:emergency_coolant_heated"
+    "nuclearcraft:emergency_coolant_heated",
+    "nuclearcraft:emergency_coolant_heated_flowing"
   ]
 }

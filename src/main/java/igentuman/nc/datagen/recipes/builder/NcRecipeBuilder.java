@@ -75,7 +75,7 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
             name.append(in.getName()).append("-");
         }
         for(FluidStackIngredient in: inputFluids) {
-            name.append(in.getRepresentations().get(0).getFluid().getFluidType().toString().split(":")[1]).append("-");
+            name.append(in.getName()).append("-");
         }
         name.replace(name.length()-1, name.length(), "");
         return new ResourceLocation(MODID, ID+"/"+name);

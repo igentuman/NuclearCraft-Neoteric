@@ -21,7 +21,7 @@ public class NCFluidBlockStates extends ExtendedBlockstateProvider {
 
     @Override
     protected void registerStatesAndModels() {
-        for(NCFluids.FluidEntry entry : NCFluids.ALL_ENTRIES)
+        for(NCFluids.FluidEntry entry : NCFluids.ALL_FLUID_ENTRIES.values())
         {
             Fluid still = entry.getStill();
             Mutable<IClientFluidTypeExtensions> box = new MutableObject<>();

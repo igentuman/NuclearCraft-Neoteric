@@ -84,7 +84,7 @@ public class ProcessorSlots {
             if(output_fluids+output_items > 6) {
                 x -= margin;
             }
-            if((output_items+output_fluids) % 2 == 0) {
+            if((output_items+output_fluids) % 2 == 0 && isDoubleSlotHeight()) {
                 for (int i = 0; i < output_fluids+output_items; i++) {
                     int itemX = x + (i / 2) * margin;
                     int itemY = y + (i % 2) * margin;

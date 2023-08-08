@@ -1,5 +1,6 @@
 {
   "values": [
-    "nuclearcraft:hydrogen"
+    "nuclearcraft:hydrogen",
+    "nuclearcraft:hydrogen_flowing"
   ]
 }

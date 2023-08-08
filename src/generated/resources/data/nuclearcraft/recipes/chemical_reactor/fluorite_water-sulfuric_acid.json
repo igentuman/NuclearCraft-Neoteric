@@ -1,0 +1,26 @@
+{
+  "type": "nuclearcraft:chemical_reactor",
+  "inputFluids": [
+    {
+      "amount": 500,
+      "tag": "forge:fluorite_water"
+    },
+    {
+      "amount": 500,
+      "tag": "forge:sulfuric_acid"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 1000,
+      "fluid": "nuclearcraft:hydrofluoric_acid"
+    },
+    {
+      "amount": 50,
+      "fluid": "nuclearcraft:calcium_sulfate_solution"
+    }
+  ],
+  "powerModifier": 0.5,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

@@ -51,7 +51,7 @@ public class NCFluidBlock extends LiquidBlock
 	public int getLightEmission(BlockState state, BlockGetter level, BlockPos pos)
 	{
 		if(getFluid().getFluidType().getTemperature() > 900) {
-			return 1;
+			return 2;
 		}
 		return 0;
 	}

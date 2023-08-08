@@ -20,11 +20,14 @@ class FluidTags extends FluidTagsProvider
 	{
 		for(String name: NCFluids.NC_MATERIALS.keySet()) {
 			tag(NCFluids.LIQUIDS_TAG.get(name)).add(NCFluids.NC_MATERIALS.get(name).getStill());
+			tag(NCFluids.LIQUIDS_TAG.get(name)).add(NCFluids.NC_MATERIALS.get(name).getFlowing());
 		}
 		for(String name: NCFluids.NC_GASES.keySet()) {
 			tag(NCFluids.LIQUIDS_TAG.get(name)).add(NCFluids.NC_GASES.get(name).getStill());
+			tag(NCFluids.LIQUIDS_TAG.get(name)).add(NCFluids.NC_GASES.get(name).getFlowing());
 
 			tag(Fluids.GASEOUS).add(NCFluids.NC_GASES.get(name).getStill());
+			tag(Fluids.GASEOUS).add(NCFluids.NC_GASES.get(name).getFlowing());
 		}
 	}
 }

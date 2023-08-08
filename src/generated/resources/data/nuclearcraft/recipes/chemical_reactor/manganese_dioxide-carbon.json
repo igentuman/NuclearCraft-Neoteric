@@ -1,0 +1,26 @@
+{
+  "type": "nuclearcraft:chemical_reactor",
+  "inputFluids": [
+    {
+      "amount": 72,
+      "tag": "forge:manganese_dioxide"
+    },
+    {
+      "amount": 144,
+      "tag": "forge:carbon"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 72,
+      "fluid": "nuclearcraft:manganese"
+    },
+    {
+      "amount": 750,
+      "fluid": "nuclearcraft:carbon_monoxide"
+    }
+  ],
+  "powerModifier": 0.5,
+  "radiation": 1.0,
+  "timeModifier": 0.5
+}

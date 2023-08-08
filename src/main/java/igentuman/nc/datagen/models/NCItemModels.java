@@ -52,7 +52,7 @@ public class NCItemModels extends ItemModelProvider {
         singleTexture(NCTools.SPAXELHOE_TOUGH.getId().getPath(),
                 mcLoc("item/generated"),
                 "layer0", modLoc("item/tool/"+NCTools.SPAXELHOE_TOUGH.getId().getPath()));
-        NCFluids.ALL_ENTRIES.forEach(this::createBucket);
+        NCFluids.ALL_FLUID_ENTRIES.values().forEach(this::createBucket);
     }
 
     private void multiblocks() {

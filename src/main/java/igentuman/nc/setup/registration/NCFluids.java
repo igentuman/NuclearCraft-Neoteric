@@ -49,7 +49,7 @@ public class NCFluids {
     public static final DeferredRegister<FluidType> FLUID_TYPES = DeferredRegister.create(
             ForgeRegistries.Keys.FLUID_TYPES, MODID
     );
-    public static final List<FluidEntry> ALL_ENTRIES = new ArrayList<>();
+    public static final HashMap<String, FluidEntry> ALL_FLUID_ENTRIES = new HashMap<>();
     public static final Set<NCBlocks.BlockEntry<? extends LiquidBlock>> ALL_FLUID_BLOCKS = new HashSet<>();
     public static HashMap<String, FluidEntry> NC_MATERIALS = new HashMap<>();
     public static HashMap<String, FluidEntry> NC_GASES = new HashMap<>();
@@ -85,9 +85,15 @@ public class NCFluids {
     private static void liquids() {
         HashMap<String, LiquidDefinition> items = new HashMap<>();
         items.put("radaway", new LiquidDefinition("radaway", 0x50B37AC4));
+        items.put("ethanol", new LiquidDefinition("ethanol", 0x50B37AC4));
+        items.put("methanol", new LiquidDefinition("methanol", 0x50B37AC4));
+        items.put("hydrogen_chloride", new LiquidDefinition("hydrogen_chloride", 0x50B37AC4));
+        items.put("lithium_fluoride", new LiquidDefinition("lithium_fluoride", 0x50B37AC4));
+        items.put("beryllium_fluoride", new LiquidDefinition("beryllium_fluoride", 0x50B37AC4));
         items.put("radaway_slow", new LiquidDefinition("radaway_slow", 0x50A0EFFF));
         items.put("redstone_ethanol", new LiquidDefinition("redstone_ethanol", 0x507E8CC8));
         items.put("boron_nitride_solution", new LiquidDefinition("boron_nitride_solution", 0x506F8E5C));
+        items.put("boron_arsenide_solution", new LiquidDefinition("boron_arsenide_solution", 0x506F8E5C));
         items.put("fluorite_water", new LiquidDefinition("fluorite_water", 0x508AB492));
         items.put("calcium_sulfate_solution", new LiquidDefinition("calcium_sulfate_solution", 0x50B8B0A6));
         items.put("sodium_fluoride_solution", new LiquidDefinition("sodium_fluoride_solution", 0x50C2B1A1));
@@ -138,10 +144,10 @@ public class NCFluids {
 
     private static void acids() {
         HashMap<String, AcidDefinition> items = new HashMap<>();
-        items.put("hydrofluoric_acid", new AcidDefinition("hydrofluoric_acid", 0x4D99FFEE));
-        items.put("boric_acid", new AcidDefinition("boric_acid", 0x4DA0EFFF));
-        items.put("sulfuric_acid", new AcidDefinition("sulfuric_acid", 0x4DA0EFFF));
-        items.put("nitric_acid", new AcidDefinition("nitric_acid", 0x4D4F9EFF));
+        items.put("hydrofluoric_acid", new AcidDefinition("hydrofluoric_acid", 0xCC99FFEE));
+        items.put("boric_acid", new AcidDefinition("boric_acid", 0xCCA0EFFF));
+        items.put("sulfuric_acid", new AcidDefinition("sulfuric_acid", 0xCCA0EFFF));
+        items.put("nitric_acid", new AcidDefinition("nitric_acid", 0xCC4F9EFF));
 
         for(AcidDefinition acid: items.values()) {
             LIQUIDS_TAG.put(acid.name, TagKey.create(Registry.FLUID_REGISTRY,  new ResourceLocation("forge", acid.name)));
@@ -185,33 +191,34 @@ public class NCFluids {
     private static void gases() {
         HashMap<String, GasDefinition> items = new HashMap<>();
 
-        items.put("steam", new GasDefinition("steam", 0x4D929292));
-        items.put("high_pressure_steam", new GasDefinition("high_pressure_steam", 0x4DBDBDBD));
-        items.put("exhaust_steam", new GasDefinition("exhaust_steam", 0x4D7E7E7E));
-        items.put("low_pressure_steam", new GasDefinition("low_pressure_steam", 0x4DA8A8A8));
-        items.put("low_quality_steam", new GasDefinition("low_quality_steam", 0x4D828282));
-        items.put("argon", new GasDefinition("argon", 0x4DFF75DD));
-        items.put("neon", new GasDefinition("neon", 0x4DFF9F7A));
-        items.put("chlorine", new GasDefinition("chlorine", 0x4DFFFF8F));
-        items.put("nitric_oxide", new GasDefinition("nitric_oxide", 0x4DC9EEFF));
-        items.put("nitrogen_dioxide", new GasDefinition("nitrogen_dioxide", 0x4D782A10));
-        items.put("hydrogen", new GasDefinition("hydrogen", 0x4DA0EFFF));
-        items.put("helium", new GasDefinition("helium", 0x4DC57B81));
-        items.put("helium_3", new GasDefinition("helium_3", 0x4DCBBB67));
-        items.put("tritium", new GasDefinition("tritium", 0x4D5DBBD6));
-        items.put("deuterium", new GasDefinition("deuterium", 0x4D9E6FEF));
-        items.put("oxygen", new GasDefinition("oxygen", 0x4D7E8CC8));
-        items.put("nitrogen", new GasDefinition("nitrogen", 0x4D7CC37B));
-        items.put("fluorine", new GasDefinition("fluorine", 0x4DD3C75D));
-        items.put("carbon_dioxide", new GasDefinition("carbon_dioxide", 0x4D5C635A));
-        items.put("carbon_monoxide", new GasDefinition("carbon_monoxide", 0x4D4C5649));
-        items.put("ethene", new GasDefinition("ethene", 0x4DFFE4A3));
-        items.put("fluoromethane", new GasDefinition("fluoromethane", 0x4D424C05));
-        items.put("ammonia", new GasDefinition("ammonia", 0x4D7AC3A0));
-        items.put("oxygen_difluoride", new GasDefinition("oxygen_difluoride", 0x4DEA1B01));
-        items.put("diborane", new GasDefinition("diborane", 0x4DCC6E8C));
-        items.put("sulfur_dioxide", new GasDefinition("sulfur_dioxide", 0x4DC3BC7A));
-        items.put("sulfur_trioxide", new GasDefinition("sulfur_trioxide", 0x4DD3AE5D));
+        items.put("steam", new GasDefinition("steam", 0xCC929292));
+        items.put("high_pressure_steam", new GasDefinition("high_pressure_steam", 0xCCBDBDBD));
+        items.put("exhaust_steam", new GasDefinition("exhaust_steam", 0xCC7E7E7E));
+        items.put("low_pressure_steam", new GasDefinition("low_pressure_steam", 0xCCA8A8A8));
+        items.put("low_quality_steam", new GasDefinition("low_quality_steam", 0xCC828282));
+        items.put("argon", new GasDefinition("argon", 0xCCFF75DD));
+        items.put("neon", new GasDefinition("neon", 0xCCFF9F7A));
+        items.put("chlorine", new GasDefinition("chlorine", 0xCCFFFF8F));
+        items.put("nitric_oxide", new GasDefinition("nitric_oxide", 0xCCC9EEFF));
+        items.put("nitrogen_dioxide", new GasDefinition("nitrogen_dioxide", 0xCC782A10));
+        items.put("hydrogen", new GasDefinition("hydrogen", 0xCCA0EFFF));
+        items.put("helium", new GasDefinition("helium", 0xCCC57B81));
+        items.put("helium_3", new GasDefinition("helium_3", 0xCCCBBB67));
+        items.put("tritium", new GasDefinition("tritium", 0xCC5DBBD6));
+        items.put("deuterium", new GasDefinition("deuterium", 0xCC9E6FEF));
+        items.put("oxygen", new GasDefinition("oxygen", 0xCC7E8CC8));
+        items.put("nitrogen", new GasDefinition("nitrogen", 0xCC7CC37B));
+        items.put("fluorine", new GasDefinition("fluorine", 0xCCD3C75D));
+        items.put("carbon", new GasDefinition("carbon", 0xCC5C635A));
+        items.put("carbon_dioxide", new GasDefinition("carbon_dioxide", 0xCC5C635A));
+        items.put("carbon_monoxide", new GasDefinition("carbon_monoxide", 0xCC4C5649));
+        items.put("ethene", new GasDefinition("ethene", 0xCCFFE4A3));
+        items.put("fluoromethane", new GasDefinition("fluoromethane", 0xCC424C05));
+        items.put("ammonia", new GasDefinition("ammonia", 0xCC7AC3A0));
+        items.put("oxygen_difluoride", new GasDefinition("oxygen_difluoride", 0xCCEA1B01));
+        items.put("diborane", new GasDefinition("diborane", 0xCCCC6E8C));
+        items.put("sulfur_dioxide", new GasDefinition("sulfur_dioxide", 0xCCC3BC7A));
+        items.put("sulfur_trioxide", new GasDefinition("sulfur_trioxide", 0xCCD3AE5D));
         items.put("radon", new GasDefinition("radon", 0xFFFFFFFF));
         for(GasDefinition gas: items.values()) {
             LIQUIDS_TAG.put(gas.name, TagKey.create(Registry.FLUID_REGISTRY,  new ResourceLocation("forge", gas.name)));
@@ -370,7 +377,7 @@ public class NCFluids {
             FluidEntry entry = new FluidEntry(flowing, still, block, bucket, type, properties, color);
             thisMutable.setValue(entry);
             ALL_FLUID_BLOCKS.add(block);
-            ALL_ENTRIES.add(entry);
+            ALL_FLUID_ENTRIES.put(name, entry);
             return entry;
         }
 

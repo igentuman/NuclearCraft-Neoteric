@@ -224,6 +224,11 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
             json.add(JsonConstants.INGREDIENT, ingredient.toJson());
             return json;
         }
+
+        @Override
+        public String getName() {
+            return getRepresentations().get(0).getItem().toString();
+        }
     }
 
     @NothingNullByDefault
@@ -238,6 +243,11 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
         @Override
         public boolean test(ItemStack stack) {
             return Arrays.stream(ingredients).anyMatch(ingredient -> ingredient.test(stack));
+        }
+
+        @Override
+        public String getName() {
+            return getRepresentations().get(0).getItem().toString();
         }
 
         @Override

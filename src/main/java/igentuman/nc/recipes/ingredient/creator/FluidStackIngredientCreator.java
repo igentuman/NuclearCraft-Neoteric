@@ -1,6 +1,7 @@
 package igentuman.nc.recipes.ingredient.creator;
 
 import com.google.gson.*;
+import igentuman.nc.NuclearCraft;
 import igentuman.nc.network.BasePacketHandler;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.IMultiIngredient;
@@ -97,10 +98,10 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
             }
             return from(stack);
         } else if (jsonObject.has("tag")) {
-            if (!jsonObject.has("count")) {
+            if (!jsonObject.has("amount")) {
                 throw new JsonSyntaxException("Expected to receive a amount that is greater than zero.");
             }
-            JsonElement count = jsonObject.get("count");
+            JsonElement count = jsonObject.get("amount");
             if (!GsonHelper.isNumberValue(count)) {
                 throw new JsonSyntaxException("Expected amount to be a number greater than zero.");
             }
@@ -156,6 +157,12 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
         private SingleFluidStackIngredient(FluidStack fluidInstance) {
             this.fluidInstance = Objects.requireNonNull(fluidInstance);
         }
+
+        @Override
+        public String getName() {
+            return fluidInstance.getFluid().getFluidType().toString().replace(":", "_");
+        }
+
 
         @Override
         public boolean test(FluidStack fluidStack) {
@@ -244,6 +251,11 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
             this.amount = amount;
         }
 
+        public String getName()
+        {
+            return tag.getKey().location().getPath().replace('/', '_').replace(':', '.');
+        }
+
         @Override
         public boolean test(FluidStack fluidStack) {
             return testType(fluidStack) && fluidStack.getAmount() >= amount;
@@ -279,6 +291,9 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
             List<@NotNull FluidStack> representations = new ArrayList<>();
             for (Fluid fluid : tag) {
                 representations.add(new FluidStack(fluid, amount));
+            }
+            if(representations.isEmpty()) {
+                NuclearCraft.LOGGER.error("Fluid Tag {} is empty!", tag.getKey().location());
             }
             return representations;
         }
@@ -404,6 +419,11 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
                 json.add(ingredient.serialize());
             }
             return json;
+        }
+
+        @Override
+        public String getName() {
+            return getRepresentations().get(0).getFluid().getFluidType().toString().split(":")[1];
         }
 
         @Override

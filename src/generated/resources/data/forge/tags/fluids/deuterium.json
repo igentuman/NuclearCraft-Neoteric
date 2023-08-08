@@ -1,5 +1,6 @@
 {
   "values": [
-    "nuclearcraft:deuterium"
+    "nuclearcraft:deuterium",
+    "nuclearcraft:deuterium_flowing"
   ]
 }

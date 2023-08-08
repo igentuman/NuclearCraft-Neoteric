@@ -74,4 +74,6 @@ public interface InputIngredient<TYPE> extends Predicate<TYPE> {
      * @return JsonElement representation of this ingredient.
      */
     JsonElement serialize();
+
+    String getName();
 }

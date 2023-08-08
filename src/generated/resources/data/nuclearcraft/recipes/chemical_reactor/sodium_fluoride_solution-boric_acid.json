@@ -1,0 +1,26 @@
+{
+  "type": "nuclearcraft:chemical_reactor",
+  "inputFluids": [
+    {
+      "amount": 144,
+      "tag": "forge:sodium_fluoride_solution"
+    },
+    {
+      "amount": 2000,
+      "tag": "forge:boric_acid"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 72,
+      "fluid": "nuclearcraft:borax_solution"
+    },
+    {
+      "amount": 1500,
+      "fluid": "nuclearcraft:hydrofluoric_acid"
+    }
+  ],
+  "powerModifier": 0.5,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

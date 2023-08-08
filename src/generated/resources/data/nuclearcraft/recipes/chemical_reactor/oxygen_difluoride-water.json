@@ -1,0 +1,26 @@
+{
+  "type": "nuclearcraft:chemical_reactor",
+  "inputFluids": [
+    {
+      "amount": 250,
+      "tag": "forge:oxygen_difluoride"
+    },
+    {
+      "amount": 250,
+      "tag": "minecraft:water"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 250,
+      "fluid": "nuclearcraft:liquid_oxygen"
+    },
+    {
+      "amount": 250,
+      "fluid": "nuclearcraft:hydrofluoric_acid"
+    }
+  ],
+  "powerModifier": 0.5,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

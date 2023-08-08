@@ -1,6 +1,8 @@
 package igentuman.nc.handler.event.client;
 
 import igentuman.nc.setup.registration.NCFluids;
+import net.minecraft.client.color.block.BlockColor;
+import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
@@ -11,6 +13,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static net.minecraft.world.level.block.Blocks.WATER;
 
 @Mod.EventBusSubscriber(modid = MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ColorHandler {
@@ -26,7 +29,7 @@ public class ColorHandler {
     @SubscribeEvent
     public static void registerBlockColorHandlers(RegisterColorHandlersEvent.Block event) {
         for (String name: NCFluids.NC_GASES.keySet()) {
-           // event.register(event.getBlockColors().getColor(NCFluids.NC_GASES.get(n), NCFluids.NC_GASES.get(name).getStill());
+
         }
     }
 

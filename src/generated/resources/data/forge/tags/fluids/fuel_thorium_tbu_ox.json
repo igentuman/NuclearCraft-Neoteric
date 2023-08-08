@@ -1,5 +1,6 @@
 {
   "values": [
-    "nuclearcraft:fuel_thorium_tbu_ox"
+    "nuclearcraft:fuel_thorium_tbu_ox",
+    "nuclearcraft:fuel_thorium_tbu_ox_flowing"
   ]
 }

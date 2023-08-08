@@ -79,6 +79,7 @@ public class Processors {
                     ProcessorBuilder
                             .make(CHEMICAL_REACTOR, 2, 0, 2, 0)
                             .blockEntity(ChemicalReactorBE::new)
+                            .recipe(ChemicalReactorRecipe::new)
                             .progressBar(5)
                             .build()
             );
@@ -95,7 +96,6 @@ public class Processors {
                             .blockEntity(DecayHastenerBE::new)
                             .recipe(DecayHastenerRecipe::new)
                             .progressBar(0)
-
                             .build()
             );
             all.put(ELECTROLYZER,

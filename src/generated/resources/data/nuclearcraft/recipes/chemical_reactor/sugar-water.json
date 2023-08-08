@@ -1,0 +1,26 @@
+{
+  "type": "nuclearcraft:chemical_reactor",
+  "inputFluids": [
+    {
+      "amount": 72,
+      "tag": "forge:sugar"
+    },
+    {
+      "amount": 500,
+      "tag": "minecraft:water"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 2000,
+      "fluid": "nuclearcraft:ethanol"
+    },
+    {
+      "amount": 1000,
+      "fluid": "nuclearcraft:carbon_dioxide"
+    }
+  ],
+  "powerModifier": 0.5,
+  "radiation": 1.0,
+  "timeModifier": 0.5
+}

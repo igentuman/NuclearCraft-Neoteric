@@ -30,5 +30,6 @@ public class CustomRecipes extends NCRecipes {
         IngotFormerRecipes.generate(consumer);
         FuelReprocessorRecipes.generate(consumer);
         ElectrolyzerRecipes.generate(consumer);
+        ChemicalReactorRecipes.generate(consumer);
     }
 }

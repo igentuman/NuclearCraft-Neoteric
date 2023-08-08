@@ -133,15 +133,8 @@ public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
     }
 
     public List<FluidStack> getInputFluids(int id) {
-        if(resolvedInputFluids == null) {
-            resolvedInputFluids = NonNullList.create();
-            int i = 0;
-            for (FluidStackIngredient inFluid : inputFluids) {
-                if (i == id) resolvedInputFluids.addAll(inFluid.getRepresentations());
-                i++;
-            }
-        }
-        return resolvedInputFluids;
+        if(inputFluids.length > id) return inputFluids[id].getRepresentations();
+        return List.of(FluidStack.EMPTY);
     }
 
     public List<FluidStack> getOutputFluids(int id) {

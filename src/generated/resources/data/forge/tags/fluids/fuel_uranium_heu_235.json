@@ -1,5 +1,6 @@
 {
   "values": [
-    "nuclearcraft:fuel_uranium_heu_235"
+    "nuclearcraft:fuel_uranium_heu_235",
+    "nuclearcraft:fuel_uranium_heu_235_flowing"
   ]
 }

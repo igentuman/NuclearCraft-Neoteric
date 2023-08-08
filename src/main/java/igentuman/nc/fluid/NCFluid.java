@@ -190,46 +190,4 @@ public class NCFluid extends FlowingFluid
 			builder.add(LEVEL);
 		}
 	}
-
-	public static class EntityFluidSerializer implements EntityDataSerializer<FluidStack>
-	{
-		@Override
-		public void write(FriendlyByteBuf buf, @Nonnull FluidStack value)
-		{
-			buf.writeFluidStack(value);
-		}
-
-		@Nonnull
-		@Override
-		public FluidStack read(FriendlyByteBuf buf)
-		{
-			return buf.readFluidStack();
-		}
-
-		@Nonnull
-		@Override
-		public FluidStack copy(FluidStack value)
-		{
-			return value.copy();
-		}
-	}
-
-	public static final DispenseItemBehavior BUCKET_DISPENSE_BEHAVIOR = new DefaultDispenseItemBehavior()
-	{
-		private final DefaultDispenseItemBehavior defaultBehavior = new DefaultDispenseItemBehavior();
-
-		public ItemStack execute(BlockSource source, ItemStack stack)
-		{
-			BucketItem bucketitem = (BucketItem)stack.getItem();
-			BlockPos blockpos = source.getPos().relative(source.getBlockState().getValue(DispenserBlock.FACING));
-			Level world = source.getLevel();
-			if(bucketitem.emptyContents(null, world, blockpos, null))
-			{
-				bucketitem.checkExtraContent(null, world, stack, blockpos);
-				return new ItemStack(Items.BUCKET);
-			}
-			else
-				return this.defaultBehavior.dispense(source, stack);
-		}
-	};
 }

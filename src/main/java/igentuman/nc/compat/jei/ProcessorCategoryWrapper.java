@@ -160,7 +160,7 @@ public class ProcessorCategoryWrapper<T extends AbstractRecipe> implements IReci
                 itemIdx++;
                 outputCounter++;
             } else if(processor.getSlotsConfig().getSlotType(itemIdx).contains("fluid_in")) {
-                if(!recipe.getOutputFluids(inputFluidCounter).get(0).equals(FluidStack.EMPTY)) {
+                if(!recipe.getInputFluids(inputFluidCounter).get(0).equals(FluidStack.EMPTY)) {
                     builder.addSlot(RecipeIngredientRole.INPUT, pos[0]+xShift+barXshift, pos[1]+yShift)
                         .addIngredients(ForgeTypes.FLUID_STACK, recipe.getInputFluids(inputFluidCounter))
                         .setFluidRenderer(recipe.getInputFluids(inputFluidCounter).get(0).getAmount(), false, 16, 16);;

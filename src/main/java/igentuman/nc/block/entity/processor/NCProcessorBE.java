@@ -1,6 +1,7 @@
 package igentuman.nc.block.entity.processor;
 
 import igentuman.nc.block.entity.NuclearCraftBE;
+import igentuman.nc.client.NcClient;
 import igentuman.nc.handler.UpgradesHandler;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.recipes.AbstractRecipe;
@@ -16,11 +17,16 @@ import igentuman.nc.handler.sided.SlotModePair;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.ComparatorBlock;
+import net.minecraft.world.level.block.PoweredBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.common.capabilities.Capability;
@@ -28,14 +34,18 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Objects;
+
+import static igentuman.nc.block.NCProcessorBlock.ACTIVE;
 
 public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE {
 
@@ -49,6 +59,8 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
 
     protected boolean saveSideMapFlag = true;
 
+    public boolean wasUpdated = true;
+
     protected RECIPE recipe;
     @NBTField
     public int speedMultiplier = 1;
@@ -60,7 +72,11 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
     @NBTField
     public int redstoneMode = 0;
 
+    @NBTField
+    public boolean isActive = false;
+
     public int manualUpdateCounter = 40;
+
 
     public LazyOptional<IEnergyStorage> getEnergy() {
         return energy;
@@ -213,51 +229,82 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
     }
 
     public void tickClient() {
+        if(isActive && level.getRandom().nextInt(50) < 5) {
+            BlockPos pos = worldPosition;
+            Direction direction = getFacing();
+            Direction.Axis direction$axis = direction.getAxis();
+            double d0 = (double)pos.getX() + 0.5D;
+            double d1 = (double)pos.getY();
+            double d2 = (double)pos.getZ() + 0.5D;
+            double d3 = 0.52D;
+            double d4 = level.getRandom().nextDouble() * 0.6D - 0.3D;
+            double d5 = direction$axis == Direction.Axis.X ? (double)direction.getStepX() * 0.52D : d4;
+            double d6 = level.getRandom().nextDouble() * 6.0D / 16.0D;
+            double d7 = direction$axis == Direction.Axis.Z ? (double)direction.getStepZ() * 0.52D : d4;
+            level.addParticle(ParticleTypes.SMOKE, d0 + d5, d1 + d6, d2 + d7, 0.0D, 0, 0.0D);
+            level.addParticle(DustParticleOptions.REDSTONE, d0 + d5, d1 + d6, d2 + d7, 0, 0, 0);
+        }
     }
 
     public void tickServer() {
         if(redstoneMode == 1 && !hasRedstoneSignal()) return;
-        manualUpdate();
+        boolean updated = manualUpdate();
         processRecipe();
         handleRecipeOutput();
-        contentHandler.tick();
-        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+        updated = updated || contentHandler.tick();
+        if(updated || wasUpdated) {
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(ACTIVE, isActive), Block.UPDATE_ALL);
+        }
     }
 
-    private void manualUpdate() {
+    private boolean manualUpdate() {
         if(manualUpdateCounter > 0) {
             manualUpdateCounter--;
-            return;
+            return false;
         }
         manualUpdateCounter = 40;
         saveSideMapFlag = true;
         energyStorage.wasUpdated = true;
         upgradesHandler.wasUpdated = true;
+        return true;
     }
 
     public boolean hasRedstoneSignal() {
         return Objects.requireNonNull(getLevel()).hasNeighborSignal(worldPosition);
     }
 
+
     protected void processRecipe() {
         if(!hasRecipe()) {
             updateRecipe();
         }
-        if(!hasRecipe()) return;
+        if(!hasRecipe()) {
+            isActive = false;
+            return;
+        }
 
-        if(energyStorage.getEnergyStored() < energyPerTick()) return;
+        if(energyStorage.getEnergyStored() < energyPerTick()) {
+            isActive = false;
+            return;
+        }
         recipeInfo.process(speedMultiplier());
+        isActive = true;
         setChanged();
         if(!recipeInfo.isCompleted()) {
             energyStorage.consumeEnergy(energyPerTick());
         }
     }
 
+    @Override
+    public void setChanged() {
+        super.setChanged();
+        wasUpdated = true;
+    }
+
     public int energyMultiplier() {
         energyMultiplier = (int) Math.max(speedMultiplier()-1, Math.pow(speedMultiplier()-1, 2)+speedMultiplier()-Math.pow(upgradesHandler.getStackInSlot(1).getCount(),2));
         return energyMultiplier;
     }
-
 
     @Override
     public void setRemoved() {

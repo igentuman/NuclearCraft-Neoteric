@@ -1,0 +1,6 @@
+{
+  "parent": "nuclearcraft:block/processor/fuel_reprocessor",
+  "textures": {
+    "north": "nuclearcraft:block/processor/fuel_reprocessor_powered"
+  }
+}

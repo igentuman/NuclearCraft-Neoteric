@@ -1,18 +1,33 @@
 {
   "variants": {
-    "facing=east": {
+    "facing=east,powered=false": {
       "model": "nuclearcraft:block/processor/manufactory",
       "y": 90
     },
-    "facing=north": {
+    "facing=east,powered=true": {
+      "model": "nuclearcraft:block/processor/manufactory_powered",
+      "y": 90
+    },
+    "facing=north,powered=false": {
       "model": "nuclearcraft:block/processor/manufactory"
     },
-    "facing=south": {
+    "facing=north,powered=true": {
+      "model": "nuclearcraft:block/processor/manufactory_powered"
+    },
+    "facing=south,powered=false": {
       "model": "nuclearcraft:block/processor/manufactory",
       "y": 180
     },
-    "facing=west": {
+    "facing=south,powered=true": {
+      "model": "nuclearcraft:block/processor/manufactory_powered",
+      "y": 180
+    },
+    "facing=west,powered=false": {
       "model": "nuclearcraft:block/processor/manufactory",
+      "y": 270
+    },
+    "facing=west,powered=true": {
+      "model": "nuclearcraft:block/processor/manufactory_powered",
       "y": 270
     }
   }

@@ -1,0 +1,6 @@
+{
+  "parent": "nuclearcraft:block/processor/nuclear_furnace",
+  "textures": {
+    "north": "nuclearcraft:block/processor/nuclear_furnace_powered"
+  }
+}

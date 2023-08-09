@@ -1,0 +1,6 @@
+{
+  "parent": "nuclearcraft:block/processor/electrolyzer",
+  "textures": {
+    "north": "nuclearcraft:block/processor/electrolyzer_powered"
+  }
+}

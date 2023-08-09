@@ -1,0 +1,6 @@
+{
+  "parent": "nuclearcraft:block/processor/centrifuge",
+  "textures": {
+    "north": "nuclearcraft:block/processor/centrifuge_powered"
+  }
+}

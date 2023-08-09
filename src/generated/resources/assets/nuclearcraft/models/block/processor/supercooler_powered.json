@@ -1,0 +1,6 @@
+{
+  "parent": "nuclearcraft:block/processor/supercooler",
+  "textures": {
+    "north": "nuclearcraft:block/processor/supercooler_powered"
+  }
+}

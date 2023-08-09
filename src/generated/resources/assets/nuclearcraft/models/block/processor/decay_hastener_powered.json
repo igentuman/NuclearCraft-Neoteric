@@ -1,0 +1,6 @@
+{
+  "parent": "nuclearcraft:block/processor/decay_hastener",
+  "textures": {
+    "north": "nuclearcraft:block/processor/decay_hastener_powered"
+  }
+}

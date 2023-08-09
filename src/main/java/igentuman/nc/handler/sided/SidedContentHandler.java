@@ -141,7 +141,7 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
         return null;
     }
 
-    public void tick() {
+    public boolean tick() {
         boolean updated = false;
         for(Direction dir: Direction.values()) {
             if(itemHandler != null) {
@@ -153,6 +153,7 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
                 updated = fluidCapability.pullFluids(dir) || updated;
             }
         }
+        return updated;
     }
 
     public void clearHolded() {

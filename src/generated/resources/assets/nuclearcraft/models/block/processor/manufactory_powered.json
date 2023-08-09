@@ -1,0 +1,6 @@
+{
+  "parent": "nuclearcraft:block/processor/manufactory",
+  "textures": {
+    "north": "nuclearcraft:block/processor/manufactory_powered"
+  }
+}

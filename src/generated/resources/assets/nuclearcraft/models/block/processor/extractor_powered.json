@@ -1,0 +1,6 @@
+{
+  "parent": "nuclearcraft:block/processor/extractor",
+  "textures": {
+    "north": "nuclearcraft:block/processor/extractor_powered"
+  }
+}

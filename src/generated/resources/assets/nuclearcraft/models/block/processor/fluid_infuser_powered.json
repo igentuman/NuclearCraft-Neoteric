@@ -1,0 +1,6 @@
+{
+  "parent": "nuclearcraft:block/processor/fluid_infuser",
+  "textures": {
+    "north": "nuclearcraft:block/processor/fluid_infuser_powered"
+  }
+}

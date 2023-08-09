@@ -25,6 +25,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
@@ -35,6 +36,7 @@ import java.lang.reflect.InvocationTargetException;
 
 public class NCProcessorBlock extends HorizontalDirectionalBlock implements EntityBlock {
     public static final DirectionProperty HORIZONTAL_FACING = FACING;
+    public static final BooleanProperty ACTIVE = BlockStateProperties.POWERED;
     public NCProcessorBlock() {
         this(Properties.of(Material.METAL)
                 .sound(SoundType.METAL)
@@ -47,6 +49,7 @@ public class NCProcessorBlock extends HorizontalDirectionalBlock implements Enti
         this.registerDefaultState(
                 this.stateDefinition.any()
                         .setValue(HORIZONTAL_FACING, Direction.NORTH)
+                        .setValue(ACTIVE, false)
         );
     }
     @Override
@@ -56,7 +59,8 @@ public class NCProcessorBlock extends HorizontalDirectionalBlock implements Enti
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(BlockStateProperties.HORIZONTAL_FACING);
+        builder.add(BlockStateProperties.HORIZONTAL_FACING)
+                .add(BlockStateProperties.POWERED);
     }
 
     @Nullable
@@ -109,6 +113,7 @@ public class NCProcessorBlock extends HorizontalDirectionalBlock implements Enti
             return (lvl, pos, blockState, t) -> {
                 if (t instanceof NCProcessorBE tile) {
                     tile.tickClient();
+                    level.setBlock(pos, blockState.setValue(ACTIVE, tile.isActive), 3);
                 }
             };
         }

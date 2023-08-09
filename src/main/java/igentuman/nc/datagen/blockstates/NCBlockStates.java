@@ -9,9 +9,13 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.client.model.generators.*;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.ForgeRegistries;
+
+import java.util.function.Function;
 
 import static igentuman.nc.NuclearCraft.MODID;
 
@@ -63,9 +67,32 @@ public class NCBlockStates extends BlockStateProvider {
         for(String name: NCProcessors.PROCESSORS.keySet()) {
             horizontalBlock(
                     NCProcessors.PROCESSORS.get(name).get(),
-                    sidedModel(NCProcessors.PROCESSORS.get(name).get(),
-                            "processor"));
+                    st -> processorModel(st, sidedModel(NCProcessors.PROCESSORS.get(name).get(),
+                            "processor"))
+                    );
         }
+    }
+
+    public BlockModelBuilder processorModel(BlockState st, ModelFile model) {
+        String powered = st.getValue(BlockStateProperties.POWERED) ? "_powered" : "";
+        BlockModelBuilder result = models()
+                .getBuilder("block/processor/"+key(st.getBlock()).getPath()+powered)
+                .texture("north", "block/processor/"+key(st.getBlock()).getPath()+powered)
+                ;
+        if(st.getValue(BlockStateProperties.POWERED)) {
+            result.parent(model);
+        }
+        return result;
+    }
+
+
+    public void horizontalBlock(Block block, Function<BlockState, ModelFile> modelFunc) {
+        getVariantBuilder(block)
+                .forAllStates(state -> ConfiguredModel.builder()
+                        .modelFile(modelFunc.apply(state))
+                        .rotationY(((int) state.getValue(BlockStateProperties.HORIZONTAL_FACING).toYRot() + 180) % 360)
+                        .build()
+                );
     }
 
 
@@ -156,7 +183,7 @@ public class NCBlockStates extends BlockStateProvider {
                 new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/back"),
                 new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/side"),
                 new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/side")
-        );
+        ).texture("particle", ModelProvider.BLOCK_FOLDER + "/"+subPath+"/side");
     }
 
     public ModelFile energyModel(Block block, String subPath) {

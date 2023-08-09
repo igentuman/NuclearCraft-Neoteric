@@ -1,0 +1,6 @@
+{
+  "parent": "nuclearcraft:block/processor/alloy_smelter",
+  "textures": {
+    "north": "nuclearcraft:block/processor/alloy_smelter_powered"
+  }
+}

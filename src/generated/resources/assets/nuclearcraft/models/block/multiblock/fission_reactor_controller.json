@@ -4,6 +4,7 @@
     "down": "nuclearcraft:block/fission/controller/top",
     "east": "nuclearcraft:block/fission/controller/side",
     "north": "nuclearcraft:block/fission/controller/fission_reactor_controller",
+    "particle": "nuclearcraft:block/fission/controller/side",
     "south": "nuclearcraft:block/fission/controller/back",
     "up": "nuclearcraft:block/fission/controller/bottom",
     "west": "nuclearcraft:block/fission/controller/side"

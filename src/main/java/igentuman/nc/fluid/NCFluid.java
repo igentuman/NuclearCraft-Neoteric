@@ -3,21 +3,11 @@ package igentuman.nc.fluid;
 import igentuman.nc.block.NCFluidBlock;
 import igentuman.nc.setup.registration.NCFluids;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.BlockSource;
 import net.minecraft.core.Direction;
-import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
-import net.minecraft.core.dispenser.DispenseItemBehavior;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.syncher.EntityDataSerializer;
-import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
@@ -27,12 +17,15 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 
 import javax.annotation.Nonnull;
 import java.util.function.Consumer;
 import java.util.function.Function;
+
+import static net.minecraft.world.level.block.Blocks.AIR;
+
+
 public class NCFluid extends FlowingFluid
 {
 	private static NCFluids.FluidEntry entryStatic;
@@ -82,6 +75,9 @@ public class NCFluid extends FlowingFluid
 	@Override
 	public int getTickDelay(LevelReader p_205569_1_)
 	{
+		if(getFluidType().getDensity() == -1000) {
+			return 0;
+		}
 		// viscosity delta to water (1000)
 		int dW = this.getFlowing().getFluidType().getViscosity()-Fluids.WATER.getFluidType().getViscosity();
 		// dW for water & lava is 5000, difference in tick delay is 25 -> 0.005 as a modifier
@@ -178,9 +174,11 @@ public class NCFluid extends FlowingFluid
 
 	public static class Flowing extends NCFluid
 	{
+		public String name;
 		public Flowing(NCFluids.FluidEntry entry)
 		{
 			super(entry);
+			//name = entry.getFlowing().getFluidType().toString().split(":")[1];
 		}
 
 		@Override
@@ -188,6 +186,20 @@ public class NCFluid extends FlowingFluid
 		{
 			super.createFluidStateDefinition(builder);
 			builder.add(LEVEL);
+		}
+
+		protected void spread(LevelAccessor pLevel, BlockPos pPos, FluidState pState) {
+			if(entry.getFlowing().getFluidType().getDensity() > -1000) {
+				super.spread(pLevel, pPos, pState);
+				return;
+			}
+			BlockState blockstate = pLevel.getBlockState(pPos);
+			BlockPos blockpos = pPos.above();
+			BlockState blockstate1 = pLevel.getBlockState(blockpos);
+			FluidState fluidstate = this.getNewLiquid(pLevel, blockpos.below(), blockstate1);
+			if (this.canSpreadTo(pLevel, pPos, blockstate, Direction.UP, blockpos, blockstate1, pLevel.getFluidState(blockpos), fluidstate.getType())) {
+				this.spreadTo(pLevel, blockpos, blockstate1, Direction.UP, fluidstate);
+			}
 		}
 	}
 }

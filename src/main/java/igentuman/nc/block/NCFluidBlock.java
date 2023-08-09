@@ -1,6 +1,7 @@
 package igentuman.nc.block;
 
 import igentuman.nc.setup.registration.NCFluids;
+import igentuman.nc.util.NCDamageSources;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -24,6 +25,8 @@ import net.minecraftforge.fluids.capability.wrappers.FluidBlockWrapper;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import static net.minecraft.world.level.block.Blocks.AIR;
+
 public class NCFluidBlock extends LiquidBlock
 {
     private static NCFluids.FluidEntry entryStatic;
@@ -43,15 +46,15 @@ public class NCFluidBlock extends LiquidBlock
 	@Override
 	public boolean isFireSource(BlockState state, LevelReader level, BlockPos pos, Direction direction)
 	{
-		return getFluid().getFluidType().getTemperature() > 900;
+		return getFluid().getFluidType().getTemperature() > 600;
 	}
 
 
 	@Override
 	public int getLightEmission(BlockState state, BlockGetter level, BlockPos pos)
 	{
-		if(getFluid().getFluidType().getTemperature() > 900) {
-			return 2;
+		if(getFluid().getFluidType().getTemperature() > 600) {
+			return 5;
 		}
 		return 0;
 	}
@@ -94,5 +97,19 @@ public class NCFluidBlock extends LiquidBlock
 		super.entityInside(state, worldIn, pos, entityIn);
 		if(effect!=null&&entityIn instanceof LivingEntity)
 			((LivingEntity)entityIn).addEffect(new MobEffectInstance(effect, duration, level));
+		if(getFluid().getFluidType().getTemperature() > 600) {
+			entityIn.setSecondsOnFire(1);
+		}
+		if(getFluid().getFluidType().toString().contains("acid")) {
+			entityIn.hurt(NCDamageSources.ACID, 1.0F);
+		}
+	}
+
+	public void onPlace(BlockState pState, Level pLevel, BlockPos pPos, BlockState pOldState, boolean pIsMoving) {
+		super.onPlace(pState, pLevel, pPos, pOldState, pIsMoving);
+		if(pLevel.getFluidState(pPos).getFluidType().getDensity() == -1000) {
+			pLevel.setBlock(pPos, AIR.defaultBlockState(), 3);
+		}
+
 	}
 }

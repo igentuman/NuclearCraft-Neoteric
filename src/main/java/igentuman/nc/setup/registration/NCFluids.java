@@ -12,6 +12,7 @@ import igentuman.nc.content.fuel.FuelManager;
 import igentuman.nc.util.TextureUtil;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
@@ -25,6 +26,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.minecraftforge.common.SoundActions;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -347,6 +349,12 @@ public class NCFluids {
         )
         {
             FluidType.Properties builder = FluidType.Properties.create();
+            if(isGas || name.contains("acid")) {
+                builder
+                        .sound(SoundActions.BUCKET_EMPTY, SoundEvents.FIRE_EXTINGUISH)
+                        .sound(SoundActions.BUCKET_FILL, SoundEvents.BUCKET_FILL)
+                        .sound(SoundActions.FLUID_VAPORIZE, SoundEvents.FIRE_EXTINGUISH);
+            }
             if(buildAttributes!=null)
                 buildAttributes.accept(builder);
             RegistryObject<FluidType> type;

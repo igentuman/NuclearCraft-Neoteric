@@ -2,14 +2,14 @@
   "ctm": {
     "ctm_version": 1,
     "type": "CTM",
-    "layer": "TRANSLUCENT",
+    "layer": "SOLID",
     "textures": [
-      "nuclearcraft:block/fission/glass-ctm"
+      "nuclearcraft:block/fission/casing-ctm"
     ],
     "extra": {
       "connect_to": [
         {
-          "block": "nuclearcraft:fission_reactor_glass"
+          "block": "nuclearcraft:fission_reactor_casing"
         }
       ]
     }

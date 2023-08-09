@@ -48,6 +48,8 @@ public class NCLanguageProvider extends LanguageProvider {
     }
 
     private void labels() {
+        add("block.nuclearcraft.glowing_mushroom", "Glowing Mushroom");
+
         add("reactor.size", "Reactor size: %sx%sx%s");
         add("fission.casing.wrong.block", "Wrong block at: %s");
         add("fission_reactor.efficiency", "Efficiency: %s%%");

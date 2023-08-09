@@ -63,6 +63,7 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
     @Override
     public Tag serializeNBT() {
         CompoundTag nbt = new CompoundTag();
+
         if(itemHandler != null) {
             nbt.put("itemHandler", itemHandler.serializeNBT());
         }
@@ -172,6 +173,15 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
             key += fluidCapability.getCacheKey();
         }
         return key;
+    }
+
+    public void saveSideMap() {
+        if(itemHandler != null) {
+            itemHandler.sideMapUpdated = true;
+        }
+        if(fluidCapability != null) {
+            fluidCapability.sideMapUpdated = true;
+        }
     }
 
     public enum SlotType {

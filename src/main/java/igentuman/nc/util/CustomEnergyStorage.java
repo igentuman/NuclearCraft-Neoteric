@@ -4,6 +4,7 @@ import net.minecraftforge.energy.EnergyStorage;
 
 public class CustomEnergyStorage extends EnergyStorage {
 
+    public boolean wasUpdated = true;
     public CustomEnergyStorage(int capacity, int maxTransfer) {
         super(capacity, maxTransfer, 0);
     }
@@ -12,6 +13,7 @@ public class CustomEnergyStorage extends EnergyStorage {
     }
 
     protected void onEnergyChanged() {
+        wasUpdated = true;
     }
 
     @Override
@@ -36,7 +38,9 @@ public class CustomEnergyStorage extends EnergyStorage {
         this.energy = energy;
         this.energy = Math.max(this.energy, 0);
         this.energy = Math.min(this.energy, getMaxEnergyStored());
-        onEnergyChanged();
+        if(energy != 0) {
+            onEnergyChanged();
+        }
     }
 
     public void addEnergy(int energy) {
@@ -46,7 +50,9 @@ public class CustomEnergyStorage extends EnergyStorage {
         }
         this.energy = Math.max(this.energy, 0);
         this.energy = Math.min(this.energy, getMaxEnergyStored());
-        onEnergyChanged();
+        if(energy != 0) {
+            onEnergyChanged();
+        }
     }
 
     public void consumeEnergy(int energy) {
@@ -54,7 +60,9 @@ public class CustomEnergyStorage extends EnergyStorage {
         if (this.energy < 0) {
             this.energy = 0;
         }
-        onEnergyChanged();
+        if(energy != 0) {
+            onEnergyChanged();
+        }
     }
 
     public void setMaxCapacity(int cap) {

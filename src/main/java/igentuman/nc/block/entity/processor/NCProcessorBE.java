@@ -1,6 +1,7 @@
 package igentuman.nc.block.entity.processor;
 
 import igentuman.nc.block.entity.NuclearCraftBE;
+import igentuman.nc.handler.UpgradesHandler;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.recipes.AbstractRecipe;
 import igentuman.nc.recipes.NcRecipeType;
@@ -29,6 +30,7 @@ import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -42,10 +44,10 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
     protected final CustomEnergyStorage energyStorage;
     public HashMap<String, RECIPE> cachedRecipes = new HashMap<>();
 
-    public final ItemStackHandler upgradesHandler = createHandler();
+    public final UpgradesHandler upgradesHandler = createHandler();
     protected final LazyOptional<IItemHandler> handler = LazyOptional.of(() -> upgradesHandler);
 
-    protected boolean saveSideMapFlag = false;
+    protected boolean saveSideMapFlag = true;
 
     protected RECIPE recipe;
     @NBTField
@@ -57,6 +59,8 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
 
     @NBTField
     public int redstoneMode = 0;
+
+    public int manualUpdateCounter = 40;
 
     public LazyOptional<IEnergyStorage> getEnergy() {
         return energy;
@@ -175,25 +179,9 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
         };
     }
 
-    protected ItemStackHandler createHandler() {
-        return new ItemStackHandler(prefab().getUpgradesSlots()) {
-            @Override
-            protected void onContentsChanged(int slot) {
-                setChanged();
-            }
+    protected UpgradesHandler createHandler() {
+        return new UpgradesHandler(this) {
 
-            @Override
-            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-                if(prefab().supportEnergyUpgrade && slot == 0) {
-                    return stack.getItem().equals(NCItems.NC_ITEMS.get("upgrade_energy").get());
-                }
-
-                if(prefab().supportSpeedUpgrade && slot == 1) {
-                    return stack.getItem().equals(NCItems.NC_ITEMS.get("upgrade_speed").get());
-                }
-
-                return prefab().getUpgradesSlots() == 1 && stack.getItem().equals(NCItems.NC_ITEMS.get("upgrade_speed").get());
-            }
         };
     }
 
@@ -229,10 +217,22 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
 
     public void tickServer() {
         if(redstoneMode == 1 && !hasRedstoneSignal()) return;
+        manualUpdate();
         processRecipe();
         handleRecipeOutput();
         contentHandler.tick();
         level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+    }
+
+    private void manualUpdate() {
+        if(manualUpdateCounter > 0) {
+            manualUpdateCounter--;
+            return;
+        }
+        manualUpdateCounter = 40;
+        saveSideMapFlag = true;
+        energyStorage.wasUpdated = true;
+        upgradesHandler.wasUpdated = true;
     }
 
     public boolean hasRedstoneSignal() {
@@ -285,18 +285,13 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
         super.load(tag);
     }
 
+    //used to save data to chunk
     @Override
     public void saveAdditional(CompoundTag tag) {
         super.saveAdditional(tag);
-        if(saveSideMapFlag) {
-            if(contentHandler.itemHandler != null) {
-                contentHandler.itemHandler.sideMapUpdated = true;
-            }
-            if(contentHandler.fluidCapability != null) {
-                contentHandler.fluidCapability.sideMapUpdated = true;
-            }
-            saveSideMapFlag = false;
-        }
+
+        contentHandler.saveSideMap();
+
         tag.put("Content", contentHandler.serializeNBT());
         tag.put("Energy", energyStorage.serializeNBT());
 
@@ -325,8 +320,12 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
             if (infoTag.contains("recipeInfo")) {
                 recipeInfo.deserializeNBT(infoTag.getCompound("recipeInfo"));
             }
-            energyStorage.setEnergy(infoTag.getInt("energy"));
-            upgradesHandler.deserializeNBT((CompoundTag) (infoTag).get("upgrades"));
+            if(infoTag.contains("energy")) {
+                energyStorage.setEnergy(infoTag.getInt("energy"));
+            }
+            if(infoTag.contains("upgrades")) {
+                upgradesHandler.deserializeNBT((CompoundTag) (infoTag).get("upgrades"));
+            }
         }
         if (tag.contains("Content")) {
             contentHandler.deserializeNBT(tag.getCompound("Content"));
@@ -334,7 +333,7 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
     }
 
     @Override
-    public CompoundTag getUpdateTag() {
+    public @NotNull CompoundTag getUpdateTag() {
         CompoundTag tag = super.getUpdateTag();
         saveClientData(tag);
         return tag;
@@ -343,7 +342,14 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
     protected void saveClientData(CompoundTag tag) {
         CompoundTag infoTag = new CompoundTag();
         saveTagData(infoTag);
-        infoTag.put("upgrades", upgradesHandler.serializeNBT());
+        if(saveSideMapFlag) {
+            contentHandler.saveSideMap();
+            saveSideMapFlag = false;
+        }
+        if(upgradesHandler.wasUpdated) {
+            infoTag.put("upgrades", upgradesHandler.serializeNBT());
+            upgradesHandler.wasUpdated = false;
+        }
         infoTag.put("recipeInfo", recipeInfo.serializeNBT());
         tag.put("Info", infoTag);
         tag.put("Content", contentHandler.serializeNBT());

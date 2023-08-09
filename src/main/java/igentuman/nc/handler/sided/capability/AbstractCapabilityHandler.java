@@ -8,8 +8,8 @@ import java.util.HashMap;
 public abstract class AbstractCapabilityHandler {
     public int inputSlots;
     public int outputSlots;
-    
-    protected boolean sideMapUpdated = true;
+
+    public boolean sideMapUpdated = true;
     public HashMap<Integer, SlotModePair[]> sideMap;
 
     protected void initDefault() {

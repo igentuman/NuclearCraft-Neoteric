@@ -45,6 +45,8 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
     public final ItemStackHandler upgradesHandler = createHandler();
     protected final LazyOptional<IItemHandler> handler = LazyOptional.of(() -> upgradesHandler);
 
+    protected boolean saveSideMapFlag = false;
+
     protected RECIPE recipe;
     @NBTField
     public int speedMultiplier = 1;
@@ -141,7 +143,9 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
 
     public double speedMultiplier()
     {
-        speedMultiplier = upgradesHandler.getStackInSlot(1).getCount()+1;
+        if(!prefab().supportSpeedUpgrade) return 1;
+        int id = prefab().supportEnergyUpgrade ? 1 : 0;
+        speedMultiplier = upgradesHandler.getStackInSlot(id).getCount()+1;
         return speedMultiplier;
     }
 
@@ -283,6 +287,16 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
 
     @Override
     public void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
+        if(saveSideMapFlag) {
+            if(contentHandler.itemHandler != null) {
+                contentHandler.itemHandler.sideMapUpdated = true;
+            }
+            if(contentHandler.fluidCapability != null) {
+                contentHandler.fluidCapability.sideMapUpdated = true;
+            }
+            saveSideMapFlag = false;
+        }
         tag.put("Content", contentHandler.serializeNBT());
         tag.put("Energy", energyStorage.serializeNBT());
 
@@ -358,7 +372,7 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
     public void toggleSideConfig(int slotId, int direction) {
         contentHandler.toggleSideConfig(slotId, direction);
         setChanged();
-        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+        saveSideMapFlag = true;
 
     }
 

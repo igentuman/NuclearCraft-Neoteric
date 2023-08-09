@@ -141,7 +141,7 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
 
     public double speedMultiplier()
     {
-        speedMultiplier = upgradesHandler.getStackInSlot(0).getCount()+1;
+        speedMultiplier = upgradesHandler.getStackInSlot(1).getCount()+1;
         return speedMultiplier;
     }
 
@@ -243,6 +243,7 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
 
         if(energyStorage.getEnergyStored() < energyPerTick()) return;
         recipeInfo.process(speedMultiplier());
+        setChanged();
         if(!recipeInfo.isCompleted()) {
             energyStorage.consumeEnergy(energyPerTick());
         }
@@ -357,6 +358,8 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
     public void toggleSideConfig(int slotId, int direction) {
         contentHandler.toggleSideConfig(slotId, direction);
         setChanged();
+        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+
     }
 
     public Direction getFacing() {
@@ -375,5 +378,6 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
         redstoneMode++;
         if (redstoneMode > 1) redstoneMode = 0;
         setChanged();
+        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
     }
 }

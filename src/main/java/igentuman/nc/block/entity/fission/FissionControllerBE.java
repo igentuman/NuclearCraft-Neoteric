@@ -129,6 +129,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         }
     }
     public RECIPE getRecipe() {
+        if(contentHandler.itemHandler.getStackInSlot(0).equals(ItemStack.EMPTY)) return null;
         RECIPE cachedRecipe = getCachedRecipe();
         if(cachedRecipe != null) return cachedRecipe;
         if(!NcRecipeType.ALL_RECIPES.containsKey(getName())) return null;
@@ -228,6 +229,11 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
 
     private boolean processReaction() {
         heatMultiplier = heatMultiplier() + collectedHeatMultiplier() - 1;
+        if(recipeInfo.recipe != null && recipeInfo.isCompleted()) {
+            if(contentHandler.itemHandler.getStackInSlot(0).equals(ItemStack.EMPTY)) {
+                recipeInfo.clear();
+            }
+        }
         if (!hasRecipe()) {
             updateRecipe();
         }
@@ -254,9 +260,13 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         if (hasRecipe() && recipeInfo.isCompleted()) {
             if (recipe.handleOutputs(contentHandler)) {
                 recipeInfo.clear();
+                if(contentHandler.itemHandler.getStackInSlot(0).equals(ItemStack.EMPTY)) {
+                    recipe = null;
+                }
             } else {
                 recipeInfo.stuck = true;
             }
+            setChanged();
         }
     }
 
@@ -310,13 +320,13 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     private void updateRecipe() {
         recipe = getRecipe();
         if (recipe != null) {
-            ItemStack input = contentHandler.itemHandler.getStackInSlot(0).copy();
-            input.setCount(recipe.getFirstItemStackIngredient(0).getCount());
             recipeInfo.setRecipe(recipe);
             recipeInfo.ticks = ((RECIPE) recipeInfo.recipe).getDepletionTime();
             recipeInfo.energy = recipeInfo.recipe.getEnergy();
             recipeInfo.heat = ((RECIPE) recipeInfo.recipe).getHeat();
             recipeInfo.radiation = recipeInfo.recipe.getRadiation();
+            recipeInfo.be = this;
+            recipe.extractInputs(contentHandler);
         }
     }
 

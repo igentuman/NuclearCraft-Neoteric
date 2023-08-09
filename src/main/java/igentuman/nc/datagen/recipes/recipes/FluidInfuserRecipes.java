@@ -16,9 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static igentuman.nc.setup.multiblocks.FissionReactor.MULTI_BLOCKS;
 import static igentuman.nc.setup.registration.NCItems.ALL_NC_ITEMS;
-import static igentuman.nc.setup.registration.NCItems.NC_ITEMS;
 import static net.minecraft.world.item.Items.ICE;
 
 
@@ -84,7 +82,7 @@ public class FluidInfuserRecipes extends AbstractRecipeProvider {
         );
 
         add(
-                fluidIngredient("water", 1000),
+                fluidIngredient("minecraft:water", 1000),
                 blockStack("empty_heat_sink"),
                 blockStack("water_heat_sink")
         );

@@ -27,14 +27,14 @@ public class ProgressBar extends NCGuiElement {
             new int[] {0, 109},
             new int[] {0, 140},
             new int[] {0, 171},
-            new int[] {0, 201},
+            new int[] {0, 202},
             new int[] {37, 16},
             new int[] {37, 47},
             new int[] {37, 78},
             new int[] {37, 109},
             new int[] {37, 140},
-            new int[] {37, 171},
-            new int[] {37, 201},
+            new int[] {37, 170},
+            new int[] {37, 202},
             new int[] {74, 38},
             new int[] {111, 38}
     );

@@ -1,6 +1,6 @@
 {
   "type": "minecraft:smelting",
-  "cookingtime": 100,
+  "cookingtime": 200,
   "experience": 1.0,
   "ingredient": {
     "tag": "forge:dusts/lead_platinum"

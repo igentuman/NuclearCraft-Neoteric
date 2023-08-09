@@ -8,7 +8,7 @@
   "inputFluids": [
     {
       "amount": 1000,
-      "tag": "forge:water"
+      "tag": "minecraft:water"
     }
   ],
   "output": [

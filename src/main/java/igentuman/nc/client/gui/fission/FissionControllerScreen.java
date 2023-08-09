@@ -73,7 +73,7 @@ public class FissionControllerScreen extends AbstractContainerScreen<FissionCont
         coolantBar = new VerticalBar.Coolant(17, 16,  this, 1000000);
         hotCoolantBar = new VerticalBar.HotCoolant(26, 16,  this, 1000000);
         widgets.add(heatBar);
-        widgets.add(new ProgressBar(74, 35, this,  6));
+        widgets.add(new ProgressBar(74, 35, this,  7));
     }
 
     private boolean isInteriorValid() {
@@ -132,7 +132,7 @@ public class FissionControllerScreen extends AbstractContainerScreen<FissionCont
             if (isInteriorValid()) {
                 interiorTootip = applyFormat(Component.translatable("reactor.fuel_cells", getFuelCellsCount()), ChatFormatting.GOLD);
 
-                if(!container().getResultStack().isEmpty()) {
+                if(container().hasRecipe() && !container().getEfficiency().equals("NaN")) {
                     drawString(matrixStack, font, Component.translatable("fission_reactor.efficiency", container().getEfficiency()), 46, 62, 0x8AFF8A);
                     drawString(matrixStack, font, Component.translatable("fission_reactor.net_heat", container().getNetHeat()), 46, 72, 0x8AFF8A);
                     drawString(matrixStack, font, Component.translatable("fission_reactor.heat_multiplier", container().getHeatMultiplier()), 46, 82, 0x8AFF8A);
@@ -179,9 +179,9 @@ public class FissionControllerScreen extends AbstractContainerScreen<FissionCont
 
     private void renderTooltips(PoseStack pPoseStack, int pMouseX, int pMouseY) {
         heatBar.clearTooltips();
-        heatBar.addTooltip(Component.translatable("reactor.cooling", container().getCooling()));
-        heatBar.addTooltip(Component.translatable("reactor.heating", container().getHeating()));
-        heatBar.addTooltip(Component.translatable("reactor.net_heat", container().getNetHeat()));
+        heatBar.addTooltip(Component.translatable("reactor.cooling", container().getCooling()).withStyle(ChatFormatting.AQUA));
+        heatBar.addTooltip(Component.translatable("reactor.heating", container().getHeating()).withStyle(ChatFormatting.RED));
+        heatBar.addTooltip(Component.translatable("reactor.net_heat", container().getNetHeat()).withStyle(ChatFormatting.GOLD));
         for(NCGuiElement widget: widgets) {
            if(widget.isMouseOver(pMouseX, pMouseY)) {
                renderTooltip(pPoseStack, widget.getTooltips(),

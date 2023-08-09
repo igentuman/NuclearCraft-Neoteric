@@ -24,6 +24,7 @@ public class ManufactoryRecipes extends AbstractRecipeProvider {
                 itemToItem(gemIngredient(name), dustStack(name), 1.5D);
             }
         }
+        itemToItem(dustIngredient(Materials.coal), dustStack(Materials.graphite), 0.5D, 1D);
         itemToItem(ingredient(COAL), dustStack(Materials.coal), 0.5D, 1D);
         itemToItem(ingredient(CHARCOAL), dustStack(Materials.charcoal), 0.5D, 0.5D);
 

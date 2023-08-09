@@ -219,4 +219,8 @@ public class FissionControllerContainer extends AbstractContainerMenu {
     public String getHeatMultiplier() {
         return numberFormat(blockEntity.heatMultiplier);
     }
+
+    public boolean hasRecipe() {
+        return blockEntity.hasRecipe();
+    }
 }

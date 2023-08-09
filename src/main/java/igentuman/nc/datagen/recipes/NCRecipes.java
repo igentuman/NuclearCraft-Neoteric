@@ -17,6 +17,7 @@ import java.util.function.Consumer;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.setup.registration.Fuel.NC_ISOTOPES;
+import static igentuman.nc.setup.registration.NCItems.ALL_NC_ITEMS;
 import static net.minecraft.world.item.Items.*;
 import static igentuman.nc.util.DataGenUtil.*;
 public class NCRecipes extends RecipeProvider {
@@ -40,6 +41,27 @@ public class NCRecipes extends RecipeProvider {
     }
 
     private void parts(Consumer<FinishedRecipe> consumer) {
+
+        ShapedRecipeBuilder.shaped(ALL_NC_ITEMS.get("upgrade_speed").get())
+                .pattern("LRL")
+                .pattern("RPR")
+                .pattern("LRL")
+                .define('L', forgeDust(Materials.lapis))
+                .define('R', forgeDust("redstone"))
+                .define('P', HEAVY_WEIGHTED_PRESSURE_PLATE)
+                .unlockedBy("item", has(HEAVY_WEIGHTED_PRESSURE_PLATE))
+                .save(consumer, new ResourceLocation(MODID, "upgrade_speed"));
+
+        ShapedRecipeBuilder.shaped(ALL_NC_ITEMS.get("upgrade_energy").get())
+                .pattern("ORO")
+                .pattern("RPR")
+                .pattern("ORO")
+                .define('O', forgeDust(Materials.obsidian))
+                .define('R', forgeDust(Materials.quartz))
+                .define('P', LIGHT_WEIGHTED_PRESSURE_PLATE)
+                .unlockedBy("item", has(HEAVY_WEIGHTED_PRESSURE_PLATE))
+                .save(consumer, new ResourceLocation(MODID, "upgrade_energy"));
+
         ShapedRecipeBuilder.shaped(NCItems.NC_PARTS.get("plate_basic").get())
                 .pattern("LG")
                 .pattern("GL")
@@ -191,7 +213,7 @@ public class NCRecipes extends RecipeProvider {
                 .unlockedBy("item", has(NCItems.NC_PARTS.get("plate_advanced").get()))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(FissionReactor.MULTI_BLOCKS.get("fission_reactor_controller").get(), 4)
+        ShapedRecipeBuilder.shaped(FissionReactor.MULTI_BLOCKS.get("fission_reactor_controller").get())
                 .pattern("LPL")
                 .pattern("PTP")
                 .pattern("LPL")
@@ -235,7 +257,7 @@ public class NCRecipes extends RecipeProvider {
                 .save(consumer);
 
         for(String name: FissionBlocks.heatsinks.keySet()) {
-            if(!name.contains("active")) {
+            if(!name.matches(".*active.*|.*water.*")) {
                 if(name.contains("empty")) continue;
                 TagKey<Item> i = forgeDust(name);
                 if(name.contains("slime")) {
@@ -261,11 +283,10 @@ public class NCRecipes extends RecipeProvider {
 
     private void solarPanels(Consumer<FinishedRecipe> consumer) {
         ShapedRecipeBuilder.shaped(NCEnergyBlocks.ENERGY_BLOCKS.get("solar_panel/basic").get())
-                .pattern("GQG")
+                .pattern("LQL")
                 .pattern("PLP")
                 .pattern("CSC")
-                .define('G', forgeDust("graphite"))
-                .define('Q', forgeDust("quartz"))
+                .define('Q', GLASS_PANE)
                 .define('P', HEAVY_WEIGHTED_PRESSURE_PLATE)
                 .define('L', Tags.Items.GEMS_LAPIS)
                 .define('S', DAYLIGHT_DETECTOR)
@@ -340,26 +361,38 @@ public class NCRecipes extends RecipeProvider {
             }
             if(Materials.ingots().get(name).hasOre()) {
                 SimpleCookingRecipeBuilder.smelting(Ingredient.of(forgeOre(name)),
-                        NCItems.NC_INGOTS.get(name).get(), 1.0f, 100)
+                        NCItems.NC_INGOTS.get(name).get(), 1.0f, 200)
                         .unlockedBy("has_ore", inventoryTrigger(ItemPredicate.Builder.item().of(forgeOre(name)).build()))
                         .save(consumer, MODID+"_"+name+"_ore");
+                SimpleCookingRecipeBuilder.blasting(Ingredient.of(forgeOre(name)),
+                                NCItems.NC_INGOTS.get(name).get(), 1.0f, 100)
+                        .unlockedBy("has_ore", inventoryTrigger(ItemPredicate.Builder.item().of(forgeOre(name)).build()))
+                        .save(consumer, MODID+":blast_"+name+"_ore");
             }
 
             if(Materials.ingots().get(name).chunk) {
                 SimpleCookingRecipeBuilder.smelting(Ingredient.of(forgeChunk(name)),
-                                NCItems.NC_INGOTS.get(name).get(), 1.0f, 100)
+                                NCItems.NC_INGOTS.get(name).get(), 1.0f, 200)
                         .unlockedBy("has_ore", inventoryTrigger(ItemPredicate.Builder.item().of(forgeChunk(name)).build()))
                         .save(consumer, MODID+"_"+name+"_raw");
+                SimpleCookingRecipeBuilder.blasting(Ingredient.of(forgeChunk(name)),
+                                NCItems.NC_INGOTS.get(name).get(), 1.0f, 100)
+                        .unlockedBy("has_ore", inventoryTrigger(ItemPredicate.Builder.item().of(forgeChunk(name)).build()))
+                        .save(consumer, MODID+":blast_"+name+"_raw");
             }
             if(Materials.ingots().get(name).dust) {
                 SimpleCookingRecipeBuilder.smelting(Ingredient.of(forgeDust(name)),
-                                NCItems.NC_INGOTS.get(name).get(), 1.0f, 100)
+                                NCItems.NC_INGOTS.get(name).get(), 1.0f, 200)
                         .unlockedBy("has_ore", inventoryTrigger(ItemPredicate.Builder.item().of(forgeDust(name)).build()))
                         .save(consumer, MODID+"_"+name+"_dust");
+                SimpleCookingRecipeBuilder.blasting(Ingredient.of(forgeDust(name)),
+                                NCItems.NC_INGOTS.get(name).get(), 1.0f, 100)
+                        .unlockedBy("has_ore", inventoryTrigger(ItemPredicate.Builder.item().of(forgeDust(name)).build()))
+                        .save(consumer, MODID+":blast_"+name+"_dust");
             }
             if(Materials.ingots().get(name).plate) {
                 SimpleCookingRecipeBuilder.smelting(Ingredient.of(forgePlate(name)),
-                                NCItems.NC_INGOTS.get(name).get(), 1.0f, 100)
+                                NCItems.NC_INGOTS.get(name).get(), 1.0f, 200)
                         .unlockedBy("has_ore", inventoryTrigger(ItemPredicate.Builder.item().of(forgePlate(name)).build()))
                         .save(consumer, MODID+"_"+name+"_plate");
             }

@@ -12,7 +12,7 @@ public class DecayHastenerRecipes extends AbstractRecipeProvider {
         DecayHastenerRecipes.consumer = consumer;
         ID = Processors.DECAY_HASTENER;
 
-        itemToItem(dustIngredient(Materials.thorium), dustStack(Materials.lead));
+        itemToItem(dustIngredient(Materials.thorium, 4), isotopeStack(Materials.thorium232));
         itemToItem(dustIngredient(Materials.radium), dustStack(Materials.lead));
         itemToItem(dustIngredient(Materials.polonium), dustStack(Materials.lead));
         itemToItem(dustIngredient(Materials.protactinium_233), isotopeStack(Materials.uranium233));

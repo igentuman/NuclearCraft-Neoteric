@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "nuclearcraft:water_heat_sink"
+        "recipe": "nuclearcraft:upgrade_speed"
       },
       "trigger": "minecraft:recipe_unlocked"
     },
@@ -12,7 +12,7 @@
         "items": [
           {
             "items": [
-              "nuclearcraft:empty_heat_sink"
+              "minecraft:heavy_weighted_pressure_plate"
             ]
           }
         ]
@@ -28,7 +28,7 @@
   ],
   "rewards": {
     "recipes": [
-      "nuclearcraft:water_heat_sink"
+      "nuclearcraft:upgrade_speed"
     ]
   }
 }

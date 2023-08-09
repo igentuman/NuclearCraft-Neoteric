@@ -149,7 +149,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("fuel.depletion.descr","Base Depletion Time: %s sec");
         add("fuel.criticality.descr","Criticality Factor: %s N/t");
         add("fuel.efficiency.descr","Base Efficiency: %s%%");
-        add("fuel.description","Used in Fission Reactors. Use Fuel Ports to Load/Unload. \nActual FE generation depends on Reactor Efficiency.");
+        add("fuel.description","Used in Fission Reactors. Use Fuel Ports to Load/Unload. \r\nActual FE generation depends on Reactor Efficiency.");
         add("heat_sink.heat.descr", "Cooling Rate: %s H/t");
         add("heat_sink.placement.rule", "Must be placed %s");
         add("heat_sink.between", "between %s and %s");
@@ -212,7 +212,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("validation.structure.valid", "Structure is Valid");
         add("solar_panel.fe_generation", "Daytime Gen: %s FE/t");
         add("fission_port.descr", "Used to transfer items/fluids/energy, for redstone control/output and computers.");
-        add("irradiation_chamber.descr", "Used to irradiate items with neutron flux. \nHas to be placed in one line with moderator and fuel cell behind it.");
+        add("irradiation_chamber.descr", "Used to irradiate items with neutron flux. \r\nHas to be placed in one line with moderator and fuel cell behind it.");
     }
 
     private void fuel() {

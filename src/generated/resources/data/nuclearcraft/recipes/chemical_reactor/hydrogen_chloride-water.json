@@ -1,15 +1,19 @@
 {
-  "type": "nuclearcraft:supercooler",
+  "type": "nuclearcraft:chemical_reactor",
   "inputFluids": [
     {
-      "amount": 1000,
+      "amount": 250,
+      "tag": "forge:hydrogen_chloride"
+    },
+    {
+      "amount": 250,
       "tag": "minecraft:water"
     }
   ],
   "outputFluids": [
     {
       "amount": 500,
-      "fluid": "nuclearcraft:ice"
+      "fluid": "nuclearcraft:hydrochloric_acid"
     }
   ],
   "powerModifier": 1.0,

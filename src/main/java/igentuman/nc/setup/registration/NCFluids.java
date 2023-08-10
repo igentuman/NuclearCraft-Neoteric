@@ -59,7 +59,6 @@ public class NCFluids {
 
     public static HashMap<String, TagKey<Fluid>> GASES_TAG = new HashMap<>();
     public static HashMap<String, TagKey<Fluid>> LIQUIDS_TAG = new HashMap<>();
-   // public static final TagKey<Fluid> FLUID_TAG_KEY = FluidTags.create(new ResourceLocation("forge", "fluids"));
     public static void register(IEventBus eventBus) {
         FLUIDS.register(eventBus);
     }
@@ -147,10 +146,12 @@ public class NCFluids {
 
     private static void acids() {
         HashMap<String, AcidDefinition> items = new HashMap<>();
-        items.put("hydrofluoric_acid", new AcidDefinition("hydrofluoric_acid", 0xCC99FFEE));
+        items.put("hydrofluoric_acid", new AcidDefinition("hydrofluoric_acid", 0xCCFFEE99));
+        items.put("hydrochloric_acid", new AcidDefinition("hydrochloric_acid", 0xBBEEEEFF));
         items.put("boric_acid", new AcidDefinition("boric_acid", 0xCCA0EFFF));
-        items.put("sulfuric_acid", new AcidDefinition("sulfuric_acid", 0xCCA0EFFF));
+        items.put("sulfuric_acid", new AcidDefinition("sulfuric_acid", 0xCCF8FFD3));
         items.put("nitric_acid", new AcidDefinition("nitric_acid", 0xCC4F9EFF));
+        items.put("acua_regia_acid", new AcidDefinition("acua_regia_acid", 0XCCFFBB99));
 
         for(AcidDefinition acid: items.values()) {
             LIQUIDS_TAG.put(acid.name, TagKey.create(Registry.FLUID_REGISTRY,  new ResourceLocation("forge", acid.name)));

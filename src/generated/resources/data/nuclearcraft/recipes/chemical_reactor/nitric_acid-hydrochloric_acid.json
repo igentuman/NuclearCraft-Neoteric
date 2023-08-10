@@ -1,0 +1,22 @@
+{
+  "type": "nuclearcraft:chemical_reactor",
+  "inputFluids": [
+    {
+      "amount": 250,
+      "tag": "forge:nitric_acid"
+    },
+    {
+      "amount": 750,
+      "tag": "forge:hydrochloric_acid"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 1000,
+      "fluid": "nuclearcraft:acua_regia_acid"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.5
+}

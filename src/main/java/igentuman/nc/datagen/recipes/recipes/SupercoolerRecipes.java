@@ -24,7 +24,7 @@ public class SupercoolerRecipes extends AbstractRecipeProvider {
         }
 
         add(
-                fluidIngredient("water", 1000),
+                fluidIngredient("minecraft:water", 1000),
                 fluidStack("ice", 500)
         );
 

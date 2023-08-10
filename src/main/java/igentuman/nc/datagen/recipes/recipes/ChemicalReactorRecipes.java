@@ -19,6 +19,26 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
 
         add(
                 List.of(
+                        fluidIngredient("nitric_acid", 250),
+                        fluidIngredient("hydrochloric_acid", 750)
+                ),
+                List.of(
+                        fluidStack("acua_regia_acid", 1000)
+                ), 1.5D
+        );
+
+        add(
+                List.of(
+                        fluidIngredient("hydrogen_chloride", 250),
+                        fluidIngredient("minecraft:water", 250)
+                ),
+                List.of(
+                        fluidStack("hydrochloric_acid", 500)
+                )
+        );
+
+        add(
+                List.of(
                     fluidIngredient("boron", 144),
                     fluidIngredient("hydrogen", 666)
                         ),

@@ -1,9 +1,7 @@
 package igentuman.nc.network.toClient;
 
 import igentuman.nc.network.INcPacket;
-import igentuman.nc.radiation.client.ClientWorldRadiationData;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
+import igentuman.nc.radiation.client.ClientRadiationData;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 
@@ -13,15 +11,28 @@ import java.util.Map;
 public class PacketRadiationData implements INcPacket {
 
     private final Map<Long, Long> radiation;
+    private final int playerRadiation;
 
     public PacketRadiationData(Map<Long, Long> radiation) {
+        this(radiation, 0);
+    }
+
+    public PacketRadiationData(long id, Long aLong, int playerRadiation) {
+        radiation = new HashMap<>();
+        radiation.put(id, aLong);
+        this.playerRadiation = playerRadiation;
+    }
+
+    public PacketRadiationData(Map<Long, Long> radiation, int playerRadiation) {
         this.radiation = radiation;
+        this.playerRadiation = playerRadiation;
     }
 
     @Override
     public void handle(NetworkEvent.Context context) {
         context.enqueueWork(() -> {
-            ClientWorldRadiationData.set(radiation);
+            ClientRadiationData.setWorldRadiation(radiation);
+            ClientRadiationData.setPlayerRadiation(playerRadiation);
         });
     }
 
@@ -32,6 +43,7 @@ public class PacketRadiationData implements INcPacket {
             buffer.writeLong(entry.getKey());
             buffer.writeLong(entry.getValue());
         }
+        buffer.writeInt(playerRadiation);
     }
 
     public static PacketRadiationData decode(FriendlyByteBuf buffer) {
@@ -40,6 +52,7 @@ public class PacketRadiationData implements INcPacket {
         for(int i = 0; i < size; i++) {
             radiation.put(buffer.readLong(), buffer.readLong());
         }
-        return new PacketRadiationData(radiation);
+        int playerRadiation = buffer.readInt();
+        return new PacketRadiationData(radiation, playerRadiation);
     }
 }

@@ -45,6 +45,11 @@ public class NCLanguageProvider extends LanguageProvider {
         energyBlocks();
         multiblocks();
         labels();
+        messages();
+    }
+
+    private void messages() {
+        add("message.nc.geiger_radiation_measure", "Radiation Level: %s");
     }
 
     private void labels() {

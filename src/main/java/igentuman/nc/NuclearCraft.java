@@ -3,6 +3,7 @@ package igentuman.nc;
 import igentuman.nc.handler.CommonWorldTickHandler;
 import igentuman.nc.handler.command.CommandNcPlayerRadiation;
 import igentuman.nc.handler.config.CommonConfig;
+import igentuman.nc.radiation.data.PlayerRadiation;
 import igentuman.nc.radiation.data.WorldRadiation;
 import igentuman.nc.network.PacketHandler;
 import igentuman.nc.setup.ClientSetup;
@@ -80,5 +81,6 @@ public class NuclearCraft {
     @SubscribeEvent
     public void registerCaps(RegisterCapabilitiesEvent event) {
         event.register(WorldRadiation.class);
+        event.register(PlayerRadiation.class);
     }
 }

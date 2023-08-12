@@ -2,7 +2,6 @@ package igentuman.nc.radiation.data;
 
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.CapabilityToken;
@@ -13,23 +12,23 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 
-public class WorldRadiationProvider implements ICapabilityProvider, INBTSerializable<CompoundTag> {
-    public static Capability<WorldRadiation> WORLD_RADIATION = CapabilityManager.get(new CapabilityToken<>(){});
-    private WorldRadiation worldRadiation = createWorldRadiation();
-    private final LazyOptional<WorldRadiation> opt = LazyOptional.of(() -> createWorldRadiation());
+public class PlayerRadiationProvider implements ICapabilityProvider, INBTSerializable<CompoundTag> {
+    public static Capability<PlayerRadiation> PLAYER_RADIATION = CapabilityManager.get(new CapabilityToken<>(){});
+    private PlayerRadiation playerRadiation = createPlayerRadiation();
+    private final LazyOptional<PlayerRadiation> opt = LazyOptional.of(() -> createPlayerRadiation());
 
     @Nonnull
-    private WorldRadiation createWorldRadiation() {
-        if (worldRadiation == null) {
-            worldRadiation = new WorldRadiation();
+    private PlayerRadiation createPlayerRadiation() {
+        if (playerRadiation == null) {
+            playerRadiation = new PlayerRadiation();
         }
-        return worldRadiation;
+        return playerRadiation;
     }
 
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap) {
-        if (cap == WORLD_RADIATION) {
+        if (cap == PLAYER_RADIATION) {
             return opt.cast();
         }
         return LazyOptional.empty();
@@ -43,11 +42,11 @@ public class WorldRadiationProvider implements ICapabilityProvider, INBTSerializ
 
     @Override
     public CompoundTag serializeNBT() {
-        return worldRadiation.serializeNBT();
+        return playerRadiation.serializeNBT();
     }
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
-        worldRadiation.deserializeNBT(nbt);
+        playerRadiation.deserializeNBT(nbt);
     }
 }

@@ -1,5 +1,6 @@
 package igentuman.nc.setup.registration;
 
+import igentuman.nc.item.GeigerCounterItem;
 import igentuman.nc.setup.ModSetup;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -16,7 +17,7 @@ public class NCTools {
 
     public static final Item.Properties ITEM_PROPERTIES = new Item.Properties().tab(ModSetup.ITEM_GROUP);
 
-    public static final RegistryObject<Item> GEIGER_COUNTER = ITEMS.register("geiger_counter", () -> new Item(ITEM_PROPERTIES));
+    public static final RegistryObject<Item> GEIGER_COUNTER = ITEMS.register("geiger_counter", () -> new GeigerCounterItem(ITEM_PROPERTIES));
     public static final RegistryObject<Item> MULTITOOL = ITEMS.register("multitool", () -> new Item(ITEM_PROPERTIES));
     public static final RegistryObject<Item> QNP = ITEMS.register("qnp", () -> new Item(ITEM_PROPERTIES));
     public static final RegistryObject<Item> SPAXELHOE_TOUGH = ITEMS.register("spaxelhoe_tough", () -> new Item(ITEM_PROPERTIES));

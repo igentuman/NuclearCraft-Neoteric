@@ -10,23 +10,23 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 
 import static igentuman.nc.NuclearCraft.MODID;
-import static igentuman.nc.setup.registration.NCTools.GEIGER_COUNTER;
+import static igentuman.nc.setup.registration.NCItems.ALL_NC_ITEMS;
 
 public class RadiationOverlay {
 
     private static final ResourceLocation RADIATION_BAR_TEXTURE = new ResourceLocation(MODID,
-            "textures/gui/overlay/radiation.png");
+            "textures/gui/overlay/radiation_bar.png");
 
-    public static boolean playerHasGeigerCounter(Player player) {
-        return player.getInventory().contains(new ItemStack(GEIGER_COUNTER.get()));
+    public static boolean hasDosimeter(Player player) {
+        return player.getInventory().contains(new ItemStack(ALL_NC_ITEMS.get("dosimeter").get()));
     }
 
     public static final IGuiOverlay RADIATION_BAR = (gui, poseStack, partialTicks, width, height) -> {
         Player pl = NcClient.tryGetClientPlayer();
         if (pl == null) return;
-        if(!playerHasGeigerCounter(pl)) return;
-        ClientWorldRadiationData.setCurrentChunk(pl.chunkPosition().x, pl.chunkPosition().z);
-        int radiation = ClientWorldRadiationData.getCurrentRadiation();
+        if(!hasDosimeter(pl)) return;
+        //ClientRadiationData.setCurrentChunk(pl.chunkPosition().x, pl.chunkPosition().z);
+        int radiation = ClientRadiationData.getPlayerRadiation();
         String toDisplay = String.valueOf(radiation);
         int x = width / 2;
         int y = height;

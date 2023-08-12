@@ -179,6 +179,7 @@ public class CommonConfig {
         public ForgeConfigSpec.ConfigValue<Integer> SPREAD_GATE;
         public ForgeConfigSpec.ConfigValue<Double> SPREAD_MULTIPLIER;
         public ForgeConfigSpec.ConfigValue<Integer> DECAY_SPEED;
+        public ForgeConfigSpec.ConfigValue<Integer> DECAY_SPEED_FOR_PLAYER;
         public ForgeConfigSpec.ConfigValue<List<String>> BIOME_RADIATION;
         public ForgeConfigSpec.ConfigValue<List<String>> DIMENSION_RADIATION;
 
@@ -202,6 +203,10 @@ public class CommonConfig {
             DECAY_SPEED = builder
                     .comment("How fast contamination decays (uRad/s).")
                     .defineInRange("decay_speed", 5, 1, 20);
+
+            DECAY_SPEED_FOR_PLAYER = builder
+                    .comment("How fast contamination decays in player's body (uRad/s).")
+                    .defineInRange("decay_speed_for_player", 3, 1, 20);
 
             BIOME_RADIATION = builder
                     .comment("Natural radiation per biome: uRad", "Format: biome_id: radiation")

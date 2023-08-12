@@ -6,6 +6,7 @@ import igentuman.nc.handler.event.client.ColorHandler;
 import igentuman.nc.handler.event.client.InputEvents;
 import igentuman.nc.handler.event.client.ServerLoad;
 import igentuman.nc.handler.event.client.TooltipHandler;
+import igentuman.nc.radiation.client.ClientRadiationData;
 import igentuman.nc.radiation.client.RadiationOverlay;
 import igentuman.nc.setup.multiblocks.FissionReactor;
 import igentuman.nc.content.processors.Processors;
@@ -15,7 +16,12 @@ import igentuman.nc.setup.registration.NcParticleTypes;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.client.renderer.item.ItemPropertyFunction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.BossEvent;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
@@ -29,6 +35,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.registries.RegistryObject;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.NuclearCraft.rl;
+import static igentuman.nc.setup.registration.NCTools.GEIGER_COUNTER;
 
 @Mod.EventBusSubscriber(modid = MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ClientSetup {
@@ -46,6 +54,21 @@ public class ClientSetup {
         for(RegistryObject<Fluid> f : NCFluids.FLUIDS.getEntries())
             if(NCFluids.NC_GASES.containsKey(f.getId().getPath()))
                 ItemBlockRenderTypes.setRenderLayer(f.get(), RenderType.translucent());
+
+        event.enqueueWork(() -> {
+            setPropertyOverride(GEIGER_COUNTER.get(), rl("radiation"), (stack, world, entity, seed) -> {
+                if (entity instanceof Player) {
+                    ClientRadiationData.setCurrentChunk(entity.chunkPosition().x, entity.chunkPosition().z);
+                    return (int)((float)ClientRadiationData.getCurrentWorldRadiation()/400000);
+                }
+                return 0;
+            });
+
+        });
+    }
+
+    public static void setPropertyOverride(ItemLike itemProvider, ResourceLocation override, ItemPropertyFunction propertyGetter) {
+        ItemProperties.register(itemProvider.asItem(), override, propertyGetter);
     }
 
     @SubscribeEvent
@@ -67,5 +90,6 @@ public class ClientSetup {
         ColorHandler.register(event);
         ServerLoad.register(event);
         TooltipHandler.register(event);
+
     }
 }

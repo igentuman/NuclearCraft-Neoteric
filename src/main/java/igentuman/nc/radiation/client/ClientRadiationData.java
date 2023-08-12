@@ -6,11 +6,13 @@ import java.util.Map;
 import static igentuman.nc.radiation.data.WorldRadiation.pack;
 import static igentuman.nc.radiation.data.WorldRadiation.unpackX;
 
-public class ClientWorldRadiationData {
+public class ClientRadiationData {
 
     public static Map<Long, Long> radiationData = new HashMap<>();
-    public static int currentRadiation = 0;
-    public static void set(Map<Long, Long> radiation) {
+    protected static int currentRadiation = 0;
+    protected static int playerRadiation = 0;
+
+    public static void setWorldRadiation(Map<Long, Long> radiation) {
         for(long id: radiation.keySet()) {
             if(radiationData.containsKey(id)) {
                 radiationData.replace(id, radiation.get(id));
@@ -20,7 +22,7 @@ public class ClientWorldRadiationData {
         }
     }
 
-    public static int getCurrentRadiation() {
+    public static int getCurrentWorldRadiation() {
         return currentRadiation;
     }
 
@@ -31,5 +33,13 @@ public class ClientWorldRadiationData {
         } else {
             currentRadiation = 0;
         }
+    }
+
+    public static void setPlayerRadiation(int radiation) {
+        playerRadiation = radiation;
+    }
+
+    public static int getPlayerRadiation() {
+        return playerRadiation;
     }
 }

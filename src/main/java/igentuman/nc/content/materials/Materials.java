@@ -3,6 +3,7 @@ package igentuman.nc.content.materials;
 import igentuman.nc.content.materials.MaterialsManager;
 import igentuman.nc.content.materials.NCMaterial;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -130,6 +131,7 @@ public class Materials extends MaterialsManager {
     public final static String uranium238 = "uranium/238";
     public final static String supercold_ice = "supercold_ice";
 
+    public static HashMap<String, Double> isotopes = new HashMap<>();
 
     public static HashMap<String, NCMaterial> all()
     {
@@ -238,36 +240,36 @@ public class Materials extends MaterialsManager {
 
     public static List<String> isotopes()
     {
-        return List.of(
-                americium241,
-                americium242,
-                americium243,
-                berkelium247,
-                berkelium248,
-                boron10,
-                boron11,
-                californium249,
-                californium250,
-                californium251,
-                californium252,
-                curium243,
-                curium245,
-                curium246,
-                curium247,
-                lithium6,
-                lithium7,
-                neptunium236,
-                neptunium237,
-                plutonium238,
-                plutonium239,
-                plutonium241,
-                plutonium242,
-                thorium230,
-                thorium232,
-                uranium233,
-                uranium235,
-                uranium238
-        );
+        if(!isotopes.isEmpty()) return new ArrayList<>(isotopes.keySet());
+        isotopes.put(americium241, 0.002);
+        isotopes.put(americium242, 0.007);
+        isotopes.put(americium243, 0.00013);
+        isotopes.put(berkelium247, 0.00075);
+        isotopes.put(berkelium248, 0.003);
+        isotopes.put(boron10, 0.001);
+        isotopes.put(boron11, 0.0007);
+        isotopes.put(californium249, 0.002);
+        isotopes.put(californium250, 0.076);
+        isotopes.put(californium251, 0.001);
+        isotopes.put(californium252, 0.38);
+        isotopes.put(curium243, 0.034);
+        isotopes.put(curium245, 0.00012);
+        isotopes.put(curium246, 0.00021);
+        isotopes.put(curium247, 0.0004);
+        isotopes.put(lithium6, 0.0002);
+        isotopes.put(lithium7, 0.0002);
+        isotopes.put(neptunium236, 0.00006);
+        isotopes.put(neptunium237, 0.00047);
+        isotopes.put(plutonium238, 0.011);
+        isotopes.put(plutonium239, 0.0005);
+        isotopes.put(plutonium241, 0.071);
+        isotopes.put(plutonium242, 0.00002);
+        isotopes.put(thorium230, 0.001);
+        isotopes.put(thorium232, 0.002);
+        isotopes.put(uranium233, 0.0003);
+        isotopes.put(uranium235, 0.002);
+        isotopes.put(uranium238, 0.000002);
+        return isotopes();
     }
 
 }

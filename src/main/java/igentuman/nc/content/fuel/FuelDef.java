@@ -3,7 +3,6 @@ package igentuman.nc.content.fuel;
 import igentuman.nc.handler.config.CommonConfig;
 
 import static igentuman.nc.handler.config.CommonConfig.FUEL_CONFIG;
-import static igentuman.nc.handler.config.CommonConfig.FuelConfig.HEAT_MULTIPLIER;
 
 public class FuelDef {
 
@@ -48,7 +47,7 @@ public class FuelDef {
         if(!CommonConfig.isLoaded()) {
             return 3.24444444;
         }
-        return HEAT_MULTIPLIER.get();
+        return FUEL_CONFIG.HEAT_MULTIPLIER.get();
     }
 
     public FuelDef config()

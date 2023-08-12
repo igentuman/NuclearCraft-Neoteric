@@ -18,6 +18,8 @@ import java.util.function.Consumer;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.setup.registration.Fuel.NC_ISOTOPES;
 import static igentuman.nc.setup.registration.NCItems.ALL_NC_ITEMS;
+import static igentuman.nc.setup.registration.NCItems.NC_PARTS;
+import static igentuman.nc.setup.registration.NCTools.GEIGER_COUNTER;
 import static net.minecraft.world.item.Items.*;
 import static igentuman.nc.util.DataGenUtil.*;
 public class NCRecipes extends RecipeProvider {
@@ -32,12 +34,41 @@ public class NCRecipes extends RecipeProvider {
     protected void buildCraftingRecipes(Consumer<FinishedRecipe> consumer) {
         materials(consumer);
         parts(consumer);
+        items(consumer);
         processors(consumer);
         solarPanels(consumer);
         fissionBlocks(consumer);
         turbineBlocks(consumer);
         FuelRecipes.generate(consumer);
         CustomRecipes.generate(consumer);
+    }
+
+    private void items(Consumer<FinishedRecipe> consumer) {
+
+        ShapedRecipeBuilder.shaped(ALL_NC_ITEMS.get("dosimeter").get())
+                .pattern(" G ")
+                .pattern("SBS")
+                .pattern(" L ")
+                .define('S', STRING)
+                .define('L', forgePlate(Materials.lead))
+                .define('G', ALL_NC_ITEMS.get("gelatin").get())
+                .define('B', NC_PARTS.get("bioplastic").get())
+
+                .unlockedBy("item", has(ALL_NC_ITEMS.get("gelatin").get()))
+                .save(consumer, new ResourceLocation(MODID, "dosimeter"));
+
+        ShapedRecipeBuilder.shaped(GEIGER_COUNTER.get())
+                .pattern("SFF")
+                .pattern("CDR")
+                .pattern("BFF")
+                .define('C', forgeIngot(Materials.copper))
+                .define('D', ALL_NC_ITEMS.get("dosimeter").get())
+                .define('S', forgeIngot(Materials.steel))
+                .define('F', forgeIngot(Materials.ferroboron))
+                .define('R', forgeDust("redstone"))
+                .define('B', NC_PARTS.get("bioplastic").get())
+                .unlockedBy("item", has(forgeIngot(Materials.ferroboron)))
+                .save(consumer, new ResourceLocation(MODID, "geiger_counter"));
     }
 
     private void parts(Consumer<FinishedRecipe> consumer) {

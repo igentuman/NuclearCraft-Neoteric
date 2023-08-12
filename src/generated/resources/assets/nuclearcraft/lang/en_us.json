@@ -1767,6 +1767,7 @@
   "solar_panel.fe_generation": "Daytime Gen: %s FE/t",
   "speed.multiplier": "Speed Multiplier: x%s",
   "tooltip.machine.progress": "Progress: %s%%",
+  "tooltip.nc.radiation": "Radiation: %s",
   "tooltip.press_shift_for_description": "Press SHIFT for description",
   "validation.structure.incomplete": "Incomplete",
   "validation.structure.no_controller": "No controllers",

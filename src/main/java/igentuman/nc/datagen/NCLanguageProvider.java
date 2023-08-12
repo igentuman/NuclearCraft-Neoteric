@@ -140,6 +140,7 @@ public class NCLanguageProvider extends LanguageProvider {
     }
 
     private void tooltips() {
+        add("tooltip.nc.radiation","Radiation: %s");
         add("tooltip.press_shift_for_description","Press SHIFT for description");
         add("fuel.heat.descr","Base Heat Gen: %s H/t");
         add("gui.nc.redstone_config.tooltip_0","WORK MODE: IGNORE SIGNAL");

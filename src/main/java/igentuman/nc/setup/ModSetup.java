@@ -1,11 +1,12 @@
 package igentuman.nc.setup;
 
 import igentuman.nc.NuclearCraft;
-import igentuman.nc.handler.radiation.RadiationManager;
+import igentuman.nc.radiation.data.RadiationEvents;
 import igentuman.nc.world.dimension.Dimensions;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
@@ -27,12 +28,14 @@ public class ModSetup {
 
     public static void setup() {
         IEventBus bus = MinecraftForge.EVENT_BUS;
+        bus.addGenericListener(Level.class, RadiationEvents::attacWorldRadiation);
+        bus.register(NuclearCraft.worldTickHandler);
     }
 
     public static void init(FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
             Dimensions.register();
-            MinecraftForge.EVENT_BUS.register(RadiationManager.INSTANCE);
+            //CapabilityRegistration.register(event);
 
         });
         NuclearCraft.packetHandler().initialize();

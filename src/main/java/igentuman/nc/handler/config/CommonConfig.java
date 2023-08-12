@@ -15,6 +15,10 @@ import java.util.List;
 import static igentuman.nc.world.dimension.Dimensions.WASTELAIND_ID;
 
 public class CommonConfig {
+    public static <T> List<T> toList(Collection<T> vals)
+    {
+        return new ArrayList<>(vals);
+    }
     private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
     public static final ProcessorConfig PROCESSOR_CONFIG = new ProcessorConfig(BUILDER);
     public static final OresConfig ORE_CONFIG = new OresConfig(BUILDER);
@@ -50,12 +54,12 @@ public class CommonConfig {
 
     public static class FuelConfig
     {
-        public static ForgeConfigSpec.ConfigValue<List<Double>> HEAT;
-        public static ForgeConfigSpec.ConfigValue<List<Integer>> EFFICIENCY;
-        public static ForgeConfigSpec.ConfigValue<List<Integer>> DEPLETION;
-        public static ForgeConfigSpec.ConfigValue<List<Integer>> CRITICALITY;
-        public static ForgeConfigSpec.ConfigValue<Double> HEAT_MULTIPLIER;
-        public static ForgeConfigSpec.ConfigValue<Double> DEPLETION_MULTIPLIER;
+        public ForgeConfigSpec.ConfigValue<List<Double>> HEAT;
+        public ForgeConfigSpec.ConfigValue<List<Integer>> EFFICIENCY;
+        public ForgeConfigSpec.ConfigValue<List<Integer>> DEPLETION;
+        public ForgeConfigSpec.ConfigValue<List<Integer>> CRITICALITY;
+        public ForgeConfigSpec.ConfigValue<Double> HEAT_MULTIPLIER;
+        public ForgeConfigSpec.ConfigValue<Double> DEPLETION_MULTIPLIER;
 
         public FuelConfig(ForgeConfigSpec.Builder builder) {
             builder.comment("Settings for reactor fuel").push("reactor_fuel");
@@ -84,7 +88,6 @@ public class CommonConfig {
         }
 
     }
-
 
     public static class HeatSinkConfig
     {
@@ -170,13 +173,16 @@ public class CommonConfig {
 
     }
 
-
     public static class RadiationConfig
     {
-        public static ForgeConfigSpec.ConfigValue<Boolean> ENABLED;
-        public static ForgeConfigSpec.ConfigValue<Integer> RADIUS;
-        public static ForgeConfigSpec.ConfigValue<Double> SPREAD_SPEED;
-        public static ForgeConfigSpec.ConfigValue<Double> DECAY_SPEED;
+        public ForgeConfigSpec.ConfigValue<Boolean> ENABLED;
+        public ForgeConfigSpec.ConfigValue<Integer> SPREAD_GATE;
+        public ForgeConfigSpec.ConfigValue<Double> SPREAD_MULTIPLIER;
+        public ForgeConfigSpec.ConfigValue<Integer> DECAY_SPEED;
+        public ForgeConfigSpec.ConfigValue<List<String>> BIOME_RADIATION;
+        public ForgeConfigSpec.ConfigValue<List<String>> DIMENSION_RADIATION;
+
+        public ForgeConfigSpec.ConfigValue<Integer> RADIATION_UPDATE_INTERVAL;
 
         public RadiationConfig(ForgeConfigSpec.Builder builder) {
             builder.comment("Settings for Radiation").push("radiation");
@@ -185,40 +191,44 @@ public class CommonConfig {
                     .comment("If radiation is enabled.")
                     .define("enabled", true);
 
-            RADIUS = builder
-                    .comment("Spread radius in chunks")
-                    .defineInRange("spread_radius", 8, 1, 20);
+            SPREAD_MULTIPLIER = builder
+                    .comment("Spread multiplier. How much radiation spreads from chunk to chunk. Bigger values might cause lag.")
+                    .defineInRange("spread_multiplier", 0.3d, 0.01d, 0.9d);
 
-            SPREAD_SPEED = builder
-                    .comment("How fast contamination spreads around.")
-                    .defineInRange("spread_speed", 0.99d, 0.0d, 20d);
+            SPREAD_GATE = builder
+                    .comment("If chunk radiation (uRad) less than this value it won't affect chunks nearby.", "Bigger values - less lag, but less accurate radiation spread.")
+                    .defineInRange("spread_gate", 5000, 100, 100000);
 
             DECAY_SPEED = builder
-                    .comment("How fast contamination decays.")
-                    .defineInRange("decay_speed", 0.1d, 0.0d, 20d);
+                    .comment("How fast contamination decays (uRad/s).")
+                    .defineInRange("decay_speed", 5, 1, 20);
+
+            BIOME_RADIATION = builder
+                    .comment("Natural radiation per biome: uRad", "Format: biome_id: radiation")
+                    .define("biome_radiation", List.of("wasteland: 2000", "nether_wastes: 500"));
+
+            DIMENSION_RADIATION = builder
+                    .comment("Natural radiation per dimension: uRad", "Format: dim_id: radiation")
+                    .define("dimension_radiation", List.of("-4848: 2000", "-1: 100"));
+
+            RADIATION_UPDATE_INTERVAL = builder
+                    .comment("Interval between radiation updates in ticks. 20 ticks = 1 second.", "Bigger interval - less lag, but less accurate radiation spread.")
+                    .defineInRange("update_interval", 100, 20, 1000);
 
             builder.pop();
         }
-
     }
-
-
-    public static <T> List<T> toList(Collection<T> vals)
-    {
-        return new ArrayList<>(vals);
-    }
-
 
     public static class MaterialProductsConfig {
-        public static ForgeConfigSpec.ConfigValue<List<Boolean>> INGOTS;
-        public static ForgeConfigSpec.ConfigValue<List<Boolean>> NUGGET;
-        public static ForgeConfigSpec.ConfigValue<List<Boolean>> BLOCK;
-        public static ForgeConfigSpec.ConfigValue<List<Boolean>> CHUNKS;
-        public static ForgeConfigSpec.ConfigValue<List<Boolean>> PLATES;
-        public static ForgeConfigSpec.ConfigValue<List<Boolean>> DUSTS;
-        public static ForgeConfigSpec.ConfigValue<List<Boolean>> GEMS;
+        public ForgeConfigSpec.ConfigValue<List<Boolean>> INGOTS;
+        public ForgeConfigSpec.ConfigValue<List<Boolean>> NUGGET;
+        public ForgeConfigSpec.ConfigValue<List<Boolean>> BLOCK;
+        public ForgeConfigSpec.ConfigValue<List<Boolean>> CHUNKS;
+        public ForgeConfigSpec.ConfigValue<List<Boolean>> PLATES;
+        public ForgeConfigSpec.ConfigValue<List<Boolean>> DUSTS;
+        public ForgeConfigSpec.ConfigValue<List<Boolean>> GEMS;
 
-        public static ForgeConfigSpec.ConfigValue<List<String>> MODS_PRIORITY;
+        public ForgeConfigSpec.ConfigValue<List<String>> MODS_PRIORITY;
 
         public MaterialProductsConfig(ForgeConfigSpec.Builder builder) {
             builder.comment("Settings for items registration").push("material_products");
@@ -354,7 +364,7 @@ public class CommonConfig {
         }
     }
 
-        public static class EnergyGenerationConfig {
+    public static class EnergyGenerationConfig {
             public static ForgeConfigSpec.ConfigValue<List<Boolean>> REGISTER_SOLAR_PANELS;
             public static ForgeConfigSpec.ConfigValue<List<Integer>> SOLAR_PANELS_GENERATION;
             public static ForgeConfigSpec.ConfigValue<Integer> STEAM_TURBINE;

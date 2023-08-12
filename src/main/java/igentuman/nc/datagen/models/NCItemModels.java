@@ -203,6 +203,7 @@ public class NCItemModels extends ItemModelProvider {
     }
     private void food() {
         for(String name: NCItems.NC_FOOD.keySet()) {
+            if(name.contains("smore")) continue;
             singleTexture(NCItems.NC_FOOD.get(name).getId().getPath(),
                     mcLoc("item/generated"),
                     "layer0", modLoc("item/food/"+name));

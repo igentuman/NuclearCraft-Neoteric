@@ -24,6 +24,7 @@ public class PressurizerRecipes extends AbstractRecipeProvider {
         }
 
         itemToItem(dustIngredient(Materials.graphite), ingredient(Items.COAL));
+        itemToItem(ingredient(NC_FOOD.get("foursmore").get(), 2), ingredient(NC_FOOD.get("evenmoresmore").get()));
         itemToItem(ingredient(ingotTag(Materials.graphite)), ingotStack(Materials.pyrolitic_carbon));
         itemToItem(dustIngredient(Materials.diamond), ingredient(Items.DIAMOND));
         itemToItem(dustIngredient(Materials.rhodochrosite), gemStack(Materials.rhodochrosite));

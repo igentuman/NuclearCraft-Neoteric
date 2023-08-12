@@ -80,6 +80,7 @@ public class NCItems {
         List<String> items = Arrays.asList(
                 "dominos",
                 "foursmore",
+                "evenmoresmore",
                 "graham_cracker",
                 "marshmallow",
                 "milk_chocolate",

@@ -90,6 +90,7 @@ public class Registration {
 
         NcRecipeSerializers.RECIPE_SERIALIZERS.register(bus);
         NcRecipeType.RECIPE_TYPES.register(bus);
+        NCSounds.SOUND_EVENTS.register(bus);
     }
 
     private static void initOreGeneration() {

@@ -40,6 +40,23 @@ public class RadiationManager extends SavedData {
     }
 
     public void tick(Level level) {
+        level.players().forEach(player -> {
+            if (player instanceof ServerPlayer serverPlayer) {
+                int playerChunkX = player.chunkPosition().x;
+                int playerChunkZ = player.chunkPosition().z;
+                long id = pack(playerChunkX, playerChunkZ);
+                PlayerRadiation playerRadiationCap = serverPlayer.getCapability(PlayerRadiationProvider.PLAYER_RADIATION).orElse(null);
+                int playerRadiation = 0;
+                if(playerRadiationCap != null) {
+                    playerRadiationCap.updateRadiation(level, player);
+                    playerRadiation = playerRadiationCap.getRadiation();
+                }
+
+                if(worldRadiation.chunkRadiation.get(id) != null) {
+                    NuclearCraft.packetHandler().sendTo(new PacketRadiationData(id, worldRadiation.chunkRadiation.get(id), playerRadiation), serverPlayer);
+                }
+            }
+        });
         tickCounter--;
         if (tickCounter == RADIATION_CONFIG.RADIATION_UPDATE_INTERVAL.get()/2) {
             worldRadiation.refresh(level);
@@ -50,21 +67,7 @@ public class RadiationManager extends SavedData {
             if(worldRadiation.updatedChunks.isEmpty()) {
                 return;
             }
-            level.players().forEach(player -> {
-                if (player instanceof ServerPlayer serverPlayer) {
-                    int playerChunkX = player.chunkPosition().x;
-                    int playerChunkZ = player.chunkPosition().z;
-                    long id = pack(playerChunkX, playerChunkZ);
-                    PlayerRadiation playerRadiationCap = serverPlayer.getCapability(PlayerRadiationProvider.PLAYER_RADIATION).orElse(null);
-                    int playerRadiation = 0;
-                    if(playerRadiationCap != null) {
-                        playerRadiationCap.updateRadiation(level, player);
-                        playerRadiation = playerRadiationCap.getRadiation();
-                    }
 
-                    NuclearCraft.packetHandler().sendTo(new PacketRadiationData(id, worldRadiation.updatedChunks.get(id), playerRadiation), serverPlayer);
-                }
-            });
             setDirty();
         }
     }

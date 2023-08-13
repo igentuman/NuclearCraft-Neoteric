@@ -1,0 +1,32 @@
+{
+  "geiger_1": {
+    "sounds": [
+      "nuclearcraft:item/geiger_1"
+    ],
+    "subtitle": "sound_event.nuclearcraft.item.geiger_1"
+  },
+  "geiger_2": {
+    "sounds": [
+      "nuclearcraft:item/geiger_2"
+    ],
+    "subtitle": "sound_event.nuclearcraft.item.geiger_2"
+  },
+  "geiger_3": {
+    "sounds": [
+      "nuclearcraft:item/geiger_3"
+    ],
+    "subtitle": "sound_event.nuclearcraft.item.geiger_3"
+  },
+  "geiger_4": {
+    "sounds": [
+      "nuclearcraft:item/geiger_4"
+    ],
+    "subtitle": "sound_event.nuclearcraft.item.geiger_4"
+  },
+  "geiger_5": {
+    "sounds": [
+      "nuclearcraft:item/geiger_5"
+    ],
+    "subtitle": "sound_event.nuclearcraft.item.geiger_5"
+  }
+}

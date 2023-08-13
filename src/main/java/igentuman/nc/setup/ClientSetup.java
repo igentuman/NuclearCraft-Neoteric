@@ -2,10 +2,7 @@ package igentuman.nc.setup;
 
 import igentuman.nc.client.particle.RadiationParticle;
 import igentuman.nc.client.gui.fission.FissionControllerScreen;
-import igentuman.nc.handler.event.client.ColorHandler;
-import igentuman.nc.handler.event.client.InputEvents;
-import igentuman.nc.handler.event.client.ServerLoad;
-import igentuman.nc.handler.event.client.TooltipHandler;
+import igentuman.nc.handler.event.client.*;
 import igentuman.nc.radiation.client.ClientRadiationData;
 import igentuman.nc.radiation.client.RadiationOverlay;
 import igentuman.nc.setup.multiblocks.FissionReactor;
@@ -90,6 +87,7 @@ public class ClientSetup {
         ColorHandler.register(event);
         ServerLoad.register(event);
         TooltipHandler.register(event);
+        TickHandler.register(event);
 
     }
 }

@@ -33,16 +33,13 @@ public class GeigerCounterItem extends Item
 	@Override
 	public InteractionResultHolder<ItemStack> use(@NotNull Level world, Player player, @NotNull InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
-		if (!player.isShiftKeyDown()) {
-			if (!world.isClientSide()) {
-				WorldRadiation worldRadiation = RadiationManager.get(world).getWorldRadiation();
-				int radiation = worldRadiation.getChunkRadiation(player.chunkPosition().x, player.chunkPosition().z);
-				player.sendSystemMessage(Component.translatable("message.nc.geiger_radiation_measure", format(radiation)));
-				CriteriaTriggers.USING_ITEM.trigger((ServerPlayer) player, stack);
-			}
-			return InteractionResultHolder.sidedSuccess(stack, world.isClientSide);
+		if (!world.isClientSide()) {
+			WorldRadiation worldRadiation = RadiationManager.get(world).getWorldRadiation();
+			int radiation = worldRadiation.getChunkRadiation(player.chunkPosition().x, player.chunkPosition().z);
+			player.sendSystemMessage(Component.translatable("message.nc.geiger_radiation_measure", format(radiation)));
+			CriteriaTriggers.USING_ITEM.trigger((ServerPlayer) player, stack);
 		}
-		return InteractionResultHolder.pass(stack);
+		return InteractionResultHolder.sidedSuccess(stack, world.isClientSide);
 	}
 
 	private static String format(int radiation) {

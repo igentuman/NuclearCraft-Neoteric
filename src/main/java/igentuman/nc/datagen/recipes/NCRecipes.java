@@ -17,8 +17,7 @@ import java.util.function.Consumer;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.setup.registration.Fuel.NC_ISOTOPES;
-import static igentuman.nc.setup.registration.NCItems.ALL_NC_ITEMS;
-import static igentuman.nc.setup.registration.NCItems.NC_PARTS;
+import static igentuman.nc.setup.registration.NCItems.*;
 import static igentuman.nc.setup.registration.NCTools.GEIGER_COUNTER;
 import static net.minecraft.world.item.Items.*;
 import static igentuman.nc.util.DataGenUtil.*;
@@ -53,7 +52,6 @@ public class NCRecipes extends RecipeProvider {
                 .define('L', forgePlate(Materials.lead))
                 .define('G', ALL_NC_ITEMS.get("gelatin").get())
                 .define('B', NC_PARTS.get("bioplastic").get())
-
                 .unlockedBy("item", has(ALL_NC_ITEMS.get("gelatin").get()))
                 .save(consumer, new ResourceLocation(MODID, "dosimeter"));
 
@@ -69,6 +67,30 @@ public class NCRecipes extends RecipeProvider {
                 .define('B', NC_PARTS.get("bioplastic").get())
                 .unlockedBy("item", has(forgeIngot(Materials.ferroboron)))
                 .save(consumer, new ResourceLocation(MODID, "geiger_counter"));
+
+        ShapelessRecipeBuilder.shapeless(ALL_NC_ITEMS.get("smore").get())
+                .requires(NCItems.ALL_NC_ITEMS.get("graham_cracker").get())
+                .requires(NCItems.ALL_NC_ITEMS.get("milk_chocolate").get())
+                .requires(NCItems.ALL_NC_ITEMS.get("marshmallow").get())
+                .requires(NCItems.ALL_NC_ITEMS.get("graham_cracker").get())
+                .unlockedBy("item", has(NCItems.ALL_NC_ITEMS.get("graham_cracker").get()))
+                .save(consumer, new ResourceLocation(MODID, "smore"));
+
+        ShapelessRecipeBuilder.shapeless(ALL_NC_ITEMS.get("moresmore").get())
+                .requires(NCItems.ALL_NC_ITEMS.get("smore").get())
+                .requires(NCItems.ALL_NC_ITEMS.get("milk_chocolate").get())
+                .requires(NCItems.ALL_NC_ITEMS.get("marshmallow").get())
+                .requires(NCItems.ALL_NC_ITEMS.get("smore").get())
+                .unlockedBy("item", has(NCItems.ALL_NC_ITEMS.get("smore").get()))
+                .save(consumer, new ResourceLocation(MODID, "moresmore"));
+
+        ShapelessRecipeBuilder.shapeless(ALL_NC_ITEMS.get("foursmore").get())
+                .requires(NCItems.ALL_NC_ITEMS.get("moresmore").get())
+                .requires(NCItems.ALL_NC_ITEMS.get("milk_chocolate").get())
+                .requires(NCItems.ALL_NC_ITEMS.get("marshmallow").get())
+                .requires(NCItems.ALL_NC_ITEMS.get("moresmore").get())
+                .unlockedBy("item", has(NCItems.ALL_NC_ITEMS.get("moresmore").get()))
+                .save(consumer, new ResourceLocation(MODID, "foursmore"));
     }
 
     private void parts(Consumer<FinishedRecipe> consumer) {

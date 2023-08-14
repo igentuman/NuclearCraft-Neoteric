@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "nuclearcraft:moresmore"
+    },
+    {
+      "item": "nuclearcraft:milk_chocolate"
+    },
+    {
+      "item": "nuclearcraft:marshmallow"
+    },
+    {
+      "item": "nuclearcraft:moresmore"
+    }
+  ],
+  "result": {
+    "item": "nuclearcraft:foursmore"
+  }
+}

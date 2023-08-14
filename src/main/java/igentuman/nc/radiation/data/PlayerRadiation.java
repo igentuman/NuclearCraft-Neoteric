@@ -70,7 +70,7 @@ public class PlayerRadiation implements IPlayerRadiationCapability {
         WorldRadiation worldRadiation = RadiationManager.get(level).getWorldRadiation();
         int chunkRadiation = worldRadiation.getChunkRadiation(player.chunkPosition().x, player.chunkPosition().z);
         if(chunkRadiation > radiation) {
-            radiation = (int) (chunkRadiation + radiation * 0.1f);
+            radiation = (int) (chunkRadiation * 0.05f + radiation);
         }
         if(player instanceof Player) {
             radiation += getInventoryRadiation((Player) player);
@@ -84,6 +84,7 @@ public class PlayerRadiation implements IPlayerRadiationCapability {
     public void updateContaminationStage(Player player)
     {
         if(radiation >= maxPlayerRadiation) {
+            radiation = radiation/3;
             player.hurt(NCRadiationDamageSource.RADIATION, 1000000);
             return;
         }

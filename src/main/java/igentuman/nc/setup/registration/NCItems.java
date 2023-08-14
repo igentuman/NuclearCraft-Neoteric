@@ -6,6 +6,7 @@ import igentuman.nc.setup.ModSetup;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -79,21 +80,26 @@ public class NCItems {
 
     private static void registerFood() {
         List<String> items = Arrays.asList(
-                "dominos",
-                "foursmore",
-                "evenmoresmore",
-                "graham_cracker",
                 "marshmallow",
                 "milk_chocolate",
                 "dark_chocolate",
-                "moresmore",
                 "rad_x",
                 "radaway",
                 "radaway_slow",
-                "smore"
+                "graham_cracker",
+                "smore",
+                "foursmore",
+                "dominos",
+                "moresmore",
+                "evenmoresmore"
+
         );
+        int i = 1;
         for(String name: items) {
-            NC_FOOD.put(name, ITEMS.register(name, () -> new Item(ITEM_PROPERTIES)));
+            NC_FOOD.put(name, ITEMS.register(name, () -> new Item(ITEM_PROPERTIES.food(
+                    new FoodProperties.Builder().nutrition(i)
+                            .saturationMod(i).build()
+            ))));
             ALL_NC_ITEMS.put(name, NC_FOOD.get(name));
         }
     }

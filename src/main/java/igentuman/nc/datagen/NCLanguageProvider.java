@@ -51,6 +51,7 @@ public class NCLanguageProvider extends LanguageProvider {
     private void messages() {
         add("message.nc.player_radiation_contamination", "Player Radiation Contamination: %s");
         add("message.nc.geiger_radiation_measure", "Radiation Level: %s");
+        add("death.attack.radiation", "Died of Radiation Poisoning");
     }
     private void sounds() {
         add("sound_event.nuclearcraft.item.geiger_1", "Geiger Counter Ticks Level 1 Intensity");

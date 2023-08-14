@@ -23,11 +23,20 @@ public class AssemblerRecipes extends AbstractRecipeProvider {
                             ingotIngredient(Materials.pyrolitic_carbon),
                             ingotIngredient(Materials.silicon_carbide)
                         ),
-                        List.of(
-                            ingredient(fuelItem(List.of("fuel", name, subType, "tr")), 9)
-                        )
+                        List.of(ingredient(fuelItem(List.of("fuel", name, subType, "tr")), 9))
                 );
             }
         }
+
+        itemsToItems(
+                List.of(
+                        dustIngredient(Materials.rhodochrosite),
+                        dustIngredient(Materials.calcium_sulfate),
+                        dustIngredient(Materials.magnesium),
+                        dustIngredient(Materials.obsidian)
+                ),
+                List.of(ingredient(dustItem(Materials.crystal_binder), 2))
+        );
+
     }
 }

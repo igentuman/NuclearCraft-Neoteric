@@ -1,0 +1,26 @@
+{
+  "type": "nuclearcraft:assembler",
+  "input": [
+    {
+      "tag": "forge:dusts/rhodochrosite"
+    },
+    {
+      "tag": "forge:dusts/calcium_sulfate"
+    },
+    {
+      "tag": "forge:dusts/magnesium"
+    },
+    {
+      "tag": "forge:dusts/obsidian"
+    }
+  ],
+  "output": [
+    {
+      "count": 2,
+      "item": "nuclearcraft:crystal_binder_dust"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

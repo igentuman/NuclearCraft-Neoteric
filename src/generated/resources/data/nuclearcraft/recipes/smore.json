@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "nuclearcraft:graham_cracker"
+    },
+    {
+      "item": "nuclearcraft:milk_chocolate"
+    },
+    {
+      "item": "nuclearcraft:marshmallow"
+    },
+    {
+      "item": "nuclearcraft:graham_cracker"
+    }
+  ],
+  "result": {
+    "item": "nuclearcraft:smore"
+  }
+}

@@ -68,16 +68,21 @@ public class WorldRadiation implements IWorldRadiationCapability {
         int curTimestamp = (int) (getServerTime() / 20);
         radiation -= (int) ((curTimestamp - timestamp) * decaySpeed);
         //if radiation is less than 10, remove it from the map
-        if (radiation < 10) {
-            chunkRadiation.remove(id);//still sending 0 radiation to client so he will remove it from the map
+        if (radiation < 1000) {
+            chunkRadiation.remove(id);//still sending 0 radiation to client, so he will remove it from the map
             updatedChunks.put(id, pack(0, curTimestamp));
             return;
+        }
+        radiation = Math.min(radiation, 5000000);
+        boolean toSpread = radiation > 500000;
+        if(toSpread) {//if it spreads, then it looses
+            radiation = (int)(0.9 * radiation);
         }
         long radiationData = pack(radiation, curTimestamp);
         chunkRadiation.replace(id, radiationData);
         updatedChunks.put(id, radiationData);
         //spread radiation around only if it is greater than 5 mRad
-        if (radiation > 5000000) {
+        if (toSpread) {
             spreadAround(x, z, radiation);
         }
     }

@@ -74,7 +74,7 @@ public class CommonWorldTickHandler {
             }
             double radiation = ItemRadiation.byItem(stack.getItem());
            if(radiation > 0.001) {
-               RadiationManager.get(event.getLevel()).addRadiation(event.getLevel(), radiation/5, entity.chunkPosition().x, entity.chunkPosition().z);
+               RadiationManager.get(event.getLevel()).addRadiation(event.getLevel(), stack.getCount()*radiation/5, entity.chunkPosition().x, entity.chunkPosition().z);
                 droppedRadioactiveItems.add((ItemEntity) entity);
            }
         }

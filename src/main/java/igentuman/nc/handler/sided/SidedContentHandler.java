@@ -8,10 +8,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class SidedContentHandler implements INBTSerializable<Tag> {
 
@@ -185,6 +187,12 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
         }
         if(fluidCapability != null) {
             fluidCapability.sideMapUpdated = true;
+        }
+    }
+
+    public void setAllowedInputItems(List<ItemStack> allowedInputItems) {
+        if(itemHandler != null) {
+            itemHandler.allowedInputItems = allowedInputItems;
         }
     }
 

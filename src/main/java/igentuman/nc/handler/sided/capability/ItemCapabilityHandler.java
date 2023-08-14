@@ -26,6 +26,7 @@ import static igentuman.nc.handler.sided.SlotModePair.SlotMode.*;
 
 public class ItemCapabilityHandler extends AbstractCapabilityHandler implements IItemHandlerModifiable, INBTSerializable<CompoundTag> {
 
+    public List<ItemStack> allowedInputItems;
     protected NonNullList<ItemStack> stacks;
     public BlockEntity tile;
     protected ItemStack[] sortedStacks;
@@ -274,7 +275,18 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
     private boolean inputAllowed(Integer i, ItemStack stack, Direction side) {
         SidedContentHandler.RelativeDirection relativeDirection = SidedContentHandler.RelativeDirection.toRelative(side, getFacing());
         SlotModePair.SlotMode mode = sideMap.get(relativeDirection.ordinal())[i].getMode();
-        return mode == INPUT || mode == PULL;
+        return mode == INPUT || mode == PULL && isValidInputItem(stack);
+    }
+
+    public boolean isValidInputItem(ItemStack item)
+    {
+        if(allowedInputItems.contains(item)) return true;
+        for(ItemStack stack: allowedInputItems) {
+            if(stack.sameItem(item)) {
+                return true;
+            }
+        }
+        return allowedInputItems.isEmpty();
     }
     public boolean pushItems(Direction dir) {
        return pushItems(dir, false, tile.getBlockPos());
@@ -302,7 +314,7 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
         return false;
     }
     public boolean pullItems(Direction dir) {
-       return pushItems(dir, false, tile.getBlockPos());
+       return pullItems(dir, false, tile.getBlockPos());
     }
 
     public boolean pullItems(Direction dir, boolean forceFlag, BlockPos pos) {
@@ -316,7 +328,8 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
                 if(pair.getMode() == PULL || (forceFlag && pair.getMode() == INPUT)) {
                     for(int i = 0; i < handler.getSlots(); i++) {
                         ItemStack stack = handler.getStackInSlot(i);
-                        if(stack.isEmpty()) continue;
+                            if(stack.isEmpty()) continue;
+                        if(!isValidInputItem(stack)) continue;
                         ItemStack remainder = insertItem(pair.getSlot(), stack.copy(), false);
                         if(remainder.getCount() != stack.getCount()) {
                             handler.extractItem(i, stack.getCount() - remainder.getCount(), false);

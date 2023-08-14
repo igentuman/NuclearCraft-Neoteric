@@ -195,7 +195,7 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler implements
                 SidedContentHandler.RelativeDirection relativeDirection = SidedContentHandler.RelativeDirection.toRelative(dir, getFacing());
                 for(SlotModePair pair : sideMap.get(relativeDirection.ordinal())) {
                     if(pair.getSlot() != i) continue;
-                    if(pair.getMode() == PUSH) {
+                    if(pair.getMode() == PUSH  || pair.getMode() == PUSH_EXCESS) {
                         int amount = handler.fill(outputFluid, IFluidHandler.FluidAction.SIMULATE);
                         if(amount == outputFluid.getAmount()) {
                             return true;

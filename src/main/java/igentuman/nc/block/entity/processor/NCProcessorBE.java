@@ -24,6 +24,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.ComparatorBlock;
 import net.minecraft.world.level.block.PoweredBlock;
@@ -42,7 +43,9 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 
 import static igentuman.nc.block.NCProcessorBlock.ACTIVE;
@@ -77,6 +80,7 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
 
     public int manualUpdateCounter = 40;
 
+    private List<ItemStack> allowedInputs;
 
     public LazyOptional<IEnergyStorage> getEnergy() {
         return energy;
@@ -246,9 +250,23 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
         }
     }
 
+    public List<ItemStack> getAllowedInputItems()
+    {
+        if(allowedInputs == null) {
+            allowedInputs = new ArrayList<>();
+            for(AbstractRecipe recipe: NcRecipeType.ALL_RECIPES.get(getName()).getRecipeType().getRecipes(getLevel())) {
+                for(Ingredient ingredient: recipe.getItemIngredients()) {
+                    allowedInputs.addAll(List.of(ingredient.getItems()));
+                }
+            }
+        }
+        return allowedInputs;
+    }
+
     public void tickServer() {
         if(redstoneMode == 1 && !hasRedstoneSignal()) return;
         boolean updated = manualUpdate();
+        contentHandler.setAllowedInputItems(getAllowedInputItems());
         processRecipe();
         handleRecipeOutput();
         updated = updated || contentHandler.tick();

@@ -21,6 +21,7 @@ import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -35,6 +36,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -91,6 +93,20 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         return NAME;
     }
 
+    private List<ItemStack> allowedInputs;
+
+    public List<ItemStack> getAllowedInputItems()
+    {
+        if(allowedInputs == null) {
+            allowedInputs = new ArrayList<>();
+            for(AbstractRecipe recipe: NcRecipeType.ALL_RECIPES.get(getName()).getRecipeType().getRecipes(getLevel())) {
+                for(Ingredient ingredient: recipe.getItemIngredients()) {
+                    allowedInputs.addAll(List.of(ingredient.getItems()));
+                }
+            }
+        }
+        return allowedInputs;
+    }
 
     public FissionControllerBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, NAME);
@@ -99,6 +115,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
                 1, 1,
                 0, 0);
         contentHandler.setBlockEntity(this);
+
     }
 
     @Override
@@ -110,7 +127,6 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     public LazyOptional<IEnergyStorage> getEnergy() {
         return energy;
     }
-
 
     private CustomEnergyStorage createEnergy() {
         return new CustomEnergyStorage(1000000, 0, 1000000) {
@@ -191,6 +207,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
             processReaction();
             coolDown();
             handleMeltdown();
+            contentHandler.setAllowedInputItems(getAllowedInputItems());
         }
         refreshCacheFlag = !multiblock().isFormed();
         level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
@@ -201,8 +218,14 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
             BlockPos explosionPos = getBlockPos().relative(getFacing(), 2);
             if (FISSION_CONFIG.EXPLOSION_RADIUS.get() == 0) {
                 getLevel().explode(null, explosionPos.getX(), explosionPos.getY(), explosionPos.getZ(), 2F, true, Explosion.BlockInteraction.NONE);
+                for (BlockPos pos : multiblock.fuelCells) {
+                    getLevel().explode(null, pos.getX(), pos.getY(), pos.getZ(), 1, true, Explosion.BlockInteraction.NONE);
+                }
             } else {
                 getLevel().explode(null, explosionPos.getX(), explosionPos.getY(), explosionPos.getZ(), FISSION_CONFIG.EXPLOSION_RADIUS.get().floatValue(), true, Explosion.BlockInteraction.DESTROY);
+                for (BlockPos pos : multiblock.fuelCells) {
+                    getLevel().explode(null, pos.getX(), pos.getY(), pos.getZ(), 2, true, Explosion.BlockInteraction.DESTROY);
+                }
             }
             for (BlockPos pos : multiblock.fuelCells) {
                 getLevel().setBlock(pos, NCFluids.getBlock("corium"), 1);

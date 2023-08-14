@@ -4,9 +4,15 @@ import igentuman.nc.block.entity.fission.*;
 import igentuman.nc.block.fission.*;
 import igentuman.nc.container.FissionControllerContainer;
 import igentuman.nc.setup.ModSetup;
+import igentuman.nc.setup.registration.NCBlocks;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -21,6 +27,7 @@ import net.minecraftforge.registries.RegistryObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.setup.multiblocks.FissionBlocks.REACTOR_BLOCKS_PROPERTIES;
@@ -50,6 +57,14 @@ public class FissionReactor {
         BLOCK_ENTITIES.register(bus);
         CONTAINERS.register(bus);
         blocks();
+    }
+    public static List<Block> moderators = new ArrayList<>();
+    public static List<Block> moderators() {
+        if(moderators.isEmpty()) {
+            moderators.add(NCBlocks.NC_BLOCKS.get("graphite").get());
+            moderators.add(NCBlocks.NC_BLOCKS.get("beryllium").get());
+        }
+        return moderators;
     }
 
     public static void blocks()
@@ -92,6 +107,12 @@ public class FissionReactor {
         MULTIBLOCK_BE.put("fission_heat_sink", BLOCK_ENTITIES.register("fission_heat_sink",
                 () -> BlockEntityType.Builder
                         .of(FissionHeatSinkBE::new, getHSBlocks())
+                        .build(null)));
+
+        MULTIBLOCK_BE.put("fission_moderator", BLOCK_ENTITIES.register("fission_moderator",
+                () -> BlockEntityType.Builder
+                        .of(FissionModeratorBE::new,
+                                moderators().toArray(new Block[0]))
                         .build(null)));
 
         MULTIBLOCK_BE.put("fission_casing", BLOCK_ENTITIES.register("fission_casing",

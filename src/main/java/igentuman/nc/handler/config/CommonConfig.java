@@ -1,5 +1,6 @@
 package igentuman.nc.handler.config;
 
+import com.google.common.collect.ImmutableList;
 import igentuman.nc.content.materials.*;
 import igentuman.nc.setup.energy.SolarPanels;
 import igentuman.nc.setup.multiblocks.FissionBlocks;
@@ -24,14 +25,12 @@ public class CommonConfig {
     public static final OresConfig ORE_CONFIG = new OresConfig(BUILDER);
     public static final FuelConfig FUEL_CONFIG = new FuelConfig(BUILDER);
     public static final HeatSinkConfig HEAT_SINK_CONFIG = new HeatSinkConfig(BUILDER);
-
     public static final FissionConfig FISSION_CONFIG = new FissionConfig(BUILDER);
     public static final RadiationConfig RADIATION_CONFIG = new RadiationConfig(BUILDER);
     public static final EnergyGenerationConfig ENERGY_GENERATION = new EnergyGenerationConfig(BUILDER);
     public static final MaterialProductsConfig MATERIAL_PRODUCTS = new MaterialProductsConfig(BUILDER);
     public static final DimensionConfig DIMENSION_CONFIG = new DimensionConfig(BUILDER);
     public static final ForgeConfigSpec spec = BUILDER.build();
-
     private static boolean loaded = false;
     private static List<Runnable> loadActions = new ArrayList<>();
 
@@ -52,8 +51,7 @@ public class CommonConfig {
             loadActions.add(action);
     }
 
-    public static class FuelConfig
-    {
+    public static class FuelConfig {
         public ForgeConfigSpec.ConfigValue<List<Double>> HEAT;
         public ForgeConfigSpec.ConfigValue<List<Integer>> EFFICIENCY;
         public ForgeConfigSpec.ConfigValue<List<Integer>> DEPLETION;
@@ -89,10 +87,9 @@ public class CommonConfig {
 
     }
 
-    public static class HeatSinkConfig
-    {
-        public static ForgeConfigSpec.ConfigValue<List<Double>> HEAT;
-        public static HashMap<String, ForgeConfigSpec.ConfigValue<List<String>>> PLACEMENT_RULES = new HashMap<>();
+    public static class HeatSinkConfig {
+        public ForgeConfigSpec.ConfigValue<List<Double>> HEAT;
+        public HashMap<String, ForgeConfigSpec.ConfigValue<List<String>>> PLACEMENT_RULES = new HashMap<>();
 
         public HeatSinkConfig(ForgeConfigSpec.Builder builder) {
             builder.comment("Settings for heat sinks").push("heat_sink");
@@ -113,29 +110,24 @@ public class CommonConfig {
                     .comment("^3 means 3 blocks in the corner (shared vertex or edge). possible values 2 and 3")
                    .comment("Default placement rules have all examples")
                     .define("placement_explanations", "");
-            for(String name: FissionBlocks.heatsinks().keySet()) {
+
+           for(String name: FissionBlocks.heatsinks().keySet()) {
                 if(name.contains("empty")) continue;
-                PLACEMENT_RULES.put(name,
-                        builder
-                                .define(name+"_heat_sink_placement_rule", FissionBlocks.initialPlacementRules(name))
-                        );
+                PLACEMENT_RULES.put(name, builder
+                        .define(name, FissionBlocks.initialPlacementRules(name), o -> o instanceof ArrayList));
             }
-
-
             builder.pop();
         }
-
     }
 
-    public static class FissionConfig
-    {
-        public static ForgeConfigSpec.ConfigValue<Integer> MIN_SIZE;
-        public static ForgeConfigSpec.ConfigValue<Integer> MAX_SIZE;
-        public static ForgeConfigSpec.ConfigValue<Double> HEAT_MULTIPLIER;
-        public static ForgeConfigSpec.ConfigValue<Double> HEAT_MULTIPLIER_CAP;
-        public static ForgeConfigSpec.ConfigValue<Double> MODERATOR_FE_MULTIPLIER;
-        public static ForgeConfigSpec.ConfigValue<Double> MODERATOR_HEAT_MULTIPLIER;
-        public static ForgeConfigSpec.ConfigValue<Double> EXPLOSION_RADIUS;
+    public static class FissionConfig {
+        public ForgeConfigSpec.ConfigValue<Integer> MIN_SIZE;
+        public ForgeConfigSpec.ConfigValue<Integer> MAX_SIZE;
+        public ForgeConfigSpec.ConfigValue<Double> HEAT_MULTIPLIER;
+        public ForgeConfigSpec.ConfigValue<Double> HEAT_MULTIPLIER_CAP;
+        public ForgeConfigSpec.ConfigValue<Double> MODERATOR_FE_MULTIPLIER;
+        public ForgeConfigSpec.ConfigValue<Double> MODERATOR_HEAT_MULTIPLIER;
+        public ForgeConfigSpec.ConfigValue<Double> EXPLOSION_RADIUS;
 
         public FissionConfig(ForgeConfigSpec.Builder builder) {
             builder.comment("Settings for Fission Reactor").push("fission_reactor");
@@ -173,8 +165,7 @@ public class CommonConfig {
 
     }
 
-    public static class RadiationConfig
-    {
+    public static class RadiationConfig {
         public ForgeConfigSpec.ConfigValue<Boolean> ENABLED;
         public ForgeConfigSpec.ConfigValue<Integer> SPREAD_GATE;
         public ForgeConfigSpec.ConfigValue<Double> SPREAD_MULTIPLIER;
@@ -210,11 +201,11 @@ public class CommonConfig {
 
             BIOME_RADIATION = builder
                     .comment("Natural radiation per biome: uRad", "Format: biome_id: radiation")
-                    .define("biome_radiation", List.of("wasteland: 2000", "nether_wastes: 500"));
+                    .define("biome_radiation", List.of("wasteland: 2000", "nether_wastes: 500"), o -> o instanceof ArrayList);
 
             DIMENSION_RADIATION = builder
                     .comment("Natural radiation per dimension: uRad", "Format: dim_id: radiation")
-                    .define("dimension_radiation", List.of("-4848: 2000", "-1: 100"));
+                    .define("dimension_radiation", List.of("-4848: 2000", "-1: 100"), o -> o instanceof ArrayList);
 
             RADIATION_UPDATE_INTERVAL = builder
                     .comment("Interval between radiation updates in ticks. 20 ticks = 1 second.", "Bigger interval - less lag, but less accurate radiation spread.")
@@ -272,7 +263,7 @@ public class CommonConfig {
 
             MODS_PRIORITY = builder
                     .comment("Priority of mods to resolve forge tags to itemstack.")
-                    .define("mods_priority", List.of("nuclearcraft", "mekanism", "immersiveengineering", "tconstruct"));
+                    .define("mods_priority", List.of("nuclearcraft", "mekanism", "immersiveengineering", "tconstruct"), o -> o instanceof ArrayList);
 
             builder.pop();
 
@@ -281,12 +272,12 @@ public class CommonConfig {
 
     public static class OresConfig {
 
-        public static ForgeConfigSpec.ConfigValue<List<Integer>> ORE_AMOUNT;
-        public static ForgeConfigSpec.ConfigValue<List<Integer>> ORE_VEIN_SIZE;
-        public static ForgeConfigSpec.ConfigValue<List<List<Integer>>> ORE_DIMENSIONS;
-        public static ForgeConfigSpec.ConfigValue<List<Integer>> ORE_MIN_HEIGHT;
-        public static ForgeConfigSpec.ConfigValue<List<Integer>> ORE_MAX_HEIGHT;
-        public static ForgeConfigSpec.ConfigValue<List<Boolean>> REGISTER_ORE;
+        public ForgeConfigSpec.ConfigValue<List<Integer>> ORE_AMOUNT;
+        public ForgeConfigSpec.ConfigValue<List<Integer>> ORE_VEIN_SIZE;
+        public ForgeConfigSpec.ConfigValue<List<List<Integer>>> ORE_DIMENSIONS;
+        public ForgeConfigSpec.ConfigValue<List<Integer>> ORE_MIN_HEIGHT;
+        public ForgeConfigSpec.ConfigValue<List<Integer>> ORE_MAX_HEIGHT;
+        public ForgeConfigSpec.ConfigValue<List<Boolean>> REGISTER_ORE;
 
         public OresConfig(ForgeConfigSpec.Builder builder) {
             builder.comment("Settings for ore generation").push("ores");
@@ -320,8 +311,8 @@ public class CommonConfig {
     }
 
     public static class DimensionConfig {
-        public final ForgeConfigSpec.ConfigValue<Boolean> registerWasteland;
-        public final ForgeConfigSpec.ConfigValue<Integer> wastelandID;
+        public ForgeConfigSpec.ConfigValue<Boolean> registerWasteland;
+        public ForgeConfigSpec.ConfigValue<Integer> wastelandID;
 
         public DimensionConfig(ForgeConfigSpec.Builder builder) {
             builder.push("Dimension");
@@ -336,11 +327,11 @@ public class CommonConfig {
     }
 
     public static class ProcessorConfig {
-        public static ForgeConfigSpec.ConfigValue<Integer> base_time;
-        public static ForgeConfigSpec.ConfigValue<Integer> base_power;
-        public static ForgeConfigSpec.ConfigValue<List<Boolean>> REGISTER_PROCESSOR;
-        public static ForgeConfigSpec.ConfigValue<List<Integer>> PROCESSOR_POWER;
-        public static ForgeConfigSpec.ConfigValue<List<Integer>> PROCESSOR_TIME;
+        public ForgeConfigSpec.ConfigValue<Integer> base_time;
+        public ForgeConfigSpec.ConfigValue<Integer> base_power;
+        public ForgeConfigSpec.ConfigValue<List<Boolean>> REGISTER_PROCESSOR;
+        public ForgeConfigSpec.ConfigValue<List<Integer>> PROCESSOR_POWER;
+        public ForgeConfigSpec.ConfigValue<List<Integer>> PROCESSOR_TIME;
 
 
         public ProcessorConfig(ForgeConfigSpec.Builder builder) {
@@ -370,9 +361,9 @@ public class CommonConfig {
     }
 
     public static class EnergyGenerationConfig {
-            public static ForgeConfigSpec.ConfigValue<List<Boolean>> REGISTER_SOLAR_PANELS;
-            public static ForgeConfigSpec.ConfigValue<List<Integer>> SOLAR_PANELS_GENERATION;
-            public static ForgeConfigSpec.ConfigValue<Integer> STEAM_TURBINE;
+            public ForgeConfigSpec.ConfigValue<List<Boolean>> REGISTER_SOLAR_PANELS;
+            public ForgeConfigSpec.ConfigValue<List<Integer>> SOLAR_PANELS_GENERATION;
+            public ForgeConfigSpec.ConfigValue<Integer> STEAM_TURBINE;
 
 
             public EnergyGenerationConfig(ForgeConfigSpec.Builder builder) {
@@ -390,8 +381,6 @@ public class CommonConfig {
                         .define("steam_turbine_power_gen", 50);
 
                 builder.pop();
-
             }
         }
-
 }

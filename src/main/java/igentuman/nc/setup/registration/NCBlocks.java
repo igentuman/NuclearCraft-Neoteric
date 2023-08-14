@@ -1,5 +1,6 @@
 package igentuman.nc.setup.registration;
 
+import igentuman.nc.block.fission.FissionBlock;
 import igentuman.nc.content.materials.Materials;
 import igentuman.nc.setup.ModSetup;
 import igentuman.nc.content.materials.Blocks;
@@ -50,8 +51,6 @@ public class NCBlocks {
     public static final Item.Properties ORE_ITEM_PROPERTIES = new Item.Properties().tab(ModSetup.ITEM_GROUP);
     public static final Item.Properties MULTIBLOCK_ITEM_PROPERTIES = new Item.Properties().tab(ModSetup.ITEM_GROUP);
     private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, MODID);
-    public static HashMap<String, RegistryObject<BlockEntityType<? extends BlockEntity>>> MULTIBLOCK_BE = new HashMap<>();
-
     public static final RegistryObject<Block> PORTAL_BLOCK = BLOCKS.register("portal", PortalBlock::new);
 
     public static final RegistryObject<Block> MUSHROOM_BLOCK = BLOCKS.register("glowing_mushroom", () -> new GrassBlock(
@@ -72,15 +71,7 @@ public class NCBlocks {
         BLOCK_ENTITIES.register(bus);
         registerOres();
         registerBlocks();
-        multiblocks();
     }
-
-    private static void multiblocks() {
-
-
-
-    }
-
 
     private static void registerOres() {
         for(String name: Ores.registered().keySet()) {
@@ -113,7 +104,11 @@ public class NCBlocks {
         for(String name: Blocks.registered().keySet()) {
             BLOCK_TAGS.put(name, TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation("forge","storage_blocks/"+name)));
             BLOCK_ITEM_TAGS.put(name, TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("forge", "storage_blocks/"+name)));
-            NC_BLOCKS.put(name, BLOCKS.register(name + "_block", () -> new Block(NC_BLOCKS_PROPERTIES)));
+            if(name.matches("graphite|beryllium")) {
+                NC_BLOCKS.put(name, BLOCKS.register(name + "_block", () -> new FissionBlock(NC_BLOCKS_PROPERTIES)));
+            } else {
+                NC_BLOCKS.put(name, BLOCKS.register(name + "_block", () -> new Block(NC_BLOCKS_PROPERTIES)));
+            }
             NC_BLOCKS_ITEMS.put(name, fromBlock(NC_BLOCKS.get(name)));
             ALL_NC_ITEMS.put(name+"_block", NC_BLOCKS_ITEMS.get(name));
         }

@@ -17,6 +17,8 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import java.lang.reflect.Constructor;
 import java.util.function.Supplier;
 
+import static igentuman.nc.handler.config.CommonConfig.PROCESSOR_CONFIG;
+
 
 public class ProcessorPrefab <M extends NCProcessorContainer, U extends Screen & MenuAccess<M>> {
 
@@ -120,9 +122,9 @@ public class ProcessorPrefab <M extends NCProcessorContainer, U extends Screen &
                 return this;
             }
             int id = Processors.all().keySet().stream().toList().indexOf(name);
-            registered = CommonConfig.ProcessorConfig.REGISTER_PROCESSOR.get().get(id);
-            power = CommonConfig.ProcessorConfig.PROCESSOR_POWER.get().get(id);
-            time = CommonConfig.ProcessorConfig.PROCESSOR_TIME.get().get(id);
+            registered = PROCESSOR_CONFIG.REGISTER_PROCESSOR.get().get(id);
+            power = PROCESSOR_CONFIG.PROCESSOR_POWER.get().get(id);
+            time = PROCESSOR_CONFIG.PROCESSOR_TIME.get().get(id);
             initialized = true;
         }
         return this;

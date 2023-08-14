@@ -5,6 +5,8 @@ import igentuman.nc.handler.config.CommonConfig;
 import igentuman.nc.content.processors.Processors;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
+import static igentuman.nc.handler.config.CommonConfig.ENERGY_GENERATION;
+
 public class SolarPanelPrefab {
     private boolean registered = true;
     private boolean initialized = false;
@@ -31,8 +33,8 @@ public class SolarPanelPrefab {
                 return this;
             }
             int id = Processors.all().keySet().stream().toList().indexOf(name);
-            registered = CommonConfig.EnergyGenerationConfig.REGISTER_SOLAR_PANELS.get().get(id);
-            generation = CommonConfig.EnergyGenerationConfig.SOLAR_PANELS_GENERATION.get().get(id);
+            registered = ENERGY_GENERATION.REGISTER_SOLAR_PANELS.get().get(id);
+            generation = ENERGY_GENERATION.SOLAR_PANELS_GENERATION.get().get(id);
             initialized = true;
         }
         return this;

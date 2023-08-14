@@ -1,9 +1,6 @@
 package igentuman.nc.multiblock.fission;
 
-import igentuman.nc.block.entity.fission.FissionBE;
-import igentuman.nc.block.entity.fission.FissionControllerBE;
-import igentuman.nc.block.entity.fission.FissionFuelCellBE;
-import igentuman.nc.block.entity.fission.FissionHeatSinkBE;
+import igentuman.nc.block.entity.fission.*;
 import igentuman.nc.multiblock.AbstractNCMultiblock;
 import igentuman.nc.setup.multiblocks.*;
 import igentuman.nc.multiblock.ValidationResult;
@@ -21,10 +18,7 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
 
     protected static final List<Block> validOuterBlocks = getBlocksByTagKey(FissionBlocks.CASING_BLOCKS.location().toString());
     protected static final List<Block> validInnerBlocks = getBlocksByTagKey(FissionBlocks.INNER_REACTOR_BLOCKS.location().toString());
-    protected static final List<Block> moderatorBlocks = getBlocksByTagKey(FissionBlocks.MODERATORS_BLOCKS.location().toString());
-    protected static final List<Block> heatSinkBlocks = getBlocksByTagKey(FissionBlocks.HEAT_SINK_BLOCKS.location().toString());
     public HashMap<BlockPos, FissionHeatSinkBE> activeHeatSinks = new HashMap<>();
-
     private List<BlockPos> moderators = new ArrayList<>();
     public List<BlockPos> heatSinks = new ArrayList<>();
     public List<BlockPos> fuelCells = new ArrayList<>();
@@ -97,15 +91,15 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
     }
 
     public static boolean isModerator(BlockPos pos, Level world) {
-        return  moderatorBlocks.contains(Objects.requireNonNull(world).getBlockState(pos).getBlock());
+        return  world.getBlockEntity(pos) instanceof FissionModeratorBE;
     }
 
     protected boolean isHeatSink(BlockPos pos) {
-        return heatSinkBlocks.contains(getLevel().getBlockState(pos).getBlock());
+        return getLevel().getBlockEntity(pos) instanceof FissionHeatSinkBE;
     }
 
     protected boolean isFuelCell(BlockPos pos) {
-        return FissionReactor.MULTI_BLOCKS.get("fission_reactor_solid_fuel_cell").get().equals(getLevel().getBlockState(pos).getBlock());
+        return getLevel().getBlockEntity(pos) instanceof FissionFuelCellBE;
     }
 
     @Override

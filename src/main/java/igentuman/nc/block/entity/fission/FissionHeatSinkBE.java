@@ -25,6 +25,7 @@ public class FissionHeatSinkBE extends FissionBE {
         }
         if(forceCheck) {
             isValid = def.getValidator().isValid(this);
+            refreshCacheFlag = true;
         }
        return isValid() && isAttachedToFuelCell();
     }

@@ -194,6 +194,8 @@ public class HeatSinkBlock extends Block implements EntityBlock {
 
         if(SHIFT_PRESSED) {
             list.add(TextUtils.applyFormat(getPlacementRule(), ChatFormatting.AQUA));
+        } else {
+            list.add(TextUtils.applyFormat(Component.translatable("tooltip.press_shift_for_description"), ChatFormatting.GRAY));
         }
     }
 

@@ -22,6 +22,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.compat.GlobalVars.RECIPE_CLASSES;
+import static igentuman.nc.handler.config.CommonConfig.ENERGY_GENERATION;
 
 public class SteamTurbineBE extends NCProcessorBE<SteamTurbineBE.Recipe> {
     @NBTField
@@ -112,7 +113,7 @@ public class SteamTurbineBE extends NCProcessorBE<SteamTurbineBE.Recipe> {
     }
 
     protected int getEnergyTransferPerTick() {
-        return CommonConfig.EnergyGenerationConfig.STEAM_TURBINE.get();
+        return ENERGY_GENERATION.STEAM_TURBINE.get();
     }
 
     @NothingNullByDefault

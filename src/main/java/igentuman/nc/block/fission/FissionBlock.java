@@ -65,6 +65,9 @@ public class FissionBlock extends Block implements EntityBlock {
         if(asItem().toString().matches(".*reactor_glass|.*reactor_casing.*")) {
             return "fission_casing";
         }
+        if(asItem().toString().matches("graphite.*|beryllium.*")) {
+            return "fission_moderator";
+        }
         if(asItem().toString().contains("fuel_cell")) {
             return "fission_reactor_fuel_cell";
         }

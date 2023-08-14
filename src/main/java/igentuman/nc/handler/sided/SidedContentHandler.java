@@ -4,6 +4,7 @@ import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.recipes.AbstractRecipe;
 import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -140,6 +141,8 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
         }
         return null;
     }
+
+    protected BlockPos tempPos;
 
     public boolean tick() {
         boolean updated = false;

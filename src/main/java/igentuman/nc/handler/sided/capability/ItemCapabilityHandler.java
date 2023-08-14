@@ -2,6 +2,7 @@ package igentuman.nc.handler.sided.capability;
 
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.SlotModePair;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -275,17 +276,19 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
         SlotModePair.SlotMode mode = sideMap.get(relativeDirection.ordinal())[i].getMode();
         return mode == INPUT || mode == PULL;
     }
-
-
     public boolean pushItems(Direction dir) {
-        BlockEntity be = tile.getLevel().getBlockEntity(tile.getBlockPos().relative(dir));
+       return pushItems(dir, false, tile.getBlockPos());
+    }
+
+    public boolean pushItems(Direction dir, boolean forceFlag, BlockPos pos) {
+        BlockEntity be = tile.getLevel().getBlockEntity(pos.relative(dir));
         if(be == null) return false;
         LazyOptional<IItemHandler> cap = be.getCapability(ForgeCapabilities.ITEM_HANDLER, dir.getOpposite());
         if(cap.isPresent()) {
             IItemHandler handler = cap.orElse(null);
             SidedContentHandler.RelativeDirection relativeDirection = SidedContentHandler.RelativeDirection.toRelative(dir, getFacing());
             for(SlotModePair pair : sideMap.get(relativeDirection.ordinal())) {
-                if(pair.getMode() == PUSH) {
+                if(pair.getMode() == PUSH || (forceFlag && pair.getMode() == OUTPUT)) {
                     ItemStack stack = getStackInSlot(pair.getSlot());
                     if(stack.isEmpty()) continue;
                     ItemStack remainder = ItemHandlerHelper.insertItem(handler, stack, false);
@@ -298,16 +301,19 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
         }
         return false;
     }
-
     public boolean pullItems(Direction dir) {
-        BlockEntity be = tile.getLevel().getBlockEntity(tile.getBlockPos().relative(dir));
+       return pushItems(dir, false, tile.getBlockPos());
+    }
+
+    public boolean pullItems(Direction dir, boolean forceFlag, BlockPos pos) {
+        BlockEntity be = tile.getLevel().getBlockEntity(pos.relative(dir));
         if(be == null) return false;
         LazyOptional<IItemHandler> cap = be.getCapability(ForgeCapabilities.ITEM_HANDLER, dir.getOpposite());
         if(cap.isPresent()) {
             IItemHandler handler = cap.orElse(null);
             SidedContentHandler.RelativeDirection relativeDirection = SidedContentHandler.RelativeDirection.toRelative(dir, getFacing());
             for(SlotModePair pair : sideMap.get(relativeDirection.ordinal())) {
-                if(pair.getMode() == PULL) {
+                if(pair.getMode() == PULL || (forceFlag && pair.getMode() == INPUT)) {
                     for(int i = 0; i < handler.getSlots(); i++) {
                         ItemStack stack = handler.getStackInSlot(i);
                         if(stack.isEmpty()) continue;
@@ -349,7 +355,7 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
                 SidedContentHandler.RelativeDirection relativeDirection = SidedContentHandler.RelativeDirection.toRelative(dir, getFacing());
                 for(SlotModePair pair : sideMap.get(relativeDirection.ordinal())) {
                     if(pair.getSlot() != i) continue;
-                    if(pair.getMode() == PUSH) {
+                    if(pair.getMode() == PUSH || pair.getMode() == PUSH_EXCESS) {
                         ItemStack remainder = ItemHandlerHelper.insertItem(handler, outputItem, true);
                         if(remainder.isEmpty()) {
                             return true;

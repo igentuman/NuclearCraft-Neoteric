@@ -5,6 +5,8 @@ import igentuman.nc.content.materials.Ores;
 
 import java.util.List;
 
+import static igentuman.nc.handler.config.CommonConfig.ORE_CONFIG;
+
 public class NCOre {
     public boolean initialized = false;
     public String name;
@@ -51,10 +53,10 @@ public class NCOre {
                 return this;
             }
             int id = Ores.all().keySet().stream().toList().indexOf(name);
-            registered = CommonConfig.OresConfig.REGISTER_ORE.get().get(id);
-            height[0] = CommonConfig.OresConfig.ORE_MIN_HEIGHT.get().get(id);
-            height[1] = CommonConfig.OresConfig.ORE_MAX_HEIGHT.get().get(id);
-            dimensions = CommonConfig.OresConfig.ORE_DIMENSIONS.get().get(id);
+            registered = ORE_CONFIG.REGISTER_ORE.get().get(id);
+            height[0] = ORE_CONFIG.ORE_MIN_HEIGHT.get().get(id);
+            height[1] = ORE_CONFIG.ORE_MAX_HEIGHT.get().get(id);
+            dimensions = ORE_CONFIG.ORE_DIMENSIONS.get().get(id);
             initialized = true;
         }
         return this;

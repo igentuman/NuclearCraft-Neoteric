@@ -426,7 +426,6 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
         contentHandler.toggleSideConfig(slotId, direction);
         setChanged();
         saveSideMapFlag = true;
-
     }
 
     public Direction getFacing() {

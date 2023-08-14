@@ -5,9 +5,9 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class FissionCasingBE extends FissionBE {
-    public static String NAME = "fission_casing";
-    public FissionCasingBE(BlockPos pPos, BlockState pBlockState) {
+public class FissionModeratorBE extends FissionBE {
+    public static String NAME = "fission_moderator";
+    public FissionModeratorBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, NAME);
     }
 

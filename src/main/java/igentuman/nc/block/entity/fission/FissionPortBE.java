@@ -1,10 +1,13 @@
 package igentuman.nc.block.entity.fission;
 
+import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;
+import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
@@ -18,12 +21,40 @@ public class FissionPortBE extends FissionBE {
     public FissionPortBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, NAME);
     }
+    public Direction getFacing() {
+        return getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);
+    }
 
     @Override
     public void tickServer() {
-        if(sendOutPower()) {
+        if(multiblock() == null || controller() == null) return;
+
+        boolean updated = sendOutPower();
+
+        Direction dir = getFacing();
+
+        if(itemHandler() != null) {
+            updated = itemHandler().pushItems(dir, true, worldPosition) || updated;
+            updated = itemHandler().pullItems(dir, true, worldPosition) || updated;
+        }
+        if(fluidHandler() != null) {
+            updated = fluidHandler().pushFluids(dir, true, worldPosition) || updated;
+            updated = fluidHandler().pullFluids(dir, true, worldPosition) || updated;
+        }
+
+        if(updated) {
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
         }
+    }
+
+    protected ItemCapabilityHandler itemHandler()
+    {
+        return controller().contentHandler.itemHandler;
+    }
+
+    protected FluidCapabilityHandler fluidHandler()
+    {
+        return controller().contentHandler.fluidCapability;
     }
 
     @Nonnull
@@ -74,5 +105,4 @@ public class FissionPortBE extends FissionBE {
     private FissionControllerBE controller() {
         return (FissionControllerBE) multiblock().controller().controllerBE();
     }
-
 }

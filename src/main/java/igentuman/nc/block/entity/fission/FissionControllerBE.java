@@ -5,7 +5,6 @@ import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.item.ItemFuel;
 import igentuman.nc.multiblock.fission.FissionReactorMultiblock;
 import igentuman.nc.radiation.data.RadiationManager;
-import igentuman.nc.radiation.data.WorldRadiationProvider;
 import igentuman.nc.recipes.*;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
@@ -40,7 +39,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
-import static igentuman.nc.handler.config.CommonConfig.FissionConfig.*;
+import static igentuman.nc.handler.config.CommonConfig.FISSION_CONFIG;
 
 public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> extends FissionBE  {
 
@@ -200,10 +199,10 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     private void handleMeltdown() {
         if (heat >= getMaxHeat()) {
             BlockPos explosionPos = getBlockPos().relative(getFacing(), 2);
-            if (EXPLOSION_RADIUS.get() == 0) {
+            if (FISSION_CONFIG.EXPLOSION_RADIUS.get() == 0) {
                 getLevel().explode(null, explosionPos.getX(), explosionPos.getY(), explosionPos.getZ(), 2F, true, Explosion.BlockInteraction.NONE);
             } else {
-                getLevel().explode(null, explosionPos.getX(), explosionPos.getY(), explosionPos.getZ(), EXPLOSION_RADIUS.get().floatValue(), true, Explosion.BlockInteraction.DESTROY);
+                getLevel().explode(null, explosionPos.getX(), explosionPos.getY(), explosionPos.getZ(), FISSION_CONFIG.EXPLOSION_RADIUS.get().floatValue(), true, Explosion.BlockInteraction.DESTROY);
             }
             for (BlockPos pos : multiblock.fuelCells) {
                 getLevel().setBlock(pos, NCFluids.getBlock("corium"), 1);
@@ -278,11 +277,11 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     public double heatMultiplier() {
         double h = heatPerTick();
         double c = Math.max(1, coolingPerTick());
-        return Math.log10(h / c) / (1 + Math.exp(h / c * HEAT_MULTIPLIER.get())) + 1;
+        return Math.log10(h / c) / (1 + Math.exp(h / c * FISSION_CONFIG.HEAT_MULTIPLIER.get())) + 1;
     }
 
     public double collectedHeatMultiplier() {
-        return Math.min(HEAT_MULTIPLIER_CAP.get(), Math.pow((heat + getMaxHeat() / 8) / getMaxHeat(), 5) + 0.9999694824);
+        return Math.min(FISSION_CONFIG.HEAT_MULTIPLIER_CAP.get(), Math.pow((heat + getMaxHeat() / 8) / getMaxHeat(), 5) + 0.9999694824);
     }
 
     public double coolingPerTick() {
@@ -314,11 +313,11 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     }
 
     public double moderatorsHeat() {
-        return recipeInfo.heat * moderatorAttacmentsCount * (MODERATOR_HEAT_MULTIPLIER.get() / 100);
+        return recipeInfo.heat * moderatorAttacmentsCount * (FISSION_CONFIG.MODERATOR_HEAT_MULTIPLIER.get() / 100);
     }
 
     public double moderatorsFE() {
-        return recipeInfo.energy * moderatorAttacmentsCount * (MODERATOR_FE_MULTIPLIER.get() / 100);
+        return recipeInfo.energy * moderatorAttacmentsCount * (FISSION_CONFIG.MODERATOR_FE_MULTIPLIER.get() / 100);
     }
 
 

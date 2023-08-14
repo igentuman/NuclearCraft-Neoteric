@@ -3,6 +3,7 @@ package igentuman.nc.handler.sided.capability;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.SlotModePair;
 import igentuman.nc.handler.sided.SlotModePair.*;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -109,14 +110,17 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler implements
     }
 
     public boolean pushFluids(Direction dir) {
-        BlockEntity be = tile.getLevel().getBlockEntity(tile.getBlockPos().relative(dir));
+        return pushFluids(dir, false, tile.getBlockPos());
+    }
+    public boolean pushFluids(Direction dir, boolean forceFlag, BlockPos pos) {
+        BlockEntity be = tile.getLevel().getBlockEntity(pos.relative(dir));
         if(be == null) return false;
         LazyOptional<IFluidHandler> cap = be.getCapability(ForgeCapabilities.FLUID_HANDLER, dir.getOpposite());
         if(cap.isPresent()) {
             IFluidHandler handler = cap.orElse(null);
             SidedContentHandler.RelativeDirection relativeDirection = SidedContentHandler.RelativeDirection.toRelative(dir, getFacing());
             for(SlotModePair pair : sideMap.get(relativeDirection.ordinal())) {
-                if(pair.getMode() == SlotMode.PUSH) {
+                if(pair.getMode() == SlotMode.PUSH || forceFlag) {
                     FluidTank tank = tanks.get(pair.getSlot());
                     if(tank.getFluidAmount() > 0) {
                         int amount = handler.fill(tank.getFluid(), IFluidHandler.FluidAction.EXECUTE);
@@ -130,14 +134,18 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler implements
     }
 
     public boolean pullFluids(Direction dir) {
-        BlockEntity be = tile.getLevel().getBlockEntity(tile.getBlockPos().relative(dir));
+        return pullFluids(dir, false, tile.getBlockPos());
+    }
+
+    public boolean pullFluids(Direction dir, boolean forceFlag, BlockPos pos) {
+        BlockEntity be = tile.getLevel().getBlockEntity(pos.relative(dir));
         if(be == null) return false;
         LazyOptional<IFluidHandler> cap = be.getCapability(ForgeCapabilities.FLUID_HANDLER, dir.getOpposite());
         if(cap.isPresent()) {
             IFluidHandler handler = cap.orElse(null);
             SidedContentHandler.RelativeDirection relativeDirection = SidedContentHandler.RelativeDirection.toRelative(dir, getFacing());
             for(SlotModePair pair : sideMap.get(relativeDirection.ordinal())) {
-                if(pair.getMode() == SlotMode.PULL) {
+                if(pair.getMode() == SlotMode.PULL || forceFlag) {
                     FluidTank tank = tanks.get(pair.getSlot());
                     if(tank.getFluidAmount() < tank.getCapacity()) {
                         int amount = tank.fill(handler.drain(tank.getCapacity() - tank.getFluidAmount(), IFluidHandler.FluidAction.EXECUTE), IFluidHandler.FluidAction.EXECUTE);

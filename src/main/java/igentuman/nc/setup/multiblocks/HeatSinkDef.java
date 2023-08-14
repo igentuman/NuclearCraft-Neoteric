@@ -2,6 +2,7 @@ package igentuman.nc.setup.multiblocks;
 
 import igentuman.nc.block.entity.fission.FissionHeatSinkBE;
 import igentuman.nc.handler.config.CommonConfig;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
@@ -10,6 +11,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 
 import java.util.ArrayList;
@@ -21,7 +23,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import static igentuman.nc.NuclearCraft.MODID;
-import static igentuman.nc.handler.config.CommonConfig.HeatSinkConfig.PLACEMENT_RULES;
+import static igentuman.nc.handler.config.CommonConfig.HEAT_SINK_CONFIG;
 
 public class HeatSinkDef {
     public double heat = 0;
@@ -30,8 +32,8 @@ public class HeatSinkDef {
 
     public Validator getValidator() {
         if(validator == null) {
-            rules = PLACEMENT_RULES.get(name).get()
-                    .toArray(new String[PLACEMENT_RULES.get(name).get().size()]);
+            rules = HEAT_SINK_CONFIG.PLACEMENT_RULES.get(name).get()
+                    .toArray(new String[ HEAT_SINK_CONFIG.PLACEMENT_RULES.get(name).get().size()]);
             initCondition(rules);
         }
         return validator;
@@ -129,7 +131,7 @@ public class HeatSinkDef {
         if(!initialized) {
             initialized = true;
             int id = FissionBlocks.heatsinks.keySet().stream().toList().indexOf(name);
-            heat = CommonConfig.HeatSinkConfig.HEAT.get().get(id);
+            heat =  HEAT_SINK_CONFIG.HEAT.get().get(id);
         }
         return this;
     }
@@ -171,28 +173,29 @@ public class HeatSinkDef {
                     return false;
                 }
             }
-            return result ;
+            return result;
         }
 
         private boolean inCorner(int qty, List<Block> blocks) {
-
-            int initial = blocks.contains(Objects.requireNonNull(be.getLevel()).getBlockState(be.getBlockPos().above(1)).getBlock()) ? 1 : 0;
-            initial = blocks.contains(Objects.requireNonNull(be.getLevel()).getBlockState(be.getBlockPos().below(1)).getBlock()) ? 1 : initial;
-            int counter = 0;
+            BlockPos pos = be.getBlockPos();
+            Level level = Objects.requireNonNull(be.getLevel());
+            int initial = blocks.contains(level.getBlockState(pos.above(1)).getBlock()) ? 1 : 0;
+            initial = blocks.contains(level.getBlockState(pos.below(1)).getBlock()) ? 1 : initial;
+            int[] matches = new int[4];
             int i = 0;
-            for (Direction dir: Direction.values()) {
-                if(dir.getAxis().isVertical()) continue;
+            for (Direction dir: List.of(Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST)) {
+                if(blocks.contains(level.getBlockState(pos.relative(dir)).getBlock())) {
+                    if(1+initial >= qty) return true;
+                    matches[i] = 1;
+                }
                 i++;
-                if(blocks.contains(Objects.requireNonNull(be.getLevel()).getBlockState(be.getBlockPos().relative(dir)).getBlock())) {
-                    counter++;
-                    if(counter+initial >= qty) return true;
-                }
-                if(i == 2) {
-                    i = 0;
-                    counter = 0;
-                }
             }
-            return counter+initial >= qty;
+            for(int k = 0; k < 4; k++) {
+                int next = k+1;
+                if(next > 3) next = 0;
+                if(matches[k] + matches[next] + initial >= qty) return true;
+            }
+            return false;
         }
 
         private boolean isExact(int s, List<Block> blocks) {

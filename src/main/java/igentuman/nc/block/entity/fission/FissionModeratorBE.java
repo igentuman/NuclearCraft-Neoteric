@@ -1,8 +1,6 @@
 package igentuman.nc.block.entity.fission;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class FissionModeratorBE extends FissionBE {
@@ -16,20 +14,6 @@ public class FissionModeratorBE extends FissionBE {
 
     @Override
     public boolean isAttachedToFuelCell() {
-        if(refreshCacheFlag || validationRuns < 2) {
-            validationRuns++;
-            if(refreshCacheFlag) {
-                attachedToFuelCell = false;
-                validationRuns = 0;
-            }
-            for (Direction dir : Direction.values()) {
-                BlockEntity be = getLevel().getBlockEntity(getBlockPos().relative(dir));
-                if (be instanceof FissionFuelCellBE) {
-                    attachedToFuelCell = true;
-                    break;
-                }
-            }
-        }
-        return attachedToFuelCell;
+        return isDirectlyAttachedToFuelCell(worldPosition);
     }
 }

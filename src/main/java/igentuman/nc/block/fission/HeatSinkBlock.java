@@ -111,7 +111,7 @@ public class HeatSinkBlock extends Block implements EntityBlock {
     private List<String> getBlockNames(String rawLine) {
 
         List<String> names = new ArrayList<>();
-        String[] conditionParts = rawLine.split("=|-|>|<\\^");
+        String[] conditionParts = rawLine.split("=|-|>|<|\\^");
         String[] blocks = conditionParts[0].split("\\|");
 
         for(String code: blocks) {
@@ -126,6 +126,8 @@ public class HeatSinkBlock extends Block implements EntityBlock {
         }
         return names;
     }
+
+
 
     private void initParams() {
         if(this.asItem().equals(Items.AIR)) return;

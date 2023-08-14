@@ -1,6 +1,8 @@
 package igentuman.nc.setup.multiblocks;
 
+import igentuman.nc.block.entity.fission.FissionBE;
 import igentuman.nc.block.entity.fission.FissionHeatSinkBE;
+import igentuman.nc.block.entity.fission.FissionModeratorBE;
 import igentuman.nc.handler.config.CommonConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -13,6 +15,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,6 +27,7 @@ import java.util.stream.Stream;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.handler.config.CommonConfig.HEAT_SINK_CONFIG;
+import static igentuman.nc.setup.multiblocks.FissionReactor.MULTI_BLOCKS;
 
 public class HeatSinkDef {
     public double heat = 0;
@@ -176,6 +180,17 @@ public class HeatSinkDef {
             return result;
         }
 
+        public boolean validateFuelCellAttachment(BlockPos pos)
+        {
+            BlockEntity testBe = be.getLevel().getBlockEntity(pos);
+            if(testBe instanceof FissionBE) {
+                if(!((FissionBE)testBe).isAttachedToFuelCell()) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
         private boolean inCorner(int qty, List<Block> blocks) {
             BlockPos pos = be.getBlockPos();
             Level level = Objects.requireNonNull(be.getLevel());
@@ -202,6 +217,9 @@ public class HeatSinkDef {
             int counter = 0;
             for (Direction dir: Direction.values()) {
                 if(blocks.contains(Objects.requireNonNull(be.getLevel()).getBlockState(be.getBlockPos().relative(dir)).getBlock())) {
+                    if(!validateFuelCellAttachment(be.getBlockPos().relative(dir))) {
+                        continue;
+                    }
                     counter++;
                     if(counter > s) return false;
                 }
@@ -213,7 +231,9 @@ public class HeatSinkDef {
             for (Direction dir: Direction.values()) {
                 if(
                         blocks.contains(Objects.requireNonNull(be.getLevel()).getBlockState(be.getBlockPos().relative(dir)).getBlock()) &&
-                                blocks.contains(Objects.requireNonNull(be.getLevel()).getBlockState(be.getBlockPos().relative(dir.getOpposite())).getBlock())
+                                blocks.contains(Objects.requireNonNull(be.getLevel()).getBlockState(be.getBlockPos().relative(dir.getOpposite())).getBlock()) &&
+                                validateFuelCellAttachment(be.getBlockPos().relative(dir)) &&
+                                validateFuelCellAttachment(be.getBlockPos().relative(dir.getOpposite()))
                 ) {
                     return true;
                 }
@@ -225,6 +245,9 @@ public class HeatSinkDef {
             int counter = 0;
             for (Direction dir: Direction.values()) {
                 if(blocks.contains(Objects.requireNonNull(be.getLevel()).getBlockState(be.getBlockPos().relative(dir)).getBlock())) {
+                    if(!validateFuelCellAttachment(be.getBlockPos().relative(dir))) {
+                        continue;
+                    }
                     counter++;
                     if(counter >= s) return false;
                 }
@@ -236,6 +259,9 @@ public class HeatSinkDef {
             int counter = 0;
             for (Direction dir: Direction.values()) {
                 if(blocks.contains(Objects.requireNonNull(be.getLevel()).getBlockState(be.getBlockPos().relative(dir)).getBlock())) {
+                    if(!validateFuelCellAttachment(be.getBlockPos().relative(dir))) {
+                        continue;
+                    }
                     counter++;
                     if(counter >= s) return true;
                 }
@@ -269,6 +295,13 @@ public class HeatSinkDef {
             return blocks;
         }
 
+        public boolean hasToTouchFuelCell() {
+            for(List<Block> blockList: blocks().values()) {
+                if(blockList.contains(MULTI_BLOCKS.get("fission_reactor_solid_fuel_cell").get())) {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
-
 }

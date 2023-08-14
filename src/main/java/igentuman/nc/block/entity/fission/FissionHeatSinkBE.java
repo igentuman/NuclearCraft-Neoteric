@@ -53,6 +53,7 @@ public class FissionHeatSinkBE extends FissionBE {
     public void setHeatSinkDef(HeatSinkDef def) {
         this.def = def;
         this.heat = def.getHeat();
+        hasToTouchFuelCell = def.getValidator().hasToTouchFuelCell();
     }
 
     public double getHeat() {
@@ -60,5 +61,14 @@ public class FissionHeatSinkBE extends FissionBE {
             heat = def.getHeat();
         }
         return heat;
+    }
+
+    @Override
+    public boolean isDirectlyAttachedToFuelCell(BlockPos ignoredPos) {
+        if(def == null) return super.isDirectlyAttachedToFuelCell(ignoredPos);
+        if(def.getValidator().hasToTouchFuelCell()) {
+            return super.isDirectlyAttachedToFuelCell(ignoredPos);
+        }
+        return isAttachedToFuelCell();
     }
 }

@@ -16,20 +16,6 @@ public class FissionCasingBE extends FissionBE {
 
     @Override
     public boolean isAttachedToFuelCell() {
-        if(refreshCacheFlag || validationRuns < 2) {
-            validationRuns++;
-            if(refreshCacheFlag) {
-                attachedToFuelCell = false;
-                validationRuns = 0;
-            }
-            for (Direction dir : Direction.values()) {
-                BlockEntity be = getLevel().getBlockEntity(getBlockPos().relative(dir));
-                if (be instanceof FissionFuelCellBE) {
-                    attachedToFuelCell = true;
-                    break;
-                }
-            }
-        }
-        return attachedToFuelCell;
+        return true;//we don't care
     }
 }

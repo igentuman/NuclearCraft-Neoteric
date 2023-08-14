@@ -40,6 +40,8 @@ public class FissionBE extends NuclearCraftBE {
 
     public FissionControllerBE controller;
 
+    public boolean hasToTouchFuelCell = true;
+
     public FissionBE(BlockPos pPos, BlockState pBlockState, String name) {
         super(FissionReactor.MULTIBLOCK_BE.get(name).get(), pPos, pBlockState);
     }
@@ -56,7 +58,23 @@ public class FissionBE extends NuclearCraftBE {
     public void tickServer() {
     }
 
+    public boolean isDirectlyAttachedToFuelCell(BlockPos ignoredPos) {
+        for (Direction dir : Direction.values()) {
+            if(dir.getOpposite().getNormal() == ignoredPos) {
+                continue;
+            }
+            BlockEntity be = getLevel().getBlockEntity(getBlockPos().relative(dir));
+            if (be instanceof FissionFuelCellBE) {
+                return true;
+            }
+        }
+        return false;
+    }
+    public boolean isValidating = false;
     public boolean isAttachedToFuelCell() {
+        if(isValidating) {
+            return attachedToFuelCell;
+        }
         if(refreshCacheFlag || validationRuns < 2) {
             validationRuns++;
             if(refreshCacheFlag) {
@@ -64,13 +82,15 @@ public class FissionBE extends NuclearCraftBE {
                 validationRuns = 0;
             }
             for (Direction dir : Direction.values()) {
-                BlockEntity be = getLevel().getBlockEntity(getBlockPos().relative(dir));
+                BlockPos ps = getBlockPos().relative(dir);
+                BlockEntity be = getLevel().getBlockEntity(ps);
                 if (be instanceof FissionFuelCellBE) {
                     attachedToFuelCell = true;
                     break;
                 }
                 if(be instanceof FissionBE) {
-                    boolean attached = (refreshCacheFlag ? ((FissionBE) be).isAttachedToFuelCell() : ((FissionBE) be).attachedToFuelCell)
+                    isValidating = true;
+                    boolean attached = (refreshCacheFlag ? ((FissionBE) be).isDirectlyAttachedToFuelCell(worldPosition) : ((FissionBE) be).attachedToFuelCell)
                             || attachedToFuelCell;
                     if(attached) {
                         attachedToFuelCell = true;
@@ -79,17 +99,8 @@ public class FissionBE extends NuclearCraftBE {
                 }
             }
         }
+        isValidating = false;
         return attachedToFuelCell;
-    }
-
-    public boolean isModeratorValid(BlockPos pos) {
-        for (Direction dir : Direction.values()) {
-            BlockEntity be = getLevel().getBlockEntity(getBlockPos().relative(dir));
-            if (be instanceof FissionFuelCellBE) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public void onNeighborChange(BlockState state, BlockPos pos, BlockPos neighbor) {

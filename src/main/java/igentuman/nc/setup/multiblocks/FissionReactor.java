@@ -4,6 +4,7 @@ import igentuman.nc.block.entity.fission.*;
 import igentuman.nc.block.fission.*;
 import igentuman.nc.container.FissionControllerContainer;
 import igentuman.nc.setup.ModSetup;
+import igentuman.nc.setup.registration.CreativeTabs;
 import igentuman.nc.setup.registration.NCBlocks;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
@@ -34,7 +35,7 @@ import static igentuman.nc.setup.multiblocks.FissionBlocks.REACTOR_BLOCKS_PROPER
 import static igentuman.nc.setup.registration.NCItems.ALL_NC_ITEMS;
 
 public class FissionReactor {
-    public static final Item.Properties MULTIBLOCK_ITEM_PROPERTIES = new Item.Properties().tab(ModSetup.ITEM_GROUP);
+    public static final Item.Properties MULTIBLOCK_ITEM_PROPERTIES = new Item.Properties().tab(CreativeTabs.FISSION_REACTOR);
     private static final DeferredRegister<MenuType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.MENU_TYPES, MODID);
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
     private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, MODID);

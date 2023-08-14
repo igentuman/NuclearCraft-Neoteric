@@ -14,10 +14,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.BucketItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
@@ -45,7 +42,6 @@ import java.util.function.Function;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
-import static igentuman.nc.setup.ModSetup.ITEM_GROUP;
 
 public class NCFluids {
     public static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(ForgeRegistries.FLUIDS, MODID);
@@ -477,7 +473,7 @@ public class NCFluids {
             return new NCBucketItem(
                     still, new Item.Properties()
                     .stacksTo(1)
-                    .tab(ITEM_GROUP)
+                    .tab(CreativeTabs.NC_ITEMS)
                     .craftRemainder(Items.BUCKET))
             {
                 @Override

@@ -1,5 +1,6 @@
 package igentuman.nc.item;
 
+import igentuman.nc.setup.registration.CreativeTabs;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -10,8 +11,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 
 import javax.annotation.Nonnull;
-
-import static igentuman.nc.setup.ModSetup.ITEM_GROUP;
 
 public class NCBaseItem extends Item
 {
@@ -25,7 +24,7 @@ public class NCBaseItem extends Item
 
 	public NCBaseItem(Properties props)
 	{
-		this(props, ITEM_GROUP);
+		this(props, CreativeTabs.NC_ITEMS);
 	}
 
 	public NCBaseItem(Properties props, CreativeModeTab group)

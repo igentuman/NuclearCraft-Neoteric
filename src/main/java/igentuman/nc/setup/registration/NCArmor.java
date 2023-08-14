@@ -14,7 +14,7 @@ public class NCArmor {
 
     private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
 
-    public static final Item.Properties ITEM_PROPERTIES = new Item.Properties().tab(ModSetup.ITEM_GROUP);
+    public static final Item.Properties ITEM_PROPERTIES = new Item.Properties().tab(CreativeTabs.NC_ITEMS);
 
     public static final RegistryObject<Item> HAZMAT_MASK = ITEMS.register("hazmat_mask", () -> new Item(ITEM_PROPERTIES));
     public static final RegistryObject<Item> HAZMAT_CHEST = ITEMS.register("hazmat_chest", () -> new Item(ITEM_PROPERTIES));

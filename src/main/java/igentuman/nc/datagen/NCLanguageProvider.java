@@ -8,7 +8,6 @@ import net.minecraftforge.common.data.LanguageProvider;
 import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
-import static igentuman.nc.setup.ModSetup.TAB_NAME;
 import static igentuman.nc.setup.registration.NCItems.NC_INGOTS;
 import static igentuman.nc.util.TextUtils.convertToName;
 
@@ -20,7 +19,9 @@ public class NCLanguageProvider extends LanguageProvider {
 
     @Override
     protected void addTranslations() {
-        add("itemGroup." + TAB_NAME, "NuclearCraft");
+        add("itemGroup." + MODID+"_items", "NuclearCraft Items");
+        add("itemGroup." + MODID+"_blocks", "NuclearCraft Blocks");
+        add("itemGroup." + MODID+"_fission_reactor", "NuclearCraft Fission Reactor");
         ores();
         ingots();
         plates();

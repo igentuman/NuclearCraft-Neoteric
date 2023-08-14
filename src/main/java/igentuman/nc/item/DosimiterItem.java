@@ -4,6 +4,7 @@ import igentuman.nc.radiation.data.PlayerRadiation;
 import igentuman.nc.radiation.data.PlayerRadiationProvider;
 import igentuman.nc.radiation.data.RadiationManager;
 import igentuman.nc.radiation.data.WorldRadiation;
+import igentuman.nc.setup.registration.CreativeTabs;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -16,13 +17,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-import static igentuman.nc.setup.ModSetup.ITEM_GROUP;
-
 public class DosimiterItem extends Item
 {
 	public DosimiterItem(Properties props)
 	{
-		this(props, ITEM_GROUP);
+		this(props, CreativeTabs.NC_ITEMS);
 	}
 
 	public DosimiterItem(Properties props, CreativeModeTab group)

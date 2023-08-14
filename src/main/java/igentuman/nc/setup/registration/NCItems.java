@@ -46,7 +46,7 @@ public class NCItems {
       public static HashMap<String, TagKey<Item>> PLATES_TAG = new HashMap<>();
       public static HashMap<String, TagKey<Item>> DUSTS_TAG = new HashMap<>();
 
-    public static final Item.Properties ITEM_PROPERTIES = new Item.Properties().tab(ModSetup.ITEM_GROUP);
+    public static final Item.Properties ITEM_PROPERTIES = new Item.Properties().tab(CreativeTabs.NC_ITEMS);
     public static void init() {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         ITEMS.register(bus);

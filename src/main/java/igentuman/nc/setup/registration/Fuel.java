@@ -28,7 +28,7 @@ public class Fuel {
     public static TagKey<Item> NC_DEPLETED_FUEL_TAG = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(MODID, "reactor_fuel"));
     public static TagKey<Item> NC_FUELS_TAG = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(MODID, "reactor_fuel"));
 
-    public static final Item.Properties ITEM_PROPERTIES = new Item.Properties().tab(ModSetup.ITEM_GROUP);
+    public static final Item.Properties ITEM_PROPERTIES = new Item.Properties().tab(CreativeTabs.FISSION_REACTOR);
 
 
     public static HashMap<List<String>, RegistryObject<Item>> NC_FUEL = new HashMap<>();

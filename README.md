@@ -11,24 +11,17 @@ This is a re-creation of old but gold NuclearCraft on a modern MC version
 - [x] Solar Panels
 - [x] Processors Sided Content handling
 - [x] Fission Reactor
-- [ ] Wasteland Biome
-- [ ] Wasteland Dimension
-- [ ] Radiation
-- [ ] Pipes
+- [x] Radiation
 - [ ] Energy Blocks
 - [ ] Crafttweaker Support
 - [x] JEI Support
-- [ ] Fusion Reactor
 - [ ] Steam Turbine
 - [ ] Steam Mode for reactors
-- [ ] Heat Exchanger
 - [ ] In Situ Leaching
-- [ ] Custom Villager
-- [ ] Entities
 - [ ] Computers Support
 - [ ] Custom blocks like Cobblestoen Generator
-- [ ] Custom items like Geiger Counter
-- [ ] Particle API
+- [x] Custom items like Geiger Counter
+
 
 # I WISH I COULD TRY
 ### Go to Actions Tab and download the latest artifact
@@ -38,6 +31,17 @@ This is a re-creation of old but gold NuclearCraft on a modern MC version
 ### Beta when first wave of bugs are fixed
 ### Release when second wave of bugs are fixed
 
+# Next version feature set
+- [ ] Particle API
+- [ ] Heat Exchanger
+- [ ] MSR
+- [ ] Fusion Reactor
+- [ ] Custom Villager
+- [ ] Entities
+- [ ] Wasteland Biome
+- [ ] Wasteland Dimension
+- [ ] Pipes
+- 
 # Future plans
 - [ ] Quantum Transformer "what a heck is that?"
 - [ ] Pipes nesting and color mode
@@ -46,5 +50,6 @@ This is a re-creation of old but gold NuclearCraft on a modern MC version
 - [ ] Performance optimization
 - [ ] Patchouli Guidebook
 
+- 
 # CREDITS
 tomdodd4598 - For the original mod

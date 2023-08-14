@@ -5,6 +5,7 @@ import igentuman.nc.client.gui.fission.FissionControllerScreen;
 import igentuman.nc.handler.event.client.*;
 import igentuman.nc.radiation.client.ClientRadiationData;
 import igentuman.nc.radiation.client.RadiationOverlay;
+import igentuman.nc.radiation.client.WhiteNoiseOverlay;
 import igentuman.nc.setup.multiblocks.FissionReactor;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.setup.registration.NCFluids;
@@ -18,6 +19,7 @@ import net.minecraft.client.renderer.item.ItemPropertyFunction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.api.distmarker.Dist;
@@ -45,7 +47,6 @@ public class ClientSetup {
             for(String name: NCProcessors.PROCESSORS_CONTAINERS.keySet()) {
                 MenuScreens.register(NCProcessors.PROCESSORS_CONTAINERS.get(name).get(), Processors.all().get(name).getScreenConstructor());
             }
-
         });
 
         for(RegistryObject<Fluid> f : NCFluids.FLUIDS.getEntries())
@@ -55,6 +56,7 @@ public class ClientSetup {
         event.enqueueWork(() -> {
             setPropertyOverride(GEIGER_COUNTER.get(), rl("radiation"), (stack, world, entity, seed) -> {
                 if (entity instanceof Player) {
+                    if(!((Player) entity).getInventory().contains(new ItemStack(GEIGER_COUNTER.get()))) return 0;
                     ClientRadiationData.setCurrentChunk(entity.chunkPosition().x, entity.chunkPosition().z);
                     return (int)((float)ClientRadiationData.getCurrentWorldRadiation()/400000);
                 }
@@ -71,6 +73,7 @@ public class ClientSetup {
     @SubscribeEvent
     public static void registerGuiOverlays(RegisterGuiOverlaysEvent event) {
         event.registerAboveAll("radiation_bar", RadiationOverlay.RADIATION_BAR);
+        event.registerAboveAll("white_noise", WhiteNoiseOverlay.WHITE_NOISE);
     }
 
     @SubscribeEvent

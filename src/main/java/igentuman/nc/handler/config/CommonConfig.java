@@ -193,8 +193,8 @@ public class CommonConfig {
                     .define("enabled", true);
 
             SPREAD_MULTIPLIER = builder
-                    .comment("Spread multiplier. How much radiation spreads from chunk to chunk. Bigger values might cause lag.")
-                    .defineInRange("spread_multiplier", 0.3d, 0.01d, 0.9d);
+                    .comment("Spread multiplier. How much radiation spreads from chunk to chunk per simulation. Bigger values might cause lag.")
+                    .defineInRange("spread_multiplier", 0.2d, 0.01d, 0.9d);
 
             SPREAD_GATE = builder
                     .comment("If chunk radiation (uRad) less than this value it won't affect chunks nearby.", "Bigger values - less lag, but less accurate radiation spread.")

@@ -77,7 +77,7 @@ public class WorldRadiation implements IWorldRadiationCapability {
         chunkRadiation.replace(id, radiationData);
         updatedChunks.put(id, radiationData);
         //spread radiation around only if it is greater than 5 mRad
-        if (radiation > RADIATION_CONFIG.SPREAD_MULTIPLIER.get()) {
+        if (radiation > 5000000) {
             spreadAround(x, z, radiation);
         }
     }
@@ -117,7 +117,7 @@ public class WorldRadiation implements IWorldRadiationCapability {
                 if(chunkRadiation.containsKey(id)) {
                     int curRadiation = unpackX(chunkRadiation.get(id));
                     int curTimestamp = unpackY(chunkRadiation.get(id));
-                    if(curRadiation > radiation*RADIATION_CONFIG.SPREAD_MULTIPLIER.get()) {
+                    if(curRadiation > radiation*0.5) {
                         continue;
                     }
                     //if chunk already have radiation we use average value

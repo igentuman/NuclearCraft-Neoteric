@@ -1717,6 +1717,7 @@
   "message.heat_sink.valid8": "This is a perfect fit for our application",
   "message.heat_sink.valid9": "This meets our standards very well",
   "message.nc.geiger_radiation_measure": "Radiation Level: %s",
+  "message.nc.player_radiation_contamination": "Player Radiation Contamination: %s",
   "nc_jei_cat.alloy_smelter": "Alloy Smelter",
   "nc_jei_cat.assembler": "Assembler",
   "nc_jei_cat.centrifuge": "Centrifuge",

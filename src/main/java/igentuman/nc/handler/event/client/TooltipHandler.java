@@ -1,16 +1,10 @@
 package igentuman.nc.handler.event.client;
 
-import igentuman.nc.content.materials.ItemRadiation;
-import igentuman.nc.setup.registration.NCFluids;
+import igentuman.nc.radiation.ItemRadiation;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.color.item.ItemColor;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RegisterColorHandlersEvent;
-import net.minecraftforge.client.model.DynamicFluidContainerModel;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -20,8 +14,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
-import static igentuman.nc.setup.registration.NCFluids.ALL_FLUID_ENTRIES;
-import static igentuman.nc.setup.registration.NCFluids.NC_MATERIALS;
 
 @Mod.EventBusSubscriber(modid = MODID, value = Dist.CLIENT)
 public class TooltipHandler {

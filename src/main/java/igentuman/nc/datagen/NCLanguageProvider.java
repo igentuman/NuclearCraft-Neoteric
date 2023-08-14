@@ -49,7 +49,15 @@ public class NCLanguageProvider extends LanguageProvider {
     }
 
     private void messages() {
+        add("message.nc.player_radiation_contamination", "Player Radiation Contamination: %s");
         add("message.nc.geiger_radiation_measure", "Radiation Level: %s");
+    }
+    private void sounds() {
+        add("sound_event.nuclearcraft.item.geiger_1", "Geiger Counter Ticks Level 1 Intensity");
+        add("sound_event.nuclearcraft.item.geiger_2", "Geiger Counter Ticks Level 2 Intensity");
+        add("sound_event.nuclearcraft.item.geiger_3", "Geiger Counter Ticks Level 3 Intensity");
+        add("sound_event.nuclearcraft.item.geiger_4", "Geiger Counter Ticks Level 4 Intensity");
+        add("sound_event.nuclearcraft.item.geiger_5", "Geiger Counter Ticks Level 5 Intensity");
     }
 
     private void labels() {

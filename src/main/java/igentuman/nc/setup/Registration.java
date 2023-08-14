@@ -1,7 +1,6 @@
 package igentuman.nc.setup;
 
 import com.mojang.serialization.Codec;
-import igentuman.nc.content.materials.ItemRadiation;
 import igentuman.nc.recipes.NcRecipeType;
 import igentuman.nc.setup.multiblocks.FissionReactor;
 import igentuman.nc.setup.recipes.NcRecipeSerializers;
@@ -29,13 +28,9 @@ import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureSet;
 import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraft.world.level.material.Material;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.common.capabilities.CapabilityToken;
 import net.minecraftforge.common.world.BiomeModifier;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;

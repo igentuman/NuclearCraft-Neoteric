@@ -86,7 +86,7 @@ public class RadiationManager extends SavedData {
         return worldRadiation.serializeNBT();
     }
 
-    public void addRadiation(Level level, double value, int x, int z) {
-        worldRadiation.addRadiation(level, value, x, z);
+    public void addRadiation(Level level, double value, int chunkX, int chunkZ) {
+        worldRadiation.addRadiation(level, value, chunkX, chunkZ);
     }
 }

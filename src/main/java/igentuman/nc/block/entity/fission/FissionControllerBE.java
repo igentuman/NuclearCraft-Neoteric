@@ -4,6 +4,8 @@ import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.item.ItemFuel;
 import igentuman.nc.multiblock.fission.FissionReactorMultiblock;
+import igentuman.nc.radiation.data.RadiationManager;
+import igentuman.nc.radiation.data.WorldRadiationProvider;
 import igentuman.nc.recipes.*;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
@@ -207,6 +209,9 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
                 getLevel().setBlock(pos, NCFluids.getBlock("corium"), 1);
             }
             getLevel().setBlock(getBlockPos(), NCFluids.getBlock("corium"), 1);
+
+            //1 mRad per fuel cell
+            RadiationManager.get(getLevel()).addRadiation(getLevel(), 1000000*fuelCellsCount, getBlockPos().getX() / 16, getBlockPos().getZ() / 16);
             setRemoved();
             //at any case if reactor still works we punish player
             //heat = getMaxHeat();

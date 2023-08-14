@@ -1,7 +1,8 @@
 package igentuman.nc.handler;
 
 
-import igentuman.nc.content.materials.ItemRadiation;
+import igentuman.nc.radiation.FluidRadiation;
+import igentuman.nc.radiation.ItemRadiation;
 import igentuman.nc.radiation.data.RadiationEvents;
 import igentuman.nc.radiation.data.RadiationManager;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -11,7 +12,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
@@ -29,6 +29,7 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
@@ -61,6 +62,8 @@ public class CommonWorldTickHandler {
         chunkVersions = null;
     }
 
+    private List<ItemEntity> droppedRadioactiveItems = new LinkedList<>();
+
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onEntitySpawn(EntityJoinLevelEvent event) {
         Entity entity = event.getEntity();
@@ -71,8 +74,20 @@ public class CommonWorldTickHandler {
             }
             double radiation = ItemRadiation.byItem(stack.getItem());
            if(radiation > 0.001) {
-               RadiationManager.get(event.getLevel()).addRadiation(event.getLevel(), radiation, entity.chunkPosition().x, entity.chunkPosition().z);
+               RadiationManager.get(event.getLevel()).addRadiation(event.getLevel(), radiation/5, entity.chunkPosition().x, entity.chunkPosition().z);
+                droppedRadioactiveItems.add((ItemEntity) entity);
            }
+        }
+    }
+
+    @SubscribeEvent
+    public void onFluidPlaced(BlockEvent.FluidPlaceBlockEvent event) {
+        BlockState state = event.getState();
+        if (state != null && !state.isAir()) {
+            double radiation = FluidRadiation.byFluid(state.getFluidState().getType());
+            if(radiation > 0.001) {
+                RadiationManager.get((Level) event.getLevel()).addRadiation((Level) event.getLevel(), radiation/5, event.getLiquidPos().getX()/16, event.getLiquidPos().getZ()/16);
+            }
         }
     }
 
@@ -124,6 +139,20 @@ public class CommonWorldTickHandler {
 
     private void tickEnd(ServerLevel world) {
         if (!world.isClientSide) {
+            int size = droppedRadioactiveItems.size();
+            for(int i = 0; i < size; i++) {
+                ItemEntity entity = droppedRadioactiveItems.get(i);
+                if(entity.isAlive()) {
+                    double radiation = ItemRadiation.byItem(entity.getItem().getItem());
+                    if(radiation > 0.001) {
+                        RadiationManager.get(world).addRadiation(world, radiation/10, entity.chunkPosition().x, entity.chunkPosition().z);
+                    }
+                } else {
+                    droppedRadioactiveItems.remove(i);
+                    i--;
+                    size--;
+                }
+            }
         }
     }
 }

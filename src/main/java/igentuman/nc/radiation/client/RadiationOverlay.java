@@ -25,7 +25,6 @@ public class RadiationOverlay {
         Player pl = NcClient.tryGetClientPlayer();
         if (pl == null) return;
         if(!hasDosimeter(pl)) return;
-        //ClientRadiationData.setCurrentChunk(pl.chunkPosition().x, pl.chunkPosition().z);
         int radiation = ClientRadiationData.getPlayerRadiation();
         String toDisplay = String.valueOf(radiation);
         int x = width / 2;
@@ -35,7 +34,7 @@ public class RadiationOverlay {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, RADIATION_BAR_TEXTURE);
         GuiComponent.blit(poseStack,4, y - 15,0,0,94,11,256,256);
-        int maxRadiationBar = 2000000;
+        int maxRadiationBar = 1000000;
         int barWidth = (int) Math.min(128, radiation * 90 / maxRadiationBar);
         RenderSystem.setShaderTexture(0, RADIATION_BAR_TEXTURE);
         GuiComponent.blit(poseStack,6,y - 13,0,11, barWidth,8,256,256);

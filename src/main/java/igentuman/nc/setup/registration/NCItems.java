@@ -1,6 +1,7 @@
 package igentuman.nc.setup.registration;
 
 import igentuman.nc.content.materials.*;
+import igentuman.nc.item.DosimiterItem;
 import igentuman.nc.setup.ModSetup;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
@@ -112,7 +113,11 @@ public class NCItems {
                 "unsweetened_chocolate"
         );
         for(String name: items) {
-            NC_ITEMS.put(name, ITEMS.register(name, () -> new Item(ITEM_PROPERTIES)));
+            if(name.equals("dosimeter")) {
+                NC_ITEMS.put(name, ITEMS.register(name, () -> new DosimiterItem(ITEM_PROPERTIES)));
+            } else {
+                NC_ITEMS.put(name, ITEMS.register(name, () -> new Item(ITEM_PROPERTIES)));
+            }
             ALL_NC_ITEMS.put(name, NC_ITEMS.get(name));
         }
     }

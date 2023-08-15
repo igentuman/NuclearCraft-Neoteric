@@ -341,6 +341,57 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
                         fluidStack("hydrogen_chloride", 250)
                 ), 0.5D, 0.5D
         );
+
+        add(
+                List.of(
+                        fluidIngredient("gelatin", 72),
+                        fluidIngredient("minecraft:water", 250)
+                ),
+                List.of(
+                        fluidStack("hydrated_gelatin", 250)
+                ), 0.5D, 0.5D
+        );
+
+        add(
+                List.of(
+                        fluidIngredient("hydrated_gelatin", 144),
+                        fluidIngredient("sugar", 72)
+                ),
+                List.of(
+                        fluidStack("marshmallow", 144)
+                ), 1D, 0.5D
+        );
+
+        add(
+                List.of(
+                        fluidIngredient("chocolate_liquor", 72),
+                        fluidIngredient("cocoa_butter", 72)
+                ),
+                List.of(
+                        fluidStack("unsweetened_chocolate", 144)
+                ), 0.5D, 0.5D
+        );
+
+        add(
+                List.of(
+                        fluidIngredient("unsweetened_chocolate", 144),
+                        fluidIngredient("sugar", 72)
+                ),
+                List.of(
+                        fluidStack("dark_chocolate", 144)
+                ), 0.5D, 0.5D
+        );
+
+        add(
+                List.of(
+                        fluidIngredient("dark_chocolate", 144),
+                        fluidIngredient("pasteurized_milk", 250)
+                ),
+                List.of(
+                        fluidStack("milk_chocolate", 288)
+                ), 0.5D, 0.5D
+        );
+
     }
 
     protected static void add(List<FluidStackIngredient> input, List<FluidStack> output, double...modifiers) {

@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:manufactory",
+  "input": [
+    {
+      "item": "minecraft:salmon"
+    }
+  ],
+  "output": [
+    {
+      "count": 2,
+      "item": "nuclearcraft:gelatin"
+    }
+  ],
+  "powerModifier": 0.5,
+  "radiation": 1.0,
+  "timeModifier": 0.5
+}

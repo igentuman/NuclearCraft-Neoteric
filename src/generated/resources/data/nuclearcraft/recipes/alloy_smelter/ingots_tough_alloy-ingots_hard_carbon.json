@@ -1,0 +1,20 @@
+{
+  "type": "nuclearcraft:alloy_smelter",
+  "input": [
+    {
+      "tag": "forge:ingots/tough_alloy"
+    },
+    {
+      "tag": "forge:ingots/hard_carbon"
+    }
+  ],
+  "output": [
+    {
+      "count": 2,
+      "item": "nuclearcraft:extreme_ingot"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

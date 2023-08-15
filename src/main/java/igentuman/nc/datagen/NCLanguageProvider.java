@@ -150,7 +150,7 @@ public class NCLanguageProvider extends LanguageProvider {
 
     private void shielding() {
         for(String name: NCItems.NC_SHIELDING.keySet()) {
-            add(NCItems.NC_SHIELDING.get(name).get(), convertToName(name));
+            add(NCItems.NC_SHIELDING.get(name).get(), convertToName(name)+" Shielding");
         }
     }
 

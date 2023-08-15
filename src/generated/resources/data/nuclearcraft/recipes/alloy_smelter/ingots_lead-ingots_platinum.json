@@ -1,0 +1,21 @@
+{
+  "type": "nuclearcraft:alloy_smelter",
+  "input": [
+    {
+      "count": 3,
+      "tag": "forge:ingots/lead"
+    },
+    {
+      "tag": "forge:ingots/platinum"
+    }
+  ],
+  "output": [
+    {
+      "count": 4,
+      "item": "nuclearcraft:lead_platinum_ingot"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.5
+}

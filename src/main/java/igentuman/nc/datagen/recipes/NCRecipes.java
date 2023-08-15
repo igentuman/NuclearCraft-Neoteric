@@ -1,6 +1,7 @@
 package igentuman.nc.datagen.recipes;
 
 import igentuman.nc.content.materials.Materials;
+import igentuman.nc.recipes.ingredient.NcIngredient;
 import igentuman.nc.setup.multiblocks.FissionBlocks;
 import igentuman.nc.setup.multiblocks.FissionReactor;
 import igentuman.nc.setup.registration.*;
@@ -27,8 +28,6 @@ public class NCRecipes extends RecipeProvider {
         super(generatorIn);
     }
 
-
-
     @Override
     protected void buildCraftingRecipes(Consumer<FinishedRecipe> consumer) {
         materials(consumer);
@@ -43,6 +42,64 @@ public class NCRecipes extends RecipeProvider {
     }
 
     private void items(Consumer<FinishedRecipe> consumer) {
+
+        ShapedRecipeBuilder.shaped(NC_SHIELDING.get("light").get())
+                .pattern("III")
+                .pattern("CCC")
+                .pattern("LLL")
+                .define('I', forgePlate(Materials.iron))
+                .define('C', forgePlate(Materials.graphite))
+                .define('L', forgePlate(Materials.lead))
+                .unlockedBy("item", has(forgePlate(Materials.lead)))
+                .save(consumer, new ResourceLocation(MODID, "light_shielding"));
+
+        ShapedRecipeBuilder.shaped(NC_SHIELDING.get("medium").get())
+                .pattern("BBB")
+                .pattern("RFR")
+                .pattern("PPP")
+                .define('B', NC_PARTS.get("bioplastic").get())
+                .define('F', forgeIngot(Materials.ferroboron))
+                .define('P', NC_PARTS.get("plate_basic").get())
+                .define('R', NC_SHIELDING.get("light").get())
+                .unlockedBy("item", has(NC_SHIELDING.get("light").get()))
+                .save(consumer, new ResourceLocation(MODID, "medium_shielding"));
+
+        ShapedRecipeBuilder.shaped(NC_SHIELDING.get("heavy").get())
+                .pattern("BBB")
+                .pattern("RHR")
+                .pattern("PPP")
+                .define('B', forgePlate(Materials.beryllium))
+                .define('H', forgePlate(Materials.hard_carbon))
+                .define('P', NC_PARTS.get("plate_du").get())
+                .define('R', NC_SHIELDING.get("medium").get())
+                .unlockedBy("item", has(NC_SHIELDING.get("medium").get()))
+                .save(consumer, new ResourceLocation(MODID, "heavy_shielding"));
+
+        ShapedRecipeBuilder.shaped(NC_SHIELDING.get("dps").get())
+                .pattern("BBB")
+                .pattern("RHR")
+                .pattern("PPP")
+                .define('B', forgeIngot(Materials.lead_platinum))
+                .define('H', forgePlate(Materials.hsla_steel))
+                .define('P', NC_PARTS.get("plate_elite").get())
+                .define('R', NC_SHIELDING.get("heavy").get())
+                .unlockedBy("item", has(NC_SHIELDING.get("heavy").get()))
+                .save(consumer, new ResourceLocation(MODID, "dps_shielding"));
+
+        SimpleCookingRecipeBuilder.smelting(NcIngredient.of(COCOA_BEANS),
+                        ALL_NC_ITEMS.get("roasted_cocoa_beans").get(), 1.0f, 200)
+                .unlockedBy("has_ore", has(COCOA_BEANS))
+                .save(consumer, MODID+"_roasted_cocoa_beans");
+
+        SimpleCookingRecipeBuilder.smoking(NcIngredient.of(COCOA_BEANS),
+                        ALL_NC_ITEMS.get("roasted_cocoa_beans").get(), 1.0f, 100)
+                .unlockedBy("has_ore", has(COCOA_BEANS))
+                .save(consumer, MODID+"_roasted_cocoa_beans_smoked");
+
+        SimpleCookingRecipeBuilder.smelting(NcIngredient.of(MILK_BUCKET),
+                        NCFluids.ALL_FLUID_ENTRIES.get("pasteurized_milk").bucket().get(), 1.0f, 200)
+                .unlockedBy("has_ore", has(MILK_BUCKET))
+                .save(consumer, MODID+"_pasteurized_milk");
 
         ShapedRecipeBuilder.shaped(ALL_NC_ITEMS.get("dosimeter").get())
                 .pattern(" G ")

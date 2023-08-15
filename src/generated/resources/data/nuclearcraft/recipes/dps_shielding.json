@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "tag": "forge:ingots/lead_platinum"
+    },
+    "H": {
+      "tag": "forge:plates/hsla_steel"
+    },
+    "P": {
+      "item": "nuclearcraft:plate_elite"
+    },
+    "R": {
+      "item": "nuclearcraft:heavy"
+    }
+  },
+  "pattern": [
+    "BBB",
+    "RHR",
+    "PPP"
+  ],
+  "result": {
+    "item": "nuclearcraft:dps"
+  }
+}

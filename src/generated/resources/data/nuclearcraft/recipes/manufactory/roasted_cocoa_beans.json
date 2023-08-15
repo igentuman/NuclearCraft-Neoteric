@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:manufactory",
+  "input": [
+    {
+      "item": "nuclearcraft:roasted_cocoa_beans"
+    }
+  ],
+  "output": [
+    {
+      "item": "nuclearcraft:ground_cocoa_nibs"
+    }
+  ],
+  "powerModifier": 0.5,
+  "radiation": 1.0,
+  "timeModifier": 0.5
+}

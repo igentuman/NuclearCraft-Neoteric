@@ -43,5 +43,34 @@ public class AlloySmelterRecipes extends AbstractRecipeProvider {
                 ingotStack(Materials.hsla_steel, 16),8D, 2D);
         doubleToItem(ID, dustIngredient(Materials.molybdenum, 15), dustIngredient(Materials.zirconium),
                 ingotStack(Materials.zirconium_molybdenum, 16),8D, 2D);
+
+        doubleToItem(ID, dustIngredient(Materials.coal, 4), ingotIngredient(Materials.iron),
+                ingotStack(Materials.steel));
+        doubleToItem(ID, ingotIngredient(Materials.copper, 3), ingotIngredient(Materials.tin),
+                ingotStack(Materials.bronze, 4));
+        doubleToItem(ID, ingotIngredient(Materials.boron), ingotIngredient(Materials.steel),
+                ingotStack(Materials.ferroboron, 2));
+        doubleToItem(ID, ingotIngredient(Materials.ferroboron), ingotIngredient(Materials.lithium),
+                ingotStack(Materials.tough_alloy, 2), 1.5d, 1.5d);
+        doubleToItem(ID, ingotIngredient(Materials.magnesium), ingotIngredient(Materials.boron, 2),
+                ingotStack(Materials.magnesium_diboride, 3));
+        doubleToItem(ID, ingotIngredient(Materials.lithium), ingotIngredient(Materials.manganese_dioxide),
+                ingotStack(Materials.lithium_manganese_dioxide, 2), 1.5d);
+        doubleToItem(ID, ingotIngredient(Materials.copper, 3), ingotIngredient(Materials.silver),
+                ingotStack(Materials.shibuichi, 4), 1.5d);
+        doubleToItem(ID, ingotIngredient(Materials.tin, 3), ingotIngredient(Materials.silver),
+                ingotStack(Materials.tin_silver, 4));
+        doubleToItem(ID, ingotIngredient(Materials.lead, 3), ingotIngredient(Materials.platinum),
+                ingotStack(Materials.lead_platinum, 4), 1.5d);
+        doubleToItem(ID, ingotIngredient(Materials.tough_alloy), ingotIngredient(Materials.hard_carbon),
+                ingotStack(Materials.extreme, 2));
+        doubleToItem(ID, ingotIngredient(Materials.boron_arsenide), ingotIngredient(Materials.extreme),
+                ingotStack(Materials.thermoconducting, 2), 1.5d, 1.5d);
+        doubleToItem(ID, ingotIngredient(Materials.zirconium, 7), ingotIngredient(Materials.tin),
+                ingotStack(Materials.zircaloy, 8));
+        doubleToItem(ID, ingotIngredient(Materials.iron, 15), ingotIngredient(Materials.carbon_manganese),
+                ingotStack(Materials.hsla_steel, 16),8D, 2D);
+        doubleToItem(ID, ingotIngredient(Materials.molybdenum, 15), ingotIngredient(Materials.zirconium),
+                ingotStack(Materials.zirconium_molybdenum, 16),8D, 2D);
     }
 }

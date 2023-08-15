@@ -1,0 +1,20 @@
+{
+  "type": "nuclearcraft:alloy_smelter",
+  "input": [
+    {
+      "count": 4,
+      "tag": "forge:dusts/coal"
+    },
+    {
+      "tag": "forge:ingots/iron"
+    }
+  ],
+  "output": [
+    {
+      "item": "nuclearcraft:steel_ingot"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

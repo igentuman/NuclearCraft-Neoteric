@@ -1,5 +1,6 @@
 package igentuman.nc.datagen.recipes.recipes;
 
+import com.google.common.collect.Lists;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.content.materials.Materials;
 import igentuman.nc.setup.registration.NCItems;
@@ -7,6 +8,7 @@ import net.minecraft.data.recipes.FinishedRecipe;
 
 import java.util.function.Consumer;
 
+import static igentuman.nc.setup.registration.NCItems.ALL_NC_ITEMS;
 import static net.minecraft.world.item.Items.*;
 
 public class ManufactoryRecipes extends AbstractRecipeProvider {
@@ -44,5 +46,10 @@ public class ManufactoryRecipes extends AbstractRecipeProvider {
         itemToItem(ingredient(BONE), ingredient(BONE_MEAL, 6));
         itemToItem(ingredient(ROTTEN_FLESH, 4), ingredient(LEATHER), 0.5D, 1D);
         itemToItem(ingredient(SUGAR_CANE, 2), ingredient(NCItems.NC_PARTS.get("bioplastic").get()), 1D, 0.5D);
+
+        itemToItem(ingredient(ALL_NC_ITEMS.get("roasted_cocoa_beans").get()), ingredient(ALL_NC_ITEMS.get("ground_cocoa_nibs").get()), 0.5D, 0.5D);
+        itemToItem(ingredient(PORKCHOP), ingredient(NCItems.NC_ITEMS.get("gelatin").get(), 8), 0.5D, 0.5D);
+        itemToItem(ingredient(SALMON), ingredient(NCItems.NC_ITEMS.get("gelatin").get(), 2), 0.5D, 0.5D);
+        itemToItem(ingredient(COD), ingredient(NCItems.NC_ITEMS.get("gelatin").get(), 2), 0.5D, 0.5D);
     }
 }

@@ -2,6 +2,6 @@
   "parent": "forge:item/bucket",
   "apply_tint": true,
   "flip_gas": false,
-  "fluid": "nuclearcraft:milk",
+  "fluid": "nuclearcraft:pasteurized_milk",
   "loader": "forge:fluid_container"
 }

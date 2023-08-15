@@ -108,6 +108,7 @@ public class NCItems {
         List<String> items = Arrays.asList(
                 "cocoa_butter",
                 "cocoa_solids",
+                "roasted_cocoa_beans",
                 "flour",
                 "gelatin",
                 "ground_cocoa_nibs",

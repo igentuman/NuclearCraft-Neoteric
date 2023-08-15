@@ -59,8 +59,10 @@
     "nuclearcraft:fluid_infuser",
     "nuclearcraft:isotope_separator",
     "nuclearcraft:ingot_former",
+    "nuclearcraft:pump",
     "nuclearcraft:fluid_enricher",
     "nuclearcraft:fuel_reprocessor",
+    "nuclearcraft:gas_scrubber",
     "nuclearcraft:manufactory"
   ]
 }

@@ -155,6 +155,29 @@ public class NCLanguageProvider extends LanguageProvider {
     }
 
     private void tooltips() {
+        add("processor.description.alloy_smelter","Smelts and alloys items.");
+        add("processor.description.centrifuge","Separates fluids into their components.");
+        add("processor.description.fuel_reprocessor","Separates depleted fuel into components.");
+        add("processor.description.melter","Melts items into liquids.");
+        add("processor.description.ingot_former","Forms solid items from molten liquids.");
+        add("processor.description.crystalizer","Grows crystals from solutions.");
+        add("processor.description.chemical_reactor","Mixes fluids and gases together.");
+        add("processor.description.assembler","Machine what assembles items.");
+        add("processor.description.decay_hastener","Accelerates decay speed of radioactive materials.");
+        add("processor.description.electrolyzer","Separates fluids and gases into their components.");
+        add("processor.description.extractor","Extracts liquids from solid items.");
+        add("processor.description.fluid_enricher","Enriches fluids and gases with solid items.");
+        add("processor.description.fluid_infuser","Mixes fluids with items to get new items.");
+        add("processor.description.irradiator","Transform items with the power of Radiative Flux.");
+        add("processor.description.isotope_separator","Splits items into isotopes.");
+        add("processor.description.manufactory","Crushes items into dusts and other materials.");
+        add("processor.description.pressurizer","Compresses items with high pressure.");
+        add("processor.description.rock_crusher","Produces dusts from rocks.");
+        add("processor.description.supercooler","Cools down fluids and gases.");
+        add("processor.description.steam_turbine","Produce energy with power of steam.");
+        add("processor.description.gas_scrubber","Сleansing ventilation.");
+        add("processor.description.pump","Pumps fluids and gasses from environment.");
+
         add("tooltip.nc.radiation","Radiation: %s");
         add("tooltip.press_shift_for_description","Press SHIFT for description");
         add("fuel.heat.descr","Base Heat Gen: %s H/t");

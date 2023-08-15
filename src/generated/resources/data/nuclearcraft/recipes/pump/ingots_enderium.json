@@ -1,0 +1,18 @@
+{
+  "type": "nuclearcraft:pump",
+  "input": [
+    {
+      "count": 32,
+      "tag": "forge:ingots/enderium"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 100,
+      "fluid": "nuclearcraft:helium"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.1,
+  "timeModifier": 1.0
+}

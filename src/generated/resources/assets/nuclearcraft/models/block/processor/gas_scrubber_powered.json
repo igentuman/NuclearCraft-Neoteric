@@ -1,0 +1,6 @@
+{
+  "parent": "nuclearcraft:block/processor/gas_scrubber",
+  "textures": {
+    "north": "nuclearcraft:block/processor/gas_scrubber_powered"
+  }
+}

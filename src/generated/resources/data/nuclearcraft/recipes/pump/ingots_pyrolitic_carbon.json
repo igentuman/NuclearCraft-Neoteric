@@ -1,0 +1,18 @@
+{
+  "type": "nuclearcraft:pump",
+  "input": [
+    {
+      "count": 32,
+      "tag": "forge:ingots/pyrolitic_carbon"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 100,
+      "fluid": "nuclearcraft:nitrogen"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

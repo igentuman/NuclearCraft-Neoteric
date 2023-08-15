@@ -512,16 +512,41 @@ public class NCRecipes extends RecipeProvider {
 
     private void processors(Consumer<FinishedRecipe> consumer)
     {
-/*        ShapedRecipeBuilder.shaped(NCProcessors.PROCESSORS.get("nuclear_furnace").get())
+
+        ShapedRecipeBuilder.shaped(NCProcessors.PROCESSORS.get("pump").get())
+                .pattern("PMP")
+                .pattern("PCP")
+                .pattern("PMP")
+                .define('C', CAULDRON)
+                .define('P', NC_PARTS.get("plate_basic").get())
+                .define('M', NC_PARTS.get("motor").get())
+                .group(MODID+"_machines")
+                .unlockedBy("item", has(CAULDRON))
+                .save(consumer);
+
+        ShapedRecipeBuilder.shaped(NCProcessors.PROCESSORS.get("gas_scrubber").get())
+                .pattern("PGP")
+                .pattern("CEC")
+                .pattern("PMP")
+                .define('C', forgeDust(Materials.borax))
+                .define('P', NC_PARTS.get("plate_elite").get())
+                .define('E', forgeIngot(Materials.extreme))
+                .define('M', NC_PARTS.get("motor").get())
+                .define('G', IRON_BARS)
+                .group(MODID+"_machines")
+                .unlockedBy("item", has(forgeDust(Materials.borax)))
+                .save(consumer);
+
+        ShapedRecipeBuilder.shaped(NCProcessors.PROCESSORS.get("nuclear_furnace").get())
                 .pattern("PTP")
                 .pattern("TFT")
                 .pattern("PTP")
                 .define('T', Tags.Items.INGOTS_IRON)
-                .define('P', NCItems.NC_PLATES.get("basic").get())
-                .define('F', Blocks.FURNACE)
+                .define('P', NC_PARTS.get("plate_basic").get())
+                .define('F', FURNACE)
                 .group(MODID+"_machines")
-                .unlockedBy("item", has(NCItems.NC_PLATES.get("basic").get()))
-                .save(consumer);*/
+                .unlockedBy("item", has(NC_PARTS.get("plate_basic").get()))
+                .save(consumer);
 
         ShapedRecipeBuilder.shaped(NCProcessors.PROCESSORS.get("manufactory").get())
                 .pattern("LRL")

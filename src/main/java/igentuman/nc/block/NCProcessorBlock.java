@@ -3,6 +3,8 @@ package igentuman.nc.block;
 import igentuman.nc.block.entity.processor.NCProcessorBE;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.setup.registration.NCProcessors;
+import igentuman.nc.util.TextUtils;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -13,7 +15,11 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
@@ -33,6 +39,9 @@ import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
+
+import static igentuman.nc.handler.event.client.InputEvents.SHIFT_PRESSED;
 
 public class NCProcessorBlock extends HorizontalDirectionalBlock implements EntityBlock {
     public static final DirectionProperty HORIZONTAL_FACING = FACING;
@@ -91,13 +100,8 @@ public class NCProcessorBlock extends HorizontalDirectionalBlock implements Enti
                             return (AbstractContainerMenu) Processors.all()
                                     .get(processorCode()).getContainerConstructor()
                                     .newInstance(windowId, pos, playerInventory, playerEntity, processorCode());
-                        } catch (InstantiationException e) {
-                            throw new RuntimeException(e);
-                        } catch (IllegalAccessException e) {
-                            throw new RuntimeException(e);
-                        } catch (InvocationTargetException e) {
-                            throw new RuntimeException(e);
-                        }
+                        } catch (InstantiationException | IllegalAccessException | InvocationTargetException ignored) { }
+                        return null;
                     }
                 };
                 NetworkHooks.openScreen((ServerPlayer) player, containerProvider, be.getBlockPos());
@@ -122,6 +126,12 @@ public class NCProcessorBlock extends HorizontalDirectionalBlock implements Enti
                 tile.tickServer();
             }
         };
+    }
+
+    @Override
+    public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag) {
+        if(asItem().toString().contains("empty") || this.asItem().equals(Items.AIR)) return;
+        list.add(TextUtils.applyFormat(Component.translatable("processor.description."+processorCode()), ChatFormatting.AQUA));
     }
 
 }

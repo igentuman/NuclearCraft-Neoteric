@@ -272,6 +272,13 @@ public abstract class AbstractRecipeProvider {
         return ingredient(forgeIngot(name), count);
     }
 
+    public static NcIngredient plateIngredient(String name, int...pCount)
+    {
+        int count = 1;
+        if(pCount.length > 0) count = pCount[0];
+        return ingredient(forgePlate(name), count);
+    }
+
 
     public static NcIngredient gemIngredient(String name, int...pCount)
     {

@@ -13,6 +13,8 @@ public class Processors {
 
     private static HashMap<String, ProcessorPrefab> all = new HashMap<>();
     private static HashMap<String, ProcessorPrefab> registered = new HashMap<>();
+    public static String GAS_SCRUBBER = "gas_scrubber";
+    public static String PUMP = "pump";
     public static String NUCLEAR_FURNACE = "nuclear_furnace";
     public static String MANUFACTORY = "manufactory";
     public static String ALLOY_SMELTER = "alloy_smelter";
@@ -38,6 +40,20 @@ public class Processors {
 
     public static HashMap<String, ProcessorPrefab> all() {
         if(all.isEmpty()) {
+            all.put(GAS_SCRUBBER,
+                    ProcessorBuilder
+                            .make(GAS_SCRUBBER, 1, 0, 1, 0)
+                            .blockEntity(GasScrubberBE::new)
+                            .recipe(GasScrubberBE.Recipe::new)
+                            .build()
+            );
+            all.put(PUMP,
+                    ProcessorBuilder
+                            .make(PUMP, 0, 1, 1, 0)
+                            .blockEntity(PumpBE::new)
+                            .recipe(PumpBE.Recipe::new)
+                            .build()
+            );
             all.put(NUCLEAR_FURNACE,
                     ProcessorBuilder
                             .make(NUCLEAR_FURNACE, 0, 1, 0, 1)

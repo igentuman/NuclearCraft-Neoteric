@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "igentuman.nc.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "nuclearcraft.refmap.json",
+  "mixins": [
+    "MekRadiationManager"
+  ],
+  "client": [
+  ],
+  "minVersion": "0.8"
+}

@@ -175,6 +175,8 @@ public class CommonConfig {
         public ForgeConfigSpec.ConfigValue<List<String>> DIMENSION_RADIATION;
 
         public ForgeConfigSpec.ConfigValue<Integer> RADIATION_UPDATE_INTERVAL;
+        public ForgeConfigSpec.ConfigValue<Boolean> MEKANISM_RADIATION_INTEGRATION;
+
 
         public RadiationConfig(ForgeConfigSpec.Builder builder) {
             builder.comment("Settings for Radiation").push("radiation");
@@ -185,15 +187,15 @@ public class CommonConfig {
 
             SPREAD_MULTIPLIER = builder
                     .comment("Spread multiplier. How much radiation spreads from chunk to chunk per simulation. Bigger values might cause lag.")
-                    .defineInRange("spread_multiplier", 0.2d, 0.01d, 0.9d);
+                    .defineInRange("spread_multiplier", 0.3d, 0.01d, 0.9d);
 
             SPREAD_GATE = builder
                     .comment("If chunk radiation (uRad) less than this value it won't affect chunks nearby.", "Bigger values - less lag, but less accurate radiation spread.")
                     .defineInRange("spread_gate", 5000, 100, 100000);
 
             DECAY_SPEED = builder
-                    .comment("How fast contamination decays (uRad/s).")
-                    .defineInRange("decay_speed", 5, 1, 20);
+                    .comment("How fast contamination decays (pRad/s).")
+                    .defineInRange("decay_speed", 100, 1, 10000);
 
             DECAY_SPEED_FOR_PLAYER = builder
                     .comment("How fast contamination decays in player's body (uRad/s).")
@@ -209,7 +211,14 @@ public class CommonConfig {
 
             RADIATION_UPDATE_INTERVAL = builder
                     .comment("Interval between radiation updates in ticks. 20 ticks = 1 second.", "Bigger interval - less lag, but less accurate radiation spread.")
-                    .defineInRange("update_interval", 100, 20, 1000);
+                    .defineInRange("update_interval", 40, 2, 1000);
+
+            MEKANISM_RADIATION_INTEGRATION = builder
+                    .comment(
+                            "NC radiation sources will generate mekanism radiation and wise-versa.",
+                            "You can disable mekanism radiation, but radiation sources in mekanism still will generate NC radiation.",
+                            "You can disable NC radiation, but NC radiation sources still will generate mekanism radiation.")
+                    .define("mekanism_radiation_integration", true);
 
             builder.pop();
         }

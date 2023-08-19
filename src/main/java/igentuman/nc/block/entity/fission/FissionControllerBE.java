@@ -233,7 +233,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
             getLevel().setBlock(getBlockPos(), NCFluids.getBlock("corium"), 1);
 
             //1 mRad per fuel cell
-            RadiationManager.get(getLevel()).addRadiation(getLevel(), 1000000*fuelCellsCount, getBlockPos().getX() / 16, getBlockPos().getZ() / 16);
+            RadiationManager.get(getLevel()).addRadiation(getLevel(), 1000000*fuelCellsCount, getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
             setRemoved();
             //at any case if reactor still works we punish player
             //heat = getMaxHeat();

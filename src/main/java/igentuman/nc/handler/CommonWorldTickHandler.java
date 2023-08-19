@@ -74,7 +74,7 @@ public class CommonWorldTickHandler {
             }
             double radiation = ItemRadiation.byItem(stack.getItem());
            if(radiation > 0.001) {
-               RadiationManager.get(event.getLevel()).addRadiation(event.getLevel(), stack.getCount()*radiation/5, entity.chunkPosition().x, entity.chunkPosition().z);
+               RadiationManager.get(event.getLevel()).addRadiation(event.getLevel(), stack.getCount()*radiation/5, entity.blockPosition().getX(), entity.blockPosition().getY(), entity.blockPosition().getZ());
                 droppedRadioactiveItems.add((ItemEntity) entity);
            }
         }
@@ -86,7 +86,7 @@ public class CommonWorldTickHandler {
         if (state != null && !state.isAir()) {
             double radiation = FluidRadiation.byFluid(state.getFluidState().getType());
             if(radiation > 0.001) {
-                RadiationManager.get((Level) event.getLevel()).addRadiation((Level) event.getLevel(), radiation/5, event.getLiquidPos().getX()/16, event.getLiquidPos().getZ()/16);
+               // RadiationManager.get((Level) event.getLevel()).addRadiation((Level) event.getLevel(), radiation/5, event.getLiquidPos().getX(), event.getLiquidPos().getY(), event.getLiquidPos().getZ());
             }
         }
     }
@@ -145,7 +145,7 @@ public class CommonWorldTickHandler {
                 if(entity.isAlive()) {
                     double radiation = ItemRadiation.byItem(entity.getItem().getItem());
                     if(radiation > 0.001) {
-                        RadiationManager.get(world).addRadiation(world, radiation/10, entity.chunkPosition().x, entity.chunkPosition().z);
+                       // RadiationManager.get(world).addRadiation(world, radiation/10, entity.blockPosition().getX(), entity.blockPosition().getY(), entity.blockPosition().getZ());
                     }
                 } else {
                     droppedRadioactiveItems.remove(i);

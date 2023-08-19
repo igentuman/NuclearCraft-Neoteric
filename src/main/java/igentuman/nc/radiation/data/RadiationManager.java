@@ -1,13 +1,19 @@
 package igentuman.nc.radiation.data;
 
 import igentuman.nc.NuclearCraft;
+import igentuman.nc.compat.mekanism.MekanismRadiation;
 import igentuman.nc.network.toClient.PacketRadiationData;
+import igentuman.nc.util.ModUtil;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 
@@ -82,11 +88,20 @@ public class RadiationManager extends SavedData {
     }
 
     @Override
-    public CompoundTag save(CompoundTag tag) {
+    public @NotNull CompoundTag save(CompoundTag tag) {
         return worldRadiation.serializeNBT();
     }
-
-    public void addRadiation(Level level, double value, int chunkX, int chunkZ) {
-        worldRadiation.addRadiation(level, value, chunkX, chunkZ);
+    protected int[] ignoredPos;
+    public void addRadiation(Level level, double value, int x, int y, int z) {
+        if(ignoredPos != null && ignoredPos[0] == x && ignoredPos[1] == y && ignoredPos[2] == z) {
+            ignoredPos = null;
+            return;
+        }
+        LevelChunk chunk = level.getChunkAt(new BlockPos(x, y, z));
+        int appliedRadiation = worldRadiation.addRadiation(level, value, chunk.getPos().x, chunk.getPos().z);
+        if(ModUtil.isMekanismLoadeed() && RADIATION_CONFIG.MEKANISM_RADIATION_INTEGRATION.get()) {
+            ignoredPos = new int[]{x, y, z};
+            MekanismRadiation.radiate(x, y, z, appliedRadiation, level);
+        }
     }
 }

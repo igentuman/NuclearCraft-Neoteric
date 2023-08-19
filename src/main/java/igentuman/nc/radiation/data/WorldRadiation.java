@@ -8,7 +8,7 @@ import static igentuman.nc.handler.config.CommonConfig.RADIATION_CONFIG;
 
 public class WorldRadiation implements IWorldRadiationCapability {
 
-    private final double decaySpeed = RADIATION_CONFIG.DECAY_SPEED.get();
+    private final double decaySpeed = ((double) RADIATION_CONFIG.DECAY_SPEED.get())/1000;
     public HashMap<Long, Long> chunkRadiation = new HashMap<>();
     public HashMap<Long, Long> updatedChunks = new HashMap<>();
     public HashMap<Long, Long> newChunks = new HashMap<>();
@@ -66,17 +66,19 @@ public class WorldRadiation implements IWorldRadiationCapability {
         int radiation = unpackX(chunkRadiation.get(id));
         int timestamp = unpackY(chunkRadiation.get(id));
         int curTimestamp = (int) (getServerTime() / 20);
-        radiation -= (int) ((curTimestamp - timestamp) * decaySpeed);
-        //if radiation is less than 10, remove it from the map
-        if (radiation < 1000) {
+        int radiationChange = (int) ((curTimestamp - timestamp) * decaySpeed);
+        if(radiationChange == 0) return;
+        radiation -= radiationChange;
+        //if radiation is less than 100, remove it from the map
+        if (radiation < 100) {
             chunkRadiation.remove(id);//still sending 0 radiation to client, so he will remove it from the map
             updatedChunks.put(id, pack(0, curTimestamp));
             return;
         }
         radiation = Math.min(radiation, 5000000);
-        boolean toSpread = radiation > 500000;
+        boolean toSpread = radiation > 1000;
         if(toSpread) {//if it spreads, then it looses
-            radiation = (int)(0.9 * radiation);
+            radiation = (int)(0.95 * radiation);
         }
         long radiationData = pack(radiation, curTimestamp);
         chunkRadiation.replace(id, radiationData);
@@ -87,15 +89,20 @@ public class WorldRadiation implements IWorldRadiationCapability {
         }
     }
 
-    public void addRadiation(Level level, double radiation, int x, int z)
+    //returns amount of actually added radiation in mRads
+    public int addRadiation(Level level, double radiation, int x, int z)
     {
         this.level = level;
         long id = pack(x, z);
         int curTimestamp = (int) (getServerTime() / 20);
         int newRadiation = (int) (radiation*1000000);
-
+        //if radiation is disabled we still run all radiation events, but not saving data
+        if(!RADIATION_CONFIG.ENABLED.get()) return newRadiation;
         if(chunkRadiation.containsKey(id)) {
             int curRadiation = unpackX(chunkRadiation.get(id));
+            if(curRadiation > newRadiation) {
+                newRadiation = newRadiation/10;
+            }
             newRadiation = curRadiation + newRadiation;
             chunkRadiation.replace(id, pack(newRadiation, curTimestamp));
         }
@@ -105,6 +112,7 @@ public class WorldRadiation implements IWorldRadiationCapability {
         } else {
             newChunks.put(id, pack(newRadiation, curTimestamp));
         }
+        return newRadiation;
     }
 
     private long getServerTime() {

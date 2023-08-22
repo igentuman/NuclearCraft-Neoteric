@@ -1,9 +1,10 @@
 package igentuman.nc.mixin;
 
-import igentuman.nc.handler.config.CommonConfig;
 import mekanism.api.Coord4D;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.radiation.RadiationManager;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.server.ServerLifecycleHooks;
 import org.spongepowered.asm.mixin.Mixin;
@@ -13,6 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import static igentuman.nc.handler.config.CommonConfig.RADIATION_CONFIG;
+import static igentuman.nc.radiation.data.PlayerRadiation.getRadiationShielding;
 
 @Mixin(RadiationManager.class)
 public abstract class MekRadiationManager {
@@ -39,4 +41,13 @@ public abstract class MekRadiationManager {
             callback.cancel();
         }
     }
+
+    @Inject(method = "getRadiationResistance(Lnet/minecraft/world/entity/LivingEntity;)D", at = @At("TAIL"), remap=false)
+    private void getRadiationResistance(LivingEntity entity, CallbackInfoReturnable<Double> callback) {
+        if(entity instanceof Player player) {
+            double shieldingRate = Math.max(0.001, 0.7 - getRadiationShielding(player)/100.0)*10;
+            callback.setReturnValue(callback.getReturnValue()+shieldingRate);
+        }
+    }
+
 }

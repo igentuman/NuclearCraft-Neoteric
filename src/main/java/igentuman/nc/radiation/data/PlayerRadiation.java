@@ -66,7 +66,7 @@ public class PlayerRadiation implements IPlayerRadiationCapability {
         return rad/5;//player is not getting radiation instantly
     }
 
-    public int getRadiationShielding(Entity player)
+    public static int getRadiationShielding(Entity player)
     {
         int shielding = 0;
         for(ItemStack stack: player.getArmorSlots()) {

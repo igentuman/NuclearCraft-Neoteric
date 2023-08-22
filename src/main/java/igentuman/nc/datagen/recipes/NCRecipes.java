@@ -1,9 +1,11 @@
 package igentuman.nc.datagen.recipes;
 
 import igentuman.nc.content.materials.Materials;
+import igentuman.nc.datagen.recipes.builder.SpecialRecipeBuilder;
 import igentuman.nc.recipes.ingredient.NcIngredient;
 import igentuman.nc.setup.multiblocks.FissionBlocks;
 import igentuman.nc.setup.multiblocks.FissionReactor;
+import igentuman.nc.setup.recipes.NcRecipeSerializers;
 import igentuman.nc.setup.registration.*;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.data.DataGenerator;
@@ -27,9 +29,11 @@ public class NCRecipes extends RecipeProvider {
     public NCRecipes(DataGenerator generatorIn) {
         super(generatorIn);
     }
+    public Consumer<FinishedRecipe> consumer;
 
     @Override
     protected void buildCraftingRecipes(Consumer<FinishedRecipe> consumer) {
+        this.consumer = consumer;
         materials(consumer);
         parts(consumer);
         items(consumer);
@@ -39,6 +43,17 @@ public class NCRecipes extends RecipeProvider {
         turbineBlocks(consumer);
         FuelRecipes.generate(consumer);
         CustomRecipes.generate(consumer);
+        SpecialRecipeBuilder.build(consumer, NcRecipeSerializers.SHIELDING);
+    }
+
+    public void smithingRecipe(NcIngredient inputItem, NcIngredient upgradeItem, Item resultItem) {
+        UpgradeRecipeBuilder.smithing(
+                        inputItem,
+                        upgradeItem,
+                        resultItem
+                )
+                    .unlocks("item", has(upgradeItem.getItems()[0].getItem()))
+                    .save(consumer, getItemName(resultItem) +"_"+upgradeItem.getName()+ "_upgrade");
     }
 
     private void items(Consumer<FinishedRecipe> consumer) {

@@ -178,6 +178,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("processor.description.gas_scrubber","Сleansing ventilation.");
         add("processor.description.pump","Pumps fluids and gasses from environment.");
 
+        add("tooltip.nc.rad_shielding","Rad Shielding LVL: %s");
         add("tooltip.nc.radiation","Radiation: %s");
         add("tooltip.press_shift_for_description","Press SHIFT for description");
         add("fuel.heat.descr","Base Heat Gen: %s H/t");

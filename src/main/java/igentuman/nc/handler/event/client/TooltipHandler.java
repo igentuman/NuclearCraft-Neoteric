@@ -1,9 +1,11 @@
 package igentuman.nc.handler.event.client;
 
 import igentuman.nc.radiation.ItemRadiation;
+import igentuman.nc.radiation.ItemShielding;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
@@ -17,12 +19,30 @@ import static igentuman.nc.NuclearCraft.MODID;
 
 @Mod.EventBusSubscriber(modid = MODID, value = Dist.CLIENT)
 public class TooltipHandler {
+    private static ItemTooltipEvent processedEvent;
     public static void register(FMLClientSetupEvent event) {
         MinecraftForge.EVENT_BUS.addListener(TooltipHandler::handle);
     }
     @SubscribeEvent
     public static void handle(ItemTooltipEvent event) {
+        if(event.equals(processedEvent)) return;
+        processedEvent = event;
         Item item = event.getItemStack().getItem();
+        addRadiationLevelTooltip(event, item);
+        addShieldintTooltip(event, event.getItemStack());
+    }
+
+    private static void addShieldintTooltip(ItemTooltipEvent event, ItemStack item) {
+        int shielding = ItemShielding.byItem(item.getItem());
+        if(!item.getOrCreateTag().contains("rad_shielding") &&  shielding == 0) return;
+        ChatFormatting color = ChatFormatting.GOLD;
+        if(item.getOrCreateTag().contains("rad_shielding")) {
+            shielding += item.getOrCreateTag().getInt("rad_shielding");
+        }
+        event.getToolTip().add(Component.translatable("tooltip.nc.rad_shielding", shielding).withStyle(color));
+    }
+
+    private static void addRadiationLevelTooltip(ItemTooltipEvent event, Item item) {
         double radiation = ItemRadiation.byItem(item);
         ChatFormatting color = ChatFormatting.GRAY;
         if(radiation > 0) {
@@ -35,21 +55,8 @@ public class TooltipHandler {
             if(radiation > 0.1) {
                 color = ChatFormatting.RED;
             }
-            //for some reason it runs twice
-            if(radiationTooltipExists(event.getToolTip())) {
-                return;
-            }
             event.getToolTip().add(Component.translatable("tooltip.nc.radiation", format(radiation)).withStyle(color));
         }
-    }
-
-    private static boolean radiationTooltipExists(List<Component> toolTip) {
-        for(Component component: toolTip) {
-            if(component.getString().contains("Rad/s")) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private static String format(Double radiation) {

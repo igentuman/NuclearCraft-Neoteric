@@ -2,6 +2,7 @@ package igentuman.nc.setup.registration;
 
 import igentuman.nc.content.materials.*;
 import igentuman.nc.item.DosimiterItem;
+import igentuman.nc.item.RadShieldingItem;
 import igentuman.nc.setup.ModSetup;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
@@ -136,8 +137,11 @@ public class NCItems {
                 "heavy",
                 "dps"
         );
+        int i = 1;
         for(String name: parts) {
-            NC_SHIELDING.put(name, ITEMS.register(name, () -> new Item(ITEM_PROPERTIES)));
+            int finalI = i;
+            NC_SHIELDING.put(name, ITEMS.register(name, () -> new RadShieldingItem(ITEM_PROPERTIES, finalI)));
+            i+=2;
             ALL_NC_ITEMS.put(name, NC_SHIELDING.get(name));
         }
     }

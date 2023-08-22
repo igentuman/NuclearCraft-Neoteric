@@ -2,6 +2,7 @@ package igentuman.nc.radiation.data;
 
 import igentuman.nc.content.NCRadiationDamageSource;
 import igentuman.nc.radiation.ItemRadiation;
+import igentuman.nc.radiation.ItemShielding;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -65,15 +66,29 @@ public class PlayerRadiation implements IPlayerRadiationCapability {
         return rad/10;//player is not getting radiation instantly
     }
 
+    public int getRadiationShielding(Entity player)
+    {
+        int shielding = 0;
+        for(ItemStack stack: player.getArmorSlots()) {
+            if(stack.isEmpty()) continue;
+            shielding += ItemShielding.byItem(stack.getItem());
+            if(stack.getOrCreateTag().contains("rad_shielding")) {
+                shielding += stack.getOrCreateTag().getInt("rad_shielding");
+            }
+        }
+        return shielding;
+    }
+
     public void updateRadiation(Level level, Entity player) {
         this.level = level;
         WorldRadiation worldRadiation = RadiationManager.get(level).getWorldRadiation();
         int chunkRadiation = worldRadiation.getChunkRadiation(player.chunkPosition().x, player.chunkPosition().z);
+        double shieldingRate = Math.max(0, 1 - getRadiationShielding(player)/70.0);
         if(chunkRadiation > radiation) {
-            radiation = (int) (chunkRadiation * 0.05f + radiation);
+            radiation = (int) ((chunkRadiation * 0.05f) * shieldingRate + radiation);
         }
         if(player instanceof Player) {
-            radiation += getInventoryRadiation((Player) player);
+            radiation += (int) (getInventoryRadiation((Player) player) * shieldingRate);
         }
         radiation -= (int) decaySpeed;
         radiation = Math.min(maxPlayerRadiation, Math.max(0, radiation));

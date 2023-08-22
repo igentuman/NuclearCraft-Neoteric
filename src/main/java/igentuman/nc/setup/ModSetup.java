@@ -2,6 +2,7 @@ package igentuman.nc.setup;
 
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.radiation.data.RadiationEvents;
+import igentuman.nc.recipes.shielding.RadShieldingRecipe;
 import igentuman.nc.world.dimension.Dimensions;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
@@ -20,6 +21,8 @@ public class ModSetup {
         bus.addGenericListener(Entity.class, RadiationEvents::attachPlayerRadiation);
         bus.addGenericListener(Level.class, RadiationEvents::attachWorldRadiation);
         bus.register(NuclearCraft.worldTickHandler);
+        bus.addListener(RadShieldingRecipe::onCrafting);
+
     }
 
     public static void init(FMLCommonSetupEvent event) {

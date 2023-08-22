@@ -1,14 +1,18 @@
 package igentuman.nc.radiation.data;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
+
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static igentuman.nc.handler.config.CommonConfig.RADIATION_CONFIG;
 
 public class WorldRadiation implements IWorldRadiationCapability {
 
     private final double decaySpeed = ((double) RADIATION_CONFIG.DECAY_SPEED.get())/1000;
+    private final double spreadGate = RADIATION_CONFIG.SPREAD_GATE.get();
     public HashMap<Long, Long> chunkRadiation = new HashMap<>();
     public HashMap<Long, Long> updatedChunks = new HashMap<>();
     public HashMap<Long, Long> newChunks = new HashMap<>();
@@ -26,11 +30,11 @@ public class WorldRadiation implements IWorldRadiationCapability {
     @Override
     public int getChunkRadiation(int chunkX, int chunkZ) {
         long id = pack(chunkX, chunkZ);
+        int radiation = naturalRadiation(chunkX, chunkZ);
         if (chunkRadiation.containsKey(id)) {
-            int radiation = unpackX(chunkRadiation.get(id));
-            return radiation;
+            radiation += unpackX(chunkRadiation.get(id));
         }
-        return naturalRadiation(chunkX, chunkZ);
+        return radiation;
     }
 
     public void refresh(Level level)
@@ -76,9 +80,9 @@ public class WorldRadiation implements IWorldRadiationCapability {
             return;
         }
         radiation = Math.min(radiation, 5000000);
-        boolean toSpread = radiation > 1000;
+        boolean toSpread = radiation > spreadGate;
         if(toSpread) {//if it spreads, then it looses
-            radiation = (int)(0.95 * radiation);
+            radiation = (int)(0.99 * radiation);
         }
         long radiationData = pack(radiation, curTimestamp);
         chunkRadiation.replace(id, radiationData);
@@ -182,6 +186,11 @@ public class WorldRadiation implements IWorldRadiationCapability {
     }
 
     public int naturalRadiation(int chunkX, int chunkZ) {
-        return 0;
+        int radiation = RADIATION_CONFIG.NATURAL_RADIATION.get();
+        String biomeId = level.getBiome(new BlockPos(chunkX*16, 0, chunkZ*16))
+                .unwrapKey().get().location().toString();
+        radiation += RADIATION_CONFIG.biomeRadiation(biomeId);
+        radiation += RADIATION_CONFIG.dimensionRadiation(level.dimension().location().toString());
+        return radiation;
     }
 }

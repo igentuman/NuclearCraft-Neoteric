@@ -2,6 +2,7 @@ package igentuman.nc.radiation;
 
 import igentuman.nc.content.fuel.FuelManager;
 import igentuman.nc.content.materials.Materials;
+import igentuman.nc.handler.config.CommonConfig;
 import igentuman.nc.setup.registration.Fuel;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
@@ -14,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.handler.config.CommonConfig.RADIATION_CONFIG;
 import static igentuman.nc.setup.registration.Fuel.NC_FUEL;
 import static net.minecraft.world.item.Items.AIR;
 
@@ -30,6 +32,19 @@ public class ItemRadiation {
         if(!radiationMap.isEmpty()) {
             return;
         }
+        for(String line: RADIATION_CONFIG.ITEM_RADIATION.get()) {
+            String[] split = line.split("\\|");
+            if(split.length != 2) {
+                continue;
+            }
+            Item item = getItemByName(split[0].trim());
+            if(item.equals(AIR)) {
+                continue;
+            }
+            try {
+                radiationMap.put(item, Double.parseDouble(split[1].trim()));
+            } catch (NumberFormatException ignored) {}
+        }
 
         for(String name: Materials.isotopes()) {
             for(String type: List.of("", "_ox", "_ni", "_za", "_tr")) {
@@ -39,7 +54,6 @@ public class ItemRadiation {
 
         for (String name: FuelManager.all().keySet()) {
             for(String subType: FuelManager.all().get(name).keySet()) {
-
                 for(String type: List.of("", "ox", "ni", "za", "tr")) {
                     int isotope1Cnt = 1;
                     int isotope2Cnt = 8;

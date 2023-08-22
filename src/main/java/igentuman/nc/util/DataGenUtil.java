@@ -117,4 +117,8 @@ public class DataGenUtil
 	public static TagKey<Item> forgePlate(String name) {
 		return TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("forge:plates/"+name));
 	}
+
+	public static TagKey<Item> forgeDye(String name) {
+		return TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("forge:dye/"+name));
+	}
 }

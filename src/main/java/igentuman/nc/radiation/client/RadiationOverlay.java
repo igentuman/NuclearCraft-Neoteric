@@ -2,6 +2,7 @@ package igentuman.nc.radiation.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import igentuman.nc.client.NcClient;
+import igentuman.nc.radiation.data.PlayerRadiation;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
@@ -34,7 +35,7 @@ public class RadiationOverlay {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, RADIATION_BAR_TEXTURE);
         GuiComponent.blit(poseStack,4, y - 15,0,0,94,11,256,256);
-        int maxRadiationBar = 1000000;
+        int maxRadiationBar = PlayerRadiation.maxPlayerRadiation;
         int barWidth = (int) Math.min(128, radiation * 90 / maxRadiationBar);
         RenderSystem.setShaderTexture(0, RADIATION_BAR_TEXTURE);
         GuiComponent.blit(poseStack,6,y - 13,0,11, barWidth,8,256,256);

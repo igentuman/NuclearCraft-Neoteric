@@ -27,7 +27,7 @@ public class PlayerRadiation implements IPlayerRadiationCapability {
 
     private int contaminationStage = 0;
 
-    private int maxPlayerRadiation = 1000000;
+    public static int maxPlayerRadiation = 500000000;
 
     public PlayerRadiation() {
     }
@@ -63,7 +63,7 @@ public class PlayerRadiation implements IPlayerRadiationCapability {
         for(ItemStack itemStack: player.getInventory().items) {
             rad += (int) (ItemRadiation.byItem(itemStack.getItem())*1000000);
         }
-        return rad/10;//player is not getting radiation instantly
+        return rad/5;//player is not getting radiation instantly
     }
 
     public int getRadiationShielding(Entity player)
@@ -83,9 +83,9 @@ public class PlayerRadiation implements IPlayerRadiationCapability {
         this.level = level;
         WorldRadiation worldRadiation = RadiationManager.get(level).getWorldRadiation();
         int chunkRadiation = worldRadiation.getChunkRadiation(player.chunkPosition().x, player.chunkPosition().z);
-        double shieldingRate = Math.max(0, 1 - getRadiationShielding(player)/70.0);
+        double shieldingRate = Math.max(0.001, 0.7 - getRadiationShielding(player)/100.0);
         if(chunkRadiation > radiation) {
-            radiation = (int) ((chunkRadiation * 0.05f) * shieldingRate + radiation);
+            radiation = (int) ((chunkRadiation * 0.025f) * shieldingRate + radiation);
         }
         if(player instanceof Player) {
             radiation += (int) (getInventoryRadiation((Player) player) * shieldingRate);

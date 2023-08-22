@@ -2,6 +2,7 @@ package igentuman.nc.handler.event.client;
 
 import igentuman.nc.radiation.ItemRadiation;
 import igentuman.nc.radiation.ItemShielding;
+import igentuman.nc.radiation.RadiationCleaningItems;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
@@ -30,6 +31,14 @@ public class TooltipHandler {
         Item item = event.getItemStack().getItem();
         addRadiationLevelTooltip(event, item);
         addShieldintTooltip(event, event.getItemStack());
+        addRadiationCleaningEffect(event, event.getItemStack());
+    }
+
+    private static void addRadiationCleaningEffect(ItemTooltipEvent event, ItemStack itemStack) {
+        int radiation = RadiationCleaningItems.byItem(itemStack.getItem());
+        if(radiation == 0) return;
+        ChatFormatting color = ChatFormatting.GREEN;
+        event.getToolTip().add(Component.translatable("tooltip.nc.radiation_removal", format(((double)radiation)/1000000000)+"Rad").withStyle(color));
     }
 
     private static void addShieldintTooltip(ItemTooltipEvent event, ItemStack item) {
@@ -55,21 +64,20 @@ public class TooltipHandler {
             if(radiation > 0.1) {
                 color = ChatFormatting.RED;
             }
-            event.getToolTip().add(Component.translatable("tooltip.nc.radiation", format(radiation)).withStyle(color));
+            event.getToolTip().add(Component.translatable("tooltip.nc.radiation", format(radiation)+"Rad/s").withStyle(color));
         }
     }
 
     private static String format(Double radiation) {
         if(radiation >= 1) {
-            return String.format("%.0f", radiation)+" Rad/s";
+            return String.format("%.0f", radiation)+" ";
         }
         if(radiation >= 0.000999) {
-            return String.format("%.0f", radiation*1000)+" mRad/s";
+            return String.format("%.0f", radiation*1000)+" m";
         }
         if(radiation >= 0.000000999) {
-            return String.format("%.0f", radiation*1000000)+" uRad/s";
+            return String.format("%.0f", radiation*1000000)+" u";
         }
-        return String.format("%.0f", radiation*1000000000)+" pRad/s";
+        return String.format("%.0f", radiation*1000000000)+" p";
     }
-
 }

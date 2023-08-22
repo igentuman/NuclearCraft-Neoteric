@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "item": "nuclearcraft:bioplastic"
+    },
+    "L": {
+      "item": "minecraft:leather_chestplate"
+    },
+    "W": {
+      "item": "minecraft:yellow_wool"
+    },
+    "Y": {
+      "item": "nuclearcraft:light"
+    }
+  },
+  "pattern": [
+    "BWB",
+    "YLY",
+    "YYY"
+  ],
+  "result": {
+    "item": "nuclearcraft:hazmat_chest"
+  }
+}

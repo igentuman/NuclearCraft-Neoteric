@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "item": "nuclearcraft:bioplastic"
+    },
+    "I": {
+      "tag": "forge:ingots/steel"
+    },
+    "L": {
+      "item": "minecraft:leather_boots"
+    },
+    "W": {
+      "item": "minecraft:black_wool"
+    },
+    "Y": {
+      "item": "nuclearcraft:light"
+    }
+  },
+  "pattern": [
+    "BIB",
+    "YLY",
+    "YWY"
+  ],
+  "result": {
+    "item": "nuclearcraft:hazmat_boots"
+  }
+}

@@ -20,6 +20,7 @@ import java.util.function.Consumer;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.setup.registration.Fuel.NC_ISOTOPES;
+import static igentuman.nc.setup.registration.NCArmor.*;
 import static igentuman.nc.setup.registration.NCItems.*;
 import static igentuman.nc.setup.registration.NCTools.GEIGER_COUNTER;
 import static net.minecraft.world.item.Items.*;
@@ -57,6 +58,83 @@ public class NCRecipes extends RecipeProvider {
     }
 
     private void items(Consumer<FinishedRecipe> consumer) {
+
+        ShapedRecipeBuilder.shaped(TOUGH_HELMET.get())
+                .pattern("TTT")
+                .pattern("T T")
+                .pattern("   ")
+                .define('T', forgeIngot(Materials.tough_alloy))
+                .unlockedBy("item", has(forgeIngot(Materials.tough_alloy)))
+                .save(consumer, new ResourceLocation(MODID, "tough_helmet"));
+
+        ShapedRecipeBuilder.shaped(TOUGH_BOOTS.get())
+                .pattern("   ")
+                .pattern("T T")
+                .pattern("T T")
+                .define('T', forgeIngot(Materials.tough_alloy))
+                .unlockedBy("item", has(forgeIngot(Materials.tough_alloy)))
+                .save(consumer, new ResourceLocation(MODID, "tough_boots"));
+
+        ShapedRecipeBuilder.shaped(TOUGH_PANTS.get())
+                .pattern("TTT")
+                .pattern("T T")
+                .pattern("T T")
+                .define('T', forgeIngot(Materials.tough_alloy))
+                .unlockedBy("item", has(forgeIngot(Materials.tough_alloy)))
+                .save(consumer, new ResourceLocation(MODID, "tough_pants"));
+
+        ShapedRecipeBuilder.shaped(TOUGH_CHEST.get())
+                .pattern("T T")
+                .pattern("TTT")
+                .pattern("TTT")
+                .define('T', forgeIngot(Materials.tough_alloy))
+                .unlockedBy("item", has(forgeIngot(Materials.tough_alloy)))
+                .save(consumer, new ResourceLocation(MODID, "tough_chest"));
+
+        ShapedRecipeBuilder.shaped(HAZMAT_MASK.get())
+                .pattern("BIB")
+                .pattern("BLB")
+                .pattern("YWY")
+                .define('Y', NC_SHIELDING.get("light").get())
+                .define('W', YELLOW_WOOL)
+                .define('I', forgePlate(Materials.steel))
+                .define('L', LEATHER_HELMET)
+                .define('B', ALL_NC_ITEMS.get("bioplastic").get())
+                .unlockedBy("item", has(NC_SHIELDING.get("light").get()))
+                .save(consumer, new ResourceLocation(MODID, "hazmat_head"));
+
+        ShapedRecipeBuilder.shaped(HAZMAT_CHEST.get())
+                .pattern("BWB")
+                .pattern("YLY")
+                .pattern("YYY")
+                .define('Y', NC_SHIELDING.get("light").get())
+                .define('W', YELLOW_WOOL)
+                .define('L', LEATHER_CHESTPLATE)
+                .define('B', ALL_NC_ITEMS.get("bioplastic").get())
+                .unlockedBy("item", has(NC_SHIELDING.get("light").get()))
+                .save(consumer, new ResourceLocation(MODID, "hazmat_chest"));
+
+        ShapedRecipeBuilder.shaped(HAZMAT_PANTS.get())
+                .pattern("YYY")
+                .pattern("YLY")
+                .pattern("YWY")
+                .define('Y', NC_SHIELDING.get("light").get())
+                .define('W', YELLOW_WOOL)
+                .define('L', LEATHER_LEGGINGS)
+                .unlockedBy("item", has(NC_SHIELDING.get("light").get()))
+                .save(consumer, new ResourceLocation(MODID, "hazmat_pants"));
+
+        ShapedRecipeBuilder.shaped(HAZMAT_BOOTS.get())
+                .pattern("BIB")
+                .pattern("YLY")
+                .pattern("YWY")
+                .define('Y', NC_SHIELDING.get("light").get())
+                .define('W', BLACK_WOOL)
+                .define('L', LEATHER_BOOTS)
+                .define('B', ALL_NC_ITEMS.get("bioplastic").get())
+                .define('I', forgeIngot(Materials.steel))
+                .unlockedBy("item", has(NC_SHIELDING.get("light").get()))
+                .save(consumer, new ResourceLocation(MODID, "hazmat_boots"));
 
         ShapedRecipeBuilder.shaped(NC_SHIELDING.get("light").get())
                 .pattern("III")

@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "L": {
+      "item": "minecraft:leather_leggings"
+    },
+    "W": {
+      "item": "minecraft:yellow_wool"
+    },
+    "Y": {
+      "item": "nuclearcraft:light"
+    }
+  },
+  "pattern": [
+    "YYY",
+    "YLY",
+    "YWY"
+  ],
+  "result": {
+    "item": "nuclearcraft:hazmat_pants"
+  }
+}

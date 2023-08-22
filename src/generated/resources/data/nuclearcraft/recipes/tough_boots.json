@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "T": {
+      "tag": "forge:ingots/tough_alloy"
+    }
+  },
+  "pattern": [
+    "   ",
+    "T T",
+    "T T"
+  ],
+  "result": {
+    "item": "nuclearcraft:tough_boots"
+  }
+}

@@ -28,7 +28,7 @@ jobs:
           ~/.gradle/caches
           ~/.gradle/wrapper
           ./.gradle/loom-cache/remapped-mods
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/build.gradle', '**/gradle-wrapper.properties') }}
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/build.gradle', '**/gradle-wrapper.properties') }}
     - name: Change perms
       run: chmod +x ./gradlew
     - name: Build with Gradle

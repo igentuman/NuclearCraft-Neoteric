@@ -187,6 +187,9 @@ public class WorldRadiation implements IWorldRadiationCapability {
 
     public int naturalRadiation(int chunkX, int chunkZ) {
         int radiation = RADIATION_CONFIG.NATURAL_RADIATION.get();
+        if(level == null) {
+            return radiation;
+        }
         String biomeId = level.getBiome(new BlockPos(chunkX*16, 0, chunkZ*16))
                 .unwrapKey().get().location().toString();
         radiation += RADIATION_CONFIG.biomeRadiation(biomeId);

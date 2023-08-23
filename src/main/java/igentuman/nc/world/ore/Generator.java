@@ -10,6 +10,7 @@ import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 import net.minecraft.world.level.levelgen.placement.*;
+import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -18,7 +19,17 @@ public class Generator {
     @NotNull
     public static PlacedFeature createOregen(String ore) {
             String materialName = ore.replaceAll("_deepslate|_nether|_end", "");
-            OreConfiguration config = new OreConfiguration(OreFeatures.STONE_ORE_REPLACEABLES, NCBlocks.ORE_BLOCKS.get(ore).get().defaultBlockState(), Ores.all().get(materialName).config().veinSize);
+            RuleTest test = OreFeatures.STONE_ORE_REPLACEABLES;
+            if(ore.contains("deepslate")) {
+                test = OreFeatures.DEEPSLATE_ORE_REPLACEABLES;
+            } else if(ore.contains("nether")) {
+                test = OreFeatures.NETHER_ORE_REPLACEABLES;
+            }
+            OreConfiguration config = new OreConfiguration(
+                    test,
+                    NCBlocks.ORE_BLOCKS.get(ore).get().defaultBlockState(),
+                    Ores.all().get(materialName).config().veinSize
+            );
             return createPlacedFeature(new ConfiguredFeature<>(Feature.ORE, config),
                     CountPlacement.of(Ores.all().get(materialName).config().veinAmount),
                     InSquarePlacement.spread(),

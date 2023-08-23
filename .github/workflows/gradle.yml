@@ -32,7 +32,7 @@ jobs:
     - name: Change perms
       run: chmod +x ./gradlew
     - name: Build with Gradle
-      run: ./gradlew clean addMixinsToJar build
+      run: ./gradlew build
     - name: Archive test report
       uses: actions/upload-artifact@v2
       with:

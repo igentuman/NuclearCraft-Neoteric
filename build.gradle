@@ -2,6 +2,8 @@ plugins {
     id 'net.minecraftforge.gradle' version '5.1.+'
     id 'org.parchmentmc.librarian.forgegradle' version '1.+'
     id 'org.spongepowered.mixin' version '0.7.+'
+    id 'com.github.johnrengelman.shadow' version '7.0.0'
+    id 'idea'
 }
 
 version = "${mod_version}"
@@ -20,7 +22,8 @@ minecraft {
             workingDirectory project.file('run')
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
-            property 'mixin.env.disableRefMap', 'true'
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
             property 'forge.enabledGameTestNamespaces', 'nuclearcraft'
 
             mods {
@@ -34,7 +37,8 @@ minecraft {
             workingDirectory project.file('run')
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
-            property 'mixin.env.disableRefMap', 'true'
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
             property 'forge.enabledGameTestNamespaces', 'nuclearcraft'
 
             mods {
@@ -46,7 +50,8 @@ minecraft {
 
         data {
             workingDirectory project.file('run')
-            property 'mixin.env.disableRefMap', 'true'
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
             args '--mod', 'nuclearcraft', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
@@ -64,7 +69,6 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 repositories {
     maven { url "https://minecraft.curseforge.com/api/maven/" }
     maven { url "https://maven.blamejared.com" }
-    maven { url "https://dvs1.progwml6.com/files/maven" }
     maven { url "https://jitpack.io" }
     maven { url "https://www.cursemaven.com" }
     maven { url "https://squiddev.cc/maven/" }
@@ -123,8 +127,48 @@ mixin {
     config "nuclearcraft.mixins.json"
 }
 
-jar.finalizedBy('reobfJar')
+jar.enabled = false
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
 }
+
+configurations {
+    shaded {
+        transitive = false
+    }
+}
+
+shadowJar {
+    finalizedBy 'reobfShadowJar'
+
+    from sourceSets.main.output.classesDirs
+    from sourceSets.main.output.resourcesDir
+
+    manifest {
+        attributes([
+                "Specification-Title"   : "NuclearCraft",
+                "Specification-Vendor"  : "igentuman",
+                "Specification-Version" : "${project.version}",
+                "Implementation-Title"  : "${project.name}",
+                "Implementation-Version": "${project.version}",
+                "Implementation-Vendor" : "igentuman",
+                "MixinConfigs"          : "nuclearcraft.mixins.json"
+        ])
+    }
+
+    configurations = [project.configurations.shaded]
+    archiveClassifier = null
+}
+
+
+
+reobf {
+    shadowJar {}
+}
+
+afterEvaluate {
+    tasks.reobfJar.enabled = false
+}
+
+tasks.assemble.dependsOn reobfShadowJar

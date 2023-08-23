@@ -14,6 +14,7 @@ import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class FissionPortBE extends FissionBE {
@@ -25,11 +26,19 @@ public class FissionPortBE extends FissionBE {
         return getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);
     }
 
+    public boolean hasRedstoneSignal() {
+        return Objects.requireNonNull(getLevel()).hasNeighborSignal(worldPosition);
+    }
     @Override
     public void tickServer() {
         if(multiblock() == null || controller() == null) return;
 
         boolean updated = sendOutPower();
+
+        if(hasRedstoneSignal()) {
+            controller().controllerEnabled = true;
+            return;
+        }
 
         Direction dir = getFacing();
 

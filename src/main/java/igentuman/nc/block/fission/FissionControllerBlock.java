@@ -25,6 +25,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
@@ -33,6 +34,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class FissionControllerBlock extends HorizontalDirectionalBlock implements EntityBlock {
     public static final DirectionProperty HORIZONTAL_FACING = FACING;
+    public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
+
     public FissionControllerBlock() {
         this(Properties.of(Material.METAL)
                 .sound(SoundType.METAL)
@@ -44,6 +47,7 @@ public class FissionControllerBlock extends HorizontalDirectionalBlock implement
         this.registerDefaultState(
                 this.stateDefinition.any()
                         .setValue(HORIZONTAL_FACING, Direction.NORTH)
+                        .setValue(POWERED, false)
         );
     }
     @Override
@@ -53,7 +57,8 @@ public class FissionControllerBlock extends HorizontalDirectionalBlock implement
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(BlockStateProperties.HORIZONTAL_FACING);
+        builder.add(BlockStateProperties.HORIZONTAL_FACING)
+                .add(BlockStateProperties.POWERED);
     }
 
     @Nullable
@@ -93,6 +98,7 @@ public class FissionControllerBlock extends HorizontalDirectionalBlock implement
             return (lvl, pos, blockState, t) -> {
                 if (t instanceof FissionControllerBE tile) {
                     tile.tickClient();
+                    level.setBlock(pos, blockState.setValue(POWERED, tile.powered), 3);
                 }
             };
         }

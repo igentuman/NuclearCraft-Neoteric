@@ -776,7 +776,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('T', TERRACOTTA)
                 .define('N', ANVIL)
                 .define('A', NCItems.NC_PARTS.get("actuator").get())
-                .group("nuclearcraft")
+                .group(MODID)
                 .unlockedBy("has_chassis", has(NCItems.NC_PARTS.get("chassis").get()))
                 .save(consumer);
 
@@ -854,7 +854,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('M', forgeIngot("magnesium"))
                 .define('S', NCItems.NC_PARTS.get("servo").get())
                 .define('B', BUCKET)
-                .group("nuclearcraft")
+                .group(MODID)
                 .unlockedBy("has_item", has(NCItems.NC_PARTS.get("chassis").get()))
                 .save(consumer);
 
@@ -866,7 +866,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('S', NCItems.NC_PARTS.get("coil_copper").get())
                 .define('C', NCItems.NC_PARTS.get("chassis").get())
                 .define('U', CAULDRON)
-                .group("nuclearcraft")
+                .group(MODID)
                 .unlockedBy("has_item", has(NCItems.NC_PARTS.get("chassis").get()))
                 .save(consumer);
 
@@ -879,7 +879,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('C', NCItems.NC_PARTS.get("chassis").get())
                 .define('U', CAULDRON)
                 .define('F', FURNACE)
-                .group("nuclearcraft")
+                .group(MODID)
                 .unlockedBy("has_item", has(NCItems.NC_PARTS.get("chassis").get()))
                 .save(consumer);
 
@@ -889,10 +889,10 @@ public class NCRecipes extends RecipeProvider {
                 .pattern("PFP")
                 .define('P', NCItems.NC_PARTS.get("plate_advanced").get())
                 .define('S', NCItems.NC_PARTS.get("coil_magnesium_diboride").get())
-                .define('C', NCItems.NC_PARTS.get("chassis2").get())
+                .define('C', NCItems.NC_PARTS.get("chassis").get())
                 .define('U', CHEST)
                 .define('F', FURNACE)
-                .group("nuclearcraft")
+                .group(MODID)
                 .unlockedBy("has_item", has(NCItems.NC_PARTS.get("chassis").get()))
                 .save(consumer);
 
@@ -905,7 +905,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('P', NCItems.NC_PARTS.get("plate_advanced").get())
                 .define('C', NCItems.NC_PARTS.get("chassis").get())
                 .define('S', NCItems.NC_PARTS.get("servo").get())
-                .group("nuclearcraft")
+                .group(MODID)
                 .unlockedBy("has_item", has(NCItems.NC_PARTS.get("chassis").get()))
                 .save(consumer);
 
@@ -918,7 +918,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('A', NCItems.NC_PARTS.get("actuator").get())
                 .define('T', forgeIngot("tough_alloy"))
                 .define('M', NCItems.NC_PARTS.get("motor").get())
-                .group("nuclearcraft")
+                .group(MODID)
                 .unlockedBy("has_item", has(NCItems.NC_PARTS.get("motor").get()))
                 .save(consumer);
     }

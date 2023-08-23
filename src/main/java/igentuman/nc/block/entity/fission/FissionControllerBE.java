@@ -40,7 +40,9 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
+import static igentuman.nc.block.fission.FissionControllerBlock.POWERED;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.handler.config.CommonConfig.FISSION_CONFIG;
 
@@ -82,8 +84,11 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     public double heatMultiplier = 0;
     @NBTField
     public double efficiency = 0;
+    @NBTField
+    public boolean powered = false;
     public ValidationResult validationResult = ValidationResult.INCOMPLETE;
     public RecipeInfo recipeInfo = new RecipeInfo();
+    public boolean controllerEnabled = false;
     private Direction facing;
     public RECIPE recipe;
     public HashMap<String, RECIPE> cachedRecipes = new HashMap<>();
@@ -194,24 +199,36 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     }
 
     public void tickServer() {
-        if (!multiblock().isFormed()) {
+        boolean wasPowered = powered;
+        boolean wasFormed = multiblock().isFormed();
+        if (!wasFormed) {
             multiblock().validate();
             isCasingValid = multiblock().isOuterValid();
             isInternalValid = multiblock().isInnerValid();
+            powered = false;
         }
+        boolean changed = wasPowered != powered || wasFormed != multiblock().isFormed();
+
+        controllerEnabled = (hasRedstoneSignal() || controllerEnabled) && multiblock().isFormed();
 
         if (multiblock().isFormed()) {
             height = multiblock().height();
             width = multiblock().width();
             depth = multiblock().depth();
-            contentHandler.tick();
-            processReaction();
-            coolDown();
+            changed = contentHandler.tick() || changed;
+            if(controllerEnabled) {
+                powered = processReaction();
+                changed = powered || changed;
+            }
+            changed = coolDown() || changed;
             handleMeltdown();
             contentHandler.setAllowedInputItems(getAllowedInputItems());
         }
         refreshCacheFlag = !multiblock().isFormed();
-        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+        if(refreshCacheFlag || changed) {
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(POWERED, powered), Block.UPDATE_ALL);
+        }
+        controllerEnabled = false;
     }
 
     private void handleMeltdown() {
@@ -250,9 +267,11 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         }
     }
 
-    private void coolDown() {
+    private boolean coolDown() {
+        double wasHeat = heat;
         heat -= coolingPerTick();
         heat = Math.max(0, heat);
+        return wasHeat != heat;
     }
 
     private boolean processReaction() {
@@ -503,6 +522,9 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         return height;
     }
 
+    public boolean hasRedstoneSignal() {
+        return Objects.requireNonNull(getLevel()).hasNeighborSignal(worldPosition);
+    }
 
     public static class Recipe extends NcRecipe {
 

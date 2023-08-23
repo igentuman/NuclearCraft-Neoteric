@@ -1,8 +1,6 @@
 package igentuman.nc.block.fission;
 
-import igentuman.nc.block.entity.fission.FissionBE;
 import igentuman.nc.block.entity.fission.FissionPortBE;
-import igentuman.nc.setup.energy.SolarPanels;
 import igentuman.nc.setup.multiblocks.FissionReactor;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;

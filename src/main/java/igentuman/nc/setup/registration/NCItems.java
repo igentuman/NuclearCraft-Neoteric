@@ -153,7 +153,6 @@ public class NCItems {
                 "basic_electric_circuit",
                 "bioplastic",
                 "chassis",
-                "chassis2",
                 "empty_frame",
                 "empty_sink",
                 "motor",
@@ -166,8 +165,7 @@ public class NCItems {
                 "sic_fiber",
                 "steel_frame",
                 "coil_copper",
-                "coil_magnesium_diboride",
-                "steel_frame2"
+                "coil_magnesium_diboride"
         );
         for(String name: parts) {
             NC_PARTS.put(name, ITEMS.register(name, () -> new Item(ITEM_PROPERTIES)));

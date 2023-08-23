@@ -45,8 +45,12 @@ public class NCBlockStates extends BlockStateProvider {
 
     private void fissionReactor() {
         for (String name: FissionBlocks.reactor) {
-            if(name.matches(".*controller|.*port.*")) {
+            if(name.matches(".*port.*")) {
                 horizontalBlock(FissionReactor.MULTI_BLOCKS.get("fission_reactor_" + name).get(), multiBlockModel(FissionReactor.MULTI_BLOCKS.get("fission_reactor_" + name).get(), "fission/" + name));
+            } else if(name.matches(".*controller.*")) {
+                horizontalBlock(FissionReactor.MULTI_BLOCKS.get("fission_reactor_" + name).get(),
+                        st -> controllerModel(st, sidedModel(FissionReactor.MULTI_BLOCKS.get("fission_reactor_" + name).get(), "fission/controller"))
+                );
             } else {
                 simpleBlock(FissionReactor.MULTI_BLOCKS.get("fission_reactor_" + name).get(), multiBlockModel(FissionReactor.MULTI_BLOCKS.get("fission_reactor_" + name).get(), "fission/" + name));
             }
@@ -78,6 +82,18 @@ public class NCBlockStates extends BlockStateProvider {
         BlockModelBuilder result = models()
                 .getBuilder("block/processor/"+key(st.getBlock()).getPath()+powered)
                 .texture("north", "block/processor/"+key(st.getBlock()).getPath()+powered)
+                ;
+        if(st.getValue(BlockStateProperties.POWERED)) {
+            result.parent(model);
+        }
+        return result;
+    }
+
+    public BlockModelBuilder controllerModel(BlockState st, ModelFile model) {
+        String powered = st.getValue(BlockStateProperties.POWERED) ? "_powered" : "";
+        BlockModelBuilder result = models()
+                .getBuilder("block/multiblock/"+key(st.getBlock()).getPath()+powered)
+                .texture("north", "block/fission/controller/"+key(st.getBlock()).getPath()+powered)
                 ;
         if(st.getValue(BlockStateProperties.POWERED)) {
             result.parent(model);

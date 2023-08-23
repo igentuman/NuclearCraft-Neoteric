@@ -1,0 +1,6 @@
+{
+  "parent": "nuclearcraft:block/multiblock/fission_reactor_controller",
+  "textures": {
+    "north": "nuclearcraft:block/fission/controller/fission_reactor_controller_powered"
+  }
+}

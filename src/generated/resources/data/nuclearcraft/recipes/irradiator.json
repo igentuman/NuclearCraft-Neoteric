@@ -3,7 +3,7 @@
   "group": "nuclearcraft",
   "key": {
     "C": {
-      "item": "nuclearcraft:chassis2"
+      "item": "nuclearcraft:chassis"
     },
     "F": {
       "item": "minecraft:furnace"

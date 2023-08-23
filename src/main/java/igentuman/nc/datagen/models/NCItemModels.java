@@ -212,6 +212,7 @@ public class NCItemModels extends ItemModelProvider {
 
     private void parts() {
         for(String name: NCItems.NC_PARTS.keySet()) {
+            if(name.matches("chassis|empty_frame|steel_frame")) continue;
             singleTexture(NCItems.NC_PARTS.get(name).getId().getPath(),
                     mcLoc("item/generated"),
                     "layer0", modLoc("item/part/"+name));

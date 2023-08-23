@@ -20,9 +20,11 @@ public class RecipeInfo <RECIPE extends AbstractRecipe> implements INBTSerializa
     public boolean stuck = false;
     public RECIPE recipe;
     public BlockEntity be;
+    private String recipeId;
 
     public void setRecipe(RECIPE recipe) {
         this.recipe = recipe;
+        recipeId = recipe.getId().toString();
     }
 
     public boolean isCompleted() {
@@ -39,8 +41,7 @@ public class RecipeInfo <RECIPE extends AbstractRecipe> implements INBTSerializa
         data.putDouble("radiation", radiation);
         data.putBoolean("stuck", stuck);
         if(recipe != null) {
-            data.putString("recipe", recipe.getId().toString());
-            //data.putString("recipeType", recipe.getType().toString());
+            data.putString("recipe", recipeId);
         }
         return data;
     }
@@ -54,17 +55,16 @@ public class RecipeInfo <RECIPE extends AbstractRecipe> implements INBTSerializa
             heat = ((CompoundTag) nbt).getDouble("heat");
             radiation = ((CompoundTag) nbt).getDouble("radiation");
             stuck = ((CompoundTag) nbt).getBoolean("stuck");
-            String recipeId = ((CompoundTag) nbt).getString("recipe");
-            //String recipeType = ((CompoundTag) nbt).getString("recipeType");
+            recipeId = ((CompoundTag) nbt).getString("recipe");
             if(!recipeId.isEmpty()) {
                 recipe = getRecipeFromTag(recipeId);
-
             }
         }
     }
 
     private Level getLevel()
     {
+        if(be != null) return be.getLevel();
         return DistExecutor.unsafeRunForDist(
                 () -> NcClient::tryGetClientWorld,
                 () -> () -> ServerLifecycleHooks.getCurrentServer().overworld());
@@ -90,7 +90,8 @@ public class RecipeInfo <RECIPE extends AbstractRecipe> implements INBTSerializa
     }
 
     public void clear() {
-        this.recipe = null;
+        recipe = null;
+        recipeId = "";
         ticks = 0;
         heat = 0;
         energy = 0;
@@ -101,5 +102,12 @@ public class RecipeInfo <RECIPE extends AbstractRecipe> implements INBTSerializa
 
     public boolean isStuck() {
         return stuck;
+    }
+
+    public RECIPE recipe() {
+        if(recipe == null && !recipeId.isEmpty()) {
+            recipe = getRecipeFromTag(recipeId);
+        }
+        return recipe;
     }
 }

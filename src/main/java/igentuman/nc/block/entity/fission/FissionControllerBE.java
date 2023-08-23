@@ -219,6 +219,8 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
             if(controllerEnabled) {
                 powered = processReaction();
                 changed = powered || changed;
+            } else {
+                powered = false;
             }
             changed = coolDown() || changed;
             handleMeltdown();
@@ -371,10 +373,10 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         recipe = getRecipe();
         if (recipe != null) {
             recipeInfo.setRecipe(recipe);
-            recipeInfo.ticks = ((RECIPE) recipeInfo.recipe).getDepletionTime();
+            recipeInfo.ticks = ((RECIPE) recipeInfo.recipe()).getDepletionTime();
             recipeInfo.energy = recipeInfo.recipe.getEnergy();
-            recipeInfo.heat = ((RECIPE) recipeInfo.recipe).getHeat();
-            recipeInfo.radiation = recipeInfo.recipe.getRadiation();
+            recipeInfo.heat = ((RECIPE) recipeInfo.recipe()).getHeat();
+            recipeInfo.radiation = recipeInfo.recipe().getRadiation();
             recipeInfo.be = this;
             recipe.extractInputs(contentHandler);
         }
@@ -385,7 +387,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     }
 
     public boolean hasRecipe() {
-        return recipeInfo.recipe != null;
+        return recipeInfo.recipe() != null;
     }
 
     @Override

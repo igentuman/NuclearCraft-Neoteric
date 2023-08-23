@@ -68,6 +68,23 @@ public class ItemRadiation {
                 }
             }
         }
+
+        for (String name: FuelManager.all().keySet()) {
+            for(String subType: FuelManager.all().get(name).keySet()) {
+                for(String type: List.of("", "ox", "ni", "za", "tr")) {
+                    int isotope1Cnt = 1;
+                    int isotope2Cnt = 8;
+                    if(subType.substring(0,1).equalsIgnoreCase("h")) {
+                        isotope1Cnt = 3;
+                        isotope2Cnt = 6;
+                    }
+                    Item isotope1 = getIsotope(name, String.valueOf(FuelManager.all().get(name).get(subType).getDefault().isotopes[0]), type);
+                    Item isotope2 = getIsotope(name, String.valueOf(FuelManager.all().get(name).get(subType).getDefault().isotopes[1]), type);
+                    double radiation = ItemRadiation.byItem(isotope1)*isotope1Cnt + ItemRadiation.byItem(isotope2)*isotope2Cnt;
+                    add(Fuel.NC_DEPLETED_FUEL.get(List.of("depleted", name, subType, type)).get(), radiation/1.5);
+                }
+            }
+        }
     }
 
     public static Item getIsotope(String name, String id, String type)

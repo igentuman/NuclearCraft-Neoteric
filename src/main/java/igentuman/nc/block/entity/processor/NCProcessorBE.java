@@ -4,6 +4,7 @@ import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.client.NcClient;
 import igentuman.nc.handler.UpgradesHandler;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
+import igentuman.nc.radiation.data.RadiationManager;
 import igentuman.nc.recipes.AbstractRecipe;
 import igentuman.nc.recipes.NcRecipeType;
 import igentuman.nc.recipes.RecipeInfo;
@@ -306,6 +307,9 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
             return;
         }
         recipeInfo.process(speedMultiplier());
+        if(recipeInfo.radiation != 1D) {
+            RadiationManager.get(getLevel()).addRadiation(getLevel(), recipeInfo.radiation/1000, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ());
+        }
         isActive = true;
         setChanged();
         if(!recipeInfo.isCompleted()) {

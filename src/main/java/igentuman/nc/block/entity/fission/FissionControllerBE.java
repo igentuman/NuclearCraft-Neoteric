@@ -4,6 +4,7 @@ import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.item.ItemFuel;
 import igentuman.nc.multiblock.fission.FissionReactorMultiblock;
+import igentuman.nc.radiation.ItemRadiation;
 import igentuman.nc.radiation.data.RadiationManager;
 import igentuman.nc.recipes.*;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
@@ -272,6 +273,9 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
 
     private boolean process() {
         recipeInfo.process(fuelCellsCount * (heatMultiplier() + collectedHeatMultiplier() - 1));
+        if(recipeInfo.radiation != 1D) {
+            RadiationManager.get(getLevel()).addRadiation(getLevel(), recipeInfo.radiation/1000, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ());
+        }
         if (!recipeInfo.isCompleted()) {
             energyStorage.addEnergy(calculateEnergy());
             heat += calculateHeat();
@@ -540,7 +544,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         }
 
         public double getRadiation() {
-            return 0;
+            return ItemRadiation.byItem(getFuelItem())/10;
         }
     }
 }

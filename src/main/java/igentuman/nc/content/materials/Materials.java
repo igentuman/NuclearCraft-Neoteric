@@ -264,8 +264,8 @@ public class Materials extends MaterialsManager {
         isotopes.put(plutonium239, 0.0005);
         isotopes.put(plutonium241, 0.071);
         isotopes.put(plutonium242, 0.00002);
-        isotopes.put(thorium230, 0.001);
-        isotopes.put(thorium232, 0.002);
+        isotopes.put(thorium230, 0.0001);
+        isotopes.put(thorium232, 0.0002);
         isotopes.put(uranium233, 0.0003);
         isotopes.put(uranium235, 0.002);
         isotopes.put(uranium238, 0.000002);

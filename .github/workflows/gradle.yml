@@ -24,10 +24,10 @@ jobs:
     - name: Cache
       uses: actions/cache@v2
       with:
-         path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-            ./.gradle/loom-cache/remapped-mods
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+          ./.gradle/loom-cache/remapped-mods
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/build.gradle', '**/gradle-wrapper.properties') }}
     - name: Change perms
       run: chmod +x ./gradlew

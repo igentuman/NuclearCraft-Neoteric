@@ -251,6 +251,9 @@ public class CommonConfig {
                             "minecraft:golden_carrot|500000",
                             "minecraft:golden_apple|20000000",
                             "minecraft:enchanted_golden_apple|100000000",
+                            "nuclearcraft:dominos|50000000",
+                            "nuclearcraft:moresmore|100000000",
+                            "nuclearcraft:evenmoresmore|200000000",
                             "nuclearcraft:radaway|300000000"
                     ), o -> o instanceof ArrayList);
 

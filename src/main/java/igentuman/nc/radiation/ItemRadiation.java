@@ -17,6 +17,8 @@ import java.util.List;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.handler.config.CommonConfig.RADIATION_CONFIG;
 import static igentuman.nc.setup.registration.Fuel.NC_FUEL;
+import static igentuman.nc.setup.registration.NCItems.NC_DUSTS;
+import static igentuman.nc.setup.registration.NCItems.NC_INGOTS;
 import static net.minecraft.world.item.Items.AIR;
 
 public class ItemRadiation {
@@ -32,6 +34,14 @@ public class ItemRadiation {
         if(!radiationMap.isEmpty()) {
             return;
         }
+        radiationMap.put(NC_DUSTS.get(Materials.protactinium_233).get(), 1D);
+        radiationMap.put(NC_DUSTS.get(Materials.strontium_90).get(), 0.034D);
+        radiationMap.put(NC_DUSTS.get(Materials.ruthenium_106).get(), 0.98D);
+        radiationMap.put(NC_DUSTS.get(Materials.polonium).get(), 0.293D);
+        radiationMap.put(NC_DUSTS.get(Materials.promethium_147).get(), 0.38D);
+        radiationMap.put(NC_DUSTS.get(Materials.europium_155).get(), 0.21D);
+        radiationMap.put(NC_INGOTS.get(Materials.uranium).get(), 0.00007D);
+        radiationMap.put(NC_INGOTS.get(Materials.thorium).get(), 0.00005D);
         for(String line: RADIATION_CONFIG.ITEM_RADIATION.get()) {
             String[] split = line.split("\\|");
             if(split.length != 2) {

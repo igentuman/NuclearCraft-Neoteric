@@ -20,6 +20,12 @@ public class FluidEnricherRecipes extends AbstractRecipeProvider {
         ID = Processors.FLUID_ENRICHER;
 
         add(
+                fluidIngredient(Materials.potassium_hydroxide, 4000),
+                dustIngredient(Materials.iodine),
+                fluidStack(Materials.potassium_iodide, 144)
+        );
+
+        add(
                 fluidIngredient("minecraft:water", 5000),
                 dustIngredient(Materials.coal),
                 fluidStack("technical_water", 5000)

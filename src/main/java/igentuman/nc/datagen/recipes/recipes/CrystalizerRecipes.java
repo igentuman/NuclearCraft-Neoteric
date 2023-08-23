@@ -17,6 +17,7 @@ public class CrystalizerRecipes extends AbstractRecipeProvider {
         ID = Processors.CRYSTALLIZER;
 
         itemsAndFluids(fluidIngredient("boron_nitride_solution", 144), dustStack(Materials.boron_nitride));
+        itemsAndFluids(fluidIngredient(Materials.potassium_iodide, 144), dustStack(Materials.potassium_iodide));
         itemsAndFluids(fluidIngredient("fluorite_water", 144), dustStack(Materials.fluorite));
         itemsAndFluids(fluidIngredient("calcium_sulfate_solution", 144), dustStack(Materials.calcium_sulfate));
         itemsAndFluids(fluidIngredient("sodium_fluoride_solution", 144), dustStack(Materials.sodium_fluoride));

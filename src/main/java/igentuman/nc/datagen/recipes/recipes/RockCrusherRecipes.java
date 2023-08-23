@@ -29,6 +29,10 @@ public class RockCrusherRecipes extends AbstractRecipeProvider {
                 ingredient(ANDESITE, 4),
                 List.of(dustStack(Materials.beryllium, 2), dustStack(Materials.arsenic))
         );
+        add(
+                ingredient(DEEPSLATE, 7),
+                List.of(dustStack(Materials.iodine, 1), dustStack(Materials.obsidian))
+        );
 
     }
 

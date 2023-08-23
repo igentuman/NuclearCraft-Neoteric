@@ -1,0 +1,23 @@
+{
+  "type": "nuclearcraft:fluid_enricher",
+  "input": [
+    {
+      "tag": "forge:dusts/iodine"
+    }
+  ],
+  "inputFluids": [
+    {
+      "amount": 4000,
+      "tag": "forge:potassium_hydroxide"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 144,
+      "fluid": "nuclearcraft:potassium_iodide"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

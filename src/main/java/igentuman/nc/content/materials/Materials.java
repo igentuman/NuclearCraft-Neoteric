@@ -132,6 +132,8 @@ public class Materials extends MaterialsManager {
     public final static String supercold_ice = "supercold_ice";
 
     public static HashMap<String, Double> isotopes = new HashMap<>();
+    public final static String potassium_iodide = "potassium_iodide";
+    public final static String iodine = "iodine";
 
     public static HashMap<String, NCMaterial> all()
     {
@@ -202,6 +204,8 @@ public class Materials extends MaterialsManager {
 
             //dusts
             all.put(neodymium, NCMaterial.dust(neodymium));
+            all.put(iodine, NCMaterial.dust(iodine));
+            all.put(potassium_iodide, NCMaterial.dust(potassium_iodide).fluid(true, 100).color(0xFFFFFAFA));
             all.put(barium, NCMaterial.dust(barium));
             all.put(bismuth, NCMaterial.dust(bismuth));
             all.put(thallium, NCMaterial.dust(thallium));

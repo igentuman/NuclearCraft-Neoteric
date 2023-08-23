@@ -179,6 +179,16 @@ public class NCRecipes extends RecipeProvider {
                 .unlockedBy("item", has(NC_SHIELDING.get("heavy").get()))
                 .save(consumer, new ResourceLocation(MODID, "dps_shielding"));
 
+        ShapedRecipeBuilder.shaped(NC_FOOD.get("rad_x").get())
+                .pattern("BIB")
+                .pattern("IRI")
+                .pattern("BIB")
+                .define('B', ALL_NC_ITEMS.get("bioplastic").get())
+                .define('R', ALL_NC_ITEMS.get("radaway").get())
+                .define('I', forgeDust(Materials.potassium_iodide))
+                .unlockedBy("item", has(forgeDust(Materials.potassium_iodide)))
+                .save(consumer, new ResourceLocation(MODID, "rad_x"));
+
         SimpleCookingRecipeBuilder.smelting(NcIngredient.of(COCOA_BEANS),
                         ALL_NC_ITEMS.get("roasted_cocoa_beans").get(), 1.0f, 200)
                 .unlockedBy("has_ore", has(COCOA_BEANS))

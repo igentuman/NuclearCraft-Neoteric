@@ -155,6 +155,7 @@ public class NCLanguageProvider extends LanguageProvider {
     }
 
     private void tooltips() {
+        add("effect.nuclearcraft.radiation_resistance","Radiation Resistance");
         add("processor.description.alloy_smelter","Smelts and alloys items.");
         add("processor.description.centrifuge","Separates fluids into their components.");
         add("processor.description.fuel_reprocessor","Separates depleted fuel into components.");

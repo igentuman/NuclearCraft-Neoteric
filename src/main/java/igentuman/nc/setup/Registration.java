@@ -1,6 +1,7 @@
 package igentuman.nc.setup;
 
 import com.mojang.serialization.Codec;
+import igentuman.nc.effect.RadiationResistance;
 import igentuman.nc.recipes.NcRecipeType;
 import igentuman.nc.setup.multiblocks.FissionReactor;
 import igentuman.nc.setup.recipes.NcRecipeSerializers;
@@ -12,6 +13,8 @@ import igentuman.nc.world.structure.PortalStructure;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
@@ -53,6 +56,9 @@ public class Registration {
     private static final DeferredRegister<Feature<?>> FEATURE_REGISTER = DeferredRegister.create(ForgeRegistries.FEATURES, MODID);
     private static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = DeferredRegister.create(ForgeRegistries.RECIPE_TYPES, MODID);
     public static final DeferredRegister<RecipeSerializer<?>> SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, MODID);
+    public static final DeferredRegister<MobEffect> EFFECTS = DeferredRegister.create(ForgeRegistries.MOB_EFFECTS, MODID);
+
+    public static final RegistryObject<MobEffect> RADIATION_RESISTANCE = EFFECTS.register("radiation_resistance", () -> new RadiationResistance(MobEffectCategory.BENEFICIAL, 0xd4ffFF));
 
     public static void init() {
 
@@ -69,6 +75,7 @@ public class Registration {
         CONTAINERS.register(bus);
         SERIALIZERS.register(bus);
         RECIPE_TYPES.register(bus);
+        EFFECTS.register(bus);
 
         NcParticleTypes.PARTICLE_TYPES.register(bus);
 
@@ -106,7 +113,6 @@ public class Registration {
     public static List<RegistryObject<PlacedFeature>> ORE_GENERATION = registerOreGenerators();
     public static final TagKey<Biome> HAS_PORTAL = TagKey.create(Registry.BIOME_REGISTRY, new ResourceLocation(MODID, "has_structure/portal"));
     public static final TagKey<Biome> HAS_THIEFDEN = TagKey.create(Registry.BIOME_REGISTRY, new ResourceLocation(MODID, "has_structure/nc_laboratory"));
-
 
     private static List<RegistryObject<PlacedFeature>> registerOreGenerators()
     {

@@ -106,6 +106,7 @@
   "block.nuclearcraft.zirconium_block": "Zirconium Block",
   "coolant.bar.amount": "Coolant: %s / %s mB",
   "death.attack.radiation": "Died of Radiation Poisoning",
+  "effect.nuclearcraft.radiation_resistance": "Radiation Resistance",
   "energy.bar.amount": "Total FE: %s / %s",
   "energy.multiplier": "Energy Multiplier: x%s",
   "energy.per_tick": "Energy Per Tick: %s FE/t",

@@ -16,8 +16,10 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityEvent;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -44,6 +46,7 @@ import java.util.Map;
 import java.util.Queue;
 
 import static igentuman.nc.handler.config.CommonConfig.RADIATION_CONFIG;
+import static igentuman.nc.setup.Registration.RADIATION_RESISTANCE;
 
 public class CommonWorldTickHandler {
 
@@ -94,7 +97,7 @@ public class CommonWorldTickHandler {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onItemUse(LivingEntityUseItemEvent.Finish event)
     {
-        Entity entity = event.getEntity();
+        LivingEntity entity = event.getEntity();
         ItemStack stack = event.getItem();
         if(stack.isEmpty()) {
             return;
@@ -103,6 +106,17 @@ public class CommonWorldTickHandler {
         if(radiation == 0) return;
         PlayerRadiation radCap = entity.getCapability(PlayerRadiationProvider.PLAYER_RADIATION).orElse(null);
         if(radCap != null) {
+            if(stack.getItem().toString().contains("radaway")) {
+                if(entity.hasEffect(RADIATION_RESISTANCE.get())) {
+                    entity.removeEffect(RADIATION_RESISTANCE.get());
+                }
+                entity.addEffect(new MobEffectInstance(RADIATION_RESISTANCE.get(), 1200, 1, false, true));
+            } else if(stack.getItem().toString().contains("rad_x")) {
+                if(entity.hasEffect(RADIATION_RESISTANCE.get())) {
+                    entity.removeEffect(RADIATION_RESISTANCE.get());
+                }
+                entity.addEffect(new MobEffectInstance(RADIATION_RESISTANCE.get(), 1200, 2, false, true));
+            }
             radCap.setRadiation(radCap.getRadiation() - radiation/1000);
             if(ModUtil.isMekanismLoadeed() && RADIATION_CONFIG.MEKANISM_RADIATION_INTEGRATION.get()) {
                 MekanismRadiation.addEntityRadiation((Player) entity, -radiation/10000000);

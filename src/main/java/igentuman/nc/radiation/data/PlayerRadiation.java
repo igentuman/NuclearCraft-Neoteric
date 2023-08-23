@@ -7,6 +7,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -16,6 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static igentuman.nc.handler.config.CommonConfig.RADIATION_CONFIG;
+import static igentuman.nc.setup.Registration.RADIATION_RESISTANCE;
 
 public class PlayerRadiation implements IPlayerRadiationCapability {
 
@@ -66,7 +68,7 @@ public class PlayerRadiation implements IPlayerRadiationCapability {
         return rad/5;//player is not getting radiation instantly
     }
 
-    public static int getRadiationShielding(Entity player)
+    public static int getRadiationShielding(LivingEntity player)
     {
         int shielding = 0;
         for(ItemStack stack: player.getArmorSlots()) {
@@ -76,10 +78,14 @@ public class PlayerRadiation implements IPlayerRadiationCapability {
                 shielding += stack.getOrCreateTag().getInt("rad_shielding");
             }
         }
+        if(player.hasEffect(RADIATION_RESISTANCE.get())) {
+            int resistance = player.getEffect(RADIATION_RESISTANCE.get()).getAmplifier()+1;
+            shielding += resistance*2;
+        }
         return shielding;
     }
 
-    public void updateRadiation(Level level, Entity player) {
+    public void updateRadiation(Level level, LivingEntity player) {
         this.level = level;
         WorldRadiation worldRadiation = RadiationManager.get(level).getWorldRadiation();
         int chunkRadiation = worldRadiation.getChunkRadiation(player.chunkPosition().x, player.chunkPosition().z);

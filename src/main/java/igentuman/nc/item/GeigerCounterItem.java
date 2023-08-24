@@ -25,7 +25,7 @@ public class GeigerCounterItem extends Item
 
 	public GeigerCounterItem(Properties props, CreativeModeTab group)
 	{
-		super(props.tab(group).stacksTo(1));
+		super(new Item.Properties().tab(group).stacksTo(1));
 	}
 
 	@NotNull

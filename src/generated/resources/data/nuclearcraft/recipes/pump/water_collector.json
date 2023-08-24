@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:pump",
+  "input": [
+    {
+      "item": "nuclearcraft:water_collector"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 200,
+      "fluid": "minecraft:water"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 0.1
+}

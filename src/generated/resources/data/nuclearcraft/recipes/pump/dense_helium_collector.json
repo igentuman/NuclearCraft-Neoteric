@@ -2,17 +2,16 @@
   "type": "nuclearcraft:pump",
   "input": [
     {
-      "count": 32,
-      "tag": "forge:ingots/enderium"
+      "item": "nuclearcraft:dense_helium_collector"
     }
   ],
   "outputFluids": [
     {
-      "amount": 100,
+      "amount": 2500,
       "fluid": "nuclearcraft:helium"
     }
   ],
   "powerModifier": 1.0,
-  "radiation": 1.1,
-  "timeModifier": 1.0
+  "radiation": 1.0,
+  "timeModifier": 0.1
 }

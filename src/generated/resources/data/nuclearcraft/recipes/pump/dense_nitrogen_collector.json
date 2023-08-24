@@ -2,16 +2,16 @@
   "type": "nuclearcraft:pump",
   "input": [
     {
-      "item": "minecraft:heart_of_the_sea"
+      "item": "nuclearcraft:dense_nitrogen_collector"
     }
   ],
   "outputFluids": [
     {
-      "amount": 1000,
-      "fluid": "minecraft:water"
+      "amount": 2500,
+      "fluid": "nuclearcraft:nitrogen"
     }
   ],
   "powerModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.0
+  "timeModifier": 0.1
 }

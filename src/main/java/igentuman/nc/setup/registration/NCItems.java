@@ -118,6 +118,16 @@ public class NCItems {
                 "dosimeter",
                 "upgrade_energy",
                 "upgrade_speed",
+                "water_collector",
+                "lava_collector",
+                "compact_water_collector",
+                "dense_water_collector",
+                "helium_collector",
+                "compact_helium_collector",
+                "dense_helium_collector",
+                "nitrogen_collector",
+                "compact_nitrogen_collector",
+                "dense_nitrogen_collector",
                 "unsweetened_chocolate"
         );
         for(String name: items) {

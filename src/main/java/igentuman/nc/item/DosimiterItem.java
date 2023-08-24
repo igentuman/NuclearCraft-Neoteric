@@ -6,6 +6,7 @@ import igentuman.nc.radiation.data.RadiationManager;
 import igentuman.nc.radiation.data.WorldRadiation;
 import igentuman.nc.setup.registration.CreativeTabs;
 import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -26,7 +27,7 @@ public class DosimiterItem extends Item
 
 	public DosimiterItem(Properties props, CreativeModeTab group)
 	{
-		super(props.tab(group).stacksTo(1));
+		super( new Item.Properties().tab(group).stacksTo(1));
 	}
 
 	@NotNull

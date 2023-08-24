@@ -77,7 +77,7 @@ public class Processors {
             );
             all.put(ASSEMBLER,
                     ProcessorBuilder
-                            .make(ASSEMBLER, 0, 4, 0, 1)
+                            .make(ASSEMBLER, 0, 6, 0, 1)
                             .blockEntity(AssemblerBE::new)
                             .recipe(AssemblerBE.Recipe::new)
                             .progressBar(15)

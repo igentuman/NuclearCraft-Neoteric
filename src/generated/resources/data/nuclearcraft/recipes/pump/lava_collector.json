@@ -2,13 +2,12 @@
   "type": "nuclearcraft:pump",
   "input": [
     {
-      "count": 32,
-      "tag": "forge:plates/thermoconducting"
+      "item": "nuclearcraft:lava_collector"
     }
   ],
   "outputFluids": [
     {
-      "amount": 500,
+      "amount": 1000,
       "fluid": "minecraft:lava"
     }
   ],

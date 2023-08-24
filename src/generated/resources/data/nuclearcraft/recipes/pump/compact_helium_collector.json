@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:pump",
+  "input": [
+    {
+      "item": "nuclearcraft:compact_helium_collector"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 500,
+      "fluid": "nuclearcraft:helium"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 0.1
+}

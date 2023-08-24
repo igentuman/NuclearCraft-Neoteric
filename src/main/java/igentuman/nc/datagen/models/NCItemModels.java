@@ -146,6 +146,7 @@ public class NCItemModels extends ItemModelProvider {
 
     private void items() {
         for(String name: NCItems.NC_ITEMS.keySet()) {
+            if(name.contains("collector")) continue;
             singleTexture(NCItems.NC_ITEMS.get(name).getId().getPath(),
                     mcLoc("item/generated"),
                     "layer0", modLoc("item/"+name));

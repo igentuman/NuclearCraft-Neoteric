@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import static igentuman.nc.setup.registration.NCItems.NC_ITEMS;
 import static net.minecraft.world.item.Items.*;
 import static net.minecraft.world.level.material.Fluids.LAVA;
 import static net.minecraft.world.level.material.Fluids.WATER;
@@ -19,10 +20,20 @@ public class PumpRecipes extends AbstractRecipeProvider {
     public static void generate(Consumer<FinishedRecipe> consumer) {
         PumpRecipes.consumer = consumer;
         ID = Processors.PUMP;
-        add(ingredient(HEART_OF_THE_SEA), fluidStack(WATER, 1000));
-        add(ingotIngredient(Materials.pyrolitic_carbon, 32), fluidStack("nitrogen", 100));
-        add(ingotIngredient(Materials.enderium, 32), fluidStack("helium", 100), 1D, 1D, 1.1D);
-        add(plateIngredient(Materials.thermoconducting, 32), fluidStack(LAVA, 500), 1D, 3D);
+
+        add(ingredient(NC_ITEMS.get("water_collector").get()), fluidStack(WATER, 200), 0.1D);
+        add(ingredient(NC_ITEMS.get("compact_water_collector").get()), fluidStack(WATER, 2000), 0.1D);
+        add(ingredient(NC_ITEMS.get("dense_water_collector").get()), fluidStack(WATER, 10000), 0.1D);
+
+        add(ingredient(NC_ITEMS.get("nitrogen_collector").get()), fluidStack("nitrogen", 50), 0.1D);
+        add(ingredient(NC_ITEMS.get("compact_nitrogen_collector").get()), fluidStack("nitrogen", 500), 0.1D);
+        add(ingredient(NC_ITEMS.get("dense_nitrogen_collector").get()), fluidStack("nitrogen", 2500), 0.1D);
+
+        add(ingredient(NC_ITEMS.get("helium_collector").get()), fluidStack("helium", 50), 0.1D);
+        add(ingredient(NC_ITEMS.get("compact_helium_collector").get()), fluidStack("helium", 500), 0.1D);
+        add(ingredient(NC_ITEMS.get("dense_helium_collector").get()), fluidStack("helium", 2500), 0.1D);
+
+        add(ingredient(NC_ITEMS.get("lava_collector").get()), fluidStack(LAVA, 1000), 1D, 3D);
     }
 
     protected static void add(NcIngredient inputItem, FluidStack outputFluid, double...modifiers) {

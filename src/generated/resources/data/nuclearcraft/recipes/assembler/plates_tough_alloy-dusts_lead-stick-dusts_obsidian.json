@@ -1,0 +1,27 @@
+{
+  "type": "nuclearcraft:assembler",
+  "input": [
+    {
+      "count": 5,
+      "tag": "forge:plates/tough_alloy"
+    },
+    {
+      "tag": "forge:dusts/lead"
+    },
+    {
+      "count": 2,
+      "item": "minecraft:stick"
+    },
+    {
+      "tag": "forge:dusts/obsidian"
+    }
+  ],
+  "output": [
+    {
+      "item": "nuclearcraft:spaxelhoe_tough"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

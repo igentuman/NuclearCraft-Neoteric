@@ -59,6 +59,79 @@ public class NCRecipes extends RecipeProvider {
 
     private void items(Consumer<FinishedRecipe> consumer) {
 
+        ShapedRecipeBuilder.shaped(NC_ITEMS.get("lava_collector").get())
+                .pattern("PIP")
+                .pattern("B B")
+                .pattern("PIP")
+                .define('P', NC_PARTS.get("plate_advanced").get())
+                .define('B', forgePlate(Materials.thermoconducting))
+                .define('I', LAVA_BUCKET)
+                .unlockedBy("item", has(NC_PARTS.get("plate_advanced").get()))
+                .save(consumer, new ResourceLocation(MODID, "lava_collector"));
+
+        ShapedRecipeBuilder.shaped(NC_ITEMS.get("water_collector").get())
+                .pattern("PIP")
+                .pattern("B B")
+                .pattern("PIP")
+                .define('P', NC_PARTS.get("plate_basic").get())
+                .define('B', NAUTILUS_SHELL)
+                .define('I', WATER_BUCKET)
+                .unlockedBy("item", has(NC_PARTS.get("plate_basic").get()))
+                .save(consumer, new ResourceLocation(MODID, "water_collector"));
+
+        ShapedRecipeBuilder.shaped(NC_ITEMS.get("compact_water_collector").get())
+                .pattern("CCC")
+                .pattern("CIC")
+                .pattern("CCC")
+                .define('C', NC_ITEMS.get("water_collector").get())
+                .define('I', forgePlate(Materials.platinum))
+                .unlockedBy("item", has(NC_ITEMS.get("water_collector").get()))
+                .save(consumer, new ResourceLocation(MODID, "compact_water_collector"));
+
+
+        ShapedRecipeBuilder.shaped(NC_ITEMS.get("nitrogen_collector").get())
+                .pattern("PIP")
+                .pattern("BMB")
+                .pattern("PIP")
+                .define('M', NC_PARTS.get("motor").get())
+                .define('P', NC_PARTS.get("plate_advanced").get())
+                .define('B', forgeDust(Materials.pyrolitic_carbon))
+                .define('I', forgePlate(Materials.beryllium))
+                .unlockedBy("item", has(NC_PARTS.get("plate_advanced").get()))
+                .save(consumer, new ResourceLocation(MODID, "nitrogen_collector"));
+
+        ShapedRecipeBuilder.shaped(NC_ITEMS.get("compact_nitrogen_collector").get())
+                .pattern("CCC")
+                .pattern("CIC")
+                .pattern("CCC")
+                .define('C', NC_ITEMS.get("nitrogen_collector").get())
+                .define('I', forgePlate(Materials.beryllium))
+                .unlockedBy("item", has(NC_ITEMS.get("nitrogen_collector").get()))
+                .save(consumer, new ResourceLocation(MODID, "compact_nitrogen_collector"));
+
+
+        ShapedRecipeBuilder.shaped(NC_ITEMS.get("helium_collector").get())
+                .pattern("PIP")
+                .pattern("BMB")
+                .pattern("PIP")
+                .define('M', NC_PARTS.get("motor").get())
+                .define('P', NC_PARTS.get("plate_advanced").get())
+                .define('B', forgePlate(Materials.thorium))
+                .define('I', forgeIngot(Materials.thorium))
+                .unlockedBy("item", has(NC_PARTS.get("plate_advanced").get()))
+                .save(consumer, new ResourceLocation(MODID, "helium_collector"));
+
+        ShapedRecipeBuilder.shaped(NC_ITEMS.get("compact_helium_collector").get())
+                .pattern("CCC")
+                .pattern("CIC")
+                .pattern("CCC")
+                .define('C', NC_ITEMS.get("helium_collector").get())
+                .define('I', forgePlate(Materials.cobalt))
+                .unlockedBy("item", has(NC_ITEMS.get("helium_collector").get()))
+                .save(consumer, new ResourceLocation(MODID, "compact_helium_collector"));
+
+
+
         ShapedRecipeBuilder.shaped(TOUGH_HELMET.get())
                 .pattern("TTT")
                 .pattern("T T")
@@ -431,7 +504,7 @@ public class NCRecipes extends RecipeProvider {
                 .pattern("PTP")
                 .pattern("LPL")
                 .define('P', NCItems.NC_PARTS.get("plate_advanced").get())
-                .define('T', COMPARATOR)
+                .define('T', NC_PARTS.get("basic_electric_circuit").get())
                 .define('L', FissionReactor.MULTI_BLOCKS.get("fission_reactor_casing").get())
                 .group(MODID+"_fission")
                 .unlockedBy("item", has(NCItems.NC_PARTS.get("plate_advanced").get()))

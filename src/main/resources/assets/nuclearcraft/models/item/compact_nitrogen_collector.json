@@ -1,0 +1,6 @@
+{
+	"parent": "block/cube_all",
+	"textures": {
+		"all": "nuclearcraft:item/collector/nitrogen_compact"
+	}
+}

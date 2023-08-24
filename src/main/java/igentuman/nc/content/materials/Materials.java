@@ -49,6 +49,7 @@ public class Materials extends MaterialsManager {
     public final static  String silicon_carbide = "silicon_carbide";
     public final static  String shibuichi = "shibuichi";
     public final static  String beryllium = "beryllium";
+    public final static  String netherite = "netherite";
     public final static  String bronze = "bronze";
     public final static  String corium = "corium";
     public final static  String electrum = "electrum";
@@ -153,6 +154,7 @@ public class Materials extends MaterialsManager {
             all.put(platinum, NCMaterial.ore(platinum).ores(false, true, false, false).color(0xFF6C939B));
 
             //ingots, nuggets, dusts...
+            all.put(netherite, NCMaterial.get(netherite).define("dust", "plate"));
             all.put(supercold_ice, NCMaterial.get(supercold_ice).define("block"));
             all.put(tough_alloy, NCMaterial.get(tough_alloy).define("ingot", "plate", "dust", "fluid").color(0xFF181322));
             all.put(palladium, NCMaterial.get(palladium).define("ingot", "plate", "dust", "fluid").color(0xFF181322));

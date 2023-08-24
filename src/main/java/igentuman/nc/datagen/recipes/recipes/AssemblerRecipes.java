@@ -4,9 +4,18 @@ import igentuman.nc.content.fuel.FuelManager;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.content.materials.Materials;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
 import java.util.function.Consumer;
+
+import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.setup.registration.NCItems.NC_ITEMS;
+import static igentuman.nc.setup.registration.NCItems.NC_PARTS;
+import static igentuman.nc.setup.registration.NCTools.*;
+import static igentuman.nc.util.DataGenUtil.forgePlate;
+import static net.minecraft.world.item.Items.*;
 
 public class AssemblerRecipes extends AbstractRecipeProvider {
 
@@ -37,6 +46,78 @@ public class AssemblerRecipes extends AbstractRecipeProvider {
                 ),
                 List.of(ingredient(dustItem(Materials.crystal_binder), 2))
         );
+
+        itemsToItems(
+                List.of(
+                        plateIngredient(Materials.tough_alloy, 5),
+                        dustIngredient(Materials.lead),
+                        ingredient(STICK,2),
+                        dustIngredient(Materials.obsidian)
+                ),
+                List.of(ingredient(SPAXELHOE_TOUGH.get()))
+        );
+
+        itemsToItems(
+                List.of(
+                        plateIngredient(Materials.steel, 3),
+                        dustIngredient(Materials.lead),
+                        ingredient(NC_PARTS.get("motor").get()),
+                        ingredient(NC_PARTS.get("actuator").get())
+                ),
+                List.of(ingredient(MULTITOOL.get()))
+        );
+
+        itemsToItems(
+                List.of(
+                        plateIngredient(Materials.hsla_steel, 3),
+                        ingredient(NC_PARTS.get("basic_electric_circuit").get()),
+                        ingredient(NC_PARTS.get("coil_magnesium_diboride").get()),
+                        ingredient(NC_PARTS.get("actuator").get())
+                ),
+                List.of(ingredient(QNP.get()))
+        );
+
+        itemsToItems(
+                List.of(
+                        plateIngredient(Materials.electrum),
+                        ingredient(NC_PARTS.get("bioplastic").get()),
+                        ingredient(QUARTZ),
+                        ingredient(REDSTONE),
+                        ingredient(NC_PARTS.get("coil_copper").get())
+                ),
+                List.of(ingredient(NC_PARTS.get("basic_electric_circuit").get()))
+        );
+
+        itemsToItems(
+                List.of(
+                        ingredient(NC_ITEMS.get("compact_water_collector").get(),4),
+                        ingredient(HEART_OF_THE_SEA),
+                        plateIngredient(Materials.platinum, 4),
+                        ingredient(NC_PARTS.get("motor").get())
+                ),
+                List.of(ingredient(NC_ITEMS.get("dense_water_collector").get()))
+        );
+
+        itemsToItems(
+                List.of(
+                        ingredient(NC_ITEMS.get("compact_nitrogen_collector").get(),4),
+                        plateIngredient(Materials.beryllium),
+                        plateIngredient(Materials.netherite, 4),
+                        ingredient(NC_PARTS.get("motor").get())
+                ),
+                List.of(ingredient(NC_ITEMS.get("dense_nitrogen_collector").get()))
+        );
+
+        itemsToItems(
+                List.of(
+                        ingredient(NC_ITEMS.get("compact_helium_collector").get(),4),
+                        plateIngredient(Materials.zinc),
+                        plateIngredient(Materials.cobalt, 4),
+                        ingredient(NC_PARTS.get("motor").get())
+                ),
+                List.of(ingredient(NC_ITEMS.get("dense_helium_collector").get()))
+        );
+
 
     }
 }

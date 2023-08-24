@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "item": "nuclearcraft:water_collector"
+    },
+    "I": {
+      "tag": "forge:plates/platinum"
+    }
+  },
+  "pattern": [
+    "CCC",
+    "CIC",
+    "CCC"
+  ],
+  "result": {
+    "item": "nuclearcraft:compact_water_collector"
+  }
+}

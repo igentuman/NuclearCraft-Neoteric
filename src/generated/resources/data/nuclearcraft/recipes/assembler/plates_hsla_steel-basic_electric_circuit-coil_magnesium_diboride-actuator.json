@@ -1,0 +1,26 @@
+{
+  "type": "nuclearcraft:assembler",
+  "input": [
+    {
+      "count": 3,
+      "tag": "forge:plates/hsla_steel"
+    },
+    {
+      "item": "nuclearcraft:basic_electric_circuit"
+    },
+    {
+      "item": "nuclearcraft:coil_magnesium_diboride"
+    },
+    {
+      "item": "nuclearcraft:actuator"
+    }
+  ],
+  "output": [
+    {
+      "item": "nuclearcraft:qnp"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:pressurizer",
+  "input": [
+    {
+      "tag": "forge:ingots/netherite"
+    }
+  ],
+  "output": [
+    {
+      "tag": "forge:plates/netherite"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

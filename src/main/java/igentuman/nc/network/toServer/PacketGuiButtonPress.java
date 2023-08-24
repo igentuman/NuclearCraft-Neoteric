@@ -1,5 +1,6 @@
 package igentuman.nc.network.toServer;
 
+import igentuman.nc.block.entity.fission.FissionPortBE;
 import igentuman.nc.block.entity.processor.NCProcessorBE;
 import igentuman.nc.client.gui.element.button.Button;
 import igentuman.nc.network.INcPacket;
@@ -33,12 +34,16 @@ public class PacketGuiButtonPress implements INcPacket {
         }
 
         BlockEntity be = player.level.getBlockEntity(tilePosition);
-        if(!(be instanceof NCProcessorBE)) {
-            return;
-        }
-        NCProcessorBE processor = (NCProcessorBE) be;
+
         if(buttonId == Button.RedstoneConfig.BTN_ID) {
+            if(!(be instanceof NCProcessorBE processor)) {
+                return;
+            }
             processor.toggleRedstoneMode();
+        }
+        if(buttonId == Button.ReactorComparatorModeButton.BTN_ID) {
+            FissionPortBE port = (FissionPortBE) be;
+            port.toggleComparatorMode();
         }
     }
 

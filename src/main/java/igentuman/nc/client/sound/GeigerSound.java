@@ -17,7 +17,7 @@ public class GeigerSound extends PlayerSound {
     public static GeigerSound create(@NotNull Player player) {
         if(!playerHasGeigerCounter(player)) return null;
         ClientRadiationData.setCurrentChunk(player.chunkPosition().x, player.chunkPosition().z);
-        int level = Math.min(5, (int)((float)ClientRadiationData.getCurrentWorldRadiation()/400000));
+        int level =Math.max(0, Math.min(5, (int)((float)ClientRadiationData.getCurrentWorldRadiation()/400000)));
         if(level == 0) return null;
         return new GeigerSound(player, level);
     }

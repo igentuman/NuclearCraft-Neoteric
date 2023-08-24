@@ -10,6 +10,8 @@ import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
+import java.util.NoSuchElementException;
+
 
 public class RecipeInfo <RECIPE extends AbstractRecipe> implements INBTSerializable<Tag> {
     public int ticks = 0;
@@ -73,7 +75,11 @@ public class RecipeInfo <RECIPE extends AbstractRecipe> implements INBTSerializa
     private RECIPE getRecipeFromTag(String recipe) {
         ResourceLocation id = new ResourceLocation(recipe);
         if(getLevel() == null) return null;
-        return (RECIPE) getLevel().getRecipeManager().byKey(id).get();
+        try {
+            return (RECIPE) getLevel().getRecipeManager().byKey(id).get();
+        } catch (NoSuchElementException e) {
+            return null;
+        }
     }
 
     public double getProgress() {
@@ -105,7 +111,7 @@ public class RecipeInfo <RECIPE extends AbstractRecipe> implements INBTSerializa
     }
 
     public RECIPE recipe() {
-        if(recipe == null && !recipeId.isEmpty()) {
+        if(recipe == null && recipeId != null && !recipeId.isEmpty()) {
             recipe = getRecipeFromTag(recipeId);
         }
         return recipe;

@@ -2,23 +2,22 @@ package igentuman.nc.client.gui.element.button;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import igentuman.nc.NuclearCraft;
-import igentuman.nc.client.gui.processor.NCProcessorScreen;
 import igentuman.nc.client.gui.processor.side.SideConfigSlotSelectionScreen;
 import igentuman.nc.container.NCProcessorContainer;
 import igentuman.nc.client.gui.element.NCGuiElement;
 import igentuman.nc.network.toServer.PacketGuiButtonPress;
-import igentuman.nc.network.toServer.PacketSideConfigToggle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 
 import java.lang.reflect.Field;
 import java.util.List;
 
 public class Button<T extends AbstractContainerScreen> extends NCGuiElement {
-    protected NCProcessorContainer container;
+    protected AbstractContainerMenu container;
     protected AbstractContainerScreen screen;
     protected int bId;
 
@@ -28,7 +27,7 @@ public class Button<T extends AbstractContainerScreen> extends NCGuiElement {
     public Button(int xPos, int yPos, T screen, int id)  {
         x = xPos;
         y = yPos;
-        this.container = (NCProcessorContainer) screen.getMenu();
+        this.container = screen.getMenu();
         this.screen = screen;
         bId = id;
     }
@@ -100,6 +99,36 @@ public class Button<T extends AbstractContainerScreen> extends NCGuiElement {
             btn = new ImageButton(X(), Y(), width, height, 202, 220, 18, TEXTURE, pButton -> {
                 this.screen.onClose();
             });
+        }
+    }
+
+    public static class ReactorComparatorModeButton extends Button {
+        private final BlockPos pos;
+        public static int BTN_ID = 71;
+        public byte mode = 2;
+
+        public ReactorComparatorModeButton(int xPos, int yPos, AbstractContainerScreen screen, BlockPos pos) {
+            super(xPos, yPos, screen, BTN_ID);
+            this.pos = pos;
+            height = 18;
+            width = 18;
+            btn = new ImageButton(X(), Y(), width, height, 238, 220, 18, TEXTURE, pButton -> {
+                NuclearCraft.packetHandler().sendToServer(new PacketGuiButtonPress(pos, BTN_ID));
+            });
+        }
+
+        public List<Component> getTooltips() {
+            return List.of(Component.translatable("gui.nc.reactor_comparator_config.tooltip_"+mode));
+        }
+
+        public void setMode(byte redstoneMode) {
+            mode = redstoneMode;
+            try {
+                Field f = btn.getClass().getDeclaredField("yTexStart");
+                f.setAccessible(true);
+                f.set(btn, 220 - (redstoneMode+1) * 36);
+            } catch (NoSuchFieldException | IllegalAccessException ignore) {
+            }
         }
     }
 }

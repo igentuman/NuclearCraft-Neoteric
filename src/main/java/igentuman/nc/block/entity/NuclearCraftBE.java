@@ -30,10 +30,14 @@ public class NuclearCraftBE extends BlockEntity {
     private List<Field> floatFields = new ArrayList<>();
     private List<Field> byteFields = new ArrayList<>();
     private List<Field> longFields = new ArrayList<>();
+    private List<Field> blockPosFields = new ArrayList<>();
 
     public void saveTagData(CompoundTag tag) {
         initFields();
         try {
+            for (Field f : blockPosFields) {
+                tag.putLong(f.getName(), ((BlockPos)f.get(this)).asLong());
+            }
             for (Field f : booleanFields) {
                 tag.putBoolean(f.getName(), f.getBoolean(this));
             }
@@ -72,6 +76,9 @@ public class NuclearCraftBE extends BlockEntity {
     public void readTagData(CompoundTag tag) {
         initFields();
         try {
+            for(Field f: blockPosFields) {
+                f.set(this, BlockPos.of(tag.getLong(f.getName())));
+            }
             for(Field f: booleanFields) {
                 f.setBoolean(this, tag.getBoolean(f.getName()));
             }
@@ -111,6 +118,10 @@ public class NuclearCraftBE extends BlockEntity {
         if(initFlag) return;
         for (Field field : getClass().getFields()) {
             if (field.isAnnotationPresent(NBTField.class)) {
+                if(field.getType().equals(BlockPos.class)) {
+                    blockPosFields.add(field);
+                    continue;
+                }
                 if(field.getType().equals(int.class)) {
                     intFields.add(field);
                     continue;

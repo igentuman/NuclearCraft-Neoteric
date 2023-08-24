@@ -310,6 +310,9 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
 
     private void handleRecipeOutput() {
         if (hasRecipe() && recipeInfo.isCompleted()) {
+            if(recipe == null) {
+                recipe = (RECIPE) recipeInfo.recipe();
+            }
             if (recipe.handleOutputs(contentHandler)) {
                 recipeInfo.clear();
                 if(contentHandler.itemHandler.getStackInSlot(0).equals(ItemStack.EMPTY)) {

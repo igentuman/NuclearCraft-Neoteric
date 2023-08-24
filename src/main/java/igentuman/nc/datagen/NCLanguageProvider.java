@@ -185,6 +185,10 @@ public class NCLanguageProvider extends LanguageProvider {
         add("tooltip.nc.radiation_removal","Removes Radiation: %s");
         add("tooltip.press_shift_for_description","Press SHIFT for description");
         add("fuel.heat.descr","Base Heat Gen: %s H/t");
+        add("gui.nc.reactor_comparator_config.tooltip_1","Comparator: Energy Stored");
+        add("gui.nc.reactor_comparator_config.tooltip_2","Comparator: Heat Stored");
+        add("gui.nc.reactor_comparator_config.tooltip_3","Comparator: Depletion Progress");
+        add("gui.nc.reactor_comparator_config.tooltip_4","Comparator: Fuel Left");
         add("gui.nc.redstone_config.tooltip_0","WORK MODE: IGNORE SIGNAL");
         add("gui.nc.redstone_config.tooltip_1","WORK MODE: ON SIGNAL");
         add("gui.nc.fluid_tank_renderer.amount_capacity","%s/%s mB");

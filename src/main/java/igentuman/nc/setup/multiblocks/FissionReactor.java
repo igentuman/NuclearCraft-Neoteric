@@ -3,6 +3,7 @@ package igentuman.nc.setup.multiblocks;
 import igentuman.nc.block.entity.fission.*;
 import igentuman.nc.block.fission.*;
 import igentuman.nc.container.FissionControllerContainer;
+import igentuman.nc.container.FissionPortContainer;
 import igentuman.nc.setup.ModSetup;
 import igentuman.nc.setup.registration.CreativeTabs;
 import igentuman.nc.setup.registration.NCBlocks;
@@ -47,6 +48,9 @@ public class FissionReactor {
 
     public static final RegistryObject<MenuType<FissionControllerContainer>> FISSION_CONTROLLER_CONTAINER = CONTAINERS.register("fission_reactor_controller",
             () -> IForgeMenuType.create((windowId, inv, data) -> new FissionControllerContainer(windowId, data.readBlockPos(), inv))
+            );
+    public static final RegistryObject<MenuType<FissionPortContainer>> FISSION_PORT_CONTAINER = CONTAINERS.register("fission_reactor_port",
+            () -> IForgeMenuType.create((windowId, inv, data) -> new FissionPortContainer(windowId, data.readBlockPos(), inv))
             );
 
 

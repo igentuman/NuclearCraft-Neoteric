@@ -23,7 +23,7 @@ public class ClientRadiationData {
     }
 
     public static int getCurrentWorldRadiation() {
-        return currentRadiation;
+        return Math.max(0, currentRadiation);
     }
 
     public static void setCurrentChunk(int x, int z) {

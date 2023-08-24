@@ -1,5 +1,6 @@
 package igentuman.nc.setup;
 
+import igentuman.nc.client.gui.fission.FissionPortScreen;
 import igentuman.nc.client.particle.RadiationParticle;
 import igentuman.nc.client.gui.fission.FissionControllerScreen;
 import igentuman.nc.handler.event.client.*;
@@ -43,6 +44,7 @@ public class ClientSetup {
     public static void init(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
             MenuScreens.register(FissionReactor.FISSION_CONTROLLER_CONTAINER.get(), FissionControllerScreen::new);
+            MenuScreens.register(FissionReactor.FISSION_PORT_CONTAINER.get(), FissionPortScreen::new);
 
             for(String name: NCProcessors.PROCESSORS_CONTAINERS.keySet()) {
                 MenuScreens.register(NCProcessors.PROCESSORS_CONTAINERS.get(name).get(), Processors.all().get(name).getScreenConstructor());

@@ -2,6 +2,7 @@
   "values": [
     "nuclearcraft:tough_alloy_plate",
     "nuclearcraft:steel_plate",
+    "nuclearcraft:ferroboron_plate",
     "nuclearcraft:cobalt_plate",
     "nuclearcraft:aluminum_plate",
     "nuclearcraft:graphite_plate",
@@ -22,6 +23,7 @@
     "nuclearcraft:extreme_plate",
     "nuclearcraft:electrum_plate",
     "nuclearcraft:magnesium_plate",
+    "nuclearcraft:lithium_manganese_dioxide_plate",
     "nuclearcraft:lead_plate",
     "nuclearcraft:bronze_plate",
     "nuclearcraft:iron_plate",

@@ -18,6 +18,7 @@ public final class NCSounds {
     public static final DeferredRegister<SoundEvent> SOUND_EVENTS = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, MODID);
 
     public static final List<RegistryObject<SoundEvent>> GEIGER_SOUNDS = initGeigerSounds();
+    public static final RegistryObject<SoundEvent> ITEM_CHARGED = SOUND_EVENTS.register("charge_energy", () -> new SoundEvent(rl( "charge_energy")));
 
     private static List<RegistryObject<SoundEvent>> initGeigerSounds() {
         return List.of(

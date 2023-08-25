@@ -179,6 +179,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("processor.description.gas_scrubber","Сleansing ventilation.");
         add("processor.description.pump","Pumps fluids and gasses from environment.");
 
+        add("sound_event.nuclearcraft.item.charged","Item Charged");
         add("tooltip.nc.shielding.desc","Combine with armor in crafting grid");
         add("tooltip.nc.rad_shielding","Rad Shielding LVL: %s");
         add("tooltip.nc.energy_stored","Stored: %s / %s");
@@ -196,6 +197,13 @@ public class NCLanguageProvider extends LanguageProvider {
         add("gui.nc.fluid_tank_renderer.amount_capacity","%s/%s mB");
         add("gui.nc.fluid_tank_renderer.amount","%s mB");
         add("fuel.forge_energy.descr","Forge Energy: %s FE/t");
+        add("tooltip.nc.shift_rbm_to_change","Sneak + RBM to change");
+        add("tooltip.nc.qnp_mode","Mode: %s");
+        add("tooltip.mode.one_block","One Block");
+        add("tooltip.mode.3x3","3x3");
+        add("tooltip.mode.3x3x3","3x3x3");
+        add("tooltip.mode.5x5","5x5");
+        add("tooltip.mode.vein","Vein");
         add("fuel.heat_boiling.descr","Boiling Reactor Heat: %s H/t");
         add("fuel.depletion.descr","Base Depletion Time: %s sec");
         add("fuel.criticality.descr","Criticality Factor: %s N/t");

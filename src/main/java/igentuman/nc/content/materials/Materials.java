@@ -163,7 +163,7 @@ public class Materials extends MaterialsManager {
             all.put(purpur, NCMaterial.get(purpur).define("dust", "fluid").color(0xFF7E0399));
             all.put(carbon_manganese, NCMaterial.get(carbon_manganese).define("dust", "fluid", "ingot").color(0xFF7E0399));
             all.put(gold, NCMaterial.get(gold).define("dust", "fluid").color(0xFFD4CD08));
-            all.put(ferroboron, NCMaterial.get(ferroboron).define("dust","ingot", "fluid").color(0xFF543636));
+            all.put(ferroboron, NCMaterial.get(ferroboron).define("dust","ingot", "fluid", "plate").color(0xFF543636));
             all.put(enderium, NCMaterial.get(enderium).define("dust", "fluid").color(0xFF00856C));
             all.put(lapis, NCMaterial.get(lapis).define("dust", "fluid").color(0xFF04128F));
             all.put(lead_platinum, NCMaterial.get(lead_platinum).define("dust", "fluid", "ingot").color(0xFF04118F));
@@ -180,7 +180,7 @@ public class Materials extends MaterialsManager {
             all.put(manganese_oxide, NCMaterial.alloy(manganese_oxide).define("ingot", "dust", "fluid").color(0xFF7E9D7E));
             all.put(manganese_dioxide, NCMaterial.alloy(manganese_dioxide).define("ingot", "dust", "fluid").color(0xFF28211E));
             all.put(sic_sic_cmc, NCMaterial.alloy(sic_sic_cmc).define("ingot", "plate", "dust", "fluid").color(0xFF7A766C));
-            all.put(lithium_manganese_dioxide, NCMaterial.alloy(lithium_manganese_dioxide).define("ingot", "dust", "fluid").color(0xFF696969));
+            all.put(lithium_manganese_dioxide, NCMaterial.alloy(lithium_manganese_dioxide).define("ingot", "dust", "fluid", "plate").color(0xFF696969));
             all.put(silicon_carbide, NCMaterial.alloy(silicon_carbide).define("ingot", "dust", "fluid").color(0xFF716E63));
             all.put(shibuichi, NCMaterial.alloy(shibuichi).define("ingot", "dust", "fluid").color(0xFFB9B3AE));
             all.put(beryllium, NCMaterial.alloy(beryllium).color(0xFFD7DFC6));

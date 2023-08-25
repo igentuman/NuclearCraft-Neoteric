@@ -64,7 +64,6 @@ public class ClientSetup {
                 }
                 return 0;
             });
-
         });
     }
 
@@ -93,6 +92,6 @@ public class ClientSetup {
         ServerLoad.register(event);
         TooltipHandler.register(event);
         TickHandler.register(event);
-
+        BlockOverlayHandler.register(event);
     }
 }

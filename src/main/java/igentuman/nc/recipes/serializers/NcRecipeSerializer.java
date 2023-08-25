@@ -57,7 +57,12 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerial
                 outputItems = new ItemStack[output.getAsJsonArray().size()];
                 int i = 0;
                 for (JsonElement out : output.getAsJsonArray()) {
-                    outputItems[i] = SerializerHelper.getItemStack(out.getAsJsonObject());
+                    try {
+                        outputItems[i] = SerializerHelper.getItemStack(out.getAsJsonObject());
+                    } catch (JsonSyntaxException ex) {
+                        NuclearCraft.LOGGER.error("Error parsing output itemstack for recipe: " + recipeId.toString());
+                        return null;
+                    }
                     i++;
                 }
             } else {

@@ -10,6 +10,7 @@ import net.minecraft.world.level.block.Blocks;
 import java.util.function.Consumer;
 
 import static igentuman.nc.setup.registration.NCItems.*;
+import static net.minecraft.world.item.Items.NETHERITE_INGOT;
 
 public class PressurizerRecipes extends AbstractRecipeProvider {
 
@@ -28,7 +29,7 @@ public class PressurizerRecipes extends AbstractRecipeProvider {
         itemToItem(ingredient(NC_FOOD.get("foursmore").get(), 2), ingredient(NC_FOOD.get("evenmoresmore").get()));
         itemToItem(ingredient(ingotTag(Materials.graphite)), ingotStack(Materials.pyrolitic_carbon));
         itemToItem(dustIngredient(Materials.diamond), ingredient(Items.DIAMOND));
-        itemToItem(ingotIngredient(Materials.netherite), plateIngredient(Materials.netherite));
+        itemToItem(ingredient(NETHERITE_INGOT), plateIngredient(Materials.netherite));
         itemToItem(dustIngredient(Materials.rhodochrosite), gemStack(Materials.rhodochrosite));
         itemToItem(dustIngredient(Materials.quartz), ingredient(Items.QUARTZ));
         itemToItem(dustIngredient(Materials.obsidian, 4), ingredient(Item.byBlock(Blocks.OBSIDIAN)));

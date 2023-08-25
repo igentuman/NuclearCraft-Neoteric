@@ -23,6 +23,7 @@ import static igentuman.nc.setup.registration.Fuel.NC_ISOTOPES;
 import static igentuman.nc.setup.registration.NCArmor.*;
 import static igentuman.nc.setup.registration.NCItems.*;
 import static igentuman.nc.setup.registration.NCTools.GEIGER_COUNTER;
+import static igentuman.nc.setup.registration.NCTools.LITHIUM_ION_CELL;
 import static net.minecraft.world.item.Items.*;
 import static igentuman.nc.util.DataGenUtil.*;
 public class NCRecipes extends RecipeProvider {
@@ -58,6 +59,17 @@ public class NCRecipes extends RecipeProvider {
     }
 
     private void items(Consumer<FinishedRecipe> consumer) {
+
+        ShapedRecipeBuilder.shaped(LITHIUM_ION_CELL.get())
+                .pattern("CCC")
+                .pattern("FLF")
+                .pattern("DDD")
+                .define('C', forgePlate(Materials.hard_carbon))
+                .define('F', forgePlate(Materials.ferroboron))
+                .define('L', forgePlate(Materials.lithium))
+                .define('D', forgePlate(Materials.lithium_manganese_dioxide))
+                .unlockedBy("item", has(forgeIngot(Materials.lithium_manganese_dioxide)))
+                .save(consumer, new ResourceLocation(MODID, "lithium_ion_cell"));
 
         ShapedRecipeBuilder.shaped(NC_ITEMS.get("lava_collector").get())
                 .pattern("PIP")

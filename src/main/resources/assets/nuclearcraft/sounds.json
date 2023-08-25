@@ -1,4 +1,10 @@
 {
+  "charge_energy": {
+    "sounds": [
+      "nuclearcraft:item/charge_energy"
+    ],
+    "subtitle": "sound_event.nuclearcraft.item.charged"
+  },
   "geiger_1": {
     "sounds": [
       "nuclearcraft:item/geiger_1"

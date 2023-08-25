@@ -113,18 +113,17 @@ public class QNP extends PickaxeItem
 		return true;
 	}
 
-	public List<ItemStack> mineArea(BlockPos pos, Level worldIn, LivingEntity entityLiving, BlockHitResult blockResult, ItemStack stack) {
+	public List<ItemStack> mineArea(BlockPos pos, Level worldIn, LivingEntity entityLiving, BlockHitResult blockResult, ItemStack stack, List<ItemStack> totalDrops) {
 		Direction facing = blockResult.getDirection();
 		Mode miningMode = getMode(stack);
 		Pair<BlockPos, BlockPos> area = getArea(pos, facing, miningMode.radius, miningMode.depth);
 
-		List<ItemStack> totalDrops = new ArrayList<>();
 		BlockPos.betweenClosed(area.getLeft(), area.getRight()).forEach(blockPos -> {
 			if (enoughEnergy(stack) && worldIn.getBlockEntity(blockPos) == null && worldIn instanceof ServerLevel && entityLiving instanceof ServerPlayer && !worldIn.isEmptyBlock(blockPos)) {
 				BlockState tempState = worldIn.getBlockState(blockPos);
 				if (!tempState.is(BlockTags.MINEABLE_WITH_PICKAXE) && !tempState.is(BlockTags.MINEABLE_WITH_SHOVEL)) return;
 				if (tempState.getDestroySpeed(worldIn, blockPos) < 0) return;
-				totalDrops.addAll(harvestBlock(blockPos, worldIn, entityLiving, stack, false));
+				harvestBlock(blockPos, worldIn, entityLiving, stack, false, totalDrops);
 			}
 		});
 		worldIn.getEntitiesOfClass(ExperienceOrb.class, new AABB(area.getLeft(), area.getRight()).inflate(1)).forEach(entityXPOrb -> entityXPOrb.teleportTo(entityLiving.blockPosition().getX(), entityLiving.blockPosition().getY(), entityLiving.blockPosition().getZ()));
@@ -147,9 +146,9 @@ public class QNP extends PickaxeItem
 				BlockHitResult blockResult = (BlockHitResult) rayTraceResult;
 				List<ItemStack> totalDrops = new ArrayList<>();
 				if(getMode(stack) == Mode.VEIN_MINER) {
-					totalDrops = mineVein(pos, worldIn, entityLiving, blockResult, stack);
+					mineVein(pos, worldIn, entityLiving, blockResult, stack, totalDrops);
 				} else {
-					totalDrops = mineArea(pos, worldIn, entityLiving, blockResult, stack);
+					mineArea(pos, worldIn, entityLiving, blockResult, stack, totalDrops);
 				}
 				totalDrops.forEach(itemStack -> {
 					Block.popResource(worldIn, entityLiving.blockPosition().relative(entityLiving.getDirection(), 1), itemStack);
@@ -160,10 +159,9 @@ public class QNP extends PickaxeItem
 	}
 
 	public int veinMinedBlocksCounter = 0;
-	private List<ItemStack> harvestBlock(BlockPos pos, Level worldIn, LivingEntity entityLiving, ItemStack tool, boolean veinMode) {
+	private List<ItemStack> harvestBlock(BlockPos pos, Level worldIn, LivingEntity entityLiving, ItemStack tool, boolean veinMode, List<ItemStack> totalDrops) {
 		BlockState tempState = worldIn.getBlockState(pos);
 		Block block = tempState.getBlock();
-		List<ItemStack> totalDrops = new ArrayList<>();
 		if(!enoughEnergy(tool)) return totalDrops;
 		int xp = ForgeHooks.onBlockBreakEvent(worldIn, ((ServerPlayer) entityLiving).gameMode.getGameModeForPlayer(), (ServerPlayer) entityLiving, pos);
 		if (xp >= 0 && block.onDestroyedByPlayer(tempState, worldIn, pos, (Player) entityLiving, true, tempState.getFluidState())) {
@@ -190,7 +188,7 @@ public class QNP extends PickaxeItem
 				for (Direction facing : Direction.values()) {
 					BlockPos newPos = pos.relative(facing);
 					if (worldIn.getBlockState(newPos).equals(tempState)) {
-						totalDrops.addAll(harvestBlock(newPos, worldIn, entityLiving, tool, true));
+						harvestBlock(newPos, worldIn, entityLiving, tool, true, totalDrops);
 					}
 				}
 			}
@@ -200,13 +198,13 @@ public class QNP extends PickaxeItem
 		return totalDrops;
 	}
 
-	private List<ItemStack> mineVein(BlockPos pos, Level worldIn, LivingEntity entityLiving, BlockHitResult blockResult, ItemStack stack) {
-		List<ItemStack> totalDrops = new ArrayList<>();
+	private void mineVein(BlockPos pos, Level worldIn, LivingEntity entityLiving, BlockHitResult blockResult, ItemStack stack, List<ItemStack> totalDrops) {
 		BlockState initialBlockState = worldIn.getBlockState(pos);
-		if (!initialBlockState.is(BlockTags.MINEABLE_WITH_PICKAXE) && !initialBlockState.is(BlockTags.MINEABLE_WITH_SHOVEL)) return totalDrops;
-		if (initialBlockState.getDestroySpeed(worldIn, pos) < 0) return totalDrops;
+		if (!initialBlockState.is(BlockTags.MINEABLE_WITH_PICKAXE) && !initialBlockState.is(BlockTags.MINEABLE_WITH_SHOVEL)) return;
+		if (initialBlockState.getDestroySpeed(worldIn, pos) < 0) return;
 		//mine initialblock always
-		totalDrops.addAll(harvestBlock(pos, worldIn, entityLiving, stack, false));
+		harvestBlock(pos, worldIn, entityLiving, stack, false, totalDrops);
+
 		getEnergy(stack).extractEnergy(100, false);
 		veinMinedBlocksCounter++;
 		if(initialBlockState.is(Tags.Blocks.ORES)) {
@@ -214,12 +212,11 @@ public class QNP extends PickaxeItem
 			for (Direction facing : Direction.values()) {
 				BlockPos newPos = pos.relative(facing);
 				if (worldIn.getBlockState(newPos).equals(initialBlockState)) {
-					totalDrops.addAll(harvestBlock(newPos, worldIn, entityLiving, stack, true));
+					harvestBlock(newPos, worldIn, entityLiving, stack, true, totalDrops);
 				}
 			}
 		}
 		veinMinedBlocksCounter = 0;
-		return totalDrops;
 	}
 
 	private boolean enoughEnergy(ItemStack itemStack) {

@@ -145,4 +145,8 @@ public class FissionPortContainer extends AbstractContainerMenu {
     public byte getComparatorMode() {
         return portBE.comparatorMode;
     }
+
+    public byte getAnalogSignalStrength() {
+        return portBE.analogSignal;
+    }
 }

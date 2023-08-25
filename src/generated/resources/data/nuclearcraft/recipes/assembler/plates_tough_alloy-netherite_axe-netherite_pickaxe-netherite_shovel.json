@@ -6,14 +6,13 @@
       "tag": "forge:plates/tough_alloy"
     },
     {
-      "tag": "forge:dusts/lead"
+      "item": "minecraft:netherite_axe"
     },
     {
-      "count": 2,
-      "item": "minecraft:stick"
+      "item": "minecraft:netherite_pickaxe"
     },
     {
-      "tag": "forge:dusts/obsidian"
+      "item": "minecraft:netherite_shovel"
     }
   ],
   "output": [

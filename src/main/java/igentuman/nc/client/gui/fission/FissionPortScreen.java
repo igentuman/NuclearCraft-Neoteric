@@ -76,6 +76,7 @@ public class FissionPortScreen extends AbstractContainerScreen<FissionPortContai
 
     private void renderWidgets(PoseStack matrix, float partialTicks, int mouseX, int mouseY) {
         redstoneConfigBtn.setMode(getMenu().getComparatorMode());
+        redstoneConfigBtn.strength = getMenu().getAnalogSignalStrength();
         for(NCGuiElement widget: widgets) {
             widget.draw(matrix, mouseX, mouseY, partialTicks);
         }
@@ -87,7 +88,6 @@ public class FissionPortScreen extends AbstractContainerScreen<FissionPortContai
     @Override
     protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
         drawCenteredString(matrixStack, font,  menu.getTitle(), imageWidth/2, titleLabelY, 0xffffff);
-
         renderTooltips(matrixStack, mouseX-relX, mouseY-relY);
     }
 
@@ -150,5 +150,10 @@ public class FissionPortScreen extends AbstractContainerScreen<FissionPortContai
     @Override
     public double getHotCoolant() {
         return 0;
+    }
+
+    public int getAnalogSignalStrength()
+    {
+        return container().getAnalogSignalStrength();
     }
 }

@@ -50,9 +50,9 @@ public class AssemblerRecipes extends AbstractRecipeProvider {
         itemsToItems(
                 List.of(
                         plateIngredient(Materials.tough_alloy, 5),
-                        dustIngredient(Materials.lead),
-                        ingredient(STICK,2),
-                        dustIngredient(Materials.obsidian)
+                        ingredient(NETHERITE_AXE),
+                        ingredient(NETHERITE_PICKAXE),
+                        ingredient(NETHERITE_SHOVEL)
                 ),
                 List.of(ingredient(SPAXELHOE_TOUGH.get()))
         );
@@ -71,6 +71,7 @@ public class AssemblerRecipes extends AbstractRecipeProvider {
                 List.of(
                         plateIngredient(Materials.hsla_steel, 3),
                         ingredient(NC_PARTS.get("basic_electric_circuit").get()),
+                        ingredient(LITHIUM_ION_CELL.get()),
                         ingredient(NC_PARTS.get("coil_magnesium_diboride").get()),
                         ingredient(NC_PARTS.get("actuator").get())
                 ),

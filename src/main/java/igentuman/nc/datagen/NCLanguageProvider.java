@@ -181,6 +181,7 @@ public class NCLanguageProvider extends LanguageProvider {
 
         add("tooltip.nc.shielding.desc","Combine with armor in crafting grid");
         add("tooltip.nc.rad_shielding","Rad Shielding LVL: %s");
+        add("tooltip.nc.energy_stored","Stored: %s / %s");
         add("tooltip.nc.radiation","Radiation: %s");
         add("tooltip.nc.radiation_removal","Removes Radiation: %s");
         add("tooltip.press_shift_for_description","Press SHIFT for description");
@@ -189,6 +190,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("gui.nc.reactor_comparator_config.tooltip_2","Comparator: Heat Stored");
         add("gui.nc.reactor_comparator_config.tooltip_3","Comparator: Depletion Progress");
         add("gui.nc.reactor_comparator_config.tooltip_4","Comparator: Fuel Left");
+        add("gui.nc.reactor_comparator_strength.tooltip","Current Signal Strength: %s");
         add("gui.nc.redstone_config.tooltip_0","WORK MODE: IGNORE SIGNAL");
         add("gui.nc.redstone_config.tooltip_1","WORK MODE: ON SIGNAL");
         add("gui.nc.fluid_tank_renderer.amount_capacity","%s/%s mB");
@@ -303,6 +305,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add(NCTools.MULTITOOL.get(), "Multitool");
         add(NCTools.GEIGER_COUNTER.get(), "Geiger Counter");
         add(NCTools.SPAXELHOE_TOUGH.get(), "Tough Spaxel");
+        add(NCTools.LITHIUM_ION_CELL.get(), "Lithium Ion Cell");
     }
 
     private void armor() {

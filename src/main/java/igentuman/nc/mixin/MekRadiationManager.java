@@ -42,7 +42,7 @@ public abstract class MekRadiationManager {
         }
     }
 
-    @Inject(method = "getRadiationResistance(Lnet/minecraft/world/entity/LivingEntity;)D", at = @At("TAIL"), remap=false)
+    @Inject(method = "getRadiationResistance(Lnet/minecraft/world/entity/LivingEntity;)D", at = @At("TAIL"), remap=false, cancellable = true)
     private void getRadiationResistance(LivingEntity entity, CallbackInfoReturnable<Double> callback) {
         if(entity instanceof Player player) {
             double shieldingRate = Math.max(0.001, 0.7 - getRadiationShielding(player)/100.0)*10;

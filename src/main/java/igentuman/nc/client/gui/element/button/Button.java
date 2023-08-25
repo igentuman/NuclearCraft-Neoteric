@@ -106,6 +106,7 @@ public class Button<T extends AbstractContainerScreen> extends NCGuiElement {
         private final BlockPos pos;
         public static int BTN_ID = 71;
         public byte mode = 2;
+        public byte strength = 0;
 
         public ReactorComparatorModeButton(int xPos, int yPos, AbstractContainerScreen screen, BlockPos pos) {
             super(xPos, yPos, screen, BTN_ID);
@@ -118,7 +119,10 @@ public class Button<T extends AbstractContainerScreen> extends NCGuiElement {
         }
 
         public List<Component> getTooltips() {
-            return List.of(Component.translatable("gui.nc.reactor_comparator_config.tooltip_"+mode));
+            return List.of(
+                    Component.translatable("gui.nc.reactor_comparator_config.tooltip_"+mode),
+                    Component.translatable("gui.nc.reactor_comparator_strength.tooltip", strength)
+                    );
         }
 
         public void setMode(byte redstoneMode) {

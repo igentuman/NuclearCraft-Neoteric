@@ -21,6 +21,7 @@ import java.util.function.Consumer;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.setup.registration.Fuel.NC_ISOTOPES;
 import static igentuman.nc.setup.registration.NCArmor.*;
+import static igentuman.nc.setup.registration.NCEnergyBlocks.ENERGY_BLOCKS;
 import static igentuman.nc.setup.registration.NCItems.*;
 import static igentuman.nc.setup.registration.NCTools.GEIGER_COUNTER;
 import static igentuman.nc.setup.registration.NCTools.LITHIUM_ION_CELL;
@@ -41,11 +42,103 @@ public class NCRecipes extends RecipeProvider {
         items(consumer);
         processors(consumer);
         solarPanels(consumer);
+        energyBlocks(consumer);
         fissionBlocks(consumer);
         turbineBlocks(consumer);
         FuelRecipes.generate(consumer);
         CustomRecipes.generate(consumer);
         SpecialRecipeBuilder.build(consumer, NcRecipeSerializers.SHIELDING);
+        SpecialRecipeBuilder.build(consumer, NcRecipeSerializers.RESET_NBT);
+    }
+
+    private void energyBlocks(Consumer<FinishedRecipe> consumer) {
+
+        ShapedRecipeBuilder.shaped(ENERGY_BLOCKS.get("basic_voltaic_pile").get())
+                .pattern("PSP")
+                .pattern("SMS")
+                .pattern("PSP")
+                .define('P', NC_PARTS.get("plate_basic").get())
+                .define('S', NC_PARTS.get("coil_copper").get())
+                .define('M', forgeBlock(Materials.magnesium))
+                .unlockedBy("item", has(NC_PARTS.get("coil_copper").get()))
+                .save(consumer, new ResourceLocation(MODID, "basic_voltaic_pile"));
+
+        ShapedRecipeBuilder.shaped(ENERGY_BLOCKS.get("advanced_voltaic_pile").get())
+                .pattern("PMP")
+                .pattern("VVV")
+                .pattern("PCP")
+                .define('P', NC_PARTS.get("plate_advanced").get())
+                .define('V', ENERGY_BLOCKS.get("basic_voltaic_pile").get())
+                .define('M', forgeIngot(Materials.magnesium))
+                .define('C', forgeIngot(Materials.zinc))
+                .unlockedBy("item", has(NC_PARTS.get("plate_advanced").get()))
+                .save(consumer, new ResourceLocation(MODID, "advanced_voltaic_pile"));
+
+        ShapedRecipeBuilder.shaped(ENERGY_BLOCKS.get("du_voltaic_pile").get())
+                .pattern("PMP")
+                .pattern("VVV")
+                .pattern("PCP")
+                .define('P', NC_PARTS.get("plate_du").get())
+                .define('V', ENERGY_BLOCKS.get("advanced_voltaic_pile").get())
+                .define('M', forgeIngot(Materials.magnesium))
+                .define('C', forgeIngot(Materials.silver))
+                .unlockedBy("item", has(NC_PARTS.get("plate_du").get()))
+                .save(consumer, new ResourceLocation(MODID, "du_voltaic_pile"));
+
+        ShapedRecipeBuilder.shaped(ENERGY_BLOCKS.get("elite_voltaic_pile").get())
+                .pattern("PMP")
+                .pattern("VVV")
+                .pattern("PCP")
+                .define('P', NC_PARTS.get("plate_elite").get())
+                .define('V', ENERGY_BLOCKS.get("du_voltaic_pile").get())
+                .define('M', forgePlate(Materials.magnesium))
+                .define('C', forgePlate(Materials.cobalt))
+                .unlockedBy("item", has(NC_PARTS.get("plate_elite").get()))
+                .save(consumer, new ResourceLocation(MODID, "elite_voltaic_pile"));
+
+        ShapedRecipeBuilder.shaped(ENERGY_BLOCKS.get("basic_lithium_ion_battery").get())
+                .pattern("PCP")
+                .pattern("CSC")
+                .pattern("PCP")
+                .define('P', NC_PARTS.get("plate_basic").get())
+                .define('C', LITHIUM_ION_CELL.get())
+                .define('S', NC_PARTS.get("coil_magnesium_diboride").get())
+                .unlockedBy("item", has(NC_PARTS.get("coil_magnesium_diboride").get()))
+                .save(consumer, new ResourceLocation(MODID, "basic_lithium_ion_battery"));
+
+        ShapedRecipeBuilder.shaped(ENERGY_BLOCKS.get("advanced_lithium_ion_battery").get())
+                .pattern("PDP")
+                .pattern("LLL")
+                .pattern("PSP")
+                .define('P', NC_PARTS.get("plate_advanced").get())
+                .define('D', forgeIngot(Materials.lithium_manganese_dioxide))
+                .define('L', ENERGY_BLOCKS.get("basic_lithium_ion_battery").get())
+                .define('S', NC_PARTS.get("coil_magnesium_diboride").get())
+                .unlockedBy("item", has(NC_PARTS.get("coil_magnesium_diboride").get()))
+                .save(consumer, new ResourceLocation(MODID, "advanced_lithium_ion_battery"));
+
+        ShapedRecipeBuilder.shaped(ENERGY_BLOCKS.get("du_lithium_ion_battery").get())
+                .pattern("PDP")
+                .pattern("LLL")
+                .pattern("PSP")
+                .define('P', NC_PARTS.get("plate_du").get())
+                .define('D', forgeIngot(Materials.lithium_manganese_dioxide))
+                .define('L', ENERGY_BLOCKS.get("advanced_lithium_ion_battery").get())
+                .define('S', NC_PARTS.get("coil_magnesium_diboride").get())
+                .unlockedBy("item", has(NC_PARTS.get("coil_magnesium_diboride").get()))
+                .save(consumer, new ResourceLocation(MODID, "du_lithium_ion_battery"));
+
+        ShapedRecipeBuilder.shaped(ENERGY_BLOCKS.get("elite_lithium_ion_battery").get())
+                .pattern("PDP")
+                .pattern("LLL")
+                .pattern("PSP")
+                .define('P', NC_PARTS.get("plate_elite").get())
+                .define('D', forgePlate(Materials.lithium_manganese_dioxide))
+                .define('L', ENERGY_BLOCKS.get("du_lithium_ion_battery").get())
+                .define('S', NC_PARTS.get("coil_magnesium_diboride").get())
+                .unlockedBy("item", has(NC_PARTS.get("coil_magnesium_diboride").get()))
+                .save(consumer, new ResourceLocation(MODID, "elite_lithium_ion_battery"));
+
     }
 
     public void smithingRecipe(NcIngredient inputItem, NcIngredient upgradeItem, Item resultItem) {
@@ -580,7 +673,7 @@ public class NCRecipes extends RecipeProvider {
     }
 
     private void solarPanels(Consumer<FinishedRecipe> consumer) {
-        ShapedRecipeBuilder.shaped(NCEnergyBlocks.ENERGY_BLOCKS.get("solar_panel/basic").get())
+        ShapedRecipeBuilder.shaped(ENERGY_BLOCKS.get("solar_panel/basic").get())
                 .pattern("LQL")
                 .pattern("PLP")
                 .pattern("CSC")
@@ -593,40 +686,40 @@ public class NCRecipes extends RecipeProvider {
                 .unlockedBy("item", has(NCItems.NC_PARTS.get("coil_copper").get()))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(NCEnergyBlocks.ENERGY_BLOCKS.get("solar_panel/advanced").get())
+        ShapedRecipeBuilder.shaped(ENERGY_BLOCKS.get("solar_panel/advanced").get())
                 .pattern("PGP")
                 .pattern("SSS")
                 .pattern("PCP")
                 .define('P', NCItems.NC_PARTS.get("plate_advanced").get())
-                .define('S', NCEnergyBlocks.ENERGY_BLOCKS.get("solar_panel/basic").get())
+                .define('S', ENERGY_BLOCKS.get("solar_panel/basic").get())
                 .define('G', forgeDust("graphite"))
                 .define('C', NCItems.NC_PARTS.get("coil_copper").get())
                 .group(MODID+"_solar_panels")
-                .unlockedBy("item", has(NCEnergyBlocks.ENERGY_BLOCKS.get("solar_panel/basic").get()))
+                .unlockedBy("item", has(ENERGY_BLOCKS.get("solar_panel/basic").get()))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(NCEnergyBlocks.ENERGY_BLOCKS.get("solar_panel/du").get())
+        ShapedRecipeBuilder.shaped(ENERGY_BLOCKS.get("solar_panel/du").get())
                 .pattern("PGP")
                 .pattern("SSS")
                 .pattern("PMP")
                 .define('P', NCItems.NC_PARTS.get("plate_du").get())
-                .define('S', NCEnergyBlocks.ENERGY_BLOCKS.get("solar_panel/advanced").get())
+                .define('S', ENERGY_BLOCKS.get("solar_panel/advanced").get())
                 .define('G', forgeDust("graphite"))
                 .define('M', NCItems.NC_PARTS.get("coil_magnesium_diboride").get())
                 .group(MODID+"_solar_panels")
-                .unlockedBy("item", has(NCEnergyBlocks.ENERGY_BLOCKS.get("solar_panel/advanced").get()))
+                .unlockedBy("item", has(ENERGY_BLOCKS.get("solar_panel/advanced").get()))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(NCEnergyBlocks.ENERGY_BLOCKS.get("solar_panel/elite").get())
+        ShapedRecipeBuilder.shaped(ENERGY_BLOCKS.get("solar_panel/elite").get())
                 .pattern("PGP")
                 .pattern("SSS")
                 .pattern("PMP")
                 .define('P', NCItems.NC_PARTS.get("plate_elite").get())
-                .define('S', NCEnergyBlocks.ENERGY_BLOCKS.get("solar_panel/du").get())
+                .define('S', ENERGY_BLOCKS.get("solar_panel/du").get())
                 .define('G', forgeDust("graphite"))
                 .define('M', NCItems.NC_PARTS.get("coil_magnesium_diboride").get())
                 .group(MODID+"_solar_panels")
-                .unlockedBy("item", has(NCEnergyBlocks.ENERGY_BLOCKS.get("solar_panel/advanced").get()))
+                .unlockedBy("item", has(ENERGY_BLOCKS.get("solar_panel/advanced").get()))
                 .save(consumer);
 
     }

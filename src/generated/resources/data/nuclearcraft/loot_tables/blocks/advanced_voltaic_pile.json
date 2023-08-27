@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "nuclearcraft:advanced_voltaic_pile"
+        }
+      ],
+      "name": "block",
+      "rolls": 1.0
+    }
+  ]
+}

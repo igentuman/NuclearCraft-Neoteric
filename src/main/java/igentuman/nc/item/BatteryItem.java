@@ -22,6 +22,8 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import javax.annotation.Nonnull;
 import java.util.List;
 
+import static igentuman.nc.handler.config.CommonConfig.ENERGY_STORAGE_CONFIG;
+
 public class BatteryItem extends Item
 {
 	public BatteryItem()
@@ -66,7 +68,7 @@ public class BatteryItem extends Item
 
 
 	protected int getEnergyMaxStorage() {
-		return 500000;
+		return ENERGY_STORAGE_CONFIG.getCapacityFor(toString());
 	}
 
 	@Override
@@ -95,6 +97,15 @@ public class BatteryItem extends Item
 
 	public String formatEnergy(int energy)
 	{
-		return TextUtils.numberFormat(energy/1000)+" KFE";
+		if(energy >= 1000000000) {
+			return TextUtils.numberFormat(energy/1000000000)+" GFE";
+		}
+		if(energy >= 1000000) {
+			return TextUtils.numberFormat(energy/1000000)+" MFE";
+		}
+		if(energy >= 1000) {
+			return TextUtils.numberFormat(energy/1000)+" kFE";
+		}
+		return TextUtils.numberFormat(energy)+" FE";
 	}
 }

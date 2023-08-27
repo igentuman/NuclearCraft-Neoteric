@@ -26,15 +26,15 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class NCSolarPanelBlock extends Block implements EntityBlock {
-    public NCSolarPanelBlock() {
+public class SolarPanelBlock extends Block implements EntityBlock {
+    public SolarPanelBlock() {
         this(Properties.of(Material.METAL)
                 .sound(SoundType.METAL)
                 .strength(2.0f)
                 .noOcclusion()
                 .requiresCorrectToolForDrops());
     }
-    public NCSolarPanelBlock(Properties pProperties) {
+    public SolarPanelBlock(Properties pProperties) {
         super(pProperties.sound(SoundType.METAL));
     }
     @Override
@@ -63,7 +63,7 @@ public class NCSolarPanelBlock extends Block implements EntityBlock {
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         if (level.isClientSide()) {
             return (lvl, pos, blockState, t) -> {
-                if (t instanceof NCProcessorBE tile) {
+                if (t instanceof NCEnergy tile) {
                     tile.tickClient();
                 }
             };

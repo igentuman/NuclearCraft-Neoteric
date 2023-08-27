@@ -4,6 +4,7 @@
     "down": "nuclearcraft:block/energy/solar_panel/du_side",
     "east": "nuclearcraft:block/energy/solar_panel/du_side",
     "north": "nuclearcraft:block/energy/solar_panel/du_side",
+    "particle": "nuclearcraft:block/energy/solar_panel/du_top",
     "south": "nuclearcraft:block/energy/solar_panel/du_side",
     "up": "nuclearcraft:block/energy/solar_panel/du_top",
     "west": "nuclearcraft:block/energy/solar_panel/du_side"

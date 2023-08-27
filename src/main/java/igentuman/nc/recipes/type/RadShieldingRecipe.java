@@ -1,4 +1,4 @@
-package igentuman.nc.recipes.shielding;
+package igentuman.nc.recipes.type;
 
 import igentuman.nc.item.RadShieldingItem;
 import igentuman.nc.setup.recipes.NcRecipeSerializers;
@@ -86,6 +86,5 @@ public class RadShieldingRecipe extends CustomRecipe {
     @SubscribeEvent
     public static void onCrafting(PlayerEvent.ItemCraftedEvent event) {
         ItemStack result = event.getCrafting();
-
     }
 }

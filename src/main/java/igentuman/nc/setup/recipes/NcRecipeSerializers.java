@@ -2,10 +2,11 @@ package igentuman.nc.setup.recipes;
 
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.fission.FissionControllerBE;
-import igentuman.nc.recipes.shielding.RadShieldingRecipe;
+import igentuman.nc.recipes.type.RadShieldingRecipe;
 import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.recipes.serializers.NcRecipeSerializer;
 import igentuman.nc.content.processors.Processors;
+import igentuman.nc.recipes.type.ResetNbtRecipe;
 import net.minecraft.world.item.crafting.SimpleRecipeSerializer;
 
 import java.util.HashMap;
@@ -17,6 +18,7 @@ public class NcRecipeSerializers {
 
     public static final RecipeSerializerDeferredRegister RECIPE_SERIALIZERS = new RecipeSerializerDeferredRegister(NuclearCraft.MODID);
     public static final RecipeSerializerRegistryObject<RadShieldingRecipe> SHIELDING = RECIPE_SERIALIZERS.register("shielding", () -> new SimpleRecipeSerializer<>(RadShieldingRecipe::new));
+    public static final RecipeSerializerRegistryObject<ResetNbtRecipe> RESET_NBT = RECIPE_SERIALIZERS.register("reset_nbt", () -> new SimpleRecipeSerializer<>(ResetNbtRecipe::new));
 
     public static HashMap<String, RecipeSerializerRegistryObject<NcRecipe>> SERIALIZERS = initSerializers();
 

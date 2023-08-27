@@ -1,5 +1,6 @@
 package igentuman.nc.block;
 
+import igentuman.nc.block.entity.energy.BatteryBE;
 import igentuman.nc.block.entity.processor.NCProcessorBE;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.setup.registration.NCProcessors;
@@ -7,11 +8,15 @@ import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -41,19 +46,17 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
-import static igentuman.nc.handler.event.client.InputEvents.SHIFT_PRESSED;
-
-public class NCProcessorBlock extends HorizontalDirectionalBlock implements EntityBlock {
+public class ProcessorBlock extends HorizontalDirectionalBlock implements EntityBlock {
     public static final DirectionProperty HORIZONTAL_FACING = FACING;
     public static final BooleanProperty ACTIVE = BlockStateProperties.POWERED;
-    public NCProcessorBlock() {
+    public ProcessorBlock() {
         this(Properties.of(Material.METAL)
                 .sound(SoundType.METAL)
                 .strength(2.0f)
                 .noOcclusion()
                 .requiresCorrectToolForDrops());
     }
-    public NCProcessorBlock(Properties pProperties) {
+    public ProcessorBlock(Properties pProperties) {
         super(pProperties.sound(SoundType.METAL));
         this.registerDefaultState(
                 this.stateDefinition.any()
@@ -81,6 +84,33 @@ public class NCProcessorBlock extends HorizontalDirectionalBlock implements Enti
     public String processorCode()
     {
         return asItem().toString();
+    }
+
+    @Override
+    public void setPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+        super.setPlacedBy(world, pos, state, placer, stack);
+
+        if (stack.hasTag()) {
+            NCProcessorBE tileEntity = (NCProcessorBE) world.getBlockEntity(pos);
+            CompoundTag nbtData = stack.getTag();
+            tileEntity.load(nbtData);
+        }
+    }
+
+    @Override
+    public void playerDestroy(Level pLevel, Player pPlayer, BlockPos pPos, BlockState pState, @javax.annotation.Nullable BlockEntity pBlockEntity, ItemStack pTool) {
+        pPlayer.awardStat(Stats.BLOCK_MINED.get(this));
+        pPlayer.causeFoodExhaustion(0.005F);
+        NCProcessorBE processorBe = (NCProcessorBE) pBlockEntity;
+        CompoundTag data = processorBe.getTagForStack();
+
+        ItemStack drop = new ItemStack(this);
+        drop.setTag(data);
+        if (!pLevel.isClientSide()) {
+            ItemEntity itemEntity = new ItemEntity(pLevel, pPos.getX(), pPos.getY(), pPos.getZ(), drop);
+            itemEntity.setDefaultPickUpDelay();
+            pLevel.addFreshEntity(itemEntity);
+        }
     }
 
     @Override
@@ -117,7 +147,7 @@ public class NCProcessorBlock extends HorizontalDirectionalBlock implements Enti
             return (lvl, pos, blockState, t) -> {
                 if (t instanceof NCProcessorBE tile) {
                     tile.tickClient();
-                    level.setBlock(pos, blockState.setValue(ACTIVE, tile.isActive), 3);
+                    level.setBlockAndUpdate(pos, blockState.setValue(ACTIVE, tile.isActive));
                 }
             };
         }

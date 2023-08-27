@@ -1,5 +1,6 @@
 package igentuman.nc.setup;
 
+import igentuman.nc.client.block.BatteryBlockLoader;
 import igentuman.nc.client.gui.fission.FissionPortScreen;
 import igentuman.nc.client.particle.RadiationParticle;
 import igentuman.nc.client.gui.fission.FissionControllerScreen;
@@ -18,15 +19,14 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.renderer.item.ItemPropertyFunction;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.BossEvent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
-import net.minecraftforge.client.gui.overlay.GuiOverlayManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -66,6 +66,12 @@ public class ClientSetup {
             });
         });
     }
+
+    @SubscribeEvent
+    public static void onModelRegistryEvent(ModelEvent.RegisterGeometryLoaders event) {
+        event.register(BatteryBlockLoader.BATTERY_LOADER.getPath(), new BatteryBlockLoader());
+    }
+
 
     public static void setPropertyOverride(ItemLike itemProvider, ResourceLocation override, ItemPropertyFunction propertyGetter) {
         ItemProperties.register(itemProvider.asItem(), override, propertyGetter);

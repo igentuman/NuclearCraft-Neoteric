@@ -1,10 +1,10 @@
 package igentuman.nc.setup.registration;
 
-import igentuman.nc.block.NCProcessorBlock;
+import igentuman.nc.block.ProcessorBlock;
 import igentuman.nc.block.entity.processor.NCProcessorBE;
 import igentuman.nc.container.NCProcessorContainer;
-import igentuman.nc.setup.ModSetup;
 import igentuman.nc.content.processors.Processors;
+import igentuman.nc.item.ProcessorBlockItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
@@ -74,17 +74,13 @@ public class NCProcessors {
 
     private static void registerBlocks() {
         for(String name: Processors.registered().keySet()) {
-            PROCESSORS.put(name, BLOCKS.register(name, () -> new NCProcessorBlock(PROCESSOR_BLOCK_PROPERTIES)));
+            PROCESSORS.put(name, BLOCKS.register(name, () -> new ProcessorBlock(PROCESSOR_BLOCK_PROPERTIES)));
             PROCESSOR_BLOCKS_ITEMS.put(name, fromBlock(PROCESSORS.get(name)));
         }
     }
 
     public static <B extends Block> RegistryObject<Item> fromBlock(RegistryObject<B> block) {
-        return ITEMS.register(block.getId().getPath(), () -> new BlockItem(block.get(), PROCESSOR_ITEM_PROPERTIES));
-    }
-    @FunctionalInterface
-    public interface BlockEntitySupplier<T extends BlockEntity> {
-        T create(BlockPos pPos, BlockState pState, String name);
+        return ITEMS.register(block.getId().getPath(), () -> new ProcessorBlockItem(block.get(), PROCESSOR_ITEM_PROPERTIES));
     }
 
 }

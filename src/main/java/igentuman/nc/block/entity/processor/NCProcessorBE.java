@@ -1,7 +1,6 @@
 package igentuman.nc.block.entity.processor;
 
 import igentuman.nc.block.entity.NuclearCraftBE;
-import igentuman.nc.client.NcClient;
 import igentuman.nc.handler.UpgradesHandler;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.radiation.data.RadiationManager;
@@ -10,7 +9,6 @@ import igentuman.nc.recipes.NcRecipeType;
 import igentuman.nc.recipes.RecipeInfo;
 import igentuman.nc.content.processors.ProcessorPrefab;
 import igentuman.nc.content.processors.Processors;
-import igentuman.nc.setup.registration.NCItems;
 import igentuman.nc.setup.registration.NCProcessors;
 import igentuman.nc.util.CustomEnergyStorage;
 import igentuman.nc.handler.sided.SidedContentHandler;
@@ -19,7 +17,6 @@ import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
@@ -27,8 +24,6 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.ComparatorBlock;
-import net.minecraft.world.level.block.PoweredBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.common.capabilities.Capability;
@@ -36,10 +31,7 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -49,7 +41,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
-import static igentuman.nc.block.NCProcessorBlock.ACTIVE;
+import static igentuman.nc.block.ProcessorBlock.ACTIVE;
 
 public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE {
 
@@ -176,7 +168,8 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
 
     public int energyPerTick()
     {
-        energyPerTick = (int) (recipe.getEnergy()*energyMultiplier()*prefab().config().getPower());
+        double energy = recipe == null ? 0 : recipe.getEnergy();
+        energyPerTick = (int) (energy*energyMultiplier()*prefab().config().getPower());
         return energyPerTick;
     }
 
@@ -272,6 +265,7 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
         handleRecipeOutput();
         updated = updated || contentHandler.tick();
         if(updated || wasUpdated) {
+            level.setBlockAndUpdate(worldPosition, getBlockState().setValue(ACTIVE, isActive));
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(ACTIVE, isActive), Block.UPDATE_ALL);
         }
     }
@@ -349,9 +343,18 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
             if (infoTag.contains("recipeInfo")) {
                 recipeInfo.deserializeNBT(infoTag.getCompound("recipeInfo"));
             }
-            upgradesHandler.deserializeNBT((CompoundTag) (infoTag).get("upgrades"));
+            if(infoTag.contains("upgrades")) {
+                upgradesHandler.deserializeNBT((CompoundTag) (infoTag).get("upgrades"));
+            }
         }
+        updateRecipeAfterLoad();
         super.load(tag);
+    }
+
+    private void updateRecipeAfterLoad() {
+        if(recipe == null && recipeInfo != null && recipeInfo.recipe() != null) {
+            recipe = recipeInfo.recipe();
+        }
     }
 
     //used to save data to chunk
@@ -361,9 +364,12 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
 
         contentHandler.saveSideMap();
 
-        tag.put("Content", contentHandler.serializeNBT());
-        tag.put("Energy", energyStorage.serializeNBT());
-
+        if(!tag.contains("Content")) {
+            tag.put("Content", contentHandler.serializeNBT());
+        }
+        if(!tag.contains("Energy")) {
+            tag.put("Energy", energyStorage.serializeNBT());
+        }
         CompoundTag infoTag = new CompoundTag();
         saveTagData(infoTag);
         infoTag.put("upgrades", upgradesHandler.serializeNBT());
@@ -439,7 +445,6 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
         handleUpdateTag(tag);
 
         if (oldEnergy != energyStorage.getEnergyStored()) {
-            //requestModelDataUpdate();
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
         }
     }
@@ -467,5 +472,19 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
         if (redstoneMode > 1) redstoneMode = 0;
         setChanged();
         level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+    }
+
+    public CompoundTag getTagForStack() {
+        CompoundTag data = new CompoundTag();
+        contentHandler.saveSideMap();
+        data.put("Content", contentHandler.serializeNBT());
+        data.put("Energy", energyStorage.serializeNBT());
+        CompoundTag infoTag = new CompoundTag();
+        saveTagData(infoTag);
+        infoTag.put("upgrades", upgradesHandler.serializeNBT());
+        infoTag.put("recipeInfo", recipeInfo.serializeNBT());
+        infoTag.putInt("energy", energyStorage.getEnergyStored());
+        data.put("Info", infoTag);
+        return data;
     }
 }

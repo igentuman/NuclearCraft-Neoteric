@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:ingots/zinc"
+    },
+    "M": {
+      "tag": "forge:ingots/magnesium"
+    },
+    "P": {
+      "item": "nuclearcraft:plate_advanced"
+    },
+    "V": {
+      "item": "nuclearcraft:basic_voltaic_pile"
+    }
+  },
+  "pattern": [
+    "PMP",
+    "VVV",
+    "PCP"
+  ],
+  "result": {
+    "item": "nuclearcraft:advanced_voltaic_pile"
+  }
+}

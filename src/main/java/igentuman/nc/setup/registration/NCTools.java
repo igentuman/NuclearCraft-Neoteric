@@ -20,9 +20,9 @@ public class NCTools {
     public static final Item.Properties ITEM_PROPERTIES = new Item.Properties().tab(CreativeTabs.NC_ITEMS);
     public static final RegistryObject<Item> GEIGER_COUNTER = ITEMS.register("geiger_counter", () -> new GeigerCounterItem(ITEM_PROPERTIES));
     public static final RegistryObject<Item> LITHIUM_ION_CELL = ITEMS.register("lithium_ion_cell", () -> new BatteryItem(ITEM_PROPERTIES));
-    public static final RegistryObject<Item> MULTITOOL = ITEMS.register("multitool", () -> new PickaxeItem(Tiers.TOUGH, 7, 2F, ITEM_PROPERTIES));
-    public static final RegistryObject<Item> QNP = ITEMS.register("qnp", () -> new QNP(Tiers.QNP, 12, 3F, ITEM_PROPERTIES));
-    public static final RegistryObject<Item> SPAXELHOE_TOUGH = ITEMS.register("spaxelhoe_tough", () -> new Item(ITEM_PROPERTIES));
+    public static final RegistryObject<Item> SPAXELHOE_TOUGH = ITEMS.register("spaxelhoe_tough", () -> new PickaxeItem(Tiers.TOUGH, 7, 2F, ITEM_PROPERTIES));
+    public static final RegistryObject<Item> QNP = ITEMS.register("qnp", () -> new QNP(Tiers.QNP, 11, 2F, ITEM_PROPERTIES));
+    public static final RegistryObject<Item> MULTITOOL = ITEMS.register("multitool", () -> new Item(ITEM_PROPERTIES));
 
     public static void init() {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();

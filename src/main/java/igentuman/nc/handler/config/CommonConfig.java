@@ -2,6 +2,7 @@ package igentuman.nc.handler.config;
 
 import com.google.common.collect.ImmutableList;
 import igentuman.nc.content.materials.*;
+import igentuman.nc.setup.energy.BatteryBlocks;
 import igentuman.nc.setup.energy.SolarPanels;
 import igentuman.nc.setup.multiblocks.FissionBlocks;
 import igentuman.nc.content.processors.Processors;
@@ -28,6 +29,7 @@ public class CommonConfig {
     public static final FissionConfig FISSION_CONFIG = new FissionConfig(BUILDER);
     public static final RadiationConfig RADIATION_CONFIG = new RadiationConfig(BUILDER);
     public static final EnergyGenerationConfig ENERGY_GENERATION = new EnergyGenerationConfig(BUILDER);
+    public static final EnergyStorageConfig ENERGY_STORAGE_CONFIG = new EnergyStorageConfig(BUILDER);
     public static final MaterialProductsConfig MATERIAL_PRODUCTS = new MaterialProductsConfig(BUILDER);
     public static final DimensionConfig DIMENSION_CONFIG = new DimensionConfig(BUILDER);
     public static final ForgeConfigSpec spec = BUILDER.build();
@@ -455,26 +457,64 @@ public class CommonConfig {
     }
 
     public static class EnergyGenerationConfig {
-            public ForgeConfigSpec.ConfigValue<List<Boolean>> REGISTER_SOLAR_PANELS;
-            public ForgeConfigSpec.ConfigValue<List<Integer>> SOLAR_PANELS_GENERATION;
-            public ForgeConfigSpec.ConfigValue<Integer> STEAM_TURBINE;
+        public ForgeConfigSpec.ConfigValue<List<Boolean>> REGISTER_SOLAR_PANELS;
+        public ForgeConfigSpec.ConfigValue<List<Integer>> SOLAR_PANELS_GENERATION;
+        public ForgeConfigSpec.ConfigValue<Integer> STEAM_TURBINE;
 
 
-            public EnergyGenerationConfig(ForgeConfigSpec.Builder builder) {
-                builder.push("energy_generation");
+        public EnergyGenerationConfig(ForgeConfigSpec.Builder builder) {
+            builder.push("energy_generation");
 
-                REGISTER_SOLAR_PANELS = builder
-                        .comment("Allow processor registration: " + String.join(", ", SolarPanels.all().keySet()))
-                        .define("register_processor", SolarPanels.initialRegistered());
+            REGISTER_SOLAR_PANELS = builder
+                    .comment("Allow panel registration: " + String.join(", ", SolarPanels.all().keySet()))
+                    .define("register_panel", SolarPanels.initialRegistered());
 
-                SOLAR_PANELS_GENERATION = builder
-                        .comment("Processor power: " + String.join(", ", SolarPanels.all().keySet()))
-                        .define("processor_power", SolarPanels.initialPower());
-                STEAM_TURBINE = builder
-                        .comment("Steam turbine (one block) base power gen")
-                        .define("steam_turbine_power_gen", 50);
+            SOLAR_PANELS_GENERATION = builder
+                    .comment("Panel power generation: " + String.join(", ", SolarPanels.all().keySet()))
+                    .define("panel_power", SolarPanels.initialPower());
+            STEAM_TURBINE = builder
+                    .comment("Steam turbine (one block) base power gen")
+                    .define("steam_turbine_power_gen", 50);
 
-                builder.pop();
-            }
+            builder.pop();
         }
+    }
+
+    public static class EnergyStorageConfig {
+        public ForgeConfigSpec.ConfigValue<List<Boolean>> REGISTER_ENERGY_BLOCK;
+        public ForgeConfigSpec.ConfigValue<List<Integer>> ENERGY_BLOCK_STORAGE;
+        public ForgeConfigSpec.ConfigValue<Integer> LITHIUM_ION_BATTERY_STORAGE;
+        public ForgeConfigSpec.ConfigValue<Integer> QNP_ENERGY_STORAGE;
+        public ForgeConfigSpec.ConfigValue<Integer> QNP_ENERGY_PER_BLOCK;
+
+        public EnergyStorageConfig(ForgeConfigSpec.Builder builder) {
+            builder.push("energy_storage");
+
+            REGISTER_ENERGY_BLOCK = builder
+                    .comment("Allow block registration: " + String.join(", ", SolarPanels.all().keySet()))
+                    .define("energy_block_registration", SolarPanels.initialRegistered());
+
+            ENERGY_BLOCK_STORAGE = builder
+                    .comment("Storage: " + String.join(", ", BatteryBlocks.all().keySet()))
+                    .define("energy_block_storage", BatteryBlocks.initialPower());
+
+            LITHIUM_ION_BATTERY_STORAGE = builder
+                    .define("lithium_ion_battery_storage", 1000000);
+
+            QNP_ENERGY_STORAGE = builder
+                    .define("qnp_energy_storage", 2000000);
+
+            QNP_ENERGY_PER_BLOCK = builder
+                    .define("qnp_energy_per_block", 200);
+
+            builder.pop();
+        }
+
+        public int getCapacityFor(String code) {
+            if(code.equals("lithium_ion_cell")) {
+                return LITHIUM_ION_BATTERY_STORAGE.get();
+            }
+            return BatteryBlocks.all().get(code).getStorage();
+        }
+    }
 }

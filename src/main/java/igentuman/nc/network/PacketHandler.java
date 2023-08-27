@@ -2,6 +2,7 @@ package igentuman.nc.network;
 
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.network.toClient.PacketRadiationData;
+import igentuman.nc.network.toServer.BatterySideConfig;
 import igentuman.nc.network.toServer.PacketGuiButtonPress;
 import igentuman.nc.network.toServer.PacketSideConfigToggle;
 import net.minecraftforge.network.simple.SimpleChannel;
@@ -21,6 +22,7 @@ public class PacketHandler extends BasePacketHandler {
 
         registerClientToServer(PacketGuiButtonPress.class, PacketGuiButtonPress::decode);
         registerClientToServer(PacketSideConfigToggle.class, PacketSideConfigToggle::decode);
+        registerClientToServer(BatterySideConfig.class, BatterySideConfig::decode);
 
 
         //Server to client messages

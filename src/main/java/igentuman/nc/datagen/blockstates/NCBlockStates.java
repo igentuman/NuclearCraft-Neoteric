@@ -18,6 +18,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import java.util.function.Function;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.client.block.BatteryBlockLoader.BATTERY_LOADER;
 
 public class NCBlockStates extends BlockStateProvider {
 
@@ -32,6 +33,7 @@ public class NCBlockStates extends BlockStateProvider {
         blocks();
         processors();
         solarPanels();
+        energyBlocks();
         materialFluidBlocks();
         heatSinks();
         fissionReactor();
@@ -63,7 +65,19 @@ public class NCBlockStates extends BlockStateProvider {
             simpleBlock(
                     NCEnergyBlocks.ENERGY_BLOCKS.get(name).get(),
                     energyModel(NCEnergyBlocks.ENERGY_BLOCKS.get(name).get(),
-                            name));
+                            name+"_"));
+        }
+    }
+
+    private void energyBlocks() {
+        for(String name: NCEnergyBlocks.ENERGY_BLOCKS.keySet()) {
+            if(name.contains("solar_panel")) continue;
+            String tier = name.replaceAll("voltaic_pile|lithium_ion_battery", "");
+            String category = name.replace(tier, "");
+            simpleBlock(
+                    NCEnergyBlocks.ENERGY_BLOCKS.get(name).get(),
+                    energyModel(NCEnergyBlocks.ENERGY_BLOCKS.get(name).get(),
+                            category+"/"+tier.replace("_", "")+"/"));
         }
     }
 
@@ -205,27 +219,22 @@ public class NCBlockStates extends BlockStateProvider {
     public ModelFile energyModel(Block block, String subPath) {
         ResourceLocation name = key(block);
 
-        String blockPath = "";
-        switch (subPath) {
-            case "ore":
-                blockPath = "block/ore/";
-                break;
-            case "material/block":
-                blockPath = "block/material/";
-                break;
-            case "processor":
-                blockPath = "block/processor/";
-                break;
-        }
-        return models().cube(
-                blockPath+key(block).getPath(),
-                new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"_side"),
-                new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"_top"),
-                new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"_side"),
-                new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"_side"),
-                new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"_side"),
-                new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"_side")
+        BlockModelBuilder model =  models().cube(
+                key(block).getPath(),
+                new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"side"),
+                new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"top"),
+                new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"side"),
+                new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"side"),
+                new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"side"),
+                new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"side")
         );
+        if(subPath.matches(".*solar_panel.*")) {
+            model.texture("particle", ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"top");
+        } else {
+            model.texture("particle", ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"side");
+            model.customLoader((blockModelBuilder, helper) -> new CustomLoaderBuilder<BlockModelBuilder>(BATTERY_LOADER, blockModelBuilder, helper) { });
+        }
+        return model;
     }
 
 }

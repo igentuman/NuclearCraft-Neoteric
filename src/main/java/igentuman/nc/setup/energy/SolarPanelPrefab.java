@@ -32,7 +32,7 @@ public class SolarPanelPrefab {
             if(!CommonConfig.isLoaded()) {
                 return this;
             }
-            int id = Processors.all().keySet().stream().toList().indexOf(name);
+            int id = SolarPanels.all().keySet().stream().toList().indexOf(name);
             registered = ENERGY_GENERATION.REGISTER_SOLAR_PANELS.get().get(id);
             generation = ENERGY_GENERATION.SOLAR_PANELS_GENERATION.get().get(id);
             initialized = true;

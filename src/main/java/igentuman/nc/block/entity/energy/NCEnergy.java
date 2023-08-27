@@ -8,6 +8,9 @@ import igentuman.nc.util.CustomEnergyStorage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -15,6 +18,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -24,7 +28,7 @@ public class NCEnergy extends NuclearCraftBE {
 
     protected String name;
     public static String NAME;
-    protected final CustomEnergyStorage energyStorage = createEnergy();
+    public final CustomEnergyStorage energyStorage = createEnergy();
 
     public LazyOptional<IEnergyStorage> getEnergy() {
         return energy;
@@ -69,13 +73,16 @@ public class NCEnergy extends NuclearCraftBE {
     }
 
     private CustomEnergyStorage createEnergy() {
-        //todo read config
-        return new CustomEnergyStorage(getEnergyMaxStorage(), 0, getEnergyMaxStorage()) {
+        return new CustomEnergyStorage(getEnergyMaxStorage(), getMaxTransfer(), getEnergyMaxStorage()) {
             @Override
             protected void onEnergyChanged() {
                 setChanged();
             }
         };
+    }
+
+    public int getMaxTransfer() {
+        return 0;
     }
 
     @Nonnull
@@ -114,16 +121,71 @@ public class NCEnergy extends NuclearCraftBE {
 
 
     @Override
-    public void load(CompoundTag tag) {
-        if (tag.contains("Energy")) {
-            energyStorage.deserializeNBT(tag.get("Energy"));
+    public @NotNull CompoundTag getUpdateTag() {
+        CompoundTag tag = super.getUpdateTag();
+        saveClientData(tag);
+        return tag;
+    }
+
+    protected void saveClientData(CompoundTag tag) {
+        CompoundTag infoTag = new CompoundTag();
+        saveTagData(infoTag);
+
+        tag.put("Info", infoTag);
+
+        tag.put("energy_storage", energyStorage.serializeNBT());
+        tag.putInt("energy", energyStorage.getEnergyStored());
+    }
+
+    @Nullable
+    @Override
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
+    }
+
+    @Override
+    public void handleUpdateTag(CompoundTag tag) {
+        if (tag != null) {
+            loadClientData(tag);
         }
+    }
+
+    public void loadClientData(CompoundTag tag) {
+        if (tag.contains("energy_storage")) {
+            energyStorage.deserializeNBT(tag.get("energy_storage"));
+        }
+        if(tag.contains("energy")) {
+            energyStorage.setEnergy(tag.getInt("energy"));
+        }
+    }
+
+    @Override
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
+        int oldEnergy = energyStorage.getEnergyStored();
+
+        CompoundTag tag = pkt.getTag();
+        handleUpdateTag(tag);
+        if (oldEnergy != energyStorage.getEnergyStored()) {
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+        }
+    }
+
+    @Override
+    public void load(CompoundTag tag) {
+        if (tag.contains("energy_storage")) {
+            energyStorage.deserializeNBT(tag.get("energy_storage"));
+        }
+        if (tag.contains("energy")) {
+            energyStorage.setEnergy(tag.getInt("energy"));
+        }
+
         super.load(tag);
     }
 
     @Override
     public void saveAdditional(CompoundTag tag) {
-        tag.put("Energy", energyStorage.serializeNBT());
+        tag.put("energy_storage", energyStorage.serializeNBT());
+        tag.putInt("energy", energyStorage.getEnergyStored());
     }
 
 }

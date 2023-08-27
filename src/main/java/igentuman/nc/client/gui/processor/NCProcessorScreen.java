@@ -90,7 +90,7 @@ public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractC
             progressBarX -= ProcessorSlots.margin;
         }
 
-        if(slots.getInputItems()+slots.getInputFluids() > 6) {
+        if(slots.getInputItems()+slots.getInputFluids() > 5) {
             progressBarX += ProcessorSlots.margin;
         }
         widgets.add(new ProgressBar(progressBarX, 40, this, menu.getProcessor().progressBar));

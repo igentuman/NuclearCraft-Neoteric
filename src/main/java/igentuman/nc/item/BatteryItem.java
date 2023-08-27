@@ -98,13 +98,13 @@ public class BatteryItem extends Item
 	public String formatEnergy(int energy)
 	{
 		if(energy >= 1000000000) {
-			return TextUtils.numberFormat(energy/1000000000)+" GFE";
+			return TextUtils.numberFormat((double) energy /1000000000)+" GFE";
 		}
 		if(energy >= 1000000) {
-			return TextUtils.numberFormat(energy/1000000)+" MFE";
+			return TextUtils.numberFormat((double) energy /1000000)+" MFE";
 		}
 		if(energy >= 1000) {
-			return TextUtils.numberFormat(energy/1000)+" kFE";
+			return TextUtils.numberFormat((double) energy /1000)+" kFE";
 		}
 		return TextUtils.numberFormat(energy)+" FE";
 	}

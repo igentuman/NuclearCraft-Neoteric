@@ -12,14 +12,14 @@ This is a re-creation of old but gold NuclearCraft on a modern MC version
 - [x] Processors Sided Content handling
 - [x] Fission Reactor
 - [x] Radiation
-- [ ] Energy Blocks
-- [ ] Crafttweaker Support
+- [x] Energy Blocks
+- [x] Crafttweaker Support
 - [x] JEI Support
 - [ ] Steam Turbine
 - [ ] Steam Mode for reactors
 - [ ] In Situ Leaching
 - [ ] Computers Support
-- [ ] Custom blocks like Cobblestoen Generator
+- [x] Custom blocks like Cobblestone Generator
 - [x] Custom items like Geiger Counter
 
 

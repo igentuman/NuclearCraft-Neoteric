@@ -19,8 +19,10 @@ import net.minecraftforge.common.Tags;
 import java.util.function.Consumer;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.datagen.recipes.recipes.AbstractRecipeProvider.isotopeIngredient;
 import static igentuman.nc.setup.registration.Fuel.NC_ISOTOPES;
 import static igentuman.nc.setup.registration.NCArmor.*;
+import static igentuman.nc.setup.registration.NCBlocks.NC_BLOCKS;
 import static igentuman.nc.setup.registration.NCEnergyBlocks.ENERGY_BLOCKS;
 import static igentuman.nc.setup.registration.NCItems.*;
 import static igentuman.nc.setup.registration.NCTools.GEIGER_COUNTER;
@@ -52,6 +54,46 @@ public class NCRecipes extends RecipeProvider {
     }
 
     private void energyBlocks(Consumer<FinishedRecipe> consumer) {
+
+        ShapedRecipeBuilder.shaped(ENERGY_BLOCKS.get("uranium_rtg").get())
+                .pattern("PGP")
+                .pattern("GUG")
+                .pattern("PGP")
+                .define('G', forgePlate(Materials.graphite))
+                .define('P', NC_PARTS.get("plate_basic").get())
+                .define('U', forgeBlock("uranium238"))
+                .unlockedBy("item", has(NC_PARTS.get("plate_advanced").get()))
+                .save(consumer, new ResourceLocation(MODID, "uranium_rtg"));
+
+        ShapedRecipeBuilder.shaped(ENERGY_BLOCKS.get("plutonium_rtg").get())
+                .pattern("PGP")
+                .pattern("GUG")
+                .pattern("PGP")
+                .define('G', forgePlate(Materials.graphite))
+                .define('P', NC_PARTS.get("plate_advanced").get())
+                .define('U', forgeBlock("plutonium238"))
+                .unlockedBy("item", has(NC_PARTS.get("plate_advanced").get()))
+                .save(consumer, new ResourceLocation(MODID, "plutonium_rtg"));
+
+        ShapedRecipeBuilder.shaped(ENERGY_BLOCKS.get("americium_rtg").get())
+                .pattern("PGP")
+                .pattern("GUG")
+                .pattern("PGP")
+                .define('G', forgePlate(Materials.graphite))
+                .define('P', NC_PARTS.get("plate_advanced").get())
+                .define('U', forgeBlock("americium241"))
+                .unlockedBy("item", has(NC_PARTS.get("plate_advanced").get()))
+                .save(consumer, new ResourceLocation(MODID, "americium_rtg"));
+
+        ShapedRecipeBuilder.shaped(ENERGY_BLOCKS.get("californium_rtg").get())
+                .pattern("PGP")
+                .pattern("GUG")
+                .pattern("PGP")
+                .define('G', forgePlate(Materials.graphite))
+                .define('P', NC_PARTS.get("plate_advanced").get())
+                .define('U', forgeBlock("californium250"))
+                .unlockedBy("item", has(NC_PARTS.get("plate_advanced").get()))
+                .save(consumer, new ResourceLocation(MODID, "californium_rtg"));
 
         ShapedRecipeBuilder.shaped(ENERGY_BLOCKS.get("basic_voltaic_pile").get())
                 .pattern("PSP")
@@ -727,7 +769,7 @@ public class NCRecipes extends RecipeProvider {
     private void materials(Consumer<FinishedRecipe> consumer) {
         for(String name: Materials.ingots().keySet()) {
             if(Materials.ingots().get(name).block) {
-                ShapelessRecipeBuilder.shapeless(NCBlocks.NC_BLOCKS.get(name).get())
+                ShapelessRecipeBuilder.shapeless(NC_BLOCKS.get(name).get())
                         .requires(Ingredient.of(forgeIngot(name)), 9)
                         .group(MODID+"_blocks")
                         .unlockedBy("ingot", has(NCItems.NC_INGOTS.get(name).get()))

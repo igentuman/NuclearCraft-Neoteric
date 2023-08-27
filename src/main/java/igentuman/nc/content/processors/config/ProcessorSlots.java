@@ -78,7 +78,7 @@ public class ProcessorSlots {
             }
             x = outputSlotPos[0];
             y = outputSlotPos[1];
-            if(input_fluids+input_items > 6) {
+            if(input_fluids+input_items > 5) {
                 x += margin;
             }
             if(output_fluids+output_items > 6) {

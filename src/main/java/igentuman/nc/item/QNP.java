@@ -52,6 +52,7 @@ import java.util.Random;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import static igentuman.nc.handler.config.CommonConfig.ENERGY_STORAGE_CONFIG;
 import static igentuman.nc.handler.event.client.BlockOverlayHandler.getArea;
 import static igentuman.nc.setup.registration.NCSounds.ITEM_CHARGED;
 
@@ -84,7 +85,7 @@ public class QNP extends PickaxeItem
 	}
 
 	protected int getEnergyMaxStorage() {
-		return 1500000;
+		return ENERGY_STORAGE_CONFIG.QNP_ENERGY_STORAGE.get();
 	}
 
 	@Override
@@ -182,7 +183,7 @@ public class QNP extends PickaxeItem
 			Random random = new Random();
 			((ServerLevel) worldIn).sendParticles(NcParticleTypes.RADIATION.get(), pos.getX() + (random.nextFloat() - 0.5), pos.getY() + (random.nextFloat() - 0.5),
 					pos.getZ() + (random.nextFloat() - 0.5), 3, 0, 0, 0, 0);
-			getEnergy(tool).extractEnergy(100, false);
+			getEnergy(tool).extractEnergy(ENERGY_STORAGE_CONFIG.QNP_ENERGY_PER_BLOCK.get(), false);
 			if(veinMode && veinMinedBlocksCounter < 20) {
 				veinMinedBlocksCounter++;
 				for (Direction facing : Direction.values()) {
@@ -193,7 +194,7 @@ public class QNP extends PickaxeItem
 				}
 			}
 			block.popExperience((ServerLevel) worldIn, pos, xp);
-			getEnergy(tool).extractEnergy(100, false);
+			getEnergy(tool).extractEnergy(ENERGY_STORAGE_CONFIG.QNP_ENERGY_PER_BLOCK.get(), false);
 		}
 		return totalDrops;
 	}
@@ -205,7 +206,7 @@ public class QNP extends PickaxeItem
 		//mine initialblock always
 		harvestBlock(pos, worldIn, entityLiving, stack, false, totalDrops);
 
-		getEnergy(stack).extractEnergy(100, false);
+		getEnergy(stack).extractEnergy(ENERGY_STORAGE_CONFIG.QNP_ENERGY_PER_BLOCK.get(), false);
 		veinMinedBlocksCounter++;
 		if(initialBlockState.is(Tags.Blocks.ORES)) {
 			//mine all blocks of the same type
@@ -229,7 +230,7 @@ public class QNP extends PickaxeItem
 
 	@Override
 	public float getDestroySpeed(@NotNull ItemStack stack, @NotNull BlockState state) {
-		if(getEnergy(stack).getEnergyStored() > 100) return getTier().getSpeed();
+		if(getEnergy(stack).getEnergyStored() > ENERGY_STORAGE_CONFIG.QNP_ENERGY_PER_BLOCK.get()) return getTier().getSpeed();
 		return 0.1F;
 	}
 
@@ -284,7 +285,7 @@ public class QNP extends PickaxeItem
 
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
-		return new ItemEnergyHandler(stack, getEnergyMaxStorage(), 50000, 50000);
+		return new ItemEnergyHandler(stack, getEnergyMaxStorage(), 0, getEnergyMaxStorage()/4);
 	}
 
 	public CustomEnergyStorage getEnergy(ItemStack stack)

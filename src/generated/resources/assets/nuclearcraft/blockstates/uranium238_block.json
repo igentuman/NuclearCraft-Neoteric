@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "nuclearcraft:block/material/uranium238_block"
+    }
+  }
+}

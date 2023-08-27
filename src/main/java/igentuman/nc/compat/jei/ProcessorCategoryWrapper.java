@@ -89,6 +89,8 @@ public class ProcessorCategoryWrapper<T extends AbstractRecipe> implements IReci
         int d = (int) ((recipe.getTimeModifier()*(double) processor.config().getTime())/2);
         int fluidsOut = processor.getSlotsConfig().getOutputFluids();
         int itemsOut = processor.getSlotsConfig().getOutputItems();
+        int itemsIn = processor.getSlotsConfig().getInputItems();
+        int fluidsIn = processor.getSlotsConfig().getInputFluids();
 
         int barXshift = 0;
         if(fluidsOut + itemsOut == 3 || fluidsOut + itemsOut == 6) {
@@ -97,6 +99,9 @@ public class ProcessorCategoryWrapper<T extends AbstractRecipe> implements IReci
         int extraXshift = 0;
         if(fluidsOut + itemsOut > 6) {
             extraXshift = -20;
+        }
+        if(itemsIn + fluidsIn > 5) {
+            extraXshift = 20;
         }
 
         if(arrow.containsKey(d)) {

@@ -3,6 +3,7 @@ package igentuman.nc.radiation;
 import igentuman.nc.content.fuel.FuelManager;
 import igentuman.nc.content.materials.Materials;
 import igentuman.nc.handler.config.CommonConfig;
+import igentuman.nc.setup.energy.RTGs;
 import igentuman.nc.setup.registration.Fuel;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
@@ -17,6 +18,8 @@ import java.util.List;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.handler.config.CommonConfig.RADIATION_CONFIG;
 import static igentuman.nc.setup.registration.Fuel.NC_FUEL;
+import static igentuman.nc.setup.registration.NCBlocks.NC_BLOCKS;
+import static igentuman.nc.setup.registration.NCEnergyBlocks.ENERGY_BLOCKS;
 import static igentuman.nc.setup.registration.NCItems.NC_DUSTS;
 import static igentuman.nc.setup.registration.NCItems.NC_INGOTS;
 import static net.minecraft.world.item.Items.AIR;
@@ -42,6 +45,9 @@ public class ItemRadiation {
         radiationMap.put(NC_DUSTS.get(Materials.europium_155).get(), 0.21D);
         radiationMap.put(NC_INGOTS.get(Materials.uranium).get(), 0.00007D);
         radiationMap.put(NC_INGOTS.get(Materials.thorium).get(), 0.00005D);
+        for(String name: RTGs.registered().keySet()) {
+            radiationMap.put(ENERGY_BLOCKS.get(name).get().asItem(), ((double)RTGs.registered().get(name).config().getRadiation()/1000000000));
+        }
         for(String line: RADIATION_CONFIG.ITEM_RADIATION.get()) {
             String[] split = line.split("\\|");
             if(split.length != 2) {
@@ -61,6 +67,11 @@ public class ItemRadiation {
                 add(name+type, Materials.isotopes.get(name));
             }
         }
+
+        add(NC_BLOCKS.get("americium241").get().asItem(), 0.01D);
+        add(NC_BLOCKS.get("uranium238").get().asItem(),0.000005D);
+        add(NC_BLOCKS.get("californium250").get().asItem(),3D);
+        add(NC_BLOCKS.get("plutonium238").get().asItem(), 0.034D);
 
         for (String name: FuelManager.all().keySet()) {
             for(String subType: FuelManager.all().get(name).keySet()) {

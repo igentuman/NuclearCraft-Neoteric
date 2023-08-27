@@ -1,0 +1,33 @@
+{
+  "type": "nuclearcraft:fuel_reprocessor",
+  "input": [
+    {
+      "count": 9,
+      "item": "nuclearcraft:depleted_fuel_mixed_mix_239_tr"
+    }
+  ],
+  "output": [
+    {
+      "count": 4,
+      "item": "nuclearcraft:uranium_238"
+    },
+    {
+      "item": "nuclearcraft:plutonium_239"
+    },
+    {
+      "item": "nuclearcraft:plutonium_242"
+    },
+    {
+      "item": "nuclearcraft:americium_243"
+    },
+    {
+      "item": "nuclearcraft:strontium_90_dust"
+    },
+    {
+      "item": "nuclearcraft:caesium_137_dust"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 0.5
+}

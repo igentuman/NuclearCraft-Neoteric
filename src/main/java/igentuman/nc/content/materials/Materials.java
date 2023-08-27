@@ -153,6 +153,11 @@ public class Materials extends MaterialsManager {
             all.put(cobalt, NCMaterial.ore(cobalt).color(0xFF5A6691));
             all.put(platinum, NCMaterial.ore(platinum).ores(false, true, false, false).color(0xFF6C939B));
 
+            all.put("uranium238", NCMaterial.get("uranium238").define("block"));
+            all.put("plutonium238", NCMaterial.get("plutonium238").define("block"));
+            all.put("americium241", NCMaterial.get("americium241").define("block"));
+            all.put("californium250", NCMaterial.get("californium250").define("block"));
+
             //ingots, nuggets, dusts...
             all.put(netherite, NCMaterial.get(netherite).define("dust", "plate"));
             all.put(supercold_ice, NCMaterial.get(supercold_ice).define("block"));

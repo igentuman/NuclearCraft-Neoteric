@@ -34,6 +34,7 @@ public class NCBlockStates extends BlockStateProvider {
         processors();
         solarPanels();
         energyBlocks();
+        rtgs();
         materialFluidBlocks();
         heatSinks();
         fissionReactor();
@@ -59,25 +60,39 @@ public class NCBlockStates extends BlockStateProvider {
         }
     }
 
+    private void rtgs() {
+        for(String name: NCEnergyBlocks.ENERGY_BLOCKS.keySet()) {
+            if(name.contains("rtg")) {
+                String type = name.replace("_rtg", "");
+                simpleBlock(
+                        NCEnergyBlocks.ENERGY_BLOCKS.get(name).get(),
+                        energyModel(NCEnergyBlocks.ENERGY_BLOCKS.get(name).get(),
+                                "rtg/"+type+"/"));
+            }
+        }
+    }
+
     private void solarPanels() {
         for(String name: NCEnergyBlocks.ENERGY_BLOCKS.keySet()) {
-            if(!name.contains("solar_panel")) continue;
-            simpleBlock(
-                    NCEnergyBlocks.ENERGY_BLOCKS.get(name).get(),
-                    energyModel(NCEnergyBlocks.ENERGY_BLOCKS.get(name).get(),
-                            name+"_"));
+            if(name.contains("solar_panel")) {
+                simpleBlock(
+                        NCEnergyBlocks.ENERGY_BLOCKS.get(name).get(),
+                        energyModel(NCEnergyBlocks.ENERGY_BLOCKS.get(name).get(),
+                                name + "_"));
+            }
         }
     }
 
     private void energyBlocks() {
         for(String name: NCEnergyBlocks.ENERGY_BLOCKS.keySet()) {
-            if(name.contains("solar_panel")) continue;
-            String tier = name.replaceAll("voltaic_pile|lithium_ion_battery", "");
-            String category = name.replace(tier, "");
-            simpleBlock(
-                    NCEnergyBlocks.ENERGY_BLOCKS.get(name).get(),
-                    energyModel(NCEnergyBlocks.ENERGY_BLOCKS.get(name).get(),
-                            category+"/"+tier.replace("_", "")+"/"));
+            if (name.matches(".*voltaic_pile|.*lithium_ion_battery")) {
+                String tier = name.replaceAll("voltaic_pile|lithium_ion_battery", "");
+                String category = name.replace(tier, "");
+                simpleBlock(
+                        NCEnergyBlocks.ENERGY_BLOCKS.get(name).get(),
+                        energyModel(NCEnergyBlocks.ENERGY_BLOCKS.get(name).get(),
+                                category + "/" + tier.replace("_", "") + "/"));
+            }
         }
     }
 
@@ -228,10 +243,9 @@ public class NCBlockStates extends BlockStateProvider {
                 new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"side"),
                 new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"side")
         );
-        if(subPath.matches(".*solar_panel.*")) {
-            model.texture("particle", ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"top");
-        } else {
-            model.texture("particle", ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"side");
+
+        model.texture("particle", ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"top");
+        if(subPath.matches(".*voltaic_pile.*|.*lithium_ion_battery.*")) {
             model.customLoader((blockModelBuilder, helper) -> new CustomLoaderBuilder<BlockModelBuilder>(BATTERY_LOADER, blockModelBuilder, helper) { });
         }
         return model;

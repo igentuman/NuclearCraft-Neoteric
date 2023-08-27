@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:pressurizer",
+  "input": [
+    {
+      "count": 9,
+      "item": "nuclearcraft:americium_241"
+    }
+  ],
+  "output": [
+    {
+      "item": "nuclearcraft:americium241_block"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

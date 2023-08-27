@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "G": {
+      "tag": "forge:plates/graphite"
+    },
+    "P": {
+      "item": "nuclearcraft:plate_advanced"
+    },
+    "U": {
+      "tag": "forge:storage_blocks/californium250"
+    }
+  },
+  "pattern": [
+    "PGP",
+    "GUG",
+    "PGP"
+  ],
+  "result": {
+    "item": "nuclearcraft:californium_rtg"
+  }
+}

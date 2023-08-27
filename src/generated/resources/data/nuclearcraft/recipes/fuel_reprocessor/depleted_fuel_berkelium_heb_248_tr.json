@@ -1,0 +1,34 @@
+{
+  "type": "nuclearcraft:fuel_reprocessor",
+  "input": [
+    {
+      "count": 9,
+      "item": "nuclearcraft:depleted_fuel_berkelium_heb_248_tr"
+    }
+  ],
+  "output": [
+    {
+      "item": "nuclearcraft:berkelium_248"
+    },
+    {
+      "item": "nuclearcraft:californium_249"
+    },
+    {
+      "count": 2,
+      "item": "nuclearcraft:californium_251"
+    },
+    {
+      "count": 3,
+      "item": "nuclearcraft:californium_252"
+    },
+    {
+      "item": "nuclearcraft:ruthenium_106_dust"
+    },
+    {
+      "item": "nuclearcraft:promethium_147_dust"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.5
+}

@@ -3,6 +3,7 @@ package igentuman.nc.handler.config;
 import com.google.common.collect.ImmutableList;
 import igentuman.nc.content.materials.*;
 import igentuman.nc.setup.energy.BatteryBlocks;
+import igentuman.nc.setup.energy.RTGs;
 import igentuman.nc.setup.energy.SolarPanels;
 import igentuman.nc.setup.multiblocks.FissionBlocks;
 import igentuman.nc.content.processors.Processors;
@@ -459,6 +460,9 @@ public class CommonConfig {
     public static class EnergyGenerationConfig {
         public ForgeConfigSpec.ConfigValue<List<Boolean>> REGISTER_SOLAR_PANELS;
         public ForgeConfigSpec.ConfigValue<List<Integer>> SOLAR_PANELS_GENERATION;
+        public ForgeConfigSpec.ConfigValue<List<Boolean>> REGISTER_RTG;
+        public ForgeConfigSpec.ConfigValue<List<Integer>> RTG_GENERATION;
+        public ForgeConfigSpec.ConfigValue<List<Integer>> RTG_RADIATION;
         public ForgeConfigSpec.ConfigValue<Integer> STEAM_TURBINE;
 
 
@@ -472,6 +476,19 @@ public class CommonConfig {
             SOLAR_PANELS_GENERATION = builder
                     .comment("Panel power generation: " + String.join(", ", SolarPanels.all().keySet()))
                     .define("panel_power", SolarPanels.initialPower());
+
+            REGISTER_RTG = builder
+                    .comment("Allow rtg registration: " + String.join(", ", RTGs.all().keySet()))
+                    .define("register_panel", RTGs.initialRegistered());
+
+            RTG_GENERATION = builder
+                    .comment("rtg generation: " + String.join(", ", RTGs.all().keySet()))
+                    .define("rtg_power", RTGs.initialPower());
+
+            RTG_RADIATION = builder
+                    .comment("rtg radiation: " + String.join(", ", RTGs.all().keySet()))
+                    .define("rtg_radiation", RTGs.initialRadiation());
+
             STEAM_TURBINE = builder
                     .comment("Steam turbine (one block) base power gen")
                     .define("steam_turbine_power_gen", 50);
@@ -514,7 +531,7 @@ public class CommonConfig {
             if(code.equals("lithium_ion_cell")) {
                 return LITHIUM_ION_BATTERY_STORAGE.get();
             }
-            return BatteryBlocks.all().get(code).getStorage();
+            return BatteryBlocks.all().get(code).config().getStorage();
         }
     }
 }

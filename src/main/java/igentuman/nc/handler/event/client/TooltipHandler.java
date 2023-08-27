@@ -14,8 +14,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
-import java.util.List;
-
 import static igentuman.nc.NuclearCraft.MODID;
 
 @Mod.EventBusSubscriber(modid = MODID, value = Dist.CLIENT)
@@ -30,7 +28,7 @@ public class TooltipHandler {
         processedEvent = event;
         Item item = event.getItemStack().getItem();
         addRadiationLevelTooltip(event, item);
-        addShieldintTooltip(event, event.getItemStack());
+        addShieldingTooltip(event, event.getItemStack());
         addRadiationCleaningEffect(event, event.getItemStack());
     }
 
@@ -41,7 +39,7 @@ public class TooltipHandler {
         event.getToolTip().add(Component.translatable("tooltip.nc.radiation_removal", format(((double)radiation)/1000000000)+"Rad").withStyle(color));
     }
 
-    private static void addShieldintTooltip(ItemTooltipEvent event, ItemStack item) {
+    private static void addShieldingTooltip(ItemTooltipEvent event, ItemStack item) {
         int shielding = ItemShielding.byItem(item.getItem());
         if(!item.getOrCreateTag().contains("rad_shielding") &&  shielding == 0) return;
         ChatFormatting color = ChatFormatting.GOLD;

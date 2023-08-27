@@ -5,7 +5,7 @@
     "down": "nuclearcraft:block/energy/lithium_ion_battery/du/side",
     "east": "nuclearcraft:block/energy/lithium_ion_battery/du/side",
     "north": "nuclearcraft:block/energy/lithium_ion_battery/du/side",
-    "particle": "nuclearcraft:block/energy/lithium_ion_battery/du/side",
+    "particle": "nuclearcraft:block/energy/lithium_ion_battery/du/top",
     "south": "nuclearcraft:block/energy/lithium_ion_battery/du/side",
     "up": "nuclearcraft:block/energy/lithium_ion_battery/du/top",
     "west": "nuclearcraft:block/energy/lithium_ion_battery/du/side"

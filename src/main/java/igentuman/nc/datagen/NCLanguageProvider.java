@@ -199,6 +199,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("gui.nc.fluid_tank_renderer.amount_capacity","%s/%s mB");
         add("gui.nc.fluid_tank_renderer.amount","%s mB");
         add("fuel.forge_energy.descr","Forge Energy: %s FE/t");
+        add("rtg.fe_generation","Energy Generation: %s FE/t");
         add("tooltip.nc.shift_rbm_to_change","Sneak+Use to change");
         add("tooltip.nc.qnp_mode","Mode: %s");
         add("tooltip.mode.one_block","One Block");

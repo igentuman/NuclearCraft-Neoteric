@@ -1,10 +1,12 @@
 package igentuman.nc.setup.registration;
 
 import igentuman.nc.block.BatteryBlock;
+import igentuman.nc.block.RTGBlock;
 import igentuman.nc.block.SolarPanelBlock;
 import igentuman.nc.block.entity.energy.NCEnergy;
 import igentuman.nc.item.BatteryBlockItem;
 import igentuman.nc.setup.energy.BatteryBlocks;
+import igentuman.nc.setup.energy.RTGs;
 import igentuman.nc.setup.energy.SolarPanels;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -56,6 +58,14 @@ public class NCEnergyBlocks {
                     () -> BlockEntityType.Builder
                             .of(BatteryBlocks.all().get(name).getBlockEntity(), ENERGY_BLOCKS.get(name).get())
                             .build(null)));
+
+        }
+        for(String name: RTGs.registered().keySet()) {
+            ENERGY_BE.put(name, BLOCK_ENTITIES.register(name,
+                    () -> BlockEntityType.Builder
+                            .of(RTGs.all().get(name).getBlockEntity(), ENERGY_BLOCKS.get(name).get())
+                            .build(null)));
+
         }
     }
 
@@ -69,6 +79,11 @@ public class NCEnergyBlocks {
         for(String name: BatteryBlocks.registered().keySet()) {
             ENERGY_BLOCKS.put(name, BLOCKS.register(name, () -> new BatteryBlock(ENERGY_BLOCK_PROPERTIES)));
             BLOCK_ITEMS.put(name, fromBatteryBlock(ENERGY_BLOCKS.get(name)));
+        }
+
+        for(String name: RTGs.registered().keySet()) {
+            ENERGY_BLOCKS.put(name, BLOCKS.register(name, () -> new RTGBlock(ENERGY_BLOCK_PROPERTIES)));
+            BLOCK_ITEMS.put(name, fromBlock(ENERGY_BLOCKS.get(name)));
         }
     }
 

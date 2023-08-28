@@ -1,6 +1,8 @@
 package igentuman.nc.block.entity.fission;
 
 import igentuman.nc.block.entity.NuclearCraftBE;
+import igentuman.nc.multiblock.AbstractNCMultiblock;
+import igentuman.nc.multiblock.IMultiblockAttachable;
 import igentuman.nc.multiblock.fission.FissionReactorMultiblock;
 import igentuman.nc.setup.multiblocks.FissionReactor;
 import net.minecraft.core.BlockPos;
@@ -21,13 +23,29 @@ import java.util.stream.Stream;
 
 import static igentuman.nc.NuclearCraft.MODID;
 
-public class FissionBE extends NuclearCraftBE {
+public class FissionBE extends NuclearCraftBE implements IMultiblockAttachable {
+
+    @Override
+    public void setMultiblock(AbstractNCMultiblock multiblock) {
+        this.multiblock = (FissionReactorMultiblock) multiblock;
+    }
+
+    @Override
+    public FissionBE controller() {
+        try {
+            return (FissionBE) multiblock().controller().controllerBE();
+        } catch (NullPointerException ignore) {
+            return null;
+        }
+    }
+
     public FissionReactorMultiblock multiblock() {
         return multiblock;
     }
 
-    public void setMultiblock(FissionReactorMultiblock multiblock) {
-        this.multiblock = multiblock;
+    @Override
+    public boolean canInvalidateCache() {
+        return true;
     }
 
     protected FissionReactorMultiblock multiblock;

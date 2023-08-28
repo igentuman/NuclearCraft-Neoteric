@@ -1,6 +1,7 @@
 package igentuman.nc.block.entity;
 
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
+import igentuman.nc.util.NCBlockPos;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -9,6 +10,7 @@ import net.minecraft.nbt.StringTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -16,27 +18,32 @@ import java.util.List;
 
 public class NuclearCraftBE extends BlockEntity {
     protected String name;
+    protected NCBlockPos bePos;
+
+
 
     public NuclearCraftBE(BlockEntityType<?> pType, BlockPos pPos, BlockState pBlockState) {
         super(pType, pPos, pBlockState);
     }
     private boolean initFlag = false;
-    private List<Field> booleanFields = new ArrayList<>();
-    private List<Field> intFields = new ArrayList<>();
-    private List<Field> intArrayFields = new ArrayList<>();
-    private List<Field> doubleFields = new ArrayList<>();
-    private List<Field> stringFields = new ArrayList<>();
-    private List<Field> stringArrayFields = new ArrayList<>();
-    private List<Field> floatFields = new ArrayList<>();
-    private List<Field> byteFields = new ArrayList<>();
-    private List<Field> longFields = new ArrayList<>();
-    private List<Field> blockPosFields = new ArrayList<>();
+    private List<Field> booleanFields       = new ArrayList<>();
+    private List<Field> intFields           = new ArrayList<>();
+    private List<Field> intArrayFields      = new ArrayList<>();
+    private List<Field> doubleFields        = new ArrayList<>();
+    private List<Field> stringFields        = new ArrayList<>();
+    private List<Field> stringArrayFields   = new ArrayList<>();
+    private List<Field> floatFields         = new ArrayList<>();
+    private List<Field> byteFields          = new ArrayList<>();
+    private List<Field> longFields          = new ArrayList<>();
+    private List<Field> blockPosFields      = new ArrayList<>();
 
     public void saveTagData(CompoundTag tag) {
         initFields();
         try {
             for (Field f : blockPosFields) {
-                tag.putLong(f.getName(), ((BlockPos)f.get(this)).asLong());
+                if((f.get(this)) != null) {
+                    tag.putLong(f.getName(), ((BlockPos) f.get(this)).asLong());
+                }
             }
             for (Field f : booleanFields) {
                 tag.putBoolean(f.getName(), f.getBoolean(this));

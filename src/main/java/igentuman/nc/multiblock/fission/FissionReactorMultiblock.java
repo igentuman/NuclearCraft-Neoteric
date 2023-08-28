@@ -2,8 +2,10 @@ package igentuman.nc.multiblock.fission;
 
 import igentuman.nc.block.entity.fission.*;
 import igentuman.nc.multiblock.AbstractNCMultiblock;
+import igentuman.nc.multiblock.IMultiblockAttachable;
 import igentuman.nc.setup.multiblocks.*;
 import igentuman.nc.multiblock.ValidationResult;
+import igentuman.nc.util.NCBlockPos;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
@@ -15,9 +17,6 @@ import java.util.*;
 import static igentuman.nc.util.TagUtil.getBlocksByTagKey;
 
 public class FissionReactorMultiblock extends AbstractNCMultiblock {
-
-    protected static final List<Block> validOuterBlocks = getBlocksByTagKey(FissionBlocks.CASING_BLOCKS.location().toString());
-    protected static final List<Block> validInnerBlocks = getBlocksByTagKey(FissionBlocks.INNER_REACTOR_BLOCKS.location().toString());
     public HashMap<BlockPos, FissionHeatSinkBE> activeHeatSinks = new HashMap<>();
     private List<BlockPos> moderators = new ArrayList<>();
     public List<BlockPos> heatSinks = new ArrayList<>();
@@ -25,6 +24,10 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
     private double heatSinkCooling = 0;
 
     public FissionReactorMultiblock(FissionControllerBE fissionControllerBE) {
+        super(
+                getBlocksByTagKey(FissionBlocks.CASING_BLOCKS.location().toString()),
+                getBlocksByTagKey(FissionBlocks.INNER_REACTOR_BLOCKS.location().toString())
+        );
         controller = new FissionReactorController(fissionControllerBE);
     }
 
@@ -44,52 +47,6 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
         return activeHeatSinks;
     }
 
-    @Override
-    public List<Block> validOuterBlocks() { return validOuterBlocks;  }
-
-    @Override
-    public List<Block> validInnerBlocks() { return validInnerBlocks; }
-
-    public BlockPos getBottomLeftBlock() {
-        return getSidePos(leftCasing).above(bottomCasing).relative(getFacing(), -depth + 1);
-    }
-
-    public BlockPos getTopRightBlock() {
-        return getSidePos(width - rightCasing - 1).above(height - topCasing - 1).relative(getFacing(), -1);
-    }
-
-    @Override
-    public void validateOuter() {
-        for(int y = 0; y < resolveHeight(); y++) {
-            for(int x = 0; x < resolveWidth(); x++) {
-                for (int z = 0; z < resolveDepth(); z++) {
-                    if(width < 3 || height < 3 || depth < 3)
-                    {
-                        validationResult = ValidationResult.TOO_SMALL;
-                        return;
-                    }
-                    if(y == 0 || x == 0 || z == 0 || y == resolveHeight()-1 || x == resolveWidth()-1 || z == resolveDepth()-1) {
-                        if (!isValidForOuter(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getFacing(), -z))) {
-                            validationResult = ValidationResult.WRONG_OUTER;
-                            ((FissionControllerBE)controller().controllerBE()).errorBlockPos =  getSidePos(x - leftCasing).above(y - bottomCasing).relative(getFacing(), -z);
-                            return;
-                        }
-                        attachMultiblock(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getFacing(), -z));
-                        allBlocks.add(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getFacing(), -z));
-                    }
-                }
-            }
-        }
-        validationResult = ValidationResult.VALID;
-    }
-
-    private void attachMultiblock(BlockPos pos) {
-        BlockEntity be = getLevel().getBlockEntity(pos);
-        if(be instanceof FissionBE) {
-            ((FissionBE) be).setMultiblock(this);
-        }
-    }
-
     public static boolean isModerator(BlockPos pos, Level world) {
         return  world.getBlockEntity(pos) instanceof FissionModeratorBE;
     }
@@ -102,44 +59,7 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
         return getLevel().getBlockEntity(pos) instanceof FissionFuelCellBE;
     }
 
-    @Override
-    public void validateInner() {
-        invalidateStats();
-        for(int y = 1; y < resolveHeight()-1; y++) {
-            for(int x = 1; x < resolveWidth()-1; x++) {
-                for (int z = 1; z < resolveDepth()-1; z++) {
-                    BlockPos toCheck = getSidePos(x - leftCasing).above(y - bottomCasing).relative(getFacing(), -z);
-                    if (isValidForOuter(toCheck)) {
-                        validationResult = ValidationResult.WRONG_INNER;
-                        ((FissionControllerBE)controller().controllerBE()).errorBlockPos = getSidePos(x - leftCasing).above(y - bottomCasing).relative(getFacing(), -z);
-                        return;
-                    }
-                    if(isFuelCell(toCheck)) {
-                        BlockEntity be = getLevel().getBlockEntity(toCheck);
-                        if(be instanceof FissionFuelCellBE) {
-                            fuelCells.add(toCheck);
-                            ((FissionControllerBE)controller().controllerBE()).moderatorAttacmentsCount += ((FissionFuelCellBE) be).getAttachedModeratorsCount(true);
-                        }
-                    }
-                    if(isModerator(toCheck, getLevel())) {
-                        if(isAttachedToFuelCell(toCheck)) {
-                            moderators.add(toCheck);
-                        }
-                    }
-                    if(isHeatSink(toCheck)) {
-                        heatSinks.add(toCheck);
-                    }
-                    allBlocks.add(toCheck);
-                }
-            }
-        }
-        heatSinkCooling = getHeatSinkCooling(true);
-        ((FissionControllerBE)controller().controllerBE()).fuelCellsCount = fuelCells.size();
-        ((FissionControllerBE)controller().controllerBE()).updateEnergyStorage();
-        ((FissionControllerBE)controller().controllerBE()).moderatorsCount = moderators.size();
 
-        validationResult =  ValidationResult.VALID;
-    }
 
     private boolean isAttachedToFuelCell(BlockPos toCheck) {
         for(Direction d : Direction.values()) {
@@ -150,109 +70,46 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
         return false;
     }
 
-    public boolean isValidForOuter(BlockPos pos)
+    public void validateInner()
     {
-        if(getLevel() == null) return false;
-        try {
-            return  validOuterBlocks().contains(getLevel().getBlockState(pos).getBlock());
-        } catch (NullPointerException ignored) { }
-        return false;
+        super.validateInner();
+        heatSinkCooling = getHeatSinkCooling(true);
+        FissionControllerBE controller = (FissionControllerBE) controller().controllerBE();
+        controller.fuelCellsCount = fuelCells.size();
+        controller.updateEnergyStorage();
+        controller.moderatorsCount = moderators.size();
     }
 
-    public int resolveHeight()
-    {
-        if(height < minHeight() || !outerValid) {
-            for(int i = 1; i<maxHeight()-1; i++) {
-                if(!isValidForOuter(controllerPos().above(i))) {
-                    topCasing = i-1;
-                    height = i;
-                    break;
-                }
-            }
-            for(int i = 1; i<maxHeight()-height-1; i++) {
-                if(!isValidForOuter(controllerPos().below(i))) {
-                    bottomCasing = i-1;
-                    height += i-1;
-                    break;
-                }
+    @Override
+    protected boolean validateInnerBlock(BlockPos toCheck) {
+        if(isFuelCell(toCheck)) {
+            BlockEntity be = getLevel().getBlockEntity(toCheck);
+            if(be instanceof FissionFuelCellBE) {
+                fuelCells.add(toCheck);
+                ((FissionControllerBE)controller().controllerBE()).moderatorAttacmentsCount += ((FissionFuelCellBE) be).getAttachedModeratorsCount(true);
             }
         }
-        return height;
-    }
-
-    public int resolveWidth()
-    {
-        if(width < minWidth() || !outerValid) {
-            for(int i = 1; i<maxWidth()-1; i++) {
-                if(!isValidForOuter(getLeftPos(i))) {
-                    leftCasing = i-1;
-                    width = i;
-                    break;
-
-                }
-            }
-            for(int i = 1; i<maxWidth()-width-1; i++) {
-                if(!isValidForOuter(getRightPos(i))) {
-                    rightCasing = i-1;
-                    width += i-1;
-                    break;
-                }
+        if(isModerator(toCheck, getLevel())) {
+            if(isAttachedToFuelCell(toCheck)) {
+                moderators.add(toCheck);
             }
         }
-        return width;
-    }
-
-    public int resolveDepth()
-    {
-        if(depth < minDepth() || !outerValid) {
-            for(int i = 1; i<maxDepth()-1; i++) {
-                if(!isValidForOuter(getForwardPos(i).above(topCasing))) {
-                    depth = i;
-                    break;
-                }
-            }
+        if(isHeatSink(toCheck)) {
+            heatSinks.add(toCheck);
         }
-        return depth;
+        return true;
     }
 
     public void invalidateStats()
     {
-        ((FissionControllerBE)controller().controllerBE()).moderatorAttacmentsCount = 0;
-        ((FissionControllerBE)controller().controllerBE()).moderatorsCount = 0;
-        ((FissionControllerBE)controller().controllerBE()).heatSinkCooling = 0;
-        ((FissionControllerBE)controller().controllerBE()).fuelCellsCount = 0;
+        controller().clearStats();
         moderators.clear();
         fuelCells.clear();
         heatSinks.clear();
         activeHeatSinks.clear();
     }
 
-
-    public BlockPos getForwardPos(int i) {
-        return controllerPos().relative(getFacing(), -i);
-    }
-
-    public BlockPos getLeftPos(int i)
-    {
-        return getSidePos(-i);
-    }
-
-    public BlockPos getRightPos(int i)
-    {
-        return getSidePos(i);
-    }
-
-    public BlockPos getSidePos(int i) {
-        return switch (getFacing().ordinal()) {
-            case 3 -> controllerPos().east(i);
-            case 5 -> controllerPos().north(i);
-            case 2 -> controllerPos().west(i);
-            case 4 -> controllerPos().south(i);
-            default -> null;
-        };
-    }
-
-    private Direction getFacing() {
+    protected Direction getFacing() {
         return ((FissionControllerBE)controller().controllerBE()).getFacing();
     }
 
@@ -266,14 +123,4 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
         return heatSinkCooling;
     }
 
-
-    public void onControllerRemoved() {
-        for(BlockPos b: allBlocks) {
-            BlockEntity be = getLevel().getBlockEntity(b);
-            if(be instanceof FissionBE) {
-                ((FissionBE) be).setMultiblock(null);
-                ((FissionBE) be).controller = null;
-            }
-        }
-    }
 }

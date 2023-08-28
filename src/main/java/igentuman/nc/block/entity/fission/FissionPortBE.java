@@ -148,6 +148,12 @@ public class FissionPortBE extends FissionBE {
         return false;
     }
 
+    @Override
+    public boolean canInvalidateCache() {
+        return false;
+    }
+
+    @Override
     public FissionControllerBE controller() {
         if(getLevel().isClientSide && controllerPos != null) {
             return (FissionControllerBE) getLevel().getBlockEntity(controllerPos);

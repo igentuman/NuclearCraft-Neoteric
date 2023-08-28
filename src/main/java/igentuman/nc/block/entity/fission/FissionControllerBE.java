@@ -13,6 +13,7 @@ import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.setup.multiblocks.FissionReactor;
 import igentuman.nc.setup.registration.NCFluids;
 import igentuman.nc.util.CustomEnergyStorage;
+import igentuman.nc.util.NCBlockPos;
 import igentuman.nc.util.annotation.NBTField;
 import igentuman.nc.multiblock.ValidationResult;
 import net.minecraft.core.BlockPos;
@@ -93,7 +94,6 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     public RECIPE recipe;
     public HashMap<String, RECIPE> cachedRecipes = new HashMap<>();
 
-
     @Override
     public String getName() {
         return NAME;
@@ -121,7 +121,6 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
                 1, 1,
                 0, 0);
         contentHandler.setBlockEntity(this);
-
     }
 
     @Override
@@ -200,6 +199,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
 
     public void tickServer() {
         boolean wasPowered = powered;
+        multiblock().tick();
         boolean wasFormed = multiblock().isFormed();
         if (!wasFormed) {
             multiblock().validate();
@@ -231,6 +231,11 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(POWERED, powered), Block.UPDATE_ALL);
         }
         controllerEnabled = false;
+    }
+
+    @Override
+    public boolean canInvalidateCache() {
+        return false;
     }
 
     private void handleMeltdown() {

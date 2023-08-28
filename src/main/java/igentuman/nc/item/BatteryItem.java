@@ -22,7 +22,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import javax.annotation.Nonnull;
 import java.util.List;
 
-import static igentuman.nc.handler.config.CommonConfig.ENERGY_STORAGE_CONFIG;
+import static igentuman.nc.handler.config.CommonConfig.ENERGY_STORAGE;
 
 public class BatteryItem extends Item
 {
@@ -68,7 +68,7 @@ public class BatteryItem extends Item
 
 
 	protected int getEnergyMaxStorage() {
-		return ENERGY_STORAGE_CONFIG.getCapacityFor(toString());
+		return ENERGY_STORAGE.getCapacityFor(toString());
 	}
 
 	@Override

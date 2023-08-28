@@ -1,6 +1,5 @@
 package igentuman.nc.container.elements;
 
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -21,9 +20,16 @@ public class NCSlotItemHandler extends SlotItemHandler {
 
     @Override
     public boolean mayPlace(ItemStack stack) {
-        if(allowed == null)
+        if(hidden)
+            return false;
+        if(allowed != null)
             return stack.getItem().equals(allowed);
         return super.mayPlace(stack);
+    }
+    public boolean hidden = false;
+    public Slot hidden() {
+        hidden = true;
+        return this;
     }
 
     public static class Output extends NCSlotItemHandler {

@@ -4,10 +4,12 @@ import igentuman.nc.block.entity.processor.NCProcessorBE;
 import igentuman.nc.container.elements.NCSlotItemHandler;
 import igentuman.nc.content.processors.ProcessorPrefab;
 import igentuman.nc.content.processors.Processors;
+import igentuman.nc.content.processors.config.ProcessorSlots;
 import igentuman.nc.setup.registration.NCItems;
 import igentuman.nc.setup.registration.NCProcessors;
 import igentuman.nc.handler.sided.SlotModePair;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -28,7 +30,7 @@ import java.util.Objects;
 
 import static igentuman.nc.NuclearCraft.MODID;
 
-public class NCProcessorContainer extends AbstractContainerMenu {
+public class NCProcessorContainer<T extends AbstractContainerMenu> extends AbstractContainerMenu {
     protected NCProcessorBE blockEntity;
     protected Player playerEntity;
     protected IItemHandler playerInventory;
@@ -42,6 +44,7 @@ public class NCProcessorContainer extends AbstractContainerMenu {
     public int slotIndex = 0;
 
     protected String name;
+
     public NCProcessorContainer(@Nullable MenuType<?> pMenuType, int pContainerId) {
         super(pMenuType, pContainerId);
     }
@@ -57,35 +60,47 @@ public class NCProcessorContainer extends AbstractContainerMenu {
         layoutPlayerInventorySlots();
     }
 
-    private void processorSlots() {
-        int itemIdx = 0;
-        for(int[] pos: processor.getSlotsConfig().getSlotPositions()) {
-            if(processor.getSlotsConfig().getSlotType(itemIdx).contains("item")) {
-                int idx = itemIdx;
-                blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
-                    addSlot(new SlotItemHandler(h, idx, pos[0], pos[1]));
-                });
-                itemIdx++;
+    protected void addMainSlots()
+    {
+        int i = 0;
+        int slotIdx = 0;
+        ProcessorSlots slots = processor.getSlotsConfig();
+        for(int[] pos: slots.getSlotPositions()) {
+            if(slots.getSlotType(i).contains("item")) {
+                int idx = slotIdx;
+                if(!processor.isSlotHidden(idx+slots.getInputFluids())) {
+                    blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
+                        addSlot(new SlotItemHandler(h, idx, pos[0], pos[1]));
+                    });
+                }
+                slotIdx++;
             }
+            i++;
         }
+    }
 
+    protected void processorSlots() {
+        addMainSlots();
         int ux = 154;
-        itemIdx = 0;
+        int i = 0;
 
         if(getProcessor().supportEnergyUpgrade) {
-            int idx = itemIdx;
-            int finalUx = ux;
-            addSlot(new NCSlotItemHandler(blockEntity.upgradesHandler, idx, finalUx, 77)
+            int idx = i;
+            addSlot(new NCSlotItemHandler(blockEntity.upgradesHandler, idx, ux, 77)
                     .allowed(NCItems.NC_ITEMS.get("upgrade_energy").get()));
-            itemIdx++;
+            i++;
             ux -= 18;
         }
 
         if(getProcessor().supportSpeedUpgrade) {
-            int idx = itemIdx;
-            int finalUx = ux;
-            addSlot(new NCSlotItemHandler(blockEntity.upgradesHandler, idx, finalUx, 77)
+            int idx = i;
+            addSlot(new NCSlotItemHandler(blockEntity.upgradesHandler, idx, ux, 77)
                     .allowed(NCItems.NC_ITEMS.get("upgrade_speed").get()));
+            ux -= 18;
+        }
+
+        if(getProcessor().supportsCatalyst) {
+            addSlot(new NCSlotItemHandler(blockEntity.catalystHandler, 0, ux, 77));
         }
     }
 

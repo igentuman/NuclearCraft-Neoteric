@@ -3,6 +3,7 @@ package igentuman.nc.setup.registration;
 import igentuman.nc.content.materials.*;
 import igentuman.nc.item.DosimiterItem;
 import igentuman.nc.item.RadShieldingItem;
+import igentuman.nc.item.ResearchPaperItem;
 import igentuman.nc.setup.ModSetup;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
@@ -160,6 +161,7 @@ public class NCItems {
     private static void registerParts() {
         List<String> parts = Arrays.asList(
                 "actuator",
+                "research_paper",
                 "basic_electric_circuit",
                 "bioplastic",
                 "chassis",
@@ -178,7 +180,11 @@ public class NCItems {
                 "coil_magnesium_diboride"
         );
         for(String name: parts) {
-            NC_PARTS.put(name, ITEMS.register(name, () -> new Item(ITEM_PROPERTIES)));
+            if(name.equals("research_paper")) {
+                NC_PARTS.put(name, ITEMS.register(name, () -> new ResearchPaperItem(ITEM_PROPERTIES)));
+            } else {
+                NC_PARTS.put(name, ITEMS.register(name, () -> new Item(ITEM_PROPERTIES)));
+            }
             ALL_NC_ITEMS.put(name, NC_PARTS.get(name));
         }
     }

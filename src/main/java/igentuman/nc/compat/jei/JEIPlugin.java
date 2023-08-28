@@ -4,6 +4,7 @@ import igentuman.nc.block.entity.fission.FissionControllerBE;
 import igentuman.nc.client.NcClient;
 import igentuman.nc.recipes.AbstractRecipe;
 import igentuman.nc.recipes.NcRecipeType;
+import igentuman.nc.recipes.type.OreVeinRecipe;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.recipe.RecipeType;
@@ -22,7 +23,8 @@ import static igentuman.nc.compat.GlobalVars.*;
 public  class JEIPlugin implements IModPlugin {
     public  static HashMap<String, RecipeType<? extends AbstractRecipe>>  recipeTypes;
 
-    public static RecipeType<FissionControllerBE.Recipe> FISSION = new RecipeType<>(new ResourceLocation(MODID, FissionControllerBE.NAME), FissionControllerBE.Recipe.class);
+    public static final RecipeType<FissionControllerBE.Recipe> FISSION = new RecipeType<>(new ResourceLocation(MODID, FissionControllerBE.NAME), FissionControllerBE.Recipe.class);
+    public static final RecipeType<OreVeinRecipe> ORE_VEINS = new RecipeType<>(new ResourceLocation(MODID, "nc_ore_veins"), OreVeinRecipe.class);
     private static HashMap<String, RecipeType<? extends AbstractRecipe>> getRecipeTypes() {
         if(recipeTypes == null) {
             recipeTypes = new HashMap<>();
@@ -42,6 +44,7 @@ public  class JEIPlugin implements IModPlugin {
         for(String  name: getRecipeTypes().keySet()) {
             registration.addRecipeCategories(new ProcessorCategoryWrapper<>(registration.getJeiHelpers().getGuiHelper(), getRecipeType(name)));
         }
+        registration.addRecipeCategories(new OreVeinCategoryWrapper<>(registration.getJeiHelpers().getGuiHelper(), ORE_VEINS));
         registration.addRecipeCategories(new FissionCategoryWrapper<>(registration.getJeiHelpers().getGuiHelper(), FISSION));
     }
 
@@ -63,6 +66,9 @@ public  class JEIPlugin implements IModPlugin {
         registration.addRecipes(
                 getRecipeType(FISSION),
                 NcRecipeType.ALL_RECIPES.get(FissionControllerBE.NAME).getRecipes(NcClient.tryGetClientWorld()));
+        registration.addRecipes(
+                getRecipeType(ORE_VEINS),
+                NcRecipeType.ALL_RECIPES.get("nc_ore_veins").getRecipes(NcClient.tryGetClientWorld()));
     }
 
     @Override
@@ -75,6 +81,9 @@ public  class JEIPlugin implements IModPlugin {
         }
         if(CATALYSTS.containsKey(FissionControllerBE.NAME)) {
             registry.addRecipeCatalyst(CATALYSTS.get(FissionControllerBE.NAME).get(0), FISSION);
+        }
+        if(CATALYSTS.containsKey("nc_ore_veins")) {
+            registry.addRecipeCatalyst(CATALYSTS.get("nc_ore_veins").get(0), ORE_VEINS);
         }
     }
 }

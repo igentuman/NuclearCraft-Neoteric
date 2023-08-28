@@ -43,8 +43,8 @@ public class PumpBE extends NCProcessorBE<PumpBE.Recipe> {
         public Recipe(ResourceLocation id,
                       ItemStackIngredient[] input, ItemStack[] output,
                       FluidStackIngredient[] inputFluids, FluidStack[] outputFluids,
-                      double timeModifier, double powerModifier, double heatModifier) {
-            super(id, input, output, inputFluids, outputFluids, timeModifier, powerModifier, heatModifier);
+                      double timeModifier, double powerModifier, double heatModifier, double rarity) {
+            super(id, input, output, inputFluids, outputFluids, timeModifier, powerModifier, heatModifier, 1);
             ID = Processors.PUMP;
             RECIPE_CLASSES.put(ID, this.getClass());
             CATALYSTS.put(ID, List.of(getToastSymbol()));

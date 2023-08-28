@@ -24,7 +24,7 @@ import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
 
-public class SideConfigSlotSelectionScreen<T extends NCProcessorContainer> extends AbstractContainerScreen<T> implements IProgressScreen {
+public class SideConfigSlotSelectionScreen<T extends NCProcessorContainer<T>> extends AbstractContainerScreen<T> implements IProgressScreen {
     protected final ResourceLocation GUI = new ResourceLocation(MODID, "textures/gui/window_no_inventory.png");
     protected int relX;
     protected int relY;
@@ -64,10 +64,12 @@ public class SideConfigSlotSelectionScreen<T extends NCProcessorContainer> exten
         }
         widgets.add(new ProgressBar(progressBarX, 40, this, menu.getProcessor().progressBar));
         for(int i = 0; i < slots.slotsCount();i++) {
-            if(slots.getOutputItems()+slots.getOutputFluids() == 1 && slots.getSlotType(i).contains("_out")) {
+            if(slots.outputSlotsCount() == 1 && slots.getSlotType(i).contains("_out")) {
                 widgets.add(new BigSlot(slots.getSlotPos(i), slots.getSlotType(i)).forConfig(this,  i));
             } else {
-                widgets.add(new NormalSlot(slots.getSlotPos(i), slots.getSlotType(i)).forConfig(this,  i));
+                if(!menu.getProcessor().isSlotHidden(i)) {
+                    widgets.add(new NormalSlot(slots.getSlotPos(i), slots.getSlotType(i)).forConfig(this, i));
+                }
             }
         }
         widgets.add(new Button.CloseConfig(29, 74, this));

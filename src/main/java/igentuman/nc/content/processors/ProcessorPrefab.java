@@ -15,6 +15,8 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
 
 import static igentuman.nc.handler.config.CommonConfig.PROCESSOR_CONFIG;
@@ -24,6 +26,7 @@ public class ProcessorPrefab <M extends NCProcessorContainer, U extends Screen &
 
     public int progressBar = 0;
     public Supplier<RecipeSerializer<? extends AbstractRecipe>> recipeSerializerSupplier;
+    public boolean supportsCatalyst;
     private  Class  container;
     private  MenuScreens.ScreenConstructor<M, U>  screenConstructor;
     private boolean initialized;
@@ -36,9 +39,10 @@ public class ProcessorPrefab <M extends NCProcessorContainer, U extends Screen &
     protected int power = 20;
     protected int time = 200;
 
+    public List<Integer> hiddenSlots = new ArrayList<>();
+
     public boolean supportEnergyUpgrade = true;
 
-    protected boolean supportCatalyst = false;
 
     protected Class recipeManager;
 
@@ -59,6 +63,11 @@ public class ProcessorPrefab <M extends NCProcessorContainer, U extends Screen &
 
     public void setScreenConstructor(MenuScreens.ScreenConstructor<M, U> screenConstructor) {
         this.screenConstructor = screenConstructor;
+    }
+
+    public boolean isSlotHidden(int slot)
+    {
+        return hiddenSlots.contains(slot);
     }
 
     public void setContainer(Class container) {

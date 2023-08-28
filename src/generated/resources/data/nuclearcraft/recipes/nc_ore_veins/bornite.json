@@ -1,0 +1,22 @@
+{
+  "type": "nuclearcraft:nc_ore_veins",
+  "input": [
+    {
+      "count": 70,
+      "tag": "forge:ores/copper"
+    },
+    {
+      "count": 30,
+      "tag": "forge:ores/iron"
+    }
+  ],
+  "output": [
+    {
+      "item": "nuclearcraft:research_paper",
+      "nbt": "{vein:\"nc.ore_vein.bornite\"}"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

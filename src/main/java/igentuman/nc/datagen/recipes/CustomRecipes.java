@@ -36,5 +36,8 @@ public class CustomRecipes extends NCRecipes {
         ExtractorRecipes.generate(consumer);
         PumpRecipes.generate(consumer);
         GasScrubberRecipes.generate(consumer);
+        AnalyzerRecipes.generate(consumer);
+        LeacherRecipes.generate(consumer);
+        OreVeinsRecipes.generate(consumer);
     }
 }

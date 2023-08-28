@@ -1,0 +1,22 @@
+{
+  "type": "nuclearcraft:nc_ore_veins",
+  "input": [
+    {
+      "count": 95,
+      "tag": "forge:ores/lithium"
+    },
+    {
+      "count": 5,
+      "tag": "forge:ores/aluminum"
+    }
+  ],
+  "output": [
+    {
+      "item": "nuclearcraft:research_paper",
+      "nbt": "{vein:\"nc.ore_vein.spodumene\"}"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

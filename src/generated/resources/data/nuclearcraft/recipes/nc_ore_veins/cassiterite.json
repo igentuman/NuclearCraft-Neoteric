@@ -1,0 +1,22 @@
+{
+  "type": "nuclearcraft:nc_ore_veins",
+  "input": [
+    {
+      "count": 90,
+      "tag": "forge:ores/tin"
+    },
+    {
+      "count": 10,
+      "tag": "forge:ores/lead"
+    }
+  ],
+  "output": [
+    {
+      "item": "nuclearcraft:research_paper",
+      "nbt": "{vein:\"nc.ore_vein.cassiterite\"}"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

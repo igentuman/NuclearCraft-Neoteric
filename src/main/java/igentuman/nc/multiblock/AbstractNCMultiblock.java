@@ -317,6 +317,7 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
                 refreshCooldown = 50;
                 refreshOuterCacheFlag = true;
                 refreshInnerCacheFlag = true;
+                isFormed = false;
                 hasToRefresh = false;
             }
         }

@@ -26,7 +26,8 @@ public abstract class NcRecipe extends AbstractRecipe {
             FluidStack[] outputFluids,
             double timeModifier,
             double powerModifier,
-            double radiationModifier
+            double radiationModifier,
+            double rarityModifier
     ) {
 
         super(id);
@@ -38,6 +39,7 @@ public abstract class NcRecipe extends AbstractRecipe {
         this.timeModifier = timeModifier;
         this.powerModifier = powerModifier;
         this.radiationModifier = radiationModifier;
+        this.radiationModifier = rarityModifier;
     }
 
     public NcRecipe(
@@ -46,10 +48,11 @@ public abstract class NcRecipe extends AbstractRecipe {
             ItemStack[] outputItems,
             double timeModifier,
             double powerModifier,
-            double radiationModifier
+            double radiationModifier,
+            double rarityModifier
     ) {
 
-        this(id, inputItems, outputItems, new FluidStackIngredient[0], new FluidStack[0], timeModifier, powerModifier, radiationModifier);
+        this(id, inputItems, outputItems, new FluidStackIngredient[0], new FluidStack[0], timeModifier, powerModifier, radiationModifier, rarityModifier);
     }
 
     public NcRecipe(
@@ -58,9 +61,10 @@ public abstract class NcRecipe extends AbstractRecipe {
             FluidStack[] outputFluids,
             double timeModifier,
             double powerModifier,
-            double radiationModifier
+            double radiationModifier,
+            double rarityModifier
     ) {
-            this(id, new ItemStackIngredient[0], new ItemStack[0], inputFluids, outputFluids, timeModifier, powerModifier, radiationModifier);
+            this(id, new ItemStackIngredient[0], new ItemStack[0], inputFluids, outputFluids, timeModifier, powerModifier, radiationModifier, rarityModifier);
     }
 
 

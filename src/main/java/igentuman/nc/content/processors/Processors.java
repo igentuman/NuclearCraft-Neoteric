@@ -1,7 +1,10 @@
 package igentuman.nc.content.processors;
 
-
+import igentuman.nc.client.gui.processor.LeacherScreen;
 import igentuman.nc.block.entity.processor.*;
+import igentuman.nc.container.LeacherContainer;
+import igentuman.nc.container.NCProcessorContainer;
+import net.minecraftforge.common.extensions.IForgeMenuType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,6 +18,8 @@ public class Processors {
     private static HashMap<String, ProcessorPrefab> registered = new HashMap<>();
     public static String GAS_SCRUBBER = "gas_scrubber";
     public static String PUMP = "pump";
+    public static String ANALYZER = "analyzer";
+    public static String LEACHER = "leacher";
     public static String NUCLEAR_FURNACE = "nuclear_furnace";
     public static String MANUFACTORY = "manufactory";
     public static String ALLOY_SMELTER = "alloy_smelter";
@@ -45,6 +50,24 @@ public class Processors {
                             .make(GAS_SCRUBBER, 1, 0, 1, 0)
                             .blockEntity(GasScrubberBE::new)
                             .recipe(GasScrubberBE.Recipe::new)
+                            .build()
+            );
+            all.put(ANALYZER,
+                    ProcessorBuilder
+                            .make(ANALYZER, 0, 1, 0, 1)
+                            .blockEntity(AnalyzerBE::new)
+                            .recipe(AnalyzerBE.Recipe::new)
+                            .build()
+            );
+            all.put(LEACHER,
+                    ProcessorBuilder
+                            .make(LEACHER, 1, 1, 1, 0)
+                            .blockEntity(LeacherBE::new)
+                            .recipe(LeacherBE.Recipe::new)
+                            .screen(LeacherScreen::new)
+                            .container(LeacherContainer.class)
+                            .setHiddenSlots(1)
+                            .withCatalyst()
                             .build()
             );
             all.put(PUMP,

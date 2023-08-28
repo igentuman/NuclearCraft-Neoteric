@@ -137,7 +137,7 @@ public class ItemRadiation {
         radiationMap.put(item, radiation);
     }
 
-    protected static Item getItemByName(String name)
+    public static Item getItemByName(String name)
     {
         if(!name.contains(":")) {
             name = MODID +":" + name;

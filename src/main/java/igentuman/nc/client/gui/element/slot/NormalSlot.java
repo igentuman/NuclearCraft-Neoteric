@@ -48,15 +48,13 @@ public class NormalSlot extends NCGuiElement {
         if(type.contains("_out")) {
             yOffset = 36;
         }
-        if(type.equals("energy_upgrade")) {
-            yOffset = 90;
+        switch (type) {
+            case "energy_upgrade" -> yOffset = 90;
+            case "speed_upgrade" -> yOffset = 72;
+            case "fission_cell" -> yOffset = 108;
+            case "catalyst" -> yOffset = 126;
         }
-        if(type.equals("speed_upgrade")) {
-            yOffset = 72;
-        }
-        if(type.equals("fission_cell")) {
-            yOffset = 108;
-        }
+
         //-1 because of border
         blit(transform, X()-1, Y()-1, xOffset, yOffset,  18, 18);
         if(configFlag) {

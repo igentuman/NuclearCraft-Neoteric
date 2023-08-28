@@ -33,14 +33,14 @@ public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractC
     protected int relX;
     protected int relY;
 
-    private int xCenter;
+    protected int xCenter;
 
-    private ProcessorSlots slots;
-    private Button.SideConfig sideConfigBtn;
-    private Button.RedstoneConfig redstoneConfigBtn;
+    protected ProcessorSlots slots;
+    protected Button.SideConfig sideConfigBtn;
+    protected Button.RedstoneConfig redstoneConfigBtn;
 
     public List<NCGuiElement> widgets = new ArrayList<>();
-    private EnergyBar energyBar;
+    protected EnergyBar energyBar;
 
     public NCProcessorScreen(T container, Inventory inv, Component name) {
         super(container, inv, name);
@@ -64,6 +64,26 @@ public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractC
         return super.mouseClicked(pMouseX, pMouseY, pButton);
     }
 
+
+    public void addSlots()
+    {
+        for(int i = 0; i < slots.slotsCount();i++) {
+            if(slots.outputSlotsCount() == 1 && slots.getSlotType(i).contains("_out")) {
+                widgets.add(new BigSlot(slots.getSlotPos(i), slots.getSlotType(i)));
+                if(slots.getSlotType(i).contains("fluid")) {
+                    widgets.add(new FluidTankRenderer(getFluidTank(slots.fluidSlotId(i)), 24, 24, slots.getSlotPos(i)[0]-4, slots.getSlotPos(i)[1]-4));
+                }
+            } else {
+                if(!menu.getProcessor().isSlotHidden(i+slots.getInputFluids()) || slots.getSlotType(i).contains("fluid")) {
+                    widgets.add(new NormalSlot(slots.getSlotPos(i), slots.getSlotType(i)));
+                }
+                if(slots.getSlotType(i).contains("fluid")) {
+                    widgets.add(new FluidTankRenderer(getFluidTank(slots.fluidSlotId(i)), 16, 16, slots.getSlotPos(i)));
+                }
+            }
+        }
+    }
+
     protected void init() {
         super.init();
         slots = menu.getProcessor().getSlotsConfig();
@@ -71,29 +91,25 @@ public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractC
         energyBar = new EnergyBar(9, 4,  menu.getEnergy());
         widgets.clear();
         widgets.add(energyBar);
-        for(int i = 0; i < slots.slotsCount();i++) {
-            if(slots.getOutputItems()+slots.getOutputFluids() == 1 && slots.getSlotType(i).contains("_out")) {
-                widgets.add(new BigSlot(slots.getSlotPos(i), slots.getSlotType(i)));
-                if(slots.getSlotType(i).contains("fluid")) {
-                    widgets.add(new FluidTankRenderer(getFluidTank(i-slots.getInputItems()-slots.getOutputItems()), 24, 24, slots.getSlotPos(i)[0]-4, slots.getSlotPos(i)[1]-4));
-                }
-            } else {
-                widgets.add(new NormalSlot(slots.getSlotPos(i), slots.getSlotType(i)));
-                if(slots.getSlotType(i).contains("fluid")) {
-                    widgets.add(new FluidTankRenderer(getFluidTank(i-slots.getInputItems()), 16, 16, slots.getSlotPos(i)));
-                }
 
-            }
-        }
         int progressBarX = 71;
         if(slots.getOutputItems()+slots.getOutputFluids() > 6) {
             progressBarX -= ProcessorSlots.margin;
         }
 
-        if(slots.getInputItems()+slots.getInputFluids() > 5) {
+        if(slots.getInputItems()+slots.getInputFluids() > 6) {
             progressBarX += ProcessorSlots.margin;
         }
         widgets.add(new ProgressBar(progressBarX, 40, this, menu.getProcessor().progressBar));
+        addOtherSlots();
+        sideConfigBtn = new Button.SideConfig(29, 74, this);
+        widgets.add(sideConfigBtn);
+        redstoneConfigBtn = new Button.RedstoneConfig(48, 74, this, menu.getPosition());
+        widgets.add(redstoneConfigBtn);
+        addSlots();
+    }
+
+    protected void addOtherSlots() {
         int ux = 154;
 
         if(menu.getProcessor().supportEnergyUpgrade) {
@@ -102,14 +118,15 @@ public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractC
         }
         if(menu.getProcessor().supportSpeedUpgrade) {
             widgets.add(new NormalSlot(ux, 77, "speed_upgrade"));
+            ux -= 18;
         }
-        sideConfigBtn = new Button.SideConfig(29, 74, this);
-        widgets.add(sideConfigBtn);
-        redstoneConfigBtn = new Button.RedstoneConfig(48, 74, this, menu.getPosition());
-        widgets.add(redstoneConfigBtn);
+
+        if(menu.getProcessor().supportsCatalyst) {
+            widgets.add(new NormalSlot(ux, 77, "catalyst"));
+        }
     }
 
-    private FluidTank getFluidTank(int i) {
+    protected FluidTank getFluidTank(int i) {
         return menu.getFluidTank(i);
     }
 
@@ -125,7 +142,7 @@ public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractC
         this.renderTooltip(matrixStack, mouseX, mouseY);
     }
 
-    private void renderWidgets(PoseStack matrix, float partialTicks, int mouseX, int mouseY) {
+    protected void renderWidgets(PoseStack matrix, float partialTicks, int mouseX, int mouseY) {
         redstoneConfigBtn.setMode(getMenu().getRedstoneMode());
         for(NCGuiElement widget: widgets) {
             widget.draw(matrix, mouseX, mouseY, partialTicks);
@@ -146,7 +163,7 @@ public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractC
         renderWidgets(matrixStack, partialTicks, mouseX, mouseY);
     }
 
-    private void renderTooltips(PoseStack pPoseStack, int pMouseX, int pMouseY) {
+    protected void renderTooltips(PoseStack pPoseStack, int pMouseX, int pMouseY) {
         for(NCGuiElement widget: widgets) {
             if(widget.isMouseOver(pMouseX, pMouseY)) {
                 if(widget instanceof EnergyBar) {

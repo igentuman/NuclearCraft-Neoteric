@@ -1,0 +1,23 @@
+{
+  "type": "nuclearcraft:leacher",
+  "input": [
+    {
+      "tag": "forge:ores/gold"
+    }
+  ],
+  "inputFluids": [
+    {
+      "amount": 250,
+      "tag": "forge:acua_regia_acid"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 1000,
+      "fluid": "nuclearcraft:gold_slurry"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

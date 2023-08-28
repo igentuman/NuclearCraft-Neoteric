@@ -283,4 +283,10 @@ public class Materials extends MaterialsManager {
         return isotopes();
     }
 
+    public static List<String> slurries() {
+        return List.of(
+                uranium, iron, gold, aluminum, thorium, boron, silver,
+                lead, tin, copper, zinc, cobalt, platinum, lithium, magnesium
+        );
+    }
 }

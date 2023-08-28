@@ -28,8 +28,8 @@ public class QuantumTransformerBE extends NCProcessorBE<QuantumTransformerBE.Rec
         public Recipe(ResourceLocation id,
                       ItemStackIngredient[] input, ItemStack[] output,
                       FluidStackIngredient[] inputFluids, FluidStack[] outputFluids,
-                      double timeModifier, double powerModifier, double heatModifier) {
-            super(id, input, output, timeModifier, powerModifier, heatModifier);
+                      double timeModifier, double powerModifier, double heatModifier, double rarity) {
+            super(id, input, output, timeModifier, powerModifier, heatModifier, 1);
             ID = Processors.QUANTUM_TRANSFORMER;
             RECIPE_CLASSES.put(ID, this.getClass());
             CATALYSTS.put(ID, List.of(getToastSymbol()));

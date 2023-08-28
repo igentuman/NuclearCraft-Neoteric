@@ -26,7 +26,7 @@ import java.util.Objects;
 
 public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerializer<RECIPE> {
 
-    private final IFactory<RECIPE> factory;
+    final IFactory<RECIPE> factory;
 
     public NcRecipeSerializer(IFactory<RECIPE> factory) {
         this.factory = factory;
@@ -106,8 +106,9 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerial
         double timeModifier = GsonHelper.getAsDouble(json, "timeModifier", 1.0);
         double powerModifier = GsonHelper.getAsDouble(json, "powerModifier", 1.0);
         double radiation = GsonHelper.getAsDouble(json, "radiation", 1.0);
+        double rarityModifier = GsonHelper.getAsDouble(json, "rarityModifier", 1.0);
 
-        return this.factory.create(recipeId, inputItems, outputItems, inputFluids, outputFluids, timeModifier, powerModifier, radiation);
+        return this.factory.create(recipeId, inputItems, outputItems, inputFluids, outputFluids, timeModifier, powerModifier, radiation, rarityModifier);
     }
 
     @Override
@@ -142,7 +143,7 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerial
             double powerModifier = buffer.readDouble();
             double radiation = buffer.readDouble();
 
-            return this.factory.create(recipeId, inputItems, outputItems, inputFluids,  outputFluids, timeModifier, powerModifier, radiation);
+            return this.factory.create(recipeId, inputItems, outputItems, inputFluids,  outputFluids, timeModifier, powerModifier, radiation, 1);
         } catch (Exception e) {
             NuclearCraft.LOGGER.error("Error reading itemstack to itemstack recipe from packet.", e);
             throw e;
@@ -164,6 +165,6 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerial
         RECIPE create(ResourceLocation id,
                       ItemStackIngredient[] inputItems, ItemStack[] outputItems,
                       FluidStackIngredient[] inputFluids, FluidStack[] outputFluids,
-                      double timeMultiplier, double powerMultiplier, double radiationMultiplier);
+                      double timeMultiplier, double powerMultiplier, double radiationMultiplier, double rarityMultiplier);
     }
 }

@@ -23,6 +23,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
 import static igentuman.nc.NuclearCraft.MODID;
@@ -51,18 +52,28 @@ public class NCProcessors {
         registerContainers();
     }
 
+    @SuppressWarnings("unchecked")
     private static void registerContainers() {
         for(String name: Processors.registered().keySet()) {
             PROCESSORS_CONTAINERS.put(name, CONTAINERS.register(name,
-                    () -> IForgeMenuType.create((windowId, inv, data) -> new NCProcessorContainer(windowId, data.readBlockPos(), inv, inv.player, name))));
+                    () -> IForgeMenuType.create((windowId, inv, data) -> {
+                        NCProcessorContainer<?> o = null;
+                        try {
+                            o = (NCProcessorContainer<?>) Processors.registered().get(name).getContainerConstructor()
+                                    .newInstance(windowId, data.readBlockPos(), inv, inv.player, name);
+                        } catch (InstantiationException | IllegalAccessException | InvocationTargetException ignore) {
+                        }
+                        return o;
+                    })));
         }
     }
 
-    public static HashMap<String, RegistryObject<MenuType<? extends NCProcessorContainer>>> PROCESSORS_CONTAINERS = new HashMap<>();
+    public static HashMap<String, RegistryObject<MenuType<? extends NCProcessorContainer<?>>>> PROCESSORS_CONTAINERS = new HashMap<>();
 
-    public static HashMap<String, RegistryObject<BlockEntityType<? extends NCProcessorBE>>> PROCESSORS_BE = new HashMap<>();
+    public static HashMap<String, RegistryObject<BlockEntityType<? extends NCProcessorBE<?>>>> PROCESSORS_BE = new HashMap<>();
 
 
+    @SuppressWarnings("unchecked")
     private static void registerBlockEntities() {
         for(String name: Processors.registered().keySet()) {
             PROCESSORS_BE.put(name, BLOCK_ENTITIES.register(name,

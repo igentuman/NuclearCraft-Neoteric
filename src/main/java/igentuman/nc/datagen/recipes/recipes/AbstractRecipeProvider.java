@@ -115,6 +115,18 @@ public abstract class AbstractRecipeProvider {
                 .build(consumer);
     }
 
+    public static void oreVein(List<NcIngredient> input, NcIngredient output, String nameKey, double...params) {
+        double timeModifier = params.length>0 ? params[0] : 1.0;
+        double powerModifier = params.length>1 ? params[1] : 1.0;
+        double radiation = params.length>2 ? params[2] : 1.0;
+        double rarity = params.length>3 ? params[3] : 1.0;
+        NcRecipeBuilder.get(ID)
+                .items(input, List.of(output))
+                .modifiers(timeModifier, radiation, powerModifier, rarity)
+                .build(consumer, rl(ID+"/"+nameKey));
+    }
+
+
     public static void fluidsAndFluids(List<FluidStackIngredient> input, List<FluidStack> output, double...params) {
         double timeModifier = params.length>0 ? params[0] : 1.0;
         double powerModifier = params.length>1 ? params[1] : 1.0;

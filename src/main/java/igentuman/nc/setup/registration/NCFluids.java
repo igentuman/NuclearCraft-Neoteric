@@ -42,6 +42,7 @@ import java.util.function.Function;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
+import static igentuman.nc.content.materials.Materials.slurries;
 
 public class NCFluids {
     public static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(ForgeRegistries.FLUIDS, MODID);
@@ -70,6 +71,7 @@ public class NCFluids {
         acids();
         liquidGases();
         liquids();
+        slurryFluids();
     }
 
     public static BlockState getBlock(String name)
@@ -139,6 +141,17 @@ public class NCFluids {
         }
     }
 
+    private static void slurryFluids() {
+        HashMap<String, AcidDefinition> items = new HashMap<>();
+        for(String material: slurries()) {
+            items.put(material+"_slurry", new AcidDefinition(material+"_slurry", 0x1A91A396));
+        }
+        for(AcidDefinition acid: items.values()) {
+            LIQUIDS_TAG.put(acid.name, TagKey.create(Registry.FLUID_REGISTRY,  new ResourceLocation("forge", acid.name)));
+            NC_MATERIALS.put(acid.name, FluidEntry.makeAcid(acid));
+
+        }
+    }
 
     private static void acids() {
         HashMap<String, AcidDefinition> items = new HashMap<>();

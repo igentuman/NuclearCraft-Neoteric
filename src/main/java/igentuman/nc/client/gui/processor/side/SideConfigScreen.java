@@ -24,7 +24,7 @@ import java.util.Optional;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
 
-public class SideConfigScreen<T extends NCProcessorContainer> extends AbstractContainerScreen<T> {
+public class SideConfigScreen<T extends NCProcessorContainer<T>> extends AbstractContainerScreen<T> {
     protected final ResourceLocation GUI = new ResourceLocation(MODID, "textures/gui/small_window.png");
     protected int relX;
     protected int relY;

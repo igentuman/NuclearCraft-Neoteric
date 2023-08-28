@@ -138,4 +138,18 @@ public class ProcessorSlots {
     public boolean hasThreeRows() {
         return input_fluids == 3 || output_fluids == 3 || input_items == 3 || output_items == 3;
     }
+
+
+    public int fluidSlotId(int i) {
+        //input fluids - items
+        //output fluids - items
+        if(i < input_fluids) {
+            return i;
+        }
+        return i-input_items;
+    }
+
+    public int outputSlotsCount() {
+        return output_fluids+output_items;
+    }
 }

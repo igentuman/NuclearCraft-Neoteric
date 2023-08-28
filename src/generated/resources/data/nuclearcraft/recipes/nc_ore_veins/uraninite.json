@@ -1,0 +1,30 @@
+{
+  "type": "nuclearcraft:nc_ore_veins",
+  "input": [
+    {
+      "count": 20,
+      "tag": "forge:ores/thorium"
+    },
+    {
+      "count": 3,
+      "tag": "forge:ores/silver"
+    },
+    {
+      "count": 70,
+      "tag": "forge:ores/uranium"
+    },
+    {
+      "count": 7,
+      "tag": "forge:ores/lead"
+    }
+  ],
+  "output": [
+    {
+      "item": "nuclearcraft:research_paper",
+      "nbt": "{vein:\"nc.ore_vein.uraninite\"}"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 2.0,
+  "timeModifier": 1.0
+}

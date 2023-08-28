@@ -13,8 +13,6 @@ import net.minecraft.world.level.block.Block;
 import javax.annotation.Nonnull;
 import java.util.List;
 
-import static igentuman.nc.handler.config.CommonConfig.ENERGY_STORAGE_CONFIG;
-
 public class ProcessorBlockItem extends BlockItem
 {
 	public ProcessorBlockItem(Block pBlock, Properties props)

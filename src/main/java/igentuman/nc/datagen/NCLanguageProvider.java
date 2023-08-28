@@ -98,6 +98,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("message.heat_sink.invalid9", "More work may be needed before this can be considered valid.");
 
         add("nc_jei_cat.fission_reactor_controller", "Fission Reactor Fuel Depletion");
+        add("nc_jei_cat.nc_ore_veins", "Ore Veins");
     }
 
     private void multiblocks() {
@@ -207,6 +208,17 @@ public class NCLanguageProvider extends LanguageProvider {
         add("tooltip.mode.3x3x3","3x3x3");
         add("tooltip.mode.5x5","5x5");
         add("tooltip.mode.vein","Vein");
+        add("tooltip.nc.chunk_position","Chunk Position: %s");
+        add("nc.ore_vein.borax","Vein of Borax");
+        add("nc.ore_vein.bornite","Vein of Bornite");
+        add("nc.ore_vein.cassiterite","Vein of Cassiterite");
+        add("nc.ore_vein.cobaltite","Vein of Cobaltite");
+        add("nc.ore_vein.magnesite","Vein of Magnesite");
+        add("nc.ore_vein.platinum","Vein of Platinum");
+        add("nc.ore_vein.sphalerite","Vein of Sphalerite");
+        add("nc.ore_vein.spodumene","Vein of Spodumene");
+        add("nc.ore_vein.uraninite","Vein of Uraninite");
+        add("nc.ore_vein.mixed","Vein of Mixed minerals");
         add("tooltip.nc.content_saved","Content Saved");
         add("fuel.heat_boiling.descr","Boiling Reactor Heat: %s H/t");
         add("fuel.depletion.descr","Base Depletion Time: %s sec");

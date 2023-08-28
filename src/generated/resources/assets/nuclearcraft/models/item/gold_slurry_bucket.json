@@ -1,0 +1,7 @@
+{
+  "parent": "forge:item/bucket",
+  "apply_tint": true,
+  "flip_gas": false,
+  "fluid": "nuclearcraft:gold_slurry",
+  "loader": "forge:fluid_container"
+}

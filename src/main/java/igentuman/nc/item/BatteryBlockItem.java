@@ -20,7 +20,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import javax.annotation.Nonnull;
 import java.util.List;
 
-import static igentuman.nc.handler.config.CommonConfig.ENERGY_STORAGE_CONFIG;
+import static igentuman.nc.handler.config.CommonConfig.ENERGY_STORAGE;
 
 public class BatteryBlockItem extends BlockItem
 {
@@ -61,7 +61,7 @@ public class BatteryBlockItem extends BlockItem
 
 
 	protected int getEnergyMaxStorage() {
-		return ENERGY_STORAGE_CONFIG.getCapacityFor(toString());
+		return ENERGY_STORAGE.getCapacityFor(toString());
 	}
 
 	@Override

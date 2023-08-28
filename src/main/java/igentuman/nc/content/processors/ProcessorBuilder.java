@@ -16,6 +16,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.function.Supplier;
 
 public class ProcessorBuilder <M extends NCProcessorContainer, U extends Screen & MenuAccess<M>>{
@@ -64,36 +66,48 @@ public class ProcessorBuilder <M extends NCProcessorContainer, U extends Screen 
         return this;
     }
 
-    public ProcessorPrefab<M, U> build()
+    public ProcessorPrefab<?, ?> build()
     {
         return processor;
     }
 
 
-    public ProcessorBuilder<M, U> slotsConfig(ProcessorSlots config)
+    public ProcessorBuilder<?, ?> slotsConfig(ProcessorSlots config)
     {
         processor.slotsConfig = config;
         return this;
     }
 
-    public ProcessorBuilder<M, U> progressBar(int i) {
+    public ProcessorBuilder<?, ?> progressBar(int i) {
         processor.progressBar = i;
         return this;
     }
 
-    public ProcessorBuilder<M, U> recipeSerializer(Supplier<RecipeSerializer<? extends AbstractRecipe>> sup) {
+    public ProcessorBuilder<?, ?> recipeSerializer(Supplier<RecipeSerializer<? extends AbstractRecipe>> sup) {
         processor.recipeSerializerSupplier = sup;
         return this;
     }
 
-    public ProcessorBuilder<M, U> recipe(NcRecipeSerializer.IFactory<? extends NcRecipe> factory) {
+    public ProcessorBuilder<?, ?> recipe(NcRecipeSerializer.IFactory<? extends NcRecipe> factory) {
         processor.recipeSerializerSupplier = () -> new NcRecipeSerializer<>(factory);
         return this;
     }
 
-    public ProcessorBuilder upgrades(boolean energy, boolean speed) {
+    public ProcessorBuilder<?, ?> upgrades(boolean energy, boolean speed) {
         processor.supportEnergyUpgrade = energy;
         processor.supportSpeedUpgrade = speed;
+        return this;
+    }
+
+    public ProcessorBuilder<?, ?> withCatalyst() {
+        processor.supportsCatalyst = true;
+        return this;
+    }
+
+    public ProcessorBuilder<?, ?> setHiddenSlots(Integer... i) {
+        for(int id: i) {
+            processor.hiddenSlots.add(id);
+        }
         return this;
     }
 }

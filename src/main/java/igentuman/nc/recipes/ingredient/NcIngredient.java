@@ -195,6 +195,9 @@ public class NcIngredient extends Ingredient {
       public JsonObject serialize() {
          JsonObject jsonobject = new JsonObject();
          jsonobject.addProperty("item", Registry.ITEM.getKey(this.item.getItem()).toString());
+         if(item.hasTag()) {
+            jsonobject.addProperty("nbt", item.getTag().toString());
+         }
          if(item.getCount()>1) {
             jsonobject.addProperty("count", item.getCount());
          }

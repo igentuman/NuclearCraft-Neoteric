@@ -32,6 +32,7 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
     private double powerModifier = 1D;
 
     public String ID;
+    private double rarityModifier = 1D;
 
     protected NcRecipeBuilder(String id) {
         super(ncSerializer(id));
@@ -55,6 +56,14 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
         return instance;
     }
 
+
+    public NcRecipeBuilder modifiers(double timeModifier, double radiation, double powerModifier, double rarity) {
+        this.timeModifier = timeModifier;
+        this.radiation = radiation;
+        this.powerModifier = powerModifier;
+        this.rarityModifier = rarity;
+        return this;
+    }
 
     public NcRecipeBuilder modifiers(double timeModifier, double radiation, double powerModifier) {
         this.timeModifier = timeModifier;
@@ -128,6 +137,9 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
             json.addProperty("timeModifier", timeModifier);
             json.addProperty("radiation", radiation);
             json.addProperty("powerModifier", powerModifier);
+            if(rarityModifier != 1D) {
+                json.addProperty("rarityModifier", rarityModifier);
+            }
         }
     }
 }

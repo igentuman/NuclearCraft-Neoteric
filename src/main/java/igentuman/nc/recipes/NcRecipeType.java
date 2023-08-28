@@ -28,6 +28,7 @@ public class NcRecipeType<RECIPE extends AbstractRecipe> implements RecipeType<R
     private static HashMap<String, RecipeTypeRegistryObject<? extends AbstractRecipe>> initializeRecipes() {
         HashMap<String, RecipeTypeRegistryObject<? extends AbstractRecipe>> recipes = new HashMap<>();
         recipes.put(FissionControllerBE.NAME, register(FissionControllerBE.NAME));
+        recipes.put("nc_ore_veins", register("nc_ore_veins"));
 
         for(String processorName: Processors.registered().keySet()) {
             if(Processors.registered().get(processorName).hasRecipes()) {

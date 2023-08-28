@@ -15,6 +15,8 @@ import net.minecraftforge.common.util.LazyOptional;
 import java.util.HashMap;
 import java.util.List;
 
+import static igentuman.nc.handler.sided.SlotModePair.SlotMode.INPUT;
+
 public class SidedContentHandler implements INBTSerializable<Tag> {
 
     public final int inputItemSlots;
@@ -110,14 +112,14 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
     }
 
     public void toggleSideConfig(int slotId, int direction) {
-        if(slotId < inputItemSlots) {
-            itemHandler.toggleMode(slotId, direction);
-        } else if(slotId < inputItemSlots+outputItemSlots) {
-            itemHandler.toggleMode(slotId, direction);
-        } else if(slotId < inputItemSlots+outputItemSlots+inputFluidSlots) {
-            fluidCapability.toggleMode(slotId-inputItemSlots-outputItemSlots, direction);
-        } else if(slotId < inputItemSlots+outputItemSlots+inputFluidSlots+outputFluidSlots) {
-            fluidCapability.toggleMode(slotId-inputItemSlots-outputItemSlots, direction);
+        if(slotId < inputFluidSlots) {
+            fluidCapability.toggleMode(getSlotIdFromGlobalId(slotId), direction);
+        } else if(slotId < inputFluidSlots+inputItemSlots) {
+            itemHandler.toggleMode(getSlotIdFromGlobalId(slotId), direction);
+        } else if (slotId < inputFluidSlots+inputItemSlots+outputFluidSlots) {
+            fluidCapability.toggleMode(getSlotIdFromGlobalId(slotId), direction);
+        } else if (slotId < inputFluidSlots+outputFluidSlots+inputItemSlots+outputItemSlots) {
+            itemHandler.toggleMode(getSlotIdFromGlobalId(slotId), direction);
         }
     }
 
@@ -131,20 +133,42 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
         }
     }
 
-    public SlotModePair.SlotMode getSlotMode(int direction, int slotId) {
-        if(slotId < inputItemSlots) {
-            return itemHandler.getMode(slotId, direction);
-        } else if(slotId < inputItemSlots+outputItemSlots) {
-            return itemHandler.getMode(slotId, direction);
-        } else if(slotId < inputItemSlots+outputItemSlots+inputFluidSlots) {
-            return fluidCapability.getMode(slotId-inputItemSlots-outputItemSlots, direction);
-        } else if(slotId < inputItemSlots+outputItemSlots+inputFluidSlots+outputFluidSlots) {
-            return fluidCapability.getMode(slotId-inputItemSlots-outputItemSlots, direction);
+    public int getSlotIdFromGlobalId(int id)
+    {
+        if(id < inputFluidSlots) {
+            return id;
         }
-        return null;
+        if(id < inputFluidSlots+inputItemSlots) {
+            return id-inputFluidSlots;
+        }
+        if (id < inputFluidSlots+inputItemSlots+outputFluidSlots) {
+            return id-inputFluidSlots-inputItemSlots+1;
+        }
+        if (id < inputFluidSlots+outputFluidSlots+inputItemSlots+outputItemSlots) {
+            return id-inputItemSlots-inputFluidSlots-outputFluidSlots+1;
+        }
+        return -1;
     }
 
-    protected BlockPos tempPos;
+    public SlotModePair.SlotMode getSlotMode(int direction, int slotId) {
+
+        if(getSlotType(slotId) == INPUT) {
+            if(slotId < inputFluidSlots) {
+                return fluidCapability.getMode(getSlotIdFromGlobalId(slotId), direction);
+            }
+            return itemHandler.getMode(getSlotIdFromGlobalId(slotId), direction);
+        }
+
+        if(slotId < inputFluidSlots+inputItemSlots+outputFluidSlots) {
+            return fluidCapability.getMode(getSlotIdFromGlobalId(slotId), direction);
+        }
+        return itemHandler.getMode(getSlotIdFromGlobalId(slotId), direction);
+    }
+
+    public SlotModePair.SlotMode getSlotType(int id)
+    {
+        return id > (inputFluidSlots+inputItemSlots-1) ? SlotModePair.SlotMode.OUTPUT : INPUT;
+    }
 
     public boolean tick() {
         boolean updated = false;

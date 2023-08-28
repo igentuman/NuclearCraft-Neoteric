@@ -1,6 +1,5 @@
 package igentuman.nc.handler.config;
 
-import com.google.common.collect.ImmutableList;
 import igentuman.nc.content.materials.*;
 import igentuman.nc.setup.energy.BatteryBlocks;
 import igentuman.nc.setup.energy.RTGs;
@@ -30,8 +29,9 @@ public class CommonConfig {
     public static final FissionConfig FISSION_CONFIG = new FissionConfig(BUILDER);
     public static final RadiationConfig RADIATION_CONFIG = new RadiationConfig(BUILDER);
     public static final EnergyGenerationConfig ENERGY_GENERATION = new EnergyGenerationConfig(BUILDER);
-    public static final EnergyStorageConfig ENERGY_STORAGE_CONFIG = new EnergyStorageConfig(BUILDER);
+    public static final EnergyStorageConfig ENERGY_STORAGE = new EnergyStorageConfig(BUILDER);
     public static final MaterialProductsConfig MATERIAL_PRODUCTS = new MaterialProductsConfig(BUILDER);
+    public static final InSituLeachingConfig IN_SITU_LEACHING = new InSituLeachingConfig(BUILDER);
     public static final DimensionConfig DIMENSION_CONFIG = new DimensionConfig(BUILDER);
     public static final ForgeConfigSpec spec = BUILDER.build();
     private static boolean loaded = false;
@@ -88,6 +88,48 @@ public class CommonConfig {
             builder.pop();
         }
 
+    }
+
+    public static class InSituLeachingConfig {
+        public ForgeConfigSpec.ConfigValue<Boolean> ENABLE_VEINS;
+        public ForgeConfigSpec.ConfigValue<List<Integer>> VEIN_BLOCKS_AMOUNT;
+        public ForgeConfigSpec.ConfigValue<Integer> VEINS_RARITY;
+        public ForgeConfigSpec.ConfigValue<Boolean> RANDOMIZED_ORES;
+        public ForgeConfigSpec.ConfigValue<Boolean> ADD_IE_VEINS;
+        public ForgeConfigSpec.ConfigValue<Boolean> ALLOW_TO_LEACH_IE_VEINS;
+
+
+        public InSituLeachingConfig(ForgeConfigSpec.Builder builder) {
+            builder.comment("Settings for In situ leaching").push("in_situ_leaching");
+
+            ENABLE_VEINS = builder
+                    .comment("Enable veins generation.")
+                    .define("enable_veins", true);
+
+            VEIN_BLOCKS_AMOUNT = builder
+                    .comment("Min and max values of blocks per vein.")
+                    .comment("Result amount will be random value in this range.")
+                    .define("blocks_per_vein", List.of(30000, 70000));
+
+            VEINS_RARITY = builder
+                    .comment("Veins rarity. Bigger value - less veins.")
+                    .defineInRange("veins_rarity", 100, 1, 5000);
+
+            RANDOMIZED_ORES = builder
+                    .comment("All veins will have random ores. It will ignore vein settings")
+                    .define("randomized_ores", false);
+
+            ADD_IE_VEINS = builder
+                    .comment("Add new veins to generation for Immersive Engineering.")
+                    .define("add_ie_veins", true);
+
+            ALLOW_TO_LEACH_IE_VEINS = builder
+                    .comment("Allow to leach veins from Immersive Engineering.")
+                    .comment("To do so, you need to put IE core sample into leacher.")
+                    .define("allow_to_leach_ie_veins", true);
+
+            builder.pop();
+        }
     }
 
     public static class HeatSinkConfig {

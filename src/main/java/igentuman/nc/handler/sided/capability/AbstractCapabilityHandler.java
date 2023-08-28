@@ -40,22 +40,17 @@ public abstract class AbstractCapabilityHandler {
         SlotModePair.SlotMode mode = slotModePair.getMode();
         sideMapUpdated = true;
         if(getType(slot) == SidedContentHandler.SlotType.INPUT) {
-            if (mode == SlotModePair.SlotMode.DISABLED) {
-                sideSlots[slot] = new SlotModePair(SlotModePair.SlotMode.INPUT, slot);
-            } else if (mode == SlotModePair.SlotMode.INPUT) {
-                sideSlots[slot] = new SlotModePair(SlotModePair.SlotMode.PULL, slot);
-            } else if (mode == SlotModePair.SlotMode.PULL) {
-                sideSlots[slot] = new SlotModePair(SlotModePair.SlotMode.DISABLED, slot);
+            switch (mode) {
+                case DISABLED -> sideSlots[slot] = new SlotModePair(SlotModePair.SlotMode.INPUT, slot);
+                case INPUT -> sideSlots[slot] = new SlotModePair(SlotModePair.SlotMode.PULL, slot);
+                case PULL -> sideSlots[slot] = new SlotModePair(SlotModePair.SlotMode.DISABLED, slot);
             }
         } else {
-            if (mode == SlotModePair.SlotMode.DISABLED) {
-                sideSlots[slot] = new SlotModePair(SlotModePair.SlotMode.OUTPUT, slot);
-            } else if (mode == SlotModePair.SlotMode.OUTPUT) {
-                sideSlots[slot] = new SlotModePair(SlotModePair.SlotMode.PUSH, slot);
-            } else if (mode == SlotModePair.SlotMode.PUSH) {
-                sideSlots[slot] = new SlotModePair(SlotModePair.SlotMode.PUSH_EXCESS, slot);
-            } else if (mode == SlotModePair.SlotMode.PUSH_EXCESS) {
-                sideSlots[slot] = new SlotModePair(SlotModePair.SlotMode.DISABLED, slot);
+            switch (mode) {
+                case DISABLED -> sideSlots[slot] = new SlotModePair(SlotModePair.SlotMode.OUTPUT, slot);
+                case OUTPUT -> sideSlots[slot] = new SlotModePair(SlotModePair.SlotMode.PUSH, slot);
+                case PUSH -> sideSlots[slot] = new SlotModePair(SlotModePair.SlotMode.PUSH_EXCESS, slot);
+                case PUSH_EXCESS -> sideSlots[slot] = new SlotModePair(SlotModePair.SlotMode.DISABLED, slot);
             }
         }
     }

@@ -17,7 +17,8 @@
   ],
   "output": [
     {
-      "item": "nuclearcraft:multitool"
+      "item": "nuclearcraft:multitool",
+      "nbt": "{Damage:0}"
     }
   ],
   "powerModifier": 1.0,

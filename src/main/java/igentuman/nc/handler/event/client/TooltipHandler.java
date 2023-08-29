@@ -15,6 +15,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static net.minecraft.world.item.Items.FILLED_MAP;
 
 @Mod.EventBusSubscriber(modid = MODID, value = Dist.CLIENT)
 public class TooltipHandler {
@@ -36,6 +37,9 @@ public class TooltipHandler {
     private static void miscTooltips(ItemTooltipEvent event, ItemStack itemStack) {
         if(itemStack.getOrCreateTag().contains("is_nc_analyzed")) {
             event.getToolTip().add(Component.translatable("tooltip.nc.analyzed").withStyle(ChatFormatting.GOLD));
+            if(itemStack.getItem().equals(FILLED_MAP)) {
+                event.getToolTip().add(Component.translatable("tooltip.nc.use_in_leacher").withStyle(ChatFormatting.GOLD));
+            }
         }
     }
 

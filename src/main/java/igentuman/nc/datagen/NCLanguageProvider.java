@@ -186,6 +186,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("tooltip.nc.analyzed","Item analyze completed");
         add("tooltip.nc.shielding.desc","Combine with armor in crafting grid");
         add("tooltip.nc.rad_shielding","Rad Shielding LVL: %s");
+        add("tooltip.nc.use_in_leacher","Item can be used in Leacher");
         add("tooltip.nc.energy_stored","Energy Stored: %s / %s");
         add("tooltip.nc.energy_capacity","Energy Capacity: %s");
         add("tooltip.nc.radiation","Radiation: %s");

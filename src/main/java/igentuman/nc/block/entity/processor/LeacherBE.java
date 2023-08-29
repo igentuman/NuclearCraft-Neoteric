@@ -1,14 +1,19 @@
 package igentuman.nc.block.entity.processor;
 
 import igentuman.nc.content.processors.Processors;
+import igentuman.nc.handler.OreVeinProvider;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.type.NcRecipe;
+import igentuman.nc.recipes.type.OreVeinRecipe;
+import igentuman.nc.util.annotation.NBTField;
 import igentuman.nc.util.annotation.NothingNullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -25,6 +30,11 @@ public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
     public LeacherBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, Processors.LEACHER);
     }
+
+    @NBTField
+    public int veinDepletion = 0;
+
+    protected OreVeinRecipe veinRecipe;
     @Override
     public String getName() {
         return Processors.LEACHER;
@@ -53,33 +63,54 @@ public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
         super.processRecipe();
     }
 
+    protected void updateRecipe() {
+        gatherOre();
+        super.updateRecipe();
+    }
+
     public void gatherOre()
     {
         if(!hasCatalyst()) return;
         ItemStack catalyst = catalystHandler.getStackInSlot(0);
+        ItemStack ore = ItemStack.EMPTY;
 
         if(catalyst.getItem().equals(MAP)) {
-            useMapCatalyst();
-            return;
+            ore = useMapCatalyst();
         }
         if(catalyst.getItem().equals(NC_PARTS.get("research_paper").get())) {
-            useResearchPaper();
-            return;
+            ore = useResearchPaper();
         }
         
         if(catalyst.getItem().equals(getItemByName("immersiveengineering:coresample"))) {
-            useIECoreSample();
+            ore = useIECoreSample();
         }
+        contentHandler.itemHandler.insertItem(0, ore, false);
     }
 
-    protected void useIECoreSample() {
+    //todo implement
+    protected ItemStack useIECoreSample() {
+        return ItemStack.EMPTY;
     }
 
-    protected void useResearchPaper() {
+
+    protected ItemStack useResearchPaper() {
+        ChunkPos chunkPos = new ChunkPos(getBlockPos());
+        return veinRecipe().getRandomOre(veinDepletion++, (ServerLevel)getLevel(), chunkPos.x, chunkPos.z);
     }
 
-    protected void useMapCatalyst() {
+    public OreVeinRecipe veinRecipe() {
+        if(veinRecipe == null) {
+            ChunkPos chunkPos = new ChunkPos(getBlockPos());
+            veinRecipe = OreVeinProvider
+                    .get((ServerLevel)getLevel())
+                    .getVeinForChunk(chunkPos.x, chunkPos.z);
+        }
+        return veinRecipe;
+    }
 
+    //todo implement
+    protected ItemStack useMapCatalyst() {
+        return ItemStack.EMPTY;
     }
 
     @Override

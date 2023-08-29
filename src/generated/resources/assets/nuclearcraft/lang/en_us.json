@@ -1907,6 +1907,7 @@
   "tooltip.nc.radiation_removal": "Removes Radiation: %s",
   "tooltip.nc.shielding.desc": "Combine with armor in crafting grid",
   "tooltip.nc.shift_rbm_to_change": "Sneak+Use to change",
+  "tooltip.nc.use_in_leacher": "Item can be used in Leacher",
   "tooltip.press_shift_for_description": "Press SHIFT for description",
   "validation.structure.incomplete": "Incomplete",
   "validation.structure.no_controller": "No controllers",

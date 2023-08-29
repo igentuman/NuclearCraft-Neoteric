@@ -1,15 +1,19 @@
 package igentuman.nc.recipes.type;
 
+import igentuman.nc.handler.OreVeinProvider;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Random;
 
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
+import static igentuman.nc.handler.config.CommonConfig.IN_SITU_LEACHING;
 import static igentuman.nc.setup.registration.NCItems.NC_PARTS;
 
 public class OreVeinRecipe extends NcRecipe {
@@ -27,5 +31,31 @@ public class OreVeinRecipe extends NcRecipe {
     @Override
     public @NotNull ItemStack getToastSymbol() {
         return new ItemStack(NC_PARTS.get("research_paper").get());
+    }
+
+    public int limit(ServerLevel level, int x, int z) {
+        Random rand = OreVeinProvider.get(level).rand(x, z);
+        List<Integer> range = IN_SITU_LEACHING.VEIN_BLOCKS_AMOUNT.get();
+        return rand.nextInt(range.get(1)-range.get(0))+range.get(0);
+    }
+
+    public ItemStack getRandomOre(int id, ServerLevel level, int x, int z) {
+
+        if(id >= limit(level, x, z)) {
+            return ItemStack.EMPTY;
+        }
+        int score = OreVeinProvider.get(level).rand(x, z, id).nextInt(100);
+        return getOreByScore(score, level, x, z);
+    }
+
+    public ItemStack getOreByScore(int score, ServerLevel level, int x, int z) {
+        int id = OreVeinProvider.get(level).rand(x, z, score).nextInt(inputItems.length);
+        for(int i = id; i < inputItems.length; i++) {
+            if(score <= inputItems[i].getRepresentations().get(0).getCount()) {
+                return inputItems[i].getRepresentations().get(0);
+            }
+            score -= inputItems[i].getRepresentations().get(0).getCount();
+        }
+        return getOreByScore(score, level, x, z);
     }
 }

@@ -71,7 +71,7 @@ public class NCFluids {
         acids();
         liquidGases();
         liquids();
-        slurryFluids();
+        //slurryFluids();
     }
 
     public static BlockState getBlock(String name)
@@ -143,13 +143,20 @@ public class NCFluids {
 
     private static void slurryFluids() {
         HashMap<String, AcidDefinition> items = new HashMap<>();
+        int id = 0;
         for(String material: slurries()) {
-            items.put(material+"_slurry", new AcidDefinition(material+"_slurry", 0x1A91A396));
+            int color = TextureUtil.getAverageColor("textures/block/ore/" + material + "_ore.png");
+            int[] rgba = TextureUtil.intToRgba(color);
+            if(rgba[0] == 0 && rgba[1] == 0 && rgba[2] == 0) {
+                Random rand = new Random(material.length());
+                rgba = new int[]{rand.nextInt(id+10), rand.nextInt(id+15), rand.nextInt(id+20), 255};
+            }
+            rgba[3] = 0xFE;
+            items.put(material+"_slurry", new AcidDefinition(material+"_slurry", TextureUtil.rgbaToInt(rgba)));
         }
         for(AcidDefinition acid: items.values()) {
             LIQUIDS_TAG.put(acid.name, TagKey.create(Registry.FLUID_REGISTRY,  new ResourceLocation("forge", acid.name)));
             NC_MATERIALS.put(acid.name, FluidEntry.makeAcid(acid));
-
         }
     }
 

@@ -13,6 +13,17 @@ import static igentuman.nc.NuclearCraft.MODID;
 
 public class TextureUtil {
 
+    public static int[] intToRgba(int color) {
+        int[] rgba = new int[4];
+
+        rgba[0] = (color >> 16) & 0xFF;
+        rgba[1] = (color >> 8) & 0xFF;
+        rgba[2] = color & 0xFF;
+        rgba[3] = (color >> 24) & 0xFF;
+
+        return rgba;
+    }
+
     public static int rgbaToInt(int[] rgba) {
         int r = rgba[0];
         int g = rgba[1];
@@ -65,7 +76,7 @@ public class TextureUtil {
             return rgbaToIntHex(new int[]{redAvg, greenAvg, blueAvg, 255});
         } catch (NullPointerException|IOException e) {
             e.printStackTrace();
-            System.out.print("assets/"+resourceLocation.getNamespace()+"/"+resourceLocation.getPath());
+           // System.out.print("assets/"+resourceLocation.getNamespace()+"/"+resourceLocation.getPath());
             return rgbaToIntHex(new int[]{0, 0, 0, 0});
         }
     }

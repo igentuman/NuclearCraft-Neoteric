@@ -8,6 +8,7 @@ import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.recipes.type.OreVeinRecipe;
 import igentuman.nc.util.annotation.NBTField;
 import igentuman.nc.util.annotation.NothingNullByDefault;
+import igentuman.nc.util.insitu_leaching.WorldVeinsManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -23,16 +24,24 @@ import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.compat.GlobalVars.RECIPE_CLASSES;
 import static igentuman.nc.radiation.ItemRadiation.getItemByName;
 import static igentuman.nc.setup.registration.NCItems.NC_PARTS;
-import static net.minecraft.world.item.Items.AIR;
-import static net.minecraft.world.item.Items.MAP;
+import static net.minecraft.world.item.Items.*;
 
 public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
     public LeacherBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, Processors.LEACHER);
     }
 
+    public static final byte WRONG_POSITION = 2;
+    public static final byte POSITION_IS_CORRECT = 1;
+    public static final byte POSITION_UNKNOWN = 0;
     @NBTField
     public int veinDepletion = 0;
+
+    @NBTField
+    public byte positionState = 2;
+
+    @NBTField
+    public ItemStack catalyst = ItemStack.EMPTY;
 
     protected OreVeinRecipe veinRecipe;
     @Override
@@ -70,11 +79,15 @@ public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
 
     public void gatherOre()
     {
-        if(!hasCatalyst()) return;
-        ItemStack catalyst = catalystHandler.getStackInSlot(0);
+        if(!hasCatalyst()) {
+            catalyst = ItemStack.EMPTY;
+            return;
+        }
+
+        catalyst = catalystHandler.getStackInSlot(0);
         ItemStack ore = ItemStack.EMPTY;
 
-        if(catalyst.getItem().equals(MAP)) {
+        if(catalyst.getItem().equals(FILLED_MAP)) {
             ore = useMapCatalyst();
         }
         if(catalyst.getItem().equals(NC_PARTS.get("research_paper").get())) {
@@ -94,18 +107,15 @@ public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
 
 
     protected ItemStack useResearchPaper() {
-        ChunkPos chunkPos = new ChunkPos(getBlockPos());
-        return veinRecipe().getRandomOre(veinDepletion++, (ServerLevel)getLevel(), chunkPos.x, chunkPos.z);
-    }
-
-    public OreVeinRecipe veinRecipe() {
-        if(veinRecipe == null) {
-            ChunkPos chunkPos = new ChunkPos(getBlockPos());
-            veinRecipe = OreVeinProvider
-                    .get((ServerLevel)getLevel())
-                    .getVeinForChunk(chunkPos.x, chunkPos.z);
+        BlockPos mapPos = BlockPos.of(catalyst.getOrCreateTag().getLong("pos"));
+        ChunkPos chunkPos = new ChunkPos(mapPos);
+        if(!chunkPos.equals(new ChunkPos(getBlockPos()))) {
+            positionState = WRONG_POSITION;
+            return ItemStack.EMPTY;
         }
-        return veinRecipe;
+        if(getLevel() == null) return ItemStack.EMPTY;
+        return WorldVeinsManager.get(getLevel())
+                .getWorldVeinData((ServerLevel) getLevel()).gatherRandomOre(chunkPos.x, chunkPos.z);
     }
 
     //todo implement

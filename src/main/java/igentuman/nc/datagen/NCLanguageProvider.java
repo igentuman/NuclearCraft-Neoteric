@@ -182,6 +182,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("processor.description.analyzer","Used to analyze environment and items.");
         add("processor.description.leacher","Leaches undeground minerals with acids and pumps slurry back.");
 
+        add("amount","Amount: %s");
         add("sound_event.nuclearcraft.item.charged","Item Charged");
         add("tooltip.nc.analyzed","Item analyze completed");
         add("tooltip.nc.shielding.desc","Combine with armor in crafting grid");

@@ -29,6 +29,11 @@ public class OreVeinProvider {
         return rand(chunkX, chunkZ).nextInt(IN_SITU_LEACHING.VEINS_RARITY.get()) <= 10;
     }
 
+    public int getVeinSize(int x, int z) {
+        List<Integer> range = IN_SITU_LEACHING.VEIN_BLOCKS_AMOUNT.get();
+        return rand(x, z).nextInt(range.get(1)-range.get(0))+range.get(0);
+    }
+
     public Random rand(int x, int z, int ... seeds) {
         int additional = 0;
         for(int seed : seeds)
@@ -69,5 +74,4 @@ public class OreVeinProvider {
         }
         return selectRandomVein(rand(chunkX, chunkZ), chunkX, chunkZ);
     }
-
 }

@@ -1,4 +1,5 @@
 {
+  "amount": "Amount: %s",
   "block.nuclearcraft.advanced_lithium_ion_battery": "Advanced Lithium Ion Battery",
   "block.nuclearcraft.advanced_voltaic_pile": "Advanced Voltaic Pile",
   "block.nuclearcraft.alloy_smelter": "Alloy Smelter",

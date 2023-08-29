@@ -1,8 +1,5 @@
 package igentuman.nc.content.materials;
 
-import igentuman.nc.content.materials.MaterialsManager;
-import igentuman.nc.content.materials.NCMaterial;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -284,9 +281,7 @@ public class Materials extends MaterialsManager {
     }
 
     public static List<String> slurries() {
-        return List.of(
-                uranium, iron, gold, aluminum, thorium, boron, silver,
-                lead, tin, copper, zinc, cobalt, platinum, lithium, magnesium
-        );
+        //return MATERIAL_PRODUCTS.SLURRIES.get();
+        return List.of();
     }
 }

@@ -18,7 +18,7 @@ public class Ores {
         if(registered == null) {
             registered = new HashMap<>();
             for(String name: all().keySet()) {
-                if(all().get(name).isRegistered()) {
+                if(all().get(name).config().isRegistered()) {
                     registered.put(name, all().get(name));
                 }
             }

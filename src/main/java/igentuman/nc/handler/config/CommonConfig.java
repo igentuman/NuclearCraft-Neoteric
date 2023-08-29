@@ -362,11 +362,22 @@ public class CommonConfig {
         public ForgeConfigSpec.ConfigValue<List<Boolean>> PLATES;
         public ForgeConfigSpec.ConfigValue<List<Boolean>> DUSTS;
         public ForgeConfigSpec.ConfigValue<List<Boolean>> GEMS;
+        public ForgeConfigSpec.ConfigValue<List<String>> SLURRIES;
 
         public ForgeConfigSpec.ConfigValue<List<String>> MODS_PRIORITY;
 
         public MaterialProductsConfig(ForgeConfigSpec.Builder builder) {
             builder.comment("Settings for items registration").push("material_products");
+
+            SLURRIES = builder
+                    .comment("List of available slurries (dissolved ores in acid)")
+                    .comment("Color for slurry will be calculate from average texture color")
+                    .comment("Texture location has to be: nuclearcraft:textures/block/ore/(slurry_name)_ore.png")
+                    .comment("If no texture found it will generate random color")
+                    .define("register_slurries", List.of(
+                            "uranium", "iron", "gold", "aluminum", "thorium", "boron", "silver",
+                            "lead", "tin", "copper", "zinc", "cobalt", "platinum", "lithium", "magnesium"
+                    ));
 
             CHUNKS = builder
                     .comment("Enable chunk registration: " + String.join(", ", Chunks.all().keySet()))

@@ -1,0 +1,30 @@
+{
+  "type": "nuclearcraft:centrifuge",
+  "inputFluids": [
+    {
+      "amount": 1000,
+      "tag": "forge:iron_slurry"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 800,
+      "fluid": "nuclearcraft:iron_clean_slurry"
+    },
+    {
+      "amount": 50,
+      "fluid": "nuclearcraft:hydrochloric_acid"
+    },
+    {
+      "amount": 50,
+      "fluid": "nuclearcraft:nitric_acid"
+    },
+    {
+      "amount": 10,
+      "fluid": "nuclearcraft:calcium_sulfate_solution"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

@@ -71,7 +71,7 @@ public class NCFluids {
         acids();
         liquidGases();
         liquids();
-        //slurryFluids();
+        slurryFluids();
     }
 
     public static BlockState getBlock(String name)
@@ -137,7 +137,6 @@ public class NCFluids {
         for(LiquidDefinition liquid: items.values()) {
             LIQUIDS_TAG.put(liquid.name, TagKey.create(Registry.FLUID_REGISTRY,  new ResourceLocation("forge", liquid.name)));
             NC_MATERIALS.put(liquid.name, FluidEntry.makeLiquid(liquid.name, liquid.color));
-
         }
     }
 
@@ -148,11 +147,13 @@ public class NCFluids {
             int color = TextureUtil.getAverageColor("textures/block/ore/" + material + "_ore.png");
             int[] rgba = TextureUtil.intToRgba(color);
             if(rgba[0] == 0 && rgba[1] == 0 && rgba[2] == 0) {
-                Random rand = new Random(material.length());
-                rgba = new int[]{rand.nextInt(id+10), rand.nextInt(id+15), rand.nextInt(id+20), 255};
+                Random rand = new Random(material.length()+id);
+                rgba = new int[]{rand.nextInt(id+254), rand.nextInt(id+255), rand.nextInt(id+253), 255};
             }
             rgba[3] = 0xFE;
             items.put(material+"_slurry", new AcidDefinition(material+"_slurry", TextureUtil.rgbaToInt(rgba)));
+            rgba[3] = 0xDD;
+            items.put(material+"_clean_slurry", new AcidDefinition(material+"_clean_slurry", TextureUtil.rgbaToInt(rgba)));
         }
         for(AcidDefinition acid: items.values()) {
             LIQUIDS_TAG.put(acid.name, TagKey.create(Registry.FLUID_REGISTRY,  new ResourceLocation("forge", acid.name)));

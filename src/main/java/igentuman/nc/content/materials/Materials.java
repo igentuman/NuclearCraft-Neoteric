@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static igentuman.nc.handler.config.CommonConfig.MATERIAL_PRODUCTS;
+
 
 public class Materials extends MaterialsManager {
 
@@ -281,7 +283,6 @@ public class Materials extends MaterialsManager {
     }
 
     public static List<String> slurries() {
-        //return MATERIAL_PRODUCTS.SLURRIES.get();
-        return List.of();
+        return MATERIAL_PRODUCTS.SLURRIES.get();
     }
 }

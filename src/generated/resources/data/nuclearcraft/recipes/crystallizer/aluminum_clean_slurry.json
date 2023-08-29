@@ -1,0 +1,18 @@
+{
+  "type": "nuclearcraft:crystallizer",
+  "inputFluids": [
+    {
+      "amount": 400,
+      "tag": "forge:aluminum_clean_slurry"
+    }
+  ],
+  "output": [
+    {
+      "count": 2,
+      "item": "nuclearcraft:aluminum_dust"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

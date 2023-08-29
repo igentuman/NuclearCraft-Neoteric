@@ -43,41 +43,42 @@ public class TextureUtil {
     @OnlyIn(Dist.CLIENT)
     public static int getAverageColor(String textureLocation) {
         ResourceLocation resourceLocation = new ResourceLocation(MODID, textureLocation);
+        int redSum;
+        int greenSum;
+        int blueSum;
+        int pixelCount;
+        String path = "assets/" + resourceLocation.getNamespace() + "/" + resourceLocation.getPath();
         try {
-            int redSum;
-            int greenSum;
-            int blueSum;
-            int pixelCount;
-            String path = "assets/"+resourceLocation.getNamespace()+"/"+resourceLocation.getPath();
             InputStream texStream = resourceLocation.getClass().getClassLoader().getResourceAsStream(path);
-            try (NativeImage nativeImage = NativeImage.read(texStream)) {
-                int textureWidth = nativeImage.getWidth();
-                int textureHeight = nativeImage.getHeight();
+            NativeImage nativeImage = NativeImage.read(texStream);
+            int textureWidth = nativeImage.getWidth();
+            int textureHeight = nativeImage.getHeight();
 
-                // Calculate the average color
-                redSum = 0;
-                greenSum = 0;
-                blueSum = 0;
-                pixelCount = 0;
-                for (int x = (textureWidth/2)-4; x < (textureWidth/2)+4; x++) {
-                    for (int y = (textureHeight/2)-4; y < (textureHeight/2)+4; y++) {
-                        Color pixel = new Color(nativeImage.getPixelRGBA(x, y));
-                        redSum += Math.min(254 ,pixel.getRed()+20);//adding some shift to match with item color
-                        greenSum += pixel.getGreen();
-                        blueSum += Math.max(0, pixel.getBlue()-30);
-                        pixelCount++;
-                    }
+            // Calculate the average color
+            redSum = 0;
+            greenSum = 0;
+            blueSum = 0;
+            pixelCount = 0;
+            for (int x = (textureWidth / 2) - 4; x < (textureWidth / 2) + 4; x++) {
+                for (int y = (textureHeight / 2) - 4; y < (textureHeight / 2) + 4; y++) {
+                    Color pixel = new Color(nativeImage.getPixelRGBA(x, y));
+                    redSum += Math.min(254, pixel.getRed() + 20);//adding some shift to match with item color
+                    greenSum += pixel.getGreen();
+                    blueSum += Math.max(0, pixel.getBlue() - 30);
+                    pixelCount++;
                 }
             }
+
             int redAvg = redSum / pixelCount;
             int greenAvg = greenSum / pixelCount;
             int blueAvg = blueSum / pixelCount;
 
             return rgbaToIntHex(new int[]{redAvg, greenAvg, blueAvg, 255});
-        } catch (NullPointerException|IOException e) {
-            e.printStackTrace();
-           // System.out.print("assets/"+resourceLocation.getNamespace()+"/"+resourceLocation.getPath());
+        } catch (NullPointerException | IOException e) {
+
+            System.out.print("Source texture for auto color not found: " + path+"\n");
             return rgbaToIntHex(new int[]{0, 0, 0, 0});
         }
     }
+
 }

@@ -75,16 +75,16 @@ public class CommonConfig {
 
             HEAT = builder
                     .comment("Base Fuel Heat: " + String.join(", ",FuelManager.initialHeat().keySet()))
-                    .define("base_heat", toList(FuelManager.initialHeat().values()));
+                    .define("base_heat", toList(FuelManager.initialHeat().values()), o -> o instanceof ArrayList);
             EFFICIENCY = builder
                     .comment("Base Fuel Efficiency: " + String.join(", ",FuelManager.initialEfficiency().keySet()))
-                    .define("base_efficiency", toList(FuelManager.initialEfficiency().values()));
+                    .define("base_efficiency", toList(FuelManager.initialEfficiency().values()), o -> o instanceof ArrayList);
             DEPLETION = builder
                     .comment("Base Fuel Depletion Time (seconds): " + String.join(", ",FuelManager.initialDepletion().keySet()))
-                    .define("base_depletion", toList(FuelManager.initialDepletion().values()));
+                    .define("base_depletion", toList(FuelManager.initialDepletion().values()), o -> o instanceof ArrayList);
             CRITICALITY = builder
                     .comment("Fuel Criticality: " + String.join(", ",FuelManager.initialCriticality().keySet()))
-                    .define("base_criticallity", toList(FuelManager.initialCriticality().values()));
+                    .define("base_criticallity", toList(FuelManager.initialCriticality().values()), o -> o instanceof ArrayList);
             builder.pop();
         }
 
@@ -109,7 +109,7 @@ public class CommonConfig {
             VEIN_BLOCKS_AMOUNT = builder
                     .comment("Min and max values of blocks per vein.")
                     .comment("Result amount will be random value in this range.")
-                    .define("blocks_per_vein", List.of(30000, 70000));
+                    .define("blocks_per_vein", List.of(30000, 70000), o -> o instanceof ArrayList);
 
             VEINS_RARITY = builder
                     .comment("Veins rarity. Bigger value - less veins.")
@@ -141,7 +141,7 @@ public class CommonConfig {
 
             HEAT = builder
                     .comment("Cooling rate H/t: " + String.join(", ", FissionBlocks.initialHeat().keySet()))
-                    .define("cooling_rate", toList(FissionBlocks.initialHeat().values()));
+                    .define("cooling_rate", toList(FissionBlocks.initialHeat().values()), o -> o instanceof ArrayList);
             builder
                     .comment("You can define blocks by block_name. So water_heat_sink will fall back to nuclearcraft:water_heat_sink. Or qualify it with namespace like some_mod:some_block.")
                     .comment("Or use block tag key. #nuclearcraft:fission_reactor_casing will fall back to blocks with this tag. Do not forget to put #.")
@@ -377,35 +377,35 @@ public class CommonConfig {
                     .define("register_slurries", List.of(
                             "uranium", "iron", "gold", "aluminum", "thorium", "boron", "silver",
                             "lead", "tin", "copper", "zinc", "cobalt", "platinum", "lithium", "magnesium"
-                    ));
+                    ), o -> o instanceof ArrayList);
 
             CHUNKS = builder
                     .comment("Enable chunk registration: " + String.join(", ", Chunks.all().keySet()))
-                    .define("register_chunk", Chunks.initialRegistration());
+                    .define("register_chunk", Chunks.initialRegistration(), o -> o instanceof ArrayList);
 
             INGOTS = builder
                     .comment("Enable ingots registration: " + String.join(", ", Ingots.all().keySet()))
-                    .define("register_ingot", Ingots.initialRegistration());
+                    .define("register_ingot", Ingots.initialRegistration(), o -> o instanceof ArrayList);
 
             PLATES = builder
                     .comment("Enable plate registration: " + String.join(", ", Plates.all().keySet()))
-                    .define("register_plate", Plates.initialRegistration());
+                    .define("register_plate", Plates.initialRegistration(), o -> o instanceof ArrayList);
 
             DUSTS = builder
                     .comment("Enable dust registration: " + String.join(", ", Dusts.all().keySet()))
-                    .define("register_dust", Dusts.initialRegistration());
+                    .define("register_dust", Dusts.initialRegistration(), o -> o instanceof ArrayList);
 
             NUGGET = builder
                     .comment("Enable nuggets registration: " + String.join(", ", Nuggets.all().keySet()))
-                    .define("register_nugget", Nuggets.initialRegistration());
+                    .define("register_nugget", Nuggets.initialRegistration(), o -> o instanceof ArrayList);
 
             BLOCK = builder
                     .comment("Enable blocks registration: " + String.join(", ", Blocks.all().keySet()))
-                    .define("register_block", Blocks.initialRegistration());
+                    .define("register_block", Blocks.initialRegistration(), o -> o instanceof ArrayList);
 
             GEMS = builder
                     .comment("Enable gems registration: " + String.join(", ", Gems.all().keySet()))
-                    .define("register_block", Gems.initialRegistration());
+                    .define("register_block", Gems.initialRegistration(), o -> o instanceof ArrayList);
 
             builder.pop();
 
@@ -434,27 +434,27 @@ public class CommonConfig {
 
             ORE_DIMENSIONS = builder
                     .comment("List of dimensions to generate ores: " + String.join(", ", Ores.all().keySet()))
-                    .define("dimensions", Ores.initialOreDimensions());
+                    .define("dimensions", Ores.initialOreDimensions(), o -> o instanceof ArrayList);
 
             REGISTER_ORE = builder
                     .comment("Enable ore registration: " + String.join(", ", Ores.all().keySet()))
-                    .define("register_ore", Ores.initialOreRegistration());
+                    .define("register_ore", Ores.initialOreRegistration(), o -> o instanceof ArrayList);
 
             ORE_VEIN_SIZE = builder
                     .comment("Ore blocks per vein. Order: " + String.join(", ", Ores.all().keySet()))
-                    .define("vein_size", Ores.initialOreVeinSizes());
+                    .define("vein_size", Ores.initialOreVeinSizes(), o -> o instanceof ArrayList);
 
             ORE_AMOUNT = builder
                     .comment("Veins in chunk. Order: " + String.join(", ", Ores.all().keySet()))
-                    .define("veins_in_chunk", Ores.initialOreVeinsAmount());
+                    .define("veins_in_chunk", Ores.initialOreVeinsAmount(), o -> o instanceof ArrayList);
 
             ORE_MIN_HEIGHT = builder
                     .comment("Minimal generation height. Order: " + String.join(", ", Ores.all().keySet()))
-                    .define("min_height", Ores.initialOreMinHeight());
+                    .define("min_height", Ores.initialOreMinHeight(), o -> o instanceof ArrayList);
 
             ORE_MAX_HEIGHT = builder
                     .comment("Max generation height. Order: " + String.join(", ", Ores.all().keySet()))
-                    .define("max_height", Ores.initialOreMaxHeight());
+                    .define("max_height", Ores.initialOreMaxHeight(), o -> o instanceof ArrayList);
 
             builder.pop();
         }
@@ -495,15 +495,15 @@ public class CommonConfig {
 
             REGISTER_PROCESSOR = builder
                     .comment("Allow processor registration: " + String.join(", ", Processors.all().keySet()))
-                    .define("register_processor", Processors.initialRegistered());
+                    .define("register_processor", Processors.initialRegistered(), o -> o instanceof ArrayList);
 
             PROCESSOR_POWER = builder
                     .comment("Processor power: " + String.join(", ", Processors.all().keySet()))
-                    .define("processor_power", Processors.initialPower());
+                    .define("processor_power", Processors.initialPower(), o -> o instanceof ArrayList);
 
             PROCESSOR_TIME = builder
                     .comment("Time for processor to proceed recipe: " + String.join(", ", Processors.all().keySet()))
-                    .define("processor_time", Processors.initialTime());
+                    .define("processor_time", Processors.initialTime(), o -> o instanceof ArrayList);
             builder.pop();
 
 
@@ -524,23 +524,23 @@ public class CommonConfig {
 
             REGISTER_SOLAR_PANELS = builder
                     .comment("Allow panel registration: " + String.join(", ", SolarPanels.all().keySet()))
-                    .define("register_panel", SolarPanels.initialRegistered());
+                    .define("register_panel", SolarPanels.initialRegistered(), o -> o instanceof ArrayList);
 
             SOLAR_PANELS_GENERATION = builder
                     .comment("Panel power generation: " + String.join(", ", SolarPanels.all().keySet()))
-                    .define("panel_power", SolarPanels.initialPower());
+                    .define("panel_power", SolarPanels.initialPower(), o -> o instanceof ArrayList);
 
             REGISTER_RTG = builder
                     .comment("Allow rtg registration: " + String.join(", ", RTGs.all().keySet()))
-                    .define("register_panel", RTGs.initialRegistered());
+                    .define("register_panel", RTGs.initialRegistered(), o -> o instanceof ArrayList);
 
             RTG_GENERATION = builder
                     .comment("rtg generation: " + String.join(", ", RTGs.all().keySet()))
-                    .define("rtg_power", RTGs.initialPower());
+                    .define("rtg_power", RTGs.initialPower(), o -> o instanceof ArrayList);
 
             RTG_RADIATION = builder
                     .comment("rtg radiation: " + String.join(", ", RTGs.all().keySet()))
-                    .define("rtg_radiation", RTGs.initialRadiation());
+                    .define("rtg_radiation", RTGs.initialRadiation(), o -> o instanceof ArrayList);
 
             STEAM_TURBINE = builder
                     .comment("Steam turbine (one block) base power gen")
@@ -562,11 +562,11 @@ public class CommonConfig {
 
             REGISTER_ENERGY_BLOCK = builder
                     .comment("Allow block registration: " + String.join(", ", SolarPanels.all().keySet()))
-                    .define("energy_block_registration", SolarPanels.initialRegistered());
+                    .define("energy_block_registration", SolarPanels.initialRegistered(), o -> o instanceof ArrayList);
 
             ENERGY_BLOCK_STORAGE = builder
                     .comment("Storage: " + String.join(", ", BatteryBlocks.all().keySet()))
-                    .define("energy_block_storage", BatteryBlocks.initialPower());
+                    .define("energy_block_storage", BatteryBlocks.initialPower(), o -> o instanceof ArrayList);
 
             LITHIUM_ION_BATTERY_STORAGE = builder
                     .define("lithium_ion_battery_storage", 1000000);

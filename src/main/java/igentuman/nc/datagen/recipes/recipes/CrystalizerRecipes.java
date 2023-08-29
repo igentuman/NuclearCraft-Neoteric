@@ -26,6 +26,13 @@ public class CrystalizerRecipes extends AbstractRecipeProvider {
         itemsAndFluids(fluidIngredient("potassium_hydroxide_solution", 144), dustStack(Materials.potassium_hydroxide), 0.5D, 0.5D);
         itemsAndFluids(fluidIngredient("borax_solution", 144), dustStack(Materials.borax), 0.5D, 0.5D);
         itemsAndFluids(fluidIngredient("irradiated_borax_solution", 144), dustStack(Materials.irradiated_borax), 0.5D, 0.5D);
+
+        for(String material: Materials.slurries()) {
+            itemsAndFluids(
+                    fluidIngredient(material+"_clean_slurry", 400),
+                    dustStack(material, 2)
+            );
+        }
     }
 
     protected static void itemsAndFluids(FluidStackIngredient inputFluid, NcIngredient outputItem, double...modifiers) {

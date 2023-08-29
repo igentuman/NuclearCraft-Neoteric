@@ -262,6 +262,18 @@ public class CentrifugeRecipes extends AbstractRecipeProvider {
                 ),1.5D
         );
 
+        for(String material: Materials.slurries()) {
+            add(
+                    fluidIngredient(material+"_slurry", 1000),
+                    List.of(
+                            fluidStack(material+"_clean_slurry", 800),
+                            fluidStack("hydrochloric_acid", 50),
+                            fluidStack("nitric_acid", 50),
+                            fluidStack("calcium_sulfate_solution", 10)
+                    )
+            );
+        }
+
     }
 
     protected static void add(FluidStackIngredient input, List<FluidStack> output, double...modifiers) {

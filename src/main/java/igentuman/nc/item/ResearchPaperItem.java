@@ -32,7 +32,7 @@ public class ResearchPaperItem extends Item {
         }
         if(tag.contains("pos")) {
             BlockPos pos = BlockPos.of(tag.getLong("pos"));
-            list.add(Component.translatable("tooltip.nc.chunk_position", pos.toString()).withStyle(ChatFormatting.BLUE));
+            list.add(Component.translatable("tooltip.nc.chunk_position", pos.toShortString()).withStyle(ChatFormatting.BLUE));
         }
     }
 

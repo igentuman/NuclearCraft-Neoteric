@@ -220,8 +220,9 @@ public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
         if(contentHandler.hasItemCapability(null)) {
             for (ItemStackIngredient inputItem : inputItems) {
                 for (ItemStack itemStack : inputItem.getRepresentations()) {
-                    contentHandler.itemHandler.holdedInputs.add(itemStack.copy());
-                    contentHandler.itemHandler.extractItemInternal(i, itemStack.getCount(), false);
+                    contentHandler.itemHandler.holdedInputs.add(
+                            contentHandler.itemHandler.extractItemInternal(i, itemStack.getCount(), false)
+                    );
                 }
                 i++;
             }

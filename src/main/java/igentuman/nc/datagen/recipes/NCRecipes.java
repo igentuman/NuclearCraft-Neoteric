@@ -55,6 +55,11 @@ public class NCRecipes extends RecipeProvider {
 
     private void energyBlocks(Consumer<FinishedRecipe> consumer) {
 
+        ShapelessRecipeBuilder.shapeless(PAPER)
+                        .requires(ALL_NC_ITEMS.get("research_paper").get(), 2)
+                        .unlockedBy("item", has(ALL_NC_ITEMS.get("research_paper").get()))
+                        .save(consumer, new ResourceLocation(MODID, "paper"));
+
         ShapedRecipeBuilder.shaped(ENERGY_BLOCKS.get("uranium_rtg").get())
                 .pattern("PGP")
                 .pattern("GUG")

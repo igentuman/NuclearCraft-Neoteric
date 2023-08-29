@@ -1,25 +1,36 @@
 package igentuman.nc.block.entity.processor;
 
 import igentuman.nc.content.processors.Processors;
+import igentuman.nc.handler.OreVeinProvider;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.type.NcRecipe;
+import igentuman.nc.recipes.type.OreVeinRecipe;
 import igentuman.nc.util.annotation.NothingNullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidStack;
 
+import java.util.HashMap;
 import java.util.List;
 
+import static igentuman.nc.block.ProcessorBlock.ACTIVE;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.compat.GlobalVars.RECIPE_CLASSES;
+import static net.minecraft.world.item.Items.FILLED_MAP;
+import static net.minecraft.world.item.Items.PAPER;
 
 public class AnalyzerBE extends NCProcessorBE<AnalyzerBE.Recipe> {
     public AnalyzerBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, Processors.ANALYZER);
     }
+    public HashMap<Long, OreVeinRecipe> veinsCache = new HashMap<>();
+    private BlockPos alreadySearched;
 
     @Override
     public String getName() {
@@ -37,5 +48,64 @@ public class AnalyzerBE extends NCProcessorBE<AnalyzerBE.Recipe> {
             RECIPE_CLASSES.put(ID, this.getClass());
             CATALYSTS.put(ID, List.of(getToastSymbol()));
         }
+    }
+
+    public void tickServer() {
+        if(worldPosition.equals(alreadySearched))
+        {
+            return;
+        }
+        super.tickServer();
+    }
+
+
+    protected void handleRecipeOutput() {
+        if (hasRecipe() && recipeInfo.isCompleted()) {
+            handleChunkAnalyzeWithPaper();
+            handleMapAnalyze();
+            if (recipe.handleOutputs(contentHandler)) {
+                recipeInfo.clear();
+            } else {
+                recipeInfo.stuck = true;
+            }
+        }
+    }
+
+    private void handleMapAnalyze() {
+        if(recipe.getInputIngredient(0).test(new ItemStack(FILLED_MAP))) {
+            for (ItemStack output : recipe.getResultItems()) {
+                output.setTag(contentHandler.itemHandler.holdedInputs.get(0).getOrCreateTag());
+                output.getOrCreateTag().putBoolean("is_nc_analyzed", true);
+            }
+        }
+    }
+
+    private void handleChunkAnalyzeWithPaper() {
+        if(recipe.getInputIngredient(0).test(new ItemStack(PAPER))) {
+            OreVeinRecipe vein = getVein();
+            alreadySearched = worldPosition;
+            if (vein == null) {
+                for (ItemStack output : recipe.getResultItems()) {
+                    output.getOrCreateTag().putString("vein", "nc.ore_vein.none");
+                }
+            } else {
+                for (ItemStack output : recipe.getResultItems()) {
+                    output.getOrCreateTag().putString("vein", "nc.ore_vein." + vein.getId().getPath().replace("nc_ore_veins/", ""));
+                }
+            }
+            for (ItemStack output : recipe.getResultItems()) {
+                output.getOrCreateTag().putLong("pos", worldPosition.asLong());
+            }
+        }
+    }
+
+    protected OreVeinRecipe getVein() {
+        long pos = ChunkPos.asLong(worldPosition);
+        if(!veinsCache.containsKey(pos))
+        {
+            veinsCache.put(pos, OreVeinProvider.get((ServerLevel) level)
+                    .getVeinForChunk(ChunkPos.getX(pos), ChunkPos.getZ(pos)));
+        }
+        return veinsCache.get(pos);
     }
 }

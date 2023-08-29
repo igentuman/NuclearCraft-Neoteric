@@ -27,9 +27,16 @@ public class TooltipHandler {
         if(event.equals(processedEvent)) return;
         processedEvent = event;
         Item item = event.getItemStack().getItem();
+        miscTooltips(event, event.getItemStack());
         addRadiationLevelTooltip(event, item);
         addShieldingTooltip(event, event.getItemStack());
         addRadiationCleaningEffect(event, event.getItemStack());
+    }
+
+    private static void miscTooltips(ItemTooltipEvent event, ItemStack itemStack) {
+        if(itemStack.getOrCreateTag().contains("is_nc_analyzed")) {
+            event.getToolTip().add(Component.translatable("tooltip.nc.analyzed").withStyle(ChatFormatting.GOLD));
+        }
     }
 
     private static void addRadiationCleaningEffect(ItemTooltipEvent event, ItemStack itemStack) {

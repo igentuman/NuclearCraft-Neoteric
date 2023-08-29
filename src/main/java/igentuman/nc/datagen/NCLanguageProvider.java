@@ -179,8 +179,11 @@ public class NCLanguageProvider extends LanguageProvider {
         add("processor.description.steam_turbine","Produce energy with power of steam.");
         add("processor.description.gas_scrubber","Сleansing ventilation.");
         add("processor.description.pump","Pumps fluids and gasses from environment.");
+        add("processor.description.analyzer","Used to analyze environment and items.");
+        add("processor.description.leacher","Leaches undeground minerals with acids and pumps slurry back.");
 
         add("sound_event.nuclearcraft.item.charged","Item Charged");
+        add("tooltip.nc.analyzed","Item analyze completed");
         add("tooltip.nc.shielding.desc","Combine with armor in crafting grid");
         add("tooltip.nc.rad_shielding","Rad Shielding LVL: %s");
         add("tooltip.nc.energy_stored","Energy Stored: %s / %s");
@@ -218,6 +221,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("nc.ore_vein.sphalerite","Vein of Sphalerite");
         add("nc.ore_vein.spodumene","Vein of Spodumene");
         add("nc.ore_vein.uraninite","Vein of Uraninite");
+        add("nc.ore_vein.none","Veins not found");
         add("nc.ore_vein.mixed","Vein of Mixed minerals");
         add("tooltip.nc.content_saved","Content Saved");
         add("fuel.heat_boiling.descr","Boiling Reactor Heat: %s H/t");

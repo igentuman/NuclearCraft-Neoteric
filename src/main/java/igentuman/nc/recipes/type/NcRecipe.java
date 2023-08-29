@@ -18,6 +18,8 @@ import java.util.function.Predicate;
 @NothingNullByDefault
 public abstract class NcRecipe extends AbstractRecipe {
 
+    public final double rarityModifier;
+
     public NcRecipe(
             ResourceLocation id,
             ItemStackIngredient[] inputItems,
@@ -39,7 +41,7 @@ public abstract class NcRecipe extends AbstractRecipe {
         this.timeModifier = timeModifier;
         this.powerModifier = powerModifier;
         this.radiationModifier = radiationModifier;
-        this.radiationModifier = rarityModifier;
+        this.rarityModifier = rarityModifier;
     }
 
     public NcRecipe(

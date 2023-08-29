@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "nuclearcraft:research_paper"
+    },
+    {
+      "item": "nuclearcraft:research_paper"
+    }
+  ],
+  "result": {
+    "item": "minecraft:paper"
+  }
+}

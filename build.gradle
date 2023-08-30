@@ -85,7 +85,7 @@ dependencies {
     compileOnly fg.deobf("mezz.jei:jei-${mc_version}-forge-api:${jei_version}")
     runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}-forge:${jei_version}")
 
-    runtimeOnly fg.deobf("curse.maven:ctm-267602:4393695")
+    //runtimeOnly fg.deobf("curse.maven:ctm-267602:4393695")
 
     compileOnly fg.deobf("mcjty.theoneprobe:theoneprobe:${top_version}:api") {
         transitive = false
@@ -94,10 +94,10 @@ dependencies {
         transitive = false
     }
 
-    runtimeOnly fg.deobf("curse.maven:nbtedit-reborn-678133:4420565")
+    //runtimeOnly fg.deobf("curse.maven:nbtedit-reborn-678133:4420565")
     //runtimeOnly fg.deobf("com.blamejared.crafttweaker:CraftTweaker-forge-${mc_version}:${ct_version}")
 
-    implementation fg.deobf("mekanism:Mekanism:${mc_version}-${mekanism_version}")
+    compileOnly fg.deobf("mekanism:Mekanism:${mc_version}-${mekanism_version}")
     //compileOnly fg.deobf("mekanism:Mekanism:${mc_version}-${mekanism_version}:api")
 
     //compileOnly("cc.tweaked:cc-tweaked-${mc_version}-core-api:${cc_version}")

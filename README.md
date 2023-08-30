@@ -15,8 +15,6 @@ This is a re-creation of old but gold NuclearCraft on a modern MC version
 - [x] Energy Blocks
 - [x] Crafttweaker Support
 - [x] JEI Support
-- [ ] Steam Turbine
-- [ ] Steam Mode for reactors
 - [ ] In Situ Leaching
 - [ ] Computers Support
 - [x] Custom blocks like Cobblestone Generator
@@ -41,6 +39,8 @@ This is a re-creation of old but gold NuclearCraft on a modern MC version
 - [ ] Wasteland Biome
 - [ ] Wasteland Dimension
 - [ ] Pipes
+- [ ] Steam Turbine
+- [ ] Steam Mode for reactors
 - 
 # Future plans
 - [ ] Quantum Transformer "what a heck is that?"

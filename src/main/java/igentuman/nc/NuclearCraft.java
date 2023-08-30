@@ -30,6 +30,13 @@ import net.minecraftforge.fml.loading.FMLPaths;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.nio.file.Path;
+import java.util.EnumMap;
+import java.util.Set;
+
 @Mod(NuclearCraft.MODID)
 public class NuclearCraft {
 
@@ -39,12 +46,37 @@ public class NuclearCraft {
     public static NuclearCraft instance;
     private final PacketHandler packetHandler;
 
+    /**
+     * Sorry but has to load config before registration stage
+     */
+    @SuppressWarnings("unchecked")
+    private void forceLoadConfig()
+    {
+        try {
+            Method openConfig = ConfigTracker.INSTANCE.getClass()
+                    .getDeclaredMethod("openConfig", ModConfig.class, Path.class);
+            openConfig.setAccessible(true);
+            Field configSets = ConfigTracker.INSTANCE.getClass().getDeclaredField("configSets");
+            configSets.setAccessible(true);
+            EnumMap<ModConfig.Type, Set<ModConfig>> configSetsValue = (EnumMap<ModConfig.Type, Set<ModConfig>>) configSets.get(ConfigTracker.INSTANCE);
+            ModConfig ncConfig = null;
+            for(ModConfig config : configSetsValue.get(ModConfig.Type.COMMON)) {
+                if(config.getModId().equals(MODID)) {
+                    ncConfig = config;
+                    break;
+                }
+            }
+            openConfig.invoke(ConfigTracker.INSTANCE, ncConfig, FMLPaths.CONFIGDIR.get());
+        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException | NoSuchFieldException e) {
+            LOGGER.error("Unable to force load NC config");
+        }
+    }
+
     public NuclearCraft() {
         instance = this;
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, CommonConfig.spec);
         packetHandler = new PacketHandler();
-        //todo optimize config loading
-        ConfigTracker.INSTANCE.loadConfigs(ModConfig.Type.COMMON, FMLPaths.CONFIGDIR.get());
+        forceLoadConfig();
         MinecraftForge.EVENT_BUS.addListener(this::serverStopped);
         ModSetup.setup();
         Registration.init();

@@ -16,6 +16,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -218,5 +219,9 @@ public class NCProcessorContainer<T extends AbstractContainerMenu> extends Abstr
 
     public int getRedstoneMode() {
         return blockEntity.redstoneMode;
+    }
+
+    public BlockEntity getBlockEntity() {
+        return blockEntity;
     }
 }

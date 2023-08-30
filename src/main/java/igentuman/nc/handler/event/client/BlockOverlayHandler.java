@@ -4,22 +4,33 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
 import igentuman.nc.item.QNP;
+import igentuman.nc.util.NCBlockPos;
 import net.minecraft.client.Camera;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderHighlightEvent;
+import net.minecraftforge.client.event.RenderLevelLastEvent;
+import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -27,6 +38,10 @@ import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.apache.commons.lang3.tuple.Pair;
+import org.lwjgl.opengl.GL11;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.item.QNP.getMode;
@@ -50,6 +65,21 @@ public class BlockOverlayHandler {
             topRight = topRight.relative(facing.getOpposite(), radius+1);
         }
         return Pair.of(bottomLeft, topRight);
+    }
+
+    @SubscribeEvent
+    public static void onRenderWorldEvent(RenderLevelStageEvent e) {
+        if(e.getStage().equals(RenderLevelStageEvent.Stage.AFTER_PARTICLES)) {
+            final GameRenderer gameRenderer = Minecraft.getInstance().gameRenderer;
+            Player player = Minecraft.getInstance().player;
+            gameRenderer.resetProjectionMatrix(e.getProjectionMatrix());
+            if (player.level.isClientSide) {
+                for (BlockPos pos: outlineBlocks) {
+                    AABB aabb = new AABB(0, 0,0,1,1,1);
+                    drawBoundingBoxAtBlockPos(e.getPoseStack(), aabb, 1, 0, 0, 1, pos, player.blockPosition());
+                }
+            }
+        }
     }
 
     @SubscribeEvent
@@ -90,5 +120,53 @@ public class BlockOverlayHandler {
             event.getEntity().startUsingItem(InteractionHand.MAIN_HAND);
         else if (event.getEntity().getItemInHand(InteractionHand.OFF_HAND).getItem() instanceof QNP)
             event.getEntity().startUsingItem(InteractionHand.OFF_HAND);
+    }
+
+    public static List<BlockPos> outlineBlocks = new ArrayList<>();
+
+    public static void drawBoundingBoxAtBlockPos(PoseStack matrixStackIn, AABB aabbIn, float red, float green, float blue, float alpha, BlockPos pos, BlockPos aimed) {
+        Vec3 cam = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
+
+        double camX = cam.x, camY = cam.y, camZ = cam.z;
+
+        matrixStackIn.pushPose();
+        GL11.glDisable(GL11.GL_DEPTH_TEST);
+        drawShapeOutline(matrixStackIn, Shapes.create(aabbIn), pos.getX() - camX, pos.getY() - camY, pos.getZ() - camZ, red, green, blue, alpha, pos, aimed);
+        GL11.glEnable(GL11.GL_DEPTH_TEST);
+
+        matrixStackIn.popPose();
+    }
+
+    private static void drawShapeOutline(PoseStack matrixStack, VoxelShape voxelShape, double originX, double originY, double originZ, float red, float green, float blue, float alpha, BlockPos pos, BlockPos aimed) {
+        PoseStack.Pose pose = matrixStack.last();
+        MultiBufferSource.BufferSource renderTypeBuffer = Minecraft.getInstance().renderBuffers().bufferSource();
+        VertexConsumer bufferIn = renderTypeBuffer.getBuffer(RenderType.lines());
+        voxelShape.forAllEdges((x0, y0, z0, x1, y1, z1) -> {
+            if (!pos.equals(aimed)){
+                bufferIn.vertex(pose.pose(), (float) (x0 + originX), (float) (y0 + originY), (float) (z0 + originZ))
+                        .color(red, green, blue, alpha)
+                        .normal(pose.normal(), (float) (x1-x0), (float) (y1-y0), (float) (z1-z0))
+                        .endVertex();
+                bufferIn.vertex(pose.pose(), (float) (x1 + originX), (float) (y1 + originY), (float) (z1 + originZ))
+                        .color(red, green, blue, alpha)
+                        .normal(pose.normal(), (float) (x1-x0), (float) (y1-y0), (float) (z1-z0))
+                        .endVertex();
+            }
+
+        });
+
+        renderTypeBuffer.endBatch(RenderType.lines());
+    }
+
+    public static void addToOutline(NCBlockPos ncBlockPos) {
+        if(!outlineBlocks.contains(ncBlockPos)) {
+            outlineBlocks.add(ncBlockPos);
+        }
+    }
+
+    public static void removeFromOutline(NCBlockPos ncBlockPos) {
+        if(outlineBlocks.contains(ncBlockPos)) {
+            outlineBlocks.remove(ncBlockPos);
+        }
     }
 }

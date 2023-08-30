@@ -25,11 +25,12 @@ public class CommandNcVeinCheck {
     public static int execute(CommandSourceStack ctx) {
         ServerPlayer pl = ctx.getPlayer();
         ServerLevel level = pl.getLevel();
-        int qty = WorldVeinsManager.get(level).getWorldVeinData(level).getBlocksLeft(pl.chunkPosition().x, pl.chunkPosition().z);
+        int qty = 0;
         OreVeinRecipe vein = WorldVeinsManager.get(level).getWorldVeinData(level).getVeinForChunk(pl.chunkPosition().x, pl.chunkPosition().z);
         String name = "none";
         if(vein != null) {
             name = vein.getId().getPath().replace("nc_ore_veins/", "");
+            qty = WorldVeinsManager.get(level).getWorldVeinData(level).getBlocksLeft(pl.chunkPosition().x, pl.chunkPosition().z);
         }
         pl.sendSystemMessage(Component.translatable("nc.ore_vein."+name));
         pl.sendSystemMessage(Component.translatable("amount", qty));

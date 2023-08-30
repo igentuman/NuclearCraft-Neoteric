@@ -1805,6 +1805,8 @@
   "itemGroup.nuclearcraft_blocks": "NuclearCraft Blocks",
   "itemGroup.nuclearcraft_fission_reactor": "NuclearCraft Fission Reactor",
   "itemGroup.nuclearcraft_items": "NuclearCraft Items",
+  "leacher.tooltip.invalid_pump": "Pump - Fail",
+  "leacher.tooltip.valid_pump": "Pump - Ok",
   "message.heat_sink.invalid0": "Not sure if it's valid",
   "message.heat_sink.invalid1": "Maybe you should check it again",
   "message.heat_sink.invalid2": "Hm...",

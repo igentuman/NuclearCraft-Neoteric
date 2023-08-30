@@ -13,7 +13,7 @@ public class Checkbox extends NCGuiElement {
     private int yTexStart;
     private int textureWidth;
     private int textureHeight;
-    protected ImageButton btn;
+    protected NCImageButton btn;
     private int yDiffTex;
 
 
@@ -31,12 +31,14 @@ public class Checkbox extends NCGuiElement {
         this.screen = screen;
         this.isChecked = checked;
         xTexStart = checked ? 11 : 0;
-        btn = new ImageButton(X(), Y(), 11, 11, xTexStart, 178, 11, TEXTURE, (net.minecraft.client.gui.components.Button.OnPress)null);
+        btn = new NCImageButton(X(), Y(), 11, 11, xTexStart, 178, 11, TEXTURE, null);
     }
 
     @Override
     public void draw(PoseStack transform, int mX, int mY, float pTicks) {
         super.draw(transform, mX, mY, pTicks);
+        xTexStart = isChecked() ? 11 : 0;
+        btn.xTexStart = xTexStart;
         btn.render(transform, mX, mY, pTicks);
     }
 

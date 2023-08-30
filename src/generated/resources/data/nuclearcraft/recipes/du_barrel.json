@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "item": "nuclearcraft:advanced_barrel"
+    },
+    "G": {
+      "tag": "forge:plates/hsla_steel"
+    },
+    "P": {
+      "item": "nuclearcraft:plate_du"
+    }
+  },
+  "pattern": [
+    "GPG",
+    "GBG",
+    "GPG"
+  ],
+  "result": {
+    "item": "nuclearcraft:du_barrel"
+  }
+}

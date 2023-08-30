@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:melter",
+  "input": [
+    {
+      "tag": "forge:dusts/tin"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 144,
+      "fluid": "nuclearcraft:tin"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

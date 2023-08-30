@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "item": "nuclearcraft:du_barrel"
+    },
+    "G": {
+      "tag": "forge:plates/platinum"
+    },
+    "P": {
+      "item": "nuclearcraft:plate_elite"
+    }
+  },
+  "pattern": [
+    "GPG",
+    "GBG",
+    "GPG"
+  ],
+  "result": {
+    "item": "nuclearcraft:elite_barrel"
+  }
+}

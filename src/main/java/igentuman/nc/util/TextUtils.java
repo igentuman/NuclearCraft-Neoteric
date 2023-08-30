@@ -49,6 +49,14 @@ public class TextUtils
 				result.append(" ").append(l.substring(0, 1).toUpperCase()).append(l.substring(1));
 			}
 		}
-		return result.toString();
+		return applySpeccialRules(result.toString());
+	}
+
+	public static String applySpeccialRules(String val)
+	{
+		val = val.replace("Rtg", "RTG");
+		val = val.replace("Du", "DU");
+		val = val.replace("Tbu", "TBU");
+		return val;
 	}
 }

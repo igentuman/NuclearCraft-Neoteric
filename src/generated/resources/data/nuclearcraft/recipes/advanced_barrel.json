@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "item": "nuclearcraft:basic_barrel"
+    },
+    "G": {
+      "tag": "forge:plates/tough_alloy"
+    },
+    "P": {
+      "item": "nuclearcraft:plate_advanced"
+    }
+  },
+  "pattern": [
+    "GPG",
+    "GBG",
+    "GPG"
+  ],
+  "result": {
+    "item": "nuclearcraft:advanced_barrel"
+  }
+}

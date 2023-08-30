@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:melter",
+  "input": [
+    {
+      "tag": "forge:dusts/promethium_147"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 144,
+      "fluid": "nuclearcraft:promethium_147"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

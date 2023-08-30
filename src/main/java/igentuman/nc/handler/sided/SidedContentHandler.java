@@ -117,9 +117,9 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
         } else if(slotId < inputFluidSlots+inputItemSlots) {
             itemHandler.toggleMode(getSlotIdFromGlobalId(slotId), direction);
         } else if (slotId < inputFluidSlots+inputItemSlots+outputFluidSlots) {
-            fluidCapability.toggleMode(getSlotIdFromGlobalId(slotId), direction);
+            fluidCapability.toggleMode(getSlotIdFromGlobalId(slotId)+inputFluidSlots, direction);
         } else if (slotId < inputFluidSlots+outputFluidSlots+inputItemSlots+outputItemSlots) {
-            itemHandler.toggleMode(getSlotIdFromGlobalId(slotId), direction);
+            itemHandler.toggleMode(getSlotIdFromGlobalId(slotId)+inputItemSlots, direction);
         }
     }
 
@@ -133,19 +133,15 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
         }
     }
 
-    public int getSlotIdFromGlobalId(int id)
-    {
-        if(id < inputFluidSlots) {
+    public int getSlotIdFromGlobalId(int id) {
+        if (id < inputFluidSlots) {
             return id;
-        }
-        if(id < inputFluidSlots+inputItemSlots) {
-            return id-inputFluidSlots;
-        }
-        if (id < inputFluidSlots+inputItemSlots+outputFluidSlots) {
-            return id-inputFluidSlots-inputItemSlots+1;
-        }
-        if (id < inputFluidSlots+outputFluidSlots+inputItemSlots+outputItemSlots) {
-            return id-inputItemSlots-inputFluidSlots-outputFluidSlots+1;
+        } else if (id - inputFluidSlots >= 0 && id - inputFluidSlots < inputItemSlots) {
+            return id - inputFluidSlots;
+        } else if (id - inputFluidSlots - inputItemSlots >= 0 && id - inputFluidSlots - inputItemSlots < outputFluidSlots) {
+            return id - inputFluidSlots - inputItemSlots;
+        } else if (id - inputFluidSlots - inputItemSlots - outputFluidSlots >= 0 && id - inputFluidSlots - inputItemSlots - outputFluidSlots < outputItemSlots) {
+            return id - inputFluidSlots - inputItemSlots - outputFluidSlots;
         }
         return -1;
     }
@@ -160,9 +156,9 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
         }
 
         if(slotId < inputFluidSlots+inputItemSlots+outputFluidSlots) {
-            return fluidCapability.getMode(getSlotIdFromGlobalId(slotId), direction);
+            return fluidCapability.getMode(getSlotIdFromGlobalId(slotId)+inputFluidSlots, direction);
         }
-        return itemHandler.getMode(getSlotIdFromGlobalId(slotId), direction);
+        return itemHandler.getMode(getSlotIdFromGlobalId(slotId)+inputItemSlots, direction);
     }
 
     public SlotModePair.SlotMode getSlotType(int id)

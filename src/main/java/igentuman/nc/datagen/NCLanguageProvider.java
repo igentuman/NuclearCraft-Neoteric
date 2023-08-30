@@ -9,6 +9,7 @@ import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.setup.registration.NCItems.NC_INGOTS;
+import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCK;
 import static igentuman.nc.util.TextUtils.convertToName;
 
 public class NCLanguageProvider extends LanguageProvider {
@@ -47,6 +48,7 @@ public class NCLanguageProvider extends LanguageProvider {
         multiblocks();
         labels();
         messages();
+        storageBlocks();
     }
 
     private void messages() {
@@ -108,6 +110,13 @@ public class NCLanguageProvider extends LanguageProvider {
         }
     }
 
+    private void storageBlocks() {
+        for(String name: STORAGE_BLOCK.keySet()) {
+            String title = convertToName(name);
+            add(STORAGE_BLOCK.get(name).get(), title);
+        }
+    }
+
     private void energyBlocks() {
         for(String name: NCEnergyBlocks.ENERGY_BLOCKS.keySet()) {
             String title = convertToName(name);
@@ -156,6 +165,9 @@ public class NCLanguageProvider extends LanguageProvider {
     }
 
     private void tooltips() {
+        add("tooltip.nc.liquid_empty","Stored: 0 of %s");
+        add("tooltip.nc.liquid_stored","Stored: %s %s / %s");
+        add("tooltip.nc.liquid_capacity","Capacity: %s");
         add("effect.nuclearcraft.radiation_resistance","Radiation Resistance");
         add("leacher.tooltip.valid_pump","Pump - Ok");
         add("leacher.tooltip.invalid_pump","Pump - Fail");
@@ -197,6 +209,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("tooltip.press_shift_for_description","Press SHIFT for description");
         add("fuel.heat.descr","Base Heat Gen: %s H/t");
         add("message.nc.battery.side_config","Mode: %s");
+        add("message.nc.barrel.side_config","Mode: %s");
         add("gui.nc.reactor_comparator_config.tooltip_1","Comparator: Energy Stored");
         add("gui.nc.reactor_comparator_config.tooltip_2","Comparator: Heat Stored");
         add("gui.nc.reactor_comparator_config.tooltip_3","Comparator: Depletion Progress");

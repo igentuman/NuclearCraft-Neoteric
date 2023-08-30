@@ -7,6 +7,8 @@ import igentuman.nc.setup.registration.NCItems;
 import igentuman.nc.setup.registration.NCProcessors;
 import net.minecraft.data.DataGenerator;
 
+import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCK;
+
 public class NCLootTables extends BaseLootTableProvider {
 
     public NCLootTables(DataGenerator dataGeneratorIn) {
@@ -44,6 +46,10 @@ public class NCLootTables extends BaseLootTableProvider {
         }
         for(String name: NCEnergyBlocks.ENERGY_BLOCKS.keySet()) {
             lootTables.put(NCEnergyBlocks.ENERGY_BLOCKS.get(name).get(), createSimpleTable("block", NCEnergyBlocks.ENERGY_BLOCKS.get(name).get()));
+        }
+
+        for(String name: STORAGE_BLOCK.keySet()) {
+            lootTables.put(STORAGE_BLOCK.get(name).get(), createSimpleTable("block", STORAGE_BLOCK.get(name).get()));
         }
     }
 }

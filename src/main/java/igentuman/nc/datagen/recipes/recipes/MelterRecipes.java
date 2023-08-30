@@ -24,6 +24,7 @@ public class MelterRecipes extends AbstractRecipeProvider {
         for(String name: Materials.all().keySet()) {
             NCMaterial material = Materials.all().get(name);
             if(material.fluid && !material.isGas) {
+                add(dustIngredient(name), fluidStack(name, 144));
                 add(ingotIngredient(name), fluidStack(name, 144));
                 add(oreIngredient(name), fluidStack(name, 288));
                 add(chunkIngredient(name), fluidStack(name, 216));
@@ -76,6 +77,8 @@ public class MelterRecipes extends AbstractRecipeProvider {
     }
 
     protected static void add(NcIngredient inputItem, FluidStack outputFluid, double...modifiers) {
-        itemsAndFluids(List.of(inputItem), new ArrayList<>(), new ArrayList<>(), List.of(outputFluid), modifiers);
+        try {
+            itemsAndFluids(List.of(inputItem), new ArrayList<>(), new ArrayList<>(), List.of(outputFluid), modifiers);
+        } catch(IllegalStateException ignored) {}
     }
 }

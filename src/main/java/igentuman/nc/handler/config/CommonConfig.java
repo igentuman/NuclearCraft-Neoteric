@@ -7,6 +7,7 @@ import igentuman.nc.setup.energy.SolarPanels;
 import igentuman.nc.setup.multiblocks.FissionBlocks;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.content.fuel.FuelManager;
+import igentuman.nc.setup.storage.BarrelBlocks;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 import java.util.ArrayList;
@@ -30,6 +31,7 @@ public class CommonConfig {
     public static final RadiationConfig RADIATION_CONFIG = new RadiationConfig(BUILDER);
     public static final EnergyGenerationConfig ENERGY_GENERATION = new EnergyGenerationConfig(BUILDER);
     public static final EnergyStorageConfig ENERGY_STORAGE = new EnergyStorageConfig(BUILDER);
+    public static final StorageBlocksConfig STORAGE_BLOCKS = new StorageBlocksConfig(BUILDER);
     public static final MaterialProductsConfig MATERIAL_PRODUCTS = new MaterialProductsConfig(BUILDER);
     public static final InSituLeachingConfig IN_SITU_LEACHING = new InSituLeachingConfig(BUILDER);
     public static final DimensionConfig DIMENSION_CONFIG = new DimensionConfig(BUILDER);
@@ -222,7 +224,6 @@ public class CommonConfig {
         public ForgeConfigSpec.ConfigValue<List<String>> ARMOR_PROTECTION;
         public ForgeConfigSpec.ConfigValue<List<String>> BIOME_RADIATION;
         public ForgeConfigSpec.ConfigValue<List<String>> DIMENSION_RADIATION;
-
         public ForgeConfigSpec.ConfigValue<Integer> RADIATION_UPDATE_INTERVAL;
         public ForgeConfigSpec.ConfigValue<Boolean> MEKANISM_RADIATION_INTEGRATION;
         protected HashMap<String, Integer> biomeRadiationMap;
@@ -550,6 +551,31 @@ public class CommonConfig {
         }
     }
 
+    public static class StorageBlocksConfig {
+        public ForgeConfigSpec.ConfigValue<List<Boolean>> REGISTER_BARREL;
+        public ForgeConfigSpec.ConfigValue<List<Integer>> BARREL_CAPACITY;
+
+        public StorageBlocksConfig(ForgeConfigSpec.Builder builder) {
+            builder.push("storage_blocks")
+                    .comment("Blocks to store items, fluids, etc...");
+
+            REGISTER_BARREL = builder
+                    .comment("Allow barrel registration: " + String.join(", ", BarrelBlocks.all().keySet()))
+                    .define("energy_block_registration", BarrelBlocks.initialRegistered(), o -> o instanceof ArrayList);
+
+            BARREL_CAPACITY = builder
+                    .comment("Barrel capacity in Buckets: " + String.join(", ", BarrelBlocks.all().keySet()))
+                    .define("barrel_capacity", BarrelBlocks.initialCapacity(), o -> o instanceof ArrayList);
+
+
+            builder.pop();
+        }
+
+        public int getLiquidCapacityFor(String code) {
+            return BatteryBlocks.all().get(code).config().getStorage();
+        }
+    }
+
     public static class EnergyStorageConfig {
         public ForgeConfigSpec.ConfigValue<List<Boolean>> REGISTER_ENERGY_BLOCK;
         public ForgeConfigSpec.ConfigValue<List<Integer>> ENERGY_BLOCK_STORAGE;
@@ -561,8 +587,8 @@ public class CommonConfig {
             builder.push("energy_storage");
 
             REGISTER_ENERGY_BLOCK = builder
-                    .comment("Allow block registration: " + String.join(", ", SolarPanels.all().keySet()))
-                    .define("energy_block_registration", SolarPanels.initialRegistered(), o -> o instanceof ArrayList);
+                    .comment("Allow block registration: " + String.join(", ", BatteryBlocks.all().keySet()))
+                    .define("energy_block_registration", BatteryBlocks.initialRegistered(), o -> o instanceof ArrayList);
 
             ENERGY_BLOCK_STORAGE = builder
                     .comment("Storage: " + String.join(", ", BatteryBlocks.all().keySet()))

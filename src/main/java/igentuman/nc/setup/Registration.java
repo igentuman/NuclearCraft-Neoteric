@@ -80,6 +80,7 @@ public class Registration {
         NcParticleTypes.PARTICLE_TYPES.register(bus);
 
         NCBlocks.init();
+        NCStorageBlocks.init();
         NCItems.init();
         NCTools.init();
         NCArmor.init();

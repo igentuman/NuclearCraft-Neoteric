@@ -25,6 +25,7 @@ import static igentuman.nc.setup.registration.NCArmor.*;
 import static igentuman.nc.setup.registration.NCBlocks.NC_BLOCKS;
 import static igentuman.nc.setup.registration.NCEnergyBlocks.ENERGY_BLOCKS;
 import static igentuman.nc.setup.registration.NCItems.*;
+import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCK;
 import static igentuman.nc.setup.registration.NCTools.GEIGER_COUNTER;
 import static igentuman.nc.setup.registration.NCTools.LITHIUM_ION_CELL;
 import static net.minecraft.world.item.Items.*;
@@ -45,12 +46,55 @@ public class NCRecipes extends RecipeProvider {
         processors(consumer);
         solarPanels(consumer);
         energyBlocks(consumer);
+        storageBlocks(consumer);
         fissionBlocks(consumer);
         turbineBlocks(consumer);
         FuelRecipes.generate(consumer);
         CustomRecipes.generate(consumer);
         SpecialRecipeBuilder.build(consumer, NcRecipeSerializers.SHIELDING);
         SpecialRecipeBuilder.build(consumer, NcRecipeSerializers.RESET_NBT);
+    }
+
+    private void storageBlocks(Consumer<FinishedRecipe> consumer) {
+        ShapedRecipeBuilder.shaped(STORAGE_BLOCK.get("basic_barrel").get())
+                .pattern("GPG")
+                .pattern("G G")
+                .pattern("GPG")
+                .define('G', forgePlate(Materials.steel))
+                .define('P', NC_PARTS.get("plate_basic").get())
+                .unlockedBy("item", has(NC_PARTS.get("plate_basic").get()))
+                .save(consumer, new ResourceLocation(MODID, "basic_barrel"));
+
+        ShapedRecipeBuilder.shaped(STORAGE_BLOCK.get("advanced_barrel").get())
+                .pattern("GPG")
+                .pattern("GBG")
+                .pattern("GPG")
+                .define('B', STORAGE_BLOCK.get("basic_barrel").get())
+                .define('G', forgePlate(Materials.tough_alloy))
+                .define('P', NC_PARTS.get("plate_advanced").get())
+                .unlockedBy("item", has(NC_PARTS.get("plate_advanced").get()))
+                .save(consumer, new ResourceLocation(MODID, "advanced_barrel"));
+
+        ShapedRecipeBuilder.shaped(STORAGE_BLOCK.get("du_barrel").get())
+                .pattern("GPG")
+                .pattern("GBG")
+                .pattern("GPG")
+                .define('B', STORAGE_BLOCK.get("advanced_barrel").get())
+                .define('G', forgePlate(Materials.hsla_steel))
+                .define('P', NC_PARTS.get("plate_du").get())
+                .unlockedBy("item", has(NC_PARTS.get("plate_du").get()))
+                .save(consumer, new ResourceLocation(MODID, "du_barrel"));
+
+        ShapedRecipeBuilder.shaped(STORAGE_BLOCK.get("elite_barrel").get())
+                .pattern("GPG")
+                .pattern("GBG")
+                .pattern("GPG")
+                .define('B', STORAGE_BLOCK.get("du_barrel").get())
+                .define('G', forgePlate(Materials.platinum))
+                .define('P', NC_PARTS.get("plate_elite").get())
+                .unlockedBy("item", has(NC_PARTS.get("plate_elite").get()))
+                .save(consumer, new ResourceLocation(MODID, "elite_barrel"));
+
     }
 
     private void energyBlocks(Consumer<FinishedRecipe> consumer) {
@@ -67,7 +111,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('G', forgePlate(Materials.graphite))
                 .define('P', NC_PARTS.get("plate_basic").get())
                 .define('U', forgeBlock("uranium238"))
-                .unlockedBy("item", has(NC_PARTS.get("plate_advanced").get()))
+                .unlockedBy("item", has(NC_PARTS.get("plate_basic").get()))
                 .save(consumer, new ResourceLocation(MODID, "uranium_rtg"));
 
         ShapedRecipeBuilder.shaped(ENERGY_BLOCKS.get("plutonium_rtg").get())

@@ -5,6 +5,8 @@ import igentuman.nc.setup.multiblocks.FissionReactor;
 import igentuman.nc.setup.registration.NCBlocks;
 import igentuman.nc.setup.registration.NCEnergyBlocks;
 import igentuman.nc.setup.registration.NCProcessors;
+import igentuman.nc.setup.registration.NCStorageBlocks;
+import igentuman.nc.setup.storage.BarrelBlocks;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
@@ -19,6 +21,7 @@ import java.util.function.Function;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.client.block.BatteryBlockLoader.BATTERY_LOADER;
+import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCK;
 
 public class NCBlockStates extends BlockStateProvider {
 
@@ -38,6 +41,15 @@ public class NCBlockStates extends BlockStateProvider {
         materialFluidBlocks();
         heatSinks();
         fissionReactor();
+        storageBlocks();
+    }
+
+    private void storageBlocks() {
+        for(String name: BarrelBlocks.all().keySet()) {
+            simpleBlock(
+                    STORAGE_BLOCK.get(name).get(),
+                    models().getExistingFile(modLoc("block/barrel/"+name)));
+        }
     }
 
     private void heatSinks() {

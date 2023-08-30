@@ -20,10 +20,14 @@ public class NuclearCraftBE extends BlockEntity {
     protected String name;
     protected NCBlockPos bePos;
 
+    public static String getName(BlockState pBlockState) {
+        return pBlockState.getBlock().asItem().toString();
+    }
 
 
     public NuclearCraftBE(BlockEntityType<?> pType, BlockPos pPos, BlockState pBlockState) {
         super(pType, pPos, pBlockState);
+        name = getName(pBlockState);
     }
     private boolean initFlag = false;
     private List<Field> booleanFields       = new ArrayList<>();

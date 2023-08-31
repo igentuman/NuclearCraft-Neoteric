@@ -22,6 +22,7 @@ This is a re-creation of old but gold NuclearCraft on a modern MC version
 
 
 # I WISH I COULD TRY
+### Download here: https://curseforge.com/minecraft/mc-mods/nuclearcraft-neoteric
 ### Go to Actions Tab and download the latest artifact
 
 # Release When?

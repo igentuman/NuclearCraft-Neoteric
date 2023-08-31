@@ -111,15 +111,20 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
         itemCapability.invalidate();
     }
 
-    public void toggleSideConfig(int slotId, int direction) {
-        if(slotId < inputFluidSlots) {
-            fluidCapability.toggleMode(getSlotIdFromGlobalId(slotId), direction);
-        } else if(slotId < inputFluidSlots+inputItemSlots) {
-            itemHandler.toggleMode(getSlotIdFromGlobalId(slotId), direction);
-        } else if (slotId < inputFluidSlots+inputItemSlots+outputFluidSlots) {
-            fluidCapability.toggleMode(getSlotIdFromGlobalId(slotId)+inputFluidSlots, direction);
-        } else if (slotId < inputFluidSlots+outputFluidSlots+inputItemSlots+outputItemSlots) {
-            itemHandler.toggleMode(getSlotIdFromGlobalId(slotId)+inputItemSlots, direction);
+    public int toggleSideConfig(int slotId, int direction) {
+        try {
+            if (slotId < inputFluidSlots) {
+                return fluidCapability.toggleMode(getSlotIdFromGlobalId(slotId), direction);
+            } else if (slotId < inputFluidSlots + inputItemSlots) {
+                return itemHandler.toggleMode(getSlotIdFromGlobalId(slotId), direction);
+            } else if (slotId < inputFluidSlots + inputItemSlots + outputFluidSlots) {
+                return fluidCapability.toggleMode(getSlotIdFromGlobalId(slotId) + inputFluidSlots, direction);
+            } else if (slotId < inputFluidSlots + outputFluidSlots + inputItemSlots + outputItemSlots) {
+                return itemHandler.toggleMode(getSlotIdFromGlobalId(slotId) + inputItemSlots, direction);
+            }
+            return -1;
+        } catch (NullPointerException|IndexOutOfBoundsException e) {
+            return -1;
         }
     }
 
@@ -147,18 +152,21 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
     }
 
     public SlotModePair.SlotMode getSlotMode(int direction, int slotId) {
-
-        if(getSlotType(slotId) == INPUT) {
-            if(slotId < inputFluidSlots) {
-                return fluidCapability.getMode(getSlotIdFromGlobalId(slotId), direction);
+        try {
+            if (getSlotType(slotId) == INPUT) {
+                if (slotId < inputFluidSlots) {
+                    return fluidCapability.getMode(getSlotIdFromGlobalId(slotId), direction);
+                }
+                return itemHandler.getMode(getSlotIdFromGlobalId(slotId), direction);
             }
-            return itemHandler.getMode(getSlotIdFromGlobalId(slotId), direction);
-        }
 
-        if(slotId < inputFluidSlots+inputItemSlots+outputFluidSlots) {
-            return fluidCapability.getMode(getSlotIdFromGlobalId(slotId)+inputFluidSlots, direction);
+            if (slotId < inputFluidSlots + inputItemSlots + outputFluidSlots) {
+                return fluidCapability.getMode(getSlotIdFromGlobalId(slotId) + inputFluidSlots, direction);
+            }
+            return itemHandler.getMode(getSlotIdFromGlobalId(slotId) + inputItemSlots, direction);
+        } catch (NullPointerException|IndexOutOfBoundsException e) {
+            return SlotModePair.SlotMode.UNKNOWN;
         }
-        return itemHandler.getMode(getSlotIdFromGlobalId(slotId)+inputItemSlots, direction);
     }
 
     public SlotModePair.SlotMode getSlotType(int id)
@@ -213,6 +221,41 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
     public void setAllowedInputItems(List<ItemStack> allowedInputItems) {
         if(itemHandler != null) {
             itemHandler.allowedInputItems = allowedInputItems;
+        }
+    }
+
+    public void voidSlot(int slotId) {
+        try {
+            if (getSlotType(slotId) == INPUT) {
+                if (slotId < inputFluidSlots) {
+                    fluidCapability.voidSlot(getSlotIdFromGlobalId(slotId));
+                }
+                itemHandler.voidSlot(getSlotIdFromGlobalId(slotId));
+            }
+
+            if (slotId < inputFluidSlots + inputItemSlots + outputFluidSlots) {
+                fluidCapability.voidSlot(getSlotIdFromGlobalId(slotId) + inputFluidSlots);
+            }
+            itemHandler.voidSlot(getSlotIdFromGlobalId(slotId) + inputItemSlots);
+        } catch (NullPointerException|IndexOutOfBoundsException e) {
+        }
+    }
+
+    public Object[] getSlotContent(int slotId) {
+        try {
+            if (getSlotType(slotId) == INPUT) {
+                if (slotId < inputFluidSlots) {
+                    return fluidCapability.getSlotContent(getSlotIdFromGlobalId(slotId));
+                }
+                return itemHandler.getSlotContent(getSlotIdFromGlobalId(slotId));
+            }
+
+            if (slotId < inputFluidSlots + inputItemSlots + outputFluidSlots) {
+                return fluidCapability.getSlotContent(getSlotIdFromGlobalId(slotId) + inputFluidSlots);
+            }
+            return itemHandler.getSlotContent(getSlotIdFromGlobalId(slotId) + inputItemSlots);
+        } catch (NullPointerException|IndexOutOfBoundsException e) {
+            return new Object[] {};
         }
     }
 

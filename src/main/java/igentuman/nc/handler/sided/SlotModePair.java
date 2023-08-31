@@ -63,7 +63,8 @@ public class SlotModePair {
         OUTPUT(0x80FF7B2C),
         PUSH(0x80C9BF38),
         PUSH_EXCESS(0x80C9221C),
-        DISABLED(0x80000000);
+        DISABLED(0x80000000),
+        UNKNOWN(0x80FF0000);
 
         private int color;
 

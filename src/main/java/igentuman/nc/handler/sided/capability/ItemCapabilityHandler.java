@@ -42,9 +42,9 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
     }
 
     @Override
-    public void toggleMode(int slot, int side) {
-        super.toggleMode(slot, side);
+    public int toggleMode(int slot, int side) {
         cleanCache();
+        return super.toggleMode(slot, side);
     }
 
     @Override
@@ -418,5 +418,15 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
             }
         }
         return key;
+    }
+
+    public void voidSlot(int i) {
+        setStackInSlot(i, ItemStack.EMPTY);
+    }
+
+    public Object[] getSlotContent(int slotId) {
+        ItemStack stack = getStackInSlot(slotId);
+        if(stack.isEmpty()) return new Object[]{};
+        return new Object[]{stack.getCount(), stack.getItem().toString()};
     }
 }

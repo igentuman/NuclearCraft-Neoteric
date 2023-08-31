@@ -34,7 +34,7 @@ public abstract class AbstractCapabilityHandler {
         return sideMap.get(side)[slot].getMode();
     }
 
-    public void toggleMode(int slot, int side) {
+    public int toggleMode(int slot, int side) {
         SlotModePair[] sideSlots = sideMap.get(side);
         SlotModePair slotModePair = sideSlots[slot];
         SlotModePair.SlotMode mode = slotModePair.getMode();
@@ -53,5 +53,6 @@ public abstract class AbstractCapabilityHandler {
                 case PUSH_EXCESS -> sideSlots[slot] = new SlotModePair(SlotModePair.SlotMode.DISABLED, slot);
             }
         }
+        return sideSlots[slot].getMode().ordinal();
     }
 }

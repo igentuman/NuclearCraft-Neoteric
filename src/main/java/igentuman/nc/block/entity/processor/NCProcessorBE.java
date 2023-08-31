@@ -1,6 +1,7 @@
 package igentuman.nc.block.entity.processor;
 
 import igentuman.nc.block.entity.NuclearCraftBE;
+import igentuman.nc.compat.cc.NCProcessorPeripheral;
 import igentuman.nc.handler.CatalystHandler;
 import igentuman.nc.handler.UpgradesHandler;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
@@ -45,6 +46,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static igentuman.nc.block.ProcessorBlock.ACTIVE;
+import static igentuman.nc.util.ModUtil.isCcLoaded;
 import static net.minecraft.world.item.Items.AIR;
 
 public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE {
@@ -95,6 +97,16 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
             prefab = Processors.all().get(getName());
         }
         return prefab;
+    }
+
+
+    private LazyOptional<NCProcessorPeripheral> peripheralCap;
+
+    public <T> LazyOptional<T>  getPeripheral(@Nonnull Capability<T> cap, @Nullable Direction side) {
+        if(peripheralCap == null) {
+            peripheralCap = LazyOptional.of(() -> new NCProcessorPeripheral(this));
+        }
+        return peripheralCap.cast();
     }
 
     @Override
@@ -217,8 +229,16 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
         if (cap == ForgeCapabilities.ENERGY) {
             return energy.cast();
         }
+        if(isCcLoaded()) {
+            return getPeripheral(cap, side);
+        }
         return super.getCapability(cap, side);
     }
+
+    public <T> LazyOptional<T> getParentCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
+        return super.getCapability(cap, side);
+    }
+
 
     public NCProcessorBE(BlockPos pPos, BlockState pBlockState, String name) {
         super(NCProcessors.PROCESSORS_BE.get(name).get(), pPos, pBlockState);
@@ -467,10 +487,10 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
         }
     }
 
-    public void toggleSideConfig(int slotId, int direction) {
-        contentHandler.toggleSideConfig(slotId, direction);
+    public int toggleSideConfig(int slotId, int direction) {
         setChanged();
         saveSideMapFlag = true;
+        return contentHandler.toggleSideConfig(slotId, direction);
     }
 
     public Direction getFacing() {
@@ -509,5 +529,26 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
 
     public List<Item> getAllowedCatalysts() {
         return List.of();
+    }
+
+    public int getRecipeProgress() {
+        if(hasRecipe()) {
+            return (int) (recipeInfo.getProgress()*100);
+        }
+        return 0;
+    }
+
+    public int getSlotsCount() {
+        return prefab().getSlotsConfig().slotsCount();
+    }
+
+    public void voidSlotContent(int id) {
+        if(id < 0 || id >= getSlotsCount()) return;
+        contentHandler.voidSlot(id);
+    }
+
+    public Object[] getSlotContent(int id) {
+        if(id < 0 || id >= getSlotsCount()) return new Object[]{};
+        return contentHandler.getSlotContent(id);
     }
 }

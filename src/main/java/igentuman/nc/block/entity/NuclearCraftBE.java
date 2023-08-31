@@ -1,20 +1,27 @@
 package igentuman.nc.block.entity;
 
+import igentuman.nc.compat.cc.NCProcessorPeripheral;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.util.NCBlockPos;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.NotNull;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
+import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nonnull;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+
+import static igentuman.nc.util.ModUtil.isCcLoaded;
 
 public class NuclearCraftBE extends BlockEntity {
     protected String name;
@@ -180,4 +187,5 @@ public class NuclearCraftBE extends BlockEntity {
     public String getName() {
         return name;
     }
+
 }

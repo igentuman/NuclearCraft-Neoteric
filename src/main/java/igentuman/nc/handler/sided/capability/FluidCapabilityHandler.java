@@ -257,4 +257,14 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler implements
         }
         return toOutput;
     }
+
+    public void voidSlot(int slotId) {
+        tanks.get(slotId).setFluid(FluidStack.EMPTY);
+    }
+
+    public Object[] getSlotContent(int slotIdFromGlobalId) {
+        FluidStack stack = tanks.get(slotIdFromGlobalId).getFluid();
+        if(stack.isEmpty()) return new Object[]{};
+        return new Object[]{stack.getFluid().toString(), stack.getAmount()};
+    }
 }

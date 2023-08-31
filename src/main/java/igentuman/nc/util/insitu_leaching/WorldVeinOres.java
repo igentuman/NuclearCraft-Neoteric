@@ -76,6 +76,10 @@ public class WorldVeinOres implements IWorldVeinCapability {
     }
 
     public ItemStack gatherRandomOre(int x, int z) {
-        return getVeinForChunk(x, z).getRandomOre(level, x, z, getBlocksLeft(x, z));
+        OreVeinRecipe vein = getVeinForChunk(x, z);
+        if(vein == null) {
+            return ItemStack.EMPTY;
+        }
+        return vein.getRandomOre(level, x, z, getBlocksLeft(x, z));
     }
 }

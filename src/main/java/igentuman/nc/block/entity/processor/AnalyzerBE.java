@@ -95,6 +95,7 @@ public class AnalyzerBE extends NCProcessorBE<AnalyzerBE.Recipe> {
             }
             for (ItemStack output : recipe.getResultItems()) {
                 output.getOrCreateTag().putLong("pos", worldPosition.asLong());
+                output.getOrCreateTag().putBoolean("is_nc_analyzed", true);
             }
         }
     }

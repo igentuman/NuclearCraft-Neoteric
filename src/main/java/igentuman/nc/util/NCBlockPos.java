@@ -2,6 +2,7 @@ package igentuman.nc.util;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Position;
 import net.minecraft.core.Vec3i;
 
 /**
@@ -63,6 +64,21 @@ public class NCBlockPos extends BlockPos {
         setX(getX()+x);
         setY(getY()+y);
         setZ(getZ()+z);
+        return this;
+    }
+
+    public NCBlockPos y(int y) {
+        setY(y);
+        return this;
+    }
+
+    public NCBlockPos x(int x) {
+        setX(x);
+        return this;
+    }
+
+    public NCBlockPos z(int z) {
+        setZ(z);
         return this;
     }
 }

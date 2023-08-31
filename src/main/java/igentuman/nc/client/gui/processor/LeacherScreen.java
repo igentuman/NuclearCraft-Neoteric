@@ -12,6 +12,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
+import static igentuman.nc.block.entity.processor.LeacherBE.*;
+
 
 public class LeacherScreen<T extends NCProcessorContainer> extends NCProcessorScreen<T>{
 
@@ -30,6 +32,22 @@ public class LeacherScreen<T extends NCProcessorContainer> extends NCProcessorSc
         for(int i = 0; i<4; i++) {
             pumpsCheckbox[i] = new Checkbox(68+i*13, 81, this, false);
             widgets.add(pumpsCheckbox[i]);
+        }
+    }
+
+    @Override
+    protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
+        super.renderLabels(matrixStack, mouseX, mouseY);
+        switch (((LeacherBE)getMenu().getBlockEntity()).leacherState) {
+            case WRONG_POSITION:
+                drawString(matrixStack, font, Component.translatable("nc.label.leacher_wrong_position"), 30, 16, 0xff0000);
+                break;
+            case NO_SOURCE:
+                drawString(matrixStack, font, Component.translatable("nc.label.leacher_no_source"), 30, 16, 0xff0000);
+                break;
+            case NO_ACID:
+                drawString(matrixStack, font, Component.translatable("nc.label.leacher_no_acid"), 30, 16, 0xff0000);
+                break;
         }
     }
 

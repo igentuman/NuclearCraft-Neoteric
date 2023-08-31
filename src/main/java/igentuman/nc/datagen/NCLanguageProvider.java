@@ -65,6 +65,9 @@ public class NCLanguageProvider extends LanguageProvider {
     }
 
     private void labels() {
+        add("nc.label.leacher_wrong_position", "Wrong Position");
+        add("nc.label.leacher_no_source", "No Data Source");
+        add("nc.label.leacher_no_acid", "No Acid");
         add("block.nuclearcraft.glowing_mushroom", "Glowing Mushroom");
 
         add("reactor.size", "Reactor size: %sx%sx%s");

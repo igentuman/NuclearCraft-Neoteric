@@ -25,7 +25,7 @@ public class CatalystHandler extends ItemStackHandler {
     public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
         for(Object item: be.getAllowedCatalysts()) {
             if(stack.getItem().equals(item)) {
-                return true;
+                return stack.getOrCreateTag().contains("is_nc_analyzed");
             }
         }
         return false;

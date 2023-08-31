@@ -1,27 +1,33 @@
 package igentuman.nc.block.entity.processor;
 
 import igentuman.nc.content.processors.Processors;
-import igentuman.nc.handler.OreVeinProvider;
 import igentuman.nc.handler.event.client.BlockOverlayHandler;
+import igentuman.nc.recipes.NcRecipeType;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.type.NcRecipe;
-import igentuman.nc.recipes.type.OreVeinRecipe;
 import igentuman.nc.util.NCBlockPos;
 import igentuman.nc.util.annotation.NBTField;
 import igentuman.nc.util.annotation.NothingNullByDefault;
 import igentuman.nc.util.insitu_leaching.WorldVeinsManager;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.MapItem;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.fluids.FluidStack;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -41,15 +47,17 @@ public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
     public static final byte NO_SOURCE = 3;
     public static final byte WRONG_POSITION = 2;
     public static final byte POSITION_IS_CORRECT = 1;
-    public static final byte POSITION_UNKNOWN = 0;
+    public static final byte NO_ACID = 0;
+
+    protected List<ItemStack> minableOres;
 
     @NBTField
-    public int veinDepletion = 0;
+    public BlockPos currentMiningPos;
     @NBTField
     public boolean pumpsAreValid = false;
 
     @NBTField
-    public byte positionState = 2;
+    public byte leacherState = 2;
 
     @NBTField
     public ItemStack catalyst = ItemStack.EMPTY;
@@ -58,7 +66,6 @@ public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
 
     protected byte pumpValidationTimeout = 40;
 
-    protected OreVeinRecipe veinRecipe;
     @Override
     public String getName() {
         return Processors.LEACHER;
@@ -67,18 +74,18 @@ public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
     @Override
     public void tickServer() {
         handleState();
-        byte lastState = positionState;
-        positionState = POSITION_IS_CORRECT;
+        byte lastState = leacherState;
+        leacherState = POSITION_IS_CORRECT;
 
         if(!hasCatalyst()) {
-            positionState = NO_SOURCE;
+            leacherState = NO_SOURCE;
         }
 
         if(!pumpsAreValid) {
-            positionState = PUMPS_ERROR;
+            leacherState = PUMPS_ERROR;
         }
 
-        if(lastState != positionState) {
+        if(lastState != leacherState) {
             level.setBlockAndUpdate(worldPosition, getBlockState().setValue(ACTIVE, isActive));
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(ACTIVE, isActive), Block.UPDATE_ALL);
         }
@@ -213,7 +220,10 @@ public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
 
         catalyst = catalystHandler.getStackInSlot(0);
         ItemStack ore = ItemStack.EMPTY;
-
+        if(contentHandler.fluidCapability.getFluidInSlot(0).isEmpty()) {
+            leacherState = NO_ACID;
+            return;
+        }
         if(catalyst.getItem().equals(FILLED_MAP)) {
             ore = useMapCatalyst();
         }
@@ -224,7 +234,7 @@ public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
         if(catalyst.getItem().equals(getItemByName("immersiveengineering:coresample"))) {
             ore = useIECoreSample();
         }
-        contentHandler.itemHandler.insertItem(0, ore, false);
+        contentHandler.itemHandler.insertItemInternal(0, ore, false);
     }
 
     //todo implement
@@ -234,10 +244,15 @@ public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
 
 
     protected ItemStack useResearchPaper() {
-        BlockPos mapPos = BlockPos.of(catalyst.getOrCreateTag().getLong("pos"));
+        CompoundTag tagData = catalyst.getOrCreateTag();
+        if(!tagData.contains("pos") || !tagData.contains("vein")) {
+            leacherState = NO_SOURCE;
+            return ItemStack.EMPTY;
+        }
+        BlockPos mapPos = BlockPos.of(tagData.getLong("pos"));
         ChunkPos chunkPos = new ChunkPos(mapPos);
         if(!chunkPos.equals(new ChunkPos(getBlockPos()))) {
-            positionState = WRONG_POSITION;
+            leacherState = WRONG_POSITION;
             return ItemStack.EMPTY;
         }
         if(getLevel() == null) return ItemStack.EMPTY;
@@ -245,16 +260,92 @@ public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
                 .getWorldVeinData((ServerLevel) getLevel()).gatherRandomOre(chunkPos.x, chunkPos.z);
     }
 
-    //todo implement
+    int currentMiningTimeout = 0;
     protected ItemStack useMapCatalyst() {
-        return ItemStack.EMPTY;
+
+        MapItemSavedData mapData = ((MapItem)catalyst.getItem()).getSavedData(catalyst, getLevel());
+        if(mapData == null) return ItemStack.EMPTY;
+        if(worldPosition.getX() < mapData.x-64 || worldPosition.getX() > mapData.x+64 &&
+                worldPosition.getZ() < mapData.z-64 || worldPosition.getZ() > mapData.z+64) {
+            leacherState = WRONG_POSITION;
+            return ItemStack.EMPTY;
+        }
+
+        if(currentMiningPos == null) {
+            if(currentMiningTimeout > 200) {
+                currentMiningTimeout = 0;
+
+                currentMiningPos = new NCBlockPos(getBlockPos().getX(), getBlockPos().getY()-1, getBlockPos().getZ());
+            } else {
+                currentMiningTimeout++;
+                return ItemStack.EMPTY;
+            }
+        }
+
+        if(!mineFirstMinableBlock()) {
+            currentMiningPos = null;
+            currentMiningTimeout = 0;
+        };
+        return ItemStack.EMPTY;//this method handles inventory updates already
+    }
+
+    public List<ItemStack> allMinableOres()
+    {
+        if(minableOres == null) {
+            minableOres = new ArrayList<>();
+            for(LeacherBE.Recipe recipe: getRecipes()) {
+                for(Ingredient ingredient: recipe.getItemIngredients()) {
+                    minableOres.addAll(Arrays.asList(ingredient.getItems()));
+                }
+            }
+        }
+        return minableOres;
+    }
+
+    private List<Recipe> getRecipes() {
+        return (List<Recipe>) NcRecipeType.ALL_RECIPES.get(getName()).getRecipeType().getRecipes(getLevel());
+    }
+
+    protected boolean mineFirstMinableBlock()
+    {
+        int startY = currentMiningPos.getY();
+        int startX = new ChunkPos(currentMiningPos).getMinBlockX();
+        int startZ = new ChunkPos(currentMiningPos).getMinBlockZ();
+        NCBlockPos tempMiningPos = new NCBlockPos(currentMiningPos);
+        for(int y = startY; y > getLevel().getMinBuildHeight(); y--) {
+           for(int x = 0; x < 16; x++) {
+               for(int z = 0; z < 16; z++) {
+                   BlockState toCheck = getLevel().getBlockState(tempMiningPos.y(y).x(x+startX).z(z+startZ));
+                   if(toCheck.is(Tags.Blocks.ORES)) {
+                        ItemStack toMine = new ItemStack(toCheck.getBlock());
+                        if(isMinable(toMine)) {
+                            currentMiningPos = new BlockPos(tempMiningPos);
+                            if(contentHandler.itemHandler.insertItemInternal(0, toMine, true).isEmpty()) {
+                                //todo add permissions check support
+                                getLevel().destroyBlock(tempMiningPos.y(y).x(x+startX).z(z+startZ), false);
+                                contentHandler.itemHandler.insertItemInternal(0, toMine, false);
+                                return true;
+                            }
+                        }
+                   }
+               }
+           }
+        }
+        return false;
+    }
+
+    private boolean isMinable(ItemStack toMine) {
+        for(ItemStack stack: allMinableOres()) {
+            if(stack.equals(toMine, false)) return true;
+        }
+        return false;
     }
 
     @Override
     public List<Item> getAllowedCatalysts() {
         List<Item> items = List.of(
                 NC_PARTS.get("research_paper").get(),
-                MAP
+                FILLED_MAP
         );
         Item ieCoreSample = getItemByName("immersiveengineering:coresample");
         if(ieCoreSample != null && !ieCoreSample.equals(AIR)) items.add(ieCoreSample);

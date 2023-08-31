@@ -12,6 +12,7 @@ import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCK;
 
 public class NCBlockTags extends BlockTagsProvider {
 
@@ -69,6 +70,10 @@ public class NCBlockTags extends BlockTagsProvider {
         for(String block: NCEnergyBlocks.ENERGY_BLOCKS.keySet()) {
             tag(BlockTags.MINEABLE_WITH_PICKAXE).add(NCEnergyBlocks.ENERGY_BLOCKS.get(block).get());
             tag(BlockTags.NEEDS_IRON_TOOL).add(NCEnergyBlocks.ENERGY_BLOCKS.get(block).get());
+        }
+        for(String block: STORAGE_BLOCK.keySet()) {
+            tag(BlockTags.MINEABLE_WITH_PICKAXE).add(STORAGE_BLOCK.get(block).get());
+            tag(BlockTags.NEEDS_IRON_TOOL).add(STORAGE_BLOCK.get(block).get());
         }
         for(String block: NCProcessors.PROCESSORS.keySet()) {
             tag(BlockTags.MINEABLE_WITH_PICKAXE).add(NCProcessors.PROCESSORS.get(block).get());

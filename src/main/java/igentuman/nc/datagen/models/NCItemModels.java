@@ -3,6 +3,7 @@ package igentuman.nc.datagen.models;
 import igentuman.nc.setup.multiblocks.FissionReactor;
 import igentuman.nc.setup.registration.*;
 import igentuman.nc.setup.storage.BarrelBlocks;
+import igentuman.nc.setup.storage.ContainerBlocks;
 import net.minecraft.core.Registry;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
@@ -81,6 +82,9 @@ public class NCItemModels extends ItemModelProvider {
     private void storageBlocks() {
         for(String name: BarrelBlocks.all().keySet()) {
             withExistingParent(name, modLoc("block/barrel/"+name));
+        }
+        for(String name: ContainerBlocks.all().keySet()) {
+            withExistingParent(name, modLoc("block/container/"+name));
         }
     }
 

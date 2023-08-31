@@ -1,5 +1,6 @@
-package igentuman.nc.block.entity.barrel;
+package igentuman.nc.block.entity;
 
+import igentuman.nc.block.ISizeToggable;
 import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.setup.storage.BarrelBlocks;
 import net.minecraft.core.BlockPos;
@@ -27,7 +28,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BE;
 
-public class BarrelBE extends NuclearCraftBE {
+public class BarrelBE extends NuclearCraftBE implements ISizeToggable {
 
     public final FluidTank fluidTank;
 
@@ -204,9 +205,5 @@ public class BarrelBE extends NuclearCraftBE {
         level.setBlockAndUpdate(worldPosition, getBlockState());
         level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
         return sideConfig.get(direction);
-    }
-
-    public enum SideMode {
-        DEFAULT, IN, OUT, DISABLED
     }
 }

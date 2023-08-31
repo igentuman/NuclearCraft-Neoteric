@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "item": "nuclearcraft:du_storage_container"
+    },
+    "D": {
+      "tag": "forge:plates/hsla_steel"
+    },
+    "P": {
+      "item": "nuclearcraft:plate_elite"
+    }
+  },
+  "pattern": [
+    "DPD",
+    "PCP",
+    "DPD"
+  ],
+  "result": {
+    "item": "nuclearcraft:elite_storage_container"
+  }
+}

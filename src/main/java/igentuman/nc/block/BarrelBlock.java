@@ -1,14 +1,13 @@
 package igentuman.nc.block;
 
 import igentuman.nc.NuclearCraft;
-import igentuman.nc.block.entity.barrel.BarrelBE;
+import igentuman.nc.block.entity.BarrelBE;
 import igentuman.nc.network.toServer.StorageSideConfig;
 import igentuman.nc.setup.registration.NCStorageBlocks;
 import igentuman.nc.setup.storage.BarrelBlocks;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.stats.Stats;
@@ -34,7 +33,6 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;

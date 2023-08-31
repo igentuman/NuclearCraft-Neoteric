@@ -104,6 +104,7 @@ public class NCLanguageProvider extends LanguageProvider {
 
         add("nc_jei_cat.fission_reactor_controller", "Fission Reactor Fuel Depletion");
         add("nc_jei_cat.nc_ore_veins", "Ore Veins");
+        add("container.nc.storage", "Item Storage Container");
     }
 
     private void multiblocks() {

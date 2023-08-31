@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "nuclearcraft:block/container/basic_storage_container"
+    }
+  }
+}

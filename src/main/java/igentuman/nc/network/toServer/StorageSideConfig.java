@@ -1,6 +1,7 @@
 package igentuman.nc.network.toServer;
 
-import igentuman.nc.block.entity.barrel.BarrelBE;
+import igentuman.nc.block.ISizeToggable;
+import igentuman.nc.block.entity.BarrelBE;
 import igentuman.nc.network.INcPacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -31,10 +32,10 @@ public class StorageSideConfig implements INcPacket {
             return;
         }
         BlockEntity be = player.level.getBlockEntity(tilePosition);
-        if(!(be instanceof BarrelBE barrel)) {
+        if(!(be instanceof ISizeToggable storage)) {
             return;
         }
-        BarrelBE.SideMode mode = barrel.toggleSideConfig(direction);
+        ISizeToggable.SideMode mode = storage.toggleSideConfig(direction);
         player.sendSystemMessage(Component.translatable("message.nc.barrel.side_config", mode.name()));
     }
 

@@ -1,6 +1,7 @@
 package igentuman.nc.setup;
 
 import igentuman.nc.client.block.BatteryBlockLoader;
+import igentuman.nc.client.gui.StorageContainerScreen;
 import igentuman.nc.client.gui.fission.FissionPortScreen;
 import igentuman.nc.client.particle.RadiationParticle;
 import igentuman.nc.client.gui.fission.FissionControllerScreen;
@@ -36,6 +37,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
+import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_CONTAINER;
 import static igentuman.nc.setup.registration.NCTools.GEIGER_COUNTER;
 
 @Mod.EventBusSubscriber(modid = MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -43,6 +45,7 @@ public class ClientSetup {
 
     public static void init(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
+            MenuScreens.register(STORAGE_CONTAINER.get(), StorageContainerScreen::new);
             MenuScreens.register(FissionReactor.FISSION_CONTROLLER_CONTAINER.get(), FissionControllerScreen::new);
             MenuScreens.register(FissionReactor.FISSION_PORT_CONTAINER.get(), FissionPortScreen::new);
 

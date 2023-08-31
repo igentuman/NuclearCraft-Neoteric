@@ -5,16 +5,12 @@ import igentuman.nc.block.entity.processor.NCProcessorBE;
 import igentuman.nc.container.NCProcessorContainer;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.item.ProcessorBlockItem;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -37,9 +33,9 @@ public class NCProcessors {
     public static final Item.Properties PROCESSOR_ITEM_PROPERTIES = new Item.Properties().tab(CreativeTabs.NC_BLOCKS);
     public static final BlockBehaviour.Properties PROCESSOR_BLOCK_PROPERTIES = BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.METAL).strength(2f).requiresCorrectToolForDrops();
     private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, MODID);
-
     private static final DeferredRegister<MenuType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.MENU_TYPES, MODID);
-
+    public static HashMap<String, RegistryObject<MenuType<? extends NCProcessorContainer<?>>>> PROCESSORS_CONTAINERS = new HashMap<>();
+    public static HashMap<String, RegistryObject<BlockEntityType<? extends NCProcessorBE<?>>>> PROCESSORS_BE = new HashMap<>();
 
     public static void init() {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -67,10 +63,6 @@ public class NCProcessors {
                     })));
         }
     }
-
-    public static HashMap<String, RegistryObject<MenuType<? extends NCProcessorContainer<?>>>> PROCESSORS_CONTAINERS = new HashMap<>();
-
-    public static HashMap<String, RegistryObject<BlockEntityType<? extends NCProcessorBE<?>>>> PROCESSORS_BE = new HashMap<>();
 
 
     @SuppressWarnings("unchecked")

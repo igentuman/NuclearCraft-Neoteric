@@ -7,6 +7,7 @@ import igentuman.nc.setup.registration.NCEnergyBlocks;
 import igentuman.nc.setup.registration.NCProcessors;
 import igentuman.nc.setup.registration.NCStorageBlocks;
 import igentuman.nc.setup.storage.BarrelBlocks;
+import igentuman.nc.setup.storage.ContainerBlocks;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
@@ -49,6 +50,11 @@ public class NCBlockStates extends BlockStateProvider {
             simpleBlock(
                     STORAGE_BLOCK.get(name).get(),
                     models().getExistingFile(modLoc("block/barrel/"+name)));
+        }
+        for(String name: ContainerBlocks.all().keySet()) {
+            simpleBlock(
+                    STORAGE_BLOCK.get(name).get(),
+                    models().getExistingFile(modLoc("block/container/"+name)));
         }
     }
 

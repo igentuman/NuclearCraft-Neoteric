@@ -2,10 +2,10 @@ package igentuman.nc.radiation.data;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 
 import java.util.HashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static igentuman.nc.handler.config.CommonConfig.RADIATION_CONFIG;
 
@@ -63,15 +63,15 @@ public class WorldRadiation implements IWorldRadiationCapability {
             return;
         }
         int x = unpackX(id);
-        int z = unpackY(id);
+        int z = unpackZ(id);
         if (!level.getChunkSource().hasChunk(x, z)) {
             return;//do not recalculate unloaded chunks
         }
         int radiation = unpackX(chunkRadiation.get(id));
-        int timestamp = unpackY(chunkRadiation.get(id));
+        int timestamp = unpackZ(chunkRadiation.get(id));
         int curTimestamp = (int) (getServerTime() / 20);
         int radiationChange = (int) ((curTimestamp - timestamp) * decaySpeed);
-        if(radiationChange == 0) return;
+        //if(radiationChange == 0) return;
         radiation -= radiationChange;
         //if radiation is less than 100, remove it from the map
         if (radiation < 100) {
@@ -133,12 +133,12 @@ public class WorldRadiation implements IWorldRadiationCapability {
                 }
                 if(chunkRadiation.containsKey(id)) {
                     int curRadiation = unpackX(chunkRadiation.get(id));
-                    int curTimestamp = unpackY(chunkRadiation.get(id));
+                    int curTimestamp = unpackZ(chunkRadiation.get(id));
                     if(curRadiation > radiation*0.5) {
                         continue;
                     }
                     //if chunk already have radiation we use average value
-                    int newRadiation = (int) ((curRadiation + radiation * RADIATION_CONFIG.SPREAD_MULTIPLIER.get())/2);
+                    int newRadiation = (int) ((curRadiation + radiation * RADIATION_CONFIG.SPREAD_MULTIPLIER.get()/5)/2);
                     chunkRadiation.replace(id, pack(newRadiation, curTimestamp));
                 }
                 else {
@@ -173,16 +173,16 @@ public class WorldRadiation implements IWorldRadiationCapability {
         }
     }
 
-    public static long pack(int x, int y) {
-        return ((long) x << 32) | (y & 0xFFFFFFFFL);
+    public static long pack(int x, int z) {
+        return ChunkPos.asLong(x, z);
     }
 
     public static int unpackX(long packed) {
-        return (int) (packed >> 32);
+        return ChunkPos.getX(packed);
     }
 
-    public static int unpackY(long packed) {
-        return (int) (packed & 0xFFFFFFFFL);
+    public static int unpackZ(long packed) {
+        return ChunkPos.getZ(packed);
     }
 
     public int naturalRadiation(int chunkX, int chunkZ) {

@@ -91,7 +91,9 @@ public class PlayerRadiation implements IPlayerRadiationCapability {
         int chunkRadiation = worldRadiation.getChunkRadiation(player.chunkPosition().x, player.chunkPosition().z);
         double shieldingRate = Math.max(0.001, 0.7 - getRadiationShielding(player)/100.0);
         if(chunkRadiation > radiation) {
-            radiation = (int) ((chunkRadiation * 0.025f) * shieldingRate + radiation);
+            radiation = (int) (((chunkRadiation + radiation)/10D * RADIATION_CONFIG.GAIN_SPEED_FOR_PLAYER.get()) * shieldingRate + radiation);
+        } else {
+            radiation = (int) ((chunkRadiation * (RADIATION_CONFIG.GAIN_SPEED_FOR_PLAYER.get()/1000D)) * shieldingRate + radiation);
         }
         if(player instanceof Player) {
             radiation += (int) (getInventoryRadiation((Player) player) * shieldingRate);

@@ -26,7 +26,7 @@ public class WhiteNoiseOverlay {
         if (pl == null) return;
         int radiation = ClientRadiationData.getCurrentWorldRadiation();
         int level = radiation/100000;
-        if(level < 7) return;
+        if(level < 5) return;
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, NOISE);

@@ -1834,7 +1834,7 @@
   "message.nc.barrel.side_config": "Mode: %s",
   "message.nc.battery.side_config": "Mode: %s",
   "message.nc.geiger_radiation_measure": "Radiation Level: %s",
-  "message.nc.player_radiation_contamination": "Player Radiation Contamination: %s",
+  "message.nc.player_radiation_contamination": "Radiation Dose: %s",
   "nc.label.leacher_no_acid": "No Acid",
   "nc.label.leacher_no_source": "No Data Source",
   "nc.label.leacher_wrong_position": "Wrong Position",

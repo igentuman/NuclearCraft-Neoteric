@@ -52,7 +52,7 @@ public class NCLanguageProvider extends LanguageProvider {
     }
 
     private void messages() {
-        add("message.nc.player_radiation_contamination", "Player Radiation Contamination: %s");
+        add("message.nc.player_radiation_contamination", "Radiation Dose: %s");
         add("message.nc.geiger_radiation_measure", "Radiation Level: %s");
         add("death.attack.radiation", "Died of Radiation Poisoning");
     }

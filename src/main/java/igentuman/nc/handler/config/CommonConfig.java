@@ -219,6 +219,7 @@ public class CommonConfig {
         public ForgeConfigSpec.ConfigValue<Double> SPREAD_MULTIPLIER;
         public ForgeConfigSpec.ConfigValue<Integer> DECAY_SPEED;
         public ForgeConfigSpec.ConfigValue<Integer> DECAY_SPEED_FOR_PLAYER;
+        public ForgeConfigSpec.ConfigValue<Double> GAIN_SPEED_FOR_PLAYER;
         public ForgeConfigSpec.ConfigValue<List<String>> ITEM_RADIATION;
         public ForgeConfigSpec.ConfigValue<List<String>> RADIATION_REMOVAL_ITEMS;
         public ForgeConfigSpec.ConfigValue<List<String>> ARMOR_PROTECTION;
@@ -285,11 +286,15 @@ public class CommonConfig {
 
             DECAY_SPEED = builder
                     .comment("How fast contamination decays (pRad/s).")
-                    .defineInRange("decay_speed", 100, 1, 10000);
+                    .defineInRange("decay_speed", 2000, 1000, 10000);
 
             DECAY_SPEED_FOR_PLAYER = builder
                     .comment("How fast contamination decays in player's body (uRad/s).")
-                    .defineInRange("decay_speed_for_player", 3, 1, 20);
+                    .defineInRange("decay_speed_for_player", 50, 1, 5000);
+
+            GAIN_SPEED_FOR_PLAYER = builder
+                    .comment("Rate at which player gets radiation dose.")
+                    .defineInRange("gain_speed_for_player", 0.015D, 0, 5D);
 
             RADIATION_REMOVAL_ITEMS = builder
                     .comment("List of items what cleans player radiation when used (pRad). Format: item_id|radiation")
@@ -338,7 +343,7 @@ public class CommonConfig {
 
             DIMENSION_RADIATION = builder
                     .comment("Natural radiation per dimension: uRad", "Format: dim_id|radiation")
-                    .define("dimension_radiation", List.of("nuclearcraft:wasteland|2000", "minecraft:nether|100"), o -> o instanceof ArrayList);
+                    .define("dimension_radiation", List.of("nuclearcraft:wasteland|200000", "minecraft:the_nether|1000"), o -> o instanceof ArrayList);
 
             RADIATION_UPDATE_INTERVAL = builder
                     .comment("Interval between radiation updates in ticks. 20 ticks = 1 second.", "Bigger interval - less lag, but less accurate radiation spread.")

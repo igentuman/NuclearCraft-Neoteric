@@ -1,5 +1,6 @@
 package igentuman.nc.block.entity.fission;
 
+import igentuman.nc.compat.cc.NCSolidFissionReactorPeripheral;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.item.ItemFuel;
@@ -13,7 +14,6 @@ import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.setup.multiblocks.FissionReactor;
 import igentuman.nc.setup.registration.NCFluids;
 import igentuman.nc.util.CustomEnergyStorage;
-import igentuman.nc.util.NCBlockPos;
 import igentuman.nc.util.annotation.NBTField;
 import igentuman.nc.multiblock.ValidationResult;
 import net.minecraft.core.BlockPos;
@@ -46,6 +46,7 @@ import java.util.Objects;
 import static igentuman.nc.block.fission.FissionControllerBlock.POWERED;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.handler.config.CommonConfig.FISSION_CONFIG;
+import static igentuman.nc.util.ModUtil.isCcLoaded;
 
 public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> extends FissionBE  {
 
@@ -87,6 +88,9 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     public double efficiency = 0;
     @NBTField
     public boolean powered = false;
+    @NBTField
+    protected boolean forceShutdown = false;
+
     public ValidationResult validationResult = ValidationResult.INCOMPLETE;
     public RecipeInfo recipeInfo = new RecipeInfo();
     public boolean controllerEnabled = false;
@@ -179,6 +183,15 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         energyStorage.setMaxExtract(Math.max(fuelCellsCount, 1) * 1000000);
     }
 
+    private LazyOptional<NCSolidFissionReactorPeripheral> peripheralCap;
+
+    public <T> LazyOptional<T>  getPeripheral(@Nonnull Capability<T> cap, @Nullable Direction side) {
+        if(peripheralCap == null) {
+            peripheralCap = LazyOptional.of(() -> new NCSolidFissionReactorPeripheral(this));
+        }
+        return peripheralCap.cast();
+    }
+
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
@@ -190,6 +203,9 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         }
         if (cap == ForgeCapabilities.ENERGY) {
             return energy.cast();
+        }
+        if(isCcLoaded()) {
+            return getPeripheral(cap, side);
         }
         return super.getCapability(cap, side);
     }
@@ -210,6 +226,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         boolean changed = wasPowered != powered || wasFormed != multiblock().isFormed();
 
         controllerEnabled = (hasRedstoneSignal() || controllerEnabled) && multiblock().isFormed();
+        controllerEnabled = !forceShutdown && controllerEnabled;
 
         if (multiblock().isFormed()) {
             height = multiblock().height();
@@ -228,6 +245,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         }
         refreshCacheFlag = !multiblock().isFormed();
         if(refreshCacheFlag || changed) {
+            level.setBlockAndUpdate(worldPosition, getBlockState().setValue(POWERED, powered));
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(POWERED, powered), Block.UPDATE_ALL);
         }
         controllerEnabled = false;
@@ -534,6 +552,26 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
 
     public boolean hasRedstoneSignal() {
         return Objects.requireNonNull(getLevel()).hasNeighborSignal(worldPosition);
+    }
+
+    public Object[] getFuel() {
+        if(hasRecipe()) {
+            return contentHandler.getSlotContent(0);
+        }
+        return new Object[]{};
+    }
+
+    public void voidFuel() {
+        contentHandler.voidSlot(0);
+        contentHandler.itemHandler.holdedInputs.clear();
+    }
+
+    public void forceShutdown() {
+        forceShutdown = true;
+    }
+
+    public void disableForceShutdown() {
+        forceShutdown = false;
     }
 
     public static class Recipe extends NcRecipe {

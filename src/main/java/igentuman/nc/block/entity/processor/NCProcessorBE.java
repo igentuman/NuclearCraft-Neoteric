@@ -235,11 +235,6 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
         return super.getCapability(cap, side);
     }
 
-    public <T> LazyOptional<T> getParentCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        return super.getCapability(cap, side);
-    }
-
-
     public NCProcessorBE(BlockPos pPos, BlockState pBlockState, String name) {
         super(NCProcessors.PROCESSORS_BE.get(name).get(), pPos, pBlockState);
         this.name = name;

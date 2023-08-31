@@ -16,6 +16,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -265,6 +266,6 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler implements
     public Object[] getSlotContent(int slotIdFromGlobalId) {
         FluidStack stack = tanks.get(slotIdFromGlobalId).getFluid();
         if(stack.isEmpty()) return new Object[]{};
-        return new Object[]{stack.getFluid().toString(), stack.getAmount()};
+        return new Object[]{ForgeRegistries.FLUIDS.getKey(stack.getFluid()).toString(), stack.getAmount()};
     }
 }

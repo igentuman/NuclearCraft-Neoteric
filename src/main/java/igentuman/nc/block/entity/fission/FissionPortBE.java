@@ -21,6 +21,8 @@ import javax.annotation.Nullable;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static igentuman.nc.util.ModUtil.isCcLoaded;
+
 public class FissionPortBE extends FissionBE {
     public static String NAME = "fission_reactor_port";
     @NBTField
@@ -114,7 +116,10 @@ public class FissionPortBE extends FissionBE {
             return LazyOptional.of(() -> controller().contentHandler.fluidCapability).cast();
         }
         if (cap == ForgeCapabilities.ENERGY) {
-            return controller().energy.cast();
+            return controller().getEnergy().cast();
+        }
+        if(isCcLoaded()) {
+            return controller().getPeripheral(cap, side);
         }
         return super.getCapability(cap, side);
     }

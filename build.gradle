@@ -94,7 +94,7 @@ dependencies {
         transitive = false
     }
 
-    implementation fg.deobf("curse.maven:cc-tweaked-282001:4630524")
+    compileOnly fg.deobf("curse.maven:cc-tweaked-282001:4630524")
 
     //runtimeOnly fg.deobf("curse.maven:nbtedit-reborn-678133:4420565")
     //runtimeOnly fg.deobf("com.blamejared.crafttweaker:CraftTweaker-forge-${mc_version}:${ct_version}")

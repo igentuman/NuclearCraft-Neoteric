@@ -17,6 +17,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -427,6 +428,6 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
     public Object[] getSlotContent(int slotId) {
         ItemStack stack = getStackInSlot(slotId);
         if(stack.isEmpty()) return new Object[]{};
-        return new Object[]{stack.getCount(), stack.getItem().toString()};
+        return new Object[]{stack.getCount(), ForgeRegistries.ITEMS.getKey(stack.getItem()).toString()};
     }
 }

@@ -16,7 +16,7 @@ This is a re-creation of old but gold NuclearCraft on a modern MC version
 - [x] Crafttweaker Support
 - [x] JEI Support
 - [x] In Situ Leaching
-- [ ] Computers Support
+- [x] Computers Support
 - [x] Custom blocks like Cobblestone Generator
 - [x] Custom items like Geiger Counter
 

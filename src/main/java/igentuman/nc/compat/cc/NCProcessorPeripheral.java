@@ -18,7 +18,7 @@ public class NCProcessorPeripheral implements IPeripheral {
     @Override
     public String getType()
     {
-        return getName();
+        return "nc_processor";
     }
 
 

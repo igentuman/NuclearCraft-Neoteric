@@ -12,6 +12,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public abstract class AbstractNCMultiblock implements INCMultiblock {
@@ -24,6 +25,7 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
     protected int depth;
     protected INCMultiblockController controller;
     public ValidationResult validationResult;
+    public HashMap<BlockPos, BlockInfo> cachedBlocks = new HashMap<>();
 
     public int topCasing = 0;
     public int bottomCasing = 0;
@@ -41,6 +43,17 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
     protected AbstractNCMultiblock(List<Block> validOuterBlocks, List<Block> validInnerBlocks) {
         this.validOuterBlocks = validOuterBlocks;
         this.validInnerBlocks = validInnerBlocks;
+    }
+
+    public BlockInfo getBlockInfo(BlockPos pos) {
+        if(cachedBlocks.containsKey(pos)) {
+            return cachedBlocks.get(pos);
+        }
+        BlockEntity be = getLevel().getBlockEntity(pos);
+        BlockState state = getLevel().getBlockState(pos);
+        BlockInfo info = new BlockInfo(state, be);
+        cachedBlocks.put(pos, info);
+        return info;
     }
 
     public int height() {

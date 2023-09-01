@@ -20,14 +20,27 @@ public class FissionHeatSinkBE extends FissionBE {
 
     public boolean isValid(boolean forceCheck)
     {
-        if(def == null) {
-            setHeatSinkDef(FissionBlocks.heatsinks().get(getBlockState().getBlock().asItem().toString().replace("_heat_sink", "")));
-        }
         if(forceCheck) {
-            isValid = def.getValidator().isValid(this);
+            isValid = def().getValidator().isValid(this);
             refreshCacheFlag = true;
         }
        return isValid() && isAttachedToFuelCell();
+    }
+
+    private HeatSinkDef def() {
+        if(def == null) {
+            setHeatSinkDef(FissionBlocks.heatsinks().get(getBlockState().getBlock().asItem().toString().replace("_heat_sink", "")));
+        }
+        return def;
+    }
+
+    @Override
+    public boolean isAttachedToFuelCell()
+    {
+        if(def().mustdDirectlyTouchFuelCell()) {
+            return isDirectlyAttachedToFuelCell(worldPosition);
+        }
+        return super.isAttachedToFuelCell();
     }
 
     private boolean isValid() {

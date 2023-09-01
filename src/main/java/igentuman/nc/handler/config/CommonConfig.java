@@ -286,7 +286,7 @@ public class CommonConfig {
 
             DECAY_SPEED = builder
                     .comment("How fast contamination decays (pRad/s).")
-                    .defineInRange("decay_speed", 2000, 1000, 10000);
+                    .defineInRange("decay_speed", 1500, 1000, 10000);
 
             DECAY_SPEED_FOR_PLAYER = builder
                     .comment("How fast contamination decays in player's body (uRad/s).")

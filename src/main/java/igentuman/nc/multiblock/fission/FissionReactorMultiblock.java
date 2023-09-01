@@ -63,6 +63,9 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
 
     private boolean isAttachedToFuelCell(BlockPos toCheck) {
         for(Direction d : Direction.values()) {
+            if(toCheck instanceof NCBlockPos) {
+                ((NCBlockPos) toCheck).revert();
+            }
             if(isFuelCell(toCheck.relative(d))) {
                 return true;
             }

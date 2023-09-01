@@ -144,6 +144,10 @@ public class HeatSinkDef {
         return config().heat;
     }
 
+    public boolean mustdDirectlyTouchFuelCell() {
+        return validator.hasToTouchFuelCell();
+    }
+
     public static class Validator {
 
         private FissionHeatSinkBE be;

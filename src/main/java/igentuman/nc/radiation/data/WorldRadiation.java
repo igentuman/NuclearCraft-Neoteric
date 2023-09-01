@@ -11,7 +11,7 @@ import static igentuman.nc.handler.config.CommonConfig.RADIATION_CONFIG;
 
 public class WorldRadiation implements IWorldRadiationCapability {
 
-    private final double decaySpeed = ((double) RADIATION_CONFIG.DECAY_SPEED.get())/1000;
+    private final double decaySpeed = ((double) RADIATION_CONFIG.DECAY_SPEED.get())/10000;
     private final double spreadGate = RADIATION_CONFIG.SPREAD_GATE.get();
     public HashMap<Long, Long> chunkRadiation = new HashMap<>();
     public HashMap<Long, Long> updatedChunks = new HashMap<>();

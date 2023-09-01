@@ -324,7 +324,7 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
         }
         recipeInfo.process(speedMultiplier());
         if(recipeInfo.radiation != 1D) {
-            RadiationManager.get(getLevel()).addRadiation(getLevel(), recipeInfo.radiation/1000, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ());
+            RadiationManager.get(getLevel()).addRadiation(getLevel(), (recipeInfo.radiation/1000000)*speedMultiplier(), worldPosition.getX(), worldPosition.getY(), worldPosition.getZ());
         }
         isActive = true;
         setChanged();

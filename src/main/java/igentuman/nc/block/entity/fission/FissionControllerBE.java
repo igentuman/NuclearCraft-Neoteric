@@ -212,12 +212,17 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
 
     public void tickClient() {
     }
-
+    protected int reValidateCounter = 0;
     public void tickServer() {
         boolean wasPowered = powered;
         multiblock().tick();
         boolean wasFormed = multiblock().isFormed();
         if (!wasFormed) {
+            reValidateCounter++;
+            if(reValidateCounter < 40) {
+                return;
+            }
+            reValidateCounter = 0;
             multiblock().validate();
             isCasingValid = multiblock().isOuterValid();
             isInternalValid = multiblock().isInnerValid();

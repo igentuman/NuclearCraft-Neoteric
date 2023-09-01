@@ -5,23 +5,11 @@ import igentuman.nc.multiblock.AbstractNCMultiblock;
 import igentuman.nc.multiblock.IMultiblockAttachable;
 import igentuman.nc.multiblock.fission.FissionReactorMultiblock;
 import igentuman.nc.setup.multiblocks.FissionReactor;
+import igentuman.nc.util.NCBlockPos;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Stream;
-
-import static igentuman.nc.NuclearCraft.MODID;
 
 public class FissionBE extends NuclearCraftBE implements IMultiblockAttachable {
 
@@ -76,6 +64,13 @@ public class FissionBE extends NuclearCraftBE implements IMultiblockAttachable {
     public void tickServer() {
     }
 
+    @Override
+    public void setRemoved()
+    {
+        if(controller() != null) controller().invalidateCache();
+        super.setRemoved();
+    }
+
     public boolean isDirectlyAttachedToFuelCell(BlockPos ignoredPos) {
         for (Direction dir : Direction.values()) {
             if(dir.getOpposite().getNormal() == ignoredPos) {
@@ -88,6 +83,7 @@ public class FissionBE extends NuclearCraftBE implements IMultiblockAttachable {
         }
         return false;
     }
+
     public boolean isValidating = false;
     public boolean isAttachedToFuelCell() {
         if(isValidating) {
@@ -99,8 +95,9 @@ public class FissionBE extends NuclearCraftBE implements IMultiblockAttachable {
                 attachedToFuelCell = false;
                 validationRuns = 0;
             }
+            NCBlockPos ps = NCBlockPos.of(getBlockPos());
             for (Direction dir : Direction.values()) {
-                BlockPos ps = getBlockPos().relative(dir);
+                ps.revert().relative(dir);
                 BlockEntity be = getLevel().getBlockEntity(ps);
                 if (be instanceof FissionFuelCellBE) {
                     attachedToFuelCell = true;

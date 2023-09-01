@@ -19,6 +19,11 @@ public class FissionFuelCellBE extends FissionBE {
 
     public int attachedModerators = 0;
 
+    @Override
+    public final boolean isAttachedToFuelCell() {
+        return true;
+    }
+
     public void setAttachedToFuelCell(BlockPos pos)
     {
         for (Direction dir : Direction.values()) {

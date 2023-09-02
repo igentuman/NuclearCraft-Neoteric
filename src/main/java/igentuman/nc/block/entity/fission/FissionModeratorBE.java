@@ -1,5 +1,6 @@
 package igentuman.nc.block.entity.fission;
 
+import igentuman.nc.NuclearCraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -10,7 +11,10 @@ public class FissionModeratorBE extends FissionBE {
     }
 
     @Override
-    public void tickServer() {   }
+    public void tickServer() {
+        if(NuclearCraft.instance.isNcBeStopped) return;
+        super.tickServer();
+    }
 
     @Override
     public boolean isAttachedToFuelCell() {

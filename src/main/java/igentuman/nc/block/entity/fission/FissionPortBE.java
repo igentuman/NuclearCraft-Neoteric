@@ -1,5 +1,6 @@
 package igentuman.nc.block.entity.fission;
 
+import igentuman.nc.NuclearCraft;
 import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.util.annotation.NBTField;
@@ -45,6 +46,8 @@ public class FissionPortBE extends FissionBE {
     }
     @Override
     public void tickServer() {
+        if(NuclearCraft.instance.isNcBeStopped) return;
+        super.tickServer();
         if(multiblock() == null || controller() == null) return;
         int wasSignal = analogSignal;
         boolean updated = sendOutPower();
@@ -160,6 +163,7 @@ public class FissionPortBE extends FissionBE {
 
     @Override
     public FissionControllerBE controller() {
+        if(NuclearCraft.instance.isNcBeStopped || !getLevel().getServer().isRunning()) return null;
         if(getLevel().isClientSide && controllerPos != null) {
             return (FissionControllerBE) getLevel().getBlockEntity(controllerPos);
         }

@@ -12,9 +12,12 @@ import static igentuman.nc.NuclearCraft.MODID;
 
 public class RadiationEvents {
 
+    public static boolean isTracking = false;
+
     public static void attachWorldRadiation(final AttachCapabilitiesEvent<Level> event) {
         if (!event.getObject().getCapability(WorldRadiationProvider.WORLD_RADIATION).isPresent()) {
             event.addCapability(new ResourceLocation(MODID, "radiation"), new WorldRadiationProvider());
+            isTracking = true;
         }
     }
 
@@ -38,6 +41,9 @@ public class RadiationEvents {
     }
 
     public static void onWorldTick(TickEvent.LevelTickEvent event) {
+        if(!isTracking) {
+            return;
+        }
         // Don't do anything client side
         if (event.level.isClientSide) {
             return;
@@ -47,5 +53,13 @@ public class RadiationEvents {
         }
         RadiationManager manager = RadiationManager.get(event.level);
         manager.tick(event.level);
+    }
+
+    public static void stopTracking() {
+        isTracking = false;
+    }
+
+    public static void startTracking() {
+        isTracking = true;
     }
 }

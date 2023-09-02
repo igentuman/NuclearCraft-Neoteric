@@ -1,5 +1,6 @@
 package igentuman.nc.block.entity.fission;
 
+import igentuman.nc.NuclearCraft;
 import igentuman.nc.compat.cc.NCSolidFissionReactorPeripheral;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
@@ -214,6 +215,8 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     }
     protected int reValidateCounter = 0;
     public void tickServer() {
+        if(NuclearCraft.instance.isNcBeStopped) return;
+        super.tickServer();
         boolean wasPowered = powered;
         multiblock().tick();
         boolean wasFormed = multiblock().isFormed();

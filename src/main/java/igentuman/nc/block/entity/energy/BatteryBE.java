@@ -1,5 +1,6 @@
 package igentuman.nc.block.entity.energy;
 
+import igentuman.nc.NuclearCraft;
 import igentuman.nc.setup.energy.BatteryBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -47,6 +48,7 @@ public class BatteryBE extends NCEnergy {
     }
     @Override
     public void tickServer() {
+        if(NuclearCraft.instance.isNcBeStopped) return;
         super.tickServer();
         transferEnergy();
     }

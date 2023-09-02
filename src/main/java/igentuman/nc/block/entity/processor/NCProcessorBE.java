@@ -1,5 +1,6 @@
 package igentuman.nc.block.entity.processor;
 
+import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.compat.cc.NCProcessorPeripheral;
 import igentuman.nc.handler.CatalystHandler;
@@ -279,6 +280,7 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
     }
 
     public void tickServer() {
+        if(NuclearCraft.instance.isNcBeStopped) return;
         if(redstoneMode == 1 && !hasRedstoneSignal()) return;
         boolean updated = manualUpdate();
         contentHandler.setAllowedInputItems(getAllowedInputItems());

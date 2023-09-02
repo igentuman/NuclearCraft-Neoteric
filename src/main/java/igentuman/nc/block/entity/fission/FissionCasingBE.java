@@ -12,7 +12,9 @@ public class FissionCasingBE extends FissionBE {
     }
 
     @Override
-    public void tickServer() {   }
+    public void tickServer() {
+        super.tickServer();
+    }
 
     @Override
     public final boolean isAttachedToFuelCell() {

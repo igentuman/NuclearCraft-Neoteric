@@ -1,7 +1,9 @@
 package igentuman.nc.block.entity.processor;
 
+import igentuman.nc.NuclearCraft;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.handler.event.client.BlockOverlayHandler;
+import igentuman.nc.handler.sided.SlotModePair;
 import igentuman.nc.recipes.NcRecipeType;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
@@ -11,6 +13,7 @@ import igentuman.nc.util.annotation.NBTField;
 import igentuman.nc.util.annotation.NothingNullByDefault;
 import igentuman.nc.util.insitu_leaching.WorldVeinsManager;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -24,8 +27,13 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -36,6 +44,7 @@ import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.compat.GlobalVars.RECIPE_CLASSES;
 import static igentuman.nc.radiation.ItemRadiation.getItemByName;
 import static igentuman.nc.setup.registration.NCItems.NC_PARTS;
+import static igentuman.nc.util.ModUtil.isCcLoaded;
 import static net.minecraft.world.item.Items.*;
 
 public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
@@ -73,6 +82,7 @@ public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
 
     @Override
     public void tickServer() {
+        if(NuclearCraft.instance.isNcBeStopped) return;
         handleState();
         byte lastState = leacherState;
         leacherState = POSITION_IS_CORRECT;
@@ -341,6 +351,15 @@ public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
         return false;
     }
 
+    @Nonnull
+    @Override
+    public final <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
+        if (cap == ForgeCapabilities.ITEM_HANDLER) { //not letting to access item handler from outside
+            return LazyOptional.empty();
+        }
+        return super.getCapability(cap, side);
+    }
+
     @Override
     public List<Item> getAllowedCatalysts() {
         List<Item> items = List.of(
@@ -350,5 +369,12 @@ public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
         Item ieCoreSample = getItemByName("immersiveengineering:coresample");
         if(ieCoreSample != null && !ieCoreSample.equals(AIR)) items.add(ieCoreSample);
         return items;
+    }
+
+    public int toggleSideConfig(int slotId, int direction) {
+        if(slotId == 1) return SlotModePair.SlotMode.DISABLED.ordinal();
+        setChanged();
+        saveSideMapFlag = true;
+        return contentHandler.toggleSideConfig(slotId, direction);
     }
 }

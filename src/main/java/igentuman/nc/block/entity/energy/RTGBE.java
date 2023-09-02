@@ -1,5 +1,6 @@
 package igentuman.nc.block.entity.energy;
 
+import igentuman.nc.NuclearCraft;
 import igentuman.nc.radiation.data.RadiationManager;
 import igentuman.nc.setup.energy.RTGs;
 import net.minecraft.core.BlockPos;
@@ -22,6 +23,7 @@ public class RTGBE extends NCEnergy {
     protected int radiationTimer = 40;
     @Override
     public void tickServer() {
+        if(NuclearCraft.instance.isNcBeStopped) return;
         super.tickServer();
         energyStorage.setEnergy(getEnergyMaxStorage());
         sendOutPower();

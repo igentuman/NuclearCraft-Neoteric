@@ -5,16 +5,21 @@ import igentuman.nc.handler.command.CommandNcPlayerRadiation;
 import igentuman.nc.handler.command.CommandNcVeinCheck;
 import igentuman.nc.handler.config.CommonConfig;
 import igentuman.nc.radiation.data.PlayerRadiation;
+import igentuman.nc.radiation.data.RadiationEvents;
+import igentuman.nc.radiation.data.RadiationManager;
 import igentuman.nc.radiation.data.WorldRadiation;
 import igentuman.nc.network.PacketHandler;
 import igentuman.nc.setup.ClientSetup;
 import igentuman.nc.setup.ModSetup;
 import igentuman.nc.setup.Registration;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
+import net.minecraftforge.event.GameShuttingDownEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.event.server.ServerStoppedEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -41,6 +46,7 @@ import java.util.Set;
 public class NuclearCraft {
 
     public static final Logger LOGGER = LogManager.getLogger();
+    public boolean isNcBeStopped = false;
     public static final CommonWorldTickHandler worldTickHandler = new CommonWorldTickHandler();
     public static final String MODID = "nuclearcraft";
     public static NuclearCraft instance;
@@ -78,6 +84,8 @@ public class NuclearCraft {
         packetHandler = new PacketHandler();
         forceLoadConfig();
         MinecraftForge.EVENT_BUS.addListener(this::serverStopped);
+        MinecraftForge.EVENT_BUS.addListener(this::serverStarted);
+        MinecraftForge.EVENT_BUS.addListener(this::gameShuttingDownEvent);
         ModSetup.setup();
         Registration.init();
         IEventBus modbus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -112,8 +120,23 @@ public class NuclearCraft {
     }
 
     private void serverStopped(ServerStoppedEvent event) {
+        NuclearCraft.instance.isNcBeStopped = true;
         //stop capability tracking
+        RadiationEvents.stopTracking();
+        for(ServerLevel level: event.getServer().getAllLevels()) {
+            RadiationManager.clear(level);
+        }
     }
+    private void gameShuttingDownEvent(GameShuttingDownEvent event) {
+        NuclearCraft.instance.isNcBeStopped = true;
+    }
+
+    private void serverStarted(ServerStartedEvent event) {
+        NuclearCraft.instance.isNcBeStopped = false;
+        RadiationEvents.startTracking();
+    }
+
+
 
     @SubscribeEvent
     public void registerCaps(RegisterCapabilitiesEvent event) {

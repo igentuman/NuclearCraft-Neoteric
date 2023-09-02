@@ -1,5 +1,6 @@
 package igentuman.nc.block.entity.fission;
 
+import igentuman.nc.NuclearCraft;
 import igentuman.nc.setup.multiblocks.FissionBlocks;
 import igentuman.nc.setup.multiblocks.HeatSinkDef;
 import net.minecraft.core.BlockPos;
@@ -49,6 +50,8 @@ public class FissionHeatSinkBE extends FissionBE {
 
     @Override
     public void tickServer() {
+        if(NuclearCraft.instance.isNcBeStopped) return;
+        super.tickServer();
         if(multiblock() != null) {
             if (attachedToFuelCell || refreshCacheFlag) {
                 for (Direction dir : Direction.values()) {

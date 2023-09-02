@@ -1,5 +1,6 @@
 package igentuman.nc.block.entity.fission;
 
+import igentuman.nc.NuclearCraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
@@ -35,6 +36,8 @@ public class FissionFuelCellBE extends FissionBE {
     }
     @Override
     public void tickServer() {
+        if(NuclearCraft.instance.isNcBeStopped) return;
+        super.tickServer();
         if(refreshCacheFlag || validationRuns < 2) {
             validationRuns++;
             getAttachedModeratorsCount(false);

@@ -24,6 +24,12 @@ public class RadiationManager extends SavedData {
 
     private WorldRadiation worldRadiation;
     private int tickCounter = RADIATION_CONFIG.RADIATION_UPDATE_INTERVAL.get();
+
+    public static void clear(Level level) {
+        get(level).worldRadiation.chunkRadiation.clear();
+        get(level).worldRadiation.updatedChunks.clear();
+    }
+
     public WorldRadiation getWorldRadiation() {
         return this.worldRadiation;
     }

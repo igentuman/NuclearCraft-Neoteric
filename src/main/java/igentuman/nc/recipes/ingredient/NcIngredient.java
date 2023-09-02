@@ -201,7 +201,7 @@ public class NcIngredient extends Ingredient {
                   item.getTag().remove("Damage");
                }
             }
-            if(item.getTag().getAllKeys().size() > 1) {
+            if(!item.getTag().getAllKeys().isEmpty()) {
                jsonobject.addProperty("nbt", item.getTag().toString());
             }
          }

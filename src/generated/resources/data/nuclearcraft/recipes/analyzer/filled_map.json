@@ -7,7 +7,8 @@
   ],
   "output": [
     {
-      "item": "minecraft:filled_map"
+      "item": "minecraft:filled_map",
+      "nbt": "{is_nc_analyzed:1b}"
     }
   ],
   "powerModifier": 10.0,

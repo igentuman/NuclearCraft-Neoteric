@@ -187,7 +187,7 @@ public abstract class RecipeBuilder<BUILDER extends RecipeBuilder<BUILDER>> {
                     stack.getTag().remove("Damage");
                 }
             }
-            if(stack.getTag().getAllKeys().size() > 1)
+            if(!stack.getTag().getAllKeys().isEmpty())
             json.addProperty("nbt", stack.getTag().toString());
         }
         return json;
@@ -208,7 +208,7 @@ public abstract class RecipeBuilder<BUILDER extends RecipeBuilder<BUILDER>> {
                     fluidStack.getTag().remove("Damage");
                 }
             }
-            if(fluidStack.getTag().getAllKeys().size() > 1)
+            if(!fluidStack.getTag().getAllKeys().isEmpty())
             json.addProperty("nbt", fluidStack.getTag().toString());
         }
         return json;

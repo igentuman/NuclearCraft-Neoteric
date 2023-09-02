@@ -8,7 +8,8 @@
   ],
   "output": [
     {
-      "item": "nuclearcraft:research_paper"
+      "item": "nuclearcraft:research_paper",
+      "nbt": "{vein:\"nc.ore_vein.magnesite\"}"
     }
   ],
   "powerModifier": 1.0,

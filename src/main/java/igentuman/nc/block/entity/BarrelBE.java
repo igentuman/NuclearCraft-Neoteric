@@ -1,8 +1,7 @@
 package igentuman.nc.block.entity;
 
 import igentuman.nc.block.ISizeToggable;
-import igentuman.nc.block.entity.NuclearCraftBE;
-import igentuman.nc.setup.storage.BarrelBlocks;
+import igentuman.nc.content.storage.BarrelBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;

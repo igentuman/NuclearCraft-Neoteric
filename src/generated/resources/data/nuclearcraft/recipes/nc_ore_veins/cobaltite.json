@@ -11,8 +11,7 @@
   ],
   "output": [
     {
-      "item": "nuclearcraft:research_paper",
-      "nbt": "{vein:\"nc.ore_vein.cobaltite\"}"
+      "item": "nuclearcraft:research_paper"
     }
   ],
   "powerModifier": 1.0,

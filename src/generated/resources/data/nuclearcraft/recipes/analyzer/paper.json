@@ -7,8 +7,7 @@
   ],
   "output": [
     {
-      "item": "nuclearcraft:research_paper",
-      "nbt": "{vein_data:1b}"
+      "item": "nuclearcraft:research_paper"
     }
   ],
   "powerModifier": 4.0,

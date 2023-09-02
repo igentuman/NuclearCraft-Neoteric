@@ -4,17 +4,11 @@ import igentuman.nc.content.fuel.FuelManager;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.content.materials.Materials;
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.data.recipes.ShapedRecipeBuilder;
-import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
 import java.util.function.Consumer;
 
-import static igentuman.nc.NuclearCraft.MODID;
-import static igentuman.nc.setup.registration.NCItems.NC_ITEMS;
-import static igentuman.nc.setup.registration.NCItems.NC_PARTS;
-import static igentuman.nc.setup.registration.NCTools.*;
-import static igentuman.nc.util.DataGenUtil.forgePlate;
+import static igentuman.nc.setup.registration.NCItems.*;
 import static net.minecraft.world.item.Items.*;
 
 public class AssemblerRecipes extends AbstractRecipeProvider {

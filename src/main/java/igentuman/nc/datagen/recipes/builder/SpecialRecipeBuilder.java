@@ -1,7 +1,7 @@
 package igentuman.nc.datagen.recipes.builder;
 
 import com.google.gson.JsonObject;
-import igentuman.nc.setup.recipes.RecipeSerializerRegistryObject;
+import igentuman.nc.registry.RecipeSerializerRegistryObject;
 import igentuman.nc.util.annotation.NothingNullByDefault;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;

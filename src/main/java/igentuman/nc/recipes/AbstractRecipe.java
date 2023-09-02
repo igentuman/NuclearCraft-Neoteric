@@ -1,12 +1,10 @@
 package igentuman.nc.recipes;
 
-import igentuman.nc.NuclearCraft;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
-import igentuman.nc.setup.recipes.NcRecipeSerializers;
 import igentuman.nc.setup.registration.NCProcessors;
 import igentuman.nc.util.IgnoredIInventory;
 import net.minecraft.core.NonNullList;

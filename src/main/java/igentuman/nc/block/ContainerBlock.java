@@ -35,8 +35,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 
-
-import static igentuman.nc.setup.registration.NCTools.MULTITOOL;
+import static igentuman.nc.setup.registration.NCItems.MULTITOOL;
 
 @NothingNullByDefault
 public class ContainerBlock extends Block implements EntityBlock {

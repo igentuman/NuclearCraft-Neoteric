@@ -1,8 +1,7 @@
 package igentuman.nc.block;
 
 import igentuman.nc.block.entity.energy.NCEnergy;
-import igentuman.nc.setup.energy.RTGs;
-import igentuman.nc.setup.energy.SolarPanels;
+import igentuman.nc.content.energy.RTGs;
 import igentuman.nc.setup.registration.NCEnergyBlocks;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
@@ -20,7 +19,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.Material;
 import org.jetbrains.annotations.Nullable;
 

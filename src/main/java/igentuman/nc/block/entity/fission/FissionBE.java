@@ -4,7 +4,7 @@ import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.multiblock.AbstractNCMultiblock;
 import igentuman.nc.multiblock.IMultiblockAttachable;
 import igentuman.nc.multiblock.fission.FissionReactorMultiblock;
-import igentuman.nc.setup.multiblocks.FissionReactor;
+import igentuman.nc.multiblock.fission.FissionReactor;
 import igentuman.nc.util.NCBlockPos;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

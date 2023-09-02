@@ -10,11 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static igentuman.nc.setup.registration.NCItems.NC_ITEMS;
 import static igentuman.nc.setup.registration.NCItems.NC_PARTS;
-import static igentuman.nc.setup.registration.NCTools.*;
-import static igentuman.nc.util.DataGenUtil.forgeOre;
-import static net.minecraft.world.item.Items.*;
 
 public class OreVeinsRecipes extends AbstractRecipeProvider {
 

@@ -16,7 +16,6 @@ public class NcDamageSource extends DamageSource  {
 
     private static final List<NcDamageSource> INTERNAL_DAMAGE_SOURCES = new ArrayList<>();
     public static final List<NcDamageSource> DAMAGE_SOURCES = Collections.unmodifiableList(INTERNAL_DAMAGE_SOURCES);
-    public static final NcDamageSource LASER = new NcDamageSource("laser");
     public static final NcDamageSource RADIATION = new NcDamageSource("radiation").bypassArmor();
 
     private final String translationKey;

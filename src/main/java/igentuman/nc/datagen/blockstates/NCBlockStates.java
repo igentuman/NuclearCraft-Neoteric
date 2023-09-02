@@ -1,14 +1,12 @@
 package igentuman.nc.datagen.blockstates;
 
-import igentuman.nc.setup.multiblocks.FissionBlocks;
-import igentuman.nc.setup.multiblocks.FissionReactor;
+import igentuman.nc.multiblock.fission.FissionBlocks;
+import igentuman.nc.multiblock.fission.FissionReactor;
 import igentuman.nc.setup.registration.NCBlocks;
 import igentuman.nc.setup.registration.NCEnergyBlocks;
 import igentuman.nc.setup.registration.NCProcessors;
-import igentuman.nc.setup.registration.NCStorageBlocks;
-import igentuman.nc.setup.storage.BarrelBlocks;
-import igentuman.nc.setup.storage.ContainerBlocks;
-import net.minecraft.client.renderer.RenderType;
+import igentuman.nc.content.storage.BarrelBlocks;
+import igentuman.nc.content.storage.ContainerBlocks;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;

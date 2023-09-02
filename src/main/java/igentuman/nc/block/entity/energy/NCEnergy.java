@@ -1,8 +1,6 @@
 package igentuman.nc.block.entity.energy;
 
 import igentuman.nc.block.entity.NuclearCraftBE;
-import igentuman.nc.handler.config.CommonConfig;
-import igentuman.nc.setup.energy.SolarPanels;
 import igentuman.nc.setup.registration.NCEnergyBlocks;
 import igentuman.nc.util.CustomEnergyStorage;
 import net.minecraft.core.BlockPos;

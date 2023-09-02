@@ -1,9 +1,9 @@
 package igentuman.nc.datagen.models;
 
-import igentuman.nc.setup.multiblocks.FissionReactor;
+import igentuman.nc.multiblock.fission.FissionReactor;
 import igentuman.nc.setup.registration.*;
-import igentuman.nc.setup.storage.BarrelBlocks;
-import igentuman.nc.setup.storage.ContainerBlocks;
+import igentuman.nc.content.storage.BarrelBlocks;
+import igentuman.nc.content.storage.ContainerBlocks;
 import net.minecraft.core.Registry;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
@@ -15,6 +15,7 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.setup.registration.NCItems.*;
 
 public class NCItemModels extends ItemModelProvider {
 
@@ -48,13 +49,13 @@ public class NCItemModels extends ItemModelProvider {
         
         withExistingParent(NCBlocks.PORTAL_ITEM.getId().getPath(), modLoc("block/portal"));
 
-        singleTexture(NCTools.MULTITOOL.getId().getPath(),
+        singleTexture(MULTITOOL.getId().getPath(),
                 mcLoc("item/generated"),
-                "layer0", modLoc("item/tool/"+NCTools.MULTITOOL.getId().getPath()));
+                "layer0", modLoc("item/tool/"+MULTITOOL.getId().getPath()));
 
-        singleTexture(NCTools.SPAXELHOE_TOUGH.getId().getPath(),
+        singleTexture(SPAXELHOE_TOUGH.getId().getPath(),
                 mcLoc("item/generated"),
-                "layer0", modLoc("item/tool/"+NCTools.SPAXELHOE_TOUGH.getId().getPath()));
+                "layer0", modLoc("item/tool/"+SPAXELHOE_TOUGH.getId().getPath()));
         NCFluids.ALL_FLUID_ENTRIES.values().forEach(this::createBucket);
     }
 
@@ -174,44 +175,44 @@ public class NCItemModels extends ItemModelProvider {
     }
 
     private void armor() {
-        singleTexture(NCArmor.HEV_BOOTS.getId().getPath(),
+        singleTexture(HEV_BOOTS.getId().getPath(),
                 mcLoc("item/generated"),
-                "layer0", modLoc("item/armor/"+NCArmor.HEV_BOOTS.getId().getPath()));
-        singleTexture(NCArmor.HEV_CHEST.getId().getPath(),
+                "layer0", modLoc("item/armor/"+HEV_BOOTS.getId().getPath()));
+        singleTexture(HEV_CHEST.getId().getPath(),
                 mcLoc("item/generated"),
-                "layer0", modLoc("item/armor/"+NCArmor.HEV_CHEST.getId().getPath()));
-        singleTexture(NCArmor.HEV_PANTS.getId().getPath(),
+                "layer0", modLoc("item/armor/"+HEV_CHEST.getId().getPath()));
+        singleTexture(HEV_PANTS.getId().getPath(),
                 mcLoc("item/generated"),
-                "layer0", modLoc("item/armor/"+NCArmor.HEV_PANTS.getId().getPath()));
-        singleTexture(NCArmor.HEV_HELMET.getId().getPath(),
+                "layer0", modLoc("item/armor/"+HEV_PANTS.getId().getPath()));
+        singleTexture(HEV_HELMET.getId().getPath(),
                 mcLoc("item/generated"),
-                "layer0", modLoc("item/armor/"+NCArmor.HEV_HELMET.getId().getPath()));
+                "layer0", modLoc("item/armor/"+HEV_HELMET.getId().getPath()));
 
-        singleTexture(NCArmor.HAZMAT_BOOTS.getId().getPath(),
+        singleTexture(HAZMAT_BOOTS.getId().getPath(),
                 mcLoc("item/generated"),
-                "layer0", modLoc("item/armor/"+NCArmor.HAZMAT_BOOTS.getId().getPath()));
-        singleTexture(NCArmor.HAZMAT_CHEST.getId().getPath(),
+                "layer0", modLoc("item/armor/"+HAZMAT_BOOTS.getId().getPath()));
+        singleTexture(HAZMAT_CHEST.getId().getPath(),
                 mcLoc("item/generated"),
-                "layer0", modLoc("item/armor/"+NCArmor.HAZMAT_CHEST.getId().getPath()));
-        singleTexture(NCArmor.HAZMAT_MASK.getId().getPath(),
+                "layer0", modLoc("item/armor/"+HAZMAT_CHEST.getId().getPath()));
+        singleTexture(HAZMAT_MASK.getId().getPath(),
                 mcLoc("item/generated"),
-                "layer0", modLoc("item/armor/"+NCArmor.HAZMAT_MASK.getId().getPath()));
-        singleTexture(NCArmor.HAZMAT_PANTS.getId().getPath(),
+                "layer0", modLoc("item/armor/"+HAZMAT_MASK.getId().getPath()));
+        singleTexture(HAZMAT_PANTS.getId().getPath(),
                 mcLoc("item/generated"),
-                "layer0", modLoc("item/armor/"+NCArmor.HAZMAT_PANTS.getId().getPath()));
+                "layer0", modLoc("item/armor/"+HAZMAT_PANTS.getId().getPath()));
 
-        singleTexture(NCArmor.TOUGH_BOOTS.getId().getPath(),
+        singleTexture(TOUGH_BOOTS.getId().getPath(),
                 mcLoc("item/generated"),
-                "layer0", modLoc("item/armor/"+NCArmor.TOUGH_BOOTS.getId().getPath()));
-        singleTexture(NCArmor.TOUGH_CHEST.getId().getPath(),
+                "layer0", modLoc("item/armor/"+TOUGH_BOOTS.getId().getPath()));
+        singleTexture(TOUGH_CHEST.getId().getPath(),
                 mcLoc("item/generated"),
-                "layer0", modLoc("item/armor/"+NCArmor.TOUGH_CHEST.getId().getPath()));
-        singleTexture(NCArmor.TOUGH_PANTS.getId().getPath(),
+                "layer0", modLoc("item/armor/"+TOUGH_CHEST.getId().getPath()));
+        singleTexture(TOUGH_PANTS.getId().getPath(),
                 mcLoc("item/generated"),
-                "layer0", modLoc("item/armor/"+NCArmor.TOUGH_PANTS.getId().getPath()));
-        singleTexture(NCArmor.TOUGH_HELMET.getId().getPath(),
+                "layer0", modLoc("item/armor/"+TOUGH_PANTS.getId().getPath()));
+        singleTexture(TOUGH_HELMET.getId().getPath(),
                 mcLoc("item/generated"),
-                "layer0", modLoc("item/armor/"+NCArmor.TOUGH_HELMET.getId().getPath()));
+                "layer0", modLoc("item/armor/"+TOUGH_HELMET.getId().getPath()));
 
     }
     private void food() {

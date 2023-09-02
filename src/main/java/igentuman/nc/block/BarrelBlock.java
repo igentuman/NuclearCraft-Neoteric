@@ -4,7 +4,7 @@ import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.BarrelBE;
 import igentuman.nc.network.toServer.StorageSideConfig;
 import igentuman.nc.setup.registration.NCStorageBlocks;
-import igentuman.nc.setup.storage.BarrelBlocks;
+import igentuman.nc.content.storage.BarrelBlocks;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -41,7 +41,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-import static igentuman.nc.setup.registration.NCTools.MULTITOOL;
+import static igentuman.nc.setup.registration.NCItems.MULTITOOL;
 import static net.minecraft.world.item.Items.BUCKET;
 
 public class BarrelBlock extends Block implements EntityBlock {

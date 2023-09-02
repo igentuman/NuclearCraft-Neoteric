@@ -36,7 +36,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 import static igentuman.nc.handler.config.CommonConfig.ENERGY_STORAGE;
-import static igentuman.nc.setup.registration.NCTools.MULTITOOL;
+import static igentuman.nc.setup.registration.NCItems.MULTITOOL;
 
 public class BatteryBlock extends Block implements EntityBlock {
     public BatteryBlock() {

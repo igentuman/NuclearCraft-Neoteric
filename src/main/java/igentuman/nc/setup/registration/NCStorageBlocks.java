@@ -2,12 +2,11 @@ package igentuman.nc.setup.registration;
 
 import igentuman.nc.block.BarrelBlock;
 import igentuman.nc.block.ContainerBlock;
-import igentuman.nc.container.NCProcessorContainer;
 import igentuman.nc.container.StorageContainerContainer;
 import igentuman.nc.item.BarrelBlockItem;
 import igentuman.nc.item.ContainerBlockItem;
-import igentuman.nc.setup.storage.BarrelBlocks;
-import igentuman.nc.setup.storage.ContainerBlocks;
+import igentuman.nc.content.storage.BarrelBlocks;
+import igentuman.nc.content.storage.ContainerBlocks;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -24,17 +23,13 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
 import static igentuman.nc.NuclearCraft.MODID;
-import static igentuman.nc.setup.registration.NCBlocks.NC_BLOCKS;
-import static net.minecraft.world.level.block.Blocks.CHEST;
+import static igentuman.nc.setup.Registration.BLOCKS;
+import static igentuman.nc.setup.Registration.ITEMS;
 
 public class NCStorageBlocks {
-
-    public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
-    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
     public static HashMap<String, RegistryObject<Block>> STORAGE_BLOCK = new HashMap<>();
     public static HashMap<String, RegistryObject<Item>> BLOCK_ITEMS = new HashMap<>();
     public static final Item.Properties ITEM_PROPERTIES = new Item.Properties().tab(CreativeTabs.NC_ITEMS);
@@ -46,8 +41,6 @@ public class NCStorageBlocks {
             () -> IForgeMenuType.create((windowId, inv, data) -> new StorageContainerContainer<>(windowId, data.readBlockPos(), inv)));
     public static void init() {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
-        BLOCKS.register(bus);
-        ITEMS.register(bus);
         BLOCK_ENTITIES.register(bus);
         CONTAINERS.register(bus);
         registerBlocks();

@@ -2,7 +2,7 @@ package igentuman.nc.container;
 
 import igentuman.nc.block.entity.fission.FissionControllerBE;
 import igentuman.nc.container.elements.NCSlotItemHandler;
-import igentuman.nc.setup.multiblocks.FissionReactor;
+import igentuman.nc.multiblock.fission.FissionReactor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;

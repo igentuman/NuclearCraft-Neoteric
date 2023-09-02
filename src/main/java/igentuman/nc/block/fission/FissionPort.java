@@ -1,10 +1,8 @@
 package igentuman.nc.block.fission;
 
-import igentuman.nc.block.entity.fission.FissionControllerBE;
 import igentuman.nc.block.entity.fission.FissionPortBE;
-import igentuman.nc.container.FissionControllerContainer;
 import igentuman.nc.container.FissionPortContainer;
-import igentuman.nc.setup.multiblocks.FissionReactor;
+import igentuman.nc.multiblock.fission.FissionReactor;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;

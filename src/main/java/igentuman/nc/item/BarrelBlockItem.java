@@ -1,22 +1,18 @@
 package igentuman.nc.item;
 
-import igentuman.nc.handler.ItemEnergyHandler;
 import igentuman.nc.setup.registration.CreativeTabs;
-import igentuman.nc.setup.storage.BarrelBlocks;
+import igentuman.nc.content.storage.BarrelBlocks;
 import igentuman.nc.util.CapabilityUtils;
-import igentuman.nc.util.CustomEnergyStorage;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -27,8 +23,6 @@ import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
 
 import javax.annotation.Nonnull;
 import java.util.List;
-
-import static igentuman.nc.handler.config.CommonConfig.ENERGY_STORAGE;
 
 public class BarrelBlockItem extends BlockItem
 {

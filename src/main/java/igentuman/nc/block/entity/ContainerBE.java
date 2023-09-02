@@ -2,7 +2,7 @@ package igentuman.nc.block.entity;
 
 import igentuman.nc.block.ISizeToggable;
 import igentuman.nc.handler.ItemStorageCapabilityHandler;
-import igentuman.nc.setup.storage.ContainerBlocks;
+import igentuman.nc.content.storage.ContainerBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;

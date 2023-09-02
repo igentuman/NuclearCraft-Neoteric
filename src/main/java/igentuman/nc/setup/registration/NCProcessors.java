@@ -23,11 +23,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.setup.Registration.BLOCKS;
+import static igentuman.nc.setup.Registration.ITEMS;
 
 public class NCProcessors {
-
-    public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
-    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
     public static HashMap<String, RegistryObject<Block>> PROCESSORS = new HashMap<>();
     public static HashMap<String, RegistryObject<Item>> PROCESSOR_BLOCKS_ITEMS = new HashMap<>();
     public static final Item.Properties PROCESSOR_ITEM_PROPERTIES = new Item.Properties().tab(CreativeTabs.NC_BLOCKS);
@@ -39,8 +38,6 @@ public class NCProcessors {
 
     public static void init() {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
-        BLOCKS.register(bus);
-        ITEMS.register(bus);
         BLOCK_ENTITIES.register(bus);
         CONTAINERS.register(bus);
         registerBlocks();
@@ -85,5 +82,4 @@ public class NCProcessors {
     public static <B extends Block> RegistryObject<Item> fromBlock(RegistryObject<B> block) {
         return ITEMS.register(block.getId().getPath(), () -> new ProcessorBlockItem(block.get(), PROCESSOR_ITEM_PROPERTIES));
     }
-
 }

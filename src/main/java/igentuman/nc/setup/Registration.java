@@ -3,8 +3,8 @@ package igentuman.nc.setup;
 import com.mojang.serialization.Codec;
 import igentuman.nc.effect.RadiationResistance;
 import igentuman.nc.recipes.NcRecipeType;
-import igentuman.nc.setup.multiblocks.FissionReactor;
-import igentuman.nc.setup.recipes.NcRecipeSerializers;
+import igentuman.nc.multiblock.fission.FissionReactor;
+import igentuman.nc.recipes.NcRecipeSerializers;
 import igentuman.nc.setup.registration.*;
 import igentuman.nc.world.dimension.WastelandChunkGenerator;
 import igentuman.nc.world.ore.Generator;
@@ -45,8 +45,8 @@ import static igentuman.nc.NuclearCraft.MODID;
 
 public class Registration {
 
-    private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
-    private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
+    public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
+    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
     private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, MODID);
     private static final DeferredRegister<MenuType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.MENU_TYPES, MODID);
     private static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, MODID);
@@ -82,8 +82,6 @@ public class Registration {
         NCBlocks.init();
         NCStorageBlocks.init();
         NCItems.init();
-        NCTools.init();
-        NCArmor.init();
         Fuel.init();
         NCFluids.init();
         NCEnergyBlocks.init();

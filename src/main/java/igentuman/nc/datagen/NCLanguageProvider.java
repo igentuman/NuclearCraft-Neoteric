@@ -1,6 +1,6 @@
 package igentuman.nc.datagen;
 
-import igentuman.nc.setup.multiblocks.FissionReactor;
+import igentuman.nc.multiblock.fission.FissionReactor;
 import igentuman.nc.setup.registration.*;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.LanguageProvider;
@@ -8,7 +8,7 @@ import net.minecraftforge.common.data.LanguageProvider;
 import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
-import static igentuman.nc.setup.registration.NCItems.NC_INGOTS;
+import static igentuman.nc.setup.registration.NCItems.*;
 import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCK;
 import static igentuman.nc.util.TextUtils.convertToName;
 
@@ -350,28 +350,28 @@ public class NCLanguageProvider extends LanguageProvider {
 
     private void tools()
     {
-        add(NCTools.QNP.get(), "QNP");
-        add(NCTools.MULTITOOL.get(), "Multitool");
-        add(NCTools.GEIGER_COUNTER.get(), "Geiger Counter");
-        add(NCTools.SPAXELHOE_TOUGH.get(), "Tough Spaxel");
-        add(NCTools.LITHIUM_ION_CELL.get(), "Lithium Ion Cell");
+        add(QNP.get(), "QNP");
+        add(MULTITOOL.get(), "Multitool");
+        add(GEIGER_COUNTER.get(), "Geiger Counter");
+        add(SPAXELHOE_TOUGH.get(), "Tough Spaxel");
+        add(LITHIUM_ION_CELL.get(), "Lithium Ion Cell");
     }
 
     private void armor() {
-        add(NCArmor.TOUGH_HELMET.get(), "Tough Helmet");
-        add(NCArmor.TOUGH_PANTS.get(), "Tough Pants");
-        add(NCArmor.TOUGH_BOOTS.get(), "Tough Boots");
-        add(NCArmor.TOUGH_CHEST.get(), "Tough Chest");
+        add(TOUGH_HELMET.get(), "Tough Helmet");
+        add(TOUGH_PANTS.get(), "Tough Pants");
+        add(TOUGH_BOOTS.get(), "Tough Boots");
+        add(TOUGH_CHEST.get(), "Tough Chest");
         
-        add(NCArmor.HEV_HELMET.get(), "HEV Helmet");
-        add(NCArmor.HEV_PANTS.get(), "HEV Pants");
-        add(NCArmor.HEV_BOOTS.get(), "HEV Boots");
-        add(NCArmor.HEV_CHEST.get(), "HEV Chest");
+        add(HEV_HELMET.get(), "HEV Helmet");
+        add(HEV_PANTS.get(), "HEV Pants");
+        add(HEV_BOOTS.get(), "HEV Boots");
+        add(HEV_CHEST.get(), "HEV Chest");
 
-        add(NCArmor.HAZMAT_MASK.get(), "Hazmat Mask");
-        add(NCArmor.HAZMAT_PANTS.get(), "Hazmat Pants");
-        add(NCArmor.HAZMAT_BOOTS.get(), "Hazmat Boots");
-        add(NCArmor.HAZMAT_CHEST.get(), "Hazmat Chest");
+        add(HAZMAT_MASK.get(), "Hazmat Mask");
+        add(HAZMAT_PANTS.get(), "Hazmat Pants");
+        add(HAZMAT_BOOTS.get(), "Hazmat Boots");
+        add(HAZMAT_CHEST.get(), "Hazmat Chest");
     }
     
     private void food() {

@@ -12,8 +12,7 @@
   ],
   "output": [
     {
-      "item": "nuclearcraft:research_paper",
-      "nbt": "{vein:\"nc.ore_vein.bornite\"}"
+      "item": "nuclearcraft:research_paper"
     }
   ],
   "powerModifier": 1.0,

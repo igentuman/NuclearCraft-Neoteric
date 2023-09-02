@@ -1,8 +1,8 @@
 package igentuman.nc.block.entity.fission;
 
 import igentuman.nc.NuclearCraft;
-import igentuman.nc.setup.multiblocks.FissionBlocks;
-import igentuman.nc.setup.multiblocks.HeatSinkDef;
+import igentuman.nc.multiblock.fission.FissionBlocks;
+import igentuman.nc.multiblock.fission.HeatSinkDef;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;

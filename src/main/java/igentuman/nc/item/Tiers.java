@@ -3,13 +3,12 @@ package igentuman.nc.item;
 import java.util.function.Supplier;
 
 import igentuman.nc.content.materials.Materials;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.util.LazyLoadedValue;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Ingredient;
 
 import static igentuman.nc.datagen.recipes.recipes.AbstractRecipeProvider.ingotIngredient;
-import static igentuman.nc.setup.registration.NCTools.LITHIUM_ION_CELL;
+import static igentuman.nc.setup.registration.NCItems.LITHIUM_ION_CELL;
 
 public enum Tiers implements Tier {
    TOUGH(6, 10000, 12.0F, 10.0F, 22, () -> {

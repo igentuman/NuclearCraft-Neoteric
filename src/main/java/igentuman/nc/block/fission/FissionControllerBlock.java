@@ -2,7 +2,7 @@ package igentuman.nc.block.fission;
 
 import igentuman.nc.block.entity.fission.FissionControllerBE;
 import igentuman.nc.container.FissionControllerContainer;
-import igentuman.nc.setup.multiblocks.FissionReactor;
+import igentuman.nc.multiblock.fission.FissionReactor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;

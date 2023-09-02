@@ -9,7 +9,7 @@ import igentuman.nc.handler.event.client.*;
 import igentuman.nc.radiation.client.ClientRadiationData;
 import igentuman.nc.radiation.client.RadiationOverlay;
 import igentuman.nc.radiation.client.WhiteNoiseOverlay;
-import igentuman.nc.setup.multiblocks.FissionReactor;
+import igentuman.nc.multiblock.fission.FissionReactor;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.setup.registration.NCFluids;
 import igentuman.nc.setup.registration.NCProcessors;
@@ -37,8 +37,8 @@ import net.minecraftforge.registries.RegistryObject;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
+import static igentuman.nc.setup.registration.NCItems.GEIGER_COUNTER;
 import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_CONTAINER;
-import static igentuman.nc.setup.registration.NCTools.GEIGER_COUNTER;
 
 @Mod.EventBusSubscriber(modid = MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ClientSetup {

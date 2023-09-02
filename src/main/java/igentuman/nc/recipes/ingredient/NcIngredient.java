@@ -196,7 +196,14 @@ public class NcIngredient extends Ingredient {
          JsonObject jsonobject = new JsonObject();
          jsonobject.addProperty("item", Registry.ITEM.getKey(this.item.getItem()).toString());
          if(item.hasTag()) {
-            jsonobject.addProperty("nbt", item.getTag().toString());
+            if(item.getTag().contains("Damage")) {
+               if(item.getTag().getInt("Damage") == 0) {
+                  item.getTag().remove("Damage");
+               }
+            }
+            if(item.getTag().getAllKeys().size() > 1) {
+               jsonobject.addProperty("nbt", item.getTag().toString());
+            }
          }
          if(item.getCount()>1) {
             jsonobject.addProperty("count", item.getCount());

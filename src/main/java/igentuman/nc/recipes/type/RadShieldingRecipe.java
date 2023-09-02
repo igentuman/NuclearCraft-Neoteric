@@ -1,9 +1,8 @@
 package igentuman.nc.recipes.type;
 
 import igentuman.nc.item.RadShieldingItem;
-import igentuman.nc.setup.recipes.NcRecipeSerializers;
+import igentuman.nc.recipes.NcRecipeSerializers;
 import igentuman.nc.util.annotation.NothingNullByDefault;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ArmorItem;

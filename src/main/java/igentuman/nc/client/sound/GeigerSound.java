@@ -1,15 +1,12 @@
 package igentuman.nc.client.sound;
 
 import igentuman.nc.radiation.client.ClientRadiationData;
-import igentuman.nc.radiation.data.PlayerRadiation;
-import igentuman.nc.radiation.data.PlayerRadiationProvider;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import static igentuman.nc.setup.registration.NCItems.GEIGER_COUNTER;
 import static igentuman.nc.setup.registration.NCSounds.GEIGER_SOUNDS;
-import static igentuman.nc.setup.registration.NCTools.GEIGER_COUNTER;
 
 public class GeigerSound extends PlayerSound {
 

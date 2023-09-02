@@ -1,7 +1,7 @@
 package igentuman.nc.datagen;
 
-import igentuman.nc.setup.multiblocks.FissionBlocks;
-import igentuman.nc.setup.multiblocks.FissionReactor;
+import igentuman.nc.multiblock.fission.FissionBlocks;
+import igentuman.nc.multiblock.fission.FissionReactor;
 import igentuman.nc.setup.registration.Fuel;
 import igentuman.nc.setup.registration.NCBlocks;
 import igentuman.nc.setup.registration.NCItems;

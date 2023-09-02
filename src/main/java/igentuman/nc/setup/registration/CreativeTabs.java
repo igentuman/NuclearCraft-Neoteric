@@ -5,7 +5,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 
 import static igentuman.nc.NuclearCraft.MODID;
-import static igentuman.nc.setup.multiblocks.FissionReactor.MULTI_BLOCKS;
+import static igentuman.nc.multiblock.fission.FissionReactor.MULTI_BLOCKS;
 import static igentuman.nc.setup.registration.NCItems.ALL_NC_ITEMS;
 
 public class CreativeTabs {

@@ -2,7 +2,7 @@ package igentuman.nc.block.entity.energy;
 
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.radiation.data.RadiationManager;
-import igentuman.nc.setup.energy.RTGs;
+import igentuman.nc.content.energy.RTGs;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 

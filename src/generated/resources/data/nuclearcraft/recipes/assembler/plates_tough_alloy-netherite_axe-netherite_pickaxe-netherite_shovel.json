@@ -6,22 +6,18 @@
       "tag": "forge:plates/tough_alloy"
     },
     {
-      "item": "minecraft:netherite_axe",
-      "nbt": "{Damage:0}"
+      "item": "minecraft:netherite_axe"
     },
     {
-      "item": "minecraft:netherite_pickaxe",
-      "nbt": "{Damage:0}"
+      "item": "minecraft:netherite_pickaxe"
     },
     {
-      "item": "minecraft:netherite_shovel",
-      "nbt": "{Damage:0}"
+      "item": "minecraft:netherite_shovel"
     }
   ],
   "output": [
     {
-      "item": "nuclearcraft:spaxelhoe_tough",
-      "nbt": "{Damage:0}"
+      "item": "nuclearcraft:spaxelhoe_tough"
     }
   ],
   "powerModifier": 1.0,

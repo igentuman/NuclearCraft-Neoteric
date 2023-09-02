@@ -1,9 +1,9 @@
 package igentuman.nc.block.fission;
 
 import igentuman.nc.block.entity.fission.FissionHeatSinkBE;
-import igentuman.nc.setup.multiblocks.FissionBlocks;
-import igentuman.nc.setup.multiblocks.FissionReactor;
-import igentuman.nc.setup.multiblocks.HeatSinkDef;
+import igentuman.nc.multiblock.fission.FissionBlocks;
+import igentuman.nc.multiblock.fission.FissionReactor;
+import igentuman.nc.multiblock.fission.HeatSinkDef;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;

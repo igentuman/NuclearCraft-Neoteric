@@ -1,13 +1,13 @@
 package igentuman.nc.handler.config;
 
 import igentuman.nc.content.materials.*;
-import igentuman.nc.setup.energy.BatteryBlocks;
-import igentuman.nc.setup.energy.RTGs;
-import igentuman.nc.setup.energy.SolarPanels;
-import igentuman.nc.setup.multiblocks.FissionBlocks;
+import igentuman.nc.content.energy.BatteryBlocks;
+import igentuman.nc.content.energy.RTGs;
+import igentuman.nc.content.energy.SolarPanels;
+import igentuman.nc.multiblock.fission.FissionBlocks;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.content.fuel.FuelManager;
-import igentuman.nc.setup.storage.BarrelBlocks;
+import igentuman.nc.content.storage.BarrelBlocks;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 import java.util.ArrayList;

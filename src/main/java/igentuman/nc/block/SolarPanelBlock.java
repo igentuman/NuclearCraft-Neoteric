@@ -1,8 +1,7 @@
 package igentuman.nc.block;
 
 import igentuman.nc.block.entity.energy.NCEnergy;
-import igentuman.nc.block.entity.processor.NCProcessorBE;
-import igentuman.nc.setup.energy.SolarPanels;
+import igentuman.nc.content.energy.SolarPanels;
 import igentuman.nc.setup.registration.NCEnergyBlocks;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;

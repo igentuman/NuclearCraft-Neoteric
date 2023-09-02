@@ -1,7 +1,7 @@
 package igentuman.nc.block.entity.energy;
 
 import igentuman.nc.NuclearCraft;
-import igentuman.nc.setup.energy.BatteryBlocks;
+import igentuman.nc.content.energy.BatteryBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;

@@ -18,10 +18,9 @@ import java.util.HashMap;
 import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.setup.Registration.ITEMS;
 
 public class Fuel {
-    private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
-
     public static TagKey<Item> ISOTOPE_TAG = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("forge", "isotopes"));
     public static TagKey<Item> NC_ISOTOPE_TAG = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(MODID, "isotopes"));
     public static TagKey<Item> NC_FUEL_TAG = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(MODID, "reactor_fuel"));
@@ -37,8 +36,6 @@ public class Fuel {
 
     public static void init()
     {
-        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
-        ITEMS.register(bus);
         registerFuel();
         registerIsotopes();
     }

@@ -5,9 +5,9 @@ import igentuman.nc.block.RTGBlock;
 import igentuman.nc.block.SolarPanelBlock;
 import igentuman.nc.block.entity.energy.NCEnergy;
 import igentuman.nc.item.BatteryBlockItem;
-import igentuman.nc.setup.energy.BatteryBlocks;
-import igentuman.nc.setup.energy.RTGs;
-import igentuman.nc.setup.energy.SolarPanels;
+import igentuman.nc.content.energy.BatteryBlocks;
+import igentuman.nc.content.energy.RTGs;
+import igentuman.nc.content.energy.SolarPanels;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -24,11 +24,10 @@ import net.minecraftforge.registries.RegistryObject;
 import java.util.HashMap;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.setup.Registration.BLOCKS;
+import static igentuman.nc.setup.Registration.ITEMS;
 
 public class NCEnergyBlocks {
-
-    public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
-    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
     public static HashMap<String, RegistryObject<Block>> ENERGY_BLOCKS = new HashMap<>();
     public static HashMap<String, RegistryObject<Item>> BLOCK_ITEMS = new HashMap<>();
     public static final Item.Properties ENERGY_ITEM_PROPERTIES = new Item.Properties().tab(CreativeTabs.NC_ITEMS);
@@ -38,8 +37,6 @@ public class NCEnergyBlocks {
 
     public static void init() {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
-        BLOCKS.register(bus);
-        ITEMS.register(bus);
         BLOCK_ENTITIES.register(bus);
         registerBlocks();
         registerBlockEntities();

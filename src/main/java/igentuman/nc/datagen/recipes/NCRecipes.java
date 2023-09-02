@@ -3,9 +3,9 @@ package igentuman.nc.datagen.recipes;
 import igentuman.nc.content.materials.Materials;
 import igentuman.nc.datagen.recipes.builder.SpecialRecipeBuilder;
 import igentuman.nc.recipes.ingredient.NcIngredient;
-import igentuman.nc.setup.multiblocks.FissionBlocks;
-import igentuman.nc.setup.multiblocks.FissionReactor;
-import igentuman.nc.setup.recipes.NcRecipeSerializers;
+import igentuman.nc.multiblock.fission.FissionBlocks;
+import igentuman.nc.multiblock.fission.FissionReactor;
+import igentuman.nc.recipes.NcRecipeSerializers;
 import igentuman.nc.setup.registration.*;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.data.DataGenerator;
@@ -19,15 +19,11 @@ import net.minecraftforge.common.Tags;
 import java.util.function.Consumer;
 
 import static igentuman.nc.NuclearCraft.MODID;
-import static igentuman.nc.datagen.recipes.recipes.AbstractRecipeProvider.isotopeIngredient;
 import static igentuman.nc.setup.registration.Fuel.NC_ISOTOPES;
-import static igentuman.nc.setup.registration.NCArmor.*;
 import static igentuman.nc.setup.registration.NCBlocks.NC_BLOCKS;
 import static igentuman.nc.setup.registration.NCEnergyBlocks.ENERGY_BLOCKS;
 import static igentuman.nc.setup.registration.NCItems.*;
 import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCK;
-import static igentuman.nc.setup.registration.NCTools.GEIGER_COUNTER;
-import static igentuman.nc.setup.registration.NCTools.LITHIUM_ION_CELL;
 import static net.minecraft.world.item.Items.*;
 import static igentuman.nc.util.DataGenUtil.*;
 public class NCRecipes extends RecipeProvider {

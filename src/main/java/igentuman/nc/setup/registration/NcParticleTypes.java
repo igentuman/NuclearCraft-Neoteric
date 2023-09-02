@@ -1,6 +1,8 @@
 package igentuman.nc.setup.registration;
 
 import igentuman.nc.NuclearCraft;
+import igentuman.nc.registry.ParticleTypeDeferredRegister;
+import igentuman.nc.registry.ParticleTypeRegistryObject;
 import net.minecraft.core.particles.SimpleParticleType;
 
 public class NcParticleTypes {

@@ -1,7 +1,6 @@
 package igentuman.nc.util;
 
 import igentuman.nc.util.annotation.NothingNullByDefault;
-import igentuman.nc.util.inventory.IInventorySlot;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraftforge.common.util.INBTSerializable;
@@ -66,8 +65,6 @@ public class DataHandlerUtils {
         INBTSerializable<CompoundTag> obj = containers.get(0);
         if (obj instanceof IFluidTank) {
             return NBTConstants.TANK;
-        }  else if (obj instanceof IInventorySlot) {
-            return NBTConstants.SLOT;
         }
         return NBTConstants.CONTAINER;
     }

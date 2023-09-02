@@ -182,6 +182,12 @@ public abstract class RecipeBuilder<BUILDER extends RecipeBuilder<BUILDER>> {
             json.addProperty("count", stack.getCount());
         }
         if (stack.hasTag()) {
+            if(stack.getTag().contains("Damage")) {
+                if(stack.getTag().getInt("Damage") == 0) {
+                    stack.getTag().remove("Damage");
+                }
+            }
+            if(stack.getTag().getAllKeys().size() > 1)
             json.addProperty("nbt", stack.getTag().toString());
         }
         return json;
@@ -197,6 +203,12 @@ public abstract class RecipeBuilder<BUILDER extends RecipeBuilder<BUILDER>> {
         json.addProperty("fluid", ForgeRegistries.FLUIDS.getKey(fluidStack.getFluid()).toString());
         json.addProperty("amount", fluidStack.getAmount());
         if (fluidStack.hasTag()) {
+            if(fluidStack.getTag().contains("Damage")) {
+                if(fluidStack.getTag().getInt("Damage") == 0) {
+                    fluidStack.getTag().remove("Damage");
+                }
+            }
+            if(fluidStack.getTag().getAllKeys().size() > 1)
             json.addProperty("nbt", fluidStack.getTag().toString());
         }
         return json;

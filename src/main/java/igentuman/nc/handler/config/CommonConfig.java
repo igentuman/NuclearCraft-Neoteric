@@ -483,8 +483,9 @@ public class CommonConfig {
     }
 
     public static class ProcessorConfig {
-        public ForgeConfigSpec.ConfigValue<Integer> base_time;
-        public ForgeConfigSpec.ConfigValue<Integer> base_power;
+        public ForgeConfigSpec.ConfigValue<Integer> BASE_TIME;
+        public ForgeConfigSpec.ConfigValue<Integer> BASE_POWER;
+        public ForgeConfigSpec.ConfigValue<Integer> SKIP_TICKS;
         public ForgeConfigSpec.ConfigValue<List<Boolean>> REGISTER_PROCESSOR;
         public ForgeConfigSpec.ConfigValue<List<Integer>> PROCESSOR_POWER;
         public ForgeConfigSpec.ConfigValue<List<Integer>> PROCESSOR_TIME;
@@ -492,12 +493,22 @@ public class CommonConfig {
 
         public ProcessorConfig(ForgeConfigSpec.Builder builder) {
             builder.push("Processor");
-            base_time = builder
+            BASE_TIME = builder
                     .comment("Ticks")
                     .define("base_time", 240);
-            base_power = builder
+
+            BASE_POWER = builder
                     .comment("FE per Tick")
                     .define("base_power", 100);
+
+            SKIP_TICKS = builder
+                    .comment("Generally used for server optimization. Processors will skip defined amount of ticks then and do nothing.")
+                    .comment("This won't affect recipe production performance")
+                    .comment("Let's say it will skip 2 ticks, and then it will multiply recipe progress by amount if skipped ticks.")
+                    .comment("So it won't do the job each tick. But production will be the same as if it was done each tick.")
+                    .comment("This only works if processor has recipe in work")
+                    .comment("May lead to unknown issues, Please test first")
+                    .defineInRange("skip_ticks", 0, 0, 10);
 
             REGISTER_PROCESSOR = builder
                     .comment("Allow processor registration: " + String.join(", ", Processors.all().keySet()))

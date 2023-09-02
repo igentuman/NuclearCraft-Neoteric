@@ -47,6 +47,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static igentuman.nc.block.ProcessorBlock.ACTIVE;
+import static igentuman.nc.handler.config.CommonConfig.PROCESSOR_CONFIG;
 import static igentuman.nc.util.ModUtil.isCcLoaded;
 import static net.minecraft.world.item.Items.AIR;
 
@@ -90,6 +91,8 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
     protected final LazyOptional<IEnergyStorage> energy;
 
     protected ProcessorPrefab prefab;
+
+    protected int skippedTicks = 1;
 
     public RecipeInfo<RECIPE> recipeInfo = new RecipeInfo<RECIPE>();
 
@@ -186,7 +189,7 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
 
     public int energyPerTick()
     {
-        double energy = recipe == null ? 0 : recipe.getEnergy();
+        double energy = recipe == null ? prefab().config().getPower() : recipe.getEnergy();
         energyPerTick = (int) (energy*energyMultiplier()*prefab().config().getPower());
         return energyPerTick;
     }
@@ -279,9 +282,18 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
         return allowedInputs;
     }
 
+    protected int howMuchICanSkip()
+    {
+        return Math.min(((int)(energyStorage.getEnergyStored() / energyPerTick())),PROCESSOR_CONFIG.SKIP_TICKS.get());
+    }
+
     public void tickServer() {
         if(NuclearCraft.instance.isNcBeStopped) return;
         if(redstoneMode == 1 && !hasRedstoneSignal()) return;
+        if(howMuchICanSkip() >= skippedTicks) {
+            skippedTicks++;
+            return;
+        }
         boolean updated = manualUpdate();
         contentHandler.setAllowedInputItems(getAllowedInputItems());
         processRecipe();
@@ -291,6 +303,8 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
             level.setBlockAndUpdate(worldPosition, getBlockState().setValue(ACTIVE, isActive));
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(ACTIVE, isActive), Block.UPDATE_ALL);
         }
+        skippedTicks = 1;
+
     }
 
     private boolean manualUpdate() {
@@ -320,18 +334,18 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
             return;
         }
 
-        if(energyStorage.getEnergyStored() < energyPerTick()) {
+        if(energyStorage.getEnergyStored() < energyPerTick()*skippedTicks) {
             isActive = false;
             return;
         }
-        recipeInfo.process(speedMultiplier());
+        recipeInfo.process(speedMultiplier()*skippedTicks);
         if(recipeInfo.radiation != 1D) {
-            RadiationManager.get(getLevel()).addRadiation(getLevel(), (recipeInfo.radiation/1000000)*speedMultiplier(), worldPosition.getX(), worldPosition.getY(), worldPosition.getZ());
+            RadiationManager.get(getLevel()).addRadiation(getLevel(), (recipeInfo.radiation/1000000)*speedMultiplier()*skippedTicks, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ());
         }
         isActive = true;
         setChanged();
-        if(!recipeInfo.isCompleted()) {
-            energyStorage.consumeEnergy(energyPerTick());
+        if(!recipeInfo.isCompleted() && hasRecipe()) {
+            energyStorage.consumeEnergy(energyPerTick()*skippedTicks);
         }
     }
 

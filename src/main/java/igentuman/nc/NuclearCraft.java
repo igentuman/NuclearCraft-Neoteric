@@ -74,7 +74,8 @@ public class NuclearCraft {
             }
             openConfig.invoke(ConfigTracker.INSTANCE, ncConfig, FMLPaths.CONFIGDIR.get());
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException | NoSuchFieldException e) {
-            LOGGER.error("Unable to force load NC config");
+            LOGGER.error("Unable to force load NC config. And this is why:");
+            LOGGER.error(e);
         }
     }
 

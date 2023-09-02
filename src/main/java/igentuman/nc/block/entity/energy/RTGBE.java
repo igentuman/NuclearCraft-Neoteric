@@ -30,7 +30,7 @@ public class RTGBE extends NCEnergy {
         radiationTimer--;
         if(radiationTimer <= 0) {
             radiationTimer = 40;
-            RadiationManager.get(getLevel()).addRadiation(getLevel(), RTGs.all().get(getName()).config().getRadiation()*2, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ());
+            RadiationManager.get(getLevel()).addRadiation(getLevel(), (double) RTGs.all().get(getName()).config().getRadiation() /500000000, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ());
         }
     }
 

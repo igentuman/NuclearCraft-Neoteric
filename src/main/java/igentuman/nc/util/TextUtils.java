@@ -19,11 +19,18 @@ public class TextUtils
 
 	public static String numberFormat(double value)
 	{
+		String preffix = "";
+		if(value < 1 && value > 0) {
+			preffix = "0";
+		}
+		if(value > -1 && value < 0) {
+			preffix = "0";
+		}
 		DecimalFormat df = new DecimalFormat("#.0");
 		if (value == (int) value) {
 			return String.valueOf((int)value);
 		}
-		return  df.format(value);
+		return  preffix+df.format(value);
 	}
 
 	public static String scaledFormat(double value)
@@ -57,6 +64,8 @@ public class TextUtils
 		val = val.replace("Rtg", "RTG");
 		val = val.replace("Du", "DU");
 		val = val.replace("Tbu", "TBU");
+		val = val.replace("Bssco", "BSSCO");
+		val = val.replace("Rf", "RF");
 		return val;
 	}
 }

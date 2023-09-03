@@ -1,6 +1,8 @@
 package igentuman.nc.setup.registration;
 
 import igentuman.nc.block.fission.FissionBlock;
+import igentuman.nc.content.Electromagnets;
+import igentuman.nc.content.RFAmplifier;
 import igentuman.nc.content.materials.Materials;
 import igentuman.nc.setup.ModSetup;
 import igentuman.nc.content.materials.Blocks;
@@ -43,10 +45,14 @@ public class NCBlocks {
     public static final BlockBehaviour.Properties ORE_DEEPSLATE_BLOCK_PROPERTIES = BlockBehaviour.Properties.of(Material.STONE).strength(4f).requiresCorrectToolForDrops();
     public static HashMap<String, RegistryObject<Block>> ORE_BLOCKS = new HashMap<>();
     public static HashMap<String, RegistryObject<Block>> NC_BLOCKS = new HashMap<>();
+    public static HashMap<String, RegistryObject<Block>> NC_RF_AMPLIFIERS = new HashMap<>();
+    public static HashMap<String, RegistryObject<Block>> NC_ELECTROMAGNETS = new HashMap<>();
     public static HashMap<String, RegistryObject<Block>> MULTI_BLOCKS = new HashMap<>();
     public static HashMap<String, RegistryObject<Block>> NC_MATERIAL_BLOCKS = new HashMap<>();
     public static HashMap<String, RegistryObject<Item>> ORE_BLOCK_ITEMS = new HashMap<>();
     public static HashMap<String, RegistryObject<Item>> NC_BLOCKS_ITEMS = new HashMap<>();
+    public static HashMap<String, RegistryObject<Item>> NC_ELECTROMAGNETS_ITEMS = new HashMap<>();
+    public static HashMap<String, RegistryObject<Item>> NC_RF_AMPLIFIERS_ITEMS = new HashMap<>();
     public static HashMap<String, RegistryObject<Item>> MULTIBLOCK_ITEMS = new HashMap<>();
     public static final Item.Properties ORE_ITEM_PROPERTIES = new Item.Properties().tab(CreativeTabs.NC_BLOCKS);
     public static final Item.Properties MULTIBLOCK_ITEM_PROPERTIES = new Item.Properties().tab(CreativeTabs.NC_ITEMS);
@@ -56,6 +62,8 @@ public class NCBlocks {
     public static final RegistryObject<Block> MUSHROOM_BLOCK = BLOCKS.register("glowing_mushroom", () -> new GrassBlock(
             BlockBehaviour.Properties.of(Material.PLANT).sound(SoundType.GRASS).noCollission().instabreak().randomTicks().lightLevel($ -> 10)
             ));
+    public static HashMap<String, RegistryObject<BlockEntityType<? extends BlockEntity>>> NC_BE = new HashMap<>();
+
     public static final RegistryObject<Item> MUSHROOM_ITEM = fromBlock(MUSHROOM_BLOCK);
     public static final RegistryObject<Item> PORTAL_ITEM = fromBlock(PORTAL_BLOCK);
 
@@ -71,6 +79,8 @@ public class NCBlocks {
         BLOCK_ENTITIES.register(bus);
         registerOres();
         registerBlocks();
+        registerMagnets();
+        registerAmplifiers();
     }
 
     private static void registerOres() {
@@ -97,6 +107,22 @@ public class NCBlocks {
                 ORE_BLOCK_ITEMS.put(name+"_end", fromBlock(ORE_BLOCKS.get(name+"_end")));
                 ALL_NC_ITEMS.put("ore_"+name+"_end", ORE_BLOCK_ITEMS.get(name+"_end"));
             }
+        }
+    }
+
+    private static void registerMagnets() {
+        for(String name: Electromagnets.registered().keySet()) {
+            NC_ELECTROMAGNETS.put(name, BLOCKS.register(name, () -> new ElectromagnetBlock(NC_BLOCKS_PROPERTIES)));
+            NC_ELECTROMAGNETS_ITEMS.put(name, fromBlock(NC_ELECTROMAGNETS.get(name)));
+            ALL_NC_ITEMS.put(name, NC_ELECTROMAGNETS_ITEMS.get(name));
+        }
+    }
+
+    private static void registerAmplifiers() {
+        for(String name: RFAmplifier.registered().keySet()) {
+            NC_RF_AMPLIFIERS.put(name, BLOCKS.register(name, () -> new RFAmplifierBlock(NC_BLOCKS_PROPERTIES)));
+            NC_RF_AMPLIFIERS_ITEMS.put(name, fromBlock(NC_RF_AMPLIFIERS.get(name)));
+            ALL_NC_ITEMS.put(name, NC_RF_AMPLIFIERS_ITEMS.get(name));
         }
     }
 

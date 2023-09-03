@@ -166,7 +166,15 @@ public class NCBlockStates extends BlockStateProvider {
         for(String name: NCBlocks.NC_BLOCKS.keySet()) {
             simpleBlock(NCBlocks.NC_BLOCKS.get(name).get(), model(NCBlocks.NC_BLOCKS.get(name).get(), "material/block"));
         }
+        for(String name: NCBlocks.NC_ELECTROMAGNETS.keySet()) {
+            simpleBlock(NCBlocks.NC_ELECTROMAGNETS.get(name).get(), model(NCBlocks.NC_ELECTROMAGNETS.get(name).get(), "electromagnet"));
+        }
+
+        for(String name: NCBlocks.NC_RF_AMPLIFIERS.keySet()) {
+            simpleBlock(NCBlocks.NC_RF_AMPLIFIERS.get(name).get(), model(NCBlocks.NC_RF_AMPLIFIERS.get(name).get(), "rf_amplifier"));
+        }
     }
+
 
     private void ores() {
         for(String ore: NCBlocks.ORE_BLOCKS.keySet()) {
@@ -188,6 +196,7 @@ public class NCBlockStates extends BlockStateProvider {
     public ModelFile model(Block block, String subPath) {
         ResourceLocation name = key(block);
         String blockPath = "";
+
         switch (subPath) {
             case "ore":
                 blockPath = "block/ore/";
@@ -197,6 +206,12 @@ public class NCBlockStates extends BlockStateProvider {
                 break;
             case "processor":
                 blockPath = "block/processor/";
+                break;
+            case "electromagnet":
+                blockPath = "block/electromagnet/";
+                break;
+            case "rf_amplifier":
+                blockPath = "block/rf_amplifier/";
                 break;
         }
         return models().cubeAll(

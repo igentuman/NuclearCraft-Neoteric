@@ -290,5 +290,11 @@ public class NCItemModels extends ItemModelProvider {
         for(String name: NCBlocks.NC_BLOCKS_ITEMS.keySet()) {
             withExistingParent(NCBlocks.NC_BLOCKS_ITEMS.get(name).getId().getPath(), modLoc("block/material/"+name+"_block"));
         }
+        for(String name: NCBlocks.NC_ELECTROMAGNETS_ITEMS.keySet()) {
+            withExistingParent(NCBlocks.NC_ELECTROMAGNETS_ITEMS.get(name).getId().getPath(), modLoc("block/electromagnet/"+name));
+        }
+        for(String name: NCBlocks.NC_RF_AMPLIFIERS_ITEMS.keySet()) {
+            withExistingParent(NCBlocks.NC_RF_AMPLIFIERS_ITEMS.get(name).getId().getPath(), modLoc("block/rf_amplifier/"+name));
+        }
     }
 }

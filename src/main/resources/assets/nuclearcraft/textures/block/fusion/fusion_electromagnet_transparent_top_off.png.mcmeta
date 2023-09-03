@@ -1,0 +1,10 @@
+{
+	"ctm": {
+		"ctm_version": 1,
+		"type":"ctm",
+		"layer":"CUTOUT",
+		"textures":[
+			"nuclearcraft:block/fusion/fusion_electromagnet_transparent_top_off_ctm"
+		]
+	}
+}

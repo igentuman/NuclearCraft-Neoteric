@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "nuclearcraft:block/rf_amplifier/niobium_titanium_rf_amplifier"
+    }
+  }
+}

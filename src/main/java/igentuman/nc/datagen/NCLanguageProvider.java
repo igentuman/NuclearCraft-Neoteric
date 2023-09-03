@@ -169,6 +169,16 @@ public class NCLanguageProvider extends LanguageProvider {
     }
 
     private void tooltips() {
+        add("tooltip.nc.rf_amplifier.power","Energy Required: %s FE/t");
+        add("tooltip.nc.rf_amplifier.voltage","Voltage: %s kEV");
+        add("tooltip.nc.rf_amplifier.efficiency","Efficiency: %s%%");
+        add("tooltip.nc.rf_amplifier.heat","Heat: %s H/t");
+        add("tooltip.nc.rf_amplifier.max_temp","Max Temparature: %s kK");
+        add("tooltip.nc.electromagnet.power","Energy Required: %s FE/t");
+        add("tooltip.nc.electromagnet.magnetic_field","Magnetic Field: %s T");
+        add("tooltip.nc.electromagnet.efficiency","Efficiency: %s%%");
+        add("tooltip.nc.electromagnet.heat","Heat: %s H/t");
+        add("tooltip.nc.electromagnet.max_temp","Max Temparature: %s kK");
         add("tooltip.nc.liquid_empty","Stored: 0 of %s");
         add("tooltip.nc.liquid_stored","Stored: %s %s / %s");
         add("tooltip.nc.liquid_capacity","Capacity: %s");
@@ -425,6 +435,12 @@ public class NCLanguageProvider extends LanguageProvider {
     private void blocks() {
         for(String name: NCBlocks.NC_BLOCKS.keySet()) {
             add(NCBlocks.NC_BLOCKS.get(name).get(), convertToName(name)+" Block");
+        }
+        for(String name: NCBlocks.NC_ELECTROMAGNETS.keySet()) {
+            add(NCBlocks.NC_ELECTROMAGNETS.get(name).get(), convertToName(name));
+        }
+        for(String name: NCBlocks.NC_RF_AMPLIFIERS.keySet()) {
+            add(NCBlocks.NC_RF_AMPLIFIERS.get(name).get(), convertToName(name));
         }
     }
 }

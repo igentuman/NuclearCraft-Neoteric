@@ -1,5 +1,7 @@
 package igentuman.nc.handler.config;
 
+import igentuman.nc.content.Electromagnets;
+import igentuman.nc.content.RFAmplifier;
 import igentuman.nc.content.materials.*;
 import igentuman.nc.content.energy.BatteryBlocks;
 import igentuman.nc.content.energy.RTGs;
@@ -30,6 +32,8 @@ public class CommonConfig {
     public static final FissionConfig FISSION_CONFIG = new FissionConfig(BUILDER);
     public static final RadiationConfig RADIATION_CONFIG = new RadiationConfig(BUILDER);
     public static final EnergyGenerationConfig ENERGY_GENERATION = new EnergyGenerationConfig(BUILDER);
+    public static final ElectromagnetsConfig ELECTROMAGNETS_CONFIG = new ElectromagnetsConfig(BUILDER);
+    public static final RFAmplifierConfig RF_AMPLIFIERS_CONFIG = new RFAmplifierConfig(BUILDER);
     public static final EnergyStorageConfig ENERGY_STORAGE = new EnergyStorageConfig(BUILDER);
     public static final StorageBlocksConfig STORAGE_BLOCKS = new StorageBlocksConfig(BUILDER);
     public static final MaterialProductsConfig MATERIAL_PRODUCTS = new MaterialProductsConfig(BUILDER);
@@ -54,6 +58,67 @@ public class CommonConfig {
             action.run();
         else
             loadActions.add(action);
+    }
+
+    public static class RFAmplifierConfig {
+        public ForgeConfigSpec.ConfigValue<List<Boolean>> REGISTERED;
+        public ForgeConfigSpec.ConfigValue<List<Integer>> POWER;
+        public ForgeConfigSpec.ConfigValue<List<Integer>> HEAT;
+        public ForgeConfigSpec.ConfigValue<List<Integer>> VOLTAGE;
+
+        public RFAmplifierConfig(ForgeConfigSpec.Builder builder) {
+            builder.comment("Settings for RF Amplifiers").push("rf_amplifiers");
+
+            REGISTERED = builder
+                    .comment("If RF Amplifier are registered.")
+                    .define("registered", RFAmplifier.initialRegistered(), o -> o instanceof ArrayList);
+
+            POWER = builder
+                    .comment("Power consumption (FE/t): " + String.join(", ", RFAmplifier.all().keySet()))
+                    .define("power", toList(RFAmplifier.initialPower()), o -> o instanceof ArrayList);
+
+            HEAT = builder
+                    .comment("Heat generation: " + String.join(", ", RFAmplifier.all().keySet()))
+                    .define("heat", toList(RFAmplifier.initialHeat()), o -> o instanceof ArrayList);
+
+            VOLTAGE = builder
+                    .comment("Amplification Voltage: " + String.join(", ", RFAmplifier.all().keySet()))
+                    .define("voltage", toList(RFAmplifier.initialVoltage()), o -> o instanceof ArrayList);
+
+            builder.pop();
+        }
+
+    }
+
+
+    public static class ElectromagnetsConfig {
+        public ForgeConfigSpec.ConfigValue<List<Boolean>> REGISTERED;
+        public ForgeConfigSpec.ConfigValue<List<Integer>> POWER;
+        public ForgeConfigSpec.ConfigValue<List<Integer>> HEAT;
+        public ForgeConfigSpec.ConfigValue<List<Double>> MAGNETIC_FIELD;
+
+        public ElectromagnetsConfig(ForgeConfigSpec.Builder builder) {
+            builder.comment("Settings for Electromagnets").push("electromagnets");
+
+            REGISTERED = builder
+                    .comment("If Electromagnets are registered.")
+                    .define("registered", Electromagnets.initialRegistered(), o -> o instanceof ArrayList);
+
+            POWER = builder
+                    .comment("Power consumption (FE/t): " + String.join(", ", Electromagnets.all().keySet()))
+                    .define("power", toList(Electromagnets.initialPower()), o -> o instanceof ArrayList);
+
+            HEAT = builder
+                    .comment("Heat generation: " + String.join(", ", Electromagnets.all().keySet()))
+                    .define("heat", toList(Electromagnets.initialHeat()), o -> o instanceof ArrayList);
+
+            MAGNETIC_FIELD = builder
+                    .comment("Magnetic field strength: " + String.join(", ", Electromagnets.all().keySet()))
+                    .define("heat", toList(Electromagnets.initialMagneticField()), o -> o instanceof ArrayList);
+
+            builder.pop();
+        }
+
     }
 
     public static class FuelConfig {

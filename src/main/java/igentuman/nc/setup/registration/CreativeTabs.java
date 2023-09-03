@@ -16,6 +16,14 @@ public class CreativeTabs {
         }
     };
 
+    public static final CreativeModeTab FUSION_REACTOR = new CreativeModeTab(MODID+"_fusion_reactor") {
+        @Override
+        public ItemStack makeIcon() {
+            return new ItemStack(MULTI_BLOCKS.get("fusion_reactor_core").get());
+        }
+    };
+
+
     public static final CreativeModeTab NC_BLOCKS = new CreativeModeTab(MODID+"_blocks") {
         @Override
         public ItemStack makeIcon() {

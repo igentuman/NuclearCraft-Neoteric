@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "nuclearcraft:block/rf_amplifier/basic_rf_amplifier"
+    }
+  }
+}

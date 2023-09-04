@@ -1,0 +1,54 @@
+{
+  "variants": {
+    "orientation=down_east": {
+      "model": "nuclearcraft:block/electromagnet/niobium_titanium_electromagnet_slope",
+      "x": 180,
+      "y": 90
+    },
+    "orientation=down_north": {
+      "model": "nuclearcraft:block/electromagnet/niobium_titanium_electromagnet_slope",
+      "x": 180
+    },
+    "orientation=down_south": {
+      "model": "nuclearcraft:block/electromagnet/niobium_titanium_electromagnet_slope",
+      "x": 180,
+      "y": 180
+    },
+    "orientation=down_west": {
+      "model": "nuclearcraft:block/electromagnet/niobium_titanium_electromagnet_slope",
+      "x": 180,
+      "y": 270
+    },
+    "orientation=east_up": {
+      "model": "nuclearcraft:block/electromagnet/niobium_titanium_electromagnet_slope",
+      "y": 90
+    },
+    "orientation=north_up": {
+      "model": "nuclearcraft:block/electromagnet/niobium_titanium_electromagnet_slope",
+      "y": 90
+    },
+    "orientation=south_up": {
+      "model": "nuclearcraft:block/electromagnet/niobium_titanium_electromagnet_slope",
+      "y": 90
+    },
+    "orientation=up_east": {
+      "model": "nuclearcraft:block/electromagnet/niobium_titanium_electromagnet_slope",
+      "y": 90
+    },
+    "orientation=up_north": {
+      "model": "nuclearcraft:block/electromagnet/niobium_titanium_electromagnet_slope"
+    },
+    "orientation=up_south": {
+      "model": "nuclearcraft:block/electromagnet/niobium_titanium_electromagnet_slope",
+      "y": 180
+    },
+    "orientation=up_west": {
+      "model": "nuclearcraft:block/electromagnet/niobium_titanium_electromagnet_slope",
+      "y": 270
+    },
+    "orientation=west_up": {
+      "model": "nuclearcraft:block/electromagnet/niobium_titanium_electromagnet_slope",
+      "y": 90
+    }
+  }
+}

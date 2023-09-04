@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smelting",
+  "cookingtime": 200,
+  "experience": 1.0,
+  "ingredient": {
+    "tag": "forge:dusts/titanium"
+  },
+  "result": "nuclearcraft:titanium_ingot"
+}

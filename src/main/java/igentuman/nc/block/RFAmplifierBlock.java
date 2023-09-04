@@ -31,7 +31,7 @@ public class RFAmplifierBlock extends Block {
                 Component.translatable("tooltip.nc.rf_amplifier.power", TextUtils.numberFormat(prefab().getPower())),
                 ChatFormatting.DARK_AQUA));
         list.add(TextUtils.applyFormat(
-                Component.translatable("tooltip.nc.rf_amplifier.voltage", TextUtils.numberFormat(prefab().getVoltage())),
+                Component.translatable("tooltip.nc.rf_amplifier.voltage", TextUtils.numberFormat((double) prefab().getVoltage() /1000)),
                 ChatFormatting.DARK_BLUE));
         list.add(TextUtils.applyFormat(
                 Component.translatable("tooltip.nc.rf_amplifier.efficiency", TextUtils.numberFormat(prefab().getEfficiency())),

@@ -134,6 +134,29 @@ public class Materials extends MaterialsManager {
     public static HashMap<String, Double> isotopes = new HashMap<>();
     public final static String potassium_iodide = "potassium_iodide";
     public final static String iodine = "iodine";
+    public final static String calcium = "calcium";
+    public final static String chromium = "chromium";
+    public final static String erbium = "erbium";
+    public final static String germanium = "germanium";
+    public final static String hafnium = "hafnium";
+    public final static String niobium = "niobium";
+    public final static String osmium = "osmium";
+    public final static String samarium = "samarium";
+    public final static String terbium = "terbium";
+    public final static String ytterbium = "ytterbium";
+    public final static String yttrium = "yttrium";
+    public final static String potassium = "potassium";
+    public final static String sodium = "sodium";
+    public final static String strontium = "strontium";
+    public final static String titanium = "titanium";
+    public final static String tungsten = "tungsten";
+    public final static String osmiridium = "osmiridium";
+    public final static String nichrome = "nichrome";
+    public final static String niobium_tin = "niobium_tin";
+    public final static String niobium_titanium = "niobium_titanium";
+    public final static String stainless_steel = "stainless_steel";
+    public final static String super_alloy = "super_alloy";
+    public final static String tungsten_carbide = "tungsten_carbide";
 
     public static HashMap<String, NCMaterial> all()
     {
@@ -159,6 +182,30 @@ public class Materials extends MaterialsManager {
 
             //ingots, nuggets, dusts...
             all.put(netherite, NCMaterial.get(netherite).define("dust", "plate"));
+            all.put(calcium, NCMaterial.get(calcium).define("dust", "ingot"));
+            all.put(chromium, NCMaterial.get(chromium).define("dust", "ingot"));
+            all.put(erbium, NCMaterial.get(erbium).define("dust"));
+            all.put(hafnium, NCMaterial.get(hafnium).define("dust", "ingot"));
+            all.put(niobium, NCMaterial.get(niobium).define("dust", "ingot"));
+            all.put(osmium, NCMaterial.get(osmium).define("dust", "ingot"));
+            all.put(potassium, NCMaterial.get(potassium).define("dust", "ingot"));
+            all.put(sodium, NCMaterial.get(sodium).define("dust", "ingot"));
+            all.put(strontium, NCMaterial.get(strontium).define("dust", "ingot"));
+            all.put(titanium, NCMaterial.get(titanium).define("dust", "ingot"));
+            all.put(tungsten, NCMaterial.get(tungsten).define("dust", "ingot"));
+            all.put(yttrium, NCMaterial.get(yttrium).define("dust", "ingot"));
+            all.put(ytterbium, NCMaterial.get(ytterbium).define("dust"));
+            all.put(germanium, NCMaterial.get(germanium).define("dust"));
+            all.put(terbium, NCMaterial.get(terbium).define("dust"));
+            all.put(samarium, NCMaterial.get(samarium).define("dust"));
+            all.put(osmiridium, NCMaterial.get(osmiridium).define("ingot"));
+            all.put(nichrome, NCMaterial.get(nichrome).define("ingot"));
+            all.put(niobium_tin, NCMaterial.get(niobium_tin).define("ingot"));
+            all.put(niobium_titanium, NCMaterial.get(niobium_titanium).define("ingot"));
+            all.put(stainless_steel, NCMaterial.get(stainless_steel).define("ingot"));
+            all.put(super_alloy, NCMaterial.get(super_alloy).define("ingot"));
+            all.put(tungsten_carbide, NCMaterial.get(tungsten_carbide).define("ingot"));
+
             all.put(supercold_ice, NCMaterial.get(supercold_ice).define("block"));
             all.put(tough_alloy, NCMaterial.get(tough_alloy).define("ingot", "plate", "dust", "fluid").color(0xFF181322));
             all.put(palladium, NCMaterial.get(palladium).define("ingot", "plate", "dust", "fluid").color(0xFF181322));

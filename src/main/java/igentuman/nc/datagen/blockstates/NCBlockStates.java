@@ -7,6 +7,8 @@ import igentuman.nc.setup.registration.NCEnergyBlocks;
 import igentuman.nc.setup.registration.NCProcessors;
 import igentuman.nc.content.storage.BarrelBlocks;
 import igentuman.nc.content.storage.ContainerBlocks;
+import net.minecraft.core.Direction;
+import net.minecraft.core.FrontAndTop;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
@@ -19,6 +21,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import java.util.function.Function;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.client.block.BatteryBlockLoader.BATTERY_LOADER;
 import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCK;
 
@@ -146,6 +149,15 @@ public class NCBlockStates extends BlockStateProvider {
         return result;
     }
 
+    public void directionalBlock(Block block, Function<BlockState, ModelFile> modelFunc) {
+        getVariantBuilder(block)
+                .forAllStates(state -> ConfiguredModel.builder()
+                        .modelFile(modelFunc.apply(state))
+                        .rotationX(((int) state.getValue(BlockStateProperties.VERTICAL_DIRECTION).toYRot() + 180) % 360)
+                        .rotationY(((int) state.getValue(BlockStateProperties.HORIZONTAL_FACING).toYRot() + 180) % 360)
+                        .build()
+                );
+    }
 
     public void horizontalBlock(Block block, Function<BlockState, ModelFile> modelFunc) {
         getVariantBuilder(block)
@@ -167,7 +179,11 @@ public class NCBlockStates extends BlockStateProvider {
             simpleBlock(NCBlocks.NC_BLOCKS.get(name).get(), model(NCBlocks.NC_BLOCKS.get(name).get(), "material/block"));
         }
         for(String name: NCBlocks.NC_ELECTROMAGNETS.keySet()) {
-            simpleBlock(NCBlocks.NC_ELECTROMAGNETS.get(name).get(), model(NCBlocks.NC_ELECTROMAGNETS.get(name).get(), "electromagnet"));
+            if(name.contains("slope")) {
+                orientationalBlock(NCBlocks.NC_ELECTROMAGNETS.get(name).get(), $ -> models().getExistingFile(rl("block/electromagnet/"+name)));
+            } else {
+                simpleBlock(NCBlocks.NC_ELECTROMAGNETS.get(name).get(), model(NCBlocks.NC_ELECTROMAGNETS.get(name).get(), "electromagnet"));
+            }
         }
 
         for(String name: NCBlocks.NC_RF_AMPLIFIERS.keySet()) {
@@ -175,6 +191,17 @@ public class NCBlockStates extends BlockStateProvider {
         }
     }
 
+    public void orientationalBlock(Block block, Function<BlockState, ModelFile> modelFunc) {
+        getVariantBuilder(block)
+                .forAllStates(state -> {
+                    FrontAndTop dir = state.getValue(BlockStateProperties.ORIENTATION);
+                    return ConfiguredModel.builder()
+                            .modelFile(modelFunc.apply(state))
+                            .rotationX(dir.front() == Direction.DOWN ? 180 : 0)
+                            .rotationY((((int) dir.top().toYRot()) + 180) % 360)
+                            .build();
+                });
+    }
 
     private void ores() {
         for(String ore: NCBlocks.ORE_BLOCKS.keySet()) {

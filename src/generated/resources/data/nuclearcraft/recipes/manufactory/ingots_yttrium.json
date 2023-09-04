@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:manufactory",
+  "input": [
+    {
+      "tag": "forge:ingots/yttrium"
+    }
+  ],
+  "output": [
+    {
+      "item": "nuclearcraft:yttrium_dust"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

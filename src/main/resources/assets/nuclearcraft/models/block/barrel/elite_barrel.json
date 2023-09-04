@@ -1,6 +1,6 @@
 {
 	"credit": "Made with Blockbench",
-	"parent": "cube/all",
+	"parent": "block/cube_all",
 	"texture_size": [128, 128],
 	"textures": {
 		"0": "nuclearcraft:block/barrel/elite_barrel",

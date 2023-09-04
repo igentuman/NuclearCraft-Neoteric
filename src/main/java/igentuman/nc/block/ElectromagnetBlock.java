@@ -1,25 +1,41 @@
 package igentuman.nc.block;
 
 import igentuman.nc.content.Electromagnets;
-import igentuman.nc.content.RFAmplifier;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.Direction;
+import net.minecraft.core.FrontAndTop;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.material.Material;
 
 import java.util.List;
 
 public class ElectromagnetBlock extends Block {
+
     public ElectromagnetBlock(Properties pProperties) {
-        super(pProperties);
+        super(pProperties
+                .sound(SoundType.METAL)
+                .strength(2.0f)
+                .requiresCorrectToolForDrops());
     }
+
+
 
     public String name()
     {
-        return asItem().toString();
+        return asItem().toString().replace("_slope", "");
     }
 
     public Electromagnets.MagnetPrefab prefab()

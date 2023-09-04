@@ -4,7 +4,6 @@ import igentuman.nc.block.fission.FissionBlock;
 import igentuman.nc.content.Electromagnets;
 import igentuman.nc.content.RFAmplifier;
 import igentuman.nc.content.materials.Materials;
-import igentuman.nc.setup.ModSetup;
 import igentuman.nc.content.materials.Blocks;
 import igentuman.nc.content.materials.Ores;
 import net.minecraft.Util;
@@ -113,8 +112,11 @@ public class NCBlocks {
     private static void registerMagnets() {
         for(String name: Electromagnets.registered().keySet()) {
             NC_ELECTROMAGNETS.put(name, BLOCKS.register(name, () -> new ElectromagnetBlock(NC_BLOCKS_PROPERTIES)));
+            NC_ELECTROMAGNETS.put(name+"_slope", BLOCKS.register(name+"_slope", () -> new ElectromagnetSlopeBlock(NC_BLOCKS_PROPERTIES)));
             NC_ELECTROMAGNETS_ITEMS.put(name, fromBlock(NC_ELECTROMAGNETS.get(name)));
+            NC_ELECTROMAGNETS_ITEMS.put(name+"_slope", fromBlock(NC_ELECTROMAGNETS.get(name+"_slope")));
             ALL_NC_ITEMS.put(name, NC_ELECTROMAGNETS_ITEMS.get(name));
+            ALL_NC_ITEMS.put(name+"_slope", NC_ELECTROMAGNETS_ITEMS.get(name+"_slope"));
         }
     }
 

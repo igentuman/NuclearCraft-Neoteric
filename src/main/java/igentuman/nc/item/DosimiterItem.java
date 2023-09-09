@@ -22,13 +22,9 @@ public class DosimiterItem extends Item
 {
 	public DosimiterItem(Properties props)
 	{
-		this(props, CreativeTabs.NC_ITEMS);
+		super(props);
 	}
 
-	public DosimiterItem(Properties props, CreativeModeTab group)
-	{
-		super( new Item.Properties().tab(group).stacksTo(1));
-	}
 
 	@NotNull
 	@Override

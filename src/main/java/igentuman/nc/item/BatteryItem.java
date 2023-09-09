@@ -26,20 +26,12 @@ import static igentuman.nc.handler.config.CommonConfig.ENERGY_STORAGE;
 
 public class BatteryItem extends Item
 {
-	public BatteryItem()
-	{
-		this(new Properties());
-	}
 
 	public BatteryItem(Properties props)
 	{
-		this(props, CreativeTabs.NC_ITEMS);
+		super(props);
 	}
 
-	public BatteryItem(Properties props, CreativeModeTab group)
-	{
-		super(new Item.Properties().tab(group).stacksTo(1));
-	}
 
 
 	@Override

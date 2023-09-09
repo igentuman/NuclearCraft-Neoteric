@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "render_type": "minecraft:translucent",
+  "textures": {
+    "all": "nuclearcraft:block/fusion/fusion_reactor_casing_glass"
+  }
+}

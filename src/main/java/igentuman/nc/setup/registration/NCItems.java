@@ -10,6 +10,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.PickaxeItem;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -43,41 +44,41 @@ public class NCItems {
     public static TagKey<Item> PLATE_TAG = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("forge", "plates"));
     public static TagKey<Item> PARTS_TAG = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(MODID, "parts"));
     public static final Item.Properties ITEM_PROPERTIES = new Item.Properties().tab(CreativeTabs.NC_ITEMS);
-
+    public static final Item.Properties ONE_ITEM_PROPERTIES = new Item.Properties().tab(CreativeTabs.NC_ITEMS).stacksTo(1);
 
     public static final RegistryObject<Item> HAZMAT_MASK =
-            ITEMS.register("hazmat_mask", () -> new ArmorItem(ArmorMaterials.HAZMAT, EquipmentSlot.HEAD, ITEM_PROPERTIES));
+            ITEMS.register("hazmat_mask", () -> new ArmorItem(ArmorMaterials.HAZMAT, EquipmentSlot.HEAD, ONE_ITEM_PROPERTIES));
     public static final RegistryObject<Item> HAZMAT_CHEST =
-            ITEMS.register("hazmat_chest", () -> new ArmorItem(ArmorMaterials.HAZMAT, EquipmentSlot.CHEST, ITEM_PROPERTIES));
+            ITEMS.register("hazmat_chest", () -> new ArmorItem(ArmorMaterials.HAZMAT, EquipmentSlot.CHEST, ONE_ITEM_PROPERTIES));
     public static final RegistryObject<Item> HAZMAT_BOOTS =
-            ITEMS.register("hazmat_boots", () -> new ArmorItem(ArmorMaterials.HAZMAT, EquipmentSlot.FEET, ITEM_PROPERTIES));
+            ITEMS.register("hazmat_boots", () -> new ArmorItem(ArmorMaterials.HAZMAT, EquipmentSlot.FEET, ONE_ITEM_PROPERTIES));
     public static final RegistryObject<Item> HAZMAT_PANTS =
-            ITEMS.register("hazmat_pants", () -> new ArmorItem(ArmorMaterials.HAZMAT, EquipmentSlot.LEGS, ITEM_PROPERTIES));
+            ITEMS.register("hazmat_pants", () -> new ArmorItem(ArmorMaterials.HAZMAT, EquipmentSlot.LEGS, ONE_ITEM_PROPERTIES));
 
 
     public static final RegistryObject<Item> HEV_HELMET =
-            ITEMS.register("hev_helmet", () -> new ArmorItem(ArmorMaterials.HEV, EquipmentSlot.HEAD, ITEM_PROPERTIES));
+            ITEMS.register("hev_helmet", () -> new ArmorItem(ArmorMaterials.HEV, EquipmentSlot.HEAD, ONE_ITEM_PROPERTIES));
     public static final RegistryObject<Item> HEV_CHEST =
-            ITEMS.register("hev_chest", () -> new ArmorItem(ArmorMaterials.HEV, EquipmentSlot.CHEST, ITEM_PROPERTIES));
+            ITEMS.register("hev_chest", () -> new ArmorItem(ArmorMaterials.HEV, EquipmentSlot.CHEST, ONE_ITEM_PROPERTIES));
     public static final RegistryObject<Item> HEV_BOOTS =
-            ITEMS.register("hev_boots", () -> new ArmorItem(ArmorMaterials.HEV, EquipmentSlot.FEET, ITEM_PROPERTIES));
+            ITEMS.register("hev_boots", () -> new ArmorItem(ArmorMaterials.HEV, EquipmentSlot.FEET, ONE_ITEM_PROPERTIES));
     public static final RegistryObject<Item> HEV_PANTS =
-            ITEMS.register("hev_pants", () -> new ArmorItem(ArmorMaterials.HEV, EquipmentSlot.LEGS, ITEM_PROPERTIES));
+            ITEMS.register("hev_pants", () -> new ArmorItem(ArmorMaterials.HEV, EquipmentSlot.LEGS, ONE_ITEM_PROPERTIES));
 
     public static final RegistryObject<Item> TOUGH_HELMET =
-            ITEMS.register("tough_helmet", () -> new ArmorItem(ArmorMaterials.TOUGH, EquipmentSlot.HEAD, ITEM_PROPERTIES));
+            ITEMS.register("tough_helmet", () -> new ArmorItem(ArmorMaterials.TOUGH, EquipmentSlot.HEAD, ONE_ITEM_PROPERTIES));
     public static final RegistryObject<Item> TOUGH_CHEST =
-            ITEMS.register("tough_chest", () -> new ArmorItem(ArmorMaterials.TOUGH, EquipmentSlot.CHEST, ITEM_PROPERTIES));
+            ITEMS.register("tough_chest", () -> new ArmorItem(ArmorMaterials.TOUGH, EquipmentSlot.CHEST, ONE_ITEM_PROPERTIES));
     public static final RegistryObject<Item> TOUGH_BOOTS =
-            ITEMS.register("tough_boots", () -> new ArmorItem(ArmorMaterials.TOUGH, EquipmentSlot.FEET, ITEM_PROPERTIES));
+            ITEMS.register("tough_boots", () -> new ArmorItem(ArmorMaterials.TOUGH, EquipmentSlot.FEET, ONE_ITEM_PROPERTIES));
     public static final RegistryObject<Item> TOUGH_PANTS =
-            ITEMS.register("tough_pants", () -> new ArmorItem(ArmorMaterials.TOUGH, EquipmentSlot.LEGS, ITEM_PROPERTIES));
+            ITEMS.register("tough_pants", () -> new ArmorItem(ArmorMaterials.TOUGH, EquipmentSlot.LEGS, ONE_ITEM_PROPERTIES));
 
-    public static final RegistryObject<Item> GEIGER_COUNTER = ITEMS.register("geiger_counter", () -> new GeigerCounterItem(ITEM_PROPERTIES));
-    public static final RegistryObject<Item> LITHIUM_ION_CELL = ITEMS.register("lithium_ion_cell", () -> new BatteryItem(ITEM_PROPERTIES));
-    public static final RegistryObject<Item> SPAXELHOE_TOUGH = ITEMS.register("spaxelhoe_tough", () -> new PickaxeItem(Tiers.TOUGH, 7, 2F, ITEM_PROPERTIES));
-    public static final RegistryObject<Item> QNP = ITEMS.register("qnp", () -> new QNP(Tiers.QNP, 11, 2F, ITEM_PROPERTIES));
-    public static final RegistryObject<Item> MULTITOOL = ITEMS.register("multitool", () -> new Item(ITEM_PROPERTIES));
+    public static final RegistryObject<Item> GEIGER_COUNTER = ITEMS.register("geiger_counter", () -> new GeigerCounterItem(ONE_ITEM_PROPERTIES));
+    public static final RegistryObject<Item> LITHIUM_ION_CELL = ITEMS.register("lithium_ion_cell", () -> new BatteryItem(ONE_ITEM_PROPERTIES));
+    public static final RegistryObject<Item> SPAXELHOE_TOUGH = ITEMS.register("spaxelhoe_tough", () -> new PickaxeItem(Tiers.TOUGH, 7, 2F, ONE_ITEM_PROPERTIES));
+    public static final RegistryObject<Item> QNP = ITEMS.register("qnp", () -> new QNP(Tiers.QNP, 11, 2F, ONE_ITEM_PROPERTIES));
+    public static final RegistryObject<Item> MULTITOOL = ITEMS.register("multitool", () -> new Item(ONE_ITEM_PROPERTIES));
     public static HashMap<String, TagKey<Item>> INGOTS_TAG = new HashMap<>();
     public static HashMap<String, TagKey<Item>> CHUNKS_TAG = new HashMap<>();
     public static HashMap<String, TagKey<Item>> GEMS_TAG = new HashMap<>();
@@ -134,7 +135,7 @@ public class NCItems {
         );
         int i = 1;
         for(String name: items) {
-            NC_FOOD.put(name, ITEMS.register(name, () -> new Item(ITEM_PROPERTIES.food(
+            NC_FOOD.put(name, ITEMS.register(name, () -> new Item(new Item.Properties().tab(CreativeModeTab.TAB_FOOD).food(
                     new FoodProperties.Builder().nutrition(i)
                             .saturationMod(i).build()
             ))));
@@ -169,7 +170,7 @@ public class NCItems {
         );
         for(String name: items) {
             if(name.equals("dosimeter")) {
-                NC_ITEMS.put(name, ITEMS.register(name, () -> new DosimiterItem(ITEM_PROPERTIES)));
+                NC_ITEMS.put(name, ITEMS.register(name, () -> new DosimiterItem(ONE_ITEM_PROPERTIES)));
             } else {
                 NC_ITEMS.put(name, ITEMS.register(name, () -> new Item(ITEM_PROPERTIES)));
             }
@@ -217,7 +218,7 @@ public class NCItems {
         );
         for(String name: parts) {
             if(name.equals("research_paper")) {
-                NC_PARTS.put(name, ITEMS.register(name, () -> new ResearchPaperItem(ITEM_PROPERTIES)));
+                NC_PARTS.put(name, ITEMS.register(name, () -> new ResearchPaperItem(ONE_ITEM_PROPERTIES)));
             } else {
                 NC_PARTS.put(name, ITEMS.register(name, () -> new Item(ITEM_PROPERTIES)));
             }

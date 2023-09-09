@@ -6,6 +6,7 @@ import net.minecraft.world.item.ItemStack;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.multiblock.fission.FissionReactor.MULTI_BLOCKS;
+import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_BLOCKS;
 import static igentuman.nc.setup.registration.NCItems.ALL_NC_ITEMS;
 
 public class CreativeTabs {
@@ -19,7 +20,7 @@ public class CreativeTabs {
     public static final CreativeModeTab FUSION_REACTOR = new CreativeModeTab(MODID+"_fusion_reactor") {
         @Override
         public ItemStack makeIcon() {
-            return new ItemStack(MULTI_BLOCKS.get("fusion_reactor_core").get());
+            return new ItemStack(FUSION_BLOCKS.get("fusion_core").get());
         }
     };
 

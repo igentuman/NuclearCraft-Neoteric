@@ -40,11 +40,16 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+
+import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_BE;
 
 public class FusionCoreBlock extends Block implements EntityBlock {
     public static final BooleanProperty ACTIVE = BlockStateProperties.POWERED;
@@ -73,15 +78,15 @@ public class FusionCoreBlock extends Block implements EntityBlock {
                 .add(BlockStateProperties.POWERED);
     }
 
+    public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
+        return Shapes.create(-1.00, 0.00, -1.00, 2.00, 3.00, 2.00);
+
+    }
+
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
-        return NCProcessors.PROCESSORS_BE.get(processorCode()).get().create(pPos, pState);
-    }
-
-    public String processorCode()
-    {
-        return asItem().toString();
+        return FUSION_BE.get("fusion_core").get().create(pPos, pState);
     }
 
     @Override
@@ -99,15 +104,15 @@ public class FusionCoreBlock extends Block implements EntityBlock {
                 MenuProvider containerProvider = new MenuProvider() {
                     @Override
                     public Component getDisplayName() {
-                        return Component.translatable(processorCode());
+                        return Component.translatable("fusion_core");
                     }
 
                     @Override
                     public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity) {
                         try {
                             return (AbstractContainerMenu) Processors.all()
-                                    .get(processorCode()).getContainerConstructor()
-                                    .newInstance(windowId, pos, playerInventory, playerEntity, processorCode());
+                                    .get("fusion_core").getContainerConstructor()
+                                    .newInstance(windowId, pos, playerInventory, playerEntity, "fusion_core");
                         } catch (InstantiationException | IllegalAccessException | InvocationTargetException ignored) { }
                         return null;
                     }

@@ -2,6 +2,7 @@ package igentuman.nc.setup;
 
 import com.mojang.serialization.Codec;
 import igentuman.nc.effect.RadiationResistance;
+import igentuman.nc.multiblock.fusion.FusionReactor;
 import igentuman.nc.recipes.NcRecipeType;
 import igentuman.nc.multiblock.fission.FissionReactor;
 import igentuman.nc.recipes.NcRecipeSerializers;
@@ -87,6 +88,7 @@ public class Registration {
         NCEnergyBlocks.init();
         NCProcessors.init();
         FissionReactor.init();
+        FusionReactor.init();
         initOreGeneration();
 
         NcRecipeSerializers.RECIPE_SERIALIZERS.register(bus);

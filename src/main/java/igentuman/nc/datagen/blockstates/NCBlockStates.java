@@ -23,6 +23,7 @@ import java.util.function.Function;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.client.block.BatteryBlockLoader.BATTERY_LOADER;
+import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_BLOCKS;
 import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCK;
 
 public class NCBlockStates extends BlockStateProvider {
@@ -44,6 +45,7 @@ public class NCBlockStates extends BlockStateProvider {
         heatSinks();
         fissionReactor();
         storageBlocks();
+        fusionReactor();
     }
 
     private void storageBlocks() {
@@ -78,6 +80,15 @@ public class NCBlockStates extends BlockStateProvider {
             }
         }
     }
+
+
+    private void fusionReactor() {
+        simpleBlock(FUSION_BLOCKS.get("fusion_core").get(), models().getExistingFile(rl("block/dummy")));
+        simpleBlock(FUSION_BLOCKS.get("fusion_reactor_casing").get(), model(FUSION_BLOCKS.get("fusion_reactor_casing").get(),"fusion"));
+        simpleBlock(FUSION_BLOCKS.get("fusion_reactor_casing_glass").get(), model(FUSION_BLOCKS.get("fusion_reactor_casing_glass").get(),"fusion"));
+        simpleBlock(FUSION_BLOCKS.get("fusion_reactor_connector").get(), model(FUSION_BLOCKS.get("fusion_reactor_connector").get(),"fusion"));
+    }
+
 
     private void rtgs() {
         for(String name: NCEnergyBlocks.ENERGY_BLOCKS.keySet()) {
@@ -234,6 +245,9 @@ public class NCBlockStates extends BlockStateProvider {
             case "processor":
                 blockPath = "block/processor/";
                 break;
+            case "fusion":
+                blockPath = "block/fusion/";
+                break;
             case "electromagnet":
                 blockPath = "block/electromagnet/";
                 break;
@@ -241,9 +255,13 @@ public class NCBlockStates extends BlockStateProvider {
                 blockPath = "block/rf_amplifier/";
                 break;
         }
-        return models().cubeAll(
+        BlockModelBuilder model = models().cubeAll(
                 blockPath+key(block).getPath(),
                         new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/" + name.getPath()));
+        if(name.getPath().matches(".*glass|.*cell.*")) {
+            model.renderType(new ResourceLocation("translucent"));
+        }
+        return model;
     }
 
     public ModelFile multiBlockModel(Block block, String subPath) {

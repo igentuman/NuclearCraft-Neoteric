@@ -4,6 +4,7 @@ import igentuman.nc.block.entity.fission.FissionBE;
 import igentuman.nc.multiblock.fission.FissionReactor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Registry;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -26,21 +27,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class FissionBlock extends Block implements EntityBlock {
 
-    public FissionBlock() {
-        this(Properties.of(Material.METAL)
-                .sound(SoundType.METAL)
-                .strength(2.0f)
-                .requiresCorrectToolForDrops());
-    }
     public FissionBlock(Properties pProperties) {
         super(pProperties.sound(SoundType.METAL));
-    }
-
-    public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
-        if(asItem().toString().matches(".*glass|.*cell.*")) {
-            return Shapes.create(0.01, 0.01, 0.01, 0.99, 0.99, 0.99);
-        }
-        return Shapes.block();
     }
 
     @Override
@@ -61,16 +49,17 @@ public class FissionBlock extends Block implements EntityBlock {
 
     private String blockEntityCode()
     {
-        if(asItem().toString().matches(".*reactor_glass|.*reactor_casing.*")) {
+        String code = Registry.BLOCK.getKey(this).getPath();
+        if(code.matches(".*reactor_glass|.*reactor_casing.*")) {
             return "fission_casing";
         }
-        if(asItem().toString().matches("graphite.*|beryllium.*")) {
+        if(code.matches("graphite.*|beryllium.*")) {
             return "fission_moderator";
         }
-        if(asItem().toString().contains("fuel_cell")) {
+        if(code.contains("fuel_cell")) {
             return "fission_reactor_fuel_cell";
         }
-        return asItem().toString();
+        return code;
     }
 
     @Nullable

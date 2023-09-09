@@ -60,5 +60,4 @@ public class ElectromagnetBlock extends Block {
                 Component.translatable("tooltip.nc.electromagnet.max_temp", TextUtils.numberFormat((double) prefab().getMaxTemp() /1000)),
                 ChatFormatting.RED));
     }
-
 }

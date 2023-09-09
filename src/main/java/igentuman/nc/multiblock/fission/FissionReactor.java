@@ -13,6 +13,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.Material;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -30,6 +32,7 @@ import static igentuman.nc.setup.Registration.BLOCKS;
 import static igentuman.nc.setup.Registration.ITEMS;
 import static igentuman.nc.multiblock.fission.FissionBlocks.REACTOR_BLOCKS_PROPERTIES;
 import static igentuman.nc.setup.registration.NCItems.ALL_NC_ITEMS;
+import static net.minecraft.world.level.block.Blocks.GLASS;
 
 public class FissionReactor {
     public static final Item.Properties MULTIBLOCK_ITEM_PROPERTIES = new Item.Properties().tab(CreativeTabs.FISSION_REACTOR);
@@ -87,7 +90,13 @@ public class FissionReactor {
                                 .of(FissionIrradiationChamberBE::new, MULTI_BLOCKS.get(key).get())
                                 .build(null)));
             } else {
-                MULTI_BLOCKS.put(key, BLOCKS.register(key, () -> new FissionBlock(REACTOR_BLOCKS_PROPERTIES)));
+                BlockBehaviour.Properties props;
+                if(key.matches(".*glass|.*cell.*")) {
+                    props = BlockBehaviour.Properties.of(Material.GLASS).strength(1f).requiresCorrectToolForDrops().noOcclusion();
+                } else {
+                    props = REACTOR_BLOCKS_PROPERTIES;
+                }
+                MULTI_BLOCKS.put(key, BLOCKS.register(key, () -> new FissionBlock(props)));
             }
             MULTIBLOCK_ITEMS.put(key, fromMultiblock(MULTI_BLOCKS.get(key)));
             ALL_NC_ITEMS.put(key, MULTIBLOCK_ITEMS.get(key));

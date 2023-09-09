@@ -40,6 +40,7 @@ public class NCBlocks {
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
     public static final BlockBehaviour.Properties ORE_BLOCK_PROPERTIES = BlockBehaviour.Properties.of(Material.STONE).strength(2f).requiresCorrectToolForDrops();
+    public static final Item.Properties BLOCK_ITEM_PROPERTIES = new Item.Properties().tab(CreativeTabs.NC_BLOCKS);
     public static final BlockBehaviour.Properties NC_BLOCKS_PROPERTIES = BlockBehaviour.Properties.of(Material.METAL).strength(2f).requiresCorrectToolForDrops();
     public static final BlockBehaviour.Properties ORE_DEEPSLATE_BLOCK_PROPERTIES = BlockBehaviour.Properties.of(Material.STONE).strength(4f).requiresCorrectToolForDrops();
     public static HashMap<String, RegistryObject<Block>> ORE_BLOCKS = new HashMap<>();
@@ -88,22 +89,22 @@ public class NCBlocks {
             ORE_ITEM_TAGS.put(name, TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("forge", "ores/"+name)));
             if(Materials.ores().get(name).normal_ore) {
                 ORE_BLOCKS.put(name, BLOCKS.register(name + "_ore", () -> new Block(ORE_BLOCK_PROPERTIES)));
-                ORE_BLOCK_ITEMS.put(name, fromBlock(ORE_BLOCKS.get(name)));
+                ORE_BLOCK_ITEMS.put(name, fromOreBlock(ORE_BLOCKS.get(name)));
                 ALL_NC_ITEMS.put("ore_"+name, ORE_BLOCK_ITEMS.get(name));
             }
             if(Materials.ores().get(name).deepslate_ore) {
                 ORE_BLOCKS.put(name+"_deepslate", BLOCKS.register(name + "_deepslate_ore", () -> new Block(ORE_DEEPSLATE_BLOCK_PROPERTIES)));
-                ORE_BLOCK_ITEMS.put(name+"_deepslate", fromBlock(ORE_BLOCKS.get(name+"_deepslate")));
+                ORE_BLOCK_ITEMS.put(name+"_deepslate", fromOreBlock(ORE_BLOCKS.get(name+"_deepslate")));
                 ALL_NC_ITEMS.put("ore_"+name+"_deepslate", ORE_BLOCK_ITEMS.get(name+"_deepslate"));
             }
             if(Materials.ores().get(name).nether_ore) {
                 ORE_BLOCKS.put(name+"_nether", BLOCKS.register(name + "_nether_ore", () -> new Block(ORE_BLOCK_PROPERTIES)));
-                ORE_BLOCK_ITEMS.put(name+"_nether", fromBlock(ORE_BLOCKS.get(name+"_nether")));
+                ORE_BLOCK_ITEMS.put(name+"_nether", fromOreBlock(ORE_BLOCKS.get(name+"_nether")));
                 ALL_NC_ITEMS.put("ore_"+name+"_nether", ORE_BLOCK_ITEMS.get(name+"_nether"));
             }
             if(Materials.ores().get(name).end_ore) {
                 ORE_BLOCKS.put(name+"_end", BLOCKS.register(name + "_end_ore", () -> new Block(ORE_BLOCK_PROPERTIES)));
-                ORE_BLOCK_ITEMS.put(name+"_end", fromBlock(ORE_BLOCKS.get(name+"_end")));
+                ORE_BLOCK_ITEMS.put(name+"_end", fromOreBlock(ORE_BLOCKS.get(name+"_end")));
                 ALL_NC_ITEMS.put("ore_"+name+"_end", ORE_BLOCK_ITEMS.get(name+"_end"));
             }
         }
@@ -144,8 +145,12 @@ public class NCBlocks {
         ALL_NC_ITEMS.put("glowing_mushroom", NC_BLOCKS_ITEMS.get("glowing_mushroom"));
     }
 
-    public static <B extends Block> RegistryObject<Item> fromBlock(RegistryObject<B> block) {
+    public static <B extends Block> RegistryObject<Item> fromOreBlock(RegistryObject<B> block) {
         return ITEMS.register(block.getId().getPath(), () -> new BlockItem(block.get(), ORE_ITEM_PROPERTIES));
+    }
+
+    public static <B extends Block> RegistryObject<Item> fromBlock(RegistryObject<B> block) {
+        return ITEMS.register(block.getId().getPath(), () -> new BlockItem(block.get(), BLOCK_ITEM_PROPERTIES));
     }
 
     public static <B extends Block> RegistryObject<Item> fromMultiblock(RegistryObject<B> block) {

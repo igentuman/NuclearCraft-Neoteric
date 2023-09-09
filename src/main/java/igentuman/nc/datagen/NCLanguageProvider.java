@@ -1,6 +1,7 @@
 package igentuman.nc.datagen;
 
 import igentuman.nc.multiblock.fission.FissionReactor;
+import igentuman.nc.multiblock.fusion.FusionReactor;
 import igentuman.nc.setup.registration.*;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.LanguageProvider;
@@ -69,6 +70,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("nc.label.leacher_no_source", "No Data Source");
         add("nc.label.leacher_no_acid", "No Acid");
         add("block.nuclearcraft.glowing_mushroom", "Glowing Mushroom");
+        add("fusion_core", "Fusion Reactor Core");
 
         add("reactor.size", "Reactor size: %sx%sx%s");
         add("fission.casing.wrong.block", "Wrong block at: %s");
@@ -111,6 +113,10 @@ public class NCLanguageProvider extends LanguageProvider {
         for(String name: FissionReactor.MULTI_BLOCKS.keySet()) {
             String title = convertToName(name);
             add(FissionReactor.MULTI_BLOCKS.get(name).get(), title);
+        }
+        for(String name: FusionReactor.FUSION_BLOCKS.keySet()) {
+            String title = convertToName(name);
+            add(FusionReactor.FUSION_BLOCKS.get(name).get(), title);
         }
     }
 

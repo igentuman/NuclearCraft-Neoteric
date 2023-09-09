@@ -46,7 +46,7 @@ public class ResetNbtRecipe extends CustomRecipe {
                 continue;
             }
         }
-        return true;
+        return targetStack != ItemStack.EMPTY;
     }
 
     @Override

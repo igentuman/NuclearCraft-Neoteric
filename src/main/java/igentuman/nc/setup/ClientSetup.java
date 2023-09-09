@@ -1,6 +1,7 @@
 package igentuman.nc.setup;
 
 import igentuman.nc.client.block.BatteryBlockLoader;
+import igentuman.nc.client.block.fusion.FusionCoreRenderer;
 import igentuman.nc.client.gui.StorageContainerScreen;
 import igentuman.nc.client.gui.fission.FissionPortScreen;
 import igentuman.nc.client.particle.RadiationParticle;
@@ -17,6 +18,7 @@ import igentuman.nc.setup.registration.NcParticleTypes;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.renderer.item.ItemPropertyFunction;
 import net.minecraft.resources.ResourceLocation;
@@ -37,6 +39,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
+import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_BE;
 import static igentuman.nc.setup.registration.NCItems.GEIGER_COUNTER;
 import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_CONTAINER;
 
@@ -45,6 +48,7 @@ public class ClientSetup {
 
     public static void init(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
+            BlockEntityRenderers.register(FUSION_BE.get("fusion_core").get(), FusionCoreRenderer::new);
             MenuScreens.register(STORAGE_CONTAINER.get(), StorageContainerScreen::new);
             MenuScreens.register(FissionReactor.FISSION_CONTROLLER_CONTAINER.get(), FissionControllerScreen::new);
             MenuScreens.register(FissionReactor.FISSION_PORT_CONTAINER.get(), FissionPortScreen::new);

@@ -15,6 +15,7 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_BLOCKS;
 import static igentuman.nc.setup.registration.NCItems.*;
 
 public class NCItemModels extends ItemModelProvider {
@@ -65,6 +66,10 @@ public class NCItemModels extends ItemModelProvider {
         }
         for(String name: FissionReactor.MULTI_BLOCKS.keySet()) {
             withExistingParent(FissionReactor.MULTIBLOCK_ITEMS.get(name).getId().getPath(), modLoc("block/multiblock/"+name));
+        }
+        for(String name: FUSION_BLOCKS.keySet()) {
+            if(name.contains("core")) continue;
+            withExistingParent(FUSION_BLOCKS.get(name).getId().getPath(), modLoc("block/fusion/"+name));
         }
     }
 

@@ -355,8 +355,14 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
         wasUpdated = true;
     }
 
+    public int getSpeedUpgrades()
+    {
+        if(!prefab().supportSpeedUpgrade) return 1;
+        return upgradesHandler.getStackInSlot(1).getCount();
+    }
+
     public int energyMultiplier() {
-        energyMultiplier = (int) Math.max(speedMultiplier()-1, Math.pow(speedMultiplier()-1, 2)+speedMultiplier()-Math.pow(upgradesHandler.getStackInSlot(1).getCount(),2));
+        energyMultiplier = (int) Math.max(speedMultiplier()-1, Math.pow(speedMultiplier()-1, 2)+speedMultiplier()-Math.pow(getSpeedUpgrades(),2));
         return energyMultiplier;
     }
 

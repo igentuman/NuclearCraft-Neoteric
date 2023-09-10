@@ -1,5 +1,6 @@
 package igentuman.nc.mixin;
 
+import igentuman.nc.NuclearCraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagLoader;
 import net.minecraft.world.level.block.Blocks;
@@ -33,6 +34,8 @@ public class TagLoaderMixin {
         for(TagLoader.EntryWithSource entry : map.get(type)) {
             if(!ForgeRegistries.BLOCKS.getValue(entry.entry().getId()).equals(Blocks.AIR)) {
                 list.add(entry);
+            } else {
+                NuclearCraft.LOGGER.error("Tag {} contains missing block {}", type, entry.entry().getId());
             }
         }
         map.replace(type, list);

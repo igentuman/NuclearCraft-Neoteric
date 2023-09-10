@@ -118,6 +118,7 @@ public class NCLanguageProvider extends LanguageProvider {
             String title = convertToName(name);
             add(FusionReactor.FUSION_BLOCKS.get(name).get(), title);
         }
+        add(FusionReactor.FUSION_CORE_PROXY.get(), "Fusion Reactor Core");
     }
 
     private void storageBlocks() {

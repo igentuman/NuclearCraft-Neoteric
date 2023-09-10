@@ -14,6 +14,8 @@ import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_BLOCKS;
+import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_CORE_PROXY;
 import static igentuman.nc.util.TextUtils.numberFormat;
 
 public class FusionCoreContainer extends AbstractContainerMenu {
@@ -43,7 +45,11 @@ public class FusionCoreContainer extends AbstractContainerMenu {
         return stillValid(
                 ContainerLevelAccess.create(blockEntity.getLevel(), blockEntity.getBlockPos()),
                 playerEntity,
-                FusionReactor.FUSION_BLOCKS.get(name).get()
+                FUSION_BLOCKS.get(name).get()
+        ) || stillValid(
+                ContainerLevelAccess.create(blockEntity.getLevel(), blockEntity.getBlockPos()),
+                playerEntity,
+                FUSION_CORE_PROXY.get()
         );
     }
 
@@ -90,7 +96,7 @@ public class FusionCoreContainer extends AbstractContainerMenu {
 
     protected void layoutPlayerInventorySlots() {
         int leftCol = 8;
-        int topRow = 153;
+        int topRow = 163;
         addSlotRange(playerInventory, leftCol, topRow, 9, 18);
         topRow -= 58;
         addSlotBox(playerInventory, leftCol, topRow, 9, 18, 3, 18);

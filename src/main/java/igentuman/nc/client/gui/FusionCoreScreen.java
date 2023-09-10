@@ -3,10 +3,8 @@ package igentuman.nc.client.gui;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import igentuman.nc.client.gui.element.NCGuiElement;
-import igentuman.nc.client.gui.element.bar.ProgressBar;
 import igentuman.nc.client.gui.element.bar.VerticalBar;
 import igentuman.nc.client.gui.element.button.Checkbox;
-import igentuman.nc.container.FissionControllerContainer;
 import igentuman.nc.container.FusionCoreContainer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -22,7 +20,7 @@ import java.util.Optional;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.util.TextUtils.applyFormat;
 
-public class FusionCoreScreen extends AbstractContainerScreen<FusionCoreContainer> implements IProgressScreen, IVerticalBarScreen {
+public class FusionCoreScreen extends AbstractContainerScreen<FusionCoreContainer> implements IVerticalBarScreen {
     protected final ResourceLocation GUI = new ResourceLocation(MODID, "textures/gui/fusion_core.png");
     protected int relX;
     protected int relY;
@@ -68,7 +66,6 @@ public class FusionCoreScreen extends AbstractContainerScreen<FusionCoreContaine
         coolantBar = new VerticalBar.Coolant(17, 16,  this, 1000000);
         hotCoolantBar = new VerticalBar.HotCoolant(26, 16,  this, 1000000);
         widgets.add(heatBar);
-        widgets.add(new ProgressBar(74, 35, this,  7));
     }
 
     private boolean isCasingValid() {
@@ -153,11 +150,6 @@ public class FusionCoreScreen extends AbstractContainerScreen<FusionCoreContaine
                         Optional.empty(), pMouseX, pMouseY);
             }
         }
-    }
-
-    @Override
-    public double getProgress() {
-        return container().getProgress();
     }
 
     @Override

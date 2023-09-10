@@ -1,6 +1,7 @@
 package igentuman.nc.block.fusion;
 
 import igentuman.nc.block.entity.fusion.FusionCoreBE;
+import igentuman.nc.block.entity.fusion.FusionCoreProxyBE;
 import igentuman.nc.block.entity.processor.NCProcessorBE;
 import igentuman.nc.container.FissionControllerContainer;
 import igentuman.nc.container.FusionCoreContainer;
@@ -52,8 +53,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_BE;
+import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_CORE_PROXY;
 
-public class FusionCoreBlock extends Block implements EntityBlock {
+public class FusionCoreBlock extends FusionBlock {
     public static final BooleanProperty ACTIVE = BlockStateProperties.POWERED;
 
     public FusionCoreBlock(Properties pProperties) {
@@ -88,7 +90,47 @@ public class FusionCoreBlock extends Block implements EntityBlock {
 
     @Override
     public void onPlace(BlockState pState, Level pLevel, BlockPos pPos, BlockState pOldState, boolean pIsMoving) {
+        super.onPlace(pState, pLevel, pPos, pOldState, pIsMoving);
+        //placeProxyBlocks(pState, pLevel, pPos);
+    }
 
+    @Override
+    public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
+        super.onRemove(pState, pLevel, pPos, pNewState, pIsMoving);
+        if(pState.getBlock() != pNewState.getBlock()) {
+            removeProxyBlocks(pState, pLevel, pPos);
+        }
+    }
+
+    public void removeProxyBlocks(BlockState pState, Level pLevel, BlockPos pPos) {
+        for(int x = -1; x < 2; x++) {
+            for (int z = -1; z < 2; z++) {
+                for(int y = 0; y < 3; y++) {
+                    BlockPos pos = pPos.offset(x, y, z);
+                    if(pPos.equals(pos)) continue;
+                    pLevel.removeBlock(pos, false);
+                }
+            }
+        }
+    }
+
+    public void placeProxyBlocks(BlockState pState, Level pLevel, BlockPos pPos, FusionCoreBE core) {
+        for(int x = -1; x < 2; x++) {
+            for (int z = -1; z < 2; z++) {
+                for(int y = 0; y < 3; y++) {
+                    BlockPos pos = pPos.offset(x, y, z);
+                    if(pPos.equals(pos)) continue;
+                    pLevel.setBlock(pos, FUSION_CORE_PROXY.get().defaultBlockState(), 3);
+                    FusionCoreProxyBE be = (FusionCoreProxyBE) pLevel.getBlockEntity(pos);
+                    be.setCore(core);
+                }
+            }
+        }
+    }
+
+    public void placeProxyBlocks(BlockState pState, Level pLevel, BlockPos pPos) {
+        FusionCoreBE core = (FusionCoreBE) pLevel.getBlockEntity(pPos);
+        placeProxyBlocks(pState, pLevel, pPos, core);
     }
 
     @Override

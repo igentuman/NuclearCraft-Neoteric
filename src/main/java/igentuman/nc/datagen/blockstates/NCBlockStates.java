@@ -24,6 +24,7 @@ import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.client.block.BatteryBlockLoader.BATTERY_LOADER;
 import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_BLOCKS;
+import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_CORE_PROXY;
 import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCK;
 
 public class NCBlockStates extends BlockStateProvider {
@@ -84,6 +85,7 @@ public class NCBlockStates extends BlockStateProvider {
 
     private void fusionReactor() {
         simpleBlock(FUSION_BLOCKS.get("fusion_core").get(), models().getExistingFile(rl("block/dummy")));
+        simpleBlock(FUSION_CORE_PROXY.get(), models().getExistingFile(rl("block/fusion/core_proxy")));
         simpleBlock(FUSION_BLOCKS.get("fusion_reactor_casing").get(), model(FUSION_BLOCKS.get("fusion_reactor_casing").get(),"fusion"));
         simpleBlock(FUSION_BLOCKS.get("fusion_reactor_casing_glass").get(), model(FUSION_BLOCKS.get("fusion_reactor_casing_glass").get(),"fusion"));
         simpleBlock(FUSION_BLOCKS.get("fusion_reactor_connector").get(), model(FUSION_BLOCKS.get("fusion_reactor_connector").get(),"fusion"));

@@ -1,6 +1,7 @@
 package igentuman.nc.block.entity.fusion;
 
 import igentuman.nc.block.entity.fission.FissionControllerBE;
+import igentuman.nc.block.fusion.FusionCoreBlock;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.item.ItemFuel;
 import igentuman.nc.multiblock.ValidationResult;
@@ -64,6 +65,8 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
     public RECIPE recipe;
     public HashMap<String, RECIPE> cachedRecipes = new HashMap<>();
 
+    protected boolean initialized = false;
+
     private CustomEnergyStorage createEnergy() {
         return new CustomEnergyStorage(100000000, 0, 100000000) {
             @Override
@@ -80,11 +83,22 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
                 2, 2);
         contentHandler.setBlockEntity(this);
     }
+
+    @Override
+    public void onLoad() {
+        initialized = false;
+    }
+
     public double getMaxHeat() {
         return 10000000;
     }
     @Override
     public void tickServer() {
+        if(!initialized) {
+            initialized = true;
+            FusionCoreBlock block = (FusionCoreBlock) getBlockState().getBlock();
+            block.placeProxyBlocks(getBlockState(), level, worldPosition, this);
+        }
         super.tickServer();
     }
 

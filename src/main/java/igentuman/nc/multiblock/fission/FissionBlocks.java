@@ -13,7 +13,7 @@ import java.util.*;
 import static igentuman.nc.NuclearCraft.MODID;
 
 public class FissionBlocks {
-    public static final BlockBehaviour.Properties REACTOR_BLOCKS_PROPERTIES = BlockBehaviour.Properties.of(Material.METAL).strength(2f).requiresCorrectToolForDrops();
+    public static final BlockBehaviour.Properties REACTOR_BLOCKS_PROPERTIES = BlockBehaviour.Properties.of(Material.METAL).strength(4f).requiresCorrectToolForDrops();
     public static TagKey<Block> MODERATORS_BLOCKS = TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(MODID, "moderators"));
     public static TagKey<Block> HEAT_SINK_BLOCKS = TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(MODID, "heat_sinks"));
     public static TagKey<Block> INNER_REACTOR_BLOCKS = TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(MODID, "reactor_inner"));

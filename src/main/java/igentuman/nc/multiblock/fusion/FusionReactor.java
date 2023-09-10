@@ -2,6 +2,7 @@ package igentuman.nc.multiblock.fusion;
 
 import igentuman.nc.block.fusion.FusionBlock;
 import igentuman.nc.block.fusion.FusionCoreBlock;
+import igentuman.nc.block.fusion.FusionCoreProxy;
 import igentuman.nc.container.FissionControllerContainer;
 import igentuman.nc.container.FusionCoreContainer;
 import igentuman.nc.item.FusionCoreItem;
@@ -36,6 +37,15 @@ public class FusionReactor {
     public static HashMap<String, RegistryObject<Block>> FUSION_BLOCKS = new HashMap<>();
     public static HashMap<String, RegistryObject<BlockEntityType<? extends BlockEntity>>> FUSION_BE = new HashMap<>();
     public static HashMap<String, RegistryObject<Item>> FUSION_ITEMS = new HashMap<>();
+    public static final RegistryObject<Block> FUSION_CORE_PROXY =
+            BLOCKS.register("fusion_reactor_core_proxy",
+                    () -> new FusionCoreProxy(REACTOR_BLOCKS_PROPERTIES));
+    public static final RegistryObject<BlockEntityType<? extends BlockEntity>> FUSION_CORE_PROXY_BE =
+            BLOCK_ENTITIES.register("fusion_reactor_core_proxy",
+                    () -> BlockEntityType.Builder
+                            .of(FusionCoreProxyBE::new, FUSION_CORE_PROXY.get())
+                            .build(null));
+
 
 
     public static final RegistryObject<MenuType<FusionCoreContainer>> FUSION_CORE_CONTAINER =

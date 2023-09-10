@@ -2,6 +2,8 @@ package igentuman.nc.block.entity.fusion;
 
 import igentuman.nc.block.entity.fission.FissionControllerBE;
 import igentuman.nc.block.fusion.FusionCoreBlock;
+import igentuman.nc.compat.cc.NCFusionReactorPeripheral;
+import igentuman.nc.compat.cc.NCSolidFissionReactorPeripheral;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.item.ItemFuel;
 import igentuman.nc.multiblock.ValidationResult;
@@ -15,19 +17,25 @@ import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.util.CustomEnergyStorage;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.List;
 
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
+import static igentuman.nc.util.ModUtil.isCcLoaded;
 
 public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE {
 
@@ -84,6 +92,36 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         contentHandler.setBlockEntity(this);
     }
 
+    private LazyOptional<NCFusionReactorPeripheral> peripheralCap;
+
+    public <T> LazyOptional<T>  getPeripheral(@Nonnull Capability<T> cap, @Nullable Direction side) {
+        if(peripheralCap == null) {
+            peripheralCap = LazyOptional.of(() -> new NCFusionReactorPeripheral(this));
+        }
+        return peripheralCap.cast();
+    }
+    public LazyOptional<IEnergyStorage> getEnergy() {
+        return energy;
+    }
+
+    @Nonnull
+    @Override
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
+        if (cap == ForgeCapabilities.ITEM_HANDLER) {
+            return LazyOptional.empty();
+        }
+        if (cap == ForgeCapabilities.FLUID_HANDLER) {
+            return contentHandler.getFluidCapability(side);
+        }
+        if (cap == ForgeCapabilities.ENERGY) {
+            return energy.cast();
+        }
+        if(isCcLoaded()) {
+            return getPeripheral(cap, side);
+        }
+        return super.getCapability(cap, side);
+    }
+
     @Override
     public void onLoad() {
         initialized = false;
@@ -113,6 +151,15 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
 
     public double getRecipeProgress() {
         return 0;
+    }
+
+    public void disableForceShutdown() {
+    }
+
+    public void forceShutdown() {
+    }
+
+    public void voidFuel() {
     }
 
     public static class Recipe extends NcRecipe {

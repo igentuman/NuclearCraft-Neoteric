@@ -1,21 +1,26 @@
 package igentuman.nc.block.entity.fusion;
 
-import igentuman.nc.util.annotation.NBTField;
+import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.item.Item;
+import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_CORE_PROXY_BE;
+import static igentuman.nc.util.ModUtil.isCcLoaded;
 
 public class FusionCoreProxyBE extends FusionBE {
-    @NBTField
-    BlockPos corePos;
 
-    protected FusionCoreBE core;
+
+
     public FusionCoreProxyBE(BlockPos pPos, BlockState pBlockState) {
         super(FUSION_CORE_PROXY_BE.get(), pPos, pBlockState);
     }
@@ -65,5 +70,29 @@ public class FusionCoreProxyBE extends FusionBE {
 
     public BlockPos getCorePos() {
         return corePos;
+    }
+
+    protected FluidCapabilityHandler fluidHandler()
+    {
+        return controller().contentHandler.fluidCapability;
+    }
+
+    @Nonnull
+    @Override
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
+        if(controller() == null) return super.getCapability(cap, side);
+        if (cap == ForgeCapabilities.ITEM_HANDLER) {
+            return LazyOptional.empty();
+        }
+        if (cap == ForgeCapabilities.FLUID_HANDLER) {
+            return LazyOptional.of(() -> fluidHandler()).cast();
+        }
+        if (cap == ForgeCapabilities.ENERGY) {
+            return controller().getEnergy().cast();
+        }
+        if(isCcLoaded()) {
+            return controller().getPeripheral(cap, side);
+        }
+        return super.getCapability(cap, side);
     }
 }

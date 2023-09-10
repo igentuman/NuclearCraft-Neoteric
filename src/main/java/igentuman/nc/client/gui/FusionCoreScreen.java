@@ -32,19 +32,18 @@ public class FusionCoreScreen extends AbstractContainerScreen<FusionCoreContaine
     }
 
     public List<NCGuiElement> widgets = new ArrayList<>();
-    public Checkbox checkboxCasing;
+    public Checkbox checkboxIsFormed;
     private VerticalBar energyBar;
     private VerticalBar heatBar;
     private VerticalBar coolantBar;
     private VerticalBar hotCoolantBar;
 
     public Component casingTootip = Component.empty();
-    public Component interiorTootip = Component.empty();
 
     public FusionCoreScreen(FusionCoreContainer container, Inventory inv, Component name) {
         super(container, inv, name);
-        imageWidth = 176;
-        imageHeight = 176;
+        imageWidth = 195;
+        imageHeight = 186;
     }
 
     protected void updateRelativeCords()
@@ -60,7 +59,7 @@ public class FusionCoreScreen extends AbstractContainerScreen<FusionCoreContaine
         Minecraft mc = Minecraft.getInstance();
         updateRelativeCords();
         widgets.clear();
-        checkboxCasing = new Checkbox(imageWidth-19, 80, this,  isCasingValid());
+        checkboxIsFormed = new Checkbox(imageWidth-19, 80, this,  isCasingValid());
         energyBar = new VerticalBar.Energy(17, 16,  this, container().getMaxEnergy());
         heatBar = new VerticalBar.Heat(8, 16,this,  (int) container().getMaxHeat());
         coolantBar = new VerticalBar.Coolant(17, 16,  this, 1000000);
@@ -84,13 +83,13 @@ public class FusionCoreScreen extends AbstractContainerScreen<FusionCoreContaine
         for(NCGuiElement widget: widgets) {
             widget.draw(matrix, mouseX, mouseY, partialTicks);
         }
-        checkboxCasing.setChecked(isCasingValid()).draw(matrix, mouseX, mouseY, partialTicks);
+        checkboxIsFormed.setChecked(isCasingValid()).draw(matrix, mouseX, mouseY, partialTicks);
         if(isCasingValid()) {
-            checkboxCasing.setTooltipKey("reactor.casing.complete");
+            checkboxIsFormed.setTooltipKey("reactor.casing.complete");
         } else {
-            checkboxCasing.setTooltipKey("reactor.casing.incomplete");
+            checkboxIsFormed.setTooltipKey("reactor.casing.incomplete");
         }
-        checkboxCasing.addTooltip(casingTootip);
+        checkboxIsFormed.addTooltip(casingTootip);
         energyBar.draw(matrix, mouseX, mouseY, partialTicks);
     }
 
@@ -137,8 +136,8 @@ public class FusionCoreScreen extends AbstractContainerScreen<FusionCoreContaine
                        Optional.empty(), pMouseX, pMouseY);
            }
         }
-        if(checkboxCasing.isMouseOver(pMouseX, pMouseY)) {
-            renderTooltip(pPoseStack, checkboxCasing.getTooltips(),
+        if(checkboxIsFormed.isMouseOver(pMouseX, pMouseY)) {
+            renderTooltip(pPoseStack, checkboxIsFormed.getTooltips(),
                     Optional.empty(), pMouseX, pMouseY);
         }
 

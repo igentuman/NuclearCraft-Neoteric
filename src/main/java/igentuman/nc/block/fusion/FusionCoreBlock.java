@@ -2,6 +2,8 @@ package igentuman.nc.block.fusion;
 
 import igentuman.nc.block.entity.fusion.FusionCoreBE;
 import igentuman.nc.block.entity.processor.NCProcessorBE;
+import igentuman.nc.container.FissionControllerContainer;
+import igentuman.nc.container.FusionCoreContainer;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.setup.registration.NCProcessors;
 import igentuman.nc.util.TextUtils;
@@ -53,13 +55,7 @@ import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_BE;
 
 public class FusionCoreBlock extends Block implements EntityBlock {
     public static final BooleanProperty ACTIVE = BlockStateProperties.POWERED;
-    public FusionCoreBlock() {
-        this(Properties.of(Material.METAL)
-                .sound(SoundType.METAL)
-                .strength(2.0f)
-                .noOcclusion()
-                .requiresCorrectToolForDrops());
-    }
+
     public FusionCoreBlock(Properties pProperties) {
         super(pProperties.sound(SoundType.METAL));
         this.registerDefaultState(
@@ -78,15 +74,21 @@ public class FusionCoreBlock extends Block implements EntityBlock {
                 .add(BlockStateProperties.POWERED);
     }
 
+    @Override
     public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
         return Shapes.create(-1.00, 0.00, -1.00, 2.00, 3.00, 2.00);
-
     }
+
 
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
         return FUSION_BE.get("fusion_core").get().create(pPos, pState);
+    }
+
+    @Override
+    public void onPlace(BlockState pState, Level pLevel, BlockPos pPos, BlockState pOldState, boolean pIsMoving) {
+
     }
 
     @Override
@@ -109,12 +111,7 @@ public class FusionCoreBlock extends Block implements EntityBlock {
 
                     @Override
                     public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity) {
-                        try {
-                            return (AbstractContainerMenu) Processors.all()
-                                    .get("fusion_core").getContainerConstructor()
-                                    .newInstance(windowId, pos, playerInventory, playerEntity, "fusion_core");
-                        } catch (InstantiationException | IllegalAccessException | InvocationTargetException ignored) { }
-                        return null;
+                        return new FusionCoreContainer(windowId, pos, playerInventory);
                     }
                 };
                 NetworkHooks.openScreen((ServerPlayer) player, containerProvider, be.getBlockPos());

@@ -4,6 +4,7 @@ import igentuman.nc.block.fusion.FusionBlock;
 import igentuman.nc.block.fusion.FusionCoreBlock;
 import igentuman.nc.container.FissionControllerContainer;
 import igentuman.nc.container.FusionCoreContainer;
+import igentuman.nc.item.FusionCoreItem;
 import igentuman.nc.setup.registration.CreativeTabs;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
@@ -81,7 +82,9 @@ public class FusionReactor {
                 () -> BlockEntityType.Builder
                         .of(FusionCoreBE::new, FUSION_BLOCKS.get("fusion_core").get())
                         .build(null)));
-        FUSION_ITEMS.put(key, fromMultiblock(FUSION_BLOCKS.get(key)));
+        FUSION_ITEMS.put(key,
+                ITEMS.register(FUSION_BLOCKS.get(key).getId().getPath(),
+                        () -> new FusionCoreItem(FUSION_BLOCKS.get("fusion_core").get(), FUSION_ITEM_PROPERTIES)));
         ALL_NC_ITEMS.put(key, FUSION_ITEMS.get(key));
     }
 

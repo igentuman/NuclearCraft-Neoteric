@@ -5,6 +5,7 @@ import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.item.ItemFuel;
 import igentuman.nc.multiblock.ValidationResult;
 import igentuman.nc.multiblock.fission.FissionReactor;
+import igentuman.nc.multiblock.fusion.FusionReactor;
 import igentuman.nc.radiation.ItemRadiation;
 import igentuman.nc.recipes.RecipeInfo;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
@@ -33,8 +34,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
     public double heat = 0;
     @NBTField
     public boolean isCasingValid = false;
-    @NBTField
-    public boolean isInternalValid = false;
+
     @NBTField
     public int size = 1;
     @NBTField
@@ -97,6 +97,10 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         return recipeInfo.recipe() != null;
     }
 
+    public double getRecipeProgress() {
+        return 0;
+    }
+
     public static class Recipe extends NcRecipe {
 
         public Recipe(ResourceLocation id, ItemStackIngredient[] input, ItemStack[] output, FluidStackIngredient[] inputFluids, FluidStack[] outputFluids, double timeModifier, double powerModifier, double heatModifier, double rarity) {
@@ -116,16 +120,12 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
 
         @Override
         public @NotNull String getGroup() {
-            return FissionReactor.MULTI_BLOCKS.get(ID).get().getName().getString();
+            return FusionReactor.FUSION_BLOCKS.get(ID).get().getName().getString();
         }
 
         @Override
         public @NotNull ItemStack getToastSymbol() {
-            return new ItemStack(FissionReactor.MULTI_BLOCKS.get(ID).get());
-        }
-
-        public int getDepletionTime() {
-            return (int) (getFuelItem().depletion*20*timeModifier);
+            return new ItemStack(FusionReactor.FUSION_BLOCKS.get(ID).get());
         }
 
         public double getEnergy() {

@@ -39,15 +39,8 @@ import static igentuman.nc.handler.config.CommonConfig.ENERGY_STORAGE;
 import static igentuman.nc.setup.registration.NCItems.MULTITOOL;
 
 public class BatteryBlock extends Block implements EntityBlock {
-    public BatteryBlock() {
-        this(Properties.of(Material.METAL)
-                .sound(SoundType.METAL)
-                .strength(2.0f)
-                .noOcclusion()
-                .requiresCorrectToolForDrops());
-    }
     public BatteryBlock(Properties pProperties) {
-        super(pProperties.sound(SoundType.METAL));
+        super(pProperties);
     }
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {

@@ -25,10 +25,7 @@ import java.util.List;
 public class ElectromagnetBlock extends Block {
 
     public ElectromagnetBlock(Properties pProperties) {
-        super(pProperties
-                .sound(SoundType.METAL)
-                .strength(2.0f)
-                .requiresCorrectToolForDrops());
+        super(pProperties);
     }
 
 

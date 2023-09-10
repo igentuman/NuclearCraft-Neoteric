@@ -39,16 +39,9 @@ import static igentuman.nc.setup.registration.NCItems.MULTITOOL;
 
 @NothingNullByDefault
 public class ContainerBlock extends Block implements EntityBlock {
-    public ContainerBlock() {
-        this(Properties.of(Material.METAL)
-                .sound(SoundType.METAL)
-                .strength(8.0f)
-                .noOcclusion()
-                .explosionResistance(100.0f)
-                .requiresCorrectToolForDrops());
-    }
+
     public ContainerBlock(Properties pProperties) {
-        super(pProperties.sound(SoundType.METAL).noOcclusion());
+        super(pProperties);
     }
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {

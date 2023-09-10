@@ -165,17 +165,6 @@ public class NCBlocks {
         private final RegistryObject<T> regObject;
         private final Supplier<BlockBehaviour.Properties> properties;
 
-        public static BlockEntry<NCBaseBlock> simple(String name, Supplier<BlockBehaviour.Properties> properties, Consumer<NCBaseBlock> extra)
-        {
-            return new BlockEntry<>(name, properties, p -> Util.make(new NCBaseBlock(p), extra));
-        }
-
-        public static BlockEntry<NCBaseBlock> simple(String name, Supplier<BlockBehaviour.Properties> properties)
-        {
-            return simple(name, properties, $ -> {
-            });
-        }
-
         public static BlockEntry<FenceBlock> fence(String name, Supplier<BlockBehaviour.Properties> props)
         {
             return new BlockEntry<>(name, props, FenceBlock::new);

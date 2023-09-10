@@ -45,15 +45,9 @@ import static igentuman.nc.setup.registration.NCItems.MULTITOOL;
 import static net.minecraft.world.item.Items.BUCKET;
 
 public class BarrelBlock extends Block implements EntityBlock {
-    public BarrelBlock() {
-        this(Properties.of(Material.METAL)
-                .sound(SoundType.METAL)
-                .strength(2.0f)
-                .noOcclusion()
-                .requiresCorrectToolForDrops());
-    }
+
     public BarrelBlock(Properties pProperties) {
-        super(pProperties.sound(SoundType.METAL).noOcclusion());
+        super(pProperties);
     }
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {

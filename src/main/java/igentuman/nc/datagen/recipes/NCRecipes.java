@@ -47,8 +47,8 @@ public class NCRecipes extends RecipeProvider {
         turbineBlocks(consumer);
         FuelRecipes.generate(consumer);
         CustomRecipes.generate(consumer);
-//        SpecialRecipeBuilder.build(consumer, NcRecipeSerializers.SHIELDING);
-  //      SpecialRecipeBuilder.build(consumer, NcRecipeSerializers.RESET_NBT);
+        SpecialRecipeBuilder.build(consumer, NcRecipeSerializers.SHIELDING);
+        SpecialRecipeBuilder.build(consumer, NcRecipeSerializers.RESET_NBT);
     }
 
     private void storageBlocks(Consumer<FinishedRecipe> consumer) {

@@ -27,7 +27,7 @@ import static net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.EXE
 
 public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
     private final ResourceLocation id;
-    public static String ID;
+    public final String codeId;
 
     protected double timeModifier = 1;
     protected double powerModifier = 1;
@@ -50,10 +50,12 @@ public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
     protected List<FluidStack> resolvedOutputFluids;
 
     /**
-     * @param id Recipe name.
+     * @param id     Recipe name.
+     * @param codeId
      */
-    protected AbstractRecipe(ResourceLocation id) {
+    protected AbstractRecipe(ResourceLocation id, String codeId) {
         this.id = Objects.requireNonNull(id, "Recipe name cannot be null.");
+        this.codeId = codeId;
     }
 
     public NonNullList<Ingredient> getItemIngredients() {
@@ -69,22 +71,22 @@ public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
 
     @Override
     public @NotNull RecipeSerializer<?> getSerializer() {
-        return NcRecipeSerializers.SERIALIZERS.get(ID).get();
+        return NcRecipeSerializers.SERIALIZERS.get(codeId).get();
     }
 
     @Override
     public @NotNull String getGroup() {
-        return NCProcessors.PROCESSORS.get(ID).get().getName().getString();
+        return NCProcessors.PROCESSORS.get(codeId).get().getName().getString();
     }
 
     @Override
     public @NotNull ItemStack getToastSymbol() {
-        return new ItemStack(NCProcessors.PROCESSORS.get(ID).get());
+        return new ItemStack(NCProcessors.PROCESSORS.get(codeId).get());
     }
 
     @Override
     public @NotNull RecipeType<? extends AbstractRecipe> getType() {
-        return NcRecipeType.ALL_RECIPES.get(ID).get();
+        return NcRecipeType.ALL_RECIPES.get(codeId).get();
     }
 
     public abstract void write(FriendlyByteBuf buffer);

@@ -32,9 +32,6 @@ public class FluidInfuserBE extends NCProcessorBE<FluidInfuserBE.Recipe> {
                       FluidStackIngredient[] inputFluids, FluidStack[] outputFluids,
                       double timeModifier, double powerModifier, double heatModifier, double rarity) {
             super(id, input, output, inputFluids, outputFluids, timeModifier, powerModifier, heatModifier, 1);
-            ID = Processors.FLUID_INFUSER;
-            RECIPE_CLASSES.put(ID, this.getClass());
-            CATALYSTS.put(ID, List.of(getToastSymbol()));
         }
     }
 }

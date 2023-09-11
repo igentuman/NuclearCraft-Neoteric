@@ -4,7 +4,11 @@ import igentuman.nc.client.gui.processor.LeacherScreen;
 import igentuman.nc.block.entity.processor.*;
 import igentuman.nc.container.LeacherContainer;
 import igentuman.nc.container.NCProcessorContainer;
+import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.extensions.IForgeMenuType;
+import net.minecraftforge.fml.DistExecutor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,6 +47,11 @@ public class Processors {
     public static String SUPERCOOLER = "supercooler";
     public static String QUANTUM_TRANSFORMER = "quantum_transformer";
 
+    @OnlyIn(Dist.CLIENT)
+    public static void setScreen(String name, MenuScreens.ScreenConstructor constructor) {
+        all.get(name).setScreenConstructor(constructor);
+    }
+
     public static HashMap<String, ProcessorPrefab> all() {
         if(all.isEmpty()) {
             all.put(GAS_SCRUBBER,
@@ -64,12 +73,13 @@ public class Processors {
                             .make(LEACHER, 1, 1, 1, 0)
                             .blockEntity(LeacherBE::new)
                             .recipe(LeacherBE.Recipe::new)
-                            .screen(LeacherScreen::new)
                             .container(LeacherContainer.class)
                             .setHiddenSlots(1)
                             .withCatalyst()
                             .build()
             );
+            DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> ()-> Processors.setScreen(LEACHER, LeacherScreen::new));
+
             all.put(PUMP,
                     ProcessorBuilder
                             .make(PUMP, 0, 1, 1, 0)

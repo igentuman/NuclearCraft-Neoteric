@@ -586,8 +586,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
 
         public Recipe(ResourceLocation id, ItemStackIngredient[] input, ItemStack[] output, FluidStackIngredient[] inputFluids, FluidStack[] outputFluids, double timeModifier, double powerModifier, double heatModifier, double rarity) {
             super(id, input, output, timeModifier, powerModifier, heatModifier, rarity);
-            ID = FissionControllerBE.NAME;
-            CATALYSTS.put(ID, List.of(getToastSymbol()));
+            CATALYSTS.put(codeId, List.of(getToastSymbol()));
         }
 
         protected ItemFuel fuelItem;
@@ -601,12 +600,12 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
 
         @Override
         public @NotNull String getGroup() {
-            return FissionReactor.MULTI_BLOCKS.get(ID).get().getName().getString();
+            return FissionReactor.MULTI_BLOCKS.get(codeId).get().getName().getString();
         }
 
         @Override
         public @NotNull ItemStack getToastSymbol() {
-            return new ItemStack(FissionReactor.MULTI_BLOCKS.get(ID).get());
+            return new ItemStack(FissionReactor.MULTI_BLOCKS.get(codeId).get());
         }
 
         public int getDepletionTime() {

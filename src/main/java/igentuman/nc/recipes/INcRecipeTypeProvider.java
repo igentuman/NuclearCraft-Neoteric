@@ -1,5 +1,6 @@
 package igentuman.nc.recipes;
 
+import igentuman.nc.recipes.type.NcRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
@@ -9,7 +10,7 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-public interface INcRecipeTypeProvider<RECIPE extends AbstractRecipe> {
+public interface INcRecipeTypeProvider<RECIPE extends NcRecipe> {
 
     /**
      * Gets the registry name of the element represented by this provider.

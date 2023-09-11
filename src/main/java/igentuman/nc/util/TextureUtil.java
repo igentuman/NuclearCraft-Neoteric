@@ -40,6 +40,11 @@ public class TextureUtil {
         return color;
     }
 
+    @OnlyIn(Dist.DEDICATED_SERVER)
+    public static int getAverageColorServer(String textureLocation) {
+        return 0xFFFFFFFF;
+    }
+
     @OnlyIn(Dist.CLIENT)
     public static int getAverageColor(String textureLocation) {
         ResourceLocation resourceLocation = new ResourceLocation(MODID, textureLocation);

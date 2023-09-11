@@ -1,5 +1,6 @@
 package igentuman.nc.compat;
 
+import igentuman.nc.recipes.type.NcRecipe;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.HashMap;

@@ -24,6 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
+import static igentuman.nc.recipes.NcRecipeSerializers.SERIALIZERS;
+
 public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerializer<RECIPE> {
 
     final IFactory<RECIPE> factory;
@@ -113,6 +115,9 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerial
 
     @Override
     public RECIPE fromNetwork(@NotNull ResourceLocation recipeId, @NotNull FriendlyByteBuf buffer) {
+        if(recipeId.getPath().contains("nc_ore_veins")) {
+            return (RECIPE) SERIALIZERS.get("nc_ore_veins").get().fromNetwork(recipeId, buffer);
+        }
         try {
 
             int inputSize = buffer.readInt();
@@ -145,7 +150,7 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerial
 
             return this.factory.create(recipeId, inputItems, outputItems, inputFluids,  outputFluids, timeModifier, powerModifier, radiation, 1);
         } catch (Exception e) {
-            NuclearCraft.LOGGER.error("Error reading itemstack to itemstack recipe from packet.", e);
+            NuclearCraft.LOGGER.error("Error reading recipe from packet.", e);
             throw e;
         }
     }
@@ -155,7 +160,7 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerial
         try {
             recipe.write(buffer);
         } catch (Exception e) {
-            NuclearCraft.LOGGER.error("Error writing itemstack to itemstack recipe to packet.", e);
+            NuclearCraft.LOGGER.error("Error writing recipe to packet.", e);
             throw e;
         }
     }

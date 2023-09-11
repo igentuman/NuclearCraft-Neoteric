@@ -20,7 +20,6 @@ public class OreVeinRecipeSerializer<RECIPE extends NcRecipe> extends NcRecipeSe
     @Override
     public RECIPE fromNetwork(@NotNull ResourceLocation recipeId, @NotNull FriendlyByteBuf buffer) {
         try {
-
             int inputSize = buffer.readInt();
             ItemStackIngredient[] inputItems = new ItemStackIngredient[inputSize];
             for(int i = 0; i < inputSize; i++) {
@@ -52,7 +51,7 @@ public class OreVeinRecipeSerializer<RECIPE extends NcRecipe> extends NcRecipeSe
 
             return this.factory.create(recipeId, inputItems, outputItems, inputFluids,  outputFluids, timeModifier, powerModifier, radiation, rarity);
         } catch (Exception e) {
-            NuclearCraft.LOGGER.error("Error reading itemstack to itemstack recipe from packet.", e);
+            NuclearCraft.LOGGER.error("Error reading from packet.", e);
             throw e;
         }
     }

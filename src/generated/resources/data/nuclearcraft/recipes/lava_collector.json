@@ -1,25 +1,22 @@
 {
   "type": "minecraft:crafting_shaped",
   "key": {
-    "C": {
-      "tag": "forge:plates/hard_carbon"
+    "B": {
+      "tag": "forge:plates/thermoconducting"
     },
-    "D": {
-      "tag": "forge:plates/lithium_manganese_dioxide"
+    "I": {
+      "item": "minecraft:lava_bucket"
     },
-    "F": {
-      "tag": "forge:plates/ferroboron"
-    },
-    "L": {
-      "tag": "forge:plates/lithium"
+    "P": {
+      "item": "nuclearcraft:plate_advanced"
     }
   },
   "pattern": [
-    "CCC",
-    "FLF",
-    "DDD"
+    "PIP",
+    "B B",
+    "PIP"
   ],
   "result": {
-    "item": "nuclearcraft:lithium_ion_cell"
+    "item": "nuclearcraft:lava_collector"
   }
 }

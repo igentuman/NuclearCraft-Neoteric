@@ -106,6 +106,8 @@ public class ClientSetup {
         InputEvents.register(event);
         ColorHandler.register(event);
         ServerLoad.register(event);
+        RecipesUpdated.register(event);
+        TagsUpdated.register(event);
         TooltipHandler.register(event);
         TickHandler.register(event);
         BlockOverlayHandler.register(event);

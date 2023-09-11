@@ -8,12 +8,11 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.function.Predicate;
+
+import static igentuman.nc.compat.GlobalVars.CATALYSTS;
+import static igentuman.nc.compat.GlobalVars.RECIPE_CLASSES;
 
 @NothingNullByDefault
 public abstract class NcRecipe extends AbstractRecipe {
@@ -32,7 +31,7 @@ public abstract class NcRecipe extends AbstractRecipe {
             double rarityModifier
     ) {
 
-        super(id);
+        super(id, getCodeId(id));
         this.inputItems = inputItems;
         this.outputItems = outputItems;
         this.inputFluids = inputFluids;
@@ -42,6 +41,12 @@ public abstract class NcRecipe extends AbstractRecipe {
         this.powerModifier = powerModifier;
         this.radiationModifier = radiationModifier;
         this.rarityModifier = rarityModifier;
+        CATALYSTS.put(codeId, List.of(getToastSymbol()));
+        RECIPE_CLASSES.put(codeId, getClass());
+    }
+
+    private static String getCodeId(ResourceLocation id) {
+        return id.getPath().split("/")[0];
     }
 
     public NcRecipe(
@@ -92,6 +97,10 @@ public abstract class NcRecipe extends AbstractRecipe {
         for (FluidStack output : outputFluids) {
             buffer.writeFluidStack(output);
         }
+
+        buffer.writeDouble(timeModifier);
+        buffer.writeDouble(powerModifier);
+        buffer.writeDouble(radiationModifier);
     }
 
 }

@@ -6,6 +6,7 @@ import igentuman.nc.recipes.AbstractRecipe;
 import igentuman.nc.content.processors.ProcessorPrefab;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
+import igentuman.nc.recipes.type.NcRecipe;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -30,7 +31,7 @@ import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.client.gui.element.bar.ProgressBar.bars;
 import static igentuman.nc.compat.GlobalVars.*;
 
-public class ProcessorCategoryWrapper<T extends AbstractRecipe> implements IRecipeCategory<T> {
+public class ProcessorCategoryWrapper<T extends NcRecipe> implements IRecipeCategory<T> {
     public final static ResourceLocation TEXTURE = rl("textures/gui/processor_jei.png");
 
     private final IDrawable background;

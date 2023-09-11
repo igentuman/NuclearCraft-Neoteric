@@ -34,7 +34,7 @@ public class PressurizerRecipes extends AbstractRecipeProvider {
         itemToItem(ingredient(NC_FOOD.get("foursmore").get(), 2), ingredient(NC_FOOD.get("evenmoresmore").get()));
         itemToItem(ingredient(ingotTag(Materials.graphite)), ingotStack(Materials.pyrolitic_carbon));
         itemToItem(dustIngredient(Materials.diamond), ingredient(Items.DIAMOND));
-        itemToItem(ingredient(NETHERITE_INGOT), plateIngredient(Materials.netherite));
+        itemToItem(ingredient(NETHERITE_INGOT), plateStack(Materials.netherite));
         itemToItem(dustIngredient(Materials.rhodochrosite), gemStack(Materials.rhodochrosite));
         itemToItem(dustIngredient(Materials.quartz), ingredient(Items.QUARTZ));
         itemToItem(dustIngredient(Materials.obsidian, 4), ingredient(Item.byBlock(Blocks.OBSIDIAN)));

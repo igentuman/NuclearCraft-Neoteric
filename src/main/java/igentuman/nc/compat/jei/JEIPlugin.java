@@ -1,9 +1,12 @@
 package igentuman.nc.compat.jei;
 
+import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.fission.FissionControllerBE;
 import igentuman.nc.client.NcClient;
+import igentuman.nc.content.processors.Processors;
 import igentuman.nc.recipes.AbstractRecipe;
 import igentuman.nc.recipes.NcRecipeType;
+import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.recipes.type.OreVeinRecipe;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
@@ -21,15 +24,15 @@ import static igentuman.nc.compat.GlobalVars.*;
 
 @JeiPlugin
 public  class JEIPlugin implements IModPlugin {
-    public  static HashMap<String, RecipeType<? extends AbstractRecipe>>  recipeTypes;
+    public  static HashMap<String, RecipeType<? extends NcRecipe>>  recipeTypes;
 
     public static final RecipeType<FissionControllerBE.Recipe> FISSION = new RecipeType<>(new ResourceLocation(MODID, FissionControllerBE.NAME), FissionControllerBE.Recipe.class);
     public static final RecipeType<OreVeinRecipe> ORE_VEINS = new RecipeType<>(new ResourceLocation(MODID, "nc_ore_veins"), OreVeinRecipe.class);
-    private static HashMap<String, RecipeType<? extends AbstractRecipe>> getRecipeTypes() {
+    private static HashMap<String, RecipeType<? extends NcRecipe>> getRecipeTypes() {
         if(recipeTypes == null) {
             recipeTypes = new HashMap<>();
             for (String name : RECIPE_CLASSES.keySet()) {
-                recipeTypes.put(name, new RecipeType<AbstractRecipe>(new ResourceLocation(MODID, name), RECIPE_CLASSES.get(name)));
+                recipeTypes.put(name, new RecipeType<>(new ResourceLocation(MODID, name), RECIPE_CLASSES.get(name)));
             }
         }
         return recipeTypes;
@@ -42,6 +45,7 @@ public  class JEIPlugin implements IModPlugin {
 
     public void registerCategories(IRecipeCategoryRegistration registration) {
         for(String  name: getRecipeTypes().keySet()) {
+            if(Processors.registered().get(name) == null) continue;
             registration.addRecipeCategories(new ProcessorCategoryWrapper<>(registration.getJeiHelpers().getGuiHelper(), getRecipeType(name)));
         }
         registration.addRecipeCategories(new OreVeinCategoryWrapper<>(registration.getJeiHelpers().getGuiHelper(), ORE_VEINS));
@@ -58,17 +62,21 @@ public  class JEIPlugin implements IModPlugin {
 
 
     public void registerRecipes(IRecipeRegistration registration) {
-        for(String  name: getRecipeTypes().keySet()) {
+        try {
+            for (String name : getRecipeTypes().keySet()) {
+                registration.addRecipes(
+                        getRecipeType(name),
+                        NcRecipeType.ALL_RECIPES.get(name).getRecipes(NcClient.tryGetClientWorld()));
+            }
             registration.addRecipes(
-                    getRecipeType(name),
-                    NcRecipeType.ALL_RECIPES.get(name).getRecipes(NcClient.tryGetClientWorld()));
+                    getRecipeType(FISSION),
+                    NcRecipeType.ALL_RECIPES.get(FissionControllerBE.NAME).getRecipes(NcClient.tryGetClientWorld()));
+            registration.addRecipes(
+                    getRecipeType(ORE_VEINS),
+                    NcRecipeType.ALL_RECIPES.get("nc_ore_veins").getRecipes(NcClient.tryGetClientWorld()));
+        } catch (IllegalArgumentException ex) {
+            NuclearCraft.LOGGER.error("Error registering recipes for JEI: " + ex.getMessage());
         }
-        registration.addRecipes(
-                getRecipeType(FISSION),
-                NcRecipeType.ALL_RECIPES.get(FissionControllerBE.NAME).getRecipes(NcClient.tryGetClientWorld()));
-        registration.addRecipes(
-                getRecipeType(ORE_VEINS),
-                NcRecipeType.ALL_RECIPES.get("nc_ore_veins").getRecipes(NcClient.tryGetClientWorld()));
     }
 
     @Override

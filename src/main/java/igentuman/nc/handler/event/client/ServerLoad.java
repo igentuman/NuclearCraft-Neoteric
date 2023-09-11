@@ -24,9 +24,11 @@ public class ServerLoad {
     public static boolean initialized = false;
     public static void onLevelLoad(LevelEvent.Load event) {
         if(initialized) return;
+        if(event.getLevel().getServer() == null) return;
+        Level level = event.getLevel().getServer().getLevel(Level.OVERWORLD);
         for (String name: ALL_RECIPES.keySet()) {
             NcRecipeType recipeType = ALL_RECIPES.get(name).getRecipeType();
-            recipeType.loadRecipes(Objects.requireNonNull(event.getLevel().getServer()).getLevel(Level.OVERWORLD));
+            recipeType.loadRecipes(level);
         }
         initialized = true;
     }

@@ -18,7 +18,6 @@ public class OreVeinsRecipes extends AbstractRecipeProvider {
         OreVeinsRecipes.consumer = consumer;
         ID = "nc_ore_veins";
 
-
         add(
             new HashMap<>() {
                 {

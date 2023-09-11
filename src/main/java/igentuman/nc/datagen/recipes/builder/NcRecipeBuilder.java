@@ -87,7 +87,14 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
             name.append(in.getName()).append("-");
         }
         name.replace(name.length()-1, name.length(), "");
-        return new ResourceLocation(MODID, ID+"/"+name);
+
+        return new ResourceLocation(MODID, ID+"/"+recipeIdReplacements(name.toString()));
+    }
+
+    protected String recipeIdReplacements(String val) {
+        val = val.replace("nuclearcraft_", "");
+        val = val.replace("depleted_fuel", "d_f");
+        return val;
     }
 
     public void build(Consumer<FinishedRecipe> consumer) {

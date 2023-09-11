@@ -4,6 +4,8 @@ import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.fission.FissionControllerBE;
 import igentuman.nc.client.NcClient;
 import igentuman.nc.content.processors.Processors;
+import igentuman.nc.recipes.serializers.NcRecipeSerializer;
+import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.registry.RecipeTypeDeferredRegister;
 import igentuman.nc.registry.RecipeTypeRegistryObject;
 import net.minecraft.resources.ResourceLocation;
@@ -19,14 +21,14 @@ import java.util.*;
 
 import static igentuman.nc.NuclearCraft.MODID;
 
-public class NcRecipeType<RECIPE extends AbstractRecipe> implements RecipeType<RECIPE>,
+public class NcRecipeType<RECIPE extends NcRecipe> implements RecipeType<RECIPE>,
         INcRecipeTypeProvider<RECIPE> {
 
     public static final RecipeTypeDeferredRegister RECIPE_TYPES = new RecipeTypeDeferredRegister(MODID);
 
-    public static final HashMap<String, RecipeTypeRegistryObject<? extends AbstractRecipe>> ALL_RECIPES = initializeRecipes();
-    private static HashMap<String, RecipeTypeRegistryObject<? extends AbstractRecipe>> initializeRecipes() {
-        HashMap<String, RecipeTypeRegistryObject<? extends AbstractRecipe>> recipes = new HashMap<>();
+    public static final HashMap<String, RecipeTypeRegistryObject<? extends NcRecipe>> ALL_RECIPES = initializeRecipes();
+    private static HashMap<String, RecipeTypeRegistryObject<? extends NcRecipe>> initializeRecipes() {
+        HashMap<String, RecipeTypeRegistryObject<? extends NcRecipe>> recipes = new HashMap<>();
         recipes.put(FissionControllerBE.NAME, register(FissionControllerBE.NAME));
         recipes.put("nc_ore_veins", register("nc_ore_veins"));
 
@@ -43,7 +45,7 @@ public class NcRecipeType<RECIPE extends AbstractRecipe> implements RecipeType<R
   //  public static final RecipeTypeRegistryObject<ItemStackToItemStackRecipe> SMELTING =
  //           register("smelting", recipeType -> new ItemStackToItemStackRecipe(recipeType));
 
-    public static <RECIPE extends AbstractRecipe> RecipeTypeRegistryObject<RECIPE> register(String name) {
+    public static <RECIPE extends NcRecipe> RecipeTypeRegistryObject<RECIPE> register(String name) {
         return RECIPE_TYPES.register(name, () -> new NcRecipeType<>(name));
     }
     private List<RECIPE> cachedRecipes = Collections.emptyList();
@@ -75,7 +77,7 @@ public class NcRecipeType<RECIPE extends AbstractRecipe> implements RecipeType<R
         if (world == null) {
             world = DistExecutor.unsafeRunForDist(() -> NcClient::tryGetClientWorld, () -> () -> ServerLifecycleHooks.getCurrentServer().overworld());
             if (world == null) {
-                return Collections.emptyList();
+                return cachedRecipes;
             }
         }
         if (cachedRecipes.isEmpty()) {
@@ -108,5 +110,17 @@ public class NcRecipeType<RECIPE extends AbstractRecipe> implements RecipeType<R
         if(isLoaded) return;
         getRecipes(level);
         isLoaded = true;
+    }
+
+    public void loadRecipes(RecipeManager manager) {
+        getRecipes(manager);
+        isLoaded = true;
+    }
+
+    private void getRecipes(RecipeManager manager) {
+        List<RECIPE> recipes = manager.getAllRecipesFor(this);
+        cachedRecipes = recipes.stream()
+                .filter(recipe -> !recipe.isIncomplete())
+                .toList();
     }
 }

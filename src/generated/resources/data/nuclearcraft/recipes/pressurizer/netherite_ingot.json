@@ -7,7 +7,7 @@
   ],
   "output": [
     {
-      "tag": "forge:plates/netherite"
+      "item": "nuclearcraft:netherite_plate"
     }
   ],
   "powerModifier": 1.0,

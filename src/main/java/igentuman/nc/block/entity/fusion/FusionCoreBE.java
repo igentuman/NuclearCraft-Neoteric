@@ -166,8 +166,6 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
 
         public Recipe(ResourceLocation id, ItemStackIngredient[] input, ItemStack[] output, FluidStackIngredient[] inputFluids, FluidStack[] outputFluids, double timeModifier, double powerModifier, double heatModifier, double rarity) {
             super(id, input, output, timeModifier, powerModifier, heatModifier, rarity);
-            ID = FissionControllerBE.NAME;
-            CATALYSTS.put(ID, List.of(getToastSymbol()));
         }
 
         protected ItemFuel fuelItem;
@@ -181,12 +179,12 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
 
         @Override
         public @NotNull String getGroup() {
-            return FusionReactor.FUSION_BLOCKS.get(ID).get().getName().getString();
+            return FusionReactor.FUSION_BLOCKS.get(codeId).get().getName().getString();
         }
 
         @Override
         public @NotNull ItemStack getToastSymbol() {
-            return new ItemStack(FusionReactor.FUSION_BLOCKS.get(ID).get());
+            return new ItemStack(FusionReactor.FUSION_BLOCKS.get(codeId).get());
         }
 
         public double getEnergy() {

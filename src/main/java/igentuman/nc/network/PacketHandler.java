@@ -30,8 +30,5 @@ public class PacketHandler extends BasePacketHandler {
         //Server to client messages
 
         registerServerToClient(PacketRadiationData.class, PacketRadiationData::decode);
-       // registerServerToClient(PacketPipeUpdate.class, PacketPipeUpdate::decode);
-       // registerServerToClient(PacketUpdateContainer.class, PacketUpdateContainer::decode);
-       // registerServerToClient(PacketUpdateTile.class, PacketUpdateTile::decode);
     }
 }

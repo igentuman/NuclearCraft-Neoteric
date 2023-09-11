@@ -123,9 +123,6 @@ public class SteamTurbineBE extends NCProcessorBE<SteamTurbineBE.Recipe> {
                       FluidStackIngredient[] inputFluids, FluidStack[] outputFluids,
                       double timeModifier, double powerModifier, double heatModifier, double rarity) {
             super(id, input, output, inputFluids, outputFluids, timeModifier, powerModifier, heatModifier, 1);
-            ID = Processors.STEAM_TURBINE;
-            RECIPE_CLASSES.put(ID, this.getClass());
-            CATALYSTS.put(ID, List.of(getToastSymbol()));
         }
     }
 }

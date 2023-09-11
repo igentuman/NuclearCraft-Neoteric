@@ -26,6 +26,7 @@ import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.common.SoundActions;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fluids.FluidType;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.registries.DeferredRegister;
@@ -144,7 +145,12 @@ public class NCFluids {
         HashMap<String, AcidDefinition> items = new HashMap<>();
         int id = 0;
         for(String material: slurries()) {
-            int color = TextureUtil.getAverageColor("textures/block/ore/" + material + "_ore.png");
+            int color;
+            if(FMLEnvironment.dist.isClient()) {
+                color = TextureUtil.getAverageColor("textures/block/ore/" + material + "_ore.png");
+            } else {
+                color = TextureUtil.getAverageColorServer("textures/block/ore/" + material + "_ore.png");
+            }
             int[] rgba = TextureUtil.intToRgba(color);
             if(rgba[0] == 0 && rgba[1] == 0 && rgba[2] == 0) {
                 Random rand = new Random(material.length()+id);

@@ -41,6 +41,7 @@ public class FusionCoreProxy extends FusionBlock {
                 this.stateDefinition.any()
         );
     }
+
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         return this.defaultBlockState();

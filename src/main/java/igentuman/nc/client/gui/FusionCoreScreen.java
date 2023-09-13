@@ -95,7 +95,6 @@ public class FusionCoreScreen extends AbstractContainerScreen<FusionCoreContaine
 
     @Override
     protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
-        drawCenteredString(matrixStack, font,  menu.getTitle(), imageWidth/2, titleLabelY, 0xffffff);
         casingTootip = applyFormat(Component.translatable(getValidationResultKey(), getValidationResultData()), ChatFormatting.RED);
 
         if(isCasingValid()) {

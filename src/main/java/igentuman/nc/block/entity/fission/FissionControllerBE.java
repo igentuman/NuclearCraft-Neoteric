@@ -218,8 +218,8 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         if(NuclearCraft.instance.isNcBeStopped) return;
         super.tickServer();
         boolean wasPowered = powered;
-        multiblock().tick();
         boolean wasFormed = multiblock().isFormed();
+        multiblock().tick();
         if (!wasFormed) {
             reValidateCounter++;
             if(reValidateCounter < 40) {

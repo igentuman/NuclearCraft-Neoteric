@@ -46,13 +46,10 @@ public class FusionReactor {
                             .of(FusionCoreProxyBE::new, FUSION_CORE_PROXY.get())
                             .build(null));
 
-
-
     public static final RegistryObject<MenuType<FusionCoreContainer>> FUSION_CORE_CONTAINER =
             CONTAINERS.register("fusion_reactor_core",
                 () -> IForgeMenuType.create((windowId, inv, data) -> new FusionCoreContainer(windowId, data.readBlockPos(), inv))
             );
-
 
     public static void init() {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -72,17 +69,14 @@ public class FusionReactor {
         FUSION_BLOCKS.put(key, BLOCKS.register(key, () -> new FusionBlock(REACTOR_BLOCKS_PROPERTIES)));
         FUSION_BE.put(key, BLOCK_ENTITIES.register(key,
                 () -> BlockEntityType.Builder
-                        .of(FusionCasingBE::new, FUSION_BLOCKS.get("fusion_reactor_casing").get())
+                        .of(FusionCasingBE::new, FUSION_BLOCKS.get("fusion_reactor_casing").get(), FUSION_BLOCKS.get("fusion_reactor_casing_glass").get())
                         .build(null)));
+        FUSION_BE.put("fusion_reactor_casing_glass", FUSION_BE.get(key));
         FUSION_ITEMS.put(key, fromMultiblock(FUSION_BLOCKS.get(key)));
         ALL_NC_ITEMS.put(key, FUSION_ITEMS.get(key));
 
         key = "fusion_reactor_casing_glass";
         FUSION_BLOCKS.put(key, BLOCKS.register(key, () -> new FusionBlock(BlockBehaviour.Properties.of(Material.GLASS).strength(1f).requiresCorrectToolForDrops().noOcclusion())));
-        FUSION_BE.put(key, BLOCK_ENTITIES.register(key,
-                () -> BlockEntityType.Builder
-                        .of(FusionCasingBE::new, FUSION_BLOCKS.get("fusion_reactor_casing_glass").get())
-                        .build(null)));
         FUSION_ITEMS.put(key, fromMultiblock(FUSION_BLOCKS.get(key)));
         ALL_NC_ITEMS.put(key, FUSION_ITEMS.get(key));
 
@@ -98,9 +92,7 @@ public class FusionReactor {
         ALL_NC_ITEMS.put(key, FUSION_ITEMS.get(key));
     }
 
-
     public static <B extends Block> RegistryObject<Item> fromMultiblock(RegistryObject<B> block) {
         return ITEMS.register(block.getId().getPath(), () -> new BlockItem(block.get(), FUSION_ITEM_PROPERTIES));
     }
-
 }

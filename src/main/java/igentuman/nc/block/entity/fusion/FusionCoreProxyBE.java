@@ -95,4 +95,11 @@ public class FusionCoreProxyBE extends FusionBE {
         }
         return super.getCapability(cap, side);
     }
+
+    @Override
+    public boolean canInvalidateCache()
+    {
+        return false;
+    }
+
 }

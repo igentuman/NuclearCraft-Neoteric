@@ -1,8 +1,5 @@
 package igentuman.nc.multiblock;
 
-import igentuman.nc.block.entity.fission.FissionBE;
-import igentuman.nc.block.entity.fission.FissionControllerBE;
-import igentuman.nc.block.entity.fission.FissionFuelCellBE;
 import igentuman.nc.util.NCBlockPos;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -35,7 +32,7 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
     protected boolean outerValid = false;
     public boolean refreshOuterCacheFlag = true;
     public boolean refreshInnerCacheFlag = true;
-    protected boolean isFormed = false;
+    public boolean isFormed = false;
     protected boolean innerValid = false;
     protected final List<Block> validOuterBlocks;
     protected final List<Block> validInnerBlocks;
@@ -238,7 +235,7 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
         for(BlockPos b: allBlocks) {
             BlockEntity be = getLevel().getBlockEntity(b);
             if(be instanceof IMultiblockAttachable) {
-                ((FissionBE) be).setMultiblock(null);
+                ((IMultiblockAttachable) be).setMultiblock(null);
             }
         }
     }
@@ -327,7 +324,7 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
         if(hasToRefresh) {
             refreshCooldown--;
             if(refreshCooldown <= 0) {
-                refreshCooldown = 50;
+                refreshCooldown = 10;
                 refreshOuterCacheFlag = true;
                 refreshInnerCacheFlag = true;
                 isFormed = false;

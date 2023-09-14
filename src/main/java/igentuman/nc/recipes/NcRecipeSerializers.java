@@ -2,6 +2,8 @@ package igentuman.nc.recipes;
 
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.fission.FissionControllerBE;
+import igentuman.nc.block.entity.fusion.FusionCoreBE;
+import igentuman.nc.recipes.serializers.FusionRecipeSerializer;
 import igentuman.nc.recipes.serializers.OreVeinRecipeSerializer;
 import igentuman.nc.recipes.type.OreVeinRecipe;
 import igentuman.nc.recipes.type.RadShieldingRecipe;
@@ -28,6 +30,7 @@ public class NcRecipeSerializers {
 
     private static HashMap<String, RecipeSerializerRegistryObject<? extends NcRecipe>> initSerializers() {
         HashMap<String, RecipeSerializerRegistryObject<? extends NcRecipe>> map = new HashMap<>();
+        map.put("fusion_core", RECIPE_SERIALIZERS.register("fusion_core", () -> new FusionRecipeSerializer<>(FusionCoreBE.Recipe::new)));
         map.put(FissionControllerBE.NAME, RECIPE_SERIALIZERS.register(FissionControllerBE.NAME, () -> new NcRecipeSerializer<>(FissionControllerBE.Recipe::new)));
         map.put("nc_ore_veins", RECIPE_SERIALIZERS.register("nc_ore_veins", () -> new OreVeinRecipeSerializer<>(OreVeinRecipe::new)));
         for(String key : Processors.all().keySet()) {

@@ -109,7 +109,10 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerial
         double powerModifier = GsonHelper.getAsDouble(json, "powerModifier", 1.0);
         double radiation = GsonHelper.getAsDouble(json, "radiation", 1.0);
         double rarityModifier = GsonHelper.getAsDouble(json, "rarityModifier", 1.0);
-
+        double temperature = GsonHelper.getAsDouble(json, "temperature", 1.0);
+        if(temperature > 1) {
+            rarityModifier = temperature;
+        }
         return this.factory.create(recipeId, inputItems, outputItems, inputFluids, outputFluids, timeModifier, powerModifier, radiation, rarityModifier);
     }
 

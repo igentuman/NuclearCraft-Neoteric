@@ -1,0 +1,35 @@
+{
+  "type": "nuclearcraft:fusion_core",
+  "inputFluids": [
+    {
+      "amount": 1000,
+      "tag": "forge:hydrogen"
+    },
+    {
+      "amount": 144,
+      "tag": "forge:boron/11"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 750,
+      "fluid": "nuclearcraft:helium"
+    },
+    {
+      "amount": 750,
+      "fluid": "nuclearcraft:helium"
+    },
+    {
+      "amount": 750,
+      "fluid": "nuclearcraft:helium"
+    },
+    {
+      "amount": 750,
+      "fluid": "nuclearcraft:helium"
+    }
+  ],
+  "powerModifier": 44400.0,
+  "radiation": 1.5,
+  "temperature": 16370.0,
+  "timeModifier": 600.0
+}

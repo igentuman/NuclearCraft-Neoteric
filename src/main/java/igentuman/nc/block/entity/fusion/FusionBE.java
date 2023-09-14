@@ -67,6 +67,7 @@ public class FusionBE extends NuclearCraftBE implements IMultiblockAttachable {
         multiblock().refreshInnerCacheFlag = true;
         multiblock().refreshOuterCacheFlag = true;
         multiblock().isFormed = false;
+        multiblock().hasToRefresh = true;
     }
 
     @Override

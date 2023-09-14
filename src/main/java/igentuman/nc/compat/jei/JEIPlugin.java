@@ -2,6 +2,7 @@ package igentuman.nc.compat.jei;
 
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.fission.FissionControllerBE;
+import igentuman.nc.block.entity.fusion.FusionCoreBE;
 import igentuman.nc.client.NcClient;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.recipes.AbstractRecipe;
@@ -27,6 +28,7 @@ public  class JEIPlugin implements IModPlugin {
     public  static HashMap<String, RecipeType<? extends NcRecipe>>  recipeTypes;
 
     public static final RecipeType<FissionControllerBE.Recipe> FISSION = new RecipeType<>(new ResourceLocation(MODID, FissionControllerBE.NAME), FissionControllerBE.Recipe.class);
+    public static final RecipeType<FusionCoreBE.Recipe> FUSION = new RecipeType<>(new ResourceLocation(MODID, "fusion_core"), FusionCoreBE.Recipe.class);
     public static final RecipeType<OreVeinRecipe> ORE_VEINS = new RecipeType<>(new ResourceLocation(MODID, "nc_ore_veins"), OreVeinRecipe.class);
     private static HashMap<String, RecipeType<? extends NcRecipe>> getRecipeTypes() {
         if(recipeTypes == null) {
@@ -49,6 +51,7 @@ public  class JEIPlugin implements IModPlugin {
             registration.addRecipeCategories(new ProcessorCategoryWrapper<>(registration.getJeiHelpers().getGuiHelper(), getRecipeType(name)));
         }
         registration.addRecipeCategories(new OreVeinCategoryWrapper<>(registration.getJeiHelpers().getGuiHelper(), ORE_VEINS));
+        registration.addRecipeCategories(new FusionCategoryWrapper<>(registration.getJeiHelpers().getGuiHelper(), FUSION));
         registration.addRecipeCategories(new FissionCategoryWrapper<>(registration.getJeiHelpers().getGuiHelper(), FISSION));
     }
 
@@ -68,6 +71,9 @@ public  class JEIPlugin implements IModPlugin {
                         getRecipeType(name),
                         NcRecipeType.ALL_RECIPES.get(name).getRecipes(NcClient.tryGetClientWorld()));
             }
+            registration.addRecipes(
+                    getRecipeType(FUSION),
+                    NcRecipeType.ALL_RECIPES.get("fusion_core").getRecipes(NcClient.tryGetClientWorld()));
             registration.addRecipes(
                     getRecipeType(FISSION),
                     NcRecipeType.ALL_RECIPES.get(FissionControllerBE.NAME).getRecipes(NcClient.tryGetClientWorld()));

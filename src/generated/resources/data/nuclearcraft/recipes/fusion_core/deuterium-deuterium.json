@@ -1,0 +1,31 @@
+{
+  "type": "nuclearcraft:fusion_core",
+  "inputFluids": [
+    {
+      "amount": 1000,
+      "tag": "forge:deuterium"
+    },
+    {
+      "amount": 1000,
+      "tag": "forge:deuterium"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 750,
+      "fluid": "nuclearcraft:hydrogen"
+    },
+    {
+      "amount": 750,
+      "fluid": "nuclearcraft:tritium"
+    },
+    {
+      "amount": 750,
+      "fluid": "nuclearcraft:helium"
+    }
+  ],
+  "powerModifier": 50700.0,
+  "radiation": 1.5,
+  "temperature": 1156.0,
+  "timeModifier": 200.0
+}

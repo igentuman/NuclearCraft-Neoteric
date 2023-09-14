@@ -19,13 +19,16 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.client.gui.element.bar.ProgressBar.bars;
@@ -120,6 +123,19 @@ public class ProcessorCategoryWrapper<T extends NcRecipe> implements IRecipeCate
                 slots[i].draw(stack, pos[0]+xShift-1+barXshift, pos[1]+yShift-1);
             }
         }
+    }
+
+    @Override
+    public @NotNull List<Component> getTooltipStrings(T recipe, IRecipeSlotsView recipeSlotsView, double mouseX, double mouseY) {
+        List<Component> lines = new ArrayList<>();
+        if(mouseX > 47+xShift+25 && mouseX < 47+xShift+25+36 && mouseY > height/2-16/2 && mouseY < height/2+16/2) {
+            lines.add(Component.translatable("processor.recipe.duration", (int)(recipe.getTimeModifier()*(double) processor.config().getTime())).withStyle(ChatFormatting.AQUA));
+            lines.add(Component.translatable("processor.recipe.power", (int)(recipe.getEnergy()*(double) processor.config().getPower())).withStyle(ChatFormatting.RED));
+            if(recipe.getRadiation() != 1D) {
+                lines.add(Component.translatable("processor.recipe.radiation", recipe.getRadiation()*1000).withStyle(ChatFormatting.GREEN));
+            }
+        }
+        return lines;
     }
 
     @Override

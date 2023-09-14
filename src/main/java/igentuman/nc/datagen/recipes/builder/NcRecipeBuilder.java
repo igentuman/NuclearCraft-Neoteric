@@ -33,6 +33,7 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
 
     public String ID;
     private double rarityModifier = 1D;
+    private double temperature = 0D;
 
     protected NcRecipeBuilder(String id) {
         super(ncSerializer(id));
@@ -101,6 +102,11 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
         build(consumer, getRecipeId());
     }
 
+    public NcRecipeBuilder temperature(double temperature) {
+        this.temperature = temperature;
+        return this;
+    }
+
     public class NcRecipeResult extends RecipeResult {
 
         protected NcRecipeResult(ResourceLocation id) {
@@ -146,6 +152,9 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
             json.addProperty("powerModifier", powerModifier);
             if(rarityModifier != 1D) {
                 json.addProperty("rarityModifier", rarityModifier);
+            }
+            if(temperature != 0D) {
+                json.addProperty("temperature", temperature);
             }
         }
     }

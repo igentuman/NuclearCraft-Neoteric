@@ -71,6 +71,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("nc.label.leacher_no_acid", "No Acid");
         add("block.nuclearcraft.glowing_mushroom", "Glowing Mushroom");
         add("fusion_core", "Fusion Reactor Core");
+        add("nc_jei_cat.fusion_core", "Fusion Reactor");
 
         add("reactor.size", "Reactor size: %sx%sx%s");
         add("fission.casing.wrong.block", "Wrong block at: %s");
@@ -176,6 +177,21 @@ public class NCLanguageProvider extends LanguageProvider {
     }
 
     private void tooltips() {
+
+        add("processor.recipe.power","Process Power: %s FE/t");
+        add("processor.recipe.duration","Process Duration: %s t");
+        add("processor.recipe.radiation","Process Radiation: %s uRad");
+
+        add("fusion_core.recipe.power","Base Energy Generation: %s FE/t");
+        add("fusion_core.recipe.duration","Reaction Duration: %s t");
+        add("fusion_core.recipe.radiation","Reaction Radiation: %s uRad");
+        add("fusion_core.recipe.temperature","Optimal Temperature: %s MK");
+
+        add("fission.recipe.power","Base Energy Generation: %s FE/t");
+        add("fission.recipe.duration","Depletion Time: %s s");
+        add("fission.recipe.radiation","Reaction Radiation: %s pRad");
+        add("fission.recipe.heat","Heat Generation: %s H/t");
+
         add("tooltip.nc.rf_amplifier.power","Energy Required: %s FE/t");
         add("tooltip.nc.rf_amplifier.voltage","Voltage: %s kEV");
         add("tooltip.nc.rf_amplifier.efficiency","Efficiency: %s%%");

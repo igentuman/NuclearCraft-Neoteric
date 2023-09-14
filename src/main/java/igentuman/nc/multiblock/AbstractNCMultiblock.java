@@ -15,7 +15,7 @@ import java.util.List;
 public abstract class AbstractNCMultiblock implements INCMultiblock {
 
     protected Class parentBe;
-    protected boolean hasToRefresh = true;
+    public boolean hasToRefresh = true;
     protected int refreshCooldown = 50;
     protected int height;
     protected int width;

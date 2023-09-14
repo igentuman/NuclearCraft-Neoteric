@@ -269,10 +269,11 @@ public class FusionReactorMultiblock extends AbstractNCMultiblock {
     }
 
     @Override
-    protected void invalidateStats() {
+    public void invalidateStats() {
         length = 0;
         controller().clearStats();
         isFormed = false;
+        hasToRefresh = true;
     }
 
     @Override

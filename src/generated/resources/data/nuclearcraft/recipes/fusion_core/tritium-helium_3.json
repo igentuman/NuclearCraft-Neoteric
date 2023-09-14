@@ -1,0 +1,35 @@
+{
+  "type": "nuclearcraft:fusion_core",
+  "inputFluids": [
+    {
+      "amount": 1000,
+      "tag": "forge:tritium"
+    },
+    {
+      "amount": 1000,
+      "tag": "forge:helium_3"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 250,
+      "fluid": "nuclearcraft:helium"
+    },
+    {
+      "amount": 250,
+      "fluid": "nuclearcraft:helium"
+    },
+    {
+      "amount": 250,
+      "fluid": "nuclearcraft:helium"
+    },
+    {
+      "amount": 250,
+      "fluid": "nuclearcraft:helium"
+    }
+  ],
+  "powerModifier": 109100.0,
+  "radiation": 1.5,
+  "temperature": 2604.0,
+  "timeModifier": 300.0
+}

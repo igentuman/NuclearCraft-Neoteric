@@ -26,6 +26,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -106,7 +107,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         multiblock = new FusionReactorMultiblock(this);
         contentHandler = new SidedContentHandler(
                 0, 0,
-                2, 2);
+                2, 4);
         contentHandler.setBlockEntity(this);
     }
 
@@ -462,17 +463,8 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
 
     public static class Recipe extends NcRecipe {
 
-        public Recipe(ResourceLocation id, ItemStackIngredient[] input, ItemStack[] output, FluidStackIngredient[] inputFluids, FluidStack[] outputFluids, double timeModifier, double powerModifier, double heatModifier, double rarity) {
-            super(id, input, output, timeModifier, powerModifier, heatModifier, rarity);
-        }
-
-        protected ItemFuel fuelItem;
-
-        public ItemFuel getFuelItem() {
-            if(fuelItem == null) {
-                fuelItem = (ItemFuel) getFirstItemStackIngredient(0).getItem();
-            }
-            return fuelItem;
+        public Recipe(ResourceLocation id, ItemStackIngredient[] input, ItemStack[] output, FluidStackIngredient[] inputFluids, FluidStack[] outputFluids, double timeModifier, double powerModifier, double radiation, double temperature) {
+            super(id, input, output, inputFluids, outputFluids, timeModifier, powerModifier, radiation, temperature);
         }
 
         @Override
@@ -486,15 +478,25 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         }
 
         public double getEnergy() {
-            return getFuelItem().forge_energy;
+            return powerModifier;
         }
 
         public double getHeat() {
-            return getFuelItem().heat;
+            return powerModifier;
         }
 
         public double getRadiation() {
-            return ItemRadiation.byItem(getFuelItem())/10;
+            return radiationModifier;
+        }
+
+        @Override
+        public void write(FriendlyByteBuf buffer) {
+            super.write(buffer);
+            buffer.writeDouble(getOptimalTemperature());//in our case we use that as temperature
+        }
+
+        public double getOptimalTemperature() {
+            return rarityModifier;
         }
     }
 }

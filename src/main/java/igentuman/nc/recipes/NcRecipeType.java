@@ -31,6 +31,7 @@ public class NcRecipeType<RECIPE extends NcRecipe> implements RecipeType<RECIPE>
         HashMap<String, RecipeTypeRegistryObject<? extends NcRecipe>> recipes = new HashMap<>();
         recipes.put(FissionControllerBE.NAME, register(FissionControllerBE.NAME));
         recipes.put("nc_ore_veins", register("nc_ore_veins"));
+        recipes.put("fusion_core", register("fusion_core"));
 
         for(String processorName: Processors.registered().keySet()) {
             if(Processors.registered().get(processorName).hasRecipes()) {

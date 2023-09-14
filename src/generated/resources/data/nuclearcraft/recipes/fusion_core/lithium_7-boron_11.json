@@ -1,0 +1,27 @@
+{
+  "type": "nuclearcraft:fusion_core",
+  "inputFluids": [
+    {
+      "amount": 144,
+      "tag": "forge:lithium/7"
+    },
+    {
+      "amount": 144,
+      "tag": "forge:boron/11"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 2000,
+      "fluid": "nuclearcraft:helium"
+    },
+    {
+      "amount": 2000,
+      "fluid": "nuclearcraft:helium"
+    }
+  ],
+  "powerModifier": 45.0,
+  "radiation": 1.5,
+  "temperature": 202000.0,
+  "timeModifier": 900.0
+}

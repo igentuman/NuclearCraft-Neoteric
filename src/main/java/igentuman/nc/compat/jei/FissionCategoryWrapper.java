@@ -13,15 +13,19 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import static igentuman.nc.NuclearCraft.*;
 import static igentuman.nc.compat.GlobalVars.*;
+import static igentuman.nc.util.TextUtils.numberFormat;
 
 public class FissionCategoryWrapper<T extends FissionControllerBE.Recipe> implements IRecipeCategory<T> {
     public final static ResourceLocation TEXTURE =
@@ -44,7 +48,18 @@ public class FissionCategoryWrapper<T extends FissionControllerBE.Recipe> implem
         } else{
             this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, ItemStack.EMPTY);
         }
+    }
 
+    @Override
+    public @NotNull List<Component> getTooltipStrings(T recipe, IRecipeSlotsView recipeSlotsView, double mouseX, double mouseY) {
+        List<Component> lines = new ArrayList<>();
+        if(mouseX > 29 && mouseX < 65 && mouseY > 8 && mouseY < 24) {
+            lines.add(Component.translatable("fission.recipe.duration", (int)((double)recipe.getDepletionTime()/20)).withStyle(ChatFormatting.AQUA));
+            lines.add(Component.translatable("fission.recipe.power", (int)recipe.getEnergy()).withStyle(ChatFormatting.RED));
+            lines.add(Component.translatable("fission.recipe.radiation", numberFormat(recipe.getRadiation()*1000000)).withStyle(ChatFormatting.GREEN));
+            lines.add(Component.translatable("fission.recipe.heat", (int)recipe.getHeat()).withStyle(ChatFormatting.GOLD));
+        }
+        return lines;
     }
 
     @Override

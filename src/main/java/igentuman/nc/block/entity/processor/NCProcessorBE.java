@@ -36,7 +36,6 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -49,7 +48,6 @@ import java.util.Objects;
 import static igentuman.nc.block.ProcessorBlock.ACTIVE;
 import static igentuman.nc.handler.config.CommonConfig.PROCESSOR_CONFIG;
 import static igentuman.nc.util.ModUtil.isCcLoaded;
-import static net.minecraft.world.item.Items.AIR;
 
 public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE {
 
@@ -234,7 +232,9 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
             return energy.cast();
         }
         if(isCcLoaded()) {
-            return getPeripheral(cap, side);
+            if(cap == dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL) {
+                return getPeripheral(cap, side);
+            }
         }
         return super.getCapability(cap, side);
     }

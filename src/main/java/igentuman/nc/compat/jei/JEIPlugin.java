@@ -4,6 +4,7 @@ import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.fission.FissionControllerBE;
 import igentuman.nc.block.entity.fusion.FusionCoreBE;
 import igentuman.nc.client.NcClient;
+import igentuman.nc.client.gui.processor.NCProcessorScreen;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.recipes.AbstractRecipe;
 import igentuman.nc.recipes.NcRecipeType;
@@ -12,6 +13,7 @@ import igentuman.nc.recipes.type.OreVeinRecipe;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.recipe.RecipeType;
+import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
@@ -82,6 +84,13 @@ public  class JEIPlugin implements IModPlugin {
                     NcRecipeType.ALL_RECIPES.get("nc_ore_veins").getRecipes(NcClient.tryGetClientWorld()));
         } catch (IllegalArgumentException ex) {
             NuclearCraft.LOGGER.error("Error registering recipes for JEI: " + ex.getMessage());
+        }
+    }
+
+    public void registerGuiHandlers(IGuiHandlerRegistration registration) {
+        for (String name : getRecipeTypes().keySet()) {
+            if (!Processors.registered().containsKey(name)) continue;
+            registration.addRecipeClickArea(NCProcessorScreen.class, 58, 36, 36, 15, getRecipeTypes().get(name));
         }
     }
 

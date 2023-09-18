@@ -136,7 +136,9 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
             return energy.cast();
         }
         if(isCcLoaded()) {
-            return getPeripheral(cap, side);
+            if(cap == dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL) {
+                return getPeripheral(cap, side);
+            }
         }
         return super.getCapability(cap, side);
     }

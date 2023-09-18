@@ -206,7 +206,9 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
             return energy.cast();
         }
         if(isCcLoaded()) {
-            return getPeripheral(cap, side);
+            if(cap == dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL) {
+                return getPeripheral(cap, side);
+            }
         }
         return super.getCapability(cap, side);
     }

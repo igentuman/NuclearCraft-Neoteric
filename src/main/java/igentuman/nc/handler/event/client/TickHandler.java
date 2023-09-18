@@ -10,6 +10,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 public class TickHandler {
 
+    public static String currentScreenCode = "";
+
     public static final Minecraft minecraft = Minecraft.getInstance();
 
     public static void register(FMLClientSetupEvent event) {

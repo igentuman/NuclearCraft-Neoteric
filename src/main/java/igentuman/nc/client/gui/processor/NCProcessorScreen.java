@@ -12,6 +12,7 @@ import igentuman.nc.client.gui.element.slot.BigSlot;
 import igentuman.nc.container.NCProcessorContainer;
 import igentuman.nc.client.gui.element.slot.NormalSlot;
 import igentuman.nc.content.processors.config.ProcessorSlots;
+import igentuman.nc.handler.event.client.TickHandler;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
@@ -46,6 +47,7 @@ public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractC
         super(container, inv, name);
         imageWidth = 180;
         imageHeight = 180;
+        TickHandler.currentScreenCode = menu.getProcessor().name;
     }
 
     protected void updateRelativeCords()

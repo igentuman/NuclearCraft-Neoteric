@@ -7,6 +7,10 @@ import igentuman.nc.setup.registration.NCItems;
 import igentuman.nc.setup.registration.NCProcessors;
 import net.minecraft.data.DataGenerator;
 
+import static igentuman.nc.multiblock.fission.FissionReactor.MULTI_BLOCKS;
+import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_BLOCKS;
+import static igentuman.nc.setup.registration.NCBlocks.NC_ELECTROMAGNETS;
+import static igentuman.nc.setup.registration.NCBlocks.NC_RF_AMPLIFIERS;
 import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCK;
 
 public class NCLootTables extends BaseLootTableProvider {
@@ -35,8 +39,11 @@ public class NCLootTables extends BaseLootTableProvider {
         for(String name: NCBlocks.NC_BLOCKS.keySet()) {
             lootTables.put(NCBlocks.NC_BLOCKS.get(name).get(), createSimpleTable("block", NCBlocks.NC_BLOCKS.get(name).get()));
         }
-        for(String name: FissionReactor.MULTI_BLOCKS.keySet()) {
-            lootTables.put(FissionReactor.MULTI_BLOCKS.get(name).get(), createSimpleTable("block", FissionReactor.MULTI_BLOCKS.get(name).get()));
+        for(String name: MULTI_BLOCKS.keySet()) {
+            lootTables.put(MULTI_BLOCKS.get(name).get(), createSimpleTable("block", MULTI_BLOCKS.get(name).get()));
+        }
+        for(String name: FUSION_BLOCKS.keySet()) {
+            lootTables.put(FUSION_BLOCKS.get(name).get(), createSimpleTable("block", FUSION_BLOCKS.get(name).get()));
         }
     }
 
@@ -47,9 +54,14 @@ public class NCLootTables extends BaseLootTableProvider {
         for(String name: NCEnergyBlocks.ENERGY_BLOCKS.keySet()) {
             lootTables.put(NCEnergyBlocks.ENERGY_BLOCKS.get(name).get(), createSimpleTable("block", NCEnergyBlocks.ENERGY_BLOCKS.get(name).get()));
         }
-
         for(String name: STORAGE_BLOCK.keySet()) {
             lootTables.put(STORAGE_BLOCK.get(name).get(), createSimpleTable("block", STORAGE_BLOCK.get(name).get()));
+        }
+        for(String name: NC_ELECTROMAGNETS.keySet()) {
+            lootTables.put(NC_ELECTROMAGNETS.get(name).get(), createSimpleTable("block", NC_ELECTROMAGNETS.get(name).get()));
+        }
+        for(String name: NC_RF_AMPLIFIERS.keySet()) {
+            lootTables.put(NC_RF_AMPLIFIERS.get(name).get(), createSimpleTable("block", NC_RF_AMPLIFIERS.get(name).get()));
         }
     }
 }

@@ -122,7 +122,9 @@ public class FissionPortBE extends FissionBE {
             return controller().getEnergy().cast();
         }
         if(isCcLoaded()) {
-            return controller().getPeripheral(cap, side);
+            if(cap == dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL) {
+                return controller().getPeripheral(cap, side);
+            }
         }
         return super.getCapability(cap, side);
     }
@@ -162,16 +164,16 @@ public class FissionPortBE extends FissionBE {
     }
 
     @Override
-    public FissionControllerBE controller() {
-        if(NuclearCraft.instance.isNcBeStopped || !getLevel().getServer().isRunning()) return null;
+    public FissionControllerBE<?> controller() {
+        if(NuclearCraft.instance.isNcBeStopped || (getLevel().getServer() != null && !getLevel().getServer().isRunning())) return null;
         if(getLevel().isClientSide && controllerPos != null) {
-            return (FissionControllerBE) getLevel().getBlockEntity(controllerPos);
+            return (FissionControllerBE<?>) getLevel().getBlockEntity(controllerPos);
         }
         try {
-            return (FissionControllerBE) multiblock().controller().controllerBE();
+            return (FissionControllerBE<?>) multiblock().controller().controllerBE();
         } catch (NullPointerException e) {
             if(controllerPos != null) {
-                return (FissionControllerBE) getLevel().getBlockEntity(controllerPos);
+                return (FissionControllerBE<?>) getLevel().getBlockEntity(controllerPos);
             }
             return null;
         }

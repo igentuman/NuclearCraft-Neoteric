@@ -17,6 +17,7 @@ public class ElectromagnetSlopeBlock extends ElectromagnetBlock {
     public ElectromagnetSlopeBlock(Properties pProperties) {
         super(Properties.of(Material.METAL)
                 .noOcclusion()
+                .strength(3f)
                 .requiresCorrectToolForDrops());
         this.registerDefaultState(this.stateDefinition.any().setValue(ORIENTATION, FrontAndTop.NORTH_UP));
     }

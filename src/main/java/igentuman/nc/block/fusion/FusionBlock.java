@@ -60,13 +60,6 @@ public class FusionBlock extends Block implements EntityBlock {
         return Registry.BLOCK.getKey(this).getPath();
     }
 
-
-    @Override
-    public void playerDestroy(Level pLevel, Player pPlayer, BlockPos pPos, BlockState pState, @javax.annotation.Nullable BlockEntity pBlockEntity, ItemStack pTool) {
-        pPlayer.awardStat(Stats.BLOCK_MINED.get(this));
-        pPlayer.causeFoodExhaustion(0.005F);
-    }
-
     @javax.annotation.Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {

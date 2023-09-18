@@ -56,7 +56,7 @@ public class FusionBE extends NuclearCraftBE implements IMultiblockAttachable {
         if(getLevel().isClientSide() && corePos != null) {
             return (FusionCoreBE<?>) getLevel().getBlockEntity(corePos);
         }
-        if(core == null) {
+        if(core == null && corePos != null) {
            core = (FusionCoreBE<?>) getLevel().getBlockEntity(corePos);
         }
         return core;

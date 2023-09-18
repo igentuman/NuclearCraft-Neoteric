@@ -12,9 +12,11 @@ import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.multiblock.fission.FissionReactor.MULTI_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_CORE_PROXY;
 import static igentuman.nc.setup.registration.NCBlocks.NC_ELECTROMAGNETS;
+import static igentuman.nc.setup.registration.NCBlocks.NC_RF_AMPLIFIERS;
 import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCK;
 
 public class NCBlockTags extends BlockTagsProvider {
@@ -30,10 +32,10 @@ public class NCBlockTags extends BlockTagsProvider {
         machines();
         tag(FissionBlocks.MODERATORS_BLOCKS).add(NCBlocks.NC_BLOCKS.get("graphite").get(), NCBlocks.NC_BLOCKS.get("beryllium").get());
         tag(FissionBlocks.CASING_BLOCKS).add(
-                FissionReactor.MULTI_BLOCKS.get("fission_reactor_casing").get(),
-                FissionReactor.MULTI_BLOCKS.get("fission_reactor_controller").get(),
-                FissionReactor.MULTI_BLOCKS.get("fission_reactor_glass").get(),
-                FissionReactor.MULTI_BLOCKS.get("fission_reactor_port").get(),
+                MULTI_BLOCKS.get("fission_reactor_casing").get(),
+                MULTI_BLOCKS.get("fission_reactor_controller").get(),
+                MULTI_BLOCKS.get("fission_reactor_glass").get(),
+                MULTI_BLOCKS.get("fission_reactor_port").get(),
                 NCProcessors.PROCESSORS.get("irradiator").get()
                 );
         tag(FissionBlocks.HEAT_SINK_BLOCKS).add(FissionReactor.getHSBlocks());
@@ -42,8 +44,8 @@ public class NCBlockTags extends BlockTagsProvider {
                 .add(
                         NCBlocks.NC_BLOCKS.get("graphite").get(),
                         NCBlocks.NC_BLOCKS.get("beryllium").get(),
-                        FissionReactor.MULTI_BLOCKS.get("fission_reactor_irradiation_chamber").get(),
-                        FissionReactor.MULTI_BLOCKS.get("fission_reactor_solid_fuel_cell").get()
+                        MULTI_BLOCKS.get("fission_reactor_irradiation_chamber").get(),
+                        MULTI_BLOCKS.get("fission_reactor_solid_fuel_cell").get()
                 );
     }
 
@@ -82,16 +84,24 @@ public class NCBlockTags extends BlockTagsProvider {
             tag(BlockTags.MINEABLE_WITH_PICKAXE).add(NCProcessors.PROCESSORS.get(block).get());
             tag(BlockTags.NEEDS_IRON_TOOL).add(NCProcessors.PROCESSORS.get(block).get());
         }
+        for(String block: NC_ELECTROMAGNETS.keySet()) {
+            tag(BlockTags.MINEABLE_WITH_PICKAXE).add(NC_ELECTROMAGNETS.get(block).get());
+            tag(BlockTags.NEEDS_IRON_TOOL).add(NC_ELECTROMAGNETS.get(block).get());
+        }
+        for(String block: NC_RF_AMPLIFIERS.keySet()) {
+            tag(BlockTags.MINEABLE_WITH_PICKAXE).add(NC_RF_AMPLIFIERS.get(block).get());
+            tag(BlockTags.NEEDS_IRON_TOOL).add(NC_RF_AMPLIFIERS.get(block).get());
+        }
+        for(String block: MULTI_BLOCKS.keySet()) {
+            tag(BlockTags.MINEABLE_WITH_PICKAXE).add(MULTI_BLOCKS.get(block).get());
+            tag(BlockTags.NEEDS_IRON_TOOL).add(MULTI_BLOCKS.get(block).get());
+        }
         for(String block: FUSION_BLOCKS.keySet()) {
             tag(BlockTags.MINEABLE_WITH_PICKAXE).add(FUSION_BLOCKS.get(block).get());
             tag(BlockTags.NEEDS_IRON_TOOL).add(FUSION_BLOCKS.get(block).get());
         }
         tag(BlockTags.MINEABLE_WITH_PICKAXE).add(FUSION_CORE_PROXY.get());
         tag(BlockTags.NEEDS_IRON_TOOL).add(FUSION_CORE_PROXY.get());
-        for(String block: NC_ELECTROMAGNETS.keySet()) {
-            tag(BlockTags.MINEABLE_WITH_PICKAXE).add(NC_ELECTROMAGNETS.get(block).get());
-            tag(BlockTags.NEEDS_IRON_TOOL).add(NC_ELECTROMAGNETS.get(block).get());
-        }
     }
 
     @Override

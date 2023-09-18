@@ -30,7 +30,7 @@ public class NCProcessors {
     public static HashMap<String, RegistryObject<Block>> PROCESSORS = new HashMap<>();
     public static HashMap<String, RegistryObject<Item>> PROCESSOR_BLOCKS_ITEMS = new HashMap<>();
     public static final Item.Properties PROCESSOR_ITEM_PROPERTIES = new Item.Properties().tab(CreativeTabs.NC_BLOCKS);
-    public static final BlockBehaviour.Properties PROCESSOR_BLOCK_PROPERTIES = BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.METAL).strength(2f).requiresCorrectToolForDrops();
+    public static final BlockBehaviour.Properties PROCESSOR_BLOCK_PROPERTIES = BlockBehaviour.Properties.of(Material.HEAVY_METAL).sound(SoundType.METAL).strength(2f).requiresCorrectToolForDrops();
     private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, MODID);
     private static final DeferredRegister<MenuType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.MENU_TYPES, MODID);
     public static HashMap<String, RegistryObject<MenuType<? extends NCProcessorContainer<?>>>> PROCESSORS_CONTAINERS = new HashMap<>();

@@ -76,7 +76,7 @@ public class FusionReactor {
         ALL_NC_ITEMS.put(key, FUSION_ITEMS.get(key));
 
         key = "fusion_reactor_casing_glass";
-        FUSION_BLOCKS.put(key, BLOCKS.register(key, () -> new FusionBlock(BlockBehaviour.Properties.of(Material.GLASS).strength(1f).requiresCorrectToolForDrops().noOcclusion())));
+        FUSION_BLOCKS.put(key, BLOCKS.register(key, () -> new FusionBlock(BlockBehaviour.Properties.of(Material.METAL).strength(1f).requiresCorrectToolForDrops().noOcclusion())));
         FUSION_ITEMS.put(key, fromMultiblock(FUSION_BLOCKS.get(key)));
         ALL_NC_ITEMS.put(key, FUSION_ITEMS.get(key));
 

@@ -5,8 +5,7 @@
   "refmap": "nuclearcraft.refmap.json",
   "mixins": [
     "MekRadiationManager",
-    "TagLoaderMixin",
-    "JeiGuiHandler"
+    "TagLoaderMixin"
   ],
   "client": [
   ],

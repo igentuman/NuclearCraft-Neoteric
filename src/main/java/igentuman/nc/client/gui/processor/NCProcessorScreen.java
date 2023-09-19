@@ -184,4 +184,8 @@ public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractC
     public double getProgress() {
         return menu.getProgress();
     }
+
+    public String getRecipeTypeName() {
+        return getMenu().getProcessor().name;
+    }
 }

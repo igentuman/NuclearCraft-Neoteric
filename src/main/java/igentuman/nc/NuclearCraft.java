@@ -1,6 +1,6 @@
 package igentuman.nc;
 
-import igentuman.nc.handler.CommonWorldTickHandler;
+import igentuman.nc.handler.event.server.WorldEvents;
 import igentuman.nc.handler.command.CommandNcPlayerRadiation;
 import igentuman.nc.handler.command.CommandNcVeinCheck;
 import igentuman.nc.handler.config.CommonConfig;
@@ -47,7 +47,7 @@ public class NuclearCraft {
 
     public static final Logger LOGGER = LogManager.getLogger();
     public boolean isNcBeStopped = false;
-    public static final CommonWorldTickHandler worldTickHandler = new CommonWorldTickHandler();
+    public static final WorldEvents worldTickHandler = new WorldEvents();
     public static final String MODID = "nuclearcraft";
     public static NuclearCraft instance;
     private final PacketHandler packetHandler;

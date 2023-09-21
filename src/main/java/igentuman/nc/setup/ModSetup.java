@@ -22,8 +22,7 @@ public class ModSetup {
         bus.addGenericListener(Entity.class, RadiationEvents::attachPlayerRadiation);
         bus.addGenericListener(Level.class, RadiationEvents::attachWorldRadiation);
         bus.register(NuclearCraft.worldTickHandler);
-        //bus.addListener(RadShieldingRecipe::onCrafting);
-        //bus.addListener(ResetNbtRecipe::onCrafting);
+        bus.register(new RadiationEvents());
     }
 
     public static void init(FMLCommonSetupEvent event) {

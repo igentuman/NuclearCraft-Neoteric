@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "item": "nuclearcraft:basic_electromagnet"
+    },
+    "C": {
+      "tag": "forge:ingots/niobium_titanium"
+    },
+    "S": {
+      "tag": "forge:ingots/stainless_steel"
+    }
+  },
+  "pattern": [
+    "CCC",
+    "SBS",
+    "CCC"
+  ],
+  "result": {
+    "item": "nuclearcraft:niobium_titanium_electromagnet"
+  }
+}

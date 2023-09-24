@@ -1,18 +1,12 @@
 package igentuman.nc.block.entity.fusion;
 
 import igentuman.nc.NuclearCraft;
-import igentuman.nc.block.entity.fission.FissionControllerBE;
 import igentuman.nc.block.fusion.FusionCoreBlock;
 import igentuman.nc.compat.cc.NCFusionReactorPeripheral;
-import igentuman.nc.compat.cc.NCSolidFissionReactorPeripheral;
 import igentuman.nc.handler.sided.SidedContentHandler;
-import igentuman.nc.item.ItemFuel;
 import igentuman.nc.multiblock.ValidationResult;
-import igentuman.nc.multiblock.fission.FissionReactor;
-import igentuman.nc.multiblock.fission.FissionReactorMultiblock;
 import igentuman.nc.multiblock.fusion.FusionReactor;
 import igentuman.nc.multiblock.fusion.FusionReactorMultiblock;
-import igentuman.nc.radiation.ItemRadiation;
 import igentuman.nc.radiation.data.RadiationManager;
 import igentuman.nc.recipes.AbstractRecipe;
 import igentuman.nc.recipes.NcRecipeType;
@@ -31,7 +25,6 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -43,11 +36,8 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
 
 import static igentuman.nc.block.fission.FissionControllerBlock.POWERED;
-import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.util.ModUtil.isCcLoaded;
 
 public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE {
@@ -75,6 +65,18 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
     public int inputRedstoneSignal = 0;
     @NBTField
     protected boolean forceShutdown = false;
+    @NBTField
+    public double magneticFieldStrength = 0;
+    @NBTField
+    public int magnetsPower = 0;
+    @NBTField
+    public int maxMagnetsTemp = 0;
+    @NBTField
+    public int rfAmplification = 0;
+    @NBTField
+    public int rfAmplifiersPower = 0;
+    @NBTField
+    public int minRFAmplifiersTemp = 0;
 
     public final SidedContentHandler contentHandler;
     public final CustomEnergyStorage energyStorage = createEnergy();
@@ -178,10 +180,12 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
 
         size = multiblock().width();//todo remove
         boolean changed = wasPowered != powered || wasFormed != multiblock().isFormed();
-        controllerEnabled = (hasRedstoneSignal() || controllerEnabled) && multiblock().isFormed();
+        changed = updateCharacteristics() || changed;
+        controllerEnabled = (hasRedstoneSignal() || controllerEnabled) && multiblock().isReadyToProcess();
         controllerEnabled = !forceShutdown && controllerEnabled;
         if (multiblock().isFormed()) {
             size = multiblock().width();
+
             if(controllerEnabled) {
                 powered = processReaction();
                 changed = powered || changed;
@@ -197,6 +201,23 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(POWERED, powered), Block.UPDATE_ALL);
         }
         controllerEnabled = false;
+    }
+
+    private boolean updateCharacteristics() {
+        boolean hasChanges =
+                magneticFieldStrength != multiblock().magneticFieldStrength
+                || magnetsPower != multiblock().magnetsPower
+                || maxMagnetsTemp != multiblock().maxMagnetsTemp
+                || rfAmplification != multiblock().rfAmplification
+                || rfAmplifiersPower != multiblock().rfAmplifiersPower
+                || minRFAmplifiersTemp != multiblock().maxRFAmplifiersTemp;
+        magneticFieldStrength = multiblock().magneticFieldStrength;
+        magnetsPower = multiblock().magnetsPower;
+        maxMagnetsTemp = multiblock().maxMagnetsTemp;
+        rfAmplification = multiblock().rfAmplification;
+        rfAmplifiersPower = multiblock().rfAmplifiersPower;
+        minRFAmplifiersTemp = multiblock().maxRFAmplifiersTemp;
+        return hasChanges;
     }
 
     private boolean coolDown() {

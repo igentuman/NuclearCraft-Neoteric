@@ -193,7 +193,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("fission.recipe.heat","Heat Generation: %s H/t");
 
         add("tooltip.nc.rf_amplifier.power","Energy Required: %s FE/t");
-        add("tooltip.nc.rf_amplifier.voltage","Voltage: %s kEV");
+        add("tooltip.nc.rf_amplifier.voltage","Voltage: %s kV");
         add("tooltip.nc.rf_amplifier.efficiency","Efficiency: %s%%");
         add("tooltip.nc.rf_amplifier.heat","Heat: %s H/t");
         add("tooltip.nc.rf_amplifier.max_temp","Max Temparature: %s kK");

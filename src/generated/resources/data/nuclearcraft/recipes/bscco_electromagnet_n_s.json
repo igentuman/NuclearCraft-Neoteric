@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "nuclearcraft:bscco_electromagnet"
+    }
+  ],
+  "result": {
+    "item": "nuclearcraft:bscco_electromagnet_slope"
+  }
+}

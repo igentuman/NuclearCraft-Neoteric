@@ -1,5 +1,7 @@
 package igentuman.nc.multiblock.fusion;
 
+import igentuman.nc.block.entity.ElectromagnetBE;
+import igentuman.nc.block.entity.RFAmplifierBE;
 import igentuman.nc.block.entity.fusion.FusionCasingBE;
 import igentuman.nc.block.entity.fusion.FusionConnectorBE;
 import igentuman.nc.block.entity.fusion.FusionCoreBE;
@@ -10,7 +12,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
+import java.util.HashMap;
 import java.util.List;
 
 import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_BLOCKS;
@@ -18,12 +23,29 @@ import static net.minecraft.core.Direction.*;
 import static net.minecraft.world.level.block.Blocks.AIR;
 
 public class FusionReactorMultiblock extends AbstractNCMultiblock {
-    protected FusionCoreBE controllerBE;
+    protected FusionCoreBE<?> controllerBE;
     protected int length = 0;
+    public double magneticFieldStrength = 0;
+    public int magnetsPower = 0;
+    public int maxMagnetsTemp = 0;
+    //KEV
+    public int rfAmplification = 0;
+    public int rfAmplifiersPower = 0;
+    public int maxRFAmplifiersTemp = 0;
     protected boolean connectorsValid = false;
     protected boolean ringValid = false;
+    protected boolean needToCollectFunctionalBlocks = true;
+    protected boolean needToRecalculateCharacteristics = true;
 
-    public FusionReactorMultiblock(FusionCoreBE core) {
+    public boolean isReadyToProcess()
+    {
+        return isFormed && outerValid && innerValid && !needToRecalculateCharacteristics && !needToCollectFunctionalBlocks;
+    }
+
+    protected HashMap<BlockPos, ElectromagnetBE> electromagnets = new HashMap<>();
+    protected HashMap<BlockPos, RFAmplifierBE> amplifiers = new HashMap<>();
+
+    public FusionReactorMultiblock(FusionCoreBE<?> core) {
         super(
                 List.of(
                         FUSION_BLOCKS.get("fusion_reactor_casing").get(),
@@ -32,7 +54,6 @@ public class FusionReactorMultiblock extends AbstractNCMultiblock {
                 List.of(AIR));
         controllerBE = core;
         controller = new FusionReactorController(controllerBE);
-
     }
 
     @Override
@@ -100,6 +121,77 @@ public class FusionReactorMultiblock extends AbstractNCMultiblock {
         }
     }
 
+    @Override
+    public void validate() {
+        super.validate();
+        needToCollectFunctionalBlocks = isFormed;
+    }
+
+    public void collectFunctionalParts() {
+        electromagnets.clear();
+        amplifiers.clear();
+        NCBlockPos pos = new NCBlockPos(controllerBE.getBlockPos());
+        for(Direction side: List.of(NORTH, EAST, SOUTH, WEST)) {
+            Direction dir = side;
+            int steps = length*2+3;
+            int shift = length+1;
+            NCBlockPos startPosInnerWall = null;
+            NCBlockPos startPosOuterWall = null;
+            Level level = controllerBE.getLevel();
+            //position to left corner of the ring
+            switch (side) {
+                case NORTH -> {
+                    dir = EAST;
+                    startPosInnerWall = new NCBlockPos(pos.revert().relative(NORTH, shift).relative(WEST, shift));
+                    startPosOuterWall = new NCBlockPos(pos.revert().relative(NORTH, 2+shift).relative(WEST, 1+shift));
+                }
+                case SOUTH -> {
+                    dir = WEST;
+                    startPosInnerWall = new NCBlockPos(pos.revert().relative(SOUTH, shift).relative(EAST, shift));
+                    startPosOuterWall = new NCBlockPos(pos.revert().relative(SOUTH, 2+shift).relative(EAST, 1+shift));
+                }
+                case WEST -> {
+                    dir = SOUTH;
+                    startPosInnerWall = new NCBlockPos(pos.revert().relative(WEST, shift).relative(NORTH, shift));
+                    startPosOuterWall = new NCBlockPos(pos.revert().relative(WEST, 2+shift).relative(NORTH, 1+shift));
+                }
+                case EAST -> {
+                    dir = NORTH;
+                    startPosInnerWall = new NCBlockPos(pos.revert().relative(EAST, shift).relative(SOUTH, shift));
+                    startPosOuterWall = new NCBlockPos(pos.revert().relative(EAST, 2+shift).relative(SOUTH, 1+shift));
+                }
+            }
+            //inner
+            for(int i = 0; i < steps; i++) {
+                if(level.getBlockEntity(startPosInnerWall.revert().relative(dir, i)) instanceof ElectromagnetBE magnet) {
+                    electromagnets.put(new NCBlockPos(startPosInnerWall), magnet);
+                } else if(level.getBlockEntity(startPosInnerWall.revert().relative(dir, i)) instanceof RFAmplifierBE amplifier) {
+                    amplifiers.put(new NCBlockPos(startPosInnerWall), amplifier);
+                }
+
+                if(level.getBlockEntity(startPosInnerWall.revert().relative(UP, 2).relative(dir, i)) instanceof ElectromagnetBE magnet) {
+                    electromagnets.put(new NCBlockPos(startPosInnerWall), magnet);
+                } else if(level.getBlockEntity(startPosInnerWall.revert().relative(UP, 2).relative(dir, i)) instanceof RFAmplifierBE amplifier) {
+                    amplifiers.put(new NCBlockPos(startPosInnerWall), amplifier);
+                }
+            }
+            //outer
+            for(int i = 0; i < steps+2; i++) {
+                if(level.getBlockEntity(startPosOuterWall.revert().relative(dir, i)) instanceof ElectromagnetBE magnet) {
+                    electromagnets.put(new NCBlockPos(startPosOuterWall), magnet);
+                } else if(level.getBlockEntity(startPosOuterWall.revert().relative(dir, i)) instanceof RFAmplifierBE amplifier) {
+                    amplifiers.put(new NCBlockPos(startPosOuterWall), amplifier);
+                }
+
+                if(level.getBlockEntity(startPosOuterWall.revert().relative(UP, 2).relative(dir, i)) instanceof ElectromagnetBE magnet) {
+                    electromagnets.put(new NCBlockPos(startPosOuterWall), magnet);
+                } else if(level.getBlockEntity(startPosOuterWall.revert().relative(UP, 2).relative(dir, i)) instanceof RFAmplifierBE amplifier) {
+                    amplifiers.put(new NCBlockPos(startPosOuterWall), amplifier);
+                }
+            }
+        }
+    }
+
     private void validateRing() {
         NCBlockPos pos = new NCBlockPos(controllerBE.getBlockPos().relative(UP));
         ringValid = true;
@@ -148,6 +240,7 @@ public class FusionReactorMultiblock extends AbstractNCMultiblock {
                 if(level.getBlockEntity(startPosInnerWall.revert().relative(dir, i)) instanceof FusionCasingBE casing) {
                     casing.setController(controllerBE);
                     allBlocks.add(new NCBlockPos(startPosInnerWall));
+                    attachMultiblock(casing);
                 } else {
                     ringValid = false;
                     validationResult = ValidationResult.WRONG_OUTER;
@@ -160,6 +253,7 @@ public class FusionReactorMultiblock extends AbstractNCMultiblock {
                 if(level.getBlockEntity(startPosOuterWall.revert().relative(dir, i)) instanceof FusionCasingBE casing1) {
                     casing1.setController(controllerBE);
                     allBlocks.add(new NCBlockPos(startPosOuterWall));
+                    attachMultiblock(casing1);
                 } else {
                     ringValid = false;
                     validationResult = ValidationResult.WRONG_OUTER;
@@ -169,6 +263,7 @@ public class FusionReactorMultiblock extends AbstractNCMultiblock {
                 if(level.getBlockEntity(startPosBottomWall.revert().relative(dir, i)) instanceof FusionCasingBE casing2) {
                     casing2.setController(controllerBE);
                     allBlocks.add(new NCBlockPos(startPosBottomWall));
+                    attachMultiblock(casing2);
                 } else {
                     ringValid = false;
                     validationResult = ValidationResult.WRONG_OUTER;
@@ -178,6 +273,8 @@ public class FusionReactorMultiblock extends AbstractNCMultiblock {
                 if(level.getBlockEntity(startPosTopWall.revert().relative(dir, i)) instanceof FusionCasingBE casing3) {
                     casing3.setController(controllerBE);
                     allBlocks.add(new NCBlockPos(startPosTopWall));
+                    attachMultiblock(casing3);
+
 
                 } else {
                     ringValid = false;
@@ -198,6 +295,7 @@ public class FusionReactorMultiblock extends AbstractNCMultiblock {
             for(Direction side: List.of(NORTH, EAST, Direction.SOUTH, Direction.WEST)) {
                 if(controllerBE.getLevel().getBlockEntity(pos.revert().relative(side, i)) instanceof FusionConnectorBE connector) {
                     connector.setController(controllerBE);
+                    attachMultiblock(connector);
                     allBlocks.add(new NCBlockPos(pos));
                     connectors++;
                 }
@@ -279,5 +377,67 @@ public class FusionReactorMultiblock extends AbstractNCMultiblock {
     @Override
     protected Direction getFacing() {
         return null;
+    }
+
+    public void tick() {
+        super.tick();
+        if(isFormed) {
+            if(needToCollectFunctionalBlocks) {
+                collectFunctionalParts();
+                needToCollectFunctionalBlocks = false;
+                needToRecalculateCharacteristics = true;
+            } else if(needToRecalculateCharacteristics){
+                recalculateCharacteristics();
+                needToRecalculateCharacteristics = false;
+            }
+        }
+    }
+
+    protected void recalculateCharacteristics() {
+        magneticFieldStrength = 0;
+        magnetsPower = 0;
+        maxMagnetsTemp = 1000000;
+        rfAmplification = 0;
+        rfAmplifiersPower = 0;
+        maxRFAmplifiersTemp = 1000000;
+
+        for(ElectromagnetBE magnet: electromagnets.values()) {
+            magneticFieldStrength += magnet.getStrength();
+            magnetsPower += magnet.getPower();
+            if(magnet.getMaxTemperature() < maxMagnetsTemp) {
+                maxMagnetsTemp = magnet.getMaxTemperature();
+            }
+        }
+        for(RFAmplifierBE amplifier: amplifiers.values()) {
+            rfAmplification += amplifier.getAmplification();
+            rfAmplifiersPower += amplifier.getPower();
+            if(amplifier.getMaxTemperature() < maxRFAmplifiersTemp) {
+                maxRFAmplifiersTemp = amplifier.getMaxTemperature();
+            }
+        }
+    }
+
+    @Override
+    public void onNeighborChange(BlockState state, BlockPos pos, BlockPos neighbor) {
+        super.onNeighborChange(state, pos, neighbor);
+        if(!hasToRefresh && componentChanged(neighbor)) {
+            needToCollectFunctionalBlocks = true;
+        }
+    }
+
+    private boolean componentChanged(BlockPos neighbor) {
+        //known component changed
+        if(electromagnets.containsKey(neighbor) || amplifiers.containsKey(neighbor)) {
+            return true;
+        }
+        BlockEntity be = level().getBlockEntity(neighbor);
+        //new added
+        if(
+                be instanceof ElectromagnetBE magnet
+                || be instanceof RFAmplifierBE amplifier
+        ) {
+            return true;
+        }
+        return false;
     }
 }

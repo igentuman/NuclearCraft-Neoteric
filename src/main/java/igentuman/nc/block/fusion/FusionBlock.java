@@ -1,5 +1,6 @@
 package igentuman.nc.block.fusion;
 
+import igentuman.nc.block.entity.fission.FissionBE;
 import igentuman.nc.block.entity.fusion.FusionBE;
 import igentuman.nc.multiblock.fusion.FusionReactor;
 import net.minecraft.core.BlockPos;
@@ -15,6 +16,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -75,5 +77,10 @@ public class FusionBlock extends Block implements EntityBlock {
                 tile.tickServer();
             }
         };
+    }
+
+    @Override
+    public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor){
+        ((FusionBE)level.getBlockEntity(pos)).onNeighborChange(state,  pos, neighbor);
     }
 }

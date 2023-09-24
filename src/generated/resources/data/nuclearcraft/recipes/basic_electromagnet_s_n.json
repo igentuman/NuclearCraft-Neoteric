@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "nuclearcraft:basic_electromagnet_slope"
+    }
+  ],
+  "result": {
+    "item": "nuclearcraft:basic_electromagnet"
+  }
+}

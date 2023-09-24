@@ -20,7 +20,7 @@ import java.util.function.Consumer;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.setup.registration.Fuel.NC_ISOTOPES;
-import static igentuman.nc.setup.registration.NCBlocks.NC_BLOCKS;
+import static igentuman.nc.setup.registration.NCBlocks.*;
 import static igentuman.nc.setup.registration.NCEnergyBlocks.ENERGY_BLOCKS;
 import static igentuman.nc.setup.registration.NCItems.*;
 import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCK;
@@ -279,6 +279,157 @@ public class NCRecipes extends RecipeProvider {
     }
 
     private void items(Consumer<FinishedRecipe> consumer) {
+
+        ShapedRecipeBuilder.shaped(NC_RF_AMPLIFIERS.get("basic_rf_amplifier").get())
+                .pattern("CCC")
+                .pattern("S S")
+                .pattern("CCC")
+                .define('C', forgePlate(Materials.copper))
+                .define('S', forgeIngot(Materials.stainless_steel))
+                .unlockedBy("item", has(forgePlate(Materials.copper)))
+                .save(consumer, new ResourceLocation(MODID, "basic_rf_amplifier"));
+
+        ShapedRecipeBuilder.shaped(NC_RF_AMPLIFIERS.get("magnesium_diboride_rf_amplifier").get())
+                .pattern("CCC")
+                .pattern("SBS")
+                .pattern("CCC")
+                .define('C', forgeIngot(Materials.magnesium_diboride))
+                .define('S', forgeIngot(Materials.stainless_steel))
+                .define('B', NC_RF_AMPLIFIERS.get("basic_rf_amplifier").get())
+                .unlockedBy("item", has(NC_RF_AMPLIFIERS.get("basic_rf_amplifier").get()))
+                .save(consumer, new ResourceLocation(MODID, "magnesium_diboride_rf_amplifier"));
+
+        ShapedRecipeBuilder.shaped(NC_RF_AMPLIFIERS.get("niobium_tin_rf_amplifier").get())
+                .pattern("CCC")
+                .pattern("SBS")
+                .pattern("CCC")
+                .define('C', forgeIngot(Materials.niobium_tin))
+                .define('S', forgeIngot(Materials.stainless_steel))
+                .define('B', NC_RF_AMPLIFIERS.get("basic_rf_amplifier").get())
+                .unlockedBy("item", has(NC_RF_AMPLIFIERS.get("basic_rf_amplifier").get()))
+                .save(consumer, new ResourceLocation(MODID, "niobium_tin_rf_amplifier"));
+
+        ShapedRecipeBuilder.shaped(NC_RF_AMPLIFIERS.get("niobium_titanium_rf_amplifier").get())
+                .pattern("CCC")
+                .pattern("SBS")
+                .pattern("CCC")
+                .define('C', forgeIngot(Materials.niobium_titanium))
+                .define('S', forgeIngot(Materials.stainless_steel))
+                .define('B', NC_RF_AMPLIFIERS.get("basic_rf_amplifier").get())
+                .unlockedBy("item", has(NC_RF_AMPLIFIERS.get("basic_rf_amplifier").get()))
+                .save(consumer, new ResourceLocation(MODID, "niobium_titanium_rf_amplifier"));
+
+        ShapedRecipeBuilder.shaped(NC_RF_AMPLIFIERS.get("bscco_rf_amplifier").get())
+                .pattern("CCC")
+                .pattern("SBS")
+                .pattern("CCC")
+                .define('C', NC_PARTS.get("coil_bscco").get())
+                .define('S', forgeIngot(Materials.stainless_steel))
+                .define('B', NC_RF_AMPLIFIERS.get("basic_rf_amplifier").get())
+                .unlockedBy("item", has(NC_RF_AMPLIFIERS.get("basic_rf_amplifier").get()))
+                .save(consumer, new ResourceLocation(MODID, "bscco_rf_amplifier"));
+
+        ShapedRecipeBuilder.shaped(NC_ELECTROMAGNETS.get("basic_electromagnet").get())
+                .pattern("CCC")
+                .pattern("SBS")
+                .pattern("CCC")
+                .define('C', NC_PARTS.get("coil_copper").get())
+                .define('S', forgeIngot(Materials.stainless_steel))
+                .define('B', forgeIngot(Materials.tough_alloy))
+                .unlockedBy("item", has(NC_PARTS.get("coil_copper").get()))
+                .save(consumer, new ResourceLocation(MODID, "basic_electromagnet"));
+
+        ShapedRecipeBuilder.shaped(NC_ELECTROMAGNETS.get("magnesium_diboride_electromagnet").get())
+                .pattern("CCC")
+                .pattern("SBS")
+                .pattern("CCC")
+                .define('C', NC_PARTS.get("coil_magnesium_diboride").get())
+                .define('S', forgeIngot(Materials.stainless_steel))
+                .define('B', NC_ELECTROMAGNETS.get("basic_electromagnet").get())
+                .unlockedBy("item", has(NC_ELECTROMAGNETS.get("basic_electromagnet").get()))
+                .save(consumer, new ResourceLocation(MODID, "magnesium_diboride_electromagnet"));
+
+        ShapedRecipeBuilder.shaped(NC_ELECTROMAGNETS.get("niobium_tin_electromagnet").get())
+                .pattern("CCC")
+                .pattern("SBS")
+                .pattern("CCC")
+                .define('C', forgeIngot(Materials.niobium_tin))
+                .define('S', forgeIngot(Materials.stainless_steel))
+                .define('B', NC_ELECTROMAGNETS.get("basic_electromagnet").get())
+                .unlockedBy("item", has(NC_ELECTROMAGNETS.get("basic_electromagnet").get()))
+                .save(consumer, new ResourceLocation(MODID, "niobium_tin_electromagnet"));
+
+        ShapedRecipeBuilder.shaped(NC_ELECTROMAGNETS.get("niobium_titanium_electromagnet").get())
+                .pattern("CCC")
+                .pattern("SBS")
+                .pattern("CCC")
+                .define('C', forgeIngot(Materials.niobium_titanium))
+                .define('S', forgeIngot(Materials.stainless_steel))
+                .define('B', NC_ELECTROMAGNETS.get("basic_electromagnet").get())
+                .unlockedBy("item", has(NC_ELECTROMAGNETS.get("basic_electromagnet").get()))
+                .save(consumer, new ResourceLocation(MODID, "niobium_titanium_electromagnet"));
+
+        ShapedRecipeBuilder.shaped(NC_ELECTROMAGNETS.get("bscco_electromagnet").get())
+                .pattern("CCC")
+                .pattern("SBS")
+                .pattern("CCC")
+                .define('C', NC_PARTS.get("coil_bscco").get())
+                .define('S', forgeIngot(Materials.stainless_steel))
+                .define('B', NC_ELECTROMAGNETS.get("basic_electromagnet").get())
+                .unlockedBy("item", has(NC_ELECTROMAGNETS.get("basic_electromagnet").get()))
+                .save(consumer, new ResourceLocation(MODID, "bscco_electromagnet"));
+
+        ShapelessRecipeBuilder.shapeless(NC_ELECTROMAGNETS.get("basic_electromagnet").get())
+                .requires(NC_ELECTROMAGNETS.get("basic_electromagnet_slope").get())
+                .unlockedBy("item", has(NC_ELECTROMAGNETS.get("basic_electromagnet_slope").get()))
+                .save(consumer, new ResourceLocation(MODID, "basic_electromagnet_s_n"));
+
+        ShapelessRecipeBuilder.shapeless(NC_ELECTROMAGNETS.get("basic_electromagnet_slope").get())
+                .requires(NC_ELECTROMAGNETS.get("basic_electromagnet").get())
+                .unlockedBy("item", has(NC_ELECTROMAGNETS.get("basic_electromagnet").get()))
+                .save(consumer, new ResourceLocation(MODID, "basic_electromagnet_n_s"));
+
+        ShapelessRecipeBuilder.shapeless(NC_ELECTROMAGNETS.get("magnesium_diboride_electromagnet").get())
+                .requires(NC_ELECTROMAGNETS.get("magnesium_diboride_electromagnet_slope").get())
+                .unlockedBy("item", has(NC_ELECTROMAGNETS.get("magnesium_diboride_electromagnet_slope").get()))
+                .save(consumer, new ResourceLocation(MODID, "magnesium_diboride_electromagnet_s_n"));
+
+        ShapelessRecipeBuilder.shapeless(NC_ELECTROMAGNETS.get("magnesium_diboride_electromagnet_slope").get())
+                .requires(NC_ELECTROMAGNETS.get("magnesium_diboride_electromagnet").get())
+                .unlockedBy("item", has(NC_ELECTROMAGNETS.get("magnesium_diboride_electromagnet").get()))
+                .save(consumer, new ResourceLocation(MODID, "magnesium_diboride_electromagnet_n_s"));
+
+        ShapelessRecipeBuilder.shapeless(NC_ELECTROMAGNETS.get("niobium_tin_electromagnet").get())
+                .requires(NC_ELECTROMAGNETS.get("niobium_tin_electromagnet_slope").get())
+                .unlockedBy("item", has(NC_ELECTROMAGNETS.get("niobium_tin_electromagnet_slope").get()))
+                .save(consumer, new ResourceLocation(MODID, "niobium_tin_electromagnet_s_n"));
+
+        ShapelessRecipeBuilder.shapeless(NC_ELECTROMAGNETS.get("niobium_tin_electromagnet_slope").get())
+                .requires(NC_ELECTROMAGNETS.get("niobium_tin_electromagnet").get())
+                .unlockedBy("item", has(NC_ELECTROMAGNETS.get("niobium_tin_electromagnet").get()))
+                .save(consumer, new ResourceLocation(MODID, "niobium_tin_electromagnet_n_s"));
+
+
+        ShapelessRecipeBuilder.shapeless(NC_ELECTROMAGNETS.get("niobium_titanium_electromagnet").get())
+                .requires(NC_ELECTROMAGNETS.get("niobium_titanium_electromagnet_slope").get())
+                .unlockedBy("item", has(NC_ELECTROMAGNETS.get("niobium_titanium_electromagnet_slope").get()))
+                .save(consumer, new ResourceLocation(MODID, "niobium_titanium_electromagnet_s_n"));
+
+        ShapelessRecipeBuilder.shapeless(NC_ELECTROMAGNETS.get("niobium_titanium_electromagnet_slope").get())
+                .requires(NC_ELECTROMAGNETS.get("niobium_titanium_electromagnet").get())
+                .unlockedBy("item", has(NC_ELECTROMAGNETS.get("niobium_titanium_electromagnet").get()))
+                .save(consumer, new ResourceLocation(MODID, "niobium_titanium_electromagnet_n_s"));
+
+
+        ShapelessRecipeBuilder.shapeless(NC_ELECTROMAGNETS.get("bscco_electromagnet").get())
+                .requires(NC_ELECTROMAGNETS.get("bscco_electromagnet_slope").get())
+                .unlockedBy("item", has(NC_ELECTROMAGNETS.get("bscco_electromagnet_slope").get()))
+                .save(consumer, new ResourceLocation(MODID, "bscco_electromagnet_s_n"));
+
+        ShapelessRecipeBuilder.shapeless(NC_ELECTROMAGNETS.get("bscco_electromagnet_slope").get())
+                .requires(NC_ELECTROMAGNETS.get("bscco_electromagnet").get())
+                .unlockedBy("item", has(NC_ELECTROMAGNETS.get("bscco_electromagnet").get()))
+                .save(consumer, new ResourceLocation(MODID, "bscco_electromagnet_n_s"));
 
         ShapedRecipeBuilder.shaped(LITHIUM_ION_CELL.get())
                 .pattern("CCC")

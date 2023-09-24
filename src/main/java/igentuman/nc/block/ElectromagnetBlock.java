@@ -1,8 +1,12 @@
 package igentuman.nc.block;
 
+import igentuman.nc.block.entity.ElectromagnetBE;
+import igentuman.nc.block.entity.fission.FissionBE;
 import igentuman.nc.content.Electromagnets;
+import igentuman.nc.setup.registration.NCStorageBlocks;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.FrontAndTop;
 import net.minecraft.network.chat.Component;
@@ -10,19 +14,23 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Mirror;
-import net.minecraft.world.level.block.Rotation;
-import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.Material;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class ElectromagnetBlock extends Block {
+import static igentuman.nc.setup.registration.NCBlocks.NC_BE;
+
+public class ElectromagnetBlock extends Block implements EntityBlock {
 
     public ElectromagnetBlock(Properties pProperties) {
         super(pProperties);
@@ -56,5 +64,29 @@ public class ElectromagnetBlock extends Block {
         list.add(TextUtils.applyFormat(
                 Component.translatable("tooltip.nc.electromagnet.max_temp", TextUtils.numberFormat((double) prefab().getMaxTemp() /1000)),
                 ChatFormatting.RED));
+    }
+
+    @Nullable
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
+        return NC_BE.get(name()).get().create(pPos, pState);
+    }
+
+
+    @javax.annotation.Nullable
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+        if (level.isClientSide()) {
+            return (lvl, pos, blockState, t) -> {
+                if (t instanceof ElectromagnetBE tile) {
+                    tile.tickClient();
+                }
+            };
+        }
+        return (lvl, pos, blockState, t)-> {
+            if (t instanceof ElectromagnetBE tile) {
+                tile.tickServer();
+            }
+        };
     }
 }

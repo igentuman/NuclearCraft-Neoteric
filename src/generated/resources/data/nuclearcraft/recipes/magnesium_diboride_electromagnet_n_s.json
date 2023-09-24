@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "nuclearcraft:magnesium_diboride_electromagnet"
+    }
+  ],
+  "result": {
+    "item": "nuclearcraft:magnesium_diboride_electromagnet_slope"
+  }
+}

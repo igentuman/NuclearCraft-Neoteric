@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "nuclearcraft:niobium_tin_electromagnet"
+    }
+  ],
+  "result": {
+    "item": "nuclearcraft:niobium_tin_electromagnet_slope"
+  }
+}

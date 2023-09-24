@@ -224,8 +224,11 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
 
     protected abstract void invalidateStats();
 
-    private void attachMultiblock(BlockPos pos) {
-        BlockEntity be = getLevel().getBlockEntity(pos);
+    protected void attachMultiblock(BlockPos pos) {
+        attachMultiblock(getLevel().getBlockEntity(pos));
+    }
+
+    protected void attachMultiblock(BlockEntity be) {
         if(be instanceof IMultiblockAttachable part) {
             part.setMultiblock(this);
         }

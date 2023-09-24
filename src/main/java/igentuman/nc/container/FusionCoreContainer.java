@@ -141,4 +141,28 @@ public class FusionCoreContainer extends AbstractContainerMenu {
     public double getProgress() {
         return blockEntity.getRecipeProgress();
     }
+
+    public double getElectromagnetsField() {
+        return blockEntity.magneticFieldStrength;
+    }
+
+    public int getAmplifierVoltage() {
+        return blockEntity.rfAmplification;
+    }
+
+    public int getElectromagnetsPower() {
+        return blockEntity.magnetsPower;
+    }
+
+    public int getElectromagnetsMaxTemp() {
+        return blockEntity.maxMagnetsTemp;
+    }
+
+    public int getAmplifierPower() {
+        return blockEntity.rfAmplifiersPower;
+    }
+
+    public int getAmplifierMaxTemp() {
+        return blockEntity.minRFAmplifiersTemp;
+    }
 }

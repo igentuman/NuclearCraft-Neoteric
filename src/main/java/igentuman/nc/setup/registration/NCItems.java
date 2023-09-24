@@ -214,7 +214,8 @@ public class NCItems {
                 "sic_fiber",
                 "steel_frame",
                 "coil_copper",
-                "coil_magnesium_diboride"
+                "coil_magnesium_diboride",
+                "coil_bscco"
         );
         for(String name: parts) {
             if(name.equals("research_paper")) {

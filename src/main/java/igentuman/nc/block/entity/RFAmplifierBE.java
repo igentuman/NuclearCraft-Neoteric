@@ -1,6 +1,6 @@
 package igentuman.nc.block.entity;
 
-import igentuman.nc.content.Electromagnets;
+import igentuman.nc.content.RFAmplifier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -8,29 +8,27 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import static igentuman.nc.setup.registration.NCBlocks.NC_BE;
 
-public class ElectromagnetBE extends BlockEntity {
+public class RFAmplifierBE extends BlockEntity {
     protected String name;
     public boolean hasToUpdate = true;
-    public ElectromagnetBE(BlockPos blockPos, BlockState blockState) {
+
+    public RFAmplifierBE(BlockPos blockPos, BlockState blockState) {
         this(NC_BE.get(getName(blockState)).get(), blockPos, blockState);
     }
-
     public static String getName(BlockState pBlockState) {
-        return pBlockState.getBlock().asItem().toString().replace("_slope", "");
+        return pBlockState.getBlock().asItem().toString();
     }
-
-
-    public ElectromagnetBE(BlockEntityType<?> pType, BlockPos pPos, BlockState pBlockState) {
+    public RFAmplifierBE(BlockEntityType<?> pType, BlockPos pPos, BlockState pBlockState) {
         super(pType, pPos, pBlockState);
         name = getName(pBlockState);
     }
 
-    public Electromagnets.MagnetPrefab prefab() {
-        return Electromagnets.all().get(name);
+    public RFAmplifier.RFAmplifierPrefab prefab() {
+        return RFAmplifier.all().get(name);
     }
 
-    public double getStrength() {
-        return prefab().getMagneticField();
+    public int getAmplification() {
+        return prefab().getVoltage();
     }
 
     public int getPower() {

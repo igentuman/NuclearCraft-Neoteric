@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "item": "nuclearcraft:basic_rf_amplifier"
+    },
+    "C": {
+      "tag": "forge:ingots/niobium_tin"
+    },
+    "S": {
+      "tag": "forge:ingots/stainless_steel"
+    }
+  },
+  "pattern": [
+    "CCC",
+    "SBS",
+    "CCC"
+  ],
+  "result": {
+    "item": "nuclearcraft:niobium_tin_rf_amplifier"
+  }
+}

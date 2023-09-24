@@ -85,6 +85,7 @@ public class FissionBlock extends Block implements EntityBlock {
         };
     }
 
+    @Override
     public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor){
         ((FissionBE)level.getBlockEntity(pos)).onNeighborChange(state,  pos, neighbor);
     }

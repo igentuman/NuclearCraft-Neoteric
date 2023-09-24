@@ -1,5 +1,6 @@
 package igentuman.nc.content;
 
+import igentuman.nc.block.entity.RFAmplifierBE;
 import igentuman.nc.block.entity.energy.NCEnergy;
 import igentuman.nc.handler.config.CommonConfig;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -90,6 +91,8 @@ public class Electromagnets {
             this.magneticField = magneticField;
             this.maxTemp = maxTemp;
             this.efficiency = efficiency;
+            blockEntity = ElectromagnetBE::new;
+
         }
 
         public int getPower() {
@@ -124,7 +127,7 @@ public class Electromagnets {
             return blockEntity;
         }
 
-        public MagnetPrefab setBlockEntity(BlockEntityType.BlockEntitySupplier<? extends NCEnergy>  blockEntity) {
+        public MagnetPrefab setBlockEntity(BlockEntityType.BlockEntitySupplier<? extends ElectromagnetBE>  blockEntity) {
             this.blockEntity = blockEntity;
             return this;
         }

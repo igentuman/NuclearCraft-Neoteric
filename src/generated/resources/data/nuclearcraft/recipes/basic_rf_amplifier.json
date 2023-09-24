@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "tag": "forge:plates/copper"
+    },
+    "S": {
+      "tag": "forge:ingots/stainless_steel"
+    }
+  },
+  "pattern": [
+    "CCC",
+    "S S",
+    "CCC"
+  ],
+  "result": {
+    "item": "nuclearcraft:basic_rf_amplifier"
+  }
+}

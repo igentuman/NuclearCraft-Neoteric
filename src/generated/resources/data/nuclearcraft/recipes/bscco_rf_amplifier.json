@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "item": "nuclearcraft:basic_rf_amplifier"
+    },
+    "C": {
+      "item": "nuclearcraft:coil_bscco"
+    },
+    "S": {
+      "tag": "forge:ingots/stainless_steel"
+    }
+  },
+  "pattern": [
+    "CCC",
+    "SBS",
+    "CCC"
+  ],
+  "result": {
+    "item": "nuclearcraft:bscco_rf_amplifier"
+  }
+}

@@ -31,6 +31,7 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -481,6 +482,10 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         super.invalidateCache();
         isCasingValid = false;
         isInternalValid = false;
+    }
+
+    public FluidTank getFluidTank(int i) {
+        return contentHandler.fluidCapability.tanks.get(i);
     }
 
 

@@ -9,6 +9,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
@@ -95,7 +96,7 @@ public class FusionCoreContainer extends AbstractContainerMenu {
     }
 
     protected void layoutPlayerInventorySlots() {
-        int leftCol = 8;
+        int leftCol = 27;
         int topRow = 163;
         addSlotRange(playerInventory, leftCol, topRow, 9, 18);
         topRow -= 58;
@@ -164,5 +165,9 @@ public class FusionCoreContainer extends AbstractContainerMenu {
 
     public int getAmplifierMaxTemp() {
         return blockEntity.minRFAmplifiersTemp;
+    }
+
+    public FluidTank getFluidTank(int i) {
+        return blockEntity.getFluidTank(i);
     }
 }

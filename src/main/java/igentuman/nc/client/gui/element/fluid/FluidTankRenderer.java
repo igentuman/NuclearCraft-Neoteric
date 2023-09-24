@@ -41,7 +41,7 @@ public class FluidTankRenderer extends NCGuiElement {
     private final TooltipMode tooltipMode;
     private FluidTank tank;
 
-    enum TooltipMode {
+    public enum TooltipMode {
         SHOW_AMOUNT,
         SHOW_AMOUNT_AND_CAPACITY,
         ITEM_LIST
@@ -55,7 +55,7 @@ public class FluidTankRenderer extends NCGuiElement {
         this(tank, TooltipMode.SHOW_AMOUNT_AND_CAPACITY, width, height, x, y);
     }
 
-    private FluidTankRenderer(FluidTank tank, TooltipMode tooltipMode, int width, int height, int x, int y) {
+    public FluidTankRenderer(FluidTank tank, TooltipMode tooltipMode, int width, int height, int x, int y) {
 
         this.tank = tank;
         this.tooltipMode = tooltipMode;

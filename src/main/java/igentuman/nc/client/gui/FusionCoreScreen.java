@@ -5,6 +5,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import igentuman.nc.client.gui.element.NCGuiElement;
 import igentuman.nc.client.gui.element.bar.VerticalBar;
 import igentuman.nc.client.gui.element.button.Checkbox;
+import igentuman.nc.client.gui.element.fluid.FluidTankRenderer;
+import igentuman.nc.client.gui.element.slot.VerticalLongSlot;
 import igentuman.nc.container.FusionCoreContainer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -12,12 +14,14 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.client.gui.element.fluid.FluidTankRenderer.TooltipMode.SHOW_AMOUNT_AND_CAPACITY;
 import static igentuman.nc.util.TextUtils.applyFormat;
 
 public class FusionCoreScreen extends AbstractContainerScreen<FusionCoreContainer> implements IVerticalBarScreen {
@@ -37,12 +41,13 @@ public class FusionCoreScreen extends AbstractContainerScreen<FusionCoreContaine
     private VerticalBar heatBar;
     private VerticalBar coolantBar;
     private VerticalBar hotCoolantBar;
+    private VerticalBar casingHeatBar;
 
     public Component casingTootip = Component.empty();
 
     public FusionCoreScreen(FusionCoreContainer container, Inventory inv, Component name) {
         super(container, inv, name);
-        imageWidth = 195;
+        imageWidth = 214;
         imageHeight = 186;
     }
 
@@ -58,13 +63,17 @@ public class FusionCoreScreen extends AbstractContainerScreen<FusionCoreContaine
         super.init();
         Minecraft mc = Minecraft.getInstance();
         updateRelativeCords();
+
         widgets.clear();
-        checkboxIsFormed = new Checkbox(imageWidth-19, 80, this,  isCasingValid());
-        energyBar = new VerticalBar.Energy(17, 16,  this, container().getMaxEnergy());
-        heatBar = new VerticalBar.Heat(8, 16,this,  (int) container().getMaxHeat());
-        coolantBar = new VerticalBar.Coolant(17, 16,  this, 1000000);
-        hotCoolantBar = new VerticalBar.HotCoolant(26, 16,  this, 1000000);
+        checkboxIsFormed = new Checkbox(175, 89, this,  isCasingValid());
+        heatBar = new VerticalBar.HeatLong(6, 5,this,  (int) container().getMaxHeat());
+        energyBar = new VerticalBar.EnergyLong(16, 5,  this, container().getMaxEnergy());
+        coolantBar = new VerticalBar.CoolantLong(26, 5,  this, 1000000);
+        casingHeatBar = new VerticalBar.HeatLong(36, 5,  this, 1000000);
         widgets.add(heatBar);
+        widgets.add(casingHeatBar);
+        widgets.add(coolantBar);
+        addSlots();
     }
 
     private boolean isCasingValid() {
@@ -97,6 +106,28 @@ public class FusionCoreScreen extends AbstractContainerScreen<FusionCoreContaine
         }
         checkboxIsFormed.addTooltip(casingTootip);
         energyBar.draw(matrix, mouseX, mouseY, partialTicks);
+    }
+
+    protected FluidTank getFluidTank(int i) {
+        return menu.getFluidTank(i);
+    }
+
+    public void addSlots()
+    {
+        widgets.add(new VerticalLongSlot(53, 6));
+        widgets.add(new VerticalLongSlot(53, 56));
+        widgets.add(new FluidTankRenderer(getFluidTank(0), SHOW_AMOUNT_AND_CAPACITY,6, 48, 54, 7));
+        widgets.add(new FluidTankRenderer(getFluidTank(1), SHOW_AMOUNT_AND_CAPACITY,6, 48, 54, 57));
+
+        widgets.add(new VerticalLongSlot(191, 6));
+        widgets.add(new VerticalLongSlot(191, 56));
+        widgets.add(new VerticalLongSlot(201, 6));
+        widgets.add(new VerticalLongSlot(201, 56));
+        widgets.add(new FluidTankRenderer(getFluidTank(2), SHOW_AMOUNT_AND_CAPACITY,6, 48, 192, 7));
+        widgets.add(new FluidTankRenderer(getFluidTank(3), SHOW_AMOUNT_AND_CAPACITY,6, 48, 192, 57));
+        widgets.add(new FluidTankRenderer(getFluidTank(4), SHOW_AMOUNT_AND_CAPACITY,6, 48, 202, 7));
+        widgets.add(new FluidTankRenderer(getFluidTank(5), SHOW_AMOUNT_AND_CAPACITY,6, 48, 202, 57));
+
     }
 
     @Override
@@ -132,6 +163,8 @@ public class FusionCoreScreen extends AbstractContainerScreen<FusionCoreContaine
 
     private void renderTooltips(PoseStack pPoseStack, int pMouseX, int pMouseY) {
         heatBar.clearTooltips();
+        casingHeatBar.clearTooltips();
+        coolantBar.clearTooltips();
         heatBar.addTooltip(Component.translatable("reactor.cooling", container().getCooling()).withStyle(ChatFormatting.AQUA));
         heatBar.addTooltip(Component.translatable("reactor.heating", container().getHeating()).withStyle(ChatFormatting.RED));
         heatBar.addTooltip(Component.translatable("reactor.net_heat", container().getNetHeat()).withStyle(ChatFormatting.GOLD));
@@ -146,13 +179,11 @@ public class FusionCoreScreen extends AbstractContainerScreen<FusionCoreContaine
                     Optional.empty(), pMouseX, pMouseY);
         }
 
-        if(container().getMaxEnergy() > 0) {
-            energyBar.clearTooltips();
-            energyBar.addTooltip(Component.translatable("reactor.forge_energy_per_tick", container().energyPerTick()));
-            if(energyBar.isMouseOver(pMouseX, pMouseY)) {
-                renderTooltip(pPoseStack, energyBar.getTooltips(),
-                        Optional.empty(), pMouseX, pMouseY);
-            }
+        energyBar.clearTooltips();
+        energyBar.addTooltip(Component.translatable("reactor.forge_energy_per_tick", container().energyPerTick()));
+        if(energyBar.isMouseOver(pMouseX, pMouseY)) {
+            renderTooltip(pPoseStack, energyBar.getTooltips(),
+                    Optional.empty(), pMouseX, pMouseY);
         }
     }
 

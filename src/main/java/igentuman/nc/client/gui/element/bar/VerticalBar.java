@@ -14,6 +14,7 @@ public class VerticalBar extends NCGuiElement {
     protected double maxValue;
     protected String hintKey = "";
     protected int xOffset;
+    protected int backgroundXoffset = 120;
     IVerticalBarScreen screen;
 
     public VerticalBar(int x, int y, IVerticalBarScreen screen, int max)  {
@@ -37,7 +38,7 @@ public class VerticalBar extends NCGuiElement {
         super.draw(transform, mX, mY, pTicks);
         int internal = height-2;
         int stored = (int)(internal*(barValue/maxValue));
-        blit(transform, X(), Y(), 120, 0,  width, height);
+        blit(transform, X(), Y(), backgroundXoffset, 0,  width, height);
         blit(transform, X()+1, Y()+1+internal-stored, xOffset, internal-stored,  width-2, stored);
 
     }
@@ -46,6 +47,21 @@ public class VerticalBar extends NCGuiElement {
         public Heat(int x, int y, IVerticalBarScreen screen, int maxHeat) {
             super(x, y, screen, maxHeat);
             xOffset = 102;
+            hintKey = "heat.bar.amount";
+        }
+        @Override
+        public void draw(PoseStack transform, int mX, int mY, float pTicks) {
+            barValue = screen.getHeat();
+            super.draw(transform, mX, mY, pTicks);
+        }
+    }
+
+    public static class HeatLong extends VerticalBar{
+        public HeatLong(int x, int y, IVerticalBarScreen screen, int maxHeat) {
+            super(x, y, screen, maxHeat);
+            xOffset = 134;
+            height = 97;
+            backgroundXoffset = 146;
             hintKey = "heat.bar.amount";
         }
         @Override
@@ -68,10 +84,43 @@ public class VerticalBar extends NCGuiElement {
             super.draw(transform, mX, mY, pTicks);
         }
     }
-    public static class Coolant extends VerticalBar {
-        public Coolant(int x, int y, IVerticalBarScreen screen, int maxEnergy) {
+
+    public static class EnergyLong extends VerticalBar {
+        public EnergyLong(int x, int y, IVerticalBarScreen screen,  int maxEnergy) {
             super(x, y, screen, maxEnergy);
+            xOffset = 128;
+            height = 97;
+            backgroundXoffset = 146;
+
+            hintKey = "energy.bar.amount";
+        }
+
+        @Override
+        public void draw(PoseStack transform, int mX, int mY, float pTicks) {
+            barValue = screen.getEnergy();
+            super.draw(transform, mX, mY, pTicks);
+        }
+    }
+    public static class Coolant extends VerticalBar {
+        public Coolant(int x, int y, IVerticalBarScreen screen, int capacity) {
+            super(x, y, screen, capacity);
             xOffset = 108;
+            hintKey = "coolant.bar.amount";
+        }
+
+        @Override
+        public void draw(PoseStack transform, int mX, int mY, float pTicks) {
+            barValue = screen.getCoolant();
+            super.draw(transform, mX, mY, pTicks);
+        }
+    }
+
+    public static class CoolantLong extends VerticalBar {
+        public CoolantLong(int x, int y, IVerticalBarScreen screen, int capacity) {
+            super(x, y, screen, capacity);
+            xOffset = 140;
+            height = 97;
+            backgroundXoffset = 146;
             hintKey = "coolant.bar.amount";
         }
 

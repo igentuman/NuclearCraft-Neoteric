@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import igentuman.nc.client.gui.element.NCGuiElement;
 import igentuman.nc.client.gui.element.bar.VerticalBar;
 import igentuman.nc.client.gui.element.button.Checkbox;
+import igentuman.nc.client.gui.element.button.SliderHorizontal;
 import igentuman.nc.client.gui.element.fluid.FluidTankRenderer;
 import igentuman.nc.client.gui.element.slot.VerticalLongSlot;
 import igentuman.nc.container.FusionCoreContainer;
@@ -22,7 +23,7 @@ import java.util.Optional;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.client.gui.element.fluid.FluidTankRenderer.TooltipMode.SHOW_AMOUNT_AND_CAPACITY;
-import static igentuman.nc.util.TextUtils.applyFormat;
+import static igentuman.nc.util.TextUtils.numberFormat;
 
 public class FusionCoreScreen extends AbstractContainerScreen<FusionCoreContainer> implements IVerticalBarScreen {
     protected final ResourceLocation GUI = new ResourceLocation(MODID, "textures/gui/fusion_core.png");
@@ -42,6 +43,8 @@ public class FusionCoreScreen extends AbstractContainerScreen<FusionCoreContaine
     private VerticalBar coolantBar;
     private VerticalBar hotCoolantBar;
     private VerticalBar casingHeatBar;
+
+    private SliderHorizontal rfAmplifierSlider;
 
     public Component casingTootip = Component.empty();
 
@@ -70,9 +73,13 @@ public class FusionCoreScreen extends AbstractContainerScreen<FusionCoreContaine
         energyBar = new VerticalBar.EnergyLong(16, 5,  this, container().getMaxEnergy());
         coolantBar = new VerticalBar.CoolantLong(26, 5,  this, 1000000);
         casingHeatBar = new VerticalBar.HeatLong(36, 5,  this, 1000000);
+        rfAmplifierSlider = new SliderHorizontal(64, 30, 119, this, menu.getBlockPos());
+        rfAmplifierSlider.slideTo(container().getRfAmplifiersPowerRatio());
+        widgets.add(rfAmplifierSlider);
         widgets.add(heatBar);
         widgets.add(casingHeatBar);
         widgets.add(coolantBar);
+
         addSlots();
     }
 
@@ -132,7 +139,9 @@ public class FusionCoreScreen extends AbstractContainerScreen<FusionCoreContaine
 
     @Override
     protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
-        casingTootip = applyFormat(Component.translatable(getValidationResultKey(), getValidationResultData()), ChatFormatting.RED);
+        drawCenteredString(matrixStack, font, Component.translatable("nc_jei_cat.fusion_core"), 125, 10, 0xFFFFFF);
+        drawCenteredString(matrixStack, font, Component.translatable("fusion_core.rf_amplifiers.power", getRfAmplifiersPowerRatio()), 125, 20, 0xFFFFFF);
+        casingTootip = Component.empty();
 
         if(isCasingValid()) {
             if(container().hasRecipe() && !container().getEfficiency().equals("NaN")) {
@@ -143,6 +152,10 @@ public class FusionCoreScreen extends AbstractContainerScreen<FusionCoreContaine
         }
 
         renderTooltips(matrixStack, mouseX-relX, mouseY-relY);
+    }
+
+    private String getRfAmplifiersPowerRatio() {
+        return numberFormat(container().getRfAmplifiersPowerRatio()*100);
     }
 
     private Object getValidationResultData() {
@@ -159,6 +172,28 @@ public class FusionCoreScreen extends AbstractContainerScreen<FusionCoreContaine
         updateRelativeCords();
         this.blit(matrixStack, relX, relY, 0, 0, this.imageWidth, this.imageHeight);
         renderWidgets(matrixStack, partialTicks, mouseX, mouseY);
+      //  rfAmplifierSlider.mouseMove(mouseX, mouseY);
+    }
+
+    @Override
+    public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
+        super.mouseClicked(pMouseX, pMouseY, pButton);
+        rfAmplifierSlider.mouseClicked(pMouseX, pMouseY, pButton);
+        return false;
+    }
+
+    @Override
+    public boolean mouseReleased(double pMouseX, double pMouseY, int pButton) {
+        super.mouseReleased(pMouseX, pMouseY, pButton);
+        rfAmplifierSlider.mouseReleased(pMouseX, pMouseY, pButton);
+        return false;
+    }
+
+    @Override
+    public boolean mouseDragged(double pMouseX, double pMouseY, int pButton, double pDragX, double pDragY) {
+        super.mouseDragged(pMouseX, pMouseY, pButton, pDragX, pDragY);
+        rfAmplifierSlider.mouseDragged(pMouseX, pMouseY, pButton, pDragX, pDragY);
+        return false;
     }
 
     private void renderTooltips(PoseStack pPoseStack, int pMouseX, int pMouseY) {

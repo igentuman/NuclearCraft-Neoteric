@@ -211,6 +211,7 @@ public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
                     if (fluidStack.isFluidEqual(contentHandler.fluidCapability.tanks.get(i).getFluid())) {
                         contentHandler.fluidCapability.holdedInputs.add(fluidStack.copy());
                         contentHandler.fluidCapability.tanks.get(i).drain(fluidStack, EXECUTE);
+                        break;
                     }
                 }
                 i++;
@@ -220,9 +221,14 @@ public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
         if(contentHandler.hasItemCapability(null)) {
             for (ItemStackIngredient inputItem : inputItems) {
                 for (ItemStack itemStack : inputItem.getRepresentations()) {
-                    contentHandler.itemHandler.holdedInputs.add(
-                            contentHandler.itemHandler.extractItemInternal(i, itemStack.getCount(), false)
-                    );
+                    assert contentHandler.itemHandler != null;
+                    ItemStack extracted = contentHandler.itemHandler.extractItemInternal(i, itemStack.getCount(), false);
+                    if(!extracted.isEmpty()) {
+                        contentHandler.itemHandler.holdedInputs.add(
+                                extracted
+                        );
+                        break;
+                    }
                 }
                 i++;
             }

@@ -109,9 +109,9 @@ public  class JEIPlugin implements IModPlugin {
     public  void registerGuiHandlers(IGuiHandlerRegistration registration) {
         for (String name : getRecipeTypes().keySet()) {
             if (!Processors.registered().containsKey(name)) continue;
-            addRecipeClickArea(registration, NCProcessorScreen.class, 58, 36, 36, 18, getRecipeType(name));
+            addRecipeClickArea(registration, NCProcessorScreen.class, 58, 42, 20, 20, getRecipeType(name));
         }
-        registration.addRecipeClickArea(FissionControllerScreen.class,58, 36, 36, 18, FISSION);
+        registration.addRecipeClickArea(FissionControllerScreen.class,58, 42, 20, 20, FISSION);
     }
 
     @Override

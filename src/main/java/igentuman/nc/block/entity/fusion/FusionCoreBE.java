@@ -65,6 +65,8 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
     @NBTField
     public int inputRedstoneSignal = 0;
     @NBTField
+    public int currentRfAmplification = 0;
+    @NBTField
     protected boolean forceShutdown = false;
     @NBTField
     public double magneticFieldStrength = 0;
@@ -218,6 +220,9 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         rfAmplification = multiblock().rfAmplification;
         rfAmplifiersPower = multiblock().rfAmplifiersPower;
         minRFAmplifiersTemp = multiblock().maxRFAmplifiersTemp;
+        if(hasChanges) {
+            currentRfAmplification = rfAmplification;
+        }
         return hasChanges;
     }
 

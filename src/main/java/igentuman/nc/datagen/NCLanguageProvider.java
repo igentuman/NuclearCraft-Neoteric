@@ -66,6 +66,7 @@ public class NCLanguageProvider extends LanguageProvider {
     }
 
     private void labels() {
+        add("fusion_core.rf_amplifiers.power", "RF Amplifiers: %s%%");
         add("nc.label.leacher_wrong_position", "Wrong Position");
         add("nc.label.leacher_no_source", "No Data Source");
         add("nc.label.leacher_no_acid", "No Acid");

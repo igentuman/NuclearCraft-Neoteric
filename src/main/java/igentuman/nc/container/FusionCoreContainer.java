@@ -170,4 +170,12 @@ public class FusionCoreContainer extends AbstractContainerMenu {
     public FluidTank getFluidTank(int i) {
         return blockEntity.getFluidTank(i);
     }
+
+    public int getRfAmplifiersPowerRatio() {
+        return blockEntity.rfAmplification/blockEntity.currentRfAmplification;
+    }
+
+    public BlockPos getBlockPos() {
+        return blockEntity.getBlockPos();
+    }
 }

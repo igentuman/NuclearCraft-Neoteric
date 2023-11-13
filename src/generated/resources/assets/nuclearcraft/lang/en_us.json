@@ -672,6 +672,7 @@
   "fusion_core.recipe.power": "Base Energy Generation: %s FE/t",
   "fusion_core.recipe.radiation": "Reaction Radiation: %s uRad",
   "fusion_core.recipe.temperature": "Optimal Temperature: %s MK",
+  "fusion_core.rf_amplifiers.power": "RF Amplifiers: %s%%",
   "gui.nc.fluid_tank_renderer.amount": "%s mB",
   "gui.nc.fluid_tank_renderer.amount_capacity": "%s/%s mB",
   "gui.nc.reactor_comparator_config.tooltip_1": "Comparator: Energy Stored",

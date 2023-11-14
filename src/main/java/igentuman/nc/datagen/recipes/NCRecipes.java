@@ -914,7 +914,7 @@ public class NCRecipes extends RecipeProvider {
                 .unlockedBy("item", has(FissionReactor.MULTI_BLOCKS.get("fission_reactor_casing").get()))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(FissionReactor.MULTI_BLOCKS.get("empty_active_heat_sink").get())
+        ShapedRecipeBuilder.shaped(FissionReactor.MULTI_BLOCKS.get("empty_heat_sink").get())
                 .pattern("TIT")
                 .pattern("IBI")
                 .pattern("TIT")

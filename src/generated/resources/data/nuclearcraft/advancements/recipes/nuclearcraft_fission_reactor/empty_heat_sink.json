@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "nuclearcraft:empty_active_heat_sink"
+        "recipe": "nuclearcraft:empty_heat_sink"
       },
       "trigger": "minecraft:recipe_unlocked"
     },
@@ -28,7 +28,7 @@
   ],
   "rewards": {
     "recipes": [
-      "nuclearcraft:empty_active_heat_sink"
+      "nuclearcraft:empty_heat_sink"
     ]
   }
 }

@@ -10,16 +10,44 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.*;
 
+import static igentuman.nc.handler.config.CommonConfig.FISSION_CONFIG;
 import static igentuman.nc.util.TagUtil.getBlocksByTagKey;
 
 public class FissionReactorMultiblock extends AbstractNCMultiblock {
+
+    @Override
+    public int maxHeight() {
+        return FISSION_CONFIG.MAX_SIZE.get();
+    }
+
+    @Override
+    public int maxWidth() {
+        return FISSION_CONFIG.MAX_SIZE.get();
+    }
+
+    @Override
+    public int maxDepth() {
+        return FISSION_CONFIG.MAX_SIZE.get();
+    }
+
+    @Override
+    public int minHeight() {
+        return FISSION_CONFIG.MIN_SIZE.get();
+    }
+
+    @Override
+    public int minWidth() {return FISSION_CONFIG.MIN_SIZE.get(); }
+    @Override
+    public int minDepth() { return FISSION_CONFIG.MIN_SIZE.get(); }
+
+
     public HashMap<BlockPos, FissionHeatSinkBE> activeHeatSinks = new HashMap<>();
     private List<BlockPos> moderators = new ArrayList<>();
     public List<BlockPos> heatSinks = new ArrayList<>();
     public List<BlockPos> fuelCells = new ArrayList<>();
     private double heatSinkCooling = 0;
 
-    public FissionReactorMultiblock(FissionControllerBE fissionControllerBE) {
+    public FissionReactorMultiblock(FissionControllerBE<?> fissionControllerBE) {
         super(
                 getBlocksByTagKey(FissionBlocks.CASING_BLOCKS.location().toString()),
                 getBlocksByTagKey(FissionBlocks.INNER_REACTOR_BLOCKS.location().toString())
@@ -39,7 +67,7 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
                 }
             }
         }
-        ((FissionControllerBE)controller().controllerBE()).heatSinksCount = activeHeatSinks.size();
+        ((FissionControllerBE<?>)controller().controllerBE()).heatSinksCount = activeHeatSinks.size();
         return activeHeatSinks;
     }
 
@@ -54,8 +82,6 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
     protected boolean isFuelCell(BlockPos pos) {
         return getLevel().getBlockEntity(pos) instanceof FissionFuelCellBE;
     }
-
-
 
     private boolean isAttachedToFuelCell(BlockPos toCheck) {
         for(Direction d : Direction.values()) {
@@ -73,7 +99,7 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
     {
         super.validateInner();
         heatSinkCooling = getHeatSinkCooling(true);
-        FissionControllerBE controller = (FissionControllerBE) controller().controllerBE();
+        FissionControllerBE<?> controller = (FissionControllerBE<?>) controller().controllerBE();
         controller.fuelCellsCount = fuelCells.size();
         controller.updateEnergyStorage();
         controller.moderatorsCount = moderators.size();
@@ -85,7 +111,7 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
             BlockEntity be = getLevel().getBlockEntity(toCheck);
             if(be instanceof FissionFuelCellBE) {
                 fuelCells.add(toCheck);
-                ((FissionControllerBE)controller().controllerBE()).moderatorAttacmentsCount += ((FissionFuelCellBE) be).getAttachedModeratorsCount(true);
+                ((FissionControllerBE<?>)controller().controllerBE()).moderatorAttacmentsCount += ((FissionFuelCellBE) be).getAttachedModeratorsCount(true);
             }
         }
         if(isModerator(toCheck, getLevel())) {
@@ -109,7 +135,7 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
     }
 
     protected Direction getFacing() {
-        return ((FissionControllerBE)controller().controllerBE()).getFacing();
+        return ((FissionControllerBE<?>)controller().controllerBE()).getFacing();
     }
 
     public double getHeatSinkCooling(boolean forceCheck) {

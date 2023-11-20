@@ -8,7 +8,7 @@
   ],
   "output": [
     {
-      "count": 2,
+      "count": 4,
       "item": "nuclearcraft:uranium_238"
     },
     {
@@ -29,5 +29,5 @@
   ],
   "powerModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.5
+  "timeModifier": 0.5
 }

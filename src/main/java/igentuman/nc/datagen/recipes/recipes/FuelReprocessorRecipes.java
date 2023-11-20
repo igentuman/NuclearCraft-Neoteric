@@ -78,7 +78,7 @@ public class FuelReprocessorRecipes extends AbstractRecipeProvider {
             );
 
             add(
-                    fuelIngredient(List.of("depleted", "neptunium", "len-236", type), 9),
+                    fuelIngredient(List.of("depleted", "neptunium", "hen-236", type), 9),
                     List.of(
                             isotopeStack(Materials.uranium238, 4), isotopeStack(Materials.neptunium237),
                             isotopeStack(Materials.plutonium241), isotopeStack(Materials.plutonium242),
@@ -87,9 +87,9 @@ public class FuelReprocessorRecipes extends AbstractRecipeProvider {
             );
 
             add(
-                    fuelIngredient(List.of("depleted", "neptunium", "hen-236", type), 9),
+                    fuelIngredient(List.of("depleted", "neptunium", "len-236", type), 9),
                     List.of(
-                            isotopeStack(Materials.uranium238, 2), isotopeStack(Materials.neptunium237),
+                            isotopeStack(Materials.plutonium242, 5), isotopeStack(Materials.neptunium237),
                             isotopeStack(Materials.plutonium241), isotopeStack(Materials.plutonium242),
                             dustStack(Materials.molybdenum), dustStack(Materials.caesium_137)
                     ), 1.5D
@@ -98,36 +98,36 @@ public class FuelReprocessorRecipes extends AbstractRecipeProvider {
             add(
                     fuelIngredient(List.of("depleted", "plutonium", "lep-239", type), 9),
                     List.of(
-                            isotopeStack(Materials.uranium238, 4), isotopeStack(Materials.plutonium238),
-                            isotopeStack(Materials.plutonium241), isotopeStack(Materials.plutonium242),
-                            dustStack(Materials.molybdenum), dustStack(Materials.caesium_137)
+                            isotopeStack(Materials.uranium238, 4), isotopeStack(Materials.americium243),
+                            isotopeStack(Materials.curium246), isotopeStack(Materials.plutonium242),
+                            dustStack(Materials.promethium_147), dustStack(Materials.strontium_90)
                     ), 0.5D
             );
 
             add(
                     fuelIngredient(List.of("depleted", "plutonium", "hep-239", type), 9),
                     List.of(
-                            isotopeStack(Materials.uranium238, 2), isotopeStack(Materials.plutonium238),
+                            isotopeStack(Materials.americium243, 4), isotopeStack(Materials.curium243),
                             isotopeStack(Materials.plutonium241), isotopeStack(Materials.plutonium242),
-                            dustStack(Materials.molybdenum), dustStack(Materials.caesium_137)
+                            dustStack(Materials.promethium_147), dustStack(Materials.strontium_90)
                     ), 1.5D
             );
 
             add(
                     fuelIngredient(List.of("depleted", "plutonium", "lep-241", type), 9),
                     List.of(
-                            isotopeStack(Materials.uranium238, 4), isotopeStack(Materials.neptunium237),
-                            isotopeStack(Materials.plutonium238), isotopeStack(Materials.plutonium241),
-                            dustStack(Materials.molybdenum), dustStack(Materials.caesium_137)
+                            isotopeStack(Materials.plutonium242, 5), isotopeStack(Materials.americium243),
+                            isotopeStack(Materials.curium246), isotopeStack(Materials.berkelium247),
+                            dustStack(Materials.promethium_147), dustStack(Materials.strontium_90)
                     ), 0.5D
             );
 
             add(
                     fuelIngredient(List.of("depleted", "plutonium", "hep-241", type), 9),
                     List.of(
-                            isotopeStack(Materials.uranium238, 2), isotopeStack(Materials.neptunium237),
-                            isotopeStack(Materials.plutonium238), isotopeStack(Materials.plutonium241),
-                            dustStack(Materials.molybdenum), dustStack(Materials.caesium_137)
+                            isotopeStack(Materials.americium243, 3), isotopeStack(Materials.americium241),
+                            isotopeStack(Materials.curium246, 2), isotopeStack(Materials.plutonium242),
+                            dustStack(Materials.promethium_147), dustStack(Materials.strontium_90)
                     ), 1.5D
             );
 

@@ -98,7 +98,7 @@ public class CentrifugeRecipes extends AbstractRecipeProvider {
         add(
                 moltenFuelIngredient(List.of("depleted", "neptunium", "hen-236", ""), 1296),
                 List.of(
-                        fluidStack(Materials.uranium238, 288), fluidStack(Materials.neptunium237, 144),
+                        fluidStack(Materials.uranium238, 576), fluidStack(Materials.plutonium238, 144),
                         fluidStack(Materials.plutonium241, 144), fluidStack(Materials.plutonium242, 144),
                         fluidStack(Materials.molybdenum, 144), fluidStack(Materials.caesium_137, 144)
                 ),1.5D
@@ -107,36 +107,36 @@ public class CentrifugeRecipes extends AbstractRecipeProvider {
         add(
                 moltenFuelIngredient(List.of("depleted", "plutonium", "lep-239", ""), 1296),
                 List.of(
-                        fluidStack(Materials.uranium238, 576), fluidStack(Materials.plutonium238, 144),
-                        fluidStack(Materials.plutonium241, 144), fluidStack(Materials.plutonium242, 144),
-                        fluidStack(Materials.molybdenum, 144), fluidStack(Materials.caesium_137, 144)
+                        fluidStack(Materials.curium246, 576), fluidStack(Materials.americium243, 144),
+                        fluidStack(Materials.americium242, 144), fluidStack(Materials.plutonium242, 720),
+                        fluidStack(Materials.strontium_90, 144), fluidStack(Materials.caesium_137, 144)
                 ),0.5D
         );
 
         add(
                 moltenFuelIngredient(List.of("depleted", "plutonium", "hep-239", ""), 1296),
                 List.of(
-                        fluidStack(Materials.uranium238, 288), fluidStack(Materials.plutonium238, 144),
-                        fluidStack(Materials.plutonium241, 144), fluidStack(Materials.plutonium242, 144),
-                        fluidStack(Materials.molybdenum, 144), fluidStack(Materials.caesium_137, 144)
+                        fluidStack(Materials.americium243, 576), fluidStack(Materials.plutonium238, 144),
+                        fluidStack(Materials.plutonium241, 144), fluidStack(Materials.americium242, 144),
+                        fluidStack(Materials.caesium_137, 144), fluidStack(Materials.strontium_90, 144)
                 ),1.5D
         );
 
         add(
                 moltenFuelIngredient(List.of("depleted", "plutonium", "lep-241", ""), 1296),
                 List.of(
-                        fluidStack(Materials.uranium238, 576), fluidStack(Materials.neptunium237, 144),
-                        fluidStack(Materials.plutonium238, 144), fluidStack(Materials.plutonium241, 144),
-                        fluidStack(Materials.molybdenum, 144), fluidStack(Materials.caesium_137, 144)
+                        fluidStack(Materials.plutonium242, 720), fluidStack(Materials.americium243, 144),
+                        fluidStack(Materials.curium246, 144), fluidStack(Materials.berkelium247, 144),
+                        fluidStack(Materials.promethium_147, 144), fluidStack(Materials.caesium_137, 144)
                 ),0.5D
         );
 
         add(
                 moltenFuelIngredient(List.of("depleted", "plutonium", "hep-241", ""), 1296),
                 List.of(
-                        fluidStack(Materials.uranium238, 288), fluidStack(Materials.neptunium237, 144),
-                        fluidStack(Materials.plutonium238, 144), fluidStack(Materials.plutonium241, 144),
-                        fluidStack(Materials.molybdenum, 144), fluidStack(Materials.caesium_137, 144)
+                        fluidStack(Materials.americium243, 576), fluidStack(Materials.curium243, 144),
+                        fluidStack(Materials.americium242, 144), fluidStack(Materials.plutonium241, 144),
+                        fluidStack(Materials.strontium_90, 144), fluidStack(Materials.caesium_137, 144)
                 ),1.5D
         );
 

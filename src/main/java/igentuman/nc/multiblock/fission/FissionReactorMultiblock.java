@@ -37,6 +37,7 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
 
     @Override
     public int minWidth() {return FISSION_CONFIG.MIN_SIZE.get(); }
+
     @Override
     public int minDepth() { return FISSION_CONFIG.MIN_SIZE.get(); }
 

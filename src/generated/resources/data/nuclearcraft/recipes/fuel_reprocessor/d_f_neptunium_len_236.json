@@ -8,8 +8,8 @@
   ],
   "output": [
     {
-      "count": 4,
-      "item": "nuclearcraft:uranium_238"
+      "count": 5,
+      "item": "nuclearcraft:plutonium_242"
     },
     {
       "item": "nuclearcraft:neptunium_237"
@@ -29,5 +29,5 @@
   ],
   "powerModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 0.5
+  "timeModifier": 1.5
 }

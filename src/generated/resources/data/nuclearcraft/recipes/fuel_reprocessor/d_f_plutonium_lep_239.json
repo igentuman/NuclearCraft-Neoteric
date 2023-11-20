@@ -12,19 +12,19 @@
       "item": "nuclearcraft:uranium_238"
     },
     {
-      "item": "nuclearcraft:plutonium_238"
+      "item": "nuclearcraft:americium_243"
     },
     {
-      "item": "nuclearcraft:plutonium_241"
+      "item": "nuclearcraft:curium_246"
     },
     {
       "item": "nuclearcraft:plutonium_242"
     },
     {
-      "item": "nuclearcraft:molybdenum_dust"
+      "item": "nuclearcraft:promethium_147_dust"
     },
     {
-      "item": "nuclearcraft:caesium_137_dust"
+      "item": "nuclearcraft:strontium_90_dust"
     }
   ],
   "powerModifier": 1.0,

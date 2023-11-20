@@ -246,11 +246,11 @@ public class CommonConfig {
 
             MIN_SIZE = builder
                     .comment("Explosion size if reactor overheats. 4 - TNT size. Set to 0 to disable explosion.")
-                    .defineInRange("reactor_explosion_radius", 3, 3, 24);
+                    .defineInRange("min_size", 3, 3, 24);
 
             MAX_SIZE = builder
                     .comment("Explosion size if reactor overheats. 4 - TNT size. Set to 0 to disable explosion.")
-                    .defineInRange("reactor_explosion_radius", 24, 5, 24);
+                    .defineInRange("max_size", 24, 5, 24);
 
             EXPLOSION_RADIUS = builder
                     .comment("Explosion size if reactor overheats. 4 - TNT size. Set to 0 to disable explosion.")

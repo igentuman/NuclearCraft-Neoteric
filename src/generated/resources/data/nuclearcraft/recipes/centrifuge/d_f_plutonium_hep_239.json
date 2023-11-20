@@ -8,8 +8,8 @@
   ],
   "outputFluids": [
     {
-      "amount": 288,
-      "fluid": "nuclearcraft:uranium_238"
+      "amount": 576,
+      "fluid": "nuclearcraft:americium_243"
     },
     {
       "amount": 144,
@@ -21,15 +21,15 @@
     },
     {
       "amount": 144,
-      "fluid": "nuclearcraft:plutonium_242"
-    },
-    {
-      "amount": 144,
-      "fluid": "nuclearcraft:molybdenum"
+      "fluid": "nuclearcraft:americium_242"
     },
     {
       "amount": 144,
       "fluid": "nuclearcraft:caesium_137"
+    },
+    {
+      "amount": 144,
+      "fluid": "nuclearcraft:strontium_90"
     }
   ],
   "powerModifier": 1.0,

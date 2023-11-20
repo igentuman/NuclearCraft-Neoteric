@@ -121,42 +121,39 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
 
     public int resolveHeight()
     {
-        if(height < minHeight() || !outerValid) {
-            for(int i = 1; i<maxHeight()-1; i++) {
-                if(!isValidForOuter(controllerPos().above(i))) {
-                    topCasing = i-1;
-                    height = i;
-                    break;
-                }
-            }
-            for(int i = 1; i<maxHeight()-height-1; i++) {
-                if(!isValidForOuter(controllerPos().below(i))) {
-                    bottomCasing = i-1;
-                    height += i-1;
-                    break;
-                }
+        for (int i = 1; i < maxHeight(); i++) {
+            if (!isValidForOuter(controllerPos().above(i))) {
+                topCasing = i - 1;
+                height = i;
+                break;
             }
         }
+        for (int i = 1; i < maxHeight(); i++) {
+            if (!isValidForOuter(controllerPos().below(i))) {
+                bottomCasing = i - 1;
+                height += i - 1;
+                break;
+            }
+        }
+
         return height;
     }
 
     public int resolveWidth()
     {
-        if(width < minWidth() || !outerValid) {
-            for(int i = 1; i<maxWidth()-1; i++) {
-                if(!isValidForOuter(getLeftPos(i))) {
-                    leftCasing = i-1;
-                    width = i;
-                    break;
+        for(int i = 1; i<maxWidth(); i++) {
+            if(!isValidForOuter(getLeftPos(i))) {
+                leftCasing = i-1;
+                width = i;
+                break;
 
-                }
             }
-            for(int i = 1; i<maxWidth()-width-1; i++) {
-                if(!isValidForOuter(getRightPos(i))) {
-                    rightCasing = i-1;
-                    width += i-1;
-                    break;
-                }
+        }
+        for(int i = 1; i<maxWidth(); i++) {
+            if(!isValidForOuter(getRightPos(i))) {
+                rightCasing = i-1;
+                width += i-1;
+                break;
             }
         }
         return width;
@@ -164,28 +161,39 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
 
     public int resolveDepth()
     {
-        if(depth < minDepth() || !outerValid) {
-            for(int i = 1; i<maxDepth()-1; i++) {
-                if(!isValidForOuter(getForwardPos(i).above(topCasing))) {
-                    depth = i;
-                    break;
-                }
+        for(int i = 1; i<maxDepth()-1; i++) {
+            if(!isValidForOuter(getForwardPos(i).above(topCasing))) {
+                depth = i;
+                break;
             }
         }
         return depth;
     }
 
+    public void resolveDimensions()
+    {
+        resolveHeight();
+        resolveDepth();
+        resolveWidth();
+    }
+
     @Override
     public void validateOuter() {
-        for(int y = 0; y < resolveHeight(); y++) {
-            for(int x = 0; x < resolveWidth(); x++) {
-                for (int z = 0; z < resolveDepth(); z++) {
-                    if(width < 3 || height < 3 || depth < 3)
-                    {
-                        validationResult = ValidationResult.TOO_SMALL;
-                        return;
-                    }
-                    if(y == 0 || x == 0 || z == 0 || y == resolveHeight()-1 || x == resolveWidth()-1 || z == resolveDepth()-1) {
+        resolveDimensions();
+        if(width < minWidth() || height < minHeight() || depth < minDepth())
+        {
+            validationResult = ValidationResult.TOO_SMALL;
+            return;
+        }
+        if(width > maxWidth() || height > maxHeight() || depth > maxDepth())
+        {
+            validationResult = ValidationResult.TOO_BIG;
+            return;
+        }
+        for(int y = 0; y < height; y++) {
+            for(int x = 0; x < width; x++) {
+                for (int z = 0; z < depth; z++) {
+                    if(y == 0 || x == 0 || z == 0 || y == height-1 || x == width-1 || z == depth-1) {
                         if (!isValidForOuter(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getFacing(), -z))) {
                             validationResult = ValidationResult.WRONG_OUTER;
                             controller().addErroredBlock(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getFacing(), -z));

@@ -7,6 +7,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -18,10 +19,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 import static igentuman.nc.handler.sided.SlotModePair.SlotMode.*;
 
@@ -32,6 +30,10 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler implements
     public BlockEntity tile;
     protected FluidStack[] sortedFluids;
     public List<FluidStack> holdedInputs = new ArrayList<>();
+    private Map<Direction, LazyOptional<FluidHandlerWrapper>> handlerCache = new HashMap<>();
+
+    public List<FluidStack> allowedFluids;
+
 
     public FluidCapabilityHandler(int inputSlots, int outputSlots, int amount) {
         CAPACITY = amount;
@@ -52,17 +54,32 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler implements
         this(inputSlots, outputSlots, FluidType.BUCKET_VOLUME*10);
     }
 
-    public <T> LazyOptional<T> getCapability(Direction side) {
+    public LazyOptional<FluidHandlerWrapper> getCapability(Direction side) {
         if(side == null) return getCapability();
-        SidedContentHandler.RelativeDirection relativeDirection = SidedContentHandler.RelativeDirection.toRelative(side, tile.getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING));
-        return LazyOptional.of(() -> new FluidHandlerWrapper(this, relativeDirection, (i) -> inputAllowed(i, side), (i) -> outputAllowed(i, side))).cast();
+        if(!handlerCache.containsKey(side)) {
+            SidedContentHandler.RelativeDirection relativeDirection = SidedContentHandler.RelativeDirection.toRelative(side, tile.getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING));
+            handlerCache.put(side, LazyOptional.of(
+                    () -> new FluidHandlerWrapper(this, relativeDirection, (i, f) -> inputAllowed(i, f, side), (i) -> outputAllowed(i, side))));
+        }
+        return handlerCache.get(side);
     }
 
-    public boolean inputAllowed(Integer i, Direction side) {
+    public boolean inputAllowed(Integer i, FluidStack fluid, Direction side) {
         if(side == null) return true;
         SidedContentHandler.RelativeDirection relativeDirection = SidedContentHandler.RelativeDirection.toRelative(side, getFacing());
         SlotModePair.SlotMode mode = sideMap.get(relativeDirection.ordinal())[i].getMode();
-        return mode == INPUT || mode == PULL;
+        return (mode == INPUT || mode == PULL) && isValidInputFluid(fluid) && isValidForInputSlot(i, fluid);
+    }
+
+    public boolean isValidInputFluid(FluidStack fluid)
+    {
+        if(allowedFluids == null || allowedFluids.contains(fluid)) return true;
+        for(FluidStack stack: allowedFluids) {
+            if(stack.isFluidEqual(fluid)) {
+                return true;
+            }
+        }
+        return allowedFluids.isEmpty();
     }
 
     public boolean outputAllowed(Integer i, Direction side) {
@@ -175,6 +192,15 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler implements
             key += tank.getFluid().toString();
         }
         return key;
+    }
+
+    public boolean isValidForInputSlot(int i, FluidStack fluid) {
+        if(outputAllowed(i, null)) {
+            FluidStack stack = getFluidInSlot(i);
+            if(stack.isEmpty()) return true;
+            if(stack.isFluidEqual(fluid)) return true;
+        }
+        return false;
     }
 
     public boolean isValidForOutputSlot(int i, FluidStack outputFluid) {

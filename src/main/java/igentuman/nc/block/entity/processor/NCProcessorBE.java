@@ -12,6 +12,8 @@ import igentuman.nc.recipes.NcRecipeType;
 import igentuman.nc.recipes.RecipeInfo;
 import igentuman.nc.content.processors.ProcessorPrefab;
 import igentuman.nc.content.processors.Processors;
+import igentuman.nc.recipes.ingredient.FluidStackIngredient;
+import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.setup.registration.NCProcessors;
 import igentuman.nc.util.CustomEnergyStorage;
 import igentuman.nc.handler.sided.SidedContentHandler;
@@ -34,6 +36,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
@@ -81,6 +84,7 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
     public int manualUpdateCounter = 40;
 
     private List<ItemStack> allowedInputs;
+    private List<FluidStack> allowedFluids;
 
     public LazyOptional<IEnergyStorage> getEnergy() {
         return energy;
@@ -296,6 +300,7 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
         }
         boolean updated = manualUpdate();
         contentHandler.setAllowedInputItems(getAllowedInputItems());
+        contentHandler.setAllowedInputFluids(getAllowedInputFluids());
         processRecipe();
         handleRecipeOutput();
         updated = updated || contentHandler.tick();
@@ -305,6 +310,19 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
         }
         skippedTicks = 1;
 
+    }
+
+    public List<FluidStack> getAllowedInputFluids()
+    {
+        if(allowedFluids == null) {
+            allowedFluids = new ArrayList<>();
+            for(NcRecipe recipe: NcRecipeType.ALL_RECIPES.get(getName()).getRecipeType().getRecipes(getLevel())) {
+                for(FluidStackIngredient ingredient: recipe.getInputFluids()) {
+                    allowedFluids.addAll(ingredient.getRepresentations());
+                }
+            }
+        }
+        return allowedFluids;
     }
 
     private boolean manualUpdate() {

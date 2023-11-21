@@ -123,17 +123,17 @@ public class FusionCoreScreen extends AbstractContainerScreen<FusionCoreContaine
     {
         widgets.add(new VerticalLongSlot(53, 6));
         widgets.add(new VerticalLongSlot(53, 56));
-        widgets.add(new FluidTankRenderer(getFluidTank(0), SHOW_AMOUNT_AND_CAPACITY,6, 48, 54, 7));
-        widgets.add(new FluidTankRenderer(getFluidTank(1), SHOW_AMOUNT_AND_CAPACITY,6, 48, 54, 57));
+        widgets.add(new FluidTankRenderer(getFluidTank(0), SHOW_AMOUNT_AND_CAPACITY,6, 46, 53, 6));
+        widgets.add(new FluidTankRenderer(getFluidTank(1), SHOW_AMOUNT_AND_CAPACITY,6, 46, 53, 56));
 
         widgets.add(new VerticalLongSlot(191, 6));
         widgets.add(new VerticalLongSlot(191, 56));
         widgets.add(new VerticalLongSlot(201, 6));
         widgets.add(new VerticalLongSlot(201, 56));
-        widgets.add(new FluidTankRenderer(getFluidTank(2), SHOW_AMOUNT_AND_CAPACITY,6, 48, 192, 7));
-        widgets.add(new FluidTankRenderer(getFluidTank(3), SHOW_AMOUNT_AND_CAPACITY,6, 48, 192, 57));
-        widgets.add(new FluidTankRenderer(getFluidTank(4), SHOW_AMOUNT_AND_CAPACITY,6, 48, 202, 7));
-        widgets.add(new FluidTankRenderer(getFluidTank(5), SHOW_AMOUNT_AND_CAPACITY,6, 48, 202, 57));
+        widgets.add(new FluidTankRenderer(getFluidTank(2), SHOW_AMOUNT_AND_CAPACITY,6, 46, 192, 6));
+        widgets.add(new FluidTankRenderer(getFluidTank(3), SHOW_AMOUNT_AND_CAPACITY,6, 46, 192, 56));
+        widgets.add(new FluidTankRenderer(getFluidTank(4), SHOW_AMOUNT_AND_CAPACITY,6, 46, 202, 6));
+        widgets.add(new FluidTankRenderer(getFluidTank(5), SHOW_AMOUNT_AND_CAPACITY,6, 46, 202, 56));
 
     }
 

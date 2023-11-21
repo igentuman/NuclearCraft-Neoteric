@@ -19,8 +19,6 @@ import static igentuman.nc.util.ModUtil.isCcLoaded;
 
 public class FusionCoreProxyBE extends FusionBE {
 
-
-
     public FusionCoreProxyBE(BlockPos pPos, BlockState pBlockState) {
         super(FUSION_CORE_PROXY_BE.get(), pPos, pBlockState);
     }
@@ -29,10 +27,10 @@ public class FusionCoreProxyBE extends FusionBE {
     {
         if(core != null)
         {
-            core = (FusionCoreBE) level.getBlockEntity(core.getBlockPos());
+            core = (FusionCoreBE<?>) level.getBlockEntity(core.getBlockPos());
             corePos = core.getBlockPos();
         } else {
-            core = (FusionCoreBE) level.getBlockEntity(corePos);
+            core = (FusionCoreBE<?>) level.getBlockEntity(corePos);
         }
     }
 
@@ -49,7 +47,7 @@ public class FusionCoreProxyBE extends FusionBE {
         }
     }
 
-    public void setCore(FusionCoreBE core) {
+    public void setCore(FusionCoreBE<?> core) {
         this.core = core;
         corePos = core.getBlockPos();
     }
@@ -64,7 +62,7 @@ public class FusionCoreProxyBE extends FusionBE {
         }
     }
 
-    public FusionCoreBE getCoreBE() {
+    public FusionCoreBE<?> getCoreBE() {
         return core;
     }
 
@@ -72,9 +70,9 @@ public class FusionCoreProxyBE extends FusionBE {
         return corePos;
     }
 
-    protected FluidCapabilityHandler fluidHandler()
+    protected <T> LazyOptional<T> fluidHandler(@Nullable Direction side)
     {
-        return controller().contentHandler.fluidCapability;
+        return controller().contentHandler.getFluidCapability(side);
     }
 
     @Nonnull
@@ -85,7 +83,7 @@ public class FusionCoreProxyBE extends FusionBE {
             return LazyOptional.empty();
         }
         if (cap == ForgeCapabilities.FLUID_HANDLER) {
-            return LazyOptional.of(() -> fluidHandler()).cast();
+            return fluidHandler(side).cast();
         }
         if (cap == ForgeCapabilities.ENERGY) {
             return controller().getEnergy().cast();

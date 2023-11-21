@@ -11,6 +11,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidStack;
 
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +29,7 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
     public final FluidCapabilityHandler fluidCapability;
 
     public NuclearCraftBE blockEntity;
+    private boolean updated = false;
 
     public SidedContentHandler(int inputItemSlots, int outputItemSlots, int inputFluidSlots, int outputFluidSlots) {
         this.inputItemSlots = inputItemSlots;
@@ -175,7 +177,7 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
     }
 
     public boolean tick() {
-        boolean updated = false;
+        updated = false;
         for(Direction dir: Direction.values()) {
             if(itemHandler != null) {
                 updated = itemHandler.pushItems(dir) || updated;
@@ -221,6 +223,12 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
     public void setAllowedInputItems(List<ItemStack> allowedInputItems) {
         if(itemHandler != null) {
             itemHandler.allowedInputItems = allowedInputItems;
+        }
+    }
+
+    public void setAllowedInputFluids(List<FluidStack> allowedInputFluids) {
+        if(fluidCapability != null) {
+            fluidCapability.allowedFluids = allowedInputFluids;
         }
     }
 

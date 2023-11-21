@@ -36,7 +36,9 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import static igentuman.nc.block.fission.FissionControllerBlock.POWERED;
 import static igentuman.nc.util.ModUtil.isCcLoaded;
@@ -88,7 +90,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
     public BlockPos errorBlockPos = BlockPos.ZERO;
 
     public ValidationResult validationResult = ValidationResult.INCOMPLETE;
-    public RecipeInfo recipeInfo = new RecipeInfo();
+    public RecipeInfo<RECIPE> recipeInfo = new RecipeInfo<>();
     public boolean controllerEnabled = false;
     public RECIPE recipe;
     public HashMap<String, RECIPE> cachedRecipes = new HashMap<>();
@@ -97,6 +99,9 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
     @NBTField
     private boolean isInternalValid = false;
     private int reValidateCounter = 40;
+    private boolean changed = false;
+    private boolean refreshCacheFlag;
+    private List<FluidStack> allowedInputs;
 
     private CustomEnergyStorage createEnergy() {
         return new CustomEnergyStorage(100000000, 0, 100000000) {
@@ -156,16 +161,9 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
     public double getMaxHeat() {
         return 10000000;
     }
-    @Override
-    public void tickServer() {
-        if(NuclearCraft.instance.isNcBeStopped) return;
-        if(!initialized) {
-            initialized = true;
-            FusionCoreBlock block = (FusionCoreBlock) getBlockState().getBlock();
-            block.placeProxyBlocks(getBlockState(), level, worldPosition, this);
-        }
-        super.tickServer();
-        multiblock().tick();
+
+    public void handleValidation()
+    {
         boolean wasFormed = multiblock().isFormed();
         boolean wasPowered = powered;
 
@@ -180,15 +178,68 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         }
         isCasingValid = multiblock().isOuterValid();
         isInternalValid = multiblock().isInnerValid();
-
-        size = multiblock().width();//todo remove
-        boolean changed = wasPowered != powered || wasFormed != multiblock().isFormed();
+        changed = wasPowered != powered || wasFormed != multiblock().isFormed();
         changed = updateCharacteristics() || changed;
-        controllerEnabled = (hasRedstoneSignal() || controllerEnabled) && multiblock().isReadyToProcess();
-        controllerEnabled = !forceShutdown && controllerEnabled;
-        if (multiblock().isFormed()) {
-            size = multiblock().width();
+        size = multiblock().isFormed() ? multiblock.width() : 0;
+        refreshCacheFlag = !multiblock().isFormed();
+    }
+    private int updateSpan = 20;
+    private void periodicalUpdate()
+    {
+        updateSpan--;
+        if(updateSpan < 0) {
+            updateSpan = 20;
+            changed = true;
+            setChanged();
+        }
+    }
 
+    @Override
+    public void tickServer() {
+        changed = false;
+        if(NuclearCraft.instance.isNcBeStopped) return;
+        if(!initialized) {
+            initialized = true;
+            FusionCoreBlock block = (FusionCoreBlock) getBlockState().getBlock();
+            block.placeProxyBlocks(getBlockState(), level, worldPosition, this);
+        }
+        super.tickServer();
+        multiblock().tick();
+        handleValidation();
+        periodicalUpdate();
+
+        if(canProcess()) {
+            processReaction();
+            handleMeltdown();
+        }
+        contentHandler.setAllowedInputFluids(getAllowedInputFluids());
+        if(refreshCacheFlag || changed) {
+            try {
+                assert level != null;
+                level.setBlockAndUpdate(worldPosition, getBlockState().setValue(POWERED, powered));
+                level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(POWERED, powered), Block.UPDATE_ALL);
+            } catch (NullPointerException ignore) {}
+        }
+        controllerEnabled = false;
+    }
+
+    public List<FluidStack> getAllowedInputFluids()
+    {
+        if(allowedInputs == null) {
+            allowedInputs = new ArrayList<>();
+            for(NcRecipe recipe: NcRecipeType.ALL_RECIPES.get(getName()).getRecipeType().getRecipes(getLevel())) {
+                for(FluidStackIngredient ingredient: recipe.getInputFluids()) {
+                    allowedInputs.addAll(ingredient.getRepresentations());
+                }
+            }
+        }
+        return allowedInputs;
+    }
+
+    private boolean canProcess() {
+        if (multiblock().isFormed()) {
+            controllerEnabled = (hasRedstoneSignal() || controllerEnabled) && multiblock().isReadyToProcess();
+            controllerEnabled = !forceShutdown && controllerEnabled;
             if(controllerEnabled) {
                 powered = processReaction();
                 changed = powered || changed;
@@ -196,14 +247,9 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
                 powered = false;
             }
             changed = coolDown() || changed;
-            handleMeltdown();
+
         }
-        boolean refreshCacheFlag = !multiblock().isFormed();
-        if(refreshCacheFlag || changed) {
-            level.setBlockAndUpdate(worldPosition, getBlockState().setValue(POWERED, powered));
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(POWERED, powered), Block.UPDATE_ALL);
-        }
-        controllerEnabled = false;
+        return false;
     }
 
     private boolean updateCharacteristics() {

@@ -2,22 +2,24 @@ package igentuman.nc.handler.sided.capability;
 
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.SlotModePair;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
 public class FluidHandlerWrapper implements IFluidHandler {
     private final FluidCapabilityHandler handler;
-    private final Predicate<Integer> insert;
+    private final BiPredicate<Integer, FluidStack> insert;
     private final Predicate<Integer> extract;
     private final SidedContentHandler.RelativeDirection direction;
 
     public FluidHandlerWrapper(FluidCapabilityHandler handler,
                                SidedContentHandler.RelativeDirection direction,
-                               Predicate<Integer> insert,
+                               BiPredicate<Integer, FluidStack> insert,
                                Predicate<Integer> extract) {
         this.handler = handler;
         this.direction = direction;
@@ -47,7 +49,7 @@ public class FluidHandlerWrapper implements IFluidHandler {
     @Override
     public int fill(FluidStack resource, FluidAction action) {
         for(SlotModePair pair: handler.sideMap.get(direction.ordinal())) {
-            if(insert.test(pair.getSlot())) {
+            if(insert.test(pair.getSlot(), resource)) {
                 FluidTank tank = handler.tanks.get(pair.getSlot());
                 if(tank.isFluidValid(0, resource)) {
                     return tank.fill(resource.copy(), action);

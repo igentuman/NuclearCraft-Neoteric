@@ -180,4 +180,7 @@ public class NuclearCraftBE extends BlockEntity {
         return name;
     }
 
+    public void handleSliderUpdate(int buttonId, int ratio) {
+
+    }
 }

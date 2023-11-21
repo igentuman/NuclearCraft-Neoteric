@@ -155,7 +155,7 @@ public class FusionCoreScreen extends AbstractContainerScreen<FusionCoreContaine
     }
 
     private String getRfAmplifiersPowerRatio() {
-        return numberFormat(container().getRfAmplifiersPowerRatio()*100);
+        return numberFormat(container().getRfAmplifiersPowerRatio());
     }
 
     private Object getValidationResultData() {
@@ -208,6 +208,9 @@ public class FusionCoreScreen extends AbstractContainerScreen<FusionCoreContaine
                renderTooltip(pPoseStack, widget.getTooltips(),
                        Optional.empty(), pMouseX, pMouseY);
            }
+        }
+        if(rfAmplifierSlider.isMouseOver(pMouseX, pMouseY)) {
+            renderTooltip(pPoseStack, Component.translatable("tooltip.nc.electromagnet.power", container().getElectromagnetsPower()).withStyle(ChatFormatting.AQUA), pMouseX, pMouseY);
         }
         if(checkboxIsFormed.isMouseOver(pMouseX, pMouseY)) {
             renderTooltip(pPoseStack, checkboxIsFormed.getTooltips(),

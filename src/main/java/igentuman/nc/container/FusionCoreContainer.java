@@ -172,7 +172,7 @@ public class FusionCoreContainer extends AbstractContainerMenu {
     }
 
     public int getRfAmplifiersPowerRatio() {
-        return blockEntity.currentRfAmplification==0 ? 0 : blockEntity.rfAmplification/blockEntity.currentRfAmplification;
+        return blockEntity.rfAmplificationRatio;
     }
 
     public BlockPos getBlockPos() {

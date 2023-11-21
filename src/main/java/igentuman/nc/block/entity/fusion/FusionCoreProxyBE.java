@@ -6,10 +6,13 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.EnergyStorage;
+import net.minecraftforge.energy.IEnergyStorage;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -102,4 +105,21 @@ public class FusionCoreProxyBE extends FusionBE {
         return false;
     }
 
+    public void sendOutEnergy() {
+        int required = getCoreBE().rfAmplifiersPower + getCoreBE().magnetsPower;
+
+        for(Direction side: Direction.values()) {
+            if(getCoreBE().energyStorage.getEnergyStored() > required) {
+                BlockEntity be = getCoreBE().getLevel().getBlockEntity(getBlockPos().relative(side));
+                if(be instanceof BlockEntity && !(be instanceof FusionBE)) {
+                    IEnergyStorage r = be.getCapability(ForgeCapabilities.ENERGY).orElse(null);
+                    if(r == null) return;
+                    if(r.canReceive()) {
+                        int recieved = r.receiveEnergy(getCoreBE().energyStorage.getEnergyStored()-required, false);
+                        getCoreBE().energyStorage.setEnergy(getCoreBE().energyStorage.getEnergyStored()-recieved);
+                    }
+                }
+            }
+        }
+    }
 }

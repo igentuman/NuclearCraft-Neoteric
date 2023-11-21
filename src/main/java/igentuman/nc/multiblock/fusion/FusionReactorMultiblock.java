@@ -35,7 +35,7 @@ public class FusionReactorMultiblock extends AbstractNCMultiblock {
     protected boolean connectorsValid = false;
     protected boolean ringValid = false;
     protected boolean needToCollectFunctionalBlocks = true;
-    protected boolean needToRecalculateCharacteristics = true;
+    public boolean needToRecalculateCharacteristics = true;
 
     public boolean isReadyToProcess()
     {
@@ -393,7 +393,7 @@ public class FusionReactorMultiblock extends AbstractNCMultiblock {
         }
     }
 
-    protected void recalculateCharacteristics() {
+    public void recalculateCharacteristics() {
         magneticFieldStrength = 0;
         magnetsPower = 0;
         maxMagnetsTemp = 1000000;

@@ -25,6 +25,7 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -82,6 +83,9 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
     public int rfAmplifiersPower = 0;
     @NBTField
     public int minRFAmplifiersTemp = 0;
+    @NBTField
+    public int rfAmplificationRatio = 0;
+
 
     public final SidedContentHandler contentHandler;
     public final CustomEnergyStorage energyStorage = createEnergy();
@@ -102,6 +106,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
     private boolean changed = false;
     private boolean refreshCacheFlag;
     private List<FluidStack> allowedInputs;
+    private FusionCoreProxyBE[] proxyBES;
 
     private CustomEnergyStorage createEnergy() {
         return new CustomEnergyStorage(100000000, 0, 100000000) {
@@ -210,6 +215,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
 
         if(canProcess()) {
             processReaction();
+            sendOutPower();
             handleMeltdown();
         }
         contentHandler.setAllowedInputFluids(getAllowedInputFluids());
@@ -221,6 +227,30 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
             } catch (NullPointerException ignore) {}
         }
         controllerEnabled = false;
+    }
+
+    private void sendOutPower() {
+        for(FusionCoreProxyBE proxy: getProxies()) {
+            proxy.sendOutEnergy();
+        }
+    }
+
+    private FusionCoreProxyBE[] getProxies() {
+        if(proxyBES == null) {
+            proxyBES = new FusionCoreProxyBE[18];
+            int i = 0;
+            for(int y = -1; y < 3; y+=2) {
+                for (int x = -1; x < 3; x++) {
+                    for (int z = -1; z < 3; z++) {
+                        BlockEntity be = getLevel().getBlockEntity(getBlockPos().offset(x, y, z));
+                        if (be instanceof FusionCoreProxyBE) {
+                            proxyBES[i] = (FusionCoreProxyBE) be;
+                        }
+                    }
+                }
+            }
+        }
+        return proxyBES;
     }
 
     public List<FluidStack> getAllowedInputFluids()
@@ -257,19 +287,23 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
                 magneticFieldStrength != multiblock().magneticFieldStrength
                 || magnetsPower != multiblock().magnetsPower
                 || maxMagnetsTemp != multiblock().maxMagnetsTemp
-                || rfAmplification != multiblock().rfAmplification
-                || rfAmplifiersPower != multiblock().rfAmplifiersPower
+                || rfAmplification != multiblock().rfAmplification*rfAmplifierRatio()
+                || rfAmplifiersPower != multiblock().rfAmplifiersPower*rfAmplifierRatio()
                 || minRFAmplifiersTemp != multiblock().maxRFAmplifiersTemp;
         magneticFieldStrength = multiblock().magneticFieldStrength;
         magnetsPower = multiblock().magnetsPower;
         maxMagnetsTemp = multiblock().maxMagnetsTemp;
-        rfAmplification = multiblock().rfAmplification;
-        rfAmplifiersPower = multiblock().rfAmplifiersPower;
+        rfAmplification = (int) (multiblock().rfAmplification*rfAmplifierRatio());
+        rfAmplifiersPower = (int) (multiblock().rfAmplifiersPower*rfAmplifierRatio());
         minRFAmplifiersTemp = multiblock().maxRFAmplifiersTemp;
         if(hasChanges) {
             currentRfAmplification = rfAmplification;
         }
         return hasChanges;
+    }
+
+    private double rfAmplifierRatio() {
+        return ((double)rfAmplificationRatio)/100;
     }
 
     private boolean coolDown() {
@@ -425,6 +459,15 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
     }
 
     public void voidFuel() {
+    }
+
+    @Override
+    public void handleSliderUpdate(int buttonId, int ratio)
+    {
+        if(buttonId == 0) {
+            rfAmplificationRatio = ratio;
+            changed = updateCharacteristics();
+        }
     }
 
     @Override

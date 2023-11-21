@@ -24,7 +24,7 @@ public class SliderHorizontal extends NCGuiElement {
     private BlockPos pos;
     private int startX;
 
-    public SliderHorizontal(int xPos, int yPos, int width, AbstractContainerScreen screen, BlockPos pos)  {
+    public SliderHorizontal(int xPos, int yPos, int width, AbstractContainerScreen<?> screen, BlockPos pos)  {
         x = xPos;
         y = yPos;
         startX = x;
@@ -50,9 +50,6 @@ public class SliderHorizontal extends NCGuiElement {
 
     @Override
     public boolean mouseReleased(double pMouseX, double pMouseY, int pButton) {
-        if(isPressed) {
-            NuclearCraft.packetHandler().sendToServer(new PacketSliderChanged(pos, 0));
-        }
         isPressed = false;
         return isPressed;
     }
@@ -65,9 +62,17 @@ public class SliderHorizontal extends NCGuiElement {
 
     public void mouseMove(int x, int y) {
         if (isPressed) {
+            int maxX = startX+screen.getGuiLeft()+width-3;
+            int minX = startX+screen.getGuiLeft();
             btn.x = x;
-            btn.x = Math.min(startX+screen.getGuiLeft()+width, btn.x);
-            btn.x = Math.max(startX+screen.getGuiLeft(), btn.x);
+            btn.x = Math.min(maxX, btn.x);
+            btn.x = Math.max(minX, btn.x);
+            int xpos = maxX-btn.x;
+            int ratio = 100;
+            if(xpos > 0) {
+                ratio = 100-xpos*100/(width - 3);
+            }
+            NuclearCraft.packetHandler().sendToServer(new PacketSliderChanged(pos, ratio, 0));
         }
     }
 

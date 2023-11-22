@@ -103,7 +103,6 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
     @NBTField
     private boolean isInternalValid = false;
     private int reValidateCounter = 40;
-    private boolean changed = false;
     private boolean refreshCacheFlag;
     private List<FluidStack> allowedInputs;
     private FusionCoreProxyBE[] proxyBES;
@@ -184,7 +183,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         isCasingValid = multiblock().isOuterValid();
         isInternalValid = multiblock().isInnerValid();
         changed = wasPowered != powered || wasFormed != multiblock().isFormed();
-        changed = updateCharacteristics() || changed;
+        trackChanges(updateCharacteristics());
         size = multiblock().isFormed() ? multiblock.width() : 0;
         refreshCacheFlag = !multiblock().isFormed();
     }
@@ -272,11 +271,11 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
             controllerEnabled = !forceShutdown && controllerEnabled;
             if(controllerEnabled) {
                 powered = processReaction();
-                changed = powered || changed;
+                trackChanges(powered);
             } else {
                 powered = false;
             }
-            changed = coolDown() || changed;
+            trackChanges(coolDown());
 
         }
         return false;

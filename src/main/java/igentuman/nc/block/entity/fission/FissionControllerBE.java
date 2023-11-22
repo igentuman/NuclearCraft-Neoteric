@@ -216,12 +216,45 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     public void tickClient() {
     }
     protected int reValidateCounter = 0;
+
+
+
     public void tickServer() {
         if(NuclearCraft.instance.isNcBeStopped) return;
+        changed = false;
         super.tickServer();
         boolean wasPowered = powered;
-        boolean wasFormed = multiblock().isFormed();
+        handleValidation();
+        trackChanges(wasPowered, powered);
+        controllerEnabled = (hasRedstoneSignal() || controllerEnabled) && multiblock().isFormed();
+        controllerEnabled = !forceShutdown && controllerEnabled;
+
+        if (multiblock().isFormed()) {
+            trackChanges(contentHandler.tick());
+            if(controllerEnabled) {
+                powered = processReaction();
+                trackChanges(powered);
+            } else {
+                powered = false;
+            }
+            trackChanges(coolDown());
+            handleMeltdown();
+            contentHandler.setAllowedInputItems(getAllowedInputItems());
+        }
+        refreshCacheFlag = !multiblock().isFormed();
+        if(refreshCacheFlag || changed) {
+            try {
+                assert level != null;
+                level.setBlockAndUpdate(worldPosition, getBlockState().setValue(POWERED, powered));
+                level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(POWERED, powered), Block.UPDATE_ALL);
+            } catch (NullPointerException ignored) {}
+        }
+        controllerEnabled = false;
+    }
+
+    private void handleValidation() {
         multiblock().tick();
+        boolean wasFormed = multiblock().isFormed();
         if (!wasFormed) {
             reValidateCounter++;
             if(reValidateCounter < 40) {
@@ -230,35 +263,16 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
             reValidateCounter = 0;
             multiblock().validate();
             isCasingValid = multiblock().isOuterValid();
-            isInternalValid = multiblock().isInnerValid();
-            powered = false;
-        }
-        boolean changed = wasPowered != powered || wasFormed != multiblock().isFormed();
-
-        controllerEnabled = (hasRedstoneSignal() || controllerEnabled) && multiblock().isFormed();
-        controllerEnabled = !forceShutdown && controllerEnabled;
-
-        if (multiblock().isFormed()) {
-            height = multiblock().height();
-            width = multiblock().width();
-            depth = multiblock().depth();
-            changed = contentHandler.tick() || changed;
-            if(controllerEnabled) {
-                powered = processReaction();
-                changed = powered || changed;
-            } else {
-                powered = false;
+            if(isCasingValid) {
+                isInternalValid = multiblock().isInnerValid();
             }
-            changed = coolDown() || changed;
-            handleMeltdown();
-            contentHandler.setAllowedInputItems(getAllowedInputItems());
+            powered = false;
+            changed = true;
         }
-        refreshCacheFlag = !multiblock().isFormed();
-        if(refreshCacheFlag || changed) {
-            level.setBlockAndUpdate(worldPosition, getBlockState().setValue(POWERED, powered));
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(POWERED, powered), Block.UPDATE_ALL);
-        }
-        controllerEnabled = false;
+        height = multiblock().height();
+        width = multiblock().width();
+        depth = multiblock().depth();
+        trackChanges(wasFormed, multiblock().isFormed());
     }
 
     @Override

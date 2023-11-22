@@ -161,7 +161,7 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
 
     public int resolveDepth()
     {
-        for(int i = 1; i<maxDepth()-1; i++) {
+        for(int i = 1; i<maxDepth(); i++) {
             if(!isValidForOuter(getForwardPos(i).above(topCasing))) {
                 depth = i;
                 break;

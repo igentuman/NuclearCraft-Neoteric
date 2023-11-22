@@ -18,6 +18,7 @@ import java.util.List;
 public class NuclearCraftBE extends BlockEntity {
     protected String name;
     protected NCBlockPos bePos;
+    protected boolean changed;
 
     public static String getName(BlockState pBlockState) {
         return pBlockState.getBlock().asItem().toString();
@@ -28,6 +29,17 @@ public class NuclearCraftBE extends BlockEntity {
         super(pType, pPos, pBlockState);
         name = getName(pBlockState);
     }
+
+    protected void trackChanges(boolean was, boolean now)
+    {
+        changed = was != now || changed;
+    }
+
+    protected void trackChanges(boolean was)
+    {
+        changed = was || changed;
+    }
+
     private boolean initFlag = false;
     private List<Field> booleanFields       = new ArrayList<>();
     private List<Field> intFields           = new ArrayList<>();

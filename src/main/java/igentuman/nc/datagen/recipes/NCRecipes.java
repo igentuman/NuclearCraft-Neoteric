@@ -1107,6 +1107,19 @@ public class NCRecipes extends RecipeProvider {
                 .unlockedBy("item", has(NC_PARTS.get("plate_basic").get()))
                 .save(consumer);
 
+        ShapedRecipeBuilder.shaped(NCProcessors.PROCESSORS.get("leacher").get())
+                .pattern("LRL")
+                .pattern("FPF")
+                .pattern("LSL")
+                .define('P', NCProcessors.PROCESSORS.get("chemical_reactor").get())
+                .define('S', NCProcessors.PROCESSORS.get("pump").get())
+                .define('F', NCItems.NC_PARTS.get("servo").get())
+                .define('L', NCItems.NC_PARTS.get("chassis").get())
+                .define('R', NCProcessors.PROCESSORS.get("centrifuge").get())
+                .group(MODID+"_processors")
+                .unlockedBy("item", has(NCProcessors.PROCESSORS.get("chemical_reactor").get()))
+                .save(consumer);
+
         ShapedRecipeBuilder.shaped(NCProcessors.PROCESSORS.get("manufactory").get())
                 .pattern("LRL")
                 .pattern("FPF")

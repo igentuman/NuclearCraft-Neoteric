@@ -32,6 +32,7 @@ public class NcRecipeType<RECIPE extends NcRecipe> implements RecipeType<RECIPE>
         recipes.put(FissionControllerBE.NAME, register(FissionControllerBE.NAME));
         recipes.put("nc_ore_veins", register("nc_ore_veins"));
         recipes.put("fusion_core", register("fusion_core"));
+        recipes.put("fusion_coolant", register("fusion_coolant"));
 
         for(String processorName: Processors.registered().keySet()) {
             if(Processors.registered().get(processorName).hasRecipes()) {

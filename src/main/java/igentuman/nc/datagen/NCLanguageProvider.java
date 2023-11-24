@@ -73,6 +73,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("block.nuclearcraft.glowing_mushroom", "Glowing Mushroom");
         add("fusion_core", "Fusion Reactor Core");
         add("nc_jei_cat.fusion_core", "Fusion Reactor");
+        add("nc_jei_cat.fusion_coolant", "Fusion Reactor Coolant");
 
         add("reactor.size", "Reactor size: %sx%sx%s");
         add("fission.casing.wrong.block", "Wrong block at: %s");
@@ -183,6 +184,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("processor.recipe.duration","Process Duration: %s t");
         add("processor.recipe.radiation","Process Radiation: %s uRad");
 
+        add("fusion_core.recipe.cooling_rate","Cooling Rate: %s H");
         add("fusion_core.recipe.power","Base Energy Generation: %s FE/t");
         add("fusion_core.recipe.duration","Reaction Duration: %s t");
         add("fusion_core.recipe.radiation","Reaction Radiation: %s uRad");

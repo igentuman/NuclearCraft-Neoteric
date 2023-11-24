@@ -88,6 +88,15 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
     @NBTField
     public int rfAmplificationRatio = 0;
 
+    public List<FusionCoolantRecipe> getCoolantRecipes() {
+        if(coolantRecipes == null) {
+            coolantRecipes = (List<FusionCoolantRecipe>) NcRecipeType.ALL_RECIPES.get("fusion_coolant").getRecipeType().getRecipes(getLevel());
+        }
+        return coolantRecipes;
+    }
+
+    private List<FusionCoolantRecipe> coolantRecipes;
+
 
     public final SidedContentHandler contentHandler;
     public final CustomEnergyStorage energyStorage = createEnergy();
@@ -216,6 +225,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
 
         if(canProcess()) {
             processReaction();
+            handleHeatExchange();
             sendOutPower();
             handleMeltdown();
         }
@@ -232,13 +242,16 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         controllerEnabled = false;
     }
 
-    //TODO implement recipes here
+    private void handleHeatExchange() {
+
+    }
+
     private List<FluidStack> getAllowedCoolants() {
-        return List.of(
-                new FluidStack(NC_MATERIALS.get("liquid_helium").getStill(), 1000),
-                new FluidStack(NC_MATERIALS.get("liquid_nitrogen").getStill(), 1000),
-                new FluidStack(WATER, 1000)
-        );
+        List<FluidStack> allowedCoolants = new ArrayList<>();
+        for(FusionCoolantRecipe recipe : getCoolantRecipes()) {
+            allowedCoolants.addAll(recipe.getInputFluids(0));
+        }
+        return allowedCoolants;
     }
 
     private void sendOutPower() {
@@ -481,7 +494,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
     public void handleSliderUpdate(int buttonId, int ratio)
     {
         if(buttonId == 0) {
-            rfAmplificationRatio = ratio;
+            rfAmplificationRatio = Math.min(100, Math.max(ratio, 1));
             changed = updateCharacteristics();
         }
     }
@@ -640,6 +653,32 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         }
 
         public double getOptimalTemperature() {
+            return rarityModifier;
+        }
+    }
+
+    public static class FusionCoolantRecipe extends NcRecipe {
+        public FusionCoolantRecipe(ResourceLocation id, ItemStackIngredient[] input, ItemStack[] output, FluidStackIngredient[] inputFluids, FluidStack[] outputFluids, double timeModifier, double powerModifier, double radiation, double temperature) {
+            super(id, input, output, inputFluids, outputFluids, timeModifier, powerModifier, radiation, temperature);
+        }
+
+        @Override
+        public @NotNull String getGroup() {
+            return "fusion_coolant";
+        }
+
+        @Override
+        public @NotNull ItemStack getToastSymbol() {
+            return new ItemStack(FusionReactor.FUSION_BLOCKS.get("fusion_core").get());
+        }
+
+        @Override
+        public void write(FriendlyByteBuf buffer) {
+            super.write(buffer);
+            buffer.writeDouble(getCoolingRate());
+        }
+
+        public double getCoolingRate() {
             return rarityModifier;
         }
     }

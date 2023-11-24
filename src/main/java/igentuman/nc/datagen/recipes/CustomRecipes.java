@@ -40,5 +40,6 @@ public class CustomRecipes extends NCRecipes {
         LeacherRecipes.generate(consumer);
         OreVeinsRecipes.generate(consumer);
         FusionReactorRecipes.generate(consumer);
+        FusionCoolantRecipes.generate(consumer);
     }
 }

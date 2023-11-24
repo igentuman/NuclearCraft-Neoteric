@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:fusion_coolant",
+  "coolingRate": 20000.0,
+  "inputFluids": [
+    {
+      "amount": 500,
+      "tag": "forge:liquid_nitrogen"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 500,
+      "fluid": "nuclearcraft:nitrogen"
+    }
+  ]
+}

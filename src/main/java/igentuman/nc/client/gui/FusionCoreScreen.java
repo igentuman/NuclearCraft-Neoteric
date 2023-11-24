@@ -196,7 +196,6 @@ public class FusionCoreScreen extends AbstractContainerScreen<FusionCoreContaine
         updateRelativeCords();
         this.blit(matrixStack, relX, relY, 0, 0, this.imageWidth, this.imageHeight);
         renderWidgets(matrixStack, partialTicks, mouseX, mouseY);
-      //  rfAmplifierSlider.mouseMove(mouseX, mouseY);
     }
 
     @Override

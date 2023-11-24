@@ -31,6 +31,8 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
     private double radiation = 1D;
     private double powerModifier = 1D;
 
+    public double coolingRate = 0;
+
     public String ID;
     private double rarityModifier = 1D;
     private double temperature = 0D;
@@ -107,6 +109,11 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
         return this;
     }
 
+    public NcRecipeBuilder coolingRate(double coolingRate) {
+        this.coolingRate = coolingRate;
+        return this;
+    }
+
     public class NcRecipeResult extends RecipeResult {
 
         protected NcRecipeResult(ResourceLocation id) {
@@ -146,11 +153,19 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
             if(!outputFluids.isEmpty()) {
                 json.add("outputFluids", outJson);
             }
-
-            json.addProperty("timeModifier", timeModifier);
-            json.addProperty("radiation", radiation);
-            json.addProperty("powerModifier", powerModifier);
-            if(rarityModifier != 1D) {
+            if(coolingRate > 0) {
+                json.addProperty("coolingRate", coolingRate);
+            }
+            if(timeModifier > 0) {
+                json.addProperty("timeModifier", timeModifier);
+            }
+            if(radiation > 0) {
+                json.addProperty("radiation", radiation);
+            }
+            if(powerModifier > 0) {
+                json.addProperty("powerModifier", powerModifier);
+            }
+            if(rarityModifier != 1D && rarityModifier != 0) {
                 json.addProperty("rarityModifier", rarityModifier);
             }
             if(temperature != 0D) {

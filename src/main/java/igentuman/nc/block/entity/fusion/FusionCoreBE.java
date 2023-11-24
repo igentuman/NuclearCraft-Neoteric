@@ -88,6 +88,11 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
     @NBTField
     public int rfAmplificationRatio = 0;
 
+    @NBTField
+    public int functionalBlocksCharge = 0;
+
+    public long chargeAmount = 0;
+
     public List<FusionCoolantRecipe> getCoolantRecipes() {
         if(coolantRecipes == null) {
             coolantRecipes = (List<FusionCoolantRecipe>) NcRecipeType.ALL_RECIPES.get("fusion_coolant").getRecipeType().getRecipes(getLevel());
@@ -295,6 +300,8 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         if (multiblock().isFormed()) {
             controllerEnabled = (hasRedstoneSignal() || controllerEnabled) && multiblock().isReadyToProcess();
             controllerEnabled = !forceShutdown && controllerEnabled;
+            updateCharge();
+            controllerEnabled = functionalBlocksCharge == 100 && controllerEnabled;
             if(controllerEnabled) {
                 powered = processReaction();
                 trackChanges(powered);
@@ -309,6 +316,16 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
 
         }
         return false;
+    }
+
+    private void updateCharge() {
+        long targetCharge = (rfAmplifiersPower+rfAmplification) * 10L;
+        if(targetCharge == 0) return;
+        if(chargeAmount < targetCharge) {
+            chargeAmount += energyStorage.extractEnergy((rfAmplifiersPower+rfAmplification)/20, false);
+            changed = true;
+        }
+        functionalBlocksCharge = (int) Math.min(((chargeAmount*100)/targetCharge), 100);
     }
 
     private boolean updateCharacteristics() {

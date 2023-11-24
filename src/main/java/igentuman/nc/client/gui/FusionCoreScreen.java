@@ -122,6 +122,7 @@ public class FusionCoreScreen extends AbstractContainerScreen<FusionCoreContaine
             checklist.addTooltip(Component.translatable("tooltip.nc.reactor.has_coolant", container().hasCoolant() ? "Ok" : "--").withStyle(ChatFormatting.AQUA));
             checklist.addTooltip(Component.translatable("tooltip.nc.reactor.has_energy", container().hasEnoughEnergy() ? "Ok" : "--").withStyle(ChatFormatting.AQUA));
             checklist.addTooltip(Component.translatable("tooltip.nc.reactor.has_fuel", container().hasRecipe() ? "Ok" : "--").withStyle(ChatFormatting.AQUA));
+            checklist.addTooltip(Component.translatable("tooltip.nc.reactor.charge", container().getCharge() == 100 ? "Ok" : "--").withStyle(ChatFormatting.AQUA));
 
             if(!container().getElectromagnetsPower().equals("0")) {
                 checkboxIsFormed.addTooltip(Component.translatable("tooltip.nc.electromagnet.magnetic_field", container().getElectromagnetsField()).withStyle(ChatFormatting.BLUE));
@@ -173,6 +174,9 @@ public class FusionCoreScreen extends AbstractContainerScreen<FusionCoreContaine
     protected void renderLabels(@NotNull PoseStack matrixStack, int mouseX, int mouseY) {
         drawCenteredString(matrixStack, font, Component.translatable("nc_jei_cat.fusion_core"), 125, 10, 0xFFFFFF);
         drawCenteredString(matrixStack, font, Component.translatable("fusion_core.rf_amplifiers.power", getRfAmplifiersPowerRatio()), 125, 20, 0xFFFFFF);
+        if(container().getCharge() < 100) {
+            drawCenteredString(matrixStack, font, Component.translatable("fusion_core.charge", container().getCharge()), 125, 40, 0xFFFFFF);
+        }
         casingTootip = Component.empty();
 
         renderTooltips(matrixStack, mouseX-relX, mouseY-relY);

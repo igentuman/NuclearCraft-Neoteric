@@ -185,6 +185,7 @@ public class FusionCoreContainer extends AbstractContainerMenu {
                 && hasMagnets()
                 && hasCoolant()
                 && hasRecipe()
+                && getCharge() == 100
                 && hasEnoughEnergy();
     }
 
@@ -202,5 +203,9 @@ public class FusionCoreContainer extends AbstractContainerMenu {
 
     public boolean hasAmplifiers() {
         return blockEntity.rfAmplifiersPower > 0;
+    }
+
+    public int getCharge() {
+        return blockEntity.functionalBlocksCharge;
     }
 }

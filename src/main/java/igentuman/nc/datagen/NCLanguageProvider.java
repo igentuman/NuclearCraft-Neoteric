@@ -184,6 +184,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("processor.recipe.duration","Process Duration: %s t");
         add("processor.recipe.radiation","Process Radiation: %s uRad");
 
+        add("fusion_core.charge","Charging: %s%%");
         add("fusion_core.recipe.cooling_rate","Cooling Rate: %s H");
         add("fusion_core.recipe.power","Base Energy Generation: %s FE/t");
         add("fusion_core.recipe.duration","Reaction Duration: %s t");
@@ -202,6 +203,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("tooltip.nc.rf_amplifier.heat","Heat: %s H/t");
         add("tooltip.nc.rf_amplifier.max_temp","Max Temperature: %s K");
 
+        add("tooltip.nc.reactor.charge","Charged: %s");
         add("tooltip.nc.reactor.has_magnets","Electromagnets: %s");
         add("tooltip.nc.reactor.has_amplifiers","RF Amplifiers: %s");
         add("tooltip.nc.reactor.has_coolant","Coolant: %s");

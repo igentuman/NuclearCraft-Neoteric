@@ -42,7 +42,9 @@ import java.util.HashMap;
 import java.util.List;
 
 import static igentuman.nc.block.fission.FissionControllerBlock.POWERED;
+import static igentuman.nc.setup.registration.NCFluids.NC_MATERIALS;
 import static igentuman.nc.util.ModUtil.isCcLoaded;
+import static net.minecraft.world.level.material.Fluids.WATER;
 
 public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE {
 
@@ -108,7 +110,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
     private FusionCoreProxyBE[] proxyBES;
 
     private CustomEnergyStorage createEnergy() {
-        return new CustomEnergyStorage(100000000, 0, 100000000) {
+        return new CustomEnergyStorage(100000000, 100000000, 100000000) {
             @Override
             protected void onEnergyChanged() {
                 setChanged();
@@ -121,7 +123,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         multiblock = new FusionReactorMultiblock(this);
         contentHandler = new SidedContentHandler(
                 0, 0,
-                2, 4);
+                3, 5);
         contentHandler.setBlockEntity(this);
     }
 
@@ -217,7 +219,9 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
             sendOutPower();
             handleMeltdown();
         }
-        contentHandler.setAllowedInputFluids(getAllowedInputFluids());
+        contentHandler.setAllowedInputFluids(0, getAllowedInputFluids());
+        contentHandler.setAllowedInputFluids(1, getAllowedInputFluids());
+        contentHandler.setAllowedInputFluids(2, getAllowedCoolants());
         if(refreshCacheFlag || changed) {
             try {
                 assert level != null;
@@ -226,6 +230,15 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
             } catch (NullPointerException ignore) {}
         }
         controllerEnabled = false;
+    }
+
+    //TODO implement recipes here
+    private List<FluidStack> getAllowedCoolants() {
+        return List.of(
+                new FluidStack(NC_MATERIALS.get("liquid_helium").getStill(), 1000),
+                new FluidStack(NC_MATERIALS.get("liquid_nitrogen").getStill(), 1000),
+                new FluidStack(WATER, 1000)
+        );
     }
 
     private void sendOutPower() {
@@ -274,6 +287,10 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
                 trackChanges(powered);
             } else {
                 powered = false;
+            }
+            if (!hasRecipe()) {
+                updateRecipe();
+                trackChanges(hasRecipe());
             }
             trackChanges(coolDown());
 
@@ -404,7 +421,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         }
     }
     public RECIPE getRecipe() {
-        if(contentHandler.itemHandler.getStackInSlot(0).equals(ItemStack.EMPTY)) return null;
+        if(contentHandler.fluidCapability.getFluidInSlot(0).isEmpty()) return null;
         RECIPE cachedRecipe = getCachedRecipe();
         if(cachedRecipe != null) return cachedRecipe;
         if(!NcRecipeType.ALL_RECIPES.containsKey(getName())) return null;
@@ -581,9 +598,15 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         return contentHandler.fluidCapability.tanks.get(i);
     }
 
+    public boolean hasCoolant() {
+        return !contentHandler.fluidCapability.getFluidInSlot(2).isEmpty();
+    }
+
+    public boolean hasEnoughEnergy() {
+        return energyStorage.getEnergyStored() > rfAmplifiersPower+magnetsPower;
+    }
 
     public static class Recipe extends NcRecipe {
-
         public Recipe(ResourceLocation id, ItemStackIngredient[] input, ItemStack[] output, FluidStackIngredient[] inputFluids, FluidStack[] outputFluids, double timeModifier, double powerModifier, double radiation, double temperature) {
             super(id, input, output, inputFluids, outputFluids, timeModifier, powerModifier, radiation, temperature);
         }

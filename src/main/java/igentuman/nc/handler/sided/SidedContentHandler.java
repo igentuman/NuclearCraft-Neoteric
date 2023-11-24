@@ -226,9 +226,13 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
         }
     }
 
-    public void setAllowedInputFluids(List<FluidStack> allowedInputFluids) {
+    public void setAllowedInputFluids(int slotId, List<FluidStack> allowedInputFluids) {
         if(fluidCapability != null) {
-            fluidCapability.allowedFluids = allowedInputFluids;
+            if(fluidCapability.allowedFluids == null) {
+                fluidCapability.allowedFluids = new HashMap<>();
+            }
+            fluidCapability.allowedFluids.remove(slotId);
+            fluidCapability.allowedFluids.put(slotId, allowedInputFluids);
         }
     }
 

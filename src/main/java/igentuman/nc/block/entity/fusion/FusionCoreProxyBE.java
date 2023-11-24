@@ -82,6 +82,9 @@ public class FusionCoreProxyBE extends FusionBE {
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if(controller() == null) return super.getCapability(cap, side);
+        if(side == null || side.getAxis().isHorizontal()) {
+            return LazyOptional.empty();
+        }
         if (cap == ForgeCapabilities.ITEM_HANDLER) {
             return LazyOptional.empty();
         }

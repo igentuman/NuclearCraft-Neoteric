@@ -300,7 +300,9 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
         }
         boolean updated = manualUpdate();
         contentHandler.setAllowedInputItems(getAllowedInputItems());
-        contentHandler.setAllowedInputFluids(getAllowedInputFluids());
+        for(int i = 0; i < prefab().getSlotsConfig().getInputFluids(); i++) {
+            contentHandler.setAllowedInputFluids(i, getAllowedInputFluids());
+        }
         processRecipe();
         handleRecipeOutput();
         updated = updated || contentHandler.tick();

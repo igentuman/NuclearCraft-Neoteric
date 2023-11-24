@@ -13,14 +13,16 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
+import org.jetbrains.annotations.NotNull;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_CORE_PROXY;
 import static igentuman.nc.util.TextUtils.numberFormat;
+import static igentuman.nc.util.TextUtils.scaledFormat;
 
 public class FusionCoreContainer extends AbstractContainerMenu {
-    protected FusionCoreBE blockEntity;
+    protected FusionCoreBE<?> blockEntity;
     protected Player playerEntity;
 
     protected String name = "fusion_core";
@@ -32,17 +34,17 @@ public class FusionCoreContainer extends AbstractContainerMenu {
         super(FusionReactor.FUSION_CORE_CONTAINER.get(), pContainerId);
         this.playerEntity = playerInventory.player;
         this.playerInventory =  new InvWrapper(playerInventory);
-        blockEntity = (FusionCoreBE) playerEntity.getCommandSenderWorld().getBlockEntity(pos);
+        blockEntity = (FusionCoreBE<?>) playerEntity.getCommandSenderWorld().getBlockEntity(pos);
         layoutPlayerInventorySlots();
     }
 
     @Override
-    public ItemStack quickMoveStack(Player pPlayer, int pIndex) {
+    public @NotNull ItemStack quickMoveStack(@NotNull Player pPlayer, int pIndex) {
         return ItemStack.EMPTY;
     }
 
     @Override
-    public boolean stillValid(Player playerIn) {
+    public boolean stillValid(@NotNull Player playerIn) {
         return stillValid(
                 ContainerLevelAccess.create(blockEntity.getLevel(), blockEntity.getBlockPos()),
                 playerEntity,
@@ -77,8 +79,6 @@ public class FusionCoreContainer extends AbstractContainerMenu {
     public double getHeat() {
         return blockEntity.heat;
     }
-
-
 
     private void addSlotRange(IItemHandler handler, int x, int y, int amount, int dx) {
         for (int i = 0 ; i < amount ; i++) {
@@ -147,24 +147,24 @@ public class FusionCoreContainer extends AbstractContainerMenu {
         return blockEntity.magneticFieldStrength;
     }
 
-    public int getAmplifierVoltage() {
-        return blockEntity.rfAmplification;
+    public String getAmplifierVoltage() {
+        return scaledFormat(blockEntity.rfAmplification);
     }
 
-    public int getElectromagnetsPower() {
-        return blockEntity.magnetsPower;
+    public String getElectromagnetsPower() {
+        return scaledFormat(blockEntity.magnetsPower);
     }
 
     public int getElectromagnetsMaxTemp() {
         return blockEntity.maxMagnetsTemp;
     }
 
-    public int getAmplifierPower() {
-        return blockEntity.rfAmplifiersPower;
+    public String getAmplifierPower() {
+        return scaledFormat(blockEntity.rfAmplifiersPower);
     }
 
-    public int getAmplifierMaxTemp() {
-        return blockEntity.minRFAmplifiersTemp;
+    public String getAmplifierMaxTemp() {
+        return scaledFormat(blockEntity.minRFAmplifiersTemp);
     }
 
     public FluidTank getFluidTank(int i) {
@@ -177,5 +177,30 @@ public class FusionCoreContainer extends AbstractContainerMenu {
 
     public BlockPos getBlockPos() {
         return blockEntity.getBlockPos();
+    }
+
+    public boolean isReady() {
+        return  isCasingValid()
+                && hasAmplifiers()
+                && hasMagnets()
+                && hasCoolant()
+                && hasRecipe()
+                && hasEnoughEnergy();
+    }
+
+    public boolean hasEnoughEnergy() {
+        return blockEntity.hasEnoughEnergy();
+    }
+
+    public boolean hasCoolant() {
+        return blockEntity.hasCoolant();
+    }
+
+    public boolean hasMagnets() {
+        return blockEntity.magnetsPower > 0;
+    }
+
+    public boolean hasAmplifiers() {
+        return blockEntity.rfAmplifiersPower > 0;
     }
 }

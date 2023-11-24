@@ -32,7 +32,7 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler implements
     public List<FluidStack> holdedInputs = new ArrayList<>();
     private Map<Direction, LazyOptional<FluidHandlerWrapper>> handlerCache = new HashMap<>();
 
-    public List<FluidStack> allowedFluids;
+    public HashMap<Integer, List<FluidStack>> allowedFluids;
 
 
     public FluidCapabilityHandler(int inputSlots, int outputSlots, int amount) {
@@ -68,13 +68,13 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler implements
         if(side == null) return true;
         SidedContentHandler.RelativeDirection relativeDirection = SidedContentHandler.RelativeDirection.toRelative(side, getFacing());
         SlotModePair.SlotMode mode = sideMap.get(relativeDirection.ordinal())[i].getMode();
-        return (mode == INPUT || mode == PULL) && isValidInputFluid(fluid) && isValidForInputSlot(i, fluid);
+        return (mode == INPUT || mode == PULL) && isValidInputFluid(i, fluid) && isValidForInputSlot(i, fluid);
     }
 
-    public boolean isValidInputFluid(FluidStack fluid)
+    public boolean isValidInputFluid(int id, FluidStack fluid)
     {
-        if(allowedFluids == null || allowedFluids.contains(fluid)) return true;
-        for(FluidStack stack: allowedFluids) {
+        if(allowedFluids == null || allowedFluids.get(id).contains(fluid)) return true;
+        for(FluidStack stack: allowedFluids.get(id)) {
             if(stack.isFluidEqual(fluid)) {
                 return true;
             }

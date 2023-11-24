@@ -193,16 +193,28 @@ public class NCLanguageProvider extends LanguageProvider {
         add("fission.recipe.radiation","Reaction Radiation: %s pRad");
         add("fission.recipe.heat","Heat Generation: %s H/t");
 
+        add("tooltip.nc.rf_amplifier.not_found","No RF Amplifiers attached");
         add("tooltip.nc.rf_amplifier.power","Energy Required: %s FE/t");
-        add("tooltip.nc.rf_amplifier.voltage","Voltage: %s kV");
+        add("tooltip.nc.rf_amplifier.voltage","Amplification: %s V");
         add("tooltip.nc.rf_amplifier.efficiency","Efficiency: %s%%");
         add("tooltip.nc.rf_amplifier.heat","Heat: %s H/t");
-        add("tooltip.nc.rf_amplifier.max_temp","Max Temparature: %s kK");
+        add("tooltip.nc.rf_amplifier.max_temp","Max Temperature: %s K");
+
+        add("tooltip.nc.reactor.has_magnets","Electromagnets: %s");
+        add("tooltip.nc.reactor.has_amplifiers","RF Amplifiers: %s");
+        add("tooltip.nc.reactor.has_coolant","Coolant: %s");
+        add("tooltip.nc.reactor.has_energy","Energy: %s");
+        add("tooltip.nc.reactor.has_fuel","Fuel: %s");
+        add("tooltip.nc.reactor.ready","Ready");
+        add("tooltip.nc.reactor.not_ready","Not Ready");
+
+        add("tooltip.nc.electromagnet.not_found","No Electromagnets attached");
         add("tooltip.nc.electromagnet.power","Energy Required: %s FE/t");
         add("tooltip.nc.electromagnet.magnetic_field","Magnetic Field: %s T");
         add("tooltip.nc.electromagnet.efficiency","Efficiency: %s%%");
         add("tooltip.nc.electromagnet.heat","Heat: %s H/t");
-        add("tooltip.nc.electromagnet.max_temp","Max Temparature: %s kK");
+        add("tooltip.nc.electromagnet.max_temp","Max Temparature: %s K");
+
         add("tooltip.nc.liquid_empty","Stored: 0 of %s");
         add("tooltip.nc.liquid_stored","Stored: %s %s / %s");
         add("tooltip.nc.liquid_capacity","Capacity: %s");

@@ -29,7 +29,7 @@ public class PressurizerRecipes extends AbstractRecipeProvider {
         itemToItem(isotopeIngredient(Materials.uranium238, 9), ingredient(NC_BLOCKS.get("uranium238").get().asItem()));
         itemToItem(isotopeIngredient(Materials.californium250, 9), ingredient(NC_BLOCKS.get("californium250").get().asItem()));
         itemToItem(isotopeIngredient(Materials.plutonium238, 9), ingredient(NC_BLOCKS.get("plutonium238").get().asItem()));
-        itemToItem(dustIngredient(Materials.graphite), ingredient(Items.COAL));
+        itemToItem(dustIngredient(Materials.graphite), plateStack(Materials.graphite));
         itemToItem(ingredient(ALL_NC_ITEMS.get("flour").get(), 2), ingredient(ALL_NC_ITEMS.get("graham_cracker").get()));
         itemToItem(ingredient(NC_FOOD.get("foursmore").get(), 2), ingredient(NC_FOOD.get("evenmoresmore").get()));
         itemToItem(ingredient(ingotTag(Materials.graphite)), ingotStack(Materials.pyrolitic_carbon));

@@ -7,7 +7,7 @@
   ],
   "output": [
     {
-      "item": "minecraft:coal"
+      "item": "nuclearcraft:graphite_plate"
     }
   ],
   "powerModifier": 1.0,

@@ -871,6 +871,19 @@ public class NCRecipes extends RecipeProvider {
     }
 
     private void fissionBlocks(Consumer<FinishedRecipe> consumer) {
+
+        ShapedRecipeBuilder.shaped(FissionReactor.MULTI_BLOCKS.get("fission_reactor_port").get())
+                .pattern("LPL")
+                .pattern("MTM")
+                .pattern("LPL")
+                .define('M', NCItems.NC_PARTS.get("servo").get())
+                .define('P', NCItems.NC_PARTS.get("plate_advanced").get())
+                .define('T', FissionReactor.MULTI_BLOCKS.get("fission_reactor_casing").get())
+                .define('L', forgePlate("tough_alloy"))
+                .group(MODID+"_fission")
+                .unlockedBy("item", has(FissionReactor.MULTI_BLOCKS.get("fission_reactor_casing").get()))
+                .save(consumer);
+
         ShapedRecipeBuilder.shaped(FissionReactor.MULTI_BLOCKS.get("fission_reactor_casing").get(), 4)
                 .pattern("LPL")
                 .pattern("PTP")
@@ -1003,6 +1016,17 @@ public class NCRecipes extends RecipeProvider {
     }
 
     private void materials(Consumer<FinishedRecipe> consumer) {
+
+        SimpleCookingRecipeBuilder.blasting(Ingredient.of(forgeIngot(Materials.manganese_oxide)),
+                        NC_INGOTS.get(Materials.manganese).get(), 1.0f, 100)
+                .unlockedBy("has_ore", inventoryTrigger(ItemPredicate.Builder.item().of(NC_INGOTS.get(Materials.manganese_oxide).get()).build()))
+                .save(consumer, MODID+"_"+Materials.manganese+"_sm1");
+
+        SimpleCookingRecipeBuilder.blasting(Ingredient.of(forgeDust(Materials.rhodochrosite)),
+                        NCItems.NC_DUSTS.get(Materials.manganese_oxide).get(), 1.0f, 100)
+                .unlockedBy("has_ore", inventoryTrigger(ItemPredicate.Builder.item().of(NCItems.NC_DUSTS.get(Materials.rhodochrosite).get()).build()))
+                .save(consumer, MODID+"_"+Materials.manganese_oxide+"_sm1");
+
         for(String name: Materials.ingots().keySet()) {
             if(Materials.ingots().get(name).block) {
                 ShapelessRecipeBuilder.shapeless(NC_BLOCKS.get(name).get())

@@ -54,7 +54,7 @@ public class TooltipHandler {
 
     private static void addShieldingTooltip(ItemTooltipEvent event, ItemStack item) {
         int shielding = ItemShielding.byItem(item.getItem());
-        if((item.hasTag() || !item.getTag().contains("rad_shielding")) &&  shielding == 0) return;
+        if((!item.hasTag() || !item.getTag().contains("rad_shielding")) &&  shielding == 0) return;
         ChatFormatting color = ChatFormatting.GOLD;
         if(item.hasTag() && item.getTag().contains("rad_shielding")) {
             shielding += item.getTag().getInt("rad_shielding");

@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "nuclearcraft_fission",
+  "key": {
+    "L": {
+      "tag": "forge:plates/tough_alloy"
+    },
+    "M": {
+      "item": "nuclearcraft:servo"
+    },
+    "P": {
+      "item": "nuclearcraft:plate_advanced"
+    },
+    "T": {
+      "item": "nuclearcraft:fission_reactor_casing"
+    }
+  },
+  "pattern": [
+    "LPL",
+    "MTM",
+    "LPL"
+  ],
+  "result": {
+    "item": "nuclearcraft:fission_reactor_port"
+  }
+}

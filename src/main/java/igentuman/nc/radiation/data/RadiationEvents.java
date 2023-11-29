@@ -78,7 +78,6 @@ public class RadiationEvents {
         Entity entity = event.getEntity();
         if (entity instanceof ItemEntity) {
             ItemStack stack = ((ItemEntity) entity).getItem();
-            stack.getOrCreateTag();
             if(stack.isEmpty()) {
                 return;
             }

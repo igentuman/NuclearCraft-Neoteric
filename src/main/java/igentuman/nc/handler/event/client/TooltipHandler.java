@@ -35,7 +35,9 @@ public class TooltipHandler {
     }
 
     private static void miscTooltips(ItemTooltipEvent event, ItemStack itemStack) {
-        if(itemStack.getOrCreateTag().contains("is_nc_analyzed")) {
+        if(!itemStack.hasTag()) return;
+        assert itemStack.getTag() != null;
+        if(itemStack.getTag().contains("is_nc_analyzed")) {
             event.getToolTip().add(Component.translatable("tooltip.nc.analyzed").withStyle(ChatFormatting.GOLD));
             if(itemStack.getItem().equals(FILLED_MAP)) {
                 event.getToolTip().add(Component.translatable("tooltip.nc.use_in_leacher").withStyle(ChatFormatting.GOLD));
@@ -52,10 +54,10 @@ public class TooltipHandler {
 
     private static void addShieldingTooltip(ItemTooltipEvent event, ItemStack item) {
         int shielding = ItemShielding.byItem(item.getItem());
-        if(!item.getOrCreateTag().contains("rad_shielding") &&  shielding == 0) return;
+        if((item.hasTag() || !item.getTag().contains("rad_shielding")) &&  shielding == 0) return;
         ChatFormatting color = ChatFormatting.GOLD;
-        if(item.getOrCreateTag().contains("rad_shielding")) {
-            shielding += item.getOrCreateTag().getInt("rad_shielding");
+        if(item.hasTag() && item.getTag().contains("rad_shielding")) {
+            shielding += item.getTag().getInt("rad_shielding");
         }
         event.getToolTip().add(Component.translatable("tooltip.nc.rad_shielding", shielding).withStyle(color));
     }

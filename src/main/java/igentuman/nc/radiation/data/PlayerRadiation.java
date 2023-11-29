@@ -74,8 +74,8 @@ public class PlayerRadiation implements IPlayerRadiationCapability {
         for(ItemStack stack: player.getArmorSlots()) {
             if(stack.isEmpty()) continue;
             shielding += ItemShielding.byItem(stack.getItem());
-            if(stack.getOrCreateTag().contains("rad_shielding")) {
-                shielding += stack.getOrCreateTag().getInt("rad_shielding");
+            if(stack.hasTag() && stack.getTag().contains("rad_shielding")) {
+                shielding += stack.getTag().getInt("rad_shielding");
             }
         }
         if(player.hasEffect(RADIATION_RESISTANCE.get())) {

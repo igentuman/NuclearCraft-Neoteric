@@ -1,0 +1,20 @@
+{
+  "type": "nuclearcraft:rock_crusher",
+  "input": [
+    {
+      "count": 12,
+      "item": "minecraft:tuff"
+    }
+  ],
+  "output": [
+    {
+      "item": "nuclearcraft:chromium_dust"
+    },
+    {
+      "item": "nuclearcraft:coal_dust"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

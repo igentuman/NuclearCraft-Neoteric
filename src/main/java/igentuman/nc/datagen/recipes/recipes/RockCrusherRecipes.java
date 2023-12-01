@@ -33,7 +33,14 @@ public class RockCrusherRecipes extends AbstractRecipeProvider {
                 ingredient(DEEPSLATE, 7),
                 List.of(dustStack(Materials.iodine, 1), dustStack(Materials.obsidian))
         );
-
+        add(
+                ingredient(TUFF, 12),
+                List.of(dustStack(Materials.chromium, 1), dustStack(Materials.coal))
+        );
+        add(
+                ingredient(CALCITE, 5),
+                List.of(dustStack(Materials.calcium, 2), dustStack(Materials.potassium))
+        );
     }
 
     private static void add(NcIngredient input, List<NcIngredient> output, double...modifiers) {

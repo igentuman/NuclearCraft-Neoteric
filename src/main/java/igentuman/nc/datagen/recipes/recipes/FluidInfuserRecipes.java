@@ -52,6 +52,12 @@ public class FluidInfuserRecipes extends AbstractRecipeProvider {
         }
 
         add(
+                fluidIngredient("cryotheum", 1000),
+                blockStack("empty_heat_sink"),
+                blockStack("cryotheum_heat_sink")
+        );
+
+        add(
                 fluidIngredient("oxygen", 1000),
                 ingotIngredient(Materials.manganese),
                 ingotStack(Materials.manganese_dioxide)

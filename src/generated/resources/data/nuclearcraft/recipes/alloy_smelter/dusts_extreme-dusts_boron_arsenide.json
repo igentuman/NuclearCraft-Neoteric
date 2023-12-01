@@ -2,10 +2,10 @@
   "type": "nuclearcraft:alloy_smelter",
   "input": [
     {
-      "tag": "forge:dusts/boron_arsenide"
+      "tag": "forge:dusts/extreme"
     },
     {
-      "tag": "forge:dusts/extreme"
+      "tag": "forge:dusts/boron_arsenide"
     }
   ],
   "output": [
@@ -14,7 +14,7 @@
       "item": "nuclearcraft:thermoconducting_ingot"
     }
   ],
-  "powerModifier": 1.5,
+  "powerModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.5
+  "timeModifier": 2.0
 }

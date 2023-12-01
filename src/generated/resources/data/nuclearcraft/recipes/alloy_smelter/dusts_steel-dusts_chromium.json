@@ -2,19 +2,19 @@
   "type": "nuclearcraft:alloy_smelter",
   "input": [
     {
-      "tag": "forge:ingots/lithium"
+      "tag": "forge:dusts/steel"
     },
     {
-      "tag": "forge:ingots/manganese_dioxide"
+      "tag": "forge:dusts/chromium"
     }
   ],
   "output": [
     {
       "count": 2,
-      "item": "nuclearcraft:lithium_manganese_dioxide_ingot"
+      "item": "nuclearcraft:stainless_steel_ingot"
     }
   ],
   "powerModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.8
+  "timeModifier": 3.0
 }

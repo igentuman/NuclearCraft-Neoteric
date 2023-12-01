@@ -2,18 +2,18 @@
   "type": "nuclearcraft:chemical_reactor",
   "inputFluids": [
     {
-      "amount": 250,
-      "tag": "forge:boron"
+      "amount": 350,
+      "tag": "forge:ice"
     },
     {
-      "amount": 250,
-      "tag": "forge:arsenic"
+      "amount": 150,
+      "tag": "forge:ethanol"
     }
   ],
   "outputFluids": [
     {
-      "amount": 288,
-      "fluid": "nuclearcraft:boron_arsenide_solution"
+      "amount": 500,
+      "fluid": "nuclearcraft:slurry_ice"
     }
   ],
   "powerModifier": 1.0,

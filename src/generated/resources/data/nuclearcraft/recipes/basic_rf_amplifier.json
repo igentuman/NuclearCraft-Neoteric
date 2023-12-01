@@ -6,11 +6,14 @@
     },
     "S": {
       "tag": "forge:ingots/stainless_steel"
+    },
+    "W": {
+      "item": "nuclearcraft:coil_copper"
     }
   },
   "pattern": [
     "CCC",
-    "S S",
+    "SWS",
     "CCC"
   ],
   "result": {

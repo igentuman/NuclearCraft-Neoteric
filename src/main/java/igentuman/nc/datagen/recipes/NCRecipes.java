@@ -282,9 +282,10 @@ public class NCRecipes extends RecipeProvider {
 
         ShapedRecipeBuilder.shaped(NC_RF_AMPLIFIERS.get("basic_rf_amplifier").get())
                 .pattern("CCC")
-                .pattern("S S")
+                .pattern("SWS")
                 .pattern("CCC")
                 .define('C', forgePlate(Materials.copper))
+                .define('W', NC_PARTS.get("coil_copper").get())
                 .define('S', forgeIngot(Materials.stainless_steel))
                 .unlockedBy("item", has(forgePlate(Materials.copper)))
                 .save(consumer, new ResourceLocation(MODID, "basic_rf_amplifier"));
@@ -939,22 +940,27 @@ public class NCRecipes extends RecipeProvider {
                 .save(consumer);
 
         for(String name: FissionBlocks.heatsinks.keySet()) {
-            if(!name.matches(".*active.*|.*water.*")) {
-                if(name.contains("empty")) continue;
-                TagKey<Item> i = forgeDust(name);
-                if(name.contains("slime")) {
-                    i = Tags.Items.SLIMEBALLS;
-                }
-                ShapedRecipeBuilder.shaped(FissionReactor.MULTI_BLOCKS.get(name+"_heat_sink").get())
-                        .pattern(" I ")
-                        .pattern("IBI")
-                        .pattern(" I ")
-                        .define('I', Ingredient.of(i))
-                        .define('B', FissionReactor.MULTI_BLOCKS.get("empty_heat_sink").get())
-                        .group(MODID+"_fission")
-                        .unlockedBy("item", has(FissionReactor.MULTI_BLOCKS.get("empty_heat_sink").get()))
-                        .save(consumer);
+            if(name.matches(".*active.*|.*water.*|.*liquid.*|.*empty.*|.*cryotheum.*")) {
+                continue;
             }
+            TagKey<Item> i = forgeDust(name);
+            if(name.contains("slime")) {
+                i = Tags.Items.SLIMEBALLS;
+            }
+            if(name.contains("nether_brick")) {
+                i = Tags.Items.INGOTS_NETHER_BRICK;
+            }
+
+            ShapedRecipeBuilder.shaped(FissionReactor.MULTI_BLOCKS.get(name+"_heat_sink").get())
+                    .pattern(" I ")
+                    .pattern("IBI")
+                    .pattern(" I ")
+                    .define('I', Ingredient.of(i))
+                    .define('B', FissionReactor.MULTI_BLOCKS.get("empty_heat_sink").get())
+                    .group(MODID+"_fission")
+                    .unlockedBy("item", has(FissionReactor.MULTI_BLOCKS.get("empty_heat_sink").get()))
+                    .save(consumer);
+
         }
     }
 

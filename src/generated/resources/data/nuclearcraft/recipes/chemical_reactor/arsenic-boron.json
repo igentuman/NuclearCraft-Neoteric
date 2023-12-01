@@ -1,0 +1,22 @@
+{
+  "type": "nuclearcraft:chemical_reactor",
+  "inputFluids": [
+    {
+      "amount": 333,
+      "tag": "forge:arsenic"
+    },
+    {
+      "amount": 72,
+      "tag": "forge:boron"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 288,
+      "fluid": "nuclearcraft:boron_arsenide"
+    }
+  ],
+  "powerModifier": 1.2,
+  "radiation": 1.0,
+  "timeModifier": 0.5
+}

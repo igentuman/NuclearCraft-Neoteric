@@ -52,5 +52,6 @@ public class ManufactoryRecipes extends AbstractRecipeProvider {
         itemToItem(ingredient(PORKCHOP), ingredient(NCItems.NC_ITEMS.get("gelatin").get(), 8), 0.5D, 0.5D);
         itemToItem(ingredient(SALMON), ingredient(NCItems.NC_ITEMS.get("gelatin").get(), 2), 0.5D, 0.5D);
         itemToItem(ingredient(COD), ingredient(NCItems.NC_ITEMS.get("gelatin").get(), 2), 0.5D, 0.5D);
+        itemToItem(ingredient(WHEAT_SEEDS), ingredient(NCItems.NC_ITEMS.get("flour").get(), 2), 0.5D, 0.5D);
     }
 }

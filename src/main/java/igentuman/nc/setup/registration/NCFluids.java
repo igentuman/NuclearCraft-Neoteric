@@ -85,6 +85,7 @@ public class NCFluids {
 
     private static void liquids() {
         HashMap<String, LiquidDefinition> items = new HashMap<>();
+        items.put("cryotheum", new LiquidDefinition("cryotheum", 0X9089EDFF));
         items.put("radaway", new LiquidDefinition("radaway", 0x50B37AC4));
         items.put("ethanol", new LiquidDefinition("ethanol", 0x50B37AC4));
         items.put("methanol", new LiquidDefinition("methanol", 0x50B37AC4));

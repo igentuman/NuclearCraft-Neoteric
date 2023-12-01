@@ -247,7 +247,7 @@ public class Materials extends MaterialsManager {
             all.put(promethium_147, NCMaterial.dust(promethium_147).fluid(true, 600).color(0xFF8174B0));
             all.put(molybdenum, NCMaterial.dust(molybdenum).fluid(true, 600).color(0xFF8174B0));
             all.put(caesium_137, NCMaterial.dust(caesium_137).fluid(true, 600).color(0xFF8174B0));
-            all.put(arsenic, NCMaterial.dust(arsenic).fluid(true, 500).color(0xFFDEDE7A));
+            all.put(arsenic, NCMaterial.dust(arsenic).fluid(true, 500).color(0xFFB4DE7A));
             all.put(boron_arsenide, NCMaterial.dust(boron_arsenide).with("gem").fluid(true, 500).color(0xFFDEDE7A));
             all.put(obsidian, NCMaterial.dust(obsidian).fluid(true, 600).color(0xFFDEDE7A));
             all.put(sulfur, NCMaterial.dust(sulfur).fluid(true, 700).color(0xFFDEDE7A));

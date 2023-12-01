@@ -16,7 +16,7 @@
       "fluid": "nuclearcraft:nitrogen_dioxide"
     }
   ],
-  "powerModifier": 0.5,
+  "powerModifier": 0.6,
   "radiation": 1.0,
   "timeModifier": 0.5
 }

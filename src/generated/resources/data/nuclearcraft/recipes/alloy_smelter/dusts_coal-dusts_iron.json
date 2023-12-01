@@ -2,7 +2,7 @@
   "type": "nuclearcraft:alloy_smelter",
   "input": [
     {
-      "count": 4,
+      "count": 3,
       "tag": "forge:dusts/coal"
     },
     {

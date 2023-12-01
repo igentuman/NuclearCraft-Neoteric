@@ -16,7 +16,7 @@
       "fluid": "nuclearcraft:nitric_acid"
     }
   ],
-  "powerModifier": 0.5,
+  "powerModifier": 0.4,
   "radiation": 1.0,
   "timeModifier": 1.5
 }

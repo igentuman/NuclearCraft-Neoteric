@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:manufactory",
+  "input": [
+    {
+      "item": "minecraft:wheat_seeds"
+    }
+  ],
+  "output": [
+    {
+      "count": 2,
+      "item": "nuclearcraft:flour"
+    }
+  ],
+  "powerModifier": 0.5,
+  "radiation": 1.0,
+  "timeModifier": 0.5
+}

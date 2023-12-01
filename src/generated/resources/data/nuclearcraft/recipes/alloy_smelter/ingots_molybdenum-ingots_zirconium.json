@@ -15,7 +15,7 @@
       "item": "nuclearcraft:zirconium_molybdenum_ingot"
     }
   ],
-  "powerModifier": 2.0,
+  "powerModifier": 2.5,
   "radiation": 1.0,
-  "timeModifier": 8.0
+  "timeModifier": 8.5
 }

@@ -1,5 +1,6 @@
 package igentuman.nc.datagen.recipes.recipes;
 
+import igentuman.nc.content.materials.Materials;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.creator.IngredientCreatorAccess;
@@ -19,13 +20,23 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
 
         add(
                 List.of(
+                        fluidIngredient(Materials.arsenic, 333),
+                        fluidIngredient(Materials.boron, 72)
+                ),
+                List.of(
+                        fluidStack(Materials.boron_arsenide, 288)
+                ), 0.5D, 1.2D
+        );
+
+        add(
+                List.of(
                         fluidIngredient("ammonia", 350),
                         fluidIngredient("oxygen", 650)
                 ),
                 List.of(
                         fluidStack("nitric_oxide", 750),
                         fluidStack(WATER, 250)
-                ), 0.5D, 0.5D
+                ), 0.5D, 0.6D
         );
 
         add(
@@ -35,7 +46,7 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
                 ),
                 List.of(
                         fluidStack("nitrogen_dioxide", 750)
-                ), 0.5D, 0.5D
+                ), 0.5D, 0.6D
         );
 
         add(
@@ -45,7 +56,7 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
                 ),
                 List.of(
                         fluidStack("nitric_acid", 1000)
-                ), 1.5D, 0.5D
+                ), 1.5D, 0.4D
         );
 
         add(
@@ -355,11 +366,21 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
 
         add(
                 List.of(
-                        fluidIngredient("boron", 250),
-                        fluidIngredient("arsenic", 250)
+                        fluidIngredient("ice", 350),
+                        fluidIngredient("ethanol", 150)
                 ),
                 List.of(
-                        fluidStack("boron_arsenide_solution", 288)
+                        fluidStack("slurry_ice", 500)
+                )
+        );
+
+        add(
+                List.of(
+                        fluidIngredient("boron_arsenide", 250),
+                        fluidIngredient("minecraft:water", 100)
+                ),
+                List.of(
+                        fluidStack("boron_arsenide_solution", 350)
                 )
         );
 

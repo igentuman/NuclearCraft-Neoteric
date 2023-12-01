@@ -104,6 +104,11 @@ public class DataGenUtil
 		return TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("forge:ores/"+name));
 	}
 
+	public static TagKey<Item> forgeBucket(String name)
+	{
+		return TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("forge:buckets/"+name));
+	}
+
 	public static TagKey<Item> forgeChunk(String name)
 	{
 		return TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("forge:raw_materials/"+name));

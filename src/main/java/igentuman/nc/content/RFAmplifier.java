@@ -22,11 +22,11 @@ public class RFAmplifier {
 
     public static HashMap<String, RFAmplifierPrefab> all() {
         if(all.isEmpty()) {
-            all.put("basic_rf_amplifier", new RFAmplifierPrefab("basic_rf_amplifier",500, 300, 200000, 350000, 50));
-            all.put("magnesium_diboride_rf_amplifier", new RFAmplifierPrefab("magnesium_diboride_rf_amplifier",1000, 500, 500000, 39000, 80));
-            all.put("niobium_tin_rf_amplifier", new RFAmplifierPrefab("niobium_tin_rf_amplifier",2000, 1140, 1000000, 18000, 90));
-            all.put("niobium_titanium_rf_amplifier", new RFAmplifierPrefab("niobium_titanium_rf_amplifier",4000, 2260, 2000000, 10000, 95));
-            all.put("bscco_rf_amplifier", new RFAmplifierPrefab("bscco_rf_amplifier",8000, 4500, 4000000, 104000, 99));
+            all.put("basic_rf_amplifier", new RFAmplifierPrefab("basic_rf_amplifier",250, 300, 500000, 350000, 50));
+            all.put("magnesium_diboride_rf_amplifier", new RFAmplifierPrefab("magnesium_diboride_rf_amplifier",500, 500, 1000000, 39000, 80));
+            all.put("niobium_tin_rf_amplifier", new RFAmplifierPrefab("niobium_tin_rf_amplifier",750, 1140, 2000000, 18000, 90));
+            all.put("niobium_titanium_rf_amplifier", new RFAmplifierPrefab("niobium_titanium_rf_amplifier",1500, 2260, 3000000, 10000, 95));
+            all.put("bscco_rf_amplifier", new RFAmplifierPrefab("bscco_rf_amplifier",2500, 4500, 4000000, 104000, 99));
         }
         return all;
     }

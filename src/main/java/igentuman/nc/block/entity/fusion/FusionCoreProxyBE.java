@@ -17,6 +17,8 @@ import net.minecraftforge.energy.IEnergyStorage;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import java.util.List;
+
 import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_CORE_PROXY_BE;
 import static igentuman.nc.util.ModUtil.isCcLoaded;
 
@@ -47,7 +49,9 @@ public class FusionCoreProxyBE extends FusionBE {
         }
         if(!(core instanceof FusionCoreBE)) {
             level.removeBlock(worldPosition, false);
+            return;
         }
+        core.inputRedstoneSignal = getLevel().hasNeighborSignal(worldPosition) ? 1: core.inputRedstoneSignal;
     }
 
     public void setCore(FusionCoreBE<?> core) {
@@ -111,12 +115,12 @@ public class FusionCoreProxyBE extends FusionBE {
     public void sendOutEnergy() {
         int required = getCoreBE().rfAmplifiersPower + getCoreBE().magnetsPower;
 
-        for(Direction side: Direction.values()) {
+        for(Direction side: List.of(Direction.UP, Direction.DOWN)) {
             if(getCoreBE().energyStorage.getEnergyStored() > required) {
-                BlockEntity be = getCoreBE().getLevel().getBlockEntity(getBlockPos().relative(side));
+                BlockEntity be = getLevel().getBlockEntity(getBlockPos().relative(side));
                 if(be instanceof BlockEntity && !(be instanceof FusionBE)) {
                     IEnergyStorage r = be.getCapability(ForgeCapabilities.ENERGY).orElse(null);
-                    if(r == null) return;
+                    if(r == null) break;
                     if(r.canReceive()) {
                         int recieved = r.receiveEnergy(getCoreBE().energyStorage.getEnergyStored()-required, false);
                         getCoreBE().energyStorage.setEnergy(getCoreBE().energyStorage.getEnergyStored()-recieved);

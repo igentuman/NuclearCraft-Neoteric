@@ -48,4 +48,8 @@ public class RFAmplifierBE extends BlockEntity {
             setChanged();
         }
     }
+
+    public double getEfficiency() {
+        return prefab().getEfficiency();
+    }
 }

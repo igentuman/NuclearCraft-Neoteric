@@ -32,6 +32,9 @@ public class ElectromagnetBE extends BlockEntity {
     public double getStrength() {
         return prefab().getMagneticField();
     }
+    public double getEfficiency() {
+        return prefab().getEfficiency();
+    }
 
     public int getPower() {
         return prefab().getPower();

@@ -80,7 +80,7 @@ public class NCFusionReactorPeripheral implements IPeripheral {
     @LuaFunction
     public final int getHeatStored()
     {
-        return (int) reactor.heat;
+        return (int) reactor.reactorHeat;
     }
 
     @LuaFunction

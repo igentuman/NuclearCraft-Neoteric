@@ -317,9 +317,12 @@ public class NCLanguageProvider extends LanguageProvider {
         add("reactor.casing.complete", "Reactor Casing Complete");
         add("reactor.casing.incomplete", "Reactor Casing Incomplete");
         add("energy.bar.amount", "Total FE: %s / %s");
+        add("reactor.internal_usage", "Internal usage: %s FE/t");
         add("coolant.bar.amount", "Coolant: %s / %s mB");
         add("hot_coolant.bar.amount", "Heated Coolant: %s / %s mB");
         add("heat.bar.amount", "Total Heat: %s / %s K");
+        add("tooltip.nc.reactor.plasma_heat", "Plasma Heat: %s K");
+        add("tooltip.nc.reactor.plasma_optimal", "Optimal: %s K");
         add("tooltip.machine.progress", "Progress: %s%%");
         add("reactor.fuel_cells", "Fuel Cells: %s");
         add("fission.interior.no_fuel_cells", "No Fuel Cells Found");

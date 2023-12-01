@@ -25,6 +25,7 @@ import java.util.Optional;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.client.gui.element.fluid.FluidTankRenderer.TooltipMode.SHOW_AMOUNT_AND_CAPACITY;
 import static igentuman.nc.util.TextUtils.numberFormat;
+import static igentuman.nc.util.TextUtils.scaledFormat;
 
 public class FusionCoreScreen extends AbstractContainerScreen<FusionCoreContainer> implements IVerticalBarScreen {
     protected final ResourceLocation GUI = new ResourceLocation(MODID, "textures/gui/fusion_core.png");
@@ -44,7 +45,7 @@ public class FusionCoreScreen extends AbstractContainerScreen<FusionCoreContaine
     private VerticalBar heatBar;
     private VerticalBar coolantBar;
     private VerticalBar hotCoolantBar;
-    private VerticalBar casingHeatBar;
+    private VerticalBar.HeatLong plasmaHeatBar;
 
     private SliderHorizontal rfAmplifierSlider;
 
@@ -75,12 +76,12 @@ public class FusionCoreScreen extends AbstractContainerScreen<FusionCoreContaine
         heatBar = new VerticalBar.HeatLong(6, 5,this,  (int) container().getMaxHeat());
         energyBar = new VerticalBar.EnergyLong(16, 5,  this, container().getMaxEnergy());
         coolantBar = new VerticalBar.CoolantLong(26, 5,  this, 1000000);
-        casingHeatBar = new VerticalBar.HeatLong(36, 5,  this, 1000000);
+        plasmaHeatBar = new VerticalBar.HeatLong(36, 5,  this, (long) (container().getOptimalTemp()*2), () -> container().getPlasmaHeat());
         rfAmplifierSlider = new SliderHorizontal(64, 30, 119, this, menu.getBlockPos());
         rfAmplifierSlider.slideTo(container().getRfAmplifiersPowerRatio());
         widgets.add(rfAmplifierSlider);
         widgets.add(heatBar);
-        widgets.add(casingHeatBar);
+        widgets.add(plasmaHeatBar);
         widgets.add(coolantBar);
 
         addSlots();
@@ -225,8 +226,10 @@ public class FusionCoreScreen extends AbstractContainerScreen<FusionCoreContaine
 
     private void renderTooltips(PoseStack pPoseStack, int pMouseX, int pMouseY) {
         heatBar.clearTooltips();
-        casingHeatBar.clearTooltips();
+        plasmaHeatBar.clearTooltips();
         coolantBar.clearTooltips();
+        plasmaHeatBar.setTooltipKey("tooltip.nc.reactor.plasma_heat");
+        plasmaHeatBar.addTooltip(Component.translatable("tooltip.nc.reactor.plasma_optimal", scaledFormat(container().getOptimalTemp())).withStyle(ChatFormatting.GOLD));
         heatBar.addTooltip(Component.translatable("reactor.cooling", container().getCooling()).withStyle(ChatFormatting.AQUA));
         heatBar.addTooltip(Component.translatable("reactor.heating", container().getHeating()).withStyle(ChatFormatting.RED));
         heatBar.addTooltip(Component.translatable("reactor.net_heat", container().getNetHeat()).withStyle(ChatFormatting.GOLD));
@@ -255,7 +258,8 @@ public class FusionCoreScreen extends AbstractContainerScreen<FusionCoreContaine
                     Optional.empty(), pMouseX, pMouseY);
         }
         energyBar.clearTooltips();
-        energyBar.addTooltip(Component.translatable("reactor.forge_energy_per_tick", container().energyPerTick()));
+        energyBar.addTooltip(Component.translatable("reactor.forge_energy_per_tick", scaledFormat(container().energyPerTick())));
+        energyBar.addTooltip(Component.translatable("reactor.internal_usage", scaledFormat(container().requiredEnergy())).withStyle(ChatFormatting.RED));
         if(energyBar.isMouseOver(pMouseX, pMouseY)) {
             renderTooltip(pPoseStack, energyBar.getTooltips(),
                     Optional.empty(), pMouseX, pMouseY);

@@ -17,6 +17,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -207,15 +208,20 @@ public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
         int i = 0;
         if(contentHandler.hasFluidCapability(null)) {
             for (FluidStackIngredient inputFluid : inputFluids) {
-                for (FluidStack fluidStack : inputFluid.getRepresentations()) {
-                    assert contentHandler.fluidCapability != null;
-                    if (fluidStack.isFluidEqual(contentHandler.fluidCapability.tanks.get(i).getFluid())) {
-                        contentHandler.fluidCapability.holdedInputs.add(fluidStack.copy());
-                        contentHandler.fluidCapability.tanks.get(i).drain(fluidStack, EXECUTE);
+                i = 0;
+                assert contentHandler.fluidCapability != null;
+                for(FluidTank tank : contentHandler.fluidCapability.tanks) {
+                    if(contentHandler.inputFluidSlots <= i) break;
+                    FluidStack fluidStack = tank.getFluid();
+                    if(inputFluid.test(fluidStack)) {
+                        FluidStack holded = fluidStack.copy();
+                        holded.setAmount(inputFluid.getAmount());
+                        contentHandler.fluidCapability.holdedInputs.add(holded);
+                        contentHandler.fluidCapability.tanks.get(i).drain(inputFluid.getAmount(), EXECUTE);
                         break;
                     }
+                    i++;
                 }
-                i++;
             }
         }
         i=0;

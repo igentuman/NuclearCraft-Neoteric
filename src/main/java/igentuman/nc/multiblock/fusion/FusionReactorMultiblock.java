@@ -18,11 +18,14 @@ import net.minecraft.world.level.block.state.BlockState;
 import java.util.HashMap;
 import java.util.List;
 
+import static igentuman.nc.handler.config.CommonConfig.FUSION_CONFIG;
 import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_BLOCKS;
 import static net.minecraft.core.Direction.*;
 import static net.minecraft.world.level.block.Blocks.AIR;
 
 public class FusionReactorMultiblock extends AbstractNCMultiblock {
+    public int magnetsEfficiency = 0;
+    public int rfEfficiency = 0;
     protected FusionCoreBE<?> controllerBE;
     protected int length = 0;
     public double magneticFieldStrength = 0;
@@ -83,22 +86,22 @@ public class FusionReactorMultiblock extends AbstractNCMultiblock {
 
     @Override
     public int maxWidth() {
-        return 64;
+        return FUSION_CONFIG.MAX_SIZE.get();
     }
 
     @Override
     public int minWidth() {
-        return 64;
+        return FUSION_CONFIG.MIN_SIZE.get();
     }
 
     @Override
     public int maxDepth() {
-        return 64;
+        return FUSION_CONFIG.MAX_SIZE.get();
     }
 
     @Override
     public int minDepth() {
-        return 64;
+        return FUSION_CONFIG.MIN_SIZE.get();
     }
 
     @Override
@@ -400,21 +403,26 @@ public class FusionReactorMultiblock extends AbstractNCMultiblock {
         rfAmplification = 0;
         rfAmplifiersPower = 0;
         maxRFAmplifiersTemp = 1000000;
-
+        double mEfficiency = 0;
+        double rEfficiency = 0;
         for(ElectromagnetBE magnet: electromagnets.values()) {
             magneticFieldStrength += magnet.getStrength();
+            mEfficiency += (int) magnet.getEfficiency();
             magnetsPower += magnet.getPower();
             if(magnet.getMaxTemperature() < maxMagnetsTemp) {
                 maxMagnetsTemp = magnet.getMaxTemperature();
             }
         }
+        magnetsEfficiency = (int) (mEfficiency / electromagnets.size());
         for(RFAmplifierBE amplifier: amplifiers.values()) {
             rfAmplification += amplifier.getAmplification();
             rfAmplifiersPower += amplifier.getPower();
+            rEfficiency += (int) amplifier.getEfficiency();
             if(amplifier.getMaxTemperature() < maxRFAmplifiersTemp) {
                 maxRFAmplifiersTemp = amplifier.getMaxTemperature();
             }
         }
+        rfEfficiency = (int) (rEfficiency / amplifiers.size());
     }
 
     @Override

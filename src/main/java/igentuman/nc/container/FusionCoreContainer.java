@@ -77,7 +77,7 @@ public class FusionCoreContainer extends AbstractContainerMenu {
     }
 
     public double getHeat() {
-        return blockEntity.heat;
+        return blockEntity.reactorHeat;
     }
 
     private void addSlotRange(IItemHandler handler, int x, int y, int amount, int dx) {
@@ -207,5 +207,17 @@ public class FusionCoreContainer extends AbstractContainerMenu {
 
     public int getCharge() {
         return blockEntity.functionalBlocksCharge;
+    }
+
+    public double getPlasmaHeat() {
+        return blockEntity.plasmaTemperature;
+    }
+
+    public double getOptimalTemp() {
+        return blockEntity.getOptimalTemperature();
+    }
+
+    public int requiredEnergy() {
+        return blockEntity.rfAmplifiersPower+blockEntity.magnetsPower;
     }
 }

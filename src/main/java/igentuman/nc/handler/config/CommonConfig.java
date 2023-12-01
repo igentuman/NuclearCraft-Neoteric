@@ -29,6 +29,7 @@ public class CommonConfig {
     public static final OresConfig ORE_CONFIG = new OresConfig(BUILDER);
     public static final FuelConfig FUEL_CONFIG = new FuelConfig(BUILDER);
     public static final HeatSinkConfig HEAT_SINK_CONFIG = new HeatSinkConfig(BUILDER);
+    public static final FusionConfig FUSION_CONFIG = new FusionConfig(BUILDER);
     public static final FissionConfig FISSION_CONFIG = new FissionConfig(BUILDER);
     public static final RadiationConfig RADIATION_CONFIG = new RadiationConfig(BUILDER);
     public static final EnergyGenerationConfig ENERGY_GENERATION = new EnergyGenerationConfig(BUILDER);
@@ -230,6 +231,41 @@ public class CommonConfig {
             }
             builder.pop();
         }
+    }
+
+    public static class FusionConfig {
+        public ForgeConfigSpec.ConfigValue<Integer> MIN_SIZE;
+        public ForgeConfigSpec.ConfigValue<Integer> MAX_SIZE;
+        public ForgeConfigSpec.ConfigValue<Double> RF_AMPLIFICATION_MULTIPLIER;
+        public ForgeConfigSpec.ConfigValue<Double> PLASMA_TO_ENERGY_CONVERTION;
+        public ForgeConfigSpec.ConfigValue<Double> EXPLOSION_RADIUS;
+
+        public FusionConfig(ForgeConfigSpec.Builder builder) {
+            builder.comment("Settings for Fusion Reactor").push("fusion_reactor");
+
+            MIN_SIZE = builder
+                    .comment("Explosion size if reactor overheats. 4 - TNT size. Set to 0 to disable explosion.")
+                    .defineInRange("min_size", 1, 1, 24);
+
+            MAX_SIZE = builder
+                    .comment("Explosion size if reactor overheats. 4 - TNT size. Set to 0 to disable explosion.")
+                    .defineInRange("max_size", 24, 3, 24);
+
+            EXPLOSION_RADIUS = builder
+                    .comment("Explosion size if reactor overheats. 4 - TNT size. Set to 0 to disable explosion.")
+                    .defineInRange("reactor_explosion_radius", 4f, 0.0f, 20f);
+
+            RF_AMPLIFICATION_MULTIPLIER = builder
+                    .comment("Affects heating rate for plasma by rf amplifiers.")
+                    .defineInRange("rf_amplification_multiplier", 1.5, 0.01D, 10D);
+
+            PLASMA_TO_ENERGY_CONVERTION = builder
+                    .comment("Affects plasma energy to FE converion rate.")
+                    .defineInRange("plasma_to_energy_convertion", 1D, 0.01D, 10D);
+
+            builder.pop();
+        }
+
     }
 
     public static class FissionConfig {

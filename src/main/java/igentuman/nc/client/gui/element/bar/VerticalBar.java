@@ -1,11 +1,13 @@
 package igentuman.nc.client.gui.element.bar;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import igentuman.nc.client.gui.FusionCoreScreen;
 import igentuman.nc.client.gui.IVerticalBarScreen;
 import igentuman.nc.client.gui.element.NCGuiElement;
 import net.minecraft.network.chat.Component;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 import static igentuman.nc.util.TextUtils.scaledFormat;
 
@@ -17,7 +19,7 @@ public class VerticalBar extends NCGuiElement {
     protected int backgroundXoffset = 120;
     IVerticalBarScreen screen;
 
-    public VerticalBar(int x, int y, IVerticalBarScreen screen, int max)  {
+    public VerticalBar(int x, int y, IVerticalBarScreen screen, long max)  {
         this.x = x;
         this.y = y;
         xOffset = 96;
@@ -37,10 +39,14 @@ public class VerticalBar extends NCGuiElement {
     public void draw(PoseStack transform, int mX, int mY, float pTicks) {
         super.draw(transform, mX, mY, pTicks);
         int internal = height-2;
-        int stored = (int)(internal*(barValue/maxValue));
+        int stored = (int)Math.min(internal, internal*(barValue/maxValue));
         blit(transform, X(), Y(), backgroundXoffset, 0,  width, height);
         blit(transform, X()+1, Y()+1+internal-stored, xOffset, internal-stored,  width-2, stored);
 
+    }
+
+    public void setTooltipKey(String s) {
+        hintKey = s;
     }
 
     public static class Heat extends VerticalBar{
@@ -57,16 +63,27 @@ public class VerticalBar extends NCGuiElement {
     }
 
     public static class HeatLong extends VerticalBar{
-        public HeatLong(int x, int y, IVerticalBarScreen screen, int maxHeat) {
+        Supplier<Double> heat;
+        public HeatLong(int x, int y, IVerticalBarScreen screen, long maxHeat) {
             super(x, y, screen, maxHeat);
             xOffset = 134;
             height = 97;
             backgroundXoffset = 146;
             hintKey = "heat.bar.amount";
         }
+
+        public HeatLong(int x, int y, FusionCoreScreen screen, long maxHeat, Supplier<Double> o) {
+            this(x, y, screen, maxHeat);
+            heat = o;
+        }
+
         @Override
         public void draw(PoseStack transform, int mX, int mY, float pTicks) {
-            barValue = screen.getHeat();
+            if(heat != null) {
+                barValue = heat.get();
+            } else {
+                barValue = screen.getHeat();
+            }
             super.draw(transform, mX, mY, pTicks);
         }
     }

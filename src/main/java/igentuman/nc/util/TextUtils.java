@@ -35,6 +35,9 @@ public class TextUtils
 
 	public static String scaledFormat(double value)
 	{
+		if(value >= 1000000000) {
+			return numberFormat(value/1000000000)+"G";
+		}
 		if(value >= 1000000) {
 			return numberFormat(value/1000000)+"M";
 		}

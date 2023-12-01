@@ -48,7 +48,7 @@ public class FissionBlocks {
         tmp.put("end_stone", new HeatSinkDef("end_stone", 40,  "enderium_heat_sink"));
         tmp.put("enderium", new HeatSinkDef("enderium", 120, "#nuclearcraft:fission_reactor_casing^3"));
         tmp.put("fluorite", new HeatSinkDef("fluorite", 160, "gold_heat_sink","prismarine_heat_sink"));
-        tmp.put("glowstone", new HeatSinkDef("glowstone", 90, "#nuclearcraft:moderators>2"));
+        tmp.put("glowstone", new HeatSinkDef("glowstone", 130, "#nuclearcraft:moderators>2"));
         tmp.put("gold", new HeatSinkDef("gold", 120, "water_heat_sink", "redstone_heat_sink"));
         tmp.put("iron", new HeatSinkDef("iron", 80, "gold_heat_sink"));
         tmp.put("lapis", new HeatSinkDef("lapis", 120, "fission_reactor_solid_fuel_cell", "#nuclearcraft:fission_reactor_casing"));

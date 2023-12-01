@@ -506,9 +506,9 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         recipe = getRecipe();
         if (recipe != null) {
             recipeInfo.setRecipe(recipe);
-            recipeInfo.ticks = (int) (((RECIPE) recipeInfo.recipe()).getTimeModifier()*100);
+            recipeInfo.ticks = (int) (recipeInfo.recipe().getTimeModifier()*10);
             recipeInfo.energy = recipeInfo.recipe.getEnergy();
-            recipeInfo.heat = ((RECIPE) recipeInfo.recipe()).getHeat();
+            recipeInfo.heat = recipeInfo.recipe().getHeat();
             recipeInfo.radiation = recipeInfo.recipe().getRadiation();
             recipeInfo.be = this;
             recipe.consumeInputs(contentHandler);
@@ -578,6 +578,9 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
     }
 
     public void voidFuel() {
+        contentHandler.fluidCapability.tanks.get(0).setFluid(FluidStack.EMPTY);
+        contentHandler.fluidCapability.tanks.get(1).setFluid(FluidStack.EMPTY);
+        contentHandler.clearHolded();
     }
 
     @Override

@@ -112,7 +112,10 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
             BlockEntity be = getLevel().getBlockEntity(toCheck);
             if(be instanceof FissionFuelCellBE) {
                 fuelCells.add(toCheck);
-                ((FissionControllerBE<?>)controller().controllerBE()).moderatorAttacmentsCount += ((FissionFuelCellBE) be).getAttachedModeratorsCount(true);
+                int moderatorAttachments = ((FissionFuelCellBE) be).getAttachedModeratorsCount(true);
+                ((FissionControllerBE<?>)controller().controllerBE()).fuelCellMultiplier += countAdjuscentFuelCells((NCBlockPos) toCheck, 3);
+                ((FissionControllerBE<?>)controller().controllerBE()).moderatorCellMultiplier += (countAdjuscentFuelCells((NCBlockPos) toCheck, 1)+1)*moderatorAttachments;
+                ((FissionControllerBE<?>)controller().controllerBE()).moderatorAttacmentsCount += moderatorAttachments;
             }
         }
         if(isModerator(toCheck, getLevel())) {
@@ -124,6 +127,16 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
             heatSinks.add(toCheck);
         }
         return true;
+    }
+
+    private int countAdjuscentFuelCells(NCBlockPos toCheck, int step) {
+        int count = 0;
+        for (Direction d : Direction.values()) {
+            if (isFuelCell(toCheck.revert().relative(d))) {
+                count+=step;
+            }
+        }
+        return count;
     }
 
     public void invalidateStats()

@@ -33,6 +33,26 @@ public class TextUtils
 		return  preffix+df.format(value);
 	}
 
+	public static String roundFormat(double value)
+	{
+		String preffix = "";
+		if(value < 1 && value > 0) {
+			preffix = "0";
+		}
+		if(value > -1 && value < 0) {
+			preffix = "0";
+		}
+		DecimalFormat df = new DecimalFormat("#.0");
+		if(preffix.isEmpty()) {
+			df = new DecimalFormat("#");
+		}
+
+		if (value == (int) value) {
+			return String.valueOf((int)value);
+		}
+		return  preffix+df.format(value);
+	}
+
 	public static String scaledFormat(double value)
 	{
 		if(value >= 1000000000) {

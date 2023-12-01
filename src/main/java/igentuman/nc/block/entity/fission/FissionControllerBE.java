@@ -91,6 +91,8 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     public boolean powered = false;
     @NBTField
     protected boolean forceShutdown = false;
+    public int fuelCellMultiplier = 1;
+    public int moderatorCellMultiplier = 1;
 
     public ValidationResult validationResult = ValidationResult.INCOMPLETE;
     public RecipeInfo recipeInfo = new RecipeInfo();
@@ -397,7 +399,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     }
 
     public double heatPerTick() {
-        heatPerTick = recipeInfo.heat * fuelCellsCount + moderatorsHeat();
+        heatPerTick = recipeInfo.heat * Math.max(fuelCellsCount, fuelCellMultiplier) + moderatorsHeat();
         return heatPerTick;
     }
 
@@ -406,16 +408,16 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     }
 
     private int calculateEnergy() {
-        energyPerTick = (int) ((recipeInfo.energy * fuelCellsCount + moderatorsFE()) * (heatMultiplier() + collectedHeatMultiplier() - 1));
+        energyPerTick = (int) ((recipeInfo.energy * Math.abs(fuelCellMultiplier-fuelCellsCount) + moderatorsFE()) * (heatMultiplier() + collectedHeatMultiplier() - 1));
         return energyPerTick;
     }
 
     public double moderatorsHeat() {
-        return recipeInfo.heat * moderatorAttacmentsCount * (FISSION_CONFIG.MODERATOR_HEAT_MULTIPLIER.get() / 100);
+        return recipeInfo.heat * moderatorCellMultiplier * (FISSION_CONFIG.MODERATOR_HEAT_MULTIPLIER.get() / 100);
     }
 
     public double moderatorsFE() {
-        return recipeInfo.energy * moderatorAttacmentsCount * (FISSION_CONFIG.MODERATOR_FE_MULTIPLIER.get() / 100);
+        return recipeInfo.energy * moderatorCellMultiplier * (FISSION_CONFIG.MODERATOR_FE_MULTIPLIER.get() / 100);
     }
 
 

@@ -20,6 +20,7 @@ import net.minecraftforge.items.wrapper.InvWrapper;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.util.TextUtils.numberFormat;
+import static igentuman.nc.util.TextUtils.roundFormat;
 
 public class FissionControllerContainer extends AbstractContainerMenu {
     protected FissionControllerBE blockEntity;
@@ -189,19 +190,19 @@ public class FissionControllerContainer extends AbstractContainerMenu {
     }
 
     public String getEfficiency() {
-        return numberFormat(blockEntity.efficiency);
+        return roundFormat(blockEntity.efficiency);
     }
 
     public String getNetHeat() {
-        return numberFormat(blockEntity.getNetHeat());
+        return roundFormat(blockEntity.getNetHeat());
     }
 
-    public double getCooling() {
-        return blockEntity.heatSinkCooling;
+    public int getCooling() {
+        return (int) blockEntity.heatSinkCooling;
     }
 
     public String getHeating() {
-        return numberFormat(blockEntity.heatPerTick);
+        return roundFormat(blockEntity.heatPerTick);
     }
 
     public int getHeatSinksCount() {

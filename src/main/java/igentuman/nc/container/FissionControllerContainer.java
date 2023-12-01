@@ -223,4 +223,8 @@ public class FissionControllerContainer extends AbstractContainerMenu {
     public boolean hasRecipe() {
         return blockEntity.hasRecipe();
     }
+
+    public ItemStack getInputStack() {
+        return blockEntity.getCurrentFuel();
+    }
 }

@@ -428,7 +428,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
             recipeInfo.heat = ((RECIPE) recipeInfo.recipe()).getHeat();
             recipeInfo.radiation = recipeInfo.recipe().getRadiation();
             recipeInfo.be = this;
-            recipe.extractInputs(contentHandler);
+            recipe.consumeInputs(contentHandler);
         }
     }
 
@@ -596,6 +596,11 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
 
     public void disableForceShutdown() {
         forceShutdown = false;
+    }
+
+    public ItemStack getCurrentFuel() {
+        if(!hasRecipe()) return ItemStack.EMPTY;
+        return recipeInfo.recipe().getFirstItemStackIngredient(0);
     }
 
     public static class Recipe extends NcRecipe {

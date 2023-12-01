@@ -203,11 +203,12 @@ public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
         return true;
     }
 
-    public void extractInputs(SidedContentHandler contentHandler) {
+    public void consumeInputs(SidedContentHandler contentHandler) {
         int i = 0;
         if(contentHandler.hasFluidCapability(null)) {
             for (FluidStackIngredient inputFluid : inputFluids) {
                 for (FluidStack fluidStack : inputFluid.getRepresentations()) {
+                    assert contentHandler.fluidCapability != null;
                     if (fluidStack.isFluidEqual(contentHandler.fluidCapability.tanks.get(i).getFluid())) {
                         contentHandler.fluidCapability.holdedInputs.add(fluidStack.copy());
                         contentHandler.fluidCapability.tanks.get(i).drain(fluidStack, EXECUTE);

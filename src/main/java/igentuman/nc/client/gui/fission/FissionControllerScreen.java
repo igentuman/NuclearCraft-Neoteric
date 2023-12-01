@@ -90,7 +90,7 @@ public class FissionControllerScreen extends AbstractContainerScreen<FissionCont
         this.renderBackground(matrixStack);
         super.render(matrixStack, mouseX, mouseY, partialTicks);
         this.renderTooltip(matrixStack, mouseX, mouseY);
-        itemRenderer.renderGuiItem(container().getResultStack(), relX+116, relY+35);
+        itemRenderer.renderAndDecorateItem(container().getInputStack(), relX+82, relY+20);
     }
 
     private void renderWidgets(PoseStack matrix, float partialTicks, int mouseX, int mouseY) {
@@ -133,9 +133,9 @@ public class FissionControllerScreen extends AbstractContainerScreen<FissionCont
                 interiorTootip = applyFormat(Component.translatable("reactor.fuel_cells", getFuelCellsCount()), ChatFormatting.GOLD);
 
                 if(container().hasRecipe() && !container().getEfficiency().equals("NaN")) {
-                    drawString(matrixStack, font, Component.translatable("fission_reactor.efficiency", container().getEfficiency()), 46, 62, 0x8AFF8A);
-                    drawString(matrixStack, font, Component.translatable("fission_reactor.net_heat", container().getNetHeat()), 46, 72, 0x8AFF8A);
-                    drawString(matrixStack, font, Component.translatable("fission_reactor.heat_multiplier", container().getHeatMultiplier()), 46, 82, 0x8AFF8A);
+                    drawString(matrixStack, font, Component.translatable("fission_reactor.efficiency", container().getEfficiency()), 36, 62, 0x8AFF8A);
+                    drawString(matrixStack, font, Component.translatable("fission_reactor.net_heat", container().getNetHeat()), 36, 72, 0x8AFF8A);
+                    drawString(matrixStack, font, Component.translatable("fission_reactor.heat_multiplier", container().getHeatMultiplier()), 36, 82, 0x8AFF8A);
                 }
             } else {
                 interiorTootip = applyFormat(Component.translatable(getValidationResultKey(), getValidationResultData()), ChatFormatting.RED);

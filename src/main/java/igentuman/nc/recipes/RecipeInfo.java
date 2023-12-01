@@ -58,6 +58,7 @@ public class RecipeInfo <RECIPE extends AbstractRecipe> implements INBTSerializa
             radiation = ((CompoundTag) nbt).getDouble("radiation");
             stuck = ((CompoundTag) nbt).getBoolean("stuck");
             recipeId = ((CompoundTag) nbt).getString("recipe");
+            recipe = null;
             if(!recipeId.isEmpty()) {
                 recipe = getRecipeFromTag(recipeId);
             }

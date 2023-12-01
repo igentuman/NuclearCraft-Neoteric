@@ -128,7 +128,7 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
             recipeInfo.energy = getBasePower() * recipe.getEnergy();
             recipeInfo.radiation = recipeInfo.recipe.getRadiation();
             recipeInfo.be = this;
-            recipe.extractInputs(contentHandler);
+            recipe.consumeInputs(contentHandler);
         }
     }
 

@@ -276,6 +276,7 @@ public class CommonConfig {
         public ForgeConfigSpec.ConfigValue<Double> MODERATOR_FE_MULTIPLIER;
         public ForgeConfigSpec.ConfigValue<Double> MODERATOR_HEAT_MULTIPLIER;
         public ForgeConfigSpec.ConfigValue<Double> EXPLOSION_RADIUS;
+        public ForgeConfigSpec.ConfigValue<Double> HEAT_CAPACITY;
 
         public FissionConfig(ForgeConfigSpec.Builder builder) {
             builder.comment("Settings for Fission Reactor").push("fission_reactor");
@@ -291,6 +292,10 @@ public class CommonConfig {
             EXPLOSION_RADIUS = builder
                     .comment("Explosion size if reactor overheats. 4 - TNT size. Set to 0 to disable explosion.")
                     .defineInRange("reactor_explosion_radius", 4f, 0.0f, 20f);
+
+            HEAT_CAPACITY = builder
+                    .comment("How much reactor may collect heat before meltdown.")
+                    .defineInRange("heat_capacity", 1000000, 1000D, 100000000D);
 
             HEAT_MULTIPLIER = builder
                     .comment("Affects how relation of reactor cooling and heating affects to FE generation.")

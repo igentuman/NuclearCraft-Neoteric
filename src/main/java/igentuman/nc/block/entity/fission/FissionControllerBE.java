@@ -553,11 +553,15 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     }
 
     public double getMaxHeat() {
-        return 1000000;
+        return FISSION_CONFIG.HEAT_CAPACITY.get();
     }
 
     public double calculateEfficiency() {
-        return (double) calculateEnergy() / (recipeInfo.energy / 33);
+        double mult = fuelCellsCount;
+        if(fuelCellMultiplier > fuelCellsCount) {
+            mult = (double) fuelCellMultiplier / fuelCellsCount;
+        }
+        return (double) calculateEnergy() / (recipeInfo.energy * mult / 100);
     }
 
     public double getNetHeat() {

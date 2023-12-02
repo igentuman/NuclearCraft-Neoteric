@@ -141,7 +141,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     }
 
     private CustomEnergyStorage createEnergy() {
-        return new CustomEnergyStorage(1000000, 0, 1000000) {
+        return new CustomEnergyStorage(100000000, 0, 100000000) {
             @Override
             protected void onEnergyChanged() {
                 setChanged();
@@ -557,7 +557,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     }
 
     public double calculateEfficiency() {
-        return (double) calculateEnergy() / (recipeInfo.energy / 100);
+        return (double) calculateEnergy() / (recipeInfo.energy / 33);
     }
 
     public double getNetHeat() {

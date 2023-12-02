@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "item": "nuclearcraft:basic_storage_container"
+      "item": "nuclearcraft:advanced_storage_container"
     },
     "D": {
       "tag": "forge:plates/platinum"

@@ -198,6 +198,7 @@ public class BarrelBlock extends Block implements EntityBlock {
         int storage = BarrelBlocks.all().get(code()).config().getCapacity();
 
         list.add(Component.translatable("tooltip.nc.liquid_capacity", formatLiquid(storage)).withStyle(ChatFormatting.BLUE));
+        list.add(Component.translatable("tooltip.nc.use_multitool").withStyle(ChatFormatting.YELLOW));
     }
 
     public String formatLiquid(int val)

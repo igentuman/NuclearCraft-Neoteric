@@ -328,6 +328,8 @@ public class NCLanguageProvider extends LanguageProvider {
         add("fission.interior.no_fuel_cells", "No Fuel Cells Found");
         add("fission.interior.no_moderators", "No Moderators Found");
         add("fission.interior.no_heat_sink", "No Heat Sinks Found");
+        add("tooltip.nc.use_multitool", "Use Multitool to config sides");
+        add("tooltip.nc.multitool.desc", "Commonly used to config sides of batteries, barrels, ports...");
         add("side_config.up", "UP: ");
         add("side_config.down", "DOWN: ");
         add("side_config.left", "LEFT: ");
@@ -347,7 +349,6 @@ public class NCLanguageProvider extends LanguageProvider {
         add("energy.multiplier", "Energy Multiplier: x%s");
         add("energy.per_tick", "Energy Per Tick: %s FE/t");
 
-
         add("reactor.cooling", "Cooling: %s H/t");
         add("reactor.heating", "Heat Gen: %s H/t");
         add("reactor.net_heat", "Net Heat: %s H/t");
@@ -364,8 +365,8 @@ public class NCLanguageProvider extends LanguageProvider {
         add("validation.structure.no_port", "No port found");
         add("validation.structure.valid", "Structure is Valid");
         add("solar_panel.fe_generation", "Daytime Gen: %s FE/t");
-        add("fission_port.descr", "Used to transfer items/fluids/energy, for redstone control/output and computers.");
-        add("irradiation_chamber.descr", "Used to irradiate items with neutron flux. \r\nHas to be placed in one line with moderator and fuel cell behind it.");
+        add("fission_port.descr", "One port for everything: Fluids, items, redstone, computers, etc...");
+        add("irradiation_chamber.descr", "Irradiates items with neutron flux. \r\nHas to be placed in one line with moderator and fuel cell behind it.");
     }
 
     private void fuel() {

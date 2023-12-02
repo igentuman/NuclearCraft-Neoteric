@@ -85,6 +85,7 @@ public class BarrelBlockItem extends BlockItem
 		} else {
 			list.add(Component.translatable("tooltip.nc.liquid_stored", fluid.getDisplayName(), formatLiquid(fluid.getAmount()), formatLiquid(storage)).withStyle(ChatFormatting.BLUE));
 		}
+		list.add(Component.translatable("tooltip.nc.use_multitool").withStyle(ChatFormatting.YELLOW));
 	}
 
 	public String formatLiquid(int val)

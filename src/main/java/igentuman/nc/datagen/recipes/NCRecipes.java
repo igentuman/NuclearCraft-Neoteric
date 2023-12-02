@@ -76,7 +76,7 @@ public class NCRecipes extends RecipeProvider {
                 .pattern("DPD")
                 .pattern("PCP")
                 .pattern("DPD")
-                .define('C', STORAGE_BLOCK.get("basic_storage_container").get())
+                .define('C', STORAGE_BLOCK.get("advanced_storage_container").get())
                 .define('D', forgePlate(Materials.platinum))
                 .define('P', NC_PARTS.get("plate_du").get())
                 .unlockedBy("item", has(STORAGE_BLOCK.get("advanced_storage_container").get()))

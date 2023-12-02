@@ -140,6 +140,8 @@ public class BatteryBlock extends Block implements EntityBlock {
         int storage = ENERGY_STORAGE.getCapacityFor(asItem().toString());
 
         list.add(Component.translatable("tooltip.nc.energy_capacity", formatEnergy(storage)).withStyle(ChatFormatting.BLUE));
+        list.add(Component.translatable("tooltip.nc.use_multitool").withStyle(ChatFormatting.YELLOW));
+
     }
 
     public String formatEnergy(int energy)

@@ -119,7 +119,7 @@ public class FusionCoreProxyBE extends FusionBE {
             if(getCoreBE().energyStorage.getEnergyStored() > required) {
                 BlockEntity be = getLevel().getBlockEntity(getBlockPos().relative(side));
                 if(be instanceof BlockEntity && !(be instanceof FusionBE)) {
-                    IEnergyStorage r = be.getCapability(ForgeCapabilities.ENERGY).orElse(null);
+                    IEnergyStorage r = be.getCapability(ForgeCapabilities.ENERGY, side.getOpposite()).orElse(null);
                     if(r == null) break;
                     if(r.canReceive()) {
                         int recieved = r.receiveEnergy(getCoreBE().energyStorage.getEnergyStored()-required, false);

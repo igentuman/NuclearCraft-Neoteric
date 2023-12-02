@@ -16,16 +16,16 @@ public class FusionCoolantRecipes extends AbstractRecipeProvider {
 
         for(String gas: List.of("nitrogen", "helium")) {
             add(
-                    fluidIngredient("liquid_" + gas, 500),
-                    fluidStack(gas, 500),
-                    20000
+                    fluidIngredient("liquid_" + gas, 1),
+                    fluidStack(gas, 1),
+                    2000
             );
         }
 
         add(
-                fluidIngredient("minecraft:water", 5000),
-                fluidStack("steam", 5000),
-                10000
+                fluidIngredient("minecraft:water", 1),
+                fluidStack("steam", 1),
+                500
         );
     }
 

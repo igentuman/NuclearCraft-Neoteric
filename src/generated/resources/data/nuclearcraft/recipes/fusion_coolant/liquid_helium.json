@@ -1,15 +1,15 @@
 {
   "type": "nuclearcraft:fusion_coolant",
-  "coolingRate": 20000.0,
+  "coolingRate": 2000.0,
   "inputFluids": [
     {
-      "amount": 500,
+      "amount": 1,
       "tag": "forge:liquid_helium"
     }
   ],
   "outputFluids": [
     {
-      "amount": 500,
+      "amount": 1,
       "fluid": "nuclearcraft:helium"
     }
   ]

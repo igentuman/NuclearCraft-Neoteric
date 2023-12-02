@@ -236,6 +236,7 @@ public class CommonConfig {
     public static class FusionConfig {
         public ForgeConfigSpec.ConfigValue<Integer> MIN_SIZE;
         public ForgeConfigSpec.ConfigValue<Integer> MAX_SIZE;
+        public ForgeConfigSpec.ConfigValue<Double> MINIMAL_MAGNETIC_FIELD;
         public ForgeConfigSpec.ConfigValue<Double> RF_AMPLIFICATION_MULTIPLIER;
         public ForgeConfigSpec.ConfigValue<Double> PLASMA_TO_ENERGY_CONVERTION;
         public ForgeConfigSpec.ConfigValue<Double> EXPLOSION_RADIUS;
@@ -254,6 +255,10 @@ public class CommonConfig {
             EXPLOSION_RADIUS = builder
                     .comment("Explosion size if reactor overheats. 4 - TNT size. Set to 0 to disable explosion.")
                     .defineInRange("reactor_explosion_radius", 4f, 0.0f, 20f);
+
+            MINIMAL_MAGNETIC_FIELD = builder
+                    .comment("Minimal magnetic field required to operate reactor. (Depends on reactor size).")
+                    .defineInRange("minimal_magnetic_field", 10, 1D, 1000D);
 
             RF_AMPLIFICATION_MULTIPLIER = builder
                     .comment("Affects heating rate for plasma by rf amplifiers.")

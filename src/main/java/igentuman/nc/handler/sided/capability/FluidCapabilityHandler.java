@@ -7,7 +7,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -68,25 +67,27 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler implements
         if(side == null) return true;
         SidedContentHandler.RelativeDirection relativeDirection = SidedContentHandler.RelativeDirection.toRelative(side, getFacing());
         SlotModePair.SlotMode mode = sideMap.get(relativeDirection.ordinal())[i].getMode();
-        return (mode == INPUT || mode == PULL) && isValidInputFluid(i, fluid) && isValidForInputSlot(i, fluid);
+        return (mode == INPUT || mode == PULL) && isValidSlotFluid(i, fluid) && isValidForInputSlot(i, fluid);
     }
 
-    public boolean isValidInputFluid(int id, FluidStack fluid)
+    public boolean isValidSlotFluid(int id, FluidStack fluid)
     {
-        if(allowedFluids == null || allowedFluids.get(id).contains(fluid)) return true;
+        if(allowedFluids == null) return true;
+        if(!allowedFluids.containsKey(id)) return true;
         for(FluidStack stack: allowedFluids.get(id)) {
             if(stack.isFluidEqual(fluid)) {
                 return true;
             }
         }
-        return allowedFluids.isEmpty();
+        return allowedFluids.isEmpty() || !allowedFluids.containsKey(id);
     }
 
+    int curOutputSlot = outputSlots;
     public boolean outputAllowed(Integer i, Direction side) {
         if(side == null) return true;
         SidedContentHandler.RelativeDirection relativeDirection = SidedContentHandler.RelativeDirection.toRelative(side, getFacing());
         SlotModePair.SlotMode mode = sideMap.get(relativeDirection.ordinal())[i].getMode();
-        return mode == OUTPUT || mode == PUSH || mode == PUSH_EXCESS;
+        return (mode == OUTPUT || mode == PUSH || mode == PUSH_EXCESS) && getFluidInSlot(i).getAmount() > 0;
     }
 
     public <T> LazyOptional<T> getCapability() {
@@ -206,7 +207,7 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler implements
     public boolean isValidForOutputSlot(int i, FluidStack outputFluid) {
         if(outputAllowed(i, null)) {
             FluidStack stack = getFluidInSlot(i);
-            if(stack.isEmpty()) return true;
+            if(stack.isEmpty()) return isValidSlotFluid(i, outputFluid);
             if(stack.isFluidEqual(outputFluid)) return true;
         }
         return false;

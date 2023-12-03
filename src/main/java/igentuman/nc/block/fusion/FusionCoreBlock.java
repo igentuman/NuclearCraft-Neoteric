@@ -167,14 +167,14 @@ public class FusionCoreBlock extends FusionBlock {
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         if (level.isClientSide()) {
             return (lvl, pos, blockState, t) -> {
-                if (t instanceof FusionCoreBE tile) {
+                if (t instanceof FusionCoreBE<?> tile) {
                     tile.tickClient();
                    // level.setBlockAndUpdate(pos, blockState.setValue(ACTIVE, tile.isActive));
                 }
             };
         }
         return (lvl, pos, blockState, t)-> {
-            if (t instanceof FusionCoreBE tile) {
+            if (t instanceof FusionCoreBE<?> tile) {
                 tile.tickServer();
             }
         };

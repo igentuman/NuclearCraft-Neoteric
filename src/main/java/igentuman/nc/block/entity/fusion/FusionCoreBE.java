@@ -2,6 +2,7 @@ package igentuman.nc.block.entity.fusion;
 
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.fusion.FusionCoreBlock;
+import igentuman.nc.client.sound.SoundHandler;
 import igentuman.nc.compat.cc.NCFusionReactorPeripheral;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.multiblock.ValidationResult;
@@ -16,6 +17,7 @@ import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.util.CustomEnergyStorage;
 import igentuman.nc.util.annotation.NBTField;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -23,6 +25,9 @@ import net.minecraft.network.Connection;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -32,7 +37,6 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import org.jetbrains.annotations.NotNull;
 
@@ -45,6 +49,7 @@ import java.util.Random;
 
 import static igentuman.nc.block.fission.FissionControllerBlock.POWERED;
 import static igentuman.nc.handler.config.CommonConfig.FUSION_CONFIG;
+import static igentuman.nc.setup.registration.NCSounds.*;
 import static igentuman.nc.util.ModUtil.isCcLoaded;
 import static net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE;
 
@@ -223,6 +228,82 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
             setChanged();
         }
     }
+    private boolean playedSwitchSound = false;
+    public void tickClient() {
+        if(!isCasingValid) {
+            stopSound();
+            return;
+        }
+        if(playSoundCooldown > 0) {
+            playSoundCooldown--;
+            return;
+        }
+        if(functionalBlocksCharge < 100 && functionalBlocksCharge > 0) {
+            playChargingSound();
+            return;
+        }
+        if(isReady()) {
+            if(!playedSwitchSound) {
+                playSwitchSound();
+                playedSwitchSound = true;
+                return;
+            }
+
+            if(energyPerTick > 0 && plasmaTemperature > 0) {
+                playRunningSound();
+                return;
+            }
+            playReadySound();
+        } else {
+            stopSound();
+        }
+    }
+
+    private void playReadySound() {
+        if(isRemoved() || (currentSound != null && !currentSound.getLocation().equals(FUSION_READY.get().getLocation()))) {
+            SoundHandler.stopTileSound(getBlockPos());
+            currentSound = null;
+        }
+        if(currentSound == null || !Minecraft.getInstance().getSoundManager().isActive(currentSound)) {
+            if(currentSound != null && currentSound.getLocation().equals(FUSION_READY.get().getLocation())) {
+                return;
+            }
+
+            playSoundCooldown = 20;
+            currentSound = SoundHandler.startTileSound(FUSION_READY.get(), SoundSource.BLOCKS, 0.5f, level.getRandom(), getBlockPos());
+        }
+    }
+
+    private boolean isReady() {
+        return isCasingValid
+                && rfAmplifiersPower > 0
+                && magnetsPower > 0
+                && hasCoolant()
+                && hasRecipe()
+                && functionalBlocksCharge > 99;
+    }
+
+    private void playSwitchSound() {
+        playSoundCooldown = 20;
+        SoundHandler.stopTileSound(getBlockPos());
+        currentSound = null;
+        getLevel().playSound(null, getBlockPos(), FUSION_SWITCH.get(), SoundSource.BLOCKS, 0.5f, 1.0f);
+    }
+
+    private void playRunningSound() {
+        if(isRemoved() || (currentSound != null && !currentSound.getLocation().equals(FUSION_RUNNING.get().getLocation()))) {
+            SoundHandler.stopTileSound(getBlockPos());
+            currentSound = null;
+        }
+        if((currentSound == null || !Minecraft.getInstance().getSoundManager().isActive(currentSound))) {
+            if(currentSound != null && currentSound.getLocation().equals(FUSION_RUNNING.get().getLocation())) {
+                return;
+            }
+
+            playSoundCooldown = 20;
+            currentSound = SoundHandler.startTileSound(FUSION_RUNNING.get(), SoundSource.BLOCKS, 0.5f, level.getRandom(), getBlockPos());
+        }
+    }
 
     @Override
     public void tickServer() {
@@ -316,7 +397,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
     /**
      * Depends on magnets efficiency and ratio of minimal magnetic field to overall magnetic field
      */
-    public double getHeatLoss()
+    public double getPlasmaStability()
     {
         return 2D / (magnetsEfficiency() / 100 * minimalMagneticField() / overallMagneticField());
     }
@@ -398,14 +479,40 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         trackChanges(coolDown());
     }
 
+
+
+    private void playSound(ServerLevel world, BlockPos pos, SoundEvent sound) {
+        if (!world.isClientSide) {
+            world.playSound(null, pos, sound, SoundSource.BLOCKS, 1.0f, 1.0f);
+        }
+    }
+
+    public long getTargetCharge()
+    {
+        return (rfAmplifiersPower+magnetsPower) * 5L;
+    }
+
     private void updateCharge() {
-        long targetCharge = (rfAmplifiersPower+rfAmplification) * 10L;
-        if(targetCharge == 0) return;
-        if(chargeAmount < targetCharge) {
-            chargeAmount += energyStorage.extractEnergy((rfAmplifiersPower+rfAmplification)/10, false);
+        if(getTargetCharge() == 0) return;
+        if(chargeAmount < getTargetCharge()) {
+            chargeAmount += energyStorage.extractEnergy((rfAmplifiersPower+magnetsPower)/5, false);
             changed = true;
         }
-        functionalBlocksCharge = (int) Math.min(((chargeAmount*100)/targetCharge), 100);
+        functionalBlocksCharge = (int) Math.min(((chargeAmount*100)/getTargetCharge()), 100);
+    }
+
+    private void playChargingSound() {
+        if(isRemoved() || (currentSound != null && !currentSound.getLocation().equals(FUSION_CHARGING.get().getLocation()))) {
+            SoundHandler.stopTileSound(getBlockPos());
+            currentSound = null;
+        }
+        if(currentSound == null || !Minecraft.getInstance().getSoundManager().isActive(currentSound)) {
+            if(currentSound != null && currentSound.getLocation().equals(FUSION_CHARGING.get().getLocation())) {
+                return;
+            }
+            playSoundCooldown = 20;
+            currentSound = SoundHandler.startTileSound(FUSION_CHARGING.get(), SoundSource.BLOCKS, 0.5f, level.getRandom(), getBlockPos());
+        }
     }
 
     private boolean updateCharacteristics() {
@@ -434,25 +541,36 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
     private double rfAmplifierRatio() {
         return ((double)rfAmplificationRatio)/100;
     }
-
+    private void coolantCoolDown()
+    {
+        if(hasCoolant()) {
+            if(reactorHeat > coolantRecipe.getCoolingRate()) {
+                int coolantNeeded = (int) Math.min(Math.pow(size, 2), reactorHeat/coolantRecipe.getCoolingRate());
+                int coolantPerOp = coolantRecipe.getInputFluids()[0].getAmount();
+                int availableCoolant = contentHandler.fluidCapability.tanks.get(2).getFluidAmount();
+                int possibleOps = availableCoolant/coolantPerOp;
+                int actualOps = Math.min(possibleOps, coolantNeeded*coolantPerOp);
+                reactorHeat -= (coolantRecipe.getCoolingRate() / size) * actualOps;
+                extractCoolant(actualOps);
+            }
+        }
+    }
     private boolean coolDown() {
         double wasHeat = reactorHeat;
         //passive cooldown
         reactorHeat -= 1000*size;
-        if(hasCoolant()) {
-            if(reactorHeat > coolantRecipe.getCoolingRate() / size) {
-                reactorHeat -= coolantRecipe.getCoolingRate() / size;
-                extractCoolant();
-            }
-        }
+
+        coolantCoolDown();
 
         reactorHeat = Math.max(0, reactorHeat);
         return wasHeat != reactorHeat;
     }
 
-    private void extractCoolant() {
-        contentHandler.fluidCapability.tanks.get(2).drain(coolantRecipe.getInputFluids()[0].getAmount(), EXECUTE);
-        contentHandler.fluidCapability.tanks.get(3).fill(coolantRecipe.getOutputFluids()[0], EXECUTE);
+    private void extractCoolant(int ops) {
+        contentHandler.fluidCapability.tanks.get(2).drain(coolantRecipe.getInputFluids()[0].getAmount()*ops, EXECUTE);
+        FluidStack output = coolantRecipe.getOutputFluids()[0].copy();
+        output.setAmount(output.getAmount()*ops);
+        contentHandler.fluidCapability.tanks.get(3).fill(output, EXECUTE);
     }
 
     private boolean processReaction() {
@@ -509,9 +627,9 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
     }
 
     private void heatLossExchange() {
-        plasmaTemperature -= (int) (plasmaTemperature/getHeatLoss())*size/100;
+        plasmaTemperature -= (int) ((plasmaTemperature/ Math.pow(getPlasmaStability(), 2))*((double)size))/100;
         plasmaTemperature = Math.max(0, plasmaTemperature);
-        reactorHeat += (double) plasmaTemperature /(100000*Math.pow(size, 2));
+        reactorHeat += (double) Math.min(plasmaTemperature, 100000000) / (10000*size*getPlasmaStability());
     }
 
 
@@ -847,7 +965,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         }
 
         public double getCoolingRate() {
-            return rarityModifier;
+            return Math.max(rarityModifier, 1);
         }
     }
 }

@@ -50,6 +50,7 @@ public class NCLanguageProvider extends LanguageProvider {
         labels();
         messages();
         storageBlocks();
+        sounds();
     }
 
     private void messages() {
@@ -63,6 +64,11 @@ public class NCLanguageProvider extends LanguageProvider {
         add("sound_event.nuclearcraft.item.geiger_3", "Geiger Counter Ticks Level 3 Intensity");
         add("sound_event.nuclearcraft.item.geiger_4", "Geiger Counter Ticks Level 4 Intensity");
         add("sound_event.nuclearcraft.item.geiger_5", "Geiger Counter Ticks Level 5 Intensity");
+
+        add("sound_event.nuclearcraft.fusion.ready", "Fusion Reactor Ready");
+        add("sound_event.nuclearcraft.fusion.running", "Fusion Reactor Running");
+        add("sound_event.nuclearcraft.fusion.charging", "Fusion Reactor Charging");
+        add("sound_event.nuclearcraft.fusion.switch", "Fusion Reactor Switch");
     }
 
     private void labels() {

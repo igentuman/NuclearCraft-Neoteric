@@ -7,6 +7,7 @@ import igentuman.nc.client.gui.StorageContainerScreen;
 import igentuman.nc.client.gui.fission.FissionPortScreen;
 import igentuman.nc.client.particle.RadiationParticle;
 import igentuman.nc.client.gui.fission.FissionControllerScreen;
+import igentuman.nc.client.sound.SoundHandler;
 import igentuman.nc.handler.event.client.*;
 import igentuman.nc.multiblock.fusion.FusionReactor;
 import igentuman.nc.radiation.client.ClientRadiationData;
@@ -44,12 +45,14 @@ import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_BE;
 import static igentuman.nc.setup.registration.NCItems.GEIGER_COUNTER;
 import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_CONTAINER;
+import static net.minecraftforge.eventbus.api.EventPriority.LOWEST;
 
 @Mod.EventBusSubscriber(modid = MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ClientSetup {
 
     public static void init(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
+            MinecraftForge.EVENT_BUS.addListener(LOWEST, SoundHandler::onTilePlaySound);
             BlockEntityRenderers.register(FUSION_BE.get("fusion_core").get(), FusionCoreRenderer::new);
             MenuScreens.register(STORAGE_CONTAINER.get(), StorageContainerScreen::new);
             MenuScreens.register(FusionReactor.FUSION_CORE_CONTAINER.get(), FusionCoreScreen::new);

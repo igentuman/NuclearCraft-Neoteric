@@ -18,14 +18,14 @@ public class FusionCoolantRecipes extends AbstractRecipeProvider {
             add(
                     fluidIngredient("liquid_" + gas, 1),
                     fluidStack(gas, 1),
-                    2000
+                    5000
             );
         }
 
         add(
                 fluidIngredient("minecraft:water", 1),
                 fluidStack("steam", 1),
-                500
+                1000
         );
     }
 

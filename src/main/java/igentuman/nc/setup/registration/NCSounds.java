@@ -19,6 +19,10 @@ public final class NCSounds {
 
     public static final List<RegistryObject<SoundEvent>> GEIGER_SOUNDS = initGeigerSounds();
     public static final RegistryObject<SoundEvent> ITEM_CHARGED = SOUND_EVENTS.register("charge_energy", () -> new SoundEvent(rl( "charge_energy")));
+    public static final RegistryObject<SoundEvent> FUSION_CHARGING = SOUND_EVENTS.register("tile.fusion_charging", () -> new SoundEvent(rl( "tile.fusion_charging")));
+    public static final RegistryObject<SoundEvent> FUSION_READY = SOUND_EVENTS.register("tile.fusion_ready", () -> new SoundEvent(rl( "tile.fusion_ready")));
+    public static final RegistryObject<SoundEvent> FUSION_RUNNING = SOUND_EVENTS.register("tile.fusion_running", () -> new SoundEvent(rl( "tile.fusion_running")));
+    public static final RegistryObject<SoundEvent> FUSION_SWITCH = SOUND_EVENTS.register("tile.fusion_switch", () -> new SoundEvent(rl( "tile.fusion_switch")));
 
     private static List<RegistryObject<SoundEvent>> initGeigerSounds() {
         return List.of(

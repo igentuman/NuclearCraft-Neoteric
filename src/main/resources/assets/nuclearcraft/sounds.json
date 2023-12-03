@@ -1,4 +1,28 @@
 {
+  "tile.fusion_ready": {
+    "sounds": [
+      "nuclearcraft:block/fusion_ready"
+    ],
+    "subtitle": "sound_event.nuclearcraft.fusion.ready"
+  },
+  "tile.fusion_charging": {
+    "sounds": [
+      "nuclearcraft:block/fusion_charging"
+    ],
+    "subtitle": "sound_event.nuclearcraft.fusion.charging"
+  },
+  "tile.fusion_running": {
+    "sounds": [
+      "nuclearcraft:block/fusion_running"
+    ],
+    "subtitle": "sound_event.nuclearcraft.fusion.running"
+  },
+  "fusion_switch": {
+    "sounds": [
+      "nuclearcraft:block/fusion_switch"
+    ],
+    "subtitle": "sound_event.nuclearcraft.fusion.switch"
+  },
   "charge_energy": {
     "sounds": [
       "nuclearcraft:item/charge_energy"

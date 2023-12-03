@@ -1,8 +1,10 @@
 package igentuman.nc.block.entity;
 
+import igentuman.nc.client.sound.SoundHandler;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.util.NCBlockPos;
 import igentuman.nc.util.annotation.NBTField;
+import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -19,7 +21,8 @@ public class NuclearCraftBE extends BlockEntity {
     protected String name;
     protected NCBlockPos bePos;
     protected boolean changed;
-
+    protected SoundInstance currentSound;
+    protected int playSoundCooldown = 0;
     public static String getName(BlockState pBlockState) {
         return pBlockState.getBlock().asItem().toString();
     }
@@ -93,6 +96,18 @@ public class NuclearCraftBE extends BlockEntity {
                 tag.put(f.getName(), tagList);
             }
         } catch (IllegalAccessException ignore) { }
+    }
+
+    @Override
+    public void setRemoved() {
+        super.setRemoved();
+        stopSound();
+    }
+
+    protected void stopSound() {
+        SoundHandler.stopTileSound(getBlockPos());
+        currentSound = null;
+        playSoundCooldown = 0;
     }
 
     public void readTagData(CompoundTag tag) {

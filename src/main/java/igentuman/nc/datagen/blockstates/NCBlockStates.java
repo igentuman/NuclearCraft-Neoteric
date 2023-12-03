@@ -84,7 +84,21 @@ public class NCBlockStates extends BlockStateProvider {
 
 
     private void fusionReactor() {
-        simpleBlock(FUSION_BLOCKS.get("fusion_core").get(), models().getExistingFile(rl("block/dummy")));
+        //simpleBlock(FUSION_BLOCKS.get("fusion_core").get(), models().getExistingFile(rl("block/dummy")));
+        getVariantBuilder(FUSION_BLOCKS.get("fusion_core").get())
+                .partialState()
+                .with(BlockStateProperties.POWERED, true)
+                .modelForState()
+                .modelFile(models().getExistingFile(rl("block/fusion/core_center")))
+                .addModel()
+                .partialState()
+                .with(BlockStateProperties.POWERED, false)
+                .modelForState()
+                .modelFile(models().getExistingFile(rl("block/dummy")))
+                .addModel();
+
+
+
         simpleBlock(FUSION_CORE_PROXY.get(), models().getExistingFile(rl("block/fusion/core_proxy")));
         simpleBlock(FUSION_BLOCKS.get("fusion_reactor_casing").get(), model(FUSION_BLOCKS.get("fusion_reactor_casing").get(),"fusion"));
         simpleBlock(FUSION_BLOCKS.get("fusion_reactor_casing_glass").get(), model(FUSION_BLOCKS.get("fusion_reactor_casing_glass").get(),"fusion"));

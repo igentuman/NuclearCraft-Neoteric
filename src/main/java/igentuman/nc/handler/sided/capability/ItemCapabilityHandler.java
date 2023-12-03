@@ -270,7 +270,11 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
     }
 
     private Direction getFacing() {
-        return tile.getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);
+        Direction facing = Direction.NORTH;
+        if(tile.getBlockState().hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
+            facing = tile.getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);
+        }
+        return facing;
     }
 
     private boolean inputAllowed(Integer i, ItemStack stack, Direction side) {

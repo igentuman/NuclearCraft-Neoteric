@@ -33,14 +33,14 @@ public class SliderHorizontal extends NCGuiElement {
         height = 12;
         this.screen = screen;
         xTexStart = 0;
-        btn = new NCImageButton(X(), Y(), 4, 7, 0, 171, -7, TEXTURE, pButton -> {
+        btn = new NCImageButton(X(), Y(), 4, 8, 0, 169, -9, TEXTURE, pButton -> {
 
         });
     }
 
     @Override
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
-        if(X() <= pMouseX && pMouseX < X() + width && Y() <= pMouseY && pMouseY < Y() + height) {
+        if(X() <= pMouseX && pMouseX < X() + width && Y()-1 <= pMouseY && pMouseY < Y() + height+1) {
             isPressed = true;
             return isPressed;
         }
@@ -78,7 +78,7 @@ public class SliderHorizontal extends NCGuiElement {
 
     public void drawSlide(PoseStack transform) {
         RenderSystem.setShaderTexture(0, TEXTURE);
-        blit(transform, this.x+ screen.getGuiLeft(), this.y+2+screen.getGuiTop(), 4, 175, this.width, 3, this.textureWidth, this.textureHeight);
+        blit(transform, this.x+ screen.getGuiLeft(), this.y+2+screen.getGuiTop(), 5, 175, this.width, 3, this.textureWidth, this.textureHeight);
     }
 
     @Override

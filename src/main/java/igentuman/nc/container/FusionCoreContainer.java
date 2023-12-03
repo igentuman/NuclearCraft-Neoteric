@@ -18,8 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_CORE_PROXY;
-import static igentuman.nc.util.TextUtils.numberFormat;
-import static igentuman.nc.util.TextUtils.scaledFormat;
+import static igentuman.nc.util.TextUtils.*;
 
 public class FusionCoreContainer extends AbstractContainerMenu {
     protected FusionCoreBE<?> blockEntity;
@@ -112,7 +111,7 @@ public class FusionCoreContainer extends AbstractContainerMenu {
     }
 
     public String getEfficiency() {
-        return numberFormat(blockEntity.efficiency);
+        return roundFormat(blockEntity.efficiency*100);
     }
 
     public String getNetHeat() {
@@ -219,5 +218,9 @@ public class FusionCoreContainer extends AbstractContainerMenu {
 
     public int requiredEnergy() {
         return blockEntity.rfAmplifiersPower+blockEntity.magnetsPower;
+    }
+
+    public boolean isRunning() {
+        return blockEntity.isRunning();
     }
 }

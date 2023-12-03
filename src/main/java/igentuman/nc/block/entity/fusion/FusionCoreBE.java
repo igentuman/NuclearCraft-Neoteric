@@ -4,6 +4,7 @@ import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.fusion.FusionCoreBlock;
 import igentuman.nc.client.sound.SoundHandler;
 import igentuman.nc.compat.cc.NCFusionReactorPeripheral;
+import igentuman.nc.handler.event.client.BlockOverlayHandler;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.multiblock.ValidationResult;
 import igentuman.nc.multiblock.fusion.FusionReactor;
@@ -230,6 +231,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
     }
     private boolean playedSwitchSound = false;
     public void tickClient() {
+        BlockOverlayHandler.removeFusionReactor(getBlockPos());
         if(!isCasingValid) {
             stopSound();
             return;
@@ -245,12 +247,13 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         if(isReady()) {
             if(!playedSwitchSound) {
                 playSwitchSound();
-                playedSwitchSound = true;
+
                 return;
             }
 
             if(energyPerTick > 0 && plasmaTemperature > 0) {
                 playRunningSound();
+                BlockOverlayHandler.addFusionReactor(getBlockPos());
                 return;
             }
             playReadySound();
@@ -270,7 +273,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
             }
 
             playSoundCooldown = 20;
-            currentSound = SoundHandler.startTileSound(FUSION_READY.get(), SoundSource.BLOCKS, 0.5f, level.getRandom(), getBlockPos());
+            currentSound = SoundHandler.startTileSound(FUSION_READY.get(), SoundSource.BLOCKS, 0.8f, level.getRandom(), getBlockPos());
         }
     }
 
@@ -287,7 +290,8 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         playSoundCooldown = 20;
         SoundHandler.stopTileSound(getBlockPos());
         currentSound = null;
-        getLevel().playSound(null, getBlockPos(), FUSION_SWITCH.get(), SoundSource.BLOCKS, 0.5f, 1.0f);
+        playedSwitchSound = true;
+        getLevel().playLocalSound(getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), FUSION_SWITCH.get(), SoundSource.BLOCKS, 1f, 1.0f, false);
     }
 
     private void playRunningSound() {
@@ -511,6 +515,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
                 return;
             }
             playSoundCooldown = 20;
+            playedSwitchSound = false;
             currentSound = SoundHandler.startTileSound(FUSION_CHARGING.get(), SoundSource.BLOCKS, 0.5f, level.getRandom(), getBlockPos());
         }
     }
@@ -616,7 +621,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         if(plasmaTemperature > getOptimalTemperature()) {
             temperatureEfficiency = getOptimalTemperature()/plasmaTemperature;
         }
-        return (getHeatDeviationMultiplier() + temperatureEfficiency);
+        return (getHeatDeviationMultiplier() + temperatureEfficiency)/2;
     }
 
     private void simulateHeatExchange() {
@@ -659,7 +664,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
     private void handleRecipeOutput() {
         if (hasRecipe() && recipeInfo.isCompleted()) {
             if(recipe == null) {
-                recipe = (RECIPE) recipeInfo.recipe();
+                recipe = recipeInfo.recipe();
             }
             if (recipe.handleOutputs(contentHandler)) {
                 recipeInfo.clear();
@@ -903,6 +908,10 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
 
     public boolean hasEnoughEnergy() {
         return energyStorage.getEnergyStored() > rfAmplifiersPower+magnetsPower;
+    }
+
+    public boolean isRunning() {
+        return powered && energyPerTick > 0 && plasmaTemperature > 0 && efficiency > 0;
     }
 
     public static class Recipe extends NcRecipe {

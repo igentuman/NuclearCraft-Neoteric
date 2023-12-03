@@ -1,7 +1,10 @@
 {
   "variants": {
-    "": {
+    "powered=false": {
       "model": "nuclearcraft:block/dummy"
+    },
+    "powered=true": {
+      "model": "nuclearcraft:block/fusion/core_center"
     }
   }
 }

@@ -4,8 +4,7 @@
 		"0": "nuclearcraft:block/fusion/fusion_core/plain_face",
 		"1": "nuclearcraft:block/fusion/fusion_core/top",
 		"2": "nuclearcraft:block/fusion/fusion_core/core_foot",
-		"3": "nuclearcraft:block/fusion/fusion_core/core_centre",
-		"particle": "nuclearcraft:block/fusion/fusion_dummy_side"
+		"3": "nuclearcraft:block/fusion/fusion_core/core_centre"
 	},
 	"elements": [
 		{
@@ -179,8 +178,8 @@
 		},
 		{
 			"name": "core_centre",
-			"from": [4, 1, 4],
-			"to": [12, 23, 12],
+			"from": [6, 1, 6],
+			"to": [10, 23, 10],
 			"rotation": {"angle": 45, "axis": "y", "origin": [8, 8, 8]},
 			"faces": {
 				"north": {"uv": [0, 0, 4, 11], "texture": "#3"},

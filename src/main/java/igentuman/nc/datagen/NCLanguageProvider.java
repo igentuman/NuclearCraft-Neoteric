@@ -78,6 +78,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("nc.label.leacher_no_acid", "No Acid");
         add("block.nuclearcraft.glowing_mushroom", "Glowing Mushroom");
         add("fusion_core", "Fusion Reactor Core");
+        add("fusion_core.efficiency", "Efficiency: %s%%");
         add("nc_jei_cat.fusion_core", "Fusion Reactor");
         add("nc_jei_cat.fusion_coolant", "Fusion Reactor Coolant");
 

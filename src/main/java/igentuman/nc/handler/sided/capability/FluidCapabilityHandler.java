@@ -9,6 +9,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
@@ -55,8 +56,9 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler implements
 
     public LazyOptional<FluidHandlerWrapper> getCapability(Direction side) {
         if(side == null) return getCapability();
+
         if(!handlerCache.containsKey(side)) {
-            SidedContentHandler.RelativeDirection relativeDirection = SidedContentHandler.RelativeDirection.toRelative(side, tile.getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING));
+            SidedContentHandler.RelativeDirection relativeDirection = SidedContentHandler.RelativeDirection.toRelative(side, getFacing());
             handlerCache.put(side, LazyOptional.of(
                     () -> new FluidHandlerWrapper(this, relativeDirection, (i, f) -> inputAllowed(i, f, side), (i) -> outputAllowed(i, side))));
         }
@@ -125,7 +127,11 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler implements
     }
 
     private Direction getFacing() {
-        return tile.getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);
+        Direction facing = Direction.NORTH;
+        if(tile.getBlockState().hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
+            facing = tile.getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);
+        }
+        return facing;
     }
 
     public boolean pushFluids(Direction dir) {

@@ -22,7 +22,7 @@ public class Electromagnets {
 
     public static HashMap<String, MagnetPrefab> all() {
         if(all.isEmpty()) {
-            all.put("basic_electromagnet", new MagnetPrefab("basic_electromagnet",500, 300, 0.2D, 350000, 50));
+            all.put("basic_electromagnet", new MagnetPrefab("basic_electromagnet",500, 300, 0.25D, 350000, 50));
             all.put("magnesium_diboride_electromagnet", new MagnetPrefab("magnesium_diboride_electromagnet",1000, 500, 0.5D, 39000, 80));
             all.put("niobium_tin_electromagnet", new MagnetPrefab("niobium_tin_electromagnet",1500, 1140, 1D, 18000, 90));
             all.put("niobium_titanium_electromagnet", new MagnetPrefab("niobium_titanium_electromagnet",2000, 2260, 2D, 10000, 95));

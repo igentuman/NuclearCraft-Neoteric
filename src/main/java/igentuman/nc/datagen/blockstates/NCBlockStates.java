@@ -275,7 +275,7 @@ public class NCBlockStates extends BlockStateProvider {
                 blockPath+key(block).getPath(),
                         new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/" + name.getPath()));
         if(name.getPath().matches(".*glass|.*cell.*")) {
-            model.renderType(new ResourceLocation("translucent"));
+            model.renderType(new ResourceLocation("cutout"));
         }
         return model;
     }

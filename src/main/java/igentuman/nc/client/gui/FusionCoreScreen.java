@@ -233,9 +233,6 @@ public class FusionCoreScreen extends AbstractContainerScreen<FusionCoreContaine
         coolantBar.clearTooltips();
         plasmaHeatBar.setTooltipKey("tooltip.nc.reactor.plasma_heat");
         plasmaHeatBar.addTooltip(Component.translatable("tooltip.nc.reactor.plasma_optimal", scaledFormat(container().getOptimalTemp())).withStyle(ChatFormatting.GOLD));
-        heatBar.addTooltip(Component.translatable("reactor.cooling", container().getCooling()).withStyle(ChatFormatting.AQUA));
-        heatBar.addTooltip(Component.translatable("reactor.heating", container().getHeating()).withStyle(ChatFormatting.RED));
-        heatBar.addTooltip(Component.translatable("reactor.net_heat", container().getNetHeat()).withStyle(ChatFormatting.GOLD));
         for(NCGuiElement widget: widgets) {
            if(widget.isMouseOver(pMouseX, pMouseY)) {
                renderTooltip(pPoseStack, widget.getTooltips(),

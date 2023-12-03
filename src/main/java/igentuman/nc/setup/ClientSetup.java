@@ -5,6 +5,8 @@ import igentuman.nc.client.block.fusion.FusionCoreRenderer;
 import igentuman.nc.client.gui.FusionCoreScreen;
 import igentuman.nc.client.gui.StorageContainerScreen;
 import igentuman.nc.client.gui.fission.FissionPortScreen;
+import igentuman.nc.client.particle.FusionBeamParticle;
+import igentuman.nc.client.particle.FusionBeamParticleType;
 import igentuman.nc.client.particle.RadiationParticle;
 import igentuman.nc.client.gui.fission.FissionControllerScreen;
 import igentuman.nc.client.sound.SoundHandler;
@@ -85,11 +87,6 @@ public class ClientSetup {
     }
 
     @SubscribeEvent
-    public static void onRegisterModels(ModelEvent.RegisterAdditional event) {
-        event.register(new ResourceLocation(MODID, "item/fusion_core_center"));
-    }
-
-    @SubscribeEvent
     public static void onModelRegistryEvent(ModelEvent.RegisterGeometryLoaders event) {
         event.register(BatteryBlockLoader.BATTERY_LOADER.getPath(), new BatteryBlockLoader());
     }
@@ -108,6 +105,7 @@ public class ClientSetup {
     @SubscribeEvent
     public static void registerParticleFactories(RegisterParticleProvidersEvent event) {
         event.register(NcParticleTypes.RADIATION.get(), RadiationParticle.Factory::new);
+        event.register(NcParticleTypes.FUSION_BEAM.get(), FusionBeamParticle.Factory::new);
     }
 
     public static void setup() {

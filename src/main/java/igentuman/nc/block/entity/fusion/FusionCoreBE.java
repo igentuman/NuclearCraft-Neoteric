@@ -2,6 +2,7 @@ package igentuman.nc.block.entity.fusion;
 
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.fusion.FusionCoreBlock;
+import igentuman.nc.client.particle.FusionBeamParticleData;
 import igentuman.nc.client.sound.SoundHandler;
 import igentuman.nc.compat.cc.NCFusionReactorPeripheral;
 import igentuman.nc.handler.event.client.BlockOverlayHandler;
@@ -17,6 +18,7 @@ import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.util.CustomEnergyStorage;
+import igentuman.nc.util.NCBlockPos;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -27,12 +29,14 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
@@ -253,13 +257,37 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
 
             if(energyPerTick > 0 && plasmaTemperature > 0) {
                 playRunningSound();
-                BlockOverlayHandler.addFusionReactor(getBlockPos());
+               // BlockOverlayHandler.addFusionReactor(getBlockPos());
                 return;
             }
             playReadySound();
         } else {
             stopSound();
         }
+    }
+    private void sendBeamData(FusionBeamParticleData data, BlockPos from) {
+        Vec3 vec = Vec3.atCenterOf(from);
+        if (!getLevel().isClientSide() && level instanceof ServerLevel serverWorld) {
+            for (ServerPlayer player : serverWorld.players()) {
+                serverWorld.sendParticles(player, data, true, vec.x, vec.y, vec.z, 1, 0, 0, 0, 0);
+            }
+        }
+    }
+    private void renderBeam() {
+        NCBlockPos pos = new NCBlockPos(getBlockPos().above());
+        int beamLength = size*2+4;
+        sendBeamData(new FusionBeamParticleData(Direction.EAST, beamLength, 0.35f),
+                pos.revert().relative(Direction.NORTH, size+2).relative(Direction.WEST, size+2)
+        );
+        sendBeamData(new FusionBeamParticleData(Direction.EAST, beamLength, 0.35f),
+                pos.revert().relative(Direction.SOUTH, size+2).relative(Direction.WEST, size+2)
+        );
+        sendBeamData(new FusionBeamParticleData(Direction.SOUTH, beamLength, 0.35f),
+                pos.revert().relative(Direction.EAST, size+2).relative(Direction.NORTH, size+2)
+        );
+        sendBeamData(new FusionBeamParticleData(Direction.SOUTH, beamLength, 0.35f),
+                pos.revert().relative(Direction.WEST, size+2).relative(Direction.NORTH, size+2)
+        );
     }
 
     private void playReadySound() {
@@ -352,8 +380,10 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
     public double getHeatDeviationMultiplier() {
         double mEff = (magnetsEfficiency() - 50) / 100;
         double rEff = (rfEfficiency() - 50) / 100;
-        double minMult = 0.5 + (mEff + rEff)/2;
-        double maxMult = 1.5 - (mEff + rEff)/2;
+        //better plasma stability = smaller deviation window
+        double plasmaStability = (1+getPlasmaStability())/2;
+        double minMult = 0.5*plasmaStability + (mEff + rEff)/2;
+        double maxMult = 1.5*getPlasmaStability() - (mEff + rEff)/2;
         double rand = ((new Random()).nextDouble()+4)/5;
         lastHeadDeviationMult = (lastHeadDeviationMult + rand*(maxMult-minMult)+minMult)/2;
         return lastHeadDeviationMult;
@@ -403,7 +433,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
      */
     public double getPlasmaStability()
     {
-        return 2D / (magnetsEfficiency() / 100 * minimalMagneticField() / overallMagneticField());
+        return Math.min(1.5, Math.max(0.5, 2D / (magnetsEfficiency() / 100 * (minimalMagneticField() / overallMagneticField()))));
     }
 
     private List<FluidStack> getAllowedCoolants() {
@@ -499,7 +529,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
     private void updateCharge() {
         if(getTargetCharge() == 0) return;
         if(chargeAmount < getTargetCharge()) {
-            chargeAmount += energyStorage.extractEnergy((rfAmplifiersPower+magnetsPower)/5, false);
+            chargeAmount += energyStorage.extractEnergy((rfAmplifiersPower+magnetsPower)/2, false);
             changed = true;
         }
         functionalBlocksCharge = (int) Math.min(((chargeAmount*100)/getTargetCharge()), 100);
@@ -606,6 +636,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         if (!recipeInfo.isCompleted()) {
             simulateHeatExchange();
             if(energyPerTick > 0) {
+                renderBeam();
                 energyStorage.addEnergy(energyPerTick);
             }
         }
@@ -621,7 +652,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         if(plasmaTemperature > getOptimalTemperature()) {
             temperatureEfficiency = getOptimalTemperature()/plasmaTemperature;
         }
-        return (getHeatDeviationMultiplier() + temperatureEfficiency)/2;
+        return (getHeatDeviationMultiplier() + temperatureEfficiency*2 + getPlasmaStability())/4;
     }
 
     private void simulateHeatExchange() {

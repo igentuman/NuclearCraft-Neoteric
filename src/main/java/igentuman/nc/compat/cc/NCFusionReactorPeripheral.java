@@ -63,6 +63,11 @@ public class NCFusionReactorPeripheral implements IPeripheral {
         return reactor.energyPerTick;
     }
 
+    @LuaFunction
+    public final int setRFAmplification(int amplification)
+    {
+        return reactor.rfAmplificationRatio = Math.min(100, Math.max(amplification, 1));
+    }
 
     @LuaFunction
     public final int getEnergyStored()
@@ -71,9 +76,9 @@ public class NCFusionReactorPeripheral implements IPeripheral {
     }
 
     @LuaFunction
-    public final double getHeatMultiplier()
+    public final double getPlasmaStability()
     {
-        return reactor.heatMultiplier;
+        return reactor.getPlasmaStability();
     }
 
 

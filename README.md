@@ -19,7 +19,7 @@ This is a re-creation of old but gold NuclearCraft on a modern MC version
 - [x] Computers Support
 - [x] Custom blocks like Cobblestone Generator
 - [x] Custom items like Geiger Counter
-- [ ] Fusion Reactor
+- [x] Fusion Reactor
 
 # I WISH I COULD TRY
 ### Download here: https://curseforge.com/minecraft/mc-mods/nuclearcraft-neoteric

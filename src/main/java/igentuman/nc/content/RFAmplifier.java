@@ -22,7 +22,7 @@ public class RFAmplifier {
 
     public static HashMap<String, RFAmplifierPrefab> all() {
         if(all.isEmpty()) {
-            all.put("basic_rf_amplifier", new RFAmplifierPrefab("basic_rf_amplifier",250, 300, 500000, 350000, 50));
+            all.put("basic_rf_amplifier", new RFAmplifierPrefab("basic_rf_amplifier",250, 300, 500000, 350000, 75));
             all.put("magnesium_diboride_rf_amplifier", new RFAmplifierPrefab("magnesium_diboride_rf_amplifier",500, 500, 1000000, 39000, 80));
             all.put("niobium_tin_rf_amplifier", new RFAmplifierPrefab("niobium_tin_rf_amplifier",750, 1140, 2000000, 18000, 90));
             all.put("niobium_titanium_rf_amplifier", new RFAmplifierPrefab("niobium_titanium_rf_amplifier",1500, 2260, 3000000, 10000, 95));

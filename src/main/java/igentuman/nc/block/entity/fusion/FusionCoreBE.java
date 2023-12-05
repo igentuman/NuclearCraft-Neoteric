@@ -33,6 +33,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -47,10 +48,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 import static igentuman.nc.block.fission.FissionControllerBlock.POWERED;
 import static igentuman.nc.handler.config.CommonConfig.FUSION_CONFIG;
@@ -73,8 +71,6 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
     public double heatPerTick = 0;
     @NBTField
     public int energyPerTick = 0;
-    @NBTField
-    public double heatMultiplier = 0;
     @NBTField
     public double efficiency = 0;
     @NBTField
@@ -108,11 +104,11 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
 
     public long chargeAmount = 0;
     @NBTField
-    private int rfEfficiency = 0;
+    protected int rfEfficiency = 0;
     @NBTField
-    private int magnetsEfficiency = 0;
+    protected int magnetsEfficiency = 0;
     @NBTField
-    private double lastKnownOptimalTemp = 1000000;
+    protected double lastKnownOptimalTemp = 1000000;
     public List<FusionCoolantRecipe> getCoolantRecipes() {
         if(coolantRecipes == null) {
             coolantRecipes = (List<FusionCoolantRecipe>) NcRecipeType.ALL_RECIPES.get("fusion_coolant").getRecipeType().getRecipes(getLevel());
@@ -120,7 +116,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         return coolantRecipes;
     }
 
-    private List<FusionCoolantRecipe> coolantRecipes;
+    protected List<FusionCoolantRecipe> coolantRecipes;
 
 
     public final SidedContentHandler contentHandler;
@@ -137,13 +133,13 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
 
     protected boolean initialized = false;
     @NBTField
-    private boolean isInternalValid = false;
-    private int reValidateCounter = 40;
-    private boolean refreshCacheFlag;
-    private List<FluidStack> allowedInputs;
-    private FusionCoreProxyBE[] proxyBES;
+    protected boolean isInternalValid = false;
+    protected int reValidateCounter = 40;
+    protected boolean refreshCacheFlag;
+    protected List<FluidStack> allowedInputs;
+    protected FusionCoreProxyBE[] proxyBES;
 
-    private CustomEnergyStorage createEnergy() {
+    protected CustomEnergyStorage createEnergy() {
         return new CustomEnergyStorage(2_048_000_000, 100000000, 100000000) {
             @Override
             protected void onEnergyChanged() {
@@ -161,7 +157,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         contentHandler.setBlockEntity(this);
     }
 
-    private LazyOptional<NCFusionReactorPeripheral> peripheralCap;
+    protected LazyOptional<NCFusionReactorPeripheral> peripheralCap;
 
     public <T> LazyOptional<T>  getPeripheral(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if(peripheralCap == null) {
@@ -223,8 +219,8 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         size = multiblock().isFormed() ? multiblock.width() : 0;
         refreshCacheFlag = !multiblock().isFormed();
     }
-    private int updateSpan = 20;
-    private void periodicalUpdate()
+    protected int updateSpan = 20;
+    protected void periodicalUpdate()
     {
         updateSpan--;
         if(updateSpan < 0) {
@@ -233,7 +229,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
             setChanged();
         }
     }
-    private boolean playedSwitchSound = false;
+
     public void tickClient() {
         BlockOverlayHandler.removeFusionReactor(getBlockPos());
         if(!isCasingValid) {
@@ -249,12 +245,6 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
             return;
         }
         if(isReady()) {
-            if(!playedSwitchSound) {
-                playSwitchSound();
-
-                return;
-            }
-
             if(energyPerTick > 0 && plasmaTemperature > 0) {
                 playRunningSound();
                // BlockOverlayHandler.addFusionReactor(getBlockPos());
@@ -265,7 +255,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
             stopSound();
         }
     }
-    private void sendBeamData(FusionBeamParticleData data, BlockPos from) {
+    protected void sendBeamData(FusionBeamParticleData data, BlockPos from) {
         Vec3 vec = Vec3.atCenterOf(from);
         if (!getLevel().isClientSide() && level instanceof ServerLevel serverWorld) {
             for (ServerPlayer player : serverWorld.players()) {
@@ -273,7 +263,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
             }
         }
     }
-    private void renderBeam() {
+    protected void renderBeam() {
         NCBlockPos pos = new NCBlockPos(getBlockPos().above());
         int beamLength = size*2+4;
         sendBeamData(new FusionBeamParticleData(Direction.EAST, beamLength, 0.35f),
@@ -290,7 +280,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         );
     }
 
-    private void playReadySound() {
+    protected void playReadySound() {
         if(isRemoved() || (currentSound != null && !currentSound.getLocation().equals(FUSION_READY.get().getLocation()))) {
             SoundHandler.stopTileSound(getBlockPos());
             currentSound = null;
@@ -305,7 +295,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         }
     }
 
-    private boolean isReady() {
+    protected boolean isReady() {
         return isCasingValid
                 && rfAmplifiersPower > 0
                 && magnetsPower > 0
@@ -314,15 +304,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
                 && functionalBlocksCharge > 99;
     }
 
-    private void playSwitchSound() {
-        playSoundCooldown = 20;
-        SoundHandler.stopTileSound(getBlockPos());
-        currentSound = null;
-        playedSwitchSound = true;
-        getLevel().playLocalSound(getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), FUSION_SWITCH.get(), SoundSource.BLOCKS, 1f, 1.0f, false);
-    }
-
-    private void playRunningSound() {
+    protected void playRunningSound() {
         if(isRemoved() || (currentSound != null && !currentSound.getLocation().equals(FUSION_RUNNING.get().getLocation()))) {
             SoundHandler.stopTileSound(getBlockPos());
             currentSound = null;
@@ -368,7 +350,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         controllerEnabled = false;
     }
 
-    private List<FluidStack> getAllowedCoolantsOutput() {
+    protected List<FluidStack> getAllowedCoolantsOutput() {
         List<FluidStack> allowedCoolants = new ArrayList<>();
         for(FusionCoolantRecipe recipe : getCoolantRecipes()) {
             allowedCoolants.addAll(recipe.getOutputFluids(0));
@@ -376,7 +358,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         return allowedCoolants;
     }
 
-    private double lastHeadDeviationMult = 1;
+    protected double lastHeadDeviationMult = 1;
     public double getHeatDeviationMultiplier() {
         double mEff = (magnetsEfficiency() - 50) / 100;
         double rEff = (rfEfficiency() - 50) / 100;
@@ -392,14 +374,14 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
     /**
      * Depends on reactor casing heat
      */
-    private double rfEfficiency() {
+    protected double rfEfficiency() {
         return rfEfficiency * Math.min((minRFAmplifiersTemp / ((reactorHeat+minRFAmplifiersTemp)/2)), 1);
     }
 
     /**
      * Depends on reactor casing heat
      */
-    private double magnetsEfficiency() {
+    protected double magnetsEfficiency() {
         return magnetsEfficiency * Math.min((maxMagnetsTemp / ((reactorHeat+maxMagnetsTemp)/2)), 1);
     }
 
@@ -433,10 +415,10 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
      */
     public double getPlasmaStability()
     {
-        return Math.min(1.5, Math.max(0.5, 2D / (magnetsEfficiency() / 100 * (minimalMagneticField() / overallMagneticField()))));
+        return Math.min(1.9, Math.max(0.1, 2D / (magnetsEfficiency() / 100 * (minimalMagneticField() / overallMagneticField()))));
     }
 
-    private List<FluidStack> getAllowedCoolants() {
+    protected List<FluidStack> getAllowedCoolants() {
         List<FluidStack> allowedCoolants = new ArrayList<>();
         for(FusionCoolantRecipe recipe : getCoolantRecipes()) {
             allowedCoolants.addAll(recipe.getInputFluids(0));
@@ -444,12 +426,12 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         return allowedCoolants;
     }
 
-    private void sendOutPower() {
+    protected void sendOutPower() {
         for(FusionCoreProxyBE proxy: getProxies()) {
             if(proxy == null) continue;
             proxy.sendOutEnergy();
         }
-        BlockEntity be = getLevel().getBlockEntity(getBlockPos().relative(Direction.DOWN));
+        BlockEntity be = Objects.requireNonNull(getLevel()).getBlockEntity(getBlockPos().relative(Direction.DOWN));
         if(be instanceof BlockEntity && !(be instanceof FusionBE)) {
             IEnergyStorage r = be.getCapability(ForgeCapabilities.ENERGY, Direction.UP).orElse(null);
             if(r == null) return;
@@ -460,14 +442,14 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         }
     }
 
-    private FusionCoreProxyBE[] getProxies() {
+    protected FusionCoreProxyBE[] getProxies() {
         if(proxyBES == null) {
             proxyBES = new FusionCoreProxyBE[18];
             int i = 0;
             for(int y = 0; y < 3; y+=2) {
                 for (int x = -1; x < 2; x++) {
                     for (int z = -1; z < 2; z++) {
-                        BlockEntity be = getLevel().getBlockEntity(getBlockPos().offset(x, y, z));
+                        BlockEntity be = Objects.requireNonNull(getLevel()).getBlockEntity(getBlockPos().offset(x, y, z));
                         if (be instanceof FusionCoreProxyBE) {
                             proxyBES[i] = (FusionCoreProxyBE) be;
                             i++;
@@ -492,7 +474,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         return allowedInputs;
     }
 
-    private void simulateReaction() {
+    protected void simulateReaction() {
         if (!multiblock().isFormed()) {
             return;
         }
@@ -513,20 +495,12 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         trackChanges(coolDown());
     }
 
-
-
-    private void playSound(ServerLevel world, BlockPos pos, SoundEvent sound) {
-        if (!world.isClientSide) {
-            world.playSound(null, pos, sound, SoundSource.BLOCKS, 1.0f, 1.0f);
-        }
-    }
-
     public long getTargetCharge()
     {
-        return (rfAmplifiersPower+magnetsPower) * 5L;
+        return (rfAmplifiersPower+magnetsPower) * 7L;
     }
 
-    private void updateCharge() {
+    protected void updateCharge() {
         if(getTargetCharge() == 0) return;
         if(chargeAmount < getTargetCharge()) {
             chargeAmount += energyStorage.extractEnergy((rfAmplifiersPower+magnetsPower)/2, false);
@@ -535,7 +509,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         functionalBlocksCharge = (int) Math.min(((chargeAmount*100)/getTargetCharge()), 100);
     }
 
-    private void playChargingSound() {
+    protected void playChargingSound() {
         if(isRemoved() || (currentSound != null && !currentSound.getLocation().equals(FUSION_CHARGING.get().getLocation()))) {
             SoundHandler.stopTileSound(getBlockPos());
             currentSound = null;
@@ -545,12 +519,11 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
                 return;
             }
             playSoundCooldown = 20;
-            playedSwitchSound = false;
             currentSound = SoundHandler.startTileSound(FUSION_CHARGING.get(), SoundSource.BLOCKS, 0.5f, level.getRandom(), getBlockPos());
         }
     }
 
-    private boolean updateCharacteristics() {
+    protected boolean updateCharacteristics() {
         boolean hasChanges =
                 magneticFieldStrength != multiblock().magneticFieldStrength
                 || rfEfficiency != multiblock().rfEfficiency
@@ -573,10 +546,10 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         return hasChanges;
     }
 
-    private double rfAmplifierRatio() {
+    protected double rfAmplifierRatio() {
         return ((double)rfAmplificationRatio)/100;
     }
-    private void coolantCoolDown()
+    protected void coolantCoolDown()
     {
         if(hasCoolant()) {
             if(reactorHeat > coolantRecipe.getCoolingRate()) {
@@ -585,31 +558,33 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
                 int availableCoolant = contentHandler.fluidCapability.tanks.get(2).getFluidAmount();
                 int possibleOps = availableCoolant/coolantPerOp;
                 int actualOps = Math.min(possibleOps, coolantNeeded*coolantPerOp);
-                reactorHeat -= (coolantRecipe.getCoolingRate() / size) * actualOps;
+                changeReactorHeat(-(coolantRecipe.getCoolingRate() / size) * actualOps);
                 extractCoolant(actualOps);
             }
         }
     }
-    private boolean coolDown() {
+
+    protected void changeReactorHeat(double amount) {
+        reactorHeat += amount;
+        reactorHeat = Math.max(0, reactorHeat);
+    }
+
+    protected boolean coolDown() {
         double wasHeat = reactorHeat;
         //passive cooldown
-        reactorHeat -= 1000*size;
-
+        changeReactorHeat(-1000*size);
         coolantCoolDown();
-
-        reactorHeat = Math.max(0, reactorHeat);
         return wasHeat != reactorHeat;
     }
 
-    private void extractCoolant(int ops) {
+    protected void extractCoolant(int ops) {
         contentHandler.fluidCapability.tanks.get(2).drain(coolantRecipe.getInputFluids()[0].getAmount()*ops, EXECUTE);
         FluidStack output = coolantRecipe.getOutputFluids()[0].copy();
         output.setAmount(output.getAmount()*ops);
         contentHandler.fluidCapability.tanks.get(3).fill(output, EXECUTE);
     }
 
-    private boolean processReaction() {
-        heatMultiplier = heatMultiplier() + collectedHeatMultiplier() - 1;
+    protected boolean processReaction() {
         if(recipeInfo.recipe != null && recipeInfo.isCompleted()) {
             if(contentHandler.fluidCapability.getFluidInSlot(0).equals(FluidStack.EMPTY)) {
                 recipeInfo.clear();
@@ -623,8 +598,8 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         }
         return false;
     }
-    private double radiationAggregated = 0;
-    private boolean process() {
+    protected double radiationAggregated = 0;
+    protected boolean process() {
         recipeInfo.process(efficiency);
         if(recipeInfo.radiation != 1D) {
             radiationAggregated += recipeInfo.radiation/5000;
@@ -647,52 +622,55 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         return true;
     }
 
-    private double calculateEfficiency() {
+    protected double calculateEfficiency() {
         double temperatureEfficiency = plasmaTemperature/getOptimalTemperature();
         if(plasmaTemperature > getOptimalTemperature()) {
-            temperatureEfficiency = getOptimalTemperature()/plasmaTemperature;
+            temperatureEfficiency = getOptimalTemperature()/plasmaTemperature + 0.1; //if plasma hotter we still get some small benefit
         }
-        return (getHeatDeviationMultiplier() + temperatureEfficiency*2 + getPlasmaStability())/4;
+        return temperatureEfficiency;
     }
 
-    private void simulateHeatExchange() {
+    protected void changePlasmaTemperature(int amount) {
+        plasmaTemperature += amount;
+        plasmaTemperature = Math.max(0, plasmaTemperature);
+    }
+
+    protected void simulateHeatExchange() {
         amplifyPlasma();
         plasmaToEnergyExchange();
         heatLossExchange();
-        plasmaTemperature = Math.max(0, plasmaTemperature);
     }
 
-    private void heatLossExchange() {
-        plasmaTemperature -= (int) ((plasmaTemperature/ Math.pow(getPlasmaStability(), 2))*((double)size))/100;
-        plasmaTemperature = Math.max(0, plasmaTemperature);
-        reactorHeat += (double) Math.min(plasmaTemperature, 100000000) / (10000*size*getPlasmaStability());
+    protected void heatLossExchange() {
+        changePlasmaTemperature((int) -((plasmaTemperature/ Math.pow(getPlasmaStability(), 2))*((double)size))/100);
+        changeReactorHeat((double) Math.min(plasmaTemperature, 100000000) / (10000*size*getPlasmaStability()));
     }
 
 
-    private void plasmaToEnergyExchange() {
+    protected void plasmaToEnergyExchange() {
         double optimalTemp = getOptimalTemperature();
         if(plasmaTemperature < optimalTemp) {
             energyPerTick = (int) (plasmaTemperature/optimalTemp*recipeInfo.recipe().getEnergy());
         } else {
             energyPerTick = (int) (optimalTemp/plasmaTemperature*recipeInfo.recipe().getEnergy());
         }
-        plasmaTemperature -= (int) (plasmaTemperature/(100*energyPerTick/recipeInfo.recipe().getEnergy()));
-        plasmaTemperature = Math.max(0, plasmaTemperature);
+        changePlasmaTemperature(-(int) ((plasmaTemperature)/(150*energyPerTick/recipeInfo.recipe().getEnergy())));
         energyPerTick = (int) ((energyPerTick*calculateEfficiency()*size)*FUSION_CONFIG.PLASMA_TO_ENERGY_CONVERTION.get());
         if(plasmaTemperature < 1000000) {
             energyPerTick = 0;
         }
     }
 
-    private void amplifyPlasma() {
-        plasmaTemperature += (int) ((rfAmplification/(size+1)*rfAmplifierRatio()*getHeatDeviationMultiplier())*FUSION_CONFIG.RF_AMPLIFICATION_MULTIPLIER.get());
+    protected void amplifyPlasma() {
+        double amplificationVolume = (double) rfAmplification / (size+1);
+        changePlasmaTemperature((int) (
+                        amplificationVolume
+                        * rfAmplifierRatio()
+                        * getHeatDeviationMultiplier()
+                        * FUSION_CONFIG.RF_AMPLIFICATION_MULTIPLIER.get()));
     }
 
-    private int heatMultiplier() {
-        return 0;
-    }
-
-    private void handleRecipeOutput() {
+    protected void handleRecipeOutput() {
         if (hasRecipe() && recipeInfo.isCompleted()) {
             if(recipe == null) {
                 recipe = recipeInfo.recipe();
@@ -709,11 +687,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         }
     }
 
-    private int collectedHeatMultiplier() {
-        return 0;
-    }
-
-    private void updateRecipe() {
+    protected void updateRecipe() {
         recipe = getRecipe();
         if (recipe != null) {
             recipeInfo.setRecipe(recipe);
@@ -726,7 +700,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         }
     }
 
-    private void addToCache(RECIPE recipe) {
+    protected void addToCache(RECIPE recipe) {
         String key = contentHandler.getCacheKey();
         if(cachedRecipes.containsKey(key)) {
             cachedRecipes.replace(key, recipe);
@@ -762,30 +736,39 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         return recipeInfo.isStuck();
     }
 
-    private void handleMeltdown() {
+    protected void handleMeltdown() {
+        if(!isCasingValid) {
+            return;
+        }
+        if (reactorHeat > getMaxHeat() && plasmaTemperature > 0) {
+            meltDown();
+            plasmaTemperature /= 5D;
+            reactorHeat /= 2D;
+        }
+    }
+
+    private void meltDown() {
+        double explosionRadius = FUSION_CONFIG.EXPLOSION_RADIUS.get();
+        if (explosionRadius > 0) {
+            BlockPos pos = getBlockPos();
+            getLevel().explode(null, pos.getX(), pos.getY(), pos.getZ(), 1, true, Explosion.BlockInteraction.NONE);
+        }
     }
 
     public boolean hasRedstoneSignal() {
         return inputRedstoneSignal > 0;
     }
 
-    //todo implement
-    public double getNetHeat() {
-        return 0;
-    }
-
     public boolean hasRecipe() {
         return recipeInfo.recipe() != null;
     }
 
-    public double getRecipeProgress() {
-        return 0;
+    public void forceShutdown() {
+        forceShutdown = true;
     }
 
     public void disableForceShutdown() {
-    }
-
-    public void forceShutdown() {
+        forceShutdown = false;
     }
 
     public void voidFuel() {
@@ -848,7 +831,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         }
     }
 
-    private void loadClientData(CompoundTag tag) {
+    protected void loadClientData(CompoundTag tag) {
         if (tag.contains("Info")) {
             CompoundTag infoTag = tag.getCompound("Info");
             if (infoTag.contains("recipeInfo")) {
@@ -875,7 +858,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         return tag;
     }
 
-    private void saveClientData(CompoundTag tag) {
+    protected void saveClientData(CompoundTag tag) {
         CompoundTag infoTag = new CompoundTag();
         tag.put("Info", infoTag);
         infoTag.putInt("energy", energyStorage.getEnergyStored());
@@ -914,7 +897,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
     public FluidTank getFluidTank(int i) {
         return contentHandler.fluidCapability.tanks.get(i);
     }
-    private FusionCoolantRecipe coolantRecipe;
+    protected FusionCoolantRecipe coolantRecipe;
     public boolean hasCoolant() {
         FluidStack coolant = contentHandler.fluidCapability.getFluidInSlot(2);
         if(coolant.isEmpty()) {

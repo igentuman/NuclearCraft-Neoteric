@@ -21,6 +21,7 @@ import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_CORE_PROXY;
 import static igentuman.nc.util.TextUtils.*;
 
 public class FusionCoreContainer extends AbstractContainerMenu {
+
     protected FusionCoreBE<?> blockEntity;
     protected Player playerEntity;
 
@@ -114,32 +115,12 @@ public class FusionCoreContainer extends AbstractContainerMenu {
         return roundFormat(blockEntity.efficiency*100);
     }
 
-    public String getNetHeat() {
-        return numberFormat(blockEntity.getNetHeat());
-    }
-
-    public double getCooling() {
-        return blockEntity.heatSinkCooling;
-    }
-
-    public String getHeating() {
-        return numberFormat(blockEntity.heatPerTick);
-    }
-
     public int energyPerTick() {
         return blockEntity.energyPerTick;
     }
 
-    public String getHeatMultiplier() {
-        return numberFormat(blockEntity.heatMultiplier);
-    }
-
     public boolean hasRecipe() {
         return blockEntity.hasRecipe();
-    }
-
-    public double getProgress() {
-        return blockEntity.getRecipeProgress();
     }
 
     public double getElectromagnetsField() {

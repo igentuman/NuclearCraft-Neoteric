@@ -16,9 +16,9 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import java.lang.reflect.Field;
 import java.util.List;
 
-public class Button<T extends AbstractContainerScreen> extends NCGuiElement {
+public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
     protected AbstractContainerMenu container;
-    protected AbstractContainerScreen screen;
+    protected AbstractContainerScreen<?> screen;
     protected int bId;
 
     protected ImageButton btn;
@@ -49,7 +49,7 @@ public class Button<T extends AbstractContainerScreen> extends NCGuiElement {
     }
 
     public static class SideConfig extends Button {
-        public SideConfig(int xPos, int yPos, AbstractContainerScreen screen) {
+        public SideConfig(int xPos, int yPos, AbstractContainerScreen<?> screen) {
             super(xPos, yPos, screen, 69);//nice
             height = 18;
             width = 18;
@@ -66,7 +66,7 @@ public class Button<T extends AbstractContainerScreen> extends NCGuiElement {
 
         public int mode = 0;
 
-        public RedstoneConfig(int xPos, int yPos, AbstractContainerScreen screen, BlockPos pos) {
+        public RedstoneConfig(int xPos, int yPos, AbstractContainerScreen<?> screen, BlockPos pos) {
             super(xPos, yPos, screen, 70);
             this.pos = pos;
             height = 18;
@@ -78,6 +78,37 @@ public class Button<T extends AbstractContainerScreen> extends NCGuiElement {
 
         public List<Component> getTooltips() {
             return List.of(Component.translatable("gui.nc.redstone_config.tooltip_"+mode));
+        }
+
+        public void setMode(int redstoneMode) {
+            mode = redstoneMode;
+            try {
+                Field f = btn.getClass().getDeclaredField("yTexStart");
+                f.setAccessible(true);
+                f.set(btn, 220 - redstoneMode * 36);
+            } catch (NoSuchFieldException | IllegalAccessException ignore) {
+            }
+        }
+    }
+
+    public static class ShowRecipes extends Button {
+        private final BlockPos pos;
+        public static int BTN_ID = 70;
+
+        public int mode = 0;
+
+        public ShowRecipes(int xPos, int yPos, AbstractContainerScreen<?> screen, BlockPos pos) {
+            super(xPos, yPos, screen, 70);
+            this.pos = pos;
+            height = 18;
+            width = 18;
+            btn = new ImageButton(X(), Y(), width, height, 238, 4, 18, TEXTURE, pButton -> {
+
+            });
+        }
+
+        public List<Component> getTooltips() {
+            return List.of();
         }
 
         public void setMode(int redstoneMode) {

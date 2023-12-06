@@ -42,6 +42,7 @@ public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractC
 
     public List<NCGuiElement> widgets = new ArrayList<>();
     protected EnergyBar energyBar;
+    private Button.ShowRecipes showRecipesBtn;
 
     public NCProcessorScreen(T container, Inventory inv, Component name) {
         super(container, inv, name);
@@ -65,7 +66,6 @@ public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractC
         }
         return super.mouseClicked(pMouseX, pMouseY, pButton);
     }
-
 
     public void addSlots()
     {
@@ -96,7 +96,7 @@ public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractC
             widgets.add(energyBar);
         }
         int progressBarX = 71;
-        if(slots.getOutputItems()+slots.getOutputFluids() > 5) {
+        if(slots.getOutputItems()+slots.getOutputFluids() > 6) {
             progressBarX -= ProcessorSlots.margin;
         }
 
@@ -109,6 +109,8 @@ public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractC
         widgets.add(sideConfigBtn);
         redstoneConfigBtn = new Button.RedstoneConfig(48, 74, this, menu.getPosition());
         widgets.add(redstoneConfigBtn);
+        showRecipesBtn = new Button.ShowRecipes(67, 74, this, menu.getPosition());
+        widgets.add(showRecipesBtn);
         addSlots();
     }
 

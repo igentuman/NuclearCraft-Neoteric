@@ -81,7 +81,7 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
         return 3;
     }
     public boolean isFormed() {
-        return isFormed;
+        return isOuterValid() && isInnerValid();
     }
     protected List<BlockPos> allBlocks = new ArrayList<>();
 

@@ -332,6 +332,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("tooltip.nc.reactor.plasma_optimal", "Optimal: %s K");
         add("tooltip.machine.progress", "Progress: %s%%");
         add("reactor.fuel_cells", "Fuel Cells: %s");
+        add("reactor.irradiators_connections", "Irradiation lines: %s");
         add("fission.interior.no_fuel_cells", "No Fuel Cells Found");
         add("fission.interior.no_moderators", "No Moderators Found");
         add("fission.interior.no_heat_sink", "No Heat Sinks Found");

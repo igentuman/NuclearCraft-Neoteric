@@ -228,4 +228,8 @@ public class FissionControllerContainer extends AbstractContainerMenu {
     public ItemStack getInputStack() {
         return blockEntity.getCurrentFuel();
     }
+
+    public int getIrradiatorsConnections() {
+        return blockEntity.irradiationConnections;
+    }
 }

@@ -196,10 +196,12 @@ public class Processors {
             );
             all.put(IRRADIATOR,
                     ProcessorBuilder
-                            .make(IRRADIATOR, 0, 1, 0, 1)
+                            .make(IRRADIATOR, 1, 1, 1, 1)
                             .blockEntity(IrradiatorBE::new)
                             .recipe(IrradiatorBE.Recipe::new)
                             .progressBar(14)
+                            .upgrades(false, false)
+                            .power(0)
                             .build()
             );
             all.put(ISOTOPE_SEPARATOR,

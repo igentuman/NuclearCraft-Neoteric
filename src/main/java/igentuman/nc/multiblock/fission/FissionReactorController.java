@@ -5,13 +5,13 @@ import igentuman.nc.multiblock.INCMultiblockController;
 import net.minecraft.core.BlockPos;
 
 public class FissionReactorController implements INCMultiblockController {
-    protected FissionControllerBE controllerBE;
-    public FissionReactorController(FissionControllerBE fissionControllerBE) {
+    protected FissionControllerBE<?> controllerBE;
+    public FissionReactorController(FissionControllerBE<?> fissionControllerBE) {
         controllerBE = fissionControllerBE;
     }
 
     @Override
-    public FissionControllerBE controllerBE() {
+    public FissionControllerBE<?> controllerBE() {
         return controllerBE;
     }
 
@@ -23,6 +23,7 @@ public class FissionReactorController implements INCMultiblockController {
         controllerBE().fuelCellsCount = 0;
         controllerBE().fuelCellMultiplier = 0;
         controllerBE().moderatorCellMultiplier = 0;
+        controllerBE().irradiationConnections = 0;
     }
 
     @Override

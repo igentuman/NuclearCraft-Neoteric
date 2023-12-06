@@ -115,6 +115,7 @@ public class FissionControllerScreen extends AbstractContainerScreen<FissionCont
         if(isInteriorValid()) {
             checkboxInterior.addTooltip(Component.translatable("reactor.heat_sinks_count", container().getHeatSinksCount()));
             checkboxInterior.addTooltip(Component.translatable("reactor.moderators_count", container().getModeratorsCount()));
+            checkboxInterior.addTooltip(Component.translatable("reactor.irradiators_connections", container().getIrradiatorsConnections()));
         }
         energyBar.draw(matrix, mouseX, mouseY, partialTicks);
     }

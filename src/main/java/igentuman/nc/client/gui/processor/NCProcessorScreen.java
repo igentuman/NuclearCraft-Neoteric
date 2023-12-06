@@ -90,10 +90,11 @@ public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractC
         super.init();
         slots = menu.getProcessor().getSlotsConfig();
         updateRelativeCords();
-        energyBar = new EnergyBar(9, 4,  menu.getEnergy());
         widgets.clear();
-        widgets.add(energyBar);
-
+        if(menu.getProcessor().getPower() > 0) {
+            energyBar = new EnergyBar(9, 4, menu.getEnergy());
+            widgets.add(energyBar);
+        }
         int progressBarX = 71;
         if(slots.getOutputItems()+slots.getOutputFluids() > 5) {
             progressBarX -= ProcessorSlots.margin;

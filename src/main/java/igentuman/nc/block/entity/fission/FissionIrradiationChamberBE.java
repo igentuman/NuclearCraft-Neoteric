@@ -30,12 +30,17 @@ public class FissionIrradiationChamberBE extends FissionBE {
         irradiationConnections = 0;
         for (Direction dir : Direction.values()) {
             if(isModerator(getBlockPos().relative(dir), getLevel())) {
-                BlockEntity be = getLevel().getBlockEntity(getBlockPos().relative(dir));
+                BlockEntity be = getLevel().getBlockEntity(getBlockPos().relative(dir, 2));
                 if (be instanceof FissionFuelCellBE) {
                     irradiationConnections++;
                 }
             }
         }
+    }
+
+    public boolean isValid(boolean forceCheck)
+    {
+        return irradiationConnections > 0;
     }
 
 }

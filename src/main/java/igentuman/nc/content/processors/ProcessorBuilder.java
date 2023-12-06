@@ -113,4 +113,9 @@ public class ProcessorBuilder <M extends NCProcessorContainer, U extends Screen 
         }
         return this;
     }
+
+    public ProcessorBuilder<?, ?> power(int i) {
+        processor.power = i;
+        return this;
+    }
 }

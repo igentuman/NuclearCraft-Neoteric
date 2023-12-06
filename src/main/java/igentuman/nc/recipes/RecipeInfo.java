@@ -90,10 +90,11 @@ public class RecipeInfo <RECIPE extends AbstractRecipe> implements INBTSerializa
         return 0;
     }
 
-    public void process(double multiplier) {
-        if(isStuck()) return;
+    public boolean process(double multiplier) {
+        if(isStuck()) return false;
         ticksProcessed+=1*Math.abs(multiplier);
         ticksProcessed = Math.min(ticks, ticksProcessed);
+        return true;
     }
 
     public void clear() {

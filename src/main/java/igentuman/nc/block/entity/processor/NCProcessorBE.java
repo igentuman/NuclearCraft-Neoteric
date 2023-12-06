@@ -233,7 +233,10 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
             return contentHandler.getFluidCapability(side);
         }
         if (cap == ForgeCapabilities.ENERGY) {
-            return energy.cast();
+            if(prefab().config().getPower() > 0) {
+                return energy.cast();
+            }
+            return LazyOptional.empty();
         }
         if(isCcLoaded()) {
             if(cap == dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL) {
@@ -288,6 +291,9 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
 
     protected int howMuchICanSkip()
     {
+        if(energyPerTick() == 0) {
+            return PROCESSOR_CONFIG.SKIP_TICKS.get();
+        }
         return Math.min(((int)(energyStorage.getEnergyStored() / energyPerTick())),PROCESSOR_CONFIG.SKIP_TICKS.get());
     }
 

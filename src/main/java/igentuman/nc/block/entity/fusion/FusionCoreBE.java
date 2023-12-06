@@ -30,7 +30,6 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Explosion;
@@ -62,13 +61,8 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
     public double reactorHeat = 0;
     @NBTField
     public boolean isCasingValid = false;
-
     @NBTField
     public int size = 0;
-    @NBTField
-    public double heatSinkCooling = 0;
-    @NBTField
-    public double heatPerTick = 0;
     @NBTField
     public int energyPerTick = 0;
     @NBTField
@@ -95,13 +89,10 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
     public int minRFAmplifiersTemp = 0;
     @NBTField
     public int rfAmplificationRatio = 0;
-
     @NBTField
     public int functionalBlocksCharge = 0;
-
     @NBTField
     public int plasmaTemperature = 0;
-
     public long chargeAmount = 0;
     @NBTField
     protected int rfEfficiency = 0;
@@ -109,6 +100,8 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
     protected int magnetsEfficiency = 0;
     @NBTField
     protected double lastKnownOptimalTemp = 1000000;
+    @NBTField
+    protected boolean isInternalValid = false;
     public List<FusionCoolantRecipe> getCoolantRecipes() {
         if(coolantRecipes == null) {
             coolantRecipes = (List<FusionCoolantRecipe>) NcRecipeType.ALL_RECIPES.get("fusion_coolant").getRecipeType().getRecipes(getLevel());
@@ -117,7 +110,6 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
     }
 
     protected List<FusionCoolantRecipe> coolantRecipes;
-
 
     public final SidedContentHandler contentHandler;
     public final CustomEnergyStorage energyStorage = createEnergy();
@@ -132,8 +124,6 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
     public HashMap<String, RECIPE> cachedRecipes = new HashMap<>();
 
     protected boolean initialized = false;
-    @NBTField
-    protected boolean isInternalValid = false;
     protected int reValidateCounter = 40;
     protected boolean refreshCacheFlag;
     protected List<FluidStack> allowedInputs;
@@ -751,7 +741,9 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         double explosionRadius = FUSION_CONFIG.EXPLOSION_RADIUS.get();
         if (explosionRadius > 0) {
             BlockPos pos = getBlockPos();
-            getLevel().explode(null, pos.getX(), pos.getY(), pos.getZ(), 1, true, Explosion.BlockInteraction.NONE);
+            getLevel().explode(null,
+                    pos.getX(), pos.getY(), pos.getZ(),
+                    1, true, Explosion.BlockInteraction.NONE);
         }
     }
 

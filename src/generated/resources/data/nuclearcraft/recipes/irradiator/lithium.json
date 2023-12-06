@@ -1,0 +1,18 @@
+{
+  "type": "nuclearcraft:irradiator",
+  "inputFluids": [
+    {
+      "amount": 100,
+      "tag": "forge:lithium"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 100,
+      "fluid": "nuclearcraft:tritium"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 2.5
+}

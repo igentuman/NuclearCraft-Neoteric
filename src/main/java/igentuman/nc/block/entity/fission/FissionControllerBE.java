@@ -61,6 +61,9 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     public double heat = 0;
     @NBTField
     public int fuelCellsCount = 0;
+
+    @NBTField
+    public int irradiationHeat = 0;
     @NBTField
     public int moderatorsCount = 0;
     @NBTField
@@ -85,6 +88,8 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     public int energyPerTick = 0;
     @NBTField
     public double heatMultiplier = 0;
+    @NBTField
+    public int irradiationConnections = 0;
     @NBTField
     public double efficiency = 0;
     @NBTField
@@ -222,7 +227,10 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
 
 
     public void tickServer() {
-        if(NuclearCraft.instance.isNcBeStopped) return;
+        if(NuclearCraft.instance.isNcBeStopped) {
+            irradiationHeat = 0;
+            return;
+        }
         changed = false;
         super.tickServer();
         boolean wasPowered = powered;
@@ -251,6 +259,8 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
                 level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(POWERED, powered), Block.UPDATE_ALL);
             } catch (NullPointerException ignored) {}
         }
+        irradiationHeat = 0;
+
         controllerEnabled = false;
     }
 
@@ -399,7 +409,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     }
 
     public double heatPerTick() {
-        heatPerTick = recipeInfo.heat * Math.max(fuelCellsCount, fuelCellMultiplier) + moderatorsHeat();
+        heatPerTick = recipeInfo.heat * Math.max(fuelCellsCount, fuelCellMultiplier) + moderatorsHeat() + irradiationHeat;
         return heatPerTick;
     }
 
@@ -607,6 +617,14 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     public ItemStack getCurrentFuel() {
         if(!hasRecipe()) return ItemStack.EMPTY;
         return recipeInfo.recipe().getFirstItemStackIngredient(0);
+    }
+
+    public boolean isProcessing() {
+        return hasRecipe() && recipeInfo.ticksProcessed > 0 && !recipeInfo.isCompleted();
+    }
+
+    public void addIrradiationHeat() {
+        irradiationHeat += irradiationConnections * 15;
     }
 
     public static class Recipe extends NcRecipe {

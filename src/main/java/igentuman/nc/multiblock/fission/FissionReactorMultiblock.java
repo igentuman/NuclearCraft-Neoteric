@@ -15,6 +15,8 @@ import static igentuman.nc.util.TagUtil.getBlocksByTagKey;
 
 public class FissionReactorMultiblock extends AbstractNCMultiblock {
 
+    private int irradiationConnections = 0;
+
     @Override
     public int maxHeight() {
         return FISSION_CONFIG.MAX_SIZE.get();
@@ -44,6 +46,7 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
 
     public HashMap<BlockPos, FissionHeatSinkBE> activeHeatSinks = new HashMap<>();
     private List<BlockPos> moderators = new ArrayList<>();
+    private List<BlockPos> irradiators = new ArrayList<>();
     public List<BlockPos> heatSinks = new ArrayList<>();
     public List<BlockPos> fuelCells = new ArrayList<>();
     private double heatSinkCooling = 0;
@@ -76,6 +79,10 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
         return  world.getBlockEntity(pos) instanceof FissionModeratorBE;
     }
 
+    public static boolean isIrradiator(BlockPos pos, Level world) {
+        return  world.getBlockEntity(pos) instanceof FissionIrradiationChamberBE;
+    }
+
     protected boolean isHeatSink(BlockPos pos) {
         return getLevel().getBlockEntity(pos) instanceof FissionHeatSinkBE;
     }
@@ -104,6 +111,7 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
         controller.fuelCellsCount = fuelCells.size();
         controller.updateEnergyStorage();
         controller.moderatorsCount = moderators.size();
+        controller.irradiationConnections = irradiationConnections;
     }
 
     @Override
@@ -126,7 +134,18 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
         if(isHeatSink(toCheck)) {
             heatSinks.add(toCheck);
         }
+        if(isIrradiator(toCheck, getLevel())) {
+            irradiators.add(toCheck);
+            countIrradiationConnections(toCheck);
+        }
         return true;
+    }
+
+    private void countIrradiationConnections(BlockPos toCheck) {
+        FissionIrradiationChamberBE be = (FissionIrradiationChamberBE) getLevel().getBlockEntity(toCheck);
+        assert be != null;
+        be.countIrradiationConnections();
+        irradiationConnections += be.irradiationConnections;
     }
 
     private int countAdjuscentFuelCells(NCBlockPos toCheck, int step) {
@@ -143,9 +162,11 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
     {
         controller().clearStats();
         moderators.clear();
+        irradiators.clear();
         fuelCells.clear();
         heatSinks.clear();
         activeHeatSinks.clear();
+        irradiationConnections = 0;
     }
 
     protected Direction getFacing() {

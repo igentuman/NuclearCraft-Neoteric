@@ -99,7 +99,9 @@ public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
             level.setBlockAndUpdate(worldPosition, getBlockState().setValue(ACTIVE, isActive));
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(ACTIVE, isActive), Block.UPDATE_ALL);
         }
-        super.tickServer();
+        if(leacherState == POSITION_IS_CORRECT) {
+            super.tickServer();
+        }
 
     }
 

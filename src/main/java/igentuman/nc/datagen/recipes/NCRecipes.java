@@ -1,6 +1,7 @@
 package igentuman.nc.datagen.recipes;
 
 import igentuman.nc.content.materials.Materials;
+import igentuman.nc.content.processors.Processors;
 import igentuman.nc.datagen.recipes.builder.SpecialRecipeBuilder;
 import igentuman.nc.recipes.ingredient.NcIngredient;
 import igentuman.nc.multiblock.fission.FissionBlocks;
@@ -898,9 +899,10 @@ public class NCRecipes extends RecipeProvider {
 
         ShapedRecipeBuilder.shaped(FissionReactor.MULTI_BLOCKS.get("fission_reactor_controller").get())
                 .pattern("LPL")
-                .pattern("PTP")
+                .pattern("TDT")
                 .pattern("LPL")
                 .define('P', NCItems.NC_PARTS.get("plate_advanced").get())
+                .define('D', NCProcessors.PROCESSORS.get(Processors.DECAY_HASTENER).get())
                 .define('T', NC_PARTS.get("basic_electric_circuit").get())
                 .define('L', FissionReactor.MULTI_BLOCKS.get("fission_reactor_casing").get())
                 .group(MODID+"_fission")
@@ -923,17 +925,18 @@ public class NCRecipes extends RecipeProvider {
                 .pattern("G G")
                 .pattern("TGT")
                 .define('G', Tags.Items.GLASS)
-                .define('T', forgeIngot("tough_alloy"))
+                .define('T', forgeIngot(Materials.zirconium))
                 .group(MODID+"_fission")
                 .unlockedBy("item", has(FissionReactor.MULTI_BLOCKS.get("fission_reactor_casing").get()))
                 .save(consumer);
 
         ShapedRecipeBuilder.shaped(FissionReactor.MULTI_BLOCKS.get("empty_heat_sink").get())
                 .pattern("TIT")
-                .pattern("IBI")
+                .pattern("ABA")
                 .pattern("TIT")
                 .define('I', forgePlate("thermoconducting"))
                 .define('B', BUCKET)
+                .define('A', IRON_BARS)
                 .define('T', forgeIngot("tough_alloy"))
                 .group(MODID+"_fission")
                 .unlockedBy("item", has(FissionReactor.MULTI_BLOCKS.get("fission_reactor_casing").get()))

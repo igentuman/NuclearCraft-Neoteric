@@ -2,6 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "group": "nuclearcraft_fission",
   "key": {
+    "A": {
+      "item": "minecraft:iron_bars"
+    },
     "B": {
       "item": "minecraft:bucket"
     },
@@ -14,7 +17,7 @@
   },
   "pattern": [
     "TIT",
-    "IBI",
+    "ABA",
     "TIT"
   ],
   "result": {

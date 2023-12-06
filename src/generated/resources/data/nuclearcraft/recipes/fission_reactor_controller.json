@@ -2,6 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "group": "nuclearcraft_fission",
   "key": {
+    "D": {
+      "item": "nuclearcraft:decay_hastener"
+    },
     "L": {
       "item": "nuclearcraft:fission_reactor_casing"
     },
@@ -14,7 +17,7 @@
   },
   "pattern": [
     "LPL",
-    "PTP",
+    "TDT",
     "LPL"
   ],
   "result": {

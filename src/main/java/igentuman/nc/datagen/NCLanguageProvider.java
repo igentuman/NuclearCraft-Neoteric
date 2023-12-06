@@ -232,7 +232,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("tooltip.nc.liquid_capacity","Capacity: %s");
         add("effect.nuclearcraft.radiation_resistance","Radiation Resistance");
         add("leacher.tooltip.valid_pump","Pump - Ok");
-        add("leacher.tooltip.invalid_pump","Pump - Fail");
+        add("leacher.tooltip.invalid_pump","Pump in the corner not found");
         add("processor.description.alloy_smelter","Smelts and alloys items.");
         add("processor.description.centrifuge","Separates fluids into their components.");
         add("processor.description.fuel_reprocessor","Separates depleted fuel into components.");
@@ -246,7 +246,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("processor.description.extractor","Extracts liquids from solid items.");
         add("processor.description.fluid_enricher","Enriches fluids and gases with solid items.");
         add("processor.description.fluid_infuser","Mixes fluids with items to get new items.");
-        add("processor.description.irradiator","Transform items with the power of Radiative Flux.");
+        add("processor.description.irradiator","Transform items and fluids with the power of Radiative Flux. Needs to be placed in reactor's wall.");
         add("processor.description.isotope_separator","Splits items into isotopes.");
         add("processor.description.manufactory","Crushes items into dusts and other materials.");
         add("processor.description.pressurizer","Compresses items with high pressure.");

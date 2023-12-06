@@ -1,5 +1,6 @@
 package igentuman.nc.network.toServer;
 
+import igentuman.nc.block.ISizeToggable;
 import igentuman.nc.block.entity.energy.BatteryBE;
 import igentuman.nc.block.entity.processor.NCProcessorBE;
 import igentuman.nc.network.INcPacket;
@@ -24,7 +25,6 @@ public class BatterySideConfig implements INcPacket {
 
     }
 
-
     @Override
     public void handle(NetworkEvent.Context context) {
         ServerPlayer player = context.getSender();
@@ -35,7 +35,7 @@ public class BatterySideConfig implements INcPacket {
         if(!(be instanceof BatteryBE battery)) {
             return;
         }
-        BatteryBE.EnergyMode mode = battery.toggleSideConfig(direction);
+        ISizeToggable.SideMode mode = battery.toggleSideConfig(direction);
         player.sendSystemMessage(Component.translatable("message.nc.battery.side_config", mode.name()));
     }
 

@@ -5,7 +5,10 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix3f;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
+import igentuman.nc.block.ISizeToggable;
+import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.block.entity.fusion.FusionCoreBE;
+import igentuman.nc.item.MultitoolItem;
 import igentuman.nc.item.QNP;
 import igentuman.nc.util.NCBlockPos;
 import net.minecraft.client.Camera;
@@ -106,6 +109,60 @@ public class BlockOverlayHandler {
     public static void blockOverlayEvent(RenderHighlightEvent.Block event) {
         HitResult hit = event.getTarget();
         ItemStack stackItem = Minecraft.getInstance().player.getMainHandItem();
+        handleQNP(event, hit, stackItem);
+        handleMultitool(event, hit, stackItem);
+    }
+
+    private static void handleMultitool(RenderHighlightEvent.Block event, HitResult hit, ItemStack stackItem) {
+        if (hit.getType() == HitResult.Type.BLOCK && stackItem.getItem() instanceof MultitoolItem multitool) {
+            BlockHitResult blockRayTraceResult = (BlockHitResult) hit;
+            event.setCanceled(true);
+            BlockPos blockPos = blockRayTraceResult.getBlockPos();
+
+            Level world = Minecraft.getInstance().player.level;
+            BlockEntity be = world.getBlockEntity(blockPos);
+            if(! (be instanceof NuclearCraftBE)) return;
+            NuclearCraftBE ncBe = (NuclearCraftBE) be;
+            if(ncBe.sideConfig.isEmpty()) return;
+            Direction hitSide = blockRayTraceResult.getDirection();
+            if(Minecraft.getInstance().player.isShiftKeyDown()) {
+                hitSide = hitSide.getOpposite();
+            }
+            ISizeToggable.SideMode mode = ncBe.sideConfig.get(hitSide.ordinal());
+            if(mode == null) return;
+            float[] color = new float[]{0, 1, 0};
+            switch (mode) {
+                case DEFAULT -> color = new float[]{0, 1, 0};
+                case IN -> color = new float[]{0, 0, 1};
+                case OUT -> color = new float[]{1, 0, 0};
+                case DISABLED -> color = new float[]{0.5f, 0.5f, 0.5f};
+            }
+            PoseStack stack = new PoseStack();
+            stack.pushPose();
+            Camera info = event.getCamera();
+            stack.mulPose(Vector3f.XP.rotationDegrees(info.getXRot()));
+            stack.mulPose(Vector3f.YP.rotationDegrees(info.getYRot() + 180));
+            double d0 = info.getPosition().x();
+            double d1 = info.getPosition().y();
+            double d2 = info.getPosition().z();
+            VertexConsumer builder = Minecraft.getInstance().renderBuffers().outlineBufferSource().getBuffer(RenderType.lines());
+            VoxelShape shape = world.getBlockState(blockPos).getShape(world, blockPos);
+            AABB bounds = shape.bounds();
+            switch (hitSide) {
+                case DOWN -> bounds = bounds.setMaxY(0.01);
+                case UP ->  bounds = bounds.setMinY(0.99);
+                case NORTH -> bounds = bounds.setMaxZ(0.01);
+                case SOUTH -> bounds = bounds.setMinZ(0.99);
+                case WEST -> bounds = bounds.setMaxX(0.01);
+                case EAST -> bounds = bounds.setMinX(0.99);
+            }
+            LevelRenderer.renderLineBox(stack, builder, bounds.move(blockPos.getX() - d0, blockPos.getY() - d1, blockPos.getZ() - d2), color[0], color[1], color[2], 0.35F);
+
+            stack.popPose();
+        }
+    }
+
+    private static void handleQNP(RenderHighlightEvent.Block event, HitResult hit, ItemStack stackItem) {
         if (hit.getType() == HitResult.Type.BLOCK && stackItem.getItem() instanceof QNP qnp) {
             BlockHitResult blockRayTraceResult = (BlockHitResult) hit;
             event.setCanceled(true);

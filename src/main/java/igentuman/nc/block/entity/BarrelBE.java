@@ -58,8 +58,11 @@ public class BarrelBE extends NuclearCraftBE implements ISizeToggable {
         fluidHandler = LazyOptional.of(() -> fluidTank);
     }
 
-
-    public HashMap<Integer, SideMode> sideConfig = new HashMap<>();
+    @Nullable
+    @Override
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
+    }
 
     @Nonnull
     @Override

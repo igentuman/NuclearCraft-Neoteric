@@ -338,6 +338,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("fission.interior.no_heat_sink", "No Heat Sinks Found");
         add("tooltip.nc.use_multitool", "Use Multitool to config sides");
         add("tooltip.nc.multitool.desc", "Commonly used to config sides of batteries, barrels, ports...");
+        add("tooltip.nc.multitool.shift.desc", "Sneak + RBM to config back side");
         add("side_config.up", "UP: ");
         add("side_config.down", "DOWN: ");
         add("side_config.left", "LEFT: ");

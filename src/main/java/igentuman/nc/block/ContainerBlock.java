@@ -8,6 +8,7 @@ import igentuman.nc.setup.registration.NCStorageBlocks;
 import igentuman.nc.util.annotation.NothingNullByDefault;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -65,7 +66,11 @@ public class ContainerBlock extends Block implements EntityBlock {
             ContainerBE be = (ContainerBE)level.getBlockEntity(pos);
             ItemStack handStack = player.getItemInHand(hand);
             if(handStack.getItem().equals(MULTITOOL.get())) {
-                NuclearCraft.packetHandler().sendToServer(new StorageSideConfig(pos, result.getDirection().ordinal()));
+                Direction dirToChange = result.getDirection();
+                if(player.isShiftKeyDown()) {
+                    dirToChange = dirToChange.getOpposite();
+                }
+                NuclearCraft.packetHandler().sendToServer(new StorageSideConfig(pos, dirToChange.ordinal()));
             } else {
                 MenuProvider containerProvider = new MenuProvider() {
                     @Override

@@ -1,6 +1,7 @@
 package igentuman.nc.client.block;
 
 import com.mojang.math.Transformation;
+import igentuman.nc.block.ISizeToggable;
 import igentuman.nc.block.entity.energy.BatteryBE;
 import igentuman.nc.util.ClientTools;
 import net.minecraft.client.renderer.RenderType;
@@ -81,7 +82,7 @@ public class BatteryBlockBakedModel implements IDynamicBakedModel {
         if (side != null || (layer != null && !layer.equals(RenderType.solid()))) {
             return Collections.emptyList();
         }
-        HashMap<Integer, BatteryBE.EnergyMode> sideConfig = extraData.get(BatteryBE.SIDE_CONFIG);
+        HashMap<Integer, ISizeToggable.SideMode> sideConfig = extraData.get(BatteryBE.SIDE_CONFIG);
         if(sideConfig == null) {
             return sideQuads;
         }
@@ -117,15 +118,15 @@ public class BatteryBlockBakedModel implements IDynamicBakedModel {
         return quadCache.get(cacheKey);
     }
 
-    private String keyFor(Collection<BatteryBE.EnergyMode> values) {
+    private String keyFor(Collection<ISizeToggable.SideMode> values) {
         String result = "";
-        for(BatteryBE.EnergyMode value : values) {
+        for(ISizeToggable.SideMode value : values) {
             result += value.ordinal();
         }
         return result;
     }
 
-    private TextureAtlasSprite getSideTexture(HashMap<Integer, BatteryBE.EnergyMode> sideConfig, Direction direction) {
+    private TextureAtlasSprite getSideTexture(HashMap<Integer, ISizeToggable.SideMode> sideConfig, Direction direction) {
         TextureAtlasSprite textureSide = spriteGetter.apply(batteryModelGeometry.sideDefault);
         switch (sideConfig.get(direction.ordinal())) {
             case DISABLED -> textureSide = spriteGetter.apply(batteryModelGeometry.sideNone);

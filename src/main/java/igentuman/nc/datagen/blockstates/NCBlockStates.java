@@ -77,7 +77,11 @@ public class NCBlockStates extends BlockStateProvider {
                         st -> controllerModel(st, sidedModel(FissionReactor.MULTI_BLOCKS.get("fission_reactor_" + name).get(), "fission/controller"))
                 );
             } else {
-                simpleBlock(FissionReactor.MULTI_BLOCKS.get("fission_reactor_" + name).get(), multiBlockModel(FissionReactor.MULTI_BLOCKS.get("fission_reactor_" + name).get(), "fission/" + name));
+                if(name.contains("slope")) {
+                    orientationalBlock(FissionReactor.MULTI_BLOCKS.get("fission_reactor_" +name).get(), $ -> models().getExistingFile(rl("block/multiblock/fission_reactor_"+name)));
+                } else {
+                    simpleBlock(FissionReactor.MULTI_BLOCKS.get("fission_reactor_" + name).get(), multiBlockModel(FissionReactor.MULTI_BLOCKS.get("fission_reactor_" + name).get(), "fission/" + name));
+                }
             }
         }
     }

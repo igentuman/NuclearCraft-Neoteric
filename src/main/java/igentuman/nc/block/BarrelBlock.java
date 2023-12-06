@@ -8,6 +8,7 @@ import igentuman.nc.content.storage.BarrelBlocks;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.stats.Stats;
@@ -66,7 +67,11 @@ public class BarrelBlock extends Block implements EntityBlock {
             ItemStack handStack = player.getItemInHand(hand);
             IFluidHandler barrel = be.getFluidHandler().orElse(null);
             if(handStack.getItem().equals(MULTITOOL.get())) {
-                NuclearCraft.packetHandler().sendToServer(new StorageSideConfig(pos, result.getDirection().ordinal()));
+                Direction dirToChange = result.getDirection();
+                if(player.isShiftKeyDown()) {
+                    dirToChange = dirToChange.getOpposite();
+                }
+                NuclearCraft.packetHandler().sendToServer(new StorageSideConfig(pos, dirToChange.ordinal()));
             } else
             if(!handStack.equals(ItemStack.EMPTY)) {
                 if(handStack.getItem() instanceof BucketItem) {

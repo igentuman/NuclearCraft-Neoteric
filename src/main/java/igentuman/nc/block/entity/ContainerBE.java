@@ -50,9 +50,6 @@ public class ContainerBE extends NuclearCraftBE implements ISizeToggable {
         itemHandler = LazyOptional.of(() -> inventory);
     }
 
-
-    public HashMap<Integer, SideMode> sideConfig = new HashMap<>();
-
     @Nonnull
     @Override
     public @NotNull ModelData getModelData() {
@@ -180,7 +177,6 @@ public class ContainerBE extends NuclearCraftBE implements ISizeToggable {
                 sideConfig.remove(i);
                 sideConfig.put(i, newMode);
             }
-
         }
         if(changed) {
             requestModelDataUpdate();
@@ -195,6 +191,12 @@ public class ContainerBE extends NuclearCraftBE implements ISizeToggable {
         super.saveAdditional(tag);
         tag.put("Inventory", inventory.serializeNBT());
         tag.putIntArray("sideConfig", sideConfig.values().stream().mapToInt(Enum::ordinal).toArray());
+    }
+
+    @Nullable
+    @Override
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
     }
 
     public ISizeToggable.SideMode toggleSideConfig(int direction) {

@@ -28,6 +28,7 @@ public class FissionBlocks {
             "port",
             "glass",
             "solid_fuel_cell"
+            //"casing_slope"
     );
 
     public static final HashMap<String, HeatSinkDef> heatsinks = heatsinks();

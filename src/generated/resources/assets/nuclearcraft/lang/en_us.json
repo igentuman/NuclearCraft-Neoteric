@@ -58,6 +58,7 @@
   "block.nuclearcraft.enderium_heat_sink": "Enderium Heat Sink",
   "block.nuclearcraft.extractor": "Extractor",
   "block.nuclearcraft.fission_reactor_casing": "Fission Reactor Casing",
+  "block.nuclearcraft.fission_reactor_casing_slope": "Fission Reactor Casing Slope",
   "block.nuclearcraft.fission_reactor_controller": "Fission Reactor Controller",
   "block.nuclearcraft.fission_reactor_glass": "Fission Reactor Glass",
   "block.nuclearcraft.fission_reactor_irradiation_chamber": "Fission Reactor Irradiation Chamber",

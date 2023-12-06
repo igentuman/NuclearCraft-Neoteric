@@ -1,7 +1,9 @@
 package igentuman.nc.block.entity.energy;
 
 import igentuman.nc.NuclearCraft;
+import igentuman.nc.block.ISizeToggable;
 import igentuman.nc.content.energy.BatteryBlocks;
+import igentuman.nc.handler.sided.SlotModePair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -24,20 +26,18 @@ import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class BatteryBE extends NCEnergy {
-    public static final ModelProperty<HashMap<Integer, EnergyMode>> SIDE_CONFIG = new ModelProperty<>();
+    public static final ModelProperty<HashMap<Integer, ISizeToggable.SideMode>> SIDE_CONFIG = new ModelProperty<>();
     public boolean syncSideConfig = true;
     public BatteryBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, getName(pBlockState));
         for (Direction direction : Direction.values()) {
-            sideConfig.put(direction.ordinal(), EnergyMode.DEFAULT);
+            sideConfig.put(direction.ordinal(), ISizeToggable.SideMode.DEFAULT);
         }
     }
 
     public static String getName(BlockState pBlockState) {
         return pBlockState.getBlock().asItem().toString();
     }
-
-    public HashMap<Integer, EnergyMode> sideConfig = new HashMap<>();
 
     @Nonnull
     @Override
@@ -60,17 +60,17 @@ public class BatteryBE extends NCEnergy {
         AtomicInteger capacity = new AtomicInteger(energyStorage.getEnergyStored());
         for (Direction direction : Direction.values()) {
             if(
-                    sideConfig.get(direction.ordinal()) == EnergyMode.DISABLED ||
-                    sideConfig.get(direction.ordinal()) == EnergyMode.DEFAULT
+                    sideConfig.get(direction.ordinal()) == ISizeToggable.SideMode.DISABLED ||
+                    sideConfig.get(direction.ordinal()) == ISizeToggable.SideMode.DEFAULT
             ) continue;
             BlockEntity be = level.getBlockEntity(worldPosition.relative(direction));
             if (be != null) {
                 IEnergyStorage sideEnergy = be.getCapability(ForgeCapabilities.ENERGY, direction.getOpposite()).orElse(null);
                 if(sideEnergy == null) continue;
-                if (capacity.get() > 0 && sideConfig.get(direction.ordinal()) == EnergyMode.OUT) {
+                if (capacity.get() > 0 && sideConfig.get(direction.ordinal()) == ISizeToggable.SideMode.OUT) {
                     int accepted = sideEnergy.receiveEnergy(Math.min(capacity.get(), getEnergyTransferPerTick()), false);
                     capacity.addAndGet(-accepted);
-                } else if (capacity.get() < getEnergyMaxStorage() && sideConfig.get(direction.ordinal()) == EnergyMode.IN) {
+                } else if (capacity.get() < getEnergyMaxStorage() && sideConfig.get(direction.ordinal()) == ISizeToggable.SideMode.IN) {
                     int extracted = sideEnergy.extractEnergy(Math.min(getEnergyTransferPerTick(), getEnergyMaxStorage() - capacity.get()), false);
                     capacity.addAndGet(extracted);
                 }
@@ -86,7 +86,7 @@ public class BatteryBE extends NCEnergy {
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (cap == ForgeCapabilities.ENERGY && (side != null && sideConfig.get(side.ordinal()) != EnergyMode.DISABLED)) {
+        if (cap == ForgeCapabilities.ENERGY && (side != null && sideConfig.get(side.ordinal()) != ISizeToggable.SideMode.DISABLED)) {
             return energy.cast();
         }
         return super.getCapability(cap, side);
@@ -155,7 +155,7 @@ public class BatteryBE extends NCEnergy {
     private void loadSideConfig(int[] tagData) {
         boolean changed = false;
         for (int i = 0; i < sideConfig.size(); i++) {
-            EnergyMode newMode = EnergyMode.values()[tagData[i]];
+            ISizeToggable.SideMode newMode = ISizeToggable.SideMode.values()[tagData[i]];
             if(sideConfig.get(i) != newMode) {
                 changed = true;
                 sideConfig.remove(i);
@@ -177,15 +177,11 @@ public class BatteryBE extends NCEnergy {
         tag.putIntArray("sideConfig", sideConfig.values().stream().mapToInt(Enum::ordinal).toArray());
     }
 
-    public EnergyMode toggleSideConfig(int direction) {
-        sideConfig.put(direction, EnergyMode.values()[(sideConfig.get(direction).ordinal() + 1) % 4]);
+    public ISizeToggable.SideMode toggleSideConfig(int direction) {
+        sideConfig.put(direction, ISizeToggable.SideMode.values()[(sideConfig.get(direction).ordinal() + 1) % 4]);
         setChanged();
         level.setBlockAndUpdate(worldPosition, getBlockState());
         level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
         return sideConfig.get(direction);
-    }
-
-    public enum EnergyMode {
-        DEFAULT, IN, OUT, DISABLED
     }
 }

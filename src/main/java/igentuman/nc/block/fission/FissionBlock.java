@@ -39,7 +39,7 @@ public class FissionBlock extends Block implements EntityBlock {
     @Override
     @Deprecated
     public boolean skipRendering(@NotNull BlockState state, @NotNull BlockState adjacentBlockState, @NotNull Direction side) {
-        return adjacentBlockState.getBlock().equals(this) && asItem().toString().matches(".*glass|.*cell.*");
+        return adjacentBlockState.getBlock().equals(this) && asItem().toString().matches(".*glass|.*cell.*|.*slope.*");
     }
 
     @Override
@@ -89,6 +89,4 @@ public class FissionBlock extends Block implements EntityBlock {
     public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor){
         ((FissionBE)level.getBlockEntity(pos)).onNeighborChange(state,  pos, neighbor);
     }
-
-
 }

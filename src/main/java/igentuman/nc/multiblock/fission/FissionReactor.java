@@ -96,7 +96,11 @@ public class FissionReactor {
                 } else {
                     props = REACTOR_BLOCKS_PROPERTIES;
                 }
-                MULTI_BLOCKS.put(key, BLOCKS.register(key, () -> new FissionBlock(props)));
+                if(name.contains("slope")) {
+                    MULTI_BLOCKS.put(key, BLOCKS.register(key, () -> new FissionCasingSlopeBlock(props)));
+                } else {
+                    MULTI_BLOCKS.put(key, BLOCKS.register(key, () -> new FissionBlock(props)));
+                }
             }
             MULTIBLOCK_ITEMS.put(key, fromMultiblock(MULTI_BLOCKS.get(key)));
             ALL_NC_ITEMS.put(key, MULTIBLOCK_ITEMS.get(key));

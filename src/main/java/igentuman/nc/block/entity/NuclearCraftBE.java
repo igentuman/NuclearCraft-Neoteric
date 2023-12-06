@@ -1,5 +1,6 @@
 package igentuman.nc.block.entity;
 
+import igentuman.nc.block.ISizeToggable;
 import igentuman.nc.client.sound.SoundHandler;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.util.NCBlockPos;
@@ -15,6 +16,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class NuclearCraftBE extends BlockEntity {
@@ -23,6 +25,9 @@ public class NuclearCraftBE extends BlockEntity {
     protected boolean changed;
     protected SoundInstance currentSound;
     protected int playSoundCooldown = 0;
+
+    public HashMap<Integer, ISizeToggable.SideMode> sideConfig = new HashMap<>();
+
     public static String getName(BlockState pBlockState) {
         return pBlockState.getBlock().asItem().toString();
     }

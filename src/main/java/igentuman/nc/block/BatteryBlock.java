@@ -8,6 +8,7 @@ import igentuman.nc.setup.registration.NCEnergyBlocks;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.stats.Stats;
@@ -58,7 +59,11 @@ public class BatteryBlock extends Block implements EntityBlock {
             BlockEntity be = level.getBlockEntity(pos);
             if (be instanceof BatteryBE batteryBE)  {
                 if(player.getItemInHand(hand).getItem().equals(MULTITOOL.get())) {
-                    NuclearCraft.packetHandler().sendToServer(new BatterySideConfig(pos, result.getDirection().ordinal()));
+                    Direction dirToChange = result.getDirection();
+                    if(player.isShiftKeyDown()) {
+                        dirToChange = dirToChange.getOpposite();
+                    }
+                    NuclearCraft.packetHandler().sendToServer(new BatterySideConfig(pos, dirToChange.ordinal()));
                 } else {
                     player.sendSystemMessage(Component.translatable("tooltip.nc.energy_stored", formatEnergy(batteryBE.energyStorage.getEnergyStored()), formatEnergy(batteryBE.energyStorage.getMaxEnergyStored())).withStyle(ChatFormatting.BLUE));
                 }

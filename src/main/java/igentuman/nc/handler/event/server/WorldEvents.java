@@ -1,15 +1,26 @@
 package igentuman.nc.handler.event.server;
 
+
+import igentuman.nc.item.HEVItem;
+import igentuman.nc.item.HazmatItem;
 import igentuman.nc.radiation.data.RadiationEvents;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.event.TickEvent.LevelTickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.ServerTickEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.event.level.ChunkEvent;
 import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 
+import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.setup.registration.NCItems.HEV_BOOTS;
+@Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class WorldEvents {
 
     public WorldEvents() {
@@ -53,5 +64,44 @@ public class WorldEvents {
         if (event.side.isServer() && event.phase == Phase.END) {
             RadiationEvents.onWorldTick(event);
         }
+    }
+
+    public static boolean isFullyEquitedInHazmat(Player player) {
+        for(ItemStack stack : player.getArmorSlots()) {
+            if(!(stack.getItem() instanceof HazmatItem) && !(stack.getItem() instanceof HEVItem)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean isCharged(ItemStack item)
+    {
+        return item.getCapability(ForgeCapabilities.ENERGY).map(handler -> handler.getEnergyStored() > 0).orElse(false);
+    }
+
+
+
+    @SubscribeEvent
+    public static void onPlayerDamage(LivingHurtEvent event) {
+        if (event.getEntity() instanceof Player player) {
+            if (event.getSource() != null && event.getSource().isMagic()) {
+                if(isFullyEquitedInHazmat(player)) {
+                    event.setAmount(event.getAmount()/10F);
+                }
+            }
+            if(event.getSource() != null && event.getSource().isFall()) {
+                player.getArmorSlots().forEach(stack -> {
+                    if(stack.getItem().equals(HEV_BOOTS.get()) && isCharged(stack)) {
+                        consumeEnergy(stack, 1000);
+                        event.setCanceled(true);
+                    }
+                });
+            }
+        }
+    }
+
+    private static void consumeEnergy(ItemStack stack, int i) {
+        stack.getCapability(ForgeCapabilities.ENERGY).ifPresent(handler -> handler.extractEnergy(i, false));
     }
 }

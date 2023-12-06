@@ -64,7 +64,7 @@ public class FissionControllerBlock extends HorizontalDirectionalBlock implement
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
-        return FissionReactor.MULTIBLOCK_BE.get("fission_reactor_controller").get().create(pPos, pState);
+        return FissionReactor.FISSION_BE.get("fission_reactor_controller").get().create(pPos, pState);
     }
 
     @Override

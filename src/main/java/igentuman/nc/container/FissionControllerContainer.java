@@ -92,7 +92,7 @@ public class FissionControllerContainer extends AbstractContainerMenu {
         return stillValid(
                 ContainerLevelAccess.create(blockEntity.getLevel(), blockEntity.getBlockPos()),
                 playerEntity,
-                FissionReactor.MULTI_BLOCKS.get(name).get()
+                FissionReactor.FISSION_BLOCKS.get(name).get()
         );
     }
 

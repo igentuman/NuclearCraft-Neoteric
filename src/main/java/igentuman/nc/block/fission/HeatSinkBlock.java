@@ -150,7 +150,7 @@ public class HeatSinkBlock extends Block implements EntityBlock {
     @Override
     public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
         def.getValidator();
-        BlockEntity be = FissionReactor.MULTIBLOCK_BE.get("fission_heat_sink").get().create(pPos, pState);
+        BlockEntity be = FissionReactor.FISSION_BE.get("fission_heat_sink").get().create(pPos, pState);
         ((FissionHeatSinkBE)be).setHeatSinkDef(def);
         return be;
     }

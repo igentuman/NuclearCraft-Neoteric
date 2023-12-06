@@ -36,10 +36,10 @@ public class NCItemTags extends ItemTagsProvider {
         isotopes();
         tag(FissionBlocks.MODERATORS_ITEMS).add(NCBlocks.NC_BLOCKS_ITEMS.get("graphite").get(), NCBlocks.NC_BLOCKS_ITEMS.get("beryllium").get());
         tag(FissionBlocks.CASING_ITEMS).add(
-                FissionReactor.MULTIBLOCK_ITEMS.get("fission_reactor_casing").get(),
-                FissionReactor.MULTIBLOCK_ITEMS.get("fission_reactor_controller").get(),
-                FissionReactor.MULTIBLOCK_ITEMS.get("fission_reactor_glass").get(),
-                FissionReactor.MULTIBLOCK_ITEMS.get("fission_reactor_port").get()
+                FissionReactor.FISSION_BLOCK_ITEMS.get("fission_reactor_casing").get(),
+                FissionReactor.FISSION_BLOCK_ITEMS.get("fission_reactor_controller").get(),
+                FissionReactor.FISSION_BLOCK_ITEMS.get("fission_reactor_glass").get(),
+                FissionReactor.FISSION_BLOCK_ITEMS.get("fission_reactor_port").get()
         );
     }
 

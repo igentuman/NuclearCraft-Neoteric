@@ -645,12 +645,12 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
 
         @Override
         public @NotNull String getGroup() {
-            return FissionReactor.MULTI_BLOCKS.get(codeId).get().getName().getString();
+            return FissionReactor.FISSION_BLOCKS.get(codeId).get().getName().getString();
         }
 
         @Override
         public @NotNull ItemStack getToastSymbol() {
-            return new ItemStack(FissionReactor.MULTI_BLOCKS.get(codeId).get());
+            return new ItemStack(FissionReactor.FISSION_BLOCKS.get(codeId).get());
         }
 
         public int getDepletionTime() {

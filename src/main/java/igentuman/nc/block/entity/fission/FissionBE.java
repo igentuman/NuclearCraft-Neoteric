@@ -49,7 +49,7 @@ public class FissionBE extends NuclearCraftBE implements IMultiblockAttachable {
     public boolean hasToTouchFuelCell = true;
 
     public FissionBE(BlockPos pPos, BlockState pBlockState, String name) {
-        super(FissionReactor.MULTIBLOCK_BE.get(name).get(), pPos, pBlockState);
+        super(FissionReactor.FISSION_BE.get(name).get(), pPos, pBlockState);
     }
 
     public void invalidateCache()

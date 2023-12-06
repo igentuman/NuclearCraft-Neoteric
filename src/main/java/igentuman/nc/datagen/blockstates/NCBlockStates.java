@@ -64,23 +64,23 @@ public class NCBlockStates extends BlockStateProvider {
 
     private void heatSinks() {
         for (String name: FissionBlocks.heatsinks.keySet()) {
-            simpleBlock(FissionReactor.MULTI_BLOCKS.get(name+"_heat_sink").get(), multiBlockModel(FissionReactor.MULTI_BLOCKS.get(name+"_heat_sink").get(), "heat_sink/"+name));
+            simpleBlock(FissionReactor.FISSION_BLOCKS.get(name+"_heat_sink").get(), multiBlockModel(FissionReactor.FISSION_BLOCKS.get(name+"_heat_sink").get(), "heat_sink/"+name));
         }
     }
 
     private void fissionReactor() {
         for (String name: FissionBlocks.reactor) {
             if(name.matches(".*port.*")) {
-                horizontalBlock(FissionReactor.MULTI_BLOCKS.get("fission_reactor_" + name).get(), multiBlockModel(FissionReactor.MULTI_BLOCKS.get("fission_reactor_" + name).get(), "fission/" + name));
+                horizontalBlock(FissionReactor.FISSION_BLOCKS.get("fission_reactor_" + name).get(), multiBlockModel(FissionReactor.FISSION_BLOCKS.get("fission_reactor_" + name).get(), "fission/" + name));
             } else if(name.matches(".*controller.*")) {
-                horizontalBlock(FissionReactor.MULTI_BLOCKS.get("fission_reactor_" + name).get(),
-                        st -> controllerModel(st, sidedModel(FissionReactor.MULTI_BLOCKS.get("fission_reactor_" + name).get(), "fission/controller"))
+                horizontalBlock(FissionReactor.FISSION_BLOCKS.get("fission_reactor_" + name).get(),
+                        st -> controllerModel(st, sidedModel(FissionReactor.FISSION_BLOCKS.get("fission_reactor_" + name).get(), "fission/controller"))
                 );
             } else {
                 if(name.contains("slope")) {
-                    orientationalBlock(FissionReactor.MULTI_BLOCKS.get("fission_reactor_" +name).get(), $ -> models().getExistingFile(rl("block/multiblock/fission_reactor_"+name)));
+                    orientationalBlock(FissionReactor.FISSION_BLOCKS.get("fission_reactor_" +name).get(), $ -> models().getExistingFile(rl("block/multiblock/fission_reactor_"+name)));
                 } else {
-                    simpleBlock(FissionReactor.MULTI_BLOCKS.get("fission_reactor_" + name).get(), multiBlockModel(FissionReactor.MULTI_BLOCKS.get("fission_reactor_" + name).get(), "fission/" + name));
+                    simpleBlock(FissionReactor.FISSION_BLOCKS.get("fission_reactor_" + name).get(), multiBlockModel(FissionReactor.FISSION_BLOCKS.get("fission_reactor_" + name).get(), "fission/" + name));
                 }
             }
         }

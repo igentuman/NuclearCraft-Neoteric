@@ -26,7 +26,7 @@ import java.util.stream.Stream;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.handler.config.CommonConfig.HEAT_SINK_CONFIG;
-import static igentuman.nc.multiblock.fission.FissionReactor.MULTI_BLOCKS;
+import static igentuman.nc.multiblock.fission.FissionReactor.FISSION_BLOCKS;
 
 public class HeatSinkDef {
     public double heat = 0;
@@ -300,7 +300,7 @@ public class HeatSinkDef {
 
         public boolean hasToTouchFuelCell() {
             for(List<Block> blockList: blocks().values()) {
-                if(blockList.contains(MULTI_BLOCKS.get("fission_reactor_solid_fuel_cell").get())) {
+                if(blockList.contains(FISSION_BLOCKS.get("fission_reactor_solid_fuel_cell").get())) {
                     return true;
                 }
             }

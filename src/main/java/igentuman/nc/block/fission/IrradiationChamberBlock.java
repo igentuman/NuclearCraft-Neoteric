@@ -49,7 +49,7 @@ public class IrradiationChamberBlock extends Block implements EntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
-        return FissionReactor.MULTIBLOCK_BE.get("fission_reactor_irradiation_chamber").get().create(pPos, pState);
+        return FissionReactor.FISSION_BE.get("fission_reactor_irradiation_chamber").get().create(pPos, pState);
     }
 
     @javax.annotation.Nullable

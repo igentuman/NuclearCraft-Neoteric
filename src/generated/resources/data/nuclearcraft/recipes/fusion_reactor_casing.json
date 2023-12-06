@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "nuclearcraft_fusion",
+  "key": {
+    "L": {
+      "item": "nuclearcraft:plate_advanced"
+    },
+    "M": {
+      "item": "nuclearcraft:coil_copper"
+    },
+    "P": {
+      "tag": "forge:plates/cobalt"
+    }
+  },
+  "pattern": [
+    "LPL",
+    "PMP",
+    "LPL"
+  ],
+  "result": {
+    "item": "nuclearcraft:fusion_reactor_casing"
+  }
+}

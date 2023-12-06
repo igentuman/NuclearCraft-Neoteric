@@ -1,13 +1,12 @@
 package igentuman.nc.datagen;
 
-import igentuman.nc.multiblock.fission.FissionReactor;
 import igentuman.nc.setup.registration.NCBlocks;
 import igentuman.nc.setup.registration.NCEnergyBlocks;
 import igentuman.nc.setup.registration.NCItems;
 import igentuman.nc.setup.registration.NCProcessors;
 import net.minecraft.data.DataGenerator;
 
-import static igentuman.nc.multiblock.fission.FissionReactor.MULTI_BLOCKS;
+import static igentuman.nc.multiblock.fission.FissionReactor.FISSION_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_BLOCKS;
 import static igentuman.nc.setup.registration.NCBlocks.NC_ELECTROMAGNETS;
 import static igentuman.nc.setup.registration.NCBlocks.NC_RF_AMPLIFIERS;
@@ -39,8 +38,8 @@ public class NCLootTables extends BaseLootTableProvider {
         for(String name: NCBlocks.NC_BLOCKS.keySet()) {
             lootTables.put(NCBlocks.NC_BLOCKS.get(name).get(), createSimpleTable("block", NCBlocks.NC_BLOCKS.get(name).get()));
         }
-        for(String name: MULTI_BLOCKS.keySet()) {
-            lootTables.put(MULTI_BLOCKS.get(name).get(), createSimpleTable("block", MULTI_BLOCKS.get(name).get()));
+        for(String name: FISSION_BLOCKS.keySet()) {
+            lootTables.put(FISSION_BLOCKS.get(name).get(), createSimpleTable("block", FISSION_BLOCKS.get(name).get()));
         }
         for(String name: FUSION_BLOCKS.keySet()) {
             lootTables.put(FUSION_BLOCKS.get(name).get(), createSimpleTable("block", FUSION_BLOCKS.get(name).get()));

@@ -120,9 +120,9 @@ public class NCLanguageProvider extends LanguageProvider {
     }
 
     private void multiblocks() {
-        for(String name: FissionReactor.MULTI_BLOCKS.keySet()) {
+        for(String name: FissionReactor.FISSION_BLOCKS.keySet()) {
             String title = convertToName(name);
-            add(FissionReactor.MULTI_BLOCKS.get(name).get(), title);
+            add(FissionReactor.FISSION_BLOCKS.get(name).get(), title);
         }
         for(String name: FusionReactor.FUSION_BLOCKS.keySet()) {
             String title = convertToName(name);

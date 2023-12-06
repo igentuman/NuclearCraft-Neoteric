@@ -68,7 +68,7 @@ public class FissionPort extends HorizontalDirectionalBlock implements EntityBlo
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
-        return FissionReactor.MULTIBLOCK_BE.get("fission_reactor_port").get().create(pPos, pState);
+        return FissionReactor.FISSION_BE.get("fission_reactor_port").get().create(pPos, pState);
     }
 
     @Override

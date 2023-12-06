@@ -65,8 +65,8 @@ public class NCItemModels extends ItemModelProvider {
         for(String name: NCBlocks.MULTI_BLOCKS.keySet()) {
             withExistingParent(NCBlocks.MULTIBLOCK_ITEMS.get(name).getId().getPath(), modLoc("block/multiblock/"+name));
         }
-        for(String name: FissionReactor.MULTI_BLOCKS.keySet()) {
-            withExistingParent(FissionReactor.MULTIBLOCK_ITEMS.get(name).getId().getPath(), modLoc("block/multiblock/"+name));
+        for(String name: FissionReactor.FISSION_BLOCKS.keySet()) {
+            withExistingParent(FissionReactor.FISSION_BLOCK_ITEMS.get(name).getId().getPath(), modLoc("block/multiblock/"+name));
         }
         for(String name: FUSION_BLOCKS.keySet()) {
             if(name.contains("core")) continue;

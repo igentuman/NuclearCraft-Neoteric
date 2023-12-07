@@ -781,7 +781,7 @@ public class NCRecipes extends RecipeProvider {
                 .unlockedBy("item", has(HEAVY_WEIGHTED_PRESSURE_PLATE))
                 .save(consumer, new ResourceLocation(MODID, "upgrade_energy"));
 
-        ShapedRecipeBuilder.shaped(NCItems.NC_PARTS.get("plate_basic").get())
+        ShapedRecipeBuilder.shaped(NCItems.NC_PARTS.get("plate_basic").get(), 2)
                 .pattern("LG")
                 .pattern("GL")
                 .define('L', forgeIngot(Materials.lead))
@@ -789,7 +789,7 @@ public class NCRecipes extends RecipeProvider {
                 .unlockedBy("item", has(forgeIngot(Materials.lead)))
                 .save(consumer, new ResourceLocation(MODID, "plate_basic"));
 
-        ShapedRecipeBuilder.shaped(NCItems.NC_PARTS.get("plate_basic").get())
+        ShapedRecipeBuilder.shaped(NCItems.NC_PARTS.get("plate_basic").get(), 2)
                 .pattern("GL")
                 .pattern("LG")
                 .define('L', forgeIngot(Materials.lead))

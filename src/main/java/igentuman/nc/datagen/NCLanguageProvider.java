@@ -24,6 +24,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("itemGroup." + MODID+"_items", "NuclearCraft Items");
         add("itemGroup." + MODID+"_blocks", "NuclearCraft Blocks");
         add("itemGroup." + MODID+"_fission_reactor", "NuclearCraft Fission Reactor");
+        add("itemGroup." + MODID+"_fusion_reactor", "NuclearCraft Fission Reactor");
         ores();
         ingots();
         plates();
@@ -59,6 +60,11 @@ public class NCLanguageProvider extends LanguageProvider {
         add("death.attack.radiation", "Died of Radiation Poisoning");
     }
     private void sounds() {
+        add("music.hyperspace", "Hyperspace");
+        add("music.end_of_the_world", "End of the World");
+        add("music.wanderer", "Wanderer");
+        add("music.money_for_nothing", "Money For Nothing");
+
         add("sound_event.nuclearcraft.item.geiger_1", "Geiger Counter Ticks Level 1 Intensity");
         add("sound_event.nuclearcraft.item.geiger_2", "Geiger Counter Ticks Level 2 Intensity");
         add("sound_event.nuclearcraft.item.geiger_3", "Geiger Counter Ticks Level 3 Intensity");
@@ -69,6 +75,8 @@ public class NCLanguageProvider extends LanguageProvider {
         add("sound_event.nuclearcraft.fusion.running", "Fusion Reactor Running");
         add("sound_event.nuclearcraft.fusion.charging", "Fusion Reactor Charging");
         add("sound_event.nuclearcraft.fusion.switch", "Fusion Reactor Switch");
+
+        add("sound_event.nuclearcraft.fission_reactor", "Fission Reactor Ticking");
     }
 
     private void labels() {
@@ -398,6 +406,10 @@ public class NCLanguageProvider extends LanguageProvider {
         for(String name: NCItems.NC_ITEMS.keySet()) {
             add(NCItems.NC_ITEMS.get(name).get(), convertToName(name));
         }
+        add("item."+MODID+".wanderer.desc", "Wanderer");
+        add("item."+MODID+".end_of_the_world.desc", "End of the World");
+        add("item."+MODID+".hyperspace.desc", "Hyperspace");
+        add("item."+MODID+".money_for_nothing.desc", "Money For Nothing");
     }
 
     private void isotopes() {

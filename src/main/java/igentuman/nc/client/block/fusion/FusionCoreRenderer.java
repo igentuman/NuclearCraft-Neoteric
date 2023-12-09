@@ -68,12 +68,12 @@ public class FusionCoreRenderer implements BlockEntityRenderer<BlockEntity> {
 
         long time = Util.getMillis();
         float step = -0.08f;
-        if(coreBe.efficiency > 0.5) {
+        if(coreBe.isRunning() && coreBe.efficiency > 0.5) {
             step = -0.15f;
         }
         float angel = time * step;
 
-        if(coreBe.efficiency < 0.1) {
+        if(!coreBe.isRunning() || coreBe.efficiency < 0.1) {
             angel = 45f;
         }
         angel %= 360;

@@ -3,16 +3,14 @@ package igentuman.nc.setup.registration;
 import igentuman.nc.content.ArmorMaterials;
 import igentuman.nc.content.materials.*;
 import igentuman.nc.item.*;
+import igentuman.nc.item.Tiers;
 import igentuman.nc.setup.ModSetup;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.food.FoodProperties;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.PickaxeItem;
+import net.minecraft.world.item.*;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
@@ -24,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.setup.registration.NCSounds.SOUND_MAP;
 
 public class NCItems {
 
@@ -116,7 +115,7 @@ public class NCItems {
                 "wanderer"
         );
         for(String name: items) {
-            NC_RECORDS.put(name, ITEMS.register(name, () -> new Item(ITEM_PROPERTIES)));
+            NC_RECORDS.put(name, ITEMS.register(name, () -> new RecordItem(15, SOUND_MAP.get(name), ITEM_PROPERTIES, 300)));
             ALL_NC_ITEMS.put(name, NC_RECORDS.get(name));
         }
     }

@@ -3,6 +3,7 @@ package igentuman.nc.multiblock;
 import igentuman.nc.util.NCBlockPos;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -81,7 +82,7 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
         return 3;
     }
     public boolean isFormed() {
-        return isOuterValid() && isInnerValid();
+        return isFormed;
     }
     protected List<BlockPos> allBlocks = new ArrayList<>();
 
@@ -342,5 +343,9 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
                 hasToRefresh = false;
             }
         }
+    }
+
+    public void onBlockDestroyed(BlockState state, Level level, BlockPos pos, Explosion explosion) {
+        controller.clearStats();
     }
 }

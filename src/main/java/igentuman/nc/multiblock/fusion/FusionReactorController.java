@@ -5,13 +5,13 @@ import igentuman.nc.multiblock.INCMultiblockController;
 import net.minecraft.core.BlockPos;
 
 public class FusionReactorController implements INCMultiblockController {
-    protected FusionCoreBE controllerBE;
-    public FusionReactorController(FusionCoreBE FusionCoreBE) {
+    protected FusionCoreBE<?> controllerBE;
+    public FusionReactorController(FusionCoreBE<?> FusionCoreBE) {
         controllerBE = FusionCoreBE;
     }
 
     @Override
-    public FusionCoreBE controllerBE() {
+    public FusionCoreBE<?> controllerBE() {
         return controllerBE;
     }
 
@@ -19,6 +19,8 @@ public class FusionReactorController implements INCMultiblockController {
     public void clearStats() {
         controllerBE().errorBlockPos = null;
         controllerBE().isCasingValid = false;
+        controllerBE().plasmaTemperature = 0;
+        controllerBE().reactorHeat = 0;
     }
 
     @Override

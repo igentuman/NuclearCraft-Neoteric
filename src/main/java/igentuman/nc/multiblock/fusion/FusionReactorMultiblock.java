@@ -10,6 +10,7 @@ import igentuman.nc.multiblock.ValidationResult;
 import igentuman.nc.util.NCBlockPos;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -128,6 +129,16 @@ public class FusionReactorMultiblock extends AbstractNCMultiblock {
     public void validate() {
         super.validate();
         needToCollectFunctionalBlocks = isFormed;
+    }
+
+    @Override
+    public void onBlockDestroyed(BlockState state, Level level, BlockPos pos, Explosion explosion) {
+        if(controllerBE.plasmaTemperature > 100000) {
+            level.explode(null,
+                    pos.getX(), pos.getY(), pos.getZ(),
+                    1, true, Explosion.BlockInteraction.NONE);
+        }
+        controller.clearStats();
     }
 
     public void collectFunctionalParts() {

@@ -1,6 +1,7 @@
 package igentuman.nc.block.entity.fission;
 
 import igentuman.nc.NuclearCraft;
+import igentuman.nc.client.sound.SoundHandler;
 import igentuman.nc.compat.cc.NCSolidFissionReactorPeripheral;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
@@ -17,12 +18,14 @@ import igentuman.nc.setup.registration.NCFluids;
 import igentuman.nc.util.CustomEnergyStorage;
 import igentuman.nc.util.annotation.NBTField;
 import igentuman.nc.multiblock.ValidationResult;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Explosion;
@@ -47,6 +50,7 @@ import java.util.Objects;
 import static igentuman.nc.block.fission.FissionControllerBlock.POWERED;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.handler.config.CommonConfig.FISSION_CONFIG;
+import static igentuman.nc.setup.registration.NCSounds.FISSION_REACTOR;
 import static igentuman.nc.util.ModUtil.isCcLoaded;
 
 public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> extends FissionBE  {
@@ -220,7 +224,29 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         return super.getCapability(cap, side);
     }
 
+    protected void playRunningSound() {
+        if(isRemoved() || (currentSound != null && !currentSound.getLocation().equals(FISSION_REACTOR.get().getLocation()))) {
+            SoundHandler.stopTileSound(getBlockPos());
+            currentSound = null;
+        }
+        if((currentSound == null || !Minecraft.getInstance().getSoundManager().isActive(currentSound))) {
+            if(currentSound != null && currentSound.getLocation().equals(FISSION_REACTOR.get().getLocation())) {
+                return;
+            }
+
+            playSoundCooldown = 20;
+            currentSound = SoundHandler.startTileSound(FISSION_REACTOR.get(), SoundSource.BLOCKS, 0.2f, level.getRandom(), getBlockPos());
+        }
+    }
+
     public void tickClient() {
+        if(!isCasingValid || !isInternalValid) {
+            stopSound();
+            return;
+        }
+        if(isProcessing()) {
+            playRunningSound();
+        }
     }
     protected int reValidateCounter = 0;
 
@@ -267,7 +293,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     private void handleValidation() {
         multiblock().tick();
         boolean wasFormed = multiblock().isFormed();
-        if (!wasFormed) {
+        if (!wasFormed || !isInternalValid || !isCasingValid) {
             reValidateCounter++;
             if(reValidateCounter < 40) {
                 return;

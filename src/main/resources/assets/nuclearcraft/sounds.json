@@ -5,6 +5,12 @@
     ],
     "subtitle": "sound_event.nuclearcraft.fusion.ready"
   },
+  "tile.fission_reactor": {
+    "sounds": [
+      "nuclearcraft:block/fission_reactor"
+    ],
+    "subtitle": "sound_event.nuclearcraft.fission_reactor"
+  },
   "tile.fusion_charging": {
     "sounds": [
       "nuclearcraft:block/fusion_charging"
@@ -58,5 +64,25 @@
       "nuclearcraft:item/geiger_5"
     ],
     "subtitle": "sound_event.nuclearcraft.item.geiger_5"
+  },
+  "music.wanderer": {
+    "category": "record",
+    "subtitle": "music.wanderer",
+    "sounds": [ { "name": "nuclearcraft:music/wanderer", "stream": true } ]
+  },
+  "music.end_of_the_world": {
+    "category": "record",
+    "subtitle": "music.end_of_the_world",
+    "sounds": [ { "name": "nuclearcraft:music/end_of_the_world", "stream": true } ]
+  },
+  "music.money_for_nothing": {
+    "category": "record",
+    "subtitle": "music.money_for_nothing",
+    "sounds": [ { "name": "nuclearcraft:music/money_for_nothing", "stream": true } ]
+  },
+  "music.hyperspace": {
+    "category": "record",
+    "subtitle": "music.hyperspace",
+    "sounds": [ { "name": "nuclearcraft:music/hyperspace", "stream": true } ]
   }
 }

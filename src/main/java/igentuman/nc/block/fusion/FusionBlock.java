@@ -15,6 +15,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.*;
@@ -22,6 +23,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
@@ -82,5 +84,23 @@ public class FusionBlock extends Block implements EntityBlock {
     @Override
     public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor){
         ((FusionBE)level.getBlockEntity(pos)).onNeighborChange(state,  pos, neighbor);
+    }
+
+    @Override
+    public void onBlockExploded(BlockState state, Level level, BlockPos pos, Explosion explosion)
+    {
+        if(!level.isClientSide) {
+            ((FusionBE)level.getBlockEntity(pos)).onBlockDestroyed(state, level, pos, explosion);
+        }
+        super.onBlockExploded(state, level, pos, explosion);
+    }
+
+    @Override
+    public boolean onDestroyedByPlayer(BlockState state, Level level, BlockPos pos, Player player, boolean willHarvest, FluidState fluid)
+    {
+        if(!level.isClientSide) {
+            ((FusionBE)level.getBlockEntity(pos)).onBlockDestroyed(state, level, pos, null);
+        }
+       return super.onDestroyedByPlayer(state, level, pos, player, willHarvest, fluid);
     }
 }

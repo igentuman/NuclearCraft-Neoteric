@@ -740,7 +740,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         if(!isCasingValid) {
             return;
         }
-        if (reactorHeat > getMaxHeat() && plasmaTemperature > 0) {
+        if (reactorHeat > getMaxHeat() && plasmaTemperature > 1000) {
             meltDown();
             plasmaTemperature /= 5D;
             reactorHeat /= 2D;
@@ -867,7 +867,9 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         saveTagData(infoTag);
         infoTag.put("recipeInfo", recipeInfo.serializeNBT());
         infoTag.putInt("validationId", validationResult.id);
-        infoTag.putLong("erroredBlock", errorBlockPos.asLong());
+        if(errorBlockPos != null) {
+            infoTag.putLong("erroredBlock", errorBlockPos.asLong());
+        }
         tag.put("Content", contentHandler.serializeNBT());
     }
 

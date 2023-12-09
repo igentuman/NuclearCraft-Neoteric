@@ -11,6 +11,8 @@ import igentuman.nc.multiblock.fusion.FusionReactor;
 import igentuman.nc.multiblock.fusion.FusionReactorMultiblock;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -87,6 +89,12 @@ public class FusionBE extends NuclearCraftBE implements IMultiblockAttachable {
     public void onNeighborChange(BlockState state, BlockPos pos, BlockPos neighbor) {
         if(multiblock() != null) {
             multiblock().onNeighborChange(state, pos, neighbor);
+        }
+    }
+
+    public void onBlockDestroyed(BlockState state, Level level, BlockPos pos, Explosion explosion) {
+        if(multiblock() != null) {
+            multiblock().onBlockDestroyed(state, level, pos, explosion);
         }
     }
 }

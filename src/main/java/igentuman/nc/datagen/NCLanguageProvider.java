@@ -431,6 +431,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add(QNP.get(), "QNP");
         add(MULTITOOL.get(), "Multitool");
         add(GEIGER_COUNTER.get(), "Geiger Counter");
+        add(SPAXELHOE_THORIUM.get(), "Thorium Spaxel");
         add(SPAXELHOE_TOUGH.get(), "Tough Spaxel");
         add(LITHIUM_ION_CELL.get(), "Lithium Ion Cell");
     }

@@ -58,6 +58,11 @@ public class NCItemModels extends ItemModelProvider {
         singleTexture(SPAXELHOE_TOUGH.getId().getPath(),
                 mcLoc("item/generated"),
                 "layer0", modLoc("item/tool/"+SPAXELHOE_TOUGH.getId().getPath()));
+
+        singleTexture(SPAXELHOE_THORIUM.getId().getPath(),
+                mcLoc("item/generated"),
+                "layer0", modLoc("item/tool/"+SPAXELHOE_THORIUM.getId().getPath()));
+
         NCFluids.ALL_FLUID_ENTRIES.values().forEach(this::createBucket);
     }
 

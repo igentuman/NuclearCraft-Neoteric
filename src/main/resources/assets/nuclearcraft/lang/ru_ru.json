@@ -2108,5 +2108,6 @@
   "music.money_for_nothing": "Money For Nothing",
   "music.wanderer": "Wanderer",
   "sound_event.nuclearcraft.fission_reactor": "Реактор работает",
-  "tooltip.nc.hev.desc": "Дополнительная защита и эффекты при наличии заряда"
+  "tooltip.nc.hev.desc": "Дополнительная защита и эффекты при наличии заряда",
+  "item.nuclearcraft.spaxelhoe_thorium": "Ториевый спаксел"
 }

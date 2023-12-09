@@ -761,6 +761,15 @@ public class NCRecipes extends RecipeProvider {
 
     private void parts(Consumer<FinishedRecipe> consumer) {
 
+        ShapedRecipeBuilder.shaped(SPAXELHOE_THORIUM.get())
+                .pattern("TTT")
+                .pattern("TIT")
+                .pattern(" I ")
+                .define('T', forgeIngot(Materials.thorium))
+                .define('I', forgeIngot("iron"))
+                .unlockedBy("item", has(forgeIngot(Materials.thorium)))
+                .save(consumer, new ResourceLocation(MODID, "spaxelhoe_thorium"));
+
         ShapedRecipeBuilder.shaped(ALL_NC_ITEMS.get("upgrade_speed").get())
                 .pattern("LRL")
                 .pattern("RPR")

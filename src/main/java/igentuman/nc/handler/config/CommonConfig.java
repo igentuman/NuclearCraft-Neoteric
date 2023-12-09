@@ -422,8 +422,9 @@ public class CommonConfig {
             ITEM_RADIATION = builder
                     .comment("List of items what have radiation (pRad). Format: item_id|radiation")
                     .define("items_radiation", List.of(
-                            "mekanism:pellet_polonium|2000000",
-                            "mekanism:pellet_plutonium|1500000",
+                            "nuclearcraft:spaxelhoe_thorium|50000",
+                            "mekanism:pellet_polonium|4000000",
+                            "mekanism:pellet_plutonium|2500000",
                             "mekanism:reprocessed_fissile_fragment|1800000"
                     ), o -> o instanceof ArrayList);
 

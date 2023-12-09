@@ -14,6 +14,9 @@ public enum Tiers implements Tier {
    TOUGH(8, 10000, 12.0F, 10.0F, 22, () -> {
       return ingotIngredient(Materials.tough_alloy);
    }),
+   THORIUM(7, 10000, 10.0F, 6.0F, 18, () -> {
+      return ingotIngredient(Materials.thorium);
+   }),
    QNP(9, 50000, 20.0F, 14.0F, 25, () -> {
       return Ingredient.of(LITHIUM_ION_CELL.get());
    });

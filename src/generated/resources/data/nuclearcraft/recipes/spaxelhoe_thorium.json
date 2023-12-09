@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "I": {
+      "tag": "forge:ingots/iron"
+    },
+    "T": {
+      "tag": "forge:ingots/thorium"
+    }
+  },
+  "pattern": [
+    "TTT",
+    "TIT",
+    " I "
+  ],
+  "result": {
+    "item": "nuclearcraft:spaxelhoe_thorium"
+  }
+}

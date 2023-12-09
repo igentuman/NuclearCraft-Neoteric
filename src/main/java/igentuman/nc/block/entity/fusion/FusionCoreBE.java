@@ -94,7 +94,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
     @NBTField
     public int functionalBlocksCharge = 0;
     @NBTField
-    public int plasmaTemperature = 0;
+    public long plasmaTemperature = 0;
     public long chargeAmount = 0;
     @NBTField
     protected int rfEfficiency = 0;
@@ -163,7 +163,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
 
     @Nonnull
     @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
+        public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if (cap == ForgeCapabilities.ITEM_HANDLER) {
             return LazyOptional.empty();
         }
@@ -630,7 +630,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         return temperatureEfficiency;
     }
 
-    protected void changePlasmaTemperature(int amount) {
+    protected void changePlasmaTemperature(long amount) {
         plasmaTemperature += amount;
         plasmaTemperature = Math.max(0, plasmaTemperature);
     }
@@ -642,7 +642,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
     }
 
     protected void heatLossExchange() {
-        changePlasmaTemperature((int) -((plasmaTemperature/ Math.pow(getPlasmaStability(), 2))*((double)size))/100);
+        changePlasmaTemperature((long) -((plasmaTemperature/ Math.pow(getPlasmaStability(), 2))*((double)size))/100);
         changeReactorHeat((double) Math.min(plasmaTemperature, 100000000) / (10000*size*getPlasmaStability()));
     }
 
@@ -654,7 +654,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         } else {
             energyPerTick = (int) (optimalTemp/plasmaTemperature*recipeInfo.recipe().getEnergy());
         }
-        changePlasmaTemperature(-(int) ((plasmaTemperature)/(150*energyPerTick/recipeInfo.recipe().getEnergy())));
+        changePlasmaTemperature(-(long) ((plasmaTemperature)/(150*energyPerTick/recipeInfo.recipe().getEnergy())));
         energyPerTick = (int) ((energyPerTick*calculateEfficiency()*size)*FUSION_CONFIG.PLASMA_TO_ENERGY_CONVERTION.get());
         if(plasmaTemperature < 1000000) {
             energyPerTick = 0;
@@ -663,7 +663,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
 
     protected void amplifyPlasma() {
         double amplificationVolume = (double) rfAmplification / (size+1);
-        changePlasmaTemperature((int) (
+        changePlasmaTemperature((long) (
                         amplificationVolume
                         * rfAmplifierRatio()
                         * getHeatDeviationMultiplier()

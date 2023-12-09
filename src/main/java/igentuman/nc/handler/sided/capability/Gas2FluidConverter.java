@@ -64,9 +64,11 @@ public class Gas2FluidConverter implements IGasHandler {
     private HashMap<Gas, Fluid> gasFluidMap = new HashMap<>();
 
     private FluidStack convert(GasStack stack) {
+        int amount = (int)stack.getAmount();
+        if(amount <= 0) amount = 1000;
         if(gasFluidMap.containsKey(stack.getType())) {
             if(!(gasFluidMap.get(stack.getType()) instanceof EmptyFluid)) {
-                return new FluidStack(gasFluidMap.get(stack.getType()), (int)stack.getAmount());
+                return new FluidStack(gasFluidMap.get(stack.getType()), amount);
             }
         }
         String name = stack.getTypeRegistryName().getPath();
@@ -80,7 +82,7 @@ public class Gas2FluidConverter implements IGasHandler {
         FluidStack fluidStack = FluidStack.EMPTY;
         try {
             fluidStack = FluidStackIngredientCreator.INSTANCE
-                    .from(fluidITag.getKey(), (int)stack.getAmount()).getRepresentations().get(0);
+                    .from(fluidITag.getKey(), amount).getRepresentations().get(0);
         } catch (Exception e) {
 
         }

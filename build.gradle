@@ -1,5 +1,5 @@
 plugins {
-    id 'net.minecraftforge.gradle' version '5.1.+'
+    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
     id 'org.parchmentmc.librarian.forgegradle' version '1.+'
     id 'org.spongepowered.mixin' version '0.7.+'
     id 'com.github.johnrengelman.shadow' version '7.0.0'
@@ -94,16 +94,16 @@ dependencies {
         transitive = false
     }
 
-    implementation fg.deobf("curse.maven:cc-tweaked-282001:4630524")
+   // implementation fg.deobf("curse.maven:cc-tweaked-282001:4630524")
 
-    runtimeOnly fg.deobf("curse.maven:nbtedit-reborn-678133:4420565")
+    //runtimeOnly fg.deobf("curse.maven:nbtedit-reborn-678133:4420565")
     //runtimeOnly fg.deobf("com.blamejared.crafttweaker:CraftTweaker-forge-${mc_version}:${ct_version}")
 
     implementation fg.deobf("mekanism:Mekanism:${mc_version}-${mekanism_version}")
     //compileOnly fg.deobf("mekanism:Mekanism:${mc_version}-${mekanism_version}:api")
 
-    //compileOnly("cc.tweaked:cc-tweaked-${mc_version}-core-api:${cc_version}")
-    //compileOnly(fg.deobf("cc.tweaked:cc-tweaked-${mc_version}-forge-api:${cc_version}"))
+    compileOnly("cc.tweaked:cc-tweaked-${mc_version}-core-api:${cc_version}")
+    compileOnly(fg.deobf("cc.tweaked:cc-tweaked-${mc_version}-forge-api:${cc_version}"))
     //runtimeOnly(fg.deobf("cc.tweaked:cc-tweaked-${mc_version}-forge:${cc_version}"))
 
     //compileOnly fg.deobf("vazkii.patchouli:Patchouli:${mc_version}-${patchouli_version}:api")

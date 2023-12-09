@@ -66,6 +66,16 @@ public class WorldEvents {
         }
     }
 
+    public static int getHEVProtectionRate(Player player) {
+        int rate = 0;
+        for(ItemStack stack : player.getArmorSlots()) {
+            if((stack.getItem() instanceof HEVItem) && isCharged(stack)) {
+                rate++;
+            }
+        }
+        return rate;
+    }
+
     public static boolean isFullyEquitedInHazmat(Player player) {
         for(ItemStack stack : player.getArmorSlots()) {
             if(!(stack.getItem() instanceof HazmatItem) && !(stack.getItem() instanceof HEVItem)) {
@@ -95,8 +105,16 @@ public class WorldEvents {
                     if(stack.getItem().equals(HEV_BOOTS.get()) && isCharged(stack)) {
                         consumeEnergy(stack, 1000);
                         event.setCanceled(true);
+                        return;
                     }
                 });
+            }
+            int protectionRate = getHEVProtectionRate(player);
+            if(protectionRate > 0) {
+                event.setAmount(event.getAmount() - (event.getAmount() * (protectionRate * 0.1F)));
+                for(ItemStack stack : player.getArmorSlots()) {
+                    consumeEnergy(stack, 1000);
+                }
             }
         }
     }

@@ -20,7 +20,7 @@ public enum ArmorMaterials implements ArmorMaterial {
    TOUGH(MODID+":tough", 33, new int[]{3, 6, 8, 3}, 15, SoundEvents.ARMOR_EQUIP_DIAMOND, 3.5F, 0.2F, () -> {
       return Ingredient.of(NC_INGOTS.get("tough_alloy").get());
    }),
-   HEV(MODID+":hev", 37, new int[]{3, 6, 8, 3}, 25, SoundEvents.ARMOR_EQUIP_NETHERITE, 5.0F, 0.4F, () -> {
+   HEV(MODID+":hev", 37, new int[]{3, 5, 7, 3}, 25, SoundEvents.ARMOR_EQUIP_NETHERITE, 4.0F, 0.3F, () -> {
       return Ingredient.of(NC_SHIELDING.get("dps").get());
    });
 

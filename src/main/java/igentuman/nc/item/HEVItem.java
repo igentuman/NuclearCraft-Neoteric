@@ -23,8 +23,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import java.util.List;
 
 import static igentuman.nc.handler.config.CommonConfig.ENERGY_STORAGE;
-import static igentuman.nc.setup.registration.NCItems.HEV_CHEST;
-import static igentuman.nc.setup.registration.NCItems.HEV_HELMET;
+import static igentuman.nc.setup.registration.NCItems.*;
 
 public class HEVItem extends ArmorItem {
     public HEVItem(ArmorMaterials armorMaterials, EquipmentSlot equipmentSlot, Properties hazmatProps) {
@@ -35,6 +34,12 @@ public class HEVItem extends ArmorItem {
     public int getBarColor(ItemStack pStack)
     {
         return Mth.hsvToRgb(Math.max(0.0F, getBarWidth(pStack)/(float)MAX_BAR_WIDTH)/3.0F, 1.0F, 1.0F);
+    }
+
+    @Override
+    public boolean isDamageable(ItemStack stack)
+    {
+        return false;
     }
 
     protected int getEnergyMaxStorage() {
@@ -50,7 +55,7 @@ public class HEVItem extends ArmorItem {
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
-        return new ItemEnergyHandler(stack, getEnergyMaxStorage(), 0, getEnergyMaxStorage()/4);
+        return new ItemEnergyHandler(stack, getEnergyMaxStorage(), 5000, getEnergyMaxStorage()/4);
     }
 
     @Override
@@ -61,6 +66,9 @@ public class HEVItem extends ArmorItem {
             }
             if(st.getItem().equals(HEV_HELMET.get())) {
                 player.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING, 1, 1, false, false));
+            }
+            if(st.getItem().equals(HEV_PANTS.get())) {
+                player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 1, 1, false, false));
             }
         }
     }
@@ -78,6 +86,7 @@ public class HEVItem extends ArmorItem {
     public void appendHoverText(ItemStack stack, @javax.annotation.Nullable Level world, List<Component> list, TooltipFlag flag)
     {
         list.add(Component.translatable("tooltip.nc.energy_stored", formatEnergy(getEnergy(stack).getEnergyStored()), formatEnergy(getEnergyMaxStorage())).withStyle(ChatFormatting.BLUE));
+        list.add(Component.translatable("tooltip.nc.hev.desc").withStyle(ChatFormatting.AQUA));
     }
 
     public String formatEnergy(int energy)

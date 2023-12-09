@@ -24,7 +24,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("itemGroup." + MODID+"_items", "NuclearCraft Items");
         add("itemGroup." + MODID+"_blocks", "NuclearCraft Blocks");
         add("itemGroup." + MODID+"_fission_reactor", "NuclearCraft Fission Reactor");
-        add("itemGroup." + MODID+"_fusion_reactor", "NuclearCraft Fission Reactor");
+        add("itemGroup." + MODID+"_fusion_reactor", "NuclearCraft Fusion Reactor");
         ores();
         ingots();
         plates();
@@ -194,6 +194,8 @@ public class NCLanguageProvider extends LanguageProvider {
     }
 
     private void tooltips() {
+
+        add("tooltip.nc.hev.desc","Grants additional protection and passive effects when charged");
 
         add("processor.recipe.power","Process Power: %s FE/t");
         add("processor.recipe.duration","Process Duration: %s t");

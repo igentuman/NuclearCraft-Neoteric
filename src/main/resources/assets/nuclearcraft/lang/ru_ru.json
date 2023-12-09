@@ -2097,5 +2097,16 @@
   "item.nuclearcraft.spent_nuclear_waste_bucket": "Ведро использованных ядерных отходов",
   "item.nuclearcraft.uranium_oxide_bucket": "Ведро оксида урана",
   "fluid_type.nuclearcraft.polonium": "Полоний",
-  "item.nuclearcraft.polonium_bucket": "Ведро полония"
+  "item.nuclearcraft.polonium_bucket": "Ведро полония",
+  "item.nuclearcraft.end_of_the_world.desc": "End of the World",
+  "item.nuclearcraft.hyperspace.desc": "Hyperspace",
+  "item.nuclearcraft.money_for_nothing.desc": "Money For Nothing",
+  "item.nuclearcraft.wanderer.desc": "Wanderer",
+  "itemGroup.nuclearcraft_fusion_reactor": "NuclearCraft Термоядерный Реактор",
+  "music.end_of_the_world": "End of the World",
+  "music.hyperspace": "Hyperspace",
+  "music.money_for_nothing": "Money For Nothing",
+  "music.wanderer": "Wanderer",
+  "sound_event.nuclearcraft.fission_reactor": "Реактор работает",
+  "tooltip.nc.hev.desc": "Дополнительная защита и эффекты при наличии заряда"
 }

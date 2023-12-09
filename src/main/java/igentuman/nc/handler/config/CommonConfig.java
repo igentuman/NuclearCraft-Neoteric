@@ -250,7 +250,7 @@ public class CommonConfig {
 
             MAX_SIZE = builder
                     .comment("Explosion size if reactor overheats. 4 - TNT size. Set to 0 to disable explosion.")
-                    .defineInRange("max_size", 24, 3, 24);
+                    .defineInRange("max_size", 32, 3, 48);
 
             EXPLOSION_RADIUS = builder
                     .comment("Explosion size if reactor overheats. 4 - TNT size. Set to 0 to disable explosion.")
@@ -262,7 +262,7 @@ public class CommonConfig {
 
             RF_AMPLIFICATION_MULTIPLIER = builder
                     .comment("Affects heating rate for plasma by rf amplifiers.")
-                    .defineInRange("rf_amplification_multiplier", 5.0D, 0.01D, 100D);
+                    .defineInRange("rf_amplification_multiplier", 4.0D, 0.01D, 100D);
 
             PLASMA_TO_ENERGY_CONVERTION = builder
                     .comment("Affects plasma energy to FE converion rate.")

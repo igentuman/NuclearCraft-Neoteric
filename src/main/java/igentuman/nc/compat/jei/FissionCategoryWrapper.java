@@ -14,6 +14,7 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -83,10 +84,10 @@ public class FissionCategoryWrapper<T extends FissionControllerBE.Recipe> implem
     }
 
     @Override
-    public void draw(T recipe, IRecipeSlotsView recipeSlotsView, PoseStack stack, double mouseX,
+    public void draw(T recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics graphics, double mouseX,
                      double mouseY) {
         if(arrow.containsKey(recipe.getDepletionTime())) {
-            arrow.get(recipe.getDepletionTime()).draw(stack, 29, 8);
+            arrow.get(recipe.getDepletionTime()).draw(graphics, 29, 8);
         }
     }
 

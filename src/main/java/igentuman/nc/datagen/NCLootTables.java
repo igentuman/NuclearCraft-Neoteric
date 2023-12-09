@@ -4,7 +4,10 @@ import igentuman.nc.setup.registration.NCBlocks;
 import igentuman.nc.setup.registration.NCEnergyBlocks;
 import igentuman.nc.setup.registration.NCItems;
 import igentuman.nc.setup.registration.NCProcessors;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.storage.loot.LootTable;
+
+import java.util.function.BiConsumer;
 
 import static igentuman.nc.multiblock.fission.FissionReactor.FISSION_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_BLOCKS;
@@ -14,53 +17,53 @@ import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCK;
 
 public class NCLootTables extends BaseLootTableProvider {
 
-    public NCLootTables(DataGenerator dataGeneratorIn) {
-        super(dataGeneratorIn);
+    public NCLootTables() {
+        super(null);
     }
 
-    @Override
-    protected void addTables() {
-        ores();
-        blocks();
-        machines();
-    }
-
-    private void ores() {
+    private void ores(BiConsumer<ResourceLocation, LootTable.Builder> builder) {
         for(String ore: NCBlocks.ORE_BLOCKS.keySet()) {
             if(NCItems.NC_CHUNKS.containsKey(ore.replaceAll("_deepslate|_end|_nether",""))) {
-                lootTables.put(NCBlocks.ORE_BLOCKS.get(ore).get(), createSilkTouchTable("ore", NCBlocks.ORE_BLOCKS.get(ore).get(), NCItems.NC_CHUNKS.get(ore.replaceAll("_deepslate|_end|_nether","")).get(), 1, 1));
+                builder.accept(NCBlocks.ORE_BLOCKS.get(ore).getId(), createSilkTouchTable("ore", NCBlocks.ORE_BLOCKS.get(ore).get(), NCItems.NC_CHUNKS.get(ore.replaceAll("_deepslate|_end|_nether","")).get(), 1, 1));
             } else {
-                lootTables.put(NCBlocks.ORE_BLOCKS.get(ore).get(), createSimpleTable("ore", NCBlocks.ORE_BLOCKS.get(ore).get()));
+                builder.accept(NCBlocks.ORE_BLOCKS.get(ore).getId(), createSimpleTable("ore", NCBlocks.ORE_BLOCKS.get(ore).get()));
             }
         }
     }
-    private void blocks() {
+    private void blocks(BiConsumer<ResourceLocation, LootTable.Builder> builder) {
         for(String name: NCBlocks.NC_BLOCKS.keySet()) {
-            lootTables.put(NCBlocks.NC_BLOCKS.get(name).get(), createSimpleTable("block", NCBlocks.NC_BLOCKS.get(name).get()));
+            builder.accept(NCBlocks.NC_BLOCKS.get(name).getId(), createSimpleTable("block", NCBlocks.NC_BLOCKS.get(name).get()));
         }
         for(String name: FISSION_BLOCKS.keySet()) {
-            lootTables.put(FISSION_BLOCKS.get(name).get(), createSimpleTable("block", FISSION_BLOCKS.get(name).get()));
+            builder.accept(FISSION_BLOCKS.get(name).getId(), createSimpleTable("block", FISSION_BLOCKS.get(name).get()));
         }
         for(String name: FUSION_BLOCKS.keySet()) {
-            lootTables.put(FUSION_BLOCKS.get(name).get(), createSimpleTable("block", FUSION_BLOCKS.get(name).get()));
+            builder.accept(FUSION_BLOCKS.get(name).getId(), createSimpleTable("block", FUSION_BLOCKS.get(name).get()));
         }
     }
 
-    private void machines() {
+    private void machines(BiConsumer<ResourceLocation, LootTable.Builder> builder) {
         for(String name: NCProcessors.PROCESSORS.keySet()) {
-            lootTables.put(NCProcessors.PROCESSORS.get(name).get(), createSimpleTable("block", NCProcessors.PROCESSORS.get(name).get()));
+            builder.accept(NCProcessors.PROCESSORS.get(name).getId(), createSimpleTable("block", NCProcessors.PROCESSORS.get(name).get()));
         }
         for(String name: NCEnergyBlocks.ENERGY_BLOCKS.keySet()) {
-            lootTables.put(NCEnergyBlocks.ENERGY_BLOCKS.get(name).get(), createSimpleTable("block", NCEnergyBlocks.ENERGY_BLOCKS.get(name).get()));
+            builder.accept(NCEnergyBlocks.ENERGY_BLOCKS.get(name).getId(), createSimpleTable("block", NCEnergyBlocks.ENERGY_BLOCKS.get(name).get()));
         }
         for(String name: STORAGE_BLOCK.keySet()) {
-            lootTables.put(STORAGE_BLOCK.get(name).get(), createSimpleTable("block", STORAGE_BLOCK.get(name).get()));
+            builder.accept(STORAGE_BLOCK.get(name).getId(), createSimpleTable("block", STORAGE_BLOCK.get(name).get()));
         }
         for(String name: NC_ELECTROMAGNETS.keySet()) {
-            lootTables.put(NC_ELECTROMAGNETS.get(name).get(), createSimpleTable("block", NC_ELECTROMAGNETS.get(name).get()));
+            builder.accept(NC_ELECTROMAGNETS.get(name).getId(), createSimpleTable("block", NC_ELECTROMAGNETS.get(name).get()));
         }
         for(String name: NC_RF_AMPLIFIERS.keySet()) {
-            lootTables.put(NC_RF_AMPLIFIERS.get(name).get(), createSimpleTable("block", NC_RF_AMPLIFIERS.get(name).get()));
+            builder.accept(NC_RF_AMPLIFIERS.get(name).getId(), createSimpleTable("block", NC_RF_AMPLIFIERS.get(name).get()));
         }
+    }
+
+    @Override
+    public void generate(BiConsumer<ResourceLocation, LootTable.Builder> biConsumer) {
+        ores(biConsumer);
+        blocks(biConsumer);
+        machines(biConsumer);
     }
 }

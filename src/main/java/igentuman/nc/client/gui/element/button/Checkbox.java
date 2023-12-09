@@ -3,6 +3,7 @@ package igentuman.nc.client.gui.element.button;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import igentuman.nc.client.gui.element.NCGuiElement;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
@@ -24,6 +25,7 @@ public class Checkbox extends NCGuiElement {
     private boolean isChecked = false;
 
     public Checkbox(int xPos, int yPos, AbstractContainerScreen screen, boolean checked)  {
+        super(xPos, yPos, 12, 12, Component.empty());
         x = xPos;
         y = yPos;
         width = 12;
@@ -35,15 +37,15 @@ public class Checkbox extends NCGuiElement {
     }
 
     @Override
-    public void draw(PoseStack transform, int mX, int mY, float pTicks) {
-        super.draw(transform, mX, mY, pTicks);
+    public void draw(GuiGraphics graphics, int mX, int mY, float pTicks) {
+        super.draw(graphics, mX, mY, pTicks);
         xTexStart = isChecked() ? 11 : 0;
         btn.xTexStart = xTexStart;
-        btn.render(transform, mX, mY, pTicks);
+        btn.render(graphics, mX, mY, pTicks);
     }
 
     @Override
-    public void renderButton(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
+    public void renderButton(GuiGraphics graphics, int pMouseX, int pMouseY, float pPartialTick) {
         int i = this.yTexStart;
         if (!this.isActive()) {
             i += this.yDiffTex * 2;
@@ -53,9 +55,9 @@ public class Checkbox extends NCGuiElement {
         RenderSystem.enableDepthTest();
         xTexStart = isChecked() ? 11 : 0;
 
-        blit(pPoseStack, this.x, this.y, (float)this.xTexStart, (float)i, this.width, this.height, this.textureWidth, this.textureHeight);
+        graphics.blit(TEXTURE, this.x, this.y, (float)this.xTexStart, (float)i, this.width, this.height, this.textureWidth, this.textureHeight);
         if (this.isHovered) {
-            this.renderToolTip(pPoseStack, pMouseX, pMouseY);
+            this.renderToolTip(graphics, pMouseX, pMouseY);
         }
     }
 

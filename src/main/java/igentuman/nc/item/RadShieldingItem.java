@@ -36,7 +36,7 @@ public class RadShieldingItem extends Item
 
 	public RadShieldingItem(Properties props, CreativeModeTab group, int radShieldingLevel)
 	{
-		super(props.tab(group));
+		super(props);
 		this.radShieldingLevel = radShieldingLevel;
 	}
 

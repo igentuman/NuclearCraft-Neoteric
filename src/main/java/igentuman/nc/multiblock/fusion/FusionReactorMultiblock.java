@@ -134,9 +134,9 @@ public class FusionReactorMultiblock extends AbstractNCMultiblock {
     @Override
     public void onBlockDestroyed(BlockState state, Level level, BlockPos pos, Explosion explosion) {
         if(controllerBE.plasmaTemperature > 100000) {
-            level.explode(null,
+          /*  level.explode(null,
                     pos.getX(), pos.getY(), pos.getZ(),
-                    1, true, Explosion.BlockInteraction.NONE);
+                    1, true, Explosion.BlockInteraction.KEEP);*/
         }
         controller.clearStats();
     }

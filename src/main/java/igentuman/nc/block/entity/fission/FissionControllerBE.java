@@ -217,9 +217,9 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
             return energy.cast();
         }
         if(isCcLoaded()) {
-            if(cap == dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL) {
+/*            if(cap == dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL) {
                 return getPeripheral(cap, side);
-            }
+            }*/
         }
         return super.getCapability(cap, side);
     }
@@ -322,14 +322,14 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         if (heat >= getMaxHeat()) {
             BlockPos explosionPos = getBlockPos().relative(getFacing(), 2);
             if (FISSION_CONFIG.EXPLOSION_RADIUS.get() == 0) {
-                getLevel().explode(null, explosionPos.getX(), explosionPos.getY(), explosionPos.getZ(), 2F, true, Explosion.BlockInteraction.NONE);
+                //getLevel().explode(null, explosionPos.getX(), explosionPos.getY(), explosionPos.getZ(), 2F, true, Explosion.BlockInteraction.NONE);
                 for (BlockPos pos : multiblock.fuelCells) {
-                    getLevel().explode(null, pos.getX(), pos.getY(), pos.getZ(), 1, true, Explosion.BlockInteraction.NONE);
+                    //getLevel().explode(null, pos.getX(), pos.getY(), pos.getZ(), 1, true, Explosion.BlockInteraction.KEEP);
                 }
             } else {
-                getLevel().explode(null, explosionPos.getX(), explosionPos.getY(), explosionPos.getZ(), FISSION_CONFIG.EXPLOSION_RADIUS.get().floatValue(), true, Explosion.BlockInteraction.DESTROY);
+               // getLevel().explode(null, explosionPos.getX(), explosionPos.getY(), explosionPos.getZ(), FISSION_CONFIG.EXPLOSION_RADIUS.get().floatValue(), true, Explosion.BlockInteraction.DESTROY);
                 for (BlockPos pos : multiblock.fuelCells) {
-                    getLevel().explode(null, pos.getX(), pos.getY(), pos.getZ(), 2, true, Explosion.BlockInteraction.DESTROY);
+               //     getLevel().explode(null, pos.getX(), pos.getY(), pos.getZ(), 2, true, Explosion.BlockInteraction.DESTROY);
                 }
             }
             for (BlockPos pos : multiblock.fuelCells) {

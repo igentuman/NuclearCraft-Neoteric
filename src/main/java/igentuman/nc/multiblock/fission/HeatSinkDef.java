@@ -7,6 +7,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -15,6 +16,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,6 +29,8 @@ import java.util.stream.Stream;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.handler.config.CommonConfig.HEAT_SINK_CONFIG;
 import static igentuman.nc.multiblock.fission.FissionReactor.FISSION_BLOCKS;
+import static igentuman.nc.setup.registration.NCBlocks.BLOCK_REGISTRY;
+import static igentuman.nc.setup.registration.NCBlocks.ITEM_REGISTRY;
 
 public class HeatSinkDef {
     public double heat = 0;
@@ -89,7 +93,7 @@ public class HeatSinkDef {
     public List<String> getItemsByTagKey(String key)
     {
         List<String> tmp = new ArrayList<>();
-        TagKey<Item> tag = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(key));
+        TagKey<Item> tag = TagKey.create(ITEM_REGISTRY, new ResourceLocation(key));
         Ingredient ing = Ingredient.fromValues(Stream.of(new Ingredient.TagValue(tag)));
         for (ItemStack item: ing.getItems()) {
             tmp.add(item.getItem().toString());
@@ -100,8 +104,8 @@ public class HeatSinkDef {
     public static List<Block> getBlocksByTagKey(String key)
     {
         List<Block> tmp = new ArrayList<>();
-        TagKey<Block> tag = TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(key));
-        for(Holder<Block> holder : Registry.BLOCK.getTagOrEmpty(tag)) {
+        TagKey<Block> tag = TagKey.create(BLOCK_REGISTRY, new ResourceLocation(key));
+        for(Holder<Block> holder : ForgeRegistries.BLOCKS.getHolder(tag.location()).stream().toList()) {
             tmp.add(holder.get());
         }
         return tmp;
@@ -289,7 +293,7 @@ public class HeatSinkDef {
                             if (!bStr.contains(":")) {
                                 bStr = MODID + ":" + bStr;
                             }
-                            tmp.add(Registry.BLOCK.get(new ResourceLocation(bStr)));
+                            tmp.add(ForgeRegistries.BLOCKS.getValue(new ResourceLocation(bStr)));
                         }
                     }
                     blocks.put(condition, tmp);

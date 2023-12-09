@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import igentuman.nc.client.gui.element.NCGuiElement;
 import igentuman.nc.client.gui.processor.side.SideConfigScreen;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 
 import static igentuman.nc.handler.sided.SlotModePair.SlotMode.*;
 
@@ -27,6 +28,7 @@ public class BigSlot extends NCGuiElement {
     }
 
     public BigSlot(int xMin, int yMin, String pType)  {
+        super(xMin, yMin, 26, 26, null);
         x = xMin;
         y = yMin;
         width = 26;
@@ -38,16 +40,16 @@ public class BigSlot extends NCGuiElement {
     }
 
     @Override
-    public void draw(PoseStack transform, int mX, int mY, float pTicks) {
-        super.draw(transform, mX, mY, pTicks);
+    public void draw(GuiGraphics graphics, int mX, int mY, float pTicks) {
+        super.draw(graphics, mX, mY, pTicks);
         if(type.contains("fluid")) {
             yOffset = 26;
         }
 
         //-5 because of padding
-        blit(transform, X()-5, Y()-5, xOffset, yOffset,  26, 26);
+        graphics.blit(TEXTURE, X()-5, Y()-5, xOffset, yOffset,  26, 26);
         if(configFlag) {
-            fill(transform, X() - 5, Y() - 5, X() + 21, Y() + 21, color);
+            graphics.fill(X() - 5, Y() - 5, X() + 21, Y() + 21, color);
         }
     }
 }

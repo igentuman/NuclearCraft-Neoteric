@@ -274,8 +274,8 @@ public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
 
         MapItemSavedData mapData = ((MapItem)catalyst.getItem()).getSavedData(catalyst, getLevel());
         if(mapData == null) return ItemStack.EMPTY;
-        if(worldPosition.getX() < mapData.x-64 || worldPosition.getX() > mapData.x+64 &&
-                worldPosition.getZ() < mapData.z-64 || worldPosition.getZ() > mapData.z+64) {
+        if(worldPosition.getX() < mapData.centerX-64 || worldPosition.getX() > mapData.centerX+64 &&
+                worldPosition.getZ() < mapData.centerZ-64 || worldPosition.getZ() > mapData.centerZ+64) {
             leacherState = WRONG_POSITION;
             return ItemStack.EMPTY;
         }

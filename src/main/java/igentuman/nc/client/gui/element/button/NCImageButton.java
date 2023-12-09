@@ -2,6 +2,8 @@ package igentuman.nc.client.gui.element.button;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -31,11 +33,11 @@ public class NCImageButton extends Button {
    }
 
    public NCImageButton(int pX, int pY, int pWidth, int pHeight, int pXTexStart, int pYTexStart, int pYDiffTex, ResourceLocation pResourceLocation, int pTextureWidth, int pTextureHeight, Button.OnPress pOnPress, Component pMessage) {
-      this(pX, pY, pWidth, pHeight, pXTexStart, pYTexStart, pYDiffTex, pResourceLocation, pTextureWidth, pTextureHeight, pOnPress, NO_TOOLTIP, pMessage);
+      this(pX, pY, pWidth, pHeight, pXTexStart, pYTexStart, pYDiffTex, pResourceLocation, pTextureWidth, pTextureHeight, pOnPress, null, pMessage);
    }
 
-   public NCImageButton(int pX, int pY, int pWidth, int pHeight, int pXTexStart, int pYTexStart, int pYDiffTex, ResourceLocation pResourceLocation, int pTextureWidth, int pTextureHeight, Button.OnPress pOnPress, Button.OnTooltip pOnTooltip, Component pMessage) {
-      super(pX, pY, pWidth, pHeight, pMessage, pOnPress, pOnTooltip);
+   public NCImageButton(int pX, int pY, int pWidth, int pHeight, int pXTexStart, int pYTexStart, int pYDiffTex, ResourceLocation pResourceLocation, int pTextureWidth, int pTextureHeight, Button.OnPress pOnPress, Button.OnPress pOnTooltip, Component pMessage) {
+      super(pX, pY, pWidth, pHeight, pMessage, pOnPress, null);
       this.textureWidth = pTextureWidth;
       this.textureHeight = pTextureHeight;
       this.xTexStart = pXTexStart;
@@ -45,11 +47,11 @@ public class NCImageButton extends Button {
    }
 
    public void setPosition(int pX, int pY) {
-      this.x = pX;
-      this.y = pY;
+      this.setX(pX);
+      this.setY(pY);
    }
 
-   public void renderButton(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
+   public void renderButton(GuiGraphics graphics, int pMouseX, int pMouseY, float pPartialTick) {
       RenderSystem.setShader(GameRenderer::getPositionTexShader);
       RenderSystem.setShaderTexture(0, this.resourceLocation);
       int i = this.yTexStart;
@@ -60,9 +62,9 @@ public class NCImageButton extends Button {
       }
 
       RenderSystem.enableDepthTest();
-      blit(pPoseStack, this.x, this.y, (float)this.xTexStart, (float)i, this.width, this.height, this.textureWidth, this.textureHeight);
+      graphics.blit(resourceLocation, this.getX(), this.getY(), (float)this.xTexStart, (float)i, this.width, this.height, this.textureWidth, this.textureHeight);
       if (this.isHovered) {
-         this.renderToolTip(pPoseStack, pMouseX, pMouseY);
+        // renderToolTip(graphics, pMouseX, pMouseY);
       }
 
    }

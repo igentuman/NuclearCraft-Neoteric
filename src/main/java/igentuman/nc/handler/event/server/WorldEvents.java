@@ -94,7 +94,7 @@ public class WorldEvents {
 
     @SubscribeEvent
     public static void onPlayerDamage(LivingHurtEvent event) {
-        if (event.getEntity() instanceof Player player) {
+        /*if (event.getEntity() instanceof Player player) {
             if (event.getSource() != null && event.getSource().isMagic()) {
                 if(isFullyEquitedInHazmat(player)) {
                     event.setAmount(event.getAmount()/10F);
@@ -116,7 +116,7 @@ public class WorldEvents {
                     consumeEnergy(stack, 1000);
                 }
             }
-        }
+        }*/
     }
 
     private static void consumeEnergy(ItemStack stack, int i) {

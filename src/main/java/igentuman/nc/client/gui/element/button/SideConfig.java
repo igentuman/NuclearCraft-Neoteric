@@ -7,6 +7,7 @@ import igentuman.nc.client.gui.element.NCGuiElement;
 import igentuman.nc.client.gui.processor.side.SideConfigScreen;
 import igentuman.nc.network.toServer.PacketSideConfigToggle;
 import igentuman.nc.handler.sided.SidedContentHandler;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -24,6 +25,7 @@ public class SideConfig extends NCGuiElement {
     private int direction;
 
     public SideConfig(int xPos, int yPos, int slotId, SideConfigScreen screen, int direction, ResourceLocation btnTexture)  {
+        super(xPos, yPos, 16, 16, Component.empty());
         x = xPos;
         y = yPos;
         width = 16;
@@ -43,9 +45,9 @@ public class SideConfig extends NCGuiElement {
     }
 
     @Override
-    public void draw(PoseStack transform, int mX, int mY, float pTicks) {
-        super.draw(transform, mX, mY, pTicks);
-        renderButton(transform, mX, mY, pTicks);
+    public void draw(GuiGraphics graphics, int mX, int mY, float pTicks) {
+        super.draw(graphics, mX, mY, pTicks);
+        renderButton(graphics, mX, mY, pTicks);
     }
 
     public String getDirectionName() {
@@ -65,13 +67,13 @@ public class SideConfig extends NCGuiElement {
     }
 
     @Override
-    public void renderButton(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
+    public void renderButton(GuiGraphics graphics, int pMouseX, int pMouseY, float pPartialTick) {
         RenderSystem.enableDepthTest();
         getColorOverlay();
-        btn.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
-        fill(pPoseStack, X(), Y(), X() + this.width, Y() + this.height, color);
+        btn.render(graphics, pMouseX, pMouseY, pPartialTick);
+        graphics.fill( X(), Y(), X() + this.width, Y() + this.height, color);
         if (this.isHovered) {
-            this.renderToolTip(pPoseStack, pMouseX, pMouseY);
+            this.renderToolTip(graphics, pMouseX, pMouseY);
         }
     }
 

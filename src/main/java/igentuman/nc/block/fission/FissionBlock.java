@@ -17,6 +17,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -44,7 +45,7 @@ public class FissionBlock extends Block implements EntityBlock {
 
     private String blockEntityCode()
     {
-        String code = Registry.BLOCK.getKey(this).getPath();
+        String code = ForgeRegistries.BLOCKS.getKey(this).getPath();
         if(code.matches(".*reactor_glass|.*reactor_casing.*")) {
             return "fission_casing";
         }

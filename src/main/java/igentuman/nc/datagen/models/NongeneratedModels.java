@@ -12,7 +12,7 @@ public class NongeneratedModels extends ModelProvider<NongeneratedModels.Nongene
 {
 	public NongeneratedModels(DataGenerator generator, ExistingFileHelper existingFileHelper)
 	{
-		super(generator, MODID, "block", NongeneratedModel::new, existingFileHelper);
+		super(generator.getPackOutput(), MODID, "block", NongeneratedModel::new, existingFileHelper);
 	}
 
 	@Override

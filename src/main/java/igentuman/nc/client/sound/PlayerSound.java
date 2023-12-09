@@ -21,7 +21,7 @@ public abstract class PlayerSound extends AbstractTickableSoundInstance {
     private float fadeDownStep = 0.1f;
 
     public PlayerSound(@NotNull Player player, @NotNull SoundEvent sound) {
-        super(sound, SoundSource.PLAYERS, player.level.getRandom());
+        super(sound, SoundSource.PLAYERS, player.level().getRandom());
         this.playerReference = new WeakReference<>(player);
         this.lastX = (float) player.getX();
         this.lastY = (float) player.getY();

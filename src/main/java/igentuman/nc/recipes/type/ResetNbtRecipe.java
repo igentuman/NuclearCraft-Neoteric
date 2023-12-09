@@ -5,10 +5,12 @@ import igentuman.nc.item.BatteryItem;
 import igentuman.nc.item.ProcessorBlockItem;
 import igentuman.nc.recipes.NcRecipeSerializers;
 import igentuman.nc.util.annotation.NothingNullByDefault;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
@@ -19,8 +21,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 @NothingNullByDefault
 public class ResetNbtRecipe extends CustomRecipe {
 
-    public ResetNbtRecipe(ResourceLocation id) {
-        super(id);
+    public ResetNbtRecipe(ResourceLocation id, CraftingBookCategory cat) {
+        super(id, CraftingBookCategory.EQUIPMENT);
     }
 
 
@@ -50,7 +52,7 @@ public class ResetNbtRecipe extends CustomRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingContainer inv) {
+    public ItemStack assemble(CraftingContainer inv, RegistryAccess access) {
         ItemStack targetStack = ItemStack.EMPTY;
         for (int i = 0; i < inv.getContainerSize(); ++i) {
             if(targetStack != ItemStack.EMPTY && !inv.getItem(i).isEmpty()) {

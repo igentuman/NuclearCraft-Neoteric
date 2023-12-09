@@ -11,6 +11,8 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.client.model.generators.loaders.DynamicFluidContainerModelBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.data.event.GatherDataEvent;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.List;
 
@@ -21,8 +23,8 @@ import static igentuman.nc.setup.registration.NCItems.*;
 
 public class NCItemModels extends ItemModelProvider {
 
-    public NCItemModels(DataGenerator generator, ExistingFileHelper existingFileHelper) {
-        super(generator, MODID, existingFileHelper);
+    public NCItemModels(DataGenerator generator, GatherDataEvent event) {
+        super(generator.getPackOutput(), MODID, event.getExistingFileHelper());
     }
 
     @Override
@@ -103,7 +105,7 @@ public class NCItemModels extends ItemModelProvider {
 
     private String name(ItemLike item)
     {
-        return Registry.ITEM.getKey(item.asItem()).getPath();
+        return ForgeRegistries.ITEMS.getKey(item.asItem()).getPath();
     }
 
     private ResourceLocation forgeLoc(String s)

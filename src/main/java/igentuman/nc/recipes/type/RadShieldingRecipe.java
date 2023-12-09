@@ -3,10 +3,12 @@ package igentuman.nc.recipes.type;
 import igentuman.nc.item.RadShieldingItem;
 import igentuman.nc.recipes.NcRecipeSerializers;
 import igentuman.nc.util.annotation.NothingNullByDefault;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
@@ -17,8 +19,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 @NothingNullByDefault
 public class RadShieldingRecipe extends CustomRecipe {
 
-    public RadShieldingRecipe(ResourceLocation id) {
-        super(id);
+    public RadShieldingRecipe(ResourceLocation id, CraftingBookCategory category) {
+        super(id, CraftingBookCategory.EQUIPMENT);
     }
 
 
@@ -47,7 +49,7 @@ public class RadShieldingRecipe extends CustomRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingContainer inv) {
+    public ItemStack assemble(CraftingContainer inv, RegistryAccess access) {
         ItemStack shielding = ItemStack.EMPTY;
         ItemStack armor = ItemStack.EMPTY;
         for (int i = 0; i < inv.getContainerSize(); ++i) {

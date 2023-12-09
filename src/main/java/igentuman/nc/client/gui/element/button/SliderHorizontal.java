@@ -8,6 +8,7 @@ import igentuman.nc.client.gui.processor.side.SideConfigSlotSelectionScreen;
 import igentuman.nc.network.toServer.PacketGuiButtonPress;
 import igentuman.nc.network.toServer.PacketSliderChanged;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -25,6 +26,7 @@ public class SliderHorizontal extends NCGuiElement {
     private int startX;
 
     public SliderHorizontal(int xPos, int yPos, int width, AbstractContainerScreen<?> screen, BlockPos pos)  {
+        super(xPos, yPos, width, 12, Component.empty());
         x = xPos;
         y = yPos;
         startX = x;
@@ -64,10 +66,10 @@ public class SliderHorizontal extends NCGuiElement {
         if (isPressed) {
             int maxX = startX+screen.getGuiLeft()+width-3;
             int minX = startX+screen.getGuiLeft();
-            btn.x = x;
-            btn.x = Math.min(maxX, btn.x);
-            btn.x = Math.max(minX, btn.x);
-            int xpos = maxX-btn.x;
+            x = Math.min(maxX, x);
+            x = Math.max(minX, x);
+            btn.setX(x);
+            int xpos = maxX-x;
             int ratio = 100;
             if(xpos > 0) {
                 ratio = 100-xpos*100/(width - 3);
@@ -76,21 +78,21 @@ public class SliderHorizontal extends NCGuiElement {
         }
     }
 
-    public void drawSlide(PoseStack transform) {
+    public void drawSlide(GuiGraphics graphics) {
         RenderSystem.setShaderTexture(0, TEXTURE);
-        blit(transform, this.x+ screen.getGuiLeft(), this.y+2+screen.getGuiTop(), 5, 175, this.width, 3, this.textureWidth, this.textureHeight);
+        graphics.blit(TEXTURE, this.x+ screen.getGuiLeft(), this.y+2+screen.getGuiTop(), 5, 175, this.width, 3, this.textureWidth, this.textureHeight);
     }
 
     @Override
-    public void draw(PoseStack transform, int mX, int mY, float pTicks) {
-        super.draw(transform, mX, mY, pTicks);
+    public void draw(GuiGraphics graphics, int mX, int mY, float pTicks) {
+        super.draw(graphics, mX, mY, pTicks);
         btn.xTexStart = xTexStart;
-        drawSlide(transform);
-        btn.render(transform, mX, mY, pTicks);
+        drawSlide(graphics);
+        btn.render(graphics, mX, mY, pTicks);
     }
 
     @Override
-    public void renderButton(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
+    public void renderButton(GuiGraphics graphics, int pMouseX, int pMouseY, float pPartialTick) {
         int i = this.yTexStart;
         if (!this.isActive()) {
             i += this.yDiffTex * 2;
@@ -99,9 +101,9 @@ public class SliderHorizontal extends NCGuiElement {
         }
         RenderSystem.enableDepthTest();
 
-        blit(pPoseStack, this.x, this.y, (float)this.xTexStart, (float)i, this.width, this.height, this.textureWidth, this.textureHeight);
+        graphics.blit(TEXTURE, this.x, this.y, (float)this.xTexStart, (float)i, this.width, this.height, this.textureWidth, this.textureHeight);
         if (this.isHovered) {
-            this.renderToolTip(pPoseStack, pMouseX, pMouseY);
+            this.renderToolTip(graphics, pMouseX, pMouseY);
         }
     }
 
@@ -113,6 +115,6 @@ public class SliderHorizontal extends NCGuiElement {
     }
 
     public void slideTo(int rfAmplifiersPowerRatio) {
-        btn.x = startX+screen.getGuiLeft()+width*rfAmplifiersPowerRatio/100;
+        btn.setX(startX+screen.getGuiLeft()+width*rfAmplifiersPowerRatio/100);
     }
 }

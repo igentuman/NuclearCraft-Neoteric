@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.setup.registration.NCBlocks.ITEM_REGISTRY;
 import static igentuman.nc.setup.registration.NCSounds.SOUND_MAP;
 
 public class NCItems {
@@ -40,42 +41,42 @@ public class NCItems {
     public static HashMap<String, RegistryObject<Item>> NC_NUGGETS = new HashMap<>();
     public static HashMap<String, RegistryObject<Item>> NC_PLATES = new HashMap<>();
     public static HashMap<String, RegistryObject<Item>> NC_DUSTS = new HashMap<>();
-    public static TagKey<Item> PLATE_TAG = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("forge", "plates"));
-    public static TagKey<Item> PARTS_TAG = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(MODID, "parts"));
-    public static final Item.Properties ITEM_PROPERTIES = new Item.Properties().tab(CreativeTabs.NC_ITEMS);
-    public static final Item.Properties ONE_ITEM_PROPERTIES = new Item.Properties().tab(CreativeTabs.NC_ITEMS).stacksTo(1);
-    public static final Item.Properties PAXEL_PROPS = new Item.Properties().tab(CreativeTabs.NC_ITEMS).stacksTo(1).durability(5000);
-    public static final Item.Properties HAZMAT_PROPS = new Item.Properties().tab(CreativeTabs.NC_ITEMS).stacksTo(1).durability(250);
-    public static final Item.Properties TOUGH_PROPS = new Item.Properties().tab(CreativeTabs.NC_ITEMS).stacksTo(1).durability(2500);
-    public static final Item.Properties HEV_PROPS = new Item.Properties().tab(CreativeTabs.NC_ITEMS).stacksTo(1).durability(5500);
+    public static TagKey<Item> PLATE_TAG = TagKey.create(ITEM_REGISTRY, new ResourceLocation("forge", "plates"));
+    public static TagKey<Item> PARTS_TAG = TagKey.create(ITEM_REGISTRY, new ResourceLocation(MODID, "parts"));
+    public static final Item.Properties ITEM_PROPERTIES = new Item.Properties();
+    public static final Item.Properties ONE_ITEM_PROPERTIES = new Item.Properties().stacksTo(1);
+    public static final Item.Properties PAXEL_PROPS = new Item.Properties().stacksTo(1).durability(5000);
+    public static final Item.Properties HAZMAT_PROPS = new Item.Properties().stacksTo(1).durability(250);
+    public static final Item.Properties TOUGH_PROPS = new Item.Properties().stacksTo(1).durability(2500);
+    public static final Item.Properties HEV_PROPS = new Item.Properties().stacksTo(1).durability(5500);
 
     public static final RegistryObject<Item> HAZMAT_MASK =
-            ITEMS.register("hazmat_mask", () -> new HazmatItem(ArmorMaterials.HAZMAT, EquipmentSlot.HEAD, HAZMAT_PROPS));
+            ITEMS.register("hazmat_mask", () -> new HazmatItem(ArmorMaterials.HAZMAT, ArmorItem.Type.HELMET, HAZMAT_PROPS));
     public static final RegistryObject<Item> HAZMAT_CHEST =
-            ITEMS.register("hazmat_chest", () -> new HazmatItem(ArmorMaterials.HAZMAT, EquipmentSlot.CHEST, HAZMAT_PROPS));
+            ITEMS.register("hazmat_chest", () -> new HazmatItem(ArmorMaterials.HAZMAT, ArmorItem.Type.CHESTPLATE, HAZMAT_PROPS));
     public static final RegistryObject<Item> HAZMAT_BOOTS =
-            ITEMS.register("hazmat_boots", () -> new HazmatItem(ArmorMaterials.HAZMAT, EquipmentSlot.FEET, HAZMAT_PROPS));
+            ITEMS.register("hazmat_boots", () -> new HazmatItem(ArmorMaterials.HAZMAT, ArmorItem.Type.BOOTS, HAZMAT_PROPS));
     public static final RegistryObject<Item> HAZMAT_PANTS =
-            ITEMS.register("hazmat_pants", () -> new HazmatItem(ArmorMaterials.HAZMAT, EquipmentSlot.LEGS, HAZMAT_PROPS));
+            ITEMS.register("hazmat_pants", () -> new HazmatItem(ArmorMaterials.HAZMAT, ArmorItem.Type.LEGGINGS, HAZMAT_PROPS));
 
 
     public static final RegistryObject<Item> HEV_HELMET =
-            ITEMS.register("hev_helmet", () -> new HEVItem(ArmorMaterials.HEV, EquipmentSlot.HEAD, HEV_PROPS));
+            ITEMS.register("hev_helmet", () -> new HEVItem(ArmorMaterials.HEV, ArmorItem.Type.HELMET, HEV_PROPS));
     public static final RegistryObject<Item> HEV_CHEST =
-            ITEMS.register("hev_chest", () -> new HEVItem(ArmorMaterials.HEV, EquipmentSlot.CHEST, HEV_PROPS));
+            ITEMS.register("hev_chest", () -> new HEVItem(ArmorMaterials.HEV, ArmorItem.Type.CHESTPLATE, HEV_PROPS));
     public static final RegistryObject<Item> HEV_BOOTS =
-            ITEMS.register("hev_boots", () -> new HEVItem(ArmorMaterials.HEV, EquipmentSlot.FEET, HEV_PROPS));
+            ITEMS.register("hev_boots", () -> new HEVItem(ArmorMaterials.HEV, ArmorItem.Type.BOOTS, HEV_PROPS));
     public static final RegistryObject<Item> HEV_PANTS =
-            ITEMS.register("hev_pants", () -> new HEVItem(ArmorMaterials.HEV, EquipmentSlot.LEGS, HEV_PROPS));
+            ITEMS.register("hev_pants", () -> new HEVItem(ArmorMaterials.HEV, ArmorItem.Type.LEGGINGS, HEV_PROPS));
 
     public static final RegistryObject<Item> TOUGH_HELMET =
-            ITEMS.register("tough_helmet", () -> new ArmorItem(ArmorMaterials.TOUGH, EquipmentSlot.HEAD, TOUGH_PROPS));
+            ITEMS.register("tough_helmet", () -> new ArmorItem(ArmorMaterials.TOUGH, ArmorItem.Type.HELMET, TOUGH_PROPS));
     public static final RegistryObject<Item> TOUGH_CHEST =
-            ITEMS.register("tough_chest", () -> new ArmorItem(ArmorMaterials.TOUGH, EquipmentSlot.CHEST, TOUGH_PROPS));
+            ITEMS.register("tough_chest", () -> new ArmorItem(ArmorMaterials.TOUGH, ArmorItem.Type.CHESTPLATE, TOUGH_PROPS));
     public static final RegistryObject<Item> TOUGH_BOOTS =
-            ITEMS.register("tough_boots", () -> new ArmorItem(ArmorMaterials.TOUGH, EquipmentSlot.FEET, TOUGH_PROPS));
+            ITEMS.register("tough_boots", () -> new ArmorItem(ArmorMaterials.TOUGH, ArmorItem.Type.BOOTS, TOUGH_PROPS));
     public static final RegistryObject<Item> TOUGH_PANTS =
-            ITEMS.register("tough_pants", () -> new ArmorItem(ArmorMaterials.TOUGH, EquipmentSlot.LEGS, TOUGH_PROPS));
+            ITEMS.register("tough_pants", () -> new ArmorItem(ArmorMaterials.TOUGH, ArmorItem.Type.LEGGINGS, TOUGH_PROPS));
 
     public static final RegistryObject<Item> GEIGER_COUNTER = ITEMS.register("geiger_counter", () -> new GeigerCounterItem(ONE_ITEM_PROPERTIES));
     public static final RegistryObject<Item> LITHIUM_ION_CELL = ITEMS.register("lithium_ion_cell", () -> new BatteryItem(ONE_ITEM_PROPERTIES));
@@ -139,7 +140,7 @@ public class NCItems {
         );
         int i = 1;
         for(String name: items) {
-            NC_FOOD.put(name, ITEMS.register(name, () -> new Item(new Item.Properties().tab(CreativeModeTab.TAB_FOOD).food(
+            NC_FOOD.put(name, ITEMS.register(name, () -> new Item(new Item.Properties().food(
                     new FoodProperties.Builder().nutrition(i)
                             .saturationMod(i).build()
             ))));
@@ -233,7 +234,7 @@ public class NCItems {
 
     private static void registerGems() {
         for(String name: Gems.registered().keySet()) {
-            GEMS_TAG.put(name, TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("forge", "gems/"+name)));
+            GEMS_TAG.put(name, TagKey.create(ITEM_REGISTRY, new ResourceLocation("forge", "gems/"+name)));
             NC_GEMS.put(name, ITEMS.register(name+"_gem", () -> new Item(ITEM_PROPERTIES)));
             ALL_NC_ITEMS.put(name+"_gem", NC_GEMS.get(name));
         }
@@ -241,7 +242,7 @@ public class NCItems {
 
     private static void registerChunks() {
         for(String name: Chunks.registered().keySet()) {
-            CHUNKS_TAG.put(name, TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("forge", "raw_materials/"+name)));
+            CHUNKS_TAG.put(name, TagKey.create(ITEM_REGISTRY, new ResourceLocation("forge", "raw_materials/"+name)));
             NC_CHUNKS.put(name, ITEMS.register(name+"_chunk", () -> new Item(ITEM_PROPERTIES)));
             ALL_NC_ITEMS.put(name+"_chunk", NC_CHUNKS.get(name));
         }
@@ -249,7 +250,7 @@ public class NCItems {
 
     private static void registerNuggets() {
         for(String name: Nuggets.registered().keySet()) {
-            NUGGETS_TAG.put(name, TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("forge", "nuggets/"+name)));
+            NUGGETS_TAG.put(name, TagKey.create(ITEM_REGISTRY, new ResourceLocation("forge", "nuggets/"+name)));
             NC_NUGGETS.put(name, ITEMS.register(name+"_nugget", () -> new Item(ITEM_PROPERTIES)));
             ALL_NC_ITEMS.put(name+"_nugget", NC_NUGGETS.get(name));
         }
@@ -257,7 +258,7 @@ public class NCItems {
 
     private static void registerIngots() {
         for(String name: Ingots.registered().keySet()) {
-            INGOTS_TAG.put(name, TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("forge", "ingots/"+name)));
+            INGOTS_TAG.put(name, TagKey.create(ITEM_REGISTRY, new ResourceLocation("forge", "ingots/"+name)));
             NC_INGOTS.put(name, ITEMS.register(name+"_ingot", () -> new Item(ITEM_PROPERTIES)));
             ALL_NC_ITEMS.put(name+"_ingot", NC_INGOTS.get(name));
         }
@@ -265,7 +266,7 @@ public class NCItems {
 
     private static void registerPlates() {
         for(String name: Plates.registered().keySet()) {
-            PLATES_TAG.put(name, TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("forge", "plates/"+name)));
+            PLATES_TAG.put(name, TagKey.create(ITEM_REGISTRY, new ResourceLocation("forge", "plates/"+name)));
             NC_PLATES.put(name, ITEMS.register(name+"_plate", () -> new Item(ITEM_PROPERTIES)));
             ALL_NC_ITEMS.put(name+"_plate", NC_PLATES.get(name));
         }
@@ -273,7 +274,7 @@ public class NCItems {
 
     private static void registerDusts() {
         for(String name: Dusts.registered().keySet()) {
-            DUSTS_TAG.put(name, TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("forge", "dusts/"+name)));
+            DUSTS_TAG.put(name, TagKey.create(ITEM_REGISTRY, new ResourceLocation("forge", "dusts/"+name)));
             NC_DUSTS.put(name, ITEMS.register(name+"_dust", () -> new Item(ITEM_PROPERTIES)));
             ALL_NC_ITEMS.put(name+"_dust", NC_DUSTS.get(name));
         }

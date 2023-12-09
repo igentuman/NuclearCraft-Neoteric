@@ -22,7 +22,7 @@ public class ProcessorBlockItem extends BlockItem
 
 	public ProcessorBlockItem(Block pBlock, Properties props, CreativeModeTab group)
 	{
-		super(pBlock, new Properties().tab(group));
+		super(pBlock, new Properties());
 	}
 
 	@Override

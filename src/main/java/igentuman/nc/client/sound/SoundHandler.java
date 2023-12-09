@@ -186,7 +186,7 @@ public class SoundHandler {
         }
 
         if (event.getName().startsWith("tile.")) {
-            BlockPos pos = new BlockPos(resultSound.getX() - 0.5, resultSound.getY() - 0.5, resultSound.getZ() - 0.5);
+            BlockPos pos = new BlockPos((int) (resultSound.getX() - 0.5), (int) (resultSound.getY() - 0.5), (int) (resultSound.getZ() - 0.5));
             soundMap.put(pos.asLong(), resultSound);
         }
     }

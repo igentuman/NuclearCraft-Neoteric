@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import igentuman.nc.client.gui.IProgressScreen;
 import igentuman.nc.client.gui.element.NCGuiElement;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -40,6 +41,7 @@ public class ProgressBar extends NCGuiElement {
     );
 
     public ProgressBar(int xMin, int yMin, IProgressScreen container)  {
+        super(xMin, yMin, 36, 15, Component.empty());
         x = xMin;
         y = yMin;
         width = 36;
@@ -64,12 +66,12 @@ public class ProgressBar extends NCGuiElement {
     }
 
     @Override
-    public void draw(PoseStack transform, int mX, int mY, float pTicks) {
-        super.draw(transform, mX, mY, pTicks);
+    public void draw(GuiGraphics graphics, int mX, int mY, float pTicks) {
+        super.draw(graphics, mX, mY, pTicks);
         RenderSystem.setShaderTexture(0, ATLAS);
         int texOffset = bars.get(bar)[0];
         int teyOffset = bars.get(bar)[1];
-        blit(transform, X(), Y(), texOffset, teyOffset,  width, height);
-        blit(transform, X(), Y(), texOffset, teyOffset-height-1, (int) (container.getProgress()*width), height);
+        graphics.blit(TEXTURE, X(), Y(), texOffset, teyOffset,  width, height);
+        graphics.blit(TEXTURE, X(), Y(), texOffset, teyOffset-height-1, (int) (container.getProgress()*width), height);
     }
 }

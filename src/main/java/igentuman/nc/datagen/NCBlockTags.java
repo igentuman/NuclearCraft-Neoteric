@@ -5,11 +5,13 @@ import igentuman.nc.multiblock.fission.FissionReactor;
 import igentuman.nc.setup.registration.NCBlocks;
 import igentuman.nc.setup.registration.NCEnergyBlocks;
 import igentuman.nc.setup.registration.NCProcessors;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraft.tags.BlockTags;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.common.data.BlockTagsProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.data.event.GatherDataEvent;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.multiblock.fission.FissionReactor.FISSION_BLOCKS;
@@ -21,12 +23,12 @@ import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCK;
 
 public class NCBlockTags extends BlockTagsProvider {
 
-    public NCBlockTags(DataGenerator generator, ExistingFileHelper helper) {
-        super(generator, MODID, helper);
+    public NCBlockTags(DataGenerator generator, GatherDataEvent event) {
+        super(generator.getPackOutput(), event.getLookupProvider(), MODID, event.getExistingFileHelper());
     }
 
     @Override
-    protected void addTags() {
+    protected void addTags(HolderLookup.Provider provider) {
         ores();
         blocks();
         machines();
@@ -108,4 +110,5 @@ public class NCBlockTags extends BlockTagsProvider {
     public String getName() {
         return "NuclearCraft Block Tags";
     }
+
 }

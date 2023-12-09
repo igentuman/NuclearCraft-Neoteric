@@ -278,7 +278,7 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
     {
         if(allowedInputItems.contains(item)) return true;
         for(ItemStack stack: allowedInputItems) {
-            if(stack.sameItem(item)) {
+            if(stack.is(item.getItem())) {
                 return true;
             }
         }

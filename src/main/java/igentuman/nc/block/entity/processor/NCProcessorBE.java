@@ -241,9 +241,9 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
             return LazyOptional.empty();
         }
         if(isCcLoaded()) {
-            if(cap == dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL) {
+/*            if(cap == dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL) {
                 return getPeripheral(cap, side);
-            }
+            }*/
         }
         if(isMekanismLoadeed()) {
             if(cap == mekanism.common.capabilities.Capabilities.GAS_HANDLER || cap == Capabilities.SLURRY_HANDLER) {

@@ -24,8 +24,8 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -33,7 +33,7 @@ import java.util.List;
 public class FusionBlock extends Block implements EntityBlock {
 
     public FusionBlock() {
-        this(Properties.of(Material.METAL)
+        this(Properties.of()
                 .sound(SoundType.METAL)
                 .strength(2.0f)
                 .noOcclusion()
@@ -61,7 +61,7 @@ public class FusionBlock extends Block implements EntityBlock {
 
     public String getCode()
     {
-        return Registry.BLOCK.getKey(this).getPath();
+        return ForgeRegistries.BLOCKS.getKey(this).getPath();
     }
 
     @javax.annotation.Nullable

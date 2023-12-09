@@ -26,9 +26,9 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
 import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_CORE_PROXY_BE;
@@ -55,7 +55,7 @@ public class FusionCoreProxy extends FusionBlock {
 
     public String getCode()
     {
-        return Registry.BLOCK.getKey(this).getPath();
+        return ForgeRegistries.BLOCKS.getKey(this).getPath();
     }
 
     @Override

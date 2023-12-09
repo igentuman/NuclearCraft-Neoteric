@@ -33,7 +33,7 @@ public class BarrelBlockItem extends BlockItem
 
 	public BarrelBlockItem(Block pBlock, Properties props, CreativeModeTab group)
 	{
-		super(pBlock, new Properties().tab(group).stacksTo(1));
+		super(pBlock, new Properties().stacksTo(1));
 	}
 
 

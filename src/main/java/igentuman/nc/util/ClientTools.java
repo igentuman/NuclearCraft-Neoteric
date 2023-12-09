@@ -1,12 +1,13 @@
 package igentuman.nc.util;
 
 import com.mojang.math.Transformation;
-import com.mojang.math.Vector3f;
-import com.mojang.math.Vector4f;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraftforge.client.model.pipeline.QuadBakingVertexConsumer;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
+import org.joml.Vector4fc;
 
 public class ClientTools {
 
@@ -21,23 +22,23 @@ public class ClientTools {
     }
 
     public static BakedQuad createQuad(Vector3f v1, Vector3f v2, Vector3f v3, Vector3f v4, Transformation rotation, TextureAtlasSprite sprite) {
-        Vector3f normal = v3.copy();
+        Vector3f normal = v3.normalize();
         normal.sub(v2);
-        Vector3f temp = v1.copy();
+        Vector3f temp = v1.normalize();
         temp.sub(v2);
         normal.cross(temp);
         normal.normalize();
 
-        int tw = sprite.getWidth();
-        int th = sprite.getHeight();
+        int tw = sprite.contents().width();
+        int th = sprite.contents().height();
 
         rotation = rotation.blockCenterToCorner();
         rotation.transformNormal(normal);
 
-        Vector4f vv1 = new Vector4f(v1); rotation.transformPosition(vv1);
-        Vector4f vv2 = new Vector4f(v2); rotation.transformPosition(vv2);
-        Vector4f vv3 = new Vector4f(v3); rotation.transformPosition(vv3);
-        Vector4f vv4 = new Vector4f(v4); rotation.transformPosition(vv4);
+        Vector4f vv1 = new Vector4f((Vector4fc) v1); rotation.transformPosition(vv1);
+        Vector4f vv2 = new Vector4f((Vector4fc) v2); rotation.transformPosition(vv2);
+        Vector4f vv3 = new Vector4f((Vector4fc) v3); rotation.transformPosition(vv3);
+        Vector4f vv4 = new Vector4f((Vector4fc) v4); rotation.transformPosition(vv4);
 
         BakedQuad[] quad = new BakedQuad[1];
         var builder = new QuadBakingVertexConsumer(q -> quad[0] = q);

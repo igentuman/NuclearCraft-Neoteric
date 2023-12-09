@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import igentuman.nc.client.gui.element.NCGuiElement;
 import igentuman.nc.client.gui.processor.side.SideConfigScreen;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 
 import static igentuman.nc.handler.sided.SlotModePair.SlotMode.*;
 
@@ -18,6 +19,7 @@ public class NormalSlot extends NCGuiElement {
     }
 
     public NormalSlot(int xMin, int yMin, String pType)  {
+        super(xMin, yMin, 18, 18, null);
         x = xMin;
         y = yMin;
         width = 18;
@@ -40,8 +42,8 @@ public class NormalSlot extends NCGuiElement {
     }
 
     @Override
-    public void draw(PoseStack transform, int mX, int mY, float pTicks) {
-        super.draw(transform, mX, mY, pTicks);
+    public void draw(GuiGraphics graphics, int mX, int mY, float pTicks) {
+        super.draw(graphics, mX, mY, pTicks);
         if(type.contains("fluid")) {
             xOffset = 18;
         }
@@ -56,9 +58,9 @@ public class NormalSlot extends NCGuiElement {
         }
 
         //-1 because of border
-        blit(transform, X()-1, Y()-1, xOffset, yOffset,  18, 18);
+        graphics.blit(TEXTURE, X()-1, Y()-1, xOffset, yOffset,  18, 18);
         if(configFlag) {
-            fill(transform, X() - 1, Y() - 1, X()+17, Y()+17, color);
+            graphics.fill(X() - 1, Y() - 1, X()+17, Y()+17, color);
         }
     }
 }

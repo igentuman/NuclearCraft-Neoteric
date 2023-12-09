@@ -37,7 +37,7 @@ public class MultitoolItem extends Item
 
 	public MultitoolItem(Properties props, CreativeModeTab group)
 	{
-		super(props.tab(group));
+		super(props);
 	}
 
 	public MultitoolItem setBurnTime(int burnTime)

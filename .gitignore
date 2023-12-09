@@ -19,8 +19,76 @@ build
 
 # other
 eclipse
-run
+run123
 
 # Files from Forge MDK
 forge*changelog.txt
 /src/generated/resources/.cache/
+/run/config/jei/blacklist.cfg
+/run/config/jei/ingredient-list-mod-sort-order.ini
+/run/config/jei/ingredient-list-type-sort-order.ini
+/run/config/jei/jei-client.ini
+/run/config/jei/jei-colors.ini
+/run/config/jei/jei-debug.ini
+/run/config/jei/jei-mod-id-format.ini
+/run/config/jei/recipe-category-sort-order.ini
+/run/config/Mekanism/client.toml
+/run/config/Mekanism/common.toml
+/run/config/Mekanism/gear.toml
+/run/config/Mekanism/general.toml
+/run/config/Mekanism/machine-storage.toml
+/run/config/Mekanism/machine-usage.toml
+/run/config/Mekanism/tiers.toml
+/run/config/Mekanism/world.toml
+/run/config/fml.toml
+/run/config/forge-client.toml
+/run/config/nuclearcraft-common.toml
+/run/config/theoneprobe-client.toml
+/run/config/theoneprobe-common.toml
+/run/crash-reports/crash-2023-12-10_00.12.33-client.txt
+/run/crash-reports/crash-2023-12-10_00.20.30-client.txt
+/run/crash-reports/crash-2023-12-10_00.22.39-client.txt
+/run/logs/2023-12-09-1.log.gz
+/run/logs/2023-12-10-1.log.gz
+/run/logs/2023-12-10-2.log.gz
+/run/logs/2023-12-10-3.log.gz
+/run/logs/debug.log
+/run/logs/debug-1.log.gz
+/run/logs/debug-2.log.gz
+/run/logs/debug-3.log.gz
+/run/logs/latest.log
+/run/saves/New World/advancements/380df991-f603-344c-a090-369bad2a924a.json
+/run/saves/New World/data/capabilities.dat
+/run/saves/New World/data/mekanism_radiation_manager.dat
+/run/saves/New World/data/mekanism_SecurityFrequencyHandler.dat
+/run/saves/New World/data/nc_world_radiation.dat
+/run/saves/New World/data/raids.dat
+/run/saves/New World/data/random_sequences.dat
+/run/saves/New World/DIM1/data/capabilities.dat
+/run/saves/New World/DIM1/data/raids_end.dat
+/run/saves/New World/DIM-1/data/capabilities.dat
+/run/saves/New World/DIM-1/data/raids.dat
+/run/saves/New World/entities/r.-1.0.mca
+/run/saves/New World/entities/r.-1.-1.mca
+/run/saves/New World/entities/r.-2.0.mca
+/run/saves/New World/entities/r.-2.-1.mca
+/run/saves/New World/playerdata/380df991-f603-344c-a090-369bad2a924a.dat
+/run/saves/New World/playerdata/380df991-f603-344c-a090-369bad2a924a.dat_old
+/run/saves/New World/poi/r.-1.0.mca
+/run/saves/New World/poi/r.-1.-1.mca
+/run/saves/New World/poi/r.-2.0.mca
+/run/saves/New World/poi/r.-2.-1.mca
+/run/saves/New World/region/r.-1.0.mca
+/run/saves/New World/region/r.-1.-1.mca
+/run/saves/New World/region/r.-2.0.mca
+/run/saves/New World/region/r.-2.-1.mca
+/run/saves/New World/serverconfig/forge-server.toml
+/run/saves/New World/serverconfig/jei-server.toml
+/run/saves/New World/stats/380df991-f603-344c-a090-369bad2a924a.json
+/run/saves/New World/icon.png
+/run/saves/New World/level.dat
+/run/saves/New World/level.dat_old
+/run/saves/New World/session.lock
+/run/options.txt
+/run/usercache.json
+/run/usernamecache.json

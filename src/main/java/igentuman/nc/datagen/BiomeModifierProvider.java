@@ -5,22 +5,25 @@ import com.google.gson.JsonElement;
 import com.mojang.serialization.JsonOps;
 import igentuman.nc.setup.registration.NCBlocks;
 import igentuman.nc.setup.Registration;
-import net.minecraft.core.Holder;
-import net.minecraft.core.HolderSet;
-import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.*;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
+import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.GenerationStep.Decoration;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.common.data.JsonCodecProvider;
 import net.minecraftforge.common.world.BiomeModifier;
+import net.minecraftforge.common.world.ForgeBiomeModifiers;
 import net.minecraftforge.common.world.ForgeBiomeModifiers.AddFeaturesBiomeModifier;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistries.Keys;
 import net.minecraftforge.registries.holdersets.AnyHolderSet;
 
@@ -30,30 +33,26 @@ import static igentuman.nc.NuclearCraft.MODID;
 
 public class BiomeModifierProvider
 {
-	public static void addTo(
-			DataGenerator dataGenerator, ExistingFileHelper existingFileHelper, Consumer<DataProvider> add
-	)
-	{
 
-		RegistryAccess registryAccess = RegistryAccess.builtinCopy();
-		RegistryOps<JsonElement> jsonOps = RegistryOps.create(JsonOps.INSTANCE, registryAccess);
-		ImmutableMap.Builder<ResourceLocation, BiomeModifier> modifiers = ImmutableMap.builder();
-		Registry<Biome> biomeReg = registryAccess.registryOrThrow(Registry.BIOME_REGISTRY);
-		Registry<PlacedFeature> featureReg = registryAccess.registryOrThrow(Registry.PLACED_FEATURE_REGISTRY);
-		for(String name : NCBlocks.ORE_BLOCKS.keySet())
+	public static void register(BootstapContext<BiomeModifier> context) {
+		HolderGetter<PlacedFeature> features = context.lookup(Registries.PLACED_FEATURE);
+		HolderGetter<Biome> biomes = context.lookup(Registries.BIOME);
+		return;
+		/*for(String name : NCBlocks.ORE_BLOCKS.keySet())
 		{
 			ResourceLocation nameRL = new ResourceLocation(MODID, "nc_ores_"+name);
-			ResourceKey<PlacedFeature> key = ResourceKey.create(Registry.PLACED_FEATURE_REGISTRY, nameRL);
-			Holder<PlacedFeature> featureHolder = featureReg.getHolderOrThrow(key);
-			HolderSet<Biome> biomes;
-			biomes = new AnyHolderSet<>(biomeReg);
-			AddFeaturesBiomeModifier modifier = new AddFeaturesBiomeModifier(
-					biomes, HolderSet.direct(featureHolder), Decoration.UNDERGROUND_ORES
-			);
-			modifiers.put(nameRL, modifier);
-		}
-		add.accept(JsonCodecProvider.forDatapackRegistry(
-				dataGenerator, existingFileHelper, MODID, jsonOps, Keys.BIOME_MODIFIERS, modifiers.build()
-		));
+			ResourceKey<PlacedFeature> key = ResourceKey.create(Registries.PLACED_FEATURE, nameRL);
+			Holder<PlacedFeature> featureHolder = features.getOrThrow(key);
+
+			context.register(key("overworld_ores"), new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
+					biomes.getOrThrow(BiomeTags.IS_OVERWORLD),
+					HolderSet.direct(featureHolder),
+					GenerationStep.Decoration.UNDERGROUND_ORES));
+		}*/
+	}
+
+	private static ResourceKey<BiomeModifier> key(String path)
+	{
+		return ResourceKey.create(ForgeRegistries.Keys.BIOME_MODIFIERS, new ResourceLocation(MODID, path));
 	}
 }

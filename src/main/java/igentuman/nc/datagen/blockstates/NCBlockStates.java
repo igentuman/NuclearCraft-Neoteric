@@ -16,6 +16,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.client.model.generators.*;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.function.Function;
@@ -29,8 +30,8 @@ import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCK;
 
 public class NCBlockStates extends BlockStateProvider {
 
-    public NCBlockStates(DataGenerator gen, ExistingFileHelper helper) {
-        super(gen, MODID, helper);
+    public NCBlockStates(DataGenerator gen, GatherDataEvent event) {
+        super(gen.getPackOutput(), MODID, event.getExistingFileHelper());
     }
 
     @Override

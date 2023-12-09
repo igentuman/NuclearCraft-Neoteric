@@ -27,7 +27,7 @@ public class ModSetup {
 
     public static void init(FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
-            Dimensions.register();
+            //Dimensions.register();
             //CapabilityRegistration.register(event);
 
         });

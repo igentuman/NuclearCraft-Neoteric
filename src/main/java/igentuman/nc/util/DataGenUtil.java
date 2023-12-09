@@ -16,6 +16,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static igentuman.nc.setup.registration.NCBlocks.ITEM_REGISTRY;
+
 public class DataGenUtil
 {
 	private static final Pattern MTLLIB = Pattern.compile("^mtllib\\s+(.*)$", Pattern.MULTILINE);
@@ -81,49 +83,49 @@ public class DataGenUtil
 
 	public static TagKey<Item> forgeIngot(String name)
 	{
-		return TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("forge:ingots/"+name));
+		return TagKey.create(ITEM_REGISTRY, new ResourceLocation("forge:ingots/"+name));
 	}
 
 	public static TagKey<Item> forgeGem(String name)
 	{
-		return TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("forge:gems/"+name));
+		return TagKey.create(ITEM_REGISTRY, new ResourceLocation("forge:gems/"+name));
 	}
 
 	public static TagKey<Item> forgeNugget(String name)
 	{
-		return TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("forge:nuggets/"+name));
+		return TagKey.create(ITEM_REGISTRY, new ResourceLocation("forge:nuggets/"+name));
 	}
 
 	public static TagKey<Item> forgeBlock(String name)
 	{
-		return TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("forge:storage_blocks/"+name));
+		return TagKey.create(ITEM_REGISTRY, new ResourceLocation("forge:storage_blocks/"+name));
 	}
 
 	public static TagKey<Item> forgeOre(String name)
 	{
-		return TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("forge:ores/"+name));
+		return TagKey.create(ITEM_REGISTRY, new ResourceLocation("forge:ores/"+name));
 	}
 
 	public static TagKey<Item> forgeBucket(String name)
 	{
-		return TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("forge:buckets/"+name));
+		return TagKey.create(ITEM_REGISTRY, new ResourceLocation("forge:buckets/"+name));
 	}
 
 	public static TagKey<Item> forgeChunk(String name)
 	{
-		return TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("forge:raw_materials/"+name));
+		return TagKey.create(ITEM_REGISTRY, new ResourceLocation("forge:raw_materials/"+name));
 	}
 
 	public static TagKey<Item> forgeDust(String name)
 	{
-		return TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("forge:dusts/"+name));
+		return TagKey.create(ITEM_REGISTRY, new ResourceLocation("forge:dusts/"+name));
 	}
 
 	public static TagKey<Item> forgePlate(String name) {
-		return TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("forge:plates/"+name));
+		return TagKey.create(ITEM_REGISTRY, new ResourceLocation("forge:plates/"+name));
 	}
 
 	public static TagKey<Item> forgeDye(String name) {
-		return TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("forge:dye/"+name));
+		return TagKey.create(ITEM_REGISTRY, new ResourceLocation("forge:dye/"+name));
 	}
 }

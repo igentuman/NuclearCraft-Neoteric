@@ -85,6 +85,7 @@ public abstract class NcRecipe extends AbstractRecipe {
 
         buffer.writeInt(outputItems.length);
         for (ItemStack output : outputItems) {
+            output = output == null ? ItemStack.EMPTY : output;
             buffer.writeItem(output);
         }
 
@@ -95,6 +96,7 @@ public abstract class NcRecipe extends AbstractRecipe {
 
         buffer.writeInt(outputFluids.length);
         for (FluidStack output : outputFluids) {
+            output = output == null ? FluidStack.EMPTY : output;
             buffer.writeFluidStack(output);
         }
 
@@ -102,5 +104,4 @@ public abstract class NcRecipe extends AbstractRecipe {
         buffer.writeDouble(powerModifier);
         buffer.writeDouble(radiationModifier);
     }
-
 }

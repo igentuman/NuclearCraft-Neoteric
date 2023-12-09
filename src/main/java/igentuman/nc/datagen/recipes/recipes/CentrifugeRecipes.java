@@ -24,6 +24,30 @@ public class CentrifugeRecipes extends AbstractRecipeProvider {
         );
 
         add(
+                fluidIngredient("fissile_fuel", 500),
+                List.of(
+                        fluidStack(Materials.uranium238, 300),
+                        fluidStack(Materials.uranium235, 80),
+                        fluidStack(Materials.uranium233, 80),
+                        fluidStack("hydrofluoric_acid", 16),
+                        fluidStack("sulfuric_acid", 16)
+
+                ), 1.9D
+        );
+
+        add(
+                fluidIngredient("nuclear_waste", 50),
+                List.of(
+                        fluidStack(Materials.polonium, 5),
+                        fluidStack(Materials.plutonium238, 5),
+                        fluidStack(Materials.plutonium242, 5),
+                        fluidStack(Materials.plutonium241, 5),
+                        fluidStack("spent_nuclear_waste", 1)
+
+                ), 15D
+        );
+
+        add(
                 moltenFuelIngredient(List.of("depleted", "americium", "hea-242", ""), 1296),
                 List.of(
                         fluidStack(Materials.americium243, 432), fluidStack(Materials.curium243, 144),

@@ -3,7 +3,7 @@ package igentuman.nc.client.particle;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
-import mekanism.common.lib.math.Pos3D;
+import igentuman.nc.util.math.Pos3D;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleProvider;

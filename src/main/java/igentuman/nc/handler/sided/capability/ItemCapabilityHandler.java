@@ -29,7 +29,6 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
 
     public List<ItemStack> allowedInputItems;
     protected NonNullList<ItemStack> stacks;
-    public BlockEntity tile;
     protected ItemStack[] sortedStacks;
     private Map<Direction, LazyOptional<ItemHandlerWrapper>> handlerCache = new HashMap<>();
 
@@ -267,14 +266,6 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
             SidedContentHandler.RelativeDirection relativeDirection = SidedContentHandler.RelativeDirection.toRelative(side, getFacing());
             SlotModePair.SlotMode mode = sideMap.get(relativeDirection.ordinal())[i].getMode();
             return mode == OUTPUT || mode == PUSH || mode == PUSH_EXCESS;
-    }
-
-    private Direction getFacing() {
-        Direction facing = Direction.NORTH;
-        if(tile.getBlockState().hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
-            facing = tile.getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);
-        }
-        return facing;
     }
 
     private boolean inputAllowed(Integer i, ItemStack stack, Direction side) {

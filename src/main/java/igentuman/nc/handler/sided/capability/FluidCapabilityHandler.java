@@ -27,7 +27,7 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler implements
     private final int CAPACITY;
     public final NonNullList<FluidTank> tanks;
     public final NonNullList<LazyOptional<IFluidHandler>> fluidCapabilites;
-    public BlockEntity tile;
+
     protected FluidStack[] sortedFluids;
     public List<FluidStack> holdedInputs = new ArrayList<>();
     private Map<Direction, LazyOptional<FluidHandlerWrapper>> handlerCache = new HashMap<>();
@@ -126,13 +126,6 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler implements
         }
     }
 
-    private Direction getFacing() {
-        Direction facing = Direction.NORTH;
-        if(tile.getBlockState().hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
-            facing = tile.getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);
-        }
-        return facing;
-    }
 
     public boolean pushFluids(Direction dir) {
         return pushFluids(dir, false, tile.getBlockPos());

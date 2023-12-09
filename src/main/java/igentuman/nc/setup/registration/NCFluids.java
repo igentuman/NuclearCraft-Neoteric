@@ -44,6 +44,7 @@ import java.util.function.Function;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.content.materials.Materials.slurries;
+import static igentuman.nc.util.ModUtil.isMekanismLoadeed;
 
 public class NCFluids {
     public static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(ForgeRegistries.FLUIDS, MODID);
@@ -85,6 +86,12 @@ public class NCFluids {
 
     private static void liquids() {
         HashMap<String, LiquidDefinition> items = new HashMap<>();
+        if(isMekanismLoadeed()) {
+            items.put("spent_nuclear_waste", new LiquidDefinition("spent_nuclear_waste", 0X901F1B14));
+            items.put("nuclear_waste", new LiquidDefinition("nuclear_waste", 0X903D3323));
+            items.put("fissile_fuel", new LiquidDefinition("fissile_fuel", 0X903D3323));
+        }
+        items.put("uranium_oxide", new LiquidDefinition("uranium_oxide", 0X90A9B544));
         items.put("cryotheum", new LiquidDefinition("cryotheum", 0X9089EDFF));
         items.put("radaway", new LiquidDefinition("radaway", 0x50B37AC4));
         items.put("ethanol", new LiquidDefinition("ethanol", 0x50B37AC4));

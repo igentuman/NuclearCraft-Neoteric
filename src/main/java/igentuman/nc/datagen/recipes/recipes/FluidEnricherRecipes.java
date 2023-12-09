@@ -32,6 +32,12 @@ public class FluidEnricherRecipes extends AbstractRecipeProvider {
         );
 
         add(
+                fluidIngredient("oxygen", 100),
+                dustIngredient(Materials.uranium),
+                fluidStack("uranium_oxide", 500)
+        );
+
+        add(
                 fluidIngredient("minecraft:water", 1000),
                 dustIngredient(Materials.boron_nitride),
                 fluidStack("boron_nitride_solution", 250)

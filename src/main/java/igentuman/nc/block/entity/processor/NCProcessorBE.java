@@ -19,6 +19,7 @@ import igentuman.nc.util.CustomEnergyStorage;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.SlotModePair;
 import igentuman.nc.util.annotation.NBTField;
+import mekanism.common.capabilities.Capabilities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustParticleOptions;
@@ -51,6 +52,7 @@ import java.util.Objects;
 import static igentuman.nc.block.ProcessorBlock.ACTIVE;
 import static igentuman.nc.handler.config.CommonConfig.PROCESSOR_CONFIG;
 import static igentuman.nc.util.ModUtil.isCcLoaded;
+import static igentuman.nc.util.ModUtil.isMekanismLoadeed;
 
 public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE {
 
@@ -241,6 +243,14 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
         if(isCcLoaded()) {
             if(cap == dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL) {
                 return getPeripheral(cap, side);
+            }
+        }
+        if(isMekanismLoadeed()) {
+            if(cap == mekanism.common.capabilities.Capabilities.GAS_HANDLER || cap == Capabilities.SLURRY_HANDLER) {
+                if(contentHandler.hasFluidCapability(side)) {
+                    return LazyOptional.of(() -> contentHandler.gasConverter(side));
+                }
+                return LazyOptional.empty();
             }
         }
         return super.getCapability(cap, side);

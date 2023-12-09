@@ -20,6 +20,7 @@ import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.util.CustomEnergyStorage;
 import igentuman.nc.util.NCBlockPos;
 import igentuman.nc.util.annotation.NBTField;
+import mekanism.common.capabilities.Capabilities;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -53,6 +54,7 @@ import static igentuman.nc.block.fission.FissionControllerBlock.POWERED;
 import static igentuman.nc.handler.config.CommonConfig.FUSION_CONFIG;
 import static igentuman.nc.setup.registration.NCSounds.*;
 import static igentuman.nc.util.ModUtil.isCcLoaded;
+import static igentuman.nc.util.ModUtil.isMekanismLoadeed;
 import static net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE;
 
 public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE {
@@ -170,6 +172,14 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         }
         if (cap == ForgeCapabilities.ENERGY) {
             return energy.cast();
+        }
+        if(isMekanismLoadeed()) {
+            if(cap == mekanism.common.capabilities.Capabilities.GAS_HANDLER) {
+                if(contentHandler.hasFluidCapability(side)) {
+                    return LazyOptional.of(() -> contentHandler.gasConverter(side));
+                }
+                return LazyOptional.empty();
+            }
         }
         if(isCcLoaded()) {
             if(cap == dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL) {

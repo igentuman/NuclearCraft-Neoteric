@@ -1,10 +1,10 @@
 package igentuman.nc.handler.sided;
 
 import igentuman.nc.block.entity.NuclearCraftBE;
+import igentuman.nc.handler.sided.capability.Gas2FluidConverter;
 import igentuman.nc.recipes.AbstractRecipe;
 import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -31,6 +31,8 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
     public NuclearCraftBE blockEntity;
     private boolean updated = false;
 
+    private Gas2FluidConverter gasConverter;
+
     public SidedContentHandler(int inputItemSlots, int outputItemSlots, int inputFluidSlots, int outputFluidSlots) {
         this.inputItemSlots = inputItemSlots;
         this.outputItemSlots = outputItemSlots;
@@ -38,6 +40,8 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
         this.outputFluidSlots = outputFluidSlots;
         if(inputItemSlots + outputItemSlots > 0) {
             itemHandler = new ItemCapabilityHandler(inputItemSlots, outputItemSlots);
+            itemHandler.tile = blockEntity;
+            itemHandler.sidedContentHandler = this;
             itemCapability = LazyOptional.of(() -> itemHandler);
         } else {
             itemHandler = null;
@@ -46,6 +50,7 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
         if(inputFluidSlots + outputFluidSlots > 0) {
             fluidCapability = new FluidCapabilityHandler(inputFluidSlots, outputFluidSlots);
             fluidCapability.tile = blockEntity;
+            fluidCapability.sidedContentHandler = this;
         } else {
             fluidCapability = null;
         }
@@ -269,6 +274,14 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
         } catch (NullPointerException|IndexOutOfBoundsException e) {
             return new Object[] {};
         }
+    }
+
+    public <T> T gasConverter(Direction side) {
+        if(gasConverter == null) {
+            gasConverter = new Gas2FluidConverter();
+            gasConverter.setFluidHandler(fluidCapability);
+        }
+        return (T) gasConverter.forSide(side);
     }
 
     public enum SlotType {

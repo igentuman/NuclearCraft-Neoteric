@@ -53,7 +53,7 @@ public class ItemRadiation {
                 continue;
             }
             try {
-                radiationMap.put(item, Double.parseDouble(split[1].trim()));
+                radiationMap.put(item, Double.parseDouble(split[1].trim())/1000000000);
             } catch (NumberFormatException ignored) {}
         }
 

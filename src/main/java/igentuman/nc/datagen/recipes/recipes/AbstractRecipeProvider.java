@@ -14,6 +14,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -53,6 +54,10 @@ public abstract class AbstractRecipeProvider {
 
     protected static ItemStack stack(Item item, int count) {
         return new ItemStack(item, count);
+    }
+
+    protected static ItemStack stack(String item, int count) {
+        return new ItemStack(ForgeRegistries.ITEMS.getValue(new ResourceLocation(item)), count);
     }
 
     public static ItemStack[] stackArray(ItemStack... stacks) {

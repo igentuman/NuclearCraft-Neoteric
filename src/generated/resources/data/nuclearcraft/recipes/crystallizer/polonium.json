@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:crystallizer",
+  "inputFluids": [
+    {
+      "amount": 1000,
+      "tag": "forge:polonium"
+    }
+  ],
+  "output": [
+    {
+      "item": "mekanism:pellet_polonium"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 3.0
+}

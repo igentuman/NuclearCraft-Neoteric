@@ -31,6 +31,9 @@ public class MelterRecipes extends AbstractRecipeProvider {
             }
         }
 
+        add(dustIngredient(Materials.polonium), fluidStack(Materials.polonium, 144));
+
+
         for (String name: Materials.isotopes()) {
             for(String type: new String[] {"", "_ox", "_ni", "_za"}) {
                 String key = name+type;

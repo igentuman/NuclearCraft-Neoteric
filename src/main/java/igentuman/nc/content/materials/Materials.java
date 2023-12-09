@@ -263,7 +263,7 @@ public class Materials extends MaterialsManager {
             all.put(bismuth, NCMaterial.dust(bismuth));
             all.put(thallium, NCMaterial.dust(thallium));
             all.put(gadolinium, NCMaterial.dust(gadolinium));
-            all.put(polonium, NCMaterial.dust(polonium));
+            all.put(polonium, NCMaterial.dust(polonium).fluid(true, 800).color(0xFF15755B));
             all.put(protactinium_233, NCMaterial.dust(protactinium_233));
             all.put(radium, NCMaterial.dust(radium));
             all.put(tbp, NCMaterial.dust(tbp));

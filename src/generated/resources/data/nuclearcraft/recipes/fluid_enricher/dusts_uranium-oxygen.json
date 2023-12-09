@@ -1,0 +1,23 @@
+{
+  "type": "nuclearcraft:fluid_enricher",
+  "input": [
+    {
+      "tag": "forge:dusts/uranium"
+    }
+  ],
+  "inputFluids": [
+    {
+      "amount": 100,
+      "tag": "forge:oxygen"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 500,
+      "fluid": "nuclearcraft:uranium_oxide"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

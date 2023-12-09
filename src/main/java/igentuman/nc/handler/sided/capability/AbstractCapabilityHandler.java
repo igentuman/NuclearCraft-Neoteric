@@ -2,15 +2,19 @@ package igentuman.nc.handler.sided.capability;
 
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.SlotModePair;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 import java.util.HashMap;
 
 public abstract class AbstractCapabilityHandler {
     public int inputSlots;
     public int outputSlots;
-
+    public BlockEntity tile;
     public boolean sideMapUpdated = true;
     public HashMap<Integer, SlotModePair[]> sideMap;
+    public SidedContentHandler sidedContentHandler;
 
     protected void initDefault() {
         sideMap = new HashMap<>();
@@ -54,5 +58,20 @@ public abstract class AbstractCapabilityHandler {
             }
         }
         return sideSlots[slot].getMode().ordinal();
+    }
+
+    protected Direction getFacing() {
+        Direction facing = Direction.NORTH;
+        if(tile == null) return facing;
+        if(tile.getBlockState().hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
+            facing = tile.getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);
+        }
+        return facing;
+    }
+
+    public boolean haveAccessFromSide(Direction side, int slot) {
+        SidedContentHandler.RelativeDirection relativeDirection =
+                SidedContentHandler.RelativeDirection.toRelative(side, getFacing());
+        return sideMap.get(relativeDirection.ordinal())[slot].getMode() != SlotModePair.SlotMode.DISABLED;
     }
 }

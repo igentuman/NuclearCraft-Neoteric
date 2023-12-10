@@ -962,7 +962,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         @Override
         public void write(FriendlyByteBuf buffer) {
             super.write(buffer);
-            buffer.writeDouble(getOptimalTemperature());//in our case we use that as temperature
+            buffer.writeDouble(getOptimalTemperature());
         }
 
         public double getOptimalTemperature() {
@@ -971,8 +971,11 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
     }
 
     public static class FusionCoolantRecipe extends NcRecipe {
-        public FusionCoolantRecipe(ResourceLocation id, ItemStackIngredient[] input, ItemStack[] output, FluidStackIngredient[] inputFluids, FluidStack[] outputFluids, double timeModifier, double powerModifier, double radiation, double temperature) {
-            super(id, input, output, inputFluids, outputFluids, timeModifier, powerModifier, radiation, temperature);
+        protected double coolingRate;
+
+        public FusionCoolantRecipe(ResourceLocation id, ItemStackIngredient[] input, ItemStack[] output, FluidStackIngredient[] inputFluids, FluidStack[] outputFluids, double temperature, double powerModifier, double radiation, double rar) {
+            super(id, input, output, inputFluids, outputFluids, temperature, powerModifier, radiation, rar);
+            coolingRate = temperature;
         }
 
         @Override
@@ -985,14 +988,8 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
             return new ItemStack(FusionReactor.FUSION_BLOCKS.get("fusion_core").get());
         }
 
-        @Override
-        public void write(FriendlyByteBuf buffer) {
-            super.write(buffer);
-            buffer.writeDouble(getCoolingRate());
-        }
-
         public double getCoolingRate() {
-            return Math.max(rarityModifier, 1);
+            return Math.max(coolingRate, 1);
         }
     }
 }

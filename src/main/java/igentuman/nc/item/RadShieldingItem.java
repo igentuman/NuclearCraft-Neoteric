@@ -29,12 +29,7 @@ public class RadShieldingItem extends Item
 		this(new Properties(), 0);
 	}
 
-	public RadShieldingItem(Properties props, int shieldLevel)
-	{
-		this(props, CreativeTabs.NC_ITEMS, shieldLevel);
-	}
-
-	public RadShieldingItem(Properties props, CreativeModeTab group, int radShieldingLevel)
+	public RadShieldingItem(Properties props, int radShieldingLevel)
 	{
 		super(props);
 		this.radShieldingLevel = radShieldingLevel;

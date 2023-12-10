@@ -22,12 +22,8 @@ public class NCBaseItem extends Item
 		this(new Properties());
 	}
 
-	public NCBaseItem(Properties props)
-	{
-		this(props, CreativeTabs.NC_ITEMS);
-	}
 
-	public NCBaseItem(Properties props, CreativeModeTab group)
+	public NCBaseItem(Properties props)
 	{
 		super(props);
 	}

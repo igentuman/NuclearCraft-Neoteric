@@ -25,7 +25,7 @@ import static igentuman.nc.setup.registration.Fuel.NC_ISOTOPES;
 import static igentuman.nc.setup.registration.NCBlocks.*;
 import static igentuman.nc.setup.registration.NCEnergyBlocks.ENERGY_BLOCKS;
 import static igentuman.nc.setup.registration.NCItems.*;
-import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCK;
+import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCKS;
 import static net.minecraft.world.item.Items.*;
 import static igentuman.nc.util.DataGenUtil.*;
 public class NCRecipes extends RecipeProvider {
@@ -102,7 +102,7 @@ public class NCRecipes extends RecipeProvider {
 
     private void storageBlocks(Consumer<FinishedRecipe> consumer) {
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, STORAGE_BLOCK.get("basic_storage_container").get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, STORAGE_BLOCKS.get("basic_storage_container").get())
                 .pattern(" P ")
                 .pattern("PCP")
                 .pattern(" P ")
@@ -111,37 +111,37 @@ public class NCRecipes extends RecipeProvider {
                 .unlockedBy("item", has(CHEST))
                 .save(consumer, new ResourceLocation(MODID, "basic_storage_container"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, STORAGE_BLOCK.get("advanced_storage_container").get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, STORAGE_BLOCKS.get("advanced_storage_container").get())
                 .pattern("DPD")
                 .pattern("PCP")
                 .pattern("DPD")
-                .define('C', STORAGE_BLOCK.get("basic_storage_container").get())
+                .define('C', STORAGE_BLOCKS.get("basic_storage_container").get())
                 .define('D', forgePlate(Materials.bronze))
                 .define('P', NC_PARTS.get("plate_advanced").get())
-                .unlockedBy("item", has(STORAGE_BLOCK.get("basic_storage_container").get()))
+                .unlockedBy("item", has(STORAGE_BLOCKS.get("basic_storage_container").get()))
                 .save(consumer, new ResourceLocation(MODID, "advanced_storage_container"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, STORAGE_BLOCK.get("du_storage_container").get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, STORAGE_BLOCKS.get("du_storage_container").get())
                 .pattern("DPD")
                 .pattern("PCP")
                 .pattern("DPD")
-                .define('C', STORAGE_BLOCK.get("advanced_storage_container").get())
+                .define('C', STORAGE_BLOCKS.get("advanced_storage_container").get())
                 .define('D', forgePlate(Materials.platinum))
                 .define('P', NC_PARTS.get("plate_du").get())
-                .unlockedBy("item", has(STORAGE_BLOCK.get("advanced_storage_container").get()))
+                .unlockedBy("item", has(STORAGE_BLOCKS.get("advanced_storage_container").get()))
                 .save(consumer, new ResourceLocation(MODID, "du_storage_container"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, STORAGE_BLOCK.get("elite_storage_container").get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, STORAGE_BLOCKS.get("elite_storage_container").get())
                 .pattern("DPD")
                 .pattern("PCP")
                 .pattern("DPD")
-                .define('C', STORAGE_BLOCK.get("du_storage_container").get())
+                .define('C', STORAGE_BLOCKS.get("du_storage_container").get())
                 .define('D', forgePlate(Materials.hsla_steel))
                 .define('P', NC_PARTS.get("plate_elite").get())
-                .unlockedBy("item", has(STORAGE_BLOCK.get("du_storage_container").get()))
+                .unlockedBy("item", has(STORAGE_BLOCKS.get("du_storage_container").get()))
                 .save(consumer, new ResourceLocation(MODID, "elite_storage_container"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, STORAGE_BLOCK.get("basic_barrel").get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, STORAGE_BLOCKS.get("basic_barrel").get())
                 .pattern("GPG")
                 .pattern("G G")
                 .pattern("GPG")
@@ -150,31 +150,31 @@ public class NCRecipes extends RecipeProvider {
                 .unlockedBy("item", has(NC_PARTS.get("plate_basic").get()))
                 .save(consumer, new ResourceLocation(MODID, "basic_barrel"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, STORAGE_BLOCK.get("advanced_barrel").get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, STORAGE_BLOCKS.get("advanced_barrel").get())
                 .pattern("GPG")
                 .pattern("GBG")
                 .pattern("GPG")
-                .define('B', STORAGE_BLOCK.get("basic_barrel").get())
+                .define('B', STORAGE_BLOCKS.get("basic_barrel").get())
                 .define('G', forgePlate(Materials.tough_alloy))
                 .define('P', NC_PARTS.get("plate_advanced").get())
                 .unlockedBy("item", has(NC_PARTS.get("plate_advanced").get()))
                 .save(consumer, new ResourceLocation(MODID, "advanced_barrel"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, STORAGE_BLOCK.get("du_barrel").get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, STORAGE_BLOCKS.get("du_barrel").get())
                 .pattern("GPG")
                 .pattern("GBG")
                 .pattern("GPG")
-                .define('B', STORAGE_BLOCK.get("advanced_barrel").get())
+                .define('B', STORAGE_BLOCKS.get("advanced_barrel").get())
                 .define('G', forgePlate(Materials.hsla_steel))
                 .define('P', NC_PARTS.get("plate_du").get())
                 .unlockedBy("item", has(NC_PARTS.get("plate_du").get()))
                 .save(consumer, new ResourceLocation(MODID, "du_barrel"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, STORAGE_BLOCK.get("elite_barrel").get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, STORAGE_BLOCKS.get("elite_barrel").get())
                 .pattern("GPG")
                 .pattern("GBG")
                 .pattern("GPG")
-                .define('B', STORAGE_BLOCK.get("du_barrel").get())
+                .define('B', STORAGE_BLOCKS.get("du_barrel").get())
                 .define('G', forgePlate(Materials.platinum))
                 .define('P', NC_PARTS.get("plate_elite").get())
                 .unlockedBy("item", has(NC_PARTS.get("plate_elite").get()))

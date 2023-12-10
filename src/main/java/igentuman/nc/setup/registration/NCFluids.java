@@ -10,6 +10,7 @@ import igentuman.nc.fluid.NCFluid;
 import igentuman.nc.block.NCFluidBlock;
 import igentuman.nc.content.fuel.FuelManager;
 import igentuman.nc.util.TextureUtil;
+import igentuman.nc.util.collection.HashList;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
@@ -310,6 +311,8 @@ public class NCFluids {
     )
     {
 
+        public static final List<RegistryObject<BucketItem>> ALL_BUCKETS = new ArrayList<>();
+
         public static FluidEntry makeAcid(AcidDefinition acid) {
             return make(acid.name,0, rl("block/material/fluid/liquid_still"), rl("block/material/fluid/liquid_flow"), liquidBuilder(acid.temperature), acid.color, false);
         }
@@ -415,6 +418,7 @@ public class NCFluids {
                     p -> new NCFluidBlock(thisMutable.getValue(), p)
             );
             RegistryObject<BucketItem> bucket = NCItems.ITEMS.register(name+"_bucket", () -> makeBucket(still, burnTime));
+            ALL_BUCKETS.add(bucket);
             FluidEntry entry = new FluidEntry(flowing, still, block, bucket, type, properties, color);
             thisMutable.setValue(entry);
             ALL_FLUID_BLOCKS.add(block);

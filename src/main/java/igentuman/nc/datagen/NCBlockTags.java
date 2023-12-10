@@ -10,7 +10,6 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.tags.BlockTags;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.BlockTagsProvider;
-import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.data.event.GatherDataEvent;
 
 import static igentuman.nc.NuclearCraft.MODID;
@@ -19,7 +18,7 @@ import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_CORE_PROXY;
 import static igentuman.nc.setup.registration.NCBlocks.NC_ELECTROMAGNETS;
 import static igentuman.nc.setup.registration.NCBlocks.NC_RF_AMPLIFIERS;
-import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCK;
+import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCKS;
 
 public class NCBlockTags extends BlockTagsProvider {
 
@@ -78,9 +77,9 @@ public class NCBlockTags extends BlockTagsProvider {
             tag(BlockTags.MINEABLE_WITH_PICKAXE).add(NCEnergyBlocks.ENERGY_BLOCKS.get(block).get());
             tag(BlockTags.NEEDS_IRON_TOOL).add(NCEnergyBlocks.ENERGY_BLOCKS.get(block).get());
         }
-        for(String block: STORAGE_BLOCK.keySet()) {
-            tag(BlockTags.MINEABLE_WITH_PICKAXE).add(STORAGE_BLOCK.get(block).get());
-            tag(BlockTags.NEEDS_IRON_TOOL).add(STORAGE_BLOCK.get(block).get());
+        for(String block: STORAGE_BLOCKS.keySet()) {
+            tag(BlockTags.MINEABLE_WITH_PICKAXE).add(STORAGE_BLOCKS.get(block).get());
+            tag(BlockTags.NEEDS_IRON_TOOL).add(STORAGE_BLOCKS.get(block).get());
         }
         for(String block: NCProcessors.PROCESSORS.keySet()) {
             tag(BlockTags.MINEABLE_WITH_PICKAXE).add(NCProcessors.PROCESSORS.get(block).get());

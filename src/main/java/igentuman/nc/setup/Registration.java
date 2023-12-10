@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.setup.registration.CreativeTabs.CREATIVE_TABS;
 
 public class Registration {
 
@@ -70,7 +71,7 @@ public class Registration {
         ENTITIES.register(bus);
         STRUCTURES.register(bus);
         BIOME_MODIFIERS.register(bus);
-        //PLACED_FEATURES.register(bus);
+        PLACED_FEATURES.register(bus);
         FEATURE_REGISTER.register(bus);
         CONTAINERS.register(bus);
         SERIALIZERS.register(bus);
@@ -93,6 +94,7 @@ public class Registration {
         NcRecipeSerializers.RECIPE_SERIALIZERS.register(bus);
         NcRecipeType.RECIPE_TYPES.register(bus);
         NCSounds.SOUND_EVENTS.register(bus);
+        CREATIVE_TABS.register(bus);
     }
 
     private static void initOreGeneration() {

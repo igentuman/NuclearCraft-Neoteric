@@ -32,11 +32,6 @@ public class MultitoolItem extends Item
 
 	public MultitoolItem(Properties props)
 	{
-		this(props, CreativeTabs.NC_ITEMS);
-	}
-
-	public MultitoolItem(Properties props, CreativeModeTab group)
-	{
 		super(props);
 	}
 

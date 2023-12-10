@@ -15,12 +15,8 @@ import java.util.List;
 
 public class ProcessorBlockItem extends BlockItem
 {
-	public ProcessorBlockItem(Block pBlock, Properties props)
-	{
-		this(pBlock, props, CreativeTabs.NC_BLOCKS);
-	}
 
-	public ProcessorBlockItem(Block pBlock, Properties props, CreativeModeTab group)
+	public ProcessorBlockItem(Block pBlock, Properties props)
 	{
 		super(pBlock, new Properties());
 	}

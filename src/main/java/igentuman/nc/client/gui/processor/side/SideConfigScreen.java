@@ -121,7 +121,7 @@ public class SideConfigScreen<T extends NCProcessorContainer<T>> extends Abstrac
     private void renderTooltips(GuiGraphics graphics, int pMouseX, int pMouseY) {
         for(NCGuiElement widget: widgets) {
             if(widget.isMouseOver(pMouseX, pMouseY)) {
-                graphics.renderTooltip(font, widget.getTooltips(),Optional.empty(), pMouseX, pMouseY);
+                graphics.renderTooltip(font, widget.getTooltips(),Optional.empty(), pMouseX+relX, pMouseY+relY);
             }
         }
     }

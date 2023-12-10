@@ -76,21 +76,34 @@ public class CoolantRecipeSerializer<RECIPE extends NcRecipe> extends NcRecipeSe
     @Override
     public RECIPE fromNetwork(@NotNull ResourceLocation recipeId, @NotNull FriendlyByteBuf buffer) {
         try {
-
             int inputSize = buffer.readInt();
+            ItemStackIngredient[] inputItems = new ItemStackIngredient[inputSize];
+            for(int i = 0; i < inputSize; i++) {
+                inputItems[i] = IngredientCreatorAccess.item().read(buffer);
+            }
+
+            int outputSize = buffer.readInt();
+            ItemStack[] outputItems = new ItemStack[outputSize];
+            for(int i = 0; i < outputSize; i++) {
+                outputItems[i] =  buffer.readItem();
+            }
+
+            inputSize = buffer.readInt();
             FluidStackIngredient[] inputFluids = new FluidStackIngredient[inputSize];
             for(int i = 0; i < inputSize; i++) {
                 inputFluids[i] = IngredientCreatorAccess.fluid().read(buffer);
             }
 
-            int outputSize = buffer.readInt();
+            outputSize = buffer.readInt();
             FluidStack[] outputFluids = new FluidStack[outputSize];
             for(int i = 0; i < outputSize; i++) {
                 outputFluids[i] =  buffer.readFluidStack();
             }
             double coolingRate = buffer.readDouble();
+            double powerModifier = buffer.readDouble();
+            double radiation = buffer.readDouble();
 
-            return this.factory.create(recipeId, new ItemStackIngredient[]{}, new ItemStack[]{}, inputFluids,  outputFluids, 1, 1, 1, coolingRate);
+            return this.factory.create(recipeId, new ItemStackIngredient[]{}, new ItemStack[]{}, inputFluids,  outputFluids, coolingRate, 1, 1, 1);
         } catch (Exception e) {
             NuclearCraft.LOGGER.error("Error reading from packet.", e);
             throw e;

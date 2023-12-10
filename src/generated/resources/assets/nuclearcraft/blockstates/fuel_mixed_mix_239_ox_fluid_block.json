@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/fluid/fuel_mixed_mix_239_ox"
+      "model": "nuclearcraft_fluids:block/fluid/fuel_mixed_mix_239_ox"
     }
   }
 }

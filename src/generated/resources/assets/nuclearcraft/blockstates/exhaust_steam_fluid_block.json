@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/fluid/exhaust_steam"
+      "model": "nuclearcraft_fluids:block/fluid/exhaust_steam"
     }
   }
 }

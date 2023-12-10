@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "group": "nuclearcraft_fusion",
   "key": {
     "G": {
@@ -16,5 +17,6 @@
   ],
   "result": {
     "item": "nuclearcraft:fusion_reactor_casing_glass"
-  }
+  },
+  "show_notification": true
 }

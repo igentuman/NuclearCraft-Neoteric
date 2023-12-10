@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/fluid/hard_carbon"
+      "model": "nuclearcraft_fluids:block/fluid/hard_carbon"
     }
   }
 }

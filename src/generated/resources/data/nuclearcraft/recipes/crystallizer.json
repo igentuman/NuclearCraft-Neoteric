@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "group": "nuclearcraft",
   "key": {
     "C": {
@@ -22,5 +23,6 @@
   ],
   "result": {
     "item": "nuclearcraft:crystallizer"
-  }
+  },
+  "show_notification": true
 }

@@ -46,7 +46,7 @@ public abstract class ExtendedBlockstateProvider extends BlockStateProvider
 
 	public ExtendedBlockstateProvider(DataGenerator gen, ExistingFileHelper exFileHelper)
 	{
-		super(gen.getPackOutput(), MODID, exFileHelper);
+		super(gen.getPackOutput(), MODID+"_fluids", exFileHelper);
 		this.existingFileHelper = exFileHelper;
 		this.innerModels = new NongeneratedModels(gen, existingFileHelper);
 	}

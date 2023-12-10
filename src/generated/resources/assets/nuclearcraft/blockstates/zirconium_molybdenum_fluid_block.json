@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/fluid/zirconium_molybdenum"
+      "model": "nuclearcraft_fluids:block/fluid/zirconium_molybdenum"
     }
   }
 }

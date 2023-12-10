@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "group": "nuclearcraft",
   "key": {
     "C": {
@@ -25,5 +26,6 @@
   ],
   "result": {
     "item": "nuclearcraft:irradiator"
-  }
+  },
+  "show_notification": true
 }

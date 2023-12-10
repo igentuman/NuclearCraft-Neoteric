@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/fluid/lithium_fluoride"
+      "model": "nuclearcraft_fluids:block/fluid/lithium_fluoride"
     }
   }
 }

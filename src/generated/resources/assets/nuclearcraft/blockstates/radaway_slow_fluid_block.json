@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/fluid/radaway_slow"
+      "model": "nuclearcraft_fluids:block/fluid/radaway_slow"
     }
   }
 }

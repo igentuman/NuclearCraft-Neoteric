@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "B": {
       "tag": "forge:plates/thermoconducting"
@@ -18,5 +19,6 @@
   ],
   "result": {
     "item": "nuclearcraft:lava_collector"
-  }
+  },
+  "show_notification": true
 }

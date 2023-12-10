@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/fluid/sodium_fluoride_solution"
+      "model": "nuclearcraft_fluids:block/fluid/sodium_fluoride_solution"
     }
   }
 }

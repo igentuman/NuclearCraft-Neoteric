@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "group": "nuclearcraft_fission",
   "key": {
     "A": {
@@ -22,5 +23,6 @@
   ],
   "result": {
     "item": "nuclearcraft:empty_heat_sink"
-  }
+  },
+  "show_notification": true
 }

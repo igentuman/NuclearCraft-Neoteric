@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "M": {
       "tag": "forge:storage_blocks/magnesium"
@@ -18,5 +19,6 @@
   ],
   "result": {
     "item": "nuclearcraft:basic_voltaic_pile"
-  }
+  },
+  "show_notification": true
 }

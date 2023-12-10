@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/fluid/curium_243"
+      "model": "nuclearcraft_fluids:block/fluid/curium_243"
     }
   }
 }

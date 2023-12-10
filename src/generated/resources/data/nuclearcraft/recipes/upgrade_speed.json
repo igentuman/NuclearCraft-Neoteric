@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "L": {
       "tag": "forge:dusts/lapis"
@@ -18,5 +19,6 @@
   ],
   "result": {
     "item": "nuclearcraft:upgrade_speed"
-  }
+  },
+  "show_notification": true
 }

@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "B": {
       "tag": "forge:ingots/tough_alloy"
@@ -18,5 +19,6 @@
   ],
   "result": {
     "item": "nuclearcraft:basic_electromagnet"
-  }
+  },
+  "show_notification": true
 }

@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "B": {
       "tag": "forge:plates/beryllium"
@@ -21,5 +22,6 @@
   ],
   "result": {
     "item": "nuclearcraft:heavy"
-  }
+  },
+  "show_notification": true
 }

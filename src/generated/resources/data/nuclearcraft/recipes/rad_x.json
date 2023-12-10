@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "B": {
       "item": "nuclearcraft:bioplastic"
@@ -18,5 +19,6 @@
   ],
   "result": {
     "item": "nuclearcraft:rad_x"
-  }
+  },
+  "show_notification": true
 }

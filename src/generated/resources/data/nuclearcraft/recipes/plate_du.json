@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "P": {
       "item": "nuclearcraft:plate_advanced"
@@ -18,5 +19,6 @@
   ],
   "result": {
     "item": "nuclearcraft:plate_du"
-  }
+  },
+  "show_notification": true
 }

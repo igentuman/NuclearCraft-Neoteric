@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "D": {
       "tag": "forge:plates/lithium_manganese_dioxide"
@@ -21,5 +22,6 @@
   ],
   "result": {
     "item": "nuclearcraft:elite_lithium_ion_battery"
-  }
+  },
+  "show_notification": true
 }

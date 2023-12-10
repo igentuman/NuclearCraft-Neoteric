@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/fluid/thorium_232_ox"
+      "model": "nuclearcraft_fluids:block/fluid/thorium_232_ox"
     }
   }
 }

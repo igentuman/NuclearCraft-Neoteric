@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "B": {
       "tag": "forge:ingots/extreme"
@@ -18,5 +19,6 @@
   ],
   "result": {
     "item": "nuclearcraft:plate_extreme"
-  }
+  },
+  "show_notification": true
 }

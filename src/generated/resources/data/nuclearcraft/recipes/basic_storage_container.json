@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "C": {
       "item": "minecraft:chest"
@@ -15,5 +16,6 @@
   ],
   "result": {
     "item": "nuclearcraft:basic_storage_container"
-  }
+  },
+  "show_notification": true
 }

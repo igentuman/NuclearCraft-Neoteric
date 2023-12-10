@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/fluid/pasteurized_milk"
+      "model": "nuclearcraft_fluids:block/fluid/pasteurized_milk"
     }
   }
 }

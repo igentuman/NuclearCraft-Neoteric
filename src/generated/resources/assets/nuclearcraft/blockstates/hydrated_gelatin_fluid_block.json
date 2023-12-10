@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/fluid/hydrated_gelatin"
+      "model": "nuclearcraft_fluids:block/fluid/hydrated_gelatin"
     }
   }
 }

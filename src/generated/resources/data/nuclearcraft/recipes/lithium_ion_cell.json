@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "C": {
       "tag": "forge:plates/hard_carbon"
@@ -21,5 +22,6 @@
   ],
   "result": {
     "item": "nuclearcraft:lithium_ion_cell"
-  }
+  },
+  "show_notification": true
 }

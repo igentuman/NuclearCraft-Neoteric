@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/fluid/hydrogen_chloride"
+      "model": "nuclearcraft_fluids:block/fluid/hydrogen_chloride"
     }
   }
 }

@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "C": {
       "item": "nuclearcraft:advanced_storage_container"
@@ -18,5 +19,6 @@
   ],
   "result": {
     "item": "nuclearcraft:du_storage_container"
-  }
+  },
+  "show_notification": true
 }

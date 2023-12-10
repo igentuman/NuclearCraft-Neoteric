@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/fluid/sic_sic_cmc"
+      "model": "nuclearcraft_fluids:block/fluid/sic_sic_cmc"
     }
   }
 }

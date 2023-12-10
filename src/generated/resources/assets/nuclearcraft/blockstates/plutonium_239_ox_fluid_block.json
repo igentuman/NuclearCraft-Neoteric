@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/fluid/plutonium_239_ox"
+      "model": "nuclearcraft_fluids:block/fluid/plutonium_239_ox"
     }
   }
 }

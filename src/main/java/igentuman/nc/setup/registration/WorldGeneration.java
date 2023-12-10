@@ -10,7 +10,7 @@ import net.minecraftforge.registries.RegisterEvent;
 import static igentuman.nc.NuclearCraft.rl;
 
 public class WorldGeneration {
-   // public static final ResourceKey<Biome> WASTELAND_BIOME = makeKey("wasteland");
+   public static final ResourceKey<Biome> WASTELAND_BIOME = makeKey("wasteland");
 
     private static ResourceKey<Biome> makeKey(String name) {
         return ResourceKey.create(Registries.BIOME, rl(name));

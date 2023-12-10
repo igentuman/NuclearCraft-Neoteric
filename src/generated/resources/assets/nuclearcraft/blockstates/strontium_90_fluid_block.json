@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/fluid/strontium_90"
+      "model": "nuclearcraft_fluids:block/fluid/strontium_90"
     }
   }
 }

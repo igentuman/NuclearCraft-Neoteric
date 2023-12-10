@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "group": "nuclearcraft_solar_panels",
   "key": {
     "C": {
@@ -22,5 +23,6 @@
   ],
   "result": {
     "item": "nuclearcraft:solar_panel_advanced"
-  }
+  },
+  "show_notification": true
 }

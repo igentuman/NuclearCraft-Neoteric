@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/fluid/obsidian"
+      "model": "nuclearcraft_fluids:block/fluid/obsidian"
     }
   }
 }

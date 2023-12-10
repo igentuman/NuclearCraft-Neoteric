@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "G": {
       "tag": "forge:plates/steel"
@@ -15,5 +16,6 @@
   ],
   "result": {
     "item": "nuclearcraft:basic_barrel"
-  }
+  },
+  "show_notification": true
 }

@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/fluid/ruthenium_106"
+      "model": "nuclearcraft_fluids:block/fluid/ruthenium_106"
     }
   }
 }

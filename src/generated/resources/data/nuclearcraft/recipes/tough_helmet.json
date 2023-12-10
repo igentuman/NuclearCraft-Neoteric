@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "T": {
       "tag": "forge:ingots/tough_alloy"
@@ -12,5 +13,6 @@
   ],
   "result": {
     "item": "nuclearcraft:tough_helmet"
-  }
+  },
+  "show_notification": true
 }

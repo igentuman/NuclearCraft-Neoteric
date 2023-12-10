@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/fluid/redstone_ethanol"
+      "model": "nuclearcraft_fluids:block/fluid/redstone_ethanol"
     }
   }
 }

@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/fluid/hsla_steel"
+      "model": "nuclearcraft_fluids:block/fluid/hsla_steel"
     }
   }
 }

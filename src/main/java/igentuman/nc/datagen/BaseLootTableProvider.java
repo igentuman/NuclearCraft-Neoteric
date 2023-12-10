@@ -8,9 +8,11 @@ import net.minecraft.advancements.critereon.MinMaxBounds;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
+import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.data.loot.LootTableSubProvider;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Block;
@@ -28,12 +30,15 @@ import net.minecraft.world.level.storage.loot.providers.nbt.ContextNbtProvider;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 
-public abstract class BaseLootTableProvider implements LootTableSubProvider {
+import java.util.Set;
+
+public abstract class BaseLootTableProvider extends BlockLootSubProvider {
 
     public DataGenerator generator;
 
-    public BaseLootTableProvider(DataGenerator dataGeneratorIn) {
-        this.generator = dataGeneratorIn;
+    public BaseLootTableProvider() {
+        super(Set.of(), FeatureFlags.REGISTRY.allFlags());
+
     }
 
 

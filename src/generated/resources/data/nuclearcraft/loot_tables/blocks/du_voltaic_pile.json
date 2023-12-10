@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "nuclearcraft:du_voltaic_pile"
+        }
+      ],
+      "name": "block",
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "nuclearcraft:blocks/du_voltaic_pile"
+}

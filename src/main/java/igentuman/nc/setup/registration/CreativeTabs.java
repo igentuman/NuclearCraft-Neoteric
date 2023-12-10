@@ -76,10 +76,25 @@ public class CreativeTabs {
         items.addAll(itemStacks(NC_SHIELDING.values()));
         items.addAll(itemStacks(NC_INGOTS.values()));
         items.addAll(itemStacks(NC_DUSTS.values()));
+        items.addAll(itemStacks(NC_GEMS.values()));
         items.addAll(itemStacks(NC_NUGGETS.values()));
         items.addAll(itemStacks(NC_PLATES.values()));
         items.addAll(itemStacks(NC_ISOTOPES.values()));
         items.addAll(itemStacks(NC_FUEL.values()));
+        items.add(new ItemStack(HEV_HELMET.get()));
+        items.add(new ItemStack(HEV_CHEST.get()));
+        items.add(new ItemStack(HEV_PANTS.get()));
+        items.add(new ItemStack(HEV_BOOTS.get()));
+        items.add(new ItemStack(TOUGH_HELMET.get()));
+        items.add(new ItemStack(TOUGH_CHEST.get()));
+        items.add(new ItemStack(TOUGH_PANTS.get()));
+        items.add(new ItemStack(TOUGH_BOOTS.get()));
+        items.add(new ItemStack(SPAXELHOE_THORIUM.get()));
+        items.add(new ItemStack(SPAXELHOE_TOUGH.get()));
+        items.add(new ItemStack(QNP.get()));
+        items.add(new ItemStack(MULTITOOL.get()));
+        items.add(new ItemStack(GEIGER_COUNTER.get()));
+        items.add(new ItemStack(LITHIUM_ION_CELL.get()));
         return items;
     }
 

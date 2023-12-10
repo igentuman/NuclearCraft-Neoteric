@@ -1,6 +1,7 @@
 package igentuman.nc.datagen.recipes.builder;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import igentuman.nc.container.elements.NCSlotItemHandler;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
@@ -36,6 +37,7 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
     public String ID;
     private double rarityModifier = 1D;
     private double temperature = 0D;
+    private List<String> outputItemsText = List.of();
 
     protected NcRecipeBuilder(String id) {
         super(ncSerializer(id));
@@ -50,6 +52,12 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
     public NcRecipeBuilder items(List<NcIngredient> input, List<NcIngredient> output) {
         instance.inputItems = input;
         instance.outputItems = output;
+        return instance;
+    }
+
+    public NcRecipeBuilder itemsString(List<NcIngredient> input, List<String> output) {
+        instance.inputItems = input;
+        instance.outputItemsText = output;
         return instance;
     }
 
@@ -123,18 +131,30 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
         @Override
         public void serializeRecipeData(@NotNull JsonObject json) {
             JsonArray inputJson = new JsonArray();
-            for(Ingredient in: inputItems) {
-                inputJson.add(serializeIngredient(in));
-            }
+
             if(!inputItems.isEmpty()) {
+                for(Ingredient in: inputItems) {
+                    inputJson.add(serializeIngredient(in));
+                }
                 json.add("input", inputJson);
             }
 
             JsonArray outJson = new JsonArray();
-            for (Ingredient out: outputItems) {
-                outJson.add(serializeIngredient(out));
-            }
+
             if(!outputItems.isEmpty()) {
+                for (Ingredient out: outputItems) {
+                    outJson.add(serializeIngredient(out));
+                }
+                json.add("output", outJson);
+            }
+
+            if(!outputItemsText.isEmpty()) {
+                outJson = new JsonArray();
+                for(String out: outputItemsText) {
+                    JsonObject item = new JsonObject();
+                    item.addProperty("item", out);
+                    outJson.add(item);
+                }
                 json.add("output", outJson);
             }
 

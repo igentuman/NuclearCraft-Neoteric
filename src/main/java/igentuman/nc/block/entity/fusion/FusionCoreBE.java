@@ -322,7 +322,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
     @Override
     public void tickServer() {
         changed = false;
-        if(NuclearCraft.instance.isNcBeStopped) return;
+        if(NuclearCraft.instance.isNcBeStopped || isRemoved()) return;
         if(!initialized) {
             initialized = true;
             FusionCoreBlock block = (FusionCoreBlock) getBlockState().getBlock();

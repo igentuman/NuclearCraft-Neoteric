@@ -35,6 +35,9 @@ public abstract class AbstractRecipeProvider {
     public static String ID;
 
     public static Consumer<FinishedRecipe> consumer;
+    private static List<NcIngredient> input;
+    private static List<NcIngredient> output;
+    private static double[] params;
 
     protected static NcIngredient ingredient(TagKey<Item> item, int...count) {
         return NcIngredient.of(item, count);
@@ -120,6 +123,16 @@ public abstract class AbstractRecipeProvider {
                 .build(consumer);
     }
 
+    public static void itemsToItemsString(List<NcIngredient> input, List<String> output, double...params) {
+        double timeModifier = params.length>0 ? params[0] : 1.0;
+        double powerModifier = params.length>1 ? params[1] : 1.0;
+        double radiation = params.length>2 ? params[2] : 1.0;
+        NcRecipeBuilder.get(ID)
+                .itemsString(input, output)
+                .modifiers(timeModifier, radiation, powerModifier)
+                .build(consumer);
+    }
+
     public static void oreVein(List<NcIngredient> input, NcIngredient output, String nameKey, double...params) {
         double timeModifier = params.length>0 ? params[0] : 1.0;
         double powerModifier = params.length>1 ? params[1] : 1.0;
@@ -184,6 +197,14 @@ public abstract class AbstractRecipeProvider {
         return BARRIER;
     }
 
+    public static Item nuggetItem(String name)
+    {
+        if(NC_NUGGETS.get(name) == null) {
+            System.out.println("null nugget: " + name);
+        }
+        return NC_NUGGETS.get(name).get();
+    }
+
     public static Item dustItem(String name)
     {
         if(NC_DUSTS.get(name) == null) {
@@ -205,6 +226,13 @@ public abstract class AbstractRecipeProvider {
         int count = 1;
         if(pCount.length > 0) count = pCount[0];
         return NcIngredient.stack(stack(dustItem(name), count));
+    }
+
+    public static NcIngredient nuggetStack(String name, int...pCount)
+    {
+        int count = 1;
+        if(pCount.length > 0) count = pCount[0];
+        return NcIngredient.stack(stack(nuggetItem(name), count));
     }
 
     public static NcIngredient ingotStack(String name, int...pCount)

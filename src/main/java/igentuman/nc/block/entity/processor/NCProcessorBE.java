@@ -308,7 +308,7 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
     }
 
     public void tickServer() {
-        if(NuclearCraft.instance.isNcBeStopped) return;
+        if(NuclearCraft.instance.isNcBeStopped || isRemoved()) return;
         if(redstoneMode == 1 && !hasRedstoneSignal()) return;
         if(howMuchICanSkip() >= skippedTicks) {
             skippedTicks++;

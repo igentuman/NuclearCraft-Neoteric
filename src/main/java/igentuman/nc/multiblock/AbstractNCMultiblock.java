@@ -243,8 +243,14 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
         }
     }
 
+    public boolean isLoaded(BlockPos pos)
+    {
+        return getLevel().isLoaded(pos);
+    }
+
     public void onControllerRemoved() {
         for(BlockPos b: allBlocks) {
+            if(!isLoaded(b)) continue;
             BlockEntity be = getLevel().getBlockEntity(b);
             if(be instanceof IMultiblockAttachable) {
                 ((IMultiblockAttachable) be).setMultiblock(null);

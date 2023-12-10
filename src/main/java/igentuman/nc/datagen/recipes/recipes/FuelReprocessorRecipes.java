@@ -13,6 +13,14 @@ public class FuelReprocessorRecipes extends AbstractRecipeProvider {
     public static void generate(Consumer<FinishedRecipe> consumer) {
         FuelReprocessorRecipes.consumer = consumer;
         ID = Processors.FUEL_REPROCESSOR;
+
+        addString(
+                ingotIngredient("cyanite", 3),
+                List.of(
+                        "bigreactors:blutonium_ingot"
+                ), 4.5D
+        );
+
         for (String type: List.of("", "tr")) {
             add(
                     fuelIngredient(List.of("depleted", "americium", "hea-242", type), 9),
@@ -255,6 +263,11 @@ public class FuelReprocessorRecipes extends AbstractRecipeProvider {
         }
 
     }
+
+    private static void addString(NcIngredient input, List<String> output, double...modifiers) {
+        itemsToItemsString(List.of(input), output, modifiers);
+    }
+
 
     private static void add(NcIngredient input, List<NcIngredient> output, double...modifiers) {
         itemsToItems(List.of(input), output, modifiers);

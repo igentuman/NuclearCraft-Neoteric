@@ -253,7 +253,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
 
 
     public void tickServer() {
-        if(NuclearCraft.instance.isNcBeStopped) {
+        if(NuclearCraft.instance.isNcBeStopped || isRemoved()) {
             irradiationHeat = 0;
             return;
         }
@@ -349,6 +349,9 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
 
     public void setRemoved() {
         super.setRemoved();
+        if(getLevel().isClientSide()) {
+            return;
+        }
         if(multiblock() != null) {
             multiblock().onControllerRemoved();
         }

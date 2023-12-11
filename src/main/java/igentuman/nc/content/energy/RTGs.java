@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.energy.NCEnergy;
 import igentuman.nc.block.entity.energy.RTGBE;
 import igentuman.nc.handler.config.CommonConfig;
@@ -85,14 +86,15 @@ public class RTGs {
         public RTGPrefab config()
         {
             if(!initialized) {
-                if(!CommonConfig.isLoaded()) {
-                    return this;
+                try {
+                    int id = RTGs.all().keySet().stream().toList().indexOf(name);
+                    registered = ENERGY_GENERATION.REGISTER_RTG.get().get(id);
+                    generation = ENERGY_GENERATION.RTG_GENERATION.get().get(id);
+                    radiation = ENERGY_GENERATION.RTG_RADIATION.get().get(id);
+                    initialized = true;
+                } catch (Exception e) {
+                    NuclearCraft.LOGGER.error("Error while loading config for " + name + "!");
                 }
-                int id = RTGs.all().keySet().stream().toList().indexOf(name);
-                registered = ENERGY_GENERATION.REGISTER_RTG.get().get(id);
-                generation = ENERGY_GENERATION.RTG_GENERATION.get().get(id);
-                radiation = ENERGY_GENERATION.RTG_RADIATION.get().get(id);
-                initialized = true;
             }
             return this;
         }

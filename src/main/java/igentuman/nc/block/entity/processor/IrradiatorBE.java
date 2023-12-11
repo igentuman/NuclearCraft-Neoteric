@@ -81,7 +81,7 @@ public class IrradiatorBE extends NCProcessorBE<IrradiatorBE.Recipe> implements 
                     controller = (FissionControllerBE<?>) multiblock.controller().controllerBE();
                     if(controller.isProcessing()) {
                         irradiativeFlux = controller.irradiationConnections;
-                        fuelMultiplier = controller.getRecipe().getRadiation()*10000;
+                        fuelMultiplier = controller.recipeInfo.recipe().getRadiation()*10000;
                     }
                 }
             }

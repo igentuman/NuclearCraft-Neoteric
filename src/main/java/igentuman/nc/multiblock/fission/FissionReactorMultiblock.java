@@ -153,6 +153,12 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
         for (Direction d : Direction.values()) {
             if (isFuelCell(toCheck.revert().relative(d))) {
                 count+=step;
+                continue;
+            }
+            if(isModerator(toCheck.revert().relative(d), getLevel())) {
+                if(isFuelCell(toCheck.revert().relative(d, 2))) {
+                    count += step;
+                }
             }
         }
         return count;

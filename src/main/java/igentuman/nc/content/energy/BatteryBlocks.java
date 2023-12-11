@@ -1,5 +1,6 @@
 package igentuman.nc.content.energy;
 
+import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.energy.BatteryBE;
 import igentuman.nc.block.entity.energy.NCEnergy;
 import igentuman.nc.handler.config.CommonConfig;
@@ -80,13 +81,14 @@ public class BatteryBlocks {
         public BatteryBlockPrefab config()
         {
             if(!initialized) {
-                if(!CommonConfig.isLoaded()) {
-                    return this;
+                try {
+                    int id = BatteryBlocks.all().keySet().stream().toList().indexOf(name);
+                    registered = ENERGY_STORAGE.REGISTER_ENERGY_BLOCK.get().get(id);
+                    storage = ENERGY_STORAGE.ENERGY_BLOCK_STORAGE.get().get(id);
+                    initialized = true;
+                } catch (Exception e) {
+                    NuclearCraft.LOGGER.error("Error while loading config for " + name + "!");
                 }
-                int id = BatteryBlocks.all().keySet().stream().toList().indexOf(name);
-                registered = ENERGY_STORAGE.REGISTER_ENERGY_BLOCK.get().get(id);
-                storage = ENERGY_STORAGE.ENERGY_BLOCK_STORAGE.get().get(id);
-                initialized = true;
             }
             return this;
         }

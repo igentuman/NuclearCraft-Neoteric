@@ -24,7 +24,7 @@ public class ForgeHooksMixin {
         Map<ResourceKey<?>, RegistryResourceAccess.EntryThunk<?>> map1 = new HashMap<>();
         for(Map.Entry<ResourceKey<?>, RegistryResourceAccess.EntryThunk<?>> entry : cir.getReturnValue()) {
             String name = entry.getKey().location().getPath();
-            if(!entry.getKey().location().getNamespace().equals(MODID) && !name.contains("nc_ores_"))  {
+            if(!entry.getKey().location().getNamespace().equals(MODID) || !name.contains("nc_ores_"))  {
                 map1.put(entry.getKey(), entry.getValue());
                 continue;
             }

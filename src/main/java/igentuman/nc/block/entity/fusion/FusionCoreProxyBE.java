@@ -101,9 +101,9 @@ public class FusionCoreProxyBE extends FusionBE {
             return controller().getEnergy().cast();
         }
         if(isCcLoaded()) {
-/*            if(cap == dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL) {
+            if(cap == dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL) {
                 return controller().getPeripheral(cap, side);
-            }*/
+            }
         }
 
         if(isMekanismLoadeed()) {

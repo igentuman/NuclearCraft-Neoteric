@@ -38,7 +38,7 @@ public class NCProcessorPacket {
         context.enqueueWork(() -> {
 
             ServerPlayer player = context.getSender();
-            BlockEntity be = player.level.getBlockEntity(pos);
+            BlockEntity be = player.level().getBlockEntity(pos);
 
         });
         return true;

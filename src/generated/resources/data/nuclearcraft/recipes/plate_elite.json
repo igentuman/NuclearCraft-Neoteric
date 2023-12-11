@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "B": {
       "tag": "forge:ingots/boron"
@@ -18,5 +19,6 @@
   ],
   "result": {
     "item": "nuclearcraft:plate_elite"
-  }
+  },
+  "show_notification": true
 }

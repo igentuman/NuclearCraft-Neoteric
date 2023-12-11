@@ -170,7 +170,7 @@ public abstract class AbstractRecipeProvider {
             key = name.split(":")[0];
             name = name.split(":")[1];
         }
-        return TagKey.create(Registry.FLUID_REGISTRY, new ResourceLocation(key, name));
+        return TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(), new ResourceLocation(key, name));
     }
 
     public static Item blockItem(String name)

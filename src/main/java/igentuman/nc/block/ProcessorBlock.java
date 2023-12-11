@@ -38,7 +38,6 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
@@ -50,7 +49,7 @@ public class ProcessorBlock extends HorizontalDirectionalBlock implements Entity
     public static final DirectionProperty HORIZONTAL_FACING = FACING;
     public static final BooleanProperty ACTIVE = BlockStateProperties.POWERED;
     public ProcessorBlock() {
-        this(Properties.of(Material.METAL)
+        this(Properties.of()
                 .sound(SoundType.METAL)
                 .strength(2.0f)
                 .noOcclusion()

@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "group": "nuclearcraft_machines",
   "key": {
     "C": {
@@ -19,5 +20,6 @@
   ],
   "result": {
     "item": "nuclearcraft:pump"
-  }
+  },
+  "show_notification": true
 }

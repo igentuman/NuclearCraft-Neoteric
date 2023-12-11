@@ -67,7 +67,7 @@ public class FusionCoreItem extends BlockItem
 			for(int y = 0; y < 3; y++) {
 				for(int z = -1; z < 2; z++) {
 					BlockState st = world.getBlockState(blockPos.offset(x, y, z));
-					if(!st.getMaterial().isReplaceable()) return false;
+					if(!st.canBeReplaced()) return false;
 				}
 			}
 		}

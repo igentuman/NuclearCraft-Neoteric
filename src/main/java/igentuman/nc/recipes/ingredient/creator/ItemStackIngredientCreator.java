@@ -28,6 +28,8 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import static igentuman.nc.setup.registration.NCBlocks.ITEM_REGISTRY;
+
 @NothingNullByDefault
 public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
 
@@ -171,7 +173,7 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
         public List<String> getItemsByTagKey(String key)
         {
             List<String> tmp = new ArrayList<>();
-            TagKey<Item> tag = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(key));
+            TagKey<Item> tag = TagKey.create(ITEM_REGISTRY, new ResourceLocation(key));
             Ingredient ing = Ingredient.fromValues(Stream.of(new Ingredient.TagValue(tag)));
             for (ItemStack item: ing.getItems()) {
                 tmp.add(item.getItem().toString());

@@ -4,9 +4,9 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiComponent;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.Widget;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -15,7 +15,6 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
@@ -25,7 +24,7 @@ import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
 
-public class NCGuiElement extends GuiComponent implements Widget, GuiEventListener, NarratableEntry {
+public class NCGuiElement extends AbstractWidget {
     protected static ResourceLocation TEXTURE = new ResourceLocation(MODID, "textures/gui/widgets.png");
     public static int RELATIVE_X = 0;
     public static int RELATIVE_Y = 0;
@@ -37,6 +36,10 @@ public class NCGuiElement extends GuiComponent implements Widget, GuiEventListen
     protected List<Component> tooltips = new ArrayList<>();
     protected AbstractContainerScreen screen;
     protected int slotId;
+
+    public NCGuiElement(int pX, int pY, int pWidth, int pHeight, Component pMessage) {
+        super(pX, pY, pWidth, pHeight, pMessage);
+    }
 
     public int X()
     {
@@ -68,16 +71,16 @@ public class NCGuiElement extends GuiComponent implements Widget, GuiEventListen
     }
 
     @Override
-    public void updateNarration(NarrationElementOutput pNarrationElementOutput) {
-
+    public void render(GuiGraphics graphics, int pMouseX, int pMouseY, float pPartialTick) {
+        if (this.visible) {
+            this.isHovered = pMouseX >= this.x && pMouseY >= this.y && pMouseX < this.x + this.width && pMouseY < this.y + this.height;
+            this.renderButton(graphics, pMouseX, pMouseY, pPartialTick);
+        }
     }
 
     @Override
-    public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
-        if (this.visible) {
-            this.isHovered = pMouseX >= this.x && pMouseY >= this.y && pMouseX < this.x + this.width && pMouseY < this.y + this.height;
-            this.renderButton(pPoseStack, pMouseX, pMouseY, pPartialTick);
-        }
+    protected void renderWidget(GuiGraphics guiGraphics, int i, int i1, float v) {
+
     }
 
     protected void onFocusedChanged(boolean pFocused) {
@@ -87,7 +90,7 @@ public class NCGuiElement extends GuiComponent implements Widget, GuiEventListen
         return this.active && this.visible && pMouseX >= (double)this.x && pMouseY >= (double)this.y && pMouseX < (double)(this.x + this.width) && pMouseY < (double)(this.y + this.height);
     }
 
-    public void renderToolTip(PoseStack pPoseStack, int pMouseX, int pMouseY) {
+    public void renderToolTip(GuiGraphics graphics, int pMouseX, int pMouseY) {
 
     }
 
@@ -113,7 +116,7 @@ public class NCGuiElement extends GuiComponent implements Widget, GuiEventListen
         }
     }
 
-    public void renderButton(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
+    public void renderButton(GuiGraphics graphics, int pMouseX, int pMouseY, float pPartialTick) {
         Minecraft minecraft = Minecraft.getInstance();
         Font font = minecraft.font;
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
@@ -123,11 +126,11 @@ public class NCGuiElement extends GuiComponent implements Widget, GuiEventListen
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.enableDepthTest();
-        this.blit(pPoseStack, this.x, this.y, 0, 46 + i * 20, this.width / 2, this.height);
-        this.blit(pPoseStack, this.x + this.width / 2, this.y, 200 - this.width / 2, 46 + i * 20, this.width / 2, this.height);
-        this.renderBg(pPoseStack, minecraft, pMouseX, pMouseY);
+        graphics.blit(TEXTURE, this.x, this.y, 0, 46 + i * 20, this.width / 2, this.height);
+        graphics.blit(TEXTURE, this.x + this.width / 2, this.y, 200 - this.width / 2, 46 + i * 20, this.width / 2, this.height);
+        this.renderBg(graphics, minecraft, pMouseX, pMouseY);
         int j = getFGColor();
-        drawCenteredString(pPoseStack, font, this.getMessage(), this.x + this.width / 2, this.y + (this.height - 8) / 2, j | Mth.ceil(this.alpha * 255.0F) << 24);
+        graphics.drawCenteredString(font, this.getMessage(), this.x + this.width / 2, this.y + (this.height - 8) / 2, j | Mth.ceil(this.alpha * 255.0F) << 24);
     }
 
     public static final int UNSET_FG_COLOR = -1;
@@ -143,7 +146,7 @@ public class NCGuiElement extends GuiComponent implements Widget, GuiEventListen
         this.packedFGColor = UNSET_FG_COLOR;
     }
 
-    protected void renderBg(PoseStack pPoseStack, Minecraft pMinecraft, int pMouseX, int pMouseY) {
+    protected void renderBg(GuiGraphics graphics, Minecraft pMinecraft, int pMouseX, int pMouseY) {
     }
 
     public int getWidth() {
@@ -190,7 +193,12 @@ public class NCGuiElement extends GuiComponent implements Widget, GuiEventListen
         }
     }
 
-    public void draw(PoseStack transform, int mX, int mY, float pTicks) {
+    @Override
+    protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
+
+    }
+
+    public void draw(GuiGraphics graphics, int mX, int mY, float pTicks) {
         RenderSystem.setShaderTexture(0, TEXTURE);
     }
 

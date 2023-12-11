@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/fluid/cocoa_butter"
+      "model": "nuclearcraft_fluids:block/fluid/cocoa_butter"
     }
   }
 }

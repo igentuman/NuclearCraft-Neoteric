@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/fluid/chocolate_liquor"
+      "model": "nuclearcraft_fluids:block/fluid/chocolate_liquor"
     }
   }
 }

@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/fluid/promethium_147"
+      "model": "nuclearcraft_fluids:block/fluid/promethium_147"
     }
   }
 }

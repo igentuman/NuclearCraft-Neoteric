@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "C": {
       "item": "nuclearcraft:lithium_ion_cell"
@@ -18,5 +19,6 @@
   ],
   "result": {
     "item": "nuclearcraft:basic_lithium_ion_battery"
-  }
+  },
+  "show_notification": true
 }

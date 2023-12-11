@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "B": {
       "tag": "forge:ingots/lead_platinum"
@@ -21,5 +22,6 @@
   ],
   "result": {
     "item": "nuclearcraft:dps"
-  }
+  },
+  "show_notification": true
 }

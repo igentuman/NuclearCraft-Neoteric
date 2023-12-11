@@ -122,9 +122,9 @@ public class FissionPortBE extends FissionBE {
             return controller().getEnergy().cast();
         }
         if(isCcLoaded()) {
-            if(cap == dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL) {
+/*            if(cap == dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL) {
                 return controller().getPeripheral(cap, side);
-            }
+            }*/
         }
         return super.getCapability(cap, side);
     }

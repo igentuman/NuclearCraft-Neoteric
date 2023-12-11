@@ -22,6 +22,7 @@ import net.minecraftforge.client.model.generators.*;
 import net.minecraftforge.client.model.generators.VariantBlockStateBuilder.PartialBlockstate;
 import net.minecraftforge.client.model.generators.loaders.ObjModelBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
@@ -45,7 +46,7 @@ public abstract class ExtendedBlockstateProvider extends BlockStateProvider
 
 	public ExtendedBlockstateProvider(DataGenerator gen, ExistingFileHelper exFileHelper)
 	{
-		super(gen, MODID, exFileHelper);
+		super(gen.getPackOutput(), MODID+"_fluids", exFileHelper);
 		this.existingFileHelper = exFileHelper;
 		this.innerModels = new NongeneratedModels(gen, existingFileHelper);
 	}
@@ -57,7 +58,7 @@ public abstract class ExtendedBlockstateProvider extends BlockStateProvider
 
 	protected String name(Block b)
 	{
-		return Registry.BLOCK.getKey(b).getPath();
+		return ForgeRegistries.BLOCKS.getKey(b).getPath();
 	}
 
 	public void simpleBlockAndItem(Supplier<? extends Block> b, ModelFile model)

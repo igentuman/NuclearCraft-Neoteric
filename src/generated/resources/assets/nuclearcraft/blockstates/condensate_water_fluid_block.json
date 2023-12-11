@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/fluid/condensate_water"
+      "model": "nuclearcraft_fluids:block/fluid/condensate_water"
     }
   }
 }

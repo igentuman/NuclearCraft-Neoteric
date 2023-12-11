@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "B": {
       "tag": "forge:plates/thorium"
@@ -21,5 +22,6 @@
   ],
   "result": {
     "item": "nuclearcraft:helium_collector"
-  }
+  },
+  "show_notification": true
 }

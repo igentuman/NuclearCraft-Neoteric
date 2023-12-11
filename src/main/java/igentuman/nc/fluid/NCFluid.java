@@ -6,6 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.LiquidBlock;
@@ -144,7 +145,7 @@ public class NCFluid extends FlowingFluid
 	}
 
 	@Override
-	protected boolean canConvertToSource()
+	protected boolean canConvertToSource(Level level)
 	{
 		return false;
 	}
@@ -188,7 +189,7 @@ public class NCFluid extends FlowingFluid
 			builder.add(LEVEL);
 		}
 
-		protected void spread(LevelAccessor pLevel, BlockPos pPos, FluidState pState) {
+		protected void spread(Level pLevel, BlockPos pPos, FluidState pState) {
 			if(entry.getFlowing().getFluidType().getDensity() > -1000) {
 				super.spread(pLevel, pPos, pState);
 				return;

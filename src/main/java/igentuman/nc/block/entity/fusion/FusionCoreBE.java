@@ -751,9 +751,9 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         double explosionRadius = FUSION_CONFIG.EXPLOSION_RADIUS.get();
         if (explosionRadius > 0) {
             BlockPos pos = getBlockPos();
-            getLevel().explode(null,
+/*            getLevel().explode(null,
                     pos.getX(), pos.getY(), pos.getZ(),
-                    1, true, Explosion.BlockInteraction.NONE);
+                    1, true, Explosion.BlockInteraction.NONE);*/
         }
     }
 

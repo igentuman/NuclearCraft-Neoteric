@@ -17,14 +17,10 @@ import java.util.List;
 
 public class ContainerBlockItem extends BlockItem
 {
+
 	public ContainerBlockItem(Block pBlock, Properties props)
 	{
-		this(pBlock, props, CreativeTabs.NC_BLOCKS);
-	}
-
-	public ContainerBlockItem(Block pBlock, Properties props, CreativeModeTab group)
-	{
-		super(pBlock, new Properties().tab(group).stacksTo(1));
+		super(pBlock, new Properties().stacksTo(1));
 	}
 
 

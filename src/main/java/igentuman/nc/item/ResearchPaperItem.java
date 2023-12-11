@@ -20,7 +20,7 @@ public class ResearchPaperItem extends Item {
 
     public ResearchPaperItem(Properties props, CreativeModeTab group)
     {
-        super(props.tab(group));
+        super(props);
     }
 
     @Override

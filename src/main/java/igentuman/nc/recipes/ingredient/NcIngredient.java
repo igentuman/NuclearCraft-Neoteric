@@ -17,6 +17,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.ItemLike;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
@@ -194,7 +195,7 @@ public class NcIngredient extends Ingredient {
 
       public JsonObject serialize() {
          JsonObject jsonobject = new JsonObject();
-         jsonobject.addProperty("item", Registry.ITEM.getKey(this.item.getItem()).toString());
+         jsonobject.addProperty("item", ForgeRegistries.ITEMS.getKey(this.item.getItem()).toString());
          if(item.hasTag()) {
             if(item.getTag().contains("Damage")) {
                if(item.getTag().getInt("Damage") == 0) {
@@ -232,8 +233,8 @@ public class NcIngredient extends Ingredient {
       public Collection<ItemStack> getItems() {
          List<ItemStack> list = Lists.newArrayList();
 
-         for(Holder<Item> holder : Registry.ITEM.getTagOrEmpty(this.tag)) {
-            list.add(new ItemStack(holder));
+         for(Item item : ForgeRegistries.ITEMS.tags().getTag(tag).stream().toList()) {
+            list.add(new ItemStack(item));
          }
 
          if (list.size() == 0) {

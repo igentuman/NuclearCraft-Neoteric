@@ -14,7 +14,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.Material;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
@@ -30,8 +29,8 @@ import static igentuman.nc.setup.Registration.ITEMS;
 public class NCEnergyBlocks {
     public static HashMap<String, RegistryObject<Block>> ENERGY_BLOCKS = new HashMap<>();
     public static HashMap<String, RegistryObject<Item>> BLOCK_ITEMS = new HashMap<>();
-    public static final Item.Properties ENERGY_ITEM_PROPERTIES = new Item.Properties().tab(CreativeTabs.NC_ITEMS);
-    public static final BlockBehaviour.Properties ENERGY_BLOCK_PROPERTIES = BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.METAL).strength(2f).requiresCorrectToolForDrops();
+    public static final Item.Properties ENERGY_ITEM_PROPERTIES = new Item.Properties();
+    public static final BlockBehaviour.Properties ENERGY_BLOCK_PROPERTIES = BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(2f).requiresCorrectToolForDrops();
     private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, MODID);
     public static HashMap<String, RegistryObject<BlockEntityType<? extends NCEnergy>>> ENERGY_BE = new HashMap<>();
 

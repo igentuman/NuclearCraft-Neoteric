@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/fluid/slurry_ice"
+      "model": "nuclearcraft_fluids:block/fluid/slurry_ice"
     }
   }
 }

@@ -20,6 +20,7 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -88,8 +89,9 @@ public class ProcessorCategoryWrapper<T extends NcRecipe> implements IRecipeCate
         return icon;
     }
     @Override
-    public void draw(T recipe, IRecipeSlotsView recipeSlotsView, PoseStack stack, double mouseX,
+    public void draw(T recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics graphics, double mouseX,
                      double mouseY) {
+
         int d = (int) ((recipe.getTimeModifier()*(double) processor.config().getTime())/2);
         int fluidsOut = processor.getSlotsConfig().getOutputFluids();
         int itemsOut = processor.getSlotsConfig().getOutputItems();
@@ -113,14 +115,14 @@ public class ProcessorCategoryWrapper<T extends NcRecipe> implements IRecipeCate
             if(processor.progressBar > 14) {
                 barHeight = 36;
             }
-            progressBackground.draw(stack, 47+xShift+25+barXshift+extraXshift, height/2-barHeight/2);
-            arrow.get(d).draw(stack, 47+xShift+25+barXshift+extraXshift, height/2-barHeight/2);
+            progressBackground.draw(graphics, 47+xShift+25+barXshift+extraXshift, height/2-barHeight/2);
+            arrow.get(d).draw(graphics, 47+xShift+25+barXshift+extraXshift, height/2-barHeight/2);
         }
 
         for(int i = 0; i < slots.length; i++) {
             if(slots[i] != null) {
                 int[] pos = processor.getSlotsConfig().getSlotPositions().get(i);
-                slots[i].draw(stack, pos[0]+xShift-1+barXshift, pos[1]+yShift-1);
+                slots[i].draw(graphics, pos[0]+xShift-1+barXshift, pos[1]+yShift-1);
             }
         }
     }

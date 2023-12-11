@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "B": {
       "item": "minecraft:nautilus_shell"
@@ -18,5 +19,6 @@
   ],
   "result": {
     "item": "nuclearcraft:water_collector"
-  }
+  },
+  "show_notification": true
 }

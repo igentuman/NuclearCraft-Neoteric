@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/fluid/borax_solution"
+      "model": "nuclearcraft_fluids:block/fluid/borax_solution"
     }
   }
 }

@@ -10,10 +10,10 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.Material;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -33,7 +33,7 @@ import static igentuman.nc.multiblock.fission.FissionBlocks.REACTOR_BLOCKS_PROPE
 import static igentuman.nc.setup.registration.NCItems.ALL_NC_ITEMS;
 
 public class FissionReactor {
-    public static final Item.Properties FISSION_ITEM_PROPS = new Item.Properties().tab(CreativeTabs.FISSION_REACTOR);
+    public static final Item.Properties FISSION_ITEM_PROPS = new Item.Properties();
     private static final DeferredRegister<MenuType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.MENU_TYPES, MODID);
     private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, MODID);
     public static HashMap<String, RegistryObject<Block>> FISSION_BLOCKS = new HashMap<>();
@@ -90,7 +90,7 @@ public class FissionReactor {
             } else {
                 BlockBehaviour.Properties props;
                 if(key.matches(".*glass|.*cell.*")) {
-                    props = BlockBehaviour.Properties.of(Material.GLASS).strength(1f).requiresCorrectToolForDrops().noOcclusion();
+                    props = BlockBehaviour.Properties.of().sound(SoundType.GLASS).strength(1f).requiresCorrectToolForDrops().noOcclusion();
                 } else {
                     props = REACTOR_BLOCKS_PROPERTIES;
                 }

@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/fluid/shibuichi"
+      "model": "nuclearcraft_fluids:block/fluid/shibuichi"
     }
   }
 }

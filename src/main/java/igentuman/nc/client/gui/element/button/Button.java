@@ -7,6 +7,7 @@ import igentuman.nc.container.NCProcessorContainer;
 import igentuman.nc.client.gui.element.NCGuiElement;
 import igentuman.nc.network.toServer.PacketGuiButtonPress;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.BlockPos;
@@ -25,6 +26,7 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
     protected Component tooltipKey = Component.empty();
 
     public Button(int xPos, int yPos, T screen, int id)  {
+        super(xPos, yPos, 18, 18, Component.empty());
         x = xPos;
         y = yPos;
         this.container = screen.getMenu();
@@ -37,7 +39,7 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
     }
 
     @Override
-    public void draw(PoseStack transform, int mX, int mY, float pTicks) {
+    public void draw(GuiGraphics transform, int mX, int mY, float pTicks) {
         super.draw(transform, mX, mY, pTicks);
         btn.render(transform, mX, mY, pTicks);
     }

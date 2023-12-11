@@ -8,6 +8,7 @@ import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.setup.registration.NCProcessors;
 import igentuman.nc.util.IgnoredIInventory;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -34,6 +35,10 @@ public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
     protected double powerModifier = 1;
     protected double radiationModifier = 1;
 
+    @Override
+    public ItemStack getResultItem(RegistryAccess registryAccess) {
+        return null;
+    }
     public FluidStackIngredient[] getInputFluids() {
         return inputFluids;
     }
@@ -128,7 +133,7 @@ public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
 
     @NotNull
     @Override
-    public ItemStack assemble(@NotNull IgnoredIInventory inv) {
+    public ItemStack assemble(@NotNull IgnoredIInventory inv, RegistryAccess access) {
         return ItemStack.EMPTY;
     }
 

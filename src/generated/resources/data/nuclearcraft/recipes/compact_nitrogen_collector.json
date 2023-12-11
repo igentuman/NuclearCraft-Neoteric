@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "C": {
       "item": "nuclearcraft:nitrogen_collector"
@@ -15,5 +16,6 @@
   ],
   "result": {
     "item": "nuclearcraft:compact_nitrogen_collector"
-  }
+  },
+  "show_notification": true
 }

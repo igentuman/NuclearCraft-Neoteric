@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/fluid/potassium_hydroxide"
+      "model": "nuclearcraft_fluids:block/fluid/potassium_hydroxide"
     }
   }
 }

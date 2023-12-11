@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/fluid/low_quality_steam"
+      "model": "nuclearcraft_fluids:block/fluid/low_quality_steam"
     }
   }
 }

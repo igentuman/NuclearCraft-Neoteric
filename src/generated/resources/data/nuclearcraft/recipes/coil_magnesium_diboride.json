@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "M": {
       "tag": "forge:ingots/magnesium_diboride"
@@ -15,5 +16,6 @@
   ],
   "result": {
     "item": "nuclearcraft:coil_magnesium_diboride"
-  }
+  },
+  "show_notification": true
 }

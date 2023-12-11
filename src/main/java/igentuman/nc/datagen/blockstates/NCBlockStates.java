@@ -15,7 +15,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.client.model.generators.*;
-import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.function.Function;
@@ -25,12 +25,12 @@ import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.client.block.BatteryBlockLoader.BATTERY_LOADER;
 import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_CORE_PROXY;
-import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCK;
+import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCKS;
 
 public class NCBlockStates extends BlockStateProvider {
 
-    public NCBlockStates(DataGenerator gen, ExistingFileHelper helper) {
-        super(gen, MODID, helper);
+    public NCBlockStates(DataGenerator gen, GatherDataEvent event) {
+        super(gen.getPackOutput(), MODID, event.getExistingFileHelper());
     }
 
     @Override
@@ -52,12 +52,12 @@ public class NCBlockStates extends BlockStateProvider {
     private void storageBlocks() {
         for(String name: BarrelBlocks.all().keySet()) {
             simpleBlock(
-                    STORAGE_BLOCK.get(name).get(),
+                    STORAGE_BLOCKS.get(name).get(),
                     models().getExistingFile(modLoc("block/barrel/"+name)));
         }
         for(String name: ContainerBlocks.all().keySet()) {
             simpleBlock(
-                    STORAGE_BLOCK.get(name).get(),
+                    STORAGE_BLOCKS.get(name).get(),
                     models().getExistingFile(modLoc("block/container/"+name)));
         }
     }

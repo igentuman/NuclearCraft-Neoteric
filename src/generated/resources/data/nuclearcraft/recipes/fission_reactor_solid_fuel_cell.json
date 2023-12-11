@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "group": "nuclearcraft_fission",
   "key": {
     "G": {
@@ -16,5 +17,6 @@
   ],
   "result": {
     "item": "nuclearcraft:fission_reactor_solid_fuel_cell"
-  }
+  },
+  "show_notification": true
 }

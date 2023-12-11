@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "B": {
       "item": "nuclearcraft:basic_rf_amplifier"
@@ -18,5 +19,6 @@
   ],
   "result": {
     "item": "nuclearcraft:magnesium_diboride_rf_amplifier"
-  }
+  },
+  "show_notification": true
 }

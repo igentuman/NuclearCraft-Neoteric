@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import igentuman.nc.client.gui.element.NCGuiElement;
 import igentuman.nc.client.gui.processor.side.SideConfigScreen;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 
 import static igentuman.nc.handler.sided.SlotModePair.SlotMode.INPUT;
 import static igentuman.nc.handler.sided.SlotModePair.SlotMode.OUTPUT;
@@ -15,6 +16,7 @@ public class VerticalLongSlot extends NCGuiElement {
     public int color = OUTPUT.getColor();
 
     public VerticalLongSlot(int xMin, int yMin)  {
+        super(xMin, yMin, 8, 50, null);
         x = xMin;
         y = yMin;
         width = 8;
@@ -33,15 +35,15 @@ public class VerticalLongSlot extends NCGuiElement {
     }
 
     @Override
-    public void draw(PoseStack transform, int mX, int mY, float pTicks) {
-        super.draw(transform, mX, mY, pTicks);
+    public void draw(GuiGraphics graphics, int mX, int mY, float pTicks) {
+        super.draw(graphics, mX, mY, pTicks);
         xOffset = 18;
         yOffset = 90;
 
         //-1 because of border
-        blit(transform, X()-1, Y()-1, xOffset, yOffset,  width, height);
+        graphics.blit(TEXTURE, X()-1, Y()-1, xOffset, yOffset,  width, height);
         if(configFlag) {
-            fill(transform, X() - 1, Y() - 1, X()+width-1, Y()+height-1, color);
+            graphics.fill(X() - 1, Y() - 1, X()+width-1, Y()+height-1, color);
         }
     }
 }

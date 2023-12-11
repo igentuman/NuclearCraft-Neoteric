@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/fluid/ferroboron"
+      "model": "nuclearcraft_fluids:block/fluid/ferroboron"
     }
   }
 }

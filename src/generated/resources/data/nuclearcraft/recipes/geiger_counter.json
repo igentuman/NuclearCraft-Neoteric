@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "B": {
       "item": "nuclearcraft:bioplastic"
@@ -27,5 +28,6 @@
   ],
   "result": {
     "item": "nuclearcraft:geiger_counter"
-  }
+  },
+  "show_notification": true
 }

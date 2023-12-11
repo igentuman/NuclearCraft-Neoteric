@@ -3,12 +3,10 @@ package igentuman.nc.radiation.client;
 import com.mojang.blaze3d.systems.RenderSystem;
 import igentuman.nc.client.NcClient;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 
 import java.util.Random;
@@ -37,7 +35,7 @@ public class WhiteNoiseOverlay {
             int y1 = rand.nextInt(height);
             int w = rand.nextInt(10);
             int h = rand.nextInt(10);
-            GuiComponent.blit(poseStack, x1, y1, w, h,1,1,12,12);
+            poseStack.blit(NOISE, x1, y1, w, h,1,1,12,12);
         }
     };
 }

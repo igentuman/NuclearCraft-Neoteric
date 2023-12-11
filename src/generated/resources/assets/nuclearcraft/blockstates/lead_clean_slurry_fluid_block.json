@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/fluid/lead_clean_slurry"
+      "model": "nuclearcraft_fluids:block/fluid/lead_clean_slurry"
     }
   }
 }

@@ -2,9 +2,6 @@ package igentuman.nc.handler.event.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix3f;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
 import igentuman.nc.block.ISizeToggable;
 import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.block.entity.fusion.FusionCoreBE;
@@ -42,6 +39,10 @@ import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.apache.commons.lang3.tuple.Pair;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
+import org.joml.Vector3d;
+import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
@@ -79,7 +80,7 @@ public class BlockOverlayHandler {
         if(e.getStage().equals(RenderLevelStageEvent.Stage.AFTER_SOLID_BLOCKS)) {
             for(BlockPos pos: fusionReactors) {
                 if(true) continue; //disable for now
-                BlockEntity be = player.level.getBlockEntity(pos);
+                BlockEntity be = player.level().getBlockEntity(pos);
                 if(! (be instanceof FusionCoreBE)) continue;
                 FusionCoreBE fusionBe = (FusionCoreBE) be;
                 int size = fusionBe.size+2;
@@ -95,7 +96,7 @@ public class BlockOverlayHandler {
         }
         if(e.getStage().equals(RenderLevelStageEvent.Stage.AFTER_PARTICLES)) {
             gameRenderer.resetProjectionMatrix(e.getProjectionMatrix());
-            if (player.level.isClientSide) {
+            if (player.level().isClientSide) {
                 for (BlockPos pos: outlineBlocks) {
                     AABB aabb = new AABB(0, 0,0,1,1,1);
                     drawBoundingBoxAtBlockPos(e.getPoseStack(), aabb, 1, 0, 0, 1, pos, player.blockPosition());
@@ -119,7 +120,7 @@ public class BlockOverlayHandler {
             event.setCanceled(true);
             BlockPos blockPos = blockRayTraceResult.getBlockPos();
 
-            Level world = Minecraft.getInstance().player.level;
+            Level world = Minecraft.getInstance().player.level();
             BlockEntity be = world.getBlockEntity(blockPos);
             if(! (be instanceof NuclearCraftBE)) return;
             NuclearCraftBE ncBe = (NuclearCraftBE) be;
@@ -140,8 +141,8 @@ public class BlockOverlayHandler {
             PoseStack stack = new PoseStack();
             stack.pushPose();
             Camera info = event.getCamera();
-            stack.mulPose(Vector3f.XP.rotationDegrees(info.getXRot()));
-            stack.mulPose(Vector3f.YP.rotationDegrees(info.getYRot() + 180));
+            //stack.mulPose(Vector3d.XP.rotationDegrees(info.getXRot()));
+           // stack.mulPose(Vector3f.YP.rotationDegrees(info.getYRot() + 180));
             double d0 = info.getPosition().x();
             double d1 = info.getPosition().y();
             double d2 = info.getPosition().z();
@@ -167,14 +168,14 @@ public class BlockOverlayHandler {
             BlockHitResult blockRayTraceResult = (BlockHitResult) hit;
             event.setCanceled(true);
             QNP.Mode mode = getMode(stackItem);
-            Level world = Minecraft.getInstance().player.level;
+            Level world = Minecraft.getInstance().player.level();
             Pair<BlockPos, BlockPos> area = getArea(blockRayTraceResult.getBlockPos(), blockRayTraceResult.getDirection(),  mode.radius, mode.depth);
 
             PoseStack stack = new PoseStack();
             stack.pushPose();
             Camera info = event.getCamera();
-            stack.mulPose(Vector3f.XP.rotationDegrees(info.getXRot()));
-            stack.mulPose(Vector3f.YP.rotationDegrees(info.getYRot() + 180));
+           // stack.mulPose(Vector3f.XP.rotationDegrees(info.getXRot()));
+           // stack.mulPose(Vector3f.YP.rotationDegrees(info.getYRot() + 180));
             double d0 = info.getPosition().x();
             double d1 = info.getPosition().y();
             double d2 = info.getPosition().z();

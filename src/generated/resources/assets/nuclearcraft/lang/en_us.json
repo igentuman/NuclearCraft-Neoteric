@@ -1899,6 +1899,7 @@
   "item.nuclearcraft.zirconium_plate": "Zirconium Plate",
   "itemGroup.nuclearcraft_blocks": "NuclearCraft Blocks",
   "itemGroup.nuclearcraft_fission_reactor": "NuclearCraft Fission Reactor",
+  "itemGroup.nuclearcraft_fluids": "NuclearCraft Fluids",
   "itemGroup.nuclearcraft_fusion_reactor": "NuclearCraft Fusion Reactor",
   "itemGroup.nuclearcraft_items": "NuclearCraft Items",
   "leacher.tooltip.invalid_pump": "Pump in the corner not found",

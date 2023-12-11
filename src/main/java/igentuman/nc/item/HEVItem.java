@@ -26,8 +26,8 @@ import static igentuman.nc.handler.config.CommonConfig.ENERGY_STORAGE;
 import static igentuman.nc.setup.registration.NCItems.*;
 
 public class HEVItem extends ArmorItem {
-    public HEVItem(ArmorMaterials armorMaterials, EquipmentSlot equipmentSlot, Properties hazmatProps) {
-        super(armorMaterials, equipmentSlot, hazmatProps);
+    public HEVItem(ArmorMaterials armorMaterials, ArmorItem.Type type, Properties hazmatProps) {
+        super(armorMaterials, type, hazmatProps);
     }
 
     @Override
@@ -59,16 +59,18 @@ public class HEVItem extends ArmorItem {
     }
 
     @Override
-    public void onArmorTick(ItemStack st, Level level, Player player) {
-        if(charged(st)) {
-            if(st.getItem().equals(HEV_CHEST.get())) {
-                player.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 1, 1, false, false));
-            }
-            if(st.getItem().equals(HEV_HELMET.get())) {
-                player.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING, 1, 1, false, false));
-            }
-            if(st.getItem().equals(HEV_PANTS.get())) {
-                player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 1, 1, false, false));
+    public void onInventoryTick(ItemStack st, Level level, Player player, int slotIndex, int selectedIndex) {
+        if(slotIndex <= EquipmentSlot.HEAD.getIndex() && slotIndex >= 0) {
+            if (charged(st)) {
+                if (st.getItem().equals(HEV_CHEST.get())) {
+                    player.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 1, 1, false, false));
+                }
+                if (st.getItem().equals(HEV_HELMET.get())) {
+                    player.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING, 1, 1, false, false));
+                }
+                if (st.getItem().equals(HEV_PANTS.get())) {
+                    player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 1, 1, false, false));
+                }
             }
         }
     }

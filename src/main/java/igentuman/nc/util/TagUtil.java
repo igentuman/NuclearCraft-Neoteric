@@ -5,6 +5,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.tags.IReverseTag;
 import net.minecraftforge.registries.tags.ITag;
@@ -16,13 +17,15 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static igentuman.nc.setup.registration.NCBlocks.BLOCK_REGISTRY;
+
 public class TagUtil {
     public static List<Block> getBlocksByTagKey(String key)
     {
         List<Block> tmp = new ArrayList<>();
-        TagKey<Block> tag = TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(key));
-        for(Holder<Block> holder : Registry.BLOCK.getTagOrEmpty(tag)) {
-            tmp.add(holder.get());
+        TagKey<Block> tag = TagKey.create(BLOCK_REGISTRY, new ResourceLocation(key));
+        for(Block holder : ForgeRegistries.BLOCKS.tags().getTag(tag).stream().toList()) {
+            tmp.add(holder);
         }
         return tmp;
     }

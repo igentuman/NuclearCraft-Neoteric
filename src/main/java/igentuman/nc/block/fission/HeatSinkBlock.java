@@ -28,8 +28,8 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -42,7 +42,7 @@ import static igentuman.nc.util.TextUtils.convertToName;
 public class HeatSinkBlock extends Block implements EntityBlock {
 
     public HeatSinkBlock() {
-        this(Properties.of(Material.METAL)
+        this(Properties.of()
                 .sound(SoundType.METAL)
                 .strength(2.0f)
                 .requiresCorrectToolForDrops());
@@ -118,7 +118,7 @@ public class HeatSinkBlock extends Block implements EntityBlock {
             String id = code;
             if(!id.contains(":")) {
                 id = MODID+":"+id;
-                Block block = Registry.BLOCK.get(new ResourceLocation(id));
+                Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(id));
                 names.add(block.getName().getString());
             } else {
                 names.add(convertToName(id.split(":")[1]));

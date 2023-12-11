@@ -19,15 +19,16 @@ import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.setup.Registration.ITEMS;
+import static igentuman.nc.setup.registration.NCBlocks.ITEM_REGISTRY;
 
 public class Fuel {
-    public static TagKey<Item> ISOTOPE_TAG = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("forge", "isotopes"));
-    public static TagKey<Item> NC_ISOTOPE_TAG = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(MODID, "isotopes"));
-    public static TagKey<Item> NC_FUEL_TAG = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(MODID, "reactor_fuel"));
-    public static TagKey<Item> NC_DEPLETED_FUEL_TAG = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(MODID, "reactor_fuel"));
-    public static TagKey<Item> NC_FUELS_TAG = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(MODID, "reactor_fuel"));
+    public static TagKey<Item> ISOTOPE_TAG = TagKey.create(ITEM_REGISTRY, new ResourceLocation("forge", "isotopes"));
+    public static TagKey<Item> NC_ISOTOPE_TAG = TagKey.create(ITEM_REGISTRY, new ResourceLocation(MODID, "isotopes"));
+    public static TagKey<Item> NC_FUEL_TAG = TagKey.create(ITEM_REGISTRY, new ResourceLocation(MODID, "reactor_fuel"));
+    public static TagKey<Item> NC_DEPLETED_FUEL_TAG = TagKey.create(ITEM_REGISTRY, new ResourceLocation(MODID, "reactor_fuel"));
+    public static TagKey<Item> NC_FUELS_TAG = TagKey.create(ITEM_REGISTRY, new ResourceLocation(MODID, "reactor_fuel"));
 
-    public static final Item.Properties ITEM_PROPERTIES = new Item.Properties().tab(CreativeTabs.FISSION_REACTOR);
+    public static final Item.Properties ITEM_PROPERTIES = new Item.Properties();
 
 
     public static HashMap<List<String>, RegistryObject<Item>> NC_FUEL = new HashMap<>();

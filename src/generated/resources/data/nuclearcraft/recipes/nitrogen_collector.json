@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "B": {
       "tag": "forge:dusts/pyrolitic_carbon"
@@ -21,5 +22,6 @@
   ],
   "result": {
     "item": "nuclearcraft:nitrogen_collector"
-  }
+  },
+  "show_notification": true
 }

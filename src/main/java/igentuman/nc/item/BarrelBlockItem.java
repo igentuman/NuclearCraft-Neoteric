@@ -1,6 +1,5 @@
 package igentuman.nc.item;
 
-import igentuman.nc.setup.registration.CreativeTabs;
 import igentuman.nc.content.storage.BarrelBlocks;
 import igentuman.nc.util.CapabilityUtils;
 import igentuman.nc.util.TextUtils;
@@ -10,7 +9,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
@@ -26,14 +24,10 @@ import java.util.List;
 
 public class BarrelBlockItem extends BlockItem
 {
+
 	public BarrelBlockItem(Block pBlock, Properties props)
 	{
-		this(pBlock, props, CreativeTabs.NC_BLOCKS);
-	}
-
-	public BarrelBlockItem(Block pBlock, Properties props, CreativeModeTab group)
-	{
-		super(pBlock, new Properties().tab(group).stacksTo(1));
+		super(pBlock, new Properties().stacksTo(1));
 	}
 
 

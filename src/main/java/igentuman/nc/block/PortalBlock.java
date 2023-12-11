@@ -11,7 +11,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -23,7 +22,7 @@ public class PortalBlock extends Block {
     private static final VoxelShape SHAPE = Shapes.box(0, 0, 0, 1, .8, 1);
 
     public PortalBlock() {
-        super(Properties.of(Material.METAL)
+        super(Properties.of()
                 .sound(SoundType.METAL)
                 .strength(-1.0F, 3600000.0F)
                 .noLootTable());

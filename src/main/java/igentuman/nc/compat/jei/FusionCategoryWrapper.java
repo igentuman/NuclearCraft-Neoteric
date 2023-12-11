@@ -15,6 +15,7 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -73,17 +74,17 @@ public class FusionCategoryWrapper<T extends FusionCoreBE.Recipe> implements IRe
     }
 
     @Override
-    public void draw(T recipe, IRecipeSlotsView recipeSlotsView, PoseStack stack, double mouseX, double mouseY) {
+    public void draw(T recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY) {
         if(arrow.containsKey((int)recipe.getTimeModifier())) {
-            arrow.get((int)recipe.getTimeModifier()).draw(stack, 34, 16);
+            arrow.get((int)recipe.getTimeModifier()).draw(graphics, 34, 16);
         }
         int idx = 0;
         for(int i = 0; i < 2; i++) {
-            slots[idx].draw(stack, 11+10*i, 5);
+            slots[idx].draw(graphics, 11+10*i, 5);
             idx++;
         }
         for(int i = 0; i < 4; i++) {
-            slots[idx].draw(stack, 74+10*i, 5);
+            slots[idx].draw(graphics, 74+10*i, 5);
             idx++;
         }
     }

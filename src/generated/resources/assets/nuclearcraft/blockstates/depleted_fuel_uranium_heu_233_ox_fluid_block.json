@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/fluid/depleted_fuel_uranium_heu_233_ox"
+      "model": "nuclearcraft_fluids:block/fluid/depleted_fuel_uranium_heu_233_ox"
     }
   }
 }

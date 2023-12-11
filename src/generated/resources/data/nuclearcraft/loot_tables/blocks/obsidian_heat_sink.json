@@ -12,5 +12,6 @@
       "name": "block",
       "rolls": 1.0
     }
-  ]
+  ],
+  "random_sequence": "nuclearcraft:blocks/obsidian_heat_sink"
 }

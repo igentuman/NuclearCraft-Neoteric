@@ -11,15 +11,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
-import net.minecraft.world.level.material.Material;
-import org.jetbrains.annotations.NotNull;
 
 
 public class FissionCasingSlopeBlock extends FissionBlock {
     public static final EnumProperty<FrontAndTop> ORIENTATION = BlockStateProperties.ORIENTATION;
 
     public FissionCasingSlopeBlock(Properties pProperties) {
-        super(Properties.of(Material.METAL)
+        super(Properties.of()
                 .noOcclusion()
                 .strength(3f)
                 .requiresCorrectToolForDrops());

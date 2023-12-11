@@ -10,13 +10,13 @@ import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.setup.registration.NCItems.*;
-import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCK;
+import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCKS;
 import static igentuman.nc.util.TextUtils.convertToName;
 
 public class NCLanguageProvider extends LanguageProvider {
 
     public NCLanguageProvider(DataGenerator gen, String locale) {
-        super(gen, MODID, locale);
+        super(gen.getPackOutput(), MODID, locale);
     }
 
     @Override
@@ -25,6 +25,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("itemGroup." + MODID+"_blocks", "NuclearCraft Blocks");
         add("itemGroup." + MODID+"_fission_reactor", "NuclearCraft Fission Reactor");
         add("itemGroup." + MODID+"_fusion_reactor", "NuclearCraft Fusion Reactor");
+        add("itemGroup." + MODID+"_fluids", "NuclearCraft Fluids");
         ores();
         ingots();
         plates();
@@ -140,9 +141,9 @@ public class NCLanguageProvider extends LanguageProvider {
     }
 
     private void storageBlocks() {
-        for(String name: STORAGE_BLOCK.keySet()) {
+        for(String name: STORAGE_BLOCKS.keySet()) {
             String title = convertToName(name);
-            add(STORAGE_BLOCK.get(name).get(), title);
+            add(STORAGE_BLOCKS.get(name).get(), title);
         }
     }
 

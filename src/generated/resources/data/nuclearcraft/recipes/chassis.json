@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "L": {
       "tag": "forge:ingots/lead"
@@ -18,5 +19,6 @@
   ],
   "result": {
     "item": "nuclearcraft:chassis"
-  }
+  },
+  "show_notification": true
 }

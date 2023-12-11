@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/fluid/fuel_plutonium_hep_239_za"
+      "model": "nuclearcraft_fluids:block/fluid/fuel_plutonium_hep_239_za"
     }
   }
 }

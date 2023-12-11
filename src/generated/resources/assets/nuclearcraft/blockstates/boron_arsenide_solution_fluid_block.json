@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/fluid/boron_arsenide_solution"
+      "model": "nuclearcraft_fluids:block/fluid/boron_arsenide_solution"
     }
   }
 }

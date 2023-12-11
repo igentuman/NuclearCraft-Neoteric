@@ -14,6 +14,7 @@ import igentuman.nc.client.gui.element.slot.NormalSlot;
 import igentuman.nc.content.processors.config.ProcessorSlots;
 import igentuman.nc.handler.event.client.TickHandler;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -140,35 +141,35 @@ public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractC
     }
 
     @Override
-    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
         xCenter = getGuiLeft()-imageWidth/2;
-        this.renderBackground(matrixStack);
-        super.render(matrixStack, mouseX, mouseY, partialTicks);
-        this.renderTooltip(matrixStack, mouseX, mouseY);
+        this.renderBackground(graphics);
+        super.render(graphics, mouseX, mouseY, partialTicks);
+        this.renderTooltip(graphics, mouseX, mouseY);
     }
 
-    protected void renderWidgets(PoseStack matrix, float partialTicks, int mouseX, int mouseY) {
+    protected void renderWidgets(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
         redstoneConfigBtn.setMode(getMenu().getRedstoneMode());
         for(NCGuiElement widget: widgets) {
-            widget.draw(matrix, mouseX, mouseY, partialTicks);
+            widget.draw(graphics, mouseX, mouseY, partialTicks);
         }
     }
 
     @Override
-    protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
-        drawCenteredString(matrixStack, font,  menu.getTitle(), imageWidth/2, titleLabelY, 0xffffff);
-        renderTooltips(matrixStack, mouseX-relX, mouseY-relY);
+    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
+        graphics.drawCenteredString(font,  menu.getTitle(), imageWidth/2, titleLabelY, 0xffffff);
+        renderTooltips(graphics, mouseX-relX, mouseY-relY);
     }
 
     @Override
-    protected void renderBg(PoseStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
         RenderSystem.setShaderTexture(0, GUI);
         updateRelativeCords();
-        this.blit(matrixStack, relX, relY, 0, 0, this.imageWidth, this.imageHeight);
-        renderWidgets(matrixStack, partialTicks, mouseX, mouseY);
+        graphics.blit(GUI, relX, relY, 0, 0, this.imageWidth, this.imageHeight);
+        renderWidgets(graphics, partialTicks, mouseX, mouseY);
     }
 
-    protected void renderTooltips(PoseStack pPoseStack, int pMouseX, int pMouseY) {
+    protected void renderTooltips(GuiGraphics graphics, int pMouseX, int pMouseY) {
         for(NCGuiElement widget: widgets) {
             if(widget.isMouseOver(pMouseX, pMouseY)) {
                 if(widget instanceof EnergyBar) {
@@ -177,7 +178,7 @@ public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractC
                     widget.addTooltip(applyFormat(Component.translatable("energy.multiplier", menu.energyMultiplier()), ChatFormatting.GOLD));
                     widget.addTooltip(applyFormat(Component.translatable("energy.per_tick", scaledFormat(menu.energyPerTick())), ChatFormatting.YELLOW));
                 }
-                renderTooltip(pPoseStack, widget.getTooltips(),
+                graphics.renderTooltip(font, widget.getTooltips(),
                         Optional.empty(), pMouseX, pMouseY);
             }
         }

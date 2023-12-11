@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/fluid/americium_243"
+      "model": "nuclearcraft_fluids:block/fluid/americium_243"
     }
   }
 }

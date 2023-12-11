@@ -99,8 +99,8 @@ public class ClientSetup {
 
     @SubscribeEvent
     public static void registerParticleFactories(RegisterParticleProvidersEvent event) {
-        event.register(NcParticleTypes.RADIATION.get(), RadiationParticle.Factory::new);
-        event.register(NcParticleTypes.FUSION_BEAM.get(), FusionBeamParticle.Factory::new);
+        event.registerSpriteSet(NcParticleTypes.RADIATION.get(), RadiationParticle.Factory::new);
+        event.registerSpriteSet(NcParticleTypes.FUSION_BEAM.get(), FusionBeamParticle.Factory::new);
     }
 
     public static void setup() {

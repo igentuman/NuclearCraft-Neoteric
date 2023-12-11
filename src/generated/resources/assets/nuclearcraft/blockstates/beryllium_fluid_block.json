@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/fluid/beryllium"
+      "model": "nuclearcraft_fluids:block/fluid/beryllium"
     }
   }
 }

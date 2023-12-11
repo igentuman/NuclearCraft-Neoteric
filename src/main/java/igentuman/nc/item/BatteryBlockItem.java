@@ -24,14 +24,10 @@ import static igentuman.nc.handler.config.CommonConfig.ENERGY_STORAGE;
 
 public class BatteryBlockItem extends BlockItem
 {
+
 	public BatteryBlockItem(Block pBlock, Properties props)
 	{
-		this(pBlock, props, CreativeTabs.NC_BLOCKS);
-	}
-
-	public BatteryBlockItem(Block pBlock, Properties props, CreativeModeTab group)
-	{
-		super(pBlock, new Properties().tab(group).stacksTo(1));
+		super(pBlock, new Properties().stacksTo(1));
 	}
 
 

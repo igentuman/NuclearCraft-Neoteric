@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/fluid/manganese_oxide"
+      "model": "nuclearcraft_fluids:block/fluid/manganese_oxide"
     }
   }
 }

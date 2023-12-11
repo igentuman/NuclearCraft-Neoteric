@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/fluid/molybdenum"
+      "model": "nuclearcraft_fluids:block/fluid/molybdenum"
     }
   }
 }

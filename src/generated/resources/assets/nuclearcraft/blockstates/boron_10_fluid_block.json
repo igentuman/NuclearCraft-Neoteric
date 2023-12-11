@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/fluid/boron_10"
+      "model": "nuclearcraft_fluids:block/fluid/boron_10"
     }
   }
 }

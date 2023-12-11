@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/fluid/fuel_berkelium_heb_248"
+      "model": "nuclearcraft_fluids:block/fluid/fuel_berkelium_heb_248"
     }
   }
 }

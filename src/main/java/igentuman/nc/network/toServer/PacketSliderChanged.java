@@ -34,7 +34,7 @@ public class PacketSliderChanged implements INcPacket {
             return;
         }
 
-        NuclearCraftBE be = (NuclearCraftBE) player.level.getBlockEntity(tilePosition);
+        NuclearCraftBE be = (NuclearCraftBE) player.level().getBlockEntity(tilePosition);
         if(be != null) {
             be.handleSliderUpdate(buttonId, ratio);
         }

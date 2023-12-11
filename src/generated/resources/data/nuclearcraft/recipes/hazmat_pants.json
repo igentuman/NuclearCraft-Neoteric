@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "L": {
       "item": "minecraft:leather_leggings"
@@ -18,5 +19,6 @@
   ],
   "result": {
     "item": "nuclearcraft:hazmat_pants"
-  }
+  },
+  "show_notification": true
 }

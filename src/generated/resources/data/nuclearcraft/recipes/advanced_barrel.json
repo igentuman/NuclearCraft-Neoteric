@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "B": {
       "item": "nuclearcraft:basic_barrel"
@@ -18,5 +19,6 @@
   ],
   "result": {
     "item": "nuclearcraft:advanced_barrel"
-  }
+  },
+  "show_notification": true
 }

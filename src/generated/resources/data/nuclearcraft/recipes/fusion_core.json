@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "group": "nuclearcraft_fusion",
   "key": {
     "C": {
@@ -22,5 +23,6 @@
   ],
   "result": {
     "item": "nuclearcraft:fusion_core"
-  }
+  },
+  "show_notification": true
 }

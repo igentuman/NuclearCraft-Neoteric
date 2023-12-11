@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/fluid/fuel_neptunium_hen_236_ni"
+      "model": "nuclearcraft_fluids:block/fluid/fuel_neptunium_hen_236_ni"
     }
   }
 }

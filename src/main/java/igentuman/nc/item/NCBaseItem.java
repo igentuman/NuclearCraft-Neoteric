@@ -22,14 +22,10 @@ public class NCBaseItem extends Item
 		this(new Properties());
 	}
 
+
 	public NCBaseItem(Properties props)
 	{
-		this(props, CreativeTabs.NC_ITEMS);
-	}
-
-	public NCBaseItem(Properties props, CreativeModeTab group)
-	{
-		super(props.tab(group));
+		super(props);
 	}
 
 	public NCBaseItem setBurnTime(int burnTime)

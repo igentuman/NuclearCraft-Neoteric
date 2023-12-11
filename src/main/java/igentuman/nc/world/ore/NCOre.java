@@ -1,5 +1,6 @@
 package igentuman.nc.world.ore;
 
+import igentuman.nc.NuclearCraft;
 import igentuman.nc.handler.config.CommonConfig;
 import igentuman.nc.content.materials.Ores;
 
@@ -49,15 +50,16 @@ public class NCOre {
     public NCOre config()
     {
         if(!initialized) {
-            if(!CommonConfig.isLoaded()) {
-                return this;
+            try {
+                int id = Ores.all().keySet().stream().toList().indexOf(name);
+                registered = ORE_CONFIG.REGISTER_ORE.get().get(id);
+                height[0] = ORE_CONFIG.ORE_MIN_HEIGHT.get().get(id);
+                height[1] = ORE_CONFIG.ORE_MAX_HEIGHT.get().get(id);
+                dimensions = ORE_CONFIG.ORE_DIMENSIONS.get().get(id);
+                initialized = true;
+            } catch (Exception e) {
+                NuclearCraft.LOGGER.error("Error while loading ore config for " + name + "!");
             }
-            int id = Ores.all().keySet().stream().toList().indexOf(name);
-            registered = ORE_CONFIG.REGISTER_ORE.get().get(id);
-            height[0] = ORE_CONFIG.ORE_MIN_HEIGHT.get().get(id);
-            height[1] = ORE_CONFIG.ORE_MAX_HEIGHT.get().get(id);
-            dimensions = ORE_CONFIG.ORE_DIMENSIONS.get().get(id);
-            initialized = true;
         }
         return this;
     }

@@ -25,6 +25,10 @@ public class Ores {
         }
         return registered;
     }
+    public static boolean isRegistered(String name)
+    {
+        return registered().containsKey(name);
+    }
 
     public static HashMap<String, NCOre> all()
     {

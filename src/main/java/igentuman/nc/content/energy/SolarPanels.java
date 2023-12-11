@@ -1,5 +1,6 @@
 package igentuman.nc.content.energy;
 
+import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.energy.NCEnergy;
 import igentuman.nc.block.entity.energy.solar.AdvancedSolarBE;
 import igentuman.nc.block.entity.energy.solar.BasicSolarBE;
@@ -86,13 +87,14 @@ public class SolarPanels {
         public SolarPanelPrefab config()
         {
             if(!initialized) {
-                if(!CommonConfig.isLoaded()) {
-                    return this;
+                try {
+                    int id = SolarPanels.all().keySet().stream().toList().indexOf(name);
+                    registered = ENERGY_GENERATION.REGISTER_SOLAR_PANELS.get().get(id);
+                    generation = ENERGY_GENERATION.SOLAR_PANELS_GENERATION.get().get(id);
+                    initialized = true;
+                } catch (Exception e) {
+                    NuclearCraft.LOGGER.error("Error while loading config for " + name + "!");
                 }
-                int id = SolarPanels.all().keySet().stream().toList().indexOf(name);
-                registered = ENERGY_GENERATION.REGISTER_SOLAR_PANELS.get().get(id);
-                generation = ENERGY_GENERATION.SOLAR_PANELS_GENERATION.get().get(id);
-                initialized = true;
             }
             return this;
         }

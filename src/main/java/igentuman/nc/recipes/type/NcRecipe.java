@@ -31,7 +31,7 @@ public abstract class NcRecipe extends AbstractRecipe {
             double rarityModifier
     ) {
 
-        super(id, getCodeId(id));
+        super(id);
         this.inputItems = inputItems;
         this.outputItems = outputItems;
         this.inputFluids = inputFluids;
@@ -45,9 +45,6 @@ public abstract class NcRecipe extends AbstractRecipe {
         RECIPE_CLASSES.put(codeId, getClass());
     }
 
-    private static String getCodeId(ResourceLocation id) {
-        return id.getPath().split("/")[0];
-    }
 
     public NcRecipe(
             ResourceLocation id,

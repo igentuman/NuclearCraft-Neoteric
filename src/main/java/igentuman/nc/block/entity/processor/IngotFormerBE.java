@@ -34,5 +34,10 @@ public class IngotFormerBE extends NCProcessorBE<IngotFormerBE.Recipe> {
                       double timeModifier, double powerModifier, double heatModifier, double rarity) {
             super(id, input, output, inputFluids, outputFluids, timeModifier, powerModifier, heatModifier, 1);
         }
+
+        @Override
+        public String getCodeId() {
+            return Processors.INGOT_FORMER;
+        }
     }
 }

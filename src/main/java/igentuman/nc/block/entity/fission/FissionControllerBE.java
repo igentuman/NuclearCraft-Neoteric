@@ -3,6 +3,7 @@ package igentuman.nc.block.entity.fission;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.client.sound.SoundHandler;
 import igentuman.nc.compat.cc.NCSolidFissionReactorPeripheral;
+import igentuman.nc.content.processors.Processors;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.item.ItemFuel;
@@ -661,6 +662,11 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         public Recipe(ResourceLocation id, ItemStackIngredient[] input, ItemStack[] output, FluidStackIngredient[] inputFluids, FluidStack[] outputFluids, double timeModifier, double powerModifier, double heatModifier, double rarity) {
             super(id, input, output, timeModifier, powerModifier, heatModifier, rarity);
             CATALYSTS.put(codeId, List.of(getToastSymbol()));
+        }
+
+        @Override
+        public String getCodeId() {
+            return "fission_reactor_controller";
         }
 
         protected ItemFuel fuelItem;

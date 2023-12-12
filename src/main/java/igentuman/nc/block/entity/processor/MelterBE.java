@@ -38,6 +38,9 @@ public class MelterBE extends NCProcessorBE<MelterBE.Recipe> {
             super(id, input, output, inputFluids, outputFluids, timeModifier, powerModifier, heatModifier, 1);
         }
 
-
+        @Override
+        public String getCodeId() {
+            return Processors.MELTER;
+        }
     }
 }

@@ -31,5 +31,10 @@ public class QuantumTransformerBE extends NCProcessorBE<QuantumTransformerBE.Rec
                       double timeModifier, double powerModifier, double heatModifier, double rarity) {
             super(id, input, output, timeModifier, powerModifier, heatModifier, 1);
         }
+
+        @Override
+        public String getCodeId() {
+            return Processors.QUANTUM_TRANSFORMER;
+        }
     }
 }

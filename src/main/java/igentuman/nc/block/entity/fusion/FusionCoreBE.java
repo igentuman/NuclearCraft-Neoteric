@@ -5,6 +5,7 @@ import igentuman.nc.block.fusion.FusionCoreBlock;
 import igentuman.nc.client.particle.FusionBeamParticleData;
 import igentuman.nc.client.sound.SoundHandler;
 import igentuman.nc.compat.cc.NCFusionReactorPeripheral;
+import igentuman.nc.content.processors.Processors;
 import igentuman.nc.handler.event.client.BlockOverlayHandler;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.multiblock.ValidationResult;
@@ -968,6 +969,11 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         public double getOptimalTemperature() {
             return rarityModifier;
         }
+
+        @Override
+        public String getCodeId() {
+            return "fusion_core";
+        }
     }
 
     public static class FusionCoolantRecipe extends NcRecipe {
@@ -980,6 +986,11 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
 
         @Override
         public @NotNull String getGroup() {
+            return "fusion_coolant";
+        }
+
+        @Override
+        public String getCodeId() {
             return "fusion_coolant";
         }
 

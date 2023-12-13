@@ -61,12 +61,13 @@ public class BatteryBlocks {
     public static class BatteryBlockPrefab {
         private boolean registered = true;
         private boolean initialized = false;
-        private String name;
+        private final String name;
         protected int storage = 0;
 
         public BatteryBlockPrefab(String name, int storage) {
             this.storage = storage;
             blockEntity = BatteryBE::new;
+            this.name = name;
         }
 
         public int getStorage() {

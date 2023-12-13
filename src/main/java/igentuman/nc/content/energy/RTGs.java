@@ -65,13 +65,14 @@ public class RTGs {
     public static class RTGPrefab {
         private boolean registered = true;
         private boolean initialized = false;
-        private String name;
+        private final String name;
         protected int generation = 0;
         protected int radiation = 0;
 
         public RTGPrefab(String name, int generation, int radiation) {
             this.generation = generation;
             this.radiation = radiation;
+            this.name = name;
         }
 
         public int getGeneration() {

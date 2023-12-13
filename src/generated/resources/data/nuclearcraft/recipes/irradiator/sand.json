@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:irradiator",
+  "input": [
+    {
+      "tag": "forge:sand"
+    }
+  ],
+  "output": [
+    {
+      "item": "minecraft:glowstone"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 3.0
+}

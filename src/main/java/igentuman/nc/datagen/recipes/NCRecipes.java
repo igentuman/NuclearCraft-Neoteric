@@ -49,7 +49,7 @@ public class NCRecipes extends RecipeProvider {
         storageBlocks(consumer);
         fissionBlocks(consumer);
         fusionBlocks(consumer);
-        turbineBlocks(consumer);
+       //turbineBlocks(consumer);
         FuelRecipes.generate(consumer);
         CustomRecipes.generate(consumer);
         SpecialRecipeBuilder.build(consumer, NcRecipeSerializers.SHIELDING);

@@ -259,11 +259,11 @@ public class CommonConfig {
 
             MINIMAL_MAGNETIC_FIELD = builder
                     .comment("Minimal magnetic field required to operate reactor. (Depends on reactor size).")
-                    .defineInRange("minimal_magnetic_field", 10, 1D, 100D);
+                    .defineInRange("minimal_magnetic_field", 8, 1D, 100D);
 
             RF_AMPLIFICATION_MULTIPLIER = builder
                     .comment("Affects heating rate for plasma by rf amplifiers.")
-                    .defineInRange("rf_amplification_multiplier", 4.0D, 0.01D, 100D);
+                    .defineInRange("rf_amplification_multiplier", 5.0D, 0.01D, 100D);
 
             PLASMA_TO_ENERGY_CONVERTION = builder
                     .comment("Affects plasma energy to FE converion rate.")

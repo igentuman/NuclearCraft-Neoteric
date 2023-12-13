@@ -85,7 +85,7 @@ dependencies {
     compileOnly fg.deobf("mezz.jei:jei-${mc_version}-forge-api:${jei_version}")
     implementation fg.deobf("mezz.jei:jei-${mc_version}-forge:${jei_version}")
 
-    //runtimeOnly fg.deobf("curse.maven:ctm-267602:4393695")
+    runtimeOnly fg.deobf("curse.maven:ctm-267602:4393695")
 
     compileOnly fg.deobf("mcjty.theoneprobe:theoneprobe:${top_version}:api") {
         transitive = false

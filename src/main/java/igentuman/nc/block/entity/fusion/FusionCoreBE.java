@@ -643,29 +643,34 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
     }
 
     protected void heatLossExchange() {
-        changePlasmaTemperature((long) -((plasmaTemperature/ Math.pow(getPlasmaStability(), 2))*((double)size))/100);
+        double sizeFactor = Math.log(Math.pow(size+2, 2))/100;
+        changePlasmaTemperature((long) -((plasmaTemperature / Math.pow(getPlasmaStability(), 2))*sizeFactor));
         changeReactorHeat((double) Math.min(plasmaTemperature, 100000000) / (10000*size*getPlasmaStability()));
     }
 
 
     protected void plasmaToEnergyExchange() {
         double optimalTemp = getOptimalTemperature();
+        double sizeFactor = Math.log(Math.pow(size+1, 8))/8D;
         if(plasmaTemperature < optimalTemp) {
             energyPerTick = (int) (plasmaTemperature/optimalTemp*recipeInfo.recipe().getEnergy());
         } else {
             energyPerTick = (int) (optimalTemp/plasmaTemperature*recipeInfo.recipe().getEnergy());
         }
-        changePlasmaTemperature(-(long) ((plasmaTemperature)/(150*energyPerTick/recipeInfo.recipe().getEnergy())));
-        energyPerTick = (int) ((energyPerTick*calculateEfficiency()*size)*FUSION_CONFIG.PLASMA_TO_ENERGY_CONVERTION.get());
+        changePlasmaTemperature(-(long) ((plasmaTemperature)/(150D*energyPerTick/recipeInfo.recipe().getEnergy())));
+        energyPerTick = (int) ((energyPerTick*calculateEfficiency()*size*sizeFactor)*FUSION_CONFIG.PLASMA_TO_ENERGY_CONVERTION.get());
         if(plasmaTemperature < 1000000) {
             energyPerTick = 0;
         }
     }
 
     protected void amplifyPlasma() {
-        double amplificationVolume = (double) rfAmplification / (size+1);
+        double sizeFactor = Math.log(Math.pow(size+1, 5))/10D;
+        double plasmaHeatScale = Math.log(getOptimalTemperature()/100000000)-1;
+        double amplificationVolume = (double) rfAmplification * sizeFactor;
         changePlasmaTemperature((long) (
                         amplificationVolume
+                        * plasmaHeatScale
                         * rfAmplifierRatio()
                         * getHeatDeviationMultiplier()
                         * FUSION_CONFIG.RF_AMPLIFICATION_MULTIPLIER.get()));
@@ -1000,7 +1005,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         }
 
         public double getCoolingRate() {
-            return Math.max(coolingRate, 1);
+            return Math.max(rarityModifier, 1);
         }
     }
 }

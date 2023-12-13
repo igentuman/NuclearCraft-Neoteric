@@ -3,16 +3,16 @@
   "inputFluids": [
     {
       "amount": 10,
-      "tag": "forge:low_quality_steam"
+      "tag": "forge:high_pressure_steam"
     }
   ],
   "outputFluids": [
     {
       "amount": 10,
-      "fluid": "nuclearcraft:technical_water"
+      "fluid": "nuclearcraft:exhaust_steam"
     }
   ],
-  "powerModifier": 1.0,
+  "powerModifier": 2.5,
   "radiation": 1.0,
-  "timeModifier": 1.0
+  "timeModifier": 2.0
 }

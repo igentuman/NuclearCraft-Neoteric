@@ -3,14 +3,14 @@
   "coolingRate": 5000.0,
   "inputFluids": [
     {
-      "amount": 100,
-      "tag": "minecraft:water"
+      "amount": 200,
+      "tag": "forge:technical_water"
     }
   ],
   "outputFluids": [
     {
-      "amount": 100,
-      "fluid": "nuclearcraft:steam"
+      "amount": 200,
+      "fluid": "nuclearcraft:high_pressure_steam"
     }
   ]
 }

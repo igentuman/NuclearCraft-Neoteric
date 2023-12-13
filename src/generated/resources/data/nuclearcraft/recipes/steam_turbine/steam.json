@@ -8,8 +8,8 @@
   ],
   "outputFluids": [
     {
-      "amount": 10,
-      "fluid": "nuclearcraft:exhaust_steam"
+      "amount": 0,
+      "fluid": "minecraft:empty"
     }
   ],
   "powerModifier": 1.0,

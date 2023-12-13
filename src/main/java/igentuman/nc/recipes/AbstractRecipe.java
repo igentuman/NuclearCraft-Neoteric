@@ -301,6 +301,7 @@ public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
     }
 
     public @NotNull ItemStack getResultItem() {
-        return getOutputItem(0);
+        if(outputItems.length == 0) return ItemStack.EMPTY;
+        return outputItems[0] != null ? outputItems[0] : ItemStack.EMPTY;
     }
 }

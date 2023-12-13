@@ -9,6 +9,7 @@ import net.minecraftforge.common.data.LanguageProvider;
 import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
 import static igentuman.nc.setup.registration.NCItems.*;
 import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCK;
 import static igentuman.nc.util.TextUtils.convertToName;
@@ -25,6 +26,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("itemGroup." + MODID+"_blocks", "NuclearCraft Blocks");
         add("itemGroup." + MODID+"_fission_reactor", "NuclearCraft Fission Reactor");
         add("itemGroup." + MODID+"_fusion_reactor", "NuclearCraft Fusion Reactor");
+        add("itemGroup." + MODID+"_turbine", "NuclearCraft Turbine");
         ores();
         ingots();
         plates();
@@ -131,6 +133,10 @@ public class NCLanguageProvider extends LanguageProvider {
         for(String name: FissionReactor.FISSION_BLOCKS.keySet()) {
             String title = convertToName(name);
             add(FissionReactor.FISSION_BLOCKS.get(name).get(), title);
+        }
+        for(String name: TURBINE_BLOCKS.keySet()) {
+            String title = convertToName(name);
+            add(TURBINE_BLOCKS.get(name).get(), title);
         }
         for(String name: FusionReactor.FUSION_BLOCKS.keySet()) {
             String title = convertToName(name);

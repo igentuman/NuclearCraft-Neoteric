@@ -24,7 +24,7 @@ import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.util.TextUtils.applyFormat;
 
 public class FissionPortScreen extends AbstractContainerScreen<FissionPortContainer> implements IProgressScreen, IVerticalBarScreen {
-    protected final ResourceLocation GUI = new ResourceLocation(MODID, "textures/gui/fission/port.png");
+    protected final ResourceLocation GUI = new ResourceLocation(MODID, "textures/gui/fission/turbine_port.png");
     protected int relX;
     protected int relY;
     private int xCenter;

@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "nuclearcraft:block/multiblock/turbine_port",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "nuclearcraft:block/multiblock/turbine_port"
+    },
+    "facing=south": {
+      "model": "nuclearcraft:block/multiblock/turbine_port",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "nuclearcraft:block/multiblock/turbine_port",
+      "y": 270
+    }
+  }
+}

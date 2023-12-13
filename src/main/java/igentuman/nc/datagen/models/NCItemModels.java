@@ -17,6 +17,7 @@ import java.util.List;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_CORE_PROXY;
+import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
 import static igentuman.nc.setup.registration.NCItems.*;
 
 public class NCItemModels extends ItemModelProvider {
@@ -72,6 +73,9 @@ public class NCItemModels extends ItemModelProvider {
         }
         for(String name: FissionReactor.FISSION_BLOCKS.keySet()) {
             withExistingParent(FissionReactor.FISSION_BLOCK_ITEMS.get(name).getId().getPath(), modLoc("block/multiblock/"+name));
+        }
+        for(String name: TURBINE_BLOCKS.keySet()) {
+            withExistingParent(TURBINE_BLOCKS.get(name).getId().getPath(), modLoc("block/multiblock/"+name));
         }
         for(String name: FUSION_BLOCKS.keySet()) {
             if(name.contains("core")) continue;

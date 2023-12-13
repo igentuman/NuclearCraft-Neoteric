@@ -31,6 +31,7 @@ public class CommonConfig {
     public static final HeatSinkConfig HEAT_SINK_CONFIG = new HeatSinkConfig(BUILDER);
     public static final FusionConfig FUSION_CONFIG = new FusionConfig(BUILDER);
     public static final FissionConfig FISSION_CONFIG = new FissionConfig(BUILDER);
+    public static final TurbineConfig TURBINE_CONFIG = new TurbineConfig(BUILDER);
     public static final RadiationConfig RADIATION_CONFIG = new RadiationConfig(BUILDER);
     public static final EnergyGenerationConfig ENERGY_GENERATION = new EnergyGenerationConfig(BUILDER);
     public static final ElectromagnetsConfig ELECTROMAGNETS_CONFIG = new ElectromagnetsConfig(BUILDER);
@@ -245,11 +246,11 @@ public class CommonConfig {
             builder.comment("Settings for Fusion Reactor").push("fusion_reactor");
 
             MIN_SIZE = builder
-                    .comment("Explosion size if reactor overheats. 4 - TNT size. Set to 0 to disable explosion.")
+                    .comment("Min reactor size.")
                     .defineInRange("min_size", 1, 1, 24);
 
             MAX_SIZE = builder
-                    .comment("Explosion size if reactor overheats. 4 - TNT size. Set to 0 to disable explosion.")
+                    .comment("Max reactor size.")
                     .defineInRange("max_size", 32, 3, 48);
 
             EXPLOSION_RADIUS = builder
@@ -273,6 +274,28 @@ public class CommonConfig {
 
     }
 
+    public static class TurbineConfig {
+        public ForgeConfigSpec.ConfigValue<Integer> MIN_SIZE;
+        public ForgeConfigSpec.ConfigValue<Integer> MAX_SIZE;
+
+        public TurbineConfig(ForgeConfigSpec.Builder builder) {
+            builder.comment("Settings for Turbine").push("turbine");
+
+            MIN_SIZE = builder
+                    .comment("Explosion size if reactor overheats. 4 - TNT size. Set to 0 to disable explosion.")
+                    .defineInRange("min_size", 3, 3, 24);
+
+            MAX_SIZE = builder
+                    .comment("Explosion size if reactor overheats. 4 - TNT size. Set to 0 to disable explosion.")
+                    .defineInRange("max_size", 24, 5, 24);
+
+
+
+            builder.pop();
+        }
+
+    }
+
     public static class FissionConfig {
         public ForgeConfigSpec.ConfigValue<Integer> MIN_SIZE;
         public ForgeConfigSpec.ConfigValue<Integer> MAX_SIZE;
@@ -287,11 +310,11 @@ public class CommonConfig {
             builder.comment("Settings for Fission Reactor").push("fission_reactor");
 
             MIN_SIZE = builder
-                    .comment("Explosion size if reactor overheats. 4 - TNT size. Set to 0 to disable explosion.")
+                    .comment("Reactor min size.")
                     .defineInRange("min_size", 3, 3, 24);
 
             MAX_SIZE = builder
-                    .comment("Explosion size if reactor overheats. 4 - TNT size. Set to 0 to disable explosion.")
+                    .comment("Reactor max size.")
                     .defineInRange("max_size", 24, 5, 24);
 
             EXPLOSION_RADIUS = builder
@@ -322,6 +345,7 @@ public class CommonConfig {
         }
 
     }
+
 
     public static class RadiationConfig {
         public ForgeConfigSpec.ConfigValue<Boolean> ENABLED;

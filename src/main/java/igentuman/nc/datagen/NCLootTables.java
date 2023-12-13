@@ -8,6 +8,7 @@ import net.minecraft.data.DataGenerator;
 
 import static igentuman.nc.multiblock.fission.FissionReactor.FISSION_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_BLOCKS;
+import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
 import static igentuman.nc.setup.registration.NCBlocks.NC_ELECTROMAGNETS;
 import static igentuman.nc.setup.registration.NCBlocks.NC_RF_AMPLIFIERS;
 import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCK;
@@ -43,6 +44,9 @@ public class NCLootTables extends BaseLootTableProvider {
         }
         for(String name: FUSION_BLOCKS.keySet()) {
             lootTables.put(FUSION_BLOCKS.get(name).get(), createSimpleTable("block", FUSION_BLOCKS.get(name).get()));
+        }
+        for(String name: TURBINE_BLOCKS.keySet()) {
+            lootTables.put(TURBINE_BLOCKS.get(name).get(), createSimpleTable("block", TURBINE_BLOCKS.get(name).get()));
         }
     }
 

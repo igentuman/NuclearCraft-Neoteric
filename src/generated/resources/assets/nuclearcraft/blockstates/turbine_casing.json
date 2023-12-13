@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "nuclearcraft:block/multiblock/turbine_casing"
+    }
+  }
+}

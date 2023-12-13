@@ -1,0 +1,6 @@
+{
+  "parent": "nuclearcraft:block/multiblock/turbine_controller",
+  "textures": {
+    "north": "nuclearcraft:block/turbine/controller/turbine_controller_powered"
+  }
+}

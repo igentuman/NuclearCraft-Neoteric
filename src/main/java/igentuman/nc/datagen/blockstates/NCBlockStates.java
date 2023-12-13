@@ -2,6 +2,7 @@ package igentuman.nc.datagen.blockstates;
 
 import igentuman.nc.multiblock.fission.FissionBlocks;
 import igentuman.nc.multiblock.fission.FissionReactor;
+import igentuman.nc.multiblock.turbine.TurbineRegistration;
 import igentuman.nc.setup.registration.NCBlocks;
 import igentuman.nc.setup.registration.NCEnergyBlocks;
 import igentuman.nc.setup.registration.NCProcessors;
@@ -45,8 +46,31 @@ public class NCBlockStates extends BlockStateProvider {
         materialFluidBlocks();
         heatSinks();
         fissionReactor();
+        turbine();
         storageBlocks();
         fusionReactor();
+    }
+
+    private void turbine() {
+        for (String name: TurbineRegistration.turbine) {
+            if(name.matches(".*port.*")) {
+                horizontalBlock(TurbineRegistration.TURBINE_BLOCKS.get("turbine_" + name).get(), multiBlockModel(TurbineRegistration.TURBINE_BLOCKS.get("turbine_" + name).get(), "turbine/" + name));
+            } else if(name.matches(".*controller.*")) {
+                horizontalBlock(TurbineRegistration.TURBINE_BLOCKS.get("turbine_" + name).get(),
+                        st -> controllerModel(st, sidedModel(TurbineRegistration.TURBINE_BLOCKS.get("turbine_" + name).get(), "turbine/controller"))
+                );
+            } else {
+                if(name.contains("slope")) {
+                    orientationalBlock(TurbineRegistration.TURBINE_BLOCKS.get("turbine_" +name).get(), $ -> models().getExistingFile(rl("block/multiblock/turbine_"+name)));
+                } else {
+                    simpleBlock(TurbineRegistration.TURBINE_BLOCKS.get("turbine_" + name).get(), multiBlockModel(TurbineRegistration.TURBINE_BLOCKS.get("turbine_" + name).get(), "turbine/" + name));
+                }
+            }
+        }
+
+        for(String type: TurbineRegistration.coils.keySet()) {
+            simpleBlock(TurbineRegistration.TURBINE_BLOCKS.get("turbine_" + type + "_coil").get(), multiBlockModel(TurbineRegistration.TURBINE_BLOCKS.get("turbine_" + type + "_coil").get(), "turbine/" + type + "_coil"));
+        }
     }
 
     private void storageBlocks() {
@@ -170,9 +194,15 @@ public class NCBlockStates extends BlockStateProvider {
 
     public BlockModelBuilder controllerModel(BlockState st, ModelFile model) {
         String powered = st.getValue(BlockStateProperties.POWERED) ? "_powered" : "";
+        String type = "";
+        if(st.getBlock() == FissionReactor.FISSION_BLOCKS.get("fission_reactor_controller").get()) {
+            type = "fission";
+        } else if(st.getBlock() == TurbineRegistration.TURBINE_BLOCKS.get("turbine_controller").get()) {
+            type = "turbine";
+        }
         BlockModelBuilder result = models()
                 .getBuilder("block/multiblock/"+key(st.getBlock()).getPath()+powered)
-                .texture("north", "block/fission/controller/"+key(st.getBlock()).getPath()+powered)
+                .texture("north", "block/"+type+"/controller/"+key(st.getBlock()).getPath()+powered)
                 ;
         if(st.getValue(BlockStateProperties.POWERED)) {
             result.parent(model);
@@ -313,7 +343,7 @@ public class NCBlockStates extends BlockStateProvider {
                 blockPath = "block/processor/";
                 break;
         }
-        if (subPath.matches(".*fission.*|.*fusion.*")) {
+        if (subPath.matches(".*fission.*|.*fusion.*|.*port.*|.*controller.*")) {
             blockPath = "block/multiblock/";
         }
         return models().cube(

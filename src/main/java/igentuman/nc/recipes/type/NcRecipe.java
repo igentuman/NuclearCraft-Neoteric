@@ -11,6 +11,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 import java.util.List;
 
+import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.compat.GlobalVars.RECIPE_CLASSES;
 

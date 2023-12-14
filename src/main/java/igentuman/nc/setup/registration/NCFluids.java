@@ -91,6 +91,8 @@ public class NCFluids {
             items.put("nuclear_waste", new LiquidDefinition("nuclear_waste", 0X903D3323));
             items.put("fissile_fuel", new LiquidDefinition("fissile_fuel", 0X903D3323));
         }
+        items.put("irradiated_boron", new LiquidDefinition("irradiated_boron", 0XFF6F896C, 800));
+        items.put("irradiated_lithium", new LiquidDefinition("irradiated_lithium", 0XFFBCC661, 800));
         items.put("uranium_oxide", new LiquidDefinition("uranium_oxide", 0X90A9B544));
         items.put("cryotheum", new LiquidDefinition("cryotheum", 0X9089EDFF));
         items.put("radaway", new LiquidDefinition("radaway", 0x50B37AC4));

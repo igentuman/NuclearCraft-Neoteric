@@ -20,4 +20,10 @@ public class LiquidDefinition {
         this.name = name;
         this.color = color;
     }
+
+    public LiquidDefinition(String name, int color, int temperature) {
+        this.name = name;
+        this.color = color;
+        this.temperature = temperature;
+    }
 }

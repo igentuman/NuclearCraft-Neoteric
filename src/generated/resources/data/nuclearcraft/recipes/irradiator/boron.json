@@ -3,16 +3,16 @@
   "inputFluids": [
     {
       "amount": 500,
-      "tag": "forge:lithium"
+      "tag": "forge:boron"
     }
   ],
   "outputFluids": [
     {
       "amount": 500,
-      "fluid": "nuclearcraft:irradiated_lithium"
+      "fluid": "nuclearcraft:irradiated_boron"
     }
   ],
   "powerModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.5
+  "timeModifier": 2.5
 }

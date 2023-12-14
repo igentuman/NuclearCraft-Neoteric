@@ -16,6 +16,23 @@ public class CentrifugeRecipes extends AbstractRecipeProvider {
         ID = Processors.CENTRIFUGE;
 
         add(
+                fluidIngredient("irradiated_boron", 1000),
+                List.of(
+                        fluidStack(Materials.boron10, 500),
+                        fluidStack(Materials.boron11, 500)
+                ), 1.5D
+        );
+
+        add(
+                fluidIngredient("irradiated_lithium", 1000),
+                List.of(
+                        fluidStack(Materials.lithium6, 250),
+                        fluidStack(Materials.lithium7, 250),
+                        fluidStack("tritium", 500)
+                )
+        );
+
+        add(
                 fluidIngredient("technical_water", 1000),
                 List.of(
                         fluidStack("deuterium", 750),

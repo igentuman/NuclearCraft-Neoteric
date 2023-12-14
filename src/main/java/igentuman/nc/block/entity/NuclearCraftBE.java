@@ -18,6 +18,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 public class NuclearCraftBE extends BlockEntity {
     protected String name;
@@ -106,7 +107,9 @@ public class NuclearCraftBE extends BlockEntity {
     @Override
     public void setRemoved() {
         super.setRemoved();
-        stopSound();
+        if(Objects.requireNonNull(getLevel()).isClientSide()) {
+            stopSound();
+        }
     }
 
     protected void stopSound() {

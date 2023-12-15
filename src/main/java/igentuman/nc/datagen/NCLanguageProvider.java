@@ -92,6 +92,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("fusion_core.efficiency", "Efficiency: %s%%");
         add("nc_jei_cat.fusion_core", "Fusion Reactor");
         add("nc_jei_cat.fusion_coolant", "Fusion Reactor Coolant");
+        add("nc_jei_cat.mek_chemical_conversion", "NC - GAS -> Fluid Conversion");
 
         add("reactor.size", "Reactor size: %sx%sx%s");
         add("fission.casing.wrong.block", "Wrong block at: %s");
@@ -201,6 +202,8 @@ public class NCLanguageProvider extends LanguageProvider {
     }
 
     private void tooltips() {
+
+        add("tooltip.nc.jei.gas_to_fluid.desc","NC blocks automatically converts Mek Gasses into Fluids during input");
 
         add("tooltip.nc.hev.desc","Grants additional protection and passive effects when charged");
         add("tooltip.nc.moderator.desc","Fission Reactor moderator. Has to be placed next to fuel cell. \n Each adjacent with fuel cell adds +%s%% efficiency and +%s%% heat gen");

@@ -31,7 +31,7 @@ public class Gas2FluidConverter<CHEMICAL extends Chemical<CHEMICAL>, STACK exten
     }
 
     @Override
-    public STACK getChemicalInTank(int tank) {
+    public @NotNull STACK getChemicalInTank(int tank) {
         return getEmptyStack();
     }
 

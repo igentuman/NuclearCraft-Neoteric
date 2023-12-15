@@ -1,8 +1,14 @@
 package igentuman.nc.compat.jei;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import igentuman.nc.block.entity.fusion.FusionCoreBE;
 import igentuman.nc.compat.jei.util.TickTimer;
+import igentuman.nc.recipes.AbstractRecipe;
+import igentuman.nc.recipes.type.MekChemicalConversionRecipe;
+import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.slurry.SlurryStack;
+import mekanism.client.jei.MekanismJEI;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -10,6 +16,7 @@ import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
+import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
@@ -26,29 +33,26 @@ import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
-import static igentuman.nc.compat.GlobalVars.CATALYSTS;
+import static net.minecraft.world.item.Items.BUCKET;
 
-public class FusionCoolantCategoryWrapper<T extends FusionCoreBE.FusionCoolantRecipe> implements IRecipeCategory<T> {
+public class MekChemicalConversionCategoryWrapper<T extends MekChemicalConversionRecipe> implements IRecipeCategory<T> {
     public final static ResourceLocation TEXTURE =
             new ResourceLocation(MODID, "textures/gui/processor_jei.png");
 
     private final IDrawable background;
     private final IDrawable icon;
     protected RecipeType<T> recipeType;
+    HashMap<Integer, TickTimer> timer = new HashMap<>();
     IDrawable arrow;
     private  IDrawable[] slots;
 
     IGuiHelper guiHelper;
 
-    public FusionCoolantCategoryWrapper(IGuiHelper guiHelper, RecipeType<T> recipeType) {
-        this.recipeType = recipeType;
+    public MekChemicalConversionCategoryWrapper(IGuiHelper guiHelper, RecipeType<T> recipeType) {
+        this.recipeType = (RecipeType<T>) recipeType;
         this.guiHelper = guiHelper;
         this.background = guiHelper.createDrawable(TEXTURE, 0, 0, 105, 32);
-        if(CATALYSTS.containsKey(getRecipeType().getUid().getPath())) {
-            this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, CATALYSTS.get(getRecipeType().getUid().getPath()).get(0));
-        } else{
-            this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, ItemStack.EMPTY);
-        }
+        this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(BUCKET));
     }
 
     @Override
@@ -58,8 +62,18 @@ public class FusionCoolantCategoryWrapper<T extends FusionCoreBE.FusionCoolantRe
 
     @Override
     public @NotNull Component getTitle() {
-        return Component.translatable("nc_jei_cat."+getRecipeType().getUid().getPath());
+        return Component.translatable("nc_jei_cat.mek_chemical_conversion");
     }
+
+    @Override
+    public @NotNull List<Component> getTooltipStrings(T recipe, IRecipeSlotsView recipeSlotsView, double mouseX, double mouseY) {
+        List<Component> lines = new ArrayList<>();
+        if(mouseX > 34 && mouseX < 76 && mouseY > 16 && mouseY < 32) {
+            lines.add(Component.translatable("tooltip.nc.jei.gas_to_fluid.desc").withStyle(ChatFormatting.AQUA));
+        }
+        return lines;
+    }
+
 
     @Override
     public @NotNull IDrawable getBackground() {
@@ -74,37 +88,30 @@ public class FusionCoolantCategoryWrapper<T extends FusionCoreBE.FusionCoolantRe
     @Override
     public void draw(T recipe, IRecipeSlotsView recipeSlotsView, PoseStack stack, double mouseX, double mouseY) {
         arrow.draw(stack, 34, 6);
-
         slots[0].draw(stack, 11, 5);
         slots[1].draw(stack, 74, 5);
     }
 
     @Override
-    public @NotNull List<Component> getTooltipStrings(@NotNull T recipe, @NotNull IRecipeSlotsView recipeSlotsView, double mouseX, double mouseY) {
-        List<Component> lines = new ArrayList<>();
-        if(mouseX > 34 && mouseX < 76 && mouseY > 6 && mouseY < 20) {
-            lines.add(Component.translatable("fusion_core.recipe.cooling_rate", (int)recipe.getCoolingRate()).withStyle(ChatFormatting.GOLD));
-        }
-        return lines;
-    }
-
-    @Override
     public void setRecipe(@NotNull IRecipeLayoutBuilder builder, T recipe, @NotNull IFocusGroup focuses) {
-        int d = (int)recipe.getCoolingRate();
         slots = new IDrawable[2];
+
         arrow = guiHelper.drawableBuilder(rl("textures/gui/progress.png"), 0, 0, 36, 15)
                 .buildAnimated(new TickTimer(100, 36, true), IDrawableAnimated.StartDirection.LEFT);
 
-        builder.addSlot(RecipeIngredientRole.INPUT, 12, 6)
-                .addIngredients(ForgeTypes.FLUID_STACK, recipe.getInputFluids(0))
-                .setFluidRenderer(recipe.getInputFluids()[0].getAmount(), false, 16, 16);
+        if(recipe.inputChemical instanceof GasStack) {
+            builder.addSlot(RecipeIngredientRole.INPUT, 12, 6)
+                    .addIngredients(MekanismJEI.TYPE_GAS, List.of((GasStack) recipe.inputChemical));
+        }
+        if(recipe.inputChemical instanceof SlurryStack) {
+            builder.addSlot(RecipeIngredientRole.INPUT, 12, 6)
+                    .addIngredients(MekanismJEI.TYPE_SLURRY, List.of((SlurryStack) recipe.inputChemical));
+        }
         slots[0] = guiHelper.createDrawable(rl("textures/gui/widgets.png"), 18, 0, 18, 18);
 
-
         builder.addSlot(RecipeIngredientRole.OUTPUT, 75, 6)
-                .addIngredients(ForgeTypes.FLUID_STACK, recipe.getOutputFluids(0))
-                .setFluidRenderer(recipe.getOutputFluids()[0].getAmount(), false, 16, 16);
+                .addIngredients(ForgeTypes.FLUID_STACK, List.of(recipe.outputFluid))
+                .setFluidRenderer(1000, false, 16, 16);
         slots[1] = guiHelper.createDrawable(rl("textures/gui/widgets.png"), 18, 0, 18, 18);
-
     }
 }

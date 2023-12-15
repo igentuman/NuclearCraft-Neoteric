@@ -143,7 +143,7 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
                         fluidStack("helium", 500),
                         fluidStack("helium", 500),
                         fluidStack("helium", 500)
-                ), 45D, 259000D, 1.5D, 5034D
+                ), 45D, 229000D, 1.5D, 5034D
         );
         
         add(
@@ -167,7 +167,7 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
                         fluidStack("helium", 250),
                         fluidStack("helium", 250),
                         fluidStack("helium", 250)
-                ), 30D, 309100D, 1.5D, 2604D
+                ), 30D, 209100D, 1.5D, 2604D
         );
 
         add(
@@ -200,7 +200,7 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
                 List.of(
                         fluidStack("helium", 1000*6/4),
                         fluidStack("helium", 1000*6/4)
-                ), 70D, 700000D, 1.5D, 33215D
+                ), 70D, 400000D, 1.5D, 33215D
         );
 
         add(
@@ -212,7 +212,7 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
                         fluidStack("hydrogen", 500),
                         fluidStack("helium", 1000),
                         fluidStack("helium", 1000)
-                ), 45D, 315000D, 1.5D, 9506D
+                ), 45D, 265000D, 1.5D, 9506D
         );
 
         add(
@@ -224,7 +224,7 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
                         fluidStack("deuterium", 500),
                         fluidStack("helium", 1000),
                         fluidStack("helium", 1000)
-                ), 50D, 272700D, 1.5D, 9673D
+                ), 50D, 222700D, 1.5D, 9673D
         );
 
         add(
@@ -236,7 +236,7 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
                         fluidStack("deuterium", 500),
                         fluidStack("helium", 1000*6/4),
                         fluidStack("helium", 1000*6/4)
-                ), 70D, 674000D, 1.5D, 29574D
+                ), 70D, 574000D, 1.5D, 29574D
         );
 
         add(
@@ -246,7 +246,7 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
                 List.of(
                         fluidStack("helium", 1000*6/2),
                         fluidStack("helium", 1000*6/2)
-                ), 65D, 355200D, 1.5D, 14536D
+                ), 65D, 255200D, 1.5D, 14536D
         );
 
         add(
@@ -266,7 +266,7 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
                 List.of(
                         fluidStack("helium", 1000*2),
                         fluidStack("helium", 1000*2)
-                ), 90D, 4500000D, 3.5D, 202000D
+                ), 90D, 700000D, 3.5D, 202000D
         );
 
     }

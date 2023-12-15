@@ -5,7 +5,6 @@ import igentuman.nc.block.fusion.FusionCoreBlock;
 import igentuman.nc.client.particle.FusionBeamParticleData;
 import igentuman.nc.client.sound.SoundHandler;
 import igentuman.nc.compat.cc.NCFusionReactorPeripheral;
-import igentuman.nc.content.processors.Processors;
 import igentuman.nc.handler.event.client.BlockOverlayHandler;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.multiblock.ValidationResult;
@@ -21,7 +20,6 @@ import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.util.CustomEnergyStorage;
 import igentuman.nc.util.NCBlockPos;
 import igentuman.nc.util.annotation.NBTField;
-import mekanism.common.capabilities.Capabilities;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -364,9 +362,9 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         double mEff = (magnetsEfficiency() - 50) / 100;
         double rEff = (rfEfficiency() - 50) / 100;
         //better plasma stability = smaller deviation window
-        double plasmaStability = (1+getPlasmaStability())/2;
-        double minMult = 0.5*plasmaStability + (mEff + rEff)/2;
-        double maxMult = 1.5*getPlasmaStability() - (mEff + rEff)/2;
+        double plasmaStability = (1+ getControlPartsEfficiency())/2;
+        double minMult = 0.2*plasmaStability + (mEff + rEff)/2;
+        double maxMult = 1.7* getControlPartsEfficiency() - (mEff + rEff)/2;
         double rand = ((new Random()).nextDouble()+4)/5;
         lastHeadDeviationMult = (lastHeadDeviationMult + rand*(maxMult-minMult)+minMult)/2;
         return lastHeadDeviationMult;
@@ -414,10 +412,16 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
     /**
      * Depends on magnets efficiency and ratio of minimal magnetic field to overall magnetic field
      */
-    public double getPlasmaStability()
+    public double getControlPartsEfficiency()
     {
         return Math.min(1.9, Math.max(0.1, 2D / (magnetsEfficiency() / 100 * (minimalMagneticField() / overallMagneticField()))));
     }
+
+    public double getPlasmaStability()
+    {
+        return (getControlPartsEfficiency()/1.9D+calculateEfficiency()*2)/3;
+    }
+
 
     protected List<FluidStack> getAllowedCoolants() {
         List<FluidStack> allowedCoolants = new ArrayList<>();
@@ -554,7 +558,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
     {
         if(hasCoolant()) {
             if(reactorHeat > coolantRecipe.getCoolingRate()) {
-                int coolantNeeded = (int) Math.min(Math.pow(size, 2), reactorHeat/coolantRecipe.getCoolingRate());
+                int coolantNeeded = (int) (reactorHeat/coolantRecipe.getCoolingRate());
                 int coolantPerOp = coolantRecipe.getInputFluids()[0].getAmount();
                 int availableCoolant = contentHandler.fluidCapability.tanks.get(2).getFluidAmount();
                 int possibleOps = availableCoolant/coolantPerOp;
@@ -644,8 +648,8 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
 
     protected void heatLossExchange() {
         double sizeFactor = Math.log(Math.pow(size+2, 2))/100;
-        changePlasmaTemperature((long) -((plasmaTemperature / Math.pow(getPlasmaStability(), 2))*sizeFactor));
-        changeReactorHeat((double) Math.min(plasmaTemperature, 100000000) / (10000*size*getPlasmaStability()));
+        changePlasmaTemperature((long) -((plasmaTemperature / Math.pow(getControlPartsEfficiency(), 2))*sizeFactor));
+        changeReactorHeat((double) Math.min(plasmaTemperature, 100000000) / (10000*size* getControlPartsEfficiency()));
     }
 
 
@@ -664,16 +668,22 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         }
     }
 
+    protected long prevAmplification = 0;
+
     protected void amplifyPlasma() {
         double sizeFactor = Math.log(Math.pow(size+1, 5))/10D;
-        double plasmaHeatScale = Math.log(getOptimalTemperature()/100000000)-1;
+        double pRatio = Math.log(getOptimalTemperature()/100000000);
+        double plasmaHeatScale = (pRatio-Math.sqrt(pRatio)+3)/4;
         double amplificationVolume = (double) rfAmplification * sizeFactor;
-        changePlasmaTemperature((long) (
+        double amplification =
                         amplificationVolume
                         * plasmaHeatScale
                         * rfAmplifierRatio()
                         * getHeatDeviationMultiplier()
-                        * FUSION_CONFIG.RF_AMPLIFICATION_MULTIPLIER.get()));
+                        * FUSION_CONFIG.RF_AMPLIFICATION_MULTIPLIER.get();
+        prevAmplification += (long) (amplification/100);
+        prevAmplification = (long) Math.min(prevAmplification, amplification);
+        changePlasmaTemperature(prevAmplification);
     }
 
     protected void handleRecipeOutput() {

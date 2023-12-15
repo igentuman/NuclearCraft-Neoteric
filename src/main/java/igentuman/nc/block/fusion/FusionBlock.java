@@ -2,7 +2,9 @@ package igentuman.nc.block.fusion;
 
 import igentuman.nc.block.entity.fission.FissionBE;
 import igentuman.nc.block.entity.fusion.FusionBE;
+import igentuman.nc.content.storage.BarrelBlocks;
 import igentuman.nc.multiblock.fusion.FusionReactor;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
@@ -102,5 +104,15 @@ public class FusionBlock extends Block implements EntityBlock {
             ((FusionBE)level.getBlockEntity(pos)).onBlockDestroyed(state, level, pos, null);
         }
        return super.onDestroyedByPlayer(state, level, pos, player, willHarvest, fluid);
+    }
+
+    @Override
+    public void appendHoverText(ItemStack stack, @javax.annotation.Nullable BlockGetter world, List<Component> list, TooltipFlag flag)
+    {
+        if (getCode().equals("fusion_reactor_connector")) {
+            list.add(Component.translatable("tooltip.nc.fusion_connector.descr").withStyle(ChatFormatting.YELLOW));
+        } else {
+            list.add(Component.translatable("tooltip.nc.fusion_casing.descr").withStyle(ChatFormatting.YELLOW));
+        }
     }
 }

@@ -83,6 +83,7 @@ public class NCLanguageProvider extends LanguageProvider {
 
     private void labels() {
         add("fusion_core.rf_amplifiers.power", "RF Amplifiers: %s%%");
+        add("fusion_core.stability", "Plasma Stability: %s%%");
         add("nc.label.leacher_wrong_position", "Wrong Position");
         add("nc.label.leacher_no_source", "No Data Source");
         add("nc.label.leacher_no_acid", "No Acid");
@@ -202,6 +203,7 @@ public class NCLanguageProvider extends LanguageProvider {
     private void tooltips() {
 
         add("tooltip.nc.hev.desc","Grants additional protection and passive effects when charged");
+        add("tooltip.nc.moderator.desc","Fission Reactor moderator. Has to be placed next to fuel cell. \n Each adjacent with fuel cell adds +%s%% efficiency and +%s%% heat gen");
 
         add("processor.recipe.power","Process Power: %s FE/t");
         add("processor.recipe.duration","Process Duration: %s t");
@@ -219,6 +221,8 @@ public class NCLanguageProvider extends LanguageProvider {
         add("fission.recipe.radiation","Reaction Radiation: %s pRad");
         add("fission.recipe.heat","Heat Generation: %s H/t");
 
+        add("tooltip.nc.fusion_connector.descr", "Used to connect fusion core and toroidal reactor chamber");
+        add("tooltip.nc.fusion_casing.descr", "Used to build toroidal fusion reactor chamber");
         add("tooltip.nc.rf_amplifier.not_found","No RF Amplifiers attached");
         add("tooltip.nc.rf_amplifier.power","Energy Required: %s FE/t");
         add("tooltip.nc.rf_amplifier.voltage","Amplification: %s V");

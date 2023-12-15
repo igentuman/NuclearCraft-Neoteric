@@ -204,4 +204,8 @@ public class FusionCoreContainer extends AbstractContainerMenu {
     public boolean isRunning() {
         return blockEntity.isRunning();
     }
+
+    public int getPlasmaStability() {
+        return (int) (blockEntity.getPlasmaStability()*100);
+    }
 }

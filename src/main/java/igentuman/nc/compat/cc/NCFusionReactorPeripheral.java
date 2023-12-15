@@ -78,7 +78,7 @@ public class NCFusionReactorPeripheral implements IPeripheral {
     @LuaFunction
     public final double getPlasmaStability()
     {
-        return reactor.getPlasmaStability();
+        return reactor.getControlPartsEfficiency();
     }
 
 

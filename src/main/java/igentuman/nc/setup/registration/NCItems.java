@@ -123,25 +123,29 @@ public class NCItems {
 
     private static void registerFood() {
         List<String> items = Arrays.asList(
-                "marshmallow",
-                "milk_chocolate",
-                "dark_chocolate",
                 "rad_x",
                 "radaway",
                 "radaway_slow",
+                "marshmallow",
+                "milk_chocolate",
+                "dark_chocolate",
                 "graham_cracker",
                 "smore",
+                "moresmore",
                 "foursmore",
                 "dominos",
-                "moresmore",
                 "evenmoresmore"
 
         );
-        int i = 1;
+        int i = -18;
         for(String name: items) {
+            i+=4;
+            int finalI = Math.max(i, 1);
+
             NC_FOOD.put(name, ITEMS.register(name, () -> new Item(new Item.Properties().tab(CreativeModeTab.TAB_FOOD).food(
-                    new FoodProperties.Builder().nutrition(i)
-                            .saturationMod(i).build()
+                    new FoodProperties.Builder().nutrition(finalI)
+                            .saturationMod(finalI).build()
+
             ))));
             ALL_NC_ITEMS.put(name, NC_FOOD.get(name));
         }

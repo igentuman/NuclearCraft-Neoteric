@@ -672,8 +672,8 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
 
     protected void amplifyPlasma() {
         double sizeFactor = Math.log(Math.pow(size+1, 5))/10D;
-        double pRatio = Math.log(getOptimalTemperature()/100000000);
-        double plasmaHeatScale = (pRatio-Math.sqrt(pRatio)+3)/4;
+        double pRatio = Math.log(getOptimalTemperature()/150000000);
+        double plasmaHeatScale = (pRatio-Math.sqrt(pRatio)+5)/7;
         double amplificationVolume = (double) rfAmplification * sizeFactor;
         double amplification =
                         amplificationVolume
@@ -681,7 +681,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
                         * rfAmplifierRatio()
                         * getHeatDeviationMultiplier()
                         * FUSION_CONFIG.RF_AMPLIFICATION_MULTIPLIER.get();
-        prevAmplification += (long) (amplification/100);
+        prevAmplification += (long) (amplification/1000);
         prevAmplification = (long) Math.min(prevAmplification, amplification);
         changePlasmaTemperature(prevAmplification);
     }

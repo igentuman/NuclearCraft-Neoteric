@@ -16,6 +16,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -267,6 +268,21 @@ public class FissionPortBE extends FissionBE {
         }
         setChanged();
         level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+    }
+
+    public FluidTank getFluidTank(int i) {
+        if(controller() == null) return null;
+        return controller().getFluidTank(i);
+    }
+
+    public boolean getMode() {
+        if(controller() == null) return false;
+        return controller().isSteamMode;
+    }
+
+    public int getSteamPerTick() {
+        if(controller() == null) return 0;
+        return controller().steamPerTick;
     }
 
     public static class SignalSource {

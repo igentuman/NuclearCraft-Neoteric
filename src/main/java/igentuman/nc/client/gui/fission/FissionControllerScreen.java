@@ -20,6 +20,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -109,7 +110,7 @@ public class FissionControllerScreen extends AbstractContainerScreen<FissionCont
     }
 
     @Override
-    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void render(@NotNull PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         xCenter = getGuiLeft()-imageWidth/2;
         this.renderBackground(matrixStack);
         super.render(matrixStack, mouseX, mouseY, partialTicks);
@@ -154,7 +155,7 @@ public class FissionControllerScreen extends AbstractContainerScreen<FissionCont
     }
 
     @Override
-    protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
+    protected void renderLabels(@NotNull PoseStack matrixStack, int mouseX, int mouseY) {
         drawCenteredString(matrixStack, font,  menu.getTitle(), imageWidth/2, titleLabelY, 0xffffff);
         if(isCasingValid()) {
             casingTootip = applyFormat(Component.translatable("reactor.size", getMultiblockHeight(), getMultiblockWidth(), getMultiblockDepth()), ChatFormatting.GOLD);
@@ -204,7 +205,7 @@ public class FissionControllerScreen extends AbstractContainerScreen<FissionCont
     }
 
     @Override
-    protected void renderBg(PoseStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(@NotNull PoseStack matrixStack, float partialTicks, int mouseX, int mouseY) {
         RenderSystem.setShaderTexture(0, GUI);
         updateRelativeCords();
         this.blit(matrixStack, relX, relY, 0, 0, this.imageWidth, this.imageHeight);
@@ -241,13 +242,13 @@ public class FissionControllerScreen extends AbstractContainerScreen<FissionCont
             if(coolantTank.isMouseOver(pMouseX, pMouseY)) {
                 renderTooltip(pPoseStack, coolantTank.getTooltips(),
                         Optional.empty(), pMouseX, pMouseY);
-            };
+            }
             if(steamTank.isMouseOver(pMouseX, pMouseY)) {
                 List<Component> tooltips = steamTank.getTooltips();
                 tooltips.add(Component.translatable("reactor.steam_per_tick", container().getSteamPerTick()));
                 renderTooltip(pPoseStack, tooltips,
                         Optional.empty(), pMouseX, pMouseY);
-            };
+            }
         }
     }
 

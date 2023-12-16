@@ -31,7 +31,7 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
     public NuclearCraftBE blockEntity;
     private boolean updated = false;
 
-    private Gas2FluidConverter gasConverter;
+    private Gas2FluidConverter<?,?> gasConverter;
 
     public SidedContentHandler(int inputItemSlots, int outputItemSlots, int inputFluidSlots, int outputFluidSlots) {
         this.inputItemSlots = inputItemSlots;

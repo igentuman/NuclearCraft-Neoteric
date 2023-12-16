@@ -93,6 +93,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("nc_jei_cat.fusion_core", "Fusion Reactor");
         add("nc_jei_cat.fusion_coolant", "Fusion Reactor Coolant");
         add("nc_jei_cat.mek_chemical_conversion", "NC - GAS -> Fluid Conversion");
+        add("nc_jei_cat.fission_boiling", "Boiling Reactor");
 
         add("reactor.size", "Reactor size: %sx%sx%s");
         add("fission.casing.wrong.block", "Wrong block at: %s");
@@ -208,6 +209,8 @@ public class NCLanguageProvider extends LanguageProvider {
         add("tooltip.nc.hev.desc","Grants additional protection and passive effects when charged");
         add("tooltip.nc.moderator.desc","Fission Reactor moderator. Has to be placed next to fuel cell. \n Each adjacent with fuel cell adds +%s%% efficiency and +%s%% heat gen");
 
+        add("boiling.recipe.heat_required","Heat required: %s H");
+
         add("processor.recipe.power","Process Power: %s FE/t");
         add("processor.recipe.duration","Process Duration: %s t");
         add("processor.recipe.radiation","Process Radiation: %s uRad");
@@ -223,6 +226,10 @@ public class NCLanguageProvider extends LanguageProvider {
         add("fission.recipe.duration","Depletion Time: %s s");
         add("fission.recipe.radiation","Reaction Radiation: %s pRad");
         add("fission.recipe.heat","Heat Generation: %s H/t");
+        add("gui.nc.reactor_mode.tooltip_steam","Boiling Mode");
+        add("gui.nc.reactor_mode.tooltip_energy","Energy Mode");
+        add("gui.nc.reactor_mode.timer","Changing mode in: %s sec");
+        add("reactor.steam_per_tick","Boiling rate: %s mB/t");
 
         add("tooltip.nc.fusion_connector.descr", "Used to connect fusion core and toroidal reactor chamber");
         add("tooltip.nc.fusion_casing.descr", "Used to build toroidal fusion reactor chamber");

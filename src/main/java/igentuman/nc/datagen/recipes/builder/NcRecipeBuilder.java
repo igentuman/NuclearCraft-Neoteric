@@ -33,6 +33,7 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
     private double powerModifier = 1D;
 
     public double coolingRate = 0;
+    public double heatRequired = 0;
 
     public String ID;
     private double rarityModifier = 1D;
@@ -97,6 +98,11 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
         for(FluidStackIngredient in: inputFluids) {
             name.append(in.getName()).append("-");
         }
+        if(useInputForId) {
+            for(FluidStack out: outputFluids) {
+                name.append(out.getFluid().getFluidType().getDescriptionId()).append("-");
+            }
+        }
         name.replace(name.length()-1, name.length(), "");
 
         return new ResourceLocation(MODID, ID+"/"+recipeIdReplacements(name.toString()));
@@ -119,6 +125,18 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
 
     public NcRecipeBuilder coolingRate(double coolingRate) {
         this.coolingRate = coolingRate;
+        return this;
+    }
+
+    public NcRecipeBuilder heatRequired(double heatRequired) {
+        this.heatRequired = heatRequired;
+        return this;
+    }
+
+    private boolean useInputForId = false;
+
+    public NcRecipeBuilder useInputForId(boolean b) {
+        useInputForId = b;
         return this;
     }
 
@@ -172,6 +190,9 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
             }
             if(!outputFluids.isEmpty()) {
                 json.add("outputFluids", outJson);
+            }
+            if(heatRequired > 0) {
+                json.addProperty("heatRequired", heatRequired);
             }
             if(coolingRate > 0) {
                 json.addProperty("coolingRate", coolingRate);

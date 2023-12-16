@@ -5,7 +5,7 @@ import net.minecraft.nbt.Tag;
 
 
 public class SlotModePair {
-    private final SlotMode slotMode;
+    private SlotMode slotMode;
     private final int slot;
 
     public SlotModePair(SlotMode slotMode, int slot) {
@@ -54,6 +54,10 @@ public class SlotModePair {
         int slotMode = packedValue/100;
         int slot = packedValue%100;
         return new SlotModePair(slotMode, slot);
+    }
+
+    public void setMode(SlotMode slotMode) {
+        this.slotMode = slotMode;
     }
 
     public enum SlotMode {

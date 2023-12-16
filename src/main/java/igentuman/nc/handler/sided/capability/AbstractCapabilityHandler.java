@@ -74,4 +74,10 @@ public abstract class AbstractCapabilityHandler {
                 SidedContentHandler.RelativeDirection.toRelative(side, getFacing());
         return sideMap.get(relativeDirection.ordinal())[slot].getMode() != SlotModePair.SlotMode.DISABLED;
     }
+
+    public void setGlobalMode(int i, SlotModePair.SlotMode slotMode) {
+        for(SidedContentHandler.RelativeDirection dir: SidedContentHandler.RelativeDirection.values()) {
+            sideMap.get(dir.ordinal())[i].setMode(slotMode);
+        }
+    }
 }

@@ -168,6 +168,15 @@ public abstract class AbstractRecipeProvider {
                 .build(consumer);
     }
 
+    public static void boilingRecipe(List<FluidStackIngredient> input, List<FluidStack> output, double heatRequired) {
+        NcRecipeBuilder.get(ID)
+                .fluids(input, output)
+                .modifiers(0,0,0, 0)
+                .heatRequired(heatRequired)
+                .useInputForId(true)
+                .build(consumer);
+    }
+
     public static void itemsAndFluids(
             List<NcIngredient> inputItems, List<NcIngredient> outputItems,
             List<FluidStackIngredient> inputFluids, List<FluidStack> outputFluids,

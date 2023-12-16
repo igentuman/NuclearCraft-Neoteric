@@ -7,6 +7,7 @@ import igentuman.nc.client.sound.SoundHandler;
 import igentuman.nc.compat.cc.NCFusionReactorPeripheral;
 import igentuman.nc.handler.event.client.BlockOverlayHandler;
 import igentuman.nc.handler.sided.SidedContentHandler;
+import igentuman.nc.handler.sided.SlotModePair;
 import igentuman.nc.multiblock.ValidationResult;
 import igentuman.nc.multiblock.fusion.FusionReactor;
 import igentuman.nc.multiblock.fusion.FusionReactorMultiblock;
@@ -130,6 +131,10 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
     protected List<FluidStack> allowedInputs;
     protected FusionCoreProxyBE[] proxyBES;
 
+    public FluidTank getFluidTank(int i) {
+        return contentHandler.fluidCapability.tanks.get(i);
+    }
+
     protected CustomEnergyStorage createEnergy() {
         return new CustomEnergyStorage(2_048_000_000, 100000000, 100000000) {
             @Override
@@ -146,6 +151,15 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
                 0, 0,
                 3, 5);
         contentHandler.setBlockEntity(this);
+        contentHandler.fluidCapability.setGlobalMode(0, SlotModePair.SlotMode.INPUT);
+        contentHandler.fluidCapability.setGlobalMode(1, SlotModePair.SlotMode.INPUT);
+        contentHandler.fluidCapability.setGlobalMode(2, SlotModePair.SlotMode.INPUT);
+
+        contentHandler.fluidCapability.setGlobalMode(3, SlotModePair.SlotMode.OUTPUT);
+        contentHandler.fluidCapability.setGlobalMode(4, SlotModePair.SlotMode.OUTPUT);
+        contentHandler.fluidCapability.setGlobalMode(5, SlotModePair.SlotMode.OUTPUT);
+        contentHandler.fluidCapability.setGlobalMode(6, SlotModePair.SlotMode.OUTPUT);
+        contentHandler.fluidCapability.setGlobalMode(7, SlotModePair.SlotMode.OUTPUT);
     }
 
     protected LazyOptional<NCFusionReactorPeripheral> peripheralCap;
@@ -217,6 +231,10 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         trackChanges(updateCharacteristics());
         size = multiblock().isFormed() ? multiblock.width() : 0;
         refreshCacheFlag = !multiblock().isFormed();
+        if(multiblock().isFormed()) {
+            contentHandler.fluidCapability.tanks.get(2).setCapacity(50000*size);
+            contentHandler.fluidCapability.tanks.get(7).setCapacity(50000*size);
+        }
     }
     protected int updateSpan = 20;
     protected void periodicalUpdate()
@@ -339,6 +357,8 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         contentHandler.setAllowedInputFluids(1, getAllowedInputFluids());
         contentHandler.setAllowedInputFluids(2, getAllowedCoolants());
         contentHandler.setAllowedInputFluids(7, getAllowedCoolantsOutput());
+        contentHandler.fluidCapability.tanks.get(2).setCapacity(100000);
+        contentHandler.fluidCapability.tanks.get(7).setCapacity(100000);
         if(refreshCacheFlag || changed) {
             try {
                 assert level != null;
@@ -914,9 +934,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         isInternalValid = false;
     }
 
-    public FluidTank getFluidTank(int i) {
-        return contentHandler.fluidCapability.tanks.get(i);
-    }
+
     protected FusionCoolantRecipe coolantRecipe;
     public boolean hasCoolant() {
         FluidStack coolant = contentHandler.fluidCapability.getFluidInSlot(2);

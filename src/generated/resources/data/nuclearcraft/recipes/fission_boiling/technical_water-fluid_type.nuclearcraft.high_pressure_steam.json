@@ -1,15 +1,15 @@
 {
-  "type": "nuclearcraft:fusion_coolant",
-  "coolingRate": 2500.0,
+  "type": "nuclearcraft:fission_boiling",
+  "heatRequired": 1.0,
   "inputFluids": [
     {
-      "amount": 500,
+      "amount": 10,
       "tag": "forge:technical_water"
     }
   ],
   "outputFluids": [
     {
-      "amount": 500,
+      "amount": 10,
       "fluid": "nuclearcraft:high_pressure_steam"
     }
   ]

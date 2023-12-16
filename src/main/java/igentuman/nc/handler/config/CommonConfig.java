@@ -306,6 +306,8 @@ public class CommonConfig {
         public ForgeConfigSpec.ConfigValue<Double> EXPLOSION_RADIUS;
         public ForgeConfigSpec.ConfigValue<Double> HEAT_CAPACITY;
 
+        public ForgeConfigSpec.ConfigValue<Double> BOILING_MULTIPLIER;
+
         public FissionConfig(ForgeConfigSpec.Builder builder) {
             builder.comment("Settings for Fission Reactor").push("fission_reactor");
 
@@ -340,6 +342,10 @@ public class CommonConfig {
             MODERATOR_HEAT_MULTIPLIER = builder
                     .comment("Each attachment of moderator to fuel cell will increase fuel heat generation by given percent value.")
                     .defineInRange("moderator_heat_multiplier", 33.34D, 0D, 1000D);
+
+            BOILING_MULTIPLIER = builder
+                    .comment("Rate at which steam recipes produced.")
+                    .defineInRange("boiling_mult", 5D, 0.01D, 1000000D);
 
             builder.pop();
         }

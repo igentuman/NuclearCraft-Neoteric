@@ -34,6 +34,9 @@ public class FissionPortBE extends FissionBE {
     @NBTField
     public BlockPos controllerPos;
 
+    @NBTField
+    public boolean isSteamMode = false;
+
     public FissionPortBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, NAME);
     }
@@ -44,6 +47,8 @@ public class FissionPortBE extends FissionBE {
     public boolean hasRedstoneSignal() {
         return Objects.requireNonNull(getLevel()).hasNeighborSignal(worldPosition);
     }
+
+
     @Override
     public void tickServer() {
         if(NuclearCraft.instance.isNcBeStopped) return;
@@ -56,6 +61,11 @@ public class FissionPortBE extends FissionBE {
             updated = true;
             setChanged();
         }
+        if(isSteamMode != controller().isSteamMode) {
+            isSteamMode = controller().isSteamMode;
+            updated = true;
+        }
+
         if(hasRedstoneSignal()) {
             controller().controllerEnabled = true;
         }
@@ -69,10 +79,6 @@ public class FissionPortBE extends FissionBE {
         if(itemHandler() != null) {
             updated = itemHandler().pushItems(dir, true, worldPosition) || updated;
             updated = itemHandler().pullItems(dir, true, worldPosition) || updated;
-        }
-        if(fluidHandler() != null) {
-            updated = fluidHandler().pushFluids(dir, true, worldPosition) || updated;
-            updated = fluidHandler().pullFluids(dir, true, worldPosition) || updated;
         }
 
         if(updated) {
@@ -115,10 +121,10 @@ public class FissionPortBE extends FissionBE {
         if (cap == ForgeCapabilities.ITEM_HANDLER) {
             return controller().contentHandler.itemCapability.cast();
         }
-        if (cap == ForgeCapabilities.FLUID_HANDLER) {
-            return LazyOptional.of(() -> controller().contentHandler.fluidCapability).cast();
+        if (cap == ForgeCapabilities.FLUID_HANDLER && controller().isSteamMode) {
+            return controller().getCapability(cap, side);
         }
-        if (cap == ForgeCapabilities.ENERGY) {
+        if (cap == ForgeCapabilities.ENERGY && !controller().isSteamMode) {
             return controller().getEnergy().cast();
         }
         if(isCcLoaded()) {

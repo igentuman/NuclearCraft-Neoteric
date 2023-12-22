@@ -30,6 +30,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -37,6 +38,7 @@ import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.handler.event.client.InputEvents.SHIFT_PRESSED;
+import static igentuman.nc.multiblock.fission.FissionReactor.FISSION_BE;
 import static igentuman.nc.util.TextUtils.convertToName;
 
 public class HeatSinkBlock extends Block implements EntityBlock {
@@ -131,6 +133,7 @@ public class HeatSinkBlock extends Block implements EntityBlock {
 
     private void initParams() {
         if(this.asItem().equals(Items.AIR)) return;
+        if(asItem().toString().contains("empty")) return;
         type = asItem().toString().replace("_heat_sink", "");
         def = FissionBlocks.heatsinks.get(type);
         heat = def.getHeat();
@@ -148,9 +151,10 @@ public class HeatSinkBlock extends Block implements EntityBlock {
 
     @Nullable
     @Override
-    public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
+    public BlockEntity newBlockEntity(@NotNull BlockPos pPos, @NotNull BlockState pState) {
+        if(asItem().toString().contains("empty")) return null;
         def.getValidator();
-        BlockEntity be = FissionReactor.FISSION_BE.get("fission_heat_sink").get().create(pPos, pState);
+        BlockEntity be = FISSION_BE.get("fission_heat_sink").get().create(pPos, pState);
         ((FissionHeatSinkBE)be).setHeatSinkDef(def);
         return be;
     }

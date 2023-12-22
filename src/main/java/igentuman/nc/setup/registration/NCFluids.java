@@ -184,7 +184,7 @@ public class NCFluids {
         items.put("boric_acid", new AcidDefinition("boric_acid", 0xCCA0EFFF));
         items.put("sulfuric_acid", new AcidDefinition("sulfuric_acid", 0xCCF8FFD3));
         items.put("nitric_acid", new AcidDefinition("nitric_acid", 0xCC4F9EFF));
-        items.put("acua_regia_acid", new AcidDefinition("acua_regia_acid", 0XCCFFBB99));
+        items.put("aqua_regia_acid", new AcidDefinition("aqua_regia_acid", 0XCCFFBB99));
 
         for(AcidDefinition acid: items.values()) {
             LIQUIDS_TAG.put(acid.name, TagKey.create(Registry.FLUID_REGISTRY,  new ResourceLocation("forge", acid.name)));

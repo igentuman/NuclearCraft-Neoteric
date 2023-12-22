@@ -1,7 +1,7 @@
 package igentuman.nc.block.turbine;
 
-import igentuman.nc.block.entity.turbine.TurbineControllerBE;
-import igentuman.nc.container.TurbineControllerContainer;
+import igentuman.nc.block.entity.turbine.TurbinePortBE;
+import igentuman.nc.container.TurbinePortContainer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -34,17 +34,17 @@ import org.jetbrains.annotations.Nullable;
 
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BE;
 
-public class TurbineControllerBlock extends HorizontalDirectionalBlock implements EntityBlock {
+public class TurbinePortBlock extends HorizontalDirectionalBlock implements EntityBlock {
     public static final DirectionProperty HORIZONTAL_FACING = FACING;
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
 
-    public TurbineControllerBlock() {
+    public TurbinePortBlock() {
         this(Properties.of(Material.METAL)
                 .sound(SoundType.METAL)
                 .strength(2.0f)
                 .requiresCorrectToolForDrops());
     }
-    public TurbineControllerBlock(Properties pProperties) {
+    public TurbinePortBlock(Properties pProperties) {
         super(pProperties.sound(SoundType.METAL));
         this.registerDefaultState(
                 this.stateDefinition.any()
@@ -66,7 +66,7 @@ public class TurbineControllerBlock extends HorizontalDirectionalBlock implement
     @Nullable
     @Override
     public BlockEntity newBlockEntity(@NotNull BlockPos pPos, @NotNull BlockState pState) {
-        return TURBINE_BE.get("turbine_controller").get().create(pPos, pState);
+        return TURBINE_BE.get("turbine_port").get().create(pPos, pState);
     }
 
     @Override
@@ -75,16 +75,16 @@ public class TurbineControllerBlock extends HorizontalDirectionalBlock implement
         if (!level.isClientSide()) {
             BlockEntity be = level.getBlockEntity(pos);
 
-            if (be instanceof TurbineControllerBE<?>)  {
+            if (be instanceof TurbinePortBE)  {
                 MenuProvider containerProvider = new MenuProvider() {
                     @Override
                     public Component getDisplayName() {
-                        return Component.translatable("turbine_controller");
+                        return Component.translatable("turbine_port");
                     }
 
                     @Override
                     public AbstractContainerMenu createMenu(int windowId, @NotNull Inventory playerInventory, @NotNull Player playerEntity) {
-                            return new TurbineControllerContainer(windowId, pos, playerInventory);
+                            return new TurbinePortContainer(windowId, pos, playerInventory);
                     }
                 };
                 NetworkHooks.openScreen((ServerPlayer) player, containerProvider, be.getBlockPos());
@@ -98,16 +98,16 @@ public class TurbineControllerBlock extends HorizontalDirectionalBlock implement
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, @NotNull BlockState state, @NotNull BlockEntityType<T> type) {
         if (level.isClientSide()) {
             return (lvl, pos, blockState, t) -> {
-                if (t instanceof TurbineControllerBE<?> tile) {
+                if (t instanceof TurbinePortBE tile) {
                     tile.tickClient();
-                    level.setBlock(pos, blockState.setValue(POWERED, tile.powered), 3);
                 }
             };
         }
         return (lvl, pos, blockState, t)-> {
-            if (t instanceof TurbineControllerBE<?> tile) {
+            if (t instanceof TurbinePortBE tile) {
                 tile.tickServer();
             }
         };
     }
+
 }

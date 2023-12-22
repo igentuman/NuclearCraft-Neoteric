@@ -131,8 +131,6 @@ public class TurbineControllerScreen extends AbstractContainerScreen<TurbineCont
 
                 if(container().hasRecipe() && !container().getEfficiency().equals("NaN")) {
                     drawString(matrixStack, font, Component.translatable("fission_reactor.efficiency", container().getEfficiency()), 36, 62, 0x8AFF8A);
-                    drawString(matrixStack, font, Component.translatable("fission_reactor.net_heat", container().getNetHeat()), 36, 72, 0x8AFF8A);
-                    drawString(matrixStack, font, Component.translatable("fission_reactor.heat_multiplier", container().getHeatMultiplier()), 36, 82, 0x8AFF8A);
                 }
             } else {
                 interiorTootip = applyFormat(Component.translatable(getValidationResultKey(), getValidationResultData()), ChatFormatting.RED);
@@ -171,10 +169,7 @@ public class TurbineControllerScreen extends AbstractContainerScreen<TurbineCont
     }
 
     private void renderTooltips(PoseStack pPoseStack, int pMouseX, int pMouseY) {
-        heatBar.clearTooltips();
-        heatBar.addTooltip(Component.translatable("reactor.cooling", container().getCooling()).withStyle(ChatFormatting.AQUA));
-        heatBar.addTooltip(Component.translatable("reactor.heating", container().getHeating()).withStyle(ChatFormatting.RED));
-        heatBar.addTooltip(Component.translatable("reactor.net_heat", container().getNetHeat()).withStyle(ChatFormatting.GOLD));
+
         for(NCGuiElement widget: widgets) {
            if(widget.isMouseOver(pMouseX, pMouseY)) {
                renderTooltip(pPoseStack, widget.getTooltips(),
@@ -211,7 +206,7 @@ public class TurbineControllerScreen extends AbstractContainerScreen<TurbineCont
 
     @Override
     public double getHeat() {
-        return container().getHeat();
+        return 0;
     }
 
     @Override

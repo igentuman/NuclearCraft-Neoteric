@@ -13,7 +13,9 @@ import net.minecraft.core.FrontAndTop;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.AttachFace;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.client.model.generators.*;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -24,8 +26,12 @@ import java.util.function.Function;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.client.block.BatteryBlockLoader.BATTERY_LOADER;
+import static igentuman.nc.multiblock.fission.FissionReactor.FISSION_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_CORE_PROXY;
+import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
+import static igentuman.nc.setup.registration.NCBlocks.*;
+import static igentuman.nc.setup.registration.NCProcessors.PROCESSORS;
 import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCK;
 
 public class NCBlockStates extends BlockStateProvider {
@@ -54,23 +60,68 @@ public class NCBlockStates extends BlockStateProvider {
     private void turbine() {
         for (String name: TurbineRegistration.turbine) {
             if(name.matches(".*port.*")) {
-                horizontalBlock(TurbineRegistration.TURBINE_BLOCKS.get("turbine_" + name).get(), multiBlockModel(TurbineRegistration.TURBINE_BLOCKS.get("turbine_" + name).get(), "turbine/" + name));
+                horizontalBlock(TURBINE_BLOCKS.get("turbine_" + name).get(), multiBlockModel(TURBINE_BLOCKS.get("turbine_" + name).get(), "turbine/" + name));
             } else if(name.matches(".*controller.*")) {
-                horizontalBlock(TurbineRegistration.TURBINE_BLOCKS.get("turbine_" + name).get(),
-                        st -> controllerModel(st, sidedModel(TurbineRegistration.TURBINE_BLOCKS.get("turbine_" + name).get(), "turbine/controller"))
+                horizontalBlock(TURBINE_BLOCKS.get("turbine_" + name).get(),
+                        st -> controllerModel(st, sidedModel(TURBINE_BLOCKS.get("turbine_" + name).get(), "turbine/controller"))
                 );
             } else {
                 if(name.contains("slope")) {
-                    orientationalBlock(TurbineRegistration.TURBINE_BLOCKS.get("turbine_" +name).get(), $ -> models().getExistingFile(rl("block/multiblock/turbine_"+name)));
+                    orientationalBlock(TURBINE_BLOCKS.get("turbine_" +name).get(), $ -> models().getExistingFile(rl("block/multiblock/turbine_"+name)));
                 } else {
-                    simpleBlock(TurbineRegistration.TURBINE_BLOCKS.get("turbine_" + name).get(), multiBlockModel(TurbineRegistration.TURBINE_BLOCKS.get("turbine_" + name).get(), "turbine/" + name));
+                    if(name.contains("blade")) {
+                        faceBlock(TURBINE_BLOCKS.get("turbine_" + name).get(), $ -> models().getExistingFile(rl("block/multiblock/turbine_"+name)));
+                    } else {
+                        simpleBlock(TURBINE_BLOCKS.get("turbine_" + name).get(), multiBlockModel(TURBINE_BLOCKS.get("turbine_" + name).get(), "turbine/" + name));
+                    }
                 }
             }
         }
 
         for(String type: TurbineRegistration.coils.keySet()) {
-            simpleBlock(TurbineRegistration.TURBINE_BLOCKS.get("turbine_" + type + "_coil").get(), multiBlockModel(TurbineRegistration.TURBINE_BLOCKS.get("turbine_" + type + "_coil").get(), "turbine/" + type + "_coil"));
+            simpleBlock(TURBINE_BLOCKS.get("turbine_" + type + "_coil").get(), multiBlockModel(TURBINE_BLOCKS.get("turbine_" + type + "_coil").get(), "turbine/" + type + "_coil"));
         }
+    }
+
+    public static int[] getRotationByDirection(Direction dir) {
+        int[] result = new int[2];
+        switch (dir) {
+            case UP -> {
+                result[0] = 270;
+                result[1] = 0;
+            }
+            case DOWN -> {
+                result[0] = 90;
+                result[1] = 0;
+            }
+            case NORTH -> {
+                result[0] = 0;
+                result[1] = 0;
+            }
+            case EAST -> {
+                result[0] = 0;
+                result[1] = 270;
+            }
+            case SOUTH -> {
+                result[0] = 0;
+                result[1] = 180;
+            }
+            case WEST -> {
+                result[0] = 0;
+                result[1] = 90;
+            }
+        }
+        return result;
+    }
+    public void faceBlock(Block block, Function<BlockState, ModelFile> modelFunc) {
+
+        getVariantBuilder(block)
+                .forAllStates(state -> ConfiguredModel.builder()
+                        .modelFile(modelFunc.apply(state))
+                        .rotationX(getRotationByDirection(state.getValue(BlockStateProperties.FACING))[0])
+                        .rotationY(getRotationByDirection(state.getValue(BlockStateProperties.FACING))[1])
+                        .build()
+                );
     }
 
     private void storageBlocks() {
@@ -88,23 +139,23 @@ public class NCBlockStates extends BlockStateProvider {
 
     private void heatSinks() {
         for (String name: FissionBlocks.heatsinks.keySet()) {
-            simpleBlock(FissionReactor.FISSION_BLOCKS.get(name+"_heat_sink").get(), multiBlockModel(FissionReactor.FISSION_BLOCKS.get(name+"_heat_sink").get(), "heat_sink/"+name));
+            simpleBlock(FISSION_BLOCKS.get(name+"_heat_sink").get(), multiBlockModel(FISSION_BLOCKS.get(name+"_heat_sink").get(), "heat_sink/"+name));
         }
     }
 
     private void fissionReactor() {
         for (String name: FissionBlocks.reactor) {
             if(name.matches(".*port.*")) {
-                horizontalBlock(FissionReactor.FISSION_BLOCKS.get("fission_reactor_" + name).get(), multiBlockModel(FissionReactor.FISSION_BLOCKS.get("fission_reactor_" + name).get(), "fission/" + name));
+                horizontalBlock(FISSION_BLOCKS.get("fission_reactor_" + name).get(), multiBlockModel(FISSION_BLOCKS.get("fission_reactor_" + name).get(), "fission/" + name));
             } else if(name.matches(".*controller.*")) {
-                horizontalBlock(FissionReactor.FISSION_BLOCKS.get("fission_reactor_" + name).get(),
-                        st -> controllerModel(st, sidedModel(FissionReactor.FISSION_BLOCKS.get("fission_reactor_" + name).get(), "fission/controller"))
+                horizontalBlock(FISSION_BLOCKS.get("fission_reactor_" + name).get(),
+                        st -> controllerModel(st, sidedModel(FISSION_BLOCKS.get("fission_reactor_" + name).get(), "fission/controller"))
                 );
             } else {
                 if(name.contains("slope")) {
-                    orientationalBlock(FissionReactor.FISSION_BLOCKS.get("fission_reactor_" +name).get(), $ -> models().getExistingFile(rl("block/multiblock/fission_reactor_"+name)));
+                    orientationalBlock(FISSION_BLOCKS.get("fission_reactor_" +name).get(), $ -> models().getExistingFile(rl("block/multiblock/fission_reactor_"+name)));
                 } else {
-                    simpleBlock(FissionReactor.FISSION_BLOCKS.get("fission_reactor_" + name).get(), multiBlockModel(FissionReactor.FISSION_BLOCKS.get("fission_reactor_" + name).get(), "fission/" + name));
+                    simpleBlock(FISSION_BLOCKS.get("fission_reactor_" + name).get(), multiBlockModel(FISSION_BLOCKS.get("fission_reactor_" + name).get(), "fission/" + name));
                 }
             }
         }
@@ -171,10 +222,10 @@ public class NCBlockStates extends BlockStateProvider {
     }
 
     private void processors() {
-        for(String name: NCProcessors.PROCESSORS.keySet()) {
+        for(String name: PROCESSORS.keySet()) {
             horizontalBlock(
-                    NCProcessors.PROCESSORS.get(name).get(),
-                    st -> processorModel(st, sidedModel(NCProcessors.PROCESSORS.get(name).get(),
+                    PROCESSORS.get(name).get(),
+                    st -> processorModel(st, sidedModel(PROCESSORS.get(name).get(),
                             "processor"))
                     );
         }
@@ -195,9 +246,9 @@ public class NCBlockStates extends BlockStateProvider {
     public BlockModelBuilder controllerModel(BlockState st, ModelFile model) {
         String powered = st.getValue(BlockStateProperties.POWERED) ? "_powered" : "";
         String type = "";
-        if(st.getBlock() == FissionReactor.FISSION_BLOCKS.get("fission_reactor_controller").get()) {
+        if(st.getBlock() == FISSION_BLOCKS.get("fission_reactor_controller").get()) {
             type = "fission";
-        } else if(st.getBlock() == TurbineRegistration.TURBINE_BLOCKS.get("turbine_controller").get()) {
+        } else if(st.getBlock() == TURBINE_BLOCKS.get("turbine_controller").get()) {
             type = "turbine";
         }
         BlockModelBuilder result = models()
@@ -231,24 +282,24 @@ public class NCBlockStates extends BlockStateProvider {
 
 
     private void materialFluidBlocks() {
-        for(String name: NCBlocks.NC_MATERIAL_BLOCKS.keySet()) {
-            simpleBlock(NCBlocks.NC_MATERIAL_BLOCKS.get(name).get(), model(NCBlocks.NC_MATERIAL_BLOCKS.get(name).get(), "material/fluid"));
+        for(String name: NC_MATERIAL_BLOCKS.keySet()) {
+            simpleBlock(NC_MATERIAL_BLOCKS.get(name).get(), model(NC_MATERIAL_BLOCKS.get(name).get(), "material/fluid"));
         }
     }
     private void blocks() {
-        for(String name: NCBlocks.NC_BLOCKS.keySet()) {
-            simpleBlock(NCBlocks.NC_BLOCKS.get(name).get(), model(NCBlocks.NC_BLOCKS.get(name).get(), "material/block"));
+        for(String name: NC_BLOCKS.keySet()) {
+            simpleBlock(NC_BLOCKS.get(name).get(), model(NC_BLOCKS.get(name).get(), "material/block"));
         }
-        for(String name: NCBlocks.NC_ELECTROMAGNETS.keySet()) {
+        for(String name: NC_ELECTROMAGNETS.keySet()) {
             if(name.contains("slope")) {
-                orientationalBlock(NCBlocks.NC_ELECTROMAGNETS.get(name).get(), $ -> models().getExistingFile(rl("block/electromagnet/"+name)));
+                orientationalBlock(NC_ELECTROMAGNETS.get(name).get(), $ -> models().getExistingFile(rl("block/electromagnet/"+name)));
             } else {
-                simpleBlock(NCBlocks.NC_ELECTROMAGNETS.get(name).get(), model(NCBlocks.NC_ELECTROMAGNETS.get(name).get(), "electromagnet"));
+                simpleBlock(NC_ELECTROMAGNETS.get(name).get(), model(NC_ELECTROMAGNETS.get(name).get(), "electromagnet"));
             }
         }
 
-        for(String name: NCBlocks.NC_RF_AMPLIFIERS.keySet()) {
-            simpleBlock(NCBlocks.NC_RF_AMPLIFIERS.get(name).get(), model(NCBlocks.NC_RF_AMPLIFIERS.get(name).get(), "rf_amplifier"));
+        for(String name: NC_RF_AMPLIFIERS.keySet()) {
+            simpleBlock(NC_RF_AMPLIFIERS.get(name).get(), model(NC_RF_AMPLIFIERS.get(name).get(), "rf_amplifier"));
         }
     }
 
@@ -265,16 +316,16 @@ public class NCBlockStates extends BlockStateProvider {
     }
 
     private void ores() {
-        for(String ore: NCBlocks.ORE_BLOCKS.keySet()) {
-            simpleBlock(NCBlocks.ORE_BLOCKS.get(ore).get(), model(NCBlocks.ORE_BLOCKS.get(ore).get(), "ore"));
+        for(String ore: ORE_BLOCKS.keySet()) {
+            simpleBlock(ORE_BLOCKS.get(ore).get(), model(ORE_BLOCKS.get(ore).get(), "ore"));
         }
     }
 
     private void portal() {
-        Block block = NCBlocks.PORTAL_BLOCK.get();
+        Block block = PORTAL_BLOCK.get();
         ResourceLocation side = modLoc("block/portal");
         ResourceLocation top = modLoc("block/portal");
-        simpleBlock(block, models().cube(NCBlocks.PORTAL_BLOCK.getId().getPath(), side, top, side, side, side, side));
+        simpleBlock(block, models().cube(PORTAL_BLOCK.getId().getPath(), side, top, side, side, side, side));
     }
 
     private ResourceLocation key(Block block) {

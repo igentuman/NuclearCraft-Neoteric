@@ -2,19 +2,19 @@
   "type": "nuclearcraft:leacher",
   "input": [
     {
-      "tag": "forge:ores/boron"
+      "tag": "forge:ores/cobalt"
     }
   ],
   "inputFluids": [
     {
       "amount": 250,
-      "tag": "forge:acua_regia_acid"
+      "tag": "forge:aqua_regia_acid"
     }
   ],
   "outputFluids": [
     {
       "amount": 1000,
-      "fluid": "nuclearcraft:boron_slurry"
+      "fluid": "nuclearcraft:cobalt_slurry"
     }
   ],
   "powerModifier": 1.0,

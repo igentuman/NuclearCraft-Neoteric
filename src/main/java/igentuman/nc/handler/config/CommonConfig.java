@@ -10,6 +10,7 @@ import igentuman.nc.multiblock.fission.FissionBlocks;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.content.fuel.FuelManager;
 import igentuman.nc.content.storage.BarrelBlocks;
+import igentuman.nc.multiblock.turbine.TurbineRegistration;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 import java.util.ArrayList;
@@ -277,6 +278,8 @@ public class CommonConfig {
     public static class TurbineConfig {
         public ForgeConfigSpec.ConfigValue<Integer> MIN_SIZE;
         public ForgeConfigSpec.ConfigValue<Integer> MAX_SIZE;
+        public ForgeConfigSpec.ConfigValue<List<Double>> EFFICIENCY;
+        public HashMap<String, ForgeConfigSpec.ConfigValue<List<String>>> PLACEMENT_RULES = new HashMap<>();
 
         public TurbineConfig(ForgeConfigSpec.Builder builder) {
             builder.comment("Settings for Turbine").push("turbine");
@@ -289,7 +292,29 @@ public class CommonConfig {
                     .comment("Explosion size if reactor overheats. 4 - TNT size. Set to 0 to disable explosion.")
                     .defineInRange("max_size", 24, 5, 24);
 
+            EFFICIENCY = builder
+                    .comment("Efficiency %: " + String.join(", ", TurbineRegistration.initialEfficiency().keySet()))
+                    .define("efficiency", toList(TurbineRegistration.initialEfficiency().values()), o -> o instanceof ArrayList);
 
+            builder
+                    .comment("You can define blocks by block_name. So copper_turbine_coil will fall back to nuclearcraft:copper_turbine_coil. Or qualify it with namespace like some_mod:some_block.")
+                    .comment("Or use block tag key. #nuclearcraft:fission_reactor_casing will fall back to blocks with this tag. Do not forget to put #.")
+                    .comment("if you need AND condition, add comma separated values \"block1\", \"block2\" means AND condition")
+                    .comment("if you need OR condition, use | separator. \"block1|block2\" means block1 or block2")
+                    .comment("By default you have rule condition is 'At least 1'. So if you define some block, it will go in the rule as 'at least 1'")
+                    .comment("Validation options: >2 means at least 2 (use any number)")
+                    .comment("-2 means between, it is always 2 (opposite sides)")
+                    .comment("<2 means less than 2 (use any number)")
+                    .comment("=2 means exact 2 (use any number)")
+                    .comment("^3 means 3 blocks in the corner (shared vertex or edge). possible values 2 and 3")
+                    .comment("Default placement rules have all examples")
+                    .define("placement_explanations", "");
+
+            for(String name: TurbineRegistration.coils().keySet()) {
+                if(name.contains("empty")) continue;
+                PLACEMENT_RULES.put(name, builder
+                        .define(name, TurbineRegistration.initialPlacementRules(name), o -> o instanceof ArrayList));
+            }
 
             builder.pop();
         }

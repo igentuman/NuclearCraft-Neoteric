@@ -58,6 +58,12 @@ public class FluidInfuserRecipes extends AbstractRecipeProvider {
         );
 
         add(
+                fluidIngredient("carbon", 1000),
+                dustIngredient(Materials.manganese),
+                dustStack(Materials.carbon_manganese)
+        );
+
+        add(
                 fluidIngredient("oxygen", 1000),
                 ingotIngredient(Materials.manganese),
                 ingotStack(Materials.manganese_dioxide)

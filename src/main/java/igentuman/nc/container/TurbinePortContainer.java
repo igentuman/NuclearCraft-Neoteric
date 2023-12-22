@@ -1,9 +1,6 @@
 package igentuman.nc.container;
 
-import igentuman.nc.block.entity.fission.FissionPortBE;
 import igentuman.nc.block.entity.turbine.TurbinePortBE;
-import igentuman.nc.container.elements.NCSlotItemHandler;
-import igentuman.nc.multiblock.fission.FissionReactor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -14,25 +11,29 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
+import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_PORT_CONTAINER;
 
 public class TurbinePortContainer extends AbstractContainerMenu {
     protected TurbinePortBE portBE;
     protected Player playerEntity;
 
 
-    protected String name = "fission_reactor_port";
+    protected String name = "turbine_port";
     private int slotIndex = 0;
 
     protected IItemHandler playerInventory;
 
     public TurbinePortContainer(int pContainerId, BlockPos pos, Inventory playerInventory) {
-        super(FissionReactor.FISSION_PORT_CONTAINER.get(), pContainerId);
+        super(TURBINE_PORT_CONTAINER.get(), pContainerId);
         this.playerEntity = playerInventory.player;
         this.playerInventory =  new InvWrapper(playerInventory);
         portBE = (TurbinePortBE) playerEntity.getCommandSenderWorld().getBlockEntity(pos);
@@ -88,11 +89,11 @@ public class TurbinePortContainer extends AbstractContainerMenu {
     }
 
     @Override
-    public boolean stillValid(Player playerIn) {
+    public boolean stillValid(@NotNull Player playerIn) {
         return stillValid(
-                ContainerLevelAccess.create(portBE.getLevel(), portBE.getBlockPos()),
+                ContainerLevelAccess.create(Objects.requireNonNull(portBE.getLevel()), portBE.getBlockPos()),
                 playerEntity,
-                FissionReactor.FISSION_BLOCKS.get(name).get()
+                TURBINE_BLOCKS.get(name).get()
         );
     }
 

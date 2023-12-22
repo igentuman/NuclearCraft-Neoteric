@@ -1,17 +1,32 @@
 {
   "variants": {
-    "facing=east": {
+    "facing=east,powered=false": {
       "model": "nuclearcraft:block/multiblock/turbine_port",
       "y": 90
     },
-    "facing=north": {
+    "facing=east,powered=true": {
+      "model": "nuclearcraft:block/multiblock/turbine_port",
+      "y": 90
+    },
+    "facing=north,powered=false": {
       "model": "nuclearcraft:block/multiblock/turbine_port"
     },
-    "facing=south": {
+    "facing=north,powered=true": {
+      "model": "nuclearcraft:block/multiblock/turbine_port"
+    },
+    "facing=south,powered=false": {
       "model": "nuclearcraft:block/multiblock/turbine_port",
       "y": 180
     },
-    "facing=west": {
+    "facing=south,powered=true": {
+      "model": "nuclearcraft:block/multiblock/turbine_port",
+      "y": 180
+    },
+    "facing=west,powered=false": {
+      "model": "nuclearcraft:block/multiblock/turbine_port",
+      "y": 270
+    },
+    "facing=west,powered=true": {
       "model": "nuclearcraft:block/multiblock/turbine_port",
       "y": 270
     }

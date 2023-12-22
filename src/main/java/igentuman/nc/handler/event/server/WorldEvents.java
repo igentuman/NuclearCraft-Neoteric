@@ -1,11 +1,15 @@
 package igentuman.nc.handler.event.server;
 
 
+import igentuman.nc.block.entity.turbine.TurbineBladeBE;
+import igentuman.nc.block.turbine.TurbineBladeBlock;
 import igentuman.nc.item.HEVItem;
 import igentuman.nc.item.HazmatItem;
 import igentuman.nc.radiation.data.RadiationEvents;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.DirectionalBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.event.TickEvent.LevelTickEvent;
@@ -15,6 +19,7 @@ import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.event.level.ChunkEvent;
 import net.minecraftforge.event.level.LevelEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -32,6 +37,21 @@ public class WorldEvents {
         BlockState state = event.getState();
         if (state != null && !state.isAir() && state.hasBlockEntity()) {
 
+        }
+    }
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void onBlockPlace(BlockEvent.EntityPlaceEvent event) {
+        BlockState state = event.getState();
+        if (state == null || state.isAir() || (!(state.getBlock() instanceof TurbineBladeBlock))) {
+            return;
+        }
+        BlockState attachment = event.getPlacedAgainst();
+        if(!(attachment.getBlock() instanceof TurbineBladeBlock)) {
+            if(!(attachment.getBlock().asItem().toString().contains("turbine_rotor_shaft"))) {
+                event.setCanceled(true);
+            }
+        } else {
+            event.getPlacedBlock().setValue(DirectionalBlock.FACING, attachment.getValue(DirectionalBlock.FACING));
         }
     }
 

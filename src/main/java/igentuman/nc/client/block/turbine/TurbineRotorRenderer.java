@@ -1,4 +1,4 @@
-package igentuman.nc.client.block.fusion;
+package igentuman.nc.client.block.turbine;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
@@ -15,17 +15,17 @@ import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.client.resources.model.*;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
 @NothingNullByDefault
-public class FusionCoreRenderer implements BlockEntityRenderer<BlockEntity> {
+public class TurbineRotorRenderer implements BlockEntityRenderer<BlockEntity> {
     private final BlockEntityRendererProvider.Context context;
 
-    public FusionCoreRenderer(BlockEntityRendererProvider.Context manager) {
+    public TurbineRotorRenderer(BlockEntityRendererProvider.Context manager) {
         context = manager;
     }
     public float lastAngle = 0;

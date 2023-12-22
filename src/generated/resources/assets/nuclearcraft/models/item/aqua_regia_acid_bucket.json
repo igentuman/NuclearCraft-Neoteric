@@ -2,6 +2,6 @@
   "parent": "forge:item/bucket",
   "apply_tint": true,
   "flip_gas": false,
-  "fluid": "nuclearcraft:acua_regia_acid",
+  "fluid": "nuclearcraft:aqua_regia_acid",
   "loader": "forge:fluid_container"
 }

@@ -4,7 +4,7 @@
 		"type":"ctm",
 		"layer":"CUTOUT",
 		"textures":[
-			"nuclearcraft:blocks/turbine/glass_ctm"
+			"nuclearcraft:block/turbine/glass_ctm"
 		]
 	}
 }

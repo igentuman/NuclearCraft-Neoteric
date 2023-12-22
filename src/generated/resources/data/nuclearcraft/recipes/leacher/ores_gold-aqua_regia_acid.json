@@ -2,19 +2,19 @@
   "type": "nuclearcraft:leacher",
   "input": [
     {
-      "tag": "forge:ores/uranium"
+      "tag": "forge:ores/gold"
     }
   ],
   "inputFluids": [
     {
       "amount": 250,
-      "tag": "forge:acua_regia_acid"
+      "tag": "forge:aqua_regia_acid"
     }
   ],
   "outputFluids": [
     {
       "amount": 1000,
-      "fluid": "nuclearcraft:uranium_slurry"
+      "fluid": "nuclearcraft:gold_slurry"
     }
   ],
   "powerModifier": 1.0,

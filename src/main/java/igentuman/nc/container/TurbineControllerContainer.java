@@ -1,9 +1,6 @@
 package igentuman.nc.container;
 
-import igentuman.nc.block.entity.fission.FissionControllerBE;
 import igentuman.nc.block.entity.turbine.TurbineControllerBE;
-import igentuman.nc.container.elements.NCSlotItemHandler;
-import igentuman.nc.multiblock.fission.FissionReactor;
 import igentuman.nc.multiblock.turbine.TurbineRegistration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -11,17 +8,16 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
 
 import static igentuman.nc.NuclearCraft.MODID;
-import static igentuman.nc.util.TextUtils.numberFormat;
+import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
 import static igentuman.nc.util.TextUtils.roundFormat;
 
 public class TurbineControllerContainer extends AbstractContainerMenu {
@@ -42,53 +38,16 @@ public class TurbineControllerContainer extends AbstractContainerMenu {
     }
 
     @Override
-    public ItemStack quickMoveStack(Player pPlayer, int index) {
-        ItemStack itemstack = ItemStack.EMPTY;
-        Slot slot = this.slots.get(index);
-        if (slot != null && slot.hasItem()) {
-            ItemStack stack = slot.getItem();
-            itemstack = stack.copy();
-            if (index == 0) {
-                if (!this.moveItemStackTo(stack, 1, 37, true)) {
-                    return ItemStack.EMPTY;
-                }
-                slot.onQuickCraft(stack, itemstack);
-            } else {
-                if (ForgeHooks.getBurnTime(stack, RecipeType.SMELTING) > 0) {
-                    if (!this.moveItemStackTo(stack, 0, 1, false)) {
-                        return ItemStack.EMPTY;
-                    }
-                } else if (index < 28) {
-                    if (!this.moveItemStackTo(stack, 28, 37, false)) {
-                        return ItemStack.EMPTY;
-                    }
-                } else if (index < 37 && !this.moveItemStackTo(stack, 1, 28, false)) {
-                    return ItemStack.EMPTY;
-                }
-            }
-
-            if (stack.isEmpty()) {
-                slot.set(ItemStack.EMPTY);
-            } else {
-                slot.setChanged();
-            }
-
-            if (stack.getCount() == itemstack.getCount()) {
-                return ItemStack.EMPTY;
-            }
-
-            slot.onTake(pPlayer, stack);
-        }
-
-        return itemstack;
+    public @NotNull ItemStack quickMoveStack(@NotNull Player pPlayer, int pIndex) {
+        return ItemStack.EMPTY;
     }
 
     @Override
-    public boolean stillValid(Player playerIn) {
+    public boolean stillValid(@NotNull Player playerIn) {
         return stillValid(
-                ContainerLevelAccess.create(blockEntity.getLevel(), blockEntity.getBlockPos()),
+                ContainerLevelAccess.create(Objects.requireNonNull(blockEntity.getLevel()), blockEntity.getBlockPos()),
                 playerEntity,
-                TurbineRegistration.TURBINE_BLOCKS.get(name).get()
+                TURBINE_BLOCKS.get(name).get()
         );
     }
 
@@ -133,10 +92,6 @@ public class TurbineControllerContainer extends AbstractContainerMenu {
         return blockEntity.energyStorage.getEnergyStored();
     }
 
-    public double getHeat() {
-        return blockEntity.heat;
-    }
-
     public double getProgress() {
         return blockEntity.getDepletionProgress();
     }
@@ -177,24 +132,8 @@ public class TurbineControllerContainer extends AbstractContainerMenu {
         return roundFormat(blockEntity.efficiency);
     }
 
-    public String getNetHeat() {
-        return roundFormat(blockEntity.getNetHeat());
-    }
-
-    public int getCooling() {
-        return (int) blockEntity.heatSinkCooling;
-    }
-
-    public String getHeating() {
-        return roundFormat(blockEntity.heatPerTick);
-    }
-
     public int energyPerTick() {
         return blockEntity.energyPerTick;
-    }
-
-    public String getHeatMultiplier() {
-        return numberFormat(blockEntity.heatMultiplier);
     }
 
     public boolean hasRecipe() {

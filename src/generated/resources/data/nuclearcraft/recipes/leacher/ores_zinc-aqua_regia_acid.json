@@ -2,19 +2,19 @@
   "type": "nuclearcraft:leacher",
   "input": [
     {
-      "tag": "forge:ores/iron"
+      "tag": "forge:ores/zinc"
     }
   ],
   "inputFluids": [
     {
       "amount": 250,
-      "tag": "forge:acua_regia_acid"
+      "tag": "forge:aqua_regia_acid"
     }
   ],
   "outputFluids": [
     {
       "amount": 1000,
-      "fluid": "nuclearcraft:iron_slurry"
+      "fluid": "nuclearcraft:zinc_slurry"
     }
   ],
   "powerModifier": 1.0,

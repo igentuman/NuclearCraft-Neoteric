@@ -22,7 +22,7 @@ public class LeacherRecipes extends AbstractRecipeProvider {
 
         for(String material: Materials.slurries()) {
             add(
-                    fluidIngredient("acua_regia_acid", 250),
+                    fluidIngredient("aqua_regia_acid", 250),
                     ingredient(forgeOre(material)),
                     fluidStack(material+"_slurry", 1000)
             );

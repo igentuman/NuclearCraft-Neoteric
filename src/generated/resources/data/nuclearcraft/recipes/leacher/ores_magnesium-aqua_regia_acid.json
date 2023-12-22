@@ -2,19 +2,19 @@
   "type": "nuclearcraft:leacher",
   "input": [
     {
-      "tag": "forge:ores/aluminum"
+      "tag": "forge:ores/magnesium"
     }
   ],
   "inputFluids": [
     {
       "amount": 250,
-      "tag": "forge:acua_regia_acid"
+      "tag": "forge:aqua_regia_acid"
     }
   ],
   "outputFluids": [
     {
       "amount": 1000,
-      "fluid": "nuclearcraft:aluminum_slurry"
+      "fluid": "nuclearcraft:magnesium_slurry"
     }
   ],
   "powerModifier": 1.0,

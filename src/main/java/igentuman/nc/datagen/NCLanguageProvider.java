@@ -298,7 +298,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("tooltip.nc.energy_capacity","Energy Capacity: %s");
         add("tooltip.nc.radiation","Radiation: %s");
         add("tooltip.nc.radiation_removal","Removes Radiation: %s");
-        add("tooltip.press_shift_for_description","Press SHIFT for description");
+        add("tooltip.toggle_description_keys","Toggle description: CTRL+N");
         add("fuel.heat.descr","Base Heat Gen: %s H/t");
         add("message.nc.battery.side_config","Mode: %s");
         add("message.nc.barrel.side_config","Mode: %s");
@@ -352,8 +352,8 @@ public class NCLanguageProvider extends LanguageProvider {
         add("heat_sink.placement.error", "Error during placement rule generation");
         add("reactor.interior.complete", "Interior Complete");
         add("reactor.interior.incomplete", "Interior Incomplete");
-        add("reactor.casing.complete", "Reactor Casing Complete");
-        add("reactor.casing.incomplete", "Reactor Casing Incomplete");
+        add("multiblock.casing.complete", "Multiblock Casing Complete");
+        add("multiblock.casing.incomplete", "Multiblock Casing Incomplete");
         add("energy.bar.amount", "Total FE: %s / %s");
         add("reactor.internal_usage", "Internal usage: %s FE/t");
         add("coolant.bar.amount", "Coolant: %s / %s mB");

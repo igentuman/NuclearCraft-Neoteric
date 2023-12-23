@@ -69,6 +69,10 @@ public class NCBlockStates extends BlockStateProvider {
                 if(name.contains("slope")) {
                     orientationalBlock(TURBINE_BLOCKS.get("turbine_" +name).get(), $ -> models().getExistingFile(rl("block/multiblock/turbine_"+name)));
                 } else {
+                    if(name.contains("rotor_shaft")) {
+                        faceBlock(TURBINE_BLOCKS.get("turbine_" + name).get(), $ -> models().getExistingFile(rl("block/multiblock/turbine_"+name)));
+                        continue;
+                    }
                     if(name.contains("blade")) {
                         faceBlock(TURBINE_BLOCKS.get("turbine_" + name).get(), $ -> models().getExistingFile(rl("block/multiblock/turbine_"+name)));
                     } else {

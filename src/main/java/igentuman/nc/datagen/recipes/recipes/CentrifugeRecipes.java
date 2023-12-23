@@ -9,8 +9,6 @@ import net.minecraftforge.fluids.FluidStack;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static net.minecraft.world.level.material.Fluids.WATER;
-
 public class CentrifugeRecipes extends AbstractRecipeProvider {
 
     public static void generate(Consumer<FinishedRecipe> consumer) {

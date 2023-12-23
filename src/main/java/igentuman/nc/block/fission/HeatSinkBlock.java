@@ -2,7 +2,6 @@ package igentuman.nc.block.fission;
 
 import igentuman.nc.block.entity.fission.FissionHeatSinkBE;
 import igentuman.nc.multiblock.fission.FissionBlocks;
-import igentuman.nc.multiblock.fission.FissionReactor;
 import igentuman.nc.multiblock.fission.HeatSinkDef;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
@@ -37,7 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
-import static igentuman.nc.handler.event.client.InputEvents.SHIFT_PRESSED;
+import static igentuman.nc.handler.event.client.InputEvents.DESCRIPTIONS_SHOW;
 import static igentuman.nc.multiblock.fission.FissionReactor.FISSION_BE;
 import static igentuman.nc.util.TextUtils.convertToName;
 
@@ -198,10 +197,10 @@ public class HeatSinkBlock extends Block implements EntityBlock {
         if(asItem().toString().contains("empty") || this.asItem().equals(Items.AIR)) return;
         list.add(TextUtils.applyFormat(Component.translatable("heat_sink.heat.descr", TextUtils.numberFormat(heat)), ChatFormatting.GOLD));
 
-        if(SHIFT_PRESSED) {
+        if(DESCRIPTIONS_SHOW) {
             list.add(TextUtils.applyFormat(getPlacementRule(), ChatFormatting.AQUA));
         } else {
-            list.add(TextUtils.applyFormat(Component.translatable("tooltip.press_shift_for_description"), ChatFormatting.GRAY));
+            list.add(TextUtils.applyFormat(Component.translatable("tooltip.toggle_description_keys"), ChatFormatting.GRAY));
         }
     }
 

@@ -3,6 +3,7 @@ package igentuman.nc.handler.event.server;
 
 import igentuman.nc.block.entity.turbine.TurbineBladeBE;
 import igentuman.nc.block.turbine.TurbineBladeBlock;
+import igentuman.nc.block.turbine.TurbineRotorBlock;
 import igentuman.nc.item.HEVItem;
 import igentuman.nc.item.HazmatItem;
 import igentuman.nc.radiation.data.RadiationEvents;
@@ -41,17 +42,14 @@ public class WorldEvents {
     }
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onBlockPlace(BlockEvent.EntityPlaceEvent event) {
+        boolean placed = true;
         BlockState state = event.getState();
-        if (state == null || state.isAir() || (!(state.getBlock() instanceof TurbineBladeBlock))) {
-            return;
+        if(state == null) return;
+        if(state.getBlock() instanceof TurbineBladeBlock) {
+            placed = TurbineBladeBlock.processBlockPlace(event.getLevel(), event.getPos(), event.getPlacedBlock(), state, event.getPlacedAgainst());
         }
-        BlockState attachment = event.getPlacedAgainst();
-        if(!(attachment.getBlock() instanceof TurbineBladeBlock)) {
-            if(!(attachment.getBlock().asItem().toString().contains("turbine_rotor_shaft"))) {
-                event.setCanceled(true);
-            }
-        } else {
-            event.getPlacedBlock().setValue(DirectionalBlock.FACING, attachment.getValue(DirectionalBlock.FACING));
+        if(!placed) {
+            event.setCanceled(true);
         }
     }
 

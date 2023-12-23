@@ -11,7 +11,7 @@ import net.minecraft.world.level.Level;
 import javax.annotation.Nullable;
 import java.util.List;
 
-import static igentuman.nc.handler.event.client.InputEvents.SHIFT_PRESSED;
+import static igentuman.nc.handler.event.client.InputEvents.DESCRIPTIONS_SHOW;
 
 public class ItemFuel extends Item {
 
@@ -51,8 +51,8 @@ public class ItemFuel extends Item {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
     {
-        if(!SHIFT_PRESSED) {
-            list.add(TextUtils.applyFormat(Component.translatable("tooltip.press_shift_for_description"), ChatFormatting.GRAY));
+        if(!DESCRIPTIONS_SHOW) {
+            list.add(TextUtils.applyFormat(Component.translatable("tooltip.toggle_description_keys"), ChatFormatting.GRAY));
         } else {
             list.add(TextUtils.applyFormat(Component.translatable("fuel.heat.descr", TextUtils.numberFormat(heat)), ChatFormatting.GOLD));
             //list.add(TextUtils.applyFormat(Component.translatable("fuel.heat_boiling.descr", TextUtils.numberFormat(heat_boiling)), ChatFormatting.YELLOW));

@@ -8,7 +8,6 @@ import igentuman.nc.client.gui.element.NCGuiElement;
 import igentuman.nc.client.gui.element.bar.ProgressBar;
 import igentuman.nc.client.gui.element.bar.VerticalBar;
 import igentuman.nc.client.gui.element.button.Button;
-import igentuman.nc.container.FissionPortContainer;
 import igentuman.nc.container.TurbinePortContainer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -23,7 +22,7 @@ import java.util.Optional;
 import static igentuman.nc.NuclearCraft.MODID;
 
 public class TurbinePortScreen extends AbstractContainerScreen<TurbinePortContainer> implements IProgressScreen, IVerticalBarScreen {
-    protected final ResourceLocation GUI = new ResourceLocation(MODID, "textures/gui/turbine/turbine_port.png");
+    protected final ResourceLocation GUI = new ResourceLocation(MODID, "textures/gui/turbine/port.png");
     protected int relX;
     protected int relY;
     private int xCenter;

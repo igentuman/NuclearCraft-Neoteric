@@ -1,13 +1,14 @@
 {
 	"credit": "Made with Blockbench",
 	"parent": "minecraft:block/cube",
+	"ambientocclusion": false,
 	"textures": {
 		"particle": "nuclearcraft:block/turbine/extreme_rotor_blade"
 	},
 	"elements": [
 		{
-			"from": [7, 0, 0],
-			"to": [9, 16, 16],
+			"from": [7, 2, 0],
+			"to": [9, 14, 16],
 			"rotation": {"angle": -45, "axis": "z", "origin": [8, 8, 8]},
 			"faces": {
 				"north": {"uv": [0, 0, 2, 16], "texture": "#particle"},
@@ -18,5 +19,11 @@
 				"down": {"uv": [0, 0, 2, 16], "texture": "#particle"}
 			}
 		}
-	]
+	],
+	"display": {
+		"gui": {
+			"rotation": [63, -19, 0],
+			"scale": [0.68, 0.68, 0.68]
+		}
+	}
 }

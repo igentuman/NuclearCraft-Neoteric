@@ -4,6 +4,7 @@ import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.fission.FissionControllerBE;
 import igentuman.nc.block.entity.fusion.FusionCoreBE;
 import igentuman.nc.block.entity.fusion.FusionCoreBE.FusionCoolantRecipe;
+import igentuman.nc.block.entity.turbine.TurbineControllerBE;
 import igentuman.nc.recipes.serializers.*;
 import igentuman.nc.recipes.type.OreVeinRecipe;
 import igentuman.nc.recipes.type.RadShieldingRecipe;
@@ -34,6 +35,7 @@ public class NcRecipeSerializers {
         map.put("nc_ore_veins", RECIPE_SERIALIZERS.register("nc_ore_veins", () -> new OreVeinRecipeSerializer<>(OreVeinRecipe::new)));
         map.put("fusion_coolant", RECIPE_SERIALIZERS.register("fusion_coolant", () -> new CoolantRecipeSerializer<>(FusionCoolantRecipe::new)));
         map.put("fission_boiling", RECIPE_SERIALIZERS.register("fission_boiling", () -> new BoilingRecipeSerializer<>(FissionControllerBE.FissionBoilingRecipe::new)));
+        map.put("turbine_controller", RECIPE_SERIALIZERS.register("turbine_controller", () -> new TurbineRecipeSerializer<>(TurbineControllerBE.Recipe::new)));
         for(String key : Processors.all().keySet()) {
            if(Processors.all().get(key).getRecipeSerializer() != null) {
                map.put(key, RECIPE_SERIALIZERS.register(key, Processors.all().get(key).getRecipeSerializer()));

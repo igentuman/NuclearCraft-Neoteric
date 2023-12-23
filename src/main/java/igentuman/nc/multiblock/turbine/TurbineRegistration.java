@@ -1,12 +1,7 @@
 package igentuman.nc.multiblock.turbine;
 
 import igentuman.nc.block.entity.turbine.*;
-import igentuman.nc.block.turbine.TurbineBladeBlock;
-import igentuman.nc.block.turbine.TurbineBlock;
-import igentuman.nc.block.turbine.TurbineControllerBlock;
-import igentuman.nc.block.turbine.TurbinePortBlock;
-import igentuman.nc.container.FissionControllerContainer;
-import igentuman.nc.container.FissionPortContainer;
+import igentuman.nc.block.turbine.*;
 import igentuman.nc.container.TurbineControllerContainer;
 import igentuman.nc.container.TurbinePortContainer;
 import igentuman.nc.setup.registration.CreativeTabs;
@@ -27,7 +22,6 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
-import org.checkerframework.checker.units.qual.C;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -55,7 +49,6 @@ public class TurbineRegistration {
             "bearing",
             "controller",
             "rotor_shaft",
-            "rotor_stator",
             "port",
             "glass",
             "extreme_rotor_blade",
@@ -118,6 +111,15 @@ public class TurbineRegistration {
                 TURBINE_BE.put(key,
                         BLOCK_ENTITIES.register(key,
                                 () -> BlockEntityType.Builder.of(TurbinePortBE::new, toAdd.get())
+                                        .build(null)));
+                continue;
+            }
+
+            if(block.contains("rotor_shaft")) {
+                RegistryObject<Block> toAdd = addBlock(key, () -> new TurbineRotorBlock(TURBINE_BLOCKS_PROPERTIES));
+                TURBINE_BE.put(key,
+                        BLOCK_ENTITIES.register(key,
+                                () -> BlockEntityType.Builder.of(TurbineRotorBE::new, toAdd.get())
                                         .build(null)));
                 continue;
             }

@@ -1,10 +1,6 @@
 package igentuman.nc.multiblock.turbine;
 
-import igentuman.nc.block.entity.fission.FissionBE;
-import igentuman.nc.block.entity.fission.FissionHeatSinkBE;
 import igentuman.nc.block.entity.turbine.TurbineCoilBE;
-import igentuman.nc.handler.config.CommonConfig;
-import igentuman.nc.multiblock.fission.FissionBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -27,7 +23,6 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import static igentuman.nc.NuclearCraft.MODID;
-import static igentuman.nc.handler.config.CommonConfig.HEAT_SINK_CONFIG;
 import static igentuman.nc.handler.config.CommonConfig.TURBINE_CONFIG;
 
 public class CoilDef {
@@ -178,14 +173,14 @@ public class CoilDef {
             return result;
         }
 
-        public boolean validateFuelCellAttachment(BlockPos pos)
+        public boolean validateBearingAttachment(BlockPos pos)
         {
             BlockEntity testBe = be.getLevel().getBlockEntity(pos);
-            if(testBe instanceof FissionBE) {
-                if(!((FissionBE)testBe).isAttachedToFuelCell()) {
+            /*if(testBe instanceof TurbineBE) {
+                if(!((TurbineBE)testBe).isDirectlyAttachedToFuelCell()) {
                     return false;
                 }
-            }
+            }*/
             return true;
         }
 
@@ -215,7 +210,7 @@ public class CoilDef {
             int counter = 0;
             for (Direction dir: Direction.values()) {
                 if(blocks.contains(Objects.requireNonNull(be.getLevel()).getBlockState(be.getBlockPos().relative(dir)).getBlock())) {
-                    if(!validateFuelCellAttachment(be.getBlockPos().relative(dir))) {
+                    if(!validateBearingAttachment(be.getBlockPos().relative(dir))) {
                         continue;
                     }
                     counter++;
@@ -230,8 +225,8 @@ public class CoilDef {
                 if(
                         blocks.contains(Objects.requireNonNull(be.getLevel()).getBlockState(be.getBlockPos().relative(dir)).getBlock()) &&
                                 blocks.contains(Objects.requireNonNull(be.getLevel()).getBlockState(be.getBlockPos().relative(dir.getOpposite())).getBlock()) &&
-                                validateFuelCellAttachment(be.getBlockPos().relative(dir)) &&
-                                validateFuelCellAttachment(be.getBlockPos().relative(dir.getOpposite()))
+                                validateBearingAttachment(be.getBlockPos().relative(dir)) &&
+                                validateBearingAttachment(be.getBlockPos().relative(dir.getOpposite()))
                 ) {
                     return true;
                 }
@@ -243,7 +238,7 @@ public class CoilDef {
             int counter = 0;
             for (Direction dir: Direction.values()) {
                 if(blocks.contains(Objects.requireNonNull(be.getLevel()).getBlockState(be.getBlockPos().relative(dir)).getBlock())) {
-                    if(!validateFuelCellAttachment(be.getBlockPos().relative(dir))) {
+                    if(!validateBearingAttachment(be.getBlockPos().relative(dir))) {
                         continue;
                     }
                     counter++;
@@ -257,7 +252,7 @@ public class CoilDef {
             int counter = 0;
             for (Direction dir: Direction.values()) {
                 if(blocks.contains(Objects.requireNonNull(be.getLevel()).getBlockState(be.getBlockPos().relative(dir)).getBlock())) {
-                    if(!validateFuelCellAttachment(be.getBlockPos().relative(dir))) {
+                    if(!validateBearingAttachment(be.getBlockPos().relative(dir))) {
                         continue;
                     }
                     counter++;

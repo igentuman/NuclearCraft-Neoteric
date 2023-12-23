@@ -112,7 +112,7 @@ public class FusionCoreScreen extends AbstractContainerScreen<FusionCoreContaine
 
         checklist.setTooltipKey("tooltip.nc.reactor.not_ready");
         if(isCasingValid()) {
-            checkboxIsFormed.setTooltipKey("reactor.casing.complete");
+            checkboxIsFormed.setTooltipKey("multiblock.casing.complete");
 
             if(isReady()) {
                 checklist.setTooltipKey("tooltip.nc.reactor.ready");

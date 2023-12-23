@@ -5,6 +5,8 @@ import igentuman.nc.client.block.fusion.FusionCoreRenderer;
 import igentuman.nc.client.gui.FusionCoreScreen;
 import igentuman.nc.client.gui.StorageContainerScreen;
 import igentuman.nc.client.gui.fission.FissionPortScreen;
+import igentuman.nc.client.gui.turbine.TurbineControllerScreen;
+import igentuman.nc.client.gui.turbine.TurbinePortScreen;
 import igentuman.nc.client.particle.FusionBeamParticle;
 import igentuman.nc.client.particle.RadiationParticle;
 import igentuman.nc.client.gui.fission.FissionControllerScreen;
@@ -43,7 +45,12 @@ import net.minecraftforge.registries.RegistryObject;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
+import static igentuman.nc.multiblock.fission.FissionReactor.FISSION_CONTROLLER_CONTAINER;
+import static igentuman.nc.multiblock.fission.FissionReactor.FISSION_PORT_CONTAINER;
 import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_BE;
+import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_CORE_CONTAINER;
+import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_CONTROLLER_CONTAINER;
+import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_PORT_CONTAINER;
 import static igentuman.nc.setup.registration.NCItems.GEIGER_COUNTER;
 import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_CONTAINER;
 import static net.minecraftforge.eventbus.api.EventPriority.LOWEST;
@@ -56,9 +63,11 @@ public class ClientSetup {
             MinecraftForge.EVENT_BUS.addListener(LOWEST, SoundHandler::onTilePlaySound);
             BlockEntityRenderers.register(FUSION_BE.get("fusion_core").get(), FusionCoreRenderer::new);
             MenuScreens.register(STORAGE_CONTAINER.get(), StorageContainerScreen::new);
-            MenuScreens.register(FusionReactor.FUSION_CORE_CONTAINER.get(), FusionCoreScreen::new);
-            MenuScreens.register(FissionReactor.FISSION_CONTROLLER_CONTAINER.get(), FissionControllerScreen::new);
-            MenuScreens.register(FissionReactor.FISSION_PORT_CONTAINER.get(), FissionPortScreen::new);
+            MenuScreens.register(FUSION_CORE_CONTAINER.get(), FusionCoreScreen::new);
+            MenuScreens.register(TURBINE_CONTROLLER_CONTAINER.get(), TurbineControllerScreen::new);
+            MenuScreens.register(TURBINE_PORT_CONTAINER.get(), TurbinePortScreen::new);
+            MenuScreens.register(FISSION_CONTROLLER_CONTAINER.get(), FissionControllerScreen::new);
+            MenuScreens.register(FISSION_PORT_CONTAINER.get(), FissionPortScreen::new);
 
             for(String name: NCProcessors.PROCESSORS_CONTAINERS.keySet()) {
                 MenuScreens.register(NCProcessors.PROCESSORS_CONTAINERS.get(name).get(), Processors.all().get(name).getScreenConstructor());

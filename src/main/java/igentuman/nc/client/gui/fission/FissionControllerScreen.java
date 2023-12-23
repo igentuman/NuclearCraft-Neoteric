@@ -126,7 +126,7 @@ public class FissionControllerScreen extends AbstractContainerScreen<FissionCont
         }
         checkboxCasing.setChecked(isCasingValid()).draw(matrix, mouseX, mouseY, partialTicks);
         if(isCasingValid()) {
-            checkboxCasing.setTooltipKey("reactor.casing.complete");
+            checkboxCasing.setTooltipKey("multiblock.casing.complete");
         } else {
             checkboxCasing.setTooltipKey("reactor.casing.incomplete");
         }

@@ -2,6 +2,7 @@ package igentuman.nc.datagen;
 
 import igentuman.nc.multiblock.fission.FissionBlocks;
 import igentuman.nc.multiblock.fission.FissionReactor;
+import igentuman.nc.multiblock.turbine.TurbineRegistration;
 import igentuman.nc.setup.registration.NCBlocks;
 import igentuman.nc.setup.registration.NCEnergyBlocks;
 import igentuman.nc.setup.registration.NCProcessors;
@@ -15,6 +16,7 @@ import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.multiblock.fission.FissionReactor.FISSION_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_CORE_PROXY;
+import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
 import static igentuman.nc.setup.registration.NCBlocks.NC_ELECTROMAGNETS;
 import static igentuman.nc.setup.registration.NCBlocks.NC_RF_AMPLIFIERS;
 import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCK;
@@ -47,6 +49,22 @@ public class NCBlockTags extends BlockTagsProvider {
                         FISSION_BLOCKS.get("fission_reactor_irradiation_chamber").get(),
                         FISSION_BLOCKS.get("fission_reactor_solid_fuel_cell").get()
                 );
+        tag(TurbineRegistration.CASING_BLOCKS).add(
+                TURBINE_BLOCKS.get("turbine_casing").get(),
+                TURBINE_BLOCKS.get("turbine_glass").get(),
+                TURBINE_BLOCKS.get("turbine_bearing").get(),
+                TURBINE_BLOCKS.get("turbine_controller").get(),
+                TURBINE_BLOCKS.get("turbine_port").get()
+        );
+        tag(TurbineRegistration.CASING_BLOCKS).add(
+                TurbineRegistration.getCoilBlocks()
+        );
+        tag(TurbineRegistration.INNER_TURBINE_BLOCKS).add(
+                TURBINE_BLOCKS.get("turbine_rotor_shaft").get()
+        );
+        tag(TurbineRegistration.INNER_TURBINE_BLOCKS).add(
+                TurbineRegistration.getBladeBlocks()
+        );
     }
 
     private void ores() {

@@ -18,6 +18,7 @@ import java.util.Objects;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
+import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_CONTROLLER_CONTAINER;
 import static igentuman.nc.util.TextUtils.roundFormat;
 
 public class TurbineControllerContainer extends AbstractContainerMenu {
@@ -30,7 +31,7 @@ public class TurbineControllerContainer extends AbstractContainerMenu {
     protected IItemHandler playerInventory;
 
     public TurbineControllerContainer(int pContainerId, BlockPos pos, Inventory playerInventory) {
-        super(TurbineRegistration.TURBINE_CONTROLLER_CONTAINER.get(), pContainerId);
+        super(TURBINE_CONTROLLER_CONTAINER.get(), pContainerId);
         this.playerEntity = playerInventory.player;
         this.playerInventory =  new InvWrapper(playerInventory);
         blockEntity = (TurbineControllerBE<?>) playerEntity.getCommandSenderWorld().getBlockEntity(pos);
@@ -92,10 +93,6 @@ public class TurbineControllerContainer extends AbstractContainerMenu {
         return blockEntity.energyStorage.getEnergyStored();
     }
 
-    public double getProgress() {
-        return blockEntity.getDepletionProgress();
-    }
-
 
     private void addSlotRange(IItemHandler handler, int x, int y, int amount, int dx) {
         for (int i = 0 ; i < amount ; i++) {
@@ -124,10 +121,6 @@ public class TurbineControllerContainer extends AbstractContainerMenu {
         return blockEntity.energyStorage.getMaxEnergyStored();
     }
 
-    public double getMaxHeat() {
-        return blockEntity.getMaxHeat();
-    }
-
     public String getEfficiency() {
         return roundFormat(blockEntity.efficiency);
     }
@@ -139,6 +132,5 @@ public class TurbineControllerContainer extends AbstractContainerMenu {
     public boolean hasRecipe() {
         return blockEntity.hasRecipe();
     }
-
 
 }

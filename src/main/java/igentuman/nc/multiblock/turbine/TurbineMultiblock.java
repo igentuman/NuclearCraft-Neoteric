@@ -4,16 +4,13 @@ import igentuman.nc.block.entity.turbine.*;
 import igentuman.nc.multiblock.AbstractNCMultiblock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import java.util.ArrayList;
-import java.util.List;
 
-import static igentuman.nc.handler.config.CommonConfig.FISSION_CONFIG;
 import static igentuman.nc.handler.config.CommonConfig.TURBINE_CONFIG;
+import static igentuman.nc.multiblock.turbine.TurbineRegistration.CASING_BLOCKS;
+import static igentuman.nc.multiblock.turbine.TurbineRegistration.INNER_TURBINE_BLOCKS;
 import static igentuman.nc.util.TagUtil.getBlocksByTagKey;
 
 public class TurbineMultiblock extends AbstractNCMultiblock {
-
-    private int irradiationConnections = 0;
 
     @Override
     public int maxHeight() {
@@ -36,18 +33,15 @@ public class TurbineMultiblock extends AbstractNCMultiblock {
     }
 
     @Override
-    public int minWidth() {return FISSION_CONFIG.MIN_SIZE.get(); }
+    public int minWidth() {return TURBINE_CONFIG.MIN_SIZE.get(); }
 
     @Override
-    public int minDepth() { return FISSION_CONFIG.MIN_SIZE.get(); }
-
-
-    private List<BlockPos> moderators = new ArrayList<>();
+    public int minDepth() { return TURBINE_CONFIG.MIN_SIZE.get(); }
 
     public TurbineMultiblock(TurbineControllerBE<?> turbineControllerBE) {
         super(
-                getBlocksByTagKey(TurbineRegistration.CASING_BLOCKS.location().toString()),
-                getBlocksByTagKey(TurbineRegistration.INNER_TURBINE_BLOCKS.location().toString())
+                getBlocksByTagKey(CASING_BLOCKS.location().toString()),
+                getBlocksByTagKey(INNER_TURBINE_BLOCKS.location().toString())
         );
         controller = new TurbineController(turbineControllerBE);
     }

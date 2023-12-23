@@ -2,13 +2,10 @@ package igentuman.nc.client.gui.turbine;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import igentuman.nc.client.gui.IProgressScreen;
 import igentuman.nc.client.gui.IVerticalBarScreen;
 import igentuman.nc.client.gui.element.NCGuiElement;
-import igentuman.nc.client.gui.element.bar.ProgressBar;
 import igentuman.nc.client.gui.element.bar.VerticalBar;
 import igentuman.nc.client.gui.element.button.Checkbox;
-import igentuman.nc.container.FissionControllerContainer;
 import igentuman.nc.container.TurbineControllerContainer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -16,6 +13,7 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +22,7 @@ import java.util.Optional;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.util.TextUtils.applyFormat;
 
-public class TurbineControllerScreen extends AbstractContainerScreen<TurbineControllerContainer> implements IProgressScreen, IVerticalBarScreen {
+public class TurbineControllerScreen extends AbstractContainerScreen<TurbineControllerContainer> implements IVerticalBarScreen {
     protected final ResourceLocation GUI = new ResourceLocation(MODID, "textures/gui/turbine/controller.png");
     protected int relX;
     protected int relY;
@@ -39,10 +37,6 @@ public class TurbineControllerScreen extends AbstractContainerScreen<TurbineCont
     public Checkbox checkboxCasing;
     public Checkbox checkboxInterior;
     private VerticalBar energyBar;
-    private VerticalBar heatBar;
-    private VerticalBar coolantBar;
-    private VerticalBar hotCoolantBar;
-
     public Component casingTootip = Component.empty();
     public Component interiorTootip = Component.empty();
 
@@ -68,11 +62,6 @@ public class TurbineControllerScreen extends AbstractContainerScreen<TurbineCont
         checkboxCasing = new Checkbox(imageWidth-19, 80, this,  isCasingValid());
         checkboxInterior =  new Checkbox(imageWidth-32, 80, this,  isInteriorValid());
         energyBar = new VerticalBar.Energy(17, 16,  this, container().getMaxEnergy());
-        heatBar = new VerticalBar.Heat(8, 16,this,  (int) container().getMaxHeat());
-        coolantBar = new VerticalBar.Coolant(17, 16,  this, 1000000);
-        hotCoolantBar = new VerticalBar.HotCoolant(26, 16,  this, 1000000);
-        widgets.add(heatBar);
-        widgets.add(new ProgressBar(74, 35, this,  7));
     }
 
     private boolean isInteriorValid() {
@@ -84,7 +73,7 @@ public class TurbineControllerScreen extends AbstractContainerScreen<TurbineCont
     }
 
     @Override
-    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void render(@NotNull PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         xCenter = getGuiLeft()-imageWidth/2;
         this.renderBackground(matrixStack);
         super.render(matrixStack, mouseX, mouseY, partialTicks);
@@ -97,17 +86,17 @@ public class TurbineControllerScreen extends AbstractContainerScreen<TurbineCont
         }
         checkboxCasing.setChecked(isCasingValid()).draw(matrix, mouseX, mouseY, partialTicks);
         if(isCasingValid()) {
-            checkboxCasing.setTooltipKey("reactor.casing.complete");
+            checkboxCasing.setTooltipKey("multiblock.casing.complete");
         } else {
-            checkboxCasing.setTooltipKey("reactor.casing.incomplete");
+            checkboxCasing.setTooltipKey("multiblock.casing.incomplete");
         }
         checkboxCasing.addTooltip(casingTootip);
 
         checkboxInterior.setChecked(isInteriorValid()).draw(matrix, mouseX, mouseY, partialTicks);
         if(isInteriorValid()) {
-            checkboxInterior.setTooltipKey("reactor.interior.complete");
+            checkboxInterior.setTooltipKey("multiblock.interior.complete");
         } else {
-            checkboxInterior.setTooltipKey("reactor.interior.incomplete");
+            checkboxInterior.setTooltipKey("multiblock.interior.incomplete");
         }
         checkboxInterior.addTooltip(interiorTootip);
         if(isInteriorValid()) {
@@ -117,7 +106,7 @@ public class TurbineControllerScreen extends AbstractContainerScreen<TurbineCont
     }
 
     @Override
-    protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
+    protected void renderLabels(@NotNull PoseStack matrixStack, int mouseX, int mouseY) {
         drawCenteredString(matrixStack, font,  menu.getTitle(), imageWidth/2, titleLabelY, 0xffffff);
         if(isCasingValid()) {
             casingTootip = applyFormat(Component.translatable("reactor.size", getMultiblockHeight(), getMultiblockWidth(), getMultiblockDepth()), ChatFormatting.GOLD);
@@ -130,7 +119,7 @@ public class TurbineControllerScreen extends AbstractContainerScreen<TurbineCont
          //       interiorTootip = applyFormat(Component.translatable("reactor.fuel_cells", getFuelCellsCount()), ChatFormatting.GOLD);
 
                 if(container().hasRecipe() && !container().getEfficiency().equals("NaN")) {
-                    drawString(matrixStack, font, Component.translatable("fission_reactor.efficiency", container().getEfficiency()), 36, 62, 0x8AFF8A);
+                  //  drawString(matrixStack, font, Component.translatable("fission_reactor.efficiency", container().getEfficiency()), 36, 62, 0x8AFF8A);
                 }
             } else {
                 interiorTootip = applyFormat(Component.translatable(getValidationResultKey(), getValidationResultData()), ChatFormatting.RED);
@@ -161,7 +150,7 @@ public class TurbineControllerScreen extends AbstractContainerScreen<TurbineCont
     }
 
     @Override
-    protected void renderBg(PoseStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(@NotNull PoseStack matrixStack, float partialTicks, int mouseX, int mouseY) {
         RenderSystem.setShaderTexture(0, GUI);
         updateRelativeCords();
         this.blit(matrixStack, relX, relY, 0, 0, this.imageWidth, this.imageHeight);
@@ -195,13 +184,8 @@ public class TurbineControllerScreen extends AbstractContainerScreen<TurbineCont
     }
 
     @Override
-    public double getProgress() {
-        return container().getProgress();
-    }
-
-    @Override
     public double getEnergy() {
-        return container().getEnergy();
+        return 0;
     }
 
     @Override

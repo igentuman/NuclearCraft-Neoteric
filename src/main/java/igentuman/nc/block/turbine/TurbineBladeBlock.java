@@ -6,6 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -29,7 +30,57 @@ public class TurbineBladeBlock extends DirectionalBlock implements EntityBlock {
 
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return this.defaultBlockState().setValue(FACING, context.getNearestLookingDirection().getOpposite());
+        Level level = context.getLevel();
+        BlockState neighbor = level.getBlockState(context.getClickedPos().relative(context.getClickedFace().getOpposite()));
+        Direction dir = context.getNearestLookingDirection();
+        if(neighbor.getBlock() instanceof TurbineRotorBlock) {
+            dir = context.getClickedFace().getOpposite();
+        } else
+        if(neighbor.getBlock() instanceof TurbineBladeBlock) {
+            dir = neighbor.getValue(FACING);
+        } else {
+            for (Direction direction : Direction.values()) {
+                BlockState state = level.getBlockState(context.getClickedPos().relative(direction));
+                if (state.getBlock() instanceof TurbineRotorBlock) {
+                    dir = direction;
+                    break;
+                }
+            }
+            for (Direction direction : Direction.values()) {
+                BlockState state = level.getBlockState(context.getClickedPos().relative(direction));
+                if (state.getBlock() instanceof TurbineBladeBlock) {
+                    dir = state.getValue(FACING);
+                    break;
+                }
+            }
+        }
+        return this.defaultBlockState().setValue(FACING, dir);
+    }
+
+    public static boolean processBlockPlace(LevelAccessor level, BlockPos pos, BlockState block, BlockState blockState, BlockState attachment)
+    {
+        if(attachment.getBlock() instanceof TurbineRotorBlock) {
+            return true;
+        }
+        if(attachment.getBlock() instanceof TurbineBladeBlock) {
+            block.setValue(FACING, attachment.getValue(FACING));
+            return true;
+        }
+        for(Direction direction : Direction.values()) {
+            BlockState state = level.getBlockState(pos.relative(direction));
+            if(state.getBlock() instanceof TurbineRotorBlock) {
+                block.setValue(FACING, direction);
+                return true;
+            }
+        }
+        for(Direction direction : Direction.values()) {
+            BlockState state = level.getBlockState(pos.relative(direction));
+            if(state.getBlock() instanceof TurbineBladeBlock) {
+                block.setValue(FACING, state.getValue(FACING));
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

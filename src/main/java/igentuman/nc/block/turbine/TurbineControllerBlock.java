@@ -37,7 +37,7 @@ import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BE;
 public class TurbineControllerBlock extends HorizontalDirectionalBlock implements EntityBlock {
     public static final DirectionProperty HORIZONTAL_FACING = FACING;
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
-
+    public static final String NAME = "turbine_controller";
     public TurbineControllerBlock() {
         this(Properties.of(Material.METAL)
                 .sound(SoundType.METAL)
@@ -66,7 +66,7 @@ public class TurbineControllerBlock extends HorizontalDirectionalBlock implement
     @Nullable
     @Override
     public BlockEntity newBlockEntity(@NotNull BlockPos pPos, @NotNull BlockState pState) {
-        return TURBINE_BE.get("turbine_controller").get().create(pPos, pState);
+        return TURBINE_BE.get(NAME).get().create(pPos, pState);
     }
 
     @Override
@@ -79,7 +79,7 @@ public class TurbineControllerBlock extends HorizontalDirectionalBlock implement
                 MenuProvider containerProvider = new MenuProvider() {
                     @Override
                     public Component getDisplayName() {
-                        return Component.translatable("turbine_controller");
+                        return Component.translatable(NAME);
                     }
 
                     @Override

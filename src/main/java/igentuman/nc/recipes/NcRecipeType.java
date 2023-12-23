@@ -4,7 +4,6 @@ import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.fission.FissionControllerBE;
 import igentuman.nc.client.NcClient;
 import igentuman.nc.content.processors.Processors;
-import igentuman.nc.recipes.serializers.NcRecipeSerializer;
 import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.registry.RecipeTypeDeferredRegister;
 import igentuman.nc.registry.RecipeTypeRegistryObject;
@@ -34,6 +33,7 @@ public class NcRecipeType<RECIPE extends NcRecipe> implements RecipeType<RECIPE>
         recipes.put("fusion_core", register("fusion_core"));
         recipes.put("fusion_coolant", register("fusion_coolant"));
         recipes.put("fission_boiling", register("fission_boiling"));
+        recipes.put("turbine_controller", register("turbine_controller"));
 
         for(String processorName: Processors.registered().keySet()) {
             if(Processors.registered().get(processorName).hasRecipes()) {

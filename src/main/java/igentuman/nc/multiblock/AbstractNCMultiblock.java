@@ -120,6 +120,17 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
         return false;
     }
 
+    public boolean isValidForInner(BlockPos pos)
+    {
+        if(getLevel() == null) return false;
+        try {
+            BlockState bs = getLevel().getBlockState(pos);
+            if(bs.isAir()) return true;
+            return  validInnerBlocks().contains(bs.getBlock());
+        } catch (NullPointerException ignored) { }
+        return false;
+    }
+
     public int resolveHeight()
     {
         for (int i = 1; i < maxHeight(); i++) {
@@ -200,13 +211,17 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
                             controller().addErroredBlock(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getFacing(), -z));
                             return;
                         }
-                        attachMultiblock(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getFacing(), -z));
-                        allBlocks.add(new NCBlockPos(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getFacing(), -z)));
+                        processOuterBlock(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getFacing(), -z));
                     }
                 }
             }
         }
         validationResult = ValidationResult.VALID;
+    }
+
+    protected void processOuterBlock(BlockPos pos) {
+        attachMultiblock(pos);
+        allBlocks.add(new NCBlockPos(pos));
     }
 
     public void validateInner() {
@@ -215,13 +230,12 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
             for(int x = 1; x < resolveWidth()-1; x++) {
                 for (int z = 1; z < resolveDepth()-1; z++) {
                     BlockPos toCheck = new NCBlockPos(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getFacing(), -z));
-                    if (isValidForOuter(toCheck)) {
+                    if (isValidForInner(toCheck)) {
                         validationResult = ValidationResult.WRONG_INNER;
                         controller().addErroredBlock(toCheck);
                         return;
                     }
-                    validateInnerBlock(toCheck);
-                    allBlocks.add(toCheck);
+                    processInnerBlock(toCheck);
                 }
             }
         }
@@ -229,7 +243,10 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
         validationResult =  ValidationResult.VALID;
     }
 
-    protected abstract boolean validateInnerBlock(BlockPos toCheck);
+    protected boolean processInnerBlock(BlockPos toCheck) {
+        allBlocks.add(toCheck);
+        return true;
+    }
 
     protected abstract void invalidateStats();
 

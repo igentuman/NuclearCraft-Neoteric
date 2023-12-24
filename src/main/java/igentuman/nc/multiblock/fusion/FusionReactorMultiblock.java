@@ -360,7 +360,7 @@ public class FusionReactorMultiblock extends AbstractNCMultiblock {
                 }
             }
             for(int i = 0; i < steps; i++) {
-                if(!validateInnerBlock(innerRingStartPos.revert().relative(dir, i))) {
+                if(!processInnerBlock(innerRingStartPos.revert().relative(dir, i))) {
                     innerValid = false;
                     validationResult = ValidationResult.WRONG_INNER;
                     controller().addErroredBlock(innerRingStartPos);
@@ -372,7 +372,7 @@ public class FusionReactorMultiblock extends AbstractNCMultiblock {
     }
 
     @Override
-    protected boolean validateInnerBlock(BlockPos toCheck) {
+    protected boolean processInnerBlock(BlockPos toCheck) {
         return validInnerBlocks.contains(level().getBlockState(toCheck).getBlock());
     }
 

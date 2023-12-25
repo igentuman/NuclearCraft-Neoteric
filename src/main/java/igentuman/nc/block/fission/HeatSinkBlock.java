@@ -143,11 +143,6 @@ public class HeatSinkBlock extends Block implements EntityBlock {
         return this.defaultBlockState();
     }
 
-    @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(BlockStateProperties.HORIZONTAL_FACING);
-    }
-
     @Nullable
     @Override
     public BlockEntity newBlockEntity(@NotNull BlockPos pPos, @NotNull BlockState pState) {

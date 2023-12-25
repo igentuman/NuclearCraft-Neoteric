@@ -6,8 +6,8 @@ import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.item.ItemFuel;
 import igentuman.nc.multiblock.ValidationResult;
-import igentuman.nc.multiblock.fission.FissionReactor;
 import igentuman.nc.multiblock.turbine.TurbineMultiblock;
+import igentuman.nc.multiblock.turbine.TurbineRegistration;
 import igentuman.nc.radiation.ItemRadiation;
 import igentuman.nc.radiation.data.RadiationManager;
 import igentuman.nc.recipes.AbstractRecipe;
@@ -61,19 +61,6 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
     protected final LazyOptional<IEnergyStorage> energy = LazyOptional.of(() -> energyStorage);
     public BlockPos errorBlockPos = BlockPos.ZERO;
     @NBTField
-    public double heat = 0;
-    @NBTField
-    public int fuelCellsCount = 0;
-
-    @NBTField
-    public int irradiationHeat = 0;
-    @NBTField
-    public int moderatorsCount = 0;
-    @NBTField
-    public int heatSinksCount = 0;
-    @NBTField
-    public int moderatorAttacmentsCount = 0;
-    @NBTField
     public boolean isCasingValid = false;
     @NBTField
     public boolean isInternalValid = false;
@@ -84,23 +71,13 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
     @NBTField
     public int depth = 1;
     @NBTField
-    public double heatSinkCooling = 0;
-    @NBTField
-    public double heatPerTick = 0;
-    @NBTField
     public int energyPerTick = 0;
-    @NBTField
-    public double heatMultiplier = 0;
-    @NBTField
-    public int irradiationConnections = 0;
     @NBTField
     public double efficiency = 0;
     @NBTField
     public boolean powered = false;
     @NBTField
     protected boolean forceShutdown = false;
-    public int fuelCellMultiplier = 1;
-    public int moderatorCellMultiplier = 1;
 
     public ValidationResult validationResult = ValidationResult.INCOMPLETE;
     public RecipeInfo recipeInfo = new RecipeInfo();
@@ -190,8 +167,8 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
     }
 
     public void updateEnergyStorage() {
-        energyStorage.setMaxCapacity(Math.max(fuelCellsCount, 1) * 1000000);
-        energyStorage.setMaxExtract(Math.max(fuelCellsCount, 1) * 1000000);
+        energyStorage.setMaxCapacity(1000000*height*width*depth);
+        energyStorage.setMaxExtract(1000000*height*width*depth);
     }
 
     private LazyOptional<NCTurbinePeripheral> peripheralCap;
@@ -253,7 +230,6 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
 
     public void tickServer() {
         if(NuclearCraft.instance.isNcBeStopped || isRemoved()) {
-            irradiationHeat = 0;
             return;
         }
         changed = false;
@@ -272,7 +248,6 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
             } else {
                 powered = false;
             }
-            trackChanges(coolDown());
             handleMeltdown();
             contentHandler.setAllowedInputItems(getAllowedInputItems());
         }
@@ -284,12 +259,21 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
                 level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(POWERED, powered), Block.UPDATE_ALL);
             } catch (NullPointerException ignored) {}
         }
-        irradiationHeat = 0;
 
         controllerEnabled = false;
     }
 
+    @Override
+    public TurbineMultiblock multiblock() {
+        if(multiblock == null) {
+            multiblock = new TurbineMultiblock(this);
+        }
+        return multiblock;
+    }
+
+
     private void handleValidation() {
+        if(multiblock == null) return;
         multiblock().tick();
         boolean wasFormed = multiblock().isFormed();
         if (!wasFormed || !isInternalValid || !isCasingValid) {
@@ -331,15 +315,7 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
         }
     }
 
-    private boolean coolDown() {
-        double wasHeat = heat;
-        heat -= coolingPerTick();
-        heat = Math.max(0, heat);
-        return wasHeat != heat;
-    }
-
     private boolean processReaction() {
-        heatMultiplier = heatMultiplier() + collectedHeatMultiplier() - 1;
         if(recipeInfo.recipe != null && recipeInfo.isCompleted()) {
             if(contentHandler.itemHandler.getStackInSlot(0).equals(ItemStack.EMPTY)) {
                 recipeInfo.clear();
@@ -355,13 +331,12 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
     }
 
     private boolean process() {
-        recipeInfo.process(fuelCellsCount * (heatMultiplier() + collectedHeatMultiplier() - 1));
+        recipeInfo.process(1);
         if(recipeInfo.radiation != 1D) {
             RadiationManager.get(getLevel()).addRadiation(getLevel(), recipeInfo.radiation/1000, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ());
         }
         if (!recipeInfo.isCompleted()) {
             energyStorage.addEnergy(calculateEnergy());
-            heat += calculateHeat();
         }
 
         handleRecipeOutput();
@@ -387,39 +362,9 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
         }
     }
 
-    public double heatMultiplier() {
-        double h = heatPerTick();
-        double c = Math.max(1, coolingPerTick());
-        return Math.log10(h / c) / (1 + Math.exp(h / c * FISSION_CONFIG.HEAT_MULTIPLIER.get())) + 1;
-    }
-
-    private int coolingPerTick() {
-        return 0;
-    }
-
-    public double collectedHeatMultiplier() {
-        return Math.min(FISSION_CONFIG.HEAT_MULTIPLIER_CAP.get(), Math.pow((heat + getMaxHeat() / 8) / getMaxHeat(), 5) + 0.9999694824);
-    }
-
-    public double heatPerTick() {
-        return heatPerTick;
-    }
-
-    private double calculateHeat() {
-        return heatPerTick();
-    }
-
     private int calculateEnergy() {
-        energyPerTick = (int) ((recipeInfo.energy * 1 + moderatorsFE()) * (heatMultiplier() + collectedHeatMultiplier() - 1));
+        energyPerTick = (int)(recipeInfo.energy);
         return energyPerTick;
-    }
-
-    public double moderatorsHeat() {
-        return recipeInfo.heat * moderatorCellMultiplier * (FISSION_CONFIG.MODERATOR_HEAT_MULTIPLIER.get() / 100);
-    }
-
-    public double moderatorsFE() {
-        return recipeInfo.energy * moderatorCellMultiplier * (FISSION_CONFIG.MODERATOR_FE_MULTIPLIER.get() / 100);
     }
 
 
@@ -559,15 +504,8 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
     }
 
     public double calculateEfficiency() {
-        double mult = fuelCellsCount;
-        if(fuelCellMultiplier > fuelCellsCount) {
-            mult = (double) fuelCellMultiplier / fuelCellsCount;
-        }
-        return (double) calculateEnergy() / (recipeInfo.energy * mult / 100);
-    }
 
-    public double getNetHeat() {
-        return heatPerTick - heatSinkCooling;
+        return (double) calculateEnergy() / (recipeInfo.energy / 100);
     }
 
     public int getDepth() {
@@ -615,10 +553,6 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
         return hasRecipe() && recipeInfo.ticksProcessed > 0 && !recipeInfo.isCompleted();
     }
 
-    public void addIrradiationHeat() {
-        irradiationHeat += irradiationConnections * 15;
-    }
-
     public static class Recipe extends NcRecipe {
 
         public Recipe(ResourceLocation id, ItemStackIngredient[] input, ItemStack[] output, FluidStackIngredient[] inputFluids, FluidStack[] outputFluids, double timeModifier, double powerModifier, double heatModifier, double rarity) {
@@ -628,7 +562,7 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
 
         @Override
         public String getCodeId() {
-            return "fission_reactor_controller";
+            return "turbine_controller";
         }
 
         protected ItemFuel fuelItem;
@@ -642,12 +576,12 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
 
         @Override
         public @NotNull String getGroup() {
-            return FissionReactor.FISSION_BLOCKS.get(codeId).get().getName().getString();
+            return TurbineRegistration.TURBINE_BLOCKS.get(codeId).get().getName().getString();
         }
 
         @Override
         public @NotNull ItemStack getToastSymbol() {
-            return new ItemStack(FissionReactor.FISSION_BLOCKS.get(codeId).get());
+            return new ItemStack(TurbineRegistration.TURBINE_BLOCKS.get(codeId).get());
         }
 
         public int getDepletionTime() {

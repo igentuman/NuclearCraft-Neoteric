@@ -81,4 +81,8 @@ public class NCBlockPos extends BlockPos {
         setZ(z);
         return this;
     }
+
+    public BlockPos copy() {
+        return new NCBlockPos(getX(), getY(), getZ());
+    }
 }

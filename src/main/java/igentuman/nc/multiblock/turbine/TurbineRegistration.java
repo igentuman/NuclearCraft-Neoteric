@@ -116,7 +116,7 @@ public class TurbineRegistration {
             }
 
             if(block.contains("rotor_shaft")) {
-                RegistryObject<Block> toAdd = addBlock(key, () -> new TurbineRotorBlock(TURBINE_BLOCKS_PROPERTIES));
+                RegistryObject<Block> toAdd = addBlock(key, () -> new TurbineRotorBlock(GLASS_BLOCK_PROPERTIES));
                 TURBINE_BE.put(key,
                         BLOCK_ENTITIES.register(key,
                                 () -> BlockEntityType.Builder.of(TurbineRotorBE::new, toAdd.get())
@@ -136,6 +136,14 @@ public class TurbineRegistration {
                addBlock(key, () -> new TurbineBladeBlock(TURBINE_BLOCKS_PROPERTIES));
                 continue;
             }
+            if(block.contains("bearing")) {
+                RegistryObject<Block> toAdd = addBlock(key, () -> new TurbineBearingBlock(TURBINE_BLOCKS_PROPERTIES));
+                TURBINE_BE.put(key,
+                        BLOCK_ENTITIES.register(key,
+                                () -> BlockEntityType.Builder.of(TurbineBearingBE::new, toAdd.get())
+                                        .build(null)));
+                continue;
+            }
             RegistryObject<Block> toAdd = addBlock(key, () -> new TurbineBlock(TURBINE_BLOCKS_PROPERTIES));
             TURBINE_BE.put(key, BLOCK_ENTITIES.register(key, () -> BlockEntityType.Builder.of(TurbineCasingBE::new, toAdd.get()).build(null)));
         }
@@ -144,6 +152,7 @@ public class TurbineRegistration {
                 BLOCK_ENTITIES.register("turbine_casing",
                         () -> BlockEntityType.Builder.of(TurbineCasingBE::new,
                                 TURBINE_BLOCKS.get("turbine_casing").get(),
+                                TURBINE_BLOCKS.get("turbine_bearing").get(),
                                 TURBINE_BLOCKS.get("turbine_glass").get()).build(null)));
 
 

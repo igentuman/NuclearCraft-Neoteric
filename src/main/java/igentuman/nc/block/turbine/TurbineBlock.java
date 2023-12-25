@@ -46,7 +46,7 @@ public class TurbineBlock extends Block implements EntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(@NotNull BlockPos pPos, @NotNull BlockState pState) {
-        String code = codeID().replace("glass", "casing");
+        String code = codeID().replaceAll("glass", "casing");
         if(code.contains("coil")) code = "turbine_coil";
         return TURBINE_BE.get(code).get().create(pPos, pState);
     }

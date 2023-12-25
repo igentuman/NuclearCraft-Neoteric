@@ -9,7 +9,8 @@ public enum ValidationResult {
     TOO_MANY_CONTROLLERS(false, 5, "validation.structure.too_many_controllers"),
     NO_CONTROLLER(false, 6, "validation.structure.no_controller"),
     NO_PORT(false, 7, "validation.structure.no_port"),
-    VALID(true, 8, "validation.structure.valid");
+    VALID(true, 8, "validation.structure.valid"),
+    WRONG_PROPORTIONS(false,9, "validation.structure.wrong_proportions");
 
     public boolean isValid;
     public int id;

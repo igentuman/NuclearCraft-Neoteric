@@ -104,11 +104,21 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
     }
 
     public BlockPos getBottomLeftBlock() {
-        return getSidePos(leftCasing).above(bottomCasing).relative(getFacing(), -depth + 1);
+        return getLeftPos(leftCasing).below(bottomCasing).relative(getFacing(), -depth+1);
+    }
+
+    public BlockPos getCenterBlock() {
+        BlockPos bottomLeft = getBottomLeftBlock();
+        BlockPos topRight = getTopRightBlock();
+        return new BlockPos(
+                (bottomLeft.getX() + topRight.getX()) / 2,
+                (bottomLeft.getY() + topRight.getY()) / 2,
+                (bottomLeft.getZ() + topRight.getZ()) / 2
+        );
     }
 
     public BlockPos getTopRightBlock() {
-        return getSidePos(width - rightCasing - 1).above(height - topCasing - 1).relative(getFacing(), -1);
+        return getRightPos(rightCasing).above(topCasing);
     }
 
     public boolean isValidForOuter(BlockPos pos)
@@ -229,13 +239,13 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
         for(int y = 1; y < resolveHeight()-1; y++) {
             for(int x = 1; x < resolveWidth()-1; x++) {
                 for (int z = 1; z < resolveDepth()-1; z++) {
-                    BlockPos toCheck = new NCBlockPos(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getFacing(), -z));
-                    if (isValidForInner(toCheck)) {
+                    NCBlockPos toCheck = new NCBlockPos(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getFacing(), -z));
+                    if (!isValidForInner(toCheck)) {
                         validationResult = ValidationResult.WRONG_INNER;
                         controller().addErroredBlock(toCheck);
                         return;
                     }
-                    processInnerBlock(toCheck);
+                    processInnerBlock(toCheck.copy());
                 }
             }
         }

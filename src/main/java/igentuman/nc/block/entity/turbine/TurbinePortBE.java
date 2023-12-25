@@ -88,15 +88,7 @@ public class TurbinePortBE extends TurbineBE {
             case SignalSource.ENERGY:
                 analogSignal = (byte) (controller().energyStorage.getEnergyStored() * 15 / controller().energyStorage.getMaxEnergyStored());
                 break;
-            case SignalSource.HEAT:
-                analogSignal = (byte) (controller().heat * 15 / controller().getMaxHeat());
-                break;
-            case SignalSource.PROGRESS:
-                analogSignal = (byte) (controller().recipeInfo.ticksProcessed * 15 / controller().recipeInfo.ticks);
-                break;
-            case SignalSource.ITEMS:
-                analogSignal = (byte) (itemHandler().getStackInSlot(0).getCount() * 15 / itemHandler().getStackInSlot(0).getMaxStackSize());
-                break;
+
         }
     }
 

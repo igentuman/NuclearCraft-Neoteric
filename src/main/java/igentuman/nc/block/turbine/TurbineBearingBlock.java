@@ -24,30 +24,10 @@ import java.util.Objects;
 
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BE;
 
-public class TurbineRotorBlock extends DirectionalBlock implements EntityBlock {
+public class TurbineBearingBlock extends DirectionalBlock implements EntityBlock {
 
-    public TurbineRotorBlock(Properties pProperties) {
-        super(pProperties.sound(SoundType.METAL).noOcclusion());
-    }
-
-    @Override
-    public BlockState getStateForPlacement(BlockPlaceContext context) {
-        Level level = context.getLevel();
-        BlockState neighbor = level.getBlockState(context.getClickedPos().relative(context.getClickedFace().getOpposite()));
-        if(!neighbor.isAir() && neighbor.getBlock() instanceof TurbineRotorBlock) {
-            return this.defaultBlockState().setValue(FACING, neighbor.getValue(FACING));
-        }
-        return this.defaultBlockState().setValue(FACING, context.getNearestLookingDirection().getOpposite());
-    }
-
-    @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(BlockStateProperties.FACING);
-    }
-    @Override
-    @Deprecated
-    public boolean skipRendering(@NotNull BlockState state, @NotNull BlockState adjacentBlockState, @NotNull Direction side) {
-        return adjacentBlockState.getBlock().equals(this);
+    public TurbineBearingBlock(Properties pProperties) {
+        super(pProperties);
     }
 
     private String codeID()
@@ -58,7 +38,7 @@ public class TurbineRotorBlock extends DirectionalBlock implements EntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(@NotNull BlockPos pPos, @NotNull BlockState pState) {
-        return TURBINE_BE.get("turbine_rotor_shaft").get().create(pPos, pState);
+        return TURBINE_BE.get("turbine_bearing").get().create(pPos, pState);
     }
 
     @javax.annotation.Nullable

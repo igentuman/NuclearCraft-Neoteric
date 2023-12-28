@@ -133,4 +133,11 @@ public class TurbineControllerContainer extends AbstractContainerMenu {
         return blockEntity.hasRecipe();
     }
 
+    public int getActiveCoils() {
+        return blockEntity.getActiveCoils();
+    }
+
+    public int getFlow() {
+        return blockEntity.getFlow();
+    }
 }

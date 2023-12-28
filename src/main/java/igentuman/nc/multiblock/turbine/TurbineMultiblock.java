@@ -8,6 +8,7 @@ import igentuman.nc.multiblock.ValidationResult;
 import igentuman.nc.util.NCBlockPos;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -15,8 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static igentuman.nc.handler.config.CommonConfig.TURBINE_CONFIG;
-import static igentuman.nc.multiblock.turbine.TurbineRegistration.CASING_BLOCKS;
-import static igentuman.nc.multiblock.turbine.TurbineRegistration.INNER_TURBINE_BLOCKS;
+import static igentuman.nc.multiblock.turbine.TurbineRegistration.*;
 import static igentuman.nc.util.TagUtil.getBlocksByTagKey;
 
 public class TurbineMultiblock extends AbstractNCMultiblock {
@@ -25,6 +25,7 @@ public class TurbineMultiblock extends AbstractNCMultiblock {
     public List<BlockPos> bearingPositions = new ArrayList<>();
     public List<BlockPos> rotorPositions = new ArrayList<>();
     public List<BlockPos> coilPositions = new ArrayList<>();
+    public int flow = 0;
     private List<BlockPos> bladePositions = new ArrayList<>();
 
     @Override
@@ -61,7 +62,12 @@ public class TurbineMultiblock extends AbstractNCMultiblock {
         controller = new TurbineController(turbineControllerBE);
     }
 
+    public List<Block> validCornerBlocks() {
+        return List.of(TURBINE_BLOCKS.get("turbine_casing").get());
+    }
+
     public void validateInner() {
+        if(!outerValid) return;
         super.validateInner();
         detectOrientation();
         isRotorValid = validateRotor();
@@ -90,7 +96,12 @@ public class TurbineMultiblock extends AbstractNCMultiblock {
     }
 
     private void countBlades() {
-
+        for(BlockPos pos : bladePositions) {
+            BlockEntity be = getLevel().getBlockEntity(pos);
+            if(be instanceof TurbineBladeBE blade) {
+                flow++;
+            }
+        }
     }
 
     private void detectOrientation() {
@@ -136,6 +147,8 @@ public class TurbineMultiblock extends AbstractNCMultiblock {
     public double coilsEfficiency = 0;
 
     public void countCoils() {
+        activeCoils = 0;
+        coilsEfficiency = 0;
         for(BlockPos pos : coilPositions) {
             BlockEntity be = getLevel().getBlockEntity(pos);
             if(be instanceof TurbineCoilBE coil) {
@@ -151,7 +164,7 @@ public class TurbineMultiblock extends AbstractNCMultiblock {
 
     public boolean validateProportions()
     {
-        if(bearingPositions.size() != 2) return false;
+        if(turbineDirection == null || bearingPositions.size() != 2) return false;
         switch (turbineDirection) {
             case UP:
             case DOWN:

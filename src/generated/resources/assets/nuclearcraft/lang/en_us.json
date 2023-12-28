@@ -1955,6 +1955,8 @@
   "message.nc.player_radiation_contamination": "Radiation Dose: %s",
   "multiblock.casing.complete": "Multiblock Casing Complete",
   "multiblock.casing.incomplete": "Multiblock Casing Incomplete",
+  "multiblock.interior.complete": "Interior Complete",
+  "multiblock.interior.incomplete": "Interior Incomplete",
   "music.end_of_the_world": "End of the World",
   "music.hyperspace": "Hyperspace",
   "music.money_for_nothing": "Money For Nothing",
@@ -2038,8 +2040,6 @@
   "reactor.fuel_cells": "Fuel Cells: %s",
   "reactor.heat_sinks_count": "Active Heat Sinks: %s",
   "reactor.heating": "Heat Gen: %s H/t",
-  "reactor.interior.complete": "Interior Complete",
-  "reactor.interior.incomplete": "Interior Incomplete",
   "reactor.internal_usage": "Internal usage: %s FE/t",
   "reactor.irradiators_connections": "Irradiation lines: %s",
   "reactor.moderators_count": "Active Moderators: %s",
@@ -2130,6 +2130,8 @@
   "tooltip.nc.use_in_leacher": "Item can be used in Leacher",
   "tooltip.nc.use_multitool": "Use Multitool to config sides",
   "tooltip.toggle_description_keys": "Toggle description: CTRL+N",
+  "turbine.active.coils": "Active coils: %s",
+  "turbine.blades.flow": "Max steam flow: mB/t",
   "validation.structure.incomplete": "Incomplete",
   "validation.structure.no_controller": "No controllers",
   "validation.structure.no_port": "No port found",
@@ -2137,6 +2139,8 @@
   "validation.structure.too_many_controllers": "Too many controllers",
   "validation.structure.too_small": "Structure is too small",
   "validation.structure.valid": "Structure is Valid",
+  "validation.structure.wrong_corner": "Wrong corner block at: %s",
   "validation.structure.wrong_inner": "Wrong Block at: %s",
-  "validation.structure.wrong_outer": "Wrong Casing at: %s"
+  "validation.structure.wrong_outer": "Wrong Casing at: %s",
+  "validation.structure.wrong_proportions": "Wrong proportions"
 }

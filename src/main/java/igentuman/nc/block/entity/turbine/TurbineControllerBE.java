@@ -78,14 +78,17 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
     public boolean powered = false;
     @NBTField
     protected boolean forceShutdown = false;
+    @NBTField
+    protected int activeCoils = 0;
+    @NBTField
+    protected int flow = 0;
 
     public ValidationResult validationResult = ValidationResult.INCOMPLETE;
     public RecipeInfo recipeInfo = new RecipeInfo();
     public boolean controllerEnabled = false;
-    private Direction facing;
+    protected Direction facing;
     public RECIPE recipe;
     public HashMap<String, RECIPE> cachedRecipes = new HashMap<>();
-
     @Override
     public String getName() {
         return NAME;
@@ -275,8 +278,12 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
     private void handleValidation() {
         if(multiblock == null) return;
         multiblock().tick();
+        ValidationResult wasResult = validationResult;
         boolean wasFormed = multiblock().isFormed();
         if (!wasFormed || !isInternalValid || !isCasingValid) {
+            activeCoils = 0;
+            efficiency = 0;
+            flow = 0;
             reValidateCounter++;
             if(reValidateCounter < 40) {
                 return;
@@ -289,6 +296,20 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
             }
             powered = false;
             changed = true;
+        }
+        validationResult = multiblock().validationResult;
+        if(validationResult.id != wasResult.id) {
+            changed = true;
+        }
+        if(activeCoils != multiblock().activeCoils) {
+            changed = true;
+            activeCoils = multiblock().activeCoils;
+            efficiency = multiblock().coilsEfficiency;
+        }
+
+        if(flow != multiblock().flow) {
+            changed = true;
+            flow = multiblock().flow;
         }
         height = multiblock().height();
         width = multiblock().width();
@@ -551,6 +572,14 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
 
     public boolean isProcessing() {
         return hasRecipe() && recipeInfo.ticksProcessed > 0 && !recipeInfo.isCompleted();
+    }
+
+    public int getActiveCoils() {
+        return activeCoils;
+    }
+
+    public int getFlow() {
+        return flow;
     }
 
     public static class Recipe extends NcRecipe {

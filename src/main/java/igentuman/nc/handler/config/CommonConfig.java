@@ -278,6 +278,7 @@ public class CommonConfig {
     public static class TurbineConfig {
         public ForgeConfigSpec.ConfigValue<Integer> MIN_SIZE;
         public ForgeConfigSpec.ConfigValue<Integer> MAX_SIZE;
+        public ForgeConfigSpec.ConfigValue<Integer> BLADE_FLOW;
         public ForgeConfigSpec.ConfigValue<List<Double>> EFFICIENCY;
         public HashMap<String, ForgeConfigSpec.ConfigValue<List<String>>> PLACEMENT_RULES = new HashMap<>();
 
@@ -285,12 +286,16 @@ public class CommonConfig {
             builder.comment("Settings for Turbine").push("turbine");
 
             MIN_SIZE = builder
-                    .comment("Explosion size if reactor overheats. 4 - TNT size. Set to 0 to disable explosion.")
-                    .defineInRange("min_size", 3, 3, 24);
+                    .comment("Multiblock min size.")
+                    .defineInRange("min_size", 5, 5, 25);
 
             MAX_SIZE = builder
-                    .comment("Explosion size if reactor overheats. 4 - TNT size. Set to 0 to disable explosion.")
-                    .defineInRange("max_size", 24, 5, 24);
+                    .comment("Multiblock max size.")
+                    .defineInRange("max_size", 24, 5, 25);
+
+            BLADE_FLOW = builder
+                    .comment("Steam flow per blade mB/t")
+                    .defineInRange("blade_flow", 2000, 100, 1000000);
 
             EFFICIENCY = builder
                     .comment("Efficiency %: " + String.join(", ", TurbineRegistration.initialEfficiency().keySet()))

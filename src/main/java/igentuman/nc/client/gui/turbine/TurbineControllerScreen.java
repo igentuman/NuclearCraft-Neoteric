@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.handler.config.CommonConfig.TURBINE_CONFIG;
 import static igentuman.nc.util.TextUtils.applyFormat;
 
 public class TurbineControllerScreen extends AbstractContainerScreen<TurbineControllerContainer> implements IVerticalBarScreen {
@@ -92,15 +93,16 @@ public class TurbineControllerScreen extends AbstractContainerScreen<TurbineCont
         }
         checkboxCasing.addTooltip(casingTootip);
 
-        checkboxInterior.setChecked(isInteriorValid()).draw(matrix, mouseX, mouseY, partialTicks);
-        if(isInteriorValid()) {
+        checkboxInterior.setChecked(isInteriorValid() && isCasingValid()).draw(matrix, mouseX, mouseY, partialTicks);
+        if(isInteriorValid() && isCasingValid()) {
             checkboxInterior.setTooltipKey("multiblock.interior.complete");
         } else {
             checkboxInterior.setTooltipKey("multiblock.interior.incomplete");
         }
         checkboxInterior.addTooltip(interiorTootip);
-        if(isInteriorValid()) {
-//            checkboxInterior.addTooltip(Component.translatable("reactor.irradiators_connections", container().getIrradiatorsConnections()));
+        if(isInteriorValid() && isCasingValid()) {
+            checkboxInterior.addTooltip(Component.translatable("turbine.active.coils", container().getActiveCoils()));
+            checkboxInterior.addTooltip(Component.translatable("turbine.blades.flow", container().getFlow()*TURBINE_CONFIG.BLADE_FLOW.get()));
         }
         energyBar.draw(matrix, mouseX, mouseY, partialTicks);
     }

@@ -37,6 +37,7 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
     protected boolean innerValid = false;
     protected final List<Block> validOuterBlocks;
     protected final List<Block> validInnerBlocks;
+    protected List<BlockPos> controllers = new ArrayList<>();
 
     protected AbstractNCMultiblock(List<Block> validOuterBlocks, List<Block> validInnerBlocks) {
         this.validOuterBlocks = validOuterBlocks;
@@ -52,6 +53,10 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
         BlockInfo info = new BlockInfo(state, be);
         cachedBlocks.put(pos, info);
         return info;
+    }
+
+    public List<Block> validCornerBlocks() {
+        return validOuterBlocks;
     }
 
     public int height() {
@@ -129,6 +134,14 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
         } catch (NullPointerException ignored) { }
         return false;
     }
+    public boolean isValidCorner(BlockPos pos)
+    {
+        if(getLevel() == null) return false;
+        try {
+            return  validCornerBlocks().contains(getLevel().getBlockState(pos).getBlock());
+        } catch (NullPointerException ignored) { }
+        return false;
+    }
 
     public boolean isValidForInner(BlockPos pos)
     {
@@ -168,7 +181,6 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
                 leftCasing = i-1;
                 width = i;
                 break;
-
             }
         }
         for(int i = 1; i<maxWidth(); i++) {
@@ -222,9 +234,24 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
                             return;
                         }
                         processOuterBlock(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getFacing(), -z));
+                        //validate corner blocks
+                        if(((y == 0 || y == height-1) && (z == 0 || z == depth - 1))
+                        || ((y == 0 || y == height-1) && (x == 0 || x == width - 1))
+                        || ((z == 0 || z == depth-1) && (x == 0 || x == width - 1))
+                        ) {
+                            if(!isValidCorner(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getFacing(), -z))) {
+                                validationResult = ValidationResult.WRONG_CORNER;
+                                controller().addErroredBlock(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getFacing(), -z));
+                                return;
+                            }
+                        }
                     }
                 }
             }
+        }
+        if(controllers.size() > 1) {
+            validationResult = ValidationResult.TOO_MANY_CONTROLLERS;
+            return;
         }
         validationResult = ValidationResult.VALID;
     }
@@ -232,10 +259,14 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
     protected void processOuterBlock(BlockPos pos) {
         attachMultiblock(pos);
         allBlocks.add(new NCBlockPos(pos));
+        if(getLevel().getBlockState(pos).getBlock().asItem().toString().contains("controller")) {
+            controllers.add(pos);
+        }
     }
 
     public void validateInner() {
         invalidateStats();
+        if(!outerValid) return;
         for(int y = 1; y < resolveHeight()-1; y++) {
             for(int x = 1; x < resolveWidth()-1; x++) {
                 for (int z = 1; z < resolveDepth()-1; z++) {
@@ -313,9 +344,11 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
 
     @Override
     public void validate() {
+        validationResult = ValidationResult.VALID;
         refreshOuterCacheFlag = true;
         refreshInnerCacheFlag = true;
         allBlocks.clear();
+        controllers.clear();
 
         isOuterValid();
         validateInner();

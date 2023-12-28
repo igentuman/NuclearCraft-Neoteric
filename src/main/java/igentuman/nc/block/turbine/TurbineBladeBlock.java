@@ -32,6 +32,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Objects;
 
+import static igentuman.nc.handler.config.CommonConfig.TURBINE_CONFIG;
 import static igentuman.nc.handler.event.client.InputEvents.DESCRIPTIONS_SHOW;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BE;
 
@@ -159,7 +160,7 @@ public class TurbineBladeBlock extends DirectionalBlock implements EntityBlock {
 
 
     @Override
-    public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag) {
+    public void appendHoverText(@NotNull ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag) {
         initParams();
 
         if(DESCRIPTIONS_SHOW) {
@@ -170,9 +171,8 @@ public class TurbineBladeBlock extends DirectionalBlock implements EntityBlock {
                     Component.translatable("tooltip.nc.description.expansion", TextUtils.numberFormat(def.getExpansion())),
                     ChatFormatting.GOLD));
         } else {
-            list.add(TextUtils.applyFormat(Component.translatable("tooltip.nc.blade.desc"), ChatFormatting.BLUE));
+            list.add(TextUtils.applyFormat(Component.translatable("tooltip.nc.blade.desc", TURBINE_CONFIG.BLADE_FLOW.get()), ChatFormatting.BLUE));
         }
         list.add(TextUtils.applyFormat(Component.translatable("tooltip.toggle_description_keys"), ChatFormatting.GRAY));
-
     }
 }

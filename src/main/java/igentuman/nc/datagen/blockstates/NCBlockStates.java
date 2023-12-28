@@ -1,11 +1,8 @@
 package igentuman.nc.datagen.blockstates;
 
 import igentuman.nc.multiblock.fission.FissionBlocks;
-import igentuman.nc.multiblock.fission.FissionReactor;
 import igentuman.nc.multiblock.turbine.TurbineRegistration;
-import igentuman.nc.setup.registration.NCBlocks;
 import igentuman.nc.setup.registration.NCEnergyBlocks;
-import igentuman.nc.setup.registration.NCProcessors;
 import igentuman.nc.content.storage.BarrelBlocks;
 import igentuman.nc.content.storage.ContainerBlocks;
 import net.minecraft.core.Direction;
@@ -13,9 +10,7 @@ import net.minecraft.core.FrontAndTop;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.AttachFace;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.client.model.generators.*;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -58,28 +53,17 @@ public class NCBlockStates extends BlockStateProvider {
     }
 
     private void turbine() {
-        for (String name: TurbineRegistration.turbine) {
-            if(name.matches(".*port.*")) {
-                horizontalBlock(TURBINE_BLOCKS.get("turbine_" + name).get(), multiBlockModel(TURBINE_BLOCKS.get("turbine_" + name).get(), "turbine/" + name));
-            } else if(name.matches(".*controller.*")) {
-                horizontalBlock(TURBINE_BLOCKS.get("turbine_" + name).get(),
-                        st -> controllerModel(st, sidedModel(TURBINE_BLOCKS.get("turbine_" + name).get(), "turbine/controller"))
-                );
-            } else {
-                if(name.contains("slope")) {
-                    orientationalBlock(TURBINE_BLOCKS.get("turbine_" +name).get(), $ -> models().getExistingFile(rl("block/multiblock/turbine_"+name)));
-                } else {
-                    if(name.contains("rotor_shaft")) {
-                        faceBlock(TURBINE_BLOCKS.get("turbine_" + name).get(), $ -> models().getExistingFile(rl("block/multiblock/turbine_"+name)));
-                        continue;
-                    }
-                    if(name.contains("blade")) {
-                        faceBlock(TURBINE_BLOCKS.get("turbine_" + name).get(), $ -> models().getExistingFile(rl("block/multiblock/turbine_"+name)));
-                    } else {
-                        simpleBlock(TURBINE_BLOCKS.get("turbine_" + name).get(), multiBlockModel(TURBINE_BLOCKS.get("turbine_" + name).get(), "turbine/" + name));
-                    }
-                }
-            }
+        horizontalBlock(TURBINE_BLOCKS.get("turbine_controller").get(),
+                st -> controllerModel(st, sidedModel(TURBINE_BLOCKS.get("turbine_controller").get(), "turbine/controller"))
+        );
+        horizontalBlock(TURBINE_BLOCKS.get("turbine_port").get(), multiBlockModel(TURBINE_BLOCKS.get("turbine_port").get(), "turbine/port"));
+        faceBlock(TURBINE_BLOCKS.get("turbine_rotor_shaft").get(), $ -> models().getExistingFile(rl("block/multiblock/turbine_rotor_shaft")));
+        simpleBlock(TURBINE_BLOCKS.get("turbine_bearing").get(), multiBlockModel(TURBINE_BLOCKS.get("turbine_bearing").get(), "turbine/bearing"));
+        simpleBlock(TURBINE_BLOCKS.get("turbine_casing").get(), multiBlockModel(TURBINE_BLOCKS.get("turbine_casing").get(), "turbine/casing"));
+        simpleBlock(TURBINE_BLOCKS.get("turbine_glass").get(), multiBlockModel(TURBINE_BLOCKS.get("turbine_glass").get(), "turbine/glass"));
+
+        for (String name: TurbineRegistration.blades().keySet()) {
+            faceBlock(TURBINE_BLOCKS.get("turbine_" + name).get(), $ -> models().getExistingFile(rl("block/multiblock/turbine_"+name)));
         }
 
         for(String type: TurbineRegistration.coils.keySet()) {

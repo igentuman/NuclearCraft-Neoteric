@@ -9,6 +9,8 @@ import net.minecraftforge.fluids.FluidStack;
 import java.util.List;
 import java.util.function.Consumer;
 
+import static net.minecraft.world.level.material.Fluids.WATER;
+
 public class TurbineControllerRecipes extends AbstractRecipeProvider {
 
     public static void generate(Consumer<FinishedRecipe> consumer) {
@@ -17,7 +19,7 @@ public class TurbineControllerRecipes extends AbstractRecipeProvider {
 
         add(
                 fluidIngredient("steam", 10),
-                fluidStack("water", 10),
+                fluidStack(WATER, 10),
                 1.5D
         );
 

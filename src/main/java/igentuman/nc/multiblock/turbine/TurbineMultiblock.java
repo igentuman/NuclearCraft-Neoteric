@@ -67,7 +67,6 @@ public class TurbineMultiblock extends AbstractNCMultiblock {
         isRotorValid = validateRotor();
         if(!isRotorValid) {
             validationResult =  ValidationResult.WRONG_INNER;
-
         }
     }
 
@@ -84,7 +83,14 @@ public class TurbineMultiblock extends AbstractNCMultiblock {
             innerValid = false;
             outerValid = false;
             isFormed = false;
+        } else {
+            countCoils();
+            countBlades();
         }
+    }
+
+    private void countBlades() {
+
     }
 
     private void detectOrientation() {
@@ -117,12 +123,29 @@ public class TurbineMultiblock extends AbstractNCMultiblock {
 
     protected void processOuterBlock(BlockPos pos) {
         super.processOuterBlock(pos);
-        BlockState bs = getLevel().getBlockState(pos);
-        if(bs.getBlock().asItem().toString().contains("bearing")) {
+        BlockEntity bs = getLevel().getBlockEntity(pos);
+        if(bs instanceof TurbineBearingBE) {
             bearingPositions.add(new NCBlockPos(pos));
         }
-        if(bs.getBlock().asItem().toString().contains("coil")) {
+        if(bs instanceof TurbineCoilBE) {
             coilPositions.add(new NCBlockPos(pos));
+        }
+    }
+
+    public int activeCoils = 0;
+    public double coilsEfficiency = 0;
+
+    public void countCoils() {
+        for(BlockPos pos : coilPositions) {
+            BlockEntity be = getLevel().getBlockEntity(pos);
+            if(be instanceof TurbineCoilBE coil) {
+                coil.validatePlacement();
+                if(coilsEfficiency == 0) {
+                    coilsEfficiency = coil.getRealEfficiency();
+                }
+                coilsEfficiency = (coilsEfficiency+coil.getRealEfficiency())/2;
+                activeCoils += coil.isValid() ? 1 : 0;
+            }
         }
     }
 

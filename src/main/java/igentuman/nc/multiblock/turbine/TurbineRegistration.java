@@ -12,7 +12,6 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Material;
@@ -37,31 +36,31 @@ public class TurbineRegistration {
     public static final BlockBehaviour.Properties TURBINE_BLOCKS_PROPERTIES = BlockBehaviour.Properties.of(Material.METAL).strength(4f).requiresCorrectToolForDrops();
     public static final BlockBehaviour.Properties GLASS_BLOCK_PROPERTIES = BlockBehaviour.Properties.of(Material.METAL).strength(3f).requiresCorrectToolForDrops().noOcclusion();
     public static HashMap<String, RegistryObject<Block>> TURBINE_BLOCKS = new HashMap<>();
-    public static HashMap<String, RegistryObject<BlockEntityType<? extends BlockEntity>>> TURBINE_BE = new HashMap<>();
-    public static HashMap<String, RegistryObject<Item>> TURBINE_BLOCK_ITEMS = new HashMap<>();
+    public static HashMap<String, RegistryObject<BlockEntityType<? extends TurbineBE>>> TURBINE_BE = new HashMap<>();
+    public static HashMap<String, RegistryObject<BlockItem>> TURBINE_BLOCK_ITEMS = new HashMap<>();
     public static TagKey<Block> CASING_BLOCKS = TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(MODID, "turbine_casing"));
     private static final DeferredRegister<MenuType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.MENU_TYPES, MODID);
 
     public static TagKey<Block> INNER_TURBINE_BLOCKS = TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(MODID, "turbine_inner"));
 
-    public static final List<String> turbine =  Arrays.asList(
-            "casing",
-            "bearing",
-            "controller",
-            "rotor_shaft",
-            "port",
-            "glass",
-            "extreme_rotor_blade",
-            "basic_rotor_blade",
-            "sic_sic_cmc_rotor_blade",
-            "steel_rotor_blade"
-    );
+    public static final HashMap<String, BladeDef> blades = blades();
 
-    public static final HashMap<String, CoilDef> coils =  coils();
+    public static HashMap<String, BladeDef> blades() {
+        if(blades != null) return blades;
+        HashMap<String, BladeDef> tmp = new HashMap<>();
+        tmp.put("basic_rotor_blade", new BladeDef("basic", 95, 120));
+        tmp.put("steel_rotor_blade", new BladeDef("steel", 100, 140));
+        tmp.put("extreme_rotor_blade", new BladeDef("extreme", 110, 160));
+        tmp.put("sic_sic_cmc_rotor_blade", new BladeDef("sic_sic_cmc", 125, 180));
+        return tmp;
+    }
+
+    public static final HashMap<String, CoilDef> coils = coils();
     private static HashMap<String, Double> efficiency;
 
 
     public static HashMap<String, CoilDef> coils() {
+        if(coils != null) return coils;
         HashMap<String, CoilDef> tmp = new HashMap<>();
         tmp.put("copper", new CoilDef("copper", 110, "turbine_gold_coil"));
         tmp.put("magnesium", new CoilDef("magnesium", 86, "turbine_bearing"));
@@ -94,80 +93,57 @@ public class TurbineRegistration {
 
     public static void blocks()
     {
-        for (String block : turbine) {
-            String key = "turbine_" + block;
+        RegistryObject<Block> controller = addBlock("turbine_controller", () -> new TurbineControllerBlock(TURBINE_BLOCKS_PROPERTIES));
+        TURBINE_BE.put("turbine_controller",
+                BLOCK_ENTITIES.register("turbine_controller",
+                        () -> BlockEntityType.Builder.of(TurbineControllerBE::new, controller.get())
+                                .build(null)));
 
-            if(block.contains("controller")) {
-                RegistryObject<Block> toAdd = addBlock(key, () -> new TurbineControllerBlock(TURBINE_BLOCKS_PROPERTIES));
-                TURBINE_BE.put(key,
-                        BLOCK_ENTITIES.register(key,
-                                () -> BlockEntityType.Builder.of(TurbineControllerBE::new, toAdd.get())
-                                        .build(null)));
-                continue;
-            }
+        RegistryObject<Block> port = addBlock("turbine_port", () -> new TurbinePortBlock(TURBINE_BLOCKS_PROPERTIES));
+        TURBINE_BE.put("turbine_port",
+                BLOCK_ENTITIES.register("turbine_port",
+                        () -> BlockEntityType.Builder.of(TurbinePortBE::new, port.get())
+                                .build(null)));
 
-            if(block.contains("port")) {
-                RegistryObject<Block> toAdd = addBlock(key, () -> new TurbinePortBlock(TURBINE_BLOCKS_PROPERTIES));
-                TURBINE_BE.put(key,
-                        BLOCK_ENTITIES.register(key,
-                                () -> BlockEntityType.Builder.of(TurbinePortBE::new, toAdd.get())
-                                        .build(null)));
-                continue;
-            }
+        RegistryObject<Block> rotor = addBlock("turbine_rotor_shaft", () -> new TurbineRotorBlock(GLASS_BLOCK_PROPERTIES));
+        TURBINE_BE.put("turbine_rotor_shaft",
+                BLOCK_ENTITIES.register("turbine_rotor_shaft",
+                        () -> BlockEntityType.Builder.of(TurbineRotorBE::new, rotor.get())
+                                .build(null)));
 
-            if(block.contains("rotor_shaft")) {
-                RegistryObject<Block> toAdd = addBlock(key, () -> new TurbineRotorBlock(GLASS_BLOCK_PROPERTIES));
-                TURBINE_BE.put(key,
-                        BLOCK_ENTITIES.register(key,
-                                () -> BlockEntityType.Builder.of(TurbineRotorBE::new, toAdd.get())
-                                        .build(null)));
-                continue;
-            }
+        RegistryObject<Block> bearing = addBlock("turbine_bearing", () -> new TurbineBearingBlock(TURBINE_BLOCKS_PROPERTIES));
+        TURBINE_BE.put("turbine_bearing",
+                BLOCK_ENTITIES.register("turbine_bearing",
+                        () -> BlockEntityType.Builder.of(TurbineBearingBE::new, bearing.get())
+                                .build(null)));
 
-            if(block.matches("casing|glass")) {
-                if(block.matches("glass")) {
-                    addBlock(key, () -> new TurbineBlock(GLASS_BLOCK_PROPERTIES));
-                    continue;
-                }
-                addBlock(key, () -> new TurbineBlock(TURBINE_BLOCKS_PROPERTIES));
-                continue;
-            }
-            if(block.contains("blade")) {
-               addBlock(key, () -> new TurbineBladeBlock(TURBINE_BLOCKS_PROPERTIES));
-                continue;
-            }
-            if(block.contains("bearing")) {
-                RegistryObject<Block> toAdd = addBlock(key, () -> new TurbineBearingBlock(TURBINE_BLOCKS_PROPERTIES));
-                TURBINE_BE.put(key,
-                        BLOCK_ENTITIES.register(key,
-                                () -> BlockEntityType.Builder.of(TurbineBearingBE::new, toAdd.get())
-                                        .build(null)));
-                continue;
-            }
-            RegistryObject<Block> toAdd = addBlock(key, () -> new TurbineBlock(TURBINE_BLOCKS_PROPERTIES));
-            TURBINE_BE.put(key, BLOCK_ENTITIES.register(key, () -> BlockEntityType.Builder.of(TurbineCasingBE::new, toAdd.get()).build(null)));
-        }
-        TURBINE_BE.put("turbine_blade", BLOCK_ENTITIES.register("turbine_blade", () -> BlockEntityType.Builder.of(TurbineBladeBE::new, getBladeBlocks()).build(null)));
+        addBlock("turbine_glass", () -> new TurbineBlock(GLASS_BLOCK_PROPERTIES));
+        addBlock("turbine_casing", () -> new TurbineBlock(TURBINE_BLOCKS_PROPERTIES));
+
         TURBINE_BE.put("turbine_casing",
                 BLOCK_ENTITIES.register("turbine_casing",
                         () -> BlockEntityType.Builder.of(TurbineCasingBE::new,
                                 TURBINE_BLOCKS.get("turbine_casing").get(),
-                                TURBINE_BLOCKS.get("turbine_bearing").get(),
                                 TURBINE_BLOCKS.get("turbine_glass").get()).build(null)));
 
+        for (String block : blades().keySet()) {
+            String key = "turbine_" + block;
+            addBlock(key, () -> new TurbineBladeBlock(TURBINE_BLOCKS_PROPERTIES));
+        }
 
-        for(String block: coils.keySet()) {
+        TURBINE_BE.put("turbine_blade", BLOCK_ENTITIES.register("turbine_blade", () -> BlockEntityType.Builder.of(TurbineBladeBE::new, getBladeBlocks()).build(null)));
+
+        for(String block: coils().keySet()) {
             String key = "turbine_" + block + "_coil";
-            TURBINE_BLOCKS.put(key, BLOCKS.register(key, () -> new TurbineBlock(TURBINE_BLOCKS_PROPERTIES)));
-            TURBINE_BLOCK_ITEMS.put(key, ITEMS.register(key, () -> new BlockItem(TURBINE_BLOCKS.get(key).get(), TURBINE_ITEM_PROPS)));
+            addBlock(key, () -> new TurbineCoilBlock(TURBINE_BLOCKS_PROPERTIES));
         }
         TURBINE_BE.put("turbine_coil", BLOCK_ENTITIES.register("turbine_coil", () -> BlockEntityType.Builder.of(TurbineCoilBE::new, getCoilBlocks()).build(null)));
     }
 
     public static Block[] getCoilBlocks() {
-        Block[] blocks = new Block[coils.size()];
+        Block[] blocks = new Block[coils().size()];
         int i = 0;
-        for(String block: coils.keySet()) {
+        for(String block: coils().keySet()) {
             String key = "turbine_" + block + "_coil";
             blocks[i] = TURBINE_BLOCKS.get(key).get();
             i++;

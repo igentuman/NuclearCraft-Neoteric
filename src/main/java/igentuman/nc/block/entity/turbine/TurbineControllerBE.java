@@ -562,7 +562,7 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
 
         @Override
         public String getCodeId() {
-            return "turbine_controller";
+            return TurbineControllerBE.NAME;
         }
 
         protected ItemFuel fuelItem;

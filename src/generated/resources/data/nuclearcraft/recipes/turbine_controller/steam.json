@@ -8,8 +8,8 @@
   ],
   "outputFluids": [
     {
-      "amount": 0,
-      "fluid": "minecraft:empty"
+      "amount": 10,
+      "fluid": "minecraft:water"
     }
   ],
   "powerModifier": 1.0,

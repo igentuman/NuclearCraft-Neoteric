@@ -1,5 +1,6 @@
 package igentuman.nc.multiblock.turbine;
 
+import igentuman.nc.block.entity.turbine.TurbineBearingBE;
 import igentuman.nc.block.entity.turbine.TurbineCoilBE;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -173,17 +174,6 @@ public class CoilDef {
             return result;
         }
 
-        public boolean validateBearingAttachment(BlockPos pos)
-        {
-            BlockEntity testBe = be.getLevel().getBlockEntity(pos);
-            /*if(testBe instanceof TurbineBE) {
-                if(!((TurbineBE)testBe).isDirectlyAttachedToFuelCell()) {
-                    return false;
-                }
-            }*/
-            return true;
-        }
-
         private boolean inCorner(int qty, List<Block> blocks) {
             BlockPos pos = be.getBlockPos();
             Level level = Objects.requireNonNull(be.getLevel());
@@ -210,9 +200,6 @@ public class CoilDef {
             int counter = 0;
             for (Direction dir: Direction.values()) {
                 if(blocks.contains(Objects.requireNonNull(be.getLevel()).getBlockState(be.getBlockPos().relative(dir)).getBlock())) {
-                    if(!validateBearingAttachment(be.getBlockPos().relative(dir))) {
-                        continue;
-                    }
                     counter++;
                     if(counter > s) return false;
                 }
@@ -224,9 +211,7 @@ public class CoilDef {
             for (Direction dir: Direction.values()) {
                 if(
                         blocks.contains(Objects.requireNonNull(be.getLevel()).getBlockState(be.getBlockPos().relative(dir)).getBlock()) &&
-                                blocks.contains(Objects.requireNonNull(be.getLevel()).getBlockState(be.getBlockPos().relative(dir.getOpposite())).getBlock()) &&
-                                validateBearingAttachment(be.getBlockPos().relative(dir)) &&
-                                validateBearingAttachment(be.getBlockPos().relative(dir.getOpposite()))
+                                blocks.contains(Objects.requireNonNull(be.getLevel()).getBlockState(be.getBlockPos().relative(dir.getOpposite())).getBlock())
                 ) {
                     return true;
                 }
@@ -238,9 +223,6 @@ public class CoilDef {
             int counter = 0;
             for (Direction dir: Direction.values()) {
                 if(blocks.contains(Objects.requireNonNull(be.getLevel()).getBlockState(be.getBlockPos().relative(dir)).getBlock())) {
-                    if(!validateBearingAttachment(be.getBlockPos().relative(dir))) {
-                        continue;
-                    }
                     counter++;
                     if(counter >= s) return false;
                 }
@@ -252,9 +234,6 @@ public class CoilDef {
             int counter = 0;
             for (Direction dir: Direction.values()) {
                 if(blocks.contains(Objects.requireNonNull(be.getLevel()).getBlockState(be.getBlockPos().relative(dir)).getBlock())) {
-                    if(!validateBearingAttachment(be.getBlockPos().relative(dir))) {
-                        continue;
-                    }
                     counter++;
                     if(counter >= s) return true;
                 }

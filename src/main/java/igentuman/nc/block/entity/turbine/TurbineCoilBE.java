@@ -3,16 +3,27 @@ package igentuman.nc.block.entity.turbine;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.multiblock.turbine.CoilDef;
 import igentuman.nc.multiblock.turbine.TurbineRegistration;
+import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+
+import java.util.Objects;
+
+import static net.minecraft.world.item.Items.AIR;
 
 public class TurbineCoilBE extends TurbineBE {
     public static String NAME = "turbine_coil";
     public CoilDef def;
+    @NBTField
     public boolean isValid = false;
 
     public double efficiency;
+    @NBTField
+    public boolean hasBearingConnection = false;
 
     public TurbineCoilBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, NAME);
@@ -21,20 +32,26 @@ public class TurbineCoilBE extends TurbineBE {
     public boolean isValid(boolean forceCheck)
     {
         if(forceCheck) {
-            isValid = def().getValidator().isValid(this);
+            try {
+                isValid = def().getValidator().isValid(this);
+            } catch (NullPointerException ignore) {
+                isValid = false;
+            }
             refreshCacheFlag = true;
         }
        return isValid();
     }
 
     private CoilDef def() {
+        Item item = getBlockState().getBlock().asItem();
+        if(item.equals(AIR)) return null;
         if(def == null) {
-            setCoilDef(TurbineRegistration.coils().get(getBlockState().getBlock().asItem().toString().replaceAll("turbine_|_coil", "")));
+            setCoilDef(TurbineRegistration.coils().get(item.toString().replaceAll("turbine_|_coil", "")));
         }
         return def;
     }
 
-    private boolean isValid() {
+    public boolean isValid() {
         return isValid;
     }
 
@@ -45,8 +62,17 @@ public class TurbineCoilBE extends TurbineBE {
         if(multiblock() != null) {
             if (refreshCacheFlag) {
                 for (Direction dir : Direction.values()) {
-                  //  BlockEntity be = getLevel().getBlockEntity(getBlockPos().relative(dir));
-
+                    BlockEntity be = Objects.requireNonNull(getLevel()).getBlockEntity(getBlockPos().relative(dir));
+                    if (be instanceof TurbineBearingBE) {
+                        hasBearingConnection = multiblock().bearingPositions.contains(getBlockPos().relative(dir));
+                        break;
+                    }
+                    if (be instanceof TurbineCoilBE sideCoil) {
+                        if(sideCoil.hasBearingConnection) {
+                            hasBearingConnection = true;
+                            break;
+                        }
+                    }
                 }
                 isValid(true);
                 refreshCacheFlag = false;
@@ -64,5 +90,14 @@ public class TurbineCoilBE extends TurbineBE {
             efficiency = def.getEfficiency();
         }
         return efficiency;
+    }
+    public double getRealEfficiency() {
+        if(!isValid()) return 0;
+        return getEfficiency();
+    }
+
+    public void validatePlacement() {
+        refreshCacheFlag = true;
+        tickServer();
     }
 }

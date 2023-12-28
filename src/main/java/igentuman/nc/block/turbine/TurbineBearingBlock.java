@@ -1,9 +1,16 @@
 package igentuman.nc.block.turbine;
 
 import igentuman.nc.block.entity.turbine.TurbineBE;
+import igentuman.nc.block.entity.turbine.TurbineBladeBE;
+import igentuman.nc.util.TextUtils;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
@@ -20,11 +27,12 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Objects;
 
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BE;
 
-public class TurbineBearingBlock extends DirectionalBlock implements EntityBlock {
+public class TurbineBearingBlock extends Block implements EntityBlock {
 
     public TurbineBearingBlock(Properties pProperties) {
         super(pProperties);
@@ -46,13 +54,13 @@ public class TurbineBearingBlock extends DirectionalBlock implements EntityBlock
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, @NotNull BlockState state, @NotNull BlockEntityType<T> type) {
         if (level.isClientSide()) {
             return (lvl, pos, blockState, t) -> {
-                if (t instanceof TurbineBE tile) {
+                if (t instanceof TurbineBladeBE tile) {
                     tile.tickClient();
                 }
             };
         }
         return (lvl, pos, blockState, t)-> {
-            if (t instanceof TurbineBE tile) {
+            if (t instanceof TurbineBladeBE tile) {
                 tile.tickServer();
             }
         };
@@ -61,5 +69,10 @@ public class TurbineBearingBlock extends DirectionalBlock implements EntityBlock
     @Override
     public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor){
         ((TurbineBE) Objects.requireNonNull(level.getBlockEntity(pos))).onNeighborChange(state,  pos, neighbor);
+    }
+
+    @Override
+    public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag) {
+        list.add(TextUtils.applyFormat(Component.translatable("tooltip.nc.bearing.desc"), ChatFormatting.BLUE));
     }
 }

@@ -253,9 +253,13 @@ public class NCLanguageProvider extends LanguageProvider {
         add("tooltip.nc.electromagnet.not_found","No Electromagnets attached");
         add("tooltip.nc.electromagnet.power","Energy Required: %s FE/t");
         add("tooltip.nc.electromagnet.magnetic_field","Magnetic Field: %s T");
-        add("tooltip.nc.electromagnet.efficiency","Efficiency: %s%%");
+        add("tooltip.nc.description.efficiency","Efficiency: %s%%");
+        add("tooltip.nc.description.expansion","Expansion: %s%%");
         add("tooltip.nc.electromagnet.heat","Heat: %s H/t");
         add("tooltip.nc.electromagnet.max_temp","Max Temparature: %s K");
+        add("tooltip.nc.blade.desc","Converts the energy of the oncoming fluid flow into rotational energy in the rotor shaft. The expansion coefficient is larger than unity, so the volume of the fluid flow will increase each time it passes through a set. Must be placed in complete sets of four coplanar groups extending from the turbine shaft to the wall. Each blade block can process up to %s of oncoming fluid.");
+        add("tooltip.nc.rotor_shaft.desc","Connects the rotor blades to the dynamo to convert the generated kinetic energy into electrical energy. Must be placed axially as a cuboid along the centre of the turbine interior.");
+        add("tooltip.nc.bearing.desc","Connects the rotor shaft to the turbine wall and dynamo. Must cover the full area of each end of the shaft.");
 
         add("tooltip.nc.liquid_empty","Stored: 0 of %s");
         add("tooltip.nc.liquid_stored","Stored: %s %s / %s");

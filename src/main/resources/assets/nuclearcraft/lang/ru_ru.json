@@ -1930,7 +1930,7 @@
   "tooltip.nc.analyzed": "Анализ предмета завершен",
   "tooltip.nc.chunk_position": "Позиция чанка: %s",
   "tooltip.nc.content_saved": "Содержимое сохранено",
-  "tooltip.nc.electromagnet.efficiency": "Эффективность: %s%%",
+  "tooltip.nc.description.efficiency": "Эффективность: %s%%",
   "tooltip.nc.electromagnet.heat": "Тепло: %s H/t",
   "tooltip.nc.electromagnet.magnetic_field": "Магнитное поле: %s T",
   "tooltip.nc.electromagnet.max_temp": "Максимальная температура: %s K",

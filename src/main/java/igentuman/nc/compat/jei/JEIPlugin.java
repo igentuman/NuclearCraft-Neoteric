@@ -42,7 +42,7 @@ public  class JEIPlugin implements IModPlugin {
     public static final RecipeType<FusionCoreBE.Recipe> FUSION = new RecipeType<>(new ResourceLocation(MODID, "fusion_core"), FusionCoreBE.Recipe.class);
     public static final RecipeType<FusionCoreBE.FusionCoolantRecipe> FUSION_COOLANT = new RecipeType<>(new ResourceLocation(MODID, "fusion_coolant"), FusionCoreBE.FusionCoolantRecipe.class);
     public static final RecipeType<FissionControllerBE.FissionBoilingRecipe> FISSION_BOILING = new RecipeType<>(new ResourceLocation(MODID, "fission_boiling"), FissionControllerBE.FissionBoilingRecipe.class);
-    public static final RecipeType<TurbineControllerBE.Recipe> TURBINE_CONTROLLER = new RecipeType<>(new ResourceLocation(MODID, "turbine_controller"), TurbineControllerBE.Recipe.class);
+    public static final RecipeType<TurbineControllerBE.Recipe> TURBINE_CONTROLLER = new RecipeType<>(new ResourceLocation(MODID, TurbineControllerBE.NAME), TurbineControllerBE.Recipe.class);
     public static final RecipeType<MekChemicalConversionRecipe> CHEMICAL_TO_FLUID = new RecipeType<>(new ResourceLocation(MODID, "mek_chemical_to_fluid"), MekChemicalConversionRecipe.class);;
     public static final RecipeType<OreVeinRecipe> ORE_VEINS = new RecipeType<>(new ResourceLocation(MODID, "nc_ore_veins"), OreVeinRecipe.class);
 
@@ -108,7 +108,7 @@ public  class JEIPlugin implements IModPlugin {
                     NcRecipeType.ALL_RECIPES.get("fission_boiling").getRecipes(NcClient.tryGetClientWorld()));
             registration.addRecipes(
                     getRecipeType(TURBINE_CONTROLLER),
-                    NcRecipeType.ALL_RECIPES.get("turbine_controller").getRecipes(NcClient.tryGetClientWorld()));
+                    NcRecipeType.ALL_RECIPES.get(TurbineControllerBE.NAME).getRecipes(NcClient.tryGetClientWorld()));
             registration.addRecipes(
                     getRecipeType(ORE_VEINS),
                     NcRecipeType.ALL_RECIPES.get("nc_ore_veins").getRecipes(NcClient.tryGetClientWorld()));

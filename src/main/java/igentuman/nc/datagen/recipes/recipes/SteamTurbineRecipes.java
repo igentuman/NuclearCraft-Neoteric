@@ -18,7 +18,7 @@ public class SteamTurbineRecipes extends AbstractRecipeProvider {
 
         add(
                 fluidIngredient("steam", 10),
-                fluidStack("water", 10),
+                fluidStack(WATER, 10),
                 1.5D
         );
 

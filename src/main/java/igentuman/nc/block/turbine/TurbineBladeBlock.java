@@ -2,9 +2,20 @@ package igentuman.nc.block.turbine;
 
 import igentuman.nc.block.entity.turbine.TurbineBE;
 import igentuman.nc.block.entity.turbine.TurbineBladeBE;
+import igentuman.nc.multiblock.turbine.BladeDef;
+import igentuman.nc.multiblock.turbine.CoilDef;
+import igentuman.nc.multiblock.turbine.TurbineRegistration;
+import igentuman.nc.util.TextUtils;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
@@ -18,14 +29,30 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Objects;
 
+import static igentuman.nc.handler.event.client.InputEvents.DESCRIPTIONS_SHOW;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BE;
 
 public class TurbineBladeBlock extends DirectionalBlock implements EntityBlock {
 
     public TurbineBladeBlock(Properties pProperties) {
         super(pProperties.sound(SoundType.METAL).noOcclusion());
+    }
+
+    public double efficiency = 0;
+    public double expansion = 0;
+    public String type = "";
+    public BladeDef def;
+
+    private void initParams() {
+        Item item = Item.byBlock(this);
+        if(item.toString().isEmpty()) return;
+        type = item.toString().replaceAll("turbine_", "");
+        def = TurbineRegistration.blades().get(type);
+        efficiency = def.getEfficiency();
+        expansion = def.getExpansion();
     }
 
     @Override
@@ -92,7 +119,10 @@ public class TurbineBladeBlock extends DirectionalBlock implements EntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(@NotNull BlockPos pPos, @NotNull BlockState pState) {
-        return TURBINE_BE.get("turbine_blade").get().create(pPos, pState);
+        if(def == null) initParams();
+        TurbineBladeBE be = (TurbineBladeBE) TURBINE_BE.get("turbine_blade").get().create(pPos, pState);
+        be.setBladeDef(def);
+        return be;
     }
 
     @Override
@@ -125,5 +155,24 @@ public class TurbineBladeBlock extends DirectionalBlock implements EntityBlock {
     @Override
     public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor){
         ((TurbineBE) Objects.requireNonNull(level.getBlockEntity(pos))).onNeighborChange(state,  pos, neighbor);
+    }
+
+
+    @Override
+    public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag) {
+        initParams();
+
+        if(DESCRIPTIONS_SHOW) {
+            list.add(TextUtils.applyFormat(
+                    Component.translatable("tooltip.nc.description.efficiency", TextUtils.numberFormat(def.getEfficiency())),
+                    ChatFormatting.AQUA));
+            list.add(TextUtils.applyFormat(
+                    Component.translatable("tooltip.nc.description.expansion", TextUtils.numberFormat(def.getExpansion())),
+                    ChatFormatting.GOLD));
+        } else {
+            list.add(TextUtils.applyFormat(Component.translatable("tooltip.nc.blade.desc"), ChatFormatting.BLUE));
+        }
+        list.add(TextUtils.applyFormat(Component.translatable("tooltip.toggle_description_keys"), ChatFormatting.GRAY));
+
     }
 }

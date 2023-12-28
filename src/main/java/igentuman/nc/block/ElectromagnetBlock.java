@@ -56,7 +56,7 @@ public class ElectromagnetBlock extends Block implements EntityBlock {
                 Component.translatable("tooltip.nc.electromagnet.magnetic_field", TextUtils.numberFormat(prefab().getMagneticField())),
                 ChatFormatting.DARK_BLUE));
         list.add(TextUtils.applyFormat(
-                Component.translatable("tooltip.nc.electromagnet.efficiency", TextUtils.numberFormat(prefab().getEfficiency())),
+                Component.translatable("tooltip.nc.description.efficiency", TextUtils.numberFormat(prefab().getEfficiency())),
                 ChatFormatting.AQUA));
         list.add(TextUtils.applyFormat(
                 Component.translatable("tooltip.nc.electromagnet.heat", TextUtils.numberFormat(prefab().getHeat())),

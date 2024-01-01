@@ -128,8 +128,19 @@ public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
                 return true;
             }
         }
+        for(ItemStack output: outputItems) {
+            if(output == null || output.isEmpty()
+                    || output.getItem().equals(BARRIER)) {
+                return true;
+            }
+        }
         for(FluidStackIngredient inputFluid: inputFluids) {
             if(inputFluid.getRepresentations().isEmpty()) {
+                return true;
+            }
+        }
+        for(FluidStack output: outputFluids) {
+            if(output == null || output.isEmpty()) {
                 return true;
             }
         }

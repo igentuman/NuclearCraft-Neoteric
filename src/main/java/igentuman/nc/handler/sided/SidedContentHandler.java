@@ -284,6 +284,12 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
         return (T) gasConverter.forSide(side);
     }
 
+    public void voidFluidSlot(int slotId) {
+        if(fluidCapability != null) {
+            fluidCapability.voidSlot(slotId);
+        }
+    }
+
     public enum SlotType {
         INPUT,
         OUTPUT;

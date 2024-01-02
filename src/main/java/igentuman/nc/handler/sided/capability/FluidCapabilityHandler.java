@@ -295,5 +295,4 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler implements
         return new Object[]{ForgeRegistries.FLUIDS.getKey(stack.getFluid()).toString(), stack.getAmount()};
     }
 
-
 }

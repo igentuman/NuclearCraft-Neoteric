@@ -249,6 +249,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("tooltip.nc.reactor.ready","Ready");
         add("tooltip.nc.reactor.not_ready","Not Ready");
         add("tooltip.nc.show_recipes","Show Recipes");
+        add("gui.nc.fluid_tank_renderer.can_void","SHIFT+Mouse 1 to void content");
 
         add("tooltip.nc.electromagnet.not_found","No Electromagnets attached");
         add("tooltip.nc.electromagnet.power","Energy Required: %s FE/t");

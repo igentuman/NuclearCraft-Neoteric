@@ -15,6 +15,7 @@ import static igentuman.nc.NuclearCraft.MODID;
 public class InputEvents {
 
     public static boolean DESCRIPTIONS_SHOW = true;
+    public static boolean SHIFT_PRESSED = false;
 
     public static void register(FMLClientSetupEvent event) {
         MinecraftForge.EVENT_BUS.addListener(InputEvents::onKeyPressed);
@@ -27,17 +28,23 @@ public class InputEvents {
                 DESCRIPTIONS_SHOW = !DESCRIPTIONS_SHOW;
             }
         }
+
+        if (event.getKey() == KEY_LSHIFT || event.getKey() == KEY_RSHIFT) {
+            if(event.getAction() == RELEASE) {
+                SHIFT_PRESSED = true;
+            }
+        }
     }
 
     public static void onScreenKeyPressed(ScreenEvent.KeyPressed event) {
         if (event.getKeyCode() == KEY_LSHIFT || event.getKeyCode() == KEY_RSHIFT) {
-        //    DESCRIPTIONS_SHOW = true;
+            SHIFT_PRESSED = true;
         }
     }
 
     public static void onScreenKeyReleased(ScreenEvent.KeyReleased event) {
         if (event.getKeyCode() == KEY_LSHIFT || event.getKeyCode() == KEY_RSHIFT) {
-        //    DESCRIPTIONS_SHOW = false;
+            SHIFT_PRESSED = false;
         }
     }
 }

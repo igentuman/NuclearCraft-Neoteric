@@ -2,6 +2,7 @@ package igentuman.nc.block.entity;
 
 import igentuman.nc.block.ISizeToggable;
 import igentuman.nc.client.sound.SoundHandler;
+import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.util.NCBlockPos;
 import igentuman.nc.util.annotation.NBTField;
@@ -162,48 +163,50 @@ public class NuclearCraftBE extends BlockEntity {
     private void initFields() {
         if(initFlag) return;
         for (Field field : getClass().getFields()) {
-            if (field.isAnnotationPresent(NBTField.class)) {
-                if(field.getType().equals(BlockPos.class)) {
-                    blockPosFields.add(field);
-                    continue;
-                }
-                if(field.getType().equals(int.class)) {
-                    intFields.add(field);
-                    continue;
-                }
-                if(field.getType().equals(String.class)) {
-                    stringFields.add(field);
-                    continue;
-                }
-                if(field.getType().equals(boolean.class)) {
-                    booleanFields.add(field);
-                    continue;
-                }
-                if(field.getType().equals(byte.class)) {
-                    byteFields.add(field);
-                    continue;
-                }
-                if(field.getType().equals(double.class)) {
-                    doubleFields.add(field);
-                    continue;
-                }
-                if(field.getType().equals(float.class)) {
-                    floatFields.add(field);
-                    continue;
-                }
-                if(field.getType().equals(long.class)) {
-                    longFields.add(field);
-                    continue;
-                }
-                if(field.getType().equals(int[].class)) {
-                    intArrayFields.add(field);
-                    continue;
-                }
-                if(field.getType().equals(String[].class)) {
-                    stringArrayFields.add(field);
-                }
+            if (!field.isAnnotationPresent(NBTField.class)) {
+                continue;
+            }
+            if(field.getType().equals(BlockPos.class)) {
+                blockPosFields.add(field);
+                continue;
+            }
+            if(field.getType().equals(int.class)) {
+                intFields.add(field);
+                continue;
+            }
+            if(field.getType().equals(String.class)) {
+                stringFields.add(field);
+                continue;
+            }
+            if(field.getType().equals(boolean.class)) {
+                booleanFields.add(field);
+                continue;
+            }
+            if(field.getType().equals(byte.class)) {
+                byteFields.add(field);
+                continue;
+            }
+            if(field.getType().equals(double.class)) {
+                doubleFields.add(field);
+                continue;
+            }
+            if(field.getType().equals(float.class)) {
+                floatFields.add(field);
+                continue;
+            }
+            if(field.getType().equals(long.class)) {
+                longFields.add(field);
+                continue;
+            }
+            if(field.getType().equals(int[].class)) {
+                intArrayFields.add(field);
+                continue;
+            }
+            if(field.getType().equals(String[].class)) {
+                stringArrayFields.add(field);
             }
         }
+
         initFlag = true;
     }
 
@@ -218,4 +221,6 @@ public class NuclearCraftBE extends BlockEntity {
     public void handleSliderUpdate(int buttonId, int ratio) {
 
     }
+
+
 }

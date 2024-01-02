@@ -705,6 +705,7 @@
   "fusion_core.stability": "Plasma Stability: %s%%",
   "gui.nc.fluid_tank_renderer.amount": "%s mB",
   "gui.nc.fluid_tank_renderer.amount_capacity": "%s/%s mB",
+  "gui.nc.fluid_tank_renderer.can_void": "SHIFT+Mouse 1 to void content",
   "gui.nc.reactor_comparator_config.tooltip_1": "Comparator: Energy Stored",
   "gui.nc.reactor_comparator_config.tooltip_2": "Comparator: Heat Stored",
   "gui.nc.reactor_comparator_config.tooltip_3": "Comparator: Depletion Progress",

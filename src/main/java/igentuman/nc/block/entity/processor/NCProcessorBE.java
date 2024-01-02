@@ -604,4 +604,10 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
         if(id < 0 || id >= getSlotsCount()) return new Object[]{};
         return contentHandler.getSlotContent(id);
     }
+
+    public void voidFluidSlot(int slotId) {
+        if(contentHandler != null) {
+            contentHandler.voidFluidSlot(slotId);
+        }
+    }
 }

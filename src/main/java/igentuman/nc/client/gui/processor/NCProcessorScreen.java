@@ -20,6 +20,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,19 +72,25 @@ public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractC
     {
         for(int i = 0; i < slots.slotsCount();i++) {
             if(slots.outputSlotsCount() == 1 && slots.getSlotType(i).contains("_out")) {
-                widgets.add(new BigSlot(slots.getSlotPos(i), slots.getSlotType(i)));
+                addWidget(new BigSlot(slots.getSlotPos(i), slots.getSlotType(i)));
                 if(slots.getSlotType(i).contains("fluid")) {
-                    widgets.add(new FluidTankRenderer(getFluidTank(slots.fluidSlotId(i)), 24, 24, slots.getSlotPos(i)[0]-4, slots.getSlotPos(i)[1]-4));
+                    addWidget(FluidTankRenderer.tank(getFluidTank(slots.fluidSlotId(i))).id(slots.fluidSlotId(i)).size(24, 24).pos(slots.getSlotPos(i)[0]-4, slots.getSlotPos(i)[1]-4).canVoid());
                 }
             } else {
                 if(!menu.getProcessor().isSlotHidden(i+slots.getInputFluids()) || slots.getSlotType(i).contains("fluid")) {
-                    widgets.add(new NormalSlot(slots.getSlotPos(i), slots.getSlotType(i)));
+                    addWidget(new NormalSlot(slots.getSlotPos(i), slots.getSlotType(i)));
                 }
                 if(slots.getSlotType(i).contains("fluid")) {
-                    widgets.add(new FluidTankRenderer(getFluidTank(slots.fluidSlotId(i)), 16, 16, slots.getSlotPos(i)));
+                    addWidget(FluidTankRenderer.tank(getFluidTank(slots.fluidSlotId(i))).id(slots.fluidSlotId(i)).pos(slots.getSlotPos(i)).canVoid());
                 }
             }
         }
+    }
+
+    protected void addWidget(NCGuiElement widget)
+    {
+        widget.setScreen(this);
+        widgets.add(widget);
     }
 
     protected void init() {
@@ -103,14 +110,14 @@ public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractC
         if(slots.getInputItems()+slots.getInputFluids() > 5) {
             progressBarX += ProcessorSlots.margin;
         }
-        widgets.add(new ProgressBar(progressBarX, 40, this, menu.getProcessor().progressBar));
+        addWidget(new ProgressBar(progressBarX, 40, this, menu.getProcessor().progressBar));
         addOtherSlots();
         sideConfigBtn = new Button.SideConfig(29, 74, this);
-        widgets.add(sideConfigBtn);
+        addWidget(sideConfigBtn);
         redstoneConfigBtn = new Button.RedstoneConfig(48, 74, this, menu.getPosition());
-        widgets.add(redstoneConfigBtn);
+        addWidget(redstoneConfigBtn);
         showRecipesBtn = new Button.ShowRecipes(67, 74, this, menu.getPosition());
-        widgets.add(showRecipesBtn);
+        addWidget(showRecipesBtn);
         addSlots();
     }
 
@@ -118,16 +125,16 @@ public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractC
         int ux = 154;
 
         if(menu.getProcessor().supportEnergyUpgrade) {
-            widgets.add(new NormalSlot(ux, 77, "energy_upgrade"));
+            addWidget(new NormalSlot(ux, 77, "energy_upgrade"));
             ux -= 18;
         }
         if(menu.getProcessor().supportSpeedUpgrade) {
-            widgets.add(new NormalSlot(ux, 77, "speed_upgrade"));
+            addWidget(new NormalSlot(ux, 77, "speed_upgrade"));
             ux -= 18;
         }
 
         if(menu.getProcessor().supportsCatalyst) {
-            widgets.add(new NormalSlot(ux, 77, "catalyst"));
+            addWidget(new NormalSlot(ux, 77, "catalyst"));
         }
     }
 
@@ -155,13 +162,13 @@ public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractC
     }
 
     @Override
-    protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
+    protected void renderLabels(@NotNull PoseStack matrixStack, int mouseX, int mouseY) {
         drawCenteredString(matrixStack, font,  menu.getTitle(), imageWidth/2, titleLabelY, 0xffffff);
         renderTooltips(matrixStack, mouseX-relX, mouseY-relY);
     }
 
     @Override
-    protected void renderBg(PoseStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(@NotNull PoseStack matrixStack, float partialTicks, int mouseX, int mouseY) {
         RenderSystem.setShaderTexture(0, GUI);
         updateRelativeCords();
         this.blit(matrixStack, relX, relY, 0, 0, this.imageWidth, this.imageHeight);

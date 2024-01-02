@@ -23,6 +23,7 @@ public class PacketHandler extends BasePacketHandler {
         registerClientToServer(PacketSideConfigToggle.class, PacketSideConfigToggle::decode);
         registerClientToServer(BatterySideConfig.class, BatterySideConfig::decode);
         registerClientToServer(StorageSideConfig.class, StorageSideConfig::decode);
+        registerClientToServer(PacketFlushSlotContent.class, PacketFlushSlotContent::decode);
 
 
         //Server to client messages

@@ -56,6 +56,7 @@ import static igentuman.nc.handler.config.CommonConfig.FISSION_CONFIG;
 import static igentuman.nc.multiblock.fission.FissionReactor.FISSION_BLOCKS;
 import static igentuman.nc.setup.registration.NCSounds.FISSION_REACTOR;
 import static igentuman.nc.util.ModUtil.isCcLoaded;
+import static igentuman.nc.util.ModUtil.isMekanismLoadeed;
 
 public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> extends FissionBE  {
 
@@ -304,6 +305,21 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         if (cap == ForgeCapabilities.ENERGY && !isSteamMode) {
             return energy.cast();
         }
+        if(isMekanismLoadeed() && isSteamMode) {
+            if(cap == mekanism.common.capabilities.Capabilities.GAS_HANDLER) {
+                if(contentHandler.hasFluidCapability(side)) {
+                    return LazyOptional.of(() -> contentHandler.gasConverter(side));
+                }
+                return LazyOptional.empty();
+            }
+            if(cap == mekanism.common.capabilities.Capabilities.SLURRY_HANDLER) {
+                if(contentHandler.hasFluidCapability(side)) {
+                    return LazyOptional.of(() -> contentHandler.getSlurryConverter(side));
+                }
+                return LazyOptional.empty();
+            }
+        }
+
         if(isCcLoaded()) {
             if(cap == dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL) {
                 return getPeripheral(cap, side);

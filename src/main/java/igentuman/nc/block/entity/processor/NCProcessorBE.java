@@ -19,7 +19,6 @@ import igentuman.nc.util.CustomEnergyStorage;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.SlotModePair;
 import igentuman.nc.util.annotation.NBTField;
-import mekanism.common.capabilities.Capabilities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustParticleOptions;
@@ -246,9 +245,15 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
             }
         }
         if(isMekanismLoadeed()) {
-            if(cap == mekanism.common.capabilities.Capabilities.GAS_HANDLER || cap == Capabilities.SLURRY_HANDLER) {
+            if(cap == mekanism.common.capabilities.Capabilities.GAS_HANDLER) {
                 if(contentHandler.hasFluidCapability(side)) {
                     return LazyOptional.of(() -> contentHandler.gasConverter(side));
+                }
+                return LazyOptional.empty();
+            }
+            if(cap == mekanism.common.capabilities.Capabilities.SLURRY_HANDLER) {
+                if(contentHandler.hasFluidCapability(side)) {
+                    return LazyOptional.of(() -> contentHandler.getSlurryConverter(side));
                 }
                 return LazyOptional.empty();
             }

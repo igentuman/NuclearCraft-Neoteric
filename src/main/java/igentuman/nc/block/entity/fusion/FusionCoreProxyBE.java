@@ -121,6 +121,12 @@ public class FusionCoreProxyBE extends FusionBE {
                 }
                 return LazyOptional.empty();
             }
+            if(cap == mekanism.common.capabilities.Capabilities.SLURRY_HANDLER) {
+                if(controller().contentHandler.hasFluidCapability(side)) {
+                    return LazyOptional.of(() -> controller().contentHandler.getSlurryConverter(side));
+                }
+                return LazyOptional.empty();
+            }
         }
         return super.getCapability(cap, side);
     }

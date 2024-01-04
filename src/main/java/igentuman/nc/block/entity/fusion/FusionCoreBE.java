@@ -193,6 +193,12 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
                 }
                 return LazyOptional.empty();
             }
+            if(cap == mekanism.common.capabilities.Capabilities.SLURRY_HANDLER) {
+                if(contentHandler.hasFluidCapability(side)) {
+                    return LazyOptional.of(() -> contentHandler.getSlurryConverter(side));
+                }
+                return LazyOptional.empty();
+            }
         }
         if(isCcLoaded()) {
             if(cap == dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL) {
@@ -857,7 +863,9 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         tag.put("Content", contentHandler.serializeNBT());
         infoTag.put("recipeInfo", recipeInfo.serializeNBT());
         infoTag.putInt("validationId", validationResult.id);
-        infoTag.putLong("erroredBlock", errorBlockPos.asLong());
+        if(errorBlockPos instanceof BlockPos) {
+            infoTag.putLong("erroredBlock", errorBlockPos.asLong());
+        }
         saveTagData(infoTag);
         tag.put("Info", infoTag);
     }

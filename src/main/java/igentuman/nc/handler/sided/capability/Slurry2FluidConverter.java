@@ -3,10 +3,9 @@ package igentuman.nc.handler.sided.capability;
 import igentuman.nc.recipes.ingredient.creator.FluidStackIngredientCreator;
 import igentuman.nc.util.TagUtil;
 import mekanism.api.Action;
-import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.IGasHandler;
+import mekanism.api.chemical.slurry.ISlurryHandler;
+import mekanism.api.chemical.slurry.Slurry;
+import mekanism.api.chemical.slurry.SlurryStack;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -20,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 
-public class Gas2FluidConverter implements IGasHandler {
+public class Slurry2FluidConverter implements ISlurryHandler {
 
     private FluidCapabilityHandler fluidCapability;
     private Direction side;
@@ -31,12 +30,12 @@ public class Gas2FluidConverter implements IGasHandler {
     }
 
     @Override
-    public @NotNull GasStack getChemicalInTank(int tank) {
+    public @NotNull SlurryStack getChemicalInTank(int tank) {
         return getEmptyStack();
     }
 
     @Override
-    public void setChemicalInTank(int tank, @NotNull GasStack stack) {
+    public void setChemicalInTank(int tank, @NotNull SlurryStack stack) {
 
     }
 
@@ -46,7 +45,7 @@ public class Gas2FluidConverter implements IGasHandler {
     }
 
     @Override
-    public boolean isValid(int tank, @NotNull GasStack stack) {
+    public boolean isValid(int tank, @NotNull SlurryStack stack) {
         return false;
     }
 
@@ -61,9 +60,9 @@ public class Gas2FluidConverter implements IGasHandler {
         return input;
     }
 
-    private HashMap<Gas, Fluid> gasFluidMap = new HashMap<>();
+    private HashMap<Slurry, Fluid> gasFluidMap = new HashMap<>();
 
-    private FluidStack convert(GasStack stack) {
+    private FluidStack convert(SlurryStack stack) {
         int amount = (int)stack.getAmount();
         if(amount <= 0) amount = 1000;
         if(gasFluidMap.containsKey(stack.getType())) {
@@ -92,7 +91,7 @@ public class Gas2FluidConverter implements IGasHandler {
     }
 
     @Override
-    public @NotNull GasStack insertChemical(int tank, @NotNull GasStack stack, @NotNull Action action) {
+    public @NotNull SlurryStack insertChemical(int tank, @NotNull SlurryStack stack, @NotNull Action action) {
         FluidStack fluidStack = convert(stack);
         if(fluidStack.isEmpty()) return stack;
         for(int i = 0; i < fluidCapability.inputSlots; i++) {
@@ -108,7 +107,7 @@ public class Gas2FluidConverter implements IGasHandler {
     }
 
     @Override
-    public GasStack extractChemical(int tank, long amount, Action action) {
+    public @NotNull SlurryStack extractChemical(int tank, long amount, Action action) {
         return getEmptyStack();
     }
 
@@ -116,13 +115,13 @@ public class Gas2FluidConverter implements IGasHandler {
         this.fluidCapability = fluidCapability;
     }
 
-    public Gas2FluidConverter forSide(Direction side) {
+    public Slurry2FluidConverter forSide(Direction side) {
         this.side = side;
         return this;
     }
 
     @Override
-    public @NotNull GasStack getEmptyStack() {
-        return GasStack.EMPTY;
+    public @NotNull SlurryStack getEmptyStack() {
+        return SlurryStack.EMPTY;
     }
 }

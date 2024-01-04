@@ -84,7 +84,10 @@ dependencies {
     compileOnly fg.deobf("mezz.jei:jei-${mc_version}-common-api:${jei_version}")
     compileOnly fg.deobf("mezz.jei:jei-${mc_version}-forge-api:${jei_version}")
     implementation fg.deobf("mezz.jei:jei-${mc_version}-forge:${jei_version}")
-
+    //implementation fg.deobf("curse.maven:xnet-gases-383182:4536820")
+    //implementation fg.deobf("curse.maven:xnet-260912:4462366")
+    //implementation fg.deobf("curse.maven:mcjtylib-233105:4501791")
+    //implementation fg.deobf("curse.maven:rftools-base-326041:4474182")
     runtimeOnly fg.deobf("curse.maven:ctm-267602:4393695")
 
     compileOnly fg.deobf("mcjty.theoneprobe:theoneprobe:${top_version}:api") {

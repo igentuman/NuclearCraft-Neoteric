@@ -24,6 +24,7 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static igentuman.nc.util.ModUtil.isCcLoaded;
+import static igentuman.nc.util.ModUtil.isMekanismLoadeed;
 
 public class FissionPortBE extends FissionBE {
     public static String NAME = "fission_reactor_port";
@@ -128,6 +129,22 @@ public class FissionPortBE extends FissionBE {
         if (cap == ForgeCapabilities.ENERGY && !controller().isSteamMode) {
             return controller().getEnergy().cast();
         }
+
+        if(isMekanismLoadeed() && isSteamMode) {
+            if(cap == mekanism.common.capabilities.Capabilities.GAS_HANDLER) {
+                if(controller().contentHandler.hasFluidCapability(side)) {
+                    return LazyOptional.of(() -> controller().contentHandler.gasConverter(side));
+                }
+                return LazyOptional.empty();
+            }
+            if(cap == mekanism.common.capabilities.Capabilities.SLURRY_HANDLER) {
+                if(controller().contentHandler.hasFluidCapability(side)) {
+                    return LazyOptional.of(() -> controller().contentHandler.getSlurryConverter(side));
+                }
+                return LazyOptional.empty();
+            }
+        }
+
         if(isCcLoaded()) {
             if(cap == dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL) {
                 return controller().getPeripheral(cap, side);

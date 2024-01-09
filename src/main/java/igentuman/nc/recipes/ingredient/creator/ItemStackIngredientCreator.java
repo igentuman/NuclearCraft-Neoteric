@@ -229,6 +229,11 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
         public String getName() {
             return getRepresentations().get(0).getItem().toString();
         }
+
+        @Override
+        public int getAmount() {
+            return amount;
+        }
     }
 
     @NothingNullByDefault
@@ -248,6 +253,11 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
         @Override
         public String getName() {
             return getRepresentations().get(0).getItem().toString();
+        }
+
+        @Override
+        public int getAmount() {
+            return getRepresentations().get(0).getCount();
         }
 
         @Override

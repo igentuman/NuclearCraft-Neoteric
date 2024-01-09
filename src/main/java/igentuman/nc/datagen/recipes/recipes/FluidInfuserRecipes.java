@@ -27,8 +27,8 @@ public class FluidInfuserRecipes extends AbstractRecipeProvider {
         ID = Processors.FLUID_INFUSER;
 
 
-        for(String gas: List.of("oxygen", "nitrogen")) {
-            String type = gas.substring(0, 2);
+        for(String gas: List.of("oxygen", "nitrogen", Materials.zircaloy)) {
+            String type = gas.substring(0, 2).replace("zi", "za");
             for (String name : Materials.isotopes()) {
                 String key = name + "_"+type;
                 add(

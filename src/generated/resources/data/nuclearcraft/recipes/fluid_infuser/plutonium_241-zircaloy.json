@@ -1,0 +1,22 @@
+{
+  "type": "nuclearcraft:fluid_infuser",
+  "input": [
+    {
+      "item": "nuclearcraft:plutonium_241"
+    }
+  ],
+  "inputFluids": [
+    {
+      "amount": 100,
+      "tag": "forge:zircaloy"
+    }
+  ],
+  "output": [
+    {
+      "item": "nuclearcraft:plutonium_241_za"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

@@ -1,0 +1,21 @@
+{
+  "type": "nuclearcraft:alloy_smelter",
+  "input": [
+    {
+      "count": 2,
+      "tag": "forge:dusts/niobium"
+    },
+    {
+      "tag": "forge:dusts/tin"
+    }
+  ],
+  "output": [
+    {
+      "count": 3,
+      "item": "nuclearcraft:niobium_tin_ingot"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 3.0
+}

@@ -1,0 +1,20 @@
+{
+  "type": "nuclearcraft:rock_crusher",
+  "input": [
+    {
+      "item": "minecraft:ancient_debris"
+    }
+  ],
+  "output": [
+    {
+      "count": 2,
+      "item": "minecraft:netherite_scrap"
+    },
+    {
+      "item": "nuclearcraft:titanium_dust"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

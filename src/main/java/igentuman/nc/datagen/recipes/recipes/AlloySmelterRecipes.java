@@ -11,6 +11,10 @@ public class AlloySmelterRecipes extends AbstractRecipeProvider {
         AlloySmelterRecipes.consumer = consumer;
         ID = Processors.ALLOY_SMELTER;
 
+        doubleToItem(ID, dustIngredient(Materials.niobium, 1), dustIngredient(Materials.titanium),
+                ingotStack(Materials.niobium_titanium, 1), 4D);
+        doubleToItem(ID, dustIngredient(Materials.niobium, 2), dustIngredient(Materials.tin),
+                ingotStack(Materials.niobium_tin, 3), 3D);
         doubleToItem(ID, dustIngredient(Materials.gold), dustIngredient(Materials.silver),
                 ingotStack(Materials.electrum, 2), 2D);
         doubleToItem(ID, dustIngredient(Materials.steel), dustIngredient(Materials.chromium),
@@ -48,6 +52,10 @@ public class AlloySmelterRecipes extends AbstractRecipeProvider {
         doubleToItem(ID, dustIngredient(Materials.molybdenum, 15), dustIngredient(Materials.zirconium),
                 ingotStack(Materials.zirconium_molybdenum, 16),8D, 2D);
 
+        doubleToItem(ID, ingotIngredient(Materials.niobium, 1), ingotIngredient(Materials.titanium),
+                ingotStack(Materials.niobium_titanium, 1), 5D);
+        doubleToItem(ID, ingotIngredient(Materials.niobium, 2), ingotIngredient(Materials.tin),
+                ingotStack(Materials.niobium_tin, 3), 4D);
         doubleToItem(ID, ingotIngredient(Materials.gold), ingotIngredient(Materials.silver),
                 ingotStack(Materials.electrum, 2), 3D);
         doubleToItem(ID, ingotIngredient(Materials.steel), ingotIngredient(Materials.chromium),

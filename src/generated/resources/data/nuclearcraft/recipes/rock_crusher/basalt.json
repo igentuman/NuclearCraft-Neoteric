@@ -1,0 +1,20 @@
+{
+  "type": "nuclearcraft:rock_crusher",
+  "input": [
+    {
+      "count": 7,
+      "item": "minecraft:basalt"
+    }
+  ],
+  "output": [
+    {
+      "item": "nuclearcraft:tungsten_dust"
+    },
+    {
+      "item": "nuclearcraft:niobium_dust"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

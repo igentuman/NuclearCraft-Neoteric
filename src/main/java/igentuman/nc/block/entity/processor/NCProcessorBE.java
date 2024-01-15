@@ -3,6 +3,7 @@ package igentuman.nc.block.entity.processor;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.compat.cc.NCProcessorPeripheral;
+import igentuman.nc.compat.gt.NCGTEnergyHandler;
 import igentuman.nc.handler.CatalystHandler;
 import igentuman.nc.handler.UpgradesHandler;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
@@ -50,8 +51,7 @@ import java.util.Objects;
 
 import static igentuman.nc.block.ProcessorBlock.ACTIVE;
 import static igentuman.nc.handler.config.CommonConfig.PROCESSOR_CONFIG;
-import static igentuman.nc.util.ModUtil.isCcLoaded;
-import static igentuman.nc.util.ModUtil.isMekanismLoadeed;
+import static igentuman.nc.util.ModUtil.*;
 
 public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE {
 
@@ -62,7 +62,7 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
 
     public final UpgradesHandler upgradesHandler = createUpgradesHandler();
     protected final LazyOptional<IItemHandler> handler = LazyOptional.of(() -> upgradesHandler);
-    public final CatalystHandler catalystHandler = createCatalystHadnler();
+    public final CatalystHandler catalystHandler = createCatalystHandler();
 
     protected boolean saveSideMapFlag = true;
 
@@ -86,6 +86,7 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
 
     private List<ItemStack> allowedInputs;
     private List<FluidStack> allowedFluids;
+    private LazyOptional<NCGTEnergyHandler> gtEnergyCap;
 
     public LazyOptional<IEnergyStorage> getEnergy() {
         return energy;
@@ -208,8 +209,13 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
         return recipeInfo.recipe != null;
     }
 
+    public int getEnergyCapacity()
+    {
+        return prefab().config().getPower()*5000;
+    }
+
     protected CustomEnergyStorage createEnergy() {
-        return new CustomEnergyStorage(prefab().config().getPower()*5000, 100000, 0) {
+        return new CustomEnergyStorage(getEnergyCapacity(), 100000, 0) {
             @Override
             protected void onEnergyChanged() {
                 setChanged();
@@ -217,11 +223,16 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
         };
     }
 
-    protected CatalystHandler createCatalystHadnler() {
+    protected CatalystHandler createCatalystHandler() {
         return new CatalystHandler(this);
     }
     protected UpgradesHandler createUpgradesHandler() {
         return new UpgradesHandler(this);
+    }
+
+    protected boolean gtEUSupported()
+    {
+        return PROCESSOR_CONFIG.GT_SUPPORT.get() == 2 || PROCESSOR_CONFIG.GT_SUPPORT.get() == 1;
     }
 
     @Nonnull
@@ -233,12 +244,19 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
         if (cap == ForgeCapabilities.FLUID_HANDLER) {
             return contentHandler.getFluidCapability(side);
         }
-        if (cap == ForgeCapabilities.ENERGY) {
+        if (cap == ForgeCapabilities.ENERGY && PROCESSOR_CONFIG.GT_SUPPORT.get() != 2) {
             if(prefab().config().getPower() > 0) {
                 return energy.cast();
             }
             return LazyOptional.empty();
         }
+
+        if(isGtLoaded() && gtEUSupported()) {
+            if(cap == com.gregtechceu.gtceu.api.capability.forge.GTCapability.CAPABILITY_ENERGY_CONTAINER) {
+                return getGTEnergyHandler(cap, side);
+            }
+        }
+
         if(isCcLoaded()) {
             if(cap == dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL) {
                 return getPeripheral(cap, side);
@@ -259,6 +277,14 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
             }
         }
         return super.getCapability(cap, side);
+    }
+
+    protected  <T> LazyOptional<T> getGTEnergyHandler(Capability<T> cap, Direction side) {
+        if(gtEnergyCap == null) {
+            NCGTEnergyHandler handler = new NCGTEnergyHandler(energyStorage, PROCESSOR_CONFIG.BASE_POWER.get()/4, PROCESSOR_CONFIG.GT_AMPERAGE.get());
+            gtEnergyCap = LazyOptional.of(() -> handler);
+        }
+        return gtEnergyCap.cast();
     }
 
     public NCProcessorBE(BlockPos pPos, BlockState pBlockState, String name) {

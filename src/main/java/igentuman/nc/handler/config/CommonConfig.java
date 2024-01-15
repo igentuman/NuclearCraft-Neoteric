@@ -655,6 +655,9 @@ public class CommonConfig {
     }
 
     public static class ProcessorConfig {
+        public ForgeConfigSpec.ConfigValue<Integer> GT_AMPERAGE;
+        public ForgeConfigSpec.ConfigValue<Integer> GT_SUPPORT;
+        public ForgeConfigSpec.ConfigValue<Boolean> GT_EXPLODE;
         public ForgeConfigSpec.ConfigValue<Integer> BASE_TIME;
         public ForgeConfigSpec.ConfigValue<Integer> BASE_POWER;
         public ForgeConfigSpec.ConfigValue<Integer> SKIP_TICKS;
@@ -671,7 +674,21 @@ public class CommonConfig {
 
             BASE_POWER = builder
                     .comment("FE per Tick")
-                    .define("base_power", 100);
+                    .comment("Better use value multiple of 8")
+                    .define("base_power", 128);
+
+            GT_AMPERAGE = builder
+                    .comment("GT EU Amperage")
+                    .define("gteu_amperage", 2);
+
+            GT_SUPPORT = builder
+                    .comment("GT EU direct support enabled?")
+                    .comment("0 - disabled, 1 - enabled EU and FE, 2 - EU only")
+                    .define("gteu_support", 1);
+
+            GT_EXPLODE = builder
+                    .comment("Enable explosion on wrong GE EU amperage")
+                    .define("gteu_explode", false);
 
             SKIP_TICKS = builder
                     .comment("Generally used for server optimization. Processors will skip defined amount of ticks then and do nothing.")

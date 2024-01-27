@@ -76,4 +76,6 @@ public interface InputIngredient<TYPE> extends Predicate<TYPE> {
     JsonElement serialize();
 
     String getName();
+
+    int getAmount();
 }

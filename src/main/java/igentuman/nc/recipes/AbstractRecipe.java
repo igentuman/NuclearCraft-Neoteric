@@ -123,8 +123,19 @@ public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
                 return true;
             }
         }
+        for(ItemStack output: outputItems) {
+            if(output == null || output.isEmpty()
+                    || output.getItem().equals(BARRIER)) {
+                return true;
+            }
+        }
         for(FluidStackIngredient inputFluid: inputFluids) {
             if(inputFluid.getRepresentations().isEmpty()) {
+                return true;
+            }
+        }
+        for(FluidStack output: outputFluids) {
+            if(output == null || output.isEmpty()) {
                 return true;
             }
         }
@@ -210,10 +221,9 @@ public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
     }
 
     public void consumeInputs(SidedContentHandler contentHandler) {
-        int i = 0;
         if(contentHandler.hasFluidCapability(null)) {
             for (FluidStackIngredient inputFluid : inputFluids) {
-                i = 0;
+                int i = 0;
                 assert contentHandler.fluidCapability != null;
                 for(FluidTank tank : contentHandler.fluidCapability.tanks) {
                     if(contentHandler.inputFluidSlots <= i) break;
@@ -229,20 +239,21 @@ public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
                 }
             }
         }
-        i=0;
         if(contentHandler.hasItemCapability(null)) {
             for (ItemStackIngredient inputItem : inputItems) {
-                for (ItemStack itemStack : inputItem.getRepresentations()) {
-                    assert contentHandler.itemHandler != null;
-                    ItemStack extracted = contentHandler.itemHandler.extractItemInternal(i, itemStack.getCount(), false);
-                    if(!extracted.isEmpty()) {
+                assert contentHandler.itemHandler != null;
+                for(int i = 0; i < inputItems.length; i++) {
+                    if( ! inputItem.test(contentHandler.itemHandler.getStackInSlot(i))) {
+                        continue;
+                    }
+                    ItemStack extracted = contentHandler.itemHandler.extractItemInternal(i, inputItem.getAmount(), false);
+                    if (!extracted.isEmpty()) {
                         contentHandler.itemHandler.holdedInputs.add(
                                 extracted
                         );
                         break;
                     }
                 }
-                i++;
             }
         }
     }

@@ -115,7 +115,7 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
     }
 
     @Override
-    protected boolean validateInnerBlock(BlockPos toCheck) {
+    protected boolean processInnerBlock(BlockPos toCheck) {
         if(isFuelCell(toCheck)) {
             BlockEntity be = getLevel().getBlockEntity(toCheck);
             if(be instanceof FissionFuelCellBE) {

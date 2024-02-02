@@ -7,6 +7,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
@@ -15,6 +16,8 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.handler.config.CommonConfig.FISSION_CONFIG;
+import static igentuman.nc.multiblock.fission.FissionReactor.moderators;
 import static net.minecraft.world.item.Items.FILLED_MAP;
 
 @Mod.EventBusSubscriber(modid = MODID, value = Dist.CLIENT)
@@ -32,6 +35,15 @@ public class TooltipHandler {
         addRadiationLevelTooltip(event, item);
         addShieldingTooltip(event, event.getItemStack());
         addRadiationCleaningEffect(event, event.getItemStack());
+        addModeratorTooltip(event, event.getItemStack());
+    }
+
+    private static void addModeratorTooltip(ItemTooltipEvent event, ItemStack itemStack) {
+        for(Block block: moderators) {
+            if(itemStack.is(block.asItem())) {
+                event.getToolTip().add(Component.translatable("tooltip.nc.moderator.desc", FISSION_CONFIG.MODERATOR_FE_MULTIPLIER.get(), FISSION_CONFIG.MODERATOR_HEAT_MULTIPLIER.get()).withStyle(ChatFormatting.GOLD));
+            }
+        }
     }
 
     private static void miscTooltips(ItemTooltipEvent event, ItemStack itemStack) {

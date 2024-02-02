@@ -113,7 +113,7 @@ public class FusionCoreScreen extends AbstractContainerScreen<FusionCoreContaine
 
         checklist.setTooltipKey("tooltip.nc.reactor.not_ready");
         if(isCasingValid()) {
-            checkboxIsFormed.setTooltipKey("reactor.casing.complete");
+            checkboxIsFormed.setTooltipKey("multiblock.casing.complete");
 
             if(isReady()) {
                 checklist.setTooltipKey("tooltip.nc.reactor.ready");
@@ -182,7 +182,8 @@ public class FusionCoreScreen extends AbstractContainerScreen<FusionCoreContaine
         casingTootip = Component.empty();
 
         if(container().isRunning()) {
-            graphics.drawCenteredString(font, Component.translatable("fusion_core.efficiency", container().getEfficiency()), 125, 40, 0xFFFFFF);
+            graphics.drawCenteredString(font, Component.translatable("fusion_core.efficiency", container().getEfficiency()), 125, 50, 0xFFFFFF);
+            drawCenteredString(matrixStack, font, Component.translatable("fusion_core.stability", container().getPlasmaStability()), 125, 40, 0xFFFFFF);
         }
         renderTooltips(graphics, mouseX-relX, mouseY-relY);
     }

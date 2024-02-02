@@ -65,7 +65,7 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient("hydrochloric_acid", 750)
                 ),
                 List.of(
-                        fluidStack("acua_regia_acid", 1000)
+                        fluidStack("aqua_regia_acid", 1000)
                 ), 1.5D
         );
 

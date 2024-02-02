@@ -34,6 +34,7 @@ public class VerticalBar extends NCGuiElement {
     }
 
     public List<Component> getTooltips() {
+        if(hintKey.isEmpty()) return tooltips;
         tooltips.add(Component.translatable(hintKey, scaledFormat(barValue), scaledFormat(maxValue)));
         return tooltips;
     }
@@ -141,7 +142,7 @@ public class VerticalBar extends NCGuiElement {
             xOffset = 140;
             height = 97;
             backgroundXoffset = 146;
-            hintKey = "coolant.bar.amount";
+            hintKey = "";
         }
 
         @Override
@@ -155,7 +156,7 @@ public class VerticalBar extends NCGuiElement {
         public HotCoolant(int x, int y, IVerticalBarScreen screen, int maxEnergy) {
             super(x, y, screen, maxEnergy);
             xOffset = 114;
-            hintKey = "hot_coolant.bar.amount";
+            hintKey = "";
         }
 
         @Override

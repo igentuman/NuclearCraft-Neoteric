@@ -1,0 +1,30 @@
+{
+  "type": "nuclearcraft:centrifuge",
+  "inputFluids": [
+    {
+      "amount": 1000,
+      "tag": "forge:carbon_dioxide"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 125,
+      "fluid": "nuclearcraft:carbon_dioxide"
+    },
+    {
+      "amount": 125,
+      "fluid": "nuclearcraft:carbon_monoxide"
+    },
+    {
+      "amount": 375,
+      "fluid": "nuclearcraft:carbon"
+    },
+    {
+      "amount": 375,
+      "fluid": "nuclearcraft:oxygen"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

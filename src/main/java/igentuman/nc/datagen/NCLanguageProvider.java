@@ -9,6 +9,7 @@ import net.minecraftforge.common.data.LanguageProvider;
 import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
 import static igentuman.nc.setup.registration.NCItems.*;
 import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCKS;
 import static igentuman.nc.util.TextUtils.convertToName;
@@ -26,6 +27,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("itemGroup." + MODID+"_fission_reactor", "NuclearCraft Fission Reactor");
         add("itemGroup." + MODID+"_fusion_reactor", "NuclearCraft Fusion Reactor");
         add("itemGroup." + MODID+"_fluids", "NuclearCraft Fluids");
+        add("itemGroup." + MODID+"_turbine", "NuclearCraft Turbine");
         ores();
         ingots();
         plates();
@@ -82,6 +84,7 @@ public class NCLanguageProvider extends LanguageProvider {
 
     private void labels() {
         add("fusion_core.rf_amplifiers.power", "RF Amplifiers: %s%%");
+        add("fusion_core.stability", "Plasma Stability: %s%%");
         add("nc.label.leacher_wrong_position", "Wrong Position");
         add("nc.label.leacher_no_source", "No Data Source");
         add("nc.label.leacher_no_acid", "No Acid");
@@ -90,6 +93,8 @@ public class NCLanguageProvider extends LanguageProvider {
         add("fusion_core.efficiency", "Efficiency: %s%%");
         add("nc_jei_cat.fusion_core", "Fusion Reactor");
         add("nc_jei_cat.fusion_coolant", "Fusion Reactor Coolant");
+        add("nc_jei_cat.mek_chemical_conversion", "NC - GAS -> Fluid Conversion");
+        add("nc_jei_cat.fission_boiling", "Boiling Reactor");
 
         add("reactor.size", "Reactor size: %sx%sx%s");
         add("fission.casing.wrong.block", "Wrong block at: %s");
@@ -132,6 +137,10 @@ public class NCLanguageProvider extends LanguageProvider {
         for(String name: FissionReactor.FISSION_BLOCKS.keySet()) {
             String title = convertToName(name);
             add(FissionReactor.FISSION_BLOCKS.get(name).get(), title);
+        }
+        for(String name: TURBINE_BLOCKS.keySet()) {
+            String title = convertToName(name);
+            add(TURBINE_BLOCKS.get(name).get(), title);
         }
         for(String name: FusionReactor.FUSION_BLOCKS.keySet()) {
             String title = convertToName(name);
@@ -196,7 +205,12 @@ public class NCLanguageProvider extends LanguageProvider {
 
     private void tooltips() {
 
+        add("tooltip.nc.jei.gas_to_fluid.desc","NC blocks automatically converts Mek Gasses into Fluids during input");
+
         add("tooltip.nc.hev.desc","Grants additional protection and passive effects when charged");
+        add("tooltip.nc.moderator.desc","Fission Reactor moderator. Has to be placed next to fuel cell. \n Each adjacent with fuel cell adds +%s%% efficiency and +%s%% heat gen");
+
+        add("boiling.recipe.heat_required","Heat required: %s H");
 
         add("processor.recipe.power","Process Power: %s FE/t");
         add("processor.recipe.duration","Process Duration: %s t");
@@ -213,7 +227,13 @@ public class NCLanguageProvider extends LanguageProvider {
         add("fission.recipe.duration","Depletion Time: %s s");
         add("fission.recipe.radiation","Reaction Radiation: %s pRad");
         add("fission.recipe.heat","Heat Generation: %s H/t");
+        add("gui.nc.reactor_mode.tooltip_steam","Boiling Mode");
+        add("gui.nc.reactor_mode.tooltip_energy","Energy Mode");
+        add("gui.nc.reactor_mode.timer","Changing mode in: %s sec");
+        add("reactor.steam_per_tick","Boiling rate: %s mB/t");
 
+        add("tooltip.nc.fusion_connector.descr", "Used to connect fusion core and toroidal reactor chamber");
+        add("tooltip.nc.fusion_casing.descr", "Used to build toroidal fusion reactor chamber");
         add("tooltip.nc.rf_amplifier.not_found","No RF Amplifiers attached");
         add("tooltip.nc.rf_amplifier.power","Energy Required: %s FE/t");
         add("tooltip.nc.rf_amplifier.voltage","Amplification: %s V");
@@ -230,14 +250,20 @@ public class NCLanguageProvider extends LanguageProvider {
         add("tooltip.nc.reactor.ready","Ready");
         add("tooltip.nc.reactor.not_ready","Not Ready");
         add("tooltip.nc.show_recipes","Show Recipes");
+        add("gui.nc.fluid_tank_renderer.can_void","SHIFT+Mouse 1 to void content");
 
         add("tooltip.nc.electromagnet.not_found","No Electromagnets attached");
         add("tooltip.nc.electromagnet.power","Energy Required: %s FE/t");
         add("tooltip.nc.electromagnet.magnetic_field","Magnetic Field: %s T");
-        add("tooltip.nc.electromagnet.efficiency","Efficiency: %s%%");
+        add("tooltip.nc.description.efficiency","Efficiency: %s%%");
+        add("tooltip.nc.description.expansion","Expansion: %s%%");
         add("tooltip.nc.electromagnet.heat","Heat: %s H/t");
         add("tooltip.nc.electromagnet.max_temp","Max Temparature: %s K");
-
+        add("tooltip.nc.blade.desc","Converts the energy of the oncoming fluid flow into rotational energy in the rotor shaft. The expansion coefficient is larger than unity, so the volume of the fluid flow will increase each time it passes through a set. Must be placed in complete sets of four coplanar groups extending from the turbine shaft to the wall. Each blade block can process up to %s of oncoming fluid.");
+        add("tooltip.nc.rotor_shaft.desc","Connects the rotor blades to the dynamo to convert the generated kinetic energy into electrical energy. Must be placed axially as a cuboid along the centre of the turbine interior.");
+        add("tooltip.nc.bearing.desc","Connects the rotor shaft to the turbine wall and dynamo. Must cover the full area of each end of the shaft.");
+        add("turbine.active.coils", "Active coils: %s");
+        add("turbine.blades.flow", "Max steam flow: mB/t");
         add("tooltip.nc.liquid_empty","Stored: 0 of %s");
         add("tooltip.nc.liquid_stored","Stored: %s %s / %s");
         add("tooltip.nc.liquid_capacity","Capacity: %s");
@@ -279,7 +305,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("tooltip.nc.energy_capacity","Energy Capacity: %s");
         add("tooltip.nc.radiation","Radiation: %s");
         add("tooltip.nc.radiation_removal","Removes Radiation: %s");
-        add("tooltip.press_shift_for_description","Press SHIFT for description");
+        add("tooltip.toggle_description_keys","Toggle description: CTRL+N");
         add("fuel.heat.descr","Base Heat Gen: %s H/t");
         add("message.nc.battery.side_config","Mode: %s");
         add("message.nc.barrel.side_config","Mode: %s");
@@ -331,10 +357,10 @@ public class NCLanguageProvider extends LanguageProvider {
         add("heat_sink.or", "or");
         add("heat_sink.and", "and");
         add("heat_sink.placement.error", "Error during placement rule generation");
-        add("reactor.interior.complete", "Interior Complete");
-        add("reactor.interior.incomplete", "Interior Incomplete");
-        add("reactor.casing.complete", "Reactor Casing Complete");
-        add("reactor.casing.incomplete", "Reactor Casing Incomplete");
+        add("multiblock.interior.complete", "Interior Complete");
+        add("multiblock.interior.incomplete", "Interior Incomplete");
+        add("multiblock.casing.complete", "Multiblock Casing Complete");
+        add("multiblock.casing.incomplete", "Multiblock Casing Incomplete");
         add("energy.bar.amount", "Total FE: %s / %s");
         add("reactor.internal_usage", "Internal usage: %s FE/t");
         add("coolant.bar.amount", "Coolant: %s / %s mB");
@@ -385,6 +411,8 @@ public class NCLanguageProvider extends LanguageProvider {
         add("validation.structure.no_controller", "No controllers");
         add("validation.structure.no_port", "No port found");
         add("validation.structure.valid", "Structure is Valid");
+        add("validation.structure.wrong_corner", "Wrong corner block at: %s");
+        add("validation.structure.wrong_proportions", "Wrong proportions");
         add("solar_panel.fe_generation", "Daytime Gen: %s FE/t");
         add("fission_port.descr", "One port for everything: Fluids, items, redstone, computers, etc...");
         add("irradiation_chamber.descr", "Irradiates items with neutron flux. \r\nHas to be placed in one line with moderator and fuel cell behind it.");

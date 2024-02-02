@@ -124,5 +124,10 @@ public class SteamTurbineBE extends NCProcessorBE<SteamTurbineBE.Recipe> {
                       double timeModifier, double powerModifier, double heatModifier, double rarity) {
             super(id, input, output, inputFluids, outputFluids, timeModifier, powerModifier, heatModifier, 1);
         }
+
+        @Override
+        public String getCodeId() {
+            return Processors.STEAM_TURBINE;
+        }
     }
 }

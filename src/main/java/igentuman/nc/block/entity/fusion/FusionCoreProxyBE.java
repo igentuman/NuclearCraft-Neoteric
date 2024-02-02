@@ -34,6 +34,9 @@ public class FusionCoreProxyBE extends FusionBE {
     {
         if(core != null)
         {
+            if(!level.isLoaded(core.getBlockPos())) {
+                return;
+            }
             core = (FusionCoreBE<?>) level.getBlockEntity(core.getBlockPos());
             corePos = core.getBlockPos();
         } else {
@@ -57,8 +60,13 @@ public class FusionCoreProxyBE extends FusionBE {
     }
 
     public void setCore(FusionCoreBE<?> core) {
+        FusionCoreBE<?> wasCore = this.core;
         this.core = core;
         corePos = core.getBlockPos();
+        if(wasCore != core) {
+            setChanged();
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+        }
     }
 
     public void destroyCore() {
@@ -110,6 +118,12 @@ public class FusionCoreProxyBE extends FusionBE {
             if(cap == mekanism.common.capabilities.Capabilities.GAS_HANDLER) {
                 if(controller().contentHandler.hasFluidCapability(side)) {
                     return LazyOptional.of(() -> controller().contentHandler.gasConverter(side));
+                }
+                return LazyOptional.empty();
+            }
+            if(cap == mekanism.common.capabilities.Capabilities.SLURRY_HANDLER) {
+                if(controller().contentHandler.hasFluidCapability(side)) {
+                    return LazyOptional.of(() -> controller().contentHandler.getSlurryConverter(side));
                 }
                 return LazyOptional.empty();
             }

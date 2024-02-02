@@ -1,0 +1,22 @@
+{
+  "type": "nuclearcraft:fluid_infuser",
+  "input": [
+    {
+      "item": "nuclearcraft:fuel_americium_hea_242"
+    }
+  ],
+  "inputFluids": [
+    {
+      "amount": 1000,
+      "tag": "forge:zircaloy"
+    }
+  ],
+  "output": [
+    {
+      "item": "nuclearcraft:fuel_americium_hea_242_za"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

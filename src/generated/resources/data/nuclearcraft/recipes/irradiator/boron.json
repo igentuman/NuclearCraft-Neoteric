@@ -1,0 +1,18 @@
+{
+  "type": "nuclearcraft:irradiator",
+  "inputFluids": [
+    {
+      "amount": 500,
+      "tag": "forge:boron"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 500,
+      "fluid": "nuclearcraft:irradiated_boron"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 2.5
+}

@@ -1,0 +1,27 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "nuclearcraft:block/multiblock/turbine_rotor_shaft",
+      "x": 90
+    },
+    "facing=east": {
+      "model": "nuclearcraft:block/multiblock/turbine_rotor_shaft",
+      "y": 270
+    },
+    "facing=north": {
+      "model": "nuclearcraft:block/multiblock/turbine_rotor_shaft"
+    },
+    "facing=south": {
+      "model": "nuclearcraft:block/multiblock/turbine_rotor_shaft",
+      "y": 180
+    },
+    "facing=up": {
+      "model": "nuclearcraft:block/multiblock/turbine_rotor_shaft",
+      "x": 270
+    },
+    "facing=west": {
+      "model": "nuclearcraft:block/multiblock/turbine_rotor_shaft",
+      "y": 90
+    }
+  }
+}

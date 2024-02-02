@@ -6,6 +6,8 @@ public class ModUtil {
     protected static boolean initialized = false;
     protected static boolean isMekanismLoadeed;
     protected static boolean ccLoaded;
+    protected static boolean ieLoaded;
+    protected static boolean gtLoaded;
     protected static void initialize()
     {
         if(initialized)
@@ -13,6 +15,8 @@ public class ModUtil {
         initialized = true;
         isMekanismLoadeed = ModList.get().isLoaded("mekanism");
         ccLoaded = ModList.get().isLoaded("computercraft");
+        ieLoaded = ModList.get().isLoaded("immersiveengineering");
+        gtLoaded = ModList.get().isLoaded("gtceu");
     }
 
     public static boolean isMekanismLoadeed() {
@@ -23,5 +27,15 @@ public class ModUtil {
     public static boolean isCcLoaded() {
         initialize();
         return ccLoaded;
+    }
+
+    public static boolean isIeLoaded() {
+        initialize();
+        return ieLoaded;
+    }
+
+    public static boolean isGtLoaded() {
+        initialize();
+        return gtLoaded;
     }
 }

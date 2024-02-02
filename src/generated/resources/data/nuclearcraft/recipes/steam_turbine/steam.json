@@ -9,7 +9,7 @@
   "outputFluids": [
     {
       "amount": 10,
-      "fluid": "nuclearcraft:exhaust_steam"
+      "fluid": "minecraft:water"
     }
   ],
   "powerModifier": 1.0,

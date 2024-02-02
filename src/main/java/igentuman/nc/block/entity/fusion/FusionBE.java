@@ -16,12 +16,14 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
+import java.util.Objects;
+
 public class FusionBE extends NuclearCraftBE implements IMultiblockAttachable {
 
     @NBTField
     protected BlockPos corePos;
 
-    protected FusionCoreBE core;
+    protected FusionCoreBE<?> core;
     protected FusionReactorMultiblock multiblock;
 
     public void setMultiblock(AbstractNCMultiblock multiblock) {
@@ -53,7 +55,7 @@ public class FusionBE extends NuclearCraftBE implements IMultiblockAttachable {
 
     public FusionCoreBE<?> controller() {
 
-       if (NuclearCraft.instance.isNcBeStopped || (getLevel().getServer() != null && !getLevel().getServer().isRunning())) return null;
+       if (NuclearCraft.instance.isNcBeStopped || (Objects.requireNonNull(getLevel()).getServer() != null && !getLevel().getServer().isRunning())) return null;
 
         if(getLevel().isClientSide() && corePos != null) {
             return (FusionCoreBE<?>) getLevel().getBlockEntity(corePos);

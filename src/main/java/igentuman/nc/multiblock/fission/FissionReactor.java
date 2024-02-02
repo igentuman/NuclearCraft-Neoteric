@@ -107,8 +107,10 @@ public class FissionReactor {
         for(String name: FissionBlocks.heatsinks.keySet()) {
             FISSION_BLOCKS.put(name+"_heat_sink", BLOCKS.register(name+"_heat_sink", () -> new HeatSinkBlock(REACTOR_BLOCKS_PROPERTIES, FissionBlocks.heatsinks.get(name))));
             FISSION_BLOCK_ITEMS.put(name+"_heat_sink", fromMultiblock(FISSION_BLOCKS.get(name+"_heat_sink")));
-            hsBlocks.add(FISSION_BLOCKS.get(name+"_heat_sink"));
             ALL_NC_ITEMS.put(name+"_heat_sink", FISSION_BLOCK_ITEMS.get(name+"_heat_sink"));
+            if(!name.matches("empty|active")) {
+                hsBlocks.add(FISSION_BLOCKS.get(name + "_heat_sink"));
+            }
         }
 
 

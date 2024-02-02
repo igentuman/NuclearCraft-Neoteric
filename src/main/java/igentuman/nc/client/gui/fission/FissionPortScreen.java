@@ -8,6 +8,7 @@ import igentuman.nc.client.gui.element.NCGuiElement;
 import igentuman.nc.client.gui.element.bar.ProgressBar;
 import igentuman.nc.client.gui.element.bar.VerticalBar;
 import igentuman.nc.client.gui.element.button.Button;
+import igentuman.nc.client.gui.element.fluid.FluidTankRenderer;
 import igentuman.nc.container.FissionPortContainer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -16,12 +17,14 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.client.gui.element.fluid.FluidTankRenderer.TooltipMode.SHOW_AMOUNT_AND_CAPACITY;
 import static igentuman.nc.util.TextUtils.applyFormat;
 
 public class FissionPortScreen extends AbstractContainerScreen<FissionPortContainer> implements IProgressScreen, IVerticalBarScreen {
@@ -30,6 +33,10 @@ public class FissionPortScreen extends AbstractContainerScreen<FissionPortContai
     protected int relY;
     private int xCenter;
     private Button.ReactorComparatorModeButton redstoneConfigBtn;
+    private VerticalBar coolantBar;
+    private VerticalBar hotCoolantBar;
+    private FluidTankRenderer coolantTank;
+    private FluidTankRenderer steamTank;
 
     public FissionPortContainer container()
     {
@@ -63,9 +70,16 @@ public class FissionPortScreen extends AbstractContainerScreen<FissionPortContai
         energyBar = new VerticalBar.Energy(17, 16,  this, container().getMaxEnergy());
         widgets.add(new ProgressBar(74, 35, this,  7));
         redstoneConfigBtn = new Button.ReactorComparatorModeButton(150, 74, this, menu.getPosition());
+        coolantBar = new VerticalBar.Coolant(17, 16,  this, 1000000);
+        hotCoolantBar = new VerticalBar.HotCoolant(26, 16,  this, 1000000);
+        coolantTank = new FluidTankRenderer(getFluidTank(0), SHOW_AMOUNT_AND_CAPACITY,6, 73, 18, 17);
+        steamTank = new FluidTankRenderer(getFluidTank(1), SHOW_AMOUNT_AND_CAPACITY,6, 73, 27, 17);
         widgets.add(redstoneConfigBtn);
     }
 
+    protected FluidTank getFluidTank(int i) {
+        return menu.getFluidTank(i);
+    }
 
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
@@ -81,8 +95,13 @@ public class FissionPortScreen extends AbstractContainerScreen<FissionPortContai
         for(NCGuiElement widget: widgets) {
             widget.draw(graphics, mouseX, mouseY, partialTicks);
         }
-        if(energyBar != null) {
-            energyBar.draw(graphics, mouseX, mouseY, partialTicks);
+        if(!getMenu().getMode()) {
+            energyBar.draw(matrix, mouseX, mouseY, partialTicks);
+        } else {
+            coolantBar.draw(matrix, mouseX, mouseY, partialTicks);
+            hotCoolantBar.draw(matrix, mouseX, mouseY, partialTicks);
+            coolantTank.draw(matrix, mouseX, mouseY, partialTicks);
+            steamTank.draw(graphics, mouseX, mouseY, partialTicks);
         }
     }
 
@@ -118,11 +137,22 @@ public class FissionPortScreen extends AbstractContainerScreen<FissionPortContai
            }
         }
 
-        if(container().getMaxEnergy() > 0) {
+        if(!container().getMode()) {
             energyBar.clearTooltips();
             energyBar.addTooltip(Component.translatable("reactor.forge_energy_per_tick", container().energyPerTick()));
             if(energyBar.isMouseOver(pMouseX, pMouseY)) {
                 graphics.renderTooltip(font, energyBar.getTooltips(),
+                        Optional.empty(), pMouseX, pMouseY);
+            }
+        } else {
+            if(coolantTank.isMouseOver(pMouseX, pMouseY)) {
+                renderTooltip(pPoseStack, coolantTank.getTooltips(),
+                        Optional.empty(), pMouseX, pMouseY);
+            }
+            if(steamTank.isMouseOver(pMouseX, pMouseY)) {
+                List<Component> tooltips = steamTank.getTooltips();
+                tooltips.add(Component.translatable("reactor.steam_per_tick", container().getSteamPerTick()));
+                renderTooltip(pPoseStack, tooltips,
                         Optional.empty(), pMouseX, pMouseY);
             }
         }

@@ -16,6 +16,7 @@ import java.util.function.BiConsumer;
 
 import static igentuman.nc.multiblock.fission.FissionReactor.FISSION_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_BLOCKS;
+import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
 import static igentuman.nc.setup.registration.NCBlocks.*;
 import static igentuman.nc.setup.registration.NCEnergyBlocks.ENERGY_BLOCKS;
 import static igentuman.nc.setup.registration.NCProcessors.PROCESSORS;
@@ -41,6 +42,9 @@ public class NCLootTables extends BaseLootTableProvider {
         }
         for(String name: FUSION_BLOCKS.keySet()) {
             add(FUSION_BLOCKS.get(name).get(), block -> createSimpleTable("block", FUSION_BLOCKS.get(name).get()));
+        }
+        for(String name: TURBINE_BLOCKS.keySet()) {
+            lootTables.put(TURBINE_BLOCKS.get(name).get(), createSimpleTable("block", TURBINE_BLOCKS.get(name).get()));
         }
     }
 

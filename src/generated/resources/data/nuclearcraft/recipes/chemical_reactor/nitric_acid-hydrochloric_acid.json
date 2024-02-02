@@ -13,7 +13,7 @@
   "outputFluids": [
     {
       "amount": 1000,
-      "fluid": "nuclearcraft:acua_regia_acid"
+      "fluid": "nuclearcraft:aqua_regia_acid"
     }
   ],
   "powerModifier": 1.0,

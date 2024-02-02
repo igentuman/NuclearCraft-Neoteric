@@ -17,12 +17,8 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
 
 import static igentuman.nc.recipes.NcRecipeSerializers.SERIALIZERS;
 
@@ -68,7 +64,6 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerial
                             outputItems[i] = SerializerHelper.getItemStack(out.getAsJsonObject());
                         } catch (JsonSyntaxException ex) {
                             NuclearCraft.LOGGER.error("Error parsing output itemstack for recipe: " + recipeId.toString());
-                            return null;
                         }
                         i++;
                     }

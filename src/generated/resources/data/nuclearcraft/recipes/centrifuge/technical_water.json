@@ -1,0 +1,22 @@
+{
+  "type": "nuclearcraft:centrifuge",
+  "inputFluids": [
+    {
+      "amount": 1000,
+      "tag": "forge:technical_water"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 750,
+      "fluid": "nuclearcraft:deuterium"
+    },
+    {
+      "amount": 250,
+      "fluid": "nuclearcraft:oxygen"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.9
+}

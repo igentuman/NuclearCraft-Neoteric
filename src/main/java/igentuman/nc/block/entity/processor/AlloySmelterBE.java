@@ -33,5 +33,10 @@ public class AlloySmelterBE extends NCProcessorBE<AlloySmelterBE.Recipe> {
                                   double timeModifier, double powerModifier, double heatModifier, double rarity) {
             super(id, input, output, timeModifier, powerModifier, heatModifier, 1);
         }
+
+        @Override
+        public String getCodeId() {
+            return Processors.ALLOY_SMELTER;
+        }
     }
 }

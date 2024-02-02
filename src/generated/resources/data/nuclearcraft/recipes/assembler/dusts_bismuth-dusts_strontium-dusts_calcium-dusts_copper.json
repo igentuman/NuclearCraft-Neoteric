@@ -1,0 +1,30 @@
+{
+  "type": "nuclearcraft:assembler",
+  "input": [
+    {
+      "count": 2,
+      "tag": "forge:dusts/bismuth"
+    },
+    {
+      "count": 2,
+      "tag": "forge:dusts/strontium"
+    },
+    {
+      "count": 2,
+      "tag": "forge:dusts/calcium"
+    },
+    {
+      "count": 2,
+      "tag": "forge:dusts/copper"
+    }
+  ],
+  "output": [
+    {
+      "count": 3,
+      "item": "nuclearcraft:bscco_dust"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

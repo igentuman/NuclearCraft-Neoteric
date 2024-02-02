@@ -157,6 +157,7 @@ public class Materials extends MaterialsManager {
     public final static String stainless_steel = "stainless_steel";
     public final static String super_alloy = "super_alloy";
     public final static String tungsten_carbide = "tungsten_carbide";
+    public static String bscco = "bscco";
 
     public static HashMap<String, NCMaterial> all()
     {
@@ -181,6 +182,7 @@ public class Materials extends MaterialsManager {
             all.put("californium250", NCMaterial.get("californium250").define("block"));
 
             //ingots, nuggets, dusts...
+            all.put(bscco, NCMaterial.get(bscco).define("dust"));
             all.put(netherite, NCMaterial.get(netherite).define("dust", "plate"));
             all.put(calcium, NCMaterial.get(calcium).define("dust", "ingot"));
             all.put(chromium, NCMaterial.get(chromium).define("dust", "ingot"));

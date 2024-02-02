@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:fission_boiling",
+  "heatRequired": 1.0,
+  "inputFluids": [
+    {
+      "amount": 10,
+      "tag": "forge:technical_water"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 10,
+      "fluid": "nuclearcraft:high_pressure_steam"
+    }
+  ]
+}

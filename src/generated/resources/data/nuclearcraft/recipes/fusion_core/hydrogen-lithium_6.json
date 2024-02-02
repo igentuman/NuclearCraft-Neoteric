@@ -28,7 +28,7 @@
       "fluid": "nuclearcraft:helium"
     }
   ],
-  "powerModifier": 35100.0,
+  "powerModifier": 135100.0,
   "radiation": 1.5,
   "temperature": 7278.0,
   "timeModifier": 35.0

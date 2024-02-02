@@ -113,6 +113,22 @@ public class AssemblerRecipes extends AbstractRecipeProvider {
                 List.of(ingredient(NC_ITEMS.get("dense_helium_collector").get()))
         );
 
+        itemsToItems(
+                List.of(
+                        dustIngredient(Materials.bscco, 3),
+                        ingotIngredient(Materials.silver, 6)
+                ),
+                List.of(ingredient(NC_PARTS.get("coil_bscco").get(), 3))
+        );
 
+        itemsToItems(
+                List.of(
+                        dustIngredient(Materials.bismuth, 2),
+                        dustIngredient(Materials.strontium, 2),
+                        dustIngredient(Materials.calcium, 2),
+                        dustIngredient(Materials.copper, 2)
+                ),
+                List.of(dustStack(Materials.bscco, 3))
+        );
     }
 }

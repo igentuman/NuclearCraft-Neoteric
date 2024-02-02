@@ -15,6 +15,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
@@ -64,7 +65,7 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
 
     public static class RedstoneConfig extends Button {
         private final BlockPos pos;
-        public static int BTN_ID = 70;
+        public static final int BTN_ID = 70;
 
         public int mode = 0;
 
@@ -135,13 +136,58 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
         }
     }
 
+    public static class ReactorMode extends Button {
+        private final BlockPos pos;
+        public static final int BTN_ID = 72;
+        public boolean mode = false;
+        public byte strength = 0;
+        public int timer = 2000;
+
+        public ReactorMode(int xPos, int yPos, AbstractContainerScreen<?> screen, BlockPos pos) {
+            super(xPos, yPos, screen, BTN_ID);
+            this.pos = pos;
+            height = 18;
+            width = 18;
+            btn = new ImageButton(X(), Y(), width, height, 220, 184, 18, TEXTURE, pButton -> {
+                NuclearCraft.packetHandler().sendToServer(new PacketGuiButtonPress(pos, BTN_ID));
+            });
+        }
+
+        public List<Component> getTooltips() {
+            String code = "energy";
+            if(mode) code = "steam";
+            List<Component> list = new ArrayList<>(List.of(
+                    Component.translatable("gui.nc.reactor_mode.tooltip_" + code)
+            ));
+            if(timer < 2000) {
+                list.add(Component.translatable("gui.nc.reactor_mode.timer", timer/20));
+            }
+            return list;
+        }
+
+        public void setMode(boolean reactorMode) {
+            mode = reactorMode;
+            int y = reactorMode ? 1 : 0;
+            try {
+                Field f = btn.getClass().getDeclaredField("yTexStart");
+                f.setAccessible(true);
+                f.set(btn, 184 - (y+1) * 36);
+            } catch (NoSuchFieldException | IllegalAccessException ignore) {
+            }
+        }
+
+        public void setTimer(int modeTimer) {
+            timer = modeTimer;
+        }
+    }
+
     public static class ReactorComparatorModeButton extends Button {
         private final BlockPos pos;
-        public static int BTN_ID = 71;
+        public static final int BTN_ID = 71;
         public byte mode = 2;
         public byte strength = 0;
 
-        public ReactorComparatorModeButton(int xPos, int yPos, AbstractContainerScreen screen, BlockPos pos) {
+        public ReactorComparatorModeButton(int xPos, int yPos, AbstractContainerScreen<?> screen, BlockPos pos) {
             super(xPos, yPos, screen, BTN_ID);
             this.pos = pos;
             height = 18;

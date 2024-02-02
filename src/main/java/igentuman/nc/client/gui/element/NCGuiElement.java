@@ -2,6 +2,8 @@ package igentuman.nc.client.gui.element;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import igentuman.nc.client.gui.processor.NCProcessorScreen;
+import igentuman.nc.container.NCProcessorContainer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.Gui;
@@ -14,6 +16,7 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.sounds.SoundManager;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
@@ -68,6 +71,13 @@ public class NCGuiElement extends AbstractWidget {
             return onPress();
         }
         return false;
+    }
+
+    protected BlockPos getPosition() {
+        if(screen instanceof NCProcessorScreen<?> processorScreen) {
+            return processorScreen.getMenu().getPosition();
+        }
+        return BlockPos.ZERO;
     }
 
     @Override
@@ -215,10 +225,20 @@ public class NCGuiElement extends AbstractWidget {
         tooltips.clear();
     }
 
-    public NCGuiElement forConfig(AbstractContainerScreen screen, int slotId) {
+    public NCGuiElement forConfig(AbstractContainerScreen<?> screen, int slotId) {
         this.configFlag = true;
         this.screen = screen;
         this.slotId = slotId;
+        return this;
+    }
+
+    public NCGuiElement setScreen(AbstractContainerScreen<?> screen) {
+        this.screen = screen;
+        return this;
+    }
+
+    public NCGuiElement setSlotId(int id) {
+        this.slotId = id;
         return this;
     }
 }

@@ -15,12 +15,7 @@ public class IsotopeSeparatorRecipes extends AbstractRecipeProvider {
     public static void generate(Consumer<FinishedRecipe> consumer) {
         IsotopeSeparatorRecipes.consumer = consumer;
         ID = Processors.ISOTOPE_SEPARATOR;
-        add(
-                dustIngredient(Materials.boron, 12),
-                List.of(isotopeStack(Materials.boron11, 9),
-                        isotopeStack(Materials.boron10, 3)),
-                6D
-        );
+
         add(
                 ingredient(dustItem(Materials.lithium), 10),
                 List.of(isotopeStack(Materials.lithium7, 9),

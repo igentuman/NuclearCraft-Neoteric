@@ -15,6 +15,18 @@ public class RockCrusherRecipes extends AbstractRecipeProvider {
     public static void generate(Consumer<FinishedRecipe> consumer) {
         RockCrusherRecipes.consumer = consumer;
         ID = Processors.ROCK_CRUSHER;
+
+
+        add(
+                (ingredient(BASALT, 7)),
+                List.of(dustStack(Materials.tungsten, 1), dustStack(Materials.niobium, 1))
+        );
+
+        add(
+                (ingredient(ANCIENT_DEBRIS, 1)),
+                List.of(NcIngredient.stack(stack(NETHERITE_SCRAP, 2)), dustStack(Materials.titanium, 1))
+        );
+
         add(
                 (ingredient(GRANITE, 4)),
                 List.of(dustStack(Materials.rhodochrosite, 2), dustStack(Materials.villiaumite))

@@ -3,12 +3,15 @@ package igentuman.nc.client.gui.element.fluid;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import igentuman.nc.client.gui.element.NCGuiElement;
+import igentuman.nc.network.toServer.PacketFlushSlotContent;
+import igentuman.nc.network.toServer.PacketSideConfigToggle;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -27,19 +30,54 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import static igentuman.nc.handler.event.client.InputEvents.SHIFT_PRESSED;
+
 // CREDIT: https://github.com/mezz/JustEnoughItems by mezz
 // Under MIT-License: https://github.com/mezz/JustEnoughItems/blob/1.19/LICENSE.txt
 // Includes major rewrites and methods from:
 // https://github.com/mezz/JustEnoughItems/blob/1.19/Forge/src/main/java/mezz/jei/forge/platform/FluidHelper.java
 public class FluidTankRenderer extends NCGuiElement {
-    private static final Logger LOGGER = LogManager.getLogger();
+    protected static final Logger LOGGER = LogManager.getLogger();
 
-    private static final NumberFormat nf = NumberFormat.getIntegerInstance();
-    private static final int TEXTURE_SIZE = 16;
-    private static final int MIN_FLUID_HEIGHT = 1;
+    protected static final NumberFormat nf = NumberFormat.getIntegerInstance();
+    protected static final int TEXTURE_SIZE = 16;
+    protected static final int MIN_FLUID_HEIGHT = 1;
 
-    private final TooltipMode tooltipMode;
-    private FluidTank tank;
+    protected final TooltipMode tooltipMode;
+    protected boolean canVoid = false;
+    protected final FluidTank tank;
+
+    public static FluidTankRenderer tank(FluidTank fluidTank) {
+        return new FluidTankRenderer(fluidTank, 16, 16, 0, 0);
+    }
+
+    public FluidTankRenderer pos(int[] slotPos) {
+        this.x = slotPos[0];
+        this.y = slotPos[1];
+        return this;
+    }
+
+    public FluidTankRenderer canVoid() {
+        canVoid = true;
+        return this;
+    }
+
+    public FluidTankRenderer id(int i) {
+        this.slotId = i;
+        return this;
+    }
+
+    public FluidTankRenderer size(int i, int i1) {
+        this.width = i;
+        this.height = i1;
+        return this;
+    }
+
+    public FluidTankRenderer pos(int i, int i1) {
+        this.x = i;
+        this.y = i1;
+        return this;
+    }
 
     public enum TooltipMode {
         SHOW_AMOUNT,
@@ -49,6 +87,16 @@ public class FluidTankRenderer extends NCGuiElement {
 
     public FluidTankRenderer(FluidTank tank, int width, int height, int[] pos) {
         this(tank, TooltipMode.SHOW_AMOUNT_AND_CAPACITY, width, height, pos[0], pos[1]);
+    }
+
+    @Override
+    public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
+        if(X() <= pMouseX && pMouseX < X() + width && Y() <= pMouseY && pMouseY < Y() + height) {
+           if(!tank.isEmpty() && SHIFT_PRESSED) {
+               NuclearCraft.packetHandler().sendToServer(new PacketFlushSlotContent(getPosition(), slotId));
+           }
+        }
+        return false;
     }
 
     public FluidTankRenderer(FluidTank tank, int width, int height, int x, int y) {
@@ -198,6 +246,9 @@ public class FluidTankRenderer extends NCGuiElement {
             } else if (tooltipMode == TooltipMode.SHOW_AMOUNT) {
                 MutableComponent amountString = Component.translatable("gui.nc.fluid_tank_renderer.amount", nf.format(milliBuckets));
                 tooltip.add(amountString.withStyle(ChatFormatting.WHITE));
+            }
+            if(canVoid) {
+                tooltip.add(Component.translatable("gui.nc.fluid_tank_renderer.can_void").withStyle(ChatFormatting.GOLD));
             }
         } catch (RuntimeException e) {
             LOGGER.error("Failed to get tooltip for fluid: " + e);

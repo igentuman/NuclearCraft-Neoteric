@@ -5,6 +5,13 @@
 		"layer":"CUTOUT",
 		"textures":[
 			"nuclearcraft:block/fusion/fusion_reactor_casing_glass_ctm"
-		]
+		],
+		"extra": {
+			"connect_to": [
+				{
+					"block": "nuclearcraft:fusion_reactor_casing_glass"
+				}
+			]
+		}
 	}
 }

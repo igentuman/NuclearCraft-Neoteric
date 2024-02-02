@@ -92,6 +92,8 @@ public class NCFluids {
             items.put("nuclear_waste", new LiquidDefinition("nuclear_waste", 0X903D3323));
             items.put("fissile_fuel", new LiquidDefinition("fissile_fuel", 0X903D3323));
         }
+        items.put("irradiated_boron", new LiquidDefinition("irradiated_boron", 0XFF6F896C, 800));
+        items.put("irradiated_lithium", new LiquidDefinition("irradiated_lithium", 0XFFBCC661, 800));
         items.put("uranium_oxide", new LiquidDefinition("uranium_oxide", 0X90A9B544));
         items.put("cryotheum", new LiquidDefinition("cryotheum", 0X9089EDFF));
         items.put("radaway", new LiquidDefinition("radaway", 0x50B37AC4));
@@ -183,7 +185,7 @@ public class NCFluids {
         items.put("boric_acid", new AcidDefinition("boric_acid", 0xCCA0EFFF));
         items.put("sulfuric_acid", new AcidDefinition("sulfuric_acid", 0xCCF8FFD3));
         items.put("nitric_acid", new AcidDefinition("nitric_acid", 0xCC4F9EFF));
-        items.put("acua_regia_acid", new AcidDefinition("acua_regia_acid", 0XCCFFBB99));
+        items.put("aqua_regia_acid", new AcidDefinition("aqua_regia_acid", 0XCCFFBB99));
 
         for(AcidDefinition acid: items.values()) {
             LIQUIDS_TAG.put(acid.name, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(),  new ResourceLocation("forge", acid.name)));

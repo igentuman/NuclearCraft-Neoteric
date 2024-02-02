@@ -68,11 +68,12 @@ public class SolarPanels {
     public static class SolarPanelPrefab {
         private boolean registered = true;
         private boolean initialized = false;
-        private String name;
+        private final String name;
         protected int generation = 0;
 
         public SolarPanelPrefab(String name, int generation) {
             this.generation = generation;
+            this.name = name;
         }
 
         public int getGeneration() {

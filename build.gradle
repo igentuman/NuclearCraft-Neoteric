@@ -75,11 +75,23 @@ repositories {
     maven { url "https://maven.mcmoddev.com" }
     maven { url "https://maven.tterrag.com/" }
     maven { url "https://modmaven.dev/" }
+    maven { url "https://maven.firstdarkdev.xyz/snapshots/" }
+    maven { url "https://maven.tterrag.com/" }
 }
 
 dependencies {
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
     minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
+
+    compileOnly fg.deobf("com.gregtechceu.gtceu:gtceu-forge-${mc_version}:${gtceu_version}") {
+        transitive = false
+    }
+/*    implementation fg.deobf("com.lowdragmc.ldlib:ldlib-forge-${mc_version}:${ldlib_version}") {
+        transitive = false
+    }
+    implementation fg.deobf("com.tterrag.registrate:Registrate:${registrate_version}") {
+        transitive = false
+    }*/
 
     compileOnly fg.deobf("mezz.jei:jei-${mc_version}-common-api:${jei_version}")
     compileOnly fg.deobf("mezz.jei:jei-${mc_version}-forge-api:${jei_version}")

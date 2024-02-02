@@ -38,11 +38,6 @@ public class FissionBlock extends Block implements EntityBlock {
         return adjacentBlockState.getBlock().equals(this) && asItem().toString().matches(".*glass|.*cell.*|.*slope.*");
     }
 
-    @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(BlockStateProperties.HORIZONTAL_FACING);
-    }
-
     private String blockEntityCode()
     {
         String code = ForgeRegistries.BLOCKS.getKey(this).getPath();

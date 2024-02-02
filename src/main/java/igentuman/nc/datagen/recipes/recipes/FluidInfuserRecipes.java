@@ -27,8 +27,8 @@ public class FluidInfuserRecipes extends AbstractRecipeProvider {
         ID = Processors.FLUID_INFUSER;
 
 
-        for(String gas: List.of("oxygen", "nitrogen")) {
-            String type = gas.substring(0, 2);
+        for(String gas: List.of("oxygen", "nitrogen", Materials.zircaloy)) {
+            String type = gas.substring(0, 2).replace("zi", "za");
             for (String name : Materials.isotopes()) {
                 String key = name + "_"+type;
                 add(
@@ -55,6 +55,12 @@ public class FluidInfuserRecipes extends AbstractRecipeProvider {
                 fluidIngredient("cryotheum", 1000),
                 blockStack("empty_heat_sink"),
                 blockStack("cryotheum_heat_sink")
+        );
+
+        add(
+                fluidIngredient("carbon", 1000),
+                dustIngredient(Materials.manganese),
+                dustStack(Materials.carbon_manganese)
         );
 
         add(

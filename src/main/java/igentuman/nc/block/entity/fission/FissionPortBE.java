@@ -16,6 +16,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -23,6 +24,7 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static igentuman.nc.util.ModUtil.isCcLoaded;
+import static igentuman.nc.util.ModUtil.isMekanismLoadeed;
 
 public class FissionPortBE extends FissionBE {
     public static String NAME = "fission_reactor_port";
@@ -34,6 +36,9 @@ public class FissionPortBE extends FissionBE {
     @NBTField
     public BlockPos controllerPos;
 
+    @NBTField
+    public boolean isSteamMode = false;
+
     public FissionPortBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, NAME);
     }
@@ -44,6 +49,8 @@ public class FissionPortBE extends FissionBE {
     public boolean hasRedstoneSignal() {
         return Objects.requireNonNull(getLevel()).hasNeighborSignal(worldPosition);
     }
+
+
     @Override
     public void tickServer() {
         if(NuclearCraft.instance.isNcBeStopped) return;
@@ -56,6 +63,11 @@ public class FissionPortBE extends FissionBE {
             updated = true;
             setChanged();
         }
+        if(isSteamMode != controller().isSteamMode) {
+            isSteamMode = controller().isSteamMode;
+            updated = true;
+        }
+
         if(hasRedstoneSignal()) {
             controller().controllerEnabled = true;
         }
@@ -69,10 +81,6 @@ public class FissionPortBE extends FissionBE {
         if(itemHandler() != null) {
             updated = itemHandler().pushItems(dir, true, worldPosition) || updated;
             updated = itemHandler().pullItems(dir, true, worldPosition) || updated;
-        }
-        if(fluidHandler() != null) {
-            updated = fluidHandler().pushFluids(dir, true, worldPosition) || updated;
-            updated = fluidHandler().pullFluids(dir, true, worldPosition) || updated;
         }
 
         if(updated) {
@@ -115,12 +123,28 @@ public class FissionPortBE extends FissionBE {
         if (cap == ForgeCapabilities.ITEM_HANDLER) {
             return controller().contentHandler.itemCapability.cast();
         }
-        if (cap == ForgeCapabilities.FLUID_HANDLER) {
-            return LazyOptional.of(() -> controller().contentHandler.fluidCapability).cast();
+        if (cap == ForgeCapabilities.FLUID_HANDLER && controller().isSteamMode) {
+            return controller().getCapability(cap, side);
         }
-        if (cap == ForgeCapabilities.ENERGY) {
+        if (cap == ForgeCapabilities.ENERGY && !controller().isSteamMode) {
             return controller().getEnergy().cast();
         }
+
+        if(isMekanismLoadeed() && isSteamMode) {
+            if(cap == mekanism.common.capabilities.Capabilities.GAS_HANDLER) {
+                if(controller().contentHandler.hasFluidCapability(side)) {
+                    return LazyOptional.of(() -> controller().contentHandler.gasConverter(side));
+                }
+                return LazyOptional.empty();
+            }
+            if(cap == mekanism.common.capabilities.Capabilities.SLURRY_HANDLER) {
+                if(controller().contentHandler.hasFluidCapability(side)) {
+                    return LazyOptional.of(() -> controller().contentHandler.getSlurryConverter(side));
+                }
+                return LazyOptional.empty();
+            }
+        }
+
         if(isCcLoaded()) {
 /*            if(cap == dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL) {
                 return controller().getPeripheral(cap, side);
@@ -261,6 +285,21 @@ public class FissionPortBE extends FissionBE {
         }
         setChanged();
         level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+    }
+
+    public FluidTank getFluidTank(int i) {
+        if(controller() == null) return null;
+        return controller().getFluidTank(i);
+    }
+
+    public boolean getMode() {
+        if(controller() == null) return false;
+        return controller().isSteamMode;
+    }
+
+    public int getSteamPerTick() {
+        if(controller() == null) return 0;
+        return controller().steamPerTick;
     }
 
     public static class SignalSource {

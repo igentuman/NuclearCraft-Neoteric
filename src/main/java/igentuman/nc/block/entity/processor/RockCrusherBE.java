@@ -34,5 +34,10 @@ public class RockCrusherBE extends NCProcessorBE<RockCrusherBE.Recipe> {
                       double timeModifier, double powerModifier, double heatModifier, double rarity) {
             super(id, input, output, timeModifier, powerModifier, heatModifier, 1);
         }
+
+        @Override
+        public String getCodeId() {
+            return Processors.ROCK_CRUSHER;
+        }
     }
 }

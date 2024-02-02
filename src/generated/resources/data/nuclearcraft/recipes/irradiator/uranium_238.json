@@ -1,0 +1,18 @@
+{
+  "type": "nuclearcraft:irradiator",
+  "inputFluids": [
+    {
+      "amount": 100,
+      "tag": "forge:uranium/238"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 100,
+      "fluid": "nuclearcraft:uranium_235"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 5.5
+}

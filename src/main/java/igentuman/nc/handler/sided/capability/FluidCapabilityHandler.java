@@ -84,7 +84,7 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler implements
         return allowedFluids.isEmpty() || !allowedFluids.containsKey(id);
     }
 
-    int curOutputSlot = outputSlots;
+
     public boolean outputAllowed(Integer i, Direction side) {
         if(side == null) return true;
         SidedContentHandler.RelativeDirection relativeDirection = SidedContentHandler.RelativeDirection.toRelative(side, getFacing());
@@ -294,4 +294,5 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler implements
         if(stack.isEmpty()) return new Object[]{};
         return new Object[]{ForgeRegistries.FLUIDS.getKey(stack.getFluid()).toString(), stack.getAmount()};
     }
+
 }

@@ -36,8 +36,7 @@ public class FusionCoolantCategoryWrapper<T extends FusionCoreBE.FusionCoolantRe
     private final IDrawable background;
     private final IDrawable icon;
     protected RecipeType<T> recipeType;
-    HashMap<Integer, TickTimer> timer = new HashMap<>();
-    HashMap<Integer, IDrawable> arrow = new HashMap<>();
+    IDrawable arrow;
     private  IDrawable[] slots;
 
     IGuiHelper guiHelper;
@@ -75,9 +74,8 @@ public class FusionCoolantCategoryWrapper<T extends FusionCoreBE.FusionCoolantRe
 
     @Override
     public void draw(T recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY) {
-        if(arrow.containsKey((int)recipe.getTimeModifier())) {
-            arrow.get((int)recipe.getTimeModifier()).draw(graphics, 34, 6);
-        }
+        arrow.draw(graphics, 34, 6);
+
         slots[0].draw(graphics, 11, 5);
         slots[1].draw(graphics, 74, 5);
     }
@@ -95,15 +93,9 @@ public class FusionCoolantCategoryWrapper<T extends FusionCoreBE.FusionCoolantRe
     public void setRecipe(@NotNull IRecipeLayoutBuilder builder, T recipe, @NotNull IFocusGroup focuses) {
         int d = (int)recipe.getCoolingRate();
         slots = new IDrawable[2];
-        if(!timer.containsKey(d)) {
-            int time = d / 50000;
-            if(time == 0) time = 200;
-            timer.put(d, new TickTimer(time, 36, true));
-        }
-        if(!arrow.containsKey(d)) {
-            arrow.put(d, guiHelper.drawableBuilder(rl("textures/gui/progress.png"), 0, 0, 36, 15)
-                    .buildAnimated(timer.get(d), IDrawableAnimated.StartDirection.LEFT));
-        }
+        arrow = guiHelper.drawableBuilder(rl("textures/gui/progress.png"), 0, 0, 36, 15)
+                .buildAnimated(new TickTimer(100, 36, true), IDrawableAnimated.StartDirection.LEFT);
+
         builder.addSlot(RecipeIngredientRole.INPUT, 12, 6)
                 .addIngredients(ForgeTypes.FLUID_STACK, recipe.getInputFluids(0))
                 .setFluidRenderer(recipe.getInputFluids()[0].getAmount(), false, 16, 16);

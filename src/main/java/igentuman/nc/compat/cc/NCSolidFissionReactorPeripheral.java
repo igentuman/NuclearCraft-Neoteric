@@ -18,7 +18,7 @@ public class NCSolidFissionReactorPeripheral implements IPeripheral {
     @Override
     public String getType()
     {
-        return "nc_fission_reactor_controller";
+        return "nc_fission_reactor";
     }
 
 
@@ -37,13 +37,21 @@ public class NCSolidFissionReactorPeripheral implements IPeripheral {
     public final boolean hasRecipe() {
         return reactor.hasRecipe();
     }
+    @LuaFunction
+    public final boolean isSteamMode() {
+        return reactor.isSteamMode;
+    }
+
+    @LuaFunction
+    public final double getSteamRate() {
+        return reactor.getSteamRate();
+    }
 
     @LuaFunction
     public final int getDepletionProgress()
     {
         return (int) (reactor.getDepletionProgress()*100);
     }
-
 
     @LuaFunction
     public final double getMaxHeatCapacity()

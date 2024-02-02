@@ -43,7 +43,7 @@ public class HEVItem extends ArmorItem {
     }
 
     protected int getEnergyMaxStorage() {
-        return 500000;
+        return 1000000;
     }
 
     @Override
@@ -93,7 +93,7 @@ public class HEVItem extends ArmorItem {
 
     public String formatEnergy(int energy)
     {
-        return TextUtils.numberFormat(energy/1000)+" KFE";
+        return TextUtils.scaledFormat(energy)+" FE";
     }
 
 

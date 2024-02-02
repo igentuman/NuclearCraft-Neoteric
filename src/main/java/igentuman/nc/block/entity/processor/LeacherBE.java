@@ -46,6 +46,7 @@ import static igentuman.nc.radiation.ItemRadiation.getItemByName;
 import static igentuman.nc.setup.registration.NCItems.NC_PARTS;
 import static igentuman.nc.util.ModUtil.isCcLoaded;
 import static net.minecraft.world.item.Items.*;
+import static igentuman.nc.util.ModUtil.isIeLoaded;;
 
 public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
     public LeacherBE(BlockPos pPos, BlockState pBlockState) {
@@ -145,6 +146,11 @@ public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
                       double timeModifier, double powerModifier, double heatModifier, double rarity) {
             super(id, input, output, inputFluids, outputFluids, timeModifier, powerModifier, heatModifier, 1);
         }
+
+        @Override
+        public String getCodeId() {
+            return Processors.LEACHER;
+        }
     }
 
     public void tickClient() {
@@ -240,8 +246,10 @@ public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
             ore = useResearchPaper();
         }
         
-        if(catalyst.getItem().equals(getItemByName("immersiveengineering:coresample"))) {
-            ore = useIECoreSample();
+        if(isIeLoaded()){
+            if(catalyst.getItem().equals(getItemByName("immersiveengineering:coresample"))) {
+                ore = useIECoreSample();
+            }
         }
         contentHandler.itemHandler.insertItemInternal(0, ore, false);
     }
@@ -361,12 +369,14 @@ public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
 
     @Override
     public List<Item> getAllowedCatalysts() {
-        List<Item> items = List.of(
+        List<Item> items = new ArrayList<>(List.of(
                 NC_PARTS.get("research_paper").get(),
                 FILLED_MAP
-        );
-        Item ieCoreSample = getItemByName("immersiveengineering:coresample");
-        if(ieCoreSample != null && !ieCoreSample.equals(AIR)) items.add(ieCoreSample);
+        ));
+        if(isIeLoaded()){
+            Item ieCoreSample = getItemByName("immersiveengineering:coresample");
+            items.add(ieCoreSample);
+        }
         return items;
     }
 

@@ -10,6 +10,7 @@ import igentuman.nc.multiblock.fission.FissionBlocks;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.content.fuel.FuelManager;
 import igentuman.nc.content.storage.BarrelBlocks;
+import igentuman.nc.multiblock.turbine.TurbineRegistration;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ public class CommonConfig {
     public static final HeatSinkConfig HEAT_SINK_CONFIG = new HeatSinkConfig(BUILDER);
     public static final FusionConfig FUSION_CONFIG = new FusionConfig(BUILDER);
     public static final FissionConfig FISSION_CONFIG = new FissionConfig(BUILDER);
+    public static final TurbineConfig TURBINE_CONFIG = new TurbineConfig(BUILDER);
     public static final RadiationConfig RADIATION_CONFIG = new RadiationConfig(BUILDER);
     public static final EnergyGenerationConfig ENERGY_GENERATION = new EnergyGenerationConfig(BUILDER);
     public static final ElectromagnetsConfig ELECTROMAGNETS_CONFIG = new ElectromagnetsConfig(BUILDER);
@@ -245,11 +247,11 @@ public class CommonConfig {
             builder.comment("Settings for Fusion Reactor").push("fusion_reactor");
 
             MIN_SIZE = builder
-                    .comment("Explosion size if reactor overheats. 4 - TNT size. Set to 0 to disable explosion.")
+                    .comment("Min reactor size.")
                     .defineInRange("min_size", 1, 1, 24);
 
             MAX_SIZE = builder
-                    .comment("Explosion size if reactor overheats. 4 - TNT size. Set to 0 to disable explosion.")
+                    .comment("Max reactor size.")
                     .defineInRange("max_size", 32, 3, 48);
 
             EXPLOSION_RADIUS = builder
@@ -258,15 +260,66 @@ public class CommonConfig {
 
             MINIMAL_MAGNETIC_FIELD = builder
                     .comment("Minimal magnetic field required to operate reactor. (Depends on reactor size).")
-                    .defineInRange("minimal_magnetic_field", 10, 1D, 100D);
+                    .defineInRange("minimal_magnetic_field", 8, 1D, 100D);
 
             RF_AMPLIFICATION_MULTIPLIER = builder
                     .comment("Affects heating rate for plasma by rf amplifiers.")
-                    .defineInRange("rf_amplification_multiplier", 4.0D, 0.01D, 100D);
+                    .defineInRange("rf_amplification_multiplier", 5.0D, 0.01D, 100D);
 
             PLASMA_TO_ENERGY_CONVERTION = builder
                     .comment("Affects plasma energy to FE converion rate.")
                     .defineInRange("plasma_to_energy_convertion", 1D, 0.01D, 10D);
+
+            builder.pop();
+        }
+
+    }
+
+    public static class TurbineConfig {
+        public ForgeConfigSpec.ConfigValue<Integer> MIN_SIZE;
+        public ForgeConfigSpec.ConfigValue<Integer> MAX_SIZE;
+        public ForgeConfigSpec.ConfigValue<Integer> BLADE_FLOW;
+        public ForgeConfigSpec.ConfigValue<List<Double>> EFFICIENCY;
+        public HashMap<String, ForgeConfigSpec.ConfigValue<List<String>>> PLACEMENT_RULES = new HashMap<>();
+
+        public TurbineConfig(ForgeConfigSpec.Builder builder) {
+            builder.comment("Settings for Turbine").push("turbine");
+
+            MIN_SIZE = builder
+                    .comment("Multiblock min size.")
+                    .defineInRange("min_size", 5, 5, 25);
+
+            MAX_SIZE = builder
+                    .comment("Multiblock max size.")
+                    .defineInRange("max_size", 24, 5, 25);
+
+            BLADE_FLOW = builder
+                    .comment("Steam flow per blade mB/t")
+                    .defineInRange("blade_flow", 2000, 100, 1000000);
+
+            EFFICIENCY = builder
+                    .comment("Efficiency %: " + String.join(", ", TurbineRegistration.initialEfficiency().keySet()))
+                    .define("efficiency", toList(TurbineRegistration.initialEfficiency().values()), o -> o instanceof ArrayList);
+
+            builder
+                    .comment("You can define blocks by block_name. So copper_turbine_coil will fall back to nuclearcraft:copper_turbine_coil. Or qualify it with namespace like some_mod:some_block.")
+                    .comment("Or use block tag key. #nuclearcraft:fission_reactor_casing will fall back to blocks with this tag. Do not forget to put #.")
+                    .comment("if you need AND condition, add comma separated values \"block1\", \"block2\" means AND condition")
+                    .comment("if you need OR condition, use | separator. \"block1|block2\" means block1 or block2")
+                    .comment("By default you have rule condition is 'At least 1'. So if you define some block, it will go in the rule as 'at least 1'")
+                    .comment("Validation options: >2 means at least 2 (use any number)")
+                    .comment("-2 means between, it is always 2 (opposite sides)")
+                    .comment("<2 means less than 2 (use any number)")
+                    .comment("=2 means exact 2 (use any number)")
+                    .comment("^3 means 3 blocks in the corner (shared vertex or edge). possible values 2 and 3")
+                    .comment("Default placement rules have all examples")
+                    .define("placement_explanations", "");
+
+            for(String name: TurbineRegistration.coils().keySet()) {
+                if(name.contains("empty")) continue;
+                PLACEMENT_RULES.put(name, builder
+                        .define(name, TurbineRegistration.initialPlacementRules(name), o -> o instanceof ArrayList));
+            }
 
             builder.pop();
         }
@@ -283,15 +336,17 @@ public class CommonConfig {
         public ForgeConfigSpec.ConfigValue<Double> EXPLOSION_RADIUS;
         public ForgeConfigSpec.ConfigValue<Double> HEAT_CAPACITY;
 
+        public ForgeConfigSpec.ConfigValue<Double> BOILING_MULTIPLIER;
+
         public FissionConfig(ForgeConfigSpec.Builder builder) {
             builder.comment("Settings for Fission Reactor").push("fission_reactor");
 
             MIN_SIZE = builder
-                    .comment("Explosion size if reactor overheats. 4 - TNT size. Set to 0 to disable explosion.")
+                    .comment("Reactor min size.")
                     .defineInRange("min_size", 3, 3, 24);
 
             MAX_SIZE = builder
-                    .comment("Explosion size if reactor overheats. 4 - TNT size. Set to 0 to disable explosion.")
+                    .comment("Reactor max size.")
                     .defineInRange("max_size", 24, 5, 24);
 
             EXPLOSION_RADIUS = builder
@@ -318,10 +373,15 @@ public class CommonConfig {
                     .comment("Each attachment of moderator to fuel cell will increase fuel heat generation by given percent value.")
                     .defineInRange("moderator_heat_multiplier", 33.34D, 0D, 1000D);
 
+            BOILING_MULTIPLIER = builder
+                    .comment("Rate at which steam recipes produced.")
+                    .defineInRange("boiling_mult", 5D, 0.01D, 1000000D);
+
             builder.pop();
         }
 
     }
+
 
     public static class RadiationConfig {
         public ForgeConfigSpec.ConfigValue<Boolean> ENABLED;
@@ -595,6 +655,9 @@ public class CommonConfig {
     }
 
     public static class ProcessorConfig {
+        public ForgeConfigSpec.ConfigValue<Integer> GT_AMPERAGE;
+        public ForgeConfigSpec.ConfigValue<Integer> GT_SUPPORT;
+        public ForgeConfigSpec.ConfigValue<Boolean> GT_EXPLODE;
         public ForgeConfigSpec.ConfigValue<Integer> BASE_TIME;
         public ForgeConfigSpec.ConfigValue<Integer> BASE_POWER;
         public ForgeConfigSpec.ConfigValue<Integer> SKIP_TICKS;
@@ -611,7 +674,21 @@ public class CommonConfig {
 
             BASE_POWER = builder
                     .comment("FE per Tick")
-                    .define("base_power", 100);
+                    .comment("Better use value multiple of 8")
+                    .define("base_power", 128);
+
+            GT_AMPERAGE = builder
+                    .comment("GT EU Amperage")
+                    .define("gteu_amperage", 2);
+
+            GT_SUPPORT = builder
+                    .comment("GT EU direct support enabled?")
+                    .comment("0 - disabled, 1 - enabled EU and FE, 2 - EU only")
+                    .define("gteu_support", 1);
+
+            GT_EXPLODE = builder
+                    .comment("Enable explosion on wrong GE EU amperage")
+                    .define("gteu_explode", false);
 
             SKIP_TICKS = builder
                     .comment("Generally used for server optimization. Processors will skip defined amount of ticks then and do nothing.")

@@ -1,17 +1,13 @@
 package igentuman.nc.block.fusion;
 
-import igentuman.nc.block.entity.fission.FissionBE;
 import igentuman.nc.block.entity.fusion.FusionBE;
 import igentuman.nc.multiblock.fusion.FusionReactor;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
-import net.minecraft.stats.Stats;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -102,5 +98,15 @@ public class FusionBlock extends Block implements EntityBlock {
             ((FusionBE)level.getBlockEntity(pos)).onBlockDestroyed(state, level, pos, null);
         }
        return super.onDestroyedByPlayer(state, level, pos, player, willHarvest, fluid);
+    }
+
+    @Override
+    public void appendHoverText(ItemStack stack, @javax.annotation.Nullable BlockGetter world, List<Component> list, TooltipFlag flag)
+    {
+        if (getCode().equals("fusion_reactor_connector")) {
+            list.add(Component.translatable("tooltip.nc.fusion_connector.descr").withStyle(ChatFormatting.YELLOW));
+        } else {
+            list.add(Component.translatable("tooltip.nc.fusion_casing.descr").withStyle(ChatFormatting.YELLOW));
+        }
     }
 }

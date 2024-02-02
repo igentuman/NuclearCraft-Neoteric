@@ -1,0 +1,15 @@
+{
+  "values": [
+    "nuclearcraft:turbine_casing",
+    "nuclearcraft:turbine_glass",
+    "nuclearcraft:turbine_bearing",
+    "nuclearcraft:turbine_controller",
+    "nuclearcraft:turbine_port",
+    "nuclearcraft:turbine_gold_coil",
+    "nuclearcraft:turbine_aluminium_coil",
+    "nuclearcraft:turbine_copper_coil",
+    "nuclearcraft:turbine_magnesium_coil",
+    "nuclearcraft:turbine_beryllium_coil",
+    "nuclearcraft:turbine_silver_coil"
+  ]
+}

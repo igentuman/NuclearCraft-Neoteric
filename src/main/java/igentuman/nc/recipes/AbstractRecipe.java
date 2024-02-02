@@ -17,6 +17,7 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import org.jetbrains.annotations.NotNull;
@@ -25,6 +26,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static net.minecraft.world.item.Items.BARRIER;
+import static net.minecraft.world.level.block.Blocks.AIR;
 import static net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE;
 
 public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
@@ -57,12 +59,16 @@ public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
 
     /**
      * @param id     Recipe name.
-     * @param codeId
      */
-    protected AbstractRecipe(ResourceLocation id, String codeId) {
+    protected AbstractRecipe(ResourceLocation id) {
         this.id = Objects.requireNonNull(id, "Recipe name cannot be null.");
-        this.codeId = codeId;
+        this.codeId = getCodeId();
     }
+
+    public String getCodeId() {
+        return id.getPath().split("/")[0];
+    }
+
 
     public NonNullList<Ingredient> getItemIngredients() {
         NonNullList<Ingredient> ingredients = NonNullList.create();
@@ -82,12 +88,16 @@ public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
 
     @Override
     public @NotNull String getGroup() {
-        return NCProcessors.PROCESSORS.get(codeId).get().getName().getString();
+        return codeId;
     }
 
     @Override
     public @NotNull ItemStack getToastSymbol() {
-        return new ItemStack(NCProcessors.PROCESSORS.get(codeId).get());
+        Block proc = AIR;
+        if(NCProcessors.PROCESSORS.containsKey(codeId)) {
+            proc = NCProcessors.PROCESSORS.get(codeId).get();
+        }
+        return new ItemStack(proc);
     }
 
     @Override
@@ -123,8 +133,19 @@ public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
                 return true;
             }
         }
+        for(ItemStack output: outputItems) {
+            if(output == null || output.isEmpty()
+                    || output.getItem().equals(BARRIER)) {
+                return true;
+            }
+        }
         for(FluidStackIngredient inputFluid: inputFluids) {
             if(inputFluid.getRepresentations().isEmpty()) {
+                return true;
+            }
+        }
+        for(FluidStack output: outputFluids) {
+            if(output == null || output.isEmpty()) {
                 return true;
             }
         }
@@ -210,10 +231,9 @@ public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
     }
 
     public void consumeInputs(SidedContentHandler contentHandler) {
-        int i = 0;
         if(contentHandler.hasFluidCapability(null)) {
             for (FluidStackIngredient inputFluid : inputFluids) {
-                i = 0;
+                int i = 0;
                 assert contentHandler.fluidCapability != null;
                 for(FluidTank tank : contentHandler.fluidCapability.tanks) {
                     if(contentHandler.inputFluidSlots <= i) break;
@@ -229,20 +249,21 @@ public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
                 }
             }
         }
-        i=0;
         if(contentHandler.hasItemCapability(null)) {
             for (ItemStackIngredient inputItem : inputItems) {
-                for (ItemStack itemStack : inputItem.getRepresentations()) {
-                    assert contentHandler.itemHandler != null;
-                    ItemStack extracted = contentHandler.itemHandler.extractItemInternal(i, itemStack.getCount(), false);
-                    if(!extracted.isEmpty()) {
+                assert contentHandler.itemHandler != null;
+                for(int i = 0; i < inputItems.length; i++) {
+                    if( ! inputItem.test(contentHandler.itemHandler.getStackInSlot(i))) {
+                        continue;
+                    }
+                    ItemStack extracted = contentHandler.itemHandler.extractItemInternal(i, inputItem.getAmount(), false);
+                    if (!extracted.isEmpty()) {
                         contentHandler.itemHandler.holdedInputs.add(
                                 extracted
                         );
                         break;
                     }
                 }
-                i++;
             }
         }
     }
@@ -296,6 +317,7 @@ public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
     }
 
     public @NotNull ItemStack getResultItem() {
-        return getOutputItem(0);
+        if(outputItems.length == 0) return ItemStack.EMPTY;
+        return outputItems[0] != null ? outputItems[0] : ItemStack.EMPTY;
     }
 }

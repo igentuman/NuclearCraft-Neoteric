@@ -1,15 +1,15 @@
 {
   "type": "nuclearcraft:fusion_coolant",
-  "coolingRate": 1000.0,
+  "coolingRate": 2000.0,
   "inputFluids": [
     {
-      "amount": 1,
+      "amount": 500,
       "tag": "minecraft:water"
     }
   ],
   "outputFluids": [
     {
-      "amount": 1,
+      "amount": 500,
       "fluid": "nuclearcraft:steam"
     }
   ]

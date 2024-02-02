@@ -18,13 +18,14 @@ public class SteamTurbineRecipes extends AbstractRecipeProvider {
 
         add(
                 fluidIngredient("steam", 10),
-                fluidStack("exhaust_steam", 10),
+                fluidStack(WATER, 10),
                 1.5D
         );
 
         add(
-                fluidIngredient("low_quality_steam", 10),
-                fluidStack("technical_water", 10)
+                fluidIngredient("high_pressure_steam", 10),
+                fluidStack("exhaust_steam", 10),
+                2D, 2.5D
         );
 
     }

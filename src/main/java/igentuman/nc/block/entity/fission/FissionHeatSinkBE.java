@@ -19,6 +19,10 @@ public class FissionHeatSinkBE extends FissionBE {
         super(pPos, pBlockState, NAME);
     }
 
+    public FissionHeatSinkBE(BlockPos pPos, BlockState pBlockState, String name) {
+        super(pPos, pBlockState, name);
+    }
+
     public boolean isValid(boolean forceCheck)
     {
         if(forceCheck) {

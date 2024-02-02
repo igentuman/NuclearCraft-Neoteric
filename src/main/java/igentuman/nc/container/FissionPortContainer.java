@@ -14,6 +14,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
@@ -148,5 +149,17 @@ public class FissionPortContainer extends AbstractContainerMenu {
 
     public byte getAnalogSignalStrength() {
         return portBE.analogSignal;
+    }
+
+    public FluidTank getFluidTank(int i) {
+        return portBE.getFluidTank(i);
+    }
+
+    public boolean getMode() {
+        return portBE.getMode();
+    }
+
+    public int getSteamPerTick() {
+        return portBE.getSteamPerTick();
     }
 }

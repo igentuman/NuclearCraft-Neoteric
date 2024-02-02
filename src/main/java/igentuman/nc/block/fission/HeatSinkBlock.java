@@ -2,7 +2,6 @@ package igentuman.nc.block.fission;
 
 import igentuman.nc.block.entity.fission.FissionHeatSinkBE;
 import igentuman.nc.multiblock.fission.FissionBlocks;
-import igentuman.nc.multiblock.fission.FissionReactor;
 import igentuman.nc.multiblock.fission.HeatSinkDef;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
@@ -13,6 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
@@ -29,6 +29,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.BlockHitResult;
+import org.jetbrains.annotations.NotNull;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
@@ -36,7 +37,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
-import static igentuman.nc.handler.event.client.InputEvents.SHIFT_PRESSED;
+import static igentuman.nc.handler.event.client.InputEvents.DESCRIPTIONS_SHOW;
+import static igentuman.nc.multiblock.fission.FissionReactor.FISSION_BE;
 import static igentuman.nc.util.TextUtils.convertToName;
 
 public class HeatSinkBlock extends Block implements EntityBlock {
@@ -130,8 +132,10 @@ public class HeatSinkBlock extends Block implements EntityBlock {
 
 
     private void initParams() {
-        if(this.asItem().equals(Items.AIR)) return;
-        type = asItem().toString().replace("_heat_sink", "");
+        Item item = Item.byBlock(this);
+        if(item.toString().isEmpty()) return;
+        if(item.toString().contains("empty")) return;
+        type = item.toString().replace("_heat_sink", "");
         def = FissionBlocks.heatsinks.get(type);
         heat = def.getHeat();
     }
@@ -141,16 +145,12 @@ public class HeatSinkBlock extends Block implements EntityBlock {
         return this.defaultBlockState();
     }
 
-    @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(BlockStateProperties.HORIZONTAL_FACING);
-    }
-
     @Nullable
     @Override
-    public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
+    public BlockEntity newBlockEntity(@NotNull BlockPos pPos, @NotNull BlockState pState) {
+        if(asItem().toString().contains("empty")) return null;
         def.getValidator();
-        BlockEntity be = FissionReactor.FISSION_BE.get("fission_heat_sink").get().create(pPos, pState);
+        BlockEntity be = FISSION_BE.get("fission_heat_sink").get().create(pPos, pState);
         ((FissionHeatSinkBE)be).setHeatSinkDef(def);
         return be;
     }
@@ -191,13 +191,14 @@ public class HeatSinkBlock extends Block implements EntityBlock {
 
     @Override
     public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag) {
-        if(asItem().toString().contains("empty") || this.asItem().equals(Items.AIR)) return;
+        if(asItem().toString().contains("empty")) return;
+        initParams();
         list.add(TextUtils.applyFormat(Component.translatable("heat_sink.heat.descr", TextUtils.numberFormat(heat)), ChatFormatting.GOLD));
 
-        if(SHIFT_PRESSED) {
+        if(DESCRIPTIONS_SHOW) {
             list.add(TextUtils.applyFormat(getPlacementRule(), ChatFormatting.AQUA));
         } else {
-            list.add(TextUtils.applyFormat(Component.translatable("tooltip.press_shift_for_description"), ChatFormatting.GRAY));
+            list.add(TextUtils.applyFormat(Component.translatable("tooltip.toggle_description_keys"), ChatFormatting.GRAY));
         }
     }
 

@@ -1,7 +1,6 @@
 package igentuman.nc.block.entity.fission;
 
 import igentuman.nc.NuclearCraft;
-import igentuman.nc.block.entity.fusion.FusionCoreBE;
 import igentuman.nc.client.sound.SoundHandler;
 import igentuman.nc.compat.cc.NCSolidFissionReactorPeripheral;
 import igentuman.nc.handler.sided.SidedContentHandler;
@@ -29,7 +28,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -52,7 +50,7 @@ import java.util.Objects;
 
 import static igentuman.nc.block.fission.FissionControllerBlock.POWERED;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
-import static igentuman.nc.handler.config.CommonConfig.FISSION_CONFIG;
+import static igentuman.nc.handler.config.FissionConfig.FISSION_CONFIG;
 import static igentuman.nc.multiblock.fission.FissionReactor.FISSION_BLOCKS;
 import static igentuman.nc.setup.registration.NCSounds.FISSION_REACTOR;
 import static igentuman.nc.util.ModUtil.isCcLoaded;

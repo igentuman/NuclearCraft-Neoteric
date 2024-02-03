@@ -10,7 +10,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.*;
 
-import static igentuman.nc.handler.config.CommonConfig.FISSION_CONFIG;
+import static igentuman.nc.handler.config.FissionConfig.FISSION_CONFIG;
 import static igentuman.nc.util.TagUtil.getBlocksByTagKey;
 
 public class FissionReactorMultiblock extends AbstractNCMultiblock {

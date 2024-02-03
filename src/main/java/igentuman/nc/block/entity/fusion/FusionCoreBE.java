@@ -51,7 +51,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 import static igentuman.nc.block.fission.FissionControllerBlock.POWERED;
-import static igentuman.nc.handler.config.CommonConfig.FUSION_CONFIG;
+import static igentuman.nc.handler.config.FusionConfig.FUSION_CONFIG;
 import static igentuman.nc.setup.registration.NCSounds.*;
 import static igentuman.nc.util.ModUtil.isCcLoaded;
 import static igentuman.nc.util.ModUtil.isMekanismLoadeed;

@@ -7,7 +7,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import java.util.HashMap;
 
 import static igentuman.nc.NuclearCraft.MODID;
-import static igentuman.nc.handler.config.CommonConfig.RADIATION_CONFIG;
+import static igentuman.nc.handler.config.RadiationConfig.RADIATION_CONFIG;
 import static net.minecraft.world.item.Items.AIR;
 
 public class ItemShielding {

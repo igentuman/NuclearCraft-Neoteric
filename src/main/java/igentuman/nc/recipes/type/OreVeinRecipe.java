@@ -10,11 +10,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-import java.util.Random;
-
-import static igentuman.nc.compat.GlobalVars.CATALYSTS;
-import static igentuman.nc.handler.config.CommonConfig.IN_SITU_LEACHING;
 import static igentuman.nc.setup.registration.NCItems.NC_PARTS;
 
 public class OreVeinRecipe extends NcRecipe {

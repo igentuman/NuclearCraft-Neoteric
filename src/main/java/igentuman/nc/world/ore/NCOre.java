@@ -5,10 +5,9 @@ import igentuman.nc.handler.config.CommonConfig;
 import igentuman.nc.content.materials.Ores;
 import net.minecraft.world.level.block.Block;
 
-import java.util.Arrays;
 import java.util.List;
 
-import static igentuman.nc.handler.config.CommonConfig.ORE_CONFIG;
+import static igentuman.nc.handler.config.MaterialsConfig.ORE_CONFIG;
 import static igentuman.nc.setup.registration.NCBlocks.ORE_BLOCKS;
 
 public class NCOre {

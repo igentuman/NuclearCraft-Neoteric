@@ -48,7 +48,7 @@ import igentuman.nc.compat.cc.NCTurbinePeripheral;
 
 import static igentuman.nc.block.fission.FissionControllerBlock.POWERED;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
-import static igentuman.nc.handler.config.CommonConfig.FISSION_CONFIG;
+import static igentuman.nc.handler.config.FissionConfig.FISSION_CONFIG;
 import static igentuman.nc.setup.registration.NCSounds.FISSION_REACTOR;
 import static igentuman.nc.util.ModUtil.isCcLoaded;
 

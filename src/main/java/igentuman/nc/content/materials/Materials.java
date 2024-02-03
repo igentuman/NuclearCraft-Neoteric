@@ -4,11 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static igentuman.nc.handler.config.CommonConfig.MATERIAL_PRODUCTS;
-
+import static igentuman.nc.handler.config.MaterialsConfig.MATERIAL_PRODUCTS;
 
 public class Materials extends MaterialsManager {
-
     public final static  String uranium = "uranium";
     public final static  String thorium = "thorium";
     public final static  String boron = "boron";

@@ -5,7 +5,7 @@ import igentuman.nc.NuclearCraft;
 import igentuman.nc.util.CustomEnergyStorage;
 import net.minecraft.core.Direction;
 
-import static igentuman.nc.handler.config.CommonConfig.PROCESSOR_CONFIG;
+import static igentuman.nc.handler.config.ProcessorsConfig.PROCESSOR_CONFIG;
 
 public class NCGTEnergyHandler implements IEnergyContainer {
     private final CustomEnergyStorage energyStorage;

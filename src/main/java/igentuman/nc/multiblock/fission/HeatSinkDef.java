@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import static igentuman.nc.NuclearCraft.MODID;
-import static igentuman.nc.handler.config.CommonConfig.HEAT_SINK_CONFIG;
+import static igentuman.nc.handler.config.FissionConfig.HEAT_SINK_CONFIG;
 import static igentuman.nc.multiblock.fission.FissionReactor.FISSION_BLOCKS;
 import static igentuman.nc.setup.registration.NCBlocks.BLOCK_REGISTRY;
 import static igentuman.nc.setup.registration.NCBlocks.ITEM_REGISTRY;

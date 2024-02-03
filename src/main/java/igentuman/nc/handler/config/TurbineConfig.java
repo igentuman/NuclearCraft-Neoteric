@@ -4,22 +4,21 @@ import igentuman.nc.content.energy.BatteryBlocks;
 import igentuman.nc.content.energy.RTGs;
 import igentuman.nc.content.energy.SolarPanels;
 import igentuman.nc.content.storage.BarrelBlocks;
+import igentuman.nc.multiblock.turbine.TurbineRegistration;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 
-public class CommonConfig {
+public class TurbineConfig {
     public static <T> List<T> toList(Collection<T> vals)
     {
         return new ArrayList<>(vals);
     }
     private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
-    public static final EnergyGenerationConfig ENERGY_GENERATION = new EnergyGenerationConfig(BUILDER);
-    public static final EnergyStorageConfig ENERGY_STORAGE = new EnergyStorageConfig(BUILDER);
-
-    public static final StorageBlocksConfig STORAGE_BLOCKS = new StorageBlocksConfig(BUILDER);
+    public static final TurbineConf TURBINE_CONFIG = new TurbineConf(BUILDER);
     public static final ForgeConfigSpec spec = BUILDER.build();
     private static boolean loaded = false;
     private static List<Runnable> loadActions = new ArrayList<>();
@@ -41,6 +40,56 @@ public class CommonConfig {
             loadActions.add(action);
     }
 
+    public static class TurbineConf {
+        public ForgeConfigSpec.ConfigValue<Integer> MIN_SIZE;
+        public ForgeConfigSpec.ConfigValue<Integer> MAX_SIZE;
+        public ForgeConfigSpec.ConfigValue<Integer> BLADE_FLOW;
+        public ForgeConfigSpec.ConfigValue<List<Double>> EFFICIENCY;
+        public HashMap<String, ForgeConfigSpec.ConfigValue<List<String>>> PLACEMENT_RULES = new HashMap<>();
+
+        public TurbineConf(ForgeConfigSpec.Builder builder) {
+            builder.comment("Settings for Turbine").push("turbine");
+
+            MIN_SIZE = builder
+                    .comment("Multiblock min size.")
+                    .defineInRange("min_size", 5, 5, 25);
+
+            MAX_SIZE = builder
+                    .comment("Multiblock max size.")
+                    .defineInRange("max_size", 24, 5, 25);
+
+            BLADE_FLOW = builder
+                    .comment("Steam flow per blade mB/t")
+                    .defineInRange("blade_flow", 2000, 100, 1000000);
+
+            EFFICIENCY = builder
+                    .comment("Efficiency %: " + String.join(", ", TurbineRegistration.initialEfficiency().keySet()))
+                    .define("efficiency", toList(TurbineRegistration.initialEfficiency().values()), o -> o instanceof ArrayList);
+
+            builder
+                    .comment("You can define blocks by block_name. So copper_turbine_coil will fall back to nuclearcraft:copper_turbine_coil. Or qualify it with namespace like some_mod:some_block.")
+                    .comment("Or use block tag key. #nuclearcraft:fission_reactor_casing will fall back to blocks with this tag. Do not forget to put #.")
+                    .comment("if you need AND condition, add comma separated values \"block1\", \"block2\" means AND condition")
+                    .comment("if you need OR condition, use | separator. \"block1|block2\" means block1 or block2")
+                    .comment("By default you have rule condition is 'At least 1'. So if you define some block, it will go in the rule as 'at least 1'")
+                    .comment("Validation options: >2 means at least 2 (use any number)")
+                    .comment("-2 means between, it is always 2 (opposite sides)")
+                    .comment("<2 means less than 2 (use any number)")
+                    .comment("=2 means exact 2 (use any number)")
+                    .comment("^3 means 3 blocks in the corner (shared vertex or edge). possible values 2 and 3")
+                    .comment("Default placement rules have all examples")
+                    .define("placement_explanations", "");
+
+            for(String name: TurbineRegistration.coils().keySet()) {
+                if(name.contains("empty")) continue;
+                PLACEMENT_RULES.put(name, builder
+                        .define(name, TurbineRegistration.initialPlacementRules(name), o -> o instanceof ArrayList));
+            }
+
+            builder.pop();
+        }
+
+    }
 
     public static class EnergyGenerationConfig {
         public ForgeConfigSpec.ConfigValue<List<Boolean>> REGISTER_SOLAR_PANELS;

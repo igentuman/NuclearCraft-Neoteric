@@ -1,8 +1,8 @@
 package igentuman.nc.content.fuel;
 
-import igentuman.nc.handler.config.CommonConfig;
+import igentuman.nc.handler.config.FusionConfig;
 
-import static igentuman.nc.handler.config.CommonConfig.FUEL_CONFIG;
+import static igentuman.nc.handler.config.FissionConfig.FUEL_CONFIG;
 
 public class FuelDef {
 
@@ -44,7 +44,7 @@ public class FuelDef {
 
     private Double heatMult()
     {
-        if(!CommonConfig.isLoaded()) {
+        if(!FusionConfig.isLoaded()) {
             return 3.24444444;
         }
         return FUEL_CONFIG.HEAT_MULTIPLIER.get();
@@ -52,7 +52,7 @@ public class FuelDef {
 
     public FuelDef config()
     {
-        if(!CommonConfig.isLoaded()) {
+        if(!FusionConfig.isLoaded()) {
             return this;
         }
         if(!initialized) {

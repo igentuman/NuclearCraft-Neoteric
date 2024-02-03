@@ -32,9 +32,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.material.Material;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -51,7 +49,7 @@ import static igentuman.nc.util.TextUtils.convertToName;
 public class TurbineCoilBlock extends Block implements EntityBlock {
 
     public TurbineCoilBlock() {
-        this(Properties.of(Material.METAL).sound(SoundType.METAL));
+        this(Properties.of().sound(SoundType.METAL));
     }
 
     public TurbineCoilBlock(Properties pProperties) {
@@ -92,7 +90,7 @@ public class TurbineCoilBlock extends Block implements EntityBlock {
             String id = code;
             if(!id.contains(":")) {
                 id = MODID+":"+id;
-                Block block = Registry.BLOCK.get(new ResourceLocation(id));
+                Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(id));
                 names.add(block.getName().getString());
             } else {
                 names.add(convertToName(id.split(":")[1]));

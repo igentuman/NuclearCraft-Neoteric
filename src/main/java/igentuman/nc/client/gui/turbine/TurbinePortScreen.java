@@ -10,10 +10,12 @@ import igentuman.nc.client.gui.element.bar.VerticalBar;
 import igentuman.nc.client.gui.element.button.Button;
 import igentuman.nc.container.TurbinePortContainer;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,28 +67,28 @@ public class TurbinePortScreen extends AbstractContainerScreen<TurbinePortContai
 
 
     @Override
-    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void render(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
         xCenter = getGuiLeft()-imageWidth/2;
-        this.renderBackground(matrixStack);
-        super.render(matrixStack, mouseX, mouseY, partialTicks);
-        this.renderTooltip(matrixStack, mouseX, mouseY);
+        this.renderBackground(graphics);
+        super.render(graphics, mouseX, mouseY, partialTicks);
+        this.renderTooltip(graphics, mouseX, mouseY);
     }
 
-    private void renderWidgets(PoseStack matrix, float partialTicks, int mouseX, int mouseY) {
+    private void renderWidgets(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
         redstoneConfigBtn.setMode(getMenu().getComparatorMode());
         redstoneConfigBtn.strength = getMenu().getAnalogSignalStrength();
         for(NCGuiElement widget: widgets) {
-            widget.draw(matrix, mouseX, mouseY, partialTicks);
+            widget.draw(graphics, mouseX, mouseY, partialTicks);
         }
         if(energyBar != null) {
-            energyBar.draw(matrix, mouseX, mouseY, partialTicks);
+            energyBar.draw(graphics, mouseX, mouseY, partialTicks);
         }
     }
 
     @Override
-    protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
-        drawCenteredString(matrixStack, font,  menu.getTitle(), imageWidth/2, titleLabelY, 0xffffff);
-        renderTooltips(matrixStack, mouseX-relX, mouseY-relY);
+    protected void renderLabels(@NotNull GuiGraphics graphics, int mouseX, int mouseY) {
+        graphics.drawCenteredString(font,  menu.getTitle(), imageWidth/2, titleLabelY, 0xffffff);
+        renderTooltips(graphics, mouseX-relX, mouseY-relY);
     }
 
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
@@ -99,18 +101,18 @@ public class TurbinePortScreen extends AbstractContainerScreen<TurbinePortContai
     }
 
     @Override
-    protected void renderBg(PoseStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(@NotNull GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
         RenderSystem.setShaderTexture(0, GUI);
         updateRelativeCords();
-        this.blit(matrixStack, relX, relY, 0, 0, this.imageWidth, this.imageHeight);
-        renderWidgets(matrixStack, partialTicks, mouseX, mouseY);
+        graphics.blit(GUI, relX, relY, 0, 0, this.imageWidth, this.imageHeight);
+        renderWidgets(graphics, partialTicks, mouseX, mouseY);
     }
 
-    private void renderTooltips(PoseStack pPoseStack, int pMouseX, int pMouseY) {
+    private void renderTooltips(GuiGraphics graphics, int pMouseX, int pMouseY) {
 
         for(NCGuiElement widget: widgets) {
            if(widget.isMouseOver(pMouseX, pMouseY)) {
-               renderTooltip(pPoseStack, widget.getTooltips(),
+               graphics.renderTooltip(font, widget.getTooltips(),
                        Optional.empty(), pMouseX, pMouseY);
            }
         }
@@ -119,7 +121,7 @@ public class TurbinePortScreen extends AbstractContainerScreen<TurbinePortContai
             energyBar.clearTooltips();
             energyBar.addTooltip(Component.translatable("reactor.forge_energy_per_tick", container().energyPerTick()));
             if(energyBar.isMouseOver(pMouseX, pMouseY)) {
-                renderTooltip(pPoseStack, energyBar.getTooltips(),
+                graphics.renderTooltip(font, energyBar.getTooltips(),
                         Optional.empty(), pMouseX, pMouseY);
             }
         }

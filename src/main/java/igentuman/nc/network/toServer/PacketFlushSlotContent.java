@@ -30,7 +30,7 @@ public class PacketFlushSlotContent implements INcPacket {
         if (player == null) {
             return;
         }
-        BlockEntity be = player.level.getBlockEntity(tilePosition);
+        BlockEntity be = player.level().getBlockEntity(tilePosition);
         if(!(be instanceof NCProcessorBE<?> ncBe)) {
             return;
         }

@@ -75,7 +75,7 @@ repositories {
     maven { url "https://maven.mcmoddev.com" }
     maven { url "https://maven.tterrag.com/" }
     maven { url "https://modmaven.dev/" }
-    maven { url "https://maven.firstdarkdev.xyz/snapshots/" }
+        maven { url "https://maven.firstdarkdev.xyz/snapshots/" }
     maven { url "https://maven.tterrag.com/" }
 }
 

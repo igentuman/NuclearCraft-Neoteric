@@ -17,6 +17,7 @@ import java.util.List;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.multiblock.fission.FissionReactor.FISSION_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_BLOCKS;
+import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
 import static igentuman.nc.setup.registration.Fuel.NC_FUEL;
 import static igentuman.nc.setup.registration.Fuel.NC_ISOTOPES;
 import static igentuman.nc.setup.registration.NCBlocks.*;
@@ -123,6 +124,13 @@ public class CreativeTabs {
                     .icon(() -> new ItemStack(FISSION_BLOCKS.get("fission_reactor_controller").get()))
                     .displayItems((displayParams, output) -> FISSION_BLOCKS.values().forEach(itemlike -> output.accept(new ItemStack(itemlike.get()))))
                     .title(Component.translatable("itemGroup.nuclearcraft_fission_reactor"))
+                    .build());
+
+    public static final RegistryObject<CreativeModeTab> TURBINE_TAB = CREATIVE_TABS.register("turbine",
+            () -> CreativeModeTab.builder()
+                    .icon(() -> new ItemStack(TURBINE_BLOCKS.get("turbine_controller").get()))
+                    .displayItems((displayParams, output) -> TURBINE_BLOCKS.values().forEach(itemlike -> output.accept(new ItemStack(itemlike.get()))))
+                    .title(Component.translatable("itemGroup.nuclearcraft_turbinee"))
                     .build());
 
     public static final RegistryObject<CreativeModeTab> NC_FLUIDS = CREATIVE_TABS.register("nc_fluids",

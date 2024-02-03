@@ -1,7 +1,6 @@
 package igentuman.nc.client.block.turbine;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
 import igentuman.nc.block.entity.fusion.FusionCoreBE;
 import igentuman.nc.block.fusion.FusionCoreBlock;
 import igentuman.nc.util.annotation.NothingNullByDefault;
@@ -61,7 +60,7 @@ public class TurbineRotorRenderer implements BlockEntityRenderer<BlockEntity> {
         }
         angel %= 360;
         pPoseStack.translate(dx, 0, dz);
-        pPoseStack.mulPose(Vector3f.YN.rotationDegrees(angel));
+      //  pPoseStack.mulPose(Vector3f.YN.rotationDegrees(angel));
         pPoseStack.scale(1.4f, sy, 1.4f);
         pPoseStack.translate(-dx, 0.135f, -dz);
         blockRenderer.getModelRenderer().renderModel(pPoseStack.last(), buffer.getBuffer(RenderType.cutout()), blockstate, center, 1, 1, 1, LightTexture.FULL_SKY, combinedOverlay);
@@ -72,11 +71,11 @@ public class TurbineRotorRenderer implements BlockEntityRenderer<BlockEntity> {
         pPoseStack.pushPose();
         pPoseStack.translate(0.5, 1.35, 0.5);
         pPoseStack.scale(3.80F, 3.80F, 3.80F);
-        itemRenderer.render(
+/*        itemRenderer.render(
                 core,
-                ItemTransforms.TransformType.FIXED,
+                ItemTransforms.NO_TRANSFORMS.fixed.rotation,
                 false, pPoseStack, buffer, LightTexture.FULL_SKY, combinedOverlay,
-                base);
+                base);*/
 
 
        // blockRenderer.renderSingleBlock(blockstate, pPoseStack, buffer, packedLight, combinedOverlay, pBlockEntity.getModelData(), RenderType.cutout());

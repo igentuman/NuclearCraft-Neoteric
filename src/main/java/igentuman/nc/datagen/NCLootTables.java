@@ -44,7 +44,7 @@ public class NCLootTables extends BaseLootTableProvider {
             add(FUSION_BLOCKS.get(name).get(), block -> createSimpleTable("block", FUSION_BLOCKS.get(name).get()));
         }
         for(String name: TURBINE_BLOCKS.keySet()) {
-            lootTables.put(TURBINE_BLOCKS.get(name).get(), createSimpleTable("block", TURBINE_BLOCKS.get(name).get()));
+            add(TURBINE_BLOCKS.get(name).get(), createSimpleTable("block", TURBINE_BLOCKS.get(name).get()));
         }
     }
 

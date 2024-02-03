@@ -26,7 +26,6 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
@@ -39,7 +38,7 @@ public class TurbineControllerBlock extends HorizontalDirectionalBlock implement
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
     public static final String NAME = "turbine_controller";
     public TurbineControllerBlock() {
-        this(Properties.of(Material.METAL)
+        this(Properties.of()
                 .sound(SoundType.METAL)
                 .strength(2.0f)
                 .requiresCorrectToolForDrops());

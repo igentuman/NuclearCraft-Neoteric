@@ -555,7 +555,7 @@ public class NCRecipes extends RecipeProvider {
                 .unlockedBy("item", has(NC_ITEMS.get("helium_collector").get()))
                 .save(consumer, new ResourceLocation(MODID, "compact_helium_collector"));
 
-        ShapedRecipeBuilder.shaped(HEV_HELMET.get())
+       /* ShapedRecipeBuilder.shaped(HEV_HELMET.get())
                 .pattern(" T ")
                 .pattern("THT")
                 .pattern(" B ")
@@ -593,7 +593,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('B', LITHIUM_ION_CELL.get())
                 .define('T', NC_PARTS.get("plate_extreme").get())
                 .unlockedBy("item", has(NC_PARTS.get("plate_extreme").get()))
-                .save(consumer, new ResourceLocation(MODID, "hev_chest"));
+                .save(consumer, new ResourceLocation(MODID, "hev_chest"));*/
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, TOUGH_HELMET.get())
                 .pattern("TTT")
@@ -964,7 +964,7 @@ public class NCRecipes extends RecipeProvider {
 
     private void fissionBlocks(Consumer<FinishedRecipe> consumer) {
 
-        ShapedRecipeBuilder.shaped(FissionReactor.FISSION_BLOCKS.get("fission_reactor_irradiation_chamber").get())
+        /*ShapedRecipeBuilder.shaped(FissionReactor.FISSION_BLOCKS.get("fission_reactor_irradiation_chamber").get())
                 .pattern("LPL")
                 .pattern("MTM")
                 .pattern("LPL")
@@ -974,7 +974,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('L', forgePlate(Materials.boron))
                 .group(MODID+"_fission")
                 .unlockedBy("item", has(STORAGE_BLOCK.get("basic_storage_container").get()))
-                .save(consumer);
+                .save(consumer);*/
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, FissionReactor.FISSION_BLOCKS.get("fission_reactor_port").get())
                 .pattern("LPL")
@@ -1070,7 +1070,7 @@ public class NCRecipes extends RecipeProvider {
     }
 
     private void turbineBlocks(Consumer<FinishedRecipe> consumer) {
-        ShapedRecipeBuilder.shaped(TURBINE_BLOCKS.get("turbine_casing").get(), 4)
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, TURBINE_BLOCKS.get("turbine_casing").get(), 4)
                 .pattern("SSS")
                 .pattern("SLS")
                 .pattern("SSS")
@@ -1080,7 +1080,7 @@ public class NCRecipes extends RecipeProvider {
                 .unlockedBy("item", has(NCItems.NC_PARTS.get("coil_copper").get()))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(TURBINE_BLOCKS.get("turbine_bearing").get(), 2)
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, TURBINE_BLOCKS.get("turbine_bearing").get(), 2)
                 .pattern("GGG")
                 .pattern("GSG")
                 .pattern("GGG")
@@ -1090,7 +1090,7 @@ public class NCRecipes extends RecipeProvider {
                 .unlockedBy("item", has(forgeIngot(Materials.hsla_steel)))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(TURBINE_BLOCKS.get("turbine_controller").get(), 1)
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, TURBINE_BLOCKS.get("turbine_controller").get(), 1)
                 .pattern("GCG")
                 .pattern("CBC")
                 .pattern("GCG")
@@ -1101,7 +1101,7 @@ public class NCRecipes extends RecipeProvider {
                 .unlockedBy("item", has(forgeIngot(Materials.hsla_steel)))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(TURBINE_BLOCKS.get("turbine_rotor_shaft").get(), 4)
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, TURBINE_BLOCKS.get("turbine_rotor_shaft").get(), 4)
                 .pattern("STS")
                 .pattern("STS")
                 .pattern("STS")
@@ -1111,7 +1111,7 @@ public class NCRecipes extends RecipeProvider {
                 .unlockedBy("item", has(forgeIngot(Materials.hsla_steel)))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(TURBINE_BLOCKS.get("turbine_rotor_stator").get(), 4)
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, TURBINE_BLOCKS.get("turbine_rotor_stator").get(), 4)
                 .pattern("STS")
                 .pattern("STS")
                 .pattern(" P ")
@@ -1122,19 +1122,19 @@ public class NCRecipes extends RecipeProvider {
                 .unlockedBy("item", has(forgeIngot(Materials.hsla_steel)))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(TURBINE_BLOCKS.get("turbine_port").get(), 2)
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, TURBINE_BLOCKS.get("turbine_port").get(), 2)
                 .pattern("TST")
                 .pattern("SBS")
                 .pattern("TST")
                 .define('S', forgeIngot(Materials.hsla_steel))
                 .define('T', forgeIngot(Materials.zinc))
-                .define('B', STORAGE_BLOCK.get("basic_barrel").get())
+                .define('B', CAULDRON)
                 .group(MODID+"_turbine")
                 .unlockedBy("item", has(forgeIngot(Materials.hsla_steel)))
                 .save(consumer);
 
         for(String type: coils.keySet()) {
-            ShapedRecipeBuilder.shaped(TURBINE_BLOCKS.get("turbine_"+type+"_coil").get(), 1)
+            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, TURBINE_BLOCKS.get("turbine_"+type+"_coil").get(), 1)
                     .pattern("SBS")
                     .pattern("SBS")
                     .pattern("SBS")
@@ -1145,7 +1145,7 @@ public class NCRecipes extends RecipeProvider {
                     .save(consumer);
         }
 
-        ShapedRecipeBuilder.shaped(TURBINE_BLOCKS.get("turbine_extreme_rotor_blade").get(), 2)
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, TURBINE_BLOCKS.get("turbine_extreme_rotor_blade").get(), 2)
                 .pattern(" P ")
                 .pattern(" P ")
                 .pattern(" P ")
@@ -1154,7 +1154,7 @@ public class NCRecipes extends RecipeProvider {
                 .unlockedBy("item", has(forgePlate(Materials.extreme)))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(TURBINE_BLOCKS.get("turbine_steel_rotor_blade").get(), 2)
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, TURBINE_BLOCKS.get("turbine_steel_rotor_blade").get(), 2)
                 .pattern(" P ")
                 .pattern(" P ")
                 .pattern(" P ")
@@ -1163,7 +1163,7 @@ public class NCRecipes extends RecipeProvider {
                 .unlockedBy("item", has(forgePlate(Materials.steel)))
                 .save(consumer);
 
-        ShapelessRecipeBuilder.shapeless(TURBINE_BLOCKS.get("turbine_glass").get(), 1)
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, TURBINE_BLOCKS.get("turbine_glass").get(), 1)
                 .requires(TURBINE_BLOCKS.get("turbine_casing").get())
                 .requires(Tags.Items.GLASS)
                 .group(MODID+"_turbine")

@@ -22,6 +22,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -148,10 +149,10 @@ public class FissionControllerScreen extends AbstractContainerScreen<FissionCont
         if(!getMenu().getMode()) {
             energyBar.draw(graphics, mouseX, mouseY, partialTicks);
         } else {
-            coolantBar.draw(matrix, mouseX, mouseY, partialTicks);
-            hotCoolantBar.draw(matrix, mouseX, mouseY, partialTicks);
-            coolantTank.draw(matrix, mouseX, mouseY, partialTicks);
-            steamTank.draw(matrix, mouseX, mouseY, partialTicks);
+            coolantBar.draw(graphics, mouseX, mouseY, partialTicks);
+            hotCoolantBar.draw(graphics, mouseX, mouseY, partialTicks);
+            coolantTank.draw(graphics, mouseX, mouseY, partialTicks);
+            steamTank.draw(graphics, mouseX, mouseY, partialTicks);
         }
     }
 
@@ -241,13 +242,13 @@ public class FissionControllerScreen extends AbstractContainerScreen<FissionCont
             }
         } else {
             if(coolantTank.isMouseOver(pMouseX, pMouseY)) {
-                renderTooltip(pPoseStack, coolantTank.getTooltips(),
+                graphics.renderTooltip(font, coolantTank.getTooltips(),
                         Optional.empty(), pMouseX, pMouseY);
             }
             if(steamTank.isMouseOver(pMouseX, pMouseY)) {
                 List<Component> tooltips = steamTank.getTooltips();
                 tooltips.add(Component.translatable("reactor.steam_per_tick", container().getSteamPerTick()));
-                renderTooltip(pPoseStack, tooltips,
+                graphics.renderTooltip(font, tooltips,
                         Optional.empty(), pMouseX, pMouseY);
             }
         }

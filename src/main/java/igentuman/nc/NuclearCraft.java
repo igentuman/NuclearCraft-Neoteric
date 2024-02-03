@@ -1,9 +1,9 @@
 package igentuman.nc;
 
+import igentuman.nc.handler.config.*;
 import igentuman.nc.handler.event.server.WorldEvents;
 import igentuman.nc.handler.command.CommandNcPlayerRadiation;
 import igentuman.nc.handler.command.CommandNcVeinCheck;
-import igentuman.nc.handler.config.CommonConfig;
 import igentuman.nc.radiation.data.PlayerRadiation;
 import igentuman.nc.radiation.data.RadiationEvents;
 import igentuman.nc.radiation.data.RadiationManager;
@@ -79,9 +79,21 @@ public class NuclearCraft {
         }
     }
 
+    public static void registerConfigs()
+    {
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, MaterialsConfig.spec, "NuclearCraft/materials.toml");
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, CommonConfig.spec, "NuclearCraft/common.toml");
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ProcessorsConfig.spec, "NuclearCraft/processors.toml");
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, FissionConfig.spec, "NuclearCraft/fission.toml");
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, FusionConfig.spec, "NuclearCraft/fusion.toml");
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, TurbineConfig.spec, "NuclearCraft/turbine.toml");
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, RadiationConfig.spec, "NuclearCraft/radiation.toml");
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, WorldConfig.spec, "NuclearCraft/world.toml");
+    }
+
     public NuclearCraft() {
         instance = this;
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, CommonConfig.spec);
+        registerConfigs();
         packetHandler = new PacketHandler();
         forceLoadConfig();
         MinecraftForge.EVENT_BUS.addListener(this::serverStopped);

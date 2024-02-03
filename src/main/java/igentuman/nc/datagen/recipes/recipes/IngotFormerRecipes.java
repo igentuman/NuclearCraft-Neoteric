@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static net.minecraft.world.item.Items.OBSIDIAN;
+import static net.minecraft.world.item.Items.*;
 
 public class IngotFormerRecipes extends AbstractRecipeProvider {
 
@@ -56,6 +56,9 @@ public class IngotFormerRecipes extends AbstractRecipeProvider {
             }
         }
 
+        add(ingredient(COPPER_INGOT), fluidStack(Materials.copper, 144));
+        add(ingredient(IRON_INGOT), fluidStack(Materials.iron, 144));
+        add(ingredient(GOLD_INGOT), fluidStack(Materials.gold, 144));
 
         add(gemStack(Materials.boron_arsenide), fluidStack(Materials.boron_arsenide, 144));
         add(ingredient(OBSIDIAN), fluidStack(Materials.obsidian, 288), 2D, 2D);

@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:manufactory",
+  "input": [
+    {
+      "item": "minecraft:emerald"
+    }
+  ],
+  "output": [
+    {
+      "item": "nuclearcraft:emerald_dust"
+    }
+  ],
+  "powerModifier": 1.2,
+  "radiation": 1.0,
+  "timeModifier": 1.2
+}

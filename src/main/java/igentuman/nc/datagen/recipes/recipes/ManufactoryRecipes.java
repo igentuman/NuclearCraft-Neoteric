@@ -31,6 +31,8 @@ public class ManufactoryRecipes extends AbstractRecipeProvider {
         itemToItem(ingredient(CHARCOAL), dustStack(Materials.charcoal), 0.5D, 0.5D);
 
         itemToItem(ingredient(DIAMOND), dustStack(Materials.diamond), 1.5D, 1.5D);
+        itemToItem(ingredient(EMERALD), dustStack(Materials.emerald), 1.2D, 1.2D);
+        itemToItem(ingredient(QUARTZ), dustStack(Materials.quartz));
         itemToItem(ingotIngredient("iron"), dustStack(Materials.iron), 1.2D);
         itemToItem(ingotIngredient("netherite"), dustStack(Materials.netherite), 2.5D);
         itemToItem(ingotIngredient("gold"), dustStack(Materials.gold), 1.2D);

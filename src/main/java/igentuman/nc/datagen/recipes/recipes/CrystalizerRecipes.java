@@ -10,12 +10,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import static net.minecraft.world.item.Items.GOLD_INGOT;
+import static net.minecraft.world.item.Items.LAPIS_LAZULI;
+
 public class CrystalizerRecipes extends AbstractRecipeProvider {
 
     public static void generate(Consumer<FinishedRecipe> consumer) {
         CrystalizerRecipes.consumer = consumer;
         ID = Processors.CRYSTALLIZER;
-
+        itemsAndFluids(fluidIngredient(Materials.lapis, 144), ingredient(LAPIS_LAZULI));
         itemsAndFluids(fluidIngredient("boron_nitride_solution", 144), dustStack(Materials.boron_nitride));
         itemsAndFluids(fluidIngredient("uranium_oxide", 144), dustStack(Materials.yellowcake));
         itemsAndFluids(fluidIngredient(Materials.polonium, 1000), NcIngredient.stack(stack("mekanism:pellet_polonium", 1)), 3D);

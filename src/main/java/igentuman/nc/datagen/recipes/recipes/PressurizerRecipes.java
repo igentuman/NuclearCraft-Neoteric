@@ -11,7 +11,7 @@ import java.util.function.Consumer;
 
 import static igentuman.nc.setup.registration.NCBlocks.NC_BLOCKS;
 import static igentuman.nc.setup.registration.NCItems.*;
-import static net.minecraft.world.item.Items.NETHERITE_INGOT;
+import static net.minecraft.world.item.Items.*;
 
 public class PressurizerRecipes extends AbstractRecipeProvider {
 
@@ -24,6 +24,8 @@ public class PressurizerRecipes extends AbstractRecipeProvider {
                 itemToItem(ingredient(ingotTag(name)), plateStack(name));
             }
         }
+        itemToItem(ingredient(IRON_INGOT), plateStack(Materials.iron));
+        itemToItem(ingredient(COPPER_INGOT), plateStack(Materials.copper));
 
         itemToItem(isotopeIngredient(Materials.americium241, 9), ingredient(NC_BLOCKS.get("americium241").get().asItem()));
         itemToItem(isotopeIngredient(Materials.uranium238, 9), ingredient(NC_BLOCKS.get("uranium238").get().asItem()));

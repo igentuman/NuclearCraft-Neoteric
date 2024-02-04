@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import static igentuman.nc.handler.config.CommonConfig.RADIATION_CONFIG;
+import static igentuman.nc.handler.config.RadiationConfig.RADIATION_CONFIG;
 import static igentuman.nc.radiation.data.PlayerRadiation.getRadiationShielding;
 
 @Mixin(RadiationManager.class)

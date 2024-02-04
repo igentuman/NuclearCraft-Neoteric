@@ -2,7 +2,7 @@ package igentuman.nc.content.materials;
 
 import igentuman.nc.handler.config.CommonConfig;
 
-import static igentuman.nc.handler.config.CommonConfig.MATERIAL_PRODUCTS;
+import static igentuman.nc.handler.config.MaterialsConfig.MATERIAL_PRODUCTS;
 
 public class NCMaterialProduct {
     public String name;

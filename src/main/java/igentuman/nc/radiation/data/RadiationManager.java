@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 
-import static igentuman.nc.handler.config.CommonConfig.RADIATION_CONFIG;
+import static igentuman.nc.handler.config.RadiationConfig.RADIATION_CONFIG;
 import static igentuman.nc.radiation.data.WorldRadiation.pack;
 
 public class RadiationManager extends SavedData {

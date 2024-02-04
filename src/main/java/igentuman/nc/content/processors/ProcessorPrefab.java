@@ -19,8 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static igentuman.nc.handler.config.CommonConfig.PROCESSOR_CONFIG;
-
+import static igentuman.nc.handler.config.ProcessorsConfig.PROCESSOR_CONFIG;
 
 public class ProcessorPrefab <M extends NCProcessorContainer, U extends Screen & MenuAccess<M>> {
 

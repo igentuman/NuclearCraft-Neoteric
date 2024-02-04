@@ -13,7 +13,7 @@ import java.util.List;
 
 import igentuman.nc.block.entity.ElectromagnetBE;
 
-import static igentuman.nc.handler.config.CommonConfig.ELECTROMAGNETS_CONFIG;
+import static igentuman.nc.handler.config.FusionConfig.ELECTROMAGNETS_CONFIG;
 
 public class Electromagnets {
 

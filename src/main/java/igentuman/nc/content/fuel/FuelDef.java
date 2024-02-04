@@ -2,7 +2,7 @@ package igentuman.nc.content.fuel;
 
 import igentuman.nc.handler.config.CommonConfig;
 
-import static igentuman.nc.handler.config.CommonConfig.FUEL_CONFIG;
+import static igentuman.nc.handler.config.FissionConfig.FUEL_CONFIG;
 
 public class FuelDef {
 

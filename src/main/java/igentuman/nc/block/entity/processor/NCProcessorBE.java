@@ -50,7 +50,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static igentuman.nc.block.ProcessorBlock.ACTIVE;
-import static igentuman.nc.handler.config.CommonConfig.PROCESSOR_CONFIG;
+import static igentuman.nc.handler.config.ProcessorsConfig.PROCESSOR_CONFIG;
 import static igentuman.nc.util.ModUtil.*;
 
 public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE {

@@ -16,7 +16,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 import static igentuman.nc.NuclearCraft.MODID;
-import static igentuman.nc.handler.config.CommonConfig.FISSION_CONFIG;
+import static igentuman.nc.handler.config.FissionConfig.FISSION_CONFIG;
 import static igentuman.nc.multiblock.fission.FissionReactor.moderators;
 import static net.minecraft.world.item.Items.FILLED_MAP;
 

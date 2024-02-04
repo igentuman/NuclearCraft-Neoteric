@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import static igentuman.nc.NuclearCraft.MODID;
-import static igentuman.nc.handler.config.CommonConfig.TURBINE_CONFIG;
+import static igentuman.nc.handler.config.TurbineConfig.TURBINE_CONFIG;
 
 public class CoilDef {
     public double efficiency = 0;

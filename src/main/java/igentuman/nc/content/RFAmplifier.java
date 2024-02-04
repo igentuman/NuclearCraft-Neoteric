@@ -12,8 +12,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
-import static igentuman.nc.handler.config.CommonConfig.ELECTROMAGNETS_CONFIG;
-import static igentuman.nc.handler.config.CommonConfig.RF_AMPLIFIERS_CONFIG;
+import static igentuman.nc.handler.config.FusionConfig.RF_AMPLIFIERS_CONFIG;
 
 public class RFAmplifier {
 

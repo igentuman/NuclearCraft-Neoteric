@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import static igentuman.nc.handler.config.CommonConfig.IN_SITU_LEACHING;
+import static igentuman.nc.handler.config.ProcessorsConfig.IN_SITU_LEACHING;
 
 public class OreVeinProvider {
     private ServerLevel level;

@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import static igentuman.nc.handler.config.CommonConfig.RADIATION_CONFIG;
+import static igentuman.nc.handler.config.RadiationConfig.RADIATION_CONFIG;
 import static igentuman.nc.setup.Registration.RADIATION_RESISTANCE;
 
 public class PlayerRadiation implements IPlayerRadiationCapability {

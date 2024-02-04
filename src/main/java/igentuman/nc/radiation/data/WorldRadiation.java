@@ -7,7 +7,7 @@ import net.minecraft.world.level.Level;
 
 import java.util.HashMap;
 
-import static igentuman.nc.handler.config.CommonConfig.RADIATION_CONFIG;
+import static igentuman.nc.handler.config.RadiationConfig.RADIATION_CONFIG;
 
 public class WorldRadiation implements IWorldRadiationCapability {
 

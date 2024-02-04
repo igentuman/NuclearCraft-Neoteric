@@ -1,12 +1,12 @@
 package igentuman.nc.world.ore;
 
 import igentuman.nc.NuclearCraft;
-import igentuman.nc.handler.config.CommonConfig;
 import igentuman.nc.content.materials.Ores;
 
 import java.util.List;
 
-import static igentuman.nc.handler.config.CommonConfig.ORE_CONFIG;
+import static igentuman.nc.handler.config.MaterialsConfig.ORE_CONFIG;
+
 
 public class NCOre {
     public boolean initialized = false;

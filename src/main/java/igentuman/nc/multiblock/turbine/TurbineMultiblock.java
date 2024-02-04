@@ -15,7 +15,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import java.util.ArrayList;
 import java.util.List;
 
-import static igentuman.nc.handler.config.CommonConfig.TURBINE_CONFIG;
+import static igentuman.nc.handler.config.TurbineConfig.TURBINE_CONFIG;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.*;
 import static igentuman.nc.util.TagUtil.getBlocksByTagKey;
 

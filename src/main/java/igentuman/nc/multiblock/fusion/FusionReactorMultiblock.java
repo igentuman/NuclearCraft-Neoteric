@@ -19,7 +19,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import java.util.HashMap;
 import java.util.List;
 
-import static igentuman.nc.handler.config.CommonConfig.FUSION_CONFIG;
+import static igentuman.nc.handler.config.FusionConfig.FUSION_CONFIG;
 import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_BLOCKS;
 import static net.minecraft.core.Direction.*;
 import static net.minecraft.world.level.block.Blocks.AIR;

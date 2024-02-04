@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static igentuman.nc.handler.config.CommonConfig.MATERIAL_PRODUCTS;
-
+import static igentuman.nc.handler.config.MaterialsConfig.MATERIAL_PRODUCTS;
 
 public class Materials extends MaterialsManager {
 

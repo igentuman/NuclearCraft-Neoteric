@@ -21,7 +21,7 @@ public class EnergyBar extends NCGuiElement {
     }
 
     public List<Component> getTooltips() {
-        tooltips.add(Component.literal(scaledFormat(energy.getEnergyStored())+"/"+scaledFormat(energy.getMaxEnergyStored())+" FE"));
+        tooltips.add(Component.nullToEmpty(scaledFormat(energy.getEnergyStored())+"/"+scaledFormat(energy.getMaxEnergyStored())+" FE"));
         return tooltips;
     }
 

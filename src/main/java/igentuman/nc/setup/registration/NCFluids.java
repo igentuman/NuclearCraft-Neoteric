@@ -22,11 +22,8 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
-import net.minecraftforge.common.SoundActions;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.registries.DeferredRegister;
@@ -45,12 +42,12 @@ import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.content.materials.Materials.slurries;
 import static igentuman.nc.util.ModUtil.isMekanismLoadeed;
+import static net.minecraft.sounds.SoundEvents.BUCKET_EMPTY;
+import static net.minecraft.sounds.SoundEvents.BUCKET_FILL;
 
 public class NCFluids {
     public static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(ForgeRegistries.FLUIDS, MODID);
-    public static final DeferredRegister<FluidType> FLUID_TYPES = DeferredRegister.create(
-            ForgeRegistries.Keys.FLUID_TYPES, MODID
-    );
+
     public static final HashMap<String, FluidEntry> ALL_FLUID_ENTRIES = new HashMap<>();
     public static final Set<NCBlocks.BlockEntry<? extends LiquidBlock>> ALL_FLUID_BLOCKS = new HashSet<>();
     public static HashMap<String, FluidEntry> NC_MATERIALS = new HashMap<>();
@@ -65,7 +62,6 @@ public class NCFluids {
     public static void init() {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         FLUIDS.register(bus);
-        FLUID_TYPES.register(bus);
         materialFluids();
         gases();
         fuel();
@@ -280,22 +276,22 @@ public class NCFluids {
             }
         }
     }
-    public static Consumer<FluidType.Properties> meltBuilder(int temperature)
+    public static Consumer<FluidAttributes.Builder> meltBuilder(int temperature)
     {
         int light = 1;
         int density = 2000;
         int visconsity = 3000;
-        return builder -> builder.temperature(temperature).density(density).viscosity(visconsity).lightLevel(light);
+        return builder -> builder.temperature(temperature).density(density).viscosity(visconsity).luminosity(light);
     }
 
-    public static Consumer<FluidType.Properties> liquidBuilder(int temperature)
+    public static Consumer<FluidAttributes.Builder> liquidBuilder(int temperature)
     {
         int density = 400;
         int visconsity = 1000;
         return builder -> builder.temperature(temperature).density(density).viscosity(visconsity);
     }
 
-    public static Consumer<FluidType.Properties> gasBuilder(int temperature)
+    public static Consumer<FluidAttributes.Builder> gasBuilder(int temperature)
     {
         int density = -1000;
         int visconsity = 0;
@@ -306,7 +302,6 @@ public class NCFluids {
             RegistryObject<NCFluid> still,
             NCBlocks.BlockEntry<NCFluidBlock> block,
             RegistryObject<BucketItem> bucket,
-            RegistryObject<FluidType> type,
             List<Property<?>> properties,
             int color
     )
@@ -340,7 +335,7 @@ public class NCFluids {
         }
 
         private static FluidEntry make(
-                String name, ResourceLocation stillTex, ResourceLocation flowingTex, Consumer<FluidType.Properties> buildAttributes
+                String name, ResourceLocation stillTex, ResourceLocation flowingTex, Consumer<FluidAttributes.Builder> buildAttributes
         )
         {
             return make(name, 0, stillTex, flowingTex, buildAttributes, 0xFFFFFFFF, false);
@@ -354,7 +349,7 @@ public class NCFluids {
         private static FluidEntry make(
                 String name, int burnTime,
                 ResourceLocation stillTex, ResourceLocation flowingTex,
-                @Nullable Consumer<FluidType.Properties> buildAttributes,
+                @Nullable Consumer<FluidAttributes.Builder> buildAttributes,
                 int color,
                 boolean isGas
         )
@@ -368,7 +363,7 @@ public class NCFluids {
         private static FluidEntry make(
                 String name, ResourceLocation stillTex, ResourceLocation flowingTex,
                 Function<FluidEntry, ? extends NCFluid> makeStill, Function<FluidEntry, ? extends NCFluid> makeFlowing,
-                @Nullable Consumer<FluidType.Properties> buildAttributes, ImmutableList<Property<?>> properties,
+                @Nullable Consumer<FluidAttributes.Builder> buildAttributes, ImmutableList<Property<?>> properties,
                 int color
         )
         {
@@ -379,28 +374,18 @@ public class NCFluids {
                 String name, int burnTime,
                 ResourceLocation stillTex, ResourceLocation flowingTex,
                 Function<FluidEntry, ? extends NCFluid> makeStill, Function<FluidEntry, ? extends NCFluid> makeFlowing,
-                @Nullable Consumer<FluidType.Properties> buildAttributes, List<Property<?>> properties, int color, boolean isGas
+                @Nullable Consumer<FluidAttributes.Builder> buildAttributes, List<Property<?>> properties, int color, boolean isGas
         )
         {
-            FluidType.Properties builder = FluidType.Properties.create();
+            FluidAttributes.Builder builder = FluidAttributes.builder(stillTex, flowingTex);
             if(isGas || name.contains("acid")) {
                 builder
-                        .sound(SoundActions.BUCKET_EMPTY, SoundEvents.FIRE_EXTINGUISH)
-                        .sound(SoundActions.BUCKET_FILL, SoundEvents.BUCKET_FILL)
-                        .sound(SoundActions.FLUID_VAPORIZE, SoundEvents.FIRE_EXTINGUISH);
+                        .sound(BUCKET_EMPTY, SoundEvents.FIRE_EXTINGUISH)
+                        .sound(BUCKET_FILL, BUCKET_FILL);
             }
             if(buildAttributes!=null)
                 buildAttributes.accept(builder);
-            RegistryObject<FluidType> type;
-            if(color == 0xFFFFFFFF) {
-                type = FLUID_TYPES.register(
-                        name, () -> makeTypeWithTextures(builder, stillTex, flowingTex)
-                );
-            } else {
-                type = FLUID_TYPES.register(
-                        name, () -> makeColoredTypeWithTextures(builder, stillTex, flowingTex, color)
-                );
-            }
+
 
             Mutable<FluidEntry> thisMutable = new MutableObject<>();
             RegistryObject<NCFluid> still = FLUIDS.register(name, () -> NCFluid.makeFluid(
@@ -413,74 +398,15 @@ public class NCFluids {
 
             NCBlocks.BlockEntry<NCFluidBlock> block = new NCBlocks.BlockEntry<>(
                     name+"_fluid_block",
-                    () -> BlockBehaviour.Properties.copy(Blocks.WATER).noLootTable().noCollission(),
+                    () -> BlockBehaviour.Properties.copy(Blocks.WATER).noCollission(),
                     p -> new NCFluidBlock(thisMutable.getValue(), p)
             );
             RegistryObject<BucketItem> bucket = NCItems.ITEMS.register(name+"_bucket", () -> makeBucket(still, burnTime));
-            FluidEntry entry = new FluidEntry(flowing, still, block, bucket, type, properties, color);
+            FluidEntry entry = new FluidEntry(flowing, still, block, bucket, properties, color);
             thisMutable.setValue(entry);
             ALL_FLUID_BLOCKS.add(block);
             ALL_FLUID_ENTRIES.put(name, entry);
             return entry;
-        }
-
-        private static FluidType makeColoredTypeWithTextures(
-                FluidType.Properties builder, ResourceLocation stillTex, ResourceLocation flowingTex, int color
-        )
-        {
-            return new FluidType(builder)
-            {
-                @Override
-                public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer)
-                {
-                    consumer.accept(new IClientFluidTypeExtensions()
-                    {
-                        @Override
-                        public ResourceLocation getStillTexture()
-                        {
-                            return stillTex;
-                        }
-
-                        @Override
-                        public ResourceLocation getFlowingTexture()
-                        {
-                            return flowingTex;
-                        }
-                        @Override
-                        public int getTintColor()
-                        {
-                            return color;
-                        }
-                    });
-                }
-            };
-        }
-
-        private static FluidType makeTypeWithTextures(
-                FluidType.Properties builder, ResourceLocation stillTex, ResourceLocation flowingTex
-        )
-        {
-            return new FluidType(builder)
-            {
-                @Override
-                public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer)
-                {
-                    consumer.accept(new IClientFluidTypeExtensions()
-                    {
-                        @Override
-                        public ResourceLocation getStillTexture()
-                        {
-                            return stillTex;
-                        }
-
-                        @Override
-                        public ResourceLocation getFlowingTexture()
-                        {
-                            return flowingTex;
-                        }
-                    });
-                }
-            };
         }
 
 

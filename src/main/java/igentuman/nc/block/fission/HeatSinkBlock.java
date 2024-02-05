@@ -8,6 +8,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -35,6 +36,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.handler.event.client.InputEvents.DESCRIPTIONS_SHOW;
@@ -77,31 +79,31 @@ public class HeatSinkBlock extends Block implements EntityBlock {
             if (def.getValidator() instanceof HeatSinkDef.Validator) {
                 for (String[] condition : def.getValidator().blockLines().keySet()) {
                     if (i > 0) {
-                        lines.add(Component.translatable("heat_sink.and").getString());
+                        lines.add(new TranslatableComponent("heat_sink.and").getString());
                     }
-                    String blocksLine = String.join(" "+Component.translatable("heat_sink.or").getString()+" ", getBlockNames(condition[2]));
+                    String blocksLine = String.join(" "+new TranslatableComponent("heat_sink.or").getString()+" ", getBlockNames(condition[2]));
                     switch (condition[0]) {
                         case ">":
-                            lines.add(Component.translatable("heat_sink.atleast"+(condition[1].equals("1") ? "":"s") , condition[1], blocksLine).getString());
+                            lines.add(new TranslatableComponent("heat_sink.atleast"+(condition[1].equals("1") ? "":"s") , condition[1], blocksLine).getString());
                             break;
                         case "-":
-                            lines.add(Component.translatable("heat_sink.between", condition[1], blocksLine).getString());
+                            lines.add(new TranslatableComponent("heat_sink.between", condition[1], blocksLine).getString());
                             break;
                         case "=":
-                            lines.add(Component.translatable("heat_sink.exact"+(condition[1].equals("1") ? "":"s"), condition[1], blocksLine).getString());
+                            lines.add(new TranslatableComponent("heat_sink.exact"+(condition[1].equals("1") ? "":"s"), condition[1], blocksLine).getString());
                             break;
                         case "<":
-                            lines.add(Component.translatable("heat_sink.less_than", condition[1], blocksLine).getString());
+                            lines.add(new TranslatableComponent("heat_sink.less_than", condition[1], blocksLine).getString());
                             break;
                         case "^":
-                            lines.add(Component.translatable("heat_sink.in_corner", condition[1], blocksLine).getString());
+                            lines.add(new TranslatableComponent("heat_sink.in_corner", condition[1], blocksLine).getString());
                             break;
                     }
                     i++;
                 }
-                placementRule = Component.translatable("heat_sink.placement.rule", String.join(" ", lines));
+                placementRule = new TranslatableComponent("heat_sink.placement.rule", String.join(" ", lines));
             } else {
-                placementRule = Component.translatable("heat_sink.placement.error");
+                placementRule = new TranslatableComponent("heat_sink.placement.error");
             }
         }
         return placementRule;
@@ -163,9 +165,9 @@ public class HeatSinkBlock extends Block implements EntityBlock {
             if(be instanceof FissionHeatSinkBE) {
                 int id = level.random.nextInt(10);
                 if(((FissionHeatSinkBE) be).isValid(true)) {
-                    player.sendSystemMessage(Component.translatable("message.heat_sink.valid"+id));
+                    player.sendMessage(new TranslatableComponent("message.heat_sink.valid"+id), UUID.randomUUID());
                 } else {
-                    player.sendSystemMessage(Component.translatable("message.heat_sink.invalid"+id));
+                    player.sendMessage(new TranslatableComponent("message.heat_sink.invalid"+id), UUID.randomUUID());
                 }
             }
         }
@@ -193,12 +195,12 @@ public class HeatSinkBlock extends Block implements EntityBlock {
     public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag) {
         if(asItem().toString().contains("empty")) return;
         initParams();
-        list.add(TextUtils.applyFormat(Component.translatable("heat_sink.heat.descr", TextUtils.numberFormat(heat)), ChatFormatting.GOLD));
+        list.add(TextUtils.applyFormat(new TranslatableComponent("heat_sink.heat.descr", TextUtils.numberFormat(heat)), ChatFormatting.GOLD));
 
         if(DESCRIPTIONS_SHOW) {
             list.add(TextUtils.applyFormat(getPlacementRule(), ChatFormatting.AQUA));
         } else {
-            list.add(TextUtils.applyFormat(Component.translatable("tooltip.toggle_description_keys"), ChatFormatting.GRAY));
+            list.add(TextUtils.applyFormat(new TranslatableComponent("tooltip.toggle_description_keys"), ChatFormatting.GRAY));
         }
     }
 

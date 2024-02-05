@@ -10,12 +10,11 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import org.jetbrains.annotations.NotNull;
@@ -26,6 +25,7 @@ import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BE;
+import static net.minecraftforge.fluids.capability.CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
 
 public class BarrelBE extends NuclearCraftBE implements ISizeToggable {
 
@@ -64,14 +64,6 @@ public class BarrelBE extends NuclearCraftBE implements ISizeToggable {
         return ClientboundBlockEntityDataPacket.create(this);
     }
 
-    @Nonnull
-    @Override
-    public @NotNull ModelData getModelData() {
-        return ModelData.builder()
-                .with(SIDE_CONFIG, sideConfig)
-                .build();
-    }
-
     public void tickClient() {
 
     }
@@ -92,7 +84,7 @@ public class BarrelBE extends NuclearCraftBE implements ISizeToggable {
             ) continue;
             BlockEntity be = level.getBlockEntity(worldPosition.relative(direction));
             if (be != null) {
-                IFluidHandler sideHandler = be.getCapability(ForgeCapabilities.FLUID_HANDLER, direction.getOpposite()).orElse(null);
+                IFluidHandler sideHandler = be.getCapability(FLUID_HANDLER_CAPABILITY, direction.getOpposite()).orElse(null);
                 if(sideHandler == null) continue;
                 if (currentAmount.get() > 0 && sideConfig.get(direction.ordinal()) == SideMode.OUT) {
                     int accepted = sideHandler.fill(fluidTank.getFluidInTank(0), IFluidHandler.FluidAction.EXECUTE);
@@ -124,7 +116,7 @@ public class BarrelBE extends NuclearCraftBE implements ISizeToggable {
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (cap == ForgeCapabilities.FLUID_HANDLER && (side != null && sideConfig.get(side.ordinal()) != SideMode.DISABLED)) {
+        if (cap == FLUID_HANDLER_CAPABILITY && (side != null && sideConfig.get(side.ordinal()) != SideMode.DISABLED)) {
             return getFluidHandler().cast();
         }
         return super.getCapability(cap, side);

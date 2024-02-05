@@ -5,6 +5,7 @@ import igentuman.nc.client.gui.FusionCoreScreen;
 import igentuman.nc.client.gui.IVerticalBarScreen;
 import igentuman.nc.client.gui.element.NCGuiElement;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -32,7 +33,7 @@ public class VerticalBar extends NCGuiElement {
 
     public List<Component> getTooltips() {
         if(hintKey.isEmpty()) return tooltips;
-        tooltips.add(Component.translatable(hintKey, scaledFormat(barValue), scaledFormat(maxValue)));
+        tooltips.add(new TranslatableComponent(hintKey, scaledFormat(barValue), scaledFormat(maxValue)));
         return tooltips;
     }
 

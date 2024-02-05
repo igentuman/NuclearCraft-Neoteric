@@ -8,6 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
@@ -39,7 +40,7 @@ public class SpecialRecipeBuilder implements FinishedRecipe {
         //NO-OP
     }
 
-    private static <T> ResourceLocation getName(IForgeRegistry<T> registry, T element) {
+    private static <T extends IForgeRegistryEntry<T>> ResourceLocation getName(IForgeRegistry<T> registry, T element) {
         return registry.getKey(element);
     }
 

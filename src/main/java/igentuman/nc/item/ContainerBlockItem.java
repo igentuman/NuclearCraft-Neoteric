@@ -3,6 +3,7 @@ package igentuman.nc.item;
 import igentuman.nc.setup.registration.CreativeTabs;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.BlockItem;
@@ -55,8 +56,8 @@ public class ContainerBlockItem extends BlockItem
 	@Override
 	public void appendHoverText(ItemStack stack, @javax.annotation.Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
-		list.add(Component.translatable("tooltip.nc.content_saved").withStyle(ChatFormatting.GRAY));
-		list.add(Component.translatable("tooltip.nc.use_multitool").withStyle(ChatFormatting.YELLOW));
+		list.add(new TranslatableComponent("tooltip.nc.content_saved").withStyle(ChatFormatting.GRAY));
+		list.add(new TranslatableComponent("tooltip.nc.use_multitool").withStyle(ChatFormatting.YELLOW));
 	}
 
 }

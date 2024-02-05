@@ -14,8 +14,10 @@ import net.minecraft.client.gui.components.Widget;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraftforge.client.event.ContainerScreenEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,7 +81,7 @@ public class SideConfigScreen<T extends NCProcessorContainer<T>> extends Abstrac
     }
 
     public SideConfigScreen(AbstractContainerScreen parentScreen, int slotId) {
-        this((T)parentScreen.getMenu(), NcClient.tryGetClientPlayer().getInventory(), Component.empty());
+        this((T)parentScreen.getMenu(), NcClient.tryGetClientPlayer().getInventory(), Component.nullToEmpty(""));
         this.parentScreen = parentScreen;
         this.slotId = slotId;
     }
@@ -91,7 +93,7 @@ public class SideConfigScreen<T extends NCProcessorContainer<T>> extends Abstrac
         int j = this.topPos;
         this.renderBg(matrixStack, partialTicks, mouseX, mouseY);
         net.minecraftforge.common.MinecraftForge.EVENT_BUS
-                .post(new net.minecraftforge.client.event.ContainerScreenEvent.Render.Background(this, matrixStack, mouseX, mouseY));
+                .post(new ContainerScreenEvent.DrawBackground(this, matrixStack, mouseX, mouseY));
         RenderSystem.disableDepthTest();
         for(Widget widget : this.renderables) {
             widget.render(matrixStack, mouseX, mouseY, partialTicks);
@@ -127,7 +129,7 @@ public class SideConfigScreen<T extends NCProcessorContainer<T>> extends Abstrac
 
     @Override
     protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
-        drawCenteredString(matrixStack, font,  Component.translatable("processor_slot_mode.title"), imageWidth/4, titleLabelY, 0xffffff);
+        drawCenteredString(matrixStack, font,  new TranslatableComponent("processor_slot_mode.title"), imageWidth/4, titleLabelY, 0xffffff);
     }
 
     @Override

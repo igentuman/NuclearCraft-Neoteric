@@ -17,26 +17,8 @@ import java.util.List;
 
 public class Generator {
     @NotNull
-    public static PlacedFeature createOregen(String ore) {
-            String materialName = ore.replaceAll("_deepslate|_nether|_end", "");
-            RuleTest test = OreFeatures.STONE_ORE_REPLACEABLES;
-            if(ore.contains("deepslate")) {
-                test = OreFeatures.DEEPSLATE_ORE_REPLACEABLES;
-            } else if(ore.contains("nether")) {
-                test = OreFeatures.NETHER_ORE_REPLACEABLES;
-            }
-            OreConfiguration config = new OreConfiguration(
-                    test,
-                    NCBlocks.ORE_BLOCKS.get(ore).get().defaultBlockState(),
-                    Ores.all().get(materialName).config().veinSize
-            );
-            return createPlacedFeature(new ConfiguredFeature<>(Feature.ORE, config),
-                    CountPlacement.of(Ores.all().get(materialName).config().veinAmount),
-                    InSquarePlacement.spread(),
-                    new DimensionBiomeFilter(key -> Ores.all().get(materialName).config().dimensions.contains(key)),
-                    HeightRangePlacement.uniform(
-                            VerticalAnchor.absolute(Ores.all().get(materialName).config().height[0]),
-                            VerticalAnchor.absolute(Ores.all().get(materialName).config().height[1])));
+    public static void createOregen(String ore) {
+
 
     }
 

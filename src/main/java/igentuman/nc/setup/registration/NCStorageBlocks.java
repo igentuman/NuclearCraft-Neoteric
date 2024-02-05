@@ -34,9 +34,9 @@ public class NCStorageBlocks {
     public static HashMap<String, RegistryObject<Item>> BLOCK_ITEMS = new HashMap<>();
     public static final Item.Properties ITEM_PROPERTIES = new Item.Properties().tab(CreativeTabs.NC_ITEMS);
     public static final BlockBehaviour.Properties BLOCK_PROPERTIES = BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.METAL).strength(2f).requiresCorrectToolForDrops().noOcclusion();
-    private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, MODID);
+    private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, MODID);
     public static HashMap<String, RegistryObject<BlockEntityType<? extends BlockEntity>>> STORAGE_BE = new HashMap<>();
-    private static final DeferredRegister<MenuType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.MENU_TYPES, MODID);
+    private static final DeferredRegister<MenuType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.CONTAINERS, MODID);
     public static final RegistryObject<MenuType<StorageContainerContainer<?>>> STORAGE_CONTAINER = CONTAINERS.register("storage_container",
             () -> IForgeMenuType.create((windowId, inv, data) -> new StorageContainerContainer<>(windowId, data.readBlockPos(), inv)));
     public static void init() {

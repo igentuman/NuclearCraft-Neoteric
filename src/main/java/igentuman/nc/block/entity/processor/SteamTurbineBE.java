@@ -14,15 +14,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static igentuman.nc.compat.GlobalVars.CATALYSTS;
-import static igentuman.nc.compat.GlobalVars.RECIPE_CLASSES;
 import static igentuman.nc.handler.config.CommonConfig.ENERGY_GENERATION;
+import static net.minecraftforge.energy.CapabilityEnergy.ENERGY;
 
 public class SteamTurbineBE extends NCProcessorBE<SteamTurbineBE.Recipe> {
     @NBTField
@@ -88,7 +86,7 @@ public class SteamTurbineBE extends NCProcessorBE<SteamTurbineBE.Recipe> {
             for (Direction direction : Direction.values()) {
                 BlockEntity be = level.getBlockEntity(worldPosition.relative(direction));
                 if (be != null) {
-                    boolean doContinue = be.getCapability(ForgeCapabilities.ENERGY, direction.getOpposite()).map(handler -> {
+                    boolean doContinue = be.getCapability(ENERGY, direction.getOpposite()).map(handler -> {
                                 if (handler.canReceive()) {
                                     int received = handler.receiveEnergy(Math.min(capacity.get(), energyToSend()), false);
                                     capacity.addAndGet(-received);

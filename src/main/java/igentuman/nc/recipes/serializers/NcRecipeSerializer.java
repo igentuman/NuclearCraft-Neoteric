@@ -17,14 +17,18 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.registries.ForgeRegistryEntry;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 
+import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.recipes.NcRecipeSerializers.SERIALIZERS;
 
-public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerializer<RECIPE> {
+public class NcRecipeSerializer<RECIPE extends NcRecipe> extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<RECIPE> {
 
     final IFactory<RECIPE> factory;
+    private ResourceLocation regName;
 
     public NcRecipeSerializer(IFactory<RECIPE> factory) {
         this.factory = factory;

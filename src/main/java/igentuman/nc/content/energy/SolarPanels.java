@@ -6,7 +6,6 @@ import igentuman.nc.block.entity.energy.solar.AdvancedSolarBE;
 import igentuman.nc.block.entity.energy.solar.BasicSolarBE;
 import igentuman.nc.block.entity.energy.solar.DuSolarBE;
 import igentuman.nc.block.entity.energy.solar.EliteSolarBE;
-import igentuman.nc.handler.config.CommonConfig;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
 import java.util.ArrayList;

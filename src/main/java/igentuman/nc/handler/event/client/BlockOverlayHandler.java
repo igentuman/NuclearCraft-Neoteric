@@ -21,19 +21,17 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.*;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RenderHighlightEvent;
+import net.minecraftforge.client.event.DrawSelectionEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -106,14 +104,14 @@ public class BlockOverlayHandler {
     }
 
     @SubscribeEvent
-    public static void blockOverlayEvent(RenderHighlightEvent.Block event) {
+    public static void blockOverlayEvent(DrawSelectionEvent.HighlightBlock event) {
         HitResult hit = event.getTarget();
         ItemStack stackItem = Minecraft.getInstance().player.getMainHandItem();
         handleQNP(event, hit, stackItem);
         handleMultitool(event, hit, stackItem);
     }
 
-    private static void handleMultitool(RenderHighlightEvent.Block event, HitResult hit, ItemStack stackItem) {
+    private static void handleMultitool(DrawSelectionEvent.HighlightBlock event, HitResult hit, ItemStack stackItem) {
         if (hit.getType() == HitResult.Type.BLOCK && stackItem.getItem() instanceof MultitoolItem multitool) {
             BlockHitResult blockRayTraceResult = (BlockHitResult) hit;
             event.setCanceled(true);
@@ -162,7 +160,7 @@ public class BlockOverlayHandler {
         }
     }
 
-    private static void handleQNP(RenderHighlightEvent.Block event, HitResult hit, ItemStack stackItem) {
+    private static void handleQNP(DrawSelectionEvent.HighlightBlock event, HitResult hit, ItemStack stackItem) {
         if (hit.getType() == HitResult.Type.BLOCK && stackItem.getItem() instanceof QNP qnp) {
             BlockHitResult blockRayTraceResult = (BlockHitResult) hit;
             event.setCanceled(true);
@@ -193,10 +191,10 @@ public class BlockOverlayHandler {
     public static void onRenderPre(RenderPlayerEvent.Pre event) {
         if (event.getEntity().getUUID().equals(Minecraft.getInstance().player.getUUID()) && Minecraft.getInstance().options.getCameraType() == CameraType.FIRST_PERSON)
             return;
-        if (event.getEntity().getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof QNP)
-            event.getEntity().startUsingItem(InteractionHand.MAIN_HAND);
-        else if (event.getEntity().getItemInHand(InteractionHand.OFF_HAND).getItem() instanceof QNP)
-            event.getEntity().startUsingItem(InteractionHand.OFF_HAND);
+        if (event.getPlayer().getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof QNP)
+            event.getPlayer().startUsingItem(InteractionHand.MAIN_HAND);
+        else if (event.getPlayer().getItemInHand(InteractionHand.OFF_HAND).getItem() instanceof QNP)
+            event.getPlayer().startUsingItem(InteractionHand.OFF_HAND);
     }
 
     public static List<BlockPos> outlineBlocks = new ArrayList<>();

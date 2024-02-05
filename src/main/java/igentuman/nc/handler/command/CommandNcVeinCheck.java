@@ -1,14 +1,18 @@
 package igentuman.nc.handler.command;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import igentuman.nc.recipes.type.OreVeinRecipe;
 import igentuman.nc.util.insitu_leaching.WorldVeinsManager;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.common.MinecraftForge;
+
+import java.util.UUID;
 
 public class CommandNcVeinCheck {
 
@@ -22,8 +26,8 @@ public class CommandNcVeinCheck {
         });
     }
 
-    public static int execute(CommandSourceStack ctx) {
-        ServerPlayer pl = ctx.getPlayer();
+    public static int execute(CommandSourceStack ctx) throws CommandSyntaxException {
+        ServerPlayer pl = ctx.getPlayerOrException();
         ServerLevel level = pl.getLevel();
         int qty = 0;
         OreVeinRecipe vein = WorldVeinsManager.get(level).getWorldVeinData(level).getVeinForChunk(pl.chunkPosition().x, pl.chunkPosition().z);
@@ -32,8 +36,8 @@ public class CommandNcVeinCheck {
             name = vein.getId().getPath().replace("nc_ore_veins/", "");
             qty = WorldVeinsManager.get(level).getWorldVeinData(level).getBlocksLeft(pl.chunkPosition().x, pl.chunkPosition().z);
         }
-        pl.sendSystemMessage(Component.translatable("nc.ore_vein."+name));
-        pl.sendSystemMessage(Component.translatable("amount", qty));
+        pl.sendMessage(new TranslatableComponent("nc.ore_vein."+name), UUID.randomUUID());
+        pl.sendMessage(new TranslatableComponent("amount", qty), UUID.randomUUID());
         return 0;
     }
 }

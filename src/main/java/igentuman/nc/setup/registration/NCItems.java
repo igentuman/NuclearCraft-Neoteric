@@ -116,7 +116,7 @@ public class NCItems {
                 "wanderer"
         );
         for(String name: items) {
-            NC_RECORDS.put(name, ITEMS.register(name, () -> new RecordItem(15, SOUND_MAP.get(name), ITEM_PROPERTIES, 300)));
+            NC_RECORDS.put(name, ITEMS.register(name, () -> new RecordItem(15, SOUND_MAP.get(name), ITEM_PROPERTIES)));
             ALL_NC_ITEMS.put(name, NC_RECORDS.get(name));
         }
     }

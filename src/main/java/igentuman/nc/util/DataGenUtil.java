@@ -31,7 +31,7 @@ public class DataGenUtil
 			if (obj.getPath().startsWith("models/"))
 				prefix = "";
 			Resource objResource = helper.getResource(obj, PackType.CLIENT_RESOURCES, "", prefix);
-			InputStream objStream = objResource.open();
+			InputStream objStream = objResource.getInputStream();
 			String fullObj = IOUtils.toString(objStream, StandardCharsets.US_ASCII);
 			String libLoc = findFirstOccurrenceGroup(MTLLIB, fullObj);
 			String libName = findFirstOccurrenceGroup(USEMTL, fullObj);
@@ -48,7 +48,7 @@ public class DataGenUtil
 		try
 		{
 			Resource mtlResource = helper.getResource(mtl, PackType.CLIENT_RESOURCES, "", "models");
-			String fullMtl = IOUtils.toString(mtlResource.open(), StandardCharsets.US_ASCII);
+			String fullMtl = IOUtils.toString(mtlResource.getInputStream(), StandardCharsets.US_ASCII);
 			Matcher materialMatcher = NEWMTL.matcher(fullMtl);
 			while(materialMatcher.find()&&!materialMatcher.group(1).equals(materialName)) ;
 			int materialStart = materialMatcher.start();

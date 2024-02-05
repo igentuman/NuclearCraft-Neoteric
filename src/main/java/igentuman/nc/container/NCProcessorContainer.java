@@ -11,6 +11,7 @@ import igentuman.nc.handler.sided.SlotModePair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
@@ -18,7 +19,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
@@ -30,6 +30,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
 
 public class NCProcessorContainer<T extends AbstractContainerMenu> extends AbstractContainerMenu {
     protected NCProcessorBE blockEntity;
@@ -70,7 +71,7 @@ public class NCProcessorContainer<T extends AbstractContainerMenu> extends Abstr
             if(slots.getSlotType(i).contains("item")) {
                 int idx = slotIdx;
                 if(!processor.isSlotHidden(idx+slots.getInputFluids())) {
-                    blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
+                    blockEntity.getCapability(ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
                         addSlot(new SlotItemHandler(h, idx, pos[0], pos[1]));
                     });
                 }
@@ -182,7 +183,7 @@ public class NCProcessorContainer<T extends AbstractContainerMenu> extends Abstr
     }
 
     public Component getTitle() {
-        return Component.translatable("block."+MODID+"."+name);
+        return new TranslatableComponent("block."+MODID+"."+name);
     }
 
     public IEnergyStorage getEnergy() {

@@ -22,7 +22,7 @@ public class InputEvents {
         MinecraftForge.EVENT_BUS.addListener(InputEvents::onScreenKeyPressed);
         MinecraftForge.EVENT_BUS.addListener(InputEvents::onScreenKeyReleased);
     }
-    public static void onKeyPressed(InputEvent.Key event) {
+    public static void onKeyPressed(InputEvent.KeyInputEvent event) {
         if (event.getKey() == KEY_N && event.getModifiers() == MOD_CONTROL) {
             if(event.getAction() == RELEASE) {
                 DESCRIPTIONS_SHOW = !DESCRIPTIONS_SHOW;
@@ -36,13 +36,13 @@ public class InputEvents {
         }
     }
 
-    public static void onScreenKeyPressed(ScreenEvent.KeyPressed event) {
+    public static void onScreenKeyPressed(ScreenEvent.KeyboardKeyPressedEvent event) {
         if (event.getKeyCode() == KEY_LSHIFT || event.getKeyCode() == KEY_RSHIFT) {
             SHIFT_PRESSED = true;
         }
     }
 
-    public static void onScreenKeyReleased(ScreenEvent.KeyReleased event) {
+    public static void onScreenKeyReleased(ScreenEvent.KeyboardKeyReleasedEvent event) {
         if (event.getKeyCode() == KEY_LSHIFT || event.getKeyCode() == KEY_RSHIFT) {
             SHIFT_PRESSED = false;
         }

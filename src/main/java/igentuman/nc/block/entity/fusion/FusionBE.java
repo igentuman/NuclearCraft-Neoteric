@@ -2,11 +2,8 @@ package igentuman.nc.block.entity.fusion;
 
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.NuclearCraftBE;
-import igentuman.nc.block.entity.fission.FissionBE;
-import igentuman.nc.block.entity.fission.FissionControllerBE;
 import igentuman.nc.multiblock.AbstractNCMultiblock;
 import igentuman.nc.multiblock.IMultiblockAttachable;
-import igentuman.nc.multiblock.fission.FissionReactorMultiblock;
 import igentuman.nc.multiblock.fusion.FusionReactor;
 import igentuman.nc.multiblock.fusion.FusionReactorMultiblock;
 import igentuman.nc.util.annotation.NBTField;

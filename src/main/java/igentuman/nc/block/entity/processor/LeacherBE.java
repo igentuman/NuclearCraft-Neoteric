@@ -28,9 +28,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.items.CapabilityItemHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -361,7 +361,7 @@ public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
     @Nonnull
     @Override
     public final <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (cap == ForgeCapabilities.ITEM_HANDLER) { //not letting to access item handler from outside
+        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) { //not letting to access item handler from outside
             return LazyOptional.empty();
         }
         return super.getCapability(cap, side);

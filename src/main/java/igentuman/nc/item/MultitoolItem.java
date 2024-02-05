@@ -4,6 +4,7 @@ import igentuman.nc.setup.registration.CreativeTabs;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -94,7 +95,7 @@ public class MultitoolItem extends Item
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
-		list.add(Component.translatable("tooltip.nc.multitool.desc").withStyle(ChatFormatting.YELLOW));
-		list.add(Component.translatable("tooltip.nc.multitool.shift.desc").withStyle(ChatFormatting.YELLOW));
+		list.add(new TranslatableComponent("tooltip.nc.multitool.desc").withStyle(ChatFormatting.YELLOW));
+		list.add(new TranslatableComponent("tooltip.nc.multitool.shift.desc").withStyle(ChatFormatting.YELLOW));
 	}
 }

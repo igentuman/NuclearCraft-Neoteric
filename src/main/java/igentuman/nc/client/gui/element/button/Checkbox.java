@@ -6,6 +6,7 @@ import igentuman.nc.client.gui.element.NCGuiElement;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 
 public class Checkbox extends NCGuiElement {
     protected AbstractContainerScreen screen;
@@ -67,7 +68,7 @@ public class Checkbox extends NCGuiElement {
 
     public NCGuiElement setTooltipKey(String key) {
         tooltips.clear();
-        tooltips.add(Component.translatable(key));
+        tooltips.add(new TranslatableComponent(key));
         return this;
     }
 }

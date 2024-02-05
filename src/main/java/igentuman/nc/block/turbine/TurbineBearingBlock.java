@@ -7,6 +7,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -73,6 +74,6 @@ public class TurbineBearingBlock extends Block implements EntityBlock {
 
     @Override
     public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag) {
-        list.add(TextUtils.applyFormat(Component.translatable("tooltip.nc.bearing.desc"), ChatFormatting.BLUE));
+        list.add(TextUtils.applyFormat(new TranslatableComponent("tooltip.nc.bearing.desc"), ChatFormatting.BLUE));
     }
 }

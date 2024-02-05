@@ -19,6 +19,7 @@ import igentuman.nc.setup.registration.NCFluids;
 import igentuman.nc.util.CustomEnergyStorage;
 import igentuman.nc.util.annotation.NBTField;
 import igentuman.nc.multiblock.ValidationResult;
+import mekanism.common.capabilities.Capabilities;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -34,7 +35,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
@@ -57,6 +57,9 @@ import static igentuman.nc.multiblock.fission.FissionReactor.FISSION_BLOCKS;
 import static igentuman.nc.setup.registration.NCSounds.FISSION_REACTOR;
 import static igentuman.nc.util.ModUtil.isCcLoaded;
 import static igentuman.nc.util.ModUtil.isMekanismLoadeed;
+import static net.minecraftforge.energy.CapabilityEnergy.ENERGY;
+import static net.minecraftforge.fluids.capability.CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
+import static net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
 
 public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> extends FissionBE  {
 
@@ -296,23 +299,23 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (cap == ForgeCapabilities.ITEM_HANDLER) {
+        if (cap == ITEM_HANDLER_CAPABILITY) {
             return contentHandler.getItemCapability(side);
         }
-        if (cap == ForgeCapabilities.FLUID_HANDLER && isSteamMode) {
+        if (cap == FLUID_HANDLER_CAPABILITY && isSteamMode) {
             return contentHandler.getFluidCapability(side);
         }
-        if (cap == ForgeCapabilities.ENERGY && !isSteamMode) {
+        if (cap == ENERGY && !isSteamMode) {
             return energy.cast();
         }
         if(isMekanismLoadeed() && isSteamMode) {
-            if(cap == mekanism.common.capabilities.Capabilities.GAS_HANDLER) {
+            if(cap == Capabilities.GAS_HANDLER_CAPABILITY) {
                 if(contentHandler.hasFluidCapability(side)) {
                     return LazyOptional.of(() -> contentHandler.gasConverter(side));
                 }
                 return LazyOptional.empty();
             }
-            if(cap == mekanism.common.capabilities.Capabilities.SLURRY_HANDLER) {
+            if(cap == Capabilities.SLURRY_HANDLER_CAPABILITY) {
                 if(contentHandler.hasFluidCapability(side)) {
                     return LazyOptional.of(() -> contentHandler.getSlurryConverter(side));
                 }
@@ -339,7 +342,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
             }
 
             playSoundCooldown = 20;
-            currentSound = SoundHandler.startTileSound(FISSION_REACTOR.get(), SoundSource.BLOCKS, 0.2f, level.getRandom(), getBlockPos());
+            currentSound = SoundHandler.startTileSound(FISSION_REACTOR.get(), SoundSource.BLOCKS, 0.2f, getBlockPos());
         }
     }
 
@@ -552,7 +555,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     }
 
     public double environmentCooling() {
-        return getLevel().getBiome(getBlockPos()).get().getBaseTemperature() * 10;
+        return getLevel().getBiome(getBlockPos()).value().getBaseTemperature() * 10;
     }
 
 

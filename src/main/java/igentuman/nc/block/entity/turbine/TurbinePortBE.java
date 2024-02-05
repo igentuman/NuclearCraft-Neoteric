@@ -16,7 +16,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
@@ -25,6 +24,9 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static igentuman.nc.util.ModUtil.isCcLoaded;
+import static net.minecraftforge.energy.CapabilityEnergy.ENERGY;
+import static net.minecraftforge.fluids.capability.CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
+import static net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
 
 public class TurbinePortBE extends TurbineBE {
     public static String NAME = "turbine_port";
@@ -106,13 +108,13 @@ public class TurbinePortBE extends TurbineBE {
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if(controller() == null) return super.getCapability(cap, side);
-        if (cap == ForgeCapabilities.ITEM_HANDLER) {
+        if (cap == ITEM_HANDLER_CAPABILITY) {
             return controller().contentHandler.itemCapability.cast();
         }
-        if (cap == ForgeCapabilities.FLUID_HANDLER) {
+        if (cap == FLUID_HANDLER_CAPABILITY) {
             return LazyOptional.of(() -> controller().contentHandler.fluidCapability).cast();
         }
-        if (cap == ForgeCapabilities.ENERGY) {
+        if (cap == ENERGY) {
             return controller().getEnergy().cast();
         }
         if(isCcLoaded()) {
@@ -130,7 +132,7 @@ public class TurbinePortBE extends TurbineBE {
             for (Direction direction : Direction.values()) {
                 BlockEntity be = getLevel().getBlockEntity(worldPosition.relative(direction));
                 if (be != null) {
-                    boolean doContinue = be.getCapability(ForgeCapabilities.ENERGY, direction.getOpposite()).map(handler -> {
+                    boolean doContinue = be.getCapability(ENERGY, direction.getOpposite()).map(handler -> {
                                 if (handler.canReceive()) {
                                     int received = handler.receiveEnergy(Math.min(capacity.get(), controller().energyStorage.getMaxEnergyStored()), false);
                                     capacity.addAndGet(-received);

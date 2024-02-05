@@ -17,13 +17,11 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.fluids.FluidType;
+import net.minecraftforge.fluids.FluidAttributes;
 
 import javax.annotation.Nonnull;
 import java.util.function.Consumer;
 import java.util.function.Function;
-
-import static net.minecraft.world.level.block.Blocks.AIR;
 
 
 public class NCFluid extends FlowingFluid
@@ -42,9 +40,7 @@ public class NCFluid extends FlowingFluid
 
 	@Override
 	public Vec3 getFlow(BlockGetter pBlockReader, BlockPos pPos, FluidState pFluidState) {
-		if(getFluidType().getDensity() < 0) {
-			return new Vec3(0, 0.1D, 0);
-		}
+
 		return super.getFlow(pBlockReader, pPos, pFluidState);
 	}
 
@@ -75,14 +71,7 @@ public class NCFluid extends FlowingFluid
 	@Override
 	public int getTickDelay(LevelReader p_205569_1_)
 	{
-		if(getFluidType().getDensity() == -1000) {
-			return 0;
-		}
-		// viscosity delta to water (1000)
-		int dW = this.getFlowing().getFluidType().getViscosity()-Fluids.WATER.getFluidType().getViscosity();
-		// dW for water & lava is 5000, difference in tick delay is 25 -> 0.005 as a modifier
-		double v = Math.round(5 + dW*0.005);
-		return Math.max(2, (int)v);
+		return 2;
 	}
 
 	@Override
@@ -123,12 +112,6 @@ public class NCFluid extends FlowingFluid
 			return state.getValue(LEVEL);
 	}
 
-	@Override
-	public FluidType getFluidType()
-	{
-		return entry.type().get();
-	}
-
 	@Nonnull
 	@Override
 	public Fluid getFlowing()
@@ -167,7 +150,7 @@ public class NCFluid extends FlowingFluid
 		return 1;
 	}
 
-	public static Consumer<FluidType.Properties> createBuilder(int density, int viscosity)
+	public static Consumer<FluidAttributes.Builder> createBuilder(int density, int viscosity)
 	{
 		return builder -> builder.viscosity(viscosity).density(density);
 	}
@@ -189,10 +172,7 @@ public class NCFluid extends FlowingFluid
 		}
 
 		protected void spread(LevelAccessor pLevel, BlockPos pPos, FluidState pState) {
-			if(entry.getFlowing().getFluidType().getDensity() > -1000) {
-				super.spread(pLevel, pPos, pState);
-				return;
-			}
+
 			BlockState blockstate = pLevel.getBlockState(pPos);
 			BlockPos blockpos = pPos.above();
 			BlockState blockstate1 = pLevel.getBlockState(blockpos);

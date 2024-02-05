@@ -56,13 +56,13 @@ import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.UsernameCache;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.util.thread.EffectiveSide;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.minecraftforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -92,55 +92,6 @@ public final class NcUtils {
         }
     }
 
-    public static ResourceLocation getName(ParticleType<?> element) {
-        return getName(ForgeRegistries.PARTICLE_TYPES, element);
-    }
-
-    public static ResourceLocation getName(Item element) {
-        return getName(ForgeRegistries.ITEMS, element);
-    }
-
-    public static ResourceLocation getName(Fluid element) {
-        return getName(ForgeRegistries.FLUIDS, element);
-    }
-
-    private static <T> ResourceLocation getName(IForgeRegistry<T> registry, T element) {
-        return registry.getKey(element);
-    }
-    public static String getPath(Item element) {
-        return getName(element).getPath();
-    }
-
-    public static ResourceLocation getName(Block element) {
-        return getName(ForgeRegistries.BLOCKS, element);
-    }
-
-    public static String getNamespace(Block element) {
-        return getName(element).getNamespace();
-    }
-
-    public static ResourceLocation getName(MenuType<?> element) {
-        return getName(ForgeRegistries.MENU_TYPES, element);
-    }
-    /**
-     * Gets the creator's modid if it exists, or falls back to the registry name.
-     *
-     * @implNote While the default implementation of getCreatorModId falls back to the registry name, it is possible someone is overriding this and not falling back.
-     */
-    @NotNull
-    public static String getModId(@NotNull ItemStack stack) {
-        Item item = stack.getItem();
-        String modid = item.getCreatorModId(stack);
-        if (modid == null) {
-            ResourceLocation registryName = getName(item);
-            if (registryName == null) {
-                NuclearCraft.LOGGER.error("Unexpected null registry name for item of class type: {}", item.getClass().getSimpleName());
-                return "";
-            }
-            return registryName.getNamespace();
-        }
-        return modid;
-    }
 
     public static ItemStack getItemInHand(LivingEntity entity, HumanoidArm side) {
         if (entity instanceof Player player) {

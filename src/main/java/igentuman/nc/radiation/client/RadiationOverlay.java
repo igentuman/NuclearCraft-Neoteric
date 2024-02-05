@@ -8,7 +8,7 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.gui.overlay.IGuiOverlay;
+import net.minecraftforge.client.gui.IIngameOverlay;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.setup.registration.NCItems.ALL_NC_ITEMS;
@@ -22,7 +22,7 @@ public class RadiationOverlay {
         return player.getInventory().contains(new ItemStack(ALL_NC_ITEMS.get("dosimeter").get()));
     }
 
-    public static final IGuiOverlay RADIATION_BAR = (gui, poseStack, partialTicks, width, height) -> {
+    public static final IIngameOverlay RADIATION_BAR = (gui, poseStack, partialTicks, width, height) -> {
         Player pl = NcClient.tryGetClientPlayer();
         if (pl == null) return;
         if(!hasDosimeter(pl)) return;

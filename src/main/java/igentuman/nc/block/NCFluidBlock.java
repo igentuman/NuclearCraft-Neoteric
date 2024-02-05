@@ -38,7 +38,7 @@ public class NCFluidBlock extends LiquidBlock
 
 	public NCFluidBlock(NCFluids.FluidEntry entry, Properties props)
 	{
-		super(entry.getStillGetter(), Util.make(props, $ -> entryStatic = entry).noOcclusion().noCollission().noLootTable());
+		super(entry.getStillGetter(), Util.make(props, $ -> entryStatic = entry).noOcclusion().noCollission());
 		this.entry = entry;
 		entryStatic = null;
 
@@ -46,14 +46,14 @@ public class NCFluidBlock extends LiquidBlock
 	@Override
 	public boolean isFireSource(BlockState state, LevelReader level, BlockPos pos, Direction direction)
 	{
-		return getFluid().getFluidType().getTemperature() > 600;
+		return getFluid().getAttributes().getTemperature() > 600;
 	}
 
 
 	@Override
 	public int getLightEmission(BlockState state, BlockGetter level, BlockPos pos)
 	{
-		if(getFluid().getFluidType().getTemperature() > 600) {
+		if(getFluid().getAttributes().getTemperature() > 600) {
 			return 5;
 		}
 		return 0;
@@ -97,19 +97,21 @@ public class NCFluidBlock extends LiquidBlock
 		super.entityInside(state, worldIn, pos, entityIn);
 		if(effect!=null&&entityIn instanceof LivingEntity)
 			((LivingEntity)entityIn).addEffect(new MobEffectInstance(effect, duration, level));
-		if(getFluid().getFluidType().getTemperature() > 600) {
+/*		if(getFluid().getFluidType().getTemperature() > 600) {
 			entityIn.setSecondsOnFire(1);
 		}
 		if(getFluid().getFluidType().toString().contains("acid")) {
 			entityIn.hurt(NCDamageSources.ACID, 1.0F);
-		}
+		}*/
 	}
 
 	public void onPlace(BlockState pState, Level pLevel, BlockPos pPos, BlockState pOldState, boolean pIsMoving) {
 		super.onPlace(pState, pLevel, pPos, pOldState, pIsMoving);
+/*
 		if(pLevel.getFluidState(pPos).getFluidType().getDensity() == -1000) {
 			pLevel.setBlock(pPos, AIR.defaultBlockState(), 3);
 		}
+*/
 
 	}
 }

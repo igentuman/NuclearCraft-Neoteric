@@ -7,6 +7,7 @@ import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -77,7 +78,7 @@ public class SolarPanelBlock extends Block implements EntityBlock {
 
     public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag)
     {
-        list.add(TextUtils.applyFormat(Component.translatable("solar_panel.fe_generation", TextUtils.numberFormat(SolarPanels.all().get(asItem().toString().replace("solar_panel_","")).getGeneration())), ChatFormatting.GOLD));
+        list.add(TextUtils.applyFormat(new TranslatableComponent("solar_panel.fe_generation", TextUtils.numberFormat(SolarPanels.all().get(asItem().toString().replace("solar_panel_","")).getGeneration())), ChatFormatting.GOLD));
     }
 
 }

@@ -11,6 +11,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 
 public class SliderHorizontal extends NCGuiElement {
     protected AbstractContainerScreen screen;
@@ -108,7 +109,7 @@ public class SliderHorizontal extends NCGuiElement {
 
     public NCGuiElement setTooltipKey(String key) {
         tooltips.clear();
-        tooltips.add(Component.translatable(key));
+        tooltips.add(new TranslatableComponent(key));
         return this;
     }
 

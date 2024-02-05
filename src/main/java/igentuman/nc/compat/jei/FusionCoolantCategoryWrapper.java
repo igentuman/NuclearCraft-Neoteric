@@ -16,6 +16,7 @@ import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -58,7 +59,7 @@ public class FusionCoolantCategoryWrapper<T extends FusionCoreBE.FusionCoolantRe
 
     @Override
     public @NotNull Component getTitle() {
-        return Component.translatable("nc_jei_cat."+getRecipeType().getUid().getPath());
+        return new TranslatableComponent("nc_jei_cat."+getRecipeType().getUid().getPath());
     }
 
     @Override
@@ -83,9 +84,19 @@ public class FusionCoolantCategoryWrapper<T extends FusionCoreBE.FusionCoolantRe
     public @NotNull List<Component> getTooltipStrings(@NotNull T recipe, @NotNull IRecipeSlotsView recipeSlotsView, double mouseX, double mouseY) {
         List<Component> lines = new ArrayList<>();
         if(mouseX > 34 && mouseX < 76 && mouseY > 6 && mouseY < 20) {
-            lines.add(Component.translatable("fusion_core.recipe.cooling_rate", (int)recipe.getCoolingRate()).withStyle(ChatFormatting.GOLD));
+            lines.add(new TranslatableComponent("fusion_core.recipe.cooling_rate", (int)recipe.getCoolingRate()).withStyle(ChatFormatting.GOLD));
         }
         return lines;
+    }
+
+    @Override
+    public ResourceLocation getUid() {
+        return null;
+    }
+
+    @Override
+    public Class<? extends T> getRecipeClass() {
+        return null;
     }
 
     @Override

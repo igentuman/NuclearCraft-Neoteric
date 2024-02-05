@@ -16,10 +16,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.EntityJoinLevelEvent;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.level.BlockEvent;
+import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -45,7 +45,7 @@ public class RadiationEvents {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onItemUse(LivingEntityUseItemEvent.Finish event)
     {
-        LivingEntity entity = event.getEntity();
+        LivingEntity entity = event.getEntityLiving();
         ItemStack stack = event.getItem();
         if(stack.isEmpty()) {
             return;
@@ -74,7 +74,7 @@ public class RadiationEvents {
 
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void onEntitySpawn(EntityJoinLevelEvent event) {
+    public void onEntitySpawn(EntityJoinWorldEvent event) {
         Entity entity = event.getEntity();
         if (entity instanceof ItemEntity) {
             ItemStack stack = ((ItemEntity) entity).getItem();
@@ -83,7 +83,7 @@ public class RadiationEvents {
             }
             double radiation = ItemRadiation.byItem(stack.getItem());
             if(radiation > 0.001) {
-                RadiationManager.get(event.getLevel()).addRadiation(event.getLevel(), stack.getCount()*radiation/5, entity.blockPosition().getX(), entity.blockPosition().getY(), entity.blockPosition().getZ());
+                RadiationManager.get(event.getWorld()).addRadiation(event.getWorld(), stack.getCount()*radiation/5, entity.blockPosition().getX(), entity.blockPosition().getY(), entity.blockPosition().getZ());
                 droppedRadioactiveItems.add((ItemEntity) entity);
             }
         }
@@ -120,19 +120,19 @@ public class RadiationEvents {
         }
     }
 
-    public static void onWorldTick(TickEvent.LevelTickEvent event) {
+    public static void onWorldTick(TickEvent.WorldTickEvent event) {
         if(!isTracking) {
             return;
         }
         // Don't do anything client side
-        if (event.level.isClientSide) {
+        if (event.world.isClientSide) {
             return;
         }
         if (event.phase == TickEvent.Phase.START) {
             return;
         }
-        Level world = event.level;
-        RadiationManager manager = RadiationManager.get(event.level);
+        Level world = event.world;
+        RadiationManager manager = RadiationManager.get(event.world);
         if (!world.isClientSide) {
             int size = droppedRadioactiveItems.size();
             for(int i = 0; i < size; i++) {
@@ -149,7 +149,7 @@ public class RadiationEvents {
                 }
             }
         }
-        manager.tick(event.level);
+        manager.tick(event.world);
     }
 
     public static void stopTracking() {

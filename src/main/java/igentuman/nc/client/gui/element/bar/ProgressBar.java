@@ -59,7 +59,7 @@ public class ProgressBar extends NCGuiElement {
 
 
     public List<Component> getTooltips() {
-        //return List.of(Component.translatable("tooltip.machine.progress", numberFormat(container.getProgress()*100)));
+        //return List.of(new TranslatableComponent("tooltip.machine.progress", numberFormat(container.getProgress()*100)));
         return List.of();
     }
 

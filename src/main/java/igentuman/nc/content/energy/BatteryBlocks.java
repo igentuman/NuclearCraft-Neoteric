@@ -3,7 +3,6 @@ package igentuman.nc.content.energy;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.energy.BatteryBE;
 import igentuman.nc.block.entity.energy.NCEnergy;
-import igentuman.nc.handler.config.CommonConfig;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
 import java.util.ArrayList;

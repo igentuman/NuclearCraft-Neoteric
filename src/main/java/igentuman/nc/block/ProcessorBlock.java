@@ -1,6 +1,5 @@
 package igentuman.nc.block;
 
-import igentuman.nc.block.entity.energy.BatteryBE;
 import igentuman.nc.block.entity.processor.NCProcessorBE;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.setup.registration.NCProcessors;
@@ -10,6 +9,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
@@ -56,6 +56,7 @@ public class ProcessorBlock extends HorizontalDirectionalBlock implements Entity
                 .noOcclusion()
                 .requiresCorrectToolForDrops());
     }
+
     public ProcessorBlock(Properties pProperties) {
         super(pProperties.sound(SoundType.METAL));
         this.registerDefaultState(
@@ -64,6 +65,7 @@ public class ProcessorBlock extends HorizontalDirectionalBlock implements Entity
                         .setValue(ACTIVE, false)
         );
     }
+
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
@@ -121,7 +123,7 @@ public class ProcessorBlock extends HorizontalDirectionalBlock implements Entity
                 MenuProvider containerProvider = new MenuProvider() {
                     @Override
                     public Component getDisplayName() {
-                        return Component.translatable(processorCode());
+                        return new TranslatableComponent(processorCode());
                     }
 
                     @Override
@@ -134,7 +136,7 @@ public class ProcessorBlock extends HorizontalDirectionalBlock implements Entity
                         return null;
                     }
                 };
-                NetworkHooks.openScreen((ServerPlayer) player, containerProvider, be.getBlockPos());
+                NetworkHooks.openGui((ServerPlayer) player, containerProvider, be.getBlockPos());
             }
         }
         return InteractionResult.SUCCESS;
@@ -161,7 +163,7 @@ public class ProcessorBlock extends HorizontalDirectionalBlock implements Entity
     @Override
     public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag) {
         if(asItem().toString().contains("empty") || this.asItem().equals(Items.AIR)) return;
-        list.add(TextUtils.applyFormat(Component.translatable("processor.description."+processorCode()), ChatFormatting.AQUA));
+        list.add(TextUtils.applyFormat(new TranslatableComponent("processor.description."+processorCode()), ChatFormatting.AQUA));
     }
 
 }

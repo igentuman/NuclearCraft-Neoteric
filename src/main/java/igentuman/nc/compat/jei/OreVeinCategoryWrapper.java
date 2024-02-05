@@ -15,6 +15,7 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -53,7 +54,7 @@ public class OreVeinCategoryWrapper<T extends OreVeinRecipe> implements IRecipeC
 
     @Override
     public @NotNull Component getTitle() {
-        return Component.translatable("nc_jei_cat."+getRecipeType().getUid().getPath());
+        return new TranslatableComponent("nc_jei_cat."+getRecipeType().getUid().getPath());
     }
 
     @Override
@@ -71,6 +72,17 @@ public class OreVeinCategoryWrapper<T extends OreVeinRecipe> implements IRecipeC
                      double mouseY) {
 
     }
+
+    @Override
+    public ResourceLocation getUid() {
+        return null;
+    }
+
+    @Override
+    public Class<? extends T> getRecipeClass() {
+        return null;
+    }
+
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, T recipe, IFocusGroup focuses) {
 

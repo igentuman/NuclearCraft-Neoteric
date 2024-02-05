@@ -11,7 +11,6 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
@@ -24,6 +23,7 @@ import javax.annotation.Nonnull;
 import java.util.*;
 
 import static igentuman.nc.handler.sided.SlotModePair.SlotMode.*;
+import static net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
 
 public class ItemCapabilityHandler extends AbstractCapabilityHandler implements IItemHandlerModifiable, INBTSerializable<CompoundTag> {
 
@@ -291,7 +291,7 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
     public boolean pushItems(Direction dir, boolean forceFlag, BlockPos pos) {
         BlockEntity be = tile.getLevel().getBlockEntity(pos.relative(dir));
         if(be == null) return false;
-        LazyOptional<IItemHandler> cap = be.getCapability(ForgeCapabilities.ITEM_HANDLER, dir.getOpposite());
+        LazyOptional<IItemHandler> cap = be.getCapability(ITEM_HANDLER_CAPABILITY, dir.getOpposite());
         if(cap.isPresent()) {
             IItemHandler handler = cap.orElse(null);
             SidedContentHandler.RelativeDirection relativeDirection = SidedContentHandler.RelativeDirection.toRelative(dir, getFacing());
@@ -316,7 +316,7 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
     public boolean pullItems(Direction dir, boolean forceFlag, BlockPos pos) {
         BlockEntity be = tile.getLevel().getBlockEntity(pos.relative(dir));
         if(be == null) return false;
-        LazyOptional<IItemHandler> cap = be.getCapability(ForgeCapabilities.ITEM_HANDLER, dir.getOpposite());
+        LazyOptional<IItemHandler> cap = be.getCapability(ITEM_HANDLER_CAPABILITY, dir.getOpposite());
         if(cap.isPresent()) {
             IItemHandler handler = cap.orElse(null);
             SidedContentHandler.RelativeDirection relativeDirection = SidedContentHandler.RelativeDirection.toRelative(dir, getFacing());
@@ -358,7 +358,7 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
         for(Direction dir: Direction.values()) {
             BlockEntity be = tile.getLevel().getBlockEntity(tile.getBlockPos().relative(dir));
             if(be == null) continue;
-            LazyOptional<IItemHandler> cap = be.getCapability(ForgeCapabilities.ITEM_HANDLER, dir.getOpposite());
+            LazyOptional<IItemHandler> cap = be.getCapability(ITEM_HANDLER_CAPABILITY, dir.getOpposite());
             if(cap.isPresent()) {
                 IItemHandler handler = cap.orElse(null);
                 SidedContentHandler.RelativeDirection relativeDirection = SidedContentHandler.RelativeDirection.toRelative(dir, getFacing());
@@ -380,7 +380,7 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
         for(Direction dir: Direction.values()) {
             BlockEntity be = tile.getLevel().getBlockEntity(tile.getBlockPos().relative(dir));
             if(be == null) continue;
-            LazyOptional<IItemHandler> cap = be.getCapability(ForgeCapabilities.ITEM_HANDLER, dir.getOpposite());
+            LazyOptional<IItemHandler> cap = be.getCapability(ITEM_HANDLER_CAPABILITY, dir.getOpposite());
             if(cap.isPresent()) {
                 IItemHandler handler = cap.orElse(null);
                 SidedContentHandler.RelativeDirection relativeDirection = SidedContentHandler.RelativeDirection.toRelative(dir, getFacing());

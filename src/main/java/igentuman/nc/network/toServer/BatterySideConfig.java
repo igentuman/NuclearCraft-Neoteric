@@ -7,9 +7,12 @@ import igentuman.nc.network.INcPacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.network.NetworkEvent;
+
+import java.util.UUID;
 
 public class BatterySideConfig implements INcPacket {
 
@@ -36,7 +39,7 @@ public class BatterySideConfig implements INcPacket {
             return;
         }
         ISizeToggable.SideMode mode = battery.toggleSideConfig(direction);
-        player.sendSystemMessage(Component.translatable("message.nc.battery.side_config", mode.name()));
+        player.sendMessage(new TranslatableComponent("message.nc.battery.side_config", mode.name()), UUID.randomUUID());
     }
 
     @Override

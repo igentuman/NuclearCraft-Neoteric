@@ -39,7 +39,7 @@ public class TurbineRegistration {
     public static HashMap<String, RegistryObject<BlockEntityType<? extends TurbineBE>>> TURBINE_BE = new HashMap<>();
     public static HashMap<String, RegistryObject<BlockItem>> TURBINE_BLOCK_ITEMS = new HashMap<>();
     public static TagKey<Block> CASING_BLOCKS = TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(MODID, "turbine_casing"));
-    private static final DeferredRegister<MenuType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.MENU_TYPES, MODID);
+    private static final DeferredRegister<MenuType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.CONTAINERS, MODID);
 
     public static TagKey<Block> INNER_TURBINE_BLOCKS = TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(MODID, "turbine_inner"));
 

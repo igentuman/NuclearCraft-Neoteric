@@ -15,6 +15,7 @@ public class FusionRecipeSerializer<RECIPE extends NcRecipe> extends NcRecipeSer
 
     public FusionRecipeSerializer(IFactory factory) {
         super(factory);
+
     }
 
     @Override

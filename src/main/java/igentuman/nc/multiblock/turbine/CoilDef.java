@@ -100,7 +100,7 @@ public class CoilDef {
         List<Block> tmp = new ArrayList<>();
         TagKey<Block> tag = TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(key));
         for(Holder<Block> holder : Registry.BLOCK.getTagOrEmpty(tag)) {
-            tmp.add(holder.get());
+            tmp.add(holder.value());
         }
         return tmp;
     }

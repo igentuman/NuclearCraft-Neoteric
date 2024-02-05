@@ -14,6 +14,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -109,31 +110,31 @@ public class TurbineCoilBlock extends Block implements EntityBlock {
             if (def.getValidator() instanceof CoilDef.Validator) {
                 for (String[] condition : def.getValidator().blockLines().keySet()) {
                     if (i > 0) {
-                        lines.add(Component.translatable("heat_sink.and").getString());
+                        lines.add(new TranslatableComponent("heat_sink.and").getString());
                     }
-                    String blocksLine = String.join(" "+Component.translatable("heat_sink.or").getString()+" ", getBlockNames(condition[2]));
+                    String blocksLine = String.join(" "+new TranslatableComponent("heat_sink.or").getString()+" ", getBlockNames(condition[2]));
                     switch (condition[0]) {
                         case ">":
-                            lines.add(Component.translatable("heat_sink.atleast"+(condition[1].equals("1") ? "":"s") , condition[1], blocksLine).getString());
+                            lines.add(new TranslatableComponent("heat_sink.atleast"+(condition[1].equals("1") ? "":"s") , condition[1], blocksLine).getString());
                             break;
                         case "-":
-                            lines.add(Component.translatable("heat_sink.between", condition[1], blocksLine).getString());
+                            lines.add(new TranslatableComponent("heat_sink.between", condition[1], blocksLine).getString());
                             break;
                         case "=":
-                            lines.add(Component.translatable("heat_sink.exact"+(condition[1].equals("1") ? "":"s"), condition[1], blocksLine).getString());
+                            lines.add(new TranslatableComponent("heat_sink.exact"+(condition[1].equals("1") ? "":"s"), condition[1], blocksLine).getString());
                             break;
                         case "<":
-                            lines.add(Component.translatable("heat_sink.less_than", condition[1], blocksLine).getString());
+                            lines.add(new TranslatableComponent("heat_sink.less_than", condition[1], blocksLine).getString());
                             break;
                         case "^":
-                            lines.add(Component.translatable("heat_sink.in_corner", condition[1], blocksLine).getString());
+                            lines.add(new TranslatableComponent("heat_sink.in_corner", condition[1], blocksLine).getString());
                             break;
                     }
                     i++;
                 }
-                placementRule = Component.translatable("heat_sink.placement.rule", String.join(" ", lines));
+                placementRule = new TranslatableComponent("heat_sink.placement.rule", String.join(" ", lines));
             } else {
-                placementRule = Component.translatable("heat_sink.placement.error");
+                placementRule = new TranslatableComponent("heat_sink.placement.error");
             }
         }
         return placementRule;
@@ -167,10 +168,10 @@ public class TurbineCoilBlock extends Block implements EntityBlock {
         if(DESCRIPTIONS_SHOW) {
             list.add(TextUtils.applyFormat(getPlacementRule(), ChatFormatting.AQUA));
             list.add(TextUtils.applyFormat(
-                    Component.translatable("tooltip.nc.description.efficiency", TextUtils.numberFormat(def.getEfficiency())),
+                    new TranslatableComponent("tooltip.nc.description.efficiency", TextUtils.numberFormat(def.getEfficiency())),
                     ChatFormatting.GOLD));
         } else {
-            list.add(TextUtils.applyFormat(Component.translatable("tooltip.toggle_description_keys"), ChatFormatting.GRAY));
+            list.add(TextUtils.applyFormat(new TranslatableComponent("tooltip.toggle_description_keys"), ChatFormatting.GRAY));
         }
     }
 }

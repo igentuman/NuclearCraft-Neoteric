@@ -23,6 +23,7 @@ import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -62,16 +63,26 @@ public class MekChemicalConversionCategoryWrapper<T extends MekChemicalConversio
 
     @Override
     public @NotNull Component getTitle() {
-        return Component.translatable("nc_jei_cat.mek_chemical_conversion");
+        return new TranslatableComponent("nc_jei_cat.mek_chemical_conversion");
     }
 
     @Override
     public @NotNull List<Component> getTooltipStrings(T recipe, IRecipeSlotsView recipeSlotsView, double mouseX, double mouseY) {
         List<Component> lines = new ArrayList<>();
         if(mouseX > 34 && mouseX < 76 && mouseY > 16 && mouseY < 32) {
-            lines.add(Component.translatable("tooltip.nc.jei.gas_to_fluid.desc").withStyle(ChatFormatting.AQUA));
+            lines.add(new TranslatableComponent("tooltip.nc.jei.gas_to_fluid.desc").withStyle(ChatFormatting.AQUA));
         }
         return lines;
+    }
+
+    @Override
+    public ResourceLocation getUid() {
+        return null;
+    }
+
+    @Override
+    public Class<? extends T> getRecipeClass() {
+        return null;
     }
 
 

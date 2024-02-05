@@ -1,11 +1,11 @@
 package igentuman.nc.fluid;
 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.minecraftforge.client.FluidContainerColorer;
 
 import static igentuman.nc.NuclearCraft.rl;
 
-public class FluidRenderProps implements IClientFluidTypeExtensions {
+public class FluidRenderProps extends FluidContainerColorer {
     private final ResourceLocation still;
     private final ResourceLocation flowing;
     private final int colorTint;
@@ -24,18 +24,4 @@ public class FluidRenderProps implements IClientFluidTypeExtensions {
         return new FluidRenderProps("gas", "gas", colorTint);
     }
 
-    @Override
-    public ResourceLocation getStillTexture() {
-        return still;
-    }
-
-    @Override
-    public ResourceLocation getFlowingTexture() {
-        return flowing;
-    }
-
-    @Override
-    public int getTintColor() {
-        return colorTint;
-    }
 }

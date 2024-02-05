@@ -20,7 +20,6 @@ import java.util.function.Function;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
-import static igentuman.nc.client.block.BatteryBlockLoader.BATTERY_LOADER;
 import static igentuman.nc.multiblock.fission.FissionReactor.FISSION_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_CORE_PROXY;
@@ -348,7 +347,7 @@ public class NCBlockStates extends BlockStateProvider {
                 blockPath+key(block).getPath(),
                         new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/" + name.getPath()));
         if(name.getPath().matches(".*glass|.*cell.*")) {
-            model.renderType(new ResourceLocation("cutout"));
+           // model.(new ResourceLocation("cutout"));
         }
         return model;
     }
@@ -362,7 +361,7 @@ public class NCBlockStates extends BlockStateProvider {
                 "block/multiblock/"+key(block).getPath(),
                 new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath));
         if(subPath.matches(".*glass|.*cell.*")) {
-            m.renderType(new ResourceLocation("translucent"));
+           // m.renderType(new ResourceLocation("translucent"));
         }
         return m;
     }
@@ -411,7 +410,7 @@ public class NCBlockStates extends BlockStateProvider {
 
         model.texture("particle", ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"top");
         if(subPath.matches(".*voltaic_pile.*|.*lithium_ion_battery.*")) {
-            model.customLoader((blockModelBuilder, helper) -> new CustomLoaderBuilder<BlockModelBuilder>(BATTERY_LOADER, blockModelBuilder, helper) { });
+           // model.customLoader((blockModelBuilder, helper) -> new CustomLoaderBuilder<BlockModelBuilder>(BATTERY_LOADER, blockModelBuilder, helper) { });
         }
         return model;
     }

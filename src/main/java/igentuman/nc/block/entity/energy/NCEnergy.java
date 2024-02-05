@@ -13,7 +13,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 import org.jetbrains.annotations.NotNull;
@@ -21,6 +20,8 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import static net.minecraftforge.energy.CapabilityEnergy.ENERGY;
 
 public class NCEnergy extends NuclearCraftBE {
 
@@ -42,7 +43,7 @@ public class NCEnergy extends NuclearCraftBE {
             for (Direction direction : Direction.values()) {
                 BlockEntity be = level.getBlockEntity(worldPosition.relative(direction));
                 if (be != null) {
-                    boolean doContinue = be.getCapability(ForgeCapabilities.ENERGY, direction.getOpposite()).map(handler -> {
+                    boolean doContinue = be.getCapability(ENERGY, direction.getOpposite()).map(handler -> {
                                 if (handler.canReceive()) {
                                     int received = handler.receiveEnergy(Math.min(capacity.get(), getEnergyTransferPerTick()), false);
                                     capacity.addAndGet(-received);
@@ -86,7 +87,7 @@ public class NCEnergy extends NuclearCraftBE {
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (cap == ForgeCapabilities.ENERGY) {
+        if (cap == ENERGY) {
             return energy.cast();
         }
         return super.getCapability(cap, side);

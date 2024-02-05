@@ -9,7 +9,7 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
-import net.minecraftforge.client.model.generators.loaders.DynamicFluidContainerModelBuilder;
+import net.minecraftforge.client.model.generators.loaders.DynamicBucketModelBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 import java.util.List;
@@ -118,9 +118,9 @@ public class NCItemModels extends ItemModelProvider {
     private void createBucket(NCFluids.FluidEntry entry)
     {
         withExistingParent(name(entry.getBucket()), forgeLoc("item/bucket"))
-                .customLoader(DynamicFluidContainerModelBuilder::begin)
+                .customLoader(DynamicBucketModelBuilder::begin)
                 .fluid(entry.getStill())
-                .flipGas(entry.flowing().get().getFluidType().getDensity() < 0)
+                //.flipGas(entry.flowing().getFluidType().getDensity() < 0)
                 .applyTint(true);
     }
 

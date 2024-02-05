@@ -14,8 +14,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
-import static igentuman.nc.world.dimension.Dimensions.WASTELAIND_ID;
-
 public class WorldConfig {
     public static <T> List<T> toList(Collection<T> vals)
     {
@@ -53,9 +51,9 @@ public class WorldConfig {
             registerWasteland = builder
                     .comment("Register Wasteland Dimension")
                     .define("wasteland", true);
-            wastelandID = builder
+           /* wastelandID = builder
                     .comment("Dimension ID for Wasteland")
-                    .define("wastelandID", WASTELAIND_ID);
+                    .define("wastelandID", WASTELAIND_ID);*/
             builder.pop();
         }
     }

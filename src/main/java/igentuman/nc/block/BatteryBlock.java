@@ -11,6 +11,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -24,17 +25,16 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.UUID;
 
 import static igentuman.nc.handler.config.CommonConfig.ENERGY_STORAGE;
 import static igentuman.nc.setup.registration.NCItems.MULTITOOL;
@@ -65,7 +65,7 @@ public class BatteryBlock extends Block implements EntityBlock {
                     }
                     NuclearCraft.packetHandler().sendToServer(new BatterySideConfig(pos, dirToChange.ordinal()));
                 } else {
-                    player.sendSystemMessage(Component.translatable("tooltip.nc.energy_stored", formatEnergy(batteryBE.energyStorage.getEnergyStored()), formatEnergy(batteryBE.energyStorage.getMaxEnergyStored())).withStyle(ChatFormatting.BLUE));
+                    player.sendMessage(new TranslatableComponent("tooltip.nc.energy_stored", formatEnergy(batteryBE.energyStorage.getEnergyStored()), formatEnergy(batteryBE.energyStorage.getMaxEnergyStored())).withStyle(ChatFormatting.BLUE), UUID.randomUUID());
                 }
             }
         }
@@ -144,8 +144,8 @@ public class BatteryBlock extends Block implements EntityBlock {
     {
         int storage = ENERGY_STORAGE.getCapacityFor(asItem().toString());
 
-        list.add(Component.translatable("tooltip.nc.energy_capacity", formatEnergy(storage)).withStyle(ChatFormatting.BLUE));
-        list.add(Component.translatable("tooltip.nc.use_multitool").withStyle(ChatFormatting.YELLOW));
+        list.add(new TranslatableComponent("tooltip.nc.energy_capacity", formatEnergy(storage)).withStyle(ChatFormatting.BLUE));
+        list.add(new TranslatableComponent("tooltip.nc.use_multitool").withStyle(ChatFormatting.YELLOW));
 
     }
 

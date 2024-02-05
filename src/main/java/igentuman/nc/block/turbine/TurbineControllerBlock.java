@@ -5,6 +5,7 @@ import igentuman.nc.container.TurbineControllerContainer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -79,7 +80,7 @@ public class TurbineControllerBlock extends HorizontalDirectionalBlock implement
                 MenuProvider containerProvider = new MenuProvider() {
                     @Override
                     public Component getDisplayName() {
-                        return Component.translatable(NAME);
+                        return new TranslatableComponent(NAME);
                     }
 
                     @Override
@@ -87,7 +88,7 @@ public class TurbineControllerBlock extends HorizontalDirectionalBlock implement
                             return new TurbineControllerContainer(windowId, pos, playerInventory);
                     }
                 };
-                NetworkHooks.openScreen((ServerPlayer) player, containerProvider, be.getBlockPos());
+                NetworkHooks.openGui((ServerPlayer) player, containerProvider, be.getBlockPos());
             }
         }
         return InteractionResult.SUCCESS;

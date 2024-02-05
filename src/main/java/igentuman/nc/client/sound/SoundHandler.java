@@ -12,14 +12,15 @@ import net.minecraft.client.sounds.SoundEngine;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.levelgen.RandomSource;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
-import net.minecraftforge.client.event.sound.SoundEngineLoadEvent;
+import net.minecraftforge.client.event.sound.SoundLoadEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -125,10 +126,10 @@ public class SoundHandler {
         Minecraft.getInstance().getSoundManager().stop(sound);
     }
 
-    public static SoundInstance startTileSound(SoundEvent soundEvent, SoundSource category, float volume, RandomSource random, BlockPos pos) {
+    public static SoundInstance startTileSound(SoundEvent soundEvent, SoundSource category, float volume, BlockPos pos) {
         SoundInstance s = soundMap.get(pos.asLong());
         if (s == null || !Minecraft.getInstance().getSoundManager().isActive(s)) {
-            s = new TileTickableSound(soundEvent, category, random, pos, volume);
+            s = new TileTickableSound(soundEvent, category, pos, volume);
 
             if (!isClientPlayerInRange(s)) {
                 return null;
@@ -168,7 +169,7 @@ public class SoundHandler {
     }
 
     @SubscribeEvent
-    public static void onSoundEngineSetup(SoundEngineLoadEvent event) {
+    public static void onSoundEngineSetup(SoundLoadEvent event) {
         if (soundEngine == null) {
             soundEngine = event.getEngine();
         }
@@ -196,8 +197,8 @@ public class SoundHandler {
         private final float originalVolume;
         private final int checkInterval = 20 + ThreadLocalRandom.current().nextInt(20);
 
-        TileTickableSound(SoundEvent soundEvent, SoundSource category, RandomSource random, BlockPos pos, float volume) {
-            super(soundEvent, category, random);
+        TileTickableSound(SoundEvent soundEvent, SoundSource category, BlockPos pos, float volume) {
+            super(soundEvent, category);
             this.originalVolume = volume * 1;
             this.x = pos.getX() + 0.5F;
             this.y = pos.getY() + 0.5F;

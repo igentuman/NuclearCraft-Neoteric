@@ -20,7 +20,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.client.model.generators.*;
 import net.minecraftforge.client.model.generators.VariantBlockStateBuilder.PartialBlockstate;
-import net.minecraftforge.client.model.generators.loaders.ObjModelBuilder;
+import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 import javax.annotation.Nullable;
@@ -93,8 +93,8 @@ public abstract class ExtendedBlockstateProvider extends BlockStateProvider
 		if(type!=null)
 		{
 			final String typeName = ModelProviderUtil.getName(type);
-			for(final ModelBuilder<?> model : builders)
-				model.renderType(typeName);
+			//for(final ModelBuilder<?> model : builders)
+				//model.renderType(typeName);
 		}
 	}
 
@@ -161,12 +161,12 @@ public abstract class ExtendedBlockstateProvider extends BlockStateProvider
 	T obj(T base, ResourceLocation model, Map<String, ResourceLocation> textures)
 	{
 		assertModelExists(model);
-		T ret = base
-				.customLoader(ObjModelBuilder::begin)
-				.automaticCulling(false)
-				.modelLocation(addModelsPrefix(model))
-				.flipV(true)
-				.end();
+		T ret = base;
+				//.customLoader(ModelLoad::begin)
+				//.automaticCulling(false)
+				//.modelLocation(addModelsPrefix(model))
+				//.flipV(true)
+			//	.end();
 		String particleTex = DataGenUtil.getTextureFromObj(model, existingFileHelper);
 		if(particleTex.charAt(0)=='#')
 			particleTex = textures.get(particleTex.substring(1)).toString();

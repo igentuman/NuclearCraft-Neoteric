@@ -8,6 +8,7 @@ import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.GsonHelper;
@@ -237,7 +238,7 @@ public class NcIngredient extends Ingredient {
          }
 
          if (list.size() == 0) {
-            list.add(new ItemStack(net.minecraft.world.level.block.Blocks.BARRIER).setHoverName(net.minecraft.network.chat.Component.literal("Empty Tag: " + this.tag.location())));
+            list.add(new ItemStack(net.minecraft.world.level.block.Blocks.BARRIER).setHoverName(Component.nullToEmpty("Empty Tag: " + this.tag.location())));
          }
          return list;
       }

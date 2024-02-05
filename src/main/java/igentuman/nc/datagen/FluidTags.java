@@ -26,8 +26,8 @@ class FluidTags extends FluidTagsProvider
 			tag(NCFluids.LIQUIDS_TAG.get(name)).add(NCFluids.NC_GASES.get(name).getStill());
 			tag(NCFluids.LIQUIDS_TAG.get(name)).add(NCFluids.NC_GASES.get(name).getFlowing());
 
-			tag(Fluids.GASEOUS).add(NCFluids.NC_GASES.get(name).getStill());
-			tag(Fluids.GASEOUS).add(NCFluids.NC_GASES.get(name).getFlowing());
+			//tag(Fluids.GASEOUS).add(NCFluids.NC_GASES.get(name).getStill());
+			//tag(Fluids.GASEOUS).add(NCFluids.NC_GASES.get(name).getFlowing());
 		}
 	}
 }

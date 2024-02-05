@@ -3,7 +3,6 @@ package igentuman.nc.block.entity.energy;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.ISizeToggable;
 import igentuman.nc.content.energy.BatteryBlocks;
-import igentuman.nc.handler.sided.SlotModePair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -12,10 +11,8 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 import org.jetbrains.annotations.NotNull;
@@ -24,6 +21,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import static net.minecraftforge.energy.CapabilityEnergy.ENERGY;
 
 public class BatteryBE extends NCEnergy {
     public static final ModelProperty<HashMap<Integer, ISizeToggable.SideMode>> SIDE_CONFIG = new ModelProperty<>();
@@ -39,13 +38,13 @@ public class BatteryBE extends NCEnergy {
         return pBlockState.getBlock().asItem().toString();
     }
 
-    @Nonnull
+/*    @Nonnull
     @Override
     public @NotNull ModelData getModelData() {
         return ModelData.builder()
                 .with(SIDE_CONFIG, sideConfig)
                 .build();
-    }
+    }*/
     @Override
     public void tickServer() {
         if(NuclearCraft.instance.isNcBeStopped) return;
@@ -65,7 +64,7 @@ public class BatteryBE extends NCEnergy {
             ) continue;
             BlockEntity be = level.getBlockEntity(worldPosition.relative(direction));
             if (be != null) {
-                IEnergyStorage sideEnergy = be.getCapability(ForgeCapabilities.ENERGY, direction.getOpposite()).orElse(null);
+                IEnergyStorage sideEnergy = be.getCapability(ENERGY, direction.getOpposite()).orElse(null);
                 if(sideEnergy == null) continue;
                 if (capacity.get() > 0 && sideConfig.get(direction.ordinal()) == ISizeToggable.SideMode.OUT) {
                     int accepted = sideEnergy.receiveEnergy(Math.min(capacity.get(), getEnergyTransferPerTick()), false);
@@ -86,7 +85,7 @@ public class BatteryBE extends NCEnergy {
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (cap == ForgeCapabilities.ENERGY && (side != null && sideConfig.get(side.ordinal()) != ISizeToggable.SideMode.DISABLED)) {
+        if (cap == ENERGY && (side != null && sideConfig.get(side.ordinal()) != ISizeToggable.SideMode.DISABLED)) {
             return energy.cast();
         }
         return super.getCapability(cap, side);

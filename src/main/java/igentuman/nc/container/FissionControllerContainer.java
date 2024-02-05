@@ -5,6 +5,7 @@ import igentuman.nc.container.elements.NCSlotItemHandler;
 import igentuman.nc.multiblock.fission.FissionReactor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -13,7 +14,6 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
@@ -22,6 +22,7 @@ import net.minecraftforge.items.wrapper.InvWrapper;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.util.TextUtils.numberFormat;
 import static igentuman.nc.util.TextUtils.roundFormat;
+import static net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
 
 public class FissionControllerContainer extends AbstractContainerMenu {
     protected FissionControllerBE<?> blockEntity;
@@ -38,10 +39,10 @@ public class FissionControllerContainer extends AbstractContainerMenu {
         this.playerInventory =  new InvWrapper(playerInventory);
         blockEntity = (FissionControllerBE<?>) playerEntity.getCommandSenderWorld().getBlockEntity(pos);
         layoutPlayerInventorySlots();
-        blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
+        blockEntity.getCapability(ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
             addSlot(new NCSlotItemHandler.Input(h, 0, 56, 35));
         });
-        blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
+        blockEntity.getCapability(ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
             addSlot(new NCSlotItemHandler.Output(h, 1, 116, 35));
         });
     }
@@ -98,7 +99,7 @@ public class FissionControllerContainer extends AbstractContainerMenu {
     }
 
     public Component getTitle() {
-        return Component.translatable("block."+MODID+"."+name);
+        return new TranslatableComponent("block."+MODID+"."+name);
     }
 
     public boolean isCasingValid() {

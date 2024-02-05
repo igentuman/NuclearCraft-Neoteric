@@ -9,6 +9,7 @@ import igentuman.nc.client.gui.element.slot.NormalSlot;
 import igentuman.nc.container.NCProcessorContainer;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
@@ -40,13 +41,13 @@ public class LeacherScreen<T extends NCProcessorContainer> extends NCProcessorSc
         super.renderLabels(matrixStack, mouseX, mouseY);
         switch (((LeacherBE)getMenu().getBlockEntity()).leacherState) {
             case WRONG_POSITION:
-                drawString(matrixStack, font, Component.translatable("nc.label.leacher_wrong_position"), 30, 16, 0xff0000);
+                drawString(matrixStack, font, new TranslatableComponent("nc.label.leacher_wrong_position"), 30, 16, 0xff0000);
                 break;
             case NO_SOURCE:
-                drawString(matrixStack, font, Component.translatable("nc.label.leacher_no_source"), 30, 16, 0xff0000);
+                drawString(matrixStack, font, new TranslatableComponent("nc.label.leacher_no_source"), 30, 16, 0xff0000);
                 break;
             case NO_ACID:
-                drawString(matrixStack, font, Component.translatable("nc.label.leacher_no_acid"), 30, 16, 0xff0000);
+                drawString(matrixStack, font, new TranslatableComponent("nc.label.leacher_no_acid"), 30, 16, 0xff0000);
                 break;
         }
     }

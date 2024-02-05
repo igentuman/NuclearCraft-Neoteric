@@ -160,7 +160,7 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
 
         @Override
         public String getName() {
-            return fluidInstance.getFluid().getFluidType().toString().replace(":", "_");
+            return fluidInstance.getFluid().getRegistryName().getPath().toString().replace(":", "_");
         }
 
 
@@ -211,7 +211,7 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
         public JsonElement serialize() {
             JsonObject json = new JsonObject();
             json.addProperty("amount", fluidInstance.getAmount());
-            json.addProperty("fluid", NcUtils.getName(fluidInstance.getFluid()).toString());
+            json.addProperty("fluid", fluidInstance.getFluid().getRegistryName().getPath().toString());
             if (fluidInstance.hasTag()) {
                 json.addProperty("nbt", fluidInstance.getTag().toString());
             }
@@ -422,7 +422,7 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
 
         @Override
         public String getName() {
-            return getRepresentations().get(0).getFluid().getFluidType().toString().split(":")[1];
+            return getRepresentations().get(0).getFluid().getRegistryName().getPath().toString().split(":")[1];
         }
 
         @Override

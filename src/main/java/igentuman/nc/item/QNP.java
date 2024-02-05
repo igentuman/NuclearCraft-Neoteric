@@ -11,6 +11,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
@@ -34,23 +35,20 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.Tags;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
 
 import org.apache.commons.lang3.tuple.Pair;
 
 import static igentuman.nc.handler.config.CommonConfig.ENERGY_STORAGE;
 import static igentuman.nc.handler.event.client.BlockOverlayHandler.getArea;
 import static igentuman.nc.setup.registration.NCSounds.ITEM_CHARGED;
+import static net.minecraftforge.energy.CapabilityEnergy.ENERGY;
 
 public class QNP extends PickaxeItem
 {
@@ -235,7 +233,7 @@ public class QNP extends PickaxeItem
 		if(be == null) return false;
 		if(getEnergy(tool).getEnergyStored() == getEnergy(tool).getMaxEnergyStored()) return false;
 		for(Direction side: Direction.values()) {
-			IEnergyStorage storage = be.getCapability(ForgeCapabilities.ENERGY, side).orElse(null);
+			IEnergyStorage storage = be.getCapability(ENERGY, side).orElse(null);
 			if (storage == null) return false;
 			if (storage.canExtract()) {
 				int energy = storage.extractEnergy(getEnergy(tool).receiveEnergy(storage.extractEnergy(getEnergy(tool).getMaxEnergyStored() - getEnergy(tool).getEnergyStored(), true), false), false);
@@ -244,7 +242,7 @@ public class QNP extends PickaxeItem
 			}
 		}
 
-		IEnergyStorage storage = be.getCapability(ForgeCapabilities.ENERGY).orElse(null);
+		IEnergyStorage storage = be.getCapability(ENERGY).orElse(null);
 		if (storage == null) return false;
 		if (storage.canExtract()) {
 			int energy = storage.extractEnergy(getEnergy(tool).receiveEnergy(storage.extractEnergy(getEnergy(tool).getMaxEnergyStored() - getEnergy(tool).getEnergyStored(), true), false), false);
@@ -272,7 +270,7 @@ public class QNP extends PickaxeItem
 			ItemStack tool = pPlayer.getItemInHand(pUsedHand);
 			Mode miningMode = Mode.values()[(getMode(tool).ordinal()+1)%Mode.values().length];
 			tool.getOrCreateTag().putInt("mode", miningMode.ordinal());
-			pPlayer.sendSystemMessage(Component.translatable("tooltip.nc.qnp_mode", Component.translatable("tooltip.mode." + miningMode.getName())).withStyle(ChatFormatting.GREEN));
+			pPlayer.sendMessage(new TranslatableComponent("tooltip.nc.qnp_mode", new TranslatableComponent("tooltip.mode." + miningMode.getName())).withStyle(ChatFormatting.GREEN), UUID.randomUUID());
 			return InteractionResultHolder.success(pPlayer.getItemInHand(pUsedHand));
 		}
 		return super.use(pLevel, pPlayer, pUsedHand);
@@ -286,15 +284,15 @@ public class QNP extends PickaxeItem
 
 	public CustomEnergyStorage getEnergy(ItemStack stack)
 	{
-		return (CustomEnergyStorage) CapabilityUtils.getPresentCapability(stack, ForgeCapabilities.ENERGY);
+		return (CustomEnergyStorage) CapabilityUtils.getPresentCapability(stack, ENERGY);
 	}
 
 	@Override
 	public void appendHoverText(ItemStack stack, @javax.annotation.Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
-		list.add(Component.translatable("tooltip.nc.qnp_mode", Component.translatable("tooltip.mode." + getMode(stack).getName())).withStyle(ChatFormatting.BLUE));
-		list.add(Component.translatable("tooltip.nc.shift_rbm_to_change").withStyle(ChatFormatting.GRAY));
-		list.add(Component.translatable("tooltip.nc.energy_stored", formatEnergy(getEnergy(stack).getEnergyStored()), formatEnergy(getEnergyMaxStorage())).withStyle(ChatFormatting.BLUE));
+		list.add(new TranslatableComponent("tooltip.nc.qnp_mode", new TranslatableComponent("tooltip.mode." + getMode(stack).getName())).withStyle(ChatFormatting.BLUE));
+		list.add(new TranslatableComponent("tooltip.nc.shift_rbm_to_change").withStyle(ChatFormatting.GRAY));
+		list.add(new TranslatableComponent("tooltip.nc.energy_stored", formatEnergy(getEnergy(stack).getEnergyStored()), formatEnergy(getEnergyMaxStorage())).withStyle(ChatFormatting.BLUE));
 
 	}
 

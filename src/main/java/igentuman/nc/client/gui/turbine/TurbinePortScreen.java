@@ -12,6 +12,7 @@ import igentuman.nc.container.TurbinePortContainer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -117,7 +118,7 @@ public class TurbinePortScreen extends AbstractContainerScreen<TurbinePortContai
 
         if(container().getMaxEnergy() > 0) {
             energyBar.clearTooltips();
-            energyBar.addTooltip(Component.translatable("reactor.forge_energy_per_tick", container().energyPerTick()));
+            energyBar.addTooltip(new TranslatableComponent("reactor.forge_energy_per_tick", container().energyPerTick()));
             if(energyBar.isMouseOver(pMouseX, pMouseY)) {
                 renderTooltip(pPoseStack, energyBar.getTooltips(),
                         Optional.empty(), pMouseX, pMouseY);

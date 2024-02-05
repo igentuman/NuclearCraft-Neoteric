@@ -2,7 +2,6 @@ package igentuman.nc.block.entity;
 
 import igentuman.nc.block.ISizeToggable;
 import igentuman.nc.client.sound.SoundHandler;
-import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.util.NCBlockPos;
 import igentuman.nc.util.annotation.NBTField;

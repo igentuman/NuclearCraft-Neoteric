@@ -8,13 +8,9 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -22,6 +18,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 import java.util.*;
 
 import static igentuman.nc.handler.sided.SlotModePair.SlotMode.*;
+import static net.minecraftforge.fluids.FluidAttributes.BUCKET_VOLUME;
+import static net.minecraftforge.fluids.capability.CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
 
 public class FluidCapabilityHandler extends AbstractCapabilityHandler implements INBTSerializable<CompoundTag> {
     private final int CAPACITY;
@@ -51,7 +49,7 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler implements
     }
 
     public FluidCapabilityHandler(int inputSlots, int outputSlots) {
-        this(inputSlots, outputSlots, FluidType.BUCKET_VOLUME*10);
+        this(inputSlots, outputSlots, BUCKET_VOLUME*10);
     }
 
     public LazyOptional<FluidHandlerWrapper> getCapability(Direction side) {
@@ -133,7 +131,7 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler implements
     public boolean pushFluids(Direction dir, boolean forceFlag, BlockPos pos) {
         BlockEntity be = tile.getLevel().getBlockEntity(pos.relative(dir));
         if(be == null) return false;
-        LazyOptional<IFluidHandler> cap = be.getCapability(ForgeCapabilities.FLUID_HANDLER, dir.getOpposite());
+        LazyOptional<IFluidHandler> cap = be.getCapability(FLUID_HANDLER_CAPABILITY, dir.getOpposite());
         if(cap.isPresent()) {
             IFluidHandler handler = cap.orElse(null);
             SidedContentHandler.RelativeDirection relativeDirection = SidedContentHandler.RelativeDirection.toRelative(dir, getFacing());
@@ -158,7 +156,7 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler implements
     public boolean pullFluids(Direction dir, boolean forceFlag, BlockPos pos) {
         BlockEntity be = tile.getLevel().getBlockEntity(pos.relative(dir));
         if(be == null) return false;
-        LazyOptional<IFluidHandler> cap = be.getCapability(ForgeCapabilities.FLUID_HANDLER, dir.getOpposite());
+        LazyOptional<IFluidHandler> cap = be.getCapability(FLUID_HANDLER_CAPABILITY, dir.getOpposite());
         if(cap.isPresent()) {
             IFluidHandler handler = cap.orElse(null);
             SidedContentHandler.RelativeDirection relativeDirection = SidedContentHandler.RelativeDirection.toRelative(dir, getFacing());
@@ -216,7 +214,7 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler implements
         for(Direction dir: Direction.values()) {
             BlockEntity be = tile.getLevel().getBlockEntity(tile.getBlockPos().relative(dir));
             if(be == null) continue;
-            LazyOptional<IFluidHandler> cap = be.getCapability(ForgeCapabilities.FLUID_HANDLER, dir.getOpposite());
+            LazyOptional<IFluidHandler> cap = be.getCapability(FLUID_HANDLER_CAPABILITY, dir.getOpposite());
             if(cap.isPresent()) {
                 IFluidHandler handler = cap.orElse(null);
                 SidedContentHandler.RelativeDirection relativeDirection = SidedContentHandler.RelativeDirection.toRelative(dir, getFacing());
@@ -262,7 +260,7 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler implements
         for(Direction dir: Direction.values()) {
             BlockEntity be = tile.getLevel().getBlockEntity(tile.getBlockPos().relative(dir));
             if(be == null) return toOutput;
-            LazyOptional<IFluidHandler> cap = be.getCapability(ForgeCapabilities.FLUID_HANDLER, dir.getOpposite());
+            LazyOptional<IFluidHandler> cap = be.getCapability(FLUID_HANDLER_CAPABILITY, dir.getOpposite());
             if(cap.isPresent()) {
                 IFluidHandler handler = cap.orElse(null);
 

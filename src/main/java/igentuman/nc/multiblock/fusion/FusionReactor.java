@@ -3,7 +3,6 @@ package igentuman.nc.multiblock.fusion;
 import igentuman.nc.block.fusion.FusionBlock;
 import igentuman.nc.block.fusion.FusionCoreBlock;
 import igentuman.nc.block.fusion.FusionCoreProxy;
-import igentuman.nc.container.FissionControllerContainer;
 import igentuman.nc.container.FusionCoreContainer;
 import igentuman.nc.item.FusionCoreItem;
 import igentuman.nc.setup.registration.CreativeTabs;
@@ -32,8 +31,8 @@ import static igentuman.nc.setup.registration.NCItems.ALL_NC_ITEMS;
 
 public class FusionReactor {
     public static final Item.Properties FUSION_ITEM_PROPERTIES = new Item.Properties().tab(CreativeTabs.FUSION_REACTOR);
-    private static final DeferredRegister<MenuType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.MENU_TYPES, MODID);
-    private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, MODID);
+    private static final DeferredRegister<MenuType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.CONTAINERS, MODID);
+    private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, MODID);
     public static HashMap<String, RegistryObject<Block>> FUSION_BLOCKS = new HashMap<>();
     public static HashMap<String, RegistryObject<BlockEntityType<? extends BlockEntity>>> FUSION_BE = new HashMap<>();
     public static HashMap<String, RegistryObject<Item>> FUSION_ITEMS = new HashMap<>();

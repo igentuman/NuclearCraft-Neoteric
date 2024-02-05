@@ -4,7 +4,6 @@ import igentuman.nc.NuclearCraft;
 import igentuman.nc.radiation.data.RadiationEvents;
 import igentuman.nc.recipes.type.RadShieldingRecipe;
 import igentuman.nc.recipes.type.ResetNbtRecipe;
-import igentuman.nc.world.dimension.Dimensions;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.MinecraftForge;
@@ -27,7 +26,7 @@ public class ModSetup {
 
     public static void init(FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
-            Dimensions.register();
+          //  Dimensions.register();
             //CapabilityRegistration.register(event);
 
         });

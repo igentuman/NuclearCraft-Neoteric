@@ -6,6 +6,7 @@ import igentuman.nc.radiation.data.WorldRadiationProvider;
 import igentuman.nc.setup.registration.CreativeTabs;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -15,6 +16,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.UUID;
 
 public class GeigerCounterItem extends Item
 {
@@ -30,7 +33,7 @@ public class GeigerCounterItem extends Item
 		if (!world.isClientSide()) {
 			WorldRadiation worldRadiation = RadiationManager.get(world).getWorldRadiation();
 			int radiation = worldRadiation.getChunkRadiation(player.chunkPosition().x, player.chunkPosition().z);
-			player.sendSystemMessage(Component.translatable("message.nc.geiger_radiation_measure", format(radiation)));
+			player.sendMessage(new TranslatableComponent("message.nc.geiger_radiation_measure", format(radiation)), UUID.randomUUID());
 			CriteriaTriggers.USING_ITEM.trigger((ServerPlayer) player, stack);
 		}
 		return InteractionResultHolder.sidedSuccess(stack, world.isClientSide);

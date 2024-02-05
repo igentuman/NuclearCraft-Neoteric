@@ -9,6 +9,7 @@ import igentuman.nc.network.toServer.PacketSideConfigToggle;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
@@ -55,8 +56,8 @@ public class SideConfig extends NCGuiElement {
     @Override
     public List<Component> getTooltips() {
         tooltips.clear();
-        tooltips.add(applyFormat(Component.translatable("side_config."+getDirectionName()), AQUA)
-                .append(applyFormat(Component.translatable("side_config."+screen.getSlotMode(direction, slotId).name().toLowerCase()),GOLD)));
+        tooltips.add(applyFormat(new TranslatableComponent("side_config."+getDirectionName()), AQUA)
+                .append(applyFormat(new TranslatableComponent("side_config."+screen.getSlotMode(direction, slotId).name().toLowerCase()),GOLD)));
         return tooltips;
     }
 

@@ -7,7 +7,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.function.Supplier;
 
-public class ParticleTypeDeferredRegister extends WrappedDeferredRegister<ParticleType<?>> {
+public class ParticleTypeDeferredRegister extends WrappedForgeDeferredRegister<ParticleType<?>> {
 
     public ParticleTypeDeferredRegister(String modid) {
         super(modid, ForgeRegistries.PARTICLE_TYPES);

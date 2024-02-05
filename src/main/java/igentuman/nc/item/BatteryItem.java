@@ -8,21 +8,21 @@ import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 import javax.annotation.Nonnull;
 import java.util.List;
 
 import static igentuman.nc.handler.config.CommonConfig.ENERGY_STORAGE;
+import static net.minecraftforge.energy.CapabilityEnergy.ENERGY;
 
 public class BatteryItem extends Item
 {
@@ -70,7 +70,7 @@ public class BatteryItem extends Item
 
 	public CustomEnergyStorage getEnergy(ItemStack stack)
 	{
-		return (CustomEnergyStorage) CapabilityUtils.getPresentCapability(stack, ForgeCapabilities.ENERGY);
+		return (CustomEnergyStorage) CapabilityUtils.getPresentCapability(stack, ENERGY);
 	}
 
 	@Override
@@ -84,7 +84,7 @@ public class BatteryItem extends Item
 	@Override
 	public void appendHoverText(ItemStack stack, @javax.annotation.Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
-		list.add(Component.translatable("tooltip.nc.energy_stored", formatEnergy(getEnergy(stack).getEnergyStored()), formatEnergy(getEnergy(stack).getMaxEnergyStored())).withStyle(ChatFormatting.BLUE));
+		list.add(new TranslatableComponent("tooltip.nc.energy_stored", formatEnergy(getEnergy(stack).getEnergyStored()), formatEnergy(getEnergy(stack).getMaxEnergyStored())).withStyle(ChatFormatting.BLUE));
 	}
 
 	public String formatEnergy(int energy)

@@ -32,7 +32,7 @@ public class NCEnergyBlocks {
     public static HashMap<String, RegistryObject<Item>> BLOCK_ITEMS = new HashMap<>();
     public static final Item.Properties ENERGY_ITEM_PROPERTIES = new Item.Properties().tab(CreativeTabs.NC_ITEMS);
     public static final BlockBehaviour.Properties ENERGY_BLOCK_PROPERTIES = BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.METAL).strength(2f).requiresCorrectToolForDrops();
-    private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, MODID);
+    private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, MODID);
     public static HashMap<String, RegistryObject<BlockEntityType<? extends NCEnergy>>> ENERGY_BE = new HashMap<>();
 
     public static void init() {

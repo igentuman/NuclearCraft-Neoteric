@@ -87,7 +87,7 @@ public abstract class AbstractRecipeProvider {
         try {
             return IngredientCreatorAccess.fluid().from(fluid, amount).getRepresentations().get(0);
         } catch (NullPointerException e) {
-            throw new NullPointerException("Fluid " + fluid.getFluidType().toString() + " does not exist");
+            throw new NullPointerException("Fluid " + fluid.getRegistryName().toString() + " does not exist");
         }
     }
 

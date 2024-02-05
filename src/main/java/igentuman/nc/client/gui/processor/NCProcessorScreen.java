@@ -16,6 +16,7 @@ import igentuman.nc.handler.event.client.TickHandler;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -180,9 +181,9 @@ public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractC
             if(widget.isMouseOver(pMouseX, pMouseY)) {
                 if(widget instanceof EnergyBar) {
                     widget.clearTooltips();
-                    widget.addTooltip(applyFormat(Component.translatable("speed.multiplier", menu.speedMultiplier()), ChatFormatting.RED));
-                    widget.addTooltip(applyFormat(Component.translatable("energy.multiplier", menu.energyMultiplier()), ChatFormatting.GOLD));
-                    widget.addTooltip(applyFormat(Component.translatable("energy.per_tick", scaledFormat(menu.energyPerTick())), ChatFormatting.YELLOW));
+                    widget.addTooltip(applyFormat(new TranslatableComponent("speed.multiplier", menu.speedMultiplier()), ChatFormatting.RED));
+                    widget.addTooltip(applyFormat(new TranslatableComponent("energy.multiplier", menu.energyMultiplier()), ChatFormatting.GOLD));
+                    widget.addTooltip(applyFormat(new TranslatableComponent("energy.per_tick", scaledFormat(menu.energyPerTick())), ChatFormatting.YELLOW));
                 }
                 renderTooltip(pPoseStack, widget.getTooltips(),
                         Optional.empty(), pMouseX, pMouseY);

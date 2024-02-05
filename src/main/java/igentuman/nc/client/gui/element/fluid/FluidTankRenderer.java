@@ -8,6 +8,7 @@ import igentuman.nc.NuclearCraft;
 import igentuman.nc.client.gui.element.NCGuiElement;
 import igentuman.nc.network.toServer.PacketFlushSlotContent;
 import igentuman.nc.network.toServer.PacketSideConfigToggle;
+import mezz.jei.forge.platform.FluidHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -16,14 +17,14 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -155,17 +156,16 @@ public class FluidTankRenderer extends NCGuiElement {
 
     private TextureAtlasSprite getStillFluidSprite(FluidStack fluidStack) {
         Fluid fluid = fluidStack.getFluid();
-        IClientFluidTypeExtensions renderProperties = IClientFluidTypeExtensions.of(fluid);
-        ResourceLocation fluidStill = renderProperties.getStillTexture(fluidStack);
-
+        FluidAttributes attributes = fluid.getAttributes();
+        ResourceLocation fluidStill = attributes.getStillTexture(fluidStack);
         Minecraft minecraft = Minecraft.getInstance();
-        return minecraft.getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(fluidStill);
+        return (TextureAtlasSprite)minecraft.getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(fluidStill);
     }
 
     private int getColorTint(FluidStack ingredient) {
         Fluid fluid = ingredient.getFluid();
-        IClientFluidTypeExtensions renderProperties = IClientFluidTypeExtensions.of(fluid);
-        return renderProperties.getTintColor(ingredient);
+        FluidAttributes attributes = fluid.getAttributes();
+        return attributes.getColor(ingredient);
     }
 
     private static void drawTiledSprite(PoseStack poseStack, final int tiledWidth, final int tiledHeight, int color, long scaledAmount, TextureAtlasSprite sprite) {
@@ -234,21 +234,21 @@ public class FluidTankRenderer extends NCGuiElement {
                 return tooltip;
             }
 
-            MutableComponent displayName = MutableComponent.create(tank.getFluid().getDisplayName().getContents());
+            MutableComponent displayName = new TranslatableComponent(tank.getFluid().getDisplayName().getContents());
             tooltip.add(displayName.withStyle(ChatFormatting.AQUA));
 
             long amount = tank.getFluid().getAmount();
-            long milliBuckets = (amount * 1000) / FluidType.BUCKET_VOLUME;
+            long milliBuckets = (amount * 1000) / FluidAttributes.BUCKET_VOLUME;
 
             if (tooltipMode == TooltipMode.SHOW_AMOUNT_AND_CAPACITY) {
-                MutableComponent amountString = Component.translatable("gui.nc.fluid_tank_renderer.amount_capacity", nf.format(milliBuckets), nf.format(tank.getCapacity()));
+                MutableComponent amountString = new TranslatableComponent("gui.nc.fluid_tank_renderer.amount_capacity", nf.format(milliBuckets), nf.format(tank.getCapacity()));
                 tooltip.add(amountString.withStyle(ChatFormatting.WHITE));
             } else if (tooltipMode == TooltipMode.SHOW_AMOUNT) {
-                MutableComponent amountString = Component.translatable("gui.nc.fluid_tank_renderer.amount", nf.format(milliBuckets));
+                MutableComponent amountString = new TranslatableComponent("gui.nc.fluid_tank_renderer.amount", nf.format(milliBuckets));
                 tooltip.add(amountString.withStyle(ChatFormatting.WHITE));
             }
             if(canVoid) {
-                tooltip.add(Component.translatable("gui.nc.fluid_tank_renderer.can_void").withStyle(ChatFormatting.GOLD));
+                tooltip.add(new TranslatableComponent("gui.nc.fluid_tank_renderer.can_void").withStyle(ChatFormatting.GOLD));
             }
         } catch (RuntimeException e) {
             LOGGER.error("Failed to get tooltip for fluid: " + e);

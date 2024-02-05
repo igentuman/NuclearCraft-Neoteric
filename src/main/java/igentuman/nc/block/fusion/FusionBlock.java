@@ -6,6 +6,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -103,9 +104,9 @@ public class FusionBlock extends Block implements EntityBlock {
     public void appendHoverText(ItemStack stack, @javax.annotation.Nullable BlockGetter world, List<Component> list, TooltipFlag flag)
     {
         if (getCode().equals("fusion_reactor_connector")) {
-            list.add(Component.translatable("tooltip.nc.fusion_connector.descr").withStyle(ChatFormatting.YELLOW));
+            list.add(new TranslatableComponent("tooltip.nc.fusion_connector.descr").withStyle(ChatFormatting.YELLOW));
         } else {
-            list.add(Component.translatable("tooltip.nc.fusion_casing.descr").withStyle(ChatFormatting.YELLOW));
+            list.add(new TranslatableComponent("tooltip.nc.fusion_casing.descr").withStyle(ChatFormatting.YELLOW));
         }
     }
 }

@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
-import static igentuman.nc.world.dimension.Dimensions.WASTELAIND_ID;
 
 public class FusionConfig {
     public static <T> List<T> toList(Collection<T> vals)

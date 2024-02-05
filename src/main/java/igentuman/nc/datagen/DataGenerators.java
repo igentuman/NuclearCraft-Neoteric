@@ -6,9 +6,9 @@ import igentuman.nc.datagen.models.NCItemModels;
 import igentuman.nc.datagen.recipes.NCRecipes;
 import igentuman.nc.recipes.ingredient.NcIngredient;
 import net.minecraft.data.DataGenerator;
-import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 
 import static igentuman.nc.NuclearCraft.MODID;
 
@@ -19,18 +19,17 @@ public class DataGenerators {
     public static void gatherData(GatherDataEvent event) {
         DataGenerator generator = event.getGenerator();
         NcIngredient.ping();
-        generator.addProvider(event.includeServer(), new NCRecipes(generator));
-        generator.addProvider(event.includeServer(), new NCLootTables(generator));
+        generator.addProvider(new NCRecipes(generator));
+        generator.addProvider(new NCLootTables(generator));
         NCBlockTags blockTags = new NCBlockTags(generator, event.getExistingFileHelper());
-        generator.addProvider(event.includeServer(), blockTags);
-        generator.addProvider(event.includeServer(), new NCItemTags(generator, blockTags, event.getExistingFileHelper()));
-        generator.addProvider(event.includeServer(), new FluidTags(generator, event.getExistingFileHelper()));
-        generator.addProvider(event.includeServer(), new NCBiomeTags(generator, event.getExistingFileHelper()));
-        generator.addProvider(event.includeServer(), new NCStructureSetTags(generator, event.getExistingFileHelper()));
-        generator.addProvider(event.includeClient(), new NCBlockStates(generator, event.getExistingFileHelper()));
-        generator.addProvider(event.includeClient(), new NCFluidBlockStates(generator, event.getExistingFileHelper()));
-        generator.addProvider(event.includeClient(), new NCItemModels(generator, event.getExistingFileHelper()));
-        generator.addProvider(event.includeClient(), new NCLanguageProvider(generator, "en_us"));
-        BiomeModifierProvider.addTo(generator, event.getExistingFileHelper(), d -> generator.addProvider(true, d));
+        generator.addProvider(blockTags);
+        generator.addProvider(new NCItemTags(generator, blockTags, event.getExistingFileHelper()));
+        generator.addProvider(new FluidTags(generator, event.getExistingFileHelper()));
+        generator.addProvider(new NCBiomeTags(generator, event.getExistingFileHelper()));
+        generator.addProvider(new NCStructureSetTags(generator, event.getExistingFileHelper()));
+        generator.addProvider(new NCBlockStates(generator, event.getExistingFileHelper()));
+        generator.addProvider(new NCFluidBlockStates(generator, event.getExistingFileHelper()));
+        generator.addProvider(new NCItemModels(generator, event.getExistingFileHelper()));
+        generator.addProvider(new NCLanguageProvider(generator, "en_us"));
     }
 }

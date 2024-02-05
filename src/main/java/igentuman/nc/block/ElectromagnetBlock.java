@@ -1,29 +1,23 @@
 package igentuman.nc.block;
 
 import igentuman.nc.block.entity.ElectromagnetBE;
-import igentuman.nc.block.entity.fission.FissionBE;
 import igentuman.nc.content.Electromagnets;
-import igentuman.nc.setup.registration.NCStorageBlocks;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.FrontAndTop;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.EnumProperty;
-import net.minecraft.world.level.material.Material;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -36,8 +30,6 @@ public class ElectromagnetBlock extends Block implements EntityBlock {
         super(pProperties);
     }
 
-
-
     public String name()
     {
         return asItem().toString().replace("_slope", "");
@@ -47,22 +39,22 @@ public class ElectromagnetBlock extends Block implements EntityBlock {
     {
         return Electromagnets.all().get(name());
     }
-    public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag)
+    public void appendHoverText(@NotNull ItemStack pStack, BlockGetter pLevel, List<Component> list, TooltipFlag pFlag)
     {
         list.add(TextUtils.applyFormat(
-                Component.translatable("tooltip.nc.rf_amplifier.power", TextUtils.numberFormat(prefab().getPower())),
+                new TranslatableComponent("tooltip.nc.rf_amplifier.power", TextUtils.numberFormat(prefab().getPower())),
                 ChatFormatting.DARK_AQUA));
         list.add(TextUtils.applyFormat(
-                Component.translatable("tooltip.nc.electromagnet.magnetic_field", TextUtils.numberFormat(prefab().getMagneticField())),
+                new TranslatableComponent("tooltip.nc.electromagnet.magnetic_field", TextUtils.numberFormat(prefab().getMagneticField())),
                 ChatFormatting.DARK_BLUE));
         list.add(TextUtils.applyFormat(
-                Component.translatable("tooltip.nc.description.efficiency", TextUtils.numberFormat(prefab().getEfficiency())),
+                new TranslatableComponent("tooltip.nc.description.efficiency", TextUtils.numberFormat(prefab().getEfficiency())),
                 ChatFormatting.AQUA));
         list.add(TextUtils.applyFormat(
-                Component.translatable("tooltip.nc.electromagnet.heat", TextUtils.numberFormat(prefab().getHeat())),
+                new TranslatableComponent("tooltip.nc.electromagnet.heat", TextUtils.numberFormat(prefab().getHeat())),
                 ChatFormatting.YELLOW));
         list.add(TextUtils.applyFormat(
-                Component.translatable("tooltip.nc.electromagnet.max_temp", TextUtils.numberFormat((double) prefab().getMaxTemp() /1000)),
+                new TranslatableComponent("tooltip.nc.electromagnet.max_temp", TextUtils.numberFormat((double) prefab().getMaxTemp() /1000)),
                 ChatFormatting.RED));
     }
 

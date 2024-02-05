@@ -3,7 +3,6 @@ package igentuman.nc.block.entity.processor;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.compat.cc.NCProcessorPeripheral;
-import igentuman.nc.compat.gt.NCGTEnergyHandler;
 import igentuman.nc.handler.CatalystHandler;
 import igentuman.nc.handler.UpgradesHandler;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
@@ -20,6 +19,7 @@ import igentuman.nc.util.CustomEnergyStorage;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.SlotModePair;
 import igentuman.nc.util.annotation.NBTField;
+import mekanism.common.capabilities.Capabilities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustParticleOptions;
@@ -34,7 +34,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
@@ -52,6 +51,9 @@ import java.util.Objects;
 import static igentuman.nc.block.ProcessorBlock.ACTIVE;
 import static igentuman.nc.handler.config.ProcessorsConfig.PROCESSOR_CONFIG;
 import static igentuman.nc.util.ModUtil.*;
+import static net.minecraftforge.energy.CapabilityEnergy.ENERGY;
+import static net.minecraftforge.fluids.capability.CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
+import static net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
 
 public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE {
 
@@ -86,7 +88,6 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
 
     private List<ItemStack> allowedInputs;
     private List<FluidStack> allowedFluids;
-    private LazyOptional<NCGTEnergyHandler> gtEnergyCap;
 
     public LazyOptional<IEnergyStorage> getEnergy() {
         return energy;
@@ -238,23 +239,17 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (cap == ForgeCapabilities.ITEM_HANDLER) {
+        if (cap == ITEM_HANDLER_CAPABILITY) {
             return contentHandler.getItemCapability(side);
         }
-        if (cap == ForgeCapabilities.FLUID_HANDLER) {
+        if (cap == FLUID_HANDLER_CAPABILITY) {
             return contentHandler.getFluidCapability(side);
         }
-        if (cap == ForgeCapabilities.ENERGY && PROCESSOR_CONFIG.GT_SUPPORT.get() != 2) {
+        if (cap == ENERGY) {
             if(prefab().config().getPower() > 0) {
                 return energy.cast();
             }
             return LazyOptional.empty();
-        }
-
-        if(isGtLoaded() && gtEUSupported()) {
-            if(cap == com.gregtechceu.gtceu.api.capability.forge.GTCapability.CAPABILITY_ENERGY_CONTAINER) {
-                return getGTEnergyHandler(cap, side);
-            }
         }
 
         if(isCcLoaded()) {
@@ -263,13 +258,13 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
             }
         }
         if(isMekanismLoadeed()) {
-            if(cap == mekanism.common.capabilities.Capabilities.GAS_HANDLER) {
+            if(cap == Capabilities.GAS_HANDLER_CAPABILITY) {
                 if(contentHandler.hasFluidCapability(side)) {
                     return LazyOptional.of(() -> contentHandler.gasConverter(side));
                 }
                 return LazyOptional.empty();
             }
-            if(cap == mekanism.common.capabilities.Capabilities.SLURRY_HANDLER) {
+            if(cap == Capabilities.SLURRY_HANDLER_CAPABILITY) {
                 if(contentHandler.hasFluidCapability(side)) {
                     return LazyOptional.of(() -> contentHandler.getSlurryConverter(side));
                 }
@@ -277,14 +272,6 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
             }
         }
         return super.getCapability(cap, side);
-    }
-
-    protected  <T> LazyOptional<T> getGTEnergyHandler(Capability<T> cap, Direction side) {
-        if(gtEnergyCap == null) {
-            NCGTEnergyHandler handler = new NCGTEnergyHandler(energyStorage, PROCESSOR_CONFIG.BASE_POWER.get()/4, PROCESSOR_CONFIG.GT_AMPERAGE.get());
-            gtEnergyCap = LazyOptional.of(() -> handler);
-        }
-        return gtEnergyCap.cast();
     }
 
     public NCProcessorBE(BlockPos pPos, BlockState pBlockState, String name) {

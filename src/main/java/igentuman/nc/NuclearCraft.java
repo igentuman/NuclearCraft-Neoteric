@@ -17,7 +17,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
-import net.minecraftforge.event.GameShuttingDownEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.event.server.ServerStoppedEvent;
@@ -98,7 +97,7 @@ public class NuclearCraft {
         forceLoadConfig();
         MinecraftForge.EVENT_BUS.addListener(this::serverStopped);
         MinecraftForge.EVENT_BUS.addListener(this::serverStarted);
-        MinecraftForge.EVENT_BUS.addListener(this::gameShuttingDownEvent);
+        //MinecraftForge.EVENT_BUS.addListener(this::gameShuttingDownEvent);
         ModSetup.setup();
         Registration.init();
         IEventBus modbus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -140,9 +139,9 @@ public class NuclearCraft {
             RadiationManager.clear(level);
         }
     }
-    private void gameShuttingDownEvent(GameShuttingDownEvent event) {
+/*    private void gameShuttingDownEvent(GameShuttingDownEvent event) {
         NuclearCraft.instance.isNcBeStopped = true;
-    }
+    }*/
 
     private void serverStarted(ServerStartedEvent event) {
         NuclearCraft.instance.isNcBeStopped = false;

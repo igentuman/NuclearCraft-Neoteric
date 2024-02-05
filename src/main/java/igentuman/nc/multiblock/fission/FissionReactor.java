@@ -34,8 +34,8 @@ import static igentuman.nc.setup.registration.NCItems.ALL_NC_ITEMS;
 
 public class FissionReactor {
     public static final Item.Properties FISSION_ITEM_PROPS = new Item.Properties().tab(CreativeTabs.FISSION_REACTOR);
-    private static final DeferredRegister<MenuType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.MENU_TYPES, MODID);
-    private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, MODID);
+    private static final DeferredRegister<MenuType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.CONTAINERS, MODID);
+    private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, MODID);
     public static HashMap<String, RegistryObject<Block>> FISSION_BLOCKS = new HashMap<>();
     public static HashMap<String, RegistryObject<BlockEntityType<? extends BlockEntity>>> FISSION_BE = new HashMap<>();
     public static HashMap<String, RegistryObject<Item>> FISSION_BLOCK_ITEMS = new HashMap<>();

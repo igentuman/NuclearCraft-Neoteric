@@ -6,6 +6,7 @@ import igentuman.nc.content.processors.Processors;
 import igentuman.nc.setup.registration.NCProcessors;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -15,7 +16,6 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
@@ -23,6 +23,7 @@ import net.minecraftforge.items.wrapper.InvWrapper;
 import org.jetbrains.annotations.Nullable;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
 
 public class NCEnergyContainer extends AbstractContainerMenu {
     protected NCProcessorBE blockEntity;
@@ -58,7 +59,7 @@ public class NCEnergyContainer extends AbstractContainerMenu {
         for(int[] pos: processor.getSlotsConfig().getSlotPositions()) {
             if(processor.getSlotsConfig().getSlotType(itemIdx).contains("item")) {
                 int idx = itemIdx;
-                blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
+                blockEntity.getCapability(ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
                     addSlot(new SlotItemHandler(h, idx, pos[0], pos[1]));
                 });
                 itemIdx++;
@@ -68,7 +69,7 @@ public class NCEnergyContainer extends AbstractContainerMenu {
         if(getProcessor().supportSpeedUpgrade) {
             int idx = itemIdx;
             int finalUx = ux;
-            blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
+            blockEntity.getCapability(ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
                 addSlot(new SlotItemHandler(h, idx, finalUx, 77));
             });
             itemIdx++;
@@ -77,7 +78,7 @@ public class NCEnergyContainer extends AbstractContainerMenu {
         if(getProcessor().supportEnergyUpgrade) {
             int idx = itemIdx;
             int finalUx = ux;
-            blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
+            blockEntity.getCapability(ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
                 addSlot(new SlotItemHandler(h, idx, finalUx, 77));
             });
         }
@@ -162,7 +163,7 @@ public class NCEnergyContainer extends AbstractContainerMenu {
     }
 
     public Component getTitle() {
-        return Component.translatable("block."+MODID+"."+name);
+        return new TranslatableComponent("block."+MODID+"."+name);
     }
 
     public IEnergyStorage getEnergy() {

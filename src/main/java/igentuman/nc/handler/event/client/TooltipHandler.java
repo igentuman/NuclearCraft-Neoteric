@@ -5,6 +5,7 @@ import igentuman.nc.radiation.ItemShielding;
 import igentuman.nc.radiation.RadiationCleaningItems;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -41,7 +42,7 @@ public class TooltipHandler {
     private static void addModeratorTooltip(ItemTooltipEvent event, ItemStack itemStack) {
         for(Block block: moderators) {
             if(itemStack.is(block.asItem())) {
-                event.getToolTip().add(Component.translatable("tooltip.nc.moderator.desc", FISSION_CONFIG.MODERATOR_FE_MULTIPLIER.get(), FISSION_CONFIG.MODERATOR_HEAT_MULTIPLIER.get()).withStyle(ChatFormatting.GOLD));
+                event.getToolTip().add(new TranslatableComponent("tooltip.nc.moderator.desc", FISSION_CONFIG.MODERATOR_FE_MULTIPLIER.get(), FISSION_CONFIG.MODERATOR_HEAT_MULTIPLIER.get()).withStyle(ChatFormatting.GOLD));
             }
         }
     }
@@ -50,9 +51,9 @@ public class TooltipHandler {
         if(!itemStack.hasTag()) return;
         assert itemStack.getTag() != null;
         if(itemStack.getTag().contains("is_nc_analyzed")) {
-            event.getToolTip().add(Component.translatable("tooltip.nc.analyzed").withStyle(ChatFormatting.GOLD));
+            event.getToolTip().add(new TranslatableComponent("tooltip.nc.analyzed").withStyle(ChatFormatting.GOLD));
             if(itemStack.getItem().equals(FILLED_MAP)) {
-                event.getToolTip().add(Component.translatable("tooltip.nc.use_in_leacher").withStyle(ChatFormatting.GOLD));
+                event.getToolTip().add(new TranslatableComponent("tooltip.nc.use_in_leacher").withStyle(ChatFormatting.GOLD));
             }
         }
     }
@@ -61,7 +62,7 @@ public class TooltipHandler {
         int radiation = RadiationCleaningItems.byItem(itemStack.getItem());
         if(radiation == 0) return;
         ChatFormatting color = ChatFormatting.GREEN;
-        event.getToolTip().add(Component.translatable("tooltip.nc.radiation_removal", format(((double)radiation)/1000000000)+"Rad").withStyle(color));
+        event.getToolTip().add(new TranslatableComponent("tooltip.nc.radiation_removal", format(((double)radiation)/1000000000)+"Rad").withStyle(color));
     }
 
     private static void addShieldingTooltip(ItemTooltipEvent event, ItemStack item) {
@@ -71,7 +72,7 @@ public class TooltipHandler {
         if(item.hasTag() && item.getTag().contains("rad_shielding")) {
             shielding += item.getTag().getInt("rad_shielding");
         }
-        event.getToolTip().add(Component.translatable("tooltip.nc.rad_shielding", shielding).withStyle(color));
+        event.getToolTip().add(new TranslatableComponent("tooltip.nc.rad_shielding", shielding).withStyle(color));
     }
 
     private static void addRadiationLevelTooltip(ItemTooltipEvent event, Item item) {
@@ -87,7 +88,7 @@ public class TooltipHandler {
             if(radiation > 0.1) {
                 color = ChatFormatting.RED;
             }
-            event.getToolTip().add(Component.translatable("tooltip.nc.radiation", format(radiation)+"Rad/s").withStyle(color));
+            event.getToolTip().add(new TranslatableComponent("tooltip.nc.radiation", format(radiation)+"Rad/s").withStyle(color));
         }
     }
 

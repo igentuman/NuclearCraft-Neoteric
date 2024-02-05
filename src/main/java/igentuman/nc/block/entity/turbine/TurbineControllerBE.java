@@ -32,7 +32,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
@@ -51,6 +50,9 @@ import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.handler.config.FissionConfig.FISSION_CONFIG;
 import static igentuman.nc.setup.registration.NCSounds.FISSION_REACTOR;
 import static igentuman.nc.util.ModUtil.isCcLoaded;
+import static net.minecraftforge.energy.CapabilityEnergy.ENERGY;
+import static net.minecraftforge.fluids.capability.CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
+import static net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
 
 public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> extends TurbineBE {
 
@@ -186,13 +188,13 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (cap == ForgeCapabilities.ITEM_HANDLER) {
+        if (cap == ITEM_HANDLER_CAPABILITY) {
             return contentHandler.getItemCapability(side);
         }
-        if (cap == ForgeCapabilities.FLUID_HANDLER) {
+        if (cap == FLUID_HANDLER_CAPABILITY) {
             return contentHandler.getFluidCapability(side);
         }
-        if (cap == ForgeCapabilities.ENERGY) {
+        if (cap == ENERGY) {
             return energy.cast();
         }
         if(isCcLoaded()) {
@@ -214,7 +216,7 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
             }
 
             playSoundCooldown = 20;
-            currentSound = SoundHandler.startTileSound(FISSION_REACTOR.get(), SoundSource.BLOCKS, 0.2f, level.getRandom(), getBlockPos());
+            currentSound = SoundHandler.startTileSound(FISSION_REACTOR.get(), SoundSource.BLOCKS, 0.2f, getBlockPos());
         }
     }
 

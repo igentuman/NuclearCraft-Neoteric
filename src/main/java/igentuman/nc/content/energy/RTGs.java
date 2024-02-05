@@ -7,7 +7,6 @@ import java.util.List;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.energy.NCEnergy;
 import igentuman.nc.block.entity.energy.RTGBE;
-import igentuman.nc.handler.config.CommonConfig;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
 import static igentuman.nc.handler.config.CommonConfig.ENERGY_GENERATION;

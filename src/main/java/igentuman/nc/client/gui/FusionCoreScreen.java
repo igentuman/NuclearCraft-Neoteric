@@ -13,6 +13,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
@@ -49,7 +50,7 @@ public class FusionCoreScreen extends AbstractContainerScreen<FusionCoreContaine
 
     private SliderHorizontal rfAmplifierSlider;
 
-    public Component casingTootip = Component.empty();
+    public Component casingTootip;
 
     public FusionCoreScreen(FusionCoreContainer container, Inventory inv, Component name) {
         super(container, inv, name);
@@ -118,27 +119,27 @@ public class FusionCoreScreen extends AbstractContainerScreen<FusionCoreContaine
                 checklist.setTooltipKey("tooltip.nc.reactor.ready");
             }
 
-            checklist.addTooltip(Component.translatable("tooltip.nc.reactor.has_magnets", container().hasMagnets() ? "Ok" : "--").withStyle(ChatFormatting.AQUA));
-            checklist.addTooltip(Component.translatable("tooltip.nc.reactor.has_amplifiers", container().hasAmplifiers() ? "Ok" : "--").withStyle(ChatFormatting.AQUA));
-            checklist.addTooltip(Component.translatable("tooltip.nc.reactor.has_coolant", container().hasCoolant() ? "Ok" : "--").withStyle(ChatFormatting.AQUA));
-            checklist.addTooltip(Component.translatable("tooltip.nc.reactor.has_energy", container().hasEnoughEnergy() ? "Ok" : "--").withStyle(ChatFormatting.AQUA));
-            checklist.addTooltip(Component.translatable("tooltip.nc.reactor.has_fuel", container().hasRecipe() ? "Ok" : "--").withStyle(ChatFormatting.AQUA));
-            checklist.addTooltip(Component.translatable("tooltip.nc.reactor.charge", container().getCharge() == 100 ? "Ok" : "--").withStyle(ChatFormatting.AQUA));
+            checklist.addTooltip(new TranslatableComponent("tooltip.nc.reactor.has_magnets", container().hasMagnets() ? "Ok" : "--").withStyle(ChatFormatting.AQUA));
+            checklist.addTooltip(new TranslatableComponent("tooltip.nc.reactor.has_amplifiers", container().hasAmplifiers() ? "Ok" : "--").withStyle(ChatFormatting.AQUA));
+            checklist.addTooltip(new TranslatableComponent("tooltip.nc.reactor.has_coolant", container().hasCoolant() ? "Ok" : "--").withStyle(ChatFormatting.AQUA));
+            checklist.addTooltip(new TranslatableComponent("tooltip.nc.reactor.has_energy", container().hasEnoughEnergy() ? "Ok" : "--").withStyle(ChatFormatting.AQUA));
+            checklist.addTooltip(new TranslatableComponent("tooltip.nc.reactor.has_fuel", container().hasRecipe() ? "Ok" : "--").withStyle(ChatFormatting.AQUA));
+            checklist.addTooltip(new TranslatableComponent("tooltip.nc.reactor.charge", container().getCharge() == 100 ? "Ok" : "--").withStyle(ChatFormatting.AQUA));
 
             if(!container().getElectromagnetsPower().equals("0")) {
-                checkboxIsFormed.addTooltip(Component.translatable("tooltip.nc.electromagnet.magnetic_field", container().getElectromagnetsField()).withStyle(ChatFormatting.BLUE));
-                checkboxIsFormed.addTooltip(Component.translatable("tooltip.nc.electromagnet.power", container().getElectromagnetsPower()).withStyle(ChatFormatting.AQUA));
-                checkboxIsFormed.addTooltip(Component.translatable("tooltip.nc.electromagnet.max_temp", container().getElectromagnetsMaxTemp()).withStyle(ChatFormatting.GOLD));
+                checkboxIsFormed.addTooltip(new TranslatableComponent("tooltip.nc.electromagnet.magnetic_field", container().getElectromagnetsField()).withStyle(ChatFormatting.BLUE));
+                checkboxIsFormed.addTooltip(new TranslatableComponent("tooltip.nc.electromagnet.power", container().getElectromagnetsPower()).withStyle(ChatFormatting.AQUA));
+                checkboxIsFormed.addTooltip(new TranslatableComponent("tooltip.nc.electromagnet.max_temp", container().getElectromagnetsMaxTemp()).withStyle(ChatFormatting.GOLD));
             } else {
-                checkboxIsFormed.addTooltip(Component.translatable("tooltip.nc.electromagnet.not_found").withStyle(ChatFormatting.RED));
+                checkboxIsFormed.addTooltip(new TranslatableComponent("tooltip.nc.electromagnet.not_found").withStyle(ChatFormatting.RED));
             }
-            checkboxIsFormed.addTooltip(Component.literal("----------------------"));
+            checkboxIsFormed.addTooltip(Component.nullToEmpty("----------------------"));
             if(!container().getAmplifierVoltage().equals("0")) {
-                checkboxIsFormed.addTooltip(Component.translatable("tooltip.nc.rf_amplifier.voltage", container().getAmplifierVoltage()).withStyle(ChatFormatting.BLUE));
-                checkboxIsFormed.addTooltip(Component.translatable("tooltip.nc.rf_amplifier.power", container().getAmplifierPower()).withStyle(ChatFormatting.AQUA));
-                checkboxIsFormed.addTooltip(Component.translatable("tooltip.nc.rf_amplifier.max_temp", container().getAmplifierMaxTemp()).withStyle(ChatFormatting.GOLD));
+                checkboxIsFormed.addTooltip(new TranslatableComponent("tooltip.nc.rf_amplifier.voltage", container().getAmplifierVoltage()).withStyle(ChatFormatting.BLUE));
+                checkboxIsFormed.addTooltip(new TranslatableComponent("tooltip.nc.rf_amplifier.power", container().getAmplifierPower()).withStyle(ChatFormatting.AQUA));
+                checkboxIsFormed.addTooltip(new TranslatableComponent("tooltip.nc.rf_amplifier.max_temp", container().getAmplifierMaxTemp()).withStyle(ChatFormatting.GOLD));
             } else {
-                checkboxIsFormed.addTooltip(Component.translatable("tooltip.nc.rf_amplifier.not_found").withStyle(ChatFormatting.RED));
+                checkboxIsFormed.addTooltip(new TranslatableComponent("tooltip.nc.rf_amplifier.not_found").withStyle(ChatFormatting.RED));
             }
 
         } else {
@@ -173,16 +174,16 @@ public class FusionCoreScreen extends AbstractContainerScreen<FusionCoreContaine
 
     @Override
     protected void renderLabels(@NotNull PoseStack matrixStack, int mouseX, int mouseY) {
-        drawCenteredString(matrixStack, font, Component.translatable("nc_jei_cat.fusion_core"), 125, 10, 0xFFFFFF);
-        drawCenteredString(matrixStack, font, Component.translatable("fusion_core.rf_amplifiers.power", getRfAmplifiersPowerRatio()), 125, 20, 0xFFFFFF);
+        drawCenteredString(matrixStack, font, new TranslatableComponent("nc_jei_cat.fusion_core"), 125, 10, 0xFFFFFF);
+        drawCenteredString(matrixStack, font, new TranslatableComponent("fusion_core.rf_amplifiers.power", getRfAmplifiersPowerRatio()), 125, 20, 0xFFFFFF);
         if(container().getCharge() < 100) {
-            drawCenteredString(matrixStack, font, Component.translatable("fusion_core.charge", container().getCharge()), 125, 40, 0xFFFFFF);
+            drawCenteredString(matrixStack, font, new TranslatableComponent("fusion_core.charge", container().getCharge()), 125, 40, 0xFFFFFF);
         }
-        casingTootip = Component.empty();
+        casingTootip = Component.nullToEmpty("");
 
         if(container().isRunning()) {
-            drawCenteredString(matrixStack, font, Component.translatable("fusion_core.efficiency", container().getEfficiency()), 125, 50, 0xFFFFFF);
-            drawCenteredString(matrixStack, font, Component.translatable("fusion_core.stability", container().getPlasmaStability()), 125, 40, 0xFFFFFF);
+            drawCenteredString(matrixStack, font, new TranslatableComponent("fusion_core.efficiency", container().getEfficiency()), 125, 50, 0xFFFFFF);
+            drawCenteredString(matrixStack, font, new TranslatableComponent("fusion_core.stability", container().getPlasmaStability()), 125, 40, 0xFFFFFF);
         }
         renderTooltips(matrixStack, mouseX-relX, mouseY-relY);
     }
@@ -233,7 +234,7 @@ public class FusionCoreScreen extends AbstractContainerScreen<FusionCoreContaine
         plasmaHeatBar.clearTooltips();
         coolantBar.clearTooltips();
         plasmaHeatBar.setTooltipKey("tooltip.nc.reactor.plasma_heat");
-        plasmaHeatBar.addTooltip(Component.translatable("tooltip.nc.reactor.plasma_optimal", scaledFormat(container().getOptimalTemp())).withStyle(ChatFormatting.GOLD));
+        plasmaHeatBar.addTooltip(new TranslatableComponent("tooltip.nc.reactor.plasma_optimal", scaledFormat(container().getOptimalTemp())).withStyle(ChatFormatting.GOLD));
         for(NCGuiElement widget: widgets) {
            if(widget.isMouseOver(pMouseX, pMouseY)) {
                renderTooltip(pPoseStack, widget.getTooltips(),
@@ -243,8 +244,8 @@ public class FusionCoreScreen extends AbstractContainerScreen<FusionCoreContaine
         if(rfAmplifierSlider.isMouseOver(pMouseX, pMouseY)) {
             renderTooltip(pPoseStack,
                     List.of(
-                            Component.translatable("tooltip.nc.rf_amplifier.voltage", container().getAmplifierVoltage()).withStyle(ChatFormatting.AQUA),
-                            Component.translatable("tooltip.nc.rf_amplifier.power", container().getAmplifierPower()).withStyle(ChatFormatting.AQUA)
+                            new TranslatableComponent("tooltip.nc.rf_amplifier.voltage", container().getAmplifierVoltage()).withStyle(ChatFormatting.AQUA),
+                            new TranslatableComponent("tooltip.nc.rf_amplifier.power", container().getAmplifierPower()).withStyle(ChatFormatting.AQUA)
                     ),
                     Optional.empty(),
                     pMouseX, pMouseY);
@@ -259,8 +260,8 @@ public class FusionCoreScreen extends AbstractContainerScreen<FusionCoreContaine
                     Optional.empty(), pMouseX, pMouseY);
         }
         energyBar.clearTooltips();
-        energyBar.addTooltip(Component.translatable("reactor.forge_energy_per_tick", scaledFormat(container().energyPerTick())));
-        energyBar.addTooltip(Component.translatable("reactor.internal_usage", scaledFormat(container().requiredEnergy())).withStyle(ChatFormatting.RED));
+        energyBar.addTooltip(new TranslatableComponent("reactor.forge_energy_per_tick", scaledFormat(container().energyPerTick())));
+        energyBar.addTooltip(new TranslatableComponent("reactor.internal_usage", scaledFormat(container().requiredEnergy())).withStyle(ChatFormatting.RED));
         if(energyBar.isMouseOver(pMouseX, pMouseY)) {
             renderTooltip(pPoseStack, energyBar.getTooltips(),
                     Optional.empty(), pMouseX, pMouseY);

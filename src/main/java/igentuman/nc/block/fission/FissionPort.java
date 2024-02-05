@@ -8,6 +8,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -81,7 +82,7 @@ public class FissionPort extends HorizontalDirectionalBlock implements EntityBlo
                 MenuProvider containerProvider = new MenuProvider() {
                     @Override
                     public Component getDisplayName() {
-                        return Component.translatable("block.nuclearcraft.fission_reactor_port");
+                        return new TranslatableComponent("block.nuclearcraft.fission_reactor_port");
                     }
 
                     @Override
@@ -89,7 +90,7 @@ public class FissionPort extends HorizontalDirectionalBlock implements EntityBlo
                         return new FissionPortContainer(windowId, pos, playerInventory);
                     }
                 };
-                NetworkHooks.openScreen((ServerPlayer) player, containerProvider, be.getBlockPos());
+                NetworkHooks.openGui((ServerPlayer) player, containerProvider, be.getBlockPos());
             }
         }
         return InteractionResult.SUCCESS;
@@ -114,7 +115,7 @@ public class FissionPort extends HorizontalDirectionalBlock implements EntityBlo
 
     public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag)
     {
-        list.add(TextUtils.applyFormat(Component.translatable("fission_port.descr"), ChatFormatting.GOLD));
+        list.add(TextUtils.applyFormat(new TranslatableComponent("fission_port.descr"), ChatFormatting.GOLD));
     }
 
     @Override

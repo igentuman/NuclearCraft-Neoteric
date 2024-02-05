@@ -8,6 +8,7 @@ import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -17,13 +18,12 @@ import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 import java.util.List;
 
-import static igentuman.nc.handler.config.CommonConfig.ENERGY_STORAGE;
 import static igentuman.nc.setup.registration.NCItems.*;
+import static net.minecraftforge.energy.CapabilityEnergy.ENERGY;
 
 public class HEVItem extends ArmorItem {
     public HEVItem(ArmorMaterials armorMaterials, EquipmentSlot equipmentSlot, Properties hazmatProps) {
@@ -79,14 +79,14 @@ public class HEVItem extends ArmorItem {
 
     public CustomEnergyStorage getEnergy(ItemStack stack)
     {
-        return (CustomEnergyStorage) CapabilityUtils.getPresentCapability(stack, ForgeCapabilities.ENERGY);
+        return (CustomEnergyStorage) CapabilityUtils.getPresentCapability(stack, ENERGY);
     }
 
     @Override
     public void appendHoverText(ItemStack stack, @javax.annotation.Nullable Level world, List<Component> list, TooltipFlag flag)
     {
-        list.add(Component.translatable("tooltip.nc.energy_stored", formatEnergy(getEnergy(stack).getEnergyStored()), formatEnergy(getEnergyMaxStorage())).withStyle(ChatFormatting.BLUE));
-        list.add(Component.translatable("tooltip.nc.hev.desc").withStyle(ChatFormatting.AQUA));
+        list.add(new TranslatableComponent("tooltip.nc.energy_stored", formatEnergy(getEnergy(stack).getEnergyStored()), formatEnergy(getEnergyMaxStorage())).withStyle(ChatFormatting.BLUE));
+        list.add(new TranslatableComponent("tooltip.nc.hev.desc").withStyle(ChatFormatting.AQUA));
     }
 
     public String formatEnergy(int energy)

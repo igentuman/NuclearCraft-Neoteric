@@ -100,7 +100,7 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
         }
         if(useInputForId) {
             for(FluidStack out: outputFluids) {
-                name.append(out.getFluid().getFluidType().getDescriptionId()).append("-");
+                name.append(out.getFluid().getRegistryName().getPath()).append("-");
             }
         }
         name.replace(name.length()-1, name.length(), "");

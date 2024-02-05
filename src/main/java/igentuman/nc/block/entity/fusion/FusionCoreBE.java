@@ -21,6 +21,7 @@ import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.util.CustomEnergyStorage;
 import igentuman.nc.util.NCBlockPos;
 import igentuman.nc.util.annotation.NBTField;
+import mekanism.common.capabilities.Capabilities;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -39,7 +40,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
@@ -55,7 +55,10 @@ import static igentuman.nc.handler.config.FusionConfig.FUSION_CONFIG;
 import static igentuman.nc.setup.registration.NCSounds.*;
 import static igentuman.nc.util.ModUtil.isCcLoaded;
 import static igentuman.nc.util.ModUtil.isMekanismLoadeed;
+import static net.minecraftforge.energy.CapabilityEnergy.ENERGY;
+import static net.minecraftforge.fluids.capability.CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
 import static net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE;
+import static net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
 
 public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE {
 
@@ -177,23 +180,23 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
     @Nonnull
     @Override
         public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (cap == ForgeCapabilities.ITEM_HANDLER) {
+        if (cap == ITEM_HANDLER_CAPABILITY) {
             return LazyOptional.empty();
         }
-        if (cap == ForgeCapabilities.FLUID_HANDLER) {
+        if (cap == FLUID_HANDLER_CAPABILITY) {
             return contentHandler.getFluidCapability(side);
         }
-        if (cap == ForgeCapabilities.ENERGY) {
+        if (cap == ENERGY) {
             return energy.cast();
         }
         if(isMekanismLoadeed()) {
-            if(cap == mekanism.common.capabilities.Capabilities.GAS_HANDLER) {
+            if(cap == Capabilities.GAS_HANDLER_CAPABILITY) {
                 if(contentHandler.hasFluidCapability(side)) {
                     return LazyOptional.of(() -> contentHandler.gasConverter(side));
                 }
                 return LazyOptional.empty();
             }
-            if(cap == mekanism.common.capabilities.Capabilities.SLURRY_HANDLER) {
+            if(cap == Capabilities.SLURRY_HANDLER_CAPABILITY) {
                 if(contentHandler.hasFluidCapability(side)) {
                     return LazyOptional.of(() -> contentHandler.getSlurryConverter(side));
                 }
@@ -314,7 +317,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
             }
 
             playSoundCooldown = 20;
-            currentSound = SoundHandler.startTileSound(FUSION_READY.get(), SoundSource.BLOCKS, 0.8f, level.getRandom(), getBlockPos());
+            currentSound = SoundHandler.startTileSound(FUSION_READY.get(), SoundSource.BLOCKS, 0.8f, getBlockPos());
         }
     }
 
@@ -338,7 +341,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
             }
 
             playSoundCooldown = 20;
-            currentSound = SoundHandler.startTileSound(FUSION_RUNNING.get(), SoundSource.BLOCKS, 0.5f, level.getRandom(), getBlockPos());
+            currentSound = SoundHandler.startTileSound(FUSION_RUNNING.get(), SoundSource.BLOCKS, 0.5f, getBlockPos());
         }
     }
 
@@ -464,7 +467,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         }
         BlockEntity be = Objects.requireNonNull(getLevel()).getBlockEntity(getBlockPos().relative(Direction.DOWN));
         if(be instanceof BlockEntity && !(be instanceof FusionBE)) {
-            IEnergyStorage r = be.getCapability(ForgeCapabilities.ENERGY, Direction.UP).orElse(null);
+            IEnergyStorage r = be.getCapability(ENERGY, Direction.UP).orElse(null);
             if(r == null) return;
             if(r.canReceive()) {
                 int recieved = r.receiveEnergy(energyStorage.getEnergyStored() - rfAmplifiersPower - magnetsPower, false);
@@ -550,7 +553,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
                 return;
             }
             playSoundCooldown = 20;
-            currentSound = SoundHandler.startTileSound(FUSION_CHARGING.get(), SoundSource.BLOCKS, 0.5f, level.getRandom(), getBlockPos());
+            currentSound = SoundHandler.startTileSound(FUSION_CHARGING.get(), SoundSource.BLOCKS, 0.5f, getBlockPos());
         }
     }
 

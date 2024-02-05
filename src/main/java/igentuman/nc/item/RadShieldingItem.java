@@ -2,6 +2,7 @@ package igentuman.nc.item;
 
 import igentuman.nc.setup.registration.CreativeTabs;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -93,6 +94,6 @@ public class RadShieldingItem extends Item
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
-		list.add(Component.translatable("tooltip.nc.shielding.desc").withStyle(net.minecraft.ChatFormatting.GRAY));
+		list.add(new TranslatableComponent("tooltip.nc.shielding.desc").withStyle(net.minecraft.ChatFormatting.GRAY));
 	}
 }

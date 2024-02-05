@@ -3,23 +3,25 @@ package igentuman.nc.block.turbine;
 import igentuman.nc.block.entity.turbine.TurbineBE;
 import igentuman.nc.block.entity.turbine.TurbineBladeBE;
 import igentuman.nc.multiblock.turbine.BladeDef;
-import igentuman.nc.multiblock.turbine.CoilDef;
 import igentuman.nc.multiblock.turbine.TurbineRegistration;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.DirectionalBlock;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -165,14 +167,14 @@ public class TurbineBladeBlock extends DirectionalBlock implements EntityBlock {
 
         if(DESCRIPTIONS_SHOW) {
             list.add(TextUtils.applyFormat(
-                    Component.translatable("tooltip.nc.description.efficiency", TextUtils.numberFormat(def.getEfficiency())),
+                    new TranslatableComponent("tooltip.nc.description.efficiency", TextUtils.numberFormat(def.getEfficiency())),
                     ChatFormatting.AQUA));
             list.add(TextUtils.applyFormat(
-                    Component.translatable("tooltip.nc.description.expansion", TextUtils.numberFormat(def.getExpansion())),
+                    new TranslatableComponent("tooltip.nc.description.expansion", TextUtils.numberFormat(def.getExpansion())),
                     ChatFormatting.GOLD));
         } else {
-            list.add(TextUtils.applyFormat(Component.translatable("tooltip.nc.blade.desc", TURBINE_CONFIG.BLADE_FLOW.get()), ChatFormatting.BLUE));
+            list.add(TextUtils.applyFormat(new TranslatableComponent("tooltip.nc.blade.desc", TURBINE_CONFIG.BLADE_FLOW.get()), ChatFormatting.BLUE));
         }
-        list.add(TextUtils.applyFormat(Component.translatable("tooltip.toggle_description_keys"), ChatFormatting.GRAY));
+        list.add(TextUtils.applyFormat(new TranslatableComponent("tooltip.toggle_description_keys"), ChatFormatting.GRAY));
     }
 }

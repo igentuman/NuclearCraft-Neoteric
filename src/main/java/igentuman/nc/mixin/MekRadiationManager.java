@@ -21,7 +21,7 @@ public abstract class MekRadiationManager {
 
     public boolean isMekRadiationEnabled()
     {
-        return MekanismConfig.general.radiationEnabled.getOrDefault();
+        return MekanismConfig.general.radiationEnabled.getAsBoolean();
     }
 
     @Inject(method = "isRadiationEnabled", at = @At("TAIL"), remap=false, cancellable = true)

@@ -11,6 +11,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
@@ -38,8 +39,8 @@ public class TurbineControllerScreen extends AbstractContainerScreen<TurbineCont
     public Checkbox checkboxCasing;
     public Checkbox checkboxInterior;
     private VerticalBar energyBar;
-    public Component casingTootip = Component.empty();
-    public Component interiorTootip = Component.empty();
+    public Component casingTootip = Component.nullToEmpty("");
+    public Component interiorTootip = Component.nullToEmpty("");
 
     public TurbineControllerScreen(TurbineControllerContainer container, Inventory inv, Component name) {
         super(container, inv, name);
@@ -101,8 +102,8 @@ public class TurbineControllerScreen extends AbstractContainerScreen<TurbineCont
         }
         checkboxInterior.addTooltip(interiorTootip);
         if(isInteriorValid() && isCasingValid()) {
-            checkboxInterior.addTooltip(Component.translatable("turbine.active.coils", container().getActiveCoils()));
-            checkboxInterior.addTooltip(Component.translatable("turbine.blades.flow", container().getFlow()*TURBINE_CONFIG.BLADE_FLOW.get()));
+            checkboxInterior.addTooltip(new TranslatableComponent("turbine.active.coils", container().getActiveCoils()));
+            checkboxInterior.addTooltip(new TranslatableComponent("turbine.blades.flow", container().getFlow()*TURBINE_CONFIG.BLADE_FLOW.get()));
         }
         energyBar.draw(matrix, mouseX, mouseY, partialTicks);
     }
@@ -111,20 +112,20 @@ public class TurbineControllerScreen extends AbstractContainerScreen<TurbineCont
     protected void renderLabels(@NotNull PoseStack matrixStack, int mouseX, int mouseY) {
         drawCenteredString(matrixStack, font,  menu.getTitle(), imageWidth/2, titleLabelY, 0xffffff);
         if(isCasingValid()) {
-            casingTootip = applyFormat(Component.translatable("reactor.size", getMultiblockHeight(), getMultiblockWidth(), getMultiblockDepth()), ChatFormatting.GOLD);
+            casingTootip = applyFormat(new TranslatableComponent("reactor.size", getMultiblockHeight(), getMultiblockWidth(), getMultiblockDepth()), ChatFormatting.GOLD);
         } else {
-            casingTootip = applyFormat(Component.translatable(getValidationResultKey(), getValidationResultData()), ChatFormatting.RED);
+            casingTootip = applyFormat(new TranslatableComponent(getValidationResultKey(), getValidationResultData()), ChatFormatting.RED);
         }
 
         if(isCasingValid()) {
             if (isInteriorValid()) {
-         //       interiorTootip = applyFormat(Component.translatable("reactor.fuel_cells", getFuelCellsCount()), ChatFormatting.GOLD);
+         //       interiorTootip = applyFormat(new TranslatableComponent("reactor.fuel_cells", getFuelCellsCount()), ChatFormatting.GOLD);
 
                 if(container().hasRecipe() && !container().getEfficiency().equals("NaN")) {
-                  //  drawString(matrixStack, font, Component.translatable("fission_reactor.efficiency", container().getEfficiency()), 36, 62, 0x8AFF8A);
+                  //  drawString(matrixStack, font, new TranslatableComponent("fission_reactor.efficiency", container().getEfficiency()), 36, 62, 0x8AFF8A);
                 }
             } else {
-                interiorTootip = applyFormat(Component.translatable(getValidationResultKey(), getValidationResultData()), ChatFormatting.RED);
+                interiorTootip = applyFormat(new TranslatableComponent(getValidationResultKey(), getValidationResultData()), ChatFormatting.RED);
             }
         }
 
@@ -177,7 +178,7 @@ public class TurbineControllerScreen extends AbstractContainerScreen<TurbineCont
         }
         if(container().getMaxEnergy() > 0) {
             energyBar.clearTooltips();
-            energyBar.addTooltip(Component.translatable("reactor.forge_energy_per_tick", container().energyPerTick()));
+            energyBar.addTooltip(new TranslatableComponent("reactor.forge_energy_per_tick", container().energyPerTick()));
             if(energyBar.isMouseOver(pMouseX, pMouseY)) {
                 renderTooltip(pPoseStack, energyBar.getTooltips(),
                         Optional.empty(), pMouseX, pMouseY);

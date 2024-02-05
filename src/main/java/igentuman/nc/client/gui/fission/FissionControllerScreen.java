@@ -17,6 +17,7 @@ import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.color.item.ItemColors;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
@@ -52,8 +53,8 @@ public class FissionControllerScreen extends AbstractContainerScreen<FissionCont
     private VerticalBar hotCoolantBar;
     private Button.ReactorMode modeBtn;
 
-    public Component casingTootip = Component.empty();
-    public Component interiorTootip = Component.empty();
+    public Component casingTootip = Component.nullToEmpty("");
+    public Component interiorTootip = Component.nullToEmpty("");
 
     public FissionControllerScreen(FissionControllerContainer container, Inventory inv, Component name) {
         super(container, inv, name);
@@ -140,9 +141,9 @@ public class FissionControllerScreen extends AbstractContainerScreen<FissionCont
         }
         checkboxInterior.addTooltip(interiorTootip);
         if(isInteriorValid()) {
-            checkboxInterior.addTooltip(Component.translatable("reactor.heat_sinks_count", container().getHeatSinksCount()));
-            checkboxInterior.addTooltip(Component.translatable("reactor.moderators_count", container().getModeratorsCount()));
-            checkboxInterior.addTooltip(Component.translatable("reactor.irradiators_connections", container().getIrradiatorsConnections()));
+            checkboxInterior.addTooltip(new TranslatableComponent("reactor.heat_sinks_count", container().getHeatSinksCount()));
+            checkboxInterior.addTooltip(new TranslatableComponent("reactor.moderators_count", container().getModeratorsCount()));
+            checkboxInterior.addTooltip(new TranslatableComponent("reactor.irradiators_connections", container().getIrradiatorsConnections()));
         }
         if(!getMenu().getMode()) {
             energyBar.draw(matrix, mouseX, mouseY, partialTicks);
@@ -158,22 +159,22 @@ public class FissionControllerScreen extends AbstractContainerScreen<FissionCont
     protected void renderLabels(@NotNull PoseStack matrixStack, int mouseX, int mouseY) {
         drawCenteredString(matrixStack, font,  menu.getTitle(), imageWidth/2, titleLabelY, 0xffffff);
         if(isCasingValid()) {
-            casingTootip = applyFormat(Component.translatable("reactor.size", getMultiblockHeight(), getMultiblockWidth(), getMultiblockDepth()), ChatFormatting.GOLD);
+            casingTootip = applyFormat(new TranslatableComponent("reactor.size", getMultiblockHeight(), getMultiblockWidth(), getMultiblockDepth()), ChatFormatting.GOLD);
         } else {
-            casingTootip = applyFormat(Component.translatable(getValidationResultKey(), getValidationResultData()), ChatFormatting.RED);
+            casingTootip = applyFormat(new TranslatableComponent(getValidationResultKey(), getValidationResultData()), ChatFormatting.RED);
         }
 
         if(isCasingValid()) {
             if (isInteriorValid()) {
-                interiorTootip = applyFormat(Component.translatable("reactor.fuel_cells", getFuelCellsCount()), ChatFormatting.GOLD);
+                interiorTootip = applyFormat(new TranslatableComponent("reactor.fuel_cells", getFuelCellsCount()), ChatFormatting.GOLD);
 
                 if(container().hasRecipe() && !container().getEfficiency().equals("NaN")) {
-                    drawString(matrixStack, font, Component.translatable("fission_reactor.efficiency", container().getEfficiency()), 35, 82, 0x8AFF8A);
-                    drawString(matrixStack, font, Component.translatable("fission_reactor.net_heat", container().getNetHeat()), 35, 72, 0x8AFF8A);
-                    drawString(matrixStack, font, Component.translatable("fission_reactor.heat_multiplier", container().getHeatMultiplier()), 35, 62, 0x8AFF8A);
+                    drawString(matrixStack, font, new TranslatableComponent("fission_reactor.efficiency", container().getEfficiency()), 35, 82, 0x8AFF8A);
+                    drawString(matrixStack, font, new TranslatableComponent("fission_reactor.net_heat", container().getNetHeat()), 35, 72, 0x8AFF8A);
+                    drawString(matrixStack, font, new TranslatableComponent("fission_reactor.heat_multiplier", container().getHeatMultiplier()), 35, 62, 0x8AFF8A);
                 }
             } else {
-                interiorTootip = applyFormat(Component.translatable(getValidationResultKey(), getValidationResultData()), ChatFormatting.RED);
+                interiorTootip = applyFormat(new TranslatableComponent(getValidationResultKey(), getValidationResultData()), ChatFormatting.RED);
             }
         }
 
@@ -214,9 +215,9 @@ public class FissionControllerScreen extends AbstractContainerScreen<FissionCont
 
     private void renderTooltips(PoseStack pPoseStack, int pMouseX, int pMouseY) {
         heatBar.clearTooltips();
-        heatBar.addTooltip(Component.translatable("reactor.cooling", container().getCooling()).withStyle(ChatFormatting.AQUA));
-        heatBar.addTooltip(Component.translatable("reactor.heating", container().getHeating()).withStyle(ChatFormatting.RED));
-        heatBar.addTooltip(Component.translatable("reactor.net_heat", container().getNetHeat()).withStyle(ChatFormatting.GOLD));
+        heatBar.addTooltip(new TranslatableComponent("reactor.cooling", container().getCooling()).withStyle(ChatFormatting.AQUA));
+        heatBar.addTooltip(new TranslatableComponent("reactor.heating", container().getHeating()).withStyle(ChatFormatting.RED));
+        heatBar.addTooltip(new TranslatableComponent("reactor.net_heat", container().getNetHeat()).withStyle(ChatFormatting.GOLD));
         for(NCGuiElement widget: widgets) {
            if(widget.isMouseOver(pMouseX, pMouseY)) {
                renderTooltip(pPoseStack, widget.getTooltips(),
@@ -233,7 +234,7 @@ public class FissionControllerScreen extends AbstractContainerScreen<FissionCont
         }
         if(!container().getMode()) {
             energyBar.clearTooltips();
-            energyBar.addTooltip(Component.translatable("reactor.forge_energy_per_tick", container().energyPerTick()));
+            energyBar.addTooltip(new TranslatableComponent("reactor.forge_energy_per_tick", container().energyPerTick()));
             if(energyBar.isMouseOver(pMouseX, pMouseY)) {
                 renderTooltip(pPoseStack, energyBar.getTooltips(),
                         Optional.empty(), pMouseX, pMouseY);
@@ -245,7 +246,7 @@ public class FissionControllerScreen extends AbstractContainerScreen<FissionCont
             }
             if(steamTank.isMouseOver(pMouseX, pMouseY)) {
                 List<Component> tooltips = steamTank.getTooltips();
-                tooltips.add(Component.translatable("reactor.steam_per_tick", container().getSteamPerTick()));
+                tooltips.add(new TranslatableComponent("reactor.steam_per_tick", container().getSteamPerTick()));
                 renderTooltip(pPoseStack, tooltips,
                         Optional.empty(), pMouseX, pMouseY);
             }

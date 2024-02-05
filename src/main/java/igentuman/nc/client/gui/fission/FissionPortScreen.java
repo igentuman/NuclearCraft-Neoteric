@@ -14,6 +14,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
@@ -138,7 +139,7 @@ public class FissionPortScreen extends AbstractContainerScreen<FissionPortContai
 
         if(!container().getMode()) {
             energyBar.clearTooltips();
-            energyBar.addTooltip(Component.translatable("reactor.forge_energy_per_tick", container().energyPerTick()));
+            energyBar.addTooltip(new TranslatableComponent("reactor.forge_energy_per_tick", container().energyPerTick()));
             if(energyBar.isMouseOver(pMouseX, pMouseY)) {
                 renderTooltip(pPoseStack, energyBar.getTooltips(),
                         Optional.empty(), pMouseX, pMouseY);
@@ -150,7 +151,7 @@ public class FissionPortScreen extends AbstractContainerScreen<FissionPortContai
             }
             if(steamTank.isMouseOver(pMouseX, pMouseY)) {
                 List<Component> tooltips = steamTank.getTooltips();
-                tooltips.add(Component.translatable("reactor.steam_per_tick", container().getSteamPerTick()));
+                tooltips.add(new TranslatableComponent("reactor.steam_per_tick", container().getSteamPerTick()));
                 renderTooltip(pPoseStack, tooltips,
                         Optional.empty(), pMouseX, pMouseY);
             }

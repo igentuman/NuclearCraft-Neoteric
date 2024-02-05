@@ -4,6 +4,7 @@ import igentuman.nc.setup.registration.CreativeTabs;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.*;
@@ -46,9 +47,9 @@ public class ProcessorBlockItem extends BlockItem
 	public void appendHoverText(ItemStack stack, @javax.annotation.Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
 		if(stack.hasTag() && stack.getTag().contains("energy")) {
-			list.add(Component.translatable("tooltip.nc.content_saved").withStyle(ChatFormatting.GRAY));
+			list.add(new TranslatableComponent("tooltip.nc.content_saved").withStyle(ChatFormatting.GRAY));
 		}
 		if(asItem().toString().contains("empty") || this.asItem().equals(Items.AIR)) return;
-		list.add(TextUtils.applyFormat(Component.translatable("processor.description."+toString()), ChatFormatting.AQUA));
+		list.add(TextUtils.applyFormat(new TranslatableComponent("processor.description."+toString()), ChatFormatting.AQUA));
 	}
 }

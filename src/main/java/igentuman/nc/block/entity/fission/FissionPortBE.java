@@ -4,6 +4,7 @@ import igentuman.nc.NuclearCraft;
 import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.util.annotation.NBTField;
+import mekanism.common.capabilities.Capabilities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -14,7 +15,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
@@ -25,6 +25,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static igentuman.nc.util.ModUtil.isCcLoaded;
 import static igentuman.nc.util.ModUtil.isMekanismLoadeed;
+import static net.minecraftforge.energy.CapabilityEnergy.ENERGY;
+import static net.minecraftforge.fluids.capability.CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
+import static net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
 
 public class FissionPortBE extends FissionBE {
     public static String NAME = "fission_reactor_port";
@@ -120,24 +123,24 @@ public class FissionPortBE extends FissionBE {
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if(controller() == null) return super.getCapability(cap, side);
-        if (cap == ForgeCapabilities.ITEM_HANDLER) {
+        if (cap == ITEM_HANDLER_CAPABILITY) {
             return controller().contentHandler.itemCapability.cast();
         }
-        if (cap == ForgeCapabilities.FLUID_HANDLER && controller().isSteamMode) {
+        if (cap == FLUID_HANDLER_CAPABILITY && controller().isSteamMode) {
             return controller().getCapability(cap, side);
         }
-        if (cap == ForgeCapabilities.ENERGY && !controller().isSteamMode) {
+        if (cap == ENERGY && !controller().isSteamMode) {
             return controller().getEnergy().cast();
         }
 
         if(isMekanismLoadeed() && isSteamMode) {
-            if(cap == mekanism.common.capabilities.Capabilities.GAS_HANDLER) {
+            if(cap == Capabilities.GAS_HANDLER_CAPABILITY) {
                 if(controller().contentHandler.hasFluidCapability(side)) {
                     return LazyOptional.of(() -> controller().contentHandler.gasConverter(side));
                 }
                 return LazyOptional.empty();
             }
-            if(cap == mekanism.common.capabilities.Capabilities.SLURRY_HANDLER) {
+            if(cap == Capabilities.SLURRY_HANDLER_CAPABILITY) {
                 if(controller().contentHandler.hasFluidCapability(side)) {
                     return LazyOptional.of(() -> controller().contentHandler.getSlurryConverter(side));
                 }
@@ -160,7 +163,7 @@ public class FissionPortBE extends FissionBE {
             for (Direction direction : Direction.values()) {
                 BlockEntity be = getLevel().getBlockEntity(worldPosition.relative(direction));
                 if (be != null) {
-                    boolean doContinue = be.getCapability(ForgeCapabilities.ENERGY, direction.getOpposite()).map(handler -> {
+                    boolean doContinue = be.getCapability(ENERGY, direction.getOpposite()).map(handler -> {
                                 if (handler.canReceive()) {
                                     int received = handler.receiveEnergy(Math.min(capacity.get(), controller().energyStorage.getMaxEnergyStored()), false);
                                     capacity.addAndGet(-received);

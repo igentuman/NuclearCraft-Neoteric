@@ -13,7 +13,6 @@ import igentuman.nc.util.StackUtils;
 import igentuman.nc.util.annotation.NothingNullByDefault;
 import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.contents.LiteralContents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.GsonHelper;
@@ -163,7 +162,9 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
                 return true;
             } else if (items.length == 1) {
                 ItemStack item = items[0];
-                return item.getItem() == Items.BARRIER && item.getHoverName().getContents() instanceof LiteralContents contents && contents.text().startsWith("Empty Tag: ");
+                if (item.getItem() != Items.BARRIER) return false;
+                String contents = (String) item.getHoverName().getContents();
+                return contents.startsWith("Empty Tag: ");
             }
             return false;
         }

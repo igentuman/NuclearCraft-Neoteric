@@ -2,7 +2,6 @@ package igentuman.nc.content;
 
 import igentuman.nc.block.entity.ElectromagnetBE;
 import igentuman.nc.block.entity.RFAmplifierBE;
-import igentuman.nc.block.entity.energy.NCEnergy;
 import igentuman.nc.handler.config.CommonConfig;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;

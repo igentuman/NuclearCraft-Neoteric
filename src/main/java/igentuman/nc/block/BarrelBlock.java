@@ -2,15 +2,16 @@ package igentuman.nc.block;
 
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.BarrelBE;
+import igentuman.nc.content.storage.BarrelBlocks;
 import igentuman.nc.network.toServer.StorageSideConfig;
 import igentuman.nc.setup.registration.NCStorageBlocks;
-import igentuman.nc.content.storage.BarrelBlocks;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -25,22 +26,21 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.UUID;
 
 import static igentuman.nc.setup.registration.NCItems.MULTITOOL;
 import static net.minecraft.world.item.Items.BUCKET;
@@ -107,7 +107,7 @@ public class BarrelBlock extends Block implements EntityBlock {
 
                     return InteractionResult.SUCCESS;
                 }
-                IFluidHandlerItem fluidCap = handStack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).orElse(null);
+                IFluidHandlerItem fluidCap = handStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).orElse(null);
                 if(fluidCap == null) {
                     return InteractionResult.SUCCESS;
                 }
@@ -123,9 +123,9 @@ public class BarrelBlock extends Block implements EntityBlock {
                 fluid = be.getFluidHandler().orElseGet(null).getFluidInTank(0);
                 int storage = BarrelBlocks.all().get(code()).getCapacity();
                 if(fluid == null || fluid.isEmpty()) {
-                    player.sendSystemMessage(Component.translatable("tooltip.nc.liquid_empty", formatLiquid(storage)).withStyle(ChatFormatting.BLUE));
+                    player.sendMessage(new TranslatableComponent("tooltip.nc.liquid_empty", formatLiquid(storage)).withStyle(ChatFormatting.BLUE), UUID.randomUUID());
                 } else {
-                    player.sendSystemMessage(Component.translatable("tooltip.nc.liquid_stored", fluid.getDisplayName(), formatLiquid(fluid.getAmount()), formatLiquid(storage)).withStyle(ChatFormatting.BLUE));
+                    player.sendMessage(new TranslatableComponent("tooltip.nc.liquid_stored", fluid.getDisplayName(), formatLiquid(fluid.getAmount()), formatLiquid(storage)).withStyle(ChatFormatting.BLUE), UUID.randomUUID());
                 }
             }
         }
@@ -202,8 +202,8 @@ public class BarrelBlock extends Block implements EntityBlock {
     {
         int storage = BarrelBlocks.all().get(code()).config().getCapacity();
 
-        list.add(Component.translatable("tooltip.nc.liquid_capacity", formatLiquid(storage)).withStyle(ChatFormatting.BLUE));
-        list.add(Component.translatable("tooltip.nc.use_multitool").withStyle(ChatFormatting.YELLOW));
+        list.add(new TranslatableComponent("tooltip.nc.liquid_capacity", formatLiquid(storage)).withStyle(ChatFormatting.BLUE));
+        list.add(new TranslatableComponent("tooltip.nc.use_multitool").withStyle(ChatFormatting.YELLOW));
     }
 
     public String formatLiquid(int val)

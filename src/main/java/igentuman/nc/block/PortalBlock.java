@@ -1,6 +1,5 @@
 package igentuman.nc.block;
 
-import igentuman.nc.world.dimension.Dimensions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
@@ -16,8 +15,6 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-
 public class PortalBlock extends Block {
 
     private static final VoxelShape SHAPE = Shapes.box(0, 0, 0, 1, .8, 1);
@@ -26,7 +23,7 @@ public class PortalBlock extends Block {
         super(Properties.of(Material.METAL)
                 .sound(SoundType.METAL)
                 .strength(-1.0F, 3600000.0F)
-                .noLootTable());
+                );
     }
 
     @Override
@@ -37,11 +34,11 @@ public class PortalBlock extends Block {
     @Override
     public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
         if (entity instanceof ServerPlayer player) {
-            if (level.dimension().equals(Dimensions.WASTELAND)) {
+            /*if (level.dimension().equals(Dimensions.WASTELAND)) {
                 teleportTo(player, pos.north(), Level.OVERWORLD);
             } else {
                 teleportTo(player, pos.north(), Dimensions.WASTELAND);
-            }
+            }*/
         }
     }
 

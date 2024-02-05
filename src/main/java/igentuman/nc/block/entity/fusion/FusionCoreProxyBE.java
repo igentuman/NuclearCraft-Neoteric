@@ -10,7 +10,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.EnergyStorage;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -23,6 +22,9 @@ import java.util.List;
 import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_CORE_PROXY_BE;
 import static igentuman.nc.util.ModUtil.isCcLoaded;
 import static igentuman.nc.util.ModUtil.isMekanismLoadeed;
+import static net.minecraftforge.energy.CapabilityEnergy.ENERGY;
+import static net.minecraftforge.fluids.capability.CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
+import static net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
 
 public class FusionCoreProxyBE extends FusionBE {
 
@@ -99,13 +101,13 @@ public class FusionCoreProxyBE extends FusionBE {
         if(side == null || side.getAxis().isHorizontal()) {
             return LazyOptional.empty();
         }
-        if (cap == ForgeCapabilities.ITEM_HANDLER) {
+        if (cap == ITEM_HANDLER_CAPABILITY) {
             return LazyOptional.empty();
         }
-        if (cap == ForgeCapabilities.FLUID_HANDLER) {
+        if (cap == FLUID_HANDLER_CAPABILITY) {
             return fluidHandler(side).cast();
         }
-        if (cap == ForgeCapabilities.ENERGY) {
+        if (cap == ENERGY) {
             return controller().getEnergy().cast();
         }
         if(isCcLoaded()) {
@@ -115,13 +117,13 @@ public class FusionCoreProxyBE extends FusionBE {
         }
 
         if(isMekanismLoadeed()) {
-            if(cap == mekanism.common.capabilities.Capabilities.GAS_HANDLER) {
+            if(cap == Capabilities.GAS_HANDLER_CAPABILITY) {
                 if(controller().contentHandler.hasFluidCapability(side)) {
                     return LazyOptional.of(() -> controller().contentHandler.gasConverter(side));
                 }
                 return LazyOptional.empty();
             }
-            if(cap == mekanism.common.capabilities.Capabilities.SLURRY_HANDLER) {
+            if(cap == Capabilities.SLURRY_HANDLER_CAPABILITY) {
                 if(controller().contentHandler.hasFluidCapability(side)) {
                     return LazyOptional.of(() -> controller().contentHandler.getSlurryConverter(side));
                 }
@@ -144,7 +146,7 @@ public class FusionCoreProxyBE extends FusionBE {
             if(getCoreBE().energyStorage.getEnergyStored() > required) {
                 BlockEntity be = getLevel().getBlockEntity(getBlockPos().relative(side));
                 if(be instanceof BlockEntity && !(be instanceof FusionBE)) {
-                    IEnergyStorage r = be.getCapability(ForgeCapabilities.ENERGY, side.getOpposite()).orElse(null);
+                    IEnergyStorage r = be.getCapability(ENERGY, side.getOpposite()).orElse(null);
                     if(r == null) break;
                     if(r.canReceive()) {
                         int recieved = r.receiveEnergy(getCoreBE().energyStorage.getEnergyStored()-required, false);

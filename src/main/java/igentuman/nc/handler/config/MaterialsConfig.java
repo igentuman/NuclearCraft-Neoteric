@@ -6,6 +6,7 @@ import net.minecraftforge.common.ForgeConfigSpec;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 public class MaterialsConfig {
     public static <T> List<T> toList(Collection<T> vals)
@@ -37,19 +38,19 @@ public class MaterialsConfig {
     }
 
     public static class MaterialProductsConfig {
-        public ForgeConfigSpec.ConfigValue<List<Boolean>> INGOTS;
-        public ForgeConfigSpec.ConfigValue<List<Boolean>> NUGGET;
-        public ForgeConfigSpec.ConfigValue<List<Boolean>> BLOCK;
-        public ForgeConfigSpec.ConfigValue<List<Boolean>> CHUNKS;
-        public ForgeConfigSpec.ConfigValue<List<Boolean>> PLATES;
-        public ForgeConfigSpec.ConfigValue<List<Boolean>> DUSTS;
-        public ForgeConfigSpec.ConfigValue<List<Boolean>> GEMS;
+        public List<ForgeConfigSpec.ConfigValue<Boolean>> INGOTS;
+        public List<ForgeConfigSpec.ConfigValue<Boolean>> NUGGET;
+        public List<ForgeConfigSpec.ConfigValue<Boolean>> BLOCK;
+        public List<ForgeConfigSpec.ConfigValue<Boolean>> RAW_CHUNKS;
+        public List<ForgeConfigSpec.ConfigValue<Boolean>> PLATES;
+        public List<ForgeConfigSpec.ConfigValue<Boolean>> DUSTS;
+        public List<ForgeConfigSpec.ConfigValue<Boolean>> GEMS;
         public ForgeConfigSpec.ConfigValue<List<String>> SLURRIES;
 
         public ForgeConfigSpec.ConfigValue<List<String>> MODS_PRIORITY;
 
         public MaterialProductsConfig(ForgeConfigSpec.Builder builder) {
-            builder.comment("Settings for items registration").push("material_products");
+            builder.push("slurries");
 
             SLURRIES = builder
                     .comment("List of available slurries (dissolved ores in acid)")
@@ -60,45 +61,30 @@ public class MaterialsConfig {
                             "uranium", "iron", "gold", "aluminum", "thorium", "boron", "silver",
                             "lead", "tin", "copper", "zinc", "cobalt", "platinum", "lithium", "magnesium"
                     ), o -> o instanceof ArrayList);
-
-            CHUNKS = builder
-                    .comment("Enable chunk registration: " + String.join(", ", Chunks.all().keySet()))
-                    .define("register_chunk", Chunks.initialRegistration(), o -> o instanceof ArrayList);
-
-            INGOTS = builder
-                    .comment("Enable ingots registration: " + String.join(", ", Ingots.all().keySet()))
-                    .define("register_ingot", Ingots.initialRegistration(), o -> o instanceof ArrayList);
-
-            PLATES = builder
-                    .comment("Enable plate registration: " + String.join(", ", Plates.all().keySet()))
-                    .define("register_plate", Plates.initialRegistration(), o -> o instanceof ArrayList);
-
-            DUSTS = builder
-                    .comment("Enable dust registration: " + String.join(", ", Dusts.all().keySet()))
-                    .define("register_dust", Dusts.initialRegistration(), o -> o instanceof ArrayList);
-
-            NUGGET = builder
-                    .comment("Enable nuggets registration: " + String.join(", ", Nuggets.all().keySet()))
-                    .define("register_nugget", Nuggets.initialRegistration(), o -> o instanceof ArrayList);
-
-            BLOCK = builder
-                    .comment("Enable blocks registration: " + String.join(", ", Blocks.all().keySet()))
-                    .define("register_block", Blocks.initialRegistration(), o -> o instanceof ArrayList);
-
-            GEMS = builder
-                    .comment("Enable gems registration: " + String.join(", ", Gems.all().keySet()))
-                    .define("register_block", Gems.initialRegistration(), o -> o instanceof ArrayList);
-
             builder.pop();
+            RAW_CHUNKS = registrationList(builder, "raw_chunks", Chunks.get().all().keySet());
+            INGOTS = registrationList(builder, "ingots", Ingots.get().all().keySet());
+            PLATES = registrationList(builder, "plates", Plates.get().all().keySet());
+            DUSTS = registrationList(builder, "dusts", Dusts.get().all().keySet());
+            BLOCK = registrationList(builder, "blocks", Blocks.get().all().keySet());
+            GEMS = registrationList(builder, "gems", Gems.get().all().keySet());
 
             builder.comment("Forge Tag priority").push("forge_tag_priority");
 
             MODS_PRIORITY = builder
                     .comment("Priority of mods to resolve forge tags to itemstack.")
                     .define("mods_priority", List.of("nuclearcraft", "mekanism", "immersiveengineering", "tconstruct"), o -> o instanceof ArrayList);
-
             builder.pop();
+        }
 
+        private List<ForgeConfigSpec.ConfigValue<Boolean>> registrationList(ForgeConfigSpec.Builder builder, String subCategory, Set<String> items) {
+            List<ForgeConfigSpec.ConfigValue<Boolean>> rawOres = new ArrayList<>();
+            builder.push(subCategory);
+            for (String item : items) {
+                rawOres.add(BUILDER.define(item, true));
+            }
+            builder.pop();
+            return rawOres;
         }
     }
 

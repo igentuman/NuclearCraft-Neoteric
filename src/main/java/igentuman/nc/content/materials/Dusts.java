@@ -5,45 +5,16 @@ import java.util.HashMap;
 import java.util.List;
 
 
-public class Dusts {
+public class Dusts  extends AbstractMaterial {
+    protected static String type = "dust";
+    protected static AbstractMaterial instance;
 
-    private static HashMap<String, NCMaterialProduct> all;
-    private static HashMap<String, NCMaterialProduct> registered;
-    private boolean initialized = false;
-
-    public static HashMap<String, NCMaterialProduct> registered()
+    public static Dusts get()
     {
-        if(registered == null) {
-            registered = new HashMap<>();
-            for(String name: all().keySet()) {
-                if(all().get(name).isRegistered()) {
-                    registered.put(name, all().get(name));
-                }
-            }
+        if(instance == null) {
+            instance = new Dusts();
+            instance.items = Materials.dusts().values();
         }
-        return registered;
+        return (Dusts) instance;
     }
-
-    public static HashMap<String, NCMaterialProduct> all()
-    {
-        if(all == null) {
-            all = new HashMap<>();
-            for (NCMaterial m: Materials.dusts().values()) {
-                all.put(m.name, NCMaterialProduct.get(m.name, "dust"));
-            }
-        }
-        return all;
-    }
-
-    public static List<Boolean> initialRegistration()
-    {
-        List<Boolean> tmp = new ArrayList<>();
-        for(NCMaterialProduct dust: all().values()) {
-            tmp.add(true);
-        }
-        return tmp;
-    }
-
-
-
 }

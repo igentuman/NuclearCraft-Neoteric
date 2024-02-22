@@ -34,7 +34,7 @@ import java.util.List;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.client.gui.element.bar.ProgressBar.bars;
 import static igentuman.nc.compat.GlobalVars.*;
-
+@SuppressWarnings("all")
 public class ProcessorCategoryWrapper<T extends NcRecipe> implements IRecipeCategory<T> {
     public final static ResourceLocation TEXTURE = rl("textures/gui/processor_jei.png");
 

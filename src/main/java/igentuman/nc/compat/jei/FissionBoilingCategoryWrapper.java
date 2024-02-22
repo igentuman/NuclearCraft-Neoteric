@@ -29,7 +29,7 @@ import java.util.List;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
-
+@SuppressWarnings("all")
 public class FissionBoilingCategoryWrapper<T extends FissionControllerBE.FissionBoilingRecipe> implements IRecipeCategory<T> {
     public final static ResourceLocation TEXTURE =
             new ResourceLocation(MODID, "textures/gui/processor_jei.png");
@@ -108,13 +108,13 @@ public class FissionBoilingCategoryWrapper<T extends FissionControllerBE.Fission
 
         builder.addSlot(RecipeIngredientRole.INPUT, 12, 6)
                 .addIngredients(ForgeTypes.FLUID_STACK, recipe.getInputFluids(0))
-                .setFluidRenderer(recipe.getInputFluids()[0].getAmount(), false, 16, 16);
+                .setFluidRenderer((long)recipe.getInputFluids()[0].getAmount(), false, 16, 16);
         slots[0] = guiHelper.createDrawable(rl("textures/gui/widgets.png"), 18, 0, 18, 18);
 
 
         builder.addSlot(RecipeIngredientRole.OUTPUT, 75, 6)
                 .addIngredients(ForgeTypes.FLUID_STACK, recipe.getOutputFluids(0))
-                .setFluidRenderer(recipe.getOutputFluids()[0].getAmount(), false, 16, 16);
+                .setFluidRenderer((long)recipe.getOutputFluids()[0].getAmount(), false, 16, 16);
         slots[1] = guiHelper.createDrawable(rl("textures/gui/widgets.png"), 18, 0, 18, 18);
 
     }

@@ -346,9 +346,6 @@ public class NCBlockStates extends BlockStateProvider {
         BlockModelBuilder model = models().cubeAll(
                 blockPath+key(block).getPath(),
                         new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/" + name.getPath()));
-        if(name.getPath().matches(".*glass|.*cell.*")) {
-           // model.(new ResourceLocation("cutout"));
-        }
         return model;
     }
 
@@ -360,9 +357,6 @@ public class NCBlockStates extends BlockStateProvider {
         BlockModelBuilder m = models().cubeAll(
                 "block/multiblock/"+key(block).getPath(),
                 new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath));
-        if(subPath.matches(".*glass|.*cell.*")) {
-           // m.renderType(new ResourceLocation("translucent"));
-        }
         return m;
     }
 

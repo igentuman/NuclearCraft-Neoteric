@@ -11,6 +11,8 @@ import igentuman.nc.client.particle.FusionBeamParticle;
 import igentuman.nc.client.particle.RadiationParticle;
 import igentuman.nc.client.sound.SoundHandler;
 import igentuman.nc.handler.event.client.*;
+import igentuman.nc.multiblock.fission.FissionBlocks;
+import igentuman.nc.multiblock.fission.FissionReactor;
 import igentuman.nc.radiation.client.ClientRadiationData;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.setup.registration.NCFluids;
@@ -39,10 +41,8 @@ import net.minecraftforge.registries.RegistryObject;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
-import static igentuman.nc.multiblock.fission.FissionReactor.FISSION_CONTROLLER_CONTAINER;
-import static igentuman.nc.multiblock.fission.FissionReactor.FISSION_PORT_CONTAINER;
-import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_BE;
-import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_CORE_CONTAINER;
+import static igentuman.nc.multiblock.fission.FissionReactor.*;
+import static igentuman.nc.multiblock.fusion.FusionReactor.*;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_CONTROLLER_CONTAINER;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_PORT_CONTAINER;
 import static igentuman.nc.setup.registration.NCItems.GEIGER_COUNTER;
@@ -68,9 +68,14 @@ public class ClientSetup {
             }
         });
 
-        for(RegistryObject<Fluid> f : NCFluids.FLUIDS.getEntries())
-            if(NCFluids.NC_GASES.containsKey(f.getId().getPath()))
+        for(RegistryObject<Fluid> f : NCFluids.FLUIDS.getEntries()) {
+            if (NCFluids.NC_GASES.containsKey(f.getId().getPath()))
                 ItemBlockRenderTypes.setRenderLayer(f.get(), RenderType.translucent());
+        }
+        ItemBlockRenderTypes.setRenderLayer(FISSION_BLOCKS.get("fission_reactor_glass").get(), RenderType.translucent());
+        ItemBlockRenderTypes.setRenderLayer(FISSION_BLOCKS.get("fission_reactor_solid_fuel_cell").get(), RenderType.translucent());
+        ItemBlockRenderTypes.setRenderLayer(FUSION_BLOCKS.get("fusion_reactor_casing_glass").get(), RenderType.translucent());
+        ItemBlockRenderTypes.setRenderLayer(FUSION_BLOCKS.get("fusion_reactor_core_proxy").get(), RenderType.cutout());
 
         event.enqueueWork(() -> {
             setPropertyOverride(GEIGER_COUNTER.get(), rl("radiation"), (stack, world, entity, seed) -> {

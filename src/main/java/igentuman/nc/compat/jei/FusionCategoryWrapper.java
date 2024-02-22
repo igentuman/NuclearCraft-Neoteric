@@ -28,7 +28,7 @@ import java.util.List;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
-
+@SuppressWarnings("all")
 public class FusionCategoryWrapper<T extends FusionCoreBE.Recipe> implements IRecipeCategory<T> {
     public final static ResourceLocation TEXTURE =
             new ResourceLocation(MODID, "textures/gui/processor_jei.png");

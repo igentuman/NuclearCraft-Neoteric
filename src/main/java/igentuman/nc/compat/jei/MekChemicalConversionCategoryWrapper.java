@@ -35,7 +35,7 @@ import java.util.List;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
 import static net.minecraft.world.item.Items.BUCKET;
-
+@SuppressWarnings("all")
 public class MekChemicalConversionCategoryWrapper<T extends MekChemicalConversionRecipe> implements IRecipeCategory<T> {
     public final static ResourceLocation TEXTURE =
             new ResourceLocation(MODID, "textures/gui/processor_jei.png");

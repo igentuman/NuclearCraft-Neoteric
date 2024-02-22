@@ -27,7 +27,7 @@ import java.util.List;
 import static igentuman.nc.NuclearCraft.*;
 import static igentuman.nc.compat.GlobalVars.*;
 import static igentuman.nc.util.TextUtils.numberFormat;
-
+@SuppressWarnings("all")
 public class FissionCategoryWrapper<T extends FissionControllerBE.Recipe> implements IRecipeCategory<T> {
     public final static ResourceLocation TEXTURE =
             new ResourceLocation(MODID, "textures/gui/fission/jei.png");

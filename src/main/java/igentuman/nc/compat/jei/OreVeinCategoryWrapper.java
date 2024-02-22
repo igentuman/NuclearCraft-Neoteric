@@ -25,7 +25,7 @@ import java.util.HashMap;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
-
+@SuppressWarnings("all")
 public class OreVeinCategoryWrapper<T extends OreVeinRecipe> implements IRecipeCategory<T> {
     public final static ResourceLocation TEXTURE =
             new ResourceLocation(MODID, "textures/gui/ore_veins_jei.png");

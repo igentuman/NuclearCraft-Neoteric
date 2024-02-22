@@ -1,25 +1,25 @@
 {
   "type": "minecraft:crafting_shaped",
   "group": "nuclearcraft_fusion",
+  "pattern": [
+    "LPL",
+    "CMC",
+    "LPL"
+  ],
   "key": {
     "C": {
       "item": "nuclearcraft:chemical_reactor"
-    },
-    "L": {
-      "item": "nuclearcraft:plate_elite"
     },
     "M": {
       "item": "nuclearcraft:chassis"
     },
     "P": {
       "item": "nuclearcraft:coil_magnesium_diboride"
+    },
+    "L": {
+      "item": "nuclearcraft:plate_elite"
     }
   },
-  "pattern": [
-    "LPL",
-    "CMC",
-    "LPL"
-  ],
   "result": {
     "item": "nuclearcraft:fusion_core"
   }

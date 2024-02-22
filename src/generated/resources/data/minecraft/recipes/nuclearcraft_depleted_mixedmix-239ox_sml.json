@@ -1,9 +1,9 @@
 {
   "type": "minecraft:smelting",
-  "cookingtime": 100,
-  "experience": 1.0,
   "ingredient": {
     "item": "nuclearcraft:depleted_fuel_mixed_mix_239_ox"
   },
-  "result": "nuclearcraft:depleted_fuel_mixed_mix_239"
+  "result": "nuclearcraft:depleted_fuel_mixed_mix_239",
+  "experience": 1.0,
+  "cookingtime": 100
 }

@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "nuclearcraft:lead_ore"
   ]

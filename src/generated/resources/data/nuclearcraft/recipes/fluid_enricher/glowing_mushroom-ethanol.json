@@ -2,8 +2,8 @@
   "type": "nuclearcraft:fluid_enricher",
   "input": [
     {
-      "count": 3,
-      "item": "nuclearcraft:glowing_mushroom"
+      "item": "nuclearcraft:glowing_mushroom",
+      "count": 3
     }
   ],
   "inputFluids": [
@@ -14,11 +14,11 @@
   ],
   "outputFluids": [
     {
-      "amount": 250,
-      "fluid": "nuclearcraft:radaway"
+      "fluid": "nuclearcraft:radaway",
+      "amount": 250
     }
   ],
-  "powerModifier": 1.0,
+  "timeModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.0
+  "powerModifier": 1.0
 }

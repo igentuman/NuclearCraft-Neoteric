@@ -1,9 +1,9 @@
 {
   "type": "minecraft:smelting",
-  "cookingtime": 100,
-  "experience": 1.0,
   "ingredient": {
     "item": "nuclearcraft:uranium_233_za"
   },
-  "result": "nuclearcraft:uranium_233"
+  "result": "nuclearcraft:uranium_233",
+  "experience": 1.0,
+  "cookingtime": 100
 }

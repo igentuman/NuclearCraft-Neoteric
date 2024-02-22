@@ -1,17 +1,17 @@
 {
   "type": "nuclearcraft:ingot_former",
-  "inputFluids": [
-    {
-      "amount": 144,
-      "fluid": "nuclearcraft:fuel_berkelium_heb_248_ox"
-    }
-  ],
   "output": [
     {
       "item": "nuclearcraft:fuel_berkelium_heb_248_ox"
     }
   ],
-  "powerModifier": 1.0,
+  "inputFluids": [
+    {
+      "amount": 144,
+      "fluid": "fuel_berkelium_heb_248_ox"
+    }
+  ],
+  "timeModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.0
+  "powerModifier": 1.0
 }

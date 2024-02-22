@@ -2,20 +2,20 @@
   "type": "nuclearcraft:isotope_separator",
   "input": [
     {
-      "count": 10,
-      "item": "nuclearcraft:lithium_dust"
+      "item": "nuclearcraft:lithium_dust",
+      "count": 10
     }
   ],
   "output": [
     {
-      "count": 9,
-      "item": "nuclearcraft:lithium_7"
+      "item": "nuclearcraft:lithium_7",
+      "count": 9
     },
     {
       "item": "nuclearcraft:lithium_6"
     }
   ],
-  "powerModifier": 1.0,
+  "timeModifier": 5.0,
   "radiation": 1.0,
-  "timeModifier": 5.0
+  "powerModifier": 1.0
 }

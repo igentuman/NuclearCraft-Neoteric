@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "nuclearcraft:fuel_curium_hecm_243_za",
     "nuclearcraft:fuel_curium_hecm_243_za_flowing"

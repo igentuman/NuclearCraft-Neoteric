@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "nuclearcraft:fission_reactor_casing",
     "nuclearcraft:fission_reactor_controller",

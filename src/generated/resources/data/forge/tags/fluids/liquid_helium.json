@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "nuclearcraft:liquid_helium",
     "nuclearcraft:liquid_helium_flowing"

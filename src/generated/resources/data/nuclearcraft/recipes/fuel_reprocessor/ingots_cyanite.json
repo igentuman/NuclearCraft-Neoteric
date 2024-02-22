@@ -2,8 +2,8 @@
   "type": "nuclearcraft:fuel_reprocessor",
   "input": [
     {
-      "count": 3,
-      "tag": "forge:ingots/cyanite"
+      "tag": "forge:ingots/cyanite",
+      "count": 3
     }
   ],
   "output": [
@@ -11,7 +11,7 @@
       "item": "bigreactors:blutonium_ingot"
     }
   ],
-  "powerModifier": 1.0,
+  "timeModifier": 4.5,
   "radiation": 1.0,
-  "timeModifier": 4.5
+  "powerModifier": 1.0
 }

@@ -8,23 +8,23 @@
   ],
   "outputFluids": [
     {
-      "amount": 800,
-      "fluid": "nuclearcraft:silver_clean_slurry"
+      "fluid": "nuclearcraft:silver_clean_slurry",
+      "amount": 800
     },
     {
-      "amount": 50,
-      "fluid": "nuclearcraft:hydrochloric_acid"
+      "fluid": "nuclearcraft:hydrochloric_acid",
+      "amount": 50
     },
     {
-      "amount": 50,
-      "fluid": "nuclearcraft:nitric_acid"
+      "fluid": "nuclearcraft:nitric_acid",
+      "amount": 50
     },
     {
-      "amount": 10,
-      "fluid": "nuclearcraft:calcium_sulfate_solution"
+      "fluid": "nuclearcraft:calcium_sulfate_solution",
+      "amount": 10
     }
   ],
-  "powerModifier": 1.0,
+  "timeModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.0
+  "powerModifier": 1.0
 }

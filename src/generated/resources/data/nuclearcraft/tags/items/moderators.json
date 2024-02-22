@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "nuclearcraft:graphite_block",
     "nuclearcraft:beryllium_block"

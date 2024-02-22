@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "nuclearcraft:turbine_casing",
     "nuclearcraft:turbine_glass",

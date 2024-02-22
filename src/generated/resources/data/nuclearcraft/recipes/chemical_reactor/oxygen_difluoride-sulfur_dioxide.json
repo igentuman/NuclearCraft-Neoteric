@@ -12,15 +12,15 @@
   ],
   "outputFluids": [
     {
-      "amount": 250,
-      "fluid": "nuclearcraft:sulfur_trioxide"
+      "fluid": "nuclearcraft:sulfur_trioxide",
+      "amount": 250
     },
     {
-      "amount": 250,
-      "fluid": "nuclearcraft:fluorine"
+      "fluid": "nuclearcraft:fluorine",
+      "amount": 250
     }
   ],
-  "powerModifier": 0.5,
+  "timeModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.0
+  "powerModifier": 0.5
 }

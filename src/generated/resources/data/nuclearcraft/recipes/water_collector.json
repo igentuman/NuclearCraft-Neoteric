@@ -1,21 +1,21 @@
 {
   "type": "minecraft:crafting_shaped",
-  "key": {
-    "B": {
-      "item": "minecraft:nautilus_shell"
-    },
-    "I": {
-      "item": "minecraft:water_bucket"
-    },
-    "P": {
-      "item": "nuclearcraft:plate_basic"
-    }
-  },
   "pattern": [
     "PIP",
     "B B",
     "PIP"
   ],
+  "key": {
+    "P": {
+      "item": "nuclearcraft:plate_basic"
+    },
+    "B": {
+      "item": "minecraft:nautilus_shell"
+    },
+    "I": {
+      "item": "minecraft:water_bucket"
+    }
+  },
   "result": {
     "item": "nuclearcraft:water_collector"
   }

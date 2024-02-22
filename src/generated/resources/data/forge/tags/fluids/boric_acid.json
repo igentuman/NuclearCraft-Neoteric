@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "nuclearcraft:boric_acid",
     "nuclearcraft:boric_acid_flowing"

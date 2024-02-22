@@ -7,11 +7,11 @@
   ],
   "outputFluids": [
     {
-      "amount": 288,
-      "fluid": "nuclearcraft:sic_sic_cmc"
+      "fluid": "nuclearcraft:sic_sic_cmc",
+      "amount": 288
     }
   ],
-  "powerModifier": 1.0,
+  "timeModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.0
+  "powerModifier": 1.0
 }

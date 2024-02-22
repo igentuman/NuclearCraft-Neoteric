@@ -10,11 +10,11 @@
   ],
   "output": [
     {
-      "count": 2,
-      "item": "nuclearcraft:hard_carbon_ingot"
+      "item": "nuclearcraft:hard_carbon_ingot",
+      "count": 2
     }
   ],
-  "powerModifier": 2.0,
+  "timeModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.0
+  "powerModifier": 2.0
 }

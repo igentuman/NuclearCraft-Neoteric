@@ -1,13 +1,12 @@
 {
   "parent": "minecraft:block/cube",
-  "loader": "nuclearcraft:battery_loader",
   "textures": {
     "down": "nuclearcraft:block/energy/lithium_ion_battery/basic/side",
-    "east": "nuclearcraft:block/energy/lithium_ion_battery/basic/side",
-    "north": "nuclearcraft:block/energy/lithium_ion_battery/basic/side",
-    "particle": "nuclearcraft:block/energy/lithium_ion_battery/basic/top",
-    "south": "nuclearcraft:block/energy/lithium_ion_battery/basic/side",
     "up": "nuclearcraft:block/energy/lithium_ion_battery/basic/top",
-    "west": "nuclearcraft:block/energy/lithium_ion_battery/basic/side"
+    "north": "nuclearcraft:block/energy/lithium_ion_battery/basic/side",
+    "south": "nuclearcraft:block/energy/lithium_ion_battery/basic/side",
+    "east": "nuclearcraft:block/energy/lithium_ion_battery/basic/side",
+    "west": "nuclearcraft:block/energy/lithium_ion_battery/basic/side",
+    "particle": "nuclearcraft:block/energy/lithium_ion_battery/basic/top"
   }
 }

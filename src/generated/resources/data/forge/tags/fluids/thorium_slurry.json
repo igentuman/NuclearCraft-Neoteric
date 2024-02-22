@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "nuclearcraft:thorium_slurry",
     "nuclearcraft:thorium_slurry_flowing"

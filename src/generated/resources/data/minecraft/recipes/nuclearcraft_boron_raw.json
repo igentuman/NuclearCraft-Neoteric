@@ -1,9 +1,9 @@
 {
   "type": "minecraft:smelting",
-  "cookingtime": 200,
-  "experience": 1.0,
   "ingredient": {
     "tag": "forge:raw_materials/boron"
   },
-  "result": "nuclearcraft:boron_ingot"
+  "result": "nuclearcraft:boron_ingot",
+  "experience": 1.0,
+  "cookingtime": 200
 }

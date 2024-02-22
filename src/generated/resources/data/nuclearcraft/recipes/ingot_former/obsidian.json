@@ -1,17 +1,17 @@
 {
   "type": "nuclearcraft:ingot_former",
-  "inputFluids": [
-    {
-      "amount": 288,
-      "fluid": "nuclearcraft:obsidian"
-    }
-  ],
   "output": [
     {
       "item": "minecraft:obsidian"
     }
   ],
-  "powerModifier": 2.0,
+  "inputFluids": [
+    {
+      "amount": 288,
+      "fluid": "obsidian"
+    }
+  ],
+  "timeModifier": 2.0,
   "radiation": 1.0,
-  "timeModifier": 2.0
+  "powerModifier": 2.0
 }

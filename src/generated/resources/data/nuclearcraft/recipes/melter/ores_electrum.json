@@ -7,11 +7,11 @@
   ],
   "outputFluids": [
     {
-      "amount": 288,
-      "fluid": "nuclearcraft:electrum"
+      "fluid": "nuclearcraft:electrum",
+      "amount": 288
     }
   ],
-  "powerModifier": 1.0,
+  "timeModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.0
+  "powerModifier": 1.0
 }

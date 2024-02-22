@@ -10,11 +10,11 @@
   ],
   "output": [
     {
-      "count": 2,
-      "item": "nuclearcraft:electrum_ingot"
+      "item": "nuclearcraft:electrum_ingot",
+      "count": 2
     }
   ],
-  "powerModifier": 1.0,
+  "timeModifier": 3.0,
   "radiation": 1.0,
-  "timeModifier": 3.0
+  "powerModifier": 1.0
 }

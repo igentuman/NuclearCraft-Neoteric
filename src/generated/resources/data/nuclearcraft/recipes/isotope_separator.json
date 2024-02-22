@@ -1,25 +1,25 @@
 {
   "type": "minecraft:crafting_shaped",
   "group": "nuclearcraft_machines",
-  "key": {
-    "C": {
-      "item": "nuclearcraft:chassis"
-    },
-    "M": {
-      "item": "nuclearcraft:motor"
-    },
-    "P": {
-      "item": "nuclearcraft:plate_basic"
-    },
-    "R": {
-      "tag": "forge:dusts/redstone"
-    }
-  },
   "pattern": [
     "PMP",
     "RCR",
     "PMP"
   ],
+  "key": {
+    "P": {
+      "item": "nuclearcraft:plate_basic"
+    },
+    "M": {
+      "item": "nuclearcraft:motor"
+    },
+    "R": {
+      "tag": "forge:dusts/redstone"
+    },
+    "C": {
+      "item": "nuclearcraft:chassis"
+    }
+  },
   "result": {
     "item": "nuclearcraft:isotope_separator"
   }

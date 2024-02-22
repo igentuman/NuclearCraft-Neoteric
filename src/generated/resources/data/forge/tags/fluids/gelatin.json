@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "nuclearcraft:gelatin",
     "nuclearcraft:gelatin_flowing"

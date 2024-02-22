@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "nuclearcraft:copper_slurry",
     "nuclearcraft:copper_slurry_flowing"

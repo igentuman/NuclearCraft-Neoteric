@@ -2,20 +2,20 @@
   "type": "nuclearcraft:rock_crusher",
   "input": [
     {
-      "count": 4,
-      "item": "minecraft:andesite"
+      "item": "minecraft:andesite",
+      "count": 4
     }
   ],
   "output": [
     {
-      "count": 2,
-      "item": "nuclearcraft:beryllium_dust"
+      "item": "nuclearcraft:beryllium_dust",
+      "count": 2
     },
     {
       "item": "nuclearcraft:arsenic_dust"
     }
   ],
-  "powerModifier": 1.0,
+  "timeModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.0
+  "powerModifier": 1.0
 }

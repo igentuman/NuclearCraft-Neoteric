@@ -2,21 +2,21 @@
   "type": "nuclearcraft:isotope_separator",
   "input": [
     {
-      "count": 9,
-      "item": "nuclearcraft:fuel_americium_hea_242"
+      "item": "nuclearcraft:fuel_americium_hea_242",
+      "count": 9
     }
   ],
   "output": [
     {
-      "count": 3,
-      "item": "nuclearcraft:americium_242"
+      "item": "nuclearcraft:americium_242",
+      "count": 3
     },
     {
-      "count": 6,
-      "item": "nuclearcraft:americium_243"
+      "item": "nuclearcraft:americium_243",
+      "count": 6
     }
   ],
-  "powerModifier": 1.0,
+  "timeModifier": 2.0,
   "radiation": 1.0,
-  "timeModifier": 2.0
+  "powerModifier": 1.0
 }

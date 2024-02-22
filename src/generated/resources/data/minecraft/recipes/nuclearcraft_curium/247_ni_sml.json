@@ -1,9 +1,9 @@
 {
   "type": "minecraft:smelting",
-  "cookingtime": 100,
-  "experience": 1.0,
   "ingredient": {
     "item": "nuclearcraft:curium_247_ni"
   },
-  "result": "nuclearcraft:curium_247"
+  "result": "nuclearcraft:curium_247",
+  "experience": 1.0,
+  "cookingtime": 100
 }

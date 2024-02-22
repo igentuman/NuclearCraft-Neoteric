@@ -1,22 +1,22 @@
 {
   "type": "minecraft:crafting_shaped",
   "group": "nuclearcraft_machines",
-  "key": {
-    "F": {
-      "item": "minecraft:furnace"
-    },
-    "P": {
-      "item": "nuclearcraft:plate_basic"
-    },
-    "T": {
-      "tag": "forge:ingots/iron"
-    }
-  },
   "pattern": [
     "PTP",
     "TFT",
     "PTP"
   ],
+  "key": {
+    "T": {
+      "tag": "forge:ingots/iron"
+    },
+    "P": {
+      "item": "nuclearcraft:plate_basic"
+    },
+    "F": {
+      "item": "minecraft:furnace"
+    }
+  },
   "result": {
     "item": "nuclearcraft:nuclear_furnace"
   }

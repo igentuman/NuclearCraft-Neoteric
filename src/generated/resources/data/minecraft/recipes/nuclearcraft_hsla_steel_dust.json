@@ -1,9 +1,9 @@
 {
   "type": "minecraft:smelting",
-  "cookingtime": 200,
-  "experience": 1.0,
   "ingredient": {
     "tag": "forge:dusts/hsla_steel"
   },
-  "result": "nuclearcraft:hsla_steel_ingot"
+  "result": "nuclearcraft:hsla_steel_ingot",
+  "experience": 1.0,
+  "cookingtime": 200
 }

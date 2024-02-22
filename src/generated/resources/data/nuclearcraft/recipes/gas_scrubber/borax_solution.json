@@ -8,10 +8,10 @@
   ],
   "outputFluids": [
     {
-      "amount": 250,
-      "fluid": "nuclearcraft:irradiated_borax_solution"
+      "fluid": "nuclearcraft:irradiated_borax_solution",
+      "amount": 250
     }
   ],
-  "powerModifier": 5.0,
-  "timeModifier": 1.0
+  "timeModifier": 1.0,
+  "powerModifier": 5.0
 }

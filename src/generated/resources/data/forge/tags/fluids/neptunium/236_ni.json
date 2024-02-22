@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "nuclearcraft:neptunium_236_ni",
     "nuclearcraft:neptunium_236_ni_flowing"

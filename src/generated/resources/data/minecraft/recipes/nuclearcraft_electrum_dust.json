@@ -1,9 +1,9 @@
 {
   "type": "minecraft:smelting",
-  "cookingtime": 200,
-  "experience": 1.0,
   "ingredient": {
     "tag": "forge:dusts/electrum"
   },
-  "result": "nuclearcraft:electrum_ingot"
+  "result": "nuclearcraft:electrum_ingot",
+  "experience": 1.0,
+  "cookingtime": 200
 }

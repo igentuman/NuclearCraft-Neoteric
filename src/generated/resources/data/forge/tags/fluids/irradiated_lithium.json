@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "nuclearcraft:irradiated_lithium",
     "nuclearcraft:irradiated_lithium_flowing"

@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "nuclearcraft:californium_252_ox",
     "nuclearcraft:californium_252_ox_flowing"

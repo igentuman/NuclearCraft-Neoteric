@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "nuclearcraft:nitrogen",
     "nuclearcraft:nitrogen_flowing"

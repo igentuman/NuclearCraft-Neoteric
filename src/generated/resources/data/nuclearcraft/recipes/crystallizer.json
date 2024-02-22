@@ -1,25 +1,25 @@
 {
   "type": "minecraft:crafting_shaped",
   "group": "nuclearcraft",
+  "pattern": [
+    "PSP",
+    "SCS",
+    "PUP"
+  ],
   "key": {
-    "C": {
-      "item": "nuclearcraft:chassis"
-    },
     "P": {
       "item": "nuclearcraft:plate_advanced"
     },
     "S": {
       "item": "nuclearcraft:coil_copper"
     },
+    "C": {
+      "item": "nuclearcraft:chassis"
+    },
     "U": {
       "item": "minecraft:cauldron"
     }
   },
-  "pattern": [
-    "PSP",
-    "SCS",
-    "PUP"
-  ],
   "result": {
     "item": "nuclearcraft:crystallizer"
   }

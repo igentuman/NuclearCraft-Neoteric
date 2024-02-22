@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "nuclearcraft:potassium_fluoride_solution",
     "nuclearcraft:potassium_fluoride_solution_flowing"

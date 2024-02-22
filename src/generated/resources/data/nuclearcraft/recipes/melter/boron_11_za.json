@@ -7,11 +7,11 @@
   ],
   "outputFluids": [
     {
-      "amount": 144,
-      "fluid": "nuclearcraft:boron_11_za"
+      "fluid": "nuclearcraft:boron_11_za",
+      "amount": 144
     }
   ],
-  "powerModifier": 1.0,
+  "timeModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.0
+  "powerModifier": 1.0
 }

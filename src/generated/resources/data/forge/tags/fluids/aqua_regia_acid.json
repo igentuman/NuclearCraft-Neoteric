@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "nuclearcraft:aqua_regia_acid",
     "nuclearcraft:aqua_regia_acid_flowing"

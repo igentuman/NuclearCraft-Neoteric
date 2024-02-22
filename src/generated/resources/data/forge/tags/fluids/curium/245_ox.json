@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "nuclearcraft:curium_245_ox",
     "nuclearcraft:curium_245_ox_flowing"

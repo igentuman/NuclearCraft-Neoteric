@@ -1,17 +1,17 @@
 {
   "type": "nuclearcraft:ingot_former",
-  "inputFluids": [
-    {
-      "amount": 144,
-      "fluid": "nuclearcraft:depleted_fuel_californium_lecf_249_ox"
-    }
-  ],
   "output": [
     {
       "item": "nuclearcraft:depleted_fuel_californium_lecf_249_ox"
     }
   ],
-  "powerModifier": 1.0,
+  "inputFluids": [
+    {
+      "amount": 144,
+      "fluid": "depleted_fuel_californium_lecf_249_ox"
+    }
+  ],
+  "timeModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.0
+  "powerModifier": 1.0
 }

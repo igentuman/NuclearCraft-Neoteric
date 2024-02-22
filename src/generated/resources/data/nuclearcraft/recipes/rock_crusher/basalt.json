@@ -2,8 +2,8 @@
   "type": "nuclearcraft:rock_crusher",
   "input": [
     {
-      "count": 7,
-      "item": "minecraft:basalt"
+      "item": "minecraft:basalt",
+      "count": 7
     }
   ],
   "output": [
@@ -14,7 +14,7 @@
       "item": "nuclearcraft:niobium_dust"
     }
   ],
-  "powerModifier": 1.0,
+  "timeModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.0
+  "powerModifier": 1.0
 }

@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "nuclearcraft:silver",
     "nuclearcraft:silver_flowing"

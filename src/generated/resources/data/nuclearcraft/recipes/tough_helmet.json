@@ -1,15 +1,15 @@
 {
   "type": "minecraft:crafting_shaped",
-  "key": {
-    "T": {
-      "tag": "forge:ingots/tough_alloy"
-    }
-  },
   "pattern": [
     "TTT",
     "T T",
     "   "
   ],
+  "key": {
+    "T": {
+      "tag": "forge:ingots/tough_alloy"
+    }
+  },
   "result": {
     "item": "nuclearcraft:tough_helmet"
   }

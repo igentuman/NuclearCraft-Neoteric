@@ -1,6 +1,11 @@
 {
   "type": "minecraft:crafting_shaped",
   "group": "nuclearcraft_fission",
+  "pattern": [
+    "TGT",
+    "G G",
+    "TGT"
+  ],
   "key": {
     "G": {
       "tag": "forge:glass"
@@ -9,11 +14,6 @@
       "tag": "forge:ingots/zirconium"
     }
   },
-  "pattern": [
-    "TGT",
-    "G G",
-    "TGT"
-  ],
   "result": {
     "item": "nuclearcraft:fission_reactor_solid_fuel_cell"
   }

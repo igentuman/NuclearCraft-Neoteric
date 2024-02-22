@@ -12,11 +12,11 @@
   ],
   "outputFluids": [
     {
-      "amount": 1000,
-      "fluid": "nuclearcraft:nitric_acid"
+      "fluid": "nuclearcraft:nitric_acid",
+      "amount": 1000
     }
   ],
-  "powerModifier": 0.4,
+  "timeModifier": 1.5,
   "radiation": 1.0,
-  "timeModifier": 1.5
+  "powerModifier": 0.4
 }

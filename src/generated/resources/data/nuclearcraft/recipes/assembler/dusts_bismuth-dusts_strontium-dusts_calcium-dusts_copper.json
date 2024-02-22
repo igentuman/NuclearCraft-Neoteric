@@ -2,29 +2,29 @@
   "type": "nuclearcraft:assembler",
   "input": [
     {
-      "count": 2,
-      "tag": "forge:dusts/bismuth"
+      "tag": "forge:dusts/bismuth",
+      "count": 2
     },
     {
-      "count": 2,
-      "tag": "forge:dusts/strontium"
+      "tag": "forge:dusts/strontium",
+      "count": 2
     },
     {
-      "count": 2,
-      "tag": "forge:dusts/calcium"
+      "tag": "forge:dusts/calcium",
+      "count": 2
     },
     {
-      "count": 2,
-      "tag": "forge:dusts/copper"
+      "tag": "forge:dusts/copper",
+      "count": 2
     }
   ],
   "output": [
     {
-      "count": 3,
-      "item": "nuclearcraft:bscco_dust"
+      "item": "nuclearcraft:bscco_dust",
+      "count": 3
     }
   ],
-  "powerModifier": 1.0,
+  "timeModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.0
+  "powerModifier": 1.0
 }

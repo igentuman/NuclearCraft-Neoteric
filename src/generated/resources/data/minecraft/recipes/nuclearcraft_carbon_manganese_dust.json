@@ -1,9 +1,9 @@
 {
   "type": "minecraft:smelting",
-  "cookingtime": 200,
-  "experience": 1.0,
   "ingredient": {
     "tag": "forge:dusts/carbon_manganese"
   },
-  "result": "nuclearcraft:carbon_manganese_ingot"
+  "result": "nuclearcraft:carbon_manganese_ingot",
+  "experience": 1.0,
+  "cookingtime": 200
 }

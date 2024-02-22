@@ -2,21 +2,21 @@
   "type": "nuclearcraft:isotope_separator",
   "input": [
     {
-      "count": 9,
-      "item": "nuclearcraft:fuel_uranium_heu_233"
+      "item": "nuclearcraft:fuel_uranium_heu_233",
+      "count": 9
     }
   ],
   "output": [
     {
-      "count": 3,
-      "item": "nuclearcraft:uranium_233"
+      "item": "nuclearcraft:uranium_233",
+      "count": 3
     },
     {
-      "count": 6,
-      "item": "nuclearcraft:uranium_238"
+      "item": "nuclearcraft:uranium_238",
+      "count": 6
     }
   ],
-  "powerModifier": 1.0,
+  "timeModifier": 2.0,
   "radiation": 1.0,
-  "timeModifier": 2.0
+  "powerModifier": 1.0
 }

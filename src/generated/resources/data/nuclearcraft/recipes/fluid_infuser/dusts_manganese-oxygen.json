@@ -5,18 +5,18 @@
       "tag": "forge:dusts/manganese"
     }
   ],
+  "output": [
+    {
+      "item": "nuclearcraft:manganese_dioxide_dust"
+    }
+  ],
   "inputFluids": [
     {
       "amount": 1000,
       "tag": "forge:oxygen"
     }
   ],
-  "output": [
-    {
-      "item": "nuclearcraft:manganese_dioxide_dust"
-    }
-  ],
-  "powerModifier": 1.0,
+  "timeModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.0
+  "powerModifier": 1.0
 }

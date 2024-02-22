@@ -2,8 +2,8 @@
   "type": "nuclearcraft:assembler",
   "input": [
     {
-      "count": 9,
-      "item": "nuclearcraft:fuel_americium_hea_242"
+      "item": "nuclearcraft:fuel_americium_hea_242",
+      "count": 9
     },
     {
       "tag": "forge:dusts/graphite"
@@ -17,11 +17,11 @@
   ],
   "output": [
     {
-      "count": 9,
-      "item": "nuclearcraft:fuel_americium_hea_242_tr"
+      "item": "nuclearcraft:fuel_americium_hea_242_tr",
+      "count": 9
     }
   ],
-  "powerModifier": 1.0,
+  "timeModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.0
+  "powerModifier": 1.0
 }

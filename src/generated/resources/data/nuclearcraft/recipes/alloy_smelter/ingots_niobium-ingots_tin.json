@@ -2,8 +2,8 @@
   "type": "nuclearcraft:alloy_smelter",
   "input": [
     {
-      "count": 2,
-      "tag": "forge:ingots/niobium"
+      "tag": "forge:ingots/niobium",
+      "count": 2
     },
     {
       "tag": "forge:ingots/tin"
@@ -11,11 +11,11 @@
   ],
   "output": [
     {
-      "count": 3,
-      "item": "nuclearcraft:niobium_tin_ingot"
+      "item": "nuclearcraft:niobium_tin_ingot",
+      "count": 3
     }
   ],
-  "powerModifier": 1.0,
+  "timeModifier": 4.0,
   "radiation": 1.0,
-  "timeModifier": 4.0
+  "powerModifier": 1.0
 }

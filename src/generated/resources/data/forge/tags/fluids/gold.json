@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "nuclearcraft:gold",
     "nuclearcraft:gold_flowing"

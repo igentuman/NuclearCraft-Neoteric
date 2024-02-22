@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "nuclearcraft:carbon_dioxide",
     "nuclearcraft:carbon_dioxide_flowing"

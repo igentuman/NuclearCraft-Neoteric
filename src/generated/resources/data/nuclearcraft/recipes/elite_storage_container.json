@@ -1,5 +1,10 @@
 {
   "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "DPD",
+    "PCP",
+    "DPD"
+  ],
   "key": {
     "C": {
       "item": "nuclearcraft:du_storage_container"
@@ -11,11 +16,6 @@
       "item": "nuclearcraft:plate_elite"
     }
   },
-  "pattern": [
-    "DPD",
-    "PCP",
-    "DPD"
-  ],
   "result": {
     "item": "nuclearcraft:elite_storage_container"
   }

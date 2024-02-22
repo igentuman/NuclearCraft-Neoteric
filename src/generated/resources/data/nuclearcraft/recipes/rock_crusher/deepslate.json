@@ -2,8 +2,8 @@
   "type": "nuclearcraft:rock_crusher",
   "input": [
     {
-      "count": 7,
-      "item": "minecraft:deepslate"
+      "item": "minecraft:deepslate",
+      "count": 7
     }
   ],
   "output": [
@@ -14,7 +14,7 @@
       "item": "nuclearcraft:obsidian_dust"
     }
   ],
-  "powerModifier": 1.0,
+  "timeModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.0
+  "powerModifier": 1.0
 }

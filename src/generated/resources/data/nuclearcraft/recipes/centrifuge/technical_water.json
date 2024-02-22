@@ -8,15 +8,15 @@
   ],
   "outputFluids": [
     {
-      "amount": 750,
-      "fluid": "nuclearcraft:deuterium"
+      "fluid": "nuclearcraft:deuterium",
+      "amount": 750
     },
     {
-      "amount": 250,
-      "fluid": "nuclearcraft:oxygen"
+      "fluid": "nuclearcraft:oxygen",
+      "amount": 250
     }
   ],
-  "powerModifier": 1.0,
+  "timeModifier": 1.9,
   "radiation": 1.0,
-  "timeModifier": 1.9
+  "powerModifier": 1.0
 }

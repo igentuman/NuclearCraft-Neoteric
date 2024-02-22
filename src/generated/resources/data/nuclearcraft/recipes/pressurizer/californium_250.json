@@ -2,8 +2,8 @@
   "type": "nuclearcraft:pressurizer",
   "input": [
     {
-      "count": 9,
-      "item": "nuclearcraft:californium_250"
+      "item": "nuclearcraft:californium_250",
+      "count": 9
     }
   ],
   "output": [
@@ -11,7 +11,7 @@
       "item": "nuclearcraft:californium250_block"
     }
   ],
-  "powerModifier": 1.0,
+  "timeModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.0
+  "powerModifier": 1.0
 }

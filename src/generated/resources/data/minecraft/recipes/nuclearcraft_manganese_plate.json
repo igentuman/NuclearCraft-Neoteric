@@ -1,9 +1,9 @@
 {
   "type": "minecraft:smelting",
-  "cookingtime": 200,
-  "experience": 1.0,
   "ingredient": {
     "tag": "forge:plates/manganese"
   },
-  "result": "nuclearcraft:manganese_ingot"
+  "result": "nuclearcraft:manganese_ingot",
+  "experience": 1.0,
+  "cookingtime": 200
 }

@@ -1,9 +1,9 @@
 {
   "type": "minecraft:blasting",
-  "cookingtime": 100,
-  "experience": 1.0,
   "ingredient": {
     "tag": "forge:dusts/tough_alloy"
   },
-  "result": "nuclearcraft:tough_alloy_ingot"
+  "result": "nuclearcraft:tough_alloy_ingot",
+  "experience": 1.0,
+  "cookingtime": 100
 }

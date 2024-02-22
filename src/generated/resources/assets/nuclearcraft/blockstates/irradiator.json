@@ -1,34 +1,34 @@
 {
   "variants": {
-    "facing=east,powered=false": {
-      "model": "nuclearcraft:block/processor/irradiator",
-      "y": 90
-    },
-    "facing=east,powered=true": {
-      "model": "nuclearcraft:block/processor/irradiator_powered",
-      "y": 90
-    },
     "facing=north,powered=false": {
       "model": "nuclearcraft:block/processor/irradiator"
     },
-    "facing=north,powered=true": {
-      "model": "nuclearcraft:block/processor/irradiator_powered"
-    },
     "facing=south,powered=false": {
       "model": "nuclearcraft:block/processor/irradiator",
-      "y": 180
-    },
-    "facing=south,powered=true": {
-      "model": "nuclearcraft:block/processor/irradiator_powered",
       "y": 180
     },
     "facing=west,powered=false": {
       "model": "nuclearcraft:block/processor/irradiator",
       "y": 270
     },
+    "facing=east,powered=false": {
+      "model": "nuclearcraft:block/processor/irradiator",
+      "y": 90
+    },
+    "facing=north,powered=true": {
+      "model": "nuclearcraft:block/processor/irradiator_powered"
+    },
+    "facing=south,powered=true": {
+      "model": "nuclearcraft:block/processor/irradiator_powered",
+      "y": 180
+    },
     "facing=west,powered=true": {
       "model": "nuclearcraft:block/processor/irradiator_powered",
       "y": 270
+    },
+    "facing=east,powered=true": {
+      "model": "nuclearcraft:block/processor/irradiator_powered",
+      "y": 90
     }
   }
 }

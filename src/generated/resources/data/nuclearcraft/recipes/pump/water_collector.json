@@ -7,11 +7,11 @@
   ],
   "outputFluids": [
     {
-      "amount": 200,
-      "fluid": "minecraft:water"
+      "fluid": "minecraft:water",
+      "amount": 200
     }
   ],
-  "powerModifier": 1.0,
+  "timeModifier": 0.1,
   "radiation": 1.0,
-  "timeModifier": 0.1
+  "powerModifier": 1.0
 }

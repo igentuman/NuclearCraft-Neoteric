@@ -1,5 +1,10 @@
 {
   "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "GPG",
+    "GBG",
+    "GPG"
+  ],
   "key": {
     "B": {
       "item": "nuclearcraft:du_barrel"
@@ -11,11 +16,6 @@
       "item": "nuclearcraft:plate_elite"
     }
   },
-  "pattern": [
-    "GPG",
-    "GBG",
-    "GPG"
-  ],
   "result": {
     "item": "nuclearcraft:elite_barrel"
   }

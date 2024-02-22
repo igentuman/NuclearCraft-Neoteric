@@ -12,11 +12,11 @@
   ],
   "outputFluids": [
     {
-      "amount": 500,
-      "fluid": "nuclearcraft:heavy_water"
+      "fluid": "nuclearcraft:heavy_water",
+      "amount": 500
     }
   ],
-  "powerModifier": 0.5,
+  "timeModifier": 0.5,
   "radiation": 1.0,
-  "timeModifier": 0.5
+  "powerModifier": 0.5
 }

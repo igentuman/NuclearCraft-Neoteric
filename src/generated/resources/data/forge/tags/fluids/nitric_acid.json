@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "nuclearcraft:nitric_acid",
     "nuclearcraft:nitric_acid_flowing"

@@ -2,21 +2,21 @@
   "type": "nuclearcraft:assembler",
   "input": [
     {
-      "count": 3,
-      "tag": "forge:dusts/bscco"
+      "tag": "forge:dusts/bscco",
+      "count": 3
     },
     {
-      "count": 6,
-      "tag": "forge:ingots/silver"
+      "tag": "forge:ingots/silver",
+      "count": 6
     }
   ],
   "output": [
     {
-      "count": 3,
-      "item": "nuclearcraft:coil_bscco"
+      "item": "nuclearcraft:coil_bscco",
+      "count": 3
     }
   ],
-  "powerModifier": 1.0,
+  "timeModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.0
+  "powerModifier": 1.0
 }

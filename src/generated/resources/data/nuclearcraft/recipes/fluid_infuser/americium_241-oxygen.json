@@ -5,18 +5,18 @@
       "item": "nuclearcraft:americium_241"
     }
   ],
+  "output": [
+    {
+      "item": "nuclearcraft:americium_241_ox"
+    }
+  ],
   "inputFluids": [
     {
       "amount": 100,
       "tag": "forge:oxygen"
     }
   ],
-  "output": [
-    {
-      "item": "nuclearcraft:americium_241_ox"
-    }
-  ],
-  "powerModifier": 1.0,
+  "timeModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.0
+  "powerModifier": 1.0
 }

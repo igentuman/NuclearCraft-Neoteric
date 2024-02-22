@@ -1,13 +1,12 @@
 {
   "parent": "minecraft:block/cube",
-  "loader": "nuclearcraft:battery_loader",
   "textures": {
     "down": "nuclearcraft:block/energy/voltaic_pile/basic/side",
-    "east": "nuclearcraft:block/energy/voltaic_pile/basic/side",
-    "north": "nuclearcraft:block/energy/voltaic_pile/basic/side",
-    "particle": "nuclearcraft:block/energy/voltaic_pile/basic/top",
-    "south": "nuclearcraft:block/energy/voltaic_pile/basic/side",
     "up": "nuclearcraft:block/energy/voltaic_pile/basic/top",
-    "west": "nuclearcraft:block/energy/voltaic_pile/basic/side"
+    "north": "nuclearcraft:block/energy/voltaic_pile/basic/side",
+    "south": "nuclearcraft:block/energy/voltaic_pile/basic/side",
+    "east": "nuclearcraft:block/energy/voltaic_pile/basic/side",
+    "west": "nuclearcraft:block/energy/voltaic_pile/basic/side",
+    "particle": "nuclearcraft:block/energy/voltaic_pile/basic/top"
   }
 }

@@ -1,12 +1,17 @@
 {
   "type": "minecraft:crafting_shaped",
   "group": "nuclearcraft_machines",
+  "pattern": [
+    "PHP",
+    "LCL",
+    "PMP"
+  ],
   "key": {
+    "P": {
+      "item": "nuclearcraft:plate_advanced"
+    },
     "C": {
       "item": "nuclearcraft:chassis"
-    },
-    "H": {
-      "item": "minecraft:hopper"
     },
     "L": {
       "item": "minecraft:lapis_lazuli"
@@ -14,15 +19,10 @@
     "M": {
       "item": "nuclearcraft:motor"
     },
-    "P": {
-      "item": "nuclearcraft:plate_advanced"
+    "H": {
+      "item": "minecraft:hopper"
     }
   },
-  "pattern": [
-    "PHP",
-    "LCL",
-    "PMP"
-  ],
   "result": {
     "item": "nuclearcraft:fluid_enricher"
   }

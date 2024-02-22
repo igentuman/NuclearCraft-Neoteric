@@ -1,34 +1,34 @@
 {
   "variants": {
-    "facing=east,powered=false": {
-      "model": "nuclearcraft:block/processor/centrifuge",
-      "y": 90
-    },
-    "facing=east,powered=true": {
-      "model": "nuclearcraft:block/processor/centrifuge_powered",
-      "y": 90
-    },
     "facing=north,powered=false": {
       "model": "nuclearcraft:block/processor/centrifuge"
     },
-    "facing=north,powered=true": {
-      "model": "nuclearcraft:block/processor/centrifuge_powered"
-    },
     "facing=south,powered=false": {
       "model": "nuclearcraft:block/processor/centrifuge",
-      "y": 180
-    },
-    "facing=south,powered=true": {
-      "model": "nuclearcraft:block/processor/centrifuge_powered",
       "y": 180
     },
     "facing=west,powered=false": {
       "model": "nuclearcraft:block/processor/centrifuge",
       "y": 270
     },
+    "facing=east,powered=false": {
+      "model": "nuclearcraft:block/processor/centrifuge",
+      "y": 90
+    },
+    "facing=north,powered=true": {
+      "model": "nuclearcraft:block/processor/centrifuge_powered"
+    },
+    "facing=south,powered=true": {
+      "model": "nuclearcraft:block/processor/centrifuge_powered",
+      "y": 180
+    },
     "facing=west,powered=true": {
       "model": "nuclearcraft:block/processor/centrifuge_powered",
       "y": 270
+    },
+    "facing=east,powered=true": {
+      "model": "nuclearcraft:block/processor/centrifuge_powered",
+      "y": 90
     }
   }
 }

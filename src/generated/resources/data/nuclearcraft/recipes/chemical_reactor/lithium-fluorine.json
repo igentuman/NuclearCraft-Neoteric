@@ -12,11 +12,11 @@
   ],
   "outputFluids": [
     {
-      "amount": 288,
-      "fluid": "nuclearcraft:lithium_fluoride"
+      "fluid": "nuclearcraft:lithium_fluoride",
+      "amount": 288
     }
   ],
-  "powerModifier": 0.5,
+  "timeModifier": 0.5,
   "radiation": 1.0,
-  "timeModifier": 0.5
+  "powerModifier": 0.5
 }

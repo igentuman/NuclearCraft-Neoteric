@@ -7,11 +7,11 @@
   ],
   "outputFluids": [
     {
-      "amount": 144,
-      "fluid": "nuclearcraft:fuel_californium_lecf_249"
+      "fluid": "nuclearcraft:fuel_californium_lecf_249",
+      "amount": 144
     }
   ],
-  "powerModifier": 1.0,
+  "timeModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.0
+  "powerModifier": 1.0
 }

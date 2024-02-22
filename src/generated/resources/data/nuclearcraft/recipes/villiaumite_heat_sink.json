@@ -1,19 +1,19 @@
 {
   "type": "minecraft:crafting_shaped",
   "group": "nuclearcraft_fission",
-  "key": {
-    "B": {
-      "item": "nuclearcraft:empty_heat_sink"
-    },
-    "I": {
-      "tag": "forge:dusts/villiaumite"
-    }
-  },
   "pattern": [
     " I ",
     "IBI",
     " I "
   ],
+  "key": {
+    "I": {
+      "tag": "forge:dusts/villiaumite"
+    },
+    "B": {
+      "item": "nuclearcraft:empty_heat_sink"
+    }
+  },
   "result": {
     "item": "nuclearcraft:villiaumite_heat_sink"
   }

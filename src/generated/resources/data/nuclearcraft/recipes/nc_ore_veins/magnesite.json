@@ -2,8 +2,8 @@
   "type": "nuclearcraft:nc_ore_veins",
   "input": [
     {
-      "count": 95,
-      "tag": "forge:ores/magnesium"
+      "tag": "forge:ores/magnesium",
+      "count": 95
     }
   ],
   "output": [
@@ -12,7 +12,7 @@
       "nbt": "{vein:\"nc.ore_vein.magnesite\"}"
     }
   ],
-  "powerModifier": 1.0,
+  "timeModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.0
+  "powerModifier": 1.0
 }

@@ -2,11 +2,11 @@
   "parent": "minecraft:block/cube",
   "textures": {
     "down": "nuclearcraft:block/energy/rtg/plutonium/side",
-    "east": "nuclearcraft:block/energy/rtg/plutonium/side",
-    "north": "nuclearcraft:block/energy/rtg/plutonium/side",
-    "particle": "nuclearcraft:block/energy/rtg/plutonium/top",
-    "south": "nuclearcraft:block/energy/rtg/plutonium/side",
     "up": "nuclearcraft:block/energy/rtg/plutonium/top",
-    "west": "nuclearcraft:block/energy/rtg/plutonium/side"
+    "north": "nuclearcraft:block/energy/rtg/plutonium/side",
+    "south": "nuclearcraft:block/energy/rtg/plutonium/side",
+    "east": "nuclearcraft:block/energy/rtg/plutonium/side",
+    "west": "nuclearcraft:block/energy/rtg/plutonium/side",
+    "particle": "nuclearcraft:block/energy/rtg/plutonium/top"
   }
 }

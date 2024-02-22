@@ -1,17 +1,17 @@
 {
   "type": "nuclearcraft:ingot_former",
-  "inputFluids": [
-    {
-      "amount": 144,
-      "fluid": "nuclearcraft:thorium_232_ox"
-    }
-  ],
   "output": [
     {
       "item": "nuclearcraft:thorium_232_ox"
     }
   ],
-  "powerModifier": 1.0,
+  "inputFluids": [
+    {
+      "amount": 144,
+      "fluid": "thorium_232_ox"
+    }
+  ],
+  "timeModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.0
+  "powerModifier": 1.0
 }

@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "nuclearcraft:californium_249_ni",
     "nuclearcraft:californium_249_ni_flowing"

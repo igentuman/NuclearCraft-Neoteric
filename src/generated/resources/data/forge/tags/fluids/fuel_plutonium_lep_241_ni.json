@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "nuclearcraft:fuel_plutonium_lep_241_ni",
     "nuclearcraft:fuel_plutonium_lep_241_ni_flowing"

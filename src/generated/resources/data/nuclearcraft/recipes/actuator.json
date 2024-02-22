@@ -1,24 +1,24 @@
 {
   "type": "minecraft:crafting_shaped",
-  "key": {
-    "C": {
-      "tag": "forge:ingots/copper"
-    },
-    "F": {
-      "tag": "forge:ingots/ferroboron"
-    },
-    "P": {
-      "item": "minecraft:piston"
-    },
-    "S": {
-      "tag": "forge:ingots/steel"
-    }
-  },
   "pattern": [
     "  S",
     "FP ",
     "CF "
   ],
+  "key": {
+    "F": {
+      "tag": "forge:ingots/ferroboron"
+    },
+    "S": {
+      "tag": "forge:ingots/steel"
+    },
+    "C": {
+      "tag": "forge:ingots/copper"
+    },
+    "P": {
+      "item": "minecraft:piston"
+    }
+  },
   "result": {
     "item": "nuclearcraft:actuator"
   }

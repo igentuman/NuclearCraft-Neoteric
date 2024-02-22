@@ -1,18 +1,18 @@
 {
   "type": "nuclearcraft:crystallizer",
+  "output": [
+    {
+      "item": "nuclearcraft:zinc_dust",
+      "count": 2
+    }
+  ],
   "inputFluids": [
     {
       "amount": 400,
       "tag": "forge:zinc_clean_slurry"
     }
   ],
-  "output": [
-    {
-      "count": 2,
-      "item": "nuclearcraft:zinc_dust"
-    }
-  ],
-  "powerModifier": 1.0,
+  "timeModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.0
+  "powerModifier": 1.0
 }

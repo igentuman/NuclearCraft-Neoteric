@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "nuclearcraft:boron_arsenide_solution",
     "nuclearcraft:boron_arsenide_solution_flowing"

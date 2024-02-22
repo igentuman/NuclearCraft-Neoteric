@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "nuclearcraft:milk_chocolate",
     "nuclearcraft:milk_chocolate_flowing"

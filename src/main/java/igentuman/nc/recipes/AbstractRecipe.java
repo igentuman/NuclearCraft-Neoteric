@@ -135,7 +135,7 @@ public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
             }
         }
         for(FluidStackIngredient inputFluid: inputFluids) {
-            if(inputFluid.getRepresentations().isEmpty()) {
+            if(inputFluid == null || inputFluid.getRepresentations().isEmpty()) {
                 return true;
             }
         }

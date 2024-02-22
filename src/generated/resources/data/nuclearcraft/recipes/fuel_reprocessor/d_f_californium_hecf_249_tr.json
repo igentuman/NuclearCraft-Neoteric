@@ -2,18 +2,18 @@
   "type": "nuclearcraft:fuel_reprocessor",
   "input": [
     {
-      "count": 9,
-      "item": "nuclearcraft:depleted_fuel_californium_hecf_249_tr"
+      "item": "nuclearcraft:depleted_fuel_californium_hecf_249_tr",
+      "count": 9
     }
   ],
   "output": [
     {
-      "count": 6,
-      "item": "nuclearcraft:californium_252"
+      "item": "nuclearcraft:californium_252",
+      "count": 6
     },
     {
-      "count": 2,
-      "item": "nuclearcraft:californium_250"
+      "item": "nuclearcraft:californium_250",
+      "count": 2
     },
     {
       "item": "nuclearcraft:ruthenium_106_dust"
@@ -22,7 +22,7 @@
       "item": "nuclearcraft:promethium_147_dust"
     }
   ],
-  "powerModifier": 1.0,
+  "timeModifier": 1.5,
   "radiation": 1.0,
-  "timeModifier": 1.5
+  "powerModifier": 1.0
 }

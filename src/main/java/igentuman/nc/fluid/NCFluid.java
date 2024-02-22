@@ -4,6 +4,7 @@ import igentuman.nc.block.NCFluidBlock;
 import igentuman.nc.setup.registration.NCFluids;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
@@ -17,9 +18,11 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.fluids.FluidAttributes;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -28,25 +31,33 @@ public class NCFluid extends FlowingFluid
 {
 	private static NCFluids.FluidEntry entryStatic;
 	protected final NCFluids.FluidEntry entry;
-
-	public static NCFluid makeFluid(Function<NCFluids.FluidEntry, ? extends NCFluid> make, NCFluids.FluidEntry entry)
+	protected final ResourceLocation stillTex;
+	protected final ResourceLocation flowingTex;
+	@Nullable
+	protected final Consumer<FluidAttributes.Builder> buildAttributes;
+	public static NCFluid makeFluid(FluidConstructor make, NCFluids.FluidEntry entry, ResourceLocation stillTex, ResourceLocation flowingTex, @Nullable Consumer<FluidAttributes.Builder> buildAttributes)
 	{
 		entryStatic = entry;
-		NCFluid result = make.apply(entry);
+		NCFluid result = make.create(entry, stillTex, flowingTex, buildAttributes);
 		entryStatic = null;
-
 		return result;
 	}
 
-	@Override
-	public Vec3 getFlow(BlockGetter pBlockReader, BlockPos pPos, FluidState pFluidState) {
-
-		return super.getFlow(pBlockReader, pPos, pFluidState);
+	public interface FluidConstructor
+	{
+		NCFluid create(
+				NCFluids.FluidEntry entry,
+				ResourceLocation stillTex, ResourceLocation flowingTex,
+				@Nullable Consumer<FluidAttributes.Builder> buildAttributes
+		);
 	}
 
-	public NCFluid(NCFluids.FluidEntry entry)
+	public NCFluid(NCFluids.FluidEntry entry, ResourceLocation stillTex, ResourceLocation flowingTex, @Nullable Consumer<FluidAttributes.Builder> buildAttributes)
 	{
 		this.entry = entry;
+		this.stillTex = stillTex;
+		this.flowingTex = flowingTex;
+		this.buildAttributes = buildAttributes;
 	}
 
 	@Nonnull
@@ -86,6 +97,16 @@ public class NCFluid extends FlowingFluid
 		super.createFluidStateDefinition(builder);
 		for(Property<?> p : (entry==null?entryStatic: entry).properties())
 			builder.add(p);
+	}
+
+	@Nonnull
+	@Override
+	protected FluidAttributes createAttributes()
+	{
+		FluidAttributes.Builder builder = FluidAttributes.builder(stillTex, flowingTex);
+		if(buildAttributes!=null)
+			buildAttributes.accept(builder);
+		return builder.build(this);
 	}
 
 	@Override
@@ -155,12 +176,14 @@ public class NCFluid extends FlowingFluid
 		return builder -> builder.viscosity(viscosity).density(density);
 	}
 
+
 	public static class Flowing extends NCFluid
 	{
 		public String name;
-		public Flowing(NCFluids.FluidEntry entry)
+		public Flowing(NCFluids.FluidEntry entry, ResourceLocation stillTex, ResourceLocation flowingTex,
+					   @Nullable Consumer<FluidAttributes.Builder> buildAttributes)
 		{
-			super(entry);
+			super(entry, stillTex, flowingTex, buildAttributes);
 			//name = entry.getFlowing().getFluidType().toString().split(":")[1];
 		}
 

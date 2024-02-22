@@ -1,17 +1,17 @@
 {
   "type": "nuclearcraft:ingot_former",
-  "inputFluids": [
-    {
-      "amount": 144,
-      "fluid": "nuclearcraft:uranium_238_ox"
-    }
-  ],
   "output": [
     {
       "item": "nuclearcraft:uranium_238_ox"
     }
   ],
-  "powerModifier": 1.0,
+  "inputFluids": [
+    {
+      "amount": 144,
+      "fluid": "uranium_238_ox"
+    }
+  ],
+  "timeModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.0
+  "powerModifier": 1.0
 }

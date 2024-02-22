@@ -5,18 +5,18 @@
       "item": "nuclearcraft:californium_251"
     }
   ],
+  "output": [
+    {
+      "item": "nuclearcraft:californium_251_ni"
+    }
+  ],
   "inputFluids": [
     {
       "amount": 100,
       "tag": "forge:nitrogen"
     }
   ],
-  "output": [
-    {
-      "item": "nuclearcraft:californium_251_ni"
-    }
-  ],
-  "powerModifier": 1.0,
+  "timeModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.0
+  "powerModifier": 1.0
 }

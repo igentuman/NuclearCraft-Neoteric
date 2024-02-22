@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "nuclearcraft:fuel_americium_lea_242",
     "nuclearcraft:fuel_americium_lea_242_flowing"

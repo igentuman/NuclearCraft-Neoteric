@@ -2,12 +2,12 @@
   "type": "nuclearcraft:nc_ore_veins",
   "input": [
     {
-      "count": 30,
-      "tag": "forge:ores/gold"
+      "tag": "forge:ores/gold",
+      "count": 30
     },
     {
-      "count": 70,
-      "tag": "forge:ores/platinum"
+      "tag": "forge:ores/platinum",
+      "count": 70
     }
   ],
   "output": [
@@ -16,8 +16,8 @@
       "nbt": "{vein:\"nc.ore_vein.platinum\"}"
     }
   ],
-  "powerModifier": 1.0,
+  "timeModifier": 1.0,
   "radiation": 1.0,
-  "rarityModifier": 2.0,
-  "timeModifier": 1.0
+  "powerModifier": 1.0,
+  "rarityModifier": 2.0
 }

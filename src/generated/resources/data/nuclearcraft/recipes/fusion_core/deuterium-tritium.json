@@ -12,24 +12,24 @@
   ],
   "outputFluids": [
     {
-      "amount": 65,
-      "fluid": "nuclearcraft:helium"
+      "fluid": "nuclearcraft:helium",
+      "amount": 65
     },
     {
-      "amount": 65,
-      "fluid": "nuclearcraft:helium"
+      "fluid": "nuclearcraft:helium",
+      "amount": 65
     },
     {
-      "amount": 65,
-      "fluid": "nuclearcraft:helium"
+      "fluid": "nuclearcraft:helium",
+      "amount": 65
     },
     {
-      "amount": 65,
-      "fluid": "nuclearcraft:helium"
+      "fluid": "nuclearcraft:helium",
+      "amount": 65
     }
   ],
-  "powerModifier": 110000.0,
+  "timeModifier": 20.0,
   "radiation": 1.5,
-  "temperature": 816.0,
-  "timeModifier": 20.0
+  "powerModifier": 110000.0,
+  "temperature": 816.0
 }

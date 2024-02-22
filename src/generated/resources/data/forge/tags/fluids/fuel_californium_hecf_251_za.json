@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "nuclearcraft:fuel_californium_hecf_251_za",
     "nuclearcraft:fuel_californium_hecf_251_za_flowing"

@@ -1,17 +1,17 @@
 {
   "type": "nuclearcraft:crystallizer",
+  "output": [
+    {
+      "item": "minecraft:lapis_lazuli"
+    }
+  ],
   "inputFluids": [
     {
       "amount": 144,
       "tag": "forge:lapis"
     }
   ],
-  "output": [
-    {
-      "item": "minecraft:lapis_lazuli"
-    }
-  ],
-  "powerModifier": 1.0,
+  "timeModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.0
+  "powerModifier": 1.0
 }

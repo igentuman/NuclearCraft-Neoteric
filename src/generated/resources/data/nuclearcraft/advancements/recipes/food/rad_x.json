@@ -1,21 +1,26 @@
 {
   "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "nuclearcraft:rad_x"
+    ]
+  },
   "criteria": {
-    "has_the_recipe": {
-      "conditions": {
-        "recipe": "nuclearcraft:rad_x"
-      },
-      "trigger": "minecraft:recipe_unlocked"
-    },
     "item": {
+      "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "tag": "forge:dusts/potassium_iodide"
           }
         ]
-      },
-      "trigger": "minecraft:inventory_changed"
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "nuclearcraft:rad_x"
+      }
     }
   },
   "requirements": [
@@ -23,10 +28,5 @@
       "item",
       "has_the_recipe"
     ]
-  ],
-  "rewards": {
-    "recipes": [
-      "nuclearcraft:rad_x"
-    ]
-  }
+  ]
 }

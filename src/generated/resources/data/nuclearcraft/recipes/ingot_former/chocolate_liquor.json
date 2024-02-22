@@ -1,17 +1,17 @@
 {
   "type": "nuclearcraft:ingot_former",
-  "inputFluids": [
-    {
-      "amount": 144,
-      "fluid": "nuclearcraft:chocolate_liquor"
-    }
-  ],
   "output": [
     {
       "item": "nuclearcraft:ground_cocoa_nibs"
     }
   ],
-  "powerModifier": 0.5,
+  "inputFluids": [
+    {
+      "amount": 144,
+      "fluid": "chocolate_liquor"
+    }
+  ],
+  "timeModifier": 0.25,
   "radiation": 1.0,
-  "timeModifier": 0.25
+  "powerModifier": 0.5
 }

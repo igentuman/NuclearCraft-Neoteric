@@ -1,28 +1,28 @@
 {
   "type": "minecraft:crafting_shaped",
   "group": "nuclearcraft",
+  "pattern": [
+    "PUP",
+    "SCS",
+    "PFP"
+  ],
   "key": {
-    "C": {
-      "item": "nuclearcraft:chassis"
-    },
-    "F": {
-      "item": "minecraft:furnace"
-    },
     "P": {
       "item": "nuclearcraft:plate_advanced"
     },
     "S": {
       "item": "nuclearcraft:coil_copper"
     },
+    "C": {
+      "item": "nuclearcraft:chassis"
+    },
     "U": {
       "item": "minecraft:cauldron"
+    },
+    "F": {
+      "item": "minecraft:furnace"
     }
   },
-  "pattern": [
-    "PUP",
-    "SCS",
-    "PFP"
-  ],
   "result": {
     "item": "nuclearcraft:steam_turbine"
   }

@@ -1,19 +1,19 @@
 {
   "type": "minecraft:crafting_shaped",
   "group": "nuclearcraft_fission",
-  "key": {
-    "B": {
-      "item": "nuclearcraft:empty_heat_sink"
-    },
-    "I": {
-      "tag": "forge:dusts/lapis"
-    }
-  },
   "pattern": [
     " I ",
     "IBI",
     " I "
   ],
+  "key": {
+    "I": {
+      "tag": "forge:dusts/lapis"
+    },
+    "B": {
+      "item": "nuclearcraft:empty_heat_sink"
+    }
+  },
   "result": {
     "item": "nuclearcraft:lapis_heat_sink"
   }

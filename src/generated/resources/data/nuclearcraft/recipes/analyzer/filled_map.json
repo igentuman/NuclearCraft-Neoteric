@@ -11,7 +11,7 @@
       "nbt": "{is_nc_analyzed:1b}"
     }
   ],
-  "powerModifier": 10.0,
+  "timeModifier": 5.5,
   "radiation": 1.0,
-  "timeModifier": 5.5
+  "powerModifier": 10.0
 }

@@ -2,21 +2,21 @@
   "type": "nuclearcraft:isotope_separator",
   "input": [
     {
-      "count": 9,
-      "item": "nuclearcraft:fuel_berkelium_heb_248"
+      "item": "nuclearcraft:fuel_berkelium_heb_248",
+      "count": 9
     }
   ],
   "output": [
     {
-      "count": 3,
-      "item": "nuclearcraft:berkelium_248"
+      "item": "nuclearcraft:berkelium_248",
+      "count": 3
     },
     {
-      "count": 6,
-      "item": "nuclearcraft:berkelium_247"
+      "item": "nuclearcraft:berkelium_247",
+      "count": 6
     }
   ],
-  "powerModifier": 1.0,
+  "timeModifier": 2.0,
   "radiation": 1.0,
-  "timeModifier": 2.0
+  "powerModifier": 1.0
 }

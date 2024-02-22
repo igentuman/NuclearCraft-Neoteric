@@ -2,20 +2,20 @@
   "type": "nuclearcraft:isotope_separator",
   "input": [
     {
-      "count": 10,
-      "tag": "forge:dusts/yellowcake"
+      "tag": "forge:dusts/yellowcake",
+      "count": 10
     }
   ],
   "output": [
     {
-      "count": 9,
-      "item": "nuclearcraft:uranium_238"
+      "item": "nuclearcraft:uranium_238",
+      "count": 9
     },
     {
       "item": "nuclearcraft:uranium_235"
     }
   ],
-  "powerModifier": 1.0,
+  "timeModifier": 5.0,
   "radiation": 1.0,
-  "timeModifier": 5.0
+  "powerModifier": 1.0
 }

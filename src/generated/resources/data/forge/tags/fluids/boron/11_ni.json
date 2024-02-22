@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "nuclearcraft:boron_11_ni",
     "nuclearcraft:boron_11_ni_flowing"

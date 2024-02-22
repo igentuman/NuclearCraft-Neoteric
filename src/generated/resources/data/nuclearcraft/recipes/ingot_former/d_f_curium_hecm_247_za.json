@@ -1,17 +1,17 @@
 {
   "type": "nuclearcraft:ingot_former",
-  "inputFluids": [
-    {
-      "amount": 144,
-      "fluid": "nuclearcraft:depleted_fuel_curium_hecm_247_za"
-    }
-  ],
   "output": [
     {
       "item": "nuclearcraft:depleted_fuel_curium_hecm_247_za"
     }
   ],
-  "powerModifier": 1.0,
+  "inputFluids": [
+    {
+      "amount": 144,
+      "fluid": "depleted_fuel_curium_hecm_247_za"
+    }
+  ],
+  "timeModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.0
+  "powerModifier": 1.0
 }

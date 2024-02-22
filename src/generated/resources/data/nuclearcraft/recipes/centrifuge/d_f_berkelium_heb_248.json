@@ -3,36 +3,36 @@
   "inputFluids": [
     {
       "amount": 1296,
-      "fluid": "nuclearcraft:depleted_fuel_berkelium_heb_248"
+      "fluid": "depleted_fuel_berkelium_heb_248"
     }
   ],
   "outputFluids": [
     {
-      "amount": 144,
-      "fluid": "nuclearcraft:berkelium_248"
+      "fluid": "nuclearcraft:berkelium_248",
+      "amount": 144
     },
     {
-      "amount": 144,
-      "fluid": "nuclearcraft:californium_249"
+      "fluid": "nuclearcraft:californium_249",
+      "amount": 144
     },
     {
-      "amount": 288,
-      "fluid": "nuclearcraft:californium_251"
+      "fluid": "nuclearcraft:californium_251",
+      "amount": 288
     },
     {
-      "amount": 3,
-      "fluid": "nuclearcraft:californium_252"
+      "fluid": "nuclearcraft:californium_252",
+      "amount": 3
     },
     {
-      "amount": 144,
-      "fluid": "nuclearcraft:ruthenium_106"
+      "fluid": "nuclearcraft:ruthenium_106",
+      "amount": 144
     },
     {
-      "amount": 144,
-      "fluid": "nuclearcraft:promethium_147"
+      "fluid": "nuclearcraft:promethium_147",
+      "amount": 144
     }
   ],
-  "powerModifier": 1.0,
+  "timeModifier": 1.5,
   "radiation": 1.0,
-  "timeModifier": 1.5
+  "powerModifier": 1.0
 }

@@ -1,25 +1,25 @@
 {
   "type": "minecraft:crafting_shaped",
   "group": "nuclearcraft_solar_panels",
-  "key": {
-    "C": {
-      "item": "nuclearcraft:coil_copper"
-    },
-    "G": {
-      "tag": "forge:dusts/graphite"
-    },
-    "P": {
-      "item": "nuclearcraft:plate_advanced"
-    },
-    "S": {
-      "item": "nuclearcraft:solar_panel_basic"
-    }
-  },
   "pattern": [
     "PGP",
     "SSS",
     "PCP"
   ],
+  "key": {
+    "P": {
+      "item": "nuclearcraft:plate_advanced"
+    },
+    "S": {
+      "item": "nuclearcraft:solar_panel_basic"
+    },
+    "G": {
+      "tag": "forge:dusts/graphite"
+    },
+    "C": {
+      "item": "nuclearcraft:coil_copper"
+    }
+  },
   "result": {
     "item": "nuclearcraft:solar_panel_advanced"
   }

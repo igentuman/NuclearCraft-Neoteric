@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "nuclearcraft:sugar",
     "nuclearcraft:sugar_flowing"

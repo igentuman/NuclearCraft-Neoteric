@@ -41,7 +41,6 @@ public class NCFluidBlock extends LiquidBlock
 		super(entry.getStillGetter(), Util.make(props, $ -> entryStatic = entry).noOcclusion().noCollission());
 		this.entry = entry;
 		entryStatic = null;
-
 	}
 	@Override
 	public boolean isFireSource(BlockState state, LevelReader level, BlockPos pos, Direction direction)

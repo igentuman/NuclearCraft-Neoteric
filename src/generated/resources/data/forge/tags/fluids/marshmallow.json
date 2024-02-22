@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "nuclearcraft:marshmallow",
     "nuclearcraft:marshmallow_flowing"

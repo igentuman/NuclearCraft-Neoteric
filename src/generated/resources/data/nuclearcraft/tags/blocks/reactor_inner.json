@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "nuclearcraft:prismarine_heat_sink",
     "nuclearcraft:aluminum_heat_sink",

@@ -10,7 +10,7 @@
       "item": "nuclearcraft:obsidian_dust"
     }
   ],
-  "powerModifier": 1.0,
+  "timeModifier": 2.0,
   "radiation": 1.0,
-  "timeModifier": 2.0
+  "powerModifier": 1.0
 }

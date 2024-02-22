@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "nuclearcraft:lithium_fluoride",
     "nuclearcraft:lithium_fluoride_flowing"

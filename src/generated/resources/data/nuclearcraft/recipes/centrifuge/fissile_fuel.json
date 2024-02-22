@@ -8,27 +8,27 @@
   ],
   "outputFluids": [
     {
-      "amount": 300,
-      "fluid": "nuclearcraft:uranium_238"
+      "fluid": "nuclearcraft:uranium_238",
+      "amount": 300
     },
     {
-      "amount": 80,
-      "fluid": "nuclearcraft:uranium_235"
+      "fluid": "nuclearcraft:uranium_235",
+      "amount": 80
     },
     {
-      "amount": 80,
-      "fluid": "nuclearcraft:uranium_233"
+      "fluid": "nuclearcraft:uranium_233",
+      "amount": 80
     },
     {
-      "amount": 16,
-      "fluid": "nuclearcraft:hydrofluoric_acid"
+      "fluid": "nuclearcraft:hydrofluoric_acid",
+      "amount": 16
     },
     {
-      "amount": 16,
-      "fluid": "nuclearcraft:sulfuric_acid"
+      "fluid": "nuclearcraft:sulfuric_acid",
+      "amount": 16
     }
   ],
-  "powerModifier": 1.0,
+  "timeModifier": 1.9,
   "radiation": 1.0,
-  "timeModifier": 1.9
+  "powerModifier": 1.0
 }

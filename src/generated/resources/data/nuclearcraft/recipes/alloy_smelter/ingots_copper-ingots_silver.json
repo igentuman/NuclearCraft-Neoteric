@@ -2,8 +2,8 @@
   "type": "nuclearcraft:alloy_smelter",
   "input": [
     {
-      "count": 3,
-      "tag": "forge:ingots/copper"
+      "tag": "forge:ingots/copper",
+      "count": 3
     },
     {
       "tag": "forge:ingots/silver"
@@ -11,11 +11,11 @@
   ],
   "output": [
     {
-      "count": 4,
-      "item": "nuclearcraft:shibuichi_ingot"
+      "item": "nuclearcraft:shibuichi_ingot",
+      "count": 4
     }
   ],
-  "powerModifier": 1.0,
+  "timeModifier": 1.8,
   "radiation": 1.0,
-  "timeModifier": 1.8
+  "powerModifier": 1.0
 }

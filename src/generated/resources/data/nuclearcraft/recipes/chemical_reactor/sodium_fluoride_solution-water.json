@@ -12,15 +12,15 @@
   ],
   "outputFluids": [
     {
-      "amount": 72,
-      "fluid": "nuclearcraft:sodium_hydroxide_solution"
+      "fluid": "nuclearcraft:sodium_hydroxide_solution",
+      "amount": 72
     },
     {
-      "amount": 500,
-      "fluid": "nuclearcraft:hydrofluoric_acid"
+      "fluid": "nuclearcraft:hydrofluoric_acid",
+      "amount": 500
     }
   ],
-  "powerModifier": 0.5,
+  "timeModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.0
+  "powerModifier": 0.5
 }

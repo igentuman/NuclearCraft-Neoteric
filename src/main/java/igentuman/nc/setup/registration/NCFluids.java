@@ -1,6 +1,7 @@
 package igentuman.nc.setup.registration;
 
 import com.google.common.collect.ImmutableList;
+import igentuman.nc.NuclearCraft;
 import igentuman.nc.content.materials.Materials;
 import igentuman.nc.item.NCBucketItem;
 import igentuman.nc.fluid.AcidDefinition;
@@ -11,6 +12,7 @@ import igentuman.nc.block.NCFluidBlock;
 import igentuman.nc.content.fuel.FuelManager;
 import igentuman.nc.util.TextureUtil;
 import net.minecraft.core.Registry;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.TagKey;
@@ -22,8 +24,10 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraftforge.fluids.capability.wrappers.FluidBucketWrapper;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.registries.DeferredRegister;
@@ -362,7 +366,7 @@ public class NCFluids {
 
         private static FluidEntry make(
                 String name, ResourceLocation stillTex, ResourceLocation flowingTex,
-                Function<FluidEntry, ? extends NCFluid> makeStill, Function<FluidEntry, ? extends NCFluid> makeFlowing,
+                NCFluid.FluidConstructor makeStill, NCFluid.FluidConstructor makeFlowing,
                 @Nullable Consumer<FluidAttributes.Builder> buildAttributes, ImmutableList<Property<?>> properties,
                 int color
         )
@@ -373,7 +377,7 @@ public class NCFluids {
         private static FluidEntry make(
                 String name, int burnTime,
                 ResourceLocation stillTex, ResourceLocation flowingTex,
-                Function<FluidEntry, ? extends NCFluid> makeStill, Function<FluidEntry, ? extends NCFluid> makeFlowing,
+                NCFluid.FluidConstructor makeStill, NCFluid.FluidConstructor makeFlowing,
                 @Nullable Consumer<FluidAttributes.Builder> buildAttributes, List<Property<?>> properties, int color, boolean isGas
         )
         {
@@ -388,12 +392,13 @@ public class NCFluids {
 
 
             Mutable<FluidEntry> thisMutable = new MutableObject<>();
+
             RegistryObject<NCFluid> still = FLUIDS.register(name, () -> NCFluid.makeFluid(
-                    makeStill, thisMutable.getValue()
+                    makeStill, thisMutable.getValue(), stillTex, flowingTex, buildAttributes
             ));
 
             RegistryObject<NCFluid> flowing = FLUIDS.register(name+"_flowing", () -> NCFluid.makeFluid(
-                    makeFlowing, thisMutable.getValue()
+                    makeFlowing, thisMutable.getValue(), stillTex, flowingTex, buildAttributes
             ));
 
             NCBlocks.BlockEntry<NCFluidBlock> block = new NCBlocks.BlockEntry<>(
@@ -433,18 +438,25 @@ public class NCFluids {
 
         private static BucketItem makeBucket(RegistryObject<NCFluid> still, int burnTime)
         {
-            return new NCBucketItem(
+            BucketItem result = new BucketItem(
                     still, new Item.Properties()
                     .stacksTo(1)
                     .tab(CreativeTabs.NC_ITEMS)
                     .craftRemainder(Items.BUCKET))
             {
                 @Override
+                public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt)
+                {
+                    return new FluidBucketWrapper(stack);
+                }
+
+                @Override
                 public int getBurnTime(ItemStack itemStack, RecipeType<?> type)
                 {
                     return burnTime;
                 }
             };
+            return result;
         }
 
         public RegistryObject<NCFluid> getStillGetter()

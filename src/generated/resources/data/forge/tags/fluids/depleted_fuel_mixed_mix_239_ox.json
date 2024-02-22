@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "nuclearcraft:depleted_fuel_mixed_mix_239_ox",
     "nuclearcraft:depleted_fuel_mixed_mix_239_ox_flowing"

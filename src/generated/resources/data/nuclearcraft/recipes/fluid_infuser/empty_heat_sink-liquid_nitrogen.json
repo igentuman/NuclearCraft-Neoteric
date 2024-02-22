@@ -5,18 +5,18 @@
       "item": "nuclearcraft:empty_heat_sink"
     }
   ],
+  "output": [
+    {
+      "item": "nuclearcraft:liquid_nitrogen_heat_sink"
+    }
+  ],
   "inputFluids": [
     {
       "amount": 1000,
       "tag": "forge:liquid_nitrogen"
     }
   ],
-  "output": [
-    {
-      "item": "nuclearcraft:liquid_nitrogen_heat_sink"
-    }
-  ],
-  "powerModifier": 1.0,
+  "timeModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.0
+  "powerModifier": 1.0
 }

@@ -2,11 +2,11 @@
   "parent": "minecraft:block/cube",
   "textures": {
     "down": "nuclearcraft:block/turbine/port/top",
-    "east": "nuclearcraft:block/turbine/port/side",
-    "north": "nuclearcraft:block/turbine/port/turbine_port",
-    "particle": "nuclearcraft:block/turbine/port/side",
-    "south": "nuclearcraft:block/turbine/port/back",
     "up": "nuclearcraft:block/turbine/port/bottom",
-    "west": "nuclearcraft:block/turbine/port/side"
+    "north": "nuclearcraft:block/turbine/port/turbine_port",
+    "south": "nuclearcraft:block/turbine/port/back",
+    "east": "nuclearcraft:block/turbine/port/side",
+    "west": "nuclearcraft:block/turbine/port/side",
+    "particle": "nuclearcraft:block/turbine/port/side"
   }
 }

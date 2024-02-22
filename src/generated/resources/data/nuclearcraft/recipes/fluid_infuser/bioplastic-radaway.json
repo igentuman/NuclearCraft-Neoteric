@@ -2,8 +2,13 @@
   "type": "nuclearcraft:fluid_infuser",
   "input": [
     {
-      "count": 2,
-      "item": "nuclearcraft:bioplastic"
+      "item": "nuclearcraft:bioplastic",
+      "count": 2
+    }
+  ],
+  "output": [
+    {
+      "item": "nuclearcraft:radaway"
     }
   ],
   "inputFluids": [
@@ -12,12 +17,7 @@
       "tag": "forge:radaway"
     }
   ],
-  "output": [
-    {
-      "item": "nuclearcraft:radaway"
-    }
-  ],
-  "powerModifier": 1.0,
+  "timeModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.0
+  "powerModifier": 1.0
 }

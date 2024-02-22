@@ -1,5 +1,10 @@
 {
   "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "BBB",
+    "RHR",
+    "PPP"
+  ],
   "key": {
     "B": {
       "tag": "forge:plates/beryllium"
@@ -14,11 +19,6 @@
       "item": "nuclearcraft:medium"
     }
   },
-  "pattern": [
-    "BBB",
-    "RHR",
-    "PPP"
-  ],
   "result": {
     "item": "nuclearcraft:heavy"
   }

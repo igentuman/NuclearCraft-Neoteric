@@ -1,19 +1,19 @@
 {
   "type": "minecraft:crafting_shaped",
   "group": "nuclearcraft_fission",
-  "key": {
-    "B": {
-      "item": "nuclearcraft:empty_heat_sink"
-    },
-    "I": {
-      "tag": "forge:dusts/netherite"
-    }
-  },
   "pattern": [
     " I ",
     "IBI",
     " I "
   ],
+  "key": {
+    "I": {
+      "tag": "forge:dusts/netherite"
+    },
+    "B": {
+      "item": "nuclearcraft:empty_heat_sink"
+    }
+  },
   "result": {
     "item": "nuclearcraft:netherite_heat_sink"
   }

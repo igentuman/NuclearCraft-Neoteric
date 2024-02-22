@@ -2,8 +2,8 @@
   "type": "nuclearcraft:rock_crusher",
   "input": [
     {
-      "count": 12,
-      "item": "minecraft:tuff"
+      "item": "minecraft:tuff",
+      "count": 12
     }
   ],
   "output": [
@@ -14,7 +14,7 @@
       "item": "nuclearcraft:coal_dust"
     }
   ],
-  "powerModifier": 1.0,
+  "timeModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.0
+  "powerModifier": 1.0
 }

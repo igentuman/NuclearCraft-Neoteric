@@ -1,6 +1,11 @@
 {
   "type": "minecraft:crafting_shaped",
   "group": "nuclearcraft_fission",
+  "pattern": [
+    " P ",
+    "PTP",
+    " P "
+  ],
   "key": {
     "P": {
       "tag": "forge:glass"
@@ -9,11 +14,6 @@
       "item": "nuclearcraft:fission_reactor_casing"
     }
   },
-  "pattern": [
-    " P ",
-    "PTP",
-    " P "
-  ],
   "result": {
     "item": "nuclearcraft:fission_reactor_glass"
   }

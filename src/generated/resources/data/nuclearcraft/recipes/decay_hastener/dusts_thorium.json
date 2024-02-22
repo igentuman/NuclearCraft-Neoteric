@@ -2,8 +2,8 @@
   "type": "nuclearcraft:decay_hastener",
   "input": [
     {
-      "count": 4,
-      "tag": "forge:dusts/thorium"
+      "tag": "forge:dusts/thorium",
+      "count": 4
     }
   ],
   "output": [
@@ -11,7 +11,7 @@
       "item": "nuclearcraft:thorium_232"
     }
   ],
-  "powerModifier": 1.0,
+  "timeModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.0
+  "powerModifier": 1.0
 }

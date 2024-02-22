@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "nuclearcraft:americium_243_ni",
     "nuclearcraft:americium_243_ni_flowing"

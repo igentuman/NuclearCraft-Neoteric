@@ -1,6 +1,5 @@
 {
   "type": "nuclearcraft:fusion_coolant",
-  "coolingRate": 2500.0,
   "inputFluids": [
     {
       "amount": 500,
@@ -9,8 +8,9 @@
   ],
   "outputFluids": [
     {
-      "amount": 500,
-      "fluid": "nuclearcraft:high_pressure_steam"
+      "fluid": "nuclearcraft:high_pressure_steam",
+      "amount": 500
     }
-  ]
+  ],
+  "coolingRate": 2500.0
 }

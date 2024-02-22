@@ -2,20 +2,20 @@
   "type": "nuclearcraft:rock_crusher",
   "input": [
     {
-      "count": 4,
-      "item": "minecraft:granite"
+      "item": "minecraft:granite",
+      "count": 4
     }
   ],
   "output": [
     {
-      "count": 2,
-      "item": "nuclearcraft:rhodochrosite_dust"
+      "item": "nuclearcraft:rhodochrosite_dust",
+      "count": 2
     },
     {
       "item": "nuclearcraft:villiaumite_dust"
     }
   ],
-  "powerModifier": 1.0,
+  "timeModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.0
+  "powerModifier": 1.0
 }

@@ -4,9 +4,9 @@
       "model": "nuclearcraft:block/multiblock/turbine_steel_rotor_blade",
       "x": 90
     },
-    "facing=east": {
+    "facing=up": {
       "model": "nuclearcraft:block/multiblock/turbine_steel_rotor_blade",
-      "y": 270
+      "x": 270
     },
     "facing=north": {
       "model": "nuclearcraft:block/multiblock/turbine_steel_rotor_blade"
@@ -15,13 +15,13 @@
       "model": "nuclearcraft:block/multiblock/turbine_steel_rotor_blade",
       "y": 180
     },
-    "facing=up": {
-      "model": "nuclearcraft:block/multiblock/turbine_steel_rotor_blade",
-      "x": 270
-    },
     "facing=west": {
       "model": "nuclearcraft:block/multiblock/turbine_steel_rotor_blade",
       "y": 90
+    },
+    "facing=east": {
+      "model": "nuclearcraft:block/multiblock/turbine_steel_rotor_blade",
+      "y": 270
     }
   }
 }

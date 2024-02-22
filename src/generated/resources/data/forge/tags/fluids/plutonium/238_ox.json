@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "nuclearcraft:plutonium_238_ox",
     "nuclearcraft:plutonium_238_ox_flowing"

@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "nuclearcraft:low_pressure_steam",
     "nuclearcraft:low_pressure_steam_flowing"

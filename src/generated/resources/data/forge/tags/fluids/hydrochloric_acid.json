@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "nuclearcraft:hydrochloric_acid",
     "nuclearcraft:hydrochloric_acid_flowing"

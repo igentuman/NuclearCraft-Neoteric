@@ -5,18 +5,18 @@
       "item": "nuclearcraft:fuel_mixed_mix_241"
     }
   ],
+  "output": [
+    {
+      "item": "nuclearcraft:fuel_mixed_mix_241_za"
+    }
+  ],
   "inputFluids": [
     {
       "amount": 1000,
       "tag": "forge:zircaloy"
     }
   ],
-  "output": [
-    {
-      "item": "nuclearcraft:fuel_mixed_mix_241_za"
-    }
-  ],
-  "powerModifier": 1.0,
+  "timeModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.0
+  "powerModifier": 1.0
 }

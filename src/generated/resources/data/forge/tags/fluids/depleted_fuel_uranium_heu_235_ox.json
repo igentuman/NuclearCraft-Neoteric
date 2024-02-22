@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "nuclearcraft:depleted_fuel_uranium_heu_235_ox",
     "nuclearcraft:depleted_fuel_uranium_heu_235_ox_flowing"

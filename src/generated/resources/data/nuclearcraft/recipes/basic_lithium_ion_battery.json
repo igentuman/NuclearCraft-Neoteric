@@ -1,21 +1,21 @@
 {
   "type": "minecraft:crafting_shaped",
-  "key": {
-    "C": {
-      "item": "nuclearcraft:lithium_ion_cell"
-    },
-    "P": {
-      "item": "nuclearcraft:plate_basic"
-    },
-    "S": {
-      "item": "nuclearcraft:coil_magnesium_diboride"
-    }
-  },
   "pattern": [
     "PCP",
     "CSC",
     "PCP"
   ],
+  "key": {
+    "P": {
+      "item": "nuclearcraft:plate_basic"
+    },
+    "C": {
+      "item": "nuclearcraft:lithium_ion_cell"
+    },
+    "S": {
+      "item": "nuclearcraft:coil_magnesium_diboride"
+    }
+  },
   "result": {
     "item": "nuclearcraft:basic_lithium_ion_battery"
   }

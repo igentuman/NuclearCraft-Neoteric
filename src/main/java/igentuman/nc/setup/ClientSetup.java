@@ -6,20 +6,17 @@ import igentuman.nc.client.gui.StorageContainerScreen;
 import igentuman.nc.client.gui.fission.FissionPortScreen;
 import igentuman.nc.client.gui.turbine.TurbineControllerScreen;
 import igentuman.nc.client.gui.turbine.TurbinePortScreen;
+import igentuman.nc.client.gui.fission.FissionControllerScreen;
 import igentuman.nc.client.particle.FusionBeamParticle;
 import igentuman.nc.client.particle.RadiationParticle;
-import igentuman.nc.client.gui.fission.FissionControllerScreen;
 import igentuman.nc.client.sound.SoundHandler;
 import igentuman.nc.handler.event.client.*;
-import igentuman.nc.multiblock.fusion.FusionReactor;
 import igentuman.nc.radiation.client.ClientRadiationData;
-import igentuman.nc.radiation.client.RadiationOverlay;
-import igentuman.nc.radiation.client.WhiteNoiseOverlay;
-import igentuman.nc.multiblock.fission.FissionReactor;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.setup.registration.NCFluids;
 import igentuman.nc.setup.registration.NCProcessors;
 import igentuman.nc.setup.registration.NcParticleTypes;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
@@ -32,7 +29,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.gui.OverlayRegistry;
+import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -103,11 +100,11 @@ public class ClientSetup {
         event.registerAboveAll("white_noise", WhiteNoiseOverlay.WHITE_NOISE);
     }*/
 
-/*    @SubscribeEvent
-    public static void registerParticleFactories(RegisterParticleProvidersEvent event) {
-        event.register(NcParticleTypes.RADIATION.get(), RadiationParticle.Factory::new);
-        event.register(NcParticleTypes.FUSION_BEAM.get(), FusionBeamParticle.Factory::new);
-    }*/
+    @SubscribeEvent
+    public static void registerParticleFactories(ParticleFactoryRegisterEvent event) {
+        Minecraft.getInstance().particleEngine.register(NcParticleTypes.RADIATION.get(), RadiationParticle.Factory::new);
+        Minecraft.getInstance().particleEngine.register(NcParticleTypes.FUSION_BEAM.get(), FusionBeamParticle.Factory::new);
+    }
 
     public static void setup() {
         IEventBus bus = MinecraftForge.EVENT_BUS;

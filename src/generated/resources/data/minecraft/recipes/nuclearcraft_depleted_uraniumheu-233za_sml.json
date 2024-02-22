@@ -1,9 +1,9 @@
 {
   "type": "minecraft:smelting",
-  "cookingtime": 100,
-  "experience": 1.0,
   "ingredient": {
     "item": "nuclearcraft:depleted_fuel_uranium_heu_233_za"
   },
-  "result": "nuclearcraft:depleted_fuel_uranium_heu_233"
+  "result": "nuclearcraft:depleted_fuel_uranium_heu_233",
+  "experience": 1.0,
+  "cookingtime": 100
 }

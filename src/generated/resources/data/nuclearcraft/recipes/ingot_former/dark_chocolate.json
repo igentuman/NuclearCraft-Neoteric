@@ -1,17 +1,17 @@
 {
   "type": "nuclearcraft:ingot_former",
-  "inputFluids": [
-    {
-      "amount": 144,
-      "fluid": "nuclearcraft:dark_chocolate"
-    }
-  ],
   "output": [
     {
       "item": "nuclearcraft:dark_chocolate"
     }
   ],
-  "powerModifier": 0.5,
+  "inputFluids": [
+    {
+      "amount": 144,
+      "fluid": "dark_chocolate"
+    }
+  ],
+  "timeModifier": 0.25,
   "radiation": 1.0,
-  "timeModifier": 0.25
+  "powerModifier": 0.5
 }

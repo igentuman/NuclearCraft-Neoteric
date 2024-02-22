@@ -2,12 +2,12 @@
   "type": "nuclearcraft:nc_ore_veins",
   "input": [
     {
-      "count": 90,
-      "tag": "forge:ores/zinc"
+      "tag": "forge:ores/zinc",
+      "count": 90
     },
     {
-      "count": 10,
-      "tag": "forge:ores/lead"
+      "tag": "forge:ores/lead",
+      "count": 10
     }
   ],
   "output": [
@@ -16,7 +16,7 @@
       "nbt": "{vein:\"nc.ore_vein.sphalerite\"}"
     }
   ],
-  "powerModifier": 1.0,
+  "timeModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.0
+  "powerModifier": 1.0
 }

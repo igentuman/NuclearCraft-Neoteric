@@ -1,28 +1,28 @@
 {
   "type": "minecraft:crafting_shaped",
   "group": "nuclearcraft",
+  "pattern": [
+    "PTP",
+    "ACA",
+    "PNP"
+  ],
   "key": {
-    "A": {
-      "item": "nuclearcraft:actuator"
-    },
     "C": {
       "item": "nuclearcraft:chassis"
-    },
-    "N": {
-      "item": "minecraft:anvil"
     },
     "P": {
       "item": "nuclearcraft:plate_advanced"
     },
     "T": {
       "item": "minecraft:terracotta"
+    },
+    "N": {
+      "item": "minecraft:anvil"
+    },
+    "A": {
+      "item": "nuclearcraft:actuator"
     }
   },
-  "pattern": [
-    "PTP",
-    "ACA",
-    "PNP"
-  ],
   "result": {
     "item": "nuclearcraft:pressurizer"
   }

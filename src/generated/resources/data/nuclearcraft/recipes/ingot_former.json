@@ -1,28 +1,28 @@
 {
   "type": "minecraft:crafting_shaped",
   "group": "nuclearcraft_processors",
+  "pattern": [
+    "LFL",
+    "XPX",
+    "LSL"
+  ],
   "key": {
-    "F": {
-      "item": "minecraft:hopper"
-    },
-    "L": {
-      "item": "nuclearcraft:plate_basic"
-    },
     "P": {
       "item": "nuclearcraft:chassis"
     },
     "S": {
       "tag": "forge:ingots/tough_alloy"
     },
+    "F": {
+      "item": "minecraft:hopper"
+    },
+    "L": {
+      "item": "nuclearcraft:plate_basic"
+    },
     "X": {
       "tag": "forge:ingots/ferroboron"
     }
   },
-  "pattern": [
-    "LFL",
-    "XPX",
-    "LSL"
-  ],
   "result": {
     "item": "nuclearcraft:ingot_former"
   }

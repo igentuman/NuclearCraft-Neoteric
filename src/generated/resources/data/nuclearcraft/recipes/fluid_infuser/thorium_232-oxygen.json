@@ -5,18 +5,18 @@
       "item": "nuclearcraft:thorium_232"
     }
   ],
+  "output": [
+    {
+      "item": "nuclearcraft:thorium_232_ox"
+    }
+  ],
   "inputFluids": [
     {
       "amount": 100,
       "tag": "forge:oxygen"
     }
   ],
-  "output": [
-    {
-      "item": "nuclearcraft:thorium_232_ox"
-    }
-  ],
-  "powerModifier": 1.0,
+  "timeModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.0
+  "powerModifier": 1.0
 }

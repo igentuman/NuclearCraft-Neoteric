@@ -1,24 +1,24 @@
 {
   "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PDP",
+    "LLL",
+    "PSP"
+  ],
   "key": {
+    "P": {
+      "item": "nuclearcraft:plate_elite"
+    },
     "D": {
       "tag": "forge:plates/lithium_manganese_dioxide"
     },
     "L": {
       "item": "nuclearcraft:du_lithium_ion_battery"
     },
-    "P": {
-      "item": "nuclearcraft:plate_elite"
-    },
     "S": {
       "item": "nuclearcraft:coil_magnesium_diboride"
     }
   },
-  "pattern": [
-    "PDP",
-    "LLL",
-    "PSP"
-  ],
   "result": {
     "item": "nuclearcraft:elite_lithium_ion_battery"
   }

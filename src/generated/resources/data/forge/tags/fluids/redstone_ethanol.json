@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "nuclearcraft:redstone_ethanol",
     "nuclearcraft:redstone_ethanol_flowing"

@@ -2,15 +2,15 @@
   "type": "nuclearcraft:assembler",
   "input": [
     {
-      "count": 4,
-      "item": "nuclearcraft:compact_nitrogen_collector"
+      "item": "nuclearcraft:compact_nitrogen_collector",
+      "count": 4
     },
     {
       "tag": "forge:plates/beryllium"
     },
     {
-      "count": 4,
-      "tag": "forge:plates/netherite"
+      "tag": "forge:plates/netherite",
+      "count": 4
     },
     {
       "item": "nuclearcraft:motor"
@@ -21,7 +21,7 @@
       "item": "nuclearcraft:dense_nitrogen_collector"
     }
   ],
-  "powerModifier": 1.0,
+  "timeModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.0
+  "powerModifier": 1.0
 }

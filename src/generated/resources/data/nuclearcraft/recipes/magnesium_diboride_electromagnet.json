@@ -1,21 +1,21 @@
 {
   "type": "minecraft:crafting_shaped",
-  "key": {
-    "B": {
-      "item": "nuclearcraft:basic_electromagnet"
-    },
-    "C": {
-      "item": "nuclearcraft:coil_magnesium_diboride"
-    },
-    "S": {
-      "tag": "forge:ingots/stainless_steel"
-    }
-  },
   "pattern": [
     "CCC",
     "SBS",
     "CCC"
   ],
+  "key": {
+    "C": {
+      "item": "nuclearcraft:coil_magnesium_diboride"
+    },
+    "S": {
+      "tag": "forge:ingots/stainless_steel"
+    },
+    "B": {
+      "item": "nuclearcraft:basic_electromagnet"
+    }
+  },
   "result": {
     "item": "nuclearcraft:magnesium_diboride_electromagnet"
   }

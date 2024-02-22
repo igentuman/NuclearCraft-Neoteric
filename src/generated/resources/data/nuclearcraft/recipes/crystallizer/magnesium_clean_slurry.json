@@ -1,18 +1,18 @@
 {
   "type": "nuclearcraft:crystallizer",
+  "output": [
+    {
+      "item": "nuclearcraft:magnesium_dust",
+      "count": 2
+    }
+  ],
   "inputFluids": [
     {
       "amount": 400,
       "tag": "forge:magnesium_clean_slurry"
     }
   ],
-  "output": [
-    {
-      "count": 2,
-      "item": "nuclearcraft:magnesium_dust"
-    }
-  ],
-  "powerModifier": 1.0,
+  "timeModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.0
+  "powerModifier": 1.0
 }

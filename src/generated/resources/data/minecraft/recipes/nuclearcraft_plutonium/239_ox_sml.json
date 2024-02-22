@@ -1,9 +1,9 @@
 {
   "type": "minecraft:smelting",
-  "cookingtime": 100,
-  "experience": 1.0,
   "ingredient": {
     "item": "nuclearcraft:plutonium_239_ox"
   },
-  "result": "nuclearcraft:plutonium_239"
+  "result": "nuclearcraft:plutonium_239",
+  "experience": 1.0,
+  "cookingtime": 100
 }

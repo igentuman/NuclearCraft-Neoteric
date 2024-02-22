@@ -10,11 +10,11 @@
   ],
   "output": [
     {
-      "count": 2,
-      "item": "nuclearcraft:tough_alloy_ingot"
+      "item": "nuclearcraft:tough_alloy_ingot",
+      "count": 2
     }
   ],
-  "powerModifier": 1.5,
+  "timeModifier": 1.7,
   "radiation": 1.0,
-  "timeModifier": 1.7
+  "powerModifier": 1.5
 }

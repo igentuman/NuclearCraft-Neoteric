@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "nuclearcraft:fuel_thorium_tbu_za",
     "nuclearcraft:fuel_thorium_tbu_za_flowing"

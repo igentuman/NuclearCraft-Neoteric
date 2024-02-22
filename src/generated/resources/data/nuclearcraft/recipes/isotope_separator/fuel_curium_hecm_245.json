@@ -2,21 +2,21 @@
   "type": "nuclearcraft:isotope_separator",
   "input": [
     {
-      "count": 9,
-      "item": "nuclearcraft:fuel_curium_hecm_245"
+      "item": "nuclearcraft:fuel_curium_hecm_245",
+      "count": 9
     }
   ],
   "output": [
     {
-      "count": 3,
-      "item": "nuclearcraft:curium_245"
+      "item": "nuclearcraft:curium_245",
+      "count": 3
     },
     {
-      "count": 6,
-      "item": "nuclearcraft:curium_246"
+      "item": "nuclearcraft:curium_246",
+      "count": 6
     }
   ],
-  "powerModifier": 1.0,
+  "timeModifier": 2.0,
   "radiation": 1.0,
-  "timeModifier": 2.0
+  "powerModifier": 1.0
 }

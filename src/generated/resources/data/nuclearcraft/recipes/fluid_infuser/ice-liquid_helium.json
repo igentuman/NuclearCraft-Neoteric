@@ -5,18 +5,18 @@
       "item": "minecraft:ice"
     }
   ],
+  "output": [
+    {
+      "item": "minecraft:barrier"
+    }
+  ],
   "inputFluids": [
     {
       "amount": 50,
       "tag": "forge:liquid_helium"
     }
   ],
-  "output": [
-    {
-      "item": "minecraft:barrier"
-    }
-  ],
-  "powerModifier": 1.0,
+  "timeModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.0
+  "powerModifier": 1.0
 }

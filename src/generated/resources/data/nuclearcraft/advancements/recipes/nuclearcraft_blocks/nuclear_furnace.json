@@ -1,13 +1,13 @@
 {
   "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "nuclearcraft:nuclear_furnace"
+    ]
+  },
   "criteria": {
-    "has_the_recipe": {
-      "conditions": {
-        "recipe": "nuclearcraft:nuclear_furnace"
-      },
-      "trigger": "minecraft:recipe_unlocked"
-    },
     "item": {
+      "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
@@ -16,8 +16,13 @@
             ]
           }
         ]
-      },
-      "trigger": "minecraft:inventory_changed"
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "nuclearcraft:nuclear_furnace"
+      }
     }
   },
   "requirements": [
@@ -25,10 +30,5 @@
       "item",
       "has_the_recipe"
     ]
-  ],
-  "rewards": {
-    "recipes": [
-      "nuclearcraft:nuclear_furnace"
-    ]
-  }
+  ]
 }

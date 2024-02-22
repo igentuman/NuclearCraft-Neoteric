@@ -1,24 +1,24 @@
 {
   "type": "minecraft:crafting_shaped",
-  "key": {
-    "C": {
-      "tag": "forge:ingots/silver"
-    },
-    "M": {
-      "tag": "forge:ingots/magnesium"
-    },
-    "P": {
-      "item": "nuclearcraft:plate_du"
-    },
-    "V": {
-      "item": "nuclearcraft:advanced_voltaic_pile"
-    }
-  },
   "pattern": [
     "PMP",
     "VVV",
     "PCP"
   ],
+  "key": {
+    "P": {
+      "item": "nuclearcraft:plate_du"
+    },
+    "V": {
+      "item": "nuclearcraft:advanced_voltaic_pile"
+    },
+    "M": {
+      "tag": "forge:ingots/magnesium"
+    },
+    "C": {
+      "tag": "forge:ingots/silver"
+    }
+  },
   "result": {
     "item": "nuclearcraft:du_voltaic_pile"
   }

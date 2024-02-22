@@ -1,28 +1,28 @@
 {
   "type": "minecraft:crafting_shaped",
   "group": "nuclearcraft_machines",
-  "key": {
-    "C": {
-      "tag": "forge:dusts/borax"
-    },
-    "E": {
-      "tag": "forge:ingots/extreme"
-    },
-    "G": {
-      "item": "minecraft:iron_bars"
-    },
-    "M": {
-      "item": "nuclearcraft:motor"
-    },
-    "P": {
-      "item": "nuclearcraft:plate_elite"
-    }
-  },
   "pattern": [
     "PGP",
     "CEC",
     "PMP"
   ],
+  "key": {
+    "C": {
+      "tag": "forge:dusts/borax"
+    },
+    "P": {
+      "item": "nuclearcraft:plate_elite"
+    },
+    "E": {
+      "tag": "forge:ingots/extreme"
+    },
+    "M": {
+      "item": "nuclearcraft:motor"
+    },
+    "G": {
+      "item": "minecraft:iron_bars"
+    }
+  },
   "result": {
     "item": "nuclearcraft:gas_scrubber"
   }

@@ -5,18 +5,18 @@
       "item": "nuclearcraft:boron_10"
     }
   ],
+  "output": [
+    {
+      "item": "nuclearcraft:boron_10_za"
+    }
+  ],
   "inputFluids": [
     {
       "amount": 100,
       "tag": "forge:zircaloy"
     }
   ],
-  "output": [
-    {
-      "item": "nuclearcraft:boron_10_za"
-    }
-  ],
-  "powerModifier": 1.0,
+  "timeModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.0
+  "powerModifier": 1.0
 }

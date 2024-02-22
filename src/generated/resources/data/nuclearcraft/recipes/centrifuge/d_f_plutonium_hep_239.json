@@ -3,36 +3,36 @@
   "inputFluids": [
     {
       "amount": 1296,
-      "fluid": "nuclearcraft:depleted_fuel_plutonium_hep_239"
+      "fluid": "depleted_fuel_plutonium_hep_239"
     }
   ],
   "outputFluids": [
     {
-      "amount": 576,
-      "fluid": "nuclearcraft:americium_243"
+      "fluid": "nuclearcraft:americium_243",
+      "amount": 576
     },
     {
-      "amount": 144,
-      "fluid": "nuclearcraft:plutonium_238"
+      "fluid": "nuclearcraft:plutonium_238",
+      "amount": 144
     },
     {
-      "amount": 144,
-      "fluid": "nuclearcraft:plutonium_241"
+      "fluid": "nuclearcraft:plutonium_241",
+      "amount": 144
     },
     {
-      "amount": 144,
-      "fluid": "nuclearcraft:americium_242"
+      "fluid": "nuclearcraft:americium_242",
+      "amount": 144
     },
     {
-      "amount": 144,
-      "fluid": "nuclearcraft:caesium_137"
+      "fluid": "nuclearcraft:caesium_137",
+      "amount": 144
     },
     {
-      "amount": 144,
-      "fluid": "nuclearcraft:strontium_90"
+      "fluid": "nuclearcraft:strontium_90",
+      "amount": 144
     }
   ],
-  "powerModifier": 1.0,
+  "timeModifier": 1.5,
   "radiation": 1.0,
-  "timeModifier": 1.5
+  "powerModifier": 1.0
 }

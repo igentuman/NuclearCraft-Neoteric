@@ -2,8 +2,8 @@
   "type": "nuclearcraft:alloy_smelter",
   "input": [
     {
-      "count": 3,
-      "tag": "forge:dusts/tin"
+      "tag": "forge:dusts/tin",
+      "count": 3
     },
     {
       "tag": "forge:dusts/silver"
@@ -11,11 +11,11 @@
   ],
   "output": [
     {
-      "count": 4,
-      "item": "nuclearcraft:tin_silver_ingot"
+      "item": "nuclearcraft:tin_silver_ingot",
+      "count": 4
     }
   ],
-  "powerModifier": 1.0,
+  "timeModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.0
+  "powerModifier": 1.0
 }

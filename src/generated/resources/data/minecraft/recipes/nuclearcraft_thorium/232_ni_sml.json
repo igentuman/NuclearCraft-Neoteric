@@ -1,9 +1,9 @@
 {
   "type": "minecraft:smelting",
-  "cookingtime": 100,
-  "experience": 1.0,
   "ingredient": {
     "item": "nuclearcraft:thorium_232_ni"
   },
-  "result": "nuclearcraft:thorium_232"
+  "result": "nuclearcraft:thorium_232",
+  "experience": 1.0,
+  "cookingtime": 100
 }

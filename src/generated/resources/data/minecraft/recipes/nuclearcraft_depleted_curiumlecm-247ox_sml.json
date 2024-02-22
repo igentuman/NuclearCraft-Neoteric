@@ -1,9 +1,9 @@
 {
   "type": "minecraft:smelting",
-  "cookingtime": 100,
-  "experience": 1.0,
   "ingredient": {
     "item": "nuclearcraft:depleted_fuel_curium_lecm_247_ox"
   },
-  "result": "nuclearcraft:depleted_fuel_curium_lecm_247"
+  "result": "nuclearcraft:depleted_fuel_curium_lecm_247",
+  "experience": 1.0,
+  "cookingtime": 100
 }

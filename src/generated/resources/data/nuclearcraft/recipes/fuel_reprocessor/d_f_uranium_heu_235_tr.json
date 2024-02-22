@@ -2,21 +2,21 @@
   "type": "nuclearcraft:fuel_reprocessor",
   "input": [
     {
-      "count": 9,
-      "item": "nuclearcraft:depleted_fuel_uranium_heu_235_tr"
+      "item": "nuclearcraft:depleted_fuel_uranium_heu_235_tr",
+      "count": 9
     }
   ],
   "output": [
     {
-      "count": 2,
-      "item": "nuclearcraft:uranium_238"
+      "item": "nuclearcraft:uranium_238",
+      "count": 2
     },
     {
       "item": "nuclearcraft:plutonium_239"
     },
     {
-      "count": 3,
-      "item": "nuclearcraft:plutonium_242"
+      "item": "nuclearcraft:plutonium_242",
+      "count": 3
     },
     {
       "item": "nuclearcraft:americium_243"
@@ -28,7 +28,7 @@
       "item": "nuclearcraft:caesium_137_dust"
     }
   ],
-  "powerModifier": 1.0,
+  "timeModifier": 1.5,
   "radiation": 1.0,
-  "timeModifier": 1.5
+  "powerModifier": 1.0
 }

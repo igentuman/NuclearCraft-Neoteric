@@ -8,23 +8,23 @@
   ],
   "outputFluids": [
     {
-      "amount": 125,
-      "fluid": "nuclearcraft:carbon_dioxide"
+      "fluid": "nuclearcraft:carbon_dioxide",
+      "amount": 125
     },
     {
-      "amount": 125,
-      "fluid": "nuclearcraft:carbon_monoxide"
+      "fluid": "nuclearcraft:carbon_monoxide",
+      "amount": 125
     },
     {
-      "amount": 375,
-      "fluid": "nuclearcraft:carbon"
+      "fluid": "nuclearcraft:carbon",
+      "amount": 375
     },
     {
-      "amount": 375,
-      "fluid": "nuclearcraft:oxygen"
+      "fluid": "nuclearcraft:oxygen",
+      "amount": 375
     }
   ],
-  "powerModifier": 1.0,
+  "timeModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.0
+  "powerModifier": 1.0
 }

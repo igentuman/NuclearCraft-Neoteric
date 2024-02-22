@@ -5,18 +5,18 @@
       "item": "nuclearcraft:uranium_235"
     }
   ],
+  "output": [
+    {
+      "item": "nuclearcraft:uranium_235_ni"
+    }
+  ],
   "inputFluids": [
     {
       "amount": 100,
       "tag": "forge:nitrogen"
     }
   ],
-  "output": [
-    {
-      "item": "nuclearcraft:uranium_235_ni"
-    }
-  ],
-  "powerModifier": 1.0,
+  "timeModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.0
+  "powerModifier": 1.0
 }

@@ -7,11 +7,11 @@
   ],
   "outputFluids": [
     {
-      "amount": 216,
-      "fluid": "nuclearcraft:hsla_steel"
+      "fluid": "nuclearcraft:hsla_steel",
+      "amount": 216
     }
   ],
-  "powerModifier": 1.0,
+  "timeModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.0
+  "powerModifier": 1.0
 }

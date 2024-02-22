@@ -1,9 +1,9 @@
 {
   "type": "minecraft:blasting",
-  "cookingtime": 100,
-  "experience": 1.0,
   "ingredient": {
     "tag": "forge:dusts/rhodochrosite"
   },
-  "result": "nuclearcraft:manganese_oxide_dust"
+  "result": "nuclearcraft:manganese_oxide_dust",
+  "experience": 1.0,
+  "cookingtime": 100
 }

@@ -2,8 +2,8 @@
   "type": "nuclearcraft:manufactory",
   "input": [
     {
-      "count": 2,
-      "item": "minecraft:sugar_cane"
+      "item": "minecraft:sugar_cane",
+      "count": 2
     }
   ],
   "output": [
@@ -11,7 +11,7 @@
       "item": "nuclearcraft:bioplastic"
     }
   ],
-  "powerModifier": 0.5,
+  "timeModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.0
+  "powerModifier": 0.5
 }

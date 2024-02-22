@@ -11,7 +11,7 @@
       "nbt": "{vein_data:1b}"
     }
   ],
-  "powerModifier": 4.0,
+  "timeModifier": 2.5,
   "radiation": 1.0,
-  "timeModifier": 2.5
+  "powerModifier": 4.0
 }

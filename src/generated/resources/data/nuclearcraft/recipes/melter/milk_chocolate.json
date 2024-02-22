@@ -7,11 +7,11 @@
   ],
   "outputFluids": [
     {
-      "amount": 144,
-      "fluid": "nuclearcraft:milk_chocolate"
+      "fluid": "nuclearcraft:milk_chocolate",
+      "amount": 144
     }
   ],
-  "powerModifier": 0.5,
+  "timeModifier": 0.25,
   "radiation": 1.0,
-  "timeModifier": 0.25
+  "powerModifier": 0.5
 }

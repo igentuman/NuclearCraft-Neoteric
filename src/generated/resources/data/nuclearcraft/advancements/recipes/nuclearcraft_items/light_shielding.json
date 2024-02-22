@@ -1,21 +1,26 @@
 {
   "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "nuclearcraft:light_shielding"
+    ]
+  },
   "criteria": {
-    "has_the_recipe": {
-      "conditions": {
-        "recipe": "nuclearcraft:light_shielding"
-      },
-      "trigger": "minecraft:recipe_unlocked"
-    },
     "item": {
+      "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "tag": "forge:plates/lead"
           }
         ]
-      },
-      "trigger": "minecraft:inventory_changed"
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "nuclearcraft:light_shielding"
+      }
     }
   },
   "requirements": [
@@ -23,10 +28,5 @@
       "item",
       "has_the_recipe"
     ]
-  ],
-  "rewards": {
-    "recipes": [
-      "nuclearcraft:light_shielding"
-    ]
-  }
+  ]
 }

@@ -7,11 +7,11 @@
   ],
   "outputFluids": [
     {
-      "amount": 216,
-      "fluid": "nuclearcraft:lithium_manganese_dioxide"
+      "fluid": "nuclearcraft:lithium_manganese_dioxide",
+      "amount": 216
     }
   ],
-  "powerModifier": 1.0,
+  "timeModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.0
+  "powerModifier": 1.0
 }

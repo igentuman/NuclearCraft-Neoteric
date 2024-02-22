@@ -12,15 +12,15 @@
   ],
   "outputFluids": [
     {
-      "amount": 72,
-      "fluid": "nuclearcraft:manganese"
+      "fluid": "nuclearcraft:manganese",
+      "amount": 72
     },
     {
-      "amount": 750,
-      "fluid": "nuclearcraft:carbon_monoxide"
+      "fluid": "nuclearcraft:carbon_monoxide",
+      "amount": 750
     }
   ],
-  "powerModifier": 0.5,
+  "timeModifier": 0.5,
   "radiation": 1.0,
-  "timeModifier": 0.5
+  "powerModifier": 0.5
 }

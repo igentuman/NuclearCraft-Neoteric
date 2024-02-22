@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "nuclearcraft:steel_nugget",
     "nuclearcraft:electrum_nugget",

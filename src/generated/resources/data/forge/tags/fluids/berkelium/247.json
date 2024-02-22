@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "nuclearcraft:berkelium_247",
     "nuclearcraft:berkelium_247_flowing"

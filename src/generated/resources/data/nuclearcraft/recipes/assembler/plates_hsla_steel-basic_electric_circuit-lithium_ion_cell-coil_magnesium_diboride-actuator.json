@@ -2,8 +2,8 @@
   "type": "nuclearcraft:assembler",
   "input": [
     {
-      "count": 3,
-      "tag": "forge:plates/hsla_steel"
+      "tag": "forge:plates/hsla_steel",
+      "count": 3
     },
     {
       "item": "nuclearcraft:basic_electric_circuit"
@@ -23,7 +23,7 @@
       "item": "nuclearcraft:qnp"
     }
   ],
-  "powerModifier": 1.0,
+  "timeModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.0
+  "powerModifier": 1.0
 }

@@ -1,17 +1,17 @@
 {
   "type": "nuclearcraft:crystallizer",
+  "output": [
+    {
+      "item": "nuclearcraft:borax_dust"
+    }
+  ],
   "inputFluids": [
     {
       "amount": 144,
       "tag": "forge:borax_solution"
     }
   ],
-  "output": [
-    {
-      "item": "nuclearcraft:borax_dust"
-    }
-  ],
-  "powerModifier": 0.5,
+  "timeModifier": 0.5,
   "radiation": 1.0,
-  "timeModifier": 0.5
+  "powerModifier": 0.5
 }

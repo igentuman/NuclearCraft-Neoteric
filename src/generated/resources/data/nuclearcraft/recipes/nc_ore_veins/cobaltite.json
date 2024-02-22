@@ -5,8 +5,8 @@
       "tag": "forge:ores/nickel"
     },
     {
-      "count": 99,
-      "tag": "forge:ores/cobalt"
+      "tag": "forge:ores/cobalt",
+      "count": 99
     }
   ],
   "output": [
@@ -15,7 +15,7 @@
       "nbt": "{vein:\"nc.ore_vein.cobaltite\"}"
     }
   ],
-  "powerModifier": 1.0,
+  "timeModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.0
+  "powerModifier": 1.0
 }

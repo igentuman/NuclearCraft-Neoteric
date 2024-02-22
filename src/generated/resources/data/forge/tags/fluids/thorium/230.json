@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "nuclearcraft:thorium_230",
     "nuclearcraft:thorium_230_flowing"

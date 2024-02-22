@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "nuclearcraft:fuel_americium_hea_242_ox",
     "nuclearcraft:fuel_americium_hea_242_ox_flowing"

@@ -16,11 +16,11 @@
   ],
   "output": [
     {
-      "count": 2,
-      "item": "nuclearcraft:crystal_binder_dust"
+      "item": "nuclearcraft:crystal_binder_dust",
+      "count": 2
     }
   ],
-  "powerModifier": 1.0,
+  "timeModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.0
+  "powerModifier": 1.0
 }

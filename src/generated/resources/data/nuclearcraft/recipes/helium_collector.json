@@ -1,24 +1,24 @@
 {
   "type": "minecraft:crafting_shaped",
-  "key": {
-    "B": {
-      "tag": "forge:plates/thorium"
-    },
-    "I": {
-      "tag": "forge:ingots/thorium"
-    },
-    "M": {
-      "item": "nuclearcraft:motor"
-    },
-    "P": {
-      "item": "nuclearcraft:plate_advanced"
-    }
-  },
   "pattern": [
     "PIP",
     "BMB",
     "PIP"
   ],
+  "key": {
+    "M": {
+      "item": "nuclearcraft:motor"
+    },
+    "P": {
+      "item": "nuclearcraft:plate_advanced"
+    },
+    "B": {
+      "tag": "forge:plates/thorium"
+    },
+    "I": {
+      "tag": "forge:ingots/thorium"
+    }
+  },
   "result": {
     "item": "nuclearcraft:helium_collector"
   }

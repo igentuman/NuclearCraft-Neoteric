@@ -2,8 +2,8 @@
   "type": "nuclearcraft:assembler",
   "input": [
     {
-      "count": 3,
-      "tag": "forge:plates/steel"
+      "tag": "forge:plates/steel",
+      "count": 3
     },
     {
       "tag": "forge:dusts/lead"
@@ -20,7 +20,7 @@
       "item": "nuclearcraft:multitool"
     }
   ],
-  "powerModifier": 1.0,
+  "timeModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.0
+  "powerModifier": 1.0
 }

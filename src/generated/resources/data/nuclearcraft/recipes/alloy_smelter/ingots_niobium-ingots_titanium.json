@@ -13,7 +13,7 @@
       "item": "nuclearcraft:niobium_titanium_ingot"
     }
   ],
-  "powerModifier": 1.0,
+  "timeModifier": 5.0,
   "radiation": 1.0,
-  "timeModifier": 5.0
+  "powerModifier": 1.0
 }

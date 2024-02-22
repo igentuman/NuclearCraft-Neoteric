@@ -1,9 +1,9 @@
 {
   "type": "minecraft:blasting",
-  "cookingtime": 100,
-  "experience": 1.0,
   "ingredient": {
     "tag": "forge:dusts/magnesium"
   },
-  "result": "nuclearcraft:magnesium_ingot"
+  "result": "nuclearcraft:magnesium_ingot",
+  "experience": 1.0,
+  "cookingtime": 100
 }

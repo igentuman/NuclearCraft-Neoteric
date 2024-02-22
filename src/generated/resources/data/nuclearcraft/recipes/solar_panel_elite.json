@@ -1,25 +1,25 @@
 {
   "type": "minecraft:crafting_shaped",
   "group": "nuclearcraft_solar_panels",
-  "key": {
-    "G": {
-      "tag": "forge:dusts/graphite"
-    },
-    "M": {
-      "item": "nuclearcraft:coil_magnesium_diboride"
-    },
-    "P": {
-      "item": "nuclearcraft:plate_elite"
-    },
-    "S": {
-      "item": "nuclearcraft:solar_panel_du"
-    }
-  },
   "pattern": [
     "PGP",
     "SSS",
     "PMP"
   ],
+  "key": {
+    "P": {
+      "item": "nuclearcraft:plate_elite"
+    },
+    "S": {
+      "item": "nuclearcraft:solar_panel_du"
+    },
+    "G": {
+      "tag": "forge:dusts/graphite"
+    },
+    "M": {
+      "item": "nuclearcraft:coil_magnesium_diboride"
+    }
+  },
   "result": {
     "item": "nuclearcraft:solar_panel_elite"
   }

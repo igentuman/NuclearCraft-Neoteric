@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:fission_boiling",
+  "inputFluids": [
+    {
+      "amount": 10,
+      "tag": "minecraft:water"
+    }
+  ],
+  "outputFluids": [
+    {
+      "fluid": "nuclearcraft:steam",
+      "amount": 10
+    }
+  ],
+  "heatRequired": 1.0
+}

@@ -5,18 +5,18 @@
       "item": "nuclearcraft:fuel_plutonium_lep_239"
     }
   ],
+  "output": [
+    {
+      "item": "nuclearcraft:fuel_plutonium_lep_239_ni"
+    }
+  ],
   "inputFluids": [
     {
       "amount": 1000,
       "tag": "forge:nitrogen"
     }
   ],
-  "output": [
-    {
-      "item": "nuclearcraft:fuel_plutonium_lep_239_ni"
-    }
-  ],
-  "powerModifier": 1.0,
+  "timeModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.0
+  "powerModifier": 1.0
 }

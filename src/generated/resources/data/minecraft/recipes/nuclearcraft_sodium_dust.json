@@ -1,9 +1,9 @@
 {
   "type": "minecraft:smelting",
-  "cookingtime": 200,
-  "experience": 1.0,
   "ingredient": {
     "tag": "forge:dusts/sodium"
   },
-  "result": "nuclearcraft:sodium_ingot"
+  "result": "nuclearcraft:sodium_ingot",
+  "experience": 1.0,
+  "cookingtime": 200
 }

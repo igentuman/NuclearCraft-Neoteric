@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "nuclearcraft:magnesium_clean_slurry",
     "nuclearcraft:magnesium_clean_slurry_flowing"

@@ -2,21 +2,21 @@
   "type": "nuclearcraft:fuel_reprocessor",
   "input": [
     {
-      "count": 9,
-      "item": "nuclearcraft:depleted_fuel_curium_hecm_245_tr"
+      "item": "nuclearcraft:depleted_fuel_curium_hecm_245_tr",
+      "count": 9
     }
   ],
   "output": [
     {
-      "count": 3,
-      "item": "nuclearcraft:curium_246"
+      "item": "nuclearcraft:curium_246",
+      "count": 3
     },
     {
       "item": "nuclearcraft:curium_247"
     },
     {
-      "count": 2,
-      "item": "nuclearcraft:berkelium_247"
+      "item": "nuclearcraft:berkelium_247",
+      "count": 2
     },
     {
       "item": "nuclearcraft:californium_249"
@@ -28,7 +28,7 @@
       "item": "nuclearcraft:europium_155_dust"
     }
   ],
-  "powerModifier": 1.0,
+  "timeModifier": 1.5,
   "radiation": 1.0,
-  "timeModifier": 1.5
+  "powerModifier": 1.0
 }

@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "nuclearcraft:fuel_berkelium_leb_248",
     "nuclearcraft:fuel_berkelium_leb_248_flowing"

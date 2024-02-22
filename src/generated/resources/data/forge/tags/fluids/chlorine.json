@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "nuclearcraft:chlorine",
     "nuclearcraft:chlorine_flowing"

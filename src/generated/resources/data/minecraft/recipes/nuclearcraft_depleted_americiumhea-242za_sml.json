@@ -1,9 +1,9 @@
 {
   "type": "minecraft:smelting",
-  "cookingtime": 100,
-  "experience": 1.0,
   "ingredient": {
     "item": "nuclearcraft:depleted_fuel_americium_hea_242_za"
   },
-  "result": "nuclearcraft:depleted_fuel_americium_hea_242"
+  "result": "nuclearcraft:depleted_fuel_americium_hea_242",
+  "experience": 1.0,
+  "cookingtime": 100
 }

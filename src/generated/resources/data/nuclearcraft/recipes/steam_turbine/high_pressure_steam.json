@@ -8,11 +8,11 @@
   ],
   "outputFluids": [
     {
-      "amount": 10,
-      "fluid": "nuclearcraft:exhaust_steam"
+      "fluid": "nuclearcraft:exhaust_steam",
+      "amount": 10
     }
   ],
-  "powerModifier": 2.5,
+  "timeModifier": 2.0,
   "radiation": 1.0,
-  "timeModifier": 2.0
+  "powerModifier": 2.5
 }

@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "nuclearcraft:uranium_233_za",
     "nuclearcraft:uranium_233_za_flowing"

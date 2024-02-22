@@ -1,28 +1,28 @@
 {
   "type": "minecraft:crafting_shaped",
   "group": "nuclearcraft_machines",
+  "pattern": [
+    "PBP",
+    "TCT",
+    "PAP"
+  ],
   "key": {
-    "A": {
-      "item": "nuclearcraft:actuator"
-    },
-    "B": {
-      "tag": "forge:storage_blocks/boron"
-    },
     "C": {
       "tag": "forge:ingots/tin_silver"
     },
     "P": {
       "tag": "forge:ingots/boron"
     },
+    "A": {
+      "item": "nuclearcraft:actuator"
+    },
     "T": {
       "tag": "forge:ingots/tough_alloy"
+    },
+    "B": {
+      "tag": "forge:storage_blocks/boron"
     }
   },
-  "pattern": [
-    "PBP",
-    "TCT",
-    "PAP"
-  ],
   "result": {
     "item": "nuclearcraft:decay_hastener"
   }

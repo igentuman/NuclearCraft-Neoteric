@@ -8,15 +8,15 @@
   ],
   "outputFluids": [
     {
-      "amount": 500,
-      "fluid": "nuclearcraft:boron_10"
+      "fluid": "nuclearcraft:boron_10",
+      "amount": 500
     },
     {
-      "amount": 500,
-      "fluid": "nuclearcraft:boron_11"
+      "fluid": "nuclearcraft:boron_11",
+      "amount": 500
     }
   ],
-  "powerModifier": 1.0,
+  "timeModifier": 1.5,
   "radiation": 1.0,
-  "timeModifier": 1.5
+  "powerModifier": 1.0
 }

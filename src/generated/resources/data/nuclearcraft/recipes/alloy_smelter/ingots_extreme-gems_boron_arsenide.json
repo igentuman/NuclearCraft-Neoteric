@@ -10,11 +10,11 @@
   ],
   "output": [
     {
-      "count": 2,
-      "item": "nuclearcraft:thermoconducting_ingot"
+      "item": "nuclearcraft:thermoconducting_ingot",
+      "count": 2
     }
   ],
-  "powerModifier": 1.5,
+  "timeModifier": 2.0,
   "radiation": 1.0,
-  "timeModifier": 2.0
+  "powerModifier": 1.5
 }

@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "nuclearcraft:depleted_fuel_californium_lecf_249_ni",
     "nuclearcraft:depleted_fuel_californium_lecf_249_ni_flowing"

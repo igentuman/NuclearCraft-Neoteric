@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "nuclearcraft:cobalt_ore",
     "nuclearcraft:cobalt_deepslate_ore"

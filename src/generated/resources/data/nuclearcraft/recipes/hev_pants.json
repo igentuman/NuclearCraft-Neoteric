@@ -1,21 +1,21 @@
 {
   "type": "minecraft:crafting_shaped",
-  "key": {
-    "B": {
-      "item": "nuclearcraft:lithium_ion_cell"
-    },
-    "H": {
-      "item": "nuclearcraft:hazmat_pants"
-    },
-    "T": {
-      "item": "nuclearcraft:plate_extreme"
-    }
-  },
   "pattern": [
     "TTT",
     "TBT",
     "THT"
   ],
+  "key": {
+    "H": {
+      "item": "nuclearcraft:hazmat_pants"
+    },
+    "B": {
+      "item": "nuclearcraft:lithium_ion_cell"
+    },
+    "T": {
+      "item": "nuclearcraft:plate_extreme"
+    }
+  },
   "result": {
     "item": "nuclearcraft:hev_pants"
   }

@@ -1,9 +1,9 @@
 {
   "type": "minecraft:smelting",
-  "cookingtime": 200,
-  "experience": 1.0,
   "ingredient": {
     "tag": "forge:dusts/tin_silver"
   },
-  "result": "nuclearcraft:tin_silver_ingot"
+  "result": "nuclearcraft:tin_silver_ingot",
+  "experience": 1.0,
+  "cookingtime": 200
 }

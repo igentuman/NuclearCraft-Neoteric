@@ -5,17 +5,17 @@
       "tag": "forge:ingots/magnesium"
     },
     {
-      "count": 2,
-      "tag": "forge:ingots/boron"
+      "tag": "forge:ingots/boron",
+      "count": 2
     }
   ],
   "output": [
     {
-      "count": 3,
-      "item": "nuclearcraft:magnesium_diboride_ingot"
+      "item": "nuclearcraft:magnesium_diboride_ingot",
+      "count": 3
     }
   ],
-  "powerModifier": 1.0,
+  "timeModifier": 1.5,
   "radiation": 1.0,
-  "timeModifier": 1.5
+  "powerModifier": 1.0
 }

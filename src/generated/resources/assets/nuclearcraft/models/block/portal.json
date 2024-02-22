@@ -2,10 +2,10 @@
   "parent": "minecraft:block/cube",
   "textures": {
     "down": "nuclearcraft:block/portal",
-    "east": "nuclearcraft:block/portal",
+    "up": "nuclearcraft:block/portal",
     "north": "nuclearcraft:block/portal",
     "south": "nuclearcraft:block/portal",
-    "up": "nuclearcraft:block/portal",
+    "east": "nuclearcraft:block/portal",
     "west": "nuclearcraft:block/portal"
   }
 }

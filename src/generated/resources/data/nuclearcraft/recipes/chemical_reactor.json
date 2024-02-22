@@ -1,28 +1,28 @@
 {
   "type": "minecraft:crafting_shaped",
   "group": "nuclearcraft_processors",
+  "pattern": [
+    "LFL",
+    "XPX",
+    "LSL"
+  ],
   "key": {
-    "F": {
-      "item": "nuclearcraft:motor"
-    },
-    "L": {
-      "item": "nuclearcraft:plate_advanced"
-    },
     "P": {
       "item": "nuclearcraft:chassis"
     },
     "S": {
       "item": "nuclearcraft:servo"
     },
+    "F": {
+      "item": "nuclearcraft:motor"
+    },
+    "L": {
+      "item": "nuclearcraft:plate_advanced"
+    },
     "X": {
       "tag": "forge:dusts/glowstone"
     }
   },
-  "pattern": [
-    "LFL",
-    "XPX",
-    "LSL"
-  ],
   "result": {
     "item": "nuclearcraft:chemical_reactor"
   }

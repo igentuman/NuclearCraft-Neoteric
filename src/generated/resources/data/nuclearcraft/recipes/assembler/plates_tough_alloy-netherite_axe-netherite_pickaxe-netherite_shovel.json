@@ -2,8 +2,8 @@
   "type": "nuclearcraft:assembler",
   "input": [
     {
-      "count": 5,
-      "tag": "forge:plates/tough_alloy"
+      "tag": "forge:plates/tough_alloy",
+      "count": 5
     },
     {
       "item": "minecraft:netherite_axe"
@@ -20,7 +20,7 @@
       "item": "nuclearcraft:spaxelhoe_tough"
     }
   ],
-  "powerModifier": 1.0,
+  "timeModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.0
+  "powerModifier": 1.0
 }

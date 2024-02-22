@@ -1,17 +1,17 @@
 {
   "type": "nuclearcraft:crystallizer",
+  "output": [
+    {
+      "item": "nuclearcraft:yellowcake_dust"
+    }
+  ],
   "inputFluids": [
     {
       "amount": 144,
       "tag": "forge:uranium_oxide"
     }
   ],
-  "output": [
-    {
-      "item": "nuclearcraft:yellowcake_dust"
-    }
-  ],
-  "powerModifier": 1.0,
+  "timeModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.0
+  "powerModifier": 1.0
 }

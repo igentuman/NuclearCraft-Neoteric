@@ -1,9 +1,9 @@
 {
   "type": "minecraft:smelting",
-  "cookingtime": 100,
-  "experience": 1.0,
   "ingredient": {
     "item": "nuclearcraft:lithium_7_za"
   },
-  "result": "nuclearcraft:lithium_7"
+  "result": "nuclearcraft:lithium_7",
+  "experience": 1.0,
+  "cookingtime": 100
 }

@@ -1,25 +1,25 @@
 {
   "type": "minecraft:crafting_shaped",
   "group": "nuclearcraft_fission",
-  "key": {
-    "D": {
-      "item": "nuclearcraft:decay_hastener"
-    },
-    "L": {
-      "item": "nuclearcraft:fission_reactor_casing"
-    },
-    "P": {
-      "item": "nuclearcraft:plate_advanced"
-    },
-    "T": {
-      "item": "nuclearcraft:basic_electric_circuit"
-    }
-  },
   "pattern": [
     "LPL",
     "TDT",
     "LPL"
   ],
+  "key": {
+    "P": {
+      "item": "nuclearcraft:plate_advanced"
+    },
+    "D": {
+      "item": "nuclearcraft:decay_hastener"
+    },
+    "T": {
+      "item": "nuclearcraft:basic_electric_circuit"
+    },
+    "L": {
+      "item": "nuclearcraft:fission_reactor_casing"
+    }
+  },
   "result": {
     "item": "nuclearcraft:fission_reactor_controller"
   }

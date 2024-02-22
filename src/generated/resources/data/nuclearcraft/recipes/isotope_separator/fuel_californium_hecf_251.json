@@ -2,21 +2,21 @@
   "type": "nuclearcraft:isotope_separator",
   "input": [
     {
-      "count": 9,
-      "item": "nuclearcraft:fuel_californium_hecf_251"
+      "item": "nuclearcraft:fuel_californium_hecf_251",
+      "count": 9
     }
   ],
   "output": [
     {
-      "count": 3,
-      "item": "nuclearcraft:californium_251"
+      "item": "nuclearcraft:californium_251",
+      "count": 3
     },
     {
-      "count": 6,
-      "item": "nuclearcraft:californium_252"
+      "item": "nuclearcraft:californium_252",
+      "count": 6
     }
   ],
-  "powerModifier": 1.0,
+  "timeModifier": 2.0,
   "radiation": 1.0,
-  "timeModifier": 2.0
+  "powerModifier": 1.0
 }

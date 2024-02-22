@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "nuclearcraft:neon",
     "nuclearcraft:neon_flowing"

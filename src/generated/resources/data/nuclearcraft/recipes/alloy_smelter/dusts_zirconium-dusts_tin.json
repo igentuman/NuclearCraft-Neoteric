@@ -2,8 +2,8 @@
   "type": "nuclearcraft:alloy_smelter",
   "input": [
     {
-      "count": 7,
-      "tag": "forge:dusts/zirconium"
+      "tag": "forge:dusts/zirconium",
+      "count": 7
     },
     {
       "tag": "forge:dusts/tin"
@@ -11,11 +11,11 @@
   ],
   "output": [
     {
-      "count": 8,
-      "item": "nuclearcraft:zircaloy_ingot"
+      "item": "nuclearcraft:zircaloy_ingot",
+      "count": 8
     }
   ],
-  "powerModifier": 1.0,
+  "timeModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.0
+  "powerModifier": 1.0
 }

@@ -1,24 +1,24 @@
 {
   "type": "minecraft:crafting_shaped",
-  "key": {
-    "B": {
-      "item": "nuclearcraft:bioplastic"
-    },
-    "G": {
-      "item": "nuclearcraft:gelatin"
-    },
-    "L": {
-      "tag": "forge:plates/lead"
-    },
-    "S": {
-      "item": "minecraft:string"
-    }
-  },
   "pattern": [
     " G ",
     "SBS",
     " L "
   ],
+  "key": {
+    "S": {
+      "item": "minecraft:string"
+    },
+    "L": {
+      "tag": "forge:plates/lead"
+    },
+    "G": {
+      "item": "nuclearcraft:gelatin"
+    },
+    "B": {
+      "item": "nuclearcraft:bioplastic"
+    }
+  },
   "result": {
     "item": "nuclearcraft:dosimeter"
   }

@@ -7,11 +7,11 @@
   ],
   "output": [
     {
-      "count": 8,
-      "item": "nuclearcraft:gelatin"
+      "item": "nuclearcraft:gelatin",
+      "count": 8
     }
   ],
-  "powerModifier": 0.5,
+  "timeModifier": 0.5,
   "radiation": 1.0,
-  "timeModifier": 0.5
+  "powerModifier": 0.5
 }

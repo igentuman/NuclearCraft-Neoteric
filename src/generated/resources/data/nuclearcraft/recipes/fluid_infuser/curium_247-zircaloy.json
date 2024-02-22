@@ -5,18 +5,18 @@
       "item": "nuclearcraft:curium_247"
     }
   ],
+  "output": [
+    {
+      "item": "nuclearcraft:curium_247_za"
+    }
+  ],
   "inputFluids": [
     {
       "amount": 100,
       "tag": "forge:zircaloy"
     }
   ],
-  "output": [
-    {
-      "item": "nuclearcraft:curium_247_za"
-    }
-  ],
-  "powerModifier": 1.0,
+  "timeModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.0
+  "powerModifier": 1.0
 }

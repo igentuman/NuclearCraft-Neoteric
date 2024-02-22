@@ -1,9 +1,9 @@
 {
   "type": "minecraft:blasting",
-  "cookingtime": 100,
-  "experience": 1.0,
   "ingredient": {
     "tag": "forge:dusts/manganese"
   },
-  "result": "nuclearcraft:manganese_ingot"
+  "result": "nuclearcraft:manganese_ingot",
+  "experience": 1.0,
+  "cookingtime": 100
 }

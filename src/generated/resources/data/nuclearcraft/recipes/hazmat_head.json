@@ -1,8 +1,16 @@
 {
   "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "BIB",
+    "BLB",
+    "YWY"
+  ],
   "key": {
-    "B": {
-      "item": "nuclearcraft:bioplastic"
+    "Y": {
+      "item": "nuclearcraft:light"
+    },
+    "W": {
+      "item": "minecraft:yellow_wool"
     },
     "I": {
       "tag": "forge:plates/steel"
@@ -10,18 +18,10 @@
     "L": {
       "item": "minecraft:leather_helmet"
     },
-    "W": {
-      "item": "minecraft:yellow_wool"
-    },
-    "Y": {
-      "item": "nuclearcraft:light"
+    "B": {
+      "item": "nuclearcraft:bioplastic"
     }
   },
-  "pattern": [
-    "BIB",
-    "BLB",
-    "YWY"
-  ],
   "result": {
     "item": "nuclearcraft:hazmat_mask"
   }

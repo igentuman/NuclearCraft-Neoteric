@@ -8,7 +8,6 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
-import org.apache.commons.lang3.mutable.Mutable;
 import org.apache.commons.lang3.mutable.MutableObject;
 
 public class NCFluidBlockStates extends ExtendedBlockstateProvider {
@@ -24,15 +23,10 @@ public class NCFluidBlockStates extends ExtendedBlockstateProvider {
         for(NCFluids.FluidEntry entry : NCFluids.ALL_FLUID_ENTRIES.values())
         {
             Fluid still = entry.getStill();
-            /*still.getFluidType().initializeClient(box::setValue);
-            ResourceLocation stillTexture = box.getValue().getStillTexture();
-            String renderType = "minecraft:solid";
-            if(still.getFluidType().getDensity() < 1000) {
-                renderType = "minecraft:translucent";
-            }
-            ModelFile model = models().getBuilder("block/fluid/"+ Registry.FLUID.getKey(still).getPath())
+            ResourceLocation stillTexture = still.getAttributes().getStillTexture();
+            ModelFile model = models().getBuilder("block/fluid/"+still.getRegistryName().getPath())
                     .texture("particle", stillTexture);
-            getVariantBuilder(entry.getBlock()).partialState().setModels(new ConfiguredModel(model));*/
+            getVariantBuilder(entry.getBlock()).partialState().setModels(new ConfiguredModel(model));
         }
     }
 }

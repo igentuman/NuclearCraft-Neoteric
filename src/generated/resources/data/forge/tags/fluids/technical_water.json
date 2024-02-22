@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "nuclearcraft:technical_water",
     "nuclearcraft:technical_water_flowing"

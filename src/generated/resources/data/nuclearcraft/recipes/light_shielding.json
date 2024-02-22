@@ -1,21 +1,21 @@
 {
   "type": "minecraft:crafting_shaped",
-  "key": {
-    "C": {
-      "tag": "forge:plates/graphite"
-    },
-    "I": {
-      "tag": "forge:plates/iron"
-    },
-    "L": {
-      "tag": "forge:plates/lead"
-    }
-  },
   "pattern": [
     "III",
     "CCC",
     "LLL"
   ],
+  "key": {
+    "I": {
+      "tag": "forge:plates/iron"
+    },
+    "C": {
+      "tag": "forge:plates/graphite"
+    },
+    "L": {
+      "tag": "forge:plates/lead"
+    }
+  },
   "result": {
     "item": "nuclearcraft:light"
   }

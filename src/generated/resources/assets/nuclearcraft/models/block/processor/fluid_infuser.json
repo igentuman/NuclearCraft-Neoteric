@@ -2,11 +2,11 @@
   "parent": "minecraft:block/cube",
   "textures": {
     "down": "nuclearcraft:block/processor/top",
-    "east": "nuclearcraft:block/processor/side",
-    "north": "nuclearcraft:block/processor/fluid_infuser",
-    "particle": "nuclearcraft:block/processor/side",
-    "south": "nuclearcraft:block/processor/back",
     "up": "nuclearcraft:block/processor/bottom",
-    "west": "nuclearcraft:block/processor/side"
+    "north": "nuclearcraft:block/processor/fluid_infuser",
+    "south": "nuclearcraft:block/processor/back",
+    "east": "nuclearcraft:block/processor/side",
+    "west": "nuclearcraft:block/processor/side",
+    "particle": "nuclearcraft:block/processor/side"
   }
 }

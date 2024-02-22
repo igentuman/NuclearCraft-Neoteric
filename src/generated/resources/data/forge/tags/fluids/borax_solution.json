@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "nuclearcraft:borax_solution",
     "nuclearcraft:borax_solution_flowing"

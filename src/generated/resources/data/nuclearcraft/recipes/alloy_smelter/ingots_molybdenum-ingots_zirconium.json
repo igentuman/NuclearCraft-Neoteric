@@ -2,8 +2,8 @@
   "type": "nuclearcraft:alloy_smelter",
   "input": [
     {
-      "count": 15,
-      "tag": "forge:ingots/molybdenum"
+      "tag": "forge:ingots/molybdenum",
+      "count": 15
     },
     {
       "tag": "forge:ingots/zirconium"
@@ -11,11 +11,11 @@
   ],
   "output": [
     {
-      "count": 16,
-      "item": "nuclearcraft:zirconium_molybdenum_ingot"
+      "item": "nuclearcraft:zirconium_molybdenum_ingot",
+      "count": 16
     }
   ],
-  "powerModifier": 2.5,
+  "timeModifier": 8.5,
   "radiation": 1.0,
-  "timeModifier": 8.5
+  "powerModifier": 2.5
 }

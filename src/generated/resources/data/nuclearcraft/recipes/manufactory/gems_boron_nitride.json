@@ -10,7 +10,7 @@
       "item": "nuclearcraft:boron_nitride_dust"
     }
   ],
-  "powerModifier": 1.0,
+  "timeModifier": 1.5,
   "radiation": 1.0,
-  "timeModifier": 1.5
+  "powerModifier": 1.0
 }

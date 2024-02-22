@@ -10,11 +10,11 @@
   ],
   "output": [
     {
-      "count": 2,
-      "item": "nuclearcraft:silicon_carbide_ingot"
+      "item": "nuclearcraft:silicon_carbide_ingot",
+      "count": 2
     }
   ],
-  "powerModifier": 2.0,
+  "timeModifier": 2.0,
   "radiation": 1.0,
-  "timeModifier": 2.0
+  "powerModifier": 2.0
 }

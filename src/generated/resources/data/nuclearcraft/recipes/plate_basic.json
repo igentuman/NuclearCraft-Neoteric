@@ -1,19 +1,19 @@
 {
   "type": "minecraft:crafting_shaped",
-  "key": {
-    "G": {
-      "tag": "forge:dusts/graphite"
-    },
-    "L": {
-      "tag": "forge:ingots/lead"
-    }
-  },
   "pattern": [
     "LG",
     "GL"
   ],
+  "key": {
+    "L": {
+      "tag": "forge:ingots/lead"
+    },
+    "G": {
+      "tag": "forge:dusts/graphite"
+    }
+  },
   "result": {
-    "count": 2,
-    "item": "nuclearcraft:plate_basic"
+    "item": "nuclearcraft:plate_basic",
+    "count": 2
   }
 }

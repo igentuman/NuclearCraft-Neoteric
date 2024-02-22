@@ -1,7 +1,6 @@
 {
   "parent": "forge:item/bucket",
-  "apply_tint": true,
-  "flip_gas": false,
+  "loader": "forge:bucket",
   "fluid": "nuclearcraft:fuel_americium_lea_242_ox",
-  "loader": "forge:fluid_container"
+  "applyTint": true
 }

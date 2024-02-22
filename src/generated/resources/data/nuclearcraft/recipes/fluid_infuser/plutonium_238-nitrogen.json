@@ -5,18 +5,18 @@
       "item": "nuclearcraft:plutonium_238"
     }
   ],
+  "output": [
+    {
+      "item": "nuclearcraft:plutonium_238_ni"
+    }
+  ],
   "inputFluids": [
     {
       "amount": 100,
       "tag": "forge:nitrogen"
     }
   ],
-  "output": [
-    {
-      "item": "nuclearcraft:plutonium_238_ni"
-    }
-  ],
-  "powerModifier": 1.0,
+  "timeModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.0
+  "powerModifier": 1.0
 }

@@ -2,8 +2,8 @@
   "type": "nuclearcraft:manufactory",
   "input": [
     {
-      "count": 4,
-      "item": "minecraft:rotten_flesh"
+      "item": "minecraft:rotten_flesh",
+      "count": 4
     }
   ],
   "output": [
@@ -11,7 +11,7 @@
       "item": "minecraft:leather"
     }
   ],
-  "powerModifier": 1.0,
+  "timeModifier": 0.5,
   "radiation": 1.0,
-  "timeModifier": 0.5
+  "powerModifier": 1.0
 }

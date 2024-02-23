@@ -24,8 +24,8 @@
       "amount": 5
     },
     {
-      "fluid": "minecraft:empty",
-      "amount": 0
+      "fluid": "nuclearcraft:spent_nuclear_waste",
+      "amount": 1
     }
   ],
   "timeModifier": 15.0,

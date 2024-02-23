@@ -1,7 +1,9 @@
 {
   "type": "nuclearcraft:crystallizer",
   "output": [
-    []
+    {
+      "item": "mekanism:pellet_polonium"
+    }
   ],
   "inputFluids": [
     {

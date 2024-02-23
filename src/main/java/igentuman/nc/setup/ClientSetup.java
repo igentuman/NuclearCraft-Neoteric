@@ -1,5 +1,6 @@
 package igentuman.nc.setup;
 
+import igentuman.nc.client.block.BatteryBlockLoader;
 import igentuman.nc.client.block.fusion.FusionCoreRenderer;
 import igentuman.nc.client.gui.FusionCoreScreen;
 import igentuman.nc.client.gui.StorageContainerScreen;
@@ -15,6 +16,8 @@ import igentuman.nc.multiblock.fission.FissionBlocks;
 import igentuman.nc.multiblock.fission.FissionReactor;
 import igentuman.nc.radiation.client.ClientRadiationData;
 import igentuman.nc.content.processors.Processors;
+import igentuman.nc.radiation.client.RadiationOverlay;
+import igentuman.nc.radiation.client.WhiteNoiseOverlay;
 import igentuman.nc.setup.registration.NCFluids;
 import igentuman.nc.setup.registration.NCProcessors;
 import igentuman.nc.setup.registration.NcParticleTypes;
@@ -31,7 +34,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
+import net.minecraftforge.client.gui.OverlayRegistry;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -47,6 +53,7 @@ import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_CONTRO
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_PORT_CONTAINER;
 import static igentuman.nc.setup.registration.NCItems.GEIGER_COUNTER;
 import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_CONTAINER;
+import static net.minecraftforge.client.gui.ForgeIngameGui.HOTBAR_ELEMENT;
 import static net.minecraftforge.eventbus.api.EventPriority.LOWEST;
 
 @Mod.EventBusSubscriber(modid = MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -75,8 +82,8 @@ public class ClientSetup {
         ItemBlockRenderTypes.setRenderLayer(FISSION_BLOCKS.get("fission_reactor_glass").get(), RenderType.translucent());
         ItemBlockRenderTypes.setRenderLayer(FISSION_BLOCKS.get("fission_reactor_solid_fuel_cell").get(), RenderType.translucent());
         ItemBlockRenderTypes.setRenderLayer(FUSION_BLOCKS.get("fusion_reactor_casing_glass").get(), RenderType.translucent());
-        ItemBlockRenderTypes.setRenderLayer(FUSION_BLOCKS.get("fusion_reactor_core_proxy").get(), RenderType.cutout());
-
+        ItemBlockRenderTypes.setRenderLayer(FUSION_CORE_PROXY.get(), RenderType.cutout());
+        registerGuiOverlays();
         event.enqueueWork(() -> {
             setPropertyOverride(GEIGER_COUNTER.get(), rl("radiation"), (stack, world, entity, seed) -> {
                 if (entity instanceof Player) {
@@ -89,21 +96,21 @@ public class ClientSetup {
         });
     }
 
-/*    @SubscribeEvent
-    public static void onModelRegistryEvent(ModelEvent.RegisterGeometryLoaders event) {
-        event.register(BatteryBlockLoader.BATTERY_LOADER.getPath(), new BatteryBlockLoader());
-    }*/
+    @SubscribeEvent
+    public static void onModelRegistryEvent(ModelRegistryEvent event) {
+        ModelLoaderRegistry.registerLoader(BatteryBlockLoader.BATTERY_LOADER, new BatteryBlockLoader());
+    }
 
 
     public static void setPropertyOverride(ItemLike itemProvider, ResourceLocation override, ItemPropertyFunction propertyGetter) {
         ItemProperties.register(itemProvider.asItem(), override, propertyGetter);
     }
 
-/*    @SubscribeEvent
-    public static void registerGuiOverlays(OverlayRegistry event) {
-        event.registerAboveAll("radiation_bar", RadiationOverlay.RADIATION_BAR);
-        event.registerAboveAll("white_noise", WhiteNoiseOverlay.WHITE_NOISE);
-    }*/
+
+    public static void registerGuiOverlays() {
+        OverlayRegistry.registerOverlayAbove(HOTBAR_ELEMENT, "radiation_bar", RadiationOverlay.RADIATION_BAR);
+        OverlayRegistry.registerOverlayAbove(HOTBAR_ELEMENT, "white_noise", WhiteNoiseOverlay.WHITE_NOISE);
+    }
 
     @SubscribeEvent
     public static void registerParticleFactories(ParticleFactoryRegisterEvent event) {

@@ -16,7 +16,7 @@ import java.util.function.Predicate;
 /**
  * A biome filter that also checks if the dimension is right
  */
-public class DimensionBiomeFilter extends PlacementFilter {
+public class    DimensionBiomeFilter extends PlacementFilter {
 
     private final Predicate<ResourceKey<Level>> levelTest;
 

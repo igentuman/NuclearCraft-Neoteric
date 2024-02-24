@@ -43,24 +43,6 @@ public class BatteryBlockBakedModel implements IDynamicBakedModel {
         this.overrides = overrides;
         this.itemTransforms = itemTransforms;
         this.batteryModelGeometry = batteryModelGeometry;
-
-        float l = 0;
-        float r = 1;
-        float p = 1;
-
-        Transformation rotation = modelState.getRotation();
-
-        TextureAtlasSprite textureSide = spriteGetter.apply(batteryModelGeometry.sideDefault);
-        TextureAtlasSprite textureTop = spriteGetter.apply(batteryModelGeometry.topDefault);
-
-        sideQuads = List.of(
-                ClientTools.createQuad(v(r, p, r), v(r, p, l), v(l, p, l), v(l, p, r), textureTop),
-                ClientTools.createQuad(v(l, l, l), v(r, l, l), v(r, l, r), v(l, l, r), textureSide),
-                ClientTools.createQuad(v(r, p, r), v(r, l, r), v(r, l, l), v(r, p, l), textureSide),
-                ClientTools.createQuad(v(l, p, l), v(l, l, l), v(l, l, r), v(l, p, r), textureSide),
-                ClientTools.createQuad(v(r, p, l), v(r, l, l), v(l, l, l), v(l, p, l), textureSide),
-                ClientTools.createQuad(v(l, p, r), v(l, l, r), v(r, l, r), v(r, p, r), textureSide)
-        );
     }
 
     @Override
@@ -69,6 +51,29 @@ public class BatteryBlockBakedModel implements IDynamicBakedModel {
     }
 
     public List<BakedQuad> sideQuads;
+
+    public List<BakedQuad> sideQuads() {
+        if(sideQuads == null) {
+            float l = 0;
+            float r = 1;
+            float p = 1;
+
+            Transformation rotation = modelState.getRotation();
+
+            TextureAtlasSprite textureSide = spriteGetter.apply(batteryModelGeometry.sideDefault);
+            TextureAtlasSprite textureTop = spriteGetter.apply(batteryModelGeometry.topDefault);
+
+            sideQuads = List.of(
+                    ClientTools.createQuad(v(r, p, r), v(r, p, l), v(l, p, l), v(l, p, r), textureTop),
+                    ClientTools.createQuad(v(l, l, l), v(r, l, l), v(r, l, r), v(l, l, r), textureSide),
+                    ClientTools.createQuad(v(r, p, r), v(r, l, r), v(r, l, l), v(r, p, l), textureSide),
+                    ClientTools.createQuad(v(l, p, l), v(l, l, l), v(l, l, r), v(l, p, r), textureSide),
+                    ClientTools.createQuad(v(r, p, l), v(r, l, l), v(l, l, l), v(l, p, l), textureSide),
+                    ClientTools.createQuad(v(l, p, r), v(l, l, r), v(r, l, r), v(r, p, r), textureSide)
+            );
+        }
+        return sideQuads;
+    }
     /**
      * @param state the blockstate for our block
      * @param side the six directions or null for quads that are not at a specific direction
@@ -85,10 +90,10 @@ public class BatteryBlockBakedModel implements IDynamicBakedModel {
         }
         HashMap<Integer, ISizeToggable.SideMode> sideConfig = extraData.get(BatteryBE.SIDE_CONFIG);
         if(sideConfig == null) {
-            return sideQuads;
+            return sideQuads();
         }
         String cacheKey = keyFor(sideConfig.values());
-        if(quadCache.containsKey(cacheKey)) {
+        if(quadCache.containsKey(cacheKey) && quadCache.get(cacheKey) != null) {
             return quadCache.get(cacheKey);
         }
 
@@ -154,17 +159,17 @@ public class BatteryBlockBakedModel implements IDynamicBakedModel {
     }
 
     @Override
-    public TextureAtlasSprite getParticleIcon() {
+    public @NotNull TextureAtlasSprite getParticleIcon() {
         return spriteGetter.apply(batteryModelGeometry.sideDefault);
     }
 
     @Override
-    public ItemOverrides getOverrides() {
+    public @NotNull ItemOverrides getOverrides() {
         return overrides;
     }
 
     @Override
-    public ItemTransforms getTransforms() {
+    public @NotNull ItemTransforms getTransforms() {
         return itemTransforms;
     }
 }

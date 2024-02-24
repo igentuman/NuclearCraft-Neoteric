@@ -17,6 +17,8 @@ import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
+import static com.mojang.math.Axis.YP;
+
 public class FusionBeamParticle extends TextureSheetParticle {
 
     private static final float RADIAN_45 = (float) Math.toRadians(45);
@@ -49,22 +51,22 @@ public class FusionBeamParticle extends TextureSheetParticle {
         float vMin = getV0();
         float vMax = getV1();
         Quaternionf quaternion = direction.getRotation();
-        //quaternion.mul(Vector3f.YP.rotation(RADIAN_45));
+        quaternion.mul(YP.rotation(RADIAN_45));
         drawComponent(vertexBuilder, getResultVector(quaternion, newX, newY, newZ), uMin, uMax, vMin, vMax);
         Quaternionf quaternion2 = new Quaternionf(quaternion);
-        //quaternion2.mul(Vector3f.YP.rotation(RADIAN_90));
+        quaternion2.mul(YP.rotation(RADIAN_90));
         drawComponent(vertexBuilder, getResultVector(quaternion2, newX, newY, newZ), uMin, uMax, vMin, vMax);
     }
 
     private Vector3f[] getResultVector(Quaternionf quaternion, float newX, float newY, float newZ) {
         Vector3f[] resultVector = {
-              new Vector3f(-quadSize, -halfLength, 0),
-              new Vector3f(-quadSize, halfLength, 0),
-              new Vector3f(quadSize, halfLength, 0),
-              new Vector3f(quadSize, -halfLength, 0)
+                new Vector3f(-quadSize, -halfLength, 0),
+                new Vector3f(-quadSize, halfLength, 0),
+                new Vector3f(quadSize, halfLength, 0),
+                new Vector3f(quadSize, -halfLength, 0)
         };
         for (Vector3f vec : resultVector) {
-           // vec.transform(quaternion);
+            quaternion.transform(vec);
             vec.add(newX, newY, newZ);
         }
         return resultVector;

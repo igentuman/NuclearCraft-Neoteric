@@ -20,6 +20,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
+import static com.mojang.math.Axis.YN;
+
 @NothingNullByDefault
 public class FusionCoreRenderer implements BlockEntityRenderer<BlockEntity> {
     private final BlockEntityRendererProvider.Context context;
@@ -39,15 +41,11 @@ public class FusionCoreRenderer implements BlockEntityRenderer<BlockEntity> {
         BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
         BlockState blockstate = pBlockEntity.getBlockState();
         FusionCoreBE<?> coreBe = (FusionCoreBE<?>) pBlockEntity;
-
         ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
         ItemStack core = new ItemStack(blockstate.getBlock().asItem());
-
         BakedModel center = blockRenderer.getBlockModel(blockstate.setValue(FusionCoreBlock.ACTIVE, true));
-
         pPoseStack.clear();
         pPoseStack.pushPose();
-
         long time = Util.getMillis();
         float step = -0.08f;
         if(coreBe.isRunning() && coreBe.efficiency > 0.5) {
@@ -60,7 +58,7 @@ public class FusionCoreRenderer implements BlockEntityRenderer<BlockEntity> {
         }
         angel %= 360;
         pPoseStack.translate(dx, 0, dz);
-        //pPoseStack.mulPose(Vector3f.YN.rotationDegrees(angel));
+        pPoseStack.mulPose(YN.rotationDegrees(angel));
         pPoseStack.scale(1.4f, sy, 1.4f);
         pPoseStack.translate(-dx, 0.135f, -dz);
         blockRenderer.getModelRenderer().renderModel(pPoseStack.last(), buffer.getBuffer(RenderType.cutout()), blockstate, center, 1, 1, 1, LightTexture.FULL_SKY, combinedOverlay);
@@ -76,11 +74,8 @@ public class FusionCoreRenderer implements BlockEntityRenderer<BlockEntity> {
                 ItemDisplayContext.FIXED,
                 false, pPoseStack, buffer, LightTexture.FULL_SKY, combinedOverlay,
                 base);
-
-
-       // blockRenderer.renderSingleBlock(blockstate, pPoseStack, buffer, packedLight, combinedOverlay, pBlockEntity.getModelData(), RenderType.cutout());
+        //blockRenderer.renderSingleBlock(blockstate, pPoseStack, buffer, packedLight, combinedOverlay, pBlockEntity.getModelData(), RenderType.cutout());
         pPoseStack.popPose();
-
     }
 
     @Override

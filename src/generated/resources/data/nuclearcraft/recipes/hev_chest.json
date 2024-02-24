@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "nuclearcraft:lithium_ion_cell"
+    },
+    "H": {
+      "item": "nuclearcraft:hazmat_chest"
+    },
+    "T": {
+      "item": "nuclearcraft:plate_extreme"
+    }
+  },
+  "pattern": [
+    "THT",
+    "TBT",
+    "TTT"
+  ],
+  "result": {
+    "item": "nuclearcraft:hev_chest"
+  },
+  "show_notification": true
+}

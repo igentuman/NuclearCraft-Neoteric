@@ -236,7 +236,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     }
     public double getSteamRate()
     {
-        return steamRate;
+        return Math.max(0, steamRate);
     }
 
     public void boil()

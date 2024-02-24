@@ -7,6 +7,8 @@ import igentuman.nc.block.turbine.TurbineRotorBlock;
 import igentuman.nc.item.HEVItem;
 import igentuman.nc.item.HazmatItem;
 import igentuman.nc.radiation.data.RadiationEvents;
+import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.DirectionalBlock;
@@ -112,13 +114,13 @@ public class WorldEvents {
 
     @SubscribeEvent
     public static void onPlayerDamage(LivingHurtEvent event) {
-        /*if (event.getEntity() instanceof Player player) {
-            if (event.getSource() != null && event.getSource().isMagic()) {
+        if (event.getEntity() instanceof Player player) {
+            if (event.getSource() != null && event.getSource().is(DamageTypes.MAGIC)) {
                 if(isFullyEquitedInHazmat(player)) {
                     event.setAmount(event.getAmount()/10F);
                 }
             }
-            if(event.getSource() != null && event.getSource().isFall()) {
+            if(event.getSource() != null && event.getSource().is(DamageTypes.FALL)) {
                 player.getArmorSlots().forEach(stack -> {
                     if(stack.getItem().equals(HEV_BOOTS.get()) && isCharged(stack)) {
                         consumeEnergy(stack, 1000);
@@ -134,7 +136,7 @@ public class WorldEvents {
                     consumeEnergy(stack, 1000);
                 }
             }
-        }*/
+        }
     }
 
     private static void consumeEnergy(ItemStack stack, int i) {

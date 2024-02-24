@@ -38,8 +38,8 @@ public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
     protected double radiationModifier = 1;
 
     @Override
-    public ItemStack getResultItem(RegistryAccess registryAccess) {
-        return null;
+    public @NotNull ItemStack getResultItem(@NotNull RegistryAccess registryAccess) {
+        return getResultItem();
     }
     public FluidStackIngredient[] getInputFluids() {
         return inputFluids;

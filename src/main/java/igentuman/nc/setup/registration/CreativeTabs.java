@@ -86,6 +86,10 @@ public class CreativeTabs {
         items.add(new ItemStack(HEV_CHEST.get()));
         items.add(new ItemStack(HEV_PANTS.get()));
         items.add(new ItemStack(HEV_BOOTS.get()));
+        items.add(new ItemStack(HAZMAT_MASK.get()));
+        items.add(new ItemStack(HAZMAT_CHEST.get()));
+        items.add(new ItemStack(HAZMAT_PANTS.get()));
+        items.add(new ItemStack(HAZMAT_BOOTS.get()));
         items.add(new ItemStack(TOUGH_HELMET.get()));
         items.add(new ItemStack(TOUGH_CHEST.get()));
         items.add(new ItemStack(TOUGH_PANTS.get()));

@@ -555,7 +555,7 @@ public class NCRecipes extends RecipeProvider {
                 .unlockedBy("item", has(NC_ITEMS.get("helium_collector").get()))
                 .save(consumer, new ResourceLocation(MODID, "compact_helium_collector"));
 
-       /* ShapedRecipeBuilder.shaped(HEV_HELMET.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, HEV_HELMET.get())
                 .pattern(" T ")
                 .pattern("THT")
                 .pattern(" B ")
@@ -565,7 +565,7 @@ public class NCRecipes extends RecipeProvider {
                 .unlockedBy("item", has(NC_PARTS.get("plate_extreme").get()))
                 .save(consumer, new ResourceLocation(MODID, "hev_helmet"));
 
-        ShapedRecipeBuilder.shaped(HEV_BOOTS.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, HEV_BOOTS.get())
                 .pattern("   ")
                 .pattern("THT")
                 .pattern("TBT")
@@ -575,7 +575,7 @@ public class NCRecipes extends RecipeProvider {
                 .unlockedBy("item", has(NC_PARTS.get("plate_extreme").get()))
                 .save(consumer, new ResourceLocation(MODID, "hev_boots"));
 
-        ShapedRecipeBuilder.shaped(HEV_PANTS.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, HEV_PANTS.get())
                 .pattern("TTT")
                 .pattern("TBT")
                 .pattern("THT")
@@ -585,7 +585,7 @@ public class NCRecipes extends RecipeProvider {
                 .unlockedBy("item", has(NC_PARTS.get("plate_extreme").get()))
                 .save(consumer, new ResourceLocation(MODID, "hev_pants"));
 
-        ShapedRecipeBuilder.shaped(HEV_CHEST.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, HEV_CHEST.get())
                 .pattern("THT")
                 .pattern("TBT")
                 .pattern("TTT")
@@ -593,7 +593,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('B', LITHIUM_ION_CELL.get())
                 .define('T', NC_PARTS.get("plate_extreme").get())
                 .unlockedBy("item", has(NC_PARTS.get("plate_extreme").get()))
-                .save(consumer, new ResourceLocation(MODID, "hev_chest"));*/
+                .save(consumer, new ResourceLocation(MODID, "hev_chest"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, TOUGH_HELMET.get())
                 .pattern("TTT")

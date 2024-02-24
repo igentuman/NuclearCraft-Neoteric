@@ -17,10 +17,10 @@ public class RadiationResistance extends MobEffect {
         applyEffectTick(livingEntity, strength);
     }
 
-    public boolean isDurationEffectTick(int p_19455_, int p_19456_) {
-        int k = 50 >> p_19456_;
+    public boolean isDurationEffectTick(int from, int to) {
+        int k = 50 >> from;
         if (k > 0) {
-            return p_19455_ % k == 0;
+            return to % k == 0;
         }
         return true;
     }

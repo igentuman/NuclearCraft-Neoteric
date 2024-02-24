@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "nuclearcraft:lithium_ion_cell"
+    },
+    "H": {
+      "item": "nuclearcraft:hazmat_boots"
+    },
+    "T": {
+      "item": "nuclearcraft:plate_extreme"
+    }
+  },
+  "pattern": [
+    "   ",
+    "THT",
+    "TBT"
+  ],
+  "result": {
+    "item": "nuclearcraft:hev_boots"
+  },
+  "show_notification": true
+}

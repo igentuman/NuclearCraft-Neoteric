@@ -32,15 +32,15 @@ import java.util.Objects;
 import static igentuman.nc.NuclearCraft.MODID;
 
 public class NCProcessorContainer<T extends AbstractContainerMenu> extends AbstractContainerMenu {
-    protected NCProcessorBE blockEntity;
+    protected NCProcessorBE<?> blockEntity;
     protected Player playerEntity;
     protected IItemHandler playerInventory;
 
-    public ProcessorPrefab getProcessor() {
+    public ProcessorPrefab<?, ?> getProcessor() {
         return processor;
     }
 
-    protected ProcessorPrefab processor;
+    protected ProcessorPrefab<?, ?> processor;
 
     public int slotIndex = 0;
 
@@ -52,7 +52,7 @@ public class NCProcessorContainer<T extends AbstractContainerMenu> extends Abstr
 
     public NCProcessorContainer(int windowId, BlockPos pos, Inventory playerInventory, Player player, String name) {
         this(NCProcessors.PROCESSORS_CONTAINERS.get(name).get(), windowId);
-        blockEntity = (NCProcessorBE) player.getCommandSenderWorld().getBlockEntity(pos);
+        blockEntity = (NCProcessorBE<?>) player.getCommandSenderWorld().getBlockEntity(pos);
         this.playerEntity = player;
         this.playerInventory = new InvWrapper(playerInventory);
         this.name = name;
@@ -105,29 +105,52 @@ public class NCProcessorContainer<T extends AbstractContainerMenu> extends Abstr
         }
     }
 
+    public int inputSlots() {
+        return processor.getSlotsConfig().getInputItems();
+    }
+
     @Override
-    public ItemStack quickMoveStack(Player pPlayer, int index) {
+    public @NotNull ItemStack quickMoveStack(@NotNull Player pPlayer, int index) {
         ItemStack itemstack = ItemStack.EMPTY;
         Slot slot = this.slots.get(index);
+        int maxSlotId = 36+inputSlots()+processor.getSlotsConfig().getOutputItems()+processor.getUpgradesSlots()-1;
         if (slot != null && slot.hasItem()) {
             ItemStack stack = slot.getItem();
             itemstack = stack.copy();
-            if (index == 0) {
-                if (!this.moveItemStackTo(stack, 1, 37, true)) {
+            if (index < inputSlots()) {
+                if (!this.moveItemStackTo(stack, inputSlots()+processor.getSlotsConfig().getOutputItems(), 37, true)) {
                     return ItemStack.EMPTY;
                 }
-                slot.onQuickCraft(stack, itemstack);
             } else {
-                if (ForgeHooks.getBurnTime(stack, RecipeType.SMELTING) > 0) {
-                    if (!this.moveItemStackTo(stack, 0, 1, false)) {
+                if (index < inputSlots()+processor.getSlotsConfig().getOutputItems()
+                && index > inputSlots()-1) {
+                    boolean result =  this.moveItemStackTo(stack, inputSlots()+processor.getSlotsConfig().getOutputItems(), maxSlotId, false);
+                    if (!result) {
                         return ItemStack.EMPTY;
                     }
                 } else if (index < 28) {
-                    if (!this.moveItemStackTo(stack, 28, 37, false)) {
+                    boolean result = false;
+                    if(blockEntity.isInputAllowed(stack)) {
+                        result = this.moveItemStackTo(stack, 0, inputSlots(), false);
+                    }
+                    if (!result) {
+                        result = this.moveItemStackTo(stack, 28, maxSlotId, false);
+                    }
+                    if (!result) {
                         return ItemStack.EMPTY;
                     }
-                } else if (index < 37 && !this.moveItemStackTo(stack, 1, 28, false)) {
-                    return ItemStack.EMPTY;
+                } else if (index < maxSlotId) {
+                    boolean result = false;
+                    if(blockEntity.isInputAllowed(stack)) {
+                        result = this.moveItemStackTo(stack, 0, inputSlots(), false);
+                    }
+                    if (!result) {
+                        result = this.moveItemStackTo(stack, inputSlots()+processor.getSlotsConfig().getOutputItems(), 28, false);
+                    }
+
+                    if (!result) {
+                        return ItemStack.EMPTY;
+                    }
                 }
             }
 

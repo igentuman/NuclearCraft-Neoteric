@@ -130,15 +130,15 @@ public class FissionControllerScreen extends AbstractContainerScreen<FissionCont
         if(isCasingValid()) {
             checkboxCasing.setTooltipKey("multiblock.casing.complete");
         } else {
-            checkboxCasing.setTooltipKey("reactor.casing.incomplete");
+            checkboxCasing.setTooltipKey("multiblock.casing.incomplete");
         }
         checkboxCasing.addTooltip(casingTootip);
 
         checkboxInterior.setChecked(isInteriorValid()).draw(graphics, mouseX, mouseY, partialTicks);
         if(isInteriorValid()) {
-            checkboxInterior.setTooltipKey("reactor.interior.complete");
+            checkboxInterior.setTooltipKey("multiblock.interior.complete");
         } else {
-            checkboxInterior.setTooltipKey("reactor.interior.incomplete");
+            checkboxInterior.setTooltipKey("multiblock.interior.incomplete");
         }
         checkboxInterior.addTooltip(interiorTootip);
         if(isInteriorValid()) {

@@ -51,7 +51,8 @@ public class NCImageButton extends Button {
       this.setY(pY);
    }
 
-   public void renderButton(GuiGraphics graphics, int pMouseX, int pMouseY, float pPartialTick) {
+   @Override
+   public void renderWidget(GuiGraphics graphics, int pMouseX, int pMouseY, float pPartialTick) {
       RenderSystem.setShader(GameRenderer::getPositionTexShader);
       RenderSystem.setShaderTexture(0, this.resourceLocation);
       int i = this.yTexStart;
@@ -63,9 +64,5 @@ public class NCImageButton extends Button {
 
       RenderSystem.enableDepthTest();
       graphics.blit(resourceLocation, this.getX(), this.getY(), (float)this.xTexStart, (float)i, this.width, this.height, this.textureWidth, this.textureHeight);
-      if (this.isHovered) {
-        // renderToolTip(graphics, pMouseX, pMouseY);
-      }
-
    }
 }

@@ -64,17 +64,9 @@ public class BatteryBlockLoader implements IGeometryLoader<BatteryBlockLoader.Ba
             this.topNone = topNone;
         }
 
-
-
-        //@Override
-        public Collection<Material> getMaterials(IGeometryBakingContext owner, Function<ResourceLocation, UnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
-            return List.of(sideDefault, topDefault, sideIn, sideOut, sideNone, topIn, topOut, topNone);
-        }
-
         @Override
         public BakedModel bake(IGeometryBakingContext iGeometryBakingContext, ModelBaker modelBaker, Function<Material, TextureAtlasSprite> function, ModelState modelState, ItemOverrides itemOverrides, ResourceLocation resourceLocation) {
-             //return new BatteryBlockBakedModel(iGeometryBakingContext, spriteGetter, itemOverrides, iGeometryBakingContext.getTransforms(), this);
-            return null;
+             return new BatteryBlockBakedModel(modelState, function, itemOverrides, iGeometryBakingContext.getTransforms(), this);
         }
     }
 }

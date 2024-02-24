@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.Direction;
@@ -53,12 +54,12 @@ public class BatteryBlockBakedModel implements IDynamicBakedModel {
         TextureAtlasSprite textureTop = spriteGetter.apply(batteryModelGeometry.topDefault);
 
         sideQuads = List.of(
-                ClientTools.createQuad(v(r, p, r), v(r, p, l), v(l, p, l), v(l, p, r), rotation, textureTop),
-                ClientTools.createQuad(v(l, l, l), v(r, l, l), v(r, l, r), v(l, l, r), rotation, textureSide),
-                ClientTools.createQuad(v(r, p, r), v(r, l, r), v(r, l, l), v(r, p, l), rotation, textureSide),
-                ClientTools.createQuad(v(l, p, l), v(l, l, l), v(l, l, r), v(l, p, r), rotation, textureSide),
-                ClientTools.createQuad(v(r, p, l), v(r, l, l), v(l, l, l), v(l, p, l), rotation, textureSide),
-                ClientTools.createQuad(v(l, p, r), v(l, l, r), v(r, l, r), v(r, p, r), rotation, textureSide)
+                ClientTools.createQuad(v(r, p, r), v(r, p, l), v(l, p, l), v(l, p, r), textureTop),
+                ClientTools.createQuad(v(l, l, l), v(r, l, l), v(r, l, r), v(l, l, r), textureSide),
+                ClientTools.createQuad(v(r, p, r), v(r, l, r), v(r, l, l), v(r, p, l), textureSide),
+                ClientTools.createQuad(v(l, p, l), v(l, l, l), v(l, l, r), v(l, p, r), textureSide),
+                ClientTools.createQuad(v(r, p, l), v(r, l, l), v(l, l, l), v(l, p, l), textureSide),
+                ClientTools.createQuad(v(l, p, r), v(l, l, r), v(r, l, r), v(r, p, r), textureSide)
         );
     }
 
@@ -107,12 +108,12 @@ public class BatteryBlockBakedModel implements IDynamicBakedModel {
         }
         quadCache.put(cacheKey,
             List.of(
-                    ClientTools.createQuad(v(r, p, r), v(r, p, l), v(l, p, l), v(l, p, r), rotation, textureTop),
-                    ClientTools.createQuad(v(l, l, l), v(r, l, l), v(r, l, r), v(l, l, r), rotation, getSideTexture(sideConfig, Direction.DOWN)),
-                    ClientTools.createQuad(v(r, p, r), v(r, l, r), v(r, l, l), v(r, p, l), rotation, getSideTexture(sideConfig, Direction.EAST)),
-                    ClientTools.createQuad(v(l, p, l), v(l, l, l), v(l, l, r), v(l, p, r), rotation, getSideTexture(sideConfig, Direction.WEST)),
-                    ClientTools.createQuad(v(r, p, l), v(r, l, l), v(l, l, l), v(l, p, l), rotation, getSideTexture(sideConfig, Direction.NORTH)),
-                    ClientTools.createQuad(v(l, p, r), v(l, l, r), v(r, l, r), v(r, p, r), rotation, getSideTexture(sideConfig, Direction.SOUTH))
+                    ClientTools.createQuad(v(r, p, r), v(r, p, l), v(l, p, l), v(l, p, r), textureTop),
+                    ClientTools.createQuad(v(l, l, l), v(r, l, l), v(r, l, r), v(l, l, r), getSideTexture(sideConfig, Direction.DOWN)),
+                    ClientTools.createQuad(v(r, p, r), v(r, l, r), v(r, l, l), v(r, p, l), getSideTexture(sideConfig, Direction.EAST)),
+                    ClientTools.createQuad(v(l, p, l), v(l, l, l), v(l, l, r), v(l, p, r), getSideTexture(sideConfig, Direction.WEST)),
+                    ClientTools.createQuad(v(r, p, l), v(r, l, l), v(l, l, l), v(l, p, l), getSideTexture(sideConfig, Direction.NORTH)),
+                    ClientTools.createQuad(v(l, p, r), v(l, l, r), v(r, l, r), v(r, p, r), getSideTexture(sideConfig, Direction.SOUTH))
         ));
 
         return quadCache.get(cacheKey);
@@ -135,6 +136,7 @@ public class BatteryBlockBakedModel implements IDynamicBakedModel {
         }
         return textureSide;
     }
+
 
     @Override
     public boolean useAmbientOcclusion() {

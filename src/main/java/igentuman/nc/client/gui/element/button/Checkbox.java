@@ -9,7 +9,7 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 
 public class Checkbox extends NCGuiElement {
-    protected AbstractContainerScreen screen;
+    protected AbstractContainerScreen<?> screen;
     private int xTexStart;
     private int yTexStart;
     private int textureWidth;
@@ -24,7 +24,7 @@ public class Checkbox extends NCGuiElement {
 
     private boolean isChecked = false;
 
-    public Checkbox(int xPos, int yPos, AbstractContainerScreen screen, boolean checked)  {
+    public Checkbox(int xPos, int yPos, AbstractContainerScreen<?> screen, boolean checked)  {
         super(xPos, yPos, 12, 12, Component.empty());
         x = xPos;
         y = yPos;
@@ -42,6 +42,11 @@ public class Checkbox extends NCGuiElement {
         xTexStart = isChecked() ? 11 : 0;
         btn.xTexStart = xTexStart;
         btn.render(graphics, mX, mY, pTicks);
+    }
+
+    @Override
+    protected void renderWidget(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
+        this.renderButton(pGuiGraphics, pMouseX, pMouseY, pPartialTick);
     }
 
     @Override

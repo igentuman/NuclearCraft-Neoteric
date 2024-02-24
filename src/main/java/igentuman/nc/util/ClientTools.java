@@ -1,9 +1,12 @@
 package igentuman.nc.util;
 
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Transformation;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Position;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.model.pipeline.QuadBakingVertexConsumer;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
@@ -21,37 +24,34 @@ public class ClientTools {
                 .endVertex();
     }
 
-    public static BakedQuad createQuad(Vector3f v1, Vector3f v2, Vector3f v3, Vector3f v4, Transformation rotation, TextureAtlasSprite sprite) {
-        Vector3f normal = v3.normalize();
-        normal.sub(v2);
-        Vector3f temp = v1.normalize();
-        temp.sub(v2);
-        normal.cross(temp);
-        normal.normalize();
-
-        int tw = sprite.contents().width();
-        int th = sprite.contents().height();
-
-        rotation = rotation.blockCenterToCorner();
-        rotation.transformNormal(normal);
-
-        Vector4f vv1 = new Vector4f((Vector4fc) v1); rotation.transformPosition(vv1);
-        Vector4f vv2 = new Vector4f((Vector4fc) v2); rotation.transformPosition(vv2);
-        Vector4f vv3 = new Vector4f((Vector4fc) v3); rotation.transformPosition(vv3);
-        Vector4f vv4 = new Vector4f((Vector4fc) v4); rotation.transformPosition(vv4);
+    public static BakedQuad createQuad(Vec3 v1, Vec3 v2, Vec3 v3, Vec3 v4, TextureAtlasSprite sprite) {
+        Vec3 normal = v3.subtract(v2).cross(v1.subtract(v2)).normalize();
 
         BakedQuad[] quad = new BakedQuad[1];
-        var builder = new QuadBakingVertexConsumer(q -> quad[0] = q);
+        QuadBakingVertexConsumer builder = new QuadBakingVertexConsumer(q -> quad[0] = q);
         builder.setSprite(sprite);
-        builder.setDirection(Direction.getNearest(normal.x(), normal.y(), normal.z()));
-        putVertex(builder, normal, vv1, 0, 0, sprite);
-        putVertex(builder, normal, vv2, 0, th, sprite);
-        putVertex(builder, normal, vv3, tw, th, sprite);
-        putVertex(builder, normal, vv4, tw, 0, sprite);
+        builder.setDirection(Direction.getNearest(normal.x, normal.y, normal.z));
+        putVertex(builder, normal, v1.x, v1.y, v1.z, 0, 0, sprite);
+        putVertex(builder, normal, v2.x, v2.y, v2.z, 0, 16, sprite);
+        putVertex(builder, normal, v3.x, v3.y, v3.z, 16, 16, sprite);
+        putVertex(builder, normal, v4.x, v4.y, v4.z, 16, 0, sprite);
         return quad[0];
     }
 
-    public static Vector3f v(float x, float y, float z) {
-        return new Vector3f(x, y, z);
+    private static void putVertex(VertexConsumer builder, Position normal,
+                                  double x, double y, double z, float u, float v,
+                                  TextureAtlasSprite sprite) {
+        float iu = sprite.getU(u);
+        float iv = sprite.getV(v);
+        builder.vertex(x, y, z)
+                .uv(iu, iv)
+                .uv2(0, 0)
+                .color(1.0f, 1.0f, 1.0f, 1.0f)
+                .normal((float) normal.x(), (float) normal.y(), (float) normal.z())
+                .endVertex();
+    }
+
+    public static Vec3 v(double x, double y, double z) {
+        return new Vec3(x, y, z);
     }
 }

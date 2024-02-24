@@ -13,6 +13,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.handler.config.RadiationConfig.RADIATION_CONFIG;
 import static igentuman.nc.radiation.data.PlayerRadiation.getRadiationShielding;
 
@@ -45,7 +46,7 @@ public abstract class MekRadiationManager {
     @Inject(method = "getRadiationResistance(Lnet/minecraft/world/entity/LivingEntity;)D", at = @At("TAIL"), remap=false, cancellable = true)
     private void getRadiationResistance(LivingEntity entity, CallbackInfoReturnable<Double> callback) {
         if(entity instanceof Player player) {
-            double shieldingRate = Math.max(0.001, 0.7 - getRadiationShielding(player)/100.0)*10;
+            double shieldingRate = (double) getRadiationShielding(player, MODID) / 10;
             callback.setReturnValue(callback.getReturnValue()+shieldingRate);
         }
     }

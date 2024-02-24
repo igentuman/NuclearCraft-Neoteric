@@ -66,11 +66,23 @@ public class PlayerRadiation implements IPlayerRadiationCapability {
         return rad/5;//player is not getting radiation instantly
     }
 
-    public static int getRadiationShielding(LivingEntity player)
+    public static int getRadiationShielding(LivingEntity player, String...modFilter)
     {
         int shielding = 0;
         for(ItemStack stack: player.getArmorSlots()) {
             if(stack.isEmpty()) continue;
+            if(modFilter.length > 0) {
+                String stackMod = stack.getItem().getCreatorModId(stack);
+                boolean hasMod = false;
+                for(String mod: modFilter) {
+                    assert stackMod != null;
+                    if(stackMod.equals(mod)) {
+                        hasMod = true;
+                        break;
+                    }
+                }
+                if(!hasMod) continue;
+            }
             shielding += ItemShielding.byItem(stack.getItem());
             if(stack.hasTag() && stack.getTag().contains("rad_shielding")) {
                 shielding += stack.getTag().getInt("rad_shielding");

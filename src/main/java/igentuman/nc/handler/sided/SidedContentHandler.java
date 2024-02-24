@@ -35,7 +35,7 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
     private Gas2FluidConverter gasConverter;
     private Slurry2FluidConverter slurryConverter;
 
-    public SidedContentHandler(int inputItemSlots, int outputItemSlots, int inputFluidSlots, int outputFluidSlots) {
+    public SidedContentHandler(int inputItemSlots, int outputItemSlots, int inputFluidSlots, int outputFluidSlots, int...tankCapacities) {
         this.inputItemSlots = inputItemSlots;
         this.outputItemSlots = outputItemSlots;
         this.inputFluidSlots = inputFluidSlots;
@@ -50,7 +50,13 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
             itemCapability = LazyOptional.empty();
         }
         if(inputFluidSlots + outputFluidSlots > 0) {
-            fluidCapability = new FluidCapabilityHandler(inputFluidSlots, outputFluidSlots);
+            int inputTankSize = 10;
+            int outputTankSize = 10;
+            if(tankCapacities.length > 0) {
+                inputTankSize = tankCapacities[0];
+                if(tankCapacities.length > 1) outputTankSize = tankCapacities[1];
+            }
+            fluidCapability = new FluidCapabilityHandler(inputFluidSlots, outputFluidSlots, inputTankSize, outputTankSize);
             fluidCapability.tile = blockEntity;
             fluidCapability.sidedContentHandler = this;
         } else {

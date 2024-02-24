@@ -149,7 +149,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         multiblock = new FusionReactorMultiblock(this);
         contentHandler = new SidedContentHandler(
                 0, 0,
-                3, 5);
+                3, 5, 10, 50);
         contentHandler.setBlockEntity(this);
         contentHandler.fluidCapability.setGlobalMode(0, SlotModePair.SlotMode.INPUT);
         contentHandler.fluidCapability.setGlobalMode(1, SlotModePair.SlotMode.INPUT);

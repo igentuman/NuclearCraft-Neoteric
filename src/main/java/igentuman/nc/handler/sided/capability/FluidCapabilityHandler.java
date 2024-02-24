@@ -24,7 +24,6 @@ import java.util.*;
 import static igentuman.nc.handler.sided.SlotModePair.SlotMode.*;
 
 public class FluidCapabilityHandler extends AbstractCapabilityHandler implements INBTSerializable<CompoundTag> {
-    private final int CAPACITY;
     public final NonNullList<FluidTank> tanks;
     public final NonNullList<LazyOptional<IFluidHandler>> fluidCapabilites;
 
@@ -35,23 +34,22 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler implements
     public HashMap<Integer, List<FluidStack>> allowedFluids;
 
 
-    public FluidCapabilityHandler(int inputSlots, int outputSlots, int amount) {
-        CAPACITY = amount;
+    public FluidCapabilityHandler(int inputSlots, int outputSlots, int inputCapacity, int outputCapacity) {
         tanks = NonNullList.create();
-
-        fluidCapabilites = NonNullList.create();
-        for (int i = 0; i < inputSlots + outputSlots; i++) {
-            int finalI = i;
-            tanks.add(new FluidTank(CAPACITY));
-            fluidCapabilites.add(LazyOptional.of(() -> tanks.get(finalI)));
-        }
         this.inputSlots = inputSlots;
         this.outputSlots = outputSlots;
+        fluidCapabilites = NonNullList.create();
+        for (int i = 0; i < inputSlots; i++) {
+            int finalI = i;
+            tanks.add(new FluidTank(inputCapacity*1000));
+            fluidCapabilites.add(LazyOptional.of(() -> tanks.get(finalI)));
+        }
+        for (int i = inputSlots-1; i < inputSlots+outputSlots; i++) {
+            int finalI = i;
+            tanks.add(new FluidTank(outputCapacity*1000));
+            fluidCapabilites.add(LazyOptional.of(() -> tanks.get(finalI)));
+        }
         initDefault();
-    }
-
-    public FluidCapabilityHandler(int inputSlots, int outputSlots) {
-        this(inputSlots, outputSlots, FluidType.BUCKET_VOLUME*10);
     }
 
     public LazyOptional<FluidHandlerWrapper> getCapability(Direction side) {

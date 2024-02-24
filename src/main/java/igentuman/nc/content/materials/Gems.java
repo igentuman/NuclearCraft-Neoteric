@@ -1,49 +1,16 @@
 package igentuman.nc.content.materials;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.Collection;
 
-
-public class Gems {
-
-    private static HashMap<String, NCMaterialProduct> all;
-    private static HashMap<String, NCMaterialProduct> registered;
-    private boolean initialized = false;
-
-    public static HashMap<String, NCMaterialProduct> registered()
+public class Gems extends AbstractMaterial {
+    protected static String type = "gem";
+    protected static AbstractMaterial instance;
+    public static Gems get()
     {
-        if(registered == null) {
-            registered = new HashMap<>();
-            for(String name: all().keySet()) {
-                if(all().get(name).isRegistered()) {
-                    registered.put(name, all().get(name));
-                }
-            }
+        if(instance == null) {
+            instance = new Gems();
+            instance.items = Materials.gems().values();
         }
-        return registered;
+        return (Gems) instance;
     }
-
-    public static HashMap<String, NCMaterialProduct> all()
-    {
-        if(all == null) {
-            all = new HashMap<>();
-            for (NCMaterial m: Materials.gems().values()) {
-                all.put(m.name, NCMaterialProduct.get(m.name, "gem"));
-            }
-        }
-        return all;
-    }
-
-    public static List<Boolean> initialRegistration()
-    {
-        List<Boolean> tmp = new ArrayList<>();
-        for(NCMaterialProduct item: all().values()) {
-            tmp.add(true);
-        }
-        return tmp;
-    }
-
-
-
 }

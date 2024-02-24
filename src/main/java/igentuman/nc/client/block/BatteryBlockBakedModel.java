@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.Direction;
@@ -42,24 +43,6 @@ public class BatteryBlockBakedModel implements IDynamicBakedModel {
         this.overrides = overrides;
         this.itemTransforms = itemTransforms;
         this.batteryModelGeometry = batteryModelGeometry;
-
-        float l = 0;
-        float r = 1;
-        float p = 1;
-
-        Transformation rotation = modelState.getRotation();
-
-        TextureAtlasSprite textureSide = spriteGetter.apply(batteryModelGeometry.sideDefault);
-        TextureAtlasSprite textureTop = spriteGetter.apply(batteryModelGeometry.topDefault);
-
-        sideQuads = List.of(
-                ClientTools.createQuad(v(r, p, r), v(r, p, l), v(l, p, l), v(l, p, r), rotation, textureTop),
-                ClientTools.createQuad(v(l, l, l), v(r, l, l), v(r, l, r), v(l, l, r), rotation, textureSide),
-                ClientTools.createQuad(v(r, p, r), v(r, l, r), v(r, l, l), v(r, p, l), rotation, textureSide),
-                ClientTools.createQuad(v(l, p, l), v(l, l, l), v(l, l, r), v(l, p, r), rotation, textureSide),
-                ClientTools.createQuad(v(r, p, l), v(r, l, l), v(l, l, l), v(l, p, l), rotation, textureSide),
-                ClientTools.createQuad(v(l, p, r), v(l, l, r), v(r, l, r), v(r, p, r), rotation, textureSide)
-        );
     }
 
     @Override
@@ -68,6 +51,29 @@ public class BatteryBlockBakedModel implements IDynamicBakedModel {
     }
 
     public List<BakedQuad> sideQuads;
+
+    public List<BakedQuad> sideQuads() {
+        if(sideQuads == null) {
+            float l = 0;
+            float r = 1;
+            float p = 1;
+
+            Transformation rotation = modelState.getRotation();
+
+            TextureAtlasSprite textureSide = spriteGetter.apply(batteryModelGeometry.sideDefault);
+            TextureAtlasSprite textureTop = spriteGetter.apply(batteryModelGeometry.topDefault);
+
+            sideQuads = List.of(
+                    ClientTools.createQuad(v(r, p, r), v(r, p, l), v(l, p, l), v(l, p, r), textureTop),
+                    ClientTools.createQuad(v(l, l, l), v(r, l, l), v(r, l, r), v(l, l, r), textureSide),
+                    ClientTools.createQuad(v(r, p, r), v(r, l, r), v(r, l, l), v(r, p, l), textureSide),
+                    ClientTools.createQuad(v(l, p, l), v(l, l, l), v(l, l, r), v(l, p, r), textureSide),
+                    ClientTools.createQuad(v(r, p, l), v(r, l, l), v(l, l, l), v(l, p, l), textureSide),
+                    ClientTools.createQuad(v(l, p, r), v(l, l, r), v(r, l, r), v(r, p, r), textureSide)
+            );
+        }
+        return sideQuads;
+    }
     /**
      * @param state the blockstate for our block
      * @param side the six directions or null for quads that are not at a specific direction
@@ -84,10 +90,10 @@ public class BatteryBlockBakedModel implements IDynamicBakedModel {
         }
         HashMap<Integer, ISizeToggable.SideMode> sideConfig = extraData.get(BatteryBE.SIDE_CONFIG);
         if(sideConfig == null) {
-            return sideQuads;
+            return sideQuads();
         }
         String cacheKey = keyFor(sideConfig.values());
-        if(quadCache.containsKey(cacheKey)) {
+        if(quadCache.containsKey(cacheKey) && quadCache.get(cacheKey) != null) {
             return quadCache.get(cacheKey);
         }
 
@@ -107,12 +113,12 @@ public class BatteryBlockBakedModel implements IDynamicBakedModel {
         }
         quadCache.put(cacheKey,
             List.of(
-                    ClientTools.createQuad(v(r, p, r), v(r, p, l), v(l, p, l), v(l, p, r), rotation, textureTop),
-                    ClientTools.createQuad(v(l, l, l), v(r, l, l), v(r, l, r), v(l, l, r), rotation, getSideTexture(sideConfig, Direction.DOWN)),
-                    ClientTools.createQuad(v(r, p, r), v(r, l, r), v(r, l, l), v(r, p, l), rotation, getSideTexture(sideConfig, Direction.EAST)),
-                    ClientTools.createQuad(v(l, p, l), v(l, l, l), v(l, l, r), v(l, p, r), rotation, getSideTexture(sideConfig, Direction.WEST)),
-                    ClientTools.createQuad(v(r, p, l), v(r, l, l), v(l, l, l), v(l, p, l), rotation, getSideTexture(sideConfig, Direction.NORTH)),
-                    ClientTools.createQuad(v(l, p, r), v(l, l, r), v(r, l, r), v(r, p, r), rotation, getSideTexture(sideConfig, Direction.SOUTH))
+                    ClientTools.createQuad(v(r, p, r), v(r, p, l), v(l, p, l), v(l, p, r), textureTop),
+                    ClientTools.createQuad(v(l, l, l), v(r, l, l), v(r, l, r), v(l, l, r), getSideTexture(sideConfig, Direction.DOWN)),
+                    ClientTools.createQuad(v(r, p, r), v(r, l, r), v(r, l, l), v(r, p, l), getSideTexture(sideConfig, Direction.EAST)),
+                    ClientTools.createQuad(v(l, p, l), v(l, l, l), v(l, l, r), v(l, p, r), getSideTexture(sideConfig, Direction.WEST)),
+                    ClientTools.createQuad(v(r, p, l), v(r, l, l), v(l, l, l), v(l, p, l), getSideTexture(sideConfig, Direction.NORTH)),
+                    ClientTools.createQuad(v(l, p, r), v(l, l, r), v(r, l, r), v(r, p, r), getSideTexture(sideConfig, Direction.SOUTH))
         ));
 
         return quadCache.get(cacheKey);
@@ -136,6 +142,7 @@ public class BatteryBlockBakedModel implements IDynamicBakedModel {
         return textureSide;
     }
 
+
     @Override
     public boolean useAmbientOcclusion() {
         return true;
@@ -152,17 +159,17 @@ public class BatteryBlockBakedModel implements IDynamicBakedModel {
     }
 
     @Override
-    public TextureAtlasSprite getParticleIcon() {
+    public @NotNull TextureAtlasSprite getParticleIcon() {
         return spriteGetter.apply(batteryModelGeometry.sideDefault);
     }
 
     @Override
-    public ItemOverrides getOverrides() {
+    public @NotNull ItemOverrides getOverrides() {
         return overrides;
     }
 
     @Override
-    public ItemTransforms getTransforms() {
+    public @NotNull ItemTransforms getTransforms() {
         return itemTransforms;
     }
 }

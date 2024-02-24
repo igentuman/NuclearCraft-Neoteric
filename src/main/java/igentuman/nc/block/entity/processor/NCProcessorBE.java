@@ -644,7 +644,7 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
 
     public boolean isInputAllowed(ItemStack stack) {
         for(ItemStack allowed: getAllowedInputItems()) {
-            if(ItemStack.isSameItem(allowed, stack)) {
+            if(ItemStack.isSame(allowed, stack)) {
                 return true;
             }
         }

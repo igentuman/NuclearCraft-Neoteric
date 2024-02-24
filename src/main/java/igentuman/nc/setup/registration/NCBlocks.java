@@ -138,7 +138,7 @@ public class NCBlocks {
     }
 
     private static void registerBlocks() {
-        for(String name: Blocks.registered().keySet()) {
+        for(String name: Blocks.get().registered().keySet()) {
             BLOCK_TAGS.put(name, TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation("forge","storage_blocks/"+name)));
             BLOCK_ITEM_TAGS.put(name, TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("forge", "storage_blocks/"+name)));
             if(name.matches("graphite|beryllium")) {

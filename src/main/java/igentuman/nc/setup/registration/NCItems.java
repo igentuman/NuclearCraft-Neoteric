@@ -236,7 +236,7 @@ public class NCItems {
     }
 
     private static void registerGems() {
-        for(String name: Gems.registered().keySet()) {
+        for(String name: Gems.get().registered().keySet()) {
             GEMS_TAG.put(name, TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("forge", "gems/"+name)));
             NC_GEMS.put(name, ITEMS.register(name+"_gem", () -> new Item(ITEM_PROPERTIES)));
             ALL_NC_ITEMS.put(name+"_gem", NC_GEMS.get(name));
@@ -244,7 +244,7 @@ public class NCItems {
     }
 
     private static void registerChunks() {
-        for(String name: Chunks.registered().keySet()) {
+        for(String name: Chunks.get().registered().keySet()) {
             CHUNKS_TAG.put(name, TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("forge", "raw_materials/"+name)));
             NC_CHUNKS.put(name, ITEMS.register(name+"_chunk", () -> new Item(ITEM_PROPERTIES)));
             ALL_NC_ITEMS.put(name+"_chunk", NC_CHUNKS.get(name));
@@ -252,7 +252,7 @@ public class NCItems {
     }
 
     private static void registerNuggets() {
-        for(String name: Nuggets.registered().keySet()) {
+        for(String name: Nuggets.get().registered().keySet()) {
             NUGGETS_TAG.put(name, TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("forge", "nuggets/"+name)));
             NC_NUGGETS.put(name, ITEMS.register(name+"_nugget", () -> new Item(ITEM_PROPERTIES)));
             ALL_NC_ITEMS.put(name+"_nugget", NC_NUGGETS.get(name));
@@ -260,7 +260,7 @@ public class NCItems {
     }
 
     private static void registerIngots() {
-        for(String name: Ingots.registered().keySet()) {
+        for(String name: Ingots.get().registered().keySet()) {
             INGOTS_TAG.put(name, TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("forge", "ingots/"+name)));
             NC_INGOTS.put(name, ITEMS.register(name+"_ingot", () -> new Item(ITEM_PROPERTIES)));
             ALL_NC_ITEMS.put(name+"_ingot", NC_INGOTS.get(name));
@@ -268,7 +268,7 @@ public class NCItems {
     }
 
     private static void registerPlates() {
-        for(String name: Plates.registered().keySet()) {
+        for(String name: Plates.get().registered().keySet()) {
             PLATES_TAG.put(name, TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("forge", "plates/"+name)));
             NC_PLATES.put(name, ITEMS.register(name+"_plate", () -> new Item(ITEM_PROPERTIES)));
             ALL_NC_ITEMS.put(name+"_plate", NC_PLATES.get(name));
@@ -276,7 +276,7 @@ public class NCItems {
     }
 
     private static void registerDusts() {
-        for(String name: Dusts.registered().keySet()) {
+        for(String name: Dusts.get().registered().keySet()) {
             DUSTS_TAG.put(name, TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("forge", "dusts/"+name)));
             NC_DUSTS.put(name, ITEMS.register(name+"_dust", () -> new Item(ITEM_PROPERTIES)));
             ALL_NC_ITEMS.put(name+"_dust", NC_DUSTS.get(name));

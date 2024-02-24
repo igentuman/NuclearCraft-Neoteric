@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/fluid/aqua_regia_acid"
+      "model": "nuclearcraft_fluids:block/fluid/aqua_regia_acid"
     }
   }
 }

@@ -34,18 +34,21 @@ public class NCLootTables extends BaseLootTableProvider {
         }
     }
     private void blocks() {
-        for(String name: NCBlocks.NC_BLOCKS.keySet()) {
-            add(NCBlocks.NC_BLOCKS.get(name).get(), block -> createSimpleTable("block", NCBlocks.NC_BLOCKS.get(name).get()));
+        for(RegistryObject<Block> block: NCBlocks.NC_BLOCKS.values()) {
+            add(block);
         }
-        for(String name: FISSION_BLOCKS.keySet()) {
-            add(FISSION_BLOCKS.get(name).get(), block -> createSimpleTable("block", FISSION_BLOCKS.get(name).get()));
+
+        FISSION_BLOCKS.values().forEach(this::add);
+        for(RegistryObject<Block> block: FUSION_BLOCKS.values()) {
+            add(block);
         }
-        for(String name: FUSION_BLOCKS.keySet()) {
-            add(FUSION_BLOCKS.get(name).get(), block -> createSimpleTable("block", FUSION_BLOCKS.get(name).get()));
+        for(RegistryObject<Block> block: TURBINE_BLOCKS.values()) {
+            add(block);
         }
-        for(String name: TURBINE_BLOCKS.keySet()) {
-            add(TURBINE_BLOCKS.get(name).get(), createSimpleTable("block", TURBINE_BLOCKS.get(name).get()));
-        }
+    }
+
+    private void add(RegistryObject<Block> regBlock) {
+        add(regBlock.get(), block -> createSimpleTable("block", regBlock.get()));
     }
 
     private void machines() {
@@ -80,6 +83,7 @@ public class NCLootTables extends BaseLootTableProvider {
         all.addAll(NC_BLOCKS.values().stream().map(RegistryObject::get).toList());
         all.addAll(FISSION_BLOCKS.values().stream().map(RegistryObject::get).toList());
         all.addAll(FUSION_BLOCKS.values().stream().map(RegistryObject::get).toList());
+        all.addAll(TURBINE_BLOCKS.values().stream().map(RegistryObject::get).toList());
         all.addAll(PROCESSORS.values().stream().map(RegistryObject::get).toList());
         all.addAll(ENERGY_BLOCKS.values().stream().map(RegistryObject::get).toList());
         all.addAll(STORAGE_BLOCKS.values().stream().map(RegistryObject::get).toList());

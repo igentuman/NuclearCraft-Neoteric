@@ -49,6 +49,8 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.mojang.math.Axis.XP;
+import static com.mojang.math.Axis.YP;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.item.QNP.getMode;
 
@@ -141,8 +143,8 @@ public class BlockOverlayHandler {
             PoseStack stack = new PoseStack();
             stack.pushPose();
             Camera info = event.getCamera();
-            //stack.mulPose(Vector3d.XP.rotationDegrees(info.getXRot()));
-           // stack.mulPose(Vector3f.YP.rotationDegrees(info.getYRot() + 180));
+            stack.mulPose(XP.rotationDegrees(info.getXRot()));
+            stack.mulPose(YP.rotationDegrees(info.getYRot() + 180));
             double d0 = info.getPosition().x();
             double d1 = info.getPosition().y();
             double d2 = info.getPosition().z();
@@ -174,8 +176,8 @@ public class BlockOverlayHandler {
             PoseStack stack = new PoseStack();
             stack.pushPose();
             Camera info = event.getCamera();
-           // stack.mulPose(Vector3f.XP.rotationDegrees(info.getXRot()));
-           // stack.mulPose(Vector3f.YP.rotationDegrees(info.getYRot() + 180));
+            stack.mulPose(XP.rotationDegrees(info.getXRot()));
+            stack.mulPose(YP.rotationDegrees(info.getYRot() + 180));
             double d0 = info.getPosition().x();
             double d1 = info.getPosition().y();
             double d2 = info.getPosition().z();

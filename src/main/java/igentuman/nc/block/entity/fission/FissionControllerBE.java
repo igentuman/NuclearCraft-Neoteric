@@ -253,7 +253,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         double heatEff =  cooling * FISSION_CONFIG.BOILING_MULTIPLIER.get();
 
         if(hasCoolant()) {
-            FluidStack steam = boilingRecipe.getOutputFluids()[0];
+            FluidStack steam = boilingRecipe.getOutputFluids().get(0);
             FluidStack coolant = boilingRecipe.getInputFluids(0).get(0);
             double conversion = heatEff/boilingRecipe.conversionRate();
             FluidStack currentCoolant = contentHandler.fluidCapability.getFluidInSlot(0);
@@ -816,7 +816,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
 
     public static class Recipe extends NcRecipe {
 
-        public Recipe(ResourceLocation id, ItemStackIngredient[] input, ItemStack[] output, FluidStackIngredient[] inputFluids, FluidStack[] outputFluids, double timeModifier, double powerModifier, double heatModifier, double rarity) {
+        public Recipe(ResourceLocation id, ItemStackIngredient[] input, ItemStackIngredient[] output, FluidStackIngredient[] inputFluids, FluidStackIngredient[] outputFluids, double timeModifier, double powerModifier, double heatModifier, double rarity) {
             super(id, input, output, timeModifier, powerModifier, heatModifier, rarity);
             CATALYSTS.put(codeId, List.of(getToastSymbol()));
         }
@@ -865,7 +865,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     public static class FissionBoilingRecipe extends NcRecipe {
         protected double conversionRate;
 
-        public FissionBoilingRecipe(ResourceLocation id, ItemStackIngredient[] input, ItemStack[] output, FluidStackIngredient[] inputFluids, FluidStack[] outputFluids, double conversionRate, double powerModifier, double radiation, double rar) {
+        public FissionBoilingRecipe(ResourceLocation id, ItemStackIngredient[] input, ItemStackIngredient[] output, FluidStackIngredient[] inputFluids, FluidStackIngredient[] outputFluids, double conversionRate, double powerModifier, double radiation, double rar) {
             super(id, input, output, inputFluids, outputFluids, conversionRate, powerModifier, radiation, rar);
             this.conversionRate = conversionRate;
         }

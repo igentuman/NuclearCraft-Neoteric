@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 288,
-      "fluid": "nuclearcraft:tough_alloy"
+      "tag": "forge:tough_alloy"
     }
   ],
   "powerModifier": 1.0,

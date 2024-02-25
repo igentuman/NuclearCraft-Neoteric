@@ -7,7 +7,7 @@
   ],
   "output": [
     {
-      "item": "nuclearcraft:tough_alloy_dust"
+      "tag": "forge:dusts/tough_alloy"
     }
   ],
   "powerModifier": 1.0,

@@ -9,7 +9,7 @@
   "outputFluids": [
     {
       "amount": 1000,
-      "fluid": "nuclearcraft:condensate_water"
+      "tag": "forge:condensate_water"
     }
   ],
   "powerModifier": 1.0,

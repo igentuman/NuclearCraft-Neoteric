@@ -1,15 +1,9 @@
 package igentuman.nc.datagen.recipes.builder;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import igentuman.nc.container.elements.NCSlotItemHandler;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
-import igentuman.nc.recipes.ingredient.InputIngredient;
-import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.ingredient.NcIngredient;
-import igentuman.nc.recipes.ingredient.creator.FluidStackIngredientCreator;
-import igentuman.nc.recipes.ingredient.creator.IngredientCreatorAccess;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -26,7 +20,7 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
     private List<NcIngredient> inputItems = List.of();
     private List<NcIngredient> outputItems = List.of();
     private List<FluidStackIngredient> inputFluids = List.of();
-    private List<FluidStack> outputFluids = List.of();
+    private List<FluidStackIngredient> outputFluids = List.of();
     private static NcRecipeBuilder instance;
     private double timeModifier = 1D;
     private double radiation = 1D;
@@ -62,7 +56,8 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
         return instance;
     }
 
-    public NcRecipeBuilder fluids(List<FluidStackIngredient> input, List<FluidStack> output) {
+
+    public NcRecipeBuilder fluids(List<FluidStackIngredient> input, List<FluidStackIngredient> output) {
         instance.inputFluids = input;
         instance.outputFluids = output;
         return instance;
@@ -99,8 +94,8 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
             name.append(in.getName()).append("-");
         }
         if(useInputForId) {
-            for(FluidStack out: outputFluids) {
-                name.append(out.getFluid().getFluidType().getDescriptionId()).append("-");
+            for(FluidStackIngredient out: outputFluids) {
+                name.append(out.getName()).append("-");
             }
         }
         name.replace(name.length()-1, name.length(), "");
@@ -185,10 +180,10 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
             }
 
             outJson = new JsonArray();
-            for (FluidStack out: outputFluids) {
-                outJson.add(serializeFluidStack(out));
-            }
             if(!outputFluids.isEmpty()) {
+                for (FluidStackIngredient out: outputFluids) {
+                    outJson.add(out.serialize());
+                }
                 json.add("outputFluids", outJson);
             }
             if(heatRequired > 0) {

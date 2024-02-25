@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 216,
-      "fluid": "nuclearcraft:polonium"
+      "tag": "forge:polonium"
     }
   ],
   "powerModifier": 1.0,

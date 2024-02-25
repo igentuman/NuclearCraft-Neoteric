@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import static igentuman.nc.setup.registration.NCItems.NC_PARTS;
 
 public class OreVeinRecipe extends NcRecipe {
-    public OreVeinRecipe(ResourceLocation id, ItemStackIngredient[] input, ItemStack[] output, FluidStackIngredient[] inputFluids, FluidStack[] outputFluids, double timeModifier, double powerModifier, double radiation, double rarityModifier) {
+    public OreVeinRecipe(ResourceLocation id, ItemStackIngredient[] input, ItemStackIngredient[] output, FluidStackIngredient[] inputFluids, FluidStackIngredient[] outputFluids, double timeModifier, double powerModifier, double radiation, double rarityModifier) {
         super(id, input, output, timeModifier, powerModifier, radiation, rarityModifier);
     }
 

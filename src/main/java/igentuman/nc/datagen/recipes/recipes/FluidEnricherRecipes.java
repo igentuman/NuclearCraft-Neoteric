@@ -22,83 +22,83 @@ public class FluidEnricherRecipes extends AbstractRecipeProvider {
         add(
                 fluidIngredient(Materials.potassium_hydroxide, 4000),
                 dustIngredient(Materials.iodine),
-                fluidStack(Materials.potassium_iodide, 144)
+                fluidIngredient(Materials.potassium_iodide, 144)
         );
 
         add(
                 fluidIngredient("minecraft:water", 5000),
                 dustIngredient(Materials.coal),
-                fluidStack("technical_water", 5000)
+                fluidIngredient("technical_water", 5000)
         );
 
         add(
                 fluidIngredient("oxygen", 100),
                 dustIngredient(Materials.uranium),
-                fluidStack("uranium_oxide", 500)
+                fluidIngredient("uranium_oxide", 500)
         );
 
         add(
                 fluidIngredient("minecraft:water", 1000),
                 dustIngredient(Materials.boron_nitride),
-                fluidStack("boron_nitride_solution", 250)
+                fluidIngredient("boron_nitride_solution", 250)
         );
 
         add(
                 fluidIngredient("minecraft:water", 1000),
                 dustIngredient(Materials.fluorite),
-                fluidStack("fluorite_water", 250)
+                fluidIngredient("fluorite_water", 250)
         );
 
         add(
                 fluidIngredient("minecraft:water", 1000),
                 dustIngredient(Materials.calcium_sulfate),
-                fluidStack("calcium_sulfate_solution", 250)
+                fluidIngredient("calcium_sulfate_solution", 250)
         );
 
         add(
                 fluidIngredient("minecraft:water", 1000),
                 dustIngredient(Materials.sodium_fluoride),
-                fluidStack("sodium_fluoride_solution", 250)
+                fluidIngredient("sodium_fluoride_solution", 250)
         );
 
         add(
                 fluidIngredient("minecraft:water", 1000),
                 dustIngredient(Materials.potassium_fluoride),
-                fluidStack("potassium_fluoride_solution", 250)
+                fluidIngredient("potassium_fluoride_solution", 250)
         );
 
         add(
                 fluidIngredient("minecraft:water", 1000),
                 dustIngredient(Materials.sodium_hydroxide),
-                fluidStack("sodium_hydroxide_solution", 250)
+                fluidIngredient("sodium_hydroxide_solution", 250)
         );
 
         add(
                 fluidIngredient("minecraft:water", 1000),
                 dustIngredient(Materials.borax),
-                fluidStack("borax_solution", 250)
+                fluidIngredient("borax_solution", 250)
         );
 
         add(
                 fluidIngredient("minecraft:water", 1000),
                 dustIngredient(Materials.irradiated_borax),
-                fluidStack("irradiated_borax_solution", 250)
+                fluidIngredient("irradiated_borax_solution", 250)
         );
 
         add(
                 fluidIngredient("ethanol", 250),
                 ingredient(MUSHROOM_ITEM.get(), 3),
-                fluidStack("radaway", 250)
+                fluidIngredient("radaway", 250)
         );
 
         add(
                 fluidIngredient("redstone_ethanol", 250),
                 ingredient(MUSHROOM_ITEM.get(), 3),
-                fluidStack("radaway_slow", 250)
+                fluidIngredient("radaway_slow", 250)
         );
     }
 
-    protected static void add(FluidStackIngredient inputFluid, NcIngredient inputItem, FluidStack output, double...modifiers) {
+    protected static void add(FluidStackIngredient inputFluid, NcIngredient inputItem, FluidStackIngredient output, double...modifiers) {
         itemsAndFluids(List.of(inputItem), new ArrayList<>(), List.of(inputFluid), List.of(output), modifiers);
     }
 }

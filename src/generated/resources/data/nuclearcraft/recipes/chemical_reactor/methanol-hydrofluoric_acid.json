@@ -13,11 +13,11 @@
   "outputFluids": [
     {
       "amount": 250,
-      "fluid": "nuclearcraft:fluoromethane"
+      "tag": "forge:fluoromethane"
     },
     {
       "amount": 250,
-      "fluid": "minecraft:water"
+      "tag": "minecraft:water"
     }
   ],
   "powerModifier": 0.5,

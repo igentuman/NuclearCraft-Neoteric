@@ -4,6 +4,7 @@ import igentuman.nc.content.fuel.FuelManager;
 import igentuman.nc.content.materials.Materials;
 import igentuman.nc.content.materials.NCMaterial;
 import igentuman.nc.content.processors.Processors;
+import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.NcIngredient;
 import igentuman.nc.setup.registration.Fuel;
 import igentuman.nc.setup.registration.NCItems;
@@ -23,11 +24,11 @@ public class ExtractorRecipes extends AbstractRecipeProvider {
     public static void generate(Consumer<FinishedRecipe> consumer) {
         ExtractorRecipes.consumer = consumer;
         ID = Processors.EXTRACTOR;
-        add(ingredient(ALL_NC_ITEMS.get("ground_cocoa_nibs").get()), ingredient(ALL_NC_ITEMS.get("cocoa_solids").get()), fluidStack("cocoa_butter", 144));
+        add(ingredient(ALL_NC_ITEMS.get("ground_cocoa_nibs").get()), ingredient(ALL_NC_ITEMS.get("cocoa_solids").get()), fluidIngredient("cocoa_butter", 144));
 
     }
 
-    protected static void add(NcIngredient inputItem, NcIngredient outputItem, FluidStack outputFluid, double...modifiers) {
+    protected static void add(NcIngredient inputItem, NcIngredient outputItem, FluidStackIngredient outputFluid, double...modifiers) {
         itemsAndFluids(List.of(inputItem), List.of(outputItem), new ArrayList<>(), List.of(outputFluid), modifiers);
     }
 }

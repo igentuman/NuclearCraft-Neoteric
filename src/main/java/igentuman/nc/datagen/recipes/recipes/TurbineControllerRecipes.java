@@ -19,19 +19,19 @@ public class TurbineControllerRecipes extends AbstractRecipeProvider {
 
         add(
                 fluidIngredient("steam", 10),
-                fluidStack(WATER, 10),
+                fluidIngredient("minecraft:water", 10),
                 1.5D
         );
 
         add(
                 fluidIngredient("high_pressure_steam", 10),
-                fluidStack("exhaust_steam", 10),
+                fluidIngredient("exhaust_steam", 10),
                 2D, 2.5D
         );
 
     }
 
-    protected static void add(FluidStackIngredient input, FluidStack output, double...modifiers) {
+    protected static void add(FluidStackIngredient input, FluidStackIngredient output, double...modifiers) {
         fluidsAndFluids(List.of(input), List.of(output), modifiers);
     }
 }

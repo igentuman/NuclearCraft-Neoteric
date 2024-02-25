@@ -7,7 +7,7 @@
   ],
   "output": [
     {
-      "item": "nuclearcraft:electrum_dust"
+      "tag": "forge:dusts/electrum"
     }
   ],
   "powerModifier": 1.0,

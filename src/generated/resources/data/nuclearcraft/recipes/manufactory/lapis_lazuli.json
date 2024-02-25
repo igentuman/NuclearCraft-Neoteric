@@ -7,7 +7,7 @@
   ],
   "output": [
     {
-      "item": "nuclearcraft:lapis_dust"
+      "tag": "forge:dusts/lapis"
     }
   ],
   "powerModifier": 1.0,

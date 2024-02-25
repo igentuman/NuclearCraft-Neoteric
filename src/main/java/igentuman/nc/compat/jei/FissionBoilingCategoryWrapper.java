@@ -103,7 +103,7 @@ public class FissionBoilingCategoryWrapper<T extends FissionControllerBE.Fission
 
         builder.addSlot(RecipeIngredientRole.OUTPUT, 75, 6)
                 .addIngredients(ForgeTypes.FLUID_STACK, recipe.getOutputFluids(0))
-                .setFluidRenderer(recipe.getOutputFluids()[0].getAmount(), false, 16, 16);
+                .setFluidRenderer(recipe.getOutputFluids().get(0).getAmount(), false, 16, 16);
         slots[1] = guiHelper.createDrawable(rl("textures/gui/widgets.png"), 18, 0, 18, 18);
 
     }

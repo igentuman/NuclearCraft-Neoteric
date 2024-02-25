@@ -13,7 +13,7 @@
   "outputFluids": [
     {
       "amount": 1000,
-      "fluid": "nuclearcraft:nitric_acid"
+      "tag": "forge:nitric_acid"
     }
   ],
   "powerModifier": 0.4,

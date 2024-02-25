@@ -23,9 +23,9 @@ public abstract class NcRecipe extends AbstractRecipe {
     public NcRecipe(
             ResourceLocation id,
             ItemStackIngredient[] inputItems,
-            ItemStack[] outputItems,
+            ItemStackIngredient[] outputItems,
             FluidStackIngredient[] inputFluids,
-            FluidStack[] outputFluids,
+            FluidStackIngredient[] outputFluids,
             double timeModifier,
             double powerModifier,
             double radiationModifier,
@@ -50,26 +50,25 @@ public abstract class NcRecipe extends AbstractRecipe {
     public NcRecipe(
             ResourceLocation id,
             ItemStackIngredient[] inputItems,
-            ItemStack[] outputItems,
+            ItemStackIngredient[] outputItems,
             double timeModifier,
             double powerModifier,
             double radiationModifier,
             double rarityModifier
     ) {
-
-        this(id, inputItems, outputItems, new FluidStackIngredient[0], new FluidStack[0], timeModifier, powerModifier, radiationModifier, rarityModifier);
+        this(id, inputItems, outputItems, new FluidStackIngredient[0], new FluidStackIngredient[0], timeModifier, powerModifier, radiationModifier, rarityModifier);
     }
 
     public NcRecipe(
             ResourceLocation id,
             FluidStackIngredient[] inputFluids,
-            FluidStack[] outputFluids,
+            FluidStackIngredient[] outputFluids,
             double timeModifier,
             double powerModifier,
             double radiationModifier,
             double rarityModifier
     ) {
-            this(id, new ItemStackIngredient[0], new ItemStack[0], inputFluids, outputFluids, timeModifier, powerModifier, radiationModifier, rarityModifier);
+            this(id, new ItemStackIngredient[0], new ItemStackIngredient[0], inputFluids, outputFluids, timeModifier, powerModifier, radiationModifier, rarityModifier);
     }
 
 
@@ -82,9 +81,8 @@ public abstract class NcRecipe extends AbstractRecipe {
         }
 
         buffer.writeInt(outputItems.length);
-        for (ItemStack output : outputItems) {
-            output = output == null ? ItemStack.EMPTY : output;
-            buffer.writeItem(output);
+        for (ItemStackIngredient output : inputItems) {
+            output.write(buffer);
         }
 
         buffer.writeInt(inputFluids.length);
@@ -93,9 +91,8 @@ public abstract class NcRecipe extends AbstractRecipe {
         }
 
         buffer.writeInt(outputFluids.length);
-        for (FluidStack output : outputFluids) {
-            output = output == null ? FluidStack.EMPTY : output;
-            buffer.writeFluidStack(output);
+        for (FluidStackIngredient output : outputFluids) {
+            output.write(buffer);
         }
 
         buffer.writeDouble(timeModifier);

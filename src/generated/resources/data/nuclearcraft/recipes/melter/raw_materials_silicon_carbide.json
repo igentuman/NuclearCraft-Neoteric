@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 216,
-      "fluid": "nuclearcraft:silicon_carbide"
+      "tag": "forge:silicon_carbide"
     }
   ],
   "powerModifier": 1.0,

@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 144,
-      "fluid": "nuclearcraft:californium_250_ni"
+      "tag": "forge:californium/250_ni"
     }
   ],
   "powerModifier": 1.0,

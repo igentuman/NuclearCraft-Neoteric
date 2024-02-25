@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 288,
-      "fluid": "nuclearcraft:ruthenium_106"
+      "tag": "forge:ruthenium_106"
     }
   ],
   "powerModifier": 1.0,

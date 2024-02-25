@@ -7,7 +7,7 @@
   ],
   "output": [
     {
-      "item": "nuclearcraft:tungsten_dust"
+      "tag": "forge:dusts/tungsten"
     }
   ],
   "powerModifier": 1.0,

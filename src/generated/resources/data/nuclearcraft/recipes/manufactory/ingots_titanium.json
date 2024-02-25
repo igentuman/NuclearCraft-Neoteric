@@ -7,7 +7,7 @@
   ],
   "output": [
     {
-      "item": "nuclearcraft:titanium_dust"
+      "tag": "forge:dusts/titanium"
     }
   ],
   "powerModifier": 1.0,

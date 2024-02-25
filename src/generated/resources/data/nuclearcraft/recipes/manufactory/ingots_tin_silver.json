@@ -7,7 +7,7 @@
   ],
   "output": [
     {
-      "item": "nuclearcraft:tin_silver_dust"
+      "tag": "forge:dusts/tin_silver"
     }
   ],
   "powerModifier": 1.0,

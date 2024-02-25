@@ -7,7 +7,7 @@
   ],
   "output": [
     {
-      "item": "nuclearcraft:yttrium_dust"
+      "tag": "forge:dusts/yttrium"
     }
   ],
   "powerModifier": 1.0,

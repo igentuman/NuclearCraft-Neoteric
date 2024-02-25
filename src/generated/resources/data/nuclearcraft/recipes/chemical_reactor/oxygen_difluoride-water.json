@@ -13,11 +13,11 @@
   "outputFluids": [
     {
       "amount": 250,
-      "fluid": "nuclearcraft:liquid_oxygen"
+      "tag": "forge:liquid_oxygen"
     },
     {
       "amount": 250,
-      "fluid": "nuclearcraft:hydrofluoric_acid"
+      "tag": "forge:hydrofluoric_acid"
     }
   ],
   "powerModifier": 0.5,

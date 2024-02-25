@@ -7,7 +7,7 @@
   ],
   "output": [
     {
-      "item": "nuclearcraft:graphite_dust"
+      "tag": "forge:dusts/graphite"
     }
   ],
   "powerModifier": 1.0,

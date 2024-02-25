@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 144,
-      "fluid": "nuclearcraft:lithium_7_ox"
+      "tag": "forge:lithium/7_ox"
     }
   ],
   "powerModifier": 1.0,

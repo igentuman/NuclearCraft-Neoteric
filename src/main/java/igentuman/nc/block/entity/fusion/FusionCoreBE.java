@@ -610,7 +610,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
 
     protected void extractCoolant(int ops) {
         contentHandler.fluidCapability.tanks.get(2).drain(coolantRecipe.getInputFluids()[0].getAmount()*ops, EXECUTE);
-        FluidStack output = coolantRecipe.getOutputFluids()[0].copy();
+        FluidStack output = coolantRecipe.getOutputFluids().get(0).copy();
         output.setAmount(output.getAmount()*ops);
         contentHandler.fluidCapability.tanks.get(3).fill(output, EXECUTE);
     }
@@ -975,7 +975,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
     }
 
     public static class Recipe extends NcRecipe {
-        public Recipe(ResourceLocation id, ItemStackIngredient[] input, ItemStack[] output, FluidStackIngredient[] inputFluids, FluidStack[] outputFluids, double timeModifier, double powerModifier, double radiation, double temperature) {
+        public Recipe(ResourceLocation id, ItemStackIngredient[] input, ItemStackIngredient[] output, FluidStackIngredient[] inputFluids, FluidStackIngredient[] outputFluids, double timeModifier, double powerModifier, double radiation, double temperature) {
             super(id, input, output, inputFluids, outputFluids, timeModifier, powerModifier, radiation, temperature);
         }
 
@@ -1020,7 +1020,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
     public static class FusionCoolantRecipe extends NcRecipe {
         protected double coolingRate;
 
-        public FusionCoolantRecipe(ResourceLocation id, ItemStackIngredient[] input, ItemStack[] output, FluidStackIngredient[] inputFluids, FluidStack[] outputFluids, double temperature, double powerModifier, double radiation, double rar) {
+        public FusionCoolantRecipe(ResourceLocation id, ItemStackIngredient[] input, ItemStackIngredient[] output, FluidStackIngredient[] inputFluids, FluidStackIngredient[] outputFluids, double temperature, double powerModifier, double radiation, double rar) {
             super(id, input, output, inputFluids, outputFluids, temperature, powerModifier, radiation, rar);
             coolingRate = temperature;
         }

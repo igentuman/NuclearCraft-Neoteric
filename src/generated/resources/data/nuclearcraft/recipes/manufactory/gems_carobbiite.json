@@ -7,7 +7,7 @@
   ],
   "output": [
     {
-      "item": "nuclearcraft:potassium_fluoride_dust"
+      "tag": "forge:dusts/potassium_fluoride"
     }
   ],
   "powerModifier": 1.0,

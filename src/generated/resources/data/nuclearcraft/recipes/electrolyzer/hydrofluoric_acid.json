@@ -3,17 +3,17 @@
   "inputFluids": [
     {
       "amount": 250,
-      "fluid": "nuclearcraft:hydrofluoric_acid"
+      "tag": "forge:hydrofluoric_acid"
     }
   ],
   "outputFluids": [
     {
       "amount": 250,
-      "fluid": "nuclearcraft:hydrogen"
+      "tag": "forge:hydrogen"
     },
     {
       "amount": 250,
-      "fluid": "nuclearcraft:fluorine"
+      "tag": "forge:fluorine"
     }
   ],
   "powerModifier": 1.0,

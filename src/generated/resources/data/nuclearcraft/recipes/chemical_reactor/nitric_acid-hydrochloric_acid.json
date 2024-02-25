@@ -13,7 +13,7 @@
   "outputFluids": [
     {
       "amount": 1000,
-      "fluid": "nuclearcraft:aqua_regia_acid"
+      "tag": "forge:aqua_regia_acid"
     }
   ],
   "powerModifier": 1.0,

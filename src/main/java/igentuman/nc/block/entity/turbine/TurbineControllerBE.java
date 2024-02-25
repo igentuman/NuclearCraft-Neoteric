@@ -584,7 +584,7 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
 
     public static class Recipe extends NcRecipe {
 
-        public Recipe(ResourceLocation id, ItemStackIngredient[] input, ItemStack[] output, FluidStackIngredient[] inputFluids, FluidStack[] outputFluids, double timeModifier, double powerModifier, double heatModifier, double rarity) {
+        public Recipe(ResourceLocation id, ItemStackIngredient[] input, ItemStackIngredient[] output, FluidStackIngredient[] inputFluids, FluidStackIngredient[] outputFluids, double timeModifier, double powerModifier, double heatModifier, double rarity) {
             super(id, input, output, timeModifier, powerModifier, heatModifier, rarity);
             CATALYSTS.put(codeId, List.of(getToastSymbol()));
         }

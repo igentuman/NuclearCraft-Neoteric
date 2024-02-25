@@ -7,7 +7,7 @@
   ],
   "output": [
     {
-      "item": "nuclearcraft:gold_dust"
+      "tag": "forge:dusts/gold"
     }
   ],
   "powerModifier": 1.0,

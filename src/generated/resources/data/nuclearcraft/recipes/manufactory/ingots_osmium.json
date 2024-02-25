@@ -7,7 +7,7 @@
   ],
   "output": [
     {
-      "item": "nuclearcraft:osmium_dust"
+      "tag": "forge:dusts/osmium"
     }
   ],
   "powerModifier": 1.0,

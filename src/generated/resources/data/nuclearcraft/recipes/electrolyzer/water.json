@@ -3,17 +3,17 @@
   "inputFluids": [
     {
       "amount": 500,
-      "fluid": "minecraft:water"
+      "tag": "minecraft:water"
     }
   ],
   "outputFluids": [
     {
       "amount": 500,
-      "fluid": "nuclearcraft:hydrogen"
+      "tag": "forge:hydrogen"
     },
     {
       "amount": 250,
-      "fluid": "nuclearcraft:oxygen"
+      "tag": "forge:oxygen"
     }
   ],
   "powerModifier": 1.0,

@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 144,
-      "fluid": "nuclearcraft:boron_10_ox"
+      "tag": "forge:boron/10_ox"
     }
   ],
   "powerModifier": 1.0,

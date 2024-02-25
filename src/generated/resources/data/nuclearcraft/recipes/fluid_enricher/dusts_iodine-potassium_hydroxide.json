@@ -14,7 +14,7 @@
   "outputFluids": [
     {
       "amount": 144,
-      "fluid": "nuclearcraft:potassium_iodide"
+      "tag": "forge:potassium_iodide"
     }
   ],
   "powerModifier": 1.0,

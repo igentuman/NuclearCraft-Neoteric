@@ -7,7 +7,7 @@
   ],
   "output": [
     {
-      "item": "nuclearcraft:potassium_dust"
+      "tag": "forge:dusts/potassium"
     }
   ],
   "powerModifier": 1.0,

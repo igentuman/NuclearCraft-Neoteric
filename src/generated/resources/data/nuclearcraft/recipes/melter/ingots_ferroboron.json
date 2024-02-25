@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 144,
-      "fluid": "nuclearcraft:ferroboron"
+      "tag": "forge:ferroboron"
     }
   ],
   "powerModifier": 1.0,

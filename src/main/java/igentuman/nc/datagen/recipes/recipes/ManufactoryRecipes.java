@@ -18,32 +18,33 @@ public class ManufactoryRecipes extends AbstractRecipeProvider {
         ID = Processors.MANUFACTORY;
         for(String name: Materials.all().keySet()) {
             if(NCItems.NC_DUSTS.containsKey(name) && NCItems.INGOTS_TAG.containsKey(name)) {
-                itemToItem(ingotIngredient(name), dustStack(name));
+                itemToItem(ingotIngredient(name), dustIngredient(name));
                 continue;
             }
             if(NCItems.GEMS_TAG.containsKey(name) && NCItems.NC_DUSTS.containsKey(name)) {
                 if(Materials.villiaumite.equals(name) || Materials.carobbiite.equals(name)) continue;
-                itemToItem(gemIngredient(name), dustStack(name), 1.5D);
+                itemToItem(gemIngredient(name), dustIngredient(name), 1.5D);
             }
         }
-        itemToItem(dustIngredient(Materials.coal), dustStack(Materials.graphite), 0.5D, 1D);
-        itemToItem(ingredient(COAL), dustStack(Materials.coal), 0.5D, 1D);
-        itemToItem(ingredient(CHARCOAL), dustStack(Materials.charcoal), 0.5D, 0.5D);
+        itemToItem(dustIngredient(Materials.coal), dustIngredient(Materials.graphite), 0.5D, 1D);
+        itemToItem(ingredient(COAL), dustIngredient(Materials.coal), 0.5D, 1D);
+        itemToItem(ingredient(CHARCOAL), dustIngredient(Materials.charcoal), 0.5D, 0.5D);
 
-        itemToItem(ingredient(DIAMOND), dustStack(Materials.diamond), 1.5D, 1.5D);
-        itemToItem(ingredient(EMERALD), dustStack(Materials.emerald), 1.2D, 1.2D);
-        itemToItem(ingredient(QUARTZ), dustStack(Materials.quartz));
-        itemToItem(ingotIngredient("iron"), dustStack(Materials.iron), 1.2D);
-        itemToItem(ingotIngredient("netherite"), dustStack(Materials.netherite), 2.5D);
-        itemToItem(ingotIngredient("gold"), dustStack(Materials.gold), 1.2D);
-        itemToItem(ingotIngredient("copper"), dustStack(Materials.copper), 1.2D);
-        itemToItem(ingredient(LAPIS_LAZULI), dustStack(Materials.lapis));
-        itemToItem(gemIngredient(Materials.villiaumite), dustStack(Materials.sodium_fluoride));
-        itemToItem(gemIngredient(Materials.carobbiite), dustStack(Materials.potassium_fluoride));
-        itemToItem(ingredient(OBSIDIAN), dustStack(Materials.obsidian), 2D, 1D);
+        itemToItem(ingredient(DIAMOND), dustIngredient(Materials.diamond), 1.5D, 1.5D);
+
+        itemToItem(ingredient(EMERALD), dustIngredient(Materials.emerald), 1.2D, 1.2D);
+        itemToItem(ingredient(QUARTZ), dustIngredient(Materials.quartz));
+        itemToItem(ingotIngredient("iron"), dustIngredient(Materials.iron), 1.2D);
+        itemToItem(ingotIngredient("netherite"), dustIngredient(Materials.netherite), 2.5D);
+        itemToItem(ingotIngredient("gold"), dustIngredient(Materials.gold), 1.2D);
+        itemToItem(ingotIngredient("copper"), dustIngredient(Materials.copper), 1.2D);
+        itemToItem(ingredient(LAPIS_LAZULI), dustIngredient(Materials.lapis));
+        itemToItem(gemIngredient(Materials.villiaumite), dustIngredient(Materials.sodium_fluoride));
+        itemToItem(gemIngredient(Materials.carobbiite), dustIngredient(Materials.potassium_fluoride));
+        itemToItem(ingredient(OBSIDIAN), dustIngredient(Materials.obsidian), 2D, 1D);
         itemToItem(ingredient(COBBLESTONE), ingredient(SAND));
         itemToItem(ingredient(GRAVEL), ingredient(FLINT));
-        itemToItem(ingredient(END_STONE), dustStack(Materials.end_stone));
+        itemToItem(ingredient(END_STONE), dustIngredient(Materials.end_stone));
 
         itemToItem(ingredient(BLAZE_ROD), ingredient(BLAZE_POWDER, 4));
         itemToItem(ingredient(BONE), ingredient(BONE_MEAL, 6));

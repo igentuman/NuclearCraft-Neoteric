@@ -9,7 +9,7 @@
   "outputFluids": [
     {
       "amount": 1000,
-      "fluid": "nuclearcraft:emergency_coolant"
+      "tag": "forge:emergency_coolant"
     }
   ],
   "powerModifier": 1.0,

@@ -9,19 +9,19 @@
   "outputFluids": [
     {
       "amount": 125,
-      "fluid": "nuclearcraft:carbon_dioxide"
+      "tag": "forge:carbon_dioxide"
     },
     {
       "amount": 125,
-      "fluid": "nuclearcraft:carbon_monoxide"
+      "tag": "forge:carbon_monoxide"
     },
     {
       "amount": 375,
-      "fluid": "nuclearcraft:carbon"
+      "tag": "forge:carbon"
     },
     {
       "amount": 375,
-      "fluid": "nuclearcraft:oxygen"
+      "tag": "forge:oxygen"
     }
   ],
   "powerModifier": 1.0,

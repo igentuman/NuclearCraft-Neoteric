@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 144,
-      "fluid": "nuclearcraft:manganese"
+      "tag": "forge:manganese"
     }
   ],
   "powerModifier": 1.0,

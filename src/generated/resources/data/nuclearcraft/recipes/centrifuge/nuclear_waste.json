@@ -9,23 +9,23 @@
   "outputFluids": [
     {
       "amount": 5,
-      "fluid": "nuclearcraft:polonium"
+      "tag": "forge:polonium"
     },
     {
       "amount": 5,
-      "fluid": "nuclearcraft:plutonium_238"
+      "tag": "forge:plutonium/238"
     },
     {
       "amount": 5,
-      "fluid": "nuclearcraft:plutonium_242"
+      "tag": "forge:plutonium/242"
     },
     {
       "amount": 5,
-      "fluid": "nuclearcraft:plutonium_241"
+      "tag": "forge:plutonium/241"
     },
     {
       "amount": 1,
-      "fluid": "nuclearcraft:spent_nuclear_waste"
+      "tag": "forge:spent_nuclear_waste"
     }
   ],
   "powerModifier": 1.0,

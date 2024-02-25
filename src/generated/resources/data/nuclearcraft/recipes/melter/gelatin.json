@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 144,
-      "fluid": "nuclearcraft:gelatin"
+      "tag": "forge:gelatin"
     }
   ],
   "powerModifier": 0.5,

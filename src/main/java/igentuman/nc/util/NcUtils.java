@@ -34,12 +34,14 @@ import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.BubbleColumnBlock;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -63,6 +65,7 @@ import net.minecraftforge.fml.util.thread.EffectiveSide;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.RegistryObject;
 import net.minecraftforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -71,26 +74,20 @@ import java.util.*;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
+import static igentuman.nc.multiblock.fission.FissionReactor.FISSION_BLOCKS;
+import static igentuman.nc.multiblock.fission.FissionReactor.FISSION_BLOCK_ITEMS;
+import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_BLOCKS;
+import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
+import static igentuman.nc.setup.registration.NCBlocks.*;
+import static igentuman.nc.setup.registration.NCEnergyBlocks.ENERGY_BLOCKS;
+import static igentuman.nc.setup.registration.NCItems.*;
+import static igentuman.nc.setup.registration.NCProcessors.PROCESSORS;
+
 public final class NcUtils {
 
     public static final float ONE_OVER_ROOT_TWO = (float) (1 / Math.sqrt(2));
 
     private static final List<UUID> warnedFails = new ArrayList<>();
-
-    //TODO: Evaluate adding an extra optional param to shrink and grow stack that allows for logging if it is mismatched. Defaults to false
-    // Deciding on how to implement it into the API will need more thought as we want to keep overriding implementations as simple as
-    // possible, and also ideally would use our normal logger instead of the API logger
-    public static void logMismatchedStackSize(long actual, long expected) {
-        if (expected != actual) {
-            NuclearCraft.LOGGER.error("Stack size changed by a different amount ({}) than requested ({}).", actual, expected, new Exception());
-        }
-    }
-
-    public static void logExpectedZero(FloatingLong actual) {
-        if (!actual.isZero()) {
-            NuclearCraft.LOGGER.error("Energy value changed by a different amount ({}) than requested (zero).", actual, new Exception());
-        }
-    }
 
     public static ResourceLocation getName(ParticleType<?> element) {
         return getName(ForgeRegistries.PARTICLE_TYPES, element);
@@ -140,6 +137,20 @@ public final class NcUtils {
             return registryName.getNamespace();
         }
         return modid;
+    }
+
+    @NotNull
+    public static String getModId(@NotNull FluidStack stack) {
+        Fluid fluid = stack.getFluid();
+        String modid = "";
+        try {
+            modid = ForgeRegistries.FLUIDS.getKey(fluid).getNamespace();
+        } catch (Exception e) {
+            //todo find workaround
+            return "";
+        }
+        return modid;
+
     }
 
     public static ItemStack getItemInHand(LivingEntity entity, HumanoidArm side) {
@@ -213,6 +224,43 @@ public final class NcUtils {
         }
         return Collections.emptyList();
     }
+    public static List<HashMap<String, RegistryObject<Item>>> ALL_ITEMS = List.of(
+            NC_ITEMS,
+            NC_PARTS,
+            NC_GEMS,
+            NC_INGOTS,
+            NC_DUSTS,
+            NC_NUGGETS,
+            ALL_NC_ITEMS
+    );
+    public static List<HashMap<String, RegistryObject<Block>>> ALL_BLOCKS = List.of(
+            NC_BLOCKS,
+            FISSION_BLOCKS,
+            FUSION_BLOCKS,
+            PROCESSORS,
+            ENERGY_BLOCKS,
+            ORE_BLOCKS,
+            TURBINE_BLOCKS
+    );
+    public static Block getNCBlock(String name)
+    {
+        for(HashMap<String, RegistryObject<Block>> map: ALL_BLOCKS) {
+            if(map.containsKey(name)) {
+                return map.get(name).get();
+            }
+        }
 
+        return Blocks.AIR;
+    }
 
+    public static Item getNCItem(String name)
+    {
+        for(HashMap<String, RegistryObject<Item>> map: ALL_ITEMS) {
+            if(map.containsKey(name)) {
+                return map.get(name).get();
+            }
+        }
+
+        return Items.AIR;
+    }
 }

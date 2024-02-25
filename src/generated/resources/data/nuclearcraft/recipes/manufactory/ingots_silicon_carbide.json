@@ -7,7 +7,7 @@
   ],
   "output": [
     {
-      "item": "nuclearcraft:silicon_carbide_dust"
+      "tag": "forge:dusts/silicon_carbide"
     }
   ],
   "powerModifier": 1.0,

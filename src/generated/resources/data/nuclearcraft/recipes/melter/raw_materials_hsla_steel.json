@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 216,
-      "fluid": "nuclearcraft:hsla_steel"
+      "tag": "forge:hsla_steel"
     }
   ],
   "powerModifier": 1.0,

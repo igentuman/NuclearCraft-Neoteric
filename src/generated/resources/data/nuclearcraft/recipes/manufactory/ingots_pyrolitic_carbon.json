@@ -7,7 +7,7 @@
   ],
   "output": [
     {
-      "item": "nuclearcraft:pyrolitic_carbon_dust"
+      "tag": "forge:dusts/pyrolitic_carbon"
     }
   ],
   "powerModifier": 1.0,

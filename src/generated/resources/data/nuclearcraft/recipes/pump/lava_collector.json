@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 1000,
-      "fluid": "minecraft:lava"
+      "tag": "minecraft:lava"
     }
   ],
   "powerModifier": 3.0,

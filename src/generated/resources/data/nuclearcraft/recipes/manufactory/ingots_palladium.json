@@ -7,7 +7,7 @@
   ],
   "output": [
     {
-      "item": "nuclearcraft:palladium_dust"
+      "tag": "forge:dusts/palladium"
     }
   ],
   "powerModifier": 1.0,

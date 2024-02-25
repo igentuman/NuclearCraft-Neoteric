@@ -13,11 +13,11 @@
   "outputFluids": [
     {
       "amount": 500,
-      "fluid": "nuclearcraft:boric_acid"
+      "tag": "forge:boric_acid"
     },
     {
       "amount": 500,
-      "fluid": "nuclearcraft:hydrogen"
+      "tag": "forge:hydrogen"
     }
   ],
   "powerModifier": 1.0,

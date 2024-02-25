@@ -9,7 +9,7 @@
   "outputFluids": [
     {
       "amount": 500,
-      "fluid": "nuclearcraft:ice"
+      "tag": "forge:ice"
     }
   ],
   "powerModifier": 1.0,

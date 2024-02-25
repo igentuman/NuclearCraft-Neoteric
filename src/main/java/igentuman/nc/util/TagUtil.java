@@ -1,14 +1,17 @@
 package igentuman.nc.util;
 
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.tags.IReverseTag;
 import net.minecraftforge.registries.tags.ITag;
 import net.minecraftforge.registries.tags.ITagManager;
+import static igentuman.nc.setup.registration.NCBlocks.ITEMS;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +26,17 @@ public class TagUtil {
         TagKey<Block> tag = TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(key));
         for(Holder<Block> holder : Registry.BLOCK.getTagOrEmpty(tag)) {
             tmp.add(holder.get());
+        }
+        return tmp;
+    }
+
+    public static List<Item> getItemsByTagKey(String key)
+    {
+        List<Item> tmp = new ArrayList<>();
+        TagKey<Item> tag = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(key));
+        for(HolderSet.Named<Item> holder : Registry.ITEM.getTag(tag).stream().toList()) {
+            //tmp.add(holder);
+            //todo resolve
         }
         return tmp;
     }

@@ -7,7 +7,7 @@
   ],
   "output": [
     {
-      "item": "nuclearcraft:beryllium_dust"
+      "tag": "forge:dusts/beryllium"
     }
   ],
   "powerModifier": 1.0,

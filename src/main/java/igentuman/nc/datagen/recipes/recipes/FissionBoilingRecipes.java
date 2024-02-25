@@ -15,18 +15,18 @@ public class FissionBoilingRecipes extends AbstractRecipeProvider {
 
         add(
                 fluidIngredient("minecraft:water", 10),
-                fluidStack("steam", 10),
+                fluidIngredient("steam", 10),
                 1
         );
 
         add(
                 fluidIngredient("technical_water", 10),
-                fluidStack("high_pressure_steam", 10),
+                fluidIngredient("high_pressure_steam", 10),
                 1
         );
     }
 
-    protected static void add(FluidStackIngredient input, FluidStack output, double heatRequired) {
+    protected static void add(FluidStackIngredient input, FluidStackIngredient output, double heatRequired) {
         boilingRecipe(List.of(input), List.of(output), heatRequired);
     }
 }

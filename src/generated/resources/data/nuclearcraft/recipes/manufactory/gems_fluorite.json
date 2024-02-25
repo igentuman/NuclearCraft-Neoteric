@@ -7,7 +7,7 @@
   ],
   "output": [
     {
-      "item": "nuclearcraft:fluorite_dust"
+      "tag": "forge:dusts/fluorite"
     }
   ],
   "powerModifier": 1.0,

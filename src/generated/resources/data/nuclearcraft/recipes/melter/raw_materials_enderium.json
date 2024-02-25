@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 216,
-      "fluid": "nuclearcraft:enderium"
+      "tag": "forge:enderium"
     }
   ],
   "powerModifier": 1.0,

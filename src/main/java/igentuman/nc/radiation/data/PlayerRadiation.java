@@ -18,6 +18,7 @@ import java.util.List;
 
 import static igentuman.nc.handler.config.RadiationConfig.RADIATION_CONFIG;
 import static igentuman.nc.setup.Registration.RADIATION_RESISTANCE;
+import static igentuman.nc.util.NcUtils.getModId;
 
 public class PlayerRadiation implements IPlayerRadiationCapability {
 
@@ -74,10 +75,9 @@ public class PlayerRadiation implements IPlayerRadiationCapability {
         for(ItemStack stack: player.getArmorSlots()) {
             if(stack.isEmpty()) continue;
             if(modFilter.length > 0) {
-                String stackMod = stack.getItem().getCreatorModId(stack);
+                String stackMod = getModId(stack);
                 boolean hasMod = false;
                 for(String mod: modFilter) {
-                    assert stackMod != null;
                     if(stackMod.equals(mod)) {
                         hasMod = true;
                         break;

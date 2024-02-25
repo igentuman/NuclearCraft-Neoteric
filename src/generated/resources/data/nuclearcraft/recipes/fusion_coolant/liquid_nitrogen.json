@@ -10,7 +10,7 @@
   "outputFluids": [
     {
       "amount": 1,
-      "fluid": "nuclearcraft:nitrogen"
+      "tag": "forge:nitrogen"
     }
   ]
 }

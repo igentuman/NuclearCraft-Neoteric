@@ -13,11 +13,11 @@
   "outputFluids": [
     {
       "amount": 1000,
-      "fluid": "nuclearcraft:hydrofluoric_acid"
+      "tag": "forge:hydrofluoric_acid"
     },
     {
       "amount": 50,
-      "fluid": "nuclearcraft:calcium_sulfate_solution"
+      "tag": "forge:calcium_sulfate_solution"
     }
   ],
   "powerModifier": 0.5,

@@ -7,7 +7,7 @@
   ],
   "output": [
     {
-      "item": "nuclearcraft:sodium_fluoride_dust"
+      "tag": "forge:dusts/sodium_fluoride"
     }
   ],
   "powerModifier": 1.0,

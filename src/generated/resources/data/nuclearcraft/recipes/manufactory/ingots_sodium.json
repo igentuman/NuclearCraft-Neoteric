@@ -7,7 +7,7 @@
   ],
   "output": [
     {
-      "item": "nuclearcraft:sodium_dust"
+      "tag": "forge:dusts/sodium"
     }
   ],
   "powerModifier": 1.0,

@@ -13,7 +13,7 @@
   "outputFluids": [
     {
       "amount": 288,
-      "fluid": "nuclearcraft:lithium_fluoride"
+      "tag": "forge:lithium_fluoride"
     }
   ],
   "powerModifier": 0.5,

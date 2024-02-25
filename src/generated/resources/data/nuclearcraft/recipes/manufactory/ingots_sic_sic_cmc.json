@@ -7,7 +7,7 @@
   ],
   "output": [
     {
-      "item": "nuclearcraft:sic_sic_cmc_dust"
+      "tag": "forge:dusts/sic_sic_cmc"
     }
   ],
   "powerModifier": 1.0,

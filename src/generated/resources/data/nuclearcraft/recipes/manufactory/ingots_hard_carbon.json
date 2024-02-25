@@ -7,7 +7,7 @@
   ],
   "output": [
     {
-      "item": "nuclearcraft:hard_carbon_dust"
+      "tag": "forge:dusts/hard_carbon"
     }
   ],
   "powerModifier": 1.0,

@@ -13,11 +13,11 @@
   "outputFluids": [
     {
       "amount": 250,
-      "fluid": "nuclearcraft:sulfur_trioxide"
+      "tag": "forge:sulfur_trioxide"
     },
     {
       "amount": 250,
-      "fluid": "nuclearcraft:fluorine"
+      "tag": "forge:fluorine"
     }
   ],
   "powerModifier": 0.5,

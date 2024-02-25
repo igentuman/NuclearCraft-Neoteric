@@ -7,7 +7,7 @@
   ],
   "output": [
     {
-      "item": "nuclearcraft:chromium_dust"
+      "tag": "forge:dusts/chromium"
     }
   ],
   "powerModifier": 1.0,

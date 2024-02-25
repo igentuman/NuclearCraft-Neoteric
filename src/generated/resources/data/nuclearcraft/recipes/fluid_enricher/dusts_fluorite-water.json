@@ -14,7 +14,7 @@
   "outputFluids": [
     {
       "amount": 250,
-      "fluid": "nuclearcraft:fluorite_water"
+      "tag": "forge:fluorite_water"
     }
   ],
   "powerModifier": 1.0,

@@ -27,9 +27,9 @@ public class OreVeinRecipeSerializer<RECIPE extends NcRecipe> extends NcRecipeSe
             }
 
             int outputSize = buffer.readInt();
-            ItemStack[] outputItems = new ItemStack[outputSize];
+            ItemStackIngredient[] outputItems = new ItemStackIngredient[outputSize];
             for(int i = 0; i < outputSize; i++) {
-                outputItems[i] =  buffer.readItem();
+                outputItems[i] =  IngredientCreatorAccess.item().read(buffer);
             }
 
             inputSize = buffer.readInt();
@@ -39,9 +39,9 @@ public class OreVeinRecipeSerializer<RECIPE extends NcRecipe> extends NcRecipeSe
             }
 
             outputSize = buffer.readInt();
-            FluidStack[] outputFluids = new FluidStack[outputSize];
+            FluidStackIngredient[] outputFluids = new FluidStackIngredient[outputSize];
             for(int i = 0; i < outputSize; i++) {
-                outputFluids[i] =  buffer.readFluidStack();
+                outputFluids[i] =  IngredientCreatorAccess.fluid().read(buffer);
             }
 
             double timeModifier = buffer.readDouble();

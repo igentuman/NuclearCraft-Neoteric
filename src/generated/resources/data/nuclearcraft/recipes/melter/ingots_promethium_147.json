@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 144,
-      "fluid": "nuclearcraft:promethium_147"
+      "tag": "forge:promethium_147"
     }
   ],
   "powerModifier": 1.0,

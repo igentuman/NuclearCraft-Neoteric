@@ -7,7 +7,7 @@
   ],
   "output": [
     {
-      "item": "nuclearcraft:rhodochrosite_dust"
+      "tag": "forge:dusts/rhodochrosite"
     }
   ],
   "powerModifier": 1.0,

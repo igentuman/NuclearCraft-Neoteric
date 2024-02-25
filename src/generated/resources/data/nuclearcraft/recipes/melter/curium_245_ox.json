@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 144,
-      "fluid": "nuclearcraft:curium_245_ox"
+      "tag": "forge:curium/245_ox"
     }
   ],
   "powerModifier": 1.0,

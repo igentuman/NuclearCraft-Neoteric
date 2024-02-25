@@ -9,7 +9,7 @@
   "outputFluids": [
     {
       "amount": 1000,
-      "fluid": "nuclearcraft:technical_water"
+      "tag": "forge:technical_water"
     }
   ],
   "powerModifier": 1.0,

@@ -7,7 +7,7 @@
   ],
   "output": [
     {
-      "item": "nuclearcraft:manganese_oxide_dust"
+      "tag": "forge:dusts/manganese_oxide"
     }
   ],
   "powerModifier": 1.0,

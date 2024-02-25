@@ -9,27 +9,27 @@
   "outputFluids": [
     {
       "amount": 576,
-      "fluid": "nuclearcraft:americium_243"
+      "tag": "forge:americium/243"
     },
     {
       "amount": 144,
-      "fluid": "nuclearcraft:plutonium_238"
+      "tag": "forge:plutonium/238"
     },
     {
       "amount": 144,
-      "fluid": "nuclearcraft:plutonium_241"
+      "tag": "forge:plutonium/241"
     },
     {
       "amount": 144,
-      "fluid": "nuclearcraft:americium_242"
+      "tag": "forge:americium/242"
     },
     {
       "amount": 144,
-      "fluid": "nuclearcraft:caesium_137"
+      "tag": "forge:caesium_137"
     },
     {
       "amount": 144,
-      "fluid": "nuclearcraft:strontium_90"
+      "tag": "forge:strontium_90"
     }
   ],
   "powerModifier": 1.0,

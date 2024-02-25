@@ -9,7 +9,7 @@
   "outputFluids": [
     {
       "amount": 10,
-      "fluid": "nuclearcraft:exhaust_steam"
+      "tag": "forge:exhaust_steam"
     }
   ],
   "powerModifier": 2.5,

@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 216,
-      "fluid": "nuclearcraft:corium"
+      "tag": "forge:corium"
     }
   ],
   "powerModifier": 1.0,

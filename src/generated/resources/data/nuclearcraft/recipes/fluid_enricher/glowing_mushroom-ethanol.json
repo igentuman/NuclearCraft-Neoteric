@@ -15,7 +15,7 @@
   "outputFluids": [
     {
       "amount": 250,
-      "fluid": "nuclearcraft:radaway"
+      "tag": "forge:radaway"
     }
   ],
   "powerModifier": 1.0,

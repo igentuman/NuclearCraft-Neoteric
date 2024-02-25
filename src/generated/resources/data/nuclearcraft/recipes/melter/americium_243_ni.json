@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 144,
-      "fluid": "nuclearcraft:americium_243_ni"
+      "tag": "forge:americium/243_ni"
     }
   ],
   "powerModifier": 1.0,

@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 144,
-      "fluid": "nuclearcraft:plutonium_242_ox"
+      "tag": "forge:plutonium/242_ox"
     }
   ],
   "powerModifier": 1.0,

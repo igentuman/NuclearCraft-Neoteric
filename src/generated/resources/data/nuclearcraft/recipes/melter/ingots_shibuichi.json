@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 144,
-      "fluid": "nuclearcraft:shibuichi"
+      "tag": "forge:shibuichi"
     }
   ],
   "powerModifier": 1.0,

@@ -2137,5 +2137,18 @@
   "nc_jei_cat.fission_boiling": "Парогенерирующий ядерный реактор",
   "nc_jei_cat.mek_chemical_conversion": "NC - GAS -> Конверсия",
   "reactor.steam_per_tick": "Парогенерация: %s mB/t",
-  "tooltip.nc.jei.gas_to_fluid.desc": "Машины NC автоматически конвертируют газы из Mekanism"
+  "tooltip.nc.jei.gas_to_fluid.desc": "Машины NC автоматически конвертируют газы из Mekanism",
+  "gui.nc.fluid_tank_renderer.can_void": "SHIFT+Клик для удаления содержимого",
+  "item.nuclearcraft.bscco_dust": "Пыль Bscco",
+  "itemGroup.nuclearcraft_fluids": "Жидкости NuclearCraft",
+  "multiblock.interior.complete": "Внутренность завершена",
+  "multiblock.interior.incomplete": "Внутренность незавершена",
+  "tooltip.nc.bearing.desc": "Соединяет вал ротора с стеной турбины и динамо. Должен полностью покрывать область каждого конца вала.",
+  "tooltip.nc.blade.desc": "Преобразует энергию поступающего потока жидкости во вращательную энергию в валу ротора. Коэффициент расширения больше единицы, поэтому объем потока жидкости будет увеличиваться каждый раз при прохождении через набор. Должен быть установлен в полных наборах из четырех копланарных групп, простирающихся от вала турбины до стены. Каждый блок лопасти может обрабатывать до %s поступающей жидкости.",
+  "tooltip.nc.description.expansion": "Расширение: %s%%",
+  "tooltip.nc.rotor_shaft.desc": "Соединяет лопасти ротора с динамо для преобразования созданной кинетической энергии в электрическую энергию. Должен быть установлен аксиально в виде кубоида вдоль центра внутреннего пространства турбины.",
+  "turbine.active.coils": "Активные катушки: %s",
+  "turbine.blades.flow": "Максимальный поток пара: мБ/т",
+  "validation.structure.wrong_corner": "Неправильный угловой блок на позиции: %s",
+  "validation.structure.wrong_proportions": "Неправильные пропорции"
 }

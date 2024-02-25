@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 144,
-      "fluid": "nuclearcraft:zinc"
+      "tag": "forge:zinc"
     }
   ],
   "powerModifier": 1.0,

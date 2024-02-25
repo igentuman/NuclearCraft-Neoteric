@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 144,
-      "fluid": "nuclearcraft:caesium_137"
+      "tag": "forge:caesium_137"
     }
   ],
   "powerModifier": 1.0,

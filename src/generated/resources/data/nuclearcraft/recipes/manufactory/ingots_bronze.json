@@ -7,7 +7,7 @@
   ],
   "output": [
     {
-      "item": "nuclearcraft:bronze_dust"
+      "tag": "forge:dusts/bronze"
     }
   ],
   "powerModifier": 1.0,

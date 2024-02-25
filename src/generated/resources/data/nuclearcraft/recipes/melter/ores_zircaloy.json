@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 288,
-      "fluid": "nuclearcraft:zircaloy"
+      "tag": "forge:zircaloy"
     }
   ],
   "powerModifier": 1.0,

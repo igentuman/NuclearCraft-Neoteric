@@ -9,23 +9,23 @@
   "outputFluids": [
     {
       "amount": 300,
-      "fluid": "nuclearcraft:uranium_238"
+      "tag": "forge:uranium/238"
     },
     {
       "amount": 80,
-      "fluid": "nuclearcraft:uranium_235"
+      "tag": "forge:uranium/235"
     },
     {
       "amount": 80,
-      "fluid": "nuclearcraft:uranium_233"
+      "tag": "forge:uranium/233"
     },
     {
       "amount": 16,
-      "fluid": "nuclearcraft:hydrofluoric_acid"
+      "tag": "forge:hydrofluoric_acid"
     },
     {
       "amount": 16,
-      "fluid": "nuclearcraft:sulfuric_acid"
+      "tag": "forge:sulfuric_acid"
     }
   ],
   "powerModifier": 1.0,

@@ -7,7 +7,7 @@
   ],
   "output": [
     {
-      "item": "nuclearcraft:end_stone_dust"
+      "tag": "forge:dusts/end_stone"
     }
   ],
   "powerModifier": 1.0,

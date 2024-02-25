@@ -14,7 +14,7 @@
   "outputFluids": [
     {
       "amount": 1000,
-      "fluid": "nuclearcraft:lead_slurry"
+      "tag": "forge:lead_slurry"
     }
   ],
   "powerModifier": 1.0,

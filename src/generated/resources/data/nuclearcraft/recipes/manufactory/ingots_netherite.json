@@ -7,7 +7,7 @@
   ],
   "output": [
     {
-      "item": "nuclearcraft:netherite_dust"
+      "tag": "forge:dusts/netherite"
     }
   ],
   "powerModifier": 1.0,

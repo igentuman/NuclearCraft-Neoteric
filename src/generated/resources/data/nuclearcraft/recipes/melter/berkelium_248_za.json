@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 144,
-      "fluid": "nuclearcraft:berkelium_248_za"
+      "tag": "forge:berkelium/248_za"
     }
   ],
   "powerModifier": 1.0,

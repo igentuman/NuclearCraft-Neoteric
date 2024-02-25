@@ -14,7 +14,7 @@
   "outputFluids": [
     {
       "amount": 250,
-      "fluid": "nuclearcraft:calcium_sulfate_solution"
+      "tag": "forge:calcium_sulfate_solution"
     }
   ],
   "powerModifier": 1.0,

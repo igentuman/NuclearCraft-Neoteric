@@ -13,7 +13,7 @@
   "outputFluids": [
     {
       "amount": 144,
-      "fluid": "nuclearcraft:cocoa_butter"
+      "tag": "forge:cocoa_butter"
     }
   ],
   "powerModifier": 1.0,

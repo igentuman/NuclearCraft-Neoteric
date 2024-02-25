@@ -7,7 +7,7 @@
   ],
   "output": [
     {
-      "item": "nuclearcraft:zircaloy_dust"
+      "tag": "forge:dusts/zircaloy"
     }
   ],
   "powerModifier": 1.0,

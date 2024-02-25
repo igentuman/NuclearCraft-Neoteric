@@ -7,7 +7,7 @@
   ],
   "output": [
     {
-      "item": "nuclearcraft:shibuichi_dust"
+      "tag": "forge:dusts/shibuichi"
     }
   ],
   "powerModifier": 1.0,

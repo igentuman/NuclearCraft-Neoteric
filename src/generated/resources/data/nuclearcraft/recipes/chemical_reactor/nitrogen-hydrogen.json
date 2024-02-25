@@ -13,7 +13,7 @@
   "outputFluids": [
     {
       "amount": 750,
-      "fluid": "nuclearcraft:ammonia"
+      "tag": "forge:ammonia"
     }
   ],
   "powerModifier": 0.5,

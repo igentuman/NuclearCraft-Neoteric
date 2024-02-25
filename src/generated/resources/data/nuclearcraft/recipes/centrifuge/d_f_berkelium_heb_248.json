@@ -9,27 +9,27 @@
   "outputFluids": [
     {
       "amount": 144,
-      "fluid": "nuclearcraft:berkelium_248"
+      "tag": "forge:berkelium/248"
     },
     {
       "amount": 144,
-      "fluid": "nuclearcraft:californium_249"
+      "tag": "forge:californium/249"
     },
     {
       "amount": 288,
-      "fluid": "nuclearcraft:californium_251"
+      "tag": "forge:californium/251"
     },
     {
       "amount": 3,
-      "fluid": "nuclearcraft:californium_252"
+      "tag": "forge:californium/252"
     },
     {
       "amount": 144,
-      "fluid": "nuclearcraft:ruthenium_106"
+      "tag": "forge:ruthenium_106"
     },
     {
       "amount": 144,
-      "fluid": "nuclearcraft:promethium_147"
+      "tag": "forge:promethium_147"
     }
   ],
   "powerModifier": 1.0,

@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 288,
-      "fluid": "nuclearcraft:lead_platinum"
+      "tag": "forge:lead_platinum"
     }
   ],
   "powerModifier": 1.0,

@@ -7,7 +7,7 @@
   ],
   "output": [
     {
-      "item": "nuclearcraft:charcoal_dust"
+      "tag": "forge:dusts/charcoal"
     }
   ],
   "powerModifier": 0.5,

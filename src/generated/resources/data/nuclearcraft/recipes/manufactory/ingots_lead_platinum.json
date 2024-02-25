@@ -7,7 +7,7 @@
   ],
   "output": [
     {
-      "item": "nuclearcraft:lead_platinum_dust"
+      "tag": "forge:dusts/lead_platinum"
     }
   ],
   "powerModifier": 1.0,

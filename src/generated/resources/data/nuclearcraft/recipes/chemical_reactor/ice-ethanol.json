@@ -13,7 +13,7 @@
   "outputFluids": [
     {
       "amount": 500,
-      "fluid": "nuclearcraft:slurry_ice"
+      "tag": "forge:slurry_ice"
     }
   ],
   "powerModifier": 1.0,

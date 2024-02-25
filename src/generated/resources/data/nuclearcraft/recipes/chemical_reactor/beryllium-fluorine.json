@@ -13,7 +13,7 @@
   "outputFluids": [
     {
       "amount": 288,
-      "fluid": "nuclearcraft:beryllium_fluoride"
+      "tag": "forge:beryllium_fluoride"
     }
   ],
   "powerModifier": 0.5,

@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 144,
-      "fluid": "nuclearcraft:europium_155"
+      "tag": "forge:europium_155"
     }
   ],
   "powerModifier": 1.0,

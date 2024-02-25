@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 144,
-      "fluid": "nuclearcraft:lapis"
+      "tag": "forge:lapis"
     }
   ],
   "powerModifier": 1.0,

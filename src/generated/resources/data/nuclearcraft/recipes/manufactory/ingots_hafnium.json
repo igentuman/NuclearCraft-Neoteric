@@ -7,7 +7,7 @@
   ],
   "output": [
     {
-      "item": "nuclearcraft:hafnium_dust"
+      "tag": "forge:dusts/hafnium"
     }
   ],
   "powerModifier": 1.0,

@@ -7,7 +7,7 @@
   ],
   "output": [
     {
-      "item": "nuclearcraft:niobium_dust"
+      "tag": "forge:dusts/niobium"
     }
   ],
   "powerModifier": 1.0,

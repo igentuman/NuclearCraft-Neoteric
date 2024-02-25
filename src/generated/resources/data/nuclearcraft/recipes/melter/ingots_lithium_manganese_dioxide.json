@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 144,
-      "fluid": "nuclearcraft:lithium_manganese_dioxide"
+      "tag": "forge:lithium_manganese_dioxide"
     }
   ],
   "powerModifier": 1.0,

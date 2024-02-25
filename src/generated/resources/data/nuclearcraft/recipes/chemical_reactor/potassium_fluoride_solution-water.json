@@ -13,11 +13,11 @@
   "outputFluids": [
     {
       "amount": 72,
-      "fluid": "nuclearcraft:potassium_hydroxide_solution"
+      "tag": "forge:potassium_hydroxide_solution"
     },
     {
       "amount": 500,
-      "fluid": "nuclearcraft:hydrofluoric_acid"
+      "tag": "forge:hydrofluoric_acid"
     }
   ],
   "powerModifier": 0.5,

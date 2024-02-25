@@ -13,7 +13,7 @@
   "outputFluids": [
     {
       "amount": 288,
-      "fluid": "nuclearcraft:milk_chocolate"
+      "tag": "forge:milk_chocolate"
     }
   ],
   "powerModifier": 0.5,

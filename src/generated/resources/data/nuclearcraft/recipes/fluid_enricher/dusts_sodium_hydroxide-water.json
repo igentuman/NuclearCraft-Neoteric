@@ -14,7 +14,7 @@
   "outputFluids": [
     {
       "amount": 250,
-      "fluid": "nuclearcraft:sodium_hydroxide_solution"
+      "tag": "forge:sodium_hydroxide_solution"
     }
   ],
   "powerModifier": 1.0,

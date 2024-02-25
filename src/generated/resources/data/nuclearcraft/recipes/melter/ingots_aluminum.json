@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 144,
-      "fluid": "nuclearcraft:aluminum"
+      "tag": "forge:aluminum"
     }
   ],
   "powerModifier": 1.0,

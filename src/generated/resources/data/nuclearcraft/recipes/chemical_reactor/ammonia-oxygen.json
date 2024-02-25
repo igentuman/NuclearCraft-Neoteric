@@ -13,11 +13,11 @@
   "outputFluids": [
     {
       "amount": 750,
-      "fluid": "nuclearcraft:nitric_oxide"
+      "tag": "forge:nitric_oxide"
     },
     {
       "amount": 250,
-      "fluid": "minecraft:water"
+      "tag": "minecraft:water"
     }
   ],
   "powerModifier": 0.6,

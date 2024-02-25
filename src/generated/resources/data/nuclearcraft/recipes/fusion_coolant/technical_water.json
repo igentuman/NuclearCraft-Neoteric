@@ -10,7 +10,7 @@
   "outputFluids": [
     {
       "amount": 500,
-      "fluid": "nuclearcraft:high_pressure_steam"
+      "tag": "forge:high_pressure_steam"
     }
   ]
 }

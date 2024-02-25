@@ -4,13 +4,13 @@
   "inputFluids": [
     {
       "amount": 10,
-      "tag": "forge:technical_water"
+      "tag": "minecraft:water"
     }
   ],
   "outputFluids": [
     {
       "amount": 10,
-      "fluid": "nuclearcraft:high_pressure_steam"
+      "tag": "forge:steam"
     }
   ]
 }

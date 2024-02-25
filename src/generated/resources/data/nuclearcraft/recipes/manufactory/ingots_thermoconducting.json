@@ -7,7 +7,7 @@
   ],
   "output": [
     {
-      "item": "nuclearcraft:thermoconducting_dust"
+      "tag": "forge:dusts/thermoconducting"
     }
   ],
   "powerModifier": 1.0,

@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 216,
-      "fluid": "nuclearcraft:sulfur"
+      "tag": "forge:sulfur"
     }
   ],
   "powerModifier": 1.0,

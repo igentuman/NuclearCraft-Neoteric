@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 144,
-      "fluid": "nuclearcraft:thorium_230_za"
+      "tag": "forge:thorium/230_za"
     }
   ],
   "powerModifier": 1.0,

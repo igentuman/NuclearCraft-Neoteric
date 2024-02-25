@@ -7,7 +7,7 @@
   ],
   "output": [
     {
-      "item": "nuclearcraft:zirconium_molybdenum_dust"
+      "tag": "forge:dusts/zirconium_molybdenum"
     }
   ],
   "powerModifier": 1.0,

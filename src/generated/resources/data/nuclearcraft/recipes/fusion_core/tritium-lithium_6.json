@@ -13,11 +13,11 @@
   "outputFluids": [
     {
       "amount": 1000,
-      "fluid": "nuclearcraft:helium"
+      "tag": "forge:helium"
     },
     {
       "amount": 1000,
-      "fluid": "nuclearcraft:helium"
+      "tag": "forge:helium"
     }
   ],
   "powerModifier": 191500.0,

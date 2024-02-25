@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 144,
-      "fluid": "nuclearcraft:neptunium_236_ni"
+      "tag": "forge:neptunium/236_ni"
     }
   ],
   "powerModifier": 1.0,

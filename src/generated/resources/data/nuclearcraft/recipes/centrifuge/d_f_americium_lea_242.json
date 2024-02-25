@@ -9,27 +9,27 @@
   "outputFluids": [
     {
       "amount": 432,
-      "fluid": "nuclearcraft:americium_243"
+      "tag": "forge:americium/243"
     },
     {
       "amount": 144,
-      "fluid": "nuclearcraft:curium_243"
+      "tag": "forge:curium/243"
     },
     {
       "amount": 432,
-      "fluid": "nuclearcraft:curium_246"
+      "tag": "forge:curium/246"
     },
     {
       "amount": 144,
-      "fluid": "nuclearcraft:berkelium_248"
+      "tag": "forge:berkelium/248"
     },
     {
       "amount": 144,
-      "fluid": "nuclearcraft:molybdenum"
+      "tag": "forge:molybdenum"
     },
     {
       "amount": 144,
-      "fluid": "nuclearcraft:promethium_147"
+      "tag": "forge:promethium_147"
     }
   ],
   "powerModifier": 1.0,

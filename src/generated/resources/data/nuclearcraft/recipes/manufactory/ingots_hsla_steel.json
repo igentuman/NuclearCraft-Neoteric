@@ -7,7 +7,7 @@
   ],
   "output": [
     {
-      "item": "nuclearcraft:hsla_steel_dust"
+      "tag": "forge:dusts/hsla_steel"
     }
   ],
   "powerModifier": 1.0,

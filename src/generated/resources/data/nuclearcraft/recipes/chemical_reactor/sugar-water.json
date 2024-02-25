@@ -13,11 +13,11 @@
   "outputFluids": [
     {
       "amount": 2000,
-      "fluid": "nuclearcraft:ethanol"
+      "tag": "forge:ethanol"
     },
     {
       "amount": 1000,
-      "fluid": "nuclearcraft:carbon_dioxide"
+      "tag": "forge:carbon_dioxide"
     }
   ],
   "powerModifier": 0.5,

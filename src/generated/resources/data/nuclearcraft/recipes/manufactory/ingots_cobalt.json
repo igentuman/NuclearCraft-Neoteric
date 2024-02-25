@@ -7,7 +7,7 @@
   ],
   "output": [
     {
-      "item": "nuclearcraft:cobalt_dust"
+      "tag": "forge:dusts/cobalt"
     }
   ],
   "powerModifier": 1.0,

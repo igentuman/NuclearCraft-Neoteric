@@ -7,7 +7,7 @@
   ],
   "output": [
     {
-      "item": "nuclearcraft:quartz_dust"
+      "tag": "forge:dusts/quartz"
     }
   ],
   "powerModifier": 1.0,

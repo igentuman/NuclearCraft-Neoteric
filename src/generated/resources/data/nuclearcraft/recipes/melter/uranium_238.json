@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 144,
-      "fluid": "nuclearcraft:uranium_238"
+      "tag": "forge:uranium/238"
     }
   ],
   "powerModifier": 1.0,

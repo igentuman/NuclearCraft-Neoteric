@@ -9,7 +9,7 @@
   "outputFluids": [
     {
       "amount": 100,
-      "fluid": "nuclearcraft:liquid_nitrogen"
+      "tag": "forge:liquid_nitrogen"
     }
   ],
   "powerModifier": 1.0,

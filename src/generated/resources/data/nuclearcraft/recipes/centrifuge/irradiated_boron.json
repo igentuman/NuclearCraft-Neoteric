@@ -9,11 +9,11 @@
   "outputFluids": [
     {
       "amount": 500,
-      "fluid": "nuclearcraft:boron_10"
+      "tag": "forge:boron/10"
     },
     {
       "amount": 500,
-      "fluid": "nuclearcraft:boron_11"
+      "tag": "forge:boron/11"
     }
   ],
   "powerModifier": 1.0,

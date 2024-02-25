@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 144,
-      "fluid": "nuclearcraft:sic_sic_cmc"
+      "tag": "forge:sic_sic_cmc"
     }
   ],
   "powerModifier": 1.0,

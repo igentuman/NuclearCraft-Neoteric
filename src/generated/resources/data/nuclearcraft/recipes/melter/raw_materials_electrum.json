@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 216,
-      "fluid": "nuclearcraft:electrum"
+      "tag": "forge:electrum"
     }
   ],
   "powerModifier": 1.0,

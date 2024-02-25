@@ -7,7 +7,7 @@
   ],
   "output": [
     {
-      "item": "nuclearcraft:lithium_manganese_dioxide_dust"
+      "tag": "forge:dusts/lithium_manganese_dioxide"
     }
   ],
   "powerModifier": 1.0,

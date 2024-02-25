@@ -24,12 +24,12 @@ public class LeacherRecipes extends AbstractRecipeProvider {
             add(
                     fluidIngredient("aqua_regia_acid", 250),
                     ingredient(forgeOre(material)),
-                    fluidStack(material+"_slurry", 1000)
+                    fluidIngredient(material+"_slurry", 1000)
             );
         }
     }
 
-    protected static void add(FluidStackIngredient inputFluid, NcIngredient inputItem, FluidStack output, double...modifiers) {
+    protected static void add(FluidStackIngredient inputFluid, NcIngredient inputItem, FluidStackIngredient output, double...modifiers) {
         itemsAndFluids(List.of(inputItem), new ArrayList<>(), List.of(inputFluid), List.of(output), modifiers);
     }
 }

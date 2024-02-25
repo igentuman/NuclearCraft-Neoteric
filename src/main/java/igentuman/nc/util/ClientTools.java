@@ -14,16 +14,6 @@ import org.joml.Vector4fc;
 
 public class ClientTools {
 
-    private static void putVertex(QuadBakingVertexConsumer builder, Vector3f normal, Vector4f vector,
-                                  float u, float v, TextureAtlasSprite sprite) {
-        builder.vertex(vector.x(), vector.y(), vector.z())
-                .color(1.0f, 1.0f, 1.0f, 1.0f)
-                .uv(sprite.getU(u), sprite.getV(v))
-                .uv2(0, 0)
-                .normal(normal.x(), normal.y(), normal.z())
-                .endVertex();
-    }
-
     public static BakedQuad createQuad(Vec3 v1, Vec3 v2, Vec3 v3, Vec3 v4, TextureAtlasSprite sprite) {
         Vec3 normal = v3.subtract(v2).cross(v1.subtract(v2)).normalize();
 

@@ -38,17 +38,17 @@ public class MekChemicalConversionRecipe extends NcRecipe {
 
     public static class Type extends MekChemicalConversionRecipe {
         public Type() {
-            super(rl("mek_chemical"), new ItemStackIngredient[0], new ItemStack[0], new FluidStackIngredient[0], new FluidStack[0], 1, 1, 1, 1);
+            super(rl("mek_chemical"), new ItemStackIngredient[0], new ItemStackIngredient[0], new FluidStackIngredient[0], new FluidStackIngredient[0], 1, 1, 1, 1);
         }
     }
     public ChemicalStack<?> inputChemical;
     public FluidStack outputFluid;
-    public MekChemicalConversionRecipe(ResourceLocation id, ItemStackIngredient[] input, ItemStack[] output, FluidStackIngredient[] inputFluids, FluidStack[] outputFluids, double timeModifier, double powerModifier, double radiation, double rarityModifier) {
+    public MekChemicalConversionRecipe(ResourceLocation id, ItemStackIngredient[] input, ItemStackIngredient[] output, FluidStackIngredient[] inputFluids, FluidStackIngredient[] outputFluids, double timeModifier, double powerModifier, double radiation, double rarityModifier) {
         super(id, input, output, timeModifier, powerModifier, radiation, rarityModifier);
     }
 
     public MekChemicalConversionRecipe(ChemicalStack<?> input, FluidStack outputFluid) {
-        super(new ResourceLocation("mek_chemical_conversion"), new ItemStackIngredient[0], new ItemStack[0], 1, 1, 1, 1);
+        super(new ResourceLocation("mek_chemical_conversion"), new ItemStackIngredient[0], new ItemStackIngredient[0], 1, 1, 1, 1);
         this.inputChemical = input;
         this.outputFluid = outputFluid;
     }

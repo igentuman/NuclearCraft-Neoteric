@@ -17,25 +17,25 @@ public class FusionCoolantRecipes extends AbstractRecipeProvider {
         for(String gas: List.of("nitrogen", "helium")) {
             add(
                     fluidIngredient("liquid_" + gas, 1),
-                    fluidStack(gas, 1),
+                    fluidIngredient(gas, 1),
                     2500
             );
         }
 
         add(
                 fluidIngredient("minecraft:water", 500),
-                fluidStack("steam", 500),
+                fluidIngredient("steam", 500),
                 2000
         );
 
         add(
                 fluidIngredient("technical_water", 500),
-                fluidStack("high_pressure_steam", 500),
+                fluidIngredient("high_pressure_steam", 500),
                 2500
         );
     }
 
-    protected static void add(FluidStackIngredient input, FluidStack output, double coolingRate) {
+    protected static void add(FluidStackIngredient input, FluidStackIngredient output, double coolingRate) {
         coolantRecipe(List.of(input), List.of(output), coolingRate);
     }
 }

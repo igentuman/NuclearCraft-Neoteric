@@ -122,10 +122,10 @@ public class FusionCategoryWrapper<T extends FusionCoreBE.Recipe> implements IRe
         }
 
         for(int i = 0; i < 4; i++) {
-            if(recipe.getOutputFluids().length > i) {
+            if(recipe.getOutputFluids().size() > i) {
                 builder.addSlot(RecipeIngredientRole.OUTPUT, 75 + 10 * i, 6)
                         .addIngredients(ForgeTypes.FLUID_STACK, recipe.getOutputFluids(i))
-                        .setFluidRenderer((recipe.getOutputFluids()[i].getAmount()) / 2, false, 6, 34);
+                        .setFluidRenderer((recipe.getOutputFluids().get(i).getAmount()) / 2, false, 6, 34);
             }
             slots[idx] = guiHelper.createDrawable(rl("textures/gui/widgets.png"), 34, 90, 8, 38);
             idx++;

@@ -4,6 +4,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static igentuman.nc.setup.registration.NCBlocks.BLOCK_REGISTRY;
+import static igentuman.nc.setup.registration.NCBlocks.ITEM_REGISTRY;
 
 public class TagUtil {
     public static List<Block> getBlocksByTagKey(String key)
@@ -25,6 +27,16 @@ public class TagUtil {
         List<Block> tmp = new ArrayList<>();
         TagKey<Block> tag = TagKey.create(BLOCK_REGISTRY, new ResourceLocation(key));
         for(Block holder : ForgeRegistries.BLOCKS.tags().getTag(tag).stream().toList()) {
+            tmp.add(holder);
+        }
+        return tmp;
+    }
+
+    public static List<Item> getItemsByTagKey(String key)
+    {
+        List<Item> tmp = new ArrayList<>();
+        TagKey<Item> tag = TagKey.create(ITEM_REGISTRY, new ResourceLocation(key));
+        for(Item holder : ForgeRegistries.ITEMS.tags().getTag(tag).stream().toList()) {
             tmp.add(holder);
         }
         return tmp;

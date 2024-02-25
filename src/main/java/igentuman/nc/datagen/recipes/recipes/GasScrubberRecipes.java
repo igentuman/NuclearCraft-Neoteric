@@ -16,11 +16,11 @@ public class GasScrubberRecipes extends AbstractRecipeProvider {
 
         add(
                 fluidIngredient("borax_solution", 250),
-                fluidStack("irradiated_borax_solution", 250), 1, 5, -10
+                fluidIngredient("irradiated_borax_solution", 250), 1, 5, -10
         );
     }
 
-    protected static void add(FluidStackIngredient input, FluidStack output, double...modifiers) {
+    protected static void add(FluidStackIngredient input, FluidStackIngredient output, double...modifiers) {
         fluidsAndFluids(List.of(input), List.of(output), modifiers);
     }
 }

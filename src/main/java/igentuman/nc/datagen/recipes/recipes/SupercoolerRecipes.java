@@ -19,37 +19,37 @@ public class SupercoolerRecipes extends AbstractRecipeProvider {
         for(String gas: List.of("oxygen", "hydrogen", "nitrogen", "helium")) {
             add(
                     fluidIngredient(gas, 1000),
-                    fluidStack("liquid_" + gas, 100)
+                    fluidIngredient("liquid_" + gas, 100)
             );
         }
 
         add(
                 fluidIngredient("slurry_ice", 1000),
-                fluidStack("cryotheum", 1000)
+                fluidIngredient("cryotheum", 1000)
         );
 
         add(
                 fluidIngredient("minecraft:water", 1000),
-                fluidStack("ice", 500)
+                fluidIngredient("ice", 500)
         );
 
         add(
                 fluidIngredient("exhaust_steam", 1000),
-                fluidStack("condensate_water", 1000)
+                fluidIngredient("condensate_water", 1000)
         );
 
         add(
                 fluidIngredient("condensate_water", 1000),
-                fluidStack("technical_water", 1000)
+                fluidIngredient("technical_water", 1000)
         );
 
         add(
                 fluidIngredient("emergency_coolant_heated", 1000),
-                fluidStack("emergency_coolant", 1000)
+                fluidIngredient("emergency_coolant", 1000)
         );
     }
 
-    protected static void add(FluidStackIngredient input, FluidStack output, double...modifiers) {
+    protected static void add(FluidStackIngredient input, FluidStackIngredient output, double...modifiers) {
         fluidsAndFluids(List.of(input), List.of(output), modifiers);
     }
 }

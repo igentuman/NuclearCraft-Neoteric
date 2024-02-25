@@ -204,7 +204,7 @@ public class ProcessorCategoryWrapper<T extends NcRecipe> implements IRecipeCate
                 if (!recipe.getOutputFluids(putFluidCounter).get(0).equals(FluidStack.EMPTY)) {
                     builder.addSlot(RecipeIngredientRole.OUTPUT, pos[0] + xShift + barXshift, pos[1] + yShift)
                             .addIngredients(ForgeTypes.FLUID_STACK, recipe.getOutputFluids(putFluidCounter))
-                            .setFluidRenderer((fluidTankCapacity+recipe.getOutputFluids()[putFluidCounter].getAmount())/2, false, 16, 16);
+                            .setFluidRenderer((fluidTankCapacity+recipe.getOutputFluids().get(putFluidCounter).getAmount())/2, false, 16, 16);
                 }
                 slots[itemIdx] = guiHelper.createDrawable(rl("textures/gui/widgets.png"), 18, 36, 18, 18);
                 itemIdx++;

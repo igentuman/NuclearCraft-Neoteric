@@ -10,6 +10,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -31,6 +32,7 @@ import static igentuman.nc.setup.Registration.BLOCKS;
 import static igentuman.nc.setup.Registration.ITEMS;
 import static igentuman.nc.multiblock.fission.FissionBlocks.REACTOR_BLOCKS_PROPERTIES;
 import static igentuman.nc.setup.registration.NCItems.ALL_NC_ITEMS;
+import static igentuman.nc.util.NcUtils.getNCBlock;
 
 public class FissionReactor {
     public static final Item.Properties FISSION_ITEM_PROPS = new Item.Properties();
@@ -59,8 +61,14 @@ public class FissionReactor {
     public static List<Block> moderators = new ArrayList<>();
     public static List<Block> moderators() {
         if(moderators.isEmpty()) {
-            moderators.add(NCBlocks.NC_BLOCKS.get("graphite").get());
-            moderators.add(NCBlocks.NC_BLOCKS.get("beryllium").get());
+            Block graphite = getNCBlock("graphite");
+            if( ! graphite.equals(Blocks.AIR)) {
+                moderators.add(graphite);
+            }
+            Block beryllium = getNCBlock("beryllium");
+            if( ! beryllium.equals(Blocks.AIR)) {
+                moderators.add(beryllium);
+            }
         }
         return moderators;
     }

@@ -20,6 +20,7 @@ import static igentuman.nc.setup.registration.NCBlocks.NC_BLOCKS;
 import static igentuman.nc.setup.registration.NCEnergyBlocks.ENERGY_BLOCKS;
 import static igentuman.nc.setup.registration.NCItems.NC_DUSTS;
 import static igentuman.nc.setup.registration.NCItems.NC_INGOTS;
+import static igentuman.nc.util.NcUtils.getNCBlock;
 import static net.minecraft.world.item.Items.AIR;
 
 public class ItemRadiation {
@@ -28,14 +29,6 @@ public class ItemRadiation {
     public static HashMap<Item, Double> get()
     {
         return radiationMap;
-    }
-
-    public static Block getNCBlock(String name)
-    {
-        if(NC_BLOCKS.containsKey(name)) {
-            return NC_BLOCKS.get(name).get();
-        }
-        return Blocks.AIR;
     }
 
     public static void init()

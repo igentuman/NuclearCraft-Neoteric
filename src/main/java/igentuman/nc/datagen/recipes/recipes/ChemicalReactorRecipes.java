@@ -24,7 +24,7 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient(Materials.boron, 72)
                 ),
                 List.of(
-                        fluidStack(Materials.boron_arsenide, 288)
+                        fluidIngredient(Materials.boron_arsenide, 288)
                 ), 0.5D, 1.2D
         );
 
@@ -34,8 +34,8 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient("oxygen", 650)
                 ),
                 List.of(
-                        fluidStack("nitric_oxide", 750),
-                        fluidStack(WATER, 250)
+                        fluidIngredient("nitric_oxide", 750),
+                        fluidIngredient("minecraft:water", 250)
                 ), 0.5D, 0.6D
         );
 
@@ -45,7 +45,7 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient("oxygen", 250)
                 ),
                 List.of(
-                        fluidStack("nitrogen_dioxide", 750)
+                        fluidIngredient("nitrogen_dioxide", 750)
                 ), 0.5D, 0.6D
         );
 
@@ -55,7 +55,7 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient("minecraft:water", 250)
                 ),
                 List.of(
-                        fluidStack("nitric_acid", 1000)
+                        fluidIngredient("nitric_acid", 1000)
                 ), 1.5D, 0.4D
         );
 
@@ -65,7 +65,7 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient("hydrochloric_acid", 750)
                 ),
                 List.of(
-                        fluidStack("aqua_regia_acid", 1000)
+                        fluidIngredient("aqua_regia_acid", 1000)
                 ), 1.5D
         );
 
@@ -75,7 +75,7 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient("minecraft:water", 250)
                 ),
                 List.of(
-                        fluidStack("hydrochloric_acid", 500)
+                        fluidIngredient("hydrochloric_acid", 500)
                 )
         );
 
@@ -85,7 +85,7 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
                     fluidIngredient("hydrogen", 666)
                         ),
                 List.of(
-                        fluidStack("diborane", 500)
+                        fluidIngredient("diborane", 500)
                 ), 0.5D
         );
 
@@ -95,8 +95,8 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
                     fluidIngredient("minecraft:water", 750)
                         ),
                 List.of(
-                        fluidStack("boric_acid", 500),
-                        fluidStack("hydrogen", 500)
+                        fluidIngredient("boric_acid", 500),
+                        fluidIngredient("hydrogen", 500)
                 ), 0.5D
         );
 
@@ -106,8 +106,8 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
                     fluidIngredient("ammonia", 500)
                         ),
                 List.of(
-                        fluidStack("boron_nitride_solution", 72),
-                        fluidStack(WATER, 1000)
+                        fluidIngredient("boron_nitride_solution", 72),
+                        fluidIngredient("minecraft:water", 1000)
                 ), 0.5D, 0.5D
         );
 
@@ -117,7 +117,7 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient("hydrogen", 750)
                 ),
                 List.of(
-                        fluidStack("ammonia", 750)
+                        fluidIngredient("ammonia", 750)
                 ), 0.5D, 0.5D
         );
 
@@ -127,7 +127,7 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient("liquid_oxygen", 250)
                 ),
                 List.of(
-                        fluidStack(WATER, 500)
+                        fluidIngredient("minecraft:water", 500)
                 ), 0.5D, 0.5D
         );
 
@@ -137,7 +137,7 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient("liquid_oxygen", 250)
                 ),
                 List.of(
-                        fluidStack("heavy_water", 500)
+                        fluidIngredient("heavy_water", 500)
                 ), 0.5D, 0.5D
         );
 
@@ -147,7 +147,7 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
                         fluidStackIngredient("fluorine", 250)
                 ),
                 List.of(
-                        fluidStack("hydrofluoric_acid", 250)
+                        fluidIngredient("hydrofluoric_acid", 250)
                 ), 0.5D, 0.5D
         );
 
@@ -157,7 +157,7 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient("fluorine", 250)
                 ),
                 List.of(
-                        fluidStack("lithium_fluoride", 288)
+                        fluidIngredient("lithium_fluoride", 288)
                 ), 0.5D, 0.5D
         );
 
@@ -167,7 +167,7 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient("fluorine", 250)
                 ),
                 List.of(
-                        fluidStack("beryllium_fluoride", 288)
+                        fluidIngredient("beryllium_fluoride", 288)
                 ), 0.5D, 0.5D
         );
 
@@ -177,7 +177,7 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient("liquid_oxygen", 500)
                 ),
                 List.of(
-                        fluidStack("sulfur_dioxide", 500)
+                        fluidIngredient("sulfur_dioxide", 500)
                 ), 0.5D, 0.5D
         );
 
@@ -187,7 +187,7 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient("liquid_oxygen", 250)
                 ),
                 List.of(
-                        fluidStack("sulfur_trioxide", 500)
+                        fluidIngredient("sulfur_trioxide", 500)
                 ), 0.5D, 0.5D
         );
 
@@ -197,7 +197,7 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient("minecraft:water", 250)
                 ),
                 List.of(
-                        fluidStack("sulfuric_acid", 250)
+                        fluidIngredient("sulfuric_acid", 250)
                 ), 0.5D, 0.5D
         );
 
@@ -207,8 +207,8 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient("sulfuric_acid", 500)
                 ),
                 List.of(
-                        fluidStack("hydrofluoric_acid", 1000),
-                        fluidStack("calcium_sulfate_solution", 50)
+                        fluidIngredient("hydrofluoric_acid", 1000),
+                        fluidIngredient("calcium_sulfate_solution", 50)
                 ), 1D, 0.5D
         );
 
@@ -218,8 +218,8 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient("minecraft:water", 500)
                 ),
                 List.of(
-                        fluidStack("sodium_hydroxide_solution", 72),
-                        fluidStack("hydrofluoric_acid", 500)
+                        fluidIngredient("sodium_hydroxide_solution", 72),
+                        fluidIngredient("hydrofluoric_acid", 500)
                 ), 1D, 0.5D
         );
 
@@ -229,8 +229,8 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient("minecraft:water", 500)
                 ),
                 List.of(
-                        fluidStack("potassium_hydroxide_solution", 72),
-                        fluidStack("hydrofluoric_acid", 500)
+                        fluidIngredient("potassium_hydroxide_solution", 72),
+                        fluidIngredient("hydrofluoric_acid", 500)
                 ), 1D, 0.5D
         );
 
@@ -240,8 +240,8 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient("boric_acid", 2000)
                 ),
                 List.of(
-                        fluidStack("borax_solution", 72),
-                        fluidStack("hydrofluoric_acid", 1500)
+                        fluidIngredient("borax_solution", 72),
+                        fluidIngredient("hydrofluoric_acid", 1500)
                 ), 1D, 0.5D
         );
 
@@ -251,8 +251,8 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient("minecraft:water", 250)
                 ),
                 List.of(
-                        fluidStack("liquid_oxygen", 250),
-                        fluidStack("hydrofluoric_acid", 250)
+                        fluidIngredient("liquid_oxygen", 250),
+                        fluidIngredient("hydrofluoric_acid", 250)
                 ), 1D, 0.5D
         );
 
@@ -262,8 +262,8 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient("sulfur_dioxide", 250)
                 ),
                 List.of(
-                        fluidStack("sulfur_trioxide", 250),
-                        fluidStack("fluorine", 250)
+                        fluidIngredient("sulfur_trioxide", 250),
+                        fluidIngredient("fluorine", 250)
                 ), 1D, 0.5D
         );
 
@@ -273,7 +273,7 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient("fluorine", 500)
                 ),
                 List.of(
-                        fluidStack("oxygen_difluoride", 250)
+                        fluidIngredient("oxygen_difluoride", 250)
                 ), 0.5D, 0.5D
         );
 
@@ -283,8 +283,8 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient("carbon", 144)
                 ),
                 List.of(
-                        fluidStack("manganese", 72),
-                        fluidStack("carbon_monoxide", 750)
+                        fluidIngredient("manganese", 72),
+                        fluidIngredient("carbon_monoxide", 750)
                 ), 0.5D, 0.5D
         );
 
@@ -294,8 +294,8 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient("minecraft:water", 500)
                 ),
                 List.of(
-                        fluidStack("ethanol", 2000),
-                        fluidStack("carbon_dioxide", 1000)
+                        fluidIngredient("ethanol", 2000),
+                        fluidIngredient("carbon_dioxide", 1000)
                 ), 0.5D, 0.5D
         );
 
@@ -305,8 +305,8 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient("hydrogen", 250)
                 ),
                 List.of(
-                        fluidStack("carbon_monoxide", 250),
-                        fluidStack(WATER, 250)
+                        fluidIngredient("carbon_monoxide", 250),
+                        fluidIngredient("minecraft:water", 250)
                 ), 0.5D, 0.5D
         );
 
@@ -316,7 +316,7 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient("hydrogen", 500)
                 ),
                 List.of(
-                        fluidStack("methanol", 250)
+                        fluidIngredient("methanol", 250)
                 ), 0.5D, 0.5D
         );
 
@@ -326,8 +326,8 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient("hydrofluoric_acid", 250)
                 ),
                 List.of(
-                        fluidStack("fluoromethane", 250),
-                        fluidStack(WATER, 250)
+                        fluidIngredient("fluoromethane", 250),
+                        fluidIngredient("minecraft:water", 250)
                 ), 0.5D, 0.5D
         );
 
@@ -337,8 +337,8 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient("sodium_hydroxide_solution", 72)
                 ),
                 List.of(
-                        fluidStack("ethene", 250),
-                        fluidStack("sodium_fluoride_solution", 250)
+                        fluidIngredient("ethene", 250),
+                        fluidIngredient("sodium_fluoride_solution", 250)
                 ), 0.5D, 0.5D
         );
 
@@ -348,8 +348,8 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient("potassium_hydroxide_solution", 72)
                 ),
                 List.of(
-                        fluidStack("ethene", 250),
-                        fluidStack("potassium_fluoride_solution", 250)
+                        fluidIngredient("ethene", 250),
+                        fluidIngredient("potassium_fluoride_solution", 250)
                 ), 0.5D
         );
 
@@ -359,8 +359,8 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient("sulfuric_acid", 250)
                 ),
                 List.of(
-                        fluidStack("ethanol", 250),
-                        fluidStack("sulfur_trioxide", 250)
+                        fluidIngredient("ethanol", 250),
+                        fluidIngredient("sulfur_trioxide", 250)
                 ), 0.5D
         );
 
@@ -370,7 +370,7 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient("ethanol", 150)
                 ),
                 List.of(
-                        fluidStack("slurry_ice", 500)
+                        fluidIngredient("slurry_ice", 500)
                 )
         );
 
@@ -380,7 +380,7 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient("minecraft:water", 100)
                 ),
                 List.of(
-                        fluidStack("boron_arsenide_solution", 350)
+                        fluidIngredient("boron_arsenide_solution", 350)
                 )
         );
 
@@ -390,7 +390,7 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient("chlorine", 150)
                 ),
                 List.of(
-                        fluidStack("hydrogen_chloride", 250)
+                        fluidIngredient("hydrogen_chloride", 250)
                 ), 0.5D, 0.5D
         );
 
@@ -400,7 +400,7 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient("minecraft:water", 250)
                 ),
                 List.of(
-                        fluidStack("hydrated_gelatin", 250)
+                        fluidIngredient("hydrated_gelatin", 250)
                 ), 0.5D, 0.5D
         );
 
@@ -410,7 +410,7 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient("sugar", 72)
                 ),
                 List.of(
-                        fluidStack("marshmallow", 144)
+                        fluidIngredient("marshmallow", 144)
                 ), 1D, 0.5D
         );
 
@@ -420,7 +420,7 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient("cocoa_butter", 72)
                 ),
                 List.of(
-                        fluidStack("unsweetened_chocolate", 144)
+                        fluidIngredient("unsweetened_chocolate", 144)
                 ), 0.5D, 0.5D
         );
 
@@ -430,7 +430,7 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient("sugar", 72)
                 ),
                 List.of(
-                        fluidStack("dark_chocolate", 144)
+                        fluidIngredient("dark_chocolate", 144)
                 ), 0.5D, 0.5D
         );
 
@@ -440,13 +440,13 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient("pasteurized_milk", 250)
                 ),
                 List.of(
-                        fluidStack("milk_chocolate", 288)
+                        fluidIngredient("milk_chocolate", 288)
                 ), 0.5D, 0.5D
         );
 
     }
 
-    protected static void add(List<FluidStackIngredient> input, List<FluidStack> output, double...modifiers) {
+    protected static void add(List<FluidStackIngredient> input, List<FluidStackIngredient> output, double...modifiers) {
         fluidsAndFluids(input, output, modifiers);
     }
 }

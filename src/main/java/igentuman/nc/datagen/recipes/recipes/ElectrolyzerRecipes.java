@@ -1,6 +1,7 @@
 package igentuman.nc.datagen.recipes.recipes;
 
 import igentuman.nc.content.processors.Processors;
+import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.creator.IngredientCreatorAccess;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraftforge.fluids.FluidStack;
@@ -16,27 +17,27 @@ public class ElectrolyzerRecipes extends AbstractRecipeProvider {
         ElectrolyzerRecipes.consumer = consumer;
         ID = Processors.ELECTROLYZER;
 
-        add(fluidStack(WATER, 500),
+        add(fluidIngredient("minecraft:water", 500),
                 List.of(
-                        fluidStack("hydrogen", 500),
-                        fluidStack("oxygen", 250)
+                        fluidIngredient("hydrogen", 500),
+                        fluidIngredient("oxygen", 250)
                 ), 0.5D
         );
-        add(fluidStack("heavy_water", 500),
+        add(fluidIngredient("heavy_water", 500),
                 List.of(
-                        fluidStack("deuterium", 500),
-                        fluidStack("oxygen", 250)
+                        fluidIngredient("deuterium", 500),
+                        fluidIngredient("oxygen", 250)
                 ), 0.5D
         );
-        add(fluidStack("hydrofluoric_acid", 250),
+        add(fluidIngredient("hydrofluoric_acid", 250),
                 List.of(
-                        fluidStack("hydrogen", 250),
-                        fluidStack("fluorine", 250)
+                        fluidIngredient("hydrogen", 250),
+                        fluidIngredient("fluorine", 250)
                 ), 0.5D
         );
     }
 
-    protected static void add(FluidStack input, List<FluidStack> output, double...modifiers) {
-        fluidsAndFluids(List.of(IngredientCreatorAccess.fluid().from(input)), output, modifiers);
+    protected static void add(FluidStackIngredient input, List<FluidStackIngredient> output, double...modifiers) {
+        fluidsAndFluids(List.of(input), output, modifiers);
     }
 }

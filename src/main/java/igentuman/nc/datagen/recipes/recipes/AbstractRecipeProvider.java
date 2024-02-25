@@ -5,13 +5,11 @@ import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.NcIngredient;
 import igentuman.nc.recipes.ingredient.creator.IngredientCreatorAccess;
 import igentuman.nc.setup.registration.Fuel;
-import net.minecraft.core.Registry;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -20,12 +18,9 @@ import net.minecraftforge.registries.ForgeRegistries;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.setup.registration.Fuel.*;
-import static igentuman.nc.setup.registration.NCBlocks.NC_BLOCKS;
 import static igentuman.nc.setup.registration.NCFluids.ALL_FLUID_ENTRIES;
-import static igentuman.nc.setup.registration.NCFluids.NC_MATERIALS;
 import static igentuman.nc.setup.registration.NCItems.*;
 import static igentuman.nc.util.DataGenUtil.*;
 import static net.minecraft.world.item.Items.AIR;
@@ -105,7 +100,7 @@ public abstract class AbstractRecipeProvider {
     }
 
     protected static FluidStackIngredient fluidStackIngredient(String name, int amount) {
-        return IngredientCreatorAccess.fluid().from(ALL_FLUID_ENTRIES.get(name).getStill(), amount);
+        return IngredientCreatorAccess.fluid().from(fluidStack(name, amount));
     }
 
     public static void itemToItem(NcIngredient input, NcIngredient output, double...params) {
@@ -150,7 +145,7 @@ public abstract class AbstractRecipeProvider {
     }
 
 
-    public static void fluidsAndFluids(List<FluidStackIngredient> input, List<FluidStack> output, double...params) {
+    public static void fluidsAndFluids(List<FluidStackIngredient> input, List<FluidStackIngredient> output, double...params) {
         double timeModifier = params.length>0 ? params[0] : 1.0;
         double powerModifier = params.length>1 ? params[1] : 1.0;
         double radiation = params.length>2 ? params[2] : 1.0;
@@ -160,7 +155,7 @@ public abstract class AbstractRecipeProvider {
                 .build(consumer);
     }
 
-    public static void coolantRecipe(List<FluidStackIngredient> input, List<FluidStack> output, double coolingRate) {
+    public static void coolantRecipe(List<FluidStackIngredient> input, List<FluidStackIngredient> output, double coolingRate) {
         NcRecipeBuilder.get(ID)
                 .fluids(input, output)
                 .modifiers(0,0,0, 0)
@@ -168,7 +163,7 @@ public abstract class AbstractRecipeProvider {
                 .build(consumer);
     }
 
-    public static void boilingRecipe(List<FluidStackIngredient> input, List<FluidStack> output, double heatRequired) {
+    public static void boilingRecipe(List<FluidStackIngredient> input, List<FluidStackIngredient> output, double heatRequired) {
         NcRecipeBuilder.get(ID)
                 .fluids(input, output)
                 .modifiers(0,0,0, 0)
@@ -179,7 +174,7 @@ public abstract class AbstractRecipeProvider {
 
     public static void itemsAndFluids(
             List<NcIngredient> inputItems, List<NcIngredient> outputItems,
-            List<FluidStackIngredient> inputFluids, List<FluidStack> outputFluids,
+            List<FluidStackIngredient> inputFluids, List<FluidStackIngredient> outputFluids,
             double...params) {
         double timeModifier = params.length>0 ? params[0] : 1.0;
         double powerModifier = params.length>1 ? params[1] : 1.0;
@@ -288,7 +283,7 @@ public abstract class AbstractRecipeProvider {
     {
         int count = 1;
         if(pCount.length > 0) count = pCount[0];
-        return fluidStackIngredient(fuelItem(name).toString(), count);
+        return IngredientCreatorAccess.fluid().from(ALL_FLUID_ENTRIES.get(fuelItem(name).toString()).getStill(), count);
     }
 
     public static NcIngredient fuelIngredient(List<String> name, int...pCount)

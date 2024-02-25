@@ -1,6 +1,7 @@
 package igentuman.nc.setup.registration;
 
 import igentuman.nc.content.materials.Materials;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
@@ -26,6 +27,8 @@ import static igentuman.nc.setup.registration.NCFluids.FluidEntry.ALL_BUCKETS;
 import static igentuman.nc.setup.registration.NCItems.*;
 import static igentuman.nc.setup.registration.NCProcessors.PROCESSORS;
 import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCKS;
+import static igentuman.nc.util.TagUtil.getBlocksByTagKey;
+import static igentuman.nc.util.TagUtil.getItemsByTagKey;
 
 public class CreativeTabs {
     public static final DeferredRegister<CreativeModeTab> CREATIVE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
@@ -39,14 +42,16 @@ public class CreativeTabs {
 
     public static final RegistryObject<CreativeModeTab> NC_BLOCKS_TAB = CREATIVE_TABS.register("nc_blocks",
             () ->  CreativeModeTab.builder()
-            .icon(() -> new ItemStack(NC_BLOCKS.get(Materials.uranium).get()))
+            .icon(() -> new ItemStack(getBlocksByTagKey("forge:storage_blocks/uranium").get(0)))
             .displayItems((displayParams, output) -> getBlocks().forEach(output::accept))
             .title(Component.translatable("itemGroup.nuclearcraft_blocks"))
             .build());
 
+
+
     public static final RegistryObject<CreativeModeTab> NC_ITEMS_TAB = CREATIVE_TABS.register("nc_items",
             () ->  CreativeModeTab.builder()
-                    .icon(() -> new ItemStack(NC_INGOTS.get(Materials.uranium).get()))
+                    .icon(() -> new ItemStack(getItemsByTagKey("forge:ingots/uranium").get(0)))
                     .displayItems((displayParams, output) -> getItems().forEach(output::accept))
                     .title(Component.translatable("itemGroup.nuclearcraft_items"))
                     .build()
@@ -134,7 +139,7 @@ public class CreativeTabs {
             () -> CreativeModeTab.builder()
                     .icon(() -> new ItemStack(TURBINE_BLOCKS.get("turbine_controller").get()))
                     .displayItems((displayParams, output) -> TURBINE_BLOCKS.values().forEach(itemlike -> output.accept(new ItemStack(itemlike.get()))))
-                    .title(Component.translatable("itemGroup.nuclearcraft_turbinee"))
+                    .title(Component.translatable("itemGroup.nuclearcraft_turbine"))
                     .build());
 
     public static final RegistryObject<CreativeModeTab> NC_FLUIDS = CREATIVE_TABS.register("nc_fluids",

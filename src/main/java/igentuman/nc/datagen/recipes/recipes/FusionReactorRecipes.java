@@ -20,10 +20,10 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient("tritium", 250)
                 ),
                 List.of(
-                        fluidStack("helium", 65),
-                        fluidStack("helium", 65),
-                        fluidStack("helium", 65),
-                        fluidStack("helium", 65)
+                        fluidIngredient("helium", 65),
+                        fluidIngredient("helium", 65),
+                        fluidIngredient("helium", 65),
+                        fluidIngredient("helium", 65)
                 ), 20D, 110000D, 1.5D, 816D
         );
 
@@ -34,10 +34,10 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient("deuterium", 1000)
                 ),
                 List.of(
-                        fluidStack("helium_3", 250),
-                        fluidStack("helium_3", 250),
-                        fluidStack("helium_3", 250),
-                        fluidStack("helium_3", 250)
+                        fluidIngredient("helium_3", 250),
+                        fluidIngredient("helium_3", 250),
+                        fluidIngredient("helium_3", 250),
+                        fluidIngredient("helium_3", 250)
                 ), 15D, 110000D, 1.5D, 1245D
         );
         
@@ -47,10 +47,10 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient("tritium", 1000)
                 ),
                 List.of(
-                        fluidStack("helium_3", 250),
-                        fluidStack("helium_3", 250),
-                        fluidStack("helium_3", 250),
-                        fluidStack("helium_3", 250)
+                        fluidIngredient("helium_3", 250),
+                        fluidIngredient("helium_3", 250),
+                        fluidIngredient("helium_3", 250),
+                        fluidIngredient("helium_3", 250)
                 ), 20D, 190000D, 1.5D, 6050D
         );
         
@@ -60,10 +60,10 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient("helium_3", 1000)
                 ),
                 List.of(
-                        fluidStack("helium", 250),
-                        fluidStack("helium", 250),
-                        fluidStack("helium", 250),
-                        fluidStack("helium", 250)
+                        fluidIngredient("helium", 250),
+                        fluidIngredient("helium", 250),
+                        fluidIngredient("helium", 250),
+                        fluidIngredient("helium", 250)
                 ), 20D, 150000D, 1.5D, 3339D
         );
         
@@ -73,10 +73,10 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient("lithium/6", 144)
                 ),
                 List.of(
-                        fluidStack("tritium", 500),
-                        fluidStack("tritium", 500),
-                        fluidStack("helium", 500),
-                        fluidStack("helium", 500)
+                        fluidIngredient("tritium", 500),
+                        fluidIngredient("tritium", 500),
+                        fluidIngredient("helium", 500),
+                        fluidIngredient("helium", 500)
                 ), 35D, 135100D, 1.5D,7278D
         );
         
@@ -86,10 +86,10 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient("lithium/7", 144)
                 ),
                 List.of(
-                        fluidStack("helium", 500),
-                        fluidStack("helium", 500),
-                        fluidStack("helium", 500),
-                        fluidStack("helium", 500)
+                        fluidIngredient("helium", 500),
+                        fluidIngredient("helium", 500),
+                        fluidIngredient("helium", 500),
+                        fluidIngredient("helium", 500)
                 ), 40D, 133000D, 1.5D, 5071D
         );
         
@@ -99,10 +99,10 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient("boron/11", 144)
                 ),
                 List.of(
-                        fluidStack("helium", 1000*3/4),
-                        fluidStack("helium", 1000*3/4),
-                        fluidStack("helium", 1000*3/4),
-                        fluidStack("helium", 1000*3/4)
+                        fluidIngredient("helium", 1000*3/4),
+                        fluidIngredient("helium", 1000*3/4),
+                        fluidIngredient("helium", 1000*3/4),
+                        fluidIngredient("helium", 1000*3/4)
                 ), 60D, 284400D, 1.5D, 16370D
         );
 
@@ -113,10 +113,10 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient("helium_3", 1000)
                 ),
                 List.of(
-                        fluidStack("hydrogen", 500),
-                        fluidStack("hydrogen", 500),
-                        fluidStack("helium", 500),
-                        fluidStack("helium", 500)
+                        fluidIngredient("hydrogen", 500),
+                        fluidIngredient("hydrogen", 500),
+                        fluidIngredient("helium", 500),
+                        fluidIngredient("helium", 500)
                 ), 20D, 150700D, 1.5D, 1156D
         );
         
@@ -126,10 +126,10 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient("lithium/6", 144)
                 ),
                 List.of(
-                        fluidStack("helium", 500),
-                        fluidStack("helium", 500),
-                        fluidStack("helium", 500),
-                        fluidStack("helium", 500)
+                        fluidIngredient("helium", 500),
+                        fluidIngredient("helium", 500),
+                        fluidIngredient("helium", 500),
+                        fluidIngredient("helium", 500)
                 ), 25D, 225000D, 1.5D, 2632D
         );
         
@@ -139,10 +139,10 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient("lithium/7", 144)
                 ),
                 List.of(
-                        fluidStack("helium", 500),
-                        fluidStack("helium", 500),
-                        fluidStack("helium", 500),
-                        fluidStack("helium", 500)
+                        fluidIngredient("helium", 500),
+                        fluidIngredient("helium", 500),
+                        fluidIngredient("helium", 500),
+                        fluidIngredient("helium", 500)
                 ), 45D, 229000D, 1.5D, 5034D
         );
         
@@ -152,8 +152,8 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient("boron/11", 144)
                 ),
                 List.of(
-                        fluidStack("helium", 1000*6/4),
-                        fluidStack("helium", 1000*6/4)
+                        fluidIngredient("helium", 1000*6/4),
+                        fluidIngredient("helium", 1000*6/4)
                 ), 65D, 226100D, 1.5D, 16883D
         );
 
@@ -163,10 +163,10 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient("helium_3", 1000)
                 ),
                 List.of(
-                        fluidStack("helium", 250),
-                        fluidStack("helium", 250),
-                        fluidStack("helium", 250),
-                        fluidStack("helium", 250)
+                        fluidIngredient("helium", 250),
+                        fluidIngredient("helium", 250),
+                        fluidIngredient("helium", 250),
+                        fluidIngredient("helium", 250)
                 ), 30D, 209100D, 1.5D, 2604D
         );
 
@@ -176,8 +176,8 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient("lithium/6", 144)
                 ),
                 List.of(
-                        fluidStack("helium", 1000),
-                        fluidStack("helium", 1000)
+                        fluidIngredient("helium", 1000),
+                        fluidIngredient("helium", 1000)
                 ), 45D, 191500D, 1.5D, 4971D
         );
 
@@ -187,8 +187,8 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient("lithium/7", 144)
                 ),
                 List.of(
-                        fluidStack("helium", 1000),
-                        fluidStack("helium", 1000)
+                        fluidIngredient("helium", 1000),
+                        fluidIngredient("helium", 1000)
                 ), 50D, 143500D, 1.5D, 5511D
         );
 
@@ -198,8 +198,8 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient("boron/11", 144)
                 ),
                 List.of(
-                        fluidStack("helium", 1000*6/4),
-                        fluidStack("helium", 1000*6/4)
+                        fluidIngredient("helium", 1000*6/4),
+                        fluidIngredient("helium", 1000*6/4)
                 ), 70D, 400000D, 1.5D, 33215D
         );
 
@@ -208,10 +208,10 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient("lithium/6", 144)
                 ),
                 List.of(
-                        fluidStack("hydrogen", 500),
-                        fluidStack("hydrogen", 500),
-                        fluidStack("helium", 1000),
-                        fluidStack("helium", 1000)
+                        fluidIngredient("hydrogen", 500),
+                        fluidIngredient("hydrogen", 500),
+                        fluidIngredient("helium", 1000),
+                        fluidIngredient("helium", 1000)
                 ), 45D, 265000D, 1.5D, 9506D
         );
 
@@ -220,10 +220,10 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient("lithium/7", 144)
                 ),
                 List.of(
-                        fluidStack("deuterium", 500),
-                        fluidStack("deuterium", 500),
-                        fluidStack("helium", 1000),
-                        fluidStack("helium", 1000)
+                        fluidIngredient("deuterium", 500),
+                        fluidIngredient("deuterium", 500),
+                        fluidIngredient("helium", 1000),
+                        fluidIngredient("helium", 1000)
                 ), 50D, 222700D, 1.5D, 9673D
         );
 
@@ -232,10 +232,10 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient("boron/11", 144)
                 ),
                 List.of(
-                        fluidStack("deuterium", 500),
-                        fluidStack("deuterium", 500),
-                        fluidStack("helium", 1000*6/4),
-                        fluidStack("helium", 1000*6/4)
+                        fluidIngredient("deuterium", 500),
+                        fluidIngredient("deuterium", 500),
+                        fluidIngredient("helium", 1000*6/4),
+                        fluidIngredient("helium", 1000*6/4)
                 ), 70D, 574000D, 1.5D, 29574D
         );
 
@@ -244,8 +244,8 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient("lithium/7", 144*4)
                 ),
                 List.of(
-                        fluidStack("helium", 1000*6/2),
-                        fluidStack("helium", 1000*6/2)
+                        fluidIngredient("helium", 1000*6/2),
+                        fluidIngredient("helium", 1000*6/2)
                 ), 65D, 255200D, 1.5D, 14536D
         );
 
@@ -254,8 +254,8 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient("boron/11", 144*7)
                 ),
                 List.of(
-                        fluidStack("helium", 1000*2),
-                        fluidStack("helium", 1000*2)
+                        fluidIngredient("helium", 1000*2),
+                        fluidIngredient("helium", 1000*2)
                 ), 85D, 615700D, 1.5D, 37048D
         );
 
@@ -264,14 +264,14 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient("boron/11", 144*9)
                 ),
                 List.of(
-                        fluidStack("helium", 1000*2),
-                        fluidStack("helium", 1000*2)
+                        fluidIngredient("helium", 1000*2),
+                        fluidIngredient("helium", 1000*2)
                 ), 90D, 700000D, 3.5D, 202000D
         );
 
     }
 
-    protected static void add(List<FluidStackIngredient> input, List<FluidStack> output, double...modifiers) {
+    protected static void add(List<FluidStackIngredient> input, List<FluidStackIngredient> output, double...modifiers) {
         double timeModifier = modifiers.length>0 ? modifiers[0] : 1.0;
         double powerModifier = modifiers.length>1 ? modifiers[1] : 1.0;
         double radiation = modifiers.length>2 ? modifiers[2] : 1.0;

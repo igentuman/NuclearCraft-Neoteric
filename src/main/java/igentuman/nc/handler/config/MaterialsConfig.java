@@ -72,7 +72,7 @@ public class MaterialsConfig {
             builder.comment("Forge Tag priority").push("forge_tag_priority");
 
             MODS_PRIORITY = builder
-                    .comment("Priority of mods to resolve forge tags to itemstack.")
+                    .comment("Priority of mods to resolve forge tags to itemstack and fluidstack.")
                     .define("mods_priority", List.of("nuclearcraft", "mekanism", "immersiveengineering", "tconstruct"), o -> o instanceof ArrayList);
             builder.pop();
         }

@@ -26,14 +26,17 @@ import static igentuman.nc.util.TagUtil.getItemsByTagKey;
 public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerializer<RECIPE> {
 
     final IFactory<RECIPE> factory;
-
+    protected ItemStackIngredient[] inputItems;
+    protected ItemStackIngredient[] outputItems;
+    protected FluidStackIngredient[] inputFluids;
+    protected FluidStackIngredient[] outputFluids;
     public NcRecipeSerializer(IFactory<RECIPE> factory) {
         this.factory = factory;
     }
 
     @Override
     public @NotNull RECIPE fromJson(@NotNull ResourceLocation recipeId, @NotNull JsonObject json) {
-        ItemStackIngredient[] inputItems = new ItemStackIngredient[0];
+        inputItems = new ItemStackIngredient[0];
         try {
             if (json.has(JsonConstants.INPUT)) {
                 if (GsonHelper.isArrayNode(json, JsonConstants.INPUT)) {
@@ -53,7 +56,7 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerial
             NuclearCraft.LOGGER.warn("Unable to parse input for recipe: "+recipeId);
         }
 
-        ItemStackIngredient[] outputItems = new ItemStackIngredient[0];
+        outputItems = new ItemStackIngredient[0];
         try {
             if(json.has(JsonConstants.OUTPUT)) {
                 if (GsonHelper.isArrayNode(json, JsonConstants.OUTPUT)) {
@@ -78,7 +81,7 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerial
             NuclearCraft.LOGGER.warn("Unable to parse output for recipe: "+recipeId);
         }
 
-        FluidStackIngredient[] inputFluids = new FluidStackIngredient[0];
+        inputFluids = new FluidStackIngredient[0];
         try {
             if(json.has("inputFluids")) {
                 if (GsonHelper.isArrayNode(json, "inputFluids")) {
@@ -98,7 +101,7 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerial
             NuclearCraft.LOGGER.warn("Unable to parse input fluid for recipe: "+recipeId);
         }
 
-        FluidStackIngredient[] outputFluids = new FluidStackIngredient[0];
+        outputFluids = new FluidStackIngredient[0];
         try {
             if(json.has("outputFluids")) {
                 if (GsonHelper.isArrayNode(json, "outputFluids")) {
@@ -137,36 +140,41 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerial
         return this.factory.create(recipeId, inputItems, outputItems, inputFluids, outputFluids, timeModifier, powerModifier, radiation, rarityModifier);
     }
 
+
+    public void readIngredients(@NotNull FriendlyByteBuf buffer) {
+        int inputSize = buffer.readInt();
+        inputItems = new ItemStackIngredient[inputSize];
+        for(int i = 0; i < inputSize; i++) {
+            inputItems[i] = IngredientCreatorAccess.item().read(buffer);
+        }
+
+        int outputSize = buffer.readInt();
+        outputItems = new ItemStackIngredient[outputSize];
+        for(int i = 0; i < outputSize; i++) {
+            outputItems[i] =  IngredientCreatorAccess.item().read(buffer);
+        }
+
+        inputSize = buffer.readInt();
+        inputFluids = new FluidStackIngredient[inputSize];
+        for(int i = 0; i < inputSize; i++) {
+            inputFluids[i] = IngredientCreatorAccess.fluid().read(buffer);
+        }
+
+        outputSize = buffer.readInt();
+       outputFluids = new FluidStackIngredient[outputSize];
+        for(int i = 0; i < outputSize; i++) {
+            outputFluids[i] =  IngredientCreatorAccess.fluid().read(buffer);
+        }
+    }
+
     @Override
     public RECIPE fromNetwork(@NotNull ResourceLocation recipeId, @NotNull FriendlyByteBuf buffer) {
-        if(recipeId.getPath().contains("nc_ore_veins")) {
+        if(recipeId.getPath().contains("nc_ore_veins")) {//todo this is stupid
             return (RECIPE) SERIALIZERS.get("nc_ore_veins").get().fromNetwork(recipeId, buffer);
         }
         try {
 
-            int inputSize = buffer.readInt();
-            ItemStackIngredient[] inputItems = new ItemStackIngredient[inputSize];
-            for(int i = 0; i < inputSize; i++) {
-                inputItems[i] = IngredientCreatorAccess.item().read(buffer);
-            }
-
-            int outputSize = buffer.readInt();
-            ItemStackIngredient[] outputItems = new ItemStackIngredient[outputSize];
-            for(int i = 0; i < outputSize; i++) {
-                outputItems[i] =  IngredientCreatorAccess.item().read(buffer);
-            }
-
-            inputSize = buffer.readInt();
-            FluidStackIngredient[] inputFluids = new FluidStackIngredient[inputSize];
-            for(int i = 0; i < inputSize; i++) {
-                inputFluids[i] = IngredientCreatorAccess.fluid().read(buffer);
-            }
-
-            outputSize = buffer.readInt();
-            FluidStackIngredient[] outputFluids = new FluidStackIngredient[outputSize];
-            for(int i = 0; i < outputSize; i++) {
-                outputFluids[i] =  IngredientCreatorAccess.fluid().read(buffer);
-            }
+            readIngredients(buffer);
 
             double timeModifier = buffer.readDouble();
             double powerModifier = buffer.readDouble();

@@ -20,29 +20,8 @@ public class OreVeinRecipeSerializer<RECIPE extends NcRecipe> extends NcRecipeSe
     @Override
     public RECIPE fromNetwork(@NotNull ResourceLocation recipeId, @NotNull FriendlyByteBuf buffer) {
         try {
-            int inputSize = buffer.readInt();
-            ItemStackIngredient[] inputItems = new ItemStackIngredient[inputSize];
-            for(int i = 0; i < inputSize; i++) {
-                inputItems[i] = IngredientCreatorAccess.item().read(buffer);
-            }
 
-            int outputSize = buffer.readInt();
-            ItemStackIngredient[] outputItems = new ItemStackIngredient[outputSize];
-            for(int i = 0; i < outputSize; i++) {
-                outputItems[i] =  IngredientCreatorAccess.item().read(buffer);
-            }
-
-            inputSize = buffer.readInt();
-            FluidStackIngredient[] inputFluids = new FluidStackIngredient[inputSize];
-            for(int i = 0; i < inputSize; i++) {
-                inputFluids[i] = IngredientCreatorAccess.fluid().read(buffer);
-            }
-
-            outputSize = buffer.readInt();
-            FluidStackIngredient[] outputFluids = new FluidStackIngredient[outputSize];
-            for(int i = 0; i < outputSize; i++) {
-                outputFluids[i] =  IngredientCreatorAccess.fluid().read(buffer);
-            }
+            readIngredients(buffer);
 
             double timeModifier = buffer.readDouble();
             double powerModifier = buffer.readDouble();

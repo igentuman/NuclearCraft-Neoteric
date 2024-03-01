@@ -75,8 +75,10 @@ repositories {
     maven { url "https://maven.mcmoddev.com" }
     maven { url "https://maven.tterrag.com/" }
     maven { url "https://modmaven.dev/" }
-        maven { url "https://maven.firstdarkdev.xyz/snapshots/" }
+    maven { url "https://maven.firstdarkdev.xyz/snapshots/" }
     maven { url "https://maven.tterrag.com/" }
+    maven { url "https://maven.architectury.dev" }
+    maven { url "https://maven.saps.dev/minecraft" }
 }
 
 dependencies {
@@ -106,8 +108,9 @@ dependencies {
         transitive = false
     }
 
-   // implementation fg.deobf("curse.maven:cc-tweaked-282001:4630524")
-
+    implementation fg.deobf("dev.latvian.mods:kubejs-forge:${kubejs_version}")
+    implementation fg.deobf("dev.latvian.mods:rhino-forge:${rhino_version}")
+    implementation fg.deobf("dev.architectury:architectury-forge:${architectury_version}")
     //runtimeOnly fg.deobf("curse.maven:nbtedit-reborn-678133:4420565")
     //runtimeOnly fg.deobf("com.blamejared.crafttweaker:CraftTweaker-forge-${mc_version}:${ct_version}")
 

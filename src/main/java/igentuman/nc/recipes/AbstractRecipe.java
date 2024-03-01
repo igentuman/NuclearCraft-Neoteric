@@ -94,12 +94,17 @@ public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
     public NonNullList<Ingredient> getItemIngredients() {
         NonNullList<Ingredient> ingredients = NonNullList.create();
         for (ItemStackIngredient inputItem : inputItems) {
+            if(inputItem == null) {
+                ingredients.add(Ingredient.EMPTY);
+                continue;
+            }
             ingredients.add(Ingredient.of(inputItem.getRepresentations().toArray(new ItemStack[inputItem.getRepresentations().size()])));
         }
         return ingredients;
     }
     public ItemStack getFirstItemStackIngredient(int id) {
-        return inputItems[id].getRepresentations().get(0);
+        ItemStack[] items = getInputIngredient(0).getItems();
+        return items.length > id ? items[id] : ItemStack.EMPTY;
     }
 
     @Override
@@ -149,7 +154,7 @@ public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
         boolean empty = inputFluids.length == 0 && outputFluids.length == 0 && inputItems.length == 0 && outputItems.length == 0;
         if(empty) return true;
         for(ItemStackIngredient inputItem: inputItems) {
-            if(inputItem.getRepresentations().isEmpty()
+            if(inputItem == null || inputItem.getRepresentations().isEmpty()
                     || inputItem.getRepresentations().get(0).getItem().equals(BARRIER)) {
                 return true;
             }
@@ -161,12 +166,12 @@ public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
             }
         }
         for(FluidStackIngredient inputFluid: inputFluids) {
-            if(inputFluid.getRepresentations().isEmpty()) {
+            if(inputFluid == null || inputFluid.getRepresentations().isEmpty()) {
                 return true;
             }
         }
         for(FluidStackIngredient output: outputFluids) {
-            if(output.getRepresentations().isEmpty()) {
+            if(output == null || output.getRepresentations().isEmpty()) {
                 return true;
             }
         }
@@ -188,6 +193,7 @@ public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
         if(cachedOutputItems == null) {
             cachedOutputItems = new ArrayList<>();
             for (ItemStackIngredient outputItem : outputItems) {
+                if(outputItem == null) continue;
                 List<ItemStack> items = outputItem.getRepresentations();
                 if(items.size() == 1) {
                     cachedOutputItems.add(items.get(0));

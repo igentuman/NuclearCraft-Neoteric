@@ -1,0 +1,13 @@
+{
+  "name": "Pump",
+  "icon": "nuclearcraft:pump",
+  "category": "nuclearcraft:machines",
+  "sortnum": 2,
+  "pages": [
+    {
+      "anchor": "intro",
+      "type": "text",
+      "text": "Pump used to collect fluids and gases from the environment. In order to operate it needs proper catalyst and energy."
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "name": "General Info",
+  "icon": "nuclearcraft:fission_reactor_casing",
+  "category": "nuclearcraft:fission",
+  "sortnum": 0,
+  "pages": [
+    {
+      "anchor": "intro",
+      "type": "text",
+      "text": "$(thing)Fission reactors$() generate heat from the self-sustained nuclear reaction of fission fuel. This heat is ultimately transformed into electricity. The method of electricity generation can be changed from boiling to electric mode."
+    },
+    {
+      "anchor": "casing",
+      "type": "blocks/2",
+      "header": "Reactor Casing",
+      "block1": "nuclearcraft:fission_reactor_casing",
+      "block2": "nuclearcraft:fission_reactor_glass",
+      "text": "The interior components of the reactor are contained within a rectangular prism. The reactor must have edges consisting of $(thing)Reactor Casing$(), while the walls of the reactor can be $(thing)Reactor Glass$(), Reactor Casing, or both."
+    },
+    {
+      "anchor": "controller",
+      "type": "blocks/1",
+      "header": "Reactor Controllers",
+      "block": "nuclearcraft:fission_reactor_controller",
+      "text": "Without a controller, the reactor multiblock will not form. It's GUI will show information about the reactor, such as the averages of relevant components' stats."
+    },
+    {
+      "anchor": "port",
+      "type": "blocks/1",
+      "header": "Reactor Port",
+      "block": "nuclearcraft:fission_reactor_port",
+      "text": "Reactor Port used to transfer items, fluids, and energy into and out of the reactor. The port can be configured to input or output items, fluids, and energy. The port can also be used for redstone control and computers."
+    },
+    {
+      "anchor": "fuel_cell",
+      "header": "Fuel Cell",
+      "type": "blocks/1",
+      "block": "nuclearcraft:fission_reactor_solid_fuel_cell",
+      "text": "Fuel Cells used to transform fuel heat production for boiling or direct energy production. Each fuel cell multiplies fuel depletion speed."
+    },
+    {
+      "anchor": "moderator",
+      "header": "Moderators",
+      "type": "blocks/2",
+      "block1": "nuclearcraft:graphite_block",
+      "block2": "nuclearcraft:beryllium_block",
+      "text": " $(thing)Moderators$() can slow down the high energy neutrons produced by the $(l:fission/general#fuel_cell)Fuel Cells$() into ones that will cause more fission in other fuel components. Moderators must be placed next to Fuel Cells."
+    },
+    {
+      "anchor": "heatsink",
+      "type": "blocks/2",
+      "block1": "nuclearcraft:lapis_heat_sink,nuclearcraft:aluminum_heat_sink,nuclearcraft:arsenic_heat_sink,nuclearcraft:boron_heat_sink,nuclearcraft:carobbiite_heat_sink,nuclearcraft:copper_heat_sink,nuclearcraft:cryotheum_heat_sink,nuclearcraft:diamond_heat_sink,nuclearcraft:emerald_heat_sink,nuclearcraft:end_stone_heat_sink,nuclearcraft:enderium_heat_sink,nuclearcraft:fluorite_heat_sink,nuclearcraft:glowstone_heat_sink,nuclearcraft:gold_heat_sink,nuclearcraft:iron_heat_sink,nuclearcraft:lead_heat_sink,nuclearcraft:liquid_helium_heat_sink,nuclearcraft:liquid_nitrogen_heat_sink,nuclearcraft:lithium_heat_sink,nuclearcraft:magnesium_heat_sink,nuclearcraft:manganese_heat_sink,nuclearcraft:nether_brick_heat_sink,nuclearcraft:netherite_heat_sink,nuclearcraft:obsidian_heat_sink,nuclearcraft:prismarine_heat_sink,nuclearcraft:purpur_heat_sink,nuclearcraft:quartz_heat_sink,nuclearcraft:redstone_heat_sink,nuclearcraft:silver_heat_sink,nuclearcraft:slime_heat_sink,nuclearcraft:tin_heat_sink,nuclearcraft:villiaumite_heat_sink,nuclearcraft:water_heat_sink",
+      "header": "Heatsinks",
+      "text": "$(thing)Heatsinks$() are used when designing a reactor, to balance the $(thing)Net Heat$() of the reactor. The designer should aim for a net heat of 0HU/t for a fully stable reactor. Each heatsink has specific design rules that it must adhere to."
+    },
+    {
+      "type": "text",
+      "text": "Heatsinks act to remove heat from the reactor. When a fuelcell is active, it will produce heat equal to it's base heat output times the $(thing)Heat Multiplier$(). The heat multiplier of a cell is determined by the number of moderator lines. Thus, a cell with a single moderator line will have 100% heat efficiency, and a cell with two moderator lines will have 200% heat efficiency."
+    },
+    {
+      "anchor": "irradiator",
+      "header": "Irradiators",
+      "type": "blocks/2",
+      "block1": "nuclearcraft:fission_reactor_irradiation_chamber",
+      "block2": "nuclearcraft:irradiator",
+      "text": "When placed at the end of a $(l:fission/general#moderator)Moderator$() line, $(thing)Irradiators$() will use the radiative flux to transform items in Irradiation Chamber. Irradiation speed depends on amount of irradiation lines in reactor."
+    },
+    {
+      "anchor": "planner",
+      "type": "text",
+      "header": "Design Considerations",
+      "text": "When designing a reactor, the usage of a $(l:https://github.com/ThizThizzyDizzy/nc-reactor-generator/releases)reactor planner$() is recommended. Reactor planners assist with the design of the reactor, providing feedback on design rules, heat control, and predicted output."
+    }
+  ]
+}

@@ -83,6 +83,9 @@ public class NCLanguageProvider extends LanguageProvider {
     }
 
     private void labels() {
+        add("nc.guide_book.name", "NuclearCraft Guide");
+        add("nc.guide_book.desc", "Basics and advanced topics about NuclearCraft");
+        add("nc.guide_book.edition", "Neoteric Edition");
         add("fusion_core.rf_amplifiers.power", "RF Amplifiers: %s%%");
         add("fusion_core.stability", "Plasma Stability: %s%%");
         add("nc.label.leacher_wrong_position", "Wrong Position");

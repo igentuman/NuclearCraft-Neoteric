@@ -1,0 +1,18 @@
+{
+  "name": "HEV Suit",
+  "icon": "nuclearcraft:hev_helmet",
+  "category": "nuclearcraft:items",
+  "sortnum": 0,
+  "pages": [
+    {
+      "anchor": "hev",
+      "type": "items/4",
+      "header": "HEV Suit",
+      "item1": "nuclearcraft:hev_helmet",
+      "item2": "nuclearcraft:hev_chest",
+      "item3": "nuclearcraft:hev_pants",
+      "item4": "nuclearcraft:hev_boots",
+      "text": "The $(item)HEV Suit$() is advanced technological suite. It provides protection from radiation and other environmental hazards. It also provides a variety of other useful features. Requires charge to operate."
+    }
+  ]
+}

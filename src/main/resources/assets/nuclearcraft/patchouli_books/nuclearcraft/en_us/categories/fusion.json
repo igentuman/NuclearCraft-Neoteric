@@ -1,7 +1,7 @@
 {
-  "name": "Nuclear Fusion (WIP)",
+  "name": "Nuclear Fusion",
   "description": "$(l)Fusing the atom, for fun and ultimate glory.",
-  "icon": "nuclearcraft:part:4",
+  "icon": "nuclearcraft:fusion_core",
   "parent": "nuclearcraft:multiblocks",
   "sortnum": 1
 }

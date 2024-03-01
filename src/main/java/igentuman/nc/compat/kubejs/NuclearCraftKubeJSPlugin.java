@@ -8,21 +8,22 @@ import dev.latvian.mods.kubejs.item.InputItem;
 import dev.latvian.mods.kubejs.item.OutputItem;
 import dev.latvian.mods.kubejs.recipe.RecipeKey;
 import dev.latvian.mods.kubejs.recipe.component.FluidComponents;
+import dev.latvian.mods.kubejs.recipe.component.ItemComponents;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchema;
 import dev.latvian.mods.kubejs.recipe.schema.RegisterRecipeSchemasEvent;
 import igentuman.nc.recipes.NcRecipeType;
 
-import static dev.latvian.mods.kubejs.recipe.schema.minecraft.ShapelessRecipeSchema.INGREDIENTS;
-import static dev.latvian.mods.kubejs.recipe.schema.minecraft.ShapelessRecipeSchema.RESULT;
 import static igentuman.nc.NuclearCraft.MODID;
 
 public class NuclearCraftKubeJSPlugin extends KubeJSPlugin {
-    RecipeSchema SCHEMA = new RecipeSchema(NCRecipeJS.class, NCRecipeJS::new, RESULT, INGREDIENTS);
+    RecipeKey<Either<OutputFluid, OutputItem>[]> RESULTS = FluidComponents.OUTPUT_OR_ITEM_ARRAY.key("output").alt("output", "outputFluids");
+    RecipeKey<Either<InputFluid, InputItem>[]> INGREDIENTS = FluidComponents.INPUT_OR_ITEM_ARRAY.key("input").alt("input", "inputFluids");
+    RecipeSchema SCHEMA = new RecipeSchema(NCRecipeJS.class, NCRecipeJS::new, RESULTS, INGREDIENTS);
+
     @Override
     public void registerRecipeSchemas(RegisterRecipeSchemasEvent event) {
         for(String recipeType: NcRecipeType.ALL_RECIPES.keySet()) {
-            event.namespace(MODID).register(NcRecipeType.ALL_RECIPES.get(recipeType).getRegistryName().toString(), SCHEMA);
+            event.namespace(MODID).register(recipeType, SCHEMA);
         }
-
     }
 }

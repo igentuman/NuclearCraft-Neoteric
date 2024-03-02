@@ -23,7 +23,6 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
     protected int depth;
     protected INCMultiblockController controller;
     public ValidationResult validationResult;
-    public HashMap<BlockPos, BlockInfo> cachedBlocks = new HashMap<>();
 
     public int topCasing = 0;
     public int bottomCasing = 0;
@@ -38,21 +37,12 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
     protected final List<Block> validOuterBlocks;
     protected final List<Block> validInnerBlocks;
     protected List<BlockPos> controllers = new ArrayList<>();
+    protected HashMap<Long, BlockEntity> beCache = new HashMap<>();
+    protected HashMap<Long, BlockState> bsCache = new HashMap<>();
 
     protected AbstractNCMultiblock(List<Block> validOuterBlocks, List<Block> validInnerBlocks) {
         this.validOuterBlocks = validOuterBlocks;
         this.validInnerBlocks = validInnerBlocks;
-    }
-
-    public BlockInfo getBlockInfo(BlockPos pos) {
-        if(cachedBlocks.containsKey(pos)) {
-            return cachedBlocks.get(pos);
-        }
-        BlockEntity be = getLevel().getBlockEntity(pos);
-        BlockState state = getLevel().getBlockState(pos);
-        BlockInfo info = new BlockInfo(state, be);
-        cachedBlocks.put(pos, info);
-        return info;
     }
 
     public List<Block> validCornerBlocks() {
@@ -126,11 +116,20 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
         return getRightPos(rightCasing).above(topCasing);
     }
 
+    protected BlockState getBlockState(BlockPos pos) {
+        if(bsCache.containsKey(pos.asLong())) {
+            return bsCache.get(pos.asLong());
+        }
+        BlockState state = getLevel().getBlockState(pos);
+        bsCache.put(pos.asLong(), state);
+        return state;
+    }
+
     public boolean isValidForOuter(BlockPos pos)
     {
         if(getLevel() == null) return false;
         try {
-            return  validOuterBlocks().contains(getLevel().getBlockState(pos).getBlock());
+            return  validOuterBlocks().contains(getBlockState(pos).getBlock());
         } catch (NullPointerException ignored) { }
         return false;
     }
@@ -138,7 +137,7 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
     {
         if(getLevel() == null) return false;
         try {
-            return  validCornerBlocks().contains(getLevel().getBlockState(pos).getBlock());
+            return  validCornerBlocks().contains(getBlockState(pos).getBlock());
         } catch (NullPointerException ignored) { }
         return false;
     }
@@ -147,7 +146,7 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
     {
         if(getLevel() == null) return false;
         try {
-            BlockState bs = getLevel().getBlockState(pos);
+            BlockState bs = getBlockState(pos);
             if(bs.isAir()) return true;
             return  validInnerBlocks().contains(bs.getBlock());
         } catch (NullPointerException ignored) { }
@@ -213,6 +212,7 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
 
     @Override
     public void validateOuter() {
+
         resolveDimensions();
         if(width < minWidth() || height < minHeight() || depth < minDepth())
         {
@@ -259,7 +259,7 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
     protected void processOuterBlock(BlockPos pos) {
         attachMultiblock(pos);
         allBlocks.add(new NCBlockPos(pos));
-        if(getLevel().getBlockState(pos).getBlock().asItem().toString().contains("controller")) {
+        if(getBlockState(pos).getBlock().asItem().toString().contains("controller")) {
             controllers.add(pos);
         }
     }
@@ -292,7 +292,16 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
     protected abstract void invalidateStats();
 
     protected void attachMultiblock(BlockPos pos) {
-        attachMultiblock(getLevel().getBlockEntity(pos));
+        attachMultiblock(getBlockEntity(pos));
+    }
+
+    protected BlockEntity getBlockEntity(BlockPos pos) {
+        if(beCache.containsKey(pos.asLong())) {
+            return beCache.get(pos.asLong());
+        }
+        BlockEntity be = getLevel().getBlockEntity(pos);
+        beCache.put(pos.asLong(), be);
+        return be;
     }
 
     protected void attachMultiblock(BlockEntity be) {
@@ -309,7 +318,7 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
     public void onControllerRemoved() {
         for(BlockPos b: allBlocks) {
             if(!isLoaded(b)) continue;
-            BlockEntity be = getLevel().getBlockEntity(b);
+            BlockEntity be = getBlockEntity(b);
             if(be instanceof IMultiblockAttachable) {
                 ((IMultiblockAttachable) be).setMultiblock(null);
             }
@@ -349,11 +358,11 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
         refreshInnerCacheFlag = true;
         allBlocks.clear();
         controllers.clear();
-
+        bsCache.clear();
+        beCache.clear();
         isOuterValid();
         validateInner();
         innerValid = validationResult.isValid;
-        //todo more checks before?
         isFormed = outerValid && innerValid;
     }
 
@@ -389,7 +398,7 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
 
     private boolean shouldRefreshCache(BlockState state, BlockPos pos, BlockPos neighbor) {
         boolean isInTheList = allBlocks.contains(neighbor);
-        BlockEntity neighborBe = getLevel().getBlockEntity(neighbor);
+        BlockEntity neighborBe = getBlockEntity(neighbor);
         if(!isInTheList) return false; //ignore all blocks outside
         if(neighborBe instanceof IMultiblockAttachable part) {
             return part.canInvalidateCache();
@@ -407,6 +416,8 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
                 refreshInnerCacheFlag = true;
                 isFormed = false;
                 hasToRefresh = false;
+                beCache = new HashMap<>();
+                bsCache = new HashMap<>();
             }
         }
     }

@@ -77,6 +77,11 @@ public class NCSolidFissionReactorPeripheral implements IPeripheral {
         return reactor.energyPerTick;
     }
 
+    @LuaFunction
+    public final void setModerationLevel(int level)
+    {
+        reactor.adjustModerationLevel(level);
+    }
 
     @LuaFunction
     public final int getEnergyStored()

@@ -234,10 +234,6 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         return null;
     }
 
-    public void updateEnergyStorage() {
-        energyStorage.setMaxCapacity(Math.max(fuelCellsCount, 1) * 1000000);
-        energyStorage.setMaxExtract(Math.max(fuelCellsCount, 1) * 1000000);
-    }
     public double getSteamRate()
     {
         return Math.max(0, steamRate);
@@ -830,20 +826,30 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         targetModerationLevel = Double.parseDouble(formatted);
     }
 
+    /**
+     * Slowly update the moderation level
+     * @return boolean
+     */
     public boolean updateModerationLevel()
     {
-        if(moderationLevel != targetModerationLevel) {
+        if(Math.abs(moderationLevel - targetModerationLevel) > 0.005) {
             if(moderationLevel < targetModerationLevel) {
-                moderationLevel += 0.005;
+                moderationLevel += 0.0025;
             } else {
-                moderationLevel -= 0.005;
+                moderationLevel -= 0.0025;
             }
             return true;
         }
         return false;
     }
+
     public double getModerationLevel() {
         return moderationLevel;
+    }
+
+    public void adjustModerationLevel(int level) {
+        String formatted = String.format("%.2f", (double) Math.max(1, level) / 100);
+        targetModerationLevel = Double.parseDouble(formatted);
     }
 
     public static class Recipe extends NcRecipe {

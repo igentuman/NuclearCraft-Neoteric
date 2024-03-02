@@ -97,7 +97,7 @@ public class TurbineMultiblock extends AbstractNCMultiblock {
 
     private void countBlades() {
         for(BlockPos pos : bladePositions) {
-            BlockEntity be = getLevel().getBlockEntity(pos);
+            BlockEntity be = getBlockEntity(pos);
             if(be instanceof TurbineBladeBE blade) {
                 flow++;
             }
@@ -107,7 +107,7 @@ public class TurbineMultiblock extends AbstractNCMultiblock {
     private void detectOrientation() {
         if(rotorPositions.isEmpty()) return;
         BlockPos rotorPos = rotorPositions.get(0);
-        BlockState st = getLevel().getBlockState(rotorPos);
+        BlockState st = getBlockState(rotorPos);
         turbineDirection = st.getValue(TurbineRotorBlock.FACING);
     }
 
@@ -120,7 +120,7 @@ public class TurbineMultiblock extends AbstractNCMultiblock {
 
     @Override
     protected boolean processInnerBlock(BlockPos toCheck) {
-        BlockState bs = getLevel().getBlockState(toCheck);
+        BlockState bs = getBlockState(toCheck);
         if(bs.isAir()) return true;
         super.processInnerBlock(new NCBlockPos(toCheck));
         if(bs.getBlock() instanceof TurbineRotorBlock) {
@@ -134,7 +134,7 @@ public class TurbineMultiblock extends AbstractNCMultiblock {
 
     protected void processOuterBlock(BlockPos pos) {
         super.processOuterBlock(pos);
-        BlockEntity bs = getLevel().getBlockEntity(pos);
+        BlockEntity bs = getBlockEntity(pos);
         if(bs instanceof TurbineBearingBE) {
             bearingPositions.add(new NCBlockPos(pos));
         }
@@ -150,7 +150,7 @@ public class TurbineMultiblock extends AbstractNCMultiblock {
         activeCoils = 0;
         coilsEfficiency = 0;
         for(BlockPos pos : coilPositions) {
-            BlockEntity be = getLevel().getBlockEntity(pos);
+            BlockEntity be = getBlockEntity(pos);
             if(be instanceof TurbineCoilBE coil) {
                 coil.validatePlacement();
                 if(coilsEfficiency == 0) {
@@ -190,7 +190,7 @@ public class TurbineMultiblock extends AbstractNCMultiblock {
         boolean bearingConnected = true;
         Direction dir = turbineDirection;
         for(BlockPos pos : rotorPositions) {
-            BlockState bs = getLevel().getBlockState(pos);
+            BlockState bs = getBlockState(pos);
             if(!(bs.getBlock() instanceof TurbineRotorBlock)) {
                 return false;
             }
@@ -220,14 +220,14 @@ public class TurbineMultiblock extends AbstractNCMultiblock {
                     }
                     break;
             }
-            BlockEntity be = getLevel().getBlockEntity(pos);
+            BlockEntity be = getBlockEntity(pos);
             if(!(be instanceof TurbineRotorBE rotorBE)) {
                 return false;
             }
             rotorBE.updateBearingConnection();
             bearingConnected = bearingConnected && rotorBE.connectedToBearing;
         }
-        return bearingConnected && getLevel().getBlockEntity(getCenterBlock()) instanceof TurbineRotorBE;
+        return bearingConnected && getBlockEntity(getCenterBlock()) instanceof TurbineRotorBE;
     }
 
 

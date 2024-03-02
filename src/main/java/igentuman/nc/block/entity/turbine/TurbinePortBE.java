@@ -31,7 +31,7 @@ public class TurbinePortBE extends TurbineBE {
     @NBTField
     public byte analogSignal = 0;
     @NBTField
-    public byte comparatorMode = SignalSource.HEAT;
+    public byte comparatorMode = SignalSource.OVERFLOW;
 
     @NBTField
     public BlockPos controllerPos;
@@ -68,10 +68,6 @@ public class TurbinePortBE extends TurbineBE {
 
         Direction dir = getFacing();
 
-        if(itemHandler() != null) {
-            updated = itemHandler().pushItems(dir, true, worldPosition) || updated;
-            updated = itemHandler().pullItems(dir, true, worldPosition) || updated;
-        }
         if(fluidHandler() != null) {
             updated = fluidHandler().pushFluids(dir, true, worldPosition) || updated;
             updated = fluidHandler().pullFluids(dir, true, worldPosition) || updated;
@@ -106,9 +102,7 @@ public class TurbinePortBE extends TurbineBE {
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if(controller() == null) return super.getCapability(cap, side);
-        if (cap == ForgeCapabilities.ITEM_HANDLER) {
-            return controller().contentHandler.itemCapability.cast();
-        }
+
         if (cap == ForgeCapabilities.FLUID_HANDLER) {
             return LazyOptional.of(() -> controller().contentHandler.fluidCapability).cast();
         }
@@ -250,7 +244,7 @@ public class TurbinePortBE extends TurbineBE {
 
     public void toggleComparatorMode() {
         comparatorMode++;
-        if(comparatorMode > SignalSource.ITEMS) {
+        if(comparatorMode > SignalSource.OVERFLOW) {
             comparatorMode = SignalSource.ENERGY;
         }
         setChanged();
@@ -259,8 +253,6 @@ public class TurbinePortBE extends TurbineBE {
 
     public static class SignalSource {
         public static final byte ENERGY = 1;
-        public static final byte HEAT = 2;
-        public static final byte PROGRESS = 3;
-        public static final byte ITEMS = 4;
+        public static final byte OVERFLOW = 2;
     }
 }

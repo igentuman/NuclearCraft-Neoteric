@@ -302,12 +302,13 @@ public class FusionReactorMultiblock extends AbstractNCMultiblock {
 
     private void validateConnectors() {
         NCBlockPos pos = new NCBlockPos(controllerBE.getBlockPos().above());
+
         length = 1;
         connectorsValid = true;
         for(int i = 2; i <= maxWidth()/2+1; i++) {
             int connectors = 0;
             for(Direction side: List.of(NORTH, EAST, Direction.SOUTH, Direction.WEST)) {
-                if(controllerBE.getLevel().getBlockEntity(pos.revert().relative(side, i)) instanceof FusionConnectorBE connector) {
+                if(getBlockEntity(pos.revert().relative(side, i)) instanceof FusionConnectorBE connector) {
                     connector.setController(controllerBE);
                     attachMultiblock(connector);
                     allBlocks.add(new NCBlockPos(pos));

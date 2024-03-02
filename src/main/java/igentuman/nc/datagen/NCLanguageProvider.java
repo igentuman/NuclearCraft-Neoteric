@@ -316,6 +316,8 @@ public class NCLanguageProvider extends LanguageProvider {
         add("gui.nc.reactor_comparator_config.tooltip_2","Comparator: Heat Stored");
         add("gui.nc.reactor_comparator_config.tooltip_3","Comparator: Depletion Progress");
         add("gui.nc.reactor_comparator_config.tooltip_4","Comparator: Fuel Left");
+        add("gui.nc.reactor_comparator_config.tooltip_5","Input: On/Off Reactor");
+        add("gui.nc.reactor_comparator_config.tooltip_6","Input: Moderation Control");
         add("gui.nc.reactor_comparator_strength.tooltip","Current Signal Strength: %s");
         add("gui.nc.redstone_config.tooltip_0","WORK MODE: IGNORE SIGNAL");
         add("gui.nc.redstone_config.tooltip_1","WORK MODE: ON SIGNAL");
@@ -405,6 +407,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("reactor.forge_energy_per_tick", "FE Gen: %s FE/t");
         add("reactor.heat_sinks_count", "Active Heat Sinks: %s");
         add("reactor.moderators_count", "Active Moderators: %s");
+        add("reactor.moderation_level", "Moderation Level: %s%%");
         add("validation.structure.too_big", "Structure is too big");
         add("validation.structure.too_small", "Structure is too small");
         add("validation.structure.incomplete", "Incomplete");

@@ -112,7 +112,9 @@ public  class JEIPlugin implements IModPlugin {
             registration.addRecipes(
                     getRecipeType(ORE_VEINS),
                     NcRecipeType.ALL_RECIPES.get("nc_ore_veins").getRecipes(NcClient.tryGetClientWorld()));
-            registration.addRecipes(getRecipeType(CHEMICAL_TO_FLUID), MekChemicalConversionRecipe.getRecipes());
+            if(isMekanismLoadeed()) {
+                registration.addRecipes(getRecipeType(CHEMICAL_TO_FLUID), MekChemicalConversionRecipe.getRecipes());
+            }
         } catch (IllegalArgumentException ex) {
             NuclearCraft.LOGGER.error("Error registering recipes for JEI: " + ex.getMessage());
         }

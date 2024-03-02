@@ -31,7 +31,7 @@ public class FissionPortBE extends FissionBE {
     @NBTField
     public byte analogSignal = 0;
     @NBTField
-    public byte comparatorMode = SignalSource.HEAT;
+    public byte redstoneMode = SignalSource.HEAT;
 
     @NBTField
     public BlockPos controllerPos;
@@ -48,6 +48,10 @@ public class FissionPortBE extends FissionBE {
 
     public boolean hasRedstoneSignal() {
         return Objects.requireNonNull(getLevel()).hasNeighborSignal(worldPosition);
+    }
+
+    public int getRedstoneSignal() {
+        return Objects.requireNonNull(getLevel()).getBestNeighborSignal(worldPosition);
     }
 
 
@@ -68,11 +72,11 @@ public class FissionPortBE extends FissionBE {
             updated = true;
         }
 
-        if(hasRedstoneSignal()) {
-            controller().controllerEnabled = true;
-        }
-
         updateAnalogSignal();
+        switch (redstoneMode) {
+            case SignalSource.SWITCH -> controller().toggleReactor(hasRedstoneSignal());
+            case SignalSource.MODERATOR -> controller().adjustModerator(analogSignal);
+        }
 
         updated = wasSignal != analogSignal || updated;
 
@@ -90,7 +94,7 @@ public class FissionPortBE extends FissionBE {
     }
 
     private void updateAnalogSignal() {
-        switch (comparatorMode) {
+        switch (redstoneMode) {
             case SignalSource.ENERGY:
                 analogSignal = (byte) (controller().energyStorage.getEnergyStored() * 15 / controller().energyStorage.getMaxEnergyStored());
                 break;
@@ -102,6 +106,9 @@ public class FissionPortBE extends FissionBE {
                 break;
             case SignalSource.ITEMS:
                 analogSignal = (byte) (itemHandler().getStackInSlot(0).getCount() * 15 / itemHandler().getStackInSlot(0).getMaxStackSize());
+                break;
+            case SignalSource.MODERATOR:
+                analogSignal = (byte) (Math.max(1, getRedstoneSignal()));
                 break;
         }
     }
@@ -146,9 +153,9 @@ public class FissionPortBE extends FissionBE {
         }
 
         if(isCcLoaded()) {
-/*            if(cap == dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL) {
+            if(cap == dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL) {
                 return controller().getPeripheral(cap, side);
-            }*/
+            }
         }
         return super.getCapability(cap, side);
     }
@@ -278,10 +285,10 @@ public class FissionPortBE extends FissionBE {
         return controller().energyPerTick;
     }
 
-    public void toggleComparatorMode() {
-        comparatorMode++;
-        if(comparatorMode > SignalSource.ITEMS) {
-            comparatorMode = SignalSource.ENERGY;
+    public void toggleRedstoneMode() {
+        redstoneMode++;
+        if(redstoneMode > SignalSource.MODERATOR) {
+            redstoneMode = SignalSource.ENERGY;
         }
         setChanged();
         level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
@@ -307,5 +314,7 @@ public class FissionPortBE extends FissionBE {
         public static final byte HEAT = 2;
         public static final byte PROGRESS = 3;
         public static final byte ITEMS = 4;
+        public static final byte SWITCH = 5;
+        public static final byte MODERATOR = 6;
     }
 }

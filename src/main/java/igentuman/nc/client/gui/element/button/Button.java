@@ -1,6 +1,5 @@
 package igentuman.nc.client.gui.element.button;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.client.gui.processor.side.SideConfigSlotSelectionScreen;
 import igentuman.nc.container.NCProcessorContainer;
@@ -74,7 +73,7 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
             this.pos = pos;
             height = 18;
             width = 18;
-            btn = new ImageButton(X(), Y(), width, height, 238, 220, 18, TEXTURE, pButton -> {
+            btn = new ImageButton(X(), Y(), width, height, 184, 220, 18, TEXTURE, pButton -> {
                 NuclearCraft.packetHandler().sendToServer(new PacketGuiButtonPress(pos, BTN_ID));
             });
         }
@@ -105,7 +104,7 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
             this.pos = pos;
             height = 18;
             width = 18;
-            btn = new ImageButton(X(), Y(), width, height, 238, 4, 18, TEXTURE, pButton -> {
+            btn = new ImageButton(X(), Y(), width, height, 184, 4, 18, TEXTURE, pButton -> {
 
             });
         }
@@ -181,18 +180,18 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
         }
     }
 
-    public static class ReactorComparatorModeButton extends Button {
+    public static class ReactorPortRedstoneModeButton extends Button {
         private final BlockPos pos;
         public static final int BTN_ID = 71;
         public byte mode = 2;
         public byte strength = 0;
 
-        public ReactorComparatorModeButton(int xPos, int yPos, AbstractContainerScreen<?> screen, BlockPos pos) {
+        public ReactorPortRedstoneModeButton(int xPos, int yPos, AbstractContainerScreen<?> screen, BlockPos pos) {
             super(xPos, yPos, screen, BTN_ID);
             this.pos = pos;
             height = 18;
             width = 18;
-            btn = new ImageButton(X(), Y(), width, height, 238, 220, 18, TEXTURE, pButton -> {
+            btn = new ImageButton(X(), Y(), width, height, 238, 256, 18, TEXTURE, pButton -> {
                 NuclearCraft.packetHandler().sendToServer(new PacketGuiButtonPress(pos, BTN_ID));
             });
         }
@@ -209,7 +208,7 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
             try {
                 Field f = btn.getClass().getDeclaredField("yTexStart");
                 f.setAccessible(true);
-                f.set(btn, 220 - (redstoneMode+1) * 36);
+                f.set(btn, 256 - (redstoneMode+1) * 36);
             } catch (NoSuchFieldException | IllegalAccessException ignore) {
             }
         }

@@ -28,6 +28,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -105,6 +107,8 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     public int irradiationConnections = 0;
     @NBTField
     public double efficiency = 0;
+    @NBTField
+    private double moderationLevel = 1D;
     @NBTField
     public boolean powered = false;
     @NBTField
@@ -352,8 +356,6 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     }
     protected int reValidateCounter = 0;
 
-
-
     public void tickServer() {
         if(NuclearCraft.instance.isNcBeStopped || isRemoved()) {
             irradiationHeat = 0;
@@ -370,6 +372,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         controllerEnabled = !forceShutdown && controllerEnabled;
 
         if (multiblock().isFormed()) {
+            trackChanges(updateModerationLevel());
             trackChanges(contentHandler.tick());
             if(controllerEnabled) {
                 powered = processReaction();
@@ -441,14 +444,14 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         if (heat >= getMaxHeat()) {
             BlockPos explosionPos = getBlockPos().relative(getFacing(), 2);
             if (FISSION_CONFIG.EXPLOSION_RADIUS.get() == 0) {
-                //getLevel().explode(null, explosionPos.getX(), explosionPos.getY(), explosionPos.getZ(), 2F, true, Explosion.BlockInteraction.NONE);
+                getLevel().explode(null, explosionPos.getX(), explosionPos.getY(), explosionPos.getZ(), 2F, Level.ExplosionInteraction.NONE);
                 for (BlockPos pos : multiblock.fuelCells) {
-                    //getLevel().explode(null, pos.getX(), pos.getY(), pos.getZ(), 1, true, Explosion.BlockInteraction.KEEP);
+                    getLevel().explode(null, pos.getX(), pos.getY(), pos.getZ(), 1, Level.ExplosionInteraction.NONE);
                 }
             } else {
-               // getLevel().explode(null, explosionPos.getX(), explosionPos.getY(), explosionPos.getZ(), FISSION_CONFIG.EXPLOSION_RADIUS.get().floatValue(), true, Explosion.BlockInteraction.DESTROY);
+                getLevel().explode(null, explosionPos.getX(), explosionPos.getY(), explosionPos.getZ(), FISSION_CONFIG.EXPLOSION_RADIUS.get().floatValue(), Level.ExplosionInteraction.TNT);
                 for (BlockPos pos : multiblock.fuelCells) {
-               //     getLevel().explode(null, pos.getX(), pos.getY(), pos.getZ(), 2, true, Explosion.BlockInteraction.DESTROY);
+                   getLevel().explode(null, pos.getX(), pos.getY(), pos.getZ(), 2, Level.ExplosionInteraction.TNT);
                 }
             }
             for (BlockPos pos : multiblock.fuelCells) {
@@ -574,11 +577,11 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     }
 
     public double moderatorsHeat() {
-        return recipeInfo.heat * moderatorCellMultiplier * (FISSION_CONFIG.MODERATOR_HEAT_MULTIPLIER.get() / 100);
+        return moderationLevel * recipeInfo.heat * moderatorCellMultiplier * (FISSION_CONFIG.MODERATOR_HEAT_MULTIPLIER.get() / 100);
     }
 
     public double moderatorsFE() {
-        return recipeInfo.energy * moderatorCellMultiplier * (FISSION_CONFIG.MODERATOR_FE_MULTIPLIER.get() / 100);
+        return moderationLevel * recipeInfo.energy * moderatorCellMultiplier * (FISSION_CONFIG.MODERATOR_FE_MULTIPLIER.get() / 100);
     }
 
 
@@ -810,6 +813,37 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
 
     public void addIrradiationHeat() {
         irradiationHeat += irradiationConnections * 15;
+    }
+
+    public void enableReactor() {
+        toggleReactor(true);
+    }
+
+    public void toggleReactor(boolean mode) {
+        controllerEnabled = mode;
+    }
+
+    private double targetModerationLevel = 1D;
+
+    public void adjustModerator(int redstoneSignal) {
+        String formatted = String.format("%.2f", (double) redstoneSignal / 15);
+        targetModerationLevel = Double.parseDouble(formatted);
+    }
+
+    public boolean updateModerationLevel()
+    {
+        if(moderationLevel != targetModerationLevel) {
+            if(moderationLevel < targetModerationLevel) {
+                moderationLevel += 0.005;
+            } else {
+                moderationLevel -= 0.005;
+            }
+            return true;
+        }
+        return false;
+    }
+    public double getModerationLevel() {
+        return moderationLevel;
     }
 
     public static class Recipe extends NcRecipe {

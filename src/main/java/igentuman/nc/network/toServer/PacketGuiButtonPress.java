@@ -3,15 +3,13 @@ package igentuman.nc.network.toServer;
 import igentuman.nc.block.entity.fission.FissionControllerBE;
 import igentuman.nc.block.entity.fission.FissionPortBE;
 import igentuman.nc.block.entity.processor.NCProcessorBE;
-import igentuman.nc.client.gui.element.button.Button;
-import igentuman.nc.client.gui.element.button.Button.ReactorComparatorModeButton;
+import igentuman.nc.client.gui.element.button.Button.ReactorPortRedstoneModeButton;
 import igentuman.nc.client.gui.element.button.Button.ReactorMode;
 import igentuman.nc.client.gui.element.button.Button.RedstoneConfig;
 import igentuman.nc.network.INcPacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.network.NetworkEvent;
 
@@ -51,11 +49,11 @@ public class PacketGuiButtonPress implements INcPacket {
                 }
                 port.toggleMode();
                 break;
-            case ReactorComparatorModeButton.BTN_ID:
+            case ReactorPortRedstoneModeButton.BTN_ID:
                 if (!(be instanceof FissionPortBE port)) {
                     return;
                 }
-                port.toggleComparatorMode();
+                port.toggleRedstoneMode();
                 break;
         }
     }

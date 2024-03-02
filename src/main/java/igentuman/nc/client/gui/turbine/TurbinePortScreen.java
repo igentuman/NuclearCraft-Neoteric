@@ -1,7 +1,6 @@
 package igentuman.nc.client.gui.turbine;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import igentuman.nc.client.gui.IProgressScreen;
 import igentuman.nc.client.gui.IVerticalBarScreen;
 import igentuman.nc.client.gui.element.NCGuiElement;
@@ -28,7 +27,7 @@ public class TurbinePortScreen extends AbstractContainerScreen<TurbinePortContai
     protected int relX;
     protected int relY;
     private int xCenter;
-    private Button.ReactorComparatorModeButton redstoneConfigBtn;
+    private Button.ReactorPortRedstoneModeButton redstoneConfigBtn;
 
     public TurbinePortContainer container()
     {
@@ -61,7 +60,7 @@ public class TurbinePortScreen extends AbstractContainerScreen<TurbinePortContai
         widgets.clear();
         energyBar = new VerticalBar.Energy(17, 16,  this, container().getMaxEnergy());
         widgets.add(new ProgressBar(74, 35, this,  7));
-        redstoneConfigBtn = new Button.ReactorComparatorModeButton(150, 74, this, menu.getPosition());
+        redstoneConfigBtn = new Button.ReactorPortRedstoneModeButton(150, 74, this, menu.getPosition());
         widgets.add(redstoneConfigBtn);
     }
 

@@ -117,7 +117,7 @@ public class FissionControllerScreen extends AbstractContainerScreen<FissionCont
         this.renderBackground(graphics);
         super.render(graphics, mouseX, mouseY, partialTicks);
         this.renderTooltip(graphics, mouseX, mouseY);
-       // Minecraft.getInstance().getItemRenderer().render(container().getInputStack(), ItemDisplayContext.GUI, false, graphics.pose(), relX+82, relY+20);
+        graphics.renderItem(container().getInputStack(), relX+82, relY+20);
     }
 
     private void renderWidgets(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
@@ -144,6 +144,7 @@ public class FissionControllerScreen extends AbstractContainerScreen<FissionCont
         if(isInteriorValid()) {
             checkboxInterior.addTooltip(Component.translatable("reactor.heat_sinks_count", container().getHeatSinksCount()));
             checkboxInterior.addTooltip(Component.translatable("reactor.moderators_count", container().getModeratorsCount()));
+            //checkboxInterior.addTooltip(Component.translatable("reactor.moderation_level", container().getModerationLevel()));
             checkboxInterior.addTooltip(Component.translatable("reactor.irradiators_connections", container().getIrradiatorsConnections()));
         }
         if(!getMenu().getMode()) {

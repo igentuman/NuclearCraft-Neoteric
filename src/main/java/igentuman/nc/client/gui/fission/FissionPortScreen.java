@@ -1,7 +1,6 @@
 package igentuman.nc.client.gui.fission;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import igentuman.nc.client.gui.IProgressScreen;
 import igentuman.nc.client.gui.IVerticalBarScreen;
 import igentuman.nc.client.gui.element.NCGuiElement;
@@ -10,7 +9,6 @@ import igentuman.nc.client.gui.element.bar.VerticalBar;
 import igentuman.nc.client.gui.element.button.Button;
 import igentuman.nc.client.gui.element.fluid.FluidTankRenderer;
 import igentuman.nc.container.FissionPortContainer;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -25,14 +23,13 @@ import java.util.Optional;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.client.gui.element.fluid.FluidTankRenderer.TooltipMode.SHOW_AMOUNT_AND_CAPACITY;
-import static igentuman.nc.util.TextUtils.applyFormat;
 
 public class FissionPortScreen extends AbstractContainerScreen<FissionPortContainer> implements IProgressScreen, IVerticalBarScreen {
     protected final ResourceLocation GUI = new ResourceLocation(MODID, "textures/gui/fission/port.png");
     protected int relX;
     protected int relY;
     private int xCenter;
-    private Button.ReactorComparatorModeButton redstoneConfigBtn;
+    private Button.ReactorPortRedstoneModeButton redstoneConfigBtn;
     private VerticalBar coolantBar;
     private VerticalBar hotCoolantBar;
     private FluidTankRenderer coolantTank;
@@ -69,7 +66,7 @@ public class FissionPortScreen extends AbstractContainerScreen<FissionPortContai
         widgets.clear();
         energyBar = new VerticalBar.Energy(17, 16,  this, container().getMaxEnergy());
         widgets.add(new ProgressBar(74, 35, this,  7));
-        redstoneConfigBtn = new Button.ReactorComparatorModeButton(150, 74, this, menu.getPosition());
+        redstoneConfigBtn = new Button.ReactorPortRedstoneModeButton(150, 74, this, menu.getPosition());
         coolantBar = new VerticalBar.Coolant(17, 16,  this, 1000000);
         hotCoolantBar = new VerticalBar.HotCoolant(26, 16,  this, 1000000);
         coolantTank = new FluidTankRenderer(getFluidTank(0), SHOW_AMOUNT_AND_CAPACITY,6, 73, 18, 17);

@@ -1,0 +1,27 @@
+{
+  "name": "In Situ Leaching",
+  "icon": "nuclearcraft:leacher",
+  "category": "nuclearcraft:machines",
+  "sortnum": 2,
+  "pages": [
+    {
+      "anchor": "intro",
+      "type": "blocks/1",
+      "block": "nuclearcraft:leacher",
+      "text": "This is the perfect way of getting resources from ores without having to mine them. In this method you pump acids into the ground, acid dissolves minerals and leacher pumps the solution back up."
+    },
+    {
+      "anchor": "modes",
+      "type": "blocks/1",
+      "block": "nuclearcraft:analyzer",
+      "text": "Leacher operates in 2 modes. First mode requires analyzed map. In this mode it will pump real resources from the ground. Second mode requires research paper with minerals vein information. Use Analyzer to analyze chunks and if chunk contains minerals vein it will put this information on the research paper. In this method it gets resources from deep underground. Leacher must be placed in exact chunk with the vein."
+    },
+    {
+      "anchor": "placement",
+      "type": "blocks/2",
+      "block1": "nuclearcraft:leacher",
+      "block2": "nuclearcraft:pump",
+      "text": "Place leacher block and it will highlight placements for pumps. After all blocks are placed, put data source and supply some acid and energy. It will start leaching."
+    }
+  ]
+}

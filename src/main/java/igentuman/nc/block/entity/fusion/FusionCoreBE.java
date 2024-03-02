@@ -871,13 +871,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
     }
 
     @Override
-    public void handleUpdateTag(CompoundTag tag) {
-        if (tag != null) {
-            loadClientData(tag);
-        }
-    }
-
-    protected void loadClientData(CompoundTag tag) {
+    public void loadClientData(CompoundTag tag) {
         if (tag.contains("Info")) {
             CompoundTag infoTag = tag.getCompound("Info");
             if (infoTag.contains("recipeInfo")) {
@@ -898,12 +892,6 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
     }
 
     @Override
-    public CompoundTag getUpdateTag() {
-        CompoundTag tag = super.getUpdateTag();
-        saveClientData(tag);
-        return tag;
-    }
-
     protected void saveClientData(CompoundTag tag) {
         CompoundTag infoTag = new CompoundTag();
         tag.put("Info", infoTag);
@@ -915,12 +903,6 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
             infoTag.putLong("erroredBlock", errorBlockPos.asLong());
         }
         tag.put("Content", contentHandler.serializeNBT());
-    }
-
-    @Nullable
-    @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
     }
 
     @Override

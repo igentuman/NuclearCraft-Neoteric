@@ -135,19 +135,6 @@ public class NCEnergy extends NuclearCraftBE {
         tag.putInt("energy", energyStorage.getEnergyStored());
     }
 
-    @Nullable
-    @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
-    }
-
-    @Override
-    public void handleUpdateTag(CompoundTag tag) {
-        if (tag != null) {
-            loadClientData(tag);
-        }
-    }
-
     public void loadClientData(CompoundTag tag) {
         if (tag.contains("energy_storage")) {
             energyStorage.deserializeNBT(tag.get("energy_storage"));

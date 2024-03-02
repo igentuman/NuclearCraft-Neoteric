@@ -454,13 +454,7 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
     }
 
     @Override
-    public void handleUpdateTag(CompoundTag tag) {
-        if (tag != null) {
-            loadClientData(tag);
-        }
-    }
-
-    private void loadClientData(CompoundTag tag) {
+    public void loadClientData(CompoundTag tag) {
         if (tag.contains("Info")) {
             CompoundTag infoTag = tag.getCompound("Info");
             if (infoTag.contains("recipeInfo")) {
@@ -481,13 +475,7 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
     }
 
     @Override
-    public CompoundTag getUpdateTag() {
-        CompoundTag tag = super.getUpdateTag();
-        saveClientData(tag);
-        return tag;
-    }
-
-    private void saveClientData(CompoundTag tag) {
+    protected void saveClientData(CompoundTag tag) {
         CompoundTag infoTag = new CompoundTag();
         tag.put("Info", infoTag);
         infoTag.putInt("energy", energyStorage.getEnergyStored());
@@ -496,12 +484,6 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
         infoTag.putInt("validationId", validationResult.id);
         infoTag.putLong("erroredBlock", errorBlockPos.asLong());
         tag.put("Content", contentHandler.serializeNBT());
-    }
-
-    @Nullable
-    @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
     }
 
     @Override

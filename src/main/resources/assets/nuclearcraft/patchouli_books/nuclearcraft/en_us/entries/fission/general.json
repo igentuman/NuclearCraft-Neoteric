@@ -10,6 +10,11 @@
       "text": "$(thing)Fission reactors$() generate heat from the self-sustained nuclear reaction of fission fuel. This heat is ultimately transformed into electricity. The method of electricity generation can be changed from boiling to electric mode."
     },
     {
+      "anchor": "reactor_modes",
+      "type": "text",
+      "text": "$(thing)Fission Reactor$() can operate in 2 modes: energy and boiling. Energy mode means what reactor will produce energy directly. And in boiling mode it will use produced heat to boil coolant. Use $(item)Reactor Port$() to input/output coolant."
+    },
+    {
       "anchor": "casing",
       "type": "blocks/2",
       "header": "Reactor Casing",
@@ -44,7 +49,24 @@
       "type": "blocks/2",
       "block1": "nuclearcraft:graphite_block",
       "block2": "nuclearcraft:beryllium_block",
-      "text": " $(thing)Moderators$() can slow down the high energy neutrons produced by the $(l:fission/general#fuel_cell)Fuel Cells$() into ones that will cause more fission in other fuel components. Moderators must be placed next to Fuel Cells."
+      "text": " $(thing)Moderators$() can slow down the high energy neutrons produced by the $(l:fission/general#fuel_cell)Fuel Cells$() into ones that will cause more fission in other fuel components. Moderators must be placed next to Fuel Cells. You can adjust moderation level with redstone signal input to $(item)Reactor Port$()"
+    },
+    {
+      "anchor": "moderator_bonus",
+      "header": "Moderators Placement",
+      "type": "patchouli:multiblock",
+      "multiblock": {
+        "mapping": {
+          "M": "nuclearcraft:graphite_block",
+          "C": "nuclearcraft:fission_reactor_solid_fuel_cell"
+        },
+        "pattern": [
+            [" 0 ","CMC", "   "]
+        ],
+        "symmetrical": true,
+        "visualize": false
+      },
+      "text": "You can benefit additional efficiency bonus by placing multiple fuel cells next to one moderator block. Efficiency and heat bonus "
     },
     {
       "anchor": "heatsink",
@@ -58,12 +80,109 @@
       "text": "Heatsinks act to remove heat from the reactor. When a fuelcell is active, it will produce heat equal to it's base heat output times the $(thing)Heat Multiplier$(). The heat multiplier of a cell is determined by the number of moderator lines. Thus, a cell with a single moderator line will have 100% heat efficiency, and a cell with two moderator lines will have 200% heat efficiency."
     },
     {
+      "anchor": "heat_sink_validation",
+      "header": "Heat Sink Validation",
+      "type": "patchouli:multiblock",
+      "multiblock": {
+        "mapping": {
+          "P": "nuclearcraft:prismarine_heat_sink",
+          "W": "nuclearcraft:water_heat_sink",
+          "C": "nuclearcraft:fission_reactor_solid_fuel_cell",
+          "M": "nuclearcraft:graphite_block"
+        },
+        "pattern": [
+          ["C0 ","M  ", "WP "]
+        ],
+        "visualize": false,
+        "symmetrical": true
+      },
+      "text": "If some reactor part placement rule require non-fuel cell block. For example if it needs other heat sink block, that heat sink has to be placed according to the placement rule. And in the end connection chain has to be connected to fuel cell. "
+    },
+    {
       "anchor": "irradiator",
       "header": "Irradiators",
       "type": "blocks/2",
       "block1": "nuclearcraft:fission_reactor_irradiation_chamber",
       "block2": "nuclearcraft:irradiator",
       "text": "When placed at the end of a $(l:fission/general#moderator)Moderator$() line, $(thing)Irradiators$() will use the radiative flux to transform items in Irradiation Chamber. Irradiation speed depends on amount of irradiation lines in reactor."
+    },
+    {
+      "anchor": "irradiator_line",
+      "header": "Irradiation Line",
+      "type": "patchouli:multiblock",
+      "multiblock": {
+        "mapping": {
+          "M": "nuclearcraft:graphite_block",
+          "C": "nuclearcraft:fission_reactor_solid_fuel_cell",
+          "I": "nuclearcraft:fission_reactor_irradiation_chamber"
+        },
+        "pattern": [
+          [" 0 ","IMC", "   "]
+        ],
+        "symmetrical": true,
+        "visualize": false
+      },
+      "text": "You can make up to 6 irradiation lines per each irradiation chamber. Each line will increase the speed of irradiation."
+    },
+    {
+      "anchor": "simple_reactor",
+      "header": "Simple Reactor",
+      "type": "patchouli:multiblock",
+      "multiblock": {
+        "mapping": {
+          "W": "nuclearcraft:fission_reactor_casing",
+          "G": "nuclearcraft:fission_reactor_glass",
+          "M": "nuclearcraft:graphite_block",
+          "C": "nuclearcraft:fission_reactor_solid_fuel_cell",
+          "I": "nuclearcraft:fission_reactor_irradiation_chamber",
+          "N": "nuclearcraft:fission_reactor_controller[facing=west]",
+          "P": "nuclearcraft:fission_reactor_port[facing=east]",
+          "H": "nuclearcraft:water_heat_sink",
+          "S": "nuclearcraft:prismarine_heat_sink",
+          "K": "nuclearcraft:glowstone_heat_sink",
+          "E": "nuclearcraft:enderium_heat_sink",
+          "R": "nuclearcraft:irradiator"
+        },
+        "pattern": [
+          [
+            "WWWWW",
+            "WGGGW",
+            "WGGGW",
+            "WGGGW",
+            "WWWWW"],
+          [
+            "WGGGW",
+            "GE EG",
+            "G I G",
+            "GE EG",
+            "WGGGW"
+          ],
+          [
+            "WGGGW",
+            "GSKSG",
+            "GKMKG",
+            "GSKSG",
+            "WGGGW"
+          ],
+          [
+            "WGNGW",
+            "GHMHG",
+            "RMCMG",
+            "GHMHG",
+            "WGPGW"
+          ],
+          [
+            "WWWWW",
+            "WWWWW",
+            "WWWWW",
+            "WWWWW",
+            "WWWWW"
+          ],
+          ["     ","     ","  0  ","     ","     "]
+        ],
+        "symmetrical": true
+      },
+      "text": "This is a simple reactor design. It has 1 fuel cell, 1 irradiation line. It's a good starting point for a reactor. Best fuel for this reactor is HEU-235."
     },
     {
       "anchor": "planner",

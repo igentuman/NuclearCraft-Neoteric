@@ -497,13 +497,7 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
     }
 
     @Override
-    public void handleUpdateTag(CompoundTag tag) {
-        if (tag != null) {
-            loadClientData(tag);
-        }
-    }
-
-    protected void loadClientData(CompoundTag tag) {
+    public void loadClientData(CompoundTag tag) {
         if (tag.contains("Info")) {
             CompoundTag infoTag = tag.getCompound("Info");
             readTagData(infoTag);
@@ -551,12 +545,6 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
         tag.put("Info", infoTag);
         tag.put("Content", contentHandler.serializeNBT());
         infoTag.putInt("energy", energyStorage.getEnergyStored());
-    }
-
-    @Nullable
-    @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
     }
 
     @Override

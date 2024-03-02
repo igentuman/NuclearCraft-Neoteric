@@ -11,10 +11,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -219,8 +222,37 @@ public class NuclearCraftBE extends BlockEntity {
     }
 
     public void handleSliderUpdate(int buttonId, int ratio) {
-
     }
 
+    public void loadClientData(CompoundTag tag) {
+    }
 
+    protected void saveClientData(CompoundTag tag) {
+    }
+
+    @Override
+    public CompoundTag getUpdateTag() {
+        CompoundTag tag = super.getUpdateTag();
+        saveClientData(tag);
+        return tag;
+    }
+
+    @Override
+    public void handleUpdateTag(CompoundTag tag) {
+        if (tag != null) {
+            loadClientData(tag);
+        }
+    }
+
+    @Nullable
+    @Override
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
+    }
+
+    @Override
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
+        CompoundTag tag = pkt.getTag();
+        handleUpdateTag(tag);
+    }
 }

@@ -227,13 +227,7 @@ public class FissionPortBE extends FissionBE {
     }
 
     @Override
-    public void handleUpdateTag(CompoundTag tag) {
-        if (tag != null) {
-            loadClientData(tag);
-        }
-    }
-
-    private void loadClientData(CompoundTag tag) {
+    public void loadClientData(CompoundTag tag) {
         if (tag.contains("Info")) {
             CompoundTag infoTag = tag.getCompound("Info");
             readTagData(infoTag);
@@ -241,29 +235,12 @@ public class FissionPortBE extends FissionBE {
     }
 
     @Override
-    public CompoundTag getUpdateTag() {
-        CompoundTag tag = super.getUpdateTag();
-        saveClientData(tag);
-        return tag;
-    }
-
-    private void saveClientData(CompoundTag tag) {
+    protected void saveClientData(CompoundTag tag) {
         CompoundTag infoTag = new CompoundTag();
         tag.put("Info", infoTag);
         saveTagData(infoTag);
     }
 
-    @Nullable
-    @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
-    }
-
-    @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        CompoundTag tag = pkt.getTag();
-        handleUpdateTag(tag);
-    }
 
     public int getEnergyStored() {
         if(controller() == null) return 0;

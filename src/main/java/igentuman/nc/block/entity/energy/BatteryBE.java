@@ -104,13 +104,6 @@ public class BatteryBE extends NCEnergy {
         }
     }
 
-    @Override
-    public void handleUpdateTag(CompoundTag tag) {
-        if (tag != null) {
-            loadClientData(tag);
-        }
-    }
-
 
     @Override
     protected int getEnergyTransferPerTick() {

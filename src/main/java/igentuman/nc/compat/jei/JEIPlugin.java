@@ -25,6 +25,7 @@ import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -121,9 +122,10 @@ public  class JEIPlugin implements IModPlugin {
     }
 
     private <T extends AbstractContainerScreen<?>> void addRecipeClickArea(IGuiHandlerRegistration registration, Class<? extends T> containerScreenClass, int xPos, int yPos, int width, int height, RecipeType<?>... recipeTypes) {
+        if(recipeTypes == null) return;
         registration.addGuiContainerHandler(containerScreenClass, new IGuiContainerHandler<T>() {
             @Override
-            public Collection<IGuiClickableArea> getGuiClickableAreas(T containerScreen, double mouseX, double mouseY) {
+            public @NotNull Collection<IGuiClickableArea> getGuiClickableAreas(@NotNull T containerScreen, double mouseX, double mouseY) {
                 NCProcessorScreen<?> screen = (NCProcessorScreen<?>) containerScreen;
                 String name = screen.getRecipeTypeName();
                 IGuiClickableArea clickableArea = IGuiClickableArea.createBasic(xPos, yPos, width, height, getRecipeTypes().get(name));
@@ -132,7 +134,7 @@ public  class JEIPlugin implements IModPlugin {
         });
     }
 
-    public  void registerGuiHandlers(IGuiHandlerRegistration registration) {
+    public  void registerGuiHandlers(@NotNull IGuiHandlerRegistration registration) {
         for (String name : getRecipeTypes().keySet()) {
             if (!Processors.registered().containsKey(name)) continue;
             addRecipeClickArea(registration, NCProcessorScreen.class, 67, 74, 18, 18, getRecipeType(name));

@@ -3,10 +3,7 @@ package igentuman.nc.handler.config;
 import igentuman.nc.content.materials.*;
 import net.minecraftforge.common.ForgeConfigSpec;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class MaterialsConfig {
     public static <T> List<T> toList(Collection<T> vals)
@@ -90,41 +87,34 @@ public class MaterialsConfig {
 
     public static class OresConfig {
 
-        public ForgeConfigSpec.ConfigValue<List<Integer>> ORE_AMOUNT;
-        public ForgeConfigSpec.ConfigValue<List<Integer>> ORE_VEIN_SIZE;
-        public ForgeConfigSpec.ConfigValue<List<List<Integer>>> ORE_DIMENSIONS;
-        public ForgeConfigSpec.ConfigValue<List<Integer>> ORE_MIN_HEIGHT;
-        public ForgeConfigSpec.ConfigValue<List<Integer>> ORE_MAX_HEIGHT;
-        public ForgeConfigSpec.ConfigValue<List<Boolean>> REGISTER_ORE;
+        public HashMap<String, List<ForgeConfigSpec.ConfigValue<?>>> ORES;
 
         public OresConfig(ForgeConfigSpec.Builder builder) {
-            builder.comment("Settings for ore generation").push("ores");
+            builder.comment("Settings for ore generation").push("ores").pop();
+            ORES = new HashMap<>();
+            for(String name: Ores.all().keySet()) {
+                ORES.put(name, buildOreConfig(builder, name));
+            }
 
-            ORE_DIMENSIONS = builder
-                    .comment("List of dimensions to generate ores: " + String.join(", ", Ores.all().keySet()))
-                    .define("dimensions", Ores.initialOreDimensions(), o -> o instanceof ArrayList);
+        }
 
-            REGISTER_ORE = builder
-                    .comment("Enable ore registration: " + String.join(", ", Ores.all().keySet()))
-                    .define("register_ore", Ores.initialOreRegistration(), o -> o instanceof ArrayList);
-
-            ORE_VEIN_SIZE = builder
-                    .comment("Ore blocks per vein. Order: " + String.join(", ", Ores.all().keySet()))
-                    .define("vein_size", Ores.initialOreVeinSizes(), o -> o instanceof ArrayList);
-
-            ORE_AMOUNT = builder
-                    .comment("Veins in chunk. Order: " + String.join(", ", Ores.all().keySet()))
-                    .define("veins_in_chunk", Ores.initialOreVeinsAmount(), o -> o instanceof ArrayList);
-
-            ORE_MIN_HEIGHT = builder
-                    .comment("Minimal generation height. Order: " + String.join(", ", Ores.all().keySet()))
-                    .define("min_height", Ores.initialOreMinHeight(), o -> o instanceof ArrayList);
-
-            ORE_MAX_HEIGHT = builder
-                    .comment("Max generation height. Order: " + String.join(", ", Ores.all().keySet()))
-                    .define("max_height", Ores.initialOreMaxHeight(), o -> o instanceof ArrayList);
-
+        private List<ForgeConfigSpec.ConfigValue<?>> buildOreConfig(ForgeConfigSpec.Builder builder, String name) {
+            List<ForgeConfigSpec.ConfigValue<?>> options = new ArrayList<>();
+            builder.push(name);
+            ForgeConfigSpec.ConfigValue<Boolean> register = builder.define("register", true);
+            ForgeConfigSpec.ConfigValue<List<Integer>> dimensions = builder.define("dimensions", Ores.all().get(name).dimensions, o -> o instanceof ArrayList);
+            ForgeConfigSpec.ConfigValue<Integer> veinSize = builder.define("vein_size", Ores.all().get(name).veinSize);
+            ForgeConfigSpec.ConfigValue<Integer> veinsPerChunk = builder.define("veins_in_chunk", Ores.all().get(name).veinAmount);
+            ForgeConfigSpec.ConfigValue<Integer> min_height = builder.define("min_height", Ores.all().get(name).height[0]);
+            ForgeConfigSpec.ConfigValue<Integer> max_height = builder.define("max_height", Ores.all().get(name).height[1]);
+            options.add(register);
+            options.add(dimensions);
+            options.add(veinSize);
+            options.add(veinsPerChunk);
+            options.add(min_height);
+            options.add(max_height);
             builder.pop();
+            return options;
         }
     }
 

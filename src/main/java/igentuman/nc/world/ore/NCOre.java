@@ -5,6 +5,7 @@ import igentuman.nc.handler.config.CommonConfig;
 import igentuman.nc.content.materials.Ores;
 import net.minecraft.world.level.block.Block;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static igentuman.nc.handler.config.MaterialsConfig.ORE_CONFIG;
@@ -54,10 +55,10 @@ public class NCOre {
         if(!initialized) {
             try {
                 int id = Ores.all().keySet().stream().toList().indexOf(name);
-                registered = ORE_CONFIG.REGISTER_ORE.get().get(id);
-                height[0] = ORE_CONFIG.ORE_MIN_HEIGHT.get().get(id);
-                height[1] = ORE_CONFIG.ORE_MAX_HEIGHT.get().get(id);
-                dimensions = ORE_CONFIG.ORE_DIMENSIONS.get().get(id);
+                registered = (boolean) ORE_CONFIG.ORES.get(name).get(0).get();
+                dimensions = Arrays.asList((Integer[]) ORE_CONFIG.ORES.get(name).get(1).get());
+                height[0] = (int) ORE_CONFIG.ORES.get(name).get(2).get();
+                height[1] = (int) ORE_CONFIG.ORES.get(name).get(3).get();
                 initialized = true;
             } catch (Exception e) {
                 NuclearCraft.LOGGER.error("Error while loading ore config for " + name + "!");

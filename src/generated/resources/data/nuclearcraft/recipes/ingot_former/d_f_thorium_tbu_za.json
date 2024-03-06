@@ -8,7 +8,7 @@
   "inputFluids": [
     {
       "amount": 144,
-      "fluid": "depleted_fuel_thorium_tbu_za"
+      "tag": "forge:depleted_fuel_thorium_tbu_za"
     }
   ],
   "timeModifier": 1.0,

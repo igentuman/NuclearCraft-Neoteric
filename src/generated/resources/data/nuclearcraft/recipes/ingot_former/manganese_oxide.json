@@ -8,7 +8,7 @@
   "inputFluids": [
     {
       "amount": 144,
-      "fluid": "manganese_oxide"
+      "tag": "forge:manganese_oxide"
     }
   ],
   "timeModifier": 1.0,

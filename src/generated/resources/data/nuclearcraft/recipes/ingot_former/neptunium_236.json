@@ -8,7 +8,7 @@
   "inputFluids": [
     {
       "amount": 144,
-      "fluid": "neptunium_236"
+      "tag": "forge:neptunium/236"
     }
   ],
   "timeModifier": 1.0,

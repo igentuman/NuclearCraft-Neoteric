@@ -8,7 +8,7 @@
   "inputFluids": [
     {
       "amount": 144,
-      "fluid": "thermoconducting"
+      "tag": "forge:thermoconducting"
     }
   ],
   "timeModifier": 1.0,

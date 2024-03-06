@@ -8,7 +8,7 @@
   "inputFluids": [
     {
       "amount": 144,
-      "fluid": "manganese"
+      "tag": "forge:manganese"
     }
   ],
   "timeModifier": 1.0,

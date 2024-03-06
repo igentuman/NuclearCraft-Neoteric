@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:ingot_former",
+  "output": [
+    {
+      "item": "nuclearcraft:fuel_mixed_mix_241_ni"
+    }
+  ],
+  "inputFluids": [
+    {
+      "amount": 144,
+      "tag": "forge:fuel_mixed_mix-241_ni"
+    }
+  ],
+  "timeModifier": 1.0,
+  "radiation": 1.0,
+  "powerModifier": 1.0
+}

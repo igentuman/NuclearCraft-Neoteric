@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:ingot_former",
+  "output": [
+    {
+      "item": "nuclearcraft:fuel_neptunium_len_236_ox"
+    }
+  ],
+  "inputFluids": [
+    {
+      "amount": 144,
+      "tag": "forge:fuel_neptunium_len-236_ox"
+    }
+  ],
+  "timeModifier": 1.0,
+  "radiation": 1.0,
+  "powerModifier": 1.0
+}

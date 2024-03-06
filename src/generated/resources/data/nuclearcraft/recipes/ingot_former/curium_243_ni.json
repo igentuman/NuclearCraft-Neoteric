@@ -8,7 +8,7 @@
   "inputFluids": [
     {
       "amount": 144,
-      "fluid": "curium_243_ni"
+      "tag": "forge:curium/243_ni"
     }
   ],
   "timeModifier": 1.0,

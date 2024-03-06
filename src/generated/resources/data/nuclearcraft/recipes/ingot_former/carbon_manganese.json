@@ -8,7 +8,7 @@
   "inputFluids": [
     {
       "amount": 144,
-      "fluid": "carbon_manganese"
+      "tag": "forge:carbon_manganese"
     }
   ],
   "timeModifier": 1.0,

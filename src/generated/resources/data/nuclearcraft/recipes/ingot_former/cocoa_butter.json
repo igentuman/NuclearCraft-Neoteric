@@ -8,7 +8,7 @@
   "inputFluids": [
     {
       "amount": 144,
-      "fluid": "cocoa_butter"
+      "tag": "forge:cocoa_butter"
     }
   ],
   "timeModifier": 0.25,

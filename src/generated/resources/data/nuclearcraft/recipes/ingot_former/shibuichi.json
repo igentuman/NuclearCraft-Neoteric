@@ -8,7 +8,7 @@
   "inputFluids": [
     {
       "amount": 144,
-      "fluid": "shibuichi"
+      "tag": "forge:shibuichi"
     }
   ],
   "timeModifier": 1.0,

@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:ingot_former",
+  "output": [
+    {
+      "item": "nuclearcraft:depleted_fuel_americium_hea_242"
+    }
+  ],
+  "inputFluids": [
+    {
+      "amount": 144,
+      "tag": "forge:depleted_fuel_americium_hea-242"
+    }
+  ],
+  "timeModifier": 1.0,
+  "radiation": 1.0,
+  "powerModifier": 1.0
+}

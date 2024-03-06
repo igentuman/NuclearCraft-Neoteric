@@ -8,7 +8,7 @@
   "inputFluids": [
     {
       "amount": 144,
-      "fluid": "californium_250"
+      "tag": "forge:californium/250"
     }
   ],
   "timeModifier": 1.0,

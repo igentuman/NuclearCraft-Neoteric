@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:ingot_former",
+  "output": [
+    {
+      "item": "nuclearcraft:depleted_fuel_curium_lecm_243"
+    }
+  ],
+  "inputFluids": [
+    {
+      "amount": 144,
+      "tag": "forge:depleted_fuel_curium_lecm-243"
+    }
+  ],
+  "timeModifier": 1.0,
+  "radiation": 1.0,
+  "powerModifier": 1.0
+}

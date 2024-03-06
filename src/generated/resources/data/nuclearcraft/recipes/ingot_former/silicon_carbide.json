@@ -8,7 +8,7 @@
   "inputFluids": [
     {
       "amount": 144,
-      "fluid": "silicon_carbide"
+      "tag": "forge:silicon_carbide"
     }
   ],
   "timeModifier": 1.0,

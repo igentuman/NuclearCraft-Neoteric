@@ -8,7 +8,7 @@
   "inputFluids": [
     {
       "amount": 144,
-      "fluid": "lead"
+      "tag": "forge:lead"
     }
   ],
   "timeModifier": 1.0,

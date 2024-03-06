@@ -8,7 +8,7 @@
   "inputFluids": [
     {
       "amount": 144,
-      "fluid": "thorium_230"
+      "tag": "forge:thorium/230"
     }
   ],
   "timeModifier": 1.0,

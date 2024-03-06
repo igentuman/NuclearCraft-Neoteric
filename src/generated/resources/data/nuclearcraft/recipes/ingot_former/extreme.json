@@ -8,7 +8,7 @@
   "inputFluids": [
     {
       "amount": 144,
-      "fluid": "extreme"
+      "tag": "forge:extreme"
     }
   ],
   "timeModifier": 1.0,

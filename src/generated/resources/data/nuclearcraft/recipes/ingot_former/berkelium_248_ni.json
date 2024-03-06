@@ -8,7 +8,7 @@
   "inputFluids": [
     {
       "amount": 144,
-      "fluid": "berkelium_248_ni"
+      "tag": "forge:berkelium/248_ni"
     }
   ],
   "timeModifier": 1.0,

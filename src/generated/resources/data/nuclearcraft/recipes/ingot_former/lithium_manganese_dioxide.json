@@ -8,7 +8,7 @@
   "inputFluids": [
     {
       "amount": 144,
-      "fluid": "lithium_manganese_dioxide"
+      "tag": "forge:lithium_manganese_dioxide"
     }
   ],
   "timeModifier": 1.0,

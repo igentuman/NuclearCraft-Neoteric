@@ -8,7 +8,7 @@
   "inputFluids": [
     {
       "amount": 144,
-      "fluid": "boron_10"
+      "tag": "forge:boron/10"
     }
   ],
   "timeModifier": 1.0,

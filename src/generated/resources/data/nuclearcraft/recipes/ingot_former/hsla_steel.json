@@ -8,7 +8,7 @@
   "inputFluids": [
     {
       "amount": 144,
-      "fluid": "hsla_steel"
+      "tag": "forge:hsla_steel"
     }
   ],
   "timeModifier": 1.0,

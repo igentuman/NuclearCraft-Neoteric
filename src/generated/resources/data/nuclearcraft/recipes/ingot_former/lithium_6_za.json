@@ -8,7 +8,7 @@
   "inputFluids": [
     {
       "amount": 144,
-      "fluid": "lithium_6_za"
+      "tag": "forge:lithium/6_za"
     }
   ],
   "timeModifier": 1.0,

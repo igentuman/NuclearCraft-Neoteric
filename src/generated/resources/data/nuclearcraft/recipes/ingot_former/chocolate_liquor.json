@@ -8,7 +8,7 @@
   "inputFluids": [
     {
       "amount": 144,
-      "fluid": "chocolate_liquor"
+      "tag": "forge:chocolate_liquor"
     }
   ],
   "timeModifier": 0.25,

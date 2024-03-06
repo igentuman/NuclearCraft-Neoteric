@@ -8,7 +8,7 @@
   "inputFluids": [
     {
       "amount": 144,
-      "fluid": "beryllium"
+      "tag": "forge:beryllium"
     }
   ],
   "timeModifier": 1.0,

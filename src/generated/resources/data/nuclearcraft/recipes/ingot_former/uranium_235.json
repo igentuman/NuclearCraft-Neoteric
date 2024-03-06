@@ -8,7 +8,7 @@
   "inputFluids": [
     {
       "amount": 144,
-      "fluid": "uranium_235"
+      "tag": "forge:uranium/235"
     }
   ],
   "timeModifier": 1.0,

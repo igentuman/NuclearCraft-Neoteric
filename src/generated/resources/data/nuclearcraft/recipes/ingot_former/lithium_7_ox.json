@@ -8,7 +8,7 @@
   "inputFluids": [
     {
       "amount": 144,
-      "fluid": "lithium_7_ox"
+      "tag": "forge:lithium/7_ox"
     }
   ],
   "timeModifier": 1.0,

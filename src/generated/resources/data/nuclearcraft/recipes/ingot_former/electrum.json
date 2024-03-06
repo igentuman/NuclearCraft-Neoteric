@@ -8,7 +8,7 @@
   "inputFluids": [
     {
       "amount": 144,
-      "fluid": "electrum"
+      "tag": "forge:electrum"
     }
   ],
   "timeModifier": 1.0,

@@ -8,7 +8,7 @@
   "inputFluids": [
     {
       "amount": 144,
-      "fluid": "americium_243"
+      "tag": "forge:americium/243"
     }
   ],
   "timeModifier": 1.0,

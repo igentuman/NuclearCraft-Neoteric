@@ -8,7 +8,7 @@
   "inputFluids": [
     {
       "amount": 144,
-      "fluid": "magnesium_diboride"
+      "tag": "forge:magnesium_diboride"
     }
   ],
   "timeModifier": 1.0,

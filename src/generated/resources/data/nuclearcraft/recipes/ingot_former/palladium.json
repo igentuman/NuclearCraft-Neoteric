@@ -8,7 +8,7 @@
   "inputFluids": [
     {
       "amount": 144,
-      "fluid": "palladium"
+      "tag": "forge:palladium"
     }
   ],
   "timeModifier": 1.0,

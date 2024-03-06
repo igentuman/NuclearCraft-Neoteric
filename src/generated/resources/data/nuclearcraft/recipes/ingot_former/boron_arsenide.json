@@ -8,7 +8,7 @@
   "inputFluids": [
     {
       "amount": 144,
-      "fluid": "boron_arsenide"
+      "tag": "forge:boron_arsenide"
     }
   ],
   "timeModifier": 1.0,

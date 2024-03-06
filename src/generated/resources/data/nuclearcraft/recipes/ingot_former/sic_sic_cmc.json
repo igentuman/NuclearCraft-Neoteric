@@ -8,7 +8,7 @@
   "inputFluids": [
     {
       "amount": 144,
-      "fluid": "sic_sic_cmc"
+      "tag": "forge:sic_sic_cmc"
     }
   ],
   "timeModifier": 1.0,

@@ -8,7 +8,7 @@
   "inputFluids": [
     {
       "amount": 144,
-      "fluid": "plutonium_241"
+      "tag": "forge:plutonium/241"
     }
   ],
   "timeModifier": 1.0,

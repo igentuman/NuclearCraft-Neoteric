@@ -113,6 +113,9 @@ dependencies {
     compileOnly(fg.deobf("cc.tweaked:cc-tweaked-${mc_version}-forge-api:${cc_version}"))
     runtimeOnly(fg.deobf("cc.tweaked:cc-tweaked-${mc_version}-forge:${cc_version}"))*/
 
+    compileOnly fg.deobf("vazkii.patchouli:Patchouli:${mc_version}-${patchouli_version}:api")
+    runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:${mc_version}-${patchouli_version}")
+
 }
 
 jar {

@@ -24,6 +24,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.MaterialColor;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fluids.FluidAttributes;
@@ -280,26 +281,27 @@ public class NCFluids {
             }
         }
     }
-    public static Consumer<FluidAttributes.Builder> meltBuilder(int temperature)
+    public static Consumer<FluidAttributes.Builder> meltBuilder(int temperature, int color)
     {
         int light = 1;
         int density = 2000;
         int visconsity = 3000;
-        return builder -> builder.temperature(temperature).density(density).viscosity(visconsity).luminosity(light);
+        return builder -> builder.overlay(rl("block/material/fluid/molten_still"))
+                .temperature(temperature).density(density).viscosity(visconsity).luminosity(light).color(color);
     }
 
-    public static Consumer<FluidAttributes.Builder> liquidBuilder(int temperature)
+    public static Consumer<FluidAttributes.Builder> liquidBuilder(int temperature, int color)
     {
         int density = 400;
         int visconsity = 1000;
-        return builder -> builder.temperature(temperature).density(density).viscosity(visconsity);
+        return builder -> builder.overlay(rl("block/material/fluid/liquid_still")).temperature(temperature).density(density).viscosity(visconsity).color(color);
     }
 
-    public static Consumer<FluidAttributes.Builder> gasBuilder(int temperature)
+    public static Consumer<FluidAttributes.Builder> gasBuilder(int temperature, int color)
     {
         int density = -1000;
         int visconsity = 0;
-        return builder -> builder.temperature(temperature).density(density).viscosity(visconsity);
+        return builder -> builder.temperature(temperature).gaseous().density(density).viscosity(visconsity).color(color);
     }
     public record FluidEntry(
             RegistryObject<NCFluid> flowing,
@@ -312,37 +314,25 @@ public class NCFluids {
     {
 
         public static FluidEntry makeAcid(AcidDefinition acid) {
-            return make(acid.name,0, rl("block/material/fluid/liquid_still"), rl("block/material/fluid/liquid_flow"), liquidBuilder(acid.temperature), acid.color, false);
+            return make(acid.name,0, rl("block/material/fluid/liquid_still"), rl("block/material/fluid/liquid_flow"), liquidBuilder(acid.temperature, acid.color), acid.color, false);
         }
 
         public static FluidEntry makeGas(GasDefinition gas) {
-            return make(gas.name,0, rl("block/material/fluid/gas"), rl("block/material/fluid/gas"), gasBuilder(gas.temperature), gas.color, true);
+            return make(gas.name,0, rl("block/material/fluid/gas"), rl("block/material/fluid/gas"), gasBuilder(gas.temperature, gas.color), gas.color, true);
         }
 
         private static FluidEntry makeMoltenLiquid(String name, int color)
         {
-            return make(name,0, rl("block/material/fluid/molten_still"), rl("block/material/fluid/molten_flow"), meltBuilder(1000), color, false);
+            return make(name,0, rl("block/material/fluid/molten_still"), rl("block/material/fluid/molten_flow"), meltBuilder(1000, color), color, false);
         }
         private static FluidEntry makeLiquid(String name, int color)
         {
-            return make(name,0, rl("block/material/fluid/liquid_still"), rl("block/material/fluid/liquid_flow"), liquidBuilder(400), color, false);
+            return make(name,0, rl("block/material/fluid/liquid_still"), rl("block/material/fluid/liquid_flow"), liquidBuilder(400, color), color, false);
         }
 
         private static FluidEntry make(String name, ResourceLocation stillTex, ResourceLocation flowingTex, int color)
         {
             return make(name, 0, stillTex, flowingTex, color);
-        }
-
-        private static FluidEntry make(String name, ResourceLocation stillTex, ResourceLocation flowingTex)
-        {
-            return make(name, 0, stillTex, flowingTex, 0xFFFFFFFF);
-        }
-
-        private static FluidEntry make(
-                String name, ResourceLocation stillTex, ResourceLocation flowingTex, Consumer<FluidAttributes.Builder> buildAttributes
-        )
-        {
-            return make(name, 0, stillTex, flowingTex, buildAttributes, 0xFFFFFFFF, false);
         }
 
         private static FluidEntry make(String name, int burnTime, ResourceLocation stillTex, ResourceLocation flowingTex, int color)
@@ -387,12 +377,12 @@ public class NCFluids {
                         .sound(BUCKET_EMPTY, SoundEvents.FIRE_EXTINGUISH)
                         .sound(BUCKET_FILL, BUCKET_FILL);
             }
+            builder.color(color);
+
             if(buildAttributes!=null)
                 buildAttributes.accept(builder);
 
-
             Mutable<FluidEntry> thisMutable = new MutableObject<>();
-
             RegistryObject<NCFluid> still = FLUIDS.register(name, () -> NCFluid.makeFluid(
                     makeStill, thisMutable.getValue(), stillTex, flowingTex, buildAttributes
             ));

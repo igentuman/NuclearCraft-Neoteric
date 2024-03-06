@@ -73,40 +73,36 @@ public class HeatSinkBlock extends Block implements EntityBlock {
 
     public Component getPlacementRule()
     {
-        if(placementRule == null) {
-            List<String> lines = new ArrayList<>();
-            int i = 0;
-            if (def.getValidator() instanceof HeatSinkDef.Validator) {
-                for (String[] condition : def.getValidator().blockLines().keySet()) {
-                    if (i > 0) {
-                        lines.add(new TranslatableComponent("heat_sink.and").getString());
-                    }
-                    String blocksLine = String.join(" "+new TranslatableComponent("heat_sink.or").getString()+" ", getBlockNames(condition[2]));
-                    switch (condition[0]) {
-                        case ">":
-                            lines.add(new TranslatableComponent("heat_sink.atleast"+(condition[1].equals("1") ? "":"s") , condition[1], blocksLine).getString());
-                            break;
-                        case "-":
-                            lines.add(new TranslatableComponent("heat_sink.between", condition[1], blocksLine).getString());
-                            break;
-                        case "=":
-                            lines.add(new TranslatableComponent("heat_sink.exact"+(condition[1].equals("1") ? "":"s"), condition[1], blocksLine).getString());
-                            break;
-                        case "<":
-                            lines.add(new TranslatableComponent("heat_sink.less_than", condition[1], blocksLine).getString());
-                            break;
-                        case "^":
-                            lines.add(new TranslatableComponent("heat_sink.in_corner", condition[1], blocksLine).getString());
-                            break;
-                    }
-                    i++;
+        List<String> lines = new ArrayList<>();
+        int i = 0;
+        if (def.getValidator() instanceof HeatSinkDef.Validator) {
+            for (String[] condition : def.getValidator().blockLines().keySet()) {
+                if (i > 0) {
+                    lines.add(new TranslatableComponent("heat_sink.and").getString());
                 }
-                placementRule = new TranslatableComponent("heat_sink.placement.rule", String.join(" ", lines));
-            } else {
-                placementRule = new TranslatableComponent("heat_sink.placement.error");
+                String blocksLine = String.join(" "+new TranslatableComponent("heat_sink.or").getString()+" ", getBlockNames(condition[2]));
+                switch (condition[0]) {
+                    case ">":
+                        lines.add(new TranslatableComponent("heat_sink.atleast"+(condition[1].equals("1") ? "":"s") , condition[1], blocksLine).getString());
+                        break;
+                    case "-":
+                        lines.add(new TranslatableComponent("heat_sink.between", condition[1], blocksLine).getString());
+                        break;
+                    case "=":
+                        lines.add(new TranslatableComponent("heat_sink.exact"+(condition[1].equals("1") ? "":"s"), condition[1], blocksLine).getString());
+                        break;
+                    case "<":
+                        lines.add(new TranslatableComponent("heat_sink.less_than", condition[1], blocksLine).getString());
+                        break;
+                    case "^":
+                        lines.add(new TranslatableComponent("heat_sink.in_corner", condition[1], blocksLine).getString());
+                        break;
+                }
+                i++;
             }
+            return new TranslatableComponent("heat_sink.placement.rule", String.join(" ", lines));
         }
-        return placementRule;
+        return new TranslatableComponent("heat_sink.placement.error");
     }
 
 

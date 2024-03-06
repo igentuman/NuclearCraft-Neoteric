@@ -173,4 +173,6 @@ public class ItemStorageCapabilityHandler extends AbstractCapabilityHandler impl
         if (slot < 0 || slot >= stacks.size())
             throw new RuntimeException("Slot " + slot + " not in valid range - [0," + stacks.size() + ")");
     }
+
+
 }

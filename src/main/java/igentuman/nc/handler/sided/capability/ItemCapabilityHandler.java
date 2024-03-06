@@ -249,12 +249,20 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
     }
 
     public LazyOptional<ItemHandlerWrapper> getCapability(Direction side) {
-        if(side == null) return LazyOptional.of(() -> new ItemHandlerWrapper(this, (i) -> true, (i, s) -> true));
+        if(side == null) return globalCap();
         if(!handlerCache.containsKey(side)) {
             handlerCache.put(side, LazyOptional.of(
-                    () -> new ItemHandlerWrapper(this, (i) -> outputAllowed(i, side), (i, s) -> inputAllowed(i, s, side))));
+                    () -> new ItemHandlerWrapper(side,this, (i) -> outputAllowed(i, side), (i, s) -> inputAllowed(i, s, side))));
         }
         return handlerCache.get(side);
+    }
+    LazyOptional<ItemHandlerWrapper> globalCap;
+    private LazyOptional<ItemHandlerWrapper> globalCap() {
+
+        if(globalCap == null) {
+            globalCap =  LazyOptional.of(() -> new ItemHandlerWrapper(null, this, (i) -> true, (i, s) -> true));
+        }
+        return globalCap;
     }
 
     public void cleanCache() {
@@ -317,20 +325,21 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
         BlockEntity be = tile.getLevel().getBlockEntity(pos.relative(dir));
         if(be == null) return false;
         LazyOptional<IItemHandler> cap = be.getCapability(ITEM_HANDLER_CAPABILITY, dir.getOpposite());
-        if(cap.isPresent()) {
-            IItemHandler handler = cap.orElse(null);
-            SidedContentHandler.RelativeDirection relativeDirection = SidedContentHandler.RelativeDirection.toRelative(dir, getFacing());
-            for(SlotModePair pair : sideMap.get(relativeDirection.ordinal())) {
-                if(pair.getMode() == PULL || (forceFlag && pair.getMode() == INPUT)) {
-                    for(int i = 0; i < handler.getSlots(); i++) {
-                        ItemStack stack = handler.getStackInSlot(i);
-                            if(stack.isEmpty()) continue;
-                        if(!isValidInputItem(stack)) continue;
-                        ItemStack remainder = insertItem(pair.getSlot(), stack.copy(), false);
-                        if(remainder.getCount() != stack.getCount()) {
-                            handler.extractItem(i, stack.getCount() - remainder.getCount(), false);
-                            return true;
-                        }
+        if(!cap.isPresent()) {
+            return false;
+        }
+        IItemHandler handler = cap.orElse(null);
+        SidedContentHandler.RelativeDirection relativeDirection = SidedContentHandler.RelativeDirection.toRelative(dir, getFacing());
+        for(SlotModePair pair : sideMap.get(relativeDirection.ordinal())) {
+            if(pair.getMode() == PULL || (forceFlag && pair.getMode() == INPUT)) {
+                for(int i = 0; i < handler.getSlots(); i++) {
+                    ItemStack stack = handler.extractItem(i, 64, true);
+                        if(stack.isEmpty()) continue;
+                    if(!isValidInputItem(stack)) continue;
+                    ItemStack remainder = insertItem(pair.getSlot(), stack.copy(), false);
+                    if(remainder.getCount() != stack.getCount()) {
+                        handler.extractItem(i, stack.getCount() - remainder.getCount(), false);
+                        return true;
                     }
                 }
             }

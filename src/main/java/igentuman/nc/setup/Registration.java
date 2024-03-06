@@ -9,7 +9,9 @@ import igentuman.nc.multiblock.fission.FissionReactor;
 import igentuman.nc.recipes.NcRecipeSerializers;
 import igentuman.nc.setup.registration.*;
 import igentuman.nc.world.ore.Generator;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
+import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.effect.MobEffect;
@@ -25,6 +27,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.levelgen.structure.StructureSet;
 import net.minecraft.world.level.material.Material;
@@ -49,7 +52,7 @@ public class Registration {
     private static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITIES, MODID);
     /*    private static final DeferredRegister<Codec<? extends Biome>> BIOME_MODIFIERS = DeferredRegister.create(ForgeRegistries.Keys.BIOMES, MODID);
   /*    private static final DeferredRegister<StructureType<?>> STRUCTURES = DeferredRegister.create(Registry.STRUCT, MODID);*/
-    private static final DeferredRegister<PlacedFeature> PLACED_FEATURES = DeferredRegister.create(Registry.PLACED_FEATURE_REGISTRY, MODID);
+    public static final DeferredRegister<PlacedFeature> PLACED_FEATURES = DeferredRegister.create(Registry.PLACED_FEATURE_REGISTRY, MODID);
     private static final DeferredRegister<Feature<?>> FEATURE_REGISTER = DeferredRegister.create(ForgeRegistries.FEATURES, MODID);
     private static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = DeferredRegister.create(Registry.RECIPE_TYPE_REGISTRY, MODID);
     public static final DeferredRegister<RecipeSerializer<?>> SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, MODID);
@@ -86,15 +89,17 @@ public class Registration {
         FissionReactor.init();
         FusionReactor.init();
         TurbineRegistration.init();
-        initOreGeneration();
 
         NcRecipeSerializers.RECIPE_SERIALIZERS.register(bus);
         NcRecipeType.RECIPE_TYPES.register(bus);
         NCSounds.SOUND_EVENTS.register(bus);
     }
 
-    private static void initOreGeneration() {
-        ORE_GENERATION = registerOreGenerators();
+    static void initOreGeneration() {
+        ORE_GENERATION = new ArrayList<>();
+        for(String ore: NCBlocks.ORE_BLOCKS.keySet()) {
+            ORE_GENERATION.add(Generator.createOregen(ore));
+        }
     }
 
     public static final BlockBehaviour.Properties BLOCK_PROPERTIES = BlockBehaviour.Properties.of(Material.METAL).strength(2f).requiresCorrectToolForDrops();
@@ -106,16 +111,7 @@ public class Registration {
     // Some common properties for our blocks and items
     public static final Item.Properties ITEM_PROPERTIES = new Item.Properties().tab(CreativeTabs.NC_ITEMS);
 
-    public static List<RegistryObject<PlacedFeature>> ORE_GENERATION;
-
-    private static List<RegistryObject<PlacedFeature>> registerOreGenerators()
-    {
-        List<RegistryObject<PlacedFeature>> temp = new ArrayList<>();
-        for(String ore: NCBlocks.ORE_BLOCKS.keySet()) {
-            temp.add(PLACED_FEATURES.register("nc_ores_"+ore, () -> Generator.createOregen(ore)));
-        }
-        return temp;
-    }
+    public static List<Holder<PlacedFeature>> ORE_GENERATION;
 
     public static <B extends Block> RegistryObject<Item> fromBlock(RegistryObject<B> block) {
         return ITEMS.register(block.getId().getPath(), () -> new BlockItem(block.get(), ITEM_PROPERTIES));

@@ -84,7 +84,8 @@ public class ResetNbtRecipe extends CustomRecipe {
 
     @Override
     public RecipeSerializer<?> getSerializer() {
-        return NcRecipeSerializers.RESET_NBT.get();
+        return null;
+      //  return NcRecipeSerializers.RESET_NBT.get();
     }
 
     @SubscribeEvent

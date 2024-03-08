@@ -191,7 +191,7 @@ public class WorldRadiation implements IWorldRadiationCapability {
             return radiation;
         }
         String biomeId = level.getBiome(new BlockPos(chunkX*16, 0, chunkZ*16))
-                .unwrapKey().get().location().toString();
+                .getRegistryName().getPath().toString();
         radiation += RADIATION_CONFIG.biomeRadiation(biomeId);
         radiation += RADIATION_CONFIG.dimensionRadiation(level.dimension().location().toString());
         return radiation;

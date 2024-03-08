@@ -37,8 +37,9 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
-import org.jetbrains.annotations.Nullable;
 
+
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.UUID;
 

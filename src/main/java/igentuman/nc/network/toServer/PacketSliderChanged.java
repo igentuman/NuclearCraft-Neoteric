@@ -1,15 +1,11 @@
 package igentuman.nc.network.toServer;
 
 import igentuman.nc.block.entity.NuclearCraftBE;
-import igentuman.nc.block.entity.fission.FissionPortBE;
-import igentuman.nc.block.entity.processor.NCProcessorBE;
-import igentuman.nc.client.gui.element.button.Button;
 import igentuman.nc.network.INcPacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 public class PacketSliderChanged implements INcPacket {
 

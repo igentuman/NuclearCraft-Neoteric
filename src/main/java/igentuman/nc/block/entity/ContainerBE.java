@@ -15,7 +15,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import org.jetbrains.annotations.NotNull;
+import org.antlr.v4.runtime.misc.NotNull;;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -185,18 +185,11 @@ public class ContainerBE extends NuclearCraftBE implements ISizeToggable {
         }
     }
 
-    @Override
     public void saveAdditional(CompoundTag tag) {
-        super.saveAdditional(tag);
         tag.put("Inventory", inventory.serializeNBT());
         tag.putIntArray("sideConfig", sideConfig.values().stream().mapToInt(Enum::ordinal).toArray());
     }
 
-    @Nullable
-    @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
-    }
 
     public ISizeToggable.SideMode toggleSideConfig(int direction) {
         sideConfig.put(direction, SideMode.values()[(sideConfig.get(direction).ordinal() + 1) % 4]);

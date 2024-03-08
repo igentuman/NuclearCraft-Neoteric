@@ -1,21 +1,20 @@
 package igentuman.nc.setup.registration;
 
 import com.google.common.collect.ImmutableList;
-import igentuman.nc.NuclearCraft;
 import igentuman.nc.content.materials.Materials;
-import igentuman.nc.item.NCBucketItem;
 import igentuman.nc.fluid.AcidDefinition;
 import igentuman.nc.fluid.GasDefinition;
 import igentuman.nc.fluid.LiquidDefinition;
 import igentuman.nc.fluid.NCFluid;
 import igentuman.nc.block.NCFluidBlock;
 import igentuman.nc.content.fuel.FuelManager;
+import igentuman.nc.util.TagUtil;
 import igentuman.nc.util.TextureUtil;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.tags.TagKey;
+import net.minecraft.tags.Tag;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Blocks;
@@ -24,7 +23,6 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.MaterialColor;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fluids.FluidAttributes;
@@ -33,7 +31,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.minecraftforge.fmllegacy.RegistryObject;
 import org.apache.commons.lang3.mutable.Mutable;
 import org.apache.commons.lang3.mutable.MutableObject;
 
@@ -58,8 +56,8 @@ public class NCFluids {
     public static HashMap<String, FluidEntry> NC_MATERIALS = new HashMap<>();
     public static HashMap<String, FluidEntry> NC_GASES = new HashMap<>();
 
-    public static HashMap<String, TagKey<Fluid>> GASES_TAG = new HashMap<>();
-    public static HashMap<String, TagKey<Fluid>> LIQUIDS_TAG = new HashMap<>();
+    public static HashMap<String, Tag.Named<Fluid>> GASES_TAG = new HashMap<>();
+    public static HashMap<String, Tag.Named<Fluid>> LIQUIDS_TAG = new HashMap<>();
     public static void register(IEventBus eventBus) {
         FLUIDS.register(eventBus);
     }
@@ -133,7 +131,7 @@ public class NCFluids {
         items.put("emergency_coolant_heated", new LiquidDefinition("emergency_coolant_heated", 0x90CDBEE7));
 
         for(LiquidDefinition liquid: items.values()) {
-            LIQUIDS_TAG.put(liquid.name, TagKey.create(Registry.FLUID_REGISTRY,  new ResourceLocation("forge", liquid.name)));
+            LIQUIDS_TAG.put(liquid.name, TagUtil.createFluidTagKey(liquid.name));
             NC_MATERIALS.put(liquid.name, FluidEntry.makeLiquid(liquid.name, liquid.color));
 
         }
@@ -147,7 +145,7 @@ public class NCFluids {
         items.put("liquid_nitrogen", new LiquidDefinition("liquid_nitrogen", 0x5031C23A));
 
         for(LiquidDefinition liquid: items.values()) {
-            LIQUIDS_TAG.put(liquid.name, TagKey.create(Registry.FLUID_REGISTRY,  new ResourceLocation("forge", liquid.name)));
+            LIQUIDS_TAG.put(liquid.name, TagUtil.createFluidTagKey( liquid.name));
             NC_MATERIALS.put(liquid.name, FluidEntry.makeLiquid(liquid.name, liquid.color));
         }
     }
@@ -173,7 +171,7 @@ public class NCFluids {
             items.put(material+"_clean_slurry", new AcidDefinition(material+"_clean_slurry", TextureUtil.rgbaToInt(rgba)));
         }
         for(AcidDefinition acid: items.values()) {
-            LIQUIDS_TAG.put(acid.name, TagKey.create(Registry.FLUID_REGISTRY,  new ResourceLocation("forge", acid.name)));
+            LIQUIDS_TAG.put(acid.name, TagUtil.createFluidTagKey( acid.name));
             NC_MATERIALS.put(acid.name, FluidEntry.makeAcid(acid));
         }
     }
@@ -188,7 +186,7 @@ public class NCFluids {
         items.put("aqua_regia_acid", new AcidDefinition("aqua_regia_acid", 0XCCFFBB99));
 
         for(AcidDefinition acid: items.values()) {
-            LIQUIDS_TAG.put(acid.name, TagKey.create(Registry.FLUID_REGISTRY,  new ResourceLocation("forge", acid.name)));
+            LIQUIDS_TAG.put(acid.name, TagUtil.createFluidTagKey( acid.name));
             NC_MATERIALS.put(acid.name, FluidEntry.makeAcid(acid));
 
         }
@@ -196,7 +194,7 @@ public class NCFluids {
 
     private static void materialFluids() {
         for (String name: Materials.fluids().keySet()) {
-            LIQUIDS_TAG.put(name, TagKey.create(Registry.FLUID_REGISTRY,  new ResourceLocation("forge", name)));
+            LIQUIDS_TAG.put(name, TagUtil.createFluidTagKey( name));
             NC_MATERIALS.put(name, FluidEntry.makeMoltenLiquid(name, Materials.fluids().get(name).color));
         }
     }
@@ -216,10 +214,10 @@ public class NCFluids {
                     NC_MATERIALS.put(key,
                             FluidEntry.makeMoltenLiquid(key.replace("-","_"),
                                     colorFuel));
-                    LIQUIDS_TAG.put(key, TagKey.create(Registry.FLUID_REGISTRY, new ResourceLocation("forge", key.replace("-","_"))));
+                    LIQUIDS_TAG.put(key, TagUtil.createFluidTagKey( key.replace("-","_")));
                     NC_MATERIALS.put("depleted_"+key,
                             FluidEntry.makeMoltenLiquid("depleted_"+key.replace("-","_"), colorDepleted));
-                    LIQUIDS_TAG.put("depleted_"+key, TagKey.create(Registry.FLUID_REGISTRY, new ResourceLocation("forge", "depleted_"+key.replace("-","_"))));
+                    LIQUIDS_TAG.put("depleted_"+key, TagUtil.createFluidTagKey( "depleted_"+key.replace("-","_")));
                 }
             }
         }
@@ -259,8 +257,8 @@ public class NCFluids {
         items.put("sulfur_trioxide", new GasDefinition("sulfur_trioxide", 0xCCD3AE5D));
         items.put("radon", new GasDefinition("radon", 0xFFFFFFFF));
         for(GasDefinition gas: items.values()) {
-            LIQUIDS_TAG.put(gas.name, TagKey.create(Registry.FLUID_REGISTRY,  new ResourceLocation("forge", gas.name)));
-            GASES_TAG.put(gas.name, TagKey.create(Registry.FLUID_REGISTRY,  new ResourceLocation("forge", "gases/"+gas.name)));
+            LIQUIDS_TAG.put(gas.name, TagUtil.createFluidTagKey( gas.name));
+            GASES_TAG.put(gas.name, TagUtil.createFluidTagKey( "gases/"+gas.name));
             NC_GASES.put(gas.name, FluidEntry.makeGas(gas));
         }
     }
@@ -276,7 +274,7 @@ public class NCFluids {
                 }
                 NC_MATERIALS.put(name+type,
                         FluidEntry.makeMoltenLiquid(name.replace("/", "_")+type,color));
-                LIQUIDS_TAG.put(name+type, TagKey.create(Registry.FLUID_REGISTRY,  new ResourceLocation("forge", name+type)));
+                LIQUIDS_TAG.put(name+type, TagUtil.createFluidTagKey( name+type));
 
             }
         }

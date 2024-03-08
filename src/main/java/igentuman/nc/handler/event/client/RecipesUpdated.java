@@ -17,7 +17,7 @@ public class RecipesUpdated {
     public static void recipesUpdated(RecipesUpdatedEvent event) {
         manager = event.getRecipeManager();
         for (String name: ALL_RECIPES.keySet()) {
-            NcRecipeType recipeType = ALL_RECIPES.get(name).getRecipeType();
+          //  NcRecipeType recipeType = ALL_RECIPES.get(name).getRecipeType();
             //recipeType.loadRecipes(RecipesUpdated.manager);
         }
     }

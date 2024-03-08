@@ -17,7 +17,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import org.jetbrains.annotations.NotNull;
+import org.antlr.v4.runtime.misc.NotNull;;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -56,12 +56,6 @@ public class BarrelBE extends NuclearCraftBE implements ISizeToggable {
         }
         fluidTank = createTank();
         fluidHandler = LazyOptional.of(() -> fluidTank);
-    }
-
-    @Nullable
-    @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
     }
 
     public void tickClient() {
@@ -185,9 +179,7 @@ public class BarrelBE extends NuclearCraftBE implements ISizeToggable {
         }
     }
 
-    @Override
     public void saveAdditional(CompoundTag tag) {
-        super.saveAdditional(tag);
         CompoundTag tank = new CompoundTag();
         tag.put("Fluid", fluidTank.getFluid().writeToNBT(tank));
         tag.putIntArray("sideConfig", sideConfig.values().stream().mapToInt(Enum::ordinal).toArray());

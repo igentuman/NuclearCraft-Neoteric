@@ -2,17 +2,13 @@ package igentuman.nc.setup.registration;
 
 import igentuman.nc.content.materials.Materials;
 import igentuman.nc.item.ItemFuel;
-import igentuman.nc.setup.ModSetup;
 import igentuman.nc.content.fuel.FuelManager;
+import igentuman.nc.util.TagUtil;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
+import net.minecraft.tags.Tag;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.minecraftforge.fmllegacy.RegistryObject;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,11 +17,11 @@ import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.setup.Registration.ITEMS;
 
 public class Fuel {
-    public static TagKey<Item> ISOTOPE_TAG = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("forge", "isotopes"));
-    public static TagKey<Item> NC_ISOTOPE_TAG = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(MODID, "isotopes"));
-    public static TagKey<Item> NC_FUEL_TAG = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(MODID, "reactor_fuel"));
-    public static TagKey<Item> NC_DEPLETED_FUEL_TAG = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(MODID, "reactor_fuel"));
-    public static TagKey<Item> NC_FUELS_TAG = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(MODID, "reactor_fuel"));
+    public static Tag.Named<Item> ISOTOPE_TAG = TagUtil.createItemForgeTag("isotopes");
+    public static Tag.Named<Item> NC_ISOTOPE_TAG = TagUtil.createItemNCTag("isotopes");
+    public static Tag.Named<Item> NC_FUEL_TAG = TagUtil.createItemNCTag("reactor_fuel");
+    public static Tag.Named<Item> NC_DEPLETED_FUEL_TAG = TagUtil.createItemNCTag("reactor_fuel");
+    public static Tag.Named<Item> NC_FUELS_TAG = TagUtil.createItemNCTag("reactor_fuel");
 
     public static final Item.Properties ITEM_PROPERTIES = new Item.Properties().tab(CreativeTabs.FISSION_REACTOR);
 

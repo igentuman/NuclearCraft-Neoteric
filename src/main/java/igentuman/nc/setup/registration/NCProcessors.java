@@ -12,12 +12,12 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Material;
-import net.minecraftforge.common.extensions.IForgeMenuType;
+import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.minecraftforge.fmllegacy.RegistryObject;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -49,7 +49,7 @@ public class NCProcessors {
     private static void registerContainers() {
         for(String name: Processors.registered().keySet()) {
             PROCESSORS_CONTAINERS.put(name, CONTAINERS.register(name,
-                    () -> IForgeMenuType.create((windowId, inv, data) -> {
+                    () -> IForgeContainerType.create((windowId, inv, data) -> {
                         NCProcessorContainer<?> o = null;
                         try {
                             o = (NCProcessorContainer<?>) Processors.registered().get(name).getContainerConstructor()

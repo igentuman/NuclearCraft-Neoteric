@@ -4,8 +4,8 @@ import igentuman.nc.NuclearCraft;
 import igentuman.nc.util.annotation.NothingNullByDefault;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.antlr.v4.runtime.misc.NotNull;;
+import javax.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;

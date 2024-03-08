@@ -5,10 +5,8 @@ import igentuman.nc.block.entity.fission.FissionHeatSinkBE;
 import igentuman.nc.handler.config.CommonConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -89,21 +87,21 @@ public class HeatSinkDef {
     public List<String> getItemsByTagKey(String key)
     {
         List<String> tmp = new ArrayList<>();
-        TagKey<Item> tag = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(key));
+/*        Tag.Named<Item> tag = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(key));
         Ingredient ing = Ingredient.fromValues(Stream.of(new Ingredient.TagValue(tag)));
         for (ItemStack item: ing.getItems()) {
             tmp.add(item.getItem().toString());
-        }
+        }*/
         return tmp;
     }
 
     public static List<Block> getBlocksByTagKey(String key)
     {
         List<Block> tmp = new ArrayList<>();
-        TagKey<Block> tag = TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(key));
+/*        Tag.Named<Block> tag = TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(key));
         for(Holder<Block> holder : Registry.BLOCK.getTagOrEmpty(tag)) {
             tmp.add(holder.value());
-        }
+        }*/
         return tmp;
     }
 

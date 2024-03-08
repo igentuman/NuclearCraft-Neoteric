@@ -4,7 +4,6 @@ import igentuman.nc.NuclearCraft;
 import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.util.annotation.NBTField;
-import mekanism.common.capabilities.Capabilities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -133,7 +132,7 @@ public class FissionPortBE extends FissionBE {
             return controller().getEnergy().cast();
         }
 
-        if(isMekanismLoadeed() && isSteamMode) {
+        /*if(isMekanismLoadeed() && isSteamMode) {
             if(cap == Capabilities.GAS_HANDLER_CAPABILITY) {
                 if(controller().contentHandler.hasFluidCapability(side)) {
                     return LazyOptional.of(() -> controller().contentHandler.gasConverter(side));
@@ -146,7 +145,7 @@ public class FissionPortBE extends FissionBE {
                 }
                 return LazyOptional.empty();
             }
-        }
+        }*/
 
         if(isCcLoaded()) {
             if(cap == dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL) {
@@ -215,7 +214,6 @@ public class FissionPortBE extends FissionBE {
         super.load(tag);
     }
 
-    @Override
     public void saveAdditional(CompoundTag tag) {
         CompoundTag infoTag = new CompoundTag();
         saveTagData(infoTag);
@@ -247,12 +245,6 @@ public class FissionPortBE extends FissionBE {
         CompoundTag infoTag = new CompoundTag();
         tag.put("Info", infoTag);
         saveTagData(infoTag);
-    }
-
-    @Nullable
-    @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
     }
 
     @Override

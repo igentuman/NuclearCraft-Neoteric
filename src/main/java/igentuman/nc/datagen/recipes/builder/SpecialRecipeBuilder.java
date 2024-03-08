@@ -1,7 +1,6 @@
 package igentuman.nc.datagen.recipes.builder;
 
 import com.google.gson.JsonObject;
-import igentuman.nc.registry.RecipeSerializerRegistryObject;
 import igentuman.nc.util.annotation.NothingNullByDefault;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
@@ -9,7 +8,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 
 import java.util.function.Consumer;
 
@@ -22,9 +21,6 @@ public class SpecialRecipeBuilder implements FinishedRecipe {
         this.serializer = serializer;
     }
 
-    public static void build(Consumer<FinishedRecipe> consumer, RecipeSerializerRegistryObject<?> serializer) {
-        build(consumer, serializer.get());
-    }
 
     public static void build(Consumer<FinishedRecipe> consumer, RecipeSerializer<?> serializer) {
         consumer.accept(new SpecialRecipeBuilder(serializer));

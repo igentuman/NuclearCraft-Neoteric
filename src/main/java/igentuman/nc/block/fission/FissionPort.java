@@ -34,9 +34,9 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.network.NetworkHooks;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
+import org.antlr.v4.runtime.misc.NotNull;;
+import javax.annotation.Nullable;
 
 import java.util.List;
 

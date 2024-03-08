@@ -38,7 +38,7 @@ import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.ItemHandlerHelper;
-import org.jetbrains.annotations.NotNull;
+import org.antlr.v4.runtime.misc.NotNull;;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -159,8 +159,9 @@ public class QNP extends PickaxeItem
 		Block block = tempState.getBlock();
 		if(!enoughEnergy(tool)) return totalDrops;
 		int xp = ForgeHooks.onBlockBreakEvent(worldIn, ((ServerPlayer) entityLiving).gameMode.getGameModeForPlayer(), (ServerPlayer) entityLiving, pos);
-		if (xp >= 0 && block.onDestroyedByPlayer(tempState, worldIn, pos, (Player) entityLiving, true, tempState.getFluidState())) {
-			block.destroy(worldIn, pos, tempState);
+		if (xp >= 0) {
+			block.playerDestroy(worldIn, (Player) entityLiving, pos, tempState, worldIn.getBlockEntity(pos), tool);
+			//block.destroy(worldIn, pos, tempState);
 			Block.getDrops(tempState, (ServerLevel) worldIn, pos, null, (Player) entityLiving, tool).forEach(itemStack -> {
 				boolean combined = false;
 				for (ItemStack drop : totalDrops) {
@@ -175,8 +176,8 @@ public class QNP extends PickaxeItem
 				}
 			});
 			Random random = new Random();
-			((ServerLevel) worldIn).sendParticles(NcParticleTypes.RADIATION.get(), pos.getX() + (random.nextFloat() - 0.5), pos.getY() + (random.nextFloat() - 0.5),
-					pos.getZ() + (random.nextFloat() - 0.5), 3, 0, 0, 0, 0);
+			/*((ServerLevel) worldIn).sendParticles(NcParticleTypes.RADIATION.get(), pos.getX() + (random.nextFloat() - 0.5), pos.getY() + (random.nextFloat() - 0.5),
+					pos.getZ() + (random.nextFloat() - 0.5), 3, 0, 0, 0, 0);*/
 			getEnergy(tool).extractEnergy(ENERGY_STORAGE.QNP_ENERGY_PER_BLOCK.get(), false);
 			if(veinMode && veinMinedBlocksCounter < 20) {
 				veinMinedBlocksCounter++;

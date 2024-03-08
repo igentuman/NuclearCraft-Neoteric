@@ -1,7 +1,7 @@
 package igentuman.nc.datagen.recipes.builder;
 
 import net.minecraft.advancements.CriterionTriggerInstance;
-import org.jetbrains.annotations.NotNull;
+import org.antlr.v4.runtime.misc.NotNull;;
 
 import java.util.Objects;
 

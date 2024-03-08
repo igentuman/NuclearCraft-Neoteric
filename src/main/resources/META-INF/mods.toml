@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[40,)"
+loaderVersion="[37,)"
 license="MIT"
 [[mods]] 
 modId="nuclearcraft" 
@@ -15,12 +15,12 @@ A complex nuclear engineering mod for Minecraft
 [[dependencies.nuclearcraft]]
 modId="forge" 
 mandatory=true 
-versionRange="[40,)"
+versionRange="[37,)"
 ordering="NONE"
 side="BOTH"
 [[dependencies.nuclearcraft]]
 modId="minecraft"
 mandatory=true
-versionRange="[1.18.2,)"
+versionRange="[1.17.1,)"
 ordering="NONE"
 side="BOTH"

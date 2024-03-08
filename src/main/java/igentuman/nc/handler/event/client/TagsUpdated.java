@@ -14,7 +14,7 @@ public class TagsUpdated {
     public static void tagsUpated(TagsUpdatedEvent event) {
         if(RecipesUpdated.manager != null) {
             for (String name: ALL_RECIPES.keySet()) {
-                NcRecipeType recipeType = ALL_RECIPES.get(name).getRecipeType();
+               // NcRecipeType recipeType = ALL_RECIPES.get(name).getRecipeType();
                 //recipeType.loadRecipes(RecipesUpdated.manager);
             }
         }

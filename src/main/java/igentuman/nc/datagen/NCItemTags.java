@@ -104,7 +104,7 @@ public class NCItemTags extends ItemTagsProvider {
 
     private void chunks() {
         for(String name: NCItems.NC_CHUNKS.keySet()) {
-            tag(Tags.Items.RAW_MATERIALS).add(NCItems.NC_CHUNKS.get(name).get());
+          //  tag(Tags.Items.).add(NCItems.NC_CHUNKS.get(name).get());
             tag(NCItems.CHUNKS_TAG.get(name)).add(NCItems.NC_CHUNKS.get(name).get());
         }
     }

@@ -35,7 +35,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
-import org.jetbrains.annotations.NotNull;
+import org.antlr.v4.runtime.misc.NotNull;;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -102,11 +102,11 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
     {
         if(allowedInputs == null) {
             allowedInputs = new ArrayList<>();
-            for(AbstractRecipe recipe: NcRecipeType.ALL_RECIPES.get(getName()).getRecipeType().getRecipes(getLevel())) {
+           /* for(AbstractRecipe recipe: NcRecipeType.ALL_RECIPES.get(getName()).getRecipeType().getRecipes(getLevel())) {
                 for(Ingredient ingredient: recipe.getItemIngredients()) {
                     allowedInputs.addAll(List.of(ingredient.getItems()));
                 }
-            }
+            }*/
         }
         return allowedInputs;
     }
@@ -152,12 +152,12 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
         RECIPE cachedRecipe = getCachedRecipe();
         if(cachedRecipe != null) return cachedRecipe;
         if(!NcRecipeType.ALL_RECIPES.containsKey(getName())) return null;
-        for(AbstractRecipe recipe: NcRecipeType.ALL_RECIPES.get(getName()).getRecipeType().getRecipes(getLevel())) {
+        /*for(AbstractRecipe recipe: NcRecipeType.ALL_RECIPES.get(getName()).getRecipeType().getRecipes(getLevel())) {
             if(recipe.test(contentHandler)) {
                 addToCache((RECIPE)recipe);
                 return (RECIPE)recipe;
             }
-        }
+        }*/
         return null;
     }
 
@@ -436,7 +436,6 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
         super.load(tag);
     }
 
-    @Override
     public void saveAdditional(CompoundTag tag) {
         CompoundTag infoTag = new CompoundTag();
         tag.put("Energy", energyStorage.serializeNBT());
@@ -498,12 +497,6 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
         infoTag.putInt("validationId", validationResult.id);
         infoTag.putLong("erroredBlock", errorBlockPos.asLong());
         tag.put("Content", contentHandler.serializeNBT());
-    }
-
-    @Nullable
-    @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
     }
 
     @Override

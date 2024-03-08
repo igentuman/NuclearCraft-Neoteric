@@ -21,7 +21,7 @@ public class OreVeinProvider {
     private OreVeinProvider(ServerLevel level) {
         this.level = level;
         recipes = (List<OreVeinRecipe>) level.getRecipeManager()
-                .getAllRecipesFor(NcRecipeType.ALL_RECIPES.get("nc_ore_veins").getRecipeType());
+                .getAllRecipesFor(NcRecipeType.ALL_RECIPES.get("nc_ore_veins"));
     }
 
     public boolean chunkContainsVein(int chunkX, int chunkZ)

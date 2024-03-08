@@ -9,7 +9,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.FriendlyByteBuf;
-import org.jetbrains.annotations.NotNull;
+import org.antlr.v4.runtime.misc.NotNull;;
 
 import java.util.Locale;
 
@@ -43,7 +43,8 @@ public record FusionBeamParticleData(Direction direction, double distance, float
     @NotNull
     @Override
     public ParticleType<?> getType() {
-        return NcParticleTypes.FUSION_BEAM.get();
+        return null;
+//return NcParticleTypes.FUSION_BEAM.get();
     }
 
     @Override

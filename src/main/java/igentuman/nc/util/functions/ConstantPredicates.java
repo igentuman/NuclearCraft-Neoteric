@@ -1,7 +1,7 @@
 package igentuman.nc.util.functions;
 
 import net.minecraftforge.common.util.TriPredicate;
-import org.jetbrains.annotations.NotNull;
+import org.antlr.v4.runtime.misc.NotNull;;
 
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
@@ -23,8 +23,8 @@ public class ConstantPredicates {
     private static final BiPredicate<Object, Object> alwaysFalseBi = (t, u) -> false;
     private static final TriPredicate<Object, Object, Object> alwaysFalseTri = (t, u, v) -> false;
 
-    private static final BiPredicate<Object, @NotNull AutomationType> internalOnly = (t, automationType) -> automationType == AutomationType.INTERNAL;
-    private static final BiPredicate<Object, @NotNull AutomationType> notExternal = (t, automationType) -> automationType != AutomationType.EXTERNAL;
+    private static final BiPredicate<Object, AutomationType> internalOnly = (t, automationType) -> automationType == AutomationType.INTERNAL;
+    private static final BiPredicate<Object, AutomationType> notExternal = (t, automationType) -> automationType != AutomationType.EXTERNAL;
 
     /**
      * Returns a predicate that returns {@code true} for any input.
@@ -73,8 +73,8 @@ public class ConstantPredicates {
      *
      * @since 10.3.3
      */
-    public static <T> BiPredicate<T, @NotNull AutomationType> internalOnly() {
-        return (BiPredicate<T, @NotNull AutomationType>) internalOnly;
+    public static <T> BiPredicate<T, AutomationType> internalOnly() {
+        return (BiPredicate<T, AutomationType>) internalOnly;
     }
 
     /**
@@ -82,7 +82,7 @@ public class ConstantPredicates {
      *
      * @since 10.3.3
      */
-    public static <T> BiPredicate<T, @NotNull AutomationType> notExternal() {
-        return (BiPredicate<T, @NotNull AutomationType>) notExternal;
+    public static <T> BiPredicate<T, AutomationType> notExternal() {
+        return (BiPredicate<T, AutomationType>) notExternal;
     }
 }

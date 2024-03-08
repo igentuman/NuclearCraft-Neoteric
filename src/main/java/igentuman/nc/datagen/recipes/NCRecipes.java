@@ -9,12 +9,14 @@ import igentuman.nc.multiblock.fission.FissionReactor;
 import igentuman.nc.recipes.NcRecipeSerializers;
 import igentuman.nc.setup.registration.*;
 import net.minecraft.advancements.critereon.ItemPredicate;
+import net.minecraft.core.Registry;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.*;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
+import net.minecraft.tags.Tag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.Tags;
 
 import java.util.function.Consumer;
@@ -52,8 +54,8 @@ public class NCRecipes extends RecipeProvider {
        //turbineBlocks(consumer);
         FuelRecipes.generate(consumer);
         CustomRecipes.generate(consumer);
-        SpecialRecipeBuilder.build(consumer, NcRecipeSerializers.SHIELDING);
-        SpecialRecipeBuilder.build(consumer, NcRecipeSerializers.RESET_NBT);
+      //  SpecialRecipeBuilder.build(consumer, NcRecipeSerializers.SHIELDING);
+     //   SpecialRecipeBuilder.build(consumer, NcRecipeSerializers.RESET_NBT);
     }
 
     private void fusionBlocks(Consumer<FinishedRecipe> consumer) {
@@ -327,6 +329,10 @@ public class NCRecipes extends RecipeProvider {
                 )
                     .unlocks("item", has(upgradeItem.getItems()[0].getItem()))
                     .save(consumer, getItemName(resultItem) +"_"+upgradeItem.getName()+ "_upgrade");
+    }
+
+    private static String getItemName(ItemLike pItemLike) {
+        return Registry.ITEM.getKey(pItemLike.asItem()).getPath();
     }
 
     private void items(Consumer<FinishedRecipe> consumer) {
@@ -1055,7 +1061,7 @@ public class NCRecipes extends RecipeProvider {
             if(name.matches(".*active.*|.*water.*|.*liquid.*|.*empty.*|.*cryotheum.*")) {
                 continue;
             }
-            TagKey<Item> i = forgeDust(name);
+            Tag.Named<Item> i = forgeDust(name);
             if(name.contains("slime")) {
                 i = Tags.Items.SLIMEBALLS;
             }

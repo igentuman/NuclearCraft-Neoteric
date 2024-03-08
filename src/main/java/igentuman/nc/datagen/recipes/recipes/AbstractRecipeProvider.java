@@ -5,13 +5,13 @@ import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.NcIngredient;
 import igentuman.nc.recipes.ingredient.creator.IngredientCreatorAccess;
 import igentuman.nc.setup.registration.Fuel;
+import igentuman.nc.util.TagUtil;
 import net.minecraft.core.Registry;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
+import net.minecraft.tags.Tag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -20,12 +20,9 @@ import net.minecraftforge.registries.ForgeRegistries;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.setup.registration.Fuel.*;
-import static igentuman.nc.setup.registration.NCBlocks.NC_BLOCKS;
 import static igentuman.nc.setup.registration.NCFluids.ALL_FLUID_ENTRIES;
-import static igentuman.nc.setup.registration.NCFluids.NC_MATERIALS;
 import static igentuman.nc.setup.registration.NCItems.*;
 import static igentuman.nc.util.DataGenUtil.*;
 import static net.minecraft.world.item.Items.AIR;
@@ -40,7 +37,7 @@ public abstract class AbstractRecipeProvider {
     private static List<NcIngredient> output;
     private static double[] params;
 
-    protected static NcIngredient ingredient(TagKey<Item> item, int...count) {
+    protected static NcIngredient ingredient(Tag.Named<Item> item, int...count) {
         return NcIngredient.of(item, count);
     }
 
@@ -191,13 +188,13 @@ public abstract class AbstractRecipeProvider {
                 .build(consumer);
     }
 
-    public static TagKey<Fluid> forgeFluid(String name) {
+    public static Tag.Named<Fluid> forgeFluid(String name) {
         String key = "forge";
         if(name.contains(":")) {
             key = name.split(":")[0];
             name = name.split(":")[1];
         }
-        return TagKey.create(Registry.FLUID_REGISTRY, new ResourceLocation(key, name));
+        return TagUtil.createFluidTagKey(new ResourceLocation(key, name));
     }
 
     public static Item blockItem(String name)
@@ -227,7 +224,7 @@ public abstract class AbstractRecipeProvider {
         return NC_DUSTS.get(name).get();
     }
 
-    public static TagKey<Item> dustTag(String name)
+    public static Tag.Named<Item> dustTag(String name)
     {
         if(DUSTS_TAG.get(name) == null) {
             System.out.println("null dust tag: " + name);
@@ -368,7 +365,7 @@ public abstract class AbstractRecipeProvider {
         return NC_PLATES.get(name).get();
     }
 
-    public static TagKey<Item> plateTag(String name)
+    public static Tag.Named<Item> plateTag(String name)
     {
         if(PLATES_TAG.get(name) == null) {
             System.out.println("null plate tag: " + name);
@@ -384,7 +381,7 @@ public abstract class AbstractRecipeProvider {
         return NC_INGOTS.get(name).get();
     }
 
-    public static TagKey<Item> ingotTag(String name)
+    public static Tag.Named<Item> ingotTag(String name)
     {
         if(INGOTS_TAG.get(name) == null) {
             System.out.println("null ingot tag: " + name);
@@ -392,7 +389,7 @@ public abstract class AbstractRecipeProvider {
         return INGOTS_TAG.get(name);
     }
 
-    public static TagKey<Item> gemTag(String name) {
+    public static Tag.Named<Item> gemTag(String name) {
         if(GEMS_TAG.get(name) == null) {
             System.out.println("null gem tag: " + name);
         }

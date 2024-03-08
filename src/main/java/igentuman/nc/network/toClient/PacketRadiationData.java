@@ -3,7 +3,7 @@ package igentuman.nc.network.toClient;
 import igentuman.nc.network.INcPacket;
 import igentuman.nc.radiation.client.ClientRadiationData;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import java.util.HashMap;
 import java.util.Map;

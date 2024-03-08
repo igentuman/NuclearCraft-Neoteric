@@ -8,7 +8,6 @@ import igentuman.nc.NuclearCraft;
 import igentuman.nc.client.gui.element.NCGuiElement;
 import igentuman.nc.network.toServer.PacketFlushSlotContent;
 import igentuman.nc.network.toServer.PacketSideConfigToggle;
-import mezz.jei.forge.platform.FluidHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.events.GuiEventListener;

@@ -320,7 +320,7 @@ public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
     }
 
     private List<Recipe> getRecipes() {
-        return (List<Recipe>) NcRecipeType.ALL_RECIPES.get(getName()).getRecipeType().getRecipes(getLevel());
+        return (List<Recipe>) level.getRecipeManager().getAllRecipesFor(NcRecipeType.ALL_RECIPES.get(getName()));
     }
 
     protected boolean mineFirstMinableBlock()

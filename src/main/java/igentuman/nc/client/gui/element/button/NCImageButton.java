@@ -55,7 +55,7 @@ public class NCImageButton extends Button {
       int i = this.yTexStart;
       if (!this.isActive()) {
          i += this.yDiffTex * 2;
-      } else if (this.isHoveredOrFocused()) {
+      } else if (this.isHovered()) {
          i += this.yDiffTex;
       }
 

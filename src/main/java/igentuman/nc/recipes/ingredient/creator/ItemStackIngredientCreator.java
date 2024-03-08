@@ -10,18 +10,17 @@ import igentuman.nc.recipes.ingredient.InputIngredient;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.util.JsonConstants;
 import igentuman.nc.util.StackUtils;
+import igentuman.nc.util.TagUtil;
 import igentuman.nc.util.annotation.NothingNullByDefault;
-import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
+import net.minecraft.tags.Tag;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -172,7 +171,7 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
         public List<String> getItemsByTagKey(String key)
         {
             List<String> tmp = new ArrayList<>();
-            TagKey<Item> tag = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(key));
+            Tag.Named<Item> tag = TagUtil.createItemTag(new ResourceLocation(key));
             Ingredient ing = Ingredient.fromValues(Stream.of(new Ingredient.TagValue(tag)));
             for (ItemStack item: ing.getItems()) {
                 tmp.add(item.getItem().toString());
@@ -181,8 +180,8 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
         }
 
         @Override
-        public List<@NotNull ItemStack> getRepresentations() {
-            List<@NotNull ItemStack> representations = new ArrayList<>();
+        public List<ItemStack> getRepresentations() {
+            List<ItemStack> representations = new ArrayList<>();
             for (ItemStack stack : ingredient.getItems()) {
                 if (stack.getCount() == amount) {
                     representations.add(stack);
@@ -294,8 +293,8 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
         }
 
         @Override
-        public List<@NotNull ItemStack> getRepresentations() {
-            List<@NotNull ItemStack> representations = new ArrayList<>();
+        public List<ItemStack> getRepresentations() {
+            List<ItemStack> representations = new ArrayList<>();
             for (ItemStackIngredient ingredient : ingredients) {
                 representations.addAll(ingredient.getRepresentations());
             }

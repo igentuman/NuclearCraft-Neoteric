@@ -1,6 +1,7 @@
 package igentuman.nc.recipes.ingredient;
 
-import net.minecraft.tags.TagKey;
+
+import net.minecraft.tags.Tag;
 
 import java.util.Locale;
 
@@ -9,8 +10,8 @@ public class WildcardMatcher {
     private WildcardMatcher() {
     }
 
-    public static boolean matches(String wildcard, TagKey<?> key) {
-        return matches(wildcard, key.location().toString());
+    public static boolean matches(String wildcard, Tag<?> key) {
+        return matches(wildcard, key.toString());
     }
 
     public static boolean matches(String wildcard, String text) {

@@ -184,7 +184,6 @@ public class TurbinePortBE extends TurbineBE {
         super.load(tag);
     }
 
-    @Override
     public void saveAdditional(CompoundTag tag) {
         CompoundTag infoTag = new CompoundTag();
         saveTagData(infoTag);
@@ -216,12 +215,6 @@ public class TurbinePortBE extends TurbineBE {
         CompoundTag infoTag = new CompoundTag();
         tag.put("Info", infoTag);
         saveTagData(infoTag);
-    }
-
-    @Nullable
-    @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
     }
 
     @Override

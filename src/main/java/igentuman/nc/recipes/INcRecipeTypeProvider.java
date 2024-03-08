@@ -3,8 +3,8 @@ package igentuman.nc.recipes;
 import igentuman.nc.recipes.type.NcRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.antlr.v4.runtime.misc.NotNull;;
+import javax.annotation.Nullable;
 
 import java.util.List;
 import java.util.function.Predicate;

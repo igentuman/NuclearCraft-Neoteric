@@ -32,8 +32,8 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.DrawSelectionEvent;
-import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.IFluidBlock;
@@ -71,10 +71,9 @@ public class BlockOverlayHandler {
     }
 
     @SubscribeEvent
-    public static void onRenderWorldEvent(RenderLevelStageEvent e) {
+    public static void onRenderWorldEvent(RenderWorldLastEvent e) {
         final GameRenderer gameRenderer = Minecraft.getInstance().gameRenderer;
         Player player = Minecraft.getInstance().player;
-        if(e.getStage().equals(RenderLevelStageEvent.Stage.AFTER_SOLID_BLOCKS)) {
             for(BlockPos pos: fusionReactors) {
                 if(true) continue; //disable for now
                 BlockEntity be = player.level.getBlockEntity(pos);
@@ -85,21 +84,18 @@ public class BlockOverlayHandler {
                 AABB box1 = new AABB(-size, 0.01f,-size, size,0.99f, -size+1);
                 AABB box2 = new AABB(-size, 0.01f, size, size,0.99f, size-1);
 
-                drawBoundingBoxAtBlockPos(e.getPoseStack(), box1, 1, 0, 0.5f, 1, pos.above(), player.blockPosition());
-                drawBoundingBoxAtBlockPos(e.getPoseStack(), box2, 1, 0, 0.5f, 1, pos.above(), player.blockPosition());
+                drawBoundingBoxAtBlockPos(e.getMatrixStack(), box1, 1, 0, 0.5f, 1, pos.above(), player.blockPosition());
+                drawBoundingBoxAtBlockPos(e.getMatrixStack(), box2, 1, 0, 0.5f, 1, pos.above(), player.blockPosition());
                 //drawBoundingBoxAtBlockPos(e.getPoseStack(), box3, 1, 0, 0.5f, 1, pos.above(), player.blockPosition());
                 // drawBoundingBoxAtBlockPos(e.getPoseStack(), box4, 1, 0, 0.5f, 1, pos.above(), player.blockPosition());
             }
-        }
-        if(e.getStage().equals(RenderLevelStageEvent.Stage.AFTER_PARTICLES)) {
-            gameRenderer.resetProjectionMatrix(e.getProjectionMatrix());
-            if (player.level.isClientSide) {
-                for (BlockPos pos: outlineBlocks) {
-                    AABB aabb = new AABB(0, 0,0,1,1,1);
-                    drawBoundingBoxAtBlockPos(e.getPoseStack(), aabb, 1, 0, 0, 1, pos, player.blockPosition());
-                }
-
+        gameRenderer.resetProjectionMatrix(e.getProjectionMatrix());
+        if (player.level.isClientSide) {
+            for (BlockPos pos: outlineBlocks) {
+                AABB aabb = new AABB(0, 0,0,1,1,1);
+                drawBoundingBoxAtBlockPos(e.getMatrixStack(), aabb, 1, 0, 0, 1, pos, player.blockPosition());
             }
+
         }
     }
 
@@ -137,7 +133,7 @@ public class BlockOverlayHandler {
             }
             PoseStack stack = new PoseStack();
             stack.pushPose();
-            Camera info = event.getCamera();
+            Camera info = event.getInfo();
             stack.mulPose(Vector3f.XP.rotationDegrees(info.getXRot()));
             stack.mulPose(Vector3f.YP.rotationDegrees(info.getYRot() + 180));
             double d0 = info.getPosition().x();
@@ -170,7 +166,7 @@ public class BlockOverlayHandler {
 
             PoseStack stack = new PoseStack();
             stack.pushPose();
-            Camera info = event.getCamera();
+            Camera info = event.getInfo();
             stack.mulPose(Vector3f.XP.rotationDegrees(info.getXRot()));
             stack.mulPose(Vector3f.YP.rotationDegrees(info.getYRot() + 180));
             double d0 = info.getPosition().x();

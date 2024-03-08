@@ -18,8 +18,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.event.server.ServerStartedEvent;
-import net.minecraftforge.event.server.ServerStoppedEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
@@ -31,6 +29,8 @@ import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
+import net.minecraftforge.fmlserverevents.FMLServerStartedEvent;
+import net.minecraftforge.fmlserverevents.FMLServerStoppedEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -131,7 +131,7 @@ public class NuclearCraft {
         return new ResourceLocation(MODID, path);
     }
 
-    private void serverStopped(ServerStoppedEvent event) {
+    private void serverStopped(FMLServerStoppedEvent event) {
         NuclearCraft.instance.isNcBeStopped = true;
         //stop capability tracking
         RadiationEvents.stopTracking();
@@ -143,7 +143,7 @@ public class NuclearCraft {
         NuclearCraft.instance.isNcBeStopped = true;
     }*/
 
-    private void serverStarted(ServerStartedEvent event) {
+    private void serverStarted(FMLServerStartedEvent event) {
         NuclearCraft.instance.isNcBeStopped = false;
         RadiationEvents.startTracking();
     }

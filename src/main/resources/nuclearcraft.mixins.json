@@ -1,7 +1,7 @@
 {
   "required": false,
   "package": "igentuman.nc.mixin",
-  "compatibilityLevel": "JAVA_17",
+  "compatibilityLevel": "JAVA_16",
   "refmap": "nuclearcraft.refmap.json",
   "mixins": [
   ],

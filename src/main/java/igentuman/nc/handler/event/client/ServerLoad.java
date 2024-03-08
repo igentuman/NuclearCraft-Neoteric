@@ -23,8 +23,9 @@ public class ServerLoad {
         if(event.getWorld().getServer() == null) return;
         Level level = event.getWorld().getServer().getLevel(Level.OVERWORLD);
         for (String name: ALL_RECIPES.keySet()) {
-            NcRecipeType<?> recipeType = ALL_RECIPES.get(name).getRecipeType();
-            recipeType.loadRecipes(level);
+            level.getRecipeManager().getAllRecipesFor(ALL_RECIPES.get(name));
+         //   NcRecipeType<?> recipeType = (NcRecipeType<?>) ALL_RECIPES.get(name);
+          //  recipeType.loadRecipes(level);
         }
         initialized = true;
     }

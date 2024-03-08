@@ -78,7 +78,7 @@ public class BatteryBlockBakedModel implements IDynamicBakedModel {
     @Override
     public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData) {
 
-        RenderType layer = MinecraftForgeClient.getRenderType();
+        RenderType layer = MinecraftForgeClient.getRenderLayer();
 
         if (side != null || (layer != null && !layer.equals(RenderType.solid()))) {
             return Collections.emptyList();

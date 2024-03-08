@@ -19,7 +19,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import org.jetbrains.annotations.NotNull;
+import org.antlr.v4.runtime.misc.NotNull;;
 
 import java.util.List;
 import java.util.Objects;
@@ -68,6 +68,7 @@ public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
     public NonNullList<Ingredient> getItemIngredients() {
         NonNullList<Ingredient> ingredients = NonNullList.create();
         for (ItemStackIngredient inputItem : inputItems) {
+            if(inputItem == null) continue;
             ingredients.add(Ingredient.of(inputItem.getRepresentations().toArray(new ItemStack[inputItem.getRepresentations().size()])));
         }
         return ingredients;
@@ -97,7 +98,7 @@ public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
 
     @Override
     public @NotNull RecipeType<? extends AbstractRecipe> getType() {
-        return NcRecipeType.ALL_RECIPES.get(codeId).get();
+        return NcRecipeType.ALL_RECIPES.get(codeId);
     }
 
     public abstract void write(FriendlyByteBuf buffer);
@@ -123,7 +124,9 @@ public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
         boolean empty = inputFluids.length == 0 && outputFluids.length == 0 && inputItems.length == 0 && outputItems.length == 0;
         if(empty) return true;
         for(ItemStackIngredient inputItem: inputItems) {
-            if(inputItem.getRepresentations().isEmpty()
+            if(
+                    inputItem == null ||
+                    inputItem.getRepresentations().isEmpty()
                     || inputItem.getRepresentations().get(0).getItem().equals(BARRIER)) {
                 return true;
             }

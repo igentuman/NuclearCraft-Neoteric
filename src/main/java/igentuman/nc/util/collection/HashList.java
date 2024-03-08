@@ -1,7 +1,7 @@
 package igentuman.nc.util.collection;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.antlr.v4.runtime.misc.NotNull;;
+import javax.annotation.Nullable;
 
 import java.util.AbstractList;
 import java.util.ArrayList;

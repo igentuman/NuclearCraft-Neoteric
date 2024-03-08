@@ -5,18 +5,13 @@ import com.google.gson.*;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntComparators;
 import it.unimi.dsi.fastutil.ints.IntList;
-import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
-import net.minecraft.util.GsonHelper;
+import net.minecraft.tags.Tag;
 import net.minecraft.world.entity.player.StackedContents;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.ItemLike;
 
 import javax.annotation.Nullable;
@@ -24,9 +19,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 public class NcIngredient extends Ingredient {
    private static final java.util.concurrent.atomic.AtomicInteger INVALIDATION_COUNTER = new java.util.concurrent.atomic.AtomicInteger();
@@ -99,21 +92,6 @@ public class NcIngredient extends Ingredient {
       }
    }
 
-   public IntList getStackingIds() {
-      if (this.stackingIds == null || checkInvalidation()) {
-         this.markValid();
-         this.dissolve();
-         this.stackingIds = new IntArrayList(this.itemStacks.length);
-
-         for(ItemStack itemstack : this.itemStacks) {
-            this.stackingIds.add(StackedContents.getStackingIndex(itemstack));
-         }
-
-         this.stackingIds.sort(IntComparators.NATURAL_COMPARATOR);
-      }
-
-      return this.stackingIds;
-   }
 
 
    public JsonElement toJson() {
@@ -165,7 +143,7 @@ public class NcIngredient extends Ingredient {
       }).map(NcIngredient.ItemValue::new));
    }
 
-   public static NcIngredient of(TagKey<Item> pTag, int ... pCounts) {
+   public static NcIngredient of(Tag.Named<Item> pTag, int ... pCounts) {
       return  fromVals(Stream.of(new NcIngredient.TagValue(pTag, pCounts)))
               .withCount(pCounts);
    }
@@ -214,10 +192,10 @@ public class NcIngredient extends Ingredient {
    }
 
    public static class TagValue implements NcIngredient.Value {
-      private final TagKey<Item> tag;
+      private final Tag.Named<Item> tag;
       private final int count;
 
-      public TagValue(TagKey<Item> pTag, int...pCount) {
+      public TagValue(Tag.Named<Item> pTag, int...pCount) {
          this.tag = pTag;
          if(pCount.length > 0) {
             count = pCount[0];
@@ -227,25 +205,25 @@ public class NcIngredient extends Ingredient {
       }
       
       public String getName() {
-         return tag.location().getPath().replace("/","_");
+         return tag.getName().getPath().replace("/","_");
       }
 
       public Collection<ItemStack> getItems() {
          List<ItemStack> list = Lists.newArrayList();
 
-         for(Holder<Item> holder : Registry.ITEM.getTagOrEmpty(this.tag)) {
-            list.add(new ItemStack(holder));
+         for (Item item : this.tag.getValues()) {
+            list.add(new ItemStack(item, count));
          }
 
          if (list.size() == 0) {
-            list.add(new ItemStack(net.minecraft.world.level.block.Blocks.BARRIER).setHoverName(Component.nullToEmpty("Empty Tag: " + this.tag.location())));
+            list.add(new ItemStack(net.minecraft.world.level.block.Blocks.BARRIER).setHoverName(Component.nullToEmpty("Empty Tag: " + this.tag.getName())));
          }
          return list;
       }
 
       public JsonObject serialize() {
          JsonObject jsonobject = new JsonObject();
-         jsonobject.addProperty("tag", this.tag.location().toString());
+         jsonobject.addProperty("tag", this.tag.getName().toString());
          if(count>1) {
             jsonobject.addProperty("count", this.count);
          }

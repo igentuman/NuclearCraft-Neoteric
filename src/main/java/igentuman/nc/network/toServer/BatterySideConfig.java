@@ -2,15 +2,13 @@ package igentuman.nc.network.toServer;
 
 import igentuman.nc.block.ISizeToggable;
 import igentuman.nc.block.entity.energy.BatteryBE;
-import igentuman.nc.block.entity.processor.NCProcessorBE;
 import igentuman.nc.network.INcPacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import java.util.UUID;
 

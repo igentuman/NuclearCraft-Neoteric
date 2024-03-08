@@ -1,7 +1,5 @@
 package igentuman.nc.block.entity.fusion;
 
-import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;
-import mekanism.common.capabilities.Capabilities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
@@ -11,7 +9,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.EnergyStorage;
 import net.minecraftforge.energy.IEnergyStorage;
 
 import javax.annotation.Nonnull;
@@ -116,7 +113,7 @@ public class FusionCoreProxyBE extends FusionBE {
             }
         }
 
-        if(isMekanismLoadeed()) {
+        /*if(isMekanismLoadeed()) {
             if(cap == Capabilities.GAS_HANDLER_CAPABILITY) {
                 if(controller().contentHandler.hasFluidCapability(side)) {
                     return LazyOptional.of(() -> controller().contentHandler.gasConverter(side));
@@ -129,7 +126,7 @@ public class FusionCoreProxyBE extends FusionBE {
                 }
                 return LazyOptional.empty();
             }
-        }
+        }*/
         return super.getCapability(cap, side);
     }
 

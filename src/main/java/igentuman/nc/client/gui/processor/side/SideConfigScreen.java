@@ -17,7 +17,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraftforge.client.event.ContainerScreenEvent;
+import net.minecraftforge.client.event.GuiContainerEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,7 +93,7 @@ public class SideConfigScreen<T extends NCProcessorContainer<T>> extends Abstrac
         int j = this.topPos;
         this.renderBg(matrixStack, partialTicks, mouseX, mouseY);
         net.minecraftforge.common.MinecraftForge.EVENT_BUS
-                .post(new ContainerScreenEvent.DrawBackground(this, matrixStack, mouseX, mouseY));
+                .post(new GuiContainerEvent.DrawBackground(this, matrixStack, mouseX, mouseY));
         RenderSystem.disableDepthTest();
         for(Widget widget : this.renderables) {
             widget.render(matrixStack, mouseX, mouseY, partialTicks);

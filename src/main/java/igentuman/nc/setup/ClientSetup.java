@@ -43,7 +43,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.registries.RegistryObject;
+import net.minecraftforge.fmllegacy.RegistryObject;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
@@ -114,8 +114,8 @@ public class ClientSetup {
 
     @SubscribeEvent
     public static void registerParticleFactories(ParticleFactoryRegisterEvent event) {
-        Minecraft.getInstance().particleEngine.register(NcParticleTypes.RADIATION.get(), RadiationParticle.Factory::new);
-        Minecraft.getInstance().particleEngine.register(NcParticleTypes.FUSION_BEAM.get(), FusionBeamParticle.Factory::new);
+        //Minecraft.getInstance().particleEngine.register(NcParticleTypes.RADIATION.get(), RadiationParticle.Factory::new);
+       // Minecraft.getInstance().particleEngine.register(NcParticleTypes.FUSION_BEAM.get(), FusionBeamParticle.Factory::new);
     }
 
     public static void setup() {

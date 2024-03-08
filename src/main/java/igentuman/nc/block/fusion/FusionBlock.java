@@ -22,7 +22,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Material;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 
 import java.util.List;
 
@@ -92,13 +92,13 @@ public class FusionBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public boolean onDestroyedByPlayer(BlockState state, Level level, BlockPos pos, Player player, boolean willHarvest, FluidState fluid)
-    {
+    public void playerDestroy(Level level, Player pPlayer, BlockPos pos, BlockState state, @Nullable BlockEntity pBlockEntity, ItemStack pTool) {
         if(!level.isClientSide) {
             ((FusionBE)level.getBlockEntity(pos)).onBlockDestroyed(state, level, pos, null);
         }
-       return super.onDestroyedByPlayer(state, level, pos, player, willHarvest, fluid);
+        super.playerDestroy(level, pPlayer, pos, state, pBlockEntity, pTool);
     }
+
 
     @Override
     public void appendHoverText(ItemStack stack, @javax.annotation.Nullable BlockGetter world, List<Component> list, TooltipFlag flag)

@@ -1,9 +1,8 @@
 package igentuman.nc.handler.event.client;
 
-import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.InputEvent;
-import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -36,13 +35,13 @@ public class InputEvents {
         }
     }
 
-    public static void onScreenKeyPressed(ScreenEvent.KeyboardKeyPressedEvent event) {
+    public static void onScreenKeyPressed(GuiScreenEvent.KeyboardKeyPressedEvent event) {
         if (event.getKeyCode() == KEY_LSHIFT || event.getKeyCode() == KEY_RSHIFT) {
             SHIFT_PRESSED = true;
         }
     }
 
-    public static void onScreenKeyReleased(ScreenEvent.KeyboardKeyReleasedEvent event) {
+    public static void onScreenKeyReleased(GuiScreenEvent.KeyboardKeyReleasedEvent event) {
         if (event.getKeyCode() == KEY_LSHIFT || event.getKeyCode() == KEY_RSHIFT) {
             SHIFT_PRESSED = false;
         }

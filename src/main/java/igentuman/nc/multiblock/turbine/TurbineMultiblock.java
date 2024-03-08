@@ -56,8 +56,8 @@ public class TurbineMultiblock extends AbstractNCMultiblock {
 
     public TurbineMultiblock(TurbineControllerBE<?> turbineControllerBE) {
         super(
-                getBlocksByTagKey(CASING_BLOCKS.location().toString()),
-                getBlocksByTagKey(INNER_TURBINE_BLOCKS.location().toString())
+                getBlocksByTagKey(CASING_BLOCKS.getName().toString()),
+                getBlocksByTagKey(INNER_TURBINE_BLOCKS.getName().toString())
         );
         controller = new TurbineController(turbineControllerBE);
     }

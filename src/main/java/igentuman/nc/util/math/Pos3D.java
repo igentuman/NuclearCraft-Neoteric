@@ -8,7 +8,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.NotNull;
+import org.antlr.v4.runtime.misc.NotNull;;
 
 /**
  * Pos3D - a way of performing operations on objects in a three-dimensional environment.
@@ -173,7 +173,7 @@ public class Pos3D extends Vec3 {
      * @return the distance between this and the defined Pos3D
      */
     public double distance(Vec3 pos) {
-        return Mth.length(x - pos.x, y - pos.y, z - pos.z);
+        return Mth.length((int) (x - pos.x), y - pos.y, (int) (z - pos.z));
     }
 
     /**

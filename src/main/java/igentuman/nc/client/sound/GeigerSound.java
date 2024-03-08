@@ -3,7 +3,7 @@ package igentuman.nc.client.sound;
 import igentuman.nc.radiation.client.ClientRadiationData;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.antlr.v4.runtime.misc.NotNull;;
 
 import static igentuman.nc.setup.registration.NCItems.GEIGER_COUNTER;
 import static igentuman.nc.setup.registration.NCSounds.GEIGER_SOUNDS;

@@ -14,12 +14,12 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Material;
-import net.minecraftforge.common.extensions.IForgeMenuType;
+import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.minecraftforge.fmllegacy.RegistryObject;
 import igentuman.nc.block.entity.fusion.*;
 import java.util.HashMap;
 
@@ -47,7 +47,7 @@ public class FusionReactor {
 
     public static final RegistryObject<MenuType<FusionCoreContainer>> FUSION_CORE_CONTAINER =
             CONTAINERS.register("fusion_reactor_core",
-                () -> IForgeMenuType.create((windowId, inv, data) -> new FusionCoreContainer(windowId, data.readBlockPos(), inv))
+                () -> IForgeContainerType.create((windowId, inv, data) -> new FusionCoreContainer(windowId, data.readBlockPos(), inv))
             );
 
     public static void init() {

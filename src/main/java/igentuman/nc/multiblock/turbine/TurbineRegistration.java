@@ -5,9 +5,10 @@ import igentuman.nc.block.turbine.*;
 import igentuman.nc.container.TurbineControllerContainer;
 import igentuman.nc.container.TurbinePortContainer;
 import igentuman.nc.setup.registration.CreativeTabs;
+import igentuman.nc.util.TagUtil;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
+import net.minecraft.tags.Tag;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -15,12 +16,12 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Material;
-import net.minecraftforge.common.extensions.IForgeMenuType;
+import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.minecraftforge.fmllegacy.RegistryObject;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -38,10 +39,10 @@ public class TurbineRegistration {
     public static HashMap<String, RegistryObject<Block>> TURBINE_BLOCKS = new HashMap<>();
     public static HashMap<String, RegistryObject<BlockEntityType<? extends TurbineBE>>> TURBINE_BE = new HashMap<>();
     public static HashMap<String, RegistryObject<BlockItem>> TURBINE_BLOCK_ITEMS = new HashMap<>();
-    public static TagKey<Block> CASING_BLOCKS = TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(MODID, "turbine_casing"));
+    public static Tag.Named<Block> CASING_BLOCKS = TagUtil.createBlockNCTag("turbine_casing");
     private static final DeferredRegister<MenuType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.CONTAINERS, MODID);
 
-    public static TagKey<Block> INNER_TURBINE_BLOCKS = TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(MODID, "turbine_inner"));
+    public static Tag.Named<Block> INNER_TURBINE_BLOCKS = TagUtil.createBlockNCTag("turbine_inner");
 
     public static final HashMap<String, BladeDef> blades = blades();
 
@@ -73,10 +74,10 @@ public class TurbineRegistration {
 
 
     public static final RegistryObject<MenuType<TurbineControllerContainer>> TURBINE_CONTROLLER_CONTAINER = CONTAINERS.register("turbine_controller",
-            () -> IForgeMenuType.create((windowId, inv, data) -> new TurbineControllerContainer(windowId, data.readBlockPos(), inv))
+            () -> IForgeContainerType.create((windowId, inv, data) -> new TurbineControllerContainer(windowId, data.readBlockPos(), inv))
     );
     public static final RegistryObject<MenuType<TurbinePortContainer>> TURBINE_PORT_CONTAINER = CONTAINERS.register("turbine_port",
-            () -> IForgeMenuType.create((windowId, inv, data) -> new TurbinePortContainer(windowId, data.readBlockPos(), inv))
+            () -> IForgeContainerType.create((windowId, inv, data) -> new TurbinePortContainer(windowId, data.readBlockPos(), inv))
     );
 
     public static void init() {

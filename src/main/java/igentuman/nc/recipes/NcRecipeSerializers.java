@@ -11,25 +11,35 @@ import igentuman.nc.recipes.type.RadShieldingRecipe;
 import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.recipes.type.ResetNbtRecipe;
-import igentuman.nc.registry.RecipeSerializerDeferredRegister;
-import igentuman.nc.registry.RecipeSerializerRegistryObject;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.SimpleRecipeSerializer;
+import net.minecraftforge.fmllegacy.RegistryObject;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.HashMap;
 
+import static igentuman.nc.NuclearCraft.MODID;
+import static net.minecraft.data.recipes.SpecialRecipeBuilder.special;
+
 public class NcRecipeSerializers {
+
+    public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(
+            ForgeRegistries.RECIPE_SERIALIZERS, MODID
+    );
 
     private NcRecipeSerializers() {
     }
+/*   public static final RegistryObject<SimpleRecipeSerializer<ResetNbtRecipe>> RESET_NBT = RECIPE_SERIALIZERS.register(
+            "reset_nbt", special(ResetNbtRecipe::new)
+    );
+    public static final RegistryObject<SimpleRecipeSerializer<RadShieldingRecipe>> SHIELDING = RECIPE_SERIALIZERS.register(
+            "shielding", special(RadShieldingRecipe::new)
+    );*/
+    public static HashMap<String, RegistryObject<NcRecipeSerializer<? extends NcRecipe>>> SERIALIZERS = initSerializers();
 
-    public static final RecipeSerializerDeferredRegister RECIPE_SERIALIZERS = new RecipeSerializerDeferredRegister(NuclearCraft.MODID);
-    public static final RecipeSerializerRegistryObject<RadShieldingRecipe> SHIELDING = RECIPE_SERIALIZERS.register("shielding", () -> new SimpleRecipeSerializer<>(RadShieldingRecipe::new));
-    public static final RecipeSerializerRegistryObject<ResetNbtRecipe> RESET_NBT = RECIPE_SERIALIZERS.register("reset_nbt", () -> new SimpleRecipeSerializer<>(ResetNbtRecipe::new));
-
-    public static HashMap<String, RecipeSerializerRegistryObject<? extends NcRecipe>> SERIALIZERS = initSerializers();
-
-    private static HashMap<String, RecipeSerializerRegistryObject<? extends NcRecipe>> initSerializers() {
-        HashMap<String, RecipeSerializerRegistryObject<? extends NcRecipe>> map = new HashMap<>();
+    private static HashMap<String, RegistryObject<NcRecipeSerializer<? extends NcRecipe>>> initSerializers() {
+        HashMap<String, RegistryObject<NcRecipeSerializer<? extends NcRecipe>>> map = new HashMap<>();
         map.put("fusion_core", RECIPE_SERIALIZERS.register("fusion_core", () -> new FusionRecipeSerializer<>(FusionCoreBE.Recipe::new)));
         map.put(FissionControllerBE.NAME, RECIPE_SERIALIZERS.register(FissionControllerBE.NAME, () -> new NcRecipeSerializer<>(FissionControllerBE.Recipe::new)));
         map.put("nc_ore_veins", RECIPE_SERIALIZERS.register("nc_ore_veins", () -> new OreVeinRecipeSerializer<>(OreVeinRecipe::new)));

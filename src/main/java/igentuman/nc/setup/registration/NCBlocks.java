@@ -6,9 +6,8 @@ import igentuman.nc.content.RFAmplifier;
 import igentuman.nc.content.materials.Materials;
 import igentuman.nc.content.materials.Blocks;
 import igentuman.nc.content.materials.Ores;
-import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
+import net.minecraft.tags.Tag;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
@@ -23,9 +22,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
 import igentuman.nc.block.*;
 
 import javax.annotation.Nonnull;
@@ -35,6 +34,8 @@ import java.util.function.Supplier;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.setup.registration.NCItems.ALL_NC_ITEMS;
+import static igentuman.nc.util.TagUtil.createBlockForgeTag;
+import static igentuman.nc.util.TagUtil.createItemForgeTag;
 
 public class NCBlocks {
 
@@ -68,10 +69,10 @@ public class NCBlocks {
     public static final RegistryObject<Item> MUSHROOM_ITEM = fromBlock(MUSHROOM_BLOCK);
     public static final RegistryObject<Item> PORTAL_ITEM = fromBlock(PORTAL_BLOCK);
 
-    public static HashMap<String, TagKey<Block>> ORE_TAGS = new HashMap<>();
-    public static HashMap<String, TagKey<Item>> ORE_ITEM_TAGS = new HashMap<>();
-    public static HashMap<String, TagKey<Item>> BLOCK_ITEM_TAGS = new HashMap<>();
-    public static HashMap<String, TagKey<Block>> BLOCK_TAGS = new HashMap<>();
+    public static HashMap<String, Tag.Named<Block>> ORE_TAGS = new HashMap<>();
+    public static HashMap<String, Tag.Named<Item>> ORE_ITEM_TAGS = new HashMap<>();
+    public static HashMap<String, Tag.Named<Item>> BLOCK_ITEM_TAGS = new HashMap<>();
+    public static HashMap<String, Tag.Named<Block>> BLOCK_TAGS = new HashMap<>();
 
     public static void init() {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -84,10 +85,12 @@ public class NCBlocks {
         registerAmplifiers();
     }
 
+
+
     private static void registerOres() {
         for(String name: Ores.registered().keySet()) {
-            ORE_TAGS.put(name, TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation("forge", "ores/"+name)));
-            ORE_ITEM_TAGS.put(name, TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("forge", "ores/"+name)));
+            ORE_TAGS.put(name, createBlockForgeTag("ores/"+name));
+            ORE_ITEM_TAGS.put(name, createItemForgeTag("ores/"+name));
             if(Materials.ores().get(name).normal_ore) {
                 ORE_BLOCKS.put(name, BLOCKS.register(name + "_ore", () -> new Block(ORE_BLOCK_PROPERTIES)));
                 ORE_BLOCK_ITEMS.put(name, fromOreBlock(ORE_BLOCKS.get(name)));
@@ -141,8 +144,8 @@ public class NCBlocks {
 
     private static void registerBlocks() {
         for(String name: Blocks.registered().keySet()) {
-            BLOCK_TAGS.put(name, TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation("forge","storage_blocks/"+name)));
-            BLOCK_ITEM_TAGS.put(name, TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("forge", "storage_blocks/"+name)));
+            BLOCK_TAGS.put(name, createBlockForgeTag("storage_blocks/"+name));
+            BLOCK_ITEM_TAGS.put(name, createItemForgeTag("storage_blocks/"+name));
             if(name.matches("graphite|beryllium")) {
                 NC_BLOCKS.put(name, BLOCKS.register(name + "_block", () -> new FissionBlock(NC_BLOCKS_PROPERTIES)));
             } else {
@@ -186,19 +189,6 @@ public class NCBlocks {
             this.properties = properties;
             this.regObject = BLOCKS.register(name, () -> make.apply(properties.get()));
             ALL_ENTRIES.add(this);
-        }
-
-        public BlockEntry(T existing)
-        {
-            this.properties = () -> BlockBehaviour.Properties.copy(existing);
-            this.regObject = RegistryObject.create(Registry.BLOCK.getKey(existing), ForgeRegistries.BLOCKS);
-        }
-
-        @SuppressWarnings("unchecked")
-        public BlockEntry(BlockEntry<? extends T> toCopy)
-        {
-            this.properties = toCopy.properties;
-            this.regObject = (RegistryObject<T>)toCopy.regObject;
         }
 
         @Override

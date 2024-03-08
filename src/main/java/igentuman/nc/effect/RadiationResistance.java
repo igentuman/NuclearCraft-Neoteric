@@ -5,7 +5,7 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 
 public class RadiationResistance extends MobEffect {
     public RadiationResistance(MobEffectCategory pCategory, int pColor) {

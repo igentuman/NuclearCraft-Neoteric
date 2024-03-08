@@ -2,7 +2,7 @@ package igentuman.nc.multiblock.fission;
 
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
+import net.minecraft.tags.Tag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -11,15 +11,17 @@ import net.minecraft.world.level.material.Material;
 import java.util.*;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.util.TagUtil.createBlockNCTag;
+import static igentuman.nc.util.TagUtil.createItemNCTag;
 
 public class FissionBlocks {
     public static final BlockBehaviour.Properties REACTOR_BLOCKS_PROPERTIES = BlockBehaviour.Properties.of(Material.METAL).strength(4f).requiresCorrectToolForDrops();
-    public static TagKey<Block> MODERATORS_BLOCKS = TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(MODID, "moderators"));
-    public static TagKey<Block> HEAT_SINK_BLOCKS = TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(MODID, "heat_sinks"));
-    public static TagKey<Block> INNER_REACTOR_BLOCKS = TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(MODID, "reactor_inner"));
-    public static TagKey<Item> MODERATORS_ITEMS = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(MODID, "moderators"));
-    public static TagKey<Block> CASING_BLOCKS = TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(MODID, "fission_reactor_casing"));
-    public static TagKey<Item> CASING_ITEMS = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(MODID, "fission_reactor_casing"));
+    public static Tag.Named<Block> MODERATORS_BLOCKS = createBlockNCTag("moderators");
+    public static Tag.Named<Block> HEAT_SINK_BLOCKS = createBlockNCTag("heat_sinks");
+    public static Tag.Named<Block> INNER_REACTOR_BLOCKS = createBlockNCTag("reactor_inner");
+    public static Tag.Named<Item> MODERATORS_ITEMS = createItemNCTag("moderators");
+    public static Tag.Named<Block> CASING_BLOCKS = createBlockNCTag("fission_reactor_casing");
+    public static Tag.Named<Item> CASING_ITEMS = createItemNCTag("fission_reactor_casing");
 
     public static final List<String> reactor =  Arrays.asList(
             "casing",

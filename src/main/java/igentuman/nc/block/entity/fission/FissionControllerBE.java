@@ -1,7 +1,6 @@
 package igentuman.nc.block.entity.fission;
 
 import igentuman.nc.NuclearCraft;
-import igentuman.nc.block.entity.fusion.FusionCoreBE;
 import igentuman.nc.client.sound.SoundHandler;
 import igentuman.nc.compat.cc.NCSolidFissionReactorPeripheral;
 import igentuman.nc.handler.sided.SidedContentHandler;
@@ -19,7 +18,6 @@ import igentuman.nc.setup.registration.NCFluids;
 import igentuman.nc.util.CustomEnergyStorage;
 import igentuman.nc.util.annotation.NBTField;
 import igentuman.nc.multiblock.ValidationResult;
-import mekanism.common.capabilities.Capabilities;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -40,7 +38,7 @@ import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import org.jetbrains.annotations.NotNull;
+import org.antlr.v4.runtime.misc.NotNull;;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -139,7 +137,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     {
         if(allowedInputs == null) {
             allowedInputs = new ArrayList<>();
-            for(AbstractRecipe recipe: NcRecipeType.ALL_RECIPES.get(getName()).getRecipeType().getRecipes(getLevel())) {
+            for(AbstractRecipe recipe: level.getRecipeManager().getAllRecipesFor(NcRecipeType.ALL_RECIPES.get(getName()))) {
                 for(Ingredient ingredient: recipe.getItemIngredients()) {
                     allowedInputs.addAll(List.of(ingredient.getItems()));
                 }
@@ -216,7 +214,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         RECIPE cachedRecipe = getCachedRecipe();
         if(cachedRecipe != null) return cachedRecipe;
         if(!NcRecipeType.ALL_RECIPES.containsKey(getName())) return null;
-        for(AbstractRecipe recipe: NcRecipeType.ALL_RECIPES.get(getName()).getRecipeType().getRecipes(getLevel())) {
+        for(AbstractRecipe recipe: level.getRecipeManager().getAllRecipesFor(NcRecipeType.ALL_RECIPES.get(getName()))) {
             if(recipe.test(contentHandler)) {
                 addToCache((RECIPE)recipe);
                 return (RECIPE)recipe;
@@ -308,7 +306,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         if (cap == ENERGY && !isSteamMode) {
             return energy.cast();
         }
-        if(isMekanismLoadeed() && isSteamMode) {
+        /*if(isMekanismLoadeed() && isSteamMode) {
             if(cap == Capabilities.GAS_HANDLER_CAPABILITY) {
                 if(contentHandler.hasFluidCapability(side)) {
                     return LazyOptional.of(() -> contentHandler.gasConverter(side));
@@ -321,7 +319,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
                 }
                 return LazyOptional.empty();
             }
-        }
+        }*/
 
         if(isCcLoaded()) {
             if(cap == dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL) {
@@ -555,7 +553,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     }
 
     public double environmentCooling() {
-        return getLevel().getBiome(getBlockPos()).value().getBaseTemperature() * 10;
+        return getLevel().getBiome(getBlockPos()).getBaseTemperature() * 10;
     }
 
 
@@ -632,7 +630,6 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         super.load(tag);
     }
 
-    @Override
     public void saveAdditional(CompoundTag tag) {
         CompoundTag infoTag = new CompoundTag();
         tag.put("Energy", energyStorage.serializeNBT());
@@ -694,12 +691,6 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         infoTag.putInt("validationId", validationResult.id);
         infoTag.putLong("erroredBlock", errorBlockPos.asLong());
         tag.put("Content", contentHandler.serializeNBT());
-    }
-
-    @Nullable
-    @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
     }
 
     @Override
@@ -777,9 +768,8 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
 
     public List<FissionBoilingRecipe> getBoilingRecipes() {
         if(coolantRecipes == null) {
-            coolantRecipes = (List<FissionBoilingRecipe>) NcRecipeType.ALL_RECIPES
-                    .get("fission_boiling")
-                    .getRecipeType().getRecipes(getLevel());
+            coolantRecipes = (List<FissionBoilingRecipe>) level.getRecipeManager().getAllRecipesFor(NcRecipeType.ALL_RECIPES
+                    .get("fission_boiling"));
         }
         return coolantRecipes;
     }

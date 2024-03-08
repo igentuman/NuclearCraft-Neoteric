@@ -1,6 +1,5 @@
 package igentuman.nc.client.sound;
 
-import igentuman.nc.registry.SoundEventRegistryObject;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import net.minecraft.client.Minecraft;
@@ -12,17 +11,16 @@ import net.minecraft.client.sounds.SoundEngine;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.levelgen.RandomSource;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.client.event.sound.SoundLoadEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fmllegacy.RegistryObject;
 
 import java.util.Map;
 import java.util.UUID;
@@ -110,7 +108,7 @@ public class SoundHandler {
         return Minecraft.getInstance().options.getSoundSourceVolume(category);
     }
 
-    public static void playSound(SoundEventRegistryObject<?> soundEventRO) {
+    public static void playSound(RegistryObject<SoundEvent> soundEventRO) {
         playSound(soundEventRO.get());
     }
 
@@ -171,18 +169,18 @@ public class SoundHandler {
     @SubscribeEvent
     public static void onSoundEngineSetup(SoundLoadEvent event) {
         if (soundEngine == null) {
-            soundEngine = event.getEngine();
+            soundEngine = event.getManager();
         }
     }
 
     public static void onTilePlaySound(PlaySoundEvent event) {
         SoundInstance resultSound = event.getSound();
-        ResourceLocation soundLoc = event.getOriginalSound().getLocation();
+        ResourceLocation soundLoc = event.getSound().getLocation();
         if (!soundLoc.getNamespace().startsWith(MODID)) {
             return;
         }
-        if (event.getOriginalSound() instanceof PlayerSound sound) {
-            event.setSound(sound);
+        if (event.getSound() instanceof PlayerSound sound) {
+            event.setResultSound(sound);
             return;
         }
 

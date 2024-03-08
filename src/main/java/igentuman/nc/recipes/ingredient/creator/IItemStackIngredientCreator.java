@@ -2,12 +2,11 @@ package igentuman.nc.recipes.ingredient.creator;
 
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.util.annotation.NothingNullByDefault;
-import net.minecraft.tags.TagKey;
+import net.minecraft.tags.Tag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
-import net.minecraftforge.common.crafting.AbstractIngredient;
 
 import java.util.Objects;
 
@@ -33,11 +32,10 @@ public interface IItemStackIngredientCreator extends IIngredientCreator<Item, It
         if (stack.isEmpty()) {
             throw new IllegalArgumentException("ItemStackIngredients cannot be created using the empty stack.");
         }
-        //Copy the stack to ensure it doesn't get modified afterwards
         stack = stack.copy();
         //Support NBT that is on the stack in case it matters
         // Note: Only bother making it an NBT ingredient if the stack has NBT, otherwise there is no point in doing the extra checks
-        Ingredient ingredient = stack.hasTag() ? AbstractIngredient.of(stack) : Ingredient.of(stack);
+        Ingredient ingredient = Ingredient.of(stack);
         return from(ingredient, amount);
     }
 
@@ -82,12 +80,12 @@ public interface IItemStackIngredientCreator extends IIngredientCreator<Item, It
      *
      * @param tag Tag to match.
      */
-    default ItemStackIngredient from(TagKey<Item> tag) {
+    default ItemStackIngredient from(Tag.Named<Item> tag) {
         return from(tag, 1);
     }
 
     @Override
-    default ItemStackIngredient from(TagKey<Item> tag, int amount) {
+    default ItemStackIngredient from(Tag.Named<Item> tag, int amount) {
         Objects.requireNonNull(tag, "ItemStackIngredients cannot be created from a null tag.");
         return from(Ingredient.of(tag), amount);
     }

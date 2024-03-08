@@ -6,39 +6,37 @@ import igentuman.nc.block.entity.turbine.TurbineControllerBE;
 import igentuman.nc.client.NcClient;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.recipes.type.NcRecipe;
-import igentuman.nc.registry.RecipeTypeDeferredRegister;
-import igentuman.nc.registry.RecipeTypeRegistryObject;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.server.ServerLifecycleHooks;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
+import org.antlr.v4.runtime.misc.NotNull;;
+import javax.annotation.Nullable;
 
 import java.util.*;
 
-import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.NuclearCraft.rl;
 
 public class NcRecipeType<RECIPE extends NcRecipe> implements RecipeType<RECIPE>,
         INcRecipeTypeProvider<RECIPE> {
 
-    public static final RecipeTypeDeferredRegister RECIPE_TYPES = new RecipeTypeDeferredRegister(MODID);
 
-    public static final HashMap<String, RecipeTypeRegistryObject<? extends NcRecipe>> ALL_RECIPES = initializeRecipes();
-    private static HashMap<String, RecipeTypeRegistryObject<? extends NcRecipe>> initializeRecipes() {
-        HashMap<String, RecipeTypeRegistryObject<? extends NcRecipe>> recipes = new HashMap<>();
-        recipes.put(FissionControllerBE.NAME, register(FissionControllerBE.NAME));
-        recipes.put("nc_ore_veins", register("nc_ore_veins"));
-        recipes.put("fusion_core", register("fusion_core"));
-        recipes.put("fusion_coolant", register("fusion_coolant"));
-        recipes.put("fission_boiling", register("fission_boiling"));
-        recipes.put(TurbineControllerBE.NAME, register(TurbineControllerBE.NAME));
+    public static final HashMap<String, RecipeType<? extends NcRecipe>> ALL_RECIPES = initializeRecipes();
+    private static HashMap<String, RecipeType<? extends NcRecipe>> initializeRecipes() {
+        HashMap<String, RecipeType<? extends NcRecipe>> recipes = new HashMap<>();
+        recipes.put(FissionControllerBE.NAME, registerRecipeType(FissionControllerBE.NAME));
+        recipes.put("nc_ore_veins", registerRecipeType("nc_ore_veins"));
+        recipes.put("fusion_core", registerRecipeType("fusion_core"));
+        recipes.put("fusion_coolant", registerRecipeType("fusion_coolant"));
+        recipes.put("fission_boiling", registerRecipeType("fission_boiling"));
+        recipes.put(TurbineControllerBE.NAME, registerRecipeType(TurbineControllerBE.NAME));
 
         for(String processorName: Processors.registered().keySet()) {
             if(Processors.registered().get(processorName).hasRecipes()) {
-                recipes.put(processorName, register(processorName));
+                recipes.put(processorName, registerRecipeType(processorName));
             }
         }
 
@@ -49,9 +47,7 @@ public class NcRecipeType<RECIPE extends NcRecipe> implements RecipeType<RECIPE>
   //  public static final RecipeTypeRegistryObject<ItemStackToItemStackRecipe> SMELTING =
  //           register("smelting", recipeType -> new ItemStackToItemStackRecipe(recipeType));
 
-    public static <RECIPE extends NcRecipe> RecipeTypeRegistryObject<RECIPE> register(String name) {
-        return RECIPE_TYPES.register(name, () -> new NcRecipeType<>(name));
-    }
+
     private List<RECIPE> cachedRecipes = Collections.emptyList();
     private final ResourceLocation registryName;
 
@@ -74,6 +70,18 @@ public class NcRecipeType<RECIPE extends NcRecipe> implements RecipeType<RECIPE>
         return this;
     }
 
+    private static <T extends Recipe<?>> RecipeType<T> registerRecipeType(String path)
+    {
+        ResourceLocation name = rl(path);
+        return Registry.register(Registry.RECIPE_TYPE, name, new RecipeType<T>()
+        {
+            @Override
+            public String toString()
+            {
+                return name.toString();
+            }
+        });
+    }
 
     @NotNull
     @Override

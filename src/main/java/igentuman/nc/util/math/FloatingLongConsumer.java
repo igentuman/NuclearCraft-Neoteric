@@ -1,6 +1,6 @@
 package igentuman.nc.util.math;
 
-import org.jetbrains.annotations.NotNull;
+import org.antlr.v4.runtime.misc.NotNull;;
 
 import java.util.function.Consumer;
 

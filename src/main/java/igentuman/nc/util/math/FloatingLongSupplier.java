@@ -1,7 +1,7 @@
 package igentuman.nc.util.math;
 
 import net.minecraftforge.common.util.NonNullSupplier;
-import org.jetbrains.annotations.NotNull;
+import org.antlr.v4.runtime.misc.NotNull;;
 
 import java.util.function.Supplier;
 

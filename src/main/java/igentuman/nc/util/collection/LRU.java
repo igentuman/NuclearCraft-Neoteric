@@ -1,7 +1,7 @@
 package igentuman.nc.util.collection;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import org.jetbrains.annotations.NotNull;
+import org.antlr.v4.runtime.misc.NotNull;;
 
 import java.util.AbstractCollection;
 import java.util.Iterator;

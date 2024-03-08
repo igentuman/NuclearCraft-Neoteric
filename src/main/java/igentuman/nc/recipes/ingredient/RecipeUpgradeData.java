@@ -5,8 +5,8 @@ import igentuman.nc.util.annotation.ParametersAreNotNullByDefault;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.world.item.ItemStack;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.antlr.v4.runtime.misc.NotNull;;
+import javax.annotation.Nullable;
 
 import java.util.function.Function;
 

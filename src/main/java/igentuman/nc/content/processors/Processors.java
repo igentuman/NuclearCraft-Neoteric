@@ -3,11 +3,9 @@ package igentuman.nc.content.processors;
 import igentuman.nc.client.gui.processor.LeacherScreen;
 import igentuman.nc.block.entity.processor.*;
 import igentuman.nc.container.LeacherContainer;
-import igentuman.nc.container.NCProcessorContainer;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.fml.DistExecutor;
 
 import java.util.ArrayList;

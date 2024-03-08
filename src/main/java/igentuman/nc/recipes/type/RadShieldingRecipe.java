@@ -79,7 +79,8 @@ public class RadShieldingRecipe extends CustomRecipe {
 
     @Override
     public RecipeSerializer<?> getSerializer() {
-        return NcRecipeSerializers.SHIELDING.get();
+        return null;
+       // return NcRecipeSerializers.SHIELDING;
     }
 
     @SubscribeEvent

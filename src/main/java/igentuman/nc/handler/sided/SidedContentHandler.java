@@ -1,8 +1,6 @@
 package igentuman.nc.handler.sided;
 
 import igentuman.nc.block.entity.NuclearCraftBE;
-import igentuman.nc.handler.sided.capability.Gas2FluidConverter;
-import igentuman.nc.handler.sided.capability.Slurry2FluidConverter;
 import igentuman.nc.recipes.AbstractRecipe;
 import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
@@ -32,8 +30,8 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
     public NuclearCraftBE blockEntity;
     private boolean updated = false;
 
-    private Gas2FluidConverter gasConverter;
-    private Slurry2FluidConverter slurryConverter;
+/*    private Gas2FluidConverter gasConverter;
+    private Slurry2FluidConverter slurryConverter;*/
 
     public SidedContentHandler(int inputItemSlots, int outputItemSlots, int inputFluidSlots, int outputFluidSlots) {
         this.inputItemSlots = inputItemSlots;
@@ -278,7 +276,7 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
         }
     }
 
-    public <T> T gasConverter(Direction side) {
+/*    public <T> T gasConverter(Direction side) {
         if(gasConverter == null) {
             gasConverter = new Gas2FluidConverter();
             gasConverter.setFluidHandler(fluidCapability);
@@ -292,7 +290,7 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
             slurryConverter.setFluidHandler(fluidCapability);
         }
         return (T) gasConverter.forSide(side);
-    }
+    }*/
 
     public void voidFluidSlot(int slotId) {
         if(fluidCapability != null) {

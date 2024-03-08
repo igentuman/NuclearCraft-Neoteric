@@ -15,7 +15,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
-import org.jetbrains.annotations.NotNull;
+import org.antlr.v4.runtime.misc.NotNull;;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -136,12 +136,6 @@ public class NCEnergy extends NuclearCraftBE {
         tag.putInt("energy", energyStorage.getEnergyStored());
     }
 
-    @Nullable
-    @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
-    }
-
     @Override
     public void handleUpdateTag(CompoundTag tag) {
         if (tag != null) {
@@ -181,7 +175,6 @@ public class NCEnergy extends NuclearCraftBE {
         super.load(tag);
     }
 
-    @Override
     public void saveAdditional(CompoundTag tag) {
         tag.put("energy_storage", energyStorage.serializeNBT());
         tag.putInt("energy", energyStorage.getEnergyStored());

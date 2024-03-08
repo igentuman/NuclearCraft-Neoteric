@@ -19,7 +19,6 @@ import igentuman.nc.util.CustomEnergyStorage;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.SlotModePair;
 import igentuman.nc.util.annotation.NBTField;
-import mekanism.common.capabilities.Capabilities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustParticleOptions;
@@ -39,7 +38,7 @@ import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
-import org.jetbrains.annotations.NotNull;
+import org.antlr.v4.runtime.misc.NotNull;;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -147,7 +146,7 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
         RECIPE cachedRecipe = getCachedRecipe();
         if(cachedRecipe != null) return cachedRecipe;
         if(!NcRecipeType.ALL_RECIPES.containsKey(getName())) return null;
-        for(AbstractRecipe recipe: NcRecipeType.ALL_RECIPES.get(getName()).getRecipeType().getRecipes(getLevel())) {
+        for(AbstractRecipe recipe: getRecipes()) {
             if(recipe.test(contentHandler)) {
                 addToCache((RECIPE)recipe);
                 return (RECIPE)recipe;
@@ -257,7 +256,7 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
                 return getPeripheral(cap, side);
             }
         }
-        if(isMekanismLoadeed()) {
+       /* if(isMekanismLoadeed()) {
             if(cap == Capabilities.GAS_HANDLER_CAPABILITY) {
                 if(contentHandler.hasFluidCapability(side)) {
                     return LazyOptional.of(() -> contentHandler.gasConverter(side));
@@ -270,7 +269,7 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
                 }
                 return LazyOptional.empty();
             }
-        }
+        }*/
         return super.getCapability(cap, side);
     }
 
@@ -308,13 +307,27 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
     {
         if(allowedInputs == null) {
             allowedInputs = new ArrayList<>();
-            for(AbstractRecipe recipe: NcRecipeType.ALL_RECIPES.get(getName()).getRecipeType().getRecipes(getLevel())) {
+            for(AbstractRecipe recipe: getRecipes()) {
                 for(Ingredient ingredient: recipe.getItemIngredients()) {
                     allowedInputs.addAll(List.of(ingredient.getItems()));
                 }
             }
         }
         return allowedInputs;
+    }
+
+    protected List<NcRecipe> recipes;
+    private List<NcRecipe> getRecipes() {
+        if(recipes == null) {
+            recipes = new ArrayList<>();
+            for (NcRecipe recipe: level.getRecipeManager().getAllRecipesFor(NcRecipeType.ALL_RECIPES.get(getName()))) {
+                if(recipe.isIncomplete()) {
+                    continue;
+                }
+                recipes.add(recipe);
+            }
+        }
+        return recipes;
     }
 
     protected int howMuchICanSkip()
@@ -352,7 +365,7 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
     {
         if(allowedFluids == null) {
             allowedFluids = new ArrayList<>();
-            for(NcRecipe recipe: NcRecipeType.ALL_RECIPES.get(getName()).getRecipeType().getRecipes(getLevel())) {
+            for(NcRecipe recipe: getRecipes()) {
                 for(FluidStackIngredient ingredient: recipe.getInputFluids()) {
                     allowedFluids.addAll(ingredient.getRepresentations());
                 }
@@ -459,9 +472,7 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
     }
 
     //used to save data to chunk
-    @Override
     public void saveAdditional(CompoundTag tag) {
-        super.saveAdditional(tag);
 
         contentHandler.saveSideMap();
 
@@ -538,12 +549,6 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
         tag.put("Info", infoTag);
         tag.put("Content", contentHandler.serializeNBT());
         infoTag.putInt("energy", energyStorage.getEnergyStored());
-    }
-
-    @Nullable
-    @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
     }
 
     @Override

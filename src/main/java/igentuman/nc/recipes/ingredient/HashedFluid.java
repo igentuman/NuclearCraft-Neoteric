@@ -1,7 +1,7 @@
 package igentuman.nc.recipes.ingredient;
 
 import net.minecraftforge.fluids.FluidStack;
-import org.jetbrains.annotations.NotNull;
+import org.antlr.v4.runtime.misc.NotNull;;
 
 /**
  * A wrapper of an FluidStack which tests equality and hashes based on fluid type and NBT data, ignoring stack size.

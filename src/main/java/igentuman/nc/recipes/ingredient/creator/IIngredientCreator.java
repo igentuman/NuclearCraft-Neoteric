@@ -4,14 +4,14 @@ import com.google.gson.JsonElement;
 import igentuman.nc.recipes.ingredient.InputIngredient;
 import igentuman.nc.util.annotation.NothingNullByDefault;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.tags.TagKey;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.tags.Tag;
+import org.antlr.v4.runtime.misc.NotNull;;
+import javax.annotation.Nullable;
 
 import java.util.stream.Stream;
 
 @NothingNullByDefault
-public interface IIngredientCreator<TYPE, STACK, INGREDIENT extends InputIngredient<@NotNull STACK>> {
+public interface IIngredientCreator<TYPE, STACK, INGREDIENT extends InputIngredient<STACK>> {
 
     /**
      * Creates an Ingredient that matches a given stack.
@@ -43,7 +43,7 @@ public interface IIngredientCreator<TYPE, STACK, INGREDIENT extends InputIngredi
      * @throws NullPointerException     if the given tag is null.
      * @throws IllegalArgumentException if the given amount smaller than one.
      */
-    INGREDIENT from(TagKey<TYPE> tag, int amount);
+    INGREDIENT from(Tag.Named<TYPE> tag, int amount);
 
     /**
      * Reads an Ingredient from a Packet Buffer.

@@ -29,6 +29,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -137,7 +138,8 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     {
         if(allowedInputs == null) {
             allowedInputs = new ArrayList<>();
-            for(AbstractRecipe recipe: level.getRecipeManager().getAllRecipesFor(NcRecipeType.ALL_RECIPES.get(getName()))) {
+            if(getRecipes(getName()) == null) return allowedInputs;
+            for(AbstractRecipe recipe: getRecipes(getName())) {
                 for(Ingredient ingredient: recipe.getItemIngredients()) {
                     allowedInputs.addAll(List.of(ingredient.getItems()));
                 }
@@ -164,6 +166,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
 
     protected List<FluidStack> getAllowedCoolantsOutput() {
         List<FluidStack> allowedCoolants = new ArrayList<>();
+        if(getBoilingRecipes() == null) return allowedCoolants;
         for(FissionBoilingRecipe recipe : getBoilingRecipes()) {
             allowedCoolants.addAll(recipe.getOutputFluids(0));
         }
@@ -172,6 +175,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
 
     protected List<FluidStack> getAllowedCoolants() {
         List<FluidStack> allowedCoolants = new ArrayList<>();
+        if(getBoilingRecipes() == null) return allowedCoolants;
         for(FissionBoilingRecipe recipe : getBoilingRecipes()) {
             allowedCoolants.addAll(recipe.getInputFluids(0));
         }
@@ -214,7 +218,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         RECIPE cachedRecipe = getCachedRecipe();
         if(cachedRecipe != null) return cachedRecipe;
         if(!NcRecipeType.ALL_RECIPES.containsKey(getName())) return null;
-        for(AbstractRecipe recipe: level.getRecipeManager().getAllRecipesFor(NcRecipeType.ALL_RECIPES.get(getName()))) {
+        for(AbstractRecipe recipe: getRecipes(getName())) {
             if(recipe.test(contentHandler)) {
                 addToCache((RECIPE)recipe);
                 return (RECIPE)recipe;
@@ -768,10 +772,28 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
 
     public List<FissionBoilingRecipe> getBoilingRecipes() {
         if(coolantRecipes == null) {
-            coolantRecipes = (List<FissionBoilingRecipe>) level.getRecipeManager().getAllRecipesFor(NcRecipeType.ALL_RECIPES
-                    .get("fission_boiling"));
+            coolantRecipes = (List<FissionBoilingRecipe>) getRecipes("fission_boiling");
         }
         return coolantRecipes;
+    }
+
+    protected HashMap<String, List<? extends NcRecipe>> recipes = new HashMap<>();
+    private List<? extends NcRecipe> getRecipes(String name) {
+        if(recipes.get(name) == null) {
+            List<NcRecipe> tmp = new ArrayList<>();
+            if(level == null) {
+                Level level = NuclearCraft.instance.server.overworld();
+            }
+            if(level == null) return null;
+            for (NcRecipe recipe: level.getRecipeManager().getAllRecipesFor(NcRecipeType.ALL_RECIPES.get(name))) {
+                if(recipe.isIncomplete()) {
+                    continue;
+                }
+                tmp.add(recipe);
+            }
+            recipes.put(name, tmp);
+        }
+        return recipes.get(name);
     }
 
     protected List<FissionBoilingRecipe> coolantRecipes;

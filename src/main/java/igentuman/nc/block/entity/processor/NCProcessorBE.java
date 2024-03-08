@@ -26,17 +26,22 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.items.IItemHandler;
 import org.antlr.v4.runtime.misc.NotNull;;
 
@@ -146,6 +151,7 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
         RECIPE cachedRecipe = getCachedRecipe();
         if(cachedRecipe != null) return cachedRecipe;
         if(!NcRecipeType.ALL_RECIPES.containsKey(getName())) return null;
+        if(getRecipes() == null) return null;
         for(AbstractRecipe recipe: getRecipes()) {
             if(recipe.test(contentHandler)) {
                 addToCache((RECIPE)recipe);
@@ -320,6 +326,10 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
     private List<NcRecipe> getRecipes() {
         if(recipes == null) {
             recipes = new ArrayList<>();
+            if(level == null) {
+                Level level = NuclearCraft.instance.server.overworld();
+            }
+            if(level == null) return null;
             for (NcRecipe recipe: level.getRecipeManager().getAllRecipesFor(NcRecipeType.ALL_RECIPES.get(getName()))) {
                 if(recipe.isIncomplete()) {
                     continue;
@@ -346,9 +356,11 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
             return;
         }
         boolean updated = manualUpdate();
-        contentHandler.setAllowedInputItems(getAllowedInputItems());
-        for(int i = 0; i < prefab().getSlotsConfig().getInputFluids(); i++) {
-            contentHandler.setAllowedInputFluids(i, getAllowedInputFluids());
+        if(getRecipes() != null) {
+            contentHandler.setAllowedInputItems(getAllowedInputItems());
+            for (int i = 0; i < prefab().getSlotsConfig().getInputFluids(); i++) {
+                contentHandler.setAllowedInputFluids(i, getAllowedInputFluids());
+            }
         }
         processRecipe();
         handleRecipeOutput();
@@ -365,6 +377,7 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
     {
         if(allowedFluids == null) {
             allowedFluids = new ArrayList<>();
+            if(getRecipes() == null) return null;
             for(NcRecipe recipe: getRecipes()) {
                 for(FluidStackIngredient ingredient: recipe.getInputFluids()) {
                     allowedFluids.addAll(ingredient.getRepresentations());

@@ -47,6 +47,20 @@ public class TagUtil {
         return tmp;
     }
 
+    public static List<Block> getBlocksByTagKey(ResourceLocation key)
+    {
+        List<Block> tmp = new ArrayList<>();
+        Tag<Block> blockTag = BlockTags.getAllTags().getTag(key);
+        if (blockTag != null) {
+            for (Block block : blockTag.getValues()) {
+                tmp.add(block);
+            }
+        } else {
+            System.out.println("Tag not found.");
+        }
+        return tmp;
+    }
+
 
     public static Set<ResourceLocation> tagNames(Stream<? extends Tag.Named<?>> stream) {
         return stream.map(Tag.Named::getName)

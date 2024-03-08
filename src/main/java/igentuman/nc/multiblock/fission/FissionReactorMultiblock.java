@@ -53,8 +53,8 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
 
     public FissionReactorMultiblock(FissionControllerBE<?> fissionControllerBE) {
         super(
-                getBlocksByTagKey(FissionBlocks.CASING_BLOCKS.getName().toString()),
-                getBlocksByTagKey(FissionBlocks.INNER_REACTOR_BLOCKS.getName().toString())
+                getBlocksByTagKey(FissionBlocks.CASING_BLOCKS.getName()),
+                getBlocksByTagKey(FissionBlocks.INNER_REACTOR_BLOCKS.getName())
         );
         controller = new FissionReactorController(fissionControllerBE);
     }

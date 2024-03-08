@@ -13,6 +13,7 @@ import igentuman.nc.setup.ClientSetup;
 import igentuman.nc.setup.ModSetup;
 import igentuman.nc.setup.Registration;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
@@ -142,10 +143,11 @@ public class NuclearCraft {
 /*    private void gameShuttingDownEvent(GameShuttingDownEvent event) {
         NuclearCraft.instance.isNcBeStopped = true;
     }*/
-
+    public MinecraftServer server;
     private void serverStarted(FMLServerStartedEvent event) {
         NuclearCraft.instance.isNcBeStopped = false;
         RadiationEvents.startTracking();
+        server = event.getServer();
     }
 
 

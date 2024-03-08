@@ -1,5 +1,7 @@
 package igentuman.nc.world.ore;
 
+import igentuman.nc.content.materials.Ores;
+import igentuman.nc.setup.registration.NCBlocks;
 import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.world.level.biome.Biome;
@@ -26,14 +28,14 @@ public class Generator {
     @NotNull
     public static ConfiguredFeature<?, ?> createOregen(String ore) {
             String materialName = ore.replaceAll("_deepslate|_nether|_end", "");
-        ConfiguredFeature<?, ?> glowstoneOre = Feature.ORE.configured(new OreConfiguration(List.of(
+        ConfiguredFeature<?, ?> oreGen = Feature.ORE.configured(new OreConfiguration(List.of(
                         OreConfiguration.target(OreConfiguration.Predicates.STONE_ORE_REPLACEABLES,
-                                Blocks.GLOWSTONE.defaultBlockState()),
-                        OreConfiguration.target(OreConfiguration.Predicates.DEEPSLATE_ORE_REPLACEABLES,
-                                Blocks.ACACIA_WOOD.defaultBlockState())),
-                        11))
-                .rangeUniform(VerticalAnchor.bottom(), VerticalAnchor.aboveBottom(20)).squared().count(100);
-        return register("glowstone_ore", glowstoneOre);
+                                NCBlocks.ORE_BLOCKS.get(ore).get().defaultBlockState())),
+                        Ores.all().get(materialName).config().veinSize))
+                .rangeUniform(VerticalAnchor.absolute(Ores.all().get(materialName).config().height[0]),
+                        VerticalAnchor.absolute(Ores.all().get(materialName).config().height[1]))
+                .squared().count(Ores.all().get(materialName).config().veinAmount);
+        return register(ore, oreGen);
     }
 
     private static <Config extends FeatureConfiguration> ConfiguredFeature<Config, ?> register(String name,

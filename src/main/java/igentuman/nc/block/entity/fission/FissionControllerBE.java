@@ -161,7 +161,6 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         contentHandler.fluidCapability.tanks.get(1).setCapacity(10000);
         contentHandler.setAllowedInputFluids(0, getAllowedCoolants());
         contentHandler.setAllowedInputFluids(1, getAllowedCoolantsOutput());
-
     }
 
     protected List<FluidStack> getAllowedCoolantsOutput() {
@@ -782,6 +781,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         if(recipes.get(name) == null) {
             List<NcRecipe> tmp = new ArrayList<>();
             if(level == null) {
+                if(NuclearCraft.instance.server == null) return null;
                 Level level = NuclearCraft.instance.server.overworld();
             }
             if(level == null) return null;

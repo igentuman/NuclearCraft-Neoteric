@@ -19,8 +19,7 @@ import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.multiblock.fission.FissionReactor.FISSION_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_BLOCKS;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
-import static igentuman.nc.setup.registration.Fuel.NC_FUEL;
-import static igentuman.nc.setup.registration.Fuel.NC_ISOTOPES;
+import static igentuman.nc.setup.registration.Fuel.*;
 import static igentuman.nc.setup.registration.NCBlocks.*;
 import static igentuman.nc.setup.registration.NCEnergyBlocks.ENERGY_BLOCKS;
 import static igentuman.nc.setup.registration.NCFluids.FluidEntry.ALL_BUCKETS;
@@ -87,6 +86,7 @@ public class CreativeTabs {
         items.addAll(itemStacks(NC_PLATES.values()));
         items.addAll(itemStacks(NC_ISOTOPES.values()));
         items.addAll(itemStacks(NC_FUEL.values()));
+        items.addAll(itemStacks(NC_DEPLETED_FUEL.values()));
         items.add(new ItemStack(HEV_HELMET.get()));
         items.add(new ItemStack(HEV_CHEST.get()));
         items.add(new ItemStack(HEV_PANTS.get()));

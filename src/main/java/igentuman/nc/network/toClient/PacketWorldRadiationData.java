@@ -8,31 +8,23 @@ import net.minecraftforge.network.NetworkEvent;
 import java.util.HashMap;
 import java.util.Map;
 
-public class PacketRadiationData implements INcPacket {
+public class PacketWorldRadiationData implements INcPacket {
 
     private final Map<Long, Long> radiation;
-    private final int playerRadiation;
 
-    public PacketRadiationData(Map<Long, Long> radiation) {
-        this(radiation, 0);
-    }
-
-    public PacketRadiationData(long id, Long aLong, int playerRadiation) {
+    public PacketWorldRadiationData(long id, Long aLong) {
         radiation = new HashMap<>();
         radiation.put(id, aLong);
-        this.playerRadiation = playerRadiation;
     }
 
-    public PacketRadiationData(Map<Long, Long> radiation, int playerRadiation) {
+    public PacketWorldRadiationData(Map<Long, Long> radiation) {
         this.radiation = radiation;
-        this.playerRadiation = playerRadiation;
     }
 
     @Override
     public void handle(NetworkEvent.Context context) {
         context.enqueueWork(() -> {
             ClientRadiationData.setWorldRadiation(radiation);
-            ClientRadiationData.setPlayerRadiation(playerRadiation);
         });
     }
 
@@ -43,16 +35,14 @@ public class PacketRadiationData implements INcPacket {
             buffer.writeLong(entry.getKey());
             buffer.writeLong(entry.getValue());
         }
-        buffer.writeInt(playerRadiation);
     }
 
-    public static PacketRadiationData decode(FriendlyByteBuf buffer) {
+    public static PacketWorldRadiationData decode(FriendlyByteBuf buffer) {
         int size = buffer.readInt();
         Map<Long, Long> radiation = new HashMap<>();
         for(int i = 0; i < size; i++) {
             radiation.put(buffer.readLong(), buffer.readLong());
         }
-        int playerRadiation = buffer.readInt();
-        return new PacketRadiationData(radiation, playerRadiation);
+        return new PacketWorldRadiationData(radiation);
     }
 }

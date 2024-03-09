@@ -38,13 +38,6 @@ public class NCTurbinePeripheral implements IPeripheral {
         return turbine.hasRecipe();
     }
 
-
-    @LuaFunction
-    public final double getMaxHeatCapacity()
-    {
-        return turbine.getMaxHeat();
-    }
-
     @LuaFunction
     public final void enableTurbine()
     {
@@ -68,13 +61,6 @@ public class NCTurbinePeripheral implements IPeripheral {
     public final int getEnergyStored()
     {
         return turbine.energyStorage.getEnergyStored();
-    }
-
-
-    @LuaFunction
-    public final void voidSteam()
-    {
-        turbine.voidFuel();
     }
 
 }

@@ -50,7 +50,7 @@ public class RadiationEvents {
         if(stack.isEmpty()) {
             return;
         }
-        int radiation = RadiationCleaningItems.byItem(stack.getItem());
+        long radiation = RadiationCleaningItems.byItem(stack.getItem());
         if(radiation == 0) return;
         PlayerRadiation radCap = entity.getCapability(PlayerRadiationProvider.PLAYER_RADIATION).orElse(null);
         if(radCap != null) {
@@ -65,7 +65,7 @@ public class RadiationEvents {
                 }
                 entity.addEffect(new MobEffectInstance(RADIATION_RESISTANCE.get(), 1200, 2, false, true));
             }
-            radCap.setRadiation(radCap.getRadiation() - radiation/1000);
+            radCap.setRadiation((int) (radCap.getRadiation() - radiation/1000));
             if(ModUtil.isMekanismLoadeed() && RADIATION_CONFIG.MEKANISM_RADIATION_INTEGRATION.get()) {
                 MekanismRadiation.addEntityRadiation((Player) entity, -radiation/10000000);
             }

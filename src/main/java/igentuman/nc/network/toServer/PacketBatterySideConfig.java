@@ -1,7 +1,7 @@
 package igentuman.nc.network.toServer;
 
 import igentuman.nc.block.ISizeToggable;
-import igentuman.nc.block.entity.BarrelBE;
+import igentuman.nc.block.entity.energy.BatteryBE;
 import igentuman.nc.network.INcPacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -10,20 +10,19 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.network.NetworkEvent;
 
-public class StorageSideConfig implements INcPacket {
+public class PacketBatterySideConfig implements INcPacket {
 
     private BlockPos tilePosition;
     private int direction;
 
-    public StorageSideConfig(Object position, int direction) {
+    public PacketBatterySideConfig(Object position, int direction) {
         this.tilePosition = (BlockPos) position;
         this.direction = direction;
     }
 
-    public StorageSideConfig() {
+    public PacketBatterySideConfig() {
 
     }
-
 
     @Override
     public void handle(NetworkEvent.Context context) {
@@ -32,11 +31,11 @@ public class StorageSideConfig implements INcPacket {
             return;
         }
         BlockEntity be = player.level().getBlockEntity(tilePosition);
-        if(!(be instanceof ISizeToggable storage)) {
+        if(!(be instanceof BatteryBE battery)) {
             return;
         }
-        ISizeToggable.SideMode mode = storage.toggleSideConfig(direction);
-        player.sendSystemMessage(Component.translatable("message.nc.barrel.side_config", mode.name()));
+        ISizeToggable.SideMode mode = battery.toggleSideConfig(direction);
+        player.sendSystemMessage(Component.translatable("message.nc.battery.side_config", mode.name()));
     }
 
     @Override
@@ -45,8 +44,8 @@ public class StorageSideConfig implements INcPacket {
         buffer.writeInt(direction);
     }
 
-    public static StorageSideConfig decode(FriendlyByteBuf buffer) {
-         StorageSideConfig packet = new StorageSideConfig();
+    public static PacketBatterySideConfig decode(FriendlyByteBuf buffer) {
+         PacketBatterySideConfig packet = new PacketBatterySideConfig();
           packet.tilePosition = buffer.readBlockPos();
           packet.direction = buffer.readInt();
           return packet;

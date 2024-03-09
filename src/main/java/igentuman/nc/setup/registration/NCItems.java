@@ -124,9 +124,6 @@ public class NCItems {
 
     private static void registerFood() {
         List<String> items = Arrays.asList(
-                "rad_x",
-                "radaway",
-                "radaway_slow",
                 "marshmallow",
                 "milk_chocolate",
                 "dark_chocolate",
@@ -146,6 +143,13 @@ public class NCItems {
             NC_FOOD.put(name, ITEMS.register(name, () -> new Item(new Item.Properties().food(
                     new FoodProperties.Builder().nutrition(finalI)
                             .saturationMod(finalI).build()
+            ))));
+            ALL_NC_ITEMS.put(name, NC_FOOD.get(name));
+        }
+        for(String name: List.of("rad_x","radaway","radaway_slow")) {
+            NC_FOOD.put(name, ITEMS.register(name, () -> new RadAwayItem(new Item.Properties().food(
+                    new FoodProperties.Builder().nutrition(0)
+                            .saturationMod(0).alwaysEat().build()
             ))));
             ALL_NC_ITEMS.put(name, NC_FOOD.get(name));
         }

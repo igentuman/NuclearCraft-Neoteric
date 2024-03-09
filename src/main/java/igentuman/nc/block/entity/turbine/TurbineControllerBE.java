@@ -36,6 +36,7 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -113,8 +114,8 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
         super(pPos, pBlockState, NAME);
         multiblock = new TurbineMultiblock(this);
         contentHandler = new SidedContentHandler(
-                1, 1,
-                0, 0);
+                0, 0,
+                1, 1, 10000000, 100000000);
         contentHandler.setBlockEntity(this);
     }
 
@@ -146,7 +147,7 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
         }
     }
     public RECIPE getRecipe() {
-        if(contentHandler.itemHandler.getStackInSlot(0).equals(ItemStack.EMPTY)) return null;
+        if(contentHandler.fluidCapability.tanks.get(0).isEmpty()) return null;
         RECIPE cachedRecipe = getCachedRecipe();
         if(cachedRecipe != null) return cachedRecipe;
         if(!NcRecipeType.ALL_RECIPES.containsKey(getName())) return null;
@@ -169,11 +170,6 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
         return null;
     }
 
-    public void updateEnergyStorage() {
-        energyStorage.setMaxCapacity(1000000*height*width*depth);
-        energyStorage.setMaxExtract(1000000*height*width*depth);
-    }
-
     private LazyOptional<NCTurbinePeripheral> peripheralCap;
 
     public <T> LazyOptional<T>  getPeripheral(@Nonnull Capability<T> cap, @Nullable Direction side) {
@@ -186,11 +182,8 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (cap == ForgeCapabilities.ITEM_HANDLER) {
-            return contentHandler.getItemCapability(side);
-        }
         if (cap == ForgeCapabilities.FLUID_HANDLER) {
-            return contentHandler.getFluidCapability(side);
+            return contentHandler.getFluidCapability(null);
         }
         if (cap == ForgeCapabilities.ENERGY) {
             return energy.cast();
@@ -393,10 +386,8 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
         recipe = getRecipe();
         if (recipe != null) {
             recipeInfo.setRecipe(recipe);
-            recipeInfo.ticks = ((RECIPE) recipeInfo.recipe()).getDepletionTime();
+            recipeInfo.ticks = ((RECIPE) recipeInfo.recipe()).getBaseTime();
             recipeInfo.energy = recipeInfo.recipe.getEnergy();
-            recipeInfo.heat = ((RECIPE) recipeInfo.recipe()).getHeat();
-            recipeInfo.radiation = recipeInfo.recipe().getRadiation();
             recipeInfo.be = this;
             recipe.consumeInputs(contentHandler);
         }
@@ -498,16 +489,7 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
         }
     }
 
-    public double getDepletionProgress() {
-        return recipeInfo.getProgress();
-    }
-
-    public double getMaxHeat() {
-        return FISSION_CONFIG.HEAT_CAPACITY.get();
-    }
-
     public double calculateEfficiency() {
-
         return (double) calculateEnergy() / (recipeInfo.energy / 100);
     }
 
@@ -527,29 +509,12 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
         return Objects.requireNonNull(getLevel()).hasNeighborSignal(worldPosition);
     }
 
-    public Object[] getFuel() {
-        if(hasRecipe()) {
-            return contentHandler.getSlotContent(0);
-        }
-        return new Object[]{};
-    }
-
-    public void voidFuel() {
-        contentHandler.voidSlot(0);
-        contentHandler.itemHandler.holdedInputs.clear();
-    }
-
     public void forceShutdown() {
         forceShutdown = true;
     }
 
     public void disableForceShutdown() {
         forceShutdown = false;
-    }
-
-    public ItemStack getCurrentFuel() {
-        if(!hasRecipe()) return ItemStack.EMPTY;
-        return recipeInfo.recipe().getFirstItemStackIngredient(0);
     }
 
     public boolean isProcessing() {
@@ -564,11 +529,14 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
         return flow;
     }
 
+    public FluidTank getFluidTank(int i) {
+        return contentHandler.fluidCapability.tanks.get(i);
+    }
     public static class Recipe extends NcRecipe {
 
         public Recipe(ResourceLocation id, ItemStackIngredient[] input, ItemStackIngredient[] output, FluidStackIngredient[] inputFluids, FluidStackIngredient[] outputFluids, double timeModifier, double powerModifier, double heatModifier, double rarity) {
-            super(id, input, output, timeModifier, powerModifier, heatModifier, rarity);
-            CATALYSTS.put(codeId, List.of(getToastSymbol()));
+            super(id, input, output, inputFluids, outputFluids, timeModifier, powerModifier, heatModifier, rarity);
+            CATALYSTS.put(TurbineControllerBE.NAME, List.of(getToastSymbol()));
         }
 
         @Override
@@ -576,39 +544,20 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
             return TurbineControllerBE.NAME;
         }
 
-        protected ItemFuel fuelItem;
-
-        public ItemFuel getFuelItem() {
-            if(fuelItem == null) {
-                fuelItem = (ItemFuel) getFirstItemStackIngredient(0).getItem();
-            }
-            return fuelItem;
-        }
-
         @Override
         public @NotNull String getGroup() {
-            return TurbineRegistration.TURBINE_BLOCKS.get(codeId).get().getName().getString();
+            return TurbineControllerBE.NAME;
         }
 
         @Override
         public @NotNull ItemStack getToastSymbol() {
-            return new ItemStack(TurbineRegistration.TURBINE_BLOCKS.get(codeId).get());
+            return new ItemStack(TurbineRegistration.TURBINE_BLOCKS.get(getCodeId()).get());
         }
 
-        public int getDepletionTime() {
-            return (int) (getFuelItem().depletion*20*timeModifier);
+        public int getBaseTime() {
+            return (int) (20*timeModifier);
         }
 
-        public double getEnergy() {
-            return getFuelItem().forge_energy;
-        }
-
-        public double getHeat() {
-            return getFuelItem().heat;
-        }
-
-        public double getRadiation() {
-            return ItemRadiation.byItem(getFuelItem())/10;
-        }
+        public double getEnergy() { return powerModifier; }
     }
 }

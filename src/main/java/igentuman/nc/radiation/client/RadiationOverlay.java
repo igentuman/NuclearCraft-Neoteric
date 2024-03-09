@@ -25,7 +25,7 @@ public class RadiationOverlay {
         Player pl = NcClient.tryGetClientPlayer();
         if (pl == null) return;
         if(!hasDosimeter(pl)) return;
-        int radiation = ClientRadiationData.getPlayerRadiation();
+        long radiation = ClientRadiationData.getPlayerRadiation();
         String toDisplay = String.valueOf(radiation);
         int x = width / 2;
         int y = height;

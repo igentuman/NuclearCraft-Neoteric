@@ -115,7 +115,6 @@ public class TurbineMultiblock extends AbstractNCMultiblock {
     public void tick() {
         super.tick();
         TurbineControllerBE<?> controller = (TurbineControllerBE<?>) controller().controllerBE();
-        controller.updateEnergyStorage();
     }
 
     @Override

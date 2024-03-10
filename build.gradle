@@ -88,6 +88,7 @@ dependencies {
     compileOnly fg.deobf("com.gregtechceu.gtceu:gtceu-forge-${mc_version}:${gtceu_version}") {
         transitive = false
     }
+    runtimeOnly fg.deobf("curse.maven:spark-361579:4738952")
 /*    implementation fg.deobf("com.lowdragmc.ldlib:ldlib-forge-${mc_version}:${ldlib_version}") {
         transitive = false
     }

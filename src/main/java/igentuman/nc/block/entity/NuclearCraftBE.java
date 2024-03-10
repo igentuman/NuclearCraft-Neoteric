@@ -2,7 +2,6 @@ package igentuman.nc.block.entity;
 
 import igentuman.nc.block.ISizeToggable;
 import igentuman.nc.client.sound.SoundHandler;
-import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.util.NCBlockPos;
 import igentuman.nc.util.annotation.NBTField;
@@ -25,7 +24,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class NuclearCraftBE extends BlockEntity {
-    protected String name;
+    protected final String name;
     protected NCBlockPos bePos;
     protected boolean changed;
     protected SoundInstance currentSound;
@@ -41,6 +40,16 @@ public class NuclearCraftBE extends BlockEntity {
     public NuclearCraftBE(BlockEntityType<?> pType, BlockPos pPos, BlockState pBlockState) {
         super(pType, pPos, pBlockState);
         name = getName(pBlockState);
+        booleanFields = initFields(boolean.class);
+        intFields = initFields(int.class);
+        intArrayFields = initFields(int[].class);
+        doubleFields = initFields(double.class);
+        stringFields = initFields(String.class);
+        stringArrayFields = initFields(String[].class);
+        blockPosFields = initFields(BlockPos.class);
+        floatFields = initFields(float.class);
+        byteFields = initFields(byte.class);
+        longFields = initFields(long.class);
     }
 
     protected void trackChanges(boolean was, boolean now)
@@ -53,20 +62,18 @@ public class NuclearCraftBE extends BlockEntity {
         changed = was || changed;
     }
 
-    private boolean initFlag = false;
-    private List<Field> booleanFields       = new ArrayList<>();
-    private List<Field> intFields           = new ArrayList<>();
-    private List<Field> intArrayFields      = new ArrayList<>();
-    private List<Field> doubleFields        = new ArrayList<>();
-    private List<Field> stringFields        = new ArrayList<>();
-    private List<Field> stringArrayFields   = new ArrayList<>();
-    private List<Field> floatFields         = new ArrayList<>();
-    private List<Field> byteFields          = new ArrayList<>();
-    private List<Field> longFields          = new ArrayList<>();
-    private List<Field> blockPosFields      = new ArrayList<>();
+    private final List<Field> booleanFields;
+    private final List<Field> intFields;
+    private final List<Field> intArrayFields;
+    private final List<Field> doubleFields;
+    private final List<Field> stringFields;
+    private final List<Field> stringArrayFields;
+    private final List<Field> floatFields;
+    private final List<Field> byteFields;
+    private final List<Field> longFields;
+    private final List<Field> blockPosFields;
 
     public void saveTagData(CompoundTag tag) {
-        initFields();
         try {
             for (Field f : blockPosFields) {
                 if((f.get(this)) != null) {
@@ -123,7 +130,6 @@ public class NuclearCraftBE extends BlockEntity {
     }
 
     public void readTagData(CompoundTag tag) {
-        initFields();
         try {
             for(Field f: blockPosFields) {
                 f.set(this, BlockPos.of(tag.getLong(f.getName())));
@@ -163,54 +169,17 @@ public class NuclearCraftBE extends BlockEntity {
         } catch (IllegalAccessException ignore) { }
     }
 
-    private void initFields() {
-        if(initFlag) return;
+    private List<Field> initFields(Class<?> fieldClass) {
+        List<Field> fields = new ArrayList<>();
         for (Field field : getClass().getFields()) {
             if (!field.isAnnotationPresent(NBTField.class)) {
                 continue;
             }
-            if(field.getType().equals(BlockPos.class)) {
-                blockPosFields.add(field);
-                continue;
-            }
-            if(field.getType().equals(int.class)) {
-                intFields.add(field);
-                continue;
-            }
-            if(field.getType().equals(String.class)) {
-                stringFields.add(field);
-                continue;
-            }
-            if(field.getType().equals(boolean.class)) {
-                booleanFields.add(field);
-                continue;
-            }
-            if(field.getType().equals(byte.class)) {
-                byteFields.add(field);
-                continue;
-            }
-            if(field.getType().equals(double.class)) {
-                doubleFields.add(field);
-                continue;
-            }
-            if(field.getType().equals(float.class)) {
-                floatFields.add(field);
-                continue;
-            }
-            if(field.getType().equals(long.class)) {
-                longFields.add(field);
-                continue;
-            }
-            if(field.getType().equals(int[].class)) {
-                intArrayFields.add(field);
-                continue;
-            }
-            if(field.getType().equals(String[].class)) {
-                stringArrayFields.add(field);
+            if(field.getType().equals(fieldClass)) {
+                fields.add(field);
             }
         }
-
-        initFlag = true;
+        return fields;
     }
 
     public ItemCapabilityHandler getItemInventory() {

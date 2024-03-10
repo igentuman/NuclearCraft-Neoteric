@@ -39,7 +39,7 @@ public class ClientRadiationData {
         playerRadiation = radiation;
     }
 
-    public static int getPlayerRadiation() {
+    public static long getPlayerRadiation() {
         return playerRadiation;
     }
 }

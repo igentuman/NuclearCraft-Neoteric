@@ -30,6 +30,8 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
     public final FluidCapabilityHandler fluidCapability;
 
     public NuclearCraftBE blockEntity;
+    public boolean hasPush = false;
+    public boolean hasPull = false;
     private boolean updated = false;
 
     private Gas2FluidConverter gasConverter;
@@ -188,20 +190,77 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
     {
         return id > (inputFluidSlots+inputItemSlots-1) ? SlotModePair.SlotMode.OUTPUT : INPUT;
     }
-
+    private Direction lastPushSide = Direction.UP;
+    private Direction lastPullSide = Direction.UP;
     public boolean tick() {
         updated = false;
+
+
+        if(!canPush() && !canPull()) {
+            return updated;
+        }
+        push(lastPushSide);
+        pull(lastPullSide);
+
         for(Direction dir: Direction.values()) {
-            if(itemHandler != null) {
-                updated = itemHandler.pushItems(dir) || updated;
-                updated = itemHandler.pullItems(dir) || updated;
-            }
-            if(fluidCapability != null) {
-                updated = fluidCapability.pushFluids(dir) || updated;
-                updated = fluidCapability.pullFluids(dir) || updated;
-            }
+            push(dir);
+            pull(dir);
         }
         return updated;
+    }
+
+    private boolean hasPush() {
+        boolean result = false;
+        if(fluidCapability != null) {
+            result = fluidCapability.hasPush();
+        }
+        if(itemHandler != null) {
+            result = result || itemHandler.hasPush();
+        }
+        return result;
+    }
+
+    private boolean hasPull() {
+        boolean result = false;
+        if(fluidCapability != null) {
+            result = fluidCapability.hasPull();
+        }
+        if(itemHandler != null) {
+            result = result || itemHandler.hasPull();
+        }
+        return result;
+    }
+
+
+    private boolean canPush() {
+        return hasPush && (itemHandler != null && itemHandler.canPush() || fluidCapability != null && fluidCapability.canPush());
+    }
+
+
+    private boolean canPull() {
+        return hasPull && (itemHandler != null && itemHandler.canPull() || fluidCapability != null && fluidCapability.canPull());
+    }
+
+    public void push(Direction side) {
+        if(!canPush()) return;
+        if(itemHandler != null) {
+            updated = itemHandler.pushItems(side) || updated;
+        }
+        if(fluidCapability != null) {
+            updated = fluidCapability.pushFluids(side) || updated;
+        }
+        if(updated) lastPushSide = side;
+    }
+
+    public void pull(Direction side) {
+        if(!canPull()) return;
+        if(itemHandler != null) {
+            updated = itemHandler.pullItems(side) || updated;
+        }
+        if(fluidCapability != null) {
+            updated = fluidCapability.pullFluids(side) || updated;
+        }
+        if(updated) lastPullSide = side;
     }
 
     public void clearHolded() {
@@ -213,15 +272,16 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
         }
     }
 
+    protected String cacheKey = "";
     public String getCacheKey() {
-        String key = "";
+        cacheKey = "";
         if(itemHandler != null) {
-            key += itemHandler.getCacheKey();
+            cacheKey += itemHandler.getCacheKey();
         }
         if(fluidCapability != null) {
-            key += fluidCapability.getCacheKey();
+            cacheKey += fluidCapability.getCacheKey();
         }
-        return key;
+        return cacheKey;
     }
 
     public void saveSideMap() {
@@ -304,6 +364,20 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
         if(fluidCapability != null) {
             fluidCapability.voidSlot(slotId);
         }
+    }
+
+    public boolean isInputEmpty() {
+        if(itemHandler != null) {
+            for(int i = 0; i < inputItemSlots; i++) {
+                if(!itemHandler.getStackInSlot(i).isEmpty()) return false;
+            }
+        }
+        if(fluidCapability != null) {
+            for(int i = 0; i < inputFluidSlots; i++) {
+                if(!fluidCapability.getFluidInSlot(i).isEmpty()) return false;
+            }
+        }
+        return true;
     }
 
     public enum SlotType {

@@ -23,6 +23,7 @@ import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
@@ -87,6 +88,7 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
     private List<ItemStack> allowedInputs;
     private List<FluidStack> allowedFluids;
     private LazyOptional<NCGTEnergyHandler> gtEnergyCap;
+    private ParticleOptions particle1 = ParticleTypes.SMOKE;
 
     public LazyOptional<IEnergyStorage> getEnergy() {
         return energy;
@@ -143,6 +145,7 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
         }
     }
     public RECIPE getRecipe() {
+        if(isInputEmpty()) return null;
         RECIPE cachedRecipe = getCachedRecipe();
         if(cachedRecipe != null) return cachedRecipe;
         if(!NcRecipeType.ALL_RECIPES.containsKey(getName())) return null;
@@ -153,6 +156,10 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
             }
         }
         return null;
+    }
+
+    private boolean isInputEmpty() {
+        return contentHandler.isInputEmpty();
     }
 
     public RECIPE getCachedRecipe() {
@@ -289,7 +296,6 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
 
     public NCProcessorBE(BlockPos pPos, BlockState pBlockState, String name) {
         super(NCProcessors.PROCESSORS_BE.get(name).get(), pPos, pBlockState);
-        this.name = name;
         prefab = Processors.all().get(name);
         contentHandler = new SidedContentHandler(
                 prefab().getSlotsConfig().getInputItems(), prefab().getSlotsConfig().getOutputItems(),
@@ -312,7 +318,7 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
             double d5 = direction$axis == Direction.Axis.X ? (double)direction.getStepX() * 0.52D : d4;
             double d6 = level.getRandom().nextDouble() * 6.0D / 16.0D;
             double d7 = direction$axis == Direction.Axis.Z ? (double)direction.getStepZ() * 0.52D : d4;
-            level.addParticle(ParticleTypes.SMOKE, d0 + d5, d1 + d6, d2 + d7, 0.0D, 0, 0.0D);
+            level.addParticle(particle1, d0 + d5, d1 + d6, d2 + d7, 0.0D, 0, 0.0D);
             level.addParticle(DustParticleOptions.REDSTONE, d0 + d5, d1 + d6, d2 + d7, 0, 0, 0);
         }
     }
@@ -519,13 +525,6 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
         }
     }
 
-    @Override
-    public @NotNull CompoundTag getUpdateTag() {
-        CompoundTag tag = super.getUpdateTag();
-        saveClientData(tag);
-        return tag;
-    }
-
     protected void saveClientData(CompoundTag tag) {
         CompoundTag infoTag = new CompoundTag();
         saveTagData(infoTag);
@@ -562,6 +561,7 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
     public int toggleSideConfig(int slotId, int direction) {
         setChanged();
         saveSideMapFlag = true;
+        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
         return contentHandler.toggleSideConfig(slotId, direction);
     }
 

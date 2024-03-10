@@ -122,6 +122,7 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler implements
         if(!nbt.getCompound("sideMap").isEmpty()) {
             sideMap = SidedContentHandler.deserializeSideMap(nbt.getCompound("sideMap"));
         }
+        onLoad();
     }
 
 
@@ -293,4 +294,25 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler implements
         return new Object[]{ForgeRegistries.FLUIDS.getKey(stack.getFluid()).toString(), stack.getAmount()};
     }
 
+    public boolean canPush() {
+        for(int i = inputSlots; i < getSlots(); i++) {
+            if(getFluidInSlot(i).getAmount() > 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private int getSlots() {
+        return tanks.size();
+    }
+
+    public boolean canPull() {
+        for(int i = 0; i < inputSlots; i++) {
+            if(getFluidInSlot(i).getAmount() < tanks.get(i).getCapacity()) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

@@ -30,7 +30,7 @@ public class SideConfigScreen<T extends NCProcessorContainer<T>> extends Abstrac
     protected int relX;
     protected int relY;
 
-    protected AbstractContainerScreen parentScreen;
+    protected AbstractContainerScreen<T> parentScreen;
 
     private int slotId;
 
@@ -97,19 +97,19 @@ public class SideConfigScreen<T extends NCProcessorContainer<T>> extends Abstrac
         for(Renderable widget : this.renderables) {
             widget.render(graphics, mouseX, mouseY, partialTicks);
         }
-        PoseStack posestack = RenderSystem.getModelViewStack();
-        posestack.pushPose();
-        posestack.translate((double)i, (double)j, 0.0D);
+
+        graphics.pose().pushPose();
+        graphics.pose().translate((double)i, (double)j, 0.0D);
         RenderSystem.applyModelViewMatrix();
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         this.hoveredSlot = null;
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         this.renderLabels(graphics, mouseX, mouseY);
         renderTooltips(graphics, mouseX-relX, mouseY-relY);
-        posestack.popPose();
+        graphics.pose().popPose();
         RenderSystem.applyModelViewMatrix();
         RenderSystem.enableDepthTest();
-        this.renderTooltip(graphics, mouseX, mouseY);
+       // this.renderTooltip(graphics, mouseX-relX, mouseY-relY);
     }
 
     private void renderWidgets(GuiGraphics matrix, float partialTicks, int mouseX, int mouseY) {
@@ -121,7 +121,7 @@ public class SideConfigScreen<T extends NCProcessorContainer<T>> extends Abstrac
     private void renderTooltips(GuiGraphics graphics, int pMouseX, int pMouseY) {
         for(NCGuiElement widget: widgets) {
             if(widget.isMouseOver(pMouseX, pMouseY)) {
-                graphics.renderTooltip(font, widget.getTooltips(),Optional.empty(), pMouseX+relX, pMouseY+relY);
+                graphics.renderTooltip(font, widget.getTooltips(),Optional.empty(), pMouseX, pMouseY);
             }
         }
     }

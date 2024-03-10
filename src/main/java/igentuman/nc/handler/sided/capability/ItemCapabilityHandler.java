@@ -238,10 +238,6 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
             throw new RuntimeException("Slot " + slot + " not in valid range - [0," + stacks.size() + ")");
     }
 
-    protected void onLoad() {
-
-    }
-
     protected void onContentsChanged(int slot) {
         if(slot > inputSlots-1) {
             sortedStacks = null;
@@ -249,12 +245,20 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
     }
 
     public LazyOptional<ItemHandlerWrapper> getCapability(Direction side) {
-        if(side == null) return LazyOptional.of(() -> new ItemHandlerWrapper(this, (i) -> true, (i, s) -> true));
+        if(side == null) return globalCap();
         if(!handlerCache.containsKey(side)) {
             handlerCache.put(side, LazyOptional.of(
-                    () -> new ItemHandlerWrapper(this, (i) -> outputAllowed(i, side), (i, s) -> inputAllowed(i, s, side))));
+                    () -> new ItemHandlerWrapper(side,this, (i) -> outputAllowed(i, side), (i, s) -> inputAllowed(i, s, side))));
         }
         return handlerCache.get(side);
+    }
+    LazyOptional<ItemHandlerWrapper> globalCap;
+    private LazyOptional<ItemHandlerWrapper> globalCap() {
+
+        if(globalCap == null) {
+            globalCap =  LazyOptional.of(() -> new ItemHandlerWrapper(null, this, (i) -> true, (i, s) -> true));
+        }
+        return globalCap;
     }
 
     public void cleanCache() {
@@ -317,20 +321,21 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
         BlockEntity be = tile.getLevel().getBlockEntity(pos.relative(dir));
         if(be == null) return false;
         LazyOptional<IItemHandler> cap = be.getCapability(ForgeCapabilities.ITEM_HANDLER, dir.getOpposite());
-        if(cap.isPresent()) {
-            IItemHandler handler = cap.orElse(null);
-            SidedContentHandler.RelativeDirection relativeDirection = SidedContentHandler.RelativeDirection.toRelative(dir, getFacing());
-            for(SlotModePair pair : sideMap.get(relativeDirection.ordinal())) {
-                if(pair.getMode() == PULL || (forceFlag && pair.getMode() == INPUT)) {
-                    for(int i = 0; i < handler.getSlots(); i++) {
-                        ItemStack stack = handler.getStackInSlot(i);
-                            if(stack.isEmpty()) continue;
-                        if(!isValidInputItem(stack)) continue;
-                        ItemStack remainder = insertItem(pair.getSlot(), stack.copy(), false);
-                        if(remainder.getCount() != stack.getCount()) {
-                            handler.extractItem(i, stack.getCount() - remainder.getCount(), false);
-                            return true;
-                        }
+        if(!cap.isPresent()) {
+            return false;
+        }
+        IItemHandler handler = cap.orElse(null);
+        SidedContentHandler.RelativeDirection relativeDirection = SidedContentHandler.RelativeDirection.toRelative(dir, getFacing());
+        for(SlotModePair pair : sideMap.get(relativeDirection.ordinal())) {
+            if(pair.getMode() == PULL || (forceFlag && pair.getMode() == INPUT)) {
+                for(int i = 0; i < handler.getSlots(); i++) {
+                    ItemStack stack = handler.extractItem(i, 64, true);
+                        if(stack.isEmpty()) continue;
+                    if(!isValidInputItem(stack)) continue;
+                    ItemStack remainder = insertItem(pair.getSlot(), stack.copy(), false);
+                    if(remainder.getCount() != stack.getCount()) {
+                        handler.extractItem(i, stack.getCount() - remainder.getCount(), false);
+                        return true;
                     }
                 }
             }
@@ -424,5 +429,20 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
         ItemStack stack = getStackInSlot(slotId);
         if(stack.isEmpty()) return new Object[]{};
         return new Object[]{stack.getCount(), ForgeRegistries.ITEMS.getKey(stack.getItem()).toString()};
+    }
+
+    public boolean canPush() {
+        for(int i = inputSlots; i < getSlots(); i++) {
+            if(!getStackInSlot(i).isEmpty()) return true;
+        }
+        return false;
+    }
+
+    public boolean canPull() {
+        for(int i = 0; i < inputSlots; i++) {
+            final ItemStack stack = getStackInSlot(i);
+            if(stack.isEmpty() || stack.getCount() < stack.getMaxStackSize()) return true;
+        }
+        return false;
     }
 }

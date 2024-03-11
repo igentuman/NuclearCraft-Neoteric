@@ -1,11 +1,9 @@
 package igentuman.nc.fluid;
 
-import igentuman.nc.block.NCFluidBlock;
 import igentuman.nc.setup.registration.NCFluids;
 import net.minecraft.fluid.FlowingFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
-import net.minecraft.state.Property;
 import net.minecraft.state.StateContainer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.Direction;
@@ -18,7 +16,6 @@ import net.minecraftforge.fluids.FluidAttributes;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 
 public class NCFluid extends FlowingFluid

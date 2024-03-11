@@ -7,11 +7,9 @@ import igentuman.nc.fluid.AcidDefinition;
 import igentuman.nc.fluid.GasDefinition;
 import igentuman.nc.fluid.LiquidDefinition;
 import igentuman.nc.fluid.NCFluid;
-import igentuman.nc.block.NCFluidBlock;
 import igentuman.nc.content.fuel.FuelManager;
 import igentuman.nc.util.TagUtil;
 import igentuman.nc.util.TextureUtil;
-import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.BucketItem;
@@ -41,7 +39,6 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
@@ -304,6 +301,20 @@ public class NCFluids {
         return builder -> builder.temperature(temperature).gaseous().density(density).viscosity(visconsity).color(color);
     }
     public static class FluidEntry {
+        public final RegistryObject<BucketItem> bucket;
+        public final List<Property> properties;
+        public final int color;
+        public final boolean isGas;
+        public final RegistryObject<NCFluid> flowing;
+        public final RegistryObject<NCFluid> still;
+        public FluidEntry(RegistryObject<NCFluid> flowing, RegistryObject<NCFluid> still, RegistryObject<BucketItem> bucket, List<Property> properties, int color) {
+            this.bucket = bucket;
+            this.properties = properties;
+            this.color = color;
+            this.isGas = false;
+            this.flowing = flowing;
+            this.still = still;
+        }
 
         public static FluidEntry makeAcid(AcidDefinition acid) {
             return make(acid.name,0, rl("block/material/fluid/liquid_still"), rl("block/material/fluid/liquid_flow"), liquidBuilder(acid.temperature, acid.color), acid.color, false);
@@ -383,23 +394,17 @@ public class NCFluids {
                     makeFlowing, thisMutable.getValue(), stillTex, flowingTex, buildAttributes
             ));
 
-/*            NCBlocks.BlockEntry<NCFluidBlock> block = new NCBlocks.BlockEntry<>(
-                    name+"_fluid_block",
-                    () -> Block.Properties.copy(Blocks.WATER).noCollission(),
-                    p -> new NCFluidBlock(thisMutable.getValue(), p)
-            );*/
             RegistryObject<BucketItem> bucket = NCItems.ITEMS.register(name+"_bucket", () -> makeBucket(still, burnTime));
-            //FluidEntry entry = new FluidEntry(flowing, still, block, bucket, properties, color);
-            //thisMutable.setValue(entry);
-           // ALL_FLUID_BLOCKS.add(block);
-           // ALL_FLUID_ENTRIES.put(name, entry);
-          //  return entry;
-            return null;
+            FluidEntry entry = new FluidEntry(flowing, still, bucket, properties, color);
+            thisMutable.setValue(entry);
+
+            ALL_FLUID_ENTRIES.put(name, entry);
+            return entry;
         }
 
 
 
-/*        public NCFluid getFlowing()
+       public NCFluid getFlowing()
         {
             return flowing.get();
         }
@@ -409,15 +414,10 @@ public class NCFluids {
             return still.get();
         }
 
-        public NCFluidBlock getBlock()
-        {
-            return block.get();
-        }
-
         public BucketItem getBucket()
         {
             return bucket.get();
-        }*/
+        }
 
         private static BucketItem makeBucket(RegistryObject<NCFluid> still, int burnTime)
         {
@@ -441,10 +441,10 @@ public class NCFluids {
             };
             return result;
         }
-/*
+
         public RegistryObject<NCFluid> getStillGetter()
         {
             return still;
-        }*/
+        }
     }
 }

@@ -77,7 +77,7 @@ public class Registration {
         TurbineRegistration.init();
 
         NcRecipeSerializers.RECIPE_SERIALIZERS.register(bus);
-      //  NcRecipeType.RECIPE_TYPES.register(bus);
+        //NcRecipeType.RECIPE_TYPES.register(bus);
         NCSounds.SOUND_EVENTS.register(bus);
     }
 

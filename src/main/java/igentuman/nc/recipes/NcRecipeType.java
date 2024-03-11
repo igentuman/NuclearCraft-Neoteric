@@ -21,6 +21,7 @@ import org.antlr.v4.runtime.misc.NotNull;
 import javax.annotation.Nullable;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static igentuman.nc.NuclearCraft.rl;
 
@@ -31,16 +32,16 @@ public class NcRecipeType<RECIPE extends NcRecipe> implements IRecipeType<RECIPE
     public static final HashMap<String, IRecipeType<? extends NcRecipe>> ALL_RECIPES = initializeRecipes();
     private static HashMap<String, IRecipeType<? extends NcRecipe>> initializeRecipes() {
         HashMap<String, IRecipeType<? extends NcRecipe>> recipes = new HashMap<>();
-        //recipes.put(FissionControllerBE.NAME, registerRecipeType(FissionControllerBE.NAME));
-    //    recipes.put("nc_ore_veins", registerRecipeType("nc_ore_veins"));
-     //   recipes.put("fusion_core", registerRecipeType("fusion_core"));
-     //   recipes.put("fusion_coolant", registerRecipeType("fusion_coolant"));
-     //   recipes.put("fission_boiling", registerRecipeType("fission_boiling"));
-     //   recipes.put(TurbineControllerBE.NAME, registerRecipeType(TurbineControllerBE.NAME));
+        recipes.put(FissionControllerBE.NAME, registerRecipeType(FissionControllerBE.NAME));
+        recipes.put("nc_ore_veins", registerRecipeType("nc_ore_veins"));
+        recipes.put("fusion_core", registerRecipeType("fusion_core"));
+        recipes.put("fusion_coolant", registerRecipeType("fusion_coolant"));
+        recipes.put("fission_boiling", registerRecipeType("fission_boiling"));
+        recipes.put(TurbineControllerBE.NAME, registerRecipeType(TurbineControllerBE.NAME));
 
         for(String processorName: Processors.registered().keySet()) {
             if(Processors.registered().get(processorName).hasRecipes()) {
-       //         recipes.put(processorName, registerRecipeType(processorName));
+                recipes.put(processorName, registerRecipeType(processorName));
             }
         }
 
@@ -52,7 +53,7 @@ public class NcRecipeType<RECIPE extends NcRecipe> implements IRecipeType<RECIPE
  //           register("smelting", recipeType -> new ItemStackToItemStackRecipe(recipeType));
 
 
-    private List<Object> cachedRecipes = Collections.emptyList();
+    private List<RECIPE> cachedRecipes = Collections.emptyList();
     private final ResourceLocation registryName;
 
     private NcRecipeType(String name) {
@@ -74,10 +75,17 @@ public class NcRecipeType<RECIPE extends NcRecipe> implements IRecipeType<RECIPE
         return this;
     }
 
-    private static  <V, T extends V> T registerRecipeType(String path)
+    private static <T extends IRecipe<?>> IRecipeType<T> registerRecipeType(String path)
     {
         ResourceLocation name = rl(path);
-        return (T) Registry.register(Registry.RECIPE_TYPE, name, null);
+        return Registry.register(Registry.RECIPE_TYPE, name, new IRecipeType<T>()
+        {
+            @Override
+            public String toString()
+            {
+                return name.toString();
+            }
+        });
     }
 
     @NotNull
@@ -86,29 +94,17 @@ public class NcRecipeType<RECIPE extends NcRecipe> implements IRecipeType<RECIPE
         if (world == null) {
             world = DistExecutor.unsafeRunForDist(() -> NcClient::tryGetClientWorld, () -> () -> ServerLifecycleHooks.getCurrentServer().overworld());
             if (world == null) {
-            //    return cachedRecipes;
-                return null;
+                return cachedRecipes;
             }
         }
         if (cachedRecipes.isEmpty()) {
             RecipeManager recipeManager = world.getRecipeManager();
-            List<RECIPE> recipes = recipeManager.getAllRecipesFor(this);
-            cachedRecipes = Arrays.asList(recipes.stream()
-                    .filter(recipe -> !recipe.isIncomplete())
-                    .toArray());
+            List<RECIPE> recipes = recipeManager.getAllRecipesFor(this).stream().filter(recipe -> !recipe.isIncomplete()).collect(Collectors.toList());;
+            cachedRecipes = recipes;
         }
-        //    return cachedRecipes;
-        return null;
+            return cachedRecipes;
     }
 
-    /**
-     * Helper for getting a recipe from a world's recipe manager.
-     */
-    public static <C extends Container & IInventory, RECIPE_TYPE extends IRecipe<C>> Optional<RECIPE_TYPE> getRecipeFor(RecipeType<RECIPE_TYPE> recipeType, C inventory, World level) {
-        /*return level.getRecipeManager().getRecipeFor(recipeType, inventory, level)
-              .filter(recipe -> !recipe.isSpecial());*/
-        return null;
-    }
 
     /**
      * Helper for getting a recipe from a world's recipe manager.
@@ -131,8 +127,7 @@ public class NcRecipeType<RECIPE extends NcRecipe> implements IRecipeType<RECIPE
 
     private void getRecipes(RecipeManager manager) {
         List<RECIPE> recipes = manager.getAllRecipesFor(this);
-        cachedRecipes = Arrays.asList(recipes.stream()
-                .filter(recipe -> !recipe.isIncomplete())
-                .toArray());
+        cachedRecipes =recipes.stream()
+                .filter(recipe -> !recipe.isIncomplete()).collect(Collectors.toList());
     }
 }

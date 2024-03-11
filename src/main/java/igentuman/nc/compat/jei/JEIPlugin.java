@@ -120,22 +120,21 @@ public  class JEIPlugin implements IModPlugin {
         }
     }
 
-/*    private <T extends Container> void addRecipeClickArea(IGuiHandlerRegistration registration, Class<? extends T> containerScreenClass, int xPos, int yPos, int width, int height, RecipeType<?>... recipeTypes) {
-        registration.addGuiContainerHandler(containerScreenClass, new IGuiContainerHandler<T>() {
+    private <T extends NCProcessorScreen> void addRecipeClickArea(IGuiHandlerRegistration registration, Class<? extends T> containerScreenClass, int xPos, int yPos, int width, int height, RecipeType<?>... recipeTypes) {
+/*        registration.addGuiContainerHandler(containerScreenClass, new IGuiContainerHandler<T>() {
             @Override
             public Collection<IGuiClickableArea> getGuiClickableAreas(T containerScreen, double mouseX, double mouseY) {
-                NCProcessorScreen<?> screen = (NCProcessorScreen<?>) containerScreen;
-                String name = screen.getRecipeTypeName();
+                String name = containerScreen.getRecipeTypeName();
                 IGuiClickableArea clickableArea = IGuiClickableArea.createBasic(xPos, yPos, width, height, getRecipeTypes().get(name).getUid());
                 return Arrays.asList(clickableArea);
             }
-        });
-    }*/
+        });*/
+    }
 
     public  void registerGuiHandlers(IGuiHandlerRegistration registration) {
         for (String name : getRecipeTypes().keySet()) {
             if (!Processors.registered().containsKey(name)) continue;
-         //   addRecipeClickArea(registration, NCProcessorScreen.class, 67, 74, 18, 18, getRecipeType(name));
+            addRecipeClickArea(registration, NCProcessorScreen.class, 67, 74, 18, 18, getRecipeType(name));
         }
         registration.addRecipeClickArea(FissionControllerScreen.class,65, 42, 36, 26, FISSION.getUid());
     }

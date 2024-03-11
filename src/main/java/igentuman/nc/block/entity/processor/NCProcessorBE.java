@@ -19,7 +19,7 @@ import igentuman.nc.util.CustomEnergyStorage;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.SlotModePair;
 import igentuman.nc.util.annotation.NBTField;
-import net.minecraft.client.particle.FallingDustParticle;
+import mekanism.common.capabilities.Capabilities;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.state.properties.BlockStateProperties;
@@ -30,16 +30,16 @@ import net.minecraft.util.Direction;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
-import org.antlr.v4.runtime.misc.NotNull;;
+import org.antlr.v4.runtime.misc.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -290,7 +290,7 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
                 return getPeripheral(cap, side);
             }
         }
-       /* if(isMekanismLoadeed()) {
+        if(isMekanismLoadeed()) {
             if(cap == Capabilities.GAS_HANDLER_CAPABILITY) {
                 if(contentHandler.hasFluidCapability(side)) {
                     return LazyOptional.of(() -> contentHandler.gasConverter(side));
@@ -303,7 +303,7 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
                 }
                 return LazyOptional.empty();
             }
-        }*/
+        }
         return super.getCapability(cap, side);
     }
 
@@ -385,10 +385,9 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
         updated = updated || contentHandler.tick();
         if(updated || wasUpdated) {
             level.setBlockAndUpdate(worldPosition, getBlockState().setValue(ACTIVE, isActive));
-           // level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(ACTIVE, isActive), Block.UPDATE_ALL);
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Constants.BlockFlags.DEFAULT);
         }
         skippedTicks = 1;
-
     }
 
     public List<FluidStack> getAllowedInputFluids()
@@ -438,7 +437,7 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
         }
         recipeInfo.process(speedMultiplier()*skippedTicks);
         if(recipeInfo.radiation != 1D) {
-            RadiationManager.get(getLevel()).addRadiation(getLevel(), (recipeInfo.radiation/1000000)*speedMultiplier()*skippedTicks, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ());
+            //RadiationManager.get(getLevel()).addRadiation(getLevel(), (recipeInfo.radiation/1000000)*speedMultiplier()*skippedTicks, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ());
         }
         isActive = true;
         setChanged();
@@ -582,17 +581,7 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
         infoTag.putInt("energy", energyStorage.getEnergyStored());
     }
 
-/*    @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        int oldEnergy = energyStorage.getEnergyStored();
 
-        CompoundNBT tag = pkt.getTag();
-        handleUpdateTag(tag);
-
-        if (oldEnergy != energyStorage.getEnergyStored()) {
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
-        }
-    }*/
 
     public int toggleSideConfig(int slotId, int direction) {
         setChanged();
@@ -616,7 +605,7 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
         redstoneMode++;
         if (redstoneMode > 1) redstoneMode = 0;
         setChanged();
-    //    level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Constants.BlockFlags.DEFAULT);
     }
 
     public CompoundNBT getTagForStack() {

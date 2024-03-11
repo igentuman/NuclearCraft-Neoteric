@@ -50,16 +50,18 @@ public class RecipeInfo <RECIPE extends AbstractRecipe> implements INBTSerializa
     @Override
     public void deserializeNBT(CompoundNBT nbt) {
         if(nbt instanceof CompoundNBT) {
-            ticks = ((CompoundNBT) nbt).getInt("ticks");
-            ticksProcessed = ((CompoundNBT) nbt).getDouble("ticksProcessed");
-            energy = ((CompoundNBT) nbt).getDouble("energy");
-            heat = ((CompoundNBT) nbt).getDouble("heat");
-            radiation = ((CompoundNBT) nbt).getDouble("radiation");
-            stuck = ((CompoundNBT) nbt).getBoolean("stuck");
-            recipeId = ((CompoundNBT) nbt).getString("recipe");
+            ticks = nbt.getInt("ticks");
+            ticksProcessed = nbt.getDouble("ticksProcessed");
+            energy = nbt.getDouble("energy");
+            heat = nbt.getDouble("heat");
+            radiation = nbt.getDouble("radiation");
+            stuck = nbt.getBoolean("stuck");
+            recipeId = nbt.getString("recipe");
             recipe = null;
             if(!recipeId.isEmpty()) {
-                recipe = getRecipeFromTag(recipeId);
+                try {
+                    recipe = getRecipeFromTag(recipeId);
+                } catch (RuntimeException e) {}
             }
         }
     }
@@ -67,7 +69,7 @@ public class RecipeInfo <RECIPE extends AbstractRecipe> implements INBTSerializa
     private World getLevel()
     {
         if(be != null) return be.getLevel();
-        return DistExecutor.safeRunForDist(
+        return DistExecutor.unsafeRunForDist(
                 () -> NcClient::tryGetClientWorld,
                 () -> () -> ServerLifecycleHooks.getCurrentServer().overworld());
     }

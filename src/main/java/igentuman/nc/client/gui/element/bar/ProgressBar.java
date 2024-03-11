@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import igentuman.nc.client.gui.IProgressScreen;
 import igentuman.nc.client.gui.element.NCGuiElement;
+import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponent;
@@ -71,10 +72,10 @@ public class ProgressBar extends NCGuiElement {
     @Override
     public void draw(MatrixStack transform, int mX, int mY, float pTicks) {
         super.draw(transform, mX, mY, pTicks);
-       // RenderSystem.text(0, ATLAS);
+        Minecraft.getInstance().getTextureManager().bind(ATLAS);
         int texOffset = bars.get(bar)[0];
         int teyOffset = bars.get(bar)[1];
-      //  blit(transform, X(), Y(), texOffset, teyOffset,  width, height);
-        //blit(transform, X(), Y(), texOffset, teyOffset-height-1, (int) (container.getProgress()*width), height);
+        blit(transform, X(), Y(), texOffset, teyOffset,  width, height);
+        blit(transform, X(), Y(), texOffset, teyOffset-height-1, (int) (container.getProgress()*width), height);
     }
 }

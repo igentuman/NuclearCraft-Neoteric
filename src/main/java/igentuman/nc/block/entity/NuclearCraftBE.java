@@ -8,6 +8,7 @@ import igentuman.nc.util.NCBlockPos;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
+import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -119,6 +120,13 @@ public class NuclearCraftBE extends TileEntity {
     public SUpdateTileEntityPacket getUpdatePacket() {
         return new SUpdateTileEntityPacket(getBlockPos(), 0, this.getUpdateTag());
     }
+
+    @Override
+    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
+        CompoundNBT tag = pkt.getTag();
+        handleUpdateTag(getBlockState(), tag);
+    }
+
     @Override
     public void setRemoved() {
         super.setRemoved();

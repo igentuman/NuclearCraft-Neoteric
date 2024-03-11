@@ -184,8 +184,8 @@ public class NCProcessorScreen extends ContainerScreen<NCProcessorContainer> imp
                     widget.addTooltip(applyFormat(new TranslationTextComponent("energy.multiplier", menu.energyMultiplier()), TextFormatting.GOLD));
                     widget.addTooltip(applyFormat(new TranslationTextComponent("energy.per_tick", scaledFormat(menu.energyPerTick())), TextFormatting.YELLOW));
                 }
-               /* renderTooltip(pMatrixStack, widget.getTooltips(),
-                        Optional.empty(), pMouseX, pMouseY);*/
+                renderComponentTooltip(pMatrixStack, widget.getTooltips(),
+                      pMouseX, pMouseY);
             }
         }
     }

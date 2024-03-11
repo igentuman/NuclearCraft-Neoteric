@@ -7,6 +7,7 @@ import igentuman.nc.client.gui.element.NCGuiElement;
 import igentuman.nc.client.gui.processor.side.SideConfigScreen;
 import igentuman.nc.network.toServer.PacketSideConfigToggle;
 import igentuman.nc.handler.sided.SidedContentHandler;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.gui.widget.button.ImageButton;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -33,9 +34,9 @@ public class SideConfig extends NCGuiElement {
         height = 16;
         this.screen = screen;
         this.slotId = slotId;
-/*        btn = new SideBtn(X(), Y(), btnTexture, pButton -> {
+        btn = new SideBtn(X(), Y(), btnTexture, (Button.IPressable) pButton -> {
             NuclearCraft.packetHandler().sendToServer(new PacketSideConfigToggle(screen.getPosition(), slotId, direction));
-        });*/
+        });
 
         this.direction = direction;
     }
@@ -81,6 +82,10 @@ public class SideConfig extends NCGuiElement {
     public static class SideBtn extends ImageButton {
         public SideBtn(int x, int y, ResourceLocation btnTexture) {
             super(x, y, 16, 16, 0, 0, 0, btnTexture, 16, 16, null);
+        }
+
+        public SideBtn(int x, int y, ResourceLocation btnTexture, Object o) {
+            super(x, y, 16, 16, 0, 0, 0, btnTexture, 16, 16, (IPressable) o);
         }
     }
 }

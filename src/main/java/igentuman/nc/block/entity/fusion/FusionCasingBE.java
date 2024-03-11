@@ -1,16 +1,21 @@
 package igentuman.nc.block.entity.fusion;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockState;
+import igentuman.nc.multiblock.fusion.FusionReactor;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.block.BlockState;
 
 public class FusionCasingBE extends FusionBE {
-    public FusionCasingBE(BlockEntityType<?> pType, BlockPos pPos, BlockState pBlockState) {
+    public FusionCasingBE(TileEntityType<?> pType, BlockPos pPos, BlockState pBlockState) {
         super(pType, pPos, pBlockState);
     }
 
     public FusionCasingBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, getName(pBlockState));
+    }
+
+    public FusionCasingBE() {
+        super(FusionReactor.FUSION_BE.get("fusion_casing").get());
     }
 
     @Override

@@ -1,18 +1,18 @@
 package igentuman.nc.util.insitu_leaching;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraft.world.level.storage.DimensionDataStorage;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.storage.DimensionSavedDataManager;
+import net.minecraft.world.storage.WorldSavedData;
 import org.antlr.v4.runtime.misc.NotNull;;
 
 import javax.annotation.Nonnull;
 
-public class WorldVeinsManager extends SavedData {
+public class WorldVeinsManager extends WorldSavedData {
 
     private WorldVeinOres worldVeinData;
-    public WorldVeinOres getWorldVeinData(ServerLevel level) {
+    public WorldVeinOres getWorldVeinData(World level) {
         worldVeinData.level = level;
         return worldVeinData;
     }
@@ -23,18 +23,21 @@ public class WorldVeinsManager extends SavedData {
     }
 
     public WorldVeinsManager() {
+        super("nc_world_veins");
         worldVeinData = new WorldVeinOres();
     }
     @Nonnull
-    public static WorldVeinsManager get(Level level) {
+    public static WorldVeinsManager get(World level) {
         if (level.isClientSide) {
             throw new RuntimeException("Don't access this client-side!");
         }
-        DimensionDataStorage storage = ((ServerLevel) level).getDataStorage();
-        return storage.computeIfAbsent(WorldVeinsManager::new, WorldVeinsManager::new, "nc_world_veins");
+        DimensionSavedDataManager storage = ((ServerWorld) level).getDataStorage();
+        return null;
+    //    return storage.computeIfAbsent(WorldVeinsManager::new, WorldVeinsManager::new, "nc_world_veins");
     }
 
-    public WorldVeinsManager(CompoundTag tag) {
+    public WorldVeinsManager(CompoundNBT tag) {
+        super("nc_world_veins");
         if(tag.contains("depletion")) {
             worldVeinData = WorldVeinOres.deserialize(tag);
         } else {
@@ -43,7 +46,12 @@ public class WorldVeinsManager extends SavedData {
     }
 
     @Override
-    public @NotNull CompoundTag save(CompoundTag tag) {
+    public void load(CompoundNBT compoundNBT) {
+
+    }
+
+    @Override
+    public @NotNull CompoundNBT save(CompoundNBT tag) {
         return worldVeinData.serializeNBT();
     }
 }

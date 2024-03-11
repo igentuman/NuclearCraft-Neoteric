@@ -6,33 +6,17 @@ import igentuman.nc.content.storage.BarrelBlocks;
 import igentuman.nc.network.toServer.StorageSideConfig;
 import igentuman.nc.setup.registration.NCStorageBlocks;
 import igentuman.nc.util.TextUtils;
-import net.minecraft.ChatFormatting;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.stats.Stats;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.BucketItem;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.Direction;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -44,25 +28,15 @@ import java.util.List;
 import java.util.UUID;
 
 import static igentuman.nc.setup.registration.NCItems.MULTITOOL;
-import static net.minecraft.world.item.Items.BUCKET;
 
-public class BarrelBlock extends Block implements EntityBlock {
+public class BarrelBlock extends Block {
 
     public BarrelBlock(Properties pProperties) {
         super(pProperties);
     }
-    @Override
-    public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return this.defaultBlockState();
-    }
 
-    @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-
-    }
-
-    @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
+   /* @Override
+    public InteractionResult use(BlockState state, World level, BlockPos pos, PlayerEntity player, InteractionHand hand, BlockHitResult result) {
         if (!level.isClientSide()) {
             BarrelBE be = (BarrelBE)level.getBlockEntity(pos);
             ItemStack handStack = player.getItemInHand(hand);
@@ -124,17 +98,17 @@ public class BarrelBlock extends Block implements EntityBlock {
                 fluid = be.getFluidHandler().orElseGet(null).getFluidInTank(0);
                 int storage = BarrelBlocks.all().get(code()).getCapacity();
                 if(fluid == null || fluid.isEmpty()) {
-                    player.sendMessage(new TranslatableComponent("tooltip.nc.liquid_empty", formatLiquid(storage)).withStyle(ChatFormatting.BLUE), UUID.randomUUID());
+                    player.sendMessage(new TranslationTextComponent("tooltip.nc.liquid_empty", formatLiquid(storage)).withStyle(TextFormatting.BLUE), UUID.randomUUID());
                 } else {
-                    player.sendMessage(new TranslatableComponent("tooltip.nc.liquid_stored", fluid.getDisplayName(), formatLiquid(fluid.getAmount()), formatLiquid(storage)).withStyle(ChatFormatting.BLUE), UUID.randomUUID());
+                    player.sendMessage(new TranslationTextComponent("tooltip.nc.liquid_stored", fluid.getDisplayName(), formatLiquid(fluid.getAmount()), formatLiquid(storage)).withStyle(TextFormatting.BLUE), UUID.randomUUID());
                 }
             }
         }
         return InteractionResult.SUCCESS;
-    }
+    }*/
 
-    @Override
-    public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
+/*    @Override
+    public void onRemove(BlockState pState, World pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
         if (pState.getBlock() != pNewState.getBlock()) {
             BlockEntity blockEntity = pLevel.getBlockEntity(pPos);
 
@@ -146,47 +120,31 @@ public class BarrelBlock extends Block implements EntityBlock {
     @Override
     public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
         return NCStorageBlocks.STORAGE_BE.get(code()).get().create(pPos, pState);
-    }
+    }*/
 
     public String code()
     {
         return asItem().toString();
     }
 
-    @javax.annotation.Nullable
     @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        if (level.isClientSide()) {
-            return (lvl, pos, blockState, t) -> {
-                if (t instanceof BarrelBE tile) {
-                    tile.tickClient();
-                }
-            };
-        }
-        return (lvl, pos, blockState, t)-> {
-            if (t instanceof BarrelBE tile) {
-                tile.tickServer();
-            }
-        };
-
-    }
-    @Override
-    public void setPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+    public void setPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
         super.setPlacedBy(world, pos, state, placer, stack);
 
         if (stack.hasTag()) {
             BarrelBE tileEntity = (BarrelBE) world.getBlockEntity(pos);
-            CompoundTag nbtData = stack.getTag();
-            tileEntity.load(nbtData);
+            CompoundNBT nbtData = stack.getTag();
+            tileEntity.load(state, nbtData);
         }
     }
 
+/*
     @Override
-    public void playerDestroy(Level pLevel, Player pPlayer, BlockPos pPos, BlockState pState, @javax.annotation.Nullable BlockEntity pBlockEntity, ItemStack pTool) {
+    public void playerDestroy(World pLevel, PlayerEntity pPlayer, BlockPos pPos, BlockState pState, @javax.annotation.Nullable BlockEntity pBlockEntity, ItemStack pTool) {
         pPlayer.awardStat(Stats.BLOCK_MINED.get(this));
         pPlayer.causeFoodExhaustion(0.005F);
         BarrelBE BarrelBE = (BarrelBE) pBlockEntity;
-        CompoundTag data = BarrelBE.getUpdateTag();
+        CompoundNBT data = BarrelBE.getUpdateTag();
 
         ItemStack drop = new ItemStack(this);
         drop.setTag(data);
@@ -196,16 +154,17 @@ public class BarrelBlock extends Block implements EntityBlock {
             pLevel.addFreshEntity(itemEntity);
         }
     }
+*/
 
 
-    @Override
-    public void appendHoverText(ItemStack stack, @javax.annotation.Nullable BlockGetter world, List<Component> list, TooltipFlag flag)
+/*    @Override
+    public void appendHoverText(ItemStack stack, @javax.annotation.Nullable BlockGetter world, List<TextComponent> list, TooltipFlag flag)
     {
         int storage = BarrelBlocks.all().get(code()).config().getCapacity();
 
-        list.add(new TranslatableComponent("tooltip.nc.liquid_capacity", formatLiquid(storage)).withStyle(ChatFormatting.BLUE));
-        list.add(new TranslatableComponent("tooltip.nc.use_multitool").withStyle(ChatFormatting.YELLOW));
-    }
+        list.add(new TranslationTextComponent("tooltip.nc.liquid_capacity", formatLiquid(storage)).withStyle(TextFormatting.BLUE));
+        list.add(new TranslationTextComponent("tooltip.nc.use_multitool").withStyle(TextFormatting.YELLOW));
+    }*/
 
     public String formatLiquid(int val)
     {

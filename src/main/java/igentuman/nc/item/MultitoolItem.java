@@ -1,21 +1,16 @@
 package igentuman.nc.item;
 
 import igentuman.nc.setup.registration.CreativeTabs;
-import net.minecraft.ChatFormatting;
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.level.Level;
+import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -36,7 +31,7 @@ public class MultitoolItem extends Item
 		this(props, CreativeTabs.NC_ITEMS);
 	}
 
-	public MultitoolItem(Properties props, CreativeModeTab group)
+	public MultitoolItem(Properties props, ItemGroup group)
 	{
 		super(props.tab(group));
 	}
@@ -47,8 +42,8 @@ public class MultitoolItem extends Item
 		return this;
 	}
 
-	@Override
-	public boolean doesSneakBypassUse(ItemStack stack, net.minecraft.world.level.LevelReader world, BlockPos pos, Player player)
+/*	@Override
+	public boolean doesSneakBypassUse(ItemStack stack, net.minecraft.world.level.LevelReader world, BlockPos pos, PlayerEntity player)
 	{
 		return true;
 	}
@@ -57,7 +52,7 @@ public class MultitoolItem extends Item
 	public int getBurnTime(ItemStack itemStack, RecipeType<?> type)
 	{
 		return burnTime;
-	}
+	}*/
 
 	public boolean isHidden()
 	{
@@ -81,21 +76,12 @@ public class MultitoolItem extends Item
 		return false;
 	}
 
-	public boolean canEquip(ItemStack stack, EquipmentSlot armorType, Entity entity)
-	{
-		return false;
-	}
+
 
 	@Override
-	public int getBarColor(ItemStack pStack)
+	public void appendHoverText(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
 	{
-		return Mth.hsvToRgb(Math.max(0.0F, getBarWidth(pStack)/(float)MAX_BAR_WIDTH)/3.0F, 1.0F, 1.0F);
-	}
-
-	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
-	{
-		list.add(new TranslatableComponent("tooltip.nc.multitool.desc").withStyle(ChatFormatting.YELLOW));
-		list.add(new TranslatableComponent("tooltip.nc.multitool.shift.desc").withStyle(ChatFormatting.YELLOW));
+		list.add(new TranslationTextComponent("tooltip.nc.multitool.desc").withStyle(TextFormatting.YELLOW));
+		list.add(new TranslationTextComponent("tooltip.nc.multitool.shift.desc").withStyle(TextFormatting.YELLOW));
 	}
 }

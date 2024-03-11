@@ -19,18 +19,14 @@ import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.util.CustomEnergyStorage;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.Direction;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.item.ItemStack;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -39,10 +35,8 @@ import org.antlr.v4.runtime.misc.NotNull;;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+
 import igentuman.nc.compat.cc.NCTurbinePeripheral;
 
 import static igentuman.nc.block.fission.FissionControllerBlock.POWERED;
@@ -104,7 +98,7 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
             allowedInputs = new ArrayList<>();
            /* for(AbstractRecipe recipe: NcRecipeType.ALL_RECIPES.get(getName()).getRecipeType().getRecipes(getLevel())) {
                 for(Ingredient ingredient: recipe.getItemIngredients()) {
-                    allowedInputs.addAll(List.of(ingredient.getItems()));
+                    allowedInputs.addAll(Arrays.asList(ingredient.getItems()));
                 }
             }*/
         }
@@ -204,7 +198,7 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
         }
         return super.getCapability(cap, side);
     }
-
+/*
     protected void playRunningSound() {
         if(isRemoved() || (currentSound != null && !currentSound.getLocation().equals(FISSION_REACTOR.get().getLocation()))) {
             SoundHandler.stopTileSound(getBlockPos());
@@ -218,7 +212,7 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
             playSoundCooldown = 20;
             currentSound = SoundHandler.startTileSound(FISSION_REACTOR.get(), SoundSource.BLOCKS, 0.2f, getBlockPos());
         }
-    }
+    }*/
 
     public void tickClient() {
         if(!isCasingValid || !isInternalValid) {
@@ -226,7 +220,7 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
             return;
         }
         if(isProcessing()) {
-            playRunningSound();
+        //    playRunningSound();
         }
     }
     protected int reValidateCounter = 0;
@@ -261,7 +255,7 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
             try {
                 assert level != null;
                 level.setBlockAndUpdate(worldPosition, getBlockState().setValue(POWERED, powered));
-                level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(POWERED, powered), Block.UPDATE_ALL);
+             //   level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(POWERED, powered), Block.UPDATE_ALL);
             } catch (NullPointerException ignored) {}
         }
 
@@ -413,12 +407,12 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
     }
 
     @Override
-    public void load(CompoundTag tag) {
+    public void load(BlockState state, CompoundNBT tag) {
         if (tag.contains("Energy")) {
-            energyStorage.deserializeNBT(tag.get("Energy"));
+            energyStorage.deserializeNBT(tag.getCompound("Energy"));
         }
         if (tag.contains("Info")) {
-            CompoundTag infoTag = tag.getCompound("Info");
+            CompoundNBT infoTag = tag.getCompound("Info");
             readTagData(infoTag);
             if (infoTag.contains("recipeInfo")) {
                 recipeInfo.deserializeNBT(infoTag.getCompound("recipeInfo"));
@@ -433,11 +427,11 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
         if (tag.contains("Content")) {
             contentHandler.deserializeNBT(tag.getCompound("Content"));
         }
-        super.load(tag);
+        super.load(state, tag);
     }
 
-    public void saveAdditional(CompoundTag tag) {
-        CompoundTag infoTag = new CompoundTag();
+    public void saveAdditional(CompoundNBT tag) {
+        CompoundNBT infoTag = new CompoundNBT();
         tag.put("Energy", energyStorage.serializeNBT());
         tag.put("Content", contentHandler.serializeNBT());
         infoTag.put("recipeInfo", recipeInfo.serializeNBT());
@@ -455,15 +449,15 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
     }
 
     @Override
-    public void handleUpdateTag(CompoundTag tag) {
+    public void handleUpdateTag(BlockState state, CompoundNBT tag) {
         if (tag != null) {
             loadClientData(tag);
         }
     }
 
-    private void loadClientData(CompoundTag tag) {
+    private void loadClientData(CompoundNBT tag) {
         if (tag.contains("Info")) {
-            CompoundTag infoTag = tag.getCompound("Info");
+            CompoundNBT infoTag = tag.getCompound("Info");
             if (infoTag.contains("recipeInfo")) {
                 recipeInfo.deserializeNBT(infoTag.getCompound("recipeInfo"));
             }
@@ -482,14 +476,14 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
     }
 
     @Override
-    public CompoundTag getUpdateTag() {
-        CompoundTag tag = super.getUpdateTag();
+    public CompoundNBT getUpdateTag() {
+        CompoundNBT tag = super.getUpdateTag();
         saveClientData(tag);
         return tag;
     }
 
-    private void saveClientData(CompoundTag tag) {
-        CompoundTag infoTag = new CompoundTag();
+    private void saveClientData(CompoundNBT tag) {
+        CompoundNBT infoTag = new CompoundNBT();
         tag.put("Info", infoTag);
         infoTag.putInt("energy", energyStorage.getEnergyStored());
         saveTagData(infoTag);
@@ -499,18 +493,18 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
         tag.put("Content", contentHandler.serializeNBT());
     }
 
-    @Override
+  /*  @Override
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
         int oldEnergy = energyStorage.getEnergyStored();
 
-        CompoundTag tag = pkt.getTag();
+        CompoundNBT tag = pkt.getTag();
         handleUpdateTag(tag);
 
         if (oldEnergy != energyStorage.getEnergyStored()) {
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
         }
     }
-
+*/
     public double getDepletionProgress() {
         return recipeInfo.getProgress();
     }
@@ -581,7 +575,7 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
 
         public Recipe(ResourceLocation id, ItemStackIngredient[] input, ItemStack[] output, FluidStackIngredient[] inputFluids, FluidStack[] outputFluids, double timeModifier, double powerModifier, double heatModifier, double rarity) {
             super(id, input, output, timeModifier, powerModifier, heatModifier, rarity);
-            CATALYSTS.put(codeId, List.of(getToastSymbol()));
+            CATALYSTS.put(codeId, Arrays.asList(getToastSymbol()));
         }
 
         @Override

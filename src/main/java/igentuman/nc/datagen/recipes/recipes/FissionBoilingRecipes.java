@@ -1,15 +1,16 @@
 package igentuman.nc.datagen.recipes.recipes;
 
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.IFinishedRecipe;
 import net.minecraftforge.fluids.FluidStack;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
 public class FissionBoilingRecipes extends AbstractRecipeProvider {
 
-    public static void generate(Consumer<FinishedRecipe> consumer) {
+    public static void generate(Consumer<IFinishedRecipe> consumer) {
         FissionBoilingRecipes.consumer = consumer;
         ID = "fission_boiling";
 
@@ -27,6 +28,6 @@ public class FissionBoilingRecipes extends AbstractRecipeProvider {
     }
 
     protected static void add(FluidStackIngredient input, FluidStack output, double heatRequired) {
-        boilingRecipe(List.of(input), List.of(output), heatRequired);
+        boilingRecipe(Arrays.asList(input), Arrays.asList(output), heatRequired);
     }
 }

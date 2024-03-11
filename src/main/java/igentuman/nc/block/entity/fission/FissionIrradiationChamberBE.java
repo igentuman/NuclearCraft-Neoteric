@@ -1,10 +1,10 @@
 package igentuman.nc.block.entity.fission;
 
 import igentuman.nc.NuclearCraft;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.Direction;
+import net.minecraft.block.BlockState;
 
 import static igentuman.nc.multiblock.fission.FissionReactorMultiblock.isModerator;
 
@@ -30,7 +30,7 @@ public class FissionIrradiationChamberBE extends FissionBE {
         irradiationConnections = 0;
         for (Direction dir : Direction.values()) {
             if(isModerator(getBlockPos().relative(dir), getLevel())) {
-                BlockEntity be = getLevel().getBlockEntity(getBlockPos().relative(dir, 2));
+                TileEntity be = getLevel().getBlockEntity(getBlockPos().relative(dir, 2));
                 if (be instanceof FissionFuelCellBE) {
                     irradiationConnections++;
                 }

@@ -2,8 +2,8 @@ package igentuman.nc.client;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.client.Minecraft;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 
@@ -21,12 +21,12 @@ public class NcClient {
     public static long ticksPassed = 0;
 
     @Nullable
-    public static Level tryGetClientWorld() {
+    public static World tryGetClientWorld() {
         return Minecraft.getInstance().level;
     }
 
     @Nullable
-    public static Player tryGetClientPlayer() {
+    public static PlayerEntity tryGetClientPlayer() {
         return Minecraft.getInstance().player;
     }
 }

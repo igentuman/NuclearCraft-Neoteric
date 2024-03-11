@@ -3,21 +3,21 @@ package igentuman.nc.datagen.recipes.recipes;
 import igentuman.nc.content.materials.Materials;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.recipes.ingredient.NcIngredient;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.IFinishedRecipe;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
 import static igentuman.nc.setup.registration.NCItems.NC_ITEMS;
-import static net.minecraft.world.item.Items.*;
-import static net.minecraft.world.level.material.Fluids.LAVA;
-import static net.minecraft.world.level.material.Fluids.WATER;
+import static net.minecraft.fluid.Fluids.LAVA;
+import static net.minecraft.fluid.Fluids.WATER;
 
 public class PumpRecipes extends AbstractRecipeProvider {
 
-    public static void generate(Consumer<FinishedRecipe> consumer) {
+    public static void generate(Consumer<IFinishedRecipe> consumer) {
         PumpRecipes.consumer = consumer;
         ID = Processors.PUMP;
 
@@ -37,6 +37,6 @@ public class PumpRecipes extends AbstractRecipeProvider {
     }
 
     protected static void add(NcIngredient inputItem, FluidStack outputFluid, double...modifiers) {
-        itemsAndFluids(List.of(inputItem), new ArrayList<>(), new ArrayList<>(), List.of(outputFluid), modifiers);
+        itemsAndFluids(Arrays.asList(inputItem), new ArrayList<>(), new ArrayList<>(), Arrays.asList(outputFluid), modifiers);
     }
 }

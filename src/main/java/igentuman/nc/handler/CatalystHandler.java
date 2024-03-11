@@ -1,7 +1,7 @@
 package igentuman.nc.handler;
 
 import igentuman.nc.block.entity.processor.NCProcessorBE;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;

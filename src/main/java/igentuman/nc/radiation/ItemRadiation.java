@@ -4,10 +4,11 @@ import igentuman.nc.content.fuel.FuelManager;
 import igentuman.nc.content.materials.Materials;
 import igentuman.nc.content.energy.RTGs;
 import igentuman.nc.setup.registration.Fuel;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
+import net.minecraft.item.Item;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -17,7 +18,7 @@ import static igentuman.nc.setup.registration.NCBlocks.NC_BLOCKS;
 import static igentuman.nc.setup.registration.NCEnergyBlocks.ENERGY_BLOCKS;
 import static igentuman.nc.setup.registration.NCItems.NC_DUSTS;
 import static igentuman.nc.setup.registration.NCItems.NC_INGOTS;
-import static net.minecraft.world.item.Items.AIR;
+import static net.minecraft.item.Items.AIR;
 
 public class ItemRadiation {
     protected static HashMap<Item, Double> radiationMap = new HashMap<>();
@@ -58,7 +59,7 @@ public class ItemRadiation {
         }
 
         for(String name: Materials.isotopes()) {
-            for(String type: List.of("", "_ox", "_ni", "_za", "_tr")) {
+            for(String type: Arrays.asList("", "_ox", "_ni", "_za", "_tr")) {
                 add(name+type, Materials.isotopes.get(name));
             }
         }
@@ -70,7 +71,7 @@ public class ItemRadiation {
 
         for (String name: FuelManager.all().keySet()) {
             for(String subType: FuelManager.all().get(name).keySet()) {
-                for(String type: List.of("", "ox", "ni", "za", "tr")) {
+                for(String type: Arrays.asList("", "ox", "ni", "za", "tr")) {
                     int isotope1Cnt = 1;
                     int isotope2Cnt = 8;
                     if(subType.substring(0,1).equalsIgnoreCase("h")) {
@@ -80,14 +81,14 @@ public class ItemRadiation {
                     Item isotope1 = getIsotope(name, String.valueOf(FuelManager.all().get(name).get(subType).getDefault().isotopes[0]), type);
                     Item isotope2 = getIsotope(name, String.valueOf(FuelManager.all().get(name).get(subType).getDefault().isotopes[1]), type);
                     double radiation = ItemRadiation.byItem(isotope1)*isotope1Cnt + ItemRadiation.byItem(isotope2)*isotope2Cnt;
-                    add(Fuel.NC_FUEL.get(List.of("fuel", name, subType, type)).get(), radiation/2);
+                    add(Fuel.NC_FUEL.get(Arrays.asList("fuel", name, subType, type)).get(), radiation/2);
                 }
             }
         }
 
         for (String name: FuelManager.all().keySet()) {
             for(String subType: FuelManager.all().get(name).keySet()) {
-                for(String type: List.of("", "ox", "ni", "za", "tr")) {
+                for(String type: Arrays.asList("", "ox", "ni", "za", "tr")) {
                     int isotope1Cnt = 1;
                     int isotope2Cnt = 8;
                     if(subType.substring(0,1).equalsIgnoreCase("h")) {
@@ -97,7 +98,7 @@ public class ItemRadiation {
                     Item isotope1 = getIsotope(name, String.valueOf(FuelManager.all().get(name).get(subType).getDefault().isotopes[0]), type);
                     Item isotope2 = getIsotope(name, String.valueOf(FuelManager.all().get(name).get(subType).getDefault().isotopes[1]), type);
                     double radiation = ItemRadiation.byItem(isotope1)*isotope1Cnt + ItemRadiation.byItem(isotope2)*isotope2Cnt;
-                    add(Fuel.NC_DEPLETED_FUEL.get(List.of("depleted", name, subType, type)).get(), radiation/1.5);
+                    add(Fuel.NC_DEPLETED_FUEL.get(Arrays.asList("depleted", name, subType, type)).get(), radiation/1.5);
                 }
             }
         }

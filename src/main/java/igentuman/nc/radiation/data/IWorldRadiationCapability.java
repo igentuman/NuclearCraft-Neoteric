@@ -1,11 +1,11 @@
 package igentuman.nc.radiation.data;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.Level;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.INBTSerializable;
 
 
-public interface IWorldRadiationCapability extends INBTSerializable<CompoundTag> {
+public interface IWorldRadiationCapability extends INBTSerializable<CompoundNBT> {
 
     int getChunkRadiation(int chunkX, int chunkZ);
 

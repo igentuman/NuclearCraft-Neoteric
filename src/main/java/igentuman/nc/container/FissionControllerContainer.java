@@ -3,16 +3,15 @@ package igentuman.nc.container;
 import igentuman.nc.block.entity.fission.FissionControllerBE;
 import igentuman.nc.container.elements.NCSlotItemHandler;
 import igentuman.nc.multiblock.fission.FissionReactor;
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.inventory.Inventory;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.Slot;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
@@ -24,16 +23,16 @@ import static igentuman.nc.util.TextUtils.numberFormat;
 import static igentuman.nc.util.TextUtils.roundFormat;
 import static net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
 
-public class FissionControllerContainer extends AbstractContainerMenu {
+public class FissionControllerContainer extends Container {
     protected FissionControllerBE<?> blockEntity;
-    protected Player playerEntity;
+    protected PlayerEntity playerEntity;
 
     protected String name = "fission_reactor_controller";
     private int slotIndex = 0;
 
     protected IItemHandler playerInventory;
 
-    public FissionControllerContainer(int pContainerId, BlockPos pos, Inventory playerInventory) {
+    public FissionControllerContainer(int pContainerId, BlockPos pos, PlayerInventory playerInventory) {
         super(FissionReactor.FISSION_CONTROLLER_CONTAINER.get(), pContainerId);
         this.playerEntity = playerInventory.player;
         this.playerInventory =  new InvWrapper(playerInventory);
@@ -48,7 +47,7 @@ public class FissionControllerContainer extends AbstractContainerMenu {
     }
 
     @Override
-    public ItemStack quickMoveStack(Player pPlayer, int index) {
+    public ItemStack quickMoveStack(PlayerEntity pPlayer, int index) {
         ItemStack itemstack = ItemStack.EMPTY;
         Slot slot = this.slots.get(index);
         if (slot != null && slot.hasItem()) {
@@ -60,11 +59,7 @@ public class FissionControllerContainer extends AbstractContainerMenu {
                 }
                 slot.onQuickCraft(stack, itemstack);
             } else {
-                if (ForgeHooks.getBurnTime(stack, RecipeType.SMELTING) > 0) {
-                    if (!this.moveItemStackTo(stack, 0, 1, false)) {
-                        return ItemStack.EMPTY;
-                    }
-                } else if (index < 28) {
+                if (index < 28) {
                     if (!this.moveItemStackTo(stack, 28, 37, false)) {
                         return ItemStack.EMPTY;
                     }
@@ -90,16 +85,17 @@ public class FissionControllerContainer extends AbstractContainerMenu {
     }
 
     @Override
-    public boolean stillValid(Player playerIn) {
-        return stillValid(
+    public boolean stillValid(PlayerEntity playerIn) {
+        return true;
+/*        return stillValid(
                 ContainerLevelAccess.create(blockEntity.getLevel(), blockEntity.getBlockPos()),
                 playerEntity,
                 FissionReactor.FISSION_BLOCKS.get(name).get()
-        );
+        );*/
     }
 
-    public Component getTitle() {
-        return new TranslatableComponent("block."+MODID+"."+name);
+    public TextComponent getTitle() {
+        return new TranslationTextComponent("block."+MODID+"."+name);
     }
 
     public boolean isCasingValid() {

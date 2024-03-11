@@ -3,17 +3,16 @@ package igentuman.nc.datagen.recipes.builder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.minecraft.advancements.Advancement;
-import net.minecraft.advancements.AdvancementRewards;
-import net.minecraft.advancements.CriterionTriggerInstance;
-import net.minecraft.advancements.RequirementsStrategy;
-import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
-import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.level.ItemLike;
+import mekanism.api.datagen.recipe.RecipeCriterion;
+import net.minecraft.advancements.*;
+import net.minecraft.advancements.criterion.CriterionInstance;
+import net.minecraft.advancements.criterion.RecipeUnlockedTrigger;
+import net.minecraft.data.IFinishedRecipe;
+import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.util.IItemProvider;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.fluids.FluidStack;
@@ -26,6 +25,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static net.minecraft.advancements.IRequirementsStrategy.OR;
 
 public abstract class RecipeBuilder<BUILDER extends RecipeBuilder<BUILDER>> {
 
@@ -46,9 +46,9 @@ public abstract class RecipeBuilder<BUILDER extends RecipeBuilder<BUILDER>> {
      *
      * @param criterion Criterion to add.
      */
-    public BUILDER addCriterion(RecipeCriterion criterion) {
+/*    public BUILDER addCriterion(Criterit criterion) {
         return addCriterion(criterion.name(), criterion.criterion());
-    }
+    }*/
 
     /**
      * Adds a criterion to this recipe.
@@ -56,7 +56,7 @@ public abstract class RecipeBuilder<BUILDER extends RecipeBuilder<BUILDER>> {
      * @param name      Name of the criterion.
      * @param criterion Criterion to add.
      */
-    public BUILDER addCriterion(String name, CriterionTriggerInstance criterion) {
+    public BUILDER addCriterion(String name, ICriterionInstance criterion) {
         advancementBuilder.addCriterion(name, criterion);
         return (BUILDER) this;
     }
@@ -101,12 +101,12 @@ public abstract class RecipeBuilder<BUILDER extends RecipeBuilder<BUILDER>> {
      * @param consumer Finished Recipe Consumer.
      * @param id       Name of the recipe being built.
      */
-    public void build(Consumer<FinishedRecipe> consumer, ResourceLocation id) {
+    public void build(Consumer<IFinishedRecipe> consumer, ResourceLocation id) {
         validate(id);
         if (hasCriteria()) {
             //If there is a way to "unlock" this recipe then add an advancement with the criteria
             advancementBuilder.parent(new ResourceLocation("recipes/root")).addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id))
-                  .rewards(AdvancementRewards.Builder.recipe(id)).requirements(RequirementsStrategy.OR);
+                  .rewards(AdvancementRewards.Builder.recipe(id)).requirements(OR);
         }
         consumer.accept(getResult(id));
     }
@@ -117,7 +117,7 @@ public abstract class RecipeBuilder<BUILDER extends RecipeBuilder<BUILDER>> {
      * @param consumer Finished Recipe Consumer.
      * @param output       Output to base the recipe name off of.
      */
-    protected void build(Consumer<FinishedRecipe> consumer, ItemLike... output) {
+    protected void build(Consumer<IFinishedRecipe> consumer, IItemProvider... output) {
         ResourceLocation registryName = ForgeRegistries.ITEMS.getKey(output[0].asItem());
         if (registryName == null) {
             throw new IllegalStateException("Could not retrieve registry name for output.");
@@ -128,7 +128,7 @@ public abstract class RecipeBuilder<BUILDER extends RecipeBuilder<BUILDER>> {
     /**
      * Base recipe result.
      */
-    protected abstract class RecipeResult implements FinishedRecipe {
+    protected abstract class RecipeResult implements IFinishedRecipe {
 
         private final ResourceLocation id;
 
@@ -153,7 +153,7 @@ public abstract class RecipeBuilder<BUILDER extends RecipeBuilder<BUILDER>> {
 
         @NotNull
         @Override
-        public RecipeSerializer<?> getType() {
+        public IRecipeSerializer<?> getType() {
             return ForgeRegistries.RECIPE_SERIALIZERS.getValue(serializerName);
         }
 

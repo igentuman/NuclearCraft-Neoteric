@@ -1,8 +1,8 @@
 package igentuman.nc.handler.event.client;
 
 import igentuman.nc.setup.registration.NCFluids;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -13,7 +13,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.setup.registration.NCFluids.ALL_FLUID_ENTRIES;
 import static igentuman.nc.setup.registration.NCFluids.NC_MATERIALS;
-import static net.minecraft.world.level.block.Blocks.WATER;
 
 @Mod.EventBusSubscriber(modid = MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ColorHandler {
@@ -30,13 +29,13 @@ public class ColorHandler {
     public static void onClientSetup(FMLClientSetupEvent event)
     {
         for(String gas: NCFluids.NC_GASES.keySet()) {
-            ItemBlockRenderTypes.setRenderLayer(ALL_FLUID_ENTRIES.get(gas).getFlowing(), RenderType.translucent());
+        //    RenderTypeLookup.setRenderLayer(ALL_FLUID_ENTRIES.get(gas).getFlowing(), RenderType.translucent());
         }
 
         for(String fluid: NC_MATERIALS.keySet()) {
             if(fluid.contains("molten")) return;
-            ItemBlockRenderTypes.setRenderLayer(NC_MATERIALS.get(fluid).getStill(), RenderType.translucent());
-            ItemBlockRenderTypes.setRenderLayer(NC_MATERIALS.get(fluid).getFlowing(), RenderType.translucent());
+          //  RenderTypeLookup.setRenderLayer(NC_MATERIALS.get(fluid).getStill(), RenderType.translucent());
+         //   RenderTypeLookup.setRenderLayer(NC_MATERIALS.get(fluid).getFlowing(), RenderType.translucent());
         }
     }
 

@@ -1,6 +1,6 @@
 package igentuman.nc.multiblock;
 
-import net.minecraft.world.level.block.Block;
+import net.minecraft.block.Block;
 
 import java.util.List;
 

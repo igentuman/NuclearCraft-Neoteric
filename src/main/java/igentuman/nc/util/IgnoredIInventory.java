@@ -1,10 +1,12 @@
 package igentuman.nc.util;
 
-import net.minecraft.world.Container;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
 
-public final class IgnoredIInventory implements Container {
+import javax.annotation.Nonnull;
+
+public final class IgnoredIInventory implements IInventory {
 
     public static final IgnoredIInventory INSTANCE = new IgnoredIInventory();
 
@@ -37,7 +39,7 @@ public final class IgnoredIInventory implements Container {
     }
 
     @Override
-    public void setItem(int index, ItemStack stack) {
+    public void setItem(int index, @Nonnull ItemStack stack) {
     }
 
     @Override
@@ -45,7 +47,7 @@ public final class IgnoredIInventory implements Container {
     }
 
     @Override
-    public boolean stillValid(Player player) {
+    public boolean stillValid(@Nonnull PlayerEntity player) {
         return false;
     }
 

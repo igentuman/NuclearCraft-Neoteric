@@ -2,16 +2,16 @@ package igentuman.nc.handler.sided.capability;
 
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.SlotModePair;
-import net.minecraft.core.Direction;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
 
 import java.util.HashMap;
 
 public abstract class AbstractCapabilityHandler {
     public int inputSlots;
     public int outputSlots;
-    public BlockEntity tile;
+    public TileEntity tile;
     public boolean sideMapUpdated = true;
     public HashMap<Integer, SlotModePair[]> sideMap;
     public SidedContentHandler sidedContentHandler;
@@ -45,16 +45,30 @@ public abstract class AbstractCapabilityHandler {
         sideMapUpdated = true;
         if(getType(slot) == SidedContentHandler.SlotType.INPUT) {
             switch (mode) {
-                case DISABLED -> sideSlots[slot] = new SlotModePair(SlotModePair.SlotMode.INPUT, slot);
-                case INPUT -> sideSlots[slot] = new SlotModePair(SlotModePair.SlotMode.PULL, slot);
-                case PULL -> sideSlots[slot] = new SlotModePair(SlotModePair.SlotMode.DISABLED, slot);
+                case DISABLED:
+                    sideSlots[slot] = new SlotModePair(SlotModePair.SlotMode.INPUT, slot);
+                    break;
+                case INPUT:
+                    sideSlots[slot] = new SlotModePair(SlotModePair.SlotMode.PULL, slot);
+                    break;
+                case PULL:
+                    sideSlots[slot] = new SlotModePair(SlotModePair.SlotMode.DISABLED, slot);
+                    break;
             }
         } else {
             switch (mode) {
-                case DISABLED -> sideSlots[slot] = new SlotModePair(SlotModePair.SlotMode.OUTPUT, slot);
-                case OUTPUT -> sideSlots[slot] = new SlotModePair(SlotModePair.SlotMode.PUSH, slot);
-                case PUSH -> sideSlots[slot] = new SlotModePair(SlotModePair.SlotMode.PUSH_EXCESS, slot);
-                case PUSH_EXCESS -> sideSlots[slot] = new SlotModePair(SlotModePair.SlotMode.DISABLED, slot);
+                case DISABLED:
+                    sideSlots[slot] = new SlotModePair(SlotModePair.SlotMode.OUTPUT, slot);
+                    break;
+                case OUTPUT:
+                    sideSlots[slot] = new SlotModePair(SlotModePair.SlotMode.PUSH, slot);
+                    break;
+                case PUSH:
+                    sideSlots[slot] = new SlotModePair(SlotModePair.SlotMode.PUSH_EXCESS, slot);
+                    break;
+                case PUSH_EXCESS:
+                    sideSlots[slot] = new SlotModePair(SlotModePair.SlotMode.DISABLED, slot);
+                    break;
             }
         }
         return sideSlots[slot].getMode().ordinal();

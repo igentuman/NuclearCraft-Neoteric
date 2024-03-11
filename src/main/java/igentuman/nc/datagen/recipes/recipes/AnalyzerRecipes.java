@@ -4,18 +4,18 @@ import igentuman.nc.content.materials.Materials;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.recipes.ingredient.NcIngredient;
 import igentuman.nc.setup.registration.NCItems;
-import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.data.IFinishedRecipe;
+import net.minecraft.item.ItemStack;
 
 import java.util.function.Consumer;
 
-import static igentuman.nc.setup.registration.NCItems.ALL_NC_ITEMS;
 import static igentuman.nc.setup.registration.NCItems.NC_PARTS;
-import static net.minecraft.world.item.Items.*;
+import static net.minecraft.item.Items.FILLED_MAP;
+import static net.minecraft.item.Items.PAPER;
 
 public class AnalyzerRecipes extends AbstractRecipeProvider {
 
-    public static void generate(Consumer<FinishedRecipe> consumer) {
+    public static void generate(Consumer<IFinishedRecipe> consumer) {
         AnalyzerRecipes.consumer = consumer;
         ID = Processors.ANALYZER;
 

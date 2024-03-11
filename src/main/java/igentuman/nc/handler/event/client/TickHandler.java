@@ -32,14 +32,14 @@ public class TickHandler {
         GeigerSound toPlay = GeigerSound.create(minecraft.player);
         if(toPlay != null && (geigerSound == null || geigerSound.radiationLevel != toPlay.radiationLevel)) {
             if(geigerSound != null) {
-                SoundHandler.stopSound(geigerSound);
+         //       SoundHandler.stopSound(geigerSound);
             }
             geigerSound = toPlay;
-            SoundHandler.playSound(geigerSound);
+         //   SoundHandler.playSound(geigerSound);
         }
 
         if(toPlay == null && geigerSound != null) {
-            SoundHandler.stopSound(geigerSound);
+         //   SoundHandler.stopSound(geigerSound);
             geigerSound = null;
         }
     }

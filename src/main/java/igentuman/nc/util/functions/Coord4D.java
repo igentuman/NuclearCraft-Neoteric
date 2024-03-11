@@ -1,18 +1,17 @@
 package igentuman.nc.util.functions;
 
 import igentuman.nc.util.NBTConstants;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
-import net.minecraft.core.Vec3i;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.entity.Entity;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.RegistryKey;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.Direction;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.World;
 
 import java.util.Objects;
 
@@ -21,40 +20,40 @@ public class Coord4D {
     private final int x;
     private final int y;
     private final int z;
-    public final ResourceKey<Level> dimension;
+    public final RegistryKey<World> dimension;
     private final int hashCode;
 
     public Coord4D(Entity entity) {
         this(entity.blockPosition(), entity.level);
     }
 
-    public Coord4D(double x, double y, double z, ResourceKey<Level> dimension) {
-        this.x = Mth.floor(x);
-        this.y = Mth.floor(y);
-        this.z = Mth.floor(z);
+    public Coord4D(double x, double y, double z, RegistryKey<World> dimension) {
+        this.x = MathHelper.floor(x);
+        this.y = MathHelper.floor(y);
+        this.z = MathHelper.floor(z);
         this.dimension = dimension;
         this.hashCode = initHashCode();
     }
 
-    public Coord4D(Vec3i pos, Level world) {
+    public Coord4D(BlockPos pos, World world) {
         this(pos, world.dimension());
     }
 
-    public Coord4D(Vec3i pos, ResourceKey<Level> dimension) {
+    public Coord4D(BlockPos pos, RegistryKey<World> dimension) {
         this(pos.getX(), pos.getY(), pos.getZ(), dimension);
     }
 
-    public Coord4D(BlockEntity tile) {
+    public Coord4D(TileEntity tile) {
         this(tile.getBlockPos(), Objects.requireNonNull(tile.getLevel(), "Block entity has no level."));
     }
 
-    public static Coord4D read(CompoundTag tag) {
+    public static Coord4D read(CompoundNBT tag) {
         return new Coord4D(tag.getInt(NBTConstants.X), tag.getInt(NBTConstants.Y), tag.getInt(NBTConstants.Z),
-              ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(tag.getString(NBTConstants.DIMENSION))));
+              RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(tag.getString(NBTConstants.DIMENSION))));
     }
 
-    public static Coord4D read(FriendlyByteBuf dataStream) {
-        return new Coord4D(dataStream.readBlockPos(), ResourceKey.create(Registry.DIMENSION_REGISTRY, dataStream.readResourceLocation()));
+    public static Coord4D read(PacketBuffer dataStream) {
+        return new Coord4D(dataStream.readBlockPos(), RegistryKey.create(Registry.DIMENSION_REGISTRY, dataStream.readResourceLocation()));
     }
 
     /**
@@ -82,7 +81,7 @@ public class Coord4D {
         return new BlockPos(x, y, z);
     }
 
-    public CompoundTag write(CompoundTag nbtTags) {
+    public CompoundNBT write(CompoundNBT nbtTags) {
         nbtTags.putInt(NBTConstants.X, x);
         nbtTags.putInt(NBTConstants.Y, y);
         nbtTags.putInt(NBTConstants.Z, z);
@@ -90,7 +89,7 @@ public class Coord4D {
         return nbtTags;
     }
 
-    public void write(FriendlyByteBuf dataStream) {
+    public void write(PacketBuffer dataStream) {
         //Note: We write the position as a block pos over the network so that it can be packed more efficiently
         dataStream.writeBlockPos(getPos());
         dataStream.writeResourceLocation(dimension.location());
@@ -129,7 +128,8 @@ public class Coord4D {
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof Coord4D other && other.x == x && other.y == y && other.z == z && other.dimension == dimension;
+        return obj instanceof Coord4D && ((Coord4D) obj).x == x && ((Coord4D) obj).y == y && ((Coord4D) obj).z == z && ((Coord4D) obj).dimension == dimension;
+
     }
 
     @Override

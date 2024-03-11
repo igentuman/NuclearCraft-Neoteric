@@ -2,8 +2,10 @@ package igentuman.nc.content.storage;
 
 import igentuman.nc.block.entity.ContainerBE;
 import igentuman.nc.handler.config.CommonConfig;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
+
+import java.util.Arrays;
 
 import static igentuman.nc.handler.config.CommonConfig.STORAGE_BLOCKS;
 
@@ -18,7 +20,7 @@ public class ContainerBlockPrefab {
     public ContainerBlockPrefab(String name, int rows, int colls) {
         this.rows = rows;
         this.colls = colls;
-        blockEntity = ContainerBE::new;
+        //blockEntity = ContainerBE::new;
         this.name = name;
     }
 
@@ -32,7 +34,7 @@ public class ContainerBlockPrefab {
             if(!CommonConfig.isLoaded()) {
                 return this;
             }
-            int id = BarrelBlocks.all().keySet().stream().toList().indexOf(name);
+            int id = Arrays.asList(BarrelBlocks.all().keySet().stream().toArray()).indexOf(name);
             registered = STORAGE_BLOCKS.REGISTER_BARREL.get().get(id);
             initialized = true;
         }
@@ -42,15 +44,15 @@ public class ContainerBlockPrefab {
         return  registered;
     }
 
-    public BlockEntityType.BlockEntitySupplier<? extends BlockEntity>  getBlockEntity() {
+    public TileEntityType <? extends TileEntity>  getBlockEntity() {
         return blockEntity;
     }
 
-    public ContainerBlockPrefab setBlockEntity(BlockEntityType.BlockEntitySupplier<? extends BlockEntity>  blockEntity) {
+    public ContainerBlockPrefab setBlockEntity(TileEntityType<? extends TileEntity>  blockEntity) {
         this.blockEntity = blockEntity;
         return this;
     }
-    private BlockEntityType.BlockEntitySupplier<? extends BlockEntity>  blockEntity;
+    private TileEntityType<? extends TileEntity>  blockEntity;
 
     public int getRows() {
         return rows;

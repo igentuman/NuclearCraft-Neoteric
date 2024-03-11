@@ -5,29 +5,30 @@ import igentuman.nc.container.NCProcessorContainer;
 import igentuman.nc.content.processors.config.ProcessorSlots;
 import igentuman.nc.handler.config.CommonConfig;
 import igentuman.nc.recipes.AbstractRecipe;
-import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.MenuAccess;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.inventory.Inventory;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
 
 import static igentuman.nc.handler.config.ProcessorsConfig.PROCESSOR_CONFIG;
 
-public class ProcessorPrefab <M extends NCProcessorContainer, U extends Screen & MenuAccess<M>> {
+public class ProcessorPrefab <M extends NCProcessorContainer, U extends Screen> {
 
     public int progressBar = 0;
-    public Supplier<RecipeSerializer<? extends AbstractRecipe>> recipeSerializerSupplier;
+    public Supplier<IRecipeSerializer<? extends AbstractRecipe>> recipeSerializerSupplier;
     public boolean supportsCatalyst;
     private  Class  container;
-    private  MenuScreens.ScreenConstructor<M, U>  screenConstructor;
+    private  Container  screenConstructor;
     private boolean initialized;
     private boolean has_recipes = true;
     private Boolean registered = true;
@@ -46,21 +47,21 @@ public class ProcessorPrefab <M extends NCProcessorContainer, U extends Screen &
     protected Class recipeManager;
 
 
-    public BlockEntityType.BlockEntitySupplier<? extends NCProcessorBE>  getBlockEntity() {
+    public TileEntityType <? extends NCProcessorBE>  getBlockEntity() {
         return blockEntity;
     }
 
-    public ProcessorPrefab<M, U> setBlockEntity(BlockEntityType.BlockEntitySupplier<? extends NCProcessorBE>  blockEntity) {
+    public ProcessorPrefab<M, U> setBlockEntity(TileEntityType<? extends NCProcessorBE>  blockEntity) {
         this.blockEntity = blockEntity;
         return this;
     }
-    private BlockEntityType.BlockEntitySupplier<? extends NCProcessorBE>  blockEntity;
+    private TileEntityType<? extends NCProcessorBE>  blockEntity;
 
-    public MenuScreens.ScreenConstructor<M, U> getScreenConstructor() {
+    public Container getScreenConstructor() {
         return screenConstructor;
     }
 
-    public void setScreenConstructor(MenuScreens.ScreenConstructor<M, U> screenConstructor) {
+    public void setScreenConstructor(Container screenConstructor) {
         this.screenConstructor = screenConstructor;
     }
 
@@ -129,7 +130,7 @@ public class ProcessorPrefab <M extends NCProcessorContainer, U extends Screen &
             if(!CommonConfig.isLoaded()) {
                 return this;
             }
-            int id = Processors.all().keySet().stream().toList().indexOf(name);
+            int id = Arrays.asList(Processors.all().keySet().stream().toArray()).indexOf(name);
             registered = PROCESSOR_CONFIG.REGISTER_PROCESSOR.get().get(id);
             power = PROCESSOR_CONFIG.PROCESSOR_POWER.get().get(id);
             time = PROCESSOR_CONFIG.PROCESSOR_TIME.get().get(id);
@@ -144,7 +145,7 @@ public class ProcessorPrefab <M extends NCProcessorContainer, U extends Screen &
 
     public Constructor<M> getContainerConstructor() {
         try {
-            return container.getConstructor(int.class, BlockPos.class, Inventory.class, Player.class, String.class);
+            return container.getConstructor(int.class, BlockPos.class, Inventory.class, PlayerEntity.class, String.class);
         } catch (NoSuchMethodException ex) {
             return null;
         }
@@ -158,7 +159,7 @@ public class ProcessorPrefab <M extends NCProcessorContainer, U extends Screen &
         return has_recipes;
     }
 
-    public Supplier<RecipeSerializer<? extends AbstractRecipe>> getRecipeSerializer() {
+    public Supplier<IRecipeSerializer<? extends AbstractRecipe>> getRecipeSerializer() {
         return recipeSerializerSupplier;
     }
 }

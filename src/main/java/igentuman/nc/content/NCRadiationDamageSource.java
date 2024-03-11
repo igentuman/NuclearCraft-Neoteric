@@ -1,6 +1,7 @@
 package igentuman.nc.content;
 
-import net.minecraft.world.damagesource.DamageSource;
+
+import net.minecraft.util.DamageSource;
 
 public class NCRadiationDamageSource {
 

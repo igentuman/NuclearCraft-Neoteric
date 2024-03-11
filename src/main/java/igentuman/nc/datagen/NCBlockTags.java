@@ -6,8 +6,8 @@ import igentuman.nc.multiblock.turbine.TurbineRegistration;
 import igentuman.nc.setup.registration.NCBlocks;
 import igentuman.nc.setup.registration.NCEnergyBlocks;
 import igentuman.nc.setup.registration.NCProcessors;
+import net.minecraft.data.BlockTagsProvider;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraft.tags.BlockTags;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -70,8 +70,8 @@ public class NCBlockTags extends BlockTagsProvider {
 
     private void ores() {
         for(String ore: NCBlocks.ORE_BLOCKS.keySet()) {
-            tag(BlockTags.MINEABLE_WITH_PICKAXE).add(NCBlocks.ORE_BLOCKS.get(ore).get());
-            tag(BlockTags.NEEDS_IRON_TOOL).add(NCBlocks.ORE_BLOCKS.get(ore).get());
+         /*   tag(BlockTags.MINEABLE_WITH_PICKAXE).add(NCBlocks.ORE_BLOCKS.get(ore).get());
+            tag(BlockTags.NEEDS_IRON_TOOL).add(NCBlocks.ORE_BLOCKS.get(ore).get());*/
             tag(Tags.Blocks.ORES).add(NCBlocks.ORE_BLOCKS.get(ore).get());
             tag(NCBlocks.ORE_TAGS.get(ore.replaceAll("_deepslate|_end|_nether","")))
                     .add(NCBlocks.ORE_BLOCKS.get(ore).get());
@@ -79,9 +79,9 @@ public class NCBlockTags extends BlockTagsProvider {
     }
 
     private void blocks() {
-        for(String block: NCBlocks.NC_BLOCKS.keySet()) {
+        for(String block: NCBlocks.NC_BLOCKS.keySet()) {/*
             tag(BlockTags.MINEABLE_WITH_PICKAXE).add(NCBlocks.NC_BLOCKS.get(block).get());
-            tag(BlockTags.NEEDS_IRON_TOOL).add(NCBlocks.NC_BLOCKS.get(block).get());
+            tag(BlockTags.NEEDS_IRON_TOOL).add(NCBlocks.NC_BLOCKS.get(block).get());*/
             tag(Tags.Blocks.STORAGE_BLOCKS).add(NCBlocks.NC_BLOCKS.get(block).get());
             if(NCBlocks.BLOCK_TAGS.get(block) != null) {
                 tag(NCBlocks.BLOCK_TAGS.get(block)).add(NCBlocks.NC_BLOCKS.get(block).get());
@@ -91,7 +91,7 @@ public class NCBlockTags extends BlockTagsProvider {
     }
 
     private void machines() {
-        for(String block: NCEnergyBlocks.ENERGY_BLOCKS.keySet()) {
+/*        for(String block: NCEnergyBlocks.ENERGY_BLOCKS.keySet()) {
             tag(BlockTags.MINEABLE_WITH_PICKAXE).add(NCEnergyBlocks.ENERGY_BLOCKS.get(block).get());
             tag(BlockTags.NEEDS_IRON_TOOL).add(NCEnergyBlocks.ENERGY_BLOCKS.get(block).get());
         }
@@ -120,7 +120,7 @@ public class NCBlockTags extends BlockTagsProvider {
             tag(BlockTags.NEEDS_IRON_TOOL).add(FUSION_BLOCKS.get(block).get());
         }
         tag(BlockTags.MINEABLE_WITH_PICKAXE).add(FUSION_CORE_PROXY.get());
-        tag(BlockTags.NEEDS_IRON_TOOL).add(FUSION_CORE_PROXY.get());
+        tag(BlockTags.NEEDS_IRON_TOOL).add(FUSION_CORE_PROXY.get());*/
     }
 
     @Override

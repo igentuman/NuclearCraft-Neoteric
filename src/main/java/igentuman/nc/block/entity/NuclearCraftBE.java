@@ -5,15 +5,14 @@ import igentuman.nc.client.sound.SoundHandler;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.util.NCBlockPos;
 import igentuman.nc.util.annotation.NBTField;
-import net.minecraft.client.resources.sounds.SoundInstance;
-import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.StringTag;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.StringNBT;
+import net.minecraft.network.play.server.SUpdateTileEntityPacket;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.block.BlockState;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
@@ -22,11 +21,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
-public class NuclearCraftBE extends BlockEntity {
+public class NuclearCraftBE extends TileEntity {
     protected String name;
     protected NCBlockPos bePos;
     protected boolean changed;
-    protected SoundInstance currentSound;
+    //protected SoundInstance currentSound;
     protected int playSoundCooldown = 0;
 
     public HashMap<Integer, ISizeToggable.SideMode> sideConfig = new HashMap<>();
@@ -36,9 +35,13 @@ public class NuclearCraftBE extends BlockEntity {
     }
 
 
-    public NuclearCraftBE(BlockEntityType<?> pType, BlockPos pPos, BlockState pBlockState) {
-        super(pType, pPos, pBlockState);
+    public NuclearCraftBE(TileEntityType<?> pType, BlockPos pPos, BlockState pBlockState) {
+        super(pType);
         name = getName(pBlockState);
+    }
+
+    public NuclearCraftBE(TileEntityType<?> pType) {
+        super(pType);
     }
 
     protected void trackChanges(boolean was, boolean now)
@@ -63,7 +66,7 @@ public class NuclearCraftBE extends BlockEntity {
     private List<Field> longFields          = new ArrayList<>();
     private List<Field> blockPosFields      = new ArrayList<>();
 
-    public void saveTagData(CompoundTag tag) {
+    public void saveTagData(CompoundNBT tag) {
         initFields();
         try {
             for (Field f : blockPosFields) {
@@ -97,9 +100,9 @@ public class NuclearCraftBE extends BlockEntity {
             }
             for (Field f : stringArrayFields) {
                 String[] stringArray = (String[]) f.get(this);
-                ListTag tagList = new ListTag();
+                ListNBT tagList = new ListNBT();
                 for (String string : stringArray) {
-                    tagList.add(StringTag.valueOf(string));
+                    tagList.add(StringNBT.valueOf(string));
                 }
                 tag.put(f.getName(), tagList);
             }
@@ -107,11 +110,9 @@ public class NuclearCraftBE extends BlockEntity {
     }
 
     @Nullable
-    @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return new ClientboundBlockEntityDataPacket(getBlockPos(), 0, this.getUpdateTag());
+    public SUpdateTileEntityPacket getUpdatePacket() {
+        return new SUpdateTileEntityPacket(getBlockPos(), 0, this.getUpdateTag());
     }
-
     @Override
     public void setRemoved() {
         super.setRemoved();
@@ -121,12 +122,12 @@ public class NuclearCraftBE extends BlockEntity {
     }
 
     protected void stopSound() {
-        SoundHandler.stopTileSound(getBlockPos());
-        currentSound = null;
+        //SoundHandler.stopTileSound(getBlockPos());
+        //currentSound = null;
         playSoundCooldown = 0;
     }
 
-    public void readTagData(CompoundTag tag) {
+    public void readTagData(CompoundNBT tag) {
         initFields();
         try {
             for(Field f: blockPosFields) {
@@ -157,7 +158,7 @@ public class NuclearCraftBE extends BlockEntity {
                 f.set(this, tag.getIntArray(f.getName()));
             }
             for(Field f: intArrayFields) {
-                ListTag tagList = tag.getList(f.getName(), 8);
+                ListNBT tagList = tag.getList(f.getName(), 8);
                 String[] stringArray = new String[tagList.size()];
                 for (int i = 0; i < tagList.size(); i++) {
                     stringArray[i] = tagList.getString(i);

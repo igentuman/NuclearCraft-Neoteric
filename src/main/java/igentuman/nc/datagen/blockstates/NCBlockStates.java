@@ -5,13 +5,12 @@ import igentuman.nc.multiblock.turbine.TurbineRegistration;
 import igentuman.nc.setup.registration.NCEnergyBlocks;
 import igentuman.nc.content.storage.BarrelBlocks;
 import igentuman.nc.content.storage.ContainerBlocks;
-import net.minecraft.core.Direction;
-import net.minecraft.core.FrontAndTop;
+import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.util.Direction;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraftforge.client.model.generators.*;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -27,6 +26,7 @@ import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS
 import static igentuman.nc.setup.registration.NCBlocks.*;
 import static igentuman.nc.setup.registration.NCProcessors.PROCESSORS;
 import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCK;
+import static net.minecraft.util.Direction.*;
 
 public class NCBlockStates extends BlockStateProvider {
 
@@ -53,16 +53,16 @@ public class NCBlockStates extends BlockStateProvider {
 
     private void turbine() {
         horizontalBlock(TURBINE_BLOCKS.get("turbine_controller").get(),
-                st -> controllerModel(st, sidedModel(TURBINE_BLOCKS.get("turbine_controller").get(), "turbine/controller"))
+                st ->  controllerModel(st, sidedModel(TURBINE_BLOCKS.get("turbine_controller").get(), "turbine/controller"))
         );
         horizontalBlock(TURBINE_BLOCKS.get("turbine_port").get(), multiBlockModel(TURBINE_BLOCKS.get("turbine_port").get(), "turbine/port"));
-        faceBlock(TURBINE_BLOCKS.get("turbine_rotor_shaft").get(), $ -> models().getExistingFile(rl("block/multiblock/turbine_rotor_shaft")));
+        faceBlock(TURBINE_BLOCKS.get("turbine_rotor_shaft").get(), $ ->  models().getExistingFile(rl("block/multiblock/turbine_rotor_shaft")));
         simpleBlock(TURBINE_BLOCKS.get("turbine_bearing").get(), multiBlockModel(TURBINE_BLOCKS.get("turbine_bearing").get(), "turbine/bearing"));
         simpleBlock(TURBINE_BLOCKS.get("turbine_casing").get(), multiBlockModel(TURBINE_BLOCKS.get("turbine_casing").get(), "turbine/casing"));
         simpleBlock(TURBINE_BLOCKS.get("turbine_glass").get(), multiBlockModel(TURBINE_BLOCKS.get("turbine_glass").get(), "turbine/glass"));
 
         for (String name: TurbineRegistration.blades().keySet()) {
-            faceBlock(TURBINE_BLOCKS.get("turbine_" + name).get(), $ -> models().getExistingFile(rl("block/multiblock/turbine_"+name)));
+            faceBlock(TURBINE_BLOCKS.get("turbine_" + name).get(), $ ->  models().getExistingFile(rl("block/multiblock/turbine_"+name)));
         }
 
         for(String type: TurbineRegistration.coils.keySet()) {
@@ -73,30 +73,30 @@ public class NCBlockStates extends BlockStateProvider {
     public static int[] getRotationByDirection(Direction dir) {
         int[] result = new int[2];
         switch (dir) {
-            case UP -> {
+            case UP:
                 result[0] = 270;
                 result[1] = 0;
-            }
-            case DOWN -> {
+            break;
+            case DOWN:
                 result[0] = 90;
                 result[1] = 0;
-            }
-            case NORTH -> {
+                break;
+            case NORTH:
                 result[0] = 0;
                 result[1] = 0;
-            }
-            case EAST -> {
+                break;
+            case EAST:
                 result[0] = 0;
                 result[1] = 270;
-            }
-            case SOUTH -> {
+                break;
+            case SOUTH:
                 result[0] = 0;
                 result[1] = 180;
-            }
-            case WEST -> {
+                break;
+            case WEST:
                 result[0] = 0;
                 result[1] = 90;
-            }
+                break;
         }
         return result;
     }
@@ -136,11 +136,11 @@ public class NCBlockStates extends BlockStateProvider {
                 horizontalBlock(FISSION_BLOCKS.get("fission_reactor_" + name).get(), multiBlockModel(FISSION_BLOCKS.get("fission_reactor_" + name).get(), "fission/" + name));
             } else if(name.matches(".*controller.*")) {
                 horizontalBlock(FISSION_BLOCKS.get("fission_reactor_" + name).get(),
-                        st -> controllerModel(st, sidedModel(FISSION_BLOCKS.get("fission_reactor_" + name).get(), "fission/controller"))
+                        st ->  controllerModel(st, sidedModel(FISSION_BLOCKS.get("fission_reactor_" + name).get(), "fission/controller"))
                 );
             } else {
                 if(name.contains("slope")) {
-                    orientationalBlock(FISSION_BLOCKS.get("fission_reactor_" +name).get(), $ -> models().getExistingFile(rl("block/multiblock/fission_reactor_"+name)));
+                    orientationalBlock(FISSION_BLOCKS.get("fission_reactor_" +name).get(), $ ->  models().getExistingFile(rl("block/multiblock/fission_reactor_"+name)));
                 } else {
                     simpleBlock(FISSION_BLOCKS.get("fission_reactor_" + name).get(), multiBlockModel(FISSION_BLOCKS.get("fission_reactor_" + name).get(), "fission/" + name));
                 }
@@ -212,7 +212,7 @@ public class NCBlockStates extends BlockStateProvider {
         for(String name: PROCESSORS.keySet()) {
             horizontalBlock(
                     PROCESSORS.get(name).get(),
-                    st -> processorModel(st, sidedModel(PROCESSORS.get(name).get(),
+                    st ->  processorModel(st, sidedModel(PROCESSORS.get(name).get(),
                             "processor"))
                     );
         }
@@ -250,9 +250,9 @@ public class NCBlockStates extends BlockStateProvider {
 
     public void directionalBlock(Block block, Function<BlockState, ModelFile> modelFunc) {
         getVariantBuilder(block)
-                .forAllStates(state -> ConfiguredModel.builder()
+                .forAllStates(state ->  ConfiguredModel.builder()
                         .modelFile(modelFunc.apply(state))
-                        .rotationX(((int) state.getValue(BlockStateProperties.VERTICAL_DIRECTION).toYRot() + 180) % 360)
+                     //   .rotationX(((int) state.getValue(BlockStateProperties.ORIENTATION).toYRot() + 180) % 360)
                         .rotationY(((int) state.getValue(BlockStateProperties.HORIZONTAL_FACING).toYRot() + 180) % 360)
                         .build()
                 );
@@ -279,7 +279,7 @@ public class NCBlockStates extends BlockStateProvider {
         }
         for(String name: NC_ELECTROMAGNETS.keySet()) {
             if(name.contains("slope")) {
-                orientationalBlock(NC_ELECTROMAGNETS.get(name).get(), $ -> models().getExistingFile(rl("block/electromagnet/"+name)));
+                orientationalBlock(NC_ELECTROMAGNETS.get(name).get(), $ ->  models().getExistingFile(rl("block/electromagnet/"+name)));
             } else {
                 simpleBlock(NC_ELECTROMAGNETS.get(name).get(), model(NC_ELECTROMAGNETS.get(name).get(), "electromagnet"));
             }
@@ -291,15 +291,15 @@ public class NCBlockStates extends BlockStateProvider {
     }
 
     public void orientationalBlock(Block block, Function<BlockState, ModelFile> modelFunc) {
-        getVariantBuilder(block)
-                .forAllStates(state -> {
+/*        getVariantBuilder(block)
+                .forAllStates(state ->  {
                     FrontAndTop dir = state.getValue(BlockStateProperties.ORIENTATION);
                     return ConfiguredModel.builder()
                             .modelFile(modelFunc.apply(state))
-                            .rotationX(dir.front() == Direction.DOWN ? 180 : 0)
+                            .rotationX(dir.front() == DOWN ? 180 : 0)
                             .rotationY((((int) dir.top().toYRot()) + 180) % 360)
                             .build();
-                });
+                });*/
     }
 
     private void ores() {
@@ -404,7 +404,7 @@ public class NCBlockStates extends BlockStateProvider {
 
         model.texture("particle", ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"top");
         if(subPath.matches(".*voltaic_pile.*|.*lithium_ion_battery.*")) {
-           // model.customLoader((blockModelBuilder, helper) -> new CustomLoaderBuilder<BlockModelBuilder>(BATTERY_LOADER, blockModelBuilder, helper) { });
+           // model.customLoader((blockModelBuilder, helper): new CustomLoaderBuilder<BlockModelBuilder>(BATTERY_LOADER, blockModelBuilder, helper) { });
         }
         return model;
     }

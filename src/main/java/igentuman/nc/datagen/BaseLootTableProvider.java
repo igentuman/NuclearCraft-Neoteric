@@ -1,44 +1,38 @@
 package igentuman.nc.datagen;
 
+import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import net.minecraft.advancements.critereon.EnchantmentPredicate;
-import net.minecraft.advancements.critereon.ItemPredicate;
-import net.minecraft.advancements.critereon.MinMaxBounds;
+import net.minecraft.advancements.criterion.EnchantmentPredicate;
+import net.minecraft.advancements.criterion.ItemPredicate;
+import net.minecraft.advancements.criterion.MinMaxBounds;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.DataProvider;
-import net.minecraft.data.HashCache;
-import net.minecraft.data.loot.LootTableProvider;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.enchantment.Enchantments;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.storage.loot.LootPool;
-import net.minecraft.world.level.storage.loot.LootTable;
-import net.minecraft.world.level.storage.loot.LootTables;
-import net.minecraft.world.level.storage.loot.entries.AlternativesEntry;
-import net.minecraft.world.level.storage.loot.entries.DynamicLoot;
-import net.minecraft.world.level.storage.loot.entries.LootItem;
-import net.minecraft.world.level.storage.loot.functions.*;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
-import net.minecraft.world.level.storage.loot.predicates.MatchTool;
-import net.minecraft.world.level.storage.loot.providers.nbt.ContextNbtProvider;
-import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
-import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
+import net.minecraft.data.DirectoryCache;
+import net.minecraft.data.IDataProvider;
+import net.minecraft.data.LootTableProvider;
+import net.minecraft.enchantment.Enchantments;
+import net.minecraft.loot.*;
+import net.minecraft.loot.conditions.ILootCondition;
+import net.minecraft.loot.conditions.MatchTool;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.block.Block;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class BaseLootTableProvider extends LootTableProvider {
+import static net.minecraft.loot.LootParameterSets.ALL_PARAMS;
 
+public abstract class BaseLootTableProvider extends LootTableProvider {
+    protected final Map<ResourceLocation, LootTable> tables = Maps.newHashMap();
     private static final Logger LOGGER = LogManager.getLogger();
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
-
+    private static final ILootCondition.IBuilder HAS_SILK_TOUCH = MatchTool.toolMatches(ItemPredicate.Builder.item()
+            .hasEnchantment(new EnchantmentPredicate(Enchantments.SILK_TOUCH, MinMaxBounds.IntBound.atLeast(1))));
     protected final Map<Block, LootTable.Builder> lootTables = new HashMap<>();
     private final DataGenerator generator;
 
@@ -49,64 +43,57 @@ public abstract class BaseLootTableProvider extends LootTableProvider {
 
     protected abstract void addTables();
 
-    protected LootTable.Builder createStandardTable(String name, Block block, BlockEntityType<?> type) {
-        LootPool.Builder builder = LootPool.lootPool()
-                .name(name)
-                .setRolls(ConstantValue.exactly(1))
-                .add(LootItem.lootTableItem(block)
-                        .apply(CopyNameFunction.copyName(CopyNameFunction.NameSource.BLOCK_ENTITY))
-                        .apply(CopyNbtFunction.copyData(ContextNbtProvider.BLOCK_ENTITY)
-                                .copy("Info", "BlockEntityTag.Info", CopyNbtFunction.MergeStrategy.REPLACE)
-                                .copy("Inventory", "BlockEntityTag.Inventory", CopyNbtFunction.MergeStrategy.REPLACE)
-                                .copy("Energy", "BlockEntityTag.Energy", CopyNbtFunction.MergeStrategy.REPLACE))
-                        .apply(SetContainerContents.setContents()
-                                .withEntry(DynamicLoot.dynamicEntry(new ResourceLocation("minecraft", "contents"))))
-                );
-        return LootTable.lootTable().withPool(builder);
-    }
-
     protected LootTable.Builder createSimpleTable(String name, Block block) {
         LootPool.Builder builder = LootPool.lootPool()
                 .name(name)
-                .setRolls(ConstantValue.exactly(1))
-                .add(LootItem.lootTableItem(block));
+                .setRolls(ConstantRange.exactly(1))
+                .add(ItemLootEntry.lootTableItem(block));
         return LootTable.lootTable().withPool(builder);
     }
 
-    protected LootTable.Builder createSilkTouchTable(String name, Block block, Item lootItem, float min, float max) {
-        LootPool.Builder builder = LootPool.lootPool()
-                .name(name)
-                .setRolls(ConstantValue.exactly(1))
-                .add(AlternativesEntry.alternatives(
-                                LootItem.lootTableItem(block)
-                                        .when(MatchTool.toolMatches(ItemPredicate.Builder.item()
-                                                .hasEnchantment(new EnchantmentPredicate(Enchantments.SILK_TOUCH, MinMaxBounds.Ints.atLeast(1))))),
-                                LootItem.lootTableItem(lootItem)
-                                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(min, max)))
-                                        .apply(ApplyBonusCount.addUniformBonusCount(Enchantments.BLOCK_FORTUNE, 1))
-                                        .apply(ApplyExplosionDecay.explosionDecay())
-                        )
-                );
-        return LootTable.lootTable().withPool(builder);
-    }
+    public void run(@Nonnull DirectoryCache outCache)
+    {
+        tables.clear();
+        Path outFolder = generator.getOutputFolder();
 
-    @Override
-    public void run(HashCache cache) {
         addTables();
+        tables.forEach((name, table) -> {
+            Path out = getPath(outFolder, name);
 
-        Map<ResourceLocation, LootTable> tables = new HashMap<>();
-        for (Map.Entry<Block, LootTable.Builder> entry : lootTables.entrySet()) {
-            tables.put(entry.getKey().getLootTable(), entry.getValue().setParamSet(LootContextParamSets.BLOCK).build());
-        }
-        writeTables(cache, tables);
+            try
+            {
+                IDataProvider.save(GSON, outCache, LootTableManager.serialize(table), out);
+            } catch(IOException x)
+            {
+                LOGGER.error("Couldn't save loot table {}", out, x);
+            }
+
+        });
     }
 
-    private void writeTables(HashCache cache, Map<ResourceLocation, LootTable> tables) {
-        Path outputFolder = this.generator.getOutputFolder();
-        tables.forEach((key, lootTable) -> {
-            Path path = outputFolder.resolve("data/" + key.getNamespace() + "/loot_tables/" + key.getPath() + ".json");
-            //  DataProvider.save(cache, LootTables.serialize(lootTable), path);
-        });
+    private static Path getPath(Path pathIn, ResourceLocation id)
+    {
+        return pathIn.resolve("data/"+id.getNamespace()+"/loot_tables/"+id.getPath()+".json");
+    }
+
+
+    @Nonnull
+    protected static LootTable.Builder createSilkTouchDispatchTable(@Nonnull Block block, @Nonnull LootEntry.Builder<?> builder) {
+        return createSelfDropDispatchTable(block, HAS_SILK_TOUCH, builder);
+    }
+
+
+    @Nonnull
+    protected static LootTable.Builder createSelfDropDispatchTable(@Nonnull Block block, @Nonnull ILootCondition.IBuilder conditionBuilder,
+                                                                   @Nonnull LootEntry.Builder<?> entry) {
+        return LootTable.lootTable().withPool(LootPool.lootPool()
+                .name("main")
+                .setRolls(ConstantRange.exactly(1))
+                .add(ItemLootEntry.lootTableItem(block)
+                        .when(conditionBuilder)
+                        .otherwise(entry)
+                )
+        );
     }
 
     @Override

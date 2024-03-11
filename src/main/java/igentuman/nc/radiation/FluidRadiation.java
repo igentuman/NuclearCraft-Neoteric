@@ -3,12 +3,13 @@ package igentuman.nc.radiation;
 import igentuman.nc.content.fuel.FuelManager;
 import igentuman.nc.content.materials.Materials;
 import igentuman.nc.setup.registration.Fuel;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.material.Fluid;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.item.Item;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -29,7 +30,7 @@ public class FluidRadiation {
         }
 
         for(String name: Materials.isotopes()) {
-            for(String type: List.of("", "_ox", "_ni", "_za", "_tr")) {
+            for(String type: Arrays.asList("", "_ox", "_ni", "_za", "_tr")) {
                 add(name+type, Materials.isotopes.get(name));
             }
         }
@@ -37,7 +38,7 @@ public class FluidRadiation {
         for (String name: FuelManager.all().keySet()) {
             for(String subType: FuelManager.all().get(name).keySet()) {
 
-                for(String type: List.of("", "ox", "ni", "za", "tr")) {
+                for(String type: Arrays.asList("", "ox", "ni", "za", "tr")) {
                     int isotope1Cnt = 1;
                     int isotope2Cnt = 8;
                     if(subType.substring(0,1).equalsIgnoreCase("h")) {

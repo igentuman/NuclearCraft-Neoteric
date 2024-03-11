@@ -2,14 +2,18 @@ package igentuman.nc.item;
 
 import igentuman.nc.setup.registration.CreativeTabs;
 import igentuman.nc.util.TextUtils;
-import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.item.*;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.Entity;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.World;
+import net.minecraft.block.Block;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -21,7 +25,7 @@ public class ProcessorBlockItem extends BlockItem
 		this(pBlock, props, CreativeTabs.NC_BLOCKS);
 	}
 
-	public ProcessorBlockItem(Block pBlock, Properties props, CreativeModeTab group)
+	public ProcessorBlockItem(Block pBlock, Properties props, ItemGroup group)
 	{
 		super(pBlock, new Properties().tab(group));
 	}
@@ -38,18 +42,18 @@ public class ProcessorBlockItem extends BlockItem
 		return false;
 	}
 
-	public boolean canEquip(ItemStack stack, EquipmentSlot armorType, Entity entity)
+	public boolean canEquip(ItemStack stack, EquipmentSlotType armorType, Entity entity)
 	{
 		return false;
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, @javax.annotation.Nullable Level world, List<Component> list, TooltipFlag flag)
+	public void appendHoverText(ItemStack stack, @javax.annotation.Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
 	{
 		if(stack.hasTag() && stack.getTag().contains("energy")) {
-			list.add(new TranslatableComponent("tooltip.nc.content_saved").withStyle(ChatFormatting.GRAY));
+			list.add(new TranslationTextComponent("tooltip.nc.content_saved").withStyle(TextFormatting.GRAY));
 		}
 		if(asItem().toString().contains("empty") || this.asItem().equals(Items.AIR)) return;
-		list.add(TextUtils.applyFormat(new TranslatableComponent("processor.description."+toString()), ChatFormatting.AQUA));
+		list.add(TextUtils.applyFormat(new TranslationTextComponent("processor.description."+toString()), TextFormatting.AQUA));
 	}
 }

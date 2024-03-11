@@ -4,15 +4,13 @@ import igentuman.nc.NuclearCraft;
 import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.util.annotation.NBTField;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.Direction;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
@@ -87,7 +85,7 @@ public class FissionPortBE extends FissionBE {
 
         if(updated) {
             setChanged();
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+           // level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
         }
     }
 
@@ -160,7 +158,7 @@ public class FissionPortBE extends FissionBE {
         AtomicInteger capacity = new AtomicInteger(controller().energyStorage.getEnergyStored());
         if (capacity.get() > 0) {
             for (Direction direction : Direction.values()) {
-                BlockEntity be = getLevel().getBlockEntity(worldPosition.relative(direction));
+                TileEntity be = getLevel().getBlockEntity(worldPosition.relative(direction));
                 if (be != null) {
                     boolean doContinue = be.getCapability(ENERGY, direction.getOpposite()).map(handler -> {
                                 if (handler.canReceive()) {
@@ -206,52 +204,54 @@ public class FissionPortBE extends FissionBE {
     }
 
     @Override
-    public void load(CompoundTag tag) {
+    public void load(BlockState state, CompoundNBT tag) {
         if (tag.contains("Info")) {
-            CompoundTag infoTag = tag.getCompound("Info");
+            CompoundNBT infoTag = tag.getCompound("Info");
             readTagData(infoTag);
         }
-        super.load(tag);
+        super.load(state, tag);
     }
 
-    public void saveAdditional(CompoundTag tag) {
-        CompoundTag infoTag = new CompoundTag();
+    public void saveAdditional(CompoundNBT tag) {
+        CompoundNBT infoTag = new CompoundNBT();
         saveTagData(infoTag);
         tag.put("Info", infoTag);
     }
 
     @Override
-    public void handleUpdateTag(CompoundTag tag) {
+    public void handleUpdateTag(BlockState state, CompoundNBT tag) {
         if (tag != null) {
             loadClientData(tag);
         }
     }
 
-    private void loadClientData(CompoundTag tag) {
+    private void loadClientData(CompoundNBT tag) {
         if (tag.contains("Info")) {
-            CompoundTag infoTag = tag.getCompound("Info");
+            CompoundNBT infoTag = tag.getCompound("Info");
             readTagData(infoTag);
         }
     }
 
     @Override
-    public CompoundTag getUpdateTag() {
-        CompoundTag tag = super.getUpdateTag();
+    public CompoundNBT getUpdateTag() {
+        CompoundNBT tag = super.getUpdateTag();
         saveClientData(tag);
         return tag;
     }
 
-    private void saveClientData(CompoundTag tag) {
-        CompoundTag infoTag = new CompoundTag();
+    private void saveClientData(CompoundNBT tag) {
+        CompoundNBT infoTag = new CompoundNBT();
         tag.put("Info", infoTag);
         saveTagData(infoTag);
     }
 
+/*
     @Override
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        CompoundTag tag = pkt.getTag();
+        CompoundNBT tag = pkt.getTag();
         handleUpdateTag(tag);
     }
+*/
 
     public int getEnergyStored() {
         if(controller() == null) return 0;
@@ -279,7 +279,7 @@ public class FissionPortBE extends FissionBE {
             comparatorMode = SignalSource.ENERGY;
         }
         setChanged();
-        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+      //  level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
     }
 
     public FluidTank getFluidTank(int i) {

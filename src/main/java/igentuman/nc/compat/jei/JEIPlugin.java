@@ -21,15 +21,12 @@ import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
@@ -85,8 +82,8 @@ public  class JEIPlugin implements IModPlugin {
 
     private List<? extends NcRecipe> getRecipes(String name) {
         List<NcRecipe> tmp = new ArrayList<>();
-        Level level = NcClient.tryGetClientWorld();
-        if(level == null) return List.of();
+        World level = NcClient.tryGetClientWorld();
+        if(level == null) return Arrays.asList();
         for (NcRecipe recipe: level.getRecipeManager().getAllRecipesFor(NcRecipeType.ALL_RECIPES.get(name))) {
             if(recipe.isIncomplete()) {
                 continue;
@@ -123,22 +120,22 @@ public  class JEIPlugin implements IModPlugin {
         }
     }
 
-    private <T extends AbstractContainerScreen<?>> void addRecipeClickArea(IGuiHandlerRegistration registration, Class<? extends T> containerScreenClass, int xPos, int yPos, int width, int height, RecipeType<?>... recipeTypes) {
+/*    private <T extends Container> void addRecipeClickArea(IGuiHandlerRegistration registration, Class<? extends T> containerScreenClass, int xPos, int yPos, int width, int height, RecipeType<?>... recipeTypes) {
         registration.addGuiContainerHandler(containerScreenClass, new IGuiContainerHandler<T>() {
             @Override
             public Collection<IGuiClickableArea> getGuiClickableAreas(T containerScreen, double mouseX, double mouseY) {
                 NCProcessorScreen<?> screen = (NCProcessorScreen<?>) containerScreen;
                 String name = screen.getRecipeTypeName();
                 IGuiClickableArea clickableArea = IGuiClickableArea.createBasic(xPos, yPos, width, height, getRecipeTypes().get(name).getUid());
-                return List.of(clickableArea);
+                return Arrays.asList(clickableArea);
             }
         });
-    }
+    }*/
 
     public  void registerGuiHandlers(IGuiHandlerRegistration registration) {
         for (String name : getRecipeTypes().keySet()) {
             if (!Processors.registered().containsKey(name)) continue;
-            addRecipeClickArea(registration, NCProcessorScreen.class, 67, 74, 18, 18, getRecipeType(name));
+         //   addRecipeClickArea(registration, NCProcessorScreen.class, 67, 74, 18, 18, getRecipeType(name));
         }
         registration.addRecipeClickArea(FissionControllerScreen.class,65, 42, 36, 26, FISSION.getUid());
     }

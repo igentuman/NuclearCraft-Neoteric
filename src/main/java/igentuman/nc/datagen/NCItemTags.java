@@ -5,9 +5,9 @@ import igentuman.nc.multiblock.fission.FissionReactor;
 import igentuman.nc.setup.registration.Fuel;
 import igentuman.nc.setup.registration.NCBlocks;
 import igentuman.nc.setup.registration.NCItems;
+import net.minecraft.data.BlockTagsProvider;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.tags.BlockTagsProvider;
-import net.minecraft.data.tags.ItemTagsProvider;
+import net.minecraft.data.ItemTagsProvider;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 

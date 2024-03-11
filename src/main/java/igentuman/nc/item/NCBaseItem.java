@@ -1,14 +1,9 @@
 package igentuman.nc.item;
 
 import igentuman.nc.setup.registration.CreativeTabs;
-import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
 
@@ -27,7 +22,7 @@ public class NCBaseItem extends Item
 		this(props, CreativeTabs.NC_ITEMS);
 	}
 
-	public NCBaseItem(Properties props, CreativeModeTab group)
+	public NCBaseItem(Properties props, ItemGroup group)
 	{
 		super(props.tab(group));
 	}
@@ -38,11 +33,6 @@ public class NCBaseItem extends Item
 		return this;
 	}
 
-	@Override
-	public int getBurnTime(ItemStack itemStack, RecipeType<?> type)
-	{
-		return burnTime;
-	}
 
 	public boolean isHidden()
 	{
@@ -66,14 +56,4 @@ public class NCBaseItem extends Item
 		return false;
 	}
 
-	public boolean canEquip(ItemStack stack, EquipmentSlot armorType, Entity entity)
-	{
-		return Mob.getEquipmentSlotForItem(stack)==armorType||getEquipmentSlot(stack)==armorType;
-	}
-
-	@Override
-	public int getBarColor(ItemStack pStack)
-	{
-		return Mth.hsvToRgb(Math.max(0.0F, getBarWidth(pStack)/(float)MAX_BAR_WIDTH)/3.0F, 1.0F, 1.0F);
-	}
 }

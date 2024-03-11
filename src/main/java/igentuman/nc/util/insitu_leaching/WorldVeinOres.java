@@ -2,23 +2,23 @@ package igentuman.nc.util.insitu_leaching;
 
 import igentuman.nc.handler.OreVeinProvider;
 import igentuman.nc.recipes.type.OreVeinRecipe;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ChunkPos;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.World;
 
 import java.util.HashMap;
 
 
 public class WorldVeinOres implements IWorldVeinCapability {
 
-    public ServerLevel level;
+    public World level;
     public HashMap<Long, Integer> chunkVeins = new HashMap<>();
 
     public WorldVeinOres() {
     }
 
-    public static WorldVeinOres deserialize(CompoundTag veins) {
+    public static WorldVeinOres deserialize(CompoundNBT veins) {
         WorldVeinOres worldVeins = new WorldVeinOres();
         worldVeins.deserializeNBT(veins);
         return worldVeins;
@@ -57,9 +57,9 @@ public class WorldVeinOres implements IWorldVeinCapability {
     }
 
     @Override
-    public CompoundTag serializeNBT() {
-        CompoundTag tag = new CompoundTag();
-        CompoundTag veinsTag = new CompoundTag();
+    public CompoundNBT serializeNBT() {
+        CompoundNBT tag = new CompoundNBT();
+        CompoundNBT veinsTag = new CompoundNBT();
         for(long key : chunkVeins.keySet()) {
             veinsTag.putInt(String.valueOf(key), chunkVeins.get(key));
         }
@@ -68,8 +68,8 @@ public class WorldVeinOres implements IWorldVeinCapability {
     }
 
     @Override
-    public void deserializeNBT(CompoundTag nbt) {
-        CompoundTag veinsTag = nbt.getCompound("depletion");
+    public void deserializeNBT(CompoundNBT nbt) {
+        CompoundNBT veinsTag = nbt.getCompound("depletion");
         for(String key : veinsTag.getAllKeys()) {
             chunkVeins.put(Long.parseLong(key), veinsTag.getInt(key));
         }

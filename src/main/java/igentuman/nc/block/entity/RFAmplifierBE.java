@@ -1,14 +1,14 @@
 package igentuman.nc.block.entity;
 
 import igentuman.nc.content.RFAmplifier;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.block.BlockState;
 
 import static igentuman.nc.setup.registration.NCBlocks.NC_BE;
 
-public class RFAmplifierBE extends BlockEntity {
+public class RFAmplifierBE extends TileEntity {
     protected String name;
     public boolean hasToUpdate = true;
 
@@ -18,8 +18,8 @@ public class RFAmplifierBE extends BlockEntity {
     public static String getName(BlockState pBlockState) {
         return pBlockState.getBlock().asItem().toString();
     }
-    public RFAmplifierBE(BlockEntityType<?> pType, BlockPos pPos, BlockState pBlockState) {
-        super(pType, pPos, pBlockState);
+    public RFAmplifierBE(TileEntityType<?> pType, BlockPos pPos, BlockState pBlockState) {
+        super(pType);
         name = getName(pBlockState);
     }
 

@@ -4,18 +4,19 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import igentuman.nc.setup.registration.NcParticleTypes;
-import net.minecraft.core.Direction;
-import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.core.particles.ParticleType;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.particles.IParticleData;
+import net.minecraft.particles.ParticleType;
+import net.minecraft.util.Direction;
+import net.minecraft.network.PacketBuffer;
 import org.antlr.v4.runtime.misc.NotNull;;
 
 import java.util.Locale;
 
-public record FusionBeamParticleData(Direction direction, double distance, float energyScale) implements ParticleOptions {
+import static igentuman.nc.util.NcUtils.DIRECTION_CODEC;
 
-    public static final Deserializer<FusionBeamParticleData> DESERIALIZER = new Deserializer<>() {
+public class FusionBeamParticleData implements IParticleData {
+
+    public static final IDeserializer<FusionBeamParticleData> DESERIALIZER = new IDeserializer<FusionBeamParticleData>() {
         @NotNull
         @Override
         public FusionBeamParticleData fromCommand(@NotNull ParticleType<FusionBeamParticleData> type, @NotNull StringReader reader) throws CommandSyntaxException {
@@ -30,15 +31,25 @@ public record FusionBeamParticleData(Direction direction, double distance, float
 
         @NotNull
         @Override
-        public FusionBeamParticleData fromNetwork(@NotNull ParticleType<FusionBeamParticleData> type, FriendlyByteBuf buf) {
+        public FusionBeamParticleData fromNetwork(@NotNull ParticleType<FusionBeamParticleData> type, PacketBuffer buf) {
             return new FusionBeamParticleData(buf.readEnum(Direction.class), buf.readDouble(), buf.readFloat());
         }
     };
     public static final Codec<FusionBeamParticleData> CODEC = RecordCodecBuilder.create(val -> val.group(
-          Direction.CODEC.fieldOf("direction").forGetter(data -> data.direction),
-          Codec.DOUBLE.fieldOf("distance").forGetter(data -> data.distance),
-          Codec.FLOAT.fieldOf("energyScale").forGetter(data -> data.energyScale)
+            DIRECTION_CODEC.fieldOf("direction").forGetter(data -> data.direction),
+            Codec.DOUBLE.fieldOf("distance").forGetter(data -> data.distance),
+            Codec.FLOAT.fieldOf("energyScale").forGetter(data -> data.energyScale)
     ).apply(val, FusionBeamParticleData::new));
+
+    public final Direction direction;
+    public final double distance;
+    public final float energyScale;
+
+    public FusionBeamParticleData(Direction direction, double distance, float energyScale) {
+        this.direction = direction;
+        this.distance = distance;
+        this.energyScale = energyScale;
+    }
 
     @NotNull
     @Override
@@ -48,7 +59,7 @@ public record FusionBeamParticleData(Direction direction, double distance, float
     }
 
     @Override
-    public void writeToNetwork(@NotNull FriendlyByteBuf buffer) {
+    public void writeToNetwork(@NotNull PacketBuffer buffer) {
         buffer.writeEnum(direction);
         buffer.writeDouble(distance);
         buffer.writeFloat(energyScale);

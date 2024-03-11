@@ -7,18 +7,20 @@ import igentuman.nc.content.materials.Materials;
 import igentuman.nc.setup.registration.NCItems;
 import igentuman.nc.content.fuel.FuelManager;
 import igentuman.nc.content.materials.NCMaterial;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.IFinishedRecipe;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static net.minecraft.world.item.Items.*;
+import static net.minecraft.item.Items.OBSIDIAN;
+import static net.minecraft.item.Items.SUGAR;
 
 public class MelterRecipes extends AbstractRecipeProvider {
 
-    public static void generate(Consumer<FinishedRecipe> consumer) {
+    public static void generate(Consumer<IFinishedRecipe> consumer) {
         MelterRecipes.consumer = consumer;
         ID = Processors.MELTER;
         for(String name: Materials.all().keySet()) {
@@ -45,7 +47,7 @@ public class MelterRecipes extends AbstractRecipeProvider {
             for(String subType: FuelManager.all().get(name).keySet()) {
                 for (String type : new String[]{"", "za", "ox","ni"}) {
 
-                    List<String> key = List.of("fuel", name, subType, type);
+                    List<String> key = Arrays.asList("fuel", name, subType, type);
 
                     String keyStr = "fuel_"+name +"_"+ subType;
                     if(!type.isEmpty()){
@@ -54,7 +56,7 @@ public class MelterRecipes extends AbstractRecipeProvider {
                     keyStr+= type;
                     add(ingredient(Fuel.NC_FUEL.get(key).get()), fluidStack(keyStr, 144));
 
-                    key = List.of("depleted", name, subType, type);
+                    key = Arrays.asList("depleted", name, subType, type);
                     keyStr = "depleted_"+keyStr;
                     add(ingredient(Fuel.NC_DEPLETED_FUEL.get(key).get()), fluidStack(keyStr, 144));
                 }
@@ -81,7 +83,7 @@ public class MelterRecipes extends AbstractRecipeProvider {
 
     protected static void add(NcIngredient inputItem, FluidStack outputFluid, double...modifiers) {
         try {
-            itemsAndFluids(List.of(inputItem), new ArrayList<>(), new ArrayList<>(), List.of(outputFluid), modifiers);
+            itemsAndFluids(Arrays.asList(inputItem), new ArrayList<>(), new ArrayList<>(), Arrays.asList(outputFluid), modifiers);
         } catch(IllegalStateException ignored) {}
     }
 }

@@ -7,11 +7,11 @@ import igentuman.nc.multiblock.IMultiblockAttachable;
 import igentuman.nc.multiblock.fusion.FusionReactor;
 import igentuman.nc.multiblock.fusion.FusionReactorMultiblock;
 import igentuman.nc.util.annotation.NBTField;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.Explosion;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.block.BlockState;
+import net.minecraft.world.Explosion;
+import net.minecraft.world.World;
 
 import java.util.Objects;
 
@@ -36,8 +36,12 @@ public class FusionBE extends NuclearCraftBE implements IMultiblockAttachable {
         return true;
     }
 
-    public FusionBE(BlockEntityType<?> pType, BlockPos pPos, BlockState pBlockState) {
+    public FusionBE(TileEntityType<?> pType, BlockPos pPos, BlockState pBlockState) {
         super(pType, pPos, pBlockState);
+    }
+
+    public FusionBE(TileEntityType<?> pType) {
+        super(pType);
     }
 
     public FusionBE(BlockPos pPos, BlockState pBlockState, String name) {
@@ -91,7 +95,7 @@ public class FusionBE extends NuclearCraftBE implements IMultiblockAttachable {
         }
     }
 
-    public void onBlockDestroyed(BlockState state, Level level, BlockPos pos, Explosion explosion) {
+    public void onBlockDestroyed(BlockState state, World level, BlockPos pos, Explosion explosion) {
         if(multiblock() != null) {
             multiblock().onBlockDestroyed(state, level, pos, explosion);
         }

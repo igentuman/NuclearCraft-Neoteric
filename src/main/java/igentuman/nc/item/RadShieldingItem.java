@@ -1,18 +1,14 @@
 package igentuman.nc.item;
 
 import igentuman.nc.setup.registration.CreativeTabs;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.level.Level;
+import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -35,7 +31,7 @@ public class RadShieldingItem extends Item
 		this(props, CreativeTabs.NC_ITEMS, shieldLevel);
 	}
 
-	public RadShieldingItem(Properties props, CreativeModeTab group, int radShieldingLevel)
+	public RadShieldingItem(Properties props, ItemGroup group, int radShieldingLevel)
 	{
 		super(props.tab(group));
 		this.radShieldingLevel = radShieldingLevel;
@@ -52,11 +48,6 @@ public class RadShieldingItem extends Item
 		return this;
 	}
 
-	@Override
-	public int getBurnTime(ItemStack itemStack, RecipeType<?> type)
-	{
-		return burnTime;
-	}
 
 	public boolean isHidden()
 	{
@@ -80,20 +71,10 @@ public class RadShieldingItem extends Item
 		return false;
 	}
 
-	public boolean canEquip(ItemStack stack, EquipmentSlot armorType, Entity entity)
-	{
-		return false;
-	}
 
 	@Override
-	public int getBarColor(ItemStack pStack)
+	public void appendHoverText(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
 	{
-		return Mth.hsvToRgb(Math.max(0.0F, getBarWidth(pStack)/(float)MAX_BAR_WIDTH)/3.0F, 1.0F, 1.0F);
-	}
-
-	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
-	{
-		list.add(new TranslatableComponent("tooltip.nc.shielding.desc").withStyle(net.minecraft.ChatFormatting.GRAY));
+		list.add(new TranslationTextComponent("tooltip.nc.shielding.desc").withStyle(TextFormatting.GRAY));
 	}
 }

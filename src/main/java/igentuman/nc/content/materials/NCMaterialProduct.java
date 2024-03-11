@@ -2,6 +2,8 @@ package igentuman.nc.content.materials;
 
 import igentuman.nc.handler.config.CommonConfig;
 
+import java.util.Arrays;
+
 import static igentuman.nc.handler.config.MaterialsConfig.MATERIAL_PRODUCTS;
 
 public class NCMaterialProduct {
@@ -26,7 +28,7 @@ public class NCMaterialProduct {
             if(!CommonConfig.isLoaded()) {
                 return this;
             }
-            int id = Ores.all().keySet().stream().toList().indexOf(name);
+            int id = Arrays.asList(Ores.all().keySet().stream().toArray()).indexOf(name);
             switch (type) {
                 case "ingot":
                     registered = MATERIAL_PRODUCTS.INGOTS.get().get(id);

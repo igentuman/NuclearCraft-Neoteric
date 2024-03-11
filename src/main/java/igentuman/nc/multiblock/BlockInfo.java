@@ -1,13 +1,13 @@
 package igentuman.nc.multiblock;
 
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.tileentity.TileEntity;
 
 public class BlockInfo {
     protected final BlockState state;
-    protected final BlockEntity entity;
+    protected final TileEntity entity;
 
-    public BlockInfo(BlockState state, BlockEntity entity) {
+    public BlockInfo(BlockState state, TileEntity entity) {
         this.state = state;
         this.entity = entity;
     }

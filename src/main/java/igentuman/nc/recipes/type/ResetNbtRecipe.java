@@ -3,21 +3,20 @@ package igentuman.nc.recipes.type;
 import igentuman.nc.item.BatteryBlockItem;
 import igentuman.nc.item.BatteryItem;
 import igentuman.nc.item.ProcessorBlockItem;
-import igentuman.nc.recipes.NcRecipeSerializers;
 import igentuman.nc.util.annotation.NothingNullByDefault;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.CraftingContainer;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CustomRecipe;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.level.Level;
+import net.minecraft.inventory.CraftingInventory;
+import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.SpecialRecipe;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 
 @NothingNullByDefault
-public class ResetNbtRecipe extends CustomRecipe {
+public class ResetNbtRecipe extends SpecialRecipe {
 
     public ResetNbtRecipe(ResourceLocation id) {
         super(id);
@@ -25,7 +24,7 @@ public class ResetNbtRecipe extends CustomRecipe {
 
 
     @Override
-    public boolean matches(CraftingContainer inv, Level world) {
+    public boolean matches(CraftingInventory inv, World world) {
         ItemStack targetStack = ItemStack.EMPTY;
         for (int i = 0; i < inv.getContainerSize(); ++i) {
             if(targetStack != ItemStack.EMPTY && !inv.getItem(i).isEmpty()) {
@@ -50,7 +49,7 @@ public class ResetNbtRecipe extends CustomRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingContainer inv) {
+    public ItemStack assemble(CraftingInventory inv) {
         ItemStack targetStack = ItemStack.EMPTY;
         for (int i = 0; i < inv.getContainerSize(); ++i) {
             if(targetStack != ItemStack.EMPTY && !inv.getItem(i).isEmpty()) {
@@ -73,7 +72,7 @@ public class ResetNbtRecipe extends CustomRecipe {
         }
 
         ItemStack result = targetStack.copy();
-        result.setTag(new CompoundTag());
+        result.setTag(new CompoundNBT());
         return result;
     }
 
@@ -83,7 +82,7 @@ public class ResetNbtRecipe extends CustomRecipe {
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
+    public IRecipeSerializer<?> getSerializer() {
         return null;
       //  return NcRecipeSerializers.RESET_NBT.get();
     }

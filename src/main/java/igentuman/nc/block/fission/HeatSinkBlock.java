@@ -4,33 +4,31 @@ import igentuman.nc.block.entity.fission.FissionHeatSinkBE;
 import igentuman.nc.multiblock.fission.FissionBlocks;
 import igentuman.nc.multiblock.fission.HeatSinkDef;
 import igentuman.nc.util.TextUtils;
-import net.minecraft.ChatFormatting;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.material.Material;
-import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.block.SoundType;
+import net.minecraft.block.material.Material;
+import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+
+import net.minecraft.world.IBlockReader;
+import net.minecraft.world.World;
+import net.minecraft.block.Block;
+
+import net.minecraft.block.BlockState;
+
 import org.antlr.v4.runtime.misc.NotNull;;
 import javax.annotation.Nullable;
 
@@ -43,7 +41,7 @@ import static igentuman.nc.handler.event.client.InputEvents.DESCRIPTIONS_SHOW;
 import static igentuman.nc.multiblock.fission.FissionReactor.FISSION_BE;
 import static igentuman.nc.util.TextUtils.convertToName;
 
-public class HeatSinkBlock extends Block implements EntityBlock {
+public class HeatSinkBlock extends Block {
 
     public HeatSinkBlock() {
         this(Properties.of(Material.METAL)
@@ -61,7 +59,7 @@ public class HeatSinkBlock extends Block implements EntityBlock {
         initParams();
     }
 
-    public Component placementRule;
+    public TextComponent placementRule;
 
     public HeatSinkBlock(Properties reactorBlocksProperties, HeatSinkDef heatSinkDef) {
         super(reactorBlocksProperties);
@@ -71,38 +69,38 @@ public class HeatSinkBlock extends Block implements EntityBlock {
 
     }
 
-    public Component getPlacementRule()
+    public TextComponent getPlacementRule()
     {
         List<String> lines = new ArrayList<>();
         int i = 0;
         if (def.getValidator() instanceof HeatSinkDef.Validator) {
             for (String[] condition : def.getValidator().blockLines().keySet()) {
                 if (i > 0) {
-                    lines.add(new TranslatableComponent("heat_sink.and").getString());
+                    lines.add(new TranslationTextComponent("heat_sink.and").getString());
                 }
-                String blocksLine = String.join(" "+new TranslatableComponent("heat_sink.or").getString()+" ", getBlockNames(condition[2]));
+                String blocksLine = String.join(" "+new TranslationTextComponent("heat_sink.or").getString()+" ", getBlockNames(condition[2]));
                 switch (condition[0]) {
                     case ">":
-                        lines.add(new TranslatableComponent("heat_sink.atleast"+(condition[1].equals("1") ? "":"s") , condition[1], blocksLine).getString());
+                        lines.add(new TranslationTextComponent("heat_sink.atleast"+(condition[1].equals("1") ? "":"s") , condition[1], blocksLine).getString());
                         break;
                     case "-":
-                        lines.add(new TranslatableComponent("heat_sink.between", condition[1], blocksLine).getString());
+                        lines.add(new TranslationTextComponent("heat_sink.between", condition[1], blocksLine).getString());
                         break;
                     case "=":
-                        lines.add(new TranslatableComponent("heat_sink.exact"+(condition[1].equals("1") ? "":"s"), condition[1], blocksLine).getString());
+                        lines.add(new TranslationTextComponent("heat_sink.exact"+(condition[1].equals("1") ? "":"s"), condition[1], blocksLine).getString());
                         break;
                     case "<":
-                        lines.add(new TranslatableComponent("heat_sink.less_than", condition[1], blocksLine).getString());
+                        lines.add(new TranslationTextComponent("heat_sink.less_than", condition[1], blocksLine).getString());
                         break;
                     case "^":
-                        lines.add(new TranslatableComponent("heat_sink.in_corner", condition[1], blocksLine).getString());
+                        lines.add(new TranslationTextComponent("heat_sink.in_corner", condition[1], blocksLine).getString());
                         break;
                 }
                 i++;
             }
-            return new TranslatableComponent("heat_sink.placement.rule", String.join(" ", lines));
+            return new TranslationTextComponent("heat_sink.placement.rule", String.join(" ", lines));
         }
-        return new TranslatableComponent("heat_sink.placement.error");
+        return new TranslationTextComponent("heat_sink.placement.error");
     }
 
 
@@ -138,65 +136,43 @@ public class HeatSinkBlock extends Block implements EntityBlock {
         heat = def.getHeat();
     }
 
-    @Override
-    public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return this.defaultBlockState();
-    }
 
-    @Nullable
+/*    @Nullable
     @Override
     public BlockEntity newBlockEntity(@NotNull BlockPos pPos, @NotNull BlockState pState) {
         if(asItem().toString().contains("empty")) return null;
         def.getValidator();
-        BlockEntity be = FISSION_BE.get("fission_heat_sink").get().create(pPos, pState);
+        TileEntity be = FISSION_BE.get("fission_heat_sink").get().create(pPos, pState);
         ((FissionHeatSinkBE)be).setHeatSinkDef(def);
         return be;
-    }
+    }*/
 
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
-        if(!player.getItemInHand(hand).isEmpty()) return InteractionResult.FAIL;
+    public ActionResultType use(BlockState state, World level, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult result) {
+        if(!player.getItemInHand(hand).isEmpty()) return ActionResultType.FAIL;
         if (!level.isClientSide()) {
-            BlockEntity be = level.getBlockEntity(pos);
+            TileEntity be = level.getBlockEntity(pos);
             if(be instanceof FissionHeatSinkBE) {
                 int id = level.random.nextInt(10);
                 if(((FissionHeatSinkBE) be).isValid(true)) {
-                    player.sendMessage(new TranslatableComponent("message.heat_sink.valid"+id), UUID.randomUUID());
+                    player.sendMessage(new TranslationTextComponent("message.heat_sink.valid"+id), UUID.randomUUID());
                 } else {
-                    player.sendMessage(new TranslatableComponent("message.heat_sink.invalid"+id), UUID.randomUUID());
+                    player.sendMessage(new TranslationTextComponent("message.heat_sink.invalid"+id), UUID.randomUUID());
                 }
             }
         }
-        return InteractionResult.SUCCESS;
+        return ActionResultType.SUCCESS;
     }
-
-    @javax.annotation.Nullable
     @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        if (level.isClientSide()) {
-            return (lvl, pos, blockState, t) -> {
-                if (t instanceof FissionHeatSinkBE tile) {
-                    tile.tickClient();
-                }
-            };
-        }
-        return (lvl, pos, blockState, t)-> {
-            if (t instanceof FissionHeatSinkBE tile) {
-                tile.tickServer();
-            }
-        };
-    }
-
-    @Override
-    public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag) {
+    public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable IBlockReader pLevel, List<ITextComponent> list, ITooltipFlag pFlag) {
         if(asItem().toString().contains("empty")) return;
         initParams();
-        list.add(TextUtils.applyFormat(new TranslatableComponent("heat_sink.heat.descr", TextUtils.numberFormat(heat)), ChatFormatting.GOLD));
+        list.add(TextUtils.applyFormat(new TranslationTextComponent("heat_sink.heat.descr", TextUtils.numberFormat(heat)), TextFormatting.GOLD));
 
         if(DESCRIPTIONS_SHOW) {
-            list.add(TextUtils.applyFormat(getPlacementRule(), ChatFormatting.AQUA));
+            list.add(TextUtils.applyFormat(getPlacementRule(), TextFormatting.AQUA));
         } else {
-            list.add(TextUtils.applyFormat(new TranslatableComponent("tooltip.toggle_description_keys"), ChatFormatting.GRAY));
+            list.add(TextUtils.applyFormat(new TranslationTextComponent("tooltip.toggle_description_keys"), TextFormatting.GRAY));
         }
     }
 

@@ -1,7 +1,6 @@
 package igentuman.nc.handler.sided;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.CompoundNBT;
 
 
 public class SlotModePair {
@@ -18,8 +17,8 @@ public class SlotModePair {
         this.slot = slot;
     }
 
-    public static Tag serializeArray(SlotModePair[] slotModePairs) {
-        CompoundTag tag = new CompoundTag();
+    public static CompoundNBT serializeArray(SlotModePair[] slotModePairs) {
+        CompoundNBT tag = new CompoundNBT();
         int[] vals = new int[slotModePairs.length];
         for (int i = 0; i < slotModePairs.length; i++) {
             vals[i] = slotModePairs[i].pack();
@@ -28,7 +27,7 @@ public class SlotModePair {
         return tag;
     }
 
-    public static SlotModePair[] deserializeArray(CompoundTag compound) {
+    public static SlotModePair[] deserializeArray(CompoundNBT compound) {
         int[] vals = compound.getIntArray("pairs");
         SlotModePair[] slotModePairs = new SlotModePair[vals.length];
         for (int i = 0; i < vals.length; i++) {

@@ -1,8 +1,8 @@
 package igentuman.nc.util;
 
 import igentuman.nc.util.annotation.NothingNullByDefault;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fluids.IFluidTank;
 
@@ -15,26 +15,26 @@ public class DataHandlerUtils {
     }
 
     /**
-     * Helper to read and load a list of containers from a {@link ListTag}
+     * Helper to read and load a list of containers from a {@link ListNBT}
      */
-    public static void readContainers(List<? extends INBTSerializable<CompoundTag>> containers, ListTag storedContainers) {
+    public static void readContainers(List<? extends INBTSerializable<CompoundNBT>> containers, ListNBT storedContainers) {
         readContents(containers, storedContainers, getTagByType(containers));
     }
 
     /**
-     * Helper to read and load a list of containers to a {@link ListTag}
+     * Helper to read and load a list of containers to a {@link ListNBT}
      */
-    public static ListTag writeContainers(List<? extends INBTSerializable<CompoundTag>> containers) {
+    public static ListNBT writeContainers(List<? extends INBTSerializable<CompoundNBT>> containers) {
         return writeContents(containers, getTagByType(containers));
     }
 
     /**
-     * Helper to read and load a list of handler contents from a {@link ListTag}
+     * Helper to read and load a list of handler contents from a {@link ListNBT}
      */
-    public static void readContents(List<? extends INBTSerializable<CompoundTag>> contents, ListTag storedContents, String key) {
+    public static void readContents(List<? extends INBTSerializable<CompoundNBT>> contents, ListNBT storedContents, String key) {
         int size = contents.size();
         for (int tagCount = 0; tagCount < storedContents.size(); tagCount++) {
-            CompoundTag tagCompound = storedContents.getCompound(tagCount);
+            CompoundNBT tagCompound = storedContents.getCompound(tagCount);
             byte id = tagCompound.getByte(key);
             if (id >= 0 && id < size) {
                 contents.get(id).deserializeNBT(tagCompound);
@@ -43,12 +43,12 @@ public class DataHandlerUtils {
     }
 
     /**
-     * Helper to read and load a list of handler contents to a {@link ListTag}
+     * Helper to read and load a list of handler contents to a {@link ListNBT}
      */
-    public static ListTag writeContents(List<? extends INBTSerializable<CompoundTag>> contents, String key) {
-        ListTag storedContents = new ListTag();
+    public static ListNBT writeContents(List<? extends INBTSerializable<CompoundNBT>> contents, String key) {
+        ListNBT storedContents = new ListNBT();
         for (int tank = 0; tank < contents.size(); tank++) {
-            CompoundTag tagCompound = contents.get(tank).serializeNBT();
+            CompoundNBT tagCompound = contents.get(tank).serializeNBT();
             if (!tagCompound.isEmpty()) {
                 tagCompound.putByte(key, (byte) tank);
                 storedContents.add(tagCompound);
@@ -58,11 +58,11 @@ public class DataHandlerUtils {
     }
 
     // keep this only for backwards compat
-    private static String getTagByType(List<? extends INBTSerializable<CompoundTag>> containers) {
+    private static String getTagByType(List<? extends INBTSerializable<CompoundNBT>> containers) {
         if (containers.isEmpty()) {
             return NBTConstants.CONTAINER;
         }
-        INBTSerializable<CompoundTag> obj = containers.get(0);
+        INBTSerializable<CompoundNBT> obj = containers.get(0);
         if (obj instanceof IFluidTank) {
             return NBTConstants.TANK;
         }
@@ -72,7 +72,7 @@ public class DataHandlerUtils {
     /**
      * Helper to calculate what the maximum id is in a list of contents.
      */
-    public static int getMaxId(ListTag storedContents, String key) {
+    public static int getMaxId(ListNBT storedContents, String key) {
         int maxId = -1;
         for (int tagCount = 0; tagCount < storedContents.size(); tagCount++) {
             byte id = storedContents.getCompound(tagCount).getByte(key);

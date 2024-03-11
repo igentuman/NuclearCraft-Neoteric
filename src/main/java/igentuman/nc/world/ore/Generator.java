@@ -2,60 +2,56 @@ package igentuman.nc.world.ore;
 
 import igentuman.nc.content.materials.Ores;
 import igentuman.nc.setup.registration.NCBlocks;
-import net.minecraft.core.Registry;
-import net.minecraft.data.BuiltinRegistries;
-import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.levelgen.GenerationStep;
-import net.minecraft.world.level.levelgen.VerticalAnchor;
-import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
-import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
-import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
-import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
-import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.gen.GenerationStage;
+import net.minecraft.world.gen.feature.ConfiguredFeature;
+import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.feature.OreFeature;
+import net.minecraft.world.gen.feature.OreFeatureConfig;
+import net.minecraft.world.gen.placement.Placement;
+import net.minecraft.world.gen.placement.TopSolidRangeConfig;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
-import org.antlr.v4.runtime.misc.NotNull;;
+import org.antlr.v4.runtime.misc.NotNull;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.setup.Registration.ORE_GENERATION;
+import static net.minecraft.util.registry.WorldGenRegistries.CONFIGURED_FEATURE;
+import static net.minecraft.world.biome.Biome.Category.NETHER;
+import static net.minecraft.world.biome.Biome.Category.THEEND;
+import static net.minecraft.world.gen.GenerationStage.Decoration.UNDERGROUND_ORES;
 
 public class Generator {
-    public static final RuleTest IN_ENDSTONE = new TagMatchTest(Tags.Blocks.END_STONES);
     @NotNull
     public static ConfiguredFeature<?, ?> createOregen(String ore) {
             String materialName = ore.replaceAll("_deepslate|_nether|_end", "");
-        ConfiguredFeature<?, ?> oreGen = Feature.ORE.configured(new OreConfiguration(List.of(
-                        OreConfiguration.target(OreConfiguration.Predicates.STONE_ORE_REPLACEABLES,
-                                NCBlocks.ORE_BLOCKS.get(ore).get().defaultBlockState())),
+        ConfiguredFeature<?, ?> oreGen = Feature.ORE.configured(
+                new OreFeatureConfig(
+                        OreFeatureConfig.FillerBlockType.NATURAL_STONE,
+                                NCBlocks.ORE_BLOCKS.get(ore).get().defaultBlockState(),
                         Ores.all().get(materialName).config().veinSize))
-                .rangeUniform(VerticalAnchor.absolute(Ores.all().get(materialName).config().height[0]),
-                        VerticalAnchor.absolute(Ores.all().get(materialName).config().height[1]))
+                .decorated(Placement.RANGE.configured(new TopSolidRangeConfig(Ores.all().get(materialName).config().height[0],
+                        11, Ores.all().get(materialName).config().height[1])))
                 .squared().count(Ores.all().get(materialName).config().veinAmount);
-        return register(ore, oreGen);
+        return oreGen;
     }
 
-    private static <Config extends FeatureConfiguration> ConfiguredFeature<Config, ?> register(String name,
-                                                                                               ConfiguredFeature<Config, ?> configuredFeature) {
-        return Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, rl(name),
-                configuredFeature);
-    }
 
     public static void onBiomeLoadingEvent(BiomeLoadingEvent event) {
-        if (event.getCategory() == Biome.BiomeCategory.NETHER) {
+        if (event.getCategory() == NETHER) {
             for(ConfiguredFeature<?, ?> feature: ORE_GENERATION) {
-                event.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, feature);
+                event.getGeneration().addFeature(UNDERGROUND_ORES, feature);
             }
-        } else if (event.getCategory() == Biome.BiomeCategory.THEEND) {
+        } else if (event.getCategory() == THEEND) {
             for(ConfiguredFeature<?, ?> feature: ORE_GENERATION) {
-                event.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, feature);
+                event.getGeneration().addFeature(UNDERGROUND_ORES, feature);
             }
         } else {
             for(ConfiguredFeature<?, ?> feature: ORE_GENERATION) {
-                event.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, feature);
+                event.getGeneration().addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, feature);
             }
         }
     }

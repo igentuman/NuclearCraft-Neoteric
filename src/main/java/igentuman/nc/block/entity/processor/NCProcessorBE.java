@@ -19,42 +19,34 @@ import igentuman.nc.util.CustomEnergyStorage;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.SlotModePair;
 import igentuman.nc.util.annotation.NBTField;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraft.client.particle.FallingDustParticle;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.particles.ParticleTypes;
+import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.Direction;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.items.IItemHandler;
 import org.antlr.v4.runtime.misc.NotNull;;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import static igentuman.nc.block.ProcessorBlock.ACTIVE;
 import static igentuman.nc.handler.config.ProcessorsConfig.PROCESSOR_CONFIG;
 import static igentuman.nc.util.ModUtil.*;
+import static net.minecraft.particles.RedstoneParticleData.REDSTONE;
 import static net.minecraftforge.energy.CapabilityEnergy.ENERGY;
 import static net.minecraftforge.fluids.capability.CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
 import static net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
@@ -305,7 +297,7 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
             double d6 = level.getRandom().nextDouble() * 6.0D / 16.0D;
             double d7 = direction$axis == Direction.Axis.Z ? (double)direction.getStepZ() * 0.52D : d4;
             level.addParticle(ParticleTypes.SMOKE, d0 + d5, d1 + d6, d2 + d7, 0.0D, 0, 0.0D);
-            level.addParticle(DustParticleOptions.REDSTONE, d0 + d5, d1 + d6, d2 + d7, 0, 0, 0);
+            level.addParticle(REDSTONE, d0 + d5, d1 + d6, d2 + d7, 0, 0, 0);
         }
     }
 
@@ -315,7 +307,7 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
             allowedInputs = new ArrayList<>();
             for(AbstractRecipe recipe: getRecipes()) {
                 for(Ingredient ingredient: recipe.getItemIngredients()) {
-                    allowedInputs.addAll(List.of(ingredient.getItems()));
+                    allowedInputs.addAll(Arrays.asList(ingredient.getItems()));
                 }
             }
         }
@@ -327,7 +319,7 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
         if(recipes == null) {
             recipes = new ArrayList<>();
             if(level == null) {
-                Level level = NuclearCraft.instance.server.overworld();
+                World level = NuclearCraft.instance.server.overworld();
             }
             if(level == null) return null;
             for (NcRecipe recipe: level.getRecipeManager().getAllRecipesFor(NcRecipeType.ALL_RECIPES.get(getName()))) {
@@ -367,7 +359,7 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
         updated = updated || contentHandler.tick();
         if(updated || wasUpdated) {
             level.setBlockAndUpdate(worldPosition, getBlockState().setValue(ACTIVE, isActive));
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(ACTIVE, isActive), Block.UPDATE_ALL);
+           // level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(ACTIVE, isActive), Block.UPDATE_ALL);
         }
         skippedTicks = 1;
 
@@ -454,28 +446,28 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
     }
 
     @Override
-    public void load(CompoundTag tag) {
+    public void load(BlockState state, CompoundNBT tag) {
         if (tag.contains("Energy")) {
-            energyStorage.deserializeNBT(tag.get("Energy"));
+            energyStorage.deserializeNBT(tag.getCompound("Energy"));
         }
         if (tag.contains("Content")) {
             contentHandler.deserializeNBT(tag.getCompound("Content"));
         }
         if (tag.contains("Info")) {
-            CompoundTag infoTag = tag.getCompound("Info");
+            CompoundNBT infoTag = tag.getCompound("Info");
             readTagData(infoTag);
             if (infoTag.contains("recipeInfo")) {
                 recipeInfo.deserializeNBT(infoTag.getCompound("recipeInfo"));
             }
             if(infoTag.contains("upgrades")) {
-                upgradesHandler.deserializeNBT((CompoundTag) (infoTag).get("upgrades"));
+                upgradesHandler.deserializeNBT((CompoundNBT) (infoTag).get("upgrades"));
             }
             if(infoTag.contains("catalyst")) {
-                catalystHandler.deserializeNBT((CompoundTag) (infoTag).get("catalyst"));
+                catalystHandler.deserializeNBT((CompoundNBT) (infoTag).get("catalyst"));
             }
         }
         updateRecipeAfterLoad();
-        super.load(tag);
+        super.load(state, tag);
     }
 
     private void updateRecipeAfterLoad() {
@@ -485,7 +477,7 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
     }
 
     //used to save data to chunk
-    public void saveAdditional(CompoundTag tag) {
+    public void saveAdditional(CompoundNBT tag) {
 
         contentHandler.saveSideMap();
 
@@ -495,7 +487,7 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
         if(!tag.contains("Energy")) {
             tag.put("Energy", energyStorage.serializeNBT());
         }
-        CompoundTag infoTag = new CompoundTag();
+        CompoundNBT infoTag = new CompoundNBT();
         saveTagData(infoTag);
         infoTag.put("upgrades", upgradesHandler.serializeNBT());
         infoTag.put("catalyst", catalystHandler.serializeNBT());
@@ -508,15 +500,15 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
     }
 
     @Override
-    public void handleUpdateTag(CompoundTag tag) {
+    public void handleUpdateTag(BlockState state, CompoundNBT tag) {
         if (tag != null) {
             loadClientData(tag);
         }
     }
 
-    protected void loadClientData(CompoundTag tag) {
+    protected void loadClientData(CompoundNBT tag) {
         if (tag.contains("Info")) {
-            CompoundTag infoTag = tag.getCompound("Info");
+            CompoundNBT infoTag = tag.getCompound("Info");
             readTagData(infoTag);
             if (infoTag.contains("recipeInfo")) {
                 recipeInfo.deserializeNBT(infoTag.getCompound("recipeInfo"));
@@ -525,10 +517,10 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
                 energyStorage.setEnergy(infoTag.getInt("energy"));
             }
             if(infoTag.contains("upgrades")) {
-                upgradesHandler.deserializeNBT((CompoundTag) (infoTag).get("upgrades"));
+                upgradesHandler.deserializeNBT((CompoundNBT) (infoTag).get("upgrades"));
             }
             if(infoTag.contains("catalyst")) {
-                catalystHandler.deserializeNBT((CompoundTag) (infoTag).get("catalyst"));
+                catalystHandler.deserializeNBT((CompoundNBT) (infoTag).get("catalyst"));
             }
         }
         if (tag.contains("Content")) {
@@ -537,14 +529,14 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
     }
 
     @Override
-    public @NotNull CompoundTag getUpdateTag() {
-        CompoundTag tag = super.getUpdateTag();
+    public @NotNull CompoundNBT getUpdateTag() {
+        CompoundNBT tag = super.getUpdateTag();
         saveClientData(tag);
         return tag;
     }
 
-    protected void saveClientData(CompoundTag tag) {
-        CompoundTag infoTag = new CompoundTag();
+    protected void saveClientData(CompoundNBT tag) {
+        CompoundNBT infoTag = new CompoundNBT();
         saveTagData(infoTag);
         if(saveSideMapFlag) {
             contentHandler.saveSideMap();
@@ -564,17 +556,17 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
         infoTag.putInt("energy", energyStorage.getEnergyStored());
     }
 
-    @Override
+/*    @Override
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
         int oldEnergy = energyStorage.getEnergyStored();
 
-        CompoundTag tag = pkt.getTag();
+        CompoundNBT tag = pkt.getTag();
         handleUpdateTag(tag);
 
         if (oldEnergy != energyStorage.getEnergyStored()) {
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
         }
-    }
+    }*/
 
     public int toggleSideConfig(int slotId, int direction) {
         setChanged();
@@ -598,15 +590,15 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
         redstoneMode++;
         if (redstoneMode > 1) redstoneMode = 0;
         setChanged();
-        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+    //    level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
     }
 
-    public CompoundTag getTagForStack() {
-        CompoundTag data = new CompoundTag();
+    public CompoundNBT getTagForStack() {
+        CompoundNBT data = new CompoundNBT();
         contentHandler.saveSideMap();
         data.put("Content", contentHandler.serializeNBT());
         data.put("Energy", energyStorage.serializeNBT());
-        CompoundTag infoTag = new CompoundTag();
+        CompoundNBT infoTag = new CompoundNBT();
         saveTagData(infoTag);
         infoTag.put("upgrades", upgradesHandler.serializeNBT());
         infoTag.put("catalyst", catalystHandler.serializeNBT());
@@ -617,7 +609,7 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
     }
 
     public List<Item> getAllowedCatalysts() {
-        return List.of();
+        return Arrays.asList();
     }
 
     public int getRecipeProgress() {

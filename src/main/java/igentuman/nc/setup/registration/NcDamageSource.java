@@ -2,8 +2,9 @@ package igentuman.nc.setup.registration;
 
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.util.annotation.NothingNullByDefault;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Vector3d;
 import org.antlr.v4.runtime.misc.NotNull;;
 import javax.annotation.Nullable;
 
@@ -12,7 +13,7 @@ import java.util.Collections;
 import java.util.List;
 
 @NothingNullByDefault
-public class NcDamageSource extends DamageSource  {
+public class NcDamageSource extends DamageSource {
 
     private static final List<NcDamageSource> INTERNAL_DAMAGE_SOURCES = new ArrayList<>();
     public static final List<NcDamageSource> DAMAGE_SOURCES = Collections.unmodifiableList(INTERNAL_DAMAGE_SOURCES);
@@ -20,7 +21,7 @@ public class NcDamageSource extends DamageSource  {
 
     private final String translationKey;
     @Nullable
-    private final Vec3 damageLocation;
+    private final Vector3d damageLocation;
 
 
     private NcDamageSource(String damageType) {
@@ -28,7 +29,7 @@ public class NcDamageSource extends DamageSource  {
         INTERNAL_DAMAGE_SOURCES.add(this);
     }
 
-    private NcDamageSource(@NotNull String damageType, @Nullable Vec3 damageLocation) {
+    private NcDamageSource(@NotNull String damageType, @Nullable Vector3d damageLocation) {
         super(NuclearCraft.MODID + "." + damageType);
         this.translationKey = "death.attack." + getMsgId();
         this.damageLocation = damageLocation;
@@ -37,7 +38,7 @@ public class NcDamageSource extends DamageSource  {
     /**
      * Gets a new instance of this damage source, that is positioned at the given location.
      */
-    public NcDamageSource fromPosition(@NotNull Vec3 damageLocation) {
+    public NcDamageSource fromPosition(@NotNull Vector3d damageLocation) {
         return new NcDamageSource(getMsgId(), damageLocation);
     }
 
@@ -47,7 +48,7 @@ public class NcDamageSource extends DamageSource  {
 
     @Nullable
     @Override
-    public Vec3 getSourcePosition() {
+    public Vector3d getSourcePosition() {
         return damageLocation;
     }
 

@@ -7,18 +7,18 @@ import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.recipes.type.OreVeinRecipe;
 import igentuman.nc.util.annotation.NothingNullByDefault;
-import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.item.ItemStack;
+import net.minecraft.block.BlockState;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.HashMap;
 
-import static net.minecraft.world.item.Items.FILLED_MAP;
-import static net.minecraft.world.item.Items.PAPER;
+import static net.minecraft.item.Items.FILLED_MAP;
+import static net.minecraft.item.Items.PAPER;
 
 public class AnalyzerBE extends NCProcessorBE<AnalyzerBE.Recipe> {
     public AnalyzerBE(BlockPos pPos, BlockState pBlockState) {
@@ -98,10 +98,10 @@ public class AnalyzerBE extends NCProcessorBE<AnalyzerBE.Recipe> {
     }
 
     protected OreVeinRecipe getVein() {
-        long pos = ChunkPos.asLong(worldPosition);
+        long pos = new ChunkPos(worldPosition).toLong();
         if(!veinsCache.containsKey(pos))
         {
-            veinsCache.put(pos, OreVeinProvider.get((ServerLevel) level)
+            veinsCache.put(pos, OreVeinProvider.get((ServerWorld) level)
                     .getVeinForChunk(ChunkPos.getX(pos), ChunkPos.getZ(pos)));
         }
         return veinsCache.get(pos);

@@ -28,11 +28,7 @@ public class NCLootTables extends BaseLootTableProvider {
 
     private void ores() {
         for(String ore: NCBlocks.ORE_BLOCKS.keySet()) {
-            if(NCItems.NC_CHUNKS.containsKey(ore.replaceAll("_deepslate|_end|_nether",""))) {
-                lootTables.put(NCBlocks.ORE_BLOCKS.get(ore).get(), createSilkTouchTable("ore", NCBlocks.ORE_BLOCKS.get(ore).get(), NCItems.NC_CHUNKS.get(ore.replaceAll("_deepslate|_end|_nether","")).get(), 1, 1));
-            } else {
-                lootTables.put(NCBlocks.ORE_BLOCKS.get(ore).get(), createSimpleTable("ore", NCBlocks.ORE_BLOCKS.get(ore).get()));
-            }
+            lootTables.put(NCBlocks.ORE_BLOCKS.get(ore).get(), createSimpleTable("ore", NCBlocks.ORE_BLOCKS.get(ore).get()));
         }
     }
     private void blocks() {

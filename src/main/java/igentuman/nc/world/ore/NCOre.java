@@ -3,6 +3,7 @@ package igentuman.nc.world.ore;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.content.materials.Ores;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static igentuman.nc.handler.config.MaterialsConfig.ORE_CONFIG;
@@ -43,7 +44,7 @@ public class NCOre {
     }
 
     public NCOre dim(Integer ...dim) {
-        dimensions = List.of(dim);
+        dimensions = Arrays.asList(dim);
         return this;
     }
 
@@ -51,7 +52,7 @@ public class NCOre {
     {
         if(!initialized) {
             try {
-                int id = Ores.all().keySet().stream().toList().indexOf(name);
+                int id = Arrays.asList(Ores.all().keySet().stream().toArray()).indexOf(name);
                 registered = ORE_CONFIG.REGISTER_ORE.get().get(id);
                 height[0] = ORE_CONFIG.ORE_MIN_HEIGHT.get().get(id);
                 height[1] = ORE_CONFIG.ORE_MAX_HEIGHT.get().get(id);

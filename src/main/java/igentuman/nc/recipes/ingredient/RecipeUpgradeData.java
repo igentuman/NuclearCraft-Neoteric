@@ -2,8 +2,8 @@ package igentuman.nc.recipes.ingredient;
 
 import igentuman.nc.util.ItemDataUtils;
 import igentuman.nc.util.annotation.ParametersAreNotNullByDefault;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.item.ItemStack;
 
 import org.antlr.v4.runtime.misc.NotNull;;
 import javax.annotation.Nullable;
@@ -23,8 +23,8 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
 
 
     @Nullable
-    private static <TYPE extends RecipeUpgradeData<TYPE>> TYPE getContainerUpgradeData(@NotNull ItemStack stack, String key, Function<ListTag, TYPE> creator) {
-        ListTag containers = ItemDataUtils.getList(stack, key);
+    public static <TYPE extends RecipeUpgradeData<TYPE>> TYPE getContainerUpgradeData(@NotNull ItemStack stack, String key, Function<ListNBT, TYPE> creator) {
+        ListNBT containers = ItemDataUtils.getList(stack, key);
         return containers.isEmpty() ? null : creator.apply(containers);
     }
 

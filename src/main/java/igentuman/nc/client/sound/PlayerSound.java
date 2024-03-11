@@ -1,18 +1,19 @@
 package igentuman.nc.client.sound;
 
-import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.client.audio.TickableSound;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.SoundEvent;
 import org.antlr.v4.runtime.misc.NotNull;;
 import javax.annotation.Nullable;
 
 import java.lang.ref.WeakReference;
 
-public abstract class PlayerSound extends AbstractTickableSoundInstance {
+import static net.minecraft.util.SoundCategory.PLAYERS;
+
+public abstract class PlayerSound extends TickableSound {
 
     @NotNull
-    private final WeakReference<Player> playerReference;
+    private final WeakReference<PlayerEntity> playerReference;
     private float lastX;
     private float lastY;
     private float lastZ;
@@ -20,8 +21,8 @@ public abstract class PlayerSound extends AbstractTickableSoundInstance {
     private float fadeUpStep = 0.1f;
     private float fadeDownStep = 0.1f;
 
-    public PlayerSound(@NotNull Player player, @NotNull SoundEvent sound) {
-        super(sound, SoundSource.PLAYERS);
+    public PlayerSound(@NotNull PlayerEntity player, @NotNull SoundEvent sound) {
+        super(sound, PLAYERS);
         this.playerReference = new WeakReference<>(player);
         this.lastX = (float) player.getX();
         this.lastY = (float) player.getY();
@@ -33,7 +34,7 @@ public abstract class PlayerSound extends AbstractTickableSoundInstance {
     }
 
     @Nullable
-    private Player getPlayer() {
+    private PlayerEntity getPlayer() {
         return playerReference.get();
     }
 
@@ -44,7 +45,7 @@ public abstract class PlayerSound extends AbstractTickableSoundInstance {
 
     @Override
     public double getX() {
-        Player player = getPlayer();
+        PlayerEntity player = getPlayer();
         if (player != null) {
             this.lastX = (float) player.getX();
         }
@@ -53,7 +54,7 @@ public abstract class PlayerSound extends AbstractTickableSoundInstance {
 
     @Override
     public double getY() {
-        Player player = getPlayer();
+        PlayerEntity player = getPlayer();
         if (player != null) {
             this.lastY = (float) player.getY();
         }
@@ -62,7 +63,7 @@ public abstract class PlayerSound extends AbstractTickableSoundInstance {
 
     @Override
     public double getZ() {
-        Player player = getPlayer();
+        PlayerEntity player = getPlayer();
         if (player != null) {
             this.lastZ = (float) player.getZ();
         }
@@ -71,7 +72,7 @@ public abstract class PlayerSound extends AbstractTickableSoundInstance {
 
     @Override
     public void tick() {
-        Player player = getPlayer();
+        PlayerEntity player = getPlayer();
         if (player == null || !player.isAlive()) {
             stop();
             volume = 0.0F;
@@ -87,7 +88,7 @@ public abstract class PlayerSound extends AbstractTickableSoundInstance {
         }
     }
 
-    public abstract boolean shouldPlaySound(@NotNull Player player);
+    public abstract boolean shouldPlaySound(@NotNull PlayerEntity player);
 
     @Override
     public float getVolume() {
@@ -101,7 +102,7 @@ public abstract class PlayerSound extends AbstractTickableSoundInstance {
 
     @Override
     public boolean canPlaySound() {
-        Player player = getPlayer();
+        PlayerEntity player = getPlayer();
         if (player == null) {
             return super.canPlaySound();
         }

@@ -4,9 +4,9 @@ import igentuman.nc.block.turbine.TurbineBladeBlock;
 import igentuman.nc.item.HEVItem;
 import igentuman.nc.item.HazmatItem;
 import igentuman.nc.radiation.data.RadiationEvents;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.block.BlockState;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.ServerTickEvent;
@@ -32,7 +32,7 @@ public class WorldEvents {
     @SubscribeEvent
     public void onBlockBreak(BlockEvent.BreakEvent event) {
         BlockState state = event.getState();
-        if (state != null && !state.isAir() && state.hasBlockEntity()) {
+        if (state != null && !state.isAir() && state.hasTileEntity()) {
 
         }
     }
@@ -42,7 +42,7 @@ public class WorldEvents {
         BlockState state = event.getState();
         if(state == null) return;
         if(state.getBlock() instanceof TurbineBladeBlock) {
-            placed = TurbineBladeBlock.processBlockPlace(event.getWorld(), event.getPos(), event.getPlacedBlock(), state, event.getPlacedAgainst());
+         //   placed = TurbineBladeBlock.processBlockPlace(event.getWorld(), event.getPos(), event.getPlacedBlock(), state, event.getPlacedAgainst());
         }
         if(!placed) {
             event.setCanceled(true);
@@ -76,7 +76,7 @@ public class WorldEvents {
         }
     }
 
-    public static int getHEVProtectionRate(Player player) {
+    public static int getHEVProtectionRate(PlayerEntity player) {
         int rate = 0;
         for(ItemStack stack : player.getArmorSlots()) {
             if((stack.getItem() instanceof HEVItem) && isCharged(stack)) {
@@ -86,7 +86,7 @@ public class WorldEvents {
         return rate;
     }
 
-    public static boolean isFullyEquitedInHazmat(Player player) {
+    public static boolean isFullyEquitedInHazmat(PlayerEntity player) {
         for(ItemStack stack : player.getArmorSlots()) {
             if(!(stack.getItem() instanceof HazmatItem) && !(stack.getItem() instanceof HEVItem)) {
                 return false;
@@ -104,13 +104,14 @@ public class WorldEvents {
 
     @SubscribeEvent
     public static void onPlayerDamage(LivingHurtEvent event) {
-        if (event.getEntity() instanceof Player player) {
+        if (event.getEntity() instanceof PlayerEntity) {
+            PlayerEntity player = (PlayerEntity) event.getEntity();
             if (event.getSource() != null && event.getSource().isMagic()) {
                 if(isFullyEquitedInHazmat(player)) {
                     event.setAmount(event.getAmount()/10F);
                 }
             }
-            if(event.getSource() != null && event.getSource().isFall()) {
+            if(event.getSource() != null && event.getSource().isFire()) {
                 player.getArmorSlots().forEach(stack -> {
                     if(stack.getItem().equals(HEV_BOOTS.get()) && isCharged(stack)) {
                         consumeEnergy(stack, 1000);

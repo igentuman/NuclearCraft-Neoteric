@@ -4,10 +4,11 @@ import igentuman.nc.content.materials.Materials;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.NcIngredient;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.IFinishedRecipe;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -15,7 +16,7 @@ import static igentuman.nc.setup.registration.NCBlocks.MUSHROOM_ITEM;
 
 public class FluidEnricherRecipes extends AbstractRecipeProvider {
 
-    public static void generate(Consumer<FinishedRecipe> consumer) {
+    public static void generate(Consumer<IFinishedRecipe> consumer) {
         FluidEnricherRecipes.consumer = consumer;
         ID = Processors.FLUID_ENRICHER;
 
@@ -99,6 +100,6 @@ public class FluidEnricherRecipes extends AbstractRecipeProvider {
     }
 
     protected static void add(FluidStackIngredient inputFluid, NcIngredient inputItem, FluidStack output, double...modifiers) {
-        itemsAndFluids(List.of(inputItem), new ArrayList<>(), List.of(inputFluid), List.of(output), modifiers);
+        itemsAndFluids(Arrays.asList(inputItem), new ArrayList<>(), Arrays.asList(inputFluid), Arrays.asList(output), modifiers);
     }
 }

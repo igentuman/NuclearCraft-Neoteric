@@ -1,41 +1,22 @@
 package igentuman.nc.setup.registration;
 
-import com.mojang.serialization.Codec;
-import igentuman.nc.NuclearCraft;
 import igentuman.nc.client.particle.FusionBeamParticleData;
 import igentuman.nc.client.particle.FusionBeamParticleType;
-import net.minecraft.core.Registry;
-import net.minecraft.core.particles.ParticleType;
-import net.minecraft.core.particles.SimpleParticleType;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeType;
+import igentuman.nc.setup.registry.ParticleTypeDeferredRegister;
+import igentuman.nc.setup.registry.ParticleTypeRegistryObject;
+import net.minecraft.particles.BasicParticleType;
 
-import static igentuman.nc.NuclearCraft.rl;
+import static igentuman.nc.NuclearCraft.MODID;
 
 public class NcParticleTypes {
 
     private NcParticleTypes() {
     }
-/*
-    public static final ParticleType<SimpleParticleType> RADIATION = registerParticleType("radiation");
-    public static final ParticleType<FusionBeamParticleType> FUSION_BEAM = registerParticleType("fusion_beam", FusionBeamParticleType::new);
+    public static final ParticleTypeDeferredRegister PARTICLE_TYPES = new ParticleTypeDeferredRegister(MODID);
 
-    private static <T extends ParticleType<?>> ParticleType<T> registerParticleType(String path)
-    {
-        ResourceLocation name = rl(path);
-        return Registry.register(Registry.PARTICLE_TYPE, name, new ParticleType<T>()
-        {
-            @Override
-            public Codec<T> codec() {
-                return (T) -> T.CODEC;
-            }
+    public static final ParticleTypeRegistryObject<BasicParticleType, BasicParticleType> RADIATION = PARTICLE_TYPES.registerBasicParticle("radiation");
 
-            @Override
-            public String toString()
-            {
-                return name.toString();
-            }
-        });
-    }*/
+    public static final ParticleTypeRegistryObject<FusionBeamParticleData, FusionBeamParticleType> FUSION_BEAM = PARTICLE_TYPES.register("laser", FusionBeamParticleType::new);
+
+
 }

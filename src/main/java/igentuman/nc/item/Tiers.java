@@ -3,14 +3,13 @@ package igentuman.nc.item;
 import java.util.function.Supplier;
 
 import igentuman.nc.content.materials.Materials;
-import net.minecraft.util.LazyLoadedValue;
-import net.minecraft.world.item.Tier;
-import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.item.IItemTier;
+import net.minecraft.item.crafting.Ingredient;
 
 import static igentuman.nc.datagen.recipes.recipes.AbstractRecipeProvider.ingotIngredient;
 import static igentuman.nc.setup.registration.NCItems.LITHIUM_ION_CELL;
 
-public enum Tiers implements Tier {
+public enum Tiers implements IItemTier {
    TOUGH(8, 10000, 12.0F, 10.0F, 22, () -> {
       return ingotIngredient(Materials.tough_alloy);
    }),
@@ -26,7 +25,7 @@ public enum Tiers implements Tier {
    private final float speed;
    private final float damage;
    private final int enchantmentValue;
-   private final LazyLoadedValue<Ingredient> repairIngredient;
+   private final  Supplier<Ingredient> repairIngredient;
 
    private Tiers(int pLevel, int pUses, float pSpeed, float pDamage, int pEnchantmentValue, Supplier<Ingredient> pRepairIngredient) {
       this.level = pLevel;
@@ -34,7 +33,7 @@ public enum Tiers implements Tier {
       this.speed = pSpeed;
       this.damage = pDamage;
       this.enchantmentValue = pEnchantmentValue;
-      this.repairIngredient = new LazyLoadedValue<>(pRepairIngredient);
+      this.repairIngredient = pRepairIngredient;
    }
 
    public int getUses() {

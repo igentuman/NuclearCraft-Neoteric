@@ -1,7 +1,7 @@
 package igentuman.nc.handler.event.client;
 
 import igentuman.nc.recipes.NcRecipeType;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
@@ -20,13 +20,13 @@ public class ServerLoad {
     public static boolean initialized = false;
     public static void onLevelLoad(WorldEvent.Load event) {
         if(initialized) return;
-        if(event.getWorld().getServer() == null) return;
-        Level level = event.getWorld().getServer().getLevel(Level.OVERWORLD);
+/*        if(event.getWorld().getServer() == null) return;
+        World level = event.getWorld().getServer().getLevel(Level.OVERWORLD);
         for (String name: ALL_RECIPES.keySet()) {
             level.getRecipeManager().getAllRecipesFor(ALL_RECIPES.get(name));
          //   NcRecipeType<?> recipeType = (NcRecipeType<?>) ALL_RECIPES.get(name);
           //  recipeType.loadRecipes(level);
         }
-        initialized = true;
+        initialized = true;*/
     }
 }

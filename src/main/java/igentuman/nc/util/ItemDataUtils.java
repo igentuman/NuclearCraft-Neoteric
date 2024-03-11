@@ -1,9 +1,8 @@
 package igentuman.nc.util;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.INBTSerializable;
 import org.antlr.v4.runtime.misc.NotNull;;
 import javax.annotation.Nullable;
@@ -13,38 +12,40 @@ import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import static net.minecraftforge.common.util.Constants.NBT.TAG_COMPOUND;
+
 public final class ItemDataUtils {
 
     private ItemDataUtils() {
     }
 
     @NotNull
-    public static CompoundTag getDataMap(ItemStack stack) {
-        CompoundTag tag = stack.getOrCreateTag();
-        if (tag.contains(NBTConstants.NC_DATA, Tag.TAG_COMPOUND)) {
+    public static CompoundNBT getDataMap(ItemStack stack) {
+        CompoundNBT tag = stack.getOrCreateTag();
+        if (tag.contains(NBTConstants.NC_DATA, TAG_COMPOUND)) {
             return tag.getCompound(NBTConstants.NC_DATA);
         }
-        CompoundTag dataMap = new CompoundTag();
+        CompoundNBT dataMap = new CompoundNBT();
         tag.put(NBTConstants.NC_DATA, dataMap);
         return dataMap;
     }
 
     @Nullable
-    public static CompoundTag getDataMapIfPresent(ItemStack stack) {
-        CompoundTag tag = stack.getTag();
-        if (tag != null && tag.contains(NBTConstants.NC_DATA, Tag.TAG_COMPOUND)) {
+    public static CompoundNBT getDataMapIfPresent(ItemStack stack) {
+        CompoundNBT tag = stack.getTag();
+        if (tag != null && tag.contains(NBTConstants.NC_DATA, TAG_COMPOUND)) {
             return tag.getCompound(NBTConstants.NC_DATA);
         }
         return null;
     }
 
     public static boolean hasData(ItemStack stack, String key, int type) {
-        CompoundTag dataMap = getDataMapIfPresent(stack);
+        CompoundNBT dataMap = getDataMapIfPresent(stack);
         return dataMap != null && dataMap.contains(key, type);
     }
 
     public static void removeData(ItemStack stack, String key) {
-        CompoundTag dataMap = getDataMapIfPresent(stack);
+        CompoundNBT dataMap = getDataMapIfPresent(stack);
         if (dataMap != null) {
             dataMap.remove(key);
             if (dataMap.isEmpty()) {
@@ -55,28 +56,28 @@ public final class ItemDataUtils {
         }
     }
 
-    public static <T> T getDataValue(ItemStack stack, Function<CompoundTag, T> getter, T fallback) {
-        CompoundTag dataMap = getDataMapIfPresent(stack);
+    public static <T> T getDataValue(ItemStack stack, Function<CompoundNBT, T> getter, T fallback) {
+        CompoundNBT dataMap = getDataMapIfPresent(stack);
         return dataMap == null ? fallback : getter.apply(dataMap);
     }
 
     public static int getInt(ItemStack stack, String key) {
-        CompoundTag dataMap = getDataMapIfPresent(stack);
+        CompoundNBT dataMap = getDataMapIfPresent(stack);
         return dataMap == null ? 0 : dataMap.getInt(key);
     }
 
     public static long getLong(ItemStack stack, String key) {
-        CompoundTag dataMap = getDataMapIfPresent(stack);
+        CompoundNBT dataMap = getDataMapIfPresent(stack);
         return dataMap == null ? 0 : dataMap.getLong(key);
     }
 
     public static boolean getBoolean(ItemStack stack, String key) {
-        CompoundTag dataMap = getDataMapIfPresent(stack);
+        CompoundNBT dataMap = getDataMapIfPresent(stack);
         return dataMap != null && dataMap.getBoolean(key);
     }
 
     public static double getDouble(ItemStack stack, String key) {
-        CompoundTag dataMap = getDataMapIfPresent(stack);
+        CompoundNBT dataMap = getDataMapIfPresent(stack);
         return dataMap == null ? 0 : dataMap.getDouble(key);
     }
 
@@ -84,38 +85,38 @@ public final class ItemDataUtils {
         return getDataValue(stack, dataMap -> dataMap.getString(key), "");
     }
 
-    public static CompoundTag getCompound(ItemStack stack, String key) {
-        return getDataValue(stack, dataMap -> dataMap.getCompound(key), new CompoundTag());
+    public static CompoundNBT getCompound(ItemStack stack, String key) {
+        return getDataValue(stack, dataMap -> dataMap.getCompound(key), new CompoundNBT());
     }
 
-    public static CompoundTag getOrAddCompound(ItemStack stack, String key) {
-        CompoundTag dataMap = getDataMap(stack);
-        if (dataMap.contains(key, Tag.TAG_COMPOUND)) {
+    public static CompoundNBT getOrAddCompound(ItemStack stack, String key) {
+        CompoundNBT dataMap = getDataMap(stack);
+        if (dataMap.contains(key, TAG_COMPOUND)) {
             return dataMap.getCompound(key);
         }
-        CompoundTag compound = new CompoundTag();
+        CompoundNBT compound = new CompoundNBT();
         dataMap.put(key, compound);
         return compound;
     }
 
-    public static void setCompoundIfPresent(ItemStack stack, String key, Consumer<CompoundTag> setter) {
-        CompoundTag dataMap = getDataMapIfPresent(stack);
-        if (dataMap != null && dataMap.contains(key, Tag.TAG_COMPOUND)) {
+    public static void setCompoundIfPresent(ItemStack stack, String key, Consumer<CompoundNBT> setter) {
+        CompoundNBT dataMap = getDataMapIfPresent(stack);
+        if (dataMap != null && dataMap.contains(key, TAG_COMPOUND)) {
             setter.accept(dataMap.getCompound(key));
         }
     }
 
     @Nullable
     public static UUID getUniqueID(ItemStack stack, String key) {
-        CompoundTag dataMap = getDataMapIfPresent(stack);
+        CompoundNBT dataMap = getDataMapIfPresent(stack);
         if (dataMap != null && dataMap.hasUUID(key)) {
             return dataMap.getUUID(key);
         }
         return null;
     }
 
-    public static ListTag getList(ItemStack stack, String key) {
-        return getDataValue(stack, dataMap -> dataMap.getList(key, Tag.TAG_COMPOUND), new ListTag());
+    public static ListNBT getList(ItemStack stack, String key) {
+        return getDataValue(stack, dataMap -> dataMap.getList(key, TAG_COMPOUND), new ListNBT());
     }
 
     public static void setInt(ItemStack stack, String key, int i) {
@@ -154,7 +155,7 @@ public final class ItemDataUtils {
         getDataMap(stack).putString(key, s);
     }
 
-    public static void setCompound(ItemStack stack, String key, CompoundTag tag) {
+    public static void setCompound(ItemStack stack, String key, CompoundNBT tag) {
         getDataMap(stack).put(key, tag);
     }
 
@@ -166,11 +167,11 @@ public final class ItemDataUtils {
         }
     }
 
-    public static void setList(ItemStack stack, String key, ListTag tag) {
+    public static void setList(ItemStack stack, String key, ListNBT tag) {
         getDataMap(stack).put(key, tag);
     }
 
-    public static void setListOrRemove(ItemStack stack, String key, ListTag tag) {
+    public static void setListOrRemove(ItemStack stack, String key, ListNBT tag) {
         if (tag.isEmpty()) {
             removeData(stack, key);
         } else {
@@ -190,13 +191,13 @@ public final class ItemDataUtils {
         }
     }
 
-    public static void readContainers(ItemStack stack, String containerKey, List<? extends INBTSerializable<CompoundTag>> containers) {
+    public static void readContainers(ItemStack stack, String containerKey, List<? extends INBTSerializable<CompoundNBT>> containers) {
         if (!stack.isEmpty()) {
             DataHandlerUtils.readContainers(containers, getList(stack, containerKey));
         }
     }
 
-    public static void writeContainers(ItemStack stack, String containerKey, List<? extends INBTSerializable<CompoundTag>> containers) {
+    public static void writeContainers(ItemStack stack, String containerKey, List<? extends INBTSerializable<CompoundNBT>> containers) {
         if (!stack.isEmpty()) {
             setListOrRemove(stack, containerKey, DataHandlerUtils.writeContainers(containers));
         }

@@ -1,13 +1,13 @@
 package igentuman.nc.multiblock;
 
 import igentuman.nc.util.NCBlockPos;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.world.level.Explosion;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.Direction;
+import net.minecraft.world.Explosion;
+import net.minecraft.world.World;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,7 +48,7 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
         if(cachedBlocks.containsKey(pos)) {
             return cachedBlocks.get(pos);
         }
-        BlockEntity be = getLevel().getBlockEntity(pos);
+        TileEntity be = getLevel().getBlockEntity(pos);
         BlockState state = getLevel().getBlockState(pos);
         BlockInfo info = new BlockInfo(state, be);
         cachedBlocks.put(pos, info);
@@ -97,7 +97,7 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
     @Override
     public List<Block> validInnerBlocks() { return validInnerBlocks; }
 
-    protected Level getLevel() {
+    protected World getLevel() {
         return  controller().controllerBE().getLevel();
     }
     protected BlockPos controllerPos;
@@ -295,9 +295,9 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
         attachMultiblock(getLevel().getBlockEntity(pos));
     }
 
-    protected void attachMultiblock(BlockEntity be) {
-        if(be instanceof IMultiblockAttachable part) {
-            part.setMultiblock(this);
+    protected void attachMultiblock(TileEntity be) {
+        if(be instanceof IMultiblockAttachable) {
+            ((IMultiblockAttachable)be).setMultiblock(this);
         }
     }
 
@@ -309,7 +309,7 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
     public void onControllerRemoved() {
         for(BlockPos b: allBlocks) {
             if(!isLoaded(b)) continue;
-            BlockEntity be = getLevel().getBlockEntity(b);
+            TileEntity be = getLevel().getBlockEntity(b);
             if(be instanceof IMultiblockAttachable) {
                 ((IMultiblockAttachable) be).setMultiblock(null);
             }
@@ -331,13 +331,17 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
     }
 
     public BlockPos getSidePos(int i) {
-        return switch (getFacing().ordinal()) {
-            case 3 -> controllerPos().east(i);
-            case 5 -> controllerPos().north(i);
-            case 2 -> controllerPos().west(i);
-            case 4 -> controllerPos().south(i);
-            default -> null;
+        switch (getFacing().ordinal()) {
+            case 3:
+                return controllerPos().east(i);
+            case 5:
+                return controllerPos().north(i);
+            case 2:
+                return controllerPos().west(i);
+            case 4:
+                return controllerPos().south(i);
         };
+        return null;
     }
 
     protected abstract Direction getFacing();
@@ -389,10 +393,10 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
 
     private boolean shouldRefreshCache(BlockState state, BlockPos pos, BlockPos neighbor) {
         boolean isInTheList = allBlocks.contains(neighbor);
-        BlockEntity neighborBe = getLevel().getBlockEntity(neighbor);
+        TileEntity neighborBe = getLevel().getBlockEntity(neighbor);
         if(!isInTheList) return false; //ignore all blocks outside
-        if(neighborBe instanceof IMultiblockAttachable part) {
-            return part.canInvalidateCache();
+        if(neighborBe instanceof IMultiblockAttachable) {
+            return ((IMultiblockAttachable)neighborBe).canInvalidateCache();
         }
         return true;
     }
@@ -411,7 +415,7 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
         }
     }
 
-    public void onBlockDestroyed(BlockState state, Level level, BlockPos pos, Explosion explosion) {
+    public void onBlockDestroyed(BlockState state, World level, BlockPos pos, Explosion explosion) {
         controller.clearStats();
     }
 }

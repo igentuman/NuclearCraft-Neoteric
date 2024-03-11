@@ -4,20 +4,17 @@ import igentuman.nc.handler.config.*;
 import igentuman.nc.handler.event.server.WorldEvents;
 import igentuman.nc.handler.command.CommandNcPlayerRadiation;
 import igentuman.nc.handler.command.CommandNcVeinCheck;
-import igentuman.nc.radiation.data.PlayerRadiation;
 import igentuman.nc.radiation.data.RadiationEvents;
 import igentuman.nc.radiation.data.RadiationManager;
-import igentuman.nc.radiation.data.WorldRadiation;
 import igentuman.nc.network.PacketHandler;
 import igentuman.nc.setup.ClientSetup;
 import igentuman.nc.setup.ModSetup;
 import igentuman.nc.setup.Registration;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -26,12 +23,11 @@ import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ConfigTracker;
 import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
+import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
-import net.minecraftforge.fmlserverevents.FMLServerStartedEvent;
-import net.minecraftforge.fmlserverevents.FMLServerStoppedEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -114,7 +110,7 @@ public class NuclearCraft {
     }
 
     @SubscribeEvent
-    public static void onModConfigEvent(final ModConfigEvent event) {
+    public static void onModConfigEvent(final ModConfig.ModConfigEvent event) {
         if (event.getConfig().getType() == ModConfig.Type.COMMON)
             CommonConfig.setLoaded();
     }
@@ -136,7 +132,7 @@ public class NuclearCraft {
         NuclearCraft.instance.isNcBeStopped = true;
         //stop capability tracking
         RadiationEvents.stopTracking();
-        for(ServerLevel level: event.getServer().getAllLevels()) {
+        for(ServerWorld level: event.getServer().getAllLevels()) {
             RadiationManager.clear(level);
         }
     }
@@ -152,9 +148,9 @@ public class NuclearCraft {
 
 
 
-    @SubscribeEvent
-    public void registerCaps(RegisterCapabilitiesEvent event) {
+/*    @SubscribeEvent
+    public void registerCaps(Capabilit event) {
         event.register(WorldRadiation.class);
         event.register(PlayerRadiation.class);
-    }
+    }*/
 }

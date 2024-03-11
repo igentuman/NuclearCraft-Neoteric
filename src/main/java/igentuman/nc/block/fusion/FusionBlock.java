@@ -2,31 +2,29 @@ package igentuman.nc.block.fusion;
 
 import igentuman.nc.block.entity.fusion.FusionBE;
 import igentuman.nc.multiblock.fusion.FusionReactor;
-import net.minecraft.ChatFormatting;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Explosion;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.*;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.block.Block;
+import net.minecraft.block.SoundType;
+import net.minecraft.block.material.Material;
+import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.text.TextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.Explosion;
+import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorldReader;
+import net.minecraft.world.World;
+import net.minecraft.block.BlockState;
 import javax.annotation.Nullable;
 
 import java.util.List;
 
-public class FusionBlock extends Block implements EntityBlock {
+public class FusionBlock extends Block {
 
     public FusionBlock() {
         this(Properties.of(Material.METAL)
@@ -37,22 +35,24 @@ public class FusionBlock extends Block implements EntityBlock {
     }
     public FusionBlock(Properties pProperties) {
         super(pProperties.sound(SoundType.METAL));
-        this.registerDefaultState(
+        /*this.registerDefaultState(
                 this.stateDefinition.any()
-        );
+        );*/
         if(getCode().contains("glass")) {
             properties.noOcclusion();
         }
     }
+
+    @Nullable
     @Override
-    public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return this.defaultBlockState();
+    public BlockState getStateForPlacement(BlockItemUseContext p_196258_1_) {
+        return super.getBlock().defaultBlockState();
     }
 
     @Nullable
     @Override
-    public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
-        return FusionReactor.FUSION_BE.get(getCode()).get().create(pPos, pState);
+    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
+        return FusionReactor.FUSION_BE.get(getCode()).get().create();
     }
 
     public String getCode()
@@ -60,30 +60,13 @@ public class FusionBlock extends Block implements EntityBlock {
         return Registry.BLOCK.getKey(this).getPath();
     }
 
-    @javax.annotation.Nullable
     @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        if (level.isClientSide()) {
-            return (lvl, pos, blockState, t) -> {
-                if (t instanceof FusionBE tile) {
-                    tile.tickClient();
-                }
-            };
-        }
-        return (lvl, pos, blockState, t)-> {
-            if (t instanceof FusionBE tile) {
-                tile.tickServer();
-            }
-        };
-    }
-
-    @Override
-    public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor){
+    public void onNeighborChange(BlockState state, IWorldReader level, BlockPos pos, BlockPos neighbor){
         ((FusionBE)level.getBlockEntity(pos)).onNeighborChange(state,  pos, neighbor);
     }
 
     @Override
-    public void onBlockExploded(BlockState state, Level level, BlockPos pos, Explosion explosion)
+    public void onBlockExploded(BlockState state, World level, BlockPos pos, Explosion explosion)
     {
         if(!level.isClientSide) {
             ((FusionBE)level.getBlockEntity(pos)).onBlockDestroyed(state, level, pos, explosion);
@@ -92,7 +75,7 @@ public class FusionBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public void playerDestroy(Level level, Player pPlayer, BlockPos pos, BlockState state, @Nullable BlockEntity pBlockEntity, ItemStack pTool) {
+    public void playerDestroy(World level, PlayerEntity pPlayer, BlockPos pos, BlockState state, @Nullable TileEntity pBlockEntity, ItemStack pTool) {
         if(!level.isClientSide) {
             ((FusionBE)level.getBlockEntity(pos)).onBlockDestroyed(state, level, pos, null);
         }
@@ -100,13 +83,14 @@ public class FusionBlock extends Block implements EntityBlock {
     }
 
 
-    @Override
-    public void appendHoverText(ItemStack stack, @javax.annotation.Nullable BlockGetter world, List<Component> list, TooltipFlag flag)
+
+/*    @Override
+    public void appendHoverText(ItemStack stack, World world, List<TextComponent> list, ITooltipFlag flag)
     {
         if (getCode().equals("fusion_reactor_connector")) {
-            list.add(new TranslatableComponent("tooltip.nc.fusion_connector.descr").withStyle(ChatFormatting.YELLOW));
+            list.add(new TranslationTextComponent("tooltip.nc.fusion_connector.descr").withStyle(TextFormatting.YELLOW));
         } else {
-            list.add(new TranslatableComponent("tooltip.nc.fusion_casing.descr").withStyle(ChatFormatting.YELLOW));
+            list.add(new TranslationTextComponent("tooltip.nc.fusion_casing.descr").withStyle(TextFormatting.YELLOW));
         }
-    }
+    }*/
 }

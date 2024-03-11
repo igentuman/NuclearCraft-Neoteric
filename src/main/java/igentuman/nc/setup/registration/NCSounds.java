@@ -1,10 +1,11 @@
 package igentuman.nc.setup.registration;
 
-import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.SoundEvent;
+import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.fmllegacy.RegistryObject;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -42,7 +43,7 @@ public final class NCSounds {
     }
 
     private static List<RegistryObject<SoundEvent>> initGeigerSounds() {
-        return List.of(
+        return Arrays.asList(
                 SOUND_EVENTS.register("geiger_1", () -> new SoundEvent(rl( "geiger_1"))),
                 SOUND_EVENTS.register("geiger_2", () -> new SoundEvent(rl( "geiger_2"))),
                 SOUND_EVENTS.register("geiger_3", () -> new SoundEvent(rl( "geiger_3"))),

@@ -1,18 +1,11 @@
 package igentuman.nc.block.turbine;
 
 import igentuman.nc.block.entity.turbine.TurbineBE;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.Direction;
+import net.minecraft.world.IWorldReader;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.antlr.v4.runtime.misc.NotNull;;
 import javax.annotation.Nullable;
@@ -21,15 +14,10 @@ import java.util.Objects;
 
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BE;
 
-public class TurbineBlock extends Block implements EntityBlock {
+public class TurbineBlock extends Block {
 
     public TurbineBlock(Properties pProperties) {
         super(pProperties);
-    }
-
-    @Override
-    public BlockState getStateForPlacement(@NotNull BlockPlaceContext context) {
-        return this.defaultBlockState();
     }
 
     @Override
@@ -43,33 +31,16 @@ public class TurbineBlock extends Block implements EntityBlock {
         return ForgeRegistries.BLOCKS.getKey(this).getPath();
     }
 
-    @Nullable
+/*    @Nullable
     @Override
     public BlockEntity newBlockEntity(@NotNull BlockPos pPos, @NotNull BlockState pState) {
         String code = codeID().replaceAll("glass", "casing");
         if(code.contains("coil")) code = "turbine_coil";
         return TURBINE_BE.get(code).get().create(pPos, pState);
-    }
-
-    @javax.annotation.Nullable
-    @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, @NotNull BlockState state, @NotNull BlockEntityType<T> type) {
-        if (level.isClientSide()) {
-            return (lvl, pos, blockState, t) -> {
-                if (t instanceof TurbineBE tile) {
-                    tile.tickClient();
-                }
-            };
-        }
-        return (lvl, pos, blockState, t)-> {
-            if (t instanceof TurbineBE tile) {
-                tile.tickServer();
-            }
-        };
-    }
+    }*/
 
     @Override
-    public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor){
+    public void onNeighborChange(BlockState state, IWorldReader level, BlockPos pos, BlockPos neighbor){
         ((TurbineBE) Objects.requireNonNull(level.getBlockEntity(pos))).onNeighborChange(state,  pos, neighbor);
     }
 

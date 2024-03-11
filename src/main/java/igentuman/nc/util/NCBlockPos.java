@@ -1,9 +1,7 @@
 package igentuman.nc.util;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.Position;
-import net.minecraft.core.Vec3i;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.Direction;
 
 /**
  * Wrapper class for BlockPos manipulations
@@ -31,7 +29,7 @@ public class NCBlockPos extends BlockPos {
         origZ = z;
     }
 
-    public NCBlockPos(Vec3i pos) {
+    public NCBlockPos(BlockPos pos) {
         super(pos);
         origX = pos.getX();
         origY = pos.getY();

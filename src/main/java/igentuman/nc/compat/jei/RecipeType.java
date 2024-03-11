@@ -1,6 +1,6 @@
 package igentuman.nc.compat.jei;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ResourceLocation;
 
 public final class RecipeType<T> {
     public static <T> RecipeType<T> create(String nameSpace, String path, Class<? extends T> recipeClass) {
@@ -35,11 +35,11 @@ public final class RecipeType<T> {
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof RecipeType<?> other)) {
+        if (!(obj instanceof RecipeType<?>)) {
             return false;
         }
-        return this.recipeClass == other.recipeClass &&
-                this.uid.equals(other.uid);
+        return this.recipeClass == ((RecipeType<?>) obj).recipeClass &&
+                this.uid.equals(((RecipeType<?>) obj).uid);
     }
 
     @Override

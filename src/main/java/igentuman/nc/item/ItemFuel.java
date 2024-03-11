@@ -1,15 +1,16 @@
 package igentuman.nc.item;
 import igentuman.nc.content.fuel.FuelDef;
 import igentuman.nc.util.TextUtils;
-import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
+import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
+
 import java.util.List;
 
 import static igentuman.nc.handler.event.client.InputEvents.DESCRIPTIONS_SHOW;
@@ -50,18 +51,18 @@ public class ItemFuel extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
+    public void appendHoverText(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
     {
         if(!DESCRIPTIONS_SHOW) {
-            list.add(TextUtils.applyFormat(new TranslatableComponent("tooltip.toggle_description_keys"), ChatFormatting.GRAY));
+            list.add(TextUtils.applyFormat(new TranslationTextComponent("tooltip.toggle_description_keys"), TextFormatting.GRAY));
         } else {
-            list.add(TextUtils.applyFormat(new TranslatableComponent("fuel.heat.descr", TextUtils.numberFormat(heat)), ChatFormatting.GOLD));
-            //list.add(TextUtils.applyFormat(new TranslatableComponent("fuel.heat_boiling.descr", TextUtils.numberFormat(heat_boiling)), ChatFormatting.YELLOW));
-            list.add(TextUtils.applyFormat(new TranslatableComponent("fuel.forge_energy.descr", forge_energy), ChatFormatting.BLUE));
-            //list.add(TextUtils.applyFormat(new TranslatableComponent("fuel.criticality.descr", criticality), ChatFormatting.RED));
-            list.add(TextUtils.applyFormat(new TranslatableComponent("fuel.depletion.descr", depletion), ChatFormatting.GREEN));
-            //list.add(TextUtils.applyFormat(new TranslatableComponent("fuel.efficiency.descr", efficiency), ChatFormatting.DARK_PURPLE));
-            list.add(TextUtils.applyFormat(new TranslatableComponent("fuel.description"), ChatFormatting.AQUA));
+            list.add(TextUtils.applyFormat(new TranslationTextComponent("fuel.heat.descr", TextUtils.numberFormat(heat)), TextFormatting.GOLD));
+            //list.add(TextUtils.applyFormat(new TranslationTextComponent("fuel.heat_boiling.descr", TextUtils.numberFormat(heat_boiling)), TextFormatting.YELLOW));
+            list.add(TextUtils.applyFormat(new TranslationTextComponent("fuel.forge_energy.descr", forge_energy), TextFormatting.BLUE));
+            //list.add(TextUtils.applyFormat(new TranslationTextComponent("fuel.criticality.descr", criticality), TextFormatting.RED));
+            list.add(TextUtils.applyFormat(new TranslationTextComponent("fuel.depletion.descr", depletion), TextFormatting.GREEN));
+            //list.add(TextUtils.applyFormat(new TranslationTextComponent("fuel.efficiency.descr", efficiency), TextFormatting.DARK_PURPLE));
+            list.add(TextUtils.applyFormat(new TranslationTextComponent("fuel.description"), TextFormatting.AQUA));
         }
     }
 }

@@ -1,10 +1,10 @@
 package igentuman.nc.radiation.data;
 
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.util.INBTSerializable;
 
 
-public interface IPlayerRadiationCapability extends INBTSerializable<CompoundTag> {
+public interface IPlayerRadiationCapability extends INBTSerializable<CompoundNBT> {
     int getRadiation();
     void setRadiation(int radiation);
 

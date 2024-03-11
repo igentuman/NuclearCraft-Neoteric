@@ -6,13 +6,14 @@ import igentuman.nc.block.turbine.TurbineRotorBlock;
 import igentuman.nc.multiblock.AbstractNCMultiblock;
 import igentuman.nc.multiblock.ValidationResult;
 import igentuman.nc.util.NCBlockPos;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.Direction;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static igentuman.nc.handler.config.TurbineConfig.TURBINE_CONFIG;
@@ -63,7 +64,7 @@ public class TurbineMultiblock extends AbstractNCMultiblock {
     }
 
     public List<Block> validCornerBlocks() {
-        return List.of(TURBINE_BLOCKS.get("turbine_casing").get());
+        return Arrays.asList(TURBINE_BLOCKS.get("turbine_casing").get());
     }
 
     public void validateInner() {
@@ -97,8 +98,8 @@ public class TurbineMultiblock extends AbstractNCMultiblock {
 
     private void countBlades() {
         for(BlockPos pos : bladePositions) {
-            BlockEntity be = getLevel().getBlockEntity(pos);
-            if(be instanceof TurbineBladeBE blade) {
+            TileEntity be = getLevel().getBlockEntity(pos);
+            if(be instanceof TurbineBladeBE) {
                 flow++;
             }
         }
@@ -134,7 +135,7 @@ public class TurbineMultiblock extends AbstractNCMultiblock {
 
     protected void processOuterBlock(BlockPos pos) {
         super.processOuterBlock(pos);
-        BlockEntity bs = getLevel().getBlockEntity(pos);
+        TileEntity bs = getLevel().getBlockEntity(pos);
         if(bs instanceof TurbineBearingBE) {
             bearingPositions.add(new NCBlockPos(pos));
         }
@@ -150,8 +151,9 @@ public class TurbineMultiblock extends AbstractNCMultiblock {
         activeCoils = 0;
         coilsEfficiency = 0;
         for(BlockPos pos : coilPositions) {
-            BlockEntity be = getLevel().getBlockEntity(pos);
-            if(be instanceof TurbineCoilBE coil) {
+            TileEntity be = getLevel().getBlockEntity(pos);
+            if(be instanceof TurbineCoilBE ) {
+                TurbineCoilBE coil = (TurbineCoilBE) be;
                 coil.validatePlacement();
                 if(coilsEfficiency == 0) {
                     coilsEfficiency = coil.getRealEfficiency();
@@ -220,10 +222,11 @@ public class TurbineMultiblock extends AbstractNCMultiblock {
                     }
                     break;
             }
-            BlockEntity be = getLevel().getBlockEntity(pos);
-            if(!(be instanceof TurbineRotorBE rotorBE)) {
+            TileEntity be = getLevel().getBlockEntity(pos);
+            if(!(be instanceof TurbineRotorBE )) {
                 return false;
             }
+            TurbineRotorBE rotorBE = (TurbineRotorBE) be;
             rotorBE.updateBearingConnection();
             bearingConnected = bearingConnected && rotorBE.connectedToBearing;
         }

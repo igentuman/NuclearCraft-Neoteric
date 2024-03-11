@@ -3,8 +3,9 @@ package igentuman.nc.recipes.ingredient.creator;
 import com.google.gson.JsonElement;
 import igentuman.nc.recipes.ingredient.InputIngredient;
 import igentuman.nc.util.annotation.NothingNullByDefault;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tags.Tag;
+import net.minecraftforge.common.Tags;
 import org.antlr.v4.runtime.misc.NotNull;;
 import javax.annotation.Nullable;
 
@@ -43,7 +44,7 @@ public interface IIngredientCreator<TYPE, STACK, INGREDIENT extends InputIngredi
      * @throws NullPointerException     if the given tag is null.
      * @throws IllegalArgumentException if the given amount smaller than one.
      */
-    INGREDIENT from(Tag.Named<TYPE> tag, int amount);
+    INGREDIENT from(Tags.IOptionalNamedTag<TYPE> tag, int amount);
 
     /**
      * Reads an Ingredient from a Packet Buffer.
@@ -52,7 +53,7 @@ public interface IIngredientCreator<TYPE, STACK, INGREDIENT extends InputIngredi
      *
      * @throws NullPointerException if the given buffer is null.
      */
-    INGREDIENT read(FriendlyByteBuf buffer);
+    INGREDIENT read(PacketBuffer buffer);
 
     /**
      * Helper to deserialize a Json Object into an Ingredient.

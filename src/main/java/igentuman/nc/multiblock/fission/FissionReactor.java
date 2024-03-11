@@ -6,20 +6,19 @@ import igentuman.nc.container.FissionControllerContainer;
 import igentuman.nc.container.FissionPortContainer;
 import igentuman.nc.setup.registration.CreativeTabs;
 import igentuman.nc.setup.registration.NCBlocks;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.block.material.Material;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
+import net.minecraft.block.Block;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.fmllegacy.RegistryObject;
 
 
 import java.util.ArrayList;
@@ -34,17 +33,17 @@ import static igentuman.nc.setup.registration.NCItems.ALL_NC_ITEMS;
 
 public class FissionReactor {
     public static final Item.Properties FISSION_ITEM_PROPS = new Item.Properties().tab(CreativeTabs.FISSION_REACTOR);
-    private static final DeferredRegister<MenuType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.CONTAINERS, MODID);
-    private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, MODID);
+    private static final DeferredRegister<ContainerType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.CONTAINERS, MODID);
+    private static final DeferredRegister<TileEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, MODID);
     public static HashMap<String, RegistryObject<Block>> FISSION_BLOCKS = new HashMap<>();
-    public static HashMap<String, RegistryObject<BlockEntityType<? extends BlockEntity>>> FISSION_BE = new HashMap<>();
+    public static HashMap<String, RegistryObject<TileEntityType<? extends TileEntity>>> FISSION_BE = new HashMap<>();
     public static HashMap<String, RegistryObject<Item>> FISSION_BLOCK_ITEMS = new HashMap<>();
 
 
-    public static final RegistryObject<MenuType<FissionControllerContainer>> FISSION_CONTROLLER_CONTAINER = CONTAINERS.register("fission_reactor_controller",
+    public static final RegistryObject<ContainerType<FissionControllerContainer>> FISSION_CONTROLLER_CONTAINER = CONTAINERS.register("fission_reactor_controller",
             () -> IForgeContainerType.create((windowId, inv, data) -> new FissionControllerContainer(windowId, data.readBlockPos(), inv))
             );
-    public static final RegistryObject<MenuType<FissionPortContainer>> FISSION_PORT_CONTAINER = CONTAINERS.register("fission_reactor_port",
+    public static final RegistryObject<ContainerType<FissionPortContainer>> FISSION_PORT_CONTAINER = CONTAINERS.register("fission_reactor_port",
             () -> IForgeContainerType.create((windowId, inv, data) -> new FissionPortContainer(windowId, data.readBlockPos(), inv))
             );
 
@@ -71,34 +70,30 @@ public class FissionReactor {
             String key = "fission_reactor_"+name;
             if(name.contains("controller")) {
                 FISSION_BLOCKS.put(key, BLOCKS.register(key, () -> new FissionControllerBlock(REACTOR_BLOCKS_PROPERTIES)));
-                FISSION_BE.put(key, BLOCK_ENTITIES.register(key,
-                        () -> BlockEntityType.Builder
+                /*FISSION_BE.put(key, BLOCK_ENTITIES.register(key,
+                        () -> TileEntityType.Builder
                                 .of(FissionControllerBE::new, FISSION_BLOCKS.get(key).get())
-                                .build(null)));
+                                .build(null)));*/
             } else if(name.contains("port")) {
                 FISSION_BLOCKS.put(key, BLOCKS.register(key, () -> new FissionPort(REACTOR_BLOCKS_PROPERTIES)));
-                FISSION_BE.put(key, BLOCK_ENTITIES.register(key,
-                        () -> BlockEntityType.Builder
+               /* FISSION_BE.put(key, BLOCK_ENTITIES.register(key,
+                        () -> TileEntityType.Builder
                                 .of(FissionPortBE::new, FISSION_BLOCKS.get(key).get())
-                                .build(null)));
+                                .build(null)));*/
             } else if(name.contains("irradiation")) {
                 FISSION_BLOCKS.put(key, BLOCKS.register(key, () -> new IrradiationChamberBlock(REACTOR_BLOCKS_PROPERTIES)));
-                FISSION_BE.put(key, BLOCK_ENTITIES.register(key,
-                        () -> BlockEntityType.Builder
+                /*FISSION_BE.put(key, BLOCK_ENTITIES.register(key,
+                        () -> TileEntityType.Builder
                                 .of(FissionIrradiationChamberBE::new, FISSION_BLOCKS.get(key).get())
-                                .build(null)));
+                                .build(null)));*/
             } else {
-                BlockBehaviour.Properties props;
+                Block.Properties props;
                 if(key.matches(".*glass|.*cell.*")) {
-                    props = BlockBehaviour.Properties.of(Material.GLASS).strength(1f).requiresCorrectToolForDrops().noOcclusion();
+                    props = Block.Properties.of(Material.GLASS).strength(1f).requiresCorrectToolForDrops().noOcclusion();
                 } else {
                     props = REACTOR_BLOCKS_PROPERTIES;
                 }
-                if(name.contains("slope")) {
-                    FISSION_BLOCKS.put(key, BLOCKS.register(key, () -> new FissionCasingSlopeBlock(props)));
-                } else {
-                    FISSION_BLOCKS.put(key, BLOCKS.register(key, () -> new FissionBlock(props)));
-                }
+                FISSION_BLOCKS.put(key, BLOCKS.register(key, () -> new FissionBlock(props)));
             }
             FISSION_BLOCK_ITEMS.put(key, fromMultiblock(FISSION_BLOCKS.get(key)));
             ALL_NC_ITEMS.put(key, FISSION_BLOCK_ITEMS.get(key));
@@ -113,30 +108,30 @@ public class FissionReactor {
             }
         }
 
-
+/*
         FISSION_BE.put("fission_heat_sink", BLOCK_ENTITIES.register("fission_heat_sink",
-                () -> BlockEntityType.Builder
+                () -> TileEntityType.Builder
                         .of(FissionHeatSinkBE::new, getHSBlocks())
                         .build(null)));
 
         FISSION_BE.put("fission_moderator", BLOCK_ENTITIES.register("fission_moderator",
-                () -> BlockEntityType.Builder
+                () -> TileEntityType.Builder
                         .of(FissionModeratorBE::new,
                                 moderators().toArray(new Block[0]))
                         .build(null)));
 
         FISSION_BE.put("fission_casing", BLOCK_ENTITIES.register("fission_casing",
-                () -> BlockEntityType.Builder
+                () -> TileEntityType.Builder
                         .of(FissionCasingBE::new,
                                 FISSION_BLOCKS.get("fission_reactor_casing").get(),
                                 FISSION_BLOCKS.get("fission_reactor_glass").get())
                         .build(null)));
 
         FISSION_BE.put("fission_reactor_fuel_cell", BLOCK_ENTITIES.register("fission_reactor_fuel_cell",
-                () -> BlockEntityType.Builder
+                () -> TileEntityType.Builder
                         .of(FissionFuelCellBE::new,
                                 FISSION_BLOCKS.get("fission_reactor_solid_fuel_cell").get())
-                        .build(null)));
+                        .build(null)));*/
 
     }
 

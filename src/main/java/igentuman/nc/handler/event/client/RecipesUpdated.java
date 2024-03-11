@@ -1,7 +1,6 @@
 package igentuman.nc.handler.event.client;
 
-import igentuman.nc.recipes.NcRecipeType;
-import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.item.crafting.RecipeManager;
 import net.minecraftforge.client.event.RecipesUpdatedEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;

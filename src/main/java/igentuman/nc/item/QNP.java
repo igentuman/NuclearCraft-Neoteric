@@ -1,38 +1,35 @@
 package igentuman.nc.item;
 
 import igentuman.nc.handler.ItemEnergyHandler;
-import igentuman.nc.setup.registration.NcParticleTypes;
 import igentuman.nc.util.CapabilityUtils;
 import igentuman.nc.util.CustomEnergyStorage;
 import igentuman.nc.util.RayTraceUtils;
 import igentuman.nc.util.TextUtils;
-import net.minecraft.ChatFormatting;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.item.ExperienceOrbEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.IItemTier;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
+import net.minecraft.item.PickaxeItem;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.Direction;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.util.Mth;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.ExperienceOrb;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.*;
-import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -48,11 +45,12 @@ import org.apache.commons.lang3.tuple.Pair;
 import static igentuman.nc.handler.config.CommonConfig.ENERGY_STORAGE;
 import static igentuman.nc.handler.event.client.BlockOverlayHandler.getArea;
 import static igentuman.nc.setup.registration.NCSounds.ITEM_CHARGED;
+import static net.minecraft.util.math.MathHelper.hsvToRgb;
 import static net.minecraftforge.energy.CapabilityEnergy.ENERGY;
 
 public class QNP extends PickaxeItem
 {
-	public QNP(Tier pTier, int pAttackDamageModifier, float pAttackSpeedModifier, Properties pProperties) {
+	public QNP(IItemTier pTier, int pAttackDamageModifier, float pAttackSpeedModifier, Properties pProperties) {
 		super(pTier, pAttackDamageModifier, pAttackSpeedModifier, pProperties);
 	}
 
@@ -67,27 +65,24 @@ public class QNP extends PickaxeItem
 		return true;
 	}
 
-	public boolean canEquip(ItemStack stack, EquipmentSlot armorType, Entity entity)
-	{
-		return false;
-	}
 
-	@Override
+/*	@Override
 	public int getBarColor(ItemStack pStack)
 	{
-		return Mth.hsvToRgb(Math.max(0.0F, getBarWidth(pStack)/(float)MAX_BAR_WIDTH)/3.0F, 1.0F, 1.0F);
-	}
+		return hsvToRgb(Math.max(0.0F, getBarWidth(pStack)/(float)16)/3.0F, 1.0F, 1.0F);
+	}*/
 
 	protected int getEnergyMaxStorage() {
 		return ENERGY_STORAGE.QNP_ENERGY_STORAGE.get();
 	}
 
-	@Override
-	public int getBarWidth(ItemStack stack) {
+
+/*	@Override
+	public int getDurabilityBarWidth(ItemStack stack) {
 		CustomEnergyStorage energyStorage = getEnergy(stack);
 		float chargeRatio = (float) energyStorage.getEnergyStored() / (float) getEnergyMaxStorage();
 		return (int) Math.min(13, 13*chargeRatio);
-	}
+	}*/
 
 	@Override
 	public boolean isDamaged(ItemStack stack) {
@@ -95,7 +90,7 @@ public class QNP extends PickaxeItem
 	}
 
 	@Override
-	public boolean isCorrectToolForDrops(ItemStack stack, BlockState state) {
+	public boolean isCorrectToolForDrops(BlockState state) {
 		return true;
 	}
 	@Override
@@ -103,30 +98,31 @@ public class QNP extends PickaxeItem
 	{
 	}
 
+
 	@Override
-	public boolean isBarVisible(ItemStack pStack) {
+	public boolean showDurabilityBar(ItemStack pStack) {
 		return true;
 	}
 
-	public List<ItemStack> mineArea(BlockPos pos, Level worldIn, LivingEntity entityLiving, BlockHitResult blockResult, ItemStack stack, List<ItemStack> totalDrops) {
+	public List<ItemStack> mineArea(BlockPos pos, World worldIn, LivingEntity entityLiving, BlockRayTraceResult blockResult, ItemStack stack, List<ItemStack> totalDrops) {
 		Direction facing = blockResult.getDirection();
 		Mode miningMode = getMode(stack);
 		Pair<BlockPos, BlockPos> area = getArea(pos, facing, miningMode.radius, miningMode.depth);
 
 		BlockPos.betweenClosed(area.getLeft(), area.getRight()).forEach(blockPos -> {
-			if (enoughEnergy(stack) && worldIn.getBlockEntity(blockPos) == null && worldIn instanceof ServerLevel && entityLiving instanceof ServerPlayer && !worldIn.isEmptyBlock(blockPos)) {
+			if (enoughEnergy(stack) && worldIn.getBlockEntity(blockPos) == null && worldIn instanceof ServerWorld && entityLiving instanceof ServerPlayerEntity && !worldIn.isEmptyBlock(blockPos)) {
 				BlockState tempState = worldIn.getBlockState(blockPos);
-				if (!tempState.is(BlockTags.MINEABLE_WITH_PICKAXE) && !tempState.is(BlockTags.MINEABLE_WITH_SHOVEL)) return;
+				//if (!tempState.is(BlockTags.O) && !tempState.is(BlockTags.MINEABLE_WITH_SHOVEL)) return;
 				if (tempState.getDestroySpeed(worldIn, blockPos) < 0) return;
 				harvestBlock(blockPos, worldIn, entityLiving, stack, false, totalDrops);
 			}
 		});
-		worldIn.getEntitiesOfClass(ExperienceOrb.class, new AABB(area.getLeft(), area.getRight()).inflate(1)).forEach(entityXPOrb -> entityXPOrb.teleportTo(entityLiving.blockPosition().getX(), entityLiving.blockPosition().getY(), entityLiving.blockPosition().getZ()));
+		worldIn.getEntitiesOfClass(ExperienceOrbEntity.class, new AxisAlignedBB(area.getLeft(), area.getRight()).inflate(1)).forEach(entityXPOrb -> entityXPOrb.teleportTo(entityLiving.blockPosition().getX(), entityLiving.blockPosition().getY(), entityLiving.blockPosition().getZ()));
 		return totalDrops;
 	}
 
 	public static Mode getMode(ItemStack stack) {
-		CompoundTag tag = stack.getOrCreateTag();
+		CompoundNBT tag = stack.getOrCreateTag();
 		if(!tag.contains("mode")) {
 			tag.putInt("mode", Mode.ONE_BLOCK.ordinal());
 			stack.save(tag);
@@ -134,11 +130,11 @@ public class QNP extends PickaxeItem
 		return Mode.values()[tag.getInt("mode")];
 	}
 
-	public boolean mineBlock(@NotNull ItemStack stack, @NotNull Level worldIn, @NotNull BlockState state, @NotNull BlockPos pos, @NotNull LivingEntity entityLiving) {
-		if (entityLiving instanceof Player) {
-			HitResult rayTraceResult = RayTraceUtils.rayTraceSimple(worldIn, entityLiving, 16, 0);
-			if (rayTraceResult.getType() == HitResult.Type.BLOCK) {
-				BlockHitResult blockResult = (BlockHitResult) rayTraceResult;
+	public boolean mineBlock(@NotNull ItemStack stack, @NotNull World worldIn, @NotNull BlockState state, @NotNull BlockPos pos, @NotNull LivingEntity entityLiving) {
+		if (entityLiving instanceof PlayerEntity) {
+			RayTraceResult rayTraceResult = RayTraceUtils.rayTraceSimple(worldIn, entityLiving, 16, 0);
+			if (rayTraceResult.getType() == RayTraceResult.Type.BLOCK) {
+				BlockRayTraceResult blockResult = (BlockRayTraceResult) rayTraceResult;
 				List<ItemStack> totalDrops = new ArrayList<>();
 				if(getMode(stack) == Mode.VEIN_MINER) {
 					mineVein(pos, worldIn, entityLiving, blockResult, stack, totalDrops);
@@ -154,15 +150,15 @@ public class QNP extends PickaxeItem
 	}
 
 	public int veinMinedBlocksCounter = 0;
-	private List<ItemStack> harvestBlock(BlockPos pos, Level worldIn, LivingEntity entityLiving, ItemStack tool, boolean veinMode, List<ItemStack> totalDrops) {
+	private List<ItemStack> harvestBlock(BlockPos pos, World worldIn, LivingEntity entityLiving, ItemStack tool, boolean veinMode, List<ItemStack> totalDrops) {
 		BlockState tempState = worldIn.getBlockState(pos);
 		Block block = tempState.getBlock();
 		if(!enoughEnergy(tool)) return totalDrops;
-		int xp = ForgeHooks.onBlockBreakEvent(worldIn, ((ServerPlayer) entityLiving).gameMode.getGameModeForPlayer(), (ServerPlayer) entityLiving, pos);
+		int xp = ForgeHooks.onBlockBreakEvent(worldIn, ((ServerPlayerEntity) entityLiving).gameMode.getGameModeForPlayer(), (ServerPlayerEntity) entityLiving, pos);
 		if (xp >= 0) {
-			block.playerDestroy(worldIn, (Player) entityLiving, pos, tempState, worldIn.getBlockEntity(pos), tool);
+			block.playerDestroy(worldIn, (PlayerEntity) entityLiving, pos, tempState, worldIn.getBlockEntity(pos), tool);
 			//block.destroy(worldIn, pos, tempState);
-			Block.getDrops(tempState, (ServerLevel) worldIn, pos, null, (Player) entityLiving, tool).forEach(itemStack -> {
+			Block.getDrops(tempState, (ServerWorld) worldIn, pos, null, (PlayerEntity) entityLiving, tool).forEach(itemStack -> {
 				boolean combined = false;
 				for (ItemStack drop : totalDrops) {
 					if (ItemHandlerHelper.canItemStacksStack(drop, itemStack)) {
@@ -176,7 +172,7 @@ public class QNP extends PickaxeItem
 				}
 			});
 			Random random = new Random();
-			/*((ServerLevel) worldIn).sendParticles(NcParticleTypes.RADIATION.get(), pos.getX() + (random.nextFloat() - 0.5), pos.getY() + (random.nextFloat() - 0.5),
+			/*((ServerWorld) worldIn).sendParticles(NcParticleTypes.RADIATION.get(), pos.getX() + (random.nextFloat() - 0.5), pos.getY() + (random.nextFloat() - 0.5),
 					pos.getZ() + (random.nextFloat() - 0.5), 3, 0, 0, 0, 0);*/
 			getEnergy(tool).extractEnergy(ENERGY_STORAGE.QNP_ENERGY_PER_BLOCK.get(), false);
 			if(veinMode && veinMinedBlocksCounter < 20) {
@@ -188,15 +184,15 @@ public class QNP extends PickaxeItem
 					}
 				}
 			}
-			block.popExperience((ServerLevel) worldIn, pos, xp);
+			block.popExperience((ServerWorld) worldIn, pos, xp);
 			getEnergy(tool).extractEnergy(ENERGY_STORAGE.QNP_ENERGY_PER_BLOCK.get(), false);
 		}
 		return totalDrops;
 	}
 
-	private void mineVein(BlockPos pos, Level worldIn, LivingEntity entityLiving, BlockHitResult blockResult, ItemStack stack, List<ItemStack> totalDrops) {
+	private void mineVein(BlockPos pos, World worldIn, LivingEntity entityLiving, BlockRayTraceResult blockResult, ItemStack stack, List<ItemStack> totalDrops) {
 		BlockState initialBlockState = worldIn.getBlockState(pos);
-		if (!initialBlockState.is(BlockTags.MINEABLE_WITH_PICKAXE) && !initialBlockState.is(BlockTags.MINEABLE_WITH_SHOVEL)) return;
+		//if (!initialBlockState.is(BlockTags.MINEABLE_WITH_PICKAXE) && !initialBlockState.is(BlockTags.MINEABLE_WITH_SHOVEL)) return;
 		if (initialBlockState.getDestroySpeed(worldIn, pos) < 0) return;
 		//mine initialblock always
 		harvestBlock(pos, worldIn, entityLiving, stack, false, totalDrops);
@@ -229,7 +225,7 @@ public class QNP extends PickaxeItem
 		return 0.1F;
 	}
 
-	public boolean chargeFromEnergyBlock(BlockEntity be, ItemStack tool)
+	public boolean chargeFromEnergyBlock(TileEntity be, ItemStack tool)
 	{
 		if(be == null) return false;
 		if(getEnergy(tool).getEnergyStored() == getEnergy(tool).getMaxEnergyStored()) return false;
@@ -253,33 +249,34 @@ public class QNP extends PickaxeItem
 		return false;
 	}
 
-	@Override
-	public @NotNull InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
-		if(context.getLevel().isClientSide) return super.onItemUseFirst(stack, context);
-		BlockEntity be = context.getLevel().getBlockEntity(context.getClickedPos());
-		if(chargeFromEnergyBlock(be, context.getItemInHand())) {
-			Objects.requireNonNull(context.getPlayer()).playSound(ITEM_CHARGED.get(), 0.5f, 1f);
-			return InteractionResult.SUCCESS;
-		}
-		return InteractionResult.PASS;
-	}
 
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
+	public @NotNull ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
+		if(context.getLevel().isClientSide) return super.onItemUseFirst(stack, context);
+		TileEntity be = context.getLevel().getBlockEntity(context.getClickedPos());
+		if(chargeFromEnergyBlock(be, context.getItemInHand())) {
+			//Objects.requireNonNull(context.getPlayer()).playSound(ITEM_CHARGED.get(), 0.5f, 1f);
+			return ActionResultType.SUCCESS;
+		}
+		return ActionResultType.PASS;
+	}
+
+/*	@Override
+	public InteractionResultHolder<ItemStack> use(World pLevel, PlayerEntity pPlayer, InteractionHand pUsedHand) {
 		if(pLevel.isClientSide) return super.use(pLevel, pPlayer, pUsedHand);
 		if(pPlayer.isSteppingCarefully()) {
 			ItemStack tool = pPlayer.getItemInHand(pUsedHand);
 			Mode miningMode = Mode.values()[(getMode(tool).ordinal()+1)%Mode.values().length];
 			tool.getOrCreateTag().putInt("mode", miningMode.ordinal());
-			pPlayer.sendMessage(new TranslatableComponent("tooltip.nc.qnp_mode", new TranslatableComponent("tooltip.mode." + miningMode.getName())).withStyle(ChatFormatting.GREEN), UUID.randomUUID());
+			pPlayer.sendMessage(new TranslationTextComponent("tooltip.nc.qnp_mode", new TranslationTextComponent("tooltip.mode." + miningMode.getName())).withStyle(TextFormatting.GREEN), UUID.randomUUID());
 			return InteractionResultHolder.success(pPlayer.getItemInHand(pUsedHand));
 		}
 		return super.use(pLevel, pPlayer, pUsedHand);
-	}
+	}*/
 
 
 	@Override
-	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
+	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
 		return new ItemEnergyHandler(stack, getEnergyMaxStorage(), 0, getEnergyMaxStorage()/4);
 	}
 
@@ -289,11 +286,11 @@ public class QNP extends PickaxeItem
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, @javax.annotation.Nullable Level world, List<Component> list, TooltipFlag flag)
+	public void appendHoverText(ItemStack stack, @javax.annotation.Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
 	{
-		list.add(new TranslatableComponent("tooltip.nc.qnp_mode", new TranslatableComponent("tooltip.mode." + getMode(stack).getName())).withStyle(ChatFormatting.BLUE));
-		list.add(new TranslatableComponent("tooltip.nc.shift_rbm_to_change").withStyle(ChatFormatting.GRAY));
-		list.add(new TranslatableComponent("tooltip.nc.energy_stored", formatEnergy(getEnergy(stack).getEnergyStored()), formatEnergy(getEnergyMaxStorage())).withStyle(ChatFormatting.BLUE));
+		list.add(new TranslationTextComponent("tooltip.nc.qnp_mode", new TranslationTextComponent("tooltip.mode." + getMode(stack).getName())).withStyle(TextFormatting.BLUE));
+		list.add(new TranslationTextComponent("tooltip.nc.shift_rbm_to_change").withStyle(TextFormatting.GRAY));
+		list.add(new TranslationTextComponent("tooltip.nc.energy_stored", formatEnergy(getEnergy(stack).getEnergyStored()), formatEnergy(getEnergyMaxStorage())).withStyle(TextFormatting.BLUE));
 
 	}
 

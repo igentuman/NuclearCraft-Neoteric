@@ -3,27 +3,24 @@ package igentuman.nc.util;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.mojang.authlib.GameProfile;
+import com.mojang.serialization.Codec;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.util.math.FloatingLong;
-import net.minecraft.stats.Stats;
-import net.minecraft.util.Mth;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.effect.MobEffect;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.entity.HumanoidArm;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.util.Direction;
+import net.minecraft.util.HandSide;
+import net.minecraft.util.IStringSerializable;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import javax.annotation.Nullable;
 
 import java.util.*;
-import java.util.function.Supplier;
-import java.util.function.UnaryOperator;
+
 
 public final class NcUtils {
 
     public static final float ONE_OVER_ROOT_TWO = (float) (1 / Math.sqrt(2));
+    public static final Codec<Direction> DIRECTION_CODEC = IStringSerializable.fromEnum(Direction::values, Direction::byName);
 
     private static final List<UUID> warnedFails = new ArrayList<>();
 
@@ -43,26 +40,22 @@ public final class NcUtils {
     }
 
 
-    public static ItemStack getItemInHand(LivingEntity entity, HumanoidArm side) {
-        if (entity instanceof Player player) {
-            return getItemInHand(player, side);
-        } else if (side == HumanoidArm.RIGHT) {
+    public static ItemStack getItemInHand(LivingEntity entity, HandSide side) {
+        if (entity instanceof PlayerEntity) {
+            return getItemInHand(entity, side);
+        } else if (side == HandSide.RIGHT) {
             return entity.getMainHandItem();
         }
         return entity.getOffhandItem();
     }
 
-    public static ItemStack getItemInHand(Player player, HumanoidArm side) {
+    public static ItemStack getItemInHand(PlayerEntity player, HandSide side) {
         if (player.getMainArm() == side) {
             return player.getMainHandItem();
         }
         return player.getOffhandItem();
     }
 
-    public static int redstoneLevelFromContents(long amount, long capacity) {
-        double fractionFull = capacity == 0 ? 0 : amount / (double) capacity;
-        return Mth.floor((float) (fractionFull * 14.0F)) + (fractionFull > 0 ? 1 : 0);
-    }
 
     /**
      * Calculates the redstone level based on the percentage of amount stored.
@@ -87,7 +80,7 @@ public final class NcUtils {
      *
      * @return true if the player is neither in creative mode, nor in spectator mode.
      */
-    public static boolean isPlayingMode(Player player) {
+    public static boolean isPlayingMode(PlayerEntity player) {
         return !player.isCreative() && !player.isSpectator();
     }
 

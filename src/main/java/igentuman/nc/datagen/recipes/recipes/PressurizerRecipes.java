@@ -2,20 +2,21 @@ package igentuman.nc.datagen.recipes.recipes;
 
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.content.materials.Materials;
-import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.Blocks;
+import net.minecraft.block.Blocks;
+import net.minecraft.data.IFinishedRecipe;
+import net.minecraft.item.Item;
+import net.minecraft.item.Items;
 
 import java.util.function.Consumer;
 
 import static igentuman.nc.setup.registration.NCBlocks.NC_BLOCKS;
 import static igentuman.nc.setup.registration.NCItems.*;
-import static net.minecraft.world.item.Items.*;
+import static net.minecraft.item.Items.IRON_INGOT;
+import static net.minecraft.item.Items.NETHERITE_INGOT;
 
 public class PressurizerRecipes extends AbstractRecipeProvider {
 
-    public static void generate(Consumer<FinishedRecipe> consumer) {
+    public static void generate(Consumer<IFinishedRecipe> consumer) {
         ID = Processors.PRESSURIZER;
         PressurizerRecipes.consumer = consumer;
         for (String name : Materials.all().keySet()) {
@@ -25,7 +26,7 @@ public class PressurizerRecipes extends AbstractRecipeProvider {
             }
         }
         itemToItem(ingredient(IRON_INGOT), plateStack(Materials.iron));
-        itemToItem(ingredient(COPPER_INGOT), plateStack(Materials.copper));
+        //itemToItem(ingredient(COPPER_INGOT), plateStack(Materials.copper));
 
         itemToItem(isotopeIngredient(Materials.americium241, 9), ingredient(NC_BLOCKS.get("americium241").get().asItem()));
         itemToItem(isotopeIngredient(Materials.uranium238, 9), ingredient(NC_BLOCKS.get("uranium238").get().asItem()));

@@ -1,29 +1,19 @@
 package igentuman.nc.block;
 
-import igentuman.nc.block.entity.RFAmplifierBE;
 import igentuman.nc.content.RFAmplifier;
 import igentuman.nc.util.TextUtils;
-import net.minecraft.ChatFormatting;
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockState;
-import javax.annotation.Nullable;
+import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.IBlockReader;
+import net.minecraft.block.Block;
 
 import java.util.List;
 
-import static igentuman.nc.setup.registration.NCBlocks.NC_BE;
 
-public class RFAmplifierBlock extends Block implements EntityBlock {
+public class RFAmplifierBlock extends Block {
     public RFAmplifierBlock(Properties pProperties) {
         super(pProperties);
     }
@@ -37,45 +27,28 @@ public class RFAmplifierBlock extends Block implements EntityBlock {
     {
         return RFAmplifier.all().get(name());
     }
-    public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag)
+    public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable IBlockReader pLevel, List<ITextComponent> list, ITooltipFlag pFlag)
     {
         list.add(TextUtils.applyFormat(
-                new TranslatableComponent("tooltip.nc.rf_amplifier.power", TextUtils.numberFormat(prefab().getPower())),
-                ChatFormatting.DARK_AQUA));
+                new TranslationTextComponent("tooltip.nc.rf_amplifier.power", TextUtils.numberFormat(prefab().getPower())),
+                TextFormatting.DARK_AQUA));
         list.add(TextUtils.applyFormat(
-                new TranslatableComponent("tooltip.nc.rf_amplifier.voltage", TextUtils.numberFormat((double) prefab().getVoltage() /1000)),
-                ChatFormatting.DARK_BLUE));
+                new TranslationTextComponent("tooltip.nc.rf_amplifier.voltage", TextUtils.numberFormat((double) prefab().getVoltage() /1000)),
+                TextFormatting.DARK_BLUE));
         list.add(TextUtils.applyFormat(
-                new TranslatableComponent("tooltip.nc.rf_amplifier.efficiency", TextUtils.numberFormat(prefab().getEfficiency())),
-                ChatFormatting.AQUA));
+                new TranslationTextComponent("tooltip.nc.rf_amplifier.efficiency", TextUtils.numberFormat(prefab().getEfficiency())),
+                TextFormatting.AQUA));
         list.add(TextUtils.applyFormat(
-                new TranslatableComponent("tooltip.nc.rf_amplifier.heat", TextUtils.numberFormat(prefab().getHeat())),
-                ChatFormatting.YELLOW));
+                new TranslationTextComponent("tooltip.nc.rf_amplifier.heat", TextUtils.numberFormat(prefab().getHeat())),
+                TextFormatting.YELLOW));
         list.add(TextUtils.applyFormat(
-                new TranslatableComponent("tooltip.nc.rf_amplifier.max_temp", TextUtils.numberFormat((double) prefab().getMaxTemp() /1000)),
-                ChatFormatting.RED));
+                new TranslationTextComponent("tooltip.nc.rf_amplifier.max_temp", TextUtils.numberFormat((double) prefab().getMaxTemp() /1000)),
+                TextFormatting.RED));
     }
 
-    @Nullable
+/*    @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
         return NC_BE.get(name()).get().create(pPos, pState);
-    }
-
-    @javax.annotation.Nullable
-    @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        if (level.isClientSide()) {
-            return (lvl, pos, blockState, t) -> {
-                if (t instanceof RFAmplifierBE tile) {
-                    tile.tickClient();
-                }
-            };
-        }
-        return (lvl, pos, blockState, t)-> {
-            if (t instanceof RFAmplifierBE tile) {
-                tile.tickServer();
-            }
-        };
-    }
+    }*/
 }

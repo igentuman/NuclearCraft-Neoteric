@@ -2,12 +2,11 @@ package igentuman.nc.util;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.mojang.math.Transformation;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.DirectionProperty;
+import net.minecraft.state.IntegerProperty;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.Direction;
 import net.minecraftforge.client.model.data.ModelProperty;
 
 import java.util.Arrays;
@@ -28,11 +27,15 @@ public class NCProperties
 	public static final IntegerProperty INT_16 = IntegerProperty.create("int_16", 0, 15);
 	public static final IntegerProperty INT_32 = IntegerProperty.create("int_32", 0, 31);
 
-	public static record VisibilityList(Set<String> selected, boolean showSelected)
+	public static class VisibilityList
 	{
+		private final ImmutableSet<String> selected;
+		private final boolean showSelected;
+
 		private VisibilityList(Collection<String> selected, boolean show)
 		{
-			this(ImmutableSet.copyOf(selected), show);
+			this.selected = ImmutableSet.copyOf(selected);
+			this.showSelected = show;
 		}
 
 		public static VisibilityList show(String... visible)
@@ -57,7 +60,7 @@ public class NCProperties
 
 		public static VisibilityList hideAll()
 		{
-			return show(ImmutableList.of());
+			return show(Arrays.asList());
 		}
 
 		public boolean isVisible(String group)
@@ -66,11 +69,13 @@ public class NCProperties
 		}
 	}
 
-	public static record IEObjState(VisibilityList visibility, Transformation transform)
+	public static class IEObjState
 	{
+		private final VisibilityList visibility;
+
 		public IEObjState(VisibilityList visibility)
 		{
-			this(visibility, Transformation.identity());
+			this.visibility = visibility;
 		}
 	}
 

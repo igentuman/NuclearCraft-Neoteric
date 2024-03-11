@@ -12,18 +12,16 @@ import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.util.annotation.NBTField;
 import igentuman.nc.util.annotation.NothingNullByDefault;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.item.ItemStack;
+import net.minecraft.block.BlockState;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.List;
 
-import static igentuman.nc.compat.GlobalVars.CATALYSTS;
-import static igentuman.nc.compat.GlobalVars.RECIPE_CLASSES;
 
 public class IrradiatorBE extends NCProcessorBE<IrradiatorBE.Recipe> implements IMultiblockAttachable {
     private AbstractNCMultiblock multiblock;
@@ -126,7 +124,7 @@ public class IrradiatorBE extends NCProcessorBE<IrradiatorBE.Recipe> implements 
         for (Direction d: Direction.values()) {
             if(d.equals(getFacing()) || d.equals(getFacing().getOpposite())) continue;
             BlockPos toCheck = getBlockPos().relative(d);
-            BlockEntity be = getLevel().getBlockEntity(toCheck);
+            TileEntity be = getLevel().getBlockEntity(toCheck);
             if(be instanceof FissionBE) {
                 multiblock = ((FissionBE) be).multiblock();
                 controller = (FissionControllerBE<?>) ((FissionBE) be).controller();

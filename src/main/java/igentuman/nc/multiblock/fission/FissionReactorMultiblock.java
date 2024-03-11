@@ -3,10 +3,10 @@ package igentuman.nc.multiblock.fission;
 import igentuman.nc.block.entity.fission.*;
 import igentuman.nc.multiblock.AbstractNCMultiblock;
 import igentuman.nc.util.NCBlockPos;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.Direction;
+import net.minecraft.world.World;
 
 import java.util.*;
 
@@ -62,7 +62,7 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
     public Map<BlockPos, FissionHeatSinkBE> activeHeatSinks() {
         if(activeHeatSinks.isEmpty()) {
             for(BlockPos hpos: heatSinks) {
-                BlockEntity be = getLevel().getBlockEntity(hpos);
+                TileEntity be = getLevel().getBlockEntity(hpos);
                 if(be instanceof FissionHeatSinkBE) {
                     FissionHeatSinkBE hs = (FissionHeatSinkBE) be;
                     if(hs.isValid(true)) {
@@ -75,11 +75,11 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
         return activeHeatSinks;
     }
 
-    public static boolean isModerator(BlockPos pos, Level world) {
+    public static boolean isModerator(BlockPos pos, World world) {
         return  world.getBlockEntity(pos) instanceof FissionModeratorBE;
     }
 
-    public static boolean isIrradiator(BlockPos pos, Level world) {
+    public static boolean isIrradiator(BlockPos pos, World world) {
         return  world.getBlockEntity(pos) instanceof FissionIrradiationChamberBE;
     }
 
@@ -117,7 +117,7 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
     @Override
     protected boolean processInnerBlock(BlockPos toCheck) {
         if(isFuelCell(toCheck)) {
-            BlockEntity be = getLevel().getBlockEntity(toCheck);
+            TileEntity be = getLevel().getBlockEntity(toCheck);
             if(be instanceof FissionFuelCellBE) {
                 fuelCells.add(toCheck);
                 int moderatorAttachments = ((FissionFuelCellBE) be).getAttachedModeratorsCount(true);

@@ -2,8 +2,8 @@ package igentuman.nc.handler;
 
 import igentuman.nc.recipes.NcRecipeType;
 import igentuman.nc.recipes.type.OreVeinRecipe;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
 import java.util.HashMap;
 import java.util.List;
@@ -13,12 +13,12 @@ import java.util.Random;
 import static igentuman.nc.handler.config.ProcessorsConfig.IN_SITU_LEACHING;
 
 public class OreVeinProvider {
-    private ServerLevel level;
+    private World level;
     protected List<OreVeinRecipe> recipes;
-    protected static Map<Level, OreVeinProvider> providers = new HashMap<>();
+    protected static Map<World, OreVeinProvider> providers = new HashMap<>();
 
     @SuppressWarnings("unchecked")
-    private OreVeinProvider(ServerLevel level) {
+    private OreVeinProvider(World level) {
         this.level = level;
         recipes = (List<OreVeinRecipe>) level.getRecipeManager()
                 .getAllRecipesFor(NcRecipeType.ALL_RECIPES.get("nc_ore_veins"));
@@ -40,10 +40,10 @@ public class OreVeinProvider {
         {
             additional += seed;
         }
-        return new Random(level.getSeed()/2+x+z+additional);
+        return new Random(((ServerWorld)level).getSeed()/2+x+z+additional);
     }
 
-    public static OreVeinProvider get(ServerLevel level)
+    public static OreVeinProvider get(World level)
     {
         if(!providers.containsKey(level))
         {

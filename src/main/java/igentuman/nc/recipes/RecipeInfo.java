@@ -1,19 +1,18 @@
 package igentuman.nc.recipes;
 
 import igentuman.nc.client.NcClient;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import java.util.NoSuchElementException;
 
 
-public class RecipeInfo <RECIPE extends AbstractRecipe> implements INBTSerializable<Tag> {
+public class RecipeInfo <RECIPE extends AbstractRecipe> implements INBTSerializable<CompoundNBT> {
     public int ticks = 0;
     public double ticksProcessed = 0;
     public double energy = 0;
@@ -21,7 +20,7 @@ public class RecipeInfo <RECIPE extends AbstractRecipe> implements INBTSerializa
     public double radiation = 0;
     public boolean stuck = false;
     public RECIPE recipe;
-    public BlockEntity be;
+    public TileEntity be;
     private String recipeId;
 
     public void setRecipe(RECIPE recipe) {
@@ -34,8 +33,8 @@ public class RecipeInfo <RECIPE extends AbstractRecipe> implements INBTSerializa
     }
 
     @Override
-    public Tag serializeNBT() {
-        CompoundTag data = new CompoundTag();
+    public CompoundNBT serializeNBT() {
+        CompoundNBT data = new CompoundNBT();
         data.putInt("ticks", ticks);
         data.putDouble("ticksProcessed", ticksProcessed);
         data.putDouble("energy", energy);
@@ -49,15 +48,15 @@ public class RecipeInfo <RECIPE extends AbstractRecipe> implements INBTSerializa
     }
 
     @Override
-    public void deserializeNBT(Tag nbt) {
-        if(nbt instanceof CompoundTag) {
-            ticks = ((CompoundTag) nbt).getInt("ticks");
-            ticksProcessed = ((CompoundTag) nbt).getDouble("ticksProcessed");
-            energy = ((CompoundTag) nbt).getDouble("energy");
-            heat = ((CompoundTag) nbt).getDouble("heat");
-            radiation = ((CompoundTag) nbt).getDouble("radiation");
-            stuck = ((CompoundTag) nbt).getBoolean("stuck");
-            recipeId = ((CompoundTag) nbt).getString("recipe");
+    public void deserializeNBT(CompoundNBT nbt) {
+        if(nbt instanceof CompoundNBT) {
+            ticks = ((CompoundNBT) nbt).getInt("ticks");
+            ticksProcessed = ((CompoundNBT) nbt).getDouble("ticksProcessed");
+            energy = ((CompoundNBT) nbt).getDouble("energy");
+            heat = ((CompoundNBT) nbt).getDouble("heat");
+            radiation = ((CompoundNBT) nbt).getDouble("radiation");
+            stuck = ((CompoundNBT) nbt).getBoolean("stuck");
+            recipeId = ((CompoundNBT) nbt).getString("recipe");
             recipe = null;
             if(!recipeId.isEmpty()) {
                 recipe = getRecipeFromTag(recipeId);
@@ -65,10 +64,10 @@ public class RecipeInfo <RECIPE extends AbstractRecipe> implements INBTSerializa
         }
     }
 
-    private Level getLevel()
+    private World getLevel()
     {
         if(be != null) return be.getLevel();
-        return DistExecutor.unsafeRunForDist(
+        return DistExecutor.safeRunForDist(
                 () -> NcClient::tryGetClientWorld,
                 () -> () -> ServerLifecycleHooks.getCurrentServer().overworld());
     }

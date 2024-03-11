@@ -12,20 +12,20 @@ import igentuman.nc.util.NCBlockPos;
 import igentuman.nc.util.annotation.NBTField;
 import igentuman.nc.util.annotation.NothingNullByDefault;
 import igentuman.nc.util.insitu_leaching.WorldVeinsManager;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.MapItem;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
+import net.minecraft.item.MapItem;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.Direction;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.storage.MapData;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -40,13 +40,10 @@ import java.util.List;
 import java.util.Objects;
 
 import static igentuman.nc.block.ProcessorBlock.ACTIVE;
-import static igentuman.nc.compat.GlobalVars.CATALYSTS;
-import static igentuman.nc.compat.GlobalVars.RECIPE_CLASSES;
 import static igentuman.nc.radiation.ItemRadiation.getItemByName;
 import static igentuman.nc.setup.registration.NCItems.NC_PARTS;
-import static igentuman.nc.util.ModUtil.isCcLoaded;
-import static net.minecraft.world.item.Items.*;
-import static igentuman.nc.util.ModUtil.isIeLoaded;;
+import static igentuman.nc.util.ModUtil.isIeLoaded;
+import static net.minecraft.item.Items.FILLED_MAP;;
 
 public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
     public LeacherBE(BlockPos pPos, BlockState pBlockState) {
@@ -98,7 +95,7 @@ public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
 
         if(lastState != leacherState) {
             level.setBlockAndUpdate(worldPosition, getBlockState().setValue(ACTIVE, isActive));
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(ACTIVE, isActive), Block.UPDATE_ALL);
+           // level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(ACTIVE, isActive), Block.UPDATE_ALL);
         }
         if(leacherState == POSITION_IS_CORRECT) {
             super.tickServer();
@@ -159,7 +156,7 @@ public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
 
     public boolean isPumpValid(NCBlockPos pos, int id) {
         for (int y = 0; y < 20; y++) {
-            BlockEntity be = getLevel().getBlockEntity( pos.below());
+            TileEntity be = getLevel().getBlockEntity( pos.below());
             if (be instanceof PumpBE) {
                 pumps[id] = (PumpBE) be;
                 return pumps[id].isInSituValid();
@@ -261,7 +258,7 @@ public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
 
 
     protected ItemStack useResearchPaper() {
-        CompoundTag tagData = catalyst.getOrCreateTag();
+        CompoundNBT tagData = catalyst.getOrCreateTag();
         if(!tagData.contains("pos") || !tagData.contains("vein")) {
             leacherState = NO_SOURCE;
             return ItemStack.EMPTY;
@@ -274,15 +271,15 @@ public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
         }
         if(getLevel() == null) return ItemStack.EMPTY;
         return WorldVeinsManager.get(getLevel())
-                .getWorldVeinData((ServerLevel) getLevel()).gatherRandomOre(chunkPos.x, chunkPos.z);
+                .getWorldVeinData((ServerWorld) getLevel()).gatherRandomOre(chunkPos.x, chunkPos.z);
     }
 
     int currentMiningTimeout = 0;
     protected ItemStack useMapCatalyst() {
 
-        MapItemSavedData mapData = ((MapItem)catalyst.getItem()).getSavedData(catalyst, getLevel());
-        if(mapData == null) return ItemStack.EMPTY;
-        if(worldPosition.getX() < mapData.x-64 || worldPosition.getX() > mapData.x+64 &&
+      //  MapItemSavedData mapData = ((MapItem)catalyst.getItem()).(catalyst, getLevel());
+        return ItemStack.EMPTY;
+        /*if(worldPosition.getX() < mapData.x-64 || worldPosition.getX() > mapData.x+64 &&
                 worldPosition.getZ() < mapData.z-64 || worldPosition.getZ() > mapData.z+64) {
             leacherState = WRONG_POSITION;
             return ItemStack.EMPTY;
@@ -303,14 +300,14 @@ public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
             currentMiningPos = null;
             currentMiningTimeout = 0;
         };
-        return ItemStack.EMPTY;//this method handles inventory updates already
+        return ItemStack.EMPTY;//this method handles inventory updates already*/
     }
 
     public List<ItemStack> allMinableOres()
     {
         if(minableOres == null) {
             minableOres = new ArrayList<>();
-            for(LeacherBE.Recipe recipe: getRecipes()) {
+            for(Recipe recipe: getRecipes()) {
                 for(Ingredient ingredient: recipe.getItemIngredients()) {
                     minableOres.addAll(Arrays.asList(ingredient.getItems()));
                 }
@@ -329,7 +326,7 @@ public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
         int startX = new ChunkPos(currentMiningPos).getMinBlockX();
         int startZ = new ChunkPos(currentMiningPos).getMinBlockZ();
         NCBlockPos tempMiningPos = new NCBlockPos(currentMiningPos);
-        for(int y = startY; y > getLevel().getMinBuildHeight(); y--) {
+        for(int y = startY; y > 0; y--) {
            for(int x = 0; x < 16; x++) {
                for(int z = 0; z < 16; z++) {
                    BlockState toCheck = getLevel().getBlockState(tempMiningPos.y(y).x(x+startX).z(z+startZ));
@@ -369,7 +366,7 @@ public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
 
     @Override
     public List<Item> getAllowedCatalysts() {
-        List<Item> items = new ArrayList<>(List.of(
+        List<Item> items = new ArrayList<>(Arrays.asList(
                 NC_PARTS.get("research_paper").get(),
                 FILLED_MAP
         ));

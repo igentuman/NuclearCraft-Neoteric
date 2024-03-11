@@ -8,16 +8,18 @@ import igentuman.nc.content.processors.config.ProcessorSlots;
 import igentuman.nc.setup.registration.NCItems;
 import igentuman.nc.setup.registration.NCProcessors;
 import igentuman.nc.handler.sided.SlotModePair;
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.*;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import mekanism.common.tile.prefab.TileEntityElectricMachine;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.Slot;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.inventory.Inventory;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
@@ -32,9 +34,9 @@ import java.util.Objects;
 import static igentuman.nc.NuclearCraft.MODID;
 import static net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
 
-public class NCProcessorContainer<T extends AbstractContainerMenu> extends AbstractContainerMenu {
+public class NCProcessorContainer<T extends Container> extends Container {
     protected NCProcessorBE blockEntity;
-    protected Player playerEntity;
+    protected PlayerEntity playerEntity;
     protected IItemHandler playerInventory;
 
     public ProcessorPrefab getProcessor() {
@@ -47,11 +49,11 @@ public class NCProcessorContainer<T extends AbstractContainerMenu> extends Abstr
 
     protected String name;
 
-    public NCProcessorContainer(@Nullable MenuType<?> pMenuType, int pContainerId) {
+    public NCProcessorContainer(@Nullable ContainerType<?> pMenuType, int pContainerId) {
         super(pMenuType, pContainerId);
     }
 
-    public NCProcessorContainer(int windowId, BlockPos pos, Inventory playerInventory, Player player, String name) {
+    public NCProcessorContainer(int windowId, BlockPos pos, PlayerInventory playerInventory, PlayerEntity player, String name) {
         this(NCProcessors.PROCESSORS_CONTAINERS.get(name).get(), windowId);
         blockEntity = (NCProcessorBE) player.getCommandSenderWorld().getBlockEntity(pos);
         this.playerEntity = player;
@@ -107,7 +109,7 @@ public class NCProcessorContainer<T extends AbstractContainerMenu> extends Abstr
     }
 
     @Override
-    public ItemStack quickMoveStack(Player pPlayer, int index) {
+    public ItemStack quickMoveStack(PlayerEntity pPlayer, int index) {
         ItemStack itemstack = ItemStack.EMPTY;
         Slot slot = this.slots.get(index);
         if (slot != null && slot.hasItem()) {
@@ -119,11 +121,7 @@ public class NCProcessorContainer<T extends AbstractContainerMenu> extends Abstr
                 }
                 slot.onQuickCraft(stack, itemstack);
             } else {
-                if (ForgeHooks.getBurnTime(stack, RecipeType.SMELTING) > 0) {
-                    if (!this.moveItemStackTo(stack, 0, 1, false)) {
-                        return ItemStack.EMPTY;
-                    }
-                } else if (index < 28) {
+                 if (index < 28) {
                     if (!this.moveItemStackTo(stack, 28, 37, false)) {
                         return ItemStack.EMPTY;
                     }
@@ -174,16 +172,17 @@ public class NCProcessorContainer<T extends AbstractContainerMenu> extends Abstr
     }
 
     @Override
-    public boolean stillValid(@NotNull Player playerIn) {
-        return stillValid(
+    public boolean stillValid(@NotNull PlayerEntity playerIn) {
+        return true;
+/*        return stillValid(
                 ContainerLevelAccess.create(Objects.requireNonNull(blockEntity.getLevel()), blockEntity.getBlockPos()),
                 playerEntity,
                 NCProcessors.PROCESSORS.get(name).get()
-        );
+        );*/
     }
 
-    public Component getTitle() {
-        return new TranslatableComponent("block."+MODID+"."+name);
+    public TextComponent getTitle() {
+        return new TranslationTextComponent("block."+MODID+"."+name);
     }
 
     public IEnergyStorage getEnergy() {
@@ -222,7 +221,7 @@ public class NCProcessorContainer<T extends AbstractContainerMenu> extends Abstr
         return blockEntity.redstoneMode;
     }
 
-    public BlockEntity getBlockEntity() {
+    public TileEntity getBlockEntity() {
         return blockEntity;
     }
 }

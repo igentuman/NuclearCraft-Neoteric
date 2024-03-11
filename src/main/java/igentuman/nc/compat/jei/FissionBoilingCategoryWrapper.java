@@ -1,6 +1,6 @@
 package igentuman.nc.compat.jei;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import igentuman.nc.block.entity.fission.FissionControllerBE;
 import igentuman.nc.compat.jei.util.TickTimer;
 import mezz.jei.api.gui.IRecipeLayout;
@@ -9,11 +9,11 @@ import mezz.jei.api.gui.drawable.IDrawableAnimated;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.item.ItemStack;
 import org.antlr.v4.runtime.misc.NotNull;
 
 
@@ -55,8 +55,8 @@ public class FissionBoilingCategoryWrapper<T extends FissionControllerBE.Fission
     }
 
     @Override
-    public @NotNull Component getTitle() {
-        return new TranslatableComponent("nc_jei_cat."+getRecipeType().getUid().getPath());
+    public @NotNull String getTitle() {
+        return new TranslationTextComponent("nc_jei_cat."+getRecipeType().getUid().getPath()).getString();
     }
 
     @Override
@@ -77,16 +77,16 @@ public class FissionBoilingCategoryWrapper<T extends FissionControllerBE.Fission
 
 
     @Override
-    public void draw(T recipe, PoseStack stack, double mouseX, double mouseY) {
+    public void draw(T recipe, MatrixStack stack, double mouseX, double mouseY) {
         arrow.draw(stack, 34, 6);
 
     }
 
     @Override
-    public @NotNull List<Component> getTooltipStrings(@NotNull T recipe, double mouseX, double mouseY) {
-        List<Component> lines = new ArrayList<>();
+    public @NotNull List<ITextComponent> getTooltipStrings(@NotNull T recipe, double mouseX, double mouseY) {
+        List<ITextComponent> lines = new ArrayList<>();
         if(mouseX > 34 && mouseX < 76 && mouseY > 6 && mouseY < 20) {
-            lines.add(new TranslatableComponent("boiling.recipe.heat_required", (int)recipe.conversionRate()).withStyle(ChatFormatting.GOLD));
+            lines.add(new TranslationTextComponent("boiling.recipe.heat_required", (int)recipe.conversionRate()).withStyle(TextFormatting.GOLD));
         }
         return lines;
     }

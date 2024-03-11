@@ -1,7 +1,7 @@
 package igentuman.nc.client.gui.processor;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import igentuman.nc.client.gui.IProgressScreen;
 import igentuman.nc.client.gui.element.NCGuiElement;
 import igentuman.nc.client.gui.element.bar.EnergyBar;
@@ -13,13 +13,15 @@ import igentuman.nc.container.NCProcessorContainer;
 import igentuman.nc.client.gui.element.slot.NormalSlot;
 import igentuman.nc.content.processors.config.ProcessorSlots;
 import igentuman.nc.handler.event.client.TickHandler;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.inventory.Inventory;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import org.antlr.v4.runtime.misc.NotNull;;
 
@@ -31,7 +33,7 @@ import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.util.TextUtils.applyFormat;
 import static igentuman.nc.util.TextUtils.scaledFormat;
 
-public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractContainerScreen<T> implements IProgressScreen {
+public class NCProcessorScreen<T extends NCProcessorContainer> extends ContainerScreen<T> implements IProgressScreen {
     protected final ResourceLocation GUI = new ResourceLocation(MODID, "textures/gui/processor.png");
     protected int relX;
     protected int relY;
@@ -46,7 +48,7 @@ public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractC
     protected EnergyBar energyBar;
     private Button.ShowRecipes showRecipesBtn;
 
-    public NCProcessorScreen(T container, Inventory inv, Component name) {
+    public NCProcessorScreen(T container, PlayerInventory inv, ITextComponent name) {
         super(container, inv, name);
         imageWidth = 180;
         imageHeight = 180;
@@ -143,19 +145,19 @@ public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractC
         return menu.getFluidTank(i);
     }
 
-    public NCProcessorScreen(AbstractContainerMenu abstractContainerMenu, Inventory inventory, Component component) {
-        this((T)abstractContainerMenu, inventory, component);
+    public NCProcessorScreen(Container ContainerScreen, PlayerInventory inventory, ITextComponent component) {
+        this((T)ContainerScreen, inventory, component);
     }
 
     @Override
-    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         xCenter = getGuiLeft()-imageWidth/2;
         this.renderBackground(matrixStack);
         super.render(matrixStack, mouseX, mouseY, partialTicks);
         this.renderTooltip(matrixStack, mouseX, mouseY);
     }
 
-    protected void renderWidgets(PoseStack matrix, float partialTicks, int mouseX, int mouseY) {
+    protected void renderWidgets(MatrixStack matrix, float partialTicks, int mouseX, int mouseY) {
         redstoneConfigBtn.setMode(getMenu().getRedstoneMode());
         for(NCGuiElement widget: widgets) {
             widget.draw(matrix, mouseX, mouseY, partialTicks);
@@ -163,30 +165,30 @@ public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractC
     }
 
     @Override
-    protected void renderLabels(@NotNull PoseStack matrixStack, int mouseX, int mouseY) {
+    protected void renderLabels(@NotNull MatrixStack matrixStack, int mouseX, int mouseY) {
         drawCenteredString(matrixStack, font,  menu.getTitle(), imageWidth/2, titleLabelY, 0xffffff);
         renderTooltips(matrixStack, mouseX-relX, mouseY-relY);
     }
 
     @Override
-    protected void renderBg(@NotNull PoseStack matrixStack, float partialTicks, int mouseX, int mouseY) {
-        RenderSystem.setShaderTexture(0, GUI);
+    protected void renderBg(@NotNull MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+        Minecraft.getInstance().getTextureManager().bind(GUI);
         updateRelativeCords();
         this.blit(matrixStack, relX, relY, 0, 0, this.imageWidth, this.imageHeight);
         renderWidgets(matrixStack, partialTicks, mouseX, mouseY);
     }
 
-    protected void renderTooltips(PoseStack pPoseStack, int pMouseX, int pMouseY) {
+    protected void renderTooltips(MatrixStack pMatrixStack, int pMouseX, int pMouseY) {
         for(NCGuiElement widget: widgets) {
             if(widget.isMouseOver(pMouseX, pMouseY)) {
                 if(widget instanceof EnergyBar) {
                     widget.clearTooltips();
-                    widget.addTooltip(applyFormat(new TranslatableComponent("speed.multiplier", menu.speedMultiplier()), ChatFormatting.RED));
-                    widget.addTooltip(applyFormat(new TranslatableComponent("energy.multiplier", menu.energyMultiplier()), ChatFormatting.GOLD));
-                    widget.addTooltip(applyFormat(new TranslatableComponent("energy.per_tick", scaledFormat(menu.energyPerTick())), ChatFormatting.YELLOW));
+                    widget.addTooltip(applyFormat(new TranslationTextComponent("speed.multiplier", menu.speedMultiplier()), TextFormatting.RED));
+                    widget.addTooltip(applyFormat(new TranslationTextComponent("energy.multiplier", menu.energyMultiplier()), TextFormatting.GOLD));
+                    widget.addTooltip(applyFormat(new TranslationTextComponent("energy.per_tick", scaledFormat(menu.energyPerTick())), TextFormatting.YELLOW));
                 }
-                renderTooltip(pPoseStack, widget.getTooltips(),
-                        Optional.empty(), pMouseX, pMouseY);
+               /* renderTooltip(pMatrixStack, widget.getTooltips(),
+                        Optional.empty(), pMouseX, pMouseY);*/
             }
         }
     }

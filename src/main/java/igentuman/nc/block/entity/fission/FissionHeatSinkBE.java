@@ -3,10 +3,10 @@ package igentuman.nc.block.entity.fission;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.multiblock.fission.FissionBlocks;
 import igentuman.nc.multiblock.fission.HeatSinkDef;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.Direction;
+import net.minecraft.block.BlockState;
 
 public class FissionHeatSinkBE extends FissionBE {
     public static String NAME = "fission_heat_sink";
@@ -59,7 +59,7 @@ public class FissionHeatSinkBE extends FissionBE {
         if(multiblock() != null) {
             if (attachedToFuelCell || refreshCacheFlag) {
                 for (Direction dir : Direction.values()) {
-                    BlockEntity be = getLevel().getBlockEntity(getBlockPos().relative(dir));
+                    TileEntity be = getLevel().getBlockEntity(getBlockPos().relative(dir));
                     if (be instanceof FissionBE) {
                         ((FissionBE) be).attachedToFuelCell = true;
                     }

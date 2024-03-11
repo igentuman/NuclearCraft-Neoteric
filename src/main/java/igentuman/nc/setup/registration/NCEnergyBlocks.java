@@ -8,20 +8,21 @@ import igentuman.nc.item.BatteryBlockItem;
 import igentuman.nc.content.energy.BatteryBlocks;
 import igentuman.nc.content.energy.RTGs;
 import igentuman.nc.content.energy.SolarPanels;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.block.SoundType;
+import net.minecraft.block.material.Material;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
+import net.minecraft.block.Block;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.fmllegacy.RegistryObject;
 
 import java.util.HashMap;
+import java.util.function.Supplier;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.setup.Registration.BLOCKS;
@@ -31,9 +32,9 @@ public class NCEnergyBlocks {
     public static HashMap<String, RegistryObject<Block>> ENERGY_BLOCKS = new HashMap<>();
     public static HashMap<String, RegistryObject<Item>> BLOCK_ITEMS = new HashMap<>();
     public static final Item.Properties ENERGY_ITEM_PROPERTIES = new Item.Properties().tab(CreativeTabs.NC_ITEMS);
-    public static final BlockBehaviour.Properties ENERGY_BLOCK_PROPERTIES = BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.METAL).strength(2f).requiresCorrectToolForDrops();
-    private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, MODID);
-    public static HashMap<String, RegistryObject<BlockEntityType<? extends NCEnergy>>> ENERGY_BE = new HashMap<>();
+    public static final Block.Properties ENERGY_BLOCK_PROPERTIES = Block.Properties.of(Material.METAL).sound(SoundType.METAL).strength(2f).requiresCorrectToolForDrops();
+    private static final DeferredRegister<TileEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, MODID);
+    public static HashMap<String, RegistryObject<TileEntityType<? extends NCEnergy>>> ENERGY_BE = new HashMap<>();
 
     public static void init() {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -43,27 +44,27 @@ public class NCEnergyBlocks {
     }
 
     private static void registerBlockEntities() {
-        for(String name: SolarPanels.registered().keySet()) {
+        /*for(String name: SolarPanels.registered().keySet()) {
             String key = "solar_panel/"+name;
             ENERGY_BE.put(key, BLOCK_ENTITIES.register(key,
-                    () -> BlockEntityType.Builder
-                            .of(SolarPanels.all().get(name).getBlockEntity(), ENERGY_BLOCKS.get(key).get())
+                    () -> TileEntityType.Builder
+                            .of((Supplier<TileEntityType<?>>)SolarPanels.all().get(name).getBlockEntity(), ENERGY_BLOCKS.get(key).get())
                             .build(null)));
         }
         for(String name: BatteryBlocks.registered().keySet()) {
             ENERGY_BE.put(name, BLOCK_ENTITIES.register(name,
-                    () -> BlockEntityType.Builder
+                    () -> TileEntityType.Builder
                             .of(BatteryBlocks.all().get(name).getBlockEntity(), ENERGY_BLOCKS.get(name).get())
                             .build(null)));
 
         }
         for(String name: RTGs.registered().keySet()) {
             ENERGY_BE.put(name, BLOCK_ENTITIES.register(name,
-                    () -> BlockEntityType.Builder
+                    () -> TileEntityType.Builder
                             .of(RTGs.all().get(name).getBlockEntity(), ENERGY_BLOCKS.get(name).get())
                             .build(null)));
 
-        }
+        }*/
     }
 
     private static void registerBlocks() {

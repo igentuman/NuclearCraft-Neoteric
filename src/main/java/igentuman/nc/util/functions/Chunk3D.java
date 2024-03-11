@@ -1,10 +1,10 @@
 package igentuman.nc.util.functions;
 
-import net.minecraft.core.SectionPos;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.Level;
-import org.antlr.v4.runtime.misc.NotNull;;
+import net.minecraft.util.RegistryKey;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.SectionPos;
+import net.minecraft.world.World;
+import org.antlr.v4.runtime.misc.NotNull;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -15,7 +15,7 @@ import java.util.Set;
  */
 public class Chunk3D extends ChunkPos {
 
-    public final ResourceKey<Level> dimension;
+    public final RegistryKey<World> dimension;
 
     /**
      * Creates a Chunk3D from the defined chunk x, chunk z, and dimension values.
@@ -24,7 +24,7 @@ public class Chunk3D extends ChunkPos {
      * @param x         Chunk X coordinate
      * @param z         Chunk Z coordinate
      */
-    public Chunk3D(ResourceKey<Level> dimension, int x, int z) {
+    public Chunk3D(RegistryKey<World> dimension, int x, int z) {
         super(x, z);
         this.dimension = dimension;
     }
@@ -37,7 +37,7 @@ public class Chunk3D extends ChunkPos {
      *
      * @since 10.3.2
      */
-    public Chunk3D(ResourceKey<Level> dimension, long chunkPos) {
+    public Chunk3D(RegistryKey<World> dimension, long chunkPos) {
         this(dimension, ChunkPos.getX(chunkPos), ChunkPos.getZ(chunkPos));
     }
 
@@ -47,7 +47,7 @@ public class Chunk3D extends ChunkPos {
      * @param dimension Dimension ID
      * @param chunkPos  Chunk position
      */
-    public Chunk3D(ResourceKey<Level> dimension, ChunkPos chunkPos) {
+    public Chunk3D(RegistryKey<World> dimension, ChunkPos chunkPos) {
         this(dimension, chunkPos.x, chunkPos.z);
     }
 
@@ -90,7 +90,7 @@ public class Chunk3D extends ChunkPos {
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof Chunk3D other && other.x == x && other.z == z && other.dimension == dimension;
+        return obj instanceof Chunk3D && ((Chunk3D) obj).x == x && ((Chunk3D) obj).z == z && ((Chunk3D) obj).dimension == dimension;
     }
 
     @Override

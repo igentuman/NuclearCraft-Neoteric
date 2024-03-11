@@ -1,7 +1,7 @@
 package igentuman.nc.client.gui.turbine;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import igentuman.nc.client.gui.IProgressScreen;
 import igentuman.nc.client.gui.IVerticalBarScreen;
 import igentuman.nc.client.gui.element.NCGuiElement;
@@ -10,11 +10,13 @@ import igentuman.nc.client.gui.element.bar.VerticalBar;
 import igentuman.nc.client.gui.element.button.Button;
 import igentuman.nc.container.TurbinePortContainer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.client.gui.AbstractGui;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.inventory.Inventory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +24,7 @@ import java.util.Optional;
 
 import static igentuman.nc.NuclearCraft.MODID;
 
-public class TurbinePortScreen extends AbstractContainerScreen<TurbinePortContainer> implements IProgressScreen, IVerticalBarScreen {
+public class TurbinePortScreen extends ContainerScreen<TurbinePortContainer> implements IProgressScreen, IVerticalBarScreen {
     protected final ResourceLocation GUI = new ResourceLocation(MODID, "textures/gui/turbine/port.png");
     protected int relX;
     protected int relY;
@@ -39,7 +41,7 @@ public class TurbinePortScreen extends AbstractContainerScreen<TurbinePortContai
     private VerticalBar energyBar;
 
 
-    public TurbinePortScreen(TurbinePortContainer container, Inventory inv, Component name) {
+    public TurbinePortScreen(TurbinePortContainer container, PlayerInventory inv, ITextComponent name) {
         super(container, inv, name);
         imageWidth = 176;
         imageHeight = 176;
@@ -66,14 +68,14 @@ public class TurbinePortScreen extends AbstractContainerScreen<TurbinePortContai
 
 
     @Override
-    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         xCenter = getGuiLeft()-imageWidth/2;
         this.renderBackground(matrixStack);
         super.render(matrixStack, mouseX, mouseY, partialTicks);
         this.renderTooltip(matrixStack, mouseX, mouseY);
     }
 
-    private void renderWidgets(PoseStack matrix, float partialTicks, int mouseX, int mouseY) {
+    private void renderWidgets(MatrixStack matrix, float partialTicks, int mouseX, int mouseY) {
         redstoneConfigBtn.setMode(getMenu().getComparatorMode());
         redstoneConfigBtn.strength = getMenu().getAnalogSignalStrength();
         for(NCGuiElement widget: widgets) {
@@ -85,7 +87,7 @@ public class TurbinePortScreen extends AbstractContainerScreen<TurbinePortContai
     }
 
     @Override
-    protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
+    protected void renderLabels(MatrixStack matrixStack, int mouseX, int mouseY) {
         drawCenteredString(matrixStack, font,  menu.getTitle(), imageWidth/2, titleLabelY, 0xffffff);
         renderTooltips(matrixStack, mouseX-relX, mouseY-relY);
     }
@@ -100,28 +102,28 @@ public class TurbinePortScreen extends AbstractContainerScreen<TurbinePortContai
     }
 
     @Override
-    protected void renderBg(PoseStack matrixStack, float partialTicks, int mouseX, int mouseY) {
-        RenderSystem.setShaderTexture(0, GUI);
+    protected void renderBg(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+        Minecraft.getInstance().getTextureManager().bind(GUI);
         updateRelativeCords();
         this.blit(matrixStack, relX, relY, 0, 0, this.imageWidth, this.imageHeight);
         renderWidgets(matrixStack, partialTicks, mouseX, mouseY);
     }
 
-    private void renderTooltips(PoseStack pPoseStack, int pMouseX, int pMouseY) {
+    private void renderTooltips(MatrixStack pMatrixStack, int pMouseX, int pMouseY) {
 
         for(NCGuiElement widget: widgets) {
            if(widget.isMouseOver(pMouseX, pMouseY)) {
-               renderTooltip(pPoseStack, widget.getTooltips(),
-                       Optional.empty(), pMouseX, pMouseY);
+/*               renderTooltip(pMatrixStack, widget.getTooltips(),
+                       Optional.empty(), pMouseX, pMouseY);*/
            }
         }
 
         if(container().getMaxEnergy() > 0) {
             energyBar.clearTooltips();
-            energyBar.addTooltip(new TranslatableComponent("reactor.forge_energy_per_tick", container().energyPerTick()));
+            energyBar.addTooltip(new TranslationTextComponent("reactor.forge_energy_per_tick", container().energyPerTick()));
             if(energyBar.isMouseOver(pMouseX, pMouseY)) {
-                renderTooltip(pPoseStack, energyBar.getTooltips(),
-                        Optional.empty(), pMouseX, pMouseY);
+/*                renderTooltip(pMatrixStack, energyBar.getTooltips(),
+                        Optional.empty(), pMouseX, pMouseY);*/
             }
         }
     }

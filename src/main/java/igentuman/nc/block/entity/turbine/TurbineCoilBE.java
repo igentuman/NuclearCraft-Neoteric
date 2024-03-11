@@ -4,16 +4,17 @@ import igentuman.nc.NuclearCraft;
 import igentuman.nc.multiblock.turbine.CoilDef;
 import igentuman.nc.multiblock.turbine.TurbineRegistration;
 import igentuman.nc.util.annotation.NBTField;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.Direction;
+import net.minecraft.item.Item;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 
 import java.util.Objects;
 
-import static net.minecraft.world.item.Items.AIR;
+import static net.minecraft.block.Blocks.AIR;
+
 
 public class TurbineCoilBE extends TurbineBE {
     public static String NAME = "turbine_coil";
@@ -62,13 +63,13 @@ public class TurbineCoilBE extends TurbineBE {
         if(multiblock() != null) {
             if (refreshCacheFlag) {
                 for (Direction dir : Direction.values()) {
-                    BlockEntity be = Objects.requireNonNull(getLevel()).getBlockEntity(getBlockPos().relative(dir));
+                    TileEntity be = Objects.requireNonNull(getLevel()).getBlockEntity(getBlockPos().relative(dir));
                     if (be instanceof TurbineBearingBE) {
                         hasBearingConnection = multiblock().bearingPositions.contains(getBlockPos().relative(dir));
                         break;
                     }
-                    if (be instanceof TurbineCoilBE sideCoil) {
-                        if(sideCoil.hasBearingConnection) {
+                    if (be instanceof TurbineCoilBE) {
+                        if(((TurbineCoilBE) be).hasBearingConnection) {
                             hasBearingConnection = true;
                             break;
                         }

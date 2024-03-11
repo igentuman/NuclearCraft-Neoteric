@@ -1,17 +1,13 @@
 package igentuman.nc.content;
 
-import igentuman.nc.block.entity.RFAmplifierBE;
-import igentuman.nc.block.entity.energy.NCEnergy;
 import igentuman.nc.handler.config.CommonConfig;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
+import java.util.function.Supplier;
 
 import igentuman.nc.block.entity.ElectromagnetBE;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 
 import static igentuman.nc.handler.config.FusionConfig.ELECTROMAGNETS_CONFIG;
 
@@ -82,7 +78,7 @@ public class Electromagnets {
         protected int heat = 0;
         protected int maxTemp = 0;
         protected int efficiency = 0;
-        private BlockEntityType.BlockEntitySupplier<? extends BlockEntity>  blockEntity = ElectromagnetBE::new;
+        private Supplier<TileEntityType<? extends TileEntity>>  blockEntity;
 
         public MagnetPrefab(String name, int energy, int heat, double magneticField, int maxTemp, int efficiency) {
             this.power = energy;
@@ -91,7 +87,7 @@ public class Electromagnets {
             this.magneticField = magneticField;
             this.maxTemp = maxTemp;
             this.efficiency = efficiency;
-            blockEntity = ElectromagnetBE::new;
+           // blockEntity = ElectromagnetBE::new;
 
         }
 
@@ -110,7 +106,7 @@ public class Electromagnets {
                 if(!CommonConfig.isLoaded()) {
                     return this;
                 }
-                int id = Electromagnets.all().keySet().stream().toList().indexOf(name);
+                int id = Arrays.asList(Electromagnets.all().keySet().stream().toArray()).indexOf(name);
                 registered = ELECTROMAGNETS_CONFIG.REGISTERED.get().get(id);
                 power = ELECTROMAGNETS_CONFIG.POWER.get().get(id);
                 heat = ELECTROMAGNETS_CONFIG.HEAT.get().get(id);
@@ -123,12 +119,12 @@ public class Electromagnets {
             return  registered;
         }
 
-        public BlockEntityType.BlockEntitySupplier<? extends BlockEntity>  getBlockEntity() {
+        public Supplier<TileEntityType<? extends TileEntity>>  getBlockEntity() {
             return blockEntity;
         }
 
-        public MagnetPrefab setBlockEntity(BlockEntityType.BlockEntitySupplier<? extends ElectromagnetBE>  blockEntity) {
-            this.blockEntity = blockEntity;
+        public MagnetPrefab setBlockEntity(Supplier<TileEntityType<? extends ElectromagnetBE>>  blockEntity) {
+          //  this.blockEntity = blockEntity;
             return this;
         }
 

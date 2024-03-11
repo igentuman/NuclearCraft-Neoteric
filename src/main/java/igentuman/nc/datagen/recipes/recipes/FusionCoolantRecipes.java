@@ -2,19 +2,20 @@ package igentuman.nc.datagen.recipes.recipes;
 
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.IFinishedRecipe;
 import net.minecraftforge.fluids.FluidStack;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
 public class FusionCoolantRecipes extends AbstractRecipeProvider {
 
-    public static void generate(Consumer<FinishedRecipe> consumer) {
+    public static void generate(Consumer<IFinishedRecipe> consumer) {
         FusionCoolantRecipes.consumer = consumer;
         ID = "fusion_coolant";
 
-        for(String gas: List.of("nitrogen", "helium")) {
+        for(String gas: Arrays.asList("nitrogen", "helium")) {
             add(
                     fluidIngredient("liquid_" + gas, 1),
                     fluidStack(gas, 1),
@@ -36,6 +37,6 @@ public class FusionCoolantRecipes extends AbstractRecipeProvider {
     }
 
     protected static void add(FluidStackIngredient input, FluidStack output, double coolingRate) {
-        coolantRecipe(List.of(input), List.of(output), coolingRate);
+        coolantRecipe(Arrays.asList(input), Arrays.asList(output), coolingRate);
     }
 }

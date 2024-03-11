@@ -2,10 +2,7 @@ package igentuman.nc.handler.config;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class RadiationConfig {
     public static <T> List<T> toList(Collection<T> vals)
@@ -121,7 +118,7 @@ public class RadiationConfig {
 
             RADIATION_REMOVAL_ITEMS = builder
                     .comment("List of items what cleans player radiation when used (pRad). Format: item_id|radiation")
-                    .define("radiation_removal_items", List.of(
+                    .define("radiation_removal_items", Arrays.asList(
                             "minecraft:golden_carrot|500000",
                             "minecraft:golden_apple|20000000",
                             "minecraft:enchanted_golden_apple|100000000",
@@ -133,7 +130,7 @@ public class RadiationConfig {
 
             ITEM_RADIATION = builder
                     .comment("List of items what have radiation (pRad). Format: item_id|radiation")
-                    .define("items_radiation", List.of(
+                    .define("items_radiation", Arrays.asList(
                             "nuclearcraft:spaxelhoe_thorium|50000",
                             "mekanism:pellet_polonium|4000000",
                             "mekanism:pellet_plutonium|2500000",
@@ -142,7 +139,7 @@ public class RadiationConfig {
 
             ARMOR_PROTECTION = builder
                     .comment("List of armor items and default shielding lvl. Format: item_id|radiation")
-                    .define("armor_shielding", List.of(
+                    .define("armor_shielding", Arrays.asList(
                             "mekanism:hazmat_mask|3",
                             "mekanism:hazmat_gown|5",
                             "mekanism:hazmat_pants|4",
@@ -163,11 +160,11 @@ public class RadiationConfig {
 
             BIOME_RADIATION = builder
                     .comment("Natural radiation per biome: uRad", "Format: biome_id|radiation")
-                    .define("biome_radiation", List.of("nuclearcraft:wasteland|2000", "minecraft:nether_wastes|500"), o -> o instanceof ArrayList);
+                    .define("biome_radiation", Arrays.asList("nuclearcraft:wasteland|2000", "minecraft:nether_wastes|500"), o -> o instanceof ArrayList);
 
             DIMENSION_RADIATION = builder
                     .comment("Natural radiation per dimension: uRad", "Format: dim_id|radiation")
-                    .define("dimension_radiation", List.of("nuclearcraft:wasteland|200000", "minecraft:the_nether|1000"), o -> o instanceof ArrayList);
+                    .define("dimension_radiation", Arrays.asList("nuclearcraft:wasteland|200000", "minecraft:the_nether|1000"), o -> o instanceof ArrayList);
 
             RADIATION_UPDATE_INTERVAL = builder
                     .comment("Interval between radiation updates in ticks. 20 ticks = 1 second.", "Bigger interval - less lag, but less accurate radiation spread.")

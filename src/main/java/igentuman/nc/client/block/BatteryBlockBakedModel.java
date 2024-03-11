@@ -1,18 +1,15 @@
 package igentuman.nc.client.block;
 
-import com.mojang.math.Transformation;
 import igentuman.nc.block.ISizeToggable;
 import igentuman.nc.block.entity.energy.BatteryBE;
 import igentuman.nc.util.ClientTools;
+import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.ItemOverrides;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.resources.model.ModelState;
-import net.minecraft.core.Direction;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.util.Direction;
+import net.minecraft.block.BlockState;
+import net.minecraft.util.math.vector.TransformationMatrix;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.data.IDynamicBakedModel;
 import net.minecraftforge.client.model.data.IModelData;
@@ -26,15 +23,15 @@ import static igentuman.nc.util.ClientTools.v;
 
 public class BatteryBlockBakedModel implements IDynamicBakedModel {
 
-    private final ModelState modelState;
-    private final Function<Material, TextureAtlasSprite> spriteGetter;
+    private final IModelTransform modelState;
+    private final Function<RenderMaterial, TextureAtlasSprite> spriteGetter;
     private final Map<String, List<BakedQuad>> quadCache = new HashMap<>();
-    private final ItemOverrides overrides;
-    private final ItemTransforms itemTransforms;
+    private final ItemOverrideList overrides;
+    private final ItemCameraTransforms itemTransforms;
     public BatteryBlockLoader.BatteryModelGeometry batteryModelGeometry;
 
-    public BatteryBlockBakedModel(ModelState modelState, Function<Material, TextureAtlasSprite> spriteGetter,
-                                  ItemOverrides overrides, ItemTransforms itemTransforms,
+    public BatteryBlockBakedModel(IModelTransform modelState, Function<RenderMaterial, TextureAtlasSprite> spriteGetter,
+                                  ItemOverrideList overrides, ItemCameraTransforms itemTransforms,
                                   BatteryBlockLoader.BatteryModelGeometry batteryModelGeometry) {
         this.modelState = modelState;
         this.spriteGetter = spriteGetter;
@@ -46,12 +43,12 @@ public class BatteryBlockBakedModel implements IDynamicBakedModel {
         float r = 1;
         float p = 1;
 
-        Transformation rotation = modelState.getRotation();
+        TransformationMatrix rotation = modelState.getRotation();
 
         TextureAtlasSprite textureSide = spriteGetter.apply(batteryModelGeometry.sideDefault);
         TextureAtlasSprite textureTop = spriteGetter.apply(batteryModelGeometry.topDefault);
 
-        sideQuads = List.of(
+        sideQuads = Arrays.asList(
                 ClientTools.createQuad(v(r, p, r), v(r, p, l), v(l, p, l), v(l, p, r), rotation, textureTop),
                 ClientTools.createQuad(v(l, l, l), v(r, l, l), v(r, l, r), v(l, l, r), rotation, textureSide),
                 ClientTools.createQuad(v(r, p, r), v(r, l, r), v(r, l, l), v(r, p, l), rotation, textureSide),
@@ -96,18 +93,25 @@ public class BatteryBlockBakedModel implements IDynamicBakedModel {
         float r = 1;
         float p = 1;
 
-        Transformation rotation = modelState.getRotation();
+        TransformationMatrix rotation = modelState.getRotation();
 
 
         TextureAtlasSprite textureTop;
         switch (sideConfig.get(Direction.UP.ordinal())) {
-            case DISABLED -> textureTop = spriteGetter.apply(batteryModelGeometry.topNone);
-            case IN -> textureTop = spriteGetter.apply(batteryModelGeometry.topIn);
-            case OUT -> textureTop = spriteGetter.apply(batteryModelGeometry.topOut);
-            default -> textureTop = spriteGetter.apply(batteryModelGeometry.topDefault);
+            case DISABLED:
+                textureTop = spriteGetter.apply(batteryModelGeometry.topNone);
+                break;
+            case IN:
+                textureTop = spriteGetter.apply(batteryModelGeometry.topIn);
+                break;
+            case OUT:
+                textureTop = spriteGetter.apply(batteryModelGeometry.topOut);
+                break;
+            default:
+                textureTop = spriteGetter.apply(batteryModelGeometry.topDefault);
         }
         quadCache.put(cacheKey,
-            List.of(
+            Arrays.asList(
                     ClientTools.createQuad(v(r, p, r), v(r, p, l), v(l, p, l), v(l, p, r), rotation, textureTop),
                     ClientTools.createQuad(v(l, l, l), v(r, l, l), v(r, l, r), v(l, l, r), rotation, getSideTexture(sideConfig, Direction.DOWN)),
                     ClientTools.createQuad(v(r, p, r), v(r, l, r), v(r, l, l), v(r, p, l), rotation, getSideTexture(sideConfig, Direction.EAST)),
@@ -130,9 +134,14 @@ public class BatteryBlockBakedModel implements IDynamicBakedModel {
     private TextureAtlasSprite getSideTexture(HashMap<Integer, ISizeToggable.SideMode> sideConfig, Direction direction) {
         TextureAtlasSprite textureSide = spriteGetter.apply(batteryModelGeometry.sideDefault);
         switch (sideConfig.get(direction.ordinal())) {
-            case DISABLED -> textureSide = spriteGetter.apply(batteryModelGeometry.sideNone);
-            case IN -> textureSide = spriteGetter.apply(batteryModelGeometry.sideIn);
-            case OUT -> textureSide = spriteGetter.apply(batteryModelGeometry.sideOut);
+            case DISABLED:
+                textureSide = spriteGetter.apply(batteryModelGeometry.sideNone);
+                break;
+            case IN:
+                textureSide = spriteGetter.apply(batteryModelGeometry.sideIn);
+                break;
+            case OUT:
+                textureSide = spriteGetter.apply(batteryModelGeometry.sideOut);
         }
         return textureSide;
     }
@@ -158,12 +167,12 @@ public class BatteryBlockBakedModel implements IDynamicBakedModel {
     }
 
     @Override
-    public ItemOverrides getOverrides() {
+    public ItemOverrideList getOverrides() {
         return overrides;
     }
 
     @Override
-    public ItemTransforms getTransforms() {
+    public ItemCameraTransforms getTransforms() {
         return itemTransforms;
     }
 }

@@ -4,26 +4,17 @@ import igentuman.nc.setup.registration.CreativeTabs;
 import igentuman.nc.content.storage.BarrelBlocks;
 import igentuman.nc.util.CapabilityUtils;
 import igentuman.nc.util.TextUtils;
-import net.minecraft.ChatFormatting;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.item.ItemStack;
+import net.minecraft.block.Block;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
 
 import javax.annotation.Nonnull;
-import java.util.List;
 
 public class BarrelBlockItem extends BlockItem
 {
@@ -32,7 +23,7 @@ public class BarrelBlockItem extends BlockItem
 		this(pBlock, props, CreativeTabs.NC_BLOCKS);
 	}
 
-	public BarrelBlockItem(Block pBlock, Properties props, CreativeModeTab group)
+	public BarrelBlockItem(Block pBlock, Properties props, ItemGroup group)
 	{
 		super(pBlock, new Properties().tab(group).stacksTo(1));
 	}
@@ -51,14 +42,9 @@ public class BarrelBlockItem extends BlockItem
 		return false;
 	}
 
-	public boolean canEquip(ItemStack stack, EquipmentSlot armorType, Entity entity)
-	{
-		return false;
-	}
-
 
 	@Override
-	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
+	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
 		return new FluidHandlerItemStack(stack, getCapacity());
 	}
 
@@ -76,18 +62,18 @@ public class BarrelBlockItem extends BlockItem
 		return asItem().toString();
 	}
 
-	@Override
-	public void appendHoverText(ItemStack stack, @javax.annotation.Nullable Level world, List<Component> list, TooltipFlag flag)
+/*	@Override
+	public void appendHoverText(ItemStack stack, @javax.annotation.Nullable World world, List<TextComponent> list, TooltipFlag flag)
 	{
 		int storage = BarrelBlocks.all().get(code()).config().getCapacity();
 		FluidStack fluid = getFluid(stack).getFluidInTank(0);
 		if(fluid == null || fluid.isFluidEqual(FluidStack.EMPTY)) {
-			list.add(new TranslatableComponent("tooltip.nc.liquid_empty", formatLiquid(storage)).withStyle(ChatFormatting.BLUE));
+			list.add(new TranslationTextComponent("tooltip.nc.liquid_empty", formatLiquid(storage)).withStyle(TextFormatting.BLUE));
 		} else {
-			list.add(new TranslatableComponent("tooltip.nc.liquid_stored", fluid.getDisplayName(), formatLiquid(fluid.getAmount()), formatLiquid(storage)).withStyle(ChatFormatting.BLUE));
+			list.add(new TranslationTextComponent("tooltip.nc.liquid_stored", fluid.getDisplayName(), formatLiquid(fluid.getAmount()), formatLiquid(storage)).withStyle(TextFormatting.BLUE));
 		}
-		list.add(new TranslatableComponent("tooltip.nc.use_multitool").withStyle(ChatFormatting.YELLOW));
-	}
+		list.add(new TranslationTextComponent("tooltip.nc.use_multitool").withStyle(TextFormatting.YELLOW));
+	}*/
 
 	public String formatLiquid(int val)
 	{

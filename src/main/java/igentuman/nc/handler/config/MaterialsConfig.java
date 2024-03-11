@@ -4,6 +4,7 @@ import igentuman.nc.content.materials.*;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -56,7 +57,7 @@ public class MaterialsConfig {
                     .comment("Color for slurry will be calculate from average texture color")
                     .comment("Texture location has to be: nuclearcraft:textures/block/ore/(slurry_name)_ore.png")
                     .comment("If no texture found it will generate random color")
-                    .define("register_slurries", List.of(
+                    .define("register_slurries", Arrays.asList(
                             "uranium", "iron", "gold", "aluminum", "thorium", "boron", "silver",
                             "lead", "tin", "copper", "zinc", "cobalt", "platinum", "lithium", "magnesium"
                     ), o -> o instanceof ArrayList);
@@ -95,7 +96,7 @@ public class MaterialsConfig {
 
             MODS_PRIORITY = builder
                     .comment("Priority of mods to resolve forge tags to itemstack.")
-                    .define("mods_priority", List.of("nuclearcraft", "mekanism", "immersiveengineering", "tconstruct"), o -> o instanceof ArrayList);
+                    .define("mods_priority", Arrays.asList("nuclearcraft", "mekanism", "immersiveengineering", "tconstruct"), o -> o instanceof ArrayList);
 
             builder.pop();
 

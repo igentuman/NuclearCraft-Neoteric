@@ -2,14 +2,12 @@ package igentuman.nc.block.entity;
 
 import igentuman.nc.block.ISizeToggable;
 import igentuman.nc.content.storage.BarrelBlocks;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.Direction;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -76,7 +74,7 @@ public class BarrelBE extends NuclearCraftBE implements ISizeToggable {
                     sideConfig.get(direction.ordinal()) == SideMode.DISABLED ||
                     sideConfig.get(direction.ordinal()) == SideMode.DEFAULT
             ) continue;
-            BlockEntity be = level.getBlockEntity(worldPosition.relative(direction));
+            TileEntity be = level.getBlockEntity(worldPosition.relative(direction));
             if (be != null) {
                 IFluidHandler sideHandler = be.getCapability(FLUID_HANDLER_CAPABILITY, direction.getOpposite()).orElse(null);
                 if(sideHandler == null) continue;
@@ -99,7 +97,7 @@ public class BarrelBE extends NuclearCraftBE implements ISizeToggable {
         }
         if(wasUpdated) {
             level.setBlockAndUpdate(worldPosition, getBlockState());
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+          //  level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
         }
     }
 
@@ -116,33 +114,35 @@ public class BarrelBE extends NuclearCraftBE implements ISizeToggable {
         return super.getCapability(cap, side);
     }
 
-    @Override
+/*    @Override
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        CompoundTag tag = pkt.getTag();
+        CompoundNBT tag = pkt.getTag();
         handleUpdateTag(tag);
-    }
+    }*/
 
+/*
     @Override
-    public void handleUpdateTag(CompoundTag tag) {
+    public void handleUpdateTag(CompoundNBT tag) {
         if (tag != null) {
             loadClientData(tag);
         }
     }
+*/
 
     @Override
-    public @NotNull CompoundTag getUpdateTag() {
-        CompoundTag tag = super.getUpdateTag();
+    public @NotNull CompoundNBT getUpdateTag() {
+        CompoundNBT tag = super.getUpdateTag();
         saveClientData(tag);
         return tag;
     }
 
-    protected void saveClientData(CompoundTag tag) {
-        CompoundTag tank = new CompoundTag();
+    protected void saveClientData(CompoundNBT tag) {
+        CompoundNBT tank = new CompoundNBT();
         tag.put("Fluid", fluidTank.getFluid().writeToNBT(tank));
         tag.putIntArray("sideConfig", sideConfig.values().stream().mapToInt(Enum::ordinal).toArray());
     }
 
-    public void loadClientData(CompoundTag tag) {
+    public void loadClientData(CompoundNBT tag) {
         if(tag.contains("Fluid")) {
             fluidTank.setFluid(FluidStack.loadFluidStackFromNBT(tag.getCompound("Fluid")));
         }
@@ -151,8 +151,8 @@ public class BarrelBE extends NuclearCraftBE implements ISizeToggable {
     }
 
     @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
+    public void load(BlockState state, CompoundNBT tag) {
+        super.load(state, tag);
         if(tag.contains("Fluid")) {
             fluidTank.setFluid(FluidStack.loadFluidStackFromNBT(tag.getCompound("Fluid")));
         }
@@ -175,12 +175,12 @@ public class BarrelBE extends NuclearCraftBE implements ISizeToggable {
             requestModelDataUpdate();
             if(level == null) return;
             level.setBlockAndUpdate(worldPosition, getBlockState());
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+       //     level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
         }
     }
 
-    public void saveAdditional(CompoundTag tag) {
-        CompoundTag tank = new CompoundTag();
+    public void saveAdditional(CompoundNBT tag) {
+        CompoundNBT tank = new CompoundNBT();
         tag.put("Fluid", fluidTank.getFluid().writeToNBT(tank));
         tag.putIntArray("sideConfig", sideConfig.values().stream().mapToInt(Enum::ordinal).toArray());
     }
@@ -189,7 +189,7 @@ public class BarrelBE extends NuclearCraftBE implements ISizeToggable {
         sideConfig.put(direction, SideMode.values()[(sideConfig.get(direction).ordinal() + 1) % 4]);
         setChanged();
         level.setBlockAndUpdate(worldPosition, getBlockState());
-        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+       // level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
         return sideConfig.get(direction);
     }
 }

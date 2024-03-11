@@ -1,11 +1,12 @@
 package igentuman.nc.block.entity.turbine;
 
 import igentuman.nc.block.turbine.TurbineRotorBlock;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.Direction;
+import net.minecraft.block.BlockState;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class TurbineRotorBE extends TurbineBE {
@@ -23,9 +24,10 @@ public class TurbineRotorBE extends TurbineBE {
     public void updateBearingConnection() {
         connectedToBearing = false;
         Direction facing = getBlockState().getValue(TurbineRotorBlock.FACING);
-        for(Direction dir: List.of(facing, facing.getOpposite())) {
-            BlockEntity be = getLevel().getBlockEntity(getBlockPos().relative(dir));
-            if(be instanceof TurbineRotorBE rotor) {
+        for(Direction dir: Arrays.asList(facing, facing.getOpposite())) {
+            TileEntity be = getLevel().getBlockEntity(getBlockPos().relative(dir));
+            if(be instanceof TurbineRotorBE) {
+                TurbineRotorBE rotor = (TurbineRotorBE) be;
                 connectedToBearing = rotor.hasBearingConnection(dir);
                 if(connectedToBearing) break;
             }
@@ -38,8 +40,9 @@ public class TurbineRotorBE extends TurbineBE {
 
     private boolean hasBearingConnection(Direction dir) {
         if(connectedToBearing) return true;
-        BlockEntity be = getLevel().getBlockEntity(getBlockPos().relative(dir));
-        if(be instanceof TurbineRotorBE rotor) {
+        TileEntity be = getLevel().getBlockEntity(getBlockPos().relative(dir));
+        if(be instanceof TurbineRotorBE) {
+            TurbineRotorBE rotor = (TurbineRotorBE) be;
             connectedToBearing = rotor.hasBearingConnection(dir);
         }
         if(be instanceof TurbineBearingBE) {

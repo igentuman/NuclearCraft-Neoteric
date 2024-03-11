@@ -9,15 +9,13 @@ import igentuman.nc.recipes.ingredient.InputIngredient;
 import igentuman.nc.util.SerializerHelper;
 import igentuman.nc.util.TagUtil;
 import igentuman.nc.util.annotation.NothingNullByDefault;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.FluidTags;
-import net.minecraft.tags.Tag;
-import net.minecraft.util.GsonHelper;
-import net.minecraft.world.level.material.Fluid;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.JSONUtils;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.registries.ForgeRegistries;
-import org.antlr.v4.runtime.misc.NotNull;;
+
 import javax.annotation.Nullable;
 
 import java.util.*;
@@ -43,7 +41,7 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
     }
 
     @Override
-    public FluidStackIngredient from(Tag.Named<Fluid> tag, int amount) {
+    public FluidStackIngredient from(Tags.IOptionalNamedTag<Fluid> tag, int amount) {
         Objects.requireNonNull(tag, "FluidStackIngredients cannot be created from a null tag.");
         if (amount <= 0) {
             throw new IllegalArgumentException("FluidStackIngredients must have an amount of at least one. Received size was: " + amount);
@@ -52,13 +50,16 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
     }
 
     @Override
-    public FluidStackIngredient read(FriendlyByteBuf buffer) {
+    public FluidStackIngredient read(PacketBuffer buffer) {
         Objects.requireNonNull(buffer, "FluidStackIngredients cannot be read from a null packet buffer.");
-        return switch (buffer.readEnum(IngredientType.class)) {
-            case SINGLE -> from(FluidStack.readFromPacket(buffer));
-            //case TAGGED -> from(Tag.Named<Fluid>().create(buffer.readResourceLocation()), buffer.readVarInt());
-            case MULTI -> createMulti(BasePacketHandler.readArray(buffer, FluidStackIngredient[]::new, this::read));
+        switch (buffer.readEnum(IngredientType.class)) {
+            case SINGLE:
+                return from(FluidStack.readFromPacket(buffer));
+            //case TAGGED -> from(Tags.IOptionalNamedTag<Fluid>().create(buffer.readResourceLocation()), buffer.readVarInt());
+            case MULTI:
+                return createMulti(BasePacketHandler.readArray(buffer, FluidStackIngredient[]::new, this::read));
         };
+        return null;
     }
 
     @Override
@@ -99,15 +100,15 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
                 throw new JsonSyntaxException("Expected to receive a amount that is greater than zero.");
             }
             JsonElement count = jsonObject.get("amount");
-            if (!GsonHelper.isNumberValue(count)) {
+            if (!JSONUtils.isNumberValue(count)) {
                 throw new JsonSyntaxException("Expected amount to be a number greater than zero.");
             }
             int amount = count.getAsJsonPrimitive().getAsInt();
             if (amount < 1) {
                 throw new JsonSyntaxException("Expected amount to be greater than zero.");
             }
-            ResourceLocation resourceLocation = new ResourceLocation(GsonHelper.getAsString(jsonObject, "tag"));
-            Tag.Named<Fluid> key = TagUtil.createFluidTagKey(resourceLocation);
+            ResourceLocation resourceLocation = new ResourceLocation(JSONUtils.getAsString(jsonObject, "tag"));
+            Tags.IOptionalNamedTag<Fluid> key = TagUtil.createFluidTagKey(resourceLocation);
             return from(key, amount);
         }
         throw new JsonSyntaxException("Expected to receive a resource location representing either a tag or a fluid.");
@@ -128,10 +129,10 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
         }
         List<FluidStackIngredient> cleanedIngredients = new ArrayList<>();
         for (FluidStackIngredient ingredient : ingredients) {
-            if (ingredient instanceof MultiFluidStackIngredient multi) {
+            if (ingredient instanceof MultiFluidStackIngredient) {
                 //Don't worry about if our inner ingredients are multi as well, as if this is the only external method for
                 // creating a multi ingredient, then we are certified they won't be of a higher depth
-                Collections.addAll(cleanedIngredients, multi.ingredients);
+                Collections.addAll(cleanedIngredients, ((MultiFluidStackIngredient)ingredient).ingredients);
             } else {
                 cleanedIngredients.add(ingredient);
             }
@@ -198,7 +199,7 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
         }
 
         @Override
-        public void write(FriendlyByteBuf buffer) {
+        public void write(PacketBuffer buffer) {
             buffer.writeEnum(IngredientType.SINGLE);
             fluidInstance.writeToPacket(buffer);
         }
@@ -235,9 +236,9 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
     @NothingNullByDefault
     public static class TaggedFluidStackIngredient extends FluidStackIngredient {
 
-        protected final Tag.Named<Fluid> tag;
+        protected final Tags.IOptionalNamedTag<Fluid> tag;
 
-        private TaggedFluidStackIngredient(Tag.Named<Fluid> tag, int amount) {
+        private TaggedFluidStackIngredient(Tags.IOptionalNamedTag<Fluid> tag, int amount) {
             this.tag = tag;
             this.amount = amount;
         }
@@ -297,7 +298,7 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
         }
 
         @Override
-        public void write(FriendlyByteBuf buffer) {
+        public void write(PacketBuffer buffer) {
            // buffer.writeEnum(IngredientType.TAGGED);
             buffer.writeResourceLocation(tag.getName());
             buffer.writeVarInt(amount);
@@ -394,11 +395,11 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
 
         @Override
         public final List<FluidStackIngredient> getIngredients() {
-            return List.of(ingredients);
+            return Arrays.asList(ingredients);
         }
 
         @Override
-        public void write(FriendlyByteBuf buffer) {
+        public void write(PacketBuffer buffer) {
             buffer.writeEnum(IngredientType.MULTI);
             BasePacketHandler.writeArray(buffer, ingredients, InputIngredient::write);
         }

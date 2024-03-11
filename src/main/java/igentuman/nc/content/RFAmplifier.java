@@ -3,13 +3,10 @@ package igentuman.nc.content;
 import igentuman.nc.block.entity.ElectromagnetBE;
 import igentuman.nc.block.entity.RFAmplifierBE;
 import igentuman.nc.handler.config.CommonConfig;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import static igentuman.nc.handler.config.FusionConfig.RF_AMPLIFIERS_CONFIG;
 
@@ -88,7 +85,7 @@ public class RFAmplifier {
         protected int heat = 0;
         protected int maxTemp = 0;
         protected int efficiency = 0;
-        private BlockEntityType.BlockEntitySupplier<? extends BlockEntity>  blockEntity = ElectromagnetBE::new;
+        private TileEntityType<? extends TileEntity>  blockEntity;
 
         public RFAmplifierPrefab(String name, int energy, int heat, int voltage, int maxTemp, int efficiency) {
             this.power = energy;
@@ -97,7 +94,7 @@ public class RFAmplifier {
             this.voltage = voltage;
             this.maxTemp = maxTemp;
             this.efficiency = efficiency;
-            blockEntity = RFAmplifierBE::new;
+          //  blockEntity = RFAmplifierBE::new;
         }
 
         public int getEfficiency() {
@@ -123,7 +120,7 @@ public class RFAmplifier {
                 if(!CommonConfig.isLoaded()) {
                     return this;
                 }
-                int id = RFAmplifier.all().keySet().stream().toList().indexOf(name);
+                int id = Arrays.asList(RFAmplifier.all().keySet().stream().toArray()).indexOf(name);
                 registered = RF_AMPLIFIERS_CONFIG.REGISTERED.get().get(id);
                 power = RF_AMPLIFIERS_CONFIG.POWER.get().get(id);
                 heat = RF_AMPLIFIERS_CONFIG.HEAT.get().get(id);
@@ -136,11 +133,11 @@ public class RFAmplifier {
             return  registered;
         }
 
-        public BlockEntityType.BlockEntitySupplier<? extends BlockEntity>  getBlockEntity() {
+        public TileEntityType<? extends TileEntity> getBlockEntity() {
             return blockEntity;
         }
 
-        public RFAmplifierPrefab setBlockEntity(BlockEntityType.BlockEntitySupplier<? extends RFAmplifierBE>  blockEntity) {
+        public RFAmplifierPrefab setBlockEntity(TileEntityType<? extends RFAmplifierBE>  blockEntity) {
             this.blockEntity = blockEntity;
             return this;
         }

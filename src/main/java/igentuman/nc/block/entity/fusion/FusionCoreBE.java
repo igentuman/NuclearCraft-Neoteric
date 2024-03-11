@@ -2,7 +2,6 @@ package igentuman.nc.block.entity.fusion;
 
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.fusion.FusionCoreBlock;
-import igentuman.nc.client.particle.FusionBeamParticleData;
 import igentuman.nc.client.sound.SoundHandler;
 import igentuman.nc.compat.cc.NCFusionReactorPeripheral;
 import igentuman.nc.handler.event.client.BlockOverlayHandler;
@@ -22,25 +21,20 @@ import igentuman.nc.util.CustomEnergyStorage;
 import igentuman.nc.util.NCBlockPos;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.Container;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.level.Explosion;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.Direction;
+import net.minecraft.nbt.CompoundNBT;
+
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.item.ItemStack;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.world.Explosion;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -52,14 +46,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
-import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.block.fission.FissionControllerBlock.POWERED;
 import static igentuman.nc.handler.config.FusionConfig.FUSION_CONFIG;
 import static igentuman.nc.recipes.NcRecipeType.ALL_RECIPES;
 import static igentuman.nc.setup.registration.NCSounds.*;
 import static igentuman.nc.util.ModUtil.isCcLoaded;
 import static igentuman.nc.util.ModUtil.isMekanismLoadeed;
-import static net.minecraft.core.Registry.RECIPE_TYPE;
 import static net.minecraftforge.energy.CapabilityEnergy.ENERGY;
 import static net.minecraftforge.fluids.capability.CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
 import static net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE;
@@ -112,6 +104,30 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
     protected double lastKnownOptimalTemp = 1000000;
     @NBTField
     protected boolean isInternalValid = false;
+
+    public FusionCoreBE(TileEntityType<?> type, SidedContentHandler contentHandler) {
+        super(type);
+        this.contentHandler = contentHandler;
+    }
+
+    public FusionCoreBE() {
+        super(FusionReactor.FUSION_BE.get("fusion_core").get());
+        multiblock = new FusionReactorMultiblock(this);
+        contentHandler = new SidedContentHandler(
+                0, 0,
+                3, 5);
+        contentHandler.setBlockEntity(this);
+        contentHandler.fluidCapability.setGlobalMode(0, SlotModePair.SlotMode.INPUT);
+        contentHandler.fluidCapability.setGlobalMode(1, SlotModePair.SlotMode.INPUT);
+        contentHandler.fluidCapability.setGlobalMode(2, SlotModePair.SlotMode.INPUT);
+
+        contentHandler.fluidCapability.setGlobalMode(3, SlotModePair.SlotMode.OUTPUT);
+        contentHandler.fluidCapability.setGlobalMode(4, SlotModePair.SlotMode.OUTPUT);
+        contentHandler.fluidCapability.setGlobalMode(5, SlotModePair.SlotMode.OUTPUT);
+        contentHandler.fluidCapability.setGlobalMode(6, SlotModePair.SlotMode.OUTPUT);
+        contentHandler.fluidCapability.setGlobalMode(7, SlotModePair.SlotMode.OUTPUT);
+    }
+
     public List<FusionCoolantRecipe> getCoolantRecipes() {
         if(coolantRecipes == null) {
             coolantRecipes = (List<FusionCoolantRecipe>) level.getRecipeManager().getAllRecipesFor(ALL_RECIPES.get("fusion_coolant"));
@@ -272,29 +288,29 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
             return;
         }
         if(functionalBlocksCharge < 100 && functionalBlocksCharge > 0) {
-            playChargingSound();
+          //  playChargingSound();
             return;
         }
         if(isReady()) {
             if(energyPerTick > 0 && plasmaTemperature > 0) {
-                playRunningSound();
+               // playRunningSound();
                // BlockOverlayHandler.addFusionReactor(getBlockPos());
                 return;
             }
-            playReadySound();
+            //playReadySound();
         } else {
             stopSound();
         }
     }
-    protected void sendBeamData(FusionBeamParticleData data, BlockPos from) {
-        Vec3 vec = Vec3.atCenterOf(from);
-        if (!getLevel().isClientSide() && level instanceof ServerLevel serverWorld) {
-            for (ServerPlayer player : serverWorld.players()) {
+/*    protected void sendBeamData(FusionBeamParticleData data, BlockPos from) {
+        Vector3d vec = Vector3d.atCenterOf(from);
+        if (!getLevel().isClientSide() && level instanceof ServerWorld serverWorld) {
+            for (ServerPlayerEntity player : serverWorld.players()) {
                 serverWorld.sendParticles(player, data, true, vec.x, vec.y, vec.z, 1, 0, 0, 0, 0);
             }
         }
-    }
-    protected void renderBeam() {
+    }*/
+   /* protected void renderBeam() {
         NCBlockPos pos = new NCBlockPos(getBlockPos().above());
         int beamLength = size*2+4;
         sendBeamData(new FusionBeamParticleData(Direction.EAST, beamLength, 0.35f),
@@ -310,8 +326,8 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
                 pos.revert().relative(Direction.WEST, size+2).relative(Direction.NORTH, size+2)
         );
     }
-
-    protected void playReadySound() {
+*/
+/*    protected void playReadySound() {
         if(isRemoved() || (currentSound != null && !currentSound.getLocation().equals(FUSION_READY.get().getLocation()))) {
             SoundHandler.stopTileSound(getBlockPos());
             currentSound = null;
@@ -324,7 +340,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
             playSoundCooldown = 20;
             currentSound = SoundHandler.startTileSound(FUSION_READY.get(), SoundSource.BLOCKS, 0.8f, getBlockPos());
         }
-    }
+    }*/
 
     protected boolean isReady() {
         return isCasingValid
@@ -335,7 +351,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
                 && functionalBlocksCharge > 99;
     }
 
-    protected void playRunningSound() {
+/*    protected void playRunningSound() {
         if(isRemoved() || (currentSound != null && !currentSound.getLocation().equals(FUSION_RUNNING.get().getLocation()))) {
             SoundHandler.stopTileSound(getBlockPos());
             currentSound = null;
@@ -348,7 +364,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
             playSoundCooldown = 20;
             currentSound = SoundHandler.startTileSound(FUSION_RUNNING.get(), SoundSource.BLOCKS, 0.5f, getBlockPos());
         }
-    }
+    }*/
 
     @Override
     public void tickServer() {
@@ -377,7 +393,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
             try {
                 assert level != null;
                 level.setBlockAndUpdate(worldPosition, getBlockState().setValue(POWERED, powered));
-                level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(POWERED, powered), Block.UPDATE_ALL);
+            //    level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(POWERED, powered), Block.UPDATE_ALL);
             } catch (NullPointerException ignore) {}
         }
         controllerEnabled = false;
@@ -470,8 +486,8 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
             if(proxy == null) continue;
             proxy.sendOutEnergy();
         }
-        BlockEntity be = Objects.requireNonNull(getLevel()).getBlockEntity(getBlockPos().relative(Direction.DOWN));
-        if(be instanceof BlockEntity && !(be instanceof FusionBE)) {
+        TileEntity be = Objects.requireNonNull(getLevel()).getBlockEntity(getBlockPos().relative(Direction.DOWN));
+        if(be instanceof TileEntity && !(be instanceof FusionBE)) {
             IEnergyStorage r = be.getCapability(ENERGY, Direction.UP).orElse(null);
             if(r == null) return;
             if(r.canReceive()) {
@@ -488,7 +504,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
             for(int y = 0; y < 3; y+=2) {
                 for (int x = -1; x < 2; x++) {
                     for (int z = -1; z < 2; z++) {
-                        BlockEntity be = Objects.requireNonNull(getLevel()).getBlockEntity(getBlockPos().offset(x, y, z));
+                        TileEntity be = Objects.requireNonNull(getLevel()).getBlockEntity(getBlockPos().offset(x, y, z));
                         if (be instanceof FusionCoreProxyBE) {
                             proxyBES[i] = (FusionCoreProxyBE) be;
                             i++;
@@ -550,7 +566,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         functionalBlocksCharge = (int) Math.min(((chargeAmount*100)/getTargetCharge()), 100);
     }
 
-    protected void playChargingSound() {
+/*    protected void playChargingSound() {
         if(isRemoved() || (currentSound != null && !currentSound.getLocation().equals(FUSION_CHARGING.get().getLocation()))) {
             SoundHandler.stopTileSound(getBlockPos());
             currentSound = null;
@@ -562,7 +578,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
             playSoundCooldown = 20;
             currentSound = SoundHandler.startTileSound(FUSION_CHARGING.get(), SoundSource.BLOCKS, 0.5f, getBlockPos());
         }
-    }
+    }*/
 
     protected boolean updateCharacteristics() {
         boolean hasChanges =
@@ -652,7 +668,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         if (!recipeInfo.isCompleted()) {
             simulateHeatExchange();
             if(energyPerTick > 0) {
-                renderBeam();
+                //renderBeam();
                 energyStorage.addEnergy(energyPerTick);
             }
         }
@@ -805,7 +821,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
             BlockPos pos = getBlockPos();
             getLevel().explode(null,
                     pos.getX(), pos.getY(), pos.getZ(),
-                    1, true, Explosion.BlockInteraction.NONE);
+                    1, true, Explosion.Mode.NONE);
         }
     }
 
@@ -841,12 +857,12 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
     }
 
     @Override
-    public void load(CompoundTag tag) {
+    public void load(BlockState state, CompoundNBT tag) {
         if (tag.contains("Energy")) {
-            energyStorage.deserializeNBT(tag.get("Energy"));
+            energyStorage.deserializeNBT(tag.getCompound("Energy"));
         }
         if (tag.contains("Info")) {
-            CompoundTag infoTag = tag.getCompound("Info");
+            CompoundNBT infoTag = tag.getCompound("Info");
             readTagData(infoTag);
             if (infoTag.contains("recipeInfo")) {
                 recipeInfo.deserializeNBT(infoTag.getCompound("recipeInfo"));
@@ -863,11 +879,11 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         if (tag.contains("Content")) {
             contentHandler.deserializeNBT(tag.getCompound("Content"));
         }
-        super.load(tag);
+        super.load(state, tag);
     }
 
-    public void saveAdditional(CompoundTag tag) {
-        CompoundTag infoTag = new CompoundTag();
+    public void saveAdditional(CompoundNBT tag) {
+        CompoundNBT infoTag = new CompoundNBT();
         tag.put("Energy", energyStorage.serializeNBT());
         tag.put("Content", contentHandler.serializeNBT());
         infoTag.put("recipeInfo", recipeInfo.serializeNBT());
@@ -880,15 +896,15 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
     }
 
     @Override
-    public void handleUpdateTag(CompoundTag tag) {
+    public void handleUpdateTag(BlockState state, CompoundNBT tag) {
         if (tag != null) {
             loadClientData(tag);
         }
     }
 
-    protected void loadClientData(CompoundTag tag) {
+    protected void loadClientData(CompoundNBT tag) {
         if (tag.contains("Info")) {
-            CompoundTag infoTag = tag.getCompound("Info");
+            CompoundNBT infoTag = tag.getCompound("Info");
             if (infoTag.contains("recipeInfo")) {
                 recipeInfo.deserializeNBT(infoTag.getCompound("recipeInfo"));
             }
@@ -907,14 +923,14 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
     }
 
     @Override
-    public CompoundTag getUpdateTag() {
-        CompoundTag tag = super.getUpdateTag();
+    public CompoundNBT getUpdateTag() {
+        CompoundNBT tag = super.getUpdateTag();
         saveClientData(tag);
         return tag;
     }
 
-    protected void saveClientData(CompoundTag tag) {
-        CompoundTag infoTag = new CompoundTag();
+    protected void saveClientData(CompoundNBT tag) {
+        CompoundNBT infoTag = new CompoundNBT();
         tag.put("Info", infoTag);
         infoTag.putInt("energy", energyStorage.getEnergyStored());
         saveTagData(infoTag);
@@ -927,17 +943,17 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
     }
 
 
-    @Override
+/*    @Override
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
         int oldEnergy = energyStorage.getEnergyStored();
 
-        CompoundTag tag = pkt.getTag();
+        CompoundNBT tag = pkt.getTag();
         handleUpdateTag(tag);
 
         if (oldEnergy != energyStorage.getEnergyStored()) {
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
         }
-    }
+    }*/
 
     public void invalidateCache()
     {
@@ -1006,7 +1022,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         }
 
         @Override
-        public void write(FriendlyByteBuf buffer) {
+        public void write(PacketBuffer buffer) {
             super.write(buffer);
             buffer.writeDouble(getOptimalTemperature());
         }

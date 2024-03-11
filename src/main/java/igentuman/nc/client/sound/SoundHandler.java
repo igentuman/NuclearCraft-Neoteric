@@ -3,24 +3,21 @@ package igentuman.nc.client.sound;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
-import net.minecraft.client.resources.sounds.SimpleSoundInstance;
-import net.minecraft.client.resources.sounds.Sound;
-import net.minecraft.client.resources.sounds.SoundInstance;
-import net.minecraft.client.sounds.SoundEngine;
-import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.client.audio.SoundEngine;
+import net.minecraft.client.audio.SoundSource;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.IWorldReader;
+import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.client.event.sound.SoundLoadEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fmllegacy.RegistryObject;
 
 import java.util.Map;
 import java.util.UUID;
@@ -28,13 +25,15 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static net.minecraft.util.SoundCategory.MASTER;
+import static net.minecraft.util.SoundCategory.PLAYERS;
 
 @Mod.EventBusSubscriber(modid = MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class SoundHandler {
 
     private SoundHandler() {
     }
-    private static final Long2ObjectMap<SoundInstance> soundMap = new Long2ObjectOpenHashMap<>();
+    private static final Long2ObjectMap<SoundEvent> soundMap = new Long2ObjectOpenHashMap<>();
     private static SoundEngine soundEngine;
     private static boolean hadPlayerSounds;
 
@@ -46,34 +45,34 @@ public class SoundHandler {
 
     }
 
-    private static void startSound(LevelAccessor world, UUID uuid, Map<UUID, PlayerSound> knownSounds, Function<Player, PlayerSound> soundCreator) {
+    private static void startSound(World world, UUID uuid, Map<UUID, PlayerSound> knownSounds, Function<PlayerEntity, PlayerSound> soundCreator) {
         if (knownSounds.containsKey(uuid)) {
             if (playerSoundsEnabled()) {
                 //Check if it needs to be restarted
                 restartSounds(knownSounds.get(uuid));
             }
         } else {
-            Player player = world.getPlayerByUUID(uuid);
+            PlayerEntity player = world.getPlayerByUUID(uuid);
             if (player != null) {
                 PlayerSound sound = soundCreator.apply(player);
-                playSound(sound);
+             //   playSound(sound);
                 knownSounds.put(uuid, sound);
             }
         }
     }
 
     @SafeVarargs
-    private static void startSounds(LevelAccessor world, UUID uuid, Map<UUID, PlayerSound[]> knownSounds, Function<Player, PlayerSound>... soundCreators) {
+    private static void startSounds(World world, UUID uuid, Map<UUID, PlayerSound[]> knownSounds, Function<PlayerEntity, PlayerSound>... soundCreators) {
         if (knownSounds.containsKey(uuid)) {
             if (playerSoundsEnabled()) {
                 restartSounds(knownSounds.get(uuid));
             }
         } else {
-            Player player = world.getPlayerByUUID(uuid);
+            PlayerEntity player = world.getPlayerByUUID(uuid);
             if (player != null) {
                 PlayerSound[] sounds = new PlayerSound[soundCreators.length];
                 for (int i = 0; i < soundCreators.length; i++) {
-                    playSound(sounds[i] = soundCreators[i].apply(player));
+                 //   playSound(sounds[i] = soundCreators[i].apply(player));
                 }
                 knownSounds.put(uuid, sounds);
             }
@@ -83,7 +82,7 @@ public class SoundHandler {
     private static void restartSounds(PlayerSound... sounds) {
         for (PlayerSound sound : sounds) {
             if (!sound.isStopped() && soundEngine != null) {
-                playSound(sound);
+               // playSound(sound);
             }
         }
     }
@@ -101,11 +100,13 @@ public class SoundHandler {
 
 
     private static boolean playerSoundsEnabled() {
-        return getVolume(SoundSource.MASTER) > 0 && getVolume(SoundSource.PLAYERS) > 0;
+        return true;
+       // return getVolume(MASTER) > 0 && getVolume(PLAYERS) > 0;
     }
 
     private static float getVolume(SoundSource category) {
-        return Minecraft.getInstance().options.getSoundSourceVolume(category);
+        return 1f;
+       // return Minecraft.getInstance().options.getSoundSourceVolume(category);
     }
 
     public static void playSound(RegistryObject<SoundEvent> soundEventRO) {
@@ -113,9 +114,9 @@ public class SoundHandler {
     }
 
     public static void playSound(SoundEvent sound) {
-        playSound(SimpleSoundInstance.forUI(sound, 1, 1));
+     //   playSound(SoundEvent.forUI(sound, 1, 1));
     }
-
+/*
     public static void playSound(SoundInstance sound) {
         Minecraft.getInstance().getSoundManager().play(sound);
     }
@@ -152,7 +153,7 @@ public class SoundHandler {
         if (sound.isRelative() || sound.getAttenuation() == SoundInstance.Attenuation.NONE) {
             return true;
         }
-        Player player = Minecraft.getInstance().player;
+        PlayerEntity player = Minecraft.getInstance().player;
         if (player == null) {
             return false;
         }
@@ -241,5 +242,5 @@ public class SoundHandler {
         public boolean canStartSilent() {
             return true;
         }
-    }
+    }*/
 }

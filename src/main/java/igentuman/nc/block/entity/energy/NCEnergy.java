@@ -3,15 +3,13 @@ package igentuman.nc.block.entity.energy;
 import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.setup.registration.NCEnergyBlocks;
 import igentuman.nc.util.CustomEnergyStorage;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.Direction;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -41,7 +39,7 @@ public class NCEnergy extends NuclearCraftBE {
         AtomicInteger capacity = new AtomicInteger(energyStorage.getEnergyStored());
         if (capacity.get() > 0) {
             for (Direction direction : Direction.values()) {
-                BlockEntity be = level.getBlockEntity(worldPosition.relative(direction));
+                TileEntity be = level.getBlockEntity(worldPosition.relative(direction));
                 if (be != null) {
                     boolean doContinue = be.getCapability(ENERGY, direction.getOpposite()).map(handler -> {
                                 if (handler.canReceive()) {
@@ -93,7 +91,7 @@ public class NCEnergy extends NuclearCraftBE {
         return super.getCapability(cap, side);
     }
 
-    public NCEnergy(BlockEntityType<?> pType, BlockPos pPos, BlockState pBlockState, String name) {
+    public NCEnergy(TileEntityType<?> pType, BlockPos pPos, BlockState pBlockState, String name) {
         super(pType, pPos, pBlockState);
     }
 
@@ -120,14 +118,14 @@ public class NCEnergy extends NuclearCraftBE {
 
 
     @Override
-    public @NotNull CompoundTag getUpdateTag() {
-        CompoundTag tag = super.getUpdateTag();
+    public @NotNull CompoundNBT getUpdateTag() {
+        CompoundNBT tag = super.getUpdateTag();
         saveClientData(tag);
         return tag;
     }
 
-    protected void saveClientData(CompoundTag tag) {
-        CompoundTag infoTag = new CompoundTag();
+    protected void saveClientData(CompoundNBT tag) {
+        CompoundNBT infoTag = new CompoundNBT();
         saveTagData(infoTag);
 
         tag.put("Info", infoTag);
@@ -137,45 +135,45 @@ public class NCEnergy extends NuclearCraftBE {
     }
 
     @Override
-    public void handleUpdateTag(CompoundTag tag) {
+    public void handleUpdateTag(BlockState state, CompoundNBT tag) {
         if (tag != null) {
             loadClientData(tag);
         }
     }
 
-    public void loadClientData(CompoundTag tag) {
+    public void loadClientData(CompoundNBT tag) {
         if (tag.contains("energy_storage")) {
-            energyStorage.deserializeNBT(tag.get("energy_storage"));
+            energyStorage.deserializeNBT(tag.getCompound("energy_storage"));
         }
         if(tag.contains("energy")) {
             energyStorage.setEnergy(tag.getInt("energy"));
         }
     }
 
-    @Override
+/*    @Override
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
         int oldEnergy = energyStorage.getEnergyStored();
 
-        CompoundTag tag = pkt.getTag();
+        CompoundNBT tag = pkt.getTag();
         handleUpdateTag(tag);
         if (oldEnergy != energyStorage.getEnergyStored()) {
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
         }
-    }
+    }*/
 
     @Override
-    public void load(CompoundTag tag) {
+    public void load(BlockState state,CompoundNBT tag) {
         if (tag.contains("energy_storage")) {
-            energyStorage.deserializeNBT(tag.get("energy_storage"));
+            energyStorage.deserializeNBT(tag.getCompound("energy_storage"));
         }
         if (tag.contains("energy")) {
             energyStorage.setEnergy(tag.getInt("energy"));
         }
 
-        super.load(tag);
+        super.load(state, tag);
     }
 
-    public void saveAdditional(CompoundTag tag) {
+    public void saveAdditional(CompoundNBT tag) {
         tag.put("energy_storage", energyStorage.serializeNBT());
         tag.putInt("energy", energyStorage.getEnergyStored());
     }

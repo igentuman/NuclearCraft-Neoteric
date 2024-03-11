@@ -2,31 +2,22 @@ package igentuman.nc.block.fission;
 
 import igentuman.nc.block.entity.fission.FissionBE;
 import igentuman.nc.multiblock.fission.FissionReactor;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
-import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockState;
-import org.antlr.v4.runtime.misc.NotNull;;
+import net.minecraft.block.SoundType;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.Direction;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.IWorldReader;
+import net.minecraft.world.World;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import org.antlr.v4.runtime.misc.NotNull;
 import javax.annotation.Nullable;
 
-public class FissionBlock extends Block implements EntityBlock {
+public class FissionBlock extends Block {
 
     public FissionBlock(Properties pProperties) {
         super(pProperties.sound(SoundType.METAL));
-    }
-
-    @Override
-    public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return this.defaultBlockState();
     }
 
     @Override
@@ -50,31 +41,17 @@ public class FissionBlock extends Block implements EntityBlock {
         return code;
     }
 
+/*
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
         return FissionReactor.FISSION_BE.get(blockEntityCode()).get().create(pPos, pState);
     }
+*/
 
-    @javax.annotation.Nullable
-    @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        if (level.isClientSide()) {
-            return (lvl, pos, blockState, t) -> {
-                if (t instanceof FissionBE tile) {
-                    tile.tickClient();
-                }
-            };
-        }
-        return (lvl, pos, blockState, t)-> {
-            if (t instanceof FissionBE tile) {
-                tile.tickServer();
-            }
-        };
-    }
 
     @Override
-    public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor){
+    public void onNeighborChange(BlockState state, IWorldReader level, BlockPos pos, BlockPos neighbor){
         ((FissionBE)level.getBlockEntity(pos)).onNeighborChange(state,  pos, neighbor);
     }
 }

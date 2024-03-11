@@ -6,23 +6,22 @@ import igentuman.nc.content.RFAmplifier;
 import igentuman.nc.content.materials.Materials;
 import igentuman.nc.content.materials.Blocks;
 import igentuman.nc.content.materials.Ores;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.Tag;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.FenceBlock;
-import net.minecraft.world.level.block.GrassBlock;
-import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.block.GrassBlock;
+import net.minecraft.block.SoundType;
+import net.minecraft.block.material.Material;
+import net.minecraft.item.BlockItem;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.IItemProvider;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.item.Item;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fluids.IFluidBlock;
+import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import igentuman.nc.block.*;
@@ -41,10 +40,10 @@ public class NCBlocks {
 
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
-    public static final BlockBehaviour.Properties ORE_BLOCK_PROPERTIES = BlockBehaviour.Properties.of(Material.STONE).strength(2f).requiresCorrectToolForDrops();
+    public static final Block.Properties ORE_BLOCK_PROPERTIES = Block.Properties.of(Material.STONE).strength(2f).requiresCorrectToolForDrops();
     public static final Item.Properties BLOCK_ITEM_PROPERTIES = new Item.Properties().tab(CreativeTabs.NC_BLOCKS);
-    public static final BlockBehaviour.Properties NC_BLOCKS_PROPERTIES = BlockBehaviour.Properties.of(Material.METAL).strength(2f).requiresCorrectToolForDrops();
-    public static final BlockBehaviour.Properties ORE_DEEPSLATE_BLOCK_PROPERTIES = BlockBehaviour.Properties.of(Material.STONE).strength(4f).requiresCorrectToolForDrops();
+    public static final Block.Properties NC_BLOCKS_PROPERTIES = Block.Properties.of(Material.METAL).strength(2f).requiresCorrectToolForDrops();
+    public static final Block.Properties ORE_DEEPSLATE_BLOCK_PROPERTIES = Block.Properties.of(Material.STONE).strength(4f).requiresCorrectToolForDrops();
     public static HashMap<String, RegistryObject<Block>> ORE_BLOCKS = new HashMap<>();
     public static HashMap<String, RegistryObject<Block>> NC_BLOCKS = new HashMap<>();
     public static HashMap<String, RegistryObject<Block>> NC_RF_AMPLIFIERS = new HashMap<>();
@@ -58,21 +57,21 @@ public class NCBlocks {
     public static HashMap<String, RegistryObject<Item>> MULTIBLOCK_ITEMS = new HashMap<>();
     public static final Item.Properties ORE_ITEM_PROPERTIES = new Item.Properties().tab(CreativeTabs.NC_BLOCKS);
     public static final Item.Properties MULTIBLOCK_ITEM_PROPERTIES = new Item.Properties().tab(CreativeTabs.NC_ITEMS);
-    private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, MODID);
+    private static final DeferredRegister<TileEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, MODID);
     public static final RegistryObject<Block> PORTAL_BLOCK = BLOCKS.register("portal", PortalBlock::new);
 
     public static final RegistryObject<Block> MUSHROOM_BLOCK = BLOCKS.register("glowing_mushroom", () -> new GrassBlock(
-            BlockBehaviour.Properties.of(Material.PLANT).sound(SoundType.GRASS).noCollission().instabreak().randomTicks().lightLevel($ -> 10)
+            Block.Properties.of(Material.PLANT).sound(SoundType.GRASS).noCollission().instabreak().randomTicks().lightLevel($ -> 10)
             ));
-    public static HashMap<String, RegistryObject<BlockEntityType<? extends BlockEntity>>> NC_BE = new HashMap<>();
+    public static HashMap<String, RegistryObject<TileEntityType<? extends TileEntity>>> NC_BE = new HashMap<>();
 
     public static final RegistryObject<Item> MUSHROOM_ITEM = fromBlock(MUSHROOM_BLOCK);
     public static final RegistryObject<Item> PORTAL_ITEM = fromBlock(PORTAL_BLOCK);
 
-    public static HashMap<String, Tag.Named<Block>> ORE_TAGS = new HashMap<>();
-    public static HashMap<String, Tag.Named<Item>> ORE_ITEM_TAGS = new HashMap<>();
-    public static HashMap<String, Tag.Named<Item>> BLOCK_ITEM_TAGS = new HashMap<>();
-    public static HashMap<String, Tag.Named<Block>> BLOCK_TAGS = new HashMap<>();
+    public static HashMap<String, Tags.IOptionalNamedTag<Block>> ORE_TAGS = new HashMap<>();
+    public static HashMap<String, Tags.IOptionalNamedTag<Item>> ORE_ITEM_TAGS = new HashMap<>();
+    public static HashMap<String, Tags.IOptionalNamedTag<Item>> BLOCK_ITEM_TAGS = new HashMap<>();
+    public static HashMap<String, Tags.IOptionalNamedTag<Block>> BLOCK_TAGS = new HashMap<>();
 
     public static void init() {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -122,10 +121,10 @@ public class NCBlocks {
             NC_ELECTROMAGNETS_ITEMS.put(name+"_slope", fromBlock(NC_ELECTROMAGNETS.get(name+"_slope")));
             ALL_NC_ITEMS.put(name, NC_ELECTROMAGNETS_ITEMS.get(name));
             ALL_NC_ITEMS.put(name+"_slope", NC_ELECTROMAGNETS_ITEMS.get(name+"_slope"));
-            NC_BE.put(name, BLOCK_ENTITIES.register(name,
-                    () -> BlockEntityType.Builder
+/*            NC_BE.put(name, BLOCK_ENTITIES.register(name,
+                    () -> TileEntityType.Builder
                             .of(Electromagnets.all().get(name).getBlockEntity(), NC_ELECTROMAGNETS.get(name).get(), NC_ELECTROMAGNETS.get(name+"_slope").get())
-                            .build(null)));
+                            .build(null)));*/
         }
     }
 
@@ -135,10 +134,10 @@ public class NCBlocks {
             NC_RF_AMPLIFIERS_ITEMS.put(name, fromBlock(NC_RF_AMPLIFIERS.get(name)));
             ALL_NC_ITEMS.put(name, NC_RF_AMPLIFIERS_ITEMS.get(name));
 
-            NC_BE.put(name, BLOCK_ENTITIES.register(name,
-                    () -> BlockEntityType.Builder
+/*            NC_BE.put(name, BLOCK_ENTITIES.register(name,
+                    () -> TileEntityType.Builder
                             .of(RFAmplifier.all().get(name).getBlockEntity(), NC_RF_AMPLIFIERS.get(name).get())
-                            .build(null)));
+                            .build(null)));*/
         }
     }
 
@@ -171,53 +170,60 @@ public class NCBlocks {
     }
 
 
-    public static final class BlockEntry<T extends Block> implements Supplier<T>, ItemLike
+    public static final class BlockEntry<T extends IFluidBlock> implements Supplier<T>, IItemProvider
     {
         public static final Collection<BlockEntry<?>> ALL_ENTRIES = new ArrayList<>();
 
-        private final RegistryObject<T> regObject;
-        private final Supplier<BlockBehaviour.Properties> properties;
-
-        public static BlockEntry<FenceBlock> fence(String name, Supplier<BlockBehaviour.Properties> props)
-        {
-            return new BlockEntry<>(name, props, FenceBlock::new);
-        }
+      //  private final RegistryObject<T> regObject;
+        private final Supplier<Block.Properties> properties;
 
 
-        public BlockEntry(String name, Supplier<BlockBehaviour.Properties> properties, Function<BlockBehaviour.Properties, T> make)
+        public BlockEntry(String name, Supplier<Block.Properties> properties, Function<Block.Properties, T> make)
         {
             this.properties = properties;
-            this.regObject = BLOCKS.register(name, () -> make.apply(properties.get()));
+           // this.regObject = BLOCKS.register(name, () -> make.apply(properties.get()));
             ALL_ENTRIES.add(this);
         }
+/*
 
         @Override
         public T get()
         {
             return regObject.get();
         }
+*/
 
-        public BlockState defaultBlockState()
+  /*      public BlockState defaultBlockState()
         {
             return get().defaultBlockState();
-        }
+        }*/
 
-        public ResourceLocation getId()
+/*        public ResourceLocation getId()
         {
             return regObject.getId();
-        }
+        }*/
 
-        public BlockBehaviour.Properties getProperties()
+        public Block.Properties getProperties()
         {
             return properties.get();
         }
 
-        @Nonnull
+        @Override
+        public T get() {
+            return null;
+        }
+
+        @Override
+        public Item asItem() {
+            return null;
+        }
+
+/*        @Nonnull
         @Override
         public Item asItem()
         {
             return get().asItem();
-        }
+        }*/
     }
 
 }

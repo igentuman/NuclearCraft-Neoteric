@@ -1,17 +1,14 @@
 package igentuman.nc.compat.jei;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import igentuman.nc.recipes.type.OreVeinRecipe;
-import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.item.ItemStack;
 import org.antlr.v4.runtime.misc.NotNull;
 
 import static igentuman.nc.NuclearCraft.MODID;
@@ -45,8 +42,8 @@ public class OreVeinCategoryWrapper<T extends OreVeinRecipe> implements IRecipeC
     }
 
     @Override
-    public @NotNull Component getTitle() {
-        return new TranslatableComponent("nc_jei_cat."+getRecipeType().getUid().getPath());
+    public @NotNull String getTitle() {
+        return new TranslationTextComponent("nc_jei_cat."+getRecipeType().getUid().getPath()).getString();
     }
 
     @Override

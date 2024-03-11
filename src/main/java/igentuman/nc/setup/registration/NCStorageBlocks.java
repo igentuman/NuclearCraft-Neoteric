@@ -7,21 +7,20 @@ import igentuman.nc.item.BarrelBlockItem;
 import igentuman.nc.item.ContainerBlockItem;
 import igentuman.nc.content.storage.BarrelBlocks;
 import igentuman.nc.content.storage.ContainerBlocks;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.block.SoundType;
+import net.minecraft.block.material.Material;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
+import net.minecraft.block.Block;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.fmllegacy.RegistryObject;
 
 import java.util.HashMap;
 
@@ -33,11 +32,11 @@ public class NCStorageBlocks {
     public static HashMap<String, RegistryObject<Block>> STORAGE_BLOCK = new HashMap<>();
     public static HashMap<String, RegistryObject<Item>> BLOCK_ITEMS = new HashMap<>();
     public static final Item.Properties ITEM_PROPERTIES = new Item.Properties().tab(CreativeTabs.NC_ITEMS);
-    public static final BlockBehaviour.Properties BLOCK_PROPERTIES = BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.METAL).strength(2f).requiresCorrectToolForDrops().noOcclusion();
-    private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, MODID);
-    public static HashMap<String, RegistryObject<BlockEntityType<? extends BlockEntity>>> STORAGE_BE = new HashMap<>();
-    private static final DeferredRegister<MenuType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.CONTAINERS, MODID);
-    public static final RegistryObject<MenuType<StorageContainerContainer<?>>> STORAGE_CONTAINER = CONTAINERS.register("storage_container",
+    public static final Block.Properties BLOCK_PROPERTIES = Block.Properties.of(Material.METAL).sound(SoundType.METAL).strength(2f).requiresCorrectToolForDrops().noOcclusion();
+    private static final DeferredRegister<TileEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, MODID);
+    public static HashMap<String, RegistryObject<TileEntityType<? extends TileEntity>>> STORAGE_BE = new HashMap<>();
+    private static final DeferredRegister<ContainerType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.CONTAINERS, MODID);
+    public static final RegistryObject<ContainerType<StorageContainerContainer<?>>> STORAGE_CONTAINER = CONTAINERS.register("storage_container",
             () -> IForgeContainerType.create((windowId, inv, data) -> new StorageContainerContainer<>(windowId, data.readBlockPos(), inv)));
     public static void init() {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -54,17 +53,17 @@ public class NCStorageBlocks {
 
     private static void registerBlockEntities() {
         for(String name: BarrelBlocks.registered().keySet()) {
-            STORAGE_BE.put(name, BLOCK_ENTITIES.register(name,
-                    () -> BlockEntityType.Builder
+/*            STORAGE_BE.put(name, BLOCK_ENTITIES.register(name,
+                    () -> TileEntityType.Builder
                             .of(BarrelBlocks.all().get(name).getBlockEntity(), STORAGE_BLOCK.get(name).get())
-                            .build(null)));
+                            .build(null)));*/
 
         }
         for(String name: ContainerBlocks.registered().keySet()) {
-            STORAGE_BE.put(name, BLOCK_ENTITIES.register(name,
-                    () -> BlockEntityType.Builder
+/*            STORAGE_BE.put(name, BLOCK_ENTITIES.register(name,
+                    () -> TileEntityType.Builder
                             .of(ContainerBlocks.all().get(name).getBlockEntity(), STORAGE_BLOCK.get(name).get())
-                            .build(null)));
+                            .build(null)));*/
 
         }
     }

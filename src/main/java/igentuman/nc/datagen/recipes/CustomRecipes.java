@@ -2,16 +2,16 @@ package igentuman.nc.datagen.recipes;
 
 import igentuman.nc.datagen.recipes.recipes.*;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.IFinishedRecipe;
 import java.util.function.Consumer;
 
 public class CustomRecipes extends NCRecipes {
     public CustomRecipes(DataGenerator generatorIn) {
         super(generatorIn);
     }
-    public static Consumer<FinishedRecipe> consumer;
+    public static Consumer<IFinishedRecipe> consumer;
 
-    public static void generate(Consumer<FinishedRecipe> consumer) {
+    public static void generate(Consumer<IFinishedRecipe> consumer) {
         CustomRecipes.consumer = consumer;
         FissionRecipes.generate(consumer);
         ManufactoryRecipes.generate(consumer);

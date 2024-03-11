@@ -5,8 +5,8 @@ import igentuman.nc.radiation.data.RadiationEvents;
 import igentuman.nc.recipes.type.RadShieldingRecipe;
 import igentuman.nc.recipes.type.ResetNbtRecipe;
 import igentuman.nc.world.ore.Generator;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.Level;
+import net.minecraft.entity.Entity;
+import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
@@ -22,7 +22,7 @@ public class ModSetup {
         bus.addListener(Generator::onBiomeLoadingEvent);
         bus.addListener(RadiationEvents::onPlayerCloned);
         bus.addGenericListener(Entity.class, RadiationEvents::attachPlayerRadiation);
-        bus.addGenericListener(Level.class, RadiationEvents::attachWorldRadiation);
+        bus.addGenericListener(World.class, RadiationEvents::attachWorldRadiation);
         bus.register(NuclearCraft.worldTickHandler);
         bus.register(new RadiationEvents());
     }

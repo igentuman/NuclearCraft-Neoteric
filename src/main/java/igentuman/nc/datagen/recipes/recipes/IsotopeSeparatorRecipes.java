@@ -5,34 +5,35 @@ import igentuman.nc.content.processors.Processors;
 import igentuman.nc.setup.registration.Fuel;
 import igentuman.nc.content.materials.Materials;
 import igentuman.nc.content.fuel.FuelManager;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.IFinishedRecipe;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
 public class IsotopeSeparatorRecipes extends AbstractRecipeProvider {
 
-    public static void generate(Consumer<FinishedRecipe> consumer) {
+    public static void generate(Consumer<IFinishedRecipe> consumer) {
         IsotopeSeparatorRecipes.consumer = consumer;
         ID = Processors.ISOTOPE_SEPARATOR;
 
         add(
                 ingredient(dustItem(Materials.lithium), 10),
-                List.of(isotopeStack(Materials.lithium7, 9),
+                Arrays.asList(isotopeStack(Materials.lithium7, 9),
                         isotopeStack(Materials.lithium6, 1)),
                 5D
         );
 
         add(
                 dustIngredient(Materials.yellowcake, 10),
-                List.of(isotopeStack(Materials.uranium238, 9),
+                Arrays.asList(isotopeStack(Materials.uranium238, 9),
                         isotopeStack(Materials.uranium235, 1)),
                 5D
         );
 
         add(
                 dustIngredient(Materials.uranium, 10),
-                List.of(isotopeStack(Materials.uranium238, 9),
+                Arrays.asList(isotopeStack(Materials.uranium238, 9),
                         isotopeStack(Materials.uranium235, 1)),
                 4D
         );
@@ -55,13 +56,13 @@ public class IsotopeSeparatorRecipes extends AbstractRecipeProvider {
             isotope1Cnt = 3;
             isotope2Cnt = 6;
         }
-        add(ingredient(Fuel.NC_FUEL.get(List.of("fuel", name, subType, type)).get(), 9),
-                List.of(ingredient(getIsotope(name, String.valueOf(isotope1), type), isotope1Cnt),
+        add(ingredient(Fuel.NC_FUEL.get(Arrays.asList("fuel", name, subType, type)).get(), 9),
+                Arrays.asList(ingredient(getIsotope(name, String.valueOf(isotope1), type), isotope1Cnt),
                         ingredient(getIsotope(name, String.valueOf(isotope2), type), isotope2Cnt)),
                 2);
     }
 
     private static void add(NcIngredient input, List<NcIngredient> output, double...modifiers) {
-        itemsToItems(List.of(input), output, modifiers);
+        itemsToItems(Arrays.asList(input), output, modifiers);
     }
 }

@@ -1,20 +1,17 @@
 package igentuman.nc.compat.jei;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import igentuman.nc.block.entity.fusion.FusionCoreBE;
 import igentuman.nc.compat.jei.util.TickTimer;
-import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawable;
-import mezz.jei.api.gui.drawable.IDrawableAnimated;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.item.ItemStack;
 import org.antlr.v4.runtime.misc.NotNull;
 
 import java.util.ArrayList;
@@ -54,8 +51,8 @@ public class FusionCategoryWrapper<T extends FusionCoreBE.Recipe> implements IRe
     }
 
     @Override
-    public @NotNull Component getTitle() {
-        return new TranslatableComponent("nc_jei_cat."+getRecipeType().getUid().getPath());
+    public @NotNull String getTitle() {
+        return new TranslationTextComponent("nc_jei_cat."+getRecipeType().getUid().getPath()).getString();
     }
 
     @Override
@@ -81,13 +78,13 @@ public class FusionCategoryWrapper<T extends FusionCoreBE.Recipe> implements IRe
 
 
     @Override
-    public @NotNull List<Component> getTooltipStrings(T recipe, double mouseX, double mouseY) {
-        List<Component> lines = new ArrayList<>();
+    public @NotNull List<ITextComponent> getTooltipStrings(T recipe, double mouseX, double mouseY) {
+        List<ITextComponent> lines = new ArrayList<>();
         if(mouseX > 34 && mouseX < 76 && mouseY > 16 && mouseY < 32) {
-            lines.add(new TranslatableComponent("fusion_core.recipe.duration", (int)recipe.getTimeModifier()).withStyle(ChatFormatting.AQUA));
-            lines.add(new TranslatableComponent("fusion_core.recipe.power", (int)recipe.getEnergy()).withStyle(ChatFormatting.RED));
-            lines.add(new TranslatableComponent("fusion_core.recipe.radiation", recipe.getRadiation()*1000).withStyle(ChatFormatting.GREEN));
-            lines.add(new TranslatableComponent("fusion_core.recipe.temperature", (int)recipe.getOptimalTemperature()).withStyle(ChatFormatting.GOLD));
+            lines.add(new TranslationTextComponent("fusion_core.recipe.duration", (int)recipe.getTimeModifier()).withStyle(TextFormatting.AQUA));
+            lines.add(new TranslationTextComponent("fusion_core.recipe.power", (int)recipe.getEnergy()).withStyle(TextFormatting.RED));
+            lines.add(new TranslationTextComponent("fusion_core.recipe.radiation", recipe.getRadiation()*1000).withStyle(TextFormatting.GREEN));
+            lines.add(new TranslationTextComponent("fusion_core.recipe.temperature", (int)recipe.getOptimalTemperature()).withStyle(TextFormatting.GOLD));
         }
         return lines;
     }

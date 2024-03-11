@@ -3,25 +3,24 @@ package igentuman.nc.radiation.data;
 import igentuman.nc.content.NCRadiationDamageSource;
 import igentuman.nc.radiation.ItemRadiation;
 import igentuman.nc.radiation.ItemShielding;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Effects;
+import net.minecraft.world.World;
 
 import java.util.LinkedList;
 import java.util.List;
 
 import static igentuman.nc.handler.config.RadiationConfig.RADIATION_CONFIG;
-import static igentuman.nc.setup.Registration.RADIATION_RESISTANCE;
 
 public class PlayerRadiation implements IPlayerRadiationCapability {
 
     private final double decaySpeed = RADIATION_CONFIG.DECAY_SPEED_FOR_PLAYER.get();
 
-    public Level level;
+    public World level;
     private int radiation = 0;
     private int timestamp = 0;
 
@@ -32,23 +31,23 @@ public class PlayerRadiation implements IPlayerRadiationCapability {
     public PlayerRadiation() {
     }
 
-    public static PlayerRadiation deserialize(CompoundTag radiation) {
+    public static PlayerRadiation deserialize(CompoundNBT radiation) {
         PlayerRadiation playerRadiation = new PlayerRadiation();
         playerRadiation.deserializeNBT(radiation);
         return playerRadiation;
     }
 
     @Override
-    public CompoundTag serializeNBT() {
-        CompoundTag tag = new CompoundTag();
+    public CompoundNBT serializeNBT() {
+        CompoundNBT tag = new CompoundNBT();
         tag.putInt("radiation", radiation);
         tag.putInt("timestamp", timestamp);
         return tag;
     }
 
     @Override
-    public void deserializeNBT(CompoundTag nbt) {
-        CompoundTag radiationTag = nbt.getCompound("radiation");
+    public void deserializeNBT(CompoundNBT nbt) {
+        CompoundNBT radiationTag = nbt.getCompound("radiation");
         radiation = radiationTag.getInt("radiation");
         timestamp = radiationTag.getInt("timestamp");
     }
@@ -58,9 +57,9 @@ public class PlayerRadiation implements IPlayerRadiationCapability {
         timestamp = source.timestamp;
     }
 
-    public int getInventoryRadiation(Player player) {
+    public int getInventoryRadiation(PlayerEntity player) {
         int rad = 0;
-        for(ItemStack itemStack: player.getInventory().items) {
+        for(ItemStack itemStack: player.inventory.items) {
             rad += (int) (ItemRadiation.byItem(itemStack.getItem())*1000000);
         }
         return rad/5;//player is not getting radiation instantly
@@ -76,33 +75,33 @@ public class PlayerRadiation implements IPlayerRadiationCapability {
                 shielding += stack.getTag().getInt("rad_shielding");
             }
         }
-        if(player.hasEffect(RADIATION_RESISTANCE.get())) {
+/*        if(player.hasEffect(RADIATION_RESISTANCE.get())) {
             int resistance = player.getEffect(RADIATION_RESISTANCE.get()).getAmplifier()+1;
             shielding += resistance*2;
-        }
+        }*/
         return shielding;
     }
 
-    public void updateRadiation(Level level, LivingEntity player) {
+    public void updateRadiation(World level, LivingEntity player) {
         this.level = level;
         WorldRadiation worldRadiation = RadiationManager.get(level).getWorldRadiation();
-        int chunkRadiation = worldRadiation.getChunkRadiation(player.chunkPosition().x, player.chunkPosition().z);
+        int chunkRadiation = worldRadiation.getChunkRadiation(player.xChunk, player.zChunk);
         double shieldingRate = Math.max(0.001, 0.7 - getRadiationShielding(player)/100.0);
         if(chunkRadiation > radiation) {
             radiation = (int) (((chunkRadiation + radiation)/10D * RADIATION_CONFIG.GAIN_SPEED_FOR_PLAYER.get()) * shieldingRate + radiation);
         } else {
             radiation = (int) ((chunkRadiation * (RADIATION_CONFIG.GAIN_SPEED_FOR_PLAYER.get()/1000D)) * shieldingRate + radiation);
         }
-        if(player instanceof Player) {
-            radiation += (int) (getInventoryRadiation((Player) player) * shieldingRate);
+        if(player instanceof PlayerEntity) {
+            radiation += (int) (getInventoryRadiation((PlayerEntity) player) * shieldingRate);
         }
         radiation -= (int) decaySpeed;
         radiation = Math.min(maxPlayerRadiation, Math.max(0, radiation));
-        assert player instanceof Player;
-        updateContaminationStage((Player) player);
+        assert player instanceof PlayerEntity;
+        updateContaminationStage((PlayerEntity) player);
     }
 
-    public void updateContaminationStage(Player player)
+    public void updateContaminationStage(PlayerEntity player)
     {
         if(radiation >= maxPlayerRadiation) {
             radiation = radiation/3;
@@ -125,36 +124,36 @@ public class PlayerRadiation implements IPlayerRadiationCapability {
         setContaminationStage(0, player);
     }
 
-    public List<MobEffectInstance> contaminationEffects = new LinkedList<>();
-    private void setContaminationStage(int i, Player player) {
+    public List<EffectInstance> contaminationEffects = new LinkedList<>();
+    private void setContaminationStage(int i, PlayerEntity player) {
         if(player.isCreative()) return;
         contaminationStage = i;
-        for(MobEffectInstance effect: contaminationEffects) {
+        for(EffectInstance effect: contaminationEffects) {
             player.removeEffect(effect.getEffect());
         }
         contaminationEffects.clear();
         switch (contaminationStage) {
-            case 3 -> {
-                contaminationEffects.add(new MobEffectInstance(MobEffects.WEAKNESS, 900000, 3));
-                contaminationEffects.add(new MobEffectInstance(MobEffects.CONFUSION, 900000,2));
-                contaminationEffects.add(new MobEffectInstance(MobEffects.GLOWING, 900000));
-                contaminationEffects.add(new MobEffectInstance(MobEffects.UNLUCK, 900000));
-                contaminationEffects.add(new MobEffectInstance(MobEffects.POISON, 900000));
-                contaminationEffects.add(new MobEffectInstance(MobEffects.BLINDNESS, 900000));
+            case 3:
+                contaminationEffects.add(new EffectInstance(Effects.WEAKNESS, 900000, 3));
+                contaminationEffects.add(new EffectInstance(Effects.CONFUSION, 900000,2));
+                contaminationEffects.add(new EffectInstance(Effects.GLOWING, 900000));
+                contaminationEffects.add(new EffectInstance(Effects.UNLUCK, 900000));
+                contaminationEffects.add(new EffectInstance(Effects.POISON, 900000));
+                contaminationEffects.add(new EffectInstance(Effects.BLINDNESS, 900000));
+            break;
+            case 2:
+                contaminationEffects.add(new EffectInstance(Effects.WEAKNESS, 900000, 2));
+                contaminationEffects.add(new EffectInstance(Effects.CONFUSION, 900000));
+                contaminationEffects.add(new EffectInstance(Effects.GLOWING, 900000));
+                contaminationEffects.add(new EffectInstance(Effects.UNLUCK, 900000));
+                contaminationEffects.add(new EffectInstance(Effects.POISON, 900000));
+            break;
+            case 1:
+                contaminationEffects.add(new EffectInstance(Effects.WEAKNESS, 90000));
+                contaminationEffects.add(new EffectInstance(Effects.UNLUCK, 90000));
             }
-            case 2 -> {
-                contaminationEffects.add(new MobEffectInstance(MobEffects.WEAKNESS, 900000, 2));
-                contaminationEffects.add(new MobEffectInstance(MobEffects.CONFUSION, 900000));
-                contaminationEffects.add(new MobEffectInstance(MobEffects.GLOWING, 900000));
-                contaminationEffects.add(new MobEffectInstance(MobEffects.UNLUCK, 900000));
-                contaminationEffects.add(new MobEffectInstance(MobEffects.POISON, 900000));
-            }
-            case 1 -> {
-                contaminationEffects.add(new MobEffectInstance(MobEffects.WEAKNESS, 90000));
-                contaminationEffects.add(new MobEffectInstance(MobEffects.UNLUCK, 90000));
-            }
-        }
-        for(MobEffectInstance effect: contaminationEffects) {
+        
+        for(EffectInstance effect: contaminationEffects) {
             player.addEffect(effect);
         }
     }

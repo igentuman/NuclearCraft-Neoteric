@@ -10,7 +10,7 @@ version = "${mod_version}"
 group = 'igentuman.nc'
 archivesBaseName = "NuclearCraft-${mc_version}"
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(16)
+    java.toolchain.languageVersion = JavaLanguageVersion.of(8)
 
 println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
 minecraft {
@@ -82,10 +82,13 @@ repositories {
 dependencies {
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
     minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
-    implementation fg.deobf("curse.maven:cc-tweaked-282001:3709267")
-    implementation fg.deobf("curse.maven:patchouli-306770:3528319")
-    implementation fg.deobf("curse.maven:jei-238222:4351306")
-    runtimeOnly fg.deobf("curse.maven:the-one-probe-245211:3430022")
+    implementation fg.deobf("curse.maven:cc-tweaked-282001:3606344") {
+        transitive = true
+    }
+    runtimeOnly fg.deobf("curse.maven:patchouli-306770:3847029")
+    implementation fg.deobf("curse.maven:jei-238222:4371666")
+    implementation fg.deobf("curse.maven:mekanism-268560:3659389")
+    runtimeOnly fg.deobf("curse.maven:the-one-probe-245211:3752096")
 }
 
 jar {
@@ -132,8 +135,7 @@ shadowJar {
                 "Specification-Version" : "${project.version}",
                 "Implementation-Title"  : "${project.name}",
                 "Implementation-Version": "${project.version}",
-                "Implementation-Vendor" : "igentuman",
-                "MixinConfigs"          : "nuclearcraft.mixins.json"
+                "Implementation-Vendor" : "igentuman"
         ])
     }
 

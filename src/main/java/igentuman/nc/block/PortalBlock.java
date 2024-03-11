@@ -1,23 +1,16 @@
 package igentuman.nc.block;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
-import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.Shapes;
-import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.block.SoundType;
+import net.minecraft.block.material.Material;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 
 public class PortalBlock extends Block {
 
-    private static final VoxelShape SHAPE = Shapes.box(0, 0, 0, 1, .8, 1);
+    private static final VoxelShape SHAPE = VoxelShapes.box(0, 0, 0, 1, .8, 1);
 
     public PortalBlock() {
         super(Properties.of(Material.METAL)
@@ -25,24 +18,24 @@ public class PortalBlock extends Block {
                 .strength(-1.0F, 3600000.0F)
                 );
     }
-
+/*
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         return SHAPE;
     }
 
     @Override
-    public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
+    public void entityInside(BlockState state, World level, BlockPos pos, Entity entity) {
         if (entity instanceof ServerPlayer player) {
-            /*if (level.dimension().equals(Dimensions.WASTELAND)) {
+            *//*if (level.dimension().equals(Dimensions.WASTELAND)) {
                 teleportTo(player, pos.north(), Level.OVERWORLD);
             } else {
                 teleportTo(player, pos.north(), Dimensions.WASTELAND);
-            }*/
+            }*//*
         }
     }
 
-    private void teleportTo(ServerPlayer player, BlockPos pos, ResourceKey<Level> id) {
-        ServerLevel world = player.getServer().getLevel(id);
-    }
+    private void teleportTo(ServerPlayer player, BlockPos pos, ResourceKey<World> id) {
+        ServerWorld world = player.getServer().getLevel(id);
+    }*/
 }

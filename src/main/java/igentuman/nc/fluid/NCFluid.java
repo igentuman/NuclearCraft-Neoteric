@@ -2,23 +2,17 @@ package igentuman.nc.fluid;
 
 import igentuman.nc.block.NCFluidBlock;
 import igentuman.nc.setup.registration.NCFluids;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.LiquidBlock;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition.Builder;
-import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraft.world.level.material.FlowingFluid;
-import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.ForgeHooks;
+import net.minecraft.fluid.FlowingFluid;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.FluidState;
+import net.minecraft.state.Property;
+import net.minecraft.state.StateContainer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.item.Item;
+import net.minecraft.block.BlockState;
+import net.minecraft.world.*;
 import net.minecraftforge.fluids.FluidAttributes;
 
 import javax.annotation.Nonnull;
@@ -60,27 +54,33 @@ public class NCFluid extends FlowingFluid
 		this.buildAttributes = buildAttributes;
 	}
 
-	@Nonnull
+/*	@Nonnull
 	@Override
 	public Item getBucket()
 	{
 		return entry.getBucket();
+	}*/
+
+
+	@Override
+	public Item getBucket() {
+		return null;
 	}
 
 	@Override
-	protected boolean canBeReplacedWith(FluidState fluidState, BlockGetter blockReader, BlockPos pos, Fluid fluidIn, Direction direction)
+	protected boolean canBeReplacedWith(FluidState fluidState, IBlockReader blockReader, BlockPos pos, Fluid fluidIn, Direction direction)
 	{
 		return direction==Direction.DOWN&&!isSame(fluidIn);
 	}
 
-	@Override
+/*	@Override
 	public boolean isSame(@Nonnull Fluid fluidIn)
 	{
 		return fluidIn==entry.getStill()||fluidIn==entry.getFlowing();
-	}
+	}*/
 
 	@Override
-	public int getTickDelay(LevelReader p_205569_1_)
+	public int getTickDelay(IWorldReader p_205569_1_)
 	{
 		return 2;
 	}
@@ -92,12 +92,17 @@ public class NCFluid extends FlowingFluid
 	}
 
 	@Override
-	protected void createFluidStateDefinition(Builder<Fluid, FluidState> builder)
+	protected BlockState createLegacyBlock(FluidState fluidState) {
+		return null;
+	}
+
+/*	@Override
+	protected void createFluidStateDefinition(StateContainer.Builder<Fluid, FluidState> builder)
 	{
 		super.createFluidStateDefinition(builder);
-		for(Property<?> p : (entry==null?entryStatic: entry).properties())
+		for(Property<?> p : (entry==null?entryStatic: entry))
 			builder.add(p);
-	}
+	}*/
 
 	@Nonnull
 	@Override
@@ -108,20 +113,20 @@ public class NCFluid extends FlowingFluid
 			buildAttributes.accept(builder);
 		return builder.build(this);
 	}
-
+/*
 	@Override
 	protected BlockState createLegacyBlock(FluidState state)
 	{
-		BlockState result = entry.getBlock().defaultBlockState().setValue(LiquidBlock.LEVEL, getLegacyLevel(state));
+		BlockState result = entry.getBlock().defaultBlockState().setValue(LiquidBlock.WORLD, getLegacyLevel(state));
 		for(Property<?> prop : entry.properties())
 			result = NCFluidBlock.withCopiedValue(prop, result, state);
 		return result;
-	}
+	}*/
 
 	@Override
 	public boolean isSource(FluidState state)
 	{
-		return state.getType()==entry.getStill();
+		return true;
 	}
 
 	@Override
@@ -137,14 +142,14 @@ public class NCFluid extends FlowingFluid
 	@Override
 	public Fluid getFlowing()
 	{
-		return entry.getFlowing();
+		return null;
 	}
 
 	@Nonnull
 	@Override
 	public Fluid getSource()
 	{
-		return entry.getStill();
+		return null;
 	}
 
 	@Override
@@ -154,19 +159,19 @@ public class NCFluid extends FlowingFluid
 	}
 
 	@Override
-	protected void beforeDestroyingBlock(LevelAccessor iWorld, BlockPos blockPos, BlockState blockState)
+	protected void beforeDestroyingBlock(IWorld iWorld, BlockPos blockPos, BlockState blockState)
 	{
 
 	}
 
 	@Override
-	protected int getSlopeFindDistance(LevelReader iWorldReader)
+	protected int getSlopeFindDistance(IWorldReader iWorldReader)
 	{
 		return 4;
 	}
 
 	@Override
-	protected int getDropOff(LevelReader iWorldReader)
+	protected int getDropOff(IWorldReader iWorldReader)
 	{
 		return 1;
 	}
@@ -188,13 +193,13 @@ public class NCFluid extends FlowingFluid
 		}
 
 		@Override
-		protected void createFluidStateDefinition(Builder<Fluid, FluidState> builder)
+		protected void createFluidStateDefinition(StateContainer.Builder<Fluid, FluidState> builder)
 		{
 			super.createFluidStateDefinition(builder);
 			builder.add(LEVEL);
 		}
 
-		protected void spread(LevelAccessor pLevel, BlockPos pPos, FluidState pState) {
+		protected void spread(IWorld pLevel, BlockPos pPos, FluidState pState) {
 
 			BlockState blockstate = pLevel.getBlockState(pPos);
 			BlockPos blockpos = pPos.above();

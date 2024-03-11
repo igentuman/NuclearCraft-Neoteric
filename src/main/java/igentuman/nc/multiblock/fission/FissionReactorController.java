@@ -2,7 +2,7 @@ package igentuman.nc.multiblock.fission;
 
 import igentuman.nc.block.entity.fission.FissionControllerBE;
 import igentuman.nc.multiblock.INCMultiblockController;
-import net.minecraft.core.BlockPos;
+import net.minecraft.util.math.BlockPos;
 
 public class FissionReactorController implements INCMultiblockController {
     protected FissionControllerBE<?> controllerBE;

@@ -2,11 +2,11 @@ package igentuman.nc.network.toServer;
 
 import igentuman.nc.block.entity.processor.NCProcessorBE;
 import igentuman.nc.network.INcPacket;
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
 
 public class PacketSideConfigToggle implements INcPacket {
 
@@ -27,11 +27,11 @@ public class PacketSideConfigToggle implements INcPacket {
 
     @Override
     public void handle(NetworkEvent.Context context) {
-        ServerPlayer player = context.getSender();
+        ServerPlayerEntity player = context.getSender();
         if (player == null) {
             return;
         }
-        BlockEntity be = player.level.getBlockEntity(tilePosition);
+        TileEntity be = player.level.getBlockEntity(tilePosition);
         if(!(be instanceof NCProcessorBE)) {
             return;
         }
@@ -40,13 +40,13 @@ public class PacketSideConfigToggle implements INcPacket {
     }
 
     @Override
-    public void encode(FriendlyByteBuf buffer) {
+    public void encode(PacketBuffer buffer) {
         buffer.writeBlockPos(tilePosition);
         buffer.writeInt(slotId);
         buffer.writeInt(direction);
     }
 
-    public static PacketSideConfigToggle decode(FriendlyByteBuf buffer) {
+    public static PacketSideConfigToggle decode(PacketBuffer buffer) {
          PacketSideConfigToggle packet = new PacketSideConfigToggle();
           packet.tilePosition = buffer.readBlockPos();
           packet.slotId = buffer.readInt();

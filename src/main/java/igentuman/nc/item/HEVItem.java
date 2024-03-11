@@ -1,40 +1,41 @@
 package igentuman.nc.item;
 
-import igentuman.nc.content.ArmorMaterials;
 import igentuman.nc.handler.ItemEnergyHandler;
 import igentuman.nc.util.CapabilityUtils;
 import igentuman.nc.util.CustomEnergyStorage;
 import igentuman.nc.util.TextUtils;
-import net.minecraft.ChatFormatting;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.util.Mth;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
+import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.ArmorItem;
+import net.minecraft.item.ArmorMaterial;
+import net.minecraft.item.IArmorMaterial;
+import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Effects;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 import static igentuman.nc.setup.registration.NCItems.*;
 import static net.minecraftforge.energy.CapabilityEnergy.ENERGY;
 
 public class HEVItem extends ArmorItem {
-    public HEVItem(ArmorMaterials armorMaterials, EquipmentSlot equipmentSlot, Properties hazmatProps) {
+    public HEVItem(IArmorMaterial armorMaterials, EquipmentSlotType equipmentSlot, Properties hazmatProps) {
         super(armorMaterials, equipmentSlot, hazmatProps);
     }
 
-    @Override
+/*    @Override
     public int getBarColor(ItemStack pStack)
     {
-        return Mth.hsvToRgb(Math.max(0.0F, getBarWidth(pStack)/(float)MAX_BAR_WIDTH)/3.0F, 1.0F, 1.0F);
-    }
+        return MathHelper.hsvToRgb(Math.max(0.0F, getBarWidth(pStack)/(float)MAX_BAR_WIDTH)/3.0F, 1.0F, 1.0F);
+    }*/
 
     @Override
     public boolean isDamageable(ItemStack stack)
@@ -46,29 +47,29 @@ public class HEVItem extends ArmorItem {
         return 1000000;
     }
 
-    @Override
+/*    @Override
     public int getBarWidth(ItemStack stack) {
         CustomEnergyStorage energyStorage = getEnergy(stack);
         float chargeRatio = (float) energyStorage.getEnergyStored() / (float) getEnergyMaxStorage();
         return (int) Math.min(13, 13*chargeRatio);
-    }
+    }*/
 
     @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
+    public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
         return new ItemEnergyHandler(stack, getEnergyMaxStorage(), 5000, getEnergyMaxStorage()/4);
     }
 
     @Override
-    public void onArmorTick(ItemStack st, Level level, Player player) {
+    public void onArmorTick(ItemStack st, World level, PlayerEntity player) {
         if(charged(st)) {
             if(st.getItem().equals(HEV_CHEST.get())) {
-                player.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 1, 1, false, false));
+                player.addEffect(new EffectInstance(Effects.ABSORPTION, 1, 1, false, false));
             }
             if(st.getItem().equals(HEV_HELMET.get())) {
-                player.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING, 1, 1, false, false));
+                player.addEffect(new EffectInstance(Effects.WATER_BREATHING, 1, 1, false, false));
             }
             if(st.getItem().equals(HEV_PANTS.get())) {
-                player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 1, 1, false, false));
+                player.addEffect(new EffectInstance(Effects.MOVEMENT_SPEED, 1, 1, false, false));
             }
         }
     }
@@ -83,10 +84,10 @@ public class HEVItem extends ArmorItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @javax.annotation.Nullable Level world, List<Component> list, TooltipFlag flag)
+    public void appendHoverText(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
     {
-        list.add(new TranslatableComponent("tooltip.nc.energy_stored", formatEnergy(getEnergy(stack).getEnergyStored()), formatEnergy(getEnergyMaxStorage())).withStyle(ChatFormatting.BLUE));
-        list.add(new TranslatableComponent("tooltip.nc.hev.desc").withStyle(ChatFormatting.AQUA));
+        list.add(new TranslationTextComponent("tooltip.nc.energy_stored", formatEnergy(getEnergy(stack).getEnergyStored()), formatEnergy(getEnergyMaxStorage())).withStyle(TextFormatting.BLUE));
+        list.add(new TranslationTextComponent("tooltip.nc.hev.desc").withStyle(TextFormatting.AQUA));
     }
 
     public String formatEnergy(int energy)

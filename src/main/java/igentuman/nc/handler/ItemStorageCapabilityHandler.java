@@ -1,12 +1,11 @@
 package igentuman.nc.handler;
 
 import igentuman.nc.handler.sided.capability.AbstractCapabilityHandler;
-import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -14,14 +13,17 @@ import org.antlr.v4.runtime.misc.NotNull;;
 
 import javax.annotation.Nonnull;
 
+import static net.minecraftforge.common.util.Constants.NBT.TAG_COMPOUND;
+import static net.minecraftforge.common.util.Constants.NBT.TAG_INT;
 
-public class ItemStorageCapabilityHandler extends AbstractCapabilityHandler implements IItemHandlerModifiable, INBTSerializable<CompoundTag> {
+
+public class ItemStorageCapabilityHandler extends AbstractCapabilityHandler implements IItemHandlerModifiable, INBTSerializable<CompoundNBT> {
 
     protected int slots;
     protected int stackSize;
 
     protected NonNullList<ItemStack> stacks;
-    public BlockEntity tile;
+    public TileEntity tile;
 
     public ItemStorageCapabilityHandler(int slots, int stackSize) {
         this.slots = slots;
@@ -135,17 +137,17 @@ public class ItemStorageCapabilityHandler extends AbstractCapabilityHandler impl
     }
 
     @Override
-    public CompoundTag serializeNBT() {
-        ListTag nbtTagList = new ListTag();
+    public CompoundNBT serializeNBT() {
+        ListNBT nbtTagList = new ListNBT();
         for (int i = 0; i < stacks.size(); i++) {
             if (!stacks.get(i).isEmpty()) {
-                CompoundTag itemTag = new CompoundTag();
+                CompoundNBT itemTag = new CompoundNBT();
                 itemTag.putInt("Slot", i);
                 stacks.get(i).save(itemTag);
                 nbtTagList.add(itemTag);
             }
         }
-        CompoundTag nbt = new CompoundTag();
+        CompoundNBT nbt = new CompoundNBT();
         nbt.put("Items", nbtTagList);
         nbt.putInt("Size", stacks.size());
         return nbt;
@@ -156,11 +158,11 @@ public class ItemStorageCapabilityHandler extends AbstractCapabilityHandler impl
     }
 
     @Override
-    public void deserializeNBT(CompoundTag nbt) {
-        setSize(nbt.contains("Size", Tag.TAG_INT) ? nbt.getInt("Size") : stacks.size());
-        ListTag tagList = nbt.getList("Items", Tag.TAG_COMPOUND);
+    public void deserializeNBT(CompoundNBT nbt) {
+        setSize(nbt.contains("Size", TAG_INT) ? nbt.getInt("Size") : stacks.size());
+        ListNBT tagList = nbt.getList("Items", TAG_COMPOUND);
         for (int i = 0; i < tagList.size(); i++) {
-            CompoundTag itemTags = tagList.getCompound(i);
+            CompoundNBT itemTags = tagList.getCompound(i);
             int slot = itemTags.getInt("Slot");
 
             if (slot >= 0 && slot < stacks.size()) {

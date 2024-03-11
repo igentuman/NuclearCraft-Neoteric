@@ -3,9 +3,10 @@ package igentuman.nc.content.energy;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.energy.BatteryBE;
 import igentuman.nc.block.entity.energy.NCEnergy;
-import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.tileentity.TileEntityType;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -65,7 +66,7 @@ public class BatteryBlocks {
 
         public BatteryBlockPrefab(String name, int storage) {
             this.storage = storage;
-            blockEntity = BatteryBE::new;
+          //  blockEntity = BatteryBE::new;
             this.name = name;
         }
 
@@ -82,7 +83,7 @@ public class BatteryBlocks {
         {
             if(!initialized) {
                 try {
-                    int id = BatteryBlocks.all().keySet().stream().toList().indexOf(name);
+                    int id = Arrays.asList(BatteryBlocks.all().keySet().stream().toArray()).indexOf(name);
                     registered = ENERGY_STORAGE.REGISTER_ENERGY_BLOCK.get().get(id);
                     storage = ENERGY_STORAGE.ENERGY_BLOCK_STORAGE.get().get(id);
                     initialized = true;
@@ -96,15 +97,15 @@ public class BatteryBlocks {
             return  registered;
         }
 
-        public BlockEntityType.BlockEntitySupplier<? extends NCEnergy>  getBlockEntity() {
+        public TileEntityType<? extends NCEnergy> getBlockEntity() {
             return blockEntity;
         }
 
-        public BatteryBlockPrefab setBlockEntity(BlockEntityType.BlockEntitySupplier<? extends NCEnergy>  blockEntity) {
+        public BatteryBlockPrefab setBlockEntity(TileEntityType<? extends NCEnergy>  blockEntity) {
             this.blockEntity = blockEntity;
             return this;
         }
-        private BlockEntityType.BlockEntitySupplier<? extends NCEnergy>  blockEntity;
+        private TileEntityType<? extends NCEnergy>  blockEntity;
     }
 
 }

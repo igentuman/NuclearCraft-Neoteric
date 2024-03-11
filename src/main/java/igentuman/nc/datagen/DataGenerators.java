@@ -6,9 +6,10 @@ import igentuman.nc.datagen.models.NCItemModels;
 import igentuman.nc.datagen.recipes.NCRecipes;
 import igentuman.nc.recipes.ingredient.NcIngredient;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.IDataProvider;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
+import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 
 import static igentuman.nc.NuclearCraft.MODID;
 

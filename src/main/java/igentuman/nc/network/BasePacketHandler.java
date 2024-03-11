@@ -1,24 +1,24 @@
 package igentuman.nc.network;
 
 import igentuman.nc.util.functions.TriConsumer;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.SectionPos;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.RegistryKey;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.SectionPos;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.fmllegacy.network.NetworkDirection;
-import net.minecraftforge.fmllegacy.network.NetworkRegistry;
-import net.minecraftforge.fmllegacy.network.PacketDistributor;
-import net.minecraftforge.fmllegacy.network.simple.SimpleChannel;
-import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
+import net.minecraftforge.fml.network.NetworkDirection;
+import net.minecraftforge.fml.network.NetworkRegistry;
+import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import javax.annotation.Nullable;
 
@@ -39,21 +39,21 @@ public abstract class BasePacketHandler {
               .simpleChannel();
     }
 
-    public static String readString(FriendlyByteBuf buffer) {
+    public static String readString(PacketBuffer buffer) {
         return buffer.readUtf(Short.MAX_VALUE);
     }
 
-    public static Vec3 readVector3d(FriendlyByteBuf buffer) {
-        return new Vec3(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
+    public static Vector3d readVector3d(PacketBuffer buffer) {
+        return new Vector3d(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
     }
 
-    public static void writeVector3d(FriendlyByteBuf buffer, Vec3 vector) {
+    public static void writeVector3d(PacketBuffer buffer, Vector3d vector) {
         buffer.writeDouble(vector.x());
         buffer.writeDouble(vector.y());
         buffer.writeDouble(vector.z());
     }
 
-    public static <TYPE> void writeOptional(FriendlyByteBuf buffer, @Nullable TYPE value, BiConsumer<FriendlyByteBuf, TYPE> writer) {
+    public static <TYPE> void writeOptional(PacketBuffer buffer, @Nullable TYPE value, BiConsumer<PacketBuffer, TYPE> writer) {
         if (value == null) {
             buffer.writeBoolean(false);
         } else {
@@ -63,18 +63,18 @@ public abstract class BasePacketHandler {
     }
 
     @Nullable
-    public static <TYPE> TYPE readOptional(FriendlyByteBuf buffer, Function<FriendlyByteBuf, TYPE> reader) {
+    public static <TYPE> TYPE readOptional(PacketBuffer buffer, Function<PacketBuffer, TYPE> reader) {
         return buffer.readBoolean() ? reader.apply(buffer) : null;
     }
 
-    public static <TYPE> void writeArray(FriendlyByteBuf buffer, TYPE[] array, BiConsumer<TYPE, FriendlyByteBuf> writer) {
+    public static <TYPE> void writeArray(PacketBuffer buffer, TYPE[] array, BiConsumer<TYPE, PacketBuffer> writer) {
         buffer.writeVarInt(array.length);
         for (TYPE element : array) {
             writer.accept(element, buffer);
         }
     }
 
-    public static <TYPE> TYPE[] readArray(FriendlyByteBuf buffer, IntFunction<TYPE[]> arrayFactory, Function<FriendlyByteBuf, TYPE> reader) {
+    public static <TYPE> TYPE[] readArray(PacketBuffer buffer, IntFunction<TYPE[]> arrayFactory, Function<PacketBuffer, TYPE> reader) {
         TYPE[] array = arrayFactory.apply(buffer.readVarInt());
         for (int element = 0; element < array.length; element++) {
             array[element] = reader.apply(buffer);
@@ -82,13 +82,13 @@ public abstract class BasePacketHandler {
         return array;
     }
 
-    public static <KEY, VALUE> void writeMap(FriendlyByteBuf buffer, Map<KEY, VALUE> map, TriConsumer<KEY, VALUE, FriendlyByteBuf> writer) {
+    public static <KEY, VALUE> void writeMap(PacketBuffer buffer, Map<KEY, VALUE> map, TriConsumer<KEY, VALUE, PacketBuffer> writer) {
         buffer.writeVarInt(map.size());
         map.forEach((key, value) -> writer.accept(key, value, buffer));
     }
 
-    public static <KEY, VALUE, MAP extends Map<KEY, VALUE>> MAP readMap(FriendlyByteBuf buffer, IntFunction<MAP> mapFactory, Function<FriendlyByteBuf, KEY> keyReader,
-          Function<FriendlyByteBuf, VALUE> valueReader) {
+    public static <KEY, VALUE, MAP extends Map<KEY, VALUE>> MAP readMap(PacketBuffer buffer, IntFunction<MAP> mapFactory, Function<PacketBuffer, KEY> keyReader,
+          Function<PacketBuffer, VALUE> valueReader) {
         int elements = buffer.readVarInt();
         MAP map = mapFactory.apply(elements);
         for (int element = 0; element < elements; element++) {
@@ -104,15 +104,15 @@ public abstract class BasePacketHandler {
 
     public abstract void initialize();
 
-    protected <MSG extends INcPacket> void registerClientToServer(Class<MSG> type, Function<FriendlyByteBuf, MSG> decoder) {
+    protected <MSG extends INcPacket> void registerClientToServer(Class<MSG> type, Function<PacketBuffer, MSG> decoder) {
         registerMessage(type, decoder, NetworkDirection.PLAY_TO_SERVER);
     }
 
-    protected <MSG extends INcPacket> void registerServerToClient(Class<MSG> type, Function<FriendlyByteBuf, MSG> decoder) {
+    protected <MSG extends INcPacket> void registerServerToClient(Class<MSG> type, Function<PacketBuffer, MSG> decoder) {
         registerMessage(type, decoder, NetworkDirection.PLAY_TO_CLIENT);
     }
 
-    private <MSG extends INcPacket> void registerMessage(Class<MSG> type, Function<FriendlyByteBuf, MSG> decoder, NetworkDirection networkDirection) {
+    private <MSG extends INcPacket> void registerMessage(Class<MSG> type, Function<PacketBuffer, MSG> decoder, NetworkDirection networkDirection) {
         getChannel().registerMessage(index++, type, INcPacket::encode, decoder, INcPacket::handle, Optional.of(networkDirection));
     }
 
@@ -122,7 +122,7 @@ public abstract class BasePacketHandler {
      * @param message - the message to send
      * @param player  - the player to send it to
      */
-    public <MSG> void sendTo(MSG message, ServerPlayer player) {
+    public <MSG> void sendTo(MSG message, ServerPlayerEntity player) {
         //Validate it is not a fake player, even though none of our code should call this with a fake player
         if (!(player instanceof FakePlayer)) {
             getChannel().send(PacketDistributor.PLAYER.with(() -> player), message);
@@ -158,7 +158,7 @@ public abstract class BasePacketHandler {
      * @param message   - the message to send
      * @param dimension - the dimension to target
      */
-    public <MSG> void sendToDimension(MSG message, ResourceKey<Level> dimension) {
+    public <MSG> void sendToDimension(MSG message, RegistryKey<World> dimension) {
         getChannel().send(PacketDistributor.DIMENSION.with(() -> dimension), message);
     }
 
@@ -179,12 +179,13 @@ public abstract class BasePacketHandler {
         getChannel().send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity), message);
     }
 
-    public <MSG> void sendToAllTracking(MSG message, BlockEntity tile) {
+    public <MSG> void sendToAllTracking(MSG message, TileEntity tile) {
         sendToAllTracking(message, tile.getLevel(), tile.getBlockPos());
     }
 
-    public <MSG> void sendToAllTracking(MSG message, Level world, BlockPos pos) {
-        if (world instanceof ServerLevel level) {
+    public <MSG> void sendToAllTracking(MSG message, World world, BlockPos pos) {
+        if (world instanceof ServerWorld ) {
+            ServerWorld level = (ServerWorld) world;
             //If we have a ServerWorld just directly figure out the ChunkPos to not require looking up the chunk
             // This provides a decent performance boost over using the packet distributor
             level.getChunkSource().chunkMap.getPlayers(new ChunkPos(pos), false).forEach(p -> sendTo(message, p));

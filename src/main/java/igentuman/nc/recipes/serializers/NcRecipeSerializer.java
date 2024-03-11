@@ -4,28 +4,24 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import igentuman.nc.NuclearCraft;
-import igentuman.nc.handler.config.CommonConfig;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.ingredient.creator.IngredientCreatorAccess;
 import igentuman.nc.util.JsonConstants;
 import igentuman.nc.util.SerializerHelper;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.JSONUtils;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 import org.antlr.v4.runtime.misc.NotNull;;
 import javax.annotation.Nullable;
 
 
-import static igentuman.nc.NuclearCraft.rl;
-import static igentuman.nc.recipes.NcRecipeSerializers.SERIALIZERS;
-
-public class NcRecipeSerializer<RECIPE extends NcRecipe> extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<RECIPE> {
+public class NcRecipeSerializer<RECIPE extends NcRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<RECIPE> {
 
     final IFactory<RECIPE> factory;
     private ResourceLocation regName;
@@ -39,8 +35,8 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> extends ForgeRegistryEn
         ItemStackIngredient[] inputItems = new ItemStackIngredient[0];
         try {
             if (json.has(JsonConstants.INPUT)) {
-                if (GsonHelper.isArrayNode(json, JsonConstants.INPUT)) {
-                    JsonElement input = GsonHelper.getAsJsonArray(json, JsonConstants.INPUT);
+                if (JSONUtils.isArrayNode(json, JsonConstants.INPUT)) {
+                    JsonElement input = JSONUtils.getAsJsonArray(json, JsonConstants.INPUT);
                     inputItems = new ItemStackIngredient[input.getAsJsonArray().size()];
                     int i = 0;
                     for (JsonElement in : input.getAsJsonArray()) {
@@ -48,7 +44,7 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> extends ForgeRegistryEn
                         i++;
                     }
                 } else {
-                    JsonElement inputJson = GsonHelper.getAsJsonObject(json, JsonConstants.INPUT);
+                    JsonElement inputJson = JSONUtils.getAsJsonObject(json, JsonConstants.INPUT);
                     inputItems = new ItemStackIngredient[]{IngredientCreatorAccess.item().deserialize(inputJson)};
                 }
             }
@@ -59,8 +55,8 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> extends ForgeRegistryEn
         ItemStack[] outputItems = new ItemStack[0];
         try {
             if(json.has(JsonConstants.OUTPUT)) {
-                if (GsonHelper.isArrayNode(json, JsonConstants.OUTPUT)) {
-                    JsonElement output = GsonHelper.getAsJsonArray(json, JsonConstants.OUTPUT);
+                if (JSONUtils.isArrayNode(json, JsonConstants.OUTPUT)) {
+                    JsonElement output = JSONUtils.getAsJsonArray(json, JsonConstants.OUTPUT);
                     outputItems = new ItemStack[output.getAsJsonArray().size()];
                     int i = 0;
                     for (JsonElement out : output.getAsJsonArray()) {
@@ -72,7 +68,7 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> extends ForgeRegistryEn
                         i++;
                     }
                 } else {
-                    JsonElement output = GsonHelper.getAsJsonObject(json, JsonConstants.OUTPUT);
+                    JsonElement output = JSONUtils.getAsJsonObject(json, JsonConstants.OUTPUT);
                     outputItems = new ItemStack[]{SerializerHelper.getItemStack(output.getAsJsonObject())};
                 }
             }
@@ -83,8 +79,8 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> extends ForgeRegistryEn
         FluidStackIngredient[] inputFluids = new FluidStackIngredient[0];
         try {
             if(json.has("inputFluids")) {
-                if (GsonHelper.isArrayNode(json, "inputFluids")) {
-                    JsonElement input = GsonHelper.getAsJsonArray(json, "inputFluids");
+                if (JSONUtils.isArrayNode(json, "inputFluids")) {
+                    JsonElement input = JSONUtils.getAsJsonArray(json, "inputFluids");
                     inputFluids = new FluidStackIngredient[input.getAsJsonArray().size()];
                     int i = 0;
                     for (JsonElement in : input.getAsJsonArray()) {
@@ -92,7 +88,7 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> extends ForgeRegistryEn
                         i++;
                     }
                 } else {
-                    JsonElement inputJson = GsonHelper.getAsJsonObject(json, "inputFluids");
+                    JsonElement inputJson = JSONUtils.getAsJsonObject(json, "inputFluids");
                     inputFluids = new FluidStackIngredient[]{IngredientCreatorAccess.fluid().deserialize(inputJson)};
                 }
             }
@@ -103,8 +99,8 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> extends ForgeRegistryEn
         FluidStack[] outputFluids = new FluidStack[0];
         try {
             if(json.has("outputFluids")) {
-                if (GsonHelper.isArrayNode(json, "outputFluids")) {
-                    JsonElement output = GsonHelper.getAsJsonArray(json, "outputFluids");
+                if (JSONUtils.isArrayNode(json, "outputFluids")) {
+                    JsonElement output = JSONUtils.getAsJsonArray(json, "outputFluids");
                     outputFluids = new FluidStack[output.getAsJsonArray().size()];
                     int i = 0;
                     for (JsonElement out : output.getAsJsonArray()) {
@@ -112,7 +108,7 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> extends ForgeRegistryEn
                         i++;
                     }
                 } else {
-                    JsonElement output = GsonHelper.getAsJsonObject(json, "outputFluids");
+                    JsonElement output = JSONUtils.getAsJsonObject(json, "outputFluids");
                     outputFluids = new FluidStack[]{SerializerHelper.getFluidStack(output.getAsJsonObject(), "outputFluids")};
                 }
             }
@@ -125,11 +121,11 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> extends ForgeRegistryEn
         double rarityModifier = 1D;
         double temperature = 1D;
         try {
-            timeModifier = GsonHelper.getAsDouble(json, "timeModifier", 1.0);
-            powerModifier = GsonHelper.getAsDouble(json, "powerModifier", 1.0);
-            radiation = GsonHelper.getAsDouble(json, "radiation", 1.0);
-            rarityModifier = GsonHelper.getAsDouble(json, "rarityModifier", 1.0);
-            temperature = GsonHelper.getAsDouble(json, "temperature", 1.0);
+            timeModifier = JSONUtils.getAsFloat(json, "timeModifier", 1.0f);
+            powerModifier = JSONUtils.getAsFloat(json, "powerModifier", 1.0f);
+            radiation = JSONUtils.getAsFloat(json, "radiation", 1.0f);
+            rarityModifier = JSONUtils.getAsFloat(json, "rarityModifier", 1.0f);
+            temperature = JSONUtils.getAsFloat(json, "temperature", 1.0f);
             if (temperature > 1) {
                 rarityModifier = temperature;
             }
@@ -140,7 +136,7 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> extends ForgeRegistryEn
     }
 
     @Override
-    public RECIPE fromNetwork(@NotNull ResourceLocation recipeId, @NotNull FriendlyByteBuf buffer) {
+    public RECIPE fromNetwork(@NotNull ResourceLocation recipeId, @NotNull PacketBuffer buffer) {
         if(recipeId.getPath().contains("nc_ore_veins")) {
            // return (RECIPE) SERIALIZERS.get("nc_ore_veins").get().fromNetwork(recipeId, buffer);
         }
@@ -182,7 +178,7 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> extends ForgeRegistryEn
     }
 
     @Override
-    public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull RECIPE recipe) {
+    public void toNetwork(@NotNull PacketBuffer buffer, @NotNull RECIPE recipe) {
         try {
             recipe.write(buffer);
         } catch (Exception e) {

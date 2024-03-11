@@ -1,27 +1,23 @@
 package igentuman.nc.client.gui.element.fluid;
 
 import com.google.common.base.Preconditions;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
-import com.mojang.math.Matrix4f;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.client.gui.element.NCGuiElement;
 import igentuman.nc.network.toServer.PacketFlushSlotContent;
-import igentuman.nc.network.toServer.PacketSideConfigToggle;
-import net.minecraft.ChatFormatting;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.Fluids;
+import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.InventoryMenu;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.Fluids;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
@@ -33,6 +29,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static igentuman.nc.handler.event.client.InputEvents.SHIFT_PRESSED;
+import static net.minecraft.client.renderer.vertex.DefaultVertexFormats.POSITION_TEX;
+import static net.minecraft.inventory.container.PlayerContainer.BLOCK_ATLAS;
 
 // CREDIT: https://github.com/mezz/JustEnoughItems by mezz
 // Under MIT-License: https://github.com/mezz/JustEnoughItems/blob/1.19/LICENSE.txt
@@ -106,6 +104,7 @@ public class FluidTankRenderer extends NCGuiElement {
     }
 
     public FluidTankRenderer(FluidTank tank, TooltipMode tooltipMode, int width, int height, int x, int y) {
+        super(x, y, width, height, new TranslationTextComponent("fluid_tank_renderer"));
         this.tank = tank;
         this.tooltipMode = tooltipMode;
         this.width = width;
@@ -114,12 +113,12 @@ public class FluidTankRenderer extends NCGuiElement {
         this.y = y;
     }
     @Override
-    public void draw(PoseStack transform, int mX, int mY, float pTicks) {
+    public void draw(MatrixStack transform, int mX, int mY, float pTicks) {
         super.draw(transform, mX, mY, pTicks);
         render(transform, tank.getFluid());
     }
 
-    public void render(PoseStack poseStack, FluidStack fluidStack) {
+    public void render(MatrixStack poseStack, FluidStack fluidStack) {
         RenderSystem.enableBlend();
         poseStack.pushPose();
         {
@@ -127,11 +126,11 @@ public class FluidTankRenderer extends NCGuiElement {
             drawFluid(poseStack, width, height, fluidStack);
         }
         poseStack.popPose();
-        RenderSystem.setShaderColor(1, 1, 1, 1);
+        RenderSystem.clearColor(1, 1, 1, 1);
         RenderSystem.disableBlend();
     }
 
-    private void drawFluid(PoseStack poseStack, final int width, final int height, FluidStack fluidStack) {
+    private void drawFluid(MatrixStack poseStack, final int width, final int height, FluidStack fluidStack) {
         Fluid fluid = fluidStack.getFluid();
         if (fluid.isSame(Fluids.EMPTY)) {
             return;
@@ -158,7 +157,7 @@ public class FluidTankRenderer extends NCGuiElement {
         FluidAttributes attributes = fluid.getAttributes();
         ResourceLocation fluidStill = attributes.getStillTexture(fluidStack);
         Minecraft minecraft = Minecraft.getInstance();
-        return (TextureAtlasSprite)minecraft.getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(fluidStill);
+        return (TextureAtlasSprite)minecraft.getTextureAtlas(BLOCK_ATLAS).apply(fluidStill);
     }
 
     private int getColorTint(FluidStack ingredient) {
@@ -167,8 +166,8 @@ public class FluidTankRenderer extends NCGuiElement {
         return attributes.getColor(ingredient);
     }
 
-    private static void drawTiledSprite(PoseStack poseStack, final int tiledWidth, final int tiledHeight, int color, long scaledAmount, TextureAtlasSprite sprite) {
-        RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
+    private static void drawTiledSprite(MatrixStack poseStack, final int tiledWidth, final int tiledHeight, int color, long scaledAmount, TextureAtlasSprite sprite) {
+        Minecraft.getInstance().getTextureManager().bind(BLOCK_ATLAS);
         Matrix4f matrix = poseStack.last().pose();
         setGLColorFromInt(color);
 
@@ -201,7 +200,7 @@ public class FluidTankRenderer extends NCGuiElement {
         float blue = (color & 0xFF) / 255.0F;
         float alpha = ((color >> 24) & 0xFF) / 255F;
 
-        RenderSystem.setShaderColor(red, green, blue, alpha);
+        RenderSystem.clearColor(red, green, blue, alpha);
     }
 
     private static void drawTextureWithMasking(Matrix4f matrix, float xCoord, float yCoord, TextureAtlasSprite textureSprite, long maskTop, long maskRight, float zLevel) {
@@ -212,11 +211,11 @@ public class FluidTankRenderer extends NCGuiElement {
         uMax = uMax - (maskRight / 16F * (uMax - uMin));
         vMax = vMax - (maskTop / 16F * (vMax - vMin));
 
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+       // RenderSystem.setShader(GameRenderer::getPositionTexShader);
 
-        Tesselator tessellator = Tesselator.getInstance();
+        Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferBuilder = tessellator.getBuilder();
-        bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+        bufferBuilder.begin(3, POSITION_TEX);
         bufferBuilder.vertex(matrix, xCoord, yCoord + 16, zLevel).uv(uMin, vMax).endVertex();
         bufferBuilder.vertex(matrix, xCoord + 16 - maskRight, yCoord + 16, zLevel).uv(uMax, vMax).endVertex();
         bufferBuilder.vertex(matrix, xCoord + 16 - maskRight, yCoord + maskTop, zLevel).uv(uMax, vMin).endVertex();
@@ -224,8 +223,8 @@ public class FluidTankRenderer extends NCGuiElement {
         tessellator.end();
     }
 
-    public List<Component> getTooltips() {
-        List<Component> tooltip = new ArrayList<>();
+    public List<ITextComponent> getTooltips() {
+        List<ITextComponent> tooltip = new ArrayList<>();
 
         Fluid fluidType = tank.getFluid().getFluid();
         try {
@@ -233,21 +232,21 @@ public class FluidTankRenderer extends NCGuiElement {
                 return tooltip;
             }
 
-            MutableComponent displayName = new TranslatableComponent(tank.getFluid().getDisplayName().getContents());
-            tooltip.add(displayName.withStyle(ChatFormatting.AQUA));
+            TranslationTextComponent displayName = new TranslationTextComponent(tank.getFluid().getDisplayName().getContents());
+            tooltip.add(displayName.withStyle(TextFormatting.AQUA));
 
             long amount = tank.getFluid().getAmount();
             long milliBuckets = (amount * 1000) / FluidAttributes.BUCKET_VOLUME;
 
             if (tooltipMode == TooltipMode.SHOW_AMOUNT_AND_CAPACITY) {
-                MutableComponent amountString = new TranslatableComponent("gui.nc.fluid_tank_renderer.amount_capacity", nf.format(milliBuckets), nf.format(tank.getCapacity()));
-                tooltip.add(amountString.withStyle(ChatFormatting.WHITE));
+                TranslationTextComponent amountString = new TranslationTextComponent("gui.nc.fluid_tank_renderer.amount_capacity", nf.format(milliBuckets), nf.format(tank.getCapacity()));
+                tooltip.add(amountString.withStyle(TextFormatting.WHITE));
             } else if (tooltipMode == TooltipMode.SHOW_AMOUNT) {
-                MutableComponent amountString = new TranslatableComponent("gui.nc.fluid_tank_renderer.amount", nf.format(milliBuckets));
-                tooltip.add(amountString.withStyle(ChatFormatting.WHITE));
+                TranslationTextComponent amountString = new TranslationTextComponent("gui.nc.fluid_tank_renderer.amount", nf.format(milliBuckets));
+                tooltip.add(amountString.withStyle(TextFormatting.WHITE));
             }
             if(canVoid) {
-                tooltip.add(new TranslatableComponent("gui.nc.fluid_tank_renderer.can_void").withStyle(ChatFormatting.GOLD));
+                tooltip.add(new TranslationTextComponent("gui.nc.fluid_tank_renderer.can_void").withStyle(TextFormatting.GOLD));
             }
         } catch (RuntimeException e) {
             LOGGER.error("Failed to get tooltip for fluid: " + e);

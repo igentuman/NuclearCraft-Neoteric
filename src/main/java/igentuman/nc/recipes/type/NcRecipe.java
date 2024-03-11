@@ -4,14 +4,13 @@ import igentuman.nc.recipes.AbstractRecipe;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.util.annotation.NothingNullByDefault;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
-import java.util.List;
+import java.util.Arrays;
 
-import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.compat.GlobalVars.RECIPE_CLASSES;
 
@@ -42,7 +41,7 @@ public abstract class NcRecipe extends AbstractRecipe {
         this.powerModifier = powerModifier;
         this.radiationModifier = radiationModifier;
         this.rarityModifier = rarityModifier;
-        CATALYSTS.put(codeId, List.of(getToastSymbol()));
+        CATALYSTS.put(codeId, Arrays.asList(getToastSymbol()));
         RECIPE_CLASSES.put(codeId, getClass());
     }
 
@@ -74,7 +73,7 @@ public abstract class NcRecipe extends AbstractRecipe {
 
 
     @Override
-    public void write(FriendlyByteBuf buffer) {
+    public void write(PacketBuffer buffer) {
 
         buffer.writeInt(inputItems.length);
         for (ItemStackIngredient input : inputItems) {

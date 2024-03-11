@@ -6,19 +6,14 @@ import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.util.annotation.NothingNullByDefault;
-import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.item.ItemStack;
+import net.minecraft.block.BlockState;
 import net.minecraftforge.fluids.FluidStack;
-import org.antlr.v4.runtime.misc.NotNull;;
 
 import java.util.List;
 
-import static igentuman.nc.compat.GlobalVars.CATALYSTS;
-import static igentuman.nc.compat.GlobalVars.RECIPE_CLASSES;
-import static igentuman.nc.recipes.NcRecipeSerializers.SERIALIZERS;
 
 public class MelterBE extends NCProcessorBE<MelterBE.Recipe> {
     public MelterBE(BlockPos pPos, BlockState pBlockState) {

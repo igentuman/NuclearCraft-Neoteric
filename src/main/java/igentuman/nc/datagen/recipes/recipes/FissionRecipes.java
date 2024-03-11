@@ -5,11 +5,12 @@ import igentuman.nc.block.entity.fission.FissionControllerBE;
 import igentuman.nc.datagen.recipes.builder.NcRecipeBuilder;
 import igentuman.nc.recipes.ingredient.NcIngredient;
 import igentuman.nc.setup.registration.Fuel;
-import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.data.IFinishedRecipe;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -18,8 +19,8 @@ import static igentuman.nc.NuclearCraft.rl;
 public class FissionRecipes {
 
 
-    public static Consumer<FinishedRecipe> consumer;
-    public static void generate(Consumer<FinishedRecipe> consumer) {
+    public static Consumer<IFinishedRecipe> consumer;
+    public static void generate(Consumer<IFinishedRecipe> consumer) {
         FissionRecipes.consumer = consumer;
         solidFissionRecipes();
     }
@@ -34,7 +35,7 @@ public class FissionRecipes {
         double powerModifier = params.length>1 ? params[1] : 1.0;
         double radiation = params.length>2 ? params[2] : 1.0;
         NcRecipeBuilder.get(id)
-                .items(List.of(input), List.of(output))
+                .items(Arrays.asList(input), Arrays.asList(output))
                 .modifiers(timeModifier, radiation, powerModifier)
                 .build(consumer, rl(id+"/"+output.getName().replace("depleted_fuel_", "")));
     }

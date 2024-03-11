@@ -1,7 +1,7 @@
 package igentuman.nc.client.gui.processor.side;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import igentuman.nc.client.NcClient;
 import igentuman.nc.client.gui.IProgressScreen;
 import igentuman.nc.client.gui.element.NCGuiElement;
@@ -13,12 +13,12 @@ import igentuman.nc.client.gui.element.slot.NormalSlot;
 import igentuman.nc.container.NCProcessorContainer;
 import igentuman.nc.content.processors.config.ProcessorSlots;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.Widget;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.client.gui.widget.Widget;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.TextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.GuiContainerEvent;
 
 import java.util.ArrayList;
@@ -26,19 +26,19 @@ import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
 
-public class SideConfigSlotSelectionScreen<T extends NCProcessorContainer<T>> extends AbstractContainerScreen<T> implements IProgressScreen {
+public class SideConfigSlotSelectionScreen<T extends NCProcessorContainer<T>> extends ContainerScreen<T> implements IProgressScreen {
     protected final ResourceLocation GUI = new ResourceLocation(MODID, "textures/gui/window_no_inventory.png");
     protected int relX;
     protected int relY;
 
-    protected AbstractContainerScreen parentScreen;
+    protected ContainerScreen parentScreen;
 
     private ProcessorSlots slots;
 
     public List<NCGuiElement> widgets = new ArrayList<>();
     private EnergyBar energyBar;
 
-    public SideConfigSlotSelectionScreen(T container, Inventory inv, Component name) {
+    public SideConfigSlotSelectionScreen(T container, PlayerInventory inv, TextComponent name) {
         super(container, inv, name);
         imageWidth = 180;
         imageHeight = 180;
@@ -91,50 +91,50 @@ public class SideConfigSlotSelectionScreen<T extends NCProcessorContainer<T>> ex
         Minecraft.getInstance().forceSetScreen(parentScreen);
     }
 
-    public SideConfigSlotSelectionScreen(AbstractContainerScreen parentScreen) {
-        this((T)parentScreen.getMenu(), NcClient.tryGetClientPlayer().getInventory(), Component.nullToEmpty(""));
+    public SideConfigSlotSelectionScreen(ContainerScreen parentScreen) {
+        this((T)parentScreen.getMenu(), NcClient.tryGetClientPlayer().inventory, new TranslationTextComponent(""));
         this.parentScreen = parentScreen;
     }
 
     @Override
-    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(matrixStack);
         int i = this.leftPos;
         int j = this.topPos;
         this.renderBg(matrixStack, partialTicks, mouseX, mouseY);
         net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new GuiContainerEvent.DrawBackground(this, matrixStack, mouseX, mouseY));
         RenderSystem.disableDepthTest();
-        for(Widget widget : this.renderables) {
+       /* for(Widget widget : this.renderables) {
             widget.render(matrixStack, mouseX, mouseY, partialTicks);
-        }
-        PoseStack posestack = RenderSystem.getModelViewStack();
+        }*/
+        MatrixStack posestack = matrixStack;
         posestack.pushPose();
         posestack.translate((double)i, (double)j, 0.0D);
-        RenderSystem.applyModelViewMatrix();
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        //RenderSystem.applyModelViewMatrix();
+        //RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         this.hoveredSlot = null;
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+       // RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         this.renderLabels(matrixStack, mouseX, mouseY);
         posestack.popPose();
-        RenderSystem.applyModelViewMatrix();
+      //  RenderSystem.applyModelViewMatrix();
         RenderSystem.enableDepthTest();
         this.renderTooltip(matrixStack, mouseX, mouseY);
     }
 
-    private void renderWidgets(PoseStack matrix, float partialTicks, int mouseX, int mouseY) {
+    private void renderWidgets(MatrixStack matrix, float partialTicks, int mouseX, int mouseY) {
         for(NCGuiElement widget: widgets) {
             widget.draw(matrix, mouseX, mouseY, partialTicks);
         }
     }
 
     @Override
-    protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
-        drawCenteredString(matrixStack, font,  new TranslatableComponent("processor_side_config.title"), imageWidth/2, titleLabelY, 0xffffff);
+    protected void renderLabels(MatrixStack matrixStack, int mouseX, int mouseY) {
+        drawCenteredString(matrixStack, font,  new TranslationTextComponent("processor_side_config.title"), imageWidth/2, titleLabelY, 0xffffff);
     }
 
     @Override
-    protected void renderBg(PoseStack matrixStack, float partialTicks, int mouseX, int mouseY) {
-        RenderSystem.setShaderTexture(0, GUI);
+    protected void renderBg(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+        Minecraft.getInstance().getTextureManager().bind(GUI);
         updateRelativeCords();
         this.blit(matrixStack, relX, relY, 0, 0, this.imageWidth, this.imageHeight);
         renderWidgets(matrixStack, partialTicks, mouseX, mouseY);

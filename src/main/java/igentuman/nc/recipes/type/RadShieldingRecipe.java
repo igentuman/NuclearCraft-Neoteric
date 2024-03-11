@@ -1,21 +1,20 @@
 package igentuman.nc.recipes.type;
 
 import igentuman.nc.item.RadShieldingItem;
-import igentuman.nc.recipes.NcRecipeSerializers;
 import igentuman.nc.util.annotation.NothingNullByDefault;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.CraftingContainer;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CustomRecipe;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.level.Level;
+import net.minecraft.inventory.CraftingInventory;
+import net.minecraft.item.ArmorItem;
+import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.SpecialRecipe;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 
 @NothingNullByDefault
-public class RadShieldingRecipe extends CustomRecipe {
+public class RadShieldingRecipe extends SpecialRecipe {
 
     public RadShieldingRecipe(ResourceLocation id) {
         super(id);
@@ -23,7 +22,7 @@ public class RadShieldingRecipe extends CustomRecipe {
 
 
     @Override
-    public boolean matches(CraftingContainer inv, Level world) {
+    public boolean matches(CraftingInventory inv, World world) {
         ItemStack shielding = ItemStack.EMPTY;
         ItemStack armor = ItemStack.EMPTY;
         for (int i = 0; i < inv.getContainerSize(); ++i) {
@@ -47,7 +46,7 @@ public class RadShieldingRecipe extends CustomRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingContainer inv) {
+    public ItemStack assemble(CraftingInventory inv) {
         ItemStack shielding = ItemStack.EMPTY;
         ItemStack armor = ItemStack.EMPTY;
         for (int i = 0; i < inv.getContainerSize(); ++i) {
@@ -78,9 +77,9 @@ public class RadShieldingRecipe extends CustomRecipe {
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
+    public IRecipeSerializer<?> getSerializer() {
         return null;
-       // return NcRecipeSerializers.SHIELDING;
+        //return NcRecipeSerializers.SHIELDING;
     }
 
     @SubscribeEvent

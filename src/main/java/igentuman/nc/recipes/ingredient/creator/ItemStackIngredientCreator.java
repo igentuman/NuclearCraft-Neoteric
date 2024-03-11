@@ -12,19 +12,23 @@ import igentuman.nc.util.JsonConstants;
 import igentuman.nc.util.StackUtils;
 import igentuman.nc.util.TagUtil;
 import igentuman.nc.util.annotation.NothingNullByDefault;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.item.Items;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.tags.Tag;
-import net.minecraft.util.GsonHelper;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.util.JSONUtils;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.Tags;
+
 import javax.annotation.Nullable;
+import javax.security.auth.login.CredentialException;
 
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
+
 
 @NothingNullByDefault
 public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
@@ -47,12 +51,16 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
     }
 
     @Override
-    public ItemStackIngredient read(FriendlyByteBuf buffer) {
+    public ItemStackIngredient read(PacketBuffer buffer) {
         Objects.requireNonNull(buffer, "ItemStackIngredients cannot be read from a null packet buffer.");
-        return switch (buffer.readEnum(IngredientType.class)) {
-            case SINGLE -> from(Ingredient.fromNetwork(buffer), buffer.readVarInt());
-            case MULTI -> createMulti(BasePacketHandler.readArray(buffer, ItemStackIngredient[]::new, this::read));
+        switch (buffer.readEnum(IngredientType.class)) {
+            case SINGLE:
+                return from(Ingredient.fromNetwork(buffer), buffer.readVarInt());
+            case MULTI:
+                return createMulti(BasePacketHandler.readArray(buffer, ItemStackIngredient[]::new, this::read));
         };
+
+        return null;
     }
 
     @Override
@@ -81,7 +89,7 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
         int amount = 1;
         if (jsonObject.has("count")) {
             JsonElement count = jsonObject.get("count");
-            if (!GsonHelper.isNumberValue(count)) {
+            if (!JSONUtils.isNumberValue(count)) {
                 throw new JsonSyntaxException("Expected amount to be a number that is one or larger.");
             }
             amount = count.getAsJsonPrimitive().getAsInt();
@@ -109,8 +117,8 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
         }
         List<ItemStackIngredient> cleanedIngredients = new ArrayList<>();
         for (ItemStackIngredient ingredient : ingredients) {
-            if (ingredient instanceof MultiItemStackIngredient multi) {
-                Collections.addAll(cleanedIngredients, multi.ingredients);
+            if (ingredient instanceof MultiItemStackIngredient) {
+                Collections.addAll(cleanedIngredients, ((MultiItemStackIngredient) ingredient).ingredients);
             } else {
                 cleanedIngredients.add(ingredient);
             }
@@ -168,16 +176,6 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
             return false;
         }
 
-        public List<String> getItemsByTagKey(String key)
-        {
-            List<String> tmp = new ArrayList<>();
-            Tag.Named<Item> tag = TagUtil.createItemTag(new ResourceLocation(key));
-            Ingredient ing = Ingredient.fromValues(Stream.of(new Ingredient.TagValue(tag)));
-            for (ItemStack item: ing.getItems()) {
-                tmp.add(item.getItem().toString());
-            }
-            return tmp;
-        }
 
         @Override
         public List<ItemStack> getRepresentations() {
@@ -209,7 +207,7 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
         }
 
         @Override
-        public void write(FriendlyByteBuf buffer) {
+        public void write(PacketBuffer buffer) {
             buffer.writeEnum(IngredientType.SINGLE);
             ingredient.toNetwork(buffer);
             buffer.writeVarInt(amount);
@@ -312,11 +310,11 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
 
         @Override
         public final List<ItemStackIngredient> getIngredients() {
-            return List.of(ingredients);
+            return Arrays.asList(ingredients);
         }
 
         @Override
-        public void write(FriendlyByteBuf buffer) {
+        public void write(PacketBuffer buffer) {
             buffer.writeEnum(IngredientType.MULTI);
             BasePacketHandler.writeArray(buffer, ingredients, InputIngredient::write);
         }

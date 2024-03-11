@@ -9,26 +9,21 @@ import igentuman.nc.multiblock.fission.FissionReactor;
 import igentuman.nc.recipes.NcRecipeSerializers;
 import igentuman.nc.setup.registration.*;
 import igentuman.nc.world.ore.Generator;
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.effect.MobEffect;
-import net.minecraft.world.effect.MobEffectCategory;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
-import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.block.material.Material;
+import net.minecraft.entity.EntityType;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
+import net.minecraft.block.Block;
+import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.potion.Effect;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.gen.feature.ConfiguredFeature;
+import net.minecraft.world.gen.feature.Feature;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -42,16 +37,16 @@ public class Registration {
 
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
-    public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, MODID);
-    private static final DeferredRegister<MenuType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.CONTAINERS, MODID);
+    public static final DeferredRegister<TileEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, MODID);
+    private static final DeferredRegister<ContainerType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.CONTAINERS, MODID);
     private static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITIES, MODID);
     /*    private static final DeferredRegister<Codec<? extends Biome>> BIOME_MODIFIERS = DeferredRegister.create(ForgeRegistries.Keys.BIOMES, MODID);
   /*    private static final DeferredRegister<StructureType<?>> STRUCTURES = DeferredRegister.create(Registry.STRUCT, MODID);*/
     private static final DeferredRegister<Feature<?>> FEATURE_REGISTER = DeferredRegister.create(ForgeRegistries.FEATURES, MODID);
-    public static final DeferredRegister<RecipeSerializer<?>> SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, MODID);
-    public static final DeferredRegister<MobEffect> EFFECTS = DeferredRegister.create(ForgeRegistries.MOB_EFFECTS, MODID);
+    public static final DeferredRegister<IRecipeSerializer<?>> SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, MODID);
+//    public static final DeferredRegister<Effect> EFFECTS = DeferredRegister.create(Registry.EFF., MODID);
 
-    public static final RegistryObject<MobEffect> RADIATION_RESISTANCE = EFFECTS.register("radiation_resistance", () -> new RadiationResistance(MobEffectCategory.BENEFICIAL, 0xd4ffFF));
+  //  public static final RegistryObject<Effect> RADIATION_RESISTANCE = EFFECTS.register("radiation_resistance", () -> new RadiationResistance(MobEffectCategory.BENEFICIAL, 0xd4ffFF));
 
     public static void init() {
 
@@ -66,7 +61,7 @@ public class Registration {
         FEATURE_REGISTER.register(bus);
         CONTAINERS.register(bus);
         SERIALIZERS.register(bus);
-        EFFECTS.register(bus);
+    //    EFFECTS.register(bus);
 
       //  NcParticleTypes.PARTICLE_TYPES.register(bus);
 
@@ -95,7 +90,7 @@ public class Registration {
         }
     }
 
-    public static final BlockBehaviour.Properties BLOCK_PROPERTIES = BlockBehaviour.Properties.of(Material.METAL).strength(2f).requiresCorrectToolForDrops();
+    public static final Block.Properties BLOCK_PROPERTIES = Block.Properties.of(Material.METAL).strength(2f).requiresCorrectToolForDrops();
 
     //public static final TagKey<StructureSet> WASTELAND_DIMENSION_STRUCTURE_SET = TagKey.create(Registry.STRUCTURE_SET_REGISTRY, WastelandChunkGenerator.RL_WASTELAND_DIMENSION_SET);
 

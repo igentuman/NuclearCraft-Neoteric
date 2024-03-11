@@ -1,9 +1,7 @@
 package igentuman.nc.block.entity.fission;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.block.BlockState;
 
 public class FissionCasingBE extends FissionBE {
     public static String NAME = "fission_casing";

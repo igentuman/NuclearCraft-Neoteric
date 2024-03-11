@@ -1,43 +1,40 @@
 package igentuman.nc.block;
 
-import net.minecraft.core.Direction;
-import net.minecraft.core.FrontAndTop;
-import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.block.*;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.EnumProperty;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.block.material.Material;
+import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.util.Direction;
+import net.minecraft.block.BlockState;
+import net.minecraft.util.Mirror;
+import net.minecraft.util.Rotation;
 
 
 public class ElectromagnetSlopeBlock extends ElectromagnetBlock {
-    public static final EnumProperty<FrontAndTop> ORIENTATION = BlockStateProperties.ORIENTATION;
+//    public static final EnumProperty<FrontAndTop> ORIENTATION = BlockStateProperties.ORIENTATION;
 
     public ElectromagnetSlopeBlock(Properties pProperties) {
         super(Properties.of(Material.METAL)
                 .noOcclusion()
                 .strength(3f)
                 .requiresCorrectToolForDrops());
-        this.registerDefaultState(this.stateDefinition.any().setValue(ORIENTATION, FrontAndTop.NORTH_UP));
+       // this.registerDefaultState(this.stateDefinition.any().setValue(ORIENTATION, FrontAndTop.NORTH_UP));
     }
 
-    public BlockState rotate(BlockState pState, Rotation pRotation) {
+/*    public BlockState rotate(BlockState pState, Rotation pRotation) {
         return pState.setValue(ORIENTATION, pRotation.rotation().rotate(pState.getValue(ORIENTATION)));
     }
 
     public BlockState mirror(BlockState pState, Mirror pMirror) {
         return pState.setValue(ORIENTATION, pMirror.rotation().rotate(pState.getValue(ORIENTATION)));
-    }
-
+    }*/
+/*
     public static Direction getFrontFacing(BlockState pState) {
         return pState.getValue(ORIENTATION).front();
     }
 
     public static Direction getTopFacing(BlockState pState) {
         return pState.getValue(ORIENTATION).top();
-    }
-
+    }*/
+/*
     public BlockState getStateForPlacement(BlockPlaceContext pContext) {
         Direction direction = pContext.getClickedFace();
         Direction direction1;
@@ -61,5 +58,5 @@ public class ElectromagnetSlopeBlock extends ElectromagnetBlock {
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
         pBuilder.add(ORIENTATION);
-    }
+    }*/
 }

@@ -1,8 +1,8 @@
 package igentuman.nc.recipes;
 
 import igentuman.nc.recipes.type.NcRecipe;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.Level;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 import org.antlr.v4.runtime.misc.NotNull;;
 import javax.annotation.Nullable;
 
@@ -25,18 +25,18 @@ public interface INcRecipeTypeProvider<RECIPE extends NcRecipe> {
 
 
     @NotNull
-    default List<RECIPE> getRecipes(@Nullable Level world) {
+    default List<RECIPE> getRecipes(@Nullable World world) {
         return getRecipeType().getRecipes(world);
     }
 
-    default Stream<RECIPE> stream(@Nullable Level world) {
+    default Stream<RECIPE> stream(@Nullable World world) {
         return getRecipes(world).stream();
     }
     @Nullable
-    default RECIPE findFirst(@Nullable Level world, Predicate<RECIPE> matchCriteria) {
+    default RECIPE findFirst(@Nullable World world, Predicate<RECIPE> matchCriteria) {
         return stream(world).filter(matchCriteria).findFirst().orElse(null);
     }
-    default boolean contains(@Nullable Level world, Predicate<RECIPE> matchCriteria) {
+    default boolean contains(@Nullable World world, Predicate<RECIPE> matchCriteria) {
         return stream(world).anyMatch(matchCriteria);
     }
 }

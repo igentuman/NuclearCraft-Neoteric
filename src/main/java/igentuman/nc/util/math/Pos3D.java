@@ -1,13 +1,12 @@
 package igentuman.nc.util.math;
 
-import net.minecraft.core.Direction;
-import net.minecraft.core.Direction.Axis;
-import net.minecraft.core.Vec3i;
-import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
+import jdk.nashorn.internal.ir.Block;
+import net.minecraft.entity.Entity;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Vector3d;
 import org.antlr.v4.runtime.misc.NotNull;;
 
 /**
@@ -15,13 +14,13 @@ import org.antlr.v4.runtime.misc.NotNull;;
  *
  * @author aidancbrady
  */
-public class Pos3D extends Vec3 {
+public class Pos3D extends Vector3d {
 
     public Pos3D() {
         this(0, 0, 0);
     }
 
-    public Pos3D(Vec3 vec) {
+    public Pos3D(Vector3d vec) {
         super(vec.x, vec.y, vec.z);
     }
 
@@ -38,12 +37,12 @@ public class Pos3D extends Vec3 {
         this(entity.getX(), entity.getY(), entity.getZ());
     }
 
-    public static Pos3D create(BlockEntity tile) {
+    public static Pos3D create(TileEntity tile) {
         return create(tile.getBlockPos());
     }
 
-    public static Pos3D create(Vec3i vec) {
-        return new Pos3D(Vec3.atLowerCornerOf(vec));
+    public static Pos3D create(BlockPos vec) {
+        return new Pos3D(Vector3d.atLowerCornerOf(vec));
     }
 
     public static Pos3D translateMatrix(double[] matrix, Pos3D translation) {
@@ -61,8 +60,8 @@ public class Pos3D extends Vec3 {
         return Math.acos(pos1.dot(pos2));
     }
 
-    public static AABB getAABB(Vec3 pos1, Vec3 pos2) {
-        return new AABB(pos1.x, pos1.y, pos1.z, pos2.x, pos2.y, pos2.z);
+    public static AxisAlignedBB getAABB(Vector3d pos1, Vector3d pos2) {
+        return new AxisAlignedBB(pos1.x, pos1.y, pos1.z, pos2.x, pos2.y, pos2.z);
     }
 
 
@@ -70,11 +69,11 @@ public class Pos3D extends Vec3 {
     /**
      * Creates and returns a Pos3D with values representing the difference between this and the Pos3D in the parameters.
      *
-     * @param vec - Vec3 to subtract
+     * @param vec - Vector3d to subtract
      *
      * @return difference of the two Pos3Ds
      */
-    public Pos3D diff(Vec3 vec) {
+    public Pos3D diff(Vector3d vec) {
         return new Pos3D(x - vec.x, y - vec.y, z - vec.z);
     }
 
@@ -106,7 +105,7 @@ public class Pos3D extends Vec3 {
      *
      * @return translated Pos3D
      */
-    public Pos3D translate(Vec3 pos) {
+    public Pos3D translate(Vector3d pos) {
         return translate(pos.x, pos.y, pos.z);
     }
 
@@ -117,11 +116,11 @@ public class Pos3D extends Vec3 {
      *
      * @return translated Pos3D
      */
-    public Pos3D translate(Vec3... positions) {
+    public Pos3D translate(Vector3d... positions) {
         double x = this.x;
         double y = this.y;
         double z = this.z;
-        for (Vec3 position : positions) {
+        for (Vector3d position : positions) {
             x += position.x;
             y += position.y;
             z += position.z;
@@ -141,13 +140,13 @@ public class Pos3D extends Vec3 {
      */
     public Pos3D translateExcludingSide(Direction direction, double amount) {
         double xPos = x, yPos = y, zPos = z;
-        if (direction.getAxis() != Axis.X) {
+        if (direction.getAxis() != Direction.Axis.X) {
             xPos += amount;
         }
-        if (direction.getAxis() != Axis.Y) {
+        if (direction.getAxis() != Direction.Axis.Y) {
             yPos += amount;
         }
-        if (direction.getAxis() != Axis.Z) {
+        if (direction.getAxis() != Direction.Axis.Z) {
             zPos += amount;
         }
         return new Pos3D(xPos, yPos, zPos);
@@ -157,9 +156,9 @@ public class Pos3D extends Vec3 {
      * Adjusts the position for the given direction to match that as the entity
      */
     public Pos3D adjustPosition(Direction direction, Entity entity) {
-        if (direction.getAxis() == Axis.X) {
+        if (direction.getAxis() == Direction.Axis.X) {
             return new Pos3D(entity.getX(), y, z);
-        } else if (direction.getAxis() == Axis.Y) {
+        } else if (direction.getAxis() == Direction.Axis.Y) {
             return new Pos3D(x, entity.getY(), z);
         } //Axis.Z
         return new Pos3D(x, y, entity.getZ());
@@ -172,8 +171,9 @@ public class Pos3D extends Vec3 {
      *
      * @return the distance between this and the defined Pos3D
      */
-    public double distance(Vec3 pos) {
-        return Mth.length((int) (x - pos.x), y - pos.y, (int) (z - pos.z));
+    public double distance(Vector3d pos) {
+        //return Math.length((int) (x - pos.x), y - pos.y, (int) (z - pos.z));
+        return 0;
     }
 
     /**
@@ -234,7 +234,7 @@ public class Pos3D extends Vec3 {
 
     @NotNull
     @Override
-    public Pos3D multiply(Vec3 pos) {
+    public Pos3D multiply(Vector3d pos) {
         return multiply(pos.x, pos.y, pos.z);
     }
 
@@ -268,7 +268,7 @@ public class Pos3D extends Vec3 {
     public double[] getRotationMatrix(float angle) {
         double[] matrix = new double[16];
         //Note: We don't need to bother cloning it here as normalize will return a new object regardless
-        Vec3 axis = normalize();
+        Vector3d axis = normalize();
 
         double x = axis.x;
         double y = axis.y;
@@ -332,7 +332,7 @@ public class Pos3D extends Vec3 {
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof Vec3 other && other.x == x && other.y == y && other.z == z;
+        return obj instanceof Vector3d && ((Vector3d) obj).x == x && ((Vector3d) obj).y == y && ((Vector3d) obj).z == z;
     }
 
     @Override

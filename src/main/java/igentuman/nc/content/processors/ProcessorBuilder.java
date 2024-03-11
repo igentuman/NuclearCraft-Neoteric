@@ -7,22 +7,18 @@ import igentuman.nc.content.processors.config.ProcessorSlots;
 import igentuman.nc.recipes.AbstractRecipe;
 import igentuman.nc.recipes.serializers.NcRecipeSerializer;
 import igentuman.nc.recipes.type.NcRecipe;
-import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.MenuAccess;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.function.Supplier;
 
-import static igentuman.nc.compat.GlobalVars.RECIPE_CLASSES;
 
-public class ProcessorBuilder <M extends NCProcessorContainer, U extends Screen & MenuAccess<M>>{
+public class ProcessorBuilder <M extends NCProcessorContainer, U extends Screen>{
     public ProcessorPrefab processor;
     private ProcessorBuilder() { }
 
@@ -39,7 +35,7 @@ public class ProcessorBuilder <M extends NCProcessorContainer, U extends Screen 
         builder.processor = new ProcessorPrefab(name, inFluids, inItems, outFluids, outItems);
         builder.container(NCProcessorContainer.class);
         if(FMLEnvironment.dist.isClient()){
-            builder.screen(NCProcessorScreen::new);
+         //   builder.screen(NCProcessorScreen::new);
         }
         return builder;
     }
@@ -49,21 +45,21 @@ public class ProcessorBuilder <M extends NCProcessorContainer, U extends Screen 
         return this;
     }
 
-    public ProcessorBuilder blockEntity(BlockEntityType.BlockEntitySupplier<? extends NCProcessorBE> be)
+    public ProcessorBuilder blockEntity(TileEntityType<? extends NCProcessorBE> be)
     {
         processor.setBlockEntity(be);
         return this;
     }
 
     @OnlyIn(Dist.CLIENT)
-    public ProcessorBuilder screen(MenuScreens.ScreenConstructor<M, U> screenConstructor)
+    public ProcessorBuilder screen(Container screenConstructor)
     {
-        processor.setScreenConstructor(screenConstructor);
+        //processor.setScreenConstructor(screenConstructor);
         return this;
     }
 
     @OnlyIn(Dist.DEDICATED_SERVER)
-    public ProcessorBuilder<M, U> screen(Object screenConstructor)
+    public ProcessorBuilder screen(Object screenConstructor)
     {
         return this;
     }
@@ -85,7 +81,7 @@ public class ProcessorBuilder <M extends NCProcessorContainer, U extends Screen 
         return this;
     }
 
-    public ProcessorBuilder<?, ?> recipeSerializer(Supplier<RecipeSerializer<? extends AbstractRecipe>> sup) {
+    public ProcessorBuilder<?, ?> recipeSerializer(Supplier<IRecipeSerializer<? extends AbstractRecipe>> sup) {
         processor.recipeSerializerSupplier = sup;
         return this;
     }

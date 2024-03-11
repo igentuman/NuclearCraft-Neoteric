@@ -1,10 +1,10 @@
 package igentuman.nc.network;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
@@ -21,13 +21,13 @@ public class NCProcessorPacket {
         this.val = val;
     }
 
-    public NCProcessorPacket(FriendlyByteBuf buf) {
+    public NCProcessorPacket(PacketBuffer buf) {
         this.pos = buf.readBlockPos();
         this.id = buf.readInt();
         this.val = buf.readByte();
     }
 
-    public void toBytes(FriendlyByteBuf buf) {
+    public void toBytes(PacketBuffer buf) {
         buf.writeBlockPos(pos);
         buf.writeInt(id);
         buf.writeByte(val);
@@ -37,8 +37,8 @@ public class NCProcessorPacket {
         NetworkEvent.Context context = supplier.get();
         context.enqueueWork(() -> {
 
-            ServerPlayer player = context.getSender();
-            BlockEntity be = player.level.getBlockEntity(pos);
+            ServerPlayerEntity player = context.getSender();
+            TileEntity be = player.level.getBlockEntity(pos);
 
         });
         return true;

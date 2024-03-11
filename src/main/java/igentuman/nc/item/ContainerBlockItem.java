@@ -1,29 +1,29 @@
 package igentuman.nc.item;
 
 import igentuman.nc.setup.registration.CreativeTabs;
-import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.item.ItemStack;
+import net.minecraft.block.Block;
+import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class ContainerBlockItem extends BlockItem
 {
-	public ContainerBlockItem(Block pBlock, Properties props)
+	public ContainerBlockItem(Block pBlock, Item.Properties props)
 	{
 		this(pBlock, props, CreativeTabs.NC_BLOCKS);
 	}
 
-	public ContainerBlockItem(Block pBlock, Properties props, CreativeModeTab group)
+	public ContainerBlockItem(Block pBlock, Properties props, ItemGroup group)
 	{
 		super(pBlock, new Properties().tab(group).stacksTo(1));
 	}
@@ -42,11 +42,6 @@ public class ContainerBlockItem extends BlockItem
 		return false;
 	}
 
-	public boolean canEquip(ItemStack stack, EquipmentSlot armorType, Entity entity)
-	{
-		return false;
-	}
-
 
 	public String code()
 	{
@@ -54,10 +49,10 @@ public class ContainerBlockItem extends BlockItem
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, @javax.annotation.Nullable Level world, List<Component> list, TooltipFlag flag)
+	public void appendHoverText(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
 	{
-		list.add(new TranslatableComponent("tooltip.nc.content_saved").withStyle(ChatFormatting.GRAY));
-		list.add(new TranslatableComponent("tooltip.nc.use_multitool").withStyle(ChatFormatting.YELLOW));
+		list.add(new TranslationTextComponent("tooltip.nc.content_saved").withStyle(TextFormatting.GRAY));
+		list.add(new TranslationTextComponent("tooltip.nc.use_multitool").withStyle(TextFormatting.YELLOW));
 	}
 
 }

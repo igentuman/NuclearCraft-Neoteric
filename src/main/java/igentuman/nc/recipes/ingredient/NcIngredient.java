@@ -2,17 +2,14 @@ package igentuman.nc.recipes.ingredient;
 
 import com.google.common.collect.Lists;
 import com.google.gson.*;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntComparators;
 import it.unimi.dsi.fastutil.ints.IntList;
-import net.minecraft.core.Registry;
-import net.minecraft.network.chat.Component;
-import net.minecraft.tags.Tag;
-import net.minecraft.world.entity.player.StackedContents;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.ItemLike;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.util.IItemProvider;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.common.Tags;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
@@ -20,6 +17,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
+
+import static net.minecraft.item.Items.BARRIER;
 
 public class NcIngredient extends Ingredient {
    private static final java.util.concurrent.atomic.AtomicInteger INVALIDATION_COUNTER = new java.util.concurrent.atomic.AtomicInteger();
@@ -82,7 +81,7 @@ public class NcIngredient extends Ingredient {
             return pStack.isEmpty();
          } else {
             for(ItemStack itemstack : this.itemStacks) {
-               if (itemstack.is(pStack.getItem())) {
+               if (itemstack.sameItem(pStack)) {
                   return true;
                }
             }
@@ -96,16 +95,17 @@ public class NcIngredient extends Ingredient {
 
    public JsonElement toJson() {
       if (this.values.length == 1) {
-         return this.values[0].serialize();
+       //  return this.values[0].serialize();
       } else {
          JsonArray jsonarray = new JsonArray();
 
          for(NcIngredient.Value ingredient$value : this.values) {
-            jsonarray.add(ingredient$value.serialize());
+       //     jsonarray.add(ingredient$value.serialize());
          }
 
          return jsonarray;
       }
+      return new JsonArray();
    }
 
    public boolean isEmpty() {
@@ -124,7 +124,7 @@ public class NcIngredient extends Ingredient {
       return EMPTY;
    }
 
-   public static NcIngredient of(ItemLike... pItems) {
+   public static NcIngredient of(IItemProvider... pItems) {
       return stack(Arrays.stream(pItems).map(ItemStack::new));
    }
 
@@ -143,7 +143,7 @@ public class NcIngredient extends Ingredient {
       }).map(NcIngredient.ItemValue::new));
    }
 
-   public static NcIngredient of(Tag.Named<Item> pTag, int ... pCounts) {
+   public static NcIngredient of(Tags.IOptionalNamedTag<Item> pTag, int ... pCounts) {
       return  fromVals(Stream.of(new NcIngredient.TagValue(pTag, pCounts)))
               .withCount(pCounts);
    }
@@ -192,10 +192,10 @@ public class NcIngredient extends Ingredient {
    }
 
    public static class TagValue implements NcIngredient.Value {
-      private final Tag.Named<Item> tag;
+      private final Tags.IOptionalNamedTag<Item> tag;
       private final int count;
 
-      public TagValue(Tag.Named<Item> pTag, int...pCount) {
+      public TagValue(Tags.IOptionalNamedTag<Item> pTag, int...pCount) {
          this.tag = pTag;
          if(pCount.length > 0) {
             count = pCount[0];
@@ -216,7 +216,7 @@ public class NcIngredient extends Ingredient {
          }
 
          if (list.size() == 0) {
-            list.add(new ItemStack(net.minecraft.world.level.block.Blocks.BARRIER).setHoverName(Component.nullToEmpty("Empty Tag: " + this.tag.getName())));
+            list.add(new ItemStack(BARRIER).setHoverName(new TranslationTextComponent("Empty Tag: " + this.tag.getName())));
          }
          return list;
       }
@@ -231,7 +231,7 @@ public class NcIngredient extends Ingredient {
       }
    }
 
-   public interface Value  extends Ingredient.Value{
+   public interface Value  extends Ingredient.IItemList{
       String getName();
    }
 }

@@ -2,9 +2,9 @@ package igentuman.nc.datagen.recipes.builder;
 
 import com.google.gson.JsonObject;
 import igentuman.nc.util.annotation.NothingNullByDefault;
-import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.data.IFinishedRecipe;
+import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
@@ -13,21 +13,21 @@ import javax.annotation.Nullable;
 import java.util.function.Consumer;
 
 @NothingNullByDefault
-public class SpecialRecipeBuilder implements FinishedRecipe {
+public class SpecialRecipeBuilder implements IFinishedRecipe {
 
-    private final RecipeSerializer<?> serializer;
+    private final IRecipeSerializer<?> serializer;
 
-    private SpecialRecipeBuilder(RecipeSerializer<?> serializer) {
+    private SpecialRecipeBuilder(IRecipeSerializer<?> serializer) {
         this.serializer = serializer;
     }
 
 
-    public static void build(Consumer<FinishedRecipe> consumer, RecipeSerializer<?> serializer) {
+    public static void build(Consumer<IFinishedRecipe> consumer, IRecipeSerializer<?> serializer) {
         consumer.accept(new SpecialRecipeBuilder(serializer));
     }
 
     @Override
-    public RecipeSerializer<?> getType() {
+    public IRecipeSerializer<?> getType() {
         return serializer;
     }
 
@@ -40,7 +40,7 @@ public class SpecialRecipeBuilder implements FinishedRecipe {
         return registry.getKey(element);
     }
 
-    public static ResourceLocation getName(RecipeSerializer<?> element) {
+    public static ResourceLocation getName(IRecipeSerializer<?> element) {
         return getName(ForgeRegistries.RECIPE_SERIALIZERS, element);
     }
 

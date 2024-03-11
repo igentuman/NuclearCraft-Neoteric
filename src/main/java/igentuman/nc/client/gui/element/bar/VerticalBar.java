@@ -1,11 +1,11 @@
 package igentuman.nc.client.gui.element.bar;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import igentuman.nc.client.gui.FusionCoreScreen;
 import igentuman.nc.client.gui.IVerticalBarScreen;
 import igentuman.nc.client.gui.element.NCGuiElement;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -21,6 +21,7 @@ public class VerticalBar extends NCGuiElement {
     IVerticalBarScreen screen;
 
     public VerticalBar(int x, int y, IVerticalBarScreen screen, long max)  {
+        super(x, y, 8, 88, new TranslationTextComponent(""));
         this.x = x;
         this.y = y;
         xOffset = 96;
@@ -31,14 +32,14 @@ public class VerticalBar extends NCGuiElement {
         height = 88;
     }
 
-    public List<Component> getTooltips() {
+    public List<ITextComponent> getTooltips() {
         if(hintKey.isEmpty()) return tooltips;
-        tooltips.add(new TranslatableComponent(hintKey, scaledFormat(barValue), scaledFormat(maxValue)));
+        tooltips.add(new TranslationTextComponent(hintKey, scaledFormat(barValue), scaledFormat(maxValue)));
         return tooltips;
     }
 
     @Override
-    public void draw(PoseStack transform, int mX, int mY, float pTicks) {
+    public void draw(MatrixStack transform, int mX, int mY, float pTicks) {
         super.draw(transform, mX, mY, pTicks);
         int internal = height-2;
         int stored = (int)Math.min(internal, internal*(barValue/maxValue));
@@ -58,7 +59,7 @@ public class VerticalBar extends NCGuiElement {
             hintKey = "heat.bar.amount";
         }
         @Override
-        public void draw(PoseStack transform, int mX, int mY, float pTicks) {
+        public void draw(MatrixStack transform, int mX, int mY, float pTicks) {
             barValue = screen.getHeat();
             super.draw(transform, mX, mY, pTicks);
         }
@@ -80,7 +81,7 @@ public class VerticalBar extends NCGuiElement {
         }
 
         @Override
-        public void draw(PoseStack transform, int mX, int mY, float pTicks) {
+        public void draw(MatrixStack transform, int mX, int mY, float pTicks) {
             if(heat != null) {
                 barValue = heat.get();
             } else {
@@ -98,7 +99,7 @@ public class VerticalBar extends NCGuiElement {
         }
 
         @Override
-        public void draw(PoseStack transform, int mX, int mY, float pTicks) {
+        public void draw(MatrixStack transform, int mX, int mY, float pTicks) {
             barValue = screen.getEnergy();
             super.draw(transform, mX, mY, pTicks);
         }
@@ -115,7 +116,7 @@ public class VerticalBar extends NCGuiElement {
         }
 
         @Override
-        public void draw(PoseStack transform, int mX, int mY, float pTicks) {
+        public void draw(MatrixStack transform, int mX, int mY, float pTicks) {
             barValue = screen.getEnergy();
             super.draw(transform, mX, mY, pTicks);
         }
@@ -128,7 +129,7 @@ public class VerticalBar extends NCGuiElement {
         }
 
         @Override
-        public void draw(PoseStack transform, int mX, int mY, float pTicks) {
+        public void draw(MatrixStack transform, int mX, int mY, float pTicks) {
             barValue = screen.getCoolant();
             super.draw(transform, mX, mY, pTicks);
         }
@@ -144,7 +145,7 @@ public class VerticalBar extends NCGuiElement {
         }
 
         @Override
-        public void draw(PoseStack transform, int mX, int mY, float pTicks) {
+        public void draw(MatrixStack transform, int mX, int mY, float pTicks) {
             barValue = screen.getCoolant();
             super.draw(transform, mX, mY, pTicks);
         }
@@ -158,7 +159,7 @@ public class VerticalBar extends NCGuiElement {
         }
 
         @Override
-        public void draw(PoseStack transform, int mX, int mY, float pTicks) {
+        public void draw(MatrixStack transform, int mX, int mY, float pTicks) {
             barValue = screen.getHotCoolant();
             super.draw(transform, mX, mY, pTicks);
         }

@@ -2,14 +2,13 @@ package igentuman.nc.container;
 
 import igentuman.nc.container.elements.NCSlotItemHandler;
 import igentuman.nc.setup.registration.NCItems;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.entity.player.PlayerEntity;
 
-public class LeacherContainer<T extends AbstractContainerMenu> extends NCProcessorContainer<T> {
+public class LeacherContainer extends NCProcessorContainer<LeacherContainer> {
 
-    public LeacherContainer(int windowId, BlockPos pos, Inventory playerInventory, Player player, String name) {
+    public LeacherContainer(int windowId, BlockPos pos, PlayerInventory playerInventory, PlayerEntity player, String name) {
         super(windowId, pos, playerInventory, player, name);
     }
 

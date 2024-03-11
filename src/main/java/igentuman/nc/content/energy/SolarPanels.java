@@ -6,11 +6,13 @@ import igentuman.nc.block.entity.energy.solar.AdvancedSolarBE;
 import igentuman.nc.block.entity.energy.solar.BasicSolarBE;
 import igentuman.nc.block.entity.energy.solar.DuSolarBE;
 import igentuman.nc.block.entity.energy.solar.EliteSolarBE;
-import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.tileentity.TileEntityType;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Supplier;
 
 import static igentuman.nc.handler.config.CommonConfig.ENERGY_GENERATION;
 
@@ -21,10 +23,10 @@ public class SolarPanels {
 
     public static HashMap<String, SolarPanelPrefab> all() {
         if(all.isEmpty()) {
-            all.put("basic", new SolarPanelPrefab("basic",25).setBlockEntity(BasicSolarBE::new));
-            all.put("advanced", new SolarPanelPrefab("advanced",100).setBlockEntity(AdvancedSolarBE::new));
-            all.put("du", new SolarPanelPrefab("du",400).setBlockEntity(DuSolarBE::new));
-            all.put("elite", new SolarPanelPrefab("elite",1500).setBlockEntity(EliteSolarBE::new));
+            all.put("basic", new SolarPanelPrefab("basic",25)/*.setBlockEntity(BasicSolarBE::new)*/);
+            all.put("advanced", new SolarPanelPrefab("advanced",100)/*.setBlockEntity(AdvancedSolarBE::new)*/);
+            all.put("du", new SolarPanelPrefab("du",400)/*.setBlockEntity(DuSolarBE::new)*/);
+            all.put("elite", new SolarPanelPrefab("elite",1500)/*.setBlockEntity(EliteSolarBE::new)*/);
         }
         return all;
     }
@@ -88,7 +90,7 @@ public class SolarPanels {
         {
             if(!initialized) {
                 try {
-                    int id = SolarPanels.all().keySet().stream().toList().indexOf(name);
+                    int id = Arrays.asList(SolarPanels.all().keySet().stream().toArray()).indexOf(name);
                     registered = ENERGY_GENERATION.REGISTER_SOLAR_PANELS.get().get(id);
                     generation = ENERGY_GENERATION.SOLAR_PANELS_GENERATION.get().get(id);
                     initialized = true;
@@ -102,14 +104,14 @@ public class SolarPanels {
             return  registered;
         }
 
-        public BlockEntityType.BlockEntitySupplier<? extends NCEnergy>  getBlockEntity() {
+        public Supplier<TileEntityType<? extends NCEnergy>> getBlockEntity() {
             return blockEntity;
         }
 
-        public SolarPanelPrefab setBlockEntity(BlockEntityType.BlockEntitySupplier<? extends NCEnergy>  blockEntity) {
+        public SolarPanelPrefab setBlockEntity(Supplier<TileEntityType<? extends NCEnergy>> blockEntity) {
             this.blockEntity = blockEntity;
             return this;
         }
-        private BlockEntityType.BlockEntitySupplier<? extends NCEnergy>  blockEntity;
+        private Supplier<TileEntityType<? extends NCEnergy>>  blockEntity;
     }
 }

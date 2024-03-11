@@ -1,45 +1,47 @@
 package igentuman.nc.client.gui.element.button;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.client.gui.processor.side.SideConfigSlotSelectionScreen;
 import igentuman.nc.container.NCProcessorContainer;
 import igentuman.nc.client.gui.element.NCGuiElement;
 import igentuman.nc.network.toServer.PacketGuiButtonPress;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.ImageButton;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.client.gui.widget.button.ImageButton;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
-    protected AbstractContainerMenu container;
-    protected AbstractContainerScreen<?> screen;
+public class Button<T extends ContainerScreen<?>> extends NCGuiElement {
+    protected ContainerScreen<?> container;
+    protected ContainerScreen<?> screen;
     protected int bId;
 
     protected ImageButton btn;
-    protected Component tooltipKey  = Component.nullToEmpty("");
+    protected ITextComponent tooltipKey  = new TranslationTextComponent("");
 
     public Button(int xPos, int yPos, T screen, int id)  {
+        super(xPos, yPos, 18, 18, new TranslationTextComponent(""));
         x = xPos;
         y = yPos;
-        this.container = screen.getMenu();
+        //this.container = screen.getMenu();
         this.screen = screen;
         bId = id;
     }
 
-    public List<Component> getTooltips() {
-        return List.of(tooltipKey);
+    public List<ITextComponent> getTooltips() {
+        return Arrays.asList(tooltipKey);
     }
 
     @Override
-    public void draw(PoseStack transform, int mX, int mY, float pTicks) {
+    public void draw(MatrixStack transform, int mX, int mY, float pTicks) {
         super.draw(transform, mX, mY, pTicks);
         btn.render(transform, mX, mY, pTicks);
     }
@@ -51,14 +53,14 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
     }
 
     public static class SideConfig extends Button {
-        public SideConfig(int xPos, int yPos, AbstractContainerScreen<?> screen) {
+        public SideConfig(int xPos, int yPos, ContainerScreen<?> screen) {
             super(xPos, yPos, screen, 69);//nice
             height = 18;
             width = 18;
             btn = new ImageButton(X(), Y(), width, height, 220, 220, 18, TEXTURE, pButton -> {
                 Minecraft.getInstance().forceSetScreen(new SideConfigSlotSelectionScreen<>(screen));
             });
-            tooltipKey = new TranslatableComponent("gui.nc.side_config.tooltip");
+            tooltipKey = new TranslationTextComponent("gui.nc.side_config.tooltip");
         }
     }
 
@@ -68,7 +70,7 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
 
         public int mode = 0;
 
-        public RedstoneConfig(int xPos, int yPos, AbstractContainerScreen<?> screen, BlockPos pos) {
+        public RedstoneConfig(int xPos, int yPos, ContainerScreen<?> screen, BlockPos pos) {
             super(xPos, yPos, screen, 70);
             this.pos = pos;
             height = 18;
@@ -78,8 +80,8 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
             });
         }
 
-        public List<Component> getTooltips() {
-            return List.of(new TranslatableComponent("gui.nc.redstone_config.tooltip_"+mode));
+        public List<ITextComponent> getTooltips() {
+            return Arrays.asList(new TranslationTextComponent("gui.nc.redstone_config.tooltip_"+mode));
         }
 
         public void setMode(int redstoneMode) {
@@ -99,7 +101,7 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
 
         public int mode = 0;
 
-        public ShowRecipes(int xPos, int yPos, AbstractContainerScreen<?> screen, BlockPos pos) {
+        public ShowRecipes(int xPos, int yPos, ContainerScreen<?> screen, BlockPos pos) {
             super(xPos, yPos, screen, 70);
             this.pos = pos;
             height = 18;
@@ -109,8 +111,8 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
             });
         }
 
-        public List<Component> getTooltips() {
-            return List.of();
+        public List<ITextComponent> getTooltips() {
+            return Arrays.asList();
         }
 
         public void setMode(int redstoneMode) {
@@ -125,7 +127,7 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
     }
 
     public static class CloseConfig extends Button {
-        public <T extends NCProcessorContainer> CloseConfig(int xPos, int yPos, AbstractContainerScreen<T> screen) {
+        public <T extends NCProcessorContainer> CloseConfig(int xPos, int yPos, ContainerScreen<T> screen) {
             super(xPos, yPos, screen, 71);
             height = 18;
             width = 18;
@@ -142,7 +144,7 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
         public byte strength = 0;
         public int timer = 2000;
 
-        public ReactorMode(int xPos, int yPos, AbstractContainerScreen<?> screen, BlockPos pos) {
+        public ReactorMode(int xPos, int yPos, ContainerScreen<?> screen, BlockPos pos) {
             super(xPos, yPos, screen, BTN_ID);
             this.pos = pos;
             height = 18;
@@ -152,14 +154,14 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
             });
         }
 
-        public List<Component> getTooltips() {
+        public List<ITextComponent> getTooltips() {
             String code = "energy";
             if(mode) code = "steam";
-            List<Component> list = new ArrayList<>(List.of(
-                    new TranslatableComponent("gui.nc.reactor_mode.tooltip_" + code)
+            List<ITextComponent> list = new ArrayList<>(Arrays.asList(
+                    new TranslationTextComponent("gui.nc.reactor_mode.tooltip_" + code)
             ));
             if(timer < 2000) {
-                list.add(new TranslatableComponent("gui.nc.reactor_mode.timer", timer/20));
+                list.add(new TranslationTextComponent("gui.nc.reactor_mode.timer", timer/20));
             }
             return list;
         }
@@ -186,7 +188,7 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
         public byte mode = 2;
         public byte strength = 0;
 
-        public ReactorComparatorModeButton(int xPos, int yPos, AbstractContainerScreen<?> screen, BlockPos pos) {
+        public ReactorComparatorModeButton(int xPos, int yPos, ContainerScreen<?> screen, BlockPos pos) {
             super(xPos, yPos, screen, BTN_ID);
             this.pos = pos;
             height = 18;
@@ -196,10 +198,10 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
             });
         }
 
-        public List<Component> getTooltips() {
-            return List.of(
-                    new TranslatableComponent("gui.nc.reactor_comparator_config.tooltip_"+mode),
-                    new TranslatableComponent("gui.nc.reactor_comparator_strength.tooltip", strength)
+        public List<ITextComponent> getTooltips() {
+            return Arrays.asList(
+                    new TranslationTextComponent("gui.nc.reactor_comparator_config.tooltip_"+mode),
+                    new TranslationTextComponent("gui.nc.reactor_comparator_strength.tooltip", strength)
                     );
         }
 

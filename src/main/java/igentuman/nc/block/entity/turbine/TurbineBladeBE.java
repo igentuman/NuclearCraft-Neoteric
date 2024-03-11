@@ -5,10 +5,9 @@ import igentuman.nc.block.entity.fission.FissionBE;
 import igentuman.nc.multiblock.turbine.BladeDef;
 import igentuman.nc.multiblock.turbine.CoilDef;
 import igentuman.nc.multiblock.turbine.TurbineRegistration;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.Direction;
+import net.minecraft.block.BlockState;
 
 public class TurbineBladeBE extends TurbineBE {
     public static String NAME = "turbine_blade";
@@ -25,7 +24,7 @@ public class TurbineBladeBE extends TurbineBE {
         if(multiblock() != null) {
             if (refreshCacheFlag) {
                 for (Direction dir : Direction.values()) {
-                    //BlockEntity be = getLevel().getBlockEntity(getBlockPos().relative(dir));
+                    //TileEntity be = getLevel().getBlockEntity(getBlockPos().relative(dir));
                 }
                 refreshCacheFlag = false;
             }

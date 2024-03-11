@@ -4,10 +4,9 @@ import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.recipes.AbstractRecipe;
 import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
-import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.util.Direction;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -17,7 +16,7 @@ import java.util.List;
 
 import static igentuman.nc.handler.sided.SlotModePair.SlotMode.INPUT;
 
-public class SidedContentHandler implements INBTSerializable<Tag> {
+public class SidedContentHandler implements INBTSerializable<CompoundNBT> {
 
     public final int inputItemSlots;
     public final int outputItemSlots;
@@ -56,15 +55,15 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
         }
     }
 
-    public static Tag serializeSideMap(HashMap<Integer, SlotModePair[]> sideMap) {
-        CompoundTag nbt = new CompoundTag();
+    public static CompoundNBT serializeSideMap(HashMap<Integer, SlotModePair[]> sideMap) {
+        CompoundNBT nbt = new CompoundNBT();
         for (int i = 0; i < 6; i++) {
             nbt.put("side"+i, SlotModePair.serializeArray(sideMap.get(i)));
         }
         return nbt;
     }
 
-    public static HashMap<Integer, SlotModePair[]> deserializeSideMap(CompoundTag sideMap) {
+    public static HashMap<Integer, SlotModePair[]> deserializeSideMap(CompoundNBT sideMap) {
         HashMap<Integer, SlotModePair[]> map = new HashMap<>();
         for (int i = 0; i < 6; i++) {
             map.put(i, SlotModePair.deserializeArray(sideMap.getCompound("side"+i)));
@@ -73,8 +72,8 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
     }
 
     @Override
-    public Tag serializeNBT() {
-        CompoundTag nbt = new CompoundTag();
+    public CompoundNBT serializeNBT() {
+        CompoundNBT nbt = new CompoundNBT();
 
         if(itemHandler != null) {
             nbt.put("itemHandler", itemHandler.serializeNBT());
@@ -86,12 +85,12 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
     }
 
     @Override
-    public void deserializeNBT(Tag nbt) {
+    public void deserializeNBT(CompoundNBT nbt) {
         if(itemHandler != null) {
-            itemHandler.deserializeNBT(((CompoundTag) nbt).getCompound("itemHandler"));
+            itemHandler.deserializeNBT(((CompoundNBT) nbt).getCompound("itemHandler"));
         }
         if(fluidCapability != null) {
-            fluidCapability.deserializeNBT(((CompoundTag) nbt).getCompound("fluidHandler"));
+            fluidCapability.deserializeNBT(((CompoundNBT) nbt).getCompound("fluidHandler"));
         }
     }
 

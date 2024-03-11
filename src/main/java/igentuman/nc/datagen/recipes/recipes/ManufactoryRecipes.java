@@ -4,16 +4,16 @@ import com.google.common.collect.Lists;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.content.materials.Materials;
 import igentuman.nc.setup.registration.NCItems;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.IFinishedRecipe;
 
 import java.util.function.Consumer;
 
 import static igentuman.nc.setup.registration.NCItems.ALL_NC_ITEMS;
-import static net.minecraft.world.item.Items.*;
+import static net.minecraft.item.Items.*;
 
 public class ManufactoryRecipes extends AbstractRecipeProvider {
 
-    public static void generate(Consumer<FinishedRecipe> consumer) {
+    public static void generate(Consumer<IFinishedRecipe> consumer) {
         ManufactoryRecipes.consumer = consumer;
         ID = Processors.MANUFACTORY;
         for(String name: Materials.all().keySet()) {

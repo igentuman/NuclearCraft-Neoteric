@@ -1,29 +1,34 @@
 package igentuman.nc.client.block.turbine;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import igentuman.nc.block.entity.fusion.FusionCoreBE;
 import igentuman.nc.block.fusion.FusionCoreBlock;
 import igentuman.nc.util.annotation.NothingNullByDefault;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Util;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.block.BlockState;
+import net.minecraft.util.math.vector.Vector3f;
 
 @NothingNullByDefault
-public class TurbineRotorRenderer implements BlockEntityRenderer<BlockEntity> {
-    private final BlockEntityRendererProvider.Context context;
+public class TurbineRotorRenderer extends TileEntityRenderer<TileEntity> {
+    public TurbineRotorRenderer(TileEntityRendererDispatcher p_i226006_1_) {
+        super(p_i226006_1_);
+    }
+
+    @Override
+    public void render(TileEntity tileEntity, float v, MatrixStack matrixStack, IRenderTypeBuffer iRenderTypeBuffer, int i, int i1) {
+
+    }
+  /*  private final BlockEntityRendererProvider.Context context;
 
     public TurbineRotorRenderer(BlockEntityRendererProvider.Context manager) {
         context = manager;
@@ -36,7 +41,7 @@ public class TurbineRotorRenderer implements BlockEntityRenderer<BlockEntity> {
     public float dx = 0.5f;
     public float dz = 0.5f;
     @Override
-    public void render(BlockEntity pBlockEntity, float pPartialTick, PoseStack pPoseStack, MultiBufferSource buffer, int packedLight, int combinedOverlay) {
+    public void render(TileEntity pBlockEntity, float pPartialTick, MatrixStack pMatrixStack, MultiBufferSource buffer, int packedLight, int combinedOverlay) {
         BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
         BlockState blockstate = pBlockEntity.getBlockState();
         FusionCoreBE<?> coreBe = (FusionCoreBE<?>) pBlockEntity;
@@ -46,8 +51,8 @@ public class TurbineRotorRenderer implements BlockEntityRenderer<BlockEntity> {
 
         BakedModel center = blockRenderer.getBlockModel(blockstate.setValue(FusionCoreBlock.ACTIVE, true));
 
-        pPoseStack.clear();
-        pPoseStack.pushPose();
+        pMatrixStack.clear();
+        pMatrixStack.pushPose();
 
         long time = Util.getMillis();
         float step = -0.08f;
@@ -60,27 +65,27 @@ public class TurbineRotorRenderer implements BlockEntityRenderer<BlockEntity> {
             angel = 45f;
         }
         angel %= 360;
-        pPoseStack.translate(dx, 0, dz);
-        pPoseStack.mulPose(Vector3f.YN.rotationDegrees(angel));
-        pPoseStack.scale(1.4f, sy, 1.4f);
-        pPoseStack.translate(-dx, 0.135f, -dz);
-        blockRenderer.getModelRenderer().renderModel(pPoseStack.last(), buffer.getBuffer(RenderType.cutout()), blockstate, center, 1, 1, 1, LightTexture.FULL_SKY, combinedOverlay);
-        pPoseStack.popPose();
+        pMatrixStack.translate(dx, 0, dz);
+        pMatrixStack.mulPose(Vector3f.YN.rotationDegrees(angel));
+        pMatrixStack.scale(1.4f, sy, 1.4f);
+        pMatrixStack.translate(-dx, 0.135f, -dz);
+        blockRenderer.getModelRenderer().renderModel(pMatrixStack.last(), buffer.getBuffer(RenderType.cutout()), blockstate, center, 1, 1, 1, LightTexture.FULL_SKY, combinedOverlay);
+        pMatrixStack.popPose();
 
         BakedModel base = itemRenderer.getModel(core, pBlockEntity.getLevel(), null, 0);
-        pPoseStack.clear();
-        pPoseStack.pushPose();
-        pPoseStack.translate(0.5, 1.35, 0.5);
-        pPoseStack.scale(3.80F, 3.80F, 3.80F);
+        pMatrixStack.clear();
+        pMatrixStack.pushPose();
+        pMatrixStack.translate(0.5, 1.35, 0.5);
+        pMatrixStack.scale(3.80F, 3.80F, 3.80F);
         itemRenderer.render(
                 core,
                 ItemTransforms.TransformType.FIXED,
-                false, pPoseStack, buffer, LightTexture.FULL_SKY, combinedOverlay,
+                false, pMatrixStack, buffer, LightTexture.FULL_SKY, combinedOverlay,
                 base);
 
 
-       // blockRenderer.renderSingleBlock(blockstate, pPoseStack, buffer, packedLight, combinedOverlay, pBlockEntity.getModelData(), RenderType.cutout());
-        pPoseStack.popPose();
+       // blockRenderer.renderSingleBlock(blockstate, pMatrixStack, buffer, packedLight, combinedOverlay, pBlockEntity.getModelData(), RenderType.cutout());
+        pMatrixStack.popPose();
 
     }
 
@@ -95,7 +100,7 @@ public class TurbineRotorRenderer implements BlockEntityRenderer<BlockEntity> {
     }
 
     @Override
-    public boolean shouldRender(BlockEntity pBlockEntity, Vec3 pCameraPos) {
+    public boolean shouldRender(BlockEntity pBlockEntity, Vector3d pCameraPos) {
         return BlockEntityRenderer.super.shouldRender(pBlockEntity, pCameraPos);
-    }
+    }*/
 }

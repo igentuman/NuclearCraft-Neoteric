@@ -1,18 +1,18 @@
 package igentuman.nc.util;
 
-import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.Style;
+import net.minecraft.util.text.IFormattableTextComponent;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextComponent;
+import net.minecraft.util.text.TextFormatting;
 
 import java.text.DecimalFormat;
 
 public class TextUtils
 {
-	public static MutableComponent applyFormat(Component component, ChatFormatting... color)
+	public static IFormattableTextComponent applyFormat(TextComponent component, TextFormatting... color)
 	{
 		Style style = component.getStyle();
-		for(ChatFormatting format : color)
+		for(TextFormatting format : color)
 			style = style.applyFormat(format);
 		return component.copy().setStyle(style);
 	}

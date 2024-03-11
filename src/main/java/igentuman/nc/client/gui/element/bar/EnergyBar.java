@@ -1,8 +1,9 @@
 package igentuman.nc.client.gui.element.bar;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import igentuman.nc.client.gui.element.NCGuiElement;
-import net.minecraft.network.chat.Component;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.energy.IEnergyStorage;
 
 import java.util.List;
@@ -13,6 +14,7 @@ public class EnergyBar extends NCGuiElement {
     private final IEnergyStorage energy;
 
     public EnergyBar(int xMin, int yMin, IEnergyStorage energy)  {
+        super(xMin, yMin, 16, 88, new TranslationTextComponent("nc.gui.energy"));
         this.energy = energy;
         x = xMin;
         y = yMin;
@@ -20,13 +22,13 @@ public class EnergyBar extends NCGuiElement {
         height = 88;
     }
 
-    public List<Component> getTooltips() {
-        tooltips.add(Component.nullToEmpty(scaledFormat(energy.getEnergyStored())+"/"+scaledFormat(energy.getMaxEnergyStored())+" FE"));
+    public List<ITextComponent> getTooltips() {
+        tooltips.add(new TranslationTextComponent(scaledFormat(energy.getEnergyStored())+"/"+scaledFormat(energy.getMaxEnergyStored())+" FE"));
         return tooltips;
     }
 
     @Override
-    public void draw(PoseStack transform, int mX, int mY, float pTicks) {
+    public void draw(MatrixStack transform, int mX, int mY, float pTicks) {
         super.draw(transform, mX, mY, pTicks);
         int stored = (int)(86*(energy.getEnergyStored()/(float)energy.getMaxEnergyStored()));
         blit(transform, X(), Y(), 36, 0,  18, 88);

@@ -1,8 +1,8 @@
 package igentuman.nc.handler;
 
 import igentuman.nc.util.CustomEnergyStorage;
-import net.minecraft.core.Direction;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.util.Direction;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;

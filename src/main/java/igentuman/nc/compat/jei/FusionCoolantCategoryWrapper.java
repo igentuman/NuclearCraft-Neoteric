@@ -1,6 +1,6 @@
 package igentuman.nc.compat.jei;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import igentuman.nc.block.entity.fusion.FusionCoreBE;
 import igentuman.nc.compat.jei.util.TickTimer;
 import mezz.jei.api.constants.VanillaTypes;
@@ -10,11 +10,11 @@ import mezz.jei.api.gui.drawable.IDrawableAnimated;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.item.ItemStack;
 import org.antlr.v4.runtime.misc.NotNull;
 
 import java.util.ArrayList;
@@ -60,8 +60,8 @@ public class FusionCoolantCategoryWrapper<T extends FusionCoreBE.FusionCoolantRe
     }
 
     @Override
-    public @NotNull Component getTitle() {
-        return new TranslatableComponent("nc_jei_cat."+getRecipeType().getUid().getPath());
+    public @NotNull String getTitle() {
+        return new TranslationTextComponent("nc_jei_cat."+getRecipeType().getUid().getPath()).getString();
     }
 
     @Override
@@ -76,10 +76,10 @@ public class FusionCoolantCategoryWrapper<T extends FusionCoreBE.FusionCoolantRe
 
 
     @Override
-    public @NotNull List<Component> getTooltipStrings(@NotNull T recipe, double mouseX, double mouseY) {
-        List<Component> lines = new ArrayList<>();
+    public @NotNull List<ITextComponent> getTooltipStrings(@NotNull T recipe, double mouseX, double mouseY) {
+        List<ITextComponent> lines = new ArrayList<>();
         if(mouseX > 34 && mouseX < 76 && mouseY > 6 && mouseY < 20) {
-            lines.add(new TranslatableComponent("fusion_core.recipe.cooling_rate", (int)recipe.getCoolingRate()).withStyle(ChatFormatting.GOLD));
+            lines.add(new TranslationTextComponent("fusion_core.recipe.cooling_rate", (int)recipe.getCoolingRate()).withStyle(TextFormatting.GOLD));
         }
         return lines;
     }

@@ -1,6 +1,6 @@
 package igentuman.nc.compat.jei;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import igentuman.nc.compat.jei.util.TickTimer;
 import igentuman.nc.recipes.AbstractRecipe;
 import igentuman.nc.content.processors.ProcessorPrefab;
@@ -14,12 +14,13 @@ import mezz.jei.api.gui.drawable.IDrawableAnimated;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import org.antlr.v4.runtime.misc.NotNull;
 
@@ -71,8 +72,8 @@ public class ProcessorCategoryWrapper<T extends NcRecipe> implements IRecipeCate
     }
 
     @Override
-    public @NotNull Component getTitle() {
-        return new TranslatableComponent("nc_jei_cat."+getRecipeType().getUid().getPath());
+    public @NotNull String  getTitle() {
+        return new TranslationTextComponent("nc_jei_cat."+getRecipeType().getUid().getPath()).getString();
     }
 
     @Override
@@ -95,7 +96,7 @@ public class ProcessorCategoryWrapper<T extends NcRecipe> implements IRecipeCate
             iIngredients.setInputs(VanillaTypes.FLUID, inputFluids);
         }
         if(t.getOutputFluids().length > 0) {
-            iIngredients.setOutputs(VanillaTypes.FLUID, Arrays.stream(t.getOutputFluids()).toList());
+            iIngredients.setOutputs(VanillaTypes.FLUID, Arrays.asList(t.getOutputFluids()));
         }
         if(t.getItemIngredients().size() > 0) {
             List<ItemStack> inputItems = new ArrayList<>();
@@ -110,7 +111,7 @@ public class ProcessorCategoryWrapper<T extends NcRecipe> implements IRecipeCate
     }
 
     @Override
-    public void draw(T recipe, PoseStack stack, double mouseX,
+    public void draw(T recipe, MatrixStack stack, double mouseX,
                      double mouseY) {
         int d = (int) ((recipe.getTimeModifier()*(double) processor.config().getTime())/2);
         int fluidsOut = processor.getSlotsConfig().getOutputFluids();
@@ -148,13 +149,13 @@ public class ProcessorCategoryWrapper<T extends NcRecipe> implements IRecipeCate
     }
 
     @Override
-    public @NotNull List<Component> getTooltipStrings(T recipe, double mouseX, double mouseY) {
-        List<Component> lines = new ArrayList<>();
+    public @NotNull List<ITextComponent> getTooltipStrings(T recipe, double mouseX, double mouseY) {
+        List<ITextComponent> lines = new ArrayList<>();
         if(mouseX > 47+xShift+25 && mouseX < 47+xShift+25+36 && mouseY > height/2-16/2 && mouseY < height/2+16/2) {
-            lines.add(new TranslatableComponent("processor.recipe.duration", (int)(recipe.getTimeModifier()*(double) processor.config().getTime())).withStyle(ChatFormatting.AQUA));
-            lines.add(new TranslatableComponent("processor.recipe.power", (int)(recipe.getEnergy()*(double) processor.config().getPower())).withStyle(ChatFormatting.RED));
+            lines.add(new TranslationTextComponent("processor.recipe.duration", (int)(recipe.getTimeModifier()*(double) processor.config().getTime())).withStyle(TextFormatting.AQUA));
+            lines.add(new TranslationTextComponent("processor.recipe.power", (int)(recipe.getEnergy()*(double) processor.config().getPower())).withStyle(TextFormatting.RED));
             if(recipe.getRadiation() != 1D) {
-                lines.add(new TranslatableComponent("processor.recipe.radiation", recipe.getRadiation()*1000).withStyle(ChatFormatting.GREEN));
+                lines.add(new TranslationTextComponent("processor.recipe.radiation", recipe.getRadiation()*1000).withStyle(TextFormatting.GREEN));
             }
         }
         return lines;

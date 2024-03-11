@@ -1,17 +1,14 @@
 package igentuman.nc.radiation;
 
-import igentuman.nc.content.fuel.FuelManager;
-import igentuman.nc.content.materials.Materials;
-import igentuman.nc.setup.registration.Fuel;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.item.Item;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.HashMap;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.handler.config.RadiationConfig.RADIATION_CONFIG;
-import static net.minecraft.world.item.Items.AIR;
+import static net.minecraft.item.Items.AIR;
 
 public class RadiationCleaningItems {
     protected static HashMap<Item, Integer> radiationMap = new HashMap<>();

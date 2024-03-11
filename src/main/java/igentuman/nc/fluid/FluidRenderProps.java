@@ -1,6 +1,6 @@
 package igentuman.nc.fluid;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.FluidContainerColorer;
 
 import static igentuman.nc.NuclearCraft.rl;

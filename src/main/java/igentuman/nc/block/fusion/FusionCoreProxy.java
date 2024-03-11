@@ -4,52 +4,40 @@ import igentuman.nc.block.entity.fusion.FusionBE;
 import igentuman.nc.block.entity.fusion.FusionCoreBE;
 import igentuman.nc.block.entity.fusion.FusionCoreProxyBE;
 import igentuman.nc.container.FusionCoreContainer;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.block.SoundType;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.stats.Stats;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.MenuProvider;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.fmllegacy.network.NetworkHooks;
+import net.minecraft.inventory.Inventory;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
+import net.minecraft.block.BlockState;
+import net.minecraftforge.fml.network.NetworkHooks;
 import javax.annotation.Nullable;
 
 import java.util.Properties;
 
-import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_CORE_PROXY_BE;
 
 public class FusionCoreProxy extends FusionBlock {
 
     public FusionCoreProxy(Properties pProperties) {
         super(pProperties.sound(SoundType.METAL));
-        this.registerDefaultState(
+/*        this.registerDefaultState(
                 this.stateDefinition.any()
-        );
-    }
-
-    @Override
-    public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return this.defaultBlockState();
-    }
-
-    @Nullable
-    @Override
-    public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
-        return FUSION_CORE_PROXY_BE.get().create(pPos, pState);
+        );*/
     }
 
     public String getCode()
@@ -58,7 +46,7 @@ public class FusionCoreProxy extends FusionBlock {
     }
 
     @Override
-    public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
+    public void onRemove(BlockState pState, World pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
         FusionCoreProxyBE be = (FusionCoreProxyBE) pLevel.getBlockEntity(pPos);
         be.destroyCore();
         super.onRemove(pState, pLevel, pPos, pNewState, pIsMoving);
@@ -66,49 +54,32 @@ public class FusionCoreProxy extends FusionBlock {
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
+    public ActionResultType use(BlockState state, World level, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult result) {
         if (!level.isClientSide()) {
-            BlockEntity be = level.getBlockEntity(pos);
+            TileEntity be = level.getBlockEntity(pos);
             FusionCoreProxyBE proxy = (FusionCoreProxyBE) be;
 
             if (proxy.getCoreBE() instanceof FusionCoreBE)  {
-                MenuProvider containerProvider = new MenuProvider() {
+                INamedContainerProvider containerProvider = new INamedContainerProvider() {
                     @Override
-                    public Component getDisplayName() {
-                        return new TranslatableComponent("fusion_core");
+                    public ITextComponent getDisplayName() {
+                        return new TranslationTextComponent("fusion_core");
                     }
 
                     @Override
-                    public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity) {
+                    public Container createMenu(int windowId, PlayerInventory playerInventory, PlayerEntity playerEntity) {
                         return new FusionCoreContainer(windowId, proxy.getCorePos(), playerInventory);
                     }
                 };
-                NetworkHooks.openGui((ServerPlayer) player, containerProvider, proxy.getCorePos());
+                NetworkHooks.openGui((ServerPlayerEntity) player, containerProvider, proxy.getCorePos());
             }
         }
-        return InteractionResult.SUCCESS;
+        return ActionResultType.SUCCESS;
     }
 
     @Override
-    public void playerDestroy(Level pLevel, Player pPlayer, BlockPos pPos, BlockState pState, @javax.annotation.Nullable BlockEntity pBlockEntity, ItemStack pTool) {
+    public void playerDestroy(World pLevel, PlayerEntity pPlayer, BlockPos pPos, BlockState pState, @javax.annotation.Nullable TileEntity pBlockEntity, ItemStack pTool) {
         pPlayer.awardStat(Stats.BLOCK_MINED.get(this));
         pPlayer.causeFoodExhaustion(0.005F);
-    }
-
-    @javax.annotation.Nullable
-    @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        if (level.isClientSide()) {
-            return (lvl, pos, blockState, t) -> {
-                if (t instanceof FusionBE tile) {
-                    tile.tickClient();
-                }
-            };
-        }
-        return (lvl, pos, blockState, t)-> {
-            if (t instanceof FusionBE tile) {
-                tile.tickServer();
-            }
-        };
     }
 }

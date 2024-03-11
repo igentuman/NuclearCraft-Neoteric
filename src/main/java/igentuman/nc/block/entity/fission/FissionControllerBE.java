@@ -19,20 +19,16 @@ import igentuman.nc.util.CustomEnergyStorage;
 import igentuman.nc.util.annotation.NBTField;
 import igentuman.nc.multiblock.ValidationResult;
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.Explosion;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.Direction;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.item.ItemStack;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -44,10 +40,7 @@ import org.antlr.v4.runtime.misc.NotNull;;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import static igentuman.nc.block.fission.FissionControllerBlock.POWERED;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
@@ -56,6 +49,8 @@ import static igentuman.nc.multiblock.fission.FissionReactor.FISSION_BLOCKS;
 import static igentuman.nc.setup.registration.NCSounds.FISSION_REACTOR;
 import static igentuman.nc.util.ModUtil.isCcLoaded;
 import static igentuman.nc.util.ModUtil.isMekanismLoadeed;
+import static net.minecraft.world.Explosion.Mode.DESTROY;
+import static net.minecraft.world.Explosion.Mode.NONE;
 import static net.minecraftforge.energy.CapabilityEnergy.ENERGY;
 import static net.minecraftforge.fluids.capability.CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
 import static net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
@@ -141,7 +136,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
             if(getRecipes(getName()) == null) return allowedInputs;
             for(AbstractRecipe recipe: getRecipes(getName())) {
                 for(Ingredient ingredient: recipe.getItemIngredients()) {
-                    allowedInputs.addAll(List.of(ingredient.getItems()));
+                    allowedInputs.addAll(Arrays.asList(ingredient.getItems()));
                 }
             }
         }
@@ -332,7 +327,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         return super.getCapability(cap, side);
     }
 
-    protected void playRunningSound() {
+/*    protected void playRunningSound() {
         if(isRemoved() || (currentSound != null && !currentSound.getLocation().equals(FISSION_REACTOR.get().getLocation()))) {
             SoundHandler.stopTileSound(getBlockPos());
             currentSound = null;
@@ -345,7 +340,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
             playSoundCooldown = 20;
             currentSound = SoundHandler.startTileSound(FISSION_REACTOR.get(), SoundSource.BLOCKS, 0.2f, getBlockPos());
         }
-    }
+    }*/
 
     public void tickClient() {
         if(!isCasingValid || !isInternalValid) {
@@ -353,7 +348,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
             return;
         }
         if(isProcessing()) {
-            playRunningSound();
+        //    playRunningSound();
         }
     }
     protected int reValidateCounter = 0;
@@ -392,7 +387,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
             try {
                 assert level != null;
                 level.setBlockAndUpdate(worldPosition, getBlockState().setValue(POWERED, powered));
-                level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(POWERED, powered), Block.UPDATE_ALL);
+          //      level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(POWERED, powered), Block.UPDATE_ALL);
             } catch (NullPointerException ignored) {}
         }
         irradiationHeat = 0;
@@ -447,14 +442,14 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         if (heat >= getMaxHeat()) {
             BlockPos explosionPos = getBlockPos().relative(getFacing(), 2);
             if (FISSION_CONFIG.EXPLOSION_RADIUS.get() == 0) {
-                getLevel().explode(null, explosionPos.getX(), explosionPos.getY(), explosionPos.getZ(), 2F, true, Explosion.BlockInteraction.NONE);
+                getLevel().explode(null, explosionPos.getX(), explosionPos.getY(), explosionPos.getZ(), 2F, true, NONE);
                 for (BlockPos pos : multiblock.fuelCells) {
-                    getLevel().explode(null, pos.getX(), pos.getY(), pos.getZ(), 1, true, Explosion.BlockInteraction.NONE);
+                    getLevel().explode(null, pos.getX(), pos.getY(), pos.getZ(), 1, true, NONE);
                 }
             } else {
-                getLevel().explode(null, explosionPos.getX(), explosionPos.getY(), explosionPos.getZ(), FISSION_CONFIG.EXPLOSION_RADIUS.get().floatValue(), true, Explosion.BlockInteraction.DESTROY);
+                getLevel().explode(null, explosionPos.getX(), explosionPos.getY(), explosionPos.getZ(), FISSION_CONFIG.EXPLOSION_RADIUS.get().floatValue(), true, DESTROY);
                 for (BlockPos pos : multiblock.fuelCells) {
-                    getLevel().explode(null, pos.getX(), pos.getY(), pos.getZ(), 2, true, Explosion.BlockInteraction.DESTROY);
+                    getLevel().explode(null, pos.getX(), pos.getY(), pos.getZ(), 2, true, DESTROY);
                 }
             }
             for (BlockPos pos : multiblock.fuelCells) {
@@ -610,12 +605,12 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     }
 
     @Override
-    public void load(CompoundTag tag) {
+    public void load(BlockState state, CompoundNBT tag) {
         if (tag.contains("Energy")) {
-            energyStorage.deserializeNBT(tag.get("Energy"));
+            energyStorage.deserializeNBT(tag.getCompound("Energy"));
         }
         if (tag.contains("Info")) {
-            CompoundTag infoTag = tag.getCompound("Info");
+            CompoundNBT infoTag = tag.getCompound("Info");
             readTagData(infoTag);
             if (infoTag.contains("recipeInfo")) {
                 recipeInfo.deserializeNBT(infoTag.getCompound("recipeInfo"));
@@ -630,11 +625,11 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         if (tag.contains("Content")) {
             contentHandler.deserializeNBT(tag.getCompound("Content"));
         }
-        super.load(tag);
+        super.load(state, tag);
     }
 
-    public void saveAdditional(CompoundTag tag) {
-        CompoundTag infoTag = new CompoundTag();
+    public void saveAdditional(CompoundNBT tag) {
+        CompoundNBT infoTag = new CompoundNBT();
         tag.put("Energy", energyStorage.serializeNBT());
         tag.put("Content", contentHandler.serializeNBT());
         infoTag.put("recipeInfo", recipeInfo.serializeNBT());
@@ -652,15 +647,15 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     }
 
     @Override
-    public void handleUpdateTag(CompoundTag tag) {
+    public void handleUpdateTag(BlockState state, CompoundNBT tag) {
         if (tag != null) {
             loadClientData(tag);
         }
     }
 
-    private void loadClientData(CompoundTag tag) {
+    private void loadClientData(CompoundNBT tag) {
         if (tag.contains("Info")) {
-            CompoundTag infoTag = tag.getCompound("Info");
+            CompoundNBT infoTag = tag.getCompound("Info");
             if (infoTag.contains("recipeInfo")) {
                 recipeInfo.deserializeNBT(infoTag.getCompound("recipeInfo"));
             }
@@ -679,14 +674,14 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     }
 
     @Override
-    public CompoundTag getUpdateTag() {
-        CompoundTag tag = super.getUpdateTag();
+    public CompoundNBT getUpdateTag() {
+        CompoundNBT tag = super.getUpdateTag();
         saveClientData(tag);
         return tag;
     }
 
-    private void saveClientData(CompoundTag tag) {
-        CompoundTag infoTag = new CompoundTag();
+    private void saveClientData(CompoundNBT tag) {
+        CompoundNBT infoTag = new CompoundNBT();
         tag.put("Info", infoTag);
         infoTag.putInt("energy", energyStorage.getEnergyStored());
         saveTagData(infoTag);
@@ -696,17 +691,17 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         tag.put("Content", contentHandler.serializeNBT());
     }
 
-    @Override
+/*    @Override
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
         int oldEnergy = energyStorage.getEnergyStored();
 
-        CompoundTag tag = pkt.getTag();
+        CompoundNBT tag = pkt.getTag();
         handleUpdateTag(tag);
 
         if (oldEnergy != energyStorage.getEnergyStored()) {
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
         }
-    }
+    }*/
 
     public double getDepletionProgress() {
         return recipeInfo.getProgress();
@@ -782,7 +777,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
             List<NcRecipe> tmp = new ArrayList<>();
             if(level == null) {
                 if(NuclearCraft.instance.server == null) return null;
-                Level level = NuclearCraft.instance.server.overworld();
+                World level = NuclearCraft.instance.server.overworld();
             }
             if(level == null) return null;
             for (NcRecipe recipe: level.getRecipeManager().getAllRecipesFor(NcRecipeType.ALL_RECIPES.get(name))) {
@@ -833,7 +828,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
 
         public Recipe(ResourceLocation id, ItemStackIngredient[] input, ItemStack[] output, FluidStackIngredient[] inputFluids, FluidStack[] outputFluids, double timeModifier, double powerModifier, double heatModifier, double rarity) {
             super(id, input, output, timeModifier, powerModifier, heatModifier, rarity);
-            CATALYSTS.put(codeId, List.of(getToastSymbol()));
+            CATALYSTS.put(codeId, Arrays.asList(getToastSymbol()));
         }
 
         @Override

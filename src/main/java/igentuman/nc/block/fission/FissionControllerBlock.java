@@ -3,37 +3,32 @@ package igentuman.nc.block.fission;
 import igentuman.nc.block.entity.fission.FissionControllerBE;
 import igentuman.nc.container.FissionControllerContainer;
 import igentuman.nc.multiblock.fission.FissionReactor;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.MenuProvider;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.HorizontalDirectionalBlock;
-import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.material.Material;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.fmllegacy.network.NetworkHooks;
+import net.minecraft.block.*;
+import net.minecraft.block.material.Material;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.DirectionProperty;
+import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.inventory.Inventory;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.network.NetworkHooks;
 import javax.annotation.Nullable;
 
-public class FissionControllerBlock extends HorizontalDirectionalBlock implements EntityBlock {
+public class FissionControllerBlock extends HorizontalFaceBlock {
     public static final DirectionProperty HORIZONTAL_FACING = FACING;
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
 
@@ -45,13 +40,13 @@ public class FissionControllerBlock extends HorizontalDirectionalBlock implement
     }
     public FissionControllerBlock(Properties pProperties) {
         super(pProperties.sound(SoundType.METAL));
-        this.registerDefaultState(
+        /*this.registerDefaultState(
                 this.stateDefinition.any()
                         .setValue(HORIZONTAL_FACING, Direction.NORTH)
                         .setValue(POWERED, false)
-        );
+        );*/
     }
-    @Override
+    /*@Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
     }
@@ -60,54 +55,37 @@ public class FissionControllerBlock extends HorizontalDirectionalBlock implement
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(BlockStateProperties.HORIZONTAL_FACING)
                 .add(BlockStateProperties.POWERED);
-    }
+    }*/
 
+/*
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
         return FissionReactor.FISSION_BE.get("fission_reactor_controller").get().create(pPos, pState);
     }
+*/
 
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
+    public ActionResultType use(BlockState state, World level, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult result) {
 
         if (!level.isClientSide()) {
-            BlockEntity be = level.getBlockEntity(pos);
+            TileEntity be = level.getBlockEntity(pos);
 
             if (be instanceof FissionControllerBE)  {
-                MenuProvider containerProvider = new MenuProvider() {
+                INamedContainerProvider containerProvider = new INamedContainerProvider() {
                     @Override
-                    public Component getDisplayName() {
-                        return new TranslatableComponent("fission_reactor_controller");
+                    public ITextComponent getDisplayName() {
+                        return new TranslationTextComponent("fission_reactor_controller");
                     }
 
                     @Override
-                    public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity) {
+                    public Container createMenu(int windowId, PlayerInventory playerInventory, PlayerEntity playerEntity) {
                             return new FissionControllerContainer(windowId, pos, playerInventory);
                     }
                 };
-                NetworkHooks.openGui((ServerPlayer) player, containerProvider, be.getBlockPos());
+                NetworkHooks.openGui((ServerPlayerEntity) player, containerProvider, be.getBlockPos());
             }
         }
-        return InteractionResult.SUCCESS;
+        return ActionResultType.SUCCESS;
     }
-
-    @javax.annotation.Nullable
-    @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        if (level.isClientSide()) {
-            return (lvl, pos, blockState, t) -> {
-                if (t instanceof FissionControllerBE tile) {
-                    tile.tickClient();
-                    level.setBlock(pos, blockState.setValue(POWERED, tile.powered), 3);
-                }
-            };
-        }
-        return (lvl, pos, blockState, t)-> {
-            if (t instanceof FissionControllerBE tile) {
-                tile.tickServer();
-            }
-        };
-    }
-
 }

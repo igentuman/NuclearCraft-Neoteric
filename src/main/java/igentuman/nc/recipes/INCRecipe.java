@@ -1,7 +1,7 @@
 package igentuman.nc.recipes;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.item.ItemStack;
 
 public interface INCRecipe {
 
@@ -9,6 +9,6 @@ public interface INCRecipe {
 
     ItemStack getOutput();
 
-    CompoundTag serialize();
+    CompoundNBT serialize();
 
 }

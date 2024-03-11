@@ -3,11 +3,11 @@ package igentuman.nc.handler.sided.capability;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.SlotModePair;
 import igentuman.nc.handler.sided.SlotModePair.*;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.Direction;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -21,7 +21,7 @@ import static igentuman.nc.handler.sided.SlotModePair.SlotMode.*;
 import static net.minecraftforge.fluids.FluidAttributes.BUCKET_VOLUME;
 import static net.minecraftforge.fluids.capability.CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
 
-public class FluidCapabilityHandler extends AbstractCapabilityHandler implements INBTSerializable<CompoundTag> {
+public class FluidCapabilityHandler extends AbstractCapabilityHandler implements INBTSerializable<CompoundNBT> {
     private final int CAPACITY;
     public final NonNullList<FluidTank> tanks;
     public final NonNullList<LazyOptional<IFluidHandler>> fluidCapabilites;
@@ -101,10 +101,10 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler implements
     }
 
     @Override
-    public CompoundTag serializeNBT() {
-        CompoundTag tag = new CompoundTag();
+    public CompoundNBT serializeNBT() {
+        CompoundNBT tag = new CompoundNBT();
         for (int i = 0; i < tanks.size(); i++) {
-            tag.put("tank" + i, tanks.get(i).writeToNBT(new CompoundTag()));
+            tag.put("tank" + i, tanks.get(i).writeToNBT(new CompoundNBT()));
         }
         tag.putInt("size", tanks.size());
         if(sideMapUpdated) {
@@ -114,7 +114,7 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler implements
         return tag;
     }
 
-    public void deserializeNBT(CompoundTag nbt) {
+    public void deserializeNBT(CompoundNBT nbt) {
         int size = nbt.getInt("size");
         for (int i = 0; i < size; i++) {
             tanks.get(i).readFromNBT(nbt.getCompound("tank" + i));
@@ -129,7 +129,7 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler implements
         return pushFluids(dir, false, tile.getBlockPos());
     }
     public boolean pushFluids(Direction dir, boolean forceFlag, BlockPos pos) {
-        BlockEntity be = tile.getLevel().getBlockEntity(pos.relative(dir));
+        TileEntity be = tile.getLevel().getBlockEntity(pos.relative(dir));
         if(be == null) return false;
         LazyOptional<IFluidHandler> cap = be.getCapability(FLUID_HANDLER_CAPABILITY, dir.getOpposite());
         if(cap.isPresent()) {
@@ -154,7 +154,7 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler implements
     }
 
     public boolean pullFluids(Direction dir, boolean forceFlag, BlockPos pos) {
-        BlockEntity be = tile.getLevel().getBlockEntity(pos.relative(dir));
+        TileEntity be = tile.getLevel().getBlockEntity(pos.relative(dir));
         if(be == null) return false;
         LazyOptional<IFluidHandler> cap = be.getCapability(FLUID_HANDLER_CAPABILITY, dir.getOpposite());
         if(cap.isPresent()) {
@@ -212,7 +212,7 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler implements
 
     public boolean canPushExcessFluid(int i, FluidStack outputFluid) {
         for(Direction dir: Direction.values()) {
-            BlockEntity be = tile.getLevel().getBlockEntity(tile.getBlockPos().relative(dir));
+            TileEntity be = tile.getLevel().getBlockEntity(tile.getBlockPos().relative(dir));
             if(be == null) continue;
             LazyOptional<IFluidHandler> cap = be.getCapability(FLUID_HANDLER_CAPABILITY, dir.getOpposite());
             if(cap.isPresent()) {
@@ -258,7 +258,7 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler implements
 
     public FluidStack pushExcessFluid(int i, FluidStack toOutput) {
         for(Direction dir: Direction.values()) {
-            BlockEntity be = tile.getLevel().getBlockEntity(tile.getBlockPos().relative(dir));
+            TileEntity be = tile.getLevel().getBlockEntity(tile.getBlockPos().relative(dir));
             if(be == null) return toOutput;
             LazyOptional<IFluidHandler> cap = be.getCapability(FLUID_HANDLER_CAPABILITY, dir.getOpposite());
             if(cap.isPresent()) {

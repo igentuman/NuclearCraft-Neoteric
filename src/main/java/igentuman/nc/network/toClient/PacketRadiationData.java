@@ -2,8 +2,8 @@ package igentuman.nc.network.toClient;
 
 import igentuman.nc.network.INcPacket;
 import igentuman.nc.radiation.client.ClientRadiationData;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,7 +37,7 @@ public class PacketRadiationData implements INcPacket {
     }
 
     @Override
-    public void encode(FriendlyByteBuf buffer) {
+    public void encode(PacketBuffer buffer) {
         buffer.writeInt(radiation.size());
         for(Map.Entry<Long, Long> entry : radiation.entrySet()) {
             buffer.writeLong(entry.getKey());
@@ -46,7 +46,7 @@ public class PacketRadiationData implements INcPacket {
         buffer.writeInt(playerRadiation);
     }
 
-    public static PacketRadiationData decode(FriendlyByteBuf buffer) {
+    public static PacketRadiationData decode(PacketBuffer buffer) {
         int size = buffer.readInt();
         Map<Long, Long> radiation = new HashMap<>();
         for(int i = 0; i < size; i++) {

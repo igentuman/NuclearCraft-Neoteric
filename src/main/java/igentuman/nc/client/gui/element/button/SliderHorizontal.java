@@ -1,20 +1,17 @@
 package igentuman.nc.client.gui.element.button;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.client.gui.element.NCGuiElement;
-import igentuman.nc.client.gui.processor.side.SideConfigSlotSelectionScreen;
-import igentuman.nc.network.toServer.PacketGuiButtonPress;
 import igentuman.nc.network.toServer.PacketSliderChanged;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TranslationTextComponent;
 
 public class SliderHorizontal extends NCGuiElement {
-    protected AbstractContainerScreen screen;
+    protected ContainerScreen screen;
     private int xTexStart;
     private int yTexStart;
     private int textureWidth = 256;
@@ -25,7 +22,8 @@ public class SliderHorizontal extends NCGuiElement {
     private BlockPos pos;
     private int startX;
 
-    public SliderHorizontal(int xPos, int yPos, int width, AbstractContainerScreen<?> screen, BlockPos pos)  {
+    public SliderHorizontal(int xPos, int yPos, int width, ContainerScreen<?> screen, BlockPos pos)  {
+        super(xPos, yPos, width, 12, new TranslationTextComponent(""));
         x = xPos;
         y = yPos;
         startX = x;
@@ -34,9 +32,7 @@ public class SliderHorizontal extends NCGuiElement {
         height = 12;
         this.screen = screen;
         xTexStart = 0;
-        btn = new NCImageButton(X(), Y(), 4, 8, 0, 169, -9, TEXTURE, pButton -> {
-
-        });
+    //    btn = new NCImageButton(X(), Y(), 4, 8, 0, 169, TEXTURE);
     }
 
     @Override
@@ -77,13 +73,13 @@ public class SliderHorizontal extends NCGuiElement {
         }
     }
 
-    public void drawSlide(PoseStack transform) {
-        RenderSystem.setShaderTexture(0, TEXTURE);
+    public void drawSlide(MatrixStack transform) {
+        Minecraft.getInstance().getTextureManager().bind(TEXTURE);
         blit(transform, this.x+ screen.getGuiLeft(), this.y+2+screen.getGuiTop(), 5, 175, this.width, 3, this.textureWidth, this.textureHeight);
     }
 
     @Override
-    public void draw(PoseStack transform, int mX, int mY, float pTicks) {
+    public void draw(MatrixStack transform, int mX, int mY, float pTicks) {
         super.draw(transform, mX, mY, pTicks);
         btn.xTexStart = xTexStart;
         drawSlide(transform);
@@ -91,25 +87,25 @@ public class SliderHorizontal extends NCGuiElement {
     }
 
     @Override
-    public void renderButton(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
+    public void renderButton(MatrixStack pMatrixStack, int pMouseX, int pMouseY, float pPartialTick) {
         int i = this.yTexStart;
-        if (!this.isActive()) {
+        /*if (!this.isActive()) {
             i += this.yDiffTex * 2;
         } else if (this.isHoveredOrFocused()) {
             i += this.yDiffTex;
-        }
+        }*/
         RenderSystem.enableDepthTest();
 
-        blit(pPoseStack, this.x, this.y, (float)this.xTexStart, (float)i, this.width, this.height, this.textureWidth, this.textureHeight);
+        blit(pMatrixStack, this.x, this.y, (float)this.xTexStart, (float)i, this.width, this.height, this.textureWidth, this.textureHeight);
         if (this.isHovered) {
-            this.renderToolTip(pPoseStack, pMouseX, pMouseY);
+            this.renderToolTip(pMatrixStack, pMouseX, pMouseY);
         }
     }
 
 
     public NCGuiElement setTooltipKey(String key) {
         tooltips.clear();
-        tooltips.add(new TranslatableComponent(key));
+        tooltips.add(new TranslationTextComponent(key));
         return this;
     }
 

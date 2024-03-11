@@ -1,7 +1,7 @@
 package igentuman.nc.datagen.models;
 
 import net.minecraft.data.DataGenerator;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.generators.ModelBuilder;
 import net.minecraftforge.client.model.generators.ModelProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;

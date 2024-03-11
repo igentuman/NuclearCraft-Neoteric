@@ -3,15 +3,12 @@ package igentuman.nc.block.entity;
 import igentuman.nc.block.ISizeToggable;
 import igentuman.nc.handler.ItemStorageCapabilityHandler;
 import igentuman.nc.content.storage.ContainerBlocks;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.Direction;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.item.ItemStack;
+import net.minecraft.block.BlockState;
 import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -68,13 +65,13 @@ public class ContainerBE extends NuclearCraftBE implements ISizeToggable {
         for (Direction direction : Direction.values()) {
             if (sideConfig.get(direction.ordinal()) == SideMode.DISABLED) continue;
             if (level == null) continue;
-            BlockEntity be = level.getBlockEntity(worldPosition.relative(direction));
+            TileEntity be = level.getBlockEntity(worldPosition.relative(direction));
             if(be == null) continue;
             if (be.getCapability(ITEM_HANDLER_CAPABILITY, direction.getOpposite()).isPresent()) {
                 be.getCapability(ITEM_HANDLER_CAPABILITY, direction.getOpposite()).ifPresent(cap -> {
                     boolean transactionDone = false;
                     switch (sideConfig.get(direction.ordinal())) {
-                        case OUT -> {
+                        case OUT:
                             for(int i = 0; i < inventory.getSlots(); i++) {
                                 ItemStack stack = inventory.getStackInSlot(i);
                                 if(stack.isEmpty()) continue;
@@ -90,8 +87,8 @@ public class ContainerBE extends NuclearCraftBE implements ISizeToggable {
                                 }
                                 if(transactionDone) break;
                             }
-                        }
-                        case IN -> {
+                        break;
+                        case IN:
                             for(int i = 0; i < cap.getSlots(); i++) {
                                 ItemStack stack = cap.getStackInSlot(i);
                                 if(stack.isEmpty()) continue;
@@ -107,7 +104,7 @@ public class ContainerBE extends NuclearCraftBE implements ISizeToggable {
                                 }
                                 if(transactionDone) break;
                             }
-                        }
+                        break;
                     }
                 });
             }
@@ -123,33 +120,33 @@ public class ContainerBE extends NuclearCraftBE implements ISizeToggable {
         return super.getCapability(cap, side);
     }
 
-    @Override
+/*    @Override
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        CompoundTag tag = pkt.getTag();
+        CompoundNBT tag = pkt.getTag();
         handleUpdateTag(tag);
-    }
+    }*/
 
     @Override
-    public void handleUpdateTag(CompoundTag tag) {
+    public void handleUpdateTag(BlockState state, CompoundNBT tag) {
         if (tag != null) {
             loadClientData(tag);
         }
     }
 
     @Override
-    public @NotNull CompoundTag getUpdateTag() {
-        CompoundTag tag = super.getUpdateTag();
+    public @NotNull CompoundNBT getUpdateTag() {
+        CompoundNBT tag = super.getUpdateTag();
         saveClientData(tag);
         return tag;
     }
 
-    protected void saveClientData(CompoundTag tag) {
-        CompoundTag tank = new CompoundTag();
+    protected void saveClientData(CompoundNBT tag) {
+        CompoundNBT tank = new CompoundNBT();
         tag.put("Inventory", inventory.serializeNBT());
         tag.putIntArray("sideConfig", sideConfig.values().stream().mapToInt(Enum::ordinal).toArray());
     }
 
-    public void loadClientData(CompoundTag tag) {
+    public void loadClientData(CompoundNBT tag) {
         if(tag.contains("Inventory")) {
             inventory.deserializeNBT(tag.getCompound("Inventory"));
         }
@@ -158,8 +155,8 @@ public class ContainerBE extends NuclearCraftBE implements ISizeToggable {
     }
 
     @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
+    public void load(BlockState state, CompoundNBT tag) {
+        super.load(state, tag);
         if(tag.contains("Inventory")) {
             inventory.deserializeNBT(tag.getCompound("Inventory"));
         }
@@ -181,11 +178,11 @@ public class ContainerBE extends NuclearCraftBE implements ISizeToggable {
             requestModelDataUpdate();
             if(level == null) return;
             level.setBlockAndUpdate(worldPosition, getBlockState());
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+         //   level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
         }
     }
 
-    public void saveAdditional(CompoundTag tag) {
+    public void saveAdditional(CompoundNBT tag) {
         tag.put("Inventory", inventory.serializeNBT());
         tag.putIntArray("sideConfig", sideConfig.values().stream().mapToInt(Enum::ordinal).toArray());
     }
@@ -195,7 +192,7 @@ public class ContainerBE extends NuclearCraftBE implements ISizeToggable {
         sideConfig.put(direction, SideMode.values()[(sideConfig.get(direction).ordinal() + 1) % 4]);
         setChanged();
         level.setBlockAndUpdate(worldPosition, getBlockState());
-        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+     //   level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
         return sideConfig.get(direction);
     }
 

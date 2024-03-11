@@ -3,24 +3,17 @@ package igentuman.nc.multiblock.fission;
 import igentuman.nc.block.entity.fission.FissionBE;
 import igentuman.nc.block.entity.fission.FissionHeatSinkBE;
 import igentuman.nc.handler.config.CommonConfig;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.World;
+import net.minecraft.block.Block;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.handler.config.FissionConfig.HEAT_SINK_CONFIG;
@@ -87,7 +80,7 @@ public class HeatSinkDef {
     public List<String> getItemsByTagKey(String key)
     {
         List<String> tmp = new ArrayList<>();
-/*        Tag.Named<Item> tag = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(key));
+/*        Tags.IOptionalNamedTag<Item> tag = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(key));
         Ingredient ing = Ingredient.fromValues(Stream.of(new Ingredient.TagValue(tag)));
         for (ItemStack item: ing.getItems()) {
             tmp.add(item.getItem().toString());
@@ -98,7 +91,7 @@ public class HeatSinkDef {
     public static List<Block> getBlocksByTagKey(String key)
     {
         List<Block> tmp = new ArrayList<>();
-/*        Tag.Named<Block> tag = TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(key));
+/*        Tags.IOptionalNamedTag<Block> tag = TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(key));
         for(Holder<Block> holder : Registry.BLOCK.getTagOrEmpty(tag)) {
             tmp.add(holder.value());
         }*/
@@ -131,7 +124,7 @@ public class HeatSinkDef {
         }
         if(!initialized) {
             initialized = true;
-            int id = FissionBlocks.heatsinks.keySet().stream().toList().indexOf(name);
+            int id = Arrays.asList(FissionBlocks.heatsinks.keySet().stream().toArray()).indexOf(name);
             heat =  HEAT_SINK_CONFIG.HEAT.get().get(id);
         }
         return this;
@@ -183,7 +176,7 @@ public class HeatSinkDef {
 
         public boolean validateFuelCellAttachment(BlockPos pos)
         {
-            BlockEntity testBe = be.getLevel().getBlockEntity(pos);
+            TileEntity testBe = be.getLevel().getBlockEntity(pos);
             if(testBe instanceof FissionBE) {
                 if(!((FissionBE)testBe).isAttachedToFuelCell()) {
                     return false;
@@ -194,12 +187,12 @@ public class HeatSinkDef {
 
         private boolean inCorner(int qty, List<Block> blocks) {
             BlockPos pos = be.getBlockPos();
-            Level level = Objects.requireNonNull(be.getLevel());
+            World level = Objects.requireNonNull(be.getLevel());
             int initial = blocks.contains(level.getBlockState(pos.above(1)).getBlock()) ? 1 : 0;
             initial = blocks.contains(level.getBlockState(pos.below(1)).getBlock()) ? 1 : initial;
             int[] matches = new int[4];
             int i = 0;
-            for (Direction dir: List.of(Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST)) {
+            for (Direction dir: Arrays.asList(Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST)) {
                 if(blocks.contains(level.getBlockState(pos.relative(dir)).getBlock())) {
                     if(1+initial >= qty) return true;
                     matches[i] = 1;

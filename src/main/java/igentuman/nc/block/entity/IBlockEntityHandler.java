@@ -1,7 +1,8 @@
 package igentuman.nc.block.entity;
 
-import net.minecraft.world.level.block.entity.BlockEntity;
+
+import net.minecraft.tileentity.TileEntity;
 
 public interface IBlockEntityHandler {
-    BlockEntity getBlockEntity();
+    TileEntity getBlockEntity();
 }

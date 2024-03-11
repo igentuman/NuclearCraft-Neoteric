@@ -1,15 +1,15 @@
 package igentuman.nc.item;
 
-import net.minecraft.ChatFormatting;
-import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
+import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -19,22 +19,22 @@ public class ResearchPaperItem extends Item {
         super(pProperties);
     }
 
-    public ResearchPaperItem(Properties props, CreativeModeTab group)
+    public ResearchPaperItem(Properties props, ItemGroup group)
     {
         super(props.tab(group));
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
+    public void appendHoverText(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
     {
-        CompoundTag tag = stack.getOrCreateTag();
+        CompoundNBT tag = stack.getOrCreateTag();
         if(tag.contains("vein")) {
-            list.add(new TranslatableComponent(tag.getString("vein")).withStyle(ChatFormatting.AQUA));
+            list.add(new TranslationTextComponent(tag.getString("vein")).withStyle(TextFormatting.AQUA));
         }
         if(tag.contains("pos")) {
             BlockPos pos = BlockPos.of(tag.getLong("pos"));
-            list.add(new TranslatableComponent("tooltip.nc.chunk_position", pos.toShortString()).withStyle(ChatFormatting.BLUE));
-            list.add(new TranslatableComponent("tooltip.nc.use_in_leacher", pos.toShortString()).withStyle(ChatFormatting.GREEN));
+            list.add(new TranslationTextComponent("tooltip.nc.chunk_position", pos.toShortString()).withStyle(TextFormatting.BLUE));
+            list.add(new TranslationTextComponent("tooltip.nc.use_in_leacher", pos.toShortString()).withStyle(TextFormatting.GREEN));
         }
     }
 

@@ -2,24 +2,25 @@ package igentuman.nc.datagen.recipes.recipes;
 
 import igentuman.nc.datagen.recipes.builder.NcRecipeBuilder;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.IFinishedRecipe;
 import net.minecraftforge.fluids.FluidStack;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
 public class FusionReactorRecipes extends AbstractRecipeProvider {
 
-    public static void generate(Consumer<FinishedRecipe> consumer) {
+    public static void generate(Consumer<IFinishedRecipe> consumer) {
         FusionReactorRecipes.consumer = consumer;
         ID = "fusion_core";
 
         add(
-                List.of(
+                Arrays.asList(
                         fluidIngredient("deuterium", 250),
                         fluidIngredient("tritium", 250)
                 ),
-                List.of(
+                Arrays.asList(
                         fluidStack("helium", 65),
                         fluidStack("helium", 65),
                         fluidStack("helium", 65),
@@ -29,11 +30,11 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
 
         
         add(
-                List.of(
+                Arrays.asList(
                         fluidIngredient("hydrogen", 1000),
                         fluidIngredient("deuterium", 1000)
                 ),
-                List.of(
+                Arrays.asList(
                         fluidStack("helium_3", 250),
                         fluidStack("helium_3", 250),
                         fluidStack("helium_3", 250),
@@ -42,11 +43,11 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
         );
         
         add(
-                List.of(
+                Arrays.asList(
                         fluidIngredient("hydrogen", 1000),
                         fluidIngredient("tritium", 1000)
                 ),
-                List.of(
+                Arrays.asList(
                         fluidStack("helium_3", 250),
                         fluidStack("helium_3", 250),
                         fluidStack("helium_3", 250),
@@ -55,11 +56,11 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
         );
         
         add(
-                List.of(
+                Arrays.asList(
                         fluidIngredient("hydrogen", 1000),
                         fluidIngredient("helium_3", 1000)
                 ),
-                List.of(
+                Arrays.asList(
                         fluidStack("helium", 250),
                         fluidStack("helium", 250),
                         fluidStack("helium", 250),
@@ -68,11 +69,11 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
         );
         
         add(
-                List.of(
+                Arrays.asList(
                         fluidIngredient("hydrogen", 1000),
                         fluidIngredient("lithium/6", 144)
                 ),
-                List.of(
+                Arrays.asList(
                         fluidStack("tritium", 500),
                         fluidStack("tritium", 500),
                         fluidStack("helium", 500),
@@ -81,11 +82,11 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
         );
         
         add(
-                List.of(
+                Arrays.asList(
                         fluidIngredient("hydrogen", 1000),
                         fluidIngredient("lithium/7", 144)
                 ),
-                List.of(
+                Arrays.asList(
                         fluidStack("helium", 500),
                         fluidStack("helium", 500),
                         fluidStack("helium", 500),
@@ -94,11 +95,11 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
         );
         
         add(
-                List.of(
+                Arrays.asList(
                         fluidIngredient("hydrogen", 1000),
                         fluidIngredient("boron/11", 144)
                 ),
-                List.of(
+                Arrays.asList(
                         fluidStack("helium", 1000*3/4),
                         fluidStack("helium", 1000*3/4),
                         fluidStack("helium", 1000*3/4),
@@ -108,11 +109,11 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
 
 
         add(
-                List.of(
+                Arrays.asList(
                         fluidIngredient("deuterium", 1000),
                         fluidIngredient("helium_3", 1000)
                 ),
-                List.of(
+                Arrays.asList(
                         fluidStack("hydrogen", 500),
                         fluidStack("hydrogen", 500),
                         fluidStack("helium", 500),
@@ -121,11 +122,11 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
         );
         
         add(
-                List.of(
+                Arrays.asList(
                         fluidIngredient("deuterium", 1000),
                         fluidIngredient("lithium/6", 144)
                 ),
-                List.of(
+                Arrays.asList(
                         fluidStack("helium", 500),
                         fluidStack("helium", 500),
                         fluidStack("helium", 500),
@@ -134,11 +135,11 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
         );
         
         add(
-                List.of(
+                Arrays.asList(
                         fluidIngredient("deuterium", 1000),
                         fluidIngredient("lithium/7", 144)
                 ),
-                List.of(
+                Arrays.asList(
                         fluidStack("helium", 500),
                         fluidStack("helium", 500),
                         fluidStack("helium", 500),
@@ -147,22 +148,22 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
         );
         
         add(
-                List.of(
+                Arrays.asList(
                         fluidIngredient("deuterium", 1000),
                         fluidIngredient("boron/11", 144)
                 ),
-                List.of(
+                Arrays.asList(
                         fluidStack("helium", 1000*6/4),
                         fluidStack("helium", 1000*6/4)
                 ), 65D, 226100D, 1.5D, 16883D
         );
 
         add(
-                List.of(
+                Arrays.asList(
                         fluidIngredient("tritium", 1000),
                         fluidIngredient("helium_3", 1000)
                 ),
-                List.of(
+                Arrays.asList(
                         fluidStack("helium", 250),
                         fluidStack("helium", 250),
                         fluidStack("helium", 250),
@@ -171,43 +172,43 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
         );
 
         add(
-                List.of(
+                Arrays.asList(
                         fluidIngredient("tritium", 1000),
                         fluidIngredient("lithium/6", 144)
                 ),
-                List.of(
+                Arrays.asList(
                         fluidStack("helium", 1000),
                         fluidStack("helium", 1000)
                 ), 45D, 191500D, 1.5D, 4971D
         );
 
         add(
-                List.of(
+                Arrays.asList(
                         fluidIngredient("tritium", 1000),
                         fluidIngredient("lithium/7", 144)
                 ),
-                List.of(
+                Arrays.asList(
                         fluidStack("helium", 1000),
                         fluidStack("helium", 1000)
                 ), 50D, 143500D, 1.5D, 5511D
         );
 
         add(
-                List.of(
+                Arrays.asList(
                         fluidIngredient("tritium", 1000),
                         fluidIngredient("boron/11", 144)
                 ),
-                List.of(
+                Arrays.asList(
                         fluidStack("helium", 1000*6/4),
                         fluidStack("helium", 1000*6/4)
                 ), 70D, 400000D, 1.5D, 33215D
         );
 
         add(
-                List.of(fluidIngredient("helium_3", 1000),
+                Arrays.asList(fluidIngredient("helium_3", 1000),
                         fluidIngredient("lithium/6", 144)
                 ),
-                List.of(
+                Arrays.asList(
                         fluidStack("hydrogen", 500),
                         fluidStack("hydrogen", 500),
                         fluidStack("helium", 1000),
@@ -216,10 +217,10 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
         );
 
         add(
-                List.of(fluidIngredient("helium_3", 1000),
+                Arrays.asList(fluidIngredient("helium_3", 1000),
                         fluidIngredient("lithium/7", 144)
                 ),
-                List.of(
+                Arrays.asList(
                         fluidStack("deuterium", 500),
                         fluidStack("deuterium", 500),
                         fluidStack("helium", 1000),
@@ -228,10 +229,10 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
         );
 
         add(
-                List.of(fluidIngredient("helium_3", 1000),
+                Arrays.asList(fluidIngredient("helium_3", 1000),
                         fluidIngredient("boron/11", 144)
                 ),
-                List.of(
+                Arrays.asList(
                         fluidStack("deuterium", 500),
                         fluidStack("deuterium", 500),
                         fluidStack("helium", 1000*6/4),
@@ -240,30 +241,30 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
         );
 
         add(
-                List.of(fluidIngredient("lithium/6", 144*4),
+                Arrays.asList(fluidIngredient("lithium/6", 144*4),
                         fluidIngredient("lithium/7", 144*4)
                 ),
-                List.of(
+                Arrays.asList(
                         fluidStack("helium", 1000*6/2),
                         fluidStack("helium", 1000*6/2)
                 ), 65D, 255200D, 1.5D, 14536D
         );
 
         add(
-                List.of(fluidIngredient("lithium/6", 144*7),
+                Arrays.asList(fluidIngredient("lithium/6", 144*7),
                         fluidIngredient("boron/11", 144*7)
                 ),
-                List.of(
+                Arrays.asList(
                         fluidStack("helium", 1000*2),
                         fluidStack("helium", 1000*2)
                 ), 85D, 615700D, 1.5D, 37048D
         );
 
         add(
-                List.of(fluidIngredient("lithium/7", 144*9),
+                Arrays.asList(fluidIngredient("lithium/7", 144*9),
                         fluidIngredient("boron/11", 144*9)
                 ),
-                List.of(
+                Arrays.asList(
                         fluidStack("helium", 1000*2),
                         fluidStack("helium", 1000*2)
                 ), 90D, 700000D, 3.5D, 202000D

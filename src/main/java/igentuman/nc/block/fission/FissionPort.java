@@ -4,44 +4,41 @@ import igentuman.nc.block.entity.fission.FissionPortBE;
 import igentuman.nc.container.FissionPortContainer;
 import igentuman.nc.multiblock.fission.FissionReactor;
 import igentuman.nc.util.TextUtils;
-import net.minecraft.ChatFormatting;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.MenuProvider;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.HorizontalDirectionalBlock;
-import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.material.Material;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.fmllegacy.network.NetworkHooks;
-import org.antlr.v4.runtime.misc.NotNull;;
+import net.minecraft.block.HorizontalFaceBlock;
+import net.minecraft.block.SoundType;
+import net.minecraft.block.material.Material;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.state.DirectionProperty;
+import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.Direction;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.inventory.Inventory;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.IBlockReader;
+import net.minecraft.world.World;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraftforge.fml.network.NetworkHooks;
 import javax.annotation.Nullable;
 
 import java.util.List;
 
 
-public class FissionPort extends HorizontalDirectionalBlock implements EntityBlock {
+public class FissionPort extends HorizontalFaceBlock {
     public static final DirectionProperty HORIZONTAL_FACING = FACING;
     public FissionPort() {
         this(Properties.of(Material.METAL)
@@ -51,12 +48,12 @@ public class FissionPort extends HorizontalDirectionalBlock implements EntityBlo
     }
     public FissionPort(Properties pProperties) {
         super(pProperties.sound(SoundType.METAL));
-        this.registerDefaultState(
+/*        this.registerDefaultState(
                 this.stateDefinition.any()
                         .setValue(HORIZONTAL_FACING, Direction.NORTH)
-        );
+        );*/
     }
-    @Override
+/*    @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
     }
@@ -70,52 +67,35 @@ public class FissionPort extends HorizontalDirectionalBlock implements EntityBlo
     @Override
     public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
         return FissionReactor.FISSION_BE.get("fission_reactor_port").get().create(pPos, pState);
-    }
+    }*/
 
     @Override
-    public @NotNull InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
+    public ActionResultType use(BlockState state, World level, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult result) {
 
         if (!level.isClientSide()) {
-            BlockEntity be = level.getBlockEntity(pos);
+            TileEntity be = level.getBlockEntity(pos);
 
-            if (be instanceof FissionPortBE port)  {
-                MenuProvider containerProvider = new MenuProvider() {
+            if (be instanceof FissionPortBE)  {
+                INamedContainerProvider containerProvider = new INamedContainerProvider() {
                     @Override
-                    public Component getDisplayName() {
-                        return new TranslatableComponent("block.nuclearcraft.fission_reactor_port");
+                    public ITextComponent getDisplayName() {
+                        return new TranslationTextComponent("block.nuclearcraft.fission_reactor_port");
                     }
 
                     @Override
-                    public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity) {
+                    public Container createMenu(int windowId, PlayerInventory playerInventory, PlayerEntity playerEntity) {
                         return new FissionPortContainer(windowId, pos, playerInventory);
                     }
                 };
-                NetworkHooks.openGui((ServerPlayer) player, containerProvider, be.getBlockPos());
+                NetworkHooks.openGui((ServerPlayerEntity) player, containerProvider, be.getBlockPos());
             }
         }
-        return InteractionResult.SUCCESS;
+        return ActionResultType.SUCCESS;
     }
 
-    @javax.annotation.Nullable
-    @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        if (level.isClientSide()) {
-            return (lvl, pos, blockState, t) -> {
-                if (t instanceof FissionPortBE tile) {
-                    tile.tickClient();
-                }
-            };
-        }
-        return (lvl, pos, blockState, t)-> {
-            if (t instanceof FissionPortBE tile) {
-                tile.tickServer();
-            }
-        };
-    }
-
-    public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag)
+    public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable IBlockReader pLevel, List<ITextComponent> list, ITooltipFlag pFlag)
     {
-        list.add(TextUtils.applyFormat(new TranslatableComponent("fission_port.descr"), ChatFormatting.GOLD));
+        list.add(TextUtils.applyFormat(new TranslationTextComponent("fission_port.descr"), TextFormatting.GOLD));
     }
 
     @Override
@@ -124,8 +104,8 @@ public class FissionPort extends HorizontalDirectionalBlock implements EntityBlo
     }
 
     @Override
-    public int getAnalogOutputSignal(BlockState pBlockState, Level pLevel, BlockPos pPos) {
-        return pLevel.getBlockEntity(pPos) instanceof FissionPortBE be ? be.analogSignal : 0;
+    public int getAnalogOutputSignal(BlockState pBlockState, World pLevel, BlockPos pPos) {
+        return pLevel.getBlockEntity(pPos) instanceof FissionPortBE ? ((FissionPortBE)pLevel.getBlockEntity(pPos)).analogSignal : 0;
     }
 
 }

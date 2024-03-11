@@ -9,18 +9,20 @@ import igentuman.nc.content.materials.Materials;
 import igentuman.nc.setup.registration.NCItems;
 import igentuman.nc.content.fuel.FuelManager;
 import igentuman.nc.content.materials.NCMaterial;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.IFinishedRecipe;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static net.minecraft.world.item.Items.*;
+import static net.minecraft.item.Items.*;
+
 
 public class IngotFormerRecipes extends AbstractRecipeProvider {
 
-    public static void generate(Consumer<FinishedRecipe> consumer) {
+    public static void generate(Consumer<IFinishedRecipe> consumer) {
         IngotFormerRecipes.consumer = consumer;
         ID = Processors.INGOT_FORMER;
         for(String name: Materials.all().keySet()) {
@@ -41,7 +43,7 @@ public class IngotFormerRecipes extends AbstractRecipeProvider {
             for(String subType: FuelManager.all().get(name).keySet()) {
                 for (String type : new String[]{"", "za", "ox","ni"}) {
 
-                    List<String> key = List.of("fuel", name, subType, type);
+                    List<String> key = Arrays.asList("fuel", name, subType, type);
 
                     String keyStr = "fuel_"+name +"_"+ subType;
                     if(!type.isEmpty()){
@@ -50,14 +52,14 @@ public class IngotFormerRecipes extends AbstractRecipeProvider {
                     keyStr+= type;
                     add(ingredient(Fuel.NC_FUEL.get(key).get()), fluidIngredient(keyStr, 144));
 
-                    key = List.of("depleted", name, subType, type);
+                    key = Arrays.asList("depleted", name, subType, type);
                     keyStr = "depleted_"+keyStr;
                     add(ingredient(Fuel.NC_DEPLETED_FUEL.get(key).get()), fluidIngredient(keyStr, 144));
                 }
             }
         }
 
-        add(ingredient(COPPER_INGOT), fluidIngredient(Materials.copper, 144));
+       // add(ingredient(COPPER_INGOT), fluidIngredient(Materials.copper, 144));
         add(ingredient(IRON_INGOT), fluidIngredient(Materials.iron, 144));
         add(ingredient(GOLD_INGOT), fluidIngredient(Materials.gold, 144));
 
@@ -74,6 +76,6 @@ public class IngotFormerRecipes extends AbstractRecipeProvider {
     }
 
     protected static void add(NcIngredient outputItem, FluidStackIngredient inputFluid, double...modifiers) {
-        itemsAndFluids(new ArrayList<>(), List.of(outputItem), List.of(inputFluid), new ArrayList<>(), modifiers);
+        itemsAndFluids(new ArrayList<>(), Arrays.asList(outputItem), Arrays.asList(inputFluid), new ArrayList<>(), modifiers);
     }
 }

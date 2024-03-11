@@ -1,7 +1,7 @@
 package igentuman.nc.network;
 
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
@@ -9,7 +9,7 @@ public interface INcPacket {
 
     void handle(NetworkEvent.Context context);
 
-    void encode(FriendlyByteBuf buffer);
+    void encode(PacketBuffer buffer);
 
     static <PACKET extends INcPacket> void handle(PACKET message, Supplier<NetworkEvent.Context> ctx) {
         if (message != null) {

@@ -1,9 +1,9 @@
 package igentuman.nc.radiation.data;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.Level;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.World;
 
 import java.util.HashMap;
 
@@ -16,12 +16,12 @@ public class WorldRadiation implements IWorldRadiationCapability {
     public HashMap<Long, Long> chunkRadiation = new HashMap<>();
     public HashMap<Long, Long> updatedChunks = new HashMap<>();
     public HashMap<Long, Long> newChunks = new HashMap<>();
-    public Level level;
+    public World level;
 
     public WorldRadiation() {
     }
 
-    public static WorldRadiation deserialize(CompoundTag radiation) {
+    public static WorldRadiation deserialize(CompoundNBT radiation) {
         WorldRadiation worldRadiation = new WorldRadiation();
         worldRadiation.deserializeNBT(radiation);
         return worldRadiation;
@@ -37,7 +37,7 @@ public class WorldRadiation implements IWorldRadiationCapability {
         return radiation;
     }
 
-    public void refresh(Level level)
+    public void refresh(World level)
     {
         this.level = level;
         chunkRadiation.putAll(newChunks);
@@ -94,7 +94,7 @@ public class WorldRadiation implements IWorldRadiationCapability {
     }
 
     //returns amount of actually added radiation in mRads
-    public int addRadiation(Level level, double radiation, int x, int z)
+    public int addRadiation(World level, double radiation, int x, int z)
     {
         this.level = level;
         long id = pack(x, z);
@@ -155,9 +155,9 @@ public class WorldRadiation implements IWorldRadiationCapability {
     }
 
     @Override
-    public CompoundTag serializeNBT() {
-        CompoundTag tag = new CompoundTag();
-        CompoundTag radiationTag = new CompoundTag();
+    public CompoundNBT serializeNBT() {
+        CompoundNBT tag = new CompoundNBT();
+        CompoundNBT radiationTag = new CompoundNBT();
         for(long key : chunkRadiation.keySet()) {
             radiationTag.putLong(String.valueOf(key), chunkRadiation.get(key));
         }
@@ -166,8 +166,8 @@ public class WorldRadiation implements IWorldRadiationCapability {
     }
 
     @Override
-    public void deserializeNBT(CompoundTag nbt) {
-        CompoundTag radiationTag = nbt.getCompound("radiation");
+    public void deserializeNBT(CompoundNBT nbt) {
+        CompoundNBT radiationTag = nbt.getCompound("radiation");
         for(String key : radiationTag.getAllKeys()) {
             chunkRadiation.put(Long.parseLong(key), radiationTag.getLong(key));
         }

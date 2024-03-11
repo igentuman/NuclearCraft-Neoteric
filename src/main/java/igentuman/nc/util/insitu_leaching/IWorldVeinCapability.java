@@ -1,11 +1,11 @@
 package igentuman.nc.util.insitu_leaching;
 
 import igentuman.nc.recipes.type.OreVeinRecipe;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.util.INBTSerializable;
 
 
-public interface IWorldVeinCapability extends INBTSerializable<CompoundTag> {
+public interface IWorldVeinCapability extends INBTSerializable<CompoundNBT> {
 
     OreVeinRecipe getVeinForChunk(int chunkX, int chunkZ);
 

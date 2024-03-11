@@ -8,12 +8,12 @@ import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.util.CustomEnergyStorage;
 import igentuman.nc.util.annotation.NBTField;
 import igentuman.nc.util.annotation.NothingNullByDefault;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.item.ItemStack;
+import net.minecraft.block.BlockState;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.List;
@@ -84,7 +84,7 @@ public class SteamTurbineBE extends NCProcessorBE<SteamTurbineBE.Recipe> {
         AtomicInteger capacity = new AtomicInteger(energyStorage.getEnergyStored());
         if (capacity.get() > 0) {
             for (Direction direction : Direction.values()) {
-                BlockEntity be = level.getBlockEntity(worldPosition.relative(direction));
+                TileEntity be = level.getBlockEntity(worldPosition.relative(direction));
                 if (be != null) {
                     boolean doContinue = be.getCapability(ENERGY, direction.getOpposite()).map(handler -> {
                                 if (handler.canReceive()) {

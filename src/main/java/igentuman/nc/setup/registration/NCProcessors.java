@@ -5,19 +5,18 @@ import igentuman.nc.block.entity.processor.NCProcessorBE;
 import igentuman.nc.container.NCProcessorContainer;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.item.ProcessorBlockItem;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.block.SoundType;
+import net.minecraft.block.material.Material;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.item.Item;
+import net.minecraft.block.Block;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.fmllegacy.RegistryObject;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -30,11 +29,11 @@ public class NCProcessors {
     public static HashMap<String, RegistryObject<Block>> PROCESSORS = new HashMap<>();
     public static HashMap<String, RegistryObject<Item>> PROCESSOR_BLOCKS_ITEMS = new HashMap<>();
     public static final Item.Properties PROCESSOR_ITEM_PROPERTIES = new Item.Properties().tab(CreativeTabs.NC_BLOCKS);
-    public static final BlockBehaviour.Properties PROCESSOR_BLOCK_PROPERTIES = BlockBehaviour.Properties.of(Material.HEAVY_METAL).sound(SoundType.METAL).strength(2f).requiresCorrectToolForDrops();
-    private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, MODID);
-    private static final DeferredRegister<MenuType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.CONTAINERS, MODID);
-    public static HashMap<String, RegistryObject<MenuType<? extends NCProcessorContainer<?>>>> PROCESSORS_CONTAINERS = new HashMap<>();
-    public static HashMap<String, RegistryObject<BlockEntityType<? extends NCProcessorBE<?>>>> PROCESSORS_BE = new HashMap<>();
+    public static final Block.Properties PROCESSOR_BLOCK_PROPERTIES = Block.Properties.of(Material.HEAVY_METAL).sound(SoundType.METAL).strength(2f).requiresCorrectToolForDrops();
+    private static final DeferredRegister<TileEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, MODID);
+    private static final DeferredRegister<ContainerType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.CONTAINERS, MODID);
+    public static HashMap<String, RegistryObject<ContainerType<? extends NCProcessorContainer<?>>>> PROCESSORS_CONTAINERS = new HashMap<>();
+    public static HashMap<String, RegistryObject<TileEntityType<? extends NCProcessorBE<?>>>> PROCESSORS_BE = new HashMap<>();
 
     public static void init() {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -65,10 +64,10 @@ public class NCProcessors {
     @SuppressWarnings("unchecked")
     private static void registerBlockEntities() {
         for(String name: Processors.registered().keySet()) {
-            PROCESSORS_BE.put(name, BLOCK_ENTITIES.register(name,
-                    () -> BlockEntityType.Builder
+/*            PROCESSORS_BE.put(name, BLOCK_ENTITIES.register(name,
+                    () -> TileEntityType.Builder
                             .of(Processors.all().get(name).getBlockEntity(), PROCESSORS.get(name).get())
-                            .build(null)));
+                            .build(null)));*/
         }
     }
 

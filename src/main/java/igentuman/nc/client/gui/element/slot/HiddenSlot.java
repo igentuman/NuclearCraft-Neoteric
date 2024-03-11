@@ -1,9 +1,10 @@
 package igentuman.nc.client.gui.element.slot;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import igentuman.nc.client.gui.element.NCGuiElement;
 import igentuman.nc.client.gui.processor.side.SideConfigScreen;
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.text.ITextComponent;
 
 import static igentuman.nc.handler.sided.SlotModePair.SlotMode.INPUT;
 import static igentuman.nc.handler.sided.SlotModePair.SlotMode.OUTPUT;
@@ -19,6 +20,7 @@ public class HiddenSlot extends NCGuiElement {
     }
 
     public HiddenSlot(int xMin, int yMin, String pType)  {
+        super(xMin, yMin, 18, 18, ITextComponent.nullToEmpty(""));
         x = xMin;
         y = yMin;
         width = 18;
@@ -35,7 +37,7 @@ public class HiddenSlot extends NCGuiElement {
     }
 
     @Override
-    public void draw(PoseStack transform, int mX, int mY, float pTicks) {
+    public void draw(MatrixStack transform, int mX, int mY, float pTicks) {
 
     }
 }

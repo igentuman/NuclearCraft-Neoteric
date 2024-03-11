@@ -3,7 +3,7 @@ package igentuman.nc.network;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.network.toClient.PacketRadiationData;
 import igentuman.nc.network.toServer.*;
-import net.minecraftforge.fmllegacy.network.simple.SimpleChannel;
+import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 public class PacketHandler extends BasePacketHandler {
 

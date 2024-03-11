@@ -67,11 +67,11 @@ public class NCLanguageProvider extends LanguageProvider {
         add("music.wanderer", "Wanderer");
         add("music.money_for_nothing", "Money For Nothing");
 
-        add("sound_event.nuclearcraft.item.geiger_1", "Geiger Counter Ticks Level 1 Intensity");
-        add("sound_event.nuclearcraft.item.geiger_2", "Geiger Counter Ticks Level 2 Intensity");
-        add("sound_event.nuclearcraft.item.geiger_3", "Geiger Counter Ticks Level 3 Intensity");
-        add("sound_event.nuclearcraft.item.geiger_4", "Geiger Counter Ticks Level 4 Intensity");
-        add("sound_event.nuclearcraft.item.geiger_5", "Geiger Counter Ticks Level 5 Intensity");
+        add("sound_event.nuclearcraft.item.geiger_1", "Geiger Counter Ticks World 1 Intensity");
+        add("sound_event.nuclearcraft.item.geiger_2", "Geiger Counter Ticks World 2 Intensity");
+        add("sound_event.nuclearcraft.item.geiger_3", "Geiger Counter Ticks World 3 Intensity");
+        add("sound_event.nuclearcraft.item.geiger_4", "Geiger Counter Ticks World 4 Intensity");
+        add("sound_event.nuclearcraft.item.geiger_5", "Geiger Counter Ticks World 5 Intensity");
 
         add("sound_event.nuclearcraft.fusion.ready", "Fusion Reactor Ready");
         add("sound_event.nuclearcraft.fusion.running", "Fusion Reactor Running");
@@ -179,10 +179,10 @@ public class NCLanguageProvider extends LanguageProvider {
             if(NC_INGOTS.containsKey(name)) {
                 molten = "Molten ";
             }
-            add(NCFluids.NC_MATERIALS.get(name).getBucket(), "Bucket of " + molten + convertToName(name));
+           // add(NCFluids.NC_MATERIALS.get(name).getBucket(), "Bucket of " + molten + convertToName(name));
         }
         for(String name: NCFluids.NC_GASES.keySet()) {
-            add(NCFluids.NC_GASES.get(name).getBucket(), "Bucket of " + convertToName(name));
+          //  add(NCFluids.NC_GASES.get(name).getBucket(), "Bucket of " + convertToName(name));
         }
     }
 

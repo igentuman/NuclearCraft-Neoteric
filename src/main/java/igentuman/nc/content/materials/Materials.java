@@ -163,17 +163,17 @@ public class Materials extends MaterialsManager {
         if(all == null) {
             all = new HashMap<>();
             //ores and all basic stuff by default
-            all.put(uranium, NCMaterial.ore(uranium).color(0xFF476447));
-            all.put(thorium, NCMaterial.ore(thorium).color(0xFF2E2E2E));
-            all.put(boron, NCMaterial.ore(boron).color(0xFF999999));
-            all.put(silver, NCMaterial.ore(silver).color(0xFFA49CA6));
+            all.put(uranium, NCMaterial.ore(uranium).ores(true, false, false, false).color(0xFF476447));
+            all.put(thorium, NCMaterial.ore(thorium).ores(true, false, false, false).color(0xFF2E2E2E));
+            all.put(boron, NCMaterial.ore(boron).ores(true, false, false, false).color(0xFF999999));
+            all.put(silver, NCMaterial.ore(silver).ores(true, false, false, false).color(0xFFA49CA6));
             all.put(lead, NCMaterial.ore(lead).ores(true, false, false, false).color(0xFF778887));
             all.put(tin, NCMaterial.ore(tin).ores(true, false, false, false).color(0xFFDFDFE8));
             all.put(zinc, NCMaterial.ore(zinc).ores(true, false, false, false).color(0xFFAFB0A6));
-            all.put(magnesium, NCMaterial.ore(magnesium).color(0xFFF0D0ED));
-            all.put(lithium, NCMaterial.ore(lithium));
-            all.put(cobalt, NCMaterial.ore(cobalt).color(0xFF5A6691));
-            all.put(platinum, NCMaterial.ore(platinum).ores(false, true, false, false).color(0xFF6C939B));
+            all.put(magnesium, NCMaterial.ore(magnesium).ores(true, false, false, false).color(0xFFF0D0ED));
+            all.put(lithium, NCMaterial.ore(lithium).ores(true, false, false, false));
+            all.put(cobalt, NCMaterial.ore(cobalt).ores(true, false, false, false).color(0xFF5A6691));
+            all.put(platinum, NCMaterial.ore(platinum).ores(true, false, false, false).color(0xFF6C939B));
 
             all.put("uranium238", NCMaterial.get("uranium238").define("block"));
             all.put("plutonium238", NCMaterial.get("plutonium238").define("block"));

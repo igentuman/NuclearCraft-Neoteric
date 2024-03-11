@@ -1,12 +1,13 @@
 package igentuman.nc.util;
 
-import net.minecraft.core.Direction;
-import net.minecraft.world.level.block.Rotation;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Rotation;
 
 import java.util.Arrays;
 import java.util.Comparator;
 
-import static net.minecraft.core.Direction.*;
+import static net.minecraft.util.Direction.*;
+
 
 public class DirectionUtil
 {
@@ -20,7 +21,7 @@ public class DirectionUtil
 	{
 		if(to==orig)
 			return Rotation.NONE;
-		if(orig.getAxis()==Axis.Y||to.getAxis()==Axis.Y)
+		if(orig.getAxis()== Direction.Axis.Y||to.getAxis()== Direction.Axis.Y)
 			return null;
 		orig = orig.getClockWise();
 		if(orig==to)
@@ -34,39 +35,45 @@ public class DirectionUtil
 		return null;//This shouldn't ever happen
 	}
 
-	public static Direction rotateAround(Direction d, Axis axis)
+	public static Direction rotateAround(Direction d, Direction.Axis axis)
 	{
 		if (axis == d.getAxis())
 			return d;
-		return switch(axis)
+		switch(axis)
 				{
-					case X -> rotateX(d);
-					case Y -> d.getClockWise();
-					case Z -> rotateZ(d);
+					case X:
+						return rotateX(d);
+					case Y:
+						return d.getClockWise();
+					case Z:
+						return rotateZ(d);
 				};
+		return null;
 	}
 
 	public static Direction rotateX(Direction d)
 	{
-		return switch(d)
+		switch(d)
 				{
-					case NORTH -> DOWN;
-					case SOUTH -> UP;
-					case UP -> NORTH;
-					case DOWN -> SOUTH;
-					case EAST, WEST -> throw new IllegalStateException("Unable to get X-rotated facing of "+d);
+					case NORTH: return DOWN;
+					case SOUTH: return UP;
+					case UP: return NORTH;
+					case DOWN: return SOUTH;
+				//	case EAST, WEST -> throw new IllegalStateException("Unable to get X-rotated facing of "+d);
 				};
+		return null;
 	}
 
 	public static Direction rotateZ(Direction d)
 	{
-		return switch(d)
+		switch(d)
 				{
-					case EAST -> DOWN;
-					case WEST -> UP;
-					case UP -> EAST;
-					case DOWN -> WEST;
-					case SOUTH, NORTH -> throw new IllegalStateException("Unable to get Z-rotated facing of "+d);
+					case EAST: return DOWN;
+					case WEST: return UP;
+					case UP: return EAST;
+					case DOWN: return WEST;
+					//case SOUTH, NORTH -> throw new IllegalStateException("Unable to get Z-rotated facing of "+d);
 				};
+		return null;
 	}
 }

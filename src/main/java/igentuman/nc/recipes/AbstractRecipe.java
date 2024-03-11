@@ -7,28 +7,29 @@ import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.setup.registration.NCProcessors;
 import igentuman.nc.util.IgnoredIInventory;
-import net.minecraft.core.NonNullList;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.item.ItemStack;
+import net.minecraft.block.Block;
+import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import org.antlr.v4.runtime.misc.NotNull;;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-import static net.minecraft.world.item.Items.BARRIER;
-import static net.minecraft.world.level.block.Blocks.AIR;
+import static net.minecraft.block.Blocks.AIR;
+import static net.minecraft.item.Items.BARRIER;
 import static net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE;
 
-public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
+public abstract class AbstractRecipe implements IRecipe<IgnoredIInventory> {
     private final ResourceLocation id;
     public final String codeId;
 
@@ -78,7 +79,7 @@ public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
     }
 
     @Override
-    public @NotNull RecipeSerializer<?> getSerializer() {
+    public @NotNull IRecipeSerializer<?> getSerializer() {
         return NcRecipeSerializers.SERIALIZERS.get(codeId).get();
     }
 
@@ -97,11 +98,11 @@ public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
     }
 
     @Override
-    public @NotNull RecipeType<? extends AbstractRecipe> getType() {
+    public @NotNull IRecipeType<? extends AbstractRecipe> getType() {
         return NcRecipeType.ALL_RECIPES.get(codeId);
     }
 
-    public abstract void write(FriendlyByteBuf buffer);
+    public abstract void write(PacketBuffer buffer);
 
     @NotNull
     @Override
@@ -110,7 +111,7 @@ public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
     }
 
     @Override
-    public boolean matches(@NotNull IgnoredIInventory inv, @NotNull Level world) {
+    public boolean matches(@NotNull IgnoredIInventory inv, @NotNull World world) {
         return !isIncomplete();
     }
 
@@ -162,17 +163,17 @@ public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
     }
 
     public List<ItemStack> getResultItems() {
-        return List.of(outputItems);
+        return Arrays.asList(outputItems);
     }
 
     public List<FluidStack> getInputFluids(int id) {
         if(inputFluids.length > id) return inputFluids[id].getRepresentations();
-        return List.of(FluidStack.EMPTY);
+        return Arrays.asList(FluidStack.EMPTY);
     }
 
     public List<FluidStack> getOutputFluids(int id) {
-        if(outputFluids.length > id) return List.of(outputFluids[id]);
-        return List.of(FluidStack.EMPTY);
+        if(outputFluids.length > id) return Arrays.asList(outputFluids[id]);
+        return Arrays.asList(FluidStack.EMPTY);
     }
 
     public double getTimeModifier() {

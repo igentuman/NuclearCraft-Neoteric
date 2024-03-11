@@ -7,11 +7,11 @@ import igentuman.nc.client.gui.element.button.Button.ReactorComparatorModeButton
 import igentuman.nc.client.gui.element.button.Button.ReactorMode;
 import igentuman.nc.client.gui.element.button.Button.RedstoneConfig;
 import igentuman.nc.network.INcPacket;
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
 
 public class PacketGuiButtonPress implements INcPacket {
 
@@ -30,41 +30,41 @@ public class PacketGuiButtonPress implements INcPacket {
 
     @Override
     public void handle(NetworkEvent.Context context) {
-        ServerPlayer player = context.getSender();
+        ServerPlayerEntity player = context.getSender();
         if (player == null) {
             return;
         }
 
-        BlockEntity be = player.level.getBlockEntity(tilePosition);
+        TileEntity be = player.level.getBlockEntity(tilePosition);
         switch (buttonId) {
             case RedstoneConfig.BTN_ID:
-                if (!(be instanceof NCProcessorBE<?> processor)) {
+                if (!(be instanceof NCProcessorBE<?>)) {
                     return;
                 }
-                processor.toggleRedstoneMode();
+                ((NCProcessorBE<?>) be).toggleRedstoneMode();
                 break;
             case ReactorMode.BTN_ID:
-                if (!(be instanceof FissionControllerBE<?> port)) {
+                if (!(be instanceof FissionControllerBE<?>)) {
                     return;
                 }
-                port.toggleMode();
+                ((FissionControllerBE<?>) be).toggleMode();
                 break;
             case ReactorComparatorModeButton.BTN_ID:
-                if (!(be instanceof FissionPortBE port)) {
+                if (!(be instanceof FissionPortBE)) {
                     return;
                 }
-                port.toggleComparatorMode();
+                ((FissionPortBE) be).toggleComparatorMode();
                 break;
         }
     }
 
     @Override
-    public void encode(FriendlyByteBuf buffer) {
+    public void encode(PacketBuffer buffer) {
         buffer.writeBlockPos(tilePosition);
         buffer.writeInt(buttonId);
     }
 
-    public static PacketGuiButtonPress decode(FriendlyByteBuf buffer) {
+    public static PacketGuiButtonPress decode(PacketBuffer buffer) {
          PacketGuiButtonPress packet = new PacketGuiButtonPress();
           packet.tilePosition = buffer.readBlockPos();
           packet.buttonId = buffer.readInt();

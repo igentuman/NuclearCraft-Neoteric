@@ -6,17 +6,17 @@ import igentuman.nc.recipes.ingredient.NcIngredient;
 import igentuman.nc.recipes.ingredient.creator.IngredientCreatorAccess;
 import igentuman.nc.setup.registration.Fuel;
 import igentuman.nc.util.TagUtil;
-import net.minecraft.core.Registry;
-import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.Tag;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.material.Fluid;
+import net.minecraft.data.IFinishedRecipe;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.block.Block;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -25,19 +25,19 @@ import static igentuman.nc.setup.registration.Fuel.*;
 import static igentuman.nc.setup.registration.NCFluids.ALL_FLUID_ENTRIES;
 import static igentuman.nc.setup.registration.NCItems.*;
 import static igentuman.nc.util.DataGenUtil.*;
-import static net.minecraft.world.item.Items.AIR;
-import static net.minecraft.world.item.Items.BARRIER;
+import static net.minecraft.item.Items.AIR;
+import static net.minecraft.item.Items.BARRIER;
 
 public abstract class AbstractRecipeProvider {
 
     public static String ID;
 
-    public static Consumer<FinishedRecipe> consumer;
+    public static Consumer<IFinishedRecipe> consumer;
     private static List<NcIngredient> input;
     private static List<NcIngredient> output;
     private static double[] params;
 
-    protected static NcIngredient ingredient(Tag.Named<Item> item, int...count) {
+    protected static NcIngredient ingredient(Tags.IOptionalNamedTag<Item> item, int...count) {
         return NcIngredient.of(item, count);
     }
 
@@ -75,7 +75,7 @@ public abstract class AbstractRecipeProvider {
         double powerModifier = params.length>1 ? params[1] : 1.0;
         double radiation = params.length>2 ? params[2] : 1.0;
         NcRecipeBuilder.get(id)
-                .items(List.of(input1, input2), List.of(output))
+                .items(Arrays.asList(input1, input2), Arrays.asList(output))
                 .modifiers(timeModifier, radiation, powerModifier)
                 .build(consumer);
     }
@@ -102,7 +102,8 @@ public abstract class AbstractRecipeProvider {
     }
 
     protected static FluidStackIngredient fluidStackIngredient(String name, int amount) {
-        return IngredientCreatorAccess.fluid().from(ALL_FLUID_ENTRIES.get(name).getStill(), amount);
+      //  return IngredientCreatorAccess.fluid().from(ALL_FLUID_ENTRIES.get(name).getStill(), amount);
+        return null;
     }
 
     public static void itemToItem(NcIngredient input, NcIngredient output, double...params) {
@@ -110,7 +111,7 @@ public abstract class AbstractRecipeProvider {
         double powerModifier = params.length>1 ? params[1] : 1.0;
         double radiation = params.length>2 ? params[2] : 1.0;
         NcRecipeBuilder.get(ID)
-                .items(List.of(input), List.of(output))
+                .items(Arrays.asList(input), Arrays.asList(output))
                 .modifiers(timeModifier, radiation, powerModifier)
                 .build(consumer);
     }
@@ -141,7 +142,7 @@ public abstract class AbstractRecipeProvider {
         double radiation = params.length>2 ? params[2] : 1.0;
         double rarity = params.length>3 ? params[3] : 1.0;
         NcRecipeBuilder.get(ID)
-                .items(input, List.of(output))
+                .items(input, Arrays.asList(output))
                 .modifiers(timeModifier, radiation, powerModifier, rarity)
                 .build(consumer, rl(ID+"/"+nameKey));
     }
@@ -188,7 +189,7 @@ public abstract class AbstractRecipeProvider {
                 .build(consumer);
     }
 
-    public static Tag.Named<Fluid> forgeFluid(String name) {
+    public static Tags.IOptionalNamedTag<Fluid> forgeFluid(String name) {
         String key = "forge";
         if(name.contains(":")) {
             key = name.split(":")[0];
@@ -199,7 +200,7 @@ public abstract class AbstractRecipeProvider {
 
     public static Item blockItem(String name)
     {
-        for(String key: List.of(name, "block_"+name, name+"_block")) {
+        for(String key: Arrays.asList(name, "block_"+name, name+"_block")) {
             if(ALL_NC_ITEMS.get(name) != null) {
                 return ALL_NC_ITEMS.get(key).get();
             }
@@ -224,7 +225,7 @@ public abstract class AbstractRecipeProvider {
         return NC_DUSTS.get(name).get();
     }
 
-    public static Tag.Named<Item> dustTag(String name)
+    public static Tags.IOptionalNamedTag<Item> dustTag(String name)
     {
         if(DUSTS_TAG.get(name) == null) {
             System.out.println("null dust tag: " + name);
@@ -365,7 +366,7 @@ public abstract class AbstractRecipeProvider {
         return NC_PLATES.get(name).get();
     }
 
-    public static Tag.Named<Item> plateTag(String name)
+    public static Tags.IOptionalNamedTag<Item> plateTag(String name)
     {
         if(PLATES_TAG.get(name) == null) {
             System.out.println("null plate tag: " + name);
@@ -381,7 +382,7 @@ public abstract class AbstractRecipeProvider {
         return NC_INGOTS.get(name).get();
     }
 
-    public static Tag.Named<Item> ingotTag(String name)
+    public static Tags.IOptionalNamedTag<Item> ingotTag(String name)
     {
         if(INGOTS_TAG.get(name) == null) {
             System.out.println("null ingot tag: " + name);
@@ -389,7 +390,7 @@ public abstract class AbstractRecipeProvider {
         return INGOTS_TAG.get(name);
     }
 
-    public static Tag.Named<Item> gemTag(String name) {
+    public static Tags.IOptionalNamedTag<Item> gemTag(String name) {
         if(GEMS_TAG.get(name) == null) {
             System.out.println("null gem tag: " + name);
         }

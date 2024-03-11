@@ -1,25 +1,24 @@
 package igentuman.nc.util;
 
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormatElement;
-import com.mojang.math.Transformation;
-import com.mojang.math.Vector3f;
-import com.mojang.math.Vector4f;
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.core.Direction;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.client.renderer.vertex.VertexFormat;
+import net.minecraft.client.renderer.vertex.VertexFormatElement;
+import net.minecraft.util.Direction;
+import net.minecraft.util.math.vector.TransformationMatrix;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.util.math.vector.Vector4f;
 import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
-import net.minecraftforge.client.model.pipeline.VertexBufferConsumer;
+
+import static net.minecraft.client.renderer.vertex.DefaultVertexFormats.BLOCK;
 
 public class ClientTools {
 
-    private static void putVertex(BakedQuadBuilder builder, Vec3 pos, Vector4f vector,
+    private static void putVertex(BakedQuadBuilder builder, Vector3d pos, Vector4f vector,
                                   float u, float v, TextureAtlasSprite sprite) {
 
-        VertexFormat format = DefaultVertexFormat.BLOCK;
+        VertexFormat format = BLOCK;
         float[] colour = {1, 1, 1, 1};
         for(int e = 0; e < format.getElements().size(); e++)
             switch(format.getElements().get(e).getUsage())
@@ -48,8 +47,8 @@ public class ClientTools {
             }
     }
 
-    public static BakedQuad createQuad(Vector3f v1, Vector3f v2, Vector3f v3, Vector3f v4, Transformation rotation, TextureAtlasSprite sprite) {
-        Vec3 normal = new Vec3(v3.x(), v3.y(), v3.z());
+    public static BakedQuad createQuad(Vector3f v1, Vector3f v2, Vector3f v3, Vector3f v4, TransformationMatrix rotation, TextureAtlasSprite sprite) {
+        Vector3d normal = new Vector3d(v3.x(), v3.y(), v3.z());
         normal.normalize();
         Vector3f temp = v1.copy();
         temp.normalize();
@@ -68,7 +67,7 @@ public class ClientTools {
         Vector4f vv4 = new Vector4f((Vector3f) v4); rotation.transformPosition(vv4);
 
         BakedQuad[] quad = new BakedQuad[1];
-        var builder = new BakedQuadBuilder(sprite);
+        BakedQuadBuilder builder = new BakedQuadBuilder(sprite);
         builder.setQuadOrientation(Direction.getNearest(normal.x(), normal.y(), normal.z()));
         putVertex(builder, normal, vv1, 0, 0, sprite);
         putVertex(builder, normal, vv2, 0, th, sprite);

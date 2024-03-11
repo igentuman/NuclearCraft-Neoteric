@@ -1,11 +1,9 @@
 package igentuman.nc.radiation.data;
 
-import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.Level;
+import net.minecraft.util.Direction;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.common.capabilities.CapabilityToken;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
@@ -13,8 +11,9 @@ import javax.annotation.Nullable;
 
 import javax.annotation.Nonnull;
 
-public class WorldRadiationProvider implements ICapabilityProvider, INBTSerializable<CompoundTag> {
-    public static Capability<WorldRadiation> WORLD_RADIATION = CapabilityManager.get(new CapabilityToken<>(){});
+public class WorldRadiationProvider implements ICapabilityProvider, INBTSerializable<CompoundNBT> {
+    public static Capability<WorldRadiation> WORLD_RADIATION = null;
+    //CapabilityManager.get(new CapabilityToken<>(){});
     private WorldRadiation worldRadiation = createWorldRadiation();
     private final LazyOptional<WorldRadiation> opt = LazyOptional.of(() -> createWorldRadiation());
 
@@ -42,12 +41,12 @@ public class WorldRadiationProvider implements ICapabilityProvider, INBTSerializ
     }
 
     @Override
-    public CompoundTag serializeNBT() {
+    public CompoundNBT serializeNBT() {
         return worldRadiation.serializeNBT();
     }
 
     @Override
-    public void deserializeNBT(CompoundTag nbt) {
+    public void deserializeNBT(CompoundNBT nbt) {
         worldRadiation.deserializeNBT(nbt);
     }
 }

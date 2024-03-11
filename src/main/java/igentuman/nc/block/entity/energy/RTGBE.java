@@ -3,8 +3,8 @@ package igentuman.nc.block.entity.energy;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.radiation.data.RadiationManager;
 import igentuman.nc.content.energy.RTGs;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.block.BlockState;
 
 public class RTGBE extends NCEnergy {
     public RTGBE(BlockPos pPos, BlockState pBlockState) {

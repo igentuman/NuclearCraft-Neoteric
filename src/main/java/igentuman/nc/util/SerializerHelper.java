@@ -4,17 +4,16 @@ import com.google.gson.*;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import igentuman.nc.util.annotation.NothingNullByDefault;
 import igentuman.nc.util.math.FloatingLong;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.TagParser;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.ShapedRecipe;
-import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.Fluids;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.Fluids;
+import net.minecraft.item.crafting.ShapedRecipe;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.JSONUtils;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
-import org.antlr.v4.runtime.misc.NotNull;;
+import org.antlr.v4.runtime.misc.NotNull;;import static net.minecraft.nbt.JsonToNBT.parseTag;
 
 
 @NothingNullByDefault
@@ -67,11 +66,11 @@ public class SerializerHelper {
      */
     public static ItemStack getItemStack(@NotNull JsonObject json, @NotNull String key) {
         validateKey(json, key);
-        return ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, key));
+        return ShapedRecipe.itemFromJson(JSONUtils.getAsJsonObject(json, key));
     }
 
     public static ItemStack getItemStack(@NotNull JsonObject json) {
-        return ShapedRecipe.itemStackFromJson(json);
+        return ShapedRecipe.itemFromJson(json);
     }
 
     /**
@@ -84,7 +83,7 @@ public class SerializerHelper {
      */
     public static FluidStack getFluidStack(@NotNull JsonObject json, @NotNull String key) {
         validateKey(json, key);
-        return deserializeFluid(GsonHelper.getAsJsonObject(json, key));
+        return deserializeFluid(JSONUtils.getAsJsonObject(json, key));
     }
 
     public static FluidStack getFluidStack(@NotNull JsonObject json) {
@@ -103,26 +102,26 @@ public class SerializerHelper {
             throw new JsonSyntaxException("Expected to receive a amount that is greater than zero");
         }
         JsonElement count = json.get("amount");
-        if (!GsonHelper.isNumberValue(count)) {
+        if (!JSONUtils.isNumberValue(count)) {
             throw new JsonSyntaxException("Expected amount to be a number greater than zero.");
         }
         int amount = count.getAsJsonPrimitive().getAsInt();
         if (amount < 1) {
             throw new JsonSyntaxException("Expected amount to be greater than zero.");
         }
-        ResourceLocation resourceLocation = new ResourceLocation(GsonHelper.getAsString(json, "fluid"));
+        ResourceLocation resourceLocation = new ResourceLocation(JSONUtils.getAsString(json, "fluid"));
         Fluid fluid = ForgeRegistries.FLUIDS.getValue(resourceLocation);
         if (fluid == null || fluid == Fluids.EMPTY) {
             throw new JsonSyntaxException("Invalid fluid type '" + resourceLocation + "'");
         }
-        CompoundTag nbt = null;
+        CompoundNBT nbt = null;
         if (json.has("nbt")) {
             JsonElement jsonNBT = json.get("nbt");
             try {
                 if (jsonNBT.isJsonObject()) {
-                    nbt = TagParser.parseTag(GSON.toJson(jsonNBT));
+                    nbt = parseTag(GSON.toJson(jsonNBT));
                 } else {
-                    nbt = TagParser.parseTag(GsonHelper.convertToString(jsonNBT, "nbt"));
+                    nbt = parseTag(JSONUtils.convertToString(jsonNBT, "nbt"));
                 }
             } catch (CommandSyntaxException e) {
                 throw new JsonSyntaxException("Invalid NBT entry for fluid '" + resourceLocation + "'");

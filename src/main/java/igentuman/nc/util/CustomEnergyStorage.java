@@ -1,5 +1,7 @@
 package igentuman.nc.util;
 
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
 import net.minecraftforge.energy.EnergyStorage;
 
 public class CustomEnergyStorage extends EnergyStorage {
@@ -71,5 +73,25 @@ public class CustomEnergyStorage extends EnergyStorage {
 
     public void setMaxExtract(int i) {
         maxExtract = i;
+    }
+
+    public CompoundNBT serializeNBT() {
+        CompoundNBT nbt = new CompoundNBT();
+        nbt.putInt("energy", energy);
+        nbt.putInt("capacity", capacity);
+        nbt.putInt("maxExtract", maxExtract);
+        return nbt;
+    }
+
+    public void deserializeNBT(CompoundNBT energyStorage) {
+        if (energyStorage.contains("energy")) {
+            energy = energyStorage.getInt("energy");
+        }
+        if (energyStorage.contains("capacity")) {
+            capacity = energyStorage.getInt("capacity");
+        }
+        if (energyStorage.contains("maxExtract")) {
+            maxExtract = energyStorage.getInt("maxExtract");
+        }
     }
 }

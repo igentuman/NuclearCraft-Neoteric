@@ -1,6 +1,6 @@
 package igentuman.nc.client.gui.element.slot;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import igentuman.nc.client.gui.element.NCGuiElement;
 import igentuman.nc.client.gui.processor.side.SideConfigScreen;
 import net.minecraft.client.Minecraft;
@@ -18,6 +18,7 @@ public class NormalSlot extends NCGuiElement {
     }
 
     public NormalSlot(int xMin, int yMin, String pType)  {
+        super(xMin, yMin, 18, 18, null);
         x = xMin;
         y = yMin;
         width = 18;
@@ -40,7 +41,7 @@ public class NormalSlot extends NCGuiElement {
     }
 
     @Override
-    public void draw(PoseStack transform, int mX, int mY, float pTicks) {
+    public void draw(MatrixStack transform, int mX, int mY, float pTicks) {
         super.draw(transform, mX, mY, pTicks);
         if(type.contains("fluid")) {
             xOffset = 18;
@@ -49,10 +50,17 @@ public class NormalSlot extends NCGuiElement {
             yOffset = 36;
         }
         switch (type) {
-            case "energy_upgrade" -> yOffset = 90;
-            case "speed_upgrade" -> yOffset = 72;
-            case "fission_cell" -> yOffset = 108;
-            case "catalyst" -> yOffset = 126;
+            case "energy_upgrade":
+                yOffset = 90;
+            break;
+            case "speed_upgrade":
+                yOffset = 72;
+                break;
+            case "fission_cell":
+                yOffset = 108;
+                break;
+            case "catalyst":
+                yOffset = 126;
         }
 
         //-1 because of border

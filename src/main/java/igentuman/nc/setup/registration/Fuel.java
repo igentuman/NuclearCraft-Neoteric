@@ -4,12 +4,11 @@ import igentuman.nc.content.materials.Materials;
 import igentuman.nc.item.ItemFuel;
 import igentuman.nc.content.fuel.FuelManager;
 import igentuman.nc.util.TagUtil;
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.Tag;
-import net.minecraft.world.item.Item;
-import net.minecraftforge.fmllegacy.RegistryObject;
+import net.minecraft.item.Item;
+import net.minecraftforge.common.Tags;
+import net.minecraftforge.fml.RegistryObject;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -17,11 +16,11 @@ import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.setup.Registration.ITEMS;
 
 public class Fuel {
-    public static Tag.Named<Item> ISOTOPE_TAG = TagUtil.createItemForgeTag("isotopes");
-    public static Tag.Named<Item> NC_ISOTOPE_TAG = TagUtil.createItemNCTag("isotopes");
-    public static Tag.Named<Item> NC_FUEL_TAG = TagUtil.createItemNCTag("reactor_fuel");
-    public static Tag.Named<Item> NC_DEPLETED_FUEL_TAG = TagUtil.createItemNCTag("reactor_fuel");
-    public static Tag.Named<Item> NC_FUELS_TAG = TagUtil.createItemNCTag("reactor_fuel");
+    public static Tags.IOptionalNamedTag<Item> ISOTOPE_TAG = TagUtil.createItemForgeTag("isotopes");
+    public static Tags.IOptionalNamedTag<Item> NC_ISOTOPE_TAG = TagUtil.createItemNCTag("isotopes");
+    public static Tags.IOptionalNamedTag<Item> NC_FUEL_TAG = TagUtil.createItemNCTag("reactor_fuel");
+    public static Tags.IOptionalNamedTag<Item> NC_DEPLETED_FUEL_TAG = TagUtil.createItemNCTag("reactor_fuel");
+    public static Tags.IOptionalNamedTag<Item> NC_FUELS_TAG = TagUtil.createItemNCTag("reactor_fuel");
 
     public static final Item.Properties ITEM_PROPERTIES = new Item.Properties().tab(CreativeTabs.FISSION_REACTOR);
 
@@ -39,35 +38,35 @@ public class Fuel {
     private static void registerFuel() {
         for (String name: FuelManager.all().keySet()) {
             for(String subType: FuelManager.all().get(name).keySet()) {
-                NC_FUEL.put(List.of("fuel", name, subType, ""),
+                NC_FUEL.put(Arrays.asList("fuel", name, subType, ""),
                         ITEMS.register("fuel_"+name+"_"+subType.replace("-","_"),
                                 () -> new ItemFuel(ITEM_PROPERTIES, FuelManager.all().get(name).get(subType).getDefault())));
-                NC_FUEL.put(List.of("fuel", name, subType, "ox"),
+                NC_FUEL.put(Arrays.asList("fuel", name, subType, "ox"),
                         ITEMS.register("fuel_"+name+"_"+subType.replace("-","_")+"_ox",
                                 () -> new ItemFuel(ITEM_PROPERTIES, FuelManager.all().get(name).get(subType).getOxide())));
-                NC_FUEL.put(List.of("fuel", name, subType, "ni"),
+                NC_FUEL.put(Arrays.asList("fuel", name, subType, "ni"),
                         ITEMS.register("fuel_"+name+"_"+subType.replace("-","_")+"_ni",
                                 () -> new ItemFuel(ITEM_PROPERTIES, FuelManager.all().get(name).get(subType).getNitride())));
-                NC_FUEL.put(List.of("fuel", name, subType, "za"),
+                NC_FUEL.put(Arrays.asList("fuel", name, subType, "za"),
                         ITEMS.register("fuel_"+name+"_"+subType.replace("-","_")+"_za",
                                 () -> new ItemFuel(ITEM_PROPERTIES, FuelManager.all().get(name).get(subType).getZirconiumAlloy())));
-                NC_FUEL.put(List.of("fuel", name, subType, "tr"),
+                NC_FUEL.put(Arrays.asList("fuel", name, subType, "tr"),
                         ITEMS.register("fuel_"+name+"_"+subType.replace("-","_")+"_tr",
                                 () -> new ItemFuel(ITEM_PROPERTIES, FuelManager.all().get(name).get(subType).getTriso())));
 
-                NC_DEPLETED_FUEL.put(List.of("depleted", name, subType, ""),
+                NC_DEPLETED_FUEL.put(Arrays.asList("depleted", name, subType, ""),
                         ITEMS.register("depleted_fuel_"+name+"_"+subType.replace("-","_"),
                                 () -> new Item(ITEM_PROPERTIES)));
-                NC_DEPLETED_FUEL.put(List.of("depleted", name, subType, "ox"),
+                NC_DEPLETED_FUEL.put(Arrays.asList("depleted", name, subType, "ox"),
                         ITEMS.register("depleted_fuel_"+name+"_"+subType.replace("-","_")+"_ox",
                                 () -> new Item(ITEM_PROPERTIES)));
-                NC_DEPLETED_FUEL.put(List.of("depleted", name, subType, "ni"),
+                NC_DEPLETED_FUEL.put(Arrays.asList("depleted", name, subType, "ni"),
                         ITEMS.register("depleted_fuel_"+name+"_"+subType.replace("-","_")+"_ni",
                                 () -> new Item(ITEM_PROPERTIES)));
-                NC_DEPLETED_FUEL.put(List.of("depleted", name, subType, "za"),
+                NC_DEPLETED_FUEL.put(Arrays.asList("depleted", name, subType, "za"),
                         ITEMS.register("depleted_fuel_"+name+"_"+subType.replace("-","_")+"_za",
                                 () -> new Item(ITEM_PROPERTIES)));
-                NC_DEPLETED_FUEL.put(List.of("depleted", name, subType, "tr"),
+                NC_DEPLETED_FUEL.put(Arrays.asList("depleted", name, subType, "tr"),
                         ITEMS.register("depleted_fuel_"+name+"_"+subType.replace("-","_")+"_tr",
                                 () -> new Item(ITEM_PROPERTIES)));
             }

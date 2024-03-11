@@ -1,6 +1,7 @@
 package igentuman.nc.setup.registration;
 
 import com.google.common.collect.ImmutableList;
+import com.mojang.authlib.properties.Property;
 import igentuman.nc.content.materials.Materials;
 import igentuman.nc.fluid.AcidDefinition;
 import igentuman.nc.fluid.GasDefinition;
@@ -10,28 +11,29 @@ import igentuman.nc.block.NCFluidBlock;
 import igentuman.nc.content.fuel.FuelManager;
 import igentuman.nc.util.TagUtil;
 import igentuman.nc.util.TextureUtil;
-import net.minecraft.core.Registry;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.tags.Tag;
-import net.minecraft.world.item.*;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.LiquidBlock;
-import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraft.world.level.material.Fluid;
+import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.item.BucketItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.block.BlockState;
+import net.minecraft.util.SoundEvents;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fluids.capability.wrappers.FluidBucketWrapper;
+import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.fmllegacy.RegistryObject;
 import org.apache.commons.lang3.mutable.Mutable;
 import org.apache.commons.lang3.mutable.MutableObject;
 
@@ -45,19 +47,19 @@ import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.content.materials.Materials.slurries;
 import static igentuman.nc.util.ModUtil.isMekanismLoadeed;
-import static net.minecraft.sounds.SoundEvents.BUCKET_EMPTY;
-import static net.minecraft.sounds.SoundEvents.BUCKET_FILL;
+import static net.minecraft.util.SoundEvents.BUCKET_EMPTY;
+import static net.minecraft.util.SoundEvents.BUCKET_FILL;
 
 public class NCFluids {
     public static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(ForgeRegistries.FLUIDS, MODID);
 
     public static final HashMap<String, FluidEntry> ALL_FLUID_ENTRIES = new HashMap<>();
-    public static final Set<NCBlocks.BlockEntry<? extends LiquidBlock>> ALL_FLUID_BLOCKS = new HashSet<>();
+    public static final Set<NCBlocks.BlockEntry<? extends IFluidBlock>> ALL_FLUID_BLOCKS = new HashSet<>();
     public static HashMap<String, FluidEntry> NC_MATERIALS = new HashMap<>();
     public static HashMap<String, FluidEntry> NC_GASES = new HashMap<>();
 
-    public static HashMap<String, Tag.Named<Fluid>> GASES_TAG = new HashMap<>();
-    public static HashMap<String, Tag.Named<Fluid>> LIQUIDS_TAG = new HashMap<>();
+    public static HashMap<String, Tags.IOptionalNamedTag<Fluid>> GASES_TAG = new HashMap<>();
+    public static HashMap<String, Tags.IOptionalNamedTag<Fluid>> LIQUIDS_TAG = new HashMap<>();
     public static void register(IEventBus eventBus) {
         FLUIDS.register(eventBus);
     }
@@ -78,7 +80,7 @@ public class NCFluids {
     public static BlockState getBlock(String name)
     {
         if(NC_MATERIALS.containsKey(name)) {
-            return NC_MATERIALS.get(name).getBlock().defaultBlockState();
+        //    return NC_MATERIALS.get(name).getBlock().defaultBlockState();
         }
         return Blocks.AIR.defaultBlockState();
     }
@@ -301,15 +303,7 @@ public class NCFluids {
         int visconsity = 0;
         return builder -> builder.temperature(temperature).gaseous().density(density).viscosity(visconsity).color(color);
     }
-    public record FluidEntry(
-            RegistryObject<NCFluid> flowing,
-            RegistryObject<NCFluid> still,
-            NCBlocks.BlockEntry<NCFluidBlock> block,
-            RegistryObject<BucketItem> bucket,
-            List<Property<?>> properties,
-            int color
-    )
-    {
+    public static class FluidEntry {
 
         public static FluidEntry makeAcid(AcidDefinition acid) {
             return make(acid.name,0, rl("block/material/fluid/liquid_still"), rl("block/material/fluid/liquid_flow"), liquidBuilder(acid.temperature, acid.color), acid.color, false);
@@ -348,14 +342,14 @@ public class NCFluids {
         {
             return make(
                     name, burnTime, stillTex, flowingTex, NCFluid::new, NCFluid.Flowing::new, buildAttributes,
-                    ImmutableList.of(), color, isGas
+                    Arrays.asList(), color, isGas
             );
         }
 
         private static FluidEntry make(
                 String name, ResourceLocation stillTex, ResourceLocation flowingTex,
                 NCFluid.FluidConstructor makeStill, NCFluid.FluidConstructor makeFlowing,
-                @Nullable Consumer<FluidAttributes.Builder> buildAttributes, ImmutableList<Property<?>> properties,
+                @Nullable Consumer<FluidAttributes.Builder> buildAttributes, ImmutableList<Property> properties,
                 int color
         )
         {
@@ -366,7 +360,7 @@ public class NCFluids {
                 String name, int burnTime,
                 ResourceLocation stillTex, ResourceLocation flowingTex,
                 NCFluid.FluidConstructor makeStill, NCFluid.FluidConstructor makeFlowing,
-                @Nullable Consumer<FluidAttributes.Builder> buildAttributes, List<Property<?>> properties, int color, boolean isGas
+                @Nullable Consumer<FluidAttributes.Builder> buildAttributes, List<Property> properties, int color, boolean isGas
         )
         {
             FluidAttributes.Builder builder = FluidAttributes.builder(stillTex, flowingTex);
@@ -389,22 +383,23 @@ public class NCFluids {
                     makeFlowing, thisMutable.getValue(), stillTex, flowingTex, buildAttributes
             ));
 
-            NCBlocks.BlockEntry<NCFluidBlock> block = new NCBlocks.BlockEntry<>(
+/*            NCBlocks.BlockEntry<NCFluidBlock> block = new NCBlocks.BlockEntry<>(
                     name+"_fluid_block",
-                    () -> BlockBehaviour.Properties.copy(Blocks.WATER).noCollission(),
+                    () -> Block.Properties.copy(Blocks.WATER).noCollission(),
                     p -> new NCFluidBlock(thisMutable.getValue(), p)
-            );
+            );*/
             RegistryObject<BucketItem> bucket = NCItems.ITEMS.register(name+"_bucket", () -> makeBucket(still, burnTime));
-            FluidEntry entry = new FluidEntry(flowing, still, block, bucket, properties, color);
-            thisMutable.setValue(entry);
-            ALL_FLUID_BLOCKS.add(block);
-            ALL_FLUID_ENTRIES.put(name, entry);
-            return entry;
+            //FluidEntry entry = new FluidEntry(flowing, still, block, bucket, properties, color);
+            //thisMutable.setValue(entry);
+           // ALL_FLUID_BLOCKS.add(block);
+           // ALL_FLUID_ENTRIES.put(name, entry);
+          //  return entry;
+            return null;
         }
 
 
 
-        public NCFluid getFlowing()
+/*        public NCFluid getFlowing()
         {
             return flowing.get();
         }
@@ -422,7 +417,7 @@ public class NCFluids {
         public BucketItem getBucket()
         {
             return bucket.get();
-        }
+        }*/
 
         private static BucketItem makeBucket(RegistryObject<NCFluid> still, int burnTime)
         {
@@ -433,23 +428,23 @@ public class NCFluids {
                     .craftRemainder(Items.BUCKET))
             {
                 @Override
-                public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt)
+                public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundNBT nbt)
                 {
                     return new FluidBucketWrapper(stack);
                 }
 
                 @Override
-                public int getBurnTime(ItemStack itemStack, RecipeType<?> type)
+                public int getBurnTime(ItemStack itemStack, IRecipeType<?> type)
                 {
                     return burnTime;
                 }
             };
             return result;
         }
-
+/*
         public RegistryObject<NCFluid> getStillGetter()
         {
             return still;
-        }
+        }*/
     }
 }

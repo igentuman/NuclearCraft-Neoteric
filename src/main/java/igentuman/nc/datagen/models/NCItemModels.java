@@ -4,12 +4,11 @@ import igentuman.nc.multiblock.fission.FissionReactor;
 import igentuman.nc.setup.registration.*;
 import igentuman.nc.content.storage.BarrelBlocks;
 import igentuman.nc.content.storage.ContainerBlocks;
-import net.minecraft.core.Registry;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.ItemLike;
+import net.minecraft.util.IItemProvider;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.Registry;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
-import net.minecraftforge.client.model.generators.loaders.DynamicBucketModelBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 import java.util.List;
@@ -105,7 +104,7 @@ public class NCItemModels extends ItemModelProvider {
         }
     }
 
-    private String name(ItemLike item)
+    private String name(IItemProvider item)
     {
         return Registry.ITEM.getKey(item.asItem()).getPath();
     }
@@ -117,11 +116,11 @@ public class NCItemModels extends ItemModelProvider {
 
     private void createBucket(NCFluids.FluidEntry entry)
     {
-        withExistingParent(name(entry.getBucket()), forgeLoc("item/bucket"))
-                .customLoader(DynamicBucketModelBuilder::begin)
-                .fluid(entry.getStill())
+       // withExistingParent(name(entry.getBucket()), forgeLoc("item/bucket"))
+      //          .customLoader(DynamicBucketModelBuilder::begin)
+              //  .fluid(entry.getStill())
                 //.flipGas(entry.flowing().getFluidType().getDensity() < 0)
-                .applyTint(true);
+         //       .applyTint(true);
     }
 
 

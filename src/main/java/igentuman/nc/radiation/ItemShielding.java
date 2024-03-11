@@ -1,14 +1,14 @@
 package igentuman.nc.radiation;
 
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.item.Item;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.HashMap;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.handler.config.RadiationConfig.RADIATION_CONFIG;
-import static net.minecraft.world.item.Items.AIR;
+import static net.minecraft.item.Items.AIR;
 
 public class ItemShielding {
     protected static HashMap<Item, Integer> shieldingItems = new HashMap<>();

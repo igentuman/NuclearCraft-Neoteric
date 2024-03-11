@@ -3,13 +3,14 @@ package igentuman.nc.datagen.recipes;
 import igentuman.nc.setup.registration.Fuel;
 import igentuman.nc.content.materials.Materials;
 import igentuman.nc.content.fuel.FuelManager;
-import net.minecraft.advancements.critereon.ItemPredicate;
+import net.minecraft.advancements.criterion.ItemPredicate;
+import net.minecraft.data.CookingRecipeBuilder;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.data.recipes.ShapelessRecipeBuilder;
-import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
-import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.data.IFinishedRecipe;
+import net.minecraft.data.ShapelessRecipeBuilder;
+import net.minecraft.item.crafting.Ingredient;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -23,12 +24,12 @@ public class FuelRecipes extends NCRecipes {
         super(generatorIn);
     }
 
-    public static void generate(Consumer<FinishedRecipe> consumer) {
+    public static void generate(Consumer<IFinishedRecipe> consumer) {
 
         for (String name: Materials.isotopes()) {
             for(String type: new String[] {"_ox", "_ni", "_za"}) {
                 String key = name+type;
-                SimpleCookingRecipeBuilder.smelting(Ingredient.of(Fuel.NC_ISOTOPES.get(key).get()),
+                CookingRecipeBuilder.smelting(Ingredient.of(Fuel.NC_ISOTOPES.get(key).get()),
                                 Fuel.NC_ISOTOPES.get(name).get(), 1.0f, 100)
                         .unlockedBy("item", inventoryTrigger(ItemPredicate.Builder.item().of(Fuel.NC_ISOTOPES.get(name).get()).build()))
                         .save(consumer, MODID+"_"+name+type+"_sml");
@@ -38,16 +39,16 @@ public class FuelRecipes extends NCRecipes {
         for (String name: FuelManager.all().keySet()) {
             for(String subType: FuelManager.all().get(name).keySet()) {
                 for (String type : new String[]{"ox", "ni", "za"}) {
-                    List<String> key = List.of("fuel", name, subType, type);
-                    SimpleCookingRecipeBuilder.smelting(Ingredient.of(Fuel.NC_FUEL.get(key).get()),
-                                    Fuel.NC_FUEL.get(List.of("fuel", name, subType, "")).get(), 1.0f, 100)
-                            .unlockedBy("item", inventoryTrigger(ItemPredicate.Builder.item().of( Fuel.NC_FUEL.get(List.of("fuel", name, subType, "")).get()).build()))
+                    List<String> key = Arrays.asList("fuel", name, subType, type);
+                    CookingRecipeBuilder.smelting(Ingredient.of(Fuel.NC_FUEL.get(key).get()),
+                                    Fuel.NC_FUEL.get(Arrays.asList("fuel", name, subType, "")).get(), 1.0f, 100)
+                            .unlockedBy("item", inventoryTrigger(ItemPredicate.Builder.item().of( Fuel.NC_FUEL.get(Arrays.asList("fuel", name, subType, "")).get()).build()))
                             .save(consumer, MODID + "_fuel_" + name+subType + type + "_sml");
 
-                    key = List.of("depleted", name, subType, type);
-                    SimpleCookingRecipeBuilder.smelting(Ingredient.of(Fuel.NC_DEPLETED_FUEL.get(key).get()),
-                                    Fuel.NC_DEPLETED_FUEL.get(List.of("depleted", name, subType, "")).get(), 1.0f, 100)
-                            .unlockedBy("item", inventoryTrigger(ItemPredicate.Builder.item().of( Fuel.NC_DEPLETED_FUEL.get(List.of("depleted", name, subType, "")).get()).build()))
+                    key = Arrays.asList("depleted", name, subType, type);
+                    CookingRecipeBuilder.smelting(Ingredient.of(Fuel.NC_DEPLETED_FUEL.get(key).get()),
+                                    Fuel.NC_DEPLETED_FUEL.get(Arrays.asList("depleted", name, subType, "")).get(), 1.0f, 100)
+                            .unlockedBy("item", inventoryTrigger(ItemPredicate.Builder.item().of( Fuel.NC_DEPLETED_FUEL.get(Arrays.asList("depleted", name, subType, "")).get()).build()))
                             .save(consumer, MODID + "_depleted_" + name+subType + type + "_sml");
                 }
 
@@ -72,7 +73,7 @@ public class FuelRecipes extends NCRecipes {
 
     }
 
-    private static void fuelPelletRecipe(Consumer<FinishedRecipe> consumer, String name, String subType, String type, int isotope1, int isotope2)
+    private static void fuelPelletRecipe(Consumer<IFinishedRecipe> consumer, String name, String subType, String type, int isotope1, int isotope2)
     {
         int isotope1Cnt = 1;
         int isotope2Cnt = 8;
@@ -80,11 +81,11 @@ public class FuelRecipes extends NCRecipes {
             isotope1Cnt = 3;
             isotope2Cnt = 6;
         }
-        ShapelessRecipeBuilder.shapeless(Fuel.NC_FUEL.get(List.of("fuel", name, subType, type)).get())
+        ShapelessRecipeBuilder.shapeless(Fuel.NC_FUEL.get(Arrays.asList("fuel", name, subType, type)).get())
                 .group(MODID+"_ingots")
                 .requires(getIsotope(name, String.valueOf(isotope1), type), isotope1Cnt)
                 .requires(getIsotope(name, String.valueOf(isotope2), type), isotope2Cnt)
-                .unlockedBy("has_ore", inventoryTrigger(ItemPredicate.Builder.item().of( Fuel.NC_FUEL.get(List.of("fuel", name, subType, type)).get()).build()))
+                .unlockedBy("has_ore", inventoryTrigger(ItemPredicate.Builder.item().of( Fuel.NC_FUEL.get(Arrays.asList("fuel", name, subType, type)).get()).build()))
                 .save(consumer, MODID + "_fuel_" + name+subType + type+"_cr");
     }
 

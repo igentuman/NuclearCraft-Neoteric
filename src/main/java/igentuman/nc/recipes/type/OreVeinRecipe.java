@@ -3,10 +3,10 @@ package igentuman.nc.recipes.type;
 import igentuman.nc.handler.OreVeinProvider;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 import org.antlr.v4.runtime.misc.NotNull;;
 
@@ -27,12 +27,12 @@ public class OreVeinRecipe extends NcRecipe {
         return new ItemStack(NC_PARTS.get("research_paper").get());
     }
 
-    public ItemStack getRandomOre(ServerLevel level, int x, int z, int id) {
+    public ItemStack getRandomOre(World level, int x, int z, int id) {
         int score = OreVeinProvider.get(level).rand(x, z, id).nextInt(100);
         return getOreByScore(score, level, x, z);
     }
 
-    public ItemStack getOreByScore(int score, ServerLevel level, int x, int z) {
+    public ItemStack getOreByScore(int score, World level, int x, int z) {
         int id = OreVeinProvider.get(level).rand(x, z, score).nextInt(inputItems.length);
         for(int i = id; i < inputItems.length; i++) {
             if(score <= inputItems[i].getRepresentations().get(0).getCount()) {
@@ -44,7 +44,7 @@ public class OreVeinRecipe extends NcRecipe {
     }
 
     @Override
-    public void write(FriendlyByteBuf buffer) {
+    public void write(PacketBuffer buffer) {
 
         super.write(buffer);
 

@@ -1,7 +1,7 @@
 package igentuman.nc.util;
 
-import com.mojang.blaze3d.platform.NativeImage;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.texture.NativeImage;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 

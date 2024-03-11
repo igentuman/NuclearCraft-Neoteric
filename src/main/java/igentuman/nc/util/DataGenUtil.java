@@ -1,11 +1,11 @@
 package igentuman.nc.util;
 
 import com.google.common.base.Preconditions;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.PackType;
-import net.minecraft.server.packs.resources.Resource;
-import net.minecraft.tags.Tag;
-import net.minecraft.world.item.Item;
+import net.minecraft.resources.IResource;
+import net.minecraft.resources.ResourcePackType;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.item.Item;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import org.apache.commons.io.IOUtils;
 
@@ -31,7 +31,7 @@ public class DataGenUtil
 			String prefix = "models";
 			if (obj.getPath().startsWith("models/"))
 				prefix = "";
-			Resource objResource = helper.getResource(obj, PackType.CLIENT_RESOURCES, "", prefix);
+			IResource objResource = helper.getResource(obj, ResourcePackType.CLIENT_RESOURCES, "", prefix);
 			InputStream objStream = objResource.getInputStream();
 			String fullObj = IOUtils.toString(objStream, StandardCharsets.US_ASCII);
 			String libLoc = findFirstOccurrenceGroup(MTLLIB, fullObj);
@@ -48,7 +48,7 @@ public class DataGenUtil
 	{
 		try
 		{
-			Resource mtlResource = helper.getResource(mtl, PackType.CLIENT_RESOURCES, "", "models");
+			IResource mtlResource = helper.getResource(mtl, ResourcePackType.CLIENT_RESOURCES, "", "models");
 			String fullMtl = IOUtils.toString(mtlResource.getInputStream(), StandardCharsets.US_ASCII);
 			Matcher materialMatcher = NEWMTL.matcher(fullMtl);
 			while(materialMatcher.find()&&!materialMatcher.group(1).equals(materialName)) ;
@@ -80,51 +80,51 @@ public class DataGenUtil
 		return new ResourceLocation(base.getNamespace(), lastDir+relativePath);
 	}
 
-	public static Tag.Named<Item> forgeIngot(String name)
+	public static Tags.IOptionalNamedTag<Item> forgeIngot(String name)
 	{
 		return createItemForgeTag("ingots/"+name);
 	}
 
-	public static Tag.Named<Item> forgeGem(String name)
+	public static Tags.IOptionalNamedTag<Item> forgeGem(String name)
 	{
 		return createItemForgeTag("gems/"+name);
 	}
 
-	public static Tag.Named<Item> forgeNugget(String name)
+	public static Tags.IOptionalNamedTag<Item> forgeNugget(String name)
 	{
 		return createItemForgeTag("nuggets/"+name);
 	}
 
-	public static Tag.Named<Item> forgeBlock(String name)
+	public static Tags.IOptionalNamedTag<Item> forgeBlock(String name)
 	{
 		return createItemForgeTag("storage_blocks/"+name);
 	}
 
-	public static Tag.Named<Item> forgeOre(String name)
+	public static Tags.IOptionalNamedTag<Item> forgeOre(String name)
 	{
 		return createItemForgeTag("ores/"+name);
 	}
 
-	public static Tag.Named<Item> forgeBucket(String name)
+	public static Tags.IOptionalNamedTag<Item> forgeBucket(String name)
 	{
 		return createItemForgeTag("buckets/"+name);
 	}
 
-	public static Tag.Named<Item> forgeChunk(String name)
+	public static Tags.IOptionalNamedTag<Item> forgeChunk(String name)
 	{
 		return createItemForgeTag("raw_materials/"+name);
 	}
 
-	public static Tag.Named<Item> forgeDust(String name)
+	public static Tags.IOptionalNamedTag<Item> forgeDust(String name)
 	{
 		return createItemForgeTag("dusts/"+name);
 	}
 
-	public static Tag.Named<Item> forgePlate(String name) {
+	public static Tags.IOptionalNamedTag<Item> forgePlate(String name) {
 		return createItemForgeTag("plates/"+name);
 	}
 
-	public static Tag.Named<Item> forgeDye(String name) {
+	public static Tags.IOptionalNamedTag<Item> forgeDye(String name) {
 		return createItemForgeTag("dye/"+name);
 	}
 }

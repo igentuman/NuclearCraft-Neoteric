@@ -1,13 +1,14 @@
 package igentuman.nc.content.energy;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.energy.NCEnergy;
 import igentuman.nc.block.entity.energy.RTGBE;
-import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.tileentity.TileEntityType;
 
 import static igentuman.nc.handler.config.CommonConfig.ENERGY_GENERATION;
 
@@ -19,10 +20,10 @@ public class RTGs {
     public static HashMap<String, RTGPrefab> all() {
         if(all.isEmpty()) {
             //radiation in pRads
-            all.put("uranium_rtg", new RTGPrefab("uranium_rtg",20, 56).setBlockEntity(RTGBE::new));
-            all.put("americium_rtg", new RTGPrefab("americium_rtg",200, 57800).setBlockEntity(RTGBE::new));
-            all.put("plutonium_rtg", new RTGPrefab("plutonium_rtg",800, 200000).setBlockEntity(RTGBE::new));
-            all.put("californium_rtg", new RTGPrefab("californium_rtg",4000, 1900000).setBlockEntity(RTGBE::new));
+            all.put("uranium_rtg", new RTGPrefab("uranium_rtg",20, 56).setBlockEntity(null));
+            all.put("americium_rtg", new RTGPrefab("americium_rtg",200, 57800).setBlockEntity(null));
+            all.put("plutonium_rtg", new RTGPrefab("plutonium_rtg",800, 200000).setBlockEntity(null));
+            all.put("californium_rtg", new RTGPrefab("californium_rtg",4000, 1900000).setBlockEntity(null));
         }
         return all;
     }
@@ -87,7 +88,7 @@ public class RTGs {
         {
             if(!initialized) {
                 try {
-                    int id = RTGs.all().keySet().stream().toList().indexOf(name);
+                    int id = Arrays.asList(RTGs.all().keySet().stream().toArray()).indexOf(name);
                     registered = ENERGY_GENERATION.REGISTER_RTG.get().get(id);
                     generation = ENERGY_GENERATION.RTG_GENERATION.get().get(id);
                     radiation = ENERGY_GENERATION.RTG_RADIATION.get().get(id);
@@ -102,15 +103,15 @@ public class RTGs {
             return  registered;
         }
 
-        public BlockEntityType.BlockEntitySupplier<? extends NCEnergy>  getBlockEntity() {
+        public TileEntityType<? extends NCEnergy> getBlockEntity() {
             return blockEntity;
         }
 
-        public RTGPrefab setBlockEntity(BlockEntityType.BlockEntitySupplier<? extends NCEnergy>  blockEntity) {
+        public RTGPrefab setBlockEntity(TileEntityType<? extends NCEnergy>  blockEntity) {
             this.blockEntity = blockEntity;
             return this;
         }
-        private BlockEntityType.BlockEntitySupplier<? extends NCEnergy>  blockEntity;
+        private TileEntityType<? extends NCEnergy>  blockEntity;
 
         public int getRadiation() {
             return radiation;

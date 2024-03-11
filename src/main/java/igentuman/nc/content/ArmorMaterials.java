@@ -1,19 +1,20 @@
 package igentuman.nc.content;
 
 import igentuman.nc.setup.registration.NCItems;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.LazyLoadedValue;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.item.ArmorMaterial;
-import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.ArmorMaterial;
+import net.minecraft.item.IArmorMaterial;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.SoundEvents;
+
 import java.util.function.Supplier;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.setup.registration.NCItems.NC_INGOTS;
 import static igentuman.nc.setup.registration.NCItems.NC_SHIELDING;
 
-public enum ArmorMaterials implements ArmorMaterial {
+public enum ArmorMaterials implements IArmorMaterial {
    HAZMAT(MODID+":hazmat", 5, new int[]{1, 2, 3, 1}, 15, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F, () -> {
       return Ingredient.of(NCItems.NC_ITEMS.get("bioplastic").get());
    }),
@@ -29,40 +30,44 @@ public enum ArmorMaterials implements ArmorMaterial {
    private final int durabilityMultiplier;
    private final int[] slotProtections;
    private final int enchantmentValue;
-   private final SoundEvent sound;
    private final float toughness;
    private final float knockbackResistance;
-   private final LazyLoadedValue<Ingredient> repairIngredient;
+
+   private final Supplier<Ingredient> repairIngredient;
 
    private ArmorMaterials(String pName, int pDurabilityMultiplier, int[] pSlotProtections, int pEnchantmentValue, SoundEvent pSound, float pToughness, float pKnockbackResistance, Supplier<Ingredient> pRepairIngredient) {
       this.name = pName;
       this.durabilityMultiplier = pDurabilityMultiplier;
       this.slotProtections = pSlotProtections;
       this.enchantmentValue = pEnchantmentValue;
-      this.sound = pSound;
       this.toughness = pToughness;
       this.knockbackResistance = pKnockbackResistance;
-      this.repairIngredient = new LazyLoadedValue<>(pRepairIngredient);
+      this.repairIngredient = pRepairIngredient;
    }
 
-   public int getDurabilityForSlot(EquipmentSlot pSlot) {
-      return HEALTH_PER_SLOT[pSlot.getIndex()] * this.durabilityMultiplier;
+   @Override
+   public int getDurabilityForSlot(EquipmentSlotType equipmentSlotType) {
+      return HEALTH_PER_SLOT[equipmentSlotType.getIndex()] * this.durabilityMultiplier;
+
    }
 
-   public int getDefenseForSlot(EquipmentSlot pSlot) {
-      return this.slotProtections[pSlot.getIndex()];
+   @Override
+   public int getDefenseForSlot(EquipmentSlotType equipmentSlotType) {
+      return this.slotProtections[equipmentSlotType.getIndex()];
    }
 
    public int getEnchantmentValue() {
       return this.enchantmentValue;
    }
 
+   @Override
    public SoundEvent getEquipSound() {
-      return this.sound;
+      return null;
    }
 
+   @Override
    public Ingredient getRepairIngredient() {
-      return this.repairIngredient.get();
+      return repairIngredient.get();
    }
 
    public String getName() {

@@ -1,6 +1,7 @@
 package igentuman.nc.util;
 
-import net.minecraft.world.damagesource.DamageSource;
+
+import net.minecraft.util.DamageSource;
 
 public class NCDamageSources {
     public static final DamageSource ACID = new DamageSource("acid").setIsFire();

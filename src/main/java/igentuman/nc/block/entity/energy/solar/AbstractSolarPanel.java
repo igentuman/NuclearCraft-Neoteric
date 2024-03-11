@@ -2,8 +2,8 @@ package igentuman.nc.block.entity.energy.solar;
 
 import igentuman.nc.block.entity.energy.NCEnergy;
 import igentuman.nc.content.energy.SolarPanels;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.block.BlockState;
 
 public class AbstractSolarPanel extends NCEnergy {
     public AbstractSolarPanel(BlockPos pPos, BlockState pBlockState, String name) {

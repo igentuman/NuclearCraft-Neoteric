@@ -4,18 +4,18 @@ import igentuman.nc.content.materials.Materials;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.NcIngredient;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.IFinishedRecipe;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static net.minecraft.world.item.Items.GOLD_INGOT;
-import static net.minecraft.world.item.Items.LAPIS_LAZULI;
+import static net.minecraft.item.Items.LAPIS_LAZULI;
 
 public class CrystalizerRecipes extends AbstractRecipeProvider {
 
-    public static void generate(Consumer<FinishedRecipe> consumer) {
+    public static void generate(Consumer<IFinishedRecipe> consumer) {
         CrystalizerRecipes.consumer = consumer;
         ID = Processors.CRYSTALLIZER;
         itemsAndFluids(fluidIngredient(Materials.lapis, 144), ingredient(LAPIS_LAZULI));
@@ -41,6 +41,6 @@ public class CrystalizerRecipes extends AbstractRecipeProvider {
     }
 
     protected static void itemsAndFluids(FluidStackIngredient inputFluid, NcIngredient outputItem, double...modifiers) {
-        itemsAndFluids(new ArrayList<>(), List.of(outputItem), List.of(inputFluid), new ArrayList<>(), modifiers);
+        itemsAndFluids(new ArrayList<>(), Arrays.asList(outputItem), Arrays.asList(inputFluid), new ArrayList<>(), modifiers);
     }
 }

@@ -2,6 +2,8 @@ package igentuman.nc.content.fuel;
 
 import igentuman.nc.handler.config.CommonConfig;
 
+import java.util.Arrays;
+
 import static igentuman.nc.handler.config.FissionConfig.FUEL_CONFIG;
 
 public class FuelDef {
@@ -57,7 +59,7 @@ public class FuelDef {
         }
         if(!initialized) {
             initialized = true;
-            int id = FuelManager.all().get(group).keySet().stream().toList().indexOf(name);
+            int id = Arrays.asList(FuelManager.all().get(group).keySet().stream().toArray()).indexOf(name);
             efficiency = FUEL_CONFIG.EFFICIENCY.get().get(id);
             criticality = FUEL_CONFIG.CRITICALITY.get().get(id);
             heat = FUEL_CONFIG.HEAT.get().get(id);

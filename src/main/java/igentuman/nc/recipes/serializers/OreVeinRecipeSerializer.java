@@ -5,9 +5,9 @@ import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.ingredient.creator.IngredientCreatorAccess;
 import igentuman.nc.recipes.type.NcRecipe;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import org.antlr.v4.runtime.misc.NotNull;;
 
@@ -18,7 +18,7 @@ public class OreVeinRecipeSerializer<RECIPE extends NcRecipe> extends NcRecipeSe
     }
 
     @Override
-    public RECIPE fromNetwork(@NotNull ResourceLocation recipeId, @NotNull FriendlyByteBuf buffer) {
+    public RECIPE fromNetwork(@NotNull ResourceLocation recipeId, @NotNull PacketBuffer buffer) {
         try {
             int inputSize = buffer.readInt();
             ItemStackIngredient[] inputItems = new ItemStackIngredient[inputSize];

@@ -6,10 +6,10 @@ import igentuman.nc.multiblock.AbstractNCMultiblock;
 import igentuman.nc.multiblock.IMultiblockAttachable;
 import igentuman.nc.multiblock.turbine.TurbineRegistration;
 import igentuman.nc.multiblock.turbine.TurbineMultiblock;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.Direction;
+import net.minecraft.block.BlockState;
 
 public class TurbineBE extends NuclearCraftBE implements IMultiblockAttachable {
 
@@ -74,7 +74,7 @@ public class TurbineBE extends NuclearCraftBE implements IMultiblockAttachable {
             if(dir.getOpposite().getNormal() == ignoredPos) {
                 continue;
             }
-            BlockEntity be = getLevel().getBlockEntity(getBlockPos().relative(dir));
+            TileEntity be = getLevel().getBlockEntity(getBlockPos().relative(dir));
             if (be instanceof FissionFuelCellBE) {
                 return true;
             }

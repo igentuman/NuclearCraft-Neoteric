@@ -2,48 +2,36 @@ package igentuman.nc.block.fusion;
 
 import igentuman.nc.block.entity.fusion.FusionCoreBE;
 import igentuman.nc.block.entity.fusion.FusionCoreProxyBE;
-import igentuman.nc.block.entity.processor.NCProcessorBE;
-import igentuman.nc.container.FissionControllerContainer;
 import igentuman.nc.container.FusionCoreContainer;
-import igentuman.nc.content.processors.Processors;
-import igentuman.nc.setup.registration.NCProcessors;
-import igentuman.nc.util.TextUtils;
-import net.minecraft.ChatFormatting;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.block.SoundType;
+import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.item.Items;
+import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponent;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.stats.Stats;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.MenuProvider;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.Shapes;
-import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.fmllegacy.network.NetworkHooks;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.IBlockReader;
+import net.minecraft.world.World;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraftforge.fml.network.NetworkHooks;
 import javax.annotation.Nullable;
 
 import java.util.List;
@@ -56,48 +44,45 @@ public class FusionCoreBlock extends FusionBlock {
 
     public FusionCoreBlock(Properties pProperties) {
         super(pProperties.sound(SoundType.METAL));
-        this.registerDefaultState(
+/*        this.registerDefaultState(
                 this.stateDefinition.any()
                         .setValue(ACTIVE, false)
-        );
-    }
-    @Override
-    public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return this.defaultBlockState();
+        );*/
     }
 
+/*
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(BlockStateProperties.POWERED);
     }
+*/
 
     @Override
-    public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
-        return Shapes.create(-1.00, 0.00, -1.00, 2.00, 3.00, 2.00);
+    public VoxelShape getShape(BlockState pState, IBlockReader world, BlockPos pPos, ISelectionContext pContext) {
+        return VoxelShapes.create(new AxisAlignedBB(-1.00, 0.00, -1.00, 2.00, 3.00, 2.00));
     }
-
 
     @Nullable
     @Override
-    public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
-        return FUSION_BE.get("fusion_core").get().create(pPos, pState);
+    public TileEntity createTileEntity(BlockState pState, IBlockReader world) {
+        return FUSION_BE.get("fusion_core").get().create();
     }
 
     @Override
-    public void onPlace(BlockState pState, Level pLevel, BlockPos pPos, BlockState pOldState, boolean pIsMoving) {
+    public void onPlace(BlockState pState, World pLevel, BlockPos pPos, BlockState pOldState, boolean pIsMoving) {
         super.onPlace(pState, pLevel, pPos, pOldState, pIsMoving);
         //placeProxyBlocks(pState, pLevel, pPos);
     }
 
     @Override
-    public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
+    public void onRemove(BlockState pState, World pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
         super.onRemove(pState, pLevel, pPos, pNewState, pIsMoving);
         if(pState.getBlock() != pNewState.getBlock()) {
             removeProxyBlocks(pState, pLevel, pPos);
         }
     }
 
-    public void removeProxyBlocks(BlockState pState, Level pLevel, BlockPos pPos) {
+    public void removeProxyBlocks(BlockState pState, World pLevel, BlockPos pPos) {
         for(int x = -1; x < 2; x++) {
             for (int z = -1; z < 2; z++) {
                 for(int y = 0; y < 3; y++) {
@@ -109,7 +94,7 @@ public class FusionCoreBlock extends FusionBlock {
         }
     }
 
-    public void placeProxyBlocks(BlockState pState, Level pLevel, BlockPos pPos, FusionCoreBE core) {
+    public void placeProxyBlocks(BlockState pState, World pLevel, BlockPos pPos, FusionCoreBE core) {
         for(int x = -1; x < 2; x++) {
             for (int z = -1; z < 2; z++) {
                 for(int y = 0; y < 3; y++) {
@@ -123,60 +108,42 @@ public class FusionCoreBlock extends FusionBlock {
         }
     }
 
-    public void placeProxyBlocks(BlockState pState, Level pLevel, BlockPos pPos) {
+    public void placeProxyBlocks(BlockState pState, World pLevel, BlockPos pPos) {
         FusionCoreBE core = (FusionCoreBE) pLevel.getBlockEntity(pPos);
         placeProxyBlocks(pState, pLevel, pPos, core);
     }
 
     @Override
-    public void playerDestroy(Level pLevel, Player pPlayer, BlockPos pPos, BlockState pState, @javax.annotation.Nullable BlockEntity pBlockEntity, ItemStack pTool) {
+    public void playerDestroy(World pLevel, PlayerEntity pPlayer, BlockPos pPos, BlockState pState, @javax.annotation.Nullable TileEntity pBlockEntity, ItemStack pTool) {
         pPlayer.awardStat(Stats.BLOCK_MINED.get(this));
         pPlayer.causeFoodExhaustion(0.005F);
 
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
+    public ActionResultType use(BlockState state, World level, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult) {
         if (!level.isClientSide()) {
-            BlockEntity be = level.getBlockEntity(pos);
+            TileEntity be = level.getBlockEntity(pos);
             if (be instanceof FusionCoreBE)  {
-                MenuProvider containerProvider = new MenuProvider() {
+                INamedContainerProvider containerProvider = new INamedContainerProvider() {
                     @Override
-                    public Component getDisplayName() {
-                        return new TranslatableComponent("fusion_core");
+                    public ITextComponent getDisplayName() {
+                        return null;
                     }
 
                     @Override
-                    public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity) {
+                    public Container createMenu(int windowId, PlayerInventory playerInventory, PlayerEntity playerEntity) {
                         return new FusionCoreContainer(windowId, pos, playerInventory);
                     }
                 };
-                NetworkHooks.openGui((ServerPlayer) player, containerProvider, be.getBlockPos());
+                NetworkHooks.openGui((ServerPlayerEntity) player, containerProvider, be.getBlockPos());
             }
         }
-        return InteractionResult.SUCCESS;
-    }
-
-    @javax.annotation.Nullable
-    @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        if (level.isClientSide()) {
-            return (lvl, pos, blockState, t) -> {
-                if (t instanceof FusionCoreBE<?> tile) {
-                    tile.tickClient();
-                   // level.setBlockAndUpdate(pos, blockState.setValue(ACTIVE, tile.isActive));
-                }
-            };
-        }
-        return (lvl, pos, blockState, t)-> {
-            if (t instanceof FusionCoreBE<?> tile) {
-                tile.tickServer();
-            }
-        };
+        return ActionResultType.SUCCESS;
     }
 
     @Override
-    public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag) {
+    public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable IBlockReader pLevel, List<ITextComponent> list, ITooltipFlag pFlag) {
         if(asItem().toString().contains("empty") || this.asItem().equals(Items.AIR)) return;
     }
 

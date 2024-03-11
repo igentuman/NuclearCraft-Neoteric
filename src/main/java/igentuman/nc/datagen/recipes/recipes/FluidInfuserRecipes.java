@@ -1,33 +1,30 @@
 package igentuman.nc.datagen.recipes.recipes;
 
-import com.google.common.collect.Lists;
 import igentuman.nc.content.fuel.FuelManager;
 import igentuman.nc.content.materials.Materials;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.NcIngredient;
 import igentuman.nc.setup.registration.Fuel;
-import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
+import net.minecraft.data.IFinishedRecipe;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
 import static igentuman.nc.setup.registration.NCItems.ALL_NC_ITEMS;
-import static net.minecraft.world.item.Items.ICE;
+import static net.minecraft.item.Items.ICE;
 
 
 public class FluidInfuserRecipes extends AbstractRecipeProvider {
 
-    public static void generate(Consumer<FinishedRecipe> consumer) {
+    public static void generate(Consumer<IFinishedRecipe> consumer) {
         FluidInfuserRecipes.consumer = consumer;
         ID = Processors.FLUID_INFUSER;
 
 
-        for(String gas: List.of("oxygen", "nitrogen", Materials.zircaloy)) {
+        for(String gas: Arrays.asList("oxygen", "nitrogen", Materials.zircaloy)) {
             String type = gas.substring(0, 2).replace("zi", "za");
             for (String name : Materials.isotopes()) {
                 String key = name + "_"+type;
@@ -40,8 +37,8 @@ public class FluidInfuserRecipes extends AbstractRecipeProvider {
 
             for (String name : FuelManager.all().keySet()) {
                 for (String subType : FuelManager.all().get(name).keySet()) {
-                    List<String> key = List.of("fuel", name, subType, "");
-                    List<String> keyResult = List.of("fuel", name, subType, type);
+                    List<String> key = Arrays.asList("fuel", name, subType, "");
+                    List<String> keyResult = Arrays.asList("fuel", name, subType, type);
                     add(
                             fluidIngredient(gas, 1000),
                             ingredient(Fuel.NC_FUEL.get(key).get()),
@@ -114,6 +111,6 @@ public class FluidInfuserRecipes extends AbstractRecipeProvider {
     }
 
     protected static void add(FluidStackIngredient inputFluid, NcIngredient inputItem, NcIngredient output, double...modifiers) {
-        itemsAndFluids(List.of(inputItem), List.of(output), List.of(inputFluid), new ArrayList<>(), modifiers);
+        itemsAndFluids(Arrays.asList(inputItem), Arrays.asList(output), Arrays.asList(inputFluid), new ArrayList<>(), modifiers);
     }
 }

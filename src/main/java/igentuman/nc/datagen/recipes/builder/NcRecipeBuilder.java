@@ -3,19 +3,15 @@ package igentuman.nc.datagen.recipes.builder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import igentuman.nc.container.elements.NCSlotItemHandler;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
-import igentuman.nc.recipes.ingredient.InputIngredient;
-import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.ingredient.NcIngredient;
-import igentuman.nc.recipes.ingredient.creator.FluidStackIngredientCreator;
-import igentuman.nc.recipes.ingredient.creator.IngredientCreatorAccess;
-import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.data.IFinishedRecipe;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import org.antlr.v4.runtime.misc.NotNull;;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -23,10 +19,10 @@ import static igentuman.nc.NuclearCraft.MODID;
 
 public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
 
-    private List<NcIngredient> inputItems = List.of();
-    private List<NcIngredient> outputItems = List.of();
-    private List<FluidStackIngredient> inputFluids = List.of();
-    private List<FluidStack> outputFluids = List.of();
+    private List<NcIngredient> inputItems = Arrays.asList();
+    private List<NcIngredient> outputItems = Arrays.asList();
+    private List<FluidStackIngredient> inputFluids = Arrays.asList();
+    private List<FluidStack> outputFluids = Arrays.asList();
     private static NcRecipeBuilder instance;
     private double timeModifier = 1D;
     private double radiation = 1D;
@@ -38,7 +34,7 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
     public String ID;
     private double rarityModifier = 1D;
     private double temperature = 0D;
-    private List<String> outputItemsText = List.of();
+    private List<String> outputItemsText = Arrays.asList();
 
     protected NcRecipeBuilder(String id) {
         super(ncSerializer(id));
@@ -114,7 +110,7 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
         return val;
     }
 
-    public void build(Consumer<FinishedRecipe> consumer) {
+    public void build(Consumer<IFinishedRecipe> consumer) {
         build(consumer, getRecipeId());
     }
 

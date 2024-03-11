@@ -1,6 +1,6 @@
 package igentuman.nc.compat.jei;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import igentuman.nc.block.entity.fission.FissionControllerBE;
 import igentuman.nc.compat.jei.util.TickTimer;
 import mezz.jei.api.constants.VanillaTypes;
@@ -10,11 +10,11 @@ import mezz.jei.api.gui.drawable.IDrawableAnimated;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.item.ItemStack;
 import org.antlr.v4.runtime.misc.NotNull;
 
 import java.util.ArrayList;
@@ -49,13 +49,13 @@ public class FissionCategoryWrapper<T extends FissionControllerBE.Recipe> implem
     }
 
     @Override
-    public @NotNull List<Component> getTooltipStrings(T recipe, double mouseX, double mouseY) {
-        List<Component> lines = new ArrayList<>();
+    public @NotNull List<ITextComponent> getTooltipStrings(T recipe, double mouseX, double mouseY) {
+        List<ITextComponent> lines = new ArrayList<>();
         if(mouseX > 29 && mouseX < 65 && mouseY > 8 && mouseY < 24) {
-            lines.add(new TranslatableComponent("fission.recipe.duration", (int)((double)recipe.getDepletionTime()/20)).withStyle(ChatFormatting.AQUA));
-            lines.add(new TranslatableComponent("fission.recipe.power", (int)recipe.getEnergy()).withStyle(ChatFormatting.RED));
-            lines.add(new TranslatableComponent("fission.recipe.radiation", numberFormat(recipe.getRadiation()*1000000)).withStyle(ChatFormatting.GREEN));
-            lines.add(new TranslatableComponent("fission.recipe.heat", (int)recipe.getHeat()).withStyle(ChatFormatting.GOLD));
+            lines.add(new TranslationTextComponent("fission.recipe.duration", (int)((double)recipe.getDepletionTime()/20)).withStyle(TextFormatting.AQUA));
+            lines.add(new TranslationTextComponent("fission.recipe.power", (int)recipe.getEnergy()).withStyle(TextFormatting.RED));
+            lines.add(new TranslationTextComponent("fission.recipe.radiation", numberFormat(recipe.getRadiation()*1000000)).withStyle(TextFormatting.GREEN));
+            lines.add(new TranslationTextComponent("fission.recipe.heat", (int)recipe.getHeat()).withStyle(TextFormatting.GOLD));
         }
         return lines;
     }
@@ -75,8 +75,8 @@ public class FissionCategoryWrapper<T extends FissionControllerBE.Recipe> implem
     }
 
     @Override
-    public @NotNull Component getTitle() {
-        return new TranslatableComponent("nc_jei_cat."+getRecipeType().getUid().getPath());
+    public @NotNull String getTitle() {
+        return new TranslationTextComponent("nc_jei_cat."+getRecipeType().getUid().getPath()).getString();
     }
 
     @Override
@@ -96,7 +96,7 @@ public class FissionCategoryWrapper<T extends FissionControllerBE.Recipe> implem
     }
 
     @Override
-    public void draw(T recipe, PoseStack stack, double mouseX, double mouseY) {
+    public void draw(T recipe, MatrixStack stack, double mouseX, double mouseY) {
         if(arrow.containsKey(recipe.getDepletionTime())) {
             arrow.get(recipe.getDepletionTime()).draw(stack, 29, 8);
         }

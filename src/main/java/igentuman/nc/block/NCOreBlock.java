@@ -1,6 +1,6 @@
 package igentuman.nc.block;
 
-import net.minecraft.world.level.block.Block;
+import net.minecraft.block.Block;
 
 public class NCOreBlock extends Block {
 

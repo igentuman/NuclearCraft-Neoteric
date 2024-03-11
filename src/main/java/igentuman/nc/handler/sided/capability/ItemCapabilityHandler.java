@@ -2,15 +2,13 @@ package igentuman.nc.handler.sided.capability;
 
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.SlotModePair;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.Direction;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
@@ -23,9 +21,11 @@ import javax.annotation.Nonnull;
 import java.util.*;
 
 import static igentuman.nc.handler.sided.SlotModePair.SlotMode.*;
+import static net.minecraftforge.common.util.Constants.NBT.TAG_COMPOUND;
+import static net.minecraftforge.common.util.Constants.NBT.TAG_INT;
 import static net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
 
-public class ItemCapabilityHandler extends AbstractCapabilityHandler implements IItemHandlerModifiable, INBTSerializable<CompoundTag> {
+public class ItemCapabilityHandler extends AbstractCapabilityHandler implements IItemHandlerModifiable, INBTSerializable<CompoundNBT> {
 
     public List<ItemStack> allowedInputItems;
     protected NonNullList<ItemStack> stacks;
@@ -190,17 +190,17 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
     }
 
     @Override
-    public CompoundTag serializeNBT() {
-        ListTag nbtTagList = new ListTag();
+    public CompoundNBT serializeNBT() {
+        ListNBT nbtTagList = new ListNBT();
         for (int i = 0; i < stacks.size(); i++) {
             if (!stacks.get(i).isEmpty()) {
-                CompoundTag itemTag = new CompoundTag();
+                CompoundNBT itemTag = new CompoundNBT();
                 itemTag.putInt("Slot", i);
                 stacks.get(i).save(itemTag);
                 nbtTagList.add(itemTag);
             }
         }
-        CompoundTag nbt = new CompoundTag();
+        CompoundNBT nbt = new CompoundNBT();
         nbt.put("Items", nbtTagList);
         nbt.putInt("Size", stacks.size());
         if (sideMapUpdated) {
@@ -215,11 +215,11 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
     }
 
     @Override
-    public void deserializeNBT(CompoundTag nbt) {
-        setSize(nbt.contains("Size", Tag.TAG_INT) ? nbt.getInt("Size") : stacks.size());
-        ListTag tagList = nbt.getList("Items", Tag.TAG_COMPOUND);
+    public void deserializeNBT(CompoundNBT nbt) {
+        setSize(nbt.contains("Size", TAG_INT) ? nbt.getInt("Size") : stacks.size());
+        ListNBT tagList = nbt.getList("Items", TAG_COMPOUND);
         for (int i = 0; i < tagList.size(); i++) {
-            CompoundTag itemTags = tagList.getCompound(i);
+            CompoundNBT itemTags = tagList.getCompound(i);
             int slot = itemTags.getInt("Slot");
 
             if (slot >= 0 && slot < stacks.size()) {
@@ -297,7 +297,7 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
     }
 
     public boolean pushItems(Direction dir, boolean forceFlag, BlockPos pos) {
-        BlockEntity be = tile.getLevel().getBlockEntity(pos.relative(dir));
+        TileEntity be = tile.getLevel().getBlockEntity(pos.relative(dir));
         if(be == null) return false;
         LazyOptional<IItemHandler> cap = be.getCapability(ITEM_HANDLER_CAPABILITY, dir.getOpposite());
         if(cap.isPresent()) {
@@ -322,7 +322,7 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
     }
 
     public boolean pullItems(Direction dir, boolean forceFlag, BlockPos pos) {
-        BlockEntity be = tile.getLevel().getBlockEntity(pos.relative(dir));
+        TileEntity be = tile.getLevel().getBlockEntity(pos.relative(dir));
         if(be == null) return false;
         LazyOptional<IItemHandler> cap = be.getCapability(ITEM_HANDLER_CAPABILITY, dir.getOpposite());
         if(!cap.isPresent()) {
@@ -365,7 +365,7 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
 
     public boolean canPushExcessItems(int i, ItemStack outputItem) {
         for(Direction dir: Direction.values()) {
-            BlockEntity be = tile.getLevel().getBlockEntity(tile.getBlockPos().relative(dir));
+            TileEntity be = tile.getLevel().getBlockEntity(tile.getBlockPos().relative(dir));
             if(be == null) continue;
             LazyOptional<IItemHandler> cap = be.getCapability(ITEM_HANDLER_CAPABILITY, dir.getOpposite());
             if(cap.isPresent()) {
@@ -387,7 +387,7 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
 
     public ItemStack pushExcessItems(int i, ItemStack outputItem) {
         for(Direction dir: Direction.values()) {
-            BlockEntity be = tile.getLevel().getBlockEntity(tile.getBlockPos().relative(dir));
+            TileEntity be = tile.getLevel().getBlockEntity(tile.getBlockPos().relative(dir));
             if(be == null) continue;
             LazyOptional<IItemHandler> cap = be.getCapability(ITEM_HANDLER_CAPABILITY, dir.getOpposite());
             if(cap.isPresent()) {

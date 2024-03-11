@@ -1,6 +1,6 @@
 package igentuman.nc.util;
 
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 public final class InventoryUtils {

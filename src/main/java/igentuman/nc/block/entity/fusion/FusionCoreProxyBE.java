@@ -1,12 +1,12 @@
 package igentuman.nc.block.entity.fusion;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.Direction;
+import net.minecraft.item.ItemStack;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -14,9 +14,9 @@ import net.minecraftforge.energy.IEnergyStorage;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import java.util.Arrays;
 import java.util.List;
 
-import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_CORE_PROXY_BE;
 import static igentuman.nc.util.ModUtil.isCcLoaded;
 import static igentuman.nc.util.ModUtil.isMekanismLoadeed;
 import static net.minecraftforge.energy.CapabilityEnergy.ENERGY;
@@ -26,7 +26,11 @@ import static net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABI
 public class FusionCoreProxyBE extends FusionBE {
 
     public FusionCoreProxyBE(BlockPos pPos, BlockState pBlockState) {
-        super(FUSION_CORE_PROXY_BE.get(), pPos, pBlockState);
+        super(null);
+    }
+
+    public FusionCoreProxyBE() {
+        super(null);
     }
     protected int timer = 20;
     protected void validateCore()
@@ -64,7 +68,7 @@ public class FusionCoreProxyBE extends FusionBE {
         corePos = core.getBlockPos();
         if(wasCore != core) {
             setChanged();
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+           // level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
         }
     }
 
@@ -139,10 +143,10 @@ public class FusionCoreProxyBE extends FusionBE {
     public void sendOutEnergy() {
         int required = getCoreBE().rfAmplifiersPower + getCoreBE().magnetsPower;
 
-        for(Direction side: List.of(Direction.UP, Direction.DOWN)) {
+        for(Direction side: Arrays.asList(Direction.UP, Direction.DOWN)) {
             if(getCoreBE().energyStorage.getEnergyStored() > required) {
-                BlockEntity be = getLevel().getBlockEntity(getBlockPos().relative(side));
-                if(be instanceof BlockEntity && !(be instanceof FusionBE)) {
+                TileEntity be = getLevel().getBlockEntity(getBlockPos().relative(side));
+                if(be instanceof TileEntity && !(be instanceof FusionBE)) {
                     IEnergyStorage r = be.getCapability(ENERGY, side.getOpposite()).orElse(null);
                     if(r == null) break;
                     if(r.canReceive()) {

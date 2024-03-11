@@ -1,10 +1,10 @@
 package igentuman.nc.multiblock;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
 
 public interface INCMultiblockController {
-    BlockEntity controllerBE();
+    TileEntity controllerBE();
 
     void clearStats();
 

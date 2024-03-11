@@ -118,12 +118,6 @@ public class BatteryBE extends NCEnergy {
         return BatteryBlocks.all().get(getBlockState().getBlock().asItem().toString()).getStorage();
     }
 
-    @Override
-    public @NotNull CompoundTag getUpdateTag() {
-        CompoundTag tag = super.getUpdateTag();
-        saveClientData(tag);
-        return tag;
-    }
 
     @Override
     protected void saveClientData(CompoundTag tag) {

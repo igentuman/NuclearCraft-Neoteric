@@ -99,7 +99,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("nc_jei_cat.mek_chemical_conversion", "NC - GAS -> Fluid Conversion");
         add("nc_jei_cat.fission_boiling", "Boiling Reactor");
 
-        add("reactor.size", "Reactor size: %sx%sx%s");
+        add("reactor.size", "Structure size: %sx%sx%s");
         add("fission.casing.wrong.block", "Wrong block at: %s");
         add("fission_reactor.efficiency", "Efficiency: %s%%");
         add("fission_reactor.net_heat", "Net Heat: %s H/t");
@@ -266,7 +266,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("tooltip.nc.rotor_shaft.desc","Connects the rotor blades to the dynamo to convert the generated kinetic energy into electrical energy. Must be placed axially as a cuboid along the centre of the turbine interior.");
         add("tooltip.nc.bearing.desc","Connects the rotor shaft to the turbine wall and dynamo. Must cover the full area of each end of the shaft.");
         add("turbine.active.coils", "Active coils: %s");
-        add("turbine.blades.flow", "Max steam flow: mB/t");
+        add("turbine.blades.flow", "Max steam flow: %s mB/t");
         add("tooltip.nc.liquid_empty","Stored: 0 of %s");
         add("tooltip.nc.liquid_stored","Stored: %s %s / %s");
         add("tooltip.nc.liquid_capacity","Capacity: %s");

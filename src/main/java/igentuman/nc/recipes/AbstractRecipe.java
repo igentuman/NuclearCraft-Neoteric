@@ -236,6 +236,8 @@ public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
         return radiationModifier;
     }
 
+
+
     public boolean handleOutputs(SidedContentHandler contentHandler) {
         int i = contentHandler.inputItemSlots;
         for(ItemStack outputItem: getResultItems()) {

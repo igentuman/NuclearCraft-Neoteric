@@ -117,14 +117,6 @@ public class NCEnergy extends NuclearCraftBE {
         energy.invalidate();
     }
 
-
-    @Override
-    public @NotNull CompoundTag getUpdateTag() {
-        CompoundTag tag = super.getUpdateTag();
-        saveClientData(tag);
-        return tag;
-    }
-
     protected void saveClientData(CompoundTag tag) {
         CompoundTag infoTag = new CompoundTag();
         saveTagData(infoTag);

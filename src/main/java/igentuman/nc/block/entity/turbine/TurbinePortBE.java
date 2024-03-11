@@ -70,8 +70,8 @@ public class TurbinePortBE extends TurbineBE {
         Direction dir = getFacing();
 
         if(fluidHandler() != null) {
-            updated = fluidHandler().pushFluids(dir, true, worldPosition) || updated;
-            updated = fluidHandler().pullFluids(dir, true, worldPosition) || updated;
+            updated = fluidHandler().pushFluids(dir, false, worldPosition) || updated;
+            updated = fluidHandler().pullFluids(dir, false, worldPosition) || updated;
         }
 
         if(updated) {

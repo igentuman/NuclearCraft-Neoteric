@@ -3,13 +3,11 @@ package igentuman.nc.block.entity.turbine;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.client.sound.SoundHandler;
 import igentuman.nc.handler.sided.SidedContentHandler;
+import igentuman.nc.handler.sided.SlotModePair;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
-import igentuman.nc.item.ItemFuel;
 import igentuman.nc.multiblock.ValidationResult;
 import igentuman.nc.multiblock.turbine.TurbineMultiblock;
 import igentuman.nc.multiblock.turbine.TurbineRegistration;
-import igentuman.nc.radiation.ItemRadiation;
-import igentuman.nc.radiation.data.RadiationManager;
 import igentuman.nc.recipes.AbstractRecipe;
 import igentuman.nc.recipes.NcRecipeType;
 import igentuman.nc.recipes.RecipeInfo;
@@ -27,7 +25,6 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -49,9 +46,10 @@ import igentuman.nc.compat.cc.NCTurbinePeripheral;
 
 import static igentuman.nc.block.fission.FissionControllerBlock.POWERED;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
-import static igentuman.nc.handler.config.FissionConfig.FISSION_CONFIG;
+import static igentuman.nc.handler.config.TurbineConfig.TURBINE_CONFIG;
 import static igentuman.nc.setup.registration.NCSounds.FISSION_REACTOR;
 import static igentuman.nc.util.ModUtil.isCcLoaded;
+import static net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE;
 
 public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> extends TurbineBE {
 
@@ -80,9 +78,9 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
     @NBTField
     protected boolean forceShutdown = false;
     @NBTField
-    protected int activeCoils = 0;
+    public int activeCoils = 0;
     @NBTField
-    protected int flow = 0;
+    public int flow = 0;
 
     public ValidationResult validationResult = ValidationResult.INCOMPLETE;
     public RecipeInfo recipeInfo = new RecipeInfo();
@@ -95,27 +93,17 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
         return NAME;
     }
 
-    private List<ItemStack> allowedInputs;
+    private List<FluidStack> allowedInputs;
 
-    public List<ItemStack> getAllowedInputItems()
-    {
-        if(allowedInputs == null) {
-            allowedInputs = new ArrayList<>();
-            for(AbstractRecipe recipe: NcRecipeType.ALL_RECIPES.get(getName()).getRecipeType().getRecipes(getLevel())) {
-                for(Ingredient ingredient: recipe.getItemIngredients()) {
-                    allowedInputs.addAll(List.of(ingredient.getItems()));
-                }
-            }
-        }
-        return allowedInputs;
-    }
 
     public TurbineControllerBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, NAME);
         multiblock = new TurbineMultiblock(this);
         contentHandler = new SidedContentHandler(
                 0, 0,
-                1, 1, 10000000, 100000000);
+                1, 1, 1000, 10000);
+        contentHandler.fluidCapability.setGlobalMode(0, SlotModePair.SlotMode.PULL);
+        contentHandler.fluidCapability.setGlobalMode(1, SlotModePair.SlotMode.PUSH);
         contentHandler.setBlockEntity(this);
     }
 
@@ -239,13 +227,13 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
         if (multiblock().isFormed()) {
             trackChanges(contentHandler.tick());
             if(controllerEnabled) {
-                powered = processReaction();
+                powered = processRecipe();
                 trackChanges(powered);
             } else {
                 powered = false;
             }
             handleMeltdown();
-            contentHandler.setAllowedInputItems(getAllowedInputItems());
+            contentHandler.setAllowedInputFluids(0, getAllowedInputFluids());
         }
         refreshCacheFlag = !multiblock().isFormed();
         if(refreshCacheFlag || changed) {
@@ -257,6 +245,19 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
         }
 
         controllerEnabled = false;
+    }
+
+    public List<FluidStack> getAllowedInputFluids()
+    {
+        if(allowedInputs == null) {
+            allowedInputs = new ArrayList<>();
+            for(NcRecipe recipe: NcRecipeType.ALL_RECIPES.get(getName()).getRecipeType().getRecipes(getLevel())) {
+                for(FluidStackIngredient ingredient: recipe.getInputFluids()) {
+                    allowedInputs.addAll(ingredient.getRepresentations());
+                }
+            }
+        }
+        return allowedInputs;
     }
 
     @Override
@@ -329,9 +330,9 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
         }
     }
 
-    private boolean processReaction() {
+    private boolean processRecipe() {
         if(recipeInfo.recipe != null && recipeInfo.isCompleted()) {
-            if(contentHandler.itemHandler.getStackInSlot(0).equals(ItemStack.EMPTY)) {
+            if(contentHandler.fluidCapability.getFluidInSlot(0).isEmpty()) {
                 recipeInfo.clear();
             }
         }
@@ -346,12 +347,8 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
 
     private boolean process() {
         recipeInfo.process(1);
-        if(recipeInfo.radiation != 1D) {
-            RadiationManager.get(getLevel()).addRadiation(getLevel(), recipeInfo.radiation/1000, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ());
-        }
-        if (!recipeInfo.isCompleted()) {
-            energyStorage.addEnergy(calculateEnergy());
-        }
+
+        energyStorage.addEnergy(calculateEnergy());
 
         handleRecipeOutput();
 
@@ -366,7 +363,7 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
             }
             if (recipe.handleOutputs(contentHandler)) {
                 recipeInfo.clear();
-                if(contentHandler.itemHandler.getStackInSlot(0).equals(ItemStack.EMPTY)) {
+                if(contentHandler.fluidCapability.getFluidInSlot(0).isEmpty()) {
                     recipe = null;
                 }
             } else {
@@ -376,8 +373,13 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
         }
     }
 
+    public int getRealFlow()
+    {
+        return Math.min(flow*TURBINE_CONFIG.BLADE_FLOW.get(), getFluidTank(0).getFluidAmount());
+    }
+
     private int calculateEnergy() {
-        energyPerTick = (int)(recipeInfo.energy);
+        energyPerTick = (int)(getRealFlow()*TURBINE_CONFIG.ENERGY_GEN.get());
         return energyPerTick;
     }
 
@@ -555,9 +557,30 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
         }
 
         public int getBaseTime() {
-            return (int) (20*timeModifier);
+            return (int) Math.max(1, timeModifier);
         }
 
-        public double getEnergy() { return powerModifier; }
+        public double getEnergy() { return Math.max(1, powerModifier); }
+
+        public double ratio = 1D;
+        @Override
+        public void consumeInputs(SidedContentHandler contentHandler) {
+            TurbineControllerBE<?> be = (TurbineControllerBE<?>)contentHandler.blockEntity;
+            int flow = be.getRealFlow();
+            ratio = (double)flow/(double)getInputFluids(0).get(0).getAmount();
+            FluidStack holded = contentHandler.fluidCapability.getFluidInSlot(0).copy();
+            holded.setAmount(flow);
+            contentHandler.fluidCapability.holdedInputs.add(holded);
+            contentHandler.fluidCapability.tanks.get(0).drain(flow, EXECUTE);
+        }
+
+        @Override
+        public boolean handleOutputs(SidedContentHandler contentHandler) {
+            FluidStack outputFluid = outputFluids[0].getRepresentations().get(0);
+            FluidStack toOutput = outputFluid.copy();
+            int toPush = (int) (outputFluid.getAmount()*ratio);
+            toOutput.setAmount(toPush);
+            return contentHandler.fluidCapability.insertFluidInternal(1, toOutput, false).getAmount() != toPush;
+        }
     }
 }

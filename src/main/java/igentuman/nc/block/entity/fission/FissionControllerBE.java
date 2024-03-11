@@ -111,10 +111,9 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     @NBTField
     public double efficiency = 0;
     @NBTField
-    private double moderationLevel = 1D;
+    public double moderationLevel = 1D;
     @NBTField
     public boolean powered = false;
-    @NBTField
     protected boolean forceShutdown = false;
     public int fuelCellMultiplier = 1;
     public int moderatorCellMultiplier = 1;
@@ -157,8 +156,10 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
                 1, 1,
                 1, 1);
         contentHandler.setBlockEntity(this);
-        contentHandler.fluidCapability.setGlobalMode(0, SlotModePair.SlotMode.INPUT);
-        contentHandler.fluidCapability.setGlobalMode(1, SlotModePair.SlotMode.OUTPUT);
+        contentHandler.fluidCapability.setGlobalMode(0, SlotModePair.SlotMode.PULL);
+        contentHandler.fluidCapability.setGlobalMode(1, SlotModePair.SlotMode.PUSH);
+        contentHandler.itemHandler.setGlobalMode(0, SlotModePair.SlotMode.PULL);
+        contentHandler.itemHandler.setGlobalMode(1, SlotModePair.SlotMode.PUSH);
         contentHandler.fluidCapability.tanks.get(0).setCapacity(10000);
         contentHandler.fluidCapability.tanks.get(1).setCapacity(10000);
         contentHandler.setAllowedInputFluids(0, getAllowedCoolants());

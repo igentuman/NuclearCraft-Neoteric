@@ -96,6 +96,7 @@ public class TurbineMultiblock extends AbstractNCMultiblock {
     }
 
     private void countBlades() {
+        flow = 0;
         for(BlockPos pos : bladePositions) {
             BlockEntity be = getBlockEntity(pos);
             if(be instanceof TurbineBladeBE blade) {

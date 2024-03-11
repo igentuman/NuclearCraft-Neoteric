@@ -15,11 +15,17 @@ import java.util.List;
 
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.compat.GlobalVars.RECIPE_CLASSES;
+import static igentuman.nc.setup.registration.NCProcessors.PROCESSORS_BE;
 
 public class AlloySmelterBE extends NCProcessorBE<AlloySmelterBE.Recipe> {
     public AlloySmelterBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, Processors.ALLOY_SMELTER);
     }
+
+    public AlloySmelterBE() {
+        super(PROCESSORS_BE.get(Processors.ALLOY_SMELTER).get());
+    }
+
     @Override
     public String getName() {
         return Processors.ALLOY_SMELTER;

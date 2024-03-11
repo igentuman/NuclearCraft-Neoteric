@@ -15,11 +15,17 @@ import java.util.List;
 
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.compat.GlobalVars.RECIPE_CLASSES;
+import static igentuman.nc.setup.registration.NCProcessors.PROCESSORS_BE;
 
 public class FluidInfuserBE extends NCProcessorBE<FluidInfuserBE.Recipe> {
     public FluidInfuserBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, Processors.FLUID_INFUSER);
     }
+
+    public FluidInfuserBE() {
+        super(PROCESSORS_BE.get(Processors.FLUID_INFUSER).get());
+    }
+
     @Override
     public String getName() {
         return Processors.FLUID_INFUSER;

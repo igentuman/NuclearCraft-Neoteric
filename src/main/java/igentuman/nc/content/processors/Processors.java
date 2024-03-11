@@ -55,21 +55,21 @@ public class Processors {
             all.put(GAS_SCRUBBER,
                     ProcessorBuilder
                             .make(GAS_SCRUBBER, 1, 0, 1, 0)
-                            //.blockEntity(GasScrubberBE::new)
+                            .blockEntity(GasScrubberBE::new)
                             .recipe(GasScrubberBE.Recipe::new)
                             .build()
             );
             all.put(ANALYZER,
                     ProcessorBuilder
                             .make(ANALYZER, 0, 1, 0, 1)
-                            //.blockEntity(AnalyzerBE::new)
+                            .blockEntity(AnalyzerBE::new)
                             .recipe(AnalyzerBE.Recipe::new)
                             .build()
             );
             all.put(LEACHER,
                     ProcessorBuilder
                             .make(LEACHER, 1, 1, 1, 0)
-                            //.blockEntity(LeacherBE::new)
+                            .blockEntity(LeacherBE::new)
                             .recipe(LeacherBE.Recipe::new)
                             .container(LeacherContainer.class)
                             .setHiddenSlots(1)
@@ -81,20 +81,20 @@ public class Processors {
             all.put(PUMP,
                     ProcessorBuilder
                             .make(PUMP, 0, 1, 1, 0)
-                           // .blockEntity(PumpBE::new)
+                            .blockEntity(PumpBE::new)
                             .recipe(PumpBE.Recipe::new)
                             .build()
             );
             all.put(NUCLEAR_FURNACE,
                     ProcessorBuilder
                             .make(NUCLEAR_FURNACE, 0, 1, 0, 1)
-                           // .blockEntity(NuclearFurnaceBE::new)
+                            .blockEntity(NuclearFurnaceBE::new)
                             .build()
             );
             all.put(MANUFACTORY,
                     ProcessorBuilder
                             .make(MANUFACTORY, 0, 1, 0, 1)
-                          //  .blockEntity(ManufactoryBE::new)
+                            .blockEntity(ManufactoryBE::new)
                             .recipe(ManufactoryBE.Recipe::new)
                             .progressBar(13)
                             .build()
@@ -102,14 +102,14 @@ public class Processors {
             all.put(ALLOY_SMELTER,
                     ProcessorBuilder
                             .make(ALLOY_SMELTER, 0, 2, 0, 1)
-                           // .blockEntity(AlloySmelterBE::new)
+                            .blockEntity(AlloySmelterBE::new)
                             .recipe(AlloySmelterBE.Recipe::new)
                             .build()
             );
             all.put(ASSEMBLER,
                     ProcessorBuilder
                             .make(ASSEMBLER, 0, 6, 0, 1)
-                           // .blockEntity(AssemblerBE::new)
+                            .blockEntity(AssemblerBE::new)
                             .recipe(AssemblerBE.Recipe::new)
                             .progressBar(15)
                             .build()
@@ -117,7 +117,7 @@ public class Processors {
             all.put(CENTRIFUGE,
                     ProcessorBuilder
                             .make(CENTRIFUGE, 1, 0, 6, 0)
-                           // .blockEntity(CentrifugeBE::new)
+                            .blockEntity(CentrifugeBE::new)
                             .recipe(CentrifugeBE.Recipe::new)
                             .progressBar(16)
                             .build()
@@ -125,7 +125,7 @@ public class Processors {
             all.put(CHEMICAL_REACTOR,
                     ProcessorBuilder
                             .make(CHEMICAL_REACTOR, 2, 0, 2, 0)
-                          //  .blockEntity(ChemicalReactorBE::new)
+                            .blockEntity(ChemicalReactorBE::new)
                             .recipe(ChemicalReactorBE.Recipe::new)
                             .progressBar(5)
                             .build()
@@ -133,7 +133,7 @@ public class Processors {
             all.put(CRYSTALLIZER,
                     ProcessorBuilder
                             .make(CRYSTALLIZER, 1, 0, 0, 1)
-                           // .blockEntity(CrystalizerBE::new)
+                            .blockEntity(CrystalizerBE::new)
                             .recipe(CrystalizerBE.Recipe::new)
                             .progressBar(6)
                             .build()
@@ -141,7 +141,7 @@ public class Processors {
             all.put(DECAY_HASTENER,
                     ProcessorBuilder
                             .make(DECAY_HASTENER, 0, 1, 0, 1)
-                           // .blockEntity(DecayHastenerBE::new)
+                            .blockEntity(DecayHastenerBE::new)
                             .recipe(DecayHastenerBE.Recipe::new)
                             .progressBar(0)
                             .build()
@@ -149,14 +149,14 @@ public class Processors {
             all.put(ELECTROLYZER,
                     ProcessorBuilder
                             .make(ELECTROLYZER, 1, 0, 4, 0)
-                          //  .blockEntity(ElectrolyzerBE::new)
+                            .blockEntity(ElectrolyzerBE::new)
                             .recipe(ElectrolyzerBE.Recipe::new)
                             .build()
             );
             all.put(EXTRACTOR,
                     ProcessorBuilder
                             .make(EXTRACTOR, 0, 1, 1, 1)
-                          //  .blockEntity(ExtractorBE::new)
+                            .blockEntity(ExtractorBE::new)
                             .recipe(ExtractorBE.Recipe::new)
                             .progressBar(7)
                             .build()
@@ -164,14 +164,14 @@ public class Processors {
             all.put(FLUID_ENRICHER,
                     ProcessorBuilder
                             .make(FLUID_ENRICHER, 1, 1, 1, 0)
-                            //.blockEntity(FluidEnricherBE::new)
+                            .blockEntity(FluidEnricherBE::new)
                             .recipe(FluidEnricherBE.Recipe::new)
                             .build()
             );
             all.put(FLUID_INFUSER,
                     ProcessorBuilder
                             .make(FLUID_INFUSER, 1, 1, 0, 1)
-                          //  .blockEntity(FluidInfuserBE::new)
+                            .blockEntity(FluidInfuserBE::new)
                             .recipe(FluidInfuserBE.Recipe::new)
                             .progressBar(4)
                             .build()
@@ -179,7 +179,7 @@ public class Processors {
             all.put(FUEL_REPROCESSOR,
                     ProcessorBuilder
                             .make(FUEL_REPROCESSOR, 0, 1, 0, 8)
-                           // .blockEntity(FuelReprocessorBE::new)
+                            .blockEntity(FuelReprocessorBE::new)
                             .recipe(FuelReprocessorBE.Recipe::new)
                             .progressBar(16)
                             .build()
@@ -187,7 +187,7 @@ public class Processors {
             all.put(INGOT_FORMER,
                     ProcessorBuilder
                             .make(INGOT_FORMER, 1, 0, 0, 1)
-                          //  .blockEntity(IngotFormerBE::new)
+                            .blockEntity(IngotFormerBE::new)
                             .recipe(IngotFormerBE.Recipe::new)
                             .progressBar(4)
                             .build()
@@ -195,7 +195,7 @@ public class Processors {
             all.put(IRRADIATOR,
                     ProcessorBuilder
                             .make(IRRADIATOR, 1, 1, 1, 1)
-                         //   .blockEntity(IrradiatorBE::new)
+                            .blockEntity(IrradiatorBE::new)
                             .recipe(IrradiatorBE.Recipe::new)
                             .progressBar(14)
                             .upgrades(false, false)
@@ -205,7 +205,7 @@ public class Processors {
             all.put(ISOTOPE_SEPARATOR,
                     ProcessorBuilder
                             .make(ISOTOPE_SEPARATOR, 0, 1, 0, 2)
-                        //    .blockEntity(IsotopeSeparatorBE::new)
+                            .blockEntity(IsotopeSeparatorBE::new)
                             .recipe(IsotopeSeparatorBE.Recipe::new)
                             .progressBar(10)
                             .build()
@@ -213,7 +213,7 @@ public class Processors {
             all.put(MELTER,
                     ProcessorBuilder
                             .make(MELTER, 0, 1, 1, 0)
-                         //   .blockEntity(MelterBE::new)
+                            .blockEntity(MelterBE::new)
                             .recipe(MelterBE.Recipe::new)
                             .progressBar(0)
                             .build()
@@ -221,7 +221,7 @@ public class Processors {
             all.put(PRESSURIZER,
                     ProcessorBuilder
                             .make(PRESSURIZER, 0, 1, 0, 1)
-                        //    .blockEntity(PressurizerBE::new)
+                            .blockEntity(PressurizerBE::new)
                             .recipe(PressurizerBE.Recipe::new)
                             .progressBar(9)
                             .build()
@@ -229,7 +229,7 @@ public class Processors {
             all.put(ROCK_CRUSHER,
                     ProcessorBuilder
                             .make(ROCK_CRUSHER, 0, 1, 0, 3)
-                         //   .blockEntity(RockCrusherBE::new)
+                            .blockEntity(RockCrusherBE::new)
                             .recipe(RockCrusherBE.Recipe::new)
                             .progressBar(12)
                             .build()
@@ -237,7 +237,7 @@ public class Processors {
             all.put(STEAM_TURBINE,
                     ProcessorBuilder
                             .make(STEAM_TURBINE, 1, 0, 1, 0)
-                          //  .blockEntity(SteamTurbineBE::new)
+                            .blockEntity(SteamTurbineBE::new)
                             .recipe(SteamTurbineBE.Recipe::new)
                             .progressBar(4)
                             .upgrades(false, false)
@@ -247,7 +247,7 @@ public class Processors {
             all.put(SUPERCOOLER,
                     ProcessorBuilder
                             .make(SUPERCOOLER, 1, 0, 1, 0)
-                         //   .blockEntity(SuperCoolerBE::new)
+                            .blockEntity(SuperCoolerBE::new)
                             .recipe(SuperCoolerBE.Recipe::new)
                             .progressBar(11)
                             .build()

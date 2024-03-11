@@ -44,27 +44,27 @@ public class NCEnergyBlocks {
     }
 
     private static void registerBlockEntities() {
-        /*for(String name: SolarPanels.registered().keySet()) {
+        for(String name: SolarPanels.registered().keySet()) {
             String key = "solar_panel/"+name;
             ENERGY_BE.put(key, BLOCK_ENTITIES.register(key,
                     () -> TileEntityType.Builder
-                            .of((Supplier<TileEntityType<?>>)SolarPanels.all().get(name).getBlockEntity(), ENERGY_BLOCKS.get(key).get())
+                            .of(SolarPanels.all().get(name).getBlockEntity(name), ENERGY_BLOCKS.get(key).get())
                             .build(null)));
         }
         for(String name: BatteryBlocks.registered().keySet()) {
             ENERGY_BE.put(name, BLOCK_ENTITIES.register(name,
                     () -> TileEntityType.Builder
-                            .of(BatteryBlocks.all().get(name).getBlockEntity(), ENERGY_BLOCKS.get(name).get())
+                            .of(BatteryBlocks.all().get(name).getBlockEntity(name), ENERGY_BLOCKS.get(name).get())
                             .build(null)));
 
         }
         for(String name: RTGs.registered().keySet()) {
             ENERGY_BE.put(name, BLOCK_ENTITIES.register(name,
                     () -> TileEntityType.Builder
-                            .of(RTGs.all().get(name).getBlockEntity(), ENERGY_BLOCKS.get(name).get())
+                            .of(RTGs.all().get(name).getBlockEntity(name), ENERGY_BLOCKS.get(name).get())
                             .build(null)));
 
-        }*/
+        }
     }
 
     private static void registerBlocks() {

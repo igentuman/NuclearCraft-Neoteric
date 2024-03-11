@@ -15,12 +15,18 @@ import java.util.List;
 
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.compat.GlobalVars.RECIPE_CLASSES;
+import static igentuman.nc.setup.registration.NCProcessors.PROCESSORS_BE;
 
 public class IngotFormerBE extends NCProcessorBE<IngotFormerBE.Recipe> {
 
     public IngotFormerBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, Processors.INGOT_FORMER);
     }
+
+    public IngotFormerBE() {
+        super(PROCESSORS_BE.get(Processors.INGOT_FORMER).get());
+    }
+
     @Override
     public String getName() {
         return Processors.INGOT_FORMER;

@@ -15,11 +15,17 @@ import java.util.List;
 
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.compat.GlobalVars.RECIPE_CLASSES;
+import static igentuman.nc.setup.registration.NCProcessors.PROCESSORS_BE;
 
 public class AssemblerBE extends NCProcessorBE<AssemblerBE.Recipe> {
     public AssemblerBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, Processors.ASSEMBLER);
     }
+
+    public AssemblerBE() {
+        super(PROCESSORS_BE.get(Processors.ASSEMBLER).get());
+    }
+
     @Override
     public String getName() {
         return Processors.ASSEMBLER;

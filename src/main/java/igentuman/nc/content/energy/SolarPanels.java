@@ -23,10 +23,10 @@ public class SolarPanels {
 
     public static HashMap<String, SolarPanelPrefab> all() {
         if(all.isEmpty()) {
-            all.put("basic", new SolarPanelPrefab("basic",25)/*.setBlockEntity(BasicSolarBE::new)*/);
-            all.put("advanced", new SolarPanelPrefab("advanced",100)/*.setBlockEntity(AdvancedSolarBE::new)*/);
-            all.put("du", new SolarPanelPrefab("du",400)/*.setBlockEntity(DuSolarBE::new)*/);
-            all.put("elite", new SolarPanelPrefab("elite",1500)/*.setBlockEntity(EliteSolarBE::new)*/);
+            all.put("basic", new SolarPanelPrefab("basic",25).setBlockEntity(BasicSolarBE::new));
+            all.put("advanced", new SolarPanelPrefab("advanced",100).setBlockEntity(AdvancedSolarBE::new));
+            all.put("du", new SolarPanelPrefab("du",400).setBlockEntity(DuSolarBE::new));
+            all.put("elite", new SolarPanelPrefab("elite",1500).setBlockEntity(EliteSolarBE::new));
         }
         return all;
     }
@@ -104,14 +104,14 @@ public class SolarPanels {
             return  registered;
         }
 
-        public Supplier<TileEntityType<? extends NCEnergy>> getBlockEntity() {
+        public Supplier<? extends NCEnergy> getBlockEntity(String name) {
             return blockEntity;
         }
 
-        public SolarPanelPrefab setBlockEntity(Supplier<TileEntityType<? extends NCEnergy>> blockEntity) {
+        public SolarPanelPrefab setBlockEntity(Supplier<? extends NCEnergy> blockEntity) {
             this.blockEntity = blockEntity;
             return this;
         }
-        private Supplier<TileEntityType<? extends NCEnergy>>  blockEntity;
+        private Supplier<? extends NCEnergy>  blockEntity;
     }
 }

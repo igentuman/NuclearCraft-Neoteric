@@ -121,10 +121,10 @@ public class NCBlocks {
             NC_ELECTROMAGNETS_ITEMS.put(name+"_slope", fromBlock(NC_ELECTROMAGNETS.get(name+"_slope")));
             ALL_NC_ITEMS.put(name, NC_ELECTROMAGNETS_ITEMS.get(name));
             ALL_NC_ITEMS.put(name+"_slope", NC_ELECTROMAGNETS_ITEMS.get(name+"_slope"));
-/*            NC_BE.put(name, BLOCK_ENTITIES.register(name,
+            NC_BE.put(name, BLOCK_ENTITIES.register(name,
                     () -> TileEntityType.Builder
-                            .of(Electromagnets.all().get(name).getBlockEntity(), NC_ELECTROMAGNETS.get(name).get(), NC_ELECTROMAGNETS.get(name+"_slope").get())
-                            .build(null)));*/
+                            .of(Electromagnets.all().get(name).getBlockEntity(name), NC_ELECTROMAGNETS.get(name).get(), NC_ELECTROMAGNETS.get(name+"_slope").get())
+                            .build(null)));
         }
     }
 
@@ -174,34 +174,14 @@ public class NCBlocks {
     {
         public static final Collection<BlockEntry<?>> ALL_ENTRIES = new ArrayList<>();
 
-      //  private final RegistryObject<T> regObject;
         private final Supplier<Block.Properties> properties;
 
 
         public BlockEntry(String name, Supplier<Block.Properties> properties, Function<Block.Properties, T> make)
         {
             this.properties = properties;
-           // this.regObject = BLOCKS.register(name, () -> make.apply(properties.get()));
             ALL_ENTRIES.add(this);
         }
-/*
-
-        @Override
-        public T get()
-        {
-            return regObject.get();
-        }
-*/
-
-  /*      public BlockState defaultBlockState()
-        {
-            return get().defaultBlockState();
-        }*/
-
-/*        public ResourceLocation getId()
-        {
-            return regObject.getId();
-        }*/
 
         public Block.Properties getProperties()
         {
@@ -218,12 +198,6 @@ public class NCBlocks {
             return null;
         }
 
-/*        @Nonnull
-        @Override
-        public Item asItem()
-        {
-            return get().asItem();
-        }*/
     }
 
 }

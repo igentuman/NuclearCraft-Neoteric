@@ -15,11 +15,17 @@ import java.util.List;
 
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.compat.GlobalVars.RECIPE_CLASSES;
+import static igentuman.nc.setup.registration.NCProcessors.PROCESSORS_BE;
 
 public class FuelReprocessorBE extends NCProcessorBE<FuelReprocessorBE.Recipe> {
     public FuelReprocessorBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, Processors.FUEL_REPROCESSOR);
     }
+
+    public FuelReprocessorBE() {
+        super(PROCESSORS_BE.get(Processors.FUEL_REPROCESSOR).get());
+    }
+
     @Override
     public String getName() {
         return Processors.FUEL_REPROCESSOR;

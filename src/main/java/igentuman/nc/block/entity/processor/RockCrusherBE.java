@@ -15,11 +15,17 @@ import java.util.List;
 
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.compat.GlobalVars.RECIPE_CLASSES;
+import static igentuman.nc.setup.registration.NCProcessors.PROCESSORS_BE;
 
 public class RockCrusherBE extends NCProcessorBE<RockCrusherBE.Recipe> {
     public RockCrusherBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, Processors.ROCK_CRUSHER);
     }
+
+    public RockCrusherBE() {
+        super(PROCESSORS_BE.get(Processors.ROCK_CRUSHER).get());
+    }
+
     @Override
     public String getName() {
         return Processors.ROCK_CRUSHER;

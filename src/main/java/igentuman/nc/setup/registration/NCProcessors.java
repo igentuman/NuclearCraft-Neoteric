@@ -64,10 +64,10 @@ public class NCProcessors {
     @SuppressWarnings("unchecked")
     private static void registerBlockEntities() {
         for(String name: Processors.registered().keySet()) {
-/*            PROCESSORS_BE.put(name, BLOCK_ENTITIES.register(name,
+            PROCESSORS_BE.put(name, BLOCK_ENTITIES.register(name,
                     () -> TileEntityType.Builder
-                            .of(Processors.all().get(name).getBlockEntity(), PROCESSORS.get(name).get())
-                            .build(null)));*/
+                            .of(Processors.all().get(name).getBlockEntity(name), PROCESSORS.get(name).get())
+                            .build(null)));
         }
     }
 

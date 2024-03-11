@@ -6,11 +6,9 @@ import igentuman.nc.content.processors.config.ProcessorSlots;
 import igentuman.nc.handler.config.CommonConfig;
 import igentuman.nc.recipes.AbstractRecipe;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.inventory.Inventory;
 
@@ -47,15 +45,15 @@ public class ProcessorPrefab <M extends NCProcessorContainer, U extends Screen> 
     protected Class recipeManager;
 
 
-    public TileEntityType <? extends NCProcessorBE>  getBlockEntity() {
+    public  Supplier<? extends NCProcessorBE>  getBlockEntity(String name) {
         return blockEntity;
     }
 
-    public ProcessorPrefab<M, U> setBlockEntity(TileEntityType<? extends NCProcessorBE>  blockEntity) {
+    public ProcessorPrefab<M, U> setBlockEntity(Supplier<? extends NCProcessorBE>  blockEntity) {
         this.blockEntity = blockEntity;
         return this;
     }
-    private TileEntityType<? extends NCProcessorBE>  blockEntity;
+    private Supplier<? extends NCProcessorBE>  blockEntity;
 
     public Container getScreenConstructor() {
         return screenConstructor;

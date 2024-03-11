@@ -23,6 +23,8 @@ import net.minecraft.client.particle.FallingDustParticle;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.Direction;
 import net.minecraft.nbt.CompoundNBT;
@@ -51,7 +53,7 @@ import static net.minecraftforge.energy.CapabilityEnergy.ENERGY;
 import static net.minecraftforge.fluids.capability.CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
 import static net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
 
-public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE {
+public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE implements ITickableTileEntity {
 
     public static String NAME;
     public final SidedContentHandler contentHandler;
@@ -85,6 +87,22 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
     private List<ItemStack> allowedInputs;
     private List<FluidStack> allowedFluids;
 
+    public NCProcessorBE(TileEntityType<? extends NCProcessorBE<?>> tileEntityType) {
+        super(tileEntityType);
+        energy = null;
+        energyStorage = null;
+        contentHandler = null;
+    }
+    @Override
+    public void tick() {
+        if(level == null) return;
+        if(level.isClientSide()) {
+            tickClient();
+        }
+        if(!level.isClientSide()) {
+            tickServer();
+        }
+    }
     public LazyOptional<IEnergyStorage> getEnergy() {
         return energy;
     }

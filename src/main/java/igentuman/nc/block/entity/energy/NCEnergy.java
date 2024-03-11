@@ -3,6 +3,7 @@ package igentuman.nc.block.entity.energy;
 import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.setup.registration.NCEnergyBlocks;
 import igentuman.nc.util.CustomEnergyStorage;
+import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.BlockPos;
@@ -21,17 +22,24 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static net.minecraftforge.energy.CapabilityEnergy.ENERGY;
 
-public class NCEnergy extends NuclearCraftBE {
+public class NCEnergy extends NuclearCraftBE implements ITickableTileEntity {
 
-    protected String name;
+    protected String name = "";
     public static String NAME;
-    public final CustomEnergyStorage energyStorage = createEnergy();
+    public final CustomEnergyStorage energyStorage;
+    protected final LazyOptional<IEnergyStorage> energy;
+
+    public NCEnergy(TileEntityType<? extends NCEnergy> tileEntityType, String name) {
+        super(tileEntityType, name);
+        this.name = name;
+        energyStorage = createEnergy();
+        energy = LazyOptional.of(() -> energyStorage);
+    }
 
     public LazyOptional<IEnergyStorage> getEnergy() {
         return energy;
     }
 
-    protected final LazyOptional<IEnergyStorage> energy = LazyOptional.of(() -> energyStorage);
 
     protected int counter;
 
@@ -93,11 +101,15 @@ public class NCEnergy extends NuclearCraftBE {
 
     public NCEnergy(TileEntityType<?> pType, BlockPos pPos, BlockState pBlockState, String name) {
         super(pType, pPos, pBlockState);
+        energyStorage = createEnergy();
+        energy = LazyOptional.of(() -> energyStorage);
     }
 
     public NCEnergy(BlockPos pPos, BlockState pBlockState, String name) {
         super(NCEnergyBlocks.ENERGY_BE.get(name).get(), pPos, pBlockState);
         this.name = name;
+        energyStorage = createEnergy();
+        energy = LazyOptional.of(() -> energyStorage);
     }
 
     public void tickClient() {
@@ -178,4 +190,14 @@ public class NCEnergy extends NuclearCraftBE {
         tag.putInt("energy", energyStorage.getEnergyStored());
     }
 
+    @Override
+    public void tick() {
+        if(level == null) return;
+        if(level.isClientSide()) {
+            tickClient();
+        }
+        if(!level.isClientSide()) {
+            tickServer();
+        }
+    }
 }

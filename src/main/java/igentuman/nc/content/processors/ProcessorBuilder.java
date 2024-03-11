@@ -45,7 +45,7 @@ public class ProcessorBuilder <M extends NCProcessorContainer, U extends Screen>
         return this;
     }
 
-    public ProcessorBuilder blockEntity(TileEntityType<? extends NCProcessorBE> be)
+    public ProcessorBuilder blockEntity(Supplier<? extends NCProcessorBE> be)
     {
         processor.setBlockEntity(be);
         return this;

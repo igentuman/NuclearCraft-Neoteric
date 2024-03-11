@@ -15,11 +15,17 @@ import java.util.List;
 
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.compat.GlobalVars.RECIPE_CLASSES;
+import static igentuman.nc.setup.registration.NCProcessors.PROCESSORS_BE;
 
 public class DecayHastenerBE extends NCProcessorBE<DecayHastenerBE.Recipe> {
     public DecayHastenerBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, Processors.DECAY_HASTENER);
     }
+
+    public DecayHastenerBE() {
+        super(PROCESSORS_BE.get(Processors.DECAY_HASTENER).get());
+    }
+
     @Override
     public String getName() {
         return Processors.DECAY_HASTENER;

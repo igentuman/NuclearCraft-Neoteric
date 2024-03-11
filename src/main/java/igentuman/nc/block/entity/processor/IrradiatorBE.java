@@ -22,6 +22,8 @@ import net.minecraftforge.fluids.FluidStack;
 
 import java.util.List;
 
+import static igentuman.nc.setup.registration.NCProcessors.PROCESSORS_BE;
+
 
 public class IrradiatorBE extends NCProcessorBE<IrradiatorBE.Recipe> implements IMultiblockAttachable {
     private AbstractNCMultiblock multiblock;
@@ -30,6 +32,11 @@ public class IrradiatorBE extends NCProcessorBE<IrradiatorBE.Recipe> implements 
     public IrradiatorBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, Processors.IRRADIATOR);
     }
+
+    public IrradiatorBE() {
+        super(PROCESSORS_BE.get(Processors.IRRADIATOR).get());
+    }
+
     @Override
     public String getName() {
         return Processors.IRRADIATOR;

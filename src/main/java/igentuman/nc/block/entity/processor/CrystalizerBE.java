@@ -15,11 +15,17 @@ import java.util.List;
 
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.compat.GlobalVars.RECIPE_CLASSES;
+import static igentuman.nc.setup.registration.NCProcessors.PROCESSORS_BE;
 
 public class CrystalizerBE extends NCProcessorBE<CrystalizerBE.Recipe> {
     public CrystalizerBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState,  Processors.CRYSTALLIZER);
     }
+
+    public CrystalizerBE() {
+        super(PROCESSORS_BE.get(Processors.CRYSTALLIZER).get());
+    }
+
     @Override
     public String getName() {
         return Processors.CRYSTALLIZER;

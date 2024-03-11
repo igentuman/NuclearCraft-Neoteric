@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Supplier;
 
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.energy.NCEnergy;
@@ -103,15 +104,15 @@ public class RTGs {
             return  registered;
         }
 
-        public TileEntityType<? extends NCEnergy> getBlockEntity() {
-            return blockEntity;
+        public Supplier<? extends NCEnergy> getBlockEntity(String name) {
+            return () -> new RTGBE(name);
         }
 
-        public RTGPrefab setBlockEntity(TileEntityType<? extends NCEnergy>  blockEntity) {
+        public RTGPrefab setBlockEntity(Supplier<? extends NCEnergy>  blockEntity) {
             this.blockEntity = blockEntity;
             return this;
         }
-        private TileEntityType<? extends NCEnergy>  blockEntity;
+        private Supplier<? extends NCEnergy>  blockEntity;
 
         public int getRadiation() {
             return radiation;

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Supplier;
 
 import static igentuman.nc.handler.config.CommonConfig.ENERGY_STORAGE;
 
@@ -97,15 +98,15 @@ public class BatteryBlocks {
             return  registered;
         }
 
-        public TileEntityType<? extends NCEnergy> getBlockEntity() {
-            return blockEntity;
+        public Supplier<? extends NCEnergy> getBlockEntity(String name) {
+            return () -> new BatteryBE(name);
         }
 
-        public BatteryBlockPrefab setBlockEntity(TileEntityType<? extends NCEnergy>  blockEntity) {
+        public BatteryBlockPrefab setBlockEntity(Supplier<? extends NCEnergy>  blockEntity) {
             this.blockEntity = blockEntity;
             return this;
         }
-        private TileEntityType<? extends NCEnergy>  blockEntity;
+        private Supplier<? extends NCEnergy>  blockEntity;
     }
 
 }

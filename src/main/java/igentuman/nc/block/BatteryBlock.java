@@ -72,11 +72,17 @@ public class BatteryBlock extends Block {
         super.onRemove(pState, pLevel, pPos, pNewState, pIsMoving);
     }
 
-/*    @Nullable
     @Override
-    public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
-        return NCEnergyBlocks.ENERGY_BE.get(code()).get().create(pPos, pState);
-    }*/
+    public boolean hasTileEntity(BlockState state) {
+        return true;
+    }
+
+    @Nullable
+    @Override
+    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
+        return NCEnergyBlocks.ENERGY_BE.get(code()).get().create();
+    }
+
 
     public String code()
     {

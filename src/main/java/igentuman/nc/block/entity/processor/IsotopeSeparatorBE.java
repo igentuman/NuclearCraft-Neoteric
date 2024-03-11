@@ -15,11 +15,17 @@ import java.util.List;
 
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.compat.GlobalVars.RECIPE_CLASSES;
+import static igentuman.nc.setup.registration.NCProcessors.PROCESSORS_BE;
 
 public class IsotopeSeparatorBE extends NCProcessorBE<IsotopeSeparatorBE.Recipe> {
     public IsotopeSeparatorBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, Processors.ISOTOPE_SEPARATOR);
     }
+
+    public IsotopeSeparatorBE() {
+        super(PROCESSORS_BE.get(Processors.ISOTOPE_SEPARATOR).get());
+    }
+
     @Override
     public String getName() {
         return Processors.ISOTOPE_SEPARATOR;

@@ -14,11 +14,18 @@ import net.minecraftforge.fluids.FluidStack;
 
 import java.util.List;
 
+import static igentuman.nc.setup.registration.NCProcessors.PROCESSORS_BE;
+
 
 public class MelterBE extends NCProcessorBE<MelterBE.Recipe> {
     public MelterBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, Processors.MELTER);
     }
+
+    public MelterBE() {
+        super(PROCESSORS_BE.get(Processors.MELTER).get());
+    }
+
     @Override
     public String getName() {
         return Processors.MELTER;

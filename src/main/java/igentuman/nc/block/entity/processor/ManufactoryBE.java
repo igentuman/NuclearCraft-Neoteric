@@ -15,10 +15,15 @@ import java.util.List;
 
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.compat.GlobalVars.RECIPE_CLASSES;
+import static igentuman.nc.setup.registration.NCProcessors.PROCESSORS_BE;
 
 public class ManufactoryBE extends NCProcessorBE<ManufactoryBE.Recipe> {
     public ManufactoryBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, Processors.MANUFACTORY);
+    }
+
+    public ManufactoryBE() {
+        super(PROCESSORS_BE.get(Processors.MANUFACTORY).get());
     }
 
     @Override

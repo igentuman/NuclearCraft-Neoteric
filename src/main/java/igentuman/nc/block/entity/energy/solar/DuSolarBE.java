@@ -8,6 +8,11 @@ public class DuSolarBE extends AbstractSolarPanel {
     public DuSolarBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, NAME);
     }
+
+    public DuSolarBE() {
+        super(BlockPos.ZERO, null, NAME);
+    }
+
     @Override
     public String getName() {
         return NAME;

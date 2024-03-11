@@ -1,6 +1,7 @@
 package igentuman.nc.block.entity;
 
 import igentuman.nc.block.ISizeToggable;
+import igentuman.nc.block.entity.energy.NCEnergy;
 import igentuman.nc.client.sound.SoundHandler;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.util.NCBlockPos;
@@ -30,6 +31,11 @@ public class NuclearCraftBE extends TileEntity {
 
     public HashMap<Integer, ISizeToggable.SideMode> sideConfig = new HashMap<>();
 
+    public NuclearCraftBE(TileEntityType<? extends NCEnergy> tileEntityType, String name) {
+        super(tileEntityType);
+        this.name = name;
+    }
+
     public static String getName(BlockState pBlockState) {
         return pBlockState.getBlock().asItem().toString();
     }
@@ -37,7 +43,7 @@ public class NuclearCraftBE extends TileEntity {
 
     public NuclearCraftBE(TileEntityType<?> pType, BlockPos pPos, BlockState pBlockState) {
         super(pType);
-        name = getName(pBlockState);
+        name = pType.getRegistryName().getPath();
     }
 
     public NuclearCraftBE(TileEntityType<?> pType) {

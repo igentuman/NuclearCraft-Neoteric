@@ -15,11 +15,17 @@ import java.util.List;
 
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.compat.GlobalVars.RECIPE_CLASSES;
+import static igentuman.nc.setup.registration.NCProcessors.PROCESSORS_BE;
 
 public class PressurizerBE extends NCProcessorBE<PressurizerBE.Recipe> {
     public PressurizerBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, Processors.PRESSURIZER);
     }
+
+    public PressurizerBE() {
+        super(PROCESSORS_BE.get(Processors.PRESSURIZER).get());
+    }
+
     @Override
     public String getName() {
         return Processors.PRESSURIZER;

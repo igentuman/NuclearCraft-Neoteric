@@ -8,6 +8,11 @@ public class EliteSolarBE extends AbstractSolarPanel {
     public EliteSolarBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, NAME);
     }
+
+    public EliteSolarBE() {
+        super(BlockPos.ZERO, null, NAME);
+    }
+
     @Override
     public String getName() {
         return NAME;

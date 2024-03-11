@@ -32,6 +32,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 import javax.annotation.Nullable;
@@ -71,11 +72,17 @@ public class ProcessorBlock extends HorizontalFaceBlock {
                 .add(BlockStateProperties.POWERED);
     }*/
 
-/*    @Nullable
     @Override
-    public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
-        return NCProcessors.PROCESSORS_BE.get(processorCode()).get().create(pPos, pState);
-    }*/
+    public boolean hasTileEntity(BlockState state) {
+        return true;
+    }
+
+    @Nullable
+    @Override
+    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
+        return  NCProcessors.PROCESSORS_BE.get(processorCode()).get().create();
+    }
+
 
     public String processorCode()
     {

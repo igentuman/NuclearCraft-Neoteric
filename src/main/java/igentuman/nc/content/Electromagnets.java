@@ -8,6 +8,7 @@ import java.util.function.Supplier;
 import igentuman.nc.block.entity.ElectromagnetBE;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import static igentuman.nc.handler.config.FusionConfig.ELECTROMAGNETS_CONFIG;
 
@@ -78,7 +79,7 @@ public class Electromagnets {
         protected int heat = 0;
         protected int maxTemp = 0;
         protected int efficiency = 0;
-        private Supplier<TileEntityType<? extends TileEntity>>  blockEntity;
+        private Supplier<? extends TileEntity>  blockEntity;
 
         public MagnetPrefab(String name, int energy, int heat, double magneticField, int maxTemp, int efficiency) {
             this.power = energy;
@@ -87,7 +88,7 @@ public class Electromagnets {
             this.magneticField = magneticField;
             this.maxTemp = maxTemp;
             this.efficiency = efficiency;
-           // blockEntity = ElectromagnetBE::new;
+            blockEntity = () -> new ElectromagnetBE();
 
         }
 
@@ -119,12 +120,12 @@ public class Electromagnets {
             return  registered;
         }
 
-        public Supplier<TileEntityType<? extends TileEntity>>  getBlockEntity() {
-            return blockEntity;
+        public Supplier<? extends TileEntity>  getBlockEntity(String name) {
+            return () -> new ElectromagnetBE(name);
         }
 
-        public MagnetPrefab setBlockEntity(Supplier<TileEntityType<? extends ElectromagnetBE>>  blockEntity) {
-          //  this.blockEntity = blockEntity;
+        public MagnetPrefab setBlockEntity(Supplier<? extends TileEntity>  blockEntity) {
+           this.blockEntity = blockEntity;
             return this;
         }
 

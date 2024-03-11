@@ -19,6 +19,10 @@ public class ElectromagnetBE extends TileEntity {
         super(NC_BE.get("basic_electromagnet").get());
     }
 
+    public ElectromagnetBE(String name) {
+        super(NC_BE.get(name).get());
+    }
+
     public static String getName(BlockState pBlockState) {
         return pBlockState.getBlock().asItem().toString().replace("_slope", "");
     }

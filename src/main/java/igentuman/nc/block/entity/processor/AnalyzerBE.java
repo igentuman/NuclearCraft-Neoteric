@@ -17,6 +17,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 import java.util.HashMap;
 
+import static igentuman.nc.setup.registration.NCProcessors.PROCESSORS_BE;
 import static net.minecraft.item.Items.FILLED_MAP;
 import static net.minecraft.item.Items.PAPER;
 
@@ -26,6 +27,10 @@ public class AnalyzerBE extends NCProcessorBE<AnalyzerBE.Recipe> {
     }
     public HashMap<Long, OreVeinRecipe> veinsCache = new HashMap<>();
     private BlockPos alreadySearched;
+
+    public AnalyzerBE() {
+        super(PROCESSORS_BE.get(Processors.ANALYZER).get());
+    }
 
     @Override
     public String getName() {

@@ -42,6 +42,7 @@ import java.util.Objects;
 import static igentuman.nc.block.ProcessorBlock.ACTIVE;
 import static igentuman.nc.radiation.ItemRadiation.getItemByName;
 import static igentuman.nc.setup.registration.NCItems.NC_PARTS;
+import static igentuman.nc.setup.registration.NCProcessors.PROCESSORS_BE;
 import static igentuman.nc.util.ModUtil.isIeLoaded;
 import static net.minecraft.item.Items.FILLED_MAP;;
 
@@ -72,6 +73,10 @@ public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
     protected PumpBE[] pumps = new PumpBE[4];
 
     protected byte pumpValidationTimeout = 40;
+
+    public LeacherBE() {
+        super(PROCESSORS_BE.get(Processors.LEACHER).get());
+    }
 
     @Override
     public String getName() {

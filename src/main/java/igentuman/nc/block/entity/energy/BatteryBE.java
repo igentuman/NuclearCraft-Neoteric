@@ -20,6 +20,7 @@ import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static igentuman.nc.setup.registration.NCEnergyBlocks.ENERGY_BE;
 import static net.minecraftforge.energy.CapabilityEnergy.ENERGY;
 
 public class BatteryBE extends NCEnergy {
@@ -30,6 +31,10 @@ public class BatteryBE extends NCEnergy {
         for (Direction direction : Direction.values()) {
             sideConfig.put(direction.ordinal(), ISizeToggable.SideMode.DEFAULT);
         }
+    }
+
+    public BatteryBE(String name) {
+        super(BlockPos.ZERO, null, name);
     }
 
     public static String getName(BlockState pBlockState) {
@@ -119,7 +124,7 @@ public class BatteryBE extends NCEnergy {
     }
 
     protected int getEnergyMaxStorage() {
-        return BatteryBlocks.all().get(getBlockState().getBlock().asItem().toString()).getStorage();
+        return BatteryBlocks.all().get(getName()).getStorage();
     }
 
     @Override

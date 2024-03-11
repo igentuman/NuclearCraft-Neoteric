@@ -15,11 +15,17 @@ import java.util.List;
 
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.compat.GlobalVars.RECIPE_CLASSES;
+import static igentuman.nc.setup.registration.NCProcessors.PROCESSORS_BE;
 
 public class GasScrubberBE extends NCProcessorBE<GasScrubberBE.Recipe> {
     public GasScrubberBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, Processors.GAS_SCRUBBER);
     }
+
+    public GasScrubberBE() {
+        super(PROCESSORS_BE.get(Processors.GAS_SCRUBBER).get());
+    }
+
     @Override
     public String getName() {
         return Processors.GAS_SCRUBBER;

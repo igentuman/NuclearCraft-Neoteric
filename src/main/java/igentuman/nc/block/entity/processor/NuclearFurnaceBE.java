@@ -15,11 +15,17 @@ import java.util.List;
 
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.compat.GlobalVars.RECIPE_CLASSES;
+import static igentuman.nc.setup.registration.NCProcessors.PROCESSORS_BE;
 
 public class NuclearFurnaceBE extends NCProcessorBE<NuclearFurnaceBE.Recipe> {
     public NuclearFurnaceBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, Processors.NUCLEAR_FURNACE);
     }
+
+    public NuclearFurnaceBE() {
+        super(PROCESSORS_BE.get(Processors.NUCLEAR_FURNACE).get());
+    }
+
     @Override
     public String getName() {
         return Processors.NUCLEAR_FURNACE;

@@ -15,11 +15,17 @@ import java.util.List;
 
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.compat.GlobalVars.RECIPE_CLASSES;
+import static igentuman.nc.setup.registration.NCProcessors.PROCESSORS_BE;
 
 public class ElectrolyzerBE extends NCProcessorBE<ElectrolyzerBE.Recipe> {
     public ElectrolyzerBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, Processors.ELECTROLYZER);
     }
+
+    public ElectrolyzerBE() {
+        super(PROCESSORS_BE.get(Processors.ELECTROLYZER).get());
+    }
+
     @Override
     public String getName() {
         return Processors.ELECTROLYZER;

@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static igentuman.nc.handler.config.CommonConfig.ENERGY_GENERATION;
+import static igentuman.nc.setup.registration.NCProcessors.PROCESSORS_BE;
 import static net.minecraftforge.energy.CapabilityEnergy.ENERGY;
 
 public class SteamTurbineBE extends NCProcessorBE<SteamTurbineBE.Recipe> {
@@ -28,6 +29,11 @@ public class SteamTurbineBE extends NCProcessorBE<SteamTurbineBE.Recipe> {
     public SteamTurbineBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, Processors.STEAM_TURBINE);
     }
+
+    public SteamTurbineBE() {
+        super(PROCESSORS_BE.get(Processors.STEAM_TURBINE).get());
+    }
+
     @Override
     public String getName() {
         return Processors.STEAM_TURBINE;

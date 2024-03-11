@@ -15,11 +15,17 @@ import java.util.List;
 
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.compat.GlobalVars.RECIPE_CLASSES;
+import static igentuman.nc.setup.registration.NCProcessors.PROCESSORS_BE;
 
 public class ChemicalReactorBE extends NCProcessorBE<ChemicalReactorBE.Recipe> {
     public ChemicalReactorBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, Processors.CHEMICAL_REACTOR);
     }
+
+    public ChemicalReactorBE() {
+        super(PROCESSORS_BE.get(Processors.CHEMICAL_REACTOR).get());
+    }
+
     @Override
     public String getName() {
         return  Processors.CHEMICAL_REACTOR;

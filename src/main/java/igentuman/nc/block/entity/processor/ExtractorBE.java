@@ -15,11 +15,17 @@ import java.util.List;
 
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.compat.GlobalVars.RECIPE_CLASSES;
+import static igentuman.nc.setup.registration.NCProcessors.PROCESSORS_BE;
 
 public class ExtractorBE extends NCProcessorBE<ExtractorBE.Recipe> {
     public ExtractorBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, Processors.EXTRACTOR);
     }
+
+    public ExtractorBE() {
+        super(PROCESSORS_BE.get(Processors.EXTRACTOR).get());
+    }
+
     @Override
     public String getName() {
         return Processors.EXTRACTOR;

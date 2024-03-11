@@ -4,6 +4,7 @@ import igentuman.nc.content.processors.Processors;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.type.NcRecipe;
+import igentuman.nc.setup.registration.NCProcessors;
 import igentuman.nc.util.annotation.NothingNullByDefault;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.ResourceLocation;
@@ -15,11 +16,17 @@ import java.util.List;
 
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.compat.GlobalVars.RECIPE_CLASSES;
+import static igentuman.nc.setup.registration.NCProcessors.PROCESSORS_BE;
 
 public class SuperCoolerBE extends NCProcessorBE<SuperCoolerBE.Recipe> {
     public SuperCoolerBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, Processors.SUPERCOOLER);
     }
+
+    public SuperCoolerBE() {
+        super(PROCESSORS_BE.get(Processors.SUPERCOOLER).get());
+    }
+
     @Override
     public String getName() {
         return Processors.SUPERCOOLER;

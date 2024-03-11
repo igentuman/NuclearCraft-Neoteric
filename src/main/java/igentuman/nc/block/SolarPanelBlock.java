@@ -4,9 +4,11 @@ import igentuman.nc.block.entity.energy.NCEnergy;
 import igentuman.nc.content.energy.SolarPanels;
 import igentuman.nc.setup.registration.NCEnergyBlocks;
 import igentuman.nc.util.TextUtils;
+import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -32,12 +34,17 @@ public class SolarPanelBlock extends Block {
     public SolarPanelBlock(Properties pProperties) {
         super(pProperties.sound(SoundType.METAL));
     }
-/*
+
+    @Override
+    public boolean hasTileEntity(BlockState state) {
+        return true;
+    }
+
     @Nullable
     @Override
-    public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
-        return NCEnergyBlocks.ENERGY_BE.get(code()).get().create(pPos, pState);
-    }*/
+    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
+        return NCEnergyBlocks.ENERGY_BE.get(code()).get().create();
+    }
 
     public String code()
     {
@@ -50,5 +57,6 @@ public class SolarPanelBlock extends Block {
     {
         list.add(TextUtils.applyFormat(new TranslationTextComponent("solar_panel.fe_generation", TextUtils.numberFormat(SolarPanels.all().get(asItem().toString().replace("solar_panel_","")).getGeneration())), TextFormatting.GOLD));
     }
+
 
 }

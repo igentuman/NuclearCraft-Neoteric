@@ -2,7 +2,7 @@ package igentuman.nc.block.turbine;
 
 import igentuman.nc.block.entity.turbine.TurbineControllerBE;
 import igentuman.nc.container.TurbineControllerContainer;
-import net.minecraft.block.HorizontalFaceBlock;
+import net.minecraft.block.HorizontalBlock;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.state.BooleanProperty;
@@ -21,7 +21,7 @@ import javax.annotation.Nullable;
 
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BE;
 
-public class TurbineControllerBlock extends HorizontalFaceBlock {
+public class TurbineControllerBlock extends HorizontalBlock {
     public static final DirectionProperty HORIZONTAL_FACING = FACING;
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
     public static final String NAME = "turbine_controller";

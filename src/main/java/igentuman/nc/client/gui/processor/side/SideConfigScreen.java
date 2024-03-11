@@ -28,12 +28,12 @@ import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
 import static net.minecraft.client.gui.AbstractGui.drawCenteredString;
 
-public class SideConfigScreen<T extends NCProcessorContainer<T>> extends ContainerScreen<T> {
+public class SideConfigScreen<T extends NCProcessorContainer> extends ContainerScreen<T> {
     protected final ResourceLocation GUI = new ResourceLocation(MODID, "textures/gui/small_window.png");
     protected int relX;
     protected int relY;
 
-    protected ContainerScreen parentScreen;
+    protected ContainerScreen<T> parentScreen;
 
     private int slotId;
 

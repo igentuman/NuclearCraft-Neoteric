@@ -32,7 +32,7 @@ public class NCProcessors {
     public static final Block.Properties PROCESSOR_BLOCK_PROPERTIES = Block.Properties.of(Material.HEAVY_METAL).sound(SoundType.METAL).strength(2f).requiresCorrectToolForDrops();
     private static final DeferredRegister<TileEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, MODID);
     private static final DeferredRegister<ContainerType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.CONTAINERS, MODID);
-    public static HashMap<String, RegistryObject<ContainerType<? extends NCProcessorContainer<?>>>> PROCESSORS_CONTAINERS = new HashMap<>();
+    public static HashMap<String, RegistryObject<ContainerType<NCProcessorContainer>>> PROCESSORS_CONTAINERS = new HashMap<>();
     public static HashMap<String, RegistryObject<TileEntityType<? extends NCProcessorBE<?>>>> PROCESSORS_BE = new HashMap<>();
 
     public static void init() {
@@ -49,13 +49,7 @@ public class NCProcessors {
         for(String name: Processors.registered().keySet()) {
             PROCESSORS_CONTAINERS.put(name, CONTAINERS.register(name,
                     () -> IForgeContainerType.create((windowId, inv, data) -> {
-                        NCProcessorContainer<?> o = null;
-                        try {
-                            o = (NCProcessorContainer<?>) Processors.registered().get(name).getContainerConstructor()
-                                    .newInstance(windowId, data.readBlockPos(), inv, inv.player, name);
-                        } catch (InstantiationException | IllegalAccessException | InvocationTargetException ignore) {
-                        }
-                        return o;
+                       return new NCProcessorContainer(windowId, data.readBlockPos(), inv, inv.player, name);
                     })));
         }
     }

@@ -1,12 +1,16 @@
 package igentuman.nc.content.processors;
 
 import igentuman.nc.block.entity.processor.NCProcessorBE;
+import igentuman.nc.client.gui.processor.NCProcessorScreen;
 import igentuman.nc.container.NCProcessorContainer;
 import igentuman.nc.content.processors.config.ProcessorSlots;
 import igentuman.nc.handler.config.CommonConfig;
 import igentuman.nc.recipes.AbstractRecipe;
+import igentuman.nc.recipes.serializers.NcRecipeSerializer;
+import igentuman.nc.recipes.type.NcRecipe;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.util.math.BlockPos;
@@ -20,13 +24,13 @@ import java.util.function.Supplier;
 
 import static igentuman.nc.handler.config.ProcessorsConfig.PROCESSOR_CONFIG;
 
-public class ProcessorPrefab <M extends NCProcessorContainer, U extends Screen> {
+public class ProcessorPrefab {
 
     public int progressBar = 0;
-    public Supplier<IRecipeSerializer<? extends AbstractRecipe>> recipeSerializerSupplier;
+    public Supplier<NcRecipeSerializer<? extends NcRecipe>> recipeSerializerSupplier;
     public boolean supportsCatalyst;
     private  Class  container;
-    private  Container  screenConstructor;
+    private  NCProcessorScreen screenConstructor;
     private boolean initialized;
     private boolean has_recipes = true;
     private Boolean registered = true;
@@ -45,21 +49,21 @@ public class ProcessorPrefab <M extends NCProcessorContainer, U extends Screen> 
     protected Class recipeManager;
 
 
-    public  Supplier<? extends NCProcessorBE>  getBlockEntity(String name) {
+    public  Supplier<? extends NCProcessorBE<?>>  getBlockEntity(String name) {
         return blockEntity;
     }
 
-    public ProcessorPrefab<M, U> setBlockEntity(Supplier<? extends NCProcessorBE>  blockEntity) {
+    public ProcessorPrefab setBlockEntity(Supplier<? extends NCProcessorBE<?>>  blockEntity) {
         this.blockEntity = blockEntity;
         return this;
     }
-    private Supplier<? extends NCProcessorBE>  blockEntity;
+    private Supplier<? extends NCProcessorBE<?>>  blockEntity;
 
-    public Container getScreenConstructor() {
+    public NCProcessorScreen getScreenConstructor() {
         return screenConstructor;
     }
 
-    public void setScreenConstructor(Container screenConstructor) {
+    public void setScreenConstructor(NCProcessorScreen screenConstructor) {
         this.screenConstructor = screenConstructor;
     }
 
@@ -102,7 +106,7 @@ public class ProcessorPrefab <M extends NCProcessorContainer, U extends Screen> 
         return time;
     }
 
-    public ProcessorPrefab<M, U> time(int time) {
+    public ProcessorPrefab time(int time) {
         this.time = time;
         return this;
     }
@@ -122,7 +126,7 @@ public class ProcessorPrefab <M extends NCProcessorContainer, U extends Screen> 
 
     protected ProcessorSlots slotsConfig;
 
-    public ProcessorPrefab<M, U> config()
+    public ProcessorPrefab config()
     {
         if(!initialized) {
             if(!CommonConfig.isLoaded()) {
@@ -141,9 +145,9 @@ public class ProcessorPrefab <M extends NCProcessorContainer, U extends Screen> 
         return  registered;
     }
 
-    public Constructor<M> getContainerConstructor() {
+    public Constructor<Container> getContainerConstructor() {
         try {
-            return container.getConstructor(int.class, BlockPos.class, Inventory.class, PlayerEntity.class, String.class);
+            return container.getConstructor(int.class, BlockPos.class, PlayerInventory.class, PlayerEntity.class, String.class);
         } catch (NoSuchMethodException ex) {
             return null;
         }
@@ -157,7 +161,7 @@ public class ProcessorPrefab <M extends NCProcessorContainer, U extends Screen> 
         return has_recipes;
     }
 
-    public Supplier<IRecipeSerializer<? extends AbstractRecipe>> getRecipeSerializer() {
+    public Supplier<NcRecipeSerializer<? extends NcRecipe>> getRecipeSerializer() {
         return recipeSerializerSupplier;
     }
 }

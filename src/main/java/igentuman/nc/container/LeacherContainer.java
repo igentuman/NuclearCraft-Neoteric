@@ -6,7 +6,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.entity.player.PlayerEntity;
 
-public class LeacherContainer extends NCProcessorContainer<LeacherContainer> {
+public class LeacherContainer extends NCProcessorContainer {
 
     public LeacherContainer(int windowId, BlockPos pos, PlayerInventory playerInventory, PlayerEntity player, String name) {
         super(windowId, pos, playerInventory, player, name);

@@ -14,7 +14,7 @@ import net.minecraft.util.text.ITextComponent;
 import static igentuman.nc.NuclearCraft.rl;
 
 @NothingNullByDefault
-public class StorageContainerScreen extends ContainerScreen<StorageContainerContainer<?>> {
+public class StorageContainerScreen extends ContainerScreen<StorageContainerContainer> {
 
     private final ResourceLocation GUI;
 

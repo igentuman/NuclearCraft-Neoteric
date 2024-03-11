@@ -4,7 +4,7 @@ import igentuman.nc.block.entity.fission.FissionPortBE;
 import igentuman.nc.container.FissionPortContainer;
 import igentuman.nc.multiblock.fission.FissionReactor;
 import igentuman.nc.util.TextUtils;
-import net.minecraft.block.HorizontalFaceBlock;
+import net.minecraft.block.HorizontalBlock;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
@@ -38,7 +38,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 
-public class FissionPort extends HorizontalFaceBlock {
+public class FissionPort extends HorizontalBlock {
     public static final DirectionProperty HORIZONTAL_FACING = FACING;
     public FissionPort() {
         this(Properties.of(Material.METAL)

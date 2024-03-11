@@ -17,9 +17,9 @@ import net.minecraft.inventory.Inventory;
 import static igentuman.nc.block.entity.processor.LeacherBE.*;
 
 
-public class LeacherScreen<T extends NCProcessorContainer> extends NCProcessorScreen<T>{
+public class LeacherScreen extends NCProcessorScreen{
 
-    public LeacherScreen(Container container, PlayerInventory inventory, ITextComponent component) {
+    public LeacherScreen(NCProcessorContainer container, PlayerInventory inventory, ITextComponent component) {
         super(container, inventory, component);
     }
 

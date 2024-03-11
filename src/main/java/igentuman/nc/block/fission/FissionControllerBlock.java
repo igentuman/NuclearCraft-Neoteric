@@ -28,7 +28,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 import javax.annotation.Nullable;
 
-public class FissionControllerBlock extends HorizontalFaceBlock {
+public class FissionControllerBlock extends HorizontalBlock {
     public static final DirectionProperty HORIZONTAL_FACING = FACING;
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
 

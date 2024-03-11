@@ -34,7 +34,7 @@ import java.util.Objects;
 import static igentuman.nc.NuclearCraft.MODID;
 import static net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
 
-public class NCProcessorContainer<T extends Container> extends Container {
+public class NCProcessorContainer extends Container {
     protected NCProcessorBE blockEntity;
     protected PlayerEntity playerEntity;
     protected IItemHandler playerInventory;

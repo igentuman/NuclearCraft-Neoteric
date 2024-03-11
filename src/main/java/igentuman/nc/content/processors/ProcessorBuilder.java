@@ -29,32 +29,34 @@ public class ProcessorBuilder <M extends NCProcessorContainer, U extends Screen>
         return builder;
     }
 
-    public static ProcessorBuilder make(String name, int inFluids, int inItems, int outFluids, int outItems)
+    public static ProcessorBuilder<?, ?> make(String name, int inFluids, int inItems, int outFluids, int outItems)
     {
-        ProcessorBuilder builder = new ProcessorBuilder();
+        ProcessorBuilder<?, ?> builder = new ProcessorBuilder<>();
         builder.processor = new ProcessorPrefab(name, inFluids, inItems, outFluids, outItems);
         builder.container(NCProcessorContainer.class);
         if(FMLEnvironment.dist.isClient()){
-         //   builder.screen(NCProcessorScreen::new);
+          //  builder.setScreen(NCProcessorScreen::new);
         }
         return builder;
     }
+
+
 
     public ProcessorBuilder<M, U> container(Class container) {
         processor.setContainer(container);
         return this;
     }
 
-    public ProcessorBuilder blockEntity(Supplier<? extends NCProcessorBE> be)
+    public ProcessorBuilder blockEntity(Supplier<? extends NCProcessorBE<?>> be)
     {
         processor.setBlockEntity(be);
         return this;
     }
 
     @OnlyIn(Dist.CLIENT)
-    public ProcessorBuilder screen(Container screenConstructor)
+    public ProcessorBuilder setScreen(NCProcessorScreen screenConstructor)
     {
-        //processor.setScreenConstructor(screenConstructor);
+        processor.setScreenConstructor(screenConstructor);
         return this;
     }
 
@@ -64,7 +66,7 @@ public class ProcessorBuilder <M extends NCProcessorContainer, U extends Screen>
         return this;
     }
 
-    public ProcessorPrefab<?, ?> build()
+    public ProcessorPrefab build()
     {
         return processor;
     }
@@ -81,7 +83,7 @@ public class ProcessorBuilder <M extends NCProcessorContainer, U extends Screen>
         return this;
     }
 
-    public ProcessorBuilder<?, ?> recipeSerializer(Supplier<IRecipeSerializer<? extends AbstractRecipe>> sup) {
+    public ProcessorBuilder<?, ?> recipeSerializer(Supplier<NcRecipeSerializer<? extends NcRecipe>> sup) {
         processor.recipeSerializerSupplier = sup;
         return this;
     }

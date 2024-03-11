@@ -5,6 +5,7 @@ import igentuman.nc.client.block.fusion.FusionCoreRenderer;
 import igentuman.nc.client.gui.FusionCoreScreen;
 import igentuman.nc.client.gui.StorageContainerScreen;
 import igentuman.nc.client.gui.fission.FissionPortScreen;
+import igentuman.nc.client.gui.processor.NCProcessorScreen;
 import igentuman.nc.client.gui.turbine.TurbineControllerScreen;
 import igentuman.nc.client.gui.turbine.TurbinePortScreen;
 import igentuman.nc.client.gui.fission.FissionControllerScreen;
@@ -43,6 +44,7 @@ import static igentuman.nc.multiblock.fusion.FusionReactor.*;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_CONTROLLER_CONTAINER;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_PORT_CONTAINER;
 import static igentuman.nc.setup.registration.NCItems.GEIGER_COUNTER;
+import static igentuman.nc.setup.registration.NCProcessors.PROCESSORS_CONTAINERS;
 import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_CONTAINER;
 import static net.minecraftforge.eventbus.api.EventPriority.LOWEST;
 
@@ -60,8 +62,10 @@ public class ClientSetup {
             ScreenManager.register(FISSION_CONTROLLER_CONTAINER.get(), FissionControllerScreen::new);
             ScreenManager.register(FISSION_PORT_CONTAINER.get(), FissionPortScreen::new);
 
-            for(String name: NCProcessors.PROCESSORS_CONTAINERS.keySet()) {
-                //ScreenManager.register(NCProcessors.PROCESSORS_CONTAINERS.get(name).get(), Processors.all().get(name).getScreenConstructor());
+            for(String name: PROCESSORS_CONTAINERS.keySet()) {
+                  ScreenManager.register(PROCESSORS_CONTAINERS.get(name).get(), NCProcessorScreen::new);
+
+              //  ScreenManager.register(NCProcessors.PROCESSORS_CONTAINERS.get(name).get(), () -> Processors.all().get(name).getScreenConstructor());
             }
         });
 

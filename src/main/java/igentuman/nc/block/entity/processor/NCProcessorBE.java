@@ -89,10 +89,28 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
 
     public NCProcessorBE(TileEntityType<? extends NCProcessorBE<?>> tileEntityType) {
         super(tileEntityType);
-        energy = null;
-        energyStorage = null;
-        contentHandler = null;
+        name = tileEntityType.getRegistryName().getPath();
+        prefab = Processors.all().get(name);
+        contentHandler = new SidedContentHandler(
+                prefab().getSlotsConfig().getInputItems(), prefab().getSlotsConfig().getOutputItems(),
+                prefab().getSlotsConfig().getInputFluids(), prefab().getSlotsConfig().getOutputFluids());
+        contentHandler.setBlockEntity(this);
+        energyStorage = createEnergy();
+        energy = LazyOptional.of(() -> energyStorage);
     }
+
+    public NCProcessorBE(BlockPos pPos, BlockState pBlockState, String name) {
+        super(NCProcessors.PROCESSORS_BE.get(name).get(), pPos, pBlockState);
+        this.name = name;
+        prefab = Processors.all().get(name);
+        contentHandler = new SidedContentHandler(
+                prefab().getSlotsConfig().getInputItems(), prefab().getSlotsConfig().getOutputItems(),
+                prefab().getSlotsConfig().getInputFluids(), prefab().getSlotsConfig().getOutputFluids());
+        contentHandler.setBlockEntity(this);
+        energyStorage = createEnergy();
+        energy = LazyOptional.of(() -> energyStorage);
+    }
+
     @Override
     public void tick() {
         if(level == null) return;
@@ -289,17 +307,7 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
         return super.getCapability(cap, side);
     }
 
-    public NCProcessorBE(BlockPos pPos, BlockState pBlockState, String name) {
-        super(NCProcessors.PROCESSORS_BE.get(name).get(), pPos, pBlockState);
-        this.name = name;
-        prefab = Processors.all().get(name);
-        contentHandler = new SidedContentHandler(
-                prefab().getSlotsConfig().getInputItems(), prefab().getSlotsConfig().getOutputItems(),
-                prefab().getSlotsConfig().getInputFluids(), prefab().getSlotsConfig().getOutputFluids());
-        contentHandler.setBlockEntity(this);
-        energyStorage = createEnergy();
-        energy = LazyOptional.of(() -> energyStorage);
-    }
+
 
     public void tickClient() {
         if(isActive && level.getRandom().nextInt(50) < 5) {

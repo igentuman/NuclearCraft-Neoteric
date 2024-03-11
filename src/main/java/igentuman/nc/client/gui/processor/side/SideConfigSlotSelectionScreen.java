@@ -26,12 +26,12 @@ import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
 
-public class SideConfigSlotSelectionScreen<T extends NCProcessorContainer<T>> extends ContainerScreen<T> implements IProgressScreen {
+public class SideConfigSlotSelectionScreen<T extends NCProcessorContainer> extends ContainerScreen<T> implements IProgressScreen {
     protected final ResourceLocation GUI = new ResourceLocation(MODID, "textures/gui/window_no_inventory.png");
     protected int relX;
     protected int relY;
 
-    protected ContainerScreen parentScreen;
+    protected ContainerScreen<T> parentScreen;
 
     private ProcessorSlots slots;
 

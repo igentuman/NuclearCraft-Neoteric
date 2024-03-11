@@ -68,8 +68,8 @@ public class NCGuiElement extends Widget {
     }
 
     protected BlockPos getPosition() {
-        if(screen instanceof NCProcessorScreen<?>) {
-            NCProcessorScreen<?> processorScreen = (NCProcessorScreen<?>) screen;
+        if(screen instanceof NCProcessorScreen) {
+            NCProcessorScreen processorScreen = (NCProcessorScreen) screen;
             return processorScreen.getMenu().getPosition();
         }
         return BlockPos.ZERO;

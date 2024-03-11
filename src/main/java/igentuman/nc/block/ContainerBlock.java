@@ -67,7 +67,7 @@ public class ContainerBlock extends Block {
 
                     @Override
                     public Container createMenu(int windowId, PlayerInventory playerInventory, PlayerEntity playerEntity) {
-                        return new StorageContainerContainer<>(windowId, pos, playerInventory);
+                        return new StorageContainerContainer(windowId, pos, playerInventory);
                     }
                 };
                 NetworkHooks.openGui((ServerPlayerEntity) player, containerProvider, be.getBlockPos());

@@ -3,7 +3,7 @@ package igentuman.nc.block.turbine;
 import igentuman.nc.block.entity.turbine.TurbinePortBE;
 import igentuman.nc.container.TurbinePortContainer;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.HorizontalFaceBlock;
+import net.minecraft.block.HorizontalBlock;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
@@ -27,7 +27,7 @@ import org.antlr.v4.runtime.misc.NotNull;
 ;
 
 
-public class TurbinePortBlock extends HorizontalFaceBlock {
+public class TurbinePortBlock extends HorizontalBlock {
     public static final DirectionProperty HORIZONTAL_FACING = FACING;
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
 

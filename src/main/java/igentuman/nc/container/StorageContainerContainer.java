@@ -16,7 +16,7 @@ import net.minecraftforge.items.wrapper.InvWrapper;
 
 import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_CONTAINER;
 
-public class StorageContainerContainer<T extends Container> extends Container {
+public class StorageContainerContainer extends Container {
    private final ContainerBE blockEntity;
    private final PlayerEntity playerEntity;
    private final IItemHandler playerInventory;

@@ -33,7 +33,7 @@ import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.util.TextUtils.applyFormat;
 import static igentuman.nc.util.TextUtils.scaledFormat;
 
-public class NCProcessorScreen<T extends NCProcessorContainer> extends ContainerScreen<T> implements IProgressScreen {
+public class NCProcessorScreen extends ContainerScreen<NCProcessorContainer> implements IProgressScreen {
     protected final ResourceLocation GUI = new ResourceLocation(MODID, "textures/gui/processor.png");
     protected int relX;
     protected int relY;
@@ -48,12 +48,13 @@ public class NCProcessorScreen<T extends NCProcessorContainer> extends Container
     protected EnergyBar energyBar;
     private Button.ShowRecipes showRecipesBtn;
 
-    public NCProcessorScreen(T container, PlayerInventory inv, ITextComponent name) {
+    public NCProcessorScreen(NCProcessorContainer container, PlayerInventory inv, ITextComponent name) {
         super(container, inv, name);
         imageWidth = 180;
         imageHeight = 180;
         TickHandler.currentScreenCode = menu.getProcessor().name;
     }
+
 
     protected void updateRelativeCords()
     {
@@ -143,10 +144,6 @@ public class NCProcessorScreen<T extends NCProcessorContainer> extends Container
 
     protected FluidTank getFluidTank(int i) {
         return menu.getFluidTank(i);
-    }
-
-    public NCProcessorScreen(Container ContainerScreen, PlayerInventory inventory, ITextComponent component) {
-        this((T)ContainerScreen, inventory, component);
     }
 
     @Override

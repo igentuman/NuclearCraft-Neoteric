@@ -36,8 +36,8 @@ public class NCStorageBlocks {
     private static final DeferredRegister<TileEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, MODID);
     public static HashMap<String, RegistryObject<TileEntityType<? extends TileEntity>>> STORAGE_BE = new HashMap<>();
     private static final DeferredRegister<ContainerType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.CONTAINERS, MODID);
-    public static final RegistryObject<ContainerType<StorageContainerContainer<?>>> STORAGE_CONTAINER = CONTAINERS.register("storage_container",
-            () -> IForgeContainerType.create((windowId, inv, data) -> new StorageContainerContainer<>(windowId, data.readBlockPos(), inv)));
+    public static final RegistryObject<ContainerType<StorageContainerContainer>> STORAGE_CONTAINER = CONTAINERS.register("storage_container",
+            () -> IForgeContainerType.create((windowId, inv, data) -> new StorageContainerContainer(windowId, data.readBlockPos(), inv)));
     public static void init() {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         BLOCK_ENTITIES.register(bus);

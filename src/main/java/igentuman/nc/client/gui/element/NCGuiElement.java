@@ -3,6 +3,7 @@ package igentuman.nc.client.gui.element;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import igentuman.nc.client.gui.processor.NCProcessorScreen;
+import igentuman.nc.container.NCProcessorContainer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.FontRenderer;
@@ -67,10 +68,18 @@ public class NCGuiElement extends Widget {
         return false;
     }
 
+    public NCProcessorContainer getProcessorMenu() {
+        if(screen instanceof NCProcessorScreen) {
+            NCProcessorScreen processorScreen = (NCProcessorScreen) screen;
+            return (NCProcessorContainer) processorScreen.getMenu();
+        }
+        return null;
+    }
+
     protected BlockPos getPosition() {
         if(screen instanceof NCProcessorScreen) {
             NCProcessorScreen processorScreen = (NCProcessorScreen) screen;
-            return processorScreen.getMenu().getPosition();
+            return getProcessorMenu().getPosition();
         }
         return BlockPos.ZERO;
     }

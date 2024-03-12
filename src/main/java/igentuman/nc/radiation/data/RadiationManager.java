@@ -11,13 +11,16 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.storage.DimensionSavedDataManager;
 import net.minecraft.world.storage.WorldSavedData;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import org.antlr.v4.runtime.misc.NotNull;
 
 import javax.annotation.Nonnull;
 
 import static igentuman.nc.handler.config.RadiationConfig.RADIATION_CONFIG;
 import static igentuman.nc.radiation.data.WorldRadiation.pack;
+import static igentuman.nc.radiation.data.WorldRadiationProvider.WORLD_RADIATION;
 
 public class RadiationManager extends WorldSavedData {
 
@@ -25,8 +28,8 @@ public class RadiationManager extends WorldSavedData {
     private int tickCounter = RADIATION_CONFIG.RADIATION_UPDATE_INTERVAL.get();
 
     public static void clear(World level) {
-//        get(level).worldRadiation.chunkRadiation.clear();
-   //     get(level).worldRadiation.updatedChunks.clear();
+        get(level).worldRadiation.chunkRadiation.clear();
+        get(level).worldRadiation.updatedChunks.clear();
     }
 
     public WorldRadiation getWorldRadiation() {
@@ -47,9 +50,8 @@ public class RadiationManager extends WorldSavedData {
         if (level.isClientSide) {
             throw new RuntimeException("Don't access this client-side!");
         }
-      //  DimensionDataStorage storage = ((World)level).getLevelData();
-     //   return storage.computeIfAbsent(RadiationManager::new, RadiationManager::new, "nc_world_radiation");
-        return null;
+        DimensionSavedDataManager savedData = ServerLifecycleHooks.getCurrentServer().overworld().getDataStorage();
+        return savedData.computeIfAbsent(RadiationManager::new, "nc_world_radiation");
     }
 
     public void tick(World level) {
@@ -66,7 +68,7 @@ public class RadiationManager extends WorldSavedData {
                 }
 
                 if(worldRadiation.chunkRadiation.get(id) != null) {
-                 //   NuclearCraft.packetHandler().sendTo(new PacketRadiationData(id, worldRadiation.chunkRadiation.get(id), playerRadiation), serverPlayer);
+                    NuclearCraft.packetHandler().sendTo(new PacketRadiationData(id, worldRadiation.chunkRadiation.get(id), playerRadiation), (ServerPlayerEntity) player);
                 }
             }
         });
@@ -96,8 +98,12 @@ public class RadiationManager extends WorldSavedData {
     }
 
     @Override
-    public void load(CompoundNBT compoundNBT) {
-
+    public void load(CompoundNBT tag) {
+        if(tag.contains("radiation")) {
+            worldRadiation = WorldRadiation.deserialize(tag);
+        } else {
+            worldRadiation = new WorldRadiation();
+        }
     }
 
     @Override

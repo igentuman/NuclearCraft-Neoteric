@@ -4,6 +4,7 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import igentuman.nc.setup.registration.NcParticleTypes;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleType;
 import net.minecraft.util.Direction;
@@ -54,8 +55,7 @@ public class FusionBeamParticleData implements IParticleData {
     @NotNull
     @Override
     public ParticleType<?> getType() {
-        return null;
-//return NcParticleTypes.FUSION_BEAM.get();
+            return NcParticleTypes.FUSION_BEAM.get();
     }
 
     @Override

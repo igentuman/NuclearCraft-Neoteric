@@ -24,7 +24,7 @@ public class CommandNcPlayerRadiation {
 
     public static int execute(CommandSource ctx) throws CommandSyntaxException {
         ServerPlayerEntity pl = ctx.getPlayerOrException();
-        pl.sendMessage(new TranslationTextComponent("nc.message.player_radiation"), UUID.randomUUID());
+        pl.sendMessage(new TranslationTextComponent("nc.message.player_radiation"), pl.getUUID());
         return 0;
     }
 }

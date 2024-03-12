@@ -3,6 +3,8 @@ package igentuman.nc.radiation.data;
 import net.minecraft.util.Direction;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
@@ -11,8 +13,8 @@ import javax.annotation.Nullable;
 import javax.annotation.Nonnull;
 
 public class PlayerRadiationProvider implements ICapabilityProvider, INBTSerializable<CompoundNBT> {
-    public static Capability<PlayerRadiation> PLAYER_RADIATION = null;
-    //CapabilityManager.get(new CapabilityToken<>(){});
+    @CapabilityInject(PlayerRadiation.class)
+    public static Capability<PlayerRadiation> PLAYER_RADIATION;
     private PlayerRadiation playerRadiation = createPlayerRadiation();
     private final LazyOptional<PlayerRadiation> opt = LazyOptional.of(() -> createPlayerRadiation());
 

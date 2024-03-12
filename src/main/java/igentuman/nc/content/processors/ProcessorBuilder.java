@@ -116,4 +116,5 @@ public class ProcessorBuilder <M extends NCProcessorContainer, U extends Screen>
         processor.power = i;
         return this;
     }
+
 }

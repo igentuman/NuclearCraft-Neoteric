@@ -9,6 +9,9 @@ import java.util.List;
 
 public class TurbineBearingBE extends TurbineBE {
     public static String NAME = "turbine_bearing";
+    public TurbineBearingBE() {
+        this(BlockPos.ZERO, null);
+    }
     public TurbineBearingBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, NAME);
     }

@@ -3,6 +3,9 @@ package igentuman.nc.item;
 import igentuman.nc.radiation.data.PlayerRadiation;
 import igentuman.nc.radiation.data.PlayerRadiationProvider;
 import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -19,20 +22,20 @@ public class DosimiterItem extends Item
 		super(props);
 	}
 
-/*
+
 	@NotNull
 	@Override
-	public InteractionResultHolder<ItemStack> use(@NotNull World world, PlayerEntity player, @NotNull InteractionHand hand) {
+	public ActionResult<ItemStack> use(@NotNull World world, PlayerEntity player, @NotNull Hand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 		if (!world.isClientSide()) {
 			PlayerRadiation radiationCap = player.getCapability(PlayerRadiationProvider.PLAYER_RADIATION).orElse(null);
-			if(radiationCap == null) return InteractionResultHolder.sidedSuccess(stack, world.isClientSide);
+			if(radiationCap == null) return ActionResult.sidedSuccess(stack, world.isClientSide);
 			int radiation = radiationCap.getRadiation();
 			player.sendMessage(new TranslationTextComponent("message.nc.player_radiation_contamination", format(radiation)),  UUID.randomUUID());
-			CriteriaTriggers.USING_ITEM.trigger((ServerPlayer) player, stack);
+			//CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger((ServerPlayerEntity) player, stack);
 		}
-		return InteractionResultHolder.sidedSuccess(stack, world.isClientSide);
-	}*/
+		return ActionResult.sidedSuccess(stack, world.isClientSide);
+	}
 
 	private static String format(int radiation) {
 		if(radiation >= 1000000) {

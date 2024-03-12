@@ -18,7 +18,6 @@ public class ParticleTypeDeferredRegister extends WrappedDeferredRegister<Partic
     }
 
     public <PARTICLE extends IParticleData, TYPE extends ParticleType<PARTICLE>> ParticleTypeRegistryObject<PARTICLE, TYPE> register(String name, Supplier<TYPE> sup) {
-       // return register(name, sup, ParticleTypeRegistryObject::new);
-        return null;
+       return register(name, sup, ParticleTypeRegistryObject::new);
     }
 }

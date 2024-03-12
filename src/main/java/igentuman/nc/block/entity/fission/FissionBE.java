@@ -58,12 +58,6 @@ public class FissionBE extends NuclearCraftBE implements IMultiblockAttachable {
         validationRuns = 0;
     }
 
-    public void tickClient() {
-    }
-
-    public void tickServer() {
-
-    }
 
     @Override
     public void setRemoved()

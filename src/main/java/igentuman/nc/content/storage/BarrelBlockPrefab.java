@@ -6,6 +6,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 
 import java.util.Arrays;
+import java.util.function.Supplier;
 
 import static igentuman.nc.handler.config.CommonConfig.STORAGE_BLOCKS;
 
@@ -17,7 +18,7 @@ public class BarrelBlockPrefab {
 
     public BarrelBlockPrefab(String name, int capacity) {
         this.capacity = capacity;
-        //blockEntity = BarrelBE::new;
+       // blockEntity = BarrelBE::new;
     }
 
     public int getCapacity() {
@@ -46,13 +47,13 @@ public class BarrelBlockPrefab {
         return  registered;
     }
 
-    public TileEntityType<? extends TileEntity> getBlockEntity() {
-        return blockEntity;
+    public Supplier<? extends TileEntity> getBlockEntity(String name) {
+        return () -> new BarrelBE(name);
     }
 
-    public BarrelBlockPrefab setBlockEntity(TileEntityType<? extends TileEntity>  blockEntity) {
+    public BarrelBlockPrefab setBlockEntity(Supplier<? extends TileEntity>  blockEntity) {
         this.blockEntity = blockEntity;
         return this;
     }
-    private TileEntityType<? extends TileEntity>  blockEntity;
+    private Supplier<? extends TileEntity>  blockEntity;
 }

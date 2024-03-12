@@ -25,6 +25,16 @@ public class ContainerBE extends NuclearCraftBE implements ISizeToggable {
 
     public final ItemStorageCapabilityHandler inventory;
 
+    public ContainerBE(String name) {
+        super(STORAGE_BE.get(name).get(), BlockPos.ZERO, null);
+        for (Direction direction : Direction.values()) {
+            sideConfig.put(direction.ordinal(), SideMode.DEFAULT);
+        }
+        inventory = createInventory();
+        itemHandler = LazyOptional.of(() -> inventory);
+
+    }
+
     private ItemStorageCapabilityHandler createInventory() {
         return new ItemStorageCapabilityHandler(ContainerBlocks.all().get(getName()).getCapacity(), 64);
     }
@@ -120,11 +130,6 @@ public class ContainerBE extends NuclearCraftBE implements ISizeToggable {
         return super.getCapability(cap, side);
     }
 
-/*    @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        CompoundNBT tag = pkt.getTag();
-        handleUpdateTag(tag);
-    }*/
 
     @Override
     public void handleUpdateTag(BlockState state, CompoundNBT tag) {

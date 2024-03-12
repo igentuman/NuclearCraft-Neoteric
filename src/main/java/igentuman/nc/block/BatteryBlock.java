@@ -54,7 +54,7 @@ public class BatteryBlock extends Block {
                     }
                     NuclearCraft.packetHandler().sendToServer(new BatterySideConfig(pos, dirToChange.ordinal()));
                 } else {
-                    player.sendMessage(new TranslationTextComponent("tooltip.nc.energy_stored", formatEnergy(((BatteryBE)be).energyStorage.getEnergyStored()), formatEnergy(((BatteryBE)be).energyStorage.getMaxEnergyStored())).withStyle(TextFormatting.BLUE), UUID.randomUUID());
+                    player.sendMessage(new TranslationTextComponent("tooltip.nc.energy_stored", formatEnergy(((BatteryBE)be).energyStorage.getEnergyStored()), formatEnergy(((BatteryBE)be).energyStorage.getMaxEnergyStored())).withStyle(TextFormatting.BLUE), player.getUUID());
                 }
             }
         }

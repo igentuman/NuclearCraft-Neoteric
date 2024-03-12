@@ -148,7 +148,7 @@ public class RadiationEvents {
                 }
             }
         }
-      //  manager.tick(event.world);
+        manager.tick(event.world);
     }
 
     public static void stopTracking() {

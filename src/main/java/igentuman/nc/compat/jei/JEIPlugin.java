@@ -11,6 +11,7 @@ import igentuman.nc.content.processors.Processors;
 
 import igentuman.nc.recipes.AbstractRecipe;
 import igentuman.nc.recipes.NcRecipeType;
+import igentuman.nc.recipes.type.MekChemicalConversionRecipe;
 import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.recipes.type.OreVeinRecipe;
 import mezz.jei.api.IModPlugin;
@@ -43,6 +44,7 @@ public  class JEIPlugin implements IModPlugin {
     public static final RecipeType<FissionControllerBE.FissionBoilingRecipe> FISSION_BOILING = new RecipeType<>(new ResourceLocation(MODID, "fission_boiling"), FissionControllerBE.FissionBoilingRecipe.class);
     public static final RecipeType<TurbineControllerBE.Recipe> TURBINE_CONTROLLER = new RecipeType<>(new ResourceLocation(MODID, TurbineControllerBE.NAME), TurbineControllerBE.Recipe.class);
     public static final RecipeType<OreVeinRecipe> ORE_VEINS = new RecipeType<>(new ResourceLocation(MODID, "nc_ore_veins"), OreVeinRecipe.class);
+    public static final RecipeType<MekChemicalConversionRecipe> CHEMICAL_TO_FLUID = new RecipeType<>(new ResourceLocation(MODID, "mek_chemical_to_fluid"), MekChemicalConversionRecipe.class);;
 
     private static HashMap<String, RecipeType<? extends NcRecipe>> getRecipeTypes() {
         if (recipeTypes == null) {
@@ -69,7 +71,11 @@ public  class JEIPlugin implements IModPlugin {
         registration.addRecipeCategories(new FusionCoolantCategoryWrapper<>(registration.getJeiHelpers().getGuiHelper(), FUSION_COOLANT));
         registration.addRecipeCategories(new FissionBoilingCategoryWrapper<>(registration.getJeiHelpers().getGuiHelper(), FISSION_BOILING));
         registration.addRecipeCategories(new FissionCategoryWrapper<>(registration.getJeiHelpers().getGuiHelper(), FISSION));
+        registration.addRecipeCategories(new TurbineControllerCategoryWrapper<>(registration.getJeiHelpers().getGuiHelper(), TURBINE_CONTROLLER));
+        if(isMekanismLoadeed()) {
+            registration.addRecipeCategories(new MekChemicalConversionCategoryWrapper<>(registration.getJeiHelpers().getGuiHelper(), CHEMICAL_TO_FLUID));
 
+        }
     }
 
     public <TYPE> RecipeType<TYPE> getRecipeType(String name) {

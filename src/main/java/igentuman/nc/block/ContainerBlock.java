@@ -85,11 +85,17 @@ public class ContainerBlock extends Block {
         super.onRemove(pState, pLevel, pPos, pNewState, pIsMoving);
     }
 
-/*    @Nullable
     @Override
-    public TileEntity newTileEntity(BlockPos pPos, BlockState pState) {
-        return NCStorageBlocks.STORAGE_BE.get(code()).get().create(pPos, pState);
-    }*/
+    public boolean hasTileEntity(BlockState state) {
+        return true;
+    }
+
+    @Nullable
+    @Override
+    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
+        return NCStorageBlocks.STORAGE_BE.get(state.getBlock().asItem().toString()).get().create();
+    }
+
 
     public String code()
     {

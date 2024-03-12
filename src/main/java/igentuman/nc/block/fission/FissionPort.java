@@ -13,7 +13,9 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.DirectionProperty;
+import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -48,26 +50,35 @@ public class FissionPort extends HorizontalBlock {
     }
     public FissionPort(Properties pProperties) {
         super(pProperties.sound(SoundType.METAL));
-/*        this.registerDefaultState(
+        this.registerDefaultState(
                 this.stateDefinition.any()
                         .setValue(HORIZONTAL_FACING, Direction.NORTH)
-        );*/
-    }
-/*    @Override
-    public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
-    }
-
-    @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(BlockStateProperties.HORIZONTAL_FACING);
+        );
     }
 
     @Nullable
     @Override
-    public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
-        return FissionReactor.FISSION_BE.get("fission_reactor_port").get().create(pPos, pState);
-    }*/
+    public BlockState getStateForPlacement(BlockItemUseContext context) {
+        return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+        builder.add(BlockStateProperties.HORIZONTAL_FACING)
+                .add(BlockStateProperties.POWERED);
+    }
+
+    @Override
+    public boolean hasTileEntity(BlockState state) {
+        return state != null;
+    }
+
+    @Nullable
+    @Override
+    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
+        return FissionReactor.FISSION_BE.get("fission_reactor_port").get().create();
+    }
+
 
     @Override
     public ActionResultType use(BlockState state, World level, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult result) {
@@ -107,5 +118,4 @@ public class FissionPort extends HorizontalBlock {
     public int getAnalogOutputSignal(BlockState pBlockState, World pLevel, BlockPos pPos) {
         return pLevel.getBlockEntity(pPos) instanceof FissionPortBE ? ((FissionPortBE)pLevel.getBlockEntity(pPos)).analogSignal : 0;
     }
-
 }

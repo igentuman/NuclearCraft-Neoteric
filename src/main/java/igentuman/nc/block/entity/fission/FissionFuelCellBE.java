@@ -1,6 +1,7 @@
 package igentuman.nc.block.entity.fission;
 
 import igentuman.nc.NuclearCraft;
+import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.Direction;
@@ -10,9 +11,12 @@ import java.util.Objects;
 
 import static igentuman.nc.multiblock.fission.FissionReactorMultiblock.isModerator;
 
-public class FissionFuelCellBE extends FissionBE {
+public class FissionFuelCellBE extends FissionBE implements ITickableTileEntity {
     public static String NAME = "fission_reactor_fuel_cell";
 
+    public FissionFuelCellBE() {
+        this(BlockPos.ZERO, null);
+    }
     public FissionFuelCellBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, NAME);
     }

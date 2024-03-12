@@ -48,12 +48,6 @@ public class FusionBE extends NuclearCraftBE implements IMultiblockAttachable {
         super(FusionReactor.FUSION_BE.get(name).get(), pPos, pBlockState);
     }
 
-    public void tickServer() {
-    }
-
-    public void tickClient() {
-    }
-
     public FusionCoreBE<?> controller() {
 
        if (NuclearCraft.instance.isNcBeStopped || (Objects.requireNonNull(getLevel()).getServer() != null && !getLevel().getServer().isRunning())) return null;

@@ -26,6 +26,9 @@ public class TurbineCoilBE extends TurbineBE {
     @NBTField
     public boolean hasBearingConnection = false;
 
+    public TurbineCoilBE() {
+        this(BlockPos.ZERO, null);
+    }
     public TurbineCoilBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, NAME);
     }

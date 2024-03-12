@@ -41,6 +41,23 @@ public class NuclearCraftBE extends TileEntity {
         return pBlockState.getBlock().asItem().toString();
     }
 
+    public void tick() {
+        if(level == null) return;
+        if(level.isClientSide()) {
+            tickClient();
+        }
+        if(!level.isClientSide()) {
+            tickServer();
+        }
+    }
+
+
+    public void tickClient() {
+    }
+
+    public void tickServer() {
+
+    }
 
     public NuclearCraftBE(TileEntityType<?> pType, BlockPos pPos, BlockState pBlockState) {
         super(pType);

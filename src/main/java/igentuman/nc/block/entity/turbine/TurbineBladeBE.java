@@ -13,6 +13,9 @@ public class TurbineBladeBE extends TurbineBE {
     public static String NAME = "turbine_blade";
     private BladeDef def;
 
+    public TurbineBladeBE() {
+        this(BlockPos.ZERO, null);
+    }
     public TurbineBladeBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, NAME);
     }

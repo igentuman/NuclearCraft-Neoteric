@@ -3,10 +3,12 @@ package igentuman.nc.block.fission;
 import igentuman.nc.block.entity.fission.FissionBE;
 import igentuman.nc.multiblock.fission.FissionReactor;
 import net.minecraft.block.SoundType;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.Direction;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraft.block.Block;
@@ -26,9 +28,9 @@ public class FissionBlock extends Block {
         return adjacentBlockState.getBlock().equals(this) && asItem().toString().matches(".*glass|.*cell.*|.*slope.*");
     }
 
-    private String blockEntityCode()
+    private String blockEntityCode(BlockState state)
     {
-        String code = Registry.BLOCK.getKey(this).getPath();
+        String code = state.getBlock().asItem().toString();
         if(code.matches(".*reactor_glass|.*reactor_casing.*")) {
             return "fission_casing";
         }
@@ -41,13 +43,17 @@ public class FissionBlock extends Block {
         return code;
     }
 
-/*
+    @Override
+    public boolean hasTileEntity(BlockState state) {
+        return state != null;
+    }
+
     @Nullable
     @Override
-    public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
-        return FissionReactor.FISSION_BE.get(blockEntityCode()).get().create(pPos, pState);
+    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
+        return FissionReactor.FISSION_BE.get(blockEntityCode(state)).get().create();
     }
-*/
+
 
 
     @Override

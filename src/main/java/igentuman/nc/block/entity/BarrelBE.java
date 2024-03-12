@@ -29,6 +29,15 @@ public class BarrelBE extends NuclearCraftBE implements ISizeToggable {
 
     public final FluidTank fluidTank;
 
+    public BarrelBE(String name) {
+        super(STORAGE_BE.get(name).get(), BlockPos.ZERO, null);
+        for (Direction direction : Direction.values()) {
+            sideConfig.put(direction.ordinal(), SideMode.DEFAULT);
+        }
+        fluidTank = createTank();
+        fluidHandler = LazyOptional.of(() -> fluidTank);
+    }
+
     private FluidTank createTank() {
         return new FluidTank(BarrelBlocks.all().get(getName()).config().getCapacity()) {
             @Override

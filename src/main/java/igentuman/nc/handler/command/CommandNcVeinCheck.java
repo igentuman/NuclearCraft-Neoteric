@@ -38,8 +38,8 @@ public class CommandNcVeinCheck {
             name = vein.getId().getPath().replace("nc_ore_veins/", "");
             qty = WorldVeinsManager.get(level).getWorldVeinData(level).getBlocksLeft(pl.xChunk, pl.zChunk);
         }
-        pl.sendMessage(new TranslationTextComponent("nc.ore_vein."+name), UUID.randomUUID());
-        pl.sendMessage(new TranslationTextComponent("amount", qty), UUID.randomUUID());
+        pl.sendMessage(new TranslationTextComponent("nc.ore_vein."+name), pl.getUUID());
+        pl.sendMessage(new TranslationTextComponent("amount", qty), pl.getUUID());
         return 0;
     }
 }

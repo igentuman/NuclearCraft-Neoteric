@@ -105,6 +105,9 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
         return allowedInputs;
     }
 
+    public TurbineControllerBE() {
+        this(BlockPos.ZERO, null);
+    }
     public TurbineControllerBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, NAME);
         multiblock = new TurbineMultiblock(this);

@@ -6,7 +6,15 @@ import igentuman.nc.content.storage.BarrelBlocks;
 import igentuman.nc.network.toServer.StorageSideConfig;
 import igentuman.nc.setup.registration.NCStorageBlocks;
 import igentuman.nc.util.TextUtils;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.item.BucketItem;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.Direction;
@@ -14,6 +22,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -28,6 +37,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static igentuman.nc.setup.registration.NCItems.MULTITOOL;
+import static net.minecraft.item.Items.BUCKET;
 
 public class BarrelBlock extends Block {
 
@@ -35,8 +45,8 @@ public class BarrelBlock extends Block {
         super(pProperties);
     }
 
-   /* @Override
-    public InteractionResult use(BlockState state, World level, BlockPos pos, PlayerEntity player, InteractionHand hand, BlockHitResult result) {
+    @Override
+    public ActionResultType use(BlockState state, World level, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult result) {
         if (!level.isClientSide()) {
             BarrelBE be = (BarrelBE)level.getBlockEntity(pos);
             ItemStack handStack = player.getItemInHand(hand);
@@ -59,7 +69,7 @@ public class BarrelBlock extends Block {
                                 player.setItemInHand(hand, bucket);
                             } else {
                                 handStack.shrink(1);
-                                if(!player.getInventory().add(bucket)) {
+                                if(!player.inventory.add(bucket)) {
                                     player.drop(bucket, false);
                                 }
                             }
@@ -68,23 +78,23 @@ public class BarrelBlock extends Block {
                         int filled = barrel.fill(new FluidStack(to, 1000), IFluidHandler.FluidAction.SIMULATE);
                         if(filled == 1000) {
                             barrel.fill(new FluidStack(to, 1000), IFluidHandler.FluidAction.EXECUTE);
-                            if(player.isCreative()) return InteractionResult.SUCCESS;
+                            if(player.isCreative()) return ActionResultType.SUCCESS;
                             if(handStack.getCount() == 1) {
                                 player.setItemInHand(hand, new ItemStack(BUCKET));
                             } else {
                                 handStack.shrink(1);
-                                if(!player.getInventory().add(new ItemStack(to.getBucket()))) {
+                                if(!player.inventory.add(new ItemStack(to.getBucket()))) {
                                     player.drop(new ItemStack(to.getBucket()), false);
                                 }
                             }
                         }
                     }
 
-                    return InteractionResult.SUCCESS;
+                    return ActionResultType.SUCCESS;
                 }
                 IFluidHandlerItem fluidCap = handStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).orElse(null);
                 if(fluidCap == null) {
-                    return InteractionResult.SUCCESS;
+                    return ActionResultType.SUCCESS;
                 }
                 FluidStack inhandFluid = fluidCap.getFluidInTank(0);
                 if(inhandFluid == null || inhandFluid.isEmpty()) {
@@ -98,29 +108,26 @@ public class BarrelBlock extends Block {
                 fluid = be.getFluidHandler().orElseGet(null).getFluidInTank(0);
                 int storage = BarrelBlocks.all().get(code()).getCapacity();
                 if(fluid == null || fluid.isEmpty()) {
-                    player.sendMessage(new TranslationTextComponent("tooltip.nc.liquid_empty", formatLiquid(storage)).withStyle(TextFormatting.BLUE), UUID.randomUUID());
+                    player.sendMessage(new TranslationTextComponent("tooltip.nc.liquid_empty", formatLiquid(storage)).withStyle(TextFormatting.BLUE), player.getUUID());
                 } else {
-                    player.sendMessage(new TranslationTextComponent("tooltip.nc.liquid_stored", fluid.getDisplayName(), formatLiquid(fluid.getAmount()), formatLiquid(storage)).withStyle(TextFormatting.BLUE), UUID.randomUUID());
+                    player.sendMessage(new TranslationTextComponent("tooltip.nc.liquid_stored", fluid.getDisplayName(), formatLiquid(fluid.getAmount()), formatLiquid(storage)).withStyle(TextFormatting.BLUE), player.getUUID());
                 }
             }
         }
-        return InteractionResult.SUCCESS;
-    }*/
+        return ActionResultType.SUCCESS;
+    }
 
-/*    @Override
-    public void onRemove(BlockState pState, World pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
-        if (pState.getBlock() != pNewState.getBlock()) {
-            BlockEntity blockEntity = pLevel.getBlockEntity(pPos);
 
-        }
-        super.onRemove(pState, pLevel, pPos, pNewState, pIsMoving);
+    @Override
+    public boolean hasTileEntity(BlockState state) {
+        return true;
     }
 
     @Nullable
     @Override
-    public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
-        return NCStorageBlocks.STORAGE_BE.get(code()).get().create(pPos, pState);
-    }*/
+    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
+        return NCStorageBlocks.STORAGE_BE.get(code()).get().create();
+    }
 
     public String code()
     {
@@ -157,14 +164,14 @@ public class BarrelBlock extends Block {
 */
 
 
-/*    @Override
-    public void appendHoverText(ItemStack stack, @javax.annotation.Nullable BlockGetter world, List<TextComponent> list, TooltipFlag flag)
+    @Override
+    public void appendHoverText(ItemStack stack, @javax.annotation.Nullable IBlockReader world, List<ITextComponent> list, ITooltipFlag flag)
     {
         int storage = BarrelBlocks.all().get(code()).config().getCapacity();
 
         list.add(new TranslationTextComponent("tooltip.nc.liquid_capacity", formatLiquid(storage)).withStyle(TextFormatting.BLUE));
         list.add(new TranslationTextComponent("tooltip.nc.use_multitool").withStyle(TextFormatting.YELLOW));
-    }*/
+    }
 
     public String formatLiquid(int val)
     {

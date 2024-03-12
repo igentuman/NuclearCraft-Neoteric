@@ -12,6 +12,9 @@ import java.util.List;
 public class TurbineRotorBE extends TurbineBE {
     public static String NAME = "turbine_rotor_shaft";
     public boolean connectedToBearing = false;
+    public TurbineRotorBE() {
+        this(BlockPos.ZERO, null);
+    }
     public TurbineRotorBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, NAME);
     }

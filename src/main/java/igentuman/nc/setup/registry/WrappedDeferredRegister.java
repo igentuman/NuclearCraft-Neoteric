@@ -1,6 +1,5 @@
 package igentuman.nc.setup.registry;
 
-import mekanism.common.registration.WrappedRegistryObject;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;

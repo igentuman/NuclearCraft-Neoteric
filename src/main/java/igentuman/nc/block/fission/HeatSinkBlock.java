@@ -155,9 +155,9 @@ public class HeatSinkBlock extends Block {
             if(be instanceof FissionHeatSinkBE) {
                 int id = level.random.nextInt(10);
                 if(((FissionHeatSinkBE) be).isValid(true)) {
-                    player.sendMessage(new TranslationTextComponent("message.heat_sink.valid"+id), UUID.randomUUID());
+                    player.sendMessage(new TranslationTextComponent("message.heat_sink.valid"+id), player.getUUID());
                 } else {
-                    player.sendMessage(new TranslationTextComponent("message.heat_sink.invalid"+id), UUID.randomUUID());
+                    player.sendMessage(new TranslationTextComponent("message.heat_sink.invalid"+id), player.getUUID());
                 }
             }
         }

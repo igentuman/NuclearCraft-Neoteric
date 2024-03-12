@@ -6,6 +6,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 
 import java.util.Arrays;
+import java.util.function.Supplier;
 
 import static igentuman.nc.handler.config.CommonConfig.STORAGE_BLOCKS;
 
@@ -20,7 +21,7 @@ public class ContainerBlockPrefab {
     public ContainerBlockPrefab(String name, int rows, int colls) {
         this.rows = rows;
         this.colls = colls;
-        //blockEntity = ContainerBE::new;
+      //  blockEntity = ContainerBE::new;
         this.name = name;
     }
 
@@ -44,15 +45,15 @@ public class ContainerBlockPrefab {
         return  registered;
     }
 
-    public TileEntityType <? extends TileEntity>  getBlockEntity() {
-        return blockEntity;
+    public Supplier<? extends TileEntity> getBlockEntity(String name) {
+        return () -> new ContainerBE(name);
     }
 
-    public ContainerBlockPrefab setBlockEntity(TileEntityType<? extends TileEntity>  blockEntity) {
+    public ContainerBlockPrefab setBlockEntity(Supplier<? extends TileEntity>  blockEntity) {
         this.blockEntity = blockEntity;
         return this;
     }
-    private TileEntityType<? extends TileEntity>  blockEntity;
+    private Supplier<? extends TileEntity>  blockEntity;
 
     public int getRows() {
         return rows;

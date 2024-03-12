@@ -37,7 +37,7 @@ public class BatterySideConfig implements INcPacket {
             return;
         }
         ISizeToggable.SideMode mode = ((BatteryBE) be).toggleSideConfig(direction);
-        player.sendMessage(new TranslationTextComponent("message.nc.battery.side_config", mode.name()), UUID.randomUUID());
+        player.sendMessage(new TranslationTextComponent("message.nc.battery.side_config", mode.name()), player.getUUID());
     }
 
     @Override

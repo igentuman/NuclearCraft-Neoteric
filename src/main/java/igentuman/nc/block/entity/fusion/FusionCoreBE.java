@@ -2,6 +2,7 @@ package igentuman.nc.block.entity.fusion;
 
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.fusion.FusionCoreBlock;
+import igentuman.nc.client.particle.FusionBeamParticleData;
 import igentuman.nc.client.sound.SoundHandler;
 import igentuman.nc.compat.cc.NCFusionReactorPeripheral;
 import igentuman.nc.handler.event.client.BlockOverlayHandler;
@@ -21,8 +22,10 @@ import igentuman.nc.util.CustomEnergyStorage;
 import igentuman.nc.util.NCBlockPos;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.BlockPos;
@@ -33,6 +36,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.item.ItemStack;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.capabilities.Capability;
@@ -57,7 +61,7 @@ import static net.minecraftforge.fluids.capability.CapabilityFluidHandler.FLUID_
 import static net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE;
 import static net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
 
-public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE {
+public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE implements ITickableTileEntity {
 
     @NBTField
     public double reactorHeat = 0;
@@ -302,15 +306,15 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
             stopSound();
         }
     }
-/*    protected void sendBeamData(FusionBeamParticleData data, BlockPos from) {
+    protected void sendBeamData(FusionBeamParticleData data, BlockPos from) {
         Vector3d vec = Vector3d.atCenterOf(from);
-        if (!getLevel().isClientSide() && level instanceof ServerWorld serverWorld) {
-            for (ServerPlayerEntity player : serverWorld.players()) {
-                serverWorld.sendParticles(player, data, true, vec.x, vec.y, vec.z, 1, 0, 0, 0, 0);
+        if (!getLevel().isClientSide() && level instanceof ServerWorld) {
+            for (PlayerEntity player : level.players()) {
+                ((ServerWorld) level).sendParticles((ServerPlayerEntity) player, data, true, vec.x, vec.y, vec.z, 1, 0, 0, 0, 0);
             }
         }
-    }*/
-   /* protected void renderBeam() {
+    }
+    protected void renderBeam() {
         NCBlockPos pos = new NCBlockPos(getBlockPos().above());
         int beamLength = size*2+4;
         sendBeamData(new FusionBeamParticleData(Direction.EAST, beamLength, 0.35f),
@@ -326,7 +330,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
                 pos.revert().relative(Direction.WEST, size+2).relative(Direction.NORTH, size+2)
         );
     }
-*/
+
 /*    protected void playReadySound() {
         if(isRemoved() || (currentSound != null && !currentSound.getLocation().equals(FUSION_READY.get().getLocation()))) {
             SoundHandler.stopTileSound(getBlockPos());
@@ -393,7 +397,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
             try {
                 assert level != null;
                 level.setBlockAndUpdate(worldPosition, getBlockState().setValue(POWERED, powered));
-            //    level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(POWERED, powered), Block.UPDATE_ALL);
+                level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(POWERED, powered), 3);
             } catch (NullPointerException ignore) {}
         }
         controllerEnabled = false;
@@ -668,7 +672,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         if (!recipeInfo.isCompleted()) {
             simulateHeatExchange();
             if(energyPerTick > 0) {
-                //renderBeam();
+                renderBeam();
                 energyStorage.addEnergy(energyPerTick);
             }
         }
@@ -941,19 +945,6 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         }
         tag.put("Content", contentHandler.serializeNBT());
     }
-
-
-/*    @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        int oldEnergy = energyStorage.getEnergyStored();
-
-        CompoundNBT tag = pkt.getTag();
-        handleUpdateTag(tag);
-
-        if (oldEnergy != energyStorage.getEnergyStored()) {
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
-        }
-    }*/
 
     public void invalidateCache()
     {

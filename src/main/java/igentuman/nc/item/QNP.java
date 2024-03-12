@@ -1,6 +1,7 @@
 package igentuman.nc.item;
 
 import igentuman.nc.handler.ItemEnergyHandler;
+import igentuman.nc.setup.registration.NcParticleTypes;
 import igentuman.nc.util.CapabilityUtils;
 import igentuman.nc.util.CustomEnergyStorage;
 import igentuman.nc.util.RayTraceUtils;
@@ -14,7 +15,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.item.PickaxeItem;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
@@ -66,23 +69,17 @@ public class QNP extends PickaxeItem
 	}
 
 
-/*	@Override
-	public int getBarColor(ItemStack pStack)
-	{
-		return hsvToRgb(Math.max(0.0F, getBarWidth(pStack)/(float)16)/3.0F, 1.0F, 1.0F);
-	}*/
-
 	protected int getEnergyMaxStorage() {
 		return ENERGY_STORAGE.QNP_ENERGY_STORAGE.get();
 	}
 
-
-/*	@Override
-	public int getDurabilityBarWidth(ItemStack stack) {
+	@Override
+	public double getDurabilityForDisplay(ItemStack stack) {
 		CustomEnergyStorage energyStorage = getEnergy(stack);
 		float chargeRatio = (float) energyStorage.getEnergyStored() / (float) getEnergyMaxStorage();
 		return (int) Math.min(13, 13*chargeRatio);
-	}*/
+	}
+
 
 	@Override
 	public boolean isDamaged(ItemStack stack) {
@@ -156,8 +153,8 @@ public class QNP extends PickaxeItem
 		if(!enoughEnergy(tool)) return totalDrops;
 		int xp = ForgeHooks.onBlockBreakEvent(worldIn, ((ServerPlayerEntity) entityLiving).gameMode.getGameModeForPlayer(), (ServerPlayerEntity) entityLiving, pos);
 		if (xp >= 0) {
-			block.playerDestroy(worldIn, (PlayerEntity) entityLiving, pos, tempState, worldIn.getBlockEntity(pos), tool);
-			//block.destroy(worldIn, pos, tempState);
+			//block.playerDestroy(worldIn, (PlayerEntity) entityLiving, pos, tempState, worldIn.getBlockEntity(pos), tool);
+			block.destroy(worldIn, pos, tempState);
 			Block.getDrops(tempState, (ServerWorld) worldIn, pos, null, (PlayerEntity) entityLiving, tool).forEach(itemStack -> {
 				boolean combined = false;
 				for (ItemStack drop : totalDrops) {
@@ -172,8 +169,8 @@ public class QNP extends PickaxeItem
 				}
 			});
 			Random random = new Random();
-			/*((ServerWorld) worldIn).sendParticles(NcParticleTypes.RADIATION.get(), pos.getX() + (random.nextFloat() - 0.5), pos.getY() + (random.nextFloat() - 0.5),
-					pos.getZ() + (random.nextFloat() - 0.5), 3, 0, 0, 0, 0);*/
+			((ServerWorld) worldIn).sendParticles(NcParticleTypes.RADIATION.get(), pos.getX() + (random.nextFloat() - 0.5), pos.getY() + (random.nextFloat() - 0.5),
+					pos.getZ() + (random.nextFloat() - 0.5), 3, 0, 0, 0, 0);
 			getEnergy(tool).extractEnergy(ENERGY_STORAGE.QNP_ENERGY_PER_BLOCK.get(), false);
 			if(veinMode && veinMinedBlocksCounter < 20) {
 				veinMinedBlocksCounter++;
@@ -261,18 +258,19 @@ public class QNP extends PickaxeItem
 		return ActionResultType.PASS;
 	}
 
-/*	@Override
-	public InteractionResultHolder<ItemStack> use(World pLevel, PlayerEntity pPlayer, InteractionHand pUsedHand) {
+
+	@Override
+	public ActionResult<ItemStack> use(World pLevel, PlayerEntity pPlayer, Hand pUsedHand) {
 		if(pLevel.isClientSide) return super.use(pLevel, pPlayer, pUsedHand);
 		if(pPlayer.isSteppingCarefully()) {
 			ItemStack tool = pPlayer.getItemInHand(pUsedHand);
 			Mode miningMode = Mode.values()[(getMode(tool).ordinal()+1)%Mode.values().length];
 			tool.getOrCreateTag().putInt("mode", miningMode.ordinal());
-			pPlayer.sendMessage(new TranslationTextComponent("tooltip.nc.qnp_mode", new TranslationTextComponent("tooltip.mode." + miningMode.getName())).withStyle(TextFormatting.GREEN), UUID.randomUUID());
-			return InteractionResultHolder.success(pPlayer.getItemInHand(pUsedHand));
+			pPlayer.sendMessage(new TranslationTextComponent("tooltip.nc.qnp_mode", new TranslationTextComponent("tooltip.mode." + miningMode.getName())).withStyle(TextFormatting.GREEN), pPlayer.getUUID());
+			return ActionResult.success(pPlayer.getItemInHand(pUsedHand));
 		}
 		return super.use(pLevel, pPlayer, pUsedHand);
-	}*/
+	}
 
 
 	@Override

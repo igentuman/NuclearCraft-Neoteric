@@ -54,9 +54,8 @@ public class FissionControllerScreen extends ContainerScreen<FissionControllerCo
     private VerticalBar hotCoolantBar;
     private Button.ReactorMode modeBtn;
 
-    public TranslationTextComponent casingTootip = new TranslationTextComponent("") {
-    };
-    public TranslationTextComponent interiorTootip = new TranslationTextComponent("");
+    public ITextComponent casingTootip = ITextComponent.nullToEmpty("");
+    public ITextComponent interiorTootip = ITextComponent.nullToEmpty("");
 
     public FissionControllerScreen(FissionControllerContainer container, PlayerInventory inv, ITextComponent name) {
         super(container, inv, name);
@@ -161,14 +160,14 @@ public class FissionControllerScreen extends ContainerScreen<FissionControllerCo
     protected void renderLabels(@NotNull MatrixStack matrixStack, int mouseX, int mouseY) {
         drawCenteredString(matrixStack, font,  menu.getTitle(), imageWidth/2, titleLabelY, 0xffffff);
         if(isCasingValid()) {
-          //  casingTootip = applyFormat(new TranslationTextComponent("reactor.size", getMultiblockHeight(), getMultiblockWidth(), getMultiblockDepth()), TextFormatting.GOLD);
+            casingTootip = applyFormat(new TranslationTextComponent("reactor.size", getMultiblockHeight(), getMultiblockWidth(), getMultiblockDepth()), TextFormatting.GOLD);
         } else {
-          //  casingTootip = applyFormat(new TranslationTextComponent(getValidationResultKey(), getValidationResultData()), TextFormatting.RED);
+            casingTootip = applyFormat(new TranslationTextComponent(getValidationResultKey(), getValidationResultData()), TextFormatting.RED);
         }
 
         if(isCasingValid()) {
             if (isInteriorValid()) {
-               // interiorTootip = applyFormat(new TranslationTextComponent("reactor.fuel_cells", getFuelCellsCount()), TextFormatting.GOLD);
+                interiorTootip = applyFormat(new TranslationTextComponent("reactor.fuel_cells", getFuelCellsCount()), TextFormatting.GOLD);
 
                 if(container().hasRecipe() && !container().getEfficiency().equals("NaN")) {
                     drawString(matrixStack, font, new TranslationTextComponent("fission_reactor.efficiency", container().getEfficiency()), 35, 82, 0x8AFF8A);
@@ -176,7 +175,7 @@ public class FissionControllerScreen extends ContainerScreen<FissionControllerCo
                     drawString(matrixStack, font, new TranslationTextComponent("fission_reactor.heat_multiplier", container().getHeatMultiplier()), 35, 62, 0x8AFF8A);
                 }
             } else {
-               // interiorTootip = applyFormat(new TranslationTextComponent(getValidationResultKey(), getValidationResultData()), TextFormatting.RED);
+                interiorTootip = applyFormat(new TranslationTextComponent(getValidationResultKey(), getValidationResultData()), TextFormatting.RED);
             }
         }
 
@@ -222,35 +221,35 @@ public class FissionControllerScreen extends ContainerScreen<FissionControllerCo
         heatBar.addTooltip(new TranslationTextComponent("reactor.net_heat", container().getNetHeat()).withStyle(TextFormatting.GOLD));
         for(NCGuiElement widget: widgets) {
            if(widget.isMouseOver(pMouseX, pMouseY)) {
-            /*   renderTooltip(pMatrixStack, widget.getTooltips(),
-                       Optional.empty(), pMouseX, pMouseY);*/
+               renderComponentTooltip(pMatrixStack, widget.getTooltips(),
+                        pMouseX, pMouseY);
            }
         }
         if(checkboxCasing.isMouseOver(pMouseX, pMouseY)) {
-            /*renderTooltip(pMatrixStack, checkboxCasing.getTooltips(),
-                    Optional.empty(), pMouseX, pMouseY);*/
+            renderComponentTooltip(pMatrixStack, checkboxCasing.getTooltips(),
+                     pMouseX, pMouseY);
         }
         if(checkboxInterior.isMouseOver(pMouseX, pMouseY)) {
-        /*    renderTooltip(pMatrixStack, checkboxInterior.getTooltips(),
-                    Optional.empty(), pMouseX, pMouseY);*/
+            renderComponentTooltip(pMatrixStack, checkboxInterior.getTooltips(),
+                     pMouseX, pMouseY);
         }
         if(!container().getMode()) {
             energyBar.clearTooltips();
             energyBar.addTooltip(new TranslationTextComponent("reactor.forge_energy_per_tick", container().energyPerTick()));
             if(energyBar.isMouseOver(pMouseX, pMouseY)) {
-            /*    renderTooltip(pMatrixStack, energyBar.getTooltips(),
-                        Optional.empty(), pMouseX, pMouseY);*/
+                renderComponentTooltip(pMatrixStack, energyBar.getTooltips(),
+                         pMouseX, pMouseY);
             }
         } else {
             if(coolantTank.isMouseOver(pMouseX, pMouseY)) {
-              /*  renderTooltip(pMatrixStack, coolantTank.getTooltips(),
-                        Optional.empty(), pMouseX, pMouseY);*/
+                renderComponentTooltip(pMatrixStack, coolantTank.getTooltips(),
+                        pMouseX, pMouseY);
             }
             if(steamTank.isMouseOver(pMouseX, pMouseY)) {
                 List<ITextComponent> tooltips = steamTank.getTooltips();
                 tooltips.add(new TranslationTextComponent("reactor.steam_per_tick", container().getSteamPerTick()));
-               /* renderTooltip(pMatrixStack, tooltips,
-                        Optional.empty(), pMouseX, pMouseY);*/
+               renderComponentTooltip(pMatrixStack, tooltips,
+                        pMouseX, pMouseY);
             }
         }
     }

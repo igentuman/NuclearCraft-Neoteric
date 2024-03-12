@@ -33,7 +33,9 @@ public class TurbinePortBE extends TurbineBE {
 
     @NBTField
     public BlockPos controllerPos;
-
+    public TurbinePortBE() {
+        this(BlockPos.ZERO, null);
+    }
     public TurbinePortBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, NAME);
     }

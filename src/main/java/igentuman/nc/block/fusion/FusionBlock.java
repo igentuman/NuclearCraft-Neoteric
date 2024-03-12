@@ -9,6 +9,7 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.math.BlockPos;
@@ -35,9 +36,9 @@ public class FusionBlock extends Block {
     }
     public FusionBlock(Properties pProperties) {
         super(pProperties.sound(SoundType.METAL));
-        /*this.registerDefaultState(
+        this.registerDefaultState(
                 this.stateDefinition.any()
-        );*/
+        );
         if(getCode().contains("glass")) {
             properties.noOcclusion();
         }
@@ -84,13 +85,13 @@ public class FusionBlock extends Block {
 
 
 
-/*    @Override
-    public void appendHoverText(ItemStack stack, World world, List<TextComponent> list, ITooltipFlag flag)
+    @Override
+    public void appendHoverText(ItemStack stack, IBlockReader world, List<ITextComponent> list, ITooltipFlag flag)
     {
         if (getCode().equals("fusion_reactor_connector")) {
             list.add(new TranslationTextComponent("tooltip.nc.fusion_connector.descr").withStyle(TextFormatting.YELLOW));
         } else {
             list.add(new TranslationTextComponent("tooltip.nc.fusion_casing.descr").withStyle(TextFormatting.YELLOW));
         }
-    }*/
+    }
 }

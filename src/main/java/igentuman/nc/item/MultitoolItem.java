@@ -10,6 +10,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
@@ -42,17 +43,10 @@ public class MultitoolItem extends Item
 		return this;
 	}
 
-/*	@Override
-	public boolean doesSneakBypassUse(ItemStack stack, net.minecraft.world.level.LevelReader world, BlockPos pos, PlayerEntity player)
-	{
+	@Override
+	public boolean doesSneakBypassUse(ItemStack stack, IWorldReader world, BlockPos pos, PlayerEntity player) {
 		return true;
 	}
-
-	@Override
-	public int getBurnTime(ItemStack itemStack, RecipeType<?> type)
-	{
-		return burnTime;
-	}*/
 
 	public boolean isHidden()
 	{

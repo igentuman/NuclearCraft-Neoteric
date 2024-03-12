@@ -32,7 +32,11 @@ public class NCImageButton extends Button {
       this.resourceLocation = pResourceLocation;
    }
 
-   public void setPosition(int pX, int pY) {
+    public NCImageButton(int x, int y, int i, int i1, int xTexStart, int i2, int i3, ResourceLocation texture) {
+        this(x, y, i, i1, xTexStart, i2, i3, texture, 256, 256, null);
+    }
+
+    public void setPosition(int pX, int pY) {
       this.x = pX;
       this.y = pY;
    }

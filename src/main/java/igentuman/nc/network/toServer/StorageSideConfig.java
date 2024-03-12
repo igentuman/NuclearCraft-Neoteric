@@ -38,7 +38,7 @@ public class StorageSideConfig implements INcPacket {
         }
         ISizeToggable storage = (ISizeToggable) be;
         ISizeToggable.SideMode mode = storage.toggleSideConfig(direction);
-        player.sendMessage(new TranslationTextComponent("message.nc.barrel.side_config", mode.name()), UUID.randomUUID());
+        player.sendMessage(new TranslationTextComponent("message.nc.barrel.side_config", mode.name()), player.getUUID());
     }
 
     @Override

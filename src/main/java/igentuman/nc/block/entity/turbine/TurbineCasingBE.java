@@ -6,6 +6,9 @@ import net.minecraft.block.BlockState;
 
 public class TurbineCasingBE extends TurbineBE {
     public static String NAME = "turbine_casing";
+    public TurbineCasingBE() {
+        this(BlockPos.ZERO, null);
+    }
     public TurbineCasingBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, NAME);
     }

@@ -3,12 +3,13 @@ package igentuman.nc.block.entity.fission;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.multiblock.fission.FissionBlocks;
 import igentuman.nc.multiblock.fission.HeatSinkDef;
+import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.Direction;
 import net.minecraft.block.BlockState;
 
-public class FissionHeatSinkBE extends FissionBE {
+public class FissionHeatSinkBE extends FissionBE implements ITickableTileEntity {
     public static String NAME = "fission_heat_sink";
     public HeatSinkDef def;
     public boolean isValid = false;
@@ -21,6 +22,10 @@ public class FissionHeatSinkBE extends FissionBE {
 
     public FissionHeatSinkBE(BlockPos pPos, BlockState pBlockState, String name) {
         super(pPos, pBlockState, name);
+    }
+
+    public FissionHeatSinkBE() {
+        this(BlockPos.ZERO, null);
     }
 
     public boolean isValid(boolean forceCheck)

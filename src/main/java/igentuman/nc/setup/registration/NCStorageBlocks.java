@@ -53,17 +53,17 @@ public class NCStorageBlocks {
 
     private static void registerBlockEntities() {
         for(String name: BarrelBlocks.registered().keySet()) {
-/*            STORAGE_BE.put(name, BLOCK_ENTITIES.register(name,
+            STORAGE_BE.put(name, BLOCK_ENTITIES.register(name,
                     () -> TileEntityType.Builder
-                            .of(BarrelBlocks.all().get(name).getBlockEntity(), STORAGE_BLOCK.get(name).get())
-                            .build(null)));*/
+                            .of(BarrelBlocks.all().get(name).getBlockEntity(name), STORAGE_BLOCK.get(name).get())
+                            .build(null)));
 
         }
         for(String name: ContainerBlocks.registered().keySet()) {
-/*            STORAGE_BE.put(name, BLOCK_ENTITIES.register(name,
+            STORAGE_BE.put(name, BLOCK_ENTITIES.register(name,
                     () -> TileEntityType.Builder
-                            .of(ContainerBlocks.all().get(name).getBlockEntity(), STORAGE_BLOCK.get(name).get())
-                            .build(null)));*/
+                            .of(ContainerBlocks.all().get(name).getBlockEntity(name), STORAGE_BLOCK.get(name).get())
+                            .build(null)));
 
         }
     }

@@ -8,6 +8,7 @@ import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.Container;
@@ -112,11 +113,11 @@ public class ProcessorBlock extends HorizontalBlock {
 
         ItemStack drop = new ItemStack(this);
         drop.setTag(data);
-/*        if (!pLevel.isClientSide()) {
+        if (!pLevel.isClientSide()) {
             ItemEntity itemEntity = new ItemEntity(pLevel, pPos.getX(), pPos.getY(), pPos.getZ(), drop);
             itemEntity.setDefaultPickUpDelay();
             pLevel.addFreshEntity(itemEntity);
-        }*/
+        }
     }
 
     @Override

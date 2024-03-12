@@ -29,7 +29,7 @@ import static igentuman.nc.setup.Registration.BLOCKS;
 import static igentuman.nc.setup.Registration.ITEMS;
 import static igentuman.nc.setup.registration.NCItems.ALL_NC_ITEMS;
 
-public class FusionReactor {
+public class  FusionReactor {
     public static final Item.Properties FUSION_ITEM_PROPERTIES = new Item.Properties().tab(CreativeTabs.FUSION_REACTOR);
     private static final DeferredRegister<ContainerType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.CONTAINERS, MODID);
     private static final DeferredRegister<TileEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, MODID);
@@ -39,13 +39,13 @@ public class FusionReactor {
     public static final RegistryObject<Block> FUSION_CORE_PROXY =
             BLOCKS.register("fusion_reactor_core_proxy",
                     () -> new FusionCoreProxy(REACTOR_BLOCKS_PROPERTIES));
- /*   public static final RegistryObject<TileEntityType<? extends TileEntity>> FUSION_CORE_PROXY_BE =
+    public static final RegistryObject<TileEntityType<? extends TileEntity>> FUSION_CORE_PROXY_BE =
 
             BLOCK_ENTITIES.register("fusion_reactor_core_proxy",
                     () -> TileEntityType.Builder
                             .of(FusionCoreProxyBE::new, FUSION_CORE_PROXY.get())
                             .build(null));
-*/
+
 
     public static final RegistryObject<ContainerType<FusionCoreContainer>> FUSION_CORE_CONTAINER =
             CONTAINERS.register("fusion_reactor_core",
@@ -59,20 +59,20 @@ public class FusionReactor {
         String key;
         key = "fusion_reactor_connector";
         FUSION_BLOCKS.put(key, BLOCKS.register(key, () -> new FusionBlock(REACTOR_BLOCKS_PROPERTIES)));
-/*        FUSION_BE.put(key, BLOCK_ENTITIES.register(key,
+        FUSION_BE.put(key, BLOCK_ENTITIES.register(key,
                 () -> TileEntityType.Builder
                         .of(FusionConnectorBE::new, FUSION_BLOCKS.get("fusion_reactor_connector").get())
-                        .build(null)));*/
+                        .build(null)));
         FUSION_ITEMS.put(key, fromMultiblock(FUSION_BLOCKS.get(key)));
         ALL_NC_ITEMS.put(key, FUSION_ITEMS.get(key));
 
         key = "fusion_reactor_casing";
         FUSION_BLOCKS.put(key, BLOCKS.register(key, () -> new FusionBlock(REACTOR_BLOCKS_PROPERTIES)));
-/*        FUSION_BE.put(key, BLOCK_ENTITIES.register(key,
+        FUSION_BE.put(key, BLOCK_ENTITIES.register(key,
                 () -> TileEntityType.Builder
                         .of(FusionCasingBE::new, FUSION_BLOCKS.get("fusion_reactor_casing").get(), FUSION_BLOCKS.get("fusion_reactor_casing_glass").get())
-                        .build(null)));*/
-       // FUSION_BE.put("fusion_reactor_casing_glass", FUSION_BE.get(key));
+                        .build(null)));
+        FUSION_BE.put("fusion_reactor_casing_glass", FUSION_BE.get(key));
         FUSION_ITEMS.put(key, fromMultiblock(FUSION_BLOCKS.get(key)));
         ALL_NC_ITEMS.put(key, FUSION_ITEMS.get(key));
 
@@ -83,10 +83,10 @@ public class FusionReactor {
 
         key = "fusion_core";
         FUSION_BLOCKS.put(key, BLOCKS.register(key, () -> new FusionCoreBlock(REACTOR_BLOCKS_PROPERTIES)));
-       /* FUSION_BE.put(key, BLOCK_ENTITIES.register(key,
+        FUSION_BE.put(key, BLOCK_ENTITIES.register(key,
                 () -> TileEntityType.Builder
                         .of(FusionCoreBE::new, FUSION_BLOCKS.get("fusion_core").get())
-                        .build(null)));*/
+                        .build(null)));
         FUSION_ITEMS.put(key,
                 ITEMS.register(FUSION_BLOCKS.get(key).getId().getPath(),
                         () -> new FusionCoreItem(FUSION_BLOCKS.get("fusion_core").get(), FUSION_ITEM_PROPERTIES)));

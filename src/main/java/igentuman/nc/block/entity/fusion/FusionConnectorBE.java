@@ -19,9 +19,5 @@ public class FusionConnectorBE extends FusionBE {
         super(FUSION_BE.get("fusion_connector").get());
     }
 
-    @Override
-    public void tickServer() {
-        super.tickServer();
-    }
 
 }

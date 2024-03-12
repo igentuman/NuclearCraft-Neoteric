@@ -5,6 +5,7 @@ import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.Direction;
@@ -14,6 +15,7 @@ import net.minecraft.block.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
+import org.antlr.v4.runtime.misc.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -26,7 +28,7 @@ import static net.minecraftforge.energy.CapabilityEnergy.ENERGY;
 import static net.minecraftforge.fluids.capability.CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
 import static net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
 
-public class FissionPortBE extends FissionBE {
+public class FissionPortBE extends FissionBE implements ITickableTileEntity {
     public static String NAME = "fission_reactor_port";
     @NBTField
     public byte analogSignal = 0;
@@ -39,6 +41,9 @@ public class FissionPortBE extends FissionBE {
     @NBTField
     public boolean isSteamMode = false;
 
+    public FissionPortBE() {
+        super(BlockPos.ZERO, null, NAME);
+    }
     public FissionPortBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, NAME);
     }
@@ -85,7 +90,7 @@ public class FissionPortBE extends FissionBE {
 
         if(updated) {
             setChanged();
-           // level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
         }
     }
 
@@ -245,14 +250,6 @@ public class FissionPortBE extends FissionBE {
         saveTagData(infoTag);
     }
 
-/*
-    @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        CompoundNBT tag = pkt.getTag();
-        handleUpdateTag(tag);
-    }
-*/
-
     public int getEnergyStored() {
         if(controller() == null) return 0;
         return controller().energyStorage.getEnergyStored();
@@ -279,7 +276,7 @@ public class FissionPortBE extends FissionBE {
             comparatorMode = SignalSource.ENERGY;
         }
         setChanged();
-      //  level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
     }
 
     public FluidTank getFluidTank(int i) {

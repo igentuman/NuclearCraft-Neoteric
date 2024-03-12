@@ -12,6 +12,7 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Items;
 import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
@@ -44,18 +45,17 @@ public class FusionCoreBlock extends FusionBlock {
 
     public FusionCoreBlock(Properties pProperties) {
         super(pProperties.sound(SoundType.METAL));
-/*        this.registerDefaultState(
+        this.registerDefaultState(
                 this.stateDefinition.any()
                         .setValue(ACTIVE, false)
-        );*/
+        );
     }
 
-/*
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
         builder.add(BlockStateProperties.POWERED);
     }
-*/
+
 
     @Override
     public VoxelShape getShape(BlockState pState, IBlockReader world, BlockPos pPos, ISelectionContext pContext) {
@@ -71,7 +71,7 @@ public class FusionCoreBlock extends FusionBlock {
     @Override
     public void onPlace(BlockState pState, World pLevel, BlockPos pPos, BlockState pOldState, boolean pIsMoving) {
         super.onPlace(pState, pLevel, pPos, pOldState, pIsMoving);
-        //placeProxyBlocks(pState, pLevel, pPos);
+        placeProxyBlocks(pState, pLevel, pPos);
     }
 
     @Override

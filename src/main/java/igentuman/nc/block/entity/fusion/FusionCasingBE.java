@@ -17,9 +17,4 @@ public class FusionCasingBE extends FusionBE {
     public FusionCasingBE() {
         super(FusionReactor.FUSION_BE.get("fusion_casing").get());
     }
-
-    @Override
-    public void tickServer() {
-        super.tickServer();
-    }
 }

@@ -21,6 +21,7 @@ import igentuman.nc.multiblock.ValidationResult;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.Direction;
 import net.minecraft.nbt.CompoundNBT;
@@ -55,7 +56,7 @@ import static net.minecraftforge.energy.CapabilityEnergy.ENERGY;
 import static net.minecraftforge.fluids.capability.CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
 import static net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
 
-public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> extends FissionBE  {
+public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> extends FissionBE implements ITickableTileEntity {
 
     public static String NAME = "fission_reactor_controller";
     public final SidedContentHandler contentHandler;
@@ -141,6 +142,9 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
             }
         }
         return allowedInputs;
+    }
+    public FissionControllerBE() {
+        this(BlockPos.ZERO, null);
     }
 
     public FissionControllerBE(BlockPos pPos, BlockState pBlockState) {
@@ -387,7 +391,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
             try {
                 assert level != null;
                 level.setBlockAndUpdate(worldPosition, getBlockState().setValue(POWERED, powered));
-          //      level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(POWERED, powered), Block.UPDATE_ALL);
+                level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(POWERED, powered), 3);
             } catch (NullPointerException ignored) {}
         }
         irradiationHeat = 0;
@@ -653,6 +657,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         }
     }
 
+
     private void loadClientData(CompoundNBT tag) {
         if (tag.contains("Info")) {
             CompoundNBT infoTag = tag.getCompound("Info");
@@ -672,9 +677,8 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
             }
         }
     }
-
     @Override
-    public CompoundNBT getUpdateTag() {
+    public @NotNull CompoundNBT getUpdateTag() {
         CompoundNBT tag = super.getUpdateTag();
         saveClientData(tag);
         return tag;
@@ -690,18 +694,6 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         infoTag.putLong("erroredBlock", errorBlockPos.asLong());
         tag.put("Content", contentHandler.serializeNBT());
     }
-
-/*    @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        int oldEnergy = energyStorage.getEnergyStored();
-
-        CompoundNBT tag = pkt.getTag();
-        handleUpdateTag(tag);
-
-        if (oldEnergy != energyStorage.getEnergyStored()) {
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
-        }
-    }*/
 
     public double getDepletionProgress() {
         return recipeInfo.getProgress();

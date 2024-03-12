@@ -1,6 +1,7 @@
 package igentuman.nc.block.entity.fusion;
 
 import net.minecraft.block.Blocks;
+import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.Direction;
@@ -23,7 +24,7 @@ import static net.minecraftforge.energy.CapabilityEnergy.ENERGY;
 import static net.minecraftforge.fluids.capability.CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
 import static net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
 
-public class FusionCoreProxyBE extends FusionBE {
+public class FusionCoreProxyBE extends FusionBE implements ITickableTileEntity {
 
     public FusionCoreProxyBE(BlockPos pPos, BlockState pBlockState) {
         super(null);

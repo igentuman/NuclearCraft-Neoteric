@@ -31,7 +31,7 @@ public class Checkbox extends NCGuiElement {
         this.screen = screen;
         this.isChecked = checked;
         xTexStart = checked ? 11 : 0;
-        //btn = new NCImageButton(X(), Y(), 11, 11, xTexStart, 178, 11, TEXTURE, null);
+        btn = new NCImageButton(X(), Y(), 11, 11, xTexStart, 178, 11, TEXTURE);
     }
 
     @Override
@@ -45,11 +45,11 @@ public class Checkbox extends NCGuiElement {
     @Override
     public void renderButton(MatrixStack pMatrixStack, int pMouseX, int pMouseY, float pPartialTick) {
         int i = this.yTexStart;
-       /* if (!this.isActive()) {
+        /*if (!this.isActive()) {
             i += this.yDiffTex * 2;
-        } else if (this.isHoveredOrFocused()) {
+        } else */if (this.isHoveredOrFocused()) {
             i += this.yDiffTex;
-        }*/
+        }
         RenderSystem.enableDepthTest();
         xTexStart = isChecked() ? 11 : 0;
 

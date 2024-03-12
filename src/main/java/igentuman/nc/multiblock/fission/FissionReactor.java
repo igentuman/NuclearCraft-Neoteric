@@ -70,22 +70,22 @@ public class FissionReactor {
             String key = "fission_reactor_"+name;
             if(name.contains("controller")) {
                 FISSION_BLOCKS.put(key, BLOCKS.register(key, () -> new FissionControllerBlock(REACTOR_BLOCKS_PROPERTIES)));
-                /*FISSION_BE.put(key, BLOCK_ENTITIES.register(key,
+                FISSION_BE.put(key, BLOCK_ENTITIES.register(key,
                         () -> TileEntityType.Builder
                                 .of(FissionControllerBE::new, FISSION_BLOCKS.get(key).get())
-                                .build(null)));*/
+                                .build(null)));
             } else if(name.contains("port")) {
                 FISSION_BLOCKS.put(key, BLOCKS.register(key, () -> new FissionPort(REACTOR_BLOCKS_PROPERTIES)));
-               /* FISSION_BE.put(key, BLOCK_ENTITIES.register(key,
+                FISSION_BE.put(key, BLOCK_ENTITIES.register(key,
                         () -> TileEntityType.Builder
                                 .of(FissionPortBE::new, FISSION_BLOCKS.get(key).get())
-                                .build(null)));*/
+                                .build(null)));
             } else if(name.contains("irradiation")) {
                 FISSION_BLOCKS.put(key, BLOCKS.register(key, () -> new IrradiationChamberBlock(REACTOR_BLOCKS_PROPERTIES)));
-                /*FISSION_BE.put(key, BLOCK_ENTITIES.register(key,
+                FISSION_BE.put(key, BLOCK_ENTITIES.register(key,
                         () -> TileEntityType.Builder
                                 .of(FissionIrradiationChamberBE::new, FISSION_BLOCKS.get(key).get())
-                                .build(null)));*/
+                                .build(null)));
             } else {
                 Block.Properties props;
                 if(key.matches(".*glass|.*cell.*")) {
@@ -108,7 +108,7 @@ public class FissionReactor {
             }
         }
 
-/*
+
         FISSION_BE.put("fission_heat_sink", BLOCK_ENTITIES.register("fission_heat_sink",
                 () -> TileEntityType.Builder
                         .of(FissionHeatSinkBE::new, getHSBlocks())
@@ -131,7 +131,7 @@ public class FissionReactor {
                 () -> TileEntityType.Builder
                         .of(FissionFuelCellBE::new,
                                 FISSION_BLOCKS.get("fission_reactor_solid_fuel_cell").get())
-                        .build(null)));*/
+                        .build(null)));
 
     }
 

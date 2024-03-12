@@ -111,16 +111,6 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
         energy = LazyOptional.of(() -> energyStorage);
     }
 
-    @Override
-    public void tick() {
-        if(level == null) return;
-        if(level.isClientSide()) {
-            tickClient();
-        }
-        if(!level.isClientSide()) {
-            tickServer();
-        }
-    }
     public LazyOptional<IEnergyStorage> getEnergy() {
         return energy;
     }

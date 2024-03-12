@@ -35,9 +35,9 @@ public class FusionCoreProxy extends FusionBlock {
 
     public FusionCoreProxy(Properties pProperties) {
         super(pProperties.sound(SoundType.METAL));
-/*        this.registerDefaultState(
+        this.registerDefaultState(
                 this.stateDefinition.any()
-        );*/
+        );
     }
 
     public String getCode()

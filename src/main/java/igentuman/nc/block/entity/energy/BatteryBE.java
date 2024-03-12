@@ -3,12 +3,23 @@ package igentuman.nc.block.entity.energy;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.ISizeToggable;
 import igentuman.nc.content.energy.BatteryBlocks;
+import igentuman.nc.util.TextUtils;
+import mekanism.client.model.BaseModelCache;
+import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.Direction;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.IBlockReader;
+import net.minecraftforge.client.model.ModelDataManager;
+import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelDataMap;
 import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -18,9 +29,12 @@ import org.antlr.v4.runtime.misc.NotNull;;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static igentuman.nc.handler.event.client.InputEvents.DESCRIPTIONS_SHOW;
 import static igentuman.nc.setup.registration.NCEnergyBlocks.ENERGY_BE;
+import static net.minecraftforge.common.util.Constants.BlockFlags.DEFAULT;
 import static net.minecraftforge.energy.CapabilityEnergy.ENERGY;
 
 public class BatteryBE extends NCEnergy {
@@ -35,19 +49,22 @@ public class BatteryBE extends NCEnergy {
 
     public BatteryBE(String name) {
         super(BlockPos.ZERO, null, name);
+        for (Direction direction : Direction.values()) {
+            sideConfig.put(direction.ordinal(), ISizeToggable.SideMode.DEFAULT);
+        }
     }
 
     public static String getName(BlockState pBlockState) {
         return pBlockState.getBlock().asItem().toString();
     }
 
-/*    @Nonnull
+    @Nonnull
     @Override
-    public @NotNull ModelData getModelData() {
-        return ModelData.builder()
-                .with(SIDE_CONFIG, sideConfig)
+    public @NotNull IModelData getModelData() {
+        return new ModelDataMap.Builder()
+                .withInitial(SIDE_CONFIG, sideConfig)
                 .build();
-    }*/
+    }
     @Override
     public void tickServer() {
         if(NuclearCraft.instance.isNcBeStopped) return;
@@ -81,7 +98,7 @@ public class BatteryBE extends NCEnergy {
         if(capacity.get() != energyStorage.getEnergyStored()) {
             energyStorage.setEnergy(capacity.get());
             level.setBlockAndUpdate(worldPosition, getBlockState());
-           // level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), DEFAULT);
         }
     }
 
@@ -92,25 +109,6 @@ public class BatteryBE extends NCEnergy {
             return energy.cast();
         }
         return super.getCapability(cap, side);
-    }
-
-/*    @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        int oldEnergy = energyStorage.getEnergyStored();
-
-        CompoundNBT tag = pkt.getTag();
-        handleUpdateTag(tag);
-        if (oldEnergy != energyStorage.getEnergyStored()) {
-            level.setBlockAndUpdate(worldPosition, getBlockState());
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
-        }
-    }*/
-
-    @Override
-    public void handleUpdateTag(BlockState state, CompoundNBT tag) {
-        if (tag != null) {
-            loadClientData(tag);
-        }
     }
 
 
@@ -127,12 +125,6 @@ public class BatteryBE extends NCEnergy {
         return BatteryBlocks.all().get(getName()).getStorage();
     }
 
-    @Override
-    public @NotNull CompoundNBT getUpdateTag() {
-        CompoundNBT tag = super.getUpdateTag();
-        saveClientData(tag);
-        return tag;
-    }
 
     @Override
     protected void saveClientData(CompoundNBT tag) {
@@ -150,48 +142,7 @@ public class BatteryBE extends NCEnergy {
     @Override
     public void load(BlockState state, CompoundNBT tag) {
         super.load(state, tag);
-        /*    @Nullable
-    @Override
-    public BlockEntity newBlockEntity(@NotNull BlockPos pPos, @NotNull BlockState pState) {
-        if(def == null) initParams();
-        TurbineBladeBE be = (TurbineBladeBE) TURBINE_BE.get("turbine_blade").get().create(pPos, pState);
-        be.setBladeDef(def);
-        return be;
-    }
-
-    @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(BlockStateProperties.FACING);
-    }
-
-    private String blockEntityCode()
-    {
-        return asItem().toString();
-    }
-
-
-    @Override
-    public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor){
-        ((TurbineBE) Objects.requireNonNull(level.getBlockEntity(pos))).onNeighborChange(state,  pos, neighbor);
-    }
-
-
-    @Override
-    public void appendHoverText(@NotNull ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<TextComponent> list, TooltipFlag pFlag) {
-        initParams();
-
-        if(DESCRIPTIONS_SHOW) {
-            list.add(TextUtils.applyFormat(
-                    new TranslationTextComponent("tooltip.nc.description.efficiency", TextUtils.numberFormat(def.getEfficiency())),
-                    TextFormatting.AQUA));
-            list.add(TextUtils.applyFormat(
-                    new TranslationTextComponent("tooltip.nc.description.expansion", TextUtils.numberFormat(def.getExpansion())),
-                    TextFormatting.GOLD));
-        } else {
-            list.add(TextUtils.applyFormat(new TranslationTextComponent("tooltip.nc.blade.desc", TURBINE_CONFIG.BLADE_FLOW.get()), TextFormatting.BLUE));
-        }
-        list.add(TextUtils.applyFormat(new TranslationTextComponent("tooltip.toggle_description_keys"), TextFormatting.GRAY));
-    }*/if(!tag.contains("sideConfig")) return;
+        if(!tag.contains("sideConfig")) return;
         loadSideConfig(tag.getIntArray("sideConfig"));
     }
 
@@ -210,7 +161,7 @@ public class BatteryBE extends NCEnergy {
             requestModelDataUpdate();
             if(level == null) return;
             level.setBlockAndUpdate(worldPosition, getBlockState());
-           // level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), DEFAULT);
         }
     }
 
@@ -224,7 +175,7 @@ public class BatteryBE extends NCEnergy {
         sideConfig.put(direction, ISizeToggable.SideMode.values()[(sideConfig.get(direction).ordinal() + 1) % 4]);
         setChanged();
         level.setBlockAndUpdate(worldPosition, getBlockState());
-        //level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), DEFAULT);
         return sideConfig.get(direction);
     }
 }

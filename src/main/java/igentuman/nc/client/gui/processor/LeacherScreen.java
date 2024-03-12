@@ -14,19 +14,25 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.inventory.Inventory;
 
+import java.util.List;
+
 import static igentuman.nc.block.entity.processor.LeacherBE.*;
 
 
-public class LeacherScreen extends NCProcessorScreen{
+public class LeacherScreen extends NCProcessorScreen {
 
     public LeacherScreen(NCProcessorContainer container, PlayerInventory inventory, ITextComponent component) {
         super(container, inventory, component);
     }
 
+    public NCProcessorContainer getProcessorMenu() {
+        return (NCProcessorContainer) menu;
+    }
+
     public Checkbox[] pumpsCheckbox = new Checkbox[4];
 
     public PumpBE[] getPumps() {
-        return ((LeacherBE)menu.getBlockEntity()).getPumpsForClient();
+        return ((LeacherBE)getProcessorMenu().getBlockEntity()).getPumpsForClient();
     }
     @Override
     protected void init() {
@@ -40,7 +46,7 @@ public class LeacherScreen extends NCProcessorScreen{
     @Override
     protected void renderLabels(MatrixStack matrixStack, int mouseX, int mouseY) {
         super.renderLabels(matrixStack, mouseX, mouseY);
-        switch (((LeacherBE)getMenu().getBlockEntity()).leacherState) {
+        switch (((LeacherBE)getProcessorMenu().getBlockEntity()).leacherState) {
             case WRONG_POSITION:
                 drawString(matrixStack, font, new TranslationTextComponent("nc.label.leacher_wrong_position"), 30, 16, 0xff0000);
                 break;
@@ -61,7 +67,7 @@ public class LeacherScreen extends NCProcessorScreen{
             pumpsCheckbox[i].setChecked(isValid);
             pumpsCheckbox[i].setTooltipKey("leacher.tooltip."+ (isValid ? "valid" : "invalid") + "_pump");
         }
-        for (NCGuiElement widget : widgets) {
+        for (NCGuiElement widget : (List<NCGuiElement>)widgets) {
             widget.draw(matrix, mouseX, mouseY, partialTicks);
         }
     }
@@ -70,17 +76,17 @@ public class LeacherScreen extends NCProcessorScreen{
     protected void addOtherSlots() {
         int ux = 154;
 
-        if(menu.getProcessor().supportEnergyUpgrade) {
+        if(getProcessorMenu().getProcessor().supportEnergyUpgrade) {
             widgets.add(new NormalSlot(ux, 77, "energy_upgrade"));
             ux -= 18;
         }
-        if(menu.getProcessor().supportSpeedUpgrade) {
+        if(getProcessorMenu().getProcessor().supportSpeedUpgrade) {
             widgets.add(new NormalSlot(ux, 77, "speed_upgrade"));
             ux -= 18;
         }
 
-        if(menu.getProcessor().supportsCatalyst) {
-            int[] xy = menu.getProcessor().getSlotsConfig().getSlotPositions().get(1);
+        if(getProcessorMenu().getProcessor().supportsCatalyst) {
+            int[] xy = getProcessorMenu().getProcessor().getSlotsConfig().getSlotPositions().get(1);
             widgets.add(new NormalSlot(xy[0], xy[1], "catalyst"));
         }
     }

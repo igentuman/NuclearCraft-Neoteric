@@ -143,19 +143,19 @@ public class FissionPortScreen extends ContainerScreen<FissionPortContainer> imp
             energyBar.clearTooltips();
             energyBar.addTooltip(new TranslationTextComponent("reactor.forge_energy_per_tick", container().energyPerTick()));
             if(energyBar.isMouseOver(pMouseX, pMouseY)) {
-/*                renderTooltip(pMatrixStack, energyBar.getTooltips(),
-                        Optional.empty(), pMouseX, pMouseY);*/
+                renderComponentTooltip(pMatrixStack, energyBar.getTooltips(),
+                         pMouseX, pMouseY);
             }
         } else {
             if(coolantTank.isMouseOver(pMouseX, pMouseY)) {
-/*                renderTooltip(pMatrixStack, coolantTank.getTooltips(),
-                        Optional.empty(), pMouseX, pMouseY);*/
+                renderComponentTooltip(pMatrixStack, coolantTank.getTooltips(),
+                        pMouseX, pMouseY);
             }
             if(steamTank.isMouseOver(pMouseX, pMouseY)) {
                 List<ITextComponent> tooltips = steamTank.getTooltips();
-/*                tooltips.add(new TranslationTextComponent("reactor.steam_per_tick", container().getSteamPerTick()));
-                renderTooltip(pMatrixStack, tooltips,
-                        Optional.empty(), pMouseX, pMouseY);*/
+                tooltips.add(new TranslationTextComponent("reactor.steam_per_tick", container().getSteamPerTick()));
+                renderComponentTooltip(pMatrixStack, tooltips,
+                      pMouseX, pMouseY);
             }
         }
     }

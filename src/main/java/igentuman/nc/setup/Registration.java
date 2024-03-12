@@ -32,6 +32,9 @@ import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
+import static igentuman.nc.recipes.NcRecipeSerializers.RECIPE_SERIALIZERS;
+import static igentuman.nc.setup.registration.NCSounds.SOUND_EVENTS;
+import static igentuman.nc.setup.registration.NcParticleTypes.PARTICLE_TYPES;
 
 public class Registration {
 
@@ -40,8 +43,6 @@ public class Registration {
     public static final DeferredRegister<TileEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, MODID);
     private static final DeferredRegister<ContainerType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.CONTAINERS, MODID);
     private static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITIES, MODID);
-    /*    private static final DeferredRegister<Codec<? extends Biome>> BIOME_MODIFIERS = DeferredRegister.create(ForgeRegistries.Keys.BIOMES, MODID);
-  /*    private static final DeferredRegister<StructureType<?>> STRUCTURES = DeferredRegister.create(Registry.STRUCT, MODID);*/
     private static final DeferredRegister<Feature<?>> FEATURE_REGISTER = DeferredRegister.create(ForgeRegistries.FEATURES, MODID);
     public static final DeferredRegister<IRecipeSerializer<?>> SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, MODID);
 //    public static final DeferredRegister<Effect> EFFECTS = DeferredRegister.create(Registry.EFF., MODID);
@@ -51,19 +52,17 @@ public class Registration {
     public static void init() {
 
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+        PARTICLE_TYPES.register(bus);
         BLOCKS.register(bus);
         ITEMS.register(bus);
         BLOCK_ENTITIES.register(bus);
         CONTAINERS.register(bus);
         ENTITIES.register(bus);
-       // STRUCTURES.register(bus);
-        //BIOME_MODIFIERS.register(bus);
         FEATURE_REGISTER.register(bus);
         CONTAINERS.register(bus);
         SERIALIZERS.register(bus);
     //    EFFECTS.register(bus);
 
-      //  NcParticleTypes.PARTICLE_TYPES.register(bus);
 
         NCBlocks.init();
         NCStorageBlocks.init();
@@ -75,12 +74,9 @@ public class Registration {
         FissionReactor.init();
         FusionReactor.init();
         TurbineRegistration.init();
-
-        NcRecipeSerializers.RECIPE_SERIALIZERS.register(bus);
-        //NcRecipeType.RECIPE_TYPES.register(bus);
-        NCSounds.SOUND_EVENTS.register(bus);
+        RECIPE_SERIALIZERS.register(bus);
+        SOUND_EVENTS.register(bus);
     }
-
 
 
     static void initOreGeneration() {
@@ -92,10 +88,6 @@ public class Registration {
 
     public static final Block.Properties BLOCK_PROPERTIES = Block.Properties.of(Material.METAL).strength(2f).requiresCorrectToolForDrops();
 
-    //public static final TagKey<StructureSet> WASTELAND_DIMENSION_STRUCTURE_SET = TagKey.create(Registry.STRUCTURE_SET_REGISTRY, WastelandChunkGenerator.RL_WASTELAND_DIMENSION_SET);
-
-   // public static final RegistryObject<StructureType<?>> LABORATORY = STRUCTURES.register("nc_laboratory", () -> typeConvert(LaboratoryStructure.CODEC));
-
     // Some common properties for our blocks and items
     public static final Item.Properties ITEM_PROPERTIES = new Item.Properties().tab(CreativeTabs.NC_ITEMS);
 
@@ -105,7 +97,4 @@ public class Registration {
         return ITEMS.register(block.getId().getPath(), () -> new BlockItem(block.get(), ITEM_PROPERTIES));
     }
 
-/*    private static <S extends Structure> StructureType<S> typeConvert(Codec<S> codec) {
-        return () -> codec;
-    }*/
 }

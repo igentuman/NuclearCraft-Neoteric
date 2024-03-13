@@ -11,6 +11,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
@@ -127,9 +128,6 @@ public class TurbinePortContainer extends AbstractContainerMenu {
     public int getEnergy() {
         return portBE.getEnergyStored();
     }
-    public double getProgress() {
-        return portBE.getDepletionProgress();
-    }
 
     public int getMaxEnergy() {
         return portBE.getMaxEnergyStored();
@@ -145,5 +143,9 @@ public class TurbinePortContainer extends AbstractContainerMenu {
 
     public byte getAnalogSignalStrength() {
         return portBE.analogSignal;
+    }
+
+    public FluidTank getFluidTank(int i) {
+        return portBE.getFluidTank(i);
     }
 }

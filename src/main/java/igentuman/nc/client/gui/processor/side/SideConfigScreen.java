@@ -29,7 +29,7 @@ public class SideConfigScreen<T extends NCProcessorContainer<T>> extends Abstrac
     protected int relX;
     protected int relY;
 
-    protected AbstractContainerScreen parentScreen;
+    protected AbstractContainerScreen<T> parentScreen;
 
     private int slotId;
 
@@ -96,16 +96,16 @@ public class SideConfigScreen<T extends NCProcessorContainer<T>> extends Abstrac
         for(Widget widget : this.renderables) {
             widget.render(matrixStack, mouseX, mouseY, partialTicks);
         }
-        PoseStack posestack = RenderSystem.getModelViewStack();
-        posestack.pushPose();
-        posestack.translate((double)i, (double)j, 0.0D);
+
+        matrixStack.pushPose();
+        matrixStack.translate((double)i, (double)j, 0.0D);
         RenderSystem.applyModelViewMatrix();
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         this.hoveredSlot = null;
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         this.renderLabels(matrixStack, mouseX, mouseY);
         renderTooltips(matrixStack, mouseX-relX, mouseY-relY);
-        posestack.popPose();
+        matrixStack.popPose();
         RenderSystem.applyModelViewMatrix();
         RenderSystem.enableDepthTest();
         this.renderTooltip(matrixStack, mouseX, mouseY);

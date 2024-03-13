@@ -2,7 +2,7 @@ package igentuman.nc.block;
 
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.BarrelBE;
-import igentuman.nc.network.toServer.StorageSideConfig;
+import igentuman.nc.network.toServer.PacketStorageSideConfig;
 import igentuman.nc.setup.registration.NCStorageBlocks;
 import igentuman.nc.content.storage.BarrelBlocks;
 import igentuman.nc.util.TextUtils;
@@ -25,7 +25,6 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -71,7 +70,7 @@ public class BarrelBlock extends Block implements EntityBlock {
                 if(player.isShiftKeyDown()) {
                     dirToChange = dirToChange.getOpposite();
                 }
-                NuclearCraft.packetHandler().sendToServer(new StorageSideConfig(pos, dirToChange.ordinal()));
+                NuclearCraft.packetHandler().sendToServer(new PacketStorageSideConfig(pos, dirToChange.ordinal()));
             } else
             if(!handStack.equals(ItemStack.EMPTY)) {
                 if(handStack.getItem() instanceof BucketItem) {

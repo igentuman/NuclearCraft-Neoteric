@@ -1,5 +1,7 @@
 package igentuman.nc.handler.sided.capability;
 
+import igentuman.nc.handler.sided.SlotModePair;
+import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
@@ -17,11 +19,14 @@ public class ItemHandlerWrapper implements IItemHandlerModifiable {
     private final Predicate<Integer> extract;
     private final BiPredicate<Integer, ItemStack> insert;
 
-    public ItemHandlerWrapper(IItemHandlerModifiable handler, Predicate<Integer> extract,
-                              BiPredicate<Integer, ItemStack> insert) {
+    private final Direction side;
+
+    public ItemHandlerWrapper(Direction side, IItemHandlerModifiable handler, Predicate<Integer> extract,
+                                  BiPredicate<Integer, ItemStack> insert) {
         this.handler = handler;
         this.extract = extract;
         this.insert = insert;
+        this.side = side;
     }
 
     @Override
@@ -49,6 +54,12 @@ public class ItemHandlerWrapper implements IItemHandlerModifiable {
     @Nonnull
     @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
+        if( side != null &&
+                (((ItemCapabilityHandler) handler).getMode(slot, 0) == SlotModePair.SlotMode.INPUT ||
+                        ((ItemCapabilityHandler) handler).getMode(slot, 0) == SlotModePair.SlotMode.PULL)
+        ) {
+            return ItemStack.EMPTY;
+        }
         return this.extract.test(slot) ? this.handler.extractItem(slot, amount, simulate) : ItemStack.EMPTY;
     }
 

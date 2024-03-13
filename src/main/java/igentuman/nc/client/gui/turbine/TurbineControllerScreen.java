@@ -6,6 +6,7 @@ import igentuman.nc.client.gui.IVerticalBarScreen;
 import igentuman.nc.client.gui.element.NCGuiElement;
 import igentuman.nc.client.gui.element.bar.VerticalBar;
 import igentuman.nc.client.gui.element.button.Checkbox;
+import igentuman.nc.client.gui.element.fluid.FluidTankRenderer;
 import igentuman.nc.container.TurbineControllerContainer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -13,6 +14,7 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -31,7 +33,7 @@ public class TurbineControllerScreen extends AbstractContainerScreen<TurbineCont
 
     public TurbineControllerContainer container()
     {
-        return (TurbineControllerContainer)menu;
+        return menu;
     }
 
     public List<NCGuiElement> widgets = new ArrayList<>();
@@ -63,6 +65,18 @@ public class TurbineControllerScreen extends AbstractContainerScreen<TurbineCont
         checkboxCasing = new Checkbox(imageWidth-19, 80, this,  isCasingValid());
         checkboxInterior =  new Checkbox(imageWidth-32, 80, this,  isInteriorValid());
         energyBar = new VerticalBar.Energy(17, 16,  this, container().getMaxEnergy());
+        addWidget(FluidTankRenderer.tank(getFluidTank(0)).id(0).size(18, 18).pos(56, 35).canVoid());
+        addWidget(FluidTankRenderer.tank(getFluidTank(1)).id(1).size(24, 24).pos(112, 31).canVoid());
+    }
+
+    protected void addWidget(NCGuiElement widget)
+    {
+        widget.setScreen(this);
+        widgets.add(widget);
+    }
+
+    protected FluidTank getFluidTank(int i) {
+        return menu.getFluidTank(i);
     }
 
     private boolean isInteriorValid() {
@@ -187,7 +201,7 @@ public class TurbineControllerScreen extends AbstractContainerScreen<TurbineCont
 
     @Override
     public double getEnergy() {
-        return 0;
+        return container().getEnergy();
     }
 
     @Override

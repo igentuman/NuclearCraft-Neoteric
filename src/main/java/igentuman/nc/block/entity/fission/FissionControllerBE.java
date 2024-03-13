@@ -110,6 +110,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     @NBTField
     public boolean powered = false;
     @NBTField
+    public double moderationLevel = 1D;
     protected boolean forceShutdown = false;
     public int fuelCellMultiplier = 1;
     public int moderatorCellMultiplier = 1;
@@ -152,8 +153,10 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
                 1, 1,
                 1, 1);
         contentHandler.setBlockEntity(this);
-        contentHandler.fluidCapability.setGlobalMode(0, SlotModePair.SlotMode.INPUT);
-        contentHandler.fluidCapability.setGlobalMode(1, SlotModePair.SlotMode.OUTPUT);
+        contentHandler.fluidCapability.setGlobalMode(0, SlotModePair.SlotMode.PULL);
+        contentHandler.fluidCapability.setGlobalMode(1, SlotModePair.SlotMode.PUSH);
+        contentHandler.itemHandler.setGlobalMode(0, SlotModePair.SlotMode.PULL);
+        contentHandler.itemHandler.setGlobalMode(1, SlotModePair.SlotMode.PUSH);
         contentHandler.fluidCapability.tanks.get(0).setCapacity(10000);
         contentHandler.fluidCapability.tanks.get(1).setCapacity(10000);
         contentHandler.setAllowedInputFluids(0, getAllowedCoolants());
@@ -676,13 +679,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     }
 
     @Override
-    public CompoundTag getUpdateTag() {
-        CompoundTag tag = super.getUpdateTag();
-        saveClientData(tag);
-        return tag;
-    }
-
-    private void saveClientData(CompoundTag tag) {
+    public void saveClientData(CompoundTag tag) {
         CompoundTag infoTag = new CompoundTag();
         tag.put("Info", infoTag);
         infoTag.putInt("energy", energyStorage.getEnergyStored());
@@ -693,11 +690,6 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         tag.put("Content", contentHandler.serializeNBT());
     }
 
-    @Nullable
-    @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
-    }
 
     @Override
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {

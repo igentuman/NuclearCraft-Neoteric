@@ -18,6 +18,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -68,13 +69,10 @@ public class TurbinePortBE extends TurbineBE {
 
         Direction dir = getFacing();
 
-        if(itemHandler() != null) {
-            updated = itemHandler().pushItems(dir, true, worldPosition) || updated;
-            updated = itemHandler().pullItems(dir, true, worldPosition) || updated;
-        }
+
         if(fluidHandler() != null) {
-            updated = fluidHandler().pushFluids(dir, true, worldPosition) || updated;
-            updated = fluidHandler().pullFluids(dir, true, worldPosition) || updated;
+            updated = fluidHandler().pushFluids(dir, false, worldPosition) || updated;
+            updated = fluidHandler().pullFluids(dir, false, worldPosition) || updated;
         }
 
         if(updated) {
@@ -92,16 +90,14 @@ public class TurbinePortBE extends TurbineBE {
         }
     }
 
-    protected ItemCapabilityHandler itemHandler()
-    {
-        return controller().contentHandler.itemHandler;
-    }
-
     protected FluidCapabilityHandler fluidHandler()
     {
         return controller().contentHandler.fluidCapability;
     }
-
+    protected <T> LazyOptional<T> fluidHandler(@Nullable Direction side)
+    {
+        return controller().contentHandler.getFluidCapability(side);
+    }
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
@@ -110,7 +106,7 @@ public class TurbinePortBE extends TurbineBE {
             return controller().contentHandler.itemCapability.cast();
         }
         if (cap == ForgeCapabilities.FLUID_HANDLER) {
-            return LazyOptional.of(() -> controller().contentHandler.fluidCapability).cast();
+            return fluidHandler(side).cast();
         }
         if (cap == ForgeCapabilities.ENERGY) {
             return controller().getEnergy().cast();
@@ -204,23 +200,13 @@ public class TurbinePortBE extends TurbineBE {
     }
 
     @Override
-    public CompoundTag getUpdateTag() {
-        CompoundTag tag = super.getUpdateTag();
-        saveClientData(tag);
-        return tag;
-    }
-
-    private void saveClientData(CompoundTag tag) {
+    public void saveClientData(CompoundTag tag) {
         CompoundTag infoTag = new CompoundTag();
         tag.put("Info", infoTag);
         saveTagData(infoTag);
     }
 
-    @Nullable
-    @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
-    }
+
 
     @Override
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
@@ -231,11 +217,6 @@ public class TurbinePortBE extends TurbineBE {
     public int getEnergyStored() {
         if(controller() == null) return 0;
         return controller().energyStorage.getEnergyStored();
-    }
-
-    public double getDepletionProgress() {
-        if(controller() == null) return 0;
-        return controller().getDepletionProgress();
     }
 
     public int getMaxEnergyStored() {
@@ -255,6 +236,11 @@ public class TurbinePortBE extends TurbineBE {
         }
         setChanged();
         level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+    }
+
+    public FluidTank getFluidTank(int i) {
+        if(controller() == null) return null;
+        return controller().getFluidTank(i);
     }
 
     public static class SignalSource {

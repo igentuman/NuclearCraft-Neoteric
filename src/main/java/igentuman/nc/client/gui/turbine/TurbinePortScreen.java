@@ -8,12 +8,14 @@ import igentuman.nc.client.gui.element.NCGuiElement;
 import igentuman.nc.client.gui.element.bar.ProgressBar;
 import igentuman.nc.client.gui.element.bar.VerticalBar;
 import igentuman.nc.client.gui.element.button.Button;
+import igentuman.nc.client.gui.element.fluid.FluidTankRenderer;
 import igentuman.nc.container.TurbinePortContainer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +46,12 @@ public class TurbinePortScreen extends AbstractContainerScreen<TurbinePortContai
         imageHeight = 176;
     }
 
+    protected void addWidget(NCGuiElement widget)
+    {
+        widget.setScreen(this);
+        widgets.add(widget);
+    }
+
     protected void updateRelativeCords()
     {
         relX = (this.width - this.imageWidth) / 2;
@@ -61,8 +69,13 @@ public class TurbinePortScreen extends AbstractContainerScreen<TurbinePortContai
         widgets.add(new ProgressBar(74, 35, this,  7));
         redstoneConfigBtn = new Button.ReactorComparatorModeButton(150, 74, this, menu.getPosition());
         widgets.add(redstoneConfigBtn);
+        addWidget(FluidTankRenderer.tank(getFluidTank(0)).id(0).size(18, 18).pos(56, 35).canVoid());
+        addWidget(FluidTankRenderer.tank(getFluidTank(1)).id(1).size(24, 24).pos(112, 31).canVoid());
     }
 
+    protected FluidTank getFluidTank(int i) {
+        return menu.getFluidTank(i);
+    }
 
     @Override
     public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
@@ -127,7 +140,7 @@ public class TurbinePortScreen extends AbstractContainerScreen<TurbinePortContai
 
     @Override
     public double getProgress() {
-        return container().getProgress();
+        return 0;
     }
 
     @Override

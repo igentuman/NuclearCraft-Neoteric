@@ -1,6 +1,7 @@
 package igentuman.nc.handler.command;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import igentuman.nc.radiation.data.PlayerRadiationProvider;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.Registry;
@@ -28,7 +29,8 @@ public class CommandNcPlayerRadiation {
 
     public static int execute(CommandSourceStack ctx) {
         ServerPlayer pl = ctx.getPlayer();
-        pl.sendSystemMessage(Component.literal("nc.message.player_radiation"));
+        PlayerRadiationProvider.setRadiation((Player) pl, 100);
+        pl.sendSystemMessage(Component.translatable("nc.message.player_radiation"));
         return 0;
     }
 }

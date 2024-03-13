@@ -9,6 +9,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
@@ -139,5 +140,9 @@ public class TurbineControllerContainer extends AbstractContainerMenu {
 
     public int getFlow() {
         return blockEntity.getFlow();
+    }
+
+    public FluidTank getFluidTank(int i) {
+        return blockEntity.getFluidTank(i);
     }
 }

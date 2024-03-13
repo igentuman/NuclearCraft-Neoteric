@@ -3,7 +3,7 @@ package igentuman.nc.block;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.ContainerBE;
 import igentuman.nc.container.StorageContainerContainer;
-import igentuman.nc.network.toServer.StorageSideConfig;
+import igentuman.nc.network.toServer.PacketStorageSideConfig;
 import igentuman.nc.setup.registration.NCStorageBlocks;
 import igentuman.nc.util.annotation.NothingNullByDefault;
 import net.minecraft.ChatFormatting;
@@ -41,7 +41,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-import static igentuman.nc.handler.config.CommonConfig.ENERGY_STORAGE;
 import static igentuman.nc.setup.registration.NCItems.MULTITOOL;
 
 @NothingNullByDefault
@@ -70,7 +69,7 @@ public class ContainerBlock extends Block implements EntityBlock {
                 if(player.isShiftKeyDown()) {
                     dirToChange = dirToChange.getOpposite();
                 }
-                NuclearCraft.packetHandler().sendToServer(new StorageSideConfig(pos, dirToChange.ordinal()));
+                NuclearCraft.packetHandler().sendToServer(new PacketStorageSideConfig(pos, dirToChange.ordinal()));
             } else {
                 MenuProvider containerProvider = new MenuProvider() {
                     @Override

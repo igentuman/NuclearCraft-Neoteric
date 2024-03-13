@@ -77,6 +77,9 @@ repositories {
     maven { url "https://modmaven.dev/" }
     maven { url "https://maven.firstdarkdev.xyz/snapshots/" }
     maven { url "https://maven.tterrag.com/" }
+    maven { url "https://maven.firstdarkdev.xyz/snapshots/" }
+    maven { url "https://maven.architectury.dev" }
+    maven { url "https://maven.saps.dev/minecraft" }
 }
 
 dependencies {
@@ -86,6 +89,11 @@ dependencies {
     compileOnly fg.deobf("com.gregtechceu.gtceu:gtceu-forge-${mc_version}:${gtceu_version}") {
         transitive = false
     }
+    compileOnly fg.deobf("dev.latvian.mods:kubejs-forge:${kubejs_version}")
+    compileOnly fg.deobf("dev.latvian.mods:rhino-forge:${rhino_version}")
+    //implementation fg.deobf("dev.architectury:architectury-forge:${architectury_version}")
+
+    //runtimeOnly fg.deobf("curse.maven:spark-361579:4738952")
 /*    implementation fg.deobf("com.lowdragmc.ldlib:ldlib-forge-${mc_version}:${ldlib_version}") {
         transitive = false
     }

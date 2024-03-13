@@ -137,14 +137,9 @@ public class ContainerBE extends NuclearCraftBE implements ISizeToggable {
         }
     }
 
-    @Override
-    public @NotNull CompoundTag getUpdateTag() {
-        CompoundTag tag = super.getUpdateTag();
-        saveClientData(tag);
-        return tag;
-    }
 
-    protected void saveClientData(CompoundTag tag) {
+    @Override
+    public void saveClientData(CompoundTag tag) {
         CompoundTag tank = new CompoundTag();
         tag.put("Inventory", inventory.serializeNBT());
         tag.putIntArray("sideConfig", sideConfig.values().stream().mapToInt(Enum::ordinal).toArray());
@@ -191,12 +186,6 @@ public class ContainerBE extends NuclearCraftBE implements ISizeToggable {
         super.saveAdditional(tag);
         tag.put("Inventory", inventory.serializeNBT());
         tag.putIntArray("sideConfig", sideConfig.values().stream().mapToInt(Enum::ordinal).toArray());
-    }
-
-    @Nullable
-    @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
     }
 
     public ISizeToggable.SideMode toggleSideConfig(int direction) {

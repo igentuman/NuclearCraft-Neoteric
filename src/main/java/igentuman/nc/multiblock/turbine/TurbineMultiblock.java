@@ -96,6 +96,7 @@ public class TurbineMultiblock extends AbstractNCMultiblock {
     }
 
     private void countBlades() {
+        flow = 0;
         for(BlockPos pos : bladePositions) {
             BlockEntity be = getLevel().getBlockEntity(pos);
             if(be instanceof TurbineBladeBE blade) {
@@ -115,7 +116,6 @@ public class TurbineMultiblock extends AbstractNCMultiblock {
     public void tick() {
         super.tick();
         TurbineControllerBE<?> controller = (TurbineControllerBE<?>) controller().controllerBE();
-        controller.updateEnergyStorage();
     }
 
     @Override

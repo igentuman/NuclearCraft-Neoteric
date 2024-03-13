@@ -24,7 +24,7 @@ public class CoolantRecipeSerializer<RECIPE extends NcRecipe> extends NcRecipeSe
     @Override
     public @NotNull RECIPE fromJson(@NotNull ResourceLocation recipeId, @NotNull JsonObject json) {
 
-        FluidStackIngredient[] inputFluids = new FluidStackIngredient[0];
+        inputFluids = new FluidStackIngredient[0];
         try {
             if(json.has("inputFluids")) {
                 if (GsonHelper.isArrayNode(json, "inputFluids")) {
@@ -44,7 +44,7 @@ public class CoolantRecipeSerializer<RECIPE extends NcRecipe> extends NcRecipeSe
             NuclearCraft.LOGGER.warn("Unable to parse input fluid for recipe: "+recipeId);
         }
 
-        FluidStackIngredient[] outputFluids = new FluidStackIngredient[0];
+        outputFluids = new FluidStackIngredient[0];
         try {
             if(json.has("outputFluids")) {
                 if (GsonHelper.isArrayNode(json, "outputFluids")) {
@@ -76,29 +76,7 @@ public class CoolantRecipeSerializer<RECIPE extends NcRecipe> extends NcRecipeSe
     @Override
     public RECIPE fromNetwork(@NotNull ResourceLocation recipeId, @NotNull FriendlyByteBuf buffer) {
         try {
-            int inputSize = buffer.readInt();
-            ItemStackIngredient[] inputItems = new ItemStackIngredient[inputSize];
-            for(int i = 0; i < inputSize; i++) {
-                inputItems[i] = IngredientCreatorAccess.item().read(buffer);
-            }
-
-            int outputSize = buffer.readInt();
-            ItemStack[] outputItems = new ItemStack[outputSize];
-            for(int i = 0; i < outputSize; i++) {
-                outputItems[i] =  buffer.readItem();
-            }
-
-            inputSize = buffer.readInt();
-            FluidStackIngredient[] inputFluids = new FluidStackIngredient[inputSize];
-            for(int i = 0; i < inputSize; i++) {
-                inputFluids[i] = IngredientCreatorAccess.fluid().read(buffer);
-            }
-
-            outputSize = buffer.readInt();
-            FluidStackIngredient[] outputFluids = new FluidStackIngredient[outputSize];
-            for(int i = 0; i < outputSize; i++) {
-                outputFluids[i] =  IngredientCreatorAccess.fluid().read(buffer);
-            }
+            readIngredients(buffer);
             double coolingRate = buffer.readDouble();
             double powerModifier = buffer.readDouble();
             double radiation = buffer.readDouble();

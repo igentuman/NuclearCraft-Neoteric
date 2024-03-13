@@ -58,7 +58,7 @@ public class TooltipHandler {
     }
 
     private static void addRadiationCleaningEffect(ItemTooltipEvent event, ItemStack itemStack) {
-        int radiation = RadiationCleaningItems.byItem(itemStack.getItem());
+        long radiation = RadiationCleaningItems.byItem(itemStack.getItem());
         if(radiation == 0) return;
         ChatFormatting color = ChatFormatting.GREEN;
         event.getToolTip().add(Component.translatable("tooltip.nc.radiation_removal", format(((double)radiation)/1000000000)+"Rad").withStyle(color));

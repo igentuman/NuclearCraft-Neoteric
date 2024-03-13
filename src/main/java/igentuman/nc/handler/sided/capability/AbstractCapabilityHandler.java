@@ -57,7 +57,32 @@ public abstract class AbstractCapabilityHandler {
                 case PUSH_EXCESS -> sideSlots[slot] = new SlotModePair(SlotModePair.SlotMode.DISABLED, slot);
             }
         }
+        sidedContentHandler.hasPush = hasPush();
+        sidedContentHandler.hasPull = hasPull();
         return sideSlots[slot].getMode().ordinal();
+    }
+
+    public boolean hasPull() {
+        for (SlotModePair[] slotModePairs : sideMap.values()) {
+            for (SlotModePair slotModePair : slotModePairs) {
+                if(slotModePair.getMode() == SlotModePair.SlotMode.PULL) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+
+    public boolean hasPush() {
+        for (SlotModePair[] slotModePairs : sideMap.values()) {
+            for (SlotModePair slotModePair : slotModePairs) {
+                if(slotModePair.getMode() == SlotModePair.SlotMode.PUSH || slotModePair.getMode() == SlotModePair.SlotMode.PUSH_EXCESS) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     protected Direction getFacing() {
@@ -79,5 +104,10 @@ public abstract class AbstractCapabilityHandler {
         for(SidedContentHandler.RelativeDirection dir: SidedContentHandler.RelativeDirection.values()) {
             sideMap.get(dir.ordinal())[i].setMode(slotMode);
         }
+    }
+
+    protected void onLoad() {
+        sidedContentHandler.hasPush = hasPush();
+        sidedContentHandler.hasPull = hasPull();
     }
 }

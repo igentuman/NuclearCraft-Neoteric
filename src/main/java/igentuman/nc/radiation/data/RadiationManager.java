@@ -2,13 +2,13 @@ package igentuman.nc.radiation.data;
 
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.compat.mekanism.MekanismRadiation;
-import igentuman.nc.network.toClient.PacketRadiationData;
+import igentuman.nc.network.toClient.PacketPlayerRadiationData;
+import igentuman.nc.network.toClient.PacketWorldRadiationData;
 import igentuman.nc.util.ModUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.saveddata.SavedData;
@@ -53,19 +53,23 @@ public class RadiationManager extends SavedData {
 
     public void tick(Level level) {
         level.players().forEach(player -> {
+            int wasRadiation = 0;
+            int playerRadiation = 0;
             if (player instanceof ServerPlayer serverPlayer) {
                 int playerChunkX = player.chunkPosition().x;
                 int playerChunkZ = player.chunkPosition().z;
                 long id = pack(playerChunkX, playerChunkZ);
                 PlayerRadiation playerRadiationCap = serverPlayer.getCapability(PlayerRadiationProvider.PLAYER_RADIATION).orElse(null);
-                int playerRadiation = 0;
                 if(playerRadiationCap != null) {
+                    wasRadiation = playerRadiationCap.getRadiation();
                     playerRadiationCap.updateRadiation(level, player);
                     playerRadiation = playerRadiationCap.getRadiation();
                 }
 
                 if(worldRadiation.chunkRadiation.get(id) != null) {
-                    NuclearCraft.packetHandler().sendTo(new PacketRadiationData(id, worldRadiation.chunkRadiation.get(id), playerRadiation), serverPlayer);
+                    NuclearCraft.packetHandler().sendTo(new PacketWorldRadiationData(id, worldRadiation.chunkRadiation.get(id)), serverPlayer);
+                } else if(wasRadiation != playerRadiation) {
+                    NuclearCraft.packetHandler().sendTo(new PacketPlayerRadiationData(playerRadiation), serverPlayer);
                 }
             }
         });

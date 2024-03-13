@@ -65,7 +65,7 @@ public class RadiationCleaningItems {
         return ForgeRegistries.ITEMS.getValue(itemKey);
     }
 
-    public static int byItem(Item item) {
+    public static long byItem(Item item) {
         if(!initialized) {
             init();
             initialized = true;

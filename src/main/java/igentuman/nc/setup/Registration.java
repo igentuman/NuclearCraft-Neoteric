@@ -113,7 +113,7 @@ public class Registration {
     // Some common properties for our blocks and items
     public static final Item.Properties ITEM_PROPERTIES = new Item.Properties().tab(CreativeTabs.NC_ITEMS);
 
-    public static List<RegistryObject<PlacedFeature>> ORE_GENERATION = registerOreGenerators();
+    public static List<RegistryObject<PlacedFeature>> ORE_GENERATION;
     public static final TagKey<Biome> HAS_PORTAL = TagKey.create(Registry.BIOME_REGISTRY, new ResourceLocation(MODID, "has_structure/portal"));
     public static final TagKey<Biome> HAS_THIEFDEN = TagKey.create(Registry.BIOME_REGISTRY, new ResourceLocation(MODID, "has_structure/nc_laboratory"));
 

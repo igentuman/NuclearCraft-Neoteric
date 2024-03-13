@@ -91,6 +91,10 @@ public class FluidTankRenderer extends NCGuiElement {
         this(tank, TooltipMode.SHOW_AMOUNT_AND_CAPACITY, width, height, pos[0], pos[1]);
     }
 
+    public FluidTankRenderer(FluidTank tank, int width, int height, int[] pos, boolean canVoid) {
+        this(tank, TooltipMode.SHOW_AMOUNT_AND_CAPACITY, width, height, pos[0], pos[1]);
+        this.canVoid = canVoid;
+    }
     @Override
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
         if(X() <= pMouseX && pMouseX < X() + width && Y() <= pMouseY && pMouseY < Y() + height) {

@@ -58,12 +58,6 @@ public class BarrelBE extends NuclearCraftBE implements ISizeToggable {
         fluidHandler = LazyOptional.of(() -> fluidTank);
     }
 
-    @Nullable
-    @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
-    }
-
     @Nonnull
     @Override
     public @NotNull ModelData getModelData() {
@@ -144,13 +138,7 @@ public class BarrelBE extends NuclearCraftBE implements ISizeToggable {
     }
 
     @Override
-    public @NotNull CompoundTag getUpdateTag() {
-        CompoundTag tag = super.getUpdateTag();
-        saveClientData(tag);
-        return tag;
-    }
-
-    protected void saveClientData(CompoundTag tag) {
+    public void saveClientData(CompoundTag tag) {
         CompoundTag tank = new CompoundTag();
         tag.put("Fluid", fluidTank.getFluid().writeToNBT(tank));
         tag.putIntArray("sideConfig", sideConfig.values().stream().mapToInt(Enum::ordinal).toArray());

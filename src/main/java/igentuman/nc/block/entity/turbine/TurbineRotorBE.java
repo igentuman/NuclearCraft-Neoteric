@@ -1,23 +1,30 @@
 package igentuman.nc.block.entity.turbine;
 
 import igentuman.nc.block.turbine.TurbineRotorBlock;
+import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
+import static igentuman.nc.block.fission.FissionControllerBlock.POWERED;
+
 public class TurbineRotorBE extends TurbineBE {
+    @NBTField
+    public BlockPos controllerPos = BlockPos.ZERO;
+    private float rotation = 0;
+
     public static String NAME = "turbine_rotor_shaft";
     public boolean connectedToBearing = false;
     public TurbineRotorBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, NAME);
-    }
-
-    @Override
-    public void tickServer() {
-        super.tickServer();
     }
 
     public void updateBearingConnection() {
@@ -36,6 +43,34 @@ public class TurbineRotorBE extends TurbineBE {
         }
     }
 
+    @Override
+    protected void saveClientData(CompoundTag tag) {
+        saveTagData(tag);
+    }
+
+    @Override
+    public void loadClientData(CompoundTag tag) {
+        readTagData(tag);
+    }
+
+    @Override
+    public void tickServer() {
+        super.tickServer();
+        BlockPos wasPos = controllerPos;
+        if(wasPos != getControllerPos()) {
+            controllerPos = getControllerPos();
+            level.setBlockAndUpdate(worldPosition, getBlockState().setValue(POWERED, getRotationSpeed() > 0));
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(POWERED, getRotationSpeed() > 0), Block.UPDATE_ALL);
+        }
+    }
+
+    private BlockPos getControllerPos() {
+        if(getController() == null) {
+            return BlockPos.ZERO;
+        }
+        return getController().getBlockPos();
+    }
+
     private boolean hasBearingConnection(Direction dir) {
         if(connectedToBearing) return true;
         BlockEntity be = getLevel().getBlockEntity(getBlockPos().relative(dir));
@@ -46,5 +81,23 @@ public class TurbineRotorBE extends TurbineBE {
             connectedToBearing = true;
         }
         return connectedToBearing;
+    }
+
+    public TurbineControllerBE<?> getController() {
+        if(controllerPos == BlockPos.ZERO) return controller();
+        BlockEntity be = getLevel().getBlockEntity(controllerPos);
+        if(be instanceof TurbineControllerBE<?> controller) {
+            return controller;
+        }
+        return controller();
+    }
+
+    public float getRotationSpeed() {
+        TurbineControllerBE<?> controller = getController();
+        rotation = 0;
+        if(controller instanceof TurbineControllerBE<?>) {
+            rotation = controller.getRotationSpeed();
+        }
+        return rotation;
     }
 }

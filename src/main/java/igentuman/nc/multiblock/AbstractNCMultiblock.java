@@ -286,6 +286,7 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
 
     protected boolean processInnerBlock(BlockPos toCheck) {
         allBlocks.add(toCheck);
+        attachMultiblock(toCheck);
         return true;
     }
 

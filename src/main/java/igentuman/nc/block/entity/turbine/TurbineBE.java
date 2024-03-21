@@ -19,9 +19,9 @@ public class TurbineBE extends NuclearCraftBE implements IMultiblockAttachable {
     }
 
     @Override
-    public TurbineBE controller() {
+    public TurbineControllerBE<?> controller() {
         try {
-            return (TurbineBE) multiblock().controller().controllerBE();
+            return (TurbineControllerBE<?>) multiblock().controller().controllerBE();
         } catch (NullPointerException ignore) {
             return null;
         }

@@ -81,6 +81,8 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
     public int activeCoils = 0;
     @NBTField
     public int flow = 0;
+    @NBTField
+    public float rotationSpeed = 0;
 
     public ValidationResult validationResult = ValidationResult.INCOMPLETE;
     public RecipeInfo recipeInfo = new RecipeInfo();
@@ -88,6 +90,7 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
     protected Direction facing;
     public RECIPE recipe;
     public HashMap<String, RECIPE> cachedRecipes = new HashMap<>();
+
     @Override
     public String getName() {
         return NAME;
@@ -213,6 +216,7 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
 
 
     public void tickServer() {
+        rotationSpeed = 0;
         if(NuclearCraft.instance.isNcBeStopped || isRemoved()) {
             return;
         }
@@ -236,10 +240,11 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
             contentHandler.setAllowedInputFluids(0, getAllowedInputFluids());
         }
         refreshCacheFlag = !multiblock().isFormed();
+        if(wasPowered != powered) {
+            level.setBlockAndUpdate(worldPosition, getBlockState().setValue(POWERED, powered));
+        }
         if(refreshCacheFlag || changed) {
             try {
-                assert level != null;
-                level.setBlockAndUpdate(worldPosition, getBlockState().setValue(POWERED, powered));
                 level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(POWERED, powered), Block.UPDATE_ALL);
             } catch (NullPointerException ignored) {}
         }
@@ -347,7 +352,7 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
 
     private boolean process() {
         recipeInfo.process(1);
-
+        rotationSpeed = (rotationSpeed+(float)getRealFlow()/(float)(flow*TURBINE_CONFIG.BLADE_FLOW.get()))/2;
         energyStorage.addEnergy(calculateEnergy());
 
         handleRecipeOutput();
@@ -534,6 +539,11 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
     public FluidTank getFluidTank(int i) {
         return contentHandler.fluidCapability.tanks.get(i);
     }
+
+    public float getRotationSpeed() {
+        return rotationSpeed;
+    }
+
     public static class Recipe extends NcRecipe {
 
         public Recipe(ResourceLocation id, ItemStackIngredient[] input, ItemStackIngredient[] output, FluidStackIngredient[] inputFluids, FluidStackIngredient[] outputFluids, double timeModifier, double powerModifier, double heatModifier, double rarity) {

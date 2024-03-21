@@ -1,8 +1,9 @@
 package igentuman.nc.client.block.turbine;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import igentuman.nc.block.entity.fusion.FusionCoreBE;
-import igentuman.nc.block.fusion.FusionCoreBlock;
+import com.mojang.math.Axis;
+import igentuman.nc.block.entity.turbine.TurbineRotorBE;
+import igentuman.nc.block.turbine.TurbineRotorBlock;
 import igentuman.nc.util.annotation.NothingNullByDefault;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
@@ -10,15 +11,19 @@ import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
+import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.phys.Vec3;
+
+import static com.mojang.math.Axis.*;
 
 @NothingNullByDefault
 public class TurbineRotorRenderer implements BlockEntityRenderer<BlockEntity> {
@@ -38,48 +43,58 @@ public class TurbineRotorRenderer implements BlockEntityRenderer<BlockEntity> {
     public void render(BlockEntity pBlockEntity, float pPartialTick, PoseStack pPoseStack, MultiBufferSource buffer, int packedLight, int combinedOverlay) {
         BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
         BlockState blockstate = pBlockEntity.getBlockState();
-        FusionCoreBE<?> coreBe = (FusionCoreBE<?>) pBlockEntity;
+        TurbineRotorBE rotorBe = (TurbineRotorBE) pBlockEntity;
 
         ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
         ItemStack core = new ItemStack(blockstate.getBlock().asItem());
 
-        BakedModel center = blockRenderer.getBlockModel(blockstate.setValue(FusionCoreBlock.ACTIVE, true));
+        BakedModel center = blockRenderer.getBlockModel(blockstate.setValue(TurbineRotorBlock.ACTIVE, true));
 
         pPoseStack.clear();
         pPoseStack.pushPose();
 
         long time = Util.getMillis();
-        float step = -0.08f;
-        if(coreBe.isRunning() && coreBe.efficiency > 0.5) {
-            step = -0.15f;
-        }
+        float step = rotorBe.getRotationSpeed();
+
         float angel = time * step;
 
-        if(!coreBe.isRunning() || coreBe.efficiency < 0.1) {
-            angel = 45f;
-        }
         angel %= 360;
-        pPoseStack.translate(dx, 0, dz);
-      //  pPoseStack.mulPose(Vector3f.YN.rotationDegrees(angel));
-        pPoseStack.scale(1.4f, sy, 1.4f);
-        pPoseStack.translate(-dx, 0.135f, -dz);
-        blockRenderer.getModelRenderer().renderModel(pPoseStack.last(), buffer.getBuffer(RenderType.cutout()), blockstate, center, 1, 1, 1, LightTexture.FULL_SKY, combinedOverlay);
+        pPoseStack.translate(0.5, 0.5, 0.5);
+        Direction facing = blockstate.getValue(TurbineRotorBlock.FACING);
+        switch (facing) {
+            case NORTH:
+            case SOUTH:
+                pPoseStack.mulPose(ZN.rotationDegrees(angel));
+                break;
+            case EAST:
+            case WEST:
+                pPoseStack.mulPose(XN.rotationDegrees(-angel));
+                break;
+            default:
+                pPoseStack.mulPose(YN.rotationDegrees(-angel));
+                break;
+        }
+       // pPoseStack.scale(1.4f, sy, 1.4f);
+        pPoseStack.translate(-0.5, -0.5, -0.5);
+        blockRenderer.getModelRenderer().renderModel(
+                pPoseStack.last(), buffer.getBuffer(RenderType.cutout()), blockstate, center, 1, 1, 1,
+                LightTexture.FULL_SKY, combinedOverlay);
         pPoseStack.popPose();
 
-        BakedModel base = itemRenderer.getModel(core, pBlockEntity.getLevel(), null, 0);
+ /*       BakedModel base = itemRenderer.getModel(core, pBlockEntity.getLevel(), null, 0);
         pPoseStack.clear();
         pPoseStack.pushPose();
         pPoseStack.translate(0.5, 1.35, 0.5);
         pPoseStack.scale(3.80F, 3.80F, 3.80F);
-/*        itemRenderer.render(
+        itemRenderer.render(
                 core,
-                ItemTransforms.NO_TRANSFORMS.fixed.rotation,
+                ItemDisplayContext.FIXED,
                 false, pPoseStack, buffer, LightTexture.FULL_SKY, combinedOverlay,
                 base);*/
 
 
        // blockRenderer.renderSingleBlock(blockstate, pPoseStack, buffer, packedLight, combinedOverlay, pBlockEntity.getModelData(), RenderType.cutout());
-        pPoseStack.popPose();
+     //   pPoseStack.popPose();
 
     }
 

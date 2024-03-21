@@ -2,6 +2,7 @@ package igentuman.nc.setup;
 
 import igentuman.nc.client.block.BatteryBlockLoader;
 import igentuman.nc.client.block.fusion.FusionCoreRenderer;
+import igentuman.nc.client.block.turbine.TurbineRotorRenderer;
 import igentuman.nc.client.gui.FusionCoreScreen;
 import igentuman.nc.client.gui.StorageContainerScreen;
 import igentuman.nc.client.gui.fission.FissionPortScreen;
@@ -49,8 +50,7 @@ import static igentuman.nc.multiblock.fission.FissionReactor.FISSION_CONTROLLER_
 import static igentuman.nc.multiblock.fission.FissionReactor.FISSION_PORT_CONTAINER;
 import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_BE;
 import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_CORE_CONTAINER;
-import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_CONTROLLER_CONTAINER;
-import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_PORT_CONTAINER;
+import static igentuman.nc.multiblock.turbine.TurbineRegistration.*;
 import static igentuman.nc.setup.registration.NCItems.GEIGER_COUNTER;
 import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_CONTAINER;
 import static net.minecraftforge.eventbus.api.EventPriority.LOWEST;
@@ -62,6 +62,7 @@ public class ClientSetup {
         event.enqueueWork(() -> {
             MinecraftForge.EVENT_BUS.addListener(LOWEST, SoundHandler::onTilePlaySound);
             BlockEntityRenderers.register(FUSION_BE.get("fusion_core").get(), FusionCoreRenderer::new);
+            BlockEntityRenderers.register(TURBINE_BE.get("turbine_rotor_shaft").get(), TurbineRotorRenderer::new);
             MenuScreens.register(STORAGE_CONTAINER.get(), StorageContainerScreen::new);
             MenuScreens.register(FUSION_CORE_CONTAINER.get(), FusionCoreScreen::new);
             MenuScreens.register(TURBINE_CONTROLLER_CONTAINER.get(), TurbineControllerScreen::new);
@@ -89,6 +90,7 @@ public class ClientSetup {
             });
         });
     }
+
 
     @SubscribeEvent
     public static void onModelRegistryEvent(ModelEvent.RegisterGeometryLoaders event) {

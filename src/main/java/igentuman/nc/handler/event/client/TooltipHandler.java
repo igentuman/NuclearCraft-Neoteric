@@ -15,6 +15,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
+import java.util.Locale;
+
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.handler.config.FissionConfig.FISSION_CONFIG;
 import static igentuman.nc.multiblock.fission.FissionReactor.moderators;
@@ -93,14 +95,14 @@ public class TooltipHandler {
 
     private static String format(Double radiation) {
         if(radiation >= 1) {
-            return String.format("%.0f", radiation)+" ";
+            return String.format(Locale.US,"%.0f", radiation)+" ";
         }
         if(radiation >= 0.000999) {
-            return String.format("%.0f", radiation*1000)+" m";
+            return String.format(Locale.US,"%.0f", radiation*1000)+" m";
         }
         if(radiation >= 0.000000999) {
-            return String.format("%.0f", radiation*1000000)+" u";
+            return String.format(Locale.US,"%.0f", radiation*1000000)+" u";
         }
-        return String.format("%.0f", radiation*1000000000)+" p";
+        return String.format(Locale.US,"%.0f", radiation*1000000000)+" p";
     }
 }

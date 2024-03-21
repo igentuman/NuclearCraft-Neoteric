@@ -47,10 +47,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import static igentuman.nc.block.fission.FissionControllerBlock.POWERED;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
@@ -808,7 +805,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     private double targetModerationLevel = 1D;
 
     public void adjustModerator(int redstoneSignal) {
-        String formatted = String.format("%.2f", (double) redstoneSignal / 15);
+        String formatted = String.format(Locale.US, "%.2f", (double) redstoneSignal / 15);
         targetModerationLevel = Double.parseDouble(formatted);
     }
 
@@ -834,7 +831,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     }
 
     public void adjustModerationLevel(int level) {
-        String formatted = String.format("%.2f", (double) Math.max(1, level) / 100);
+        String formatted = String.format(Locale.US,"%.2f", (double) Math.max(1, level) / 100);
         targetModerationLevel = Double.parseDouble(formatted);
     }
 

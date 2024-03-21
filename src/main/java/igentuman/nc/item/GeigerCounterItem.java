@@ -16,6 +16,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Locale;
+
 public class GeigerCounterItem extends Item
 {
 	public GeigerCounterItem(Properties props)
@@ -38,11 +40,11 @@ public class GeigerCounterItem extends Item
 
 	private static String format(int radiation) {
 		if(radiation >= 1000000) {
-			return String.format("%.2f", (float)radiation/1000000)+" Rad";
+			return String.format(Locale.US,"%.2f", (float)radiation/1000000)+" Rad";
 		}
 		if(radiation >= 1000) {
-			return String.format("%.2f", (float)radiation/1000)+" mRad";
+			return String.format(Locale.US,"%.2f", (float)radiation/1000)+" mRad";
 		}
-		return String.format("%.2f", (float)radiation)+" uRad";
+		return String.format(Locale.US,"%.2f", (float)radiation)+" uRad";
 	}
 }

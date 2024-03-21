@@ -192,10 +192,12 @@ public class NCLanguageProvider extends LanguageProvider {
             if(NC_INGOTS.containsKey(name)) {
                 molten = "Molten ";
             }
-            add("fluid."+MODID+"."+name, molten + convertToName(name));
+            add("fluid."+MODID+"."+name.replaceAll("/|-","_"), molten + convertToName(name));
+            add("fluid."+MODID+"."+name.replaceAll("/|-","_")+"_flowing", molten + convertToName(name));
         }
         for(String name: NCFluids.NC_GASES.keySet()) {
-            add("fluid."+MODID+"."+name, convertToName(name));
+            add("fluid."+MODID+"."+name.replaceAll("/|-","_"), convertToName(name));
+            add("fluid."+MODID+"."+name.replaceAll("/|-","_")+"_flowing", convertToName(name));
         }
     }
 

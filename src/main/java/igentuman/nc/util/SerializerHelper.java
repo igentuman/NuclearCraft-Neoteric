@@ -16,6 +16,8 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
+import static igentuman.nc.NuclearCraft.MODID;
+
 
 @NothingNullByDefault
 public class SerializerHelper {
@@ -110,10 +112,16 @@ public class SerializerHelper {
         if (amount < 1) {
             throw new JsonSyntaxException("Expected amount to be greater than zero.");
         }
-        ResourceLocation resourceLocation = new ResourceLocation(GsonHelper.getAsString(json, "fluid"));
-        Fluid fluid = ForgeRegistries.FLUIDS.getValue(resourceLocation);
+        String name = GsonHelper.getAsString(json, "fluid");
+        Fluid fluid = null;
+        if(!name.contains(":")) {
+            fluid = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(MODID+":" + name));
+        }
+        if(fluid == null || fluid == Fluids.EMPTY) {
+            fluid = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(name));
+        }
         if (fluid == null || fluid == Fluids.EMPTY) {
-            throw new JsonSyntaxException("Invalid fluid type '" + resourceLocation + "'");
+            throw new JsonSyntaxException("Invalid fluid type '" + name + "'");
         }
         CompoundTag nbt = null;
         if (json.has("nbt")) {
@@ -125,7 +133,7 @@ public class SerializerHelper {
                     nbt = TagParser.parseTag(GsonHelper.convertToString(jsonNBT, "nbt"));
                 }
             } catch (CommandSyntaxException e) {
-                throw new JsonSyntaxException("Invalid NBT entry for fluid '" + resourceLocation + "'");
+                throw new JsonSyntaxException("Invalid NBT entry for fluid '" + name + "'");
             }
         }
         return new FluidStack(fluid, amount, nbt);

@@ -234,7 +234,7 @@ public class FluidTankRenderer extends NCGuiElement {
                 return tooltip;
             }
 
-            MutableComponent displayName = new TranslatableComponent(tank.getFluid().getDisplayName().getContents());
+            TranslatableComponent displayName = (TranslatableComponent) tank.getFluid().getDisplayName();
             tooltip.add(displayName.withStyle(ChatFormatting.AQUA));
 
             long amount = tank.getFluid().getAmount();

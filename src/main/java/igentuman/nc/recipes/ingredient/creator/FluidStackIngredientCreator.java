@@ -38,9 +38,7 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
     @Override
     public FluidStackIngredient from(FluidStack instance) {
         Objects.requireNonNull(instance, "FluidStackIngredients cannot be created from a null FluidStack.");
-        if (instance.isEmpty()) {
-            throw new IllegalArgumentException("FluidStackIngredients cannot be created using the empty stack.");
-        }
+
         //Copy the stack to ensure it doesn't get modified afterwards
         return new SingleFluidStackIngredient(instance.copy());
     }

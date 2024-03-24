@@ -26,7 +26,7 @@ import static igentuman.nc.handler.config.CommonConfig.ENERGY_GENERATION;
 
 public class SteamTurbineBE extends NCProcessorBE<SteamTurbineBE.Recipe> {
     @NBTField
-    protected double efficiency = 0.0001;
+    protected double efficiency = 0.001;
     public SteamTurbineBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, Processors.STEAM_TURBINE);
     }
@@ -39,7 +39,7 @@ public class SteamTurbineBE extends NCProcessorBE<SteamTurbineBE.Recipe> {
     public void tickServer()
     {
         sendOutPower();
-        efficiency -= 0.0001;
+        efficiency += 0.001;
         efficiency = Math.max(0.0001, Math.min(10, efficiency));
         if(energyStorage.getEnergyStored()>=energyStorage.getMaxEnergyStored()) {
             return;
@@ -54,7 +54,7 @@ public class SteamTurbineBE extends NCProcessorBE<SteamTurbineBE.Recipe> {
         }
         if(!hasRecipe()) return;
 
-        recipeInfo.process(speedMultiplier());
+        recipeInfo.process(speedMultiplier()/efficiency);
         efficiency += 0.0004;
         energyStorage.addEnergy((int) (getEnergyTransferPerTick()*recipe.getEnergy()));
     }
@@ -62,7 +62,7 @@ public class SteamTurbineBE extends NCProcessorBE<SteamTurbineBE.Recipe> {
     @Override
     public double speedMultiplier()
     {
-        return super.speedMultiplier()/efficiency;
+        return super.speedMultiplier();
     }
 
     @Override

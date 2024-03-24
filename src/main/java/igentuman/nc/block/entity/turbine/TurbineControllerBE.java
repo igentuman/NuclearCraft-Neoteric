@@ -26,6 +26,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.common.capabilities.Capability;
@@ -49,6 +50,7 @@ import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.handler.config.TurbineConfig.TURBINE_CONFIG;
 import static igentuman.nc.setup.registration.NCSounds.FISSION_REACTOR;
 import static igentuman.nc.util.ModUtil.isCcLoaded;
+import static net.minecraft.core.particles.ParticleTypes.SMOKE;
 import static net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE;
 
 public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> extends TurbineBE {
@@ -59,6 +61,8 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
 
     protected final LazyOptional<IEnergyStorage> energy = LazyOptional.of(() -> energyStorage);
     public BlockPos errorBlockPos = BlockPos.ZERO;
+    @NBTField
+    public Direction orientation = Direction.NORTH;
     @NBTField
     public boolean isCasingValid = false;
     @NBTField
@@ -85,7 +89,7 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
     public float rotationSpeed = 0;
 
     public ValidationResult validationResult = ValidationResult.INCOMPLETE;
-    public RecipeInfo recipeInfo = new RecipeInfo();
+    public RecipeInfo<RECIPE> recipeInfo = new RecipeInfo<>();
     public boolean controllerEnabled = false;
     protected Direction facing;
     public RECIPE recipe;
@@ -129,6 +133,24 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
         };
     }
 
+    public BlockPos getBlockPosForSteam()
+    {
+        if(!multiblock().isFormed()) {
+            multiblock().validate();
+        }
+        BlockPos start = worldPosition;
+        if(multiblock().bearingPositions.size() > 0) {
+            for (int i = 0; i < multiblock().bearingPositions.size(); i++) {
+                start = multiblock().bearingPositions.get(i);
+                BlockEntity be = getLevel().getBlockEntity(start.relative(orientation));
+                if(!(be instanceof TurbineRotorBE)) {
+                    return start;
+                }
+            }
+        }
+        return start;
+    }
+
     private void addToCache(RECIPE recipe) {
         String key = contentHandler.getCacheKey();
         if(cachedRecipes.containsKey(key)) {
@@ -142,7 +164,7 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
         RECIPE cachedRecipe = getCachedRecipe();
         if(cachedRecipe != null) return cachedRecipe;
         if(!NcRecipeType.ALL_RECIPES.containsKey(getName())) return null;
-        for(AbstractRecipe recipe: NcRecipeType.ALL_RECIPES.get(getName()).getRecipeType().getRecipes(getLevel())) {
+        for(NcRecipe recipe: NcRecipeType.ALL_RECIPES.get(getName()).getRecipeType().getRecipes(getLevel())) {
             if(recipe.test(contentHandler)) {
                 addToCache((RECIPE)recipe);
                 return (RECIPE)recipe;
@@ -207,7 +229,8 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
             stopSound();
             return;
         }
-        if(isProcessing()) {
+        if(energyPerTick > 0) {
+            spawnSteamParticles();
             playRunningSound();
         }
     }
@@ -348,6 +371,44 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
             return process();
         }
         return false;
+    }
+
+    private void spawnSteamParticles() {
+        if (level.isClientSide && level.getGameTime() % 2 == 0) {
+            BlockPos pos = getBlockPosForSteam();
+            for (int i = 0; i < 5; i++) {
+                double x = pos.getX() + 0.5 + level.random.nextGaussian() * 0.2;
+                double y = pos.getY() + 0.5 + level.random.nextGaussian() * 0.2;
+                double z = pos.getZ() + 0.5 + level.random.nextGaussian() * 0.2;
+                float ySpeed = 0;
+                float zSpeed = 0;
+                float xSpeed = 0;
+                switch (orientation) {
+                    case UP:
+                        ySpeed = 0.4f;
+                        y += 1;
+                        break;
+                    case DOWN:
+                        ySpeed = -0.4f;
+                        break;
+                    case NORTH:
+                        zSpeed = -0.4f;
+                        break;
+                    case SOUTH:
+                        zSpeed = 0.4f;
+                        z += 1;
+                        break;
+                    case EAST:
+                        xSpeed = 0.4f;
+                        x += 1;
+                        break;
+                    case WEST:
+                        xSpeed = -0.4f;
+                        break;
+                }
+                level.addParticle(SMOKE, x, y, z, xSpeed, ySpeed, zSpeed);
+            }
+        }
     }
 
     private boolean process() {

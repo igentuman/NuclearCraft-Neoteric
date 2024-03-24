@@ -7,6 +7,7 @@ import igentuman.nc.util.NCBlockPos;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -40,6 +41,7 @@ public class NuclearCraftBE extends BlockEntity {
     public NuclearCraftBE(BlockEntityType<?> pType, BlockPos pPos, BlockState pBlockState) {
         super(pType, pPos, pBlockState);
         name = getName(pBlockState);
+        directionFields = initFields(Direction.class);
         booleanFields = initFields(boolean.class);
         intFields = initFields(int.class);
         intArrayFields = initFields(int[].class);
@@ -73,12 +75,17 @@ public class NuclearCraftBE extends BlockEntity {
     private final List<Field> longFields;
     private final List<Field> blockPosFields;
 
+    private final List<Field> directionFields;
+
     public void saveTagData(CompoundTag tag) {
         try {
             for (Field f : blockPosFields) {
                 if((f.get(this)) != null) {
                     tag.putLong(f.getName(), ((BlockPos) f.get(this)).asLong());
                 }
+            }
+            for (Field f : directionFields) {
+                tag.putString(f.getName(), ((Direction) f.get(this)).getName());
             }
             for (Field f : booleanFields) {
                 tag.putBoolean(f.getName(), f.getBoolean(this));
@@ -131,6 +138,9 @@ public class NuclearCraftBE extends BlockEntity {
 
     public void readTagData(CompoundTag tag) {
         try {
+            for(Field f: directionFields) {
+                f.set(this, Direction.byName(tag.getString(f.getName())));
+            }
             for(Field f: blockPosFields) {
                 f.set(this, BlockPos.of(tag.getLong(f.getName())));
             }

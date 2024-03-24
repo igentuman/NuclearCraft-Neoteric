@@ -38,6 +38,7 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.ItemHandlerHelper;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -127,7 +128,7 @@ public class QNP extends PickaxeItem
 		return totalDrops;
 	}
 
-	public static Mode getMode(ItemStack stack) {
+	public static Mode getMode(@NotNull ItemStack stack) {
 		CompoundTag tag = stack.getOrCreateTag();
 		if(!tag.contains("mode")) {
 			tag.putInt("mode", Mode.ONE_BLOCK.ordinal());
@@ -156,7 +157,7 @@ public class QNP extends PickaxeItem
 	}
 
 	public int veinMinedBlocksCounter = 0;
-	private List<ItemStack> harvestBlock(BlockPos pos, Level worldIn, LivingEntity entityLiving, ItemStack tool, boolean veinMode, List<ItemStack> totalDrops) {
+	private List<ItemStack> harvestBlock(BlockPos pos, @NotNull Level worldIn, LivingEntity entityLiving, ItemStack tool, boolean veinMode, List<ItemStack> totalDrops) {
 		BlockState tempState = worldIn.getBlockState(pos);
 		Block block = tempState.getBlock();
 		if(!enoughEnergy(tool)) return totalDrops;

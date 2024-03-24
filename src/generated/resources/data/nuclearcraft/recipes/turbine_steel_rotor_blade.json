@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_turbine",
+  "key": {
+    "P": {
+      "tag": "forge:plates/steel"
+    }
+  },
+  "pattern": [
+    " P ",
+    " P ",
+    " P "
+  ],
+  "result": {
+    "count": 2,
+    "item": "nuclearcraft:turbine_steel_rotor_blade"
+  },
+  "show_notification": true
+}

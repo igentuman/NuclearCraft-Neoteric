@@ -16,7 +16,7 @@ public class GasScrubberRecipes extends AbstractRecipeProvider {
 
         add(
                 fluidIngredient("borax_solution", 250),
-                fluidIngredient("irradiated_borax_solution", 250), 1, 5, -10
+                fluidIngredient("irradiated_borax_solution", 250), 1, 5, -1000
         );
     }
 

@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_turbine",
+  "key": {
+    "B": {
+      "item": "minecraft:bucket"
+    },
+    "C": {
+      "item": "nuclearcraft:turbine_casing"
+    },
+    "G": {
+      "item": "nuclearcraft:basic_electric_circuit"
+    }
+  },
+  "pattern": [
+    "GCG",
+    "CBC",
+    "GCG"
+  ],
+  "result": {
+    "item": "nuclearcraft:turbine_controller"
+  },
+  "show_notification": true
+}

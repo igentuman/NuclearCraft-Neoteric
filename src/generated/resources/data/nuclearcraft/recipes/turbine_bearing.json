@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_turbine",
+  "key": {
+    "G": {
+      "tag": "forge:ingots/gold"
+    },
+    "S": {
+      "tag": "forge:ingots/hsla_steel"
+    }
+  },
+  "pattern": [
+    "GGG",
+    "GSG",
+    "GGG"
+  ],
+  "result": {
+    "count": 2,
+    "item": "nuclearcraft:turbine_bearing"
+  },
+  "show_notification": true
+}

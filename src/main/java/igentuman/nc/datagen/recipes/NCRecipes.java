@@ -49,7 +49,7 @@ public class NCRecipes extends RecipeProvider {
         storageBlocks(consumer);
         fissionBlocks(consumer);
         fusionBlocks(consumer);
-       //turbineBlocks(consumer);
+        turbineBlocks(consumer);
         FuelRecipes.generate(consumer);
         CustomRecipes.generate(consumer);
         SpecialRecipeBuilder.build(consumer, NcRecipeSerializers.SHIELDING);
@@ -1107,17 +1107,6 @@ public class NCRecipes extends RecipeProvider {
                 .pattern("STS")
                 .define('S', forgeIngot(Materials.hsla_steel))
                 .define('T', forgeIngot(Materials.zinc))
-                .group(MODID+"_turbine")
-                .unlockedBy("item", has(forgeIngot(Materials.hsla_steel)))
-                .save(consumer);
-
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, TURBINE_BLOCKS.get("turbine_rotor_stator").get(), 4)
-                .pattern("STS")
-                .pattern("STS")
-                .pattern(" P ")
-                .define('S', forgeIngot(Materials.hsla_steel))
-                .define('T', forgeIngot(Materials.zinc))
-                .define('P', forgeIngot(Materials.platinum))
                 .group(MODID+"_turbine")
                 .unlockedBy("item", has(forgeIngot(Materials.hsla_steel)))
                 .save(consumer);

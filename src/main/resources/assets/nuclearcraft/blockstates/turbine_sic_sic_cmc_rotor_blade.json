@@ -1,0 +1,50 @@
+{
+  "variants": {
+    "facing=down,powered=false": {
+      "model": "nuclearcraft:block/multiblock/turbine_sic_sic_cmc_rotor_blade",
+      "x": 90
+    },
+    "facing=down,powered=true": {
+      "model": "nuclearcraft:block/dummy",
+      "x": 90
+    },
+    "facing=east,powered=false": {
+      "model": "nuclearcraft:block/multiblock/turbine_sic_sic_cmc_rotor_blade",
+      "y": 270
+    },
+    "facing=east,powered=true": {
+      "model": "nuclearcraft:block/dummy",
+      "y": 270
+    },
+    "facing=north,powered=false": {
+      "model": "nuclearcraft:block/multiblock/turbine_sic_sic_cmc_rotor_blade"
+    },
+    "facing=north,powered=true": {
+      "model": "nuclearcraft:block/dummy"
+    },
+    "facing=south,powered=false": {
+      "model": "nuclearcraft:block/multiblock/turbine_sic_sic_cmc_rotor_blade",
+      "y": 180
+    },
+    "facing=south,powered=true": {
+      "model": "nuclearcraft:block/dummy",
+      "y": 180
+    },
+    "facing=up,powered=false": {
+      "model": "nuclearcraft:block/multiblock/turbine_sic_sic_cmc_rotor_blade",
+      "x": 270
+    },
+    "facing=up,powered=true": {
+      "model": "nuclearcraft:block/dummy",
+      "x": 270
+    },
+    "facing=west,powered=false": {
+      "model": "nuclearcraft:block/multiblock/turbine_sic_sic_cmc_rotor_blade",
+      "y": 90
+    },
+    "facing=west,powered=true": {
+      "model": "nuclearcraft:block/dummy",
+      "y": 90
+    }
+  }
+}

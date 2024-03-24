@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_turbine",
+  "key": {
+    "B": {
+      "tag": "forge:ingots/copper"
+    },
+    "S": {
+      "tag": "forge:ingots/stainless_steel"
+    }
+  },
+  "pattern": [
+    "SBS",
+    "SBS",
+    "SBS"
+  ],
+  "result": {
+    "item": "nuclearcraft:turbine_copper_coil"
+  },
+  "show_notification": true
+}

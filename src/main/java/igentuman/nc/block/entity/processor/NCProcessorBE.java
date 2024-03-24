@@ -435,7 +435,7 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
     }
 
     public int energyMultiplier() {
-        energyMultiplier = (int) Math.max(speedMultiplier()-1, Math.pow(speedMultiplier()-1, 2)+speedMultiplier()-Math.pow(getEnergyUpgrades(),2));
+        energyMultiplier = (int) Math.max(speedMultiplier(), Math.pow(speedMultiplier()-1, 2)+speedMultiplier()-Math.pow(getEnergyUpgrades(),2));
         return energyMultiplier;
     }
 

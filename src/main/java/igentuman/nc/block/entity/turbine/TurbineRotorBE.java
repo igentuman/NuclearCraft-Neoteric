@@ -100,4 +100,19 @@ public class TurbineRotorBE extends TurbineBE {
         }
         return rotation;
     }
+
+    public int getAttachedBlades() {
+        int blades = 0;
+        Direction facing = getBlockState().getValue(TurbineRotorBlock.FACING).getClockWise();
+        for(int i = 1; i < 32; i++) {
+            BlockEntity be = getLevel().getBlockEntity(getBlockPos().relative(facing, i));
+            if(be instanceof TurbineBladeBE) {
+                blades++;
+            } else {
+                break;
+            }
+        }
+
+        return blades*2;
+    }
 }

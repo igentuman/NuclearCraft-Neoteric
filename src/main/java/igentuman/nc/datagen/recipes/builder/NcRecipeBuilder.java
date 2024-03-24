@@ -195,7 +195,7 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
             if(timeModifier > 0) {
                 json.addProperty("timeModifier", timeModifier);
             }
-            if(radiation > 0) {
+            if(radiation != 0) {
                 json.addProperty("radiation", radiation);
             }
             if(powerModifier > 0) {

@@ -63,7 +63,7 @@ public class NCBlockStates extends BlockStateProvider {
         simpleBlock(TURBINE_BLOCKS.get("turbine_glass").get(), multiBlockModel(TURBINE_BLOCKS.get("turbine_glass").get(), "turbine/glass"));
 
         for (String name: TurbineRegistration.blades().keySet()) {
-            faceBlock(TURBINE_BLOCKS.get("turbine_" + name).get(), $ -> models().getExistingFile(rl("block/multiblock/turbine_"+name)));
+            //faceBlock(TURBINE_BLOCKS.get("turbine_" + name).get(), $ -> models().getExistingFile(rl("block/multiblock/turbine_"+name)));
         }
 
         for(String type: TurbineRegistration.coils.keySet()) {
@@ -102,9 +102,9 @@ public class NCBlockStates extends BlockStateProvider {
         return result;
     }
     public void faceBlock(Block block, Function<BlockState, ModelFile> modelFunc) {
-
         getVariantBuilder(block)
-                .forAllStates(state -> ConfiguredModel.builder()
+                .forAllStatesExcept(
+                        state -> ConfiguredModel.builder()
                         .modelFile(modelFunc.apply(state))
                         .rotationX(getRotationByDirection(state.getValue(BlockStateProperties.FACING))[0])
                         .rotationY(getRotationByDirection(state.getValue(BlockStateProperties.FACING))[1])

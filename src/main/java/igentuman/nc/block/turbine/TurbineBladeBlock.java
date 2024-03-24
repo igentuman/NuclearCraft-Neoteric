@@ -26,6 +26,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -37,7 +38,7 @@ import static igentuman.nc.handler.event.client.InputEvents.DESCRIPTIONS_SHOW;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BE;
 
 public class TurbineBladeBlock extends DirectionalBlock implements EntityBlock {
-
+    public static final BooleanProperty HIDDEN = BlockStateProperties.POWERED;
     public TurbineBladeBlock(Properties pProperties) {
         super(pProperties.sound(SoundType.METAL).noOcclusion());
     }
@@ -82,7 +83,7 @@ public class TurbineBladeBlock extends DirectionalBlock implements EntityBlock {
                 }
             }
         }
-        return this.defaultBlockState().setValue(FACING, dir);
+        return this.defaultBlockState().setValue(FACING, dir).setValue(HIDDEN, false);
     }
 
     public static boolean processBlockPlace(LevelAccessor level, BlockPos pos, BlockState block, BlockState blockState, BlockState attachment)
@@ -128,7 +129,7 @@ public class TurbineBladeBlock extends DirectionalBlock implements EntityBlock {
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(BlockStateProperties.FACING);
+        builder.add(BlockStateProperties.FACING).add(HIDDEN);
     }
 
     private String blockEntityCode()

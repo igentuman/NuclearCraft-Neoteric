@@ -7,7 +7,7 @@
   ],
   "output": [
     {
-      "item": "nuclearcraft:polonium_dust"
+      "tag": "forge:dusts/polonium"
     }
   ],
   "powerModifier": 1.0,

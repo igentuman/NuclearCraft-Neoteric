@@ -2,24 +2,22 @@
   "type": "nuclearcraft:assembler",
   "input": [
     {
-      "tag": "forge:plates/electrum"
+      "item": "minecraft:glowstone_dust"
     },
     {
-      "item": "nuclearcraft:bioplastic"
-    },
-    {
-      "item": "minecraft:quartz"
+      "tag": "forge:dusts/quartz"
     },
     {
       "item": "minecraft:redstone"
     },
     {
-      "item": "nuclearcraft:coil_copper"
+      "tag": "forge:dusts/emerald"
     }
   ],
   "output": [
     {
-      "item": "nuclearcraft:basic_electric_circuit"
+      "count": 2,
+      "tag": "forge:dusts/energetic_blend"
     }
   ],
   "powerModifier": 1.0,

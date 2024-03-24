@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_machines",
+  "key": {
+    "C": {
+      "item": "minecraft:cartography_table"
+    },
+    "M": {
+      "item": "nuclearcraft:motor"
+    },
+    "P": {
+      "item": "nuclearcraft:plate_basic"
+    },
+    "Y": {
+      "item": "minecraft:ender_eye"
+    }
+  },
+  "pattern": [
+    "PYP",
+    "PCP",
+    "PMP"
+  ],
+  "result": {
+    "item": "nuclearcraft:analyzer"
+  },
+  "show_notification": true
+}

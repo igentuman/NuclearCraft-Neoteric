@@ -7,7 +7,7 @@
   ],
   "output": [
     {
-      "item": "nuclearcraft:thallium_dust"
+      "tag": "forge:dusts/thallium"
     }
   ],
   "powerModifier": 1.0,

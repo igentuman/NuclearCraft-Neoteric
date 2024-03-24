@@ -22,10 +22,10 @@
       "item": "nuclearcraft:americium_243"
     },
     {
-      "item": "nuclearcraft:strontium_90_dust"
+      "tag": "forge:dusts/strontium_90"
     },
     {
-      "item": "nuclearcraft:caesium_137_dust"
+      "tag": "forge:dusts/caesium_137"
     }
   ],
   "powerModifier": 1.0,

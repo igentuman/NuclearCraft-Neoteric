@@ -9,7 +9,7 @@
   "output": [
     {
       "count": 2,
-      "item": "nuclearcraft:magnesium_dust"
+      "tag": "forge:dusts/magnesium"
     }
   ],
   "powerModifier": 1.0,

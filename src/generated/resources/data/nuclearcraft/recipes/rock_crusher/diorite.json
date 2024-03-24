@@ -9,13 +9,13 @@
   "output": [
     {
       "count": 2,
-      "item": "nuclearcraft:zirconium_dust"
+      "tag": "forge:dusts/zirconium"
     },
     {
-      "item": "nuclearcraft:fluorite_dust"
+      "tag": "forge:dusts/fluorite"
     },
     {
-      "item": "nuclearcraft:carobbiite_dust"
+      "tag": "forge:dusts/carobbiite"
     }
   ],
   "powerModifier": 1.0,

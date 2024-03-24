@@ -8,7 +8,7 @@
   ],
   "output": [
     {
-      "item": "nuclearcraft:irradiated_borax_dust"
+      "tag": "forge:dusts/irradiated_borax"
     }
   ],
   "powerModifier": 0.5,

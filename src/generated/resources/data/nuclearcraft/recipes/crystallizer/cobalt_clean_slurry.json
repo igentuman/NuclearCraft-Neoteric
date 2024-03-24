@@ -9,7 +9,7 @@
   "output": [
     {
       "count": 2,
-      "item": "nuclearcraft:cobalt_dust"
+      "tag": "forge:dusts/cobalt"
     }
   ],
   "powerModifier": 1.0,

@@ -16,42 +16,56 @@ public class RockCrusherRecipes extends AbstractRecipeProvider {
         RockCrusherRecipes.consumer = consumer;
         ID = Processors.ROCK_CRUSHER;
 
+        add(
+                (ingredient(END_STONE, 3)),
+                List.of(dustIngredient(Materials.borax, 1), dustIngredient(Materials.germanium, 1))
+        );
+
+        add(
+                (ingredient(PURPUR_BLOCK, 2)),
+                List.of(dustIngredient(Materials.purpur, 1))
+        );
+
+        add(
+                (ingredient(NETHERRACK, 2)),
+                List.of(dustIngredient(Materials.sulfur, 1))
+        );
 
         add(
                 (ingredient(BASALT, 7)),
-                List.of(dustStack(Materials.tungsten, 1), dustStack(Materials.niobium, 1))
+                List.of(dustIngredient(Materials.tungsten, 1), dustIngredient(Materials.niobium, 1))
         );
 
         add(
                 (ingredient(ANCIENT_DEBRIS, 1)),
-                List.of(NcIngredient.stack(stack(NETHERITE_SCRAP, 2)), dustStack(Materials.titanium, 1))
+                List.of(NcIngredient.stack(stack(NETHERITE_SCRAP, 2)), dustIngredient(Materials.titanium, 1))
         );
 
         add(
                 (ingredient(GRANITE, 4)),
-                List.of(dustStack(Materials.rhodochrosite, 2), dustStack(Materials.villiaumite))
+                List.of(dustIngredient(Materials.rhodochrosite, 2), dustIngredient(Materials.villiaumite))
         );
 
         add(
                 ingredient(DIORITE, 4),
-                List.of(dustStack(Materials.zirconium, 2), dustStack(Materials.fluorite), dustStack(Materials.carobbiite))
+                List.of(dustIngredient(Materials.zirconium, 2), dustIngredient(Materials.fluorite), dustIngredient(Materials.carobbiite))
         );
 
         add(
                 ingredient(ANDESITE, 4),
-                List.of(dustStack(Materials.beryllium, 2), dustStack(Materials.arsenic))
+                List.of(dustIngredient(Materials.beryllium, 2), dustIngredient(Materials.arsenic))
         );
         add(
                 ingredient(DEEPSLATE, 7),
-                List.of(dustStack(Materials.iodine, 1), dustStack(Materials.obsidian))
+                List.of(dustIngredient(Materials.iodine, 1), dustIngredient(Materials.obsidian))
         );
         add(
                 ingredient(TUFF, 12),
-                List.of(dustStack(Materials.chromium, 1), dustStack(Materials.coal))
+                List.of(dustIngredient(Materials.chromium, 1), dustIngredient(Materials.coal))
         );
         add(
                 ingredient(CALCITE, 5),
-                List.of(dustStack(Materials.calcium, 2), dustStack(Materials.potassium))
+                List.of(dustIngredient(Materials.calcium, 2), dustIngredient(Materials.potassium))
         );
     }
 

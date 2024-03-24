@@ -7,13 +7,13 @@
   ],
   "inputFluids": [
     {
-      "amount": 100,
+      "amount": 144,
       "tag": "forge:oxygen"
     }
   ],
   "outputFluids": [
     {
-      "amount": 500,
+      "amount": 576,
       "tag": "forge:uranium_oxide"
     }
   ],

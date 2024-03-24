@@ -76,11 +76,21 @@ public class AssemblerRecipes extends AbstractRecipeProvider {
                 List.of(
                         plateIngredient(Materials.electrum),
                         ingredient(NC_PARTS.get("bioplastic").get()),
-                        ingredient(QUARTZ),
+                        dustIngredient(Materials.energetic_blend),
                         ingredient(REDSTONE),
                         ingredient(NC_PARTS.get("coil_copper").get())
                 ),
                 List.of(ingredient(NC_PARTS.get("basic_electric_circuit").get()))
+        );
+
+        itemsToItems(
+                List.of(
+                        ingredient(GLOWSTONE_DUST),
+                        dustIngredient(Materials.quartz),
+                        ingredient(REDSTONE),
+                        dustIngredient(Materials.emerald)
+                ),
+                List.of(dustIngredient(Materials.energetic_blend, 2))
         );
 
         itemsToItems(
@@ -128,7 +138,7 @@ public class AssemblerRecipes extends AbstractRecipeProvider {
                         dustIngredient(Materials.calcium, 2),
                         dustIngredient(Materials.copper, 2)
                 ),
-                List.of(dustStack(Materials.bscco, 3))
+                List.of(dustIngredient(Materials.bscco, 3))
         );
     }
 }

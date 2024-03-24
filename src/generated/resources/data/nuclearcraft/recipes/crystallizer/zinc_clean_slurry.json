@@ -9,7 +9,7 @@
   "output": [
     {
       "count": 2,
-      "item": "nuclearcraft:zinc_dust"
+      "tag": "forge:dusts/zinc"
     }
   ],
   "powerModifier": 1.0,

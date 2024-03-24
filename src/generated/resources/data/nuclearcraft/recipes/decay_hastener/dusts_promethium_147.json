@@ -7,7 +7,7 @@
   ],
   "output": [
     {
-      "item": "nuclearcraft:neodymium_dust"
+      "tag": "forge:dusts/neodymium"
     }
   ],
   "powerModifier": 1.0,

@@ -25,8 +25,8 @@ public class IsotopeSeparatorRecipes extends AbstractRecipeProvider {
 
         add(
                 dustIngredient(Materials.yellowcake, 10),
-                List.of(isotopeStack(Materials.uranium238, 9),
-                        isotopeStack(Materials.uranium235, 1)),
+                List.of(isotopeStack(Materials.uranium238, 7),
+                        isotopeStack(Materials.uranium235, 2)),
                 5D
         );
 

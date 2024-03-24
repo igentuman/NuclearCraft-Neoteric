@@ -8,7 +8,7 @@
   ],
   "output": [
     {
-      "item": "nuclearcraft:calcium_sulfate_dust"
+      "tag": "forge:dusts/calcium_sulfate"
     }
   ],
   "powerModifier": 1.0,

@@ -33,6 +33,9 @@ public class MelterRecipes extends AbstractRecipeProvider {
         }
 
         add(dustIngredient(Materials.polonium), fluidIngredient(Materials.polonium, 144));
+        add(dustIngredient(Materials.sulfur), fluidIngredient(Materials.sulfur, 144));
+        add(ingredient(REDSTONE), fluidIngredient("redstone", 144));
+        add(ingredient(GLOWSTONE_DUST), fluidIngredient("glowstone", 144));
 
 
         for (String name: Materials.isotopes()) {

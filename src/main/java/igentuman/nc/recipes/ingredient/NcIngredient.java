@@ -45,7 +45,7 @@ public class NcIngredient extends Ingredient {
 
    private String name;
 
-   protected NcIngredient(Stream<? extends NcIngredient.Value> pValues) {
+   protected NcIngredient(Stream<? extends Ingredient.Value> pValues) {
       super(Stream.empty());
       this.values = pValues.toArray((p_43933_) -> {
          return new NcIngredient.Value[p_43933_];
@@ -139,7 +139,14 @@ public class NcIngredient extends Ingredient {
    }
 
    private final boolean isVanilla = this.getClass() == NcIngredient.class;
+   public static NcIngredient of(TagKey<Item> pTag) {
+      return fromValues(Stream.of(new NcIngredient.TagValue(pTag)));
+   }
 
+   public static NcIngredient fromValues(Stream<? extends Ingredient.Value> pStream) {
+      NcIngredient ingredient = new NcIngredient(pStream);
+      return ingredient.isEmpty() ? EMPTY : ingredient;
+   }
 
    public static NcIngredient of() {
       return EMPTY;

@@ -7,7 +7,7 @@
   ],
   "output": [
     {
-      "item": "nuclearcraft:protactinium_233_dust"
+      "tag": "forge:dusts/protactinium_233"
     }
   ],
   "powerModifier": 1.0,

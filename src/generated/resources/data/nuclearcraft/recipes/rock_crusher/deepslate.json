@@ -8,10 +8,10 @@
   ],
   "output": [
     {
-      "item": "nuclearcraft:iodine_dust"
+      "tag": "forge:dusts/iodine"
     },
     {
-      "item": "nuclearcraft:obsidian_dust"
+      "tag": "forge:dusts/obsidian"
     }
   ],
   "powerModifier": 1.0,

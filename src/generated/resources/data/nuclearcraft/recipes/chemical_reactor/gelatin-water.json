@@ -12,7 +12,7 @@
   ],
   "outputFluids": [
     {
-      "amount": 250,
+      "amount": 288,
       "tag": "forge:hydrated_gelatin"
     }
   ],

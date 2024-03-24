@@ -231,10 +231,8 @@ public abstract class AbstractRecipeProvider {
         return DUSTS_TAG.get(name);
     }
 
-    public static NcIngredient dustStack(String name, int...pCount)
+    public static NcIngredient dustStack(String name, int count)
     {
-        int count = 1;
-        if(pCount.length > 0) count = pCount[0];
         return NcIngredient.stack(stack(dustItem(name), count));
     }
 

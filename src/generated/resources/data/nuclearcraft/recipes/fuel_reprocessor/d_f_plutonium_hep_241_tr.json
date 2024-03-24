@@ -22,10 +22,10 @@
       "item": "nuclearcraft:plutonium_242"
     },
     {
-      "item": "nuclearcraft:promethium_147_dust"
+      "tag": "forge:dusts/promethium_147"
     },
     {
-      "item": "nuclearcraft:strontium_90_dust"
+      "tag": "forge:dusts/strontium_90"
     }
   ],
   "powerModifier": 1.0,

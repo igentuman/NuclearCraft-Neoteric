@@ -1,0 +1,20 @@
+{
+  "type": "nuclearcraft:rock_crusher",
+  "input": [
+    {
+      "count": 3,
+      "item": "minecraft:end_stone"
+    }
+  ],
+  "output": [
+    {
+      "tag": "forge:dusts/borax"
+    },
+    {
+      "tag": "forge:dusts/germanium"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

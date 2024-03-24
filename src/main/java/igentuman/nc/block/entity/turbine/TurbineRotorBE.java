@@ -115,4 +115,17 @@ public class TurbineRotorBE extends TurbineBE {
 
         return blades*2;
     }
+
+    public boolean isFormed() {
+        if(getController() == null) {
+            return false;
+        }
+        if(getController().multiblock() == null) {
+            return false;
+        }
+        if(!getController().multiblock().isFormed() || getLevel().getGameTime() % 20 == 0) {
+            getController().multiblock().validate();
+        }
+        return getController().multiblock().isFormed();
+    }
 }

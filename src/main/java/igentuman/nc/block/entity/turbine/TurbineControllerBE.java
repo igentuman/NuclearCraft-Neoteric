@@ -51,6 +51,7 @@ import static igentuman.nc.handler.config.TurbineConfig.TURBINE_CONFIG;
 import static igentuman.nc.setup.registration.NCSounds.FISSION_REACTOR;
 import static igentuman.nc.util.ModUtil.isCcLoaded;
 import static net.minecraft.core.particles.ParticleTypes.SMOKE;
+import static net.minecraft.core.particles.ParticleTypes.SNOWFLAKE;
 import static net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE;
 
 public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> extends TurbineBE {
@@ -141,7 +142,7 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
         BlockPos start = worldPosition;
         if(multiblock().bearingPositions.size() > 0) {
             for (int i = 0; i < multiblock().bearingPositions.size(); i++) {
-                start = multiblock().bearingPositions.get(i);
+                start = new BlockPos(multiblock().bearingPositions.get(i));
                 BlockEntity be = getLevel().getBlockEntity(start.relative(orientation));
                 if(!(be instanceof TurbineRotorBE)) {
                     return start;
@@ -372,41 +373,81 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
         }
         return false;
     }
+    public List<BlockPos> getBlocks(BlockPos pos, Direction.Axis axis) {
+        List<BlockPos> positions = new ArrayList<>();
 
-    private void spawnSteamParticles() {
-        if (level.isClientSide && level.getGameTime() % 2 == 0) {
-            BlockPos pos = getBlockPosForSteam();
-            for (int i = 0; i < 5; i++) {
-                double x = pos.getX() + 0.5 + level.random.nextGaussian() * 0.2;
-                double y = pos.getY() + 0.5 + level.random.nextGaussian() * 0.2;
-                double z = pos.getZ() + 0.5 + level.random.nextGaussian() * 0.2;
-                float ySpeed = 0;
-                float zSpeed = 0;
-                float xSpeed = 0;
-                switch (orientation) {
-                    case UP:
-                        ySpeed = 0.4f;
-                        y += 1;
-                        break;
-                    case DOWN:
-                        ySpeed = -0.4f;
-                        break;
-                    case NORTH:
-                        zSpeed = -0.4f;
-                        break;
-                    case SOUTH:
-                        zSpeed = 0.4f;
-                        z += 1;
-                        break;
-                    case EAST:
-                        xSpeed = 0.4f;
-                        x += 1;
-                        break;
-                    case WEST:
-                        xSpeed = -0.4f;
-                        break;
+        switch (axis) {
+            case X:
+                // Generate positions around the BlockPos on the YZ plane
+                for (int y = -1; y <= 1; y++) {
+                    for (int z = -1; z <= 1; z++) {
+                        if (y != 0 || z != 0) { // Exclude the original position
+                            positions.add(pos.offset(0, y, z));
+                        }
+                    }
                 }
-                level.addParticle(SMOKE, x, y, z, xSpeed, ySpeed, zSpeed);
+                break;
+            case Y:
+                // Generate positions around the BlockPos on the XZ plane
+                for (int x = -1; x <= 1; x++) {
+                    for (int z = -1; z <= 1; z++) {
+                        if (x != 0 || z != 0) { // Exclude the original position
+                            positions.add(pos.offset(x, 0, z));
+                        }
+                    }
+                }
+                break;
+            case Z:
+                // Generate positions around the BlockPos on the XY plane
+                for (int x = -1; x <= 1; x++) {
+                    for (int y = -1; y <= 1; y++) {
+                        if (x != 0 || y != 0) { // Exclude the original position
+                            positions.add(pos.offset(x, y, 0));
+                        }
+                    }
+                }
+                break;
+        }
+
+        return positions;
+    }
+    private void spawnSteamParticles() {
+        if (level.isClientSide && level.getGameTime() % 4 == 0) {
+            BlockPos pos = getBlockPosForSteam().relative(orientation.getOpposite(), 2);
+            for(BlockPos source:  getBlocks(pos, orientation.getAxis())){
+                for (int i = 0; i < 3; i++) {
+                    double x = source.getX() + level.random.nextGaussian() * 0.2;
+                    double y = source.getY() + level.random.nextGaussian() * 0.2;
+                    double z = source.getZ() + level.random.nextGaussian() * 0.2;
+                    float ySpeed = 0;
+                    float zSpeed = 0;
+                    float xSpeed = 0;
+                    switch (orientation.getOpposite()) {
+                        case UP:
+                            ySpeed = 0.4f;
+                            break;
+                        case DOWN:
+                            ySpeed = -0.3f;
+                            break;
+                        case NORTH:
+                            zSpeed = -0.3f;
+                            z += 0.5;
+                            break;
+                        case SOUTH:
+                            zSpeed = 0.3f;
+                            z += 0.5;
+                            break;
+                        case EAST:
+                            xSpeed = 0.3f;
+                            z += 0.5;
+                            break;
+                        case WEST:
+                            xSpeed = -0.3f;
+                            z += 0.5;
+                            break;
+                    }
+                    level.addParticle(SNOWFLAKE, x, y, z, xSpeed, ySpeed, zSpeed);
+                }
             }
         }
     }

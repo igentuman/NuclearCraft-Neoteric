@@ -54,11 +54,16 @@ import java.util.*;
 import static igentuman.nc.block.fission.FissionControllerBlock.POWERED;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.handler.config.FissionConfig.FISSION_CONFIG;
+import static igentuman.nc.handler.event.client.BlockOverlayHandler.outlineBlocks;
 import static igentuman.nc.multiblock.fission.FissionReactor.FISSION_BLOCKS;
 import static igentuman.nc.setup.registration.Fuel.ITEM_PROPERTIES;
 import static igentuman.nc.setup.registration.NCSounds.FISSION_REACTOR;
+import static igentuman.nc.setup.registration.NcParticleTypes.RADIATION;
 import static igentuman.nc.util.ModUtil.isCcLoaded;
 import static igentuman.nc.util.ModUtil.isMekanismLoadeed;
+import static net.minecraft.core.Direction.Axis.X;
+import static net.minecraft.core.Direction.Axis.Z;
+import static net.minecraft.core.particles.ParticleTypes.SNOWFLAKE;
 
 public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> extends FissionBE  {
 
@@ -350,6 +355,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
             return;
         }
         if(isProcessing()) {
+            spawnParticles();
             playRunningSound();
         }
     }
@@ -405,6 +411,14 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
                 isSteamMode = !isSteamMode;
             }
         }
+    }
+
+    @Override
+    public FissionReactorMultiblock multiblock() {
+        if(multiblock == null) {
+            multiblock = new FissionReactorMultiblock(this);
+        }
+        return super.multiblock();
     }
 
     private void handleValidation() {
@@ -500,13 +514,29 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
             updateRecipe();
         }
         if (hasRecipe()) {
-            Random random = new Random();
-            ((ServerLevel) level).sendParticles(NcParticleTypes.RADIATION.get(), getBlockPos().getX() + (random.nextFloat() - 0.5), getBlockPos().above().getY() + (random.nextFloat() - 0.5),
-                    getBlockPos().getZ() + (random.nextFloat() - 0.5), 1, 0, 0, 0, speed);
-
             return process();
         }
         return false;
+    }
+
+    private void spawnParticles() {
+        if(multiblock() == null) {
+            return;
+        }
+        if(!multiblock().isFormed()) {
+            multiblock().validate();
+        }
+        if(level.getGameTime()  % (level.random.nextInt(10)+5) != 0) {
+            return;
+        }
+        BlockPos topBlock = multiblock().getTopRightInnerBlock();
+        BlockPos bottomLeft = multiblock().getBottomLeftInnerBlock();
+
+        for(BlockPos blockPos: BlockPos.betweenClosed(bottomLeft, topBlock)) {
+            if(level.random.nextBoolean()) {
+                level.addParticle(RADIATION.get(), blockPos.getX()+level.random.nextFloat(), blockPos.getY()+level.random.nextFloat(), blockPos.getZ()+level.random.nextFloat(), 0, -0.05f, 0);
+            }
+        }
     }
 
     private boolean process() {

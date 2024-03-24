@@ -99,7 +99,30 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
     }
 
     public BlockPos getBottomLeftBlock() {
+        if(controllerPos instanceof NCBlockPos) {
+            ((NCBlockPos) controllerPos).revert();
+        }
         return getLeftPos(leftCasing).below(bottomCasing).relative(getFacing(), -depth+1);
+    }
+    public BlockPos getBottomLeftInnerBlock() {
+        if(controllerPos instanceof NCBlockPos) {
+            ((NCBlockPos) controllerPos).revert();
+        }
+        return new BlockPos(getLeftPos(leftCasing-1).below(bottomCasing-1).relative(getFacing(), -depth+2));
+    }
+
+    public BlockPos getTopRightBlock() {
+        if(controllerPos instanceof NCBlockPos) {
+            ((NCBlockPos) controllerPos).revert();
+        }
+        return getRightPos(rightCasing).above(topCasing);
+    }
+
+    public BlockPos getTopRightInnerBlock() {
+        if(controllerPos instanceof NCBlockPos) {
+            ((NCBlockPos) controllerPos).revert();
+        }
+        return new BlockPos(getRightPos(rightCasing-1).above(topCasing-1).relative(getFacing(), -1));
     }
 
     public BlockPos getCenterBlock() {
@@ -112,9 +135,7 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
         );
     }
 
-    public BlockPos getTopRightBlock() {
-        return getRightPos(rightCasing).above(topCasing);
-    }
+
 
     protected BlockState getBlockState(BlockPos pos) {
         if(bsCache.containsKey(pos.asLong())) {
@@ -426,4 +447,6 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
     public void onBlockDestroyed(BlockState state, Level level, BlockPos pos, Explosion explosion) {
         controller.clearStats();
     }
+
+
 }

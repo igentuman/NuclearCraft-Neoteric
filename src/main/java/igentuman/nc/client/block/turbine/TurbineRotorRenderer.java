@@ -96,6 +96,9 @@ public class TurbineRotorRenderer implements BlockEntityRenderer<BlockEntity> {
                 LightTexture.FULL_SKY, combinedOverlay);
         pPoseStack.popPose();
 
+        if(!rotor.isFormed()) {
+            return;
+        }
         BakedModel verticalBlade = blockRenderer.getBlockModel(bladeVertical);
         BakedModel horizontalBlade = blockRenderer.getBlockModel(bladeHorizontal);
         renderBlade(pPoseStack, buffer, combinedOverlay, blockRenderer, rotation, verticalBlade);

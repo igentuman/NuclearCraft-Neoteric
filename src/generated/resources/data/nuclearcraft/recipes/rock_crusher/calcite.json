@@ -9,10 +9,10 @@
   "output": [
     {
       "count": 2,
-      "item": "nuclearcraft:calcium_dust"
+      "tag": "forge:dusts/calcium"
     },
     {
-      "item": "nuclearcraft:potassium_dust"
+      "tag": "forge:dusts/potassium"
     }
   ],
   "powerModifier": 1.0,

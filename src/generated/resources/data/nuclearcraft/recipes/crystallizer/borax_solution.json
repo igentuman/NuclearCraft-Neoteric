@@ -8,7 +8,7 @@
   ],
   "output": [
     {
-      "item": "nuclearcraft:borax_dust"
+      "tag": "forge:dusts/borax"
     }
   ],
   "powerModifier": 0.5,

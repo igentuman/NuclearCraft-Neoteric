@@ -7,7 +7,7 @@
   ],
   "output": [
     {
-      "item": "nuclearcraft:barium_dust"
+      "tag": "forge:dusts/barium"
     }
   ],
   "powerModifier": 1.0,

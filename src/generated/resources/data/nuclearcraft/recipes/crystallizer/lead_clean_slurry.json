@@ -9,7 +9,7 @@
   "output": [
     {
       "count": 2,
-      "item": "nuclearcraft:lead_dust"
+      "tag": "forge:dusts/lead"
     }
   ],
   "powerModifier": 1.0,

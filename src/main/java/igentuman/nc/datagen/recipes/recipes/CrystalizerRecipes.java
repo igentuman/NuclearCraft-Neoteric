@@ -10,32 +10,36 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static net.minecraft.world.item.Items.GOLD_INGOT;
-import static net.minecraft.world.item.Items.LAPIS_LAZULI;
+import static igentuman.nc.setup.registration.NCItems.NC_ITEMS;
+import static net.minecraft.world.item.Items.*;
 
 public class CrystalizerRecipes extends AbstractRecipeProvider {
 
     public static void generate(Consumer<FinishedRecipe> consumer) {
         CrystalizerRecipes.consumer = consumer;
         ID = Processors.CRYSTALLIZER;
+        itemsAndFluids(fluidIngredient("minecraft:water", 1000), ingredient(NC_ITEMS.get("salt").get()), 0.5D, 2.5D);
+        itemsAndFluids(fluidIngredient("redstone", 144), ingredient(REDSTONE), 0.5D, 0.5D);
+        itemsAndFluids(fluidIngredient("glowstone", 144), ingredient(GLOWSTONE_DUST), 0.5D, 0.5D);
         itemsAndFluids(fluidIngredient(Materials.lapis, 144), ingredient(LAPIS_LAZULI));
-        itemsAndFluids(fluidIngredient("boron_nitride_solution", 144), dustStack(Materials.boron_nitride));
-        itemsAndFluids(fluidIngredient("uranium_oxide", 144), dustStack(Materials.yellowcake));
+        itemsAndFluids(fluidIngredient(Materials.sulfur, 144), dustIngredient(Materials.sulfur));
+        itemsAndFluids(fluidIngredient("boron_nitride_solution", 144), dustIngredient(Materials.boron_nitride));
+        itemsAndFluids(fluidIngredient("uranium_oxide", 144), dustIngredient(Materials.yellowcake));
         itemsAndFluids(fluidIngredient(Materials.polonium, 1000), NcIngredient.stack(stack("mekanism:pellet_polonium", 1)), 3D);
-        itemsAndFluids(fluidIngredient(Materials.potassium_iodide, 144), dustStack(Materials.potassium_iodide));
-        itemsAndFluids(fluidIngredient("fluorite_water", 144), dustStack(Materials.fluorite));
-        itemsAndFluids(fluidIngredient("calcium_sulfate_solution", 144), dustStack(Materials.calcium_sulfate));
-        itemsAndFluids(fluidIngredient("sodium_fluoride_solution", 144), dustStack(Materials.sodium_fluoride));
-        itemsAndFluids(fluidIngredient("potassium_fluoride_solution", 144), dustStack(Materials.potassium_fluoride));
-        itemsAndFluids(fluidIngredient("sodium_hydroxide_solution", 144), dustStack(Materials.sodium_hydroxide), 0.5D, 0.5D);
-        itemsAndFluids(fluidIngredient("potassium_hydroxide_solution", 144), dustStack(Materials.potassium_hydroxide), 0.5D, 0.5D);
-        itemsAndFluids(fluidIngredient("borax_solution", 144), dustStack(Materials.borax), 0.5D, 0.5D);
-        itemsAndFluids(fluidIngredient("irradiated_borax_solution", 144), dustStack(Materials.irradiated_borax), 0.5D, 0.5D);
+        itemsAndFluids(fluidIngredient(Materials.potassium_iodide, 144), dustIngredient(Materials.potassium_iodide));
+        itemsAndFluids(fluidIngredient("fluorite_water", 144), dustIngredient(Materials.fluorite));
+        itemsAndFluids(fluidIngredient("calcium_sulfate_solution", 144), dustIngredient(Materials.calcium_sulfate));
+        itemsAndFluids(fluidIngredient("sodium_fluoride_solution", 144), dustIngredient(Materials.sodium_fluoride));
+        itemsAndFluids(fluidIngredient("potassium_fluoride_solution", 144), dustIngredient(Materials.potassium_fluoride));
+        itemsAndFluids(fluidIngredient("sodium_hydroxide_solution", 144), dustIngredient(Materials.sodium_hydroxide), 0.5D, 0.5D);
+        itemsAndFluids(fluidIngredient("potassium_hydroxide_solution", 144), dustIngredient(Materials.potassium_hydroxide), 0.5D, 0.5D);
+        itemsAndFluids(fluidIngredient("borax_solution", 144), dustIngredient(Materials.borax), 0.5D, 0.5D);
+        itemsAndFluids(fluidIngredient("irradiated_borax_solution", 144), dustIngredient(Materials.irradiated_borax), 0.5D, 0.5D);
 
         for(String material: Materials.slurries()) {
             itemsAndFluids(
                     fluidIngredient(material+"_clean_slurry", 400),
-                    dustStack(material, 2)
+                    dustIngredient(material, 2)
             );
         }
     }

@@ -2,18 +2,18 @@
   "type": "nuclearcraft:chemical_reactor",
   "inputFluids": [
     {
-      "amount": 250,
-      "tag": "forge:liquid_oxygen"
+      "amount": 288,
+      "tag": "forge:beryllium"
     },
     {
-      "amount": 500,
-      "tag": "forge:fluorine"
+      "amount": 250,
+      "tag": "forge:fluorite_water"
     }
   ],
   "outputFluids": [
     {
-      "amount": 250,
-      "tag": "forge:oxygen_difluoride"
+      "amount": 360,
+      "tag": "forge:beryllium_fluoride"
     }
   ],
   "powerModifier": 0.5,

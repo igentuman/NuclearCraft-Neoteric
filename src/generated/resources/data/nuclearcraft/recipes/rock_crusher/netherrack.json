@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:rock_crusher",
+  "input": [
+    {
+      "count": 2,
+      "item": "minecraft:netherrack"
+    }
+  ],
+  "output": [
+    {
+      "tag": "forge:dusts/sulfur"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

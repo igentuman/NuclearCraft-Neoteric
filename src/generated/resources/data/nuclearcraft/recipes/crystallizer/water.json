@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:crystallizer",
+  "inputFluids": [
+    {
+      "amount": 1000,
+      "tag": "minecraft:water"
+    }
+  ],
+  "output": [
+    {
+      "item": "nuclearcraft:salt"
+    }
+  ],
+  "powerModifier": 2.5,
+  "radiation": 1.0,
+  "timeModifier": 0.5
+}

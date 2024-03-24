@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import static igentuman.nc.setup.registration.NCBlocks.MUSHROOM_ITEM;
+import static igentuman.nc.setup.registration.NCItems.NC_ITEMS;
+import static net.minecraft.world.level.material.Fluids.WATER;
 
 public class FluidEnricherRecipes extends AbstractRecipeProvider {
 
@@ -32,9 +34,15 @@ public class FluidEnricherRecipes extends AbstractRecipeProvider {
         );
 
         add(
-                fluidIngredient("oxygen", 100),
+                fluidIngredient("minecraft:water", 500),
+                ingredient(NC_ITEMS.get("salt").get(), 3),
+                fluidIngredient("chlorine", 500)
+        );
+
+        add(
+                fluidIngredient("oxygen", 144),
                 dustIngredient(Materials.uranium),
-                fluidIngredient("uranium_oxide", 500)
+                fluidIngredient("uranium_oxide", 576)
         );
 
         add(

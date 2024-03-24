@@ -4,7 +4,7 @@
   "group": "nuclearcraft_solar_panels",
   "key": {
     "G": {
-      "tag": "forge:dusts/graphite"
+      "tag": "forge:dusts/energetic_blend"
     },
     "M": {
       "item": "nuclearcraft:coil_magnesium_diboride"

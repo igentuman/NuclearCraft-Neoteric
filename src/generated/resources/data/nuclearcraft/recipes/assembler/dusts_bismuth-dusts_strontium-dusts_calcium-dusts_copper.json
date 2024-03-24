@@ -21,7 +21,7 @@
   "output": [
     {
       "count": 3,
-      "item": "nuclearcraft:bscco_dust"
+      "tag": "forge:dusts/bscco"
     }
   ],
   "powerModifier": 1.0,

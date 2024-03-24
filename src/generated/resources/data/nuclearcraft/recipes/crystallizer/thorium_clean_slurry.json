@@ -9,7 +9,7 @@
   "output": [
     {
       "count": 2,
-      "item": "nuclearcraft:thorium_dust"
+      "tag": "forge:dusts/thorium"
     }
   ],
   "powerModifier": 1.0,

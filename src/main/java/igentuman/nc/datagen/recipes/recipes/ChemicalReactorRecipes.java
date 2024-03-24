@@ -143,31 +143,21 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
 
         add(
                 List.of(
-                        fluidIngredient("hydrogen", 250),
-                        fluidStackIngredient("fluorine", 250)
-                ),
-                List.of(
-                        fluidIngredient("hydrofluoric_acid", 250)
-                ), 0.5D, 0.5D
-        );
-
-        add(
-                List.of(
                         fluidIngredient("lithium", 288),
-                        fluidIngredient("fluorine", 250)
+                        fluidIngredient("fluorite_water", 250)
                 ),
                 List.of(
-                        fluidIngredient("lithium_fluoride", 288)
+                        fluidIngredient("lithium_fluoride", 360)
                 ), 0.5D, 0.5D
         );
 
         add(
                 List.of(
                         fluidIngredient("beryllium", 288),
-                        fluidIngredient("fluorine", 250)
+                        fluidIngredient("fluorite_water", 250)
                 ),
                 List.of(
-                        fluidIngredient("beryllium_fluoride", 288)
+                        fluidIngredient("beryllium_fluoride", 360)
                 ), 0.5D, 0.5D
         );
 
@@ -263,14 +253,14 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
                 ),
                 List.of(
                         fluidIngredient("sulfur_trioxide", 250),
-                        fluidIngredient("fluorine", 250)
+                        fluidIngredient("fluorite_water", 250)
                 ), 1D, 0.5D
         );
 
         add(
                 List.of(
                         fluidIngredient("liquid_oxygen", 250),
-                        fluidIngredient("fluorine", 500)
+                        fluidIngredient("fluorite_water", 500)
                 ),
                 List.of(
                         fluidIngredient("oxygen_difluoride", 250)
@@ -376,11 +366,11 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
 
         add(
                 List.of(
-                        fluidIngredient("boron_arsenide", 250),
+                        fluidIngredient("boron_arsenide", 288),
                         fluidIngredient("minecraft:water", 100)
                 ),
                 List.of(
-                        fluidIngredient("boron_arsenide_solution", 350)
+                        fluidIngredient("boron_arsenide_solution", 360)
                 )
         );
 
@@ -400,7 +390,7 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient("minecraft:water", 250)
                 ),
                 List.of(
-                        fluidIngredient("hydrated_gelatin", 250)
+                        fluidIngredient("hydrated_gelatin", 288)
                 ), 0.5D, 0.5D
         );
 

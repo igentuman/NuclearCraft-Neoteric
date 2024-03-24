@@ -22,6 +22,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -65,11 +66,19 @@ public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
                 }
                 resolve:
                 for(String mod: MATERIAL_PRODUCTS.MODS_PRIORITY.get()) {
+                    FluidStack flowing = null;
                     for(FluidStack fluid: outputFluid.getRepresentations()) {
-                        if(getModId(fluid).equals(mod)) {
-                            cachedOutputFluids.add(fluid);
+                        if(getModId(fluid).equals(mod) || getModId(fluid).equals("minecraft")) {
+                            if(ForgeRegistries.FLUIDS.getKey(fluid.getFluid()).getPath().contains("_flowing")) {
+                                flowing = fluid;
+                                continue; //skipping flowing types
+                            }
+                            cachedOutputFluids.add(new FluidStack(fluid.getRawFluid(), fluid.getAmount()));
                             break resolve;
                         }
+                    } //if no still found
+                    if(flowing != null) {
+                        cachedOutputFluids.add(new FluidStack(flowing, flowing.getAmount()));
                     }
                 }
             }

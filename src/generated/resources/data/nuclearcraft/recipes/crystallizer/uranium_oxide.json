@@ -8,7 +8,7 @@
   ],
   "output": [
     {
-      "item": "nuclearcraft:yellowcake_dust"
+      "tag": "forge:dusts/yellowcake"
     }
   ],
   "powerModifier": 1.0,

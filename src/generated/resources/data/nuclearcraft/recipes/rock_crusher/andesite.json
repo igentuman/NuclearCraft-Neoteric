@@ -9,10 +9,10 @@
   "output": [
     {
       "count": 2,
-      "item": "nuclearcraft:beryllium_dust"
+      "tag": "forge:dusts/beryllium"
     },
     {
-      "item": "nuclearcraft:arsenic_dust"
+      "tag": "forge:dusts/arsenic"
     }
   ],
   "powerModifier": 1.0,

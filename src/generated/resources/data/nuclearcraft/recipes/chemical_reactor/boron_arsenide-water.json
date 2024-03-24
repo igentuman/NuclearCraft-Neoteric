@@ -2,7 +2,7 @@
   "type": "nuclearcraft:chemical_reactor",
   "inputFluids": [
     {
-      "amount": 250,
+      "amount": 288,
       "tag": "forge:boron_arsenide"
     },
     {
@@ -12,7 +12,7 @@
   ],
   "outputFluids": [
     {
-      "amount": 350,
+      "amount": 360,
       "tag": "forge:boron_arsenide_solution"
     }
   ],

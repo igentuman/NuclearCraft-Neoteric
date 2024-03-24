@@ -9,7 +9,7 @@
   "output": [
     {
       "count": 2,
-      "item": "nuclearcraft:aluminum_dust"
+      "tag": "forge:dusts/aluminum"
     }
   ],
   "powerModifier": 1.0,

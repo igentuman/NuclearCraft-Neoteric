@@ -7,7 +7,7 @@
   ],
   "output": [
     {
-      "item": "nuclearcraft:bismuth_dust"
+      "tag": "forge:dusts/bismuth"
     }
   ],
   "powerModifier": 1.0,

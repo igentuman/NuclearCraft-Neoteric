@@ -11,7 +11,7 @@
       "item": "minecraft:netherite_scrap"
     },
     {
-      "item": "nuclearcraft:titanium_dust"
+      "tag": "forge:dusts/titanium"
     }
   ],
   "powerModifier": 1.0,

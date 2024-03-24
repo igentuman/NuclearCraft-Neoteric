@@ -20,6 +20,7 @@ import net.minecraftforge.common.Tags;
 import java.util.function.Consumer;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.datagen.recipes.recipes.AbstractRecipeProvider.dustIngredient;
 import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_BLOCKS;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.coils;
@@ -1181,7 +1182,7 @@ public class NCRecipes extends RecipeProvider {
                 .pattern("PCP")
                 .define('P', NCItems.NC_PARTS.get("plate_advanced").get())
                 .define('S', ENERGY_BLOCKS.get("solar_panel/basic").get())
-                .define('G', forgeDust("graphite"))
+                .define('G', dustIngredient(Materials.quartz))
                 .define('C', NCItems.NC_PARTS.get("coil_copper").get())
                 .group(MODID+"_solar_panels")
                 .unlockedBy("item", has(ENERGY_BLOCKS.get("solar_panel/basic").get()))
@@ -1193,7 +1194,7 @@ public class NCRecipes extends RecipeProvider {
                 .pattern("PMP")
                 .define('P', NCItems.NC_PARTS.get("plate_du").get())
                 .define('S', ENERGY_BLOCKS.get("solar_panel/advanced").get())
-                .define('G', forgeDust("graphite"))
+                .define('G', dustIngredient(Materials.energetic_blend))
                 .define('M', NCItems.NC_PARTS.get("coil_magnesium_diboride").get())
                 .group(MODID+"_solar_panels")
                 .unlockedBy("item", has(ENERGY_BLOCKS.get("solar_panel/advanced").get()))
@@ -1205,7 +1206,7 @@ public class NCRecipes extends RecipeProvider {
                 .pattern("PMP")
                 .define('P', NCItems.NC_PARTS.get("plate_elite").get())
                 .define('S', ENERGY_BLOCKS.get("solar_panel/du").get())
-                .define('G', forgeDust("graphite"))
+                .define('G', dustIngredient(Materials.energetic_blend))
                 .define('M', NCItems.NC_PARTS.get("coil_magnesium_diboride").get())
                 .group(MODID+"_solar_panels")
                 .unlockedBy("item", has(ENERGY_BLOCKS.get("solar_panel/advanced").get()))
@@ -1215,11 +1216,25 @@ public class NCRecipes extends RecipeProvider {
 
     private void materials(Consumer<FinishedRecipe> consumer) {
 
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NC_DUSTS.get(Materials.dimensional_blend).get(), 2)
+                .requires(dustIngredient(Materials.enderium), 1)
+                .requires(dustIngredient(Materials.emerald), 1)
+                .requires(dustIngredient(Materials.lapis), 1)
+                .group(MODID+"_dusts")
+                .unlockedBy("dust", has(NC_DUSTS.get(Materials.enderium).get()))
+                .save(consumer);
+
         SimpleCookingRecipeBuilder.blasting(Ingredient.of(forgeIngot(Materials.manganese_oxide)),
                         RecipeCategory.MISC,
                         NC_INGOTS.get(Materials.manganese).get(), 1.0f, 100)
                 .unlockedBy("has_ore", inventoryTrigger(ItemPredicate.Builder.item().of(NC_INGOTS.get(Materials.manganese_oxide).get()).build()))
                 .save(consumer, MODID+"_"+Materials.manganese+"_sm1");
+
+        SimpleCookingRecipeBuilder.blasting(Ingredient.of(forgeIngot(Materials.sodium_fluoride)),
+                        RecipeCategory.MISC,
+                        NC_DUSTS.get(Materials.sodium).get(), 1.0f, 100)
+                .unlockedBy("has_ore", inventoryTrigger(ItemPredicate.Builder.item().of(NC_DUSTS.get(Materials.sodium_fluoride).get()).build()))
+                .save(consumer, MODID+"_"+Materials.sodium+"_sm1");
 
         SimpleCookingRecipeBuilder.blasting(Ingredient.of(forgeDust(Materials.rhodochrosite)),
                         RecipeCategory.MISC,
@@ -1302,6 +1317,18 @@ public class NCRecipes extends RecipeProvider {
 
     private void processors(Consumer<FinishedRecipe> consumer)
     {
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NCProcessors.PROCESSORS.get("analyzer").get())
+                .pattern("PYP")
+                .pattern("PCP")
+                .pattern("PMP")
+                .define('C', CARTOGRAPHY_TABLE)
+                .define('Y', ENDER_EYE)
+                .define('P', NC_PARTS.get("plate_basic").get())
+                .define('M', NC_PARTS.get("motor").get())
+                .group(MODID+"_machines")
+                .unlockedBy("item", has(CAULDRON))
+                .save(consumer);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NCProcessors.PROCESSORS.get("pump").get())
                 .pattern("PMP")

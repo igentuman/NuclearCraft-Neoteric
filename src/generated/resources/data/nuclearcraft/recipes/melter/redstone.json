@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:melter",
+  "input": [
+    {
+      "item": "minecraft:redstone"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 144,
+      "tag": "forge:redstone"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

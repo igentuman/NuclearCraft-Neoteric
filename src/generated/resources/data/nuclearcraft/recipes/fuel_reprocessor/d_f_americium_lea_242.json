@@ -22,10 +22,10 @@
       "item": "nuclearcraft:berkelium_248"
     },
     {
-      "item": "nuclearcraft:molybdenum_dust"
+      "tag": "forge:dusts/molybdenum"
     },
     {
-      "item": "nuclearcraft:promethium_147_dust"
+      "tag": "forge:dusts/promethium_147"
     }
   ],
   "powerModifier": 1.0,

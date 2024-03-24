@@ -21,10 +21,10 @@
       "item": "nuclearcraft:plutonium_242"
     },
     {
-      "item": "nuclearcraft:molybdenum_dust"
+      "tag": "forge:dusts/molybdenum"
     },
     {
-      "item": "nuclearcraft:caesium_137_dust"
+      "tag": "forge:dusts/caesium_137"
     }
   ],
   "powerModifier": 1.0,

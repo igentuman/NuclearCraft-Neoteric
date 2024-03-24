@@ -13,7 +13,7 @@
   ],
   "output": [
     {
-      "item": "nuclearcraft:carbon_manganese_dust"
+      "tag": "forge:dusts/carbon_manganese"
     }
   ],
   "powerModifier": 1.0,

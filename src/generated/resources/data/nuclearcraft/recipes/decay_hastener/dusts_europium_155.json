@@ -7,7 +7,7 @@
   ],
   "output": [
     {
-      "item": "nuclearcraft:gadolinium_dust"
+      "tag": "forge:dusts/gadolinium"
     }
   ],
   "powerModifier": 1.0,

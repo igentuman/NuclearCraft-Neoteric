@@ -99,6 +99,9 @@ public class NCFluids {
         items.put("radaway", new LiquidDefinition("radaway", 0x50B37AC4));
         items.put("ethanol", new LiquidDefinition("ethanol", 0x50B37AC4));
         items.put("methanol", new LiquidDefinition("methanol", 0x50B37AC4));
+        items.put("sodium", new LiquidDefinition("sodium", 0x50dd695c));
+        items.put("glowstone", new LiquidDefinition("glowstone", 0x50d6e11f));
+        items.put("redstone", new LiquidDefinition("redstone", 0x50e50e0e));
         items.put("hydrogen_chloride", new LiquidDefinition("hydrogen_chloride", 0x50B37AC4));
         items.put("lithium_fluoride", new LiquidDefinition("lithium_fluoride", 0x50B37AC4));
         items.put("beryllium_fluoride", new LiquidDefinition("beryllium_fluoride", 0x50B37AC4));

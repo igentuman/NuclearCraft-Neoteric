@@ -1,0 +1,28 @@
+{
+  "type": "nuclearcraft:assembler",
+  "input": [
+    {
+      "tag": "forge:plates/electrum"
+    },
+    {
+      "item": "nuclearcraft:bioplastic"
+    },
+    {
+      "tag": "forge:dusts/energetic_blend"
+    },
+    {
+      "item": "minecraft:redstone"
+    },
+    {
+      "item": "nuclearcraft:coil_copper"
+    }
+  ],
+  "output": [
+    {
+      "item": "nuclearcraft:basic_electric_circuit"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

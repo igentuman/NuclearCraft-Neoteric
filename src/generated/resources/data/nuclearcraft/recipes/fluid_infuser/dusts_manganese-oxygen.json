@@ -13,7 +13,7 @@
   ],
   "output": [
     {
-      "item": "nuclearcraft:manganese_dioxide_dust"
+      "tag": "forge:dusts/manganese_dioxide"
     }
   ],
   "powerModifier": 1.0,

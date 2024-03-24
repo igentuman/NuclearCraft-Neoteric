@@ -8,7 +8,7 @@
   ],
   "output": [
     {
-      "item": "nuclearcraft:potassium_hydroxide_dust"
+      "tag": "forge:dusts/potassium_hydroxide"
     }
   ],
   "powerModifier": 0.5,

@@ -8,10 +8,11 @@
   ],
   "output": [
     {
-      "count": 9,
+      "count": 7,
       "item": "nuclearcraft:uranium_238"
     },
     {
+      "count": 2,
       "item": "nuclearcraft:uranium_235"
     }
   ],

@@ -16,6 +16,7 @@ import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.setup.registration.NCFluids;
+import igentuman.nc.setup.registration.NcParticleTypes;
 import igentuman.nc.util.CustomEnergyStorage;
 import igentuman.nc.util.annotation.NBTField;
 import igentuman.nc.multiblock.ValidationResult;
@@ -27,6 +28,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -45,10 +47,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import static igentuman.nc.block.fission.FissionControllerBlock.POWERED;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
@@ -118,7 +117,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     public int moderatorCellMultiplier = 1;
 
     public ValidationResult validationResult = ValidationResult.INCOMPLETE;
-    public RecipeInfo recipeInfo = new RecipeInfo();
+    public RecipeInfo<RECIPE> recipeInfo = new RecipeInfo<>();
     public boolean controllerEnabled = false;
     private Direction facing;
     public RECIPE recipe;
@@ -445,6 +444,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     private void handleMeltdown() {
         if (heat >= getMaxHeat()) {
             BlockPos explosionPos = getBlockPos().relative(getFacing(), 2);
+            List<BlockPos> fuelCells = new ArrayList<>(multiblock().fuelCells);
             if (FISSION_CONFIG.EXPLOSION_RADIUS.get() == 0) {
                 getLevel().explode(null, explosionPos.getX(), explosionPos.getY(), explosionPos.getZ(), 2F, true, Explosion.BlockInteraction.NONE);
                 for (BlockPos pos : multiblock.fuelCells) {
@@ -456,7 +456,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
                     getLevel().explode(null, pos.getX(), pos.getY(), pos.getZ(), 2, true, Explosion.BlockInteraction.DESTROY);
                 }
             }
-            for (BlockPos pos : multiblock.fuelCells) {
+            for (BlockPos pos : fuelCells) {
                 getLevel().setBlock(pos, NCFluids.getBlock("corium"), 1);
             }
             getLevel().setBlock(getBlockPos(), NCFluids.getBlock("corium"), 1);

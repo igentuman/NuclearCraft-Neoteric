@@ -105,7 +105,11 @@ public abstract class BaseLootTableProvider extends LootTableProvider {
         Path outputFolder = this.generator.getOutputFolder();
         tables.forEach((key, lootTable) -> {
             Path path = outputFolder.resolve("data/" + key.getNamespace() + "/loot_tables/" + key.getPath() + ".json");
-            //  DataProvider.save(cache, LootTables.serialize(lootTable), path);
+            try {
+                DataProvider.save(GSON, cache, LootTables.serialize(lootTable), path);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         });
     }
 

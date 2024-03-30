@@ -27,6 +27,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -36,11 +38,29 @@ import java.util.Objects;
 import static igentuman.nc.handler.config.TurbineConfig.TURBINE_CONFIG;
 import static igentuman.nc.handler.event.client.InputEvents.DESCRIPTIONS_SHOW;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BE;
+import static net.minecraft.world.level.block.Blocks.ANVIL;
+import static net.minecraft.world.level.block.Blocks.IRON_BARS;
 
 public class TurbineBladeBlock extends DirectionalBlock implements EntityBlock {
     public static final BooleanProperty HIDDEN = BlockStateProperties.POWERED;
     public TurbineBladeBlock(Properties pProperties) {
-        super(pProperties.sound(SoundType.METAL).noOcclusion());
+        super(Properties.copy(IRON_BARS).noCollission().forceSolidOff());
+    }
+
+    @Override
+    public boolean isCollisionShapeFullBlock(BlockState pState, BlockGetter pLevel, BlockPos pPos) {
+        if(pState.getValue(HIDDEN)) {
+            return false;
+        }
+        return super.isCollisionShapeFullBlock(pState, pLevel, pPos);
+    }
+
+    @Override
+    public VoxelShape getCollisionShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
+        if(pState.getValue(HIDDEN)) {
+            return Block.box(0, 0, 0, 0, 0, 0);
+        }
+        return super.getCollisionShape(pState, pLevel, pPos, pContext);
     }
 
     public double efficiency = 0;

@@ -1,7 +1,6 @@
 package igentuman.nc.container;
 
 import igentuman.nc.block.entity.turbine.TurbineControllerBE;
-import igentuman.nc.multiblock.turbine.TurbineRegistration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -123,7 +122,7 @@ public class TurbineControllerContainer extends AbstractContainerMenu {
     }
 
     public String getEfficiency() {
-        return roundFormat(blockEntity.efficiency);
+        return roundFormat(blockEntity.coilsEfficiency);
     }
 
     public int energyPerTick() {

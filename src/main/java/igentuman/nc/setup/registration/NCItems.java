@@ -45,10 +45,10 @@ public class NCItems {
     public static TagKey<Item> PARTS_TAG = TagKey.create(ITEM_REGISTRY, new ResourceLocation(MODID, "parts"));
     public static final Item.Properties ITEM_PROPERTIES = new Item.Properties();
     public static final Item.Properties ONE_ITEM_PROPERTIES = new Item.Properties().stacksTo(1);
-    public static final Item.Properties PAXEL_PROPS = new Item.Properties().stacksTo(1).durability(5000);
+    public static final Item.Properties PAXEL_PROPS = new Item.Properties().stacksTo(1).durability(5000).fireResistant();
     public static final Item.Properties HAZMAT_PROPS = new Item.Properties().stacksTo(1).durability(250);
-    public static final Item.Properties TOUGH_PROPS = new Item.Properties().stacksTo(1).durability(2500);
-    public static final Item.Properties HEV_PROPS = new Item.Properties().stacksTo(1).durability(5500);
+    public static final Item.Properties TOUGH_PROPS = new Item.Properties().stacksTo(1).durability(2500).fireResistant();
+    public static final Item.Properties HEV_PROPS = new Item.Properties().stacksTo(1).durability(5500).fireResistant();
 
     public static final RegistryObject<Item> HAZMAT_MASK =
             ITEMS.register("hazmat_mask", () -> new HazmatItem(ArmorMaterials.HAZMAT, ArmorItem.Type.HELMET, HAZMAT_PROPS));

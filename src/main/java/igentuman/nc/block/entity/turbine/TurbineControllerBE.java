@@ -7,8 +7,6 @@ import igentuman.nc.handler.sided.SlotModePair;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.multiblock.ValidationResult;
 import igentuman.nc.multiblock.turbine.TurbineMultiblock;
-import igentuman.nc.multiblock.turbine.TurbineRegistration;
-import igentuman.nc.recipes.AbstractRecipe;
 import igentuman.nc.recipes.NcRecipeType;
 import igentuman.nc.recipes.RecipeInfo;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
@@ -48,10 +46,10 @@ import igentuman.nc.compat.cc.NCTurbinePeripheral;
 import static igentuman.nc.block.fission.FissionControllerBlock.POWERED;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.handler.config.TurbineConfig.TURBINE_CONFIG;
+import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
 import static igentuman.nc.setup.registration.NCSounds.FISSION_REACTOR;
 import static igentuman.nc.util.ModUtil.isCcLoaded;
-import static net.minecraft.core.particles.ParticleTypes.SMOKE;
-import static net.minecraft.core.particles.ParticleTypes.SNOWFLAKE;
+import static net.minecraft.core.particles.ParticleTypes.*;
 import static net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE;
 
 public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> extends TurbineBE {
@@ -77,7 +75,7 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
     @NBTField
     public int energyPerTick = 0;
     @NBTField
-    public double efficiency = 0;
+    public double coilsEfficiency = 0;
     @NBTField
     public boolean powered = false;
     @NBTField
@@ -85,16 +83,22 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
     @NBTField
     public int activeCoils = 0;
     @NBTField
-    public int flow = 0;
+    public float flow = 0;
     @NBTField
     public float rotationSpeed = 0;
+    @NBTField
+    public int blades = 0;
 
+    @NBTField
+    public double efficiency = 0;
     public ValidationResult validationResult = ValidationResult.INCOMPLETE;
     public RecipeInfo<RECIPE> recipeInfo = new RecipeInfo<>();
     public boolean controllerEnabled = false;
     protected Direction facing;
     public RECIPE recipe;
     public HashMap<String, RECIPE> cachedRecipes = new HashMap<>();
+
+
 
     @Override
     public String getName() {
@@ -110,8 +114,8 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
         contentHandler = new SidedContentHandler(
                 0, 0,
                 1, 1, 1000, 10000);
-        contentHandler.fluidCapability.setGlobalMode(0, SlotModePair.SlotMode.PULL);
-        contentHandler.fluidCapability.setGlobalMode(1, SlotModePair.SlotMode.PUSH);
+        contentHandler.fluidCapability.setGlobalMode(0, SlotModePair.SlotMode.INPUT);
+        contentHandler.fluidCapability.setGlobalMode(1, SlotModePair.SlotMode.OUTPUT);
         contentHandler.setBlockEntity(this);
     }
 
@@ -230,7 +234,7 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
             stopSound();
             return;
         }
-        if(energyPerTick > 0) {
+        if(rotationSpeed > 0) {
             spawnSteamParticles();
             playRunningSound();
         }
@@ -305,7 +309,7 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
         boolean wasFormed = multiblock().isFormed();
         if (!wasFormed || !isInternalValid || !isCasingValid) {
             activeCoils = 0;
-            efficiency = 0;
+            coilsEfficiency = 0;
             flow = 0;
             reValidateCounter++;
             if(reValidateCounter < 40) {
@@ -327,17 +331,28 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
         if(activeCoils != multiblock().activeCoils) {
             changed = true;
             activeCoils = multiblock().activeCoils;
-            efficiency = multiblock().coilsEfficiency;
+            coilsEfficiency = multiblock().coilsEfficiency;
         }
 
         if(flow != multiblock().flow) {
             changed = true;
             flow = multiblock().flow;
+            blades = multiblock().blades;
         }
         height = multiblock().height();
         width = multiblock().width();
         depth = multiblock().depth();
         trackChanges(wasFormed, multiblock().isFormed());
+    }
+
+    public float bladesEfficiency()
+    {
+        if(blades == 0) return 0;
+        return flow/blades;
+    }
+
+    public float getEfficiencyRate() {
+        return (float) coilsEfficiency /(100*activeCoils) * bladesEfficiency();
     }
 
     @Override
@@ -375,37 +390,30 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
     }
     public List<BlockPos> getBlocks(BlockPos pos, Direction.Axis axis) {
         List<BlockPos> positions = new ArrayList<>();
-
+        int y = pos.getY();
+        int z = pos.getZ();
+        int x = pos.getX();
         switch (axis) {
             case X:
                 // Generate positions around the BlockPos on the YZ plane
-                for (int y = -1; y <= 1; y++) {
-                    for (int z = -1; z <= 1; z++) {
-                        if (y != 0 || z != 0) { // Exclude the original position
-                            positions.add(pos.offset(0, y, z));
-                        }
-                    }
-                }
+                positions.add(pos.offset(0, -1, -1));
+                positions.add(pos.offset(0, -1, 1));
+                positions.add(pos.offset(0, 1, 1));
+                positions.add(pos.offset(0, 1, -1));
                 break;
             case Y:
                 // Generate positions around the BlockPos on the XZ plane
-                for (int x = -1; x <= 1; x++) {
-                    for (int z = -1; z <= 1; z++) {
-                        if (x != 0 || z != 0) { // Exclude the original position
-                            positions.add(pos.offset(x, 0, z));
-                        }
-                    }
-                }
+                positions.add(pos.offset( -1, 0,-1));
+                positions.add(pos.offset( -1, 0, 1));
+                positions.add(pos.offset( 1, 0, 1));
+                positions.add(pos.offset( 1, 0, -1));
                 break;
             case Z:
-                // Generate positions around the BlockPos on the XY plane
-                for (int x = -1; x <= 1; x++) {
-                    for (int y = -1; y <= 1; y++) {
-                        if (x != 0 || y != 0) { // Exclude the original position
-                            positions.add(pos.offset(x, y, 0));
-                        }
-                    }
-                }
+                // Generate positions around the BlockPos on the XY planed
+                positions.add(pos.offset(-1, -1, 0));
+                positions.add(pos.offset(1, -1, 0));
+                positions.add(pos.offset(1, 1, 0));
+                positions.add(pos.offset(-1, 1, 0));
                 break;
         }
 
@@ -413,40 +421,40 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
     }
     private void spawnSteamParticles() {
         if (level.isClientSide && level.getGameTime() % 4 == 0) {
-            BlockPos pos = getBlockPosForSteam().relative(orientation.getOpposite(), 2);
+            BlockPos pos = getBlockPosForSteam().relative(orientation.getOpposite(), 1);
             for(BlockPos source:  getBlocks(pos, orientation.getAxis())){
                 for (int i = 0; i < 3; i++) {
                     double x = source.getX() + level.random.nextGaussian() * 0.2;
-                    double y = source.getY() + level.random.nextGaussian() * 0.2;
+                    double y = source.getY() + 0.7f + level.random.nextGaussian() * 0.2;
                     double z = source.getZ() + level.random.nextGaussian() * 0.2;
                     float ySpeed = 0;
                     float zSpeed = 0;
                     float xSpeed = 0;
                     switch (orientation.getOpposite()) {
                         case UP:
-                            ySpeed = 0.4f;
+                            ySpeed = 0.2f;
                             break;
                         case DOWN:
-                            ySpeed = -0.3f;
+                            ySpeed = -0.1f;
                             break;
                         case NORTH:
-                            zSpeed = -0.3f;
+                            zSpeed = -0.1f;
                             z += 0.5;
                             break;
                         case SOUTH:
-                            zSpeed = 0.3f;
+                            zSpeed = 0.1f;
                             z += 0.5;
                             break;
                         case EAST:
-                            xSpeed = 0.3f;
+                            xSpeed = 0.1f;
                             z += 0.5;
                             break;
                         case WEST:
-                            xSpeed = -0.3f;
+                            xSpeed = -0.1f;
                             z += 0.5;
                             break;
                     }
-                    level.addParticle(SNOWFLAKE, x, y, z, xSpeed, ySpeed, zSpeed);
+                    level.addParticle(CLOUD, x, y, z, xSpeed, ySpeed, zSpeed);
                 }
             }
         }
@@ -454,11 +462,11 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
 
     private boolean process() {
         recipeInfo.process(1);
-        rotationSpeed = (rotationSpeed+(float)getRealFlow()/(float)(flow*TURBINE_CONFIG.BLADE_FLOW.get()))/2;
+        rotationSpeed = (rotationSpeed+(float)getRealFlow()/flow*TURBINE_CONFIG.BLADE_FLOW.get())/2;
         energyStorage.addEnergy(calculateEnergy());
 
         handleRecipeOutput();
-
+        contentHandler.fluidCapability.tanks.get(0).drain(getRealFlow(), EXECUTE);
         efficiency = calculateEfficiency();
         return true;
     }
@@ -466,7 +474,7 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
     private void handleRecipeOutput() {
         if (hasRecipe() && recipeInfo.isCompleted()) {
             if(recipe == null) {
-                recipe = (RECIPE) recipeInfo.recipe();
+                recipe = recipeInfo.recipe();
             }
             if (recipe.handleOutputs(contentHandler)) {
                 recipeInfo.clear();
@@ -482,11 +490,11 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
 
     public int getRealFlow()
     {
-        return Math.min(flow*TURBINE_CONFIG.BLADE_FLOW.get(), getFluidTank(0).getFluidAmount());
+        return (int)Math.min(flow*TURBINE_CONFIG.BLADE_FLOW.get(), getFluidTank(0).getFluidAmount());
     }
 
     private int calculateEnergy() {
-        energyPerTick = (int)(getRealFlow()*TURBINE_CONFIG.ENERGY_GEN.get());
+        energyPerTick = (int)(getRealFlow()*TURBINE_CONFIG.ENERGY_GEN.get()*getEfficiencyRate());
         return energyPerTick;
     }
 
@@ -495,10 +503,10 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
         recipe = getRecipe();
         if (recipe != null) {
             recipeInfo.setRecipe(recipe);
-            recipeInfo.ticks = ((RECIPE) recipeInfo.recipe()).getBaseTime();
+            recipeInfo.ticks = recipeInfo.recipe().getBaseTime();
             recipeInfo.energy = recipeInfo.recipe.getEnergy();
             recipeInfo.be = this;
-            recipe.consumeInputs(contentHandler);
+            //recipe.consumeInputs(contentHandler);
         }
     }
 
@@ -635,7 +643,7 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
     }
 
     public int getFlow() {
-        return flow;
+        return (int) flow;
     }
 
     public FluidTank getFluidTank(int i) {
@@ -665,7 +673,7 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
 
         @Override
         public @NotNull ItemStack getToastSymbol() {
-            return new ItemStack(TurbineRegistration.TURBINE_BLOCKS.get(getCodeId()).get());
+            return new ItemStack(TURBINE_BLOCKS.get(getCodeId()).get());
         }
 
         public int getBaseTime() {

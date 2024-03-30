@@ -7,11 +7,13 @@ import igentuman.nc.multiblock.turbine.CoilDef;
 import igentuman.nc.multiblock.turbine.TurbineRegistration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 import static igentuman.nc.block.fission.FissionControllerBlock.POWERED;
 import static igentuman.nc.block.turbine.TurbineBladeBlock.HIDDEN;
+import static net.minecraft.world.item.Items.AIR;
 
 public class TurbineBladeBE extends TurbineBE {
     public static String NAME = "turbine_blade";
@@ -43,7 +45,20 @@ public class TurbineBladeBE extends TurbineBE {
         }
     }
 
+    private BladeDef def() {
+        Item item = getBlockState().getBlock().asItem();
+        if(item.equals(AIR)) return null;
+        if(def == null) {
+            setBladeDef(TurbineRegistration.blades().get(item.toString().replaceAll("turbine_", "")));
+        }
+        return def;
+    }
+
     public void setBladeDef(BladeDef def) {
         this.def = def;
+    }
+
+    public float getFlow() {
+        return (float) (def().getEfficiency()/100D);
     }
 }

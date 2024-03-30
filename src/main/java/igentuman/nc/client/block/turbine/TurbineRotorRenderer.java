@@ -31,10 +31,19 @@ import static net.minecraft.world.level.block.state.properties.BlockStatePropert
 public class TurbineRotorRenderer implements BlockEntityRenderer<BlockEntity> {
     private final BlockEntityRendererProvider.Context context;
     private TurbineRotorBE rotor;
-    public BlockState bladeVertical = null;
-    public BlockState bladeHorizontal = null;
+    public final BlockState bladeVertical;
+    public final BlockState bladeHorizontal;
+    public final BakedModel verticalBladeModel;
+    public final BakedModel horizontalBladeModel;
     public TurbineRotorRenderer(BlockEntityRendererProvider.Context manager) {
         context = manager;
+        BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
+        bladeVertical = TURBINE_BLOCKS.get("turbine_basic_rotor_blade").get()
+                .defaultBlockState().setValue(FACING, Direction.DOWN).setValue(HIDDEN, false);
+        bladeHorizontal = TURBINE_BLOCKS.get("turbine_basic_rotor_blade").get()
+                .defaultBlockState().setValue(FACING, Direction.UP).setValue(HIDDEN, false);
+        verticalBladeModel = blockRenderer.getBlockModel(bladeVertical);
+        horizontalBladeModel = blockRenderer.getBlockModel(bladeHorizontal);
     }
     public float lastAngle = 0;
     public float x = -0.25f;
@@ -62,10 +71,7 @@ public class TurbineRotorRenderer implements BlockEntityRenderer<BlockEntity> {
         float step = rotorBe.getRotationSpeed() * 2;
 
         float angel = time * step;
-        bladeVertical = TURBINE_BLOCKS.get("turbine_basic_rotor_blade").get()
-                .defaultBlockState().setValue(FACING, Direction.DOWN).setValue(HIDDEN, false);
-        bladeHorizontal = TURBINE_BLOCKS.get("turbine_basic_rotor_blade").get()
-                .defaultBlockState().setValue(FACING, Direction.UP).setValue(HIDDEN, false);
+
         angel %= 360;
         pPoseStack.translate(0.5, 0.5, 0.5);
         Direction facing = blockstate.getValue(TurbineRotorBlock.FACING);
@@ -99,11 +105,10 @@ public class TurbineRotorRenderer implements BlockEntityRenderer<BlockEntity> {
         if(!rotor.isFormed()) {
             return;
         }
-        BakedModel verticalBlade = blockRenderer.getBlockModel(bladeVertical);
-        BakedModel horizontalBlade = blockRenderer.getBlockModel(bladeHorizontal);
-        renderBlade(pPoseStack, buffer, combinedOverlay, blockRenderer, rotation, verticalBlade);
+
+        renderBlade(pPoseStack, buffer, combinedOverlay, blockRenderer, rotation, verticalBladeModel);
         pPoseStack.translate(-0.5, -0.5, -0.5);
-        renderBlade(pPoseStack, buffer, combinedOverlay, blockRenderer, rotation2, horizontalBlade);
+        renderBlade(pPoseStack, buffer, combinedOverlay, blockRenderer, rotation2, horizontalBladeModel);
     }
 
     private void renderBlade(PoseStack pPoseStack, MultiBufferSource buffer, int combinedOverlay, BlockRenderDispatcher blockRenderer, Quaternionf rotation, BakedModel blade) {

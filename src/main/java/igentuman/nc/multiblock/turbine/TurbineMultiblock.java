@@ -25,7 +25,10 @@ public class TurbineMultiblock extends AbstractNCMultiblock {
     public List<BlockPos> bearingPositions = new ArrayList<>();
     public List<BlockPos> rotorPositions = new ArrayList<>();
     public List<BlockPos> coilPositions = new ArrayList<>();
-    public int flow = 0;
+    public float flow = 0;
+    public int activeCoils = 0;
+    public double coilsEfficiency = 0;
+    public int blades = 0;
     private List<BlockPos> bladePositions = new ArrayList<>();
 
     @Override
@@ -92,6 +95,12 @@ public class TurbineMultiblock extends AbstractNCMultiblock {
         } else {
             countCoils();
             countBlades();
+            if(blades % 2 != 0) {
+                validationResult = ValidationResult.WRONG_INNER;
+                innerValid = false;
+                outerValid = false;
+                isFormed = false;
+            }
         }
     }
 
@@ -100,7 +109,8 @@ public class TurbineMultiblock extends AbstractNCMultiblock {
         for(BlockPos pos : bladePositions) {
             BlockEntity be = getBlockEntity(pos);
             if(be instanceof TurbineBladeBE blade) {
-                flow++;
+                flow+=blade.getFlow();
+                blades++;
             }
         }
     }
@@ -143,8 +153,7 @@ public class TurbineMultiblock extends AbstractNCMultiblock {
         }
     }
 
-    public int activeCoils = 0;
-    public double coilsEfficiency = 0;
+
 
     public void countCoils() {
         activeCoils = 0;

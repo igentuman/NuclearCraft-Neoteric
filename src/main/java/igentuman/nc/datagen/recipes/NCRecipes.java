@@ -30,6 +30,8 @@ import static igentuman.nc.setup.registration.NCItems.*;
 import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCK;
 import static net.minecraft.world.item.Items.*;
 import static igentuman.nc.util.DataGenUtil.*;
+import static net.minecraft.world.level.GameRules.Category.MISC;
+
 public class NCRecipes extends RecipeProvider {
 
     public NCRecipes(DataGenerator generatorIn) {
@@ -1311,6 +1313,18 @@ public class NCRecipes extends RecipeProvider {
 
     private void processors(Consumer<FinishedRecipe> consumer)
     {
+
+        ShapedRecipeBuilder.shaped(NCProcessors.PROCESSORS.get("analyzer").get())
+                .pattern("PYP")
+                .pattern("PCP")
+                .pattern("PMP")
+                .define('C', CARTOGRAPHY_TABLE)
+                .define('Y', ENDER_EYE)
+                .define('P', NC_PARTS.get("plate_basic").get())
+                .define('M', NC_PARTS.get("motor").get())
+                .group(MODID+"_machines")
+                .unlockedBy("item", has(CAULDRON))
+                .save(consumer);
 
         ShapedRecipeBuilder.shaped(NCProcessors.PROCESSORS.get("pump").get())
                 .pattern("PMP")

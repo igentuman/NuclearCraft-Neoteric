@@ -6,7 +6,6 @@ import igentuman.nc.compat.cc.NCProcessorPeripheral;
 import igentuman.nc.handler.CatalystHandler;
 import igentuman.nc.handler.UpgradesHandler;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
-import igentuman.nc.radiation.data.RadiationManager;
 import igentuman.nc.recipes.AbstractRecipe;
 import igentuman.nc.recipes.NcRecipeType;
 import igentuman.nc.recipes.RecipeInfo;
@@ -19,7 +18,6 @@ import igentuman.nc.util.CustomEnergyStorage;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.SlotModePair;
 import igentuman.nc.util.annotation.NBTField;
-import mekanism.common.capabilities.Capabilities;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.state.properties.BlockStateProperties;
@@ -281,13 +279,13 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
             }
         }
         if(isMekanismLoadeed()) {
-            if(cap == Capabilities.GAS_HANDLER_CAPABILITY) {
+            if(cap == mekanism.common.capabilities.Capabilities.GAS_HANDLER_CAPABILITY) {
                 if(contentHandler.hasFluidCapability(side)) {
                     return LazyOptional.of(() -> contentHandler.gasConverter(side));
                 }
                 return LazyOptional.empty();
             }
-            if(cap == Capabilities.SLURRY_HANDLER_CAPABILITY) {
+            if(cap == mekanism.common.capabilities.Capabilities.SLURRY_HANDLER_CAPABILITY) {
                 if(contentHandler.hasFluidCapability(side)) {
                     return LazyOptional.of(() -> contentHandler.getSlurryConverter(side));
                 }

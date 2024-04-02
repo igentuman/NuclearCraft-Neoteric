@@ -106,7 +106,7 @@ public class ProcessorBlock extends HorizontalDirectionalBlock implements Entity
         ItemStack drop = new ItemStack(this);
         drop.setTag(data);
         if (!pLevel.isClientSide()) {
-            ItemEntity itemEntity = new ItemEntity(pLevel, pPos.getX(), pPos.getY(), pPos.getZ(), drop);
+            ItemEntity itemEntity = new ItemEntity(pLevel, pPos.getX(), pPos.getY(), pPos.getZ(), drop, pLevel.random.nextDouble() * 0.1D - 0.05D, 0.15D, pLevel.random.nextDouble() * 0.1D - 0.05D);
             itemEntity.setDefaultPickUpDelay();
             pLevel.addFreshEntity(itemEntity);
         }

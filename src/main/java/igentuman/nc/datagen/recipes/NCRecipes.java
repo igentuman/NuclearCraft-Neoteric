@@ -1234,7 +1234,7 @@ public class NCRecipes extends RecipeProvider {
 
     private void materials(Consumer<FinishedRecipe> consumer) {
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NC_DUSTS.get(Materials.dimensional_blend).get(), 2)
+        ShapelessRecipeBuilder.shapeless(NC_DUSTS.get(Materials.dimensional_blend).get(), 2)
                 .requires(dustIngredient(Materials.enderium), 1)
                 .requires(dustIngredient(Materials.emerald), 1)
                 .requires(dustIngredient(Materials.lapis), 1)
@@ -1248,7 +1248,6 @@ public class NCRecipes extends RecipeProvider {
                 .save(consumer, MODID+"_"+Materials.manganese+"_sm1");
 
         SimpleCookingRecipeBuilder.blasting(Ingredient.of(forgeIngot(Materials.sodium_fluoride)),
-                        RecipeCategory.MISC,
                         NC_DUSTS.get(Materials.sodium).get(), 1.0f, 100)
                 .unlockedBy("has_ore", inventoryTrigger(ItemPredicate.Builder.item().of(NC_DUSTS.get(Materials.sodium_fluoride).get()).build()))
                 .save(consumer, MODID+"_"+Materials.sodium+"_sm1");
@@ -1327,7 +1326,7 @@ public class NCRecipes extends RecipeProvider {
     private void processors(Consumer<FinishedRecipe> consumer)
     {
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NCProcessors.PROCESSORS.get("analyzer").get())
+        ShapedRecipeBuilder.shaped(NCProcessors.PROCESSORS.get("analyzer").get())
                 .pattern("PYP")
                 .pattern("PCP")
                 .pattern("PMP")

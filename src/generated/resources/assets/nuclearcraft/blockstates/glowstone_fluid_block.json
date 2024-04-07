@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft_fluids:block/fluid/glowstone"
+      "model": "nuclearcraft:block/fluid/glowstone"
     }
   }
 }

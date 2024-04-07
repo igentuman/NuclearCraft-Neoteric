@@ -1,12 +1,12 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_ore": {
+    "dust": {
       "conditions": {
         "items": [
           {
             "items": [
-              "nuclearcraft:sodium_fluoride_dust"
+              "nuclearcraft:enderium_dust"
             ]
           }
         ]
@@ -15,21 +15,20 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "minecraft:nuclearcraft_sodium_sm1"
+        "recipe": "nuclearcraft:dimensional_blend_dust"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
   },
   "requirements": [
     [
-      "has_ore",
+      "dust",
       "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
-      "minecraft:nuclearcraft_sodium_sm1"
+      "nuclearcraft:dimensional_blend_dust"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

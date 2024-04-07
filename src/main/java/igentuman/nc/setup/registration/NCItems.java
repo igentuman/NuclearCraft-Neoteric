@@ -147,7 +147,7 @@ public class NCItems {
             ALL_NC_ITEMS.put(name, NC_FOOD.get(name));
         }
         for(String name: List.of("rad_x","radaway","radaway_slow")) {
-            NC_FOOD.put(name, ITEMS.register(name, () -> new RadAwayItem(new Item.Properties().food(
+            NC_FOOD.put(name, ITEMS.register(name, () -> new RadAwayItem(new Item.Properties().tab(CreativeModeTab.TAB_FOOD).food(
                     new FoodProperties.Builder().nutrition(0)
                             .saturationMod(0).alwaysEat().build()
             ))));

@@ -202,6 +202,7 @@ public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
                 }
                 resolve:
                 for(String mod: MATERIAL_PRODUCTS.MODS_PRIORITY.get()) {
+                    FluidStack flowing = null;
                     for(ItemStack item: items) {
                         if(getModId(item).equals(mod)) {
                             cachedOutputItems.add(item);

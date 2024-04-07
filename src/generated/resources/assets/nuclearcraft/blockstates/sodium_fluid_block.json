@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft_fluids:block/fluid/sodium"
+      "model": "nuclearcraft:block/fluid/sodium"
     }
   }
 }

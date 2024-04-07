@@ -1,9 +1,7 @@
 package igentuman.nc.block;
 
-import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.energy.BatteryBE;
 import igentuman.nc.block.entity.energy.NCEnergy;
-import igentuman.nc.network.toServer.PacketBatterySideConfig;
 import igentuman.nc.setup.registration.NCEnergyBlocks;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
@@ -61,7 +59,8 @@ public class BatteryBlock extends Block implements EntityBlock {
                     if(player.isShiftKeyDown()) {
                         dirToChange = dirToChange.getOpposite();
                     }
-                    NuclearCraft.packetHandler().sendToServer(new PacketBatterySideConfig(pos, dirToChange.ordinal()));
+                    ISizeToggable.SideMode mode = batteryBE.toggleSideConfig(dirToChange.ordinal());
+                    player.sendSystemMessage(Component.translatable("message.nc.barrel.side_config", mode.name()));
                 } else {
                     player.sendSystemMessage(Component.translatable("tooltip.nc.energy_stored", formatEnergy(batteryBE.energyStorage.getEnergyStored()), formatEnergy(batteryBE.energyStorage.getMaxEnergyStored())).withStyle(ChatFormatting.BLUE));
                 }

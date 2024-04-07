@@ -1,8 +1,6 @@
 package igentuman.nc.block;
 
-import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.BarrelBE;
-import igentuman.nc.network.toServer.PacketStorageSideConfig;
 import igentuman.nc.setup.registration.NCStorageBlocks;
 import igentuman.nc.content.storage.BarrelBlocks;
 import igentuman.nc.util.TextUtils;
@@ -69,7 +67,8 @@ public class BarrelBlock extends Block implements EntityBlock {
                 if(player.isShiftKeyDown()) {
                     dirToChange = dirToChange.getOpposite();
                 }
-                NuclearCraft.packetHandler().sendToServer(new PacketStorageSideConfig(pos, dirToChange.ordinal()));
+                ISizeToggable.SideMode mode = be.toggleSideConfig(dirToChange.ordinal());
+                player.sendSystemMessage(Component.translatable("message.nc.barrel.side_config", mode.name()));
             } else
             if(!handStack.equals(ItemStack.EMPTY)) {
                 if(handStack.getItem() instanceof BucketItem) {

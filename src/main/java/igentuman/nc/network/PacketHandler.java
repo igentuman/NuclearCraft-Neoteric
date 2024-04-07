@@ -22,8 +22,6 @@ public class PacketHandler extends BasePacketHandler {
         registerClientToServer(PacketSliderChanged.class, PacketSliderChanged::decode);
         registerClientToServer(PacketGuiButtonPress.class, PacketGuiButtonPress::decode);
         registerClientToServer(PacketSideConfigToggle.class, PacketSideConfigToggle::decode);
-        registerClientToServer(PacketBatterySideConfig.class, PacketBatterySideConfig::decode);
-        registerClientToServer(PacketStorageSideConfig.class, PacketStorageSideConfig::decode);
         registerClientToServer(PacketFlushSlotContent.class, PacketFlushSlotContent::decode);
 
 

@@ -411,6 +411,9 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
             isActive = false;
             return;
         }
+        if(!canProcessRecipe()) {
+            return;
+        }
         recipeInfo.process(speedMultiplier()*skippedTicks);
         if(recipeInfo.radiation != 1D) {
             RadiationManager.get(getLevel()).addRadiation(getLevel(), (recipeInfo.radiation/1000000)*speedMultiplier()*skippedTicks, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ());
@@ -420,6 +423,10 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
         if(!recipeInfo.isCompleted() && hasRecipe()) {
             energyStorage.consumeEnergy(energyPerTick()*skippedTicks);
         }
+    }
+
+    protected boolean canProcessRecipe() {
+        return true;
     }
 
     @Override

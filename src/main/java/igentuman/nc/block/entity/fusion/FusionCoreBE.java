@@ -755,7 +755,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         }
     }
     public RECIPE getRecipe() {
-        if(contentHandler.fluidCapability.getFluidInSlot(0).isEmpty()) return null;
+        if(contentHandler.fluidCapability.getFluidInSlot(0).isEmpty() || contentHandler.fluidCapability.getFluidInSlot(0).isEmpty()) return null;
         RECIPE cachedRecipe = getCachedRecipe();
         if(cachedRecipe != null) return cachedRecipe;
         if(!NcRecipeType.ALL_RECIPES.containsKey(getName())) return null;

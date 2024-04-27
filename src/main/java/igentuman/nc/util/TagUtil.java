@@ -4,6 +4,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -24,6 +25,16 @@ public class TagUtil {
         List<Block> tmp = new ArrayList<>();
         TagKey<Block> tag = TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(key));
         for(Holder<Block> holder : Registry.BLOCK.getTagOrEmpty(tag)) {
+            tmp.add(holder.value());
+        }
+        return tmp;
+    }
+
+    public static List<Item> getItemsByTagKey(String key)
+    {
+        List<Item> tmp = new ArrayList<>();
+        TagKey<Item> tag = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(key));
+        for(Holder<Item> holder : Registry.ITEM.getTagOrEmpty(tag)) {
             tmp.add(holder.value());
         }
         return tmp;

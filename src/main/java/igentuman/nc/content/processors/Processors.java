@@ -89,8 +89,10 @@ public class Processors {
             );
             all.put(NUCLEAR_FURNACE,
                     ProcessorBuilder
-                            .make(NUCLEAR_FURNACE, 0, 1, 0, 1)
+                            .make(NUCLEAR_FURNACE, 0, 2, 0, 1)
                             .blockEntity(NuclearFurnaceBE::new)
+                            .power(0)
+                            .upgrades(false, false)
                             .build()
             );
             all.put(MANUFACTORY,

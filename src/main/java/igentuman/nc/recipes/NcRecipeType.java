@@ -1,17 +1,23 @@
 package igentuman.nc.recipes;
 
-import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.fission.FissionControllerBE;
+import igentuman.nc.block.entity.processor.NuclearFurnaceBE;
 import igentuman.nc.block.entity.turbine.TurbineControllerBE;
 import igentuman.nc.client.NcClient;
 import igentuman.nc.content.processors.Processors;
+import igentuman.nc.recipes.ingredient.FluidStackIngredient;
+import igentuman.nc.recipes.ingredient.ItemStackIngredient;
+import igentuman.nc.recipes.ingredient.creator.IngredientCreatorAccess;
 import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.registry.RecipeTypeDeferredRegister;
 import igentuman.nc.registry.RecipeTypeRegistryObject;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
@@ -20,6 +26,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.NuclearCraft.rl;
 
 public class NcRecipeType<RECIPE extends NcRecipe> implements RecipeType<RECIPE>,
         INcRecipeTypeProvider<RECIPE> {
@@ -42,12 +49,8 @@ public class NcRecipeType<RECIPE extends NcRecipe> implements RecipeType<RECIPE>
             }
         }
 
-        //recipes.put("smelting", SMELTING);
         return recipes;
     }
-
-  //  public static final RecipeTypeRegistryObject<ItemStackToItemStackRecipe> SMELTING =
- //           register("smelting", recipeType -> new ItemStackToItemStackRecipe(recipeType));
 
     public static <RECIPE extends NcRecipe> RecipeTypeRegistryObject<RECIPE> register(String name) {
         return RECIPE_TYPES.register(name, () -> new NcRecipeType<>(name));
@@ -56,7 +59,7 @@ public class NcRecipeType<RECIPE extends NcRecipe> implements RecipeType<RECIPE>
     private final ResourceLocation registryName;
 
     private NcRecipeType(String name) {
-        this.registryName = NuclearCraft.rl(name);
+        this.registryName = rl(name);
     }
 
     @Override
@@ -86,12 +89,36 @@ public class NcRecipeType<RECIPE extends NcRecipe> implements RecipeType<RECIPE>
         }
         if (cachedRecipes.isEmpty()) {
             RecipeManager recipeManager = world.getRecipeManager();
-            List<RECIPE> recipes = recipeManager.getAllRecipesFor(this);
+            List<RECIPE> recipes = new ArrayList<>();
+            if(this.registryName.getPath().equals("nuclear_furnace")) {
+                recipes = getSmeltingRecipes(recipeManager);
+            } else {
+                recipes = recipeManager.getAllRecipesFor(this);
+            }
             cachedRecipes = recipes.stream()
                     .filter(recipe -> !recipe.isIncomplete())
                     .toList();
         }
         return cachedRecipes;
+    }
+
+    private List<RECIPE> getSmeltingRecipes(RecipeManager recipeManager) {
+        List<SmeltingRecipe> smelting = recipeManager.getAllRecipesFor(SMELTING);
+        List<RECIPE> recipes = new ArrayList<>();
+        for(SmeltingRecipe recipe: smelting) {
+            if(recipe.isIncomplete()) {
+                continue;
+            }
+            ItemStackIngredient output = IngredientCreatorAccess.item().from(recipe.getResultItem());
+            recipes.add((RECIPE) new NuclearFurnaceBE.Recipe(
+                    rl(output.getName()),
+                    new ItemStackIngredient[]{IngredientCreatorAccess.item().from(recipe.getIngredients().get(0))},
+                    new ItemStack[]{recipe.getResultItem()},
+                    new FluidStackIngredient[0],
+                    new FluidStack[0],
+                    recipe.getCookingTime()/1000D, 1, 1, 1));
+        }
+        return recipes;
     }
 
     /**

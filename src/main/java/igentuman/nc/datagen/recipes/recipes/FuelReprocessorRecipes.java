@@ -23,7 +23,7 @@ public class FuelReprocessorRecipes extends AbstractRecipeProvider {
 
         for (String type: List.of("", "tr")) {
             add(
-                    fuelIngredient(List.of("depleted", "americium", "hea-242", type), 9),
+                    fuelIngredient(List.of("depleted", "americium", "hea-242", type), 1),
                     List.of(
                             isotopeStack(Materials.americium243, 3), isotopeStack(Materials.curium243),
                             isotopeStack(Materials.curium246, 2), isotopeStack(Materials.berkelium247),
@@ -32,7 +32,7 @@ public class FuelReprocessorRecipes extends AbstractRecipeProvider {
             );
 
             add(
-                    fuelIngredient(List.of("depleted", "americium", "lea-242", type), 9),
+                    fuelIngredient(List.of("depleted", "americium", "lea-242", type), 1),
                     List.of(
                             isotopeStack(Materials.americium243, 3), isotopeStack(Materials.curium243),
                             isotopeStack(Materials.curium246, 3), isotopeStack(Materials.berkelium248),
@@ -41,7 +41,7 @@ public class FuelReprocessorRecipes extends AbstractRecipeProvider {
             );
 
             add(
-                    fuelIngredient(List.of("depleted", "thorium", "tbu", type), 9),
+                    fuelIngredient(List.of("depleted", "thorium", "tbu", type), 1),
                     List.of(
                             isotopeStack(Materials.uranium233), isotopeStack(Materials.uranium238, 5),
                             isotopeStack(Materials.neptunium236), isotopeStack(Materials.neptunium237),
@@ -50,7 +50,7 @@ public class FuelReprocessorRecipes extends AbstractRecipeProvider {
             );
 
             add(
-                    fuelIngredient(List.of("depleted", "uranium", "leu-233", type), 9),
+                    fuelIngredient(List.of("depleted", "uranium", "leu-233", type), 1),
                     List.of(
                             isotopeStack(Materials.uranium238, 5), isotopeStack(Materials.plutonium241),
                             isotopeStack(Materials.plutonium242), isotopeStack(Materials.americium243),
@@ -59,7 +59,7 @@ public class FuelReprocessorRecipes extends AbstractRecipeProvider {
             );
 
             add(
-                    fuelIngredient(List.of("depleted", "uranium", "heu-233", type), 9),
+                    fuelIngredient(List.of("depleted", "uranium", "heu-233", type), 1),
                     List.of(
                             isotopeStack(Materials.uranium235), isotopeStack(Materials.uranium238, 2),
                             isotopeStack(Materials.plutonium242, 3), isotopeStack(Materials.americium243),
@@ -68,7 +68,7 @@ public class FuelReprocessorRecipes extends AbstractRecipeProvider {
             );
 
             add(
-                    fuelIngredient(List.of("depleted", "uranium", "leu-235", type), 9),
+                    fuelIngredient(List.of("depleted", "uranium", "leu-235", type), 1),
                     List.of(
                             isotopeStack(Materials.uranium238, 4), isotopeStack(Materials.plutonium239),
                             isotopeStack(Materials.plutonium242), isotopeStack(Materials.americium243),
@@ -77,7 +77,7 @@ public class FuelReprocessorRecipes extends AbstractRecipeProvider {
             );
 
             add(
-                    fuelIngredient(List.of("depleted", "uranium", "heu-235", type), 9),
+                    fuelIngredient(List.of("depleted", "uranium", "heu-235", type), 1),
                     List.of(
                             isotopeStack(Materials.uranium238, 2), isotopeStack(Materials.plutonium239),
                             isotopeStack(Materials.plutonium242, 3), isotopeStack(Materials.americium243),
@@ -86,7 +86,7 @@ public class FuelReprocessorRecipes extends AbstractRecipeProvider {
             );
 
             add(
-                    fuelIngredient(List.of("depleted", "neptunium", "hen-236", type), 9),
+                    fuelIngredient(List.of("depleted", "neptunium", "hen-236", type), 1),
                     List.of(
                             isotopeStack(Materials.uranium238, 4), isotopeStack(Materials.neptunium237),
                             isotopeStack(Materials.plutonium241), isotopeStack(Materials.plutonium242),
@@ -95,7 +95,7 @@ public class FuelReprocessorRecipes extends AbstractRecipeProvider {
             );
 
             add(
-                    fuelIngredient(List.of("depleted", "neptunium", "len-236", type), 9),
+                    fuelIngredient(List.of("depleted", "neptunium", "len-236", type), 1),
                     List.of(
                             isotopeStack(Materials.plutonium242, 5), isotopeStack(Materials.neptunium237),
                             isotopeStack(Materials.plutonium241), isotopeStack(Materials.plutonium242),
@@ -104,7 +104,7 @@ public class FuelReprocessorRecipes extends AbstractRecipeProvider {
             );
 
             add(
-                    fuelIngredient(List.of("depleted", "plutonium", "lep-239", type), 9),
+                    fuelIngredient(List.of("depleted", "plutonium", "lep-239", type), 1),
                     List.of(
                             isotopeStack(Materials.uranium238, 4), isotopeStack(Materials.americium243),
                             isotopeStack(Materials.curium246), isotopeStack(Materials.plutonium242),
@@ -113,7 +113,7 @@ public class FuelReprocessorRecipes extends AbstractRecipeProvider {
             );
 
             add(
-                    fuelIngredient(List.of("depleted", "plutonium", "hep-239", type), 9),
+                    fuelIngredient(List.of("depleted", "plutonium", "hep-239", type), 1),
                     List.of(
                             isotopeStack(Materials.americium243, 4), isotopeStack(Materials.curium243),
                             isotopeStack(Materials.plutonium241), isotopeStack(Materials.plutonium242),
@@ -122,7 +122,7 @@ public class FuelReprocessorRecipes extends AbstractRecipeProvider {
             );
 
             add(
-                    fuelIngredient(List.of("depleted", "plutonium", "lep-241", type), 9),
+                    fuelIngredient(List.of("depleted", "plutonium", "lep-241", type), 1),
                     List.of(
                             isotopeStack(Materials.plutonium242, 5), isotopeStack(Materials.americium243),
                             isotopeStack(Materials.curium246), isotopeStack(Materials.berkelium247),
@@ -131,7 +131,7 @@ public class FuelReprocessorRecipes extends AbstractRecipeProvider {
             );
 
             add(
-                    fuelIngredient(List.of("depleted", "plutonium", "hep-241", type), 9),
+                    fuelIngredient(List.of("depleted", "plutonium", "hep-241", type), 1),
                     List.of(
                             isotopeStack(Materials.americium243, 3), isotopeStack(Materials.americium241),
                             isotopeStack(Materials.curium246, 2), isotopeStack(Materials.plutonium242),
@@ -140,7 +140,7 @@ public class FuelReprocessorRecipes extends AbstractRecipeProvider {
             );
 
             add(
-                    fuelIngredient(List.of("depleted", "mixed", "mix-239", type), 9),
+                    fuelIngredient(List.of("depleted", "mixed", "mix-239", type), 1),
                     List.of(
                             isotopeStack(Materials.uranium238, 4), isotopeStack(Materials.plutonium239),
                             isotopeStack(Materials.plutonium242), isotopeStack(Materials.americium243),
@@ -149,7 +149,7 @@ public class FuelReprocessorRecipes extends AbstractRecipeProvider {
             );
 
             add(
-                    fuelIngredient(List.of("depleted", "mixed", "mix-241", type), 9),
+                    fuelIngredient(List.of("depleted", "mixed", "mix-241", type), 1),
                     List.of(
                             isotopeStack(Materials.uranium238, 4), isotopeStack(Materials.neptunium237),
                             isotopeStack(Materials.plutonium241), isotopeStack(Materials.plutonium242),
@@ -158,7 +158,7 @@ public class FuelReprocessorRecipes extends AbstractRecipeProvider {
             );
 
             add(
-                    fuelIngredient(List.of("depleted", "curium", "lecm-243", type), 9),
+                    fuelIngredient(List.of("depleted", "curium", "lecm-243", type), 1),
                     List.of(
                             isotopeStack(Materials.curium246, 4), isotopeStack(Materials.curium247),
                             isotopeStack(Materials.berkelium247, 2), isotopeStack(Materials.berkelium248),
@@ -167,7 +167,7 @@ public class FuelReprocessorRecipes extends AbstractRecipeProvider {
             );
 
             add(
-                    fuelIngredient(List.of("depleted", "curium", "hecm-243", type), 9),
+                    fuelIngredient(List.of("depleted", "curium", "hecm-243", type), 1),
                     List.of(
                             isotopeStack(Materials.curium245, 3), isotopeStack(Materials.curium245),
                             isotopeStack(Materials.berkelium247, 2), isotopeStack(Materials.berkelium248),
@@ -176,7 +176,7 @@ public class FuelReprocessorRecipes extends AbstractRecipeProvider {
             );
 
             add(
-                    fuelIngredient(List.of("depleted", "curium", "lecm-245", type), 9),
+                    fuelIngredient(List.of("depleted", "curium", "lecm-245", type), 1),
                     List.of(
                             isotopeStack(Materials.curium246, 4), isotopeStack(Materials.curium247),
                             isotopeStack(Materials.berkelium247, 2), isotopeStack(Materials.californium249),
@@ -185,7 +185,7 @@ public class FuelReprocessorRecipes extends AbstractRecipeProvider {
             );
 
             add(
-                    fuelIngredient(List.of("depleted", "curium", "hecm-245", type), 9),
+                    fuelIngredient(List.of("depleted", "curium", "hecm-245", type), 1),
                     List.of(
                             isotopeStack(Materials.curium246, 3), isotopeStack(Materials.curium247),
                             isotopeStack(Materials.berkelium247, 2), isotopeStack(Materials.californium249),
@@ -194,7 +194,7 @@ public class FuelReprocessorRecipes extends AbstractRecipeProvider {
             );
 
             add(
-                    fuelIngredient(List.of("depleted", "curium", "lecm-247", type), 9),
+                    fuelIngredient(List.of("depleted", "curium", "lecm-247", type), 1),
                     List.of(
                             isotopeStack(Materials.curium246, 5), isotopeStack(Materials.berkelium247),
                             isotopeStack(Materials.californium249), isotopeStack(Materials.berkelium248),
@@ -203,7 +203,7 @@ public class FuelReprocessorRecipes extends AbstractRecipeProvider {
             );
 
             add(
-                    fuelIngredient(List.of("depleted", "curium", "hecm-247", type), 9),
+                    fuelIngredient(List.of("depleted", "curium", "hecm-247", type), 1),
                     List.of(
                             isotopeStack(Materials.californium251), isotopeStack(Materials.californium249),
                             isotopeStack(Materials.berkelium247, 4), isotopeStack(Materials.berkelium248),
@@ -212,7 +212,7 @@ public class FuelReprocessorRecipes extends AbstractRecipeProvider {
             );
 
             add(
-                    fuelIngredient(List.of("depleted", "berkelium", "leb-248", type), 9),
+                    fuelIngredient(List.of("depleted", "berkelium", "leb-248", type), 1),
                     List.of(
                             isotopeStack(Materials.berkelium247, 5), isotopeStack(Materials.berkelium248),
                             isotopeStack(Materials.californium249), isotopeStack(Materials.californium251),
@@ -221,7 +221,7 @@ public class FuelReprocessorRecipes extends AbstractRecipeProvider {
             );
 
             add(
-                    fuelIngredient(List.of("depleted", "berkelium", "heb-248", type), 9),
+                    fuelIngredient(List.of("depleted", "berkelium", "heb-248", type), 1),
                     List.of(
                             isotopeStack(Materials.berkelium248), isotopeStack(Materials.californium249),
                             isotopeStack(Materials.californium251, 2), isotopeStack(Materials.californium252, 3),
@@ -230,7 +230,7 @@ public class FuelReprocessorRecipes extends AbstractRecipeProvider {
             );
 
             add(
-                    fuelIngredient(List.of("depleted", "californium", "lecf-249", type), 9),
+                    fuelIngredient(List.of("depleted", "californium", "lecf-249", type), 1),
                     List.of(
                             isotopeStack(Materials.californium252, 8),
                             dustIngredient(Materials.ruthenium_106), dustIngredient(Materials.promethium_147)
@@ -238,7 +238,7 @@ public class FuelReprocessorRecipes extends AbstractRecipeProvider {
             );
 
             add(
-                    fuelIngredient(List.of("depleted", "californium", "hecf-249", type), 9),
+                    fuelIngredient(List.of("depleted", "californium", "hecf-249", type), 1),
                     List.of(
                             isotopeStack(Materials.californium252, 6), isotopeStack(Materials.californium250, 2),
                             dustIngredient(Materials.ruthenium_106), dustIngredient(Materials.promethium_147)
@@ -246,7 +246,7 @@ public class FuelReprocessorRecipes extends AbstractRecipeProvider {
             );
 
             add(
-                    fuelIngredient(List.of("depleted", "californium", "lecf-251", type), 9),
+                    fuelIngredient(List.of("depleted", "californium", "lecf-251", type), 1),
                     List.of(
                             isotopeStack(Materials.californium252, 8),
                             dustIngredient(Materials.ruthenium_106), dustIngredient(Materials.promethium_147)
@@ -254,7 +254,7 @@ public class FuelReprocessorRecipes extends AbstractRecipeProvider {
             );
 
             add(
-                    fuelIngredient(List.of("depleted", "californium", "hecf-251", type), 9),
+                    fuelIngredient(List.of("depleted", "californium", "hecf-251", type), 1),
                     List.of(
                             isotopeStack(Materials.californium252, 7),
                             dustIngredient(Materials.ruthenium_106), dustIngredient(Materials.promethium_147)

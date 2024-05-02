@@ -29,7 +29,7 @@ public class FuelRecipes extends NCRecipes {
             for(String type: new String[] {"_ox", "_ni", "_za"}) {
                 String key = name+type;
                 SimpleCookingRecipeBuilder.smelting(Ingredient.of(Fuel.NC_ISOTOPES.get(key).get()),
-                                Fuel.NC_ISOTOPES.get(name).get(), 1.0f, 100)
+                                                            Fuel.NC_ISOTOPES.get(name).get(), 1.0f, 100)
                         .unlockedBy("item", inventoryTrigger(ItemPredicate.Builder.item().of(Fuel.NC_ISOTOPES.get(name).get()).build()))
                         .save(consumer, MODID+"_"+name+type+"_sml");
             }
@@ -40,13 +40,13 @@ public class FuelRecipes extends NCRecipes {
                 for (String type : new String[]{"ox", "ni", "za"}) {
                     List<String> key = List.of("fuel", name, subType, type);
                     SimpleCookingRecipeBuilder.smelting(Ingredient.of(Fuel.NC_FUEL.get(key).get()),
-                                    Fuel.NC_FUEL.get(List.of("fuel", name, subType, "")).get(), 1.0f, 100)
+                            Fuel.NC_FUEL.get(List.of("fuel", name, subType, "")).get(), 1.0f, 100)
                             .unlockedBy("item", inventoryTrigger(ItemPredicate.Builder.item().of( Fuel.NC_FUEL.get(List.of("fuel", name, subType, "")).get()).build()))
                             .save(consumer, MODID + "_fuel_" + name+subType + type + "_sml");
 
                     key = List.of("depleted", name, subType, type);
                     SimpleCookingRecipeBuilder.smelting(Ingredient.of(Fuel.NC_DEPLETED_FUEL.get(key).get()),
-                                    Fuel.NC_DEPLETED_FUEL.get(List.of("depleted", name, subType, "")).get(), 1.0f, 100)
+                                                                       Fuel.NC_DEPLETED_FUEL.get(List.of("depleted", name, subType, "")).get(), 1.0f, 100)
                             .unlockedBy("item", inventoryTrigger(ItemPredicate.Builder.item().of( Fuel.NC_DEPLETED_FUEL.get(List.of("depleted", name, subType, "")).get()).build()))
                             .save(consumer, MODID + "_depleted_" + name+subType + type + "_sml");
                 }
@@ -80,7 +80,7 @@ public class FuelRecipes extends NCRecipes {
             isotope1Cnt = 3;
             isotope2Cnt = 6;
         }
-        ShapelessRecipeBuilder.shapeless(Fuel.NC_FUEL.get(List.of("fuel", name, subType, type)).get())
+        ShapelessRecipeBuilder.shapeless(Fuel.NC_FUEL.get(List.of("fuel", name, subType, type)).get(), 3)
                 .group(MODID+"_ingots")
                 .requires(getIsotope(name, String.valueOf(isotope1), type), isotope1Cnt)
                 .requires(getIsotope(name, String.valueOf(isotope2), type), isotope2Cnt)

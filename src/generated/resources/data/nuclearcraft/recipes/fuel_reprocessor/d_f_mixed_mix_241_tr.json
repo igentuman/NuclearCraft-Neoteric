@@ -2,7 +2,6 @@
   "type": "nuclearcraft:fuel_reprocessor",
   "input": [
     {
-      "count": 9,
       "item": "nuclearcraft:depleted_fuel_mixed_mix_241_tr"
     }
   ],

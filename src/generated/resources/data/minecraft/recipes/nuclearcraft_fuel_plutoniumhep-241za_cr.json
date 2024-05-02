@@ -31,6 +31,7 @@
     }
   ],
   "result": {
-    "item": "nuclearcraft:fuel_plutonium_hep_241_za"
+    "item": "nuclearcraft:fuel_plutonium_hep_241_za",
+    "count": 3
   }
 }

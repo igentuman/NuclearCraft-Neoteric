@@ -31,6 +31,7 @@
     }
   ],
   "result": {
-    "item": "nuclearcraft:fuel_uranium_leu_233_ni"
+    "item": "nuclearcraft:fuel_uranium_leu_233_ni",
+    "count": 3
   }
 }

@@ -31,6 +31,7 @@
     }
   ],
   "result": {
-    "item": "nuclearcraft:fuel_californium_lecf_249_ni"
+    "item": "nuclearcraft:fuel_californium_lecf_249_ni",
+    "count": 3
   }
 }

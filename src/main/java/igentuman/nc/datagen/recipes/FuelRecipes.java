@@ -80,7 +80,7 @@ public class FuelRecipes extends NCRecipes {
             isotope1Cnt = 3;
             isotope2Cnt = 6;
         }
-        ShapelessRecipeBuilder.shapeless(Fuel.NC_FUEL.get(List.of("fuel", name, subType, type)).get())
+        ShapelessRecipeBuilder.shapeless(Fuel.NC_FUEL.get(List.of("fuel", name, subType, type)).get(), 3)
                 .group(MODID+"_ingots")
                 .requires(getIsotope(name, String.valueOf(isotope1), type), isotope1Cnt)
                 .requires(getIsotope(name, String.valueOf(isotope2), type), isotope2Cnt)

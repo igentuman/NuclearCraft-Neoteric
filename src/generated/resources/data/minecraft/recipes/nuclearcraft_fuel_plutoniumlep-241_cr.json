@@ -31,6 +31,7 @@
     }
   ],
   "result": {
-    "item": "nuclearcraft:fuel_plutonium_lep_241"
+    "item": "nuclearcraft:fuel_plutonium_lep_241",
+    "count": 3
   }
 }

@@ -34,7 +34,7 @@ public class FluidEnricherRecipes extends AbstractRecipeProvider {
         add(
                 fluidIngredient("oxygen", 100),
                 dustIngredient(Materials.uranium),
-                fluidStack("uranium_oxide", 500)
+                fluidStack("uranium_oxide", 432)
         );
 
         add(

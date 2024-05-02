@@ -31,6 +31,7 @@
     }
   ],
   "result": {
-    "item": "nuclearcraft:fuel_curium_hecm_245"
+    "item": "nuclearcraft:fuel_curium_hecm_245",
+    "count": 3
   }
 }

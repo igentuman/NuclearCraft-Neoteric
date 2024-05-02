@@ -31,6 +31,7 @@
     }
   ],
   "result": {
-    "item": "nuclearcraft:fuel_mixed_mix_241_ox"
+    "item": "nuclearcraft:fuel_mixed_mix_241_ox",
+    "count": 3
   }
 }

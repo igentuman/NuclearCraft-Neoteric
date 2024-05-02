@@ -31,6 +31,7 @@
     }
   ],
   "result": {
-    "item": "nuclearcraft:fuel_californium_hecf_249"
+    "item": "nuclearcraft:fuel_californium_hecf_249",
+    "count": 3
   }
 }

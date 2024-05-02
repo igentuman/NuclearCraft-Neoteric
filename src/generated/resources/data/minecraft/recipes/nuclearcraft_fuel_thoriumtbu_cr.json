@@ -31,6 +31,7 @@
     }
   ],
   "result": {
-    "item": "nuclearcraft:fuel_thorium_tbu"
+    "item": "nuclearcraft:fuel_thorium_tbu",
+    "count": 3
   }
 }

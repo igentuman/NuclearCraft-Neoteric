@@ -31,6 +31,7 @@
     }
   ],
   "result": {
-    "item": "nuclearcraft:fuel_americium_lea_242_ni"
+    "item": "nuclearcraft:fuel_americium_lea_242_ni",
+    "count": 3
   }
 }

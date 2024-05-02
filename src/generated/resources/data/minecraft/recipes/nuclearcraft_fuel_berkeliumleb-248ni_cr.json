@@ -31,6 +31,7 @@
     }
   ],
   "result": {
-    "item": "nuclearcraft:fuel_berkelium_leb_248_ni"
+    "item": "nuclearcraft:fuel_berkelium_leb_248_ni",
+    "count": 3
   }
 }

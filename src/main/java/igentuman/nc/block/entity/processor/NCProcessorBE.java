@@ -474,6 +474,10 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
                 catalystHandler.deserializeNBT((CompoundTag) (infoTag).get("catalyst"));
             }
         }
+
+        if (tag.contains("playerUID")) {
+            playerUID = tag.getUUID("playerUID");
+        }
         updateRecipeAfterLoad();
         super.load(tag);
     }
@@ -503,6 +507,9 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
         infoTag.put("catalyst", catalystHandler.serializeNBT());
         infoTag.put("recipeInfo", recipeInfo.serializeNBT());
         tag.put("Info", infoTag);
+        if(playerUID != null) {
+            tag.putUUID("playerUID", playerUID);
+        }
     }
 
     public double getProgress() {

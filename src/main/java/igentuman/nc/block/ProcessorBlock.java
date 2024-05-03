@@ -88,11 +88,13 @@ public class ProcessorBlock extends HorizontalDirectionalBlock implements Entity
     @Override
     public void setPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
         super.setPlacedBy(world, pos, state, placer, stack);
-
+        NCProcessorBE<?> tileEntity = (NCProcessorBE<?>) world.getBlockEntity(pos);
         if (stack.hasTag()) {
-            NCProcessorBE tileEntity = (NCProcessorBE) world.getBlockEntity(pos);
             CompoundTag nbtData = stack.getTag();
             tileEntity.load(nbtData);
+        }
+        if(placer instanceof ServerPlayer player) {
+            tileEntity.setPlayer(player);
         }
     }
 
@@ -100,7 +102,7 @@ public class ProcessorBlock extends HorizontalDirectionalBlock implements Entity
     public void playerDestroy(Level pLevel, Player pPlayer, BlockPos pPos, BlockState pState, @javax.annotation.Nullable BlockEntity pBlockEntity, ItemStack pTool) {
         pPlayer.awardStat(Stats.BLOCK_MINED.get(this));
         pPlayer.causeFoodExhaustion(0.005F);
-        NCProcessorBE processorBe = (NCProcessorBE) pBlockEntity;
+        NCProcessorBE<?> processorBe = (NCProcessorBE<?>) pBlockEntity;
         CompoundTag data = processorBe.getTagForStack();
 
         ItemStack drop = new ItemStack(this);
@@ -144,14 +146,14 @@ public class ProcessorBlock extends HorizontalDirectionalBlock implements Entity
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         if (level.isClientSide()) {
             return (lvl, pos, blockState, t) -> {
-                if (t instanceof NCProcessorBE tile) {
+                if (t instanceof NCProcessorBE<?> tile) {
                     tile.tickClient();
                     level.setBlockAndUpdate(pos, blockState.setValue(ACTIVE, tile.isActive));
                 }
             };
         }
         return (lvl, pos, blockState, t)-> {
-            if (t instanceof NCProcessorBE tile) {
+            if (t instanceof NCProcessorBE<?> tile) {
                 tile.tickServer();
             }
         };

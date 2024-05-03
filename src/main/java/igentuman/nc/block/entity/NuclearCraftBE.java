@@ -13,16 +13,15 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class NuclearCraftBE extends BlockEntity {
     protected final String name;
@@ -30,6 +29,7 @@ public class NuclearCraftBE extends BlockEntity {
     protected boolean changed;
     protected SoundInstance currentSound;
     protected int playSoundCooldown = 0;
+    protected UUID playerUID = null;
 
     public HashMap<Integer, ISizeToggable.SideMode> sideConfig = new HashMap<>();
 
@@ -213,6 +213,9 @@ public class NuclearCraftBE extends BlockEntity {
     public CompoundTag getUpdateTag() {
         CompoundTag tag = super.getUpdateTag();
         saveClientData(tag);
+        if(playerUID != null) {
+            tag.putUUID("playerUID", playerUID);
+        }
         return tag;
     }
 
@@ -220,6 +223,9 @@ public class NuclearCraftBE extends BlockEntity {
     public void handleUpdateTag(CompoundTag tag) {
         if (tag != null) {
             loadClientData(tag);
+            if (tag.contains("playerUID")) {
+                playerUID = tag.getUUID("playerUID");
+            }
         }
     }
 
@@ -233,5 +239,9 @@ public class NuclearCraftBE extends BlockEntity {
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
         CompoundTag tag = pkt.getTag();
         handleUpdateTag(tag);
+    }
+
+    public void setPlayer(ServerPlayer player) {
+        playerUID = player.getUUID();
     }
 }

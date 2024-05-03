@@ -1,5 +1,6 @@
 package igentuman.nc.block.entity.processor;
 
+import com.mojang.authlib.GameProfile;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.handler.event.client.BlockOverlayHandler;
@@ -14,9 +15,11 @@ import igentuman.nc.util.annotation.NothingNullByDefault;
 import igentuman.nc.util.insitu_leaching.WorldVeinsManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.MapItem;
@@ -29,15 +32,14 @@ import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.FakePlayer;
+import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import static igentuman.nc.block.ProcessorBlock.ACTIVE;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
@@ -58,8 +60,10 @@ public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
     public static final byte WRONG_POSITION = 2;
     public static final byte POSITION_IS_CORRECT = 1;
     public static final byte NO_ACID = 0;
-
+    public final UUID fakePlayerUUID = UUID.nameUUIDFromBytes("729b293e-9ac8-4873-a530-f38ed1e24fcb".getBytes());
     protected List<ItemStack> minableOres;
+    protected Player player;
+
 
     @NBTField
     public BlockPos currentMiningPos;
@@ -338,8 +342,19 @@ public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
                         if(isMinable(toMine)) {
                             currentMiningPos = new BlockPos(tempMiningPos);
                             if(contentHandler.itemHandler.insertItemInternal(0, toMine, true).isEmpty()) {
-                                //todo add permissions check support
-                                getLevel().destroyBlock(tempMiningPos.y(y).x(x+startX).z(z+startZ), false);
+                                if(player == null) {
+                                    if (playerUID == null) {
+                                        playerUID = fakePlayerUUID;
+                                    }
+                                    if (playerUID == fakePlayerUUID) {
+                                        player = FakePlayerFactory.get((ServerLevel) getLevel(), new GameProfile(playerUID, "[NC]LEACHER"));
+                                    } else {
+                                        player = getLevel().getPlayerByUUID(playerUID);
+                                    }
+                                }
+                                if(player == null) return false;
+                                if(!getLevel().mayInteract(player, tempMiningPos.y(y).x(x+startX).z(z+startZ))) return false;
+                                if(!getLevel().destroyBlock(tempMiningPos.y(y).x(x+startX).z(z+startZ), false, player)) return false;
                                 contentHandler.itemHandler.insertItemInternal(0, toMine, false);
                                 return true;
                             }

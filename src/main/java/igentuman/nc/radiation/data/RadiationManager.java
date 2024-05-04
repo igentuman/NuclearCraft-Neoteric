@@ -52,10 +52,12 @@ public class RadiationManager extends SavedData {
     }
 
     public void tick(Level level) {
+        if(!RADIATION_CONFIG.ENABLED.get()) return;
         level.players().forEach(player -> {
             int wasRadiation = 0;
             int playerRadiation = 0;
             if (player instanceof ServerPlayer serverPlayer) {
+                if(serverPlayer.isSpectator() || serverPlayer.isCreative()) return;
                 int playerChunkX = player.chunkPosition().x;
                 int playerChunkZ = player.chunkPosition().z;
                 long id = pack(playerChunkX, playerChunkZ);
@@ -103,6 +105,7 @@ public class RadiationManager extends SavedData {
     }
     protected int[] ignoredPos;
     public void addRadiation(Level level, double value, int x, int y, int z) {
+        if(!RADIATION_CONFIG.ENABLED.get()) return;
         if(ignoredPos != null && ignoredPos[0] == x && ignoredPos[1] == y && ignoredPos[2] == z) {
             ignoredPos = null;
             return;

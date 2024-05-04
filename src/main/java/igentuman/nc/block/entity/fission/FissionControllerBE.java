@@ -459,19 +459,14 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
             List<BlockPos> fuelCells = new ArrayList<>(multiblock().fuelCells);
             if (FISSION_CONFIG.EXPLOSION_RADIUS.get() == 0) {
                 getLevel().explode(null, explosionPos.getX(), explosionPos.getY(), explosionPos.getZ(), 2F, Level.ExplosionInteraction.NONE);
-                for (BlockPos pos : fuelCells) {
-                    getLevel().explode(null, pos.getX(), pos.getY(), pos.getZ(), 1, Level.ExplosionInteraction.NONE);
-                }
             } else {
-                getLevel().explode(null, explosionPos.getX(), explosionPos.getY(), explosionPos.getZ(), FISSION_CONFIG.EXPLOSION_RADIUS.get().floatValue(), Level.ExplosionInteraction.TNT);
+                getLevel().explode(null, explosionPos.getX(), explosionPos.getY(), explosionPos.getZ(), FISSION_CONFIG.EXPLOSION_RADIUS.get().floatValue(), Level.ExplosionInteraction.NONE);
+                getLevel().setBlock(explosionPos, NCFluids.getBlock("corium"), 1);
                 for (BlockPos pos : fuelCells) {
-                   getLevel().explode(null, pos.getX(), pos.getY(), pos.getZ(), 2, Level.ExplosionInteraction.TNT);
+                    getLevel().explode(null, pos.getX(), pos.getY(), pos.getZ(), 2, Level.ExplosionInteraction.NONE);
+                    getLevel().setBlock(pos, NCFluids.getBlock("corium"), 1);
                 }
             }
-            for (BlockPos pos : fuelCells) {
-                getLevel().setBlock(pos, NCFluids.getBlock("corium"), 1);
-            }
-            getLevel().setBlock(getBlockPos(), NCFluids.getBlock("corium"), 1);
 
             //1 mRad per fuel cell
             RadiationManager.get(getLevel()).addRadiation(getLevel(), 1000000*fuelCellsCount, getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());

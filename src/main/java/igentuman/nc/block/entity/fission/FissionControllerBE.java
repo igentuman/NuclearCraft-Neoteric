@@ -4,6 +4,7 @@ import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.fusion.FusionCoreBE;
 import igentuman.nc.client.sound.SoundHandler;
 import igentuman.nc.compat.cc.NCSolidFissionReactorPeripheral;
+import igentuman.nc.content.fuel.FuelDef;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.SlotModePair;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
@@ -27,6 +28,7 @@ import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Explosion;
@@ -54,9 +56,11 @@ import static igentuman.nc.block.fission.FissionControllerBlock.POWERED;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.handler.config.FissionConfig.FISSION_CONFIG;
 import static igentuman.nc.multiblock.fission.FissionReactor.FISSION_BLOCKS;
+import static igentuman.nc.setup.registration.Fuel.ITEM_PROPERTIES;
 import static igentuman.nc.setup.registration.NCSounds.FISSION_REACTOR;
 import static igentuman.nc.util.ModUtil.isCcLoaded;
 import static igentuman.nc.util.ModUtil.isMekanismLoadeed;
+import static net.minecraft.world.item.Items.AIR;
 
 public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> extends FissionBE  {
 
@@ -822,7 +826,15 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
 
         public ItemFuel getFuelItem() {
             if(fuelItem == null) {
-                fuelItem = (ItemFuel) getFirstItemStackIngredient(0).getItem();
+                Item item = getFirstItemStackIngredient(0).getItem();
+                if( !(item instanceof ItemFuel) && !item.equals(AIR)) {
+                    fuelItem = new ItemFuel(ITEM_PROPERTIES, new FuelDef(item.toString(), "", (int) powerModifier, 50D, 10D, timeModifier, 100D));
+                    return fuelItem;
+                }
+                Item item1 = getFirstItemStackIngredient(0).getItem();
+                if(item1 instanceof ItemFuel) {
+                    fuelItem  = (ItemFuel) item1;
+                }
             }
             return fuelItem;
         }
@@ -838,14 +850,17 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         }
 
         public int getDepletionTime() {
+            if(getFuelItem() == null) return 0;
             return (int) (getFuelItem().depletion*20*timeModifier);
         }
 
         public double getEnergy() {
+            if(getFuelItem() == null) return 0;
             return getFuelItem().forge_energy;
         }
 
         public double getHeat() {
+            if(getFuelItem() == null) return 0;
             return getFuelItem().heat;
         }
 

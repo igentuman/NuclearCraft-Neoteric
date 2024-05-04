@@ -160,7 +160,7 @@ public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
 
     public boolean isIncomplete()
     {
-        boolean empty = inputFluids.length == 0 && outputFluids.length == 0 && inputItems.length == 0 && outputItems.length == 0;
+        boolean empty = (inputFluids.length == 0 && inputItems.length == 0) || (outputFluids.length == 0 && outputItems.length == 0);
         if(empty) return true;
         for(ItemStackIngredient inputItem: inputItems) {
             if(inputItem == null || inputItem.getRepresentations().isEmpty()

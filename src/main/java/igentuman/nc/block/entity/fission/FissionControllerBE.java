@@ -64,6 +64,7 @@ import static igentuman.nc.util.ModUtil.isMekanismLoadeed;
 import static net.minecraft.core.Direction.Axis.X;
 import static net.minecraft.core.Direction.Axis.Z;
 import static net.minecraft.core.particles.ParticleTypes.SNOWFLAKE;
+import static net.minecraft.world.item.Items.AIR;
 
 public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> extends FissionBE  {
 
@@ -886,11 +887,14 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         public ItemFuel getFuelItem() {
             if(fuelItem == null) {
                 Item item = getFirstItemStackIngredient(0).getItem();
-                if( !(item instanceof ItemFuel)) {
+                if( !(item instanceof ItemFuel) && !item.equals(AIR)) {
                     fuelItem = new ItemFuel(ITEM_PROPERTIES, new FuelDef(item.toString(), "", (int) powerModifier, 50D, 10D, timeModifier, 100D));
                     return fuelItem;
                 }
-                fuelItem = (ItemFuel) getFirstItemStackIngredient(0).getItem();
+                Item item1 = getFirstItemStackIngredient(0).getItem();
+                if(item1 instanceof ItemFuel) {
+                    fuelItem  = (ItemFuel) item1;
+                }
             }
             return fuelItem;
         }
@@ -906,14 +910,17 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         }
 
         public int getDepletionTime() {
+            if(getFuelItem() == null) return 0;
             return (int) (getFuelItem().depletion*20*timeModifier);
         }
 
         public double getEnergy() {
+            if(getFuelItem() == null) return 0;
             return getFuelItem().forge_energy;
         }
 
         public double getHeat() {
+            if(getFuelItem() == null) return 0;
             return getFuelItem().heat;
         }
 

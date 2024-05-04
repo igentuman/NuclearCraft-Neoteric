@@ -6,6 +6,7 @@ import com.google.gson.JsonSyntaxException;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.handler.config.CommonConfig;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
+import igentuman.nc.recipes.type.EmptyRecipe;
 import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.ingredient.creator.IngredientCreatorAccess;
@@ -54,6 +55,7 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerial
             }
         } catch (Exception ex) {
             NuclearCraft.LOGGER.warn("Unable to parse input for recipe: "+recipeId);
+            return emptyRecipe();
         }
 
         outputItems = new ItemStackIngredient[0];
@@ -79,6 +81,7 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerial
             }
         } catch (Exception ex) {
             NuclearCraft.LOGGER.warn("Unable to parse output for recipe: "+recipeId);
+            return emptyRecipe();
         }
 
         inputFluids = new FluidStackIngredient[0];
@@ -99,6 +102,7 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerial
             }
         } catch (Exception ex) {
             NuclearCraft.LOGGER.warn("Unable to parse input fluid for recipe: "+recipeId);
+            return emptyRecipe();
         }
 
         outputFluids = new FluidStackIngredient[0];
@@ -119,6 +123,7 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerial
             }
         } catch (Exception ex) {
             NuclearCraft.LOGGER.warn("Unable to parse output fluid for recipe: "+recipeId);
+            return emptyRecipe();
         }
         double timeModifier = 1D;
         double powerModifier = 1D;
@@ -138,6 +143,10 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerial
             NuclearCraft.LOGGER.warn("Unable to parse params for recipe: "+recipeId);
         }
         return this.factory.create(recipeId, inputItems, outputItems, inputFluids, outputFluids, timeModifier, powerModifier, radiation, rarityModifier);
+    }
+
+    private RECIPE emptyRecipe() {
+        return (RECIPE) new EmptyRecipe();
     }
 
 

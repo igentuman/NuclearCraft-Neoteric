@@ -6,7 +6,8 @@
   "mixins": [
     "ForgeHooksMixin",
     "MekRadiationManager",
-    "TagLoaderMixin"
+    "TagLoaderMixin",
+    "KubeJSRecipesEventJSMixin"
   ],
   "client": [
   ],

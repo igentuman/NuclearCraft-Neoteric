@@ -73,7 +73,7 @@ public class QNP extends PickaxeItem
 	}
 
 	@Override
-	public int getBarColor(ItemStack pStack)
+	public int getBarColor(@NotNull ItemStack pStack)
 	{
 		return Mth.hsvToRgb(Math.max(0.0F, getBarWidth(pStack)/(float)MAX_BAR_WIDTH)/3.0F, 1.0F, 1.0F);
 	}
@@ -83,7 +83,7 @@ public class QNP extends PickaxeItem
 	}
 
 	@Override
-	public int getBarWidth(ItemStack stack) {
+	public int getBarWidth(@NotNull ItemStack stack) {
 		CustomEnergyStorage energyStorage = getEnergy(stack);
 		float chargeRatio = (float) energyStorage.getEnergyStored() / (float) getEnergyMaxStorage();
 		return (int) Math.min(13, 13*chargeRatio);
@@ -95,7 +95,7 @@ public class QNP extends PickaxeItem
 	}
 
 	@Override
-	public boolean isCorrectToolForDrops(ItemStack stack, BlockState state) {
+	public boolean isCorrectToolForDrops(@NotNull ItemStack stack, @NotNull BlockState state) {
 		return true;
 	}
 	@Override
@@ -104,7 +104,7 @@ public class QNP extends PickaxeItem
 	}
 
 	@Override
-	public boolean isBarVisible(ItemStack pStack) {
+	public boolean isBarVisible(@NotNull ItemStack pStack) {
 		return true;
 	}
 
@@ -159,9 +159,9 @@ public class QNP extends PickaxeItem
 		Block block = tempState.getBlock();
 		if(!enoughEnergy(tool)) return totalDrops;
 		int xp = ForgeHooks.onBlockBreakEvent(worldIn, ((ServerPlayer) entityLiving).gameMode.getGameModeForPlayer(), (ServerPlayer) entityLiving, pos);
-		if (xp >= 0 && block.onDestroyedByPlayer(tempState, worldIn, pos, (Player) entityLiving, true, tempState.getFluidState())) {
+		if (xp >= 0 && block.onDestroyedByPlayer(tempState, worldIn, pos, (ServerPlayer) entityLiving, true, tempState.getFluidState())) {
 			block.destroy(worldIn, pos, tempState);
-			Block.getDrops(tempState, (ServerLevel) worldIn, pos, null, (Player) entityLiving, tool).forEach(itemStack -> {
+			Block.getDrops(tempState, (ServerLevel) worldIn, pos, null, entityLiving, tool).forEach(itemStack -> {
 				boolean combined = false;
 				for (ItemStack drop : totalDrops) {
 					if (ItemHandlerHelper.canItemStacksStack(drop, itemStack)) {

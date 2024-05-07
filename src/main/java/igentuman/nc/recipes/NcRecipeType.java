@@ -32,7 +32,7 @@ public class NcRecipeType<RECIPE extends NcRecipe> implements RecipeType<RECIPE>
         INcRecipeTypeProvider<RECIPE> {
 
     public static final RecipeTypeDeferredRegister RECIPE_TYPES = new RecipeTypeDeferredRegister(MODID);
-
+    public static boolean initialized = false;
     public static final HashMap<String, RecipeTypeRegistryObject<? extends NcRecipe>> ALL_RECIPES = initializeRecipes();
     private static HashMap<String, RecipeTypeRegistryObject<? extends NcRecipe>> initializeRecipes() {
         HashMap<String, RecipeTypeRegistryObject<? extends NcRecipe>> recipes = new HashMap<>();
@@ -48,7 +48,7 @@ public class NcRecipeType<RECIPE extends NcRecipe> implements RecipeType<RECIPE>
                 recipes.put(processorName, register(processorName));
             }
         }
-
+        initialized = true;
         return recipes;
     }
 
@@ -60,6 +60,13 @@ public class NcRecipeType<RECIPE extends NcRecipe> implements RecipeType<RECIPE>
 
     private NcRecipeType(String name) {
         this.registryName = rl(name);
+    }
+
+    public static void invalidateCache() {
+        if(!initialized) return;
+        for (RecipeTypeRegistryObject<? extends NcRecipe> recipeType : ALL_RECIPES.values()) {
+            recipeType.getRecipeType().cachedRecipes = Collections.emptyList();
+        }
     }
 
     @Override

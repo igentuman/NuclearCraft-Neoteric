@@ -30,6 +30,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.setup.registration.NCItems.NC_ITEMS;
 
 public class NCProcessorContainer<T extends AbstractContainerMenu> extends AbstractContainerMenu {
     protected NCProcessorBE<?> blockEntity;
@@ -88,7 +89,7 @@ public class NCProcessorContainer<T extends AbstractContainerMenu> extends Abstr
         if(getProcessor().supportEnergyUpgrade) {
             int idx = i;
             addSlot(new NCSlotItemHandler(blockEntity.upgradesHandler, idx, ux, 77)
-                    .allowed(NCItems.NC_ITEMS.get("upgrade_energy").get()));
+                    .allowed(NC_ITEMS.get("upgrade_energy").get()));
             i++;
             ux -= 18;
         }
@@ -96,7 +97,7 @@ public class NCProcessorContainer<T extends AbstractContainerMenu> extends Abstr
         if(getProcessor().supportSpeedUpgrade) {
             int idx = i;
             addSlot(new NCSlotItemHandler(blockEntity.upgradesHandler, idx, ux, 77)
-                    .allowed(NCItems.NC_ITEMS.get("upgrade_speed").get()));
+                    .allowed(NC_ITEMS.get("upgrade_speed").get()));
             ux -= 18;
         }
 
@@ -129,7 +130,7 @@ public class NCProcessorContainer<T extends AbstractContainerMenu> extends Abstr
                         return ItemStack.EMPTY;
                     }
                 } else if (index < 28) {
-                    boolean result = false;
+                    boolean result = handleUpgradesQuickMove(stack);
                     if(blockEntity.isInputAllowed(stack)) {
                         result = this.moveItemStackTo(stack, 0, inputSlots(), false);
                     }
@@ -168,6 +169,20 @@ public class NCProcessorContainer<T extends AbstractContainerMenu> extends Abstr
         }
 
         return itemstack;
+    }
+
+    private boolean handleUpgradesQuickMove(ItemStack stack) {
+        if(stack.getItem().equals(NC_ITEMS.get("upgrade_speed").get()) && processor.supportSpeedUpgrade) {
+            return this.moveItemStackTo(stack, inputSlots()+processor.getSlotsConfig().getOutputItems(), 37, true);
+        }
+        if(stack.getItem().equals(NC_ITEMS.get("upgrade_energy").get()) && processor.supportEnergyUpgrade) {
+            int id = 37;
+            if(processor.supportSpeedUpgrade) {
+                id++;
+            }
+            return this.moveItemStackTo(stack, inputSlots()+processor.getSlotsConfig().getOutputItems(), id, true);
+        }
+        return false;
     }
 
 

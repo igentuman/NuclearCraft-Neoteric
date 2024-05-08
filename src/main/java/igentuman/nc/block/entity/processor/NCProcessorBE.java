@@ -635,4 +635,13 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
             contentHandler.voidFluidSlot(slotId);
         }
     }
+
+    public boolean isInputAllowed(ItemStack stack) {
+        for(ItemStack allowed: getAllowedInputItems()) {
+            if(ItemStack.isSame(allowed, stack)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

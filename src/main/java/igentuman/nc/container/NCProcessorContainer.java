@@ -30,6 +30,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.setup.registration.NCItems.NC_ITEMS;
 import static net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
 
 public class NCProcessorContainer<T extends AbstractContainerMenu> extends AbstractContainerMenu {
@@ -89,7 +90,7 @@ public class NCProcessorContainer<T extends AbstractContainerMenu> extends Abstr
         if(getProcessor().supportEnergyUpgrade) {
             int idx = i;
             addSlot(new NCSlotItemHandler(blockEntity.upgradesHandler, idx, ux, 77)
-                    .allowed(NCItems.NC_ITEMS.get("upgrade_energy").get()));
+                    .allowed(NC_ITEMS.get("upgrade_energy").get()));
             i++;
             ux -= 18;
         }
@@ -97,7 +98,7 @@ public class NCProcessorContainer<T extends AbstractContainerMenu> extends Abstr
         if(getProcessor().supportSpeedUpgrade) {
             int idx = i;
             addSlot(new NCSlotItemHandler(blockEntity.upgradesHandler, idx, ux, 77)
-                    .allowed(NCItems.NC_ITEMS.get("upgrade_speed").get()));
+                    .allowed(NC_ITEMS.get("upgrade_speed").get()));
             ux -= 18;
         }
 
@@ -106,25 +107,38 @@ public class NCProcessorContainer<T extends AbstractContainerMenu> extends Abstr
         }
     }
 
+    public int inputSlots() {
+        return processor.getSlotsConfig().getInputItems();
+    }
+
     @Override
     public ItemStack quickMoveStack(Player pPlayer, int index) {
         ItemStack itemstack = ItemStack.EMPTY;
         Slot slot = this.slots.get(index);
+        int maxSlotId = 36+inputSlots()+processor.getSlotsConfig().getOutputItems()+processor.getUpgradesSlots()-1;
         if (slot != null && slot.hasItem()) {
             ItemStack stack = slot.getItem();
             itemstack = stack.copy();
-            if (index == 0) {
-                if (!this.moveItemStackTo(stack, 1, 37, true)) {
+            if (index < inputSlots()) {
+                if (!this.moveItemStackTo(stack, inputSlots()+processor.getSlotsConfig().getOutputItems(), 37, true)) {
                     return ItemStack.EMPTY;
                 }
-                slot.onQuickCraft(stack, itemstack);
             } else {
-                if (ForgeHooks.getBurnTime(stack, RecipeType.SMELTING) > 0) {
-                    if (!this.moveItemStackTo(stack, 0, 1, false)) {
+                if (index < inputSlots()+processor.getSlotsConfig().getOutputItems()
+                        && index > inputSlots()-1) {
+                    boolean result =  this.moveItemStackTo(stack, inputSlots()+processor.getSlotsConfig().getOutputItems(), maxSlotId, false);
+                    if (!result) {
                         return ItemStack.EMPTY;
                     }
                 } else if (index < 28) {
-                    if (!this.moveItemStackTo(stack, 28, 37, false)) {
+                    boolean result = handleUpgradesQuickMove(stack);
+                    if(blockEntity.isInputAllowed(stack)) {
+                        result = this.moveItemStackTo(stack, 0, inputSlots(), false);
+                    }
+                    if (!result) {
+                        result = this.moveItemStackTo(stack, 28, maxSlotId, false);
+                    }
+                    if (!result) {
                         return ItemStack.EMPTY;
                     }
                 } else if (index < 37 && !this.moveItemStackTo(stack, 1, 28, false)) {
@@ -146,6 +160,20 @@ public class NCProcessorContainer<T extends AbstractContainerMenu> extends Abstr
         }
 
         return itemstack;
+    }
+
+    private boolean handleUpgradesQuickMove(ItemStack stack) {
+        if(stack.getItem().equals(NC_ITEMS.get("upgrade_speed").get()) && processor.supportSpeedUpgrade) {
+            return this.moveItemStackTo(stack, inputSlots()+processor.getSlotsConfig().getOutputItems(), 37, true);
+        }
+        if(stack.getItem().equals(NC_ITEMS.get("upgrade_energy").get()) && processor.supportEnergyUpgrade) {
+            int id = 37;
+            if(processor.supportSpeedUpgrade) {
+                id++;
+            }
+            return this.moveItemStackTo(stack, inputSlots()+processor.getSlotsConfig().getOutputItems(), id, true);
+        }
+        return false;
     }
 
 

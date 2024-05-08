@@ -112,9 +112,9 @@ dependencies {
     implementation fg.deobf("dev.latvian.mods:rhino-forge:${rhino_version}")
     implementation fg.deobf("dev.architectury:architectury-forge:${architectury_version}")
 
-    implementation fg.deobf("curse.maven:ftb-library-forge-404465:5282375")
-    implementation fg.deobf("curse.maven:ftb-teams-forge-404468:5267190")
-    implementation fg.deobf("curse.maven:ftb-chunks-forge-314906:5267364")
+    //implementation fg.deobf("curse.maven:ftb-library-forge-404465:5282375")
+    //implementation fg.deobf("curse.maven:ftb-teams-forge-404468:5267190")
+    //implementation fg.deobf("curse.maven:ftb-chunks-forge-314906:5267364")
 
     //runtimeOnly fg.deobf("curse.maven:nbtedit-reborn-678133:4420565")
     //runtimeOnly fg.deobf("com.blamejared.crafttweaker:CraftTweaker-forge-${mc_version}:${ct_version}")

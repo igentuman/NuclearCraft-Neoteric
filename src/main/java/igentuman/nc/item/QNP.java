@@ -49,8 +49,8 @@ import java.util.Random;
 import org.apache.commons.lang3.tuple.Pair;
 
 import static igentuman.nc.handler.config.CommonConfig.ENERGY_STORAGE;
-import static igentuman.nc.handler.event.client.BlockOverlayHandler.getArea;
 import static igentuman.nc.setup.registration.NCSounds.ITEM_CHARGED;
+import static igentuman.nc.util.AreaUtil.getArea;
 
 public class QNP extends PickaxeItem
 {
@@ -104,6 +104,8 @@ public class QNP extends PickaxeItem
 	public void setDamage(ItemStack stack, int damage)
 	{
 	}
+
+
 
 	@Override
 	public boolean isBarVisible(@NotNull ItemStack pStack) {

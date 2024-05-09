@@ -18,14 +18,12 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.*;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -41,7 +39,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.apache.commons.lang3.tuple.Pair;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
-import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
 
@@ -53,6 +50,7 @@ import static com.mojang.math.Axis.XP;
 import static com.mojang.math.Axis.YP;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.item.QNP.getMode;
+import static igentuman.nc.util.AreaUtil.getArea;
 
 @Mod.EventBusSubscriber(modid = MODID, value = Dist.CLIENT)
 public class BlockOverlayHandler {
@@ -60,19 +58,6 @@ public class BlockOverlayHandler {
     public static void register(FMLClientSetupEvent event) {
         MinecraftForge.EVENT_BUS.addListener(BlockOverlayHandler::blockOverlayEvent);
         MinecraftForge.EVENT_BUS.addListener(BlockOverlayHandler::onRenderPre);
-    }
-
-    public static Pair<BlockPos, BlockPos> getArea(BlockPos pos, Direction facing, int radius, boolean depth) {
-        BlockPos bottomLeft = pos.relative(facing.getAxis() == Direction.Axis.Y ? Direction.SOUTH : Direction.DOWN, radius).relative(facing.getAxis() == Direction.Axis.Y ? Direction.WEST : facing.getCounterClockWise(), radius);
-        BlockPos topRight = pos.relative(facing.getAxis() == Direction.Axis.Y ? Direction.NORTH : Direction.UP, radius).relative(facing.getAxis() == Direction.Axis.Y ? Direction.EAST : facing.getClockWise(), radius);
-        if (facing.getAxis() != Direction.Axis.Y && radius > 0) {
-            bottomLeft = bottomLeft.relative(Direction.UP, radius - 1);
-            topRight = topRight.relative(Direction.UP, radius - 1);
-        }
-        if (depth) {
-            topRight = topRight.relative(facing.getOpposite(), radius+1);
-        }
-        return Pair.of(bottomLeft, topRight);
     }
 
     @SubscribeEvent

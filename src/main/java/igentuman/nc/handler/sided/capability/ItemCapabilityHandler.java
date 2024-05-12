@@ -62,7 +62,11 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
     @Override
     @NotNull
     public ItemStack getStackInSlot(int slot) {
-        validateSlotIndex(slot);
+        try {
+            validateSlotIndex(slot);
+        } catch (Exception ignored) {
+            return ItemStack.EMPTY;
+        }
         return this.stacks.get(slot);
     }
 

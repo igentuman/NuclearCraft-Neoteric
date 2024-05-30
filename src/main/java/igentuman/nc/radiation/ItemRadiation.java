@@ -3,11 +3,9 @@ package igentuman.nc.radiation;
 import igentuman.nc.content.fuel.FuelManager;
 import igentuman.nc.content.materials.Materials;
 import igentuman.nc.content.energy.RTGs;
-import igentuman.nc.setup.registration.Fuel;
+import igentuman.nc.setup.registration.FissionFuel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.HashMap;
@@ -16,7 +14,6 @@ import java.util.List;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.content.materials.Materials.*;
 import static igentuman.nc.handler.config.RadiationConfig.RADIATION_CONFIG;
-import static igentuman.nc.setup.registration.NCBlocks.NC_BLOCKS;
 import static igentuman.nc.setup.registration.NCEnergyBlocks.ENERGY_BLOCKS;
 import static igentuman.nc.setup.registration.NCItems.NC_DUSTS;
 import static igentuman.nc.setup.registration.NCItems.NC_INGOTS;
@@ -84,7 +81,7 @@ public class ItemRadiation {
                     Item isotope1 = getIsotope(name, String.valueOf(FuelManager.all().get(name).get(subType).getDefault().isotopes[0]), type);
                     Item isotope2 = getIsotope(name, String.valueOf(FuelManager.all().get(name).get(subType).getDefault().isotopes[1]), type);
                     double radiation = ItemRadiation.byItem(isotope1)*isotope1Cnt + ItemRadiation.byItem(isotope2)*isotope2Cnt;
-                    add(Fuel.NC_FUEL.get(List.of("fuel", name, subType, type)).get(), radiation/2);
+                    add(FissionFuel.NC_FUEL.get(List.of("fuel", name, subType, type)).get(), radiation/2);
                 }
             }
         }
@@ -101,7 +98,7 @@ public class ItemRadiation {
                     Item isotope1 = getIsotope(name, String.valueOf(FuelManager.all().get(name).get(subType).getDefault().isotopes[0]), type);
                     Item isotope2 = getIsotope(name, String.valueOf(FuelManager.all().get(name).get(subType).getDefault().isotopes[1]), type);
                     double radiation = ItemRadiation.byItem(isotope1)*isotope1Cnt + ItemRadiation.byItem(isotope2)*isotope2Cnt;
-                    add(Fuel.NC_DEPLETED_FUEL.get(List.of("depleted", name, subType, type)).get(), radiation/1.5);
+                    add(FissionFuel.NC_DEPLETED_FUEL.get(List.of("depleted", name, subType, type)).get(), radiation/1.5);
                 }
             }
         }
@@ -112,14 +109,14 @@ public class ItemRadiation {
         if(!type.isEmpty()) {
             type = "_"+type;
         }
-        if(!Fuel.NC_ISOTOPES.containsKey(name+"/"+id+type)) {
-            for(String isotope: Fuel.NC_ISOTOPES.keySet()) {
+        if(!FissionFuel.NC_ISOTOPES.containsKey(name+"/"+id+type)) {
+            for(String isotope: FissionFuel.NC_ISOTOPES.keySet()) {
                 if(isotope.contains(id)) {
-                    return  Fuel.NC_ISOTOPES.get(isotope).get();
+                    return  FissionFuel.NC_ISOTOPES.get(isotope).get();
                 }
             }
         }
-        return Fuel.NC_ISOTOPES.get(name+"/"+id+type).get();
+        return FissionFuel.NC_ISOTOPES.get(name+"/"+id+type).get();
     }
 
     public static void add(String item, double radiation)

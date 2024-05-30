@@ -9,6 +9,8 @@ import net.minecraft.data.recipes.FinishedRecipe;
 import java.util.function.Consumer;
 
 import static igentuman.nc.setup.registration.NCItems.ALL_NC_ITEMS;
+import static igentuman.nc.setup.registration.Tags.GEMS_TAG;
+import static igentuman.nc.setup.registration.Tags.INGOTS_TAG;
 import static net.minecraft.world.item.Items.*;
 
 public class ManufactoryRecipes extends AbstractRecipeProvider {
@@ -17,11 +19,11 @@ public class ManufactoryRecipes extends AbstractRecipeProvider {
         ManufactoryRecipes.consumer = consumer;
         ID = Processors.MANUFACTORY;
         for(String name: Materials.all().keySet()) {
-            if(NCItems.NC_DUSTS.containsKey(name) && NCItems.INGOTS_TAG.containsKey(name)) {
+            if(NCItems.NC_DUSTS.containsKey(name) && INGOTS_TAG.containsKey(name)) {
                 itemToItem(ingotIngredient(name), dustIngredient(name));
                 continue;
             }
-            if(NCItems.GEMS_TAG.containsKey(name) && NCItems.NC_DUSTS.containsKey(name)) {
+            if(GEMS_TAG.containsKey(name) && NCItems.NC_DUSTS.containsKey(name)) {
                 if(Materials.villiaumite.equals(name) || Materials.carobbiite.equals(name)) continue;
                 itemToItem(gemIngredient(name), dustIngredient(name), 1.5D);
             }

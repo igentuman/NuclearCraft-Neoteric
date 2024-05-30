@@ -28,7 +28,7 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import static igentuman.nc.setup.registration.NCBlocks.ITEM_REGISTRY;
+import static igentuman.nc.setup.registration.Registries.ITEM_REGISTRY;
 
 @NothingNullByDefault
 public class ItemStackIngredientCreator implements IItemStackIngredientCreator {

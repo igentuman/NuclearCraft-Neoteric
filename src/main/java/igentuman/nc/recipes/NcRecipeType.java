@@ -20,9 +20,7 @@ import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
 import java.util.*;
-
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
 
@@ -65,6 +63,9 @@ public class NcRecipeType<RECIPE extends NcRecipe> implements RecipeType<RECIPE>
         for (RecipeTypeRegistryObject<? extends NcRecipe> recipeType : ALL_RECIPES.values()) {
             recipeType.getRecipeType().cachedRecipes = Collections.emptyList();
         }
+    }
+
+    public static void init() {
     }
 
     @Override

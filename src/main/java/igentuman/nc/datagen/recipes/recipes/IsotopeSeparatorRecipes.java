@@ -2,7 +2,7 @@ package igentuman.nc.datagen.recipes.recipes;
 
 import igentuman.nc.recipes.ingredient.NcIngredient;
 import igentuman.nc.content.processors.Processors;
-import igentuman.nc.setup.registration.Fuel;
+import igentuman.nc.setup.registration.FissionFuel;
 import igentuman.nc.content.materials.Materials;
 import igentuman.nc.content.fuel.FuelManager;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -55,7 +55,7 @@ public class IsotopeSeparatorRecipes extends AbstractRecipeProvider {
             isotope1Cnt = 3;
             isotope2Cnt = 6;
         }
-        add(ingredient(Fuel.NC_FUEL.get(List.of("fuel", name, subType, type)).get(), 9),
+        add(ingredient(FissionFuel.NC_FUEL.get(List.of("fuel", name, subType, type)).get(), 9),
                 List.of(ingredient(getIsotope(name, String.valueOf(isotope1), type), isotope1Cnt),
                         ingredient(getIsotope(name, String.valueOf(isotope2), type), isotope2Cnt)),
                 2);

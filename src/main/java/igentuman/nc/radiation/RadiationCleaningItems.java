@@ -1,8 +1,5 @@
 package igentuman.nc.radiation;
 
-import igentuman.nc.content.fuel.FuelManager;
-import igentuman.nc.content.materials.Materials;
-import igentuman.nc.setup.registration.Fuel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.ForgeRegistries;

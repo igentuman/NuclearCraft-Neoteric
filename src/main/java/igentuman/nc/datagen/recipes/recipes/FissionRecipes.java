@@ -4,10 +4,9 @@ package igentuman.nc.datagen.recipes.recipes;
 import igentuman.nc.block.entity.fission.FissionControllerBE;
 import igentuman.nc.datagen.recipes.builder.NcRecipeBuilder;
 import igentuman.nc.recipes.ingredient.NcIngredient;
-import igentuman.nc.setup.registration.Fuel;
+import igentuman.nc.setup.registration.FissionFuel;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,13 +39,13 @@ public class FissionRecipes {
     }
 
     private static void solidFissionRecipes() {
-        for(List<String> name: Fuel.NC_FUEL.keySet()) {
+        for(List<String> name: FissionFuel.NC_FUEL.keySet()) {
             if(name.contains("tr")) continue;
             List<String> depleted = new ArrayList<>(name);
             depleted.set(0, "depleted");
             itemToItemRecipe(FissionControllerBE.NAME,
-                    NcIngredient.of(Fuel.NC_FUEL.get(name).get()),
-                    Fuel.NC_DEPLETED_FUEL.get(depleted).get());
+                    NcIngredient.of(FissionFuel.NC_FUEL.get(name).get()),
+                    FissionFuel.NC_DEPLETED_FUEL.get(depleted).get());
         }
     }
 

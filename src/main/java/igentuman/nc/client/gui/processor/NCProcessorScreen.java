@@ -117,7 +117,7 @@ public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractC
         addWidget(sideConfigBtn);
         redstoneConfigBtn = new Button.RedstoneConfig(48, 74, this, menu.getPosition());
         addWidget(redstoneConfigBtn);
-        showRecipesBtn = new Button.ShowRecipes(67, 74, this, menu.getPosition());
+        showRecipesBtn = new Button.ShowRecipes(67, 74, this);
         addWidget(showRecipesBtn);
         addSlots();
     }

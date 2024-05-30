@@ -1,22 +1,16 @@
 package igentuman.nc.setup.registration;
 
 import net.minecraft.sounds.SoundEvent;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
-
 import java.util.HashMap;
 import java.util.List;
-
-import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
+import static igentuman.nc.setup.registration.Registries.SOUND_EVENTS;
 
 public final class NCSounds {
 
     private NCSounds() {
     }
-
-    public static final DeferredRegister<SoundEvent> SOUND_EVENTS = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, MODID);
 
     public static final List<RegistryObject<SoundEvent>> GEIGER_SOUNDS = initGeigerSounds();
     public static final RegistryObject<SoundEvent> ITEM_CHARGED = SOUND_EVENTS.register("charge_energy", () -> SoundEvent.createVariableRangeEvent(rl( "charge_energy")));
@@ -49,5 +43,9 @@ public final class NCSounds {
                 SOUND_EVENTS.register("geiger_4", () -> SoundEvent.createVariableRangeEvent(rl( "geiger_4"))),
                 SOUND_EVENTS.register("geiger_5", () -> SoundEvent.createVariableRangeEvent(rl( "geiger_5")))
         );
+    }
+
+    public static void init() {
+
     }
 }

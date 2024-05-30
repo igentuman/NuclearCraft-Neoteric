@@ -2,7 +2,7 @@ package igentuman.nc.radiation;
 
 import igentuman.nc.content.fuel.FuelManager;
 import igentuman.nc.content.materials.Materials;
-import igentuman.nc.setup.registration.Fuel;
+import igentuman.nc.setup.registration.FissionFuel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.material.Fluid;
@@ -59,14 +59,14 @@ public class FluidRadiation {
         if(!type.isEmpty()) {
             type = "_"+type;
         }
-        if(!Fuel.NC_ISOTOPES.containsKey(name+"/"+id+type)) {
-            for(String isotope: Fuel.NC_ISOTOPES.keySet()) {
+        if(!FissionFuel.NC_ISOTOPES.containsKey(name+"/"+id+type)) {
+            for(String isotope: FissionFuel.NC_ISOTOPES.keySet()) {
                 if(isotope.contains(id)) {
-                    return  Fuel.NC_ISOTOPES.get(isotope).get();
+                    return  FissionFuel.NC_ISOTOPES.get(isotope).get();
                 }
             }
         }
-        return Fuel.NC_ISOTOPES.get(name+"/"+id+type).get();
+        return FissionFuel.NC_ISOTOPES.get(name+"/"+id+type).get();
     }
 
     public static void add(String item, double radiation)

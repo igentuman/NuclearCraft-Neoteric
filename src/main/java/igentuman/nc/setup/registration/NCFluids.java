@@ -10,8 +10,6 @@ import igentuman.nc.fluid.NCFluid;
 import igentuman.nc.block.NCFluidBlock;
 import igentuman.nc.content.fuel.FuelManager;
 import igentuman.nc.util.TextureUtil;
-import igentuman.nc.util.collection.HashList;
-import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.TagKey;
@@ -22,15 +20,12 @@ import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.common.SoundActions;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
-import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import org.apache.commons.lang3.mutable.Mutable;
@@ -42,31 +37,25 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.content.materials.Materials.slurries;
+import static igentuman.nc.setup.registration.Registries.*;
+import static igentuman.nc.setup.registration.Tags.GASES_TAG;
+import static igentuman.nc.setup.registration.Tags.LIQUIDS_TAG;
 import static igentuman.nc.util.ModUtil.isMekanismLoadeed;
 
 public class NCFluids {
-    public static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(ForgeRegistries.FLUIDS, MODID);
-    public static final DeferredRegister<FluidType> FLUID_TYPES = DeferredRegister.create(
-            ForgeRegistries.Keys.FLUID_TYPES, MODID
-    );
+
     public static final HashMap<String, FluidEntry> ALL_FLUID_ENTRIES = new HashMap<>();
     public static final Set<NCBlocks.BlockEntry<? extends LiquidBlock>> ALL_FLUID_BLOCKS = new HashSet<>();
     public static HashMap<String, FluidEntry> NC_MATERIALS = new HashMap<>();
     public static HashMap<String, FluidEntry> NC_GASES = new HashMap<>();
 
-    public static HashMap<String, TagKey<Fluid>> GASES_TAG = new HashMap<>();
-    public static HashMap<String, TagKey<Fluid>> LIQUIDS_TAG = new HashMap<>();
     public static void register(IEventBus eventBus) {
         FLUIDS.register(eventBus);
     }
 
     public static void init() {
-        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
-        FLUIDS.register(bus);
-        FLUID_TYPES.register(bus);
         materialFluids();
         gases();
         fuel();
@@ -193,7 +182,6 @@ public class NCFluids {
         for(AcidDefinition acid: items.values()) {
             LIQUIDS_TAG.put(acid.name, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(),  new ResourceLocation("forge", acid.name)));
             NC_MATERIALS.put(acid.name, FluidEntry.makeAcid(acid));
-
         }
     }
 
@@ -422,7 +410,7 @@ public class NCFluids {
                     () -> BlockBehaviour.Properties.copy(Blocks.WATER).noLootTable().noCollission(),
                     p -> new NCFluidBlock(thisMutable.getValue(), p)
             );
-            RegistryObject<BucketItem> bucket = NCItems.ITEMS.register(name+"_bucket", () -> makeBucket(still, burnTime));
+            RegistryObject<BucketItem> bucket = ITEMS.register(name+"_bucket", () -> makeBucket(still, burnTime));
             ALL_BUCKETS.add(bucket);
             FluidEntry entry = new FluidEntry(flowing, still, block, bucket, type, properties, color);
             thisMutable.setValue(entry);

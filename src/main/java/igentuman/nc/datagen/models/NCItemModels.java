@@ -4,13 +4,11 @@ import igentuman.nc.multiblock.fission.FissionReactor;
 import igentuman.nc.setup.registration.*;
 import igentuman.nc.content.storage.BarrelBlocks;
 import igentuman.nc.content.storage.ContainerBlocks;
-import net.minecraft.core.Registry;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.client.model.generators.loaders.DynamicFluidContainerModelBuilder;
-import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -71,7 +69,7 @@ public class NCItemModels extends ItemModelProvider {
 
     private void multiblocks() {
         for(String name: NCBlocks.MULTI_BLOCKS.keySet()) {
-            withExistingParent(NCBlocks.MULTIBLOCK_ITEMS.get(name).getId().getPath(), modLoc("block/multiblock/"+name));
+            withExistingParent(MULTIBLOCK_ITEMS.get(name).getId().getPath(), modLoc("block/multiblock/"+name));
         }
         for(String name: FissionReactor.FISSION_BLOCKS.keySet()) {
             withExistingParent(FissionReactor.FISSION_BLOCK_ITEMS.get(name).getId().getPath(), modLoc("block/multiblock/"+name));
@@ -136,7 +134,7 @@ public class NCItemModels extends ItemModelProvider {
     }
 
     private void fuel() {
-        for(List<String> name: Fuel.NC_FUEL.keySet()) {
+        for(List<String> name: FissionFuel.NC_FUEL.keySet()) {
             String depleted = "/";
             if(name.get(0).equals("depleted")) {
                 depleted = "/depleted/";
@@ -146,12 +144,12 @@ public class NCItemModels extends ItemModelProvider {
             if(!name.get(3).isEmpty()) {
                 subPath+="_"+name.get(3);
             }
-            singleTexture(Fuel.NC_FUEL.get(name).getId().getPath(),
+            singleTexture(FissionFuel.NC_FUEL.get(name).getId().getPath(),
                     mcLoc("item/generated"),
                     "layer0", modLoc("item/fuel/"+subPath));
         }
 
-        for(List<String> name: Fuel.NC_DEPLETED_FUEL.keySet()) {
+        for(List<String> name: FissionFuel.NC_DEPLETED_FUEL.keySet()) {
             String depleted = "/";
             if(name.get(0).equals("depleted")) {
                 depleted = "/depleted/";
@@ -161,15 +159,15 @@ public class NCItemModels extends ItemModelProvider {
             if(!name.get(3).isEmpty()) {
                 subPath+="_"+name.get(3);
             }
-            singleTexture(Fuel.NC_DEPLETED_FUEL.get(name).getId().getPath(),
+            singleTexture(FissionFuel.NC_DEPLETED_FUEL.get(name).getId().getPath(),
                     mcLoc("item/generated"),
                     "layer0", modLoc("item/fuel/"+subPath));
         }
     }
 
     private void isotopes() {
-        for(String name: Fuel.NC_ISOTOPES.keySet()) {
-            singleTexture(Fuel.NC_ISOTOPES.get(name).getId().getPath(),
+        for(String name: FissionFuel.NC_ISOTOPES.keySet()) {
+            singleTexture(FissionFuel.NC_ISOTOPES.get(name).getId().getPath(),
                     mcLoc("item/generated"),
                     "layer0", modLoc("item/material/isotope/"+name));
         }
@@ -299,20 +297,20 @@ public class NCItemModels extends ItemModelProvider {
         }
     }
     private void ores() {
-        for(String ore: NCBlocks.ORE_BLOCK_ITEMS.keySet()) {
-            withExistingParent(NCBlocks.ORE_BLOCK_ITEMS.get(ore).getId().getPath(), modLoc("block/ore/"+ore+"_ore"));
+        for(String ore: ORE_BLOCK_ITEMS.keySet()) {
+            withExistingParent(ORE_BLOCK_ITEMS.get(ore).getId().getPath(), modLoc("block/ore/"+ore+"_ore"));
         }
     }
 
     private void blocks() {
-        for(String name: NCBlocks.NC_BLOCKS_ITEMS.keySet()) {
-            withExistingParent(NCBlocks.NC_BLOCKS_ITEMS.get(name).getId().getPath(), modLoc("block/material/"+name+"_block"));
+        for(String name: NC_BLOCKS_ITEMS.keySet()) {
+            withExistingParent(NC_BLOCKS_ITEMS.get(name).getId().getPath(), modLoc("block/material/"+name+"_block"));
         }
-        for(String name: NCBlocks.NC_ELECTROMAGNETS_ITEMS.keySet()) {
-            withExistingParent(NCBlocks.NC_ELECTROMAGNETS_ITEMS.get(name).getId().getPath(), modLoc("block/electromagnet/"+name));
+        for(String name: NC_ELECTROMAGNETS_ITEMS.keySet()) {
+            withExistingParent(NC_ELECTROMAGNETS_ITEMS.get(name).getId().getPath(), modLoc("block/electromagnet/"+name));
         }
-        for(String name: NCBlocks.NC_RF_AMPLIFIERS_ITEMS.keySet()) {
-            withExistingParent(NCBlocks.NC_RF_AMPLIFIERS_ITEMS.get(name).getId().getPath(), modLoc("block/rf_amplifier/"+name));
+        for(String name: NC_RF_AMPLIFIERS_ITEMS.keySet()) {
+            withExistingParent(NC_RF_AMPLIFIERS_ITEMS.get(name).getId().getPath(), modLoc("block/rf_amplifier/"+name));
         }
     }
 }

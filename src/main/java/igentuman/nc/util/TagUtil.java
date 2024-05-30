@@ -1,7 +1,5 @@
 package igentuman.nc.util;
 
-import igentuman.nc.recipes.ingredient.FluidStackIngredient;
-import igentuman.nc.recipes.ingredient.creator.IngredientCreatorAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -23,8 +21,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static igentuman.nc.handler.config.MaterialsConfig.MATERIAL_PRODUCTS;
-import static igentuman.nc.setup.registration.NCBlocks.BLOCK_REGISTRY;
-import static igentuman.nc.setup.registration.NCBlocks.ITEM_REGISTRY;
+import static igentuman.nc.setup.registration.Registries.BLOCK_REGISTRY;
+import static igentuman.nc.setup.registration.Registries.ITEM_REGISTRY;
 
 public class TagUtil {
 

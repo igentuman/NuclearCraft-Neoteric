@@ -24,11 +24,12 @@ import static igentuman.nc.datagen.recipes.recipes.AbstractRecipeProvider.dustIn
 import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_BLOCKS;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.coils;
-import static igentuman.nc.setup.registration.Fuel.NC_ISOTOPES;
+import static igentuman.nc.setup.registration.FissionFuel.NC_ISOTOPES;
 import static igentuman.nc.setup.registration.NCBlocks.*;
 import static igentuman.nc.setup.registration.NCEnergyBlocks.ENERGY_BLOCKS;
 import static igentuman.nc.setup.registration.NCItems.*;
 import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCKS;
+import static igentuman.nc.setup.registration.Tags.*;
 import static net.minecraft.world.item.Items.*;
 import static igentuman.nc.util.DataGenUtil.*;
 public class NCRecipes extends RecipeProvider {

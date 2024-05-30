@@ -1,27 +1,25 @@
 package igentuman.nc.multiblock.fission;
 
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-
 import java.util.*;
-
-import static igentuman.nc.NuclearCraft.MODID;
-import static igentuman.nc.setup.registration.NCBlocks.BLOCK_REGISTRY;
-import static igentuman.nc.setup.registration.NCBlocks.ITEM_REGISTRY;
+import static igentuman.nc.setup.registration.Tags.blockTag;
+import static igentuman.nc.setup.registration.Tags.itemTag;
 
 public class FissionBlocks {
+
     public static final BlockBehaviour.Properties REACTOR_BLOCKS_PROPERTIES = BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(4f).requiresCorrectToolForDrops();
-    public static TagKey<Block> MODERATORS_BLOCKS = TagKey.create(BLOCK_REGISTRY, new ResourceLocation(MODID, "moderators"));
-    public static TagKey<Block> HEAT_SINK_BLOCKS = TagKey.create(BLOCK_REGISTRY, new ResourceLocation(MODID, "heat_sinks"));
-    public static TagKey<Block> INNER_REACTOR_BLOCKS = TagKey.create(BLOCK_REGISTRY, new ResourceLocation(MODID, "reactor_inner"));
-    public static TagKey<Item> MODERATORS_ITEMS = TagKey.create(ITEM_REGISTRY, new ResourceLocation(MODID, "moderators"));
-    public static TagKey<Block> CASING_BLOCKS = TagKey.create(BLOCK_REGISTRY, new ResourceLocation(MODID, "fission_reactor_casing"));
-    public static TagKey<Item> CASING_ITEMS = TagKey.create(ITEM_REGISTRY, new ResourceLocation(MODID, "fission_reactor_casing"));
+
+    public static TagKey<Block> MODERATORS_BLOCKS = blockTag("moderators");
+    public static TagKey<Block> HEAT_SINK_BLOCKS = blockTag("heat_sinks");
+    public static TagKey<Block> INNER_REACTOR_BLOCKS = blockTag("reactor_inner");
+    public static TagKey<Item> MODERATORS_ITEMS = itemTag("moderators");
+    public static TagKey<Block> CASING_BLOCKS = blockTag("fission_reactor_casing");
+    public static TagKey<Item> CASING_ITEMS = itemTag("fission_reactor_casing");
+
 
     public static final List<String> reactor =  Arrays.asList(
             "casing",
@@ -85,7 +83,6 @@ public class FissionBlocks {
                 heat.put(name, heatsinks().get(name).heat);
             }
         }
-
         return heat;
     }
 

@@ -4,7 +4,7 @@ import igentuman.nc.datagen.recipes.builder.NcRecipeBuilder;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.NcIngredient;
 import igentuman.nc.content.processors.Processors;
-import igentuman.nc.setup.registration.Fuel;
+import igentuman.nc.setup.registration.FissionFuel;
 import igentuman.nc.content.materials.Materials;
 import igentuman.nc.setup.registration.NCItems;
 import igentuman.nc.content.fuel.FuelManager;
@@ -41,7 +41,7 @@ public class MelterRecipes extends AbstractRecipeProvider {
         for (String name: Materials.isotopes()) {
             for(String type: new String[] {"", "_ox", "_ni", "_za"}) {
                 String key = name+type;
-                add(ingredient(Fuel.NC_ISOTOPES.get(key).get()), fluidIngredient(key, 144));
+                add(ingredient(FissionFuel.NC_ISOTOPES.get(key).get()), fluidIngredient(key, 144));
             }
         }
 
@@ -56,11 +56,11 @@ public class MelterRecipes extends AbstractRecipeProvider {
                         keyStr += "_";
                     }
                     keyStr+= type;
-                    add(ingredient(Fuel.NC_FUEL.get(key).get()), fluidStackIngredient(keyStr, 144));
+                    add(ingredient(FissionFuel.NC_FUEL.get(key).get()), fluidStackIngredient(keyStr, 144));
 
                     key = List.of("depleted", name, subType, type);
                     keyStr = "depleted_"+keyStr;
-                    add(ingredient(Fuel.NC_DEPLETED_FUEL.get(key).get()), fluidStackIngredient(keyStr, 144));
+                    add(ingredient(FissionFuel.NC_DEPLETED_FUEL.get(key).get()), fluidStackIngredient(keyStr, 144));
                 }
             }
         }

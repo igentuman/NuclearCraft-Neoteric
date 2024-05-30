@@ -1,16 +1,12 @@
 package igentuman.nc.datagen.recipes.recipes;
 
-import com.google.common.collect.Lists;
 import igentuman.nc.content.fuel.FuelManager;
 import igentuman.nc.content.materials.Materials;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.NcIngredient;
-import igentuman.nc.setup.registration.Fuel;
+import igentuman.nc.setup.registration.FissionFuel;
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,8 +29,8 @@ public class FluidInfuserRecipes extends AbstractRecipeProvider {
                 String key = name + "_"+type;
                 add(
                         fluidIngredient(gas, 100),
-                        ingredient(Fuel.NC_ISOTOPES.get(name).get()),
-                        ingredient(Fuel.NC_ISOTOPES.get(key).get())
+                        ingredient(FissionFuel.NC_ISOTOPES.get(name).get()),
+                        ingredient(FissionFuel.NC_ISOTOPES.get(key).get())
                 );
             }
 
@@ -44,8 +40,8 @@ public class FluidInfuserRecipes extends AbstractRecipeProvider {
                     List<String> keyResult = List.of("fuel", name, subType, type);
                     add(
                             fluidIngredient(gas, 1000),
-                            ingredient(Fuel.NC_FUEL.get(key).get()),
-                            ingredient(Fuel.NC_FUEL.get(keyResult).get())
+                            ingredient(FissionFuel.NC_FUEL.get(key).get()),
+                            ingredient(FissionFuel.NC_FUEL.get(keyResult).get())
                     );
                 }
             }

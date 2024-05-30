@@ -425,11 +425,11 @@ public class NCLanguageProvider extends LanguageProvider {
     }
 
     private void fuel() {
-        for(List<String> name: Fuel.NC_FUEL.keySet()) {
-            add(Fuel.NC_FUEL.get(name).get(), convertToName(name.get(0))+" "+convertToName(name.get(1))+" "+name.get(2).toUpperCase()+" "+name.get(3).toUpperCase());
+        for(List<String> name: FissionFuel.NC_FUEL.keySet()) {
+            add(FissionFuel.NC_FUEL.get(name).get(), convertToName(name.get(0))+" "+convertToName(name.get(1))+" "+name.get(2).toUpperCase()+" "+name.get(3).toUpperCase());
         }
-        for(List<String> name: Fuel.NC_DEPLETED_FUEL.keySet()) {
-            add(Fuel.NC_DEPLETED_FUEL.get(name).get(), convertToName(name.get(0))+" "+convertToName(name.get(1))+" "+name.get(2).toUpperCase()+" "+name.get(3).toUpperCase());
+        for(List<String> name: FissionFuel.NC_DEPLETED_FUEL.keySet()) {
+            add(FissionFuel.NC_DEPLETED_FUEL.get(name).get(), convertToName(name.get(0))+" "+convertToName(name.get(1))+" "+name.get(2).toUpperCase()+" "+name.get(3).toUpperCase());
         }
     }
 
@@ -450,8 +450,8 @@ public class NCLanguageProvider extends LanguageProvider {
     }
 
     private void isotopes() {
-        for(String name: Fuel.NC_ISOTOPES.keySet()) {
-            add(Fuel.NC_ISOTOPES.get(name).get(), convertToName(name));
+        for(String name: FissionFuel.NC_ISOTOPES.keySet()) {
+            add(FissionFuel.NC_ISOTOPES.get(name).get(), convertToName(name));
         }
     }
 

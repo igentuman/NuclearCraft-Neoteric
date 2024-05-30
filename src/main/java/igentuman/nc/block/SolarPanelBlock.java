@@ -24,6 +24,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+import static igentuman.nc.setup.registration.NCEnergyBlocks.ENERGY_BE;
+
 public class SolarPanelBlock extends Block implements EntityBlock {
     public SolarPanelBlock() {
         this(Properties.of()
@@ -48,7 +50,7 @@ public class SolarPanelBlock extends Block implements EntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
-        return NCEnergyBlocks.ENERGY_BE.get(code()).get().create(pPos, pState);
+        return ENERGY_BE.get(code()).get().create(pPos, pState);
     }
 
     public String code()

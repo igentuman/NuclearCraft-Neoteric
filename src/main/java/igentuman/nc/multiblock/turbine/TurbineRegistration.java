@@ -26,10 +26,8 @@ import java.util.*;
 import java.util.function.Supplier;
 
 import static igentuman.nc.NuclearCraft.MODID;
-import static igentuman.nc.setup.Registration.BLOCKS;
-import static igentuman.nc.setup.Registration.BLOCK_ENTITIES;
-import static igentuman.nc.setup.registration.NCBlocks.BLOCK_REGISTRY;
-import static igentuman.nc.setup.registration.NCItems.ITEMS;
+import static igentuman.nc.setup.registration.Registries.*;
+import static igentuman.nc.setup.registration.Tags.blockTag;
 
 public class TurbineRegistration {
     public static final Item.Properties TURBINE_ITEM_PROPS = new Item.Properties();
@@ -39,12 +37,11 @@ public class TurbineRegistration {
     public static HashMap<String, RegistryObject<Block>> TURBINE_BLOCKS = new HashMap<>();
     public static HashMap<String, RegistryObject<BlockEntityType<? extends TurbineBE>>> TURBINE_BE = new HashMap<>();
     public static HashMap<String, RegistryObject<BlockItem>> TURBINE_BLOCK_ITEMS = new HashMap<>();
-    public static TagKey<Block> CASING_BLOCKS = TagKey.create(BLOCK_REGISTRY, new ResourceLocation(MODID, "turbine_casing"));
-    private static final DeferredRegister<MenuType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.MENU_TYPES, MODID);
-
-    public static TagKey<Block> INNER_TURBINE_BLOCKS = TagKey.create(BLOCK_REGISTRY, new ResourceLocation(MODID, "turbine_inner"));
-
+    public static TagKey<Block> CASING_BLOCKS = blockTag("turbine_casing");
+    public static TagKey<Block> INNER_TURBINE_BLOCKS = blockTag("turbine_inner");
     public static final HashMap<String, BladeDef> blades = blades();
+    public static final HashMap<String, CoilDef> coils = coils();
+    private static HashMap<String, Double> efficiency;
 
     public static HashMap<String, BladeDef> blades() {
         if(blades != null) return blades;
@@ -55,10 +52,6 @@ public class TurbineRegistration {
         tmp.put("sic_sic_cmc_rotor_blade", new BladeDef("sic_sic_cmc", 125, 180));
         return tmp;
     }
-
-    public static final HashMap<String, CoilDef> coils = coils();
-    private static HashMap<String, Double> efficiency;
-
 
     public static HashMap<String, CoilDef> coils() {
         if(coils != null) return coils;
@@ -72,7 +65,6 @@ public class TurbineRegistration {
         return tmp;
     }
 
-
     public static final RegistryObject<MenuType<TurbineControllerContainer>> TURBINE_CONTROLLER_CONTAINER = CONTAINERS.register("turbine_controller",
             () -> IForgeMenuType.create((windowId, inv, data) -> new TurbineControllerContainer(windowId, data.readBlockPos(), inv))
     );
@@ -81,8 +73,6 @@ public class TurbineRegistration {
     );
 
     public static void init() {
-        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
-        CONTAINERS.register(bus);
         blocks();
     }
 
@@ -178,7 +168,6 @@ public class TurbineRegistration {
                 efficiency.put(name, coils().get(name).efficiency);
             }
         }
-
         return efficiency;
     }
 }

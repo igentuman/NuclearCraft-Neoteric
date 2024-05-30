@@ -53,6 +53,7 @@ import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_CORE_CONTAINER
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.*;
 import static igentuman.nc.setup.registration.NCItems.GEIGER_COUNTER;
 import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_CONTAINER;
+import static igentuman.nc.setup.registration.Registries.FLUIDS;
 import static net.minecraftforge.eventbus.api.EventPriority.LOWEST;
 
 @Mod.EventBusSubscriber(modid = MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -75,7 +76,7 @@ public class ClientSetup {
             }
         });
 
-        for(RegistryObject<Fluid> f : NCFluids.FLUIDS.getEntries())
+        for(RegistryObject<Fluid> f : FLUIDS.getEntries())
             if(NCFluids.NC_GASES.containsKey(f.getId().getPath()))
                 ItemBlockRenderTypes.setRenderLayer(f.get(), RenderType.translucent());
 

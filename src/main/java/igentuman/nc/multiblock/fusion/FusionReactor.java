@@ -16,24 +16,16 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraftforge.common.extensions.IForgeMenuType;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import igentuman.nc.block.entity.fusion.*;
 import java.util.HashMap;
 
-import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.multiblock.fission.FissionBlocks.REACTOR_BLOCKS_PROPERTIES;
-import static igentuman.nc.setup.Registration.BLOCKS;
-import static igentuman.nc.setup.Registration.ITEMS;
 import static igentuman.nc.setup.registration.NCItems.ALL_NC_ITEMS;
+import static igentuman.nc.setup.registration.Registries.*;
 
 public class FusionReactor {
     public static final Item.Properties FUSION_ITEM_PROPERTIES = new Item.Properties();
-    private static final DeferredRegister<MenuType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.MENU_TYPES, MODID);
-    private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, MODID);
     public static HashMap<String, RegistryObject<Block>> FUSION_BLOCKS = new HashMap<>();
     public static HashMap<String, RegistryObject<BlockEntityType<? extends BlockEntity>>> FUSION_BE = new HashMap<>();
     public static HashMap<String, RegistryObject<Item>> FUSION_ITEMS = new HashMap<>();
@@ -52,9 +44,6 @@ public class FusionReactor {
             );
 
     public static void init() {
-        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
-        BLOCK_ENTITIES.register(bus);
-        CONTAINERS.register(bus);
         String key;
         key = "fusion_reactor_connector";
         FUSION_BLOCKS.put(key, BLOCKS.register(key, () -> new FusionBlock(REACTOR_BLOCKS_PROPERTIES)));

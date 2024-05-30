@@ -3,11 +3,9 @@ package igentuman.nc.multiblock.fission;
 import igentuman.nc.block.entity.fission.FissionBE;
 import igentuman.nc.block.entity.fission.FissionHeatSinkBE;
 import igentuman.nc.handler.config.CommonConfig;
+import igentuman.nc.util.TagUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -17,7 +15,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.registries.ForgeRegistries;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,12 +22,10 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
-
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.handler.config.FissionConfig.HEAT_SINK_CONFIG;
 import static igentuman.nc.multiblock.fission.FissionReactor.FISSION_BLOCKS;
-import static igentuman.nc.setup.registration.NCBlocks.BLOCK_REGISTRY;
-import static igentuman.nc.setup.registration.NCBlocks.ITEM_REGISTRY;
+import static igentuman.nc.setup.registration.Registries.ITEM_REGISTRY;
 
 public class HeatSinkDef {
     public double heat = 0;
@@ -97,16 +92,6 @@ public class HeatSinkDef {
         Ingredient ing = Ingredient.fromValues(Stream.of(new Ingredient.TagValue(tag)));
         for (ItemStack item: ing.getItems()) {
             tmp.add(item.getItem().toString());
-        }
-        return tmp;
-    }
-
-    public static List<Block> getBlocksByTagKey(String key)
-    {
-        List<Block> tmp = new ArrayList<>();
-        TagKey<Block> tag = TagKey.create(BLOCK_REGISTRY, new ResourceLocation(key));
-        for(Holder<Block> holder : ForgeRegistries.BLOCKS.getHolder(tag.location()).stream().toList()) {
-            tmp.add(holder.get());
         }
         return tmp;
     }
@@ -288,7 +273,7 @@ public class HeatSinkDef {
                     List<Block> tmp = new ArrayList<>();
                     for(String bStr: blockLines().get(condition)) {
                         if(bStr.contains("#")) {
-                            tmp.addAll(getBlocksByTagKey(bStr));
+                            tmp.addAll(TagUtil.getBlocksByTagKey(bStr));
                         } else {
                             if (!bStr.contains(":")) {
                                 bStr = MODID + ":" + bStr;

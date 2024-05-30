@@ -22,6 +22,8 @@ import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS
 import static igentuman.nc.setup.registration.NCBlocks.NC_ELECTROMAGNETS;
 import static igentuman.nc.setup.registration.NCBlocks.NC_RF_AMPLIFIERS;
 import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCKS;
+import static igentuman.nc.setup.registration.Tags.BLOCK_TAGS;
+import static igentuman.nc.setup.registration.Tags.ORE_TAGS;
 
 public class NCBlockTags extends BlockTagsProvider {
 
@@ -74,7 +76,7 @@ public class NCBlockTags extends BlockTagsProvider {
             tag(BlockTags.MINEABLE_WITH_PICKAXE).add(NCBlocks.ORE_BLOCKS.get(ore).get());
             tag(BlockTags.NEEDS_IRON_TOOL).add(NCBlocks.ORE_BLOCKS.get(ore).get());
             tag(Tags.Blocks.ORES).add(NCBlocks.ORE_BLOCKS.get(ore).get());
-            tag(NCBlocks.ORE_TAGS.get(ore.replaceAll("_deepslate|_end|_nether","")))
+            tag(ORE_TAGS.get(ore.replaceAll("_deepslate|_end|_nether","")))
                     .add(NCBlocks.ORE_BLOCKS.get(ore).get());
         }
     }
@@ -84,8 +86,8 @@ public class NCBlockTags extends BlockTagsProvider {
             tag(BlockTags.MINEABLE_WITH_PICKAXE).add(NCBlocks.NC_BLOCKS.get(block).get());
             tag(BlockTags.NEEDS_IRON_TOOL).add(NCBlocks.NC_BLOCKS.get(block).get());
             tag(Tags.Blocks.STORAGE_BLOCKS).add(NCBlocks.NC_BLOCKS.get(block).get());
-            if(NCBlocks.BLOCK_TAGS.get(block) != null) {
-                tag(NCBlocks.BLOCK_TAGS.get(block)).add(NCBlocks.NC_BLOCKS.get(block).get());
+            if(BLOCK_TAGS.get(block) != null) {
+                tag(BLOCK_TAGS.get(block)).add(NCBlocks.NC_BLOCKS.get(block).get());
             }
         }
 

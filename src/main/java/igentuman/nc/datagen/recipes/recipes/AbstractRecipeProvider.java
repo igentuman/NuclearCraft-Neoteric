@@ -4,7 +4,7 @@ import igentuman.nc.datagen.recipes.builder.NcRecipeBuilder;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.NcIngredient;
 import igentuman.nc.recipes.ingredient.creator.IngredientCreatorAccess;
-import igentuman.nc.setup.registration.Fuel;
+import igentuman.nc.setup.registration.FissionFuel;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -19,9 +19,10 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import static igentuman.nc.NuclearCraft.rl;
-import static igentuman.nc.setup.registration.Fuel.*;
+import static igentuman.nc.setup.registration.FissionFuel.*;
 import static igentuman.nc.setup.registration.NCFluids.ALL_FLUID_ENTRIES;
 import static igentuman.nc.setup.registration.NCItems.*;
+import static igentuman.nc.setup.registration.Tags.*;
 import static igentuman.nc.util.DataGenUtil.*;
 import static net.minecraft.world.item.Items.AIR;
 import static net.minecraft.world.item.Items.BARRIER;
@@ -405,13 +406,13 @@ public abstract class AbstractRecipeProvider {
         if(!type.isEmpty()) {
             type = "_"+type;
         }
-        if(!Fuel.NC_ISOTOPES.containsKey(name+"/"+id+type)) {
-            for(String isotope: Fuel.NC_ISOTOPES.keySet()) {
+        if(!FissionFuel.NC_ISOTOPES.containsKey(name+"/"+id+type)) {
+            for(String isotope: FissionFuel.NC_ISOTOPES.keySet()) {
                 if(isotope.contains(id)) {
-                    return  Fuel.NC_ISOTOPES.get(isotope).get();
+                    return  FissionFuel.NC_ISOTOPES.get(isotope).get();
                 }
             }
         }
-        return Fuel.NC_ISOTOPES.get(name+"/"+id+type).get();
+        return FissionFuel.NC_ISOTOPES.get(name+"/"+id+type).get();
     }
 }

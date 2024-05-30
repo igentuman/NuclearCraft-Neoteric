@@ -4,30 +4,23 @@ import igentuman.nc.content.ArmorMaterials;
 import igentuman.nc.content.materials.*;
 import igentuman.nc.item.*;
 import igentuman.nc.item.Tiers;
-import igentuman.nc.setup.ModSetup;
-import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import static igentuman.nc.NuclearCraft.MODID;
-import static igentuman.nc.setup.registration.NCBlocks.ITEM_REGISTRY;
 import static igentuman.nc.setup.registration.NCSounds.SOUND_MAP;
+import static igentuman.nc.setup.registration.Registries.ITEMS;
+import static igentuman.nc.setup.registration.Registries.ITEM_REGISTRY;
+import static igentuman.nc.setup.registration.Tags.*;
 
 public class NCItems {
 
-    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
     public static HashMap<String, RegistryObject<Item>> NC_FOOD = new HashMap<>();
     public static HashMap<String, RegistryObject<Item>> ALL_NC_ITEMS = new HashMap<>();
 
@@ -41,8 +34,11 @@ public class NCItems {
     public static HashMap<String, RegistryObject<Item>> NC_NUGGETS = new HashMap<>();
     public static HashMap<String, RegistryObject<Item>> NC_PLATES = new HashMap<>();
     public static HashMap<String, RegistryObject<Item>> NC_DUSTS = new HashMap<>();
-    public static TagKey<Item> PLATE_TAG = TagKey.create(ITEM_REGISTRY, new ResourceLocation("forge", "plates"));
-    public static TagKey<Item> PARTS_TAG = TagKey.create(ITEM_REGISTRY, new ResourceLocation(MODID, "parts"));
+    public static HashMap<String, RegistryObject<Item>> ORE_BLOCK_ITEMS = new HashMap<>();
+    public static HashMap<String, RegistryObject<Item>> NC_BLOCKS_ITEMS = new HashMap<>();
+    public static HashMap<String, RegistryObject<Item>> NC_ELECTROMAGNETS_ITEMS = new HashMap<>();
+    public static HashMap<String, RegistryObject<Item>> NC_RF_AMPLIFIERS_ITEMS = new HashMap<>();
+    public static HashMap<String, RegistryObject<Item>> MULTIBLOCK_ITEMS = new HashMap<>();
     public static final Item.Properties ITEM_PROPERTIES = new Item.Properties();
     public static final Item.Properties ONE_ITEM_PROPERTIES = new Item.Properties().stacksTo(1);
     public static final Item.Properties PAXEL_PROPS = new Item.Properties().stacksTo(1).durability(5000).fireResistant();
@@ -84,16 +80,12 @@ public class NCItems {
     public static final RegistryObject<Item> SPAXELHOE_THORIUM = ITEMS.register("spaxelhoe_thorium", () -> new PaxelItem(3, 1, Tiers.THORIUM, PAXEL_PROPS));
     public static final RegistryObject<Item> QNP = ITEMS.register("qnp", () -> new QNP(Tiers.QNP, 11, 2F, ONE_ITEM_PROPERTIES));
     public static final RegistryObject<Item> MULTITOOL = ITEMS.register("multitool", () -> new MultitoolItem(ONE_ITEM_PROPERTIES));
-    public static HashMap<String, TagKey<Item>> INGOTS_TAG = new HashMap<>();
-    public static HashMap<String, TagKey<Item>> CHUNKS_TAG = new HashMap<>();
-    public static HashMap<String, TagKey<Item>> GEMS_TAG = new HashMap<>();
-    public static HashMap<String, TagKey<Item>> NUGGETS_TAG = new HashMap<>();
-    public static HashMap<String, TagKey<Item>> PLATES_TAG = new HashMap<>();
-    public static HashMap<String, TagKey<Item>> DUSTS_TAG = new HashMap<>();
+
+    public static RegistryObject<Item> registerItem(String name) {
+        return ITEMS.register(name, () -> new Item(ITEM_PROPERTIES));
+    }
 
     public static void init() {
-        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
-        ITEMS.register(bus);
         registerChunks();
         registerNuggets();
         registerIngots();
@@ -184,7 +176,7 @@ public class NCItems {
             if(name.equals("dosimeter")) {
                 NC_ITEMS.put(name, ITEMS.register(name, () -> new DosimiterItem(ONE_ITEM_PROPERTIES)));
             } else {
-                NC_ITEMS.put(name, ITEMS.register(name, () -> new Item(ITEM_PROPERTIES)));
+                NC_ITEMS.put(name, registerItem(name));
             }
             ALL_NC_ITEMS.put(name, NC_ITEMS.get(name));
         }
@@ -233,7 +225,7 @@ public class NCItems {
             if(name.equals("research_paper")) {
                 NC_PARTS.put(name, ITEMS.register(name, () -> new ResearchPaperItem(ONE_ITEM_PROPERTIES)));
             } else {
-                NC_PARTS.put(name, ITEMS.register(name, () -> new Item(ITEM_PROPERTIES)));
+                NC_PARTS.put(name,registerItem(name));
             }
             ALL_NC_ITEMS.put(name, NC_PARTS.get(name));
         }
@@ -241,48 +233,48 @@ public class NCItems {
 
     private static void registerGems() {
         for(String name: Gems.get().registered().keySet()) {
-            GEMS_TAG.put(name, TagKey.create(ITEM_REGISTRY, new ResourceLocation("forge", "gems/"+name)));
-            NC_GEMS.put(name, ITEMS.register(name+"_gem", () -> new Item(ITEM_PROPERTIES)));
+            addGemTag(name);
+            NC_GEMS.put(name, registerItem(name+"_gem"));
             ALL_NC_ITEMS.put(name+"_gem", NC_GEMS.get(name));
         }
     }
 
     private static void registerChunks() {
         for(String name: Chunks.get().registered().keySet()) {
-            CHUNKS_TAG.put(name, TagKey.create(ITEM_REGISTRY, new ResourceLocation("forge", "raw_materials/"+name)));
-            NC_CHUNKS.put(name, ITEMS.register(name+"_chunk", () -> new Item(ITEM_PROPERTIES)));
+            addChunkTag(name);
+            NC_CHUNKS.put(name, registerItem(name+"_chunk"));
             ALL_NC_ITEMS.put(name+"_chunk", NC_CHUNKS.get(name));
         }
     }
 
     private static void registerNuggets() {
         for(String name: Nuggets.get().registered().keySet()) {
-            NUGGETS_TAG.put(name, TagKey.create(ITEM_REGISTRY, new ResourceLocation("forge", "nuggets/"+name)));
-            NC_NUGGETS.put(name, ITEMS.register(name+"_nugget", () -> new Item(ITEM_PROPERTIES)));
+            addNuggetTag(name);
+            NC_NUGGETS.put(name, registerItem(name+"_nugget"));
             ALL_NC_ITEMS.put(name+"_nugget", NC_NUGGETS.get(name));
         }
     }
 
     private static void registerIngots() {
         for(String name: Ingots.get().registered().keySet()) {
-            INGOTS_TAG.put(name, TagKey.create(ITEM_REGISTRY, new ResourceLocation("forge", "ingots/"+name)));
-            NC_INGOTS.put(name, ITEMS.register(name+"_ingot", () -> new Item(ITEM_PROPERTIES)));
+            addIngotTag(name);
+            NC_INGOTS.put(name,registerItem(name+"_ingot"));
             ALL_NC_ITEMS.put(name+"_ingot", NC_INGOTS.get(name));
         }
     }
 
     private static void registerPlates() {
         for(String name: Plates.get().registered().keySet()) {
-            PLATES_TAG.put(name, TagKey.create(ITEM_REGISTRY, new ResourceLocation("forge", "plates/"+name)));
-            NC_PLATES.put(name, ITEMS.register(name+"_plate", () -> new Item(ITEM_PROPERTIES)));
+            addPlateTag(name);
+            NC_PLATES.put(name,registerItem(name+"_plate"));
             ALL_NC_ITEMS.put(name+"_plate", NC_PLATES.get(name));
         }
     }
 
     private static void registerDusts() {
         for(String name: Dusts.get().registered().keySet()) {
-            DUSTS_TAG.put(name, TagKey.create(ITEM_REGISTRY, new ResourceLocation("forge", "dusts/"+name)));
-            NC_DUSTS.put(name, ITEMS.register(name+"_dust", () -> new Item(ITEM_PROPERTIES)));
+            addDustTag(name);
+            NC_DUSTS.put(name, registerItem(name+"_dust"));
             ALL_NC_ITEMS.put(name+"_dust", NC_DUSTS.get(name));
         }
     }

@@ -11,6 +11,7 @@ import java.util.function.Consumer;
 
 import static igentuman.nc.setup.registration.NCBlocks.NC_BLOCKS;
 import static igentuman.nc.setup.registration.NCItems.*;
+import static igentuman.nc.setup.registration.Tags.INGOTS_TAG;
 import static net.minecraft.world.item.Items.*;
 
 public class PressurizerRecipes extends AbstractRecipeProvider {

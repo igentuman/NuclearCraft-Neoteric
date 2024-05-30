@@ -4,8 +4,6 @@ import igentuman.nc.block.entity.fission.*;
 import igentuman.nc.block.fission.*;
 import igentuman.nc.container.FissionControllerContainer;
 import igentuman.nc.container.FissionPortContainer;
-import igentuman.nc.setup.registration.CreativeTabs;
-import igentuman.nc.setup.registration.NCBlocks;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -16,28 +14,17 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraftforge.common.extensions.IForgeMenuType;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
-
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import static igentuman.nc.NuclearCraft.MODID;
-import static igentuman.nc.setup.Registration.BLOCKS;
-import static igentuman.nc.setup.Registration.ITEMS;
 import static igentuman.nc.multiblock.fission.FissionBlocks.REACTOR_BLOCKS_PROPERTIES;
 import static igentuman.nc.setup.registration.NCItems.ALL_NC_ITEMS;
+import static igentuman.nc.setup.registration.Registries.*;
 import static igentuman.nc.util.NcUtils.getNCBlock;
 
 public class FissionReactor {
     public static final Item.Properties FISSION_ITEM_PROPS = new Item.Properties();
-    private static final DeferredRegister<MenuType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.MENU_TYPES, MODID);
-    private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, MODID);
     public static HashMap<String, RegistryObject<Block>> FISSION_BLOCKS = new HashMap<>();
     public static HashMap<String, RegistryObject<BlockEntityType<? extends BlockEntity>>> FISSION_BE = new HashMap<>();
     public static HashMap<String, RegistryObject<Item>> FISSION_BLOCK_ITEMS = new HashMap<>();
@@ -53,9 +40,6 @@ public class FissionReactor {
 
 
     public static void init() {
-        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
-        BLOCK_ENTITIES.register(bus);
-        CONTAINERS.register(bus);
         blocks();
     }
     public static List<Block> moderators = new ArrayList<>();

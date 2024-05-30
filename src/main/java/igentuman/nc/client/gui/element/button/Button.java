@@ -94,14 +94,11 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
     }
 
     public static class ShowRecipes extends Button {
-        private final BlockPos pos;
-        public static int BTN_ID = 70;
 
         public int mode = 0;
 
-        public ShowRecipes(int xPos, int yPos, AbstractContainerScreen<?> screen, BlockPos pos) {
+        public ShowRecipes(int xPos, int yPos, AbstractContainerScreen<?> screen) {
             super(xPos, yPos, screen, 70);
-            this.pos = pos;
             height = 18;
             width = 18;
             btn = new ImageButton(X(), Y(), width, height, 184, 4, 18, TEXTURE, pButton -> {
@@ -111,16 +108,6 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
 
         public List<Component> getTooltips() {
             return List.of();
-        }
-
-        public void setMode(int redstoneMode) {
-            mode = redstoneMode;
-            try {
-                Field f = btn.getClass().getDeclaredField("yTexStart");
-                f.setAccessible(true);
-                f.set(btn, 220 - redstoneMode * 36);
-            } catch (NoSuchFieldException | IllegalAccessException ignore) {
-            }
         }
     }
 

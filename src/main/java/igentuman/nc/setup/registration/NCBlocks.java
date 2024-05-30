@@ -6,9 +6,6 @@ import igentuman.nc.content.RFAmplifier;
 import igentuman.nc.content.materials.Materials;
 import igentuman.nc.content.materials.Blocks;
 import igentuman.nc.content.materials.Ores;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.BlockItem;
@@ -19,26 +16,21 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import igentuman.nc.block.*;
 
 import javax.annotation.Nonnull;
 import java.util.*;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static igentuman.nc.NuclearCraft.MODID;
-import static igentuman.nc.setup.registration.NCItems.ALL_NC_ITEMS;
+import static igentuman.nc.setup.registration.NCItems.*;
+import static igentuman.nc.setup.registration.Registries.*;
+import static igentuman.nc.setup.registration.Tags.*;
 
 public class NCBlocks {
 
-    public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
-    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
     public static final BlockBehaviour.Properties ORE_BLOCK_PROPERTIES = BlockBehaviour.Properties.of().sound(SoundType.STONE).strength(2f).requiresCorrectToolForDrops();
     public static final Item.Properties BLOCK_ITEM_PROPERTIES = new Item.Properties();
     public static final BlockBehaviour.Properties NC_BLOCKS_PROPERTIES = BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(2f).requiresCorrectToolForDrops();
@@ -49,45 +41,27 @@ public class NCBlocks {
     public static HashMap<String, RegistryObject<Block>> NC_ELECTROMAGNETS = new HashMap<>();
     public static HashMap<String, RegistryObject<Block>> MULTI_BLOCKS = new HashMap<>();
     public static HashMap<String, RegistryObject<Block>> NC_MATERIAL_BLOCKS = new HashMap<>();
-    public static HashMap<String, RegistryObject<Item>> ORE_BLOCK_ITEMS = new HashMap<>();
-    public static HashMap<String, RegistryObject<Item>> NC_BLOCKS_ITEMS = new HashMap<>();
-    public static HashMap<String, RegistryObject<Item>> NC_ELECTROMAGNETS_ITEMS = new HashMap<>();
-    public static HashMap<String, RegistryObject<Item>> NC_RF_AMPLIFIERS_ITEMS = new HashMap<>();
-    public static HashMap<String, RegistryObject<Item>> MULTIBLOCK_ITEMS = new HashMap<>();
     public static final Item.Properties ORE_ITEM_PROPERTIES = new Item.Properties();
     public static final Item.Properties MULTIBLOCK_ITEM_PROPERTIES = new Item.Properties();
-    private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, MODID);
     public static final RegistryObject<Block> PORTAL_BLOCK = BLOCKS.register("portal", PortalBlock::new);
-
     public static final RegistryObject<Block> MUSHROOM_BLOCK = BLOCKS.register("glowing_mushroom", () -> new GrassBlock(
             BlockBehaviour.Properties.of().sound(SoundType.GRASS).noCollission().instabreak().randomTicks().lightLevel($ -> 10)
             ));
     public static HashMap<String, RegistryObject<BlockEntityType<? extends BlockEntity>>> NC_BE = new HashMap<>();
-
     public static final RegistryObject<Item> MUSHROOM_ITEM = fromBlock(MUSHROOM_BLOCK);
     public static final RegistryObject<Item> PORTAL_ITEM = fromBlock(PORTAL_BLOCK);
 
-    public static HashMap<String, TagKey<Block>> ORE_TAGS = new HashMap<>();
-    public static HashMap<String, TagKey<Item>> ORE_ITEM_TAGS = new HashMap<>();
-    public static HashMap<String, TagKey<Item>> BLOCK_ITEM_TAGS = new HashMap<>();
-    public static HashMap<String, TagKey<Block>> BLOCK_TAGS = new HashMap<>();
-
     public static void init() {
-        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
-        BLOCKS.register(bus);
-        ITEMS.register(bus);
-        BLOCK_ENTITIES.register(bus);
         registerOres();
         registerBlocks();
         registerMagnets();
         registerAmplifiers();
     }
-    public static ResourceKey<Registry<Block>> BLOCK_REGISTRY = ForgeRegistries.BLOCKS.getRegistryKey();
-    public static ResourceKey<Registry<Item>> ITEM_REGISTRY = ForgeRegistries.ITEMS.getRegistryKey();
+
     private static void registerOres() {
         for(String name: Ores.registered().keySet()) {
             ORE_TAGS.put(name, TagKey.create(BLOCK_REGISTRY, new ResourceLocation("forge", "ores/"+name)));
-            ORE_ITEM_TAGS.put(name, TagKey.create(ITEM_REGISTRY, new ResourceLocation("forge", "ores/"+name)));
+            addOreTag(name);
             if(Materials.ores().get(name).normal_ore) {
                 ORE_BLOCKS.put(name, BLOCKS.register(name + "_ore", () -> new Block(ORE_BLOCK_PROPERTIES)));
                 ORE_BLOCK_ITEMS.put(name, fromOreBlock(ORE_BLOCKS.get(name)));

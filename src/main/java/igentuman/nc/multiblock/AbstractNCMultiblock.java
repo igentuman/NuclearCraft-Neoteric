@@ -382,8 +382,9 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
         controllers.clear();
         bsCache.clear();
         beCache.clear();
-        isOuterValid();
-        validateInner();
+        if(isOuterValid()) {
+            validateInner();
+        }
         innerValid = validationResult.isValid;
         isFormed = outerValid && innerValid;
     }

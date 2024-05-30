@@ -101,7 +101,7 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
             super(xPos, yPos, screen, 70);
             height = 18;
             width = 18;
-            btn = new ImageButton(X(), Y(), width, height, 184, 4, 18, TEXTURE, pButton -> {
+            btn = new ImageButton(X(), Y(), width, height, 238, 76, 18, TEXTURE, pButton -> {
 
             });
         }

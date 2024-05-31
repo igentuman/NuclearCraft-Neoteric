@@ -289,7 +289,9 @@ public class HeatSinkDef {
 
         public boolean hasToTouchFuelCell() {
             for(List<Block> blockList: blocks().values()) {
-                if(blockList.contains(FISSION_BLOCKS.get("fission_reactor_solid_fuel_cell").get())) {
+                 if(
+                        blockList.contains(FISSION_BLOCKS.get("fission_reactor_solid_fuel_cell").get())
+                        && blockList.size() == 1) {
                     return true;
                 }
             }

@@ -63,8 +63,7 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
         if(activeHeatSinks.isEmpty()) {
             for(BlockPos hpos: heatSinks) {
                 BlockEntity be = getBlockEntity(hpos);
-                if(be instanceof FissionHeatSinkBE) {
-                    FissionHeatSinkBE hs = (FissionHeatSinkBE) be;
+                if(be instanceof FissionHeatSinkBE hs) {
                     if(hs.isValid(true)) {
                         activeHeatSinks.put(hpos, hs);
                     }

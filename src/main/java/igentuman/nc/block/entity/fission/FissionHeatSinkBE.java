@@ -34,7 +34,9 @@ public class FissionHeatSinkBE extends FissionBE {
 
     private HeatSinkDef def() {
         if(def == null) {
-            setHeatSinkDef(FissionBlocks.heatsinks().get(getBlockState().getBlock().asItem().toString().replace("_heat_sink", "")));
+            setHeatSinkDef(
+                    FissionBlocks.heatsinks().get(getBlockState().getBlock().asItem().toString().replace("_heat_sink", ""))
+            );
         }
         return def;
     }

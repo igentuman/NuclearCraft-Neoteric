@@ -141,7 +141,7 @@ public class NCProcessorContainer<T extends AbstractContainerMenu> extends Abstr
                         return ItemStack.EMPTY;
                     }
                 } else if (index < maxSlotId) {
-                    boolean result = false;
+                    boolean result = handleUpgradesQuickMove(stack);
                     if(blockEntity.isInputAllowed(stack)) {
                         result = this.moveItemStackTo(stack, 0, inputSlots(), false);
                     }
@@ -171,16 +171,17 @@ public class NCProcessorContainer<T extends AbstractContainerMenu> extends Abstr
         return itemstack;
     }
 
+    //TODO this is cursed. Improve this
     private boolean handleUpgradesQuickMove(ItemStack stack) {
         if(stack.getItem().equals(NC_ITEMS.get("upgrade_speed").get()) && processor.supportSpeedUpgrade) {
-            return this.moveItemStackTo(stack, inputSlots()+processor.getSlotsConfig().getOutputItems(), 37, true);
+            return this.moveItemStackTo(stack, inputSlots()+processor.getSlotsConfig().getOutputItems(), inputSlots()+processor.getSlotsConfig().getOutputItems()+1, true);
         }
         if(stack.getItem().equals(NC_ITEMS.get("upgrade_energy").get()) && processor.supportEnergyUpgrade) {
-            int id = 37;
+            int id = inputSlots()+processor.getSlotsConfig().getOutputItems()+1;
             if(processor.supportSpeedUpgrade) {
                 id++;
             }
-            return this.moveItemStackTo(stack, inputSlots()+processor.getSlotsConfig().getOutputItems(), id, true);
+            return this.moveItemStackTo(stack, inputSlots()+processor.getSlotsConfig().getOutputItems()+1, id, true);
         }
         return false;
     }

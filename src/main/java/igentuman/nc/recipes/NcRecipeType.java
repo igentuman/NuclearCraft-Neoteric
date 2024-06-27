@@ -116,7 +116,7 @@ public class NcRecipeType<RECIPE extends NcRecipe> implements RecipeType<RECIPE>
             }
             ItemStackIngredient output = IngredientCreatorAccess.item().from(recipe.getResultItem());
             recipes.add((RECIPE) new NuclearFurnaceBE.Recipe(
-                    rl(recipe.getId()+"_nf"),
+                    rl(recipe.getId().getPath()+"_nf"),
                     new ItemStackIngredient[]{IngredientCreatorAccess.item().from(recipe.getIngredients().get(0))},
                     new ItemStackIngredient[]{output},
                     new FluidStackIngredient[0],

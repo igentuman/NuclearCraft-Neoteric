@@ -116,7 +116,7 @@ public class NcRecipeType<RECIPE extends NcRecipe> implements RecipeType<RECIPE>
             }
             ItemStackIngredient output = IngredientCreatorAccess.item().from(recipe.getResultItem());
             recipes.add((RECIPE) new NuclearFurnaceBE.Recipe(
-                    rl(recipe.getId().getPath()+"_nf"),
+                    rl(getNFRecipeId(recipe)),
                     new ItemStackIngredient[]{IngredientCreatorAccess.item().from(recipe.getIngredients().get(0))},
                     new ItemStackIngredient[]{output},
                     new FluidStackIngredient[0],
@@ -124,6 +124,10 @@ public class NcRecipeType<RECIPE extends NcRecipe> implements RecipeType<RECIPE>
                     recipe.getCookingTime()/1000D, 1, 1, 1));
         }
         return recipes;
+    }
+
+    private String getNFRecipeId(SmeltingRecipe recipe) {
+        return recipe.getId().toString().replaceAll("[^a-z0-9/._-]", "_") + "_nf";
     }
 
     /**

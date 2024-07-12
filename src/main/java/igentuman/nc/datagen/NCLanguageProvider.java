@@ -273,6 +273,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("effect.nuclearcraft.radiation_resistance","Radiation Resistance");
         add("leacher.tooltip.valid_pump","Pump - Ok");
         add("leacher.tooltip.invalid_pump","Pump in the corner not found");
+        add("processor.description.nuclear_furnace","Fast furnace what uses uranium ingots as fuel.");
         add("processor.description.alloy_smelter","Smelts and alloys items.");
         add("processor.description.centrifuge","Separates fluids into their components.");
         add("processor.description.fuel_reprocessor","Separates depleted fuel into components.");

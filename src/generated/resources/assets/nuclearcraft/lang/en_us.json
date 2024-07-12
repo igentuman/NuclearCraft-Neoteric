@@ -2039,6 +2039,7 @@
   "processor.description.leacher": "Leaches undeground minerals with acids and pumps slurry back.",
   "processor.description.manufactory": "Crushes items into dusts and other materials.",
   "processor.description.melter": "Melts items into liquids.",
+  "processor.description.nuclear_furnace": "Fast furnace what uses uranium ingots as fuel.",
   "processor.description.pressurizer": "Compresses items with high pressure.",
   "processor.description.pump": "Pumps fluids and gasses from environment.",
   "processor.description.rock_crusher": "Produces dusts from rocks.",

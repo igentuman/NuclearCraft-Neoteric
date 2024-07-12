@@ -70,6 +70,7 @@ public class RadShieldingRecipe extends CustomRecipe {
             return ItemStack.EMPTY;
         }
         ItemStack result = armor.copy();
+        result.setCount(1);
         result.getOrCreateTag().putInt("rad_shielding", ((RadShieldingItem)shielding.getItem()).getRadiationShieldingLevel());
         return result;
     }

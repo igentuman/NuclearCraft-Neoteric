@@ -149,8 +149,6 @@ public class NuclearCraft {
         RadiationEvents.startTracking();
     }
 
-
-
     @SubscribeEvent
     public void registerCaps(RegisterCapabilitiesEvent event) {
         event.register(WorldRadiation.class);

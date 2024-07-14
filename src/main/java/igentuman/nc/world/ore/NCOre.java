@@ -57,8 +57,9 @@ public class NCOre {
                 int id = Ores.all().keySet().stream().toList().indexOf(name);
                 registered = (boolean) ORE_CONFIG.ORES.get(name).get(0).get();
                 dimensions = Arrays.asList((Integer[]) ORE_CONFIG.ORES.get(name).get(1).get());
-                height[0] = (int) ORE_CONFIG.ORES.get(name).get(2).get();
-                height[1] = (int) ORE_CONFIG.ORES.get(name).get(3).get();
+                veinSize = (int) ORE_CONFIG.ORES.get(name).get(2).get();
+                height[0] = (int) ORE_CONFIG.ORES.get(name).get(3).get();
+                height[1] = (int) ORE_CONFIG.ORES.get(name).get(4).get();
                 initialized = true;
             } catch (Exception e) {
                 NuclearCraft.LOGGER.error("Error while loading ore config for " + name + "!");

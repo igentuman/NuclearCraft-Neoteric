@@ -35,23 +35,23 @@ public class NCPlacedFeatures {
     public static void bootstrap(BootstapContext<PlacedFeature> context) {
         HolderGetter<ConfiguredFeature<?, ?>> configuredFeatures = context.lookup(Registries.CONFIGURED_FEATURE);
 
-        for(String name: Ores.all().keySet()) {
+        for(String name: Ores.registered().keySet()) {
             NCOre ore = Ores.all().get(name);
             if(ore.dimensions.contains(0)) {
                 register(context, PLACED_FEATURES.get(name), configuredFeatures.getOrThrow(NCConfiguredFeatures.ORE_CONFIGURED_FEATURES.get(name)),
-                        OreGenerator.commonOrePlacement(ore.veinSize,
-                                HeightRangePlacement.uniform(VerticalAnchor.absolute(ore.height[0]), VerticalAnchor.absolute(ore.height[1]))));
+                        OreGenerator.commonOrePlacement(ore.config().veinSize,
+                                HeightRangePlacement.uniform(VerticalAnchor.absolute(ore.config().height[0]), VerticalAnchor.absolute(ore.config().height[1]))));
             }
             if(ore.dimensions.contains(-1)) {
                 register(context, PLACED_FEATURES.get(name), configuredFeatures.getOrThrow(NCConfiguredFeatures.ORE_CONFIGURED_FEATURES.get(name)),
-                        OreGenerator.commonOrePlacement(ore.veinSize,
-                                HeightRangePlacement.uniform(VerticalAnchor.absolute(ore.height[0]), VerticalAnchor.absolute(ore.height[1]))));
+                        OreGenerator.commonOrePlacement(ore.config().veinSize,
+                                HeightRangePlacement.uniform(VerticalAnchor.absolute(ore.config().config().height[0]), VerticalAnchor.absolute(ore.height[1]))));
             }
 
             if(ore.dimensions.contains(1)) {
                 register(context, PLACED_FEATURES.get(name), configuredFeatures.getOrThrow(NCConfiguredFeatures.ORE_CONFIGURED_FEATURES.get(name)),
-                        OreGenerator.commonOrePlacement(ore.veinSize,
-                                HeightRangePlacement.uniform(VerticalAnchor.absolute(ore.height[0]), VerticalAnchor.absolute(ore.height[1]))));
+                        OreGenerator.commonOrePlacement(ore.config().veinSize,
+                                HeightRangePlacement.uniform(VerticalAnchor.absolute(ore.config().config().height[0]), VerticalAnchor.absolute(ore.config().height[1]))));
             }
         }
 

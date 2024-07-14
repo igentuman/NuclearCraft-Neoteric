@@ -95,7 +95,6 @@ public class MaterialsConfig {
             for(String name: Ores.all().keySet()) {
                 ORES.put(name, buildOreConfig(builder, name));
             }
-
         }
 
         private List<ForgeConfigSpec.ConfigValue<?>> buildOreConfig(ForgeConfigSpec.Builder builder, String name) {
@@ -104,13 +103,11 @@ public class MaterialsConfig {
             ForgeConfigSpec.ConfigValue<Boolean> register = builder.define("register", true);
             ForgeConfigSpec.ConfigValue<List<Integer>> dimensions = builder.define("dimensions", Ores.all().get(name).dimensions, o -> o instanceof ArrayList);
             ForgeConfigSpec.ConfigValue<Integer> veinSize = builder.define("vein_size", Ores.all().get(name).veinSize);
-            ForgeConfigSpec.ConfigValue<Integer> veinsPerChunk = builder.define("veins_in_chunk", Ores.all().get(name).veinAmount);
             ForgeConfigSpec.ConfigValue<Integer> min_height = builder.define("min_height", Ores.all().get(name).height[0]);
             ForgeConfigSpec.ConfigValue<Integer> max_height = builder.define("max_height", Ores.all().get(name).height[1]);
             options.add(register);
             options.add(dimensions);
             options.add(veinSize);
-            options.add(veinsPerChunk);
             options.add(min_height);
             options.add(max_height);
             builder.pop();

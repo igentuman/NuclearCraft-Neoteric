@@ -37,22 +37,22 @@ public class NCBiomeModifier {
         var placedFeatures = context.lookup(Registries.PLACED_FEATURE);
         var biomes = context.lookup(Registries.BIOME);
 
-        for(String name: Ores.all().keySet()) {
+        for(String name: Ores.registered().keySet()) {
             NCOre ore = Ores.all().get(name);
-            if(ore.dimensions.contains(0)) {
+            if(ore.config().dimensions.contains(0)) {
                 context.register(BIOME_MODIFIERS.get(name), new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
                         biomes.getOrThrow(BiomeTags.IS_OVERWORLD),
                         HolderSet.direct(placedFeatures.getOrThrow(NCPlacedFeatures.PLACED_FEATURES.get(name))),
                         GenerationStep.Decoration.UNDERGROUND_ORES));
             }
-            if(ore.dimensions.contains(-1)) {
+            if(ore.config().dimensions.contains(-1)) {
                 context.register(BIOME_MODIFIERS.get(name), new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
                         biomes.getOrThrow(BiomeTags.IS_NETHER),
                         HolderSet.direct(placedFeatures.getOrThrow(NCPlacedFeatures.PLACED_FEATURES.get(name))),
                         GenerationStep.Decoration.UNDERGROUND_ORES));
             }
 
-            if(ore.dimensions.contains(1)) {
+            if(ore.config().dimensions.contains(1)) {
                 context.register(BIOME_MODIFIERS.get(name), new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
                         biomes.getOrThrow(BiomeTags.IS_END),
                         HolderSet.direct(placedFeatures.getOrThrow(NCPlacedFeatures.PLACED_FEATURES.get(name))),

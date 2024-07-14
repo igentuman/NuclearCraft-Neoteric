@@ -1,2 +1,16 @@
 Nuclear furnace Missing Description #109
 [ALL] Duplication glitch #108
+[1.20.1][BUG] multitool doen not configures sides #106
+Performance improvements
+Claim friendly destructions [avoid greefing on servers]
+Turbine multiblock implementation
+Fission reactor heat sink placement validation fixes
+KubeJS compatibility fixes
+Fixed many cases leading to crash
+Fixed QNP for dedicated servers
+Fixed multitool for dedicated servers
+Recipe fixes
+Nuclear furnace implemented
+Fixed quick stack move of upgrades in processors GUI
+Gas to fluid conversion fix
+Fixed missing "Show recipes" button

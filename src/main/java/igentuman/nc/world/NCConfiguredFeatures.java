@@ -40,27 +40,27 @@ public class NCConfiguredFeatures {
         RuleTest netherrackReplacables = new BlockMatchTest(Blocks.NETHERRACK);
         RuleTest endReplaceables = new BlockMatchTest(Blocks.END_STONE);
 
-        for(String name: Ores.all().keySet()) {
+        for(String name: Ores.registered().keySet()) {
             NCOre ore = Ores.all().get(name);
 
             if(ore.dimensions.contains(0)) {
                 List<OreConfiguration.TargetBlockState> overworld = new ArrayList<>();
-                if(ore.height[1] > 0) {
+                if(ore.config().height[1] > 0) {
                     overworld.add(OreConfiguration.target(stoneReplaceable,
                             Ores.all().get(name).block().defaultBlockState()));
                 }
-                if(ore.height[0] < 0) {
+                if(ore.config().height[0] < 0) {
                     overworld.add(OreConfiguration.target(deepslateReplaceables, ore.block("_deepslate").defaultBlockState()));
                 }
 
                 register(context, ORE_CONFIGURED_FEATURES.get(name), Feature.ORE, new OreConfiguration(overworld, 9));
             }
-            if(ore.dimensions.contains(-1)) {
+            if(ore.config().dimensions.contains(-1)) {
                 register(context, ORE_CONFIGURED_FEATURES.get(name), Feature.ORE, new OreConfiguration(netherrackReplacables,
                         ore.block().defaultBlockState(), 9));
             }
 
-            if(ore.dimensions.contains(1)) {
+            if(ore.config().dimensions.contains(1)) {
                 register(context, ORE_CONFIGURED_FEATURES.get(name), Feature.ORE, new OreConfiguration(endReplaceables,
                         ore.block().defaultBlockState(), 9));
             }

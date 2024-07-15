@@ -59,7 +59,7 @@ public class NCBlocks {
     }
 
     private static void registerOres() {
-        for(String name: Ores.registered().keySet()) {
+        for(String name: Ores.all().keySet()) {
             ORE_TAGS.put(name, TagKey.create(BLOCK_REGISTRY, new ResourceLocation("forge", "ores/"+name)));
             addOreTag(name);
             if(Materials.ores().get(name).normal_ore) {
@@ -86,7 +86,7 @@ public class NCBlocks {
     }
 
     private static void registerMagnets() {
-        for(String name: Electromagnets.registered().keySet()) {
+        for(String name: Electromagnets.all().keySet()) {
             NC_ELECTROMAGNETS.put(name, BLOCKS.register(name, () -> new ElectromagnetBlock(NC_BLOCKS_PROPERTIES)));
             NC_ELECTROMAGNETS.put(name+"_slope", BLOCKS.register(name+"_slope", () -> new ElectromagnetSlopeBlock(NC_BLOCKS_PROPERTIES)));
             NC_ELECTROMAGNETS_ITEMS.put(name, fromBlock(NC_ELECTROMAGNETS.get(name)));
@@ -101,7 +101,7 @@ public class NCBlocks {
     }
 
     private static void registerAmplifiers() {
-        for(String name: RFAmplifier.registered().keySet()) {
+        for(String name: RFAmplifier.all().keySet()) {
             NC_RF_AMPLIFIERS.put(name, BLOCKS.register(name, () -> new RFAmplifierBlock(NC_BLOCKS_PROPERTIES)));
             NC_RF_AMPLIFIERS_ITEMS.put(name, fromBlock(NC_RF_AMPLIFIERS.get(name)));
             ALL_NC_ITEMS.put(name, NC_RF_AMPLIFIERS_ITEMS.get(name));
@@ -114,7 +114,7 @@ public class NCBlocks {
     }
 
     private static void registerBlocks() {
-        for(String name: Blocks.get().registered().keySet()) {
+        for(String name: Blocks.get().all().keySet()) {
             BLOCK_TAGS.put(name, TagKey.create(BLOCK_REGISTRY, new ResourceLocation("forge","storage_blocks/"+name)));
             BLOCK_ITEM_TAGS.put(name, TagKey.create(ITEM_REGISTRY, new ResourceLocation("forge", "storage_blocks/"+name)));
             if(name.matches("graphite|beryllium")) {

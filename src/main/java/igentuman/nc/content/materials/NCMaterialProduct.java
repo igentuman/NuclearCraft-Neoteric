@@ -1,13 +1,10 @@
 package igentuman.nc.content.materials;
 
-import igentuman.nc.handler.config.CommonConfig;
-import igentuman.nc.handler.config.MaterialsConfig;
-
 import static igentuman.nc.handler.config.MaterialsConfig.MATERIAL_PRODUCTS;
 
 public class NCMaterialProduct {
-    public String name;
-    public String type;
+    protected String name;
+    protected String type;
     private boolean initialized = false;
     private Boolean registered = true;
 
@@ -23,29 +20,36 @@ public class NCMaterialProduct {
 
     public NCMaterialProduct config()
     {
+        int id = 0;
         if(!initialized) {
-            if(!MaterialsConfig.isLoaded()) {
-                return this;
-            }
-            int id = Ores.all().keySet().stream().toList().indexOf(name);
             switch (type) {
                 case "ingot":
+                    id = Materials.ingots().keySet().stream().toList().indexOf(name);
                     registered = MATERIAL_PRODUCTS.INGOTS.get(id).get();
                     break;
                 case "nugget":
-                    registered = MATERIAL_PRODUCTS.NUGGET.get(id).get();
+                    id = Materials.nuggets().keySet().stream().toList().indexOf(name);
+                    registered = MATERIAL_PRODUCTS.NUGGETS.get(id).get();
                     break;
                 case "block":
+                    id = Materials.blocks().keySet().stream().toList().indexOf(name);
                     registered = MATERIAL_PRODUCTS.BLOCK.get(id).get();
                     break;
                 case "chunk":
+                    id = Materials.chunks().keySet().stream().toList().indexOf(name);
                     registered = MATERIAL_PRODUCTS.RAW_CHUNKS.get(id).get();
                     break;
                 case "plate":
+                    id = Materials.plates().keySet().stream().toList().indexOf(name);
                     registered = MATERIAL_PRODUCTS.PLATES.get(id).get();
                     break;
                 case "dust":
+                    id = Materials.dusts().keySet().stream().toList().indexOf(name);
                     registered = MATERIAL_PRODUCTS.DUSTS.get(id).get();
+                    break;
+                case "gem":
+                    id = Materials.gems().keySet().stream().toList().indexOf(name);
+                    registered = MATERIAL_PRODUCTS.GEMS.get(id).get();
                     break;
             }
             initialized = true;

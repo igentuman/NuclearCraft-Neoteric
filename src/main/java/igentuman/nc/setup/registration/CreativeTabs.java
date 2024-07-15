@@ -1,5 +1,6 @@
 package igentuman.nc.setup.registration;
 
+import igentuman.nc.content.materials.Ores;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -75,6 +76,7 @@ public class CreativeTabs {
         items.addAll(itemStacks(NC_FOOD.values()));
         items.addAll(itemStacks(NC_SHIELDING.values()));
         items.addAll(itemStacks(NC_INGOTS.values()));
+        items.addAll(itemStacks(NC_CHUNKS.values()));
         items.addAll(itemStacks(NC_DUSTS.values()));
         items.addAll(itemStacks(NC_GEMS.values()));
         items.addAll(itemStacks(NC_NUGGETS.values()));
@@ -110,7 +112,12 @@ public class CreativeTabs {
         items.addAll(blockStacks(NC_ELECTROMAGNETS.values()));
         items.addAll(blockStacks(NC_RF_AMPLIFIERS.values()));
         items.addAll(blockStacks(ENERGY_BLOCKS.values()));
-        items.addAll(blockStacks(ORE_BLOCKS.values()));
+        for(ItemStack ore: blockStacks(ORE_BLOCKS.values())) {
+            String type = ore.getItem().toString().replaceAll("_ore|_deepslate_ore", "");
+            if(Ores.registered().containsKey(type)) {
+                items.add(ore);
+            }
+        }
         items.addAll(blockStacks(NC_MATERIAL_BLOCKS.values()));
         items.addAll(blockStacks(STORAGE_BLOCKS.values()));
         return items;

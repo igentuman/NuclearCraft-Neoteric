@@ -36,7 +36,7 @@ public class MaterialsConfig {
 
     public static class MaterialProductsConfig {
         public List<ForgeConfigSpec.ConfigValue<Boolean>> INGOTS;
-        public List<ForgeConfigSpec.ConfigValue<Boolean>> NUGGET;
+        public List<ForgeConfigSpec.ConfigValue<Boolean>> NUGGETS;
         public List<ForgeConfigSpec.ConfigValue<Boolean>> BLOCK;
         public List<ForgeConfigSpec.ConfigValue<Boolean>> RAW_CHUNKS;
         public List<ForgeConfigSpec.ConfigValue<Boolean>> PLATES;
@@ -61,6 +61,7 @@ public class MaterialsConfig {
             builder.pop();
             RAW_CHUNKS = registrationList(builder, "raw_chunks", Chunks.get().all().keySet());
             INGOTS = registrationList(builder, "ingots", Ingots.get().all().keySet());
+            NUGGETS = registrationList(builder, "nuggets", Nuggets.get().all().keySet());
             PLATES = registrationList(builder, "plates", Plates.get().all().keySet());
             DUSTS = registrationList(builder, "dusts", Dusts.get().all().keySet());
             BLOCK = registrationList(builder, "blocks", Blocks.get().all().keySet());

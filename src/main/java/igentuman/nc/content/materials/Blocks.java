@@ -4,7 +4,7 @@ package igentuman.nc.content.materials;
 import java.util.Collection;
 
 public class Blocks  extends AbstractMaterial {
-    protected static String type = "block";
+    protected String type = "block";
     protected static AbstractMaterial instance;
     public static Blocks get()
     {

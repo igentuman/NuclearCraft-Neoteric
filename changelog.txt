@@ -18,3 +18,4 @@
 
 1.0.0-rc.2
     Fixed material registration config
+    Open Computers II support

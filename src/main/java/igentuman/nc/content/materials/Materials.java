@@ -3,6 +3,7 @@ package igentuman.nc.content.materials;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 import static igentuman.nc.handler.config.MaterialsConfig.MATERIAL_PRODUCTS;
 
@@ -331,5 +332,18 @@ public class Materials extends MaterialsManager {
 
     public static List<String> slurries() {
         return MATERIAL_PRODUCTS.SLURRIES.get();
+    }
+
+    public static Set<String> registeredOf(String type) {
+        return switch (type) {
+            case "ore" -> Ores.registered().keySet();
+            case "dust" -> Dusts.get().registered().keySet();
+            case "ingot" -> Ingots.get().registered().keySet();
+            case "nugget" -> Nuggets.get().registered().keySet();
+            case "plate" -> Plates.get().registered().keySet();
+            case "chunk" -> Chunks.get().registered().keySet();
+            case "gem" -> Gems.get().registered().keySet();
+            default -> Set.of();
+        };
     }
 }

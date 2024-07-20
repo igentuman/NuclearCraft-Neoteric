@@ -1,5 +1,6 @@
 package igentuman.nc.setup.registration;
 
+import igentuman.nc.content.materials.Materials;
 import igentuman.nc.content.materials.Ores;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
@@ -8,9 +9,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.registries.RegistryObject;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 import static igentuman.nc.multiblock.fission.FissionReactor.FISSION_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_BLOCKS;
@@ -68,6 +67,18 @@ public class CreativeTabs {
         return stacks;
     }
 
+    private static List<ItemStack> onlyEnabledItems(String type, HashMap<String, RegistryObject<Item>> items)
+    {
+        List<ItemStack> itemsList = new ArrayList<>();
+        Set<String> enabled = Materials.registeredOf(type);
+        for(String name: items.keySet()) {
+            if(enabled.contains(name)) {
+                itemsList.add(new ItemStack(items.get(name).get()));
+            }
+        }
+        return itemsList;
+    }
+
     private static List<ItemStack> getItems()
     {
         List<ItemStack> items = itemStacks(NC_PARTS.values());
@@ -75,12 +86,12 @@ public class CreativeTabs {
         items.addAll(itemStacks(NC_RECORDS.values()));
         items.addAll(itemStacks(NC_FOOD.values()));
         items.addAll(itemStacks(NC_SHIELDING.values()));
-        items.addAll(itemStacks(NC_INGOTS.values()));
-        items.addAll(itemStacks(NC_CHUNKS.values()));
-        items.addAll(itemStacks(NC_DUSTS.values()));
-        items.addAll(itemStacks(NC_GEMS.values()));
-        items.addAll(itemStacks(NC_NUGGETS.values()));
-        items.addAll(itemStacks(NC_PLATES.values()));
+        items.addAll(onlyEnabledItems("ingot", NC_INGOTS));
+        items.addAll(onlyEnabledItems("chunk",NC_CHUNKS));
+        items.addAll(onlyEnabledItems("dust",NC_DUSTS));
+        items.addAll(onlyEnabledItems("gem",NC_GEMS));
+        items.addAll(onlyEnabledItems("nugget",NC_NUGGETS));
+        items.addAll(onlyEnabledItems("plate",NC_PLATES));
         items.addAll(itemStacks(NC_ISOTOPES.values()));
         items.addAll(itemStacks(NC_FUEL.values()));
         items.addAll(itemStacks(NC_DEPLETED_FUEL.values()));

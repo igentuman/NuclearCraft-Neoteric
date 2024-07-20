@@ -85,6 +85,36 @@ public class NCItems {
         return ITEMS.register(name, () -> new Item(ITEM_PROPERTIES));
     }
 
+    public static RegistryObject<Item> registerIngot(String name) {
+        return ITEMS.register(name, () -> new NCIngotItem(ITEM_PROPERTIES));
+    }
+
+    public static RegistryObject<Item> registerChunk(String name) {
+        return ITEMS.register(name, () -> new NCChunkItem(ITEM_PROPERTIES));
+    }
+
+    public static RegistryObject<Item> registerNugget(String name) {
+        return ITEMS.register(name, () -> new NCNuggetItem(ITEM_PROPERTIES));
+    }
+
+    public static RegistryObject<Item> registerPlate(String name) {
+        return ITEMS.register(name, () -> new NCPlateItem(ITEM_PROPERTIES));
+    }
+
+    public static RegistryObject<Item> registerDust(String name) {
+        return ITEMS.register(name, () -> new NCDustItem(ITEM_PROPERTIES));
+    }
+
+    public static RegistryObject<Item> registerGem(String name) {
+        return ITEMS.register(name, () -> new NCBGemItem(ITEM_PROPERTIES));
+    }
+
+
+    public static RegistryObject<Item> registerBlockItem(String name) {
+        return ITEMS.register(name, () -> new NCBlockItem(ITEM_PROPERTIES));
+    }
+
+
     public static void init() {
         registerChunks();
         registerNuggets();
@@ -232,49 +262,49 @@ public class NCItems {
     }
 
     private static void registerGems() {
-        for(String name: Gems.get().registered().keySet()) {
+        for(String name: Gems.get().all().keySet()) {
             addGemTag(name);
-            NC_GEMS.put(name, registerItem(name+"_gem"));
+            NC_GEMS.put(name, registerGem(name+"_gem"));
             ALL_NC_ITEMS.put(name+"_gem", NC_GEMS.get(name));
         }
     }
 
     private static void registerChunks() {
-        for(String name: Chunks.get().registered().keySet()) {
+        for(String name: Chunks.get().all().keySet()) {
             addChunkTag(name);
-            NC_CHUNKS.put(name, registerItem(name+"_chunk"));
+            NC_CHUNKS.put(name, registerChunk(name+"_chunk"));
             ALL_NC_ITEMS.put(name+"_chunk", NC_CHUNKS.get(name));
         }
     }
 
     private static void registerNuggets() {
-        for(String name: Nuggets.get().registered().keySet()) {
+        for(String name: Nuggets.get().all().keySet()) {
             addNuggetTag(name);
-            NC_NUGGETS.put(name, registerItem(name+"_nugget"));
+            NC_NUGGETS.put(name, registerNugget(name+"_nugget"));
             ALL_NC_ITEMS.put(name+"_nugget", NC_NUGGETS.get(name));
         }
     }
 
     private static void registerIngots() {
-        for(String name: Ingots.get().registered().keySet()) {
+        for(String name: Ingots.get().all().keySet()) {
             addIngotTag(name);
-            NC_INGOTS.put(name,registerItem(name+"_ingot"));
+            NC_INGOTS.put(name,registerIngot(name+"_ingot"));
             ALL_NC_ITEMS.put(name+"_ingot", NC_INGOTS.get(name));
         }
     }
 
     private static void registerPlates() {
-        for(String name: Plates.get().registered().keySet()) {
+        for(String name: Plates.get().all().keySet()) {
             addPlateTag(name);
-            NC_PLATES.put(name,registerItem(name+"_plate"));
+            NC_PLATES.put(name,registerPlate(name+"_plate"));
             ALL_NC_ITEMS.put(name+"_plate", NC_PLATES.get(name));
         }
     }
 
     private static void registerDusts() {
-        for(String name: Dusts.get().registered().keySet()) {
+        for(String name: Dusts.get().all().keySet()) {
             addDustTag(name);
-            NC_DUSTS.put(name, registerItem(name+"_dust"));
+            NC_DUSTS.put(name, registerDust(name+"_dust"));
             ALL_NC_ITEMS.put(name+"_dust", NC_DUSTS.get(name));
         }
     }

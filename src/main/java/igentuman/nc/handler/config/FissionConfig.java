@@ -52,13 +52,18 @@ public class FissionConfig {
         public ForgeConfigSpec.ConfigValue<List<Integer>> DEPLETION;
         public ForgeConfigSpec.ConfigValue<List<Integer>> CRITICALITY;
         public ForgeConfigSpec.ConfigValue<Double> HEAT_MULTIPLIER;
+        public ForgeConfigSpec.ConfigValue<Double> FUEL_HEAT_MULTIPLIER;
         public ForgeConfigSpec.ConfigValue<Double> DEPLETION_MULTIPLIER;
 
         public FuelConfig(ForgeConfigSpec.Builder builder) {
             builder.comment("Settings for reactor fuel").push("reactor_fuel");
 
+            FUEL_HEAT_MULTIPLIER = builder
+                    .comment("Heat multiplier. Affects to all fuels.")
+                    .defineInRange("fuel_heat_multiplier", 1, 0.01D, 100D);
+
             HEAT_MULTIPLIER = builder
-                    .comment("Heat multiplier for boiling reactor.")
+                    .comment("Heat multiplier affects on heat/cooling ratio multiplier.")
                     .define("heat_multiplier", 3.24444444);
 
             DEPLETION_MULTIPLIER = builder

@@ -26,7 +26,7 @@ public class FissionFuel {
     public static RegistryObject<Item> fuel(String name, String type, String subType)
     {
         return ITEMS.register("fuel_"+name+"_"+type.replace("-","_")+subType,
-                () -> new ItemFuel(ITEM_PROPERTIES, FuelManager.all().get(name).get(type).subType(subType)));
+                () -> new ItemFuel(ITEM_PROPERTIES, name, type, subType));
     }
     public static RegistryObject<Item> depletedFuel(String name, String type, String subType)
     {

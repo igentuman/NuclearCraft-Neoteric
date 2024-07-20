@@ -1,5 +1,6 @@
 package igentuman.nc.item;
 import igentuman.nc.content.fuel.FuelDef;
+import igentuman.nc.content.fuel.FuelManager;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -18,27 +19,28 @@ public class ItemFuel extends Item {
     public FuelDef def;
     public double heat = 0;
     public int forge_energy = 0;
-
     public double heat_boiling = 0;
-
     public int criticality = 0;
-
     public int depletion = 0;
-
     public int efficiency = 0;
+    public final String group;
+    public final String name;
+    public final String subType;
 
-    public ItemFuel(Properties pProperties, FuelDef def) {
-        this(pProperties);
-        setDefinition(def);
-    }
+    private boolean initialized = false;
 
-    public ItemFuel(Properties pProperties) {
+    public ItemFuel(Properties pProperties, String group, String name, String subType) {
         super(pProperties);
+        this.group = group;
+        this.name = name;
+        this.subType = subType;
     }
 
-    public ItemFuel setDefinition(FuelDef definition)
+    public ItemFuel initDefinition()
     {
-        def = definition;
+        if(initialized) return this;
+        def = FuelManager.all().get(group).get(name).subType(subType);
+        def.config();
         heat = def.getHeatFEMode();
         heat_boiling = def.getHeatBoilingMode();
         criticality = def.criticality;
@@ -51,6 +53,7 @@ public class ItemFuel extends Item {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
     {
+        initDefinition();
         if(!DESCRIPTIONS_SHOW) {
             list.add(TextUtils.applyFormat(Component.translatable("tooltip.toggle_description_keys"), ChatFormatting.GRAY));
         } else {

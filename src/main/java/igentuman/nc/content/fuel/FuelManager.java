@@ -105,7 +105,7 @@ public class FuelManager {
             heat = new HashMap<>();
             for (String name : all().keySet()) {
                 for (String subItem : all().get(name).keySet()) {
-                    heat.put(subItem, all().get(name).get(subItem).getOxide().heat);
+                    heat.put(subItem, all().get(name).get(subItem).getDefault().heat);
                 }
             }
         }
@@ -118,7 +118,7 @@ public class FuelManager {
             depletion = new HashMap<>();
             for (String name : all().keySet()) {
                 for (String subItem : all().get(name).keySet()) {
-                    depletion.put(subItem, all().get(name).get(subItem).getOxide().depletion);
+                    depletion.put(subItem, all().get(name).get(subItem).getDefault().depletion);
                 }
             }
         }
@@ -131,7 +131,7 @@ public class FuelManager {
             criticality = new HashMap<>();
             for (String name : all().keySet()) {
                 for (String subItem : all().get(name).keySet()) {
-                    criticality.put(subItem, all().get(name).get(subItem).getOxide().criticality);
+                    criticality.put(subItem, all().get(name).get(subItem).getDefault().criticality);
                 }
             }
         }
@@ -144,7 +144,7 @@ public class FuelManager {
             efficiency = new HashMap<>();
             for (String name : all().keySet()) {
                 for (String subItem : all().get(name).keySet()) {
-                    efficiency.put(subItem, all().get(name).get(subItem).getOxide().efficiency);
+                    efficiency.put(subItem, all().get(name).get(subItem).getDefault().efficiency);
                 }
             }
         }
@@ -157,7 +157,7 @@ public class FuelManager {
             forge_energy = new HashMap<>();
             for (String name : all().keySet()) {
                 for (String subItem : all().get(name).keySet()) {
-                    forge_energy.put(subItem, all().get(name).get(subItem).getOxide().forge_energy);
+                    forge_energy.put(subItem, all().get(name).get(subItem).getDefault().forge_energy);
                 }
             }
         }

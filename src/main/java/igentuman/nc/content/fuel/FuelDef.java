@@ -1,10 +1,21 @@
 package igentuman.nc.content.fuel;
 
+import igentuman.nc.NuclearCraft;
 import igentuman.nc.handler.config.FusionConfig;
+import org.apache.logging.log4j.Level;
 
+import static igentuman.nc.handler.config.FissionConfig.FISSION_CONFIG;
 import static igentuman.nc.handler.config.FissionConfig.FUEL_CONFIG;
 
 public class FuelDef {
+
+    public final String name;
+    public final String group;
+    public double heat;
+    public int criticality;
+    public int depletion;
+    public int efficiency;
+    public int forge_energy;
 
     public FuelDef(String group, String name, int forge_energy, double heat, int criticality, int depletion, int efficiency)
     {
@@ -26,18 +37,6 @@ public class FuelDef {
 
     private boolean initialized = false;
 
-    public String name = "";
-
-    public String group = "";
-    public double heat = 0;
-
-    public int criticality = 0;
-
-    public int depletion = 0;
-
-    public int efficiency = 0;
-    public int forge_energy = 0;
-
     public FuelDef(String group, String name, int forge_energy, double heat, double criticality, double depletion, double efficiency) {
         this(group, name, forge_energy, heat, (int)criticality, (int)depletion, (int)efficiency);
     }
@@ -52,15 +51,13 @@ public class FuelDef {
 
     public FuelDef config()
     {
-        if(!FusionConfig.isLoaded()) {
-            return this;
-        }
         if(!initialized) {
             initialized = true;
+            NuclearCraft.LOGGER.log(Level.INFO,"FuelDef: "+group+" "+name);
             int id = FuelManager.all().get(group).keySet().stream().toList().indexOf(name);
             efficiency = FUEL_CONFIG.EFFICIENCY.get().get(id);
             criticality = FUEL_CONFIG.CRITICALITY.get().get(id);
-            heat = FUEL_CONFIG.HEAT.get().get(id);
+            heat = FUEL_CONFIG.HEAT.get().get(id)*FUEL_CONFIG.FUEL_HEAT_MULTIPLIER.get();
             depletion = (int) (FUEL_CONFIG.DEPLETION.get().get(id)*FUEL_CONFIG.DEPLETION_MULTIPLIER.get());
         }
         return this;
@@ -69,7 +66,7 @@ public class FuelDef {
 
     public double getHeatFEMode()
     {
-        return config().heat;
+        return config().heat*FUEL_CONFIG.FUEL_HEAT_MULTIPLIER.get();
     }
 
     public double getHeatBoilingMode() {

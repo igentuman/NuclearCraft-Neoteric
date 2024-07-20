@@ -14,7 +14,7 @@ import static igentuman.nc.NuclearCraft.MODID;
 @Mod.EventBusSubscriber(modid = MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class InputEvents {
 
-    public static boolean DESCRIPTIONS_SHOW = true;
+    public static boolean DESCRIPTIONS_SHOW = false;
     public static boolean SHIFT_PRESSED = false;
 
     public static void register(FMLClientSetupEvent event) {

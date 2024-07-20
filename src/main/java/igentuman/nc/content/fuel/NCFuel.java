@@ -73,10 +73,18 @@ public class NCFuel {
     public static NCFuel of(FuelDef fuelDef) {
         NCFuel f = new NCFuel();
         f.setDef(fuelDef);
+        f.name = fuelDef.name;
+        f.group = fuelDef.group;
         return f;
     }
 
     public FuelDef subType(String subType) {
+        this.name = def.name;
+        this.group = def.group;
+        getOxide();
+        getNitride();
+        getTriso();
+        getZirconiumAlloy();
         switch (subType) {
             case "": return getDefault();
             case "_ox": return getOxide();

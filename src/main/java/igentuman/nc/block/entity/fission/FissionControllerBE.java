@@ -464,10 +464,10 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
             if (FISSION_CONFIG.EXPLOSION_RADIUS.get() == 0) {
                 getLevel().explode(null, explosionPos.getX(), explosionPos.getY(), explosionPos.getZ(), 2F, Level.ExplosionInteraction.NONE);
             } else {
-                getLevel().explode(null, explosionPos.getX(), explosionPos.getY(), explosionPos.getZ(), FISSION_CONFIG.EXPLOSION_RADIUS.get().floatValue(), Level.ExplosionInteraction.NONE);
+                getLevel().explode(null, explosionPos.getX(), explosionPos.getY(), explosionPos.getZ(), FISSION_CONFIG.EXPLOSION_RADIUS.get().floatValue(), Level.ExplosionInteraction.TNT);
                 getLevel().setBlock(explosionPos, NCFluids.getBlock("corium"), 1);
                 for (BlockPos pos : fuelCells) {
-                    getLevel().explode(null, pos.getX(), pos.getY(), pos.getZ(), 2, Level.ExplosionInteraction.NONE);
+                    getLevel().explode(null, pos.getX(), pos.getY(), pos.getZ(), 2, Level.ExplosionInteraction.TNT);
                     getLevel().setBlock(pos, NCFluids.getBlock("corium"), 1);
                 }
             }
@@ -888,7 +888,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
             if(fuelItem == null) {
                 Item item = getFirstItemStackIngredient(0).getItem();
                 if( !(item instanceof ItemFuel) && !item.equals(AIR)) {
-                    fuelItem = new ItemFuel(ITEM_PROPERTIES, new FuelDef(item.toString(), "", (int) powerModifier, 50D, 10D, timeModifier, 100D));
+                    fuelItem = new ItemFuel(ITEM_PROPERTIES, item.toString(), "", "");
                     return fuelItem;
                 }
                 Item item1 = getFirstItemStackIngredient(0).getItem();

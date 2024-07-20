@@ -18,9 +18,11 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import java.util.Locale;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.handler.config.CommonConfig.ENERGY_STORAGE;
 import static igentuman.nc.handler.config.FissionConfig.FISSION_CONFIG;
 import static igentuman.nc.multiblock.fission.FissionReactor.moderators;
 import static net.minecraft.world.item.Items.FILLED_MAP;
+import static net.minecraft.world.item.Items.LIGHTNING_ROD;
 
 @Mod.EventBusSubscriber(modid = MODID, value = Dist.CLIENT)
 public class TooltipHandler {
@@ -49,6 +51,9 @@ public class TooltipHandler {
     }
 
     private static void miscTooltips(ItemTooltipEvent event, ItemStack itemStack) {
+        if(itemStack.is(LIGHTNING_ROD) && ENERGY_STORAGE.LIGHTNING_ROD_CHARGE.get() > 0) {
+            event.getToolTip().add(Component.translatable("tooltip.nc.lightning_rod_charge", ENERGY_STORAGE.LIGHTNING_ROD_CHARGE.get()).withStyle(ChatFormatting.GOLD));
+        }
         if(!itemStack.hasTag()) return;
         assert itemStack.getTag() != null;
         if(itemStack.getTag().contains("is_nc_analyzed")) {
@@ -57,6 +62,7 @@ public class TooltipHandler {
                 event.getToolTip().add(Component.translatable("tooltip.nc.use_in_leacher").withStyle(ChatFormatting.GOLD));
             }
         }
+
     }
 
     private static void addRadiationCleaningEffect(ItemTooltipEvent event, ItemStack itemStack) {

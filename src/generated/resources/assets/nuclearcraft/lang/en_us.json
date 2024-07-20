@@ -2113,6 +2113,7 @@
   "tooltip.nc.fusion_connector.descr": "Used to connect fusion core and toroidal reactor chamber",
   "tooltip.nc.hev.desc": "Grants additional protection and passive effects when charged",
   "tooltip.nc.jei.gas_to_fluid.desc": "NC blocks automatically converts Mek Gasses into Fluids during input",
+  "tooltip.nc.lightning_rod_charge": "Can charge NC Energy blocks by %s FE",
   "tooltip.nc.liquid_capacity": "Capacity: %s",
   "tooltip.nc.liquid_empty": "Stored: 0 of %s",
   "tooltip.nc.liquid_stored": "Stored: %s %s / %s",

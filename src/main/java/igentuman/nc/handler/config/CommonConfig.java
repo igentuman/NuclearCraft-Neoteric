@@ -112,10 +112,14 @@ public class CommonConfig {
         public ForgeConfigSpec.ConfigValue<List<Integer>> ENERGY_BLOCK_STORAGE;
         public ForgeConfigSpec.ConfigValue<Integer> LITHIUM_ION_BATTERY_STORAGE;
         public ForgeConfigSpec.ConfigValue<Integer> QNP_ENERGY_STORAGE;
+        public ForgeConfigSpec.ConfigValue<Integer> LIGHTNING_ROD_CHARGE;
         public ForgeConfigSpec.ConfigValue<Integer> QNP_ENERGY_PER_BLOCK;
 
         public EnergyStorageConfig(ForgeConfigSpec.Builder builder) {
             builder.push("energy_storage");
+
+            LIGHTNING_ROD_CHARGE = builder
+                    .define("ligtning_rod_charge", 1000000);
 
             REGISTER_ENERGY_BLOCK = builder
                     .comment("Allow block registration: " + String.join(", ", BatteryBlocks.all().keySet()))

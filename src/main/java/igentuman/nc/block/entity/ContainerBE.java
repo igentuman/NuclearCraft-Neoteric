@@ -28,6 +28,7 @@ import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BE;
 public class ContainerBE extends NuclearCraftBE implements ISizeToggable {
 
     public final ItemStorageCapabilityHandler inventory;
+    private double loadRate = 0;
 
     private ItemStorageCapabilityHandler createInventory() {
         return new ItemStorageCapabilityHandler(ContainerBlocks.all().get(getName()).getCapacity(), 64);
@@ -63,6 +64,22 @@ public class ContainerBE extends NuclearCraftBE implements ISizeToggable {
     }
     public void tickServer() {
         transferItems();
+        updateLoadRate();
+    }
+
+    private void updateLoadRate() {
+        double wasRate = loadRate;
+        loadRate = 0.05;
+        for(int i = 0; i < inventory.getSlots(); i++) {
+            ItemStack stack = inventory.getStackInSlot(i);
+            if(stack.isEmpty()) continue;
+            loadRate += (stack.getCount()/(double)stack.getMaxStackSize())/inventory.getSlots();
+        }
+        if(wasRate != loadRate) {
+            setChanged();
+            level.setBlockAndUpdate(worldPosition, getBlockState());
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+        }
     }
 
     private void transferItems() {
@@ -193,5 +210,9 @@ public class ContainerBE extends NuclearCraftBE implements ISizeToggable {
 
     public int getColls() {
         return ContainerBlocks.all().get(getName()).getColls();
+    }
+
+    public double getLoadRate() {
+        return loadRate;
     }
 }

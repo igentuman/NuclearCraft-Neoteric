@@ -6,6 +6,7 @@ import igentuman.nc.content.energy.BatteryBlocks;
 import igentuman.nc.handler.sided.SlotModePair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -25,6 +26,8 @@ import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static igentuman.nc.handler.config.CommonConfig.ENERGY_STORAGE;
+
 public class BatteryBE extends NCEnergy {
     public static final ModelProperty<HashMap<Integer, ISizeToggable.SideMode>> SIDE_CONFIG = new ModelProperty<>();
     public boolean syncSideConfig = true;
@@ -34,6 +37,7 @@ public class BatteryBE extends NCEnergy {
             sideConfig.put(direction.ordinal(), ISizeToggable.SideMode.DEFAULT);
         }
     }
+    private int chargeCooldown = 0;
 
     public static String getName(BlockState pBlockState) {
         return pBlockState.getBlock().asItem().toString();
@@ -51,10 +55,11 @@ public class BatteryBE extends NCEnergy {
         if(NuclearCraft.instance.isNcBeStopped) return;
         super.tickServer();
         transferEnergy();
+        if(chargeCooldown > 0) chargeCooldown--;
     }
 
     /**
-     * Push pull energy to adjacent blocks
+     * Push/pull energy to adjacent blocks
      */
     protected void transferEnergy() {
         AtomicInteger capacity = new AtomicInteger(energyStorage.getEnergyStored());
@@ -170,5 +175,25 @@ public class BatteryBE extends NCEnergy {
         level.setBlockAndUpdate(worldPosition, getBlockState());
         level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
         return sideConfig.get(direction);
+    }
+
+    public void onLightningStrike() {
+        if(chargeCooldown > 0) return;
+        chargeCooldown = 100;
+        energyStorage.addEnergy(ENERGY_STORAGE.LIGHTNING_ROD_CHARGE.get());
+        level.setBlockAndUpdate(worldPosition, getBlockState());
+        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+        BlockPos pos = worldPosition;
+        Direction direction = Direction.UP;
+        Direction.Axis direction$axis = direction.getAxis();
+        double d0 = (double)pos.getX() + 0.5D;
+        double d1 = (double)pos.getY();
+        double d2 = (double)pos.getZ() + 0.5D;
+        double d3 = 0.52D;
+        double d4 = level.getRandom().nextDouble() * 0.6D - 0.3D;
+        double d5 = direction$axis == Direction.Axis.X ? (double)direction.getStepX() * 0.52D : d4;
+        double d6 = level.getRandom().nextDouble() * 6.0D / 16.0D;
+        double d7 = direction$axis == Direction.Axis.Z ? (double)direction.getStepZ() * 0.52D : d4;
+        level.addParticle(DustParticleOptions.REDSTONE, d0 + d5, d1 + d6, d2 + d7, 0, 0, 0);
     }
 }

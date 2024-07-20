@@ -208,6 +208,7 @@ public class NCLanguageProvider extends LanguageProvider {
 
     private void tooltips() {
 
+        add("tooltip.nc.lightning_rod_charge", "Can charge NC Energy blocks by %s FE");
         add("tooltip.nc.jei.gas_to_fluid.desc","NC blocks automatically converts Mek Gasses into Fluids during input");
 
         add("tooltip.nc.hev.desc","Grants additional protection and passive effects when charged");

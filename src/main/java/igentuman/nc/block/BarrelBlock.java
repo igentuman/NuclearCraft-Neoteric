@@ -56,6 +56,18 @@ public class BarrelBlock extends Block implements EntityBlock {
 
     }
 
+    public boolean hasAnalogOutputSignal(BlockState pState) {
+        return true;
+    }
+
+    public int getAnalogOutputSignal(BlockState pBlockState, Level pLevel, BlockPos pPos) {
+        BlockEntity blockEntity = pLevel.getBlockEntity(pPos);
+        if (blockEntity instanceof BarrelBE barrelBE) {
+            return (int) ((barrelBE.fluidTank.getFluid().getAmount()/(double)barrelBE.fluidTank.getCapacity())*15);
+        }
+        return 0;
+    }
+
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
         if (!level.isClientSide()) {

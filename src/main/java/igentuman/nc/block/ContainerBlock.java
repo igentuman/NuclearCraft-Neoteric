@@ -1,5 +1,6 @@
 package igentuman.nc.block;
 
+import igentuman.nc.block.entity.BarrelBE;
 import igentuman.nc.block.entity.ContainerBE;
 import igentuman.nc.container.StorageContainerContainer;
 import igentuman.nc.setup.registration.NCStorageBlocks;
@@ -53,6 +54,18 @@ public class ContainerBlock extends Block implements EntityBlock {
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
 
+    }
+
+    public boolean hasAnalogOutputSignal(BlockState pState) {
+        return true;
+    }
+
+    public int getAnalogOutputSignal(BlockState pBlockState, Level pLevel, BlockPos pPos) {
+        BlockEntity blockEntity = pLevel.getBlockEntity(pPos);
+        if (blockEntity instanceof ContainerBE containerBE) {
+            return (int) ((containerBE.getLoadRate())*15);
+        }
+        return 0;
     }
 
     @Override

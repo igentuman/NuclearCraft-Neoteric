@@ -126,6 +126,10 @@ dependencies {
     compileOnly(fg.deobf("cc.tweaked:cc-tweaked-${mc_version}-forge-api:${cc_version}"))
     implementation fg.deobf("cc.tweaked:cc-tweaked-${mc_version}-forge:${cc_version}")
 
+    implementation fg.deobf("curse.maven:sedna-511276:${sedna_version}")
+    implementation fg.deobf("curse.maven:markdownmanual-502485:${md_version}")
+    implementation fg.deobf("curse.maven:oc2r-1037738:${oc2_version}")
+
     compileOnly fg.deobf("vazkii.patchouli:Patchouli:${mc_version}-${patchouli_version}:api")
     runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:${mc_version}-${patchouli_version}")
 }

@@ -5,6 +5,7 @@ import igentuman.nc.block.fusion.FusionCoreBlock;
 import igentuman.nc.client.particle.FusionBeamParticleData;
 import igentuman.nc.client.sound.SoundHandler;
 import igentuman.nc.compat.cc.NCFusionReactorPeripheral;
+import igentuman.nc.compat.oc2.NCFusionReactorDevice;
 import igentuman.nc.handler.event.client.BlockOverlayHandler;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.SlotModePair;
@@ -33,7 +34,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -51,10 +51,10 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 import static igentuman.nc.block.fission.FissionControllerBlock.POWERED;
+import static igentuman.nc.compat.oc2.NCFusionReactorDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.handler.config.FusionConfig.FUSION_CONFIG;
 import static igentuman.nc.setup.registration.NCSounds.*;
-import static igentuman.nc.util.ModUtil.isCcLoaded;
-import static igentuman.nc.util.ModUtil.isMekanismLoadeed;
+import static igentuman.nc.util.ModUtil.*;
 import static net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE;
 
 public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE {
@@ -204,12 +204,23 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
                 return LazyOptional.empty();
             }
         }
+
+        if(isOC2Loaded()) {
+            if(cap == DEVICE_CAPABILITY) {
+                return getOCDevice(cap, side);
+            }
+        }
+
         if(isCcLoaded()) {
             if(cap == dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL) {
                 return getPeripheral(cap, side);
             }
         }
         return super.getCapability(cap, side);
+    }
+
+    public <T> LazyOptional<T> getOCDevice(Capability<T> cap, Direction side) {
+        return LazyOptional.of(() -> NCFusionReactorDevice.createDevice(this)).cast();
     }
 
     @Override

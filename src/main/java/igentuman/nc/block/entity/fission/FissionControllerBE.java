@@ -3,6 +3,7 @@ package igentuman.nc.block.entity.fission;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.client.sound.SoundHandler;
 import igentuman.nc.compat.cc.NCSolidFissionReactorPeripheral;
+import igentuman.nc.compat.oc2.NCFissionReactorDevice;
 import igentuman.nc.content.fuel.FuelDef;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.SlotModePair;
@@ -50,13 +51,13 @@ import java.util.*;
 
 import static igentuman.nc.block.fission.FissionControllerBlock.POWERED;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
+import static igentuman.nc.compat.oc2.NCFissionReactorDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.handler.config.FissionConfig.FISSION_CONFIG;
 import static igentuman.nc.multiblock.fission.FissionReactor.FISSION_BLOCKS;
 import static igentuman.nc.setup.registration.FissionFuel.ITEM_PROPERTIES;
 import static igentuman.nc.setup.registration.NCSounds.FISSION_REACTOR;
 import static igentuman.nc.setup.registration.NcParticleTypes.RADIATION;
-import static igentuman.nc.util.ModUtil.isCcLoaded;
-import static igentuman.nc.util.ModUtil.isMekanismLoadeed;
+import static igentuman.nc.util.ModUtil.*;
 import static net.minecraft.world.item.Items.AIR;
 
 public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> extends FissionBE  {
@@ -293,6 +294,10 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         return peripheralCap.cast();
     }
 
+    public <T> LazyOptional<T> getOCDevice(Capability<T> cap, Direction side) {
+        return LazyOptional.of(() -> NCFissionReactorDevice.createDevice(this)).cast();
+    }
+
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
@@ -304,6 +309,11 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         }
         if (cap == ForgeCapabilities.ENERGY && !isSteamMode) {
             return energy.cast();
+        }
+        if(isOC2Loaded()) {
+            if(cap == DEVICE_CAPABILITY) {
+                return getOCDevice(cap, side);
+            }
         }
         if(isMekanismLoadeed() && isSteamMode) {
             if(cap == mekanism.common.capabilities.Capabilities.GAS_HANDLER) {
@@ -756,10 +766,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     }
 
     public Object[] getFuel() {
-        if(hasRecipe()) {
-            return contentHandler.getSlotContent(0);
-        }
-        return new Object[]{};
+        return contentHandler.itemHandler.getSlotContent(0);
     }
 
     public void voidFuel() {

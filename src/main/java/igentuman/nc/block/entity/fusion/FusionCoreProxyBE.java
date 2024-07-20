@@ -20,9 +20,9 @@ import javax.annotation.Nullable;
 
 import java.util.List;
 
+import static igentuman.nc.compat.oc2.NCFusionReactorDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_CORE_PROXY_BE;
-import static igentuman.nc.util.ModUtil.isCcLoaded;
-import static igentuman.nc.util.ModUtil.isMekanismLoadeed;
+import static igentuman.nc.util.ModUtil.*;
 
 public class FusionCoreProxyBE extends FusionBE {
 
@@ -111,6 +111,12 @@ public class FusionCoreProxyBE extends FusionBE {
         if(isCcLoaded()) {
             if(cap == dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL) {
                 return controller().getPeripheral(cap, side);
+            }
+        }
+
+        if(isOC2Loaded()) {
+            if(cap == DEVICE_CAPABILITY) {
+                return controller().getOCDevice(cap, side);
             }
         }
 

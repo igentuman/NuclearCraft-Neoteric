@@ -7,8 +7,6 @@ import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -23,8 +21,8 @@ import javax.annotation.Nullable;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static igentuman.nc.util.ModUtil.isCcLoaded;
-import static igentuman.nc.util.ModUtil.isMekanismLoadeed;
+import static igentuman.nc.compat.oc2.NCFissionReactorDevice.DEVICE_CAPABILITY;
+import static igentuman.nc.util.ModUtil.*;
 
 public class FissionPortBE extends FissionBE {
     public static String NAME = "fission_reactor_port";
@@ -149,6 +147,12 @@ public class FissionPortBE extends FissionBE {
                     return LazyOptional.of(() -> controller().contentHandler.getSlurryConverter(side));
                 }
                 return LazyOptional.empty();
+            }
+        }
+
+        if(isOC2Loaded()) {
+            if(cap == DEVICE_CAPABILITY) {
+                return controller().getOCDevice(cap, side);
             }
         }
 

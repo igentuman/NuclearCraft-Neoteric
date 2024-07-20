@@ -4,6 +4,7 @@ import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.compat.cc.NCProcessorPeripheral;
 import igentuman.nc.compat.gt.NCGTEnergyHandler;
+import igentuman.nc.compat.oc2.NCProcessorDevice;
 import igentuman.nc.handler.CatalystHandler;
 import igentuman.nc.handler.UpgradesHandler;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
@@ -51,6 +52,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static igentuman.nc.block.ProcessorBlock.ACTIVE;
+import static igentuman.nc.compat.oc2.NCProcessorDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.handler.config.ProcessorsConfig.PROCESSOR_CONFIG;
 import static igentuman.nc.util.ModUtil.*;
 
@@ -242,6 +244,8 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
         return PROCESSOR_CONFIG.GT_SUPPORT.get() == 2 || PROCESSOR_CONFIG.GT_SUPPORT.get() == 1;
     }
 
+
+
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
@@ -269,6 +273,13 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
                 return getPeripheral(cap, side);
             }
         }
+
+        if(isOC2Loaded()) {
+            if(cap == DEVICE_CAPABILITY) {
+                return getOCDevice(cap, side);
+            }
+        }
+
         if(isMekanismLoadeed()) {
             if(cap == mekanism.common.capabilities.Capabilities.GAS_HANDLER) {
                 if(contentHandler.hasFluidCapability(side)) {
@@ -284,6 +295,10 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
             }
         }
         return super.getCapability(cap, side);
+    }
+
+    private <T> LazyOptional<T> getOCDevice(Capability<T> cap, Direction side) {
+        return LazyOptional.of(() -> NCProcessorDevice.createDevice(this)).cast();
     }
 
     protected  <T> LazyOptional<T> getGTEnergyHandler(Capability<T> cap, Direction side) {

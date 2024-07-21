@@ -5,6 +5,7 @@ import com.mojang.math.Transformation;
 import igentuman.nc.block.entity.turbine.TurbineRotorBE;
 import igentuman.nc.block.turbine.TurbineRotorBlock;
 import igentuman.nc.util.annotation.NothingNullByDefault;
+import mekanism.common.lib.math.Quaternion;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
@@ -25,6 +26,7 @@ import org.joml.Vector3f;
 import static com.mojang.math.Axis.*;
 import static igentuman.nc.block.turbine.TurbineBladeBlock.HIDDEN;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
+import static net.minecraft.core.Direction.Axis.Y;
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.FACING;
 
 @NothingNullByDefault
@@ -33,8 +35,11 @@ public class TurbineRotorRenderer implements BlockEntityRenderer<BlockEntity> {
     private TurbineRotorBE rotor;
     public final BlockState bladeVertical;
     public final BlockState bladeHorizontal;
+    public final BlockState bladeNorth;
     public final BakedModel verticalBladeModel;
     public final BakedModel horizontalBladeModel;
+    public final BakedModel northBladeModel;
+
     public TurbineRotorRenderer(BlockEntityRendererProvider.Context manager) {
         context = manager;
         BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
@@ -42,8 +47,11 @@ public class TurbineRotorRenderer implements BlockEntityRenderer<BlockEntity> {
                 .defaultBlockState().setValue(FACING, Direction.DOWN).setValue(HIDDEN, false);
         bladeHorizontal = TURBINE_BLOCKS.get("turbine_basic_rotor_blade").get()
                 .defaultBlockState().setValue(FACING, Direction.UP).setValue(HIDDEN, false);
+        bladeNorth = TURBINE_BLOCKS.get("turbine_basic_rotor_blade").get()
+                .defaultBlockState().setValue(FACING, Direction.NORTH).setValue(HIDDEN, false);
         verticalBladeModel = blockRenderer.getBlockModel(bladeVertical);
         horizontalBladeModel = blockRenderer.getBlockModel(bladeHorizontal);
+        northBladeModel = blockRenderer.getBlockModel(bladeNorth);
     }
     public float lastAngle = 0;
     public float x = -0.25f;
@@ -68,11 +76,11 @@ public class TurbineRotorRenderer implements BlockEntityRenderer<BlockEntity> {
         pPoseStack.pushPose();
 
         long time = Util.getMillis();
-        float step = rotorBe.getRotationSpeed() * 2;
+        float step = rotorBe.getRotationSpeed() * 0.01f;
 
-        float angel = time * step;
+        float angle = time * step;
 
-        angel %= 360;
+        angle %= 360;
         pPoseStack.translate(0.5, 0.5, 0.5);
         Direction facing = blockstate.getValue(TurbineRotorBlock.FACING);
         Quaternionf rotation = new Quaternionf();
@@ -80,17 +88,17 @@ public class TurbineRotorRenderer implements BlockEntityRenderer<BlockEntity> {
         switch (facing) {
             case NORTH:
             case SOUTH:
-                rotation = ZN.rotationDegrees(angel);
-                rotation2 = ZN.rotationDegrees(angel+90);
+                rotation = ZN.rotationDegrees(angle);
+                rotation2 = ZN.rotationDegrees(angle+90);
                 break;
             case EAST:
             case WEST:
-                rotation = XN.rotationDegrees(-angel);
-                rotation2 = XN.rotationDegrees(angel+90);
+                rotation = XN.rotationDegrees(-angle);
+                rotation2 = XN.rotationDegrees(angle+90);
                 break;
             default:
-                rotation = YN.rotationDegrees(-angel);
-                rotation2 = YN.rotationDegrees(angel+90);
+                rotation = YN.rotationDegrees(-angle);
+                rotation2 = YN.rotationDegrees(angle+90);
                 break;
         }
 
@@ -98,27 +106,43 @@ public class TurbineRotorRenderer implements BlockEntityRenderer<BlockEntity> {
         pPoseStack.translate(-0.5, -0.5, -0.5);
 
         blockRenderer.getModelRenderer().renderModel(
-                pPoseStack.last(), buffer.getBuffer(RenderType.cutout()), blockstate, center, 1, 1, 1,
+                pPoseStack.last(), buffer.getBuffer(RenderType.cutout()), blockstate, center, 0.5f, 0.5f, 0.5f,
                 LightTexture.FULL_SKY, combinedOverlay);
         pPoseStack.popPose();
 
         if(!rotor.isFormed()) {
             return;
         }
+        if(facing.getAxis() == Y) {
+            renderBlade(facing, pPoseStack, buffer, combinedOverlay, blockRenderer, rotation, northBladeModel);
+            pPoseStack.translate(-0.5, -0.5, -0.5);
+            renderBlade(facing, pPoseStack, buffer, combinedOverlay, blockRenderer, rotation2, northBladeModel);
+        } else {
+            renderBlade(facing, pPoseStack, buffer, combinedOverlay, blockRenderer, rotation, verticalBladeModel);
+            pPoseStack.translate(-0.5, -0.5, -0.5);
+            renderBlade(facing, pPoseStack, buffer, combinedOverlay, blockRenderer, rotation2, horizontalBladeModel);
+        }
 
-        renderBlade(pPoseStack, buffer, combinedOverlay, blockRenderer, rotation, verticalBladeModel);
-        pPoseStack.translate(-0.5, -0.5, -0.5);
-        renderBlade(pPoseStack, buffer, combinedOverlay, blockRenderer, rotation2, horizontalBladeModel);
     }
 
-    private void renderBlade(PoseStack pPoseStack, MultiBufferSource buffer, int combinedOverlay, BlockRenderDispatcher blockRenderer, Quaternionf rotation, BakedModel blade) {
+    private void renderBlade(Direction facing, PoseStack pPoseStack, MultiBufferSource buffer, int combinedOverlay, BlockRenderDispatcher blockRenderer, Quaternionf rotation, BakedModel blade) {
 
         pPoseStack.translate(0.5, 0.5, 0.5);
         Transformation tr = new Transformation(new Vector3f(0, 0, 0), rotation, new Vector3f(1f, getAttachedBlades()+1, 1f), null);
+        BlockState theBlade = bladeVertical;
+        if(facing.getAxis() == Y) {
+            tr = new Transformation(
+                    new Vector3f(0, 0, 0),
+                    rotation,
+                    new Vector3f(1f, 1f, getAttachedBlades() + 1),
+                    null
+            );
+            theBlade = bladeNorth;
+        }
         pPoseStack.pushTransformation(tr);
         pPoseStack.translate(-0.5, -0.5, -0.5);
         blockRenderer.getModelRenderer().renderModel(
-                pPoseStack.last(), buffer.getBuffer(RenderType.cutout()), bladeVertical, blade, 0.7f, 0.7f, 0.7f,
+                pPoseStack.last(), buffer.getBuffer(RenderType.cutout()), theBlade, blade, 0.7f, 0.7f, 0.7f,
                 LightTexture.FULL_SKY, combinedOverlay);
 
         pPoseStack.popPose();

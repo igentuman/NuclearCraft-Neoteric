@@ -179,7 +179,7 @@ public class BatteryBE extends NCEnergy {
 
     public void onLightningStrike() {
         if(chargeCooldown > 0) return;
-        chargeCooldown = 100;
+        chargeCooldown = 600;
         energyStorage.addEnergy(ENERGY_STORAGE.LIGHTNING_ROD_CHARGE.get());
         level.setBlockAndUpdate(worldPosition, getBlockState());
         level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);

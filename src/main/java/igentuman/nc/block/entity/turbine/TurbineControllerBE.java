@@ -422,15 +422,15 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
     private void spawnSteamParticles() {
         if (level.isClientSide && level.getGameTime() % 4 == 0) {
             BlockPos pos = getBlockPosForSteam().relative(orientation.getOpposite(), 1);
-            for(BlockPos source:  getBlocks(pos, orientation.getAxis())){
+            for(BlockPos source:  getBlocks(pos, multiblock().turbineDirection.getAxis())){
                 for (int i = 0; i < 3; i++) {
-                    double x = source.getX() + level.random.nextGaussian() * 0.2;
+                    double x = source.getX() + 0.4f + level.random.nextGaussian() * 0.2;
                     double y = source.getY() + 0.7f + level.random.nextGaussian() * 0.2;
-                    double z = source.getZ() + level.random.nextGaussian() * 0.2;
+                    double z = source.getZ() - 0.4f + level.random.nextGaussian() * 0.2;
                     float ySpeed = 0;
                     float zSpeed = 0;
                     float xSpeed = 0;
-                    switch (orientation.getOpposite()) {
+                    switch (multiblock().turbineDirection) {
                         case UP:
                             ySpeed = 0.2f;
                             break;

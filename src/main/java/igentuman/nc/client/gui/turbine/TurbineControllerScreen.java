@@ -136,7 +136,8 @@ public class TurbineControllerScreen extends AbstractContainerScreen<TurbineCont
          //       interiorTootip = applyFormat(Component.translatable("reactor.fuel_cells", getFuelCellsCount()), ChatFormatting.GOLD);
 
                 if(container().hasRecipe() && !container().getEfficiency().equals("NaN")) {
-                  //  drawString(matrixStack, font, Component.translatable("fission_reactor.efficiency", container().getEfficiency()), 36, 62, 0x8AFF8A);
+                    graphics.drawString(font, Component.translatable("turbine.efficiency", container().getEfficiency()), 35, 82, 0xffffff);
+                    graphics.drawString(font, Component.translatable("turbine.real_flow", container().getRealFlow()), 35, 72, 0xffffff);
                 }
             } else {
                 interiorTootip = applyFormat(Component.translatable(getValidationResultKey(), getValidationResultData()), ChatFormatting.RED);

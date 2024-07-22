@@ -144,4 +144,8 @@ public class TurbineControllerContainer extends AbstractContainerMenu {
     public FluidTank getFluidTank(int i) {
         return blockEntity.getFluidTank(i);
     }
+
+    public int getRealFlow() {
+        return blockEntity.realFlow;
+    }
 }

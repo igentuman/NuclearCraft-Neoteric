@@ -65,7 +65,7 @@ public class TurbineConfig {
 
             ENERGY_GEN = builder
                     .comment("Energy gen per mB of steam")
-                    .defineInRange("energy_gen", 1, 1, 1000000);
+                    .defineInRange("energy_gen", 10, 1, 1000000);
 
             EFFICIENCY = builder
                     .comment("Efficiency %: " + String.join(", ", TurbineRegistration.initialEfficiency().keySet()))

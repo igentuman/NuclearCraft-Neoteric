@@ -27,7 +27,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("itemGroup." + MODID+"_fission_reactor", "NuclearCraft Fission Reactor");
         add("itemGroup." + MODID+"_fusion_reactor", "NuclearCraft Fusion Reactor");
         add("itemGroup." + MODID+"_fluids", "NuclearCraft Fluids");
-        add("itemGroup." + MODID+"_turbine", "NuclearCraft Turbine");
+        add("itemGroup." + MODID+"_turbine_controller", "NuclearCraft Turbine");
         ores();
         ingots();
         plates();
@@ -105,6 +105,9 @@ public class NCLanguageProvider extends LanguageProvider {
         add("fission_reactor.net_heat", "Net Heat: %s H/t");
         add("fission.casing.reactor_incomplete", "Reactor Incomplete");
         add("fission_reactor.heat_multiplier", "Heat Multiplier: %sx");
+
+        add("turbine.efficiency", "Efficiency: %s%%");
+        add("turbine.real_flow", "Real Flow: %smB");
 
         add("processor_side_config.title", "Select Slot");
         add("processor_slot_mode.title", "Slot Mode");

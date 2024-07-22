@@ -75,6 +75,8 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
     @NBTField
     public int energyPerTick = 0;
     @NBTField
+    public int realFlow = 0;
+    @NBTField
     public double coilsEfficiency = 0;
     @NBTField
     public boolean powered = false;
@@ -469,10 +471,10 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
         }
         rotationSpeed = (rotationSpeed*4+theFlow/(flow*TURBINE_CONFIG.BLADE_FLOW.get()))/5f;
         energyStorage.addEnergy(calculateEnergy());
-
-        handleRecipeOutput();
-        contentHandler.fluidCapability.tanks.get(0).drain(getRealFlow(), EXECUTE);
         efficiency = calculateEfficiency();
+        handleRecipeOutput();
+        contentHandler.fluidCapability.tanks.get(0).drain(realFlow, EXECUTE);
+
         return true;
     }
 
@@ -495,11 +497,20 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
 
     public int getRealFlow()
     {
-        return (int)Math.min(flow*TURBINE_CONFIG.BLADE_FLOW.get(), getFluidTank(0).getFluidAmount());
+        int wasFlow = realFlow;
+        realFlow = (int)Math.min(flow*TURBINE_CONFIG.BLADE_FLOW.get(), getFluidTank(0).getFluidAmount());
+        if(wasFlow != realFlow) {
+            changed = true;
+        }
+        return realFlow;
     }
 
     private int calculateEnergy() {
-        energyPerTick = (int)(getRealFlow()*TURBINE_CONFIG.ENERGY_GEN.get()*getEfficiencyRate());
+        int wasEnergy = energyPerTick;
+        energyPerTick = (int)(realFlow*TURBINE_CONFIG.ENERGY_GEN.get()*getEfficiencyRate());
+        if(wasEnergy != energyPerTick) {
+            changed = true;
+        }
         return energyPerTick;
     }
 
@@ -612,7 +623,7 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
     }
 
     public double calculateEfficiency() {
-        return (double) calculateEnergy() / (recipeInfo.energy / 100);
+        return (double) energyPerTick / (recipeInfo.energy / 100);
     }
 
     public int getDepth() {
@@ -691,7 +702,7 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
         @Override
         public void consumeInputs(SidedContentHandler contentHandler) {
             TurbineControllerBE<?> be = (TurbineControllerBE<?>)contentHandler.blockEntity;
-            int flow = be.getRealFlow();
+            int flow = be.realFlow;
             ratio = (double)flow/(double)getInputFluids(0).get(0).getAmount();
             FluidStack holded = contentHandler.fluidCapability.getFluidInSlot(0).copy();
             holded.setAmount(flow);

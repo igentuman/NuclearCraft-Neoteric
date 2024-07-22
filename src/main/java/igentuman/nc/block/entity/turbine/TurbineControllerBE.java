@@ -462,7 +462,12 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
 
     private boolean process() {
         recipeInfo.process(1);
-        rotationSpeed = (rotationSpeed+(float)getRealFlow()/flow*TURBINE_CONFIG.BLADE_FLOW.get())/2;
+        flow = Math.max(1, flow);
+        float theFlow = (float)getRealFlow();
+        if(theFlow > 0) {
+            theFlow = Math.max(theFlow, flow/2*TURBINE_CONFIG.BLADE_FLOW.get());
+        }
+        rotationSpeed = (rotationSpeed*4+theFlow/(flow*TURBINE_CONFIG.BLADE_FLOW.get()))/5f;
         energyStorage.addEnergy(calculateEnergy());
 
         handleRecipeOutput();

@@ -20,4 +20,5 @@
     Fixed material registration config
     Open Computers II support
 
-1.0.0-rc.3
+1.0.0
+   Turbine rendering fixes

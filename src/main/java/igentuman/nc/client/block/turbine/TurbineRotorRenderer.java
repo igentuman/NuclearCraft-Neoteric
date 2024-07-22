@@ -76,7 +76,7 @@ public class TurbineRotorRenderer implements BlockEntityRenderer<BlockEntity> {
         pPoseStack.pushPose();
 
         long time = Util.getMillis();
-        float step = rotorBe.getRotationSpeed() * 0.01f;
+        float step = rotorBe.getRotationSpeed() * 3f;
 
         float angle = time * step;
 
@@ -93,11 +93,11 @@ public class TurbineRotorRenderer implements BlockEntityRenderer<BlockEntity> {
                 break;
             case EAST:
             case WEST:
-                rotation = XN.rotationDegrees(-angle);
+                rotation = XN.rotationDegrees(angle);
                 rotation2 = XN.rotationDegrees(angle+90);
                 break;
             default:
-                rotation = YN.rotationDegrees(-angle);
+                rotation = YN.rotationDegrees(angle);
                 rotation2 = YN.rotationDegrees(angle+90);
                 break;
         }

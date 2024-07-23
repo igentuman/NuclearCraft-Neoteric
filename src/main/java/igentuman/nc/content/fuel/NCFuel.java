@@ -24,8 +24,8 @@ public class NCFuel {
         if(zirconium == null) {
             zirconium = new FuelDef(group, name,
                     (int) (def.forge_energy*1.25),
-                    Math.ceil((float)oxide.heat*1.1), (float)oxide.criticality/1.25,
-                    (float)oxide.depletion*1.05, (float)oxide.efficiency/1.01)
+                    Math.ceil(oxide.heat*1.1f), oxide.criticality/1.25f,
+                    oxide.depletion*1.05f, oxide.efficiency/1.01f)
                     .isotopes(def.isotopes);
         }
         return zirconium;
@@ -36,8 +36,8 @@ public class NCFuel {
         if(oxide == null) {
             oxide = new FuelDef(group, name,
                     (int) (def.forge_energy*1.4),
-                    (float)def.heat*1.25, (float)def.criticality*1.1,
-                    (float)def.depletion/1.1, (float)def.efficiency/1.05)
+                    def.heat*1.25f, def.criticality*1.1f,
+                    def.depletion/1.1f, def.efficiency/1.05f)
                     .isotopes(def.isotopes);
         }
         return oxide;

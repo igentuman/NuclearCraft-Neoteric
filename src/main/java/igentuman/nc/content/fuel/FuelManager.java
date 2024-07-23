@@ -6,6 +6,7 @@ public class FuelManager {
     protected static HashMap<String, HashMap<String, NCFuel>> all;
     protected static HashMap<String, HashMap<String, NCFuel>> registered;
     protected static HashMap<String, Double> heat;
+    protected static HashMap<String, FuelDef> ids;
     protected static HashMap<String, Integer> efficiency;
     protected static HashMap<String, Integer> criticality;
     protected static HashMap<String, Integer> depletion;
@@ -98,6 +99,19 @@ public class FuelManager {
 
         }
         return all;
+    }
+
+    public static HashMap<String, FuelDef> flatFuels() {
+        if (ids == null) {
+            ids = new HashMap<>();
+            for (String name : all().keySet()) {
+                for (String subItem : all().get(name).keySet()) {
+                    ids.put(subItem, all().get(name).get(subItem).getDefault());
+                }
+            }
+        }
+
+        return ids;
     }
 
     public static HashMap<String, Double> initialHeat() {

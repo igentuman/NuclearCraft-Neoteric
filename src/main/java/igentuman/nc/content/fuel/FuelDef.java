@@ -1,10 +1,8 @@
 package igentuman.nc.content.fuel;
 
 import igentuman.nc.NuclearCraft;
-import igentuman.nc.handler.config.FusionConfig;
 import org.apache.logging.log4j.Level;
 
-import static igentuman.nc.handler.config.FissionConfig.FISSION_CONFIG;
 import static igentuman.nc.handler.config.FissionConfig.FUEL_CONFIG;
 
 public class FuelDef {
@@ -41,11 +39,8 @@ public class FuelDef {
         this(group, name, forge_energy, heat, (int)criticality, (int)depletion, (int)efficiency);
     }
 
-    private Double heatMult()
+    private Double boilingHeatMult()
     {
-        if(!FusionConfig.isLoaded()) {
-            return 3.24444444;
-        }
         return FUEL_CONFIG.HEAT_MULTIPLIER.get();
     }
 
@@ -53,8 +48,8 @@ public class FuelDef {
     {
         if(!initialized) {
             initialized = true;
+            int id = FuelManager.flatFuels().keySet().stream().toList().indexOf(name);
             NuclearCraft.LOGGER.log(Level.INFO,"FuelDef: "+group+" "+name);
-            int id = FuelManager.all().get(group).keySet().stream().toList().indexOf(name);
             efficiency = FUEL_CONFIG.EFFICIENCY.get().get(id);
             criticality = FUEL_CONFIG.CRITICALITY.get().get(id);
             heat = FUEL_CONFIG.HEAT.get().get(id)*FUEL_CONFIG.FUEL_HEAT_MULTIPLIER.get();
@@ -70,7 +65,7 @@ public class FuelDef {
     }
 
     public double getHeatBoilingMode() {
-        double mult = heatMult();
+        double mult = boilingHeatMult();
         try {
             if(name.substring(0,1).equalsIgnoreCase("l")) {
                 mult *=2;

@@ -258,4 +258,8 @@ public class FissionControllerContainer extends AbstractContainerMenu {
     public String getModerationLevel() {
         return numberFormat(blockEntity.getModerationLevel() * 100);
     }
+
+    public int getReactivity() {
+        return blockEntity.reactivityLevel;
+    }
 }

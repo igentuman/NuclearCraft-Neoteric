@@ -413,6 +413,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("reactor.heat_sinks_count", "Active Heat Sinks: %s");
         add("reactor.moderators_count", "Active Moderators: %s");
         add("reactor.moderation_level", "Moderation Level: %s%%");
+        add("reactor.reactivity", "Reactivity: %s%%");
         add("validation.structure.too_big", "Structure is too big");
         add("validation.structure.too_small", "Structure is too small");
         add("validation.structure.incomplete", "Incomplete");

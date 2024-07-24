@@ -144,7 +144,8 @@ public class FissionControllerScreen extends AbstractContainerScreen<FissionCont
         if(isInteriorValid()) {
             checkboxInterior.addTooltip(Component.translatable("reactor.heat_sinks_count", container().getHeatSinksCount()));
             checkboxInterior.addTooltip(Component.translatable("reactor.moderators_count", container().getModeratorsCount()));
-            //checkboxInterior.addTooltip(Component.translatable("reactor.moderation_level", container().getModerationLevel()));
+            checkboxInterior.addTooltip(Component.translatable("reactor.moderation_level", container().getModerationLevel()));
+            checkboxInterior.addTooltip(Component.translatable("reactor.reactivity", container().getReactivity()));
             checkboxInterior.addTooltip(Component.translatable("reactor.irradiators_connections", container().getIrradiatorsConnections()));
         }
         if(!getMenu().getMode()) {

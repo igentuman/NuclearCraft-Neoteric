@@ -68,7 +68,7 @@ public class FissionConfig {
 
             DEPLETION_MULTIPLIER = builder
                     .comment("Depletion multiplier. Affects how long fuel lasts.")
-                    .defineInRange("depletion_multiplier", 100D, 0D, 1000D);
+                    .defineInRange("depletion_multiplier", 1D, 0D, 1000D);
 
             HEAT = builder
                     .comment("Base Fuel Heat: " + String.join(", ",FuelManager.initialHeat().keySet()))

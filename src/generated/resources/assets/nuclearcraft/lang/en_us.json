@@ -2060,6 +2060,7 @@
   "reactor.moderation_level": "Moderation Level: %s%%",
   "reactor.moderators_count": "Active Moderators: %s",
   "reactor.net_heat": "Net Heat: %s H/t",
+  "reactor.reactivity": "Reactivity: %s%%",
   "reactor.size": "Structure size: %sx%sx%s",
   "reactor.steam_per_tick": "Boiling rate: %s mB/t",
   "rtg.fe_generation": "Energy Generation: %s FE/t",

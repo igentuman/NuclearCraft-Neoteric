@@ -75,7 +75,8 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     public double heat = 0;
     @NBTField
     public int fuelCellsCount = 0;
-
+    @NBTField
+    public int reactivityLevel = 0;
     @NBTField
     public int irradiationHeat = 0;
     @NBTField
@@ -388,7 +389,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         if (multiblock().isFormed()) {
             trackChanges(updateModerationLevel());
             trackChanges(contentHandler.tick());
-            if(controllerEnabled) {
+            if(controllerEnabled || reactivityLevel > 0) {
                 powered = processReaction();
                 trackChanges(powered);
             } else {
@@ -544,9 +545,11 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     }
 
     private boolean process() {
-        recipeInfo.process(fuelCellsCount * (heatMultiplier() + collectedHeatMultiplier() - 1));
+        reactivityLevel += controllerEnabled ? 1 : -1;
+        reactivityLevel = Math.max(0, Math.min(reactivityLevel, 100));
+        recipeInfo.process(fuelCellsCount * (heatMultiplier() + collectedHeatMultiplier() - 1) * reactivityLevel/100D);
         if(recipeInfo.radiation != 1D) {
-            RadiationManager.get(getLevel()).addRadiation(getLevel(), recipeInfo.radiation/1000, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ());
+            RadiationManager.get(getLevel()).addRadiation(getLevel(), recipeInfo.radiation/10000, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ());
         }
         if (!recipeInfo.isCompleted()) {
             if(!isSteamMode) {
@@ -608,11 +611,11 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     }
 
     private double calculateHeat() {
-        return heatPerTick();
+        return heatPerTick() * Math.min(0.5D, reactivityLevel / 100D);
     }
 
     private int calculateEnergy() {
-        energyPerTick = (int) ((recipeInfo.energy * Math.abs(fuelCellMultiplier-fuelCellsCount) + moderatorsFE()) * (heatMultiplier() + collectedHeatMultiplier() - 1));
+        energyPerTick = (int) ((recipeInfo.energy * Math.abs(fuelCellMultiplier-fuelCellsCount) + moderatorsFE()) * (heatMultiplier() + collectedHeatMultiplier() - 1)) * reactivityLevel / 100;
         return energyPerTick;
     }
 
@@ -867,6 +870,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     }
 
     public double getModerationLevel() {
+        if(moderatorsCount == 0) return 1D;
         return moderationLevel;
     }
 

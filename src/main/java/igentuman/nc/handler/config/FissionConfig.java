@@ -169,7 +169,7 @@ public class FissionConfig {
 
             BOILING_MULTIPLIER = builder
                     .comment("Rate at which steam recipes produced.")
-                    .defineInRange("boiling_mult", 5D, 0.01D, 1000000D);
+                    .defineInRange("boiling_mult", 100D, 0.01D, 1000000D);
 
             builder.pop();
         }

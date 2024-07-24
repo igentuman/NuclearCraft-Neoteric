@@ -17,15 +17,15 @@ public class SteamTurbineRecipes extends AbstractRecipeProvider {
         ID = Processors.STEAM_TURBINE;
 
         add(
-                fluidIngredient("steam", 10),
-                fluidIngredient("minecraft:water", 10),
-                1.5D
+                fluidIngredient("steam", 100),
+                fluidIngredient("minecraft:water", 100),
+                0.1D
         );
 
         add(
-                fluidIngredient("high_pressure_steam", 10),
-                fluidIngredient("exhaust_steam", 10),
-                2D, 2.5D
+                fluidIngredient("high_pressure_steam", 100),
+                fluidIngredient("exhaust_steam", 100),
+                0.2D, 1.1D
         );
 
     }

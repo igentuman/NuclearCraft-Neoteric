@@ -250,8 +250,8 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         if(getNetHeat() < 0) {
             cooling += getNetHeat();
         }
-        cooling = Math.min(heat, cooling);
-        double heatEff =  cooling * FISSION_CONFIG.BOILING_MULTIPLIER.get();
+        cooling = Math.min(heatPerTick, cooling);
+        double heatEff =  cooling * FISSION_CONFIG.BOILING_MULTIPLIER.get() * efficiency * 0.01D * heatMultiplier;
 
         if(hasCoolant()) {
             FluidStack steam = boilingRecipe.getOutputFluids().get(0);
@@ -270,13 +270,18 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
             int canGetAmount = (int) Math.min(steam.getAmount()*conversion, capacity);
             ops = canGetAmount/steam.getAmount();
             ops = Math.min(currentCoolant.getAmount()/coolant.getAmount(), ops);
+            steamPerTick = Math.max(ops*steam.getAmount(), 0);
+            if(steamPerTick == 0) {
+                heat += coolingPerTick()/2;
+                return;
+            }
             contentHandler.fluidCapability.tanks.get(0).drain(ops*coolant.getAmount(), IFluidHandler.FluidAction.EXECUTE);
             FluidStack out = steam.copy();
             out.setAmount(ops*steam.getAmount());
-            steamPerTick = ops*steam.getAmount();
+
             contentHandler.fluidCapability.tanks.get(1).fill(out, IFluidHandler.FluidAction.EXECUTE);
             changed = true;
-            if(ops < conversion) {
+            if(ops < Math.floor(conversion)) {
                 heat += coolingPerTick()/(conversion - ops);
             }
         }
@@ -473,7 +478,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
             }
 
             //1 mRad per fuel cell
-            RadiationManager.get(getLevel()).addRadiation(getLevel(), 1000000*fuelCellsCount, getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
+            RadiationManager.get(getLevel()).addRadiation(getLevel(), 100000*fuelCellsCount, getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
             setRemoved();
             //at any case if reactor still works we punish player
             //heat = getMaxHeat();

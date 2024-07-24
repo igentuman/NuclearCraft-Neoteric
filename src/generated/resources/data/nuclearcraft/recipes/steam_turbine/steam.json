@@ -2,17 +2,17 @@
   "type": "nuclearcraft:steam_turbine",
   "inputFluids": [
     {
-      "amount": 10,
+      "amount": 100,
       "tag": "forge:steam"
     }
   ],
   "outputFluids": [
     {
-      "amount": 10,
+      "amount": 100,
       "tag": "minecraft:water"
     }
   ],
   "powerModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.5
+  "timeModifier": 0.1
 }

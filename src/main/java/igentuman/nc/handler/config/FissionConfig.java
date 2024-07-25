@@ -50,6 +50,7 @@ public class FissionConfig {
         public ForgeConfigSpec.ConfigValue<List<Double>> HEAT;
         public ForgeConfigSpec.ConfigValue<List<Integer>> EFFICIENCY;
         public ForgeConfigSpec.ConfigValue<List<Integer>> DEPLETION;
+        public ForgeConfigSpec.ConfigValue<List<Integer>> FE_GENERATION;
         public ForgeConfigSpec.ConfigValue<List<Integer>> CRITICALITY;
         public ForgeConfigSpec.ConfigValue<Double> HEAT_MULTIPLIER;
         public ForgeConfigSpec.ConfigValue<Double> FUEL_HEAT_MULTIPLIER;
@@ -76,6 +77,9 @@ public class FissionConfig {
             EFFICIENCY = builder
                     .comment("Base Fuel Efficiency: " + String.join(", ",FuelManager.initialEfficiency().keySet()))
                     .define("base_efficiency", toList(FuelManager.initialEfficiency().values()), o -> o instanceof ArrayList);
+            FE_GENERATION = builder
+                    .comment("Base Fuel FE generation: " + String.join(", ",FuelManager.initialForgeEnergy().keySet()))
+                    .define("base_fe_generation", toList(FuelManager.initialForgeEnergy().values()), o -> o instanceof ArrayList);
             DEPLETION = builder
                     .comment("Base Fuel Depletion Time (seconds): " + String.join(", ",FuelManager.initialDepletion().keySet()))
                     .define("base_depletion", toList(FuelManager.initialDepletion().values()), o -> o instanceof ArrayList);

@@ -52,6 +52,7 @@ public class FuelDef {
             NuclearCraft.LOGGER.log(Level.INFO,"FuelDef: "+group+" "+name);
             efficiency = FUEL_CONFIG.EFFICIENCY.get().get(id);
             criticality = FUEL_CONFIG.CRITICALITY.get().get(id);
+            forge_energy = FUEL_CONFIG.FE_GENERATION.get().get(id);
             heat = FUEL_CONFIG.HEAT.get().get(id)*FUEL_CONFIG.FUEL_HEAT_MULTIPLIER.get();
             depletion = (int) (FUEL_CONFIG.DEPLETION.get().get(id)*FUEL_CONFIG.DEPLETION_MULTIPLIER.get());
         }

@@ -615,7 +615,12 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     }
 
     private int calculateEnergy() {
-        energyPerTick = (int) ((recipeInfo.energy * Math.abs(fuelCellMultiplier-fuelCellsCount) + moderatorsFE()) * (heatMultiplier() + collectedHeatMultiplier() - 1)) * reactivityLevel / 100;
+        energyPerTick = (int) (
+                (recipeInfo.energy * Math.abs(fuelCellMultiplier-fuelCellsCount) + moderatorsFE())
+                * (heatMultiplier() + collectedHeatMultiplier() - 1)
+                * FISSION_CONFIG.FE_GENERATION_MULTIPLIER.get()/10D
+                * reactivityLevel / 100D
+        );
         return energyPerTick;
     }
 

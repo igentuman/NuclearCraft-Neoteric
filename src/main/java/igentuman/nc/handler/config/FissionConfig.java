@@ -134,6 +134,7 @@ public class FissionConfig {
         public ForgeConfigSpec.ConfigValue<Double> EXPLOSION_RADIUS;
         public ForgeConfigSpec.ConfigValue<Double> HEAT_CAPACITY;
 
+        public ForgeConfigSpec.ConfigValue<Double> FE_GENERATION_MULTIPLIER;
         public ForgeConfigSpec.ConfigValue<Double> BOILING_MULTIPLIER;
 
         public FissionReactorConfig(ForgeConfigSpec.Builder builder) {
@@ -174,6 +175,10 @@ public class FissionConfig {
             BOILING_MULTIPLIER = builder
                     .comment("Rate at which steam recipes produced.")
                     .defineInRange("boiling_mult", 100D, 0.01D, 1000000D);
+
+            FE_GENERATION_MULTIPLIER = builder
+                    .comment("Affects how much energy reactors produce.")
+                    .defineInRange("fe_generation_multiplier", 10D, 0.01D, 1000000D);
 
             builder.pop();
         }

@@ -2,17 +2,17 @@
   "type": "nuclearcraft:turbine_controller",
   "inputFluids": [
     {
-      "amount": 10,
+      "amount": 1000,
       "tag": "forge:high_pressure_steam"
     }
   ],
   "outputFluids": [
     {
-      "amount": 10,
+      "amount": 1000,
       "tag": "forge:exhaust_steam"
     }
   ],
-  "powerModifier": 2.5,
+  "powerModifier": 1.5,
   "radiation": 1.0,
   "timeModifier": 2.0
 }

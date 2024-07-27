@@ -2,13 +2,13 @@
   "type": "nuclearcraft:turbine_controller",
   "inputFluids": [
     {
-      "amount": 10,
+      "amount": 1000,
       "tag": "forge:steam"
     }
   ],
   "outputFluids": [
     {
-      "amount": 10,
+      "amount": 1000,
       "tag": "minecraft:water"
     }
   ],

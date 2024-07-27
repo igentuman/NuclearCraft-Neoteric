@@ -28,7 +28,7 @@
       "tag": "forge:helium"
     }
   ],
-  "powerModifier": 265000.0,
+  "powerModifier": 530000.0,
   "radiation": 1.5,
   "temperature": 9506.0,
   "timeModifier": 45.0

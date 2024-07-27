@@ -35,7 +35,7 @@ public class ProcessorPrefab <M extends NCProcessorContainer, U extends Screen &
     public String name;
 
     public boolean supportSpeedUpgrade = true;
-    protected int power = 20;
+    protected int power = 50;
     protected int time = 200;
 
     public List<Integer> hiddenSlots = new ArrayList<>();

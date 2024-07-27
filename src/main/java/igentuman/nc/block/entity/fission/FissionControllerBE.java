@@ -378,7 +378,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         }
         changed = false;
         hopToggleMode();
-
+        boolean wasFormed = multiblock().isFormed();
         super.tickServer();
         boolean wasPowered = powered;
         handleValidation();
@@ -398,6 +398,11 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
             trackChanges(coolDown());
             handleMeltdown();
             contentHandler.setAllowedInputItems(getAllowedInputItems());
+        } else {
+            //if reactor was broken during processing, contaminate area
+            if(isProcessing() && wasFormed) {
+                RadiationManager.get(getLevel()).addRadiation(getLevel(), 10000*fuelCellsCount, getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
+            }
         }
         refreshCacheFlag = !multiblock().isFormed();
         if(refreshCacheFlag || changed) {

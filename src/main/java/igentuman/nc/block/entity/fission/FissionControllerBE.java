@@ -374,6 +374,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     public void tickServer() {
         if(NuclearCraft.instance.isNcBeStopped || isRemoved()) {
             irradiationHeat = 0;
+            controllerEnabled = false;
             return;
         }
         changed = false;
@@ -383,9 +384,13 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         boolean wasPowered = powered;
         handleValidation();
         trackChanges(wasPowered, powered);
-        controllerEnabled = (hasRedstoneSignal() || controllerEnabled) && multiblock().isFormed();
+        boolean wasEnabled = controllerEnabled;
+        controllerEnabled = hasRedstoneSignal() && multiblock().isFormed();
         controllerEnabled = !forceShutdown && controllerEnabled;
-
+        //do not allow change reactor state during cooldown or heating up
+        if(controllerEnabled != wasEnabled && reactivityLevel > 10 && reactivityLevel < 99) {
+            controllerEnabled = wasEnabled;
+        }
         if (multiblock().isFormed()) {
             trackChanges(updateModerationLevel());
             trackChanges(contentHandler.tick());
@@ -414,7 +419,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         }
         irradiationHeat = 0;
 
-        controllerEnabled = false;
+
     }
 
     private void hopToggleMode() {

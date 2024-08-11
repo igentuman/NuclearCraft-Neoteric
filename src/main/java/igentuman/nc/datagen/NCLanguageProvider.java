@@ -61,6 +61,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("message.nc.player_radiation_contamination", "Radiation Dose: %s");
         add("message.nc.geiger_radiation_measure", "Radiation Level: %s");
         add("death.attack.radiation", "Died of Radiation Poisoning");
+        add("nc.message.patrons", "Special thanks to patrons: marcin212, PersonBelowRocks, tomdodd4598, ethantabler, endleon201, sancho.lucky, Cerusvi, tocix9730 and others...");
     }
     private void sounds() {
         add("music.hyperspace", "Hyperspace");

@@ -44,6 +44,23 @@ This is a re-creation of old but gold NuclearCraft on a modern MC version
 - [ ] Wasteland Dimension
 - [ ] Pipes
 
-- 
+
 # CREDITS
 tomdodd4598 - For the original mod
+
+# SUPPORT
+
+Thanks everyone for supporting this my other projects! 
+If you want to support me, you can donate to my [Patreon](https://patreon.com/igentuman) or [Paypal](https://paypal.me/igentuman)
+
+# SPECIAL THANKS TO PATRONS:
+```
+Wandering Singularity
+Tom Dodd
+Niv
+Commander Ava
+marcin212
+endleon tiozae
+Ethan Tabler
+PersonBelow Rocks
+```

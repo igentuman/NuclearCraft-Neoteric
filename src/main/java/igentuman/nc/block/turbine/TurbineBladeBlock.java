@@ -188,9 +188,9 @@ public class TurbineBladeBlock extends DirectionalBlock implements EntityBlock {
             list.add(TextUtils.applyFormat(
                     Component.translatable("tooltip.nc.description.efficiency", TextUtils.numberFormat(def.getEfficiency())),
                     ChatFormatting.AQUA));
-            list.add(TextUtils.applyFormat(
+            /*list.add(TextUtils.applyFormat(
                     Component.translatable("tooltip.nc.description.expansion", TextUtils.numberFormat(def.getExpansion())),
-                    ChatFormatting.GOLD));
+                    ChatFormatting.GOLD));*/
         } else {
             list.add(TextUtils.applyFormat(Component.translatable("tooltip.nc.blade.desc", TURBINE_CONFIG.BLADE_FLOW.get()), ChatFormatting.BLUE));
         }

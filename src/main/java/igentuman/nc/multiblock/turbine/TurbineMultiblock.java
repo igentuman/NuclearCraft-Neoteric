@@ -95,8 +95,8 @@ public class TurbineMultiblock extends AbstractNCMultiblock {
         } else {
             countCoils();
             countBlades();
-            if(blades % 2 != 0) {
-                validationResult = ValidationResult.WRONG_INNER;
+            if(blades % 4 != 0) {
+                validationResult = ValidationResult.WRONG_BLADES;
                 innerValid = false;
                 outerValid = false;
                 isFormed = false;
@@ -106,11 +106,14 @@ public class TurbineMultiblock extends AbstractNCMultiblock {
 
     private void countBlades() {
         flow = 0;
+        blades = 0;
         for(BlockPos pos : bladePositions) {
             BlockEntity be = getBlockEntity(pos);
             if(be instanceof TurbineBladeBE blade) {
-                flow+=blade.getFlow();
-                blades++;
+                if(blade.isValid()) {
+                    flow += blade.getFlow();
+                    blades++;
+                }
             }
         }
     }

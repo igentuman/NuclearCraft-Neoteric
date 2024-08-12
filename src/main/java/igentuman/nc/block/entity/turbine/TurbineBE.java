@@ -69,19 +69,6 @@ public class TurbineBE extends NuclearCraftBE implements IMultiblockAttachable {
         super.setRemoved();
     }
 
-    public boolean isDirectlyAttachedToFuelCell(BlockPos ignoredPos) {
-        for (Direction dir : Direction.values()) {
-            if(dir.getOpposite().getNormal() == ignoredPos) {
-                continue;
-            }
-            BlockEntity be = getLevel().getBlockEntity(getBlockPos().relative(dir));
-            if (be instanceof FissionFuelCellBE) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public boolean isValidating = false;
 
     public void onNeighborChange(BlockState state, BlockPos pos, BlockPos neighbor) {

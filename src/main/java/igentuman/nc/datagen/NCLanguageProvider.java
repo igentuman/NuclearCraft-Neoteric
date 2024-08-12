@@ -426,6 +426,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("validation.structure.valid", "Structure is Valid");
         add("validation.structure.wrong_corner", "Wrong corner block at: %s");
         add("validation.structure.wrong_proportions", "Wrong proportions");
+        add("validation.structure.wrong_blades", "Wrong blades placement");
         add("solar_panel.fe_generation", "Daytime Gen: %s FE/t");
         add("fission_port.descr", "One port for everything: Fluids, items, redstone, computers, etc...");
         add("irradiation_chamber.descr", "Irradiates items with neutron flux. \r\nHas to be placed in one line with moderator and fuel cell behind it.");

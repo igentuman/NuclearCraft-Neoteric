@@ -20,13 +20,13 @@ public class TurbineControllerRecipes extends AbstractRecipeProvider {
         add(
                 fluidIngredient("steam", 1000),
                 fluidIngredient("minecraft:water", 1000),
-                1.5D
+                1D, 0.5D
         );
 
         add(
                 fluidIngredient("high_pressure_steam", 1000),
                 fluidIngredient("exhaust_steam", 1000),
-                2D, 1.5D
+                1D, 1D
         );
 
     }

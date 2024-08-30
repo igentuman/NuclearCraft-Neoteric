@@ -86,9 +86,10 @@ public class FissionReactor {
                 } else {
                     props = REACTOR_BLOCKS_PROPERTIES;
                 }
-                if(name.contains("slope")) {
-                    FISSION_BLOCKS.put(key, BLOCKS.register(key, () -> new FissionCasingSlopeBlock(props)));
-                } else {
+                if(key.matches(".*glass|.*casing.*")) {
+                    FISSION_BLOCKS.put(key, BLOCKS.register(key, () -> new FissionCasingBlock(props)));
+                }
+                if(key.matches(".*cell")) {
                     FISSION_BLOCKS.put(key, BLOCKS.register(key, () -> new FissionBlock(props)));
                 }
             }
@@ -115,13 +116,6 @@ public class FissionReactor {
                 () -> BlockEntityType.Builder
                         .of(FissionModeratorBE::new,
                                 moderators().toArray(new Block[0]))
-                        .build(null)));
-
-        FISSION_BE.put("fission_casing", BLOCK_ENTITIES.register("fission_casing",
-                () -> BlockEntityType.Builder
-                        .of(FissionCasingBE::new,
-                                FISSION_BLOCKS.get("fission_reactor_casing").get(),
-                                FISSION_BLOCKS.get("fission_reactor_glass").get())
                         .build(null)));
 
         FISSION_BE.put("fission_reactor_fuel_cell", BLOCK_ENTITIES.register("fission_reactor_fuel_cell",

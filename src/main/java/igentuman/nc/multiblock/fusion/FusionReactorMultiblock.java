@@ -251,10 +251,8 @@ public class FusionReactorMultiblock extends AbstractNCMultiblock {
             }
             //inner wall
             for(int i = 0; i < steps; i++) {
-                if(level.getBlockEntity(startPosInnerWall.revert().relative(dir, i)) instanceof FusionCasingBE casing) {
-                    casing.setController(controllerBE);
+                if(isValidForOuter(startPosInnerWall.revert().relative(dir, i))) {
                     allBlocks.add(new NCBlockPos(startPosInnerWall));
-                    attachMultiblock(casing);
                 } else {
                     ringValid = false;
                     validationResult = ValidationResult.WRONG_OUTER;
@@ -264,32 +262,24 @@ public class FusionReactorMultiblock extends AbstractNCMultiblock {
             }
             //outer, bottom, top walls
             for(int i = 0; i < steps+2; i++) {
-                if(level.getBlockEntity(startPosOuterWall.revert().relative(dir, i)) instanceof FusionCasingBE casing1) {
-                    casing1.setController(controllerBE);
+                if(isValidForOuter(startPosOuterWall.revert().relative(dir, i))) {
                     allBlocks.add(new NCBlockPos(startPosOuterWall));
-                    attachMultiblock(casing1);
                 } else {
                     ringValid = false;
                     validationResult = ValidationResult.WRONG_OUTER;
                     controller().addErroredBlock(startPosOuterWall);
                     return;
                 }
-                if(level.getBlockEntity(startPosBottomWall.revert().relative(dir, i)) instanceof FusionCasingBE casing2) {
-                    casing2.setController(controllerBE);
+                if(isValidForOuter(startPosBottomWall.revert().relative(dir, i))) {
                     allBlocks.add(new NCBlockPos(startPosBottomWall));
-                    attachMultiblock(casing2);
                 } else {
                     ringValid = false;
                     validationResult = ValidationResult.WRONG_OUTER;
                     controller().addErroredBlock(startPosBottomWall);
                     return;
                 }
-                if(level.getBlockEntity(startPosTopWall.revert().relative(dir, i)) instanceof FusionCasingBE casing3) {
-                    casing3.setController(controllerBE);
+                if(isValidForOuter(startPosTopWall.revert().relative(dir, i))) {
                     allBlocks.add(new NCBlockPos(startPosTopWall));
-                    attachMultiblock(casing3);
-
-
                 } else {
                     ringValid = false;
                     validationResult = ValidationResult.WRONG_OUTER;

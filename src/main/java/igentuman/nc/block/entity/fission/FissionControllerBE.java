@@ -369,7 +369,6 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
             playRunningSound();
         }
     }
-    protected int reValidateCounter = 0;
 
     public void tickServer() {
         if(NuclearCraft.instance.isNcBeStopped || isRemoved()) {

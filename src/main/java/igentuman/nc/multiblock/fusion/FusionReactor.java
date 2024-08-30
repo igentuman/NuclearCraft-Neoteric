@@ -1,6 +1,7 @@
 package igentuman.nc.multiblock.fusion;
 
 import igentuman.nc.block.fusion.FusionBlock;
+import igentuman.nc.block.fusion.FusionCasingBlock;
 import igentuman.nc.block.fusion.FusionCoreBlock;
 import igentuman.nc.block.fusion.FusionCoreProxy;
 import igentuman.nc.container.FissionControllerContainer;
@@ -55,17 +56,13 @@ public class FusionReactor {
         ALL_NC_ITEMS.put(key, FUSION_ITEMS.get(key));
 
         key = "fusion_reactor_casing";
-        FUSION_BLOCKS.put(key, BLOCKS.register(key, () -> new FusionBlock(REACTOR_BLOCKS_PROPERTIES)));
-        FUSION_BE.put(key, BLOCK_ENTITIES.register(key,
-                () -> BlockEntityType.Builder
-                        .of(FusionCasingBE::new, FUSION_BLOCKS.get("fusion_reactor_casing").get(), FUSION_BLOCKS.get("fusion_reactor_casing_glass").get())
-                        .build(null)));
-        FUSION_BE.put("fusion_reactor_casing_glass", FUSION_BE.get(key));
+        FUSION_BLOCKS.put(key, BLOCKS.register(key, () -> new FusionCasingBlock(REACTOR_BLOCKS_PROPERTIES)));
+
         FUSION_ITEMS.put(key, fromMultiblock(FUSION_BLOCKS.get(key)));
         ALL_NC_ITEMS.put(key, FUSION_ITEMS.get(key));
 
         key = "fusion_reactor_casing_glass";
-        FUSION_BLOCKS.put(key, BLOCKS.register(key, () -> new FusionBlock(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(1f).requiresCorrectToolForDrops().noOcclusion())));
+        FUSION_BLOCKS.put(key, BLOCKS.register(key, () -> new FusionCasingBlock(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(1f).requiresCorrectToolForDrops().noOcclusion())));
         FUSION_ITEMS.put(key, fromMultiblock(FUSION_BLOCKS.get(key)));
         ALL_NC_ITEMS.put(key, FUSION_ITEMS.get(key));
 

@@ -44,7 +44,7 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler implements
             tanks.add(new FluidTank(inputCapacity*1000));
             fluidCapabilites.add(LazyOptional.of(() -> tanks.get(finalI)));
         }
-        for (int i = inputSlots-1; i < inputSlots+outputSlots; i++) {
+        for (int i = inputSlots; i < inputSlots+outputSlots; i++) {
             int finalI = i;
             tanks.add(new FluidTank(outputCapacity*1000));
             fluidCapabilites.add(LazyOptional.of(() -> tanks.get(finalI)));

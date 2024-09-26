@@ -98,6 +98,7 @@ public abstract class AbstractCapabilityHandler {
         if(side == null) return true;
         SidedContentHandler.RelativeDirection relativeDirection =
                 SidedContentHandler.RelativeDirection.toRelative(side, getFacing());
+        assert relativeDirection != null;
         return sideMap.get(relativeDirection.ordinal())[slot].getMode() != SlotModePair.SlotMode.DISABLED;
     }
 

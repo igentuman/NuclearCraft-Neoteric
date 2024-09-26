@@ -2160,6 +2160,7 @@
   "validation.structure.too_many_controllers": "Too many controllers",
   "validation.structure.too_small": "Structure is too small",
   "validation.structure.valid": "Structure is Valid",
+  "validation.structure.wrong_blades": "Wrong blades placement",
   "validation.structure.wrong_corner": "Wrong corner block at: %s",
   "validation.structure.wrong_inner": "Wrong Block at: %s",
   "validation.structure.wrong_outer": "Wrong Casing at: %s",

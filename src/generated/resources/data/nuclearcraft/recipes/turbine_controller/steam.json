@@ -12,7 +12,7 @@
       "tag": "minecraft:water"
     }
   ],
-  "powerModifier": 1.0,
+  "powerModifier": 0.5,
   "radiation": 1.0,
-  "timeModifier": 1.5
+  "timeModifier": 1.0
 }

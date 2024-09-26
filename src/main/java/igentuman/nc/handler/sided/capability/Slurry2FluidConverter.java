@@ -78,12 +78,12 @@ public class Slurry2FluidConverter implements ISlurryHandler {
         if(fluidITag.isEmpty()) {
             return FluidStack.EMPTY;
         }
-        FluidStack fluidStack = FluidStack.EMPTY;
+        FluidStack fluidStack;
         try {
             fluidStack = FluidStackIngredientCreator.INSTANCE
                     .from(fluidITag.getKey(), amount).getRepresentations().get(0);
         } catch (Exception e) {
-
+            return FluidStack.EMPTY;
         }
 
         gasFluidMap.put(stack.getType(), fluidStack.getFluid());
@@ -107,7 +107,7 @@ public class Slurry2FluidConverter implements ISlurryHandler {
     }
 
     @Override
-    public @NotNull SlurryStack extractChemical(int tank, long amount, Action action) {
+    public @NotNull SlurryStack extractChemical(int tank, long amount, @NotNull Action action) {
         return getEmptyStack();
     }
 

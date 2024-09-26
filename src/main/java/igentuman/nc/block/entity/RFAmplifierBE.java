@@ -9,6 +9,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import static igentuman.nc.setup.registration.NCBlocks.NC_BE;
 
 public class RFAmplifierBE extends BlockEntity {
+
     protected String name;
     public boolean hasToUpdate = true;
 

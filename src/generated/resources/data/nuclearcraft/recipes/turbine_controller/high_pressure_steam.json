@@ -12,7 +12,7 @@
       "tag": "forge:exhaust_steam"
     }
   ],
-  "powerModifier": 1.5,
+  "powerModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 2.0
+  "timeModifier": 1.0
 }

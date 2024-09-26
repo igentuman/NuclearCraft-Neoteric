@@ -79,12 +79,12 @@ public class Gas2FluidConverter implements IGasHandler {
         if(fluidITag.isEmpty()) {
             return FluidStack.EMPTY;
         }
-        FluidStack fluidStack = FluidStack.EMPTY;
+        FluidStack fluidStack;
         try {
             fluidStack = FluidStackIngredientCreator.INSTANCE
                     .from(fluidITag.getKey(), amount).getRepresentations().get(0);
         } catch (Exception e) {
-
+            return FluidStack.EMPTY;
         }
 
         gasFluidMap.put(stack.getType(), fluidStack.getFluid());
@@ -108,7 +108,7 @@ public class Gas2FluidConverter implements IGasHandler {
     }
 
     @Override
-    public GasStack extractChemical(int tank, long amount, Action action) {
+    public @NotNull GasStack extractChemical(int tank, long amount, @NotNull Action action) {
         return getEmptyStack();
     }
 

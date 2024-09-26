@@ -1,5 +1,7 @@
 package igentuman.nc.multiblock.fusion;
 
+import igentuman.nc.block.ElectromagnetBlock;
+import igentuman.nc.block.RFAmplifierBlock;
 import igentuman.nc.block.entity.ElectromagnetBE;
 import igentuman.nc.block.entity.RFAmplifierBE;
 import igentuman.nc.block.entity.fusion.FusionCasingBE;
@@ -191,6 +193,7 @@ public class FusionReactorMultiblock extends AbstractNCMultiblock {
             }
             //outer
             for(int i = 0; i < steps+2; i++) {
+                assert startPosOuterWall != null;
                 if(level.getBlockEntity(startPosOuterWall.revert().relative(dir, i)) instanceof ElectromagnetBE magnet) {
                     electromagnets.put(new NCBlockPos(startPosOuterWall), magnet);
                 } else if(level.getBlockEntity(startPosOuterWall.revert().relative(dir, i)) instanceof RFAmplifierBE amplifier) {
@@ -251,6 +254,7 @@ public class FusionReactorMultiblock extends AbstractNCMultiblock {
             }
             //inner wall
             for(int i = 0; i < steps; i++) {
+                assert startPosInnerWall != null;
                 if(isValidForOuter(startPosInnerWall.revert().relative(dir, i))) {
                     allBlocks.add(new NCBlockPos(startPosInnerWall));
                 } else {
@@ -262,6 +266,7 @@ public class FusionReactorMultiblock extends AbstractNCMultiblock {
             }
             //outer, bottom, top walls
             for(int i = 0; i < steps+2; i++) {
+                assert startPosOuterWall != null;
                 if(isValidForOuter(startPosOuterWall.revert().relative(dir, i))) {
                     allBlocks.add(new NCBlockPos(startPosOuterWall));
                 } else {
@@ -270,6 +275,7 @@ public class FusionReactorMultiblock extends AbstractNCMultiblock {
                     controller().addErroredBlock(startPosOuterWall);
                     return;
                 }
+                assert startPosBottomWall != null;
                 if(isValidForOuter(startPosBottomWall.revert().relative(dir, i))) {
                     allBlocks.add(new NCBlockPos(startPosBottomWall));
                 } else {
@@ -278,6 +284,7 @@ public class FusionReactorMultiblock extends AbstractNCMultiblock {
                     controller().addErroredBlock(startPosBottomWall);
                     return;
                 }
+                assert startPosTopWall != null;
                 if(isValidForOuter(startPosTopWall.revert().relative(dir, i))) {
                     allBlocks.add(new NCBlockPos(startPosTopWall));
                 } else {
@@ -351,6 +358,7 @@ public class FusionReactorMultiblock extends AbstractNCMultiblock {
                 }
             }
             for(int i = 0; i < steps; i++) {
+                assert innerRingStartPos != null;
                 if(!processInnerBlock(innerRingStartPos.revert().relative(dir, i))) {
                     innerValid = false;
                     validationResult = ValidationResult.WRONG_INNER;
@@ -440,11 +448,11 @@ public class FusionReactorMultiblock extends AbstractNCMultiblock {
         if(electromagnets.containsKey(neighbor) || amplifiers.containsKey(neighbor)) {
             return true;
         }
-        BlockEntity be = level().getBlockEntity(neighbor);
+        Block changedBlock = level().getBlockState(neighbor).getBlock();
         //new added
         if(
-                be instanceof ElectromagnetBE magnet
-                || be instanceof RFAmplifierBE amplifier
+                changedBlock instanceof ElectromagnetBlock
+                || changedBlock instanceof RFAmplifierBlock
         ) {
             return true;
         }

@@ -966,17 +966,17 @@ public class NCRecipes extends RecipeProvider {
 
     private void fissionBlocks(Consumer<FinishedRecipe> consumer) {
 
-        /*ShapedRecipeBuilder.shaped(FissionReactor.FISSION_BLOCKS.get("fission_reactor_irradiation_chamber").get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, FissionReactor.FISSION_BLOCKS.get("fission_reactor_irradiation_chamber").get())
                 .pattern("LPL")
                 .pattern("MTM")
                 .pattern("LPL")
                 .define('M', NCItems.NC_PARTS.get("servo").get())
                 .define('P', NCItems.NC_PARTS.get("plate_advanced").get())
-                .define('T', STORAGE_BLOCK.get("basic_storage_container").get())
+                .define('T', STORAGE_BLOCKS.get("basic_storage_container").get())
                 .define('L', forgePlate(Materials.boron))
                 .group(MODID+"_fission")
-                .unlockedBy("item", has(STORAGE_BLOCK.get("basic_storage_container").get()))
-                .save(consumer);*/
+                .unlockedBy("item", has(STORAGE_BLOCKS.get("basic_storage_container").get()))
+                .save(consumer);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, FissionReactor.FISSION_BLOCKS.get("fission_reactor_port").get())
                 .pattern("LPL")

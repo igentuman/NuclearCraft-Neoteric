@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_fission",
+  "key": {
+    "L": {
+      "tag": "forge:plates/boron"
+    },
+    "M": {
+      "item": "nuclearcraft:servo"
+    },
+    "P": {
+      "item": "nuclearcraft:plate_advanced"
+    },
+    "T": {
+      "item": "nuclearcraft:basic_storage_container"
+    }
+  },
+  "pattern": [
+    "LPL",
+    "MTM",
+    "LPL"
+  ],
+  "result": {
+    "item": "nuclearcraft:fission_reactor_irradiation_chamber"
+  },
+  "show_notification": true
+}

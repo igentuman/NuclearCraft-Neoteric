@@ -45,10 +45,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import static igentuman.nc.block.ProcessorBlock.ACTIVE;
 import static igentuman.nc.handler.config.ProcessorsConfig.PROCESSOR_CONFIG;
@@ -89,6 +86,7 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
     private List<FluidStack> allowedFluids;
     private LazyOptional<NCGTEnergyHandler> gtEnergyCap;
     private ParticleOptions particle1 = ParticleTypes.SMOKE;
+    private UUID playerUID;
 
     public LazyOptional<IEnergyStorage> getEnergy() {
         return energy;
@@ -241,6 +239,8 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
     {
         return PROCESSOR_CONFIG.GT_SUPPORT.get() == 2 || PROCESSOR_CONFIG.GT_SUPPORT.get() == 1;
     }
+
+
 
     @Nonnull
     @Override
@@ -438,7 +438,7 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
     public int getEnergyUpgrades()
     {
         if(!prefab().supportEnergyUpgrade) return 1;
-        return upgradesHandler.getStackInSlot(0).getCount();
+        return upgradesHandler.getStackInSlot(0).getCount()+1;
     }
 
     public int energyMultiplier() {
@@ -474,6 +474,10 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
                 catalystHandler.deserializeNBT((CompoundTag) (infoTag).get("catalyst"));
             }
         }
+
+        if (tag.contains("playerUID")) {
+            playerUID = tag.getUUID("playerUID");
+        }
         updateRecipeAfterLoad();
         super.load(tag);
     }
@@ -503,6 +507,9 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
         infoTag.put("catalyst", catalystHandler.serializeNBT());
         infoTag.put("recipeInfo", recipeInfo.serializeNBT());
         tag.put("Info", infoTag);
+        if(playerUID != null) {
+            tag.putUUID("playerUID", playerUID);
+        }
     }
 
     public double getProgress() {
@@ -651,5 +658,16 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
         if(contentHandler != null) {
             contentHandler.voidFluidSlot(slotId);
         }
+    }
+
+    public List<Item> getAllowedItems(int idx) {
+        if(contentHandler.itemHandler.validItemsForSlot.containsKey(idx)) {
+            return contentHandler.itemHandler.validItemsForSlot.get(idx);
+        }
+        List<Item> allowedItems = new ArrayList<>();
+        for(ItemStack stack: getAllowedInputItems()) {
+            allowedItems.add(stack.getItem());
+        }
+        return allowedItems;
     }
 }

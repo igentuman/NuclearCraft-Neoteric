@@ -667,4 +667,15 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
         }
         return false;
     }
+
+    public List<Item> getAllowedItems(int idx) {
+        if(contentHandler.itemHandler.validItemsForSlot.containsKey(idx)) {
+            return contentHandler.itemHandler.validItemsForSlot.get(idx);
+        }
+        List<Item> allowedItems = new ArrayList<>();
+        for(ItemStack stack: getAllowedInputItems()) {
+            allowedItems.add(stack.getItem());
+        }
+        return allowedItems;
+    }
 }

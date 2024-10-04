@@ -8,6 +8,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -28,6 +29,7 @@ import static igentuman.nc.handler.sided.SlotModePair.SlotMode.*;
 public class ItemCapabilityHandler extends AbstractCapabilityHandler implements IItemHandlerModifiable, INBTSerializable<CompoundTag> {
 
     public List<ItemStack> allowedInputItems;
+    public HashMap<Integer, List<Item>> validItemsForSlot = new HashMap<>();
     protected NonNullList<ItemStack> stacks;
     protected ItemStack[] sortedStacks;
     private Map<Direction, LazyOptional<ItemHandlerWrapper>> handlerCache = new HashMap<>();
@@ -277,6 +279,11 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
     }
 
     private boolean inputAllowed(Integer i, ItemStack stack, Direction side) {
+        boolean validForSlot = true;
+        if (validItemsForSlot.containsKey(i)) {
+            validForSlot = validItemsForSlot.get(i).contains(stack.getItem());
+        }
+        if (!validForSlot) return false;
         SidedContentHandler.RelativeDirection relativeDirection = SidedContentHandler.RelativeDirection.toRelative(side, getFacing());
         SlotModePair.SlotMode mode = sideMap.get(relativeDirection.ordinal())[i].getMode();
         return mode == INPUT || mode == PULL && isValidInputItem(stack);
@@ -449,5 +456,9 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
             if(stack.isEmpty() || stack.getCount() < stack.getMaxStackSize()) return true;
         }
         return false;
+    }
+
+    public void setValidItemsForSlot(List<Item> fuelItems, int slotId) {
+        validItemsForSlot.put(slotId, fuelItems);
     }
 }

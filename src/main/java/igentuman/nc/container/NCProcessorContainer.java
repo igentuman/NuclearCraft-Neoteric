@@ -73,7 +73,9 @@ public class NCProcessorContainer<T extends AbstractContainerMenu> extends Abstr
                 int idx = slotIdx;
                 if(!processor.isSlotHidden(idx+slots.getInputFluids())) {
                     blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
-                        addSlot(new SlotItemHandler(h, idx, pos[0], pos[1]));
+                        NCSlotItemHandler slotItemHandler = new NCSlotItemHandler(h, idx, pos[0], pos[1]);
+                        slotItemHandler.allowed(blockEntity.getAllowedItems(idx));
+                        addSlot(slotItemHandler);
                     });
                 }
                 slotIdx++;

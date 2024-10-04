@@ -17,27 +17,39 @@ import static igentuman.nc.util.TagUtil.getItemsByTagKey;
 public class NuclearFurnaceBE extends NCProcessorBE<NuclearFurnaceBE.Recipe> {
     public NuclearFurnaceBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, Processors.NUCLEAR_FURNACE);
+        contentHandler.itemHandler.setValidItemsForSlot(getFuelItems(), 1);
     }
 
     @NBTField
-    public int burnTime = 400;
+    public int burnTime = 0;
+    private List<Item> ingots;
 
-    @Override
-    public boolean canProcessRecipe() {
-        List<Item> ingots = getItemsByTagKey("forge:ingots/uranium");
-        boolean hasFuel = ingots.contains(contentHandler.itemHandler.getStackInSlot(0).getItem()) || ingots.contains(contentHandler.itemHandler.getStackInSlot(1).getItem());
-        if(hasFuel) {
-            burnTime--;
-            if(burnTime <= 0) {
+    private List<Item> getFuelItems() {
+        if (ingots == null) {
+            ingots = getItemsByTagKey("forge:ingots/uranium");
+        }
+        return ingots;
+    }
+
+    private void consumeFuel() {
+        burnTime--;
+        if (burnTime < 0) {
+
+            boolean hasFuel = getFuelItems().contains(contentHandler.itemHandler.getStackInSlot(1).getItem());
+            if (hasFuel) {
                 burnTime = 400;
-                if(ingots.contains(contentHandler.itemHandler.getStackInSlot(0).getItem())) {
-                    contentHandler.itemHandler.extractItem(0, 1, false);
-                } else if(ingots.contains(contentHandler.itemHandler.getStackInSlot(1).getItem())) {
+                if(getFuelItems().contains(contentHandler.itemHandler.getStackInSlot(1).getItem())) {
                     contentHandler.itemHandler.extractItem(1, 1, false);
                 }
             }
         }
-        return hasFuel;
+
+    }
+
+    @Override
+    public boolean canProcessRecipe() {
+        consumeFuel();
+        return burnTime > 0;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package igentuman.nc.setup.registration;
 
 import igentuman.nc.block.BatteryBlock;
+import igentuman.nc.block.DecayGeneratorBlock;
 import igentuman.nc.block.RTGBlock;
 import igentuman.nc.block.SolarPanelBlock;
 import igentuman.nc.block.entity.energy.NCEnergy;
@@ -14,10 +15,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 import java.util.HashMap;
@@ -58,9 +55,15 @@ public class NCEnergyBlocks {
                             .build(null)));
 
         }
+        ENERGY_BE.put("decay_generator", BLOCK_ENTITIES.register("decay_generator",
+                () -> BlockEntityType.Builder
+                        .of(DecayGeneratorBE::new, ENERGY_BLOCKS.get("decay_generator").get())
+                        .build(null)));
     }
 
     private static void registerBlocks() {
+        ENERGY_BLOCKS.put("decay_generator", BLOCKS.register("decay_generator", () -> new DecayGeneratorBlock(ENERGY_BLOCK_PROPERTIES)));
+        BLOCK_ITEMS.put("decay_generator", fromBlock(ENERGY_BLOCKS.get("decay_generator")));
         for(String name: SolarPanels.registered().keySet()) {
             String key = "solar_panel/"+name;
             ENERGY_BLOCKS.put(key, BLOCKS.register(key.replace("/","_"), () -> new SolarPanelBlock(ENERGY_BLOCK_PROPERTIES)));

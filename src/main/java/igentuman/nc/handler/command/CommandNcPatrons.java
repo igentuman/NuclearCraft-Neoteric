@@ -20,7 +20,7 @@ public class CommandNcPatrons {
     private CommandNcPatrons() {}
 
     public static LiteralArgumentBuilder<CommandSourceStack> register() {
-        MinecraftForge.EVENT_BUS.register(CommandNcPlayerRadiation.class);
+        MinecraftForge.EVENT_BUS.register(CommandNcPatrons.class);
         return Commands.literal("nc_patrons")
                 .executes(ctx -> {
             return execute(ctx.getSource());

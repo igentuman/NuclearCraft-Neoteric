@@ -49,6 +49,7 @@ public class CommonConfig {
         public ForgeConfigSpec.ConfigValue<List<Integer>> RTG_GENERATION;
         public ForgeConfigSpec.ConfigValue<List<Integer>> RTG_RADIATION;
         public ForgeConfigSpec.ConfigValue<Integer> STEAM_TURBINE;
+        public ForgeConfigSpec.ConfigValue<Integer> DECAY_GENERATOR;
 
 
         public EnergyGenerationConfig(ForgeConfigSpec.Builder builder) {
@@ -77,6 +78,10 @@ public class CommonConfig {
             STEAM_TURBINE = builder
                     .comment("Steam turbine (one block) base power gen")
                     .define("steam_turbine_power_gen", 50);
+
+            DECAY_GENERATOR = builder
+                    .comment("Decay Generator base power gen")
+                    .define("decay_generator_power_gen", 100);
 
             builder.pop();
         }

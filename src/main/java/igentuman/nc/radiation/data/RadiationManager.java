@@ -114,7 +114,7 @@ public class RadiationManager extends SavedData {
         int appliedRadiation = worldRadiation.addRadiation(level, value, chunk.getPos().x, chunk.getPos().z);
         if(ModUtil.isMekanismLoadeed() && RADIATION_CONFIG.MEKANISM_RADIATION_INTEGRATION.get()) {
             ignoredPos = new int[]{x, y, z};
-            MekanismRadiation.radiate(x, y, z, appliedRadiation, level);
+            MekanismRadiation.radiate(x, y, z, appliedRadiation/1000, level);
         }
     }
 }

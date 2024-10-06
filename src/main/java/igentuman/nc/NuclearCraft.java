@@ -1,9 +1,9 @@
 package igentuman.nc;
 
 import igentuman.nc.handler.command.CommandNcPatrons;
+import igentuman.nc.handler.command.StructureCommand;
 import igentuman.nc.handler.config.*;
 import igentuman.nc.handler.event.server.WorldEvents;
-import igentuman.nc.handler.command.CommandNcPlayerRadiation;
 import igentuman.nc.handler.command.CommandNcVeinCheck;
 import igentuman.nc.radiation.data.PlayerRadiation;
 import igentuman.nc.radiation.data.RadiationEvents;
@@ -124,6 +124,7 @@ public class NuclearCraft {
         event.getDispatcher().register(CommandNcPlayerRadiation.register());
         event.getDispatcher().register(CommandNcVeinCheck.register());
         event.getDispatcher().register(CommandNcPatrons.register());
+        StructureCommand.register(event.getDispatcher());
     }
 
     private void registerClientEventHandlers(FMLClientSetupEvent event) {

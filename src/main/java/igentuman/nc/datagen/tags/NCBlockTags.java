@@ -1,4 +1,4 @@
-package igentuman.nc.datagen;
+package igentuman.nc.datagen.tags;
 
 import igentuman.nc.multiblock.fission.FissionBlocks;
 import igentuman.nc.multiblock.fission.FissionReactor;
@@ -18,9 +18,8 @@ import static igentuman.nc.multiblock.fission.FissionReactor.FISSION_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_CORE_PROXY;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
-import static igentuman.nc.setup.registration.NCBlocks.NC_ELECTROMAGNETS;
-import static igentuman.nc.setup.registration.NCBlocks.NC_RF_AMPLIFIERS;
-import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCK;
+import static igentuman.nc.setup.registration.NCBlocks.*;
+import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCKS;
 
 public class NCBlockTags extends BlockTagsProvider {
 
@@ -87,6 +86,12 @@ public class NCBlockTags extends BlockTagsProvider {
                 tag(NCBlocks.BLOCK_TAGS.get(block)).add(NCBlocks.NC_BLOCKS.get(block).get());
             }
         }
+        tag(DECAY_GEN_BLOCK).add(
+                NC_BLOCKS.get("uranium").get(),
+                NC_BLOCKS.get("uranium238").get(),
+                NC_BLOCKS.get("plutonium238").get(),
+                NC_BLOCKS.get("americium241").get()
+                );
 
     }
 
@@ -95,9 +100,9 @@ public class NCBlockTags extends BlockTagsProvider {
             tag(BlockTags.MINEABLE_WITH_PICKAXE).add(NCEnergyBlocks.ENERGY_BLOCKS.get(block).get());
             tag(BlockTags.NEEDS_IRON_TOOL).add(NCEnergyBlocks.ENERGY_BLOCKS.get(block).get());
         }
-        for(String block: STORAGE_BLOCK.keySet()) {
-            tag(BlockTags.MINEABLE_WITH_PICKAXE).add(STORAGE_BLOCK.get(block).get());
-            tag(BlockTags.NEEDS_IRON_TOOL).add(STORAGE_BLOCK.get(block).get());
+        for(String block: STORAGE_BLOCKS.keySet()) {
+            tag(BlockTags.MINEABLE_WITH_PICKAXE).add(STORAGE_BLOCKS.get(block).get());
+            tag(BlockTags.NEEDS_IRON_TOOL).add(STORAGE_BLOCKS.get(block).get());
         }
         for(String block: NCProcessors.PROCESSORS.keySet()) {
             tag(BlockTags.MINEABLE_WITH_PICKAXE).add(NCProcessors.PROCESSORS.get(block).get());
@@ -127,4 +132,5 @@ public class NCBlockTags extends BlockTagsProvider {
     public @NotNull String getName() {
         return "NuclearCraft Block Tags";
     }
+
 }

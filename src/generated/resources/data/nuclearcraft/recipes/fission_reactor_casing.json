@@ -7,14 +7,11 @@
     },
     "P": {
       "item": "nuclearcraft:plate_advanced"
-    },
-    "T": {
-      "tag": "forge:ingots/tough_alloy"
     }
   },
   "pattern": [
     "LPL",
-    "PTP",
+    "P P",
     "LPL"
   ],
   "result": {

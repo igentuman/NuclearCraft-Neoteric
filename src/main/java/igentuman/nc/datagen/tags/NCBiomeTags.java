@@ -1,6 +1,7 @@
-package igentuman.nc.datagen;
+package igentuman.nc.datagen.tags;
 
 import net.minecraft.data.BuiltinRegistries;
+
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.tags.BiomeTags;

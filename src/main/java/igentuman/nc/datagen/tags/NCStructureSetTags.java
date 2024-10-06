@@ -1,4 +1,4 @@
-package igentuman.nc.datagen;
+package igentuman.nc.datagen.tags;
 
 import igentuman.nc.setup.Registration;
 import net.minecraft.data.BuiltinRegistries;

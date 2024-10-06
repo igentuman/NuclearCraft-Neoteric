@@ -6,18 +6,21 @@ import igentuman.nc.content.energy.RTGs;
 import igentuman.nc.setup.registration.Fuel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.HashMap;
 import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.content.materials.Materials.*;
 import static igentuman.nc.handler.config.RadiationConfig.RADIATION_CONFIG;
 import static igentuman.nc.setup.registration.NCBlocks.NC_BLOCKS;
 import static igentuman.nc.setup.registration.NCEnergyBlocks.ENERGY_BLOCKS;
 import static igentuman.nc.setup.registration.NCItems.NC_DUSTS;
 import static igentuman.nc.setup.registration.NCItems.NC_INGOTS;
 import static igentuman.nc.util.NcUtils.getNCBlock;
+import static igentuman.nc.util.TagUtil.getBlocksByTagKey;
 import static net.minecraft.world.item.Items.AIR;
 
 public class ItemRadiation {
@@ -33,14 +36,14 @@ public class ItemRadiation {
         if(!radiationMap.isEmpty()) {
             return;
         }
-        radiationMap.put(NC_DUSTS.get(Materials.protactinium_233).get(), 1D);
-        radiationMap.put(NC_DUSTS.get(Materials.strontium_90).get(), 0.034D);
-        radiationMap.put(NC_DUSTS.get(Materials.ruthenium_106).get(), 0.98D);
-        radiationMap.put(NC_DUSTS.get(Materials.polonium).get(), 0.293D);
-        radiationMap.put(NC_DUSTS.get(Materials.promethium_147).get(), 0.38D);
-        radiationMap.put(NC_DUSTS.get(Materials.europium_155).get(), 0.21D);
-        radiationMap.put(NC_INGOTS.get(Materials.uranium).get(), 0.00007D);
-        radiationMap.put(NC_INGOTS.get(Materials.thorium).get(), 0.00005D);
+        radiationMap.put(NC_DUSTS.get(protactinium_233).get(), 1D);
+        radiationMap.put(NC_DUSTS.get(strontium_90).get(), 0.034D);
+        radiationMap.put(NC_DUSTS.get(ruthenium_106).get(), 0.98D);
+        radiationMap.put(NC_DUSTS.get(polonium).get(), 0.293D);
+        radiationMap.put(NC_DUSTS.get(promethium_147).get(), 0.38D);
+        radiationMap.put(NC_DUSTS.get(europium_155).get(), 0.21D);
+        radiationMap.put(NC_INGOTS.get(uranium).get(), 0.00007D);
+        radiationMap.put(NC_INGOTS.get(thorium).get(), 0.00005D);
         for(String name: RTGs.registered().keySet()) {
             radiationMap.put(ENERGY_BLOCKS.get(name).get().asItem(), ((double)RTGs.registered().get(name).config().getRadiation()/1000000000));
         }
@@ -63,11 +66,14 @@ public class ItemRadiation {
                 add(name+type, Materials.isotopes.get(name));
             }
         }
+        for(Block block: getBlocksByTagKey("forge:storage_blocks/uranium")) {
+            add(block.asItem().toString(), 0.00004D);
+        }
 
-        add(NC_BLOCKS.get("americium241").get().asItem(), 0.01D);
-        add(NC_BLOCKS.get("uranium238").get().asItem(),0.000005D);
-        add(NC_BLOCKS.get("californium250").get().asItem(),3D);
-        add(NC_BLOCKS.get("plutonium238").get().asItem(), 0.034D);
+        add(getNCBlock("americium241").asItem(), 0.05D);
+        add(getNCBlock("uranium238").asItem(),0.00005D);
+        add(getNCBlock("californium250").asItem(),3D);
+        add(getNCBlock("plutonium238").asItem(), 0.034D);
 
         for (String name: FuelManager.all().keySet()) {
             for(String subType: FuelManager.all().get(name).keySet()) {

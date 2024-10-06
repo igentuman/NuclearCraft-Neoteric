@@ -11,7 +11,7 @@ import java.util.List;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
 import static igentuman.nc.setup.registration.NCItems.*;
-import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCK;
+import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCKS;
 import static igentuman.nc.util.TextUtils.convertToName;
 
 public class NCLanguageProvider extends LanguageProvider {
@@ -26,7 +26,8 @@ public class NCLanguageProvider extends LanguageProvider {
         add("itemGroup." + MODID+"_blocks", "NuclearCraft Blocks");
         add("itemGroup." + MODID+"_fission_reactor", "NuclearCraft Fission Reactor");
         add("itemGroup." + MODID+"_fusion_reactor", "NuclearCraft Fusion Reactor");
-        add("itemGroup." + MODID+"_turbine", "NuclearCraft Turbine");
+        add("itemGroup." + MODID+"_fluids", "NuclearCraft Fluids");
+        add("itemGroup." + MODID+"_turbine_controller", "NuclearCraft Turbine");
         ores();
         ingots();
         plates();
@@ -60,6 +61,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("message.nc.player_radiation_contamination", "Radiation Dose: %s");
         add("message.nc.geiger_radiation_measure", "Radiation Level: %s");
         add("death.attack.radiation", "Died of Radiation Poisoning");
+        add("nc.message.patrons", "Special thanks to patrons: marcin212, PersonBelowRocks, tomdodd4598, ethantabler, endleon201, sancho.lucky, Cerusvi, tocix9730 and others...");
     }
     private void sounds() {
         add("music.hyperspace", "Hyperspace");
@@ -82,6 +84,9 @@ public class NCLanguageProvider extends LanguageProvider {
     }
 
     private void labels() {
+        add("nc.guide_book.name", "NuclearCraft Guide");
+        add("nc.guide_book.desc", "Basics and advanced topics about NuclearCraft");
+        add("nc.guide_book.edition", "Neoteric Edition");
         add("fusion_core.rf_amplifiers.power", "RF Amplifiers: %s%%");
         add("fusion_core.stability", "Plasma Stability: %s%%");
         add("nc.label.leacher_wrong_position", "Wrong Position");
@@ -101,6 +106,9 @@ public class NCLanguageProvider extends LanguageProvider {
         add("fission_reactor.net_heat", "Net Heat: %s H/t");
         add("fission.casing.reactor_incomplete", "Reactor Incomplete");
         add("fission_reactor.heat_multiplier", "Heat Multiplier: %sx");
+
+        add("turbine.efficiency", "Efficiency: %s%%");
+        add("turbine.real_flow", "Real Flow: %smB");
 
         add("processor_side_config.title", "Select Slot");
         add("processor_slot_mode.title", "Slot Mode");
@@ -149,9 +157,9 @@ public class NCLanguageProvider extends LanguageProvider {
     }
 
     private void storageBlocks() {
-        for(String name: STORAGE_BLOCK.keySet()) {
+        for(String name: STORAGE_BLOCKS.keySet()) {
             String title = convertToName(name);
-            add(STORAGE_BLOCK.get(name).get(), title);
+            add(STORAGE_BLOCKS.get(name).get(), title);
         }
     }
 
@@ -204,6 +212,8 @@ public class NCLanguageProvider extends LanguageProvider {
 
     private void tooltips() {
 
+        add("decay_generator.fe_generation", "Result FE generation depends on attached blocks radiation");
+        add("tooltip.nc.lightning_rod_charge", "Can charge NC Energy blocks by %s FE");
         add("tooltip.nc.jei.gas_to_fluid.desc","NC blocks automatically converts Mek Gasses into Fluids during input");
 
         add("tooltip.nc.hev.desc","Grants additional protection and passive effects when charged");
@@ -269,7 +279,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("effect.nuclearcraft.radiation_resistance","Radiation Resistance");
         add("leacher.tooltip.valid_pump","Pump - Ok");
         add("leacher.tooltip.invalid_pump","Pump in the corner not found");
-        add("processor.description.nuclear_furnace","Very fast furnace which uses uranium ingots as fuel.");
+        add("processor.description.nuclear_furnace","Fast furnace what uses uranium ingots as fuel.");
         add("processor.description.alloy_smelter","Smelts and alloys items.");
         add("processor.description.centrifuge","Separates fluids into their components.");
         add("processor.description.fuel_reprocessor","Separates depleted fuel into components.");
@@ -313,6 +323,8 @@ public class NCLanguageProvider extends LanguageProvider {
         add("gui.nc.reactor_comparator_config.tooltip_2","Comparator: Heat Stored");
         add("gui.nc.reactor_comparator_config.tooltip_3","Comparator: Depletion Progress");
         add("gui.nc.reactor_comparator_config.tooltip_4","Comparator: Fuel Left");
+        add("gui.nc.reactor_comparator_config.tooltip_5","Input: On/Off Reactor");
+        add("gui.nc.reactor_comparator_config.tooltip_6","Input: Moderation Control");
         add("gui.nc.reactor_comparator_strength.tooltip","Current Signal Strength: %s");
         add("gui.nc.redstone_config.tooltip_0","WORK MODE: IGNORE SIGNAL");
         add("gui.nc.redstone_config.tooltip_1","WORK MODE: ON SIGNAL");
@@ -402,6 +414,8 @@ public class NCLanguageProvider extends LanguageProvider {
         add("reactor.forge_energy_per_tick", "FE Gen: %s FE/t");
         add("reactor.heat_sinks_count", "Active Heat Sinks: %s");
         add("reactor.moderators_count", "Active Moderators: %s");
+        add("reactor.moderation_level", "Moderation Level: %s%%");
+        add("reactor.reactivity", "Reactivity: %s%%");
         add("validation.structure.too_big", "Structure is too big");
         add("validation.structure.too_small", "Structure is too small");
         add("validation.structure.incomplete", "Incomplete");
@@ -413,6 +427,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("validation.structure.valid", "Structure is Valid");
         add("validation.structure.wrong_corner", "Wrong corner block at: %s");
         add("validation.structure.wrong_proportions", "Wrong proportions");
+        add("validation.structure.wrong_blades", "Wrong blades placement");
         add("solar_panel.fe_generation", "Daytime Gen: %s FE/t");
         add("fission_port.descr", "One port for everything: Fluids, items, redstone, computers, etc...");
         add("irradiation_chamber.descr", "Irradiates items with neutron flux. \r\nHas to be placed in one line with moderator and fuel cell behind it.");

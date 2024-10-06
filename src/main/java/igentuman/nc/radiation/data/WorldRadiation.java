@@ -101,7 +101,7 @@ public class WorldRadiation implements IWorldRadiationCapability {
         int curTimestamp = (int) (getServerTime() / 20);
         int newRadiation = (int) (radiation*1000000);
         //if radiation is disabled we still run all radiation events, but not saving data
-        if(!RADIATION_CONFIG.ENABLED.get()) return newRadiation;
+        if(!RADIATION_CONFIG.ENABLED.get()) return 0;
         if(chunkRadiation.containsKey(id)) {
             int curRadiation = unpackX(chunkRadiation.get(id));
             if(curRadiation > newRadiation) {

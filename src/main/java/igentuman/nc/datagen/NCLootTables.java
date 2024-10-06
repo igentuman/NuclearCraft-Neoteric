@@ -11,7 +11,7 @@ import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_BLOCKS;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
 import static igentuman.nc.setup.registration.NCBlocks.NC_ELECTROMAGNETS;
 import static igentuman.nc.setup.registration.NCBlocks.NC_RF_AMPLIFIERS;
-import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCK;
+import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCKS;
 
 public class NCLootTables extends BaseLootTableProvider {
 
@@ -57,8 +57,8 @@ public class NCLootTables extends BaseLootTableProvider {
         for(String name: NCEnergyBlocks.ENERGY_BLOCKS.keySet()) {
             lootTables.put(NCEnergyBlocks.ENERGY_BLOCKS.get(name).get(), createSimpleTable("block", NCEnergyBlocks.ENERGY_BLOCKS.get(name).get()));
         }
-        for(String name: STORAGE_BLOCK.keySet()) {
-            lootTables.put(STORAGE_BLOCK.get(name).get(), createSimpleTable("block", STORAGE_BLOCK.get(name).get()));
+        for(String name: STORAGE_BLOCKS.keySet()) {
+            lootTables.put(STORAGE_BLOCKS.get(name).get(), createSimpleTable("block", STORAGE_BLOCKS.get(name).get()));
         }
         for(String name: NC_ELECTROMAGNETS.keySet()) {
             lootTables.put(NC_ELECTROMAGNETS.get(name).get(), createSimpleTable("block", NC_ELECTROMAGNETS.get(name).get()));

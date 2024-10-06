@@ -27,7 +27,7 @@ import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_CORE_PROXY;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
 import static igentuman.nc.setup.registration.NCBlocks.*;
 import static igentuman.nc.setup.registration.NCProcessors.PROCESSORS;
-import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCK;
+import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCKS;
 
 public class NCBlockStates extends BlockStateProvider {
 
@@ -115,12 +115,12 @@ public class NCBlockStates extends BlockStateProvider {
     private void storageBlocks() {
         for(String name: BarrelBlocks.all().keySet()) {
             simpleBlock(
-                    STORAGE_BLOCK.get(name).get(),
+                    STORAGE_BLOCKS.get(name).get(),
                     models().getExistingFile(modLoc("block/barrel/"+name)));
         }
         for(String name: ContainerBlocks.all().keySet()) {
             simpleBlock(
-                    STORAGE_BLOCK.get(name).get(),
+                    STORAGE_BLOCKS.get(name).get(),
                     models().getExistingFile(modLoc("block/container/"+name)));
         }
     }
@@ -205,6 +205,10 @@ public class NCBlockStates extends BlockStateProvider {
                         NCEnergyBlocks.ENERGY_BLOCKS.get(name).get(),
                         energyModel(NCEnergyBlocks.ENERGY_BLOCKS.get(name).get(),
                                 category + "/" + tier.replace("_", "") + "/"));
+            } else if(!name.contains("rtg") && !name.contains("solar")) {
+                simpleBlock(
+                        NCEnergyBlocks.ENERGY_BLOCKS.get(name).get(),
+                        models().cubeAll(name, rl("block/energy/" + name)));
             }
         }
     }

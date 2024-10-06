@@ -20,9 +20,9 @@ public class RTGs {
     public static HashMap<String, RTGPrefab> all() {
         if(all.isEmpty()) {
             //radiation in pRads
-            all.put("uranium_rtg", new RTGPrefab("uranium_rtg",20, 56).setBlockEntity(RTGBE::new));
-            all.put("americium_rtg", new RTGPrefab("americium_rtg",200, 57800).setBlockEntity(RTGBE::new));
-            all.put("plutonium_rtg", new RTGPrefab("plutonium_rtg",800, 200000).setBlockEntity(RTGBE::new));
+            all.put("uranium_rtg", new RTGPrefab("uranium_rtg",100, 560).setBlockEntity(RTGBE::new));
+            all.put("americium_rtg", new RTGPrefab("americium_rtg",400, 57800).setBlockEntity(RTGBE::new));
+            all.put("plutonium_rtg", new RTGPrefab("plutonium_rtg",1200, 200000).setBlockEntity(RTGBE::new));
             all.put("californium_rtg", new RTGPrefab("californium_rtg",4000, 1900000).setBlockEntity(RTGBE::new));
         }
         return all;

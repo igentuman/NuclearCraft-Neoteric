@@ -15,13 +15,13 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.MinecraftForge;
 
-public class CommandNcPlayerRadiation {
+public class CommandNcPatrons {
 
-    private CommandNcPlayerRadiation() {}
+    private CommandNcPatrons() {}
 
     public static LiteralArgumentBuilder<CommandSourceStack> register() {
-        MinecraftForge.EVENT_BUS.register(CommandNcPlayerRadiation.class);
-        return Commands.literal("nc_player_radiation")
+        MinecraftForge.EVENT_BUS.register(CommandNcPatrons.class);
+        return Commands.literal("nc_patrons")
                 .executes(ctx -> {
             return execute(ctx.getSource());
         });
@@ -29,8 +29,7 @@ public class CommandNcPlayerRadiation {
 
     public static int execute(CommandSourceStack ctx) {
         ServerPlayer pl = ctx.getPlayer();
-        PlayerRadiationProvider.setRadiation((Player) pl, 100);
-        pl.sendSystemMessage(Component.translatable("nc.message.player_radiation"));
+        pl.sendSystemMessage(Component.translatable("nc.message.patrons"));
         return 0;
     }
 }

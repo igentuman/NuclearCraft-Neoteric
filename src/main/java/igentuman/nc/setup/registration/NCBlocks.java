@@ -33,6 +33,7 @@ import java.util.function.Supplier;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.setup.registration.NCItems.ALL_NC_ITEMS;
+import static net.minecraft.core.Registry.BLOCK_REGISTRY;
 
 public class NCBlocks {
 
@@ -65,6 +66,7 @@ public class NCBlocks {
 
     public static final RegistryObject<Item> MUSHROOM_ITEM = fromBlock(MUSHROOM_BLOCK);
     public static final RegistryObject<Item> PORTAL_ITEM = fromBlock(PORTAL_BLOCK);
+    public static TagKey<Block> DECAY_GEN_BLOCK = blockTag("decay_gen_block");
 
     public static HashMap<String, TagKey<Block>> ORE_TAGS = new HashMap<>();
     public static HashMap<String, TagKey<Item>> ORE_ITEM_TAGS = new HashMap<>();
@@ -84,7 +86,7 @@ public class NCBlocks {
 
     private static void registerOres() {
         for(String name: Ores.registered().keySet()) {
-            ORE_TAGS.put(name, TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation("forge", "ores/"+name)));
+            ORE_TAGS.put(name, TagKey.create(BLOCK_REGISTRY, new ResourceLocation("forge", "ores/"+name)));
             ORE_ITEM_TAGS.put(name, TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("forge", "ores/"+name)));
             if(Materials.ores().get(name).normal_ore) {
                 ORE_BLOCKS.put(name, BLOCKS.register(name + "_ore", () -> new Block(ORE_BLOCK_PROPERTIES)));
@@ -139,7 +141,7 @@ public class NCBlocks {
 
     private static void registerBlocks() {
         for(String name: Blocks.get().registered().keySet()) {
-            BLOCK_TAGS.put(name, TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation("forge","storage_blocks/"+name)));
+            BLOCK_TAGS.put(name, TagKey.create(BLOCK_REGISTRY, new ResourceLocation("forge","storage_blocks/"+name)));
             BLOCK_ITEM_TAGS.put(name, TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("forge", "storage_blocks/"+name)));
             if(name.matches("graphite|beryllium")) {
                 NC_BLOCKS.put(name, BLOCKS.register(name + "_block", () -> new FissionBlock(NC_BLOCKS_PROPERTIES)));
@@ -159,6 +161,10 @@ public class NCBlocks {
 
     public static <B extends Block> RegistryObject<Item> fromBlock(RegistryObject<B> block) {
         return ITEMS.register(block.getId().getPath(), () -> new BlockItem(block.get(), BLOCK_ITEM_PROPERTIES));
+    }
+
+    public static TagKey<Block> blockTag(String name) {
+        return TagKey.create(BLOCK_REGISTRY, new ResourceLocation(MODID, name));
     }
 
     public static <B extends Block> RegistryObject<Item> fromMultiblock(RegistryObject<B> block) {

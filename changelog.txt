@@ -22,3 +22,10 @@
 
 1.0.0
    Turbine rendering fixes
+   Multiblock optimizations
+   Irradiation chamber recipe fix
+   Code optimizations
+   Added config for fission reactor FE output rate
+   Doubled Fission reactor default FE output
+   Improved input slot validation
+

@@ -50,6 +50,7 @@ public class NCBlocks {
     public static HashMap<String, RegistryObject<BlockEntityType<? extends BlockEntity>>> NC_BE = new HashMap<>();
     public static final RegistryObject<Item> MUSHROOM_ITEM = fromBlock(MUSHROOM_BLOCK);
     public static final RegistryObject<Item> PORTAL_ITEM = fromBlock(PORTAL_BLOCK);
+    public static TagKey<Block> DECAY_GEN_BLOCK = blockTag("decay_gen_block");
 
     public static void init() {
         registerOres();

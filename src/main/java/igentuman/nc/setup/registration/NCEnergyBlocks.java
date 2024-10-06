@@ -16,6 +16,7 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraftforge.registries.RegistryObject;
+import igentuman.nc.block.entity.energy.DecayGeneratorBE;
 
 import java.util.HashMap;
 
@@ -64,6 +65,7 @@ public class NCEnergyBlocks {
     private static void registerBlocks() {
         ENERGY_BLOCKS.put("decay_generator", BLOCKS.register("decay_generator", () -> new DecayGeneratorBlock(ENERGY_BLOCK_PROPERTIES)));
         BLOCK_ITEMS.put("decay_generator", fromBlock(ENERGY_BLOCKS.get("decay_generator")));
+
         for(String name: SolarPanels.registered().keySet()) {
             String key = "solar_panel/"+name;
             ENERGY_BLOCKS.put(key, BLOCKS.register(key.replace("/","_"), () -> new SolarPanelBlock(ENERGY_BLOCK_PROPERTIES)));

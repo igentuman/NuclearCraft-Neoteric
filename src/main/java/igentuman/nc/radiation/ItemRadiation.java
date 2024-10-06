@@ -6,6 +6,7 @@ import igentuman.nc.content.energy.RTGs;
 import igentuman.nc.setup.registration.FissionFuel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.HashMap;
@@ -18,6 +19,7 @@ import static igentuman.nc.setup.registration.NCEnergyBlocks.ENERGY_BLOCKS;
 import static igentuman.nc.setup.registration.NCItems.NC_DUSTS;
 import static igentuman.nc.setup.registration.NCItems.NC_INGOTS;
 import static igentuman.nc.util.NcUtils.getNCBlock;
+import static igentuman.nc.util.TagUtil.getBlocksByTagKey;
 import static net.minecraft.world.item.Items.AIR;
 
 public class ItemRadiation {
@@ -63,9 +65,12 @@ public class ItemRadiation {
                 add(name+type, Materials.isotopes.get(name));
             }
         }
+        for(Block block: getBlocksByTagKey("forge:storage_blocks/uranium")) {
+            add(block.asItem().toString(), 0.00004D);
+        }
 
-        add(getNCBlock("americium241").asItem(), 0.01D);
-        add(getNCBlock("uranium238").asItem(),0.000005D);
+        add(getNCBlock("americium241").asItem(), 0.05D);
+        add(getNCBlock("uranium238").asItem(),0.00005D);
         add(getNCBlock("californium250").asItem(),3D);
         add(getNCBlock("plutonium238").asItem(), 0.034D);
 

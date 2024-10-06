@@ -1,17 +1,16 @@
-package igentuman.nc.datagen;
+package igentuman.nc.datagen.tags;
 
 import igentuman.nc.setup.registration.NCFluids;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.FluidTagsProvider;
 import net.minecraftforge.common.Tags.Fluids;
-import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.data.event.GatherDataEvent;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.setup.registration.Tags.LIQUIDS_TAG;
 
-class FluidTags extends FluidTagsProvider
+public class FluidTags extends FluidTagsProvider
 {
 	public FluidTags(DataGenerator gen, GatherDataEvent event)
 	{

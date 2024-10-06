@@ -4,6 +4,7 @@ import igentuman.nc.datagen.blockstates.NCBlockStates;
 import igentuman.nc.datagen.blockstates.NCFluidBlockStates;
 import igentuman.nc.datagen.models.NCItemModels;
 import igentuman.nc.datagen.recipes.NCRecipes;
+import igentuman.nc.datagen.tags.*;
 import igentuman.nc.recipes.ingredient.NcIngredient;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.loot.LootTableProvider;

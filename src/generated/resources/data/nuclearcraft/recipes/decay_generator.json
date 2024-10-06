@@ -2,24 +2,23 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
+    "G": {
+      "tag": "forge:plates/steel"
+    },
     "P": {
       "item": "nuclearcraft:plate_basic"
     },
-    "R": {
-      "item": "minecraft:redstone"
-    },
-    "T": {
-      "tag": "forge:ingots/tough_alloy"
+    "U": {
+      "item": "nuclearcraft:coil_copper"
     }
   },
   "pattern": [
-    " P ",
-    "TRT",
-    " P "
+    "PGP",
+    "GUG",
+    "PGP"
   ],
   "result": {
-    "count": 2,
-    "item": "nuclearcraft:plate_advanced"
+    "item": "nuclearcraft:decay_generator"
   },
   "show_notification": true
 }

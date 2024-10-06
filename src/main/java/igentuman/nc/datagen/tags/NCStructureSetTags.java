@@ -1,11 +1,10 @@
-package igentuman.nc.datagen;
+package igentuman.nc.datagen.tags;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.world.level.levelgen.structure.StructureSet;
-import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.data.event.GatherDataEvent;
 
 import static igentuman.nc.NuclearCraft.MODID;

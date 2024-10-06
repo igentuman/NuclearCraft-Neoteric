@@ -1,13 +1,10 @@
-package igentuman.nc.datagen;
+package igentuman.nc.datagen.tags;
 
 import net.minecraft.core.HolderLookup;
 
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.TagsProvider;
-import net.minecraft.tags.BiomeTags;
-import net.minecraft.tags.TagEntry;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 

@@ -5,6 +5,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -72,6 +73,18 @@ public class TagUtil {
             tmp.add(holder);
         }
         return tmp;
+    }
+
+    public static Block getSingleBlockByTagKey(String key)
+    {
+        for(String mod: MATERIAL_PRODUCTS.MODS_PRIORITY.get()) {
+            for(Block holder : getBlocksByTagKey(key)) {
+                if(holder.getDescriptionId().contains(mod)) {
+                    return holder;
+                }
+            }
+        }
+        return getBlocksByTagKey(key).get(0);
     }
 
     public static List<Item> getItemsByTagKey(String key)

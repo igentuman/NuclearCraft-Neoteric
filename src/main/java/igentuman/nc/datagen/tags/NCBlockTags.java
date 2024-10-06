@@ -1,4 +1,4 @@
-package igentuman.nc.datagen;
+package igentuman.nc.datagen.tags;
 
 import igentuman.nc.multiblock.fission.FissionBlocks;
 import igentuman.nc.multiblock.fission.FissionReactor;
@@ -19,8 +19,7 @@ import static igentuman.nc.multiblock.fission.FissionReactor.FISSION_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_CORE_PROXY;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
-import static igentuman.nc.setup.registration.NCBlocks.NC_ELECTROMAGNETS;
-import static igentuman.nc.setup.registration.NCBlocks.NC_RF_AMPLIFIERS;
+import static igentuman.nc.setup.registration.NCBlocks.*;
 import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCKS;
 import static igentuman.nc.setup.registration.Tags.BLOCK_TAGS;
 import static igentuman.nc.setup.registration.Tags.ORE_TAGS;
@@ -90,6 +89,12 @@ public class NCBlockTags extends BlockTagsProvider {
                 tag(BLOCK_TAGS.get(block)).add(NCBlocks.NC_BLOCKS.get(block).get());
             }
         }
+        tag(DECAY_GEN_BLOCK).add(
+                NC_BLOCKS.get("uranium").get(),
+                NC_BLOCKS.get("uranium238").get(),
+                NC_BLOCKS.get("plutonium238").get(),
+                NC_BLOCKS.get("americium241").get()
+                );
 
     }
 

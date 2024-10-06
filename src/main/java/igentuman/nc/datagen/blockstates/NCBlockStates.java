@@ -205,6 +205,10 @@ public class NCBlockStates extends BlockStateProvider {
                         NCEnergyBlocks.ENERGY_BLOCKS.get(name).get(),
                         energyModel(NCEnergyBlocks.ENERGY_BLOCKS.get(name).get(),
                                 category + "/" + tier.replace("_", "") + "/"));
+            } else if(!name.contains("rtg") && !name.contains("solar")) {
+                simpleBlock(
+                        NCEnergyBlocks.ENERGY_BLOCKS.get(name).get(),
+                        models().cubeAll(name, rl("block/energy/" + name)));
             }
         }
     }

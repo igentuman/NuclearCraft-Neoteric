@@ -193,6 +193,16 @@ public class NCRecipes extends RecipeProvider {
                         .unlockedBy("item", has(ALL_NC_ITEMS.get("research_paper").get()))
                         .save(consumer, new ResourceLocation(MODID, "paper"));
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ENERGY_BLOCKS.get("decay_generator").get())
+                .pattern("PGP")
+                .pattern("GUG")
+                .pattern("PGP")
+                .define('G', forgePlate(Materials.steel))
+                .define('P', NC_PARTS.get("plate_basic").get())
+                .define('U', NC_PARTS.get("coil_copper").get())
+                .unlockedBy("item", has(NC_PARTS.get("plate_basic").get()))
+                .save(consumer, new ResourceLocation(MODID, "decay_generator"));
+
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ENERGY_BLOCKS.get("uranium_rtg").get())
                 .pattern("PGP")
                 .pattern("GUG")
@@ -841,10 +851,10 @@ public class NCRecipes extends RecipeProvider {
                 .unlockedBy("item", has(forgeIngot(Materials.lead)))
                 .save(consumer, new ResourceLocation(MODID, "plate_basic2"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NCItems.NC_PARTS.get("plate_advanced").get())
-                .pattern(" R ")
-                .pattern("TPT")
-                .pattern(" R ")
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NCItems.NC_PARTS.get("plate_advanced").get(), 2)
+                .pattern(" P ")
+                .pattern("TRT")
+                .pattern(" P ")
                 .define('R', REDSTONE)
                 .define('P', NCItems.NC_PARTS.get("plate_basic").get())
                 .define('T', forgeIngot(Materials.tough_alloy))
@@ -992,10 +1002,9 @@ public class NCRecipes extends RecipeProvider {
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, FissionReactor.FISSION_BLOCKS.get("fission_reactor_casing").get(), 4)
                 .pattern("LPL")
-                .pattern("PTP")
+                .pattern("P P")
                 .pattern("LPL")
                 .define('P', NCItems.NC_PARTS.get("plate_advanced").get())
-                .define('T', forgeIngot("tough_alloy"))
                 .define('L', forgePlate("lead"))
                 .group(MODID+"_fission")
                 .unlockedBy("item", has(NCItems.NC_PARTS.get("plate_advanced").get()))

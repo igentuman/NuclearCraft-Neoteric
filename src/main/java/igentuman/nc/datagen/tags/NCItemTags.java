@@ -1,4 +1,4 @@
-package igentuman.nc.datagen;
+package igentuman.nc.datagen.tags;
 
 import igentuman.nc.multiblock.fission.FissionBlocks;
 import igentuman.nc.multiblock.fission.FissionReactor;

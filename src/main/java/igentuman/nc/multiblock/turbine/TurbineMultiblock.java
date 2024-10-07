@@ -1,6 +1,7 @@
 package igentuman.nc.multiblock.turbine;
 
 import igentuman.nc.block.entity.turbine.*;
+import igentuman.nc.block.turbine.TurbineBearingBlock;
 import igentuman.nc.block.turbine.TurbineBladeBlock;
 import igentuman.nc.block.turbine.TurbineRotorBlock;
 import igentuman.nc.multiblock.AbstractNCMultiblock;
@@ -147,11 +148,12 @@ public class TurbineMultiblock extends AbstractNCMultiblock {
 
     protected void processOuterBlock(BlockPos pos) {
         super.processOuterBlock(pos);
-        BlockEntity bs = getBlockEntity(pos);
-        if(bs instanceof TurbineBearingBE) {
+        BlockEntity be = getBlockEntity(pos);
+        BlockState bs = getBlockState(pos);
+        if(bs.getBlock() instanceof TurbineBearingBlock) {
             bearingPositions.add(new NCBlockPos(pos));
         }
-        if(bs instanceof TurbineCoilBE) {
+        if(be instanceof TurbineCoilBE) {
             coilPositions.add(new NCBlockPos(pos));
         }
     }

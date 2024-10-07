@@ -1,6 +1,7 @@
 package igentuman.nc.block.entity.turbine;
 
 import igentuman.nc.NuclearCraft;
+import igentuman.nc.block.turbine.TurbineBearingBlock;
 import igentuman.nc.multiblock.turbine.CoilDef;
 import igentuman.nc.multiblock.turbine.TurbineRegistration;
 import igentuman.nc.util.annotation.NBTField;
@@ -63,7 +64,8 @@ public class TurbineCoilBE extends TurbineBE {
             if (refreshCacheFlag) {
                 for (Direction dir : Direction.values()) {
                     BlockEntity be = Objects.requireNonNull(getLevel()).getBlockEntity(getBlockPos().relative(dir));
-                    if (be instanceof TurbineBearingBE) {
+                    BlockState bs = getLevel().getBlockState(getBlockPos().relative(dir));
+                    if (bs.getBlock() instanceof TurbineBearingBlock) {
                         hasBearingConnection = multiblock().bearingPositions.contains(getBlockPos().relative(dir));
                         break;
                     }

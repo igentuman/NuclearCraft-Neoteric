@@ -2,6 +2,7 @@ package igentuman.nc.datagen.tags;
 
 import igentuman.nc.multiblock.fission.FissionBlocks;
 import igentuman.nc.multiblock.fission.FissionReactor;
+import igentuman.nc.multiblock.fusion.FusionReactor;
 import igentuman.nc.multiblock.turbine.TurbineRegistration;
 import igentuman.nc.setup.registration.NCBlocks;
 import igentuman.nc.setup.registration.NCEnergyBlocks;
@@ -36,6 +37,9 @@ public class NCBlockTags extends BlockTagsProvider {
         blocks();
         machines();
         tag(FissionBlocks.MODERATORS_BLOCKS).add(NCBlocks.NC_BLOCKS.get("graphite").get(), NCBlocks.NC_BLOCKS.get("beryllium").get());
+        tag(FusionReactor.CASING_BLOCKS).add(
+                FUSION_BLOCKS.get("fusion_reactor_casing").get(),
+                FUSION_BLOCKS.get("fusion_reactor_casing_glass").get());
         tag(FissionBlocks.CASING_BLOCKS).add(
                 FISSION_BLOCKS.get("fission_reactor_casing").get(),
                 FISSION_BLOCKS.get("fission_reactor_controller").get(),

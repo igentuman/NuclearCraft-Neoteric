@@ -102,20 +102,11 @@ public class TurbineRegistration {
                         () -> BlockEntityType.Builder.of(TurbineRotorBE::new, rotor.get())
                                 .build(null)));
 
-        RegistryObject<Block> bearing = addBlock("turbine_bearing", () -> new TurbineBearingBlock(TURBINE_BLOCKS_PROPERTIES));
-        TURBINE_BE.put("turbine_bearing",
-                BLOCK_ENTITIES.register("turbine_bearing",
-                        () -> BlockEntityType.Builder.of(TurbineBearingBE::new, bearing.get())
-                                .build(null)));
+        addBlock("turbine_bearing", () -> new TurbineBearingBlock(TURBINE_BLOCKS_PROPERTIES));
+
 
         addBlock("turbine_glass", () -> new TurbineBlock(GLASS_BLOCK_PROPERTIES));
         addBlock("turbine_casing", () -> new TurbineBlock(TURBINE_BLOCKS_PROPERTIES));
-
-        TURBINE_BE.put("turbine_casing",
-                BLOCK_ENTITIES.register("turbine_casing",
-                        () -> BlockEntityType.Builder.of(TurbineCasingBE::new,
-                                TURBINE_BLOCKS.get("turbine_casing").get(),
-                                TURBINE_BLOCKS.get("turbine_glass").get()).build(null)));
 
         for (String block : blades().keySet()) {
             String key = "turbine_" + block;

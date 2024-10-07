@@ -4,9 +4,8 @@ import igentuman.nc.block.ElectromagnetBlock;
 import igentuman.nc.block.RFAmplifierBlock;
 import igentuman.nc.block.entity.ElectromagnetBE;
 import igentuman.nc.block.entity.RFAmplifierBE;
-import igentuman.nc.block.entity.fusion.FusionCasingBE;
-import igentuman.nc.block.entity.fusion.FusionConnectorBE;
 import igentuman.nc.block.entity.fusion.FusionCoreBE;
+import igentuman.nc.block.fusion.FusionConnectorBlock;
 import igentuman.nc.multiblock.AbstractNCMultiblock;
 import igentuman.nc.multiblock.ValidationResult;
 import igentuman.nc.util.NCBlockPos;
@@ -15,14 +14,13 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.HashMap;
 import java.util.List;
 
 import static igentuman.nc.handler.config.FusionConfig.FUSION_CONFIG;
-import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_BLOCKS;
+import static igentuman.nc.util.TagUtil.getBlocksByTagKey;
 import static net.minecraft.core.Direction.*;
 import static net.minecraft.world.level.block.Blocks.AIR;
 
@@ -53,10 +51,7 @@ public class FusionReactorMultiblock extends AbstractNCMultiblock {
 
     public FusionReactorMultiblock(FusionCoreBE<?> core) {
         super(
-                List.of(
-                        FUSION_BLOCKS.get("fusion_reactor_casing").get(),
-                        FUSION_BLOCKS.get("fusion_reactor_casing_glass").get()
-                ),
+                getBlocksByTagKey(FusionReactor.CASING_BLOCKS.location().toString()),
                 List.of(AIR));
         controllerBE = core;
         controller = new FusionReactorController(controllerBE);
@@ -305,9 +300,7 @@ public class FusionReactorMultiblock extends AbstractNCMultiblock {
         for(int i = 2; i <= maxWidth()/2+1; i++) {
             int connectors = 0;
             for(Direction side: List.of(NORTH, EAST, Direction.SOUTH, Direction.WEST)) {
-                if(getBlockEntity(pos.revert().relative(side, i)) instanceof FusionConnectorBE connector) {
-                    connector.setController(controllerBE);
-                    attachMultiblock(connector);
+                if(getBlockState(pos.revert().relative(side, i)).getBlock() instanceof FusionConnectorBlock) {
                     allBlocks.add(new NCBlockPos(pos));
                     connectors++;
                 }

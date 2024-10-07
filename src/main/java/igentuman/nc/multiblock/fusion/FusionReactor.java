@@ -1,13 +1,11 @@
 package igentuman.nc.multiblock.fusion;
 
-import igentuman.nc.block.fusion.FusionBlock;
-import igentuman.nc.block.fusion.FusionCasingBlock;
-import igentuman.nc.block.fusion.FusionCoreBlock;
-import igentuman.nc.block.fusion.FusionCoreProxy;
+import igentuman.nc.block.fusion.*;
 import igentuman.nc.container.FissionControllerContainer;
 import igentuman.nc.container.FusionCoreContainer;
 import igentuman.nc.item.FusionCoreItem;
 import igentuman.nc.setup.registration.CreativeTabs;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -24,12 +22,18 @@ import java.util.HashMap;
 import static igentuman.nc.multiblock.fission.FissionBlocks.REACTOR_BLOCKS_PROPERTIES;
 import static igentuman.nc.setup.registration.NCItems.ALL_NC_ITEMS;
 import static igentuman.nc.setup.registration.Registries.*;
+import static igentuman.nc.setup.registration.Tags.blockTag;
+import static igentuman.nc.setup.registration.Tags.itemTag;
 
 public class FusionReactor {
+
     public static final Item.Properties FUSION_ITEM_PROPERTIES = new Item.Properties();
     public static HashMap<String, RegistryObject<Block>> FUSION_BLOCKS = new HashMap<>();
     public static HashMap<String, RegistryObject<BlockEntityType<? extends BlockEntity>>> FUSION_BE = new HashMap<>();
     public static HashMap<String, RegistryObject<Item>> FUSION_ITEMS = new HashMap<>();
+    public static TagKey<Block> CASING_BLOCKS = blockTag("fusion_reactor_casing");
+    public static TagKey<Item> CASING_ITEMS = itemTag("fusion_reactor_casing");
+
     public static final RegistryObject<Block> FUSION_CORE_PROXY =
             BLOCKS.register("fusion_reactor_core_proxy",
                     () -> new FusionCoreProxy(REACTOR_BLOCKS_PROPERTIES));
@@ -47,11 +51,7 @@ public class FusionReactor {
     public static void init() {
         String key;
         key = "fusion_reactor_connector";
-        FUSION_BLOCKS.put(key, BLOCKS.register(key, () -> new FusionBlock(REACTOR_BLOCKS_PROPERTIES)));
-        FUSION_BE.put(key, BLOCK_ENTITIES.register(key,
-                () -> BlockEntityType.Builder
-                        .of(FusionConnectorBE::new, FUSION_BLOCKS.get("fusion_reactor_connector").get())
-                        .build(null)));
+        FUSION_BLOCKS.put(key, BLOCKS.register(key, () -> new FusionConnectorBlock(REACTOR_BLOCKS_PROPERTIES)));
         FUSION_ITEMS.put(key, fromMultiblock(FUSION_BLOCKS.get(key)));
         ALL_NC_ITEMS.put(key, FUSION_ITEMS.get(key));
 

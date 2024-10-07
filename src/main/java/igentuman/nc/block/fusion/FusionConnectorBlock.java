@@ -13,23 +13,20 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.List;
 
-public class FusionCasingBlock extends Block {
+public class FusionConnectorBlock extends Block {
 
-    public FusionCasingBlock() {
+    public FusionConnectorBlock() {
         this(Properties.of()
                 .sound(SoundType.METAL)
                 .strength(2.0f)
                 .noOcclusion()
                 .requiresCorrectToolForDrops());
     }
-    public FusionCasingBlock(Properties pProperties) {
+    public FusionConnectorBlock(Properties pProperties) {
         super(pProperties.sound(SoundType.METAL));
         this.registerDefaultState(
                 this.stateDefinition.any()
         );
-        if(getCode().contains("glass")) {
-            properties.noOcclusion();
-        }
     }
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
@@ -44,6 +41,6 @@ public class FusionCasingBlock extends Block {
     @Override
     public void appendHoverText(ItemStack stack, @javax.annotation.Nullable BlockGetter world, List<Component> list, TooltipFlag flag)
     {
-        list.add(Component.translatable("tooltip.nc.fusion_casing.descr").withStyle(ChatFormatting.YELLOW));
+        list.add(Component.translatable("tooltip.nc.fusion_connector.descr").withStyle(ChatFormatting.YELLOW));
     }
 }

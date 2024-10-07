@@ -2,6 +2,7 @@ package igentuman.nc.datagen.tags;
 
 import igentuman.nc.multiblock.fission.FissionBlocks;
 import igentuman.nc.multiblock.fission.FissionReactor;
+import igentuman.nc.multiblock.fusion.FusionReactor;
 import igentuman.nc.setup.registration.FissionFuel;
 import igentuman.nc.setup.registration.NCItems;
 import net.minecraft.core.HolderLookup;
@@ -37,6 +38,9 @@ public class NCItemTags extends ItemTagsProvider {
         parts();
         fuel();
         isotopes();
+        tag(FusionReactor.CASING_ITEMS).add(
+                FusionReactor.FUSION_ITEMS.get("fusion_reactor_casing").get(),
+                FusionReactor.FUSION_ITEMS.get("fusion_reactor_casing_glass").get());
         tag(FissionBlocks.MODERATORS_ITEMS).add(NC_BLOCKS_ITEMS.get("graphite").get(), NC_BLOCKS_ITEMS.get("beryllium").get());
         tag(FissionBlocks.CASING_ITEMS).add(
                 FissionReactor.FISSION_BLOCK_ITEMS.get("fission_reactor_casing").get(),

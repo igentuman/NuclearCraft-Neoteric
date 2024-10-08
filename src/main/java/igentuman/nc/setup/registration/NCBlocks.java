@@ -94,10 +94,6 @@ public class NCBlocks {
             NC_ELECTROMAGNETS_ITEMS.put(name+"_slope", fromBlock(NC_ELECTROMAGNETS.get(name+"_slope")));
             ALL_NC_ITEMS.put(name, NC_ELECTROMAGNETS_ITEMS.get(name));
             ALL_NC_ITEMS.put(name+"_slope", NC_ELECTROMAGNETS_ITEMS.get(name+"_slope"));
-            NC_BE.put(name, BLOCK_ENTITIES.register(name,
-                    () -> BlockEntityType.Builder
-                            .of(Electromagnets.all().get(name).getBlockEntity(), NC_ELECTROMAGNETS.get(name).get(), NC_ELECTROMAGNETS.get(name+"_slope").get())
-                            .build(null)));
         }
     }
 
@@ -106,11 +102,6 @@ public class NCBlocks {
             NC_RF_AMPLIFIERS.put(name, BLOCKS.register(name, () -> new RFAmplifierBlock(NC_BLOCKS_PROPERTIES)));
             NC_RF_AMPLIFIERS_ITEMS.put(name, fromBlock(NC_RF_AMPLIFIERS.get(name)));
             ALL_NC_ITEMS.put(name, NC_RF_AMPLIFIERS_ITEMS.get(name));
-
-            NC_BE.put(name, BLOCK_ENTITIES.register(name,
-                    () -> BlockEntityType.Builder
-                            .of(RFAmplifier.all().get(name).getBlockEntity(), NC_RF_AMPLIFIERS.get(name).get())
-                            .build(null)));
         }
     }
 

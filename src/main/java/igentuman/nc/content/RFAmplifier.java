@@ -1,11 +1,6 @@
 package igentuman.nc.content;
 
-import igentuman.nc.block.entity.ElectromagnetBE;
-import igentuman.nc.block.entity.RFAmplifierBE;
-import igentuman.nc.block.entity.energy.NCEnergy;
 import igentuman.nc.handler.config.CommonConfig;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -89,7 +84,6 @@ public class RFAmplifier {
         protected int heat = 0;
         protected int maxTemp = 0;
         protected int efficiency = 0;
-        private BlockEntityType.BlockEntitySupplier<? extends BlockEntity>  blockEntity = ElectromagnetBE::new;
 
         public RFAmplifierPrefab(String name, int energy, int heat, int voltage, int maxTemp, int efficiency) {
             this.power = energy;
@@ -98,7 +92,6 @@ public class RFAmplifier {
             this.voltage = voltage;
             this.maxTemp = maxTemp;
             this.efficiency = efficiency;
-            blockEntity = RFAmplifierBE::new;
         }
 
         public int getEfficiency() {
@@ -135,15 +128,6 @@ public class RFAmplifier {
         }
         public boolean isRegistered() {
             return  registered;
-        }
-
-        public BlockEntityType.BlockEntitySupplier<? extends BlockEntity>  getBlockEntity() {
-            return blockEntity;
-        }
-
-        public RFAmplifierPrefab setBlockEntity(BlockEntityType.BlockEntitySupplier<? extends RFAmplifierBE>  blockEntity) {
-            this.blockEntity = blockEntity;
-            return this;
         }
 
         public int getVoltage() {

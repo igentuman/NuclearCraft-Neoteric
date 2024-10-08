@@ -2,8 +2,6 @@ package igentuman.nc.multiblock.fusion;
 
 import igentuman.nc.block.ElectromagnetBlock;
 import igentuman.nc.block.RFAmplifierBlock;
-import igentuman.nc.block.entity.ElectromagnetBE;
-import igentuman.nc.block.entity.RFAmplifierBE;
 import igentuman.nc.block.entity.fusion.FusionCoreBE;
 import igentuman.nc.block.fusion.FusionConnectorBlock;
 import igentuman.nc.multiblock.AbstractNCMultiblock;
@@ -46,8 +44,8 @@ public class FusionReactorMultiblock extends AbstractNCMultiblock {
         return isFormed && outerValid && innerValid && !needToRecalculateCharacteristics && !needToCollectFunctionalBlocks;
     }
 
-    protected HashMap<BlockPos, ElectromagnetBE> electromagnets = new HashMap<>();
-    protected HashMap<BlockPos, RFAmplifierBE> amplifiers = new HashMap<>();
+    protected HashMap<BlockPos, ElectromagnetBlock> electromagnets = new HashMap<>();
+    protected HashMap<BlockPos, RFAmplifierBlock> amplifiers = new HashMap<>();
 
     public FusionReactorMultiblock(FusionCoreBE<?> core) {
         super(
@@ -138,6 +136,22 @@ public class FusionReactorMultiblock extends AbstractNCMultiblock {
         controller.clearStats();
     }
 
+    private Block getBlock(BlockPos pos) {
+        if(level() == null) {
+            return AIR;
+        }
+        return level().getBlockState(pos).getBlock();
+    }
+
+    private void processFunctionalBlock(NCBlockPos pos)
+    {
+        if(getBlock(pos) instanceof ElectromagnetBlock magnet) {
+            electromagnets.put(pos.copy(), magnet);
+        } else if(getBlock(pos) instanceof RFAmplifierBlock amplifier) {
+            amplifiers.put(pos.copy(), amplifier);
+        }
+    }
+
     public void collectFunctionalParts() {
         electromagnets.clear();
         amplifiers.clear();
@@ -148,7 +162,6 @@ public class FusionReactorMultiblock extends AbstractNCMultiblock {
             int shift = length+1;
             NCBlockPos startPosInnerWall = null;
             NCBlockPos startPosOuterWall = null;
-            Level level = controllerBE.getLevel();
             //position to left corner of the ring
             switch (side) {
                 case NORTH -> {
@@ -172,34 +185,18 @@ public class FusionReactorMultiblock extends AbstractNCMultiblock {
                     startPosOuterWall = new NCBlockPos(pos.revert().relative(EAST, 2+shift).relative(SOUTH, 1+shift));
                 }
             }
+            if(startPosInnerWall == null || startPosOuterWall == null) {
+                return;
+            }
             //inner
             for(int i = 0; i < steps; i++) {
-                if(level.getBlockEntity(startPosInnerWall.revert().relative(dir, i)) instanceof ElectromagnetBE magnet) {
-                    electromagnets.put(new NCBlockPos(startPosInnerWall), magnet);
-                } else if(level.getBlockEntity(startPosInnerWall.revert().relative(dir, i)) instanceof RFAmplifierBE amplifier) {
-                    amplifiers.put(new NCBlockPos(startPosInnerWall), amplifier);
-                }
-
-                if(level.getBlockEntity(startPosInnerWall.revert().relative(UP, 2).relative(dir, i)) instanceof ElectromagnetBE magnet) {
-                    electromagnets.put(new NCBlockPos(startPosInnerWall), magnet);
-                } else if(level.getBlockEntity(startPosInnerWall.revert().relative(UP, 2).relative(dir, i)) instanceof RFAmplifierBE amplifier) {
-                    amplifiers.put(new NCBlockPos(startPosInnerWall), amplifier);
-                }
+                processFunctionalBlock(startPosInnerWall.revert().relative(dir, i));
+                processFunctionalBlock(startPosInnerWall.revert().relative(UP, 2).relative(dir, i));
             }
             //outer
             for(int i = 0; i < steps+2; i++) {
-                assert startPosOuterWall != null;
-                if(level.getBlockEntity(startPosOuterWall.revert().relative(dir, i)) instanceof ElectromagnetBE magnet) {
-                    electromagnets.put(new NCBlockPos(startPosOuterWall), magnet);
-                } else if(level.getBlockEntity(startPosOuterWall.revert().relative(dir, i)) instanceof RFAmplifierBE amplifier) {
-                    amplifiers.put(new NCBlockPos(startPosOuterWall), amplifier);
-                }
-
-                if(level.getBlockEntity(startPosOuterWall.revert().relative(UP, 2).relative(dir, i)) instanceof ElectromagnetBE magnet) {
-                    electromagnets.put(new NCBlockPos(startPosOuterWall), magnet);
-                } else if(level.getBlockEntity(startPosOuterWall.revert().relative(UP, 2).relative(dir, i)) instanceof RFAmplifierBE amplifier) {
-                    amplifiers.put(new NCBlockPos(startPosOuterWall), amplifier);
-                }
+                processFunctionalBlock(startPosOuterWall.revert().relative(dir, i));
+                processFunctionalBlock(startPosOuterWall.revert().relative(UP, 2).relative(dir, i));
             }
         }
     }
@@ -369,6 +366,9 @@ public class FusionReactorMultiblock extends AbstractNCMultiblock {
     }
 
     private Level level() {
+        if(controllerBE == null) {
+            return null;
+        }
         return controllerBE.getLevel();
     }
 
@@ -408,7 +408,7 @@ public class FusionReactorMultiblock extends AbstractNCMultiblock {
         maxRFAmplifiersTemp = 1000000;
         double mEfficiency = 0;
         double rEfficiency = 0;
-        for(ElectromagnetBE magnet: electromagnets.values()) {
+        for(ElectromagnetBlock magnet: electromagnets.values()) {
             magneticFieldStrength += magnet.getStrength();
             mEfficiency += (int) magnet.getEfficiency();
             magnetsPower += magnet.getPower();
@@ -417,7 +417,7 @@ public class FusionReactorMultiblock extends AbstractNCMultiblock {
             }
         }
         magnetsEfficiency = (int) (mEfficiency / electromagnets.size());
-        for(RFAmplifierBE amplifier: amplifiers.values()) {
+        for(RFAmplifierBlock amplifier: amplifiers.values()) {
             rfAmplification += amplifier.getAmplification();
             rfAmplifiersPower += amplifier.getPower();
             rEfficiency += (int) amplifier.getEfficiency();

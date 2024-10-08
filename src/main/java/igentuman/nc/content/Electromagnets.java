@@ -9,8 +9,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
-import igentuman.nc.block.entity.ElectromagnetBE;
-
 import static igentuman.nc.handler.config.FusionConfig.ELECTROMAGNETS_CONFIG;
 
 public class Electromagnets {
@@ -80,7 +78,6 @@ public class Electromagnets {
         protected int heat = 0;
         protected int maxTemp = 0;
         protected int efficiency = 0;
-        private BlockEntityType.BlockEntitySupplier<? extends BlockEntity>  blockEntity = ElectromagnetBE::new;
 
         public MagnetPrefab(String name, int energy, int heat, double magneticField, int maxTemp, int efficiency) {
             this.power = energy;
@@ -89,7 +86,6 @@ public class Electromagnets {
             this.magneticField = magneticField;
             this.maxTemp = maxTemp;
             this.efficiency = efficiency;
-            blockEntity = ElectromagnetBE::new;
 
         }
 
@@ -119,15 +115,6 @@ public class Electromagnets {
         }
         public boolean isRegistered() {
             return  registered;
-        }
-
-        public BlockEntityType.BlockEntitySupplier<? extends BlockEntity>  getBlockEntity() {
-            return blockEntity;
-        }
-
-        public MagnetPrefab setBlockEntity(BlockEntityType.BlockEntitySupplier<? extends ElectromagnetBE>  blockEntity) {
-            this.blockEntity = blockEntity;
-            return this;
         }
 
         public double getMagneticField() {

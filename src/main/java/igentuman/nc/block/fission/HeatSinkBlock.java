@@ -107,9 +107,6 @@ public class HeatSinkBlock extends Block implements EntityBlock {
         return placementRule;
     }
 
-
-
-
     private List<String> getBlockNames(String rawLine) {
 
         List<String> names = new ArrayList<>();
@@ -128,8 +125,6 @@ public class HeatSinkBlock extends Block implements EntityBlock {
         }
         return names;
     }
-
-
 
     private void initParams() {
         Item item = Item.byBlock(this);

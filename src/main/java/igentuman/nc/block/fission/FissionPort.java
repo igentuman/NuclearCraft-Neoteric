@@ -38,6 +38,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+import static igentuman.nc.util.TextUtils.applyFormat;
+import static net.minecraft.network.chat.Component.translatable;
 
 public class FissionPort extends HorizontalDirectionalBlock implements EntityBlock {
     public static final DirectionProperty HORIZONTAL_FACING = FACING;
@@ -80,7 +82,7 @@ public class FissionPort extends HorizontalDirectionalBlock implements EntityBlo
                 MenuProvider containerProvider = new MenuProvider() {
                     @Override
                     public Component getDisplayName() {
-                        return Component.translatable("block.nuclearcraft.fission_reactor_port");
+                        return translatable("block.nuclearcraft.fission_reactor_port");
                     }
 
                     @Override
@@ -113,7 +115,7 @@ public class FissionPort extends HorizontalDirectionalBlock implements EntityBlo
 
     public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag)
     {
-        list.add(TextUtils.applyFormat(Component.translatable("fission_port.descr"), ChatFormatting.GOLD));
+        list.add(applyFormat(translatable("fission_port.descr"), ChatFormatting.GOLD));
     }
 
     @Override

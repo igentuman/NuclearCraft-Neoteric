@@ -26,22 +26,22 @@ import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.compat.GlobalVars.RECIPE_CLASSES;
 
 public class IrradiatorBE extends NCProcessorBE<IrradiatorBE.Recipe> implements IMultiblockAttachable {
+
     private AbstractNCMultiblock multiblock;
     private FissionControllerBE<?> controller;
+    @NBTField
+    public int irradiativeFlux = 0;
+    @NBTField
+    public double fuelMultiplier = 1D;
 
     public IrradiatorBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, Processors.IRRADIATOR);
     }
+
     @Override
     public String getName() {
         return Processors.IRRADIATOR;
     }
-
-    @NBTField
-    public int irradiativeFlux = 0;
-
-    @NBTField
-    public double fuelMultiplier = 1D;
 
     @Override
     public double speedMultiplier()

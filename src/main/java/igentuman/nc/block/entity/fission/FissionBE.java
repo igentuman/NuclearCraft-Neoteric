@@ -41,10 +41,8 @@ public class FissionBE extends NuclearCraftBE implements IMultiblockAttachable {
     public static String NAME;
     public boolean refreshCacheFlag = true;
     public boolean attachedToFuelCell = false;
-
     public byte validationRuns = 0;
-
-    public FissionControllerBE controller;
+    public FissionControllerBE<?> controller;
 
     public boolean hasToTouchFuelCell = true;
 

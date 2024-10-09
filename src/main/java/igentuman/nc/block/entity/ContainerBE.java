@@ -141,8 +141,6 @@ public class ContainerBE extends NuclearCraftBE implements ISizeToggable {
         return super.getCapability(cap, side);
     }
 
-
-
     protected void saveClientData(CompoundTag tag) {
         CompoundTag tank = new CompoundTag();
         tag.put("Inventory", inventory.serializeNBT());

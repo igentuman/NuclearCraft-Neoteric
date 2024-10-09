@@ -5,8 +5,6 @@ import igentuman.nc.content.storage.BarrelBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -57,8 +55,6 @@ public class BarrelBE extends NuclearCraftBE implements ISizeToggable {
         fluidTank = createTank();
         fluidHandler = LazyOptional.of(() -> fluidTank);
     }
-
-
 
     @Nonnull
     @Override

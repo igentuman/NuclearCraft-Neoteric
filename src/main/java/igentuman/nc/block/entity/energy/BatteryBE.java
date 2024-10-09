@@ -3,7 +3,6 @@ package igentuman.nc.block.entity.energy;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.ISizeToggable;
 import igentuman.nc.content.energy.BatteryBlocks;
-import igentuman.nc.handler.sided.SlotModePair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustParticleOptions;

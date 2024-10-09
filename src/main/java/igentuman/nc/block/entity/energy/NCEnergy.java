@@ -67,7 +67,7 @@ public class NCEnergy extends NuclearCraftBE {
     }
 
     protected int getEnergyTransferPerTick() {
-        return Math.min(100, energyStorage.getEnergyStored());
+        return Math.min(getEnergyMaxStorage(), energyStorage.getEnergyStored());
     }
 
     private CustomEnergyStorage createEnergy() {

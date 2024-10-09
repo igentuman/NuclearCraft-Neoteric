@@ -12,7 +12,6 @@ public class FissionHeatSinkBE extends FissionBE {
     public static String NAME = "fission_heat_sink";
     public HeatSinkDef def;
     public boolean isValid = false;
-
     public double heat;
 
     public FissionHeatSinkBE(BlockPos pPos, BlockState pBlockState) {

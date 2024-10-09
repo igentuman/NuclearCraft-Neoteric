@@ -42,7 +42,6 @@ import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
-import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -62,45 +61,38 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
     public final SidedContentHandler contentHandler;
     protected final CustomEnergyStorage energyStorage;
     public HashMap<String, RECIPE> cachedRecipes = new HashMap<>();
-
     public final UpgradesHandler upgradesHandler = createUpgradesHandler();
     protected final LazyOptional<IItemHandler> handler = LazyOptional.of(() -> upgradesHandler);
     public final CatalystHandler catalystHandler = createCatalystHandler();
-
     protected boolean saveSideMapFlag = true;
-
     public boolean wasUpdated = true;
-
     protected RECIPE recipe;
+    public int manualUpdateCounter = 40;
+    protected int skippedTicks = 1;
+    private LazyOptional<NCProcessorPeripheral> peripheralCap;
+
     @NBTField
     public int speedMultiplier = 1;
     @NBTField
     public int energyPerTick = 0;
     @NBTField
     public int energyMultiplier = 1;
-
     @NBTField
     public int redstoneMode = 0;
-
     @NBTField
     public boolean isActive = false;
-
-    public int manualUpdateCounter = 40;
 
     private List<ItemStack> allowedInputs;
     private List<FluidStack> allowedFluids;
     private LazyOptional<NCGTEnergyHandler> gtEnergyCap;
     private ParticleOptions particle1 = ParticleTypes.SMOKE;
+    protected ProcessorPrefab prefab;
 
     public LazyOptional<IEnergyStorage> getEnergy() {
         return energy;
     }
 
     protected final LazyOptional<IEnergyStorage> energy;
-
-    protected ProcessorPrefab prefab;
-
-    protected int skippedTicks = 1;
 
     public RecipeInfo<RECIPE> recipeInfo = new RecipeInfo<RECIPE>();
 
@@ -110,9 +102,6 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
         }
         return prefab;
     }
-
-
-    private LazyOptional<NCProcessorPeripheral> peripheralCap;
 
     public <T> LazyOptional<T>  getPeripheral(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if(peripheralCap == null) {
@@ -243,8 +232,6 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
     {
         return PROCESSOR_CONFIG.GT_SUPPORT.get() == 2 || PROCESSOR_CONFIG.GT_SUPPORT.get() == 1;
     }
-
-
 
     @Nonnull
     @Override

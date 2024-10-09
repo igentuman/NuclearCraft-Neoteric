@@ -30,13 +30,7 @@ public class NuclearCraftBE extends BlockEntity {
     protected SoundInstance currentSound;
     protected int playSoundCooldown = 0;
     protected UUID playerUID = null;
-
     public HashMap<Integer, ISizeToggable.SideMode> sideConfig = new HashMap<>();
-
-    public static String getName(BlockState pBlockState) {
-        return pBlockState.getBlock().asItem().toString();
-    }
-
 
     public NuclearCraftBE(BlockEntityType<?> pType, BlockPos pPos, BlockState pBlockState) {
         super(pType, pPos, pBlockState);
@@ -52,6 +46,10 @@ public class NuclearCraftBE extends BlockEntity {
         floatFields = initFields(float.class);
         byteFields = initFields(byte.class);
         longFields = initFields(long.class);
+    }
+
+    public static String getName(BlockState pBlockState) {
+        return pBlockState.getBlock().asItem().toString();
     }
 
     protected void trackChanges(boolean was, boolean now)
@@ -74,7 +72,6 @@ public class NuclearCraftBE extends BlockEntity {
     private final List<Field> byteFields;
     private final List<Field> longFields;
     private final List<Field> blockPosFields;
-
     private final List<Field> directionFields;
 
     public void saveTagData(CompoundTag tag) {

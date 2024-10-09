@@ -4,7 +4,6 @@ import igentuman.nc.NuclearCraft;
 import igentuman.nc.client.sound.SoundHandler;
 import igentuman.nc.compat.cc.NCSolidFissionReactorPeripheral;
 import igentuman.nc.compat.oc2.NCFissionReactorDevice;
-import igentuman.nc.content.fuel.FuelDef;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.SlotModePair;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;

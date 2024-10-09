@@ -41,9 +41,7 @@ public class FissionBlock extends Block implements EntityBlock {
     private String blockEntityCode()
     {
         String code = ForgeRegistries.BLOCKS.getKey(this).getPath();
-        if(code.matches(".*reactor_glass|.*reactor_casing.*")) {
-            return "fission_casing";
-        }
+
         if(code.matches("graphite.*|beryllium.*")) {
             return "fission_moderator";
         }

@@ -11,6 +11,9 @@ import net.minecraft.world.level.block.Block;
 
 import java.util.List;
 
+import static igentuman.nc.util.TextUtils.applyFormat;
+import static net.minecraft.network.chat.Component.translatable;
+
 public class RFAmplifierBlock extends Block {
     public RFAmplifierBlock(Properties pProperties) {
         super(pProperties);
@@ -25,6 +28,7 @@ public class RFAmplifierBlock extends Block {
     {
         return RFAmplifier.all().get(name());
     }
+
     public int getAmplification() {
         return prefab().getVoltage();
     }
@@ -39,20 +43,20 @@ public class RFAmplifierBlock extends Block {
     }
     public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag)
     {
-        list.add(TextUtils.applyFormat(
-                Component.translatable("tooltip.nc.rf_amplifier.power", TextUtils.numberFormat(prefab().getPower())),
+        list.add(applyFormat(
+                translatable("tooltip.nc.rf_amplifier.power", TextUtils.numberFormat(prefab().getPower())),
                 ChatFormatting.DARK_AQUA));
-        list.add(TextUtils.applyFormat(
-                Component.translatable("tooltip.nc.rf_amplifier.voltage", TextUtils.numberFormat((double) prefab().getVoltage() /1000)),
+        list.add(applyFormat(
+                translatable("tooltip.nc.rf_amplifier.voltage", TextUtils.numberFormat((double) prefab().getVoltage() /1000)),
                 ChatFormatting.DARK_BLUE));
-        list.add(TextUtils.applyFormat(
-                Component.translatable("tooltip.nc.rf_amplifier.efficiency", TextUtils.numberFormat(prefab().getEfficiency())),
+        list.add(applyFormat(
+                translatable("tooltip.nc.rf_amplifier.efficiency", TextUtils.numberFormat(prefab().getEfficiency())),
                 ChatFormatting.AQUA));
-        list.add(TextUtils.applyFormat(
-                Component.translatable("tooltip.nc.rf_amplifier.heat", TextUtils.numberFormat(prefab().getHeat())),
+        list.add(applyFormat(
+                translatable("tooltip.nc.rf_amplifier.heat", TextUtils.numberFormat(prefab().getHeat())),
                 ChatFormatting.YELLOW));
-        list.add(TextUtils.applyFormat(
-                Component.translatable("tooltip.nc.rf_amplifier.max_temp", TextUtils.numberFormat((double) prefab().getMaxTemp() /1000)),
+        list.add(applyFormat(
+                translatable("tooltip.nc.rf_amplifier.max_temp", TextUtils.numberFormat((double) prefab().getMaxTemp() /1000)),
                 ChatFormatting.RED));
     }
 

@@ -3,11 +3,8 @@ package igentuman.nc.block.entity.fission;
 import igentuman.nc.NuclearCraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-
-import java.util.Objects;
 
 import static igentuman.nc.multiblock.fission.FissionReactorMultiblock.isModerator;
 

@@ -3,22 +3,15 @@ package igentuman.nc.block;
 import igentuman.nc.content.Electromagnets;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.List;
 
-import static igentuman.nc.setup.registration.NCBlocks.NC_BE;
+import static igentuman.nc.util.TextUtils.numberFormat;
+import static net.minecraft.network.chat.Component.translatable;
 
 public class ElectromagnetBlock extends Block {
 
@@ -51,19 +44,19 @@ public class ElectromagnetBlock extends Block {
     public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag)
     {
         list.add(TextUtils.applyFormat(
-                Component.translatable("tooltip.nc.rf_amplifier.power", TextUtils.numberFormat(prefab().getPower())),
+                translatable("tooltip.nc.rf_amplifier.power", numberFormat(prefab().getPower())),
                 ChatFormatting.DARK_AQUA));
         list.add(TextUtils.applyFormat(
-                Component.translatable("tooltip.nc.electromagnet.magnetic_field", TextUtils.numberFormat(prefab().getMagneticField())),
+                translatable("tooltip.nc.electromagnet.magnetic_field", numberFormat(prefab().getMagneticField())),
                 ChatFormatting.DARK_BLUE));
         list.add(TextUtils.applyFormat(
-                Component.translatable("tooltip.nc.description.efficiency", TextUtils.numberFormat(prefab().getEfficiency())),
+                translatable("tooltip.nc.description.efficiency", numberFormat(prefab().getEfficiency())),
                 ChatFormatting.AQUA));
         list.add(TextUtils.applyFormat(
-                Component.translatable("tooltip.nc.electromagnet.heat", TextUtils.numberFormat(prefab().getHeat())),
+                translatable("tooltip.nc.electromagnet.heat", numberFormat(prefab().getHeat())),
                 ChatFormatting.YELLOW));
         list.add(TextUtils.applyFormat(
-                Component.translatable("tooltip.nc.electromagnet.max_temp", TextUtils.numberFormat((double) prefab().getMaxTemp() /1000)),
+                translatable("tooltip.nc.electromagnet.max_temp", numberFormat((double) prefab().getMaxTemp() /1000)),
                 ChatFormatting.RED));
     }
 }

@@ -44,6 +44,8 @@ import java.nio.file.Path;
 import java.util.EnumMap;
 import java.util.Set;
 
+import static igentuman.nc.util.FileExtractor.unpackFilesFromFolderToConfig;
+
 @Mod(NuclearCraft.MODID)
 public class NuclearCraft {
 
@@ -83,6 +85,7 @@ public class NuclearCraft {
 
     public static void registerConfigs()
     {
+        unpackFilesFromFolderToConfig("data/nuclearcraft/fission_fuel", "NuclearCraft/fission_fuel");
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, MaterialsConfig.spec, "NuclearCraft/materials.toml");
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, CommonConfig.spec, "NuclearCraft/common.toml");
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ProcessorsConfig.spec, "NuclearCraft/processors.toml");

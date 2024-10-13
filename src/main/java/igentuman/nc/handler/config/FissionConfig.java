@@ -47,11 +47,6 @@ public class FissionConfig {
     }
 
     public static class FuelConfig {
-        public ForgeConfigSpec.ConfigValue<List<Double>> HEAT;
-        public ForgeConfigSpec.ConfigValue<List<Integer>> EFFICIENCY;
-        public ForgeConfigSpec.ConfigValue<List<Integer>> DEPLETION;
-        public ForgeConfigSpec.ConfigValue<List<Integer>> FE_GENERATION;
-        public ForgeConfigSpec.ConfigValue<List<Integer>> CRITICALITY;
         public ForgeConfigSpec.ConfigValue<Double> HEAT_MULTIPLIER;
         public ForgeConfigSpec.ConfigValue<Double> FUEL_HEAT_MULTIPLIER;
         public ForgeConfigSpec.ConfigValue<Double> DEPLETION_MULTIPLIER;
@@ -71,21 +66,6 @@ public class FissionConfig {
                     .comment("Depletion multiplier. Affects how long fuel lasts.")
                     .defineInRange("depletion_multiplier", 1D, 0D, 1000D);
 
-            HEAT = builder
-                    .comment("Base Fuel Heat: " + String.join(", ",FuelManager.initialHeat().keySet()))
-                    .define("base_heat", toList(FuelManager.initialHeat().values()), o -> o instanceof ArrayList);
-            EFFICIENCY = builder
-                    .comment("Base Fuel Efficiency: " + String.join(", ",FuelManager.initialEfficiency().keySet()))
-                    .define("base_efficiency", toList(FuelManager.initialEfficiency().values()), o -> o instanceof ArrayList);
-            FE_GENERATION = builder
-                    .comment("Base Fuel FE generation: " + String.join(", ",FuelManager.initialForgeEnergy().keySet()))
-                    .define("base_fe_generation", toList(FuelManager.initialForgeEnergy().values()), o -> o instanceof ArrayList);
-            DEPLETION = builder
-                    .comment("Base Fuel Depletion Time (seconds): " + String.join(", ",FuelManager.initialDepletion().keySet()))
-                    .define("base_depletion", toList(FuelManager.initialDepletion().values()), o -> o instanceof ArrayList);
-            CRITICALITY = builder
-                    .comment("Fuel Criticality: " + String.join(", ",FuelManager.initialCriticality().keySet()))
-                    .define("base_criticallity", toList(FuelManager.initialCriticality().values()), o -> o instanceof ArrayList);
             builder.pop();
         }
 

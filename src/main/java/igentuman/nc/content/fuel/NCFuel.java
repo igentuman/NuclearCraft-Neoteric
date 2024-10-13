@@ -1,5 +1,7 @@
 package igentuman.nc.content.fuel;
 
+import com.google.gson.JsonObject;
+
 public class NCFuel {
     public String group;
 
@@ -9,6 +11,27 @@ public class NCFuel {
     private FuelDef nitride;
     private FuelDef zirconium;
     private FuelDef triso;
+
+    /**
+     * Load a fuel from a JSON object.
+     * @param data
+     * @return
+     */
+    public static NCFuel of(JsonObject data) {
+        FuelDef def = new FuelDef(
+                data.get("group").getAsString(),
+                data.get("name").getAsString(),
+                data.get("forge_energy").getAsInt(),
+                data.get("heat").getAsDouble(),
+                data.get("criticality").getAsInt(),
+                data.get("depletion").getAsInt(),
+                data.get("efficiency").getAsInt());
+        def.isotopes(
+                data.get("isotopes").getAsJsonArray().get(0).getAsInt(),
+                data.get("isotopes").getAsJsonArray().get(1).getAsInt()
+                );
+        return NCFuel.of(def);
+    }
 
     public void setDef(FuelDef def) {
         this.def = def;

@@ -40,7 +40,6 @@ public class ItemFuel extends Item {
     {
         if(initialized) return this;
         def = FuelManager.all().get(group).get(name).subType(subType);
-        def.config();
         heat = def.getHeatFEMode();
         heat_boiling = def.getHeatBoilingMode();
         criticality = def.criticality;

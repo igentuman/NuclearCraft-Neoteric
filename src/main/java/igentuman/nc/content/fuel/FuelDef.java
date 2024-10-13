@@ -14,6 +14,7 @@ public class FuelDef {
     public int depletion;
     public int efficiency;
     public int forge_energy;
+    public int[] isotopes;
 
     public FuelDef(String group, String name, int forge_energy, double heat, int criticality, int depletion, int efficiency)
     {
@@ -31,10 +32,6 @@ public class FuelDef {
         return this;
     }
 
-    public int[] isotopes;
-
-    private boolean initialized = false;
-
     public FuelDef(String group, String name, int forge_energy, double heat, double criticality, double depletion, double efficiency) {
         this(group, name, forge_energy, heat, (int)criticality, (int)depletion, (int)efficiency);
     }
@@ -44,25 +41,9 @@ public class FuelDef {
         return FUEL_CONFIG.HEAT_MULTIPLIER.get();
     }
 
-    public FuelDef config()
-    {
-        if(!initialized) {
-            initialized = true;
-            int id = FuelManager.flatFuels().keySet().stream().toList().indexOf(name);
-            NuclearCraft.LOGGER.log(Level.INFO,"FuelDef: "+group+" "+name);
-            efficiency = FUEL_CONFIG.EFFICIENCY.get().get(id);
-            criticality = FUEL_CONFIG.CRITICALITY.get().get(id);
-            forge_energy = FUEL_CONFIG.FE_GENERATION.get().get(id);
-            heat = FUEL_CONFIG.HEAT.get().get(id)*FUEL_CONFIG.FUEL_HEAT_MULTIPLIER.get();
-            depletion = (int) (FUEL_CONFIG.DEPLETION.get().get(id)*FUEL_CONFIG.DEPLETION_MULTIPLIER.get());
-        }
-        return this;
-    }
-
-
     public double getHeatFEMode()
     {
-        return config().heat*FUEL_CONFIG.FUEL_HEAT_MULTIPLIER.get();
+        return heat*FUEL_CONFIG.FUEL_HEAT_MULTIPLIER.get();
     }
 
     public double getHeatBoilingMode() {
@@ -73,6 +54,6 @@ public class FuelDef {
             }
         } catch (NullPointerException ignore) {}
 
-        return Math.ceil(config().heat*mult);
+        return Math.ceil(heat*mult);
     }
 }

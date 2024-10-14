@@ -52,6 +52,7 @@ public class FusionReactorMultiblock extends AbstractNCMultiblock {
                 getBlocksByTagKey(FusionReactor.CASING_BLOCKS.location().toString()),
                 List.of(AIR));
         controllerBE = core;
+        id = "fission_reactor_"+controllerBE.getBlockPos().toShortString();
         controller = new FusionReactorController(controllerBE);
     }
 

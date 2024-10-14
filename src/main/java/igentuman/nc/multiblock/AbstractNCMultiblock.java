@@ -23,7 +23,7 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
     protected int depth;
     protected INCMultiblockController controller;
     public ValidationResult validationResult;
-
+    public String id;
     public int topCasing = 0;
     public int bottomCasing = 0;
     public int leftCasing = 0;
@@ -450,4 +450,16 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
     }
 
 
+    public boolean onBlockChange(BlockPos pos) {
+        if(allBlocks.contains(pos)) {
+            hasToRefresh = true;
+            controller.clearStats();
+            return true;
+        }
+        return false;
+    }
+
+    public String getId() {
+        return id;
+    }
 }

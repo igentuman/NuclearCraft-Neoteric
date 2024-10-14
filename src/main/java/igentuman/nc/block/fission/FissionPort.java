@@ -2,6 +2,7 @@ package igentuman.nc.block.fission;
 
 import igentuman.nc.block.entity.fission.FissionPortBE;
 import igentuman.nc.container.FissionPortContainer;
+import igentuman.nc.handler.MultiblockHandler;
 import igentuman.nc.multiblock.fission.FissionReactor;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
@@ -20,6 +21,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
@@ -126,6 +128,11 @@ public class FissionPort extends HorizontalDirectionalBlock implements EntityBlo
     @Override
     public int getAnalogOutputSignal(BlockState pBlockState, Level pLevel, BlockPos pPos) {
         return pLevel.getBlockEntity(pPos) instanceof FissionPortBE be ? be.analogSignal : 0;
+    }
+
+    @Override
+    public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor){
+        MultiblockHandler.trackBlockChange(pos);
     }
 
 }

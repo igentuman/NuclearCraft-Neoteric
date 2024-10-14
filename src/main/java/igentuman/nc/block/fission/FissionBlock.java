@@ -1,6 +1,7 @@
 package igentuman.nc.block.fission;
 
 import igentuman.nc.block.entity.fission.FissionBE;
+import igentuman.nc.handler.MultiblockHandler;
 import igentuman.nc.multiblock.fission.FissionReactor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -76,6 +77,6 @@ public class FissionBlock extends Block implements EntityBlock {
 
     @Override
     public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor){
-        ((FissionBE)level.getBlockEntity(pos)).onNeighborChange(state,  pos, neighbor);
+        MultiblockHandler.trackBlockChange(pos);
     }
 }

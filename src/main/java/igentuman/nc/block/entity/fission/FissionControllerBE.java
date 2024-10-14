@@ -312,7 +312,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         if (cap == ForgeCapabilities.FLUID_HANDLER && isSteamMode) {
             return contentHandler.getFluidCapability(side);
         }
-        if (cap == ForgeCapabilities.ENERGY && !isSteamMode) {
+        if (cap == ForgeCapabilities.ENERGY && !isSteamMode && side == null) {
             return energy.cast();
         }
         if(isOC2Loaded()) {

@@ -2,6 +2,7 @@ package igentuman.nc.block.fission;
 
 import igentuman.nc.block.entity.fission.FissionControllerBE;
 import igentuman.nc.container.FissionControllerContainer;
+import igentuman.nc.handler.MultiblockHandler;
 import igentuman.nc.multiblock.fission.FissionReactor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -15,6 +16,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
@@ -108,4 +110,8 @@ public class FissionControllerBlock extends HorizontalDirectionalBlock implement
         };
     }
 
+    @Override
+    public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor){
+        MultiblockHandler.trackBlockChange(pos);
+    }
 }

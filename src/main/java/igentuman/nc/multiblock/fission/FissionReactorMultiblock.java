@@ -56,6 +56,7 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
                 getBlocksByTagKey(FissionBlocks.CASING_BLOCKS.location().toString()),
                 getBlocksByTagKey(FissionBlocks.INNER_REACTOR_BLOCKS.location().toString())
         );
+        id = "fission_reactor_"+fissionControllerBE.getBlockPos().toShortString();
         controller = new FissionReactorController(fissionControllerBE);
     }
 

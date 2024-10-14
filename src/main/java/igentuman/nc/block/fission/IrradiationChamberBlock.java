@@ -1,6 +1,7 @@
 package igentuman.nc.block.fission;
 
 import igentuman.nc.block.entity.fission.FissionIrradiationChamberBE;
+import igentuman.nc.handler.MultiblockHandler;
 import igentuman.nc.multiblock.fission.FissionReactor;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
@@ -11,6 +12,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.SoundType;
@@ -71,6 +73,11 @@ public class IrradiationChamberBlock extends Block implements EntityBlock {
     @Override
     public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag) {
         list.add(TextUtils.applyFormat(Component.translatable("irradiation_chamber.descr"), ChatFormatting.AQUA));
+    }
+
+    @Override
+    public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor){
+        MultiblockHandler.trackBlockChange(pos);
     }
 
 }

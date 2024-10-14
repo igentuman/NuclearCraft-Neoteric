@@ -191,9 +191,10 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerial
 
             return this.factory.create(recipeId, inputItems, outputItems, inputFluids,  outputFluids, timeModifier, powerModifier, radiation, 1);
         } catch (Exception e) {
-            NuclearCraft.LOGGER.error("Error reading recipe from packet.", e);
-            throw e;
+            NuclearCraft.LOGGER.error("Error reading recipe from packet.", e, recipeId);
         }
+        //return invalid recipe
+        return this.factory.create(recipeId, new ItemStackIngredient[0], new ItemStackIngredient[0], new FluidStackIngredient[0],  new FluidStackIngredient[0], 0, 0, 0, 1);
     }
 
     @Override

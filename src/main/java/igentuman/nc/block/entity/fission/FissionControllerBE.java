@@ -163,7 +163,6 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         contentHandler.fluidCapability.tanks.get(1).setCapacity(10000);
         contentHandler.setAllowedInputFluids(0, getAllowedCoolants());
         contentHandler.setAllowedInputFluids(1, getAllowedCoolantsOutput());
-
     }
 
     protected List<FluidStack> getAllowedCoolantsOutput() {

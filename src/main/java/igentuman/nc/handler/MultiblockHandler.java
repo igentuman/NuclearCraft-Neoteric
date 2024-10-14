@@ -3,7 +3,6 @@ package igentuman.nc.handler;
 import igentuman.nc.multiblock.AbstractNCMultiblock;
 import net.minecraft.core.BlockPos;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class MultiblockHandler {
@@ -13,8 +12,8 @@ public class MultiblockHandler {
     public static void addMultiblock(AbstractNCMultiblock multiblock) {
         if(!multiblocks.containsKey(multiblock.getId())) {
             multiblocks.put(multiblock.getId(), multiblock);
-        } else if(multiblocks.get(multiblock.getId()) == null) {
-            multiblocks.put(multiblock.getId(), multiblock);
+        } else {
+            multiblocks.putIfAbsent(multiblock.getId(), multiblock);
         }
     }
 
@@ -36,5 +35,9 @@ public class MultiblockHandler {
                 multiblocks.remove(id);
             }
         }
+    }
+
+    public static void removeMultiblock(AbstractNCMultiblock multiblock) {
+        multiblocks.remove(multiblock.getId());
     }
 }

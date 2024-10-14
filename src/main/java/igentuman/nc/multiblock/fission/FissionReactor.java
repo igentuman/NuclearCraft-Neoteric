@@ -106,12 +106,6 @@ public class FissionReactor {
             }
         }
 
-
-        FISSION_BE.put("fission_heat_sink", BLOCK_ENTITIES.register("fission_heat_sink",
-                () -> BlockEntityType.Builder
-                        .of(FissionHeatSinkBE::new, getHSBlocks())
-                        .build(null)));
-
         FISSION_BE.put("fission_moderator", BLOCK_ENTITIES.register("fission_moderator",
                 () -> BlockEntityType.Builder
                         .of(FissionModeratorBE::new,

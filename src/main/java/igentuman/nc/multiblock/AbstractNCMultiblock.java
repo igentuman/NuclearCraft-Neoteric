@@ -1,5 +1,6 @@
 package igentuman.nc.multiblock;
 
+import igentuman.nc.handler.MultiblockHandler;
 import igentuman.nc.util.NCBlockPos;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -15,7 +16,6 @@ import java.util.List;
 
 public abstract class AbstractNCMultiblock implements INCMultiblock {
 
-    protected Class parentBe;
     public boolean hasToRefresh = true;
     protected int refreshCooldown = 50;
     protected int height;
@@ -39,10 +39,15 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
     protected List<BlockPos> controllers = new ArrayList<>();
     protected HashMap<Long, BlockEntity> beCache = new HashMap<>();
     protected HashMap<Long, BlockState> bsCache = new HashMap<>();
+    protected List<BlockPos> allBlocks = new ArrayList<>();
 
     protected AbstractNCMultiblock(List<Block> validOuterBlocks, List<Block> validInnerBlocks) {
         this.validOuterBlocks = validOuterBlocks;
         this.validInnerBlocks = validInnerBlocks;
+    }
+
+    public void dispose() {
+        MultiblockHandler.removeMultiblock(this);
     }
 
     public List<Block> validCornerBlocks() {
@@ -79,7 +84,6 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
     public boolean isFormed() {
         return isFormed;
     }
-    protected List<BlockPos> allBlocks = new ArrayList<>();
 
     @Override
     public List<Block> validOuterBlocks() { return validOuterBlocks;  }
@@ -345,6 +349,7 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
                 ((IMultiblockAttachable) be).setMultiblock(null);
             }
         }
+        dispose();
     }
 
     public BlockPos getForwardPos(int i) {

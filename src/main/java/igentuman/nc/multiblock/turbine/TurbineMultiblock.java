@@ -4,6 +4,7 @@ import igentuman.nc.block.entity.turbine.*;
 import igentuman.nc.block.turbine.TurbineBearingBlock;
 import igentuman.nc.block.turbine.TurbineBladeBlock;
 import igentuman.nc.block.turbine.TurbineRotorBlock;
+import igentuman.nc.handler.MultiblockHandler;
 import igentuman.nc.multiblock.AbstractNCMultiblock;
 import igentuman.nc.multiblock.ValidationResult;
 import igentuman.nc.util.NCBlockPos;
@@ -64,7 +65,7 @@ public class TurbineMultiblock extends AbstractNCMultiblock {
                 getBlocksByTagKey(INNER_TURBINE_BLOCKS.location().toString())
         );
         id = "fission_reactor_"+turbineControllerBE.getBlockPos().toShortString();
-
+        MultiblockHandler.addMultiblock(this);
         controller = new TurbineController(turbineControllerBE);
     }
 

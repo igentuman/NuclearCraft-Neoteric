@@ -4,6 +4,7 @@ import igentuman.nc.block.ElectromagnetBlock;
 import igentuman.nc.block.RFAmplifierBlock;
 import igentuman.nc.block.entity.fusion.FusionCoreBE;
 import igentuman.nc.block.fusion.FusionConnectorBlock;
+import igentuman.nc.handler.MultiblockHandler;
 import igentuman.nc.multiblock.AbstractNCMultiblock;
 import igentuman.nc.multiblock.ValidationResult;
 import igentuman.nc.util.NCBlockPos;
@@ -52,7 +53,8 @@ public class FusionReactorMultiblock extends AbstractNCMultiblock {
                 getBlocksByTagKey(FusionReactor.CASING_BLOCKS.location().toString()),
                 List.of(AIR));
         controllerBE = core;
-        id = "fission_reactor_"+controllerBE.getBlockPos().toShortString();
+        id = "fusion_reactor_"+controllerBE.getBlockPos().toShortString();
+        MultiblockHandler.addMultiblock(this);
         controller = new FusionReactorController(controllerBE);
     }
 

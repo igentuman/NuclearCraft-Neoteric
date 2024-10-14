@@ -1,31 +1,21 @@
 package igentuman.nc.block.turbine;
 
-import igentuman.nc.block.entity.fission.FissionHeatSinkBE;
 import igentuman.nc.block.entity.turbine.TurbineBE;
-import igentuman.nc.block.entity.turbine.TurbineBladeBE;
 import igentuman.nc.block.entity.turbine.TurbineCoilBE;
-import igentuman.nc.multiblock.fission.FissionBlocks;
-import igentuman.nc.multiblock.fission.HeatSinkDef;
 import igentuman.nc.multiblock.turbine.CoilDef;
 import igentuman.nc.multiblock.turbine.TurbineRegistration;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.DirectionalBlock;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -42,7 +32,6 @@ import java.util.Objects;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.handler.event.client.InputEvents.DESCRIPTIONS_SHOW;
-import static igentuman.nc.multiblock.fission.FissionReactor.FISSION_BE;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BE;
 import static igentuman.nc.util.TextUtils.convertToName;
 

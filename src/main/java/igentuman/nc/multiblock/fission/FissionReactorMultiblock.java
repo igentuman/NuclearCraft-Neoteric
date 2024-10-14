@@ -1,11 +1,14 @@
 package igentuman.nc.multiblock.fission;
 
 import igentuman.nc.block.entity.fission.*;
+import igentuman.nc.block.fission.HeatSinkBlock;
+import igentuman.nc.handler.MultiblockHandler;
 import igentuman.nc.multiblock.AbstractNCMultiblock;
 import igentuman.nc.util.NCBlockPos;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.*;
@@ -44,7 +47,7 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
     public int minDepth() { return FISSION_CONFIG.MIN_SIZE.get(); }
 
 
-    public HashMap<BlockPos, FissionHeatSinkBE> activeHeatSinks = new HashMap<>();
+    public HashMap<BlockPos, HeatSinkBlock> activeHeatSinks = new HashMap<>();
     private List<BlockPos> moderators = new ArrayList<>();
     private List<BlockPos> irradiators = new ArrayList<>();
     public List<BlockPos> heatSinks = new ArrayList<>();
@@ -57,14 +60,15 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
                 getBlocksByTagKey(FissionBlocks.INNER_REACTOR_BLOCKS.location().toString())
         );
         id = "fission_reactor_"+fissionControllerBE.getBlockPos().toShortString();
+        MultiblockHandler.addMultiblock(this);
         controller = new FissionReactorController(fissionControllerBE);
     }
 
-    public Map<BlockPos, FissionHeatSinkBE> activeHeatSinks() {
+    public Map<BlockPos, HeatSinkBlock> activeHeatSinks() {
         if(activeHeatSinks.isEmpty()) {
             for(BlockPos hpos: heatSinks) {
-                BlockEntity be = getBlockEntity(hpos);
-                if(be instanceof FissionHeatSinkBE hs) {
+                Block block = getBlockState(hpos).getBlock();
+                if(block instanceof HeatSinkBlock hs) {
                     if(hs.isValid(true)) {
                         activeHeatSinks.put(hpos, hs);
                     }
@@ -88,7 +92,7 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
     }
 
     protected boolean isHeatSink(BlockPos pos) {
-        return getBlockEntity(pos) instanceof FissionHeatSinkBE;
+        return getBlockState(pos).getBlock() instanceof HeatSinkBlock;
     }
 
     protected boolean isFuelCell(BlockPos pos) {
@@ -183,8 +187,8 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
     public double getHeatSinkCooling(boolean forceCheck) {
         if(refreshInnerCacheFlag || forceCheck) {
             heatSinkCooling = 0;
-            for (FissionHeatSinkBE hs : activeHeatSinks().values()) {
-                heatSinkCooling += hs.getHeat();
+            for (HeatSinkBlock hs : activeHeatSinks().values()) {
+                heatSinkCooling += hs.heat;
             }
         }
         return heatSinkCooling;

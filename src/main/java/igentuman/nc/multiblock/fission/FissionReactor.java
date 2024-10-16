@@ -37,24 +37,8 @@ public class FissionReactor {
             () -> IForgeMenuType.create((windowId, inv, data) -> new FissionPortContainer(windowId, data.readBlockPos(), inv))
             );
 
-
-
     public static void init() {
         blocks();
-    }
-    public static List<Block> moderators = new ArrayList<>();
-    public static List<Block> moderators() {
-        if(moderators.isEmpty()) {
-            Block graphite = getNCBlock("graphite");
-            if( ! graphite.equals(Blocks.AIR)) {
-                moderators.add(graphite);
-            }
-            Block beryllium = getNCBlock("beryllium");
-            if( ! beryllium.equals(Blocks.AIR)) {
-                moderators.add(beryllium);
-            }
-        }
-        return moderators;
     }
 
     public static void blocks()

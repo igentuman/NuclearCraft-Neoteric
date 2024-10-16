@@ -5,6 +5,7 @@ import igentuman.nc.handler.MultiblockHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
@@ -16,6 +17,12 @@ public class FissionCasingBlock extends Block {
     public FissionCasingBlock(Properties pProperties) {
         super(pProperties.sound(SoundType.METAL));
     }
+
+    @Override
+    public boolean propagatesSkylightDown(BlockState pState, BlockGetter pLevel, BlockPos pPos) {
+        return asItem().toString().matches(".*glass");
+    }
+
 
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
@@ -32,4 +39,5 @@ public class FissionCasingBlock extends Block {
     public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor){
         MultiblockHandler.trackBlockChange(pos);
     }
+
 }

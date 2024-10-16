@@ -10,6 +10,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import java.util.*;
 import static igentuman.nc.setup.registration.Tags.blockTag;
 import static igentuman.nc.setup.registration.Tags.itemTag;
+import static igentuman.nc.util.TagUtil.getBlocksByTagKey;
 
 public class FissionBlocks {
 
@@ -33,8 +34,13 @@ public class FissionBlocks {
             //"casing_slope"
     );
 
+    public static final List<Block> blocks = moderators();
+
+    public static List<Block> moderators() {
+        return getBlocksByTagKey(FissionBlocks.MODERATORS_BLOCKS.location().toString());
+    }
+
     public static final HashMap<String, HeatSinkDef> heatsinks = heatsinks();
-    private static HashMap<String, Double> heat;
 
     public static HashMap<String, HeatSinkDef> heatsinks() {
         HashMap<String, HeatSinkDef> tmp = new HashMap<>();
@@ -53,19 +59,4 @@ public class FissionBlocks {
         return tmp;
     }
 
-    public static HashMap<String, Double> initialHeat()
-    {
-        if(heat == null) {
-            heat = new HashMap<>();
-            for(String name: heatsinks().keySet()) {
-                if(name.contains("empty")) continue;
-                heat.put(name, heatsinks().get(name).heat);
-            }
-        }
-        return heat;
-    }
-
-    public static List<String> initialPlacementRules(String name) {
-        return List.of(heatsinks().get(name).rules);
-    }
 }

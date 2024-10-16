@@ -5,7 +5,6 @@ import igentuman.nc.handler.MultiblockHandler;
 import igentuman.nc.multiblock.fission.FissionReactor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -16,8 +15,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -33,23 +30,9 @@ public class FissionBlock extends Block implements EntityBlock {
         return this.defaultBlockState();
     }
 
-    @Override
-    @Deprecated
-    public boolean skipRendering(@NotNull BlockState state, @NotNull BlockState adjacentBlockState, @NotNull Direction side) {
-        return adjacentBlockState.getBlock().equals(this) && asItem().toString().matches(".*glass|.*cell.*|.*slope.*");
-    }
-
     private String blockEntityCode()
     {
-        String code = ForgeRegistries.BLOCKS.getKey(this).getPath();
-
-        if(code.matches("graphite.*|beryllium.*")) {
-            return "fission_moderator";
-        }
-        if(code.contains("fuel_cell")) {
-            return "fission_reactor_fuel_cell";
-        }
-        return code;
+        return ForgeRegistries.BLOCKS.getKey(this).getPath();
     }
 
     @Nullable

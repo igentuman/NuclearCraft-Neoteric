@@ -1,5 +1,8 @@
 package igentuman.nc.handler.event.client;
 
+import igentuman.nc.multiblock.fission.FissionBlocks;
+import igentuman.nc.multiblock.fission.FissionReactor;
+import igentuman.nc.multiblock.fission.FissionReactorMultiblock;
 import igentuman.nc.radiation.ItemRadiation;
 import igentuman.nc.radiation.ItemShielding;
 import igentuman.nc.radiation.RadiationCleaningItems;
@@ -20,7 +23,6 @@ import java.util.Locale;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.handler.config.CommonConfig.ENERGY_STORAGE;
 import static igentuman.nc.handler.config.FissionConfig.FISSION_CONFIG;
-import static igentuman.nc.multiblock.fission.FissionReactor.moderators;
 import static net.minecraft.world.item.Items.FILLED_MAP;
 import static net.minecraft.world.item.Items.LIGHTNING_ROD;
 
@@ -43,7 +45,7 @@ public class TooltipHandler {
     }
 
     private static void addModeratorTooltip(ItemTooltipEvent event, ItemStack itemStack) {
-        for(Block block: moderators) {
+        for(Block block: FissionBlocks.moderators()) {
             if(itemStack.is(block.asItem())) {
                 event.getToolTip().add(Component.translatable("tooltip.nc.moderator.desc", FISSION_CONFIG.MODERATOR_FE_MULTIPLIER.get(), FISSION_CONFIG.MODERATOR_HEAT_MULTIPLIER.get()).withStyle(ChatFormatting.GOLD));
             }

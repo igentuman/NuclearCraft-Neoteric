@@ -1,7 +1,9 @@
 package igentuman.nc.multiblock.fission;
 
 import igentuman.nc.block.entity.fission.*;
+import igentuman.nc.block.fission.FissionFuelCellBlock;
 import igentuman.nc.block.fission.HeatSinkBlock;
+import igentuman.nc.block.fission.IrradiationChamberBlock;
 import igentuman.nc.handler.MultiblockHandler;
 import igentuman.nc.multiblock.AbstractNCMultiblock;
 import igentuman.nc.util.NCBlockPos;
@@ -46,6 +48,7 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
     @Override
     public int minDepth() { return FISSION_CONFIG.MIN_SIZE.get(); }
 
+    private final List<Block> validModerators;
 
     public HashMap<BlockPos, HeatSinkBlock> activeHeatSinks = new HashMap<>();
     private List<BlockPos> moderators = new ArrayList<>();
@@ -60,6 +63,7 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
                 getBlocksByTagKey(FissionBlocks.INNER_REACTOR_BLOCKS.location().toString())
         );
         id = "fission_reactor_"+fissionControllerBE.getBlockPos().toShortString();
+        validModerators = getBlocksByTagKey(FissionBlocks.MODERATORS_BLOCKS.location().toString());
         MultiblockHandler.addMultiblock(this);
         controller = new FissionReactorController(fissionControllerBE);
     }
@@ -69,7 +73,7 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
             for(BlockPos hpos: heatSinks) {
                 Block block = getBlockState(hpos).getBlock();
                 if(block instanceof HeatSinkBlock hs) {
-                    if(hs.isValid(true)) {
+                    if(hs.isValid(getLevel(), hpos)) {
                         activeHeatSinks.put(hpos, hs);
                     }
                 }
@@ -79,16 +83,16 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
         return activeHeatSinks;
     }
 
-    public static boolean isModerator(BlockPos pos, Level level) {
-        return  level.getBlockEntity(pos) instanceof FissionModeratorBE;
+    public boolean isModerator(BlockPos pos, Level level) {
+        return  validModerators.contains(level.getBlockState(pos).getBlock());
     }
 
     public boolean isModerator(BlockPos pos) {
-        return  getBlockEntity(pos) instanceof FissionModeratorBE;
+        return  validModerators.contains(getBlockState(pos).getBlock());
     }
 
     public boolean isIrradiator(BlockPos pos) {
-        return  getBlockEntity(pos) instanceof FissionIrradiationChamberBE;
+        return  getBlockState(pos).getBlock() instanceof IrradiationChamberBlock;
     }
 
     protected boolean isHeatSink(BlockPos pos) {
@@ -96,7 +100,7 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
     }
 
     protected boolean isFuelCell(BlockPos pos) {
-        return getBlockEntity(pos) instanceof FissionFuelCellBE;
+        return getBlockState(pos).getBlock() instanceof FissionFuelCellBlock;
     }
 
     private boolean isAttachedToFuelCell(BlockPos toCheck) {
@@ -123,13 +127,12 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
 
     @Override
     protected boolean processInnerBlock(BlockPos toCheck) {
-        BlockEntity be = getBlockEntity(toCheck);
         if(isFuelCell(toCheck)) {
             fuelCells.add(toCheck);
-            int moderatorAttachments = ((FissionFuelCellBE) be).getAttachedModeratorsCount(true);
+            int moderatorAttachments = getAttachedModeratorsToFuelCell(toCheck);
             ((FissionControllerBE<?>)controller().controllerBE()).fuelCellMultiplier += countAdjuscentFuelCells((NCBlockPos) toCheck, 3);
             ((FissionControllerBE<?>)controller().controllerBE()).moderatorCellMultiplier += (countAdjuscentFuelCells((NCBlockPos) toCheck, 1)+1)*moderatorAttachments;
-            ((FissionControllerBE<?>)controller().controllerBE()).moderatorAttacmentsCount += moderatorAttachments;
+            ((FissionControllerBE<?>)controller().controllerBE()).moderatorAttachments += moderatorAttachments;
         }
         if(isModerator(toCheck)) {
             if(isAttachedToFuelCell(toCheck)) {
@@ -146,11 +149,25 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
         return true;
     }
 
+    private int getAttachedModeratorsToFuelCell(BlockPos toCheck) {
+        int count = 0;
+        for(Direction d : Direction.values()) {
+            if(isModerator(toCheck.relative(d))) {
+                count++;
+            }
+        }
+        return count;
+    }
+
     private void countIrradiationConnections(BlockPos toCheck) {
-        FissionIrradiationChamberBE be = (FissionIrradiationChamberBE) getBlockEntity(toCheck);
-        assert be != null;
-        be.countIrradiationConnections();
-        irradiationConnections += be.irradiationConnections;
+        for(Direction d: Direction.values()) {
+            if(isModerator(toCheck.relative(d))) {
+                Block bs = getBlockState(toCheck.relative(d, 2)).getBlock();
+                if(bs instanceof FissionFuelCellBlock) {
+                    irradiationConnections++;
+                }
+            }
+        }
     }
 
     private int countAdjuscentFuelCells(NCBlockPos toCheck, int step) {

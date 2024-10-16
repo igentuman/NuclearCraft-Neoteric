@@ -83,7 +83,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     @NBTField
     public int heatSinksCount = 0;
     @NBTField
-    public int moderatorAttacmentsCount = 0;
+    public int moderatorAttachments = 0;
     @NBTField
     public boolean isCasingValid = false;
     @NBTField

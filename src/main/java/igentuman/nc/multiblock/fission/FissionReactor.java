@@ -75,10 +75,6 @@ public class FissionReactor {
                                 .build(null)));
             } else if(name.contains("irradiation")) {
                 FISSION_BLOCKS.put(key, BLOCKS.register(key, () -> new IrradiationChamberBlock(REACTOR_BLOCKS_PROPERTIES)));
-                FISSION_BE.put(key, BLOCK_ENTITIES.register(key,
-                        () -> BlockEntityType.Builder
-                                .of(FissionIrradiationChamberBE::new, FISSION_BLOCKS.get(key).get())
-                                .build(null)));
             } else {
                 BlockBehaviour.Properties props;
                 if(key.matches(".*glass|.*cell.*")) {
@@ -105,19 +101,6 @@ public class FissionReactor {
                 hsBlocks.add(FISSION_BLOCKS.get(name + "_heat_sink"));
             }
         }
-
-        FISSION_BE.put("fission_moderator", BLOCK_ENTITIES.register("fission_moderator",
-                () -> BlockEntityType.Builder
-                        .of(FissionModeratorBE::new,
-                                moderators().toArray(new Block[0]))
-                        .build(null)));
-
-        FISSION_BE.put("fission_reactor_fuel_cell", BLOCK_ENTITIES.register("fission_reactor_fuel_cell",
-                () -> BlockEntityType.Builder
-                        .of(FissionFuelCellBE::new,
-                                FISSION_BLOCKS.get("fission_reactor_solid_fuel_cell").get())
-                        .build(null)));
-
     }
 
     private static List<RegistryObject<Block>> hsBlocks = new ArrayList<>();

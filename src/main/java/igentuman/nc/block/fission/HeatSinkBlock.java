@@ -138,7 +138,7 @@ public class HeatSinkBlock extends Block {
             Block block = level.getBlockState(pos).getBlock();
             if(block instanceof HeatSinkBlock) {
                 int id = level.random.nextInt(10);
-                if(isValid(true)) {
+                if(isValid(level, pos)) {
                     player.sendSystemMessage(Component.translatable("message.heat_sink.valid"+id));
                 } else {
                     player.sendSystemMessage(Component.translatable("message.heat_sink.invalid"+id));
@@ -166,7 +166,7 @@ public class HeatSinkBlock extends Block {
         MultiblockHandler.trackBlockChange(pos);
     }
 
-    public boolean isValid(boolean b) {
-        return isValid;
+    public boolean isValid(Level level, BlockPos pos) {
+        return def.getValidator().isValid(level, pos);
     }
 }

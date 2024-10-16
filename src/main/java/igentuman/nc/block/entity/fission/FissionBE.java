@@ -44,8 +44,6 @@ public class FissionBE extends NuclearCraftBE implements IMultiblockAttachable {
     public byte validationRuns = 0;
     public FissionControllerBE<?> controller;
 
-    public boolean hasToTouchFuelCell = true;
-
     public FissionBE(BlockPos pPos, BlockState pBlockState, String name) {
         super(FissionReactor.FISSION_BE.get(name).get(), pPos, pBlockState);
     }
@@ -68,53 +66,6 @@ public class FissionBE extends NuclearCraftBE implements IMultiblockAttachable {
     {
         if(controller() != null) controller().invalidateCache();
         super.setRemoved();
-    }
-
-    public boolean isDirectlyAttachedToFuelCell(BlockPos ignoredPos) {
-        for (Direction dir : Direction.values()) {
-            if(dir.getOpposite().getNormal() == ignoredPos) {
-                continue;
-            }
-            BlockEntity be = getLevel().getBlockEntity(getBlockPos().relative(dir));
-            if (be instanceof FissionFuelCellBE) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean isValidating = false;
-    public boolean isAttachedToFuelCell() {
-        if(isValidating) {
-            return attachedToFuelCell;
-        }
-        if(refreshCacheFlag || validationRuns < 2) {
-            validationRuns++;
-            if(refreshCacheFlag) {
-                attachedToFuelCell = false;
-                validationRuns = 0;
-            }
-            NCBlockPos ps = NCBlockPos.of(getBlockPos());
-            for (Direction dir : Direction.values()) {
-                ps.revert().relative(dir);
-                BlockEntity be = getLevel().getBlockEntity(ps);
-                if (be instanceof FissionFuelCellBE) {
-                    attachedToFuelCell = true;
-                    break;
-                }
-                if(be instanceof FissionBE) {
-                    isValidating = true;
-                    boolean attached = (refreshCacheFlag ? ((FissionBE) be).isDirectlyAttachedToFuelCell(worldPosition) : ((FissionBE) be).attachedToFuelCell)
-                            || attachedToFuelCell;
-                    if(attached) {
-                        attachedToFuelCell = true;
-                        break;
-                    }
-                }
-            }
-        }
-        isValidating = false;
-        return attachedToFuelCell;
     }
 
     public void onNeighborChange(BlockState state, BlockPos pos, BlockPos neighbor) {

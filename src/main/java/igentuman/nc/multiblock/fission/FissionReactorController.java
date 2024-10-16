@@ -17,7 +17,7 @@ public class FissionReactorController implements INCMultiblockController {
 
     @Override
     public void clearStats() {
-        controllerBE().moderatorAttacmentsCount = 0;
+        controllerBE().moderatorAttachments = 0;
         controllerBE().moderatorsCount = 0;
         controllerBE().heatSinkCooling = 0;
         controllerBE().fuelCellsCount = 0;

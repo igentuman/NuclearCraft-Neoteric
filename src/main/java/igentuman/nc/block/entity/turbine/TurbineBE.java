@@ -1,14 +1,11 @@
 package igentuman.nc.block.entity.turbine;
 
 import igentuman.nc.block.entity.NuclearCraftBE;
-import igentuman.nc.block.entity.fission.FissionFuelCellBE;
 import igentuman.nc.multiblock.AbstractNCMultiblock;
 import igentuman.nc.multiblock.IMultiblockAttachable;
 import igentuman.nc.multiblock.turbine.TurbineRegistration;
 import igentuman.nc.multiblock.turbine.TurbineMultiblock;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class TurbineBE extends NuclearCraftBE implements IMultiblockAttachable {

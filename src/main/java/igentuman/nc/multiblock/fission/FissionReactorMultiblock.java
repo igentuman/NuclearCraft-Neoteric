@@ -4,14 +4,13 @@ import igentuman.nc.block.entity.fission.*;
 import igentuman.nc.block.fission.FissionFuelCellBlock;
 import igentuman.nc.block.fission.HeatSinkBlock;
 import igentuman.nc.block.fission.IrradiationChamberBlock;
-import igentuman.nc.handler.MultiblockHandler;
+import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.AbstractNCMultiblock;
 import igentuman.nc.util.NCBlockPos;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.*;
 

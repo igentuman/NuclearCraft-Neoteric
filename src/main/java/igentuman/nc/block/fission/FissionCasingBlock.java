@@ -1,7 +1,6 @@
 package igentuman.nc.block.fission;
 
-import igentuman.nc.block.entity.fission.FissionBE;
-import igentuman.nc.handler.MultiblockHandler;
+import igentuman.nc.multiblock.MultiblockHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;

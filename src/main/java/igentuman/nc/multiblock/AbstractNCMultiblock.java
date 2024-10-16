@@ -1,6 +1,5 @@
 package igentuman.nc.multiblock;
 
-import igentuman.nc.handler.MultiblockHandler;
 import igentuman.nc.util.NCBlockPos;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -28,7 +27,8 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
     public int bottomCasing = 0;
     public int leftCasing = 0;
     public int rightCasing = 0;
-
+    private NCBlockPos bottomLeft;
+    private NCBlockPos topRight;
     protected boolean outerValid = false;
     public boolean refreshOuterCacheFlag = true;
     public boolean refreshInnerCacheFlag = true;
@@ -283,6 +283,24 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
 
     protected void processOuterBlock(BlockPos pos) {
         attachMultiblock(pos);
+        if(topRight == null) {
+            topRight = new NCBlockPos(pos);
+            topRight.offset(1,1,1);
+        }
+        if(bottomLeft == null) {
+            bottomLeft = new NCBlockPos(pos);
+            topRight.offset(-1,-1,-1);
+        }
+        if(pos.getX() <= bottomLeft.getX() && pos.getY() <= bottomLeft.getY() && pos.getZ() <= bottomLeft.getZ()) {
+            bottomLeft.x(pos.getX()-1);
+            bottomLeft.y(pos.getY()-1);
+            bottomLeft.z(pos.getZ()-1);
+        }
+        if(pos.getX() >= topRight.getX() && pos.getY() >= topRight.getY() && pos.getZ() >= topRight.getZ()) {
+            topRight.x(pos.getX()+1);
+            topRight.y(pos.getY()+1);
+            topRight.z(pos.getZ()+1);
+        }
         allBlocks.add(new NCBlockPos(pos));
         if(getBlockState(pos).getBlock().asItem().toString().contains("controller")) {
             controllers.add(pos);
@@ -454,9 +472,15 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
         controller.clearStats();
     }
 
-
     public boolean onBlockChange(BlockPos pos) {
         if(allBlocks.contains(pos)) {
+            hasToRefresh = true;
+            controller.clearStats();
+            return true;
+        }
+        if(bottomLeft == null || topRight == null) return false;
+        if(pos.getX() >= bottomLeft.getX() && pos.getY() >= bottomLeft.getY() && pos.getZ() >= bottomLeft.getZ()
+                && pos.getX() <= topRight.getX() && pos.getY() <= topRight.getY() && pos.getZ() <= topRight.getZ()) {
             hasToRefresh = true;
             controller.clearStats();
             return true;

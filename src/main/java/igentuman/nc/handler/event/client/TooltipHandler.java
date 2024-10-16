@@ -1,8 +1,6 @@
 package igentuman.nc.handler.event.client;
 
 import igentuman.nc.multiblock.fission.FissionBlocks;
-import igentuman.nc.multiblock.fission.FissionReactor;
-import igentuman.nc.multiblock.fission.FissionReactorMultiblock;
 import igentuman.nc.radiation.ItemRadiation;
 import igentuman.nc.radiation.ItemShielding;
 import igentuman.nc.radiation.RadiationCleaningItems;

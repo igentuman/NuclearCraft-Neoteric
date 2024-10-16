@@ -1,6 +1,5 @@
-package igentuman.nc.handler;
+package igentuman.nc.multiblock;
 
-import igentuman.nc.multiblock.AbstractNCMultiblock;
 import net.minecraft.core.BlockPos;
 
 import java.util.HashMap;

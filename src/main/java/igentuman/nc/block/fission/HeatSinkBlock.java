@@ -1,6 +1,6 @@
 package igentuman.nc.block.fission;
 
-import igentuman.nc.handler.MultiblockHandler;
+import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.fission.FissionBlocks;
 import igentuman.nc.multiblock.fission.HeatSinkDef;
 import igentuman.nc.util.TextUtils;

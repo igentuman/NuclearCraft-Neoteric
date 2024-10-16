@@ -2,7 +2,7 @@ package igentuman.nc.block.fission;
 
 import igentuman.nc.block.entity.fission.FissionControllerBE;
 import igentuman.nc.container.FissionControllerContainer;
-import igentuman.nc.handler.MultiblockHandler;
+import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.fission.FissionReactor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

@@ -4,25 +4,20 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import igentuman.nc.NuclearCraft;
-import igentuman.nc.handler.config.CommonConfig;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.type.EmptyRecipe;
 import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.ingredient.creator.IngredientCreatorAccess;
 import igentuman.nc.util.JsonConstants;
-import igentuman.nc.util.SerializerHelper;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
 
 import static igentuman.nc.recipes.NcRecipeSerializers.SERIALIZERS;
-import static igentuman.nc.util.TagUtil.getItemsByTagKey;
 
 public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerializer<RECIPE> {
 
@@ -55,7 +50,7 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerial
             }
         } catch (Exception ex) {
             NuclearCraft.LOGGER.warn("Unable to parse input for recipe: "+recipeId);
-            return emptyRecipe();
+            return emptyRecipe(recipeId);
         }
 
         outputItems = new ItemStackIngredient[0];
@@ -81,7 +76,7 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerial
             }
         } catch (Exception ex) {
             NuclearCraft.LOGGER.warn("Unable to parse output for recipe: "+recipeId);
-            return emptyRecipe();
+            return emptyRecipe(recipeId);
         }
 
         inputFluids = new FluidStackIngredient[0];
@@ -102,7 +97,7 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerial
             }
         } catch (Exception ex) {
             NuclearCraft.LOGGER.warn("Unable to parse input fluid for recipe: "+recipeId);
-            return emptyRecipe();
+            return emptyRecipe(recipeId);
         }
 
         outputFluids = new FluidStackIngredient[0];
@@ -123,7 +118,7 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerial
             }
         } catch (Exception ex) {
             NuclearCraft.LOGGER.warn("Unable to parse output fluid for recipe: "+recipeId);
-            return emptyRecipe();
+            return emptyRecipe(recipeId);
         }
         double timeModifier = 1D;
         double powerModifier = 1D;
@@ -145,8 +140,8 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerial
         return this.factory.create(recipeId, inputItems, outputItems, inputFluids, outputFluids, timeModifier, powerModifier, radiation, rarityModifier);
     }
 
-    private RECIPE emptyRecipe() {
-        return (RECIPE) new EmptyRecipe();
+    private RECIPE emptyRecipe(@NotNull ResourceLocation recipeId) {
+        return (RECIPE) new EmptyRecipe(recipeId);
     }
 
 

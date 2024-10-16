@@ -1,6 +1,8 @@
 package igentuman.nc.multiblock.fission;
 
-import igentuman.nc.handler.config.CommonConfig;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import igentuman.nc.NuclearCraft;
 import igentuman.nc.util.TagUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -19,7 +21,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import static igentuman.nc.NuclearCraft.MODID;
-import static igentuman.nc.handler.config.FissionConfig.HEAT_SINK_CONFIG;
 import static igentuman.nc.multiblock.fission.FissionReactor.FISSION_BLOCKS;
 import static igentuman.nc.setup.registration.Registries.ITEM_REGISTRY;
 
@@ -28,10 +29,26 @@ public class HeatSinkDef {
     public String name = "";
     public String[] rules;
 
+    public static HeatSinkDef of(JsonObject asJsonObject) {
+        HeatSinkDef def = new HeatSinkDef();
+        try {
+            def.heat = asJsonObject.get("heat").getAsDouble();
+            def.name = asJsonObject.get("type").getAsString();
+            JsonArray rules = asJsonObject.getAsJsonArray("placement_rule");
+            String[] ruleArray = new String[rules.size()];
+            for (int i = 0; i < rules.size(); i++) {
+                ruleArray[i] = rules.get(i).getAsString();
+            }
+            def.rules = ruleArray;
+            return def;
+        } catch (Exception e) {
+            NuclearCraft.LOGGER.error("Error parsing heatsink definition: " + e.getMessage());
+            return null;
+        }
+    }
+
     public Validator getValidator() {
         if(validator == null) {
-            rules = HEAT_SINK_CONFIG.PLACEMENT_RULES.get(name).get()
-                    .toArray(new String[ HEAT_SINK_CONFIG.PLACEMENT_RULES.get(name).get().size()]);
             initCondition(rules);
         }
         return validator;
@@ -40,14 +57,8 @@ public class HeatSinkDef {
     protected Validator validator;
     private boolean initialized = false;
 
-    public HeatSinkDef() {
+    private HeatSinkDef() {
 
-    }
-
-    public HeatSinkDef(String name, int h, String...rules) {
-        heat = h;
-        this.name = name;
-        this.rules = rules;
     }
 
     private void initCondition(String[] rules) {
@@ -107,25 +118,8 @@ public class HeatSinkDef {
         return tmp;
     }
 
-    public HeatSinkDef(int i) {
-        heat = i;
-    }
-
-    public HeatSinkDef config()
-    {
-        if(!CommonConfig.isLoaded()) {
-            return this;
-        }
-        if(!initialized) {
-            initialized = true;
-            int id = FissionBlocks.heatsinks.keySet().stream().toList().indexOf(name);
-            heat =  HEAT_SINK_CONFIG.HEAT.get().get(id);
-        }
-        return this;
-    }
-
     public double getHeat() {
-        return config().heat;
+        return heat;
     }
 
     public boolean mustdDirectlyTouchFuelCell() {

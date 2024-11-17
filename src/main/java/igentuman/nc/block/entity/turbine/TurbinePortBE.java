@@ -155,7 +155,7 @@ public class TurbinePortBE extends TurbineBE {
 
     @Override
     public TurbineControllerBE<?> controller() {
-        if(NuclearCraft.instance.isNcBeStopped || (getLevel().getServer() != null && !getLevel().getServer().isRunning())) return null;
+        if(NuclearCraft.instance.isNcBeStopped || (!getLevel().isClientSide() && getLevel().getServer() != null && !getLevel().getServer().isRunning())) return null;
         if(getLevel().isClientSide && controllerPos != null) {
             return (TurbineControllerBE<?>) getLevel().getBlockEntity(controllerPos);
         }

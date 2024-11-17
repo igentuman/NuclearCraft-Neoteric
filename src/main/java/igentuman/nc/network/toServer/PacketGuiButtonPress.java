@@ -55,7 +55,7 @@ public class PacketGuiButtonPress implements INcPacket {
                 if (!(be instanceof FissionPortBE port)) {
                     return;
                 }
-                port.toggleComparatorMode();
+                port.toggleRedstoneMode();
                 break;
         }
     }

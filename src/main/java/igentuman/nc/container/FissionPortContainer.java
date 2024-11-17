@@ -1,5 +1,6 @@
 package igentuman.nc.container;
 
+import igentuman.nc.block.entity.fission.FissionControllerBE;
 import igentuman.nc.block.entity.fission.FissionPortBE;
 import igentuman.nc.container.elements.NCSlotItemHandler;
 import igentuman.nc.multiblock.fission.FissionReactor;
@@ -36,8 +37,9 @@ public class FissionPortContainer extends AbstractContainerMenu {
         this.playerEntity = playerInventory.player;
         this.playerInventory =  new InvWrapper(playerInventory);
         portBE = (FissionPortBE) playerEntity.getCommandSenderWorld().getBlockEntity(pos);
-
+        slotIndex = 0;
         layoutPlayerInventorySlots();
+        FissionControllerBE<?> controller = portBE.controller();
         portBE.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
             addSlot(new NCSlotItemHandler.Input(h, 0, 56, 35));
         });
@@ -52,26 +54,18 @@ public class FissionPortContainer extends AbstractContainerMenu {
 
     @Override
     public ItemStack quickMoveStack(Player pPlayer, int index) {
+        if(portBE.controller() == null) return ItemStack.EMPTY;
         ItemStack itemstack = ItemStack.EMPTY;
         Slot slot = this.slots.get(index);
         if (slot != null && slot.hasItem()) {
             ItemStack stack = slot.getItem();
             itemstack = stack.copy();
-            if (index == 0) {
-                if (!this.moveItemStackTo(stack, 1, 37, true)) {
+            if(slot instanceof NCSlotItemHandler.Output || slot instanceof NCSlotItemHandler.Input) {
+                if (!this.moveItemStackTo(stack, 0, 35, true)) {
                     return ItemStack.EMPTY;
                 }
-                slot.onQuickCraft(stack, itemstack);
             } else {
-                if (ForgeHooks.getBurnTime(stack, RecipeType.SMELTING) > 0) {
-                    if (!this.moveItemStackTo(stack, 0, 1, false)) {
-                        return ItemStack.EMPTY;
-                    }
-                } else if (index < 28) {
-                    if (!this.moveItemStackTo(stack, 28, 37, false)) {
-                        return ItemStack.EMPTY;
-                    }
-                } else if (index < 37 && !this.moveItemStackTo(stack, 1, 28, false)) {
+                if (!this.moveItemStackTo(stack, slots.size()-3, slots.size()-1, true)) {
                     return ItemStack.EMPTY;
                 }
             }
@@ -144,7 +138,7 @@ public class FissionPortContainer extends AbstractContainerMenu {
     }
 
     public byte getComparatorMode() {
-        return portBE.comparatorMode;
+        return portBE.redstoneMode;
     }
 
     public byte getAnalogSignalStrength() {

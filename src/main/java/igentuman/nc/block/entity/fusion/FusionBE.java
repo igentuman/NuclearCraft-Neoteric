@@ -55,7 +55,7 @@ public class FusionBE extends NuclearCraftBE implements IMultiblockAttachable {
 
     public FusionCoreBE<?> controller() {
 
-       if (NuclearCraft.instance.isNcBeStopped || (Objects.requireNonNull(getLevel()).getServer() != null && !getLevel().getServer().isRunning())) return null;
+       if (NuclearCraft.instance.isNcBeStopped || (!getLevel().isClientSide() && Objects.requireNonNull(getLevel()).getServer() != null && !getLevel().getServer().isRunning())) return null;
 
         if(getLevel().isClientSide() && corePos != null) {
             return (FusionCoreBE<?>) getLevel().getBlockEntity(corePos);

@@ -47,10 +47,9 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.*;
 
 import static igentuman.nc.block.fission.FissionControllerBlock.POWERED;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
@@ -115,6 +114,9 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     public boolean powered = false;
     @NBTField
     public double moderationLevel = 1D;
+    @NBTField
+    public boolean enabledByController = false;
+
     protected boolean forceShutdown = false;
     public int fuelCellMultiplier = 1;
     public int moderatorCellMultiplier = 1;
@@ -148,6 +150,17 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
             }
         }
         return allowedInputs;
+    }
+
+
+
+    public int getRedstoneSignal() {
+        return Objects.requireNonNull(getLevel()).getBestNeighborSignal(worldPosition);
+    }
+
+    public void toggleReactor(boolean mode) {
+        controllerEnabled = mode || getRedstoneSignal() > 0;
+        enabledByController = mode;
     }
 
     public FissionControllerBE(BlockPos pPos, BlockState pBlockState) {
@@ -379,6 +392,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         controllerEnabled = !forceShutdown && controllerEnabled;
 
         if (multiblock().isFormed()) {
+            trackChanges(updateModerationLevel());
             trackChanges(contentHandler.tick());
             if(controllerEnabled) {
                 powered = processReaction();
@@ -583,13 +597,41 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     }
 
     public double moderatorsHeat() {
-        return recipeInfo.heat * moderatorCellMultiplier * (FISSION_CONFIG.MODERATOR_HEAT_MULTIPLIER.get() / 100);
+        return Math.max(0.25, getModerationLevel()) * recipeInfo.heat * moderatorCellMultiplier * (FISSION_CONFIG.MODERATOR_HEAT_MULTIPLIER.get() / 100);
     }
 
     public double moderatorsFE() {
-        return recipeInfo.energy * moderatorCellMultiplier * (FISSION_CONFIG.MODERATOR_FE_MULTIPLIER.get() / 100);
+        return getModerationLevel() * recipeInfo.energy * moderatorCellMultiplier * (FISSION_CONFIG.MODERATOR_FE_MULTIPLIER.get() / 100);
     }
 
+    private double targetModerationLevel = 1D;
+
+    public void adjustModerator(int redstoneSignal) {
+        BigDecimal bd = BigDecimal.valueOf((double) redstoneSignal / 15);
+        bd = bd.setScale(1, RoundingMode.HALF_UP);
+        targetModerationLevel = bd.doubleValue();
+    }
+
+    public boolean updateModerationLevel()
+    {
+        if(Math.abs(moderationLevel - targetModerationLevel) > 0.005) {
+            if(moderationLevel < targetModerationLevel) {
+                moderationLevel += 0.0025;
+            } else {
+                moderationLevel -= 0.0025;
+            }
+            return true;
+        }
+
+        return false;
+    }
+
+    public double getModerationLevel() {
+        if(moderatorsCount == 0) return 1D;
+        BigDecimal bd = BigDecimal.valueOf(moderationLevel);
+        bd = bd.setScale(2, RoundingMode.HALF_UP);
+        return bd.doubleValue();
+    }
 
     private void updateRecipe() {
         recipe = getRecipe();

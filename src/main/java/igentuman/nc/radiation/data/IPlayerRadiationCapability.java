@@ -5,8 +5,8 @@ import net.minecraftforge.common.util.INBTSerializable;
 
 
 public interface IPlayerRadiationCapability extends INBTSerializable<CompoundTag> {
-    int getRadiation();
-    void setRadiation(int radiation);
+    long getRadiation();
+    void setRadiation(long radiation);
 
     int getTimestamp();
     void setTimestamp(int timestamp);

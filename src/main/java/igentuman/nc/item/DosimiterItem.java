@@ -33,14 +33,14 @@ public class DosimiterItem extends Item
 		if (!world.isClientSide()) {
 			PlayerRadiation radiationCap = player.getCapability(PlayerRadiationProvider.PLAYER_RADIATION).orElse(null);
 			if(radiationCap == null) return InteractionResultHolder.sidedSuccess(stack, world.isClientSide);
-			int radiation = radiationCap.getRadiation();
+			long radiation = radiationCap.getRadiation();
 			player.sendSystemMessage(Component.translatable("message.nc.player_radiation_contamination", format(radiation)));
 			CriteriaTriggers.USING_ITEM.trigger((ServerPlayer) player, stack);
 		}
 		return InteractionResultHolder.sidedSuccess(stack, world.isClientSide);
 	}
 
-	private static String format(int radiation) {
+	private static String format(long radiation) {
 		if(radiation >= 1000000) {
 			return String.format("%.2f", (float)radiation/1000000)+" Rad";
 		}

@@ -25,7 +25,7 @@ public class PlayerRadiation implements IPlayerRadiationCapability {
     private final double decaySpeed = RADIATION_CONFIG.DECAY_SPEED_FOR_PLAYER.get();
 
     public Level level;
-    private int radiation = 0;
+    private long radiation = 0;
     private int timestamp = 0;
 
     private int contaminationStage = 0;
@@ -44,7 +44,7 @@ public class PlayerRadiation implements IPlayerRadiationCapability {
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag tag = new CompoundTag();
-        tag.putInt("radiation", radiation);
+        tag.putLong("radiation", radiation);
         tag.putInt("timestamp", timestamp);
         return tag;
     }
@@ -174,12 +174,12 @@ public class PlayerRadiation implements IPlayerRadiationCapability {
     }
 
     @Override
-    public int getRadiation() {
+    public long getRadiation() {
         return radiation;
     }
 
     @Override
-    public void setRadiation(int radiation) {
+    public void setRadiation(long radiation) {
         this.radiation = radiation;
     }
 

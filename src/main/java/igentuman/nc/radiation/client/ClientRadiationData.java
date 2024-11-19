@@ -9,8 +9,8 @@ import static igentuman.nc.radiation.data.WorldRadiation.unpackX;
 public class ClientRadiationData {
 
     public static Map<Long, Long> radiationData = new HashMap<>();
-    protected static int currentRadiation = 0;
-    protected static int playerRadiation = 0;
+    protected static long currentRadiation = 0;
+    protected static long playerRadiation = 0;
 
     public static void setWorldRadiation(Map<Long, Long> radiation) {
         for(long id: radiation.keySet()) {
@@ -22,7 +22,7 @@ public class ClientRadiationData {
         }
     }
 
-    public static int getCurrentWorldRadiation() {
+    public static long getCurrentWorldRadiation() {
         return Math.max(0, currentRadiation);
     }
 
@@ -35,7 +35,7 @@ public class ClientRadiationData {
         }
     }
 
-    public static void setPlayerRadiation(int radiation) {
+    public static void setPlayerRadiation(long radiation) {
         playerRadiation = radiation;
     }
 

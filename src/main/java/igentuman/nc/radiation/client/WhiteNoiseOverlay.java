@@ -24,8 +24,8 @@ public class WhiteNoiseOverlay {
     public static final IGuiOverlay WHITE_NOISE = (gui, poseStack, partialTicks, width, height) -> {
         Player pl = NcClient.tryGetClientPlayer();
         if (pl == null) return;
-        int radiation = ClientRadiationData.getCurrentWorldRadiation();
-        int level = radiation/100000;
+        long radiation = ClientRadiationData.getCurrentWorldRadiation();
+        int level = (int) (radiation/100000);
         if(level < 5) return;
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);

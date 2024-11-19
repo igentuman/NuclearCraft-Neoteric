@@ -53,8 +53,8 @@ public class RadiationManager extends SavedData {
 
     public void tick(Level level) {
         level.players().forEach(player -> {
-            int wasRadiation = 0;
-            int playerRadiation = 0;
+            long wasRadiation = 0;
+            long playerRadiation = 0;
             if (player instanceof ServerPlayer serverPlayer) {
                 int playerChunkX = player.chunkPosition().x;
                 int playerChunkZ = player.chunkPosition().z;

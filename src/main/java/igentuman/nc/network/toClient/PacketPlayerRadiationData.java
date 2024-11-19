@@ -7,9 +7,9 @@ import net.minecraftforge.network.NetworkEvent;
 
 public class PacketPlayerRadiationData implements INcPacket {
 
-    private final int playerRadiation;
+    private final long playerRadiation;
 
-    public PacketPlayerRadiationData(int playerRadiation) {
+    public PacketPlayerRadiationData(long playerRadiation) {
         this.playerRadiation = playerRadiation;
     }
 
@@ -22,7 +22,7 @@ public class PacketPlayerRadiationData implements INcPacket {
 
     @Override
     public void encode(FriendlyByteBuf buffer) {
-        buffer.writeInt(playerRadiation);
+        buffer.writeLong(playerRadiation);
     }
 
     public static PacketPlayerRadiationData decode(FriendlyByteBuf buffer) {

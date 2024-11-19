@@ -93,8 +93,9 @@ public class TagUtil {
         List<Item> tmp = new ArrayList<>();
         TagKey<Item> tag = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(key));
         for(HolderSet.Named<Item> holder : Registry.ITEM.getTag(tag).stream().toList()) {
-            //tmp.add(holder);
-            //todo resolve
+            for(Holder<Item> item : holder) {
+                tmp.add(item.get());
+            }
         }
         return tmp;
     }

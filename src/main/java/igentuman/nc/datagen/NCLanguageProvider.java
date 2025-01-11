@@ -29,7 +29,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("itemGroup." + MODID+"_fission_reactor", "NuclearCraft Fission Reactor");
         add("itemGroup." + MODID+"_fusion_reactor", "NuclearCraft Fusion Reactor");
         add("itemGroup." + MODID+"_fluids", "NuclearCraft Fluids");
-        add("itemGroup." + MODID+"_turbine_controller", "NuclearCraft Turbine");
+        add("itemGroup." + MODID+"_turbine", "NuclearCraft Turbine");
         add("itemGroup." + MODID+"_kugelblitz", "NuclearCraft Kugelblitz");
         ores();
         ingots();

@@ -1,5 +1,6 @@
 package igentuman.nc.handler.event.client;
 
+import igentuman.nc.handler.config.RadiationConfig;
 import igentuman.nc.multiblock.fission.FissionBlocks;
 import igentuman.nc.radiation.ItemRadiation;
 import igentuman.nc.radiation.ItemShielding;
@@ -36,9 +37,11 @@ public class TooltipHandler {
         processedEvent = event;
         Item item = event.getItemStack().getItem();
         miscTooltips(event, event.getItemStack());
-        addRadiationLevelTooltip(event, item);
-        addShieldingTooltip(event, event.getItemStack());
-        addRadiationCleaningEffect(event, event.getItemStack());
+        if(RadiationConfig.RADIATION_CONFIG.ENABLED.get()) {
+            addRadiationLevelTooltip(event, item);
+            addShieldingTooltip(event, event.getItemStack());
+            addRadiationCleaningEffect(event, event.getItemStack());
+        }
         addModeratorTooltip(event, event.getItemStack());
     }
 

@@ -24,6 +24,11 @@ public class FissionCasingBlock extends MultiblockBlock {
     }
 
     @Override
+    public float getShadeBrightness(BlockState pState, BlockGetter pLevel, BlockPos pPos) {
+        return asItem().toString().matches(".*glass") ? 1.0F : 0.2F;
+    }
+
+    @Override
     @Deprecated
     public boolean skipRendering(@NotNull BlockState state, @NotNull BlockState adjacentBlockState, @NotNull Direction side) {
         return adjacentBlockState.getBlock().equals(this) && asItem().toString().matches(".*glass|.*slope.*");

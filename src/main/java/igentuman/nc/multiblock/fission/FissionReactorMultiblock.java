@@ -135,7 +135,10 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
                 controllerBE().drainCoolant(coolant, amount);
             }
         }
-        controllerBE().activeCooling = activeCooling;
+        if (controllerBE().activeCooling != activeCooling) {
+            controllerBE().activeCooling = activeCooling;
+            controllerBE().setChanged();
+        }
     }
 
     private double getCoolingByCoolant(String coolant, int amount) {

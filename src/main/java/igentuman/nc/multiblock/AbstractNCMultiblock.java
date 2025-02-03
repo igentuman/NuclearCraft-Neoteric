@@ -424,7 +424,6 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
     }
 
     public boolean isInnerValid() {
-        if(refreshOuterCacheFlag) return false;
         if(refreshInnerCacheFlag) {
             validateInner();
             refreshInnerCacheFlag = !validationResult.isValid;

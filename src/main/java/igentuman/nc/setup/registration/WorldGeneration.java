@@ -53,7 +53,7 @@ public class WorldGeneration {
     }
 
     public static class StructureLoader {
-        private static final String STRUCTURE_PATH = ":structures/fission_reactor   ";
+        private static final String STRUCTURE_PATH = ":structures/fission_reactor";
 
         public static StructureTemplate loadStructure(ServerLevel level, ResourceLocation structureLocation) {
             StructureTemplateManager manager = level.getStructureManager();

@@ -314,10 +314,10 @@ public class FusionReactorMultiblock extends AbstractNCMultiblock {
             } else {
                 if (connectors != 0) {
                     connectorsValid = false;
+                    controller().addErroredBlock(pos);
+                    validationResult = ValidationResult.INCOMPLETE;
                 } else {
                     connectorsValid = true;
-                    validationResult = ValidationResult.INCOMPLETE;
-                    controller().addErroredBlock(pos);
                 }
                 return;
             }

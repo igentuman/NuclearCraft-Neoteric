@@ -400,7 +400,6 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
 
     @Override
     public void tickServer() {
-        tickProxyBlocks();
         changed = false;
         if(NuclearCraft.instance.isNcBeStopped || isRemoved()) return;
         if(!initialized) {
@@ -408,6 +407,8 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
             FusionCoreBlock block = (FusionCoreBlock) getBlockState().getBlock();
             block.placeProxyBlocks(getBlockState(), level, worldPosition, this);
         }
+        tickProxyBlocks();
+
         super.tickServer();
 
         handleValidation();
@@ -538,9 +539,9 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
 
     protected FusionCoreProxyBE[] getProxies() {
         if(proxyBES == null) {
-            proxyBES = new FusionCoreProxyBE[18];
+            proxyBES = new FusionCoreProxyBE[26];
             int i = 0;
-            for(int y = 0; y < 3; y+=2) {
+            for(int y = 0; y < 3; y++) {
                 for (int x = -1; x < 2; x++) {
                     for (int z = -1; z < 2; z++) {
                         BlockEntity be = Objects.requireNonNull(getLevel()).getBlockEntity(getBlockPos().offset(x, y, z));

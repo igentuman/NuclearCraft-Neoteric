@@ -39,7 +39,6 @@ public class SteamTurbineBE extends NCProcessorBE<SteamTurbineBE.Recipe> {
     public void tickServer()
     {
         sendOutPower();
-        efficiency += 0.001;
         efficiency = Math.max(0.0001, Math.min(10, efficiency));
         if(energyStorage.getEnergyStored()>=energyStorage.getMaxEnergyStored()) {
             return;
@@ -54,7 +53,9 @@ public class SteamTurbineBE extends NCProcessorBE<SteamTurbineBE.Recipe> {
         }
         if(!hasRecipe()) return;
 
-        recipeInfo.process(speedMultiplier()/efficiency);
+        if (!recipeInfo.process(speedMultiplier()*efficiency)) {
+            return;
+        }
         efficiency += 0.0004;
         energyStorage.addEnergy((int) (getEnergyTransferPerTick()*recipe.getEnergy()*ENERGY_GENERATION.GENERATION_MULTIPLIER.get()));
     }

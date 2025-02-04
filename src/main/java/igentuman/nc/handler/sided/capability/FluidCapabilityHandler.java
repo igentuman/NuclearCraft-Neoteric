@@ -203,7 +203,7 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler implements
         if(outputAllowed(i, null)) {
             FluidStack stack = getFluidInSlot(i);
             if(stack.isEmpty()) return isValidSlotFluid(i, outputFluid);
-            if(stack.isFluidEqual(outputFluid)) return true;
+            if(stack.isFluidEqual(outputFluid) && tanks.get(i).getCapacity() > stack.getAmount() + outputFluid.getAmount()) return true;
         }
         return false;
     }
@@ -257,7 +257,7 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler implements
     public FluidStack pushExcessFluid(int i, FluidStack toOutput) {
         for(Direction dir: Direction.values()) {
             BlockEntity be = tile.getLevel().getBlockEntity(tile.getBlockPos().relative(dir));
-            if(be == null) return toOutput;
+            if(be == null) continue;
             LazyOptional<IFluidHandler> cap = be.getCapability(ForgeCapabilities.FLUID_HANDLER, dir.getOpposite());
             if(cap.isPresent()) {
                 IFluidHandler handler = cap.orElse(null);
@@ -276,7 +276,7 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler implements
                     }
                 }
             }
-            return toOutput;
+
         }
         return toOutput;
     }

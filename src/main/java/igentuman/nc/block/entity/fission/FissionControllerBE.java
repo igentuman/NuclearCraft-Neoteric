@@ -1007,7 +1007,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
 
         public int getDepletionTime() {
             if(getFuelItem() == null) return 0;
-            return (int) (getFuelItem().depletion*20*timeModifier);
+            return (int) (getFuelItem().depletion()*20*timeModifier);
         }
 
         public double getEnergy() {

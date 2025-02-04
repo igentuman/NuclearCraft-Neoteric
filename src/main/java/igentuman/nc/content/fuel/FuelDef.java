@@ -36,9 +36,14 @@ public class FuelDef {
         this(group, name, forge_energy, heat, (int)criticality, (int)depletion, (int)efficiency);
     }
 
-    private Double boilingHeatMult()
+    private double boilingHeatMult()
     {
         return FUEL_CONFIG.HEAT_MULTIPLIER.get();
+    }
+
+    public double depletionMult()
+    {
+        return FUEL_CONFIG.DEPLETION_MULTIPLIER.get();
     }
 
     public double getHeatFEMode()

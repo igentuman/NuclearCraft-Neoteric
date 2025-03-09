@@ -117,6 +117,10 @@ public class FluidTankRenderer extends NCGuiElement {
     @Override
     public void draw(GuiGraphics graphics, int mX, int mY, float pTicks) {
         super.draw(graphics, mX, mY, pTicks);
+        if(tank == null) {
+            render(graphics, FluidStack.EMPTY);
+            return;
+        }
         render(graphics, tank.getFluid());
     }
 
@@ -231,6 +235,9 @@ public class FluidTankRenderer extends NCGuiElement {
     public List<Component> getTooltips() {
         List<Component> tooltip = new ArrayList<>();
 
+        if(tank == null) {
+            return tooltip;
+        }
         Fluid fluidType = tank.getFluid().getFluid();
         try {
             if (fluidType.isSame(Fluids.EMPTY)) {

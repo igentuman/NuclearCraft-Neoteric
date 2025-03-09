@@ -4,11 +4,9 @@
   "compatibilityLevel": "JAVA_17",
   "refmap": "nuclearcraft.refmap.json",
   "mixins": [
-    "ForgeHooksMixin",
     "KubeJSRecipesEventJSMixin",
     "LightningRodBlockMixin",
     "MekRadiationManager",
-    "PlacedFeatureMixin",
     "TagLoaderMixin"
   ],
   "client": [

@@ -1,5 +1,6 @@
 package igentuman.nc.setup.registration;
 
+import com.mojang.serialization.Codec;
 import igentuman.nc.world.BiomeFilterNether;
 import igentuman.nc.world.OrePlacementModifier;
 import net.minecraft.core.BlockPos;
@@ -10,6 +11,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.levelgen.placement.PlacementModifier;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
@@ -28,11 +30,11 @@ public class WorldGeneration {
     public static final DeferredRegister<PlacementModifierType<?>> PLACEMENT_MODIFIERS =
             DeferredRegister.create(Registries.PLACEMENT_MODIFIER_TYPE, MODID);
 
-    public static final RegistryObject<PlacementModifierType<OrePlacementModifier>> NC_ORE_MODIFIER =
-            PLACEMENT_MODIFIERS.register("nc_ore_modifier", () -> () -> OrePlacementModifier.CODEC);
+    public static final RegistryObject<PlacementModifierType<?>> NC_ORE_MODIFIER =
+            PLACEMENT_MODIFIERS.register("nc_ore_modifier", () -> placement(OrePlacementModifier.CODEC));
 
-    public static final RegistryObject<PlacementModifierType<BiomeFilterNether>> VEGETATION_MODIFIER =
-            PLACEMENT_MODIFIERS.register("nc_vegetation_modifier", () -> () -> BiomeFilterNether.CODEC);
+    public static final RegistryObject<PlacementModifierType<?>> VEGETATION_MODIFIER =
+            PLACEMENT_MODIFIERS.register("nc_vegetation_modifier", () -> placement(BiomeFilterNether.CODEC));
 
     private static ResourceKey<Biome> makeKey(String name) {
         return ResourceKey.create(Registries.BIOME, rl(name));
@@ -47,6 +49,10 @@ public class WorldGeneration {
 
     public static void register(IEventBus eventBus) {
         PLACEMENT_MODIFIERS.register(eventBus);
+    }
+
+    public static <P extends PlacementModifier> PlacementModifierType<P> placement(Codec<P> codec) {
+        return () -> codec;
     }
 
     public static void init() {

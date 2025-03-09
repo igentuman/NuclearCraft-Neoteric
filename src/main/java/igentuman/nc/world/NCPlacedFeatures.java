@@ -40,18 +40,18 @@ public class NCPlacedFeatures {
             NCOre ore = Ores.all().get(name);
             if(ore.dimensions.contains(0)) {
                 register(context, PLACED_FEATURES.get(name), configuredFeatures.getOrThrow(ORE_CONFIGURED_FEATURES.get(name)),
-                        OreGenerator.orePlacement(new OrePlacementModifier(ore.config().veinSize),
+                        OreGenerator.orePlacement(new OrePlacementModifier(name),
                                 HeightRangePlacement.uniform(VerticalAnchor.absolute(ore.config().height[0]), VerticalAnchor.absolute(ore.config().height[1]))));
             }
             if(ore.dimensions.contains(-1)) {
                 register(context, PLACED_FEATURES.get(name), configuredFeatures.getOrThrow(ORE_CONFIGURED_FEATURES.get(name)),
-                        OreGenerator.orePlacement(new OrePlacementModifier(ore.config().veinSize),
+                        OreGenerator.orePlacement(new OrePlacementModifier(name),
                                 HeightRangePlacement.uniform(VerticalAnchor.absolute(ore.config().config().height[0]), VerticalAnchor.absolute(ore.height[1]))));
             }
 
             if(ore.dimensions.contains(1)) {
                 register(context, PLACED_FEATURES.get(name), configuredFeatures.getOrThrow(ORE_CONFIGURED_FEATURES.get(name)),
-                        OreGenerator.orePlacement(new OrePlacementModifier(ore.config().veinSize),
+                        OreGenerator.orePlacement(new OrePlacementModifier(name),
                                 HeightRangePlacement.uniform(VerticalAnchor.absolute(ore.config().config().height[0]), VerticalAnchor.absolute(ore.config().height[1]))));
             }
         }

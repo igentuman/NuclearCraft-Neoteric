@@ -3,7 +3,7 @@
   "placement": [
     {
       "type": "nuclearcraft:nc_ore_modifier",
-      "count": 7
+      "name": "cobalt"
     },
     {
       "type": "minecraft:in_square"

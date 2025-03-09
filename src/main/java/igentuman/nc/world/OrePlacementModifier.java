@@ -5,11 +5,15 @@ import igentuman.nc.setup.registration.WorldGeneration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.levelgen.placement.PlacementContext;
 import net.minecraft.world.level.levelgen.placement.PlacementModifier;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -18,81 +22,85 @@ import java.util.stream.Stream;
 
 import static dev.latvian.mods.rhino.TopLevel.Builtins.Array;
 import static igentuman.nc.handler.config.OreGenConfig.ORE_CONFIG;
+import static net.minecraft.core.registries.Registries.DIMENSION;
+import static net.minecraft.core.registries.Registries.DIMENSION_TYPE;
 
 public class OrePlacementModifier extends PlacementModifier {
 
-    public static final Codec<OrePlacementModifier> CODEC = Codec.INT.fieldOf("count")
-            .xmap(OrePlacementModifier::new, (modifier) -> modifier.count)
+    public static final Codec<OrePlacementModifier> CODEC = Codec.STRING.fieldOf("name")
+            .xmap(OrePlacementModifier::new, (modifier) -> modifier.name)
             .codec();
 
-    private int count;
-    private final HashMap<String, Integer> countMap;
-    private final HashMap<String, Integer[]> heightMap;
-    private final HashMap<String, List<Integer>> dimensionsMap;
-    private String name;
+    private final String name;
+    private boolean register;
+    private int amount;
+    private int minHeight;
+    private int maxHeight;
+    private List<Integer> dims;
+    private HashMap<ResourceKey<Level>, Boolean> dimsCache = new HashMap<>();
 
-    public OrePlacementModifier(int count) {
-        this.countMap = new HashMap<>();
-        this.heightMap = new HashMap<>();
-        this.dimensionsMap = new HashMap<>();
-        for(String name: ORE_CONFIG.ORES.keySet()) {
-            boolean register;
-            int amount;
-            int minHeight;
-            int maxHeight;
-            List<Integer> dims;
-            try {
-                register = ORE_CONFIG.ORES.get(name).register.get();
-                amount = ORE_CONFIG.ORES.get(name).veinSize.get();
-                minHeight = ORE_CONFIG.ORES.get(name).min_height.get();
-                maxHeight = ORE_CONFIG.ORES.get(name).max_height.get();
-                dims = ORE_CONFIG.ORES.get(name).dimensions.get();
-            } catch (Exception e) {
-                register = ORE_CONFIG.ORES.get(name).register.getDefault();
-                amount = ORE_CONFIG.ORES.get(name).veinSize.getDefault();
-                minHeight = ORE_CONFIG.ORES.get(name).min_height.getDefault();
-                maxHeight = ORE_CONFIG.ORES.get(name).max_height.getDefault();
-                dims = ORE_CONFIG.ORES.get(name).dimensions.getDefault();
-            }
-            if(!register) {
-                amount = 0;
-            }
-            this.heightMap.put(name, new Integer[]{minHeight, maxHeight});
-            this.dimensionsMap.put(name, dims);
-            this.countMap.put(name, amount);
+    public OrePlacementModifier(String name) {
+        this.name = name;
+        try {
+            register = ORE_CONFIG.ORES.get(name).register.get();
+            amount = ORE_CONFIG.ORES.get(name).veinSize.get();
+            minHeight = ORE_CONFIG.ORES.get(name).min_height.get();
+            maxHeight = ORE_CONFIG.ORES.get(name).max_height.get();
+            dims = ORE_CONFIG.ORES.get(name).dimensions.get();
+        } catch (Exception e) {
+            register = ORE_CONFIG.ORES.get(name).register.getDefault();
+            amount = ORE_CONFIG.ORES.get(name).veinSize.getDefault();
+            minHeight = ORE_CONFIG.ORES.get(name).min_height.getDefault();
+            maxHeight = ORE_CONFIG.ORES.get(name).max_height.getDefault();
+            dims = ORE_CONFIG.ORES.get(name).dimensions.getDefault();
         }
-
-        this.count = count;
+        if (!register) {
+            amount = 0;
+        }
     }
 
+
     @Override
-    public PlacementModifierType<?> type() {
+    public @NotNull PlacementModifierType<?> type() {
         return WorldGeneration.NC_ORE_MODIFIER.get();
     }
 
     @Override
-    public Stream<BlockPos> getPositions(PlacementContext context, RandomSource random, BlockPos pos) {
+    public @NotNull Stream<BlockPos> getPositions(PlacementContext context, RandomSource random, BlockPos pos) {
         int actualCount = determinePlacementCount(context, random);
-
+        int x = (pos.getX() >> 4 << 4) + random.nextInt(16);
+        int z = (pos.getZ() >> 4 << 4) + random.nextInt(16);
         return Stream.generate(() -> new BlockPos(
-                pos.getX() + random.nextInt(16),
-                heightMap.get(name)[0] + random.nextInt(heightMap.get(name)[1] - heightMap.get(name)[0] + 1),
-                pos.getZ() + random.nextInt(16)
+                x,
+                minHeight + random.nextInt(maxHeight - minHeight + 1),
+                z
         )).limit(actualCount);
     }
 
     private int determinePlacementCount(PlacementContext context, RandomSource random) {
         try {
-            name = context.topFeature().get().feature().unwrapKey().get().location().getPath().replace("_ore", "");
-            int dimensionId = context.getLevel().getServer().registryAccess().registry(Registries.DIMENSION_TYPE).get().getId(context.getLevel().getLevel().dimensionType());
-            int veinSize = countMap.get(name);
-            if(!dimensionsMap.get(name).contains(dimensionId)) {
-                veinSize = 0;
+            WorldGenLevel level = context.getLevel();
+            int veinSize = amount;
+            if(!canPlace(level)) {
+                return 0;
             }
-            if(veinSize == 0) return 0;
             return random.nextInt(veinSize);
         } catch (Exception e) {
             return 0;
         }
+    }
+
+    private boolean canPlace(WorldGenLevel level) {
+        if (dimsCache.containsKey(level.getLevel().dimension())) {
+            return dimsCache.get(level.getLevel().dimension());
+        }
+        for (int dim : dims) {
+            if (level.getServer().registryAccess().registry(DIMENSION).get().getHolder(dim).get().is(level.getLevel().dimension())) {
+                dimsCache.put(level.getLevel().dimension(), true);
+                return true;
+            }
+            dimsCache.put(level.getLevel().dimension(), false);
+        }
+        return false;
     }
 }

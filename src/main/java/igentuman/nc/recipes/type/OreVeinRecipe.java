@@ -7,14 +7,30 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.HashMap;
+import java.util.Random;
 
 import static igentuman.nc.setup.registration.NCItems.NC_PARTS;
 
 public class OreVeinRecipe extends NcRecipe {
     public OreVeinRecipe(ResourceLocation id, ItemStackIngredient[] input, ItemStackIngredient[] output, FluidStackIngredient[] inputFluids, FluidStackIngredient[] outputFluids, double timeModifier, double powerModifier, double radiation, double rarityModifier) {
         super(id, input, output, timeModifier, powerModifier, radiation, rarityModifier);
+    }
+
+    private HashMap<ItemStackIngredient, Integer> itemsPool = new HashMap<>();
+    private int roll;
+
+    public HashMap<ItemStackIngredient, Integer> getItemsPool() {
+        if(itemsPool.isEmpty()) {
+            for(ItemStackIngredient item : inputItems) {
+                itemsPool.put(item, item.getAmount());
+            }
+        }
+        return itemsPool;
     }
 
     @Override
@@ -27,18 +43,27 @@ public class OreVeinRecipe extends NcRecipe {
         return new ItemStack(NC_PARTS.get("research_paper").get());
     }
 
+    private int gameTimeSeed(ServerLevel level) {
+        Random rand = new Random(level.getGameTime());
+        return rand.nextInt();
+    }
+
     public ItemStack getRandomOre(ServerLevel level, int x, int z, int id) {
-        int score = OreVeinProvider.get(level).rand(x, z, id).nextInt(100);
-        return getOreByScore(score, level, x, z);
+        int score = OreVeinProvider.get(level).rand(x, z, id, gameTimeSeed(level)).nextInt(100);
+        roll = 1;
+        ItemStack ore = getOreByScore(score, level, x, z).copy();
+        ore.setCount(1);
+        return ore;
     }
 
     public ItemStack getOreByScore(int score, ServerLevel level, int x, int z) {
-        int id = OreVeinProvider.get(level).rand(x, z, score).nextInt(inputItems.length);
-        for(int i = id; i < inputItems.length; i++) {
-            if(score <= inputItems[i].getRepresentations().get(0).getCount()) {
-                return inputItems[i].getRepresentations().get(0);
+        for (ItemStackIngredient item: getItemsPool().keySet()) {
+            if (score <= getItemsPool().get(item) && OreVeinProvider.get(level).rand(x, z, score, gameTimeSeed(level)).nextInt(10)>roll) {
+                return item.getRepresentations().get(0);
             }
-            score -= inputItems[i].getRepresentations().get(0).getCount();
+            roll++;
+            roll = Math.min(roll, 8);
+            score -= getItemsPool().get(item)/2;
         }
         return getOreByScore(score, level, x, z);
     }

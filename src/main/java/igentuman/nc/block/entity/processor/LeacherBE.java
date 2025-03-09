@@ -78,7 +78,7 @@ public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
 
     protected PumpBE[] pumps = new PumpBE[4];
 
-    protected byte pumpValidationTimeout = 40;
+    protected byte pumpValidationTimeout = 80;
 
     @Override
     public String getName() {
@@ -113,7 +113,7 @@ public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
     private void handleState() {
         pumpValidationTimeout--;
         if(pumpValidationTimeout <= 0) {
-            pumpValidationTimeout = 40;
+            pumpValidationTimeout = 80;
             clearHighligts();
             validatePumps();
         }
@@ -162,8 +162,8 @@ public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
     }
 
     public boolean isPumpValid(NCBlockPos pos, int id) {
-        for (int y = 0; y < 20; y++) {
-            BlockEntity be = getLevel().getBlockEntity( pos.below());
+        for (int y = 0; y < 2; y++) {
+            BlockEntity be = getLevel().getBlockEntity(pos.below());
             if (be instanceof PumpBE) {
                 pumps[id] = (PumpBE) be;
                 return pumps[id].isInSituValid();
@@ -176,7 +176,7 @@ public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
         ChunkPos chunkPos = new ChunkPos(getBlockPos());
         boolean isClientSide = Objects.requireNonNull(getLevel()).isClientSide;
         pumpsAreValid = isPumpValid(
-                new NCBlockPos(chunkPos.getMinBlockX(), worldPosition.getY()+5, chunkPos.getMinBlockZ()),
+                new NCBlockPos(chunkPos.getMinBlockX(), worldPosition.getY()+1, chunkPos.getMinBlockZ()),
                 0
         );
         if(!pumpsAreValid) {
@@ -185,7 +185,7 @@ public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
             }
         }
         if(!isPumpValid(
-                new NCBlockPos(chunkPos.getMinBlockX(), worldPosition.getY()+5, chunkPos.getMaxBlockZ()),
+                new NCBlockPos(chunkPos.getMinBlockX(), worldPosition.getY()+1, chunkPos.getMaxBlockZ()),
                 1
         )) {
             pumpsAreValid = false;
@@ -195,7 +195,7 @@ public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
         }
 
         if(!isPumpValid(
-                new NCBlockPos(chunkPos.getMaxBlockX(), worldPosition.getY()+5, chunkPos.getMaxBlockZ()),
+                new NCBlockPos(chunkPos.getMaxBlockX(), worldPosition.getY()+1, chunkPos.getMaxBlockZ()),
                 2
         )) {
             if(isClientSide) {
@@ -205,7 +205,7 @@ public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
         }
 
         if(!isPumpValid(
-                new NCBlockPos(chunkPos.getMaxBlockX(), worldPosition.getY()+5, chunkPos.getMinBlockZ()),
+                new NCBlockPos(chunkPos.getMaxBlockX(), worldPosition.getY()+1, chunkPos.getMinBlockZ()),
                 3
         )) {
             if(isClientSide) {
@@ -232,6 +232,9 @@ public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
 
     public void gatherOre()
     {
+        if(!contentHandler.itemHandler.getStackInSlot(0).isEmpty()) {
+            return;
+        }
         if(!hasCatalyst()) {
             catalyst = ItemStack.EMPTY;
             return;
@@ -283,7 +286,6 @@ public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
 
     int currentMiningTimeout = 0;
     protected ItemStack useMapCatalyst() {
-
         MapItemSavedData mapData = ((MapItem)catalyst.getItem()).getSavedData(catalyst, getLevel());
         if(mapData == null) return ItemStack.EMPTY;
         if(worldPosition.getX() < mapData.centerX-64 || worldPosition.getX() > mapData.centerX+64 &&

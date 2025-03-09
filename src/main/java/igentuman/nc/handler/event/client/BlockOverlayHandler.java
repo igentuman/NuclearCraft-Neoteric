@@ -64,6 +64,7 @@ public class BlockOverlayHandler {
     @SubscribeEvent
     public static void onRenderWorldEvent(RenderLevelStageEvent e) {
         final GameRenderer gameRenderer = Minecraft.getInstance().gameRenderer;
+
         Player player = Minecraft.getInstance().player;
         if(e.getStage().equals(RenderLevelStageEvent.Stage.AFTER_SOLID_BLOCKS)) {
             for(BlockPos pos: fusionReactors) {

@@ -42,7 +42,7 @@ public class PumpBE extends NCProcessorBE<PumpBE.Recipe> {
     //just check if it has solid blocks below and is not busy on other recipes
     public boolean isInSituValid() {
         NCBlockPos pos = NCBlockPos.of(getBlockPos());
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 2; i++) {
             if (!level.getBlockState(pos.below()).isSolidRender(level, pos)) {
                 return false;
             }

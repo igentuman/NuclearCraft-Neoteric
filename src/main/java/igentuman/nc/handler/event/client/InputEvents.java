@@ -30,8 +30,11 @@ public class InputEvents {
         }
 
         if (event.getKey() == KEY_LSHIFT || event.getKey() == KEY_RSHIFT) {
-            if(event.getAction() == RELEASE) {
+            if(event.getAction() == PRESS) {
                 SHIFT_PRESSED = true;
+            } else
+            if(event.getAction() == RELEASE) {
+                SHIFT_PRESSED = false;
             }
         }
     }

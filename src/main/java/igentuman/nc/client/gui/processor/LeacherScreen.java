@@ -52,7 +52,7 @@ public class LeacherScreen<T extends NCProcessorContainer<AbstractContainerMenu>
     protected void renderWidgets(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
         redstoneConfigBtn.setMode(getMenu().getRedstoneMode());
         for(int i = 0; i<4; i++) {
-            boolean isValid = getPumps()[i] != null && getPumps()[i].isInSituValid();
+            boolean isValid = getPumps()[i] != null;
             pumpsCheckbox[i].setChecked(isValid);
             pumpsCheckbox[i].setTooltipKey("leacher.tooltip."+ (isValid ? "valid" : "invalid") + "_pump");
         }

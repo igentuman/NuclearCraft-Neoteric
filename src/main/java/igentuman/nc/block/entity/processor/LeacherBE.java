@@ -138,6 +138,12 @@ public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
     }
 
     public PumpBE[] getPumpsForClient() {
+        if(pumpsAreValid) {
+            if(pumps[0] == null) {
+                validatePumps();
+            }
+            return pumps;
+        }
         validatePumps();
         return pumps;
     }

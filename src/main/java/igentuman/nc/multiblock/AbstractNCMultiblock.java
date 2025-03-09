@@ -489,7 +489,7 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
         if(allBlocks.contains(pos)) {
             Block targetBlock = getBlockState(pos).getBlock();
             if(targetBlock.getDescriptionId().matches(
-                    ".*fusion_proxy.*|.*fusion_core.*|.*controller.*|.*port.*|.*irradiator.*"
+                    ".*fusion_proxy.*|.*fusion_core.*|.*controller.*|.*port.*|.*irradiator.*|.*rotor.*"
             )) {
                 return true;
             }
@@ -503,7 +503,7 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
                 && pos.getX() <= topRight.getX() && pos.getY() <= topRight.getY() && pos.getZ() <= topRight.getZ()) {
             Block targetBlock = getBlockState(pos).getBlock();
             if(targetBlock.getDescriptionId().matches(
-                    ".*core_proxy.*|.*fusion_core.*|.*port.*|.*irradiator.*"
+                    ".*core_proxy.*|.*fusion_core.*|.*port.*|.*irradiator.*|.*rotor.*"
             )) {
                 return true;
             }

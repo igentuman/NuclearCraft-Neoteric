@@ -86,6 +86,10 @@ public class TurbinePortBE extends TurbineBE {
                 analogSignal = (byte) (controller().energyStorage.getEnergyStored() * 15 / controller().energyStorage.getMaxEnergyStored());
                 break;
             case SignalSource.OVERFLOW:
+                if (controller().getFlow() == 0) {
+                    analogSignal = 0;
+                    break;
+                }
                 analogSignal = (byte) (controller().getRealFlow() * 15 / controller().getFlow());
                 break;
         }

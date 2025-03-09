@@ -308,44 +308,41 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
 
     private void handleValidation() {
         if(multiblock == null) return;
-        ValidationResult wasResult = validationResult;
-        boolean wasFormed = multiblock().isFormed();
-        if (!wasFormed || !isInternalValid || !isCasingValid) {
-            activeCoils = 0;
-            coilsEfficiency = 0;
-            flow = 0;
-            reValidateCounter++;
-            if(reValidateCounter < 40) {
-                return;
+        if (level.getGameTime() % 40 == 0) {
+            ValidationResult wasResult = validationResult;
+            boolean wasFormed = multiblock().isFormed();
+            if (!wasFormed || !isInternalValid || !isCasingValid) {
+                activeCoils = 0;
+                coilsEfficiency = 0;
+                flow = 0;
+                multiblock().validate();
+                isCasingValid = multiblock().isOuterValid();
+                if (isCasingValid) {
+                    isInternalValid = multiblock().isInnerValid();
+                }
+                powered = false;
+                changed = true;
             }
-            reValidateCounter = 0;
-            multiblock().validate();
-            isCasingValid = multiblock().isOuterValid();
-            if(isCasingValid) {
-                isInternalValid = multiblock().isInnerValid();
+            validationResult = multiblock().validationResult;
+            if (validationResult.id != wasResult.id) {
+                changed = true;
             }
-            powered = false;
-            changed = true;
-        }
-        validationResult = multiblock().validationResult;
-        if(validationResult.id != wasResult.id) {
-            changed = true;
-        }
-        if(activeCoils != multiblock().activeCoils) {
-            changed = true;
-            activeCoils = multiblock().activeCoils;
-            coilsEfficiency = multiblock().coilsEfficiency;
-        }
+            if (activeCoils != multiblock().activeCoils) {
+                changed = true;
+                activeCoils = multiblock().activeCoils;
+                coilsEfficiency = multiblock().coilsEfficiency;
+            }
 
-        if(flow != multiblock().flow) {
-            changed = true;
-            flow = multiblock().flow;
-            blades = multiblock().blades;
+            if (flow != multiblock().flow) {
+                changed = true;
+                flow = multiblock().flow;
+                blades = multiblock().blades;
+            }
+            height = multiblock().height();
+            width = multiblock().width();
+            depth = multiblock().depth();
+            trackChanges(wasFormed, multiblock().isFormed());
         }
-        height = multiblock().height();
-        width = multiblock().width();
-        depth = multiblock().depth();
-        trackChanges(wasFormed, multiblock().isFormed());
     }
 
     public float bladesEfficiency()

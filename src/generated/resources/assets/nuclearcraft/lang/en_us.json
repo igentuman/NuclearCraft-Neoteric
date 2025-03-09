@@ -743,6 +743,8 @@
   "gui.nc.redstone_config.tooltip_0": "WORK MODE: IGNORE SIGNAL",
   "gui.nc.redstone_config.tooltip_1": "WORK MODE: ON SIGNAL",
   "gui.nc.side_config.tooltip": "Side Config",
+  "gui.nc.turbine_comparator_config.tooltip_0": "Comparator: Energy Stored",
+  "gui.nc.turbine_comparator_config.tooltip_2": "Comparator: Overflow",
   "heat.bar.amount": "Total Heat: %s / %s K",
   "heat_sink.and": "and",
   "heat_sink.atleast": "next to at least %s %s",

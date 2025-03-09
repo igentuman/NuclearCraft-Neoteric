@@ -2,6 +2,7 @@ package igentuman.nc.client.gui.element.button;
 
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.client.gui.processor.side.SideConfigSlotSelectionScreen;
+import igentuman.nc.client.gui.turbine.TurbinePortScreen;
 import igentuman.nc.container.NCProcessorContainer;
 import igentuman.nc.client.gui.element.NCGuiElement;
 import igentuman.nc.network.toServer.PacketGuiButtonPress;
@@ -204,6 +205,36 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
                     Component.translatable("gui.nc.reactor_comparator_config.tooltip_"+mode),
                     Component.translatable("gui.nc.reactor_comparator_strength.tooltip", strength)
                     );
+        }
+
+        public void setMode(byte redstoneMode) {
+            mode = redstoneMode;
+            btn = new ImageButton(X(), Y(), width, height, 238, 256 - (redstoneMode+1) * 36, 18, TEXTURE, pButton -> {
+                NuclearCraft.packetHandler().sendToServer(new PacketGuiButtonPress(pos, BTN_ID));
+            });
+        }
+    }
+
+    public static class TurbinePortRedstoneModeButton extends Button {
+        public final BlockPos pos;
+        public static final int BTN_ID = 74;
+        public byte mode = 2;
+        public byte strength = 0;
+        public TurbinePortRedstoneModeButton(int xPos, int yPos, AbstractContainerScreen<?> screen, BlockPos pos) {
+            super(xPos, yPos, screen, BTN_ID);
+            this.pos = pos;
+            height = 18;
+            width = 18;
+            btn = new ImageButton(X(), Y(), width, height, 238, 256, 18, TEXTURE, pButton -> {
+                NuclearCraft.packetHandler().sendToServer(new PacketGuiButtonPress(pos, bId));
+            });
+        }
+
+        public List<Component> getTooltips() {
+            return List.of(
+                    Component.translatable("gui.nc.turbine_comparator_config.tooltip_"+mode),
+                    Component.translatable("gui.nc.reactor_comparator_strength.tooltip", strength)
+            );
         }
 
         public void setMode(byte redstoneMode) {

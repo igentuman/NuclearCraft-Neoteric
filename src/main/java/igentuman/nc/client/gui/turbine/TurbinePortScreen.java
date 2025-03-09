@@ -29,7 +29,7 @@ public class TurbinePortScreen extends AbstractContainerScreen<TurbinePortContai
     protected int relX;
     protected int relY;
     private int xCenter;
-    private Button.ReactorPortRedstoneModeButton redstoneConfigBtn;
+    private Button.TurbinePortRedstoneModeButton redstoneConfigBtn;
 
     public TurbinePortContainer container()
     {
@@ -68,7 +68,7 @@ public class TurbinePortScreen extends AbstractContainerScreen<TurbinePortContai
         widgets.clear();
         energyBar = new VerticalBar.Energy(17, 16,  this, container().getMaxEnergy());
         widgets.add(new ProgressBar(74, 35, this,  7));
-        redstoneConfigBtn = new Button.ReactorPortRedstoneModeButton(150, 74, this, menu.getPosition());
+        redstoneConfigBtn = new Button.TurbinePortRedstoneModeButton(150, 74, this, menu.getPosition());
         widgets.add(redstoneConfigBtn);
         addWidget(FluidTankRenderer.tank(getFluidTank(0)).id(0).size(18, 18).pos(56, 35).canVoid());
         addWidget(FluidTankRenderer.tank(getFluidTank(1)).id(1).size(24, 24).pos(112, 31).canVoid());

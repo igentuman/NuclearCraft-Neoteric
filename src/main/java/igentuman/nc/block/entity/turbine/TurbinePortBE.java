@@ -85,7 +85,9 @@ public class TurbinePortBE extends TurbineBE {
             case SignalSource.ENERGY:
                 analogSignal = (byte) (controller().energyStorage.getEnergyStored() * 15 / controller().energyStorage.getMaxEnergyStored());
                 break;
-
+            case SignalSource.OVERFLOW:
+                analogSignal = (byte) (controller().getRealFlow() * 15 / controller().getFlow());
+                break;
         }
     }
 
@@ -212,22 +214,23 @@ public class TurbinePortBE extends TurbineBE {
         return controller().energyPerTick;
     }
 
-    public void toggleComparatorMode() {
-        comparatorMode++;
-        if(comparatorMode > SignalSource.OVERFLOW) {
+    public FluidTank getFluidTank(int i) {
+        if(controller() == null) return null;
+        return controller().getFluidTank(i);
+    }
+
+    public void toggleRedstoneMode() {
+        if(comparatorMode == SignalSource.ENERGY) {
+            comparatorMode = SignalSource.OVERFLOW;
+        } else {
             comparatorMode = SignalSource.ENERGY;
         }
         setChanged();
         level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
     }
 
-    public FluidTank getFluidTank(int i) {
-        if(controller() == null) return null;
-        return controller().getFluidTank(i);
-    }
-
     public static class SignalSource {
-        public static final byte ENERGY = 1;
+        public static final byte ENERGY = 0;
         public static final byte OVERFLOW = 2;
     }
 }

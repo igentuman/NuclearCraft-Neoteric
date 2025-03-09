@@ -333,6 +333,8 @@ public class NCLanguageProvider extends LanguageProvider {
         add("message.nc.battery.side_config","Mode: %s");
         add("message.nc.barrel.side_config","Mode: %s");
         add("gui.nc.reactor_comparator_config.tooltip_1","Comparator: Energy Stored");
+        add("gui.nc.turbine_comparator_config.tooltip_0","Comparator: Energy Stored");
+        add("gui.nc.turbine_comparator_config.tooltip_2","Comparator: Overflow");
         add("gui.nc.reactor_comparator_config.tooltip_2","Comparator: Heat Stored");
         add("gui.nc.reactor_comparator_config.tooltip_3","Comparator: Depletion Progress");
         add("gui.nc.reactor_comparator_config.tooltip_4","Comparator: Fuel Left");

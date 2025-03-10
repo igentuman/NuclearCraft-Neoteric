@@ -99,6 +99,9 @@ public class TurbineRotorBE extends TurbineBE {
         TurbineControllerBE<?> controller = getController();
         rotation = 0;
         if(controller instanceof TurbineControllerBE<?>) {
+            if(controller.isRemoved()) {
+                return rotation;
+            }
             rotation = controller.getRotationSpeed();
         }
         return rotation;
@@ -130,9 +133,9 @@ public class TurbineRotorBE extends TurbineBE {
         if(getController().multiblock() == null) {
             return false;
         }
-        if(!getController().multiblock().isFormed() || getLevel().getGameTime() % 20 == 0) {
-            getController().multiblock().validate();
+        if(getController() instanceof TurbineControllerBE<?> && getController().isRemoved()) {
+            return false;
         }
-        return getController().multiblock().isFormed();
+        return getController().multiblock().isFormed;
     }
 }

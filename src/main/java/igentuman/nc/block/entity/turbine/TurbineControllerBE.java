@@ -465,15 +465,15 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
     private boolean process() {
         recipeInfo.process(1);
         flow = Math.max(1, flow);
-        float theFlow = (float)getRealFlow();
-        if(theFlow > 0) {
-            theFlow = Math.max(theFlow, flow/2*TURBINE_CONFIG.BLADE_FLOW.get());
+        float realFlow = (float)getRealFlow();
+        if(realFlow > 0) {
+            this.realFlow = (int) Math.min(realFlow, flow/2*TURBINE_CONFIG.BLADE_FLOW.get());
         }
-        rotationSpeed = (rotationSpeed*4+theFlow/(flow*TURBINE_CONFIG.BLADE_FLOW.get()))/5f;
+        rotationSpeed = (rotationSpeed*4+realFlow/(flow*TURBINE_CONFIG.BLADE_FLOW.get()))/5f;
         energyStorage.addEnergy(calculateEnergy());
         efficiency = calculateEfficiency();
         handleRecipeOutput();
-        contentHandler.fluidCapability.tanks.get(0).drain(realFlow, EXECUTE);
+        contentHandler.fluidCapability.tanks.get(0).drain(this.realFlow, EXECUTE);
 
         return true;
     }
@@ -714,6 +714,9 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
         public boolean handleOutputs(SidedContentHandler contentHandler) {
             FluidStack outputFluid = outputFluids[0].getRepresentations().get(0);
             FluidStack toOutput = outputFluid.copy();
+            TurbineControllerBE<?> be = (TurbineControllerBE<?>)contentHandler.blockEntity;
+            int flow = be.realFlow;
+            ratio = (double)flow/(double)getInputFluids(0).get(0).getAmount();
             int toPush = (int) (outputFluid.getAmount()*ratio);
             toOutput.setAmount(toPush);
             return contentHandler.fluidCapability.insertFluidInternal(1, toOutput, false).getAmount() != toPush;

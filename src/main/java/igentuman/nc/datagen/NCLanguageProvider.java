@@ -84,6 +84,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("sound_event.nuclearcraft.fusion.switch", "Fusion Reactor Switch");
 
         add("sound_event.nuclearcraft.fission_reactor", "Fission Reactor Ticking");
+        add("sound_event.nuclearcraft.turbine", "Turbine is spinning");
     }
 
     private void labels() {
@@ -100,6 +101,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("fusion_core", "Fusion Reactor Core");
         add("fusion_core.efficiency", "Efficiency: %s%%");
         add("nc_jei_cat.fusion_core", "Fusion Reactor");
+        add("nc_jei_cat.turbine", "Turbine");
         add("nc_jei_cat.fusion_coolant", "Fusion Reactor Coolant");
         add("nc_jei_cat.mek_chemical_conversion", "NC - GAS -> Fluid Conversion");
         add("nc_jei_cat.fission_boiling", "Boiling Reactor");

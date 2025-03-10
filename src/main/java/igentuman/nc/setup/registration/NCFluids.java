@@ -128,6 +128,9 @@ public class NCFluids {
             LIQUIDS_TAG.put(liquid.name, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(),  new ResourceLocation("forge", liquid.name)));
             NC_MATERIALS.put(liquid.name, FluidEntry.makeLiquid(liquid.name, liquid.color));
 
+            if (!liquid.name.matches(".*_solution|.*_water|.*_liquor|.*_chocolate|.*_milk|.*_coolant.*")) {
+                LIQUIDS_TAG.put("molten_" + liquid.name, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(),  new ResourceLocation("forge", "molten_" + liquid.name)));
+            }
         }
     }
 
@@ -189,6 +192,7 @@ public class NCFluids {
         for (String name: Materials.fluids().keySet()) {
             LIQUIDS_TAG.put(name, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(),  new ResourceLocation("forge", name)));
             NC_MATERIALS.put(name, FluidEntry.makeMoltenLiquid(name, Materials.fluids().get(name).color));
+            LIQUIDS_TAG.put("molten_" + name, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(),  new ResourceLocation("forge", "molten_" + name)));
         }
     }
 

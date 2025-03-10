@@ -155,16 +155,18 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler implements
         BlockEntity be = tile.getLevel().getBlockEntity(pos.relative(dir));
         if(be == null) return false;
         LazyOptional<IFluidHandler> cap = be.getCapability(ForgeCapabilities.FLUID_HANDLER, dir.getOpposite());
-        if(cap.isPresent()) {
-            IFluidHandler handler = cap.orElse(null);
-            SidedContentHandler.RelativeDirection relativeDirection = SidedContentHandler.RelativeDirection.toRelative(dir, getFacing());
-            for(SlotModePair pair : sideMap.get(relativeDirection.ordinal())) {
-                if(pair.getMode() == SlotMode.PULL || forceFlag) {
-                    NcFluidTank tank = tanks.get(pair.getSlot());
-                    if(tank.getFluidAmount() < tank.getCapacity()) {
-                        int amount = tank.fill(handler.drain(tank.getCapacity() - tank.getFluidAmount(), IFluidHandler.FluidAction.EXECUTE), IFluidHandler.FluidAction.EXECUTE);
-                        return amount > 0;
-                    }
+        if (!cap.isPresent()) {
+            return false;
+        }
+        IFluidHandler sourceTank = cap.orElse(null);
+        SidedContentHandler.RelativeDirection relativeDirection = SidedContentHandler.RelativeDirection.toRelative(dir, getFacing());
+        for(SlotModePair pair : sideMap.get(relativeDirection.ordinal())) {
+            if(pair.getMode() == SlotMode.PULL || forceFlag) {
+                NcFluidTank tank = tanks.get(pair.getSlot());
+                if(tank.getFluidAmount() < tank.getCapacity()) {
+                    int amount = tank.fill(sourceTank.drain(tank.getCapacity() - tank.getFluidAmount(), IFluidHandler.FluidAction.SIMULATE), IFluidHandler.FluidAction.SIMULATE);
+                    tank.fill(sourceTank.drain(amount, IFluidHandler.FluidAction.EXECUTE), IFluidHandler.FluidAction.EXECUTE);
+                    return amount > 0;
                 }
             }
         }

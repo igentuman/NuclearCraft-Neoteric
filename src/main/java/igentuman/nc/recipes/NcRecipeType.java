@@ -14,6 +14,7 @@ import igentuman.nc.registry.RecipeTypeRegistryObject;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.DistExecutor;
@@ -119,10 +120,15 @@ public class NcRecipeType<RECIPE extends NcRecipe> implements RecipeType<RECIPE>
             if(recipe.isIncomplete()) {
                 continue;
             }
-            ItemStackIngredient output = IngredientCreatorAccess.item().from(recipe.getResultItem(RegistryAccess.EMPTY));
+            ItemStack result = recipe.getResultItem(RegistryAccess.EMPTY);
+            Ingredient input = recipe.getIngredients().get(0);
+            if (result.isEmpty() || input.isEmpty()) {
+                continue;
+            }
+            ItemStackIngredient output = IngredientCreatorAccess.item().from(result);
             recipes.add((RECIPE) new NuclearFurnaceBE.Recipe(
                     rl(getNFRecipeId(recipe)),
-                    new ItemStackIngredient[]{IngredientCreatorAccess.item().from(recipe.getIngredients().get(0))},
+                    new ItemStackIngredient[]{IngredientCreatorAccess.item().from(input)},
                     new ItemStackIngredient[]{output},
                     new FluidStackIngredient[0],
                     new FluidStackIngredient[0],

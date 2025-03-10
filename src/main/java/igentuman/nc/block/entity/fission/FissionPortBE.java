@@ -286,6 +286,7 @@ public class FissionPortBE extends FissionBE {
         if(redstoneMode > SignalSource.MODERATOR) {
             redstoneMode = SignalSource.ENERGY;
         }
+        analogSignal = 0;
         setChanged();
         level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
     }

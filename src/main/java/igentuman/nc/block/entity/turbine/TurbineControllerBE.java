@@ -48,7 +48,7 @@ import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.handler.config.CommonConfig.ENERGY_GENERATION;
 import static igentuman.nc.handler.config.TurbineConfig.TURBINE_CONFIG;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
-import static igentuman.nc.setup.registration.NCSounds.FISSION_REACTOR;
+import static igentuman.nc.setup.registration.NCSounds.TURBINE;
 import static igentuman.nc.util.ModUtil.isCcLoaded;
 import static net.minecraft.core.particles.ParticleTypes.*;
 import static net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE;
@@ -220,17 +220,17 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
     }
 
     protected void playRunningSound() {
-        if(isRemoved() || (currentSound != null && !currentSound.getLocation().equals(FISSION_REACTOR.get().getLocation()))) {
+        if(isRemoved() || (currentSound != null && !currentSound.getLocation().equals(TURBINE.get().getLocation()))) {
             SoundHandler.stopTileSound(getBlockPos());
             currentSound = null;
         }
         if((currentSound == null || !Minecraft.getInstance().getSoundManager().isActive(currentSound))) {
-            if(currentSound != null && currentSound.getLocation().equals(FISSION_REACTOR.get().getLocation())) {
+            if(currentSound != null && currentSound.getLocation().equals(TURBINE.get().getLocation())) {
                 return;
             }
 
             playSoundCooldown = 20;
-            currentSound = SoundHandler.startTileSound(FISSION_REACTOR.get(), SoundSource.BLOCKS, 0.2f, level.getRandom(), getBlockPos());
+            currentSound = SoundHandler.startTileSound(TURBINE.get(), SoundSource.BLOCKS, 0.2f, level.getRandom(), getBlockPos());
         }
     }
 
@@ -242,6 +242,8 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
         if(rotationSpeed > 0) {
             spawnSteamParticles();
             playRunningSound();
+        } else {
+            stopSound();
         }
     }
     protected int reValidateCounter = 0;

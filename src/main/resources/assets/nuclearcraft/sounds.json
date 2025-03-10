@@ -5,6 +5,12 @@
     ],
     "subtitle": "sound_event.nuclearcraft.fusion.ready"
   },
+  "tile.turbine": {
+    "sounds": [
+      "nuclearcraft:block/turbine"
+    ],
+    "subtitle": "sound_event.nuclearcraft.turbine"
+  },
   "tile.fission_reactor": {
     "sounds": [
       "nuclearcraft:block/fission_reactor"

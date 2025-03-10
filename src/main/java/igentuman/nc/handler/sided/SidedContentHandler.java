@@ -356,7 +356,7 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
             slurryConverter = new Slurry2FluidConverter();
             slurryConverter.setFluidHandler(fluidCapability);
         }
-        return (T) gasConverter.forSide(side);
+        return (T) slurryConverter.forSide(side);
     }
 
     public void voidFluidSlot(int slotId) {

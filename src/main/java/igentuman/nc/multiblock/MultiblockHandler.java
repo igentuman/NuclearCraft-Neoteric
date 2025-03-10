@@ -21,6 +21,13 @@ public class MultiblockHandler {
         }
     }
 
+    public static void addMultiblock(AbstractNCMultiblock multiblock, boolean force) {
+        if(multiblocks.containsKey(multiblock.getId()) && force) {
+            multiblocks.remove(multiblock.getId());
+        }
+        addMultiblock(multiblock);
+    }
+
     public static void trackBlockChange(BlockPos pos) {
         for(AbstractNCMultiblock multiblock: multiblocks.values()) {
             if(multiblock == null) {
@@ -42,6 +49,10 @@ public class MultiblockHandler {
                 continue;
             }
             if(multiblock.isLoaded()) {
+                if(multiblock.controller().controllerBE().isRemoved()) {
+                    toRemove.add(id);
+                    continue;
+                }
                 multiblock.tick();
             }
         }

@@ -148,7 +148,7 @@ public class FusionCoreScreen extends AbstractContainerScreen<FusionCoreContaine
                 checkboxIsFormed.addTooltip(Component.translatable("tooltip.nc.electromagnet.not_found").withStyle(ChatFormatting.RED));
             }
             checkboxIsFormed.addTooltip(Component.literal("----------------------"));
-            if(!container().hasAmplifiers()) {
+            if(container().hasAmplifiers()) {
                 checkboxIsFormed.addTooltip(Component.translatable("tooltip.nc.rf_amplifier.voltage", container().getAmplifierVoltage()).withStyle(ChatFormatting.BLUE));
                 checkboxIsFormed.addTooltip(Component.translatable("tooltip.nc.rf_amplifier.power", container().getAmplifierPower()).withStyle(ChatFormatting.AQUA));
                 checkboxIsFormed.addTooltip(Component.translatable("tooltip.nc.rf_amplifier.max_temp", container().getAmplifierMaxTemp()).withStyle(ChatFormatting.GOLD));

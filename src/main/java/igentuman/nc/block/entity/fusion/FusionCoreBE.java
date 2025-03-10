@@ -164,9 +164,14 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         };
     }
 
+    private void initMultiblock() {
+        if(multiblock == null) {
+            multiblock = new FusionReactorMultiblock(this);
+        }
+    }
+
     public FusionCoreBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, getName(pBlockState));
-        multiblock = new FusionReactorMultiblock(this);
         contentHandler = new SidedContentHandler(
                 0, 0,
                 3, 5, 10, 50);
@@ -401,6 +406,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
     @Override
     public void tickServer() {
         changed = false;
+        initMultiblock();
         if(NuclearCraft.instance.isNcBeStopped || isRemoved()) return;
         if(!initialized) {
             initialized = true;

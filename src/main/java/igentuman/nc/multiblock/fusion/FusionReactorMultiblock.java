@@ -54,8 +54,8 @@ public class FusionReactorMultiblock extends AbstractNCMultiblock {
                 List.of(AIR));
         controllerBE = core;
         id = "fusion_reactor_"+controllerBE.getBlockPos().toShortString();
-        MultiblockHandler.addMultiblock(this);
         controller = new FusionReactorController(controllerBE);
+        MultiblockHandler.addMultiblock(this, true);
     }
 
     @Override

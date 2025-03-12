@@ -1,5 +1,6 @@
 package igentuman.nc.multiblock;
 
+import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.fission.FissionControllerBE;
 import igentuman.nc.block.entity.fission.FissionPortBE;
 import igentuman.nc.block.entity.processor.IrradiatorBE;
@@ -421,6 +422,7 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
         if(isFormed) {
             validationResult = ValidationResult.VALID;
         }
+        NuclearCraft.LOGGER.info("NC multiblock was validated" + controllerPos().toShortString());
     }
 
     public boolean isInnerValid() {

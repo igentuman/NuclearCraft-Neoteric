@@ -23,28 +23,25 @@ This is a re-creation of old but gold NuclearCraft on a modern MC version
 - [x] Custom items like Geiger Counter
 - [x] Fusion Reactor
 - [x] Steam Mode for reactors
-
+- [x] Steam Turbine
+- [x] Patchouli Guidebook
+- 
 ### Download here: https://curseforge.com/minecraft/mc-mods/nuclearcraft-neoteric
 ### Development builds: Go to Actions Tab and download the latest artifact
 
 # Next version feature set
-- [ ] Steam Turbine
+- [ ] Kugelblitz 
  
 # Future plans
-- [ ] Quantum Transformer "what a heck is that?"
-- [ ] Pipes nesting and color mode
+
 - [ ] Crafting Automation
-- [ ] Reactor Simulator
-- [ ] Performance optimization
-- [ ] Patchouli Guidebook
+- [ ] Reactor Design Hub
 - [ ] Particle API
 - [ ] Heat Exchanger
-- [ ] MSR
 - [ ] Custom Villager
 - [ ] Entities
 - [ ] Wasteland Biome
 - [ ] Wasteland Dimension
-- [ ] Pipes
 
 
 # CREDITS

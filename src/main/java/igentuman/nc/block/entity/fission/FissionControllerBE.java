@@ -475,9 +475,13 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     private void handleValidation() {
         boolean wasFormed = multiblock().isFormed();
         boolean assembled = wasFormed && isInternalValid && isCasingValid;
-        if ((!assembled && getLevel().getGameTime() % delay == 0) || (getLevel().getGameTime() % delay*10 == 0 && hasRecipe())) {
-            Random rand = new Random();
-            delay = rand.nextInt(40) + 40;
+        if (
+                (!assembled && getLevel().getGameTime() % delay == 0)
+                || (assembled && getLevel().getGameTime() % (delay* 4L) == 0 && hasRecipe())
+        ) {
+            Random rand = new Random(getBlockPos().asLong());
+            delay = rand.nextInt(80) + 80;
+
             multiblock().validate();
             isCasingValid = multiblock().isOuterValid();
             if(isCasingValid) {

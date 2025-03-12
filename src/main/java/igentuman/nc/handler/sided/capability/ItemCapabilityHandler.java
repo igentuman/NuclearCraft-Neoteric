@@ -120,7 +120,7 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
         int limit = getStackLimit(slot, stack);
 
         if (!existing.isEmpty()) {
-            if (!ItemHandlerHelper.canItemStacksStack(stack, existing))
+            if (!(ItemHandlerHelper.canItemStacksStack(stack, existing) && existing.getCount() <= limit))
                 return stack;
 
             limit -= existing.getCount();
@@ -371,10 +371,11 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
     }
 
     public boolean isValidForOutputSlot(int i, ItemStack outputItem) {
-        if(outputAllowed(i, null)) {
+        if (outputAllowed(i, null)) {
             ItemStack stack = getStackInSlot(i);
             if(stack.isEmpty()) return true;
-            if(ItemHandlerHelper.canItemStacksStack(stack, outputItem)) return true;
+            return ItemHandlerHelper.canItemStacksStack(stack, outputItem)
+                    && stack.getMaxStackSize() >= outputItem.getCount() + stack.getCount();
         }
         return false;
     }
@@ -411,7 +412,7 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
                 SidedContentHandler.RelativeDirection relativeDirection = SidedContentHandler.RelativeDirection.toRelative(dir, getFacing());
                 for(SlotModePair pair : sideMap.get(relativeDirection.ordinal())) {
                     if(pair.getSlot() != i) continue;
-                    if(pair.getMode() == PUSH) {
+                    if(pair.getMode() == PUSH || pair.getMode() == PUSH_EXCESS) {
                         ItemStack remainder = ItemHandlerHelper.insertItem(handler, outputItem, true);
                         if(remainder.isEmpty()) {
                             return ItemHandlerHelper.insertItem(handler, outputItem, false);

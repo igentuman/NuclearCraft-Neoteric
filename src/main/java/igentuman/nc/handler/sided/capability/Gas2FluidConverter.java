@@ -100,8 +100,9 @@ public class Gas2FluidConverter implements IGasHandler {
             if(fluidCapability.isValidForInputSlot(i, fluidStack)) {
                 boolean doInsert = action.execute();
                 FluidStack inserted = fluidCapability.insertFluidInternal(i, fluidStack, doInsert);
-                stack.setAmount(inserted.getAmount());
-                return stack;
+                GasStack result = stack.copy();
+                result.setAmount(inserted.getAmount());
+                return result;
             }
         }
         return stack;

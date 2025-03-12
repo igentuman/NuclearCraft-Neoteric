@@ -248,7 +248,7 @@ public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
     public boolean handleOutputs(SidedContentHandler contentHandler) {
         int i = contentHandler.inputItemSlots;
         for(ItemStack outputItem: getResultItems()) {
-            if(!contentHandler.itemHandler.isValidForOutputSlot(i, outputItem)) {
+            if(!contentHandler.itemHandler.insertItemInternal(i, outputItem, true).isEmpty()) {
                 if(!contentHandler.itemHandler.canPushExcessItems(i, outputItem)) return false;
             }
             i++;
@@ -273,9 +273,8 @@ public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
         }
         i = contentHandler.inputFluidSlots;
         for(FluidStack outputFluid: getOutputFluids()) {
-            FluidStack toOutput = outputFluid.copy();
-            if(!contentHandler.fluidCapability.insertFluidInternal(i, toOutput, false).isEmpty()) {
-                if(!contentHandler.fluidCapability.pushExcessFluid(i, toOutput).isEmpty()) {
+            if(!contentHandler.fluidCapability.insertFluidInternal(i, outputFluid, true).isEmpty()) {
+                if(!contentHandler.fluidCapability.pushExcessFluid(i, outputFluid).isEmpty()) {
                     return false;
                 }
             }

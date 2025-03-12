@@ -1,6 +1,8 @@
 # NuclearCraft-Neoteric
 This is a re-creation of old but gold NuclearCraft on a modern MC version
 
+[![Build Mod Job](https://github.com/igentuman/NuclearCraft-Neoteric/actions/workflows/gradle.yml/badge.svg?branch=1.20)](https://github.com/igentuman/NuclearCraft-Neoteric/actions/workflows/gradle.yml)
+
 # ROADMAP
 - [x] Ore Generation
 - [x] Processors

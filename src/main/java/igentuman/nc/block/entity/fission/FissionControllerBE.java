@@ -477,7 +477,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         boolean assembled = wasFormed && isInternalValid && isCasingValid;
         if (
                 (!assembled && getLevel().getGameTime() % delay == 0)
-                || (assembled && getLevel().getGameTime() % (delay* 4L) == 0 && hasRecipe())
+                || (assembled && getLevel().getGameTime() % (delay* 8L) == 0 && hasRecipe())
         ) {
             Random rand = new Random(getBlockPos().asLong());
             delay = rand.nextInt(80) + 80;

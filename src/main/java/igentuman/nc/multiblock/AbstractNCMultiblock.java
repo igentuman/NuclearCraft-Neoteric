@@ -422,7 +422,7 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
         if(isFormed) {
             validationResult = ValidationResult.VALID;
         }
-        NuclearCraft.LOGGER.info("NC multiblock was validated" + controllerPos().toShortString());
+        NuclearCraft.LOGGER.info("NC multiblock was validated at " + controllerPos().toShortString());
     }
 
     public boolean isInnerValid() {

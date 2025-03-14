@@ -206,7 +206,7 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if (cap == ForgeCapabilities.FLUID_HANDLER) {
-            return contentHandler.getFluidCapability(null);
+            return contentHandler.getFluidCapability(side);
         }
         if (cap == ForgeCapabilities.ENERGY) {
             return energy.cast();
@@ -273,7 +273,7 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
             }
             handleMeltdown();
         }
-        refreshCacheFlag = !multiblock().isFormed();
+        refreshCacheFlag = !multiblock().isFormed()  || level.getGameTime() % 100 == 0;
         if(wasPowered != powered) {
             level.setBlockAndUpdate(worldPosition, getBlockState().setValue(POWERED, powered));
         }
@@ -434,25 +434,25 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
                     float xSpeed = 0;
                     switch (multiblock().turbineDirection) {
                         case UP:
-                            ySpeed = 0.2f;
+                            ySpeed = 0.2f + (float)(height)/4;
                             break;
                         case DOWN:
-                            ySpeed = -0.1f;
+                            ySpeed = -0.1f - (float)(height)/4;
                             break;
                         case NORTH:
-                            zSpeed = -0.1f;
+                            zSpeed = -0.1f - (float)(depth)/4;
                             z += 0.5;
                             break;
                         case SOUTH:
-                            zSpeed = 0.1f;
+                            zSpeed = 0.1f + (float)(depth)/4;
                             z += 0.5;
                             break;
                         case EAST:
-                            xSpeed = 0.1f;
+                            xSpeed = 0.1f + (float)(width)/4;
                             z += 0.5;
                             break;
                         case WEST:
-                            xSpeed = -0.1f;
+                            xSpeed = -0.1f - (float)(width)/4;
                             z += 0.5;
                             break;
                     }
@@ -699,6 +699,7 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
         public double getEnergy() { return Math.max(1, powerModifier); }
 
         public double ratio = 1D;
+
         @Override
         public void consumeInputs(SidedContentHandler contentHandler) {
             TurbineControllerBE<?> be = (TurbineControllerBE<?>)contentHandler.blockEntity;
@@ -719,7 +720,7 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
             ratio = (double)flow/(double)getInputFluids(0).get(0).getAmount();
             int toPush = (int) (outputFluid.getAmount()*ratio);
             toOutput.setAmount(toPush);
-            return contentHandler.fluidCapability.insertFluidInternal(1, toOutput, false).getAmount() != toPush;
+            return contentHandler.fluidCapability.insertFluidInternal(1, toOutput, true).getAmount() != toPush;
         }
     }
 }

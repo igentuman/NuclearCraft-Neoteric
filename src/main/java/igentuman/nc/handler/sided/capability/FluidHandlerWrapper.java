@@ -60,7 +60,7 @@ public class FluidHandlerWrapper implements IFluidHandler {
     @Override
     public @NotNull FluidStack drain(FluidStack resource, FluidAction action) {
         for(SlotModePair pair: handler.sideMap.get(direction.ordinal())) {
-            if(extract.test(pair.getSlot()) && resource.isFluidEqual(handler.tanks.get(pair.getSlot()).getFluid())) {
+            if(extract.test(pair.getSlot()) && (resource.isEmpty() || resource.isFluidEqual(handler.tanks.get(pair.getSlot()).getFluid()))) {
                 NcFluidTank tank = handler.tanks.get(pair.getSlot());
                 return tank.drain(resource, action);
             }

@@ -8,6 +8,7 @@ import net.minecraft.world.level.Level;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 public class MultiblockHandler {
 
@@ -29,7 +30,8 @@ public class MultiblockHandler {
     }
 
     public static void trackBlockChange(BlockPos pos) {
-        for(AbstractNCMultiblock multiblock: multiblocks.values()) {
+        List<AbstractNCMultiblock> tmp = new ArrayList<>(multiblocks.values());
+        for(AbstractNCMultiblock multiblock: tmp) {
             if(multiblock == null) {
                 continue;
             }
@@ -42,7 +44,8 @@ public class MultiblockHandler {
     private static List<String> toRemove = new ArrayList<>();
 
     public static void tick() {
-        for(String id: multiblocks.keySet()) {
+        Set<String> tmp = multiblocks.keySet();
+        for(String id: tmp) {
             AbstractNCMultiblock multiblock = multiblocks.get(id);
             if(multiblock == null || multiblock.controller().controllerBE() == null) {
                 toRemove.add(id);

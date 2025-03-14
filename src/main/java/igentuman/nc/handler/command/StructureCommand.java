@@ -23,6 +23,7 @@ public class StructureCommand  {
                         .suggests((context, builder) -> {
                             builder.suggest("fission_reactor");
                             builder.suggest("fusion_reactor");
+                            builder.suggest("turbine");
                             return builder.buildFuture();
                         })
                         .executes(StructureCommand::executeCommand)
@@ -36,18 +37,26 @@ public class StructureCommand  {
         String structure = StringArgumentType.getString(context, "structure");
 
         switch (structure) {
-            case "fission_reactor":
-                placeFissionReactor(player);
-                break;
-            case "fusion_reactor":
-                placeFusionReactor(player);
-                break;
-            default:
-                context.getSource().sendFailure(Component.literal("Invalid structure: " + structure));
-                return 0; // Command failed
+            case "fission_reactor" -> placeFissionReactor(player);
+            case "fusion_reactor" -> placeFusionReactor(player);
+            case "turbine" -> placeTurbine(player);
+            default -> context.getSource().sendFailure(Component.literal("Invalid structure: " + structure));
         }
 
         return 1; // Command succeeded
+    }
+
+    private static void placeTurbine(ServerPlayer player) {
+        double rayTraceRange = 30.0D;
+        HitResult hitResult = player.pick(rayTraceRange, 0.0F, false);
+        if (hitResult.getType() == HitResult.Type.BLOCK) {
+            BlockHitResult blockHitResult = (BlockHitResult) hitResult;
+            BlockPos blockPos = blockHitResult.getBlockPos().offset(-3, 1, -3);
+            WorldGeneration.StructurePlacer.placeStructure((ServerLevel) player.level(), blockPos, "turbine");
+            player.sendSystemMessage(Component.literal("Placing turbine!"));
+        } else {
+            player.sendSystemMessage(Component.literal("No block targeted!"));
+        }
     }
 
     // Handle placing the fission reactor

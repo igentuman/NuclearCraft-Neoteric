@@ -93,8 +93,9 @@ public class FluidTankRenderer extends NCGuiElement {
     @Override
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
         if(X() <= pMouseX && pMouseX < X() + width && Y() <= pMouseY && pMouseY < Y() + height) {
-           if(!tank.isEmpty() && SHIFT_PRESSED) {
+           if(tank != null && !tank.isEmpty() && SHIFT_PRESSED) {
                NuclearCraft.packetHandler().sendToServer(new PacketFlushSlotContent(getPosition(), slotId));
+               return true;
            }
         }
         return false;

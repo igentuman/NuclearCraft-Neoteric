@@ -2188,6 +2188,7 @@
   "validation.structure.incomplete": "Incomplete",
   "validation.structure.no_controller": "No controllers",
   "validation.structure.no_port": "No port found",
+  "validation.structure.photon_concentrator": "Incorrect Photon Concentrators placement",
   "validation.structure.too_big": "Structure is too big",
   "validation.structure.too_many_controllers": "Too many controllers",
   "validation.structure.too_small": "Structure is too small",

@@ -12,7 +12,8 @@ public enum ValidationResult {
     VALID(true, 8, "validation.structure.valid"),
     WRONG_PROPORTIONS(false,9, "validation.structure.wrong_proportions"),
     WRONG_CORNER(false,10, "validation.structure.wrong_corner"),
-    WRONG_BLADES(false,11, "validation.structure.wrong_blades");
+    WRONG_BLADES(false,11, "validation.structure.wrong_blades"),
+    PHOTON_CONCENTRATOR(false,12, "validation.structure.photon_concentrator");
 
 
 

@@ -4,6 +4,9 @@ import igentuman.nc.block.entity.fission.FissionControllerBE;
 import igentuman.nc.block.entity.kugelblitz.ChamberTerminalBE;
 import igentuman.nc.multiblock.AbstractNCMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;
+import igentuman.nc.multiblock.ValidationResult;
+import igentuman.nc.util.NCBlockPos;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
 import java.util.List;
@@ -59,7 +62,39 @@ public class KugelblitzMultiblock extends AbstractNCMultiblock {
     }
 
     @Override
+    public void validateOuter()
+    {
+        super.validateOuter();
+        validatePhotonConcentrators();
+    }
+
+    private void validatePhotonConcentrators() {
+        BlockPos center = getCenter();
+        BlockPos left = center.offset(-3, 0, 0);
+        BlockPos right = center.offset(3, 0, 0);
+        BlockPos top = center.offset(0, 0, -3);
+        BlockPos bottom = center.offset(0, 0, 3);
+        if (getLevel().getBlockState(left).getBlock() != KUGELBLITZ_BLOCKS.get("photon_concentrator").get() ||
+                getLevel().getBlockState(right).getBlock() != KUGELBLITZ_BLOCKS.get("photon_concentrator").get() ||
+                getLevel().getBlockState(top).getBlock() != KUGELBLITZ_BLOCKS.get("photon_concentrator").get() ||
+                getLevel().getBlockState(bottom).getBlock() != KUGELBLITZ_BLOCKS.get("photon_concentrator").get()) {
+            validationResult = ValidationResult.PHOTON_CONCENTRATOR;
+        }
+    }
+
+    @Override
     protected void invalidateStats() {
 
+    }
+
+    public BlockPos getCenter() {
+        BlockPos pos = new BlockPos(getTopRightBlock());
+        return switch (getFacing()) {
+            case NORTH -> pos.offset(+3, -3, +3);
+            case SOUTH -> pos.offset(-3, -3, -3);
+            case WEST -> pos.offset(+3, -3, -3);
+            case EAST -> pos.offset(-3, -3, +3);
+            default -> pos;
+        };
     }
 }

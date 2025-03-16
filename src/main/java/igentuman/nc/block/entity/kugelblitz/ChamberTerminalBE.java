@@ -74,21 +74,9 @@ public class ChamberTerminalBE<RECIPE extends ChamberTerminalBE.Recipe> extends 
     @NBTField
     public int energyPerTick = 0;
     @NBTField
-    public int realFlow = 0;
-    @NBTField
-    public double coilsEfficiency = 0;
-    @NBTField
     public boolean powered = false;
     @NBTField
     protected boolean forceShutdown = false;
-    @NBTField
-    public int activeCoils = 0;
-    @NBTField
-    public float flow = 0;
-    @NBTField
-    public float rotationSpeed = 0;
-    @NBTField
-    public int blades = 0;
 
     @NBTField
     public double efficiency = 0;
@@ -218,7 +206,7 @@ public class ChamberTerminalBE<RECIPE extends ChamberTerminalBE.Recipe> extends 
             stopSound();
             return;
         }
-        if(rotationSpeed > 0) {
+        if(energyPerTick > 0) {
             //spawnSteamParticles();
             playRunningSound();
         }
@@ -228,7 +216,6 @@ public class ChamberTerminalBE<RECIPE extends ChamberTerminalBE.Recipe> extends 
 
 
     public void tickServer() {
-        rotationSpeed = 0;
         if(NuclearCraft.instance.isNcBeStopped || isRemoved()) {
             return;
         }
@@ -290,9 +277,6 @@ public class ChamberTerminalBE<RECIPE extends ChamberTerminalBE.Recipe> extends 
         ValidationResult wasResult = validationResult;
         boolean wasFormed = multiblock().isFormed();
         if (!wasFormed || !isInternalValid || !isCasingValid) {
-            activeCoils = 0;
-            coilsEfficiency = 0;
-            flow = 0;
             reValidateCounter++;
             if(reValidateCounter < 40) {
                 return;
@@ -315,16 +299,6 @@ public class ChamberTerminalBE<RECIPE extends ChamberTerminalBE.Recipe> extends 
         width = multiblock().width();
         depth = multiblock().depth();
         trackChanges(wasFormed, multiblock().isFormed());
-    }
-
-    public float bladesEfficiency()
-    {
-        if(blades == 0) return 0;
-        return flow/blades;
-    }
-
-    public float getEfficiencyRate() {
-        return (float) coilsEfficiency /(100*activeCoils) * bladesEfficiency();
     }
 
     @Override
@@ -415,19 +389,10 @@ public class ChamberTerminalBE<RECIPE extends ChamberTerminalBE.Recipe> extends 
         }
     }
 
-    public int getRealFlow()
-    {
-        int wasFlow = realFlow;
-        realFlow = (int)Math.min(flow*TURBINE_CONFIG.BLADE_FLOW.get(), getFluidTank(0).getFluidAmount());
-        if(wasFlow != realFlow) {
-            changed = true;
-        }
-        return realFlow;
-    }
 
     private int calculateEnergy() {
         int wasEnergy = energyPerTick;
-        energyPerTick = (int)(realFlow*TURBINE_CONFIG.ENERGY_GEN.get()*getEfficiencyRate()*ENERGY_GENERATION.GENERATION_MULTIPLIER.get());
+        energyPerTick = 0;
         if(wasEnergy != energyPerTick) {
             changed = true;
         }
@@ -574,20 +539,8 @@ public class ChamberTerminalBE<RECIPE extends ChamberTerminalBE.Recipe> extends 
         return hasRecipe() && recipeInfo.ticksProcessed > 0 && !recipeInfo.isCompleted();
     }
 
-    public int getActiveCoils() {
-        return activeCoils;
-    }
-
-    public int getFlow() {
-        return (int) flow;
-    }
-
     public FluidTank getFluidTank(int i) {
         return contentHandler.fluidCapability.tanks.get(i);
-    }
-
-    public float getRotationSpeed() {
-        return rotationSpeed;
     }
 
     public static class Recipe extends NcRecipe {
@@ -618,25 +571,5 @@ public class ChamberTerminalBE<RECIPE extends ChamberTerminalBE.Recipe> extends 
 
         public double getEnergy() { return Math.max(1, powerModifier); }
 
-        public double ratio = 1D;
-        @Override
-        public void consumeInputs(SidedContentHandler contentHandler) {
-            ChamberTerminalBE<?> be = (ChamberTerminalBE<?>)contentHandler.blockEntity;
-            int flow = be.realFlow;
-            ratio = (double)flow/(double)getInputFluids(0).get(0).getAmount();
-            FluidStack holded = contentHandler.fluidCapability.getFluidInSlot(0).copy();
-            holded.setAmount(flow);
-            contentHandler.fluidCapability.holdedInputs.add(holded);
-            contentHandler.fluidCapability.tanks.get(0).drain(flow, EXECUTE);
-        }
-
-        @Override
-        public boolean handleOutputs(SidedContentHandler contentHandler) {
-            FluidStack outputFluid = outputFluids[0].getRepresentations().get(0);
-            FluidStack toOutput = outputFluid.copy();
-            int toPush = (int) (outputFluid.getAmount()*ratio);
-            toOutput.setAmount(toPush);
-            return contentHandler.fluidCapability.insertFluidInternal(1, toOutput, false).getAmount() != toPush;
-        }
     }
 }

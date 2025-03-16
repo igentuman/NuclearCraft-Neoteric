@@ -3,6 +3,7 @@ package igentuman.nc.datagen.tags;
 import igentuman.nc.multiblock.fission.FissionBlocks;
 import igentuman.nc.multiblock.fission.FissionReactor;
 import igentuman.nc.multiblock.fusion.FusionReactor;
+import igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration;
 import igentuman.nc.multiblock.turbine.TurbineRegistration;
 import igentuman.nc.setup.registration.NCBlocks;
 import igentuman.nc.setup.registration.NCEnergyBlocks;
@@ -19,6 +20,7 @@ import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.multiblock.fission.FissionReactor.FISSION_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_CORE_PROXY;
+import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BLOCKS;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
 import static igentuman.nc.setup.registration.NCBlocks.*;
 import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCKS;
@@ -37,6 +39,14 @@ public class NCBlockTags extends BlockTagsProvider {
         blocks();
         machines();
         tag(FissionBlocks.MODERATORS_BLOCKS).add(NCBlocks.NC_MATERIAL_BLOCKS.get("graphite").get(), NCBlocks.NC_MATERIAL_BLOCKS.get("beryllium").get());
+        tag(KugelblitzRegistration.CASING_BLOCKS).add(
+                KUGELBLITZ_BLOCKS.get("neutronium_frame").get(),
+                KUGELBLITZ_BLOCKS.get("chamber_port").get(),
+                KUGELBLITZ_BLOCKS.get("chamber_terminal").get(),
+                KUGELBLITZ_BLOCKS.get("quantum_flux_regulator").get(),
+                KUGELBLITZ_BLOCKS.get("quantum_transformer").get(),
+                KUGELBLITZ_BLOCKS.get("photon_concentrator").get(),
+                KUGELBLITZ_BLOCKS.get("event_horizon_stabilizer").get());
         tag(FusionReactor.CASING_BLOCKS).add(
                 FUSION_BLOCKS.get("fusion_reactor_casing").get(),
                 FUSION_BLOCKS.get("fusion_reactor_casing_glass").get());

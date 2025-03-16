@@ -122,7 +122,6 @@ public class TurbineRotorBE extends TurbineBE {
                 break;
             }
         }
-
         return blades*2;
     }
 
@@ -136,6 +135,6 @@ public class TurbineRotorBE extends TurbineBE {
         if(getController() instanceof TurbineControllerBE<?> && getController().isRemoved()) {
             return false;
         }
-        return getController().multiblock().isFormed;
+        return getController().controller().isInternalValid && getController().controller().isCasingValid;
     }
 }

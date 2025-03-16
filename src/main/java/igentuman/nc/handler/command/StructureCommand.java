@@ -23,6 +23,7 @@ public class StructureCommand  {
                         .suggests((context, builder) -> {
                             builder.suggest("fission_reactor");
                             builder.suggest("fusion_reactor");
+                            builder.suggest("kugelblitz_chamber");
                             builder.suggest("turbine");
                             return builder.buildFuture();
                         })
@@ -39,11 +40,25 @@ public class StructureCommand  {
         switch (structure) {
             case "fission_reactor" -> placeFissionReactor(player);
             case "fusion_reactor" -> placeFusionReactor(player);
+            case "kugelblitz_chamber" -> placeKugelblitzChamber(player);
             case "turbine" -> placeTurbine(player);
             default -> context.getSource().sendFailure(Component.literal("Invalid structure: " + structure));
         }
 
         return 1; // Command succeeded
+    }
+
+    private static void placeKugelblitzChamber(ServerPlayer player) {
+        double rayTraceRange = 30.0D;
+        HitResult hitResult = player.pick(rayTraceRange, 0.0F, false);
+        if (hitResult.getType() == HitResult.Type.BLOCK) {
+            BlockHitResult blockHitResult = (BlockHitResult) hitResult;
+            BlockPos blockPos = blockHitResult.getBlockPos().offset(-3, 1, -3);
+            WorldGeneration.StructurePlacer.placeStructure((ServerLevel) player.level(), blockPos, "kugelblitz_chamber");
+            player.sendSystemMessage(Component.literal("Placing chamber!"));
+        } else {
+            player.sendSystemMessage(Component.literal("No block targeted!"));
+        }
     }
 
     private static void placeTurbine(ServerPlayer player) {

@@ -2054,7 +2054,7 @@
   "processor.description.assembler": "Machine what assembles items.",
   "processor.description.centrifuge": "Separates fluids into their components.",
   "processor.description.chemical_reactor": "Mixes fluids and gases together.",
-  "processor.description.crystalizer": "Grows crystals from solutions.",
+  "processor.description.crystallizer": "Grows crystals from solutions.",
   "processor.description.decay_hastener": "Accelerates decay speed of radioactive materials.",
   "processor.description.electrolyzer": "Separates fluids and gases into their components.",
   "processor.description.extractor": "Extracts liquids from solid items.",

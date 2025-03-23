@@ -300,7 +300,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("processor.description.fuel_reprocessor","Separates depleted fuel into components.");
         add("processor.description.melter","Melts items into liquids.");
         add("processor.description.ingot_former","Forms solid items from molten liquids.");
-        add("processor.description.crystalizer","Grows crystals from solutions.");
+        add("processor.description.crystallizer","Grows crystals from solutions.");
         add("processor.description.chemical_reactor","Mixes fluids and gases together.");
         add("processor.description.assembler","Machine what assembles items.");
         add("processor.description.decay_hastener","Accelerates decay speed of radioactive materials.");

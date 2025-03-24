@@ -5,7 +5,6 @@ import com.mojang.math.Transformation;
 import igentuman.nc.block.entity.turbine.TurbineRotorBE;
 import igentuman.nc.block.turbine.TurbineRotorBlock;
 import igentuman.nc.util.annotation.NothingNullByDefault;
-import mekanism.common.lib.math.Quaternion;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;

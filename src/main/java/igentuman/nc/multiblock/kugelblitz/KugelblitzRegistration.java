@@ -1,20 +1,20 @@
 package igentuman.nc.multiblock.kugelblitz;
 
 import igentuman.nc.block.entity.kugelblitz.BlackHoleBE;
+import igentuman.nc.block.entity.kugelblitz.ChamberBE;
 import igentuman.nc.block.entity.kugelblitz.ChamberPortBE;
 import igentuman.nc.block.entity.kugelblitz.ChamberTerminalBE;
+import igentuman.nc.block.kugelblitz.BlackHoleBlock;
+import igentuman.nc.block.kugelblitz.ChamberBlock;
 import igentuman.nc.block.kugelblitz.ChamberPortBlock;
 import igentuman.nc.block.kugelblitz.ChamberTerminalBlock;
 import igentuman.nc.container.ChamberPortContainer;
 import igentuman.nc.container.ChamberTerminalContainer;
-import igentuman.nc.container.FissionControllerContainer;
-import igentuman.nc.container.FissionPortContainer;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.GlassBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -34,6 +34,7 @@ public class KugelblitzRegistration {
     public static final Item.Properties KUGELBLITZ_ITEM_PROPERTIES = new Item.Properties();
     public static final Block.Properties KUGELBLITZ_BLOCK_PROPERTIES =  BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(4f).requiresCorrectToolForDrops();;
     public static HashMap<String, RegistryObject<BlockEntityType<? extends BlockEntity>>> KUGELBLITZ_BE = new HashMap<>();
+
     public static HashMap<String, RegistryObject<Item>> KUGELBLITZ_ITEMS = new HashMap<>();
     public static HashMap<String, RegistryObject<Block>> KUGELBLITZ_BLOCKS = new HashMap<>();
     public static TagKey<Block> CASING_BLOCKS = blockTag("kugelblitz_casing");
@@ -80,7 +81,7 @@ public class KugelblitzRegistration {
                         () -> BlockEntityType.Builder.of(ChamberTerminalBE::new, KUGELBLITZ_BLOCKS.get("chamber_terminal").get())
                                 .build(null)));
 
-        KUGELBLITZ_BLOCKS.put("black_hole", BLOCKS.register("black_hole", () -> new ChamberTerminalBlock(KUGELBLITZ_BLOCK_PROPERTIES)));
+        KUGELBLITZ_BLOCKS.put("black_hole", BLOCKS.register("black_hole", () -> new BlackHoleBlock(KUGELBLITZ_BLOCK_PROPERTIES)));
         KUGELBLITZ_ITEMS.put("black_hole", fromMultiblock(KUGELBLITZ_BLOCKS.get("black_hole")));
         ALL_NC_ITEMS.put("black_hole", KUGELBLITZ_ITEMS.get("black_hole"));
 
@@ -92,9 +93,9 @@ public class KugelblitzRegistration {
 
     private static void registerSimpleBlock(String key) {
         if(key.contains("photon")) {
-            KUGELBLITZ_BLOCKS.put(key, BLOCKS.register(key, () -> new GlassBlock(KUGELBLITZ_BLOCK_PROPERTIES)));
+            KUGELBLITZ_BLOCKS.put(key, BLOCKS.register(key, () -> new ChamberBlock(KUGELBLITZ_BLOCK_PROPERTIES)));
         } else {
-            KUGELBLITZ_BLOCKS.put(key, BLOCKS.register(key, () -> new Block(KUGELBLITZ_BLOCK_PROPERTIES)));
+            KUGELBLITZ_BLOCKS.put(key, BLOCKS.register(key, () -> new ChamberBlock(KUGELBLITZ_BLOCK_PROPERTIES)));
         }
         KUGELBLITZ_ITEMS.put(key, fromMultiblock(KUGELBLITZ_BLOCKS.get(key)));
         ALL_NC_ITEMS.put(key, KUGELBLITZ_ITEMS.get(key));

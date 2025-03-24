@@ -15,7 +15,7 @@ import igentuman.nc.client.gui.turbine.TurbinePortScreen;
 import igentuman.nc.client.particle.FusionBeamParticle;
 import igentuman.nc.client.particle.RadiationParticle;
 import igentuman.nc.client.gui.fission.FissionControllerScreen;
-import igentuman.nc.client.particle.ShaderLoader;
+import igentuman.nc.client.renderer.DistortionShader;
 import igentuman.nc.client.sound.SoundHandler;
 import igentuman.nc.content.energy.BatteryBlocks;
 import igentuman.nc.handler.event.client.*;
@@ -48,7 +48,9 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.RegistryObject;
+import igentuman.nc.client.block.kugelblitz.BlackholeRenderer;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
@@ -56,15 +58,13 @@ import static igentuman.nc.multiblock.fission.FissionReactor.FISSION_CONTROLLER_
 import static igentuman.nc.multiblock.fission.FissionReactor.FISSION_PORT_CONTAINER;
 import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_BE;
 import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_CORE_CONTAINER;
-import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.CHAMBER_PORT_CONTAINER;
-import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.CHAMBER_TERMINAL_CONTAINER;
+import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.*;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.*;
 import static igentuman.nc.setup.registration.NCBlocks.REDSTONE_DIMMER_CONTAINER;
 import static igentuman.nc.setup.registration.NCItems.GEIGER_COUNTER;
 import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_CONTAINER;
 import static igentuman.nc.setup.registration.Registries.FLUIDS;
 import static net.minecraftforge.eventbus.api.EventPriority.LOWEST;
-import igentuman.nc.client.particle.BlackHoleShaderManager;
 
 @Mod.EventBusSubscriber(modid = MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ClientSetup {
@@ -75,6 +75,7 @@ public class ClientSetup {
             MinecraftForge.EVENT_BUS.addListener(LOWEST, SoundHandler::onTilePlaySound);
             BlockEntityRenderers.register(FUSION_BE.get("fusion_core").get(), FusionCoreRenderer::new);
             BlockEntityRenderers.register(TURBINE_BE.get("turbine_rotor_shaft").get(), TurbineRotorRenderer::new);
+            BlockEntityRenderers.register(KUGELBLITZ_BE.get("black_hole").get(), BlackholeRenderer::new);
             MenuScreens.register(STORAGE_CONTAINER.get(), StorageContainerScreen::new);
             MenuScreens.register(FUSION_CORE_CONTAINER.get(), FusionCoreScreen::new);
             MenuScreens.register(TURBINE_CONTROLLER_CONTAINER.get(), TurbineControllerScreen::new);
@@ -142,6 +143,7 @@ public class ClientSetup {
         TooltipHandler.register(event);
         TickHandler.register(event);
         BlockOverlayHandler.register(event);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(DistortionShader::registerShaders);
     }
 
     @SubscribeEvent
@@ -149,5 +151,5 @@ public class ClientSetup {
         for(String name: BatteryBlocks.all().keySet()) {
             event.register(NCEnergyBlocks.BLOCK_ITEMS.get(name).get(), BatteryBlockItemDecorator.INSTANCE);
         }
-      }
+    }
 }

@@ -1,6 +1,7 @@
 package igentuman.nc.block.entity.kugelblitz;
 
 import igentuman.nc.NuclearCraft;
+import igentuman.nc.block.entity.fusion.FusionCoreBE;
 import igentuman.nc.client.sound.SoundHandler;
 import igentuman.nc.compat.cc.KugelblitzPeripheral;
 import igentuman.nc.handler.sided.SidedContentHandler;
@@ -48,7 +49,7 @@ import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS
 import static igentuman.nc.setup.registration.NCSounds.FISSION_REACTOR;
 import static igentuman.nc.util.ModUtil.isCcLoaded;
 
-public class ChamberTerminalBE<RECIPE extends ChamberTerminalBE.Recipe> extends ChamberBE {
+public class ChamberTerminalBE extends ChamberBE {
 
     public static String NAME = "chamber_terminal";
     public final SidedContentHandler contentHandler;
@@ -78,11 +79,10 @@ public class ChamberTerminalBE<RECIPE extends ChamberTerminalBE.Recipe> extends 
     @NBTField
     public double efficiency = 0;
     public ValidationResult validationResult = ValidationResult.INCOMPLETE;
-    public RecipeInfo<RECIPE> recipeInfo = new RecipeInfo<>();
     public boolean controllerEnabled = false;
     protected Direction facing;
-    public RECIPE recipe;
-    public HashMap<String, RECIPE> cachedRecipes = new HashMap<>();
+    public Recipe recipe;
+    public HashMap<String, Recipe> cachedRecipes = new HashMap<>();
 
 
 
@@ -125,37 +125,13 @@ public class ChamberTerminalBE<RECIPE extends ChamberTerminalBE.Recipe> extends 
         };
     }
 
-    private void addToCache(RECIPE recipe) {
-        String key = contentHandler.getCacheKey();
-        if(cachedRecipes.containsKey(key)) {
-            cachedRecipes.replace(key, recipe);
-        } else {
-            cachedRecipes.put(key, recipe);
-        }
-    }
-    public RECIPE getRecipe() {
+    @Override
+    public Recipe getRecipe() {
         if(contentHandler.fluidCapability.tanks.get(0).isEmpty()) return null;
-        RECIPE cachedRecipe = getCachedRecipe();
-        if(cachedRecipe != null) return cachedRecipe;
-        if(!NcRecipeType.ALL_RECIPES.containsKey(getName())) return null;
-        for(NcRecipe recipe: NcRecipeType.ALL_RECIPES.get(getName()).getRecipeType().getRecipes(getLevel())) {
-            if(recipe.test(contentHandler)) {
-                addToCache((RECIPE)recipe);
-                return (RECIPE)recipe;
-            }
-        }
+        //TODO implement
         return null;
     }
 
-    public RECIPE getCachedRecipe() {
-        String key = contentHandler.getCacheKey();
-        if(cachedRecipes.containsKey(key)) {
-            if(cachedRecipes.get(key).test(contentHandler)) {
-                return cachedRecipes.get(key);
-            }
-        }
-        return null;
-    }
 
     private LazyOptional<KugelblitzPeripheral> peripheralCap;
 
@@ -372,7 +348,7 @@ public class ChamberTerminalBE<RECIPE extends ChamberTerminalBE.Recipe> extends 
     private void handleRecipeOutput() {
         if (hasRecipe() && recipeInfo.isCompleted()) {
             if(recipe == null) {
-                recipe = recipeInfo.recipe();
+                recipe = (Recipe) recipeInfo.recipe();
             }
             if (recipe.handleOutputs(contentHandler)) {
                 recipeInfo.clear();
@@ -401,7 +377,7 @@ public class ChamberTerminalBE<RECIPE extends ChamberTerminalBE.Recipe> extends 
         recipe = getRecipe();
         if (recipe != null) {
             recipeInfo.setRecipe(recipe);
-            recipeInfo.ticks = recipeInfo.recipe().getBaseTime();
+            recipeInfo.ticks = ((Recipe)recipeInfo.recipe()).getBaseTime();
             recipeInfo.energy = recipeInfo.recipe.getEnergy();
             recipeInfo.be = this;
             //recipe.consumeInputs(contentHandler);
@@ -441,7 +417,6 @@ public class ChamberTerminalBE<RECIPE extends ChamberTerminalBE.Recipe> extends 
         super.saveAdditional(tag);
         if (tag.contains("Info")) {
             CompoundTag infoTag = tag.getCompound("Info");
-            infoTag.put("recipeInfo", recipeInfo.serializeNBT());
             infoTag.putInt("validationId", validationResult.id);
             infoTag.putLong("erroredBlock", errorBlockPos.asLong());
             tag.remove("Info");

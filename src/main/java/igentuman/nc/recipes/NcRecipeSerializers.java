@@ -16,7 +16,6 @@ import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import java.util.HashMap;
 
 import static igentuman.nc.setup.registration.Registries.RECIPE_SERIALIZERS;
-import static igentuman.nc.util.FileExtractor.registrationConfig;
 
 public class NcRecipeSerializers {
 

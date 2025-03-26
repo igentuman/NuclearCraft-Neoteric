@@ -6,8 +6,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class KugelblitzController  implements MultiblockController {
-    private final ChamberTerminalBE<?> controllerBE;
-    public KugelblitzController(ChamberTerminalBE<?> be) {
+    private final ChamberTerminalBE controllerBE;
+    public KugelblitzController(ChamberTerminalBE be) {
         controllerBE = be;
     }
 

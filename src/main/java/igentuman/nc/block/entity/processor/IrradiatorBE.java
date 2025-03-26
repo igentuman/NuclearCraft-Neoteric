@@ -20,7 +20,7 @@ import net.minecraft.world.level.block.state.BlockState;
 public class IrradiatorBE extends NCProcessorBE implements MultiblockAttachable {
 
     private AbstractNCMultiblock multiblock;
-    private FissionControllerBE<?> controller;
+    private FissionControllerBE controller;
     @NBTField
     public int irradiativeFlux = 0;
     @NBTField
@@ -42,7 +42,7 @@ public class IrradiatorBE extends NCProcessorBE implements MultiblockAttachable 
     }
 
     @Override
-    public FissionControllerBE<?> controller() {
+    public FissionControllerBE controller() {
         return controller;
     }
 
@@ -65,7 +65,7 @@ public class IrradiatorBE extends NCProcessorBE implements MultiblockAttachable 
         if (multiblock != null) {
             if (multiblock.isFormed()) {
                 if (multiblock.controller() != null) {
-                    controller = (FissionControllerBE<?>) multiblock.controller().controllerBE();
+                    controller = (FissionControllerBE) multiblock.controller().controllerBE();
                     if(controller.isProcessing()) {
                         irradiativeFlux = controller.irradiationConnections;
                         fuelMultiplier = controller.recipeInfo.recipe().getRadiation()*10000;
@@ -116,7 +116,7 @@ public class IrradiatorBE extends NCProcessorBE implements MultiblockAttachable 
             BlockEntity be = getLevel().getBlockEntity(toCheck);
             if(be instanceof FissionBE) {
                 multiblock = ((FissionBE) be).getMultiblock();
-                controller = (FissionControllerBE<?>) ((FissionBE) be).controller();
+                controller = (FissionControllerBE) ((FissionBE) be).controller();
             }
         }
     }

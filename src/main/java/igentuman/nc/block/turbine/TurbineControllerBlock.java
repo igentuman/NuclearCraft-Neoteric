@@ -74,7 +74,7 @@ public class TurbineControllerBlock extends HorizontalDirectionalBlock implement
         if (!level.isClientSide()) {
             BlockEntity be = level.getBlockEntity(pos);
 
-            if (be instanceof TurbineControllerBE<?>)  {
+            if (be instanceof TurbineControllerBE)  {
                 MenuProvider containerProvider = new MenuProvider() {
                     @Override
                     public Component getDisplayName() {
@@ -97,14 +97,14 @@ public class TurbineControllerBlock extends HorizontalDirectionalBlock implement
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, @NotNull BlockState state, @NotNull BlockEntityType<T> type) {
         if (level.isClientSide()) {
             return (lvl, pos, blockState, t) -> {
-                if (t instanceof TurbineControllerBE<?> tile) {
+                if (t instanceof TurbineControllerBE tile) {
                     tile.tickClient();
                     level.setBlock(pos, blockState.setValue(POWERED, tile.powered), 3);
                 }
             };
         }
         return (lvl, pos, blockState, t)-> {
-            if (t instanceof TurbineControllerBE<?> tile) {
+            if (t instanceof TurbineControllerBE tile) {
                 tile.tickServer();
             }
         };

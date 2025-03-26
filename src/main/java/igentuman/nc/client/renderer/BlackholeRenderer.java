@@ -1,8 +1,7 @@
-package igentuman.nc.client.block.kugelblitz;
+package igentuman.nc.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import igentuman.nc.block.entity.kugelblitz.BlackHoleBE;
-import igentuman.nc.client.renderer.BillboardingEffectRenderer;
 import igentuman.nc.util.Color;
 import igentuman.nc.util.CustomEffect;
 import net.minecraft.client.Minecraft;
@@ -33,7 +32,7 @@ public class BlackholeRenderer implements BlockEntityRenderer<BlockEntity> {
 
     @Override
     public void render(BlockEntity tile, float v, PoseStack poseStack, MultiBufferSource multiBufferSource, int i, int i1) {
-        float energyScale = 0.2f;
+        float energyScale = ((BlackHoleBE)tile).getBlackholeScale();
         float scale = getBoundedScale(energyScale, MIN_SCALE, MAX_SCALE);
         BillboardingEffectRenderer.render(CORE.getTexture(), "nc.blackhole", () -> {
             Vec3 center = Vec3.atCenterOf(tile.getBlockPos());

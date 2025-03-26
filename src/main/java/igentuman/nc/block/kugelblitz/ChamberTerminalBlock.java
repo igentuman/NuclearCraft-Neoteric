@@ -74,7 +74,7 @@ public class ChamberTerminalBlock extends HorizontalDirectionalBlock implements 
         if (!level.isClientSide()) {
             BlockEntity be = level.getBlockEntity(pos);
 
-            if (be instanceof ChamberTerminalBE<?>)  {
+            if (be instanceof ChamberTerminalBE)  {
                 MenuProvider containerProvider = new MenuProvider() {
                     @Override
                     public Component getDisplayName() {
@@ -97,14 +97,14 @@ public class ChamberTerminalBlock extends HorizontalDirectionalBlock implements 
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, @NotNull BlockState state, @NotNull BlockEntityType<T> type) {
         if (level.isClientSide()) {
             return (lvl, pos, blockState, t) -> {
-                if (t instanceof ChamberTerminalBE<?> tile) {
+                if (t instanceof ChamberTerminalBE tile) {
                     tile.tickClient();
                     level.setBlock(pos, blockState.setValue(POWERED, tile.powered), 3);
                 }
             };
         }
         return (lvl, pos, blockState, t)-> {
-            if (t instanceof ChamberTerminalBE<?> tile) {
+            if (t instanceof ChamberTerminalBE tile) {
                 tile.tickServer();
             }
         };

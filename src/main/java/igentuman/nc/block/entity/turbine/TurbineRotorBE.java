@@ -83,19 +83,19 @@ public class TurbineRotorBE extends TurbineBE {
         return connectedToBearing;
     }
 
-    public TurbineControllerBE<?> getController() {
+    public TurbineControllerBE getController() {
         if(controllerPos == BlockPos.ZERO) return controller();
         BlockEntity be = getLevel().getBlockEntity(controllerPos);
-        if(be instanceof TurbineControllerBE<?> controller) {
+        if(be instanceof TurbineControllerBE controller) {
             return controller;
         }
         return controller();
     }
 
     public float getRotationSpeed() {
-        TurbineControllerBE<?> controller = getController();
+        TurbineControllerBE controller = getController();
         rotation = 0;
-        if(controller instanceof TurbineControllerBE<?>) {
+        if(controller instanceof TurbineControllerBE) {
             if(controller.isRemoved()) {
                 return rotation;
             }
@@ -129,7 +129,7 @@ public class TurbineRotorBE extends TurbineBE {
         if(getController().getMultiblock() == null) {
             return false;
         }
-        if(getController() instanceof TurbineControllerBE<?> && getController().isRemoved()) {
+        if(getController() instanceof TurbineControllerBE && getController().isRemoved()) {
             return false;
         }
         return getController().controller().isInternalValid && getController().controller().isCasingValid;

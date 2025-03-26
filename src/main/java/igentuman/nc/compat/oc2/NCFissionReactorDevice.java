@@ -20,11 +20,11 @@ public class NCFissionReactorDevice {
     public static final Capability<Device> DEVICE_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {
     });
 
-    public static RPCDevice createDevice(FissionControllerBE<?> blockEntity) {
+    public static RPCDevice createDevice(FissionControllerBE blockEntity) {
         return new ObjectDevice(new NCFissionReactorDeviceRecord(blockEntity));
     }
 
-    public record NCFissionReactorDeviceRecord(FissionControllerBE<?> reactor) implements NamedDevice {
+    public record NCFissionReactorDeviceRecord(FissionControllerBE reactor) implements NamedDevice {
 
         @Callback
         public final String getName() {

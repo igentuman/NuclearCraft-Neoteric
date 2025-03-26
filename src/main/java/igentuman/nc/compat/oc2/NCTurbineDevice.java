@@ -20,11 +20,11 @@ public class NCTurbineDevice {
     public static final Capability<Device> DEVICE_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {
     });
 
-    public static RPCDevice createDevice(TurbineControllerBE<?> blockEntity) {
+    public static RPCDevice createDevice(TurbineControllerBE blockEntity) {
         return new ObjectDevice(new NCFTurbineDeviceRecord(blockEntity));
     }
 
-    public record NCFTurbineDeviceRecord(TurbineControllerBE<?> turbine) implements NamedDevice {
+    public record NCFTurbineDeviceRecord(TurbineControllerBE turbine) implements NamedDevice {
 
         @Callback
         public final String getName() {

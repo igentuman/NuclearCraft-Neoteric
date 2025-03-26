@@ -7,9 +7,9 @@ import igentuman.nc.block.entity.fission.FissionControllerBE;
 import javax.annotation.Nonnull;
 
 public class NCSolidFissionReactorPeripheral implements IPeripheral {
-    private final FissionControllerBE<?> reactor;
+    private final FissionControllerBE reactor;
 
-    public NCSolidFissionReactorPeripheral(FissionControllerBE<?> processorBE)
+    public NCSolidFissionReactorPeripheral(FissionControllerBE processorBE)
     {
         this.reactor = processorBE;
     }

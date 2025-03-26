@@ -4,6 +4,8 @@ import igentuman.nc.NuclearCraft;
 import igentuman.nc.client.sound.SoundHandler;
 import igentuman.nc.compat.cc.NCSolidFissionReactorPeripheral;
 import igentuman.nc.compat.oc2.NCFissionReactorDevice;
+import igentuman.nc.handler.CatalystHandler;
+import igentuman.nc.handler.UpgradesHandler;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.SlotModePair;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
@@ -64,13 +66,12 @@ import static igentuman.nc.setup.registration.NcParticleTypes.RADIATION;
 import static igentuman.nc.util.ModUtil.*;
 import static net.minecraft.world.item.Items.AIR;
 
-public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> extends FissionBE  {
+public class FissionControllerBE extends FissionBE  {
 
     public static String NAME = "fission_reactor_controller";
     public final SidedContentHandler contentHandler;
-    public final CustomEnergyStorage energyStorage = createEnergy();
-
-    protected final LazyOptional<IEnergyStorage> energy = LazyOptional.of(() -> energyStorage);
+    public final CustomEnergyStorage energyStorage;
+    protected final LazyOptional<IEnergyStorage> energy;
     public BlockPos errorBlockPos = BlockPos.ZERO;
 
     @NBTField
@@ -123,40 +124,21 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     public double moderationLevel = 1D;
     @NBTField
     public boolean powered = false;
+    @NBTField
+    private double steamRate;
+    @NBTField
+    public int steamPerTick = 0;
     protected boolean forceShutdown = false;
     public int fuelCellMultiplier = 1;
     public int moderatorCellMultiplier = 1;
 
     public ValidationResult validationResult = ValidationResult.INCOMPLETE;
-    public RecipeInfo<RECIPE> recipeInfo = new RecipeInfo<>();
+
     public boolean controllerEnabled = false;
     private Direction facing;
-    public RECIPE recipe;
-    public HashMap<String, RECIPE> cachedRecipes = new HashMap<>();
-    @NBTField
-    private double steamRate;
-    @NBTField
-    public int steamPerTick = 0;
-
-    @Override
-    public String getName() {
-        return NAME;
-    }
-
+    protected List<FissionBoilingRecipe> coolantRecipes;
+    protected FissionBoilingRecipe boilingRecipe;
     private List<ItemStack> allowedInputs;
-
-    public List<ItemStack> getAllowedInputItems()
-    {
-        if(allowedInputs == null) {
-            allowedInputs = new ArrayList<>();
-            for(NcRecipe recipe: NcRecipeType.getAllRecipesFor(getName(), getLevel())) {
-                for(Ingredient ingredient: recipe.getItemIngredients()) {
-                    allowedInputs.addAll(List.of(ingredient.getItems()));
-                }
-            }
-        }
-        return allowedInputs;
-    }
 
     public FissionControllerBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, NAME);
@@ -181,6 +163,27 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
             contentHandler.fluidCapability.setGlobalMode(2+activeCoolersTypes().indexOf(type), SlotModePair.SlotMode.PULL);
         }
         contentHandler.setAllowedInputItems(this::getAllowedInputItems);
+        energyStorage = createEnergy();
+        energy = LazyOptional.of(() -> energyStorage);
+        recipeInfo = new RecipeInfo();
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+
+    public List<ItemStack> getAllowedInputItems()
+    {
+        if(allowedInputs == null) {
+            allowedInputs = new ArrayList<>();
+            for(NcRecipe recipe: NcRecipeType.getAllRecipesFor(getName(), getLevel())) {
+                for(Ingredient ingredient: recipe.getItemIngredients()) {
+                    allowedInputs.addAll(List.of(ingredient.getItems()));
+                }
+            }
+        }
+        return allowedInputs;
     }
 
     private List<String> activeCoolersTypes() {
@@ -209,10 +212,6 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         return allowedCoolants;
     }
 
-    public FluidTank getFluidTank(int i) {
-        return contentHandler.fluidCapability.tanks.get(i);
-    }
-
     @Override
     public ItemCapabilityHandler getItemInventory()
     {
@@ -232,37 +231,14 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         };
     }
 
-    private void addToCache(RECIPE recipe) {
-        String key = contentHandler.getCacheKey();
-        if(cachedRecipes.containsKey(key)) {
-            cachedRecipes.replace(key, recipe);
-        } else {
-            cachedRecipes.put(key, recipe);
-        }
+    @Override
+    public SidedContentHandler contentHandler() {
+        return contentHandler;
     }
 
-    public RECIPE getRecipe() {
-        if(contentHandler.itemHandler.getStackInSlot(0).equals(ItemStack.EMPTY)) return null;
-        RECIPE cachedRecipe = getCachedRecipe();
-        if(cachedRecipe != null) return cachedRecipe;
-        if(!NcRecipeType.ALL_RECIPES.containsKey(getName())) return null;
-        for(NcRecipe recipe: NcRecipeType.getAllRecipesFor(getName(), getLevel())) {
-            if(recipe.test(contentHandler)) {
-                addToCache((RECIPE)recipe);
-                return (RECIPE)recipe;
-            }
-        }
-        return null;
-    }
-
-    public RECIPE getCachedRecipe() {
-        String key = contentHandler.getCacheKey();
-        if(cachedRecipes.containsKey(key)) {
-            if(cachedRecipes.get(key).test(contentHandler)) {
-                return cachedRecipes.get(key);
-            }
-        }
-        return null;
+    @Override
+    public CustomEnergyStorage energyStorage() {
+        return energyStorage;
     }
 
     public double getSteamRate()
@@ -371,21 +347,6 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         return super.getCapability(cap, side);
     }
 
-    protected void playRunningSound() {
-        if(isRemoved() || (currentSound != null && !currentSound.getLocation().equals(FISSION_REACTOR.get().getLocation()))) {
-            SoundHandler.stopTileSound(getBlockPos());
-            currentSound = null;
-        }
-        if((currentSound == null || !Minecraft.getInstance().getSoundManager().isActive(currentSound))) {
-            if(currentSound != null && currentSound.getLocation().equals(FISSION_REACTOR.get().getLocation())) {
-                return;
-            }
-
-            playSoundCooldown = 20;
-            currentSound = SoundHandler.startTileSound(FISSION_REACTOR.get(), SoundSource.BLOCKS, 0.2f, level.getRandom(), getBlockPos());
-        }
-    }
-
     public void tickClient() {
         if(!isCasingValid || !isInternalValid) {
             stopSound();
@@ -393,7 +354,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         }
         if(isProcessing() && powered) {
             spawnParticles();
-            playRunningSound();
+            playSound(FISSION_REACTOR, 0.2f);
         } else {
             stopSound();
         }
@@ -618,7 +579,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     private void handleRecipeOutput() {
         if (hasRecipe() && recipeInfo.isCompleted()) {
             if(recipe == null) {
-                recipe = recipeInfo.recipe();
+                recipe = (Recipe) recipeInfo.recipe();
             }
             if (recipe.handleOutputs(contentHandler)) {
                 recipeInfo.clear();
@@ -683,14 +644,19 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         return getModerationLevel() * recipeInfo.energy * moderatorCellMultiplier * (FISSION_CONFIG.MODERATOR_FE_MULTIPLIER.get() / 100);
     }
 
+    @Override
+    public Recipe getRecipe() {
+        if(contentHandler().itemHandler.getStackInSlot(0).equals(ItemStack.EMPTY)) return null;
+        return (Recipe) super.getRecipe();
+    }
 
-    private void updateRecipe() {
+    protected void updateRecipe() {
         recipe = getRecipe();
         if (recipe != null) {
             recipeInfo.setRecipe(recipe);
-            recipeInfo.ticks = recipeInfo.recipe().getDepletionTime();
+            recipeInfo.ticks = ((Recipe)recipeInfo.recipe()).getDepletionTime();
             recipeInfo.energy = recipeInfo.recipe().getEnergy();
-            recipeInfo.heat = recipeInfo.recipe().getHeat();
+            recipeInfo.heat = ((Recipe)recipeInfo.recipe()).getHeat();
             recipeInfo.radiation = recipeInfo.recipe().getRadiation();
             recipeInfo.be = this;
             recipe.consumeInputs(contentHandler);
@@ -724,7 +690,6 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         super.saveAdditional(tag);
         if (tag.contains("Info")) {
             CompoundTag infoTag = tag.getCompound("Info");
-            infoTag.put("recipeInfo", recipeInfo.serializeNBT());
             infoTag.putInt("validationId", validationResult.id);
             infoTag.putLong("erroredBlock", errorBlockPos.asLong());
             tag.remove("Info");
@@ -830,9 +795,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         return coolantRecipes;
     }
 
-    protected List<FissionBoilingRecipe> coolantRecipes;
 
-    protected FissionBoilingRecipe boilingRecipe;
     public boolean hasCoolant() {
         FluidStack coolant = contentHandler.fluidCapability.getFluidInSlot(0);
         if(coolant.isEmpty()) {
@@ -1002,7 +965,9 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     public static class FissionBoilingRecipe extends NcRecipe {
         protected double conversionRate;
 
-        public FissionBoilingRecipe(ResourceLocation id, ItemStackIngredient[] input, ItemStackIngredient[] output, FluidStackIngredient[] inputFluids, FluidStackIngredient[] outputFluids, double conversionRate, double powerModifier, double radiation, double rar) {
+        public FissionBoilingRecipe(ResourceLocation id, ItemStackIngredient[] input, ItemStackIngredient[] output,
+                                    FluidStackIngredient[] inputFluids, FluidStackIngredient[] outputFluids,
+                                    double conversionRate, double powerModifier, double radiation, double rar) {
             super(id, input, output, inputFluids, outputFluids, conversionRate, powerModifier, radiation, rar);
             this.conversionRate = conversionRate;
         }

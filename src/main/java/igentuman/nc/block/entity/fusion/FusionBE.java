@@ -19,7 +19,7 @@ public class FusionBE extends NuclearCraftBE implements MultiblockAttachable {
 
     @NBTField
     protected BlockPos corePos;
-    protected FusionCoreBE<?> core;
+    protected FusionCoreBE core;
     protected FusionReactorMultiblock multiblock;
 
     public void setMultiblock(AbstractNCMultiblock multiblock) {
@@ -49,15 +49,15 @@ public class FusionBE extends NuclearCraftBE implements MultiblockAttachable {
     public void tickClient() {
     }
 
-    public FusionCoreBE<?> controller() {
+    public FusionCoreBE controller() {
 
        if (NuclearCraft.instance.isNcBeStopped || (!getLevel().isClientSide() && Objects.requireNonNull(getLevel()).getServer() != null && !getLevel().getServer().isRunning())) return null;
 
         if(getLevel().isClientSide() && corePos != null) {
-            return (FusionCoreBE<?>) getLevel().getBlockEntity(corePos);
+            return (FusionCoreBE) getLevel().getBlockEntity(corePos);
         }
         if(core == null && corePos != null) {
-           core = (FusionCoreBE<?>) getLevel().getBlockEntity(corePos);
+           core = (FusionCoreBE) getLevel().getBlockEntity(corePos);
         }
         return core;
     }
@@ -79,7 +79,7 @@ public class FusionBE extends NuclearCraftBE implements MultiblockAttachable {
         super.setRemoved();
     }
 
-    public void setController(FusionCoreBE<?> controllerBE) {
+    public void setController(FusionCoreBE controllerBE) {
         core = controllerBE;
         corePos = controllerBE.getBlockPos();
     }

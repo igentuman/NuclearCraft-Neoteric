@@ -57,7 +57,7 @@ import static igentuman.nc.setup.registration.NCSounds.*;
 import static igentuman.nc.util.ModUtil.*;
 import static net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE;
 
-public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE {
+public class FusionCoreBE extends FusionBE {
 
 
     @NBTField
@@ -141,10 +141,9 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
     public BlockPos errorBlockPos = BlockPos.ZERO;
 
     public ValidationResult validationResult = ValidationResult.INCOMPLETE;
-    public RecipeInfo<RECIPE> recipeInfo = new RecipeInfo<>();
     public boolean controllerEnabled = false;
-    public RECIPE recipe;
-    public HashMap<String, RECIPE> cachedRecipes = new HashMap<>();
+    public Recipe recipe;
+    public HashMap<String, Recipe> cachedRecipes = new HashMap<>();
 
     protected boolean initialized = false;
     protected int reValidateCounter = 40;
@@ -487,8 +486,8 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
     public double getOptimalTemperature()
     {
         if(hasRecipe()) {
-            if(recipeInfo.recipe().getOptimalTemperature() > 0) {
-                lastKnownOptimalTemp = recipeInfo.recipe().getOptimalTemperature() * 1000000;
+            if(((Recipe)recipeInfo.recipe()).getOptimalTemperature() > 0) {
+                lastKnownOptimalTemp = ((Recipe)recipeInfo.recipe()).getOptimalTemperature() * 1000000;
             }
         }
         return lastKnownOptimalTemp;
@@ -793,7 +792,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
     protected void handleRecipeOutput() {
         if (hasRecipe() && recipeInfo.isCompleted()) {
             if(recipe == null) {
-                recipe = recipeInfo.recipe();
+                recipe = (Recipe) recipeInfo.recipe();
             }
             if (recipe.handleOutputs(contentHandler)) {
                 recipeInfo.clear();
@@ -813,44 +812,19 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
             recipeInfo.setRecipe(recipe);
             recipeInfo.ticks = (int) (recipeInfo.recipe().getTimeModifier()*10);
             recipeInfo.energy = recipeInfo.recipe.getEnergy();
-            recipeInfo.heat = recipeInfo.recipe().getHeat();
+            recipeInfo.heat = ((Recipe)recipeInfo.recipe()).getHeat();
             recipeInfo.radiation = recipeInfo.recipe().getRadiation();
             recipeInfo.be = this;
             recipe.consumeInputs(contentHandler);
         }
     }
 
-    protected void addToCache(RECIPE recipe) {
-        String key = contentHandler.getCacheKey();
-        if(cachedRecipes.containsKey(key)) {
-            cachedRecipes.replace(key, recipe);
-        } else {
-            cachedRecipes.put(key, recipe);
-        }
-    }
-    public RECIPE getRecipe() {
+    @Override
+    public Recipe getRecipe() {
         if(contentHandler.fluidCapability.getFluidInSlot(0).isEmpty() || contentHandler.fluidCapability.getFluidInSlot(0).isEmpty()) return null;
-        RECIPE cachedRecipe = getCachedRecipe();
-        if(cachedRecipe != null) return cachedRecipe;
-        if(!NcRecipeType.ALL_RECIPES.containsKey(getName())) return null;
-        for(AbstractRecipe recipe: NcRecipeType.getAllRecipesFor(getName(), getLevel())) {
-            if(recipe.test(contentHandler)) {
-                addToCache((RECIPE)recipe);
-                return (RECIPE)recipe;
-            }
-        }
-        return null;
+        return (Recipe) super.getRecipe();
     }
 
-    public RECIPE getCachedRecipe() {
-        String key = contentHandler.getCacheKey();
-        if(cachedRecipes.containsKey(key)) {
-            if(cachedRecipes.get(key).test(contentHandler)) {
-                return cachedRecipes.get(key);
-            }
-        }
-        return null;
-    }
 
     public boolean recipeIsStuck() {
         return recipeInfo.isStuck();
@@ -971,7 +945,6 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         isCasingValid = false;
         isInternalValid = false;
     }
-
 
     protected FusionCoolantRecipe coolantRecipe;
     public boolean hasCoolant() {

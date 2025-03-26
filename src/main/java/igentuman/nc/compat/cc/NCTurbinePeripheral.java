@@ -7,9 +7,9 @@ import igentuman.nc.block.entity.turbine.TurbineControllerBE;
 import javax.annotation.Nonnull;
 
 public class NCTurbinePeripheral implements IPeripheral {
-    private final TurbineControllerBE<?> turbine;
+    private final TurbineControllerBE turbine;
 
-    public NCTurbinePeripheral(TurbineControllerBE<?> turbine)
+    public NCTurbinePeripheral(TurbineControllerBE turbine)
     {
         this.turbine = turbine;
     }

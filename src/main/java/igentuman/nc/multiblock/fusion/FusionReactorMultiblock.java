@@ -26,7 +26,7 @@ import static net.minecraft.world.level.block.Blocks.AIR;
 public class FusionReactorMultiblock extends AbstractNCMultiblock {
     public int magnetsEfficiency = 0;
     public int rfEfficiency = 0;
-    protected FusionCoreBE<?> controllerBE;
+    protected FusionCoreBE controllerBE;
     protected int length = 0;
     public double magneticFieldStrength = 0;
     public int magnetsPower = 0;
@@ -48,7 +48,7 @@ public class FusionReactorMultiblock extends AbstractNCMultiblock {
     protected HashMap<BlockPos, ElectromagnetBlock> electromagnets = new HashMap<>();
     public HashMap<BlockPos, RFAmplifierBlock> amplifiers = new HashMap<>();
 
-    public FusionReactorMultiblock(FusionCoreBE<?> core) {
+    public FusionReactorMultiblock(FusionCoreBE core) {
         super(
                 getBlocksByTagKey(FusionReactor.CASING_BLOCKS.location().toString()),
                 List.of(AIR));

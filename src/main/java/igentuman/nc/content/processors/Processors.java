@@ -1,18 +1,23 @@
 package igentuman.nc.content.processors;
 
+import igentuman.api.nc.IProcessorRegistry;
 import igentuman.nc.client.gui.processor.LeacherScreen;
 import igentuman.nc.block.entity.processor.*;
 import igentuman.nc.container.LeacherContainer;
-import igentuman.nc.container.NCProcessorContainer;
+import igentuman.nc.util.annotation.NCProcessorsRegistry;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.forgespi.language.ModFileScanData;
+import org.objectweb.asm.Type;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import static igentuman.nc.NuclearCraft.LOGGER;
 
 
 @SuppressWarnings("ALL")
@@ -262,8 +267,30 @@ public class Processors {
                             .blockEntity(QuantumTransformerBE::new)
                             .build()
             );*/
+
+            scanForProcessorRegistries();
         }
         return all;
+    }
+
+    private static void scanForProcessorRegistries() {
+        Type annotationType = Type.getType(NCProcessorsRegistry.class);
+
+        for (ModFileScanData scanData : ModList.get().getAllScanData()) {
+            for (ModFileScanData.AnnotationData annotationData : scanData.getAnnotations()) {
+                if (annotationType.equals(annotationData.annotationType())) {
+                    try {
+                        Class<?> clazz = Class.forName(annotationData.memberName());
+                        Object instance = clazz.getDeclaredConstructor().newInstance();
+                        if (instance instanceof IProcessorRegistry registry) {
+                            registry.registerProcessors(all);
+                        }
+                    } catch (Exception e) {
+                        LOGGER.error("Failed to load processor registry: " + annotationData.memberName(), e);
+                    }
+                }
+            }
+        }
     }
 
     public static HashMap<String, ProcessorPrefab> registered() {

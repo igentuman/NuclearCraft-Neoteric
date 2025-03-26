@@ -22,7 +22,7 @@ import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_CONTRO
 import static igentuman.nc.util.TextUtils.roundFormat;
 
 public class TurbineControllerContainer extends AbstractContainerMenu {
-    protected TurbineControllerBE<?> blockEntity;
+    protected TurbineControllerBE blockEntity;
     protected Player playerEntity;
 
     protected String name = "turbine_controller";
@@ -34,7 +34,7 @@ public class TurbineControllerContainer extends AbstractContainerMenu {
         super(TURBINE_CONTROLLER_CONTAINER.get(), pContainerId);
         this.playerEntity = playerInventory.player;
         this.playerInventory =  new InvWrapper(playerInventory);
-        blockEntity = (TurbineControllerBE<?>) playerEntity.getCommandSenderWorld().getBlockEntity(pos);
+        blockEntity = (TurbineControllerBE) playerEntity.getCommandSenderWorld().getBlockEntity(pos);
         layoutPlayerInventorySlots();
     }
 

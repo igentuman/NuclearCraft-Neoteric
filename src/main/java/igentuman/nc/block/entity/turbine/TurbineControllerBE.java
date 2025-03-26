@@ -53,7 +53,7 @@ import static igentuman.nc.util.ModUtil.isCcLoaded;
 import static net.minecraft.core.particles.ParticleTypes.*;
 import static net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE;
 
-public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> extends TurbineBE {
+public class TurbineControllerBE extends TurbineBE {
 
     public static String NAME = "turbine_controller";
     public final SidedContentHandler contentHandler;
@@ -91,25 +91,15 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
     public float rotationSpeed = 0;
     @NBTField
     public int blades = 0;
-
     @NBTField
     public double efficiency = 0;
+
     public ValidationResult validationResult = ValidationResult.INCOMPLETE;
-    public RecipeInfo<RECIPE> recipeInfo = new RecipeInfo<>();
     public boolean controllerEnabled = false;
     protected Direction facing;
-    public RECIPE recipe;
-    public HashMap<String, RECIPE> cachedRecipes = new HashMap<>();
-
-
-
-    @Override
-    public String getName() {
-        return NAME;
-    }
-
+    public Recipe recipe;
+    public HashMap<String, Recipe> cachedRecipes = new HashMap<>();
     private List<FluidStack> allowedInputs;
-
 
     public TurbineControllerBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, NAME);
@@ -122,6 +112,11 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
         contentHandler.setBlockEntity(this);
         contentHandler.setAllowedInputFluids(0, this::getAllowedInputFluids);
 
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
     }
 
     @Override
@@ -161,37 +156,12 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
         return start;
     }
 
-    private void addToCache(RECIPE recipe) {
-        String key = contentHandler.getCacheKey();
-        if(cachedRecipes.containsKey(key)) {
-            cachedRecipes.replace(key, recipe);
-        } else {
-            cachedRecipes.put(key, recipe);
-        }
-    }
-    public RECIPE getRecipe() {
+    @Override
+    public Recipe getRecipe() {
         if(contentHandler.fluidCapability.tanks.get(0).isEmpty()) return null;
-        RECIPE cachedRecipe = getCachedRecipe();
-        if(cachedRecipe != null) return cachedRecipe;
-        if(!NcRecipeType.ALL_RECIPES.containsKey(getName())) return null;
-        for(NcRecipe recipe: NcRecipeType.ALL_RECIPES.get(getName()).getRecipeType().getRecipes(getLevel())) {
-            if(recipe.test(contentHandler)) {
-                addToCache((RECIPE)recipe);
-                return (RECIPE)recipe;
-            }
-        }
-        return null;
+        return (Recipe) super.getRecipe();
     }
 
-    public RECIPE getCachedRecipe() {
-        String key = contentHandler.getCacheKey();
-        if(cachedRecipes.containsKey(key)) {
-            if(cachedRecipes.get(key).test(contentHandler)) {
-                return cachedRecipes.get(key);
-            }
-        }
-        return null;
-    }
 
     private LazyOptional<NCTurbinePeripheral> peripheralCap;
 
@@ -481,7 +451,7 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
     private void handleRecipeOutput() {
         if (hasRecipe() && recipeInfo.isCompleted()) {
             if(recipe == null) {
-                recipe = recipeInfo.recipe();
+                recipe = (Recipe) recipeInfo.recipe();
             }
             if (recipe.handleOutputs(contentHandler)) {
                 recipeInfo.clear();
@@ -519,7 +489,7 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
         recipe = getRecipe();
         if (recipe != null) {
             recipeInfo.setRecipe(recipe);
-            recipeInfo.ticks = recipeInfo.recipe().getBaseTime();
+            recipeInfo.ticks = ((Recipe)recipeInfo.recipe()).getBaseTime();
             recipeInfo.energy = recipeInfo.recipe.getEnergy();
             recipeInfo.be = this;
             //recipe.consumeInputs(contentHandler);
@@ -536,15 +506,9 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
 
     @Override
     public void load(CompoundTag tag) {
-        if (tag.contains("Energy")) {
-            energyStorage.deserializeNBT(tag.get("Energy"));
-        }
+        super.load(tag);
         if (tag.contains("Info")) {
             CompoundTag infoTag = tag.getCompound("Info");
-            readTagData(infoTag);
-            if (infoTag.contains("recipeInfo")) {
-                recipeInfo.deserializeNBT(infoTag.getCompound("recipeInfo"));
-            }
             if (!isCasingValid || !isInternalValid) {
                 errorBlockPos = BlockPos.of(infoTag.getLong("erroredBlock"));
                 validationResult = ValidationResult.byId(infoTag.getInt("validationId"));
@@ -552,22 +516,18 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
                 validationResult = ValidationResult.VALID;
             }
         }
-        if (tag.contains("Content")) {
-            contentHandler.deserializeNBT(tag.getCompound("Content"));
-        }
-        super.load(tag);
     }
 
     @Override
     public void saveAdditional(CompoundTag tag) {
-        CompoundTag infoTag = new CompoundTag();
-        tag.put("Energy", energyStorage.serializeNBT());
-        tag.put("Content", contentHandler.serializeNBT());
-        infoTag.put("recipeInfo", recipeInfo.serializeNBT());
-        infoTag.putInt("validationId", validationResult.id);
-        infoTag.putLong("erroredBlock", errorBlockPos.asLong());
-        saveTagData(infoTag);
-        tag.put("Info", infoTag);
+        super.saveAdditional(tag);
+        if (tag.contains("Info")) {
+            CompoundTag infoTag = tag.getCompound("Info");
+            infoTag.putInt("validationId", validationResult.id);
+            infoTag.putLong("erroredBlock", errorBlockPos.asLong());
+            tag.remove("Info");
+            tag.put("Info", infoTag);
+        }
     }
 
     public Direction getFacing() {
@@ -579,46 +539,27 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
 
     @Override
     public void loadClientData(CompoundTag tag) {
+        super.loadClientData(tag);
         if (tag.contains("Info")) {
             CompoundTag infoTag = tag.getCompound("Info");
-            if (infoTag.contains("recipeInfo")) {
-                recipeInfo.deserializeNBT(infoTag.getCompound("recipeInfo"));
-            }
-            energyStorage.setEnergy(infoTag.getInt("energy"));
-            readTagData(infoTag);
             if (!isCasingValid || !isInternalValid) {
                 errorBlockPos = BlockPos.of(infoTag.getLong("erroredBlock"));
                 validationResult = ValidationResult.byId(infoTag.getInt("validationId"));
             } else {
                 validationResult = ValidationResult.VALID;
             }
-            if (tag.contains("Content")) {
-                contentHandler.deserializeNBT(tag.getCompound("Content"));
-            }
         }
     }
 
     @Override
     protected void saveClientData(CompoundTag tag) {
-        CompoundTag infoTag = new CompoundTag();
-        tag.put("Info", infoTag);
-        infoTag.putInt("energy", energyStorage.getEnergyStored());
-        saveTagData(infoTag);
-        infoTag.put("recipeInfo", recipeInfo.serializeNBT());
-        infoTag.putInt("validationId", validationResult.id);
-        infoTag.putLong("erroredBlock", errorBlockPos.asLong());
-        tag.put("Content", contentHandler.serializeNBT());
-    }
-
-    @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        int oldEnergy = energyStorage.getEnergyStored();
-
-        CompoundTag tag = pkt.getTag();
-        handleUpdateTag(tag);
-
-        if (oldEnergy != energyStorage.getEnergyStored()) {
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+        super.saveClientData(tag);
+        if (tag.contains("Info")) {
+            CompoundTag infoTag = tag.getCompound("Info");
+            infoTag.putInt("validationId", validationResult.id);
+            infoTag.putLong("erroredBlock", errorBlockPos.asLong());
+            tag.remove("Info");
+            tag.put("Info", infoTag);
         }
     }
 
@@ -702,7 +643,7 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
 
         @Override
         public void consumeInputs(SidedContentHandler contentHandler) {
-            TurbineControllerBE<?> be = (TurbineControllerBE<?>)contentHandler.blockEntity;
+            TurbineControllerBE be = (TurbineControllerBE)contentHandler.blockEntity;
             int flow = be.realFlow;
             ratio = (double)flow/(double)getInputFluids(0).get(0).getAmount();
             FluidStack holded = contentHandler.fluidCapability.getFluidInSlot(0).copy();
@@ -715,7 +656,7 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
         public boolean handleOutputs(SidedContentHandler contentHandler) {
             FluidStack outputFluid = outputFluids[0].getRepresentations().get(0);
             FluidStack toOutput = outputFluid.copy();
-            TurbineControllerBE<?> be = (TurbineControllerBE<?>)contentHandler.blockEntity;
+            TurbineControllerBE be = (TurbineControllerBE)contentHandler.blockEntity;
             int flow = be.realFlow;
             ratio = (double)flow/(double)getInputFluids(0).get(0).getAmount();
             int toPush = (int) (outputFluid.getAmount()*ratio);

@@ -5,13 +5,13 @@ import igentuman.nc.block.entity.fission.FissionControllerBE;
 import net.minecraft.core.BlockPos;
 
 public class FissionReactorController implements MultiblockController {
-    protected FissionControllerBE<?> controllerBE;
-    public FissionReactorController(FissionControllerBE<?> fissionControllerBE) {
+    protected FissionControllerBE controllerBE;
+    public FissionReactorController(FissionControllerBE fissionControllerBE) {
         controllerBE = fissionControllerBE;
     }
 
     @Override
-    public FissionControllerBE<?> controllerBE() {
+    public FissionControllerBE controllerBE() {
         return controllerBE;
     }
 

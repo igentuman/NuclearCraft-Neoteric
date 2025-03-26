@@ -39,7 +39,7 @@ public class FissionBE extends NuclearCraftBE implements MultiblockAttachable {
     public boolean refreshCacheFlag = true;
     public boolean attachedToFuelCell = false;
     public byte validationRuns = 0;
-    public FissionControllerBE<?> controller;
+    public FissionControllerBE controller;
 
     public FissionBE(BlockPos pPos, BlockState pBlockState, String name) {
         super(FissionReactor.FISSION_BE.get(name).get(), pPos, pBlockState);

@@ -24,7 +24,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
-import static igentuman.nc.util.FileExtractor.registrationConfig;
 
 public class NcRecipeType<RECIPE extends NcRecipe> implements RecipeType<RECIPE>,
         INcRecipeTypeProvider<RECIPE> {

@@ -7,9 +7,9 @@ import igentuman.nc.block.entity.kugelblitz.ChamberTerminalBE;
 import javax.annotation.Nonnull;
 
 public class KugelblitzPeripheral implements IPeripheral {
-    private final ChamberTerminalBE<?> controller;
+    private final ChamberTerminalBE controller;
 
-    public KugelblitzPeripheral(ChamberTerminalBE<?> controller)
+    public KugelblitzPeripheral(ChamberTerminalBE controller)
     {
         this.controller = controller;
     }

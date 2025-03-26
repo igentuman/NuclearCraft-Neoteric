@@ -1,6 +1,7 @@
 package igentuman.nc.recipes;
 
 import igentuman.nc.client.NcClient;
+import igentuman.nc.recipes.type.NcRecipe;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
@@ -13,7 +14,7 @@ import net.minecraftforge.server.ServerLifecycleHooks;
 import java.util.NoSuchElementException;
 
 
-public class RecipeInfo <RECIPE extends AbstractRecipe> implements INBTSerializable<Tag> {
+public class RecipeInfo implements INBTSerializable<Tag> {
 
     public int ticks = 0;
     public double ticksProcessed = 0;
@@ -21,11 +22,11 @@ public class RecipeInfo <RECIPE extends AbstractRecipe> implements INBTSerializa
     public double heat = 0;
     public double radiation = 0;
     public boolean stuck = false;
-    public RECIPE recipe;
+    public NcRecipe recipe;
     public BlockEntity be;
     private String recipeId;
 
-    public void setRecipe(RECIPE recipe) {
+    public void setRecipe(NcRecipe recipe) {
         this.recipe = recipe;
         recipeId = recipe.getId().toString();
     }
@@ -74,11 +75,11 @@ public class RecipeInfo <RECIPE extends AbstractRecipe> implements INBTSerializa
                 () -> () -> ServerLifecycleHooks.getCurrentServer().overworld());
     }
 
-    private RECIPE getRecipeFromTag(String recipe) {
+    private NcRecipe getRecipeFromTag(String recipe) {
         ResourceLocation id = new ResourceLocation(recipe);
         if(getLevel() == null) return null;
         try {
-            return (RECIPE) getLevel().getRecipeManager().byKey(id).get();
+            return (NcRecipe) getLevel().getRecipeManager().byKey(id).get();
         } catch (NoSuchElementException e) {
             return null;
         }
@@ -117,7 +118,7 @@ public class RecipeInfo <RECIPE extends AbstractRecipe> implements INBTSerializa
         return stuck;
     }
 
-    public RECIPE recipe() {
+    public NcRecipe recipe() {
         if(recipe == null && recipeId != null && !recipeId.isEmpty()) {
             recipe = getRecipeFromTag(recipeId);
         }

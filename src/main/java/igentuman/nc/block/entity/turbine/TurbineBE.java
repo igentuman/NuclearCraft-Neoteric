@@ -14,7 +14,7 @@ public class TurbineBE extends NuclearCraftBE implements MultiblockAttachable {
     public static String NAME;
     public boolean refreshCacheFlag = true;
     public byte validationRuns = 0;
-    public TurbineControllerBE<?> controller;
+    public TurbineControllerBE controller;
 
     public TurbineBE(BlockPos pPos, BlockState pBlockState, String name) {
         super(TurbineRegistration.TURBINE_BE.get(name).get(), pPos, pBlockState);
@@ -26,9 +26,9 @@ public class TurbineBE extends NuclearCraftBE implements MultiblockAttachable {
     }
 
     @Override
-    public TurbineControllerBE<?> controller() {
+    public TurbineControllerBE controller() {
         try {
-            return (TurbineControllerBE<?>) getMultiblock().controller().controllerBE();
+            return (TurbineControllerBE) getMultiblock().controller().controllerBE();
         } catch (NullPointerException ignore) {
             return null;
         }

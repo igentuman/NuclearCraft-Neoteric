@@ -1,16 +1,20 @@
 package igentuman.nc.block.entity;
 
 import igentuman.api.nc.SideModeToggleable;
+import igentuman.nc.block.entity.fission.FissionControllerBE;
 import igentuman.nc.client.sound.SoundHandler;
 import igentuman.nc.handler.CatalystHandler;
 import igentuman.nc.handler.UpgradesHandler;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
+import igentuman.nc.recipes.NcRecipeType;
 import igentuman.nc.recipes.RecipeInfo;
 import igentuman.nc.recipes.type.NcRecipe;
+import igentuman.nc.setup.registration.NCSounds;
 import igentuman.nc.util.CustomEnergyStorage;
 import igentuman.nc.util.NCBlockPos;
 import igentuman.nc.util.annotation.NBTField;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -20,14 +24,18 @@ import net.minecraft.nbt.StringTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
+import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -48,12 +56,13 @@ public class NuclearCraftBE extends BlockEntity {
     public HashMap<Integer, SideModeToggleable.SideMode> sideConfig = new HashMap<>();
     public SidedContentHandler contentHandler;
     protected CustomEnergyStorage energyStorage;
-    public RecipeInfo<? extends NcRecipe> recipeInfo;
+    public RecipeInfo recipeInfo;
     public UpgradesHandler upgradesHandler;
     public CatalystHandler catalystHandler;
     protected NcRecipe recipe;
     protected boolean saveSideMapFlag = true;
     public boolean wasUpdated = true;
+    public HashMap<String, NcRecipe> cachedRecipes = new HashMap<>();
 
     public NuclearCraftBE(BlockEntityType<?> pType, BlockPos pPos, BlockState pBlockState) {
         super(pType, pPos, pBlockState);
@@ -69,6 +78,7 @@ public class NuclearCraftBE extends BlockEntity {
         floatFields = initFields(float.class);
         byteFields = initFields(byte.class);
         longFields = initFields(long.class);
+        recipeInfo = new RecipeInfo();
     }
 
     public SidedContentHandler contentHandler() {
@@ -87,8 +97,58 @@ public class NuclearCraftBE extends BlockEntity {
         return energyStorage;
     }
 
-    public RecipeInfo<? extends NcRecipe> recipeInfo() {
+    public RecipeInfo recipeInfo() {
         return recipeInfo;
+    }
+
+    public NcRecipe getRecipe() {
+        NcRecipe cachedRecipe = getCachedRecipe();
+        if(cachedRecipe != null) return cachedRecipe;
+        if(!NcRecipeType.ALL_RECIPES.containsKey(getName())) return null;
+        for(NcRecipe recipe: NcRecipeType.getAllRecipesFor(getName(), getLevel())) {
+            if(recipe.test(contentHandler())) {
+                addToCache(recipe);
+                return recipe;
+            }
+        }
+        return null;
+    }
+
+    public NcRecipe getCachedRecipe() {
+        String key = contentHandler().getCacheKey();
+        if(cachedRecipes.containsKey(key)) {
+            if(cachedRecipes.get(key).test(contentHandler())) {
+                return cachedRecipes.get(key);
+            }
+        }
+        return null;
+    }
+
+    protected void addToCache(NcRecipe recipe) {
+        String key = contentHandler().getCacheKey();
+        if(cachedRecipes.containsKey(key)) {
+            cachedRecipes.replace(key, recipe);
+        } else {
+            cachedRecipes.put(key, recipe);
+        }
+    }
+
+    protected void playSound(RegistryObject<SoundEvent> sound, float volume) {
+        if(isRemoved() || (currentSound != null && !currentSound.getLocation().equals(sound.get().getLocation()))) {
+            SoundHandler.stopTileSound(getBlockPos());
+            currentSound = null;
+        }
+        if((currentSound == null || !Minecraft.getInstance().getSoundManager().isActive(currentSound))) {
+            if(currentSound != null && currentSound.getLocation().equals(sound.get().getLocation())) {
+                if (!Minecraft.getInstance().getSoundManager().isActive(currentSound)) {
+                    SoundHandler.playSound(currentSound);
+                }
+                return;
+            }
+
+            playSoundCooldown = 20;
+            currentSound = SoundHandler.startTileSound(sound.get(), SoundSource.BLOCKS, volume, level.getRandom(), getBlockPos());
+        }
     }
 
     public static String getName(BlockState pBlockState) {
@@ -244,6 +304,10 @@ public class NuclearCraftBE extends BlockEntity {
     public void handleSliderUpdate(int buttonId, int ratio) {
     }
 
+    public FluidTank getFluidTank(int i) {
+        return contentHandler().fluidCapability.tanks.get(i);
+    }
+
     @Override
     public void setChanged() {
         super.setChanged();
@@ -251,8 +315,8 @@ public class NuclearCraftBE extends BlockEntity {
     }
 
     private void updateRecipeAfterLoad() {
-        if(recipe == null && recipeInfo != null && recipeInfo.recipe() != null) {
-            recipe = recipeInfo.recipe();
+        if(recipe == null && recipeInfo() != null && recipeInfo().recipe() != null) {
+            recipe = recipeInfo().recipe();
         }
     }
 

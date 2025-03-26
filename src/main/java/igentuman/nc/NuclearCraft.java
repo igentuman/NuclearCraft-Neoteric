@@ -68,6 +68,7 @@ public class NuclearCraft {
 
     public NuclearCraft() {
         instance = this;
+        IEventBus modbus = FMLJavaModLoadingContext.get().getModEventBus();
         registerConfigs();
         packetHandler = new PacketHandler();
         //forceLoadConfig();
@@ -76,7 +77,7 @@ public class NuclearCraft {
         MinecraftForge.EVENT_BUS.addListener(this::gameShuttingDownEvent);
         ModSetup.setup();
         Registration.init();
-        IEventBus modbus = FMLJavaModLoadingContext.get().getModEventBus();
+
 
         MinecraftForge.EVENT_BUS.addListener(this::registerCommands);
         modbus.addListener(ModSetup::init);

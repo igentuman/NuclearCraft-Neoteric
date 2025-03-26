@@ -116,6 +116,9 @@ public class FissionControllerScreen extends AbstractContainerScreen<FissionCont
     }
 
     private void renderWidgets(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
+        if (modeBtn == null) {
+            init();
+        }
         modeBtn.setMode(getMenu().getMode());
         modeBtn.setTimer(getMenu().getModeTimer());
         for(NCGuiElement widget: widgets) {

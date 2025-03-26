@@ -48,7 +48,7 @@ public class PacketGuiButtonPress implements INcPacket {
                 processor.toggleRedstoneMode();
                 break;
             case ReactorMode.BTN_ID:
-                if (!(be instanceof FissionControllerBE<?> port)) {
+                if (!(be instanceof FissionControllerBE port)) {
                     return;
                 }
                 port.toggleMode();
@@ -66,7 +66,7 @@ public class PacketGuiButtonPress implements INcPacket {
                 port.toggleRedstoneMode();
                 break;
             case Button.FusionReactorRedstoneModeButton.BTN_ID:
-                if (be instanceof FusionCoreBE<?> port) {
+                if (be instanceof FusionCoreBE port) {
                     port.toggleRedstoneMode();
                 }
                 if (be instanceof FusionCoreProxyBE port) {

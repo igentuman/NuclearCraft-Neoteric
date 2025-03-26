@@ -1,16 +1,17 @@
 package igentuman.nc.block.entity.kugelblitz;
 
-import igentuman.nc.client.sound.SoundHandler;
-import igentuman.nc.setup.registration.NCSounds;
 import igentuman.nc.util.annotation.NBTField;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
+import static igentuman.nc.setup.registration.NCSounds.BLACKHOLE_IDLE;
+import static igentuman.nc.setup.registration.NCSounds.BLACKHOLE_SPAWN;
+
 public class BlackHoleBE extends ChamberBE {
+
     public static String NAME = "black_hole";
+    public float scale = 0.2f;
 
     @NBTField
     public boolean isInitialized = false;
@@ -23,54 +24,19 @@ public class BlackHoleBE extends ChamberBE {
     public void tickClient() {
         if (spawnSoundCooldown > 1) {
             stopSound();
+            scale = 0.2f;
         }
         if (spawnSoundCooldown > 0) {
             spawnSoundCooldown--;
+            scale = Math.max(0.19f, Math.min(0.21f, getLevel().getRandom().nextFloat()));
             return;
         }
         if (!isInitialized) {
             isInitialized = true;
-            spawnSoundCooldown = 85;
-            playSpawnSound();
+            spawnSoundCooldown = 35;
+            playSound(BLACKHOLE_SPAWN, 0.8f);
         }
-        playIdleSound();
-    }
-
-    protected void stopSound() {
-        if (currentSound == null) return;
-        SoundHandler.stopTileSound(getBlockPos());
-        currentSound = null;
-        playSoundCooldown = 0;
-    }
-
-    protected void playSpawnSound() {
-        if(isRemoved() || (currentSound != null && !currentSound.getLocation().equals(NCSounds.BLACKHOLE_SPAWN.get().getLocation()))) {
-            SoundHandler.stopTileSound(getBlockPos());
-            currentSound = null;
-        }
-        if((currentSound == null || !Minecraft.getInstance().getSoundManager().isActive(currentSound))) {
-            if(currentSound != null && currentSound.getLocation().equals(NCSounds.BLACKHOLE_SPAWN.get().getLocation())) {
-                return;
-            }
-
-            playSoundCooldown = 20;
-            currentSound = SoundHandler.startTileSound(NCSounds.BLACKHOLE_SPAWN.get(), SoundSource.BLOCKS, 0.6f, level.getRandom(), getBlockPos());
-        }
-    }
-
-    protected void playIdleSound() {
-        if(isRemoved() || (currentSound != null && !currentSound.getLocation().equals(NCSounds.BLACKHOLE_IDLE.get().getLocation()))) {
-            SoundHandler.stopTileSound(getBlockPos());
-            currentSound = null;
-        }
-        if((currentSound == null || !Minecraft.getInstance().getSoundManager().isActive(currentSound))) {
-            if(currentSound != null && currentSound.getLocation().equals(NCSounds.BLACKHOLE_IDLE.get().getLocation())) {
-                return;
-            }
-
-            playSoundCooldown = 20;
-            currentSound = SoundHandler.startTileSound(NCSounds.BLACKHOLE_IDLE.get(), SoundSource.BLOCKS, 0.7f, level.getRandom(), getBlockPos());
-        }
+        playSound(BLACKHOLE_IDLE, 0.7f);
     }
 
     public void tickServer() {
@@ -80,5 +46,9 @@ public class BlackHoleBE extends ChamberBE {
             level.setBlockAndUpdate(worldPosition, getBlockState());
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
         }
+    }
+
+    public float getBlackholeScale() {
+        return scale;
     }
 }

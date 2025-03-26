@@ -17,7 +17,7 @@ import static net.minecraft.world.level.block.Blocks.AIR;
 
 public class KugelblitzMultiblock extends AbstractNCMultiblock {
 
-    private ChamberTerminalBE<?> controllerBe;
+    private ChamberTerminalBE controllerBe;
 
     public int maxHeight() {
         return 8;
@@ -38,9 +38,9 @@ public class KugelblitzMultiblock extends AbstractNCMultiblock {
         return 7;
     }
 
-    private ChamberTerminalBE<?> controllerBE() {
+    private ChamberTerminalBE controllerBE() {
         if (controllerBe == null) {
-            controllerBe = (ChamberTerminalBE<?>) controller().controllerBE();
+            controllerBe = (ChamberTerminalBE) controller().controllerBE();
         }
         return controllerBe;
     }
@@ -54,7 +54,7 @@ public class KugelblitzMultiblock extends AbstractNCMultiblock {
         super(validOuterBlocks, validInnerBlocks);
     }
 
-    public KugelblitzMultiblock(ChamberTerminalBE<?> be) {
+    public KugelblitzMultiblock(ChamberTerminalBE be) {
         this(getBlocksByTagKey(CASING_BLOCKS.location().toString()), List.of(KUGELBLITZ_BLOCKS.get("black_hole").get(), AIR));
         id = "chamber_"+be.getBlockPos().toShortString();
         MultiblockHandler.addMultiblock(this);

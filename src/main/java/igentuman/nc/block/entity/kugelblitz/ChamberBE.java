@@ -10,20 +10,27 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class ChamberBE extends NuclearCraftBE implements MultiblockAttachable {
 
+    protected KugelblitzMultiblock multiblock;
+    public static String NAME;
+    public boolean refreshCacheFlag = true;
+    public byte validationRuns = 0;
+    public ChamberTerminalBE controller;
+
     @Override
     public void setMultiblock(AbstractNCMultiblock multiblock) {
         this.multiblock = (KugelblitzMultiblock) multiblock;
     }
 
     @Override
-    public ChamberTerminalBE<?> controller() {
+    public ChamberTerminalBE controller() {
         try {
-            return (ChamberTerminalBE<?>) getMultiblock().controller().controllerBE();
+            return (ChamberTerminalBE) getMultiblock().controller().controllerBE();
         } catch (NullPointerException ignore) {
             return null;
         }
     }
 
+    @Override
     public KugelblitzMultiblock getMultiblock() {
         return multiblock;
     }
@@ -32,16 +39,6 @@ public class ChamberBE extends NuclearCraftBE implements MultiblockAttachable {
     public boolean canInvalidateCache() {
         return true;
     }
-
-    protected KugelblitzMultiblock multiblock;
-    public boolean isValidating = false;
-
-    public static String NAME;
-    public boolean refreshCacheFlag = true;
-
-    public byte validationRuns = 0;
-
-    public ChamberTerminalBE<?> controller;
 
     public ChamberBE(BlockPos pPos, BlockState pBlockState, String name) {
         super(KugelblitzRegistration.KUGELBLITZ_BE.get(name).get(), pPos, pBlockState);
@@ -66,5 +63,4 @@ public class ChamberBE extends NuclearCraftBE implements MultiblockAttachable {
         if(controller() != null) controller().invalidateCache();
         super.setRemoved();
     }
-
 }

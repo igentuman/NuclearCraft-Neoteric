@@ -21,7 +21,7 @@ import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.util.TextUtils.roundFormat;
 
 public class ChamberTerminalContainer extends AbstractContainerMenu {
-    protected ChamberTerminalBE<?> blockEntity;
+    protected ChamberTerminalBE blockEntity;
     protected Player playerEntity;
 
     protected String name = "chamber_terminal";
@@ -33,7 +33,7 @@ public class ChamberTerminalContainer extends AbstractContainerMenu {
         super(KugelblitzRegistration.CHAMBER_TERMINAL_CONTAINER.get(), pContainerId);
         this.playerEntity = playerInventory.player;
         this.playerInventory =  new InvWrapper(playerInventory);
-        blockEntity = (ChamberTerminalBE<?>) playerEntity.getCommandSenderWorld().getBlockEntity(pos);
+        blockEntity = (ChamberTerminalBE) playerEntity.getCommandSenderWorld().getBlockEntity(pos);
         layoutPlayerInventorySlots();
         blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
             addSlot(new NCSlotItemHandler.Input(h, 0, 56, 35));

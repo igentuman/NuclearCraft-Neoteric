@@ -59,7 +59,7 @@ public class TurbineMultiblock extends AbstractNCMultiblock {
     @Override
     public int minDepth() { return TURBINE_CONFIG.MIN_SIZE.get(); }
 
-    public TurbineMultiblock(TurbineControllerBE<?> turbineControllerBE) {
+    public TurbineMultiblock(TurbineControllerBE turbineControllerBE) {
         super(
                 getBlocksByTagKey(CASING_BLOCKS.location().toString()),
                 getBlocksByTagKey(INNER_TURBINE_BLOCKS.location().toString())
@@ -132,7 +132,7 @@ public class TurbineMultiblock extends AbstractNCMultiblock {
     @Override
     public void tick() {
         super.tick();
-        TurbineControllerBE<?> controller = (TurbineControllerBE<?>) controller().controllerBE();
+        TurbineControllerBE controller = (TurbineControllerBE) controller().controllerBE();
     }
 
     @Override
@@ -254,7 +254,7 @@ public class TurbineMultiblock extends AbstractNCMultiblock {
     }
 
     protected Direction getFacing() {
-        return ((TurbineControllerBE<?>)controller().controllerBE()).getFacing();
+        return ((TurbineControllerBE)controller().controllerBE()).getFacing();
     }
 
 }

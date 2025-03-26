@@ -147,50 +147,19 @@ public class ChamberPortBE extends ChamberBE {
     }
 
     @Override
-    public ChamberTerminalBE<?> controller() {
+    public ChamberTerminalBE controller() {
         if(NuclearCraft.instance.isNcBeStopped || (!getLevel().isClientSide() && getLevel().getServer() != null && !getLevel().getServer().isRunning())) return null;
         if(getLevel().isClientSide && controllerPos != null) {
-            return (ChamberTerminalBE<?>) getLevel().getBlockEntity(controllerPos);
+            return (ChamberTerminalBE) getLevel().getBlockEntity(controllerPos);
         }
         try {
-            return (ChamberTerminalBE<?>) getMultiblock().controller().controllerBE();
+            return (ChamberTerminalBE) getMultiblock().controller().controllerBE();
         } catch (NullPointerException e) {
             if(controllerPos != null) {
-                return (ChamberTerminalBE<?>) getLevel().getBlockEntity(controllerPos);
+                return (ChamberTerminalBE) getLevel().getBlockEntity(controllerPos);
             }
             return null;
         }
-    }
-
-    @Override
-    public void load(CompoundTag tag) {
-        if (tag.contains("Info")) {
-            CompoundTag infoTag = tag.getCompound("Info");
-            readTagData(infoTag);
-        }
-        super.load(tag);
-    }
-
-    @Override
-    public void saveAdditional(CompoundTag tag) {
-        CompoundTag infoTag = new CompoundTag();
-        saveTagData(infoTag);
-        tag.put("Info", infoTag);
-    }
-
-    @Override
-    public void loadClientData(CompoundTag tag) {
-        if (tag.contains("Info")) {
-            CompoundTag infoTag = tag.getCompound("Info");
-            readTagData(infoTag);
-        }
-    }
-
-    @Override
-    protected void saveClientData(CompoundTag tag) {
-        CompoundTag infoTag = new CompoundTag();
-        tag.put("Info", infoTag);
-        saveTagData(infoTag);
     }
 
     public int getEnergyStored() {

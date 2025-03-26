@@ -5,13 +5,13 @@ import igentuman.api.nc.MultiblockController;
 import net.minecraft.core.BlockPos;
 
 public class FusionReactorController implements MultiblockController {
-    protected FusionCoreBE<?> controllerBE;
-    public FusionReactorController(FusionCoreBE<?> FusionCoreBE) {
+    protected FusionCoreBE controllerBE;
+    public FusionReactorController(FusionCoreBE FusionCoreBE) {
         controllerBE = FusionCoreBE;
     }
 
     @Override
-    public FusionCoreBE<?> controllerBE() {
+    public FusionCoreBE controllerBE() {
         return controllerBE;
     }
 

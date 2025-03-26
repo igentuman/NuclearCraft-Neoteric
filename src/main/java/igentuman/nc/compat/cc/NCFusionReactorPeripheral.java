@@ -7,9 +7,9 @@ import igentuman.nc.block.entity.fusion.FusionCoreBE;
 import javax.annotation.Nonnull;
 
 public class NCFusionReactorPeripheral implements IPeripheral {
-    private final FusionCoreBE<?> reactor;
+    private final FusionCoreBE reactor;
 
-    public NCFusionReactorPeripheral(FusionCoreBE<?> processorBE)
+    public NCFusionReactorPeripheral(FusionCoreBE processorBE)
     {
         this.reactor = processorBE;
     }

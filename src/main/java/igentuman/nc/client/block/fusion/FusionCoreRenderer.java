@@ -40,7 +40,7 @@ public class FusionCoreRenderer implements BlockEntityRenderer<BlockEntity> {
     public void render(BlockEntity pBlockEntity, float pPartialTick, PoseStack pPoseStack, MultiBufferSource buffer, int packedLight, int combinedOverlay) {
         BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
         BlockState blockstate = pBlockEntity.getBlockState();
-        FusionCoreBE<?> coreBe = (FusionCoreBE<?>) pBlockEntity;
+        FusionCoreBE coreBe = (FusionCoreBE) pBlockEntity;
         ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
         ItemStack core = new ItemStack(blockstate.getBlock().asItem());
         BakedModel center = blockRenderer.getBlockModel(blockstate.setValue(FusionCoreBlock.ACTIVE, true));

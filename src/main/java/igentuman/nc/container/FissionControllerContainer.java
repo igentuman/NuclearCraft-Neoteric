@@ -24,7 +24,7 @@ import static igentuman.nc.util.TextUtils.numberFormat;
 import static igentuman.nc.util.TextUtils.roundFormat;
 
 public class FissionControllerContainer extends AbstractContainerMenu {
-    protected FissionControllerBE<?> blockEntity;
+    protected FissionControllerBE blockEntity;
     protected Player playerEntity;
 
     protected String name = "fission_reactor_controller";
@@ -36,7 +36,7 @@ public class FissionControllerContainer extends AbstractContainerMenu {
         super(FissionReactor.FISSION_CONTROLLER_CONTAINER.get(), pContainerId);
         this.playerEntity = playerInventory.player;
         this.playerInventory =  new InvWrapper(playerInventory);
-        blockEntity = (FissionControllerBE<?>) playerEntity.getCommandSenderWorld().getBlockEntity(pos);
+        blockEntity = (FissionControllerBE) playerEntity.getCommandSenderWorld().getBlockEntity(pos);
         layoutPlayerInventorySlots();
         blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
             addSlot(new NCSlotItemHandler.Input(h, 0, 56, 35));

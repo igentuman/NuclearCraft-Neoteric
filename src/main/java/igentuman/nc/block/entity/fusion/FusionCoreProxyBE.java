@@ -35,11 +35,11 @@ public class FusionCoreProxyBE extends FusionBE {
             if(!level.isLoaded(core.getBlockPos())) {
                 return;
             }
-            core = (FusionCoreBE<?>) level.getBlockEntity(core.getBlockPos());
+            core = (FusionCoreBE) level.getBlockEntity(core.getBlockPos());
             corePos = core.getBlockPos();
         } else {
             if(corePos == null) return;
-            core = (FusionCoreBE<?>) level.getBlockEntity(corePos);
+            core = (FusionCoreBE) level.getBlockEntity(corePos);
         }
     }
 
@@ -60,8 +60,8 @@ public class FusionCoreProxyBE extends FusionBE {
         }
     }
 
-    public void setCore(FusionCoreBE<?> core) {
-        FusionCoreBE<?> wasCore = this.core;
+    public void setCore(FusionCoreBE core) {
+        FusionCoreBE wasCore = this.core;
         this.core = core;
         corePos = core.getBlockPos();
         if(wasCore != core) {
@@ -80,7 +80,7 @@ public class FusionCoreProxyBE extends FusionBE {
         }
     }
 
-    public FusionCoreBE<?> getCoreBE() {
+    public FusionCoreBE getCoreBE() {
         return core;
     }
 
@@ -161,7 +161,7 @@ public class FusionCoreProxyBE extends FusionBE {
         }
     }
 
-    public void forceTickServer(FusionCoreBE<?> core) {
+    public void forceTickServer(FusionCoreBE core) {
         this.core = core;
         core.inputRedstoneSignal =  Math.max(getLevel().getBestNeighborSignal(getBlockPos()), core.inputRedstoneSignal);
         core.rfAmplificationRatio = (int)((double)core.inputRedstoneSignal / 0.15D);

@@ -31,7 +31,7 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
     public List<BlockPos> fuelCells = new ArrayList<>();
     private double heatSinkCooling = 0;
     public double activeCooling = 0;
-    private FissionControllerBE<?> controllerBe;
+    private FissionControllerBE controllerBe;
     private List<BlockPos> directFuelCellConnectionPos = new ArrayList<>();
     private List<BlockPos> secondFuelCellConnectionPos = new ArrayList<>();
     public HashMap<String, Integer> coolantPerTick = new HashMap<>();
@@ -64,7 +64,7 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
     @Override
     public int minDepth() { return FISSION_CONFIG.MIN_SIZE.get(); }
 
-    public FissionReactorMultiblock(FissionControllerBE<?> fissionControllerBE) {
+    public FissionReactorMultiblock(FissionControllerBE fissionControllerBE) {
         super(
                 getBlocksByTagKey(FissionBlocks.CASING_BLOCKS.location().toString()),
                 getBlocksByTagKey(FissionBlocks.INNER_REACTOR_BLOCKS.location().toString())
@@ -258,9 +258,9 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
         }
     }
 
-    private FissionControllerBE<?> controllerBE() {
+    private FissionControllerBE controllerBE() {
         if (controllerBe == null) {
-            controllerBe = (FissionControllerBE<?>) controller().controllerBE();
+            controllerBe = (FissionControllerBE) controller().controllerBE();
         }
         return controllerBe;
     }

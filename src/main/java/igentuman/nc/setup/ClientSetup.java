@@ -15,7 +15,6 @@ import igentuman.nc.client.gui.turbine.TurbinePortScreen;
 import igentuman.nc.client.particle.FusionBeamParticle;
 import igentuman.nc.client.particle.RadiationParticle;
 import igentuman.nc.client.gui.fission.FissionControllerScreen;
-import igentuman.nc.client.renderer.DistortionShader;
 import igentuman.nc.client.sound.SoundHandler;
 import igentuman.nc.content.energy.BatteryBlocks;
 import igentuman.nc.handler.event.client.*;
@@ -70,7 +69,6 @@ import static net.minecraftforge.eventbus.api.EventPriority.LOWEST;
 public class ClientSetup {
 
     public static void init(FMLClientSetupEvent event) {
-        //new BlackHoleShaderManager();
         event.enqueueWork(() -> {
             MinecraftForge.EVENT_BUS.addListener(LOWEST, SoundHandler::onTilePlaySound);
             BlockEntityRenderers.register(FUSION_BE.get("fusion_core").get(), FusionCoreRenderer::new);
@@ -143,7 +141,6 @@ public class ClientSetup {
         TooltipHandler.register(event);
         TickHandler.register(event);
         BlockOverlayHandler.register(event);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(DistortionShader::registerShaders);
     }
 
     @SubscribeEvent

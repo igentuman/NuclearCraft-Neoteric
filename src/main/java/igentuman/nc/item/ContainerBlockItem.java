@@ -23,13 +23,11 @@ public class ContainerBlockItem extends BlockItem
 		super(pBlock, new Properties().stacksTo(1));
 	}
 
-
 	@Override
 	public boolean isRepairable(@Nonnull ItemStack stack)
 	{
 		return false;
 	}
-
 
 	@Override
 	public boolean isBookEnchantable(ItemStack stack, ItemStack book)
@@ -41,7 +39,6 @@ public class ContainerBlockItem extends BlockItem
 	{
 		return false;
 	}
-
 
 	public String code()
 	{

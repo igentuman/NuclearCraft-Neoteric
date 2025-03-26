@@ -7,22 +7,11 @@ import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.util.annotation.NothingNullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.fluids.FluidStack;
+public class DecayHastenerBE extends NCProcessorBE {
 
-import java.util.List;
-
-import static igentuman.nc.compat.GlobalVars.CATALYSTS;
-import static igentuman.nc.compat.GlobalVars.RECIPE_CLASSES;
-
-public class DecayHastenerBE extends NCProcessorBE<DecayHastenerBE.Recipe> {
     public DecayHastenerBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, Processors.DECAY_HASTENER);
-    }
-    @Override
-    public String getName() {
-        return Processors.DECAY_HASTENER;
     }
 
     @NothingNullByDefault

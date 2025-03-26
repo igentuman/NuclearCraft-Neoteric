@@ -47,7 +47,7 @@ public class ChamberPortBE extends ChamberBE {
     public void tickServer() {
         if(NuclearCraft.instance.isNcBeStopped) return;
         super.tickServer();
-        if(multiblock() == null || controller() == null) return;
+        if(getMultiblock() == null || controller() == null) return;
         int wasSignal = analogSignal;
         boolean updated = sendOutPower();
         if(controllerPos == null) {
@@ -113,7 +113,7 @@ public class ChamberPortBE extends ChamberBE {
     }
 
     protected boolean sendOutPower() {
-        if(multiblock() == null) return false;
+        if(getMultiblock() == null) return false;
         AtomicInteger capacity = new AtomicInteger(controller().energyStorage.getEnergyStored());
         if (capacity.get() > 0) {
             for (Direction direction : Direction.values()) {
@@ -153,7 +153,7 @@ public class ChamberPortBE extends ChamberBE {
             return (ChamberTerminalBE<?>) getLevel().getBlockEntity(controllerPos);
         }
         try {
-            return (ChamberTerminalBE<?>) multiblock().controller().controllerBE();
+            return (ChamberTerminalBE<?>) getMultiblock().controller().controllerBE();
         } catch (NullPointerException e) {
             if(controllerPos != null) {
                 return (ChamberTerminalBE<?>) getLevel().getBlockEntity(controllerPos);

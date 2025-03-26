@@ -15,7 +15,6 @@ import igentuman.nc.util.annotation.NothingNullByDefault;
 import igentuman.nc.util.insitu_leaching.WorldVeinsManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -32,28 +31,20 @@ import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidStack;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
 import static igentuman.nc.block.ProcessorBlock.ACTIVE;
-import static igentuman.nc.compat.GlobalVars.CATALYSTS;
-import static igentuman.nc.compat.GlobalVars.RECIPE_CLASSES;
 import static igentuman.nc.radiation.ItemRadiation.getItemByName;
 import static igentuman.nc.setup.registration.NCItems.NC_PARTS;
-import static igentuman.nc.util.ModUtil.isCcLoaded;
 import static net.minecraft.world.item.Items.*;
 import static igentuman.nc.util.ModUtil.isIeLoaded;;
 
-public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
-    public LeacherBE(BlockPos pPos, BlockState pBlockState) {
-        super(pPos, pBlockState, Processors.LEACHER);
-    }
+public class LeacherBE extends NCProcessorBE {
 
     public static final byte PUMPS_ERROR = 4;
     public static final byte NO_SOURCE = 3;
@@ -64,25 +55,20 @@ public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
     protected List<ItemStack> minableOres;
     protected Player player;
 
-
     @NBTField
     public BlockPos currentMiningPos;
     @NBTField
     public boolean pumpsAreValid = false;
-
     @NBTField
     public byte leacherState = 2;
-
     @NBTField
     public ItemStack catalyst = ItemStack.EMPTY;
 
     protected PumpBE[] pumps = new PumpBE[4];
-
     protected byte pumpValidationTimeout = 80;
 
-    @Override
-    public String getName() {
-        return Processors.LEACHER;
+    public LeacherBE(BlockPos pPos, BlockState pBlockState) {
+        super(pPos, pBlockState, Processors.LEACHER);
     }
 
     @Override
@@ -231,7 +217,7 @@ public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
         super.processRecipe();
     }
 
-    protected void updateRecipe() {
+    public void updateRecipe() {
         gatherOre();
         super.updateRecipe();
     }

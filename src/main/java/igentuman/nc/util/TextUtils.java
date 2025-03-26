@@ -6,6 +6,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 
 import java.text.DecimalFormat;
+import java.util.Locale;
 
 public class TextUtils
 {
@@ -82,6 +83,11 @@ public class TextUtils
 		return applySpeccialRules(result.toString());
 	}
 
+	public static String formatLiquid(int val)
+	{
+		return TextUtils.numberFormat(val/1000)+" B";
+	}
+
 	public static String applySpeccialRules(String val)
 	{
 		val = val.replace("Rtg", "RTG");
@@ -90,5 +96,29 @@ public class TextUtils
 		val = val.replace("Bssco", "BSSCO");
 		val = val.replace("Rf", "RF");
 		return val;
+	}
+
+	public static String formatEnergy(int energy)
+	{
+		if(energy >= 1000000000) {
+			return TextUtils.numberFormat(energy/1000000000)+" GFE";
+		}
+		if(energy >= 1000000) {
+			return TextUtils.numberFormat(energy/1000000)+" MFE";
+		}
+		if(energy >= 1000) {
+			return TextUtils.numberFormat(energy/1000)+" kFE";
+		}
+		return TextUtils.numberFormat(energy)+" FE";
+	}
+
+	public static String formatRads(long radiation) {
+		if(radiation >= 1000000) {
+			return String.format(Locale.US,"%.2f", (float)radiation/1000000)+" Rad";
+		}
+		if(radiation >= 1000) {
+			return String.format(Locale.US,"%.2f", (float)radiation/1000)+" mRad";
+		}
+		return String.format(Locale.US,"%.2f", (float)radiation)+" uRad";
 	}
 }

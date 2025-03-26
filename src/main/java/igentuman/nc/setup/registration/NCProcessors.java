@@ -25,7 +25,7 @@ public class NCProcessors {
     public static final Item.Properties PROCESSOR_ITEM_PROPERTIES = new Item.Properties();
     public static final BlockBehaviour.Properties PROCESSOR_BLOCK_PROPERTIES = BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(2f).requiresCorrectToolForDrops();
     public static HashMap<String, RegistryObject<MenuType<? extends NCProcessorContainer<?>>>> PROCESSORS_CONTAINERS = new HashMap<>();
-    public static HashMap<String, RegistryObject<BlockEntityType<? extends NCProcessorBE<?>>>> PROCESSORS_BE = new HashMap<>();
+    public static HashMap<String, RegistryObject<BlockEntityType<? extends NCProcessorBE>>> PROCESSORS_BE = new HashMap<>();
 
     public static void init() {
         registerBlocks();

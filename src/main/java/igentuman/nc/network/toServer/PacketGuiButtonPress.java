@@ -42,7 +42,7 @@ public class PacketGuiButtonPress implements INcPacket {
         BlockEntity be = player.level().getBlockEntity(tilePosition);
         switch (buttonId) {
             case RedstoneConfig.BTN_ID:
-                if (!(be instanceof NCProcessorBE<?> processor)) {
+                if (!(be instanceof NCProcessorBE processor)) {
                     return;
                 }
                 processor.toggleRedstoneMode();

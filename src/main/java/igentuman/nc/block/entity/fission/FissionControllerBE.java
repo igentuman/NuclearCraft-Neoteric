@@ -103,7 +103,6 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     public int depth = 1;
     @NBTField
     public int toggleModeTimer = 2000;
-
     @NBTField
     public boolean enabledByController = false;
     @NBTField
@@ -150,7 +149,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     {
         if(allowedInputs == null) {
             allowedInputs = new ArrayList<>();
-            for(AbstractRecipe recipe: NcRecipeType.ALL_RECIPES.get(getName()).getRecipeType().getRecipes(getLevel())) {
+            for(NcRecipe recipe: NcRecipeType.getAllRecipesFor(getName(), getLevel())) {
                 for(Ingredient ingredient: recipe.getItemIngredients()) {
                     allowedInputs.addAll(List.of(ingredient.getItems()));
                 }
@@ -241,12 +240,13 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
             cachedRecipes.put(key, recipe);
         }
     }
+
     public RECIPE getRecipe() {
         if(contentHandler.itemHandler.getStackInSlot(0).equals(ItemStack.EMPTY)) return null;
         RECIPE cachedRecipe = getCachedRecipe();
         if(cachedRecipe != null) return cachedRecipe;
         if(!NcRecipeType.ALL_RECIPES.containsKey(getName())) return null;
-        for(AbstractRecipe recipe: NcRecipeType.ALL_RECIPES.get(getName()).getRecipeType().getRecipes(getLevel())) {
+        for(NcRecipe recipe: NcRecipeType.getAllRecipesFor(getName(), getLevel())) {
             if(recipe.test(contentHandler)) {
                 addToCache((RECIPE)recipe);
                 return (RECIPE)recipe;
@@ -408,19 +408,19 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         }
         changed = false;
         hopToggleMode();
-        boolean wasFormed = multiblock().isFormed();
+        boolean wasFormed = getMultiblock().isFormed();
         super.tickServer();
         boolean wasPowered = powered;
         handleValidation();
         trackChanges(wasPowered, powered);
         boolean wasEnabled = controllerEnabled;
-        controllerEnabled = hasRedstoneSignal() && multiblock().isFormed();
+        controllerEnabled = hasRedstoneSignal() && getMultiblock().isFormed();
         controllerEnabled = !forceShutdown && controllerEnabled;
         //do not allow change reactor state during cooldown or heating up
         if(controllerEnabled != wasEnabled && reactivityLevel > 10 && reactivityLevel < 99) {
             controllerEnabled = wasEnabled;
         }
-        if (multiblock().isFormed()) {
+        if (getMultiblock().isFormed()) {
             trackChanges(updateModerationLevel());
             trackChanges(contentHandler.tick());
             if(controllerEnabled || reactivityLevel > 0) {
@@ -438,7 +438,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
                 RadiationManager.get(getLevel()).addRadiation(getLevel(), 10000*fuelCellsCount, getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
             }
         }
-        refreshCacheFlag = !multiblock().isFormed();
+        refreshCacheFlag = !getMultiblock().isFormed();
         if(refreshCacheFlag || changed) {
             try {
                 assert level != null;
@@ -463,17 +463,17 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     }
 
     @Override
-    public FissionReactorMultiblock multiblock() {
+    public FissionReactorMultiblock getMultiblock() {
         if(multiblock == null) {
             multiblock = new FissionReactorMultiblock(this);
         }
-        return super.multiblock();
+        return super.getMultiblock();
     }
 
     private int delay = 20;
 
     private void handleValidation() {
-        boolean wasFormed = multiblock().isFormed();
+        boolean wasFormed = getMultiblock().isFormed();
         boolean assembled = wasFormed && isInternalValid && isCasingValid;
         if (
                 (!assembled && getLevel().getGameTime() % delay == 0)
@@ -482,18 +482,18 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
             Random rand = new Random(getBlockPos().asLong());
             delay = rand.nextInt(80) + 80;
 
-            multiblock().validate();
-            isCasingValid = multiblock().isOuterValid();
+            getMultiblock().validate();
+            isCasingValid = getMultiblock().isOuterValid();
             if(isCasingValid) {
-                isInternalValid = multiblock().isInnerValid();
+                isInternalValid = getMultiblock().isInnerValid();
             }
             powered = false;
             changed = true;
-            height = multiblock().height();
-            width = multiblock().width();
-            depth = multiblock().depth();
+            height = getMultiblock().height();
+            width = getMultiblock().width();
+            depth = getMultiblock().depth();
             if(
-                    multiblock().isFormed()
+                    getMultiblock().isFormed()
                     && contentHandler.fluidCapability.tanks.get(0).getCapacity() != 5000*height*width*depth
             ) {
                 contentHandler.fluidCapability.tanks.get(0).setCapacity(5000*height*width*depth);
@@ -501,7 +501,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
             }
         }
 
-        trackChanges(wasFormed, multiblock().isFormed());
+        trackChanges(wasFormed, getMultiblock().isFormed());
     }
 
     @Override
@@ -512,7 +512,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     private void handleMeltdown() {
         if (heat >= getMaxHeat()) {
             BlockPos explosionPos = getBlockPos().relative(getFacing(), 2);
-            List<BlockPos> fuelCells = new ArrayList<>(multiblock().fuelCells);
+            List<BlockPos> fuelCells = new ArrayList<>(getMultiblock().fuelCells);
             if (FISSION_CONFIG.EXPLOSION_RADIUS.get() == 0) {
                 getLevel().explode(null, explosionPos.getX(), explosionPos.getY(), explosionPos.getZ(), 2F, Level.ExplosionInteraction.NONE);
             } else {
@@ -539,8 +539,8 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         if(getLevel().isClientSide()) {
             return;
         }
-        if(multiblock() != null) {
-            multiblock().onControllerRemoved();
+        if(getMultiblock() != null) {
+            getMultiblock().onControllerRemoved();
         }
     }
 
@@ -573,17 +573,17 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     }
 
     private void spawnParticles() {
-        if(multiblock() == null) {
+        if(getMultiblock() == null) {
             return;
         }
-        if(!multiblock().isFormed()) {
-            multiblock().validate();
+        if(!getMultiblock().isFormed()) {
+            getMultiblock().validate();
         }
         if(level.getGameTime()  % (level.random.nextInt(10)+5) != 0) {
             return;
         }
-        BlockPos topBlock = multiblock().getTopRightInnerBlock();
-        BlockPos bottomLeft = multiblock().getBottomLeftInnerBlock();
+        BlockPos topBlock = getMultiblock().getTopRightInnerBlock();
+        BlockPos bottomLeft = getMultiblock().getBottomLeftInnerBlock();
 
         for(BlockPos blockPos: BlockPos.betweenClosed(bottomLeft, topBlock)) {
             if(level.random.nextBoolean()) {
@@ -651,7 +651,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     }
 
     public double heatSinksCooling() {
-        heatSinkCooling = multiblock().countCooling(refreshCacheFlag);
+        heatSinkCooling = getMultiblock().countCooling(refreshCacheFlag);
         return heatSinkCooling+activeCooling;
     }
 
@@ -707,15 +707,9 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
 
     @Override
     public void load(CompoundTag tag) {
-        if (tag.contains("Energy")) {
-            energyStorage.deserializeNBT(tag.get("Energy"));
-        }
+        super.load(tag);
         if (tag.contains("Info")) {
             CompoundTag infoTag = tag.getCompound("Info");
-            readTagData(infoTag);
-            if (infoTag.contains("recipeInfo")) {
-                recipeInfo.deserializeNBT(infoTag.getCompound("recipeInfo"));
-            }
             if (!isCasingValid || !isInternalValid) {
                 errorBlockPos = BlockPos.of(infoTag.getLong("erroredBlock"));
                 validationResult = ValidationResult.byId(infoTag.getInt("validationId"));
@@ -723,22 +717,45 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
                 validationResult = ValidationResult.VALID;
             }
         }
-        if (tag.contains("Content")) {
-            contentHandler.deserializeNBT(tag.getCompound("Content"));
-        }
-        super.load(tag);
     }
 
     @Override
     public void saveAdditional(CompoundTag tag) {
-        CompoundTag infoTag = new CompoundTag();
-        tag.put("Energy", energyStorage.serializeNBT());
-        tag.put("Content", contentHandler.serializeNBT());
-        infoTag.put("recipeInfo", recipeInfo.serializeNBT());
-        infoTag.putInt("validationId", validationResult.id);
-        infoTag.putLong("erroredBlock", errorBlockPos.asLong());
-        saveTagData(infoTag);
-        tag.put("Info", infoTag);
+        super.saveAdditional(tag);
+        if (tag.contains("Info")) {
+            CompoundTag infoTag = tag.getCompound("Info");
+            infoTag.put("recipeInfo", recipeInfo.serializeNBT());
+            infoTag.putInt("validationId", validationResult.id);
+            infoTag.putLong("erroredBlock", errorBlockPos.asLong());
+            tag.remove("Info");
+            tag.put("Info", infoTag);
+        }
+    }
+
+    @Override
+    public void loadClientData(CompoundTag tag) {
+        super.loadClientData(tag);
+        if (tag.contains("Info")) {
+            CompoundTag infoTag = tag.getCompound("Info");
+            if (!isCasingValid || !isInternalValid) {
+                errorBlockPos = BlockPos.of(infoTag.getLong("erroredBlock"));
+                validationResult = ValidationResult.byId(infoTag.getInt("validationId"));
+            } else {
+                validationResult = ValidationResult.VALID;
+            }
+        }
+    }
+
+    @Override
+    protected void saveClientData(CompoundTag tag) {
+        super.saveClientData(tag);
+        if (tag.contains("Info")) {
+            CompoundTag infoTag = tag.getCompound("Info");
+            infoTag.putInt("validationId", validationResult.id);
+            infoTag.putLong("erroredBlock", errorBlockPos.asLong());
+            tag.remove("Info");
+            tag.put("Info", infoTag);
+        }
     }
 
     public Direction getFacing() {
@@ -746,51 +763,6 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
             facing = getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);
         }
         return facing;
-    }
-
-    @Override
-    public void loadClientData(CompoundTag tag) {
-        if (tag.contains("Info")) {
-            CompoundTag infoTag = tag.getCompound("Info");
-            if (infoTag.contains("recipeInfo")) {
-                recipeInfo.deserializeNBT(infoTag.getCompound("recipeInfo"));
-            }
-            energyStorage.setEnergy(infoTag.getInt("energy"));
-            readTagData(infoTag);
-            if (!isCasingValid || !isInternalValid) {
-                errorBlockPos = BlockPos.of(infoTag.getLong("erroredBlock"));
-                validationResult = ValidationResult.byId(infoTag.getInt("validationId"));
-            } else {
-                validationResult = ValidationResult.VALID;
-            }
-            if (tag.contains("Content")) {
-                contentHandler.deserializeNBT(tag.getCompound("Content"));
-            }
-        }
-    }
-
-    @Override
-    protected void saveClientData(CompoundTag tag) {
-        CompoundTag infoTag = new CompoundTag();
-        tag.put("Info", infoTag);
-        infoTag.putInt("energy", energyStorage.getEnergyStored());
-        saveTagData(infoTag);
-        infoTag.put("recipeInfo", recipeInfo.serializeNBT());
-        infoTag.putInt("validationId", validationResult.id);
-        infoTag.putLong("erroredBlock", errorBlockPos.asLong());
-        tag.put("Content", contentHandler.serializeNBT());
-    }
-
-    @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        int oldEnergy = energyStorage.getEnergyStored();
-
-        CompoundTag tag = pkt.getTag();
-        handleUpdateTag(tag);
-
-        if (oldEnergy != energyStorage.getEnergyStored()) {
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
-        }
     }
 
     public double getDepletionProgress() {
@@ -853,9 +825,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
 
     public List<FissionBoilingRecipe> getBoilingRecipes() {
         if(coolantRecipes == null) {
-            coolantRecipes = (List<FissionBoilingRecipe>) NcRecipeType.ALL_RECIPES
-                    .get("fission_boiling")
-                    .getRecipeType().getRecipes(getLevel());
+            coolantRecipes = (List<FissionBoilingRecipe>) NcRecipeType.getAllRecipesFor("fission_boiling", getLevel());
         }
         return coolantRecipes;
     }
@@ -944,7 +914,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
     }
 
     public boolean canAcceptFluid() {
-        return isSteamMode || multiblock().coolantPerTick.size() > 0;
+        return isSteamMode || getMultiblock().coolantPerTick.size() > 0;
     }
 
     public boolean hasEnoughCoolant(String coolant, int amount) {

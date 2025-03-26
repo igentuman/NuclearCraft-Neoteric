@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import igentuman.nc.handler.event.client.TickHandler;
 import igentuman.nc.util.CustomEffect;
 import net.minecraft.client.Camera;
+import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.phys.Vec3;
@@ -14,7 +15,7 @@ import org.joml.Vector3f;
 
 import java.util.function.Supplier;
 
-import static igentuman.nc.client.NCRenderType.BLACKHOLE;
+import static igentuman.nc.client.renderer.NCRenderType.BLACKHOLE;
 
 
 public class BillboardingEffectRenderer {
@@ -49,7 +50,7 @@ public class BillboardingEffectRenderer {
         int gridSize = effect.getTextureGridSize();
 
         int tick = renderTick % (gridSize * gridSize);
-        int xIndex = tick % gridSize, yIndex = tick / gridSize;
+        int yIndex = tick % gridSize, xIndex = tick / gridSize;
         float spriteSize = 1F / gridSize;
         Quaternionf quaternion = camera.rotation();
         Vector3f[] vertexPos = {new Vector3f(-1.0F, 1.0F, 0.0F), new Vector3f(1.0F, 1.0F, 0.0F),

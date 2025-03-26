@@ -1,9 +1,10 @@
-package igentuman.nc.multiblock;
+package igentuman.api.nc;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-public interface INCMultiblockController {
+public interface MultiblockController {
+
     BlockEntity controllerBE();
 
     void clearStats();

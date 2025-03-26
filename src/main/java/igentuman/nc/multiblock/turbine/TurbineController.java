@@ -1,10 +1,10 @@
 package igentuman.nc.multiblock.turbine;
 
 import igentuman.nc.block.entity.turbine.TurbineControllerBE;
-import igentuman.nc.multiblock.INCMultiblockController;
+import igentuman.api.nc.MultiblockController;
 import net.minecraft.core.BlockPos;
 
-public class TurbineController implements INCMultiblockController {
+public class TurbineController implements MultiblockController {
     protected TurbineControllerBE<?> controllerBE;
     public TurbineController(TurbineControllerBE<?> turbineControllerBE) {
         controllerBE = turbineControllerBE;

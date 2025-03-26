@@ -57,7 +57,7 @@ public class FissionPortBE extends FissionBE {
     public void tickServer() {
         if(NuclearCraft.instance.isNcBeStopped) return;
         super.tickServer();
-        if(multiblock() == null || controller() == null) return;
+        if(getMultiblock() == null || controller() == null) return;
         int wasSignal = analogSignal;
         boolean updated = sendOutPower();
         if(controllerPos == null) {
@@ -169,7 +169,7 @@ public class FissionPortBE extends FissionBE {
     }
 
     protected boolean sendOutPower() {
-        if(multiblock() == null) return false;
+        if(getMultiblock() == null) return false;
         AtomicInteger capacity = new AtomicInteger(controller().energyStorage.getEnergyStored());
         if (capacity.get() > 0) {
             for (Direction direction : Direction.values()) {
@@ -213,7 +213,7 @@ public class FissionPortBE extends FissionBE {
             }
         }
         try {
-            BlockEntity be = multiblock().controller().controllerBE();
+            BlockEntity be = getMultiblock().controller().controllerBE();
             if(be instanceof FissionControllerBE<?> controllerBe) {
                 controller = controllerBe;
                 return controller;

@@ -1,9 +1,9 @@
 package igentuman.nc.multiblock;
 
+import igentuman.api.nc.MultiblockAttachable;
+import igentuman.api.nc.Multiblock;
+import igentuman.api.nc.MultiblockController;
 import igentuman.nc.NuclearCraft;
-import igentuman.nc.block.entity.fission.FissionControllerBE;
-import igentuman.nc.block.entity.fission.FissionPortBE;
-import igentuman.nc.block.entity.processor.IrradiatorBE;
 import igentuman.nc.util.NCBlockPos;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -17,14 +17,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public abstract class AbstractNCMultiblock implements INCMultiblock {
+public abstract class AbstractNCMultiblock implements Multiblock {
 
     public boolean hasToRefresh = true;
     protected int refreshCooldown = 50;
     protected int height;
     protected int width;
     protected int depth;
-    protected INCMultiblockController controller;
+    protected MultiblockController controller;
     public ValidationResult validationResult;
     public String id;
     public int topCasing = 0;
@@ -44,6 +44,7 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
     protected HashMap<Long, BlockEntity> beCache = new HashMap<>();
     protected HashMap<Long, BlockState> bsCache = new HashMap<>();
     protected List<BlockPos> allBlocks = new ArrayList<>();
+    protected BlockPos controllerPos;
 
     protected AbstractNCMultiblock(List<Block> validOuterBlocks, List<Block> validInnerBlocks) {
         this.validOuterBlocks = validOuterBlocks;
@@ -98,7 +99,7 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
     protected Level getLevel() {
         return  controller().controllerBE().getLevel();
     }
-    protected BlockPos controllerPos;
+
     protected BlockPos controllerPos() {
         if(controllerPos == null) {
             controllerPos = controller().controllerBE().getBlockPos();
@@ -112,6 +113,7 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
         }
         return getLeftPos(leftCasing).below(bottomCasing).relative(getFacing(), -depth+1);
     }
+
     public BlockPos getBottomLeftInnerBlock() {
         if(controllerPos instanceof NCBlockPos) {
             ((NCBlockPos) controllerPos).revert();
@@ -162,6 +164,7 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
         } catch (NullPointerException ignored) { }
         return false;
     }
+
     public boolean isValidCorner(BlockPos pos)
     {
         if(getLevel() == null) return false;
@@ -340,8 +343,6 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
         return true;
     }
 
-    protected abstract void invalidateStats();
-
     protected void attachMultiblock(BlockPos pos) {
         attachMultiblock(getBlockEntity(pos));
     }
@@ -356,7 +357,7 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
     }
 
     protected void attachMultiblock(BlockEntity be) {
-        if(be instanceof IMultiblockAttachable part) {
+        if(be instanceof MultiblockAttachable part) {
             part.setMultiblock(this);
         }
     }
@@ -370,8 +371,8 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
         for(BlockPos b: allBlocks) {
             if(!isLoaded(b)) continue;
             BlockEntity be = getBlockEntity(b);
-            if(be instanceof IMultiblockAttachable) {
-                ((IMultiblockAttachable) be).setMultiblock(null);
+            if(be instanceof MultiblockAttachable) {
+                ((MultiblockAttachable) be).setMultiblock(null);
             }
         }
         dispose();
@@ -443,7 +444,7 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
         return outerValid;
     }
 
-    public INCMultiblockController controller() {
+    public MultiblockController controller() {
         return controller;
     }
 
@@ -458,14 +459,14 @@ public abstract class AbstractNCMultiblock implements INCMultiblock {
         boolean isInTheList = allBlocks.contains(neighbor);
         BlockEntity neighborBe = getBlockEntity(neighbor);
         if(!isInTheList) return false; //ignore all blocks outside
-        if(neighborBe instanceof IMultiblockAttachable part) {
+        if(neighborBe instanceof MultiblockAttachable part) {
             return part.canInvalidateCache();
         }
         return true;
     }
 
     public void tick() {
-        //not letting to spam structure re validation
+        //not letting to spam structure re-validation
         if(hasToRefresh) {
             refreshCooldown--;
             if(refreshCooldown <= 0) {

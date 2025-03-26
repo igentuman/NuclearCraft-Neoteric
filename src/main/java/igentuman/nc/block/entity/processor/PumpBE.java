@@ -8,26 +8,16 @@ import igentuman.nc.util.NCBlockPos;
 import igentuman.nc.util.annotation.NothingNullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.fluids.FluidStack;
 
-import java.util.List;
+public class PumpBE extends NCProcessorBE {
 
-import static igentuman.nc.compat.GlobalVars.CATALYSTS;
-import static igentuman.nc.compat.GlobalVars.RECIPE_CLASSES;
-
-public class PumpBE extends NCProcessorBE<PumpBE.Recipe> {
     public PumpBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, Processors.PUMP);
     }
-    @Override
-    public String getName() {
-        return Processors.PUMP;
-    }
 
     @Override
-    protected void updateRecipe() {
+    public void updateRecipe() {
         recipe = getRecipe();
         if (recipe != null) {
             recipeInfo.setRecipe(recipe);

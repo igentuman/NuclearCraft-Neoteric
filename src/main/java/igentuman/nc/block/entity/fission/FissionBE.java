@@ -2,16 +2,13 @@ package igentuman.nc.block.entity.fission;
 
 import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.multiblock.AbstractNCMultiblock;
-import igentuman.nc.multiblock.IMultiblockAttachable;
+import igentuman.api.nc.MultiblockAttachable;
 import igentuman.nc.multiblock.fission.FissionReactorMultiblock;
 import igentuman.nc.multiblock.fission.FissionReactor;
-import igentuman.nc.util.NCBlockPos;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class FissionBE extends NuclearCraftBE implements IMultiblockAttachable {
+public class FissionBE extends NuclearCraftBE implements MultiblockAttachable {
 
     @Override
     public void setMultiblock(AbstractNCMultiblock multiblock) {
@@ -21,13 +18,13 @@ public class FissionBE extends NuclearCraftBE implements IMultiblockAttachable {
     @Override
     public FissionBE controller() {
         try {
-            return (FissionBE) multiblock().controller().controllerBE();
+            return (FissionBE) getMultiblock().controller().controllerBE();
         } catch (NullPointerException ignore) {
             return null;
         }
     }
 
-    public FissionReactorMultiblock multiblock() {
+    public FissionReactorMultiblock getMultiblock() {
         return multiblock;
     }
 
@@ -69,8 +66,8 @@ public class FissionBE extends NuclearCraftBE implements IMultiblockAttachable {
     }
 
     public void onNeighborChange(BlockState state, BlockPos pos, BlockPos neighbor) {
-        if(multiblock() != null) {
-            multiblock().onNeighborChange(state, pos, neighbor);
+        if(getMultiblock() != null) {
+            getMultiblock().onNeighborChange(state, pos, neighbor);
         }
     }
 }

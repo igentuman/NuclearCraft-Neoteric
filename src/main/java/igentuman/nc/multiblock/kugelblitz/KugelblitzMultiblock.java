@@ -83,7 +83,7 @@ public class KugelblitzMultiblock extends AbstractNCMultiblock {
     }
 
     @Override
-    protected void invalidateStats() {
+    public void invalidateStats() {
 
     }
 

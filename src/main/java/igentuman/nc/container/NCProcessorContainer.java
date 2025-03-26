@@ -34,7 +34,7 @@ import static igentuman.nc.setup.registration.NCItems.NC_ITEMS;
 import static igentuman.nc.setup.registration.NCItems.NC_PARTS;
 
 public class NCProcessorContainer<T extends AbstractContainerMenu> extends AbstractContainerMenu {
-    protected NCProcessorBE<?> blockEntity;
+    protected NCProcessorBE blockEntity;
     protected Player playerEntity;
     protected IItemHandler playerInventory;
 
@@ -54,7 +54,7 @@ public class NCProcessorContainer<T extends AbstractContainerMenu> extends Abstr
 
     public NCProcessorContainer(int windowId, BlockPos pos, Inventory playerInventory, Player player, String name) {
         this(NCProcessors.PROCESSORS_CONTAINERS.get(name).get(), windowId);
-        blockEntity = (NCProcessorBE<?>) player.getCommandSenderWorld().getBlockEntity(pos);
+        blockEntity = (NCProcessorBE) player.getCommandSenderWorld().getBlockEntity(pos);
         this.playerEntity = player;
         this.playerInventory = new InvWrapper(playerInventory);
         this.name = name;

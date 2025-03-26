@@ -1,4 +1,22 @@
 {
+  "tile.laser_shoot": {
+    "sounds": [
+      "nuclearcraft:block/laser_shoot"
+    ],
+    "subtitle": "sound_event.nuclearcraft.laser.shoot"
+  },
+  "tile.blackhole_spawn": {
+    "sounds": [
+      "nuclearcraft:block/blackhole_spawn"
+    ],
+    "subtitle": "sound_event.nuclearcraft.blackhole.spawn"
+  },
+  "tile.blackhole_idle": {
+    "sounds": [
+      "nuclearcraft:block/blackhole_idle"
+    ],
+    "subtitle": "sound_event.nuclearcraft.blackhole.idle"
+  },
   "tile.fusion_ready": {
     "sounds": [
       "nuclearcraft:block/fusion_ready"

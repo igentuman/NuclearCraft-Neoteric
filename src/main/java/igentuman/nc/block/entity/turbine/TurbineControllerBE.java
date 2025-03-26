@@ -145,13 +145,13 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
 
     public BlockPos getBlockPosForSteam()
     {
-        if(!multiblock().isFormed()) {
-            multiblock().validate();
+        if(!getMultiblock().isFormed()) {
+            getMultiblock().validate();
         }
         BlockPos start = worldPosition;
-        if(multiblock().bearingPositions.size() > 0) {
-            for (int i = 0; i < multiblock().bearingPositions.size(); i++) {
-                start = new BlockPos(multiblock().bearingPositions.get(i));
+        if(getMultiblock().bearingPositions.size() > 0) {
+            for (int i = 0; i < getMultiblock().bearingPositions.size(); i++) {
+                start = new BlockPos(getMultiblock().bearingPositions.get(i));
                 BlockEntity be = getLevel().getBlockEntity(start.relative(orientation));
                 if(!(be instanceof TurbineRotorBE)) {
                     return start;
@@ -260,10 +260,10 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
         boolean wasPowered = powered;
         handleValidation();
         trackChanges(wasPowered, powered);
-        controllerEnabled = (hasRedstoneSignal() || controllerEnabled) && multiblock().isFormed();
+        controllerEnabled = (hasRedstoneSignal() || controllerEnabled) && getMultiblock().isFormed();
         controllerEnabled = !forceShutdown && controllerEnabled;
 
-        if (multiblock().isFormed()) {
+        if (getMultiblock().isFormed()) {
             trackChanges(contentHandler.tick());
             if(controllerEnabled) {
                 powered = processRecipe();
@@ -273,7 +273,7 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
             }
             handleMeltdown();
         }
-        refreshCacheFlag = !multiblock().isFormed()  || level.getGameTime() % 100 == 0;
+        refreshCacheFlag = !getMultiblock().isFormed()  || level.getGameTime() % 100 == 0;
         if(wasPowered != powered) {
             level.setBlockAndUpdate(worldPosition, getBlockState().setValue(POWERED, powered));
         }
@@ -300,7 +300,7 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
     }
 
     @Override
-    public TurbineMultiblock multiblock() {
+    public TurbineMultiblock getMultiblock() {
         if(multiblock == null) {
             multiblock = new TurbineMultiblock(this);
         }
@@ -312,38 +312,38 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
         if(multiblock == null) return;
         if (level.getGameTime() % 40 == 0) {
             ValidationResult wasResult = validationResult;
-            boolean wasFormed = multiblock().isFormed();
+            boolean wasFormed = getMultiblock().isFormed();
             if (!wasFormed || !isInternalValid || !isCasingValid) {
                 activeCoils = 0;
                 coilsEfficiency = 0;
                 flow = 0;
-                multiblock().validate();
-                isCasingValid = multiblock().isOuterValid();
+                getMultiblock().validate();
+                isCasingValid = getMultiblock().isOuterValid();
                 if (isCasingValid) {
-                    isInternalValid = multiblock().isInnerValid();
+                    isInternalValid = getMultiblock().isInnerValid();
                 }
                 powered = false;
                 changed = true;
             }
-            validationResult = multiblock().validationResult;
+            validationResult = getMultiblock().validationResult;
             if (validationResult.id != wasResult.id) {
                 changed = true;
             }
-            if (activeCoils != multiblock().activeCoils) {
+            if (activeCoils != getMultiblock().activeCoils) {
                 changed = true;
-                activeCoils = multiblock().activeCoils;
-                coilsEfficiency = multiblock().coilsEfficiency;
+                activeCoils = getMultiblock().activeCoils;
+                coilsEfficiency = getMultiblock().coilsEfficiency;
             }
 
-            if (flow != multiblock().flow) {
+            if (flow != getMultiblock().flow) {
                 changed = true;
-                flow = multiblock().flow;
-                blades = multiblock().blades;
+                flow = getMultiblock().flow;
+                blades = getMultiblock().blades;
             }
-            height = multiblock().height();
-            width = multiblock().width();
-            depth = multiblock().depth();
-            trackChanges(wasFormed, multiblock().isFormed());
+            height = getMultiblock().height();
+            width = getMultiblock().width();
+            depth = getMultiblock().depth();
+            trackChanges(wasFormed, getMultiblock().isFormed());
         }
     }
 
@@ -371,8 +371,8 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
         if(getLevel().isClientSide()) {
             return;
         }
-        if(multiblock() != null) {
-            multiblock().onControllerRemoved();
+        if(getMultiblock() != null) {
+            getMultiblock().onControllerRemoved();
         }
     }
 
@@ -424,7 +424,7 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
     private void spawnSteamParticles() {
         if (level.isClientSide && level.getGameTime() % 4 == 0) {
             BlockPos pos = getBlockPosForSteam().relative(orientation.getOpposite(), 1);
-            for(BlockPos source:  getBlocks(pos, multiblock().turbineDirection.getAxis())){
+            for(BlockPos source:  getBlocks(pos, getMultiblock().turbineDirection.getAxis())){
                 for (int i = 0; i < 3; i++) {
                     double x = source.getX() + 0.4f + level.random.nextGaussian() * 0.2;
                     double y = source.getY() + 0.7f + level.random.nextGaussian() * 0.2;
@@ -432,7 +432,7 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
                     float ySpeed = 0;
                     float zSpeed = 0;
                     float xSpeed = 0;
-                    switch (multiblock().turbineDirection) {
+                    switch (getMultiblock().turbineDirection) {
                         case UP:
                             ySpeed = 0.2f + (float)(height)/4;
                             break;

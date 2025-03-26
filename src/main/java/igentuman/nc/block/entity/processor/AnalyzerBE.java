@@ -13,23 +13,18 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.fluids.FluidStack;
-
 import java.util.HashMap;
 
 import static net.minecraft.world.item.Items.FILLED_MAP;
 import static net.minecraft.world.item.Items.PAPER;
 
-public class AnalyzerBE extends NCProcessorBE<AnalyzerBE.Recipe> {
-    public AnalyzerBE(BlockPos pPos, BlockState pBlockState) {
-        super(pPos, pBlockState, Processors.ANALYZER);
-    }
+public class AnalyzerBE extends NCProcessorBE {
+
     public HashMap<Long, OreVeinRecipe> veinsCache = new HashMap<>();
     private BlockPos alreadySearched;
 
-    @Override
-    public String getName() {
-        return Processors.ANALYZER;
+    public AnalyzerBE(BlockPos pPos, BlockState pBlockState) {
+        super(pPos, pBlockState, Processors.ANALYZER);
     }
 
     @NothingNullByDefault
@@ -56,7 +51,7 @@ public class AnalyzerBE extends NCProcessorBE<AnalyzerBE.Recipe> {
     }
 
 
-    protected void handleRecipeOutput() {
+    public void handleRecipeOutput() {
         if (hasRecipe() && recipeInfo.isCompleted()) {
             handleChunkAnalyzeWithPaper();
             handleMapAnalyze();

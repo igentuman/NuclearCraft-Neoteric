@@ -1,6 +1,6 @@
 package igentuman.nc.block;
 
-import igentuman.nc.block.entity.BarrelBE;
+import igentuman.api.nc.SideModeToggleable;
 import igentuman.nc.block.entity.ContainerBE;
 import igentuman.nc.container.StorageContainerContainer;
 import igentuman.nc.content.storage.ContainerBlocks;
@@ -39,7 +39,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-import static igentuman.nc.setup.registration.NCItems.MULTITOOL;
 import static igentuman.nc.util.StackUtils.isMultiTool;
 
 @NothingNullByDefault
@@ -80,7 +79,7 @@ public class ContainerBlock extends Block implements EntityBlock {
                 if(player.isShiftKeyDown()) {
                     dirToChange = dirToChange.getOpposite();
                 }
-                ISizeToggable.SideMode mode = be.toggleSideConfig(dirToChange.ordinal());
+                SideModeToggleable.SideMode mode = be.toggleSideConfig(dirToChange.ordinal());
                 player.sendSystemMessage(Component.translatable("message.nc.barrel.side_config", mode.name()));
             } else {
                 MenuProvider containerProvider = new MenuProvider() {

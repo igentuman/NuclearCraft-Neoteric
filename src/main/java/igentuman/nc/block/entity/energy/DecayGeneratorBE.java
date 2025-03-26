@@ -18,17 +18,20 @@ import static igentuman.nc.util.TagUtil.getBlocksByTagKey;
 import static igentuman.nc.util.TagUtil.getSingleBlockByTagKey;
 
 public class DecayGeneratorBE extends NCEnergy {
+
+    private int[] ticks = new int[6];
+    public Block leadBlock;
+    public int decayDuration = 36000; // 30 minutes
+    protected int radiationTimer = 40;
+
     public DecayGeneratorBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, getName(pBlockState));
         energyStorage.setMaxCapacity(2000);
     }
 
-    public Block leadBlock;
-    public int decayDuration = 36000; // 30 minutes
     public static String getName(BlockState pBlockState) {
         return pBlockState.getBlock().asItem().toString();
     }
-    private int[] ticks = new int[6];
 
     @Override
     public String getName() {
@@ -84,7 +87,6 @@ public class DecayGeneratorBE extends NCEnergy {
         getLevel().setBlock(relative, getLeadBlock().defaultBlockState(), 3);
     }
 
-    protected int radiationTimer = 40;
     @Override
     public void tickServer() {
         if(NuclearCraft.instance.isNcBeStopped) return;

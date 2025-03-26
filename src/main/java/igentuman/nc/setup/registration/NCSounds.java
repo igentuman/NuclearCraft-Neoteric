@@ -15,6 +15,9 @@ public final class NCSounds {
     public static final List<RegistryObject<SoundEvent>> GEIGER_SOUNDS = initGeigerSounds();
     public static final RegistryObject<SoundEvent> ITEM_CHARGED = SOUND_EVENTS.register("charge_energy", () -> SoundEvent.createVariableRangeEvent(rl( "charge_energy")));
     public static final RegistryObject<SoundEvent> FUSION_CHARGING = SOUND_EVENTS.register("tile.fusion_charging", () -> SoundEvent.createVariableRangeEvent(rl( "tile.fusion_charging")));
+    public static final RegistryObject<SoundEvent> LASER_SHOOT = SOUND_EVENTS.register("tile.laser_shoot", () -> SoundEvent.createVariableRangeEvent(rl( "tile.laser_shoot")));
+    public static final RegistryObject<SoundEvent> BLACKHOLE_SPAWN = SOUND_EVENTS.register("tile.blackhole_spawn", () -> SoundEvent.createVariableRangeEvent(rl( "tile.blackhole_spawn")));
+    public static final RegistryObject<SoundEvent> BLACKHOLE_IDLE = SOUND_EVENTS.register("tile.blackhole_idle", () -> SoundEvent.createVariableRangeEvent(rl( "tile.blackhole_idle")));
     public static final RegistryObject<SoundEvent> FUSION_READY = SOUND_EVENTS.register("tile.fusion_ready", () -> SoundEvent.createVariableRangeEvent(rl( "tile.fusion_ready")));
     public static final RegistryObject<SoundEvent> FUSION_RUNNING = SOUND_EVENTS.register("tile.fusion_running", () -> SoundEvent.createVariableRangeEvent(rl( "tile.fusion_running")));
     public static final RegistryObject<SoundEvent> FUSION_SWITCH = SOUND_EVENTS.register("tile.fusion_switch", () -> SoundEvent.createVariableRangeEvent(rl( "tile.fusion_switch")));

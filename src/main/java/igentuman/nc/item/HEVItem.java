@@ -26,6 +26,7 @@ import static igentuman.nc.handler.config.CommonConfig.ENERGY_STORAGE;
 import static igentuman.nc.setup.registration.NCItems.*;
 
 public class HEVItem extends ArmorItem {
+
     public HEVItem(ArmorMaterials armorMaterials, ArmorItem.Type type, Properties hazmatProps) {
         super(armorMaterials, type, hazmatProps);
     }

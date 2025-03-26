@@ -7,22 +7,12 @@ import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.util.annotation.NothingNullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.fluids.FluidStack;
 
-import java.util.List;
+public class FuelReprocessorBE extends NCProcessorBE {
 
-import static igentuman.nc.compat.GlobalVars.CATALYSTS;
-import static igentuman.nc.compat.GlobalVars.RECIPE_CLASSES;
-
-public class FuelReprocessorBE extends NCProcessorBE<FuelReprocessorBE.Recipe> {
     public FuelReprocessorBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, Processors.FUEL_REPROCESSOR);
-    }
-    @Override
-    public String getName() {
-        return Processors.FUEL_REPROCESSOR;
     }
 
     @NothingNullByDefault

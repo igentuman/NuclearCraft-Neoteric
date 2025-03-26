@@ -1,5 +1,6 @@
 package igentuman.nc.block;
 
+import igentuman.api.nc.SideModeToggleable;
 import igentuman.nc.block.entity.energy.BatteryBE;
 import igentuman.nc.block.entity.energy.NCEnergy;
 import igentuman.nc.content.energy.BatteryBlocks;
@@ -16,10 +17,8 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -28,14 +27,12 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 import static igentuman.nc.handler.config.CommonConfig.ENERGY_STORAGE;
-import static igentuman.nc.setup.registration.NCItems.MULTITOOL;
 import static igentuman.nc.util.StackUtils.isMultiTool;
 
 public class BatteryBlock extends Block implements EntityBlock {
@@ -65,7 +62,7 @@ public class BatteryBlock extends Block implements EntityBlock {
                     if(player.isShiftKeyDown()) {
                         dirToChange = dirToChange.getOpposite();
                     }
-                    ISizeToggable.SideMode mode = batteryBE.toggleSideConfig(dirToChange.ordinal());
+                    SideModeToggleable.SideMode mode = batteryBE.toggleSideConfig(dirToChange.ordinal());
                     player.sendSystemMessage(Component.translatable("message.nc.barrel.side_config", mode.name()));
                 } else {
                     player.sendSystemMessage(Component.translatable("tooltip.nc.energy_stored", formatEnergy(batteryBE.energyStorage.getEnergyStored()), formatEnergy(batteryBE.energyStorage.getMaxEnergyStored())).withStyle(ChatFormatting.BLUE));

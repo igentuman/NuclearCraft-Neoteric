@@ -1,13 +1,11 @@
 package igentuman.nc.block.entity;
 
-import igentuman.nc.block.ISizeToggable;
+import igentuman.api.nc.SideModeToggleable;
 import igentuman.nc.handler.ItemStorageCapabilityHandler;
 import igentuman.nc.content.storage.ContainerBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -25,7 +23,7 @@ import java.util.HashMap;
 
 import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BE;
 
-public class ContainerBE extends NuclearCraftBE implements ISizeToggable {
+public class ContainerBE extends NuclearCraftBE implements SideModeToggleable {
 
     public final ItemStorageCapabilityHandler inventory;
     private double loadRate = 0;
@@ -190,7 +188,7 @@ public class ContainerBE extends NuclearCraftBE implements ISizeToggable {
         tag.putIntArray("sideConfig", sideConfig.values().stream().mapToInt(Enum::ordinal).toArray());
     }
 
-    public ISizeToggable.SideMode toggleSideConfig(int direction) {
+    public SideModeToggleable.SideMode toggleSideConfig(int direction) {
         sideConfig.put(direction, SideMode.values()[(sideConfig.get(direction).ordinal() + 1) % 4]);
         setChanged();
         level.setBlockAndUpdate(worldPosition, getBlockState());

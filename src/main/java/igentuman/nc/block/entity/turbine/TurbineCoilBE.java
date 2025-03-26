@@ -8,7 +8,6 @@ import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -60,13 +59,13 @@ public class TurbineCoilBE extends TurbineBE {
     public void tickServer() {
         if(NuclearCraft.instance.isNcBeStopped) return;
         super.tickServer();
-        if(multiblock() != null) {
+        if(getMultiblock() != null) {
             if (refreshCacheFlag) {
                 for (Direction dir : Direction.values()) {
                     BlockEntity be = Objects.requireNonNull(getLevel()).getBlockEntity(getBlockPos().relative(dir));
                     BlockState bs = getLevel().getBlockState(getBlockPos().relative(dir));
                     if (bs.getBlock() instanceof TurbineBearingBlock) {
-                        hasBearingConnection = multiblock().bearingPositions.contains(getBlockPos().relative(dir));
+                        hasBearingConnection = getMultiblock().bearingPositions.contains(getBlockPos().relative(dir));
                         break;
                     }
                     if (be instanceof TurbineCoilBE sideCoil) {

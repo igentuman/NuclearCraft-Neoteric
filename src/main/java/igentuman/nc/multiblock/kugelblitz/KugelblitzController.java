@@ -1,11 +1,11 @@
 package igentuman.nc.multiblock.kugelblitz;
 
+import igentuman.api.nc.MultiblockController;
 import igentuman.nc.block.entity.kugelblitz.ChamberTerminalBE;
-import igentuman.nc.multiblock.INCMultiblockController;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-public class KugelblitzController  implements INCMultiblockController {
+public class KugelblitzController  implements MultiblockController {
     private final ChamberTerminalBE<?> controllerBE;
     public KugelblitzController(ChamberTerminalBE<?> be) {
         controllerBE = be;

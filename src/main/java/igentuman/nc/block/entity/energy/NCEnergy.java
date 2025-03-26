@@ -27,14 +27,10 @@ public class NCEnergy extends NuclearCraftBE {
     protected String name;
     public static String NAME;
     public final CustomEnergyStorage energyStorage = createEnergy();
-
     public LazyOptional<IEnergyStorage> getEnergy() {
         return energy;
     }
-
     protected final LazyOptional<IEnergyStorage> energy = LazyOptional.of(() -> energyStorage);
-
-    protected int counter;
 
     protected void sendOutPower() {
         AtomicInteger capacity = new AtomicInteger(energyStorage.getEnergyStored());
@@ -123,13 +119,13 @@ public class NCEnergy extends NuclearCraftBE {
 
         tag.put("Info", infoTag);
 
-        tag.put("energy_storage", energyStorage.serializeNBT());
+        tag.put("Energy", energyStorage.serializeNBT());
         tag.putInt("energy", energyStorage.getEnergyStored());
     }
 
     public void loadClientData(CompoundTag tag) {
-        if (tag.contains("energy_storage")) {
-            energyStorage.deserializeNBT(tag.get("energy_storage"));
+        if (tag.contains("Energy")) {
+            energyStorage.deserializeNBT(tag.get("Energy"));
         }
         if(tag.contains("energy")) {
             energyStorage.setEnergy(tag.getInt("energy"));
@@ -148,20 +144,8 @@ public class NCEnergy extends NuclearCraftBE {
     }
 
     @Override
-    public void load(CompoundTag tag) {
-        if (tag.contains("energy_storage")) {
-            energyStorage.deserializeNBT(tag.get("energy_storage"));
-        }
-        if (tag.contains("energy")) {
-            energyStorage.setEnergy(tag.getInt("energy"));
-        }
-
-        super.load(tag);
-    }
-
-    @Override
     public void saveAdditional(CompoundTag tag) {
-        tag.put("energy_storage", energyStorage.serializeNBT());
+        tag.put("Energy", energyStorage.serializeNBT());
         tag.putInt("energy", energyStorage.getEnergyStored());
     }
 

@@ -21,12 +21,14 @@ void main() {
     vec2 center = vec2(0.5, 0.5);
     vec2 offset = texCoord0 - center;
     float dist = length(offset);
+    vec2 distortedCoord = texCoord0;
     if (dist < BlackholeRadius) {
         float distortion = DistortionAmount * (BlackholeRadius - dist) / BlackholeRadius;
         offset *= 1.0 + distortion * sin(Time);
+        distortedCoord = center + offset;
     }
     //Merge of position_color_tex and rendertype_lightning
-    vec4 color = texture(Sampler0, texCoord0) * vertexColor;
+    vec4 color = texture(Sampler0, distortedCoord) * vertexColor;
     if (color.a < 0.1) {
         discard;
     }

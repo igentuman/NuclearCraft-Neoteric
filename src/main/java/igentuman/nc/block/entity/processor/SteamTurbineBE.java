@@ -1,7 +1,6 @@
 package igentuman.nc.block.entity.processor;
 
 import igentuman.nc.content.processors.Processors;
-import igentuman.nc.handler.config.CommonConfig;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.type.NcRecipe;
@@ -11,28 +10,19 @@ import igentuman.nc.util.annotation.NothingNullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.fluids.FluidStack;
-
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import static igentuman.nc.compat.GlobalVars.CATALYSTS;
-import static igentuman.nc.compat.GlobalVars.RECIPE_CLASSES;
 import static igentuman.nc.handler.config.CommonConfig.ENERGY_GENERATION;
 
-public class SteamTurbineBE extends NCProcessorBE<SteamTurbineBE.Recipe> {
+public class SteamTurbineBE extends NCProcessorBE {
+
     @NBTField
     protected double efficiency = 0.001;
+
     public SteamTurbineBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, Processors.STEAM_TURBINE);
-    }
-    @Override
-    public String getName() {
-        return Processors.STEAM_TURBINE;
     }
 
     @Override
@@ -47,7 +37,7 @@ public class SteamTurbineBE extends NCProcessorBE<SteamTurbineBE.Recipe> {
     }
 
     @Override
-    protected void processRecipe() {
+    public void processRecipe() {
         if(!hasRecipe()) {
             updateRecipe();
         }

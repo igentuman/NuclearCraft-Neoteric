@@ -1,10 +1,10 @@
 package igentuman.nc.multiblock.fission;
 
+import igentuman.api.nc.MultiblockController;
 import igentuman.nc.block.entity.fission.FissionControllerBE;
-import igentuman.nc.multiblock.INCMultiblockController;
 import net.minecraft.core.BlockPos;
 
-public class FissionReactorController implements INCMultiblockController {
+public class FissionReactorController implements MultiblockController {
     protected FissionControllerBE<?> controllerBE;
     public FissionReactorController(FissionControllerBE<?> fissionControllerBE) {
         controllerBE = fissionControllerBE;

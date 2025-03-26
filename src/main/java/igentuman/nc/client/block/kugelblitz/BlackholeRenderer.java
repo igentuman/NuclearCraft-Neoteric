@@ -35,7 +35,7 @@ public class BlackholeRenderer implements BlockEntityRenderer<BlockEntity> {
     public void render(BlockEntity tile, float v, PoseStack poseStack, MultiBufferSource multiBufferSource, int i, int i1) {
         float energyScale = 0.2f;
         float scale = getBoundedScale(energyScale, MIN_SCALE, MAX_SCALE);
-        BillboardingEffectRenderer.render(CORE.getTexture(), "supercriticalPhaseShifter.sps", () -> {
+        BillboardingEffectRenderer.render(CORE.getTexture(), "nc.blackhole", () -> {
             Vec3 center = Vec3.atCenterOf(tile.getBlockPos());
             CORE.setPos(center);
             CORE.setScale(scale);

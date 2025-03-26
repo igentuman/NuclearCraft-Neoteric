@@ -1,10 +1,8 @@
 package igentuman.nc.item;
 
 import igentuman.nc.handler.ItemEnergyHandler;
-import igentuman.nc.setup.registration.CreativeTabs;
 import igentuman.nc.util.CapabilityUtils;
 import igentuman.nc.util.CustomEnergyStorage;
-import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -21,6 +19,7 @@ import javax.annotation.Nonnull;
 import java.util.List;
 
 import static igentuman.nc.handler.config.CommonConfig.ENERGY_STORAGE;
+import static igentuman.nc.util.TextUtils.formatEnergy;
 
 public class BatteryBlockItem extends BlockItem
 {
@@ -85,17 +84,5 @@ public class BatteryBlockItem extends BlockItem
 		list.add(Component.translatable("tooltip.nc.use_multitool").withStyle(ChatFormatting.YELLOW));
 	}
 
-	public String formatEnergy(int energy)
-	{
-		if(energy >= 1000000000) {
-			return TextUtils.numberFormat(energy/1000000000)+" GFE";
-		}
-		if(energy >= 1000000) {
-			return TextUtils.numberFormat(energy/1000000)+" MFE";
-		}
-		if(energy >= 1000) {
-			return TextUtils.numberFormat(energy/1000)+" kFE";
-		}
-		return TextUtils.numberFormat(energy)+" FE";
-	}
+
 }

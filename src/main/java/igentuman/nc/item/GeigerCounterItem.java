@@ -18,6 +18,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 
+import static igentuman.nc.util.TextUtils.formatRads;
+
 public class GeigerCounterItem extends Item
 {
 	public GeigerCounterItem(Properties props)
@@ -32,19 +34,9 @@ public class GeigerCounterItem extends Item
 		if (!world.isClientSide()) {
 			WorldRadiation worldRadiation = RadiationManager.get(world).getWorldRadiation();
 			int radiation = worldRadiation.getChunkRadiation(player.chunkPosition().x, player.chunkPosition().z);
-			player.sendSystemMessage(Component.translatable("message.nc.geiger_radiation_measure", format(radiation)));
+			player.sendSystemMessage(Component.translatable("message.nc.geiger_radiation_measure", formatRads(radiation)));
 			CriteriaTriggers.USING_ITEM.trigger((ServerPlayer) player, stack);
 		}
 		return InteractionResultHolder.sidedSuccess(stack, world.isClientSide);
-	}
-
-	private static String format(int radiation) {
-		if(radiation >= 1000000) {
-			return String.format(Locale.US,"%.2f", (float)radiation/1000000)+" Rad";
-		}
-		if(radiation >= 1000) {
-			return String.format(Locale.US,"%.2f", (float)radiation/1000)+" mRad";
-		}
-		return String.format(Locale.US,"%.2f", (float)radiation)+" uRad";
 	}
 }

@@ -70,6 +70,10 @@ public class NcRecipeType<RECIPE extends NcRecipe> implements RecipeType<RECIPE>
     public static void init() {
     }
 
+    public static List<? extends NcRecipe> getAllRecipesFor(String name, Level level) {
+        return ALL_RECIPES.get(name).getRecipeType().getRecipes(level);
+    }
+
     @Override
     public String toString() {
         return registryName.toString();

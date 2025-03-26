@@ -21,11 +21,11 @@ public class NCProcessorDevice {
     public static final Capability<Device> DEVICE_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {
     });
 
-    public static RPCDevice createDevice(NCProcessorBE<?> blockEntity) {
+    public static RPCDevice createDevice(NCProcessorBE blockEntity) {
         return new ObjectDevice(new NCProcessorDeviceRecord(blockEntity));
     }
 
-    public record NCProcessorDeviceRecord(NCProcessorBE<?> processorBE) implements NamedDevice {
+    public record NCProcessorDeviceRecord(NCProcessorBE processorBE) implements NamedDevice {
 
         @Callback
         public String getName() {

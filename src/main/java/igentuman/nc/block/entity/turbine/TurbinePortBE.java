@@ -1,16 +1,11 @@
 package igentuman.nc.block.entity.turbine;
 
 import igentuman.nc.NuclearCraft;
-import igentuman.nc.block.entity.fission.FissionBE;
-import igentuman.nc.block.entity.fission.FissionControllerBE;
 import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;
-import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -51,7 +46,7 @@ public class TurbinePortBE extends TurbineBE {
     public void tickServer() {
         if(NuclearCraft.instance.isNcBeStopped) return;
         super.tickServer();
-        if(multiblock() == null || controller() == null) return;
+        if(getMultiblock() == null || controller() == null) return;
         int wasSignal = analogSignal;
         boolean updated = sendOutPower();
         if(controllerPos == null) {
@@ -123,7 +118,7 @@ public class TurbinePortBE extends TurbineBE {
     }
 
     protected boolean sendOutPower() {
-        if(multiblock() == null) return false;
+        if(getMultiblock() == null) return false;
         AtomicInteger capacity = new AtomicInteger(controller().energyStorage.getEnergyStored());
         if (capacity.get() > 0) {
             for (Direction direction : Direction.values()) {
@@ -163,7 +158,7 @@ public class TurbinePortBE extends TurbineBE {
             return (TurbineControllerBE<?>) getLevel().getBlockEntity(controllerPos);
         }
         try {
-            return (TurbineControllerBE<?>) multiblock().controller().controllerBE();
+            return (TurbineControllerBE<?>) getMultiblock().controller().controllerBE();
         } catch (NullPointerException e) {
             if(controllerPos != null) {
                 return (TurbineControllerBE<?>) getLevel().getBlockEntity(controllerPos);

@@ -2,10 +2,9 @@ package igentuman.nc.handler.event.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import igentuman.nc.block.ISizeToggable;
+import igentuman.api.nc.SideModeToggleable;
 import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.block.entity.fusion.FusionCoreBE;
-import igentuman.nc.item.MultitoolItem;
 import igentuman.nc.item.QNP;
 import igentuman.nc.util.NCBlockPos;
 import net.minecraft.client.Camera;
@@ -118,7 +117,7 @@ public class BlockOverlayHandler {
             if(Minecraft.getInstance().player.isShiftKeyDown()) {
                 hitSide = hitSide.getOpposite();
             }
-            ISizeToggable.SideMode mode = ncBe.sideConfig.get(hitSide.ordinal());
+            SideModeToggleable.SideMode mode = ncBe.sideConfig.get(hitSide.ordinal());
             if(mode == null) return;
             float[] color = new float[]{0, 1, 0};
             switch (mode) {

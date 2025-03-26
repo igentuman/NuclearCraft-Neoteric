@@ -126,7 +126,8 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
 
     public List<FusionCoolantRecipe> getCoolantRecipes() {
         if(coolantRecipes == null) {
-            coolantRecipes = (List<FusionCoolantRecipe>) NcRecipeType.ALL_RECIPES.get("fusion_coolant").getRecipeType().getRecipes(getLevel());
+
+            coolantRecipes = (List<FusionCoolantRecipe>) NcRecipeType.getAllRecipesFor("fusion_coolant", getLevel());
         }
         return coolantRecipes;
     }
@@ -279,10 +280,10 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
 
     public void handleValidation()
     {
-        boolean wasFormed = multiblock().isFormed();
+        boolean wasFormed = getMultiblock().isFormed();
         boolean wasPowered = powered;
-        isCasingValid = multiblock().isOuterValid();
-        isInternalValid = multiblock().isInnerValid();
+        isCasingValid = getMultiblock().isOuterValid();
+        isInternalValid = getMultiblock().isInnerValid();
 
         if (!wasFormed) {
             reValidateCounter++;
@@ -290,15 +291,15 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
                 return;
             }
             reValidateCounter = 0;
-            multiblock().validate();
+            getMultiblock().validate();
             powered = false;
         }
 
-        changed = wasPowered != powered || wasFormed != multiblock().isFormed();
+        changed = wasPowered != powered || wasFormed != getMultiblock().isFormed();
         trackChanges(updateCharacteristics());
-        size = multiblock().isFormed() ? multiblock.width() : 0;
-        refreshCacheFlag = !multiblock().isFormed();
-        if(multiblock().isFormed() != wasFormed) {
+        size = getMultiblock().isFormed() ? multiblock.width() : 0;
+        refreshCacheFlag = !getMultiblock().isFormed();
+        if(getMultiblock().isFormed() != wasFormed) {
             contentHandler.fluidCapability.tanks.get(2).setCapacity(50000*size);
             contentHandler.fluidCapability.tanks.get(7).setCapacity(50000*size);
         }
@@ -566,7 +567,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
     {
         if(allowedInputs == null) {
             allowedInputs = new ArrayList<>();
-            for(NcRecipe recipe: NcRecipeType.ALL_RECIPES.get(getName()).getRecipeType().getRecipes(getLevel())) {
+            for(NcRecipe recipe: NcRecipeType.getAllRecipesFor(getName(), getLevel())) {
                 for(FluidStackIngredient ingredient: recipe.getInputFluids()) {
                     allowedInputs.addAll(ingredient.getRepresentations());
                 }
@@ -576,10 +577,10 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
     }
 
     protected void simulateReaction() {
-        if (!multiblock().isFormed()) {
+        if (!getMultiblock().isFormed()) {
             return;
         }
-        controllerEnabled = (hasRedstoneSignal() || controllerEnabled) && multiblock().isReadyToProcess();
+        controllerEnabled = (hasRedstoneSignal() || controllerEnabled) && getMultiblock().isReadyToProcess();
         controllerEnabled = !forceShutdown && controllerEnabled;
         updateCharge();
         controllerEnabled = functionalBlocksCharge == 100 && controllerEnabled;
@@ -630,22 +631,22 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
 
     protected boolean updateCharacteristics() {
         boolean hasChanges =
-                magneticFieldStrength != multiblock().magneticFieldStrength
-                || rfEfficiency != multiblock().rfEfficiency
-                || magnetsEfficiency != multiblock().magnetsEfficiency
-                || maxMagnetsTemp != multiblock().maxMagnetsTemp
-                || rfAmplification != multiblock().rfAmplification*rfAmplifierRatio()
-                || rfAmplifiersPower != multiblock().rfAmplifiersPower*rfAmplifierRatio()
-                || minRFAmplifiersTemp != multiblock().maxRFAmplifiersTemp;
-        rfEfficiency = multiblock().rfEfficiency;
-        amplifiers = multiblock().amplifiers.size();
-        magnetsEfficiency = multiblock().magnetsEfficiency;
-        magneticFieldStrength = multiblock().magneticFieldStrength;
-        magnetsPower = multiblock().magnetsPower;
-        maxMagnetsTemp = multiblock().maxMagnetsTemp;
-        rfAmplification = (int) (multiblock().rfAmplification*rfAmplifierRatio());
-        rfAmplifiersPower = (int) (multiblock().rfAmplifiersPower*rfAmplifierRatio());
-        minRFAmplifiersTemp = multiblock().maxRFAmplifiersTemp;
+                magneticFieldStrength != getMultiblock().magneticFieldStrength
+                || rfEfficiency != getMultiblock().rfEfficiency
+                || magnetsEfficiency != getMultiblock().magnetsEfficiency
+                || maxMagnetsTemp != getMultiblock().maxMagnetsTemp
+                || rfAmplification != getMultiblock().rfAmplification*rfAmplifierRatio()
+                || rfAmplifiersPower != getMultiblock().rfAmplifiersPower*rfAmplifierRatio()
+                || minRFAmplifiersTemp != getMultiblock().maxRFAmplifiersTemp;
+        rfEfficiency = getMultiblock().rfEfficiency;
+        amplifiers = getMultiblock().amplifiers.size();
+        magnetsEfficiency = getMultiblock().magnetsEfficiency;
+        magneticFieldStrength = getMultiblock().magneticFieldStrength;
+        magnetsPower = getMultiblock().magnetsPower;
+        maxMagnetsTemp = getMultiblock().maxMagnetsTemp;
+        rfAmplification = (int) (getMultiblock().rfAmplification*rfAmplifierRatio());
+        rfAmplifiersPower = (int) (getMultiblock().rfAmplifiersPower*rfAmplifierRatio());
+        minRFAmplifiersTemp = getMultiblock().maxRFAmplifiersTemp;
         if(hasChanges) {
             currentRfAmplification = rfAmplification;
         }
@@ -832,7 +833,7 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         RECIPE cachedRecipe = getCachedRecipe();
         if(cachedRecipe != null) return cachedRecipe;
         if(!NcRecipeType.ALL_RECIPES.containsKey(getName())) return null;
-        for(AbstractRecipe recipe: NcRecipeType.ALL_RECIPES.get(getName()).getRecipeType().getRecipes(getLevel())) {
+        for(AbstractRecipe recipe: NcRecipeType.getAllRecipesFor(getName(), getLevel())) {
             if(recipe.test(contentHandler)) {
                 addToCache((RECIPE)recipe);
                 return (RECIPE)recipe;
@@ -909,15 +910,9 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
 
     @Override
     public void load(CompoundTag tag) {
-        if (tag.contains("Energy")) {
-            energyStorage.deserializeNBT(tag.get("Energy"));
-        }
+        super.load(tag);
         if (tag.contains("Info")) {
             CompoundTag infoTag = tag.getCompound("Info");
-            readTagData(infoTag);
-            if (infoTag.contains("recipeInfo")) {
-                recipeInfo.deserializeNBT(infoTag.getCompound("recipeInfo"));
-            }
             if (!isCasingValid || !isInternalValid) {
                 if(tag.contains("erroredBlock")) {
                     errorBlockPos = BlockPos.of(infoTag.getLong("erroredBlock"));
@@ -927,70 +922,46 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
                 validationResult = ValidationResult.VALID;
             }
         }
-        if (tag.contains("Content")) {
-            contentHandler.deserializeNBT(tag.getCompound("Content"));
-        }
-        super.load(tag);
     }
 
     @Override
     public void saveAdditional(CompoundTag tag) {
-        CompoundTag infoTag = new CompoundTag();
-        tag.put("Energy", energyStorage.serializeNBT());
-        tag.put("Content", contentHandler.serializeNBT());
-        infoTag.put("recipeInfo", recipeInfo.serializeNBT());
-        infoTag.putInt("validationId", validationResult.id);
-        if(errorBlockPos instanceof BlockPos) {
-            infoTag.putLong("erroredBlock", errorBlockPos.asLong());
+        super.saveAdditional(tag);
+        if (tag.contains("Info")) {
+            CompoundTag infoTag = tag.getCompound("Info");
+            infoTag.putInt("validationId", validationResult.id);
+            if(errorBlockPos instanceof BlockPos) {
+                infoTag.putLong("erroredBlock", errorBlockPos.asLong());
+            }
+            tag.remove("Info");
+            tag.put("Info", infoTag);
         }
-        saveTagData(infoTag);
-        tag.put("Info", infoTag);
     }
 
     @Override
     public void loadClientData(CompoundTag tag) {
+        super.loadClientData(tag);
         if (tag.contains("Info")) {
             CompoundTag infoTag = tag.getCompound("Info");
-            if (infoTag.contains("recipeInfo")) {
-                recipeInfo.deserializeNBT(infoTag.getCompound("recipeInfo"));
-            }
-            energyStorage.setEnergy(infoTag.getInt("energy"));
-            readTagData(infoTag);
             if (!isCasingValid || !isInternalValid) {
                 errorBlockPos = BlockPos.of(infoTag.getLong("erroredBlock"));
                 validationResult = ValidationResult.byId(infoTag.getInt("validationId"));
             } else {
                 validationResult = ValidationResult.VALID;
             }
-            if (tag.contains("Content")) {
-                contentHandler.deserializeNBT(tag.getCompound("Content"));
-            }
         }
     }
 
     @Override
     protected void saveClientData(CompoundTag tag) {
-        CompoundTag infoTag = new CompoundTag();
-        tag.put("Info", infoTag);
-        infoTag.putInt("energy", energyStorage.getEnergyStored());
-        saveTagData(infoTag);
-        infoTag.put("recipeInfo", recipeInfo.serializeNBT());
-        infoTag.putInt("validationId", validationResult.id);
-        if(errorBlockPos != null) {
-            infoTag.putLong("erroredBlock", errorBlockPos.asLong());
-        }
-        tag.put("Content", contentHandler.serializeNBT());
-    }
-
-    @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        int oldEnergy = energyStorage.getEnergyStored();
-
-        CompoundTag tag = pkt.getTag();
-        handleUpdateTag(tag);
-
-        if (oldEnergy != energyStorage.getEnergyStored()) {
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+        if (tag.contains("Info")) {
+            CompoundTag infoTag = tag.getCompound("Info");
+            infoTag.putInt("validationId", validationResult.id);
+            if(errorBlockPos instanceof BlockPos) {
+                infoTag.putLong("erroredBlock", errorBlockPos.asLong());
+            }
+            tag.remove("Info");
+            tag.put("Info", infoTag);
         }
     }
 

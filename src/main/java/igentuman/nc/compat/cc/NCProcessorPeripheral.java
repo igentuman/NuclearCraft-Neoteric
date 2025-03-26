@@ -7,9 +7,9 @@ import igentuman.nc.block.entity.processor.NCProcessorBE;
 import javax.annotation.Nonnull;
 
 public class NCProcessorPeripheral implements IPeripheral {
-    private final NCProcessorBE<?> processorBE;
+    private final NCProcessorBE processorBE;
 
-    public NCProcessorPeripheral(NCProcessorBE<?> processorBE)
+    public NCProcessorPeripheral(NCProcessorBE processorBE)
     {
         this.processorBE = processorBE;
     }

@@ -4,8 +4,7 @@ import igentuman.nc.block.entity.fission.FissionBE;
 import igentuman.nc.block.entity.fission.FissionControllerBE;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.multiblock.AbstractNCMultiblock;
-import igentuman.nc.multiblock.IMultiblockAttachable;
-import igentuman.nc.multiblock.INCMultiblockController;
+import igentuman.api.nc.MultiblockAttachable;
 import igentuman.nc.radiation.data.RadiationManager;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
@@ -15,17 +14,10 @@ import igentuman.nc.util.annotation.NothingNullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.fluids.FluidStack;
 
-import java.util.List;
-
-import static igentuman.nc.compat.GlobalVars.CATALYSTS;
-import static igentuman.nc.compat.GlobalVars.RECIPE_CLASSES;
-
-public class IrradiatorBE extends NCProcessorBE<IrradiatorBE.Recipe> implements IMultiblockAttachable {
+public class IrradiatorBE extends NCProcessorBE implements MultiblockAttachable {
 
     private AbstractNCMultiblock multiblock;
     private FissionControllerBE<?> controller;
@@ -36,11 +28,6 @@ public class IrradiatorBE extends NCProcessorBE<IrradiatorBE.Recipe> implements 
 
     public IrradiatorBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, Processors.IRRADIATOR);
-    }
-
-    @Override
-    public String getName() {
-        return Processors.IRRADIATOR;
     }
 
     @Override
@@ -60,7 +47,7 @@ public class IrradiatorBE extends NCProcessorBE<IrradiatorBE.Recipe> implements 
     }
 
     @Override
-    public AbstractNCMultiblock multiblock() {
+    public AbstractNCMultiblock getMultiblock() {
         return multiblock;
     }
 
@@ -94,7 +81,7 @@ public class IrradiatorBE extends NCProcessorBE<IrradiatorBE.Recipe> implements 
         }
     }
     @Override
-    protected void processRecipe() {
+    public void processRecipe() {
         if(!hasRecipe()) {
             updateRecipe();
         }
@@ -128,7 +115,7 @@ public class IrradiatorBE extends NCProcessorBE<IrradiatorBE.Recipe> implements 
             BlockPos toCheck = getBlockPos().relative(d);
             BlockEntity be = getLevel().getBlockEntity(toCheck);
             if(be instanceof FissionBE) {
-                multiblock = ((FissionBE) be).multiblock();
+                multiblock = ((FissionBE) be).getMultiblock();
                 controller = (FissionControllerBE<?>) ((FissionBE) be).controller();
             }
         }

@@ -1,4 +1,4 @@
-package igentuman.nc.client;
+package igentuman.nc.client.renderer;
 
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
@@ -19,7 +19,7 @@ import static igentuman.nc.NuclearCraft.rl;
 @Mod.EventBusSubscriber(modid = MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class NCShaders {
 
-    static final ShaderTracker BLACKHOLE_COLOR = new ShaderTracker();
+    public static final ShaderTracker BLACKHOLE_COLOR = new ShaderTracker();
 
     @SubscribeEvent
     public static void shaderRegistry(RegisterShadersEvent event) throws IOException {

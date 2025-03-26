@@ -3,7 +3,7 @@ package igentuman.nc.block.entity.fusion;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.multiblock.AbstractNCMultiblock;
-import igentuman.nc.multiblock.IMultiblockAttachable;
+import igentuman.api.nc.MultiblockAttachable;
 import igentuman.nc.multiblock.fusion.FusionReactor;
 import igentuman.nc.multiblock.fusion.FusionReactorMultiblock;
 import igentuman.nc.util.annotation.NBTField;
@@ -15,7 +15,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.Objects;
 
-public class FusionBE extends NuclearCraftBE implements IMultiblockAttachable {
+public class FusionBE extends NuclearCraftBE implements MultiblockAttachable {
 
     @NBTField
     protected BlockPos corePos;
@@ -26,7 +26,7 @@ public class FusionBE extends NuclearCraftBE implements IMultiblockAttachable {
         this.multiblock = (FusionReactorMultiblock) multiblock;
     }
 
-    public FusionReactorMultiblock multiblock() {
+    public FusionReactorMultiblock getMultiblock() {
         return multiblock;
     }
 
@@ -64,10 +64,10 @@ public class FusionBE extends NuclearCraftBE implements IMultiblockAttachable {
 
     public void invalidateCache()
     {
-        multiblock().refreshInnerCacheFlag = true;
-        multiblock().refreshOuterCacheFlag = true;
-        multiblock().isFormed = false;
-        multiblock().hasToRefresh = true;
+        getMultiblock().refreshInnerCacheFlag = true;
+        getMultiblock().refreshOuterCacheFlag = true;
+        getMultiblock().isFormed = false;
+        getMultiblock().hasToRefresh = true;
     }
 
     @Override
@@ -85,14 +85,14 @@ public class FusionBE extends NuclearCraftBE implements IMultiblockAttachable {
     }
 
     public void onNeighborChange(BlockState state, BlockPos pos, BlockPos neighbor) {
-        if(multiblock() != null) {
-            multiblock().onNeighborChange(state, pos, neighbor);
+        if(getMultiblock() != null) {
+            getMultiblock().onNeighborChange(state, pos, neighbor);
         }
     }
 
     public void onBlockDestroyed(BlockState state, Level level, BlockPos pos, Explosion explosion) {
-        if(multiblock() != null) {
-            multiblock().onBlockDestroyed(state, level, pos, explosion);
+        if(getMultiblock() != null) {
+            getMultiblock().onBlockDestroyed(state, level, pos, explosion);
         }
     }
 }

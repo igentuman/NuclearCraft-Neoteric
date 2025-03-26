@@ -44,12 +44,9 @@ import java.util.Objects;
 
 import static igentuman.nc.block.fission.FissionControllerBlock.POWERED;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
-import static igentuman.nc.handler.config.CommonConfig.ENERGY_GENERATION;
-import static igentuman.nc.handler.config.TurbineConfig.TURBINE_CONFIG;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
 import static igentuman.nc.setup.registration.NCSounds.FISSION_REACTOR;
 import static igentuman.nc.util.ModUtil.isCcLoaded;
-import static net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE;
 
 public class ChamberTerminalBE<RECIPE extends ChamberTerminalBE.Recipe> extends ChamberBE {
 
@@ -224,10 +221,10 @@ public class ChamberTerminalBE<RECIPE extends ChamberTerminalBE.Recipe> extends 
         boolean wasPowered = powered;
         handleValidation();
         trackChanges(wasPowered, powered);
-        controllerEnabled = (hasRedstoneSignal() || controllerEnabled) && multiblock().isFormed();
+        controllerEnabled = (hasRedstoneSignal() || controllerEnabled) && this.getMultiblock().isFormed();
         controllerEnabled = !forceShutdown && controllerEnabled;
 
-        if (multiblock().isFormed()) {
+        if (this.getMultiblock().isFormed()) {
             trackChanges(contentHandler.tick());
             if(controllerEnabled) {
                 powered = processRecipe();
@@ -237,7 +234,7 @@ public class ChamberTerminalBE<RECIPE extends ChamberTerminalBE.Recipe> extends 
             }
             handleMeltdown();
         }
-        refreshCacheFlag = !multiblock().isFormed();
+        refreshCacheFlag = !this.getMultiblock().isFormed();
         if(wasPowered != powered) {
             level.setBlockAndUpdate(worldPosition, getBlockState().setValue(POWERED, powered));
         }
@@ -264,7 +261,7 @@ public class ChamberTerminalBE<RECIPE extends ChamberTerminalBE.Recipe> extends 
     }
 
     @Override
-    public KugelblitzMultiblock multiblock() {
+    public KugelblitzMultiblock getMultiblock() {
         if(multiblock == null) {
             multiblock = new KugelblitzMultiblock(this);
         }
@@ -275,30 +272,30 @@ public class ChamberTerminalBE<RECIPE extends ChamberTerminalBE.Recipe> extends 
     private void handleValidation() {
         if(multiblock == null) return;
         ValidationResult wasResult = validationResult;
-        boolean wasFormed = multiblock().isFormed();
+        boolean wasFormed = this.getMultiblock().isFormed();
         if (!wasFormed || !isInternalValid || !isCasingValid) {
             reValidateCounter++;
             if(reValidateCounter < 40) {
                 return;
             }
             reValidateCounter = 0;
-            multiblock().validate();
-            isCasingValid = multiblock().isOuterValid();
+            this.getMultiblock().validate();
+            isCasingValid = this.getMultiblock().isOuterValid();
             if(isCasingValid) {
-                isInternalValid = multiblock().isInnerValid();
+                isInternalValid = this.getMultiblock().isInnerValid();
             }
             powered = false;
             changed = true;
         }
-        validationResult = multiblock().validationResult;
+        validationResult = this.getMultiblock().validationResult;
         if(validationResult.id != wasResult.id) {
             changed = true;
         }
 
-        height = multiblock().height();
-        width = multiblock().width();
-        depth = multiblock().depth();
-        trackChanges(wasFormed, multiblock().isFormed());
+        height = this.getMultiblock().height();
+        width = this.getMultiblock().width();
+        depth = this.getMultiblock().depth();
+        trackChanges(wasFormed, this.getMultiblock().isFormed());
     }
 
     @Override
@@ -315,8 +312,8 @@ public class ChamberTerminalBE<RECIPE extends ChamberTerminalBE.Recipe> extends 
         if(getLevel().isClientSide()) {
             return;
         }
-        if(multiblock() != null) {
-            multiblock().onControllerRemoved();
+        if(this.getMultiblock() != null) {
+            this.getMultiblock().onControllerRemoved();
         }
     }
 
@@ -421,15 +418,9 @@ public class ChamberTerminalBE<RECIPE extends ChamberTerminalBE.Recipe> extends 
 
     @Override
     public void load(CompoundTag tag) {
-        if (tag.contains("Energy")) {
-            energyStorage.deserializeNBT(tag.get("Energy"));
-        }
+        super.load(tag);
         if (tag.contains("Info")) {
             CompoundTag infoTag = tag.getCompound("Info");
-            readTagData(infoTag);
-            if (infoTag.contains("recipeInfo")) {
-                recipeInfo.deserializeNBT(infoTag.getCompound("recipeInfo"));
-            }
             if (!isCasingValid || !isInternalValid) {
                 errorBlockPos = BlockPos.of(infoTag.getLong("erroredBlock"));
                 validationResult = ValidationResult.byId(infoTag.getInt("validationId"));
@@ -437,22 +428,6 @@ public class ChamberTerminalBE<RECIPE extends ChamberTerminalBE.Recipe> extends 
                 validationResult = ValidationResult.VALID;
             }
         }
-        if (tag.contains("Content")) {
-            contentHandler.deserializeNBT(tag.getCompound("Content"));
-        }
-        super.load(tag);
-    }
-
-    @Override
-    public void saveAdditional(CompoundTag tag) {
-        CompoundTag infoTag = new CompoundTag();
-        tag.put("Energy", energyStorage.serializeNBT());
-        tag.put("Content", contentHandler.serializeNBT());
-        infoTag.put("recipeInfo", recipeInfo.serializeNBT());
-        infoTag.putInt("validationId", validationResult.id);
-        infoTag.putLong("erroredBlock", errorBlockPos.asLong());
-        saveTagData(infoTag);
-        tag.put("Info", infoTag);
     }
 
     public Direction getFacing() {
@@ -461,49 +436,42 @@ public class ChamberTerminalBE<RECIPE extends ChamberTerminalBE.Recipe> extends 
         }
         return facing;
     }
+    @Override
+    public void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
+        if (tag.contains("Info")) {
+            CompoundTag infoTag = tag.getCompound("Info");
+            infoTag.put("recipeInfo", recipeInfo.serializeNBT());
+            infoTag.putInt("validationId", validationResult.id);
+            infoTag.putLong("erroredBlock", errorBlockPos.asLong());
+            tag.remove("Info");
+            tag.put("Info", infoTag);
+        }
+    }
 
     @Override
     public void loadClientData(CompoundTag tag) {
+        super.loadClientData(tag);
         if (tag.contains("Info")) {
             CompoundTag infoTag = tag.getCompound("Info");
-            if (infoTag.contains("recipeInfo")) {
-                recipeInfo.deserializeNBT(infoTag.getCompound("recipeInfo"));
-            }
-            energyStorage.setEnergy(infoTag.getInt("energy"));
-            readTagData(infoTag);
             if (!isCasingValid || !isInternalValid) {
                 errorBlockPos = BlockPos.of(infoTag.getLong("erroredBlock"));
                 validationResult = ValidationResult.byId(infoTag.getInt("validationId"));
             } else {
                 validationResult = ValidationResult.VALID;
             }
-            if (tag.contains("Content")) {
-                contentHandler.deserializeNBT(tag.getCompound("Content"));
-            }
         }
     }
 
     @Override
     protected void saveClientData(CompoundTag tag) {
-        CompoundTag infoTag = new CompoundTag();
-        tag.put("Info", infoTag);
-        infoTag.putInt("energy", energyStorage.getEnergyStored());
-        saveTagData(infoTag);
-        infoTag.put("recipeInfo", recipeInfo.serializeNBT());
-        infoTag.putInt("validationId", validationResult.id);
-        infoTag.putLong("erroredBlock", errorBlockPos.asLong());
-        tag.put("Content", contentHandler.serializeNBT());
-    }
-
-    @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        int oldEnergy = energyStorage.getEnergyStored();
-
-        CompoundTag tag = pkt.getTag();
-        handleUpdateTag(tag);
-
-        if (oldEnergy != energyStorage.getEnergyStored()) {
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+        super.saveClientData(tag);
+        if (tag.contains("Info")) {
+            CompoundTag infoTag = tag.getCompound("Info");
+            infoTag.putInt("validationId", validationResult.id);
+            infoTag.putLong("erroredBlock", errorBlockPos.asLong());
+            tag.remove("Info");
+            tag.put("Info", infoTag);
         }
     }
 

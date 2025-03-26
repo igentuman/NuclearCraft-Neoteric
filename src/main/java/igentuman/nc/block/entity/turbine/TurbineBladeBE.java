@@ -1,20 +1,15 @@
 package igentuman.nc.block.entity.turbine;
 
 import igentuman.nc.NuclearCraft;
-import igentuman.nc.block.entity.fission.FissionBE;
 import igentuman.nc.block.turbine.TurbineBladeBlock;
-import igentuman.nc.block.turbine.TurbineRotorBlock;
 import igentuman.nc.multiblock.turbine.BladeDef;
-import igentuman.nc.multiblock.turbine.CoilDef;
 import igentuman.nc.multiblock.turbine.TurbineRegistration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Vec3i;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
-import static igentuman.nc.block.fission.FissionControllerBlock.POWERED;
 import static igentuman.nc.block.turbine.TurbineBladeBlock.HIDDEN;
 import static net.minecraft.world.item.Items.AIR;
 
@@ -33,7 +28,7 @@ public class TurbineBladeBE extends TurbineBE {
         super.tickServer();
         boolean wasActive = isActive;
 
-        isActive = multiblock() != null && controller() != null && multiblock().isFormed();
+        isActive = getMultiblock() != null && controller() != null && getMultiblock().isFormed();
 
         if(wasActive != isActive || getLevel().getGameTime() % 20 == 0) {
             level.setBlockAndUpdate(worldPosition, getBlockState().setValue(HIDDEN, isActive));

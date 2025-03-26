@@ -1,5 +1,6 @@
 package igentuman.nc.block;
 
+import igentuman.api.nc.SideModeToggleable;
 import igentuman.nc.block.entity.BarrelBE;
 import igentuman.nc.setup.registration.NCStorageBlocks;
 import igentuman.nc.content.storage.BarrelBlocks;
@@ -16,7 +17,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BucketItem;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -37,11 +37,8 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import static igentuman.nc.setup.registration.NCItems.MULTITOOL;
-import static igentuman.nc.util.StackUtils.getItemByRegistryName;
 import static igentuman.nc.util.StackUtils.isMultiTool;
 import static net.minecraft.world.item.Items.BUCKET;
 
@@ -86,7 +83,7 @@ public class BarrelBlock extends Block implements EntityBlock {
                 if(player.isShiftKeyDown()) {
                     dirToChange = dirToChange.getOpposite();
                 }
-                ISizeToggable.SideMode mode = be.toggleSideConfig(dirToChange.ordinal());
+                SideModeToggleable.SideMode mode = be.toggleSideConfig(dirToChange.ordinal());
                 player.sendSystemMessage(Component.translatable("message.nc.barrel.side_config", mode.name()));
             } else
             if(!handStack.equals(ItemStack.EMPTY)) {

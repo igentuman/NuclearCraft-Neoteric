@@ -1,6 +1,5 @@
 package igentuman.nc.item;
 
-import igentuman.nc.setup.registration.CreativeTabs;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;

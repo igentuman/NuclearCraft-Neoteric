@@ -1,10 +1,10 @@
 package igentuman.nc.multiblock.fusion;
 
 import igentuman.nc.block.entity.fusion.FusionCoreBE;
-import igentuman.nc.multiblock.INCMultiblockController;
+import igentuman.api.nc.MultiblockController;
 import net.minecraft.core.BlockPos;
 
-public class FusionReactorController implements INCMultiblockController {
+public class FusionReactorController implements MultiblockController {
     protected FusionCoreBE<?> controllerBE;
     public FusionReactorController(FusionCoreBE<?> FusionCoreBE) {
         controllerBE = FusionCoreBE;

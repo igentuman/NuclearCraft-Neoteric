@@ -1,6 +1,6 @@
 package igentuman.nc.block.entity;
 
-import igentuman.nc.block.ISizeToggable;
+import igentuman.api.nc.SideModeToggleable;
 import igentuman.nc.content.storage.BarrelBlocks;
 import igentuman.nc.handler.sided.capability.NcFluidTank;
 import net.minecraft.core.BlockPos;
@@ -16,7 +16,6 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -26,9 +25,20 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BE;
 
-public class BarrelBE extends NuclearCraftBE implements ISizeToggable {
+public class BarrelBE extends NuclearCraftBE implements SideModeToggleable {
 
     public final NcFluidTank fluidTank;
+    protected final LazyOptional<IFluidHandler> fluidHandler;
+    public static final ModelProperty<HashMap<Integer, SideMode>> SIDE_CONFIG = new ModelProperty<>();
+
+    public BarrelBE(BlockPos pPos, BlockState pBlockState) {
+        super(STORAGE_BE.get(getName(pBlockState)).get(), pPos, pBlockState);
+        for (Direction direction : Direction.values()) {
+            sideConfig.put(direction.ordinal(), SideMode.DEFAULT);
+        }
+        fluidTank = createTank();
+        fluidHandler = LazyOptional.of(() -> fluidTank);
+    }
 
     private NcFluidTank createTank() {
         return new NcFluidTank(BarrelBlocks.all().get(getName()).config().getCapacity()) {
@@ -44,19 +54,6 @@ public class BarrelBE extends NuclearCraftBE implements ISizeToggable {
         return fluidHandler;
     }
 
-    protected final LazyOptional<IFluidHandler> fluidHandler;
-
-    public static final ModelProperty<HashMap<Integer, SideMode>> SIDE_CONFIG = new ModelProperty<>();
-    public boolean syncSideConfig = true;
-    public BarrelBE(BlockPos pPos, BlockState pBlockState) {
-        super(STORAGE_BE.get(getName(pBlockState)).get(), pPos, pBlockState);
-        for (Direction direction : Direction.values()) {
-            sideConfig.put(direction.ordinal(), SideMode.DEFAULT);
-        }
-        fluidTank = createTank();
-        fluidHandler = LazyOptional.of(() -> fluidTank);
-    }
-
     @Nonnull
     @Override
     public @NotNull ModelData getModelData() {
@@ -68,6 +65,7 @@ public class BarrelBE extends NuclearCraftBE implements ISizeToggable {
     public void tickClient() {
 
     }
+
     public void tickServer() {
         transferFluid();
     }

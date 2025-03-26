@@ -22,6 +22,8 @@ import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
 import javax.annotation.Nonnull;
 import java.util.List;
 
+import static igentuman.nc.util.TextUtils.formatLiquid;
+
 public class BarrelBlockItem extends BlockItem
 {
 
@@ -81,10 +83,4 @@ public class BarrelBlockItem extends BlockItem
 		}
 		list.add(Component.translatable("tooltip.nc.use_multitool").withStyle(ChatFormatting.YELLOW));
 	}
-
-	public String formatLiquid(int val)
-	{
-		return TextUtils.numberFormat(val/1000)+" B";
-	}
-
 }

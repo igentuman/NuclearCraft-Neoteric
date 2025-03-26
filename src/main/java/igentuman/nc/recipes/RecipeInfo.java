@@ -14,6 +14,7 @@ import java.util.NoSuchElementException;
 
 
 public class RecipeInfo <RECIPE extends AbstractRecipe> implements INBTSerializable<Tag> {
+
     public int ticks = 0;
     public double ticksProcessed = 0;
     public double energy = 0;

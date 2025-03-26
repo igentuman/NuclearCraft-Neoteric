@@ -1,7 +1,7 @@
 package igentuman.nc.client.block;
 
 import com.mojang.math.Transformation;
-import igentuman.nc.block.ISizeToggable;
+import igentuman.api.nc.SideModeToggleable;
 import igentuman.nc.block.entity.energy.BatteryBE;
 import igentuman.nc.util.ClientTools;
 import net.minecraft.client.renderer.RenderType;
@@ -9,7 +9,6 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.Direction;
@@ -88,7 +87,7 @@ public class BatteryBlockBakedModel implements IDynamicBakedModel {
         if (side != null || (layer != null && !layer.equals(RenderType.solid()))) {
             return Collections.emptyList();
         }
-        HashMap<Integer, ISizeToggable.SideMode> sideConfig = extraData.get(BatteryBE.SIDE_CONFIG);
+        HashMap<Integer, SideModeToggleable.SideMode> sideConfig = extraData.get(BatteryBE.SIDE_CONFIG);
         if(sideConfig == null) {
             return sideQuads();
         }
@@ -124,15 +123,15 @@ public class BatteryBlockBakedModel implements IDynamicBakedModel {
         return quadCache.get(cacheKey);
     }
 
-    private String keyFor(Collection<ISizeToggable.SideMode> values) {
+    private String keyFor(Collection<SideModeToggleable.SideMode> values) {
         String result = "";
-        for(ISizeToggable.SideMode value : values) {
+        for(SideModeToggleable.SideMode value : values) {
             result += value.ordinal();
         }
         return result;
     }
 
-    private TextureAtlasSprite getSideTexture(HashMap<Integer, ISizeToggable.SideMode> sideConfig, Direction direction) {
+    private TextureAtlasSprite getSideTexture(HashMap<Integer, SideModeToggleable.SideMode> sideConfig, Direction direction) {
         TextureAtlasSprite textureSide = spriteGetter.apply(batteryModelGeometry.sideDefault);
         switch (sideConfig.get(direction.ordinal())) {
             case DISABLED -> textureSide = spriteGetter.apply(batteryModelGeometry.sideNone);

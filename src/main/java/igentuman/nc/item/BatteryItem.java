@@ -23,6 +23,7 @@ import javax.annotation.Nonnull;
 import java.util.List;
 
 import static igentuman.nc.handler.config.CommonConfig.ENERGY_STORAGE;
+import static igentuman.nc.util.TextUtils.formatEnergy;
 
 public class BatteryItem extends Item
 {
@@ -32,14 +33,11 @@ public class BatteryItem extends Item
 		super(props);
 	}
 
-
-
 	@Override
 	public boolean isRepairable(@Nonnull ItemStack stack)
 	{
 		return false;
 	}
-
 
 	@Override
 	public boolean isBookEnchantable(ItemStack stack, ItemStack book)
@@ -57,7 +55,6 @@ public class BatteryItem extends Item
 	{
 		return Mth.hsvToRgb(Math.max(0.0F, getBarWidth(pStack)/(float)MAX_BAR_WIDTH)/3.0F, 1.0F, 1.0F);
 	}
-
 
 	protected int getEnergyMaxStorage() {
 		return ENERGY_STORAGE.getCapacityFor(toString());
@@ -80,24 +77,9 @@ public class BatteryItem extends Item
 		return (int) Math.min(13, 13*chargeRatio);
 	}
 
-
 	@Override
 	public void appendHoverText(ItemStack stack, @javax.annotation.Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
 		list.add(Component.translatable("tooltip.nc.energy_stored", formatEnergy(getEnergy(stack).getEnergyStored()), formatEnergy(getEnergy(stack).getMaxEnergyStored())).withStyle(ChatFormatting.BLUE));
-	}
-
-	public String formatEnergy(int energy)
-	{
-		if(energy >= 1000000000) {
-			return TextUtils.numberFormat((double) energy /1000000000)+" GFE";
-		}
-		if(energy >= 1000000) {
-			return TextUtils.numberFormat((double) energy /1000000)+" MFE";
-		}
-		if(energy >= 1000) {
-			return TextUtils.numberFormat((double) energy /1000)+" kFE";
-		}
-		return TextUtils.numberFormat(energy)+" FE";
 	}
 }

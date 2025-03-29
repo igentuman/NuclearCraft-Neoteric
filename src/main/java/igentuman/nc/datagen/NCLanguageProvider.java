@@ -119,6 +119,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("processor_side_config.title", "Select Slot");
         add("processor_slot_mode.title", "Slot Mode");
 
+        add("commands.nuclearcraft.no_permission", "No permissions");
         add("message.heat_sink.valid0", "This one is looking good");
         add("message.heat_sink.valid1", "I like this one");
         add("message.heat_sink.valid2", "This heat sink design shows promise");

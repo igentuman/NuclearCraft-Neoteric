@@ -185,6 +185,7 @@
   "block.nuclearcraft.zinc_ore": "Zinc Ore",
   "block.nuclearcraft.zirconium_block": "Zirconium Block",
   "boiling.recipe.heat_required": "Heat required: %s H",
+  "commands.nuclearcraft.no_permission": "No permissions",
   "container.nc.storage": "Item Storage Container",
   "coolant.bar.amount": "Coolant: %s / %s mB",
   "death.attack.radiation": "Died of Radiation Poisoning",

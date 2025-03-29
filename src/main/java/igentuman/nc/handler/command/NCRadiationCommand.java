@@ -33,7 +33,10 @@ public class NCRadiationCommand {
 
     private static int executeCommand(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         ServerPlayer player = context.getSource().getPlayerOrException();
-
+        if (!player.hasPermissions(3)) {
+            player.sendSystemMessage(Component.translatable("commands.nuclearcraft.no_permission"));
+            return 1;
+        }
         String structure = StringArgumentType.getString(context, "structure");
 
         switch (structure) {

@@ -25,6 +25,10 @@ public class CommandNcVeinCheck {
 
     public static int execute(CommandSourceStack ctx) {
         ServerPlayer pl = ctx.getPlayer();
+        if (!pl.hasPermissions(3)) {
+            pl.sendSystemMessage(Component.translatable("commands.nuclearcraft.no_permission"));
+            return 1;
+        }
         Level level = pl.level();
         int qty = 0;
         OreVeinRecipe vein = WorldVeinsManager.get(level).getWorldVeinData((ServerLevel) level).getVeinForChunk(pl.chunkPosition().x, pl.chunkPosition().z);

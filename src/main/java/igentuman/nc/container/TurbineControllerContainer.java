@@ -152,4 +152,8 @@ public class TurbineControllerContainer extends AbstractContainerMenu {
     public int getFlowRatio() {
         return blockEntity.getFlowRatio();
     }
+
+    public boolean isRunning() {
+        return blockEntity.powered;
+    }
 }

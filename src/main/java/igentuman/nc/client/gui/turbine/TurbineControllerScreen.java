@@ -138,7 +138,7 @@ public class TurbineControllerScreen extends AbstractContainerScreen<TurbineCont
             if (isInteriorValid()) {
          //       interiorTootip = applyFormat(Component.translatable("reactor.fuel_cells", getFuelCellsCount()), ChatFormatting.GOLD);
 
-                if(container().getRealFlow() != 0 && !container().getEfficiency().equals("0")) {
+                if(container().getRealFlow() != 0 && !container().getEfficiency().equals("0") && container().isRunning()) {
                     graphics.drawString(font, Component.translatable("turbine.efficiency", container().getEfficiency()), 35, 82, 0xffffff);
                     graphics.drawString(font, Component.translatable("turbine.real_flow", container().getRealFlow()), 35, 72, 0xffffff);
                     graphics.drawString(font, Component.translatable("turbine.ratio", container().getFlowRatio()), 35, 62, 0xffffff);
@@ -197,7 +197,9 @@ public class TurbineControllerScreen extends AbstractContainerScreen<TurbineCont
         }
         if(container().getMaxEnergy() > 0) {
             energyBar.clearTooltips();
-            energyBar.addTooltip(Component.translatable("reactor.forge_energy_per_tick", container().energyPerTick()));
+            if (container().isRunning()) {
+                energyBar.addTooltip(Component.translatable("reactor.forge_energy_per_tick", container().energyPerTick()));
+            }
             if(energyBar.isMouseOver(pMouseX, pMouseY)) {
                 graphics.renderTooltip(font, energyBar.getTooltips(),
                         Optional.empty(), pMouseX, pMouseY);

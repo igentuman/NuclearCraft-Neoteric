@@ -2185,6 +2185,7 @@
   "turbine.active.coils": "Active coils: %s",
   "turbine.blades.flow": "Max steam flow: %s mB/t",
   "turbine.efficiency": "Efficiency: %s%%",
+  "turbine.ratio": "Pressure: %s%%",
   "turbine.real_flow": "Real Flow: %smB",
   "validation.structure.incomplete": "Incomplete",
   "validation.structure.no_controller": "No controllers",

@@ -51,6 +51,10 @@ public class TextUtils
 		if (value == (int) value) {
 			return String.valueOf((int)value);
 		}
+		String formatted = preffix+df.format(value);
+		if (formatted.equals("NaN")) {
+			return "0";
+		}
 		return  preffix+df.format(value);
 	}
 

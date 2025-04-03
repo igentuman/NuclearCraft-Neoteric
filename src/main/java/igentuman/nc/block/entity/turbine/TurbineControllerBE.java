@@ -2,6 +2,8 @@ package igentuman.nc.block.entity.turbine;
 
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.client.sound.SoundHandler;
+import igentuman.nc.handler.CatalystHandler;
+import igentuman.nc.handler.UpgradesHandler;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.SlotModePair;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
@@ -57,9 +59,9 @@ public class TurbineControllerBE extends TurbineBE {
 
     public static String NAME = "turbine_controller";
     public final SidedContentHandler contentHandler;
-    public final CustomEnergyStorage energyStorage = createEnergy();
+    public final CustomEnergyStorage energyStorage;
 
-    protected final LazyOptional<IEnergyStorage> energy = LazyOptional.of(() -> energyStorage);
+    protected final LazyOptional<IEnergyStorage> energy;
     public BlockPos errorBlockPos = BlockPos.ZERO;
     @NBTField
     public Direction orientation = Direction.NORTH;
@@ -111,12 +113,28 @@ public class TurbineControllerBE extends TurbineBE {
         contentHandler.fluidCapability.setGlobalMode(1, SlotModePair.SlotMode.OUTPUT);
         contentHandler.setBlockEntity(this);
         contentHandler.setAllowedInputFluids(0, this::getAllowedInputFluids);
-
+        energyStorage = createEnergy();
+        energy = LazyOptional.of(() -> energyStorage);
+        recipeInfo = new RecipeInfo();
     }
 
     @Override
     public String getName() {
         return NAME;
+    }
+
+    public SidedContentHandler contentHandler() {
+        return contentHandler;
+    }
+
+    @Override
+    public CustomEnergyStorage energyStorage() {
+        return energyStorage;
+    }
+
+    @Override
+    public RecipeInfo recipeInfo() {
+        return recipeInfo;
     }
 
     @Override
@@ -144,7 +162,7 @@ public class TurbineControllerBE extends TurbineBE {
             getMultiblock().validate();
         }
         BlockPos start = worldPosition;
-        if(getMultiblock().bearingPositions.size() > 0) {
+        if(!getMultiblock().bearingPositions.isEmpty()) {
             for (int i = 0; i < getMultiblock().bearingPositions.size(); i++) {
                 start = new BlockPos(getMultiblock().bearingPositions.get(i));
                 BlockEntity be = getLevel().getBlockEntity(start.relative(orientation));
@@ -347,9 +365,9 @@ public class TurbineControllerBE extends TurbineBE {
     }
 
     private boolean processRecipe() {
-        if(recipeInfo.recipe != null && recipeInfo.isCompleted()) {
-            if(contentHandler.fluidCapability.getFluidInSlot(0).isEmpty()) {
-                recipeInfo.clear();
+        if(recipeInfo().recipe != null && recipeInfo().isCompleted()) {
+            if(contentHandler().fluidCapability.getFluidInSlot(0).isEmpty()) {
+                recipeInfo().clear();
             }
         }
         if (!hasRecipe()) {
@@ -404,25 +422,25 @@ public class TurbineControllerBE extends TurbineBE {
                     float xSpeed = 0;
                     switch (getMultiblock().turbineDirection) {
                         case UP:
-                            ySpeed = 0.2f + (float)(height)/4;
+                            ySpeed = 0.2f + (float)(height)*0.02f;
                             break;
                         case DOWN:
-                            ySpeed = -0.1f - (float)(height)/4;
+                            ySpeed = -0.1f - (float)(height)*0.02f;
                             break;
                         case NORTH:
-                            zSpeed = -0.1f - (float)(depth)/4;
+                            zSpeed = -0.1f - (float)(depth)*0.02f;
                             z += 0.5;
                             break;
                         case SOUTH:
-                            zSpeed = 0.1f + (float)(depth)/4;
+                            zSpeed = 0.1f + (float)(depth)*0.02f;
                             z += 0.5;
                             break;
                         case EAST:
-                            xSpeed = 0.1f + (float)(width)/4;
+                            xSpeed = 0.1f + (float)(width)*0.02f;
                             z += 0.5;
                             break;
                         case WEST:
-                            xSpeed = -0.1f - (float)(width)/4;
+                            xSpeed = -0.1f - (float)(width)*0.02f;
                             z += 0.5;
                             break;
                     }
@@ -433,33 +451,37 @@ public class TurbineControllerBE extends TurbineBE {
     }
 
     private boolean process() {
-        recipeInfo.process(1);
+        recipeInfo().process(1);
         flow = Math.max(1, flow);
         float realFlow = (float)getRealFlow();
         if(realFlow > 0) {
-            this.realFlow = (int) Math.min(realFlow, flow/2*TURBINE_CONFIG.BLADE_FLOW.get());
+            this.realFlow = (int) Math.min(realFlow, getMaxFlow());
         }
         rotationSpeed = (rotationSpeed*4+realFlow/(flow*TURBINE_CONFIG.BLADE_FLOW.get()))/5f;
-        energyStorage.addEnergy(calculateEnergy());
+        energyStorage().addEnergy(calculateEnergy());
         efficiency = calculateEfficiency();
         handleRecipeOutput();
-        contentHandler.fluidCapability.tanks.get(0).drain(this.realFlow, EXECUTE);
+        contentHandler().fluidCapability.tanks.get(0).drain(this.realFlow, EXECUTE);
 
         return true;
     }
 
+    private float getMaxFlow() {
+        return flow*TURBINE_CONFIG.BLADE_FLOW.get();
+    }
+
     private void handleRecipeOutput() {
-        if (hasRecipe() && recipeInfo.isCompleted()) {
+        if (hasRecipe() && recipeInfo().isCompleted()) {
             if(recipe == null) {
-                recipe = (Recipe) recipeInfo.recipe();
+                recipe = (Recipe) recipeInfo().recipe();
             }
-            if (recipe.handleOutputs(contentHandler)) {
-                recipeInfo.clear();
-                if(contentHandler.fluidCapability.getFluidInSlot(0).isEmpty()) {
+            if (recipe.handleOutputs(contentHandler())) {
+                recipeInfo().clear();
+                if(contentHandler().fluidCapability.getFluidInSlot(0).isEmpty()) {
                     recipe = null;
                 }
             } else {
-                recipeInfo.stuck = true;
+                recipeInfo().stuck = true;
             }
             setChanged();
         }
@@ -488,20 +510,20 @@ public class TurbineControllerBE extends TurbineBE {
     private void updateRecipe() {
         recipe = getRecipe();
         if (recipe != null) {
-            recipeInfo.setRecipe(recipe);
-            recipeInfo.ticks = ((Recipe)recipeInfo.recipe()).getBaseTime();
-            recipeInfo.energy = recipeInfo.recipe.getEnergy();
-            recipeInfo.be = this;
+            recipeInfo().setRecipe(recipe);
+            recipeInfo().ticks = ((Recipe)recipeInfo().recipe()).getBaseTime();
+            recipeInfo().energy = recipeInfo().recipe.getEnergy();
+            recipeInfo().be = this;
             //recipe.consumeInputs(contentHandler);
         }
     }
 
     public boolean recipeIsStuck() {
-        return recipeInfo.isStuck();
+        return recipeInfo().isStuck();
     }
 
     public boolean hasRecipe() {
-        return recipeInfo.recipe() != null;
+        return recipeInfo().recipe() != null;
     }
 
     @Override
@@ -592,7 +614,7 @@ public class TurbineControllerBE extends TurbineBE {
     }
 
     public boolean isProcessing() {
-        return hasRecipe() && recipeInfo.ticksProcessed > 0 && !recipeInfo.isCompleted();
+        return hasRecipe() && recipeInfo().ticksProcessed > 0 && !recipeInfo().isCompleted();
     }
 
     public int getActiveCoils() {
@@ -603,12 +625,12 @@ public class TurbineControllerBE extends TurbineBE {
         return (int) flow;
     }
 
-    public FluidTank getFluidTank(int i) {
-        return contentHandler.fluidCapability.tanks.get(i);
-    }
-
     public float getRotationSpeed() {
         return rotationSpeed;
+    }
+
+    public int getFlowRatio() {
+        return (int) (((float) realFlow / getMaxFlow())*100);
     }
 
     public static class Recipe extends NcRecipe {

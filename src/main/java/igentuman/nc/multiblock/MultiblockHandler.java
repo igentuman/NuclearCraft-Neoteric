@@ -1,6 +1,5 @@
 package igentuman.nc.multiblock;
 
-import igentuman.nc.block.fission.FissionFuelCellBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
@@ -15,7 +14,7 @@ public class MultiblockHandler {
     private static HashMap<String, AbstractNCMultiblock> multiblocks = new HashMap<>();
 
     public static void addMultiblock(AbstractNCMultiblock multiblock) {
-        if(!multiblocks.containsKey(multiblock.getId())) {
+        if (!multiblocks.containsKey(multiblock.getId())) {
             multiblocks.put(multiblock.getId(), multiblock);
         } else {
             multiblocks.putIfAbsent(multiblock.getId(), multiblock);
@@ -23,7 +22,7 @@ public class MultiblockHandler {
     }
 
     public static void addMultiblock(AbstractNCMultiblock multiblock, boolean force) {
-        if(multiblocks.containsKey(multiblock.getId()) && force) {
+        if (multiblocks.containsKey(multiblock.getId()) && force) {
             multiblocks.remove(multiblock.getId());
         }
         addMultiblock(multiblock);
@@ -32,10 +31,10 @@ public class MultiblockHandler {
     public static void trackBlockChange(BlockPos pos) {
         List<AbstractNCMultiblock> tmp = new ArrayList<>(multiblocks.values());
         for(AbstractNCMultiblock multiblock: tmp) {
-            if(multiblock == null) {
+            if (multiblock == null) {
                 continue;
             }
-            if(multiblock.onBlockChange(pos)) {
+            if (multiblock.onBlockChange(pos)) {
                 break;
             }
         }
@@ -47,19 +46,19 @@ public class MultiblockHandler {
         Set<String> tmp = multiblocks.keySet();
         for(String id: tmp) {
             AbstractNCMultiblock multiblock = multiblocks.get(id);
-            if(multiblock == null || multiblock.controller().controllerBE() == null) {
+            if (multiblock == null || multiblock.controller().controllerBE() == null) {
                 toRemove.add(id);
                 continue;
             }
-            if(multiblock.isLoaded()) {
-                if(multiblock.controller().controllerBE().isRemoved()) {
+            if (multiblock.isLoaded()) {
+                if (multiblock.controller().controllerBE().isRemoved()) {
                     toRemove.add(id);
                     continue;
                 }
                 multiblock.tick();
             }
         }
-        if(!toRemove.isEmpty()) {
+        if (!toRemove.isEmpty()) {
             for(String id: toRemove) {
                 multiblocks.remove(id);
             }
@@ -74,10 +73,10 @@ public class MultiblockHandler {
 
     public static boolean checkAttachmentToBlock(Class<?> toCheck, Level level, BlockPos pos, Direction dir) {
         for(AbstractNCMultiblock multiblock: multiblocks.values()) {
-            if(multiblock == null) {
+            if (multiblock == null) {
                 continue;
             }
-            if(multiblock.checkAttachmentToBlock(toCheck, level, pos, dir)) {
+            if (multiblock.checkAttachmentToBlock(toCheck, level, pos, dir)) {
                 return true;
             }
         }

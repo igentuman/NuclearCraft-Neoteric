@@ -38,10 +38,10 @@ public class TurbinePortBE extends TurbineBE {
     public Direction getFacing() {
         return getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);
     }
-
     public boolean hasRedstoneSignal() {
         return Objects.requireNonNull(getLevel()).hasNeighborSignal(worldPosition);
     }
+
     @Override
     public void tickServer() {
         if(NuclearCraft.instance.isNcBeStopped) return;
@@ -49,10 +49,13 @@ public class TurbinePortBE extends TurbineBE {
         if(getMultiblock() == null || controller() == null) return;
         int wasSignal = analogSignal;
         boolean updated = sendOutPower();
-        if(controllerPos == null) {
-            controllerPos = controller().getBlockPos();
+        if(controller != controller()) {
+            controller = controller();
+            controllerPos = BlockPos.ZERO;
+            if(controller != null) {
+                controllerPos = controller.getBlockPos();
+            }
             updated = true;
-            setChanged();
         }
         if(hasRedstoneSignal()) {
             controller().controllerEnabled = true;
@@ -71,7 +74,7 @@ public class TurbinePortBE extends TurbineBE {
 
         if(updated || (level.getGameTime() % 40 == 0 && controller().controllerEnabled)) {
             setChanged();
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_NEIGHBORS);
         }
     }
 
@@ -85,7 +88,7 @@ public class TurbinePortBE extends TurbineBE {
                     analogSignal = 0;
                     break;
                 }
-                analogSignal = (byte) (controller().getRealFlow() * 15 / controller().getFlow());
+                analogSignal = (byte) (controller().realFlow * 15 / controller().getFlow());
                 break;
         }
     }

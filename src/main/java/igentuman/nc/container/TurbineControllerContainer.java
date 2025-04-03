@@ -148,4 +148,8 @@ public class TurbineControllerContainer extends AbstractContainerMenu {
     public int getRealFlow() {
         return blockEntity.realFlow;
     }
+
+    public int getFlowRatio() {
+        return blockEntity.getFlowRatio();
+    }
 }

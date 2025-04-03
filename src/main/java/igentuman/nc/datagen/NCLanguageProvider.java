@@ -115,6 +115,7 @@ public class NCLanguageProvider extends LanguageProvider {
 
         add("turbine.efficiency", "Efficiency: %s%%");
         add("turbine.real_flow", "Real Flow: %smB");
+        add("turbine.ratio", "Pressure: %s%%");
 
         add("processor_side_config.title", "Select Slot");
         add("processor_slot_mode.title", "Slot Mode");

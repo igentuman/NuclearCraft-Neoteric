@@ -2,6 +2,7 @@ package igentuman.nc.block.turbine;
 
 import igentuman.nc.block.entity.turbine.TurbineBE;
 import igentuman.nc.block.entity.turbine.TurbineCoilBE;
+import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.turbine.CoilDef;
 import igentuman.nc.multiblock.turbine.TurbineRegistration;
 import igentuman.nc.util.TextUtils;
@@ -145,7 +146,19 @@ public class TurbineCoilBlock extends Block implements EntityBlock {
 
     @Override
     public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor){
-        ((TurbineBE) Objects.requireNonNull(level.getBlockEntity(pos))).onNeighborChange(state,  pos, neighbor);
+        MultiblockHandler.trackBlockChange(neighbor);
+    }
+
+    @Override
+    public void onPlace(BlockState pState, Level pLevel, BlockPos pPos, BlockState pOldState, boolean pMovedByPiston) {
+        super.onPlace(pState, pLevel, pPos, pOldState, pMovedByPiston);
+        MultiblockHandler.trackBlockChange(pPos);
+    }
+
+    @Override
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
+        super.onRemove(state, level, pos, newState, isMoving);
+        MultiblockHandler.trackBlockChange(pos);
     }
 
     @Override

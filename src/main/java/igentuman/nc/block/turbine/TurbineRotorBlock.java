@@ -1,6 +1,7 @@
 package igentuman.nc.block.turbine;
 
 import igentuman.nc.block.entity.turbine.TurbineBE;
+import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -102,7 +103,19 @@ public class TurbineRotorBlock extends DirectionalBlock implements EntityBlock {
 
     @Override
     public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor){
-        ((TurbineBE) Objects.requireNonNull(level.getBlockEntity(pos))).onNeighborChange(state,  pos, neighbor);
+        MultiblockHandler.trackBlockChange(neighbor);
+    }
+
+    @Override
+    public void onPlace(BlockState pState, Level pLevel, BlockPos pPos, BlockState pOldState, boolean pMovedByPiston) {
+        super.onPlace(pState, pLevel, pPos, pOldState, pMovedByPiston);
+        MultiblockHandler.trackBlockChange(pPos);
+    }
+
+    @Override
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
+        super.onRemove(state, level, pos, newState, isMoving);
+        MultiblockHandler.trackBlockChange(pos);
     }
 
     @Override

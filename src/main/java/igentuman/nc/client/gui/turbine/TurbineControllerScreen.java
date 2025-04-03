@@ -2,8 +2,10 @@ package igentuman.nc.client.gui.turbine;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import igentuman.nc.client.gui.IProgressScreen;
 import igentuman.nc.client.gui.IVerticalBarScreen;
 import igentuman.nc.client.gui.element.NCGuiElement;
+import igentuman.nc.client.gui.element.bar.ProgressBar;
 import igentuman.nc.client.gui.element.bar.VerticalBar;
 import igentuman.nc.client.gui.element.button.Checkbox;
 import igentuman.nc.client.gui.element.fluid.FluidTankRenderer;
@@ -26,7 +28,7 @@ import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.handler.config.TurbineConfig.TURBINE_CONFIG;
 import static igentuman.nc.util.TextUtils.applyFormat;
 
-public class TurbineControllerScreen extends AbstractContainerScreen<TurbineControllerContainer> implements IVerticalBarScreen {
+public class TurbineControllerScreen extends AbstractContainerScreen<TurbineControllerContainer> implements IProgressScreen, IVerticalBarScreen {
     protected final ResourceLocation GUI = new ResourceLocation(MODID, "textures/gui/turbine/controller.png");
     protected int relX;
     protected int relY;
@@ -65,6 +67,7 @@ public class TurbineControllerScreen extends AbstractContainerScreen<TurbineCont
         widgets.clear();
         checkboxCasing = new Checkbox(imageWidth-19, 80, this,  isCasingValid());
         checkboxInterior =  new Checkbox(imageWidth-32, 80, this,  isInteriorValid());
+        widgets.add(new ProgressBar(74, 35, this,  7));
         energyBar = new VerticalBar.Energy(17, 16,  this, container().getMaxEnergy());
         addWidget(FluidTankRenderer.tank(getFluidTank(0)).id(0).size(18, 18).pos(56, 35).canVoid());
         addWidget(FluidTankRenderer.tank(getFluidTank(1)).id(1).size(24, 24).pos(112, 31).canVoid());
@@ -135,9 +138,10 @@ public class TurbineControllerScreen extends AbstractContainerScreen<TurbineCont
             if (isInteriorValid()) {
          //       interiorTootip = applyFormat(Component.translatable("reactor.fuel_cells", getFuelCellsCount()), ChatFormatting.GOLD);
 
-                if(container().hasRecipe() && !container().getEfficiency().equals("NaN")) {
+                if(container().getRealFlow() != 0 && !container().getEfficiency().equals("0")) {
                     graphics.drawString(font, Component.translatable("turbine.efficiency", container().getEfficiency()), 35, 82, 0xffffff);
                     graphics.drawString(font, Component.translatable("turbine.real_flow", container().getRealFlow()), 35, 72, 0xffffff);
+                    graphics.drawString(font, Component.translatable("turbine.ratio", container().getFlowRatio()), 35, 62, 0xffffff);
                 }
             } else {
                 interiorTootip = applyFormat(Component.translatable(getValidationResultKey(), getValidationResultData()), ChatFormatting.RED);
@@ -218,6 +222,11 @@ public class TurbineControllerScreen extends AbstractContainerScreen<TurbineCont
 
     @Override
     public double getHotCoolant() {
+        return 0;
+    }
+
+    @Override
+    public double getProgress() {
         return 0;
     }
 }

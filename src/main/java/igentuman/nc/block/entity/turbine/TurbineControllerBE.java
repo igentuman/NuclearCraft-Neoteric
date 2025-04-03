@@ -342,7 +342,7 @@ public class TurbineControllerBE extends TurbineBE {
     }
 
     public float getEfficiencyRate() {
-        return (float) coilsEfficiency /(100*activeCoils) * bladesEfficiency();
+        return (float) (Math.log10(activeCoils) * coilsEfficiency * bladesEfficiency())/1000f;
     }
 
     @Override
@@ -378,6 +378,7 @@ public class TurbineControllerBE extends TurbineBE {
         }
         return false;
     }
+
     public List<BlockPos> getBlocks(BlockPos pos, Direction.Axis axis) {
         List<BlockPos> positions = new ArrayList<>();
         int y = pos.getY();
@@ -409,6 +410,7 @@ public class TurbineControllerBE extends TurbineBE {
 
         return positions;
     }
+
     private void spawnSteamParticles() {
         if (level.isClientSide && level.getGameTime() % 4 == 0) {
             BlockPos pos = getBlockPosForSteam().relative(orientation.getOpposite(), 1);
@@ -487,10 +489,16 @@ public class TurbineControllerBE extends TurbineBE {
         }
     }
 
+    public float coilsDrag()
+    {
+        return (float) Math.max(1, (100/coilsEfficiency * Math.log(Math.log10(activeCoils+4)+2)));
+    }
+
     public int getRealFlow()
     {
         int wasFlow = realFlow;
-        realFlow = (int)Math.min(flow*TURBINE_CONFIG.BLADE_FLOW.get(), getFluidTank(0).getFluidAmount());
+        float cleanFlow = Math.min(flow*TURBINE_CONFIG.BLADE_FLOW.get(), getFluidTank(0).getFluidAmount());
+        realFlow = (int) (cleanFlow / coilsDrag());
         if(wasFlow != realFlow) {
             changed = true;
         }
@@ -499,7 +507,7 @@ public class TurbineControllerBE extends TurbineBE {
 
     private int calculateEnergy() {
         int wasEnergy = energyPerTick;
-        energyPerTick = (int)(realFlow*TURBINE_CONFIG.ENERGY_GEN.get()*getEfficiencyRate()*ENERGY_GENERATION.GENERATION_MULTIPLIER.get());
+        energyPerTick = (int)(realFlow*TURBINE_CONFIG.ENERGY_GEN.get()*getEfficiencyRate()*ENERGY_GENERATION.GENERATION_MULTIPLIER.get()/2);
         if(wasEnergy != energyPerTick) {
             changed = true;
         }

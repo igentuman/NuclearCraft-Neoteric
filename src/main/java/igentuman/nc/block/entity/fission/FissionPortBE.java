@@ -60,10 +60,13 @@ public class FissionPortBE extends FissionBE {
         if(getMultiblock() == null || controller() == null) return;
         int wasSignal = analogSignal;
         boolean updated = sendOutPower();
-        if(controllerPos == null) {
-            controllerPos = controller().getBlockPos();
+        if(controller != controller()) {
+            controller = controller();
+            controllerPos = BlockPos.ZERO;
+            if(controller != null) {
+                controllerPos = controller.getBlockPos();
+            }
             updated = true;
-            setChanged();
         }
         if(isSteamMode != controller().isSteamMode) {
             isSteamMode = controller().isSteamMode;
@@ -87,9 +90,9 @@ public class FissionPortBE extends FissionBE {
             updated = itemHandler().pullItems(dir, true, worldPosition) || updated;
         }
 
-        if(updated) {
+        if(updated || (level.getGameTime() % 40 == 0)) {
             setChanged();
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_NEIGHBORS);
         }
     }
 
@@ -173,23 +176,24 @@ public class FissionPortBE extends FissionBE {
         AtomicInteger capacity = new AtomicInteger(controller().energyStorage.getEnergyStored());
         if (capacity.get() > 0) {
             for (Direction direction : Direction.values()) {
-                BlockEntity be = getLevel().getBlockEntity(worldPosition.relative(direction));
-                if (be != null) {
-                    boolean doContinue = be.getCapability(ForgeCapabilities.ENERGY, direction.getOpposite()).map(handler -> {
-                                if (handler.canReceive()) {
-                                    int received = handler.receiveEnergy(Math.min(capacity.get(), controller().energyStorage.getMaxEnergyStored()), false);
-                                    capacity.addAndGet(-received);
-                                    controller().energyStorage.consumeEnergy(received);
-                                    setChanged();
-                                    return capacity.get() > 0;
-                                } else {
-                                    return true;
-                                }
+                BlockEntity be = getLevel().getExistingBlockEntity(worldPosition.relative(direction));
+                if (be == null) {
+                    continue;
+                }
+                boolean doContinue = be.getCapability(ForgeCapabilities.ENERGY, direction.getOpposite()).map(handler -> {
+                            if (handler.canReceive()) {
+                                int received = handler.receiveEnergy(Math.min(capacity.get(), controller().energyStorage.getMaxEnergyStored()), false);
+                                capacity.addAndGet(-received);
+                                controller().energyStorage.consumeEnergy(received);
+                                setChanged();
+                                return capacity.get() > 0;
+                            } else {
+                                return true;
                             }
-                    ).orElse(true);
-                    if (!doContinue) {
-                        return true;
-                    }
+                        }
+                ).orElse(true);
+                if (!doContinue) {
+                    return true;
                 }
             }
             return true;

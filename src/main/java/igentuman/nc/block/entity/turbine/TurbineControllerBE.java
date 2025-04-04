@@ -507,7 +507,7 @@ public class TurbineControllerBE extends TurbineBE {
 
     private int calculateEnergy() {
         int wasEnergy = energyPerTick;
-        energyPerTick = (int)(realFlow*TURBINE_CONFIG.ENERGY_GEN.get()*getEfficiencyRate()*ENERGY_GENERATION.GENERATION_MULTIPLIER.get()/2);
+        energyPerTick = (int)(realFlow*TURBINE_CONFIG.ENERGY_GEN.get()*getEfficiencyRate()*ENERGY_GENERATION.GENERATION_MULTIPLIER.get()/7);
         if(wasEnergy != energyPerTick) {
             changed = true;
         }

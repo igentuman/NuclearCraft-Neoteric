@@ -136,8 +136,6 @@ public class TurbineControllerScreen extends AbstractContainerScreen<TurbineCont
 
         if(isCasingValid()) {
             if (isInteriorValid()) {
-         //       interiorTootip = applyFormat(Component.translatable("reactor.fuel_cells", getFuelCellsCount()), ChatFormatting.GOLD);
-
                 if(container().getRealFlow() != 0 && !container().getEfficiency().equals("0") && container().isRunning()) {
                     graphics.drawString(font, Component.translatable("turbine.efficiency", container().getEfficiency()), 35, 82, 0xffffff);
                     graphics.drawString(font, Component.translatable("turbine.real_flow", container().getRealFlow()), 35, 72, 0xffffff);

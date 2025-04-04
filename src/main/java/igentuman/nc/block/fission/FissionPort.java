@@ -117,6 +117,7 @@ public class FissionPort extends HorizontalDirectionalBlock implements EntityBlo
     public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag)
     {
         list.add(applyFormat(translatable("fission_port.descr"), ChatFormatting.GOLD));
+        list.add(Component.translatable("multiblock.build_in_chunk.advise").withStyle(ChatFormatting.GREEN));
     }
 
     @Override
@@ -133,5 +134,4 @@ public class FissionPort extends HorizontalDirectionalBlock implements EntityBlo
     public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor){
         MultiblockHandler.trackBlockChange(pos);
     }
-
 }

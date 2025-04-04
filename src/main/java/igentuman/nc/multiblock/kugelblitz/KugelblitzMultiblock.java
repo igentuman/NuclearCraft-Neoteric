@@ -50,15 +50,10 @@ public class KugelblitzMultiblock extends AbstractNCMultiblock {
         return controllerBE().getFacing();
     }
 
-    protected KugelblitzMultiblock(List<Block> validOuterBlocks, List<Block> validInnerBlocks) {
-        super(validOuterBlocks, validInnerBlocks);
-    }
-
     public KugelblitzMultiblock(ChamberTerminalBE be) {
-        this(getBlocksByTagKey(CASING_BLOCKS.location().toString()), List.of(KUGELBLITZ_BLOCKS.get("black_hole").get(), AIR));
+        super(getBlocksByTagKey(CASING_BLOCKS.location().toString()), List.of(KUGELBLITZ_BLOCKS.get("black_hole").get(), AIR), new KugelblitzController(be));
         id = "chamber_"+be.getBlockPos().toShortString();
         MultiblockHandler.addMultiblock(this);
-        controller = new KugelblitzController(be);
     }
 
     @Override

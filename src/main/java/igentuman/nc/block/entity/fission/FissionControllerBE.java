@@ -254,7 +254,7 @@ public class FissionControllerBE extends FissionBE  {
         if(getNetHeat() < 0) {
             cooling = heatPerTick;
         }
-        double heatEff =  cooling * FISSION_CONFIG.BOILING_MULTIPLIER.get() * efficiency * 0.01D * heatMultiplier;
+        double heatEff =  cooling * FISSION_CONFIG.BOILING_MULTIPLIER.get() * efficiency * 0.00005D * heatMultiplier;
 
         if(hasCoolant()) {
             FluidStack steam = boilingRecipe.getOutputFluids().get(0);

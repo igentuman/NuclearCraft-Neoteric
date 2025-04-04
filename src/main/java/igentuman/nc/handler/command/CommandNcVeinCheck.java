@@ -18,6 +18,7 @@ public class CommandNcVeinCheck {
     public static LiteralArgumentBuilder<CommandSourceStack> register() {
         MinecraftForge.EVENT_BUS.register(CommandNcVeinCheck.class);
         return Commands.literal("nc_vein_check")
+                .requires(cs -> cs.hasPermission(3))
                 .executes(ctx -> {
             return execute(ctx.getSource());
         });

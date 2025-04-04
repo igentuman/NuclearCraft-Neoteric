@@ -1991,6 +1991,7 @@
   "message.nc.battery.side_config": "Mode: %s",
   "message.nc.geiger_radiation_measure": "Radiation Level: %s",
   "message.nc.player_radiation_contamination": "Radiation Dose: %s",
+  "multiblock.build_in_chunk.advise": "Consider building structure within one chunk for better performance",
   "multiblock.casing.complete": "Multiblock Casing Complete",
   "multiblock.casing.incomplete": "Multiblock Casing Incomplete",
   "multiblock.interior.complete": "Interior Complete",

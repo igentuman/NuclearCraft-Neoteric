@@ -7,6 +7,7 @@ import igentuman.nc.NuclearCraft;
 import igentuman.nc.util.NCBlockPos;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -16,6 +17,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.regex.Pattern;
+
+import static igentuman.nc.NuclearCraft.debugLog;
 
 public abstract class AbstractNCMultiblock implements Multiblock {
 
@@ -45,10 +49,13 @@ public abstract class AbstractNCMultiblock implements Multiblock {
     protected HashMap<Long, BlockState> bsCache = new HashMap<>();
     protected List<BlockPos> allBlocks = new ArrayList<>();
     protected BlockPos controllerPos;
+    private static final Pattern SPECIAL_BLOCKS = Pattern.compile(".*(fusion_proxy|fusion_core|controller|port|irradiator|rotor).*");
 
-    protected AbstractNCMultiblock(List<Block> validOuterBlocks, List<Block> validInnerBlocks) {
+    protected AbstractNCMultiblock(List<Block> validOuterBlocks, List<Block> validInnerBlocks, MultiblockController controller) {
         this.validOuterBlocks = validOuterBlocks;
         this.validInnerBlocks = validInnerBlocks;
+        this.controller = controller;
+        controllerPos = controller().controllerBE().getBlockPos();
     }
 
     public void dispose() {
@@ -97,7 +104,10 @@ public abstract class AbstractNCMultiblock implements Multiblock {
     public List<Block> validInnerBlocks() { return validInnerBlocks; }
 
     protected Level getLevel() {
-        return  controller().controllerBE().getLevel();
+        if (controller() == null || controller().controllerBE() == null) {
+            return null;
+        }
+        return controller().controllerBE().getLevel();
     }
 
     protected BlockPos controllerPos() {
@@ -423,7 +433,7 @@ public abstract class AbstractNCMultiblock implements Multiblock {
         if (isFormed) {
             validationResult = ValidationResult.VALID;
         }
-        NuclearCraft.LOGGER.info("NC multiblock was validated at " + controllerPos().toShortString());
+        debugLog("NC multiblock was validated at " + controllerPos().toShortString());
     }
 
     public boolean isInnerValid() {
@@ -492,9 +502,7 @@ public abstract class AbstractNCMultiblock implements Multiblock {
         if (hasToRefresh) return true;
         if (allBlocks.contains(pos)) {
             Block targetBlock = getBlockState(pos).getBlock();
-            if (targetBlock.getDescriptionId().matches(
-                    ".*fusion_proxy.*|.*fusion_core.*|.*controller.*|.*port.*|.*irradiator.*|.*rotor.*"
-            )) {
+            if (SPECIAL_BLOCKS.matcher(targetBlock.getDescriptionId()).matches()) {
                 if (getLevel().getBlockState(pos).is(targetBlock)) {
                     return true;
                 }
@@ -508,10 +516,10 @@ public abstract class AbstractNCMultiblock implements Multiblock {
         if (pos.getX() >= bottomLeft.getX() && pos.getY() >= bottomLeft.getY() && pos.getZ() >= bottomLeft.getZ()
                 && pos.getX() <= topRight.getX() && pos.getY() <= topRight.getY() && pos.getZ() <= topRight.getZ()) {
             Block targetBlock = getBlockState(pos).getBlock();
-            if (targetBlock.getDescriptionId().matches(
-                    ".*core_proxy.*|.*fusion_core.*|.*port.*|.*irradiator.*|.*rotor.*"
-            )) {
-                return true;
+            if (SPECIAL_BLOCKS.matcher(targetBlock.getDescriptionId()).matches()) {
+                if (getLevel().getBlockState(pos).is(targetBlock)) {
+                    return true;
+                }
             }
             hasToRefresh = true;
             controller.clearStats();
@@ -532,5 +540,9 @@ public abstract class AbstractNCMultiblock implements Multiblock {
         if (controllerPos == null) return false;
         if (getLevel() == null) return false;
         return getLevel().getChunkSource().hasChunk(controllerPos.getX() >> 4, controllerPos.getZ() >> 4);
+    }
+
+    public ChunkPos getChunk() {
+        return new ChunkPos(controllerPos.getX() >> 4, controllerPos.getZ() >> 4);
     }
 }

@@ -35,6 +35,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import static igentuman.nc.handler.config.CommonConfig.MISC_CONFIG;
 import static igentuman.nc.util.FileExtractor.preFetchProcessorsConfig;
 import static igentuman.nc.util.FileExtractor.unpackFilesFromFolderToConfig;
 
@@ -132,5 +133,11 @@ public class NuclearCraft {
     public void registerCaps(RegisterCapabilitiesEvent event) {
         event.register(WorldRadiation.class);
         event.register(PlayerRadiation.class);
+    }
+
+    public static void debugLog(String message) {
+        if (MISC_CONFIG.DEBUG_LOG.get()) {
+            LOGGER.debug(message);
+        }
     }
 }

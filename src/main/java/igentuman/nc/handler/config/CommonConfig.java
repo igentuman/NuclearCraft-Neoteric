@@ -19,6 +19,7 @@ public class CommonConfig {
     private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
     public static final EnergyGenerationConfig ENERGY_GENERATION = new EnergyGenerationConfig(BUILDER);
     public static final EnergyStorageConfig ENERGY_STORAGE = new EnergyStorageConfig(BUILDER);
+    public static final MiscConfig MISC_CONFIG = new MiscConfig(BUILDER);
 
     public static final StorageBlocksConfig STORAGE_BLOCKS = new StorageBlocksConfig(BUILDER);
     public static final ForgeConfigSpec spec = BUILDER.build();
@@ -159,6 +160,29 @@ public class CommonConfig {
                 return LITHIUM_ION_BATTERY_STORAGE.get();
             }
             return BatteryBlocks.all().get(code).config().getStorage();
+        }
+    }
+
+    public static class MiscConfig {
+        public ForgeConfigSpec.ConfigValue<Boolean> DEBUG_LOG;
+        public ForgeConfigSpec.ConfigValue<Boolean> SCHEDULED_VALIDATION;
+
+        public MiscConfig(ForgeConfigSpec.Builder builder) {
+            builder.push("Misc");
+
+            DEBUG_LOG = builder
+                    .comment("Debug logging. Enable in case of issues to collect more data")
+                    .define("debug_logging", false);
+
+            SCHEDULED_VALIDATION = builder
+                    .comment("Enable periodical re-validation of multiblocks.")
+                    .comment("Multiblocks are tracking block changes and re-validate structure if needed.")
+                    .comment("But it is possible when some events won't be tracked properly.")
+                    .comment("This is why each multiblock periodically re-check it's structure.")
+                    .comment("Disable if you have performance issues with multiblocks.")
+                    .define("scheduled_validation", true);
+
+            builder.pop();
         }
     }
 }

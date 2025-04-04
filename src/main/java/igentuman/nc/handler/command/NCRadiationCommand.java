@@ -26,6 +26,7 @@ public class NCRadiationCommand {
                             builder.suggest("clear_chunk");
                             return builder.buildFuture();
                         })
+                        .requires(cs -> cs.hasPermission(3))
                         .executes(NCRadiationCommand::executeCommand)
                 )
         );

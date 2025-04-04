@@ -57,7 +57,7 @@ public class TurbineConfig {
 
             MAX_SIZE = builder
                     .comment("Multiblock max size.")
-                    .defineInRange("max_size", 24, 5, 25);
+                    .defineInRange("max_size", 16, 5, 25);
 
             BLADE_FLOW = builder
                     .comment("Steam flow per blade mB/t")

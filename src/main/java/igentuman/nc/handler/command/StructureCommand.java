@@ -27,6 +27,7 @@ public class StructureCommand  {
                             builder.suggest("turbine");
                             return builder.buildFuture();
                         })
+                        .requires(cs -> cs.hasPermission(3))
                         .executes(StructureCommand::executeCommand)
                 )
         );

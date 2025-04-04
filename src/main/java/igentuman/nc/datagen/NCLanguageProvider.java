@@ -224,6 +224,8 @@ public class NCLanguageProvider extends LanguageProvider {
 
     private void tooltips() {
 
+        add("multiblock.build_in_chunk.advise", "Consider building structure within one chunk for better performance");
+
         add("decay_generator.fe_generation", "Result FE generation depends on attached blocks radiation");
         add("tooltip.nc.lightning_rod_charge", "Can charge NC Energy blocks by %s FE");
         add("tooltip.nc.jei.gas_to_fluid.desc","NC blocks automatically converts Mek Gasses into Fluids during input");

@@ -2,6 +2,7 @@ package igentuman.nc.block.entity.turbine;
 
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;
+import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -73,6 +74,7 @@ public class TurbinePortBE extends TurbineBE {
         }
 
         if(updated || (level.getGameTime() % 40 == 0 && controller().controllerEnabled)) {
+            MultiblockHandler.addIgnoreToUpdate(getBlockPos());
             setChanged();
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_NEIGHBORS);
         }

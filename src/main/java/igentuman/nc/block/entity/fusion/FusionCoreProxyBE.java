@@ -1,5 +1,6 @@
 package igentuman.nc.block.entity.fusion;
 
+import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -55,6 +56,7 @@ public class FusionCoreProxyBE extends FusionBE {
 
         if(wasSignal != core.analogSignal) {
             wasSignal = core.analogSignal;
+            MultiblockHandler.addIgnoreToUpdate(getBlockPos());
             setChanged();
             level.updateNeighbourForOutputSignal(worldPosition, getBlockState().getBlock());
         }

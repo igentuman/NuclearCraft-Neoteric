@@ -155,8 +155,6 @@ public abstract class AbstractNCMultiblock implements Multiblock {
         );
     }
 
-
-
     protected BlockState getBlockState(BlockPos pos) {
         if (bsCache.containsKey(pos.asLong())) {
             return bsCache.get(pos.asLong());
@@ -361,7 +359,7 @@ public abstract class AbstractNCMultiblock implements Multiblock {
         if (beCache.containsKey(pos.asLong())) {
             return beCache.get(pos.asLong());
         }
-        BlockEntity be = getLevel().getBlockEntity(pos);
+        BlockEntity be = getLevel().getExistingBlockEntity(pos);
         beCache.put(pos.asLong(), be);
         return be;
     }
@@ -381,8 +379,8 @@ public abstract class AbstractNCMultiblock implements Multiblock {
         for(BlockPos b: allBlocks) {
             if (!isLoaded(b)) continue;
             BlockEntity be = getBlockEntity(b);
-            if (be instanceof MultiblockAttachable) {
-                ((MultiblockAttachable) be).setMultiblock(null);
+            if (be instanceof MultiblockAttachable multiblockAttachable) {
+                multiblockAttachable.setMultiblock(null);
             }
         }
         dispose();

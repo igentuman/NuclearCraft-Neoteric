@@ -15,6 +15,7 @@ public class MultiblockHandler {
     private static final HashMap<String, AbstractNCMultiblock> multiblocks = new HashMap<>();
     private static final HashMap<Long, List<String>> chunkCache = new HashMap<>();
     private static final List<String> toRemove = new ArrayList<>();
+    private static final List<BlockPos> ignoreUpdate = new ArrayList<>();
 
     public static void addMultiblock(AbstractNCMultiblock multiblock) {
         if (multiblock.controller() == null) {
@@ -58,8 +59,18 @@ public class MultiblockHandler {
         addMultiblock(multiblock);
     }
 
+    public static void addIgnoreToUpdate(BlockPos blockPos) {
+        if (!ignoreUpdate.contains(blockPos)) {
+            ignoreUpdate.add(blockPos);
+        }
+    }
+
     public static void trackBlockChange(BlockPos pos) {
         if (pos == null || multiblocks.isEmpty()) {
+            return;
+        }
+        if (ignoreUpdate.contains(pos)) {
+            ignoreUpdate.remove(pos);
             return;
         }
         //Iterate chunk cache first for better performance

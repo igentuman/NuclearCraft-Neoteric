@@ -59,7 +59,7 @@ public class TurbineRotorBE extends TurbineBE {
         if(wasPos != getControllerPos()) {
             controllerPos = getControllerPos();
             level.setBlockAndUpdate(worldPosition, getBlockState().setValue(POWERED, getRotationSpeed() > 0));
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(POWERED, getRotationSpeed() > 0), Block.UPDATE_ALL);
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(POWERED, getRotationSpeed() > 0), Block.UPDATE_NEIGHBORS);
         }
     }
 

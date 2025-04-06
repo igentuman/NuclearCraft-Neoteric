@@ -1,0 +1,22 @@
+{
+  "blend": {
+    "func": "add",
+    "srcrgb": "srcalpha",
+    "dstrgb": "1-srcalpha"
+  },
+  "vertex": "rendertype_entity_translucent_cull",
+  "fragment": "nuclearcraft:distortion",
+  "attributes": [
+    "Position",
+    "Color",
+    "UV0"
+  ],
+  "samplers": [
+    { "name": "Sampler0" }
+  ],
+  "uniforms": [
+    { "name": "DistortionCenter", "type": "float", "count": 2, "values": [ 0.5, 0.5 ] },
+    { "name": "DistortionRadius", "type": "float", "count": 1, "values": [ 0.5 ] },
+    { "name": "DistortionAmount", "type": "float", "count": 1, "values": [ 0.5 ] }
+  ]
+}

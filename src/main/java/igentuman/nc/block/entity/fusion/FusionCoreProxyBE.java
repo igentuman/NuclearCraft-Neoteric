@@ -1,6 +1,11 @@
 package igentuman.nc.block.entity.fusion;
 
+import igentuman.api.nc.multiblock.MultiblockAttachable;
+import igentuman.nc.NuclearCraft;
+import igentuman.nc.block.entity.NuclearCraftBE;
+import igentuman.nc.multiblock.AbstractNCMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;
+import igentuman.nc.multiblock.fusion.FusionReactorMultiblock;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -18,17 +23,38 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import java.util.List;
+import java.util.Objects;
 
 import static igentuman.nc.compat.oc2.NCFusionReactorDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_CORE_PROXY_BE;
 import static igentuman.nc.util.ModUtil.*;
 
-public class FusionCoreProxyBE extends FusionBE {
+public class FusionCoreProxyBE extends NuclearCraftBE implements MultiblockAttachable<FusionReactorMultiblock, FusionCoreBE> {
+
+    @NBTField
+    protected BlockPos corePos;
+    protected FusionCoreBE core;
+    protected FusionReactorMultiblock multiblock;
+    protected byte wasSignal = 0;
 
     public FusionCoreProxyBE(BlockPos pPos, BlockState pBlockState) {
         super(FUSION_CORE_PROXY_BE.get(), pPos, pBlockState);
     }
-    protected byte wasSignal = 0;
+
+    @Override
+    public void setMultiblock(FusionReactorMultiblock multiblock) {
+        this.multiblock = multiblock;
+    }
+
+    public FusionReactorMultiblock getMultiblock() {
+        return multiblock;
+    }
+
+    public void setController(FusionCoreBE controllerBE) {
+        core = controllerBE;
+        corePos = controllerBE.getBlockPos();
+    }
+
     protected void validateCore()
     {
         if(core != null)
@@ -62,6 +88,30 @@ public class FusionCoreProxyBE extends FusionBE {
         }
     }
 
+    public FusionCoreBE controller() {
+
+        if (NuclearCraft.instance.isNcBeStopped
+                || (!getLevel().isClientSide() && Objects.requireNonNull(getLevel()).getServer() != null && !getLevel().getServer().isRunning())
+        ) return null;
+
+        if(getLevel().isClientSide() && corePos != null) {
+            return (FusionCoreBE) getLevel().getExistingBlockEntity(corePos);
+        }
+        if(core == null && corePos != null) {
+            core = (FusionCoreBE) getLevel().getExistingBlockEntity(corePos);
+        }
+        return core;
+    }
+
+    @Override
+    public void setRemoved()
+    {
+        if(canInvalidateCache() && !getLevel().isClientSide()) {
+            if (controller() != null) controller().invalidateCache();
+        }
+        super.setRemoved();
+    }
+
     public void setCore(FusionCoreBE core) {
         FusionCoreBE wasCore = this.core;
         this.core = core;
@@ -92,7 +142,7 @@ public class FusionCoreProxyBE extends FusionBE {
 
     protected <T> LazyOptional<T> fluidHandler(@Nullable Direction side)
     {
-        return controller().contentHandler.getFluidCapability(side);
+        return controller().contentHandler().getFluidCapability(side);
     }
 
     @Nonnull
@@ -125,14 +175,14 @@ public class FusionCoreProxyBE extends FusionBE {
 
         if(isMekanismLoadeed()) {
             if(cap == mekanism.common.capabilities.Capabilities.GAS_HANDLER) {
-                if(controller().contentHandler.hasFluidCapability(side)) {
-                    return LazyOptional.of(() -> controller().contentHandler.gasConverter(side));
+                if(controller().contentHandler().hasFluidCapability(side)) {
+                    return LazyOptional.of(() -> controller().contentHandler().gasConverter(side));
                 }
                 return LazyOptional.empty();
             }
             if(cap == mekanism.common.capabilities.Capabilities.SLURRY_HANDLER) {
-                if(controller().contentHandler.hasFluidCapability(side)) {
-                    return LazyOptional.of(() -> controller().contentHandler.getSlurryConverter(side));
+                if(controller().contentHandler().hasFluidCapability(side)) {
+                    return LazyOptional.of(() -> controller().contentHandler().getSlurryConverter(side));
                 }
                 return LazyOptional.empty();
             }
@@ -149,14 +199,14 @@ public class FusionCoreProxyBE extends FusionBE {
     public void sendOutEnergy() {
         int required = getCoreBE().rfAmplifiersPower + getCoreBE().magnetsPower;
         for(Direction side: List.of(Direction.UP, Direction.DOWN)) {
-            if(getCoreBE().energyStorage.getEnergyStored() > required) {
-                BlockEntity be = getLevel().getBlockEntity(getBlockPos().relative(side));
-                if(be instanceof BlockEntity && !(be instanceof FusionBE)) {
+            if(getCoreBE().energyStorage().getEnergyStored() > required) {
+                BlockEntity be = getLevel().getExistingBlockEntity(getBlockPos().relative(side));
+                if(be instanceof BlockEntity && !(be instanceof FusionCoreProxyBE) && !(be instanceof FusionCoreBE)) {
                     IEnergyStorage r = be.getCapability(ForgeCapabilities.ENERGY, side.getOpposite()).orElse(null);
                     if(r == null) break;
                     if(r.canReceive()) {
-                        int recieved = r.receiveEnergy(getCoreBE().energyStorage.getEnergyStored()-required, false);
-                        getCoreBE().energyStorage.setEnergy(getCoreBE().energyStorage.getEnergyStored()-recieved);
+                        int recieved = r.receiveEnergy(getCoreBE().energyStorage().getEnergyStored()-required, false);
+                        getCoreBE().energyStorage().setEnergy(getCoreBE().energyStorage().getEnergyStored()-recieved);
                     }
                 }
             }

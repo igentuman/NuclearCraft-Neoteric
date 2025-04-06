@@ -20,11 +20,11 @@ public class PumpBE extends NCProcessorBE {
     public void updateRecipe() {
         recipe = getRecipe();
         if (recipe != null) {
-            recipeInfo.setRecipe(recipe);
-            recipeInfo.ticks = (int) (getBaseProcessTime() * recipe.getTimeModifier());
-            recipeInfo.energy = getBasePower() * recipe.getEnergy();
-            recipeInfo.radiation = recipeInfo.recipe.getRadiation();
-            recipeInfo.be = this;
+            recipeInfo().setRecipe(recipe);
+            recipeInfo().ticks = (int) (getBaseProcessTime() * recipe.getTimeModifier());
+            recipeInfo().energy = getBasePower() * recipe.getEnergy();
+            recipeInfo().radiation = recipeInfo.recipe.getRadiation();
+            recipeInfo().be = this;
            // recipe.extractInputs(contentHandler);
         }
     }

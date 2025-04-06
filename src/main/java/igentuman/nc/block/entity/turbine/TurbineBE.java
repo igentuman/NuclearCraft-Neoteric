@@ -2,7 +2,7 @@ package igentuman.nc.block.entity.turbine;
 
 import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.multiblock.AbstractNCMultiblock;
-import igentuman.api.nc.MultiblockAttachable;
+import igentuman.api.nc.multiblock.MultiblockAttachable;
 import igentuman.nc.multiblock.turbine.TurbineRegistration;
 import igentuman.nc.multiblock.turbine.TurbineMultiblock;
 import net.minecraft.core.BlockPos;

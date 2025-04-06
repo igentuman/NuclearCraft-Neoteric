@@ -1,7 +1,9 @@
-package igentuman.api.nc;
+package igentuman.api.nc.multiblock;
 
 import igentuman.nc.multiblock.AbstractNCMultiblock;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -36,4 +38,14 @@ public interface MultiblockAttachable<M extends AbstractNCMultiblock, BE extends
             getMultiblock().onNeighborChange(state, pos, neighbor);
         }
     }
+
+    /**
+     * Called when nearby blocks destroyed
+     */
+    default void onBlockDestroyed(BlockState state, Level level, BlockPos pos, Explosion explosion) {
+        if(getMultiblock() != null) {
+            getMultiblock().onBlockDestroyed(state, level, pos, explosion);
+        }
+    }
+
 }

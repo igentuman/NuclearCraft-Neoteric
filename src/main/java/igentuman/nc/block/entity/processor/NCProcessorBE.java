@@ -12,7 +12,6 @@ import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.radiation.data.RadiationManager;
 import igentuman.nc.recipes.AbstractRecipe;
 import igentuman.nc.recipes.NcRecipeType;
-import igentuman.nc.recipes.RecipeInfo;
 import igentuman.nc.content.processors.ProcessorPrefab;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
@@ -358,20 +357,18 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
             skippedTicks++;
             return;
         }
-        boolean updated = manualUpdate();
-        contentHandler.setAllowedInputItems(this::getAllowedInputItems);
-        for(int i = 0; i < prefab().getSlotsConfig().getInputFluids(); i++) {
-            contentHandler.setAllowedInputFluids(i, this::getAllowedInputFluids);
-        }
+        boolean updated = forceUpdate();
+        boolean wasActive = isActive;
         processRecipe();
         handleRecipeOutput();
         updated = updated || contentHandler.tick();
         if(updated || wasUpdated) {
-            level.setBlockAndUpdate(worldPosition, getBlockState().setValue(ACTIVE, isActive));
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(ACTIVE, isActive), Block.UPDATE_ALL);
+            if (wasActive != isActive) {
+                level.setBlockAndUpdate(worldPosition, getBlockState().setValue(ACTIVE, isActive));
+            }
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(ACTIVE, isActive), Block.UPDATE_NEIGHBORS);
         }
         skippedTicks = 1;
-
     }
 
     public List<FluidStack> getAllowedInputFluids()
@@ -387,16 +384,20 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
         return allowedFluids;
     }
 
-    private boolean manualUpdate() {
+    private boolean forceUpdate() {
         if(manualUpdateCounter > 0) {
             manualUpdateCounter--;
             return false;
         }
-        manualUpdateCounter = 40;
+        manualUpdateCounter = 80;
         saveSideMapFlag = true;
         energyStorage.wasUpdated = true;
         upgradesHandler.wasUpdated = true;
         catalystHandler.wasUpdated = true;
+        contentHandler.setAllowedInputItems(this::getAllowedInputItems);
+        for(int i = 0; i < prefab().getSlotsConfig().getInputFluids(); i++) {
+            contentHandler.setAllowedInputFluids(i, this::getAllowedInputFluids);
+        }
         return true;
     }
 

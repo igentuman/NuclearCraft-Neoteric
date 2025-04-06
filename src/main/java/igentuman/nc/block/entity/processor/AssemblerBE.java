@@ -6,6 +6,7 @@ import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.util.annotation.NothingNullByDefault;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
@@ -20,6 +21,7 @@ public class AssemblerBE extends NCProcessorBE {
 
     public AssemblerBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, Processors.ASSEMBLER);
+        particle1 = ParticleTypes.ENCHANTED_HIT;
     }
 
     @NothingNullByDefault

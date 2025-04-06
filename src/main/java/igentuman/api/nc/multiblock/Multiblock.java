@@ -1,4 +1,4 @@
-package igentuman.api.nc;
+package igentuman.api.nc.multiblock;
 
 import net.minecraft.world.level.block.Block;
 import java.util.List;

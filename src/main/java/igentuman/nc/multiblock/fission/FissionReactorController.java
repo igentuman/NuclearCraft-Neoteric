@@ -1,6 +1,6 @@
 package igentuman.nc.multiblock.fission;
 
-import igentuman.api.nc.MultiblockController;
+import igentuman.api.nc.multiblock.MultiblockController;
 import igentuman.nc.block.entity.fission.FissionControllerBE;
 import net.minecraft.core.BlockPos;
 

@@ -1,6 +1,7 @@
 package igentuman.nc.block.entity.fission;
 
 import igentuman.nc.NuclearCraft;
+import igentuman.nc.block.entity.MultiblockControllerBE;
 import igentuman.nc.client.sound.SoundHandler;
 import igentuman.nc.compat.cc.NCSolidFissionReactorPeripheral;
 import igentuman.nc.compat.oc2.NCFissionReactorDevice;
@@ -11,6 +12,7 @@ import igentuman.nc.handler.sided.SlotModePair;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.item.ItemFuel;
 import igentuman.nc.multiblock.fission.FissionBlocks;
+import igentuman.nc.multiblock.fission.FissionReactor;
 import igentuman.nc.multiblock.fission.FissionReactorMultiblock;
 import igentuman.nc.radiation.ItemRadiation;
 import igentuman.nc.radiation.data.RadiationManager;
@@ -66,13 +68,12 @@ import static igentuman.nc.setup.registration.NcParticleTypes.RADIATION;
 import static igentuman.nc.util.ModUtil.*;
 import static net.minecraft.world.item.Items.AIR;
 
-public class FissionControllerBE extends FissionBE  {
+public class FissionControllerBE extends MultiblockControllerBE {
 
     public static String NAME = "fission_reactor_controller";
     public final SidedContentHandler contentHandler;
     public final CustomEnergyStorage energyStorage;
     protected final LazyOptional<IEnergyStorage> energy;
-    public BlockPos errorBlockPos = BlockPos.ZERO;
 
     @NBTField
     public boolean isSteamMode = false;
@@ -141,31 +142,30 @@ public class FissionControllerBE extends FissionBE  {
     private List<ItemStack> allowedInputs;
 
     public FissionControllerBE(BlockPos pPos, BlockState pBlockState) {
-        super(pPos, pBlockState, NAME);
+        super(FissionReactor.FISSION_BE.get(NAME).get(),pPos, pBlockState);
         multiblock = new FissionReactorMultiblock(this);
         contentHandler = new SidedContentHandler(
                 1, 1,
                 1+activeCoolersTypes().size(), 1);
-        contentHandler.setBlockEntity(this);
-        contentHandler.fluidCapability.setGlobalMode(0, SlotModePair.SlotMode.PULL);
-        contentHandler.fluidCapability.setGlobalMode(1, SlotModePair.SlotMode.PUSH);
-        contentHandler.itemHandler.setGlobalMode(0, SlotModePair.SlotMode.PULL);
-        contentHandler.itemHandler.setGlobalMode(1, SlotModePair.SlotMode.PUSH);
-        contentHandler.fluidCapability.tanks.get(0).setCapacity(10000);
-        contentHandler.fluidCapability.tanks.get(1).setCapacity(10000);
-        contentHandler.setAllowedInputFluids(0, this::getAllowedCoolants);
-        contentHandler.setAllowedInputFluids(1, this::getAllowedCoolantsOutput);
+        contentHandler().setBlockEntity(this);
+        contentHandler().fluidCapability.setGlobalMode(0, SlotModePair.SlotMode.PULL);
+        contentHandler().fluidCapability.setGlobalMode(1, SlotModePair.SlotMode.PUSH);
+        contentHandler().itemHandler.setGlobalMode(0, SlotModePair.SlotMode.PULL);
+        contentHandler().itemHandler.setGlobalMode(1, SlotModePair.SlotMode.PUSH);
+        contentHandler().fluidCapability.tanks.get(0).setCapacity(10000);
+        contentHandler().fluidCapability.tanks.get(1).setCapacity(10000);
+        contentHandler().setAllowedInputFluids(0, this::getAllowedCoolants);
+        contentHandler().setAllowedInputFluids(1, this::getAllowedCoolantsOutput);
         for(String type: activeCoolersTypes()) {
-            contentHandler.setAllowedInputFluids(
+            contentHandler().setAllowedInputFluids(
                     1+activeCoolersTypes().indexOf(type),
                     () -> FissionBlocks.heatsinks.get(type).getAllowedFluids()
                 );
-            contentHandler.fluidCapability.setGlobalMode(2+activeCoolersTypes().indexOf(type), SlotModePair.SlotMode.PULL);
+            contentHandler().fluidCapability.setGlobalMode(2+activeCoolersTypes().indexOf(type), SlotModePair.SlotMode.PULL);
         }
-        contentHandler.setAllowedInputItems(this::getAllowedInputItems);
+        contentHandler().setAllowedInputItems(this::getAllowedInputItems);
         energyStorage = createEnergy();
         energy = LazyOptional.of(() -> energyStorage);
-        recipeInfo = new RecipeInfo();
     }
 
     @Override
@@ -215,7 +215,7 @@ public class FissionControllerBE extends FissionBE  {
     @Override
     public ItemCapabilityHandler getItemInventory()
     {
-        return contentHandler.itemHandler;
+        return contentHandler().itemHandler;
     }
 
     public LazyOptional<IEnergyStorage> getEnergy() {
@@ -260,14 +260,14 @@ public class FissionControllerBE extends FissionBE  {
             FluidStack steam = boilingRecipe.getOutputFluids().get(0);
             FluidStack coolant = boilingRecipe.getInputFluids(0).get(0);
             double conversion = heatEff/boilingRecipe.conversionRate();
-            FluidStack currentCoolant = contentHandler.fluidCapability.getFluidInSlot(0);
-            FluidStack currentOutput = contentHandler.fluidCapability.getFluidInSlot(1);
+            FluidStack currentCoolant = contentHandler().fluidCapability.getFluidInSlot(0);
+            FluidStack currentOutput = contentHandler().fluidCapability.getFluidInSlot(1);
             if(!steam.isFluidEqual(currentOutput) && !currentOutput.isEmpty()) {
                 //No room? Heat up
                 heat += coolingPerTick()/2;
                 return;
             }
-            double capacity = contentHandler.fluidCapability.tanks.get(1).getCapacity() - currentOutput.getAmount();
+            double capacity = contentHandler().fluidCapability.tanks.get(1).getCapacity() - currentOutput.getAmount();
             maxSteamOutput = (int) (steam.getAmount()*conversion);
             int ops = (int) (capacity/steam.getAmount());
             capacity = ops*steam.getAmount();
@@ -279,11 +279,11 @@ public class FissionControllerBE extends FissionBE  {
                 heat += coolingPerTick()/2;
                 return;
             }
-            contentHandler.fluidCapability.tanks.get(0).drain(ops*coolant.getAmount(), IFluidHandler.FluidAction.EXECUTE);
+            contentHandler().fluidCapability.tanks.get(0).drain(ops*coolant.getAmount(), IFluidHandler.FluidAction.EXECUTE);
             FluidStack out = steam.copy();
             out.setAmount(ops*steam.getAmount());
 
-            contentHandler.fluidCapability.tanks.get(1).fill(out, IFluidHandler.FluidAction.EXECUTE);
+            contentHandler().fluidCapability.tanks.get(1).fill(out, IFluidHandler.FluidAction.EXECUTE);
             changed = true;
             if(ops < Math.floor(conversion)) {
                 heat += coolingPerTick()/(conversion - ops);
@@ -311,10 +311,10 @@ public class FissionControllerBE extends FissionBE  {
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if (cap == ForgeCapabilities.ITEM_HANDLER) {
-            return contentHandler.getItemCapability(side);
+            return contentHandler().getItemCapability(side);
         }
         if (cap == ForgeCapabilities.FLUID_HANDLER && canAcceptFluid()) {
-            return contentHandler.getFluidCapability(side);
+            return contentHandler().getFluidCapability(side);
         }
         if (cap == ForgeCapabilities.ENERGY && !isSteamMode && side == null) {
             return energy.cast();
@@ -326,14 +326,14 @@ public class FissionControllerBE extends FissionBE  {
         }
         if(isMekanismLoadeed() && isSteamMode) {
             if(cap == mekanism.common.capabilities.Capabilities.GAS_HANDLER) {
-                if(contentHandler.hasFluidCapability(side)) {
-                    return LazyOptional.of(() -> contentHandler.gasConverter(side));
+                if(contentHandler().hasFluidCapability(side)) {
+                    return LazyOptional.of(() -> contentHandler().gasConverter(side));
                 }
                 return LazyOptional.empty();
             }
             if(cap == mekanism.common.capabilities.Capabilities.SLURRY_HANDLER) {
-                if(contentHandler.hasFluidCapability(side)) {
-                    return LazyOptional.of(() -> contentHandler.getSlurryConverter(side));
+                if(contentHandler().hasFluidCapability(side)) {
+                    return LazyOptional.of(() -> contentHandler().getSlurryConverter(side));
                 }
                 return LazyOptional.empty();
             }
@@ -383,7 +383,7 @@ public class FissionControllerBE extends FissionBE  {
         }
         if (getMultiblock().isFormed()) {
             trackChanges(updateModerationLevel());
-            trackChanges(contentHandler.tick());
+            trackChanges(contentHandler().tick());
             if(controllerEnabled || reactivityLevel > 0) {
                 powered = processReaction();
                 trackChanges(powered);
@@ -428,7 +428,7 @@ public class FissionControllerBE extends FissionBE  {
         if(multiblock == null) {
             multiblock = new FissionReactorMultiblock(this);
         }
-        return super.getMultiblock();
+        return (FissionReactorMultiblock) multiblock;
     }
 
     private int delay = 20;
@@ -455,10 +455,10 @@ public class FissionControllerBE extends FissionBE  {
             depth = getMultiblock().depth();
             if(
                     getMultiblock().isFormed()
-                    && contentHandler.fluidCapability.tanks.get(0).getCapacity() != 5000*height*width*depth
+                    && contentHandler().fluidCapability.tanks.get(0).getCapacity() != 5000*height*width*depth
             ) {
-                contentHandler.fluidCapability.tanks.get(0).setCapacity(5000*height*width*depth);
-                contentHandler.fluidCapability.tanks.get(1).setCapacity(5000*height*width*depth);
+                contentHandler().fluidCapability.tanks.get(0).setCapacity(5000*height*width*depth);
+                contentHandler().fluidCapability.tanks.get(1).setCapacity(5000*height*width*depth);
             }
         }
 
@@ -520,7 +520,7 @@ public class FissionControllerBE extends FissionBE  {
     private boolean processReaction() {
         heatMultiplier = heatMultiplier() + collectedHeatMultiplier() - 1;
         if(recipeInfo.recipe != null && recipeInfo.isCompleted()) {
-            if(contentHandler.itemHandler.getStackInSlot(0).equals(ItemStack.EMPTY)) {
+            if(contentHandler().itemHandler.getStackInSlot(0).equals(ItemStack.EMPTY)) {
                 recipeInfo.clear();
             }
         }
@@ -583,7 +583,7 @@ public class FissionControllerBE extends FissionBE  {
             }
             if (recipe.handleOutputs(contentHandler)) {
                 recipeInfo.clear();
-                if(contentHandler.itemHandler.getStackInSlot(0).equals(ItemStack.EMPTY)) {
+                if(contentHandler().itemHandler.getStackInSlot(0).equals(ItemStack.EMPTY)) {
                     recipe = null;
                 }
             } else {
@@ -671,58 +671,6 @@ public class FissionControllerBE extends FissionBE  {
         return recipeInfo.recipe() != null;
     }
 
-    @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
-        if (tag.contains("Info")) {
-            CompoundTag infoTag = tag.getCompound("Info");
-            if (!isCasingValid || !isInternalValid) {
-                errorBlockPos = BlockPos.of(infoTag.getLong("erroredBlock"));
-                validationResult = ValidationResult.byId(infoTag.getInt("validationId"));
-            } else {
-                validationResult = ValidationResult.VALID;
-            }
-        }
-    }
-
-    @Override
-    public void saveAdditional(CompoundTag tag) {
-        super.saveAdditional(tag);
-        if (tag.contains("Info")) {
-            CompoundTag infoTag = tag.getCompound("Info");
-            infoTag.putInt("validationId", validationResult.id);
-            infoTag.putLong("erroredBlock", errorBlockPos.asLong());
-            tag.remove("Info");
-            tag.put("Info", infoTag);
-        }
-    }
-
-    @Override
-    public void loadClientData(CompoundTag tag) {
-        super.loadClientData(tag);
-        if (tag.contains("Info")) {
-            CompoundTag infoTag = tag.getCompound("Info");
-            if (!isCasingValid || !isInternalValid) {
-                errorBlockPos = BlockPos.of(infoTag.getLong("erroredBlock"));
-                validationResult = ValidationResult.byId(infoTag.getInt("validationId"));
-            } else {
-                validationResult = ValidationResult.VALID;
-            }
-        }
-    }
-
-    @Override
-    protected void saveClientData(CompoundTag tag) {
-        super.saveClientData(tag);
-        if (tag.contains("Info")) {
-            CompoundTag infoTag = tag.getCompound("Info");
-            infoTag.putInt("validationId", validationResult.id);
-            infoTag.putLong("erroredBlock", errorBlockPos.asLong());
-            tag.remove("Info");
-            tag.put("Info", infoTag);
-        }
-    }
-
     public Direction getFacing() {
         if (facing == null) {
             facing = getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);
@@ -767,12 +715,12 @@ public class FissionControllerBE extends FissionBE  {
     }
 
     public Object[] getFuel() {
-        return contentHandler.itemHandler.getSlotContent(0);
+        return contentHandler().itemHandler.getSlotContent(0);
     }
 
     public void voidFuel() {
-        contentHandler.voidSlot(0);
-        contentHandler.itemHandler.holdedInputs.clear();
+        contentHandler().voidSlot(0);
+        contentHandler().itemHandler.holdedInputs.clear();
     }
 
     public void forceShutdown() {
@@ -797,7 +745,7 @@ public class FissionControllerBE extends FissionBE  {
 
 
     public boolean hasCoolant() {
-        FluidStack coolant = contentHandler.fluidCapability.getFluidInSlot(0);
+        FluidStack coolant = contentHandler().fluidCapability.getFluidInSlot(0);
         if(coolant.isEmpty()) {
             boilingRecipe = null;
             return false;
@@ -881,8 +829,8 @@ public class FissionControllerBE extends FissionBE  {
     }
 
     public boolean hasEnoughCoolant(String coolant, int amount) {
-        for(int i = 0; i < contentHandler.fluidCapability.tanks.size(); i++) {
-            FluidStack stack = contentHandler.fluidCapability.tanks.get(i).getFluid();
+        for(int i = 0; i < contentHandler().fluidCapability.tanks.size(); i++) {
+            FluidStack stack = contentHandler().fluidCapability.tanks.get(i).getFluid();
             if(ForgeRegistries.FLUIDS.getKey(stack.getFluid()).getPath().equals(coolant) && stack.getAmount() >= amount) {
                 return true;
             }
@@ -891,10 +839,10 @@ public class FissionControllerBE extends FissionBE  {
     }
 
     public void drainCoolant(String coolant, int amount) {
-        for(int i = 0; i < contentHandler.fluidCapability.tanks.size(); i++) {
-            FluidStack stack = contentHandler.fluidCapability.tanks.get(i).getFluid();
+        for(int i = 0; i < contentHandler().fluidCapability.tanks.size(); i++) {
+            FluidStack stack = contentHandler().fluidCapability.tanks.get(i).getFluid();
             if(ForgeRegistries.FLUIDS.getKey(stack.getFluid()).getPath().equals(coolant) && stack.getAmount() >= amount) {
-                contentHandler.fluidCapability.tanks.get(i).drain(amount, IFluidHandler.FluidAction.EXECUTE);
+                contentHandler().fluidCapability.tanks.get(i).drain(amount, IFluidHandler.FluidAction.EXECUTE);
                 return;
             }
         }
@@ -909,7 +857,7 @@ public class FissionControllerBE extends FissionBE  {
 
         @Override
         public String getCodeId() {
-            return "fission_reactor_controller";
+            return NAME;
         }
 
         protected ItemFuel fuelItem;
@@ -984,7 +932,7 @@ public class FissionControllerBE extends FissionBE  {
 
         @Override
         public @NotNull ItemStack getToastSymbol() {
-            return new ItemStack(FISSION_BLOCKS.get("fission_reactor_controller").get());
+            return new ItemStack(FISSION_BLOCKS.get(NAME).get());
         }
 
         public double conversionRate() {

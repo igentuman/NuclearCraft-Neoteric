@@ -26,4 +26,13 @@ public class NCRenderType extends RenderType {
                 .createCompositeState(true);
         return create("nc_blackhole", DefaultVertexFormat.POSITION_COLOR_TEX, VertexFormat.Mode.QUADS, 256, true, true, state);
     });
+
+    public static final Function<ResourceLocation, RenderType> DISTORTION = Util.memoize(resourceLocation -> {
+        RenderType.CompositeState state = RenderType.CompositeState.builder()
+                .setShaderState(NCShaders.DISTORTION.shard)
+                .setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
+                .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
+                .createCompositeState(true);
+        return create("distortion", DefaultVertexFormat.POSITION_COLOR_TEX, VertexFormat.Mode.QUADS, 256, true, true, state);
+    });
 }

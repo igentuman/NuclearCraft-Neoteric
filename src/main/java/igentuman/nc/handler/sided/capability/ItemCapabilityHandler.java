@@ -313,7 +313,7 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
     }
 
     public boolean pushItems(Direction dir, boolean forceFlag, BlockPos pos) {
-        BlockEntity be = tile.getLevel().getBlockEntity(pos.relative(dir));
+        BlockEntity be = tile.getLevel().getExistingBlockEntity(pos.relative(dir));
         if(be == null) return false;
         LazyOptional<IItemHandler> cap = be.getCapability(ForgeCapabilities.ITEM_HANDLER, dir.getOpposite());
         if(cap.isPresent()) {
@@ -338,7 +338,7 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
     }
 
     public boolean pullItems(Direction dir, boolean forceFlag, BlockPos pos) {
-        BlockEntity be = tile.getLevel().getBlockEntity(pos.relative(dir));
+        BlockEntity be = tile.getLevel().getExistingBlockEntity(pos.relative(dir));
         if(be == null) return false;
         LazyOptional<IItemHandler> cap = be.getCapability(ForgeCapabilities.ITEM_HANDLER, dir.getOpposite());
         if(!cap.isPresent()) {
@@ -382,7 +382,7 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
 
     public boolean canPushExcessItems(int i, ItemStack outputItem) {
         for(Direction dir: Direction.values()) {
-            BlockEntity be = tile.getLevel().getBlockEntity(tile.getBlockPos().relative(dir));
+            BlockEntity be = tile.getLevel().getExistingBlockEntity(tile.getBlockPos().relative(dir));
             if(be == null) continue;
             LazyOptional<IItemHandler> cap = be.getCapability(ForgeCapabilities.ITEM_HANDLER, dir.getOpposite());
             if(cap.isPresent()) {
@@ -404,7 +404,7 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
 
     public ItemStack pushExcessItems(int i, ItemStack outputItem) {
         for(Direction dir: Direction.values()) {
-            BlockEntity be = tile.getLevel().getBlockEntity(tile.getBlockPos().relative(dir));
+            BlockEntity be = tile.getLevel().getExistingBlockEntity(tile.getBlockPos().relative(dir));
             if(be == null) continue;
             LazyOptional<IItemHandler> cap = be.getCapability(ForgeCapabilities.ITEM_HANDLER, dir.getOpposite());
             if(cap.isPresent()) {

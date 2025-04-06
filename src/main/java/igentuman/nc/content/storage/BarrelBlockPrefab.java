@@ -20,7 +20,7 @@ public class BarrelBlockPrefab {
     }
 
     public int getCapacity() {
-        return capacity*1000;
+        return capacity;
     }
 
     public BarrelBlockPrefab setCapacity(int capacity) {

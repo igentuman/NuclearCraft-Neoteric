@@ -34,6 +34,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.NotNull;
@@ -56,13 +57,14 @@ public class NuclearCraftBE extends BlockEntity {
     public HashMap<Integer, SideModeToggleable.SideMode> sideConfig = new HashMap<>();
     public SidedContentHandler contentHandler;
     protected CustomEnergyStorage energyStorage;
-    public RecipeInfo recipeInfo;
+    public final RecipeInfo recipeInfo;
     public UpgradesHandler upgradesHandler;
     public CatalystHandler catalystHandler;
     protected NcRecipe recipe;
     protected boolean saveSideMapFlag = true;
     public boolean wasUpdated = true;
     public HashMap<String, NcRecipe> cachedRecipes = new HashMap<>();
+    protected LazyOptional<IEnergyStorage> energy;
 
     public NuclearCraftBE(BlockEntityType<?> pType, BlockPos pPos, BlockState pBlockState) {
         super(pType, pPos, pBlockState);
@@ -495,5 +497,8 @@ public class NuclearCraftBE extends BlockEntity {
 
     public void setPlayer(ServerPlayer player) {
         playerUID = player.getUUID();
+    }
+
+    public void tickClient() {
     }
 }

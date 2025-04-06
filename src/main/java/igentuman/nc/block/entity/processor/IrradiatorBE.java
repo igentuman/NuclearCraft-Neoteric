@@ -1,20 +1,20 @@
 package igentuman.nc.block.entity.processor;
 
-import igentuman.nc.block.entity.fission.FissionBE;
 import igentuman.nc.block.entity.fission.FissionControllerBE;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.multiblock.AbstractNCMultiblock;
-import igentuman.api.nc.MultiblockAttachable;
+import igentuman.api.nc.multiblock.MultiblockAttachable;
+import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.radiation.data.RadiationManager;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.type.NcRecipe;
+import igentuman.nc.util.CustomEnergyStorage;
 import igentuman.nc.util.annotation.NBTField;
 import igentuman.nc.util.annotation.NothingNullByDefault;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class IrradiatorBE extends NCProcessorBE implements MultiblockAttachable {
@@ -28,6 +28,7 @@ public class IrradiatorBE extends NCProcessorBE implements MultiblockAttachable 
 
     public IrradiatorBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, Processors.IRRADIATOR);
+        particle1 = ParticleTypes.HAPPY_VILLAGER;
     }
 
     @Override
@@ -61,17 +62,10 @@ public class IrradiatorBE extends NCProcessorBE implements MultiblockAttachable 
         double wasFuel = fuelMultiplier;
         irradiativeFlux = 0;
         fuelMultiplier = 0;
-        upadteMultiblockConnection();
-        if (multiblock != null) {
-            if (multiblock.isFormed()) {
-                if (multiblock.controller() != null) {
-                    controller = (FissionControllerBE) multiblock.controller().controllerBE();
-                    if(controller.isProcessing()) {
-                        irradiativeFlux = controller.irradiationConnections;
-                        fuelMultiplier = controller.recipeInfo.recipe().getRadiation()*10000;
-                    }
-                }
-            }
+        //upadteMultiblockConnection();
+        if (controller() != null && controller().isProcessing()) {
+            irradiativeFlux = controller().irradiationConnections;
+            fuelMultiplier = controller().recipeInfo.recipe().getRadiation()*10000;
         }
         if(speedMultiplier() > 0) {
             super.tickServer();
@@ -80,6 +74,7 @@ public class IrradiatorBE extends NCProcessorBE implements MultiblockAttachable 
             setChanged();
         }
     }
+
     @Override
     public void processRecipe() {
         if(!hasRecipe()) {
@@ -90,34 +85,35 @@ public class IrradiatorBE extends NCProcessorBE implements MultiblockAttachable 
             return;
         }
 
-        if(energyStorage.getEnergyStored() < energyPerTick()*skippedTicks) {
+        if(energyStorage().getEnergyStored() < energyPerTick()*skippedTicks) {
             isActive = false;
             return;
         }
-        boolean processed = recipeInfo.process(speedMultiplier()*skippedTicks);
+        boolean processed = recipeInfo().process(speedMultiplier()*skippedTicks);
         if(processed) {
             controller().addIrradiationHeat();
         }
-        if(recipeInfo.radiation != 1D) {
-            RadiationManager.get(getLevel()).addRadiation(getLevel(), (recipeInfo.radiation/1000000)*speedMultiplier()*skippedTicks, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ());
+        if(recipeInfo().radiation != 1D) {
+            RadiationManager.get(getLevel()).addRadiation(getLevel(), (recipeInfo().radiation/1000000)*speedMultiplier()*skippedTicks, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ());
         }
         isActive = true;
         setChanged();
-        if(!recipeInfo.isCompleted() && hasRecipe()) {
-            energyStorage.consumeEnergy(energyPerTick()*skippedTicks);
+        if(!recipeInfo().isCompleted() && hasRecipe()) {
+            energyStorage().consumeEnergy(energyPerTick()*skippedTicks);
         }
     }
 
+    @Deprecated
     public void upadteMultiblockConnection()
     {
-        for (Direction d: Direction.values()) {
-            if(d.equals(getFacing()) || d.equals(getFacing().getOpposite())) continue;
-            BlockPos toCheck = getBlockPos().relative(d);
-            BlockEntity be = getLevel().getBlockEntity(toCheck);
-            if(be instanceof FissionBE) {
-                multiblock = ((FissionBE) be).getMultiblock();
-                controller = (FissionControllerBE) ((FissionBE) be).controller();
+        AbstractNCMultiblock mb = MultiblockHandler.getMultiblockByPos(getBlockPos());
+        if(mb != null) {
+            if(mb.isFormed()) {
+                if(mb.controller() != null) {
+                    controller = (FissionControllerBE) mb.controller().controllerBE();
+                }
             }
+            multiblock = mb;
         }
     }
 

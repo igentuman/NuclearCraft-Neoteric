@@ -36,7 +36,7 @@ import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BE;
 public class BlackHoleBlock extends Block implements EntityBlock {
 
     public BlackHoleBlock(Properties pProperties) {
-        super(pProperties.sound(SoundType.METAL).noOcclusion());
+        super(pProperties.sound(SoundType.SCULK_SENSOR).noOcclusion().lightLevel(state -> 8));
     }
     public static final BooleanProperty ACTIVE = BlockStateProperties.POWERED;
 
@@ -56,6 +56,11 @@ public class BlackHoleBlock extends Block implements EntityBlock {
             return null;
         }
         return super.getVisualShape(pState, pLevel, pPos, pContext);
+    }
+
+    @Override
+    public int getLightEmission(BlockState state, BlockGetter level, BlockPos pos) {
+        return 8;
     }
 
     @Override

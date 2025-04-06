@@ -6,12 +6,14 @@ import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.util.annotation.NothingNullByDefault;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
 public class DecayHastenerBE extends NCProcessorBE {
 
     public DecayHastenerBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, Processors.DECAY_HASTENER);
+        particle1 = ParticleTypes.GLOW;
     }
 
     @NothingNullByDefault

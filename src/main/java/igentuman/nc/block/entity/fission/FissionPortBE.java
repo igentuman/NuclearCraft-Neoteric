@@ -1,15 +1,21 @@
 package igentuman.nc.block.entity.fission;
 
+import igentuman.api.nc.multiblock.MultiblockAttachable;
 import igentuman.nc.NuclearCraft;
+import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
+import igentuman.nc.multiblock.AbstractNCMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;
+import igentuman.nc.multiblock.fission.FissionReactor;
+import igentuman.nc.multiblock.fission.FissionReactorMultiblock;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.common.capabilities.Capability;
@@ -25,21 +31,22 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static igentuman.nc.compat.oc2.NCFissionReactorDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.util.ModUtil.*;
 
-public class FissionPortBE extends FissionBE {
+public class FissionPortBE extends NuclearCraftBE implements MultiblockAttachable {
+
     public static String NAME = "fission_reactor_port";
     @NBTField
     public byte analogSignal = 0;
     @NBTField
     public byte redstoneMode = SignalSource.HEAT;
-
     @NBTField
     public BlockPos controllerPos;
-
     @NBTField
     public boolean isSteamMode = false;
+    protected FissionReactorMultiblock multiblock;
+    protected FissionControllerBE controller;
 
     public FissionPortBE(BlockPos pPos, BlockState pBlockState) {
-        super(pPos, pBlockState, NAME);
+        super(FissionReactor.FISSION_BE.get(NAME).get(), pPos, pBlockState);
     }
     public Direction getFacing() {
         return getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);
@@ -53,11 +60,12 @@ public class FissionPortBE extends FissionBE {
         return Objects.requireNonNull(getLevel()).getBestNeighborSignal(worldPosition);
     }
 
+    public FissionReactorMultiblock getMultiblock() {
+        return multiblock;
+    }
 
-    @Override
     public void tickServer() {
         if (NuclearCraft.instance.isNcBeStopped) return;
-        super.tickServer();
         if (getMultiblock() == null || controller() == null) return;
         int wasSignal = analogSignal;
         boolean updated = sendOutPower();
@@ -87,7 +95,6 @@ public class FissionPortBE extends FissionBE {
             case SignalSource.SWITCH -> controller().toggleReactor(analogSignal > 0);
             case SignalSource.MODERATOR -> controller().adjustModerator(analogSignal);
         }
-
 
         if (updated) {
             MultiblockHandler.addIgnoreToUpdate(getBlockPos());
@@ -120,12 +127,12 @@ public class FissionPortBE extends FissionBE {
 
     protected ItemCapabilityHandler itemHandler()
     {
-        return controller().contentHandler.itemHandler;
+        return controller().contentHandler().itemHandler;
     }
 
     protected FluidCapabilityHandler fluidHandler()
     {
-        return controller().contentHandler.fluidCapability;
+        return controller().contentHandler().fluidCapability;
     }
 
     @Nonnull
@@ -133,7 +140,7 @@ public class FissionPortBE extends FissionBE {
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if (controller() == null) return super.getCapability(cap, side);
         if (cap == ForgeCapabilities.ITEM_HANDLER) {
-            return controller().contentHandler.itemCapability.cast();
+            return controller().contentHandler().itemCapability.cast();
         }
         if (cap == ForgeCapabilities.FLUID_HANDLER && controller().canAcceptFluid()) {
             return controller().getCapability(cap, side);
@@ -144,14 +151,14 @@ public class FissionPortBE extends FissionBE {
 
         if (isMekanismLoadeed() && isSteamMode) {
             if (cap == mekanism.common.capabilities.Capabilities.GAS_HANDLER) {
-                if (controller().contentHandler.hasFluidCapability(side)) {
-                    return LazyOptional.of(() -> controller().contentHandler.gasConverter(side));
+                if (controller().contentHandler().hasFluidCapability(side)) {
+                    return LazyOptional.of(() -> controller().contentHandler().gasConverter(side));
                 }
                 return LazyOptional.empty();
             }
             if (cap == mekanism.common.capabilities.Capabilities.SLURRY_HANDLER) {
-                if (controller().contentHandler.hasFluidCapability(side)) {
-                    return LazyOptional.of(() -> controller().contentHandler.getSlurryConverter(side));
+                if (controller().contentHandler().hasFluidCapability(side)) {
+                    return LazyOptional.of(() -> controller().contentHandler().getSlurryConverter(side));
                 }
                 return LazyOptional.empty();
             }
@@ -173,7 +180,7 @@ public class FissionPortBE extends FissionBE {
 
     protected boolean sendOutPower() {
         if (getMultiblock() == null) return false;
-        AtomicInteger capacity = new AtomicInteger(controller().energyStorage.getEnergyStored());
+        AtomicInteger capacity = new AtomicInteger(controller().energyStorage().getEnergyStored());
         if (capacity.get() > 0) {
             for (Direction direction : Direction.values()) {
                 BlockEntity be = getLevel().getExistingBlockEntity(worldPosition.relative(direction));
@@ -182,9 +189,9 @@ public class FissionPortBE extends FissionBE {
                 }
                 boolean doContinue = be.getCapability(ForgeCapabilities.ENERGY, direction.getOpposite()).map(handler -> {
                             if (handler.canReceive()) {
-                                int received = handler.receiveEnergy(Math.min(capacity.get(), controller().energyStorage.getMaxEnergyStored()), false);
+                                int received = handler.receiveEnergy(Math.min(capacity.get(), controller().energyStorage().getMaxEnergyStored()), false);
                                 capacity.addAndGet(-received);
-                                controller().energyStorage.consumeEnergy(received);
+                                controller().energyStorage().consumeEnergy(received);
                                 setChanged();
                                 return capacity.get() > 0;
                             } else {
@@ -204,6 +211,11 @@ public class FissionPortBE extends FissionBE {
     @Override
     public boolean canInvalidateCache() {
         return false;
+    }
+
+    @Override
+    public void setMultiblock(AbstractNCMultiblock multiblock) {
+        this.multiblock = (FissionReactorMultiblock) multiblock;
     }
 
     @Override
@@ -233,41 +245,9 @@ public class FissionPortBE extends FissionBE {
         return controller;
     }
 
-    @Override
-    public void load(CompoundTag tag) {
-        if (tag.contains("Info")) {
-            CompoundTag infoTag = tag.getCompound("Info");
-            readTagData(infoTag);
-        }
-        super.load(tag);
-    }
-
-    @Override
-    public void saveAdditional(CompoundTag tag) {
-        CompoundTag infoTag = new CompoundTag();
-        saveTagData(infoTag);
-        tag.put("Info", infoTag);
-    }
-
-    @Override
-    public void loadClientData(CompoundTag tag) {
-        if (tag.contains("Info")) {
-            CompoundTag infoTag = tag.getCompound("Info");
-            readTagData(infoTag);
-        }
-    }
-
-    @Override
-    protected void saveClientData(CompoundTag tag) {
-        CompoundTag infoTag = new CompoundTag();
-        tag.put("Info", infoTag);
-        saveTagData(infoTag);
-    }
-
-
     public int getEnergyStored() {
         if (controller() == null) return 0;
-        return controller().energyStorage.getEnergyStored();
+        return controller().energyStorage().getEnergyStored();
     }
 
     public double getDepletionProgress() {
@@ -277,7 +257,7 @@ public class FissionPortBE extends FissionBE {
 
     public int getMaxEnergyStored() {
         if (controller() == null) return 0;
-        return controller().energyStorage.getMaxEnergyStored();
+        return controller().energyStorage().getMaxEnergyStored();
     }
 
     public int energyPerTick() {

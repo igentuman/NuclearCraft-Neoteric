@@ -6,6 +6,7 @@ import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.util.annotation.NothingNullByDefault;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -13,6 +14,7 @@ public class ElectrolyzerBE extends NCProcessorBE {
 
     public ElectrolyzerBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, Processors.ELECTROLYZER);
+        particle1 = ParticleTypes.ELECTRIC_SPARK;
     }
 
     @NothingNullByDefault

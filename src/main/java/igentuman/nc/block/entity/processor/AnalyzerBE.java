@@ -7,7 +7,9 @@ import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.recipes.type.OreVeinRecipe;
 import igentuman.nc.util.annotation.NothingNullByDefault;
+import net.minecraft.client.particle.Particle;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
@@ -25,6 +27,7 @@ public class AnalyzerBE extends NCProcessorBE {
 
     public AnalyzerBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, Processors.ANALYZER);
+        particle1 = ParticleTypes.WAX_OFF;
     }
 
     @NothingNullByDefault

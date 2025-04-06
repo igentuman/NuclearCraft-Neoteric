@@ -44,7 +44,11 @@ public class MultiblockHandler {
         for (List<String> list : chunkCache.values()) {
             list.remove(id);
         }
-        for (long chunkPos : chunkCache.keySet()) {
+        List<Long> chunkPosSet = chunkCache.keySet().stream().toList();
+        for (long chunkPos : chunkPosSet) {
+            if (!chunkCache.containsKey(chunkPos)) {
+                continue;
+            }
             List<String> list = chunkCache.get(chunkPos);
             if (list.isEmpty()) {
                 chunkCache.remove(chunkPos);
@@ -157,5 +161,22 @@ public class MultiblockHandler {
             }
         }
         return false;
+    }
+
+    public static AbstractNCMultiblock getMultiblockByPos(BlockPos pos) {
+        if (multiblocks.isEmpty()) {
+            return null;
+        }
+        long chunkPos = new ChunkPos(pos.getX() >> 4, pos.getZ() >> 4).toLong();
+        if (chunkCache.containsKey(chunkPos)) {
+            List<String> list = chunkCache.get(chunkPos);
+            for (String id : list) {
+                AbstractNCMultiblock multiblock = multiblocks.get(id);
+                if (multiblock == null) {
+                    continue;
+                }
+            }
+        }
+        return null;
     }
 }

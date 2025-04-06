@@ -1,7 +1,5 @@
 package igentuman.nc.block.fusion;
 
-import igentuman.nc.block.entity.fission.FissionPortBE;
-import igentuman.nc.block.entity.fusion.FusionBE;
 import igentuman.nc.block.entity.fusion.FusionCoreBE;
 import igentuman.nc.block.entity.fusion.FusionCoreProxyBE;
 import igentuman.nc.container.FusionCoreContainer;
@@ -98,13 +96,13 @@ public class FusionCoreProxyBlock extends FusionBeBlock {
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         if (level.isClientSide()) {
             return (lvl, pos, blockState, t) -> {
-                if (t instanceof FusionBE tile) {
+                if (t instanceof FusionCoreProxyBE tile) {
                     tile.tickClient();
                 }
             };
         }
         return (lvl, pos, blockState, t)-> {
-            if (t instanceof FusionBE tile) {
+            if (t instanceof FusionCoreProxyBE tile) {
                 tile.tickServer();
             }
         };

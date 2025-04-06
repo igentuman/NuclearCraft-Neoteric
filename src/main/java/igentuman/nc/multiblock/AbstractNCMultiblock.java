@@ -1,9 +1,8 @@
 package igentuman.nc.multiblock;
 
-import igentuman.api.nc.MultiblockAttachable;
-import igentuman.api.nc.Multiblock;
-import igentuman.api.nc.MultiblockController;
-import igentuman.nc.NuclearCraft;
+import igentuman.api.nc.multiblock.MultiblockAttachable;
+import igentuman.api.nc.multiblock.Multiblock;
+import igentuman.api.nc.multiblock.MultiblockController;
 import igentuman.nc.util.NCBlockPos;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

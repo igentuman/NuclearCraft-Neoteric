@@ -6,6 +6,7 @@ import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.util.annotation.NothingNullByDefault;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -13,6 +14,7 @@ public class FuelReprocessorBE extends NCProcessorBE {
 
     public FuelReprocessorBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, Processors.FUEL_REPROCESSOR);
+        particle1 = ParticleTypes.HAPPY_VILLAGER;
     }
 
     @NothingNullByDefault

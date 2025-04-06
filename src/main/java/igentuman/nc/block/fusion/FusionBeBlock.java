@@ -1,6 +1,8 @@
 package igentuman.nc.block.fusion;
 
-import igentuman.nc.block.entity.fusion.FusionBE;
+import igentuman.api.nc.multiblock.MultiblockAttachable;
+import igentuman.nc.block.entity.fusion.FusionCoreProxyBE;
+import igentuman.nc.multiblock.AbstractNCMultiblock;
 import igentuman.nc.multiblock.fusion.FusionReactor;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -63,13 +65,13 @@ public class FusionBeBlock extends Block implements EntityBlock {
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         if (level.isClientSide()) {
             return (lvl, pos, blockState, t) -> {
-                if (t instanceof FusionBE tile) {
+                if (t instanceof FusionCoreProxyBE tile) {
                     tile.tickClient();
                 }
             };
         }
         return (lvl, pos, blockState, t)-> {
-            if (t instanceof FusionBE tile) {
+            if (t instanceof FusionCoreProxyBE tile) {
                 tile.tickServer();
             }
         };
@@ -77,14 +79,14 @@ public class FusionBeBlock extends Block implements EntityBlock {
 
     @Override
     public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor){
-        ((FusionBE)level.getBlockEntity(pos)).onNeighborChange(state,  pos, neighbor);
+        ((MultiblockAttachable<AbstractNCMultiblock, BlockEntity>)level.getBlockEntity(pos)).onNeighborChange(state,  pos, neighbor);
     }
 
     @Override
     public void onBlockExploded(BlockState state, Level level, BlockPos pos, Explosion explosion)
     {
         if(!level.isClientSide) {
-            ((FusionBE)level.getBlockEntity(pos)).onBlockDestroyed(state, level, pos, explosion);
+            ((MultiblockAttachable<AbstractNCMultiblock, BlockEntity>)level.getBlockEntity(pos)).onBlockDestroyed(state, level, pos, explosion);
         }
         super.onBlockExploded(state, level, pos, explosion);
     }
@@ -93,7 +95,7 @@ public class FusionBeBlock extends Block implements EntityBlock {
     public boolean onDestroyedByPlayer(BlockState state, Level level, BlockPos pos, Player player, boolean willHarvest, FluidState fluid)
     {
         if(!level.isClientSide) {
-            ((FusionBE)level.getBlockEntity(pos)).onBlockDestroyed(state, level, pos, null);
+            ((MultiblockAttachable<AbstractNCMultiblock, BlockEntity>)level.getBlockEntity(pos)).onBlockDestroyed(state, level, pos, null);
         }
        return super.onDestroyedByPlayer(state, level, pos, player, willHarvest, fluid);
     }

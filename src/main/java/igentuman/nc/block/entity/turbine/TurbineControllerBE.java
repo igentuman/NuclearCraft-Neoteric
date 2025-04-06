@@ -115,7 +115,6 @@ public class TurbineControllerBE extends TurbineBE {
         contentHandler.setAllowedInputFluids(0, this::getAllowedInputFluids);
         energyStorage = createEnergy();
         energy = LazyOptional.of(() -> energyStorage);
-        recipeInfo = new RecipeInfo();
     }
 
     @Override

@@ -15,6 +15,7 @@ import igentuman.nc.util.annotation.NothingNullByDefault;
 import igentuman.nc.util.insitu_leaching.WorldVeinsManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -69,6 +70,7 @@ public class LeacherBE extends NCProcessorBE {
 
     public LeacherBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, Processors.LEACHER);
+        particle1 = ParticleTypes.EFFECT;
     }
 
     @Override
@@ -155,7 +157,7 @@ public class LeacherBE extends NCProcessorBE {
 
     public boolean isPumpValid(NCBlockPos pos, int id) {
         for (int y = 0; y < 2; y++) {
-            BlockEntity be = getLevel().getBlockEntity(pos.below());
+            BlockEntity be = getLevel().getExistingBlockEntity(pos.below());
             if (be instanceof PumpBE) {
                 pumps[id] = (PumpBE) be;
                 return pumps[id].isInSituValid();
@@ -224,7 +226,7 @@ public class LeacherBE extends NCProcessorBE {
 
     public void gatherOre()
     {
-        if(!contentHandler.itemHandler.getStackInSlot(0).isEmpty()) {
+        if(!contentHandler().itemHandler.getStackInSlot(0).isEmpty()) {
             return;
         }
         if(!hasCatalyst()) {
@@ -232,9 +234,9 @@ public class LeacherBE extends NCProcessorBE {
             return;
         }
 
-        catalyst = catalystHandler.getStackInSlot(0);
+        catalyst = catalystHandler().getStackInSlot(0);
         ItemStack ore = ItemStack.EMPTY;
-        if(contentHandler.fluidCapability.getFluidInSlot(0).isEmpty()) {
+        if(contentHandler().fluidCapability.getFluidInSlot(0).isEmpty()) {
             leacherState = NO_ACID;
             return;
         }
@@ -250,7 +252,7 @@ public class LeacherBE extends NCProcessorBE {
                 ore = useIECoreSample();
             }
         }
-        contentHandler.itemHandler.insertItemInternal(0, ore, false);
+        contentHandler().itemHandler.insertItemInternal(0, ore, false);
     }
 
     //todo implement
@@ -335,7 +337,7 @@ public class LeacherBE extends NCProcessorBE {
                         ItemStack toMine = new ItemStack(toCheck.getBlock());
                         if(isMinable(toMine)) {
                             currentMiningPos = new BlockPos(tempMiningPos);
-                            if(contentHandler.itemHandler.insertItemInternal(0, toMine, true).isEmpty()) {
+                            if(contentHandler().itemHandler.insertItemInternal(0, toMine, true).isEmpty()) {
                                 if(player == null) {
                                     if (playerUID == null) {
                                         playerUID = fakePlayerUUID;
@@ -349,7 +351,7 @@ public class LeacherBE extends NCProcessorBE {
                                 if(player == null) return false;
                                 if(!getLevel().mayInteract(player, tempMiningPos.y(y).x(x+startX).z(z+startZ))) return false;
                                 if(!getLevel().destroyBlock(tempMiningPos.y(y).x(x+startX).z(z+startZ), false, player)) return false;
-                                contentHandler.itemHandler.insertItemInternal(0, toMine, false);
+                                contentHandler().itemHandler.insertItemInternal(0, toMine, false);
                                 return true;
                             }
                         }
@@ -393,6 +395,6 @@ public class LeacherBE extends NCProcessorBE {
         if(slotId == 1) return SlotModePair.SlotMode.DISABLED.ordinal();
         setChanged();
         saveSideMapFlag = true;
-        return contentHandler.toggleSideConfig(slotId, direction);
+        return contentHandler().toggleSideConfig(slotId, direction);
     }
 }

@@ -113,30 +113,6 @@
       "values": [
         0
       ]
-    },
-    {
-      "name": "DistortionAmount",
-      "type": "float",
-      "count": 1,
-      "values": [
-        0.5
-      ]
-    },
-    {
-      "name": "BlackholeRadius",
-      "type": "float",
-      "count": 1,
-      "values": [
-        4.5
-      ]
-    },
-    {
-      "name": "Time",
-      "type": "float",
-      "count": 1,
-      "values": [
-        0.3
-      ]
     }
   ]
 }

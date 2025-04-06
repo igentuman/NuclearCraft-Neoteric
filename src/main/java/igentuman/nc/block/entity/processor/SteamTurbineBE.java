@@ -9,6 +9,7 @@ import igentuman.nc.util.annotation.NBTField;
 import igentuman.nc.util.annotation.NothingNullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -23,6 +24,7 @@ public class SteamTurbineBE extends NCProcessorBE {
 
     public SteamTurbineBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, Processors.STEAM_TURBINE);
+        particle1 = ParticleTypes.EFFECT;
     }
 
     @Override

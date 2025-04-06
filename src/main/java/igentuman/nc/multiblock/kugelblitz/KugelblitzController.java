@@ -1,6 +1,6 @@
 package igentuman.nc.multiblock.kugelblitz;
 
-import igentuman.api.nc.MultiblockController;
+import igentuman.api.nc.multiblock.MultiblockController;
 import igentuman.nc.block.entity.kugelblitz.ChamberTerminalBE;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;

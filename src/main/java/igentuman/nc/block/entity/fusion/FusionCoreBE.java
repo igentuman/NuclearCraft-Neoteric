@@ -1,14 +1,18 @@
 package igentuman.nc.block.entity.fusion;
 
 import igentuman.nc.NuclearCraft;
+import igentuman.nc.block.entity.MultiblockControllerBE;
 import igentuman.nc.block.fusion.FusionCoreBlock;
 import igentuman.nc.client.particle.FusionBeamParticleData;
 import igentuman.nc.client.sound.SoundHandler;
 import igentuman.nc.compat.cc.NCFusionReactorPeripheral;
 import igentuman.nc.compat.oc2.NCFusionReactorDevice;
+import igentuman.nc.handler.CatalystHandler;
+import igentuman.nc.handler.UpgradesHandler;
 import igentuman.nc.handler.event.client.BlockOverlayHandler;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.SlotModePair;
+import igentuman.nc.multiblock.AbstractNCMultiblock;
 import igentuman.nc.multiblock.ValidationResult;
 import igentuman.nc.multiblock.fusion.FusionReactor;
 import igentuman.nc.multiblock.fusion.FusionReactorMultiblock;
@@ -53,11 +57,12 @@ import java.util.*;
 import static igentuman.nc.block.fission.FissionControllerBlock.POWERED;
 import static igentuman.nc.compat.oc2.NCFusionReactorDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.handler.config.FusionConfig.FUSION_CONFIG;
+import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_BE;
 import static igentuman.nc.setup.registration.NCSounds.*;
 import static igentuman.nc.util.ModUtil.*;
 import static net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE;
 
-public class FusionCoreBE extends FusionBE {
+public class FusionCoreBE extends MultiblockControllerBE {
 
 
     @NBTField
@@ -66,8 +71,6 @@ public class FusionCoreBE extends FusionBE {
     public byte redstoneMode = SignalSource.HEAT;
     @NBTField
     public double reactorHeat = 0;
-    @NBTField
-    public boolean isCasingValid = false;
     @NBTField
     public int size = 0;
     @NBTField
@@ -111,48 +114,49 @@ public class FusionCoreBE extends FusionBE {
     protected int magnetsEfficiency = 0;
     @NBTField
     protected double lastKnownOptimalTemp = 1000000;
-    @NBTField
-    protected boolean isInternalValid = false;
+
     protected int updateSpan = 20;
-
-    public void toggleRedstoneMode() {
-        redstoneMode++;
-        if(redstoneMode > SignalSource.EFFICIENCY) {
-            redstoneMode = SignalSource.ENERGY;
-        }
-        setChanged();
-        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
-    }
-
-    public List<FusionCoolantRecipe> getCoolantRecipes() {
-        if(coolantRecipes == null) {
-
-            coolantRecipes = (List<FusionCoolantRecipe>) NcRecipeType.getAllRecipesFor("fusion_coolant", getLevel());
-        }
-        return coolantRecipes;
-    }
-
-    protected List<FusionCoolantRecipe> coolantRecipes;
-
+    protected final LazyOptional<IEnergyStorage> energy;
     public final SidedContentHandler contentHandler;
-    public final CustomEnergyStorage energyStorage = createEnergy();
-
-    protected final LazyOptional<IEnergyStorage> energy = LazyOptional.of(() -> energyStorage);
-    public BlockPos errorBlockPos = BlockPos.ZERO;
-
-    public ValidationResult validationResult = ValidationResult.INCOMPLETE;
+    public final CustomEnergyStorage energyStorage;
+    protected LazyOptional<NCFusionReactorPeripheral> peripheralCap;
+    protected List<FusionCoolantRecipe> coolantRecipes;
     public boolean controllerEnabled = false;
     public Recipe recipe;
     public HashMap<String, Recipe> cachedRecipes = new HashMap<>();
-
     protected boolean initialized = false;
     protected int reValidateCounter = 40;
     protected boolean refreshCacheFlag;
     protected List<FluidStack> allowedInputs;
     protected FusionCoreProxyBE[] proxyBES;
 
-    public FluidTank getFluidTank(int i) {
-        return contentHandler.fluidCapability.tanks.get(i);
+    public FusionCoreBE(BlockPos pPos, BlockState pBlockState) {
+        super(FUSION_BE.get("fusion_core").get(), pPos, pBlockState);
+        energyStorage = createEnergy();
+        energy = LazyOptional.of(() -> energyStorage);
+        contentHandler = new SidedContentHandler(
+                0, 0,
+                3, 5, 10, 50);
+        contentHandler().setBlockEntity(this);
+        //fuel
+        contentHandler().fluidCapability.setGlobalMode(0, SlotModePair.SlotMode.INPUT);
+        contentHandler().fluidCapability.setGlobalMode(1, SlotModePair.SlotMode.INPUT);
+        //coolant
+        contentHandler().fluidCapability.setGlobalMode(2, SlotModePair.SlotMode.INPUT);
+
+        //products
+        contentHandler().fluidCapability.setGlobalMode(3, SlotModePair.SlotMode.OUTPUT);
+        contentHandler().fluidCapability.setGlobalMode(4, SlotModePair.SlotMode.OUTPUT);
+        contentHandler().fluidCapability.setGlobalMode(5, SlotModePair.SlotMode.OUTPUT);
+        contentHandler().fluidCapability.setGlobalMode(6, SlotModePair.SlotMode.OUTPUT);
+        //hot coolant
+        contentHandler().fluidCapability.setGlobalMode(7, SlotModePair.SlotMode.OUTPUT);
+        contentHandler().setAllowedInputFluids(0, this::getAllowedInputFluids);
+        contentHandler().setAllowedInputFluids(1, this::getAllowedInputFluids);
+        contentHandler().setAllowedInputFluids(2, this::getAllowedCoolants);
+        contentHandler().setAllowedInputFluids(7, this::getAllowedCoolantsOutput);
+        contentHandler().fluidCapability.tanks.get(2).setCapacity(100000);
+        contentHandler().fluidCapability.tanks.get(7).setCapacity(100000);
     }
 
     protected CustomEnergyStorage createEnergy() {
@@ -164,40 +168,42 @@ public class FusionCoreBE extends FusionBE {
         };
     }
 
+    @Override
+    public SidedContentHandler contentHandler() {
+        return contentHandler;
+    }
+
+    @Override
+    public CustomEnergyStorage energyStorage() {
+        return energyStorage;
+    }
+
+    @Override
+    public LazyOptional<IEnergyStorage> getEnergy() {
+        return energy;
+    }
+
     private void initMultiblock() {
         if(multiblock == null) {
             multiblock = new FusionReactorMultiblock(this);
         }
     }
 
-    public FusionCoreBE(BlockPos pPos, BlockState pBlockState) {
-        super(pPos, pBlockState, getName(pBlockState));
-        contentHandler = new SidedContentHandler(
-                0, 0,
-                3, 5, 10, 50);
-        contentHandler.setBlockEntity(this);
-        //fuel
-        contentHandler.fluidCapability.setGlobalMode(0, SlotModePair.SlotMode.INPUT);
-        contentHandler.fluidCapability.setGlobalMode(1, SlotModePair.SlotMode.INPUT);
-        //coolant
-        contentHandler.fluidCapability.setGlobalMode(2, SlotModePair.SlotMode.INPUT);
-
-        //products
-        contentHandler.fluidCapability.setGlobalMode(3, SlotModePair.SlotMode.OUTPUT);
-        contentHandler.fluidCapability.setGlobalMode(4, SlotModePair.SlotMode.OUTPUT);
-        contentHandler.fluidCapability.setGlobalMode(5, SlotModePair.SlotMode.OUTPUT);
-        contentHandler.fluidCapability.setGlobalMode(6, SlotModePair.SlotMode.OUTPUT);
-        //hot coolant
-        contentHandler.fluidCapability.setGlobalMode(7, SlotModePair.SlotMode.OUTPUT);
-        contentHandler.setAllowedInputFluids(0, this::getAllowedInputFluids);
-        contentHandler.setAllowedInputFluids(1, this::getAllowedInputFluids);
-        contentHandler.setAllowedInputFluids(2, this::getAllowedCoolants);
-        contentHandler.setAllowedInputFluids(7, this::getAllowedCoolantsOutput);
-        contentHandler.fluidCapability.tanks.get(2).setCapacity(100000);
-        contentHandler.fluidCapability.tanks.get(7).setCapacity(100000);
+    public void toggleRedstoneMode() {
+        redstoneMode++;
+        if(redstoneMode > SignalSource.EFFICIENCY) {
+            redstoneMode = SignalSource.ENERGY;
+        }
+        setChanged();
+        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_NEIGHBORS);
     }
 
-    protected LazyOptional<NCFusionReactorPeripheral> peripheralCap;
+    public List<FusionCoolantRecipe> getCoolantRecipes() {
+        if(coolantRecipes == null) {
+            coolantRecipes = (List<FusionCoolantRecipe>) NcRecipeType.getAllRecipesFor("fusion_coolant", getLevel());
+        }
+        return coolantRecipes;
+    }
 
     public <T> LazyOptional<T>  getPeripheral(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if(peripheralCap == null) {
@@ -205,35 +211,12 @@ public class FusionCoreBE extends FusionBE {
         }
         return peripheralCap.cast();
     }
-    public LazyOptional<IEnergyStorage> getEnergy() {
-        return energy;
-    }
 
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (cap == ForgeCapabilities.ITEM_HANDLER) {
-            return LazyOptional.empty();
-        }
-        if (cap == ForgeCapabilities.FLUID_HANDLER) {
-            return contentHandler.getFluidCapability(side);
-        }
         if (cap == ForgeCapabilities.ENERGY) {
-            return energy.cast();
-        }
-        if(isMekanismLoadeed()) {
-            if(cap == mekanism.common.capabilities.Capabilities.GAS_HANDLER) {
-                if(contentHandler.hasFluidCapability(side)) {
-                    return LazyOptional.of(() -> contentHandler.gasConverter(side));
-                }
-                return LazyOptional.empty();
-            }
-            if(cap == mekanism.common.capabilities.Capabilities.SLURRY_HANDLER) {
-                if(contentHandler.hasFluidCapability(side)) {
-                    return LazyOptional.of(() -> contentHandler.getSlurryConverter(side));
-                }
-                return LazyOptional.empty();
-            }
+            return getEnergy().cast();
         }
 
         if(isOC2Loaded()) {
@@ -257,7 +240,7 @@ public class FusionCoreBE extends FusionBE {
     public void updateAnalogSignal() {
         switch (redstoneMode) {
             case FusionCoreBE.SignalSource.ENERGY:
-               analogSignal = (byte) ((double)energyStorage.getEnergyStored() * 15 / (double)energyStorage.getMaxEnergyStored());
+               analogSignal = (byte) ((double)energyStorage().getEnergyStored() * 15 / (double)energyStorage().getMaxEnergyStored());
                 break;
             case FusionCoreBE.SignalSource.HEAT:
                 analogSignal = (byte) (reactorHeat * 15 / getMaxHeat());
@@ -299,8 +282,8 @@ public class FusionCoreBE extends FusionBE {
         size = getMultiblock().isFormed() ? multiblock.width() : 0;
         refreshCacheFlag = !getMultiblock().isFormed();
         if(getMultiblock().isFormed() != wasFormed) {
-            contentHandler.fluidCapability.tanks.get(2).setCapacity(50000*size);
-            contentHandler.fluidCapability.tanks.get(7).setCapacity(50000*size);
+            contentHandler().fluidCapability.tanks.get(2).setCapacity(50000*size);
+            contentHandler().fluidCapability.tanks.get(7).setCapacity(50000*size);
         }
     }
 
@@ -339,6 +322,7 @@ public class FusionCoreBE extends FusionBE {
             stopSound();
         }
     }
+
     protected void sendBeamData(FusionBeamParticleData data, BlockPos from) {
         Vec3 vec = Vec3.atCenterOf(from);
         if (!getLevel().isClientSide() && level instanceof ServerLevel serverWorld) {
@@ -347,6 +331,7 @@ public class FusionCoreBE extends FusionBE {
             }
         }
     }
+
     protected void renderBeam() {
         NCBlockPos pos = new NCBlockPos(getBlockPos().above());
         int beamLength = size*2+4;
@@ -486,8 +471,8 @@ public class FusionCoreBE extends FusionBE {
     public double getOptimalTemperature()
     {
         if(hasRecipe()) {
-            if(((Recipe)recipeInfo.recipe()).getOptimalTemperature() > 0) {
-                lastKnownOptimalTemp = ((Recipe)recipeInfo.recipe()).getOptimalTemperature() * 1000000;
+            if(((Recipe)recipeInfo().recipe()).getOptimalTemperature() > 0) {
+                lastKnownOptimalTemp = ((Recipe)recipeInfo().recipe()).getOptimalTemperature() * 1000000;
             }
         }
         return lastKnownOptimalTemp;
@@ -533,12 +518,12 @@ public class FusionCoreBE extends FusionBE {
             proxy.sendOutEnergy();
         }
         BlockEntity be = Objects.requireNonNull(getLevel()).getBlockEntity(getBlockPos().relative(Direction.DOWN));
-        if(be instanceof BlockEntity && !(be instanceof FusionBE)) {
+        if(be instanceof BlockEntity && !(be instanceof FusionCoreProxyBE) && !(be instanceof FusionCoreBE)) {
             IEnergyStorage r = be.getCapability(ForgeCapabilities.ENERGY, Direction.UP).orElse(null);
             if(r == null) return;
             if(r.canReceive()) {
-                int recieved = r.receiveEnergy(energyStorage.getEnergyStored() - rfAmplifiersPower - magnetsPower, false);
-                energyStorage.setEnergy(energyStorage.getEnergyStored()-recieved);
+                int received = r.receiveEnergy(energyStorage().getEnergyStored() - rfAmplifiersPower - magnetsPower, false);
+                energyStorage().setEnergy(energyStorage().getEnergyStored()-received);
             }
         }
     }
@@ -608,7 +593,7 @@ public class FusionCoreBE extends FusionBE {
     protected void updateCharge() {
         if(getTargetCharge() == 0) return;
         if(chargeAmount < getTargetCharge()) {
-            chargeAmount += energyStorage.extractEnergy((rfAmplifiersPower+magnetsPower)/2, false);
+            chargeAmount += energyStorage().extractEnergy((rfAmplifiersPower+magnetsPower)/2, false);
             changed = true;
         }
         functionalBlocksCharge = (int) Math.min(((chargeAmount*100)/getTargetCharge()), 100);
@@ -652,6 +637,11 @@ public class FusionCoreBE extends FusionBE {
         return hasChanges;
     }
 
+    @Override
+    public FusionReactorMultiblock getMultiblock() {
+        return (FusionReactorMultiblock) multiblock;
+    }
+
     protected double rfAmplifierRatio() {
         return Math.max(0, Math.min((((double)rfAmplificationRatio/100)*(double)amplificationAdjustment/100), 1D));
     }
@@ -662,7 +652,7 @@ public class FusionCoreBE extends FusionBE {
             if(reactorHeat > coolantRecipe.getCoolingRate()) {
                 int coolantNeeded = (int) (reactorHeat/coolantRecipe.getCoolingRate());
                 int coolantPerOp = coolantRecipe.getInputFluids()[0].getAmount();
-                int availableCoolant = contentHandler.fluidCapability.tanks.get(2).getFluidAmount();
+                int availableCoolant = contentHandler().fluidCapability.tanks.get(2).getFluidAmount();
                 int possibleOps = availableCoolant/coolantPerOp;
                 int actualOps = Math.min(possibleOps, coolantNeeded*coolantPerOp);
                 changeReactorHeat(-(coolantRecipe.getCoolingRate() / size) * actualOps);
@@ -685,16 +675,16 @@ public class FusionCoreBE extends FusionBE {
     }
 
     protected void extractCoolant(int ops) {
-        contentHandler.fluidCapability.tanks.get(2).drain(coolantRecipe.getInputFluids()[0].getAmount()*ops, EXECUTE);
+        contentHandler().fluidCapability.tanks.get(2).drain(coolantRecipe.getInputFluids()[0].getAmount()*ops, EXECUTE);
         FluidStack output = coolantRecipe.getOutputFluids().get(0).copy();
         output.setAmount(output.getAmount()*ops);
-        contentHandler.fluidCapability.tanks.get(7).fill(output, EXECUTE);
+        contentHandler().fluidCapability.tanks.get(7).fill(output, EXECUTE);
     }
 
     protected boolean processReaction() {
-        if(recipeInfo.recipe != null && recipeInfo.isCompleted()) {
-            if(contentHandler.fluidCapability.getFluidInSlot(0).equals(FluidStack.EMPTY)) {
-                recipeInfo.clear();
+        if(recipeInfo().recipe != null && recipeInfo().isCompleted()) {
+            if(contentHandler().fluidCapability.getFluidInSlot(0).equals(FluidStack.EMPTY)) {
+                recipeInfo().clear();
             }
         }
         if (!hasRecipe()) {
@@ -705,21 +695,22 @@ public class FusionCoreBE extends FusionBE {
         }
         return false;
     }
+
     protected double radiationAggregated = 0;
     protected boolean process() {
-        recipeInfo.process(efficiency);
-        if(recipeInfo.radiation != 1D) {
-            radiationAggregated += recipeInfo.radiation/5000;
+        recipeInfo().process(efficiency);
+        if(recipeInfo().radiation != 1D) {
+            radiationAggregated += recipeInfo().radiation/5000;
             if(radiationAggregated > 100) {
                 RadiationManager.get(getLevel()).addRadiation(getLevel(), radiationAggregated, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ());
                 radiationAggregated = 0;
             }
         }
-        if (!recipeInfo.isCompleted()) {
+        if (!recipeInfo().isCompleted()) {
             simulateHeatExchange();
             if(energyPerTick > 0) {
                 renderBeam();
-                energyStorage.addEnergy(energyPerTick);
+                energyStorage().addEnergy(energyPerTick);
             }
         }
 
@@ -759,11 +750,11 @@ public class FusionCoreBE extends FusionBE {
         double optimalTemp = getOptimalTemperature();
         double sizeFactor = Math.log(Math.pow(size+1, 8))/8D;
         if(plasmaTemperature < optimalTemp) {
-            energyPerTick = (int) (plasmaTemperature/optimalTemp*recipeInfo.recipe().getEnergy());
+            energyPerTick = (int) (plasmaTemperature/optimalTemp*recipeInfo().recipe().getEnergy());
         } else {
-            energyPerTick = (int) (optimalTemp/plasmaTemperature*recipeInfo.recipe().getEnergy());
+            energyPerTick = (int) (optimalTemp/plasmaTemperature*recipeInfo().recipe().getEnergy());
         }
-        changePlasmaTemperature(-(long) ((plasmaTemperature)/(150D*energyPerTick/recipeInfo.recipe().getEnergy())));
+        changePlasmaTemperature(-(long) ((plasmaTemperature)/(150D*energyPerTick/recipeInfo().recipe().getEnergy())));
         energyPerTick = (int) ((energyPerTick*calculateEfficiency()*size*sizeFactor)*FUSION_CONFIG.PLASMA_TO_ENERGY_CONVERTION.get());
         if(plasmaTemperature < 1000000) {
             energyPerTick = 0;
@@ -790,17 +781,17 @@ public class FusionCoreBE extends FusionBE {
     }
 
     protected void handleRecipeOutput() {
-        if (hasRecipe() && recipeInfo.isCompleted()) {
+        if (hasRecipe() && recipeInfo().isCompleted()) {
             if(recipe == null) {
-                recipe = (Recipe) recipeInfo.recipe();
+                recipe = (Recipe) recipeInfo().recipe();
             }
             if (recipe.handleOutputs(contentHandler)) {
-                recipeInfo.clear();
-                if(contentHandler.fluidCapability.getFluidInSlot(0).isEmpty()) {
+                recipeInfo().clear();
+                if(contentHandler().fluidCapability.getFluidInSlot(0).isEmpty()) {
                     recipe = null;
                 }
             } else {
-                recipeInfo.stuck = true;
+                recipeInfo().stuck = true;
             }
             setChanged();
         }
@@ -809,25 +800,24 @@ public class FusionCoreBE extends FusionBE {
     protected void updateRecipe() {
         recipe = getRecipe();
         if (recipe != null) {
-            recipeInfo.setRecipe(recipe);
-            recipeInfo.ticks = (int) (recipeInfo.recipe().getTimeModifier()*10);
-            recipeInfo.energy = recipeInfo.recipe.getEnergy();
-            recipeInfo.heat = ((Recipe)recipeInfo.recipe()).getHeat();
-            recipeInfo.radiation = recipeInfo.recipe().getRadiation();
-            recipeInfo.be = this;
+            recipeInfo().setRecipe(recipe);
+            recipeInfo().ticks = (int) (recipeInfo().recipe().getTimeModifier()*10);
+            recipeInfo().energy = recipeInfo().recipe.getEnergy();
+            recipeInfo().heat = ((Recipe)recipeInfo().recipe()).getHeat();
+            recipeInfo().radiation = recipeInfo().recipe().getRadiation();
+            recipeInfo().be = this;
             recipe.consumeInputs(contentHandler);
         }
     }
 
     @Override
     public Recipe getRecipe() {
-        if(contentHandler.fluidCapability.getFluidInSlot(0).isEmpty() || contentHandler.fluidCapability.getFluidInSlot(0).isEmpty()) return null;
+        if(contentHandler().fluidCapability.getFluidInSlot(0).isEmpty() || contentHandler().fluidCapability.getFluidInSlot(0).isEmpty()) return null;
         return (Recipe) super.getRecipe();
     }
 
-
     public boolean recipeIsStuck() {
-        return recipeInfo.isStuck();
+        return recipeInfo().isStuck();
     }
 
     protected void handleMeltdown() {
@@ -856,7 +846,7 @@ public class FusionCoreBE extends FusionBE {
     }
 
     public boolean hasRecipe() {
-        return recipeInfo.recipe() != null;
+        return recipeInfo().recipe() != null;
     }
 
     public void forceShutdown() {
@@ -868,9 +858,9 @@ public class FusionCoreBE extends FusionBE {
     }
 
     public void voidFuel() {
-        contentHandler.fluidCapability.tanks.get(0).setFluid(FluidStack.EMPTY);
-        contentHandler.fluidCapability.tanks.get(1).setFluid(FluidStack.EMPTY);
-        contentHandler.clearHolded();
+        contentHandler().fluidCapability.tanks.get(0).setFluid(FluidStack.EMPTY);
+        contentHandler().fluidCapability.tanks.get(1).setFluid(FluidStack.EMPTY);
+        contentHandler().clearHolded();
     }
 
     @Override
@@ -882,73 +872,9 @@ public class FusionCoreBE extends FusionBE {
         }
     }
 
-    @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
-        if (tag.contains("Info")) {
-            CompoundTag infoTag = tag.getCompound("Info");
-            if (!isCasingValid || !isInternalValid) {
-                if(tag.contains("erroredBlock")) {
-                    errorBlockPos = BlockPos.of(infoTag.getLong("erroredBlock"));
-                }
-                validationResult = ValidationResult.byId(infoTag.getInt("validationId"));
-            } else {
-                validationResult = ValidationResult.VALID;
-            }
-        }
-    }
-
-    @Override
-    public void saveAdditional(CompoundTag tag) {
-        super.saveAdditional(tag);
-        if (tag.contains("Info")) {
-            CompoundTag infoTag = tag.getCompound("Info");
-            infoTag.putInt("validationId", validationResult.id);
-            if(errorBlockPos instanceof BlockPos) {
-                infoTag.putLong("erroredBlock", errorBlockPos.asLong());
-            }
-            tag.remove("Info");
-            tag.put("Info", infoTag);
-        }
-    }
-
-    @Override
-    public void loadClientData(CompoundTag tag) {
-        super.loadClientData(tag);
-        if (tag.contains("Info")) {
-            CompoundTag infoTag = tag.getCompound("Info");
-            if (!isCasingValid || !isInternalValid) {
-                errorBlockPos = BlockPos.of(infoTag.getLong("erroredBlock"));
-                validationResult = ValidationResult.byId(infoTag.getInt("validationId"));
-            } else {
-                validationResult = ValidationResult.VALID;
-            }
-        }
-    }
-
-    @Override
-    protected void saveClientData(CompoundTag tag) {
-        if (tag.contains("Info")) {
-            CompoundTag infoTag = tag.getCompound("Info");
-            infoTag.putInt("validationId", validationResult.id);
-            if(errorBlockPos instanceof BlockPos) {
-                infoTag.putLong("erroredBlock", errorBlockPos.asLong());
-            }
-            tag.remove("Info");
-            tag.put("Info", infoTag);
-        }
-    }
-
-    public void invalidateCache()
-    {
-        super.invalidateCache();
-        isCasingValid = false;
-        isInternalValid = false;
-    }
-
     protected FusionCoolantRecipe coolantRecipe;
     public boolean hasCoolant() {
-        FluidStack coolant = contentHandler.fluidCapability.getFluidInSlot(2);
+        FluidStack coolant = contentHandler().fluidCapability.getFluidInSlot(2);
         if(coolant.isEmpty()) {
             coolantRecipe = null;
             return false;
@@ -970,7 +896,7 @@ public class FusionCoreBE extends FusionBE {
     }
 
     public boolean hasEnoughEnergy() {
-        return energyStorage.getEnergyStored() > rfAmplifiersPower+magnetsPower;
+        return energyStorage().getEnergyStored() > rfAmplifiersPower+magnetsPower;
     }
 
     public boolean isRunning() {

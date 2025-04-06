@@ -20,10 +20,12 @@ import static igentuman.nc.NuclearCraft.rl;
 public class NCShaders {
 
     public static final ShaderTracker BLACKHOLE_COLOR = new ShaderTracker();
+    public static final ShaderTracker DISTORTION = new ShaderTracker();
 
     @SubscribeEvent
     public static void shaderRegistry(RegisterShadersEvent event) throws IOException {
         registerShader(event, rl("rendertype_blackhole"), DefaultVertexFormat.POSITION_COLOR_TEX, BLACKHOLE_COLOR);
+        registerShader(event, rl("distortion"), DefaultVertexFormat.POSITION_COLOR_TEX, DISTORTION);
     }
 
     private static void registerShader(RegisterShadersEvent event, ResourceLocation shaderLocation, VertexFormat vertexFormat, ShaderTracker tracker) throws IOException {

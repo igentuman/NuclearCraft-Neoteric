@@ -2,7 +2,7 @@ package igentuman.nc.block.entity.kugelblitz;
 
 import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.multiblock.AbstractNCMultiblock;
-import igentuman.api.nc.MultiblockAttachable;
+import igentuman.api.nc.multiblock.MultiblockAttachable;
 import igentuman.nc.multiblock.kugelblitz.KugelblitzMultiblock;
 import igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration;
 import net.minecraft.core.BlockPos;

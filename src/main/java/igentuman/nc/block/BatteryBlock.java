@@ -45,7 +45,7 @@ public class BatteryBlock extends Block implements EntityBlock {
     }
 
     public int getAnalogOutputSignal(BlockState pBlockState, Level pLevel, BlockPos pPos) {
-        BlockEntity blockEntity = pLevel.getBlockEntity(pPos);
+        BlockEntity blockEntity = pLevel.getExistingBlockEntity(pPos);
         if (blockEntity instanceof BatteryBE batteryBE) {
             return (int) ((batteryBE.energyStorage.getEnergyStored()/(double)batteryBE.energyStorage.getMaxEnergyStored())*15);
         }
@@ -55,7 +55,7 @@ public class BatteryBlock extends Block implements EntityBlock {
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
         if (!level.isClientSide()) {
-            BlockEntity be = level.getBlockEntity(pos);
+            BlockEntity be = level.getExistingBlockEntity(pos);
             if (be instanceof BatteryBE batteryBE)  {
                 if(isMultiTool(player.getItemInHand(hand))) {
                     Direction dirToChange = result.getDirection();
@@ -75,7 +75,7 @@ public class BatteryBlock extends Block implements EntityBlock {
     @Override
     public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
         if (pState.getBlock() != pNewState.getBlock()) {
-            BlockEntity blockEntity = pLevel.getBlockEntity(pPos);
+            BlockEntity blockEntity = pLevel.getExistingBlockEntity(pPos);
             if (blockEntity instanceof BatteryBE) {
 
             }
@@ -116,7 +116,7 @@ public class BatteryBlock extends Block implements EntityBlock {
         super.setPlacedBy(world, pos, state, placer, stack);
 
         if (stack.hasTag()) {
-            BatteryBE tileEntity = (BatteryBE) world.getBlockEntity(pos);
+            BatteryBE tileEntity = (BatteryBE) world.getExistingBlockEntity(pos);
             CompoundTag nbtData = stack.getTag();
             tileEntity.load(nbtData);
         }
@@ -146,7 +146,6 @@ public class BatteryBlock extends Block implements EntityBlock {
 
         list.add(Component.translatable("tooltip.nc.energy_capacity", formatEnergy(storage)).withStyle(ChatFormatting.BLUE));
         list.add(Component.translatable("tooltip.nc.use_multitool").withStyle(ChatFormatting.YELLOW));
-
     }
 
     public String formatEnergy(int energy)

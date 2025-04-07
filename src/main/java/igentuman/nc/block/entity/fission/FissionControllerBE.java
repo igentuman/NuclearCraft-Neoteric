@@ -2,11 +2,8 @@ package igentuman.nc.block.entity.fission;
 
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.MultiblockControllerBE;
-import igentuman.nc.client.sound.SoundHandler;
 import igentuman.nc.compat.cc.NCSolidFissionReactorPeripheral;
 import igentuman.nc.compat.oc2.NCFissionReactorDevice;
-import igentuman.nc.handler.CatalystHandler;
-import igentuman.nc.handler.UpgradesHandler;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.SlotModePair;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
@@ -24,14 +21,9 @@ import igentuman.nc.setup.registration.NCFluids;
 import igentuman.nc.util.CustomEnergyStorage;
 import igentuman.nc.util.annotation.NBTField;
 import igentuman.nc.multiblock.ValidationResult;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -45,7 +37,6 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
@@ -94,16 +85,6 @@ public class FissionControllerBE extends MultiblockControllerBE {
     @NBTField
     public int moderatorAttachments = 0;
     @NBTField
-    public boolean isCasingValid = false;
-    @NBTField
-    public boolean isInternalValid = false;
-    @NBTField
-    public int height = 1;
-    @NBTField
-    public int width = 1;
-    @NBTField
-    public int depth = 1;
-    @NBTField
     public int toggleModeTimer = 2000;
     @NBTField
     public boolean enabledByController = false;
@@ -132,9 +113,6 @@ public class FissionControllerBE extends MultiblockControllerBE {
     protected boolean forceShutdown = false;
     public int fuelCellMultiplier = 1;
     public int moderatorCellMultiplier = 1;
-
-    public ValidationResult validationResult = ValidationResult.INCOMPLETE;
-
     public boolean controllerEnabled = false;
     private Direction facing;
     protected List<FissionBoilingRecipe> coolantRecipes;
@@ -698,18 +676,6 @@ public class FissionControllerBE extends MultiblockControllerBE {
         return heatPerTick - heatSinksCooling();
     }
 
-    public int getDepth() {
-        return depth;
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
     public boolean hasRedstoneSignal() {
         return enabledByController || Objects.requireNonNull(getLevel()).hasNeighborSignal(worldPosition);
     }
@@ -742,7 +708,6 @@ public class FissionControllerBE extends MultiblockControllerBE {
         }
         return coolantRecipes;
     }
-
 
     public boolean hasCoolant() {
         FluidStack coolant = contentHandler().fluidCapability.getFluidInSlot(0);

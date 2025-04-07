@@ -70,7 +70,7 @@ public class BatteryBE extends NCEnergy {
                     sideConfig.get(direction.ordinal()) == SideModeToggleable.SideMode.DISABLED ||
                     sideConfig.get(direction.ordinal()) == SideModeToggleable.SideMode.DEFAULT
             ) continue;
-            BlockEntity be = level.getBlockEntity(worldPosition.relative(direction));
+            BlockEntity be = level.getExistingBlockEntity(worldPosition.relative(direction));
             if (be != null) {
                 IEnergyStorage sideEnergy = be.getCapability(ForgeCapabilities.ENERGY, direction.getOpposite()).orElse(null);
                 if(sideEnergy == null) continue;

@@ -88,7 +88,7 @@ public class ProcessorBlock extends HorizontalDirectionalBlock implements Entity
     @Override
     public void setPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
         super.setPlacedBy(world, pos, state, placer, stack);
-        NCProcessorBE tileEntity = (NCProcessorBE) world.getBlockEntity(pos);
+        NCProcessorBE tileEntity = (NCProcessorBE) world.getExistingBlockEntity(pos);
         if (stack.hasTag()) {
             CompoundTag nbtData = stack.getTag();
             tileEntity.load(nbtData);
@@ -117,7 +117,7 @@ public class ProcessorBlock extends HorizontalDirectionalBlock implements Entity
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
         if (!level.isClientSide()) {
-            BlockEntity be = level.getBlockEntity(pos);
+            BlockEntity be = level.getExistingBlockEntity(pos);
             if (be instanceof NCProcessorBE)  {
                 MenuProvider containerProvider = new MenuProvider() {
                     @Override

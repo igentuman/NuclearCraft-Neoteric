@@ -222,7 +222,7 @@ public class FissionPortBE extends NuclearCraftBE implements MultiblockAttachabl
     public FissionControllerBE controller() {
         if (NuclearCraft.instance.isNcBeStopped || (!getLevel().isClientSide() && getLevel().getServer() != null && !getLevel().getServer().isRunning())) return null;
         if (controller == null && getLevel().isClientSide && controllerPos != null) {
-            BlockEntity be = getLevel().getBlockEntity(controllerPos);
+            BlockEntity be = getLevel().getExistingBlockEntity(controllerPos);
             if (be instanceof FissionControllerBE controllerBe) {
                 controller = controllerBe;
                 return  controller;
@@ -236,7 +236,7 @@ public class FissionPortBE extends NuclearCraftBE implements MultiblockAttachabl
             }
         } catch (NullPointerException e) {
             if (controllerPos != null) {
-                BlockEntity be = getLevel().getBlockEntity(controllerPos);
+                BlockEntity be = getLevel().getExistingBlockEntity(controllerPos);
                 if (be instanceof FissionControllerBE controllerBe) {
                     controller = controllerBe;
                 }

@@ -501,4 +501,8 @@ public class NuclearCraftBE extends BlockEntity {
 
     public void tickClient() {
     }
+
+    protected void tickServer() {
+
+    }
 }

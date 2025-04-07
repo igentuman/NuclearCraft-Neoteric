@@ -73,7 +73,7 @@ public class ChamberPortBlock extends HorizontalDirectionalBlock implements Enti
     public InteractionResult use(@NotNull BlockState state, Level level, @NotNull BlockPos pos, @NotNull Player player, InteractionHand hand, BlockHitResult result) {
 
         if (!level.isClientSide()) {
-            BlockEntity be = level.getBlockEntity(pos);
+            BlockEntity be = level.getExistingBlockEntity(pos);
 
             if (be instanceof ChamberPortBE)  {
                 MenuProvider containerProvider = new MenuProvider() {

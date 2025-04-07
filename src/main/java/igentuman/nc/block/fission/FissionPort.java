@@ -77,7 +77,7 @@ public class FissionPort extends HorizontalDirectionalBlock implements EntityBlo
     public @NotNull InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
 
         if (!level.isClientSide()) {
-            BlockEntity be = level.getBlockEntity(pos);
+            BlockEntity be = level.getExistingBlockEntity(pos);
 
             if (be instanceof FissionPortBE port)  {
                 MenuProvider containerProvider = new MenuProvider() {
@@ -127,7 +127,7 @@ public class FissionPort extends HorizontalDirectionalBlock implements EntityBlo
 
     @Override
     public int getAnalogOutputSignal(BlockState pBlockState, Level pLevel, BlockPos pPos) {
-        return pLevel.getBlockEntity(pPos) instanceof FissionPortBE be ? be.analogSignal : 0;
+        return pLevel.getExistingBlockEntity(pPos) instanceof FissionPortBE be ? be.analogSignal : 0;
     }
 
     @Override

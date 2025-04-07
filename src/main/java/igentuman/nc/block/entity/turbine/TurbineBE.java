@@ -50,6 +50,7 @@ public class TurbineBE extends NuclearCraftBE implements MultiblockAttachable {
     }
 
     public void tickClient() {
+
     }
 
     public void tickServer() {

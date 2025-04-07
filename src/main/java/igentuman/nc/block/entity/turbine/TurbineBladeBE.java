@@ -53,7 +53,7 @@ public class TurbineBladeBE extends TurbineBE {
     }
 
     public boolean isValid() {
-        BlockEntity be = getLevel().getBlockEntity(getBlockPos().relative(getFacing()));
+        BlockEntity be = getLevel().getExistingBlockEntity(getBlockPos().relative(getFacing()));
         if(be instanceof TurbineRotorBE rotor) {
             return rotor.connectedToBearing;
         }

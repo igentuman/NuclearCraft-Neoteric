@@ -1,7 +1,6 @@
 package igentuman.nc.multiblock.kugelblitz;
 
 import igentuman.nc.block.entity.kugelblitz.BlackHoleBE;
-import igentuman.nc.block.entity.kugelblitz.ChamberBE;
 import igentuman.nc.block.entity.kugelblitz.ChamberPortBE;
 import igentuman.nc.block.entity.kugelblitz.ChamberTerminalBE;
 import igentuman.nc.block.kugelblitz.BlackHoleBlock;

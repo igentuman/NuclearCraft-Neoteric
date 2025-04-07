@@ -79,14 +79,14 @@ public class FusionBeBlock extends Block implements EntityBlock {
 
     @Override
     public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor){
-        ((MultiblockAttachable<AbstractNCMultiblock, BlockEntity>)level.getBlockEntity(pos)).onNeighborChange(state,  pos, neighbor);
+        ((MultiblockAttachable<AbstractNCMultiblock, BlockEntity>)level.getExistingBlockEntity(pos)).onNeighborChange(state,  pos, neighbor);
     }
 
     @Override
     public void onBlockExploded(BlockState state, Level level, BlockPos pos, Explosion explosion)
     {
         if(!level.isClientSide) {
-            ((MultiblockAttachable<AbstractNCMultiblock, BlockEntity>)level.getBlockEntity(pos)).onBlockDestroyed(state, level, pos, explosion);
+            ((MultiblockAttachable<AbstractNCMultiblock, BlockEntity>)level.getExistingBlockEntity(pos)).onBlockDestroyed(state, level, pos, explosion);
         }
         super.onBlockExploded(state, level, pos, explosion);
     }
@@ -95,7 +95,7 @@ public class FusionBeBlock extends Block implements EntityBlock {
     public boolean onDestroyedByPlayer(BlockState state, Level level, BlockPos pos, Player player, boolean willHarvest, FluidState fluid)
     {
         if(!level.isClientSide) {
-            ((MultiblockAttachable<AbstractNCMultiblock, BlockEntity>)level.getBlockEntity(pos)).onBlockDestroyed(state, level, pos, null);
+            ((MultiblockAttachable<AbstractNCMultiblock, BlockEntity>)level.getExistingBlockEntity(pos)).onBlockDestroyed(state, level, pos, null);
         }
        return super.onDestroyedByPlayer(state, level, pos, player, willHarvest, fluid);
     }

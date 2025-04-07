@@ -176,7 +176,7 @@ public class TurbineBladeBlock extends DirectionalBlock implements EntityBlock {
 
     @Override
     public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor){
-        ((TurbineBE) Objects.requireNonNull(level.getBlockEntity(pos))).onNeighborChange(state,  pos, neighbor);
+        ((TurbineBE) Objects.requireNonNull(level.getExistingBlockEntity(pos))).onNeighborChange(state,  pos, neighbor);
     }
 
 

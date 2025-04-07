@@ -127,7 +127,7 @@ public class TurbinePortBE extends TurbineBE {
         AtomicInteger capacity = new AtomicInteger(controller().energyStorage.getEnergyStored());
         if (capacity.get() > 0) {
             for (Direction direction : Direction.values()) {
-                BlockEntity be = getLevel().getBlockEntity(worldPosition.relative(direction));
+                BlockEntity be = getLevel().getExistingBlockEntity(worldPosition.relative(direction));
                 if (be != null) {
                     boolean doContinue = be.getCapability(ForgeCapabilities.ENERGY, direction.getOpposite()).map(handler -> {
                                 if (handler.canReceive()) {
@@ -160,13 +160,13 @@ public class TurbinePortBE extends TurbineBE {
     public TurbineControllerBE controller() {
         if(NuclearCraft.instance.isNcBeStopped || (!getLevel().isClientSide() && getLevel().getServer() != null && !getLevel().getServer().isRunning())) return null;
         if(getLevel().isClientSide && controllerPos != null) {
-            return (TurbineControllerBE) getLevel().getBlockEntity(controllerPos);
+            return (TurbineControllerBE) getLevel().getExistingBlockEntity(controllerPos);
         }
         try {
             return (TurbineControllerBE) getMultiblock().controller().controllerBE();
         } catch (NullPointerException e) {
             if(controllerPos != null) {
-                return (TurbineControllerBE) getLevel().getBlockEntity(controllerPos);
+                return (TurbineControllerBE) getLevel().getExistingBlockEntity(controllerPos);
             }
             return null;
         }

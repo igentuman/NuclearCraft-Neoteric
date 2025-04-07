@@ -62,7 +62,7 @@ public class BarrelBlock extends Block implements EntityBlock {
     }
 
     public int getAnalogOutputSignal(BlockState pBlockState, Level pLevel, BlockPos pPos) {
-        BlockEntity blockEntity = pLevel.getBlockEntity(pPos);
+        BlockEntity blockEntity = pLevel.getExistingBlockEntity(pPos);
         if (blockEntity instanceof BarrelBE barrelBE) {
             return (int) ((barrelBE.fluidTank.getFluid().getAmount()/(double)barrelBE.fluidTank.getCapacity())*15);
         }
@@ -75,7 +75,7 @@ public class BarrelBlock extends Block implements EntityBlock {
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
         if (!level.isClientSide()) {
-            BarrelBE be = (BarrelBE)level.getBlockEntity(pos);
+            BarrelBE be = (BarrelBE)level.getExistingBlockEntity(pos);
             ItemStack handStack = player.getItemInHand(hand);
             IFluidHandler barrel = be.getFluidHandler().orElse(null);
             if(isMultiTool(handStack)) {
@@ -148,7 +148,7 @@ public class BarrelBlock extends Block implements EntityBlock {
     @Override
     public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
         if (pState.getBlock() != pNewState.getBlock()) {
-            BlockEntity blockEntity = pLevel.getBlockEntity(pPos);
+            BlockEntity blockEntity = pLevel.getExistingBlockEntity(pPos);
 
         }
         super.onRemove(pState, pLevel, pPos, pNewState, pIsMoving);
@@ -187,7 +187,7 @@ public class BarrelBlock extends Block implements EntityBlock {
         super.setPlacedBy(world, pos, state, placer, stack);
 
         if (stack.hasTag()) {
-            BarrelBE tileEntity = (BarrelBE) world.getBlockEntity(pos);
+            BarrelBE tileEntity = (BarrelBE) world.getExistingBlockEntity(pos);
             CompoundTag nbtData = stack.getTag();
             tileEntity.load(nbtData);
         }

@@ -34,7 +34,7 @@ public class ChamberPortContainer extends AbstractContainerMenu {
         super(CHAMBER_PORT_CONTAINER.get(), pContainerId);
         this.playerEntity = playerInventory.player;
         this.playerInventory =  new InvWrapper(playerInventory);
-        blockEntity = (ChamberPortBE) playerEntity.getCommandSenderWorld().getBlockEntity(pos);
+        blockEntity = (ChamberPortBE) playerEntity.getCommandSenderWorld().getExistingBlockEntity(pos);
         layoutPlayerInventorySlots();
     }
 

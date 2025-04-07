@@ -78,7 +78,7 @@ public class TurbineControllerBlock extends HorizontalDirectionalBlock implement
     public InteractionResult use(@NotNull BlockState state, Level level, @NotNull BlockPos pos, @NotNull Player player, InteractionHand hand, BlockHitResult result) {
 
         if (!level.isClientSide()) {
-            BlockEntity be = level.getBlockEntity(pos);
+            BlockEntity be = level.getExistingBlockEntity(pos);
 
             if (be instanceof TurbineControllerBE)  {
                 MenuProvider containerProvider = new MenuProvider() {
@@ -115,7 +115,6 @@ public class TurbineControllerBlock extends HorizontalDirectionalBlock implement
             }
         };
     }
-
 
     @Override
     public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag) {

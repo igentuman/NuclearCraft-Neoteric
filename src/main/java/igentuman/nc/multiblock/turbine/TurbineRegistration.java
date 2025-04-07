@@ -13,6 +13,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraftforge.common.extensions.IForgeMenuType;
@@ -35,7 +36,7 @@ public class TurbineRegistration {
     public static final BlockBehaviour.Properties TURBINE_BLOCKS_PROPERTIES = BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(4f).requiresCorrectToolForDrops();
     public static final BlockBehaviour.Properties GLASS_BLOCK_PROPERTIES = BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(3f).requiresCorrectToolForDrops().noOcclusion();
     public static HashMap<String, RegistryObject<Block>> TURBINE_BLOCKS = new HashMap<>();
-    public static HashMap<String, RegistryObject<BlockEntityType<? extends TurbineBE>>> TURBINE_BE = new HashMap<>();
+    public static HashMap<String, RegistryObject<BlockEntityType<? extends BlockEntity>>> TURBINE_BE = new HashMap<>();
     public static HashMap<String, RegistryObject<BlockItem>> TURBINE_BLOCK_ITEMS = new HashMap<>();
     public static TagKey<Block> CASING_BLOCKS = blockTag("turbine_casing");
     public static TagKey<Block> INNER_TURBINE_BLOCKS = blockTag("turbine_inner");
@@ -148,7 +149,6 @@ public class TurbineRegistration {
     public static List<String> initialPlacementRules(String name) {
         return List.of(coils().get(name).rules);
     }
-
 
     public static HashMap<String, Double> initialEfficiency()
     {

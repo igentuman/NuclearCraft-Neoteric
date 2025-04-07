@@ -29,7 +29,7 @@ public class TurbineRotorBE extends TurbineBE {
         connectedToBearing = false;
         Direction facing = getBlockState().getValue(TurbineRotorBlock.FACING);
         for(Direction dir: List.of(facing, facing.getOpposite())) {
-            BlockEntity be = getLevel().getBlockEntity(getBlockPos().relative(dir));
+            BlockEntity be = getLevel().getExistingBlockEntity(getBlockPos().relative(dir));
             BlockState bs = getLevel().getBlockState(getBlockPos().relative(dir));
             if(be instanceof TurbineRotorBE rotor) {
                 connectedToBearing = rotor.hasBearingConnection(dir);
@@ -72,7 +72,7 @@ public class TurbineRotorBE extends TurbineBE {
 
     private boolean hasBearingConnection(Direction dir) {
         if(connectedToBearing) return true;
-        BlockEntity be = getLevel().getBlockEntity(getBlockPos().relative(dir));
+        BlockEntity be = getLevel().getExistingBlockEntity(getBlockPos().relative(dir));
         BlockState bs = getLevel().getBlockState(getBlockPos().relative(dir));
         if(be instanceof TurbineRotorBE rotor) {
             connectedToBearing = rotor.hasBearingConnection(dir);
@@ -85,7 +85,7 @@ public class TurbineRotorBE extends TurbineBE {
 
     public TurbineControllerBE getController() {
         if(controllerPos == BlockPos.ZERO) return controller();
-        BlockEntity be = getLevel().getBlockEntity(controllerPos);
+        BlockEntity be = getLevel().getExistingBlockEntity(controllerPos);
         if(be instanceof TurbineControllerBE controller) {
             return controller;
         }

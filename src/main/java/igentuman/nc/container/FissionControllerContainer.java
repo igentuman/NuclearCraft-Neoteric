@@ -137,7 +137,6 @@ public class FissionControllerContainer extends AbstractContainerMenu {
         return blockEntity.getDepletionProgress();
     }
 
-
     private void addSlotRange(IItemHandler handler, int x, int y, int amount, int dx) {
         for (int i = 0 ; i < amount ; i++) {
             addSlot(new SlotItemHandler(handler, slotIndex, x, y));

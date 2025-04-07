@@ -44,7 +44,7 @@ public class NCEnergyContainer extends AbstractContainerMenu {
 
     public NCEnergyContainer(int windowId, BlockPos pos, Inventory playerInventory, Player player, String name) {
         this(NCProcessors.PROCESSORS_CONTAINERS.get(name).get(), windowId);
-        blockEntity = (NCProcessorBE) player.getCommandSenderWorld().getBlockEntity(pos);
+        blockEntity = (NCProcessorBE) player.getCommandSenderWorld().getExistingBlockEntity(pos);
         this.playerEntity = player;
         this.playerInventory = new InvWrapper(playerInventory);
         this.name = name;
@@ -121,10 +121,8 @@ public class NCEnergyContainer extends AbstractContainerMenu {
 
             slot.onTake(pPlayer, stack);
         }
-
         return itemstack;
     }
-
 
     private void addSlotRange(IItemHandler handler, int x, int y, int amount, int dx) {
         for (int i = 0 ; i < amount ; i++) {
@@ -140,7 +138,6 @@ public class NCEnergyContainer extends AbstractContainerMenu {
             y += dy;
         }
     }
-
 
     protected void layoutPlayerInventorySlots() {
         int leftCol = 10;

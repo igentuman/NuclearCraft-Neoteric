@@ -62,7 +62,7 @@ public class ContainerBlock extends Block implements EntityBlock {
     }
 
     public int getAnalogOutputSignal(BlockState pBlockState, Level pLevel, BlockPos pPos) {
-        BlockEntity blockEntity = pLevel.getBlockEntity(pPos);
+        BlockEntity blockEntity = pLevel.getExistingBlockEntity(pPos);
         if (blockEntity instanceof ContainerBE containerBE) {
             return (int) ((containerBE.getLoadRate())*15);
         }
@@ -72,7 +72,7 @@ public class ContainerBlock extends Block implements EntityBlock {
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
         if (!level.isClientSide()) {
-            ContainerBE be = (ContainerBE)level.getBlockEntity(pos);
+            ContainerBE be = (ContainerBE)level.getExistingBlockEntity(pos);
             ItemStack handStack = player.getItemInHand(hand);
             if(isMultiTool(handStack)) {
                 Direction dirToChange = result.getDirection();

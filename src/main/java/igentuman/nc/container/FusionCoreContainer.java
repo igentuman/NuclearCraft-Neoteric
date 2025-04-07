@@ -34,7 +34,7 @@ public class FusionCoreContainer extends AbstractContainerMenu {
         super(FusionReactor.FUSION_CORE_CONTAINER.get(), pContainerId);
         this.playerEntity = playerInventory.player;
         this.playerInventory =  new InvWrapper(playerInventory);
-        blockEntity = (FusionCoreBE) playerEntity.getCommandSenderWorld().getBlockEntity(pos);
+        blockEntity = (FusionCoreBE) playerEntity.getCommandSenderWorld().getExistingBlockEntity(pos);
         layoutPlayerInventorySlots();
     }
 

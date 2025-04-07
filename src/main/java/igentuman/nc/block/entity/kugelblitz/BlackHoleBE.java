@@ -1,5 +1,7 @@
 package igentuman.nc.block.entity.kugelblitz;
 
+import igentuman.nc.block.entity.NuclearCraftBE;
+import igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Block;
@@ -8,7 +10,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import static igentuman.nc.setup.registration.NCSounds.BLACKHOLE_IDLE;
 import static igentuman.nc.setup.registration.NCSounds.BLACKHOLE_SPAWN;
 
-public class BlackHoleBE extends ChamberBE {
+public class BlackHoleBE extends NuclearCraftBE {
 
     public static String NAME = "black_hole";
     public float scale = 0.2f;
@@ -18,7 +20,7 @@ public class BlackHoleBE extends ChamberBE {
     private int spawnSoundCooldown = 0;
 
     public BlackHoleBE(BlockPos pPos, BlockState pBlockState) {
-        super(pPos, pBlockState, NAME);
+        super(KugelblitzRegistration.KUGELBLITZ_BE.get(NAME).get(), pPos, pBlockState);
     }
 
     public void tickClient() {

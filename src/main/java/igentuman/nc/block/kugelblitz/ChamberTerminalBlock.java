@@ -78,7 +78,7 @@ public class ChamberTerminalBlock extends HorizontalDirectionalBlock implements 
     public InteractionResult use(@NotNull BlockState state, Level level, @NotNull BlockPos pos, @NotNull Player player, InteractionHand hand, BlockHitResult result) {
 
         if (!level.isClientSide()) {
-            BlockEntity be = level.getBlockEntity(pos);
+            BlockEntity be = level.getExistingBlockEntity(pos);
 
             if (be instanceof ChamberTerminalBE)  {
                 MenuProvider containerProvider = new MenuProvider() {

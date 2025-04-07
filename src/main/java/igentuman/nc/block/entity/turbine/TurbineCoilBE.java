@@ -62,7 +62,7 @@ public class TurbineCoilBE extends TurbineBE {
         if(getMultiblock() != null) {
             if (refreshCacheFlag) {
                 for (Direction dir : Direction.values()) {
-                    BlockEntity be = Objects.requireNonNull(getLevel()).getBlockEntity(getBlockPos().relative(dir));
+                    BlockEntity be = Objects.requireNonNull(getLevel()).getExistingBlockEntity(getBlockPos().relative(dir));
                     BlockState bs = getLevel().getBlockState(getBlockPos().relative(dir));
                     if (bs.getBlock() instanceof TurbineBearingBlock) {
                         hasBearingConnection = getMultiblock().bearingPositions.contains(getBlockPos().relative(dir));

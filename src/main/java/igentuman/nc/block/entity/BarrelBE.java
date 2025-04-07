@@ -81,7 +81,7 @@ public class BarrelBE extends NuclearCraftBE implements SideModeToggleable {
                     sideConfig.get(direction.ordinal()) == SideMode.DISABLED ||
                     sideConfig.get(direction.ordinal()) == SideMode.DEFAULT
             ) continue;
-            BlockEntity be = level.getBlockEntity(worldPosition.relative(direction));
+            BlockEntity be = level.getExistingBlockEntity(worldPosition.relative(direction));
             if (be != null) {
                 IFluidHandler sideHandler = be.getCapability(ForgeCapabilities.FLUID_HANDLER, direction.getOpposite()).orElse(null);
                 if(sideHandler == null) continue;

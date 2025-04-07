@@ -1,8 +1,13 @@
 package igentuman.nc.block.entity.kugelblitz;
 
+import igentuman.api.nc.multiblock.MultiblockAttachable;
 import igentuman.nc.NuclearCraft;
+import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;
+import igentuman.nc.multiblock.AbstractNCMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;
+import igentuman.nc.multiblock.kugelblitz.KugelblitzMultiblock;
+import igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -23,18 +28,22 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static igentuman.nc.util.ModUtil.isCcLoaded;
 
-public class ChamberPortBE extends ChamberBE {
+public class ChamberPortBE extends NuclearCraftBE implements MultiblockAttachable {
+
     public static String NAME = "chamber_port";
     @NBTField
     public byte analogSignal = 0;
     @NBTField
     public byte comparatorMode = SignalSource.OVERFLOW;
-
     @NBTField
     public BlockPos controllerPos;
+    protected KugelblitzMultiblock multiblock;
+    public boolean refreshCacheFlag = true;
+    public byte validationRuns = 0;
+    public ChamberTerminalBE controller;
 
     public ChamberPortBE(BlockPos pPos, BlockState pBlockState) {
-        super(pPos, pBlockState, NAME);
+        super(KugelblitzRegistration.KUGELBLITZ_BE.get(NAME).get(), pPos, pBlockState);
     }
     public Direction getFacing() {
         return getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);
@@ -42,6 +51,21 @@ public class ChamberPortBE extends ChamberBE {
 
     public boolean hasRedstoneSignal() {
         return Objects.requireNonNull(getLevel()).hasNeighborSignal(worldPosition);
+    }
+
+    @Override
+    public void setMultiblock(AbstractNCMultiblock multiblock) {
+        this.multiblock = (KugelblitzMultiblock) multiblock;
+    }
+
+    @Override
+    public KugelblitzMultiblock getMultiblock() {
+        return multiblock;
+    }
+
+    @Override
+    public boolean canInvalidateCache() {
+        return true;
     }
 
     @Override
@@ -81,7 +105,7 @@ public class ChamberPortBE extends ChamberBE {
     private void updateAnalogSignal() {
         switch (comparatorMode) {
             case SignalSource.ENERGY:
-                analogSignal = (byte) (controller().energyStorage.getEnergyStored() * 15 / controller().energyStorage.getMaxEnergyStored());
+                analogSignal = (byte) (controller().energyStorage().getEnergyStored() * 15 / controller().energyStorage().getMaxEnergyStored());
                 break;
 
         }
@@ -89,12 +113,14 @@ public class ChamberPortBE extends ChamberBE {
 
     protected FluidCapabilityHandler fluidHandler()
     {
-        return controller().contentHandler.fluidCapability;
+        return controller().contentHandler().fluidCapability;
     }
+
     protected <T> LazyOptional<T> fluidHandler(@Nullable Direction side)
     {
-        return controller().contentHandler.getFluidCapability(side);
+        return controller().contentHandler().getFluidCapability(side);
     }
+
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
@@ -116,16 +142,16 @@ public class ChamberPortBE extends ChamberBE {
 
     protected boolean sendOutPower() {
         if(getMultiblock() == null) return false;
-        AtomicInteger capacity = new AtomicInteger(controller().energyStorage.getEnergyStored());
+        AtomicInteger capacity = new AtomicInteger(controller().energyStorage().getEnergyStored());
         if (capacity.get() > 0) {
             for (Direction direction : Direction.values()) {
-                BlockEntity be = getLevel().getBlockEntity(worldPosition.relative(direction));
+                BlockEntity be = getLevel().getExistingBlockEntity(worldPosition.relative(direction));
                 if (be != null) {
                     boolean doContinue = be.getCapability(ForgeCapabilities.ENERGY, direction.getOpposite()).map(handler -> {
                                 if (handler.canReceive()) {
-                                    int received = handler.receiveEnergy(Math.min(capacity.get(), controller().energyStorage.getMaxEnergyStored()), false);
+                                    int received = handler.receiveEnergy(Math.min(capacity.get(), controller().energyStorage().getMaxEnergyStored()), false);
                                     capacity.addAndGet(-received);
-                                    controller().energyStorage.consumeEnergy(received);
+                                    controller().energyStorage().consumeEnergy(received);
                                     setChanged();
                                     return capacity.get() > 0;
                                 } else {
@@ -144,21 +170,16 @@ public class ChamberPortBE extends ChamberBE {
     }
 
     @Override
-    public boolean canInvalidateCache() {
-        return false;
-    }
-
-    @Override
     public ChamberTerminalBE controller() {
         if(NuclearCraft.instance.isNcBeStopped || (!getLevel().isClientSide() && getLevel().getServer() != null && !getLevel().getServer().isRunning())) return null;
         if(getLevel().isClientSide && controllerPos != null) {
-            return (ChamberTerminalBE) getLevel().getBlockEntity(controllerPos);
+            return (ChamberTerminalBE) getLevel().getExistingBlockEntity(controllerPos);
         }
         try {
             return (ChamberTerminalBE) getMultiblock().controller().controllerBE();
         } catch (NullPointerException e) {
             if(controllerPos != null) {
-                return (ChamberTerminalBE) getLevel().getBlockEntity(controllerPos);
+                return (ChamberTerminalBE) getLevel().getExistingBlockEntity(controllerPos);
             }
             return null;
         }
@@ -166,12 +187,12 @@ public class ChamberPortBE extends ChamberBE {
 
     public int getEnergyStored() {
         if(controller() == null) return 0;
-        return controller().energyStorage.getEnergyStored();
+        return controller().energyStorage().getEnergyStored();
     }
 
     public int getMaxEnergyStored() {
         if(controller() == null) return 0;
-        return controller().energyStorage.getMaxEnergyStored();
+        return controller().energyStorage().getMaxEnergyStored();
     }
 
     public int energyPerTick() {

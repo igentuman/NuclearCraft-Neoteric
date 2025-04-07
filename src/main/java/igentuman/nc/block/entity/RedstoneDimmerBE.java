@@ -30,6 +30,9 @@ public class RedstoneDimmerBE extends NuclearCraftBE {
     }
 
     public void tickServer() {
+        if (getLevel().getGameTime() % 2 == 0) {
+            return;
+        }
         facing = getBlockState().getValue(HORIZONTAL_FACING);
         int wasOutput = output;
         int left = getLeftSignal();

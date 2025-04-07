@@ -131,7 +131,7 @@ public class RedstoneDimmerBlock extends HorizontalDirectionalBlock implements E
 
     @Override
     public int getSignal(BlockState state, BlockGetter world, BlockPos pos, Direction direction) {
-        BlockEntity be = world.getBlockEntity(pos);
+        BlockEntity be = world.getExistingBlockEntity(pos);
         if (be instanceof RedstoneDimmerBE) {
             return ((RedstoneDimmerBE) be).output;
         }

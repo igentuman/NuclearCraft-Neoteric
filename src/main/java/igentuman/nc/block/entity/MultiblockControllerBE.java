@@ -2,6 +2,7 @@ package igentuman.nc.block.entity;
 
 import igentuman.api.nc.multiblock.MultiblockAttachable;
 import igentuman.nc.handler.sided.SidedContentHandler;
+import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.multiblock.AbstractNCMultiblock;
 import igentuman.nc.multiblock.ValidationResult;
 import igentuman.nc.util.CustomEnergyStorage;
@@ -16,14 +17,21 @@ import net.minecraftforge.energy.IEnergyStorage;
 public class MultiblockControllerBE extends NuclearCraftBE implements MultiblockAttachable<AbstractNCMultiblock, MultiblockControllerBE> {
 
     @NBTField
+    public int height = 1;
+    @NBTField
+    public int width = 1;
+    @NBTField
+    public int depth = 1;
+    @NBTField
     public boolean isCasingValid = false;
     @NBTField
-    protected boolean isInternalValid = false;
+    public boolean isInternalValid = false;
     public boolean refreshCacheFlag = true;
     public byte validationRuns = 0;
     protected AbstractNCMultiblock multiblock;
     public BlockPos errorBlockPos = BlockPos.ZERO;
     public ValidationResult validationResult = ValidationResult.INCOMPLETE;
+    public boolean controllerEnabled = false;
 
     public MultiblockControllerBE(BlockEntityType<?> pType, BlockPos pPos, BlockState pBlockState) {
         super(pType, pPos, pBlockState);
@@ -57,6 +65,24 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
         getMultiblock().hasToRefresh = true;
         isCasingValid = false;
         isInternalValid = false;
+    }
+
+    public int getDepth() {
+        return depth;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    @Override
+    public ItemCapabilityHandler getItemInventory()
+    {
+        return contentHandler().itemHandler;
     }
 
     public LazyOptional<IEnergyStorage> getEnergy() {

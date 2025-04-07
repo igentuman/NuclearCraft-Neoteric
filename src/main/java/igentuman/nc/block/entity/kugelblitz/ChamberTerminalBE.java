@@ -1,6 +1,7 @@
 package igentuman.nc.block.entity.kugelblitz;
 
 import igentuman.nc.NuclearCraft;
+import igentuman.nc.block.entity.MultiblockControllerBE;
 import igentuman.nc.block.entity.fusion.FusionCoreBE;
 import igentuman.nc.client.sound.SoundHandler;
 import igentuman.nc.compat.cc.KugelblitzPeripheral;
@@ -9,6 +10,7 @@ import igentuman.nc.handler.sided.SlotModePair;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.multiblock.ValidationResult;
 import igentuman.nc.multiblock.kugelblitz.KugelblitzMultiblock;
+import igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration;
 import igentuman.nc.recipes.NcRecipeType;
 import igentuman.nc.recipes.RecipeInfo;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
@@ -49,53 +51,29 @@ import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS
 import static igentuman.nc.setup.registration.NCSounds.FISSION_REACTOR;
 import static igentuman.nc.util.ModUtil.isCcLoaded;
 
-public class ChamberTerminalBE extends ChamberBE {
+public class ChamberTerminalBE extends MultiblockControllerBE {
 
     public static String NAME = "chamber_terminal";
     public final SidedContentHandler contentHandler;
     public final CustomEnergyStorage energyStorage = createEnergy();
-
+    private LazyOptional<KugelblitzPeripheral> peripheralCap;
     protected final LazyOptional<IEnergyStorage> energy = LazyOptional.of(() -> energyStorage);
-    public BlockPos errorBlockPos = BlockPos.ZERO;
-    @NBTField
-    public Direction orientation = Direction.NORTH;
-    @NBTField
-    public boolean isCasingValid = false;
-    @NBTField
-    public boolean isInternalValid = false;
-    @NBTField
-    public int height = 1;
-    @NBTField
-    public int width = 1;
-    @NBTField
-    public int depth = 1;
     @NBTField
     public int energyPerTick = 0;
     @NBTField
     public boolean powered = false;
     @NBTField
     protected boolean forceShutdown = false;
-
     @NBTField
     public double efficiency = 0;
-    public ValidationResult validationResult = ValidationResult.INCOMPLETE;
-    public boolean controllerEnabled = false;
     protected Direction facing;
     public Recipe recipe;
     public HashMap<String, Recipe> cachedRecipes = new HashMap<>();
-
-
-
-    @Override
-    public String getName() {
-        return NAME;
-    }
-
     private List<FluidStack> allowedInputs;
 
 
     public ChamberTerminalBE(BlockPos pPos, BlockState pBlockState) {
-        super(pPos, pBlockState, NAME);
+        super(KugelblitzRegistration.KUGELBLITZ_BE.get(NAME).get(), pPos, pBlockState);
         multiblock = new KugelblitzMultiblock(this);
         contentHandler = new SidedContentHandler(
                 0, 0,
@@ -107,11 +85,11 @@ public class ChamberTerminalBE extends ChamberBE {
     }
 
     @Override
-    public ItemCapabilityHandler getItemInventory()
-    {
-        return contentHandler.itemHandler;
+    public String getName() {
+        return NAME;
     }
 
+    @Override
     public LazyOptional<IEnergyStorage> getEnergy() {
         return energy;
     }
@@ -131,9 +109,6 @@ public class ChamberTerminalBE extends ChamberBE {
         //TODO implement
         return null;
     }
-
-
-    private LazyOptional<KugelblitzPeripheral> peripheralCap;
 
     public <T> LazyOptional<T>  getPeripheral(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if(peripheralCap == null) {
@@ -185,8 +160,6 @@ public class ChamberTerminalBE extends ChamberBE {
         }
     }
     protected int reValidateCounter = 0;
-
-
 
     public void tickServer() {
         if(NuclearCraft.instance.isNcBeStopped || isRemoved()) {
@@ -241,9 +214,8 @@ public class ChamberTerminalBE extends ChamberBE {
         if(multiblock == null) {
             multiblock = new KugelblitzMultiblock(this);
         }
-        return multiblock;
+        return (KugelblitzMultiblock) multiblock;
     }
-
 
     private void handleValidation() {
         if(multiblock == null) return;
@@ -283,16 +255,6 @@ public class ChamberTerminalBE extends ChamberBE {
 
     }
 
-    public void setRemoved() {
-        super.setRemoved();
-        if(getLevel().isClientSide()) {
-            return;
-        }
-        if(this.getMultiblock() != null) {
-            this.getMultiblock().onControllerRemoved();
-        }
-    }
-
     private boolean processRecipe() {
         if(recipeInfo.recipe != null && recipeInfo.isCompleted()) {
             if(contentHandler.fluidCapability.getFluidInSlot(0).isEmpty()) {
@@ -306,37 +268,6 @@ public class ChamberTerminalBE extends ChamberBE {
             return process();
         }
         return false;
-    }
-    public List<BlockPos> getBlocks(BlockPos pos, Direction.Axis axis) {
-        List<BlockPos> positions = new ArrayList<>();
-        int y = pos.getY();
-        int z = pos.getZ();
-        int x = pos.getX();
-        switch (axis) {
-            case X:
-                // Generate positions around the BlockPos on the YZ plane
-                positions.add(pos.offset(0, -1, -1));
-                positions.add(pos.offset(0, -1, 1));
-                positions.add(pos.offset(0, 1, 1));
-                positions.add(pos.offset(0, 1, -1));
-                break;
-            case Y:
-                // Generate positions around the BlockPos on the XZ plane
-                positions.add(pos.offset( -1, 0,-1));
-                positions.add(pos.offset( -1, 0, 1));
-                positions.add(pos.offset( 1, 0, 1));
-                positions.add(pos.offset( 1, 0, -1));
-                break;
-            case Z:
-                // Generate positions around the BlockPos on the XY planed
-                positions.add(pos.offset(-1, -1, 0));
-                positions.add(pos.offset(1, -1, 0));
-                positions.add(pos.offset(1, 1, 0));
-                positions.add(pos.offset(-1, 1, 0));
-                break;
-        }
-
-        return positions;
     }
 
     private boolean process() {
@@ -362,7 +293,6 @@ public class ChamberTerminalBE extends ChamberBE {
         }
     }
 
-
     private int calculateEnergy() {
         int wasEnergy = energyPerTick;
         energyPerTick = 0;
@@ -372,14 +302,13 @@ public class ChamberTerminalBE extends ChamberBE {
         return energyPerTick;
     }
 
-
     private void updateRecipe() {
         recipe = getRecipe();
         if (recipe != null) {
-            recipeInfo.setRecipe(recipe);
-            recipeInfo.ticks = ((Recipe)recipeInfo.recipe()).getBaseTime();
-            recipeInfo.energy = recipeInfo.recipe.getEnergy();
-            recipeInfo.be = this;
+            recipeInfo().setRecipe(recipe);
+            recipeInfo().ticks = ((Recipe)recipeInfo().recipe()).getBaseTime();
+            recipeInfo().energy = recipeInfo().recipe.getEnergy();
+            recipeInfo().be = this;
             //recipe.consumeInputs(contentHandler);
         }
     }
@@ -392,62 +321,11 @@ public class ChamberTerminalBE extends ChamberBE {
         return recipeInfo.recipe() != null;
     }
 
-    @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
-        if (tag.contains("Info")) {
-            CompoundTag infoTag = tag.getCompound("Info");
-            if (!isCasingValid || !isInternalValid) {
-                errorBlockPos = BlockPos.of(infoTag.getLong("erroredBlock"));
-                validationResult = ValidationResult.byId(infoTag.getInt("validationId"));
-            } else {
-                validationResult = ValidationResult.VALID;
-            }
-        }
-    }
-
     public Direction getFacing() {
         if (facing == null) {
             facing = getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);
         }
         return facing;
-    }
-    @Override
-    public void saveAdditional(CompoundTag tag) {
-        super.saveAdditional(tag);
-        if (tag.contains("Info")) {
-            CompoundTag infoTag = tag.getCompound("Info");
-            infoTag.putInt("validationId", validationResult.id);
-            infoTag.putLong("erroredBlock", errorBlockPos.asLong());
-            tag.remove("Info");
-            tag.put("Info", infoTag);
-        }
-    }
-
-    @Override
-    public void loadClientData(CompoundTag tag) {
-        super.loadClientData(tag);
-        if (tag.contains("Info")) {
-            CompoundTag infoTag = tag.getCompound("Info");
-            if (!isCasingValid || !isInternalValid) {
-                errorBlockPos = BlockPos.of(infoTag.getLong("erroredBlock"));
-                validationResult = ValidationResult.byId(infoTag.getInt("validationId"));
-            } else {
-                validationResult = ValidationResult.VALID;
-            }
-        }
-    }
-
-    @Override
-    protected void saveClientData(CompoundTag tag) {
-        super.saveClientData(tag);
-        if (tag.contains("Info")) {
-            CompoundTag infoTag = tag.getCompound("Info");
-            infoTag.putInt("validationId", validationResult.id);
-            infoTag.putLong("erroredBlock", errorBlockPos.asLong());
-            tag.remove("Info");
-            tag.put("Info", infoTag);
-        }
     }
 
     public double calculateEfficiency() {
@@ -490,22 +368,22 @@ public class ChamberTerminalBE extends ChamberBE {
 
         public Recipe(ResourceLocation id, ItemStackIngredient[] input, ItemStackIngredient[] output, FluidStackIngredient[] inputFluids, FluidStackIngredient[] outputFluids, double timeModifier, double powerModifier, double heatModifier, double rarity) {
             super(id, input, output, inputFluids, outputFluids, timeModifier, powerModifier, heatModifier, rarity);
-            CATALYSTS.put(ChamberTerminalBE.NAME, List.of(getToastSymbol()));
+            CATALYSTS.put(NAME, List.of(getToastSymbol()));
         }
 
         @Override
         public String getCodeId() {
-            return ChamberTerminalBE.NAME;
+            return NAME;
         }
 
         @Override
         public @NotNull String getGroup() {
-            return ChamberTerminalBE.NAME;
+            return NAME;
         }
 
         @Override
         public @NotNull ItemStack getToastSymbol() {
-            return new ItemStack(TURBINE_BLOCKS.get(getCodeId()).get());
+            return new ItemStack(KugelblitzRegistration.KUGELBLITZ_BLOCKS.get(getCodeId()).get());
         }
 
         public int getBaseTime() {

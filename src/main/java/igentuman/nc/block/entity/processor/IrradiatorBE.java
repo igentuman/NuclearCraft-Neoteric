@@ -40,6 +40,13 @@ public class IrradiatorBE extends NCProcessorBE implements MultiblockAttachable 
     @Override
     public void setMultiblock(AbstractNCMultiblock multiblock) {
         this.multiblock = multiblock;
+        if (multiblock != null) {
+            if(multiblock.controller() != null) {
+                controller = (FissionControllerBE) multiblock.controller().controllerBE();
+            }
+        } else {
+            controller = null;
+        }
     }
 
     @Override

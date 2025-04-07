@@ -84,7 +84,7 @@ public class ContainerBE extends NuclearCraftBE implements SideModeToggleable {
         for (Direction direction : Direction.values()) {
             if (sideConfig.get(direction.ordinal()) == SideMode.DISABLED) continue;
             if (level == null) continue;
-            BlockEntity be = level.getBlockEntity(worldPosition.relative(direction));
+            BlockEntity be = level.getExistingBlockEntity(worldPosition.relative(direction));
             if(be == null) continue;
             if (be.getCapability(ForgeCapabilities.ITEM_HANDLER, direction.getOpposite()).isPresent()) {
                 be.getCapability(ForgeCapabilities.ITEM_HANDLER, direction.getOpposite()).ifPresent(cap -> {

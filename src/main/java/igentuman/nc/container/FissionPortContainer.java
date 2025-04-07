@@ -35,7 +35,7 @@ public class FissionPortContainer extends AbstractContainerMenu {
         super(FissionReactor.FISSION_PORT_CONTAINER.get(), pContainerId);
         this.playerEntity = playerInventory.player;
         this.playerInventory =  new InvWrapper(playerInventory);
-        portBE = (FissionPortBE) playerEntity.getCommandSenderWorld().getBlockEntity(pos);
+        portBE = (FissionPortBE) playerEntity.getCommandSenderWorld().getExistingBlockEntity(pos);
         slotIndex = 0;
         layoutPlayerInventorySlots();
         portBE.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {

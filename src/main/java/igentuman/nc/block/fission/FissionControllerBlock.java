@@ -81,7 +81,7 @@ public class FissionControllerBlock extends HorizontalDirectionalBlock implement
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
 
         if (!level.isClientSide()) {
-            BlockEntity be = level.getBlockEntity(pos);
+            BlockEntity be = level.getExistingBlockEntity(pos);
 
             if (be instanceof FissionControllerBE)  {
                 MenuProvider containerProvider = new MenuProvider() {

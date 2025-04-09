@@ -219,6 +219,7 @@ public class LeacherBE extends NCProcessorBE {
         super.processRecipe();
     }
 
+    @Override
     public void updateRecipe() {
         gatherOre();
         super.updateRecipe();

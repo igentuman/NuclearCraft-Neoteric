@@ -243,4 +243,8 @@ public class NCProcessorContainer<T extends AbstractContainerMenu> extends Abstr
     public BlockEntity getBlockEntity() {
         return blockEntity;
     }
+
+    public int getParallelProcessing() {
+        return blockEntity.parallelRecipes();
+    }
 }

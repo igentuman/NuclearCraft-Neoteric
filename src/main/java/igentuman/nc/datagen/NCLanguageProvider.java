@@ -432,6 +432,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("side_config.default", "DEFAULT");
         add("gui.nc.side_config.tooltip", "Side Config");
 
+        add("speed.parallel_processing", "Parallel processing: x%s");
         add("speed.multiplier", "Speed Multiplier: x%s");
         add("energy.multiplier", "Energy Multiplier: x%s");
         add("energy.per_tick", "Energy Per Tick: %s FE/t");

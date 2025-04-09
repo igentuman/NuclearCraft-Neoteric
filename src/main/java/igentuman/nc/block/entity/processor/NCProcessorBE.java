@@ -226,7 +226,7 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
         ItemStack upgrade = upgradesHandler().getStackInSlot(id);
         if(upgrade.isEmpty()) return 1;
         if (upgrade.is(NC_ITEMS.get("upgrade_stack").get())) {
-            return (int) (Math.min(32, Math.ceil((upgrade.getCount() + 2D) / 2D)));
+            return (int) (Math.min(32, Math.ceil(upgrade.getCount() / 4D)));
         }
         return 1;
     }
@@ -381,7 +381,7 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
         handleRecipeOutput();
         updated = updated || contentHandler().tick();
         if(updated || wasUpdated) {
-            energyStorage().setMaxCapacity(getEnergyCapacity() * Math.max(1, getEnergyUpgrades()/5));
+            energyStorage().setMaxCapacity(getEnergyCapacity() * Math.max(1, getEnergyUpgrades()/10));
             if (wasActive != isActive) {
                 level.setBlockAndUpdate(worldPosition, getBlockState().setValue(ACTIVE, isActive));
             }

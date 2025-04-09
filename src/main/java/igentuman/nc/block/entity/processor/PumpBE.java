@@ -14,6 +14,7 @@ public class PumpBE extends NCProcessorBE {
 
     public PumpBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, Processors.PUMP);
+        contentHandler().fluidCapability.tanks.get(0).setCapacity(100000);
     }
 
     @Override

@@ -181,6 +181,9 @@ public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractC
             if(widget.isMouseOver(pMouseX, pMouseY)) {
                 if(widget instanceof EnergyBar) {
                     widget.clearTooltips();
+                    if(menu.getParallelProcessing() > 1) {
+                        widget.addTooltip(applyFormat(Component.translatable("speed.parallel_processing", menu.getParallelProcessing()), ChatFormatting.RED));
+                    }
                     widget.addTooltip(applyFormat(Component.translatable("speed.multiplier", menu.speedMultiplier()), ChatFormatting.RED));
                     widget.addTooltip(applyFormat(Component.translatable("energy.multiplier", menu.energyMultiplier()), ChatFormatting.GOLD));
                     widget.addTooltip(applyFormat(Component.translatable("energy.per_tick", scaledFormat(menu.energyPerTick())), ChatFormatting.YELLOW));

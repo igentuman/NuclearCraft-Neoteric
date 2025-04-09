@@ -4,6 +4,7 @@ import igentuman.nc.NuclearCraft;
 import igentuman.nc.radiation.data.RadiationEvents;
 import igentuman.nc.recipes.type.RadShieldingRecipe;
 import igentuman.nc.recipes.type.ResetNbtRecipe;
+import igentuman.nc.util.insitu_leaching.WorldVeinsProvider;
 import igentuman.nc.world.dimension.Dimensions;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
@@ -21,6 +22,7 @@ public class ModSetup {
         bus.addListener(RadiationEvents::onPlayerCloned);
         bus.addGenericListener(Entity.class, RadiationEvents::attachPlayerRadiation);
         bus.addGenericListener(Level.class, RadiationEvents::attachWorldRadiation);
+        bus.addGenericListener(Level.class, WorldVeinsProvider::attachVeinCapability);
         bus.register(NuclearCraft.worldTickHandler);
         bus.register(new RadiationEvents());
     }

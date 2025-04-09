@@ -336,7 +336,7 @@ public class Materials extends MaterialsManager {
     public static List<String> slurries() {
         if(slurries == null) slurries = List.of(
                 "uranium", "iron", "gold", "aluminum", "thorium", "boron", "silver",
-                "lead", "tin", "copper", "zinc", "cobalt", "platinum", "lithium", "magnesium"
+                "lead", "tin", "copper", "zinc", "cobalt", "platinum", "lithium", "magnesium", "nickel"
         );
         return slurries;
     }

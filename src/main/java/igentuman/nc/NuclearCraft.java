@@ -14,6 +14,8 @@ import igentuman.nc.network.PacketHandler;
 import igentuman.nc.setup.ClientSetup;
 import igentuman.nc.setup.ModSetup;
 import igentuman.nc.setup.Registration;
+import igentuman.nc.util.insitu_leaching.WorldVeinOres;
+import igentuman.nc.util.insitu_leaching.WorldVeinsProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.api.distmarker.Dist;
@@ -116,6 +118,7 @@ public class NuclearCraft {
         NuclearCraft.instance.isNcBeStopped = true;
         //stop capability tracking
         RadiationEvents.stopTracking();
+        WorldVeinsProvider.stopTracking();
         for(ServerLevel level: event.getServer().getAllLevels()) {
             RadiationManager.clear(level);
         }
@@ -127,12 +130,14 @@ public class NuclearCraft {
     private void serverStarted(ServerStartedEvent event) {
         NuclearCraft.instance.isNcBeStopped = false;
         RadiationEvents.startTracking();
+        WorldVeinsProvider.startTracking();
     }
 
     @SubscribeEvent
     public void registerCaps(RegisterCapabilitiesEvent event) {
         event.register(WorldRadiation.class);
         event.register(PlayerRadiation.class);
+        event.register(WorldVeinOres.class);
     }
 
     public static void debugLog(String message) {

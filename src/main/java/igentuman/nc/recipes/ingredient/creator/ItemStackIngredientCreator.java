@@ -53,6 +53,11 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
     }
 
     @Override
+    public ItemStackIngredient from(JsonElement instance) {
+        return deserialize(instance);
+    }
+
+    @Override
     public ItemStackIngredient read(FriendlyByteBuf buffer) {
         Objects.requireNonNull(buffer, "ItemStackIngredients cannot be read from a null packet buffer.");
         return switch (buffer.readEnum(IngredientType.class)) {
@@ -133,7 +138,6 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
     public static class SingleItemStackIngredient extends ItemStackIngredient {
 
         private final Ingredient ingredient;
-        private final int amount;
 
         private SingleItemStackIngredient(Ingredient ingredient, int amount) {
             this.ingredient = Objects.requireNonNull(ingredient);

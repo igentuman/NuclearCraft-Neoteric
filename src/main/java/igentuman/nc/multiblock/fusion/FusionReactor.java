@@ -49,18 +49,18 @@ public class FusionReactor {
     public static void init() {
         String key;
         key = "fusion_reactor_connector";
-        FUSION_BLOCKS.put(key, BLOCKS.register(key, () -> new MultiblockConnectorBlock(REACTOR_BLOCKS_PROPERTIES)));
+        FUSION_BLOCKS.put(key, BLOCKS.register(key, () -> new FusionConnectorBlock(REACTOR_BLOCKS_PROPERTIES)));
         FUSION_ITEMS.put(key, fromMultiblock(FUSION_BLOCKS.get(key)));
         ALL_NC_ITEMS.put(key, FUSION_ITEMS.get(key));
 
         key = "fusion_reactor_casing";
-        FUSION_BLOCKS.put(key, BLOCKS.register(key, () -> new MultiblockCasingBlock(REACTOR_BLOCKS_PROPERTIES)));
+        FUSION_BLOCKS.put(key, BLOCKS.register(key, () -> new FusionCasingBlock(REACTOR_BLOCKS_PROPERTIES)));
 
         FUSION_ITEMS.put(key, fromMultiblock(FUSION_BLOCKS.get(key)));
         ALL_NC_ITEMS.put(key, FUSION_ITEMS.get(key));
 
         key = "fusion_reactor_casing_glass";
-        FUSION_BLOCKS.put(key, BLOCKS.register(key, () -> new MultiblockCasingBlock(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(1f).requiresCorrectToolForDrops().noOcclusion())));
+        FUSION_BLOCKS.put(key, BLOCKS.register(key, () -> new FusionCasingBlock(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(1f).requiresCorrectToolForDrops().noOcclusion())));
         FUSION_ITEMS.put(key, fromMultiblock(FUSION_BLOCKS.get(key)));
         ALL_NC_ITEMS.put(key, FUSION_ITEMS.get(key));
 

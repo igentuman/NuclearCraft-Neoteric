@@ -55,14 +55,12 @@ public class TickHandler {
                 record TransparentRenderInfo(RenderType renderType, List<LazyRender> renders, double closest) {
                 }
                 Consumer<TransparentRenderInfo> renderInfoConsumer = info -> {
-                    //Batch all renders for a single render type into a single buffer addition
                     VertexConsumer buffer = renderer.getBuffer(info.renderType);
                     for (LazyRender transparentRender : info.renders) {
                         String profilerSection = transparentRender.getProfilerSection();
                         if (profilerSection != null) {
                             profiler.push(profilerSection);
                         }
-                        //Note: We don't bother sorting renders in a specific render type as we assume the render type has sortOnUpload as true
                         transparentRender.render(camera, buffer, poseStack, renderTick, partialTick, profiler);
                         if (profilerSection != null) {
                             profiler.pop();
@@ -71,7 +69,6 @@ public class TickHandler {
                     renderer.endBatch(info.renderType);
                 };
                 if (transparentRenderers.size() == 1) {
-                    //If we only have one render type we don't need to bother calculating any distances
                     for (Map.Entry<RenderType, List<LazyRender>> entry : transparentRenderers.entrySet()) {
                         renderInfoConsumer.accept(new TransparentRenderInfo(entry.getKey(), entry.getValue(), 0));
                     }
@@ -83,17 +80,14 @@ public class TickHandler {
                                 for (LazyRender render : renders) {
                                     Vec3 renderPos = render.getCenterPos(partialTick);
                                     if (renderPos != null) {
-                                        //Note: We can just use the distance sqr as we use it for both things, so they compare the same anyway
                                         double distanceSqr = camera.getPosition().distanceToSqr(renderPos);
                                         if (distanceSqr < closest) {
                                             closest = distanceSqr;
                                         }
                                     }
                                 }
-                                //Note: we remap it in order to keep track of the closest distance so that we only have to calculate it once
                                 return new TransparentRenderInfo(entry.getKey(), renders, closest);
                             })
-                            //Sort in the order of furthest to closest (reverse of by closest)
                             .sorted(Comparator.comparingDouble(info -> -info.closest))
                             .forEachOrdered(renderInfoConsumer);
                 }

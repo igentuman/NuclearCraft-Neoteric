@@ -386,6 +386,9 @@ public class NuclearCraftBE extends BlockEntity {
             if (infoTag.contains("recipeInfo") && recipeInfo() != null) {
                 recipeInfo().deserializeNBT(infoTag.getCompound("recipeInfo"));
             }
+            if (tag.contains("Energy") && energyStorage() != null) {
+                energyStorage().deserializeNBT(tag.get("Energy"));
+            }
             if(infoTag.contains("energy") && energyStorage() != null) {
                 energyStorage().setEnergy(infoTag.getInt("energy"));
             }
@@ -409,7 +412,7 @@ public class NuclearCraftBE extends BlockEntity {
         if(!tag.contains("Content") && contentHandler() != null) {
             tag.put("Content", contentHandler().serializeNBT());
         }
-        if(!tag.contains("Energy") && energyStorage() != null) {
+        if(!tag.contains("Energy") && energyStorage() != null && energyStorage().wasUpdated) {
             tag.put("Energy", energyStorage().serializeNBT());
         }
         CompoundTag infoTag = new CompoundTag();
@@ -448,6 +451,9 @@ public class NuclearCraftBE extends BlockEntity {
                 saveSideMapFlag = false;
             }
             tag.put("Content", contentHandler().serializeNBT());
+        }
+        if(!tag.contains("Energy") && energyStorage() != null && energyStorage().wasUpdated) {
+            tag.put("Energy", energyStorage().serializeNBT());
         }
         if (energyStorage() != null) {
             infoTag.putInt("energy", energyStorage().getEnergyStored());

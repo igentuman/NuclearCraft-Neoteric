@@ -237,6 +237,10 @@ public class NCLanguageProvider extends LanguageProvider {
 
         add("tooltip.active_heatsink","Needs coolant fluid supply into reactor to work.");
 
+        add("tooltip.upgrade_stack","Improved speed upgrade with parallel processing");
+        add("tooltip.upgrade_speed","Increases recipe speed and energy consumption");
+        add("tooltip.upgrade_energy","Reduce energy consumption and increase energy buffer");
+
         add("processor.recipe.power","Process Power: %s FE/t");
         add("processor.recipe.duration","Process Duration: %s t");
         add("processor.recipe.radiation","Process Radiation: %s uRad");

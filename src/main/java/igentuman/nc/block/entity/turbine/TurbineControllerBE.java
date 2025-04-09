@@ -3,16 +3,12 @@ package igentuman.nc.block.entity.turbine;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.MultiblockControllerBE;
 import igentuman.nc.client.sound.SoundHandler;
-import igentuman.nc.handler.CatalystHandler;
-import igentuman.nc.handler.UpgradesHandler;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.SlotModePair;
-import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.multiblock.ValidationResult;
 import igentuman.nc.multiblock.turbine.TurbineMultiblock;
 import igentuman.nc.multiblock.turbine.TurbineRegistration;
 import igentuman.nc.recipes.NcRecipeType;
-import igentuman.nc.recipes.RecipeInfo;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.type.NcRecipe;
@@ -21,9 +17,6 @@ import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
@@ -36,7 +29,6 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -586,7 +578,7 @@ public class TurbineControllerBE extends MultiblockControllerBE {
         public double ratio = 1D;
 
         @Override
-        public void consumeInputs(SidedContentHandler contentHandler) {
+        public boolean consumeInputs(SidedContentHandler contentHandler, int parallelProcessing) {
             TurbineControllerBE be = (TurbineControllerBE)contentHandler.blockEntity;
             int flow = be.realFlow;
             ratio = (double)flow/(double)getInputFluids(0).get(0).getAmount();
@@ -594,6 +586,7 @@ public class TurbineControllerBE extends MultiblockControllerBE {
             holded.setAmount(flow);
             contentHandler.fluidCapability.holdedInputs.add(holded);
             contentHandler.fluidCapability.tanks.get(0).drain(flow, EXECUTE);
+            return false;
         }
 
         @Override

@@ -43,6 +43,15 @@ public class AssemblerRecipes extends AbstractRecipeProvider {
 
         itemsToItems(
                 List.of(
+                        ingredient(NC_ITEMS.get("upgrade_speed").get(), 2),
+                        plateIngredient(Materials.cobalt),
+                        dustIngredient(Materials.uranium)
+                ),
+                List.of(ingredient(NC_ITEMS.get("upgrade_stack").get(), 1))
+        );
+
+        itemsToItems(
+                List.of(
                         plateIngredient(Materials.tough_alloy, 5),
                         ingredient(NETHERITE_AXE),
                         ingredient(NETHERITE_PICKAXE),

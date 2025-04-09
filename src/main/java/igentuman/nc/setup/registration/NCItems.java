@@ -177,6 +177,19 @@ public class NCItems {
         }
     }
 
+    private static void registerUpgrades()
+    {
+        List<String> items = Arrays.asList(
+                "upgrade_energy",
+                "upgrade_speed",
+                "upgrade_stack"
+        );
+        for(String name: items) {
+            NC_ITEMS.put(name, ITEMS.register(name, () -> new UpgradeItem(ITEM_PROPERTIES)));
+            ALL_NC_ITEMS.put(name, NC_ITEMS.get(name));
+        }
+    }
+
     private static void registerItems() {
         List<String> items = Arrays.asList(
                 "cocoa_butter",
@@ -188,8 +201,6 @@ public class NCItems {
                 "salt",
                 "sawdust",
                 "dosimeter",
-                "upgrade_energy",
-                "upgrade_speed",
                 "water_collector",
                 "lava_collector",
                 "compact_water_collector",
@@ -210,6 +221,8 @@ public class NCItems {
             }
             ALL_NC_ITEMS.put(name, NC_ITEMS.get(name));
         }
+
+        registerUpgrades();
     }
 
     private static void registerShielding() {

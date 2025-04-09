@@ -22,6 +22,8 @@ public class NCShaders {
     public static final ShaderTracker BLACKHOLE_COLOR = new ShaderTracker();
     public static final ShaderTracker DISTORTION = new ShaderTracker();
 
+    public static final RenderStateShard.ShaderStateShard ZUZUZ = new RenderStateShard.ShaderStateShard();
+
     @SubscribeEvent
     public static void shaderRegistry(RegisterShadersEvent event) throws IOException {
         registerShader(event, rl("rendertype_blackhole"), DefaultVertexFormat.POSITION_COLOR_TEX, BLACKHOLE_COLOR);

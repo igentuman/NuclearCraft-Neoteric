@@ -3,7 +3,7 @@ package igentuman.nc.multiblock.fusion;
 import igentuman.nc.block.ElectromagnetBlock;
 import igentuman.nc.block.RFAmplifierBlock;
 import igentuman.nc.block.entity.fusion.FusionCoreBE;
-import igentuman.nc.block.fusion.MultiblockConnectorBlock;
+import igentuman.nc.block.fusion.FusionConnectorBlock;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.AbstractNCMultiblock;
 import igentuman.nc.multiblock.ValidationResult;
@@ -304,7 +304,7 @@ public class FusionReactorMultiblock extends AbstractNCMultiblock {
         for(int i = 2; i <= maxWidth()/2+1; i++) {
             int connectors = 0;
             for(Direction side: List.of(NORTH, EAST, Direction.SOUTH, Direction.WEST)) {
-                if(getBlockState(pos.revert().relative(side, i)).getBlock() instanceof MultiblockConnectorBlock) {
+                if(getBlockState(pos.revert().relative(side, i)).getBlock() instanceof FusionConnectorBlock) {
                     allBlocks.add(new NCBlockPos(pos));
                     connectors++;
                 }

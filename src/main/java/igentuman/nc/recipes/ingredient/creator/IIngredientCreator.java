@@ -24,6 +24,16 @@ public interface IIngredientCreator<TYPE, STACK, INGREDIENT extends InputIngredi
     INGREDIENT from(STACK instance);
 
     /**
+     * Creates an Ingredient that matches a given stack.
+     *
+     * @param instance JsonElement to match.
+     *
+     * @throws NullPointerException     if the given instance is null.
+     * @throws IllegalArgumentException if the given instance is empty.
+     */
+    INGREDIENT from(JsonElement instance);
+
+    /**
      * Creates an Ingredient that matches a provided type and amount.
      *
      * @param instance Type to match.

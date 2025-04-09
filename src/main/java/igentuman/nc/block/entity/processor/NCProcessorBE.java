@@ -51,6 +51,7 @@ import java.util.Objects;
 import static igentuman.nc.block.ProcessorBlock.ACTIVE;
 import static igentuman.nc.compat.oc2.NCProcessorDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.handler.config.ProcessorsConfig.PROCESSOR_CONFIG;
+import static igentuman.nc.setup.registration.NCItems.NC_ITEMS;
 import static igentuman.nc.util.ModUtil.*;
 
 public class NCProcessorBE extends NuclearCraftBE implements Processor {
@@ -58,7 +59,7 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
     public String NAME;
     public final SidedContentHandler contentHandler;
     protected final CustomEnergyStorage energyStorage;
-    public HashMap<String, NcRecipe> cachedRecipes = new HashMap<>();
+    public final HashMap<String, NcRecipe> cachedRecipes = new HashMap<>();
     public final UpgradesHandler upgradesHandler;
     protected final LazyOptional<IItemHandler> handler;
     public final CatalystHandler catalystHandler;
@@ -144,7 +145,7 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
 
     @Override
     public ItemCapabilityHandler getItemInventory() {
-        return contentHandler.itemHandler;
+        return contentHandler().itemHandler;
     }
 
     public void updateRecipe() {
@@ -155,7 +156,11 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
             recipeInfo().energy = getBasePower() * recipe.getEnergy();
             recipeInfo().radiation = recipeInfo().recipe.getRadiation();
             recipeInfo().be = this;
-            recipe.consumeInputs(contentHandler);
+            recipeInfo().setParallelProcessing(parallelRecipes());
+            if (!recipeInfo().consumeInputs(contentHandler())) {
+                recipe = null;
+                recipeInfo().clear();
+            }
         }
     }
 
@@ -189,7 +194,7 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
     public NcRecipe getCachedRecipe() {
         String key = contentHandler().getCacheKey();
         if(cachedRecipes.containsKey(key)) {
-            if(cachedRecipes.get(key).test(contentHandler)) {
+            if(cachedRecipes.get(key).test(contentHandler())) {
                 return cachedRecipes.get(key);
             }
         }
@@ -206,12 +211,24 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
 
     public void handleRecipeOutput() {
         if (hasRecipe() && recipeInfo().isCompleted()) {
-            if (recipe.handleOutputs(contentHandler)) {
+            if (recipeInfo().handleOutputs(contentHandler())) {
                 recipeInfo().clear();
             } else {
                 recipeInfo().stuck = true;
             }
         }
+    }
+
+    public int parallelRecipes()
+    {
+        if(!prefab().supportSpeedUpgrade) return 1;
+        int id = prefab().supportEnergyUpgrade ? 1 : 0;
+        ItemStack upgrade = upgradesHandler().getStackInSlot(id);
+        if(upgrade.isEmpty()) return 1;
+        if (upgrade.is(NC_ITEMS.get("upgrade_stack").get())) {
+            return (int) (Math.min(32, Math.ceil((upgrade.getCount() + 2D) / 2D)));
+        }
+        return 1;
     }
 
     public double speedMultiplier()
@@ -224,7 +241,7 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
 
     public int energyPerTick()
     {
-        double energy = recipe == null ? prefab().config().getPower() : recipe.getEnergy();
+        double energy = recipe == null ? 1 : recipe.getEnergy();
         energyPerTick = (int) (energy*energyMultiplier()*prefab().config().getPower());
         return energyPerTick;
     }
@@ -246,7 +263,7 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
     }
 
     protected CustomEnergyStorage createEnergy() {
-        return new CustomEnergyStorage(getEnergyCapacity(), 100000, 0) {
+        return new CustomEnergyStorage(getEnergyCapacity(), 1000000000, 0) {
             @Override
             protected void onEnergyChanged() {
                 setChanged();
@@ -257,6 +274,7 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
     public CatalystHandler createCatalystHandler() {
         return new CatalystHandler(this);
     }
+
     public UpgradesHandler createUpgradesHandler() {
         return new UpgradesHandler(this);
     }
@@ -271,7 +289,7 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if (cap == ForgeCapabilities.ENERGY && PROCESSOR_CONFIG.GT_SUPPORT.get() != 2) {
             if(prefab().config().getPower() > 0) {
-                return energy.cast();
+                return getEnergy().cast();
             }
             return LazyOptional.empty();
         }
@@ -303,7 +321,7 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
 
     protected  <T> LazyOptional<T> getGTEnergyHandler(Capability<T> cap, Direction side) {
         if(gtEnergyCap == null) {
-            NCGTEnergyHandler handler = new NCGTEnergyHandler(energyStorage, PROCESSOR_CONFIG.BASE_POWER.get()/4, PROCESSOR_CONFIG.GT_AMPERAGE.get());
+            NCGTEnergyHandler handler = new NCGTEnergyHandler(energyStorage(), PROCESSOR_CONFIG.BASE_POWER.get()/4, PROCESSOR_CONFIG.GT_AMPERAGE.get());
             gtEnergyCap = LazyOptional.of(() -> handler);
         }
         return gtEnergyCap.cast();
@@ -347,7 +365,7 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
         if(energyPerTick() == 0) {
             return PROCESSOR_CONFIG.SKIP_TICKS.get();
         }
-        return Math.min(((int)(energyStorage.getEnergyStored() / energyPerTick())),PROCESSOR_CONFIG.SKIP_TICKS.get());
+        return Math.min(((int)(energyStorage().getEnergyStored() / energyPerTick)),PROCESSOR_CONFIG.SKIP_TICKS.get());
     }
 
     public void tickServer() {
@@ -361,8 +379,9 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
         boolean wasActive = isActive;
         processRecipe();
         handleRecipeOutput();
-        updated = updated || contentHandler.tick();
+        updated = updated || contentHandler().tick();
         if(updated || wasUpdated) {
+            energyStorage().setMaxCapacity(getEnergyCapacity() * Math.max(1, getEnergyUpgrades()/5));
             if (wasActive != isActive) {
                 level.setBlockAndUpdate(worldPosition, getBlockState().setValue(ACTIVE, isActive));
             }
@@ -391,12 +410,12 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
         }
         manualUpdateCounter = 80;
         saveSideMapFlag = true;
-        energyStorage.wasUpdated = true;
-        upgradesHandler.wasUpdated = true;
-        catalystHandler.wasUpdated = true;
-        contentHandler.setAllowedInputItems(this::getAllowedInputItems);
+        energyStorage().wasUpdated = true;
+        upgradesHandler().wasUpdated = true;
+        catalystHandler().wasUpdated = true;
+        contentHandler().setAllowedInputItems(this::getAllowedInputItems);
         for(int i = 0; i < prefab().getSlotsConfig().getInputFluids(); i++) {
-            contentHandler.setAllowedInputFluids(i, this::getAllowedInputFluids);
+            contentHandler().setAllowedInputFluids(i, this::getAllowedInputFluids);
         }
         return true;
     }
@@ -414,7 +433,7 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
             return;
         }
 
-        if(energyStorage().getEnergyStored() < energyPerTick()*skippedTicks) {
+        if(energyStorage().getEnergyStored() < energyPerTick*skippedTicks) {
             isActive = false;
             return;
         }
@@ -428,7 +447,7 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
         isActive = true;
         setChanged();
         if(!recipeInfo().isCompleted() && hasRecipe()) {
-            energyStorage.consumeEnergy(energyPerTick()*skippedTicks);
+            energyStorage().consumeEnergy(energyPerTick*skippedTicks);
         }
     }
 
@@ -439,18 +458,19 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
     public int getEnergyUpgrades()
     {
         if(!prefab().supportEnergyUpgrade) return 1;
-        return upgradesHandler.getStackInSlot(0).getCount()+1;
+        return upgradesHandler().getStackInSlot(0).getCount()+1;
     }
 
     public int energyMultiplier() {
-        energyMultiplier = (int) Math.max(speedMultiplier(), Math.pow(speedMultiplier()-1, 2)+speedMultiplier()-Math.pow(getEnergyUpgrades(),2));
+        double speedMult = speedMultiplier() + ((parallelRecipes()-1) / 4D);
+        energyMultiplier = (int) Math.max(speedMult, Math.pow(speedMult-1, 2)+speedMult-Math.pow(getEnergyUpgrades(),2));
         return energyMultiplier;
     }
 
     @Override
     public void setRemoved() {
         super.setRemoved();
-        contentHandler.invalidate();
+        contentHandler().invalidate();
         energy.invalidate();
     }
 
@@ -462,7 +482,7 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
         setChanged();
         saveSideMapFlag = true;
         level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
-        return contentHandler.toggleSideConfig(slotId, direction);
+        return contentHandler().toggleSideConfig(slotId, direction);
     }
 
     public Direction getFacing() {
@@ -470,11 +490,11 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
     }
 
     public SlotModePair.SlotMode getSlotMode(int direction, int slotId) {
-        return contentHandler.getSlotMode(direction, slotId);
+        return contentHandler().getSlotMode(direction, slotId);
     }
 
     public FluidTank getFluidTank(int i) {
-        return contentHandler.fluidCapability.tanks.get(i);
+        return contentHandler().fluidCapability.tanks.get(i);
     }
 
     public void toggleRedstoneMode() {

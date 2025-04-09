@@ -1,6 +1,7 @@
 package igentuman.nc.recipes;
 
 import igentuman.nc.client.NcClient;
+import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.recipes.type.NcRecipe;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -17,6 +18,7 @@ import java.util.NoSuchElementException;
 public class RecipeInfo implements INBTSerializable<Tag> {
 
     public int ticks = 0;
+    public int parallelProcessing = 1;
     public double ticksProcessed = 0;
     public double energy = 0;
     public double heat = 0;
@@ -123,5 +125,29 @@ public class RecipeInfo implements INBTSerializable<Tag> {
             recipe = getRecipeFromTag(recipeId);
         }
         return recipe;
+    }
+
+    public void setParallelProcessing(int i) {
+        this.parallelProcessing = i;
+    }
+
+    public boolean consumeInputs(SidedContentHandler contentHandler) {
+        if(recipe != null) {
+            return recipe.consumeInputs(contentHandler, parallelProcessing);
+        }
+        return false;
+    }
+
+    public boolean handleOutputs(SidedContentHandler contentHandler) {
+        if(recipe != null) {
+            for (int i = 0; i < parallelProcessing; i++) {
+                boolean result = recipe.handleOutputs(contentHandler);
+                //at this point we only care if first output was successful
+                if (i == 0 && !result) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }

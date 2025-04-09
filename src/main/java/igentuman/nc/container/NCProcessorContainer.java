@@ -100,7 +100,7 @@ public class NCProcessorContainer<T extends AbstractContainerMenu> extends Abstr
         if(getProcessor().supportSpeedUpgrade) {
             int idx = i;
             addSlot(new NCSlotItemHandler(blockEntity.upgradesHandler, idx, ux, 77)
-                    .allowed(NC_ITEMS.get("upgrade_speed").get()));
+                    .allowed(NC_ITEMS.get("upgrade_speed").get(), NC_ITEMS.get("upgrade_stack").get()));
             ux -= 18;
         }
 
@@ -205,7 +205,7 @@ public class NCProcessorContainer<T extends AbstractContainerMenu> extends Abstr
     }
 
     public IEnergyStorage getEnergy() {
-        return (IEnergyStorage) blockEntity.getEnergy().orElse(null);
+        return blockEntity.energyStorage();
     }
 
     public double getProgress() {

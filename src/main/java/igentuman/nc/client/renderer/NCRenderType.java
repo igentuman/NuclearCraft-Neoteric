@@ -31,7 +31,8 @@ public class NCRenderType extends RenderType {
         RenderType.CompositeState state = RenderType.CompositeState.builder()
                 .setShaderState(NCShaders.DISTORTION.shard)
                 .setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
-                .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
+                .setOutputState(RenderType.MAIN_TARGET)
+                .setTransparencyState(RenderStateShard.NO_TRANSPARENCY)
                 .createCompositeState(true);
         return create("distortion", DefaultVertexFormat.POSITION_COLOR_TEX, VertexFormat.Mode.QUADS, 256, true, true, state);
     });

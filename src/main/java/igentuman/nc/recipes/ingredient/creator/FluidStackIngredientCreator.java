@@ -46,6 +46,11 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
     }
 
     @Override
+    public FluidStackIngredient from(JsonElement instance) {
+        return deserialize(instance);
+    }
+
+    @Override
     public FluidStackIngredient from(TagKey<Fluid> tag, int amount) {
         Objects.requireNonNull(tag, "FluidStackIngredients cannot be created from a null tag.");
         if (amount <= 0) {

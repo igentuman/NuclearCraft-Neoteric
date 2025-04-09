@@ -287,9 +287,56 @@ public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
         return true;
     }
 
-    public void consumeInputs(SidedContentHandler contentHandler) {
+    public boolean hasEnoughToConsume(SidedContentHandler contentHandler, int parallelProcessing) {
         if(contentHandler.hasFluidCapability(null)) {
             for (FluidStackIngredient inputFluid : inputFluids) {
+                FluidStackIngredient toConsume = inputFluid.copy();
+                toConsume.setAmount(inputFluid.getAmount() * parallelProcessing);
+                int i = 0;
+                assert contentHandler.fluidCapability != null;
+                boolean found = false;
+                for(FluidTank tank : contentHandler.fluidCapability.tanks) {
+                    if(contentHandler.inputFluidSlots <= i) break;
+                    FluidStack fluidStack = tank.getFluid();
+                    if(toConsume.test(fluidStack)) {
+                        found = true;
+                        break;
+                    }
+                    i++;
+                }
+                if (!found) {
+                    return false;
+                }
+            }
+        }
+        if(contentHandler.hasItemCapability(null)) {
+            for (ItemStackIngredient inputItem : inputItems) {
+                ItemStackIngredient toConsume = inputItem.copy();
+                toConsume.setAmount(inputItem.getAmount() * parallelProcessing);
+                assert contentHandler.itemHandler != null;
+                boolean found = false;
+                for(int i = 0; i < inputItems.length; i++) {
+                    if(toConsume.test(contentHandler.itemHandler.getStackInSlot(i))) {
+                        found = true;
+                        break;
+                    }
+                }
+                if(!found) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public boolean consumeInputs(SidedContentHandler contentHandler, int parallelProcessing) {
+        if (!hasEnoughToConsume(contentHandler, parallelProcessing)) {
+            return false;
+        }
+        if(contentHandler.hasFluidCapability(null)) {
+            for (FluidStackIngredient inputFluid : inputFluids) {
+                FluidStackIngredient toConsume = inputFluid.copy();
+                toConsume.setAmount(inputFluid.getAmount() * parallelProcessing);
                 int i = 0;
                 assert contentHandler.fluidCapability != null;
                 for(FluidTank tank : contentHandler.fluidCapability.tanks) {
@@ -309,11 +356,13 @@ public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
         if(contentHandler.hasItemCapability(null)) {
             for (ItemStackIngredient inputItem : inputItems) {
                 assert contentHandler.itemHandler != null;
+                ItemStackIngredient toConsume = inputItem.copy();
+                toConsume.setAmount(inputItem.getAmount() * parallelProcessing);
                 for(int i = 0; i < inputItems.length; i++) {
-                    if( ! inputItem.test(contentHandler.itemHandler.getStackInSlot(i))) {
+                    if( ! toConsume.test(contentHandler.itemHandler.getStackInSlot(i))) {
                         continue;
                     }
-                    ItemStack extracted = contentHandler.itemHandler.extractItemInternal(i, inputItem.getAmount(), false);
+                    ItemStack extracted = contentHandler.itemHandler.extractItemInternal(i, toConsume.getAmount(), false);
                     if (!extracted.isEmpty()) {
                         contentHandler.itemHandler.holdedInputs.add(
                                 extracted
@@ -323,6 +372,7 @@ public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
                 }
             }
         }
+        return true;
     }
 
     public boolean test(SidedContentHandler contentHandler) {

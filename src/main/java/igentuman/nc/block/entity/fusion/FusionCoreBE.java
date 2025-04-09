@@ -806,7 +806,7 @@ public class FusionCoreBE extends MultiblockControllerBE {
             recipeInfo().heat = ((Recipe)recipeInfo().recipe()).getHeat();
             recipeInfo().radiation = recipeInfo().recipe().getRadiation();
             recipeInfo().be = this;
-            recipe.consumeInputs(contentHandler);
+            recipe.consumeInputs(contentHandler, 1);
         }
     }
 

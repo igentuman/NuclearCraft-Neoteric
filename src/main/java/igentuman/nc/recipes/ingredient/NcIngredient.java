@@ -89,7 +89,7 @@ public class NcIngredient extends Ingredient {
             return pStack.isEmpty();
          } else {
             for(ItemStack itemstack : this.itemStacks) {
-               if (itemstack.is(pStack.getItem())) {
+               if (itemstack.is(pStack.getItem()) && count <= pStack.getCount()) {
                   return true;
                }
             }

@@ -2,6 +2,7 @@ package igentuman.nc.block.fusion;
 
 import igentuman.nc.block.MultiblockBlock;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -13,20 +14,23 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.List;
 
-public class MultiblockConnectorBlock extends MultiblockBlock {
+public class FusionCasingBlock extends MultiblockBlock {
 
-    public MultiblockConnectorBlock() {
+    public FusionCasingBlock() {
         this(Properties.of()
                 .sound(SoundType.METAL)
                 .strength(2.0f)
                 .noOcclusion()
                 .requiresCorrectToolForDrops());
     }
-    public MultiblockConnectorBlock(Properties pProperties) {
+    public FusionCasingBlock(Properties pProperties) {
         super(pProperties.sound(SoundType.METAL));
         this.registerDefaultState(
                 this.stateDefinition.any()
         );
+        if(getCode().contains("glass")) {
+            properties.noOcclusion();
+        }
     }
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
@@ -41,7 +45,12 @@ public class MultiblockConnectorBlock extends MultiblockBlock {
     @Override
     public void appendHoverText(ItemStack stack, @javax.annotation.Nullable BlockGetter world, List<Component> list, TooltipFlag flag)
     {
-        list.add(Component.translatable("tooltip.nc.fusion_connector.descr").withStyle(ChatFormatting.YELLOW));
+        list.add(Component.translatable("tooltip.nc.fusion_casing.descr").withStyle(ChatFormatting.YELLOW));
         list.add(Component.translatable("multiblock.build_in_chunk.advise").withStyle(ChatFormatting.GREEN));
+    }
+
+    @Override
+    public boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos) {
+        return asItem().toString().contains("glass");
     }
 }

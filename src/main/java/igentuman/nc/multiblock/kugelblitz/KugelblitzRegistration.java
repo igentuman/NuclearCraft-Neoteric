@@ -20,7 +20,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.registries.RegistryObject;
-
+import java.util.regex.Pattern;
 import java.util.HashMap;
 
 import static igentuman.nc.setup.registration.NCItems.ALL_NC_ITEMS;
@@ -29,6 +29,7 @@ import static igentuman.nc.setup.registration.Tags.blockTag;
 import static igentuman.nc.setup.registration.Tags.itemTag;
 
 public class KugelblitzRegistration {
+    public static final Pattern TRANSPARENT_BLOCKS_PATTERN = Pattern.compile(".*(glass|photon|transformer|stabilizer).*");
 
     public static final Item.Properties KUGELBLITZ_ITEM_PROPERTIES = new Item.Properties();
     public static final Block.Properties KUGELBLITZ_BLOCK_PROPERTIES =  BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(4f).requiresCorrectToolForDrops();;
@@ -91,11 +92,10 @@ public class KugelblitzRegistration {
     }
 
     private static void registerSimpleBlock(String key) {
-        if(key.contains("photon")) {
-            KUGELBLITZ_BLOCKS.put(key, BLOCKS.register(key, () -> new ChamberBlock(KUGELBLITZ_BLOCK_PROPERTIES)));
-        } else {
-            KUGELBLITZ_BLOCKS.put(key, BLOCKS.register(key, () -> new ChamberBlock(KUGELBLITZ_BLOCK_PROPERTIES)));
-        }
+        BlockBehaviour.Properties props = TRANSPARENT_BLOCKS_PATTERN.matcher(key).matches()
+                ? BlockBehaviour.Properties.of().sound(SoundType.GLASS).strength(1f).requiresCorrectToolForDrops().noOcclusion()
+                : KUGELBLITZ_BLOCK_PROPERTIES;
+        KUGELBLITZ_BLOCKS.put(key, BLOCKS.register(key, () -> new ChamberBlock(props)));
         KUGELBLITZ_ITEMS.put(key, fromMultiblock(KUGELBLITZ_BLOCKS.get(key)));
         ALL_NC_ITEMS.put(key, KUGELBLITZ_ITEMS.get(key));
     }

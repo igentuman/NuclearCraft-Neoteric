@@ -89,10 +89,12 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
         return energy;
     }
 
+    @Override
     public SidedContentHandler contentHandler() {
         return contentHandler;
     }
 
+    @Override
     public CustomEnergyStorage energyStorage() {
         return energyStorage;
     }

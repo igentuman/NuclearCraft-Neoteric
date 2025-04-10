@@ -20,7 +20,6 @@ import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.setup.registration.NCFluids;
 import igentuman.nc.util.CustomEnergyStorage;
 import igentuman.nc.util.annotation.NBTField;
-import igentuman.nc.multiblock.ValidationResult;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;

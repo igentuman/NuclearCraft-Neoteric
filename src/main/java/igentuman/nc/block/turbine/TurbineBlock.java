@@ -32,36 +32,8 @@ public class TurbineBlock extends MultiblockBlock {
     @Override
     @Deprecated
     public boolean skipRendering(@NotNull BlockState state, @NotNull BlockState adjacentBlockState, @NotNull Direction side) {
-        return adjacentBlockState.getBlock().equals(this) && codeID().matches(".*glass.*|.*slope.*");
+        return adjacentBlockState.getBlock().equals(this) && getCode().matches(".*glass.*|.*slope.*");
     }
-
-    private String codeID()
-    {
-        return ForgeRegistries.BLOCKS.getKey(this).getPath();
-    }
-
-    @Override
-    public boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos) {
-        return asItem().toString().contains("glass");
-    }
-
-    @Override
-    public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor){
-        MultiblockHandler.trackBlockChange(neighbor);
-    }
-
-    @Override
-    public void onPlace(BlockState pState, Level pLevel, BlockPos pPos, BlockState pOldState, boolean pMovedByPiston) {
-        super.onPlace(pState, pLevel, pPos, pOldState, pMovedByPiston);
-        MultiblockHandler.trackBlockChange(pPos);
-    }
-
-    @Override
-    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
-        super.onRemove(state, level, pos, newState, isMoving);
-        MultiblockHandler.trackBlockChange(pos);
-    }
-
 
     @Override
     public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag) {

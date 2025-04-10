@@ -10,6 +10,7 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 public class MultiblockBlock extends Block {
@@ -21,6 +22,11 @@ public class MultiblockBlock extends Block {
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         return this.defaultBlockState();
+    }
+
+    public String getCode()
+    {
+        return ForgeRegistries.BLOCKS.getKey(this).getPath();
     }
 
     @Override

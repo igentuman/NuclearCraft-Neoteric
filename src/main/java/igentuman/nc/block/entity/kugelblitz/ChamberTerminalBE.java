@@ -55,9 +55,9 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
 
     public static String NAME = "chamber_terminal";
     public final SidedContentHandler contentHandler;
-    public final CustomEnergyStorage energyStorage = createEnergy();
+    public final CustomEnergyStorage energyStorage;
     private LazyOptional<KugelblitzPeripheral> peripheralCap;
-    protected final LazyOptional<IEnergyStorage> energy = LazyOptional.of(() -> energyStorage);
+    protected final LazyOptional<IEnergyStorage> energy;
     @NBTField
     public int energyPerTick = 0;
     @NBTField
@@ -74,6 +74,8 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
 
     public ChamberTerminalBE(BlockPos pPos, BlockState pBlockState) {
         super(KugelblitzRegistration.KUGELBLITZ_BE.get(NAME).get(), pPos, pBlockState);
+        energyStorage = createEnergy();
+        energy = LazyOptional.of(() -> energyStorage);
         multiblock = new KugelblitzMultiblock(this);
         contentHandler = new SidedContentHandler(
                 0, 0,
@@ -105,7 +107,7 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
 
     @Override
     public Recipe getRecipe() {
-        if(contentHandler.fluidCapability.tanks.get(0).isEmpty()) return null;
+        if(contentHandler().fluidCapability.tanks.get(0).isEmpty()) return null;
         //TODO implement
         return null;
     }
@@ -121,7 +123,7 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if (cap == ForgeCapabilities.FLUID_HANDLER) {
-            return contentHandler.getFluidCapability(null);
+            return contentHandler().getFluidCapability(null);
         }
         if (cap == ForgeCapabilities.ENERGY) {
             return energy.cast();
@@ -176,7 +178,8 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
         if (this.getMultiblock().isFormed()) {
             trackChanges(contentHandler.tick());
             if(controllerEnabled) {
-                powered = processRecipe();
+                powered = true;
+                //powered = processRecipe();
                 trackChanges(powered);
             } else {
                 powered = false;
@@ -256,9 +259,9 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
     }
 
     private boolean processRecipe() {
-        if(recipeInfo.recipe != null && recipeInfo.isCompleted()) {
-            if(contentHandler.fluidCapability.getFluidInSlot(0).isEmpty()) {
-                recipeInfo.clear();
+        if(recipeInfo().recipe != null && recipeInfo().isCompleted()) {
+            if(contentHandler().fluidCapability.getFluidInSlot(0).isEmpty()) {
+                recipeInfo().clear();
             }
         }
         if (!hasRecipe()) {
@@ -271,19 +274,19 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
     }
 
     private boolean process() {
-        recipeInfo.process(1);
+        recipeInfo().process(1);
 
         return true;
     }
 
     private void handleRecipeOutput() {
-        if (hasRecipe() && recipeInfo.isCompleted()) {
+        if (hasRecipe() && recipeInfo().isCompleted()) {
             if(recipe == null) {
-                recipe = (Recipe) recipeInfo.recipe();
+                recipe = (Recipe) recipeInfo().recipe();
             }
-            if (recipe.handleOutputs(contentHandler)) {
-                recipeInfo.clear();
-                if(contentHandler.fluidCapability.getFluidInSlot(0).isEmpty()) {
+            if (recipe.handleOutputs(contentHandler())) {
+                recipeInfo().clear();
+                if(contentHandler().fluidCapability.getFluidInSlot(0).isEmpty()) {
                     recipe = null;
                 }
             } else {
@@ -314,11 +317,11 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
     }
 
     public boolean recipeIsStuck() {
-        return recipeInfo.isStuck();
+        return recipeInfo().isStuck();
     }
 
     public boolean hasRecipe() {
-        return recipeInfo.recipe() != null;
+        return recipeInfo().recipe() != null;
     }
 
     public Direction getFacing() {
@@ -329,7 +332,7 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
     }
 
     public double calculateEfficiency() {
-        return (double) energyPerTick / (recipeInfo.energy / 100);
+        return (double) energyPerTick / (recipeInfo().energy / 100);
     }
 
     public int getDepth() {
@@ -357,11 +360,27 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
     }
 
     public boolean isProcessing() {
-        return hasRecipe() && recipeInfo.ticksProcessed > 0 && !recipeInfo.isCompleted();
+        return hasRecipe() && recipeInfo().ticksProcessed > 0 && !recipeInfo.isCompleted();
+    }
+
+    @Override
+    public ItemCapabilityHandler getItemInventory()
+    {
+        return contentHandler().itemHandler;
+    }
+
+    @Override
+    public SidedContentHandler contentHandler() {
+        return contentHandler;
+    }
+
+    @Override
+    public CustomEnergyStorage energyStorage() {
+        return energyStorage;
     }
 
     public FluidTank getFluidTank(int i) {
-        return contentHandler.fluidCapability.tanks.get(i);
+        return contentHandler().fluidCapability.tanks.get(i);
     }
 
     public static class Recipe extends NcRecipe {

@@ -128,7 +128,7 @@ dependencies {
 
     compileOnly("cc.tweaked:cc-tweaked-${mc_version}-core-api:${cc_version}")
     compileOnly(fg.deobf("cc.tweaked:cc-tweaked-${mc_version}-forge-api:${cc_version}"))
-    compileOnly fg.deobf("cc.tweaked:cc-tweaked-${mc_version}-forge:${cc_version}")
+    implementation fg.deobf("cc.tweaked:cc-tweaked-${mc_version}-forge:${cc_version}")
 
     compileOnly fg.deobf("curse.maven:sedna-511276:${sedna_version}")
     compileOnly fg.deobf("curse.maven:markdownmanual-502485:${md_version}")
@@ -136,6 +136,13 @@ dependencies {
 
     compileOnly fg.deobf("vazkii.patchouli:Patchouli:${mc_version}-${patchouli_version}:api")
     runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:${mc_version}-${patchouli_version}")
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2'
+
+// Mockito dependencies
+    testImplementation 'org.mockito:mockito-core:5.3.1'
+    testImplementation 'org.mockito:mockito-junit-jupiter:5.3.1'
 }
 
 jar {
@@ -167,6 +174,10 @@ configurations {
     shaded {
         transitive = false
     }
+}
+
+test {
+    useJUnitPlatform()
 }
 
 shadowJar {

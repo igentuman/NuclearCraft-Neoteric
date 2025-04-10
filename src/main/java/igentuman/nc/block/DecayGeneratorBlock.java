@@ -69,10 +69,8 @@ public class DecayGeneratorBlock extends Block implements EntityBlock {
         };
     }
 
-
     public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag)
     {
         list.add(TextUtils.applyFormat(Component.translatable("decay_generator.fe_generation"), ChatFormatting.GOLD));
     }
-
 }

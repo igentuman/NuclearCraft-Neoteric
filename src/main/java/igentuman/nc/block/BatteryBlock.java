@@ -34,6 +34,7 @@ import java.util.List;
 
 import static igentuman.nc.handler.config.CommonConfig.ENERGY_STORAGE;
 import static igentuman.nc.util.StackUtils.isMultiTool;
+import static igentuman.nc.util.TextUtils.formatEnergy;
 
 public class BatteryBlock extends Block implements EntityBlock {
     public BatteryBlock(Properties pProperties) {
@@ -138,7 +139,6 @@ public class BatteryBlock extends Block implements EntityBlock {
         }
     }
 
-
     @Override
     public void appendHoverText(ItemStack stack, @javax.annotation.Nullable BlockGetter world, List<Component> list, TooltipFlag flag)
     {
@@ -146,20 +146,6 @@ public class BatteryBlock extends Block implements EntityBlock {
 
         list.add(Component.translatable("tooltip.nc.energy_capacity", formatEnergy(storage)).withStyle(ChatFormatting.BLUE));
         list.add(Component.translatable("tooltip.nc.use_multitool").withStyle(ChatFormatting.YELLOW));
-    }
-
-    public String formatEnergy(int energy)
-    {
-        if(energy >= 1000000000) {
-            return TextUtils.numberFormat(energy/1000000000)+" GFE";
-        }
-        if(energy >= 1000000) {
-            return TextUtils.numberFormat(energy/1000000)+" MFE";
-        }
-        if(energy >= 1000) {
-            return TextUtils.numberFormat(energy/1000)+" kFE";
-        }
-        return TextUtils.numberFormat(energy)+" FE";
     }
 
     public boolean registered() {

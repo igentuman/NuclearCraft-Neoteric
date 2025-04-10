@@ -13,6 +13,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
+import static igentuman.nc.multiblock.fission.FissionReactor.TRANSPARENT_BLOCKS;
+
 public class MultiblockBlock extends Block {
 
     public MultiblockBlock(Properties pProperties) {
@@ -32,7 +34,7 @@ public class MultiblockBlock extends Block {
     @Override
     @Deprecated
     public boolean skipRendering(@NotNull BlockState state, @NotNull BlockState adjacentBlockState, @NotNull Direction side) {
-        return adjacentBlockState.getBlock().equals(this) && asItem().toString().matches(".*glass|.*slope.*");
+        return adjacentBlockState.getBlock().equals(this) && TRANSPARENT_BLOCKS.matcher(asItem().toString()).matches();
     }
 
     @Override

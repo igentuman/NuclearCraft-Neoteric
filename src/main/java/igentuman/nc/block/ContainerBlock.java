@@ -54,7 +54,6 @@ public class ContainerBlock extends Block implements EntityBlock {
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-
     }
 
     public boolean hasAnalogOutputSignal(BlockState pState) {

@@ -75,7 +75,6 @@ public class SolarPanelBlock extends Block implements EntityBlock {
         };
     }
 
-
     public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag)
     {
         list.add(TextUtils.applyFormat(Component.translatable("solar_panel.fe_generation", TextUtils.numberFormat(SolarPanels.all().get(asItem().toString().replace("solar_panel_","")).getActualGeneration())), ChatFormatting.GOLD));

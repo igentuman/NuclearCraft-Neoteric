@@ -54,7 +54,6 @@ public class BarrelBlock extends Block implements EntityBlock {
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-
     }
 
     public boolean hasAnalogOutputSignal(BlockState pState) {
@@ -68,9 +67,6 @@ public class BarrelBlock extends Block implements EntityBlock {
         }
         return 0;
     }
-
-
-
 
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {

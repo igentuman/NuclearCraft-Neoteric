@@ -105,13 +105,13 @@ public class TextUtils
 	public static String formatEnergy(int energy)
 	{
 		if(energy >= 1000000000) {
-			return TextUtils.numberFormat(energy/1000000000)+" GFE";
+			return TextUtils.numberFormat(energy/1000000000d)+" GFE";
 		}
 		if(energy >= 1000000) {
-			return TextUtils.numberFormat(energy/1000000)+" MFE";
+			return TextUtils.numberFormat(energy/1000000d)+" MFE";
 		}
 		if(energy >= 1000) {
-			return TextUtils.numberFormat(energy/1000)+" kFE";
+			return TextUtils.numberFormat(energy/1000d)+" kFE";
 		}
 		return TextUtils.numberFormat(energy)+" FE";
 	}

@@ -21,8 +21,10 @@ import java.util.List;
 import static igentuman.nc.multiblock.fission.FissionBlocks.REACTOR_BLOCKS_PROPERTIES;
 import static igentuman.nc.setup.registration.NCItems.ALL_NC_ITEMS;
 import static igentuman.nc.setup.registration.Registries.*;
+import java.util.regex.Pattern;
 
 public class FissionReactor {
+    public static final Pattern TRANSPARENT_BLOCKS = Pattern.compile(".*glass|.*cell.*");
     public static final Item.Properties FISSION_ITEM_PROPS = new Item.Properties();
     public static HashMap<String, RegistryObject<Block>> FISSION_BLOCKS = new HashMap<>();
     public static HashMap<String, RegistryObject<BlockEntityType<? extends BlockEntity>>> FISSION_BE = new HashMap<>();
@@ -60,7 +62,7 @@ public class FissionReactor {
                 FISSION_BLOCKS.put(key, BLOCKS.register(key, () -> new IrradiationChamberBlock(REACTOR_BLOCKS_PROPERTIES)));
             } else {
                 BlockBehaviour.Properties props;
-                if(key.matches(".*glass|.*cell.*")) {
+                if(TRANSPARENT_BLOCKS.matcher(key).matches()) {
                     props = BlockBehaviour.Properties.of().sound(SoundType.GLASS).strength(1f).requiresCorrectToolForDrops().noOcclusion();
                 } else {
                     props = REACTOR_BLOCKS_PROPERTIES;

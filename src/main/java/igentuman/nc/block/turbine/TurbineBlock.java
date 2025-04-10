@@ -18,21 +18,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+import static igentuman.nc.multiblock.fission.FissionReactor.TRANSPARENT_BLOCKS;
+
 public class TurbineBlock extends MultiblockBlock {
 
     public TurbineBlock(Properties pProperties) {
         super(pProperties);
-    }
-
-    @Override
-    public BlockState getStateForPlacement(@NotNull BlockPlaceContext context) {
-        return this.defaultBlockState();
-    }
-
-    @Override
-    @Deprecated
-    public boolean skipRendering(@NotNull BlockState state, @NotNull BlockState adjacentBlockState, @NotNull Direction side) {
-        return adjacentBlockState.getBlock().equals(this) && getCode().matches(".*glass.*|.*slope.*");
     }
 
     @Override

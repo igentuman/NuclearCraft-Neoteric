@@ -1,7 +1,6 @@
 package igentuman.nc.container;
 
-import igentuman.nc.block.entity.fusion.FusionCoreBE;
-import igentuman.nc.multiblock.fusion.FusionReactorRegistration;
+import igentuman.nc.block.entity.kugelblitz.EXPLBE;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -16,25 +15,23 @@ import net.minecraftforge.items.wrapper.InvWrapper;
 import org.jetbrains.annotations.NotNull;
 
 import static igentuman.nc.NuclearCraft.MODID;
-import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BLOCKS;
-import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_CORE_PROXY;
-import static igentuman.nc.util.TextUtils.*;
+import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.*;
 
-public class FusionCoreContainer extends AbstractContainerMenu {
+public class EXPLContainer extends AbstractContainerMenu {
 
-    protected FusionCoreBE blockEntity;
+    protected EXPLBE blockEntity;
     protected Player playerEntity;
 
-    protected String name = "fusion_core";
+    protected String name = "expl";
     private int slotIndex = 0;
 
     protected IItemHandler playerInventory;
 
-    public FusionCoreContainer(int pContainerId, BlockPos pos, Inventory playerInventory) {
-        super(FusionReactorRegistration.FUSION_CORE_CONTAINER.get(), pContainerId);
+    public EXPLContainer(int pContainerId, BlockPos pos, Inventory playerInventory) {
+        super(EXPL_CONTAINER.get(), pContainerId);
         this.playerEntity = playerInventory.player;
         this.playerInventory =  new InvWrapper(playerInventory);
-        blockEntity = (FusionCoreBE) playerEntity.getCommandSenderWorld().getExistingBlockEntity(pos);
+        blockEntity = (EXPLBE) playerEntity.getCommandSenderWorld().getExistingBlockEntity(pos);
         layoutPlayerInventorySlots();
     }
 
@@ -48,11 +45,11 @@ public class FusionCoreContainer extends AbstractContainerMenu {
         return stillValid(
                 ContainerLevelAccess.create(blockEntity.getLevel(), blockEntity.getBlockPos()),
                 playerEntity,
-                FUSION_BLOCKS.get(name).get()
+                EXPL_BLOCK.get()
         ) || stillValid(
                 ContainerLevelAccess.create(blockEntity.getLevel(), blockEntity.getBlockPos()),
                 playerEntity,
-                FUSION_CORE_PROXY.get()
+                EXPL_PROXY_BLOCK.get()
         );
     }
 
@@ -60,24 +57,8 @@ public class FusionCoreContainer extends AbstractContainerMenu {
         return Component.translatable("block."+MODID+"."+name);
     }
 
-    public boolean isCasingValid() {
-        return blockEntity.isCasingValid;
-    }
-
-    public BlockPos getValidationResultData() {
-        return  blockEntity.errorBlockPos;
-    }
-
-    public String getValidationResultKey() {
-        return  blockEntity.validationResult.messageKey;
-    }
-
     public int getEnergy() {
-        return blockEntity.energyStorage.getEnergyStored();
-    }
-
-    public double getHeat() {
-        return blockEntity.reactorHeat;
+        return blockEntity.energyStorage().getEnergyStored();
     }
 
     private void addSlotRange(IItemHandler handler, int x, int y, int amount, int dx) {
@@ -104,55 +85,15 @@ public class FusionCoreContainer extends AbstractContainerMenu {
     }
 
     public int getMaxEnergy() {
-        return blockEntity.energyStorage.getMaxEnergyStored();
-    }
-
-    public double getMaxHeat() {
-        return blockEntity.getMaxHeat();
-    }
-
-    public String getEfficiency() {
-        return roundFormat(blockEntity.efficiency*100);
+        return blockEntity.energyStorage().getMaxEnergyStored();
     }
 
     public int energyPerTick() {
         return blockEntity.energyPerTick;
     }
 
-    public boolean hasRecipe() {
-        return blockEntity.hasRecipe();
-    }
-
-    public double getElectromagnetsField() {
-        return blockEntity.magneticFieldStrength;
-    }
-
-    public String getAmplifierVoltage() {
-        return scaledFormat(blockEntity.rfAmplification);
-    }
-
-    public String getElectromagnetsPower() {
-        return scaledFormat(blockEntity.magnetsPower);
-    }
-
-    public int getElectromagnetsMaxTemp() {
-        return blockEntity.maxMagnetsTemp;
-    }
-
-    public String getAmplifierPower() {
-        return scaledFormat(blockEntity.rfAmplifiersPower);
-    }
-
-    public String getAmplifierMaxTemp() {
-        return scaledFormat(blockEntity.minRFAmplifiersTemp);
-    }
-
     public FluidTank getFluidTank(int i) {
         return blockEntity.getFluidTank(i);
-    }
-
-    public int getAmplification() {
-        return blockEntity.rfAmplificationRatio;
     }
 
     public BlockPos getBlockPos() {
@@ -160,64 +101,34 @@ public class FusionCoreContainer extends AbstractContainerMenu {
     }
 
     public boolean isReady() {
-        return  isCasingValid()
-                && hasAmplifiers()
+        return true;
+        /*return  hasAmplifiers()
                 && hasMagnets()
                 && hasCoolant()
                 && hasRecipe()
                 && getCharge() == 100
-                && hasEnoughEnergy();
+                && hasEnoughEnergy();*/
     }
 
-    public boolean hasEnoughEnergy() {
+   /* public boolean hasEnoughEnergy() {
         return blockEntity.hasEnoughEnergy();
     }
 
     public boolean hasCoolant() {
         return blockEntity.hasCoolant();
-    }
+    }*/
 
-    public boolean hasMagnets() {
-        return blockEntity.magnetsPower > 0;
-    }
-
-    public boolean hasAmplifiers() {
-        return blockEntity.amplifiers > 0;
-    }
-
+/*
     public int getCharge() {
         return blockEntity.functionalBlocksCharge;
-    }
-
-    public double getPlasmaHeat() {
-        return blockEntity.plasmaTemperature;
-    }
-
-    public double getOptimalTemp() {
-        return blockEntity.getOptimalTemperature();
-    }
-
-    public int requiredEnergy() {
-        return blockEntity.rfAmplifiersPower+blockEntity.magnetsPower;
     }
 
     public boolean isRunning() {
         return blockEntity.isRunning();
     }
 
-    public int getPlasmaStability() {
-        return (int) (blockEntity.getPlasmaStability()*100);
-    }
-
-    public int getAmlificationAdjustment() {
-        return blockEntity.amplificationAdjustment;
-    }
-
-    public byte redstoneMode() {
-        return blockEntity.redstoneMode;
-    }
 
     public byte analogSignal() {
         return blockEntity.analogSignal;
-    }
+    }*/
 }

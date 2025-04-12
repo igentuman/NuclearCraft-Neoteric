@@ -126,6 +126,10 @@ public class NuclearCraftBE extends BlockEntity {
         return null;
     }
 
+    public LazyOptional<IEnergyStorage> getEnergy() {
+        return energy;
+    }
+
     protected void addToCache(NcRecipe recipe) {
         String key = contentHandler().getCacheKey();
         if(cachedRecipes.containsKey(key)) {
@@ -325,6 +329,9 @@ public class NuclearCraftBE extends BlockEntity {
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
+        if (cap == ForgeCapabilities.ENERGY && energyStorage() != null) {
+            return getEnergy().cast();
+        }
         if (cap == ForgeCapabilities.ITEM_HANDLER && contentHandler() != null) {
             return contentHandler().getItemCapability(side);
         }
@@ -508,7 +515,7 @@ public class NuclearCraftBE extends BlockEntity {
     public void tickClient() {
     }
 
-    protected void tickServer() {
+    public void tickServer() {
 
     }
 }

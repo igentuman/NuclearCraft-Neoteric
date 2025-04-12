@@ -3,7 +3,6 @@ package igentuman.nc.block.entity.fusion;
 import igentuman.api.nc.multiblock.MultiblockAttachable;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.NuclearCraftBE;
-import igentuman.nc.multiblock.AbstractNCMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.fusion.FusionReactorMultiblock;
 import igentuman.nc.util.annotation.NBTField;
@@ -26,7 +25,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static igentuman.nc.compat.oc2.NCFusionReactorDevice.DEVICE_CAPABILITY;
-import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_CORE_PROXY_BE;
+import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_CORE_PROXY_BE;
 import static igentuman.nc.util.ModUtil.*;
 
 public class FusionCoreProxyBE extends NuclearCraftBE implements MultiblockAttachable<FusionReactorMultiblock, FusionCoreBE> {
@@ -62,11 +61,17 @@ public class FusionCoreProxyBE extends NuclearCraftBE implements MultiblockAttac
             if(!level.isLoaded(core.getBlockPos())) {
                 return;
             }
-            core = (FusionCoreBE) level.getBlockEntity(core.getBlockPos());
+            core = (FusionCoreBE) level.getExistingBlockEntity(core.getBlockPos());
+            if(core == null) {
+                core = (FusionCoreBE) level.getBlockEntity(core.getBlockPos());
+            }
             corePos = core.getBlockPos();
         } else {
             if(corePos == null) return;
-            core = (FusionCoreBE) level.getBlockEntity(corePos);
+            core = (FusionCoreBE) level.getExistingBlockEntity(corePos);
+            if(core == null) {
+                core = (FusionCoreBE) level.getBlockEntity(corePos);
+            }
         }
     }
 

@@ -7,19 +7,13 @@ import igentuman.nc.client.particle.FusionBeamParticleData;
 import igentuman.nc.client.sound.SoundHandler;
 import igentuman.nc.compat.cc.NCFusionReactorPeripheral;
 import igentuman.nc.compat.oc2.NCFusionReactorDevice;
-import igentuman.nc.handler.CatalystHandler;
-import igentuman.nc.handler.UpgradesHandler;
 import igentuman.nc.handler.event.client.BlockOverlayHandler;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.SlotModePair;
-import igentuman.nc.multiblock.AbstractNCMultiblock;
-import igentuman.nc.multiblock.ValidationResult;
-import igentuman.nc.multiblock.fusion.FusionReactor;
+import igentuman.nc.multiblock.fusion.FusionReactorRegistration;
 import igentuman.nc.multiblock.fusion.FusionReactorMultiblock;
 import igentuman.nc.radiation.data.RadiationManager;
-import igentuman.nc.recipes.AbstractRecipe;
 import igentuman.nc.recipes.NcRecipeType;
-import igentuman.nc.recipes.RecipeInfo;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.type.NcRecipe;
@@ -29,10 +23,7 @@ import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -47,7 +38,6 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -57,7 +47,7 @@ import java.util.*;
 import static igentuman.nc.block.fission.FissionControllerBlock.POWERED;
 import static igentuman.nc.compat.oc2.NCFusionReactorDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.handler.config.FusionConfig.FUSION_CONFIG;
-import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_BE;
+import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BE;
 import static igentuman.nc.setup.registration.NCSounds.*;
 import static igentuman.nc.util.ModUtil.*;
 import static net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE;
@@ -910,12 +900,12 @@ public class FusionCoreBE extends MultiblockControllerBE {
 
         @Override
         public @NotNull String getGroup() {
-            return FusionReactor.FUSION_BLOCKS.get(codeId).get().getName().getString();
+            return FusionReactorRegistration.FUSION_BLOCKS.get(codeId).get().getName().getString();
         }
 
         @Override
         public @NotNull ItemStack getToastSymbol() {
-            return new ItemStack(FusionReactor.FUSION_BLOCKS.get(codeId).get());
+            return new ItemStack(FusionReactorRegistration.FUSION_BLOCKS.get(codeId).get());
         }
 
         public double getEnergy() {
@@ -966,7 +956,7 @@ public class FusionCoreBE extends MultiblockControllerBE {
 
         @Override
         public @NotNull ItemStack getToastSymbol() {
-            return new ItemStack(FusionReactor.FUSION_BLOCKS.get("fusion_core").get());
+            return new ItemStack(FusionReactorRegistration.FUSION_BLOCKS.get("fusion_core").get());
         }
 
         public double getCoolingRate() {

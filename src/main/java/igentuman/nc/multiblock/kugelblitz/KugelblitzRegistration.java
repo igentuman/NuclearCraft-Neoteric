@@ -1,14 +1,10 @@
 package igentuman.nc.multiblock.kugelblitz;
 
-import igentuman.nc.block.entity.kugelblitz.BlackHoleBE;
-import igentuman.nc.block.entity.kugelblitz.ChamberPortBE;
-import igentuman.nc.block.entity.kugelblitz.ChamberTerminalBE;
-import igentuman.nc.block.kugelblitz.BlackHoleBlock;
-import igentuman.nc.block.kugelblitz.ChamberBlock;
-import igentuman.nc.block.kugelblitz.ChamberPortBlock;
-import igentuman.nc.block.kugelblitz.ChamberTerminalBlock;
+import igentuman.nc.block.entity.kugelblitz.*;
+import igentuman.nc.block.kugelblitz.*;
 import igentuman.nc.container.ChamberPortContainer;
 import igentuman.nc.container.ChamberTerminalContainer;
+import igentuman.nc.container.EXPLContainer;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
@@ -30,7 +26,7 @@ import static igentuman.nc.setup.registration.Tags.itemTag;
 
 public class KugelblitzRegistration {
     public static final Pattern TRANSPARENT_BLOCKS_PATTERN = Pattern.compile(".*(glass|photon|transformer|stabilizer).*");
-
+    public static final BlockBehaviour.Properties NO_OCCLUSION_BLOCK_PROPS = BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(3f).requiresCorrectToolForDrops().noOcclusion();
     public static final Item.Properties KUGELBLITZ_ITEM_PROPERTIES = new Item.Properties();
     public static final Block.Properties KUGELBLITZ_BLOCK_PROPERTIES =  BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(4f).requiresCorrectToolForDrops();;
     public static HashMap<String, RegistryObject<BlockEntityType<? extends BlockEntity>>> KUGELBLITZ_BE = new HashMap<>();
@@ -39,6 +35,32 @@ public class KugelblitzRegistration {
     public static HashMap<String, RegistryObject<Block>> KUGELBLITZ_BLOCKS = new HashMap<>();
     public static TagKey<Block> CASING_BLOCKS = blockTag("kugelblitz_casing");
     public static TagKey<Item> CASING_ITEMS = itemTag("kugelblitz_casing");
+
+    public static final RegistryObject<Block> EXPL_PROXY_BLOCK =
+            BLOCKS.register("expl_proxy_block",
+                    () -> new EXPLProxyBlock(NO_OCCLUSION_BLOCK_PROPS));
+    public static final RegistryObject<BlockEntityType<? extends BlockEntity>> EXPL_PROXY_BE =
+            BLOCK_ENTITIES.register("expl_proxy",
+                    () -> BlockEntityType.Builder
+                            .of(EXPLProxyBE::new, EXPL_PROXY_BLOCK.get())
+                            .build(null));
+
+    public static final RegistryObject<Block> EXPL_BLOCK =
+            BLOCKS.register("expl",
+                    () -> new EXPLBlock(NO_OCCLUSION_BLOCK_PROPS));
+    public static final RegistryObject<BlockEntityType<? extends BlockEntity>> EXPL_BE =
+            BLOCK_ENTITIES.register("expl",
+                    () -> BlockEntityType.Builder
+                            .of(EXPLBE::new, EXPL_BLOCK.get())
+                            .build(null));
+
+    public static final RegistryObject<Item> EXPL_ITEM =
+            ITEMS.register("expl", () -> new BlockItem(EXPL_BLOCK.get(), KUGELBLITZ_ITEM_PROPERTIES));
+
+    public static final RegistryObject<MenuType<EXPLContainer>> EXPL_CONTAINER =
+            CONTAINERS.register("expl",
+                    () -> IForgeMenuType.create((windowId, inv, data) -> new EXPLContainer(windowId, data.readBlockPos(), inv))
+            );
 
     public static final RegistryObject<MenuType<ChamberTerminalContainer>> CHAMBER_TERMINAL_CONTAINER = CONTAINERS.register("chamber_terminal",
             () -> IForgeMenuType.create((windowId, inv, data) -> new ChamberTerminalContainer(windowId, data.readBlockPos(), inv))

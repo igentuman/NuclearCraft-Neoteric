@@ -3,7 +3,7 @@ package igentuman.nc.block.fusion;
 import igentuman.api.nc.multiblock.MultiblockAttachable;
 import igentuman.nc.block.entity.fusion.FusionCoreProxyBE;
 import igentuman.nc.multiblock.AbstractNCMultiblock;
-import igentuman.nc.multiblock.fusion.FusionReactor;
+import igentuman.nc.multiblock.fusion.FusionReactorRegistration;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -52,7 +52,7 @@ public class FusionBeBlock extends Block implements EntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
-        return FusionReactor.FUSION_BE.get(getCode()).get().create(pPos, pState);
+        return FusionReactorRegistration.FUSION_BE.get(getCode()).get().create(pPos, pState);
     }
 
     public String getCode()

@@ -23,7 +23,7 @@ import static igentuman.nc.setup.registration.Registries.*;
 import static igentuman.nc.setup.registration.Tags.blockTag;
 import static igentuman.nc.setup.registration.Tags.itemTag;
 
-public class FusionReactor {
+public class FusionReactorRegistration {
 
     public static final Item.Properties FUSION_ITEM_PROPERTIES = new Item.Properties();
     public static HashMap<String, RegistryObject<Block>> FUSION_BLOCKS = new HashMap<>();

@@ -1,7 +1,7 @@
 package igentuman.nc.datagen;
 
 import igentuman.nc.multiblock.fission.FissionReactor;
-import igentuman.nc.multiblock.fusion.FusionReactor;
+import igentuman.nc.multiblock.fusion.FusionReactorRegistration;
 import igentuman.nc.setup.registration.*;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.LanguageProvider;
@@ -161,11 +161,11 @@ public class NCLanguageProvider extends LanguageProvider {
             String title = convertToName(name);
             add(TURBINE_BLOCKS.get(name).get(), title);
         }
-        for(String name: FusionReactor.FUSION_BLOCKS.keySet()) {
+        for(String name: FusionReactorRegistration.FUSION_BLOCKS.keySet()) {
             String title = convertToName(name);
-            add(FusionReactor.FUSION_BLOCKS.get(name).get(), title);
+            add(FusionReactorRegistration.FUSION_BLOCKS.get(name).get(), title);
         }
-        add(FusionReactor.FUSION_CORE_PROXY.get(), "Fusion Reactor Core");
+        add(FusionReactorRegistration.FUSION_CORE_PROXY.get(), "Fusion Reactor Core");
     }
 
     private void storageBlocks() {

@@ -15,7 +15,8 @@ import net.minecraftforge.registries.RegistryObject;
 import java.util.*;
 
 import static igentuman.nc.multiblock.fission.FissionReactor.FISSION_BLOCKS;
-import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_BLOCKS;
+import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BLOCKS;
+import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.EXPL_BLOCK;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BLOCKS;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
 import static igentuman.nc.setup.registration.FissionFuel.*;
@@ -40,6 +41,7 @@ public class CreativeTabs {
     public static final RegistryObject<CreativeModeTab> KUGELBLITZ_TAB = CREATIVE_TABS.register("kugelblitz",
             () ->  CreativeModeTab.builder()
                     .displayItems((displayParams, output) -> KUGELBLITZ_BLOCKS.values().forEach(itemlike -> output.accept(new ItemStack(itemlike.get()))))
+                    .displayItems((displayParams, output) -> EXPL_BLOCK.get())
                     .icon(() -> new ItemStack(KUGELBLITZ_BLOCKS.get("chamber_terminal").get()))
                     .title(Component.translatable("itemGroup.nuclearcraft_kugelblitz"))
                     .build());
@@ -152,6 +154,7 @@ public class CreativeTabs {
         }
         items.addAll(blockStacks(NC_BLOCKS.values()));
         items.add(new ItemStack(REDSTONE_DIMMER_ITEM_BLOCK.get()));
+        items.add(new ItemStack(EXPL_BLOCK.get()));
         items.addAll(blockStacks(NC_ELECTROMAGNETS.values()));
         items.addAll(blockStacks(NC_RF_AMPLIFIERS.values()));
         for(RegistryObject<Block> block: ENERGY_BLOCKS.values()) {

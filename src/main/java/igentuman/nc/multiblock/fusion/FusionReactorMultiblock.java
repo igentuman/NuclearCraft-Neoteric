@@ -50,7 +50,7 @@ public class FusionReactorMultiblock extends AbstractNCMultiblock {
 
     public FusionReactorMultiblock(FusionCoreBE core) {
         super(
-                getBlocksByTagKey(FusionReactor.CASING_BLOCKS.location().toString()),
+                getBlocksByTagKey(FusionReactorRegistration.CASING_BLOCKS.location().toString()),
                 List.of(AIR),
                 new FusionReactorController(core));
         controllerBE = core;

@@ -2,7 +2,7 @@ package igentuman.nc.datagen.tags;
 
 import igentuman.nc.multiblock.fission.FissionBlocks;
 import igentuman.nc.multiblock.fission.FissionReactor;
-import igentuman.nc.multiblock.fusion.FusionReactor;
+import igentuman.nc.multiblock.fusion.FusionReactorRegistration;
 import igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration;
 import igentuman.nc.multiblock.turbine.TurbineRegistration;
 import igentuman.nc.setup.registration.NCBlocks;
@@ -18,8 +18,8 @@ import org.jetbrains.annotations.NotNull;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.multiblock.fission.FissionReactor.FISSION_BLOCKS;
-import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_BLOCKS;
-import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_CORE_PROXY;
+import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BLOCKS;
+import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_CORE_PROXY;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BLOCKS;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
 import static igentuman.nc.setup.registration.NCBlocks.*;
@@ -47,7 +47,7 @@ public class NCBlockTags extends BlockTagsProvider {
                 KUGELBLITZ_BLOCKS.get("quantum_transformer").get(),
                 KUGELBLITZ_BLOCKS.get("photon_concentrator").get(),
                 KUGELBLITZ_BLOCKS.get("event_horizon_stabilizer").get());
-        tag(FusionReactor.CASING_BLOCKS).add(
+        tag(FusionReactorRegistration.CASING_BLOCKS).add(
                 FUSION_BLOCKS.get("fusion_reactor_casing").get(),
                 FUSION_BLOCKS.get("fusion_reactor_casing_glass").get());
         tag(FissionBlocks.CASING_BLOCKS).add(

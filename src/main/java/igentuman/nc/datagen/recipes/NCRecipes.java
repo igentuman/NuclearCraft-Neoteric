@@ -5,7 +5,6 @@ import igentuman.nc.content.processors.Processors;
 import igentuman.nc.datagen.recipes.builder.SpecialRecipeBuilder;
 import igentuman.nc.recipes.ingredient.NcIngredient;
 import igentuman.nc.multiblock.fission.FissionBlocks;
-import igentuman.nc.multiblock.fission.FissionReactor;
 import igentuman.nc.recipes.NcRecipeSerializers;
 import igentuman.nc.setup.registration.*;
 import net.minecraft.advancements.critereon.ItemPredicate;
@@ -23,7 +22,7 @@ import java.util.function.Consumer;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.datagen.recipes.recipes.AbstractRecipeProvider.dustIngredient;
 import static igentuman.nc.multiblock.fission.FissionReactor.FISSION_BLOCKS;
-import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_BLOCKS;
+import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BLOCKS;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.coils;
 import static igentuman.nc.setup.registration.FissionFuel.NC_ISOTOPES;
@@ -33,7 +32,7 @@ import static igentuman.nc.setup.registration.NCItems.*;
 import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCKS;
 import static igentuman.nc.setup.registration.Tags.*;
 import static net.minecraft.world.item.Items.*;
-import static igentuman.nc.util.DataGenUtil.*;
+
 public class NCRecipes extends RecipeProvider {
 
     public NCRecipes(DataGenerator generatorIn) {

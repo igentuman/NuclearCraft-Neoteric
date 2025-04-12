@@ -11,6 +11,8 @@ import igentuman.nc.util.TagUtil;
 import igentuman.nc.util.annotation.NothingNullByDefault;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.tags.ITag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.JSONUtils;
 import net.minecraftforge.common.Tags;
@@ -41,7 +43,7 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
     }
 
     @Override
-    public FluidStackIngredient from(Tags.IOptionalNamedTag<Fluid> tag, int amount) {
+    public FluidStackIngredient from(ITag.INamedTag<Fluid> tag, int amount) {
         Objects.requireNonNull(tag, "FluidStackIngredients cannot be created from a null tag.");
         if (amount <= 0) {
             throw new IllegalArgumentException("FluidStackIngredients must have an amount of at least one. Received size was: " + amount);
@@ -55,7 +57,8 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
         switch (buffer.readEnum(IngredientType.class)) {
             case SINGLE:
                 return from(FluidStack.readFromPacket(buffer));
-            //case TAGGED -> from(Tags.IOptionalNamedTag<Fluid>().create(buffer.readResourceLocation()), buffer.readVarInt());
+            case TAGGED:
+                return from(FluidTags.createOptional(buffer.readResourceLocation()), buffer.readVarInt());
             case MULTI:
                 return createMulti(BasePacketHandler.readArray(buffer, FluidStackIngredient[]::new, this::read));
         };
@@ -108,7 +111,7 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
                 throw new JsonSyntaxException("Expected amount to be greater than zero.");
             }
             ResourceLocation resourceLocation = new ResourceLocation(JSONUtils.getAsString(jsonObject, "tag"));
-            Tags.IOptionalNamedTag<Fluid> key = TagUtil.createFluidTagKey(resourceLocation);
+            ITag.INamedTag<Fluid> key = TagUtil.createFluidTagKey(resourceLocation);
             return from(key, amount);
         }
         throw new JsonSyntaxException("Expected to receive a resource location representing either a tag or a fluid.");
@@ -236,9 +239,9 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
     @NothingNullByDefault
     public static class TaggedFluidStackIngredient extends FluidStackIngredient {
 
-        protected final Tags.IOptionalNamedTag<Fluid> tag;
+        protected final ITag.INamedTag<Fluid> tag;
 
-        private TaggedFluidStackIngredient(Tags.IOptionalNamedTag<Fluid> tag, int amount) {
+        private TaggedFluidStackIngredient(ITag.INamedTag<Fluid> tag, int amount) {
             this.tag = tag;
             this.amount = amount;
         }
@@ -436,7 +439,7 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
 
     private enum IngredientType {
         SINGLE,
-     //   TAGGED,
+        TAGGED,
         MULTI
     }
 }

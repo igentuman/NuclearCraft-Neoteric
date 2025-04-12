@@ -11,9 +11,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "nuclearcraft:du_storage_container"
-            ]
+            "item": "nuclearcraft:du_storage_container"
           }
         ]
       }

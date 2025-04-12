@@ -2,5 +2,6 @@
   "parent": "forge:item/bucket",
   "loader": "forge:bucket",
   "fluid": "nuclearcraft:depleted_fuel_curium_lecm_247",
+  "flipGas": false,
   "applyTint": true
 }

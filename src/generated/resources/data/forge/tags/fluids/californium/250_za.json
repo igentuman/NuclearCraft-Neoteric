@@ -2,6 +2,8 @@
   "replace": false,
   "values": [
     "nuclearcraft:californium_250_za",
+    "nuclearcraft:californium_250_za_flowing",
+    "nuclearcraft:californium_250_za",
     "nuclearcraft:californium_250_za_flowing"
   ]
 }

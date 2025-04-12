@@ -11,9 +11,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "nuclearcraft:berkelium_248"
-            ]
+            "item": "nuclearcraft:berkelium_248"
           }
         ]
       }

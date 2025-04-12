@@ -11,9 +11,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "nuclearcraft:fuel_uranium_heu_233_ni"
-            ]
+            "item": "nuclearcraft:fuel_uranium_heu_233_ni"
           }
         ]
       }

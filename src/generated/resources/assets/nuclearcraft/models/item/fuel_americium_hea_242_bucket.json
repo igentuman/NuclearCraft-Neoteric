@@ -2,5 +2,6 @@
   "parent": "forge:item/bucket",
   "loader": "forge:bucket",
   "fluid": "nuclearcraft:fuel_americium_hea_242",
+  "flipGas": false,
   "applyTint": true
 }

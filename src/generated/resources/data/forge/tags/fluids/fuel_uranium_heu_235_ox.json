@@ -2,6 +2,8 @@
   "replace": false,
   "values": [
     "nuclearcraft:fuel_uranium_heu_235_ox",
+    "nuclearcraft:fuel_uranium_heu_235_ox_flowing",
+    "nuclearcraft:fuel_uranium_heu_235_ox",
     "nuclearcraft:fuel_uranium_heu_235_ox_flowing"
   ]
 }

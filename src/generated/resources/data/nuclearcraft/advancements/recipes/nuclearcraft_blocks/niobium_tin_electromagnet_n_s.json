@@ -11,9 +11,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "nuclearcraft:niobium_tin_electromagnet"
-            ]
+            "item": "nuclearcraft:niobium_tin_electromagnet"
           }
         ]
       }

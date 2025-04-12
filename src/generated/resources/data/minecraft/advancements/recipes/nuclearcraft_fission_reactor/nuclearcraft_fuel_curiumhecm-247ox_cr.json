@@ -11,9 +11,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "nuclearcraft:fuel_curium_hecm_247_ox"
-            ]
+            "item": "nuclearcraft:fuel_curium_hecm_247_ox"
           }
         ]
       }

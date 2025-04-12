@@ -11,9 +11,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "nuclearcraft:lithium_6"
-            ]
+            "item": "nuclearcraft:lithium_6"
           }
         ]
       }

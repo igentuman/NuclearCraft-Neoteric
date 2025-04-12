@@ -11,9 +11,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "nuclearcraft:manganese_oxide_ingot"
-            ]
+            "item": "nuclearcraft:manganese_oxide_ingot"
           }
         ]
       }

@@ -9,6 +9,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
+import static net.minecraft.tags.FluidTags.WATER;
+
 
 public class SupercoolerRecipes extends AbstractRecipeProvider {
 
@@ -29,7 +31,7 @@ public class SupercoolerRecipes extends AbstractRecipeProvider {
         );
 
         add(
-                fluidIngredient("minecraft:water", 1000),
+                fluidIngredient(WATER, 1000),
                 fluidStack("ice", 500)
         );
 

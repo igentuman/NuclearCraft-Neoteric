@@ -2,6 +2,8 @@
   "replace": false,
   "values": [
     "nuclearcraft:berkelium_248_ox",
+    "nuclearcraft:berkelium_248_ox_flowing",
+    "nuclearcraft:berkelium_248_ox",
     "nuclearcraft:berkelium_248_ox_flowing"
   ]
 }

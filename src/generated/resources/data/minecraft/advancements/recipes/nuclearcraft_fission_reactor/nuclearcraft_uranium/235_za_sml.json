@@ -11,9 +11,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "nuclearcraft:uranium_235"
-            ]
+            "item": "nuclearcraft:uranium_235"
           }
         ]
       }

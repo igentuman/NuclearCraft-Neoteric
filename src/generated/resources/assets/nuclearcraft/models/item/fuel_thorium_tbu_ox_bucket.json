@@ -2,5 +2,6 @@
   "parent": "forge:item/bucket",
   "loader": "forge:bucket",
   "fluid": "nuclearcraft:fuel_thorium_tbu_ox",
+  "flipGas": false,
   "applyTint": true
 }

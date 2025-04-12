@@ -5,6 +5,7 @@ import igentuman.nc.util.annotation.NothingNullByDefault;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.tags.ITag;
 import net.minecraft.util.IItemProvider;
 import net.minecraftforge.common.Tags;
 
@@ -58,12 +59,12 @@ public interface IItemStackIngredientCreator extends IIngredientCreator<Item, It
      *
      * @param tag Tag to match.
      */
-    default ItemStackIngredient from(Tags.IOptionalNamedTag<Item> tag) {
+    default ItemStackIngredient from(ITag.INamedTag<Item> tag) {
         return from(tag, 1);
     }
 
     @Override
-    default ItemStackIngredient from(Tags.IOptionalNamedTag<Item> tag, int amount) {
+    default ItemStackIngredient from(ITag.INamedTag<Item> tag, int amount) {
         Objects.requireNonNull(tag, "ItemStackIngredients cannot be created from a null tag.");
         return from(tag, amount);
     }

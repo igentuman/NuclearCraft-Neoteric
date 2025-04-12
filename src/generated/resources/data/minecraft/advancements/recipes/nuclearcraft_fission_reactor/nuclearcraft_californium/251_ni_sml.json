@@ -11,9 +11,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "nuclearcraft:californium_251"
-            ]
+            "item": "nuclearcraft:californium_251"
           }
         ]
       }

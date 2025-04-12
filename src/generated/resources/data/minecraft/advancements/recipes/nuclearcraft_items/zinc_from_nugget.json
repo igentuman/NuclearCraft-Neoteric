@@ -11,9 +11,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "nuclearcraft:zinc_ingot"
-            ]
+            "item": "nuclearcraft:zinc_ingot"
           }
         ]
       }

@@ -11,9 +11,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "nuclearcraft:depleted_fuel_plutonium_hep_241"
-            ]
+            "item": "nuclearcraft:depleted_fuel_plutonium_hep_241"
           }
         ]
       }

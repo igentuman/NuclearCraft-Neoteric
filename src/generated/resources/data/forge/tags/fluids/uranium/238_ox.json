@@ -2,6 +2,8 @@
   "replace": false,
   "values": [
     "nuclearcraft:uranium_238_ox",
+    "nuclearcraft:uranium_238_ox_flowing",
+    "nuclearcraft:uranium_238_ox",
     "nuclearcraft:uranium_238_ox_flowing"
   ]
 }

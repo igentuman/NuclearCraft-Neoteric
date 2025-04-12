@@ -2,5 +2,6 @@
   "parent": "forge:item/bucket",
   "loader": "forge:bucket",
   "fluid": "nuclearcraft:manganese_oxide",
+  "flipGas": false,
   "applyTint": true
 }

@@ -11,9 +11,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "nuclearcraft:empty_heat_sink"
-            ]
+            "item": "nuclearcraft:empty_heat_sink"
           }
         ]
       }

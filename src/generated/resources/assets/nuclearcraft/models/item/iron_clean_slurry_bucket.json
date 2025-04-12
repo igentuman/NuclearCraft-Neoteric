@@ -2,5 +2,6 @@
   "parent": "forge:item/bucket",
   "loader": "forge:bucket",
   "fluid": "nuclearcraft:iron_clean_slurry",
+  "flipGas": false,
   "applyTint": true
 }

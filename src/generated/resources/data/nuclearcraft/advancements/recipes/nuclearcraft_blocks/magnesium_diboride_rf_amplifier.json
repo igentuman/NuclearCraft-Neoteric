@@ -11,9 +11,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "nuclearcraft:basic_rf_amplifier"
-            ]
+            "item": "nuclearcraft:basic_rf_amplifier"
           }
         ]
       }

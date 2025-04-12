@@ -11,9 +11,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "nuclearcraft:fuel_plutonium_lep_239_za"
-            ]
+            "item": "nuclearcraft:fuel_plutonium_lep_239_za"
           }
         ]
       }

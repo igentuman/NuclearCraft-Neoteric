@@ -5,6 +5,7 @@ import igentuman.nc.item.ItemFuel;
 import igentuman.nc.content.fuel.FuelManager;
 import igentuman.nc.util.TagUtil;
 import net.minecraft.item.Item;
+import net.minecraft.tags.ITag;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.fml.RegistryObject;
 
@@ -16,11 +17,11 @@ import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.setup.Registration.ITEMS;
 
 public class Fuel {
-    public static Tags.IOptionalNamedTag<Item> ISOTOPE_TAG = TagUtil.createItemForgeTag("isotopes");
-    public static Tags.IOptionalNamedTag<Item> NC_ISOTOPE_TAG = TagUtil.createItemNCTag("isotopes");
-    public static Tags.IOptionalNamedTag<Item> NC_FUEL_TAG = TagUtil.createItemNCTag("reactor_fuel");
-    public static Tags.IOptionalNamedTag<Item> NC_DEPLETED_FUEL_TAG = TagUtil.createItemNCTag("reactor_fuel");
-    public static Tags.IOptionalNamedTag<Item> NC_FUELS_TAG = TagUtil.createItemNCTag("reactor_fuel");
+    public static ITag.INamedTag<Item> ISOTOPE_TAG = TagUtil.createItemForgeTag("isotopes");
+    //public static ITag.INamedTag<Item> NC_ISOTOPE_TAG = TagUtil.createItemNCTag("isotopes");
+    public static ITag.INamedTag<Item> NC_FUEL_TAG = TagUtil.createItemNCTag("reactor_fuel");
+    public static ITag.INamedTag<Item> NC_DEPLETED_FUEL_TAG = TagUtil.createItemNCTag("reactor_fuel");
+   // public static ITag.INamedTag<Item> NC_FUELS_TAG = TagUtil.createItemNCTag("reactor_fuel");
 
     public static final Item.Properties ITEM_PROPERTIES = new Item.Properties().tab(CreativeTabs.FISSION_REACTOR);
 

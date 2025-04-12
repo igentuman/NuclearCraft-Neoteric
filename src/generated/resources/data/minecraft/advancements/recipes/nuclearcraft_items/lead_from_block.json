@@ -11,9 +11,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "nuclearcraft:lead_ingot"
-            ]
+            "item": "nuclearcraft:lead_ingot"
           }
         ]
       }

@@ -11,9 +11,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "nuclearcraft:plutonium_242"
-            ]
+            "item": "nuclearcraft:plutonium_242"
           }
         ]
       }

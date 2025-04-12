@@ -11,9 +11,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "nuclearcraft:fission_reactor_casing"
-            ]
+            "item": "nuclearcraft:fission_reactor_casing"
           }
         ]
       }

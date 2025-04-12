@@ -2,15 +2,23 @@ package igentuman.nc.block.turbine;
 
 import igentuman.nc.block.entity.turbine.TurbineBE;
 import igentuman.nc.util.TextUtils;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.DirectionalBlock;
-import net.minecraft.block.SoundType;
+import net.minecraft.block.*;
+import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.DirectionProperty;
+import net.minecraft.state.StateContainer;
+import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.item.ItemStack;
-import net.minecraft.block.BlockState;
+import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorldReader;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.antlr.v4.runtime.misc.NotNull;;
 import javax.annotation.Nullable;
@@ -23,24 +31,37 @@ import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BE;
 
 public class TurbineRotorBlock extends DirectionalBlock {
 
+    public static final DirectionProperty BLOCK_FACING = FACING;
+
     public TurbineRotorBlock(AbstractBlock.Properties pProperties) {
         super(pProperties.sound(SoundType.METAL).noOcclusion());
-    }
-
-/*    @Override
-    public BlockState getStateForPlacement(BlockPlaceContext context) {
-        World level = context.getLevel();
-        BlockState neighbor = level.getBlockState(context.getClickedPos().relative(context.getClickedFace().getOpposite()));
-        if(!neighbor.isAir() && neighbor.getBlock() instanceof TurbineRotorBlock) {
-            return this.defaultBlockState().setValue(FACING, neighbor.getValue(FACING));
-        }
-        return this.defaultBlockState().setValue(FACING, context.getNearestLookingDirection().getOpposite());
+        this.registerDefaultState(
+                this.stateDefinition.any()
+                        .setValue(BLOCK_FACING, Direction.NORTH)
+        );
     }
 
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(BlockStateProperties.FACING);
-    }*/
+    public BlockState getStateForPlacement(BlockItemUseContext context) {
+        return this.defaultBlockState().setValue(BLOCK_FACING, context.getNearestLookingDirection().getOpposite());
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+        builder.add(BLOCK_FACING);
+    }
+
+    @Override
+    public boolean hasTileEntity(BlockState state) {
+        return state != null;
+    }
+
+    @Nullable
+    @Override
+    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
+        return TURBINE_BE.get("turbine_rotor_shaft").get().create();
+    }
+
     @Override
     @Deprecated
     public boolean skipRendering(@NotNull BlockState state, @NotNull BlockState adjacentBlockState, @NotNull Direction side) {
@@ -52,19 +73,14 @@ public class TurbineRotorBlock extends DirectionalBlock {
         return ForgeRegistries.BLOCKS.getKey(this).getPath();
     }
 
-/*    @Nullable
-    @Override
-    public BlockEntity newBlockEntity(@NotNull BlockPos pPos, @NotNull BlockState pState) {
-        return TURBINE_BE.get("turbine_rotor_shaft").get().create(pPos, pState);
-    }*/
 
-/*    @Override
-    public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor){
+    @Override
+    public void onNeighborChange(BlockState state, IWorldReader level, BlockPos pos, BlockPos neighbor){
         ((TurbineBE) Objects.requireNonNull(level.getBlockEntity(pos))).onNeighborChange(state,  pos, neighbor);
     }
 
     @Override
-    public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<TextComponent> list, TooltipFlag pFlag) {
+    public void appendHoverText(ItemStack pStack, IBlockReader pLevel, List<ITextComponent> list, ITooltipFlag pFlag) {
         list.add(TextUtils.applyFormat(new TranslationTextComponent("tooltip.nc.rotor_shaft.desc"), TextFormatting.BLUE));
-    }*/
+    }
 }

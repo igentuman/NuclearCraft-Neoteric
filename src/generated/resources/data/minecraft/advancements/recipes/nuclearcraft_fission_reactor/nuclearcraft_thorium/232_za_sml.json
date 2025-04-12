@@ -11,9 +11,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "nuclearcraft:thorium_232"
-            ]
+            "item": "nuclearcraft:thorium_232"
           }
         ]
       }

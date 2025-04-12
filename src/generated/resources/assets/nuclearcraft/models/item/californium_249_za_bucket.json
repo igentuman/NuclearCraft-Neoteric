@@ -2,5 +2,6 @@
   "parent": "forge:item/bucket",
   "loader": "forge:bucket",
   "fluid": "nuclearcraft:californium_249_za",
+  "flipGas": false,
   "applyTint": true
 }

@@ -11,9 +11,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "nuclearcraft:plate_du"
-            ]
+            "item": "nuclearcraft:plate_du"
           }
         ]
       }

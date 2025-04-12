@@ -3,6 +3,7 @@ package igentuman.nc.multiblock.fission;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
 import net.minecraft.block.Block;
+import net.minecraft.tags.ITag;
 import net.minecraftforge.common.Tags;
 
 import java.util.*;
@@ -13,12 +14,12 @@ import static igentuman.nc.util.TagUtil.createItemNCTag;
 
 public class FissionBlocks {
     public static final Block.Properties REACTOR_BLOCKS_PROPERTIES = Block.Properties.of(Material.METAL).strength(4f).requiresCorrectToolForDrops();
-    public static Tags.IOptionalNamedTag<Block> MODERATORS_BLOCKS = createBlockNCTag("moderators");
-    public static Tags.IOptionalNamedTag<Block> HEAT_SINK_BLOCKS = createBlockNCTag("heat_sinks");
-    public static Tags.IOptionalNamedTag<Block> INNER_REACTOR_BLOCKS = createBlockNCTag("reactor_inner");
-    public static Tags.IOptionalNamedTag<Item> MODERATORS_ITEMS = createItemNCTag("moderators");
-    public static Tags.IOptionalNamedTag<Block> CASING_BLOCKS = createBlockNCTag("fission_reactor_casing");
-    public static Tags.IOptionalNamedTag<Item> CASING_ITEMS = createItemNCTag("fission_reactor_casing");
+    public static ITag.INamedTag<Block> MODERATORS_BLOCKS = createBlockNCTag("moderators");
+    public static ITag.INamedTag<Block> HEAT_SINK_BLOCKS = createBlockNCTag("heat_sinks");
+    public static ITag.INamedTag<Block> INNER_REACTOR_BLOCKS = createBlockNCTag("reactor_inner");
+    public static ITag.INamedTag<Item> MODERATORS_ITEMS = createItemNCTag("moderators");
+    public static ITag.INamedTag<Block> CASING_BLOCKS = createBlockNCTag("fission_reactor_casing");
+    public static ITag.INamedTag<Item> CASING_ITEMS = createItemNCTag("fission_reactor_casing");
 
     public static final List<String> reactor =  Arrays.asList(
             "casing",

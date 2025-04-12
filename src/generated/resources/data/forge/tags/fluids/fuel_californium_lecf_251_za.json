@@ -2,6 +2,8 @@
   "replace": false,
   "values": [
     "nuclearcraft:fuel_californium_lecf_251_za",
+    "nuclearcraft:fuel_californium_lecf_251_za_flowing",
+    "nuclearcraft:fuel_californium_lecf_251_za",
     "nuclearcraft:fuel_californium_lecf_251_za_flowing"
   ]
 }

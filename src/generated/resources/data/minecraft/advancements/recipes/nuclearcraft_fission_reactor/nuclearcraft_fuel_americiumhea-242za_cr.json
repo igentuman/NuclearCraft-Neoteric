@@ -11,9 +11,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "nuclearcraft:fuel_americium_hea_242_za"
-            ]
+            "item": "nuclearcraft:fuel_americium_hea_242_za"
           }
         ]
       }

@@ -11,9 +11,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "nuclearcraft:fuel_curium_lecm_247_ni"
-            ]
+            "item": "nuclearcraft:fuel_curium_lecm_247_ni"
           }
         ]
       }

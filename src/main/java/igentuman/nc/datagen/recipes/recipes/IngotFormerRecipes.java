@@ -50,6 +50,7 @@ public class IngotFormerRecipes extends AbstractRecipeProvider {
                         keyStr += "_";
                     }
                     keyStr+= type;
+                    keyStr = keyStr.replace("-", "_");
                     add(ingredient(Fuel.NC_FUEL.get(key).get()), fluidIngredient(keyStr, 144));
 
                     key = Arrays.asList("depleted", name, subType, type);

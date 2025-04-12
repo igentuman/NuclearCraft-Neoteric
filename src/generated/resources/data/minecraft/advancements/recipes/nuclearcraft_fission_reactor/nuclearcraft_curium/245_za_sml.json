@@ -11,9 +11,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "nuclearcraft:curium_245"
-            ]
+            "item": "nuclearcraft:curium_245"
           }
         ]
       }

@@ -2,5 +2,6 @@
   "parent": "forge:item/bucket",
   "loader": "forge:bucket",
   "fluid": "nuclearcraft:hydrogen_chloride",
+  "flipGas": false,
   "applyTint": true
 }

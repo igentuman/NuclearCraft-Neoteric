@@ -11,9 +11,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "nuclearcraft:graham_cracker"
-            ]
+            "item": "nuclearcraft:graham_cracker"
           }
         ]
       }

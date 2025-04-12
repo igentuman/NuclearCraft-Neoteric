@@ -3,11 +3,13 @@ package igentuman.nc.datagen.recipes.recipes;
 import igentuman.nc.datagen.recipes.builder.NcRecipeBuilder;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.NcIngredient;
+import igentuman.nc.recipes.ingredient.creator.FluidStackIngredientCreator;
 import igentuman.nc.recipes.ingredient.creator.IngredientCreatorAccess;
 import igentuman.nc.setup.registration.Fuel;
 import igentuman.nc.util.TagUtil;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.tags.ITag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -37,7 +39,7 @@ public abstract class AbstractRecipeProvider {
     private static List<NcIngredient> output;
     private static double[] params;
 
-    protected static NcIngredient ingredient(Tags.IOptionalNamedTag<Item> item, int...count) {
+    protected static NcIngredient ingredient(ITag.INamedTag<Item> item, int...count) {
         return NcIngredient.of(item, count);
     }
 
@@ -80,6 +82,10 @@ public abstract class AbstractRecipeProvider {
                 .build(consumer);
     }
 
+    protected static FluidStackIngredient fluidIngredient(ITag.INamedTag<Fluid> water, int amount) {
+        return FluidStackIngredientCreator.INSTANCE.from(water, amount);
+    }
+
     protected static FluidStack fluidStack(Fluid fluid, int amount) {
         try {
             return IngredientCreatorAccess.fluid().from(fluid, amount).getRepresentations().get(0);
@@ -102,8 +108,7 @@ public abstract class AbstractRecipeProvider {
     }
 
     protected static FluidStackIngredient fluidStackIngredient(String name, int amount) {
-      //  return IngredientCreatorAccess.fluid().from(ALL_FLUID_ENTRIES.get(name).getStill(), amount);
-        return null;
+        return IngredientCreatorAccess.fluid().from(ALL_FLUID_ENTRIES.get(name).getStill(), amount);
     }
 
     public static void itemToItem(NcIngredient input, NcIngredient output, double...params) {
@@ -189,13 +194,13 @@ public abstract class AbstractRecipeProvider {
                 .build(consumer);
     }
 
-    public static Tags.IOptionalNamedTag<Fluid> forgeFluid(String name) {
+    public static ITag.INamedTag<Fluid> forgeFluid(String name) {
         String key = "forge";
         if(name.contains(":")) {
             key = name.split(":")[0];
-            name = name.split(":")[1];
+          //  name = name.split(":")[1];
         }
-        return TagUtil.createFluidTagKey(new ResourceLocation(key, name));
+        return TagUtil.createFluidTagKey(name);
     }
 
     public static Item blockItem(String name)
@@ -225,7 +230,7 @@ public abstract class AbstractRecipeProvider {
         return NC_DUSTS.get(name).get();
     }
 
-    public static Tags.IOptionalNamedTag<Item> dustTag(String name)
+    public static ITag.INamedTag<Item> dustTag(String name)
     {
         if(DUSTS_TAG.get(name) == null) {
             System.out.println("null dust tag: " + name);
@@ -366,7 +371,7 @@ public abstract class AbstractRecipeProvider {
         return NC_PLATES.get(name).get();
     }
 
-    public static Tags.IOptionalNamedTag<Item> plateTag(String name)
+    public static ITag.INamedTag<Item> plateTag(String name)
     {
         if(PLATES_TAG.get(name) == null) {
             System.out.println("null plate tag: " + name);
@@ -382,7 +387,7 @@ public abstract class AbstractRecipeProvider {
         return NC_INGOTS.get(name).get();
     }
 
-    public static Tags.IOptionalNamedTag<Item> ingotTag(String name)
+    public static ITag.INamedTag<Item> ingotTag(String name)
     {
         if(INGOTS_TAG.get(name) == null) {
             System.out.println("null ingot tag: " + name);
@@ -390,7 +395,7 @@ public abstract class AbstractRecipeProvider {
         return INGOTS_TAG.get(name);
     }
 
-    public static Tags.IOptionalNamedTag<Item> gemTag(String name) {
+    public static ITag.INamedTag<Item> gemTag(String name) {
         if(GEMS_TAG.get(name) == null) {
             System.out.println("null gem tag: " + name);
         }

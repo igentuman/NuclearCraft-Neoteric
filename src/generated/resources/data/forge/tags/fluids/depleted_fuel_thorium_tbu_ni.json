@@ -2,6 +2,8 @@
   "replace": false,
   "values": [
     "nuclearcraft:depleted_fuel_thorium_tbu_ni",
+    "nuclearcraft:depleted_fuel_thorium_tbu_ni_flowing",
+    "nuclearcraft:depleted_fuel_thorium_tbu_ni",
     "nuclearcraft:depleted_fuel_thorium_tbu_ni_flowing"
   ]
 }

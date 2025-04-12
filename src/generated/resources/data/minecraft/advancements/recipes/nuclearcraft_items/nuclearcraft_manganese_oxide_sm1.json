@@ -11,9 +11,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "nuclearcraft:rhodochrosite_dust"
-            ]
+            "item": "nuclearcraft:rhodochrosite_dust"
           }
         ]
       }

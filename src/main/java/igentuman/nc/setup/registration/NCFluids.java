@@ -1,7 +1,6 @@
 package igentuman.nc.setup.registration;
 
 import com.google.common.collect.ImmutableList;
-import com.mojang.authlib.properties.Property;
 import igentuman.nc.content.materials.Materials;
 import igentuman.nc.fluid.AcidDefinition;
 import igentuman.nc.fluid.GasDefinition;
@@ -18,6 +17,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.state.Property;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.tags.ITag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.SoundEvents;
@@ -55,8 +57,9 @@ public class NCFluids {
     public static HashMap<String, FluidEntry> NC_MATERIALS = new HashMap<>();
     public static HashMap<String, FluidEntry> NC_GASES = new HashMap<>();
 
-    public static HashMap<String, Tags.IOptionalNamedTag<Fluid>> GASES_TAG = new HashMap<>();
-    public static HashMap<String, Tags.IOptionalNamedTag<Fluid>> LIQUIDS_TAG = new HashMap<>();
+    public static HashMap<String, ITag.INamedTag<Fluid>> GASES_TAG = new HashMap<>();
+    public static HashMap<String, ITag.INamedTag<Fluid>> LIQUIDS_TAG = new HashMap<>();
+   // public static ITag.INamedTag<Fluid> GASEOUS = FluidTags.bind("gasses");
     public static void register(IEventBus eventBus) {
         FLUIDS.register(eventBus);
     }
@@ -77,7 +80,7 @@ public class NCFluids {
     public static BlockState getBlock(String name)
     {
         if(NC_MATERIALS.containsKey(name)) {
-        //    return NC_MATERIALS.get(name).getBlock().defaultBlockState();
+            //return NC_MATERIALS.get(name).getBlock().defaultBlockState();
         }
         return Blocks.AIR.defaultBlockState();
     }
@@ -144,7 +147,7 @@ public class NCFluids {
         items.put("liquid_nitrogen", new LiquidDefinition("liquid_nitrogen", 0x5031C23A));
 
         for(LiquidDefinition liquid: items.values()) {
-            LIQUIDS_TAG.put(liquid.name, TagUtil.createFluidTagKey( liquid.name));
+            LIQUIDS_TAG.put(liquid.name, TagUtil.createFluidTagKey(liquid.name));
             NC_MATERIALS.put(liquid.name, FluidEntry.makeLiquid(liquid.name, liquid.color));
         }
     }
@@ -170,7 +173,7 @@ public class NCFluids {
             items.put(material+"_clean_slurry", new AcidDefinition(material+"_clean_slurry", TextureUtil.rgbaToInt(rgba)));
         }
         for(AcidDefinition acid: items.values()) {
-            LIQUIDS_TAG.put(acid.name, TagUtil.createFluidTagKey( acid.name));
+            LIQUIDS_TAG.put(acid.name, TagUtil.createFluidTagKey(acid.name));
             NC_MATERIALS.put(acid.name, FluidEntry.makeAcid(acid));
         }
     }
@@ -193,7 +196,7 @@ public class NCFluids {
 
     private static void materialFluids() {
         for (String name: Materials.fluids().keySet()) {
-            LIQUIDS_TAG.put(name, TagUtil.createFluidTagKey( name));
+            LIQUIDS_TAG.put(name, TagUtil.createFluidTagKey(name));
             NC_MATERIALS.put(name, FluidEntry.makeMoltenLiquid(name, Materials.fluids().get(name).color));
         }
     }
@@ -210,13 +213,11 @@ public class NCFluids {
                         colorDepleted = TextureUtil.getAverageColor("textures/item/fuel/" + name + "/depleted/" + subType.replace("-", "_") + type + ".png");
                         colorFuel = TextureUtil.getAverageColor("textures/item/fuel/" + name + "/" + subType.replace("-", "_") + type + ".png");
                     }
-                    NC_MATERIALS.put(key,
-                            FluidEntry.makeMoltenLiquid(key.replace("-","_"),
-                                    colorFuel));
-                    LIQUIDS_TAG.put(key, TagUtil.createFluidTagKey( key.replace("-","_")));
-                    NC_MATERIALS.put("depleted_"+key,
-                            FluidEntry.makeMoltenLiquid("depleted_"+key.replace("-","_"), colorDepleted));
-                    LIQUIDS_TAG.put("depleted_"+key, TagUtil.createFluidTagKey( "depleted_"+key.replace("-","_")));
+                    key = key.replace("-", "_");
+                    LIQUIDS_TAG.put(key, TagUtil.createFluidTagKey(key));
+                    NC_MATERIALS.put(key, FluidEntry.makeMoltenLiquid(key, colorFuel));
+                    LIQUIDS_TAG.put("depleted_"+key, TagUtil.createFluidTagKey( "depleted_"+key));
+                    NC_MATERIALS.put("depleted_"+key, FluidEntry.makeMoltenLiquid("depleted_"+key, colorDepleted));
                 }
             }
         }
@@ -274,7 +275,6 @@ public class NCFluids {
                 NC_MATERIALS.put(name+type,
                         FluidEntry.makeMoltenLiquid(name.replace("/", "_")+type,color));
                 LIQUIDS_TAG.put(name+type, TagUtil.createFluidTagKey( name+type));
-
             }
         }
     }
@@ -387,11 +387,11 @@ public class NCFluids {
 
             Mutable<FluidEntry> thisMutable = new MutableObject<>();
             RegistryObject<NCFluid> still = FLUIDS.register(name, () -> NCFluid.makeFluid(
-                    makeStill, thisMutable.getValue(), stillTex, flowingTex, buildAttributes
+                    makeStill, name, thisMutable.getValue(), stillTex, flowingTex, buildAttributes
             ));
 
             RegistryObject<NCFluid> flowing = FLUIDS.register(name+"_flowing", () -> NCFluid.makeFluid(
-                    makeFlowing, thisMutable.getValue(), stillTex, flowingTex, buildAttributes
+                    makeFlowing, name, thisMutable.getValue(), stillTex, flowingTex, buildAttributes
             ));
 
             RegistryObject<BucketItem> bucket = NCItems.ITEMS.register(name+"_bucket", () -> makeBucket(still, burnTime));

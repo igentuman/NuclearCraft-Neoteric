@@ -2,5 +2,6 @@
   "parent": "forge:item/bucket",
   "loader": "forge:bucket",
   "fluid": "nuclearcraft:fuel_berkelium_heb_248_za",
+  "flipGas": false,
   "applyTint": true
 }

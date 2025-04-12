@@ -2,5 +2,6 @@
   "parent": "forge:item/bucket",
   "loader": "forge:bucket",
   "fluid": "nuclearcraft:strontium_90",
+  "flipGas": false,
   "applyTint": true
 }

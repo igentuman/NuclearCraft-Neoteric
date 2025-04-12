@@ -2,5 +2,6 @@
   "parent": "forge:item/bucket",
   "loader": "forge:bucket",
   "fluid": "nuclearcraft:sugar",
+  "flipGas": false,
   "applyTint": true
 }

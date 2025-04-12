@@ -2,5 +2,6 @@
   "parent": "forge:item/bucket",
   "loader": "forge:bucket",
   "fluid": "nuclearcraft:curium_247",
+  "flipGas": false,
   "applyTint": true
 }

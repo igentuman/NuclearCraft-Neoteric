@@ -2,6 +2,8 @@
   "replace": false,
   "values": [
     "nuclearcraft:curium_243_ox",
+    "nuclearcraft:curium_243_ox_flowing",
+    "nuclearcraft:curium_243_ox",
     "nuclearcraft:curium_243_ox_flowing"
   ]
 }

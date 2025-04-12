@@ -1,9 +1,12 @@
 package igentuman.nc.fluid;
 
+import igentuman.nc.block.NCFluidBlock;
 import igentuman.nc.setup.registration.NCFluids;
+import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.fluid.FlowingFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
+import net.minecraft.state.Property;
 import net.minecraft.state.StateContainer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.Direction;
@@ -17,6 +20,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.function.Consumer;
 
+import static igentuman.nc.NuclearCraft.rl;
+
 
 public class NCFluid extends FlowingFluid
 {
@@ -24,12 +29,14 @@ public class NCFluid extends FlowingFluid
 	protected final NCFluids.FluidEntry entry;
 	protected final ResourceLocation stillTex;
 	protected final ResourceLocation flowingTex;
+	protected Item bucket;
 	@Nullable
 	protected final Consumer<FluidAttributes.Builder> buildAttributes;
-	public static NCFluid makeFluid(FluidConstructor make, NCFluids.FluidEntry entry, ResourceLocation stillTex, ResourceLocation flowingTex, @Nullable Consumer<FluidAttributes.Builder> buildAttributes)
+
+	public static NCFluid makeFluid(FluidConstructor make, String name, NCFluids.FluidEntry entry, ResourceLocation stillTex, ResourceLocation flowingTex, @Nullable Consumer<FluidAttributes.Builder> buildAttributes)
 	{
 		entryStatic = entry;
-		NCFluid result = make.create(entry, stillTex, flowingTex, buildAttributes);
+		NCFluid result = make.create(entry, name,stillTex, flowingTex, buildAttributes);
 		entryStatic = null;
 		return result;
 	}
@@ -38,12 +45,13 @@ public class NCFluid extends FlowingFluid
 	{
 		NCFluid create(
 				NCFluids.FluidEntry entry,
+				String name,
 				ResourceLocation stillTex, ResourceLocation flowingTex,
 				@Nullable Consumer<FluidAttributes.Builder> buildAttributes
 		);
 	}
 
-	public NCFluid(NCFluids.FluidEntry entry, ResourceLocation stillTex, ResourceLocation flowingTex, @Nullable Consumer<FluidAttributes.Builder> buildAttributes)
+	public NCFluid(NCFluids.FluidEntry entry, String name, ResourceLocation stillTex, ResourceLocation flowingTex, @Nullable Consumer<FluidAttributes.Builder> buildAttributes)
 	{
 		this.entry = entry;
 		this.stillTex = stillTex;
@@ -51,17 +59,11 @@ public class NCFluid extends FlowingFluid
 		this.buildAttributes = buildAttributes;
 	}
 
-/*	@Nonnull
+	@Nonnull
 	@Override
 	public Item getBucket()
 	{
 		return entry.getBucket();
-	}*/
-
-
-	@Override
-	public Item getBucket() {
-		return null;
 	}
 
 	@Override
@@ -70,11 +72,11 @@ public class NCFluid extends FlowingFluid
 		return direction==Direction.DOWN&&!isSame(fluidIn);
 	}
 
-/*	@Override
+	@Override
 	public boolean isSame(@Nonnull Fluid fluidIn)
 	{
 		return fluidIn==entry.getStill()||fluidIn==entry.getFlowing();
-	}*/
+	}
 
 	@Override
 	public int getTickDelay(IWorldReader p_205569_1_)
@@ -89,17 +91,17 @@ public class NCFluid extends FlowingFluid
 	}
 
 	@Override
-	protected BlockState createLegacyBlock(FluidState fluidState) {
-		return null;
-	}
-
-/*	@Override
 	protected void createFluidStateDefinition(StateContainer.Builder<Fluid, FluidState> builder)
 	{
 		super.createFluidStateDefinition(builder);
-		for(Property<?> p : (entry==null?entryStatic: entry))
+		if(entry==null) {
+			for(Property p : entryStatic.properties)
 			builder.add(p);
-	}*/
+		} else {
+			for (Property p : entry.properties)
+				builder.add(p);
+		}
+	}
 
 	@Nonnull
 	@Override
@@ -110,20 +112,20 @@ public class NCFluid extends FlowingFluid
 			buildAttributes.accept(builder);
 		return builder.build(this);
 	}
-/*
+
 	@Override
 	protected BlockState createLegacyBlock(FluidState state)
 	{
-		BlockState result = entry.getBlock().defaultBlockState().setValue(LiquidBlock.WORLD, getLegacyLevel(state));
-		for(Property<?> prop : entry.properties())
+		BlockState result = NCFluidBlock.stateById(getLegacyLevel(state));
+		for(Property<?> prop : entry.properties)
 			result = NCFluidBlock.withCopiedValue(prop, result, state);
 		return result;
-	}*/
+	}
 
 	@Override
 	public boolean isSource(FluidState state)
 	{
-		return true;
+		return state == entry.getStill().defaultFluidState();
 	}
 
 	@Override
@@ -139,14 +141,14 @@ public class NCFluid extends FlowingFluid
 	@Override
 	public Fluid getFlowing()
 	{
-		return null;
+		return entry.getFlowing();
 	}
 
 	@Nonnull
 	@Override
 	public Fluid getSource()
 	{
-		return null;
+		return entry.getStill();
 	}
 
 	@Override
@@ -182,11 +184,11 @@ public class NCFluid extends FlowingFluid
 	public static class Flowing extends NCFluid
 	{
 		public String name;
-		public Flowing(NCFluids.FluidEntry entry, ResourceLocation stillTex, ResourceLocation flowingTex,
+		public Flowing(NCFluids.FluidEntry entry, String name, ResourceLocation stillTex, ResourceLocation flowingTex,
 					   @Nullable Consumer<FluidAttributes.Builder> buildAttributes)
 		{
-			super(entry, stillTex, flowingTex, buildAttributes);
-			//name = entry.getFlowing().getFluidType().toString().split(":")[1];
+			super(entry, name, stillTex, flowingTex, buildAttributes);
+			this.name = name;
 		}
 
 		@Override

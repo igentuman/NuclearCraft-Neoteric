@@ -46,14 +46,12 @@ public class NCItemTags extends ItemTagsProvider {
     private void isotopes() {
         for(String name: Fuel.NC_ISOTOPES.keySet()) {
             tag(Fuel.ISOTOPE_TAG).add(Fuel.NC_ISOTOPES.get(name).get());
-            //tag(NCItems.PLATES_TAG.get(name)).add(NCItems.NC_PLATES.get(name).get());
         }
     }
 
     private void fuel() {
         for(List<String> name: Fuel.NC_FUEL.keySet()) {
             tag(Fuel.NC_FUEL_TAG).add(Fuel.NC_FUEL.get(name).get());
-            //tag(NCItems.PLATES_TAG.get(name)).add(NCItems.NC_PLATES.get(name).get());
         }
 
         for(List<String> name: Fuel.NC_DEPLETED_FUEL.keySet()) {
@@ -104,7 +102,7 @@ public class NCItemTags extends ItemTagsProvider {
 
     private void chunks() {
         for(String name: NCItems.NC_CHUNKS.keySet()) {
-          //  tag(Tags.Items.).add(NCItems.NC_CHUNKS.get(name).get());
+           // tag(Tags.Items.ORE).add(NCItems.NC_CHUNKS.get(name).get());
             tag(NCItems.CHUNKS_TAG.get(name)).add(NCItems.NC_CHUNKS.get(name).get());
         }
     }

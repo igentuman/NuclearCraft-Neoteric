@@ -15,6 +15,7 @@ import java.util.function.Consumer;
 
 import static igentuman.nc.setup.registration.NCItems.ALL_NC_ITEMS;
 import static net.minecraft.item.Items.ICE;
+import static net.minecraft.tags.FluidTags.WATER;
 
 
 public class FluidInfuserRecipes extends AbstractRecipeProvider {
@@ -91,7 +92,7 @@ public class FluidInfuserRecipes extends AbstractRecipeProvider {
         );
 
         add(
-                fluidIngredient("minecraft:water", 1000),
+                fluidIngredient(WATER, 1000),
                 blockStack("empty_heat_sink"),
                 blockStack("water_heat_sink")
         );

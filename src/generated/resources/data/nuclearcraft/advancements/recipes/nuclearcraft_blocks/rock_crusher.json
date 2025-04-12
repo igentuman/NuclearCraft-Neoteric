@@ -11,9 +11,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "nuclearcraft:motor"
-            ]
+            "item": "nuclearcraft:motor"
           }
         ]
       }

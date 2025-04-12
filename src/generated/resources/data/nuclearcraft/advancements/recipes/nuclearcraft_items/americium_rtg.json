@@ -11,9 +11,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "nuclearcraft:plate_advanced"
-            ]
+            "item": "nuclearcraft:plate_advanced"
           }
         ]
       }

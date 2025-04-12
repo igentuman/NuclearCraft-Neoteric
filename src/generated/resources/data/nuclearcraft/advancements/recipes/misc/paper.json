@@ -11,9 +11,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "nuclearcraft:research_paper"
-            ]
+            "item": "nuclearcraft:research_paper"
           }
         ]
       }

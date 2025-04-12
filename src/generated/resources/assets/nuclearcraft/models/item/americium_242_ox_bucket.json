@@ -2,5 +2,6 @@
   "parent": "forge:item/bucket",
   "loader": "forge:bucket",
   "fluid": "nuclearcraft:americium_242_ox",
+  "flipGas": false,
   "applyTint": true
 }

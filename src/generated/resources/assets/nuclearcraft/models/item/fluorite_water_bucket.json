@@ -2,5 +2,6 @@
   "parent": "forge:item/bucket",
   "loader": "forge:bucket",
   "fluid": "nuclearcraft:fluorite_water",
+  "flipGas": false,
   "applyTint": true
 }

@@ -20,12 +20,12 @@ public class DataGenerators {
     public static void gatherData(GatherDataEvent event) {
         DataGenerator generator = event.getGenerator();
         NcIngredient.ping();
-        generator.addProvider(new NCRecipes(generator));
-        generator.addProvider(new NCLootTables(generator));
         NCBlockTags blockTags = new NCBlockTags(generator, event.getExistingFileHelper());
         generator.addProvider(blockTags);
         generator.addProvider(new NCItemTags(generator, blockTags, event.getExistingFileHelper()));
         generator.addProvider(new FluidTags(generator, event.getExistingFileHelper()));
+        generator.addProvider(new NCRecipes(generator));
+        generator.addProvider(new NCLootTables(generator));
         generator.addProvider(new NCBlockStates(generator, event.getExistingFileHelper()));
         generator.addProvider(new NCFluidBlockStates(generator, event.getExistingFileHelper()));
         generator.addProvider(new NCItemModels(generator, event.getExistingFileHelper()));

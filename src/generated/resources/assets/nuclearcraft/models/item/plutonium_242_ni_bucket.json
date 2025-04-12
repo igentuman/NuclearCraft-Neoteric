@@ -2,5 +2,6 @@
   "parent": "forge:item/bucket",
   "loader": "forge:bucket",
   "fluid": "nuclearcraft:plutonium_242_ni",
+  "flipGas": false,
   "applyTint": true
 }

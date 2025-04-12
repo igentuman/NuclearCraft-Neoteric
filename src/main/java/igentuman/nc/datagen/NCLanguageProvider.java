@@ -179,10 +179,10 @@ public class NCLanguageProvider extends LanguageProvider {
             if(NC_INGOTS.containsKey(name)) {
                 molten = "Molten ";
             }
-           // add(NCFluids.NC_MATERIALS.get(name).getBucket(), "Bucket of " + molten + convertToName(name));
+            add(NCFluids.NC_MATERIALS.get(name).getBucket(), "Bucket of " + molten + convertToName(name));
         }
         for(String name: NCFluids.NC_GASES.keySet()) {
-          //  add(NCFluids.NC_GASES.get(name).getBucket(), "Bucket of " + convertToName(name));
+            add(NCFluids.NC_GASES.get(name).getBucket(), "Bucket of " + convertToName(name));
         }
     }
 
@@ -196,6 +196,13 @@ public class NCLanguageProvider extends LanguageProvider {
         }
         for(String name: NCFluids.NC_GASES.keySet()) {
             add("fluid."+MODID+"."+name, convertToName(name));
+        }
+
+        for(List<String> name: Fuel.NC_FUEL.keySet()) {
+            add("fluid."+MODID+"."+name, convertToName(name.get(0))+" "+convertToName(name.get(1))+" "+name.get(2).toUpperCase()+" "+name.get(3).toUpperCase());
+        }
+        for(List<String> name: Fuel.NC_DEPLETED_FUEL.keySet()) {
+            add("fluid."+MODID+"."+name, convertToName(name.get(0))+" "+convertToName(name.get(1))+" "+name.get(2).toUpperCase()+" "+name.get(3).toUpperCase());
         }
     }
 

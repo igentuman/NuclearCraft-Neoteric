@@ -2,6 +2,8 @@
   "replace": false,
   "values": [
     "nuclearcraft:americium_243_ox",
+    "nuclearcraft:americium_243_ox_flowing",
+    "nuclearcraft:americium_243_ox",
     "nuclearcraft:americium_243_ox_flowing"
   ]
 }

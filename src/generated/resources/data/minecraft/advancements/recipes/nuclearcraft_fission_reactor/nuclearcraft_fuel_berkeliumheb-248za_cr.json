@@ -11,9 +11,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "nuclearcraft:fuel_berkelium_heb_248_za"
-            ]
+            "item": "nuclearcraft:fuel_berkelium_heb_248_za"
           }
         ]
       }

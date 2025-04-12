@@ -11,9 +11,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "nuclearcraft:solar_panel_advanced"
-            ]
+            "item": "nuclearcraft:solar_panel_advanced"
           }
         ]
       }

@@ -2,5 +2,6 @@
   "parent": "forge:item/bucket",
   "loader": "forge:bucket",
   "fluid": "nuclearcraft:depleted_fuel_uranium_heu_233",
+  "flipGas": false,
   "applyTint": true
 }

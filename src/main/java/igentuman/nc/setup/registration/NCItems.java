@@ -8,6 +8,8 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.Food;
 import net.minecraft.item.Item;
+import net.minecraft.tags.ITag;
+import net.minecraft.tags.Tag;
 import net.minecraft.util.datafix.fixes.JukeboxRecordItem;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -42,8 +44,8 @@ public class NCItems {
     public static HashMap<String, RegistryObject<Item>> NC_NUGGETS = new HashMap<>();
     public static HashMap<String, RegistryObject<Item>> NC_PLATES = new HashMap<>();
     public static HashMap<String, RegistryObject<Item>> NC_DUSTS = new HashMap<>();
-    public static Tags.IOptionalNamedTag<Item> PLATE_TAG = createItemForgeTag("plates");
-    public static Tags.IOptionalNamedTag<Item> PARTS_TAG = createItemNCTag( "parts");
+    public static ITag.INamedTag<Item> PLATE_TAG = createItemForgeTag("plates");
+    public static ITag.INamedTag<Item> PARTS_TAG = createItemNCTag( "parts");
     public static final Item.Properties ITEM_PROPERTIES = new Item.Properties().tab(CreativeTabs.NC_ITEMS);
     public static final Item.Properties ONE_ITEM_PROPERTIES = new Item.Properties().tab(CreativeTabs.NC_ITEMS).stacksTo(1);
     public static final Item.Properties PAXEL_PROPS = new Item.Properties().tab(CreativeTabs.NC_ITEMS).stacksTo(1).durability(5000);
@@ -85,12 +87,12 @@ public class NCItems {
     public static final RegistryObject<Item> SPAXELHOE_THORIUM = ITEMS.register("spaxelhoe_thorium", () -> new PaxelItem(3, 1, Tiers.THORIUM, PAXEL_PROPS));
     public static final RegistryObject<Item> QNP = ITEMS.register("qnp", () -> new QNP(Tiers.QNP, 11, 2F, ONE_ITEM_PROPERTIES));
     public static final RegistryObject<Item> MULTITOOL = ITEMS.register("multitool", () -> new MultitoolItem(ONE_ITEM_PROPERTIES));
-    public static HashMap<String, Tags.IOptionalNamedTag<Item>> INGOTS_TAG = new HashMap<>();
-    public static HashMap<String, Tags.IOptionalNamedTag<Item>> CHUNKS_TAG = new HashMap<>();
-    public static HashMap<String, Tags.IOptionalNamedTag<Item>> GEMS_TAG = new HashMap<>();
-    public static HashMap<String, Tags.IOptionalNamedTag<Item>> NUGGETS_TAG = new HashMap<>();
-    public static HashMap<String, Tags.IOptionalNamedTag<Item>> PLATES_TAG = new HashMap<>();
-    public static HashMap<String, Tags.IOptionalNamedTag<Item>> DUSTS_TAG = new HashMap<>();
+    public static HashMap<String, ITag.INamedTag<Item>> INGOTS_TAG = new HashMap<>();
+    public static HashMap<String, ITag.INamedTag<Item>> CHUNKS_TAG = new HashMap<>();
+    public static HashMap<String, ITag.INamedTag<Item>> GEMS_TAG = new HashMap<>();
+    public static HashMap<String, ITag.INamedTag<Item>> NUGGETS_TAG = new HashMap<>();
+    public static HashMap<String, ITag.INamedTag<Item>> PLATES_TAG = new HashMap<>();
+    public static HashMap<String, ITag.INamedTag<Item>> DUSTS_TAG = new HashMap<>();
 
     public static void init() {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();

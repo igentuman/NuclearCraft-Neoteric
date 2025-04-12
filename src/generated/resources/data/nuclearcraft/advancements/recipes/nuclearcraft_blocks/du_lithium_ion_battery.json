@@ -11,9 +11,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "nuclearcraft:coil_magnesium_diboride"
-            ]
+            "item": "nuclearcraft:coil_magnesium_diboride"
           }
         ]
       }

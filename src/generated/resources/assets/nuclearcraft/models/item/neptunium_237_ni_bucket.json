@@ -2,5 +2,6 @@
   "parent": "forge:item/bucket",
   "loader": "forge:bucket",
   "fluid": "nuclearcraft:neptunium_237_ni",
+  "flipGas": false,
   "applyTint": true
 }

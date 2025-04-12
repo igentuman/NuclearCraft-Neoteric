@@ -11,9 +11,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "nuclearcraft:helium_collector"
-            ]
+            "item": "nuclearcraft:helium_collector"
           }
         ]
       }

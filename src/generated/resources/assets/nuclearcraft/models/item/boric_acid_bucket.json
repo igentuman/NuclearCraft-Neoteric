@@ -2,5 +2,6 @@
   "parent": "forge:item/bucket",
   "loader": "forge:bucket",
   "fluid": "nuclearcraft:boric_acid",
+  "flipGas": false,
   "applyTint": true
 }

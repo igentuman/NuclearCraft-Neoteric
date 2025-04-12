@@ -72,7 +72,7 @@ public class Gas2FluidConverter implements IGasHandler {
         }
         String name = stack.getTypeRegistryName().getPath();
         name = specialConvertRules(name);
-        Tags.IOptionalNamedTag<Fluid> tag = TagUtil.createFluidTagKey(new ResourceLocation("forge", name));
+        ITag.INamedTag<Fluid> tag = TagUtil.createFluidTagKey(name);
 
         if(tag.getValues().isEmpty()) {
             return FluidStack.EMPTY;

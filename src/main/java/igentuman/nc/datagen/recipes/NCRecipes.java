@@ -2,6 +2,7 @@ package igentuman.nc.datagen.recipes;
 
 import igentuman.nc.content.materials.Materials;
 import igentuman.nc.content.processors.Processors;
+import igentuman.nc.datagen.recipes.builder.SpecialRecipeBuilder;
 import igentuman.nc.recipes.ingredient.NcIngredient;
 import igentuman.nc.multiblock.fission.FissionBlocks;
 import igentuman.nc.multiblock.fission.FissionReactor;
@@ -11,6 +12,7 @@ import net.minecraft.advancements.criterion.ItemPredicate;
 import net.minecraft.data.*;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.tags.ITag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.util.registry.Registry;
@@ -53,8 +55,8 @@ public class NCRecipes extends RecipeProvider {
        //turbineBlocks(consumer);
         FuelRecipes.generate(consumer);
         CustomRecipes.generate(consumer);
-      //  SpecialRecipeBuilder.build(consumer, NcRecipeSerializers.SHIELDING);
-     //   SpecialRecipeBuilder.build(consumer, NcRecipeSerializers.RESET_NBT);
+        SpecialRecipeBuilder.build(consumer, NcRecipeSerializers.SHIELDING.get());
+        SpecialRecipeBuilder.build(consumer, NcRecipeSerializers.RESET_NBT.get());
     }
 
     private void fusionBlocks(Consumer<IFinishedRecipe> consumer) {
@@ -1051,7 +1053,7 @@ public class NCRecipes extends RecipeProvider {
             if(name.matches(".*active.*|.*water.*|.*liquid.*|.*empty.*|.*cryotheum.*")) {
                 continue;
             }
-            Tags.IOptionalNamedTag<Item> i = forgeDust(name);
+            ITag.INamedTag<Item> i = forgeDust(name);
             if(name.contains("slime")) {
                 i = Tags.Items.SLIMEBALLS;
             }

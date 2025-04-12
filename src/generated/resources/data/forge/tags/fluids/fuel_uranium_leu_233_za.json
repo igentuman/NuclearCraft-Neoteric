@@ -2,6 +2,8 @@
   "replace": false,
   "values": [
     "nuclearcraft:fuel_uranium_leu_233_za",
+    "nuclearcraft:fuel_uranium_leu_233_za_flowing",
+    "nuclearcraft:fuel_uranium_leu_233_za",
     "nuclearcraft:fuel_uranium_leu_233_za_flowing"
   ]
 }

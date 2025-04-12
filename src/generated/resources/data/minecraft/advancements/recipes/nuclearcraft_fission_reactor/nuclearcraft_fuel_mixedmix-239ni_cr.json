@@ -11,9 +11,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "nuclearcraft:fuel_mixed_mix_239_ni"
-            ]
+            "item": "nuclearcraft:fuel_mixed_mix_239_ni"
           }
         ]
       }

@@ -11,9 +11,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "nuclearcraft:fuel_californium_hecf_251"
-            ]
+            "item": "nuclearcraft:fuel_californium_hecf_251"
           }
         ]
       }

@@ -2,6 +2,8 @@
   "replace": false,
   "values": [
     "nuclearcraft:plutonium_241_ni",
+    "nuclearcraft:plutonium_241_ni_flowing",
+    "nuclearcraft:plutonium_241_ni",
     "nuclearcraft:plutonium_241_ni_flowing"
   ]
 }

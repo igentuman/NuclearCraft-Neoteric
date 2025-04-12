@@ -2,6 +2,8 @@
   "replace": false,
   "values": [
     "nuclearcraft:fuel_berkelium_heb_248",
+    "nuclearcraft:fuel_berkelium_heb_248_flowing",
+    "nuclearcraft:fuel_berkelium_heb_248",
     "nuclearcraft:fuel_berkelium_heb_248_flowing"
   ]
 }

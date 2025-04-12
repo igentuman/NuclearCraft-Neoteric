@@ -3,6 +3,7 @@ package igentuman.nc.util;
 import com.google.common.base.Preconditions;
 import net.minecraft.resources.IResource;
 import net.minecraft.resources.ResourcePackType;
+import net.minecraft.tags.ITag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.Tags;
@@ -80,51 +81,51 @@ public class DataGenUtil
 		return new ResourceLocation(base.getNamespace(), lastDir+relativePath);
 	}
 
-	public static Tags.IOptionalNamedTag<Item> forgeIngot(String name)
+	public static ITag.INamedTag<Item> forgeIngot(String name)
 	{
 		return createItemForgeTag("ingots/"+name);
 	}
 
-	public static Tags.IOptionalNamedTag<Item> forgeGem(String name)
+	public static ITag.INamedTag<Item> forgeGem(String name)
 	{
 		return createItemForgeTag("gems/"+name);
 	}
 
-	public static Tags.IOptionalNamedTag<Item> forgeNugget(String name)
+	public static ITag.INamedTag<Item> forgeNugget(String name)
 	{
 		return createItemForgeTag("nuggets/"+name);
 	}
 
-	public static Tags.IOptionalNamedTag<Item> forgeBlock(String name)
+	public static ITag.INamedTag<Item> forgeBlock(String name)
 	{
 		return createItemForgeTag("storage_blocks/"+name);
 	}
 
-	public static Tags.IOptionalNamedTag<Item> forgeOre(String name)
+	public static ITag.INamedTag<Item> forgeOre(String name)
 	{
 		return createItemForgeTag("ores/"+name);
 	}
 
-	public static Tags.IOptionalNamedTag<Item> forgeBucket(String name)
+	public static ITag.INamedTag<Item> forgeBucket(String name)
 	{
 		return createItemForgeTag("buckets/"+name);
 	}
 
-	public static Tags.IOptionalNamedTag<Item> forgeChunk(String name)
+	public static ITag.INamedTag<Item> forgeChunk(String name)
 	{
 		return createItemForgeTag("raw_materials/"+name);
 	}
 
-	public static Tags.IOptionalNamedTag<Item> forgeDust(String name)
+	public static ITag.INamedTag<Item> forgeDust(String name)
 	{
 		return createItemForgeTag("dusts/"+name);
 	}
 
-	public static Tags.IOptionalNamedTag<Item> forgePlate(String name) {
+	public static ITag.INamedTag<Item> forgePlate(String name) {
 		return createItemForgeTag("plates/"+name);
 	}
 
-	public static Tags.IOptionalNamedTag<Item> forgeDye(String name) {
+	public static ITag.INamedTag<Item> forgeDye(String name) {
 		return createItemForgeTag("dye/"+name);
 	}
 }

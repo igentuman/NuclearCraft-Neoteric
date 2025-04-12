@@ -6,6 +6,7 @@ import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.tags.ITag;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -95,17 +96,15 @@ public class NcIngredient extends Ingredient {
 
    public JsonElement toJson() {
       if (this.values.length == 1) {
-       //  return this.values[0].serialize();
+         return this.values[0].serialize();
       } else {
          JsonArray jsonarray = new JsonArray();
 
          for(NcIngredient.Value ingredient$value : this.values) {
-       //     jsonarray.add(ingredient$value.serialize());
+            jsonarray.add(ingredient$value.serialize());
          }
-
          return jsonarray;
       }
-      return new JsonArray();
    }
 
    public boolean isEmpty() {
@@ -143,7 +142,7 @@ public class NcIngredient extends Ingredient {
       }).map(NcIngredient.ItemValue::new));
    }
 
-   public static NcIngredient of(Tags.IOptionalNamedTag<Item> pTag, int ... pCounts) {
+   public static NcIngredient of(ITag.INamedTag<Item> pTag, int ... pCounts) {
       return  fromVals(Stream.of(new NcIngredient.TagValue(pTag, pCounts)))
               .withCount(pCounts);
    }
@@ -192,10 +191,10 @@ public class NcIngredient extends Ingredient {
    }
 
    public static class TagValue implements NcIngredient.Value {
-      private final Tags.IOptionalNamedTag<Item> tag;
+      private final ITag.INamedTag<Item> tag;
       private final int count;
 
-      public TagValue(Tags.IOptionalNamedTag<Item> pTag, int...pCount) {
+      public TagValue(ITag.INamedTag<Item> pTag, int...pCount) {
          this.tag = pTag;
          if(pCount.length > 0) {
             count = pCount[0];

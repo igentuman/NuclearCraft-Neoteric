@@ -10,6 +10,7 @@ import net.minecraft.block.GrassBlock;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.BlockItem;
+import net.minecraft.tags.ITag;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.IItemProvider;
@@ -68,10 +69,10 @@ public class NCBlocks {
     public static final RegistryObject<Item> MUSHROOM_ITEM = fromBlock(MUSHROOM_BLOCK);
     public static final RegistryObject<Item> PORTAL_ITEM = fromBlock(PORTAL_BLOCK);
 
-    public static HashMap<String, Tags.IOptionalNamedTag<Block>> ORE_TAGS = new HashMap<>();
-    public static HashMap<String, Tags.IOptionalNamedTag<Item>> ORE_ITEM_TAGS = new HashMap<>();
-    public static HashMap<String, Tags.IOptionalNamedTag<Item>> BLOCK_ITEM_TAGS = new HashMap<>();
-    public static HashMap<String, Tags.IOptionalNamedTag<Block>> BLOCK_TAGS = new HashMap<>();
+    public static HashMap<String, ITag.INamedTag<Block>> ORE_TAGS = new HashMap<>();
+    public static HashMap<String, ITag.INamedTag<Item>> ORE_ITEM_TAGS = new HashMap<>();
+    public static HashMap<String, ITag.INamedTag<Item>> BLOCK_ITEM_TAGS = new HashMap<>();
+    public static HashMap<String, ITag.INamedTag<Block>> BLOCK_TAGS = new HashMap<>();
 
     public static void init() {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();

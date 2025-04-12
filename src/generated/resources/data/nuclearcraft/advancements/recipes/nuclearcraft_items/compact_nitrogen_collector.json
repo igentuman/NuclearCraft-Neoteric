@@ -11,9 +11,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "nuclearcraft:nitrogen_collector"
-            ]
+            "item": "nuclearcraft:nitrogen_collector"
           }
         ]
       }

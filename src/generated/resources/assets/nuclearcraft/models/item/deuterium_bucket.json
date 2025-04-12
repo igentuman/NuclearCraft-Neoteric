@@ -2,5 +2,6 @@
   "parent": "forge:item/bucket",
   "loader": "forge:bucket",
   "fluid": "nuclearcraft:deuterium",
+  "flipGas": false,
   "applyTint": true
 }

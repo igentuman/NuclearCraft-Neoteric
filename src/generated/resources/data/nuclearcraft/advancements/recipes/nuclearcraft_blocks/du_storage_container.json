@@ -11,9 +11,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "nuclearcraft:advanced_storage_container"
-            ]
+            "item": "nuclearcraft:advanced_storage_container"
           }
         ]
       }

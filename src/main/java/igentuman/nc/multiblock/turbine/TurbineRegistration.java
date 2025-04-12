@@ -11,6 +11,7 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.block.Block;
+import net.minecraft.tags.ITag;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.extensions.IForgeContainerType;
@@ -36,10 +37,10 @@ public class TurbineRegistration {
     public static HashMap<String, RegistryObject<Block>> TURBINE_BLOCKS = new HashMap<>();
     public static HashMap<String, RegistryObject<TileEntityType<? extends TurbineBE>>> TURBINE_BE = new HashMap<>();
     public static HashMap<String, RegistryObject<BlockItem>> TURBINE_BLOCK_ITEMS = new HashMap<>();
-    public static Tags.IOptionalNamedTag<Block> CASING_BLOCKS = TagUtil.createBlockNCTag("turbine_casing");
+    public static ITag.INamedTag<Block> CASING_BLOCKS = TagUtil.createBlockNCTag("turbine_casing");
     private static final DeferredRegister<ContainerType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.CONTAINERS, MODID);
 
-    public static Tags.IOptionalNamedTag<Block> INNER_TURBINE_BLOCKS = TagUtil.createBlockNCTag("turbine_inner");
+    public static ITag.INamedTag<Block> INNER_TURBINE_BLOCKS = TagUtil.createBlockNCTag("turbine_inner");
 
     public static final HashMap<String, BladeDef> blades = blades();
 
@@ -124,7 +125,7 @@ public class TurbineRegistration {
                                 TURBINE_BLOCKS.get("turbine_casing").get(),
                                 TURBINE_BLOCKS.get("turbine_glass").get()).build(null)));
 
-        for (String block : blades().keySet()) {
+        for (String block : blades.keySet()) {
             String key = "turbine_" + block;
             addBlock(key, () -> new TurbineBladeBlock(TURBINE_BLOCKS_PROPERTIES));
         }

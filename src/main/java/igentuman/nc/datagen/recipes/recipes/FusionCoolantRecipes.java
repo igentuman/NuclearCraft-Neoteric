@@ -2,12 +2,17 @@ package igentuman.nc.datagen.recipes.recipes;
 
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
+import igentuman.nc.recipes.ingredient.creator.FluidStackIngredientCreator;
 import net.minecraft.data.IFinishedRecipe;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.tags.ITag;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
+
+import static net.minecraft.tags.FluidTags.WATER;
 
 public class FusionCoolantRecipes extends AbstractRecipeProvider {
 
@@ -24,7 +29,7 @@ public class FusionCoolantRecipes extends AbstractRecipeProvider {
         }
 
         add(
-                fluidIngredient("minecraft:water", 500),
+                fluidIngredient(WATER, 500),
                 fluidStack("steam", 500),
                 2000
         );

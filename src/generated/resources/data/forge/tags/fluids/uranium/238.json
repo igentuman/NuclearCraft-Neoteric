@@ -2,6 +2,8 @@
   "replace": false,
   "values": [
     "nuclearcraft:uranium_238",
+    "nuclearcraft:uranium_238_flowing",
+    "nuclearcraft:uranium_238",
     "nuclearcraft:uranium_238_flowing"
   ]
 }

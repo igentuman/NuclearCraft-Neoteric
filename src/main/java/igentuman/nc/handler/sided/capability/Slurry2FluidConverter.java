@@ -8,6 +8,7 @@ import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
 import net.minecraft.fluid.EmptyFluid;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.tags.ITag;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.Tags;
@@ -69,7 +70,7 @@ public class Slurry2FluidConverter implements ISlurryHandler {
         }
         String name = stack.getTypeRegistryName().getPath();
         name = specialConvertRules(name);
-        Tags.IOptionalNamedTag<Fluid> tag = TagUtil.createFluidTagKey(new ResourceLocation("forge", name));
+        ITag.INamedTag<Fluid> tag = TagUtil.createFluidTagKey(name);
 
         if(tag.getValues().isEmpty()) {
             return FluidStack.EMPTY;

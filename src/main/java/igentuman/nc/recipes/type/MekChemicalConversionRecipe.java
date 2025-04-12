@@ -13,6 +13,7 @@ import mekanism.api.chemical.slurry.SlurryStack;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.tags.ITag;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.Tags;
@@ -47,7 +48,7 @@ public class MekChemicalConversionRecipe extends NcRecipe {
 
     public static FluidStack getStackByTagCode(String name)
     {
-        Tags.IOptionalNamedTag<Fluid> fluidITag = TagUtil.createFluidTagKey(new ResourceLocation("forge", "fluids/" + name));
+        ITag.INamedTag<Fluid> fluidITag = TagUtil.createFluidTagKey( "fluids/" + name);
         if(fluidITag.getValues().isEmpty()) {
             return FluidStack.EMPTY;
         }

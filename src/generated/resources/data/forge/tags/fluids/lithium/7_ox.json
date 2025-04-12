@@ -2,6 +2,8 @@
   "replace": false,
   "values": [
     "nuclearcraft:lithium_7_ox",
+    "nuclearcraft:lithium_7_ox_flowing",
+    "nuclearcraft:lithium_7_ox",
     "nuclearcraft:lithium_7_ox_flowing"
   ]
 }

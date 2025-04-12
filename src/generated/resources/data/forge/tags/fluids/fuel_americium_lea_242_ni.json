@@ -2,6 +2,8 @@
   "replace": false,
   "values": [
     "nuclearcraft:fuel_americium_lea_242_ni",
+    "nuclearcraft:fuel_americium_lea_242_ni_flowing",
+    "nuclearcraft:fuel_americium_lea_242_ni",
     "nuclearcraft:fuel_americium_lea_242_ni_flowing"
   ]
 }

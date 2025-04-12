@@ -7,6 +7,14 @@ import igentuman.nc.multiblock.turbine.TurbineRegistration;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.block.DirectionalBlock;
 import net.minecraft.block.SoundType;
+import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.state.DirectionProperty;
+import net.minecraft.state.StateContainer;
+import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.Direction;
@@ -15,6 +23,9 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorldReader;
+import net.minecraft.world.World;
 import org.antlr.v4.runtime.misc.NotNull;
 import javax.annotation.Nullable;
 
@@ -27,8 +38,14 @@ import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BE;
 
 public class TurbineBladeBlock extends DirectionalBlock {
 
+    public static final DirectionProperty BLOCK_FACING = FACING;
+
     public TurbineBladeBlock(Properties pProperties) {
         super(pProperties.sound(SoundType.METAL).noOcclusion());
+        this.registerDefaultState(
+                this.stateDefinition.any()
+                        .setValue(BLOCK_FACING, Direction.NORTH)
+        );
     }
 
     public double efficiency = 0;
@@ -44,9 +61,14 @@ public class TurbineBladeBlock extends DirectionalBlock {
         efficiency = def.getEfficiency();
         expansion = def.getExpansion();
     }
-/*
+
     @Override
-    public BlockState getStateForPlacement(BlockPlaceContext context) {
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+        builder.add(BLOCK_FACING);
+    }
+
+    @Override
+    public BlockState getStateForPlacement(BlockItemUseContext context) {
         World level = context.getLevel();
         BlockState neighbor = level.getBlockState(context.getClickedPos().relative(context.getClickedFace().getOpposite()));
         Direction dir = context.getNearestLookingDirection();
@@ -54,7 +76,7 @@ public class TurbineBladeBlock extends DirectionalBlock {
             dir = context.getClickedFace().getOpposite();
         } else
         if(neighbor.getBlock() instanceof TurbineBladeBlock) {
-            dir = neighbor.getValue(FACING);
+            dir = neighbor.getValue(BLOCK_FACING);
         } else {
             for (Direction direction : Direction.values()) {
                 BlockState state = level.getBlockState(context.getClickedPos().relative(direction));
@@ -66,17 +88,18 @@ public class TurbineBladeBlock extends DirectionalBlock {
             for (Direction direction : Direction.values()) {
                 BlockState state = level.getBlockState(context.getClickedPos().relative(direction));
                 if (state.getBlock() instanceof TurbineBladeBlock) {
-                    dir = state.getValue(FACING);
+                    dir = state.getValue(BLOCK_FACING);
                     break;
                 }
             }
         }
-        return this.defaultBlockState().setValue(FACING, dir);
+        return this.defaultBlockState().setValue(BLOCK_FACING, dir);
     }
 
-    public static boolean processBlockPlace(LevelAccessor level, BlockPos pos, BlockState block, BlockState blockState, BlockState attachment)
+    @Override
+    public void setPlacedBy(World level, BlockPos pos, BlockState block, LivingEntity entity, ItemStack stack)
     {
-        if(attachment.getBlock() instanceof TurbineRotorBlock) {
+        /*if(attachment.getBlock() instanceof TurbineRotorBlock) {
             return true;
         }
         if(attachment.getBlock() instanceof TurbineBladeBlock) {
@@ -97,8 +120,8 @@ public class TurbineBladeBlock extends DirectionalBlock {
                 return true;
             }
         }
-        return false;
-    }*/
+        return false;*/
+    }
 
     @Override
     @Deprecated
@@ -106,18 +129,18 @@ public class TurbineBladeBlock extends DirectionalBlock {
         return adjacentBlockState.getBlock().equals(this);
     }
 
-/*    @Nullable
     @Override
-    public BlockEntity newBlockEntity(@NotNull BlockPos pPos, @NotNull BlockState pState) {
-        if(def == null) initParams();
-        TurbineBladeBE be = (TurbineBladeBE) TURBINE_BE.get("turbine_blade").get().create(pPos, pState);
-        be.setBladeDef(def);
-        return be;
+    public boolean hasTileEntity(BlockState state) {
+        return state != null;
     }
 
+    @Nullable
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(BlockStateProperties.FACING);
+    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
+        if(def == null) initParams();
+        TurbineBladeBE be = (TurbineBladeBE) TURBINE_BE.get("turbine_blade").get().create();
+        be.setBladeDef(def);
+        return be;
     }
 
     private String blockEntityCode()
@@ -127,13 +150,13 @@ public class TurbineBladeBlock extends DirectionalBlock {
 
 
     @Override
-    public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor){
+    public void onNeighborChange(BlockState state, IWorldReader level, BlockPos pos, BlockPos neighbor){
         ((TurbineBE) Objects.requireNonNull(level.getBlockEntity(pos))).onNeighborChange(state,  pos, neighbor);
     }
 
 
     @Override
-    public void appendHoverText(@NotNull ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<TextComponent> list, TooltipFlag pFlag) {
+    public void appendHoverText(ItemStack pStack, IBlockReader pLevel, List<ITextComponent> list, ITooltipFlag pFlag) {
         initParams();
 
         if(DESCRIPTIONS_SHOW) {
@@ -147,5 +170,5 @@ public class TurbineBladeBlock extends DirectionalBlock {
             list.add(TextUtils.applyFormat(new TranslationTextComponent("tooltip.nc.blade.desc", TURBINE_CONFIG.BLADE_FLOW.get()), TextFormatting.BLUE));
         }
         list.add(TextUtils.applyFormat(new TranslationTextComponent("tooltip.toggle_description_keys"), TextFormatting.GRAY));
-    }*/
+    }
 }

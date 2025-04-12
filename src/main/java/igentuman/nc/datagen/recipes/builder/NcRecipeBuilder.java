@@ -106,6 +106,8 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
 
     protected String recipeIdReplacements(String val) {
         val = val.replace("nuclearcraft_", "");
+        val = val.replace("forge:", "");
+        val = val.replace("minecraft:", "");
         val = val.replace("depleted_fuel", "d_f");
         return val;
     }

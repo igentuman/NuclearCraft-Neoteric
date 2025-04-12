@@ -2,5 +2,6 @@
   "parent": "forge:item/bucket",
   "loader": "forge:bucket",
   "fluid": "nuclearcraft:magnesium_diboride",
+  "flipGas": false,
   "applyTint": true
 }

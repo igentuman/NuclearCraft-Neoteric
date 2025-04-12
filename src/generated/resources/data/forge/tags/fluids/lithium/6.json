@@ -2,6 +2,8 @@
   "replace": false,
   "values": [
     "nuclearcraft:lithium_6",
+    "nuclearcraft:lithium_6_flowing",
+    "nuclearcraft:lithium_6",
     "nuclearcraft:lithium_6_flowing"
   ]
 }

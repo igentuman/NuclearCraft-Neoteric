@@ -2,6 +2,8 @@
   "replace": false,
   "values": [
     "nuclearcraft:depleted_fuel_curium_hecm_243_ni",
+    "nuclearcraft:depleted_fuel_curium_hecm_243_ni_flowing",
+    "nuclearcraft:depleted_fuel_curium_hecm_243_ni",
     "nuclearcraft:depleted_fuel_curium_hecm_243_ni_flowing"
   ]
 }

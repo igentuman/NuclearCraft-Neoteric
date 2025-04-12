@@ -11,9 +11,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "nuclearcraft:chemical_reactor"
-            ]
+            "item": "nuclearcraft:chemical_reactor"
           }
         ]
       }

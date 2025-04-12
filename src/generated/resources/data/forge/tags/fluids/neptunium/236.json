@@ -2,6 +2,8 @@
   "replace": false,
   "values": [
     "nuclearcraft:neptunium_236",
+    "nuclearcraft:neptunium_236_flowing",
+    "nuclearcraft:neptunium_236",
     "nuclearcraft:neptunium_236_flowing"
   ]
 }

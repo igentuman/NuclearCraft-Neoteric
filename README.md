@@ -25,9 +25,6 @@ This is a re-creation of old but gold NuclearCraft on a modern MC version
 ### Download here: https://curseforge.com/minecraft/mc-mods/nuclearcraft-neoteric
 ### Development builds: Go to Actions Tab and download the latest artifact
 
-# Next version feature set
-- [ ] Steam Turbine
-- [ ] Steam Mode for reactors
  
 # Future plans
 - [ ] Quantum Transformer "what a heck is that?"

@@ -11,9 +11,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "nuclearcraft:moresmore"
-            ]
+            "item": "nuclearcraft:moresmore"
           }
         ]
       }

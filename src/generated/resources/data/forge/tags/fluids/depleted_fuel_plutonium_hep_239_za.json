@@ -2,6 +2,8 @@
   "replace": false,
   "values": [
     "nuclearcraft:depleted_fuel_plutonium_hep_239_za",
+    "nuclearcraft:depleted_fuel_plutonium_hep_239_za_flowing",
+    "nuclearcraft:depleted_fuel_plutonium_hep_239_za",
     "nuclearcraft:depleted_fuel_plutonium_hep_239_za_flowing"
   ]
 }

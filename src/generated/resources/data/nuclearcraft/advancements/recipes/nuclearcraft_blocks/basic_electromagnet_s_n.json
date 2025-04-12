@@ -11,9 +11,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "nuclearcraft:basic_electromagnet_slope"
-            ]
+            "item": "nuclearcraft:basic_electromagnet_slope"
           }
         ]
       }

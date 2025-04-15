@@ -89,6 +89,7 @@ public class WorldVeinOres implements IWorldVeinCapability {
         ItemStack ore = vein.getRandomOre(level, x, z, getBlocksLeft(x, z));
         if (!ore.isEmpty()) {
             mineBlock(x, z);
+            WorldVeinsManager.get(level).setDirty();
         }
         return ore;
     }

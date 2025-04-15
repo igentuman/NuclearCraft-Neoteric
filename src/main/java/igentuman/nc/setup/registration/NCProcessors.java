@@ -62,7 +62,11 @@ public class NCProcessors {
 
     private static void registerBlocks() {
         for(String name: Processors.all().keySet()) {
-            PROCESSORS.put(name, BLOCKS.register(name, () -> new ProcessorBlock(PROCESSOR_BLOCK_PROPERTIES)));
+            if(name.equals("leacher")) {
+                PROCESSORS.put(name, BLOCKS.register(name, () -> new ProcessorBlock(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(2f).requiresCorrectToolForDrops().noOcclusion())));
+            } else {
+                PROCESSORS.put(name, BLOCKS.register(name, () -> new ProcessorBlock(PROCESSOR_BLOCK_PROPERTIES)));
+            }
             PROCESSOR_BLOCKS_ITEMS.put(name, fromBlock(PROCESSORS.get(name)));
         }
     }

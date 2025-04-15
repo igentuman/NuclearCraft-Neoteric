@@ -1,6 +1,5 @@
 package igentuman.nc.block;
 
-import igentuman.nc.block.entity.energy.BatteryBE;
 import igentuman.nc.block.entity.processor.NCProcessorBE;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.setup.registration.NCProcessors;
@@ -40,10 +39,13 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+
+import static igentuman.nc.multiblock.fission.FissionReactor.TRANSPARENT_BLOCKS;
 
 public class ProcessorBlock extends HorizontalDirectionalBlock implements EntityBlock {
     public static final DirectionProperty HORIZONTAL_FACING = FACING;
@@ -52,7 +54,6 @@ public class ProcessorBlock extends HorizontalDirectionalBlock implements Entity
         this(Properties.of()
                 .sound(SoundType.METAL)
                 .strength(2.0f)
-                .noOcclusion()
                 .requiresCorrectToolForDrops());
     }
     public ProcessorBlock(Properties pProperties) {

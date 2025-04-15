@@ -231,6 +231,9 @@ public class NCBlockStates extends BlockStateProvider {
 
     private void processors() {
         for(String name: PROCESSORS.keySet()) {
+            if (name.equals("leacher")) {
+                continue;
+            }
             horizontalBlock(
                     PROCESSORS.get(name).get(),
                     st -> processorModel(st, sidedModel(PROCESSORS.get(name).get(),

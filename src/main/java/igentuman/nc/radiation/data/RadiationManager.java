@@ -42,6 +42,7 @@ public class RadiationManager extends SavedData {
     public RadiationManager() {
         worldRadiation = new WorldRadiation();
     }
+
     @Nonnull
     public static RadiationManager get(Level level) {
         if (level.isClientSide) {

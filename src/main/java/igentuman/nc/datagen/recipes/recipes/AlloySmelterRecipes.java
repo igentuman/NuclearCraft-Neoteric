@@ -51,6 +51,8 @@ public class AlloySmelterRecipes extends AbstractRecipeProvider {
                 ingotStack(Materials.extreme, 2));
         doubleToItem(ID, gemIngredient(Materials.silicon), dustIngredient(Materials.graphite),
                 ingotStack(Materials.silicon_carbide, 2), 2d, 2d);
+        doubleToItem(ID, dustIngredient(Materials.manganese), dustIngredient(Materials.graphite),
+                ingotStack(Materials.carbon_manganese, 2), 5d, 5d);
         doubleToItem(ID, dustIngredient(Materials.zirconium, 7), dustIngredient(Materials.tin),
                 ingotStack(Materials.zircaloy, 8));
         doubleToItem(ID, dustIngredient(Materials.iron, 15), dustIngredient(Materials.carbon_manganese),

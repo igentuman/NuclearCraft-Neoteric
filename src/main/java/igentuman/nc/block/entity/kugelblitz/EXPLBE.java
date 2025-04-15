@@ -2,7 +2,6 @@ package igentuman.nc.block.entity.kugelblitz;
 
 import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.handler.sided.SidedContentHandler;
-import igentuman.nc.handler.sided.SlotModePair;
 import igentuman.nc.util.CustomEnergyStorage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -10,6 +9,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 
+import static igentuman.nc.handler.sided.SlotModePair.SlotMode.INPUT;
+import static igentuman.nc.handler.sided.SlotModePair.SlotMode.OUTPUT;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.EXPL_BE;
 
 public class EXPLBE extends NuclearCraftBE {
@@ -27,8 +28,8 @@ public class EXPLBE extends NuclearCraftBE {
                 0, 0,
                 1, 1, 10, 10);
         contentHandler().setBlockEntity(this);
-        contentHandler().fluidCapability.setGlobalMode(0, SlotModePair.SlotMode.INPUT);
-        contentHandler().fluidCapability.setGlobalMode(1, SlotModePair.SlotMode.OUTPUT);
+        contentHandler().fluidCapability.setGlobalMode(0, INPUT);
+        contentHandler().fluidCapability.setGlobalMode(1, OUTPUT);
     }
 
     public EXPLBE(BlockEntityType<?> pType, BlockPos pPos, BlockState pBlockState) {

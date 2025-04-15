@@ -2,7 +2,7 @@
   "type": "nuclearcraft:fluid_infuser",
   "input": [
     {
-      "tag": "forge:dusts/manganese"
+      "tag": "forge:ingots/manganese_oxide"
     }
   ],
   "inputFluids": [
@@ -13,7 +13,7 @@
   ],
   "output": [
     {
-      "tag": "forge:dusts/manganese_dioxide"
+      "item": "nuclearcraft:manganese_dioxide_ingot"
     }
   ],
   "powerModifier": 1.0,

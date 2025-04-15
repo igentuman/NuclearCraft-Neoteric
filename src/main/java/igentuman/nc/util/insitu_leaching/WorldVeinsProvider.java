@@ -2,10 +2,8 @@ package igentuman.nc.util.insitu_leaching;
 
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.*;
-import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import org.jetbrains.annotations.Nullable;
@@ -15,11 +13,13 @@ import javax.annotation.Nonnull;
 import static igentuman.nc.NuclearCraft.rl;
 
 public class WorldVeinsProvider implements ICapabilitySerializable<CompoundTag> {
+
     public static Capability<WorldVeinOres> VEINS_CAP = CapabilityManager.get(new CapabilityToken<>(){});
     private WorldVeinOres veinsData = createVeinData();
     private final LazyOptional<WorldVeinOres> opt = LazyOptional.of(() -> createVeinData());
     public static boolean isTracking = false;
     private Level level;
+
     public WorldVeinsProvider() {
     }
 
@@ -67,11 +67,11 @@ public class WorldVeinsProvider implements ICapabilitySerializable<CompoundTag> 
 
     @Override
     public CompoundTag serializeNBT() {
-        return WorldVeinsManager.get(level).getWorldVeinData((ServerLevel) level).serializeNBT();
+        return veinsData.serializeNBT();
     }
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
-        WorldVeinsManager.get(level).getWorldVeinData((ServerLevel) level).deserializeNBT(nbt);
+        veinsData.deserializeNBT(nbt);
     }
 }

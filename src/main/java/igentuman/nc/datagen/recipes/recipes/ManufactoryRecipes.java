@@ -1,6 +1,5 @@
 package igentuman.nc.datagen.recipes.recipes;
 
-import com.google.common.collect.Lists;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.content.materials.Materials;
 import igentuman.nc.setup.registration.NCItems;
@@ -9,6 +8,7 @@ import net.minecraft.data.recipes.FinishedRecipe;
 import java.util.function.Consumer;
 
 import static igentuman.nc.setup.registration.NCItems.ALL_NC_ITEMS;
+import static igentuman.nc.setup.registration.NCItems.NC_CHUNKS;
 import static igentuman.nc.setup.registration.Tags.GEMS_TAG;
 import static igentuman.nc.setup.registration.Tags.INGOTS_TAG;
 import static net.minecraft.world.item.Items.*;
@@ -21,6 +21,9 @@ public class ManufactoryRecipes extends AbstractRecipeProvider {
         for(String name: Materials.all().keySet()) {
             if(NCItems.NC_DUSTS.containsKey(name) && INGOTS_TAG.containsKey(name)) {
                 itemToItem(ingotIngredient(name), dustIngredient(name));
+                if (NC_CHUNKS.containsKey(name)) {
+                    itemToItem(ingredient(NC_CHUNKS.get(name).get()), dustIngredient(name, 2));
+                }
                 continue;
             }
             if(GEMS_TAG.containsKey(name) && NCItems.NC_DUSTS.containsKey(name)) {
@@ -28,6 +31,10 @@ public class ManufactoryRecipes extends AbstractRecipeProvider {
                 itemToItem(gemIngredient(name), dustIngredient(name), 1.5D);
             }
         }
+        itemToItem(ingredient(RAW_IRON), dustIngredient(Materials.iron, 2));
+        itemToItem(ingredient(RAW_COPPER), dustIngredient(Materials.copper, 2));
+        itemToItem(ingredient(RAW_GOLD), dustIngredient(Materials.gold, 2));
+        itemToItem(ingredient(NETHERITE_SCRAP), dustIngredient(Materials.netherite, 2));
         itemToItem(dustIngredient(Materials.coal), dustIngredient(Materials.graphite), 0.5D, 1D);
         itemToItem(ingredient(COAL), dustIngredient(Materials.coal), 0.5D, 1D);
         itemToItem(ingredient(CHARCOAL), dustIngredient(Materials.charcoal), 0.5D, 0.5D);

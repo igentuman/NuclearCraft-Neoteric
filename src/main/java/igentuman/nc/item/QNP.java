@@ -25,6 +25,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -138,6 +140,25 @@ public class QNP extends PickaxeItem
 		return Mode.values()[tag.getInt("mode")];
 	}
 
+	public int energyPerBlock(ItemStack stack)
+	{
+		int durability = getEnchantmentLevel(stack, Enchantments.UNBREAKING);
+		if(durability > 0) {
+			return (int) (ENERGY_STORAGE.QNP_ENERGY_PER_BLOCK.get() / Math.sqrt(durability + 1));
+		}
+		return ENERGY_STORAGE.QNP_ENERGY_PER_BLOCK.get();
+	}
+
+	public void consumeEnergy(ItemStack stack) {
+		int energyPerBlock = energyPerBlock(stack);
+		if (getEnergy(stack).getEnergyStored() > energyPerBlock) {
+			getEnergy(stack).setEnergy(getEnergy(stack).getEnergyStored() - energyPerBlock);
+			CompoundTag tag = stack.getTag();
+			tag.putInt("energy", getEnergy(stack).getEnergyStored());
+			stack.setTag(tag);
+		}
+	}
+
 	public boolean mineBlock(@NotNull ItemStack stack, @NotNull Level worldIn, @NotNull BlockState state, @NotNull BlockPos pos, @NotNull LivingEntity entityLiving) {
 		if (entityLiving instanceof Player) {
 			HitResult rayTraceResult = RayTraceUtils.rayTraceSimple(worldIn, entityLiving, 16, 0);
@@ -181,7 +202,7 @@ public class QNP extends PickaxeItem
 			Random random = new Random();
 			((ServerLevel) worldIn).sendParticles(NcParticleTypes.RADIATION.get(), pos.getX() + (random.nextFloat() - 0.5), pos.getY() + (random.nextFloat() - 0.5),
 					pos.getZ() + (random.nextFloat() - 0.5), 3, 0, 0, 0, 0);
-			getEnergy(tool).extractEnergy(ENERGY_STORAGE.QNP_ENERGY_PER_BLOCK.get(), false);
+			consumeEnergy(tool);
 			if(veinMode && veinMinedBlocksCounter < 20) {
 				veinMinedBlocksCounter++;
 				for (Direction facing : Direction.values()) {
@@ -192,7 +213,7 @@ public class QNP extends PickaxeItem
 				}
 			}
 			block.popExperience((ServerLevel) worldIn, pos, xp);
-			getEnergy(tool).extractEnergy(ENERGY_STORAGE.QNP_ENERGY_PER_BLOCK.get(), false);
+			consumeEnergy(tool);
 		}
 		return totalDrops;
 	}
@@ -204,7 +225,7 @@ public class QNP extends PickaxeItem
 		//mine initialblock always
 		harvestBlock(pos, worldIn, entityLiving, stack, false, totalDrops);
 
-		getEnergy(stack).extractEnergy(ENERGY_STORAGE.QNP_ENERGY_PER_BLOCK.get(), false);
+		consumeEnergy(stack);
 		veinMinedBlocksCounter++;
 		if(initialBlockState.is(Tags.Blocks.ORES)) {
 			//mine all blocks of the same type
@@ -220,15 +241,17 @@ public class QNP extends PickaxeItem
 
 	private boolean enoughEnergy(ItemStack itemStack) {
 
-		if(getMode(itemStack).radius == 0) return getEnergy(itemStack).getEnergyStored() > 100;
-		int fe = 100*(getMode(itemStack).radius*2+1)*(getMode(itemStack).radius*2+1);
+		int energyPerBlock = energyPerBlock(itemStack);
+		if(getMode(itemStack).radius == 0) return getEnergy(itemStack).getEnergyStored() > energyPerBlock;
+		int fe = energyPerBlock*(getMode(itemStack).radius*2+1)*(getMode(itemStack).radius*2+1);
 		if(getMode(itemStack).depth) fe *= getMode(itemStack).radius*2+1;
 		return getEnergy(itemStack).getEnergyStored() > fe;
 	}
 
 	@Override
 	public float getDestroySpeed(@NotNull ItemStack stack, @NotNull BlockState state) {
-		if(getEnergy(stack).getEnergyStored() > ENERGY_STORAGE.QNP_ENERGY_PER_BLOCK.get()) return getTier().getSpeed();
+		int efficiency = getEnchantmentLevel(stack, Enchantments.BLOCK_EFFICIENCY);
+		if(getEnergy(stack).getEnergyStored() > energyPerBlock(stack)) return getTier().getSpeed() + efficiency*0.5F;
 		return 0.1F;
 	}
 

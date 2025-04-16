@@ -124,6 +124,7 @@ dependencies {
     compileOnly fg.deobf("curse.maven:emi-580555:5872526")
 
     implementation fg.deobf("mekanism:Mekanism:${mc_version}-${mekanism_version}")
+    implementation fg.deobf("mekanism:Mekanism:${mc_version}-${mekanism_version}:generators")
     //compileOnly fg.deobf("mekanism:Mekanism:${mc_version}-${mekanism_version}:api")
 
     compileOnly("cc.tweaked:cc-tweaked-${mc_version}-core-api:${cc_version}")

@@ -147,7 +147,7 @@ public class FissionPortBE extends NuclearCraftBE implements MultiblockAttachabl
             return controller().getEnergy().cast();
         }
 
-        if (isMekanismLoadeed() && isSteamMode) {
+        if (isMekanismLoaded() && isSteamMode) {
             if (cap == mekanism.common.capabilities.Capabilities.GAS_HANDLER) {
                 if (controller().contentHandler().hasFluidCapability(side)) {
                     return LazyOptional.of(() -> controller().contentHandler().gasConverter(side));

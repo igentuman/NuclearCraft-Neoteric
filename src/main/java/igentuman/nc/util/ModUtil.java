@@ -26,7 +26,7 @@ public class ModUtil {
         return oc2Loaded;
     }
 
-    public static boolean isMekanismLoadeed() {
+    public static boolean isMekanismLoaded() {
         initialize();
         return isMekanismLoadeed;
     }

@@ -178,7 +178,7 @@ public class FusionCoreProxyBE extends NuclearCraftBE implements MultiblockAttac
             }
         }
 
-        if(isMekanismLoadeed()) {
+        if(isMekanismLoaded()) {
             if(cap == mekanism.common.capabilities.Capabilities.GAS_HANDLER) {
                 if(controller().contentHandler().hasFluidCapability(side)) {
                     return LazyOptional.of(() -> controller().contentHandler().gasConverter(side));

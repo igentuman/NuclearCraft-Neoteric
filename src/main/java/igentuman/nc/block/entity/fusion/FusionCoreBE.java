@@ -525,9 +525,9 @@ public class FusionCoreBE extends MultiblockControllerBE {
             for(int y = 0; y < 3; y++) {
                 for (int x = -1; x < 2; x++) {
                     for (int z = -1; z < 2; z++) {
-                        BlockEntity be = Objects.requireNonNull(getLevel()).getBlockEntity(getBlockPos().offset(x, y, z));
-                        if (be instanceof FusionCoreProxyBE) {
-                            proxyBES[i] = (FusionCoreProxyBE) be;
+                        BlockEntity be = blockEntity(getBlockPos().offset(x, y, z));
+                        if (be instanceof FusionCoreProxyBE proxy) {
+                            proxyBES[i] = proxy;
                             i++;
                         }
                     }

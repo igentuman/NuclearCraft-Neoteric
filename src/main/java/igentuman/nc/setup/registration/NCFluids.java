@@ -24,7 +24,6 @@ import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.common.SoundActions;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -42,7 +41,7 @@ import static igentuman.nc.content.materials.Materials.slurries;
 import static igentuman.nc.setup.registration.Registries.*;
 import static igentuman.nc.setup.registration.Tags.GASES_TAG;
 import static igentuman.nc.setup.registration.Tags.LIQUIDS_TAG;
-import static igentuman.nc.util.ModUtil.isMekanismLoadeed;
+import static igentuman.nc.util.ModUtil.isMekanismLoaded;
 
 public class NCFluids {
 
@@ -76,7 +75,7 @@ public class NCFluids {
 
     private static void liquids() {
         HashMap<String, LiquidDefinition> items = new HashMap<>();
-        if(isMekanismLoadeed()) {
+        if(isMekanismLoaded()) {
             items.put("spent_nuclear_waste", new LiquidDefinition("spent_nuclear_waste", 0X901F1B14));
             items.put("nuclear_waste", new LiquidDefinition("nuclear_waste", 0X903D3323));
             items.put("fissile_fuel", new LiquidDefinition("fissile_fuel", 0X903D3323));

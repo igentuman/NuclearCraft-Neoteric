@@ -36,7 +36,7 @@ import java.util.List;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.compat.GlobalVars.*;
-import static igentuman.nc.util.ModUtil.isMekanismLoadeed;
+import static igentuman.nc.util.ModUtil.isMekanismLoaded;
 
 @JeiPlugin
 public  class JEIPlugin implements IModPlugin {
@@ -94,7 +94,7 @@ public  class JEIPlugin implements IModPlugin {
         registration.addRecipeCategories(new FissionBoilingCategoryWrapper<>(registration.getJeiHelpers().getGuiHelper(), FISSION_BOILING));
         registration.addRecipeCategories(new TurbineControllerCategoryWrapper<>(registration.getJeiHelpers().getGuiHelper(), TURBINE_CONTROLLER));
         registration.addRecipeCategories(new FissionCategoryWrapper<>(registration.getJeiHelpers().getGuiHelper(), FISSION));
-        if(isMekanismLoadeed()) {
+        if(isMekanismLoaded()) {
             registration.addRecipeCategories(new MekChemicalConversionCategoryWrapper<>(registration.getJeiHelpers().getGuiHelper(), CHEMICAL_TO_FLUID));
         }
     }
@@ -140,7 +140,7 @@ public  class JEIPlugin implements IModPlugin {
             registration.addRecipes(
                     getRecipeType(ORE_VEINS),
                     NcRecipeType.ALL_RECIPES.get("nc_ore_veins").getRecipes(NcClient.tryGetClientWorld()));
-            if(isMekanismLoadeed()) {
+            if(isMekanismLoaded()) {
                 registration.addRecipes(getRecipeType(CHEMICAL_TO_FLUID), MekChemicalConversionRecipe.getRecipes());
             }
         } catch (IllegalArgumentException ex) {

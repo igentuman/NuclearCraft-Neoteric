@@ -1,7 +1,6 @@
 package igentuman.nc.block.entity;
 
 import igentuman.api.nc.SideModeToggleable;
-import igentuman.nc.block.entity.fission.FissionControllerBE;
 import igentuman.nc.client.sound.SoundHandler;
 import igentuman.nc.handler.CatalystHandler;
 import igentuman.nc.handler.UpgradesHandler;
@@ -10,7 +9,6 @@ import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.recipes.NcRecipeType;
 import igentuman.nc.recipes.RecipeInfo;
 import igentuman.nc.recipes.type.NcRecipe;
-import igentuman.nc.setup.registration.NCSounds;
 import igentuman.nc.util.CustomEnergyStorage;
 import igentuman.nc.util.NCBlockPos;
 import igentuman.nc.util.annotation.NBTField;
@@ -26,7 +24,6 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -44,7 +41,7 @@ import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.util.*;
 
-import static igentuman.nc.util.ModUtil.isMekanismLoadeed;
+import static igentuman.nc.util.ModUtil.isMekanismLoaded;
 
 public class NuclearCraftBE extends BlockEntity {
 
@@ -97,6 +94,14 @@ public class NuclearCraftBE extends BlockEntity {
 
     public CustomEnergyStorage energyStorage() {
         return energyStorage;
+    }
+
+    public BlockEntity blockEntity(BlockPos pos) {
+        BlockEntity blockEntity = level.getExistingBlockEntity(pos);
+        if(blockEntity == null) {
+            blockEntity = level.getBlockEntity(pos);
+        }
+        return blockEntity;
     }
 
     public RecipeInfo recipeInfo() {
@@ -339,7 +344,7 @@ public class NuclearCraftBE extends BlockEntity {
             return contentHandler().getFluidCapability(side);
         }
 
-        if(isMekanismLoadeed() && contentHandler() != null) {
+        if(isMekanismLoaded() && contentHandler() != null) {
             if(cap == mekanism.common.capabilities.Capabilities.GAS_HANDLER) {
                 if(contentHandler().hasFluidCapability(side)) {
                     return LazyOptional.of(() -> contentHandler().gasConverter(side));

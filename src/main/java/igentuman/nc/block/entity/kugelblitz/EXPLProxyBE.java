@@ -1,9 +1,13 @@
 package igentuman.nc.block.entity.kugelblitz;
 
 import igentuman.nc.block.entity.NuclearCraftBE;
+import igentuman.nc.block.entity.fusion.FusionCoreBE;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -31,6 +35,8 @@ public class EXPLProxyBE extends NuclearCraftBE {
 
     public void setCore(EXPLBE core) {
         this.core = core;
+        this.corePos = core.getBlockPos();
+        setChanged();
     }
 
     public int getAnalogSignal() {
@@ -48,10 +54,7 @@ public class EXPLProxyBE extends NuclearCraftBE {
 
     public EXPLBE getCoreBE() {
         if (core == null) {
-            BlockEntity be = level.getExistingBlockEntity(corePos);
-            if (be == null) {
-                be = level.getBlockEntity(corePos);
-            }
+            BlockEntity be = blockEntity(corePos);
             if (be instanceof EXPLBE) {
                 core = (EXPLBE) be;
             }
@@ -60,6 +63,13 @@ public class EXPLProxyBE extends NuclearCraftBE {
     }
 
     public void destroyCore() {
+        if(getCoreBE() instanceof EXPLBE) {
+            BlockState st = level.getBlockState(getCoreBE().getBlockPos());
+            if(st.equals(Blocks.AIR.defaultBlockState())) return;
+            ItemStack core = new ItemStack(st.getBlock().asItem());
+            level.removeBlock(getCoreBE().getBlockPos(), false);
+            Block.popResource(level, getCoreBE().getBlockPos(), core);
+        }
     }
 
     @Nonnull
@@ -67,5 +77,10 @@ public class EXPLProxyBE extends NuclearCraftBE {
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if(getCoreBE() == null) return super.getCapability(cap, side);
         return getCoreBE().getCapability(cap, side);
+    }
+
+    public void forceTickServer(EXPLBE core) {
+        this.core = core;
+        core.inputRedstoneSignal =  Math.max(getLevel().getBestNeighborSignal(getBlockPos()), core.inputRedstoneSignal);
     }
 }

@@ -1,7 +1,9 @@
 package igentuman.nc.multiblock.kugelblitz;
 
 import igentuman.nc.block.entity.fission.FissionControllerBE;
+import igentuman.nc.block.entity.kugelblitz.BlackHoleBE;
 import igentuman.nc.block.entity.kugelblitz.ChamberTerminalBE;
+import igentuman.nc.block.entity.kugelblitz.PhotonConcentratorBE;
 import igentuman.nc.multiblock.AbstractNCMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.ValidationResult;
@@ -9,6 +11,9 @@ import igentuman.nc.util.NCBlockPos;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+
+import java.util.HashMap;
 import java.util.List;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.CASING_BLOCKS;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BLOCKS;
@@ -18,6 +23,9 @@ import static net.minecraft.world.level.block.Blocks.AIR;
 public class KugelblitzMultiblock extends AbstractNCMultiblock {
 
     private ChamberTerminalBE controllerBe;
+    private final HashMap<Direction, Integer> pulseEnergy = new HashMap<>();
+    private boolean hasBlackHole = false;
+    private boolean collectingEnergy = true;
 
     public int maxHeight() {
         return 8;
@@ -69,17 +77,51 @@ public class KugelblitzMultiblock extends AbstractNCMultiblock {
         BlockPos right = center.offset(3, 0, 0);
         BlockPos top = center.offset(0, 0, -3);
         BlockPos bottom = center.offset(0, 0, 3);
-        if (getLevel().getBlockState(left).getBlock() != KUGELBLITZ_BLOCKS.get("photon_concentrator").get() ||
-                getLevel().getBlockState(right).getBlock() != KUGELBLITZ_BLOCKS.get("photon_concentrator").get() ||
-                getLevel().getBlockState(top).getBlock() != KUGELBLITZ_BLOCKS.get("photon_concentrator").get() ||
-                getLevel().getBlockState(bottom).getBlock() != KUGELBLITZ_BLOCKS.get("photon_concentrator").get()) {
+        if (!(getLevel().getExistingBlockEntity(left) instanceof PhotonConcentratorBE) ||
+                !(getLevel().getExistingBlockEntity(right) instanceof PhotonConcentratorBE) ||
+                        !(getLevel().getExistingBlockEntity(top) instanceof PhotonConcentratorBE) ||
+                                !(getLevel().getExistingBlockEntity(bottom) instanceof PhotonConcentratorBE)) {
             validationResult = ValidationResult.PHOTON_CONCENTRATOR;
         }
     }
 
     @Override
-    public void invalidateStats() {
+    public void tick() {
+        super.tick();
+        handleBlackHole();
+        if(!pulseEnergy.isEmpty() && collectingEnergy) {
+            collectingEnergy = false;
+            return;
+        }
+        collectingEnergy = true;
+        pulseEnergy.clear();
+    }
 
+    private void handleBlackHole() {
+        BlockEntity be = getLevel().getExistingBlockEntity(getCenter());
+        hasBlackHole = be instanceof BlackHoleBE;
+        if(!isFormed && hasBlackHole) {
+            getLevel().setBlockAndUpdate(getCenter(), AIR.defaultBlockState());
+            hasBlackHole = false;
+        }
+        if (!hasBlackHole) {
+            boolean energyTransfered = true;
+            //validate if all pulse energy is transferred
+            for (Direction direction : Direction.values()) {
+                if(!pulseEnergy.containsKey(direction)) {
+                    energyTransfered = false;
+                    break;
+                }
+            }
+            if (energyTransfered) {
+                getLevel().setBlockAndUpdate(getCenter(), KUGELBLITZ_BLOCKS.get("black_hole").get().defaultBlockState());
+            }
+        }
+    }
+
+    @Override
+    public void invalidateStats() {
+        pulseEnergy.clear();
     }
 
     public BlockPos getCenter() {
@@ -91,5 +133,9 @@ public class KugelblitzMultiblock extends AbstractNCMultiblock {
             case EAST -> pos.offset(-3, -3, +3);
             default -> pos;
         };
+    }
+
+    public void addPulseEnergy(int pulseEnergy, Direction facing) {
+        this.pulseEnergy.put(facing, pulseEnergy);
     }
 }

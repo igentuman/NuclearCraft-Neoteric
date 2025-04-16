@@ -301,7 +301,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
                 return getOCDevice(cap, side);
             }
         }
-        if(isMekanismLoadeed() && isSteamMode) {
+        if(isMekanismLoaded() && isSteamMode) {
             if(cap == mekanism.common.capabilities.Capabilities.GAS_HANDLER) {
                 if(contentHandler().hasFluidCapability(side)) {
                     return LazyOptional.of(() -> contentHandler().gasConverter(side));

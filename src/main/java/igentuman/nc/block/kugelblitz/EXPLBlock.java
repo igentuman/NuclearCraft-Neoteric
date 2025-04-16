@@ -102,11 +102,35 @@ public class EXPLBlock extends DirectionalBlock implements EntityBlock {
     }
 
     public void removeProxyBlocks(BlockState pState, Level pLevel, BlockPos pPos) {
-        for(int x = -1; x < 2; x++) {
-            for (int z = -1; z < 2; z++) {
-                for(int y = 0; y < 3; y++) {
+        //proxy block placement depends on facing
+        Direction facing = pState.getValue(FACING);
+        int minX = -1, maxX = 0, minY = -1, minZ = 2, maxY = 4, maxZ = 2;
+        switch (facing) {
+            case UP:
+                minX = -1; minY = 0; minZ = -1; maxX = 2;  maxY = 4; maxZ = 2;
+                break;
+            case DOWN:
+                minX = -1; minY = -3; minZ = -1; maxX = 2; maxY = 1; maxZ = 2;
+                break;
+            case NORTH:
+                minX = -1; minY = -1; minZ = -3; maxX = 2; maxY = 2; maxZ = 1;
+                break;
+            case SOUTH:
+                minX = -1; minY = -1; minZ = 0; maxX = 2; maxY = 2; maxZ = 4;
+                break;
+            case WEST:
+                minX = -3; minY = -1; minZ = -1; maxX = 1; maxY = 2; maxZ = 2;
+                break;
+            case EAST:
+                minX = 0; minY = -1; minZ = -1; maxX = 4; maxY = 2; maxZ = 2;
+                break;
+        }
+
+        for (int x = minX; x < maxX; x++) {
+            for (int z = minZ; z < maxZ; z++) {
+                for (int y = minY; y < maxY; y++) {
                     BlockPos pos = pPos.offset(x, y, z);
-                    if(pPos.equals(pos)) continue;
+                    if (pPos.equals(pos)) continue;
                     pLevel.removeBlock(pos, false);
                 }
             }
@@ -189,14 +213,14 @@ public class EXPLBlock extends DirectionalBlock implements EntityBlock {
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         if (level.isClientSide()) {
             return (lvl, pos, blockState, t) -> {
-                if (t instanceof EXPLProxyBE tile) {
+                if (t instanceof EXPLBE tile) {
                     tile.tickClient();
                    // level.setBlockAndUpdate(pos, blockState.setValue(ACTIVE, tile.isActive));
                 }
             };
         }
         return (lvl, pos, blockState, t)-> {
-            if (t instanceof EXPLProxyBE tile) {
+            if (t instanceof EXPLBE tile) {
                 tile.tickServer();
             }
         };

@@ -13,7 +13,7 @@ import static igentuman.nc.setup.registration.NCSounds.BLACKHOLE_SPAWN;
 public class BlackHoleBE extends NuclearCraftBE {
 
     public static String NAME = "black_hole";
-    public float scale = 0.2f;
+    public float scale = 0.3f;
 
     @NBTField
     public boolean isInitialized = false;
@@ -26,16 +26,16 @@ public class BlackHoleBE extends NuclearCraftBE {
     public void tickClient() {
         if (spawnSoundCooldown > 1) {
             stopSound();
-            scale = 0.2f;
+            scale = 0.3f;
         }
         if (spawnSoundCooldown > 0) {
             spawnSoundCooldown--;
-            scale = Math.max(0.19f, Math.min(0.21f, getLevel().getRandom().nextFloat()));
+            scale = Math.max(0.29f, Math.min(0.31f, getLevel().getRandom().nextFloat()));
             return;
         }
         if (!isInitialized) {
             isInitialized = true;
-            spawnSoundCooldown = 35;
+            spawnSoundCooldown = 28;
             playSound(BLACKHOLE_SPAWN, 0.8f);
         }
         playSound(BLACKHOLE_IDLE, 0.7f);

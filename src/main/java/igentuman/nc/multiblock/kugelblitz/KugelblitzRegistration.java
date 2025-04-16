@@ -81,9 +81,16 @@ public class KugelblitzRegistration {
     public static void init() {
         registerSimpleBlock("neutronium_frame");
         registerSimpleBlock("event_horizon_stabilizer");
-        registerSimpleBlock("photon_concentrator");
+
         registerSimpleBlock("quantum_flux_regulator");
         registerSimpleBlock("quantum_transformer");
+
+        KUGELBLITZ_BLOCKS.put("photon_concentrator", BLOCKS.register("photon_concentrator", () -> new PhotonConcentratorBlock(KUGELBLITZ_BLOCK_PROPERTIES)));
+        KUGELBLITZ_ITEMS.put("photon_concentrator", fromMultiblock(KUGELBLITZ_BLOCKS.get("photon_concentrator")));
+        KUGELBLITZ_BE.put("photon_concentrator",
+                BLOCK_ENTITIES.register("photon_concentrator",
+                        () -> BlockEntityType.Builder.of(PhotonConcentratorBE::new, KUGELBLITZ_BLOCKS.get("photon_concentrator").get())
+                                .build(null)));
 
         KUGELBLITZ_BLOCKS.put("chamber_port", BLOCKS.register("chamber_port", () -> new ChamberPortBlock(KUGELBLITZ_BLOCK_PROPERTIES)));
         KUGELBLITZ_ITEMS.put("chamber_port", fromMultiblock(KUGELBLITZ_BLOCKS.get("chamber_port")));

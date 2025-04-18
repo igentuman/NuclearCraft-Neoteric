@@ -1,18 +1,13 @@
 package igentuman.nc.block.kugelblitz;
 
 import igentuman.nc.block.entity.kugelblitz.BlackHoleBE;
-import igentuman.nc.block.entity.turbine.TurbineBE;
-import igentuman.nc.util.TextUtils;
-import net.minecraft.ChatFormatting;
+import igentuman.nc.block.entity.kugelblitz.EXPLProxyBE;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -27,16 +22,12 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-import java.util.Objects;
-
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BE;
-import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BE;
 
 public class BlackHoleBlock extends Block implements EntityBlock {
 
     public BlackHoleBlock(Properties pProperties) {
-        super(pProperties.sound(SoundType.SCULK_SENSOR).noOcclusion().lightLevel(state -> 8));
+        super(pProperties.sound(SoundType.ANVIL).strength(-1f, 3600000f).noOcclusion().lightLevel(state -> state.getValue(ACTIVE) ? 15 : 10));
     }
     public static final BooleanProperty ACTIVE = BlockStateProperties.POWERED;
 
@@ -59,8 +50,16 @@ public class BlackHoleBlock extends Block implements EntityBlock {
     }
 
     @Override
+    public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
+        if(pLevel.isClientSide()) {
+            pLevel.addParticle(ParticleTypes.DRAGON_BREATH, pPos.getX(), pPos.getY(), pPos.getZ(), 0, 0, 0);
+        }
+        super.onRemove(pState, pLevel, pPos, pNewState, pIsMoving);
+    }
+
+    @Override
     public int getLightEmission(BlockState state, BlockGetter level, BlockPos pos) {
-        return 8;
+        return state.getValue(ACTIVE) ? 15 : 10;
     }
 
     @Override

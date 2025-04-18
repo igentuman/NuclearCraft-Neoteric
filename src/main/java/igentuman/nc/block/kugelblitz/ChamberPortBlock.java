@@ -41,7 +41,7 @@ public class ChamberPortBlock extends HorizontalDirectionalBlock implements Enti
     public ChamberPortBlock() {
         this(Properties.of()
                 .sound(SoundType.METAL)
-                .strength(2.0f)
+                .strength(8f, 3600000f)
                 .requiresCorrectToolForDrops());
     }
     public ChamberPortBlock(Properties pProperties) {

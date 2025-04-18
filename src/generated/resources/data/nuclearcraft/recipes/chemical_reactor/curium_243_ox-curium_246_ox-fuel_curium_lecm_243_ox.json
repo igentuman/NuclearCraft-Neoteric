@@ -1,0 +1,22 @@
+{
+  "type": "nuclearcraft:chemical_reactor",
+  "inputFluids": [
+    {
+      "amount": 48,
+      "tag": "forge:curium/243_ox"
+    },
+    {
+      "amount": 432,
+      "tag": "forge:curium/246_ox"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 144,
+      "tag": "forge:fuel_curium_lecm_243_ox"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

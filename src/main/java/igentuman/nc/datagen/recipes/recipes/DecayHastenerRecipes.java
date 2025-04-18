@@ -14,7 +14,6 @@ public class DecayHastenerRecipes extends AbstractRecipeProvider {
 
         itemToItem(dustIngredient(Materials.irradiated_borax), dustIngredient(Materials.borax), 2);
         itemToItem(dustIngredient(Materials.strontium_90), dustIngredient(Materials.strontium), 2);
-        itemToItem(dustIngredient(Materials.thorium, 4), isotopeStack(Materials.thorium232));
         itemToItem(dustIngredient(Materials.radium), dustIngredient(Materials.lead));
         itemToItem(dustIngredient(Materials.polonium), dustIngredient(Materials.lead));
         itemToItem(dustIngredient(Materials.protactinium_233), isotopeStack(Materials.uranium233));

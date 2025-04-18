@@ -1,0 +1,22 @@
+{
+  "type": "nuclearcraft:chemical_reactor",
+  "inputFluids": [
+    {
+      "amount": 48,
+      "tag": "forge:americium/242_ni"
+    },
+    {
+      "amount": 432,
+      "tag": "forge:americium/243_ni"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 144,
+      "tag": "forge:fuel_americium_lea_242_ni"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

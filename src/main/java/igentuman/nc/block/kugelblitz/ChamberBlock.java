@@ -20,7 +20,7 @@ import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.TRANSPAR
 public class ChamberBlock extends MultiblockBlock {
 
     public ChamberBlock(Properties pProperties) {
-        super(pProperties.sound(SoundType.METAL));
+        super(pProperties.sound(SoundType.METAL).strength(8f, 3600000f));
     }
 
     @Override

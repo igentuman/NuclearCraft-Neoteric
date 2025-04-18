@@ -46,7 +46,7 @@ public class ChamberTerminalBlock extends HorizontalDirectionalBlock implements 
     public ChamberTerminalBlock() {
         this(Properties.of()
                 .sound(SoundType.METAL)
-                .strength(2.0f)
+                .strength(8f, 3600000f)
                 .requiresCorrectToolForDrops());
     }
     public ChamberTerminalBlock(Properties pProperties) {

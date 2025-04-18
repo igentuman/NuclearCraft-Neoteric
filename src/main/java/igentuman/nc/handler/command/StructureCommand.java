@@ -57,7 +57,7 @@ public class StructureCommand  {
         HitResult hitResult = player.pick(rayTraceRange, 0.0F, false);
         if (hitResult.getType() == HitResult.Type.BLOCK) {
             BlockHitResult blockHitResult = (BlockHitResult) hitResult;
-            BlockPos blockPos = blockHitResult.getBlockPos().offset(-3, 1, -3);
+            BlockPos blockPos = blockHitResult.getBlockPos().offset(-3, 6, -3);
             WorldGeneration.StructurePlacer.placeStructure((ServerLevel) player.level(), blockPos, "kugelblitz_chamber");
             player.sendSystemMessage(Component.literal("Placing chamber!"));
         } else {

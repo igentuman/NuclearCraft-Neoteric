@@ -1,0 +1,22 @@
+{
+  "type": "nuclearcraft:chemical_reactor",
+  "inputFluids": [
+    {
+      "amount": 144,
+      "tag": "forge:plutonium/241_za"
+    },
+    {
+      "amount": 288,
+      "tag": "forge:plutonium/242_za"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 144,
+      "tag": "forge:fuel_plutonium_hep_241_za"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

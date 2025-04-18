@@ -1,17 +1,21 @@
 {
-  "type": "nuclearcraft:decay_hastener",
+  "type": "nuclearcraft:isotope_separator",
   "input": [
     {
-      "count": 4,
+      "count": 10,
       "tag": "forge:dusts/thorium"
     }
   ],
   "output": [
     {
+      "count": 9,
       "item": "nuclearcraft:thorium_232"
+    },
+    {
+      "item": "nuclearcraft:thorium_230"
     }
   ],
   "powerModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 1.0
+  "timeModifier": 4.0
 }

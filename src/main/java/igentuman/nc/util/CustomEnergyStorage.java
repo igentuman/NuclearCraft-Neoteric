@@ -8,11 +8,18 @@ import net.minecraftforge.energy.EnergyStorage;
 public class CustomEnergyStorage extends EnergyStorage {
 
     public boolean wasUpdated = true;
+    private int receivedEnergy = 0;
+    private boolean limit = false;
+
     public CustomEnergyStorage(int capacity, int maxTransfer) {
-        super(capacity, maxTransfer, 0);
+        this(capacity, maxTransfer, 0);
     }
     public CustomEnergyStorage(int capacity, int maxTransfer, int maxExtract) {
         super(capacity, maxTransfer, maxExtract);
+    }
+    public CustomEnergyStorage(int capacity, int maxTransfer, int maxExtract, boolean limit) {
+        this(capacity, maxTransfer, maxExtract);
+        this.limit = limit;
     }
 
     protected void onEnergyChanged() {
@@ -21,8 +28,12 @@ public class CustomEnergyStorage extends EnergyStorage {
 
     @Override
     public int receiveEnergy(int maxReceive, boolean simulate) {
+        if (limit && receivedEnergy >= maxReceive) {
+            return 0;
+        }
         int rc = super.receiveEnergy(maxReceive, simulate);
         if (rc > 0 && !simulate) {
+            receivedEnergy += rc;
             onEnergyChanged();
         }
         return rc;
@@ -96,5 +107,9 @@ public class CustomEnergyStorage extends EnergyStorage {
             energy = ((CompoundTag) nbt).getInt("energy");
             capacity = ((CompoundTag) nbt).getInt("capacity");
         }
+    }
+
+    public void tick() {
+        receivedEnergy = 0;
     }
 }

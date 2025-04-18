@@ -92,6 +92,7 @@ public abstract class AbstractNCMultiblock implements Multiblock {
     public int minDepth() {
         return 3;
     }
+
     public boolean isFormed() {
         return isFormed;
     }

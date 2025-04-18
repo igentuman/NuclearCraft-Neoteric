@@ -24,7 +24,7 @@ import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.TRANSPAR
 public class PhotonConcentratorBlock extends MultiblockBlock implements EntityBlock {
 
     public PhotonConcentratorBlock(Properties pProperties) {
-        super(pProperties.sound(SoundType.METAL));
+        super(pProperties.sound(SoundType.METAL).strength(8f, 3600000f));
     }
 
     @Override

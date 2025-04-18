@@ -45,7 +45,7 @@ public class EXPLBlock extends DirectionalBlock implements EntityBlock {
     public static final BooleanProperty ACTIVE = BlockStateProperties.POWERED;
 
     public EXPLBlock(Properties pProperties) {
-        super(pProperties.sound(SoundType.METAL));
+        super(pProperties.sound(SoundType.METAL).strength(8f));
         this.registerDefaultState(
                 this.stateDefinition.any()
                         .setValue(FACING, Direction.UP)

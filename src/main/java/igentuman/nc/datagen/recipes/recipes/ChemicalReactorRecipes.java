@@ -1,15 +1,22 @@
 package igentuman.nc.datagen.recipes.recipes;
 
+import igentuman.nc.content.fuel.FuelManager;
 import igentuman.nc.content.materials.Materials;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.creator.IngredientCreatorAccess;
+import igentuman.nc.setup.registration.FissionFuel;
+import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.List;
 import java.util.function.Consumer;
 
+import static igentuman.nc.NuclearCraft.MODID;
 import static net.minecraft.world.level.material.Fluids.WATER;
 
 public class ChemicalReactorRecipes extends AbstractRecipeProvider {
@@ -434,6 +441,39 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
                 ), 0.5D, 0.5D
         );
 
+        for (String name: FuelManager.all().keySet()) {
+            for(String subType: FuelManager.all().get(name).keySet()) {
+                fuelMixRecipe(name, subType,
+                        FuelManager.all().get(name).get(subType).getDefault().isotopes[0] + "",
+                        FuelManager.all().get(name).get(subType).getDefault().isotopes[1] + ""
+                );
+                if(name.contains("mixed")) {
+                    continue;
+                }
+                fuelMixRecipe(name, subType + "_ox",
+                        FuelManager.all().get(name).get(subType).getOxide().isotopes[0] + "_ox",
+                        FuelManager.all().get(name).get(subType).getOxide().isotopes[1] + "_ox");
+
+                fuelMixRecipe(name, subType + "_ni",
+                        FuelManager.all().get(name).get(subType).getNitride().isotopes[0] + "_ni",
+                        FuelManager.all().get(name).get(subType).getNitride().isotopes[1] + "_ni");
+
+                fuelMixRecipe(name, subType + "_za",
+                        FuelManager.all().get(name).get(subType).getZirconiumAlloy().isotopes[0] + "_za",
+                        FuelManager.all().get(name).get(subType).getZirconiumAlloy().isotopes[1] + "_za");
+            }
+        }
+
+    }
+
+    private static void fuelMixRecipe(String name, String type, String isotope1, String isotope2) {
+        int isotope1Amount = 48;
+        int isotope2Amount = 432;
+        if(type.startsWith("he")) {
+            isotope1Amount = 144;
+            isotope2Amount = 288;
+        }
+        fluidsAndFluids(List.of(fluidIngredient(name+"/"+isotope1, isotope1Amount), fluidIngredient(name+"/"+isotope2, isotope2Amount)), List.of(fluidIngredient("fuel_"+name+"_"+type.replace("-","_"), 144)), true);
     }
 
     protected static void add(List<FluidStackIngredient> input, List<FluidStackIngredient> output, double...modifiers) {

@@ -2,7 +2,7 @@
   "type": "nuclearcraft:isotope_separator",
   "input": [
     {
-      "count": 9,
+      "count": 3,
       "item": "nuclearcraft:fuel_plutonium_lep_239"
     }
   ],

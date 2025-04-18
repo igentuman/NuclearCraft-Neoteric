@@ -80,7 +80,7 @@ public class EXPLBE extends NuclearCraftBE {
     }
 
     protected CustomEnergyStorage createEnergy() {
-        return new CustomEnergyStorage(2_048_000_000, 1000000, 0) {
+        return new CustomEnergyStorage(2_048_000_000, 1000000, 0, true) {
             @Override
             protected void onEnergyChanged() {
                 setChanged();
@@ -140,13 +140,14 @@ public class EXPLBE extends NuclearCraftBE {
 
     @Override
     public void tickServer() {
+        energyStorage().tick();
         inputRedstoneSignal = 0;
         tickProxyBlocks();
         activated = activated || inputRedstoneSignal > 0;
         pulseEnergy = energyStorage().getEnergyStored();
         if (activated && pulseEnergy == energyStorage().getMaxEnergyStored()) {
             if (pulseTime == 0) {
-                pulseTime = 80;
+                pulseTime = 90;
             }
         }
         if(pulseTime > 0) {
@@ -154,11 +155,11 @@ public class EXPLBE extends NuclearCraftBE {
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_NEIGHBORS);
             pulseTime--;
             setChanged();
-            if(pulseTime < 40) {
+            if(pulseTime < 35) {
                 renderBeam();
                 energyStorage().setEnergy(energyStorage().getEnergyStored()/2);
             }
-            if(pulseTime < 35 && pulseTime > 30) {
+            if(pulseTime < 33 && pulseTime > 30) {
                 transferEnergy();
             }
             if (pulseTime < 10) {
@@ -196,10 +197,10 @@ public class EXPLBE extends NuclearCraftBE {
 
     @Override
     public void tickClient() {
-        if(pulseEnergy > 0 && pulseTime > 78) {
-            playSound(LASER_SHOOT, 0.9f);
+        if(pulseEnergy > 0 && pulseTime > 88) {
+            playSound(LASER_SHOOT, 0.2f);
         }
-        if(pulseTime < 1) {
+        if(pulseTime < 20) {
             stopSound();
         }
     }

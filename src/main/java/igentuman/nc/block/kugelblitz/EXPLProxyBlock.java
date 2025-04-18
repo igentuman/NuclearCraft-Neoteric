@@ -25,8 +25,6 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
@@ -35,7 +33,7 @@ import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.EXPL_PRO
 public class EXPLProxyBlock extends Block implements EntityBlock {
 
     public EXPLProxyBlock(Properties pProperties) {
-        super(pProperties.sound(SoundType.METAL));
+        super(pProperties.sound(SoundType.METAL).strength(8f));
         this.registerDefaultState(
                 this.stateDefinition.any()
         );

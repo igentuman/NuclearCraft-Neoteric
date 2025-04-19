@@ -138,7 +138,7 @@ public class FissionPortBE extends NuclearCraftBE implements MultiblockAttachabl
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if (controller() == null) return super.getCapability(cap, side);
         if (cap == ForgeCapabilities.ITEM_HANDLER) {
-            return controller().contentHandler().itemCapability.cast();
+            return controller().getCapability(cap, side);
         }
         if (cap == ForgeCapabilities.FLUID_HANDLER && controller().canAcceptFluid()) {
             return controller().getCapability(cap, side);

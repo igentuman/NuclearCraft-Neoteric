@@ -22,8 +22,8 @@ import net.minecraftforge.items.wrapper.InvWrapper;
 import static igentuman.nc.NuclearCraft.MODID;
 
 public class FissionPortContainer extends AbstractContainerMenu {
-    protected FissionPortBE portBE;
-    protected Player playerEntity;
+    protected final FissionPortBE portBE;
+    protected final Player playerEntity;
 
 
     protected String name = "fission_reactor_port";
@@ -40,8 +40,6 @@ public class FissionPortContainer extends AbstractContainerMenu {
         layoutPlayerInventorySlots();
         portBE.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
             addSlot(new NCSlotItemHandler.Input(h, 0, 56, 35));
-        });
-        portBE.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
             addSlot(new NCSlotItemHandler.Output(h, 1, 116, 35));
         });
     }
@@ -97,7 +95,6 @@ public class FissionPortContainer extends AbstractContainerMenu {
         return Component.translatable("block."+MODID+"."+name);
     }
 
-
     private void addSlotRange(IItemHandler handler, int x, int y, int amount, int dx) {
         for (int i = 0 ; i < amount ; i++) {
             addSlot(new SlotItemHandler(handler, slotIndex, x, y));
@@ -120,6 +117,7 @@ public class FissionPortContainer extends AbstractContainerMenu {
         topRow -= 58;
         addSlotBox(playerInventory, leftCol, topRow, 9, 18, 3, 18);
     }
+
     public int getEnergy() {
         return portBE.getEnergyStored();
     }

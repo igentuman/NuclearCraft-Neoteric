@@ -32,6 +32,7 @@ import static igentuman.nc.setup.registration.Registries.*;
 import static igentuman.nc.util.TagUtil.getFirstMatchingFluidByTag;
 
 public class HeatSinkDef {
+
     public double heat = 0;
     public String name = "";
     public String[] rules;

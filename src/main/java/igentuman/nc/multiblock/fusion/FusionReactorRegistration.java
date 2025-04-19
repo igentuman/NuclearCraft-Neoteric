@@ -26,11 +26,11 @@ import static igentuman.nc.setup.registration.Tags.itemTag;
 public class FusionReactorRegistration {
 
     public static final Item.Properties FUSION_ITEM_PROPERTIES = new Item.Properties();
-    public static HashMap<String, RegistryObject<Block>> FUSION_BLOCKS = new HashMap<>();
-    public static HashMap<String, RegistryObject<BlockEntityType<? extends BlockEntity>>> FUSION_BE = new HashMap<>();
-    public static HashMap<String, RegistryObject<Item>> FUSION_ITEMS = new HashMap<>();
-    public static TagKey<Block> CASING_BLOCKS = blockTag("fusion_reactor_casing");
-    public static TagKey<Item> CASING_ITEMS = itemTag("fusion_reactor_casing");
+    public static final HashMap<String, RegistryObject<Block>> FUSION_BLOCKS = new HashMap<>();
+    public static final HashMap<String, RegistryObject<BlockEntityType<? extends BlockEntity>>> FUSION_BE = new HashMap<>();
+    public static final HashMap<String, RegistryObject<Item>> FUSION_ITEMS = new HashMap<>();
+    public static final TagKey<Block> CASING_BLOCKS = blockTag("fusion_reactor_casing");
+    public static final TagKey<Item> CASING_ITEMS = itemTag("fusion_reactor_casing");
 
     public static final RegistryObject<Block> FUSION_CORE_PROXY =
             BLOCKS.register("fusion_reactor_core_proxy",

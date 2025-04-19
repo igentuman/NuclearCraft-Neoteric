@@ -27,9 +27,6 @@ public class NCEnergy extends NuclearCraftBE {
     protected String name;
     public static String NAME;
     public final CustomEnergyStorage energyStorage = createEnergy();
-    public LazyOptional<IEnergyStorage> getEnergy() {
-        return energy;
-    }
     protected final LazyOptional<IEnergyStorage> energy = LazyOptional.of(() -> energyStorage);
 
     protected void sendOutPower() {
@@ -57,6 +54,11 @@ public class NCEnergy extends NuclearCraftBE {
             }
         }
     }
+
+    public LazyOptional<IEnergyStorage> getEnergy() {
+        return energy;
+    }
+
 
     protected int getEnergyMaxStorage() {
         return 100;

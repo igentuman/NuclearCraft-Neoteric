@@ -1,10 +1,9 @@
 package igentuman.nc.content.materials;
 
-import java.util.Collection;
-
 public class Gems extends AbstractMaterial {
 
     protected static AbstractMaterial instance;
+
     public static Gems get()
     {
         if(instance == null) {

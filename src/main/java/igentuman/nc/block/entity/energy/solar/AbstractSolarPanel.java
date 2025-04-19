@@ -6,6 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class AbstractSolarPanel extends NCEnergy {
+
     public AbstractSolarPanel(BlockPos pPos, BlockState pBlockState, String name) {
         super(pPos, pBlockState, name);
     }

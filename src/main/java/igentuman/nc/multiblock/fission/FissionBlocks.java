@@ -16,13 +16,12 @@ public class FissionBlocks {
 
     public static final BlockBehaviour.Properties REACTOR_BLOCKS_PROPERTIES = BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(4f).requiresCorrectToolForDrops();
 
-    public static TagKey<Block> MODERATORS_BLOCKS = blockTag("moderators");
-    public static TagKey<Block> HEAT_SINK_BLOCKS = blockTag("heat_sinks");
-    public static TagKey<Block> INNER_REACTOR_BLOCKS = blockTag("reactor_inner");
-    public static TagKey<Item> MODERATORS_ITEMS = itemTag("moderators");
-    public static TagKey<Block> CASING_BLOCKS = blockTag("fission_reactor_casing");
-    public static TagKey<Item> CASING_ITEMS = itemTag("fission_reactor_casing");
-
+    public static final TagKey<Block> MODERATORS_BLOCKS = blockTag("moderators");
+    public static final TagKey<Block> HEAT_SINK_BLOCKS = blockTag("heat_sinks");
+    public static final TagKey<Block> INNER_REACTOR_BLOCKS = blockTag("reactor_inner");
+    public static final TagKey<Item> MODERATORS_ITEMS = itemTag("moderators");
+    public static final TagKey<Block> CASING_BLOCKS = blockTag("fission_reactor_casing");
+    public static final TagKey<Item> CASING_ITEMS = itemTag("fission_reactor_casing");
 
     public static final List<String> reactor =  Arrays.asList(
             "casing",
@@ -58,5 +57,4 @@ public class FissionBlocks {
         }
         return tmp;
     }
-
 }

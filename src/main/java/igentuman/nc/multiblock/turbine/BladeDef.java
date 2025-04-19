@@ -1,6 +1,7 @@
 package igentuman.nc.multiblock.turbine;
 
 public class BladeDef {
+
     public double efficiency = 0;
     public double expansion = 0;
     public String name = "";

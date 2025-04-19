@@ -31,7 +31,8 @@ import static igentuman.nc.util.ModUtil.*;
 
 public class FissionPortBE extends NuclearCraftBE implements MultiblockAttachable {
 
-    public static String NAME = "fission_reactor_port";
+    public static final String NAME = "fission_reactor_port";
+
     @NBTField
     public byte analogSignal = 0;
     @NBTField

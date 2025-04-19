@@ -5,7 +5,8 @@ import igentuman.api.nc.multiblock.MultiblockController;
 import net.minecraft.core.BlockPos;
 
 public class TurbineController implements MultiblockController {
-    protected TurbineControllerBE controllerBE;
+
+    protected final TurbineControllerBE controllerBE;
     public TurbineController(TurbineControllerBE turbineControllerBE) {
         controllerBE = turbineControllerBE;
     }

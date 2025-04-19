@@ -6,8 +6,8 @@ import java.util.List;
 
 public class ContainerBlocks {
 
-    private static HashMap<String, ContainerBlockPrefab> all = new HashMap<>();
-    private static HashMap<String, ContainerBlockPrefab> registered = new HashMap<>();
+    private final static HashMap<String, ContainerBlockPrefab> all = new HashMap<>();
+    private final static HashMap<String, ContainerBlockPrefab> registered = new HashMap<>();
 
     public static HashMap<String, ContainerBlockPrefab> all() {
         if (all.isEmpty()) {

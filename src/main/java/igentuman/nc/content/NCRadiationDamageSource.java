@@ -6,6 +6,5 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
 
 public class NCRadiationDamageSource {
-
-    public static DamageSource RADIATION = new DamageSource(Holder.direct(new DamageType("radiation", DamageScaling.ALWAYS, 1f)));
+    public static final DamageSource RADIATION = new DamageSource(Holder.direct(new DamageType("radiation", DamageScaling.ALWAYS, 1f)));
 }

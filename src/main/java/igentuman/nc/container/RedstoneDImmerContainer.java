@@ -18,9 +18,9 @@ import static igentuman.nc.setup.registration.NCBlocks.REDSTONE_DIMMER_CONTAINER
 
 public class RedstoneDImmerContainer extends AbstractContainerMenu {
 
-    protected RedstoneDimmerBE blockEntity;
-    protected Player playerEntity;
-    protected IItemHandler playerInventory;
+    protected final RedstoneDimmerBE blockEntity;
+    protected final Player playerEntity;
+    protected final IItemHandler playerInventory;
 
     public RedstoneDImmerContainer(int pContainerId, BlockPos pos, Inventory playerInventory) {
         super(REDSTONE_DIMMER_CONTAINER.get(), pContainerId);

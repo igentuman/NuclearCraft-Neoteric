@@ -22,13 +22,11 @@ import static igentuman.nc.util.TextUtils.*;
 
 public class FusionCoreContainer extends AbstractContainerMenu {
 
-    protected FusionCoreBE blockEntity;
-    protected Player playerEntity;
-
-    protected String name = "fusion_core";
+    protected final FusionCoreBE blockEntity;
+    protected final Player playerEntity;
+    protected final String name = "fusion_core";
     private int slotIndex = 0;
-
-    protected IItemHandler playerInventory;
+    protected final IItemHandler playerInventory;
 
     public FusionCoreContainer(int pContainerId, BlockPos pos, Inventory playerInventory) {
         super(FusionReactorRegistration.FUSION_CORE_CONTAINER.get(), pContainerId);

@@ -13,8 +13,8 @@ import static igentuman.nc.handler.config.FusionConfig.ELECTROMAGNETS_CONFIG;
 
 public class Electromagnets {
 
-    private static HashMap<String, MagnetPrefab> all = new HashMap<>();
-    private static HashMap<String, MagnetPrefab> registered = new HashMap<>();
+    private static final HashMap<String, MagnetPrefab> all = new HashMap<>();
+    private static final HashMap<String, MagnetPrefab> registered = new HashMap<>();
 
     public static HashMap<String, MagnetPrefab> all() {
         if(all.isEmpty()) {

@@ -2,10 +2,10 @@ package igentuman.nc.fluid;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
-
 import static igentuman.nc.NuclearCraft.rl;
 
 public class FluidRenderProps implements IClientFluidTypeExtensions {
+
     private final ResourceLocation still;
     private final ResourceLocation flowing;
     private final int colorTint;

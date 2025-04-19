@@ -97,22 +97,19 @@ public class TurbinePortBE extends TurbineBE {
 
     protected FluidCapabilityHandler fluidHandler()
     {
-        return controller().contentHandler.fluidCapability;
+        return controller().contentHandler().fluidCapability;
     }
-    protected <T> LazyOptional<T> fluidHandler(@Nullable Direction side)
-    {
-        return controller().contentHandler.getFluidCapability(side);
-    }
+
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if(controller() == null) return super.getCapability(cap, side);
 
         if (cap == ForgeCapabilities.FLUID_HANDLER) {
-            return fluidHandler(side).cast();
+            return controller().getCapability(cap, side);
         }
         if (cap == ForgeCapabilities.ENERGY) {
-            return controller().getEnergy().cast();
+            return controller().getCapability(cap, side);
         }
         if(isCcLoaded()) {
             if(cap == dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL) {

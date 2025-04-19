@@ -40,6 +40,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 import static igentuman.nc.util.StackUtils.isMultiTool;
+import static igentuman.nc.util.TextUtils.formatLiquid;
 import static net.minecraft.world.item.Items.BUCKET;
 
 public class BarrelBlock extends Block implements EntityBlock {
@@ -213,11 +214,6 @@ public class BarrelBlock extends Block implements EntityBlock {
 
         list.add(Component.translatable("tooltip.nc.liquid_capacity", formatLiquid(storage)).withStyle(ChatFormatting.BLUE));
         list.add(Component.translatable("tooltip.nc.use_multitool").withStyle(ChatFormatting.YELLOW));
-    }
-
-    public String formatLiquid(int val)
-    {
-        return TextUtils.numberFormat(val/1000)+" B";
     }
 
     public boolean registered() {

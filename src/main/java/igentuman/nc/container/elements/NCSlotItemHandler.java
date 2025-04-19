@@ -13,6 +13,8 @@ import java.util.List;
 public class NCSlotItemHandler extends SlotItemHandler {
 
     private final List<Item> allowed = new ArrayList<>();
+    public boolean hidden = false;
+
     public NCSlotItemHandler(IItemHandler itemHandler, int index, int xPosition, int yPosition) {
         super(itemHandler, index, xPosition, yPosition);
     }
@@ -37,7 +39,7 @@ public class NCSlotItemHandler extends SlotItemHandler {
             return allowed.contains(stack.getItem());
         return super.mayPlace(stack);
     }
-    public boolean hidden = false;
+
     public Slot hidden() {
         hidden = true;
         return this;

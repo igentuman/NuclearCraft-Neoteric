@@ -23,7 +23,9 @@ import java.util.function.Supplier;
 import static igentuman.nc.compat.GlobalVars.RECIPE_CLASSES;
 
 public class ProcessorBuilder <M extends NCProcessorContainer, U extends Screen & MenuAccess<M>>{
+
     public ProcessorPrefab processor;
+
     private ProcessorBuilder() { }
 
     public static ProcessorBuilder make(String name)

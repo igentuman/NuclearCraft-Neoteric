@@ -1,6 +1,7 @@
 package igentuman.nc.container;
 
 import igentuman.nc.block.entity.kugelblitz.ChamberPortBE;
+import igentuman.nc.container.elements.NCSlotItemHandler;
 import igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -9,6 +10,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
@@ -22,13 +24,11 @@ import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.CHAMBER_
 import static igentuman.nc.util.TextUtils.roundFormat;
 
 public class ChamberPortContainer extends AbstractContainerMenu {
-    protected ChamberPortBE blockEntity;
-    protected Player playerEntity;
-
-    protected String name = "chamber_port";
+    protected final ChamberPortBE blockEntity;
+    protected final Player playerEntity;
+    protected final String name = "chamber_port";
     private int slotIndex = 0;
-
-    protected IItemHandler playerInventory;
+    protected final IItemHandler playerInventory;
 
     public ChamberPortContainer(int pContainerId, BlockPos pos, Inventory playerInventory) {
         super(CHAMBER_PORT_CONTAINER.get(), pContainerId);
@@ -36,6 +36,10 @@ public class ChamberPortContainer extends AbstractContainerMenu {
         this.playerInventory =  new InvWrapper(playerInventory);
         blockEntity = (ChamberPortBE) playerEntity.getCommandSenderWorld().getExistingBlockEntity(pos);
         layoutPlayerInventorySlots();
+        blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
+            addSlot(new NCSlotItemHandler.Input(h, 0, 56, 35));
+            addSlot(new NCSlotItemHandler.Output(h, 1, 116, 35));
+        });
     }
 
     @Override

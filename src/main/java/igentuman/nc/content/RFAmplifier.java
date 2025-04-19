@@ -11,8 +11,8 @@ import static igentuman.nc.handler.config.FusionConfig.RF_AMPLIFIERS_CONFIG;
 
 public class RFAmplifier {
 
-    private static HashMap<String, RFAmplifierPrefab> all = new HashMap<>();
-    private static HashMap<String, RFAmplifierPrefab> registered = new HashMap<>();
+    private static final HashMap<String, RFAmplifierPrefab> all = new HashMap<>();
+    private static final HashMap<String, RFAmplifierPrefab> registered = new HashMap<>();
 
     public static HashMap<String, RFAmplifierPrefab> all() {
         if(all.isEmpty()) {

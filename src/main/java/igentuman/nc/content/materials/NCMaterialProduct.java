@@ -3,6 +3,7 @@ package igentuman.nc.content.materials;
 import static igentuman.nc.handler.config.MaterialsConfig.MATERIAL_PRODUCTS;
 
 public class NCMaterialProduct {
+
     protected String name;
     protected String type;
     private boolean initialized = false;

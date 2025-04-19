@@ -19,10 +19,9 @@ import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.*;
 
 public class EXPLContainer extends AbstractContainerMenu {
 
-    protected EXPLBE blockEntity;
-    protected Player playerEntity;
-
-    protected String name = "expl";
+    protected final EXPLBE blockEntity;
+    protected final Player playerEntity;
+    protected final String name = "expl";
     private int slotIndex = 0;
 
     protected IItemHandler playerInventory;

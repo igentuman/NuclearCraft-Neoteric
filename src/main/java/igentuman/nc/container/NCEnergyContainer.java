@@ -25,19 +25,14 @@ import org.jetbrains.annotations.Nullable;
 import static igentuman.nc.NuclearCraft.MODID;
 
 public class NCEnergyContainer extends AbstractContainerMenu {
+
     protected NCProcessorBE blockEntity;
     protected Player playerEntity;
     protected IItemHandler playerInventory;
-
-    public ProcessorPrefab getProcessor() {
-        return processor;
-    }
-
     protected ProcessorPrefab processor;
-
     public int slotIndex = 0;
-
     protected String name;
+
     public NCEnergyContainer(@Nullable MenuType<?> pMenuType, int pContainerId) {
         super(pMenuType, pContainerId);
     }
@@ -51,6 +46,10 @@ public class NCEnergyContainer extends AbstractContainerMenu {
         this.processor = Processors.all().get(name);
         processorSlots();
         layoutPlayerInventorySlots();
+    }
+
+    public ProcessorPrefab getProcessor() {
+        return processor;
     }
 
     private void processorSlots() {

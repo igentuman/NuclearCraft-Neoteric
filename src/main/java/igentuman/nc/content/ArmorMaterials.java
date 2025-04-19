@@ -14,6 +14,7 @@ import static igentuman.nc.setup.registration.NCItems.*;
 import static igentuman.nc.setup.registration.Tags.forgeIngot;
 
 public enum ArmorMaterials implements ArmorMaterial {
+
    HAZMAT(MODID+":hazmat", 5, new int[]{1, 2, 3, 1}, 15, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F, () -> {
       return Ingredient.of(NC_PARTS.get("bioplastic").get());
    }),

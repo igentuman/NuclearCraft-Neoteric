@@ -15,7 +15,8 @@ import java.util.List;
 import static igentuman.nc.NuclearCraft.MODID;
 
 public class FluidRadiation {
-    protected static HashMap<Fluid, Double> radiationMap = new HashMap<>();
+
+    protected static final HashMap<Fluid, Double> radiationMap = new HashMap<>();
     protected static boolean initialized = false;
     public static HashMap<Fluid, Double> get()
     {

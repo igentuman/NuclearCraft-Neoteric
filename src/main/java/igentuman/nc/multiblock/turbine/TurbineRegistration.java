@@ -31,15 +31,15 @@ import static igentuman.nc.setup.registration.Registries.*;
 import static igentuman.nc.setup.registration.Tags.blockTag;
 
 public class TurbineRegistration {
-    public static final Item.Properties TURBINE_ITEM_PROPS = new Item.Properties();
 
+    public static final Item.Properties TURBINE_ITEM_PROPS = new Item.Properties();
     public static final BlockBehaviour.Properties TURBINE_BLOCKS_PROPERTIES = BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(4f).requiresCorrectToolForDrops();
     public static final BlockBehaviour.Properties GLASS_BLOCK_PROPERTIES = BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(3f).requiresCorrectToolForDrops().noOcclusion();
-    public static HashMap<String, RegistryObject<Block>> TURBINE_BLOCKS = new HashMap<>();
-    public static HashMap<String, RegistryObject<BlockEntityType<? extends BlockEntity>>> TURBINE_BE = new HashMap<>();
-    public static HashMap<String, RegistryObject<BlockItem>> TURBINE_BLOCK_ITEMS = new HashMap<>();
-    public static TagKey<Block> CASING_BLOCKS = blockTag("turbine_casing");
-    public static TagKey<Block> INNER_TURBINE_BLOCKS = blockTag("turbine_inner");
+    public static final HashMap<String, RegistryObject<Block>> TURBINE_BLOCKS = new HashMap<>();
+    public static final HashMap<String, RegistryObject<BlockEntityType<? extends BlockEntity>>> TURBINE_BE = new HashMap<>();
+    public static final HashMap<String, RegistryObject<BlockItem>> TURBINE_BLOCK_ITEMS = new HashMap<>();
+    public static final TagKey<Block> CASING_BLOCKS = blockTag("turbine_casing");
+    public static final TagKey<Block> INNER_TURBINE_BLOCKS = blockTag("turbine_inner");
     public static final HashMap<String, BladeDef> blades = blades();
     public static final HashMap<String, CoilDef> coils = coils();
     private static HashMap<String, Double> efficiency;

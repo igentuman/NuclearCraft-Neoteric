@@ -7,6 +7,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class RTGBE extends NCEnergy {
+
     public RTGBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, getName(pBlockState));
     }

@@ -24,11 +24,8 @@ import static igentuman.nc.NuclearCraft.MODID;
 public class FissionPortContainer extends AbstractContainerMenu {
     protected final FissionPortBE portBE;
     protected final Player playerEntity;
-
-
     protected String name = "fission_reactor_port";
     private int slotIndex = 0;
-
     protected IItemHandler playerInventory;
 
     public FissionPortContainer(int pContainerId, BlockPos pos, Inventory playerInventory) {
@@ -121,6 +118,7 @@ public class FissionPortContainer extends AbstractContainerMenu {
     public int getEnergy() {
         return portBE.getEnergyStored();
     }
+
     public double getProgress() {
         return portBE.getDepletionProgress();
     }

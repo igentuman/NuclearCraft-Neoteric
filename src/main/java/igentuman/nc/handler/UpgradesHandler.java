@@ -9,7 +9,8 @@ import net.minecraftforge.items.ItemStackHandler;
 import javax.annotation.Nonnull;
 
 public class UpgradesHandler extends ItemStackHandler {
-    protected NCProcessorBE be;
+
+    protected final NCProcessorBE be;
     public boolean wasUpdated = true;
 
     public UpgradesHandler(NCProcessorBE be) {

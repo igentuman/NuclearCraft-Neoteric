@@ -60,7 +60,7 @@ import static net.minecraft.world.item.Items.AIR;
 
 public class FissionControllerBE extends MultiblockControllerBE {
 
-    public static String NAME = "fission_reactor_controller";
+    public static final String NAME = "fission_reactor_controller";
     public final SidedContentHandler contentHandler;
     public final CustomEnergyStorage energyStorage;
     protected final LazyOptional<IEnergyStorage> energy;

@@ -34,6 +34,7 @@ import static net.minecraft.world.level.block.Blocks.AIR;
 import static net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE;
 
 public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
+
     private final ResourceLocation id;
     public final String codeId;
     protected double timeModifier = 1;

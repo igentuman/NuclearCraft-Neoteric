@@ -3,7 +3,6 @@ package igentuman.nc.content.processors;
 import igentuman.nc.block.entity.processor.NCProcessorBE;
 import igentuman.nc.container.NCProcessorContainer;
 import igentuman.nc.content.processors.config.ProcessorSlots;
-import igentuman.nc.handler.config.CommonConfig;
 import igentuman.nc.recipes.AbstractRecipe;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
@@ -11,7 +10,6 @@ import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
@@ -27,25 +25,18 @@ public class ProcessorPrefab <M extends NCProcessorContainer, U extends Screen &
     public int progressBar = 0;
     public Supplier<RecipeSerializer<? extends AbstractRecipe>> recipeSerializerSupplier;
     public boolean supportsCatalyst;
-    private  Class  container;
-    private  MenuScreens.ScreenConstructor<M, U>  screenConstructor;
+    private Class  container;
+    private MenuScreens.ScreenConstructor<M, U>  screenConstructor;
     private boolean initialized;
     private boolean has_recipes = true;
     private Boolean registered = true;
-
     public String name;
-
     public boolean supportSpeedUpgrade = true;
     protected int power = 50;
     protected int time = 200;
-
     public List<Integer> hiddenSlots = new ArrayList<>();
-
     public boolean supportEnergyUpgrade = true;
-
-
     protected Class recipeManager;
-
 
     public BlockEntityType.BlockEntitySupplier<? extends NCProcessorBE>  getBlockEntity() {
         return blockEntity;

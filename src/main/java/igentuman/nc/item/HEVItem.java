@@ -97,10 +97,8 @@ public class HEVItem extends ArmorItem {
         return TextUtils.scaledFormat(energy)+" FE";
     }
 
-
     @Override
     public boolean isDamaged(ItemStack stack) {
         return false;
     }
-
 }

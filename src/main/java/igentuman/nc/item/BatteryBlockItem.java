@@ -23,19 +23,16 @@ import static igentuman.nc.util.TextUtils.formatEnergy;
 
 public class BatteryBlockItem extends BlockItem
 {
-
 	public BatteryBlockItem(Block pBlock, Properties props)
 	{
 		super(pBlock, new Properties().stacksTo(1));
 	}
-
 
 	@Override
 	public boolean isRepairable(@Nonnull ItemStack stack)
 	{
 		return false;
 	}
-
 
 	@Override
 	public boolean isBookEnchantable(ItemStack stack, ItemStack book)
@@ -53,7 +50,6 @@ public class BatteryBlockItem extends BlockItem
 	{
 		return Mth.hsvToRgb(Math.max(0.0F, getBarWidth(pStack)/(float)MAX_BAR_WIDTH)/3.0F, 1.0F, 1.0F);
 	}
-
 
 	protected int getEnergyMaxStorage() {
 		return ENERGY_STORAGE.getCapacityFor(toString());
@@ -76,13 +72,10 @@ public class BatteryBlockItem extends BlockItem
 		return (int) Math.min(13, 13*chargeRatio);
 	}
 
-
 	@Override
 	public void appendHoverText(ItemStack stack, @javax.annotation.Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
 		list.add(Component.translatable("tooltip.nc.energy_stored", formatEnergy(getEnergy(stack).getEnergyStored()), formatEnergy(getEnergy(stack).getMaxEnergyStored())).withStyle(ChatFormatting.BLUE));
 		list.add(Component.translatable("tooltip.nc.use_multitool").withStyle(ChatFormatting.YELLOW));
 	}
-
-
 }

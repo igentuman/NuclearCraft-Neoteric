@@ -4,11 +4,11 @@ import java.util.Collection;
 import java.util.HashMap;
 
 public abstract class AbstractMaterial {
+
     protected HashMap<String, NCMaterialProduct> all;
     protected HashMap<String, NCMaterialProduct> registered;
     protected boolean initialized = false;
     public Collection<NCMaterial> items;
-
     public String type;
 
     public HashMap<String, NCMaterialProduct> registered()

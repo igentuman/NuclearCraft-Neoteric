@@ -29,6 +29,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 public class NcIngredient extends Ingredient {
+
    private static final java.util.concurrent.atomic.AtomicInteger INVALIDATION_COUNTER = new java.util.concurrent.atomic.AtomicInteger();
    public static void invalidateAll() {
       INVALIDATION_COUNTER.incrementAndGet();

@@ -13,9 +13,10 @@ import java.util.Random;
 import static igentuman.nc.handler.config.ProcessorsConfig.IN_SITU_LEACHING;
 
 public class OreVeinProvider {
-    private ServerLevel level;
+
+    private final ServerLevel level;
     protected List<OreVeinRecipe> recipes;
-    protected static Map<Level, OreVeinProvider> providers = new HashMap<>();
+    protected final static Map<Level, OreVeinProvider> providers = new HashMap<>();
 
     @SuppressWarnings("unchecked")
     private OreVeinProvider(ServerLevel level) {

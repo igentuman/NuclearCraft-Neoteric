@@ -7,7 +7,8 @@ import net.minecraftforge.items.ItemStackHandler;
 import javax.annotation.Nonnull;
 
 public class CatalystHandler extends ItemStackHandler {
-    protected NCProcessorBE be;
+
+    protected final NCProcessorBE be;
     public boolean wasUpdated = true;
 
     public CatalystHandler(NCProcessorBE be) {

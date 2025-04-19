@@ -11,7 +11,8 @@ import static igentuman.nc.handler.config.RadiationConfig.RADIATION_CONFIG;
 import static net.minecraft.world.item.Items.AIR;
 
 public class RadiationCleaningItems {
-    protected static HashMap<Item, Long> radiationMap = new HashMap<>();
+
+    protected static final HashMap<Item, Long> radiationMap = new HashMap<>();
     protected static boolean initialized = false;
     public static HashMap<Item, Long> get()
     {

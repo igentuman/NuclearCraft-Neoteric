@@ -1,13 +1,13 @@
 package igentuman.nc.content.storage;
 
 import igentuman.nc.block.entity.BarrelBE;
-import igentuman.nc.handler.config.CommonConfig;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
 import static igentuman.nc.handler.config.CommonConfig.STORAGE_BLOCKS;
 
 public class BarrelBlockPrefab {
+
     private boolean registered = true;
     private boolean initialized = false;
     private String name;
@@ -38,6 +38,7 @@ public class BarrelBlockPrefab {
         }
         return this;
     }
+
     public boolean isRegistered() {
         return  registered;
     }
@@ -50,5 +51,6 @@ public class BarrelBlockPrefab {
         this.blockEntity = blockEntity;
         return this;
     }
+
     private BlockEntityType.BlockEntitySupplier<? extends BlockEntity>  blockEntity;
 }

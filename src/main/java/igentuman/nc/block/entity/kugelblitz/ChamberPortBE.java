@@ -127,10 +127,10 @@ public class ChamberPortBE extends NuclearCraftBE implements MultiblockAttachabl
         if(controller() == null) return super.getCapability(cap, side);
 
         if (cap == ForgeCapabilities.FLUID_HANDLER) {
-            return fluidHandler(side).cast();
+            return controller().getCapability(cap, side);
         }
         if (cap == ForgeCapabilities.ENERGY) {
-            return controller().getEnergy().cast();
+            return  controller().getCapability(cap, side);
         }
         if(isCcLoaded()) {
             if(cap == dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL) {

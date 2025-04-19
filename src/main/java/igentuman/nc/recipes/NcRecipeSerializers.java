@@ -25,7 +25,7 @@ public class NcRecipeSerializers {
     public static final RecipeSerializerRegistryObject<RadShieldingRecipe> SHIELDING = RECIPE_SERIALIZERS.register("shielding", () -> new SimpleCraftingRecipeSerializer<>(RadShieldingRecipe::new));
     public static final RecipeSerializerRegistryObject<ResetNbtRecipe> RESET_NBT = RECIPE_SERIALIZERS.register("reset_nbt", () -> new SimpleCraftingRecipeSerializer<>(ResetNbtRecipe::new));
 
-    public static HashMap<String, RecipeSerializerRegistryObject<? extends NcRecipe>> SERIALIZERS = initSerializers();
+    public static final HashMap<String, RecipeSerializerRegistryObject<? extends NcRecipe>> SERIALIZERS = initSerializers();
 
     private static HashMap<String, RecipeSerializerRegistryObject<? extends NcRecipe>> initSerializers() {
         HashMap<String, RecipeSerializerRegistryObject<? extends NcRecipe>> map = new HashMap<>();

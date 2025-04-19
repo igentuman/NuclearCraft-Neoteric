@@ -1,17 +1,14 @@
 package igentuman.nc.item;
 
 import igentuman.nc.handler.ItemEnergyHandler;
-import igentuman.nc.setup.registration.CreativeTabs;
 import igentuman.nc.util.CapabilityUtils;
 import igentuman.nc.util.CustomEnergyStorage;
-import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -27,7 +24,6 @@ import static igentuman.nc.util.TextUtils.formatEnergy;
 
 public class BatteryItem extends Item
 {
-
 	public BatteryItem(Properties props)
 	{
 		super(props);

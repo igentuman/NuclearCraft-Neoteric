@@ -22,13 +22,12 @@ import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_CONTRO
 import static igentuman.nc.util.TextUtils.roundFormat;
 
 public class TurbineControllerContainer extends AbstractContainerMenu {
-    protected TurbineControllerBE blockEntity;
-    protected Player playerEntity;
 
-    protected String name = "turbine_controller";
+    protected final TurbineControllerBE blockEntity;
+    protected final Player playerEntity;
+    protected final String name = "turbine_controller";
     private int slotIndex = 0;
-
-    protected IItemHandler playerInventory;
+    protected final IItemHandler playerInventory;
 
     public TurbineControllerContainer(int pContainerId, BlockPos pos, Inventory playerInventory) {
         super(TURBINE_CONTROLLER_CONTAINER.get(), pContainerId);

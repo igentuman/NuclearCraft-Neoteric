@@ -23,7 +23,6 @@ import java.util.List;
 
 public class RadAwayItem extends PotionItem
 {
-
 	public RadAwayItem(Properties pProperties) {
 		super(pProperties);
 	}

@@ -22,16 +22,17 @@ import static igentuman.nc.multiblock.turbine.TurbineRegistration.*;
 import static igentuman.nc.util.TagUtil.getBlocksByTagKey;
 
 public class TurbineMultiblock extends AbstractNCMultiblock {
+
     public Direction turbineDirection;
     public boolean isRotorValid = false;
-    public List<BlockPos> bearingPositions = new ArrayList<>();
-    public List<BlockPos> rotorPositions = new ArrayList<>();
-    public List<BlockPos> coilPositions = new ArrayList<>();
+    public final List<BlockPos> bearingPositions = new ArrayList<>();
+    public final List<BlockPos> rotorPositions = new ArrayList<>();
+    public final List<BlockPos> coilPositions = new ArrayList<>();
     public float flow = 0;
     public int activeCoils = 0;
     public double coilsEfficiency = 0;
     public int blades = 0;
-    private List<BlockPos> bladePositions = new ArrayList<>();
+    private final List<BlockPos> bladePositions = new ArrayList<>();
 
     @Override
     public int maxHeight() {

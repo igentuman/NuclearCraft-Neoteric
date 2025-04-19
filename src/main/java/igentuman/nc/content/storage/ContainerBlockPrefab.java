@@ -1,16 +1,15 @@
 package igentuman.nc.content.storage;
 
 import igentuman.nc.block.entity.ContainerBE;
-import igentuman.nc.handler.config.CommonConfig;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
 import static igentuman.nc.handler.config.CommonConfig.STORAGE_BLOCKS;
 
 public class ContainerBlockPrefab {
+
     private boolean registered = true;
     private boolean initialized = false;
-
     private String name;
     protected int rows = 0;
     protected int colls = 0;
@@ -47,6 +46,7 @@ public class ContainerBlockPrefab {
         this.blockEntity = blockEntity;
         return this;
     }
+
     private BlockEntityType.BlockEntitySupplier<? extends BlockEntity>  blockEntity;
 
     public int getRows() {

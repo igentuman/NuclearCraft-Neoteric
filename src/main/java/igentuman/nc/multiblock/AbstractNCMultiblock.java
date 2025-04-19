@@ -43,10 +43,10 @@ public abstract class AbstractNCMultiblock implements Multiblock {
     protected boolean innerValid = false;
     protected final List<Block> validOuterBlocks;
     protected final List<Block> validInnerBlocks;
-    protected List<BlockPos> controllers = new ArrayList<>();
-    protected HashMap<Long, BlockEntity> beCache = new HashMap<>();
-    protected HashMap<Long, BlockState> bsCache = new HashMap<>();
-    protected List<BlockPos> allBlocks = new ArrayList<>();
+    protected final List<BlockPos> controllers = new ArrayList<>();
+    protected final HashMap<Long, BlockEntity> beCache = new HashMap<>();
+    protected final HashMap<Long, BlockState> bsCache = new HashMap<>();
+    protected final List<BlockPos> allBlocks = new ArrayList<>();
     protected BlockPos controllerPos;
     private static final Pattern SPECIAL_BLOCKS = Pattern.compile(".*(fusion_proxy|fusion_core|controller|port|irradiator|rotor).*");
 
@@ -485,8 +485,8 @@ public abstract class AbstractNCMultiblock implements Multiblock {
                 outerValid = false;
                 isFormed = false;
                 hasToRefresh = false;
-                beCache = new HashMap<>();
-                bsCache = new HashMap<>();
+                beCache.clear();
+                bsCache.clear();
                 refreshCooldown = 20;
             }
         }

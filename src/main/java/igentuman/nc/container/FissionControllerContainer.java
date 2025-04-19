@@ -24,13 +24,12 @@ import static igentuman.nc.util.TextUtils.numberFormat;
 import static igentuman.nc.util.TextUtils.roundFormat;
 
 public class FissionControllerContainer extends AbstractContainerMenu {
-    protected FissionControllerBE blockEntity;
-    protected Player playerEntity;
 
-    protected String name = "fission_reactor_controller";
+    protected final FissionControllerBE blockEntity;
+    protected final Player playerEntity;
+    protected final String name = "fission_reactor_controller";
     private int slotIndex = 0;
-
-    protected IItemHandler playerInventory;
+    protected final IItemHandler playerInventory;
 
     public FissionControllerContainer(int pContainerId, BlockPos pos, Inventory playerInventory) {
         super(FissionReactor.FISSION_CONTROLLER_CONTAINER.get(), pContainerId);
@@ -40,8 +39,6 @@ public class FissionControllerContainer extends AbstractContainerMenu {
         layoutPlayerInventorySlots();
         blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
             addSlot(new NCSlotItemHandler.Input(h, 0, 56, 35));
-        });
-        blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
             addSlot(new NCSlotItemHandler.Output(h, 1, 116, 35));
         });
     }

@@ -3,8 +3,8 @@ package igentuman.nc.content.fuel;
 import com.google.gson.JsonObject;
 
 public class NCFuel {
-    public String group;
 
+    public String group;
     public String name;
     private FuelDef def;
     private FuelDef oxide;

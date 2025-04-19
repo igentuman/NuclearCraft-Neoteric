@@ -16,7 +16,6 @@ import javax.annotation.Nonnull;
 
 public class FusionCoreItem extends BlockItem
 {
-
 	public FusionCoreItem(Block block, Properties props)
 	{
 		super(block, props);

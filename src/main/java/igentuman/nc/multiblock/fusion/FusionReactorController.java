@@ -5,7 +5,8 @@ import igentuman.api.nc.multiblock.MultiblockController;
 import net.minecraft.core.BlockPos;
 
 public class FusionReactorController implements MultiblockController {
-    protected FusionCoreBE controllerBE;
+
+    protected final FusionCoreBE controllerBE;
     public FusionReactorController(FusionCoreBE FusionCoreBE) {
         controllerBE = FusionCoreBE;
     }

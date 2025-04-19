@@ -24,16 +24,18 @@ import static igentuman.nc.setup.registration.Registries.*;
 import java.util.regex.Pattern;
 
 public class FissionReactor {
+
     public static final Pattern TRANSPARENT_BLOCKS = Pattern.compile(".*glass|.*cell.*");
     public static final Item.Properties FISSION_ITEM_PROPS = new Item.Properties();
-    public static HashMap<String, RegistryObject<Block>> FISSION_BLOCKS = new HashMap<>();
-    public static HashMap<String, RegistryObject<BlockEntityType<? extends BlockEntity>>> FISSION_BE = new HashMap<>();
-    public static HashMap<String, RegistryObject<Item>> FISSION_BLOCK_ITEMS = new HashMap<>();
-
+    public static final HashMap<String, RegistryObject<Block>> FISSION_BLOCKS = new HashMap<>();
+    public static final HashMap<String, RegistryObject<BlockEntityType<? extends BlockEntity>>> FISSION_BE = new HashMap<>();
+    public static final HashMap<String, RegistryObject<Item>> FISSION_BLOCK_ITEMS = new HashMap<>();
+    private static final List<RegistryObject<Block>> hsBlocks = new ArrayList<>();
 
     public static final RegistryObject<MenuType<FissionControllerContainer>> FISSION_CONTROLLER_CONTAINER = CONTAINERS.register("fission_reactor_controller",
             () -> IForgeMenuType.create((windowId, inv, data) -> new FissionControllerContainer(windowId, data.readBlockPos(), inv))
             );
+
     public static final RegistryObject<MenuType<FissionPortContainer>> FISSION_PORT_CONTAINER = CONTAINERS.register("fission_reactor_port",
             () -> IForgeMenuType.create((windowId, inv, data) -> new FissionPortContainer(windowId, data.readBlockPos(), inv))
             );
@@ -88,9 +90,6 @@ public class FissionReactor {
         }
     }
 
-    private static List<RegistryObject<Block>> hsBlocks = new ArrayList<>();
-
-
     public static Block[] getHSBlocks() {
         Block[] blocks = new Block[hsBlocks.size()];
         int i = 0;
@@ -104,5 +103,4 @@ public class FissionReactor {
     public static <B extends Block> RegistryObject<Item> fromMultiblock(RegistryObject<B> block) {
         return ITEMS.register(block.getId().getPath(), () -> new BlockItem(block.get(), FISSION_ITEM_PROPS));
     }
-
 }

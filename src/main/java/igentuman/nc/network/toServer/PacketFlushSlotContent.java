@@ -1,7 +1,6 @@
 
 package igentuman.nc.network.toServer;
 
-import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.block.entity.processor.NCProcessorBE;
 import igentuman.nc.network.INcPacket;
 import net.minecraft.core.BlockPos;

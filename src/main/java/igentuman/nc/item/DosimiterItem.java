@@ -35,6 +35,4 @@ public class DosimiterItem extends Item
 		}
 		return InteractionResultHolder.sidedSuccess(stack, world.isClientSide);
 	}
-
-
 }

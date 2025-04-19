@@ -1,12 +1,9 @@
 package igentuman.nc.item;
 
-import igentuman.nc.setup.registration.CreativeTabs;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -21,7 +18,6 @@ public class RadShieldingItem extends Item
 {
 	private int burnTime = -1;
 	private boolean isHidden = false;
-
 	private int radShieldingLevel = 0;
 
 	public RadShieldingItem()

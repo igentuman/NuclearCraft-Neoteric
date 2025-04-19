@@ -24,18 +24,18 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
 
     private int irradiationConnections = 0;
     private final List<Block> validModerators;
-    public HashMap<BlockPos, HeatSinkBlock> validHeatSinks = new HashMap<>();
-    private List<BlockPos> moderators = new ArrayList<>();
-    private List<BlockPos> irradiators = new ArrayList<>();
-    public List<BlockPos> heatSinks = new ArrayList<>();
-    public List<BlockPos> fuelCells = new ArrayList<>();
+    public final HashMap<BlockPos, HeatSinkBlock> validHeatSinks = new HashMap<>();
+    private final List<BlockPos> moderators = new ArrayList<>();
+    private final List<BlockPos> irradiators = new ArrayList<>();
+    public final List<BlockPos> heatSinks = new ArrayList<>();
+    public final List<BlockPos> fuelCells = new ArrayList<>();
     private double heatSinkCooling = 0;
     public double activeCooling = 0;
     private FissionControllerBE controllerBe;
-    private List<BlockPos> directFuelCellConnectionPos = new ArrayList<>();
-    private List<BlockPos> secondFuelCellConnectionPos = new ArrayList<>();
-    public HashMap<String, Integer> coolantPerTick = new HashMap<>();
-    private List<BlockPos> delayedValidation = new ArrayList<>();
+    private final List<BlockPos> directFuelCellConnectionPos = new ArrayList<>();
+    private final List<BlockPos> secondFuelCellConnectionPos = new ArrayList<>();
+    public final HashMap<String, Integer> coolantPerTick = new HashMap<>();
+    private final List<BlockPos> delayedValidation = new ArrayList<>();
     private boolean delayedValidationFlag = false;
 
     @Override

@@ -6,8 +6,8 @@ import java.util.List;
 
 public class BarrelBlocks {
 
-    private static HashMap<String, BarrelBlockPrefab> all = new HashMap<>();
-    private static HashMap<String, BarrelBlockPrefab> registered = new HashMap<>();
+    private final static HashMap<String, BarrelBlockPrefab> all = new HashMap<>();
+    private final static HashMap<String, BarrelBlockPrefab> registered = new HashMap<>();
 
     public static HashMap<String, BarrelBlockPrefab> all() {
         if (all.isEmpty()) {

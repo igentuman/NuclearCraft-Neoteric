@@ -28,6 +28,7 @@ import static igentuman.nc.setup.registration.Registries.BLOCK_REGISTRY;
 import static igentuman.nc.setup.registration.Registries.ITEM_REGISTRY;
 
 public class CoilDef {
+
     public double efficiency = 0;
     public String name = "";
     public String[] rules;

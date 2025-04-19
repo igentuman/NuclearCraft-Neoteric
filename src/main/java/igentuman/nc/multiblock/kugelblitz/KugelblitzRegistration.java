@@ -25,16 +25,17 @@ import static igentuman.nc.setup.registration.Tags.blockTag;
 import static igentuman.nc.setup.registration.Tags.itemTag;
 
 public class KugelblitzRegistration {
+
     public static final Pattern TRANSPARENT_BLOCKS_PATTERN = Pattern.compile(".*(glass|photon|transformer|stabilizer).*");
     public static final BlockBehaviour.Properties NO_OCCLUSION_BLOCK_PROPS = BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(3f).requiresCorrectToolForDrops().noOcclusion();
     public static final Item.Properties KUGELBLITZ_ITEM_PROPERTIES = new Item.Properties();
     public static final Block.Properties KUGELBLITZ_BLOCK_PROPERTIES =  BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(4f).requiresCorrectToolForDrops();;
-    public static HashMap<String, RegistryObject<BlockEntityType<? extends BlockEntity>>> KUGELBLITZ_BE = new HashMap<>();
+    public static final HashMap<String, RegistryObject<BlockEntityType<? extends BlockEntity>>> KUGELBLITZ_BE = new HashMap<>();
 
-    public static HashMap<String, RegistryObject<Item>> KUGELBLITZ_ITEMS = new HashMap<>();
-    public static HashMap<String, RegistryObject<Block>> KUGELBLITZ_BLOCKS = new HashMap<>();
-    public static TagKey<Block> CASING_BLOCKS = blockTag("kugelblitz_casing");
-    public static TagKey<Item> CASING_ITEMS = itemTag("kugelblitz_casing");
+    public static final HashMap<String, RegistryObject<Item>> KUGELBLITZ_ITEMS = new HashMap<>();
+    public static final HashMap<String, RegistryObject<Block>> KUGELBLITZ_BLOCKS = new HashMap<>();
+    public static final TagKey<Block> CASING_BLOCKS = blockTag("kugelblitz_casing");
+    public static final TagKey<Item> CASING_ITEMS = itemTag("kugelblitz_casing");
 
     public static final RegistryObject<Block> EXPL_PROXY_BLOCK =
             BLOCKS.register("expl_proxy_block",

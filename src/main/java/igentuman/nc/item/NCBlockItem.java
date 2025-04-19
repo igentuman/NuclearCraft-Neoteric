@@ -1,7 +1,6 @@
 package igentuman.nc.item;
 
 import igentuman.nc.content.materials.Blocks;
-import igentuman.nc.content.materials.Chunks;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.Item;
 import org.jetbrains.annotations.NotNull;

@@ -24,7 +24,8 @@ import static igentuman.nc.util.TagUtil.getBlocksByTagKey;
 import static net.minecraft.world.item.Items.AIR;
 
 public class ItemRadiation {
-    protected static HashMap<Item, Double> radiationMap = new HashMap<>();
+
+    protected static final HashMap<Item, Double> radiationMap = new HashMap<>();
     protected static boolean initialized = false;
     public static HashMap<Item, Double> get()
     {

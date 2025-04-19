@@ -1,12 +1,10 @@
 package igentuman.nc.item;
 
-import igentuman.nc.setup.registration.CreativeTabs;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
@@ -17,7 +15,6 @@ import java.util.List;
 
 public class ContainerBlockItem extends BlockItem
 {
-
 	public ContainerBlockItem(Block pBlock, Properties props)
 	{
 		super(pBlock, new Properties().stacksTo(1));
@@ -51,5 +48,4 @@ public class ContainerBlockItem extends BlockItem
 		list.add(Component.translatable("tooltip.nc.content_saved").withStyle(ChatFormatting.GRAY));
 		list.add(Component.translatable("tooltip.nc.use_multitool").withStyle(ChatFormatting.YELLOW));
 	}
-
 }

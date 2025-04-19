@@ -1,6 +1,5 @@
 package igentuman.nc.item;
 
-import igentuman.nc.content.materials.Nuggets;
 import igentuman.nc.content.materials.Plates;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.Item;

@@ -14,11 +14,11 @@ import net.minecraftforge.items.wrapper.InvWrapper;
 import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_CONTAINER;
 
 public class StorageContainerContainer<T extends AbstractContainerMenu> extends AbstractContainerMenu {
+
    private final ContainerBE blockEntity;
    private final Player playerEntity;
    private final IItemHandler playerInventory;
    private final IItemHandler containerInventory;
-
 
    public StorageContainerContainer(int pContainerId, BlockPos pos, Inventory pPlayerInventory) {
       super(STORAGE_CONTAINER.get(), pContainerId);

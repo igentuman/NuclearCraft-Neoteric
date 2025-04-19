@@ -19,38 +19,37 @@ import java.util.List;
 
 import static igentuman.nc.NuclearCraft.LOGGER;
 
-
 @SuppressWarnings("ALL")
 public class Processors {
 
-    private static HashMap<String, ProcessorPrefab> all = new HashMap<>();
-    private static HashMap<String, ProcessorPrefab> registered = new HashMap<>();
-    public static String GAS_SCRUBBER = "gas_scrubber";
-    public static String PUMP = "pump";
-    public static String ANALYZER = "analyzer";
-    public static String LEACHER = "leacher";
-    public static String NUCLEAR_FURNACE = "nuclear_furnace";
-    public static String MANUFACTORY = "manufactory";
-    public static String ALLOY_SMELTER = "alloy_smelter";
-    public static String ASSEMBLER = "assembler";
-    public static String CENTRIFUGE = "centrifuge";
-    public static String CHEMICAL_REACTOR = "chemical_reactor";
-    public static String CRYSTALLIZER = "crystallizer";
-    public static String FUEL_REPROCESSOR = "fuel_reprocessor";
-    public static String DECAY_HASTENER = "decay_hastener";
-    public static String ELECTROLYZER = "electrolyzer";
-    public static String EXTRACTOR = "extractor";
-    public static String FLUID_ENRICHER = "fluid_enricher";
-    public static String FLUID_INFUSER = "fluid_infuser";
-    public static String INGOT_FORMER = "ingot_former";
-    public static String IRRADIATOR = "irradiator";
-    public static String ISOTOPE_SEPARATOR = "isotope_separator";
-    public static String MELTER = "melter";
-    public static String PRESSURIZER = "pressurizer";
-    public static String ROCK_CRUSHER = "rock_crusher";
-    public static String STEAM_TURBINE = "steam_turbine";
-    public static String SUPERCOOLER = "supercooler";
-    public static String QUANTUM_TRANSFORMER = "quantum_transformer";
+    private final static HashMap<String, ProcessorPrefab> all = new HashMap<>();
+    private final static HashMap<String, ProcessorPrefab> registered = new HashMap<>();
+    public final static String GAS_SCRUBBER = "gas_scrubber";
+    public final static String PUMP = "pump";
+    public final static String ANALYZER = "analyzer";
+    public final static String LEACHER = "leacher";
+    public final static String NUCLEAR_FURNACE = "nuclear_furnace";
+    public final static String MANUFACTORY = "manufactory";
+    public final static String ALLOY_SMELTER = "alloy_smelter";
+    public final static String ASSEMBLER = "assembler";
+    public final static String CENTRIFUGE = "centrifuge";
+    public final static String CHEMICAL_REACTOR = "chemical_reactor";
+    public final static String CRYSTALLIZER = "crystallizer";
+    public final static String FUEL_REPROCESSOR = "fuel_reprocessor";
+    public final static String DECAY_HASTENER = "decay_hastener";
+    public final static String ELECTROLYZER = "electrolyzer";
+    public final static String EXTRACTOR = "extractor";
+    public final static String FLUID_ENRICHER = "fluid_enricher";
+    public final static String FLUID_INFUSER = "fluid_infuser";
+    public final static String INGOT_FORMER = "ingot_former";
+    public final static String IRRADIATOR = "irradiator";
+    public final static String ISOTOPE_SEPARATOR = "isotope_separator";
+    public final static String MELTER = "melter";
+    public final static String PRESSURIZER = "pressurizer";
+    public final static String ROCK_CRUSHER = "rock_crusher";
+    public final static String STEAM_TURBINE = "steam_turbine";
+    public final static String SUPERCOOLER = "supercooler";
+    public final static String QUANTUM_TRANSFORMER = "quantum_transformer";
 
     @OnlyIn(Dist.CLIENT)
     public static void setScreen(String name, MenuScreens.ScreenConstructor constructor) {

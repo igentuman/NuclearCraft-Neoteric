@@ -11,7 +11,8 @@ import static igentuman.nc.handler.config.RadiationConfig.RADIATION_CONFIG;
 import static net.minecraft.world.item.Items.AIR;
 
 public class ItemShielding {
-    protected static HashMap<Item, Integer> shieldingItems = new HashMap<>();
+
+    protected static final HashMap<Item, Integer> shieldingItems = new HashMap<>();
     protected static boolean initialized = false;
     public static HashMap<Item, Integer> get()
     {

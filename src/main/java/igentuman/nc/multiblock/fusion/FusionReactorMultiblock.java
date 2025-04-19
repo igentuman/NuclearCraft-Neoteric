@@ -24,6 +24,7 @@ import static net.minecraft.core.Direction.*;
 import static net.minecraft.world.level.block.Blocks.AIR;
 
 public class FusionReactorMultiblock extends AbstractNCMultiblock {
+
     public int magnetsEfficiency = 0;
     public int rfEfficiency = 0;
     protected FusionCoreBE controllerBE;

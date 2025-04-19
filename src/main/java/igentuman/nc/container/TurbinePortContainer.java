@@ -24,23 +24,19 @@ import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_PORT_CONTAINER;
 
 public class TurbinePortContainer extends AbstractContainerMenu {
-    protected TurbinePortBE portBE;
-    protected Player playerEntity;
 
-
-    protected String name = "turbine_port";
+    protected final TurbinePortBE portBE;
+    protected final Player playerEntity;
+    protected final String name = "turbine_port";
     private int slotIndex = 0;
-
-    protected IItemHandler playerInventory;
+    protected final IItemHandler playerInventory;
 
     public TurbinePortContainer(int pContainerId, BlockPos pos, Inventory playerInventory) {
         super(TURBINE_PORT_CONTAINER.get(), pContainerId);
         this.playerEntity = playerInventory.player;
         this.playerInventory =  new InvWrapper(playerInventory);
         portBE = (TurbinePortBE) playerEntity.getCommandSenderWorld().getBlockEntity(pos);
-
         layoutPlayerInventorySlots();
-
     }
 
     public BlockPos getPosition() {

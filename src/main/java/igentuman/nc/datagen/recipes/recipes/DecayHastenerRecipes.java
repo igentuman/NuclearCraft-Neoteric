@@ -37,7 +37,7 @@ public class DecayHastenerRecipes extends AbstractRecipeProvider {
         itemToItem(isotopeIngredient(Materials.americium243), isotopeStack(Materials.plutonium238));
         itemToItem(isotopeIngredient(Materials.curium243), isotopeStack(Materials.plutonium239));
         itemToItem(isotopeIngredient(Materials.curium245), isotopeStack(Materials.plutonium241));
-        itemToItem(isotopeIngredient(Materials.curium246), isotopeStack(Materials.plutonium242));
+        itemToItem(isotopeIngredient(Materials.curium246), isotopeStack(Materials.americium242));
         itemToItem(isotopeIngredient(Materials.curium247), isotopeStack(Materials.americium243));
         itemToItem(isotopeIngredient(Materials.berkelium247), isotopeStack(Materials.americium243));
         itemToItem(isotopeIngredient(Materials.berkelium248), dustIngredient(Materials.thorium));

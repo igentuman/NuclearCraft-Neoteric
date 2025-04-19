@@ -823,9 +823,9 @@ public class NCRecipes extends RecipeProvider {
                 .pattern("TTT")
                 .pattern("TIT")
                 .pattern(" I ")
-                .define('T', forgeIngot(Materials.thorium))
+                .define('T', forgePlate(Materials.thorium))
                 .define('I', forgeIngot("iron"))
-                .unlockedBy("item", has(forgeIngot(Materials.thorium)))
+                .unlockedBy("item", has(forgePlate(Materials.thorium)))
                 .save(consumer, new ResourceLocation(MODID, "spaxelhoe_thorium"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ALL_NC_ITEMS.get("upgrade_speed").get())

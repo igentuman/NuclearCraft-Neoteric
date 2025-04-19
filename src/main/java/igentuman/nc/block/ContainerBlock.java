@@ -152,7 +152,6 @@ public class ContainerBlock extends Block implements EntityBlock {
         pPlayer.causeFoodExhaustion(0.005F);
         ContainerBE ContainerBE = (ContainerBE) pBlockEntity;
         CompoundTag data = ContainerBE.getUpdateTag();
-
         ItemStack drop = new ItemStack(this);
         drop.setTag(data);
         if (!pLevel.isClientSide()) {

@@ -4,8 +4,6 @@ import igentuman.nc.content.ArmorMaterials;
 import igentuman.nc.content.materials.*;
 import igentuman.nc.item.*;
 import igentuman.nc.item.Tiers;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
 import net.minecraftforge.registries.RegistryObject;
@@ -16,7 +14,6 @@ import java.util.List;
 
 import static igentuman.nc.setup.registration.NCSounds.SOUND_MAP;
 import static igentuman.nc.setup.registration.Registries.ITEMS;
-import static igentuman.nc.setup.registration.Registries.ITEM_REGISTRY;
 import static igentuman.nc.setup.registration.Tags.*;
 
 public class NCItems {
@@ -41,7 +38,8 @@ public class NCItems {
     public static HashMap<String, RegistryObject<Item>> MULTIBLOCK_ITEMS = new HashMap<>();
     public static final Item.Properties ITEM_PROPERTIES = new Item.Properties();
     public static final Item.Properties ONE_ITEM_PROPERTIES = new Item.Properties().stacksTo(1);
-    public static final Item.Properties PAXEL_PROPS = new Item.Properties().stacksTo(1).durability(5000).fireResistant();
+    public static final Item.Properties THORIUM_PAXEL_PROPS = new Item.Properties().stacksTo(1).durability(5000).fireResistant();
+    public static final Item.Properties TOUGH_PAXEL_PROPS = new Item.Properties().stacksTo(1).durability(9000).fireResistant();
     public static final Item.Properties HAZMAT_PROPS = new Item.Properties().stacksTo(1).durability(250);
     public static final Item.Properties TOUGH_PROPS = new Item.Properties().stacksTo(1).durability(2500).fireResistant();
     public static final Item.Properties HEV_PROPS = new Item.Properties().stacksTo(1).durability(5500).fireResistant();
@@ -76,8 +74,8 @@ public class NCItems {
 
     public static final RegistryObject<Item> GEIGER_COUNTER = ITEMS.register("geiger_counter", () -> new GeigerCounterItem(ONE_ITEM_PROPERTIES));
     public static final RegistryObject<Item> LITHIUM_ION_CELL = ITEMS.register("lithium_ion_cell", () -> new BatteryItem(ONE_ITEM_PROPERTIES));
-    public static final RegistryObject<Item> SPAXELHOE_TOUGH = ITEMS.register("spaxelhoe_tough", () -> new PaxelItem(7, 2, Tiers.TOUGH, PAXEL_PROPS));
-    public static final RegistryObject<Item> SPAXELHOE_THORIUM = ITEMS.register("spaxelhoe_thorium", () -> new PaxelItem(3, 1, Tiers.THORIUM, PAXEL_PROPS));
+    public static final RegistryObject<Item> SPAXELHOE_TOUGH = ITEMS.register("spaxelhoe_tough", () -> new PaxelItem(7, 2, Tiers.TOUGH, TOUGH_PAXEL_PROPS));
+    public static final RegistryObject<Item> SPAXELHOE_THORIUM = ITEMS.register("spaxelhoe_thorium", () -> new PaxelItem(3, 1, Tiers.THORIUM, THORIUM_PAXEL_PROPS));
     public static final RegistryObject<Item> QNP = ITEMS.register("qnp", () -> new QNP(Tiers.QNP, 11, 2F, ONE_ITEM_PROPERTIES));
     public static final RegistryObject<Item> MULTITOOL = ITEMS.register("multitool", () -> new MultitoolItem(ONE_ITEM_PROPERTIES));
 

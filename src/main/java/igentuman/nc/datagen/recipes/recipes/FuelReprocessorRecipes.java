@@ -25,7 +25,7 @@ public class FuelReprocessorRecipes extends AbstractRecipeProvider {
             add(
                     fuelIngredient(List.of("depleted", "americium", "hea-242", type), 1),
                     List.of(
-                            isotopeStack(Materials.americium243, 3), isotopeStack(Materials.curium243),
+                            isotopeStack(Materials.americium243, 3), isotopeStack(Materials.americium242),
                             isotopeStack(Materials.curium246, 2), isotopeStack(Materials.berkelium247),
                             dustIngredient(Materials.molybdenum), dustIngredient(Materials.promethium_147)
                     ), 1.5D

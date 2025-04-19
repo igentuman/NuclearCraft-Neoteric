@@ -107,8 +107,6 @@ public class QNP extends PickaxeItem
 	{
 	}
 
-
-
 	@Override
 	public boolean isBarVisible(@NotNull ItemStack pStack) {
 		return true;
@@ -163,6 +161,10 @@ public class QNP extends PickaxeItem
 		if (entityLiving instanceof Player) {
 			HitResult rayTraceResult = RayTraceUtils.rayTraceSimple(worldIn, entityLiving, 16, 0);
 			if (rayTraceResult.getType() == HitResult.Type.BLOCK) {
+				BlockEntity be = worldIn.getExistingBlockEntity(pos);
+				if(be != null) {
+					return super.mineBlock(stack, worldIn, state, pos, entityLiving);
+				}
 				BlockHitResult blockResult = (BlockHitResult) rayTraceResult;
 				List<ItemStack> totalDrops = new ArrayList<>();
 				if(getMode(stack) == Mode.VEIN_MINER) {
@@ -171,7 +173,7 @@ public class QNP extends PickaxeItem
 					mineArea(pos, worldIn, entityLiving, blockResult, stack, totalDrops);
 				}
 				totalDrops.forEach(itemStack -> {
-					Block.popResource(worldIn, entityLiving.blockPosition().relative(entityLiving.getDirection(), 1), itemStack);
+					Block.popResource(worldIn, entityLiving.blockPosition().relative(entityLiving.getDirection(), 2), itemStack);
 				});
 			}
 		}
@@ -186,7 +188,8 @@ public class QNP extends PickaxeItem
 		int xp = ForgeHooks.onBlockBreakEvent(worldIn, ((ServerPlayer) entityLiving).gameMode.getGameModeForPlayer(), (ServerPlayer) entityLiving, pos);
 		if (xp >= 0 && block.onDestroyedByPlayer(tempState, worldIn, pos, (ServerPlayer) entityLiving, true, tempState.getFluidState())) {
 			block.destroy(worldIn, pos, tempState);
-			Block.getDrops(tempState, (ServerLevel) worldIn, pos, null, entityLiving, tool).forEach(itemStack -> {
+			//block.playerDestroy(worldIn, (Player) entityLiving, pos, tempState, worldIn.getExistingBlockEntity(pos), tool);
+			Block.getDrops(tempState, (ServerLevel) worldIn, pos, worldIn.getExistingBlockEntity(pos), entityLiving, tool).forEach(itemStack -> {
 				boolean combined = false;
 				for (ItemStack drop : totalDrops) {
 					if (ItemHandlerHelper.canItemStacksStack(drop, itemStack)) {

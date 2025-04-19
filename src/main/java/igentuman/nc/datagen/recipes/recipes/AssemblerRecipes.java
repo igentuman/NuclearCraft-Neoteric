@@ -53,9 +53,7 @@ public class AssemblerRecipes extends AbstractRecipeProvider {
         itemsToItems(
                 List.of(
                         plateIngredient(Materials.tough_alloy, 5),
-                        ingredient(NETHERITE_AXE),
-                        ingredient(NETHERITE_PICKAXE),
-                        ingredient(NETHERITE_SHOVEL)
+                        ingotIngredient("iron", 2)
                 ),
                 List.of(ingredient(SPAXELHOE_TOUGH.get()))
         );

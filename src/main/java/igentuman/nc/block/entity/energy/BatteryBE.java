@@ -3,6 +3,7 @@ package igentuman.nc.block.entity.energy;
 import igentuman.nc.NuclearCraft;
 import igentuman.api.nc.SideModeToggleable;
 import igentuman.nc.content.energy.BatteryBlocks;
+import igentuman.nc.util.CustomEnergyStorage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustParticleOptions;
@@ -30,7 +31,6 @@ import static igentuman.nc.handler.config.CommonConfig.ENERGY_STORAGE;
 public class BatteryBE extends NCEnergy {
 
     public static final ModelProperty<HashMap<Integer, SideModeToggleable.SideMode>> SIDE_CONFIG = new ModelProperty<>();
-    public boolean syncSideConfig = true;
     private int chargeCooldown = 0;
 
     public BatteryBE(BlockPos pPos, BlockState pBlockState) {
@@ -110,7 +110,6 @@ public class BatteryBE extends NCEnergy {
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
         }
     }
-
 
     @Override
     protected int getEnergyTransferPerTick() {

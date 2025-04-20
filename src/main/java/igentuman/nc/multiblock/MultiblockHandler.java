@@ -163,6 +163,8 @@ public class MultiblockHandler {
         return false;
     }
 
+
+
     public static AbstractNCMultiblock getMultiblockByPos(BlockPos pos) {
         if (multiblocks.isEmpty()) {
             return null;
@@ -177,6 +179,14 @@ public class MultiblockHandler {
                 }
             }
         }
+
+        // If not found in chunk cache, check all multiblocks as fallback
+        for (AbstractNCMultiblock multiblock : multiblocks.values()) {
+            if (multiblock != null && multiblock.containsPos(pos)) {
+                return multiblock;
+            }
+        }
+
         return null;
     }
 }

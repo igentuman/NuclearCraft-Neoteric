@@ -61,7 +61,7 @@ public class Gas2FluidConverter implements IGasHandler {
         return input;
     }
 
-    private HashMap<Gas, Fluid> gasFluidMap = new HashMap<>();
+    private final HashMap<Gas, Fluid> gasFluidMap = new HashMap<>();
 
     private FluidStack convert(GasStack stack) {
         int amount = (int)stack.getAmount();

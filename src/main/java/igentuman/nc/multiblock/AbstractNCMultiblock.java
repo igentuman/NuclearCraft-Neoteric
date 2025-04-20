@@ -430,6 +430,8 @@ public abstract class AbstractNCMultiblock implements Multiblock {
         isFormed = outerValid && innerValid;
         if (isFormed) {
             validationResult = ValidationResult.VALID;
+        } else {
+            controller.clearStats();
         }
         debugLog("NC multiblock was validated at " + controllerPos().toShortString());
     }
@@ -498,15 +500,17 @@ public abstract class AbstractNCMultiblock implements Multiblock {
 
     public boolean onBlockChange(BlockPos pos) {
         if (hasToRefresh) return true;
-        if (allBlocks.contains(pos)) {
-            Block targetBlock = getBlockState(pos).getBlock();
-            if (SPECIAL_BLOCKS.matcher(targetBlock.getDescriptionId()).matches()) {
-                if (getLevel().getBlockState(pos).is(targetBlock)) {
+        if (containsPos(pos)) {
+            BlockState targetBlock = getBlockState(pos);
+            if (SPECIAL_BLOCKS.matcher(targetBlock.getBlock().getDescriptionId()).matches()) {
+                if (getLevel().getBlockState(pos).is(targetBlock.getBlock())) {
                     return true;
                 }
             }
             hasToRefresh = true;
-            controller.clearStats();
+            if(getLevel().getBlockState(pos).isAir()) {
+                controller.clearStats();
+            }
             return true;
         }
         resolveDimensions();
@@ -520,7 +524,9 @@ public abstract class AbstractNCMultiblock implements Multiblock {
                 }
             }
             hasToRefresh = true;
-            controller.clearStats();
+            if(getLevel().getBlockState(pos).isAir()) {
+                controller.clearStats();
+            }
             return true;
         }
         return false;
@@ -542,5 +548,9 @@ public abstract class AbstractNCMultiblock implements Multiblock {
 
     public ChunkPos getChunk() {
         return new ChunkPos(controllerPos.getX() >> 4, controllerPos.getZ() >> 4);
+    }
+
+    public boolean containsPos(BlockPos pos) {
+        return allBlocks.contains(pos);
     }
 }

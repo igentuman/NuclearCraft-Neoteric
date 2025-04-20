@@ -72,7 +72,7 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler implements
 
     public boolean isValidSlotFluid(int id, FluidStack fluid)
     {
-        if(allowedFluids == null) return true;
+        if(allowedFluids == null) return false;
         if(!allowedFluids.containsKey(id)) return true;
         for(FluidStack stack: allowedFluids.get(id).get()) {
             if(stack.isFluidEqual(fluid)) {

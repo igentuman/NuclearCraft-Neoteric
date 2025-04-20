@@ -299,7 +299,7 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
 
     public boolean isValidInputItem(ItemStack item)
     {
-        if(allowedInputItems == null) return true;
+        if(allowedInputItems == null) return false;
         if(allowedInputItems.get().contains(item)) return true;
         for(ItemStack stack: allowedInputItems.get()) {
             if(stack.is(item.getItem())) {

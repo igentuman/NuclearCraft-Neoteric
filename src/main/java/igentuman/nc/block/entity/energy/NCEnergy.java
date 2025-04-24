@@ -26,20 +26,29 @@ public class NCEnergy extends NuclearCraftBE {
 
     protected String name;
     public static String NAME;
-    public final CustomEnergyStorage energyStorage = createEnergy();
-    protected final LazyOptional<IEnergyStorage> energy = LazyOptional.of(() -> energyStorage);
+    public final CustomEnergyStorage energyStorage;
+    protected final LazyOptional<IEnergyStorage> energy;
 
     public NCEnergy(BlockEntityType<?> pType, BlockPos pPos, BlockState pBlockState, String name) {
         super(pType, pPos, pBlockState);
+        energyStorage = createEnergy();
+        energy = LazyOptional.of(() -> energyStorage);
     }
 
     public NCEnergy(BlockPos pPos, BlockState pBlockState, String name) {
         super(NCEnergyBlocks.ENERGY_BE.get(name).get(), pPos, pBlockState);
         this.name = name;
+        energyStorage = createEnergy();
+        energy = LazyOptional.of(() -> energyStorage);
+    }
+
+    @Override
+    public CustomEnergyStorage energyStorage() {
+        return energyStorage;
     }
 
     protected void sendOutPower() {
-        AtomicInteger capacity = new AtomicInteger(energyStorage.getEnergyStored());
+        AtomicInteger capacity = new AtomicInteger(energyStorage().getEnergyStored());
         if (capacity.get() > 0) {
             for (Direction direction : Direction.values()) {
                 BlockEntity be = level.getExistingBlockEntity(worldPosition.relative(direction));
@@ -48,7 +57,7 @@ public class NCEnergy extends NuclearCraftBE {
                                 if (handler.canReceive()) {
                                     int received = handler.receiveEnergy(Math.min(capacity.get(), getEnergyTransferPerTick()), false);
                                     capacity.addAndGet(-received);
-                                    energyStorage.consumeEnergy(received);
+                                    energyStorage().consumeEnergy(received);
                                     setChanged();
                                     return capacity.get() > 0;
                                 } else {
@@ -69,13 +78,12 @@ public class NCEnergy extends NuclearCraftBE {
         return energy;
     }
 
-
     protected int getEnergyMaxStorage() {
         return 100;
     }
 
     protected int getEnergyTransferPerTick() {
-        return Math.min(getEnergyMaxStorage(), energyStorage.getEnergyStored());
+        return Math.min(getEnergyMaxStorage(), energyStorage().getEnergyStored());
     }
 
     private CustomEnergyStorage createEnergy() {
@@ -95,7 +103,7 @@ public class NCEnergy extends NuclearCraftBE {
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if (cap == ForgeCapabilities.ENERGY) {
-            return energy.cast();
+            return getEnergy().cast();
         }
         return super.getCapability(cap, side);
     }
@@ -107,6 +115,6 @@ public class NCEnergy extends NuclearCraftBE {
     @Override
     public void setRemoved() {
         super.setRemoved();
-        energy.invalidate();
+        getEnergy().invalidate();
     }
 }

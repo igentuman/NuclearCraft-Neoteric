@@ -3,7 +3,6 @@ package igentuman.nc.block.entity.energy;
 import igentuman.nc.NuclearCraft;
 import igentuman.api.nc.SideModeToggleable;
 import igentuman.nc.content.energy.BatteryBlocks;
-import igentuman.nc.util.CustomEnergyStorage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustParticleOptions;
@@ -64,7 +63,7 @@ public class BatteryBE extends NCEnergy {
      * Push/pull energy to adjacent blocks
      */
     protected void transferEnergy() {
-        AtomicInteger capacity = new AtomicInteger(energyStorage.getEnergyStored());
+        AtomicInteger capacity = new AtomicInteger(energyStorage().getEnergyStored());
         for (Direction direction : Direction.values()) {
             if(
                     sideConfig.get(direction.ordinal()) == SideModeToggleable.SideMode.DISABLED ||
@@ -83,8 +82,8 @@ public class BatteryBE extends NCEnergy {
                 }
             }
         }
-        if(capacity.get() != energyStorage.getEnergyStored()) {
-            energyStorage.setEnergy(capacity.get());
+        if(capacity.get() != energyStorage().getEnergyStored()) {
+            energyStorage().setEnergy(capacity.get());
             level.setBlockAndUpdate(worldPosition, getBlockState());
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
         }
@@ -94,18 +93,18 @@ public class BatteryBE extends NCEnergy {
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if (cap == ForgeCapabilities.ENERGY && (side != null && sideConfig.get(side.ordinal()) != SideModeToggleable.SideMode.DISABLED)) {
-            return energy.cast();
+            return getEnergy().cast();
         }
         return super.getCapability(cap, side);
     }
 
     @Override
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        int oldEnergy = energyStorage.getEnergyStored();
+        int oldEnergy = energyStorage().getEnergyStored();
 
         CompoundTag tag = pkt.getTag();
         handleUpdateTag(tag);
-        if (oldEnergy != energyStorage.getEnergyStored()) {
+        if (oldEnergy != energyStorage().getEnergyStored()) {
             level.setBlockAndUpdate(worldPosition, getBlockState());
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
         }
@@ -113,7 +112,7 @@ public class BatteryBE extends NCEnergy {
 
     @Override
     protected int getEnergyTransferPerTick() {
-        return Math.min(BatteryBlocks.all().get(getName()).getStorage(), energyStorage.getEnergyStored());
+        return Math.min(BatteryBlocks.all().get(getName()).getStorage(), energyStorage().getEnergyStored());
     }
 
     public int getMaxTransfer() {

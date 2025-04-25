@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:subatomic_liquifier",
+  "input": [
+    {
+      "tag": "forge:storage_blocks/uranium"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 72,
+      "tag": "forge:subliquid_matter"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 3.0
+}

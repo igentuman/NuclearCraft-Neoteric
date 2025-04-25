@@ -43,5 +43,6 @@ public class CustomRecipes extends NCRecipes {
         FusionCoolantRecipes.generate(consumer);
         FissionBoilingRecipes.generate(consumer);
         TurbineControllerRecipes.generate(consumer);
+        SubatomicLiquifierRecipes.generate(consumer);
     }
 }

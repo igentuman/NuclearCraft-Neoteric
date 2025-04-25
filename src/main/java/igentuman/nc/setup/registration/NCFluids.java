@@ -38,6 +38,7 @@ import java.util.function.Function;
 
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.content.materials.Materials.slurries;
+import static igentuman.nc.content.materials.Materials.subliquid_matter;
 import static igentuman.nc.setup.registration.Registries.*;
 import static igentuman.nc.setup.registration.Tags.GASES_TAG;
 import static igentuman.nc.setup.registration.Tags.LIQUIDS_TAG;
@@ -139,6 +140,7 @@ public class NCFluids {
         items.put("liquid_helium", new LiquidDefinition("liquid_helium", 0x50A0EFFF));
         items.put("liquid_oxygen", new LiquidDefinition("liquid_oxygen", 0x507E8CC8));
         items.put("liquid_nitrogen", new LiquidDefinition("liquid_nitrogen", 0x5031C23A));
+        items.put(subliquid_matter, new LiquidDefinition(subliquid_matter, 0x50C90076));
 
         for(LiquidDefinition liquid: items.values()) {
             LIQUIDS_TAG.put(liquid.name, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(),  new ResourceLocation("forge", liquid.name)));

@@ -156,6 +156,7 @@ public class Materials extends MaterialsManager {
     public final static String stainless_steel = "stainless_steel";
     public final static String super_alloy = "super_alloy";
     public final static String tungsten_carbide = "tungsten_carbide";
+    public final static String subliquid_matter = "subliquid_matter";
     public static String bscco = "bscco";
     public static List<String> slurries;
 

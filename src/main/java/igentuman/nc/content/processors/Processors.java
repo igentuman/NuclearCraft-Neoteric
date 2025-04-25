@@ -50,6 +50,7 @@ public class Processors {
     public final static String STEAM_TURBINE = "steam_turbine";
     public final static String SUPERCOOLER = "supercooler";
     public final static String QUANTUM_TRANSFORMER = "quantum_transformer";
+    public final static String SUBATOMIC_LIQUIFIER = "subatomic_liquifier";
 
     @OnlyIn(Dist.CLIENT)
     public static void setScreen(String name, MenuScreens.ScreenConstructor constructor) {
@@ -260,12 +261,13 @@ public class Processors {
                             .progressBar(11)
                             .build()
             );
-/*            all.put(QUANTUM_TRANSFORMER,
+            all.put(SUBATOMIC_LIQUIFIER,
                     ProcessorBuilder
-                            .make(QUANTUM_TRANSFORMER, 1, 0, 1, 0)
-                            .blockEntity(QuantumTransformerBE::new)
+                            .make(SUBATOMIC_LIQUIFIER, 1, 1, 1, 0)
+                            .blockEntity(SubatomicLiquifierBE::new)
+                            .recipe(SubatomicLiquifierBE.Recipe::new)
                             .build()
-            );*/
+            );
 
             scanForProcessorRegistries();
         }

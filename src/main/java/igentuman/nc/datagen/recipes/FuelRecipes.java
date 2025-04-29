@@ -16,6 +16,8 @@ import java.util.function.Consumer;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.datagen.recipes.recipes.AbstractRecipeProvider.getIsotope;
+import static igentuman.nc.setup.registration.FissionFuel.NC_FUEL;
+import static igentuman.nc.setup.registration.FissionFuel.NC_ISOTOPES;
 
 public class FuelRecipes extends NCRecipes {
 
@@ -29,11 +31,17 @@ public class FuelRecipes extends NCRecipes {
         for (String name: Materials.isotopes()) {
             for(String type: new String[] {"_ox", "_ni", "_za"}) {
                 String key = name+type;
-                SimpleCookingRecipeBuilder.smelting(Ingredient.of(FissionFuel.NC_ISOTOPES.get(key).get()),
+                if(!NC_ISOTOPES.containsKey(key)) {
+                    continue;
+                }
+                SimpleCookingRecipeBuilder.smelting(Ingredient.of(NC_ISOTOPES.get(key).get()),
                                 RecipeCategory.MISC,
-                                FissionFuel.NC_ISOTOPES.get(name).get(), 1.0f, 100)
-                        .unlockedBy("item", inventoryTrigger(ItemPredicate.Builder.item().of(FissionFuel.NC_ISOTOPES.get(name).get()).build()))
+                                NC_ISOTOPES.get(name).get(), 1.0f, 100)
+                        .unlockedBy("item", inventoryTrigger(ItemPredicate.Builder.item().of(NC_ISOTOPES.get(name).get()).build()))
                         .save(consumer, MODID+"_"+name+type+"_sml");
+                if(name.matches("xenorium|quantite")) {
+                    break;
+                }
             }
         }
 
@@ -41,10 +49,10 @@ public class FuelRecipes extends NCRecipes {
             for(String subType: FuelManager.all().get(name).keySet()) {
                 for (String type : new String[]{"ox", "ni", "za"}) {
                     List<String> key = List.of("fuel", name, subType, type);
-                    SimpleCookingRecipeBuilder.smelting(Ingredient.of(FissionFuel.NC_FUEL.get(key).get()),
+                    SimpleCookingRecipeBuilder.smelting(Ingredient.of(NC_FUEL.get(key).get()),
                                     RecipeCategory.MISC,
-                                    FissionFuel.NC_FUEL.get(List.of("fuel", name, subType, "")).get(), 1.0f, 100)
-                            .unlockedBy("item", inventoryTrigger(ItemPredicate.Builder.item().of( FissionFuel.NC_FUEL.get(List.of("fuel", name, subType, "")).get()).build()))
+                                    NC_FUEL.get(List.of("fuel", name, subType, "")).get(), 1.0f, 100)
+                            .unlockedBy("item", inventoryTrigger(ItemPredicate.Builder.item().of( NC_FUEL.get(List.of("fuel", name, subType, "")).get()).build()))
                             .save(consumer, MODID + "_fuel_" + name+subType + type + "_sml");
 
                     key = List.of("depleted", name, subType, type);
@@ -84,11 +92,11 @@ public class FuelRecipes extends NCRecipes {
             isotope1Cnt = 3;
             isotope2Cnt = 6;
         }
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, FissionFuel.NC_FUEL.get(List.of("fuel", name, subType, type)).get(), 3)
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NC_FUEL.get(List.of("fuel", name, subType, type)).get(), 3)
                 .group(MODID+"_ingots")
                 .requires(getIsotope(name, String.valueOf(isotope1), type), isotope1Cnt)
                 .requires(getIsotope(name, String.valueOf(isotope2), type), isotope2Cnt)
-                .unlockedBy("has_ore", inventoryTrigger(ItemPredicate.Builder.item().of( FissionFuel.NC_FUEL.get(List.of("fuel", name, subType, type)).get()).build()))
+                .unlockedBy("has_ore", inventoryTrigger(ItemPredicate.Builder.item().of( NC_FUEL.get(List.of("fuel", name, subType, type)).get()).build()))
                 .save(consumer, MODID + "_fuel_" + name+subType + type+"_cr");
     }
 

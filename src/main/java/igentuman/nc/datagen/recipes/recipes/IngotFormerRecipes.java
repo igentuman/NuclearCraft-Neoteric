@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import static igentuman.nc.setup.registration.FissionFuel.*;
 import static net.minecraft.world.item.Items.*;
 
 public class IngotFormerRecipes extends AbstractRecipeProvider {
@@ -32,7 +33,10 @@ public class IngotFormerRecipes extends AbstractRecipeProvider {
         for (String name: Materials.isotopes()) {
             for(String type: new String[] {"", "_ox", "_ni", "_za"}) {
                 String key = name+type;
-                add(ingredient(FissionFuel.NC_ISOTOPES.get(key).get()), fluidStack(key, 144));
+                if(!NC_ISOTOPES.containsKey(key)) {
+                    continue;
+                }
+                add(ingredient(NC_ISOTOPES.get(key).get()), fluidStack(key, 144));
             }
         }
 
@@ -47,11 +51,11 @@ public class IngotFormerRecipes extends AbstractRecipeProvider {
                         keyStr += "_";
                     }
                     keyStr+= type;
-                    add(ingredient(FissionFuel.NC_FUEL.get(key).get()), fluidStack(keyStr, 144));
+                    add(ingredient(NC_FUEL.get(key).get()), fluidStack(keyStr, 144));
 
                     key = List.of("depleted", name, subType, type);
                     keyStr = "depleted_"+keyStr;
-                    add(ingredient(FissionFuel.NC_DEPLETED_FUEL.get(key).get()), fluidStack(keyStr, 144));
+                    add(ingredient(NC_DEPLETED_FUEL.get(key).get()), fluidStack(keyStr, 144));
                 }
             }
         }

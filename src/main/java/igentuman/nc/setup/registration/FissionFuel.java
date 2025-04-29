@@ -56,6 +56,9 @@ public class FissionFuel {
         for(String name: Materials.isotopes()) {
             for(String type: new String[]{"", "_za", "_ox","_ni"}) {
                 NC_ISOTOPES.put(name+type, ITEMS.register(name.replace("/", "_")+type, () -> new Item(ITEM_PROPERTIES)));
+                if(name.matches("xenorium.*|quantite")) {
+                    break;
+                }
             }
         }
     }

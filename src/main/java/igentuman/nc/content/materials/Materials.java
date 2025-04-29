@@ -157,6 +157,8 @@ public class Materials extends MaterialsManager {
     public final static String super_alloy = "super_alloy";
     public final static String tungsten_carbide = "tungsten_carbide";
     public final static String subliquid_matter = "subliquid_matter";
+    public final static String xenorium298 = "xenorium298";
+    public final static String quantite = "quantite";
     public static String bscco = "bscco";
     public static List<String> slurries;
 
@@ -330,6 +332,8 @@ public class Materials extends MaterialsManager {
         isotopes.put(uranium233, 0.0003);
         isotopes.put(uranium235, 0.002);
         isotopes.put(uranium238, 0.000002);
+        isotopes.put(xenorium298, 1.2);
+        isotopes.put(quantite, 0.3);
         return isotopes();
     }
 

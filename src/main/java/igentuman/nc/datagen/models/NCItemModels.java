@@ -19,6 +19,7 @@ import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BL
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_CORE_PROXY;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BLOCKS;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
+import static igentuman.nc.setup.registration.FissionFuel.NC_ISOTOPES;
 import static igentuman.nc.setup.registration.NCItems.*;
 
 public class NCItemModels extends ItemModelProvider {
@@ -170,8 +171,8 @@ public class NCItemModels extends ItemModelProvider {
     }
 
     private void isotopes() {
-        for(String name: FissionFuel.NC_ISOTOPES.keySet()) {
-            singleTexture(FissionFuel.NC_ISOTOPES.get(name).getId().getPath(),
+        for(String name: NC_ISOTOPES.keySet()) {
+            singleTexture(NC_ISOTOPES.get(name).getId().getPath(),
                     mcLoc("item/generated"),
                     "layer0", modLoc("item/material/isotope/"+name));
         }

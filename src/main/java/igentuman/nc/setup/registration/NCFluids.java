@@ -39,6 +39,7 @@ import java.util.function.Function;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.content.materials.Materials.slurries;
 import static igentuman.nc.content.materials.Materials.subliquid_matter;
+import static igentuman.nc.setup.registration.FissionFuel.NC_ISOTOPES;
 import static igentuman.nc.setup.registration.Registries.*;
 import static igentuman.nc.setup.registration.Tags.GASES_TAG;
 import static igentuman.nc.setup.registration.Tags.LIQUIDS_TAG;
@@ -265,6 +266,9 @@ public class NCFluids {
     {
         for(String name: Materials.isotopes()) {
             for(String type: new String[]{"", "_za", "_ox","_ni"}) {
+                if(!NC_ISOTOPES.containsKey(name+type)) {
+                    continue;
+                }
                 if(NC_MATERIALS.containsKey(name+type)) continue;
                 int color = 0xFFCCCCCC;
                 if(FMLEnvironment.dist.isClient()) {
@@ -273,7 +277,6 @@ public class NCFluids {
                 NC_MATERIALS.put(name+type,
                         FluidEntry.makeMoltenLiquid(name.replace("/", "_")+type,color));
                 LIQUIDS_TAG.put(name+type, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(),  new ResourceLocation("forge", name+type)));
-
             }
         }
     }

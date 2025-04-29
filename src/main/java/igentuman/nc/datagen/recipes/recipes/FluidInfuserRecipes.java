@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import static igentuman.nc.setup.registration.FissionFuel.NC_FUEL;
+import static igentuman.nc.setup.registration.FissionFuel.NC_ISOTOPES;
 import static igentuman.nc.setup.registration.NCItems.ALL_NC_ITEMS;
 import static net.minecraft.world.item.Items.ICE;
 
@@ -27,10 +29,13 @@ public class FluidInfuserRecipes extends AbstractRecipeProvider {
             String type = gas.substring(0, 2).replace("zi", "za");
             for (String name : Materials.isotopes()) {
                 String key = name + "_"+type;
+                if(!NC_ISOTOPES.containsKey(key)) {
+                    continue;
+                }
                 add(
                         fluidIngredient(gas, 100),
-                        ingredient(FissionFuel.NC_ISOTOPES.get(name).get()),
-                        ingredient(FissionFuel.NC_ISOTOPES.get(key).get())
+                        ingredient(NC_ISOTOPES.get(name).get()),
+                        ingredient(NC_ISOTOPES.get(key).get())
                 );
             }
 
@@ -40,8 +45,8 @@ public class FluidInfuserRecipes extends AbstractRecipeProvider {
                     List<String> keyResult = List.of("fuel", name, subType, type);
                     add(
                             fluidIngredient(gas, 1000),
-                            ingredient(FissionFuel.NC_FUEL.get(key).get()),
-                            ingredient(FissionFuel.NC_FUEL.get(keyResult).get())
+                            ingredient(NC_FUEL.get(key).get()),
+                            ingredient(NC_FUEL.get(keyResult).get())
                     );
                 }
             }

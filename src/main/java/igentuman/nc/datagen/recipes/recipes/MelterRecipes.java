@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import static igentuman.nc.setup.registration.FissionFuel.NC_ISOTOPES;
 import static net.minecraft.world.item.Items.*;
 
 public class MelterRecipes extends AbstractRecipeProvider {
@@ -41,7 +42,10 @@ public class MelterRecipes extends AbstractRecipeProvider {
         for (String name: Materials.isotopes()) {
             for(String type: new String[] {"", "_ox", "_ni", "_za"}) {
                 String key = name+type;
-                add(ingredient(FissionFuel.NC_ISOTOPES.get(key).get()), fluidIngredient(key, 144));
+                if(!NC_ISOTOPES.containsKey(key)) {
+                    continue;
+                }
+                add(ingredient(NC_ISOTOPES.get(key).get()), fluidIngredient(key, 144));
             }
         }
 

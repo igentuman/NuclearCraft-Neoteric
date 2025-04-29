@@ -20,6 +20,7 @@ import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
 
+import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.recipes.NcRecipeSerializers.SERIALIZERS;
 import static igentuman.nc.recipes.type.NcRecipe.getBarrier;
 
@@ -42,7 +43,7 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerial
                     try {
                         inputFluids[i] = IngredientCreatorAccess.fluid().deserialize(in);
                     } catch (Exception ex) {
-                        NuclearCraft.LOGGER.warn("Unable to parse input fluid for recipe: "+recipeId);
+                        debugLog("Unable to parse input fluid for recipe: "+recipeId);
                         inputFluids[i] = IngredientCreatorAccess.fluid().from(FluidStack.EMPTY);
                     }
                     i++;
@@ -52,7 +53,7 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerial
                 try {
                 inputFluids = new FluidStackIngredient[]{IngredientCreatorAccess.fluid().deserialize(inputJson)};
                 } catch (Exception ex) {
-                    NuclearCraft.LOGGER.warn("Unable to parse input fluid for recipe: " + recipeId);
+                    debugLog("Unable to parse input fluid for recipe: " + recipeId);
                     inputFluids[0] = IngredientCreatorAccess.fluid().from(FluidStack.EMPTY);
                 }
             }
@@ -73,7 +74,7 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerial
                         try {
                             outputFluids[i] = IngredientCreatorAccess.fluid().deserialize(out.getAsJsonObject());
                         } catch (Exception ex) {
-                            NuclearCraft.LOGGER.warn("Unable to parse output fluid for recipe: "+recipeId);
+                            debugLog("Unable to parse output fluid for recipe: "+recipeId);
                             outputFluids[i] = IngredientCreatorAccess.fluid().from(FluidStack.EMPTY);
                         }
                         i++;
@@ -83,7 +84,7 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerial
                     try {
                         outputFluids = new FluidStackIngredient[]{IngredientCreatorAccess.fluid().deserialize(output.getAsJsonObject())};
                     } catch (Exception ex) {
-                        NuclearCraft.LOGGER.warn("Unable to parse output fluid for recipe: " + recipeId);
+                        debugLog("Unable to parse output fluid for recipe: " + recipeId);
                         outputFluids[0] = IngredientCreatorAccess.fluid().from(FluidStack.EMPTY);
                     }
                 }
@@ -104,7 +105,7 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerial
                     try {
                         inputItems[i] = IngredientCreatorAccess.item().deserialize(in);
                     } catch (Exception ex) {
-                        NuclearCraft.LOGGER.warn("Unable to parse input for recipe: "+recipeId);
+                        debugLog("Unable to parse input for recipe: "+recipeId);
                         inputItems[i] = getBarrier();
                     }
                     i++;
@@ -114,7 +115,7 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerial
                 try {
                     inputItems = new ItemStackIngredient[]{IngredientCreatorAccess.item().deserialize(inputJson)};
                 } catch (Exception ex) {
-                    NuclearCraft.LOGGER.warn("Unable to parse input for recipe: " + recipeId);
+                    debugLog("Unable to parse input for recipe: " + recipeId);
                     inputItems[0] = getBarrier();
                 }
             }
@@ -135,7 +136,7 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerial
                     try {
                         outputItems[i] = IngredientCreatorAccess.item().deserialize(out);
                     } catch (JsonSyntaxException ex) {
-                        NuclearCraft.LOGGER.error("Error parsing output itemstack for recipe: " + recipeId.toString());
+                        debugLog("Error parsing output itemstack for recipe: " + recipeId.toString());
                         outputItems[i] = getBarrier();
                     }
                     i++;
@@ -145,7 +146,7 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerial
                 try {
                     outputItems = new ItemStackIngredient[]{IngredientCreatorAccess.item().deserialize(output.getAsJsonObject())};
                 } catch (Exception ex) {
-                    NuclearCraft.LOGGER.warn("Unable to parse output for recipe: "+recipeId);
+                    debugLog("Unable to parse output for recipe: "+recipeId);
                     outputItems[0] = getBarrier();
                 }
             }
@@ -181,7 +182,7 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerial
                 rarityModifier = temperature;
             }
         } catch (Exception ex) {
-            NuclearCraft.LOGGER.warn("Unable to parse params for recipe: "+recipeId);
+            debugLog("Unable to parse params for recipe: "+recipeId);
         }
         return this.factory.create(recipeId, inputItems, outputItems, inputFluids, outputFluids, timeModifier, powerModifier, radiation, rarityModifier);
     }
@@ -222,9 +223,9 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerial
 
             return this.factory.create(recipeId, inputItems, outputItems, inputFluids,  outputFluids, timeModifier, powerModifier, radiation, 1);
         } catch (Exception e) {
-            NuclearCraft.LOGGER.error("Error reading recipe {} from packet. Trace: {}", recipeId, e);
+            debugLog("Error reading recipe {} from packet. Trace: {} "+ recipeId + e);
         }
-        NuclearCraft.LOGGER.error("Return empty recipe for: {}", recipeId);
+        debugLog("Return empty recipe for: {}" + recipeId);
 
         //return invalid recipe
         return emptyRecipe(recipeId);
@@ -235,7 +236,7 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerial
         try {
             recipe.write(buffer);
         } catch (Exception e) {
-            NuclearCraft.LOGGER.error("Error writing recipe to packet.", e);
+            debugLog("Error writing recipe to packet." + e);
             throw e;
         }
     }

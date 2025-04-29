@@ -4,6 +4,7 @@ import igentuman.api.nc.multiblock.MultiblockAttachable;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.multiblock.AbstractNCMultiblock;
+import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.ValidationResult;
 import igentuman.nc.util.CustomEnergyStorage;
 import igentuman.nc.util.annotation.NBTField;
@@ -121,6 +122,14 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
                 validationResult = ValidationResult.VALID;
             }
         }
+    }
+
+    @Override
+    public void setChanged() {
+        super.setChanged();
+        wasUpdated = true;
+        changed = true;
+        MultiblockHandler.addIgnoreToUpdate(getBlockPos());
     }
 
     @Override

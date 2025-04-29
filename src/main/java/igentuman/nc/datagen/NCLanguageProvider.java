@@ -106,6 +106,13 @@ public class NCLanguageProvider extends LanguageProvider {
         add("nc_jei_cat.mek_chemical_conversion", "NC - GAS -> Fluid Conversion");
         add("nc_jei_cat.fission_boiling", "Boiling Reactor");
 
+        add("label.kugelblitz.evaporation", "Evaporation Rate: %s");
+        add("label.kugelblitz.blackhole_mass", "Blackhole Mass: %s");
+        add("label.kugelblitz.frequency", "Quantum Frequency: %s");
+        add("label.kugelblitz.transformation", "Transformation");
+        add("label.kugelblitz.feeding", "Feeding Rate: %s");
+        add("label.kugelblitz.energy_gen", "FE Gen");
+
         add("reactor.size", "Structure size: %sx%sx%s");
         add("fission.casing.wrong.block", "Wrong block at: %s");
         add("fission_reactor.efficiency", "Efficiency: %s%%");

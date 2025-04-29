@@ -39,18 +39,6 @@ public class KugelblitzPeripheral implements IPeripheral {
     }
 
     @LuaFunction
-    public final void enablecontroller()
-    {
-        controller.disableForceShutdown();
-    }
-
-    @LuaFunction
-    public final void disablecontroller()
-    {
-        controller.forceShutdown();
-    }
-
-    @LuaFunction
     public final int getEnergyPerTick()
     {
         return controller.energyPerTick;

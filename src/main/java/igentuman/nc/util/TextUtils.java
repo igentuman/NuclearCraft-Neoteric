@@ -102,6 +102,24 @@ public class TextUtils
 		return val;
 	}
 
+	public static String formatMass(long mass)
+	{
+		if(mass >= 1000000000000L) {
+			return TextUtils.numberFormat(mass/1000000000000d)+" TT";
+		}
+		if(mass >= 1000000000) {
+			return TextUtils.numberFormat(mass/1000000000d)+" GT";
+		}
+		if(mass >= 1000000) {
+			return TextUtils.numberFormat(mass/1000000d)+" MT";
+		}
+		if(mass >= 1000) {
+			return TextUtils.numberFormat(mass/1000d)+" kT";
+		}
+		return TextUtils.numberFormat(mass)+" T";
+	}
+
+
 	public static String formatEnergy(int energy)
 	{
 		if(energy >= 1000000000) {

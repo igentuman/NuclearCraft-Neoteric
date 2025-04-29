@@ -105,7 +105,7 @@ public class ChamberTerminalBlock extends HorizontalDirectionalBlock implements 
             return (lvl, pos, blockState, t) -> {
                 if (t instanceof ChamberTerminalBE tile) {
                     tile.tickClient();
-                    level.setBlock(pos, blockState.setValue(POWERED, tile.powered), 3);
+                    level.setBlock(pos, blockState.setValue(POWERED, tile.controllerEnabled), 3);
                 }
             };
         }

@@ -14,6 +14,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import static igentuman.nc.block.entity.kugelblitz.BlackHoleBE.MIN_MASS;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.CASING_BLOCKS;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BLOCKS;
 import static igentuman.nc.util.TagUtil.getBlocksByTagKey;
@@ -51,6 +53,10 @@ public class KugelblitzMultiblock extends AbstractNCMultiblock {
             controllerBe = (ChamberTerminalBE) controller().controllerBE();
         }
         return controllerBe;
+    }
+
+    public BlackHoleBE getBlackHole() {
+        return blackHole;
     }
 
     @Override
@@ -321,6 +327,7 @@ public class KugelblitzMultiblock extends AbstractNCMultiblock {
             }
             if (energyTransfered) {
                 getLevel().setBlockAndUpdate(getCenter(), KUGELBLITZ_BLOCKS.get("black_hole").get().defaultBlockState());
+                controllerBE().mass = MIN_MASS*2;
             }
         }
     }

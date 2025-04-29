@@ -6,9 +6,12 @@ import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageSources;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -18,12 +21,14 @@ import java.util.List;
 import static igentuman.nc.block.kugelblitz.BlackHoleBlock.ACTIVE;
 import static igentuman.nc.setup.registration.NCSounds.BLACKHOLE_IDLE;
 import static igentuman.nc.setup.registration.NCSounds.BLACKHOLE_SPAWN;
+import static net.minecraft.world.level.block.Blocks.AIR;
 
 public class BlackHoleBE extends NuclearCraftBE {
 
     public static String NAME = "black_hole";
     public float scale = 0.3f;
-
+    public static long MIN_MASS = 100_000_000L;
+    public static long MAX_MASS = 100_000_000_000L;
     @NBTField
     public boolean isInitialized = false;
     @NBTField
@@ -143,5 +148,16 @@ public class BlackHoleBE extends NuclearCraftBE {
 
     public float getBlackholeScale() {
         return scale;
+    }
+
+    public void meltdown() {
+        getLevel().explode(null,  getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), 10, Level.ExplosionInteraction.TNT);
+        setRemoved();
+        getLevel().setBlockAndUpdate(getBlockPos(), AIR.defaultBlockState());
+    }
+
+    public void evaporate() {
+        setRemoved();
+        getLevel().setBlockAndUpdate(getBlockPos(), AIR.defaultBlockState());
     }
 }

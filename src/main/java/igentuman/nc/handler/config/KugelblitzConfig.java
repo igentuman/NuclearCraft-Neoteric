@@ -36,6 +36,8 @@ public class KugelblitzConfig {
 
     public static class GeneralConfig {
         public ForgeConfigSpec.ConfigValue<Integer> LASER_DISTANCE;
+        public ForgeConfigSpec.ConfigValue<Double> GENERATION_MULTIPLIER;
+        public ForgeConfigSpec.ConfigValue<Double> EVAPORATION_MULTIPLIER;
 
         public GeneralConfig(ForgeConfigSpec.Builder builder) {
             builder.comment("Settings for Fusion Reactor").push("general");
@@ -44,6 +46,13 @@ public class KugelblitzConfig {
                     .comment("Laser burst distance.")
                     .defineInRange("min_size", 32, 8, 64);
 
+            GENERATION_MULTIPLIER = builder
+                    .comment("Multiplier for kugelblitz chamber FE generation.")
+                    .defineInRange("fe_generation_multiplier", 1.0, 0.001, 1000.0);
+
+            EVAPORATION_MULTIPLIER = builder
+                    .comment("Adjust rate of blackhole evaporation.")
+                    .defineInRange("blackhole_evaporation_rate", 1.0, 0.001, 1000.0);
 
             builder.pop();
         }

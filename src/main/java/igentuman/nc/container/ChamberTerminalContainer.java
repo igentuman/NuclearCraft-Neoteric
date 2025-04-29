@@ -36,8 +36,8 @@ public class ChamberTerminalContainer extends AbstractContainerMenu {
         blockEntity = (ChamberTerminalBE) playerEntity.getCommandSenderWorld().getExistingBlockEntity(pos);
         layoutPlayerInventorySlots();
         blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
-            addSlot(new NCSlotItemHandler.Input(h, 0, 56, 35));
-            addSlot(new NCSlotItemHandler.Output(h, 1, 116, 35));
+            addSlot(new NCSlotItemHandler.Input(h, 0, 130, 80));
+            addSlot(new NCSlotItemHandler.Output(h, 1, 197, 80));
         });
     }
 
@@ -141,8 +141,8 @@ public class ChamberTerminalContainer extends AbstractContainerMenu {
     }
 
     protected void layoutPlayerInventorySlots() {
-        int leftCol = 8;
-        int topRow = 153;
+        int leftCol = 27;
+        int topRow = 163;
         addSlotRange(playerInventory, leftCol, topRow, 9, 18);
         topRow -= 58;
         addSlotBox(playerInventory, leftCol, topRow, 9, 18, 3, 18);
@@ -178,5 +178,33 @@ public class ChamberTerminalContainer extends AbstractContainerMenu {
 
     public FluidTank getFluidTank(int i) {
         return blockEntity.getFluidTank(i);
+    }
+
+    public BlockPos getBlockPos() {
+        return blockEntity.getBlockPos();
+    }
+
+    public int getEnergyRate() {
+        return blockEntity.energyConvertionRate;
+    }
+
+    public int getFrequency() {
+        return blockEntity.frequency;
+    }
+
+    public boolean hasBlackhole() {
+        return blockEntity.mass > 0;
+    }
+
+    public long getMass() {
+        return blockEntity.mass;
+    }
+
+    public int getEvaporation() {
+        return blockEntity.evaporation;
+    }
+
+    public long getFeeding() {
+        return blockEntity.feeding;
     }
 }

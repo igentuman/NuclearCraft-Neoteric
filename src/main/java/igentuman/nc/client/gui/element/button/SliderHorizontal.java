@@ -24,6 +24,7 @@ public class SliderHorizontal extends NCGuiElement {
     private boolean isPressed = false;
     private BlockPos pos;
     private int startX;
+    private int buttonId = 0;
 
     public SliderHorizontal(int xPos, int yPos, int width, AbstractContainerScreen<?> screen, BlockPos pos)  {
         super(xPos, yPos, width, 12, Component.empty());
@@ -38,6 +39,10 @@ public class SliderHorizontal extends NCGuiElement {
         btn = new NCImageButton(X(), Y(), 4, 8, 0, 169, -9, TEXTURE, pButton -> {
 
         });
+    }
+    public SliderHorizontal(int xPos, int yPos, int width, AbstractContainerScreen<?> screen, BlockPos pos, int btnId)  {
+        this(xPos, yPos, width, screen, pos);
+        buttonId = btnId;
     }
 
     @Override
@@ -74,7 +79,7 @@ public class SliderHorizontal extends NCGuiElement {
             if(xpos > 0) {
                 ratio = 100-xpos*100/(width - 3);
             }
-            NuclearCraft.packetHandler().sendToServer(new PacketSliderChanged(pos, ratio, 0));
+            NuclearCraft.packetHandler().sendToServer(new PacketSliderChanged(pos, ratio, buttonId));
         }
     }
 
@@ -114,7 +119,7 @@ public class SliderHorizontal extends NCGuiElement {
         return this;
     }
 
-    public void slideTo(int rfAmplifiersPowerRatio) {
-        btn.setX(startX+screen.getGuiLeft()+width*rfAmplifiersPowerRatio/100);
+    public void slideTo(int ratio) {
+        btn.setX(startX+screen.getGuiLeft()+width*ratio/100);
     }
 }

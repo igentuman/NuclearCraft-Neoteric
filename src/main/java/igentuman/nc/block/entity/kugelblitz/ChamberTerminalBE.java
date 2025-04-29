@@ -2,30 +2,23 @@ package igentuman.nc.block.entity.kugelblitz;
 
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.MultiblockControllerBE;
-import igentuman.nc.block.entity.fusion.FusionCoreBE;
-import igentuman.nc.client.sound.SoundHandler;
 import igentuman.nc.compat.cc.KugelblitzPeripheral;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.SlotModePair;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
+import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.ValidationResult;
 import igentuman.nc.multiblock.kugelblitz.KugelblitzMultiblock;
 import igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration;
-import igentuman.nc.recipes.NcRecipeType;
-import igentuman.nc.recipes.RecipeInfo;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
+import igentuman.nc.recipes.ingredient.creator.IngredientCreatorAccess;
 import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.util.CustomEnergyStorage;
 import igentuman.nc.util.annotation.NBTField;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -45,10 +38,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
+import static igentuman.nc.block.entity.kugelblitz.BlackHoleBE.MAX_MASS;
+import static igentuman.nc.block.entity.kugelblitz.BlackHoleBE.MIN_MASS;
 import static igentuman.nc.block.fission.FissionControllerBlock.POWERED;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
-import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
-import static igentuman.nc.setup.registration.NCSounds.FISSION_REACTOR;
+import static igentuman.nc.content.materials.Materials.subliquid_matter;
+import static igentuman.nc.handler.config.CommonConfig.ENERGY_GENERATION;
+import static igentuman.nc.handler.config.KugelblitzConfig.KUGELBLITZ_CONFIG;
+import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BE;
 import static igentuman.nc.util.ModUtil.isCcLoaded;
 
 public class ChamberTerminalBE extends MultiblockControllerBE {
@@ -58,30 +55,39 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
     public final CustomEnergyStorage energyStorage;
     private LazyOptional<KugelblitzPeripheral> peripheralCap;
     protected final LazyOptional<IEnergyStorage> energy;
+
+    @NBTField
+    public long feeding = 0;
     @NBTField
     public int energyPerTick = 0;
     @NBTField
-    public boolean powered = false;
-    @NBTField
-    protected boolean forceShutdown = false;
-    @NBTField
     public double efficiency = 0;
+    @NBTField
+    public long mass = 0;
+    @NBTField
+    public int evaporation = 0;
+    @NBTField
+    public byte frequency = 0;
+    @NBTField
+    public int energyConvertionRate = 50;
+    @NBTField
+    public boolean controllerEnabled = false;
+
+
     protected Direction facing;
     public Recipe recipe;
     public HashMap<String, Recipe> cachedRecipes = new HashMap<>();
     private List<FluidStack> allowedInputs;
 
-
     public ChamberTerminalBE(BlockPos pPos, BlockState pBlockState) {
-        super(KugelblitzRegistration.KUGELBLITZ_BE.get(NAME).get(), pPos, pBlockState);
+        super(KUGELBLITZ_BE.get(NAME).get(), pPos, pBlockState);
         energyStorage = createEnergy();
         energy = LazyOptional.of(() -> energyStorage);
         multiblock = new KugelblitzMultiblock(this);
         contentHandler = new SidedContentHandler(
-                0, 0,
-                1, 1, 1000, 10000);
+                1, 1,
+                1, 0, 1000);
         contentHandler.fluidCapability.setGlobalMode(0, SlotModePair.SlotMode.INPUT);
-        contentHandler.fluidCapability.setGlobalMode(1, SlotModePair.SlotMode.OUTPUT);
         contentHandler.setBlockEntity(this);
         contentHandler.setAllowedInputFluids(0, this::getAllowedInputFluids);
     }
@@ -107,7 +113,7 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
 
     @Override
     public Recipe getRecipe() {
-        if(contentHandler().fluidCapability.tanks.get(0).isEmpty()) return null;
+        if(contentHandler().itemHandler.getStackInSlot(0).isEmpty()) return null;
         //TODO implement
         return null;
     }
@@ -126,7 +132,7 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
             return contentHandler().getFluidCapability(null);
         }
         if (cap == ForgeCapabilities.ENERGY) {
-            return energy.cast();
+            return getEnergy().cast();
         }
         if(isCcLoaded()) {
             if(cap == dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL) {
@@ -136,19 +142,17 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
         return super.getCapability(cap, side);
     }
 
-    protected void playRunningSound() {
-        if(isRemoved() || (currentSound != null && !currentSound.getLocation().equals(FISSION_REACTOR.get().getLocation()))) {
-            SoundHandler.stopTileSound(getBlockPos());
-            currentSound = null;
-        }
-        if((currentSound == null || !Minecraft.getInstance().getSoundManager().isActive(currentSound))) {
-            if(currentSound != null && currentSound.getLocation().equals(FISSION_REACTOR.get().getLocation())) {
-                return;
+    @Override
+    public void handleSliderUpdate(int buttonId, int ratio) {
+        switch(buttonId) {
+            case 0 -> {
+                energyConvertionRate = ratio;
             }
-
-            playSoundCooldown = 20;
-            currentSound = SoundHandler.startTileSound(FISSION_REACTOR.get(), SoundSource.BLOCKS, 0.2f, level.getRandom(), getBlockPos());
+            case 1 -> {
+                frequency = (byte) ratio;
+            }
         }
+        setChanged();
     }
 
     public void tickClient() {
@@ -158,7 +162,6 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
         }
         if(energyPerTick > 0) {
             //spawnSteamParticles();
-            playRunningSound();
         }
     }
     protected int reValidateCounter = 0;
@@ -169,45 +172,86 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
         }
         changed = false;
         super.tickServer();
-        boolean wasPowered = powered;
+        boolean wasEnabled = controllerEnabled;
         handleValidation();
-        trackChanges(wasPowered, powered);
-        controllerEnabled = (hasRedstoneSignal() || controllerEnabled) && this.getMultiblock().isFormed();
-        controllerEnabled = !forceShutdown && controllerEnabled;
+        controllerEnabled = getMultiblock().isFormed() && hasBlackhole();
 
-        if (this.getMultiblock().isFormed()) {
+        if (controllerEnabled) {
             trackChanges(contentHandler.tick());
-            if(controllerEnabled) {
-                powered = true;
-                //powered = processRecipe();
-                trackChanges(powered);
-            } else {
-                powered = false;
-            }
+            long wasMass = mass;
+            updateBlackholeMass();
+            trackChanges(false, wasMass != mass);
             handleMeltdown();
         }
-        refreshCacheFlag = !this.getMultiblock().isFormed();
-        if(wasPowered != powered) {
-            level.setBlockAndUpdate(worldPosition, getBlockState().setValue(POWERED, powered));
+        refreshCacheFlag = !getMultiblock().isFormed();
+        if(wasEnabled != controllerEnabled) {
+           setChanged();
         }
         if(refreshCacheFlag || changed) {
             try {
-                level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(POWERED, powered), Block.UPDATE_ALL);
+                MultiblockHandler.addIgnoreToUpdate(getBlockPos());
+                level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(POWERED, controllerEnabled), Block.UPDATE_ALL);
+                level.setBlockAndUpdate(worldPosition, getBlockState().setValue(POWERED, controllerEnabled));
             } catch (NullPointerException ignored) {}
         }
+    }
 
-        controllerEnabled = false;
+    public boolean hasBlackhole() {
+        return getMultiblock().getBlackHole() instanceof BlackHoleBE;
+    }
+
+    private void updateBlackholeMass()
+    {
+        if (!hasBlackhole()) {
+            mass = 0;
+            evaporation = 0;
+            energyPerTick = 0;
+            return;
+        }
+        feeding = contentHandler().fluidCapability.getFluidInSlot(0).getAmount() * 10L;
+        mass += feeding;
+        contentHandler.fluidCapability.voidSlot(0);
+        updateEnergyGeneration();
+        updateEvaporation();
+        mass -= evaporation;
+        if (mass < MIN_MASS) {
+            doEvaporation();
+        }
+    }
+
+    private void updateEnergyGeneration() {
+        int wasEnergy = energyPerTick;
+        energyPerTick = (int)  (mass * 0.00005D * Math.log(energyConvertionRate+1));
+        energyPerTick *= ENERGY_GENERATION.GENERATION_MULTIPLIER.get();
+        energyPerTick *= KUGELBLITZ_CONFIG.GENERATION_MULTIPLIER.get();
+        energyStorage().addEnergy(energyPerTick);
+        if (wasEnergy != energyPerTick) {
+            setChanged();
+        }
+    }
+
+    private void updateEvaporation() {
+        int wasEvaporation = evaporation;
+        int rate = Math.max(1, energyConvertionRate);
+        if (recipeInfo().recipe() != null && !recipeInfo().isCompleted()) {
+            rate = 100;
+        }
+        rate = (int) Math.pow(rate, 1.2);
+        evaporation = (int) (rate * KUGELBLITZ_CONFIG.EVAPORATION_MULTIPLIER.get() * (mass * 0.0000001D));
+        if (wasEvaporation != evaporation) {
+            setChanged();
+        }
+    }
+
+    private void doEvaporation() {
+        
     }
 
     public List<FluidStack> getAllowedInputFluids()
     {
         if(allowedInputs == null) {
             allowedInputs = new ArrayList<>();
-            for(NcRecipe recipe: NcRecipeType.ALL_RECIPES.get(getName()).getRecipeType().getRecipes(getLevel())) {
-                for(FluidStackIngredient ingredient: recipe.getInputFluids()) {
-                    allowedInputs.addAll(ingredient.getRepresentations());
-                }
-            }
+            allowedInputs.addAll(IngredientCreatorAccess.fluid().from(subliquid_matter, 1).getRepresentations());
         }
         return allowedInputs;
     }
@@ -235,7 +279,6 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
             if(isCasingValid) {
                 isInternalValid = this.getMultiblock().isInnerValid();
             }
-            powered = false;
             changed = true;
         }
         validationResult = this.getMultiblock().validationResult;
@@ -255,7 +298,11 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
     }
 
     private void handleMeltdown() {
-
+        if(mass > MAX_MASS) {
+            if (getMultiblock().isFormed() && getMultiblock().getBlackHole() != null) {
+                getMultiblock().getBlackHole().meltdown();
+            }
+        }
     }
 
     private boolean processRecipe() {
@@ -349,14 +396,6 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
 
     public boolean hasRedstoneSignal() {
         return Objects.requireNonNull(getLevel()).hasNeighborSignal(worldPosition);
-    }
-
-    public void forceShutdown() {
-        forceShutdown = true;
-    }
-
-    public void disableForceShutdown() {
-        forceShutdown = false;
     }
 
     public boolean isProcessing() {

@@ -3,6 +3,7 @@ package igentuman.nc.compat.jei;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.fission.FissionControllerBE;
 import igentuman.nc.block.entity.fusion.FusionCoreBE;
+import igentuman.nc.block.entity.kugelblitz.ChamberTerminalBE;
 import igentuman.nc.block.entity.turbine.TurbineControllerBE;
 import igentuman.nc.client.NcClient;
 import igentuman.nc.client.gui.fission.FissionControllerScreen;
@@ -42,6 +43,7 @@ import static igentuman.nc.util.ModUtil.isMekanismLoaded;
 public  class JEIPlugin implements IModPlugin {
     public static HashMap<String, RecipeType<? extends NcRecipe>> recipeTypes;
 
+    public static final RecipeType<ChamberTerminalBE.Recipe> KUGELBLITZ = new RecipeType<>(new ResourceLocation(MODID, "kugelblitz_chamber"), ChamberTerminalBE.Recipe.class);
     public static final RecipeType<FissionControllerBE.Recipe> FISSION = new RecipeType<>(new ResourceLocation(MODID, FissionControllerBE.NAME), FissionControllerBE.Recipe.class);
     public static final RecipeType<FusionCoreBE.Recipe> FUSION = new RecipeType<>(new ResourceLocation(MODID, "fusion_core"), FusionCoreBE.Recipe.class);
     public static final RecipeType<FusionCoreBE.FusionCoolantRecipe> FUSION_COOLANT = new RecipeType<>(new ResourceLocation(MODID, "fusion_coolant"), FusionCoreBE.FusionCoolantRecipe.class);
@@ -94,6 +96,7 @@ public  class JEIPlugin implements IModPlugin {
         registration.addRecipeCategories(new FissionBoilingCategoryWrapper<>(registration.getJeiHelpers().getGuiHelper(), FISSION_BOILING));
         registration.addRecipeCategories(new TurbineControllerCategoryWrapper<>(registration.getJeiHelpers().getGuiHelper(), TURBINE_CONTROLLER));
         registration.addRecipeCategories(new FissionCategoryWrapper<>(registration.getJeiHelpers().getGuiHelper(), FISSION));
+        registration.addRecipeCategories(new KugelblitzCategoryWrapper<>(registration.getJeiHelpers().getGuiHelper(), KUGELBLITZ));
         if(isMekanismLoaded()) {
             registration.addRecipeCategories(new MekChemicalConversionCategoryWrapper<>(registration.getJeiHelpers().getGuiHelper(), CHEMICAL_TO_FLUID));
         }
@@ -114,7 +117,7 @@ public  class JEIPlugin implements IModPlugin {
                 if(List.of(
                         "fusion_core", "fusion_coolant",
                         "fission_reactor_controller", "fission_boiling",
-                        "nc_ore_veins", "turbine_controller"
+                        "nc_ore_veins", "turbine_controller", "kugelblitz_chamber"
                 ).contains(name)) {
                     continue;
                 }
@@ -122,6 +125,9 @@ public  class JEIPlugin implements IModPlugin {
                         getRecipeType(name),
                         NcRecipeType.ALL_RECIPES.get(name).getRecipes(NcClient.tryGetClientWorld()));
             }
+            registration.addRecipes(
+                    getRecipeType(KUGELBLITZ),
+                    NcRecipeType.ALL_RECIPES.get("kugelblitz_chamber").getRecipes(NcClient.tryGetClientWorld()));
             registration.addRecipes(
                     getRecipeType(FUSION),
                     NcRecipeType.ALL_RECIPES.get("fusion_core").getRecipes(NcClient.tryGetClientWorld()));

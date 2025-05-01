@@ -127,12 +127,10 @@ public class MultiblockHandler {
         }
     }
 
-
     public static void removeMultiblock(AbstractNCMultiblock multiblock) {
         multiblocks.remove(multiblock.getId());
         removeFromChunkCache(multiblock.getId());
     }
-
 
     public static boolean checkAttachmentToBlock(Class<?> toCheck, Level level, BlockPos pos, Direction dir) {
         if (multiblocks.isEmpty()) {
@@ -162,8 +160,6 @@ public class MultiblockHandler {
         }
         return false;
     }
-
-
 
     public static AbstractNCMultiblock getMultiblockByPos(BlockPos pos) {
         if (multiblocks.isEmpty()) {

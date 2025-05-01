@@ -65,7 +65,6 @@ public class TooltipHandler {
                 event.getToolTip().add(Component.translatable("tooltip.nc.use_in_leacher").withStyle(ChatFormatting.GOLD));
             }
         }
-
     }
 
     private static void addRadiationCleaningEffect(ItemTooltipEvent event, ItemStack itemStack) {

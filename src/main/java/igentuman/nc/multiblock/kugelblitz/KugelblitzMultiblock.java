@@ -6,6 +6,7 @@ import igentuman.nc.block.entity.kugelblitz.PhotonConcentratorBE;
 import igentuman.nc.multiblock.AbstractNCMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.ValidationResult;
+import igentuman.nc.util.NCBlockPos;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -28,6 +29,8 @@ public class KugelblitzMultiblock extends AbstractNCMultiblock {
     private BlackHoleBE blackHole;
     private boolean collectingEnergy = true;
     private BlockPos centerBlockPos;
+    private int transformers = 0;
+    private int fluxRegulators = 0;
 
     public int maxHeight() {
         return 9;
@@ -92,7 +95,11 @@ public class KugelblitzMultiblock extends AbstractNCMultiblock {
     @Override
     public void validateOuter()
     {
+        fluxRegulators = 0;
+        transformers = 0;
         centerBlockPos = BlockPos.ZERO;
+        bottomLeft = null;
+        topRight = null;
         resolveWidth();
         resolveHeight();
         resolveDepth();
@@ -173,6 +180,8 @@ public class KugelblitzMultiblock extends AbstractNCMultiblock {
             return;
         }
         centerBlockPos = topCenter.below(5);
+        bottomLeft = NCBlockPos.of(topCenter.offset(-5, -5, -5));
+        topRight = NCBlockPos.of(topCenter.offset(5, 0, 5));
         validationResult = ValidationResult.VALID;
     }
 
@@ -280,6 +289,12 @@ public class KugelblitzMultiblock extends AbstractNCMultiblock {
                 if (bs.isAir()) {
                     return blocks;
                 }
+                if (bs.is(KUGELBLITZ_BLOCKS.get("quantum_transformer").get())) {
+                    transformers++;
+                }
+                if (bs.is(KUGELBLITZ_BLOCKS.get("quantum_flux_regulator").get())) {
+                    fluxRegulators++;
+                }
                 blocks.add(bs);
                 processOuterBlock(newPos);
             }
@@ -343,5 +358,17 @@ public class KugelblitzMultiblock extends AbstractNCMultiblock {
 
     public void addPulseEnergy(int pulseEnergy, Direction facing) {
         this.pulseEnergy.put(facing, pulseEnergy);
+    }
+
+    public int fluxRegulators() {
+        return fluxRegulators;
+    }
+
+    public int transformers() {
+        return transformers;
+    }
+
+    public void removeBlackHole() {
+        blackHole = null;
     }
 }

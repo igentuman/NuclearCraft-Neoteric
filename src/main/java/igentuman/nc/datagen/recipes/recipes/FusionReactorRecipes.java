@@ -77,7 +77,7 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
                         fluidIngredient("tritium", 500),
                         fluidIngredient("helium", 500),
                         fluidIngredient("helium", 500)
-                ), 35D, 270200D, 1.5D,7278D
+                ), 35D, 270200D, 1.5D, 7278D
         );
         
         add(
@@ -96,7 +96,7 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
         add(
                 List.of(
                         fluidIngredient("hydrogen", 1000),
-                        fluidIngredient("boron/11", 144)
+                        fluidIngredient("quantite", 144)
                 ),
                 List.of(
                         fluidIngredient("helium", 1000*3/4),
@@ -149,7 +149,7 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
         add(
                 List.of(
                         fluidIngredient("deuterium", 1000),
-                        fluidIngredient("boron/11", 144)
+                        fluidIngredient("quantite", 144)
                 ),
                 List.of(
                         fluidIngredient("helium", 1000*6/4),
@@ -195,7 +195,7 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
         add(
                 List.of(
                         fluidIngredient("tritium", 1000),
-                        fluidIngredient("boron/11", 144)
+                        fluidIngredient("quantite", 144)
                 ),
                 List.of(
                         fluidIngredient("helium", 1000*6/4),
@@ -229,7 +229,7 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
 
         add(
                 List.of(fluidIngredient("helium_3", 1000),
-                        fluidIngredient("boron/11", 144)
+                        fluidIngredient("quantite", 144)
                 ),
                 List.of(
                         fluidIngredient("deuterium", 500),
@@ -241,7 +241,7 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
 
         add(
                 List.of(fluidIngredient("lithium/6", 144*4),
-                        fluidIngredient("lithium/7", 144*4)
+                        fluidIngredient("xenorium298", 144*4)
                 ),
                 List.of(
                         fluidIngredient("helium", 1000*6/2),
@@ -251,7 +251,7 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
 
         add(
                 List.of(fluidIngredient("lithium/6", 144*7),
-                        fluidIngredient("boron/11", 144*7)
+                        fluidIngredient("quantite", 144*7)
                 ),
                 List.of(
                         fluidIngredient("helium", 1000*2),
@@ -261,7 +261,7 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
 
         add(
                 List.of(fluidIngredient("lithium/7", 144*9),
-                        fluidIngredient("boron/11", 144*9)
+                        fluidIngredient("quantite", 144*9)
                 ),
                 List.of(
                         fluidIngredient("helium", 1000*2),

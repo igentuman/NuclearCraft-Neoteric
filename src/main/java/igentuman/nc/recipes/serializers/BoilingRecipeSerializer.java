@@ -10,6 +10,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import org.jetbrains.annotations.NotNull;
 
+import static igentuman.nc.NuclearCraft.debugLog;
+
 public class BoilingRecipeSerializer<RECIPE extends NcRecipe> extends NcRecipeSerializer<RECIPE> {
 
     public BoilingRecipeSerializer(IFactory factory) {
@@ -26,7 +28,7 @@ public class BoilingRecipeSerializer<RECIPE extends NcRecipe> extends NcRecipeSe
         try {
             heatRequired = GsonHelper.getAsDouble(json, "heatRequired", 1D);
         } catch (Exception ex) {
-            NuclearCraft.LOGGER.warn("Unable to parse params for recipe: "+recipeId);
+            debugLog("Unable to parse params for recipe: "+recipeId);
         }
         return this.factory.create(recipeId, new ItemStackIngredient[]{}, new ItemStackIngredient[]{}, inputFluids, outputFluids, heatRequired, 1, 1, 1);
     }
@@ -46,7 +48,7 @@ public class BoilingRecipeSerializer<RECIPE extends NcRecipe> extends NcRecipeSe
 
             return this.factory.create(recipeId, new ItemStackIngredient[]{}, new ItemStackIngredient[]{}, inputFluids,  outputFluids, heatRequired, 1, 1, 1);
         } catch (Exception e) {
-            NuclearCraft.LOGGER.error("NC fromNetwork recipe error: " + recipeId);
+            debugLog("NC fromNetwork recipe error: " + recipeId);
             throw e;
         }
     }

@@ -34,8 +34,8 @@ public abstract class AbstractNCMultiblock implements Multiblock {
     public int bottomCasing = 0;
     public int leftCasing = 0;
     public int rightCasing = 0;
-    private NCBlockPos bottomLeft;
-    private NCBlockPos topRight;
+    protected NCBlockPos bottomLeft;
+    protected NCBlockPos topRight;
     protected boolean outerValid = false;
     public boolean refreshOuterCacheFlag = true;
     public boolean refreshInnerCacheFlag = true;
@@ -49,6 +49,7 @@ public abstract class AbstractNCMultiblock implements Multiblock {
     protected final List<BlockPos> allBlocks = new ArrayList<>();
     protected BlockPos controllerPos;
     private static final Pattern SPECIAL_BLOCKS = Pattern.compile(".*(fusion_proxy|fusion_core|controller|port|irradiator|rotor).*");
+    private static final Pattern CONTROLLERS = Pattern.compile(".*(controller|terminal).*");
 
     protected AbstractNCMultiblock(List<Block> validOuterBlocks, List<Block> validInnerBlocks, MultiblockController controller) {
         this.validOuterBlocks = validOuterBlocks;
@@ -320,7 +321,7 @@ public abstract class AbstractNCMultiblock implements Multiblock {
         attachMultiblock(pos);
         updateDimensions(pos);
         allBlocks.add(new BlockPos(pos));
-        if (getBlockState(pos).getBlock().asItem().toString().contains("controller")) {
+        if (CONTROLLERS.matcher(getBlockState(pos).getBlock().asItem().toString()).matches()) {
             controllers.add(pos);
         }
     }

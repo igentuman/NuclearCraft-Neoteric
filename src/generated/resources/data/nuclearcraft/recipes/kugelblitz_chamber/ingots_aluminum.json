@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:kugelblitz_chamber",
+  "input": [
+    {
+      "tag": "forge:ingots/aluminum"
+    }
+  ],
+  "output": [
+    {
+      "tag": "forge:ingots/aluminum"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

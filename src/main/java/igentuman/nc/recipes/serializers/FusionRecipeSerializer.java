@@ -8,6 +8,8 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
+import static igentuman.nc.NuclearCraft.debugLog;
+
 public class FusionRecipeSerializer<RECIPE extends NcRecipe> extends NcRecipeSerializer<RECIPE> {
 
     public FusionRecipeSerializer(IFactory factory) {
@@ -29,7 +31,7 @@ public class FusionRecipeSerializer<RECIPE extends NcRecipe> extends NcRecipeSer
 
             return this.factory.create(recipeId, inputItems, outputItems, inputFluids,  outputFluids, timeModifier, powerModifier, radiation, temperature);
         } catch (Exception e) {
-            NuclearCraft.LOGGER.error("Error reading from packet.", e);
+            debugLog("Error reading from packet." + e);
             throw e;
         }
     }

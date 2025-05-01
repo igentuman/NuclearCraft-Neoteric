@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:kugelblitz_chamber",
+  "input": [
+    {
+      "item": "minecraft:ender_pearl"
+    }
+  ],
+  "output": [
+    {
+      "item": "minecraft:ender_pearl"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

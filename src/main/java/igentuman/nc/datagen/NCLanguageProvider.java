@@ -101,6 +101,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("fusion_core", "Fusion Reactor Core");
         add("fusion_core.efficiency", "Efficiency: %s%%");
         add("nc_jei_cat.fusion_core", "Fusion Reactor");
+        add("nc_jei_cat.kugelblitz_chamber", "Quantum Transformation");
         add("nc_jei_cat.turbine", "Turbine");
         add("nc_jei_cat.fusion_coolant", "Fusion Reactor Coolant");
         add("nc_jei_cat.mek_chemical_conversion", "NC - GAS -> Fluid Conversion");
@@ -243,6 +244,9 @@ public class NCLanguageProvider extends LanguageProvider {
         add("boiling.recipe.heat_required","Heat required: %s H");
 
         add("tooltip.active_heatsink","Needs coolant fluid supply into reactor to work.");
+
+        add("tooltip.kugelblitz.flux_regulators","Flux Regulators: %s");
+        add("tooltip.kugelblitz.transformers","Quantum Transformers: %s");
 
         add("tooltip.upgrade_stack","Improved speed upgrade with parallel processing");
         add("tooltip.upgrade_speed","Increases recipe speed and energy consumption");
@@ -544,6 +548,7 @@ public class NCLanguageProvider extends LanguageProvider {
         for(String name: NCItems.NC_PARTS.keySet()) {
             add(NCItems.NC_PARTS.get(name).get(), convertToName(name));
         }
+        add(UNKNOWN_INGREDIENT.get(), "Unknown Ingredient");
     }
 
     private void gems() {

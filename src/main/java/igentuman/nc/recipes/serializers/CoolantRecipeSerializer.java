@@ -10,6 +10,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import org.jetbrains.annotations.NotNull;
 
+import static igentuman.nc.NuclearCraft.debugLog;
+
 public class CoolantRecipeSerializer<RECIPE extends NcRecipe> extends NcRecipeSerializer<RECIPE> {
 
     public CoolantRecipeSerializer(IFactory factory) {
@@ -26,7 +28,7 @@ public class CoolantRecipeSerializer<RECIPE extends NcRecipe> extends NcRecipeSe
         try {
             coolingRate = GsonHelper.getAsDouble(json, "coolingRate", 1000.0);
         } catch (Exception ex) {
-            NuclearCraft.LOGGER.warn("Unable to parse params for recipe: "+recipeId);
+            debugLog("Unable to parse params for recipe: "+recipeId);
         }
         return this.factory.create(recipeId, new ItemStackIngredient[0], new ItemStackIngredient[0], inputFluids, outputFluids, 1, 1, 1, coolingRate);
     }
@@ -46,7 +48,7 @@ public class CoolantRecipeSerializer<RECIPE extends NcRecipe> extends NcRecipeSe
 
             return this.factory.create(recipeId, new ItemStackIngredient[]{}, new ItemStackIngredient[]{}, inputFluids,  outputFluids, coolingRate, 1, 1, 1);
         } catch (Exception e) {
-            NuclearCraft.LOGGER.error("Error reading from packet.", e);
+            debugLog("Error reading from packet." + e);
             throw e;
         }
     }

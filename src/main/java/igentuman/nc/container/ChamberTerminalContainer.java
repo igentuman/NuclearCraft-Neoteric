@@ -18,26 +18,27 @@ import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.CHAMBER_TERMINAL_CONTAINER;
+import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BLOCKS;
 import static igentuman.nc.util.TextUtils.roundFormat;
 
 public class ChamberTerminalContainer extends AbstractContainerMenu {
+
     protected final ChamberTerminalBE blockEntity;
     protected final Player playerEntity;
-
     protected final String name = "chamber_terminal";
     private int slotIndex = 0;
-
-    protected IItemHandler playerInventory;
+    protected final IItemHandler playerInventory;
 
     public ChamberTerminalContainer(int pContainerId, BlockPos pos, Inventory playerInventory) {
-        super(KugelblitzRegistration.CHAMBER_TERMINAL_CONTAINER.get(), pContainerId);
+        super(CHAMBER_TERMINAL_CONTAINER.get(), pContainerId);
         this.playerEntity = playerInventory.player;
         this.playerInventory =  new InvWrapper(playerInventory);
-        blockEntity = (ChamberTerminalBE) playerEntity.getCommandSenderWorld().getExistingBlockEntity(pos);
+        blockEntity = (ChamberTerminalBE) playerEntity.getCommandSenderWorld().getBlockEntity(pos);
         layoutPlayerInventorySlots();
         blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
-            addSlot(new NCSlotItemHandler.Input(h, 0, 130, 80));
-            addSlot(new NCSlotItemHandler.Output(h, 1, 197, 80));
+            addSlot(new NCSlotItemHandler.Input(h, 0, 135, 80));
+            addSlot(new NCSlotItemHandler.Output(h, 1, 189, 80));
         });
     }
 
@@ -79,7 +80,7 @@ public class ChamberTerminalContainer extends AbstractContainerMenu {
         return stillValid(
                 ContainerLevelAccess.create(blockEntity.getLevel(), blockEntity.getBlockPos()),
                 playerEntity,
-                KugelblitzRegistration.KUGELBLITZ_BLOCKS.get(name).get()
+                KUGELBLITZ_BLOCKS.get(name).get()
         );
     }
 
@@ -206,5 +207,17 @@ public class ChamberTerminalContainer extends AbstractContainerMenu {
 
     public long getFeeding() {
         return blockEntity.feeding;
+    }
+
+    public int getFluxRegulators() {
+        return blockEntity.fluxRegulators;
+    }
+
+    public int getTransformers() {
+        return blockEntity.transformers;
+    }
+
+    public double getProgress() {
+        return blockEntity.recipeInfo().getProgress();
     }
 }

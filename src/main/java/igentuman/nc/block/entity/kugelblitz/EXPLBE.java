@@ -80,7 +80,7 @@ public class EXPLBE extends NuclearCraftBE {
     }
 
     protected CustomEnergyStorage createEnergy() {
-        return new CustomEnergyStorage(2_048_000_000, 1000000, 0, true) {
+        return new CustomEnergyStorage(2_048_000_000, 1000000, 0, false) {
             @Override
             protected void onEnergyChanged() {
                 setChanged();

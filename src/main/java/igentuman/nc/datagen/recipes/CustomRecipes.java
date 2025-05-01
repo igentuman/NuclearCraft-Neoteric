@@ -13,6 +13,7 @@ public class CustomRecipes extends NCRecipes {
 
     public static void generate(Consumer<FinishedRecipe> consumer) {
         CustomRecipes.consumer = consumer;
+        KugelblitzRecipes.generate(consumer);
         FissionRecipes.generate(consumer);
         ManufactoryRecipes.generate(consumer);
         DecayHastenerRecipes.generate(consumer);

@@ -37,8 +37,6 @@ public class ChamberTerminalScreen extends AbstractContainerScreen<ChamberTermin
     private FluidTankRenderer feedingRateTank;
     private SliderHorizontal energyTransferRateSlider;
     private SliderHorizontal frequencySlider;
-    private FontManager fontManager = new FontManager(Minecraft.getInstance().textureManager);
-    private Font smallFont = fontManager.createFont();
     public ChamberTerminalContainer container()
     {
         return (ChamberTerminalContainer)menu;
@@ -70,19 +68,16 @@ public class ChamberTerminalScreen extends AbstractContainerScreen<ChamberTermin
     @Override
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
         for(NCGuiElement widget : widgets) {
-            if(widget.mouseClicked(pMouseX, pMouseY, pButton)) {
-                return true;
-            }
+            widget.mouseClicked(pMouseX, pMouseY, pButton);
         }
+        isQuickCrafting = false;
         return super.mouseClicked(pMouseX, pMouseY, pButton);
     }
 
     @Override
     public boolean mouseReleased(double pMouseX, double pMouseY, int pButton) {
         for(NCGuiElement widget : widgets) {
-            if(widget.mouseReleased(pMouseX, pMouseY, pButton)) {
-                return true;
-            }
+            widget.mouseReleased(pMouseX, pMouseY, pButton);
         }
         return super.mouseReleased(pMouseX, pMouseY, pButton);
     }
@@ -90,9 +85,7 @@ public class ChamberTerminalScreen extends AbstractContainerScreen<ChamberTermin
     @Override
     public boolean mouseDragged(double pMouseX, double pMouseY, int pButton, double pDragX, double pDragY) {
         for(NCGuiElement widget : widgets) {
-            if(widget.mouseDragged(pMouseX, pMouseY, pButton, pDragX, pDragY)) {
-                return true;
-            }
+            widget.mouseDragged(pMouseX, pMouseY, pButton, pDragX, pDragY);
         }
         return super.mouseDragged(pMouseX, pMouseY, pButton, pDragX, pDragY);
     }
@@ -107,11 +100,11 @@ public class ChamberTerminalScreen extends AbstractContainerScreen<ChamberTermin
         energyBar = new VerticalBar.Energy(200, 104,  this, container().getMaxEnergy());
         energyTransferRateSlider = new SliderHorizontal(6, 70, 119, this, menu.getBlockPos());
         frequencySlider = new SliderHorizontal(6, 90, 119, this, menu.getBlockPos(), 1);
-        frequencySlider.slideTo(container().getFrequency());
+        frequencySlider.slideTo((int) (container().getFrequency()/0.15D));
         energyTransferRateSlider.slideTo(container().getEnergyRate());
         widgets.add(energyTransferRateSlider);
         widgets.add(frequencySlider);
-        widgets.add(new ProgressBar(150, 80, this,  7));
+        widgets.add(new ProgressBar(152, 81, this,  2));
         //modeBtn = new Button.ReactorMode(150, 54, this, menu.getPosition());
        // widgets.add(modeBtn);
     }
@@ -185,6 +178,9 @@ public class ChamberTerminalScreen extends AbstractContainerScreen<ChamberTermin
                     graphics.drawString(font, Component.translatable("label.kugelblitz.evaporation", formatMass(container().getEvaporation())), 6, 27, 0x8AFF8A);
                     graphics.drawString(font, Component.translatable("label.kugelblitz.feeding", formatMass(container().getFeeding())), 6, 38, 0x8AFF8A);
                 }
+                checkboxCasing.addTooltip(Component.translatable("tooltip.kugelblitz.flux_regulators", container().getFluxRegulators()));
+                checkboxCasing.addTooltip(Component.translatable("tooltip.kugelblitz.transformers", container().getTransformers()));
+
             } else {
                 interiorTootip = applyFormat(Component.translatable(getValidationResultKey(), getValidationResultData()), ChatFormatting.RED);
             }
@@ -234,7 +230,7 @@ public class ChamberTerminalScreen extends AbstractContainerScreen<ChamberTermin
 
     @Override
     public double getProgress() {
-        return 0;
+        return container().getProgress();
     }
 
     @Override

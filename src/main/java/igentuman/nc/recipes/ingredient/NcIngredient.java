@@ -28,6 +28,8 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import static igentuman.nc.setup.registration.Registries.ITEM_REGISTRY;
+
 public class NcIngredient extends Ingredient {
 
    private static final java.util.concurrent.atomic.AtomicInteger INVALIDATION_COUNTER = new java.util.concurrent.atomic.AtomicInteger();
@@ -55,7 +57,15 @@ public class NcIngredient extends Ingredient {
 
    }
 
-   public String getName() {
+    public static NcIngredient of(String name) {
+         if(name.contains("#")) {
+            TagKey<Item> tag = TagKey.create(ITEM_REGISTRY, new ResourceLocation(name.replace("#","")));
+            return of(tag);
+         }
+         return of(ForgeRegistries.ITEMS.getValue(new ResourceLocation(name)));
+    }
+
+    public String getName() {
       if(name == null) {
          name = values[0].getName();
       }

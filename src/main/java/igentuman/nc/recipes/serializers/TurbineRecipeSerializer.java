@@ -1,19 +1,15 @@
 package igentuman.nc.recipes.serializers;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import igentuman.nc.NuclearCraft;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
-import igentuman.nc.recipes.ingredient.creator.IngredientCreatorAccess;
 import igentuman.nc.recipes.type.NcRecipe;
-import igentuman.nc.util.SerializerHelper;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
-import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
+
+import static igentuman.nc.NuclearCraft.debugLog;
 
 public class TurbineRecipeSerializer<RECIPE extends NcRecipe> extends NcRecipeSerializer<RECIPE> {
 
@@ -31,7 +27,7 @@ public class TurbineRecipeSerializer<RECIPE extends NcRecipe> extends NcRecipeSe
         try {
             heatRequired = GsonHelper.getAsDouble(json, "heatRequired", 1D);
         } catch (Exception ex) {
-            NuclearCraft.LOGGER.warn("Unable to parse params for recipe: "+recipeId);
+            debugLog("Unable to parse params for recipe: "+recipeId);
         }
         return this.factory.create(recipeId, new ItemStackIngredient[]{}, new ItemStackIngredient[]{}, inputFluids, outputFluids, heatRequired, 1, 1, 1);
     }
@@ -51,7 +47,7 @@ public class TurbineRecipeSerializer<RECIPE extends NcRecipe> extends NcRecipeSe
 
             return this.factory.create(recipeId, new ItemStackIngredient[]{}, new ItemStackIngredient[]{}, inputFluids,  outputFluids, heatRequired, 1, 1, 1);
         } catch (Exception e) {
-            NuclearCraft.LOGGER.error("Error reading from packet.", e);
+            debugLog("Error reading from packet." + e);
             throw e;
         }
     }

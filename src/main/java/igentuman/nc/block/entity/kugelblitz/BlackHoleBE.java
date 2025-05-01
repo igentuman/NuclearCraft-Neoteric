@@ -40,6 +40,7 @@ public class BlackHoleBE extends NuclearCraftBE {
     }
 
     public void tickClient() {
+        if(isRemoved()) return;
         scale = 0.3f + spawnDelay/100f;
         if (spawnDelay < 1) {
             playSound(BLACKHOLE_IDLE, 0.7f);
@@ -72,6 +73,7 @@ public class BlackHoleBE extends NuclearCraftBE {
     }
 
     public void tickServer() {
+        if(isRemoved()) return;
         if (!isInitialized) {
             isInitialized = true;
             setChanged();

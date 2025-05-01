@@ -47,7 +47,7 @@ public class SliderHorizontal extends NCGuiElement {
 
     @Override
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
-        if(X() <= pMouseX && pMouseX < X() + width && Y()-1 <= pMouseY && pMouseY < Y() + height+1) {
+        if(X() - 1 <= pMouseX && pMouseX < X() + width + 1 && Y()-2 <= pMouseY && pMouseY < Y() + height+2) {
             isPressed = true;
             return isPressed;
         }
@@ -58,7 +58,7 @@ public class SliderHorizontal extends NCGuiElement {
     @Override
     public boolean mouseReleased(double pMouseX, double pMouseY, int pButton) {
         isPressed = false;
-        return isPressed;
+        return false;
     }
 
     @Override

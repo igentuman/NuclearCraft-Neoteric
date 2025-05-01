@@ -428,4 +428,19 @@ public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
         if(outputItems.length == 0) return ItemStack.EMPTY;
         return !getResultItems().isEmpty() ? getResultItems().get(0) : ItemStack.EMPTY;
     }
+
+    public boolean handleOutputs(SidedContentHandler contentHandler, ItemStack outputItem) {
+        int i = contentHandler.inputItemSlots;
+        if(!contentHandler.itemHandler.insertItemInternal(i, outputItem, true).isEmpty()) {
+            if(!contentHandler.itemHandler.canPushExcessItems(i, outputItem)) return false;
+        }
+        ItemStack toOutput = outputItem.copy();
+        if(!contentHandler.itemHandler.insertItemInternal(i, toOutput, false).isEmpty()) {
+            if(!contentHandler.itemHandler.pushExcessItems(i, toOutput).isEmpty()) {
+                return false;
+            }
+        }
+        contentHandler.clearHolded();
+        return true;
+    }
 }

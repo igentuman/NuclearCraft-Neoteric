@@ -10,16 +10,20 @@ import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.ValidationResult;
 import igentuman.nc.multiblock.kugelblitz.KugelblitzMultiblock;
 import igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration;
+import igentuman.nc.recipes.NcRecipeType;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.ingredient.creator.IngredientCreatorAccess;
 import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.util.CustomEnergyStorage;
+import igentuman.nc.util.StackUtils;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -29,14 +33,12 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import static igentuman.nc.block.entity.kugelblitz.BlackHoleBE.MAX_MASS;
 import static igentuman.nc.block.entity.kugelblitz.BlackHoleBE.MIN_MASS;
@@ -45,8 +47,13 @@ import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.content.materials.Materials.subliquid_matter;
 import static igentuman.nc.handler.config.CommonConfig.ENERGY_GENERATION;
 import static igentuman.nc.handler.config.KugelblitzConfig.KUGELBLITZ_CONFIG;
+import static igentuman.nc.handler.config.MaterialsConfig.MATERIAL_PRODUCTS;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BE;
+import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BLOCKS;
+import static igentuman.nc.setup.registration.NCItems.NC_DUSTS;
 import static igentuman.nc.util.ModUtil.isCcLoaded;
+import static igentuman.nc.util.NcUtils.getModId;
+import static net.minecraft.world.level.block.Blocks.AIR;
 
 public class ChamberTerminalBE extends MultiblockControllerBE {
 
@@ -69,15 +76,21 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
     @NBTField
     public byte frequency = 0;
     @NBTField
-    public int energyConvertionRate = 50;
+    public int energyConvertionRate = 7;
     @NBTField
     public boolean controllerEnabled = false;
+    @NBTField
+    public int transformers = 0;
+    @NBTField
+    public int fluxRegulators = 0;
 
 
     protected Direction facing;
     public Recipe recipe;
     public HashMap<String, Recipe> cachedRecipes = new HashMap<>();
-    private List<FluidStack> allowedInputs;
+    private List<ItemStack> allowedInputs;
+    private final List<ItemStack> orderedOutputs = new ArrayList<>();
+    private List<FluidStack> allowedInputFluids;
 
     public ChamberTerminalBE(BlockPos pPos, BlockState pBlockState) {
         super(KUGELBLITZ_BE.get(NAME).get(), pPos, pBlockState);
@@ -87,10 +100,27 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
         contentHandler = new SidedContentHandler(
                 1, 1,
                 1, 0, 1000);
+        contentHandler().itemHandler.setGlobalMode(0, SlotModePair.SlotMode.PULL);
+        contentHandler().itemHandler.setGlobalMode(1, SlotModePair.SlotMode.PUSH);
         contentHandler.fluidCapability.setGlobalMode(0, SlotModePair.SlotMode.INPUT);
+        contentHandler().setAllowedInputItems(this::getAllowedInputItems);
         contentHandler.setBlockEntity(this);
         contentHandler.setAllowedInputFluids(0, this::getAllowedInputFluids);
     }
+
+    public List<ItemStack> getAllowedInputItems()
+    {
+        if(allowedInputs == null) {
+            allowedInputs = new ArrayList<>();
+            for(NcRecipe recipe: NcRecipeType.getAllRecipesFor("kugelblitz_chamber", getLevel())) {
+                for(Ingredient ingredient: recipe.getItemIngredients()) {
+                    allowedInputs.addAll(List.of(ingredient.getItems()));
+                }
+            }
+        }
+        return allowedInputs;
+    }
+
 
     @Override
     public String getName() {
@@ -114,7 +144,23 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
     @Override
     public Recipe getRecipe() {
         if(contentHandler().itemHandler.getStackInSlot(0).isEmpty()) return null;
-        //TODO implement
+        NcRecipe cachedRecipe = getCachedRecipe();
+        if(cachedRecipe instanceof Recipe cRecipe) {
+            if(!hasResultItem(cRecipe)) {
+                return null;
+            }
+            return cRecipe;
+        }
+        if(!NcRecipeType.ALL_RECIPES.containsKey("kugelblitz_chamber")) return null;
+        for(NcRecipe recipe: NcRecipeType.getAllRecipesFor("kugelblitz_chamber", getLevel())) {
+            if(recipe.test(contentHandler())) {
+                addToCache(recipe);
+                if(!hasResultItem((Recipe) recipe)) {
+                    return null;
+                }
+                return (Recipe) recipe;
+            }
+        }
         return null;
     }
 
@@ -149,7 +195,7 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
                 energyConvertionRate = ratio;
             }
             case 1 -> {
-                frequency = (byte) ratio;
+                frequency = (byte) (0.15D * ratio);
             }
         }
         setChanged();
@@ -158,12 +204,9 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
     public void tickClient() {
         if(!isCasingValid || !isInternalValid) {
             stopSound();
-            return;
-        }
-        if(energyPerTick > 0) {
-            //spawnSteamParticles();
         }
     }
+
     protected int reValidateCounter = 0;
 
     public void tickServer() {
@@ -176,12 +219,16 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
         handleValidation();
         controllerEnabled = getMultiblock().isFormed() && hasBlackhole();
 
+        fluxRegulators = getMultiblock().fluxRegulators();
+        transformers = getMultiblock().transformers();
         if (controllerEnabled) {
-            trackChanges(contentHandler.tick());
+            trackChanges(contentHandler().tick());
             long wasMass = mass;
             updateBlackholeMass();
             trackChanges(false, wasMass != mass);
             handleMeltdown();
+            trackChanges(processRecipe());
+            handleRecipeOutput();
         }
         refreshCacheFlag = !getMultiblock().isFormed();
         if(wasEnabled != controllerEnabled) {
@@ -197,7 +244,14 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
     }
 
     public boolean hasBlackhole() {
-        return getMultiblock().getBlackHole() instanceof BlackHoleBE;
+        if(getMultiblock().getBlackHole() instanceof BlackHoleBE) {
+            if(getMultiblock().getBlackHole().isRemoved()) {
+                getMultiblock().removeBlackHole();
+                return false;
+            }
+            return true;
+        }
+        return false;
     }
 
     private void updateBlackholeMass()
@@ -221,7 +275,8 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
 
     private void updateEnergyGeneration() {
         int wasEnergy = energyPerTick;
-        energyPerTick = (int)  (mass * 0.00005D * Math.log(energyConvertionRate+1));
+        double massRatio = (double)MAX_MASS / Math.max(mass, MIN_MASS);
+        energyPerTick = (int)(massRatio * 500 * Math.log(energyConvertionRate*Math.log(fluxRegulators*4)+1));
         energyPerTick *= ENERGY_GENERATION.GENERATION_MULTIPLIER.get();
         energyPerTick *= KUGELBLITZ_CONFIG.GENERATION_MULTIPLIER.get();
         energyStorage().addEnergy(energyPerTick);
@@ -232,28 +287,35 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
 
     private void updateEvaporation() {
         int wasEvaporation = evaporation;
-        int rate = Math.max(1, energyConvertionRate);
+        int rate = (int) Math.max(1, energyConvertionRate*Math.log(fluxRegulators));
         if (recipeInfo().recipe() != null && !recipeInfo().isCompleted()) {
-            rate = 100;
+            rate+= (int) ((100 - energyConvertionRate) * Math.log(transformers) * 7);
         }
         rate = (int) Math.pow(rate, 1.2);
-        evaporation = (int) (rate * KUGELBLITZ_CONFIG.EVAPORATION_MULTIPLIER.get() * (mass * 0.0000001D));
+        double massRatio = (double)MAX_MASS / Math.max(mass, MIN_MASS);
+        evaporation = (int)(rate * KUGELBLITZ_CONFIG.EVAPORATION_MULTIPLIER.get() * massRatio * 0.1);
         if (wasEvaporation != evaporation) {
             setChanged();
         }
     }
 
     private void doEvaporation() {
-        
+        if(hasBlackhole()) {
+            getLevel().setBlockAndUpdate(getMultiblock().getBlackHole().getBlockPos(), AIR.defaultBlockState());
+            mass = 0;
+            feeding = 0;
+            energyPerTick = 0;
+            evaporation = 0;
+        }
     }
 
     public List<FluidStack> getAllowedInputFluids()
     {
-        if(allowedInputs == null) {
-            allowedInputs = new ArrayList<>();
-            allowedInputs.addAll(IngredientCreatorAccess.fluid().from(subliquid_matter, 1).getRepresentations());
+        if(allowedInputFluids == null) {
+            allowedInputFluids = new ArrayList<>();
+            allowedInputFluids.addAll(IngredientCreatorAccess.fluid().from(subliquid_matter, 1).getRepresentations());
         }
-        return allowedInputs;
+        return allowedInputFluids;
     }
 
     @Override
@@ -299,15 +361,19 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
 
     private void handleMeltdown() {
         if(mass > MAX_MASS) {
-            if (getMultiblock().isFormed() && getMultiblock().getBlackHole() != null) {
+            if (getMultiblock().isFormed() && hasBlackhole()) {
                 getMultiblock().getBlackHole().meltdown();
+                mass = 0;
+                feeding = 0;
+                energyPerTick = 0;
+                evaporation = 0;
             }
         }
     }
 
     private boolean processRecipe() {
         if(recipeInfo().recipe != null && recipeInfo().isCompleted()) {
-            if(contentHandler().fluidCapability.getFluidInSlot(0).isEmpty()) {
+            if(contentHandler().itemHandler.getStackInSlot(0).isEmpty()) {
                 recipeInfo().clear();
             }
         }
@@ -321,8 +387,8 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
     }
 
     private boolean process() {
-        recipeInfo().process(1);
-
+        double multiplier = Math.log10(transformers) * (100 - energyConvertionRate)/100D;
+        recipeInfo().process(multiplier);
         return true;
     }
 
@@ -331,9 +397,10 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
             if(recipe == null) {
                 recipe = (Recipe) recipeInfo().recipe();
             }
-            if (recipe.handleOutputs(contentHandler())) {
+            int id = getIngredientId(recipe.getResultItem());
+            if (recipe.handleOutputs(contentHandler(), orderedOutputs.get(id))) {
                 recipeInfo().clear();
-                if(contentHandler().fluidCapability.getFluidInSlot(0).isEmpty()) {
+                if(contentHandler().itemHandler.getStackInSlot(0).isEmpty()) {
                     recipe = null;
                 }
             } else {
@@ -341,6 +408,15 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
             }
             setChanged();
         }
+    }
+
+    private int getIngredientId(@NotNull ItemStack resultItem) {
+        for(int i = 0; i < allowedInputs.size(); i++) {
+            if(allowedInputs.get(i).is(resultItem.getItem())) {
+                return i;
+            }
+        }
+        return 0;
     }
 
     private int calculateEnergy() {
@@ -359,8 +435,30 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
             recipeInfo().ticks = ((Recipe)recipeInfo().recipe()).getBaseTime();
             recipeInfo().energy = recipeInfo().recipe.getEnergy();
             recipeInfo().be = this;
-            //recipe.consumeInputs(contentHandler);
+            if (!recipeInfo().consumeInputs(contentHandler())) {
+                recipe = null;
+                recipeInfo().clear();
+            }
         }
+    }
+
+    private int getTargetFrequencyForItem(ItemStack input, long seed) {
+        Random rand = new Random(seed + input.getItem().toString().hashCode());
+        return rand.nextInt(15);
+    }
+
+    private boolean hasResultItem(Recipe recipe) {
+        ServerLevel serverLevel = (ServerLevel) getLevel();
+        long seed = serverLevel.getSeed();
+
+        if(orderedOutputs.isEmpty()) {
+            //shuffle outputs dependently on seed
+            orderedOutputs.addAll(getAllowedInputItems());
+            Random seededRandom = new Random(seed);
+            Collections.shuffle(orderedOutputs, seededRandom);
+        }
+        //result item exists only if frequency is matches seed based random frequency
+        return frequency == getTargetFrequencyForItem(recipe.getResultItem(), seed);
     }
 
     public boolean recipeIsStuck() {
@@ -368,7 +466,7 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
     }
 
     public boolean hasRecipe() {
-        return recipeInfo().recipe() != null;
+        return recipeInfo().recipe() != null && hasResultItem((Recipe) recipeInfo().recipe());
     }
 
     public Direction getFacing() {
@@ -376,10 +474,6 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
             facing = getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);
         }
         return facing;
-    }
-
-    public double calculateEfficiency() {
-        return (double) energyPerTick / (recipeInfo().energy / 100);
     }
 
     public int getDepth() {
@@ -431,24 +525,23 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
 
         @Override
         public String getCodeId() {
-            return NAME;
+            return "kugelblitz_chamber";
         }
 
         @Override
         public @NotNull String getGroup() {
-            return NAME;
+            return "kugelblitz_chamber";
         }
 
         @Override
         public @NotNull ItemStack getToastSymbol() {
-            return new ItemStack(KugelblitzRegistration.KUGELBLITZ_BLOCKS.get(getCodeId()).get());
+            return new ItemStack(KUGELBLITZ_BLOCKS.get(NAME).get());
         }
 
         public int getBaseTime() {
-            return (int) Math.max(1, timeModifier);
+            return (int) (timeModifier * 50);
         }
 
-        public double getEnergy() { return Math.max(1, powerModifier); }
-
+        public double getEnergy() { return powerModifier * 1000; }
     }
 }

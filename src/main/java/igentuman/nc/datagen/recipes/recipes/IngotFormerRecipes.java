@@ -52,10 +52,6 @@ public class IngotFormerRecipes extends AbstractRecipeProvider {
                     }
                     keyStr+= type;
                     add(ingredient(NC_FUEL.get(key).get()), fluidStack(keyStr, 144));
-
-                    key = List.of("depleted", name, subType, type);
-                    keyStr = "depleted_"+keyStr;
-                    add(ingredient(NC_DEPLETED_FUEL.get(key).get()), fluidStack(keyStr, 144));
                 }
             }
         }

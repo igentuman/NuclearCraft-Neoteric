@@ -1,5 +1,7 @@
 package igentuman.nc.handler.config;
 
+import igentuman.nc.recipes.ingredient.NcIngredient;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 import java.util.ArrayList;

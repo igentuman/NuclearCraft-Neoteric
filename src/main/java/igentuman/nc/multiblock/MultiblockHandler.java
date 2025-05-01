@@ -65,7 +65,10 @@ public class MultiblockHandler {
 
     public static void addIgnoreToUpdate(BlockPos blockPos) {
         if (!ignoreUpdate.contains(blockPos)) {
-            ignoreUpdate.add(blockPos);
+            try {
+                ignoreUpdate.add(blockPos);
+            } catch (ArrayIndexOutOfBoundsException ignored) {
+            }
         }
     }
 
@@ -74,7 +77,10 @@ public class MultiblockHandler {
             return;
         }
         if (ignoreUpdate.contains(pos)) {
-            ignoreUpdate.remove(pos);
+            try {
+                ignoreUpdate.remove(pos);
+            } catch (ArrayIndexOutOfBoundsException ignored) {
+            }
             return;
         }
         //Iterate chunk cache first for better performance

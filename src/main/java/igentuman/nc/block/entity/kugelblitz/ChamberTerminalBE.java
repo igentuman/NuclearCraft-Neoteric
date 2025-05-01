@@ -289,7 +289,7 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
         int wasEvaporation = evaporation;
         int rate = (int) Math.max(1, energyConvertionRate*Math.log(fluxRegulators));
         if (recipeInfo().recipe() != null && !recipeInfo().isCompleted()) {
-            rate+= (int) ((100 - energyConvertionRate) * Math.log(transformers) * 7);
+            rate+= (int) ((100 - energyConvertionRate) * Math.log(transformers) * 5);
         }
         rate = (int) Math.pow(rate, 1.2);
         double massRatio = (double)MAX_MASS / Math.max(mass, MIN_MASS);

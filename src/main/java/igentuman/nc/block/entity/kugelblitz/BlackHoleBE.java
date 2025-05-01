@@ -63,13 +63,17 @@ public class BlackHoleBE extends NuclearCraftBE {
                     false
             );
             //burst dragon breath particles in a sphere
-            for (int i = 0; i < 20; i++) {
-                float x = getBlockPos().getX() + 0.5F + level.random.nextFloat() + (level.random.nextBoolean() ? 2 : -2);
-                float y = getBlockPos().getY() + 0.5F + level.random.nextFloat() + (level.random.nextBoolean() ? 2 : -2);
-                float z = getBlockPos().getZ() + 0.5F + level.random.nextFloat() + (level.random.nextBoolean() ? 2 : -2);
+            for (int i = 0; i < 80; i++) {
+                float x = getBlockPos().getX() + 0.5F + randomDistance();
+                float y = getBlockPos().getY() + 0.5F + randomDistance();
+                float z = getBlockPos().getZ() + 0.5F + randomDistance();
                 level.addParticle(ParticleTypes.DRAGON_BREATH, x, y, z, 0, 0, 0);
             }
         }
+    }
+
+    private float randomDistance() {
+        return level.random.nextFloat() + level.random.nextInt(8) - 4;
     }
 
     public void tickServer() {

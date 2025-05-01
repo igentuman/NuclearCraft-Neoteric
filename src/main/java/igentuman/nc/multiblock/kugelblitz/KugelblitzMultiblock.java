@@ -330,6 +330,11 @@ public class KugelblitzMultiblock extends AbstractNCMultiblock {
             BlockPos pos = blackHole.getBlockPos();
             blackHole = null;
             getLevel().setBlockAndUpdate(pos, AIR.defaultBlockState());
+            controllerBE().mass = 0;
+            controllerBE().feeding = 0;
+            controllerBE().energyPerTick = 0;
+            controllerBE().evaporation = 0;
+            controllerBE().setChanged();
         }
         if (blackHole == null) {
             boolean energyTransfered = true;

@@ -180,8 +180,8 @@ public class KugelblitzMultiblock extends AbstractNCMultiblock {
             return;
         }
         centerBlockPos = topCenter.below(5);
-        bottomLeft = NCBlockPos.of(topCenter.offset(-5, -5, -5));
-        topRight = NCBlockPos.of(topCenter.offset(5, 0, 5));
+        bottomLeft = NCBlockPos.of(topCenter.offset(-3, -3, -3));
+        topRight = NCBlockPos.of(topCenter.offset(3, 0, 3));
         validationResult = ValidationResult.VALID;
     }
 

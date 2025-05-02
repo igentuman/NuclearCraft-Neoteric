@@ -267,6 +267,13 @@ public class NCLanguageProvider extends LanguageProvider {
         add("fission.recipe.duration","Depletion Time: %s s");
         add("fission.recipe.radiation","Reaction Radiation: %s pRad");
         add("fission.recipe.heat","Heat Generation: %s H/t");
+        add("gui.nc.kugelblits_port.tooltip_1","Comparator: FE Gen");
+        add("gui.nc.kugelblits_port.tooltip_2","Comparator: Mass");
+        add("gui.nc.kugelblits_port.tooltip_3","Comparator: Transformation Progress");
+        add("gui.nc.kugelblits_port.tooltip_4","Comparator: Inventory Size");
+        add("gui.nc.kugelblits_port.tooltip_5","Input: Quantum Frequency");
+        add("gui.nc.kugelblits_port.tooltip_6","Input: FE Gen vs Transformation rate");
+        add("gui.nc.kugelblits_port.tooltip_strength","Signal strength: %s");
         add("gui.nc.reactor_mode.tooltip_steam","Boiling Mode");
         add("gui.nc.reactor_mode.tooltip_energy","Energy Mode");
         add("gui.nc.reactor_mode.timer","Changing mode in: %s sec");

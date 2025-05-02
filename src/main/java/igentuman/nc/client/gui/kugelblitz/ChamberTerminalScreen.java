@@ -46,7 +46,6 @@ public class ChamberTerminalScreen extends AbstractContainerScreen<ChamberTermin
     public Checkbox checkboxCasing;
     public Checkbox checkboxInterior;
     private VerticalBar energyBar;
-    private Button.ReactorMode modeBtn;
 
     public Component casingTootip = Component.empty();
     public Component interiorTootip = Component.empty();
@@ -105,8 +104,6 @@ public class ChamberTerminalScreen extends AbstractContainerScreen<ChamberTermin
         widgets.add(energyTransferRateSlider);
         widgets.add(frequencySlider);
         widgets.add(new ProgressBar(152, 81, this,  2));
-        //modeBtn = new Button.ReactorMode(150, 54, this, menu.getPosition());
-       // widgets.add(modeBtn);
     }
 
     protected FluidTank getFluidTank(int i) {

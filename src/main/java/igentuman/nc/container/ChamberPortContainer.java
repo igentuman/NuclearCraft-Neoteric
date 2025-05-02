@@ -97,6 +97,22 @@ public class ChamberPortContainer extends AbstractContainerMenu {
     }
 
     public int energyPerTick() {
-        return 0;
+        return blockEntity.energyPerTick();
+    }
+
+    public double getProgress() {
+        return blockEntity.getProgress();
+    }
+
+    public BlockPos getPosition() {
+        return blockEntity.getBlockPos();
+    }
+
+    public byte getComparatorMode() {
+        return blockEntity.comparatorMode;
+    }
+
+    public byte getAnalogSignalStrength() {
+        return blockEntity.analogSignal;
     }
 }

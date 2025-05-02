@@ -7,11 +7,9 @@ import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;
 import igentuman.nc.multiblock.AbstractNCMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.kugelblitz.KugelblitzMultiblock;
-import igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -26,7 +24,10 @@ import javax.annotation.Nullable;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static igentuman.nc.compat.oc2.NCFusionReactorDevice.DEVICE_CAPABILITY;
+import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BE;
 import static igentuman.nc.util.ModUtil.isCcLoaded;
+import static igentuman.nc.util.ModUtil.isOC2Loaded;
 
 public class ChamberPortBE extends NuclearCraftBE implements MultiblockAttachable {
 
@@ -34,7 +35,7 @@ public class ChamberPortBE extends NuclearCraftBE implements MultiblockAttachabl
     @NBTField
     public byte analogSignal = 0;
     @NBTField
-    public byte comparatorMode = SignalSource.OVERFLOW;
+    public byte comparatorMode = SignalSource.ENERGY;
     @NBTField
     public BlockPos controllerPos;
     protected KugelblitzMultiblock multiblock;
@@ -43,7 +44,7 @@ public class ChamberPortBE extends NuclearCraftBE implements MultiblockAttachabl
     public ChamberTerminalBE controller;
 
     public ChamberPortBE(BlockPos pPos, BlockState pBlockState) {
-        super(KugelblitzRegistration.KUGELBLITZ_BE.get(NAME).get(), pPos, pBlockState);
+        super(KUGELBLITZ_BE.get(NAME).get(), pPos, pBlockState);
     }
     public Direction getFacing() {
         return getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);
@@ -70,7 +71,7 @@ public class ChamberPortBE extends NuclearCraftBE implements MultiblockAttachabl
 
     @Override
     public void tickServer() {
-        if(NuclearCraft.instance.isNcBeStopped) return;
+        if(NuclearCraft.instance.isNcBeStopped || isRemoved()) return;
         super.tickServer();
         if(getMultiblock() == null || controller() == null) return;
         int wasSignal = analogSignal;
@@ -87,11 +88,14 @@ public class ChamberPortBE extends NuclearCraftBE implements MultiblockAttachabl
         updateAnalogSignal();
 
         updated = wasSignal != analogSignal || updated;
-
+        switch (comparatorMode) {
+            case SignalSource.FREQUENCY -> controller().frequency = analogSignal;
+            case SignalSource.TRANSFORMATION_ENERGY_RATE -> controller().energyConvertionRate = analogSignal/15*100;
+        }
         Direction dir = getFacing();
 
         if(fluidHandler() != null) {
-            updated = fluidHandler().pushFluids(dir, false, worldPosition) || updated;
+            //updated = fluidHandler().pushFluids(dir, false, worldPosition) || updated;
             updated = fluidHandler().pullFluids(dir, false, worldPosition) || updated;
         }
 
@@ -103,12 +107,34 @@ public class ChamberPortBE extends NuclearCraftBE implements MultiblockAttachabl
     }
 
     private void updateAnalogSignal() {
+        if(controller() == null) {
+            analogSignal = 0;
+            return;
+        }
         switch (comparatorMode) {
             case SignalSource.ENERGY:
                 analogSignal = (byte) (controller().energyStorage().getEnergyStored() * 15 / controller().energyStorage().getMaxEnergyStored());
                 break;
-
+            case SignalSource.MASS:
+                analogSignal = (byte) (controller().mass * 15 / BlackHoleBE.MAX_MASS);
+                break;
+            case SignalSource.PROGRESS:
+                analogSignal = (byte) (getProgress()/100D * 15);
+                break;
+            case SignalSource.ITEMS:
+                analogSignal = (byte) (controller().contentHandler().itemHandler.getStackInSlot(0).getCount() * 15 / controller().contentHandler().itemHandler.getStackInSlot(0).getMaxStackSize());
+                break;
+            case SignalSource.FREQUENCY:
+                analogSignal = (byte) (Math.max(1, getRedstoneSignal()));
+                break;
+            case SignalSource.TRANSFORMATION_ENERGY_RATE:
+                analogSignal = (byte) (Math.max(1, getRedstoneSignal()));
+                break;
         }
+    }
+
+    public int getRedstoneSignal() {
+        return Objects.requireNonNull(getLevel()).getBestNeighborSignal(worldPosition);
     }
 
     protected FluidCapabilityHandler fluidHandler()
@@ -126,6 +152,9 @@ public class ChamberPortBE extends NuclearCraftBE implements MultiblockAttachabl
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if(controller() == null) return super.getCapability(cap, side);
 
+        if (cap == ForgeCapabilities.ITEM_HANDLER) {
+            return controller().getCapability(cap, side);
+        }
         if (cap == ForgeCapabilities.FLUID_HANDLER) {
             return controller().getCapability(cap, side);
         }
@@ -135,6 +164,12 @@ public class ChamberPortBE extends NuclearCraftBE implements MultiblockAttachabl
         if(isCcLoaded()) {
             if(cap == dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL) {
                 return controller().getPeripheral(cap, side);
+            }
+        }
+
+        if(isOC2Loaded()) {
+            if(cap == DEVICE_CAPABILITY) {
+               // return controller().getOCDevice(cap, side);
             }
         }
         return super.getCapability(cap, side);
@@ -202,9 +237,10 @@ public class ChamberPortBE extends NuclearCraftBE implements MultiblockAttachabl
 
     public void toggleComparatorMode() {
         comparatorMode++;
-        if(comparatorMode > SignalSource.OVERFLOW) {
+        if(comparatorMode > SignalSource.TRANSFORMATION_ENERGY_RATE) {
             comparatorMode = SignalSource.ENERGY;
         }
+        MultiblockHandler.addIgnoreToUpdate(getBlockPos());
         setChanged();
         level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
     }
@@ -214,8 +250,18 @@ public class ChamberPortBE extends NuclearCraftBE implements MultiblockAttachabl
         return controller().getFluidTank(i);
     }
 
+    public double getProgress() {
+        if(controller() == null) return 0;
+        return controller().recipeInfo().getProgress();
+    }
+
+
     public static class SignalSource {
         public static final byte ENERGY = 1;
-        public static final byte OVERFLOW = 2;
+        public static final byte MASS = 2;
+        public static final byte PROGRESS = 3;
+        public static final byte ITEMS = 4;
+        public static final byte FREQUENCY = 5;
+        public static final byte TRANSFORMATION_ENERGY_RATE = 6;
     }
 }

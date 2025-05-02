@@ -4,6 +4,7 @@ import igentuman.nc.block.entity.fission.FissionControllerBE;
 import igentuman.nc.block.entity.fission.FissionPortBE;
 import igentuman.nc.block.entity.fusion.FusionCoreBE;
 import igentuman.nc.block.entity.fusion.FusionCoreProxyBE;
+import igentuman.nc.block.entity.kugelblitz.ChamberPortBE;
 import igentuman.nc.block.entity.processor.NCProcessorBE;
 import igentuman.nc.block.entity.turbine.TurbinePortBE;
 import igentuman.nc.client.gui.element.button.Button;
@@ -71,6 +72,12 @@ public class PacketGuiButtonPress implements INcPacket {
                 }
                 if (be instanceof FusionCoreProxyBE port) {
                     port.toggleRedstoneMode();
+                }
+                break;
+
+            case Button.Kugelblitz.BTN_ID:
+                if (be instanceof ChamberPortBE port) {
+                    port.toggleComparatorMode();
                 }
                 break;
         }

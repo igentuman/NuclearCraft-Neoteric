@@ -12,11 +12,15 @@ import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+
+import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.NuclearCraft.rl;
 
 public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
     protected AbstractContainerMenu container;
@@ -240,6 +244,37 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
         public void setMode(byte redstoneMode) {
             mode = redstoneMode;
             btn = new ImageButton(X(), Y(), width, height, 238, 256 - (redstoneMode+1) * 36, 18, TEXTURE, pButton -> {
+                NuclearCraft.packetHandler().sendToServer(new PacketGuiButtonPress(pos, BTN_ID));
+            });
+        }
+    }
+
+    public static class Kugelblitz extends Button {
+        public final BlockPos pos;
+        public static final int BTN_ID = 75;
+        public byte mode = 2;
+        public byte strength = 0;
+
+        public Kugelblitz(int xPos, int yPos, AbstractContainerScreen<?> screen, BlockPos pos) {
+            super(xPos, yPos, screen, BTN_ID);
+            this.pos = pos;
+            height = 18;
+            width = 18;
+            btn = new ImageButton(X(), Y(), width, height, 202, 256, 18, TEXTURE, pButton -> {
+                NuclearCraft.packetHandler().sendToServer(new PacketGuiButtonPress(pos, bId));
+            });
+        }
+
+        public List<Component> getTooltips() {
+            return List.of(
+                    Component.translatable("gui.nc.kugelblits_port.tooltip_"+mode),
+                    Component.translatable("gui.nc.kugelblits_port.tooltip_strength", strength)
+            );
+        }
+
+        public void setMode(byte redstoneMode) {
+            mode = redstoneMode;
+            btn = new ImageButton(X(), Y(), width, height, 202, 256 - (redstoneMode+1) * 36, 18, TEXTURE, pButton -> {
                 NuclearCraft.packetHandler().sendToServer(new PacketGuiButtonPress(pos, BTN_ID));
             });
         }

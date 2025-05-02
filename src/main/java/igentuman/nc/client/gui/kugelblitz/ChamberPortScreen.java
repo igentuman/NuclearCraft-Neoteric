@@ -6,6 +6,7 @@ import igentuman.nc.client.gui.IVerticalBarScreen;
 import igentuman.nc.client.gui.element.NCGuiElement;
 import igentuman.nc.client.gui.element.bar.ProgressBar;
 import igentuman.nc.client.gui.element.bar.VerticalBar;
+import igentuman.nc.client.gui.element.button.Button;
 import igentuman.nc.container.ChamberPortContainer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -23,19 +24,18 @@ import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.client.gui.element.fluid.FluidTankRenderer.TooltipMode.SHOW_AMOUNT_AND_CAPACITY;
 
 public class ChamberPortScreen extends AbstractContainerScreen<ChamberPortContainer> implements IProgressScreen, IVerticalBarScreen {
+
     protected final ResourceLocation GUI = new ResourceLocation(MODID, "textures/gui/kugelblitz/port.png");
     protected int relX;
     protected int relY;
     private int xCenter;
-
     public ChamberPortContainer container()
     {
         return (ChamberPortContainer)menu;
     }
-
     public List<NCGuiElement> widgets = new ArrayList<>();
-
     private VerticalBar energyBar;
+    private Button.Kugelblitz modeBtn;
 
 
     public ChamberPortScreen(ChamberPortContainer container, Inventory inv, Component name) {
@@ -59,6 +59,8 @@ public class ChamberPortScreen extends AbstractContainerScreen<ChamberPortContai
         widgets.clear();
         energyBar = new VerticalBar.Energy(17, 16,  this, container().getMaxEnergy());
         widgets.add(new ProgressBar(74, 35, this,  7));
+        modeBtn = new Button.Kugelblitz(150, 64, this, menu.getPosition());
+        widgets.add(modeBtn);
     }
 
     protected FluidTank getFluidTank(int i) {
@@ -74,6 +76,8 @@ public class ChamberPortScreen extends AbstractContainerScreen<ChamberPortContai
     }
 
     private void renderWidgets(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
+        modeBtn.setMode(container().getComparatorMode());
+        modeBtn.strength = container().getAnalogSignalStrength();
         for(NCGuiElement widget: widgets) {
             widget.draw(graphics, mouseX, mouseY, partialTicks);
         }
@@ -122,7 +126,7 @@ public class ChamberPortScreen extends AbstractContainerScreen<ChamberPortContai
 
     @Override
     public double getProgress() {
-        return 0;
+        return container().getProgress();
     }
 
     @Override

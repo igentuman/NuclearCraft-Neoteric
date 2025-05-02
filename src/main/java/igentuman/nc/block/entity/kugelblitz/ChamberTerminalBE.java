@@ -199,6 +199,9 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
             }
         }
         setChanged();
+        MultiblockHandler.addIgnoreToUpdate(getBlockPos());
+        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(POWERED, controllerEnabled), Block.UPDATE_ALL);
+        level.setBlockAndUpdate(worldPosition, getBlockState().setValue(POWERED, controllerEnabled));
     }
 
     public void tickClient() {
@@ -276,7 +279,7 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
     private void updateEnergyGeneration() {
         int wasEnergy = energyPerTick;
         double massRatio = (double)MAX_MASS / Math.max(mass, MIN_MASS);
-        energyPerTick = (int)(massRatio * 500 * Math.log(energyConvertionRate*Math.log(fluxRegulators*4)+1));
+        energyPerTick = (int)(massRatio * 600 * Math.log(energyConvertionRate*Math.log(fluxRegulators*4)+1));
         energyPerTick *= ENERGY_GENERATION.GENERATION_MULTIPLIER.get();
         energyPerTick *= KUGELBLITZ_CONFIG.GENERATION_MULTIPLIER.get();
         energyStorage().addEnergy(energyPerTick);
@@ -289,7 +292,7 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
         int wasEvaporation = evaporation;
         int rate = (int) Math.max(1, energyConvertionRate*Math.log(fluxRegulators));
         if (recipeInfo().recipe() != null && !recipeInfo().isCompleted()) {
-            rate+= (int) ((100 - energyConvertionRate) * Math.log(transformers) * 5);
+            rate+= (int) ((100 - energyConvertionRate) * Math.log(transformers) * 2);
         }
         rate = (int) Math.pow(rate, 1.2);
         double massRatio = (double)MAX_MASS / Math.max(mass, MIN_MASS);
@@ -417,15 +420,6 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
             }
         }
         return 0;
-    }
-
-    private int calculateEnergy() {
-        int wasEnergy = energyPerTick;
-        energyPerTick = 0;
-        if(wasEnergy != energyPerTick) {
-            changed = true;
-        }
-        return energyPerTick;
     }
 
     private void updateRecipe() {

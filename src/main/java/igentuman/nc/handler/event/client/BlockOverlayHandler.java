@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import igentuman.api.nc.SideModeToggleable;
 import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.block.entity.fusion.FusionCoreBE;
+import igentuman.nc.client.renderer.DistortShader;
 import igentuman.nc.item.QNP;
 import igentuman.nc.util.NCBlockPos;
 import net.minecraft.client.Camera;
@@ -63,7 +64,6 @@ public class BlockOverlayHandler {
     @SubscribeEvent
     public static void onRenderWorldEvent(RenderLevelStageEvent e) {
         final GameRenderer gameRenderer = Minecraft.getInstance().gameRenderer;
-
         Player player = Minecraft.getInstance().player;
         if(e.getStage().equals(RenderLevelStageEvent.Stage.AFTER_SOLID_BLOCKS)) {
             for(BlockPos pos: fusionReactors) {

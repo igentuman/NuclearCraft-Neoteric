@@ -17,7 +17,7 @@ import igentuman.nc.client.gui.turbine.TurbinePortScreen;
 import igentuman.nc.client.particle.FusionBeamParticle;
 import igentuman.nc.client.particle.RadiationParticle;
 import igentuman.nc.client.gui.fission.FissionControllerScreen;
-import igentuman.nc.client.renderer.DistortionEffectRenderer;
+import igentuman.nc.client.renderer.DistortShader;
 import igentuman.nc.client.sound.SoundHandler;
 import igentuman.nc.content.energy.BatteryBlocks;
 import igentuman.nc.handler.event.client.*;
@@ -73,7 +73,7 @@ public class ClientSetup {
     public static void init(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
             MinecraftForge.EVENT_BUS.addListener(LOWEST, SoundHandler::onTilePlaySound);
-            DistortionEffectRenderer.register();
+            DistortShader.register();
             BlockEntityRenderers.register(FUSION_BE.get("fusion_core").get(), FusionCoreRenderer::new);
             BlockEntityRenderers.register(EXPL_BE.get(), EXPLRenderer::new);
             BlockEntityRenderers.register(TURBINE_BE.get("turbine_rotor_shaft").get(), TurbineRotorRenderer::new);

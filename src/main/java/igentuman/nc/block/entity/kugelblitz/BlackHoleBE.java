@@ -19,6 +19,7 @@ import net.minecraft.world.phys.AABB;
 import java.util.List;
 
 import static igentuman.nc.block.kugelblitz.BlackHoleBlock.ACTIVE;
+import static igentuman.nc.client.renderer.DistortShader.blackhole;
 import static igentuman.nc.setup.registration.NCSounds.BLACKHOLE_IDLE;
 import static igentuman.nc.setup.registration.NCSounds.BLACKHOLE_SPAWN;
 import static net.minecraft.world.level.block.Blocks.AIR;
@@ -40,7 +41,12 @@ public class BlackHoleBE extends NuclearCraftBE {
     }
 
     public void tickClient() {
-        if(isRemoved()) return;
+        if(isRemoved()) {
+            blackhole.remove(getBlockPos());
+        }
+        if (!blackhole.contains(getBlockPos())) {
+            blackhole.add(getBlockPos());
+        }
         scale = 0.3f + spawnDelay/100f;
         if (spawnDelay < 1) {
             playSound(BLACKHOLE_IDLE, 0.7f);

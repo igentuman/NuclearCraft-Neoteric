@@ -2,6 +2,8 @@ package igentuman.nc.client.renderer;
 
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.PostChain;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.resources.ResourceLocation;
@@ -20,14 +22,17 @@ import static igentuman.nc.NuclearCraft.rl;
 public class NCShaders {
 
     public static final ShaderTracker BLACKHOLE_COLOR = new ShaderTracker();
-    public static final ShaderTracker DISTORTION = new ShaderTracker();
 
-    public static final RenderStateShard.ShaderStateShard ZUZUZ = new RenderStateShard.ShaderStateShard();
+    public static PostChain blackholePostEffect;
 
     @SubscribeEvent
     public static void shaderRegistry(RegisterShadersEvent event) throws IOException {
         registerShader(event, rl("rendertype_blackhole"), DefaultVertexFormat.POSITION_COLOR_TEX, BLACKHOLE_COLOR);
-        registerShader(event, rl("distortion"), DefaultVertexFormat.POSITION_COLOR_TEX, DISTORTION);
+        Minecraft mc = Minecraft.getInstance();
+
+        blackholePostEffect = new PostChain(mc.getTextureManager(), mc.getResourceManager(),
+                mc.getMainRenderTarget(), rl("shaders/post/black_hole.json"));
+        blackholePostEffect.resize(mc.getWindow().getWidth(), mc.getWindow().getHeight());
     }
 
     private static void registerShader(RegisterShadersEvent event, ResourceLocation shaderLocation, VertexFormat vertexFormat, ShaderTracker tracker) throws IOException {

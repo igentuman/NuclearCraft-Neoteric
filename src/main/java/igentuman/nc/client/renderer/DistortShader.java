@@ -50,6 +50,20 @@ public class DistortShader {
     }
 
     private static boolean processBlackHole(Minecraft mc, RenderLevelStageEvent event, EffectInstance effect, BlockPos pos) {
+        if (mc.level == null && mc.player == null) {
+            return false;
+        }
+
+        // Calculate distance to blackhole
+        double distanceSq = mc.player.position().distanceToSqr(
+                pos.getX() + 0.5,
+                pos.getY() + 0.5,
+                pos.getZ() + 0.5
+        );
+        double distance = Math.sqrt(distanceSq);
+        if(distance > 64) {
+            return false;
+        }
         BlockEntity be = mc.level.getExistingBlockEntity(pos);
         float scaleMult = 1;
         if(be instanceof BlackHoleBE blackHoleBE) {
@@ -66,20 +80,10 @@ public class DistortShader {
         boolean blackholeVisible = false;
         float distanceFactor = 0.0f;
 
-        if (mc.level == null && mc.player == null) {
-            return false;
-        }
+
         // Get matrices
         Matrix4f viewMatrix = event.getPoseStack().last().pose();
         Matrix4f projectionMatrix = RenderSystem.getProjectionMatrix();
-
-        // Calculate distance to blackhole
-        double distanceSq = mc.player.position().distanceToSqr(
-                pos.getX() + 0.5,
-                pos.getY() + 0.5,
-                pos.getZ() + 0.5
-        );
-        double distance = Math.sqrt(distanceSq);
 
         // Get camera position
         net.minecraft.client.Camera camera = mc.gameRenderer.getMainCamera();

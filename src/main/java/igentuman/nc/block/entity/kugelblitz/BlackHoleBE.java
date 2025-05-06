@@ -55,6 +55,14 @@ public class BlackHoleBE extends NuclearCraftBE {
             spawnDelay--;
             return;
         }
+        if(getLevel().random.nextBoolean()) {
+            for (int i = 0; i < getLevel().random.nextInt(3); i++) {
+                float x = getBlockPos().getX() + 0.5F + randomDistance();
+                float y = getBlockPos().getY() + 0.5F + randomDistance();
+                float z = getBlockPos().getZ() + 0.5F + randomDistance();
+                level.addParticle(ParticleTypes.DRAGON_BREATH, x, y, z, 0, 0, 0);
+            }
+        }
         if (!isInitialized) {
             isInitialized = true;
             spawnDelay = 18;

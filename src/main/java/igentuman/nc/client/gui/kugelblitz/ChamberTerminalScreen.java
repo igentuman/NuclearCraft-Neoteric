@@ -33,8 +33,6 @@ public class ChamberTerminalScreen extends AbstractContainerScreen<ChamberTermin
     protected final ResourceLocation GUI = new ResourceLocation(MODID, "textures/gui/kugelblitz/controller.png");
     protected int relX;
     protected int relY;
-    private int xCenter;
-    private FluidTankRenderer feedingRateTank;
     private SliderHorizontal energyTransferRateSlider;
     private SliderHorizontal frequencySlider;
     public ChamberTerminalContainer container()
@@ -120,7 +118,6 @@ public class ChamberTerminalScreen extends AbstractContainerScreen<ChamberTermin
 
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
-        xCenter = getGuiLeft()-imageWidth/2;
         this.renderBackground(graphics);
         super.render(graphics, mouseX, mouseY, partialTicks);
         this.renderTooltip(graphics, mouseX, mouseY);
@@ -133,6 +130,9 @@ public class ChamberTerminalScreen extends AbstractContainerScreen<ChamberTermin
         checkboxCasing.setChecked(isCasingValid()).draw(graphics, mouseX, mouseY, partialTicks);
         if(isCasingValid()) {
             checkboxCasing.setTooltipKey("multiblock.casing.complete");
+            if (!container().hasBlackhole()) {
+                checkboxCasing.addTooltip(Component.translatable("tooltip.kugelblitz.ready_for_burst").withStyle(ChatFormatting.AQUA));
+            }
         } else {
             checkboxCasing.setTooltipKey("multiblock.casing.incomplete");
         }

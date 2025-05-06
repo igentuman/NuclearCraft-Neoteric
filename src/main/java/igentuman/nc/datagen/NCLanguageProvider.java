@@ -88,6 +88,8 @@ public class NCLanguageProvider extends LanguageProvider {
     }
 
     private void labels() {
+        add("block.nuclearcraft.expl", "EXPL");
+        add("gui.nuclearcraft:button.burst", "Activate");
         add("nc.guide_book.name", "NuclearCraft Guide");
         add("nc.guide_book.desc", "Basics and advanced topics about NuclearCraft");
         add("nc.guide_book.edition", "Neoteric Edition");
@@ -245,6 +247,8 @@ public class NCLanguageProvider extends LanguageProvider {
 
         add("tooltip.active_heatsink","Needs coolant fluid supply into reactor to work.");
 
+        add("tooltip.kugelblitz.photon_concentrator","Concentrates photons into a single point. \n Need to be placed at center of all 6 chamber walls.");
+        add("tooltip.kugelblitz.ready_for_burst","Ready for Laser Burst");
         add("tooltip.kugelblitz.flux_regulators","Flux Regulators: %s");
         add("tooltip.kugelblitz.transformers","Quantum Transformers: %s");
 

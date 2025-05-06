@@ -1,6 +1,7 @@
 package igentuman.nc.client.gui.element.button;
 
 import igentuman.nc.NuclearCraft;
+import igentuman.nc.client.gui.kugelblitz.EXPLScreen;
 import igentuman.nc.client.gui.processor.side.SideConfigSlotSelectionScreen;
 import igentuman.nc.client.gui.turbine.TurbinePortScreen;
 import igentuman.nc.container.NCProcessorContainer;
@@ -12,10 +13,11 @@ import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
-import java.lang.reflect.Field;
+import net.minecraft.client.gui.components.Button.Builder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +29,7 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
     protected AbstractContainerScreen<?> screen;
     protected int bId;
 
-    protected ImageButton btn;
+    protected net.minecraft.client.gui.components.Button btn;
     protected Component tooltipKey = Component.empty();
 
     public Button(int xPos, int yPos, T screen, int id)  {
@@ -37,6 +39,18 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
         this.container = screen.getMenu();
         this.screen = screen;
         bId = id;
+    }
+
+    public Button(int xPos, int yPos, AbstractContainerScreen<?> explScreen, int id, MutableComponent label, net.minecraft.client.gui.components.Button.OnPress o) {
+        super(xPos, yPos, 18, 18, label);
+        x = xPos;
+        y = yPos;
+        this.container = explScreen.getMenu();
+        this.screen = explScreen;
+        bId = id;
+        height = 20;
+        width = 80;
+        btn = new Builder(label, o).pos(X(), Y()).size(80, 20).build();
     }
 
     public List<Component> getTooltips() {

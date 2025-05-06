@@ -51,6 +51,7 @@ public class PhotonConcentratorBlock extends MultiblockBlock implements EntityBl
 
     @Override
     public void appendHoverText(ItemStack pStack, @Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag) {
+        list.add(Component.translatable("tooltip.kugelblitz.photon_concentrator").withStyle(ChatFormatting.AQUA));
         list.add(Component.translatable("multiblock.build_in_chunk.advise").withStyle(ChatFormatting.GREEN));
     }
 }

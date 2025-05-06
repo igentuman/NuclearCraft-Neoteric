@@ -279,7 +279,7 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
     private void updateEnergyGeneration() {
         int wasEnergy = energyPerTick;
         double massRatio = (double)MAX_MASS / Math.max(mass, MIN_MASS);
-        energyPerTick = (int)(massRatio * 600 * Math.log(energyConvertionRate*Math.log(fluxRegulators*4)+1));
+        energyPerTick = (int)(massRatio * 10000 * Math.log(energyConvertionRate*Math.log(fluxRegulators*4)+1));
         energyPerTick *= ENERGY_GENERATION.GENERATION_MULTIPLIER.get();
         energyPerTick *= KUGELBLITZ_CONFIG.GENERATION_MULTIPLIER.get();
         energyStorage().addEnergy(energyPerTick);
@@ -290,13 +290,13 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
 
     private void updateEvaporation() {
         int wasEvaporation = evaporation;
-        int rate = (int) Math.max(1, energyConvertionRate*Math.log(fluxRegulators));
+        int rate = (int) Math.max(1, energyConvertionRate * 100 / Math.log(fluxRegulators));
         if (recipeInfo().recipe() != null && !recipeInfo().isCompleted()) {
-            rate+= (int) ((100 - energyConvertionRate) * Math.log(transformers) * 2);
+            rate+= (int) ((100 - energyConvertionRate) * 100 / Math.log(transformers) );
         }
         rate = (int) Math.pow(rate, 1.2);
-        double massRatio = (double)MAX_MASS / Math.max(mass, MIN_MASS);
-        evaporation = (int)(rate * KUGELBLITZ_CONFIG.EVAPORATION_MULTIPLIER.get() * massRatio * 0.1);
+        double massRatio = Math.log((double)MAX_MASS / Math.max(mass, MIN_MASS));
+        evaporation = (int)(rate * KUGELBLITZ_CONFIG.EVAPORATION_MULTIPLIER.get() * massRatio);
         if (wasEvaporation != evaporation) {
             setChanged();
         }

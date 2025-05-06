@@ -1,7 +1,6 @@
 #version 150
 
 uniform sampler2D DiffuseSampler;
-uniform sampler2D DepthSampler;
 
 in vec2 texCoord;
 in vec2 oneTexel;
@@ -22,12 +21,6 @@ vec2 rotateVector(vec2 v, float angle) {
 float customSmoothstep(float edge0, float edge1, float x) {
     float t = clamp((x - edge0) / (edge1 - edge0), 0.0, 1.0);
     return t * t * (3.0 - 2.0 * t);
-}
-
-float linearizeDepth(float depth) {
-    float near = 0.05;
-    float far = 1000.0;
-    return (2.0 * near) / (far + near - depth * (far - near));
 }
 
 void main() {

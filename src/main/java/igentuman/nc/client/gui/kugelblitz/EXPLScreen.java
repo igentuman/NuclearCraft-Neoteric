@@ -6,6 +6,7 @@ import igentuman.nc.client.gui.IVerticalBarScreen;
 import igentuman.nc.client.gui.element.NCGuiElement;
 import igentuman.nc.client.gui.element.bar.ProgressBar;
 import igentuman.nc.client.gui.element.bar.VerticalBar;
+import igentuman.nc.client.gui.element.button.Button;
 import igentuman.nc.container.ChamberPortContainer;
 import igentuman.nc.container.EXPLContainer;
 import net.minecraft.client.Minecraft;
@@ -23,7 +24,7 @@ import java.util.Optional;
 import static igentuman.nc.NuclearCraft.MODID;
 
 public class EXPLScreen extends AbstractContainerScreen<EXPLContainer> implements IProgressScreen, IVerticalBarScreen {
-    protected final ResourceLocation GUI = new ResourceLocation(MODID, "textures/gui/kugelblitz/port.png");
+    protected final ResourceLocation GUI = new ResourceLocation(MODID, "textures/gui/small_window.png");
     protected int relX;
     protected int relY;
     private int xCenter;
@@ -37,10 +38,12 @@ public class EXPLScreen extends AbstractContainerScreen<EXPLContainer> implement
 
     private VerticalBar energyBar;
 
+    private Button burstButton;
+
     public EXPLScreen(EXPLContainer container, Inventory inv, Component name) {
         super(container, inv, name);
-        imageWidth = 176;
-        imageHeight = 176;
+        imageWidth = 126;
+        imageHeight = 126;
     }
 
     protected void updateRelativeCords()
@@ -56,8 +59,14 @@ public class EXPLScreen extends AbstractContainerScreen<EXPLContainer> implement
         Minecraft mc = Minecraft.getInstance();
         updateRelativeCords();
         widgets.clear();
-        energyBar = new VerticalBar.Energy(17, 16,  this, container().getMaxEnergy());
-        widgets.add(new ProgressBar(74, 35, this,  7));
+        energyBar = new VerticalBar.Energy(6, 16,  this, container().getMaxEnergy());
+        burstButton = new Button(18, 46, this, 77, Component.translatable("gui.nuclearcraft:button.burst"), (button) -> {
+            if(container().isReady()) {
+                container().burst();
+            }
+        });
+        burstButton.clearTooltips();
+        widgets.add(burstButton);
     }
 
     protected FluidTank getFluidTank(int i) {
@@ -106,13 +115,14 @@ public class EXPLScreen extends AbstractContainerScreen<EXPLContainer> implement
 
         for(NCGuiElement widget: widgets) {
            if(widget.isMouseOver(pMouseX, pMouseY)) {
-               graphics.renderTooltip(font, widget.getTooltips(),
-                       Optional.empty(), pMouseX, pMouseY);
+               if(widget.getTooltips().size() > 0 && !widget.getTooltips().get(0).getString().isBlank()) {
+                   graphics.renderTooltip(font, widget.getTooltips(),
+                           Optional.empty(), pMouseX, pMouseY);
+               }
            }
         }
 
         energyBar.clearTooltips();
-        energyBar.addTooltip(Component.translatable("reactor.forge_energy_per_tick", container().energyPerTick()));
         if(energyBar.isMouseOver(pMouseX, pMouseY+10)) {
             graphics.renderTooltip(font, energyBar.getTooltips(),
                     Optional.empty(), pMouseX, pMouseY);

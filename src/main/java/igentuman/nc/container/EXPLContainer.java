@@ -1,6 +1,9 @@
 package igentuman.nc.container;
 
+import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.kugelblitz.EXPLBE;
+import igentuman.nc.network.toServer.PacketGuiButtonPress;
+import igentuman.nc.network.toServer.PacketSliderChanged;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -22,16 +25,13 @@ public class EXPLContainer extends AbstractContainerMenu {
     protected final EXPLBE blockEntity;
     protected final Player playerEntity;
     protected final String name = "expl";
-    private int slotIndex = 0;
 
     protected IItemHandler playerInventory;
 
     public EXPLContainer(int pContainerId, BlockPos pos, Inventory playerInventory) {
         super(EXPL_CONTAINER.get(), pContainerId);
         this.playerEntity = playerInventory.player;
-        this.playerInventory =  new InvWrapper(playerInventory);
         blockEntity = (EXPLBE) playerEntity.getCommandSenderWorld().getExistingBlockEntity(pos);
-        layoutPlayerInventorySlots();
     }
 
     @Override
@@ -60,29 +60,6 @@ public class EXPLContainer extends AbstractContainerMenu {
         return blockEntity.energyStorage().getEnergyStored();
     }
 
-    private void addSlotRange(IItemHandler handler, int x, int y, int amount, int dx) {
-        for (int i = 0 ; i < amount ; i++) {
-            addSlot(new SlotItemHandler(handler, slotIndex, x, y));
-            x += dx;
-            slotIndex++;
-        }
-    }
-
-    protected void addSlotBox(IItemHandler handler, int x, int y, int horAmount, int dx, int verAmount, int dy) {
-        for (int j = 0 ; j < verAmount ; j++) {
-            addSlotRange(handler, x, y, horAmount, dx);
-            y += dy;
-        }
-    }
-
-    protected void layoutPlayerInventorySlots() {
-        int leftCol = 27;
-        int topRow = 163;
-        addSlotRange(playerInventory, leftCol, topRow, 9, 18);
-        topRow -= 58;
-        addSlotBox(playerInventory, leftCol, topRow, 9, 18, 3, 18);
-    }
-
     public int getMaxEnergy() {
         return blockEntity.energyStorage().getMaxEnergyStored();
     }
@@ -100,34 +77,17 @@ public class EXPLContainer extends AbstractContainerMenu {
     }
 
     public boolean isReady() {
-        return true;
-        /*return  hasAmplifiers()
-                && hasMagnets()
-                && hasCoolant()
-                && hasRecipe()
-                && getCharge() == 100
-                && hasEnoughEnergy();*/
+        return hasEnoughEnergy();
     }
 
-   /* public boolean hasEnoughEnergy() {
-        return blockEntity.hasEnoughEnergy();
+    private boolean hasEnoughEnergy() {
+        return blockEntity.energyStorage().getEnergyStored() >= getEnergy();
     }
 
-    public boolean hasCoolant() {
-        return blockEntity.hasCoolant();
-    }*/
-
-/*
-    public int getCharge() {
-        return blockEntity.functionalBlocksCharge;
+    public void burst() {
+        NuclearCraft.packetHandler().sendToServer(new PacketGuiButtonPress(blockEntity.getBlockPos(), 77));
+        //avoid spamming
+        blockEntity.energyStorage().setEnergy(0);
     }
 
-    public boolean isRunning() {
-        return blockEntity.isRunning();
-    }
-
-
-    public byte analogSignal() {
-        return blockEntity.analogSignal;
-    }*/
 }

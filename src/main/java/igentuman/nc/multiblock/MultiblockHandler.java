@@ -64,10 +64,14 @@ public class MultiblockHandler {
     }
 
     public static void addIgnoreToUpdate(BlockPos blockPos) {
+
         if (!ignoreUpdate.contains(blockPos)) {
             try {
                 ignoreUpdate.add(blockPos);
             } catch (ArrayIndexOutOfBoundsException ignored) {
+                if(ignoreUpdate.size() < 0) {
+                    ignoreUpdate.clear();
+                }
             }
         }
     }
@@ -80,6 +84,9 @@ public class MultiblockHandler {
             try {
                 ignoreUpdate.remove(pos);
             } catch (ArrayIndexOutOfBoundsException ignored) {
+                if(ignoreUpdate.size() < 0) {
+                    ignoreUpdate.clear();
+                }
             }
             return;
         }

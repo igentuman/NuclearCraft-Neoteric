@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_kugelblitz",
+  "key": {
+    "C": {
+      "item": "nuclearcraft:coil_magnesium_diboride"
+    },
+    "E": {
+      "tag": "forge:ingots/extreme"
+    },
+    "N": {
+      "item": "nuclearcraft:neutronium_frame"
+    }
+  },
+  "pattern": [
+    "CEC",
+    "ENE",
+    "CEC"
+  ],
+  "result": {
+    "item": "nuclearcraft:quantum_flux_regulator"
+  },
+  "show_notification": true
+}

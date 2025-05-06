@@ -18,15 +18,13 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.ExperienceOrb;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -47,6 +45,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
+import java.util.function.Supplier;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -157,6 +156,23 @@ public class QNP extends PickaxeItem
 		}
 	}
 
+	public static void dropResource(Level pLevel, BlockPos pPos, ItemStack pStack) {
+		double d0 = (double) EntityType.ITEM.getHeight() / (double)2.0F;
+		double d1 = (double)pPos.getX() + (double)0.5F + Mth.nextDouble(pLevel.random, (double)-0.25F, (double)0.25F);
+		double d2 = (double)pPos.getY() + (double)0.5F + Mth.nextDouble(pLevel.random, (double)-0.25F, (double)0.25F) - d0;
+		double d3 = (double)pPos.getZ() + (double)0.5F + Mth.nextDouble(pLevel.random, (double)-0.25F, (double)0.25F);
+		popResource(pLevel, (Supplier)(() -> new ItemEntity(pLevel, d1, d2, d3, pStack)), pStack);
+	}
+
+	private static void popResource(Level pLevel, Supplier<ItemEntity> pItemEntitySupplier, ItemStack pStack) {
+		if (!pLevel.isClientSide && !pStack.isEmpty() && pLevel.getGameRules().getBoolean(GameRules.RULE_DOBLOCKDROPS) && !pLevel.restoringBlockSnapshots) {
+			ItemEntity itementity = (ItemEntity)pItemEntitySupplier.get();
+			itementity.setNoPickUpDelay();
+			itementity.age /= 2;
+			pLevel.addFreshEntity(itementity);
+		}
+	}
+
 	public boolean mineBlock(@NotNull ItemStack stack, @NotNull Level worldIn, @NotNull BlockState state, @NotNull BlockPos pos, @NotNull LivingEntity entityLiving) {
 		if (entityLiving instanceof Player) {
 			HitResult rayTraceResult = RayTraceUtils.rayTraceSimple(worldIn, entityLiving, 16, 0);
@@ -173,7 +189,7 @@ public class QNP extends PickaxeItem
 					mineArea(pos, worldIn, entityLiving, blockResult, stack, totalDrops);
 				}
 				totalDrops.forEach(itemStack -> {
-					Block.popResource(worldIn, entityLiving.blockPosition().relative(entityLiving.getDirection(), 2), itemStack);
+					dropResource(worldIn, entityLiving.blockPosition().relative(entityLiving.getDirection(), 2), itemStack);
 				});
 			}
 		}

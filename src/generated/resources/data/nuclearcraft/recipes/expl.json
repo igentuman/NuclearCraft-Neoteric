@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_kugelblitz",
+  "key": {
+    "B": {
+      "item": "nuclearcraft:elite_lithium_ion_battery"
+    },
+    "C": {
+      "item": "nuclearcraft:niobium_titanium_electromagnet"
+    },
+    "L": {
+      "tag": "forge:plates/cobalt"
+    },
+    "M": {
+      "item": "nuclearcraft:niobium_titanium_rf_amplifier"
+    },
+    "P": {
+      "tag": "forge:storage_blocks/amethyst"
+    }
+  },
+  "pattern": [
+    " P ",
+    "CMC",
+    "LBL"
+  ],
+  "result": {
+    "item": "nuclearcraft:expl"
+  },
+  "show_notification": true
+}

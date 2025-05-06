@@ -148,6 +148,9 @@ public class EXPLBE extends NuclearCraftBE {
         if (activated && pulseEnergy == energyStorage().getMaxEnergyStored()) {
             if (pulseTime == 0) {
                 pulseTime = 90;
+                if(activated && inputRedstoneSignal == 0) {
+                    findAndPulseOtherLasers();
+                }
             }
         }
         if(pulseTime > 0) {
@@ -172,6 +175,44 @@ public class EXPLBE extends NuclearCraftBE {
             setChanged();
             level.setBlockAndUpdate(worldPosition, getBlockState());
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_NEIGHBORS);
+        }
+    }
+
+    private void findAndPulseOtherLasers() {
+        for (int i = 4; i <= KUGELBLITZ_CONFIG.LASER_DISTANCE.get()+4; i++) {
+            BlockPos pos = getBlockPos().relative(getFacing(), i);
+            BlockEntity be = level.getExistingBlockEntity(pos);
+            if (be instanceof PhotonConcentratorBE photonConcentrator) {
+                AbstractNCMultiblock multiblock = photonConcentrator.getMultiblock();
+                if (multiblock instanceof KugelblitzMultiblock kugelblitzMultiblock) {
+                    BlockPos center = kugelblitzMultiblock.getCenter();
+                    for(Direction direction : Direction.values()) {
+                        if(direction == getFacing().getOpposite()) {
+                            continue;
+                        }
+                        for(int j = 10; j < KUGELBLITZ_CONFIG.LASER_DISTANCE.get() + 10; j++) {
+                            BlockEntity be2 = level.getExistingBlockEntity(center.relative(direction, j));
+                            if(be2 instanceof EXPLBE expl) {
+                                expl.activate();
+                                break;
+                            }
+                        }
+
+                    }
+                    break;
+                }
+                break;
+            }
+        }
+    }
+
+    public void activate() {
+        if(pulseEnergy == energyStorage().getMaxEnergyStored()) {
+            if (pulseTime == 0) {
+                pulseTime = 90;
+                activated = true;
+                setChanged();
+            }
         }
     }
 

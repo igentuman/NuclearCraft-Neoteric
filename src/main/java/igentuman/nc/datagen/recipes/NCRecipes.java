@@ -23,6 +23,8 @@ import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.datagen.recipes.recipes.AbstractRecipeProvider.dustIngredient;
 import static igentuman.nc.multiblock.fission.FissionReactor.FISSION_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BLOCKS;
+import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.EXPL_BLOCK;
+import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BLOCKS;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.coils;
 import static igentuman.nc.setup.registration.FissionFuel.NC_ISOTOPES;
@@ -53,10 +55,109 @@ public class NCRecipes extends RecipeProvider {
         fissionBlocks(consumer);
         fusionBlocks(consumer);
         turbineBlocks(consumer);
+        kugelBlitzBlocks(consumer);
         FuelRecipes.generate(consumer);
         CustomRecipes.generate(consumer);
         SpecialRecipeBuilder.build(consumer, NcRecipeSerializers.SHIELDING);
         SpecialRecipeBuilder.build(consumer, NcRecipeSerializers.RESET_NBT);
+    }
+
+    private void kugelBlitzBlocks(Consumer<FinishedRecipe> consumer) {
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, EXPL_BLOCK.get())
+                .pattern(" P ")
+                .pattern("CMC")
+                .pattern("LBL")
+                .define('C', NC_ELECTROMAGNETS.get("niobium_titanium_electromagnet").get())
+                .define('M', NC_RF_AMPLIFIERS.get("niobium_titanium_rf_amplifier").get())
+                .define('P', forgeBlock("amethyst"))
+                .define('B', ENERGY_BLOCKS.get("elite_lithium_ion_battery").get())
+                .define('L',  forgePlate("cobalt"))
+                .group(MODID+"_kugelblitz")
+                .unlockedBy("item", has(ENERGY_BLOCKS.get("elite_lithium_ion_battery").get()))
+                .save(consumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, KUGELBLITZ_BLOCKS.get("neutronium_frame").get())
+                .pattern("ETE")
+                .pattern("TPT")
+                .pattern("ETE")
+                .define('E', forgeIngot(Materials.extreme))
+                .define('T', forgeIngot(Materials.platinum))
+                .define('P', NCItems.NC_PARTS.get("plate_extreme").get())
+                .group(MODID+"_kugelblitz")
+                .unlockedBy("item", has(NCItems.NC_PARTS.get("plate_extreme").get()))
+                .save(consumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, KUGELBLITZ_BLOCKS.get("event_horizon_stabilizer").get())
+                .pattern("BQB")
+                .pattern("ENE")
+                .pattern("BQB")
+                .define('B', forgePlate(Materials.platinum))
+                .define('Q', forgeDust(Materials.cobalt))
+                .define('E', NCItems.NC_PARTS.get("plate_elite").get())
+                .define('N', KUGELBLITZ_BLOCKS.get("neutronium_frame").get())
+                .group(MODID+"_kugelblitz")
+                .unlockedBy("item", has(KUGELBLITZ_BLOCKS.get("neutronium_frame").get()))
+                .save(consumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, KUGELBLITZ_BLOCKS.get("quantum_flux_regulator").get())
+                .pattern("CEC")
+                .pattern("ENE")
+                .pattern("CEC")
+                .define('C', NCItems.NC_PARTS.get("coil_magnesium_diboride").get())
+                .define('E', forgeIngot(Materials.extreme))
+                .define('N', KUGELBLITZ_BLOCKS.get("neutronium_frame").get())
+                .group(MODID+"_kugelblitz")
+                .unlockedBy("item", has(KUGELBLITZ_BLOCKS.get("neutronium_frame").get()))
+                .save(consumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, KUGELBLITZ_BLOCKS.get("quantum_transformer").get())
+                .pattern("DCD")
+                .pattern("ENE")
+                .pattern("DCD")
+                .define('D', forgeDust(Materials.dimensional_blend))
+                .define('C', NCItems.NC_PARTS.get("basic_electric_circuit").get())
+                .define('E', NCItems.NC_PARTS.get("plate_extreme").get())
+                .define('N', KUGELBLITZ_BLOCKS.get("neutronium_frame").get())
+                .group(MODID+"_kugelblitz")
+                .unlockedBy("item", has(KUGELBLITZ_BLOCKS.get("neutronium_frame").get()))
+                .save(consumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, KUGELBLITZ_BLOCKS.get("photon_concentrator").get())
+                .pattern("GQG")
+                .pattern("ENE")
+                .pattern("GQG")
+                .define('G', GLASS)
+                .define('Q', forgeDust(Materials.quartz))
+                .define('E', NCItems.NC_PARTS.get("plate_elite").get())
+                .define('N', KUGELBLITZ_BLOCKS.get("neutronium_frame").get())
+                .group(MODID+"_kugelblitz")
+                .unlockedBy("item", has(KUGELBLITZ_BLOCKS.get("neutronium_frame").get()))
+                .save(consumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, KUGELBLITZ_BLOCKS.get("chamber_port").get())
+                .pattern("SPS")
+                .pattern("ENE")
+                .pattern("SPS")
+                .define('S', NCItems.NC_PARTS.get("servo").get())
+                .define('P', NCItems.NC_PARTS.get("plate_extreme").get())
+                .define('E', forgeIngot(Materials.extreme))
+                .define('N', KUGELBLITZ_BLOCKS.get("neutronium_frame").get())
+                .group(MODID+"_kugelblitz")
+                .unlockedBy("item", has(KUGELBLITZ_BLOCKS.get("neutronium_frame").get()))
+                .save(consumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, KUGELBLITZ_BLOCKS.get("chamber_terminal").get())
+                .pattern("CPC")
+                .pattern("ENE")
+                .pattern("CPC")
+                .define('C', NCItems.NC_PARTS.get("basic_electric_circuit").get())
+                .define('P', NCItems.NC_PARTS.get("plate_extreme").get())
+                .define('E', forgeIngot(Materials.extreme))
+                .define('N', KUGELBLITZ_BLOCKS.get("neutronium_frame").get())
+                .group(MODID+"_kugelblitz")
+                .unlockedBy("item", has(KUGELBLITZ_BLOCKS.get("neutronium_frame").get()))
+                .save(consumer);
+
     }
 
     private void fusionBlocks(Consumer<FinishedRecipe> consumer) {

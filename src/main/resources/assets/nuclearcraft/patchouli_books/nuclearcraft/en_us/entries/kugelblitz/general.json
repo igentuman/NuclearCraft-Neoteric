@@ -1,0 +1,257 @@
+{
+  "name": "General Info",
+  "icon": "nuclearcraft:chamber_terminal",
+  "category": "nuclearcraft:kugelblitz",
+  "sortnum": 0,
+  "pages": [
+    {
+      "anchor": "intro",
+      "type": "text",
+      "text": "$(thing)Kugelblitz() - it is a type of black hole that is formed from the energy of light, rather than from the collapse of a massive star."
+    },
+    {
+      "anchor": "concept",
+      "type": "text",
+      "text": "$(thing)Kugelblitz chamber$() is a symmetric 11x11x11 spherical multiblock structure. It is used to create a black hole by using $(thing)EXPL$() laser burst from all 6 sides at the same moment of time."
+    },
+    {
+      "anchor": "corners",
+      "type": "blocks/1",
+      "header": "Corners",
+      "block": "nuclearcraft:neutronium_frame",
+      "text": "Neutrotium Frame used mostly in corners of the chamber. It is a frame block that is used to hold the structure together."
+    },
+    {
+      "anchor": "wall1",
+      "type": "blocks/1",
+      "header": "Walls 1",
+      "block": "nuclearcraft:event_horizon_stabilizer",
+      "text": "Stabilizers allows chamber to keep blackhole stable as much as possible. It needs to be placed in the walls of the chamber."
+    },
+    {
+      "anchor": "wall2",
+      "type": "blocks/2",
+      "header": "Energy and Transformation",
+      "block1": "nuclearcraft:quantum_flux_regulator",
+      "block2": "nuclearcraft:quantum_transformer",
+      "text": "Chamber allows to use blackhole evaporation energy and quantum fields to gain energy and transform one items into another. More Flux regulators gives better energy output. More quantum transformers gives better transformation speed."
+    },
+    {
+      "anchor": "port",
+      "type": "blocks/1",
+      "header": "Chamber Port",
+      "block": "nuclearcraft:chamber_port",
+      "text": "Chamber Port used to transfer items, fluids, and energy into and out of the reactor. The port can also be used for redstone control and computers."
+    },
+    {
+      "anchor": "evaporation",
+      "type": "text",
+      "header": "Evaporation and Feeding",
+      "text": "Blackhole loses it's mass during evaporation. To feed blackhole you need to supply Subliquid Matter."
+    },
+    {
+      "anchor": "quantum_transformation",
+      "type": "text",
+      "header": "Quantum transformation",
+      "text": "In JEI you can see what items can be produced by quantum transformation process. Those products are also allowed as inputs. In order to start the transformation, you need to find correct quantum frequency. Player has to find out what items can be produced by quantum transformation process. Transformations pairs are bond to world seed."
+    },
+    {
+      "anchor": "simple_reactor",
+      "header": "Simple Reactor",
+      "type": "patchouli:multiblock",
+      "multiblock": {
+        "mapping": {
+          "N": "nuclearcraft:neutronium_frame",
+          "E": "nuclearcraft:event_horizon_stabilizer",
+          "F": "nuclearcraft:quantum_flux_regulator",
+          "T": "nuclearcraft:quantum_transformer",
+          "P": "nuclearcraft:photon_concentrator",
+          "C": "nuclearcraft:chamber_port[facing=north]",
+          "X": "nuclearcraft:chamber_terminal[facing=west]",
+          "0": "nuclearcraft:black_hole",
+          " ": "minecraft:air"
+        },
+        "pattern": [
+          [
+            "           ",
+            "           ",
+            "           ",
+            "   FTETF   ",
+            "   TEEET   ",
+            "   EEPEE   ",
+            "   TEEET   ",
+            "   FTETF   ",
+            "           ",
+            "           ",
+            "           "
+          ],
+          [
+            "           ",
+            "           ",
+            "   NNNNN   ",
+            "  N     N  ",
+            "  N     N  ",
+            "  N     N  ",
+            "  N     N  ",
+            "  N     N  ",
+            "   NNNNN   ",
+            "           ",
+            "           "
+          ],
+          [
+            "           ",
+            "   NNNNN   ",
+            "  N     N  ",
+            " N       N ",
+            " N       N ",
+            " N       N ",
+            " N       N ",
+            " N       N ",
+            "  N     N  ",
+            "   NNNNN   ",
+            "           "
+          ],
+          [
+            "   FTETF   ",
+            "  N     N  ",
+            " N       N ",
+            "F         F",
+            "T         T",
+            "E         E",
+            "T         T",
+            "F         F",
+            " N       N ",
+            "  N     N  ",
+            "   FTETF   "
+          ],
+          [
+            "   TEEET   ",
+            "  N     N  ",
+            " N       N ",
+            "T         T",
+            "E         E",
+            "E         E",
+            "E         E",
+            "T         T",
+            " N       N ",
+            "  N     N  ",
+            "   TEEET   "
+          ],
+          [
+            "   EEPEE   ",
+            "  N     N  ",
+            " N       N ",
+            "E         E",
+            "E         E",
+            "P         P",
+            "E         E",
+            "E         E",
+            " N       N ",
+            "  N     N  ",
+            "   EEPEE   "
+          ],
+          [
+            "   TEEET   ",
+            "  N     N  ",
+            " N       N ",
+            "T         T",
+            "E         E",
+            "E         E",
+            "E         E",
+            "T         T",
+            " N       N ",
+            "  N     N  ",
+            "   TEEET   "
+          ],
+          [
+            "   FTETF   ",
+            "  N     N  ",
+            " N       N ",
+            "F         F",
+            "T         T",
+            "E         E",
+            "T         T",
+            "F         F",
+            " N       N ",
+            "  N     N  ",
+            "   FTETF   "
+          ],
+          [
+            "           ",
+            "   NNNNN   ",
+            "  N     N  ",
+            " N       N ",
+            " N       N ",
+            " N       N ",
+            " N       N ",
+            " N       N ",
+            "  N     N  ",
+            "   NNNNN   ",
+            "           "
+          ],
+          [
+            "           ",
+            "           ",
+            "   CNXNC   ",
+            "  N     N  ",
+            "  N     N  ",
+            "  N     N  ",
+            "  N     N  ",
+            "  N     N  ",
+            "   NNNNN   ",
+            "           ",
+            "           "
+          ],
+          [
+            "           ",
+            "           ",
+            "           ",
+            "   FTETF   ",
+            "   TEEET   ",
+            "   EEPEE   ",
+            "   TEEET   ",
+            "   FTETF   ",
+            "           ",
+            "           ",
+            "           "
+          ],
+          [
+            "           ",
+            "           ",
+            "           ",
+            "           ",
+            "           ",
+            "           ",
+            "           ",
+            "           ",
+            "           ",
+            "           ",
+            "           "
+          ],
+          [
+            "           ",
+            "           ",
+            "           ",
+            "           ",
+            "           ",
+            "     0     ",
+            "           ",
+            "           ",
+            "           ",
+            "           ",
+            "           "
+          ]
+
+        ],
+        "symmetrical": true
+      },
+      "text": "This is a simple reactor design. It has 1 fuel cell, 1 irradiation line. It's a good starting point for a reactor. Best fuel for this reactor is HEU-235."
+    },
+    {
+      "anchor": "planner",
+      "type": "text",
+      "header": "Design Considerations",
+      "text": "When designing a reactor, the usage of a $(l:https://github.com/ThizThizzyDizzy/nc-reactor-generator/releases)reactor planner$() is recommended. Reactor planners assist with the design of the reactor, providing feedback on design rules, heat control, and predicted output."
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "name": "Kugelblitz",
+  "description": "$(l)Power of black hole.",
+  "icon": "nuclearcraft:chamber_terminal",
+  "parent": "nuclearcraft:multiblocks",
+  "sortnum": 0
+}

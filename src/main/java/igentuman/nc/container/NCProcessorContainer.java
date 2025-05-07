@@ -32,6 +32,7 @@ import java.util.Objects;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.setup.registration.NCItems.NC_ITEMS;
 import static igentuman.nc.setup.registration.NCItems.NC_PARTS;
+import static igentuman.nc.util.TextUtils.__;
 
 public class NCProcessorContainer<T extends AbstractContainerMenu> extends AbstractContainerMenu {
     protected NCProcessorBE blockEntity;
@@ -201,7 +202,7 @@ public class NCProcessorContainer<T extends AbstractContainerMenu> extends Abstr
     }
 
     public Component getTitle() {
-        return Component.translatable("block."+MODID+"."+name);
+        return __("block."+MODID+"."+name);
     }
 
     public IEnergyStorage getEnergy() {

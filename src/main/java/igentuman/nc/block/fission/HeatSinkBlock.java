@@ -28,6 +28,7 @@ import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.handler.event.client.InputEvents.DESCRIPTIONS_SHOW;
+import static igentuman.nc.util.TextUtils.__;
 import static igentuman.nc.util.TextUtils.convertToName;
 
 public class HeatSinkBlock extends MultiblockBlock {
@@ -65,31 +66,31 @@ public class HeatSinkBlock extends MultiblockBlock {
             if (def.getValidator() instanceof HeatSinkDef.Validator) {
                 for (String[] condition : def.getValidator().blockLines().keySet()) {
                     if (i > 0) {
-                        lines.add(Component.translatable("heat_sink.and").getString());
+                        lines.add(__("heat_sink.and").getString());
                     }
-                    String blocksLine = String.join(" "+Component.translatable("heat_sink.or").getString()+" ", getBlockNames(condition[2]));
+                    String blocksLine = String.join(" "+__("heat_sink.or").getString()+" ", getBlockNames(condition[2]));
                     switch (condition[0]) {
                         case ">":
-                            lines.add(Component.translatable("heat_sink.atleast"+(condition[1].equals("1") ? "":"s") , condition[1], blocksLine).getString());
+                            lines.add(__("heat_sink.atleast"+(condition[1].equals("1") ? "":"s") , condition[1], blocksLine).getString());
                             break;
                         case "-":
-                            lines.add(Component.translatable("heat_sink.between", condition[1], blocksLine).getString());
+                            lines.add(__("heat_sink.between", condition[1], blocksLine).getString());
                             break;
                         case "=":
-                            lines.add(Component.translatable("heat_sink.exact"+(condition[1].equals("1") ? "":"s"), condition[1], blocksLine).getString());
+                            lines.add(__("heat_sink.exact"+(condition[1].equals("1") ? "":"s"), condition[1], blocksLine).getString());
                             break;
                         case "<":
-                            lines.add(Component.translatable("heat_sink.less_than", condition[1], blocksLine).getString());
+                            lines.add(__("heat_sink.less_than", condition[1], blocksLine).getString());
                             break;
                         case "^":
-                            lines.add(Component.translatable("heat_sink.in_corner", condition[1], blocksLine).getString());
+                            lines.add(__("heat_sink.in_corner", condition[1], blocksLine).getString());
                             break;
                     }
                     i++;
                 }
-                placementRule = Component.translatable("heat_sink.placement.rule", String.join(" ", lines));
+                placementRule = __("heat_sink.placement.rule", String.join(" ", lines));
             } else {
-                placementRule = Component.translatable("heat_sink.placement.error");
+                placementRule = __("heat_sink.placement.error");
             }
         }
         return placementRule;
@@ -131,9 +132,9 @@ public class HeatSinkBlock extends MultiblockBlock {
             if(block instanceof HeatSinkBlock) {
                 int id = level.random.nextInt(10);
                 if(isValid(level, pos)) {
-                    player.sendSystemMessage(Component.translatable("message.heat_sink.valid"+id));
+                    player.sendSystemMessage(__("message.heat_sink.valid"+id));
                 } else {
-                    player.sendSystemMessage(Component.translatable("message.heat_sink.invalid"+id));
+                    player.sendSystemMessage(__("message.heat_sink.invalid"+id));
                 }
             }
         }
@@ -144,15 +145,15 @@ public class HeatSinkBlock extends MultiblockBlock {
     public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag) {
         if(asItem().toString().contains("empty")) return;
         initParams();
-        list.add(TextUtils.applyFormat(Component.translatable("heat_sink.heat.descr", TextUtils.numberFormat(heat)), ChatFormatting.GOLD));
+        list.add(TextUtils.applyFormat(__("heat_sink.heat.descr", TextUtils.numberFormat(heat)), ChatFormatting.GOLD));
 
         if(DESCRIPTIONS_SHOW) {
             list.add(TextUtils.applyFormat(getPlacementRule(), ChatFormatting.AQUA));
             if(isActive()) {
-                list.add(TextUtils.applyFormat(Component.translatable("tooltip.active_heatsink"), ChatFormatting.YELLOW));
+                list.add(TextUtils.applyFormat(__("tooltip.active_heatsink"), ChatFormatting.YELLOW));
             }
         } else {
-            list.add(TextUtils.applyFormat(Component.translatable("tooltip.toggle_description_keys"), ChatFormatting.GRAY));
+            list.add(TextUtils.applyFormat(__("tooltip.toggle_description_keys"), ChatFormatting.GRAY));
         }
     }
 

@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.util.TextUtils.__;
 
 public class TurbinePortScreen extends AbstractContainerScreen<TurbinePortContainer> implements IProgressScreen, IVerticalBarScreen {
     protected final ResourceLocation GUI = new ResourceLocation(MODID, "textures/gui/turbine/port.png");
@@ -131,7 +132,7 @@ public class TurbinePortScreen extends AbstractContainerScreen<TurbinePortContai
 
         if(container().getMaxEnergy() > 0) {
             energyBar.clearTooltips();
-            energyBar.addTooltip(Component.translatable("reactor.forge_energy_per_tick", container().energyPerTick()));
+            energyBar.addTooltip(__("reactor.forge_energy_per_tick", container().energyPerTick()));
             if(energyBar.isMouseOver(pMouseX, pMouseY)) {
                 graphics.renderTooltip(font, energyBar.getTooltips(),
                         Optional.empty(), pMouseX, pMouseY);

@@ -40,6 +40,7 @@ import java.util.List;
 
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.EXPL_BE;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.EXPL_PROXY_BLOCK;
+import static igentuman.nc.util.TextUtils.__;
 
 public class EXPLBlock extends DirectionalBlock implements EntityBlock {
     public static final BooleanProperty ACTIVE = BlockStateProperties.POWERED;
@@ -194,7 +195,7 @@ public class EXPLBlock extends DirectionalBlock implements EntityBlock {
                 MenuProvider containerProvider = new MenuProvider() {
                     @Override
                     public Component getDisplayName() {
-                        return Component.translatable("expl");
+                        return __("expl");
                     }
 
                     @Override
@@ -229,6 +230,6 @@ public class EXPLBlock extends DirectionalBlock implements EntityBlock {
     @Override
     public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag) {
         if(asItem().toString().contains("empty") || this.asItem().equals(Items.AIR)) return;
-        list.add(Component.translatable("tooltip.expl").withStyle(ChatFormatting.GREEN));
+        list.add(__("tooltip.expl").withStyle(ChatFormatting.GREEN));
     }
 }

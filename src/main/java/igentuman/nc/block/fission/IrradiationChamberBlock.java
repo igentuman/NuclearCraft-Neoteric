@@ -11,6 +11,8 @@ import net.minecraft.world.level.block.SoundType;
 
 import java.util.List;
 
+import static igentuman.nc.util.TextUtils.__;
+
 public class IrradiationChamberBlock extends MultiblockBlock {
 
     public IrradiationChamberBlock() {
@@ -26,6 +28,6 @@ public class IrradiationChamberBlock extends MultiblockBlock {
 
     @Override
     public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag) {
-        list.add(TextUtils.applyFormat(Component.translatable("irradiation_chamber.descr"), ChatFormatting.AQUA));
+        list.add(TextUtils.applyFormat(__("irradiation_chamber.descr"), ChatFormatting.AQUA));
     }
 }

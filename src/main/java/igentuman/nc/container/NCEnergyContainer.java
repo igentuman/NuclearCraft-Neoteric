@@ -23,6 +23,7 @@ import net.minecraftforge.items.wrapper.InvWrapper;
 import org.jetbrains.annotations.Nullable;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.util.TextUtils.__;
 
 public class NCEnergyContainer extends AbstractContainerMenu {
 
@@ -158,7 +159,7 @@ public class NCEnergyContainer extends AbstractContainerMenu {
     }
 
     public Component getTitle() {
-        return Component.translatable("block."+MODID+"."+name);
+        return __("block."+MODID+"."+name);
     }
 
     public IEnergyStorage getEnergy() {

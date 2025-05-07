@@ -1,0 +1,119 @@
+{
+  "name": "General Info",
+  "icon": "nuclearcraft:turbine_controller",
+  "category": "nuclearcraft:turbine",
+  "sortnum": 0,
+  "pages": [
+    {
+      "anchor": "casing",
+      "type": "blocks/2",
+      "header": "Turbine Casing",
+      "block1": "nuclearcraft:turbine_glass",
+      "block2": "nuclearcraft:turbine_casing",
+      "text": "The interior components of the turbine are contained within a rectangular prism. The turbine must have edges consisting of $(thing)Turbine Casing$(), while the walls of the turbine can be $(thing)Turbine Glass$(), Turbine Casing, or both."
+    },
+    {
+      "anchor": "controller",
+      "type": "blocks/1",
+      "header": "Turbine Controller",
+      "block": "nuclearcraft:turbine_controller",
+      "text": "Without a controller, the turbine multiblock will not form. It's GUI will show information about the turbine, such as the averages of relevant components' stats."
+    },
+    {
+      "anchor": "port",
+      "type": "blocks/1",
+      "header": "Turbine Port",
+      "block": "nuclearcraft:turbine_port",
+      "text": "Turbine Port used to transfer fluids, and energy into and out of the turbine. The port can be configured to input or output fluids, and energy. The port can also be used for redstone control and computers."
+    },
+    {
+      "anchor": "coils",
+      "type": "blocks/2",
+      "block1": "nuclearcraft:turbine_copper_coil,nuclearcraft:turbine_magnesium_coil,nuclearcraft:turbine_silver_coil,nuclearcraft:turbine_gold_coil,nuclearcraft:turbine_beryllium_coil,nuclearcraft:turbine_aluminum_coil",
+      "header": "Coils",
+      "text": "$(thing)Coils$() are used convert kinetic energy of rotor to energy. All coils have different efficiency and placement rules"
+    },
+    {
+      "anchor": "simple_turbine",
+      "header": "Simple Turbine",
+      "type": "patchouli:multiblock",
+      "multiblock": {
+        "mapping": {
+          "W": "nuclearcraft:turbine_casing",
+          "G": "nuclearcraft:turbine_glass",
+          "L": "nuclearcraft:turbine_steel_rotor_blade",
+          "N": "nuclearcraft:turbine_controller[facing=north]",
+          "P": "nuclearcraft:turbine_port[facing=north]",
+          "M": "nuclearcraft:turbine_magnesium_coil",
+          "B": "nuclearcraft:turbine_beryllium_coil",
+          "K": "nuclearcraft:turbine_rotor_shaft",
+          "R": "nuclearcraft:turbine_bearing"
+        },
+        "pattern": [
+          [
+            "WWWWW",
+            "WGGGW",
+            "WGGGW",
+            "WGGGW",
+            "WGGGW",
+            "WGGGW",
+            "WWWWW"
+          ],
+          [
+            "WBMBW",
+            "P L G",
+            "G L G",
+            "N L G",
+            "G L G",
+            "P L G",
+            "WBMBW"
+          ],
+          [
+            "WMRMW",
+            "GLKLG",
+            "GLKLG",
+            "GLKLG",
+            "GLKLG",
+            "GLKLG",
+            "WMRMW"
+          ],
+          [
+            "WBMBW",
+            "G L G",
+            "G L G",
+            "G L G",
+            "G L G",
+            "G L G",
+            "WBMBW"
+          ],
+          [
+            "WWWWW",
+            "WGGGW",
+            "WGGGW",
+            "WGGGW",
+            "WGGGW",
+            "WGGGW",
+            "WWWWW"
+          ],
+          [
+            "     ",
+            "     ",
+            "     ",
+            "  0  ",
+            "     ",
+            "     ",
+            "     "
+          ]
+        ],
+        "symmetrical": true
+      },
+      "text": "This is a simple turbine design. It has 1 fuel cell, 1 irradiation line. It's a good starting point for a turbine. Best fuel for this turbine is HEU-235."
+    },
+    {
+      "anchor": "planner",
+      "type": "text",
+      "header": "Design Considerations",
+      "text": "When designing a turbine, the usage of a $(l:https://github.com/ThizThizzyDizzy/nc-turbine-generator/releases)turbine planner$() is recommended. Turbine planners assist with the design of the turbine, providing feedback on design rules, heat control, and predicted output."
+    }
+  ]
+}

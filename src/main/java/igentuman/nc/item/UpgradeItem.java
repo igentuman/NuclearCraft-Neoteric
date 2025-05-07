@@ -10,6 +10,8 @@ import net.minecraft.world.level.Level;
 import javax.annotation.Nullable;
 import java.util.List;
 
+import static igentuman.nc.util.TextUtils.__;
+
 public class UpgradeItem extends Item {
 
     public UpgradeItem(Properties pProperties) {
@@ -19,6 +21,6 @@ public class UpgradeItem extends Item {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
     {
-        list.add(Component.translatable("tooltip." + stack.getItem().toString()).withStyle(ChatFormatting.GREEN));
+        list.add(__("tooltip." + stack.getItem().toString()).withStyle(ChatFormatting.GREEN));
     }
 }

@@ -22,6 +22,7 @@ import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
 import javax.annotation.Nonnull;
 import java.util.List;
 
+import static igentuman.nc.util.TextUtils.__;
 import static igentuman.nc.util.TextUtils.formatLiquid;
 
 public class BarrelBlockItem extends BlockItem
@@ -77,10 +78,10 @@ public class BarrelBlockItem extends BlockItem
 		int storage = BarrelBlocks.all().get(code()).config().getCapacity();
 		FluidStack fluid = getFluid(stack).getFluidInTank(0);
 		if(fluid == null || fluid.isFluidEqual(FluidStack.EMPTY)) {
-			list.add(Component.translatable("tooltip.nc.liquid_empty", formatLiquid(storage)).withStyle(ChatFormatting.BLUE));
+			list.add(__("tooltip.nc.liquid_empty", formatLiquid(storage)).withStyle(ChatFormatting.BLUE));
 		} else {
-			list.add(Component.translatable("tooltip.nc.liquid_stored", fluid.getDisplayName(), formatLiquid(fluid.getAmount()), formatLiquid(storage)).withStyle(ChatFormatting.BLUE));
+			list.add(__("tooltip.nc.liquid_stored", fluid.getDisplayName(), formatLiquid(fluid.getAmount()), formatLiquid(storage)).withStyle(ChatFormatting.BLUE));
 		}
-		list.add(Component.translatable("tooltip.nc.use_multitool").withStyle(ChatFormatting.YELLOW));
+		list.add(__("tooltip.nc.use_multitool").withStyle(ChatFormatting.YELLOW));
 	}
 }

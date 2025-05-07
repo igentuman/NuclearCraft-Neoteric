@@ -25,8 +25,7 @@ import java.util.Optional;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.client.gui.element.fluid.FluidTankRenderer.TooltipMode.SHOW_AMOUNT_AND_CAPACITY;
-import static igentuman.nc.util.TextUtils.numberFormat;
-import static igentuman.nc.util.TextUtils.scaledFormat;
+import static igentuman.nc.util.TextUtils.*;
 
 public class FusionCoreScreen extends AbstractContainerScreen<FusionCoreContainer> implements IVerticalBarScreen {
     protected final ResourceLocation GUI = new ResourceLocation(MODID, "textures/gui/fusion_core.png");
@@ -132,28 +131,28 @@ public class FusionCoreScreen extends AbstractContainerScreen<FusionCoreContaine
                 checklist.setTooltipKey("tooltip.nc.reactor.ready");
             }
 
-            checklist.addTooltip(Component.translatable("tooltip.nc.reactor.has_magnets", container().hasMagnets() ? "Ok" : "--").withStyle(ChatFormatting.AQUA));
-            checklist.addTooltip(Component.translatable("tooltip.nc.reactor.has_amplifiers", container().hasAmplifiers() ? "Ok" : "--").withStyle(ChatFormatting.AQUA));
-            checklist.addTooltip(Component.translatable("tooltip.nc.reactor.has_coolant", container().hasCoolant() ? "Ok" : "--").withStyle(ChatFormatting.AQUA));
-            checklist.addTooltip(Component.translatable("tooltip.nc.reactor.has_energy", container().hasEnoughEnergy() ? "Ok" : "--").withStyle(ChatFormatting.AQUA));
-            checklist.addTooltip(Component.translatable("tooltip.nc.reactor.has_fuel", container().hasRecipe() ? "Ok" : "--").withStyle(ChatFormatting.AQUA));
-            checklist.addTooltip(Component.translatable("tooltip.nc.reactor.charge", container().getCharge() == 100 ? "Ok" : "--").withStyle(ChatFormatting.AQUA));
-            checklist.addTooltip(Component.translatable("tooltip.nc.reactor.running", container().isRunning() ? "Ok" : "--").withStyle(ChatFormatting.AQUA));
+            checklist.addTooltip(__("tooltip.nc.reactor.has_magnets", container().hasMagnets() ? "Ok" : "--").withStyle(ChatFormatting.AQUA));
+            checklist.addTooltip(__("tooltip.nc.reactor.has_amplifiers", container().hasAmplifiers() ? "Ok" : "--").withStyle(ChatFormatting.AQUA));
+            checklist.addTooltip(__("tooltip.nc.reactor.has_coolant", container().hasCoolant() ? "Ok" : "--").withStyle(ChatFormatting.AQUA));
+            checklist.addTooltip(__("tooltip.nc.reactor.has_energy", container().hasEnoughEnergy() ? "Ok" : "--").withStyle(ChatFormatting.AQUA));
+            checklist.addTooltip(__("tooltip.nc.reactor.has_fuel", container().hasRecipe() ? "Ok" : "--").withStyle(ChatFormatting.AQUA));
+            checklist.addTooltip(__("tooltip.nc.reactor.charge", container().getCharge() == 100 ? "Ok" : "--").withStyle(ChatFormatting.AQUA));
+            checklist.addTooltip(__("tooltip.nc.reactor.running", container().isRunning() ? "Ok" : "--").withStyle(ChatFormatting.AQUA));
 
             if(!container().getElectromagnetsPower().equals("0")) {
-                checkboxIsFormed.addTooltip(Component.translatable("tooltip.nc.electromagnet.magnetic_field", container().getElectromagnetsField()).withStyle(ChatFormatting.BLUE));
-                checkboxIsFormed.addTooltip(Component.translatable("tooltip.nc.electromagnet.power", container().getElectromagnetsPower()).withStyle(ChatFormatting.AQUA));
-                checkboxIsFormed.addTooltip(Component.translatable("tooltip.nc.electromagnet.max_temp", container().getElectromagnetsMaxTemp()).withStyle(ChatFormatting.GOLD));
+                checkboxIsFormed.addTooltip(__("tooltip.nc.electromagnet.magnetic_field", container().getElectromagnetsField()).withStyle(ChatFormatting.BLUE));
+                checkboxIsFormed.addTooltip(__("tooltip.nc.electromagnet.power", container().getElectromagnetsPower()).withStyle(ChatFormatting.AQUA));
+                checkboxIsFormed.addTooltip(__("tooltip.nc.electromagnet.max_temp", container().getElectromagnetsMaxTemp()).withStyle(ChatFormatting.GOLD));
             } else {
-                checkboxIsFormed.addTooltip(Component.translatable("tooltip.nc.electromagnet.not_found").withStyle(ChatFormatting.RED));
+                checkboxIsFormed.addTooltip(__("tooltip.nc.electromagnet.not_found").withStyle(ChatFormatting.RED));
             }
             checkboxIsFormed.addTooltip(Component.literal("----------------------"));
             if(container().hasAmplifiers()) {
-                checkboxIsFormed.addTooltip(Component.translatable("tooltip.nc.rf_amplifier.voltage", container().getAmplifierVoltage()).withStyle(ChatFormatting.BLUE));
-                checkboxIsFormed.addTooltip(Component.translatable("tooltip.nc.rf_amplifier.power", container().getAmplifierPower()).withStyle(ChatFormatting.AQUA));
-                checkboxIsFormed.addTooltip(Component.translatable("tooltip.nc.rf_amplifier.max_temp", container().getAmplifierMaxTemp()).withStyle(ChatFormatting.GOLD));
+                checkboxIsFormed.addTooltip(__("tooltip.nc.rf_amplifier.voltage", container().getAmplifierVoltage()).withStyle(ChatFormatting.BLUE));
+                checkboxIsFormed.addTooltip(__("tooltip.nc.rf_amplifier.power", container().getAmplifierPower()).withStyle(ChatFormatting.AQUA));
+                checkboxIsFormed.addTooltip(__("tooltip.nc.rf_amplifier.max_temp", container().getAmplifierMaxTemp()).withStyle(ChatFormatting.GOLD));
             } else {
-                checkboxIsFormed.addTooltip(Component.translatable("tooltip.nc.rf_amplifier.not_found").withStyle(ChatFormatting.RED));
+                checkboxIsFormed.addTooltip(__("tooltip.nc.rf_amplifier.not_found").withStyle(ChatFormatting.RED));
             }
 
         } else {
@@ -188,17 +187,17 @@ public class FusionCoreScreen extends AbstractContainerScreen<FusionCoreContaine
 
     @Override
     protected void renderLabels(@NotNull GuiGraphics graphics, int mouseX, int mouseY) {
-        graphics.drawCenteredString(font, Component.translatable("nc_jei_cat.fusion_core"), 125, 10, 0xFFFFFF);
-        graphics.drawCenteredString( font, Component.translatable("fusion_core.rf_amplifiers.power", getAmplification()), 125, 20, 0xFFFFFF);
-        graphics.drawCenteredString( font, Component.translatable("fusion_core.rf_amplifiers.adjustment", getAmplificationAdjustment()), 125, 30, 0xFFFFFF);
+        graphics.drawCenteredString(font, __("nc_jei_cat.fusion_core"), 125, 10, 0xFFFFFF);
+        graphics.drawCenteredString( font, __("fusion_core.rf_amplifiers.power", getAmplification()), 125, 20, 0xFFFFFF);
+        graphics.drawCenteredString( font, __("fusion_core.rf_amplifiers.adjustment", getAmplificationAdjustment()), 125, 30, 0xFFFFFF);
         if(container().getCharge() < 100) {
-            graphics.drawCenteredString( font, Component.translatable("fusion_core.charge", container().getCharge()), 125, 50, 0xFFFFFF);
+            graphics.drawCenteredString( font, __("fusion_core.charge", container().getCharge()), 125, 50, 0xFFFFFF);
         }
         casingTootip = Component.empty();
 
         if(container().isRunning()) {
-            graphics.drawCenteredString(font, Component.translatable("fusion_core.efficiency", container().getEfficiency()), 125, 60, 0xFFFFFF);
-            graphics.drawCenteredString(font, Component.translatable("fusion_core.stability", container().getPlasmaStability()), 125, 50, 0xFFFFFF);
+            graphics.drawCenteredString(font, __("fusion_core.efficiency", container().getEfficiency()), 125, 60, 0xFFFFFF);
+            graphics.drawCenteredString(font, __("fusion_core.stability", container().getPlasmaStability()), 125, 50, 0xFFFFFF);
         }
         renderTooltips(graphics, mouseX-relX, mouseY-relY);
     }
@@ -255,7 +254,7 @@ public class FusionCoreScreen extends AbstractContainerScreen<FusionCoreContaine
         plasmaHeatBar.clearTooltips();
         coolantBar.clearTooltips();
         plasmaHeatBar.setTooltipKey("tooltip.nc.reactor.plasma_heat");
-        plasmaHeatBar.addTooltip(Component.translatable("tooltip.nc.reactor.plasma_optimal", scaledFormat(container().getOptimalTemp())).withStyle(ChatFormatting.GOLD));
+        plasmaHeatBar.addTooltip(__("tooltip.nc.reactor.plasma_optimal", scaledFormat(container().getOptimalTemp())).withStyle(ChatFormatting.GOLD));
         for(NCGuiElement widget: widgets) {
            if(widget.isMouseOver(pMouseX, pMouseY)) {
                graphics.renderTooltip(font, widget.getTooltips(),
@@ -265,8 +264,8 @@ public class FusionCoreScreen extends AbstractContainerScreen<FusionCoreContaine
         if(rfAmplifierSlider.isMouseOver(pMouseX, pMouseY)) {
             graphics.renderTooltip(font,
                     List.of(
-                            Component.translatable("tooltip.nc.rf_amplifier.voltage", container().getAmplifierVoltage()).withStyle(ChatFormatting.AQUA),
-                            Component.translatable("tooltip.nc.rf_amplifier.power", container().getAmplifierPower()).withStyle(ChatFormatting.AQUA)
+                            __("tooltip.nc.rf_amplifier.voltage", container().getAmplifierVoltage()).withStyle(ChatFormatting.AQUA),
+                            __("tooltip.nc.rf_amplifier.power", container().getAmplifierPower()).withStyle(ChatFormatting.AQUA)
                     ),
                     Optional.empty(),
                     pMouseX, pMouseY);
@@ -281,8 +280,8 @@ public class FusionCoreScreen extends AbstractContainerScreen<FusionCoreContaine
                     Optional.empty(), pMouseX, pMouseY);
         }
         energyBar.clearTooltips();
-        energyBar.addTooltip(Component.translatable("reactor.forge_energy_per_tick", scaledFormat(container().energyPerTick())));
-        energyBar.addTooltip(Component.translatable("reactor.internal_usage", scaledFormat(container().requiredEnergy())).withStyle(ChatFormatting.RED));
+        energyBar.addTooltip(__("reactor.forge_energy_per_tick", scaledFormat(container().energyPerTick())));
+        energyBar.addTooltip(__("reactor.internal_usage", scaledFormat(container().requiredEnergy())).withStyle(ChatFormatting.RED));
         if(energyBar.isMouseOver(pMouseX, pMouseY)) {
             graphics.renderTooltip(font, energyBar.getTooltips(),
                     Optional.empty(), pMouseX, pMouseY);

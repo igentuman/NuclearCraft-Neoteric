@@ -40,6 +40,7 @@ import java.util.List;
 
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BE;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_CORE_PROXY;
+import static igentuman.nc.util.TextUtils.__;
 
 public class FusionCoreBlock extends FusionBeBlock {
     public static final BooleanProperty ACTIVE = BlockStateProperties.POWERED;
@@ -133,7 +134,7 @@ public class FusionCoreBlock extends FusionBeBlock {
                 MenuProvider containerProvider = new MenuProvider() {
                     @Override
                     public Component getDisplayName() {
-                        return Component.translatable("fusion_core");
+                        return __("fusion_core");
                     }
 
                     @Override
@@ -168,6 +169,6 @@ public class FusionCoreBlock extends FusionBeBlock {
     @Override
     public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag) {
         if(asItem().toString().contains("empty") || this.asItem().equals(Items.AIR)) return;
-        list.add(Component.translatable("multiblock.build_in_chunk.advise").withStyle(ChatFormatting.GREEN));
+        list.add(__("multiblock.build_in_chunk.advise").withStyle(ChatFormatting.GREEN));
     }
 }

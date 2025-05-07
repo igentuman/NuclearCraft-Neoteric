@@ -39,6 +39,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+import static igentuman.nc.util.TextUtils.__;
 import static igentuman.nc.util.TextUtils.applyFormat;
 import static net.minecraft.network.chat.Component.translatable;
 
@@ -117,7 +118,7 @@ public class FissionPort extends HorizontalDirectionalBlock implements EntityBlo
     public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag)
     {
         list.add(applyFormat(translatable("fission_port.descr"), ChatFormatting.GOLD));
-        list.add(Component.translatable("multiblock.build_in_chunk.advise").withStyle(ChatFormatting.GREEN));
+        list.add(__("multiblock.build_in_chunk.advise").withStyle(ChatFormatting.GREEN));
     }
 
     @Override

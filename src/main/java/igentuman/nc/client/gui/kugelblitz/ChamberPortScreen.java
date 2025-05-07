@@ -22,6 +22,7 @@ import java.util.Optional;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.client.gui.element.fluid.FluidTankRenderer.TooltipMode.SHOW_AMOUNT_AND_CAPACITY;
+import static igentuman.nc.util.TextUtils.__;
 
 public class ChamberPortScreen extends AbstractContainerScreen<ChamberPortContainer> implements IProgressScreen, IVerticalBarScreen {
 
@@ -117,7 +118,7 @@ public class ChamberPortScreen extends AbstractContainerScreen<ChamberPortContai
         }
 
         energyBar.clearTooltips();
-        energyBar.addTooltip(Component.translatable("reactor.forge_energy_per_tick", container().energyPerTick()));
+        energyBar.addTooltip(__("reactor.forge_energy_per_tick", container().energyPerTick()));
         if(energyBar.isMouseOver(pMouseX, pMouseY+10)) {
             graphics.renderTooltip(font, energyBar.getTooltips(),
                     Optional.empty(), pMouseX, pMouseY);

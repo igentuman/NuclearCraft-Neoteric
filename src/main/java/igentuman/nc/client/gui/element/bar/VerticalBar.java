@@ -11,6 +11,7 @@ import net.minecraft.network.chat.Component;
 import java.util.List;
 import java.util.function.Supplier;
 
+import static igentuman.nc.util.TextUtils.__;
 import static igentuman.nc.util.TextUtils.scaledFormat;
 
 public class VerticalBar extends NCGuiElement {
@@ -35,7 +36,7 @@ public class VerticalBar extends NCGuiElement {
 
     public List<Component> getTooltips() {
         if(hintKey.isEmpty()) return tooltips;
-        tooltips.add(Component.translatable(hintKey, scaledFormat(barValue), scaledFormat(maxValue)));
+        tooltips.add(__(hintKey, scaledFormat(barValue), scaledFormat(maxValue)));
         return tooltips;
     }
 

@@ -26,6 +26,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+import static igentuman.nc.util.TextUtils.__;
+
 public class FusionBeBlock extends Block implements EntityBlock {
 
     public FusionBeBlock() {
@@ -104,9 +106,9 @@ public class FusionBeBlock extends Block implements EntityBlock {
     public void appendHoverText(ItemStack stack, @javax.annotation.Nullable BlockGetter world, List<Component> list, TooltipFlag flag)
     {
         if (getCode().equals("fusion_reactor_connector")) {
-            list.add(Component.translatable("tooltip.nc.fusion_connector.descr").withStyle(ChatFormatting.YELLOW));
+            list.add(__("tooltip.nc.fusion_connector.descr").withStyle(ChatFormatting.YELLOW));
         } else {
-            list.add(Component.translatable("tooltip.nc.fusion_casing.descr").withStyle(ChatFormatting.YELLOW));
+            list.add(__("tooltip.nc.fusion_casing.descr").withStyle(ChatFormatting.YELLOW));
         }
     }
 }

@@ -26,6 +26,7 @@ import java.util.Optional;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.handler.config.TurbineConfig.TURBINE_CONFIG;
+import static igentuman.nc.util.TextUtils.__;
 import static igentuman.nc.util.TextUtils.applyFormat;
 
 public class TurbineControllerScreen extends AbstractContainerScreen<TurbineControllerContainer> implements IProgressScreen, IVerticalBarScreen {
@@ -119,8 +120,8 @@ public class TurbineControllerScreen extends AbstractContainerScreen<TurbineCont
         }
         checkboxInterior.addTooltip(interiorTootip);
         if(isInteriorValid() && isCasingValid()) {
-            checkboxInterior.addTooltip(Component.translatable("turbine.active.coils", container().getActiveCoils()));
-            checkboxInterior.addTooltip(Component.translatable("turbine.blades.flow", container().getFlow()*TURBINE_CONFIG.BLADE_FLOW.get()));
+            checkboxInterior.addTooltip(__("turbine.active.coils", container().getActiveCoils()));
+            checkboxInterior.addTooltip(__("turbine.blades.flow", container().getFlow()*TURBINE_CONFIG.BLADE_FLOW.get()));
         }
         energyBar.draw(graphics, mouseX, mouseY, partialTicks);
     }
@@ -129,20 +130,20 @@ public class TurbineControllerScreen extends AbstractContainerScreen<TurbineCont
     protected void renderLabels(@NotNull GuiGraphics graphics, int mouseX, int mouseY) {
         graphics.drawCenteredString(font,  menu.getTitle(), imageWidth/2, titleLabelY, 0xffffff);
         if(isCasingValid()) {
-            casingTootip = applyFormat(Component.translatable("reactor.size", getMultiblockHeight(), getMultiblockWidth(), getMultiblockDepth()), ChatFormatting.GOLD);
+            casingTootip = applyFormat(__("reactor.size", getMultiblockHeight(), getMultiblockWidth(), getMultiblockDepth()), ChatFormatting.GOLD);
         } else {
-            casingTootip = applyFormat(Component.translatable(getValidationResultKey(), getValidationResultData()), ChatFormatting.RED);
+            casingTootip = applyFormat(__(getValidationResultKey(), getValidationResultData()), ChatFormatting.RED);
         }
 
         if(isCasingValid()) {
             if (isInteriorValid()) {
                 if(container().getRealFlow() != 0 && !container().getEfficiency().equals("0") && container().isRunning()) {
-                    graphics.drawString(font, Component.translatable("turbine.efficiency", container().getEfficiency()), 35, 82, 0xffffff);
-                    graphics.drawString(font, Component.translatable("turbine.real_flow", container().getRealFlow()), 35, 72, 0xffffff);
-                    graphics.drawString(font, Component.translatable("turbine.ratio", container().getFlowRatio()), 35, 62, 0xffffff);
+                    graphics.drawString(font, __("turbine.efficiency", container().getEfficiency()), 35, 82, 0xffffff);
+                    graphics.drawString(font, __("turbine.real_flow", container().getRealFlow()), 35, 72, 0xffffff);
+                    graphics.drawString(font, __("turbine.ratio", container().getFlowRatio()), 35, 62, 0xffffff);
                 }
             } else {
-                interiorTootip = applyFormat(Component.translatable(getValidationResultKey(), getValidationResultData()), ChatFormatting.RED);
+                interiorTootip = applyFormat(__(getValidationResultKey(), getValidationResultData()), ChatFormatting.RED);
             }
         }
 
@@ -196,7 +197,7 @@ public class TurbineControllerScreen extends AbstractContainerScreen<TurbineCont
         if(container().getMaxEnergy() > 0) {
             energyBar.clearTooltips();
             if (container().isRunning()) {
-                energyBar.addTooltip(Component.translatable("reactor.forge_energy_per_tick", container().energyPerTick()));
+                energyBar.addTooltip(__("reactor.forge_energy_per_tick", container().energyPerTick()));
             }
             if(energyBar.isMouseOver(pMouseX, pMouseY)) {
                 graphics.renderTooltip(font, energyBar.getTooltips(),

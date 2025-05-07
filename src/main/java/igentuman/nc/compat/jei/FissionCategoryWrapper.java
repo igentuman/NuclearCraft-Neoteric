@@ -25,6 +25,7 @@ import java.util.List;
 
 import static igentuman.nc.NuclearCraft.*;
 import static igentuman.nc.compat.GlobalVars.*;
+import static igentuman.nc.util.TextUtils.__;
 import static igentuman.nc.util.TextUtils.numberFormat;
 import static net.minecraft.world.item.Items.AIR;
 
@@ -56,10 +57,10 @@ public class FissionCategoryWrapper<T extends FissionControllerBE.Recipe> implem
     public @NotNull List<Component> getTooltipStrings(T recipe, IRecipeSlotsView recipeSlotsView, double mouseX, double mouseY) {
         List<Component> lines = new ArrayList<>();
         if(mouseX > 29 && mouseX < 65 && mouseY > 8 && mouseY < 24) {
-            lines.add(Component.translatable("fission.recipe.duration", (int)((double)recipe.getDepletionTime()/20)).withStyle(ChatFormatting.AQUA));
-            lines.add(Component.translatable("fission.recipe.power", (int)recipe.getEnergy()).withStyle(ChatFormatting.RED));
-            lines.add(Component.translatable("fission.recipe.radiation", numberFormat(recipe.getRadiation()*1000000)).withStyle(ChatFormatting.GREEN));
-            lines.add(Component.translatable("fission.recipe.heat", (int)recipe.getHeat()).withStyle(ChatFormatting.GOLD));
+            lines.add(__("fission.recipe.duration", (int)((double)recipe.getDepletionTime()/20)).withStyle(ChatFormatting.AQUA));
+            lines.add(__("fission.recipe.power", (int)recipe.getEnergy()).withStyle(ChatFormatting.RED));
+            lines.add(__("fission.recipe.radiation", numberFormat(recipe.getRadiation()*1000000)).withStyle(ChatFormatting.GREEN));
+            lines.add(__("fission.recipe.heat", (int)recipe.getHeat()).withStyle(ChatFormatting.GOLD));
         }
         return lines;
     }
@@ -71,7 +72,7 @@ public class FissionCategoryWrapper<T extends FissionControllerBE.Recipe> implem
 
     @Override
     public @NotNull Component getTitle() {
-        return Component.translatable("nc_jei_cat."+getRecipeType().getUid().getPath());
+        return __("nc_jei_cat."+getRecipeType().getUid().getPath());
     }
 
     @Override

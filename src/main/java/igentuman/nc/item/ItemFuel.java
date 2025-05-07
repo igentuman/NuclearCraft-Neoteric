@@ -13,6 +13,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 import static igentuman.nc.handler.event.client.InputEvents.DESCRIPTIONS_SHOW;
+import static igentuman.nc.util.TextUtils.__;
 
 public class ItemFuel extends Item {
 
@@ -54,15 +55,15 @@ public class ItemFuel extends Item {
     {
         initDefinition();
         if(!DESCRIPTIONS_SHOW) {
-            list.add(TextUtils.applyFormat(Component.translatable("tooltip.toggle_description_keys"), ChatFormatting.GRAY));
+            list.add(TextUtils.applyFormat(__("tooltip.toggle_description_keys"), ChatFormatting.GRAY));
         } else {
-            list.add(TextUtils.applyFormat(Component.translatable("fuel.heat.descr", TextUtils.numberFormat(heat)), ChatFormatting.GOLD));
-            //list.add(TextUtils.applyFormat(Component.translatable("fuel.heat_boiling.descr", TextUtils.numberFormat(heat_boiling)), ChatFormatting.YELLOW));
-            list.add(TextUtils.applyFormat(Component.translatable("fuel.forge_energy.descr", forge_energy), ChatFormatting.BLUE));
-            //list.add(TextUtils.applyFormat(Component.translatable("fuel.criticality.descr", criticality), ChatFormatting.RED));
-            list.add(TextUtils.applyFormat(Component.translatable("fuel.depletion.descr", depletion()), ChatFormatting.GREEN));
-            //list.add(TextUtils.applyFormat(Component.translatable("fuel.efficiency.descr", efficiency), ChatFormatting.DARK_PURPLE));
-            list.add(TextUtils.applyFormat(Component.translatable("fuel.description"), ChatFormatting.AQUA));
+            list.add(TextUtils.applyFormat(__("fuel.heat.descr", TextUtils.numberFormat(heat)), ChatFormatting.GOLD));
+            //list.add(TextUtils.applyFormat(__("fuel.heat_boiling.descr", TextUtils.numberFormat(heat_boiling)), ChatFormatting.YELLOW));
+            list.add(TextUtils.applyFormat(__("fuel.forge_energy.descr", forge_energy), ChatFormatting.BLUE));
+            //list.add(TextUtils.applyFormat(__("fuel.criticality.descr", criticality), ChatFormatting.RED));
+            list.add(TextUtils.applyFormat(__("fuel.depletion.descr", depletion()), ChatFormatting.GREEN));
+            //list.add(TextUtils.applyFormat(__("fuel.efficiency.descr", efficiency), ChatFormatting.DARK_PURPLE));
+            list.add(TextUtils.applyFormat(__("fuel.description"), ChatFormatting.AQUA));
         }
     }
 

@@ -22,6 +22,7 @@ import java.util.Objects;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_PORT_CONTAINER;
+import static igentuman.nc.util.TextUtils.__;
 
 public class TurbinePortContainer extends AbstractContainerMenu {
 
@@ -95,7 +96,7 @@ public class TurbinePortContainer extends AbstractContainerMenu {
     }
 
     public Component getTitle() {
-        return Component.translatable("block."+MODID+"."+name);
+        return __("block."+MODID+"."+name);
     }
 
 

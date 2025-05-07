@@ -28,6 +28,7 @@ import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.setup.registration.NCItems.UNKNOWN_INGREDIENT;
+import static igentuman.nc.util.TextUtils.__;
 import static net.minecraft.world.item.Items.AIR;
 
 @SuppressWarnings("removal")
@@ -58,10 +59,10 @@ public class KugelblitzCategoryWrapper<T extends ChamberTerminalBE.Recipe> imple
     public @NotNull List<Component> getTooltipStrings(T recipe, IRecipeSlotsView recipeSlotsView, double mouseX, double mouseY) {
         List<Component> lines = new ArrayList<>();
         if(mouseX > 29 && mouseX < 65 && mouseY > 8 && mouseY < 24) {
-            lines.add(Component.translatable("fission.recipe.duration", (int)(recipe.getTimeModifier()*20)).withStyle(ChatFormatting.AQUA));
-            //lines.add(Component.translatable("fission.recipe.power", (int)recipe.getEnergy()).withStyle(ChatFormatting.RED));
-            //lines.add(Component.translatable("fission.recipe.radiation", numberFormat(recipe.getRadiation()*1000000)).withStyle(ChatFormatting.GREEN));
-            //lines.add(Component.translatable("fission.recipe.heat", (int)recipe.getHeat()).withStyle(ChatFormatting.GOLD));
+            lines.add(__("fission.recipe.duration", (int)(recipe.getTimeModifier()*20)).withStyle(ChatFormatting.AQUA));
+            //lines.add(__("fission.recipe.power", (int)recipe.getEnergy()).withStyle(ChatFormatting.RED));
+            //lines.add(__("fission.recipe.radiation", numberFormat(recipe.getRadiation()*1000000)).withStyle(ChatFormatting.GREEN));
+            //lines.add(__("fission.recipe.heat", (int)recipe.getHeat()).withStyle(ChatFormatting.GOLD));
         }
         return lines;
     }
@@ -73,7 +74,7 @@ public class KugelblitzCategoryWrapper<T extends ChamberTerminalBE.Recipe> imple
 
     @Override
     public @NotNull Component getTitle() {
-        return Component.translatable("nc_jei_cat."+getRecipeType().getUid().getPath());
+        return __("nc_jei_cat."+getRecipeType().getUid().getPath());
     }
 
     @Override

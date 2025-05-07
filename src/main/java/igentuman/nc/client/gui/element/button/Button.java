@@ -23,6 +23,7 @@ import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
+import static igentuman.nc.util.TextUtils.__;
 
 public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
     protected AbstractContainerMenu container;
@@ -77,7 +78,7 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
             btn = new ImageButton(X(), Y(), width, height, 220, 220, 18, TEXTURE, pButton -> {
                 Minecraft.getInstance().forceSetScreen(new SideConfigSlotSelectionScreen<>(screen));
             });
-            tooltipKey = Component.translatable("gui.nc.side_config.tooltip");
+            tooltipKey = __("gui.nc.side_config.tooltip");
         }
     }
 
@@ -95,7 +96,7 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
         }
 
         public List<Component> getTooltips() {
-            return List.of(Component.translatable("gui.nc.redstone_config.tooltip_"+mode));
+            return List.of(__("gui.nc.redstone_config.tooltip_"+mode));
         }
 
         public void setMode(int redstoneMode) {
@@ -156,10 +157,10 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
             String code = "energy";
             if(mode) code = "steam";
             List<Component> list = new ArrayList<>(List.of(
-                    Component.translatable("gui.nc.reactor_mode.tooltip_" + code)
+                    __("gui.nc.reactor_mode.tooltip_" + code)
             ));
             if(timer < 2000) {
-                list.add(Component.translatable("gui.nc.reactor_mode.timer", timer/20));
+                list.add(__("gui.nc.reactor_mode.timer", timer/20));
             }
             return list;
         }
@@ -220,8 +221,8 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
 
         public List<Component> getTooltips() {
             return List.of(
-                    Component.translatable("gui.nc.reactor_comparator_config.tooltip_"+mode),
-                    Component.translatable("gui.nc.reactor_comparator_strength.tooltip", strength)
+                    __("gui.nc.reactor_comparator_config.tooltip_"+mode),
+                    __("gui.nc.reactor_comparator_strength.tooltip", strength)
                     );
         }
 
@@ -250,8 +251,8 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
 
         public List<Component> getTooltips() {
             return List.of(
-                    Component.translatable("gui.nc.turbine_comparator_config.tooltip_"+mode),
-                    Component.translatable("gui.nc.reactor_comparator_strength.tooltip", strength)
+                    __("gui.nc.turbine_comparator_config.tooltip_"+mode),
+                    __("gui.nc.reactor_comparator_strength.tooltip", strength)
             );
         }
 
@@ -281,8 +282,8 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
 
         public List<Component> getTooltips() {
             return List.of(
-                    Component.translatable("gui.nc.kugelblits_port.tooltip_"+mode),
-                    Component.translatable("gui.nc.kugelblits_port.tooltip_strength", strength)
+                    __("gui.nc.kugelblits_port.tooltip_"+mode),
+                    __("gui.nc.kugelblits_port.tooltip_strength", strength)
             );
         }
 

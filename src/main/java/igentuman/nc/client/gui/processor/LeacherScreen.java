@@ -11,6 +11,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import static igentuman.nc.block.entity.processor.LeacherBE.*;
+import static igentuman.nc.util.TextUtils.__;
 
 public class LeacherScreen<T extends NCProcessorContainer<AbstractContainerMenu>> extends NCProcessorScreen<T> {
 
@@ -37,13 +38,13 @@ public class LeacherScreen<T extends NCProcessorContainer<AbstractContainerMenu>
         super.renderLabels(graphics, mouseX, mouseY);
         switch (((LeacherBE)getMenu().getBlockEntity()).leacherState) {
             case WRONG_POSITION:
-                graphics.drawString(font, Component.translatable("nc.label.leacher_wrong_position"), 30, 16, 0xff0000);
+                graphics.drawString(font, __("nc.label.leacher_wrong_position"), 30, 16, 0xff0000);
                 break;
             case NO_SOURCE:
-                graphics.drawString(font, Component.translatable("nc.label.leacher_no_source"), 30, 16, 0xff0000);
+                graphics.drawString(font, __("nc.label.leacher_no_source"), 30, 16, 0xff0000);
                 break;
             case NO_ACID:
-                graphics.drawString(font, Component.translatable("nc.label.leacher_no_acid"), 30, 16, 0xff0000);
+                graphics.drawString(font, __("nc.label.leacher_no_acid"), 30, 16, 0xff0000);
                 break;
         }
     }

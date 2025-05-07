@@ -40,6 +40,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 import static igentuman.nc.util.StackUtils.isMultiTool;
+import static igentuman.nc.util.TextUtils.__;
 
 @NothingNullByDefault
 public class ContainerBlock extends Block implements EntityBlock {
@@ -79,12 +80,12 @@ public class ContainerBlock extends Block implements EntityBlock {
                     dirToChange = dirToChange.getOpposite();
                 }
                 SideModeToggleable.SideMode mode = be.toggleSideConfig(dirToChange.ordinal());
-                player.sendSystemMessage(Component.translatable("message.nc.barrel.side_config", mode.name()));
+                player.sendSystemMessage(__("message.nc.barrel.side_config", mode.name()));
             } else {
                 MenuProvider containerProvider = new MenuProvider() {
                     @Override
                     public Component getDisplayName() {
-                        return Component.translatable("container.nc.storage");
+                        return __("container.nc.storage");
                     }
 
                     @Override
@@ -164,7 +165,7 @@ public class ContainerBlock extends Block implements EntityBlock {
     @Override
     public void appendHoverText(ItemStack stack, @javax.annotation.Nullable BlockGetter world, List<Component> list, TooltipFlag flag)
     {
-        list.add(Component.translatable("tooltip.nc.use_multitool").withStyle(ChatFormatting.YELLOW));
+        list.add(__("tooltip.nc.use_multitool").withStyle(ChatFormatting.YELLOW));
     }
 
     public boolean registered() {

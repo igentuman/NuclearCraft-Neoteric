@@ -20,6 +20,7 @@ import net.minecraftforge.items.wrapper.InvWrapper;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.CHAMBER_TERMINAL_CONTAINER;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BLOCKS;
+import static igentuman.nc.util.TextUtils.__;
 import static igentuman.nc.util.TextUtils.roundFormat;
 
 public class ChamberTerminalContainer extends AbstractContainerMenu {
@@ -85,7 +86,7 @@ public class ChamberTerminalContainer extends AbstractContainerMenu {
     }
 
     public Component getTitle() {
-        return Component.translatable("block."+MODID+"."+name);
+        return __("block."+MODID+"."+name);
     }
 
     public boolean isCasingValid() {

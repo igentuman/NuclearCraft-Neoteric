@@ -1,0 +1,7 @@
+{
+  "name": "Turbine",
+  "description": "$(l)Steam spinning turbine = Energy.",
+  "icon": "nuclearcraft:turbine_controller",
+  "parent": "nuclearcraft:multiblocks",
+  "sortnum": 0
+}

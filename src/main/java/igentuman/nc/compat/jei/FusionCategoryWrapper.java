@@ -27,6 +27,7 @@ import java.util.List;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
+import static igentuman.nc.util.TextUtils.__;
 import static net.minecraft.world.item.Items.AIR;
 
 @SuppressWarnings("removal")
@@ -61,7 +62,7 @@ public class FusionCategoryWrapper<T extends FusionCoreBE.Recipe> implements IRe
 
     @Override
     public @NotNull Component getTitle() {
-        return Component.translatable("nc_jei_cat."+getRecipeType().getUid().getPath());
+        return __("nc_jei_cat."+getRecipeType().getUid().getPath());
     }
 
     @Override
@@ -94,10 +95,10 @@ public class FusionCategoryWrapper<T extends FusionCoreBE.Recipe> implements IRe
     public @NotNull List<Component> getTooltipStrings(T recipe, IRecipeSlotsView recipeSlotsView, double mouseX, double mouseY) {
         List<Component> lines = new ArrayList<>();
         if(mouseX > 34 && mouseX < 76 && mouseY > 16 && mouseY < 32) {
-            lines.add(Component.translatable("fusion_core.recipe.duration", (int)recipe.getTimeModifier()).withStyle(ChatFormatting.AQUA));
-            lines.add(Component.translatable("fusion_core.recipe.power", (int)recipe.getEnergy()).withStyle(ChatFormatting.RED));
-            lines.add(Component.translatable("fusion_core.recipe.radiation", recipe.getRadiation()*1000).withStyle(ChatFormatting.GREEN));
-            lines.add(Component.translatable("fusion_core.recipe.temperature", (int)recipe.getOptimalTemperature()).withStyle(ChatFormatting.GOLD));
+            lines.add(__("fusion_core.recipe.duration", (int)recipe.getTimeModifier()).withStyle(ChatFormatting.AQUA));
+            lines.add(__("fusion_core.recipe.power", (int)recipe.getEnergy()).withStyle(ChatFormatting.RED));
+            lines.add(__("fusion_core.recipe.radiation", recipe.getRadiation()*1000).withStyle(ChatFormatting.GREEN));
+            lines.add(__("fusion_core.recipe.temperature", (int)recipe.getOptimalTemperature()).withStyle(ChatFormatting.GOLD));
         }
         return lines;
     }

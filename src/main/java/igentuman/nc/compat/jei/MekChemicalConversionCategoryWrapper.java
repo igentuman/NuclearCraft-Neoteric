@@ -29,6 +29,7 @@ import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
+import static igentuman.nc.util.TextUtils.__;
 import static net.minecraft.world.item.Items.BUCKET;
 
 @SuppressWarnings("removal")
@@ -59,14 +60,14 @@ public class MekChemicalConversionCategoryWrapper<T extends MekChemicalConversio
 
     @Override
     public @NotNull Component getTitle() {
-        return Component.translatable("nc_jei_cat.mek_chemical_conversion");
+        return __("nc_jei_cat.mek_chemical_conversion");
     }
 
     @Override
     public @NotNull List<Component> getTooltipStrings(T recipe, IRecipeSlotsView recipeSlotsView, double mouseX, double mouseY) {
         List<Component> lines = new ArrayList<>();
         if(mouseX > 34 && mouseX < 76 && mouseY > 16 && mouseY < 32) {
-            lines.add(Component.translatable("tooltip.nc.jei.gas_to_fluid.desc").withStyle(ChatFormatting.AQUA));
+            lines.add(__("tooltip.nc.jei.gas_to_fluid.desc").withStyle(ChatFormatting.AQUA));
         }
         return lines;
     }

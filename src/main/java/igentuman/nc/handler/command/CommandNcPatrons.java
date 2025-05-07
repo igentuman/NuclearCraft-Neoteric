@@ -15,6 +15,8 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.MinecraftForge;
 
+import static igentuman.nc.util.TextUtils.__;
+
 public class CommandNcPatrons {
 
     private CommandNcPatrons() {}
@@ -29,7 +31,7 @@ public class CommandNcPatrons {
 
     public static int execute(CommandSourceStack ctx) {
         ServerPlayer pl = ctx.getPlayer();
-        pl.sendSystemMessage(Component.translatable("nc.message.patrons"));
+        pl.sendSystemMessage(__("nc.message.patrons"));
         return 0;
     }
 }

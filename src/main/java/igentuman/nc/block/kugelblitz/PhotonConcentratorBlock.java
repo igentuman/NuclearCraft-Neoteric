@@ -20,6 +20,7 @@ import java.util.List;
 
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BE;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.TRANSPARENT_BLOCKS_PATTERN;
+import static igentuman.nc.util.TextUtils.__;
 
 public class PhotonConcentratorBlock extends MultiblockBlock implements EntityBlock {
 
@@ -51,7 +52,7 @@ public class PhotonConcentratorBlock extends MultiblockBlock implements EntityBl
 
     @Override
     public void appendHoverText(ItemStack pStack, @Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag) {
-        list.add(Component.translatable("tooltip.kugelblitz.photon_concentrator").withStyle(ChatFormatting.AQUA));
-        list.add(Component.translatable("multiblock.build_in_chunk.advise").withStyle(ChatFormatting.GREEN));
+        list.add(__("tooltip.kugelblitz.photon_concentrator").withStyle(ChatFormatting.AQUA));
+        list.add(__("multiblock.build_in_chunk.advise").withStyle(ChatFormatting.GREEN));
     }
 }

@@ -19,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 import static igentuman.nc.multiblock.fission.FissionReactor.TRANSPARENT_BLOCKS;
+import static igentuman.nc.util.TextUtils.__;
 
 public class TurbineBlock extends MultiblockBlock {
 
@@ -28,6 +29,6 @@ public class TurbineBlock extends MultiblockBlock {
 
     @Override
     public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag) {
-        list.add(Component.translatable("multiblock.build_in_chunk.advise").withStyle(ChatFormatting.GREEN));
+        list.add(__("multiblock.build_in_chunk.advise").withStyle(ChatFormatting.GREEN));
     }
 }

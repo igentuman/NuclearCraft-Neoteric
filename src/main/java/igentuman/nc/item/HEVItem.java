@@ -24,6 +24,7 @@ import java.util.List;
 
 import static igentuman.nc.handler.config.CommonConfig.ENERGY_STORAGE;
 import static igentuman.nc.setup.registration.NCItems.*;
+import static igentuman.nc.util.TextUtils.__;
 
 public class HEVItem extends ArmorItem {
 
@@ -88,8 +89,8 @@ public class HEVItem extends ArmorItem {
     @Override
     public void appendHoverText(ItemStack stack, @javax.annotation.Nullable Level world, List<Component> list, TooltipFlag flag)
     {
-        list.add(Component.translatable("tooltip.nc.energy_stored", formatEnergy(getEnergy(stack).getEnergyStored()), formatEnergy(getEnergyMaxStorage())).withStyle(ChatFormatting.BLUE));
-        list.add(Component.translatable("tooltip.nc.hev.desc").withStyle(ChatFormatting.AQUA));
+        list.add(__("tooltip.nc.energy_stored", formatEnergy(getEnergy(stack).getEnergyStored()), formatEnergy(getEnergyMaxStorage())).withStyle(ChatFormatting.BLUE));
+        list.add(__("tooltip.nc.hev.desc").withStyle(ChatFormatting.AQUA));
     }
 
     public String formatEnergy(int energy)

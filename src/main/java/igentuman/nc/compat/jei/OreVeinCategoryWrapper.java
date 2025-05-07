@@ -19,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
+import static igentuman.nc.util.TextUtils.__;
 import static net.minecraft.world.item.Items.AIR;
 
 @SuppressWarnings("removal")
@@ -50,7 +51,7 @@ public class OreVeinCategoryWrapper<T extends OreVeinRecipe> implements IRecipeC
 
     @Override
     public @NotNull Component getTitle() {
-        return Component.translatable("nc_jei_cat."+getRecipeType().getUid().getPath());
+        return __("nc_jei_cat."+getRecipeType().getUid().getPath());
     }
 
     @Override

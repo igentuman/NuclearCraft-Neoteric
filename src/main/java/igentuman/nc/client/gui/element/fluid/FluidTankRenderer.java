@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static igentuman.nc.handler.event.client.InputEvents.SHIFT_PRESSED;
+import static igentuman.nc.util.TextUtils.__;
 
 // CREDIT: https://github.com/mezz/JustEnoughItems by mezz
 // Under MIT-License: https://github.com/mezz/JustEnoughItems/blob/1.19/LICENSE.txt
@@ -252,14 +253,14 @@ public class FluidTankRenderer extends NCGuiElement {
             long milliBuckets = (amount * 1000) / FluidType.BUCKET_VOLUME;
 
             if (tooltipMode == TooltipMode.SHOW_AMOUNT_AND_CAPACITY) {
-                MutableComponent amountString = Component.translatable("gui.nc.fluid_tank_renderer.amount_capacity", nf.format(milliBuckets), nf.format(tank.getCapacity()));
+                MutableComponent amountString = __("gui.nc.fluid_tank_renderer.amount_capacity", nf.format(milliBuckets), nf.format(tank.getCapacity()));
                 tooltip.add(amountString.withStyle(ChatFormatting.WHITE));
             } else if (tooltipMode == TooltipMode.SHOW_AMOUNT) {
-                MutableComponent amountString = Component.translatable("gui.nc.fluid_tank_renderer.amount", nf.format(milliBuckets));
+                MutableComponent amountString = __("gui.nc.fluid_tank_renderer.amount", nf.format(milliBuckets));
                 tooltip.add(amountString.withStyle(ChatFormatting.WHITE));
             }
             if(canVoid) {
-                tooltip.add(Component.translatable("gui.nc.fluid_tank_renderer.can_void").withStyle(ChatFormatting.GOLD));
+                tooltip.add(__("gui.nc.fluid_tank_renderer.can_void").withStyle(ChatFormatting.GOLD));
             }
         } catch (RuntimeException e) {
             LOGGER.error("Failed to get tooltip for fluid: " + e);

@@ -14,6 +14,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.List;
 
+import static igentuman.nc.util.TextUtils.__;
+
 public class FusionCasingBlock extends MultiblockBlock {
 
     public FusionCasingBlock() {
@@ -37,7 +39,7 @@ public class FusionCasingBlock extends MultiblockBlock {
     @Override
     public void appendHoverText(ItemStack stack, @javax.annotation.Nullable BlockGetter world, List<Component> list, TooltipFlag flag)
     {
-        list.add(Component.translatable("tooltip.nc.fusion_casing.descr").withStyle(ChatFormatting.YELLOW));
-        list.add(Component.translatable("multiblock.build_in_chunk.advise").withStyle(ChatFormatting.GREEN));
+        list.add(__("tooltip.nc.fusion_casing.descr").withStyle(ChatFormatting.YELLOW));
+        list.add(__("multiblock.build_in_chunk.advise").withStyle(ChatFormatting.GREEN));
     }
 }

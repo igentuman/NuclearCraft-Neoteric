@@ -131,7 +131,7 @@ public class ChamberTerminalScreen extends AbstractContainerScreen<ChamberTermin
         if(isCasingValid()) {
             checkboxCasing.setTooltipKey("multiblock.casing.complete");
             if (!container().hasBlackhole()) {
-                checkboxCasing.addTooltip(Component.translatable("tooltip.kugelblitz.ready_for_burst").withStyle(ChatFormatting.AQUA));
+                checkboxCasing.addTooltip(__("tooltip.kugelblitz.ready_for_burst").withStyle(ChatFormatting.AQUA));
             }
         } else {
             checkboxCasing.setTooltipKey("multiblock.casing.incomplete");
@@ -158,28 +158,28 @@ public class ChamberTerminalScreen extends AbstractContainerScreen<ChamberTermin
 
         graphics.pose().pushPose();
         graphics.pose().scale(0.5f, 0.5f, 0.5f);
-        graphics.drawString(font, Component.translatable("label.kugelblitz.frequency", container().getFrequency()), 12, 164, 0x8AFF8A);
-        graphics.drawString(font, Component.translatable("label.kugelblitz.transformation"), 12, 128, 0x8AFF8A);
-        int w = font.width(Component.translatable("label.kugelblitz.energy_gen"));
-        graphics.drawCenteredString(font, Component.translatable("label.kugelblitz.energy_gen"), 248-w/2, 128, 0x8AFF8A);
+        graphics.drawString(font, __("label.kugelblitz.frequency", container().getFrequency()), 12, 164, 0x8AFF8A);
+        graphics.drawString(font, __("label.kugelblitz.transformation"), 12, 128, 0x8AFF8A);
+        int w = font.width(__("label.kugelblitz.energy_gen"));
+        graphics.drawCenteredString(font, __("label.kugelblitz.energy_gen"), 248-w/2, 128, 0x8AFF8A);
         graphics.pose().popPose();
 
         if(!isCasingValid()) {
-            casingTootip = applyFormat(Component.translatable(getValidationResultKey(), getValidationResultData()), ChatFormatting.RED);
+            casingTootip = applyFormat(__(getValidationResultKey(), getValidationResultData()), ChatFormatting.RED);
         }
 
         if(isCasingValid()) {
             if (isInteriorValid()) {
                 if(container().hasBlackhole()) {
-                    graphics.drawString(font, Component.translatable("label.kugelblitz.blackhole_mass", formatMass(container().getMass())), 6, 16, 0x8AFF8A);
-                    graphics.drawString(font, Component.translatable("label.kugelblitz.evaporation", formatMass(container().getEvaporation())), 6, 27, 0x8AFF8A);
-                    graphics.drawString(font, Component.translatable("label.kugelblitz.feeding", formatMass(container().getFeeding())), 6, 38, 0x8AFF8A);
+                    graphics.drawString(font, __("label.kugelblitz.blackhole_mass", formatMass(container().getMass())), 6, 16, 0x8AFF8A);
+                    graphics.drawString(font, __("label.kugelblitz.evaporation", formatMass(container().getEvaporation())), 6, 27, 0x8AFF8A);
+                    graphics.drawString(font, __("label.kugelblitz.feeding", formatMass(container().getFeeding())), 6, 38, 0x8AFF8A);
                 }
-                checkboxCasing.addTooltip(Component.translatable("tooltip.kugelblitz.flux_regulators", container().getFluxRegulators()));
-                checkboxCasing.addTooltip(Component.translatable("tooltip.kugelblitz.transformers", container().getTransformers()));
+                checkboxCasing.addTooltip(__("tooltip.kugelblitz.flux_regulators", container().getFluxRegulators()));
+                checkboxCasing.addTooltip(__("tooltip.kugelblitz.transformers", container().getTransformers()));
 
             } else {
-                interiorTootip = applyFormat(Component.translatable(getValidationResultKey(), getValidationResultData()), ChatFormatting.RED);
+                interiorTootip = applyFormat(__(getValidationResultKey(), getValidationResultData()), ChatFormatting.RED);
             }
         }
 
@@ -218,7 +218,7 @@ public class ChamberTerminalScreen extends AbstractContainerScreen<ChamberTermin
                     Optional.empty(), pMouseX, pMouseY);
         }
         energyBar.clearTooltips();
-        energyBar.addTooltip(Component.translatable("reactor.forge_energy_per_tick", formatEnergy(container().energyPerTick())));
+        energyBar.addTooltip(__("reactor.forge_energy_per_tick", formatEnergy(container().energyPerTick())));
         if(energyBar.isMouseOver(pMouseX, pMouseY+10)) {
             graphics.renderTooltip(font, energyBar.getTooltips(),
                     Optional.empty(), pMouseX, pMouseY);

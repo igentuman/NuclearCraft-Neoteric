@@ -21,6 +21,7 @@ import java.util.Objects;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.CHAMBER_PORT_CONTAINER;
+import static igentuman.nc.util.TextUtils.__;
 import static igentuman.nc.util.TextUtils.roundFormat;
 
 public class ChamberPortContainer extends AbstractContainerMenu {
@@ -57,7 +58,7 @@ public class ChamberPortContainer extends AbstractContainerMenu {
     }
 
     public Component getTitle() {
-        return Component.translatable("block."+MODID+"."+name);
+        return __("block."+MODID+"."+name);
     }
 
 

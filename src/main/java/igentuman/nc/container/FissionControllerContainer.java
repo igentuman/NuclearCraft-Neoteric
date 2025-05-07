@@ -20,8 +20,7 @@ import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
 import static igentuman.nc.NuclearCraft.MODID;
-import static igentuman.nc.util.TextUtils.numberFormat;
-import static igentuman.nc.util.TextUtils.roundFormat;
+import static igentuman.nc.util.TextUtils.*;
 
 public class FissionControllerContainer extends AbstractContainerMenu {
 
@@ -86,7 +85,7 @@ public class FissionControllerContainer extends AbstractContainerMenu {
     }
 
     public Component getTitle() {
-        return Component.translatable("block."+MODID+"."+name);
+        return __("block."+MODID+"."+name);
     }
 
     public boolean isCasingValid() {

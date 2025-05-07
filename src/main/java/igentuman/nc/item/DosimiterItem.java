@@ -13,6 +13,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
+import static igentuman.nc.util.TextUtils.__;
 import static igentuman.nc.util.TextUtils.formatRads;
 
 public class DosimiterItem extends Item
@@ -30,7 +31,7 @@ public class DosimiterItem extends Item
 			PlayerRadiation radiationCap = player.getCapability(PlayerRadiationProvider.PLAYER_RADIATION).orElse(null);
 			if(radiationCap == null) return InteractionResultHolder.sidedSuccess(stack, world.isClientSide);
 			long radiation = radiationCap.getRadiation();
-			player.sendSystemMessage(Component.translatable("message.nc.player_radiation_contamination", formatRads(radiation)));
+			player.sendSystemMessage(__("message.nc.player_radiation_contamination", formatRads(radiation)));
 			CriteriaTriggers.USING_ITEM.trigger((ServerPlayer) player, stack);
 		}
 		return InteractionResultHolder.sidedSuccess(stack, world.isClientSide);

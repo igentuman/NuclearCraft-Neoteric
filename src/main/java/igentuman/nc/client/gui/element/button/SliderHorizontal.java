@@ -13,6 +13,8 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 
+import static igentuman.nc.util.TextUtils.__;
+
 public class SliderHorizontal extends NCGuiElement {
     protected AbstractContainerScreen screen;
     private int xTexStart;
@@ -115,7 +117,7 @@ public class SliderHorizontal extends NCGuiElement {
 
     public NCGuiElement setTooltipKey(String key) {
         tooltips.clear();
-        tooltips.add(Component.translatable(key));
+        tooltips.add(__(key));
         return this;
     }
 

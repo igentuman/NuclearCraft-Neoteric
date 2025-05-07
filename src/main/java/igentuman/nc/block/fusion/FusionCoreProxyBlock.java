@@ -27,6 +27,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_CORE_PROXY_BE;
+import static igentuman.nc.util.TextUtils.__;
 
 public class FusionCoreProxyBlock extends FusionBeBlock {
 
@@ -71,7 +72,7 @@ public class FusionCoreProxyBlock extends FusionBeBlock {
                 MenuProvider containerProvider = new MenuProvider() {
                     @Override
                     public Component getDisplayName() {
-                        return Component.translatable("fusion_core");
+                        return __("fusion_core");
                     }
 
                     @Override

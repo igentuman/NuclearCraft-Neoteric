@@ -34,6 +34,7 @@ import java.util.Objects;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.handler.event.client.InputEvents.DESCRIPTIONS_SHOW;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BE;
+import static igentuman.nc.util.TextUtils.__;
 import static igentuman.nc.util.TextUtils.convertToName;
 
 public class TurbineCoilBlock extends Block implements EntityBlock {
@@ -97,31 +98,31 @@ public class TurbineCoilBlock extends Block implements EntityBlock {
             if (def.getValidator() instanceof CoilDef.Validator) {
                 for (String[] condition : def.getValidator().blockLines().keySet()) {
                     if (i > 0) {
-                        lines.add(Component.translatable("heat_sink.and").getString());
+                        lines.add(__("heat_sink.and").getString());
                     }
-                    String blocksLine = String.join(" "+Component.translatable("heat_sink.or").getString()+" ", getBlockNames(condition[2]));
+                    String blocksLine = String.join(" "+__("heat_sink.or").getString()+" ", getBlockNames(condition[2]));
                     switch (condition[0]) {
                         case ">":
-                            lines.add(Component.translatable("heat_sink.atleast"+(condition[1].equals("1") ? "":"s") , condition[1], blocksLine).getString());
+                            lines.add(__("heat_sink.atleast"+(condition[1].equals("1") ? "":"s") , condition[1], blocksLine).getString());
                             break;
                         case "-":
-                            lines.add(Component.translatable("heat_sink.between", condition[1], blocksLine).getString());
+                            lines.add(__("heat_sink.between", condition[1], blocksLine).getString());
                             break;
                         case "=":
-                            lines.add(Component.translatable("heat_sink.exact"+(condition[1].equals("1") ? "":"s"), condition[1], blocksLine).getString());
+                            lines.add(__("heat_sink.exact"+(condition[1].equals("1") ? "":"s"), condition[1], blocksLine).getString());
                             break;
                         case "<":
-                            lines.add(Component.translatable("heat_sink.less_than", condition[1], blocksLine).getString());
+                            lines.add(__("heat_sink.less_than", condition[1], blocksLine).getString());
                             break;
                         case "^":
-                            lines.add(Component.translatable("heat_sink.in_corner", condition[1], blocksLine).getString());
+                            lines.add(__("heat_sink.in_corner", condition[1], blocksLine).getString());
                             break;
                     }
                     i++;
                 }
-                placementRule = Component.translatable("heat_sink.placement.rule", String.join(" ", lines));
+                placementRule = __("heat_sink.placement.rule", String.join(" ", lines));
             } else {
-                placementRule = Component.translatable("heat_sink.placement.error");
+                placementRule = __("heat_sink.placement.error");
             }
         }
         return placementRule;
@@ -167,10 +168,10 @@ public class TurbineCoilBlock extends Block implements EntityBlock {
         if(DESCRIPTIONS_SHOW) {
             list.add(TextUtils.applyFormat(getPlacementRule(), ChatFormatting.AQUA));
             list.add(TextUtils.applyFormat(
-                    Component.translatable("tooltip.nc.description.efficiency", TextUtils.numberFormat(def.getEfficiency())),
+                    __("tooltip.nc.description.efficiency", TextUtils.numberFormat(def.getEfficiency())),
                     ChatFormatting.GOLD));
         } else {
-            list.add(TextUtils.applyFormat(Component.translatable("tooltip.toggle_description_keys"), ChatFormatting.GRAY));
+            list.add(TextUtils.applyFormat(__("tooltip.toggle_description_keys"), ChatFormatting.GRAY));
         }
     }
 }

@@ -40,6 +40,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 import static igentuman.nc.util.StackUtils.isMultiTool;
+import static igentuman.nc.util.TextUtils.__;
 import static igentuman.nc.util.TextUtils.formatLiquid;
 import static net.minecraft.world.item.Items.BUCKET;
 
@@ -81,7 +82,7 @@ public class BarrelBlock extends Block implements EntityBlock {
                     dirToChange = dirToChange.getOpposite();
                 }
                 SideModeToggleable.SideMode mode = be.toggleSideConfig(dirToChange.ordinal());
-                player.sendSystemMessage(Component.translatable("message.nc.barrel.side_config", mode.name()));
+                player.sendSystemMessage(__("message.nc.barrel.side_config", mode.name()));
             } else
             if(!handStack.equals(ItemStack.EMPTY)) {
                 if(handStack.getItem() instanceof BucketItem) {
@@ -133,9 +134,9 @@ public class BarrelBlock extends Block implements EntityBlock {
                 fluid = be.getFluidHandler().orElseGet(null).getFluidInTank(0);
                 int storage = BarrelBlocks.all().get(code()).getCapacity();
                 if(fluid == null || fluid.isEmpty()) {
-                    player.sendSystemMessage(Component.translatable("tooltip.nc.liquid_empty", formatLiquid(storage)).withStyle(ChatFormatting.BLUE));
+                    player.sendSystemMessage(__("tooltip.nc.liquid_empty", formatLiquid(storage)).withStyle(ChatFormatting.BLUE));
                 } else {
-                    player.sendSystemMessage(Component.translatable("tooltip.nc.liquid_stored", fluid.getDisplayName(), formatLiquid(fluid.getAmount()), formatLiquid(storage)).withStyle(ChatFormatting.BLUE));
+                    player.sendSystemMessage(__("tooltip.nc.liquid_stored", fluid.getDisplayName(), formatLiquid(fluid.getAmount()), formatLiquid(storage)).withStyle(ChatFormatting.BLUE));
                 }
             }
         }
@@ -212,8 +213,8 @@ public class BarrelBlock extends Block implements EntityBlock {
     {
         int storage = BarrelBlocks.all().get(code()).config().getCapacity();
 
-        list.add(Component.translatable("tooltip.nc.liquid_capacity", formatLiquid(storage)).withStyle(ChatFormatting.BLUE));
-        list.add(Component.translatable("tooltip.nc.use_multitool").withStyle(ChatFormatting.YELLOW));
+        list.add(__("tooltip.nc.liquid_capacity", formatLiquid(storage)).withStyle(ChatFormatting.BLUE));
+        list.add(__("tooltip.nc.use_multitool").withStyle(ChatFormatting.YELLOW));
     }
 
     public boolean registered() {

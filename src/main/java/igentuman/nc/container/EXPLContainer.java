@@ -19,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.*;
+import static igentuman.nc.util.TextUtils.__;
 
 public class EXPLContainer extends AbstractContainerMenu {
 
@@ -53,7 +54,7 @@ public class EXPLContainer extends AbstractContainerMenu {
     }
 
     public Component getTitle() {
-        return Component.translatable("block."+MODID+"."+name);
+        return __("block."+MODID+"."+name);
     }
 
     public int getEnergy() {

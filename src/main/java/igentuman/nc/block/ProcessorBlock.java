@@ -46,6 +46,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import static igentuman.nc.multiblock.fission.FissionReactor.TRANSPARENT_BLOCKS;
+import static igentuman.nc.util.TextUtils.__;
 
 public class ProcessorBlock extends HorizontalDirectionalBlock implements EntityBlock {
     public static final DirectionProperty HORIZONTAL_FACING = FACING;
@@ -123,7 +124,7 @@ public class ProcessorBlock extends HorizontalDirectionalBlock implements Entity
                 MenuProvider containerProvider = new MenuProvider() {
                     @Override
                     public Component getDisplayName() {
-                        return Component.translatable(processorCode());
+                        return __(processorCode());
                     }
 
                     @Override
@@ -163,7 +164,7 @@ public class ProcessorBlock extends HorizontalDirectionalBlock implements Entity
     @Override
     public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag) {
         if(asItem().toString().contains("empty") || this.asItem().equals(Items.AIR)) return;
-        list.add(TextUtils.applyFormat(Component.translatable("processor.description."+processorCode()), ChatFormatting.AQUA));
+        list.add(TextUtils.applyFormat(__("processor.description."+processorCode()), ChatFormatting.AQUA));
     }
 
 }

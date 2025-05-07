@@ -24,6 +24,7 @@ import java.util.Optional;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
+import static igentuman.nc.util.TextUtils.__;
 
 public class SideConfigScreen<T extends NCProcessorContainer<T>> extends AbstractContainerScreen<T> {
     protected final ResourceLocation GUI = new ResourceLocation(MODID, "textures/gui/small_window.png");
@@ -128,7 +129,7 @@ public class SideConfigScreen<T extends NCProcessorContainer<T>> extends Abstrac
 
     @Override
     protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
-        graphics.drawCenteredString(font,  Component.translatable("processor_slot_mode.title"), imageWidth/4, titleLabelY, 0xffffff);
+        graphics.drawCenteredString(font,  __("processor_slot_mode.title"), imageWidth/4, titleLabelY, 0xffffff);
     }
 
     @Override

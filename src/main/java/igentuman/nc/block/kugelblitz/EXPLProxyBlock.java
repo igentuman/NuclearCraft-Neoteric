@@ -29,6 +29,7 @@ import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.EXPL_PROXY_BE;
+import static igentuman.nc.util.TextUtils.__;
 
 public class EXPLProxyBlock extends Block implements EntityBlock {
 
@@ -71,7 +72,7 @@ public class EXPLProxyBlock extends Block implements EntityBlock {
                 MenuProvider containerProvider = new MenuProvider() {
                     @Override
                     public Component getDisplayName() {
-                        return Component.translatable("expl");
+                        return __("expl");
                     }
 
                     @Override

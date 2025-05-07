@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BE;
+import static igentuman.nc.util.TextUtils.__;
 
 public class TurbineBearingBlock extends MultiblockBlock {
 
@@ -41,6 +42,6 @@ public class TurbineBearingBlock extends MultiblockBlock {
 
     @Override
     public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag) {
-        list.add(TextUtils.applyFormat(Component.translatable("tooltip.nc.bearing.desc"), ChatFormatting.BLUE));
+        list.add(TextUtils.applyFormat(__("tooltip.nc.bearing.desc"), ChatFormatting.BLUE));
     }
 }

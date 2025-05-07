@@ -12,6 +12,8 @@ import net.minecraft.world.level.block.Block;
 import javax.annotation.Nonnull;
 import java.util.List;
 
+import static igentuman.nc.util.TextUtils.__;
+
 public class ProcessorBlockItem extends BlockItem
 {
 
@@ -41,9 +43,9 @@ public class ProcessorBlockItem extends BlockItem
 	public void appendHoverText(ItemStack stack, @javax.annotation.Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
 		if(stack.hasTag() && stack.getTag().contains("energy")) {
-			list.add(Component.translatable("tooltip.nc.content_saved").withStyle(ChatFormatting.GRAY));
+			list.add(__("tooltip.nc.content_saved").withStyle(ChatFormatting.GRAY));
 		}
 		if(asItem().toString().contains("empty") || this.asItem().equals(Items.AIR)) return;
-		list.add(TextUtils.applyFormat(Component.translatable("processor.description."+toString()), ChatFormatting.AQUA));
+		list.add(TextUtils.applyFormat(__("processor.description."+toString()), ChatFormatting.AQUA));
 	}
 }

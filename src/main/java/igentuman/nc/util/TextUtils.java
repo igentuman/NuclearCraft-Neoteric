@@ -10,6 +10,11 @@ import java.util.Locale;
 
 public class TextUtils
 {
+	public static MutableComponent __(String text, Object... pArgs)
+	{
+		return Component.translatable(text, pArgs);
+	}
+
 	public static MutableComponent applyFormat(Component component, ChatFormatting... color)
 	{
 		Style style = component.getStyle();

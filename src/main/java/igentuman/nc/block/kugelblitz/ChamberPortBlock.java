@@ -32,6 +32,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BE;
+import static igentuman.nc.util.TextUtils.__;
 
 public class ChamberPortBlock extends HorizontalDirectionalBlock implements EntityBlock {
     public static final DirectionProperty HORIZONTAL_FACING = FACING;
@@ -79,7 +80,7 @@ public class ChamberPortBlock extends HorizontalDirectionalBlock implements Enti
                 MenuProvider containerProvider = new MenuProvider() {
                     @Override
                     public Component getDisplayName() {
-                        return Component.translatable(NAME);
+                        return __(NAME);
                     }
 
                     @Override

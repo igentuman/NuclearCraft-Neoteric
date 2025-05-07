@@ -16,6 +16,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.TRANSPARENT_BLOCKS_PATTERN;
+import static igentuman.nc.util.TextUtils.__;
 
 public class ChamberBlock extends MultiblockBlock {
 
@@ -41,6 +42,6 @@ public class ChamberBlock extends MultiblockBlock {
 
     @Override
     public void appendHoverText(ItemStack pStack, @Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag) {
-        list.add(Component.translatable("multiblock.build_in_chunk.advise").withStyle(ChatFormatting.GREEN));
+        list.add(__("multiblock.build_in_chunk.advise").withStyle(ChatFormatting.GREEN));
     }
 }

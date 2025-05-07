@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.util.TextUtils.__;
 
 public class EXPLScreen extends AbstractContainerScreen<EXPLContainer> implements IProgressScreen, IVerticalBarScreen {
     protected final ResourceLocation GUI = new ResourceLocation(MODID, "textures/gui/small_window.png");
@@ -60,7 +61,7 @@ public class EXPLScreen extends AbstractContainerScreen<EXPLContainer> implement
         updateRelativeCords();
         widgets.clear();
         energyBar = new VerticalBar.Energy(6, 16,  this, container().getMaxEnergy());
-        burstButton = new Button(18, 46, this, 77, Component.translatable("gui.nuclearcraft:button.burst"), (button) -> {
+        burstButton = new Button(18, 46, this, 77, __("gui.nuclearcraft:button.burst"), (button) -> {
             if(container().isReady()) {
                 container().burst();
             }

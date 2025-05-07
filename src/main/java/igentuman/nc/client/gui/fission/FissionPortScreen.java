@@ -23,6 +23,7 @@ import java.util.Optional;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.client.gui.element.fluid.FluidTankRenderer.TooltipMode.SHOW_AMOUNT_AND_CAPACITY;
+import static igentuman.nc.util.TextUtils.__;
 
 public class FissionPortScreen extends AbstractContainerScreen<FissionPortContainer> implements IProgressScreen, IVerticalBarScreen {
     protected final ResourceLocation GUI = new ResourceLocation(MODID, "textures/gui/fission/port.png");
@@ -136,7 +137,7 @@ public class FissionPortScreen extends AbstractContainerScreen<FissionPortContai
 
         if(!container().getMode()) {
             energyBar.clearTooltips();
-            energyBar.addTooltip(Component.translatable("reactor.forge_energy_per_tick", container().energyPerTick()));
+            energyBar.addTooltip(__("reactor.forge_energy_per_tick", container().energyPerTick()));
             if(energyBar.isMouseOver(pMouseX, pMouseY+10)) {
                 graphics.renderTooltip(font, energyBar.getTooltips(),
                         Optional.empty(), pMouseX, pMouseY);
@@ -148,7 +149,7 @@ public class FissionPortScreen extends AbstractContainerScreen<FissionPortContai
             }
             if(steamTank.isMouseOver(pMouseX, pMouseY+10)) {
                 List<Component> tooltips = steamTank.getTooltips();
-                tooltips.add(Component.translatable("reactor.steam_per_tick", container().getSteamPerTick()));
+                tooltips.add(__("reactor.steam_per_tick", container().getSteamPerTick()));
                 graphics.renderTooltip(font, tooltips,
                         Optional.empty(), pMouseX, pMouseY);
             }

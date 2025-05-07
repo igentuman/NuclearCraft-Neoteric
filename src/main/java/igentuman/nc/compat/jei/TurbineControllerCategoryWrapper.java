@@ -25,6 +25,7 @@ import java.util.List;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
+import static igentuman.nc.util.TextUtils.__;
 import static net.minecraft.world.item.Items.AIR;
 
 @SuppressWarnings("removal")
@@ -58,7 +59,7 @@ public class TurbineControllerCategoryWrapper<T extends TurbineControllerBE.Reci
 
     @Override
     public @NotNull Component getTitle() {
-        return Component.translatable("nc_jei_cat."+getRecipeType().getUid().getPath());
+        return __("nc_jei_cat."+getRecipeType().getUid().getPath());
     }
 
     @Override
@@ -84,7 +85,7 @@ public class TurbineControllerCategoryWrapper<T extends TurbineControllerBE.Reci
     public @NotNull List<Component> getTooltipStrings(@NotNull T recipe, @NotNull IRecipeSlotsView recipeSlotsView, double mouseX, double mouseY) {
         List<Component> lines = new ArrayList<>();
         if(mouseX > 34 && mouseX < 76 && mouseY > 6 && mouseY < 20) {
-          //  lines.add(Component.translatable("boiling.recipe.heat_required", (int)recipe.rarityModifier).withStyle(ChatFormatting.GOLD));
+          //  lines.add(__("boiling.recipe.heat_required", (int)recipe.rarityModifier).withStyle(ChatFormatting.GOLD));
         }
         return lines;
     }

@@ -38,6 +38,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 import static igentuman.nc.setup.registration.NCBlocks.REDSTONE_DIMMER_BE;
+import static igentuman.nc.util.TextUtils.__;
 
 public class RedstoneDimmerBlock extends HorizontalDirectionalBlock implements EntityBlock {
 
@@ -92,7 +93,7 @@ public class RedstoneDimmerBlock extends HorizontalDirectionalBlock implements E
                 MenuProvider containerProvider = new MenuProvider() {
                     @Override
                     public Component getDisplayName() {
-                        return Component.translatable("nc.redstone_dimmer.title");
+                        return __("nc.redstone_dimmer.title");
                     }
 
                     @Override
@@ -146,7 +147,7 @@ public class RedstoneDimmerBlock extends HorizontalDirectionalBlock implements E
     @Override
     public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag) {
         if(asItem().toString().contains("empty") || this.asItem().equals(Items.AIR)) return;
-        list.add(TextUtils.applyFormat(Component.translatable("nc.redstone_dimmer.description"), ChatFormatting.AQUA));
+        list.add(TextUtils.applyFormat(__("nc.redstone_dimmer.description"), ChatFormatting.AQUA));
     }
 
 }

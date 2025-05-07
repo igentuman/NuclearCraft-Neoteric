@@ -13,6 +13,8 @@ import net.minecraft.world.level.block.Block;
 import javax.annotation.Nonnull;
 import java.util.List;
 
+import static igentuman.nc.util.TextUtils.__;
+
 public class ContainerBlockItem extends BlockItem
 {
 	public ContainerBlockItem(Block pBlock, Properties props)
@@ -45,7 +47,7 @@ public class ContainerBlockItem extends BlockItem
 	@Override
 	public void appendHoverText(ItemStack stack, @javax.annotation.Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
-		list.add(Component.translatable("tooltip.nc.content_saved").withStyle(ChatFormatting.GRAY));
-		list.add(Component.translatable("tooltip.nc.use_multitool").withStyle(ChatFormatting.YELLOW));
+		list.add(__("tooltip.nc.content_saved").withStyle(ChatFormatting.GRAY));
+		list.add(__("tooltip.nc.use_multitool").withStyle(ChatFormatting.YELLOW));
 	}
 }

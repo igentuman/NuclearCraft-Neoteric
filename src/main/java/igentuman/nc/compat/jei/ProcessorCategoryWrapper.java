@@ -31,6 +31,7 @@ import java.util.List;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.client.gui.element.bar.ProgressBar.bars;
 import static igentuman.nc.compat.GlobalVars.*;
+import static igentuman.nc.util.TextUtils.__;
 import static net.minecraft.world.item.Items.AIR;
 
 @SuppressWarnings("removal")
@@ -75,7 +76,7 @@ public class ProcessorCategoryWrapper<T extends NcRecipe> implements IRecipeCate
 
     @Override
     public @NotNull Component getTitle() {
-        return Component.translatable("nc_jei_cat."+getRecipeType().getUid().getPath());
+        return __("nc_jei_cat."+getRecipeType().getUid().getPath());
     }
 
     @Override
@@ -130,10 +131,10 @@ public class ProcessorCategoryWrapper<T extends NcRecipe> implements IRecipeCate
     public @NotNull List<Component> getTooltipStrings(T recipe, IRecipeSlotsView recipeSlotsView, double mouseX, double mouseY) {
         List<Component> lines = new ArrayList<>();
         if(mouseX > 47+xShift+25 && mouseX < 47+xShift+25+36 && mouseY > height/2-16/2 && mouseY < height/2+16/2) {
-            lines.add(Component.translatable("processor.recipe.duration", (int)(recipe.getTimeModifier()*(double) processor.config().getTime())).withStyle(ChatFormatting.AQUA));
-            lines.add(Component.translatable("processor.recipe.power", (int)(recipe.getEnergy()*(double) processor.config().getPower())).withStyle(ChatFormatting.RED));
+            lines.add(__("processor.recipe.duration", (int)(recipe.getTimeModifier()*(double) processor.config().getTime())).withStyle(ChatFormatting.AQUA));
+            lines.add(__("processor.recipe.power", (int)(recipe.getEnergy()*(double) processor.config().getPower())).withStyle(ChatFormatting.RED));
             if(recipe.getRadiation() != 1D) {
-                lines.add(Component.translatable("processor.recipe.radiation", recipe.getRadiation()*1000).withStyle(ChatFormatting.GREEN));
+                lines.add(__("processor.recipe.radiation", recipe.getRadiation()*1000).withStyle(ChatFormatting.GREEN));
             }
         }
         return lines;

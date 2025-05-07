@@ -11,6 +11,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.MinecraftForge;
 
+import static igentuman.nc.util.TextUtils.__;
+
 public class CommandNcVeinCheck {
 
     private CommandNcVeinCheck() {}
@@ -27,7 +29,7 @@ public class CommandNcVeinCheck {
     public static int execute(CommandSourceStack ctx) {
         ServerPlayer pl = ctx.getPlayer();
         if (!pl.hasPermissions(3)) {
-            pl.sendSystemMessage(Component.translatable("commands.nuclearcraft.no_permission"));
+            pl.sendSystemMessage(__("commands.nuclearcraft.no_permission"));
             return 1;
         }
         Level level = pl.level();
@@ -38,8 +40,8 @@ public class CommandNcVeinCheck {
             name = vein.getId().getPath().replace("nc_ore_veins/", "");
             qty = WorldVeinsManager.get(level).getWorldVeinData((ServerLevel) level).getBlocksLeft(pl.chunkPosition().x, pl.chunkPosition().z);
         }
-        pl.sendSystemMessage(Component.translatable("nc.ore_vein."+name));
-        pl.sendSystemMessage(Component.translatable("amount", qty));
+        pl.sendSystemMessage(__("nc.ore_vein."+name));
+        pl.sendSystemMessage(__("amount", qty));
         return 0;
     }
 }

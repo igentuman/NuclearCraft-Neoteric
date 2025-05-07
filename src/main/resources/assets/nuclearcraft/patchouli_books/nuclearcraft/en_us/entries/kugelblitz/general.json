@@ -7,7 +7,7 @@
     {
       "anchor": "intro",
       "type": "text",
-      "text": "$(thing)Kugelblitz() - it is a type of black hole that is formed from the energy of light, rather than from the collapse of a massive star."
+      "text": "$(thing)Kugelblitz$() - it is a type of black hole that is formed from the energy of light, rather than from the collapse of a massive star. According to Einstein's theory of relativity, energy and mass are interchangeable, as described by the equation $$(m = \\frac{E}{c^2})$$. This means that a sufficiently concentrated beam of light can create a gravitational field strong enough to form a black hole."
     },
     {
       "anchor": "concept",
@@ -24,7 +24,7 @@
     {
       "anchor": "wall1",
       "type": "blocks/1",
-      "header": "Walls 1",
+      "header": "Walls",
       "block": "nuclearcraft:event_horizon_stabilizer",
       "text": "Stabilizers allows chamber to keep blackhole stable as much as possible. It needs to be placed in the walls of the chamber."
     },
@@ -47,7 +47,7 @@
       "anchor": "evaporation",
       "type": "text",
       "header": "Evaporation and Feeding",
-      "text": "Blackhole loses it's mass during evaporation. To feed blackhole you need to supply Subliquid Matter."
+      "text": "Blackhole loses it's mass during evaporation. To feed blackhole you need to supply Subliquid Matter. If blackhole mass is too low, it will evaporate. It it will too high, it will collapse."
     },
     {
       "anchor": "quantum_transformation",
@@ -66,7 +66,7 @@
           "F": "nuclearcraft:quantum_flux_regulator",
           "T": "nuclearcraft:quantum_transformer",
           "P": "nuclearcraft:photon_concentrator",
-          "C": "nuclearcraft:chamber_port[facing=north]",
+          "C": "nuclearcraft:chamber_port[facing=west]",
           "X": "nuclearcraft:chamber_terminal[facing=west]",
           "0": "nuclearcraft:black_hole",
           " ": "minecraft:air"

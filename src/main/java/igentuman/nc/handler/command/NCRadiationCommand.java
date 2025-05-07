@@ -14,6 +14,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 
+import static igentuman.nc.util.TextUtils.__;
+
 public class NCRadiationCommand {
 
     public static void register(CommandDispatcher<CommandSourceStack> command) {
@@ -35,7 +37,7 @@ public class NCRadiationCommand {
     private static int executeCommand(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         ServerPlayer player = context.getSource().getPlayerOrException();
         if (!player.hasPermissions(3)) {
-            player.sendSystemMessage(Component.translatable("commands.nuclearcraft.no_permission"));
+            player.sendSystemMessage(__("commands.nuclearcraft.no_permission"));
             return 1;
         }
         String structure = StringArgumentType.getString(context, "structure");

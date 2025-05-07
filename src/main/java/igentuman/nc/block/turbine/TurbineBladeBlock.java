@@ -38,6 +38,7 @@ import java.util.Objects;
 import static igentuman.nc.handler.config.TurbineConfig.TURBINE_CONFIG;
 import static igentuman.nc.handler.event.client.InputEvents.DESCRIPTIONS_SHOW;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BE;
+import static igentuman.nc.util.TextUtils.__;
 import static net.minecraft.world.level.block.Blocks.ANVIL;
 import static net.minecraft.world.level.block.Blocks.IRON_BARS;
 
@@ -186,14 +187,14 @@ public class TurbineBladeBlock extends DirectionalBlock implements EntityBlock {
 
         if(DESCRIPTIONS_SHOW) {
             list.add(TextUtils.applyFormat(
-                    Component.translatable("tooltip.nc.description.efficiency", TextUtils.numberFormat(def.getEfficiency())),
+                    __("tooltip.nc.description.efficiency", TextUtils.numberFormat(def.getEfficiency())),
                     ChatFormatting.AQUA));
             /*list.add(TextUtils.applyFormat(
-                    Component.translatable("tooltip.nc.description.expansion", TextUtils.numberFormat(def.getExpansion())),
+                    __("tooltip.nc.description.expansion", TextUtils.numberFormat(def.getExpansion())),
                     ChatFormatting.GOLD));*/
         } else {
-            list.add(TextUtils.applyFormat(Component.translatable("tooltip.nc.blade.desc", TURBINE_CONFIG.BLADE_FLOW.get()), ChatFormatting.BLUE));
+            list.add(TextUtils.applyFormat(__("tooltip.nc.blade.desc", TURBINE_CONFIG.BLADE_FLOW.get()), ChatFormatting.BLUE));
         }
-        list.add(TextUtils.applyFormat(Component.translatable("tooltip.toggle_description_keys"), ChatFormatting.GRAY));
+        list.add(TextUtils.applyFormat(__("tooltip.toggle_description_keys"), ChatFormatting.GRAY));
     }
 }

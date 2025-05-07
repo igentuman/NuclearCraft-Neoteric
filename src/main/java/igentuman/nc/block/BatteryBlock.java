@@ -34,6 +34,7 @@ import java.util.List;
 
 import static igentuman.nc.handler.config.CommonConfig.ENERGY_STORAGE;
 import static igentuman.nc.util.StackUtils.isMultiTool;
+import static igentuman.nc.util.TextUtils.__;
 import static igentuman.nc.util.TextUtils.formatEnergy;
 
 public class BatteryBlock extends Block implements EntityBlock {
@@ -64,9 +65,9 @@ public class BatteryBlock extends Block implements EntityBlock {
                         dirToChange = dirToChange.getOpposite();
                     }
                     SideModeToggleable.SideMode mode = batteryBE.toggleSideConfig(dirToChange.ordinal());
-                    player.sendSystemMessage(Component.translatable("message.nc.barrel.side_config", mode.name()));
+                    player.sendSystemMessage(__("message.nc.barrel.side_config", mode.name()));
                 } else {
-                    player.sendSystemMessage(Component.translatable("tooltip.nc.energy_stored", formatEnergy(batteryBE.energyStorage.getEnergyStored()), formatEnergy(batteryBE.energyStorage.getMaxEnergyStored())).withStyle(ChatFormatting.BLUE));
+                    player.sendSystemMessage(__("tooltip.nc.energy_stored", formatEnergy(batteryBE.energyStorage.getEnergyStored()), formatEnergy(batteryBE.energyStorage.getMaxEnergyStored())).withStyle(ChatFormatting.BLUE));
                 }
             }
         }
@@ -144,8 +145,8 @@ public class BatteryBlock extends Block implements EntityBlock {
     {
         int storage = ENERGY_STORAGE.getCapacityFor(asItem().toString());
 
-        list.add(Component.translatable("tooltip.nc.energy_capacity", formatEnergy(storage)).withStyle(ChatFormatting.BLUE));
-        list.add(Component.translatable("tooltip.nc.use_multitool").withStyle(ChatFormatting.YELLOW));
+        list.add(__("tooltip.nc.energy_capacity", formatEnergy(storage)).withStyle(ChatFormatting.BLUE));
+        list.add(__("tooltip.nc.use_multitool").withStyle(ChatFormatting.YELLOW));
     }
 
     public boolean registered() {

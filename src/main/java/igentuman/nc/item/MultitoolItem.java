@@ -17,6 +17,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
+import static igentuman.nc.util.TextUtils.__;
+
 public class MultitoolItem extends Item
 {
 	private int burnTime = -1;
@@ -86,7 +88,7 @@ public class MultitoolItem extends Item
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
-		list.add(Component.translatable("tooltip.nc.multitool.desc").withStyle(ChatFormatting.YELLOW));
-		list.add(Component.translatable("tooltip.nc.multitool.shift.desc").withStyle(ChatFormatting.YELLOW));
+		list.add(__("tooltip.nc.multitool.desc").withStyle(ChatFormatting.YELLOW));
+		list.add(__("tooltip.nc.multitool.shift.desc").withStyle(ChatFormatting.YELLOW));
 	}
 }

@@ -24,6 +24,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 import static igentuman.nc.handler.config.CommonConfig.ENERGY_GENERATION;
+import static igentuman.nc.util.TextUtils.__;
 
 public class DecayGeneratorBlock extends Block implements EntityBlock {
     public DecayGeneratorBlock() {
@@ -71,6 +72,6 @@ public class DecayGeneratorBlock extends Block implements EntityBlock {
 
     public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag)
     {
-        list.add(TextUtils.applyFormat(Component.translatable("decay_generator.fe_generation"), ChatFormatting.GOLD));
+        list.add(TextUtils.applyFormat(__("decay_generator.fe_generation"), ChatFormatting.GOLD));
     }
 }

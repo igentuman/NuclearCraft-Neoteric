@@ -14,6 +14,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
+import static igentuman.nc.util.TextUtils.__;
+
 public class RadShieldingItem extends Item
 {
 	private int burnTime = -1;
@@ -84,6 +86,6 @@ public class RadShieldingItem extends Item
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
-		list.add(Component.translatable("tooltip.nc.shielding.desc").withStyle(net.minecraft.ChatFormatting.GRAY));
+		list.add(__("tooltip.nc.shielding.desc").withStyle(net.minecraft.ChatFormatting.GRAY));
 	}
 }

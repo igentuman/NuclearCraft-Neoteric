@@ -55,7 +55,7 @@ public class FusionCoreContainer extends AbstractContainerMenu {
     }
 
     public Component getTitle() {
-        return Component.translatable("block."+MODID+"."+name);
+        return __("block."+MODID+"."+name);
     }
 
     public boolean isCasingValid() {

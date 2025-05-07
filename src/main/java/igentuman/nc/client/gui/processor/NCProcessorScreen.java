@@ -28,8 +28,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static igentuman.nc.NuclearCraft.MODID;
-import static igentuman.nc.util.TextUtils.applyFormat;
-import static igentuman.nc.util.TextUtils.scaledFormat;
+import static igentuman.nc.util.TextUtils.*;
 
 public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractContainerScreen<T> implements IProgressScreen {
     protected final ResourceLocation GUI = new ResourceLocation(MODID, "textures/gui/processor.png");
@@ -182,11 +181,11 @@ public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractC
                 if(widget instanceof EnergyBar) {
                     widget.clearTooltips();
                     if(menu.getParallelProcessing() > 1) {
-                        widget.addTooltip(applyFormat(Component.translatable("speed.parallel_processing", menu.getParallelProcessing()), ChatFormatting.RED));
+                        widget.addTooltip(applyFormat(__("speed.parallel_processing", menu.getParallelProcessing()), ChatFormatting.RED));
                     }
-                    widget.addTooltip(applyFormat(Component.translatable("speed.multiplier", menu.speedMultiplier()), ChatFormatting.RED));
-                    widget.addTooltip(applyFormat(Component.translatable("energy.multiplier", menu.energyMultiplier()), ChatFormatting.GOLD));
-                    widget.addTooltip(applyFormat(Component.translatable("energy.per_tick", scaledFormat(menu.energyPerTick())), ChatFormatting.YELLOW));
+                    widget.addTooltip(applyFormat(__("speed.multiplier", menu.speedMultiplier()), ChatFormatting.RED));
+                    widget.addTooltip(applyFormat(__("energy.multiplier", menu.energyMultiplier()), ChatFormatting.GOLD));
+                    widget.addTooltip(applyFormat(__("energy.per_tick", scaledFormat(menu.energyPerTick())), ChatFormatting.YELLOW));
                 }
                 graphics.renderTooltip(font, widget.getTooltips(),
                         Optional.empty(), pMouseX, pMouseY);

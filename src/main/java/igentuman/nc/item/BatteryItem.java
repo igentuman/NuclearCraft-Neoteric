@@ -20,6 +20,7 @@ import javax.annotation.Nonnull;
 import java.util.List;
 
 import static igentuman.nc.handler.config.CommonConfig.ENERGY_STORAGE;
+import static igentuman.nc.util.TextUtils.__;
 import static igentuman.nc.util.TextUtils.formatEnergy;
 
 public class BatteryItem extends Item
@@ -76,6 +77,6 @@ public class BatteryItem extends Item
 	@Override
 	public void appendHoverText(ItemStack stack, @javax.annotation.Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
-		list.add(Component.translatable("tooltip.nc.energy_stored", formatEnergy(getEnergy(stack).getEnergyStored()), formatEnergy(getEnergy(stack).getMaxEnergyStored())).withStyle(ChatFormatting.BLUE));
+		list.add(__("tooltip.nc.energy_stored", formatEnergy(getEnergy(stack).getEnergyStored()), formatEnergy(getEnergy(stack).getMaxEnergyStored())).withStyle(ChatFormatting.BLUE));
 	}
 }

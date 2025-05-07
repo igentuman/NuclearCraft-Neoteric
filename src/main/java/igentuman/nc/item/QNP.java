@@ -52,6 +52,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import static igentuman.nc.handler.config.CommonConfig.ENERGY_STORAGE;
 import static igentuman.nc.setup.registration.NCSounds.ITEM_CHARGED;
 import static igentuman.nc.util.AreaUtil.getArea;
+import static igentuman.nc.util.TextUtils.__;
 
 public class QNP extends PickaxeItem
 {
@@ -316,7 +317,7 @@ public class QNP extends PickaxeItem
 			ItemStack tool = pPlayer.getItemInHand(pUsedHand);
 			Mode miningMode = Mode.values()[(getMode(tool).ordinal()+1)%Mode.values().length];
 			tool.getOrCreateTag().putInt("mode", miningMode.ordinal());
-			pPlayer.sendSystemMessage(Component.translatable("tooltip.nc.qnp_mode", Component.translatable("tooltip.mode." + miningMode.getName())).withStyle(ChatFormatting.GREEN));
+			pPlayer.sendSystemMessage(__("tooltip.nc.qnp_mode", __("tooltip.mode." + miningMode.getName())).withStyle(ChatFormatting.GREEN));
 			return InteractionResultHolder.success(pPlayer.getItemInHand(pUsedHand));
 		}
 		return super.use(pLevel, pPlayer, pUsedHand);
@@ -336,9 +337,9 @@ public class QNP extends PickaxeItem
 	@Override
 	public void appendHoverText(ItemStack stack, @javax.annotation.Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
-		list.add(Component.translatable("tooltip.nc.qnp_mode", Component.translatable("tooltip.mode." + getMode(stack).getName())).withStyle(ChatFormatting.BLUE));
-		list.add(Component.translatable("tooltip.nc.shift_rbm_to_change").withStyle(ChatFormatting.GRAY));
-		list.add(Component.translatable("tooltip.nc.energy_stored", formatEnergy(getEnergy(stack).getEnergyStored()), formatEnergy(getEnergyMaxStorage())).withStyle(ChatFormatting.BLUE));
+		list.add(__("tooltip.nc.qnp_mode", __("tooltip.mode." + getMode(stack).getName())).withStyle(ChatFormatting.BLUE));
+		list.add(__("tooltip.nc.shift_rbm_to_change").withStyle(ChatFormatting.GRAY));
+		list.add(__("tooltip.nc.energy_stored", formatEnergy(getEnergy(stack).getEnergyStored()), formatEnergy(getEnergyMaxStorage())).withStyle(ChatFormatting.BLUE));
 
 	}
 

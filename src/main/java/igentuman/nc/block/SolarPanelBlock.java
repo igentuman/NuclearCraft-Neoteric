@@ -25,6 +25,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 import static igentuman.nc.setup.registration.NCEnergyBlocks.ENERGY_BE;
+import static igentuman.nc.util.TextUtils.__;
 
 public class SolarPanelBlock extends Block implements EntityBlock {
     public SolarPanelBlock() {
@@ -77,7 +78,7 @@ public class SolarPanelBlock extends Block implements EntityBlock {
 
     public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag)
     {
-        list.add(TextUtils.applyFormat(Component.translatable("solar_panel.fe_generation", TextUtils.numberFormat(SolarPanels.all().get(asItem().toString().replace("solar_panel_","")).getActualGeneration())), ChatFormatting.GOLD));
+        list.add(TextUtils.applyFormat(__("solar_panel.fe_generation", TextUtils.numberFormat(SolarPanels.all().get(asItem().toString().replace("solar_panel_","")).getActualGeneration())), ChatFormatting.GOLD));
     }
 
     public boolean registered() {

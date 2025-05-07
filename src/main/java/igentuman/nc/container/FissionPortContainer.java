@@ -20,6 +20,7 @@ import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.util.TextUtils.__;
 
 public class FissionPortContainer extends AbstractContainerMenu {
     protected final FissionPortBE portBE;
@@ -89,7 +90,7 @@ public class FissionPortContainer extends AbstractContainerMenu {
     }
 
     public Component getTitle() {
-        return Component.translatable("block."+MODID+"."+name);
+        return __("block."+MODID+"."+name);
     }
 
     private void addSlotRange(IItemHandler handler, int x, int y, int amount, int dx) {

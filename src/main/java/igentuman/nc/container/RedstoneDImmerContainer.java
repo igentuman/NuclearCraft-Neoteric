@@ -15,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.setup.registration.NCBlocks.REDSTONE_DIMMER_BLOCK;
 import static igentuman.nc.setup.registration.NCBlocks.REDSTONE_DIMMER_CONTAINER;
+import static igentuman.nc.util.TextUtils.__;
 
 public class RedstoneDImmerContainer extends AbstractContainerMenu {
 
@@ -44,7 +45,7 @@ public class RedstoneDImmerContainer extends AbstractContainerMenu {
     }
 
     public Component getTitle() {
-        return Component.translatable("block."+MODID+".redstone_dimmer");
+        return __("block."+MODID+".redstone_dimmer");
     }
 
     public BlockPos getBlockPos() {

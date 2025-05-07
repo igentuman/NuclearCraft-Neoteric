@@ -32,6 +32,7 @@ import java.util.Objects;
 
 import static igentuman.nc.handler.event.client.InputEvents.DESCRIPTIONS_SHOW;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BE;
+import static igentuman.nc.util.TextUtils.__;
 
 public class TurbineRotorBlock extends DirectionalBlock implements EntityBlock {
 
@@ -120,6 +121,6 @@ public class TurbineRotorBlock extends DirectionalBlock implements EntityBlock {
 
     @Override
     public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag) {
-        list.add(TextUtils.applyFormat(Component.translatable("tooltip.nc.rotor_shaft.desc"), ChatFormatting.BLUE));
+        list.add(TextUtils.applyFormat(__("tooltip.nc.rotor_shaft.desc"), ChatFormatting.BLUE));
     }
 }

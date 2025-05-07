@@ -19,6 +19,7 @@ import java.util.Objects;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_CONTROLLER_CONTAINER;
+import static igentuman.nc.util.TextUtils.__;
 import static igentuman.nc.util.TextUtils.roundFormat;
 
 public class TurbineControllerContainer extends AbstractContainerMenu {
@@ -52,7 +53,7 @@ public class TurbineControllerContainer extends AbstractContainerMenu {
     }
 
     public Component getTitle() {
-        return Component.translatable("block."+MODID+"."+name);
+        return __("block."+MODID+"."+name);
     }
 
     public boolean isCasingValid() {

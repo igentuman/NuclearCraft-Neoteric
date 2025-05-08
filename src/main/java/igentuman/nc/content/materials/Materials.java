@@ -84,6 +84,7 @@ public class Materials extends MaterialsManager {
     public final static String villiaumite = "villiaumite";
     public final static String alugentum = "alugentum";
     public final static String borax = "borax";
+    public final static String neutronium = "neutronium";
 
     public final static String yellowcake = "yellowcake";
     public final static String neodymium = "neodymium";
@@ -213,6 +214,7 @@ public class Materials extends MaterialsManager {
             all.put(tungsten_carbide, NCMaterial.get(tungsten_carbide).define("ingot"));
 
             all.put(supercold_ice, NCMaterial.get(supercold_ice).define("block"));
+            all.put(neutronium, NCMaterial.get(neutronium).define("ingot").color(0xFF181322));
             all.put(tough_alloy, NCMaterial.get(tough_alloy).define("ingot", "plate", "dust", "fluid").color(0xFF181322));
             all.put(palladium, NCMaterial.get(palladium).define("ingot", "plate", "dust", "fluid").color(0xFF181322));
             all.put(copper, NCMaterial.get(copper).define("dust", "plate", "fluid").color(0xFFA86F32));

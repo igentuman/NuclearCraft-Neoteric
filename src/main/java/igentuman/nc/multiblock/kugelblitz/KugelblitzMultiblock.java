@@ -31,6 +31,7 @@ public class KugelblitzMultiblock extends AbstractNCMultiblock {
     private BlockPos centerBlockPos;
     private int transformers = 0;
     private int fluxRegulators = 0;
+    private int stabilizers = 0;
 
     public int maxHeight() {
         return 9;
@@ -96,6 +97,7 @@ public class KugelblitzMultiblock extends AbstractNCMultiblock {
     public void validateOuter()
     {
         fluxRegulators = 0;
+        stabilizers = 0;
         transformers = 0;
         centerBlockPos = BlockPos.ZERO;
         bottomLeft = null;
@@ -295,6 +297,9 @@ public class KugelblitzMultiblock extends AbstractNCMultiblock {
                 if (bs.is(KUGELBLITZ_BLOCKS.get("quantum_flux_regulator").get())) {
                     fluxRegulators++;
                 }
+                if (bs.is(KUGELBLITZ_BLOCKS.get("event_horizon_stabilizer").get())) {
+                    stabilizers++;
+                }
                 blocks.add(bs);
                 processOuterBlock(newPos);
             }
@@ -313,6 +318,18 @@ public class KugelblitzMultiblock extends AbstractNCMultiblock {
         if(!pulseEnergy.isEmpty() && collectingEnergy) {
             collectingEnergy = false;
             return;
+        }
+        if(blackHole != null && !pulseEnergy.isEmpty()) {
+            boolean energyTransfered = true;
+            for (Direction direction : Direction.values()) {
+                if(!pulseEnergy.containsKey(direction)) {
+                    energyTransfered = false;
+                    break;
+                }
+            }
+            if(energyTransfered) {
+                controllerBE().handleLaserBurst();
+            }
         }
         collectingEnergy = true;
         pulseEnergy.clear();
@@ -347,7 +364,7 @@ public class KugelblitzMultiblock extends AbstractNCMultiblock {
             }
             if (energyTransfered) {
                 getLevel().setBlockAndUpdate(getCenter(), KUGELBLITZ_BLOCKS.get("black_hole").get().defaultBlockState());
-                controllerBE().mass = MIN_MASS*2;
+                controllerBE().mass = (long) (MIN_MASS*2*getLevel().random.nextDouble()/0.5D);
             }
         }
     }
@@ -362,11 +379,16 @@ public class KugelblitzMultiblock extends AbstractNCMultiblock {
     }
 
     public void addPulseEnergy(int pulseEnergy, Direction facing) {
+        collectingEnergy = true;
         this.pulseEnergy.put(facing, pulseEnergy);
     }
 
     public int fluxRegulators() {
         return fluxRegulators;
+    }
+
+    public int stabilizers() {
+        return stabilizers;
     }
 
     public int transformers() {

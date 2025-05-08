@@ -9,14 +9,12 @@ import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.ValidationResult;
 import igentuman.nc.multiblock.kugelblitz.KugelblitzMultiblock;
-import igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration;
 import igentuman.nc.recipes.NcRecipeType;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.ingredient.creator.IngredientCreatorAccess;
 import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.util.CustomEnergyStorage;
-import igentuman.nc.util.StackUtils;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -33,7 +31,6 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -47,10 +44,9 @@ import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.content.materials.Materials.subliquid_matter;
 import static igentuman.nc.handler.config.CommonConfig.ENERGY_GENERATION;
 import static igentuman.nc.handler.config.KugelblitzConfig.KUGELBLITZ_CONFIG;
-import static igentuman.nc.handler.config.MaterialsConfig.MATERIAL_PRODUCTS;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BE;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BLOCKS;
-import static igentuman.nc.setup.registration.NCItems.NC_DUSTS;
+import static igentuman.nc.setup.registration.GameEvents.BLACKHOLE_VIBRATION;
 import static igentuman.nc.util.ModUtil.isCcLoaded;
 import static igentuman.nc.util.NcUtils.getModId;
 import static net.minecraft.world.level.block.Blocks.AIR;
@@ -83,6 +79,10 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
     public int transformers = 0;
     @NBTField
     public int fluxRegulators = 0;
+    @NBTField
+    public int blackholeStability = 100;
+    @NBTField
+    public int stabilizers = 0;
 
 
     protected Direction facing;
@@ -224,6 +224,7 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
 
         fluxRegulators = getMultiblock().fluxRegulators();
         transformers = getMultiblock().transformers();
+        stabilizers = getMultiblock().stabilizers();
         if (controllerEnabled) {
             trackChanges(contentHandler().tick());
             long wasMass = mass;
@@ -232,6 +233,9 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
             handleMeltdown();
             trackChanges(processRecipe());
             handleRecipeOutput();
+            if(!isBlackHoleStable()) {
+                 getLevel().gameEvent(null, BLACKHOLE_VIBRATION.get(), getMultiblock().getCenter());
+            }
         }
         refreshCacheFlag = !getMultiblock().isFormed();
         if(wasEnabled != controllerEnabled) {
@@ -244,6 +248,10 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
                 level.setBlockAndUpdate(worldPosition, getBlockState().setValue(POWERED, controllerEnabled));
             } catch (NullPointerException ignored) {}
         }
+    }
+
+    private boolean isBlackHoleStable() {
+        return blackholeStability > 39;
     }
 
     public boolean hasBlackhole() {
@@ -274,12 +282,53 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
         if (mass < MIN_MASS) {
             doEvaporation();
         }
+        updateBlackholeStability();
+    }
+
+    private void updateBlackholeStability() {
+        if (!hasBlackhole() || mass <= 0) {
+            blackholeStability = 100;
+            return;
+        }
+
+        if(getLevel().random.nextInt(256) < getMultiblock().stabilizers()) {
+            return;
+        }
+
+        if(getLevel().random.nextDouble() > 0.98D) {
+            blackholeStability++;
+            return;
+        }
+
+        double massRange = MAX_MASS - MIN_MASS;
+        double normalizedMass = (mass - MIN_MASS) / massRange;
+        double distanceFromOptimal = Math.abs(normalizedMass - 0.5) * 2.0;
+
+        // Base chance is 5%, increases up to 15% when at boundaries
+        double decreaseChance = 0.05 + (distanceFromOptimal * 0.1);
+
+        // Additional factor: extremely large masses are more unstable
+        if (mass > MAX_MASS * 0.9) {
+            decreaseChance += 0.1;
+        }
+
+        // Random check for stability decrease
+        if (getLevel().random.nextDouble() < decreaseChance) {
+            blackholeStability = Math.max(0, blackholeStability - 1);
+            setChanged();
+        }
+
+        // Small chance to recover stability when in optimal mass range
+        if (distanceFromOptimal < 0.3 && getLevel().random.nextDouble() < 0.02) {
+            blackholeStability = Math.min(100, blackholeStability + 1);
+            setChanged();
+        }
     }
 
     private void updateEnergyGeneration() {
         int wasEnergy = energyPerTick;
         double massRatio = (double)MAX_MASS / Math.max(mass, MIN_MASS);
-        energyPerTick = (int)(massRatio * 10000 * Math.log(energyConvertionRate*Math.log(fluxRegulators*4)+1));
+        energyPerTick = (int)(massRatio * 5000 * Math.log(energyConvertionRate*Math.log(fluxRegulators*4)+1));
         energyPerTick *= ENERGY_GENERATION.GENERATION_MULTIPLIER.get();
         energyPerTick *= KUGELBLITZ_CONFIG.GENERATION_MULTIPLIER.get();
         energyStorage().addEnergy(energyPerTick);
@@ -297,6 +346,22 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
         rate = (int) Math.pow(rate, 1.2);
         double massRatio = Math.log((double)MAX_MASS / Math.max(mass, MIN_MASS));
         evaporation = (int)(rate * KUGELBLITZ_CONFIG.EVAPORATION_MULTIPLIER.get() * massRatio);
+
+        if (blackholeStability < 20) {
+            // At very low stability, risk of spontaneous mass change
+            if (getLevel().random.nextDouble() < 0.1) {
+                int fluctuation = (int)(mass * 0.0001 * (getLevel().random.nextDouble() - 0.5) * 2);
+                evaporation += fluctuation;
+            }
+        }
+
+        if (blackholeStability < 10) {
+            if (getLevel().random.nextDouble() < 0.1) {
+                int fluctuation = (int)(mass * 0.0005 * getLevel().random.nextDouble() * 20D/blackholeStability);
+                evaporation += fluctuation;
+            }
+        }
+
         if (wasEvaporation != evaporation) {
             setChanged();
         }
@@ -508,6 +573,14 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
 
     public FluidTank getFluidTank(int i) {
         return contentHandler().fluidCapability.tanks.get(i);
+    }
+
+    public void handleLaserBurst() {
+        blackholeStability += 50 + getLevel().random.nextInt(50);
+        if (blackholeStability > 100) {
+            blackholeStability = 100;
+        }
+        mass += (getLevel().random.nextInt(200)+200) * 10000L;
     }
 
     public static class Recipe extends NcRecipe {

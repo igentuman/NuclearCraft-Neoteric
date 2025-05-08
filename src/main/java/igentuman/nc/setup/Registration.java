@@ -45,6 +45,8 @@ public class Registration {
         NcRecipeType.init();
         NcParticleTypes.init();
         NCSounds.init();
+        Villager.init();
+        GameEvents.init();
     }
 
     public static final RegistryObject<StructureType<?>> PORTAL = STRUCTURES.register("portal", () -> typeConvert(PortalStructure.CODEC));

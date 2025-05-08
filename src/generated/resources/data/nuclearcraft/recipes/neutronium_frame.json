@@ -7,7 +7,7 @@
       "tag": "forge:ingots/extreme"
     },
     "P": {
-      "item": "nuclearcraft:plate_extreme"
+      "tag": "forge:ingots/neutronium"
     },
     "T": {
       "tag": "forge:ingots/platinum"

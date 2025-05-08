@@ -108,12 +108,6 @@
         "symmetrical": true
       },
       "text": "This is a simple turbine design. It has 1 fuel cell, 1 irradiation line. It's a good starting point for a turbine. Best fuel for this turbine is HEU-235."
-    },
-    {
-      "anchor": "planner",
-      "type": "text",
-      "header": "Design Considerations",
-      "text": "When designing a turbine, the usage of a $(l:https://github.com/ThizThizzyDizzy/nc-turbine-generator/releases)turbine planner$() is recommended. Turbine planners assist with the design of the turbine, providing feedback on design rules, heat control, and predicted output."
     }
   ]
 }

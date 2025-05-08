@@ -1,21 +1,18 @@
 package igentuman.nc.client.gui.kugelblitz;
 
+import igentuman.nc.client.gui.element.TooltipArea;
 import com.mojang.blaze3d.systems.RenderSystem;
 import igentuman.nc.client.gui.IProgressScreen;
 import igentuman.nc.client.gui.IVerticalBarScreen;
 import igentuman.nc.client.gui.element.NCGuiElement;
 import igentuman.nc.client.gui.element.bar.ProgressBar;
 import igentuman.nc.client.gui.element.bar.VerticalBar;
-import igentuman.nc.client.gui.element.button.Button;
 import igentuman.nc.client.gui.element.button.Checkbox;
 import igentuman.nc.client.gui.element.button.SliderHorizontal;
-import igentuman.nc.client.gui.element.fluid.FluidTankRenderer;
 import igentuman.nc.container.ChamberTerminalContainer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.font.FontManager;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -27,6 +24,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.block.entity.kugelblitz.BlackHoleBE.MAX_MASS;
+import static igentuman.nc.block.entity.kugelblitz.BlackHoleBE.MIN_MASS;
 import static igentuman.nc.util.TextUtils.*;
 
 public class ChamberTerminalScreen extends AbstractContainerScreen<ChamberTerminalContainer> implements IProgressScreen, IVerticalBarScreen {
@@ -102,6 +101,7 @@ public class ChamberTerminalScreen extends AbstractContainerScreen<ChamberTermin
         widgets.add(energyTransferRateSlider);
         widgets.add(frequencySlider);
         widgets.add(new ProgressBar(152, 81, this,  2));
+        widgets.add(new TooltipArea(6, 48, 30, 10).setTooltipKey("tooltip.kugelblitz.stability_info"));
     }
 
     protected FluidTank getFluidTank(int i) {
@@ -171,12 +171,22 @@ public class ChamberTerminalScreen extends AbstractContainerScreen<ChamberTermin
         if(isCasingValid()) {
             if (isInteriorValid()) {
                 if(container().hasBlackhole()) {
-                    graphics.drawString(font, __("label.kugelblitz.blackhole_mass", formatMass(container().getMass())), 6, 16, 0x8AFF8A);
+                    int color = 0x8AFF8A;
+                    if(container().getMass() < MIN_MASS*1.1 || container().getMass() > MAX_MASS*0.9) {
+                        color = 0xFF0000;
+                    }
+                    graphics.drawString(font, __("label.kugelblitz.blackhole_mass", formatMass(container().getMass())), 6, 16, color);
                     graphics.drawString(font, __("label.kugelblitz.evaporation", formatMass(container().getEvaporation())), 6, 27, 0x8AFF8A);
                     graphics.drawString(font, __("label.kugelblitz.feeding", formatMass(container().getFeeding())), 6, 38, 0x8AFF8A);
+                    color = 0x8AFF8A;
+                    if(container().getStability() < 40) {
+                        color = 0xFF0000;
+                    }
+                    graphics.drawString(font, __("label.kugelblitz.stability", container().getStability()), 6, 48, color);
                 }
                 checkboxCasing.addTooltip(__("tooltip.kugelblitz.flux_regulators", container().getFluxRegulators()));
                 checkboxCasing.addTooltip(__("tooltip.kugelblitz.transformers", container().getTransformers()));
+                checkboxCasing.addTooltip(__("tooltip.kugelblitz.stabilizers", container().getStabilizers()));
 
             } else {
                 interiorTootip = applyFormat(__(getValidationResultKey(), getValidationResultData()), ChatFormatting.RED);

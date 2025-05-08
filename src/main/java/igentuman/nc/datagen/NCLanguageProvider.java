@@ -88,6 +88,7 @@ public class NCLanguageProvider extends LanguageProvider {
     }
 
     private void labels() {
+        add("entity.minecraft.villager.nuclearcraft.nuclear_scientist", "Nuclear Scientist");
         add("block.nuclearcraft.expl", "EXPL");
         add("gui.nuclearcraft:button.burst", "Activate");
         add("nc.guide_book.name", "NuclearCraft Guide");
@@ -109,6 +110,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("nc_jei_cat.mek_chemical_conversion", "NC - GAS -> Fluid Conversion");
         add("nc_jei_cat.fission_boiling", "Boiling Reactor");
 
+        add("label.kugelblitz.stability", "Stability: %s%%");
         add("label.kugelblitz.evaporation", "Evaporation Rate: %s");
         add("label.kugelblitz.blackhole_mass", "Blackhole Mass: %s");
         add("label.kugelblitz.frequency", "Quantum Frequency: %s");
@@ -247,10 +249,12 @@ public class NCLanguageProvider extends LanguageProvider {
 
         add("tooltip.active_heatsink","Needs coolant fluid supply into reactor to work.");
 
+        add("tooltip.kugelblitz.stability_info","You can stabilize blackhole with EXPL lasers burst. \n On low values blackhole vibrates at 15 level.");
         add("tooltip.kugelblitz.photon_concentrator","Concentrates photons into a single point. \n Need to be placed at center of all 6 chamber walls.");
         add("tooltip.kugelblitz.ready_for_burst","Ready for Laser Burst");
         add("tooltip.kugelblitz.flux_regulators","Flux Regulators: %s");
         add("tooltip.kugelblitz.transformers","Quantum Transformers: %s");
+        add("tooltip.kugelblitz.stabilizers","Stabilizers: %s");
 
         add("tooltip.upgrade_stack","Improved speed upgrade with parallel processing");
         add("tooltip.upgrade_speed","Increases recipe speed and energy consumption");

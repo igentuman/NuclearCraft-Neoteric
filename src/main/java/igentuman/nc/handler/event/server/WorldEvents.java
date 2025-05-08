@@ -5,9 +5,14 @@ import igentuman.nc.item.HEVItem;
 import igentuman.nc.item.HazmatItem;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.radiation.data.RadiationEvents;
+import igentuman.nc.setup.registration.Villager;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -18,6 +23,8 @@ import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.event.level.ChunkEvent;
 import net.minecraftforge.event.level.LevelEvent;
+import net.minecraftforge.event.village.VillagerTradesEvent;
+import net.minecraftforge.event.village.WandererTradesEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -26,7 +33,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
-import static igentuman.nc.setup.registration.NCItems.HEV_BOOTS;
+import static igentuman.nc.setup.registration.FissionFuel.NC_ISOTOPES;
+import static igentuman.nc.setup.registration.NCItems.*;
+import static net.minecraft.world.item.Items.EMERALD;
+import static net.minecraft.world.item.Items.SCULK;
+
 @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class WorldEvents {
 
@@ -34,6 +45,45 @@ public class WorldEvents {
 
     public WorldEvents() {
 
+    }
+
+    @SubscribeEvent
+    public static void addCustomTrades(VillagerTradesEvent event) {
+        if(event.getType() == Villager.NUCLEAR_SCIENTIST.get()) {
+            Int2ObjectMap<List<VillagerTrades.ItemListing>> trades = event.getTrades();
+
+            trades.get(1).add((pTrader, pRandom) -> new MerchantOffer(
+                    new ItemStack(EMERALD, 1),
+                    new ItemStack(NC_DUSTS.get("graphite").get(), 1),
+                    32, 4, 0.02f));
+
+            trades.get(1).add((pTrader, pRandom) -> new MerchantOffer(
+                    new ItemStack(NC_INGOTS.get("lead").get(), 12),
+                    new ItemStack(EMERALD, 1),
+                    24, 4, 0.02f));
+
+            trades.get(2).add((pTrader, pRandom) -> new MerchantOffer(
+                    new ItemStack(EMERALD, 6),
+                    new ItemStack(NC_PARTS.get("plate_basic").get(), 1),
+                    16, 8, 0.02f));
+
+            trades.get(2).add((pTrader, pRandom) -> new MerchantOffer(
+                    new ItemStack(EMERALD, 8),
+                    new ItemStack(NC_FOOD.get("radaway").get(), 1),
+                    4, 8, 0.02f));
+        }
+    }
+
+    @SubscribeEvent
+    public static void addCustomWanderingTrades(WandererTradesEvent event) {
+
+        List<VillagerTrades.ItemListing> genericTrades = event.getGenericTrades();
+        List<VillagerTrades.ItemListing> rareTrades = event.getRareTrades();
+
+        genericTrades.add((pTrader, pRandom) -> new MerchantOffer(
+                new ItemStack(Items.EMERALD, 16),
+                new ItemStack(NC_ISOTOPES.get("plutonium239").get(), 1),
+                8, 2, 0.2f));
     }
 
     @SubscribeEvent

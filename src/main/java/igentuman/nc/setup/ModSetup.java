@@ -4,6 +4,7 @@ import igentuman.nc.NuclearCraft;
 import igentuman.nc.radiation.data.RadiationEvents;
 import igentuman.nc.recipes.type.RadShieldingRecipe;
 import igentuman.nc.recipes.type.ResetNbtRecipe;
+import igentuman.nc.setup.registration.GameEvents;
 import igentuman.nc.util.insitu_leaching.WorldVeinsProvider;
 import igentuman.nc.world.dimension.Dimensions;
 import net.minecraft.world.entity.Entity;
@@ -31,7 +32,7 @@ public class ModSetup {
         event.enqueueWork(() -> {
             //Dimensions.register();
             //CapabilityRegistration.register(event);
-
+            GameEvents.commonSetup();
         });
         NuclearCraft.packetHandler().initialize();
     }

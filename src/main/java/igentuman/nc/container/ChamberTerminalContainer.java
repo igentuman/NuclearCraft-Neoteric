@@ -221,4 +221,12 @@ public class ChamberTerminalContainer extends AbstractContainerMenu {
     public double getProgress() {
         return blockEntity.recipeInfo().getProgress();
     }
+
+    public int getStability() {
+        return blockEntity.blackholeStability;
+    }
+
+    public int getStabilizers() {
+        return blockEntity.stabilizers;
+    }
 }

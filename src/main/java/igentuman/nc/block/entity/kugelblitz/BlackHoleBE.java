@@ -28,7 +28,7 @@ public class BlackHoleBE extends NuclearCraftBE {
 
     public static String NAME = "black_hole";
     public float scale = 0.3f;
-    public static long MIN_MASS = 100_000_000L;
+    public static long MIN_MASS =    100_000_000L;
     public static long MAX_MASS = 10_000_000_000L;
     @NBTField
     public boolean isInitialized = false;

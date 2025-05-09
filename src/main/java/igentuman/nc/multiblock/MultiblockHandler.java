@@ -5,19 +5,20 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class MultiblockHandler {
+    public static final MultiblockHandler instance = new MultiblockHandler();
+    private MultiblockHandler() {
+    }
 
-    private static final HashMap<String, AbstractNCMultiblock> multiblocks = new HashMap<>();
-    private static final HashMap<Long, List<String>> chunkCache = new HashMap<>();
-    private static final List<String> toRemove = new ArrayList<>();
-    private static final List<BlockPos> ignoreUpdate = new ArrayList<>();
+    private final ConcurrentHashMap<String, AbstractNCMultiblock> multiblocks = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<Long, List<String>> chunkCache = new ConcurrentHashMap<>();
+    private final Set<String> toRemove = Collections.synchronizedSet(new HashSet<>());
+    public final Set<Long> ignoreUpdate = Collections.synchronizedSet(new HashSet<>());
 
-    public static void addMultiblock(AbstractNCMultiblock multiblock) {
+    public void addMultiblock(AbstractNCMultiblock multiblock) {
         if (multiblock.controller() == null) {
             throw new IllegalArgumentException("Multiblock controller is null");
         }
@@ -29,10 +30,10 @@ public class MultiblockHandler {
         addToChunkCache(multiblock);
     }
 
-    private static void addToChunkCache(AbstractNCMultiblock multiblock) {
+    private void addToChunkCache(AbstractNCMultiblock multiblock) {
         long chunkPos = multiblock.getChunk().toLong();
         if (!chunkCache.containsKey(chunkPos)) {
-            chunkCache.put(chunkPos, new ArrayList<>());
+            chunkCache.put(chunkPos, Collections.synchronizedList(new ArrayList<>()));
         }
         List<String> list = chunkCache.get(chunkPos);
         if (!list.contains(multiblock.getId())) {
@@ -40,7 +41,7 @@ public class MultiblockHandler {
         }
     }
 
-    private static void removeFromChunkCache(String id) {
+    private void removeFromChunkCache(String id) {
         for (List<String> list : chunkCache.values()) {
             list.remove(id);
         }
@@ -56,38 +57,24 @@ public class MultiblockHandler {
         }
     }
 
-    public static void addMultiblock(AbstractNCMultiblock multiblock, boolean force) {
+    public void addMultiblock(AbstractNCMultiblock multiblock, boolean force) {
         if (multiblocks.containsKey(multiblock.getId()) && force) {
             multiblocks.remove(multiblock.getId());
         }
         addMultiblock(multiblock);
     }
 
-    public static void addIgnoreToUpdate(BlockPos blockPos) {
-
-        if (!ignoreUpdate.contains(blockPos)) {
-            try {
-                ignoreUpdate.add(blockPos);
-            } catch (ArrayIndexOutOfBoundsException ignored) {
-                if(ignoreUpdate.size() < 0) {
-                    ignoreUpdate.clear();
-                }
-            }
+    public void addIgnoreToUpdate(BlockPos blockPos) {
+        if (blockPos != null) {
+            ignoreUpdate.add(blockPos.asLong());
         }
     }
 
-    public static void trackBlockChange(BlockPos pos) {
+    public void trackBlockChange(BlockPos pos) {
         if (pos == null || multiblocks.isEmpty()) {
             return;
         }
-        if (ignoreUpdate.contains(pos)) {
-            try {
-                ignoreUpdate.remove(pos);
-            } catch (ArrayIndexOutOfBoundsException ignored) {
-                if(ignoreUpdate.size() < 0) {
-                    ignoreUpdate.clear();
-                }
-            }
+        if (ignoreUpdate.remove(pos.asLong())) {
             return;
         }
         //Iterate chunk cache first for better performance
@@ -115,7 +102,7 @@ public class MultiblockHandler {
         }
     }
 
-    public static void tick() {
+    public void tick() {
         Set<String> tmp = multiblocks.keySet();
         for(String id: tmp) {
             AbstractNCMultiblock multiblock = multiblocks.get(id);
@@ -140,12 +127,12 @@ public class MultiblockHandler {
         }
     }
 
-    public static void removeMultiblock(AbstractNCMultiblock multiblock) {
+    public void removeMultiblock(AbstractNCMultiblock multiblock) {
         multiblocks.remove(multiblock.getId());
         removeFromChunkCache(multiblock.getId());
     }
 
-    public static boolean checkAttachmentToBlock(Class<?> toCheck, Level level, BlockPos pos, Direction dir) {
+    public boolean checkAttachmentToBlock(Class<?> toCheck, Level level, BlockPos pos, Direction dir) {
         if (multiblocks.isEmpty()) {
             return false;
         }
@@ -174,7 +161,7 @@ public class MultiblockHandler {
         return false;
     }
 
-    public static AbstractNCMultiblock getMultiblockByPos(BlockPos pos) {
+    public AbstractNCMultiblock getMultiblockByPos(BlockPos pos) {
         if (multiblocks.isEmpty()) {
             return null;
         }

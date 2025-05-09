@@ -133,6 +133,6 @@ public class FissionPort extends HorizontalDirectionalBlock implements EntityBlo
 
     @Override
     public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor){
-        MultiblockHandler.trackBlockChange(pos);
+        MultiblockHandler.instance.trackBlockChange(pos);
     }
 }

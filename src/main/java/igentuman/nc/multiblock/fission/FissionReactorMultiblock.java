@@ -86,7 +86,7 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
             }
         }
         controllerBe = fissionControllerBE;
-        MultiblockHandler.addMultiblock(this);
+        MultiblockHandler.instance.addMultiblock(this);
     }
 
     public Map<BlockPos, HeatSinkBlock> validHeatSinks() {

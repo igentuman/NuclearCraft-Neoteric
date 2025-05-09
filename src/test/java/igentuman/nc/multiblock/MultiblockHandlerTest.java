@@ -79,10 +79,10 @@ class MultiblockHandlerTest {
         when(mockMultiblock.getChunk()).thenReturn(chunkPos);
 
         // Add the multiblock first
-        MultiblockHandler.addMultiblock(mockMultiblock);
+        MultiblockHandler.instance.addMultiblock(mockMultiblock);
 
         // Then remove it
-        MultiblockHandler.removeMultiblock(mockMultiblock);
+        MultiblockHandler.instance.removeMultiblock(mockMultiblock);
 
         // Verify it was removed
         HashMap<String, AbstractNCMultiblock> multiblocks =
@@ -113,10 +113,10 @@ class MultiblockHandlerTest {
         when(secondMultiblock.getChunk()).thenReturn(chunkPos);
 
         // Add first multiblock
-        MultiblockHandler.addMultiblock(firstMultiblock);
+        MultiblockHandler.instance.addMultiblock(firstMultiblock);
 
         // Add second multiblock with force=true
-        MultiblockHandler.addMultiblock(secondMultiblock, true);
+        MultiblockHandler.instance.addMultiblock(secondMultiblock, true);
 
         // Verify second multiblock replaced first one
         HashMap<String, AbstractNCMultiblock> multiblocks =
@@ -134,7 +134,7 @@ class MultiblockHandlerTest {
         when(mockMultiblock.getChunk()).thenReturn(chunkPos);
 
         // Action
-        MultiblockHandler.addMultiblock(mockMultiblock);
+        MultiblockHandler.instance.addMultiblock(mockMultiblock);
 
         // Verify
         HashMap<String, AbstractNCMultiblock> multiblocks =
@@ -156,20 +156,20 @@ class MultiblockHandlerTest {
         when(mockMultiblock.controller()).thenReturn(null);
 
         assertThrows(IllegalArgumentException.class, () -> {
-            MultiblockHandler.addMultiblock(mockMultiblock);
+            MultiblockHandler.instance.addMultiblock(mockMultiblock);
         });
     }
 
     @Test
     void testIgnoreUpdate() throws IllegalAccessException {
         BlockPos pos = new BlockPos(1, 1, 1);
-        MultiblockHandler.addIgnoreToUpdate(pos);
+        MultiblockHandler.instance.addIgnoreToUpdate(pos);
 
         List<BlockPos> ignoreList = (List<BlockPos>) ignoreUpdateField.get(null);
         assertTrue(ignoreList.contains(pos));
 
         // Adding the same position again should not duplicate it
-        MultiblockHandler.addIgnoreToUpdate(pos);
+        MultiblockHandler.instance.addIgnoreToUpdate(pos);
         assertEquals(1, ignoreList.size());
     }
 
@@ -188,10 +188,10 @@ class MultiblockHandlerTest {
         when(multiblock.getChunk()).thenReturn(new ChunkPos(0, 0));
 
         // Add the multiblock
-        MultiblockHandler.addMultiblock(multiblock);
+        MultiblockHandler.instance.addMultiblock(multiblock);
 
         // Call tick
-        MultiblockHandler.tick();
+        MultiblockHandler.instance.tick();
 
         // Verify that tick was called on our multiblock
         verify(multiblock).tick();

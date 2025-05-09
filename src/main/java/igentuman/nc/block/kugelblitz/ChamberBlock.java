@@ -14,14 +14,15 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Properties;
 
-import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.TRANSPARENT_BLOCKS_PATTERN;
+import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.*;
 import static igentuman.nc.util.TextUtils.__;
 
 public class ChamberBlock extends MultiblockBlock {
 
     public ChamberBlock(Properties pProperties) {
-        super(pProperties.sound(SoundType.METAL).strength(8f, 3600000f));
+        super(Properties.of().sound(SoundType.METAL).strength(8f, 3600000f));
     }
 
     @Override
@@ -42,6 +43,7 @@ public class ChamberBlock extends MultiblockBlock {
 
     @Override
     public void appendHoverText(ItemStack pStack, @Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag) {
+        list.add(__("tooltip.kugelblitz.block_" + pStack.getItem()).withStyle(ChatFormatting.AQUA));
         list.add(__("multiblock.build_in_chunk.advise").withStyle(ChatFormatting.GREEN));
     }
 }

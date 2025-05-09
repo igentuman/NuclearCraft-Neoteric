@@ -48,7 +48,7 @@ public abstract class AbstractNCMultiblock implements Multiblock {
     protected final HashMap<Long, BlockState> bsCache = new HashMap<>();
     protected final List<BlockPos> allBlocks = new ArrayList<>();
     protected BlockPos controllerPos;
-    private static final Pattern SPECIAL_BLOCKS = Pattern.compile(".*(fusion_proxy|fusion_core|controller|port|irradiator|rotor).*");
+    private static final Pattern SPECIAL_BLOCKS = Pattern.compile(".*(fusion_proxy|fusion_core|controller|port|irradiator|rotor|chamber_terminal).*");
     private static final Pattern CONTROLLERS = Pattern.compile(".*(controller|terminal).*");
 
     protected AbstractNCMultiblock(List<Block> validOuterBlocks, List<Block> validInnerBlocks, MultiblockController controller) {
@@ -59,7 +59,7 @@ public abstract class AbstractNCMultiblock implements Multiblock {
     }
 
     public void dispose() {
-        MultiblockHandler.removeMultiblock(this);
+        MultiblockHandler.instance.removeMultiblock(this);
     }
 
     public List<Block> validCornerBlocks() {
@@ -498,6 +498,8 @@ public abstract class AbstractNCMultiblock implements Multiblock {
     public void onBlockDestroyed(BlockState state, Level level, BlockPos pos, Explosion explosion) {
         controller.clearStats();
     }
+
+
 
     public boolean onBlockChange(BlockPos pos) {
         if (hasToRefresh) return true;

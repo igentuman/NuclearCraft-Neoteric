@@ -122,7 +122,7 @@ public class FissionControllerBlock extends HorizontalDirectionalBlock implement
 
     @Override
     public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor){
-        MultiblockHandler.trackBlockChange(pos);
+        MultiblockHandler.instance.trackBlockChange(pos);
     }
 
     @Override

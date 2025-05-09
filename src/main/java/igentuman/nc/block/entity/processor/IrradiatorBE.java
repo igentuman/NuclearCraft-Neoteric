@@ -113,7 +113,7 @@ public class IrradiatorBE extends NCProcessorBE implements MultiblockAttachable 
     @Deprecated
     public void upadteMultiblockConnection()
     {
-        AbstractNCMultiblock mb = MultiblockHandler.getMultiblockByPos(getBlockPos());
+        AbstractNCMultiblock mb = MultiblockHandler.instance.getMultiblockByPos(getBlockPos());
         if(mb != null) {
             if(mb.isFormed()) {
                 if(mb.controller() != null) {

@@ -87,7 +87,7 @@ public class FusionCoreProxyBE extends NuclearCraftBE implements MultiblockAttac
 
         if(wasSignal != core.analogSignal) {
             wasSignal = core.analogSignal;
-            MultiblockHandler.addIgnoreToUpdate(getBlockPos());
+            MultiblockHandler.instance.addIgnoreToUpdate(getBlockPos());
             setChanged();
             level.updateNeighbourForOutputSignal(worldPosition, getBlockState().getBlock());
         }

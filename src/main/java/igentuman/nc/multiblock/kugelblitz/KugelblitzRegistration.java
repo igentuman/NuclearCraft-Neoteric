@@ -86,7 +86,7 @@ public class KugelblitzRegistration {
         registerSimpleBlock("quantum_flux_regulator");
         registerSimpleBlock("quantum_transformer");
 
-        KUGELBLITZ_BLOCKS.put("photon_concentrator", BLOCKS.register("photon_concentrator", () -> new PhotonConcentratorBlock(KUGELBLITZ_BLOCK_PROPERTIES)));
+        KUGELBLITZ_BLOCKS.put("photon_concentrator", BLOCKS.register("photon_concentrator", () -> new PhotonConcentratorBlock(BlockBehaviour.Properties.of().sound(SoundType.GLASS).strength(1f).requiresCorrectToolForDrops().noOcclusion())));
         KUGELBLITZ_ITEMS.put("photon_concentrator", fromMultiblock(KUGELBLITZ_BLOCKS.get("photon_concentrator")));
         KUGELBLITZ_BE.put("photon_concentrator",
                 BLOCK_ENTITIES.register("photon_concentrator",

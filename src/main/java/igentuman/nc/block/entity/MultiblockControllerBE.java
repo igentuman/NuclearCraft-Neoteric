@@ -15,6 +15,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 
+import static igentuman.nc.NuclearCraft.debugLog;
+
 public class MultiblockControllerBE extends NuclearCraftBE implements MultiblockAttachable<AbstractNCMultiblock, MultiblockControllerBE> {
 
     @NBTField
@@ -125,11 +127,25 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
     }
 
     @Override
+    public void setRemoved() {
+        super.setRemoved();
+        if(getLevel().isClientSide()) {
+            return;
+        }
+        if(getMultiblock() != null) {
+            getMultiblock().onControllerRemoved();
+        }
+    }
+
+    @Override
     public void setChanged() {
+        MultiblockHandler.instance.addIgnoreToUpdate(getBlockPos());
+        if(!MultiblockHandler.instance.ignoreUpdate.contains(getBlockPos().asLong())) {
+            debugLog("failed to suppress update for " + getBlockPos());
+        }
         super.setChanged();
         wasUpdated = true;
         changed = true;
-        MultiblockHandler.addIgnoreToUpdate(getBlockPos());
     }
 
     @Override

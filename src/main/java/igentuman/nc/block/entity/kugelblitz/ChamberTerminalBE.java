@@ -96,7 +96,6 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
         super(KUGELBLITZ_BE.get(NAME).get(), pPos, pBlockState);
         energyStorage = createEnergy();
         energy = LazyOptional.of(() -> energyStorage);
-        multiblock = new KugelblitzMultiblock(this);
         contentHandler = new SidedContentHandler(
                 1, 1,
                 1, 0, 1000);
@@ -199,7 +198,7 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
             }
         }
         setChanged();
-        MultiblockHandler.addIgnoreToUpdate(getBlockPos());
+        MultiblockHandler.instance.addIgnoreToUpdate(getBlockPos());
         level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(POWERED, controllerEnabled), Block.UPDATE_ALL);
         level.setBlockAndUpdate(worldPosition, getBlockState().setValue(POWERED, controllerEnabled));
     }
@@ -228,7 +227,7 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
         if (controllerEnabled) {
             trackChanges(contentHandler().tick());
             long wasMass = mass;
-            updateBlackholeMass();
+            updateBlackhole();
             trackChanges(false, wasMass != mass);
             handleMeltdown();
             trackChanges(processRecipe());
@@ -243,7 +242,7 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
         }
         if(refreshCacheFlag || changed) {
             try {
-                MultiblockHandler.addIgnoreToUpdate(getBlockPos());
+                MultiblockHandler.instance.addIgnoreToUpdate(getBlockPos());
                 level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(POWERED, controllerEnabled), Block.UPDATE_ALL);
                 level.setBlockAndUpdate(worldPosition, getBlockState().setValue(POWERED, controllerEnabled));
             } catch (NullPointerException ignored) {}
@@ -265,7 +264,7 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
         return false;
     }
 
-    private void updateBlackholeMass()
+    private void updateBlackhole()
     {
         if (!hasBlackhole()) {
             mass = 0;
@@ -291,7 +290,7 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
             return;
         }
 
-        if(getLevel().random.nextInt(256) < getMultiblock().stabilizers()) {
+        if(getLevel().getGameTime() % 2 == 0 || getLevel().random.nextInt(128) < getMultiblock().stabilizers()) {
             return;
         }
 
@@ -300,7 +299,7 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
             return;
         }
 
-        double massRange = MAX_MASS - MIN_MASS;
+        double massRange = MAX_MASS - MIN_MASS*5;
         double normalizedMass = (mass - MIN_MASS) / massRange;
         double distanceFromOptimal = Math.abs(normalizedMass - 0.5) * 2.0;
 

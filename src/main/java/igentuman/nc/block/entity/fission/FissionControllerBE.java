@@ -472,16 +472,6 @@ public class FissionControllerBE extends MultiblockControllerBE {
 
     }
 
-    public void setRemoved() {
-        super.setRemoved();
-        if(getLevel().isClientSide()) {
-            return;
-        }
-        if(getMultiblock() != null) {
-            getMultiblock().onControllerRemoved();
-        }
-    }
-
     private boolean coolDown() {
         double wasHeat = heat;
         heat -= coolingPerTick();

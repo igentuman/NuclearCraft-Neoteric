@@ -324,16 +324,6 @@ public class TurbineControllerBE extends MultiblockControllerBE {
 
     }
 
-    public void setRemoved() {
-        super.setRemoved();
-        if(getLevel().isClientSide()) {
-            return;
-        }
-        if(getMultiblock() != null) {
-            getMultiblock().onControllerRemoved();
-        }
-    }
-
     private boolean processRecipe() {
         if(recipeInfo().recipe != null && recipeInfo().isCompleted()) {
             if(contentHandler().fluidCapability.getFluidInSlot(0).isEmpty()) {

@@ -147,19 +147,19 @@ public class TurbineCoilBlock extends Block implements EntityBlock {
 
     @Override
     public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor){
-        MultiblockHandler.trackBlockChange(neighbor);
+        MultiblockHandler.instance.trackBlockChange(neighbor);
     }
 
     @Override
     public void onPlace(BlockState pState, Level pLevel, BlockPos pPos, BlockState pOldState, boolean pMovedByPiston) {
         super.onPlace(pState, pLevel, pPos, pOldState, pMovedByPiston);
-        MultiblockHandler.trackBlockChange(pPos);
+        MultiblockHandler.instance.trackBlockChange(pPos);
     }
 
     @Override
     public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
         super.onRemove(state, level, pos, newState, isMoving);
-        MultiblockHandler.trackBlockChange(pos);
+        MultiblockHandler.instance.trackBlockChange(pos);
     }
 
     @Override

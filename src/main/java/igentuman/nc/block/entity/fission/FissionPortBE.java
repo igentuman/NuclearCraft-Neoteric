@@ -96,7 +96,7 @@ public class FissionPortBE extends NuclearCraftBE implements MultiblockAttachabl
         }
 
         if (updated) {
-            MultiblockHandler.addIgnoreToUpdate(getBlockPos());
+            MultiblockHandler.instance.addIgnoreToUpdate(getBlockPos());
             setChanged();
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_NEIGHBORS);
         }

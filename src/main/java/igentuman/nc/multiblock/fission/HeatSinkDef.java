@@ -174,7 +174,7 @@ public class HeatSinkDef {
         {
             for(BlockPos p: pos) {
                 for(Direction dir: Direction.values()) {
-                    if(MultiblockHandler.checkAttachmentToBlock(FissionFuelCellBlock.class, level, p, dir)) {
+                    if(MultiblockHandler.instance.checkAttachmentToBlock(FissionFuelCellBlock.class, level, p, dir)) {
                         return true;
                     }
                     if(level.getBlockState(p.relative(dir)).getBlock() instanceof FissionFuelCellBlock) {

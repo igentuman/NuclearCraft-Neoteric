@@ -149,7 +149,7 @@ public class WorldEvents {
         BlockState state = event.getState();
         if(state == null) return;
         if(trackingBlocks.contains(state.getBlock())) {
-            MultiblockHandler.trackBlockChange(event.getPos());
+            MultiblockHandler.instance.trackBlockChange(event.getPos());
         }
         if (state != null && !state.isAir() && state.hasBlockEntity()) {
 
@@ -161,7 +161,7 @@ public class WorldEvents {
         BlockState state = event.getState();
         if(state == null) return;
         if(trackingBlocks.contains(state.getBlock())) {
-            MultiblockHandler.trackBlockChange(event.getPos());
+            MultiblockHandler.instance.trackBlockChange(event.getPos());
         }
         if(state.getBlock() instanceof TurbineBladeBlock) {
             placed = TurbineBladeBlock.processBlockPlace(event.getLevel(), event.getPos(), event.getPlacedBlock(), state, event.getPlacedAgainst());
@@ -191,7 +191,7 @@ public class WorldEvents {
     @SubscribeEvent
     public void onTick(ServerTickEvent event) {
         if (event.side.isServer() && event.phase == Phase.END) {
-            MultiblockHandler.tick();
+            MultiblockHandler.instance.tick();
         }
     }
 

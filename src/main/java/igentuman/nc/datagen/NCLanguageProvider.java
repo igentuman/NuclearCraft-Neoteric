@@ -255,6 +255,10 @@ public class NCLanguageProvider extends LanguageProvider {
         add("tooltip.kugelblitz.flux_regulators","Flux Regulators: %s");
         add("tooltip.kugelblitz.transformers","Quantum Transformers: %s");
         add("tooltip.kugelblitz.stabilizers","Stabilizers: %s");
+        add("tooltip.kugelblitz.block_neutronium_frame","Casing block of Kugelblitz Chamber");
+        add("tooltip.kugelblitz.block_event_horizon_stabilizer","Helps to stabilize blackhole");
+        add("tooltip.kugelblitz.block_quantum_flux_regulator","Increases FE generation of Kugelblitz Chamber");
+        add("tooltip.kugelblitz.block_quantum_transformer","Increases Quantum Transformation rate of Kugelblitz Chamber");
 
         add("tooltip.upgrade_stack","Improved speed upgrade with parallel processing");
         add("tooltip.upgrade_speed","Increases recipe speed and energy consumption");

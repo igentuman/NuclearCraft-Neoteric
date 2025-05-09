@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import igentuman.nc.NuclearCraft;
+import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.util.math.FloatingLong;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.resources.ResourceLocation;
@@ -27,6 +28,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
+import static igentuman.nc.NuclearCraft.debugLog;
+import static igentuman.nc.handler.config.MaterialsConfig.MATERIAL_PRODUCTS;
 import static igentuman.nc.multiblock.fission.FissionReactor.FISSION_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BLOCKS;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
@@ -78,17 +81,37 @@ public final class NcUtils {
      */
     @NotNull
     public static String getModId(@NotNull ItemStack stack) {
+        try {
+            String mod = stack.getItemHolder().unwrap().left().get().location().getNamespace();
+            if (mod != null && !mod.isEmpty()) {
+                return mod;
+            }
+        } catch (Exception ignored) {}
         Item item = stack.getItem();
         String modid = item.getCreatorModId(stack);
         if (modid == null) {
             ResourceLocation registryName = getName(item);
             if (registryName == null) {
-                NuclearCraft.LOGGER.error("Unexpected null registry name for item of class type: {}", item.getClass().getSimpleName());
+                debugLog("Unexpected null registry name for item of class type: {}" + item.getClass().getSimpleName());
                 return "";
             }
             return registryName.getNamespace();
         }
         return modid;
+    }
+
+    public static ItemStack getItemStackByModPriority(ItemStackIngredient item) {
+        if(item.getRepresentations().size() == 1) {
+            return item.getRepresentations().get(0);
+        }
+        for(String mod: MATERIAL_PRODUCTS.MODS_PRIORITY.get()) {
+            for(ItemStack i: item.getRepresentations()) {
+                if(getModId(i).equals(mod)) {
+                    return i;
+                }
+            }
+        }
+        return item.getRepresentations().get(0);
     }
 
     @NotNull

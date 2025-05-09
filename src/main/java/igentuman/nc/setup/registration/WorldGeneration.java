@@ -36,6 +36,7 @@ public class WorldGeneration {
     public static final RegistryObject<PlacementModifierType<?>> VEGETATION_MODIFIER =
             PLACEMENT_MODIFIERS.register("nc_vegetation_modifier", () -> placement(BiomeFilterNether.CODEC));
 
+
     private static ResourceKey<Biome> makeKey(String name) {
         return ResourceKey.create(Registries.BIOME, rl(name));
     }
@@ -59,7 +60,6 @@ public class WorldGeneration {
     }
 
     public static class StructureLoader {
-        private static final String STRUCTURE_PATH = ":structures/fission_reactor";
 
         public static StructureTemplate loadStructure(ServerLevel level, ResourceLocation structureLocation) {
             StructureTemplateManager manager = level.getStructureManager();

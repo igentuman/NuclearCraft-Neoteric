@@ -20,6 +20,6 @@ public class PoiTypeTags extends PoiTypeTagsProvider {
     @Override
     protected void addTags(HolderLookup.Provider pProvider) {
         tag(net.minecraft.tags.PoiTypeTags.ACQUIRABLE_JOB_SITE)
-                .addOptional(rl("manufactory_poi"));
+                .addOptional(rl("analyzer_poi"));
     }
 }

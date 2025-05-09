@@ -7,6 +7,7 @@ import igentuman.nc.recipes.type.ResetNbtRecipe;
 import igentuman.nc.setup.registration.GameEvents;
 import igentuman.nc.util.insitu_leaching.WorldVeinsProvider;
 import igentuman.nc.world.dimension.Dimensions;
+import igentuman.nc.world.structure.ScientistHouseStructure;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.MinecraftForge;
@@ -26,12 +27,12 @@ public class ModSetup {
         bus.addGenericListener(Level.class, WorldVeinsProvider::attachVeinCapability);
         bus.register(NuclearCraft.worldTickHandler);
         bus.register(new RadiationEvents());
+        bus.register(new ScientistHouseStructure());
     }
 
     public static void init(FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
             //Dimensions.register();
-            //CapabilityRegistration.register(event);
             GameEvents.commonSetup();
         });
         NuclearCraft.packetHandler().initialize();

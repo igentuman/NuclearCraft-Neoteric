@@ -5,6 +5,7 @@ import igentuman.nc.item.HEVItem;
 import igentuman.nc.item.HazmatItem;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.radiation.data.RadiationEvents;
+import igentuman.nc.recipes.ingredient.creator.IngredientCreatorAccess;
 import igentuman.nc.setup.registration.Villager;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.world.damagesource.DamageTypes;
@@ -33,10 +34,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.content.materials.Materials.*;
+import static igentuman.nc.setup.registration.FissionFuel.NC_FUEL;
 import static igentuman.nc.setup.registration.FissionFuel.NC_ISOTOPES;
 import static igentuman.nc.setup.registration.NCItems.*;
-import static net.minecraft.world.item.Items.EMERALD;
-import static net.minecraft.world.item.Items.SCULK;
+import static igentuman.nc.setup.registration.Tags.*;
+import static igentuman.nc.util.NcUtils.getItemStackByModPriority;
+import static net.minecraft.world.item.Items.*;
 
 @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class WorldEvents {
@@ -54,23 +58,77 @@ public class WorldEvents {
 
             trades.get(1).add((pTrader, pRandom) -> new MerchantOffer(
                     new ItemStack(EMERALD, 1),
-                    new ItemStack(NC_DUSTS.get("graphite").get(), 1),
-                    32, 4, 0.02f));
+                    getItemStackByModPriority(IngredientCreatorAccess.item().from(forgeDust("graphite"), 2)),
+                    32, 1, 0.02f));
 
             trades.get(1).add((pTrader, pRandom) -> new MerchantOffer(
-                    new ItemStack(NC_INGOTS.get("lead").get(), 12),
                     new ItemStack(EMERALD, 1),
-                    24, 4, 0.02f));
+                    getItemStackByModPriority(IngredientCreatorAccess.item().from(forgeDust("quartz"), 2)),
+                    32, 1, 0.02f));
+
+            trades.get(1).add((pTrader, pRandom) -> new MerchantOffer(
+                    getItemStackByModPriority(IngredientCreatorAccess.item().from(forgeIngot("lead"), 8)),
+                    new ItemStack(EMERALD, 1),
+                    24, 1, 0.02f));
 
             trades.get(2).add((pTrader, pRandom) -> new MerchantOffer(
                     new ItemStack(EMERALD, 6),
                     new ItemStack(NC_PARTS.get("plate_basic").get(), 1),
-                    16, 8, 0.02f));
+                    16, 5, 0.02f));
+
+            trades.get(2).add((pTrader, pRandom) -> new MerchantOffer(
+                    new ItemStack(EMERALD, 9),
+                    new ItemStack(NC_FOOD.get("smore").get(), 1),
+                    16, 5, 0.02f));
 
             trades.get(2).add((pTrader, pRandom) -> new MerchantOffer(
                     new ItemStack(EMERALD, 8),
                     new ItemStack(NC_FOOD.get("radaway").get(), 1),
-                    4, 8, 0.02f));
+                    6, 5, 0.02f));
+
+            trades.get(3).add((pTrader, pRandom) -> new MerchantOffer(
+                    new ItemStack(NC_ISOTOPES.get(neptunium236).get(), 1),
+                    new ItemStack(EMERALD, 4),
+                    7, 15, 0.02f));
+
+            trades.get(3).add((pTrader, pRandom) -> new MerchantOffer(
+                    new ItemStack(EMERALD, 32),
+                    new ItemStack(NC_ISOTOPES.get(plutonium238).get(), 2),
+                    7, 15, 0.02f));
+
+            trades.get(3).add((pTrader, pRandom) -> new MerchantOffer(
+                    new ItemStack(EMERALD, 20),
+                    getItemStackByModPriority(IngredientCreatorAccess.item().from(forgeDust("calcium_sulfate"), 2)),
+                    7, 15, 0.02f));
+
+            trades.get(4).add((pTrader, pRandom) -> new MerchantOffer(
+                    getItemStackByModPriority(IngredientCreatorAccess.item().from(forgePlate("platinum"), 16)),
+                    new ItemStack(NC_PARTS.get("plate_elite").get(), 1),
+                    7, 20, 0.02f));
+
+            trades.get(4).add((pTrader, pRandom) -> new MerchantOffer(
+                    new ItemStack(EMERALD, 32),
+                    new ItemStack(BOOK, 4),
+                    new ItemStack(NC_FUEL.get(List.of("fuel", "californium", "hecf-251", "")).get(), 2),
+                    7, 20, 0.02f));
+
+            trades.get(4).add((pTrader, pRandom) -> new MerchantOffer(
+                    getItemStackByModPriority(IngredientCreatorAccess.item().from(forgeIngot("platinum"), 16)),
+                    getItemStackByModPriority(IngredientCreatorAccess.item().from(forgeIngot("cobalt"), 4)),
+                    new ItemStack(NC_FUEL.get(List.of("fuel", "americium", "hea-242", "")).get(), 2),
+                    7, 20, 0.02f));
+
+            trades.get(5).add((pTrader, pRandom) -> new MerchantOffer(
+                    new ItemStack(EMERALD, 16),
+                    getItemStackByModPriority(IngredientCreatorAccess.item().from(forgeIngot("cobalt"), 4)),
+                    new ItemStack(NC_PARTS.get("coil_magnesium_diboride").get(), 2),
+                    7, 30, 0.02f));
+
+            trades.get(5).add((pTrader, pRandom) -> new MerchantOffer(
+                    new ItemStack(EMERALD, 16),
+                    getItemStackByModPriority(IngredientCreatorAccess.item().from(forgeIngot("zinc"), 8)),
+                    getItemStackByModPriority(IngredientCreatorAccess.item().from(forgeIngot("neutronium"), 2)),
+                    7, 30, 0.02f));
         }
     }
 

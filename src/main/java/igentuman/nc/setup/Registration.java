@@ -9,7 +9,7 @@ import igentuman.nc.multiblock.fission.FissionReactor;
 import igentuman.nc.recipes.NcRecipeSerializers;
 import igentuman.nc.recipes.NcRecipeType;
 import igentuman.nc.setup.registration.*;
-import igentuman.nc.world.structure.LaboratoryStructure;
+import igentuman.nc.world.structure.ScientistHouseStructure;
 import igentuman.nc.world.structure.PortalStructure;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -50,8 +50,6 @@ public class Registration {
     }
 
     public static final RegistryObject<StructureType<?>> PORTAL = STRUCTURES.register("portal", () -> typeConvert(PortalStructure.CODEC));
-
-    public static final RegistryObject<StructureType<?>> LABORATORY = STRUCTURES.register("nc_laboratory", () -> typeConvert(LaboratoryStructure.CODEC));
 
     private static <S extends Structure> StructureType<S> typeConvert(Codec<S> codec) {
         return () -> codec;

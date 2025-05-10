@@ -6,10 +6,10 @@ import igentuman.nc.block.entity.turbine.TurbineControllerBE;
 
 import javax.annotation.Nonnull;
 
-public class NCTurbinePeripheral implements IPeripheral {
+public class TurbinePeripheral implements IPeripheral {
     private final TurbineControllerBE turbine;
 
-    public NCTurbinePeripheral(TurbineControllerBE turbine)
+    public TurbinePeripheral(TurbineControllerBE turbine)
     {
         this.turbine = turbine;
     }
@@ -25,7 +25,13 @@ public class NCTurbinePeripheral implements IPeripheral {
     @Override
     public boolean equals( IPeripheral other )
     {
-        return this == other || other instanceof NCTurbinePeripheral && ((NCTurbinePeripheral) other).turbine == turbine;
+        return this == other || other instanceof TurbinePeripheral && ((TurbinePeripheral) other).turbine == turbine;
+    }
+
+    @LuaFunction
+    public final boolean isFormed()
+    {
+        return turbine.isCasingValid && turbine.isInternalValid;
     }
 
     @LuaFunction

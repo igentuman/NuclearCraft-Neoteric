@@ -5,8 +5,8 @@ import igentuman.nc.block.entity.MultiblockControllerBE;
 import igentuman.nc.block.fusion.FusionCoreBlock;
 import igentuman.nc.client.particle.FusionBeamParticleData;
 import igentuman.nc.client.sound.SoundHandler;
-import igentuman.nc.compat.cc.NCFusionReactorPeripheral;
-import igentuman.nc.compat.oc2.NCFusionReactorDevice;
+import igentuman.nc.compat.cc.FusionReactorPeripheral;
+import igentuman.nc.compat.oc2.FusionReactorDevice;
 import igentuman.nc.handler.event.client.BlockOverlayHandler;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.SlotModePair;
@@ -45,7 +45,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 import static igentuman.nc.block.fission.FissionControllerBlock.POWERED;
-import static igentuman.nc.compat.oc2.NCFusionReactorDevice.DEVICE_CAPABILITY;
+import static igentuman.nc.compat.oc2.FusionReactorDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.handler.config.FusionConfig.FUSION_CONFIG;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BE;
 import static igentuman.nc.setup.registration.NCSounds.*;
@@ -109,7 +109,7 @@ public class FusionCoreBE extends MultiblockControllerBE {
     protected final LazyOptional<IEnergyStorage> energy;
     public final SidedContentHandler contentHandler;
     public final CustomEnergyStorage energyStorage;
-    protected LazyOptional<NCFusionReactorPeripheral> peripheralCap;
+    protected LazyOptional<FusionReactorPeripheral> peripheralCap;
     protected List<FusionCoolantRecipe> coolantRecipes;
     public boolean controllerEnabled = false;
     public Recipe recipe;
@@ -197,7 +197,7 @@ public class FusionCoreBE extends MultiblockControllerBE {
 
     public <T> LazyOptional<T>  getPeripheral(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if(peripheralCap == null) {
-            peripheralCap = LazyOptional.of(() -> new NCFusionReactorPeripheral(this));
+            peripheralCap = LazyOptional.of(() -> new FusionReactorPeripheral(this));
         }
         return peripheralCap.cast();
     }
@@ -224,7 +224,7 @@ public class FusionCoreBE extends MultiblockControllerBE {
     }
 
     public <T> LazyOptional<T> getOCDevice(Capability<T> cap, Direction side) {
-        return LazyOptional.of(() -> NCFusionReactorDevice.createDevice(this)).cast();
+        return LazyOptional.of(() -> FusionReactorDevice.createDevice(this)).cast();
     }
 
     public void updateAnalogSignal() {

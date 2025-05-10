@@ -15,7 +15,7 @@ import java.util.Collection;
 
 import static java.util.Collections.singletonList;
 
-public class NCFissionReactorDevice {
+public class FissionReactorDevice {
 
     public static final Capability<Device> DEVICE_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {
     });
@@ -32,9 +32,15 @@ public class NCFissionReactorDevice {
         }
 
         @Callback
+        public final boolean isFormed() {
+            return reactor.isCasingValid && reactor.isInternalValid;
+        }
+
+        @Callback
         public final boolean hasRecipe() {
             return reactor.hasRecipe();
         }
+
         @Callback
         public final boolean isSteamMode() {
             return reactor.isSteamMode;

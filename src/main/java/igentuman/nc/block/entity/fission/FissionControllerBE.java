@@ -2,8 +2,8 @@ package igentuman.nc.block.entity.fission;
 
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.MultiblockControllerBE;
-import igentuman.nc.compat.cc.NCSolidFissionReactorPeripheral;
-import igentuman.nc.compat.oc2.NCFissionReactorDevice;
+import igentuman.nc.compat.cc.SolidFissionReactorPeripheral;
+import igentuman.nc.compat.oc2.FissionReactorDevice;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.SlotModePair;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
@@ -48,7 +48,7 @@ import java.util.*;
 
 import static igentuman.nc.block.fission.FissionControllerBlock.POWERED;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
-import static igentuman.nc.compat.oc2.NCFissionReactorDevice.DEVICE_CAPABILITY;
+import static igentuman.nc.compat.oc2.FissionReactorDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.handler.config.CommonConfig.ENERGY_GENERATION;
 import static igentuman.nc.handler.config.FissionConfig.FISSION_CONFIG;
 import static igentuman.nc.multiblock.fission.FissionReactor.FISSION_BLOCKS;
@@ -271,17 +271,17 @@ public class FissionControllerBE extends MultiblockControllerBE {
         toggleModeTimer = 200;
     }
 
-    private LazyOptional<NCSolidFissionReactorPeripheral> peripheralCap;
+    private LazyOptional<SolidFissionReactorPeripheral> peripheralCap;
 
     public <T> LazyOptional<T>  getPeripheral(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if(peripheralCap == null) {
-            peripheralCap = LazyOptional.of(() -> new NCSolidFissionReactorPeripheral(this));
+            peripheralCap = LazyOptional.of(() -> new SolidFissionReactorPeripheral(this));
         }
         return peripheralCap.cast();
     }
 
     public <T> LazyOptional<T> getOCDevice(Capability<T> cap, Direction side) {
-        return LazyOptional.of(() -> NCFissionReactorDevice.createDevice(this)).cast();
+        return LazyOptional.of(() -> FissionReactorDevice.createDevice(this)).cast();
     }
 
     @Nonnull

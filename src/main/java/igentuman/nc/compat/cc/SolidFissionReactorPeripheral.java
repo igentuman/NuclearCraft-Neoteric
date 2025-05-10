@@ -6,10 +6,10 @@ import igentuman.nc.block.entity.fission.FissionControllerBE;
 
 import javax.annotation.Nonnull;
 
-public class NCSolidFissionReactorPeripheral implements IPeripheral {
+public class SolidFissionReactorPeripheral implements IPeripheral {
     private final FissionControllerBE reactor;
 
-    public NCSolidFissionReactorPeripheral(FissionControllerBE processorBE)
+    public SolidFissionReactorPeripheral(FissionControllerBE processorBE)
     {
         this.reactor = processorBE;
     }
@@ -25,7 +25,13 @@ public class NCSolidFissionReactorPeripheral implements IPeripheral {
     @Override
     public boolean equals( IPeripheral other )
     {
-        return this == other || other instanceof NCSolidFissionReactorPeripheral && ((NCSolidFissionReactorPeripheral) other).reactor == reactor;
+        return this == other || other instanceof SolidFissionReactorPeripheral && ((SolidFissionReactorPeripheral) other).reactor == reactor;
+    }
+
+    @LuaFunction
+    public final boolean isFormed()
+    {
+        return reactor.isCasingValid && reactor.isInternalValid;
     }
 
     @LuaFunction
@@ -86,7 +92,7 @@ public class NCSolidFissionReactorPeripheral implements IPeripheral {
     @LuaFunction
     public final int getEnergyStored()
     {
-        return reactor.energyStorage.getEnergyStored();
+        return reactor.energyStorage().getEnergyStored();
     }
 
     @LuaFunction

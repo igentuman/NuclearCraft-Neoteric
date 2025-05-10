@@ -15,7 +15,7 @@ import java.util.Collection;
 
 import static java.util.Collections.singletonList;
 
-public class NCTurbineDevice {
+public class TurbineDevice {
 
     public static final Capability<Device> DEVICE_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {
     });
@@ -25,6 +25,11 @@ public class NCTurbineDevice {
     }
 
     public record NCFTurbineDeviceRecord(TurbineControllerBE turbine) implements NamedDevice {
+
+        @Callback
+        public final boolean isFormed() {
+            return turbine.isCasingValid && turbine.isInternalValid;
+        }
 
         @Callback
         public final String getName() {
@@ -58,7 +63,7 @@ public class NCTurbineDevice {
         @Callback
         public final int getEnergyStored()
         {
-            return turbine.energyStorage.getEnergyStored();
+            return turbine.energyStorage().getEnergyStored();
         }
         
         @Override

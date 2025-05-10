@@ -16,7 +16,7 @@ import java.util.Collection;
 
 import static java.util.Collections.singletonList;
 
-public class NCProcessorDevice {
+public class ProcessorDevice {
 
     public static final Capability<Device> DEVICE_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {
     });

@@ -24,7 +24,7 @@ import javax.annotation.Nullable;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static igentuman.nc.compat.oc2.NCFusionReactorDevice.DEVICE_CAPABILITY;
+import static igentuman.nc.compat.oc2.FusionReactorDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BE;
 import static igentuman.nc.util.ModUtil.isCcLoaded;
 import static igentuman.nc.util.ModUtil.isOC2Loaded;
@@ -169,7 +169,7 @@ public class ChamberPortBE extends NuclearCraftBE implements MultiblockAttachabl
 
         if(isOC2Loaded()) {
             if(cap == DEVICE_CAPABILITY) {
-               // return controller().getOCDevice(cap, side);
+                return controller().getOCDevice(cap, side);
             }
         }
         return super.getCapability(cap, side);

@@ -3,9 +3,9 @@ package igentuman.nc.block.entity.processor;
 import igentuman.api.nc.Processor;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.NuclearCraftBE;
-import igentuman.nc.compat.cc.NCProcessorPeripheral;
+import igentuman.nc.compat.cc.ProcessorPeripheral;
 import igentuman.nc.compat.gt.NCGTEnergyHandler;
-import igentuman.nc.compat.oc2.NCProcessorDevice;
+import igentuman.nc.compat.oc2.ProcessorDevice;
 import igentuman.nc.handler.CatalystHandler;
 import igentuman.nc.handler.UpgradesHandler;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
@@ -49,7 +49,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static igentuman.nc.block.ProcessorBlock.ACTIVE;
-import static igentuman.nc.compat.oc2.NCProcessorDevice.DEVICE_CAPABILITY;
+import static igentuman.nc.compat.oc2.ProcessorDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.handler.config.ProcessorsConfig.PROCESSOR_CONFIG;
 import static igentuman.nc.setup.registration.NCItems.NC_ITEMS;
 import static igentuman.nc.util.ModUtil.*;
@@ -65,7 +65,7 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
     public final CatalystHandler catalystHandler;
     public int manualUpdateCounter = 40;
     protected int skippedTicks = 1;
-    protected LazyOptional<NCProcessorPeripheral> peripheralCap;
+    protected LazyOptional<ProcessorPeripheral> peripheralCap;
     protected final LazyOptional<IEnergyStorage> energy;
 
     @NBTField
@@ -138,7 +138,7 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
 
     public <T> LazyOptional<T>  getPeripheral(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if(peripheralCap == null) {
-            peripheralCap = LazyOptional.of(() -> new NCProcessorPeripheral(this));
+            peripheralCap = LazyOptional.of(() -> new ProcessorPeripheral(this));
         }
         return peripheralCap.cast();
     }
@@ -316,7 +316,7 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
     }
 
     private <T> LazyOptional<T> getOCDevice(Capability<T> cap, Direction side) {
-        return LazyOptional.of(() -> NCProcessorDevice.createDevice(this)).cast();
+        return LazyOptional.of(() -> ProcessorDevice.createDevice(this)).cast();
     }
 
     protected  <T> LazyOptional<T> getGTEnergyHandler(Capability<T> cap, Direction side) {

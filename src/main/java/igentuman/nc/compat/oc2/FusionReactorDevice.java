@@ -15,7 +15,7 @@ import java.util.Collection;
 
 import static java.util.Collections.singletonList;
 
-public class NCFusionReactorDevice {
+public class FusionReactorDevice {
 
     public static final Capability<Device> DEVICE_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {
     });
@@ -27,6 +27,11 @@ public class NCFusionReactorDevice {
     public record NCFusionReactorDeviceRecord(FusionCoreBE reactor) implements NamedDevice {
 
         @Callback
+        public final boolean isFormed() {
+            return reactor.isCasingValid && reactor.isInternalValid;
+        }
+
+        @Callback
         public String getName() {
             return reactor.getName();
         }
@@ -35,7 +40,6 @@ public class NCFusionReactorDevice {
         public boolean hasRecipe() {
             return reactor.hasRecipe();
         }
-
 
         @Callback
         public double getMaxHeatCapacity()
@@ -64,13 +68,15 @@ public class NCFusionReactorDevice {
         @Callback
         public int setRFAmplification(int amplification)
         {
-            return reactor.rfAmplificationRatio = Math.min(100, Math.max(amplification, 1));
+            reactor.rfAmplificationRatio = Math.min(100, Math.max(amplification, 1));
+            reactor.setChanged();
+            return reactor.rfAmplificationRatio;
         }
 
         @Callback
         public int getEnergyStored()
         {
-            return reactor.energyStorage.getEnergyStored();
+            return reactor.energyStorage().getEnergyStored();
         }
 
         @Callback
@@ -78,7 +84,6 @@ public class NCFusionReactorDevice {
         {
             return reactor.getControlPartsEfficiency();
         }
-
 
         @Callback
         public int getHeatStored()

@@ -24,7 +24,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Objects;
 
-import static igentuman.nc.compat.oc2.NCFusionReactorDevice.DEVICE_CAPABILITY;
+import static igentuman.nc.compat.oc2.FusionReactorDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_CORE_PROXY_BE;
 import static igentuman.nc.util.ModUtil.*;
 

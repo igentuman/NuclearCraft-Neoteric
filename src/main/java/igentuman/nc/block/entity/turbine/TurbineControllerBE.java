@@ -37,7 +37,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
-import igentuman.nc.compat.cc.NCTurbinePeripheral;
+import igentuman.nc.compat.cc.TurbinePeripheral;
 
 import static igentuman.nc.block.fission.FissionControllerBlock.POWERED;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
@@ -151,11 +151,11 @@ public class TurbineControllerBE extends MultiblockControllerBE {
     }
 
 
-    private LazyOptional<NCTurbinePeripheral> peripheralCap;
+    private LazyOptional<TurbinePeripheral> peripheralCap;
 
     public <T> LazyOptional<T>  getPeripheral(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if(peripheralCap == null) {
-            peripheralCap = LazyOptional.of(() -> new NCTurbinePeripheral(this));
+            peripheralCap = LazyOptional.of(() -> new TurbinePeripheral(this));
         }
         return peripheralCap.cast();
     }

@@ -6,10 +6,10 @@ import igentuman.nc.block.entity.processor.NCProcessorBE;
 
 import javax.annotation.Nonnull;
 
-public class NCProcessorPeripheral implements IPeripheral {
+public class ProcessorPeripheral implements IPeripheral {
     private final NCProcessorBE processorBE;
 
-    public NCProcessorPeripheral(NCProcessorBE processorBE)
+    public ProcessorPeripheral(NCProcessorBE processorBE)
     {
         this.processorBE = processorBE;
     }
@@ -21,11 +21,10 @@ public class NCProcessorPeripheral implements IPeripheral {
         return "nc_processor";
     }
 
-
     @Override
     public boolean equals( IPeripheral other )
     {
-        return this == other || other instanceof NCProcessorPeripheral && ((NCProcessorPeripheral) other).processorBE == processorBE;
+        return this == other || other instanceof ProcessorPeripheral && ((ProcessorPeripheral) other).processorBE == processorBE;
     }
 
     @LuaFunction

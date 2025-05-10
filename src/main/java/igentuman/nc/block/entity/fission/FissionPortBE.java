@@ -26,7 +26,7 @@ import javax.annotation.Nullable;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static igentuman.nc.compat.oc2.NCFissionReactorDevice.DEVICE_CAPABILITY;
+import static igentuman.nc.compat.oc2.FissionReactorDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.util.ModUtil.*;
 
 public class FissionPortBE extends NuclearCraftBE implements MultiblockAttachable {

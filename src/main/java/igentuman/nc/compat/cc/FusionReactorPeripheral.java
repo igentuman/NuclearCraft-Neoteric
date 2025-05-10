@@ -6,10 +6,10 @@ import igentuman.nc.block.entity.fusion.FusionCoreBE;
 
 import javax.annotation.Nonnull;
 
-public class NCFusionReactorPeripheral implements IPeripheral {
+public class FusionReactorPeripheral implements IPeripheral {
     private final FusionCoreBE reactor;
 
-    public NCFusionReactorPeripheral(FusionCoreBE processorBE)
+    public FusionReactorPeripheral(FusionCoreBE processorBE)
     {
         this.reactor = processorBE;
     }
@@ -25,7 +25,13 @@ public class NCFusionReactorPeripheral implements IPeripheral {
     @Override
     public boolean equals( IPeripheral other )
     {
-        return this == other || other instanceof NCFusionReactorPeripheral && ((NCFusionReactorPeripheral) other).reactor == reactor;
+        return this == other || other instanceof FusionReactorPeripheral && ((FusionReactorPeripheral) other).reactor == reactor;
+    }
+
+    @LuaFunction
+    public final boolean isFormed()
+    {
+        return reactor.isCasingValid && reactor.isInternalValid;
     }
 
     @LuaFunction
@@ -66,13 +72,15 @@ public class NCFusionReactorPeripheral implements IPeripheral {
     @LuaFunction
     public final int setRFAmplification(int amplification)
     {
-        return reactor.rfAmplificationRatio = Math.min(100, Math.max(amplification, 1));
+        reactor.rfAmplificationRatio = Math.min(100, Math.max(amplification, 1));
+        reactor.setChanged();
+        return reactor.rfAmplificationRatio;
     }
 
     @LuaFunction
     public final int getEnergyStored()
     {
-        return reactor.energyStorage.getEnergyStored();
+        return reactor.energyStorage().getEnergyStored();
     }
 
     @LuaFunction

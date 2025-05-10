@@ -79,8 +79,9 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
     @NBTField
     public boolean isActive = false;
 
-    protected List<ItemStack> allowedInputs;
-    protected List<FluidStack> allowedFluids;
+    protected List<ItemStack> allowedInputItems;
+    protected List<FluidStack> allowedInputFluids;
+    protected List<FluidStack> allowedOutputFluids;
     protected LazyOptional<NCGTEnergyHandler> gtEnergyCap;
     protected ParticleOptions particle1 = ParticleTypes.SMOKE;
     protected ProcessorPrefab<?,?> prefab;
@@ -102,6 +103,10 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
         upgradesHandler = createUpgradesHandler();
         handler = LazyOptional.of(() -> upgradesHandler);
         catalystHandler = createCatalystHandler();
+        contentHandler().setAllowedInputItems(this::getAllowedInputItems);
+        for(int i = 0; i < prefab().getSlotsConfig().getInputFluids(); i++) {
+            contentHandler().setAllowedInputFluids(i, this::getAllowedInputFluids);
+        }
     }
 
     @Override
@@ -349,15 +354,15 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
 
     public List<ItemStack> getAllowedInputItems()
     {
-        if(allowedInputs == null) {
-            allowedInputs = new ArrayList<>();
+        if(allowedInputItems == null) {
+            allowedInputItems = new ArrayList<>();
             for(AbstractRecipe recipe: NcRecipeType.getAllRecipesFor(getName(), getLevel())) {
                 for(Ingredient ingredient: recipe.getItemIngredients()) {
-                    allowedInputs.addAll(List.of(ingredient.getItems()));
+                    allowedInputItems.addAll(List.of(ingredient.getItems()));
                 }
             }
         }
-        return allowedInputs;
+        return allowedInputItems;
     }
 
     protected int howMuchICanSkip()
@@ -392,15 +397,15 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
 
     public List<FluidStack> getAllowedInputFluids()
     {
-        if(allowedFluids == null) {
-            allowedFluids = new ArrayList<>();
+        if(allowedInputFluids == null) {
+            allowedInputFluids = new ArrayList<>();
             for(NcRecipe recipe: NcRecipeType.getAllRecipesFor(getName(), getLevel())) {
                 for(FluidStackIngredient ingredient: recipe.getInputFluids()) {
-                    allowedFluids.addAll(ingredient.getRepresentations());
+                    allowedInputFluids.addAll(ingredient.getRepresentations());
                 }
             }
         }
-        return allowedFluids;
+        return allowedInputFluids;
     }
 
     private boolean forceUpdate() {
@@ -417,7 +422,20 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
         for(int i = 0; i < prefab().getSlotsConfig().getInputFluids(); i++) {
             contentHandler().setAllowedInputFluids(i, this::getAllowedInputFluids);
         }
+        for(int i = prefab().getSlotsConfig().getInputFluids(); i < prefab().getSlotsConfig().getOutputFluids() + prefab().getSlotsConfig().getInputFluids(); i++) {
+            contentHandler().setAllowedInputFluids(i, this::getAllowedOutputFluids);
+        }
         return true;
+    }
+
+    private List<FluidStack> getAllowedOutputFluids() {
+        if(allowedOutputFluids == null) {
+            allowedOutputFluids = new ArrayList<>();
+            for(NcRecipe recipe: NcRecipeType.getAllRecipesFor(getName(), getLevel())) {
+                allowedOutputFluids.addAll(recipe.getOutputFluids());
+            }
+        }
+        return allowedOutputFluids;
     }
 
     public boolean hasRedstoneSignal() {

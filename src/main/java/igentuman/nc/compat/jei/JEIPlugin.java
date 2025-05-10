@@ -25,19 +25,24 @@ import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.runtime.IJeiRuntime;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtIo;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+import java.io.IOException;
+import java.util.*;
 
-import static igentuman.nc.NuclearCraft.MODID;
-import static igentuman.nc.NuclearCraft.rl;
+import static igentuman.nc.NuclearCraft.*;
 import static igentuman.nc.compat.GlobalVars.*;
+import static igentuman.nc.setup.registration.NCItems.NC_FOOD;
 import static igentuman.nc.util.ModUtil.isMekanismLoaded;
+import static net.minecraft.world.item.Items.AIR;
 
 @JeiPlugin
 public  class JEIPlugin implements IModPlugin {
@@ -100,6 +105,10 @@ public  class JEIPlugin implements IModPlugin {
         if(isMekanismLoaded()) {
             registration.addRecipeCategories(new MekChemicalConversionCategoryWrapper<>(registration.getJeiHelpers().getGuiHelper(), CHEMICAL_TO_FLUID));
         }
+
+        registration.addRecipeCategories(
+                new MultiblockStructureCategory(registration.getJeiHelpers().getGuiHelper())
+        );
     }
 
     public <TYPE> RecipeType<TYPE> getRecipeType(String name) {
@@ -149,9 +158,35 @@ public  class JEIPlugin implements IModPlugin {
             if(isMekanismLoaded()) {
                 registration.addRecipes(getRecipeType(CHEMICAL_TO_FLUID), MekChemicalConversionRecipe.getRecipes());
             }
+            List<MultiblockStructureRecipe> multiblockRecipes = loadMultiblockStructures();
+            registration.addRecipes(MultiblockStructureCategory.TYPE, multiblockRecipes);
         } catch (IllegalArgumentException ex) {
-            NuclearCraft.LOGGER.error("Error registering recipes for JEI: " + ex.getMessage());
+            LOGGER.error("Error registering recipes for JEI: " + ex.getMessage());
         }
+    }
+
+    private List<MultiblockStructureRecipe> loadMultiblockStructures() {
+        List<MultiblockStructureRecipe> recipes = new ArrayList<>();
+        ResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
+        List<String> structures = List.of(
+            "fission_reactor.nbt",
+            "fusion_reactor.nbt",
+            "kugelblitz_chamber.nbt",
+            "leacher.nbt",
+            "turbine.nbt"
+        );
+
+        for (String file : structures) {
+            Optional<Resource> structure = resourceManager.getResource(rl("structures/" + file));
+            CompoundTag nbt = null;
+            try {
+                nbt = NbtIo.readCompressed(structure.get().open());
+            } catch (IOException e) {
+                continue;
+            }
+            recipes.add(new MultiblockStructureRecipe(rl(file), nbt, file));
+        }
+        return recipes;
     }
 
     private <T extends AbstractContainerScreen<?>> void addRecipeClickArea(IGuiHandlerRegistration registration, Class<? extends T> containerScreenClass, int xPos, int yPos, int width, int height, RecipeType<?>... recipeTypes) {
@@ -191,5 +226,6 @@ public  class JEIPlugin implements IModPlugin {
         if(CATALYSTS.containsKey("nc_ore_veins")) {
             registry.addRecipeCatalyst(CATALYSTS.get("nc_ore_veins").get(0), ORE_VEINS);
         }
+       // registry.addRecipeCatalyst(new ItemStack(NC_FOOD.get("smore").get()));
     }
 }

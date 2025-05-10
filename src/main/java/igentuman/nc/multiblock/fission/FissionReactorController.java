@@ -2,7 +2,6 @@ package igentuman.nc.multiblock.fission;
 
 import igentuman.api.nc.multiblock.MultiblockController;
 import igentuman.nc.block.entity.fission.FissionControllerBE;
-import net.minecraft.core.BlockPos;
 
 public class FissionReactorController implements MultiblockController {
 
@@ -19,6 +18,8 @@ public class FissionReactorController implements MultiblockController {
 
     @Override
     public void clearStats() {
+        controllerBE().isInternalValid = false;
+        controllerBE().isCasingValid = false;
         controllerBE().moderatorAttachments = 0;
         controllerBE().moderatorsCount = 0;
         controllerBE().heatSinkCooling = 0;
@@ -26,10 +27,5 @@ public class FissionReactorController implements MultiblockController {
         controllerBE().fuelCellMultiplier = 0;
         controllerBE().moderatorCellMultiplier = 0;
         controllerBE().irradiationConnections = 0;
-    }
-
-    @Override
-    public void addErroredBlock(BlockPos relative) {
-        controllerBE().errorBlockPos = relative;
     }
 }

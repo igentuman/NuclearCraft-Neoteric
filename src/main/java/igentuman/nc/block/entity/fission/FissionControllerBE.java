@@ -325,6 +325,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
     }
 
     public void tickClient() {
+        super.tickClient();
         if(!isCasingValid || !isInternalValid) {
             stopSound();
             return;

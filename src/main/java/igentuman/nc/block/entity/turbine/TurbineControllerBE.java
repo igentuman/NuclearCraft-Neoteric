@@ -193,6 +193,7 @@ public class TurbineControllerBE extends MultiblockControllerBE {
     }
 
     public void tickClient() {
+        super.tickClient();
         if(!isCasingValid || !isInternalValid) {
             stopSound();
             return;
@@ -205,8 +206,6 @@ public class TurbineControllerBE extends MultiblockControllerBE {
         }
     }
     protected int reValidateCounter = 0;
-
-
 
     public void tickServer() {
         rotationSpeed = 0;

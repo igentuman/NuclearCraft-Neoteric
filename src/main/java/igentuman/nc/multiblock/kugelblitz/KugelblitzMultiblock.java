@@ -188,8 +188,10 @@ public class KugelblitzMultiblock extends AbstractNCMultiblock {
     }
 
     public void validateInner() {
-        invalidateStats();
-        if (!outerValid) return;
+        if (!outerValid) {
+            invalidateStats();
+            return;
+        }
         if (centerBlockPos == null || centerBlockPos.equals(BlockPos.ZERO)) {
             validationResult = ValidationResult.INCOMPLETE;
             return;
@@ -209,7 +211,7 @@ public class KugelblitzMultiblock extends AbstractNCMultiblock {
 
                         if (!isValidForInner(pos)) {
                             validationResult = ValidationResult.WRONG_INNER;
-                            controller().addErroredBlock(pos);
+                            controller().setErroredBlock(pos);
                             return;
                         }
 
@@ -253,6 +255,7 @@ public class KugelblitzMultiblock extends AbstractNCMultiblock {
                 }
 
                 if (!isValidForOuter(posToCheck)) {
+                    controller().setErroredBlock(posToCheck);
                     return false;
                 }
                 processOuterBlock(posToCheck);
@@ -288,7 +291,8 @@ public class KugelblitzMultiblock extends AbstractNCMultiblock {
                     newPos = center.offset(i, j, 0);
                 }
                 BlockState bs = getLevel().getBlockState(newPos);
-                if (bs.isAir()) {
+                if (bs.isAir() || !isValidForOuter(newPos)) {
+                    controller().setErroredBlock(newPos);
                     return blocks;
                 }
                 if (bs.is(KUGELBLITZ_BLOCKS.get("quantum_transformer").get())) {

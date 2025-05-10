@@ -289,6 +289,7 @@ public class FusionCoreBE extends MultiblockControllerBE {
 
     public void tickClient() {
         BlockOverlayHandler.removeFusionReactor(getBlockPos());
+        super.tickClient();
         if(!isCasingValid) {
             stopSound();
             return;

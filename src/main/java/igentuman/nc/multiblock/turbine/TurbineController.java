@@ -2,7 +2,6 @@ package igentuman.nc.multiblock.turbine;
 
 import igentuman.nc.block.entity.turbine.TurbineControllerBE;
 import igentuman.api.nc.multiblock.MultiblockController;
-import net.minecraft.core.BlockPos;
 
 public class TurbineController implements MultiblockController {
 
@@ -18,10 +17,7 @@ public class TurbineController implements MultiblockController {
 
     @Override
     public void clearStats() {
-    }
-
-    @Override
-    public void addErroredBlock(BlockPos relative) {
-        controllerBE().errorBlockPos = relative;
+        controllerBE().isInternalValid = false;
+        controllerBE().isCasingValid = false;
     }
 }

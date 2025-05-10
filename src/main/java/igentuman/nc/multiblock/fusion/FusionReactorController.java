@@ -2,7 +2,6 @@ package igentuman.nc.multiblock.fusion;
 
 import igentuman.nc.block.entity.fusion.FusionCoreBE;
 import igentuman.api.nc.multiblock.MultiblockController;
-import net.minecraft.core.BlockPos;
 
 public class FusionReactorController implements MultiblockController {
 
@@ -20,12 +19,8 @@ public class FusionReactorController implements MultiblockController {
     public void clearStats() {
         controllerBE().errorBlockPos = null;
         controllerBE().isCasingValid = false;
+        controllerBE().isInternalValid = false;
         controllerBE().plasmaTemperature = 0;
         controllerBE().reactorHeat = 0;
-    }
-
-    @Override
-    public void addErroredBlock(BlockPos relative) {
-        controllerBE().errorBlockPos = relative;
     }
 }

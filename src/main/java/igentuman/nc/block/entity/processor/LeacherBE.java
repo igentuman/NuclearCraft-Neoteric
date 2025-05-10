@@ -100,9 +100,8 @@ public class LeacherBE extends NCProcessorBE {
 
     private void handleState() {
         pumpValidationTimeout--;
-        if(pumpValidationTimeout <= 0) {
+        if(pumpValidationTimeout <= 0 || getLevel().isClientSide()) {
             pumpValidationTimeout = 80;
-            clearHighligts();
             validatePumps();
         }
     }

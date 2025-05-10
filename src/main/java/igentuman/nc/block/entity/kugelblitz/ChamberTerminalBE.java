@@ -211,6 +211,7 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
     }
 
     public void tickClient() {
+        super.tickClient();
         if(!isCasingValid || !isInternalValid) {
             stopSound();
         }
@@ -297,7 +298,7 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
             return;
         }
 
-        if(getLevel().getGameTime() % 2 == 0 || getLevel().random.nextInt(128) < getMultiblock().stabilizers()) {
+        if(getLevel().getGameTime() % 2 == 0 || getLevel().random.nextInt(96) < getMultiblock().stabilizers()) {
             return;
         }
 

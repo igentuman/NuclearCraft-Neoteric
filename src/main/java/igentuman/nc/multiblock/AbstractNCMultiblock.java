@@ -23,7 +23,7 @@ import static igentuman.nc.NuclearCraft.debugLog;
 public abstract class AbstractNCMultiblock implements Multiblock {
 
     public boolean hasToRefresh = true;
-    protected int refreshCooldown = 50;
+    protected int refreshCooldown = 20;
     protected int height;
     protected int width;
     protected int depth;
@@ -272,7 +272,7 @@ public abstract class AbstractNCMultiblock implements Multiblock {
                     if (y == 0 || x == 0 || z == 0 || y == height-1 || x == width-1 || z == depth-1) {
                         if (!isValidForOuter(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getFacing(), -z))) {
                             validationResult = ValidationResult.WRONG_OUTER;
-                            controller().addErroredBlock(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getFacing(), -z));
+                            controller().setErroredBlock(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getFacing(), -z));
                             return;
                         }
                         processOuterBlock(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getFacing(), -z));
@@ -283,7 +283,7 @@ public abstract class AbstractNCMultiblock implements Multiblock {
                         ) {
                             if (!isValidCorner(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getFacing(), -z))) {
                                 validationResult = ValidationResult.WRONG_CORNER;
-                                controller().addErroredBlock(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getFacing(), -z));
+                                controller().setErroredBlock(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getFacing(), -z));
                                 return;
                             }
                         }
@@ -327,15 +327,18 @@ public abstract class AbstractNCMultiblock implements Multiblock {
     }
 
     public void validateInner() {
-        invalidateStats();
-        if (!outerValid) return;
+
+        if (!outerValid) {
+            invalidateStats();
+            return;
+        }
         for(int y = 1; y < resolveHeight()-1; y++) {
             for(int x = 1; x < resolveWidth()-1; x++) {
                 for (int z = 1; z < resolveDepth()-1; z++) {
                     NCBlockPos toCheck = new NCBlockPos(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getFacing(), -z));
                     if (!isValidForInner(toCheck)) {
                         validationResult = ValidationResult.WRONG_INNER;
-                        controller().addErroredBlock(toCheck);
+                        controller().setErroredBlock(toCheck);
                         return;
                     }
                     processInnerBlock(toCheck.copy());

@@ -1,12 +1,14 @@
 package igentuman.nc.block.entity;
 
 import igentuman.api.nc.multiblock.MultiblockAttachable;
+import igentuman.nc.handler.event.client.BlockOverlayHandler;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.multiblock.AbstractNCMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.ValidationResult;
 import igentuman.nc.util.CustomEnergyStorage;
+import igentuman.nc.util.NCBlockPos;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -107,7 +109,9 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
     }
 
     public void tickClient() {
-
+        if(!isCasingValid && !isInternalValid && errorBlockPos != null && errorBlockPos != BlockPos.ZERO) {
+            BlockOverlayHandler.addToOutline(new NCBlockPos(errorBlockPos.getX(), errorBlockPos.getY(), errorBlockPos.getZ()));
+        }
     }
 
     @Override
@@ -118,10 +122,13 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
             if (!isCasingValid || !isInternalValid) {
                 if(tag.contains("erroredBlock")) {
                     errorBlockPos = BlockPos.of(infoTag.getLong("erroredBlock"));
+                } else {
+                    errorBlockPos = BlockPos.ZERO;
                 }
                 validationResult = ValidationResult.byId(infoTag.getInt("validationId"));
             } else {
                 validationResult = ValidationResult.VALID;
+                errorBlockPos = BlockPos.ZERO;
             }
         }
     }
@@ -140,9 +147,6 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
     @Override
     public void setChanged() {
         MultiblockHandler.instance.addIgnoreToUpdate(getBlockPos());
-        if(!MultiblockHandler.instance.ignoreUpdate.contains(getBlockPos().asLong())) {
-            debugLog("failed to suppress update for " + getBlockPos());
-        }
         super.setChanged();
         wasUpdated = true;
         changed = true;
@@ -156,6 +160,8 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
             infoTag.putInt("validationId", validationResult.id);
             if(errorBlockPos instanceof BlockPos) {
                 infoTag.putLong("erroredBlock", errorBlockPos.asLong());
+            } else {
+                infoTag.putLong("erroredBlock", 0);
             }
             tag.remove("Info");
             tag.put("Info", infoTag);
@@ -184,6 +190,8 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
             infoTag.putInt("validationId", validationResult.id);
             if(errorBlockPos instanceof BlockPos) {
                 infoTag.putLong("erroredBlock", errorBlockPos.asLong());
+            } else {
+                infoTag.putLong("erroredBlock", 0);
             }
             tag.remove("Info");
             tag.put("Info", infoTag);

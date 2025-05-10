@@ -260,7 +260,7 @@ public class FusionReactorMultiblock extends AbstractNCMultiblock {
                 } else {
                     ringValid = false;
                     validationResult = ValidationResult.WRONG_OUTER;
-                    controller().addErroredBlock(startPosInnerWall);
+                    controller().setErroredBlock(startPosInnerWall);
                     return;
                 }
             }
@@ -272,7 +272,7 @@ public class FusionReactorMultiblock extends AbstractNCMultiblock {
                 } else {
                     ringValid = false;
                     validationResult = ValidationResult.WRONG_OUTER;
-                    controller().addErroredBlock(startPosOuterWall);
+                    controller().setErroredBlock(startPosOuterWall);
                     return;
                 }
                 assert startPosBottomWall != null;
@@ -281,7 +281,7 @@ public class FusionReactorMultiblock extends AbstractNCMultiblock {
                 } else {
                     ringValid = false;
                     validationResult = ValidationResult.WRONG_OUTER;
-                    controller().addErroredBlock(startPosBottomWall);
+                    controller().setErroredBlock(startPosBottomWall);
                     return;
                 }
                 assert startPosTopWall != null;
@@ -290,7 +290,7 @@ public class FusionReactorMultiblock extends AbstractNCMultiblock {
                 } else {
                     ringValid = false;
                     validationResult = ValidationResult.WRONG_OUTER;
-                    controller().addErroredBlock(startPosTopWall);
+                    controller().setErroredBlock(startPosTopWall);
                     return;
                 }
             }
@@ -315,7 +315,7 @@ public class FusionReactorMultiblock extends AbstractNCMultiblock {
             } else {
                 if (connectors != 0) {
                     connectorsValid = false;
-                    controller().addErroredBlock(pos);
+                    controller().setErroredBlock(pos);
                     validationResult = ValidationResult.INCOMPLETE;
                 } else {
                     connectorsValid = true;
@@ -360,7 +360,7 @@ public class FusionReactorMultiblock extends AbstractNCMultiblock {
                 if(!processInnerBlock(innerRingStartPos.revert().relative(dir, i))) {
                     innerValid = false;
                     validationResult = ValidationResult.WRONG_INNER;
-                    controller().addErroredBlock(innerRingStartPos);
+                    controller().setErroredBlock(innerRingStartPos);
                     return;
                 }
             }

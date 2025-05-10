@@ -8,6 +8,7 @@ import igentuman.nc.block.entity.fusion.FusionCoreBE;
 import igentuman.nc.client.renderer.DistortShader;
 import igentuman.nc.item.QNP;
 import igentuman.nc.util.NCBlockPos;
+import igentuman.nc.util.collection.HashList;
 import net.minecraft.client.Camera;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
@@ -45,6 +46,7 @@ import org.lwjgl.opengl.GL11;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import static com.mojang.math.Axis.XP;
 import static com.mojang.math.Axis.YP;
@@ -55,6 +57,9 @@ import static igentuman.nc.util.StackUtils.isMultiTool;
 
 @Mod.EventBusSubscriber(modid = MODID, value = Dist.CLIENT)
 public class BlockOverlayHandler {
+
+    private static int outlineCooldown = 5;
+    private final static HashList<BlockPos> highlightsToRemove = new HashList<>();
 
     public static void register(FMLClientSetupEvent event) {
         MinecraftForge.EVENT_BUS.addListener(BlockOverlayHandler::blockOverlayEvent);
@@ -82,14 +87,26 @@ public class BlockOverlayHandler {
                 // drawBoundingBoxAtBlockPos(e.getPoseStack(), box4, 1, 0, 0.5f, 1, pos.above(), player.blockPosition());
             }
         }
+        if(!highlightsToRemove.isEmpty()) {
+            outlineCooldown--;
+            if (outlineCooldown < 1) {
+                outlineCooldown = 400;
+                for (BlockPos pos : highlightsToRemove) {
+                    outlineBlocks.remove(pos);
+                }
+                highlightsToRemove.clear();
+            }
+        }
         if(e.getStage().equals(RenderLevelStageEvent.Stage.AFTER_PARTICLES)) {
             gameRenderer.resetProjectionMatrix(e.getProjectionMatrix());
             if (player.level().isClientSide) {
+                if (outlineBlocks.isEmpty()) return;
                 for (BlockPos pos: outlineBlocks) {
+                    if(pos.equals(BlockPos.ZERO)) continue;
                     AABB aabb = new AABB(0, 0,0,1,1,1);
                     drawBoundingBoxAtBlockPos(e.getPoseStack(), aabb, 1, 0, 0, 1, pos, player.blockPosition());
+                    highlightsToRemove.add(pos);
                 }
-
             }
         }
     }
@@ -188,8 +205,8 @@ public class BlockOverlayHandler {
             event.getEntity().startUsingItem(InteractionHand.OFF_HAND);
     }
 
-    public static List<BlockPos> outlineBlocks = new ArrayList<>();
-    public static List<BlockPos> fusionReactors = new ArrayList<>();
+    public static List<BlockPos> outlineBlocks = new CopyOnWriteArrayList<>();
+    public static List<BlockPos> fusionReactors = new CopyOnWriteArrayList<>();
 
     public static void drawBoundingBoxAtBlockPos(PoseStack matrixStackIn, AABB aabbIn, float red, float green, float blue, float alpha, BlockPos pos, BlockPos aimed) {
         Vec3 cam = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
@@ -263,12 +280,13 @@ public class BlockOverlayHandler {
     public static void addToOutline(NCBlockPos ncBlockPos) {
         if(!outlineBlocks.contains(ncBlockPos)) {
             outlineBlocks.add(ncBlockPos);
+            highlightsToRemove.remove(ncBlockPos);
         }
     }
 
     public static void removeFromOutline(NCBlockPos ncBlockPos) {
-        if(outlineBlocks.contains(ncBlockPos)) {
-            outlineBlocks.remove(ncBlockPos);
+        if(!highlightsToRemove.contains(ncBlockPos)) {
+            highlightsToRemove.add(ncBlockPos);
         }
     }
 }

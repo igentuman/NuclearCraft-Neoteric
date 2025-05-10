@@ -202,8 +202,10 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
     @Override
     public void validateInner()
     {
-        invalidateStats();
-        if(!outerValid) return;
+        if(!outerValid) {
+            invalidateStats();
+            return;
+        }
         resolveDimensions();
         collectFuelCells();
         for(int y = 1; y < height-1; y++) {
@@ -212,7 +214,7 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
                     NCBlockPos toCheck = new NCBlockPos(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getFacing(), -z));
                     if (!isValidForInner(toCheck)) {
                         validationResult = ValidationResult.WRONG_INNER;
-                        controller().addErroredBlock(new BlockPos(toCheck));
+                        controller().setErroredBlock(new BlockPos(toCheck));
                         return;
                     }
                     processInnerBlock(new BlockPos(toCheck));

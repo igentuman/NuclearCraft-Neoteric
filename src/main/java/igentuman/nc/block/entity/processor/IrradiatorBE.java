@@ -61,7 +61,7 @@ public class IrradiatorBE extends NCProcessorBE implements MultiblockAttachable 
 
     @Override
     public boolean canInvalidateCache() {
-        return true;
+        return false;
     }
 
     public void tickServer() {
@@ -80,6 +80,13 @@ public class IrradiatorBE extends NCProcessorBE implements MultiblockAttachable 
         if(wasFlux != irradiativeFlux || wasFuel != fuelMultiplier) {
             setChanged();
         }
+    }
+
+    @Override
+    public void setChanged() {
+        MultiblockHandler.instance.addIgnoreToUpdate(getBlockPos());
+        super.setChanged();
+        wasUpdated = true;
     }
 
     @Override

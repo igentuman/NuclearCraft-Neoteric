@@ -231,7 +231,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
         if(getNetHeat() < 0) {
             cooling = heatPerTick;
         }
-        double heatEff =  cooling * FISSION_CONFIG.BOILING_MULTIPLIER.get() * efficiency * 0.00005D * heatMultiplier;
+        double heatEff =  cooling * FISSION_CONFIG.BOILING_MULTIPLIER.get() * boilingEfficiency() * 0.00005D * heatMultiplier;
 
         if(hasCoolant()) {
             FluidStack steam = boilingRecipe.getOutputFluids().get(0);
@@ -487,9 +487,9 @@ public class FissionControllerBE extends MultiblockControllerBE {
 
     private boolean processReaction() {
         heatMultiplier = heatMultiplier() + collectedHeatMultiplier() - 1;
-        if(recipeInfo.recipe != null && recipeInfo.isCompleted()) {
+        if(recipeInfo().recipe != null && recipeInfo().isCompleted()) {
             if(contentHandler().itemHandler.getStackInSlot(0).equals(ItemStack.EMPTY)) {
-                recipeInfo.clear();
+                recipeInfo().clear();
             }
         }
         if (!hasRecipe()) {
@@ -524,14 +524,14 @@ public class FissionControllerBE extends MultiblockControllerBE {
     private boolean process() {
         reactivityLevel += controllerEnabled ? 1 : -1;
         reactivityLevel = Math.max(0, Math.min(reactivityLevel, 100));
-        if(recipeInfo.be == null) {
-            recipeInfo.be = this;
+        if(recipeInfo().be == null) {
+            recipeInfo().be = this;
         }
-        recipeInfo.process(fuelCellsCount * (heatMultiplier() + collectedHeatMultiplier() - 1) * reactivityLevel/100D);
-        if(recipeInfo.radiation != 1D) {
-            RadiationManager.get(getLevel()).addRadiation(getLevel(), recipeInfo.radiation/10000, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ());
+        recipeInfo().process(fuelCellsCount * (heatMultiplier() + collectedHeatMultiplier() - 1) * reactivityLevel/100D);
+        if(recipeInfo().radiation != 1D) {
+            RadiationManager.get(getLevel()).addRadiation(getLevel(), recipeInfo().radiation/10000, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ());
         }
-        if (!recipeInfo.isCompleted()) {
+        if (!recipeInfo().isCompleted()) {
             if(!isSteamMode) {
                 energyStorage.addEnergy(calculateEnergy());
             }
@@ -545,17 +545,17 @@ public class FissionControllerBE extends MultiblockControllerBE {
     }
 
     private void handleRecipeOutput() {
-        if (hasRecipe() && recipeInfo.isCompleted()) {
+        if (hasRecipe() && recipeInfo().isCompleted()) {
             if(recipe == null) {
-                recipe = (Recipe) recipeInfo.recipe();
+                recipe = (Recipe) recipeInfo().recipe();
             }
             if (recipe.handleOutputs(contentHandler)) {
-                recipeInfo.clear();
+                recipeInfo().clear();
                 if(contentHandler().itemHandler.getStackInSlot(0).equals(ItemStack.EMPTY)) {
                     recipe = null;
                 }
             } else {
-                recipeInfo.stuck = true;
+                recipeInfo().stuck = true;
             }
             setChanged();
         }
@@ -585,7 +585,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
     }
 
     public double heatPerTick() {
-        heatPerTick = recipeInfo.heat * Math.max(fuelCellsCount, fuelCellMultiplier) + moderatorsHeat() + irradiationHeat;
+        heatPerTick = recipeInfo().heat * Math.max(fuelCellsCount, fuelCellMultiplier) + moderatorsHeat() + irradiationHeat;
         return heatPerTick;
     }
 
@@ -595,7 +595,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
 
     private int calculateEnergy() {
         energyPerTick = (int) (
-                (recipeInfo.energy * Math.abs(fuelCellMultiplier-fuelCellsCount) + moderatorsFE())
+                (recipeInfo().energy * Math.max(1, Math.abs(fuelCellMultiplier-fuelCellsCount)) + moderatorsFE())
                 * (heatMultiplier() + collectedHeatMultiplier() - 1)
                 * FISSION_CONFIG.FE_GENERATION_MULTIPLIER.get()/10D
                 * ENERGY_GENERATION.GENERATION_MULTIPLIER.get()
@@ -605,11 +605,11 @@ public class FissionControllerBE extends MultiblockControllerBE {
     }
 
     public double moderatorsHeat() {
-        return Math.max(0.25, getModerationLevel()) * recipeInfo.heat * moderatorCellMultiplier * (FISSION_CONFIG.MODERATOR_HEAT_MULTIPLIER.get() / 100);
+        return Math.max(0.1, getModerationLevel()) * recipeInfo().heat * moderatorCellMultiplier * (FISSION_CONFIG.MODERATOR_HEAT_MULTIPLIER.get() / 100);
     }
 
     public double moderatorsFE() {
-        return getModerationLevel() * recipeInfo.energy * moderatorCellMultiplier * (FISSION_CONFIG.MODERATOR_FE_MULTIPLIER.get() / 100);
+        return getModerationLevel() * recipeInfo().energy * moderatorCellMultiplier * (FISSION_CONFIG.MODERATOR_FE_MULTIPLIER.get() / 100);
     }
 
     @Override
@@ -621,22 +621,22 @@ public class FissionControllerBE extends MultiblockControllerBE {
     protected void updateRecipe() {
         recipe = getRecipe();
         if (recipe != null) {
-            recipeInfo.setRecipe(recipe);
-            recipeInfo.ticks = ((Recipe)recipeInfo.recipe()).getDepletionTime();
-            recipeInfo.energy = recipeInfo.recipe().getEnergy();
-            recipeInfo.heat = ((Recipe)recipeInfo.recipe()).getHeat();
-            recipeInfo.radiation = recipeInfo.recipe().getRadiation();
-            recipeInfo.be = this;
+            recipeInfo().setRecipe(recipe);
+            recipeInfo().ticks = ((Recipe)recipeInfo().recipe()).getDepletionTime();
+            recipeInfo().energy = recipeInfo().recipe().getEnergy();
+            recipeInfo().heat = ((Recipe)recipeInfo().recipe()).getHeat();
+            recipeInfo().radiation = recipeInfo().recipe().getRadiation();
+            recipeInfo().be = this;
             recipe.consumeInputs(contentHandler, 1);
         }
     }
 
     public boolean recipeIsStuck() {
-        return recipeInfo.isStuck();
+        return recipeInfo().isStuck();
     }
 
     public boolean hasRecipe() {
-        return recipeInfo.recipe() != null;
+        return recipeInfo().recipe() != null;
     }
 
     public Direction getFacing() {
@@ -647,19 +647,24 @@ public class FissionControllerBE extends MultiblockControllerBE {
     }
 
     public double getDepletionProgress() {
-        return recipeInfo.getProgress();
+        return recipeInfo().getProgress();
     }
 
     public double getMaxHeat() {
         return FISSION_CONFIG.HEAT_CAPACITY.get();
     }
 
-    public double calculateEfficiency() {
+    public double boilingEfficiency() {
         double mult = fuelCellsCount;
         if(fuelCellMultiplier > fuelCellsCount) {
             mult = (double) fuelCellMultiplier / fuelCellsCount;
         }
         return (double) calculateEnergy() / (recipeInfo.energy * mult / 100);
+    }
+
+    public double calculateEfficiency() {
+
+        return (double) calculateEnergy() / recipeInfo.energy * 100D;
     }
 
     public double getNetHeat() {
@@ -689,7 +694,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
 
     public ItemStack getCurrentFuel() {
         if(!hasRecipe()) return ItemStack.EMPTY;
-        return recipeInfo.recipe().getFirstItemStackIngredient(0);
+        return recipeInfo().recipe().getFirstItemStackIngredient(0);
     }
 
     public List<FissionBoilingRecipe> getBoilingRecipes() {
@@ -722,7 +727,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
     }
 
     public boolean isProcessing() {
-        return hasRecipe() && recipeInfo.ticksProcessed > 0 && !recipeInfo.isCompleted();
+        return hasRecipe() && recipeInfo().ticksProcessed > 0 && !recipeInfo().isCompleted();
     }
 
     public void addIrradiationHeat() {

@@ -37,6 +37,9 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
     public final HashMap<String, Integer> coolantPerTick = new HashMap<>();
     private final List<BlockPos> delayedValidation = new ArrayList<>();
     private boolean delayedValidationFlag = false;
+    private int fuelCellMultiplier = 0;
+    private int moderatorCellMultiplier = 0;
+    private int moderatorAttachments = 0;
 
     @Override
     public int maxHeight() {
@@ -200,6 +203,14 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
     }
 
     @Override
+    public void validate() {
+        moderatorAttachments = 0;
+        fuelCellMultiplier = 0;
+        moderatorCellMultiplier = 0;
+        super.validate();
+    }
+
+    @Override
     public void validateInner()
     {
         if(!outerValid) {
@@ -207,7 +218,13 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
             return;
         }
         resolveDimensions();
+        moderatorCellMultiplier = 0;
+        fuelCellMultiplier = 0;
+        moderatorAttachments = 0;
         collectFuelCells();
+        controllerBE().moderatorCellMultiplier = moderatorCellMultiplier;
+        controllerBE().fuelCellMultiplier = fuelCellMultiplier;
+        controllerBE().moderatorAttachments = moderatorAttachments;
         for(int y = 1; y < height-1; y++) {
             for(int x = 1; x < width-1; x++) {
                 for (int z = 1; z < depth-1; z++) {
@@ -240,10 +257,10 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
                     if (isFuelCell(toCheck)) {
                         addDirectFuelCellConnection(new BlockPos(toCheck));
                         addIfNotExists(new BlockPos(toCheck), fuelCells);
-                        int moderatorAttachments = countAttachedModeratorsToFuelCell(new BlockPos(toCheck));
-                        controllerBE().fuelCellMultiplier += countAdjacentFuelCells(NCBlockPos.of(toCheck), 3);
-                        controllerBE().moderatorCellMultiplier += (countAdjacentFuelCells(NCBlockPos.of(toCheck), 1)+1)*moderatorAttachments;
-                        controllerBE().moderatorAttachments += moderatorAttachments;
+                        int modAttachments = countAttachedModeratorsToFuelCell(new BlockPos(toCheck));
+                        fuelCellMultiplier += countAdjacentFuelCells(NCBlockPos.of(toCheck), 3);
+                        moderatorCellMultiplier += (countAdjacentFuelCells(NCBlockPos.of(toCheck), 1)+1)*modAttachments;
+                        moderatorAttachments += modAttachments;
                         indexDirectHeatSinks(new BlockPos(toCheck));
                     }
                 }
@@ -381,6 +398,9 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
         delayedValidation.clear();
         irradiationConnections = 0;
         delayedValidationFlag = false;
+        controllerBE().moderatorCellMultiplier = 0;
+        controllerBE().fuelCellMultiplier = 0;
+        controllerBE().moderatorAttachments = 0;
     }
 
     protected Direction getFacing() {

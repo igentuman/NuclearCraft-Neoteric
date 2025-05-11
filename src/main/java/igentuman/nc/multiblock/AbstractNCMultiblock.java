@@ -202,6 +202,7 @@ public abstract class AbstractNCMultiblock implements Multiblock {
                 height = i;
                 break;
             }
+            updateDimensions(controllerPos().above(i));
         }
         for (int i = 1; i < maxHeight(); i++) {
             if (!isValidForOuter(controllerPos().below(i))) {
@@ -209,6 +210,7 @@ public abstract class AbstractNCMultiblock implements Multiblock {
                 height += i - 1;
                 break;
             }
+            updateDimensions(controllerPos().below(i));
         }
 
         return height;
@@ -222,6 +224,7 @@ public abstract class AbstractNCMultiblock implements Multiblock {
                 width = i;
                 break;
             }
+            updateDimensions(getLeftPos(i));
         }
         for(int i = 1; i<maxWidth(); i++) {
             if (!isValidForOuter(getRightPos(i))) {
@@ -229,6 +232,7 @@ public abstract class AbstractNCMultiblock implements Multiblock {
                 width += i-1;
                 break;
             }
+            updateDimensions(getRightPos(i));
         }
         return width;
     }
@@ -240,6 +244,7 @@ public abstract class AbstractNCMultiblock implements Multiblock {
                 depth = i;
                 break;
             }
+            updateDimensions(getForwardPos(i).above(topCasing));
         }
         return depth;
     }
@@ -427,6 +432,7 @@ public abstract class AbstractNCMultiblock implements Multiblock {
         controllers.clear();
         bsCache.clear();
         beCache.clear();
+
         if (isOuterValid()) {
             validateInner();
         }

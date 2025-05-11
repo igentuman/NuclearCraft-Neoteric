@@ -58,6 +58,7 @@ public class NCLanguageProvider extends LanguageProvider {
         messages();
         storageBlocks();
         sounds();
+        advancements();
     }
 
     private void messages() {
@@ -85,6 +86,103 @@ public class NCLanguageProvider extends LanguageProvider {
 
         add("sound_event.nuclearcraft.fission_reactor", "Fission Reactor Ticking");
         add("sound_event.nuclearcraft.turbine", "Turbine is spinning");
+    }
+
+    private void advancements() {
+        // Root advancement
+        add("advancement.nc.root", "NuclearCraft");
+        add("advancement.nc.root.desc", "The beginning of your nuclear journey");
+
+        add("advancement.nc.basic_barrel", "Basic Barrel");
+        add("advancement.nc.basic_barrel.desc", "Got the barrel");
+
+        add("advancement.nc.basic_storage_container", "Basic Storage Container");
+        add("advancement.nc.basic_storage_container.desc", "Better than chests");
+
+        add("advancement.nc.basic_voltaic_pile", "Basic Voltaic Pile");
+        add("advancement.nc.basic_voltaic_pile.desc", "Keeping energy, just in case");
+
+        add("advancement.nc.alloy_smelter", "Alloy Smelter");
+        add("advancement.nc.alloy_smelter.desc", "Combine metals into alloys");
+
+        add("advancement.nc.qnp", "QNP");
+        add("advancement.nc.qnp.desc", "Craft a QNP for advanced excavation");
+
+        add("advancement.nc.leacher", "Leacher");
+        add("advancement.nc.leacher.desc", "Craft a Leacher to extract minerals using acids");
+
+        // Basic machines
+        add("advancement.nc.manufactory", "Manufactory");
+        add("advancement.nc.manufactory.desc", "Craft a Manufactory to process ores and other materials");
+
+        add("advancement.nc.isotope_separator", "Isotope Separator");
+        add("advancement.nc.isotope_separator.desc", "Craft an Isotope Separator to separate isotopes");
+
+        add("advancement.nc.assembler", "Assembler");
+        add("advancement.nc.assembler.desc", "Craft an Assembler to create complex components");
+
+        add("advancement.nc.pressurizer", "Pressurizer");
+        add("advancement.nc.pressurizer.desc", "The compression");
+
+        add("advancement.nc.decay_hastener", "Decay Hastener");
+        add("advancement.nc.decay_hastener.desc", "C'mon, hurry up!");
+
+        add("advancement.nc.chemical_reactor", "Chemical Reactor");
+        add("advancement.nc.chemical_reactor.desc", "Mixing fuids and gases");
+
+        add("advancement.nc.analyzer", "Analyzer");
+        add("advancement.nc.analyzer.desc", "It's time to analyze");
+
+        // Energy generation
+        add("advancement.nc.solar_panel_basic", "Basic Solar Panel");
+        add("advancement.nc.solar_panel_basic.desc", "Harness the power of the sun");
+
+        add("advancement.nc.decay_generator", "Decay Generator");
+        add("advancement.nc.decay_generator.desc", "Generate energy from radioactive decay");
+
+        add("advancement.nc.uranium_rtg", "Uranium RTG");
+        add("advancement.nc.uranium_rtg.desc", "Radioisotope Thermoelectric generation");
+
+        // Fission reactor
+        add("advancement.nc.fission_reactor_controller", "Fission Reactor Controller");
+        add("advancement.nc.fission_reactor_controller.desc", "Splitting the Atom");
+
+        // Irradiation
+        add("advancement.nc.irradiator", "Irradiator");
+        add("advancement.nc.irradiator.desc", "Transforming materials with neutron flux");
+
+        add("advancement.nc.chamber_terminal", "Chamber Terminal");
+        add("advancement.nc.chamber_terminal.desc", "Can you keep that blackhole stable?");
+
+        // Turbine
+        add("advancement.nc.turbine_controller", "Turbine Controller");
+        add("advancement.nc.turbine_controller.desc", "Convert steam into energy efficiently");
+
+        // Fusion
+        add("advancement.nc.fusion_core", "Fusion Core");
+        add("advancement.nc.fusion_core.desc", "Fusing elements = energy");
+
+        // Tools and special items
+        add("advancement.nc.research_paper", "Research Paper");
+        add("advancement.nc.research_paper.desc", "Analyze chunks for mineral veins");
+
+        add("advancement.nc.spaxelhoe_thorium", "Thorium Spaxelhoe");
+        add("advancement.nc.spaxelhoe_thorium.desc", "Craft a multi-tool made from Thorium");
+
+        add("advancement.nc.expl", "EXPL");
+        add("advancement.nc.expl.desc", "Howbout making blackhole out of light?");
+
+        add("advancement.nc.light_shielding", "Light Radiation Shielding");
+        add("advancement.nc.light_shielding.desc", "Your first step in radiation protection");
+
+        add("advancement.nc.radaway", "RadAway");
+        add("advancement.nc.radaway.desc", "Remove radiation contamination from your body");
+
+        add("advancement.nc.hazmat_mask", "Hazmat Protection");
+        add("advancement.nc.hazmat_mask.desc", "Full-body protection against radiation exposure");
+
+        add("advancement.nc.hev_helmet", "Advanced Protection");
+        add("advancement.nc.hev_helmet.desc", "High-tech suit with enhanced radiation shielding");
     }
 
     private void labels() {

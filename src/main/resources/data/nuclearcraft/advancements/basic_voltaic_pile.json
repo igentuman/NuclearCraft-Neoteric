@@ -1,0 +1,38 @@
+{
+  "display": {
+    "icon": {
+      "item": "nuclearcraft:basic_voltaic_pile"
+    },
+    "title": {
+      "translate": "advancement.nc.basic_voltaic_pile"
+    },
+    "description": {
+      "translate": "advancement.nc.basic_voltaic_pile.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "nuclearcraft:manufactory",
+  "criteria": {
+    "basic_voltaic_pile": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": ["nuclearcraft:basic_voltaic_pile"]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "basic_voltaic_pile"
+    ]
+  ],
+  "rewards": {
+    "experience": 10
+  }
+}

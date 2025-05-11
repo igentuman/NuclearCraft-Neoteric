@@ -1,0 +1,38 @@
+{
+  "display": {
+    "icon": {
+      "item": "nuclearcraft:leacher"
+    },
+    "title": {
+      "translate": "advancement.nc.leacher"
+    },
+    "description": {
+      "translate": "advancement.nc.leacher.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "nuclearcraft:chemical_reactor",
+  "criteria": {
+    "leacher": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": ["nuclearcraft:leacher"]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "leacher"
+    ]
+  ],
+  "rewards": {
+    "experience": 10
+  }
+}

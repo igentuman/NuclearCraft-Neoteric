@@ -1,0 +1,41 @@
+{
+  "display": {
+    "icon": {
+      "item": "nuclearcraft:irradiator"
+    },
+    "title": {
+      "translate": "advancement.nc.irradiator"
+    },
+    "description": {
+      "translate": "advancement.nc.irradiator.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "nuclearcraft:fission_reactor_controller",
+  "criteria": {
+    "irradiator": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": ["nuclearcraft:irradiator"]
+          },
+          {
+            "items": ["nuclearcraft:fission_reactor_irradiation_chamber"]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "irradiator"
+    ]
+  ],
+  "rewards": {
+    "experience": 10
+  }
+}

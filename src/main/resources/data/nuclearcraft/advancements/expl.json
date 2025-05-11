@@ -1,0 +1,38 @@
+{
+  "display": {
+    "icon": {
+      "item": "nuclearcraft:expl"
+    },
+    "title": {
+      "translate": "advancement.nc.expl"
+    },
+    "description": {
+      "translate": "advancement.nc.expl.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "nuclearcraft:chamber_terminal",
+  "criteria": {
+    "expl": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": ["nuclearcraft:expl"]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "expl"
+    ]
+  ],
+  "rewards": {
+    "experience": 10
+  }
+}

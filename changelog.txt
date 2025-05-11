@@ -1,4 +1,25 @@
-
+1.2.1-rc
+    Added new heat sinks
+    Kugelblitz Chamber multiblock and blackhole feature
+    Added stack upgrade for processors
+    Curios support for dosimeter and geiger counter #119
+    Liquid removal does not work in Turbine Port and Turbine Controller. #195
+    Fixed fission reactor recalculation of efficiency and other stats #194, #190
+    Fixed computers compatibility
+    Added new villager profession and new villager house
+    Fixed leacher feature and model update
+    OC2 compatibility fixes
+    Fixed permissions rules for /nc commands
+    Added tab in JEI to show multiblock structures
+    Fixed turbine feature
+    Added ja_jp translations (thanks to Twister)
+    Fixed multiple recipes + added bunch of missing recipes
+    Fix for fission port item capability
+    Added new isotopes, items and liquids
+    Added outlines for incorrect multiblock blocks
+    Improved QNP
+    Performance improvements for multiblock handling
+    Added advancements
 
 1.0.0-rc.1
     Nuclear furnace Missing Description #109

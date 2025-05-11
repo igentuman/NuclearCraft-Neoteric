@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "nuclearcraft:block/multiblock/platinum_heat_sink"
+    }
+  }
+}

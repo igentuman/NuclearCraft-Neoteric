@@ -435,6 +435,8 @@ public abstract class AbstractNCMultiblock implements Multiblock {
 
         if (isOuterValid()) {
             validateInner();
+        } else{
+            invalidateStats();
         }
         innerValid = validationResult.isValid;
         isFormed = outerValid && innerValid;

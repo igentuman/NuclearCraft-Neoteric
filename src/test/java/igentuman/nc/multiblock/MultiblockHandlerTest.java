@@ -12,8 +12,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -37,7 +37,7 @@ class MultiblockHandlerTest {
 
     @BeforeEach
     void setUp() throws NoSuchFieldException, IllegalAccessException {
-        // Use reflection to access private static fields
+        // Use reflection to access private fields - now instance fields
         multiblockField = MultiblockHandler.class.getDeclaredField("multiblocks");
         multiblockField.setAccessible(true);
 
@@ -50,21 +50,22 @@ class MultiblockHandlerTest {
         ignoreUpdateField = MultiblockHandler.class.getDeclaredField("ignoreUpdate");
         ignoreUpdateField.setAccessible(true);
 
-        // Clear the static collections before each test
-        ((HashMap<?, ?>) multiblockField.get(null)).clear();
-        ((HashMap<?, ?>) chunkCacheField.get(null)).clear();
-        ((List<?>) toRemoveField.get(null)).clear();
-        ((List<?>) ignoreUpdateField.get(null)).clear();
+        // Clear the collections before each test
+        // Pass MultiblockHandler.instance instead of null
+        ((ConcurrentHashMap<?, ?>) multiblockField.get(MultiblockHandler.instance)).clear();
+        ((ConcurrentHashMap<?, ?>) chunkCacheField.get(MultiblockHandler.instance)).clear();
+        ((Set<?>) toRemoveField.get(MultiblockHandler.instance)).clear();
+        ((Set<?>) ignoreUpdateField.get(MultiblockHandler.instance)).clear();
     }
 
     @AfterEach
     void tearDown() {
         // Clean up after each test
         try {
-            ((HashMap<?, ?>) multiblockField.get(null)).clear();
-            ((HashMap<?, ?>) chunkCacheField.get(null)).clear();
-            ((List<?>) toRemoveField.get(null)).clear();
-            ((List<?>) ignoreUpdateField.get(null)).clear();
+            ((ConcurrentHashMap<?, ?>) multiblockField.get(MultiblockHandler.instance)).clear();
+            ((ConcurrentHashMap<?, ?>) chunkCacheField.get(MultiblockHandler.instance)).clear();
+            ((Set<?>) toRemoveField.get(MultiblockHandler.instance)).clear();
+            ((Set<?>) ignoreUpdateField.get(MultiblockHandler.instance)).clear();
         } catch (Exception e) {
             // Ignore any cleanup exceptions
         }
@@ -85,13 +86,13 @@ class MultiblockHandlerTest {
         MultiblockHandler.instance.removeMultiblock(mockMultiblock);
 
         // Verify it was removed
-        HashMap<String, AbstractNCMultiblock> multiblocks =
-                (HashMap<String, AbstractNCMultiblock>) multiblockField.get(null);
+        ConcurrentHashMap<String, AbstractNCMultiblock> multiblocks =
+                (ConcurrentHashMap<String, AbstractNCMultiblock>) multiblockField.get(MultiblockHandler.instance);
         assertFalse(multiblocks.containsKey("test-id"));
 
         // Check chunk cache was cleaned up
-        HashMap<Long, List<String>> chunkCache =
-                (HashMap<Long, List<String>>) chunkCacheField.get(null);
+        ConcurrentHashMap<Long, List<String>> chunkCache =
+                (ConcurrentHashMap<Long, List<String>>) chunkCacheField.get(MultiblockHandler.instance);
         assertTrue(chunkCache.isEmpty() || !chunkCache.get(chunkPos.toLong()).contains("test-id"));
     }
 
@@ -119,8 +120,8 @@ class MultiblockHandlerTest {
         MultiblockHandler.instance.addMultiblock(secondMultiblock, true);
 
         // Verify second multiblock replaced first one
-        HashMap<String, AbstractNCMultiblock> multiblocks =
-                (HashMap<String, AbstractNCMultiblock>) multiblockField.get(null);
+        ConcurrentHashMap<String, AbstractNCMultiblock> multiblocks =
+                (ConcurrentHashMap<String, AbstractNCMultiblock>) multiblockField.get(MultiblockHandler.instance);
         assertEquals(secondMultiblock, multiblocks.get("same-id"));
     }
 
@@ -137,14 +138,14 @@ class MultiblockHandlerTest {
         MultiblockHandler.instance.addMultiblock(mockMultiblock);
 
         // Verify
-        HashMap<String, AbstractNCMultiblock> multiblocks =
-                (HashMap<String, AbstractNCMultiblock>) multiblockField.get(null);
+        ConcurrentHashMap<String, AbstractNCMultiblock> multiblocks =
+                (ConcurrentHashMap<String, AbstractNCMultiblock>) multiblockField.get(MultiblockHandler.instance);
 
         assertTrue(multiblocks.containsKey("test-id"));
         assertEquals(mockMultiblock, multiblocks.get("test-id"));
 
-        HashMap<Long, List<String>> chunkCache =
-                (HashMap<Long, List<String>>) chunkCacheField.get(null);
+        ConcurrentHashMap<Long, List<String>> chunkCache =
+                (ConcurrentHashMap<Long, List<String>>) chunkCacheField.get(MultiblockHandler.instance);
 
         assertTrue(chunkCache.containsKey(chunkPos.toLong()));
         assertTrue(chunkCache.get(chunkPos.toLong()).contains("test-id"));
@@ -163,14 +164,16 @@ class MultiblockHandlerTest {
     @Test
     void testIgnoreUpdate() throws IllegalAccessException {
         BlockPos pos = new BlockPos(1, 1, 1);
+        long posAsLong = pos.asLong(); // Convert BlockPos to long
+
         MultiblockHandler.instance.addIgnoreToUpdate(pos);
 
-        List<BlockPos> ignoreList = (List<BlockPos>) ignoreUpdateField.get(null);
-        assertTrue(ignoreList.contains(pos));
+        Set<Long> ignoreSet = (Set<Long>) ignoreUpdateField.get(MultiblockHandler.instance);
+        assertTrue(ignoreSet.contains(posAsLong));
 
         // Adding the same position again should not duplicate it
         MultiblockHandler.instance.addIgnoreToUpdate(pos);
-        assertEquals(1, ignoreList.size());
+        assertEquals(1, ignoreSet.size());
     }
 
     @Test

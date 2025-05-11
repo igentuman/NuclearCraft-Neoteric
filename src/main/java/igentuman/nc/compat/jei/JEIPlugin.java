@@ -127,14 +127,14 @@ public  class JEIPlugin implements IModPlugin {
     }
 
     private <T extends NCProcessorScreen> void addRecipeClickArea(IGuiHandlerRegistration registration, Class<? extends T> containerScreenClass, int xPos, int yPos, int width, int height, RecipeType<?>... recipeTypes) {
-/*        registration.addGuiContainerHandler(containerScreenClass, new IGuiContainerHandler<T>() {
+        registration.addGuiContainerHandler(containerScreenClass, new IGuiContainerHandler<T>() {
             @Override
             public Collection<IGuiClickableArea> getGuiClickableAreas(T containerScreen, double mouseX, double mouseY) {
                 String name = containerScreen.getRecipeTypeName();
                 IGuiClickableArea clickableArea = IGuiClickableArea.createBasic(xPos, yPos, width, height, getRecipeTypes().get(name).getUid());
                 return Arrays.asList(clickableArea);
             }
-        });*/
+        });
     }
 
     public  void registerGuiHandlers(IGuiHandlerRegistration registration) {

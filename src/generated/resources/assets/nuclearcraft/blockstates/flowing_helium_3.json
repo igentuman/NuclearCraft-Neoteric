@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "nuclearcraft:block/fluid/helium_3"
+    }
+  }
+}

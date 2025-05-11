@@ -56,6 +56,15 @@ public class ContainerBE extends NuclearCraftBE implements ISizeToggable {
         itemHandler = LazyOptional.of(() -> inventory);
     }
 
+    @Override
+    public CompoundNBT save(CompoundNBT tag) {
+        super.save(tag);
+        if (tag != null) {
+            saveClientData(tag);
+        }
+        return tag;
+    }
+
 /*    @Nonnull
     @Override
     public @NotNull ModelData getModelData() {

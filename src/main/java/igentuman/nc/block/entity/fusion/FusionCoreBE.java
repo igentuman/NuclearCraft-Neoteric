@@ -139,6 +139,15 @@ public class FusionCoreBE <RECIPE extends FusionCoreBE.Recipe> extends FusionBE 
         return coolantRecipes;
     }
 
+    @Override
+    public CompoundNBT save(CompoundNBT tag) {
+        super.save(tag);
+        if (tag != null) {
+            saveClientData(tag);
+        }
+        return tag;
+    }
+
     protected List<FusionCoolantRecipe> coolantRecipes;
 
     public final SidedContentHandler contentHandler;

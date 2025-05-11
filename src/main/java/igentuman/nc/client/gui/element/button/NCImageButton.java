@@ -34,6 +34,8 @@ public class NCImageButton extends Button {
 
     public NCImageButton(int x, int y, int i, int i1, int xTexStart, int i2, int i3, ResourceLocation texture) {
         this(x, y, i, i1, xTexStart, i2, i3, texture, 256, 256, null);
+        height = i;
+        width = i1;
     }
 
     public void setPosition(int pX, int pY) {
@@ -42,7 +44,6 @@ public class NCImageButton extends Button {
    }
 
    public void renderButton(MatrixStack pMatrixStack, int pMouseX, int pMouseY, float pPartialTick) {
-      //RenderSystem.setShader(GameRenderer::getPositionTexShader);
       Minecraft.getInstance().getTextureManager().bind(this.resourceLocation);
       int i = this.yTexStart;
 /*      if (!this.isActive()) {

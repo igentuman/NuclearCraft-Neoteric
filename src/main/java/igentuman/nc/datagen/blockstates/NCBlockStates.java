@@ -275,7 +275,12 @@ public class NCBlockStates extends BlockStateProvider {
     }
     private void blocks() {
         for(String name: NC_BLOCKS.keySet()) {
-            simpleBlock(NC_BLOCKS.get(name).get(), model(NC_BLOCKS.get(name).get(), "material/block"));
+            if (name.contains("flowing_")) {
+                continue;
+                //simpleBlock(NC_BLOCKS.get(name).get(), model(NC_BLOCKS.get(name).get(), "fluid"));
+            } else {
+                simpleBlock(NC_BLOCKS.get(name).get(), model(NC_BLOCKS.get(name).get(), "material/block"));
+            }
         }
         for(String name: NC_ELECTROMAGNETS.keySet()) {
             if(name.contains("slope")) {

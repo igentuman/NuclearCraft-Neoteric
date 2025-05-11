@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "nuclearcraft:block/fluid/depleted_fuel_plutonium_lep_239_ox"
+    }
+  }
+}

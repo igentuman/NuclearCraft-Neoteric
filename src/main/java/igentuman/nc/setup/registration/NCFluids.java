@@ -9,7 +9,8 @@ import igentuman.nc.fluid.NCFluid;
 import igentuman.nc.content.fuel.FuelManager;
 import igentuman.nc.util.TagUtil;
 import igentuman.nc.util.TextureUtil;
-import net.minecraft.block.Blocks;
+import net.minecraft.block.*;
+import net.minecraft.block.material.Material;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.BucketItem;
 import net.minecraft.item.Item;
@@ -18,12 +19,9 @@ import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.Property;
-import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ITag;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.block.BlockState;
 import net.minecraft.util.SoundEvents;
-import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fluids.FluidAttributes;
@@ -45,6 +43,8 @@ import java.util.function.Consumer;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.content.materials.Materials.slurries;
+import static igentuman.nc.setup.registration.NCBlocks.BLOCKS;
+import static igentuman.nc.setup.registration.NCBlocks.NC_BLOCKS;
 import static igentuman.nc.util.ModUtil.isMekanismLoadeed;
 import static net.minecraft.util.SoundEvents.BUCKET_EMPTY;
 import static net.minecraft.util.SoundEvents.BUCKET_FILL;
@@ -79,8 +79,8 @@ public class NCFluids {
 
     public static BlockState getBlock(String name)
     {
-        if(NC_MATERIALS.containsKey(name)) {
-            //return NC_MATERIALS.get(name).getBlock().defaultBlockState();
+        if(NC_BLOCKS.containsKey("flowing_" + name)) {
+            return NC_BLOCKS.get("flowing_" + name).get().defaultBlockState();
         }
         return Blocks.AIR.defaultBlockState();
     }
@@ -395,14 +395,13 @@ public class NCFluids {
             ));
 
             RegistryObject<BucketItem> bucket = NCItems.ITEMS.register(name+"_bucket", () -> makeBucket(still, burnTime));
+            makeFluidBlock(flowing, name, Block.Properties.of(Material.WATER).noDrops());
             FluidEntry entry = new FluidEntry(flowing, still, bucket, properties, color);
             thisMutable.setValue(entry);
 
             ALL_FLUID_ENTRIES.put(name, entry);
             return entry;
         }
-
-
 
        public NCFluid getFlowing()
         {
@@ -417,6 +416,12 @@ public class NCFluids {
         public BucketItem getBucket()
         {
             return bucket.get();
+        }
+
+        private static void makeFluidBlock(RegistryObject<NCFluid> flowing, String fluid, Block.Properties properties)
+        {
+            String name = "flowing_"+fluid;
+            NC_BLOCKS.put(name, BLOCKS.register(name, () -> new FlowingFluidBlock(flowing, properties)));
         }
 
         private static BucketItem makeBucket(RegistryObject<NCFluid> still, int burnTime)
@@ -445,6 +450,13 @@ public class NCFluids {
         public RegistryObject<NCFluid> getStillGetter()
         {
             return still;
+        }
+
+        public Block getBlock() {
+            if (NC_BLOCKS.containsKey("flowing_" + still.getId().getPath())) {
+                return NC_BLOCKS.get("flowing_" + still.getId().getPath()).get();
+            }
+            return Blocks.AIR;
         }
     }
 }

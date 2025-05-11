@@ -390,6 +390,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         if(refreshCacheFlag || changed) {
             try {
                 assert level != null;
+                setChanged();
                 level.setBlockAndUpdate(worldPosition, getBlockState().setValue(POWERED, powered));
                 level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(POWERED, powered), 3);
             } catch (NullPointerException ignored) {}
@@ -610,6 +611,7 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
 
     @Override
     public void load(BlockState state, CompoundNBT tag) {
+        super.load(state, tag);
         if (tag.contains("Energy")) {
             energyStorage.deserializeNBT(tag.getCompound("Energy"));
         }
@@ -629,7 +631,6 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         if (tag.contains("Content")) {
             contentHandler.deserializeNBT(tag.getCompound("Content"));
         }
-        super.load(state, tag);
     }
 
     public void saveAdditional(CompoundNBT tag) {
@@ -657,6 +658,14 @@ public class FissionControllerBE <RECIPE extends FissionControllerBE.Recipe> ext
         }
     }
 
+    @Override
+    public CompoundNBT save(CompoundNBT tag) {
+        super.save(tag);
+        if (tag != null) {
+            saveClientData(tag);
+        }
+        return tag;
+    }
 
     private void loadClientData(CompoundNBT tag) {
         if (tag.contains("Info")) {

@@ -20,11 +20,11 @@ public class NCFluidBlockStates extends ExtendedBlockstateProvider {
     protected void registerStatesAndModels() {
         for(NCFluids.FluidEntry entry : NCFluids.ALL_FLUID_ENTRIES.values())
         {
-            //Fluid still = entry.getStill();
-            //ResourceLocation stillTexture = still.getAttributes().getStillTexture();
-          //  ModelFile model = models().getBuilder("block/fluid/"+still.getRegistryName().getPath())
-          //         .texture("particle", stillTexture);
-          //  getVariantBuilder(entry.getBlock()).partialState().setModels(new ConfiguredModel(model));
+            Fluid still = entry.getStill();
+            ResourceLocation stillTexture = still.getAttributes().getStillTexture();
+            ModelFile model = models().getBuilder("block/fluid/"+still.getRegistryName().getPath())
+                   .texture("particle", stillTexture);
+            getVariantBuilder(entry.getBlock()).partialState().setModels(new ConfiguredModel(model));
         }
     }
 }

@@ -123,6 +123,15 @@ public class BarrelBE extends NuclearCraftBE implements ISizeToggable {
         return super.getCapability(cap, side);
     }
 
+    @Override
+    public CompoundNBT save(CompoundNBT tag) {
+        super.save(tag);
+        if (tag != null) {
+            saveClientData(tag);
+        }
+        return tag;
+    }
+
 /*    @Override
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
         CompoundNBT tag = pkt.getTag();

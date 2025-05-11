@@ -39,7 +39,7 @@ public class Checkbox extends NCGuiElement {
         super.draw(transform, mX, mY, pTicks);
         xTexStart = isChecked() ? 11 : 0;
         btn.xTexStart = xTexStart;
-        btn.render(transform, mX, mY, pTicks);
+        btn.renderButton(transform, mX, mY, pTicks);
     }
 
     @Override

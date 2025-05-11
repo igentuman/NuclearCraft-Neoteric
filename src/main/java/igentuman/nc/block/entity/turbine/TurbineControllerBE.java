@@ -158,6 +158,15 @@ public class TurbineControllerBE<RECIPE extends TurbineControllerBE.Recipe> exte
         return null;
     }
 
+    @Override
+    public CompoundNBT save(CompoundNBT tag) {
+        super.save(tag);
+        if (tag != null) {
+            saveClientData(tag);
+        }
+        return tag;
+    }
+
     public RECIPE getCachedRecipe() {
         String key = contentHandler.getCacheKey();
         if(cachedRecipes.containsKey(key)) {

@@ -129,6 +129,15 @@ public class NCProcessorBE<RECIPE extends AbstractRecipe> extends NuclearCraftBE
     }
 
 
+    @Override
+    public CompoundNBT save(CompoundNBT tag) {
+        super.save(tag);
+        if (tag != null) {
+            saveClientData(tag);
+        }
+        return tag;
+    }
+
     private LazyOptional<NCProcessorPeripheral> peripheralCap;
 
     public <T> LazyOptional<T>  getPeripheral(@Nonnull Capability<T> cap, @Nullable Direction side) {

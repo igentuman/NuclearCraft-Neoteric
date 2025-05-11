@@ -117,6 +117,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("nc_jei_cat.fission_boiling", "Boiling Reactor");
 
         add("label.kugelblitz.stability", "Stability: %s%%");
+        add("label.kugelblitz.charge", "Charge: %s");
         add("label.kugelblitz.evaporation", "Evaporation Rate: %s");
         add("label.kugelblitz.blackhole_mass", "Blackhole Mass: %s");
         add("label.kugelblitz.frequency", "Quantum Frequency: %s");

@@ -1998,6 +1998,7 @@
   "jei.recipe.nc.leacher": "Leacher Setup",
   "jei.recipe.nc.turbine": "Turbine",
   "label.kugelblitz.blackhole_mass": "Blackhole Mass: %s",
+  "label.kugelblitz.charge": "Charge: %s",
   "label.kugelblitz.energy_gen": "FE Gen",
   "label.kugelblitz.evaporation": "Evaporation Rate: %s",
   "label.kugelblitz.feeding": "Feeding Rate: %s",

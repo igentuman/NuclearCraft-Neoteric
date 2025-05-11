@@ -124,6 +124,22 @@ public class TextUtils
 		return TextUtils.numberFormat(mass)+" T";
 	}
 
+	public static String formatEnergy(long energy)
+	{
+		if(energy >= 1000000000000L) {
+			return TextUtils.numberFormat(energy/1000000000000d)+" TFE";
+		}
+		if(energy >= 1000000000) {
+			return TextUtils.numberFormat(energy/1000000000d)+" GFE";
+		}
+		if(energy >= 1000000) {
+			return TextUtils.numberFormat(energy/1000000d)+" MFE";
+		}
+		if(energy >= 1000) {
+			return TextUtils.numberFormat(energy/1000d)+" kFE";
+		}
+		return TextUtils.numberFormat(energy)+" FE";
+	}
 
 	public static String formatEnergy(int energy)
 	{

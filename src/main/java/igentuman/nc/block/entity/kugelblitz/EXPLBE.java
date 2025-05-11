@@ -34,15 +34,13 @@ import static net.minecraft.world.level.block.DirectionalBlock.FACING;
 public class EXPLBE extends NuclearCraftBE {
 
     @NBTField
-    public int pulseEnergy;
-    @NBTField
     public int inputRedstoneSignal = 0;
     @NBTField
     public boolean activated = false;
     @NBTField
-    public int energyPerTick;
-    @NBTField
     public int pulseTime = 0;
+    @NBTField
+    public long aggregatedEnergy = 0;
 
     protected final LazyOptional<IEnergyStorage> energy;
     public final CustomEnergyStorage energyStorage;
@@ -69,8 +67,7 @@ public class EXPLBE extends NuclearCraftBE {
     }
 
     protected void renderBeam() {
-        int beamLength = 12;
-        sendBeamData(new FusionBeamParticleData(getFacing(), beamLength, energyStorage().getEnergyStored()/(float)energyStorage().getMaxEnergyStored()*0.5f),
+        sendBeamData(new FusionBeamParticleData(getFacing(), KUGELBLITZ_CONFIG.LASER_DISTANCE.get(), (float) (aggregatedEnergy/((double)KUGELBLITZ_CONFIG.EXPL_CHARGE.get()))*0.5f),
                 getBlockPos().relative(getFacing())
         );
     }
@@ -80,7 +77,7 @@ public class EXPLBE extends NuclearCraftBE {
     }
 
     protected CustomEnergyStorage createEnergy() {
-        return new CustomEnergyStorage(2_048_000_000, 1000000, 0, false) {
+        return new CustomEnergyStorage(2_048_000_000, 10000000, 0, true) {
             @Override
             protected void onEnergyChanged() {
                 setChanged();
@@ -141,11 +138,17 @@ public class EXPLBE extends NuclearCraftBE {
     @Override
     public void tickServer() {
         energyStorage().tick();
+        long wasCharge = aggregatedEnergy;
+        if(!hasEnoughEnergy()) {
+            aggregatedEnergy += energyStorage().getEnergyStored();
+            aggregatedEnergy = Math.min(aggregatedEnergy, KUGELBLITZ_CONFIG.EXPL_CHARGE.get());
+            energyStorage().setEnergy(0);
+        }
+
         inputRedstoneSignal = 0;
         tickProxyBlocks();
         activated = activated || inputRedstoneSignal > 0;
-        pulseEnergy = energyStorage().getEnergyStored();
-        if (activated && pulseEnergy == energyStorage().getMaxEnergyStored()) {
+        if (activated && hasEnoughEnergy()) {
             if (pulseTime == 0) {
                 pulseTime = 90;
                 if(activated && inputRedstoneSignal == 0) {
@@ -160,17 +163,17 @@ public class EXPLBE extends NuclearCraftBE {
             setChanged();
             if(pulseTime < 35) {
                 renderBeam();
-                energyStorage().setEnergy(energyStorage().getEnergyStored()/2);
+                aggregatedEnergy /= 2;
             }
             if(pulseTime < 33 && pulseTime > 30) {
                 transferEnergy();
             }
             if (pulseTime < 10) {
-                energyStorage().setEnergy(0);
+                aggregatedEnergy = 0;
                 energyTransfered = false;
             }
         }
-        if(activated && pulseTime < 1) {
+        if(activated && pulseTime < 1 || wasCharge != aggregatedEnergy) {
             activated = false;
             setChanged();
             level.setBlockAndUpdate(worldPosition, getBlockState());
@@ -207,7 +210,7 @@ public class EXPLBE extends NuclearCraftBE {
     }
 
     public void activate() {
-        if(pulseEnergy == energyStorage().getMaxEnergyStored()) {
+        if(hasEnoughEnergy()) {
             if (pulseTime == 0) {
                 pulseTime = 90;
                 activated = true;
@@ -225,12 +228,12 @@ public class EXPLBE extends NuclearCraftBE {
             if (be instanceof PhotonConcentratorBE photonConcentrator) {
                 AbstractNCMultiblock multiblock = photonConcentrator.getMultiblock();
                 if (multiblock instanceof KugelblitzMultiblock kugelblitzMultiblock) {
-                    kugelblitzMultiblock.addPulseEnergy(pulseEnergy, getFacing());
+                    kugelblitzMultiblock.addPulseEnergy(aggregatedEnergy, getFacing());
                     break;
                 }
             }
             if (isMekanismLoaded() && be instanceof mekanism.generators.common.tile.fusion.TileEntityLaserFocusMatrix matrixBe) {
-                matrixBe.receiveLaserEnergy(FloatingLong.create(pulseEnergy));
+                matrixBe.receiveLaserEnergy(FloatingLong.create(aggregatedEnergy / 10));
                 break;
             }
         }
@@ -238,7 +241,7 @@ public class EXPLBE extends NuclearCraftBE {
 
     @Override
     public void tickClient() {
-        if(pulseEnergy > 0 && pulseTime > 88) {
+        if(aggregatedEnergy > 0 && pulseTime > 88) {
             playSound(LASER_SHOOT, 0.2f);
         }
         if(pulseTime < 20) {
@@ -254,5 +257,9 @@ public class EXPLBE extends NuclearCraftBE {
     @Override
     public LazyOptional<IEnergyStorage> getEnergy() {
         return energy;
+    }
+
+    public boolean hasEnoughEnergy() {
+        return aggregatedEnergy >= KUGELBLITZ_CONFIG.EXPL_CHARGE.get();
     }
 }

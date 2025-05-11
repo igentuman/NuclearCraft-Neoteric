@@ -660,7 +660,7 @@ public class FusionCoreBE extends MultiblockControllerBE {
     protected boolean coolDown() {
         double wasHeat = reactorHeat;
         //passive cooldown
-        changeReactorHeat(-1000*size);
+        changeReactorHeat(-1000*Math.log(size+4));
         coolantCoolDown();
         return wasHeat != reactorHeat;
     }
@@ -689,7 +689,7 @@ public class FusionCoreBE extends MultiblockControllerBE {
 
     protected double radiationAggregated = 0;
     protected boolean process() {
-        recipeInfo().process(efficiency);
+        recipeInfo().process(efficiency*4);
         if(recipeInfo().radiation != 1D) {
             radiationAggregated += recipeInfo().radiation/5000;
             if(radiationAggregated > 100) {
@@ -733,7 +733,7 @@ public class FusionCoreBE extends MultiblockControllerBE {
     protected void heatLossExchange() {
         double sizeFactor = Math.log(Math.pow(size+2, 2))/100;
         changePlasmaTemperature((long) -((plasmaTemperature / Math.pow(getControlPartsEfficiency(), 2))*sizeFactor));
-        changeReactorHeat((double) Math.min(plasmaTemperature, 100000000) / (10000*size* getControlPartsEfficiency()));
+        changeReactorHeat((double) Math.min(plasmaTemperature, 100000000) / (10000*Math.log(size+4)* getControlPartsEfficiency()));
     }
 
 

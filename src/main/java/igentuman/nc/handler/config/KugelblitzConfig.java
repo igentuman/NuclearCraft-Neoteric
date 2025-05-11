@@ -40,9 +40,14 @@ public class KugelblitzConfig {
         public ForgeConfigSpec.ConfigValue<Integer> LASER_DISTANCE;
         public ForgeConfigSpec.ConfigValue<Double> GENERATION_MULTIPLIER;
         public ForgeConfigSpec.ConfigValue<Double> EVAPORATION_MULTIPLIER;
+        public ForgeConfigSpec.ConfigValue<Long> EXPL_CHARGE;
 
         public GeneralConfig(ForgeConfigSpec.Builder builder) {
             builder.comment("Settings for Fusion Reactor").push("general");
+
+            EXPL_CHARGE = builder
+                    .comment("EXPL FE requirement.")
+                    .defineInRange("expl_fe", 10240000000L, 2048000000L, 20480000000L);
 
             LASER_DISTANCE = builder
                     .comment("Laser burst distance.")

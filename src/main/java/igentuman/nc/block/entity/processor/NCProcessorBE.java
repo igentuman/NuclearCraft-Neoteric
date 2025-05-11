@@ -4,7 +4,6 @@ import igentuman.api.nc.Processor;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.compat.cc.ProcessorPeripheral;
-import igentuman.nc.compat.gt.NCGTEnergyHandler;
 import igentuman.nc.compat.oc2.ProcessorDevice;
 import igentuman.nc.handler.CatalystHandler;
 import igentuman.nc.handler.UpgradesHandler;
@@ -82,7 +81,6 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
     protected List<ItemStack> allowedInputItems;
     protected List<FluidStack> allowedInputFluids;
     protected List<FluidStack> allowedOutputFluids;
-    protected LazyOptional<NCGTEnergyHandler> gtEnergyCap;
     protected ParticleOptions particle1 = ParticleTypes.SMOKE;
     protected ProcessorPrefab<?,?> prefab;
 
@@ -299,12 +297,6 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
             return LazyOptional.empty();
         }
 
-        /*if(isGtLoaded() && gtEUSupported()) {
-            if(cap == com.gregtechceu.gtceu.api.capability.forge.GTCapability.CAPABILITY_ENERGY_CONTAINER) {
-                return getGTEnergyHandler(cap, side);
-            }
-        }*/
-
         if(isCcLoaded()) {
             if(cap == dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL) {
                 return getPeripheral(cap, side);
@@ -323,16 +315,6 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
     private <T> LazyOptional<T> getOCDevice(Capability<T> cap, Direction side) {
         return LazyOptional.of(() -> ProcessorDevice.createDevice(this)).cast();
     }
-
-    protected  <T> LazyOptional<T> getGTEnergyHandler(Capability<T> cap, Direction side) {
-        if(gtEnergyCap == null) {
-            NCGTEnergyHandler handler = new NCGTEnergyHandler(energyStorage(), PROCESSOR_CONFIG.BASE_POWER.get()/4, PROCESSOR_CONFIG.GT_AMPERAGE.get());
-            gtEnergyCap = LazyOptional.of(() -> handler);
-        }
-        return gtEnergyCap.cast();
-    }
-
-
 
     public void tickClient() {
         if(isActive && level.getRandom().nextInt(50) < 5) {

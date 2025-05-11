@@ -25,7 +25,7 @@ import static net.minecraft.world.level.block.Blocks.AIR;
 public class KugelblitzMultiblock extends AbstractNCMultiblock {
 
     private ChamberTerminalBE controllerBe;
-    private final HashMap<Direction, Integer> pulseEnergy = new HashMap<>();
+    private final HashMap<Direction, Long> pulseEnergy = new HashMap<>();
     private BlackHoleBE blackHole;
     private boolean collectingEnergy = true;
     private BlockPos centerBlockPos;
@@ -388,7 +388,7 @@ public class KugelblitzMultiblock extends AbstractNCMultiblock {
         return centerBlockPos;
     }
 
-    public void addPulseEnergy(int pulseEnergy, Direction facing) {
+    public void addPulseEnergy(long pulseEnergy, Direction facing) {
         collectingEnergy = true;
         this.pulseEnergy.put(facing, pulseEnergy);
     }

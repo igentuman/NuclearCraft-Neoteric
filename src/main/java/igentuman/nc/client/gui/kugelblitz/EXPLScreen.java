@@ -23,8 +23,9 @@ import java.util.Optional;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.util.TextUtils.__;
+import static igentuman.nc.util.TextUtils.formatEnergy;
 
-public class EXPLScreen extends AbstractContainerScreen<EXPLContainer> implements IProgressScreen, IVerticalBarScreen {
+public class EXPLScreen extends AbstractContainerScreen<EXPLContainer> {
     protected final ResourceLocation GUI = new ResourceLocation(MODID, "textures/gui/small_window.png");
     protected int relX;
     protected int relY;
@@ -37,13 +38,12 @@ public class EXPLScreen extends AbstractContainerScreen<EXPLContainer> implement
 
     public List<NCGuiElement> widgets = new ArrayList<>();
 
-    private VerticalBar energyBar;
 
     private Button burstButton;
 
     public EXPLScreen(EXPLContainer container, Inventory inv, Component name) {
         super(container, inv, name);
-        imageWidth = 126;
+        imageWidth = 112;
         imageHeight = 126;
     }
 
@@ -60,18 +60,12 @@ public class EXPLScreen extends AbstractContainerScreen<EXPLContainer> implement
         Minecraft mc = Minecraft.getInstance();
         updateRelativeCords();
         widgets.clear();
-        energyBar = new VerticalBar.Energy(6, 16,  this, container().getMaxEnergy());
-        burstButton = new Button(18, 46, this, 77, __("gui.nuclearcraft:button.burst"), (button) -> {
+        burstButton = new Button(13, 46, this, 77, __("gui.nuclearcraft:button.burst"), (button) -> {
             if(container().isReady()) {
                 container().burst();
             }
         });
         burstButton.clearTooltips();
-        widgets.add(burstButton);
-    }
-
-    protected FluidTank getFluidTank(int i) {
-        return menu.getFluidTank(i);
     }
 
     @Override
@@ -86,12 +80,15 @@ public class EXPLScreen extends AbstractContainerScreen<EXPLContainer> implement
         for(NCGuiElement widget: widgets) {
             widget.draw(graphics, mouseX, mouseY, partialTicks);
         }
-        energyBar.draw(graphics, mouseX, mouseY, partialTicks);
+        if(container().isReady()) {
+            burstButton.draw(graphics, mouseX, mouseY, partialTicks);
+        }
     }
 
     @Override
     protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
         graphics.drawCenteredString(font,  menu.getTitle(), imageWidth/2, titleLabelY, 0xffffff);
+        graphics.drawCenteredString(font,  __("label.kugelblitz.charge", formatEnergy(container().getCharge())), imageWidth/2, titleLabelY+20, 0xffffff);
         renderTooltips(graphics, mouseX-relX, mouseY-relY);
     }
 
@@ -100,6 +97,9 @@ public class EXPLScreen extends AbstractContainerScreen<EXPLContainer> implement
             if(widget.mouseClicked(pMouseX, pMouseY, pButton)) {
                 return true;
             }
+        }
+        if(container().isReady()) {
+            burstButton.mouseClicked(pMouseX, pMouseY, pButton);
         }
         return super.mouseClicked(pMouseX, pMouseY, pButton);
     }
@@ -122,37 +122,6 @@ public class EXPLScreen extends AbstractContainerScreen<EXPLContainer> implement
                }
            }
         }
-
-        energyBar.clearTooltips();
-        if(energyBar.isMouseOver(pMouseX, pMouseY+10)) {
-            graphics.renderTooltip(font, energyBar.getTooltips(),
-                    Optional.empty(), pMouseX, pMouseY);
-        }
-    }
-
-    @Override
-    public double getProgress() {
-        return 0;
-    }
-
-    @Override
-    public double getEnergy() {
-        return container().getEnergy();
-    }
-
-    @Override
-    public double getHeat() {
-        return 0;
-    }
-
-    @Override
-    public double getCoolant() {
-        return 0;
-    }
-
-    @Override
-    public double getHotCoolant() {
-        return 0;
     }
 
 }

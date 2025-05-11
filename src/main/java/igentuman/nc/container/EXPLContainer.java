@@ -57,38 +57,25 @@ public class EXPLContainer extends AbstractContainerMenu {
         return __("block."+MODID+"."+name);
     }
 
-    public int getEnergy() {
-        return blockEntity.energyStorage().getEnergyStored();
-    }
-
-    public int getMaxEnergy() {
-        return blockEntity.energyStorage().getMaxEnergyStored();
-    }
-
-    public int energyPerTick() {
-        return blockEntity.energyPerTick;
-    }
-
-    public FluidTank getFluidTank(int i) {
-        return blockEntity.getFluidTank(i);
-    }
-
     public BlockPos getBlockPos() {
         return blockEntity.getBlockPos();
     }
 
     public boolean isReady() {
-        return hasEnoughEnergy();
+        return hasEnoughEnergy() && !blockEntity.activated;
     }
 
     private boolean hasEnoughEnergy() {
-        return blockEntity.energyStorage().getEnergyStored() >= getEnergy();
+        return blockEntity.hasEnoughEnergy();
     }
 
     public void burst() {
         NuclearCraft.packetHandler().sendToServer(new PacketGuiButtonPress(blockEntity.getBlockPos(), 77));
         //avoid spamming
-        blockEntity.energyStorage().setEnergy(0);
+        blockEntity.aggregatedEnergy = 0;
     }
 
+    public long getCharge() {
+        return blockEntity.aggregatedEnergy;
+    }
 }

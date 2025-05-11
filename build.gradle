@@ -72,7 +72,6 @@ repositories {
     maven { url "https://jitpack.io" }
     maven { url "https://www.cursemaven.com" }
     maven { url "https://squiddev.cc/maven/" }
-    maven { url "https://maven.mcmoddev.com" }
     maven { url "https://maven.tterrag.com/" }
     maven { url "https://modmaven.dev/" }
     maven { url "https://maven.firstdarkdev.xyz/snapshots/" }
@@ -84,9 +83,6 @@ dependencies {
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
     minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
 
-    compileOnly fg.deobf("com.gregtechceu.gtceu:gtceu-forge-${mc_version}:${gtceu_version}") {
-        transitive = false
-    }
     runtimeOnly fg.deobf("curse.maven:spark-361579:4738952")
 /*    implementation fg.deobf("com.lowdragmc.ldlib:ldlib-forge-${mc_version}:${ldlib_version}") {
         transitive = false

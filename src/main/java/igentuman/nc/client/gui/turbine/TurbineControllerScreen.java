@@ -178,6 +178,15 @@ public class TurbineControllerScreen extends AbstractContainerScreen<TurbineCont
         renderWidgets(graphics, partialTicks, mouseX, mouseY);
     }
 
+    public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
+        for(NCGuiElement widget : widgets) {
+            if(widget.mouseClicked(pMouseX, pMouseY, pButton)) {
+                return true;
+            }
+        }
+        return super.mouseClicked(pMouseX, pMouseY, pButton);
+    }
+
     private void renderTooltips(GuiGraphics graphics, int pMouseX, int pMouseY) {
 
         for(NCGuiElement widget: widgets) {

@@ -95,6 +95,13 @@ public class TurbinePortBE extends TurbineBE {
         }
     }
 
+    public void voidFluidSlot(int slotId) {
+        if(controller() != null) {
+            controller().voidFluidSlot(slotId);
+            setChanged();
+        }
+    }
+
     protected FluidCapabilityHandler fluidHandler()
     {
         return controller().contentHandler().fluidCapability;

@@ -156,4 +156,8 @@ public class TurbineControllerContainer extends AbstractContainerMenu {
     public boolean isRunning() {
         return blockEntity.powered;
     }
+
+    public BlockPos getPosition() {
+        return blockEntity.getBlockPos();
+    }
 }

@@ -144,6 +144,13 @@ public class TurbineControllerBE extends MultiblockControllerBE {
         return start;
     }
 
+    public void voidFluidSlot(int slotId) {
+        if(contentHandler() != null) {
+            contentHandler().voidFluidSlot(slotId);
+            setChanged();
+        }
+    }
+
     @Override
     public Recipe getRecipe() {
         if(contentHandler().fluidCapability.tanks.get(0).isEmpty()) return null;

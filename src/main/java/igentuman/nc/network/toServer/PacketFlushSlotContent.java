@@ -2,6 +2,8 @@
 package igentuman.nc.network.toServer;
 
 import igentuman.nc.block.entity.processor.NCProcessorBE;
+import igentuman.nc.block.entity.turbine.TurbineControllerBE;
+import igentuman.nc.block.entity.turbine.TurbinePortBE;
 import igentuman.nc.network.INcPacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -30,10 +32,18 @@ public class PacketFlushSlotContent implements INcPacket {
             return;
         }
         BlockEntity be = player.level().getBlockEntity(tilePosition);
-        if(!(be instanceof NCProcessorBE ncBe)) {
+        if((be instanceof NCProcessorBE ncBe)) {
+            ncBe.voidFluidSlot(slotId);
             return;
         }
-        ncBe.voidFluidSlot(slotId);
+        if((be instanceof TurbineControllerBE ncBe)) {
+            ncBe.voidFluidSlot(slotId);
+            return;
+        }
+        if((be instanceof TurbinePortBE ncBe)) {
+            ncBe.voidFluidSlot(slotId);
+            return;
+        }
     }
 
     @Override

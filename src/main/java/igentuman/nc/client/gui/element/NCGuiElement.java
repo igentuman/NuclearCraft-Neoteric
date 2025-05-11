@@ -3,6 +3,8 @@ package igentuman.nc.client.gui.element;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import igentuman.nc.client.gui.processor.NCProcessorScreen;
+import igentuman.nc.client.gui.turbine.TurbineControllerScreen;
+import igentuman.nc.client.gui.turbine.TurbinePortScreen;
 import igentuman.nc.container.NCProcessorContainer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -75,6 +77,12 @@ public class NCGuiElement extends AbstractWidget {
 
     protected BlockPos getPosition() {
         if(screen instanceof NCProcessorScreen<?> processorScreen) {
+            return processorScreen.getMenu().getPosition();
+        }
+        if(screen instanceof TurbineControllerScreen processorScreen) {
+            return processorScreen.getMenu().getPosition();
+        }
+        if(screen instanceof TurbinePortScreen processorScreen) {
             return processorScreen.getMenu().getPosition();
         }
         return BlockPos.ZERO;

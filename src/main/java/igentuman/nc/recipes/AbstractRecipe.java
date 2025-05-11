@@ -343,11 +343,11 @@ public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
                 for(FluidTank tank : contentHandler.fluidCapability.tanks) {
                     if(contentHandler.inputFluidSlots <= i) break;
                     FluidStack fluidStack = tank.getFluid();
-                    if(inputFluid.test(fluidStack)) {
+                    if(toConsume.test(fluidStack)) {
                         FluidStack holded = fluidStack.copy();
-                        holded.setAmount(inputFluid.getAmount());
+                        holded.setAmount(toConsume.getAmount());
                         contentHandler.fluidCapability.holdedInputs.add(holded);
-                        contentHandler.fluidCapability.tanks.get(i).drain(inputFluid.getRepresentations().get(0).getAmount(), EXECUTE);
+                        contentHandler.fluidCapability.tanks.get(i).drain(holded.getAmount(), EXECUTE);
                         break;
                     }
                     i++;

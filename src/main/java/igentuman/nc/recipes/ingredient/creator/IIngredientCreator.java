@@ -1,6 +1,7 @@
 package igentuman.nc.recipes.ingredient.creator;
 
 import com.google.gson.JsonElement;
+import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.InputIngredient;
 import igentuman.nc.util.annotation.NothingNullByDefault;
 import net.minecraft.network.FriendlyByteBuf;
@@ -96,4 +97,5 @@ public interface IIngredientCreator<TYPE, STACK, INGREDIENT extends InputIngredi
      * @throws IllegalArgumentException if the given stream is empty.
      */
     INGREDIENT from(Stream<INGREDIENT> ingredients);
+
 }

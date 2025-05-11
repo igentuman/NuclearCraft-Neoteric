@@ -7,12 +7,18 @@ import org.jetbrains.annotations.NotNull;
 public abstract class FluidStackIngredient implements InputIngredient<@NotNull FluidStack> {
 
     protected int amount;
+
     public int getAmount() {
+        if(amount == 0) {
+            try {
+                amount = getRepresentations().get(0).getAmount();
+            } catch (Exception ignored) {}
+        }
         return amount;
     }
 
     public FluidStackIngredient copy() {
-        return IngredientCreatorAccess.fluid().from(this.getName(), this.amount);
+        return IngredientCreatorAccess.fluid().from(this.serialize());
     }
 
     public void setAmount(int i) {

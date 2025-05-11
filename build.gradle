@@ -77,6 +77,20 @@ repositories {
     maven { url "https://maven.firstdarkdev.xyz/snapshots/" }
     maven { url "https://maven.architectury.dev" }
     maven { url "https://maven.saps.dev/minecraft" }
+    maven {
+        url "https://maven.latvian.dev/releases"
+        content {
+            includeGroup "dev.latvian.mods"
+            includeGroup "dev.latvian.apps"
+        }
+    }
+
+    maven {
+        url 'https://jitpack.io'
+        content {
+            includeGroup "com.github.rtyley"
+        }
+    }
 }
 
 dependencies {

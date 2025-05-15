@@ -1,7 +1,6 @@
 package igentuman.nc.datagen.tags;
 
-import igentuman.nc.multiblock.fission.FissionBlocks;
-import igentuman.nc.multiblock.fission.FissionReactor;
+import igentuman.nc.multiblock.fission.FissionReactorRegistration;
 import igentuman.nc.multiblock.fusion.FusionReactorRegistration;
 import igentuman.nc.setup.registration.FissionFuel;
 import igentuman.nc.setup.registration.NCItems;
@@ -16,6 +15,8 @@ import net.minecraftforge.data.event.GatherDataEvent;
 import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.multiblock.fission.FissionReactorRegistration.CASING_ITEMS;
+import static igentuman.nc.multiblock.fission.FissionReactorRegistration.MODERATORS_ITEMS;
 import static igentuman.nc.setup.registration.NCItems.*;
 import static igentuman.nc.setup.registration.Tags.*;
 
@@ -42,12 +43,12 @@ public class NCItemTags extends ItemTagsProvider {
         tag(FusionReactorRegistration.CASING_ITEMS).add(
                 FusionReactorRegistration.FUSION_ITEMS.get("fusion_reactor_casing").get(),
                 FusionReactorRegistration.FUSION_ITEMS.get("fusion_reactor_casing_glass").get());
-        tag(FissionBlocks.MODERATORS_ITEMS).add(NC_BLOCKS_ITEMS.get("graphite").get(), NC_BLOCKS_ITEMS.get("beryllium").get());
-        tag(FissionBlocks.CASING_ITEMS).add(
-                FissionReactor.FISSION_BLOCK_ITEMS.get("fission_reactor_casing").get(),
-                FissionReactor.FISSION_BLOCK_ITEMS.get("fission_reactor_controller").get(),
-                FissionReactor.FISSION_BLOCK_ITEMS.get("fission_reactor_glass").get(),
-                FissionReactor.FISSION_BLOCK_ITEMS.get("fission_reactor_port").get()
+        tag(MODERATORS_ITEMS).add(NC_BLOCKS_ITEMS.get("graphite").get(), NC_BLOCKS_ITEMS.get("beryllium").get());
+        tag(CASING_ITEMS).add(
+                FissionReactorRegistration.FISSION_BLOCK_ITEMS.get("fission_reactor_casing").get(),
+                FissionReactorRegistration.FISSION_BLOCK_ITEMS.get("fission_reactor_controller").get(),
+                FissionReactorRegistration.FISSION_BLOCK_ITEMS.get("fission_reactor_glass").get(),
+                FissionReactorRegistration.FISSION_BLOCK_ITEMS.get("fission_reactor_port").get()
         );
     }
 

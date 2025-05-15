@@ -78,6 +78,6 @@ public class DataGenUtil
 	{
 		String basePath = base.getPath();
 		String lastDir = basePath.substring(0, basePath.lastIndexOf('/')+1);
-		return new ResourceLocation(base.getNamespace(), lastDir+relativePath);
+		return ResourceLocation.tryBuild(base.getNamespace(), lastDir+relativePath);
 	}
 }

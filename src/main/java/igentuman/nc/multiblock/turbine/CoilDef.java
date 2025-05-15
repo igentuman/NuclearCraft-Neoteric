@@ -26,6 +26,7 @@ import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.handler.config.TurbineConfig.TURBINE_CONFIG;
 import static igentuman.nc.setup.registration.Registries.BLOCK_REGISTRY;
 import static igentuman.nc.setup.registration.Registries.ITEM_REGISTRY;
+import static igentuman.nc.util.NcUtils.rlFromString;
 
 public class CoilDef {
 
@@ -89,7 +90,9 @@ public class CoilDef {
     public List<String> getItemsByTagKey(String key)
     {
         List<String> tmp = new ArrayList<>();
-        TagKey<Item> tag = TagKey.create(ITEM_REGISTRY, new ResourceLocation(key));
+        String namespace;
+        String location;
+        TagKey<Item> tag = TagKey.create(ITEM_REGISTRY, rlFromString(key));
         Ingredient ing = Ingredient.fromValues(Stream.of(new Ingredient.TagValue(tag)));
         for (ItemStack item: ing.getItems()) {
             tmp.add(item.getItem().toString());
@@ -250,7 +253,7 @@ public class CoilDef {
                             if (!bStr.contains(":")) {
                                 bStr = MODID + ":" + bStr;
                             }
-                            tmp.add(ForgeRegistries.BLOCKS.getValue(new ResourceLocation(bStr)));
+                            tmp.add(ForgeRegistries.BLOCKS.getValue(rlFromString(bStr)));
                         }
                     }
                     blocks.put(condition, tmp);

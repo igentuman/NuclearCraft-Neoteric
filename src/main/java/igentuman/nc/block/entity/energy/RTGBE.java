@@ -24,7 +24,7 @@ public class RTGBE extends NCEnergy {
     protected int radiationTimer = 40;
     @Override
     public void tickServer() {
-        if(NuclearCraft.instance.isNcBeStopped) return;
+        if(NuclearCraft.instance.isNcBeStopped || isRemoved()) return;
         super.tickServer();
         energyStorage.setEnergy(getEnergyMaxStorage());
         sendOutPower();

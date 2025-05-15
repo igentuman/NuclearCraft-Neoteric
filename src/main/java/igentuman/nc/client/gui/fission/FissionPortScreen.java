@@ -22,11 +22,12 @@ import java.util.List;
 import java.util.Optional;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.client.gui.element.fluid.FluidTankRenderer.TooltipMode.SHOW_AMOUNT_AND_CAPACITY;
 import static igentuman.nc.util.TextUtils.__;
 
 public class FissionPortScreen extends AbstractContainerScreen<FissionPortContainer> implements IProgressScreen, IVerticalBarScreen {
-    protected final ResourceLocation GUI = new ResourceLocation(MODID, "textures/gui/fission/port.png");
+    protected final ResourceLocation GUI = rl("textures/gui/fission/port.png");
     protected int relX;
     protected int relY;
     private int xCenter;
@@ -44,7 +45,6 @@ public class FissionPortScreen extends AbstractContainerScreen<FissionPortContai
     public List<NCGuiElement> widgets = new ArrayList<>();
 
     private VerticalBar energyBar;
-
 
     public FissionPortScreen(FissionPortContainer container, Inventory inv, Component name) {
         super(container, inv, name);

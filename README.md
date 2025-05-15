@@ -25,27 +25,30 @@ This is a re-creation of old but gold NuclearCraft on a modern MC version
 - [x] Steam Mode for reactors
 - [x] Steam Turbine
 - [x] Patchouli Guidebook
-- 
+- [x] Kugelblitz
+- [x] Custom Villager
+
 ### Download here: https://curseforge.com/minecraft/mc-mods/nuclearcraft-neoteric
 ### Development builds: Go to Actions Tab and download the latest artifact
 
 # Next version feature set
-- [ ] Kugelblitz 
+- [ ] Particle API
+- [ ] Particle Accelerators
  
 # Future plans
 
 - [ ] Crafting Automation
 - [ ] Reactor Design Hub
-- [ ] Particle API
 - [ ] Heat Exchanger
-- [ ] Custom Villager
 - [ ] Entities
 - [ ] Wasteland Biome
 - [ ] Wasteland Dimension
 
 
 # CREDITS
-tomdodd4598 - For the original mod
+[tomdodd4598](https://github.com/tomdodd4598) - For the original NC mod
+
+[Lach01298](https://github.com/Lach01298) - For the origina QMD mod
 
 # SUPPORT
 
@@ -54,6 +57,7 @@ If you want to support me, you can donate to my [Patreon](https://patreon.com/ig
 
 # SPECIAL THANKS TO PATRONS:
 ```
+Noteclip
 Wandering Singularity
 Tom Dodd
 Niv

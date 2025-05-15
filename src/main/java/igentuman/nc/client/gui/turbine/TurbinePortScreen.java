@@ -23,10 +23,11 @@ import java.util.List;
 import java.util.Optional;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.util.TextUtils.__;
 
 public class TurbinePortScreen extends AbstractContainerScreen<TurbinePortContainer> implements IProgressScreen, IVerticalBarScreen {
-    protected final ResourceLocation GUI = new ResourceLocation(MODID, "textures/gui/turbine/port.png");
+    protected final ResourceLocation GUI = rl("textures/gui/turbine/port.png");
     protected int relX;
     protected int relY;
     private int xCenter;
@@ -40,7 +41,6 @@ public class TurbinePortScreen extends AbstractContainerScreen<TurbinePortContai
     public List<NCGuiElement> widgets = new ArrayList<>();
 
     private VerticalBar energyBar;
-
 
     public TurbinePortScreen(TurbinePortContainer container, Inventory inv, Component name) {
         super(container, inv, name);

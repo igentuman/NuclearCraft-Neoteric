@@ -1,6 +1,7 @@
 package igentuman.nc.setup;
 
 import igentuman.nc.NuclearCraft;
+import igentuman.nc.content.particles.Particles;
 import igentuman.nc.radiation.data.RadiationEvents;
 import igentuman.nc.recipes.type.RadShieldingRecipe;
 import igentuman.nc.recipes.type.ResetNbtRecipe;
@@ -22,6 +23,7 @@ public class ModSetup {
     public static void setup() {
         IEventBus bus = MinecraftForge.EVENT_BUS;
         bus.addListener(RadiationEvents::onPlayerCloned);
+        Particles.init();
         bus.addGenericListener(Entity.class, RadiationEvents::attachPlayerRadiation);
         bus.addGenericListener(Level.class, RadiationEvents::attachWorldRadiation);
         bus.addGenericListener(Level.class, WorldVeinsProvider::attachVeinCapability);

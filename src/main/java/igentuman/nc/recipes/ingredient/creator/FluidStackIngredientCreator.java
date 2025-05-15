@@ -27,6 +27,8 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import static igentuman.nc.util.NcUtils.rlFromString;
+
 @NothingNullByDefault
 public class FluidStackIngredientCreator implements IFluidStackIngredientCreator {
 
@@ -114,7 +116,7 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
             if (amount < 1) {
                 throw new JsonSyntaxException("Expected amount to be greater than zero.");
             }
-            ResourceLocation resourceLocation = new ResourceLocation(GsonHelper.getAsString(jsonObject, "tag"));
+            ResourceLocation resourceLocation = rlFromString(GsonHelper.getAsString(jsonObject, "tag"));
             ITagManager<Fluid> tagManager = TagUtil.manager(ForgeRegistries.FLUIDS);
             TagKey<Fluid> key = tagManager.createTagKey(resourceLocation);
             return from(key, amount);

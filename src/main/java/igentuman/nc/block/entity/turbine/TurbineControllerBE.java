@@ -85,7 +85,7 @@ public class TurbineControllerBE extends MultiblockControllerBE {
 
     public TurbineControllerBE(BlockPos pPos, BlockState pBlockState) {
         super(TurbineRegistration.TURBINE_BE.get(NAME).get(), pPos, pBlockState);
-        multiblock = new TurbineMultiblock(this);
+
         contentHandler = new SidedContentHandler(
                 0, 0,
                 1, 1, 1000, 10000);
@@ -189,14 +189,7 @@ public class TurbineControllerBE extends MultiblockControllerBE {
             SoundHandler.stopTileSound(getBlockPos());
             currentSound = null;
         }
-        if((currentSound == null || !Minecraft.getInstance().getSoundManager().isActive(currentSound))) {
-            if(currentSound != null && currentSound.getLocation().equals(TURBINE.get().getLocation())) {
-                return;
-            }
-
-            playSoundCooldown = 20;
-            currentSound = SoundHandler.startTileSound(TURBINE.get(), SoundSource.BLOCKS, 0.2f, level.getRandom(), getBlockPos());
-        }
+        playSound(TURBINE, 0.2f);
     }
 
     public void tickClient() {

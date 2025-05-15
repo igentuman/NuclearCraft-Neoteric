@@ -12,12 +12,12 @@ import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 import java.util.Random;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.setup.registration.NCItems.ALL_NC_ITEMS;
 
 public class WhiteNoiseOverlay {
 
-    private static final ResourceLocation NOISE = new ResourceLocation(MODID,
-            "textures/gui/overlay/white_noise.png");
+    private static final ResourceLocation NOISE = rl("textures/gui/overlay/white_noise.png");
 
     public static final IGuiOverlay WHITE_NOISE = (gui, poseStack, partialTicks, width, height) -> {
         Player pl = NcClient.tryGetClientPlayer();

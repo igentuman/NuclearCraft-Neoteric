@@ -3,10 +3,10 @@ package igentuman.nc.setup.registration;
 import igentuman.nc.block.BarrelBlock;
 import igentuman.nc.block.ContainerBlock;
 import igentuman.nc.container.StorageContainerContainer;
-import igentuman.nc.item.BarrelBlockItem;
-import igentuman.nc.item.ContainerBlockItem;
 import igentuman.nc.content.storage.BarrelBlocks;
 import igentuman.nc.content.storage.ContainerBlocks;
+import igentuman.nc.item.BarrelBlockItem;
+import igentuman.nc.item.ContainerBlockItem;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -17,7 +17,9 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.registries.RegistryObject;
+
 import java.util.HashMap;
+
 import static igentuman.nc.setup.registration.Registries.*;
 
 public class NCStorageBlocks {

@@ -39,13 +39,14 @@ import static igentuman.nc.setup.registration.FissionFuel.NC_FUEL;
 import static igentuman.nc.setup.registration.FissionFuel.NC_ISOTOPES;
 import static igentuman.nc.setup.registration.NCItems.*;
 import static igentuman.nc.setup.registration.Tags.*;
+import static igentuman.nc.setup.registration.Villager.addVillagerTrades;
 import static igentuman.nc.util.NcUtils.getItemStackByModPriority;
 import static net.minecraft.world.item.Items.*;
 
 @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class WorldEvents {
 
-    public static List<Block> trackingBlocks = new ArrayList<>();
+    public final static List<Block> trackingBlocks = new ArrayList<>();
 
     public WorldEvents() {
 
@@ -53,83 +54,7 @@ public class WorldEvents {
 
     @SubscribeEvent
     public static void addCustomTrades(VillagerTradesEvent event) {
-        if(event.getType() == Villager.NUCLEAR_SCIENTIST.get()) {
-            Int2ObjectMap<List<VillagerTrades.ItemListing>> trades = event.getTrades();
-
-            trades.get(1).add((pTrader, pRandom) -> new MerchantOffer(
-                    new ItemStack(EMERALD, 1),
-                    getItemStackByModPriority(IngredientCreatorAccess.item().from(forgeDust("graphite"), 2)),
-                    32, 1, 0.02f));
-
-            trades.get(1).add((pTrader, pRandom) -> new MerchantOffer(
-                    new ItemStack(EMERALD, 1),
-                    getItemStackByModPriority(IngredientCreatorAccess.item().from(forgeDust("quartz"), 2)),
-                    32, 1, 0.02f));
-
-            trades.get(1).add((pTrader, pRandom) -> new MerchantOffer(
-                    getItemStackByModPriority(IngredientCreatorAccess.item().from(forgeIngot("lead"), 8)),
-                    new ItemStack(EMERALD, 1),
-                    24, 1, 0.02f));
-
-            trades.get(2).add((pTrader, pRandom) -> new MerchantOffer(
-                    new ItemStack(EMERALD, 6),
-                    new ItemStack(NC_PARTS.get("plate_basic").get(), 1),
-                    16, 5, 0.02f));
-
-            trades.get(2).add((pTrader, pRandom) -> new MerchantOffer(
-                    new ItemStack(EMERALD, 9),
-                    new ItemStack(NC_FOOD.get("smore").get(), 1),
-                    16, 5, 0.02f));
-
-            trades.get(2).add((pTrader, pRandom) -> new MerchantOffer(
-                    new ItemStack(EMERALD, 8),
-                    new ItemStack(NC_FOOD.get("radaway").get(), 1),
-                    6, 5, 0.02f));
-
-            trades.get(3).add((pTrader, pRandom) -> new MerchantOffer(
-                    new ItemStack(NC_ISOTOPES.get(neptunium236).get(), 1),
-                    new ItemStack(EMERALD, 4),
-                    7, 15, 0.02f));
-
-            trades.get(3).add((pTrader, pRandom) -> new MerchantOffer(
-                    new ItemStack(EMERALD, 32),
-                    new ItemStack(NC_ISOTOPES.get(plutonium238).get(), 2),
-                    7, 15, 0.02f));
-
-            trades.get(3).add((pTrader, pRandom) -> new MerchantOffer(
-                    new ItemStack(EMERALD, 20),
-                    getItemStackByModPriority(IngredientCreatorAccess.item().from(forgeDust("calcium_sulfate"), 2)),
-                    7, 15, 0.02f));
-
-            trades.get(4).add((pTrader, pRandom) -> new MerchantOffer(
-                    getItemStackByModPriority(IngredientCreatorAccess.item().from(forgePlate("platinum"), 16)),
-                    new ItemStack(NC_PARTS.get("plate_elite").get(), 1),
-                    7, 20, 0.02f));
-
-            trades.get(4).add((pTrader, pRandom) -> new MerchantOffer(
-                    new ItemStack(EMERALD, 32),
-                    new ItemStack(BOOK, 4),
-                    new ItemStack(NC_FUEL.get(List.of("fuel", "californium", "hecf-251", "")).get(), 2),
-                    7, 20, 0.02f));
-
-            trades.get(4).add((pTrader, pRandom) -> new MerchantOffer(
-                    getItemStackByModPriority(IngredientCreatorAccess.item().from(forgeIngot("platinum"), 16)),
-                    getItemStackByModPriority(IngredientCreatorAccess.item().from(forgeIngot("cobalt"), 4)),
-                    new ItemStack(NC_FUEL.get(List.of("fuel", "americium", "hea-242", "")).get(), 2),
-                    7, 20, 0.02f));
-
-            trades.get(5).add((pTrader, pRandom) -> new MerchantOffer(
-                    new ItemStack(EMERALD, 16),
-                    getItemStackByModPriority(IngredientCreatorAccess.item().from(forgeIngot("cobalt"), 4)),
-                    new ItemStack(NC_PARTS.get("coil_magnesium_diboride").get(), 2),
-                    7, 30, 0.02f));
-
-            trades.get(5).add((pTrader, pRandom) -> new MerchantOffer(
-                    new ItemStack(EMERALD, 16),
-                    getItemStackByModPriority(IngredientCreatorAccess.item().from(forgeIngot("zinc"), 8)),
-                    getItemStackByModPriority(IngredientCreatorAccess.item().from(forgeIngot("neutronium"), 2)),
-                    7, 30, 0.02f));
-        }
+        addVillagerTrades(event);
     }
 
     @SubscribeEvent
@@ -146,22 +71,22 @@ public class WorldEvents {
 
     @SubscribeEvent
     public void onBlockBreak(BlockEvent.BreakEvent event) {
+        if(event.getPlayer().level().isClientSide()) return;
         BlockState state = event.getState();
         if(state == null) return;
         if(trackingBlocks.contains(state.getBlock())) {
-            MultiblockHandler.instance.trackBlockChange(event.getPos());
-        }
-        if (state != null && !state.isAir() && state.hasBlockEntity()) {
-
+            MultiblockHandler.get(event.getPlayer().level().dimension()).trackBlockChange(event.getPos());
         }
     }
+
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onBlockPlace(BlockEvent.EntityPlaceEvent event) {
+        if(event.getEntity().level().isClientSide()) return;
         boolean placed = true;
         BlockState state = event.getState();
         if(state == null) return;
         if(trackingBlocks.contains(state.getBlock())) {
-            MultiblockHandler.instance.trackBlockChange(event.getPos());
+            MultiblockHandler.get(event.getEntity().level().dimension()).trackBlockChange(event.getPos());
         }
         if(state.getBlock() instanceof TurbineBladeBlock) {
             placed = TurbineBladeBlock.processBlockPlace(event.getLevel(), event.getPos(), event.getPlacedBlock(), state, event.getPlacedAgainst());
@@ -191,13 +116,14 @@ public class WorldEvents {
     @SubscribeEvent
     public void onTick(ServerTickEvent event) {
         if (event.side.isServer() && event.phase == Phase.END) {
-            MultiblockHandler.instance.tick();
+            //MultiblockHandler.instance.tick();
         }
     }
 
     @SubscribeEvent
     public void onTick(LevelTickEvent event) {
         if (event.side.isServer() && event.phase == Phase.END) {
+            MultiblockHandler.get(event.level.dimension()).tick(event.level);
             RadiationEvents.onWorldTick(event);
         }
     }
@@ -225,8 +151,6 @@ public class WorldEvents {
     {
         return item.getCapability(ForgeCapabilities.ENERGY).map(handler -> handler.getEnergyStored() > 0).orElse(false);
     }
-
-
 
     @SubscribeEvent
     public static void onPlayerDamage(LivingHurtEvent event) {

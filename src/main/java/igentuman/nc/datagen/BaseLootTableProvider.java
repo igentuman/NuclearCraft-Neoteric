@@ -53,7 +53,7 @@ public abstract class BaseLootTableProvider extends BlockLootSubProvider {
                                 .copy("Inventory", "BlockEntityTag.Inventory", CopyNbtFunction.MergeStrategy.REPLACE)
                                 .copy("Energy", "BlockEntityTag.Energy", CopyNbtFunction.MergeStrategy.REPLACE))
                         .apply(SetContainerContents.setContents(type)
-                                .withEntry(DynamicLoot.dynamicEntry(new ResourceLocation("minecraft", "contents"))))
+                                .withEntry(DynamicLoot.dynamicEntry(ResourceLocation.tryBuild("minecraft", "contents"))))
                 );
         return LootTable.lootTable().withPool(builder);
     }

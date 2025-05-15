@@ -30,12 +30,11 @@ import static igentuman.nc.handler.sided.SlotModePair.SlotMode.*;
 public class ItemCapabilityHandler extends AbstractCapabilityHandler implements IItemHandlerModifiable, INBTSerializable<CompoundTag> {
 
     public Supplier<List<ItemStack>> allowedInputItems;
-    public HashMap<Integer, List<Item>> validItemsForSlot = new HashMap<>();
+    public final HashMap<Integer, List<Item>> validItemsForSlot = new HashMap<>();
     protected NonNullList<ItemStack> stacks;
     protected ItemStack[] sortedStacks;
-    private Map<Direction, LazyOptional<ItemHandlerWrapper>> handlerCache = new HashMap<>();
-
-    public List<ItemStack> holdedInputs = new ArrayList<>();
+    private final Map<Direction, LazyOptional<ItemHandlerWrapper>> handlerCache = new HashMap<>();
+    public final List<ItemStack> holdedInputs = new ArrayList<>();
 
     public ItemCapabilityHandler(int input, int output) {
         this.inputSlots = input;

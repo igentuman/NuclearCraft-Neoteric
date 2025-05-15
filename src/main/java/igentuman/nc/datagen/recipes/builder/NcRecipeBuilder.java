@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.NuclearCraft.rl;
 
 public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
 
@@ -100,7 +101,7 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
         }
         name.replace(name.length()-1, name.length(), "");
 
-        return new ResourceLocation(MODID, ID+"/"+recipeIdReplacements(name.toString()));
+        return rl(ID+"/"+recipeIdReplacements(name.toString()));
     }
 
     protected String recipeIdReplacements(String val) {

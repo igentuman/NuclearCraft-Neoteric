@@ -28,9 +28,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.NuclearCraft.rl;
 
 public class NCGuiElement extends AbstractWidget {
-    protected static final ResourceLocation TEXTURE = new ResourceLocation(MODID, "textures/gui/widgets.png");
+    protected static final ResourceLocation TEXTURE = rl("textures/gui/widgets.png");
     public static int RELATIVE_X = 0;
     public static int RELATIVE_Y = 0;
     protected int width;

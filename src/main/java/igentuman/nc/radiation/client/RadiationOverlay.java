@@ -10,12 +10,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.setup.registration.NCItems.ALL_NC_ITEMS;
 
 public class RadiationOverlay {
 
-    private static final ResourceLocation RADIATION_BAR_TEXTURE = new ResourceLocation(MODID,
-            "textures/gui/overlay/radiation_bar.png");
+    private static final ResourceLocation RADIATION_BAR_TEXTURE = rl("textures/gui/overlay/radiation_bar.png");
 
     public static boolean hasDosimeter(Player player) {
         return player.getInventory().contains(new ItemStack(ALL_NC_ITEMS.get("dosimeter").get()));

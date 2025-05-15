@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.NuclearCraft.rl;
 
 public class TextureUtil {
 
@@ -47,7 +48,7 @@ public class TextureUtil {
 
     @OnlyIn(Dist.CLIENT)
     public static int getAverageColor(String textureLocation) {
-        ResourceLocation resourceLocation = new ResourceLocation(MODID, textureLocation);
+        ResourceLocation resourceLocation = rl(textureLocation);
         int redSum;
         int greenSum;
         int blueSum;

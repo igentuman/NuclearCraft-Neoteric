@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.NuclearCraft.forgeRl;
+import static igentuman.nc.util.NcUtils.rlFromString;
 
 public class FluidRadiation {
 
@@ -89,7 +91,7 @@ public class FluidRadiation {
         if(!name.contains(":")) {
             name = MODID +":" + name;
         }
-        ResourceLocation itemKey = new ResourceLocation(name.replace("/", "_"));
+        ResourceLocation itemKey = rlFromString(name.replace("/", "_"));
         return ForgeRegistries.FLUIDS.getValue(itemKey);
     }
 

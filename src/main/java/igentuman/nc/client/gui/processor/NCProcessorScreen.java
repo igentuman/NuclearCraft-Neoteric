@@ -28,10 +28,11 @@ import java.util.List;
 import java.util.Optional;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.util.TextUtils.*;
 
 public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractContainerScreen<T> implements IProgressScreen {
-    protected final ResourceLocation GUI = new ResourceLocation(MODID, "textures/gui/processor.png");
+    protected final ResourceLocation GUI = rl("textures/gui/processor.png");
     protected int relX;
     protected int relY;
 

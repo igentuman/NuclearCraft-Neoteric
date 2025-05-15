@@ -27,6 +27,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.handler.config.RadiationConfig.RADIATION_CONFIG;
 import static igentuman.nc.setup.Registration.RADIATION_RESISTANCE;
 
@@ -37,7 +38,7 @@ public class RadiationEvents {
 
     public static void attachWorldRadiation(final AttachCapabilitiesEvent<Level> event) {
         if (!event.getObject().getCapability(WorldRadiationProvider.WORLD_RADIATION).isPresent()) {
-            event.addCapability(new ResourceLocation(MODID, "radiation"), new WorldRadiationProvider());
+            event.addCapability(rl("radiation"), new WorldRadiationProvider());
             isTracking = true;
         }
     }
@@ -93,7 +94,7 @@ public class RadiationEvents {
     public static void attachPlayerRadiation(final AttachCapabilitiesEvent<Entity> event) {
         if(event.getObject() instanceof Player) {
             if (!event.getObject().getCapability(PlayerRadiationProvider.PLAYER_RADIATION).isPresent()) {
-                event.addCapability(new ResourceLocation(MODID, "radiation"), new PlayerRadiationProvider());
+                event.addCapability(rl("radiation"), new PlayerRadiationProvider());
             }
         }
     }

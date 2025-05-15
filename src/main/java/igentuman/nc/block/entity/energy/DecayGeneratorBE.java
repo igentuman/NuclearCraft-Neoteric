@@ -89,7 +89,7 @@ public class DecayGeneratorBE extends NCEnergy {
 
     @Override
     public void tickServer() {
-        if(NuclearCraft.instance.isNcBeStopped) return;
+        if(NuclearCraft.instance.isNcBeStopped || isRemoved()) return;
         super.tickServer();
         energyStorage.setEnergy(getEnergyFromConnectedBlocks());
         sendOutPower();

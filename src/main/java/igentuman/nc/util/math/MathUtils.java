@@ -9,6 +9,9 @@ public class MathUtils {
 
     private static final long UNSIGNED_MASK = 0x7FFFFFFFFFFFFFFFL;
 
+    public static long clamp(long num, long min, long max) {
+        return num < min ? min : Math.min(num, max);
+    }
     public static int clampToInt(double d) {
         if (d < Integer.MAX_VALUE) {
             return (int) d;

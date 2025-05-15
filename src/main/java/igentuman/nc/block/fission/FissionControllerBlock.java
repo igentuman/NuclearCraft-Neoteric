@@ -3,8 +3,7 @@ package igentuman.nc.block.fission;
 import igentuman.nc.block.entity.fission.FissionControllerBE;
 import igentuman.nc.container.FissionControllerContainer;
 import igentuman.nc.multiblock.MultiblockHandler;
-import igentuman.nc.multiblock.fission.FissionReactor;
-import igentuman.nc.util.TextUtils;
+import igentuman.nc.multiblock.fission.FissionReactorRegistration;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -40,7 +39,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-import static igentuman.nc.handler.event.client.InputEvents.DESCRIPTIONS_SHOW;
 import static igentuman.nc.util.TextUtils.__;
 
 public class FissionControllerBlock extends HorizontalDirectionalBlock implements EntityBlock {
@@ -75,7 +73,7 @@ public class FissionControllerBlock extends HorizontalDirectionalBlock implement
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
-        return FissionReactor.FISSION_BE.get("fission_reactor_controller").get().create(pPos, pState);
+        return FissionReactorRegistration.FISSION_BE.get("fission_reactor_controller").get().create(pPos, pState);
     }
 
     @Override
@@ -121,8 +119,10 @@ public class FissionControllerBlock extends HorizontalDirectionalBlock implement
     }
 
     @Override
-    public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor){
-        MultiblockHandler.instance.trackBlockChange(pos);
+    public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor) {
+        if(level.isClientSide()) return;
+        Level world = (Level) level;
+        MultiblockHandler.get(world.dimension()).trackBlockChange(pos);
     }
 
     @Override

@@ -14,6 +14,8 @@ import net.minecraftforge.server.ServerLifecycleHooks;
 
 import java.util.NoSuchElementException;
 
+import static igentuman.nc.util.NcUtils.rlFromString;
+
 
 public class RecipeInfo implements INBTSerializable<Tag> {
 
@@ -78,7 +80,7 @@ public class RecipeInfo implements INBTSerializable<Tag> {
     }
 
     private NcRecipe getRecipeFromTag(String recipe) {
-        ResourceLocation id = new ResourceLocation(recipe);
+        ResourceLocation id = rlFromString(recipe);
         if(getLevel() == null) return null;
         try {
             return (NcRecipe) getLevel().getRecipeManager().byKey(id).get();

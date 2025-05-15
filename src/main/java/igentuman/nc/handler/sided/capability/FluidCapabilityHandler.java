@@ -28,8 +28,8 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler implements
     public final NonNullList<LazyOptional<IFluidHandler>> fluidCapabilites;
 
     protected FluidStack[] sortedFluids;
-    public List<FluidStack> holdedInputs = new ArrayList<>();
-    private Map<Direction, LazyOptional<FluidHandlerWrapper>> handlerCache = new HashMap<>();
+    public final List<FluidStack> holdedInputs = new ArrayList<>();
+    private final Map<Direction, LazyOptional<FluidHandlerWrapper>> handlerCache = new HashMap<>();
 
     public HashMap<Integer, Supplier<List<FluidStack>>> allowedFluids;
 

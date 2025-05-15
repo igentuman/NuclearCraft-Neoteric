@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import static igentuman.nc.NuclearCraft.forgeRl;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.content.materials.Materials.slurries;
 import static igentuman.nc.content.materials.Materials.subliquid_matter;
@@ -126,11 +127,11 @@ public class NCFluids {
         items.put("emergency_coolant_heated", new LiquidDefinition("emergency_coolant_heated", 0x90CDBEE7));
 
         for(LiquidDefinition liquid: items.values()) {
-            LIQUIDS_TAG.put(liquid.name, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(),  new ResourceLocation("forge", liquid.name)));
+            LIQUIDS_TAG.put(liquid.name, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(),  forgeRl(liquid.name)));
             NC_MATERIALS.put(liquid.name, FluidEntry.makeLiquid(liquid.name, liquid.color));
 
             if (!liquid.name.matches(".*_solution|.*_water|.*_liquor|.*_chocolate|.*_milk|.*_coolant.*")) {
-                LIQUIDS_TAG.put("molten_" + liquid.name, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(),  new ResourceLocation("forge", "molten_" + liquid.name)));
+                LIQUIDS_TAG.put("molten_" + liquid.name, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(),  forgeRl("molten_" + liquid.name)));
             }
         }
     }
@@ -144,7 +145,7 @@ public class NCFluids {
         items.put(subliquid_matter, new LiquidDefinition(subliquid_matter, 0x50C90076));
 
         for(LiquidDefinition liquid: items.values()) {
-            LIQUIDS_TAG.put(liquid.name, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(),  new ResourceLocation("forge", liquid.name)));
+            LIQUIDS_TAG.put(liquid.name, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(),  forgeRl(liquid.name)));
             NC_MATERIALS.put(liquid.name, FluidEntry.makeLiquid(liquid.name, liquid.color));
         }
     }
@@ -170,7 +171,7 @@ public class NCFluids {
             items.put(material+"_clean_slurry", new AcidDefinition(material+"_clean_slurry", TextureUtil.rgbaToInt(rgba)));
         }
         for(AcidDefinition acid: items.values()) {
-            LIQUIDS_TAG.put(acid.name, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(),  new ResourceLocation("forge", acid.name)));
+            LIQUIDS_TAG.put(acid.name, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(),  forgeRl(acid.name)));
             NC_MATERIALS.put(acid.name, FluidEntry.makeAcid(acid));
         }
     }
@@ -185,16 +186,16 @@ public class NCFluids {
         items.put("aqua_regia_acid", new AcidDefinition("aqua_regia_acid", 0XCCFFBB99));
 
         for(AcidDefinition acid: items.values()) {
-            LIQUIDS_TAG.put(acid.name, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(),  new ResourceLocation("forge", acid.name)));
+            LIQUIDS_TAG.put(acid.name, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(),  forgeRl(acid.name)));
             NC_MATERIALS.put(acid.name, FluidEntry.makeAcid(acid));
         }
     }
 
     private static void materialFluids() {
         for (String name: Materials.fluids().keySet()) {
-            LIQUIDS_TAG.put(name, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(),  new ResourceLocation("forge", name)));
+            LIQUIDS_TAG.put(name, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(),  forgeRl(name)));
             NC_MATERIALS.put(name, FluidEntry.makeMoltenLiquid(name, Materials.fluids().get(name).color));
-            LIQUIDS_TAG.put("molten_" + name, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(),  new ResourceLocation("forge", "molten_" + name)));
+            LIQUIDS_TAG.put("molten_" + name, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(),  forgeRl("molten_" + name)));
         }
     }
 
@@ -213,10 +214,10 @@ public class NCFluids {
                     NC_MATERIALS.put(key,
                             FluidEntry.makeMoltenLiquid(key.replace("-","_"),
                                     colorFuel));
-                    LIQUIDS_TAG.put(key, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(), new ResourceLocation("forge", key.replace("-","_"))));
+                    LIQUIDS_TAG.put(key, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(), forgeRl(key.replace("-","_"))));
                     NC_MATERIALS.put("depleted_"+key,
                             FluidEntry.makeMoltenLiquid("depleted_"+key.replace("-","_"), colorDepleted));
-                    LIQUIDS_TAG.put("depleted_"+key, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(), new ResourceLocation("forge", "depleted_"+key.replace("-","_"))));
+                    LIQUIDS_TAG.put("depleted_"+key, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(), forgeRl("depleted_"+key.replace("-","_"))));
                 }
             }
         }
@@ -256,8 +257,8 @@ public class NCFluids {
         items.put("sulfur_trioxide", new GasDefinition("sulfur_trioxide", 0xCCD3AE5D));
         items.put("radon", new GasDefinition("radon", 0xFFFFFFFF));
         for(GasDefinition gas: items.values()) {
-            LIQUIDS_TAG.put(gas.name, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(),  new ResourceLocation("forge", gas.name)));
-            GASES_TAG.put(gas.name, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(),  new ResourceLocation("forge", "gases/"+gas.name)));
+            LIQUIDS_TAG.put(gas.name, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(),  forgeRl(gas.name)));
+            GASES_TAG.put(gas.name, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(),  forgeRl("gases/"+gas.name)));
             NC_GASES.put(gas.name, FluidEntry.makeGas(gas));
         }
     }
@@ -276,7 +277,7 @@ public class NCFluids {
                 }
                 NC_MATERIALS.put(name+type,
                         FluidEntry.makeMoltenLiquid(name.replace("/", "_")+type,color));
-                LIQUIDS_TAG.put(name+type, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(),  new ResourceLocation("forge", name+type)));
+                LIQUIDS_TAG.put(name+type, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(),  forgeRl(name+type)));
             }
         }
     }

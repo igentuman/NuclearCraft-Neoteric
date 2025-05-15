@@ -5,18 +5,12 @@ import com.google.gson.JsonObject;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.fission.FissionFuelCellBlock;
 import igentuman.nc.multiblock.MultiblockHandler;
-import igentuman.nc.recipes.ingredient.creator.FluidStackIngredientCreator;
 import igentuman.nc.util.TagUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -25,10 +19,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
+
 import static igentuman.nc.NuclearCraft.MODID;
-import static igentuman.nc.multiblock.fission.FissionReactor.FISSION_BLOCKS;
-import static igentuman.nc.setup.registration.Registries.*;
+import static igentuman.nc.multiblock.fission.FissionReactorRegistration.FISSION_BLOCKS;
+import static igentuman.nc.util.NcUtils.rlFromString;
+import static igentuman.nc.util.StackUtils.getItemsByTagKey;
 import static igentuman.nc.util.TagUtil.getFirstMatchingFluidByTag;
 
 public class HeatSinkDef {
@@ -100,16 +95,7 @@ public class HeatSinkDef {
         return funcType;
     }
 
-    public List<String> getItemsByTagKey(String key)
-    {
-        List<String> tmp = new ArrayList<>();
-        TagKey<Item> tag = TagKey.create(ITEM_REGISTRY, new ResourceLocation(key));
-        Ingredient ing = Ingredient.fromValues(Stream.of(new Ingredient.TagValue(tag)));
-        for (ItemStack item: ing.getItems()) {
-            tmp.add(item.getItem().toString());
-        }
-        return tmp;
-    }
+
 
     private List<String> collectBlocks(String[] blocks) {
         List<String> tmp = new ArrayList<>();
@@ -174,7 +160,7 @@ public class HeatSinkDef {
         {
             for(BlockPos p: pos) {
                 for(Direction dir: Direction.values()) {
-                    if(MultiblockHandler.instance.checkAttachmentToBlock(FissionFuelCellBlock.class, level, p, dir)) {
+                    if(MultiblockHandler.get(level.dimension()).checkAttachmentToBlock(FissionFuelCellBlock.class, level, p, dir)) {
                         return true;
                     }
                     if(level.getBlockState(p.relative(dir)).getBlock() instanceof FissionFuelCellBlock) {
@@ -284,7 +270,7 @@ public class HeatSinkDef {
                             if (!bStr.contains(":")) {
                                 bStr = MODID + ":" + bStr;
                             }
-                            tmp.add(ForgeRegistries.BLOCKS.getValue(new ResourceLocation(bStr)));
+                            tmp.add(ForgeRegistries.BLOCKS.getValue(rlFromString(bStr)));
                         }
                     }
                     blocks.put(condition, tmp);

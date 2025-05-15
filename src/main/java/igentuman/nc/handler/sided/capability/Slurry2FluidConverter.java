@@ -19,6 +19,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 
+import static igentuman.nc.NuclearCraft.forgeRl;
+
 public class Slurry2FluidConverter implements ISlurryHandler {
 
     private FluidCapabilityHandler fluidCapability;
@@ -73,7 +75,7 @@ public class Slurry2FluidConverter implements ISlurryHandler {
         String name = stack.getTypeRegistryName().getPath();
         name = specialConvertRules(name);
         ITagManager<Fluid> tagManager = TagUtil.manager(ForgeRegistries.FLUIDS);
-        TagKey<Fluid> key = tagManager.createTagKey(new ResourceLocation("forge", name));
+        TagKey<Fluid> key = tagManager.createTagKey(forgeRl(name));
         ITag<Fluid> fluidITag = TagUtil.tag(ForgeRegistries.FLUIDS, key);
         if(fluidITag.isEmpty()) {
             return FluidStack.EMPTY;

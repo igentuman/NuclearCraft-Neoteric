@@ -29,6 +29,7 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import static igentuman.nc.setup.registration.Registries.ITEM_REGISTRY;
+import static igentuman.nc.util.NcUtils.rlFromString;
 import static net.minecraft.world.item.Items.BARRIER;
 
 @NothingNullByDefault
@@ -179,7 +180,7 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
         public List<String> getItemsByTagKey(String key)
         {
             List<String> tmp = new ArrayList<>();
-            TagKey<Item> tag = TagKey.create(ITEM_REGISTRY, new ResourceLocation(key));
+            TagKey<Item> tag = TagKey.create(ITEM_REGISTRY, rlFromString(key));
             Ingredient ing = Ingredient.fromValues(Stream.of(new Ingredient.TagValue(tag)));
             for (ItemStack item: ing.getItems()) {
                 tmp.add(item.getItem().toString());

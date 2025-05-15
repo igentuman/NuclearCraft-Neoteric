@@ -4,7 +4,6 @@ import igentuman.nc.content.materials.Materials;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.datagen.recipes.builder.SpecialRecipeBuilder;
 import igentuman.nc.recipes.ingredient.NcIngredient;
-import igentuman.nc.multiblock.fission.FissionBlocks;
 import igentuman.nc.recipes.NcRecipeSerializers;
 import igentuman.nc.setup.registration.*;
 import net.minecraft.advancements.critereon.ItemPredicate;
@@ -20,8 +19,10 @@ import net.minecraftforge.common.Tags;
 import java.util.function.Consumer;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.datagen.recipes.recipes.AbstractRecipeProvider.dustIngredient;
-import static igentuman.nc.multiblock.fission.FissionReactor.FISSION_BLOCKS;
+import static igentuman.nc.multiblock.fission.FissionReactorRegistration.FISSION_BLOCKS;
+import static igentuman.nc.multiblock.fission.FissionReactorRegistration.heatsinks;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BLOCKS;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.EXPL_BLOCK;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BLOCKS;
@@ -226,7 +227,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('C', CHEST)
                 .define('P', NC_PARTS.get("plate_basic").get())
                 .unlockedBy("item", has(CHEST))
-                .save(consumer, new ResourceLocation(MODID, "basic_storage_container"));
+                .save(consumer, rl("basic_storage_container"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, STORAGE_BLOCKS.get("advanced_storage_container").get())
                 .pattern("DPD")
@@ -236,7 +237,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('D', forgePlate(Materials.bronze))
                 .define('P', NC_PARTS.get("plate_advanced").get())
                 .unlockedBy("item", has(STORAGE_BLOCKS.get("basic_storage_container").get()))
-                .save(consumer, new ResourceLocation(MODID, "advanced_storage_container"));
+                .save(consumer, rl("advanced_storage_container"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, STORAGE_BLOCKS.get("du_storage_container").get())
                 .pattern("DPD")
@@ -246,7 +247,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('D', forgePlate(Materials.platinum))
                 .define('P', NC_PARTS.get("plate_du").get())
                 .unlockedBy("item", has(STORAGE_BLOCKS.get("advanced_storage_container").get()))
-                .save(consumer, new ResourceLocation(MODID, "du_storage_container"));
+                .save(consumer, rl("du_storage_container"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, STORAGE_BLOCKS.get("elite_storage_container").get())
                 .pattern("DPD")
@@ -256,7 +257,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('D', forgePlate(Materials.hsla_steel))
                 .define('P', NC_PARTS.get("plate_elite").get())
                 .unlockedBy("item", has(STORAGE_BLOCKS.get("du_storage_container").get()))
-                .save(consumer, new ResourceLocation(MODID, "elite_storage_container"));
+                .save(consumer, rl("elite_storage_container"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, STORAGE_BLOCKS.get("basic_barrel").get())
                 .pattern("GPG")
@@ -265,7 +266,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('G', forgePlate(Materials.steel))
                 .define('P', NC_PARTS.get("plate_basic").get())
                 .unlockedBy("item", has(NC_PARTS.get("plate_basic").get()))
-                .save(consumer, new ResourceLocation(MODID, "basic_barrel"));
+                .save(consumer, rl("basic_barrel"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, STORAGE_BLOCKS.get("advanced_barrel").get())
                 .pattern("GPG")
@@ -275,7 +276,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('G', forgePlate(Materials.tough_alloy))
                 .define('P', NC_PARTS.get("plate_advanced").get())
                 .unlockedBy("item", has(NC_PARTS.get("plate_advanced").get()))
-                .save(consumer, new ResourceLocation(MODID, "advanced_barrel"));
+                .save(consumer, rl("advanced_barrel"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, STORAGE_BLOCKS.get("du_barrel").get())
                 .pattern("GPG")
@@ -285,7 +286,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('G', forgePlate(Materials.hsla_steel))
                 .define('P', NC_PARTS.get("plate_du").get())
                 .unlockedBy("item", has(NC_PARTS.get("plate_du").get()))
-                .save(consumer, new ResourceLocation(MODID, "du_barrel"));
+                .save(consumer, rl("du_barrel"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, STORAGE_BLOCKS.get("elite_barrel").get())
                 .pattern("GPG")
@@ -295,7 +296,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('G', forgePlate(Materials.platinum))
                 .define('P', NC_PARTS.get("plate_elite").get())
                 .unlockedBy("item", has(NC_PARTS.get("plate_elite").get()))
-                .save(consumer, new ResourceLocation(MODID, "elite_barrel"));
+                .save(consumer, rl("elite_barrel"));
 
     }
 
@@ -304,7 +305,7 @@ public class NCRecipes extends RecipeProvider {
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, PAPER)
                         .requires(ALL_NC_ITEMS.get("research_paper").get(), 2)
                         .unlockedBy("item", has(ALL_NC_ITEMS.get("research_paper").get()))
-                        .save(consumer, new ResourceLocation(MODID, "paper"));
+                        .save(consumer, rl("paper"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ENERGY_BLOCKS.get("decay_generator").get())
                 .pattern("PGP")
@@ -314,7 +315,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('P', NC_PARTS.get("plate_basic").get())
                 .define('U', NC_PARTS.get("coil_copper").get())
                 .unlockedBy("item", has(NC_PARTS.get("plate_basic").get()))
-                .save(consumer, new ResourceLocation(MODID, "decay_generator"));
+                .save(consumer, rl("decay_generator"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ENERGY_BLOCKS.get("uranium_rtg").get())
                 .pattern("PGP")
@@ -324,7 +325,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('P', NC_PARTS.get("plate_basic").get())
                 .define('U', forgeBlock("uranium238"))
                 .unlockedBy("item", has(NC_PARTS.get("plate_basic").get()))
-                .save(consumer, new ResourceLocation(MODID, "uranium_rtg"));
+                .save(consumer, rl("uranium_rtg"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ENERGY_BLOCKS.get("plutonium_rtg").get())
                 .pattern("PGP")
@@ -334,7 +335,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('P', NC_PARTS.get("plate_advanced").get())
                 .define('U', forgeBlock("plutonium238"))
                 .unlockedBy("item", has(NC_PARTS.get("plate_advanced").get()))
-                .save(consumer, new ResourceLocation(MODID, "plutonium_rtg"));
+                .save(consumer, rl("plutonium_rtg"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ENERGY_BLOCKS.get("americium_rtg").get())
                 .pattern("PGP")
@@ -344,7 +345,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('P', NC_PARTS.get("plate_advanced").get())
                 .define('U', forgeBlock("americium241"))
                 .unlockedBy("item", has(NC_PARTS.get("plate_advanced").get()))
-                .save(consumer, new ResourceLocation(MODID, "americium_rtg"));
+                .save(consumer, rl("americium_rtg"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ENERGY_BLOCKS.get("californium_rtg").get())
                 .pattern("PGP")
@@ -354,7 +355,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('P', NC_PARTS.get("plate_advanced").get())
                 .define('U', forgeBlock("californium250"))
                 .unlockedBy("item", has(NC_PARTS.get("plate_advanced").get()))
-                .save(consumer, new ResourceLocation(MODID, "californium_rtg"));
+                .save(consumer, rl("californium_rtg"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ENERGY_BLOCKS.get("basic_voltaic_pile").get())
                 .pattern("PSP")
@@ -364,7 +365,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('S', NC_PARTS.get("coil_copper").get())
                 .define('M', forgeBlock(Materials.magnesium))
                 .unlockedBy("item", has(NC_PARTS.get("coil_copper").get()))
-                .save(consumer, new ResourceLocation(MODID, "basic_voltaic_pile"));
+                .save(consumer, rl("basic_voltaic_pile"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ENERGY_BLOCKS.get("advanced_voltaic_pile").get())
                 .pattern("PMP")
@@ -375,7 +376,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('M', forgeIngot(Materials.magnesium))
                 .define('C', forgeIngot(Materials.zinc))
                 .unlockedBy("item", has(NC_PARTS.get("plate_advanced").get()))
-                .save(consumer, new ResourceLocation(MODID, "advanced_voltaic_pile"));
+                .save(consumer, rl("advanced_voltaic_pile"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ENERGY_BLOCKS.get("du_voltaic_pile").get())
                 .pattern("PMP")
@@ -386,7 +387,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('M', forgeIngot(Materials.magnesium))
                 .define('C', forgeIngot(Materials.silver))
                 .unlockedBy("item", has(NC_PARTS.get("plate_du").get()))
-                .save(consumer, new ResourceLocation(MODID, "du_voltaic_pile"));
+                .save(consumer, rl("du_voltaic_pile"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ENERGY_BLOCKS.get("elite_voltaic_pile").get())
                 .pattern("PMP")
@@ -397,7 +398,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('M', forgePlate(Materials.magnesium))
                 .define('C', forgePlate(Materials.cobalt))
                 .unlockedBy("item", has(NC_PARTS.get("plate_elite").get()))
-                .save(consumer, new ResourceLocation(MODID, "elite_voltaic_pile"));
+                .save(consumer, rl("elite_voltaic_pile"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ENERGY_BLOCKS.get("basic_lithium_ion_battery").get())
                 .pattern("PCP")
@@ -407,7 +408,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('C', LITHIUM_ION_CELL.get())
                 .define('S', NC_PARTS.get("coil_magnesium_diboride").get())
                 .unlockedBy("item", has(NC_PARTS.get("coil_magnesium_diboride").get()))
-                .save(consumer, new ResourceLocation(MODID, "basic_lithium_ion_battery"));
+                .save(consumer, rl("basic_lithium_ion_battery"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ENERGY_BLOCKS.get("advanced_lithium_ion_battery").get())
                 .pattern("PDP")
@@ -418,7 +419,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('L', ENERGY_BLOCKS.get("basic_lithium_ion_battery").get())
                 .define('S', NC_PARTS.get("coil_magnesium_diboride").get())
                 .unlockedBy("item", has(NC_PARTS.get("coil_magnesium_diboride").get()))
-                .save(consumer, new ResourceLocation(MODID, "advanced_lithium_ion_battery"));
+                .save(consumer, rl("advanced_lithium_ion_battery"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ENERGY_BLOCKS.get("du_lithium_ion_battery").get())
                 .pattern("PDP")
@@ -429,7 +430,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('L', ENERGY_BLOCKS.get("advanced_lithium_ion_battery").get())
                 .define('S', NC_PARTS.get("coil_magnesium_diboride").get())
                 .unlockedBy("item", has(NC_PARTS.get("coil_magnesium_diboride").get()))
-                .save(consumer, new ResourceLocation(MODID, "du_lithium_ion_battery"));
+                .save(consumer, rl("du_lithium_ion_battery"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ENERGY_BLOCKS.get("elite_lithium_ion_battery").get())
                 .pattern("PDP")
@@ -440,7 +441,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('L', ENERGY_BLOCKS.get("du_lithium_ion_battery").get())
                 .define('S', NC_PARTS.get("coil_magnesium_diboride").get())
                 .unlockedBy("item", has(NC_PARTS.get("coil_magnesium_diboride").get()))
-                .save(consumer, new ResourceLocation(MODID, "elite_lithium_ion_battery"));
+                .save(consumer, rl("elite_lithium_ion_battery"));
 
     }
 
@@ -454,7 +455,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('W', NC_PARTS.get("coil_copper").get())
                 .define('S', forgeIngot(Materials.stainless_steel))
                 .unlockedBy("item", has(forgePlate(Materials.copper)))
-                .save(consumer, new ResourceLocation(MODID, "basic_rf_amplifier"));
+                .save(consumer, rl("basic_rf_amplifier"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NC_RF_AMPLIFIERS.get("magnesium_diboride_rf_amplifier").get())
                 .pattern("CCC")
@@ -464,7 +465,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('S', forgeIngot(Materials.stainless_steel))
                 .define('B', NC_RF_AMPLIFIERS.get("basic_rf_amplifier").get())
                 .unlockedBy("item", has(NC_RF_AMPLIFIERS.get("basic_rf_amplifier").get()))
-                .save(consumer, new ResourceLocation(MODID, "magnesium_diboride_rf_amplifier"));
+                .save(consumer, rl("magnesium_diboride_rf_amplifier"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NC_RF_AMPLIFIERS.get("niobium_tin_rf_amplifier").get())
                 .pattern("CCC")
@@ -474,7 +475,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('S', forgeIngot(Materials.stainless_steel))
                 .define('B', NC_RF_AMPLIFIERS.get("basic_rf_amplifier").get())
                 .unlockedBy("item", has(NC_RF_AMPLIFIERS.get("basic_rf_amplifier").get()))
-                .save(consumer, new ResourceLocation(MODID, "niobium_tin_rf_amplifier"));
+                .save(consumer, rl("niobium_tin_rf_amplifier"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NC_RF_AMPLIFIERS.get("niobium_titanium_rf_amplifier").get())
                 .pattern("CCC")
@@ -484,7 +485,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('S', forgeIngot(Materials.stainless_steel))
                 .define('B', NC_RF_AMPLIFIERS.get("basic_rf_amplifier").get())
                 .unlockedBy("item", has(NC_RF_AMPLIFIERS.get("basic_rf_amplifier").get()))
-                .save(consumer, new ResourceLocation(MODID, "niobium_titanium_rf_amplifier"));
+                .save(consumer, rl("niobium_titanium_rf_amplifier"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NC_RF_AMPLIFIERS.get("bscco_rf_amplifier").get())
                 .pattern("CCC")
@@ -494,7 +495,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('S', forgeIngot(Materials.stainless_steel))
                 .define('B', NC_RF_AMPLIFIERS.get("basic_rf_amplifier").get())
                 .unlockedBy("item", has(NC_RF_AMPLIFIERS.get("basic_rf_amplifier").get()))
-                .save(consumer, new ResourceLocation(MODID, "bscco_rf_amplifier"));
+                .save(consumer, rl("bscco_rf_amplifier"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NC_ELECTROMAGNETS.get("basic_electromagnet").get())
                 .pattern("CCC")
@@ -504,7 +505,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('S', forgeIngot(Materials.stainless_steel))
                 .define('B', forgeIngot(Materials.tough_alloy))
                 .unlockedBy("item", has(NC_PARTS.get("coil_copper").get()))
-                .save(consumer, new ResourceLocation(MODID, "basic_electromagnet"));
+                .save(consumer, rl("basic_electromagnet"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NC_ELECTROMAGNETS.get("magnesium_diboride_electromagnet").get())
                 .pattern("CCC")
@@ -514,7 +515,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('S', forgeIngot(Materials.stainless_steel))
                 .define('B', NC_ELECTROMAGNETS.get("basic_electromagnet").get())
                 .unlockedBy("item", has(NC_ELECTROMAGNETS.get("basic_electromagnet").get()))
-                .save(consumer, new ResourceLocation(MODID, "magnesium_diboride_electromagnet"));
+                .save(consumer, rl("magnesium_diboride_electromagnet"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NC_ELECTROMAGNETS.get("niobium_tin_electromagnet").get())
                 .pattern("CCC")
@@ -524,7 +525,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('S', forgeIngot(Materials.stainless_steel))
                 .define('B', NC_ELECTROMAGNETS.get("basic_electromagnet").get())
                 .unlockedBy("item", has(NC_ELECTROMAGNETS.get("basic_electromagnet").get()))
-                .save(consumer, new ResourceLocation(MODID, "niobium_tin_electromagnet"));
+                .save(consumer, rl("niobium_tin_electromagnet"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NC_ELECTROMAGNETS.get("niobium_titanium_electromagnet").get())
                 .pattern("CCC")
@@ -534,7 +535,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('S', forgeIngot(Materials.stainless_steel))
                 .define('B', NC_ELECTROMAGNETS.get("basic_electromagnet").get())
                 .unlockedBy("item", has(NC_ELECTROMAGNETS.get("basic_electromagnet").get()))
-                .save(consumer, new ResourceLocation(MODID, "niobium_titanium_electromagnet"));
+                .save(consumer, rl("niobium_titanium_electromagnet"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NC_ELECTROMAGNETS.get("bscco_electromagnet").get())
                 .pattern("CCC")
@@ -544,59 +545,59 @@ public class NCRecipes extends RecipeProvider {
                 .define('S', forgeIngot(Materials.stainless_steel))
                 .define('B', NC_ELECTROMAGNETS.get("basic_electromagnet").get())
                 .unlockedBy("item", has(NC_ELECTROMAGNETS.get("basic_electromagnet").get()))
-                .save(consumer, new ResourceLocation(MODID, "bscco_electromagnet"));
+                .save(consumer, rl("bscco_electromagnet"));
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NC_ELECTROMAGNETS.get("basic_electromagnet").get())
                 .requires(NC_ELECTROMAGNETS.get("basic_electromagnet_slope").get())
                 .unlockedBy("item", has(NC_ELECTROMAGNETS.get("basic_electromagnet_slope").get()))
-                .save(consumer, new ResourceLocation(MODID, "basic_electromagnet_s_n"));
+                .save(consumer, rl("basic_electromagnet_s_n"));
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NC_ELECTROMAGNETS.get("basic_electromagnet_slope").get())
                 .requires(NC_ELECTROMAGNETS.get("basic_electromagnet").get())
                 .unlockedBy("item", has(NC_ELECTROMAGNETS.get("basic_electromagnet").get()))
-                .save(consumer, new ResourceLocation(MODID, "basic_electromagnet_n_s"));
+                .save(consumer, rl("basic_electromagnet_n_s"));
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NC_ELECTROMAGNETS.get("magnesium_diboride_electromagnet").get())
                 .requires(NC_ELECTROMAGNETS.get("magnesium_diboride_electromagnet_slope").get())
                 .unlockedBy("item", has(NC_ELECTROMAGNETS.get("magnesium_diboride_electromagnet_slope").get()))
-                .save(consumer, new ResourceLocation(MODID, "magnesium_diboride_electromagnet_s_n"));
+                .save(consumer, rl("magnesium_diboride_electromagnet_s_n"));
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NC_ELECTROMAGNETS.get("magnesium_diboride_electromagnet_slope").get())
                 .requires(NC_ELECTROMAGNETS.get("magnesium_diboride_electromagnet").get())
                 .unlockedBy("item", has(NC_ELECTROMAGNETS.get("magnesium_diboride_electromagnet").get()))
-                .save(consumer, new ResourceLocation(MODID, "magnesium_diboride_electromagnet_n_s"));
+                .save(consumer, rl("magnesium_diboride_electromagnet_n_s"));
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NC_ELECTROMAGNETS.get("niobium_tin_electromagnet").get())
                 .requires(NC_ELECTROMAGNETS.get("niobium_tin_electromagnet_slope").get())
                 .unlockedBy("item", has(NC_ELECTROMAGNETS.get("niobium_tin_electromagnet_slope").get()))
-                .save(consumer, new ResourceLocation(MODID, "niobium_tin_electromagnet_s_n"));
+                .save(consumer, rl("niobium_tin_electromagnet_s_n"));
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NC_ELECTROMAGNETS.get("niobium_tin_electromagnet_slope").get())
                 .requires(NC_ELECTROMAGNETS.get("niobium_tin_electromagnet").get())
                 .unlockedBy("item", has(NC_ELECTROMAGNETS.get("niobium_tin_electromagnet").get()))
-                .save(consumer, new ResourceLocation(MODID, "niobium_tin_electromagnet_n_s"));
+                .save(consumer, rl("niobium_tin_electromagnet_n_s"));
 
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NC_ELECTROMAGNETS.get("niobium_titanium_electromagnet").get())
                 .requires(NC_ELECTROMAGNETS.get("niobium_titanium_electromagnet_slope").get())
                 .unlockedBy("item", has(NC_ELECTROMAGNETS.get("niobium_titanium_electromagnet_slope").get()))
-                .save(consumer, new ResourceLocation(MODID, "niobium_titanium_electromagnet_s_n"));
+                .save(consumer, rl("niobium_titanium_electromagnet_s_n"));
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NC_ELECTROMAGNETS.get("niobium_titanium_electromagnet_slope").get())
                 .requires(NC_ELECTROMAGNETS.get("niobium_titanium_electromagnet").get())
                 .unlockedBy("item", has(NC_ELECTROMAGNETS.get("niobium_titanium_electromagnet").get()))
-                .save(consumer, new ResourceLocation(MODID, "niobium_titanium_electromagnet_n_s"));
+                .save(consumer, rl("niobium_titanium_electromagnet_n_s"));
 
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NC_ELECTROMAGNETS.get("bscco_electromagnet").get())
                 .requires(NC_ELECTROMAGNETS.get("bscco_electromagnet_slope").get())
                 .unlockedBy("item", has(NC_ELECTROMAGNETS.get("bscco_electromagnet_slope").get()))
-                .save(consumer, new ResourceLocation(MODID, "bscco_electromagnet_s_n"));
+                .save(consumer, rl("bscco_electromagnet_s_n"));
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NC_ELECTROMAGNETS.get("bscco_electromagnet_slope").get())
                 .requires(NC_ELECTROMAGNETS.get("bscco_electromagnet").get())
                 .unlockedBy("item", has(NC_ELECTROMAGNETS.get("bscco_electromagnet").get()))
-                .save(consumer, new ResourceLocation(MODID, "bscco_electromagnet_n_s"));
+                .save(consumer, rl("bscco_electromagnet_n_s"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, LITHIUM_ION_CELL.get())
                 .pattern("CCC")
@@ -607,7 +608,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('L', forgePlate(Materials.lithium))
                 .define('D', forgePlate(Materials.lithium_manganese_dioxide))
                 .unlockedBy("item", has(forgeIngot(Materials.lithium_manganese_dioxide)))
-                .save(consumer, new ResourceLocation(MODID, "lithium_ion_cell"));
+                .save(consumer, rl("lithium_ion_cell"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NC_ITEMS.get("lava_collector").get())
                 .pattern("PIP")
@@ -617,7 +618,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('B', forgePlate(Materials.thermoconducting))
                 .define('I', LAVA_BUCKET)
                 .unlockedBy("item", has(NC_PARTS.get("plate_advanced").get()))
-                .save(consumer, new ResourceLocation(MODID, "lava_collector"));
+                .save(consumer, rl("lava_collector"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NC_ITEMS.get("water_collector").get())
                 .pattern("PIP")
@@ -627,7 +628,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('B', NAUTILUS_SHELL)
                 .define('I', WATER_BUCKET)
                 .unlockedBy("item", has(NC_PARTS.get("plate_basic").get()))
-                .save(consumer, new ResourceLocation(MODID, "water_collector"));
+                .save(consumer, rl("water_collector"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NC_ITEMS.get("compact_water_collector").get())
                 .pattern("CCC")
@@ -636,7 +637,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('C', NC_ITEMS.get("water_collector").get())
                 .define('I', forgePlate(Materials.platinum))
                 .unlockedBy("item", has(NC_ITEMS.get("water_collector").get()))
-                .save(consumer, new ResourceLocation(MODID, "compact_water_collector"));
+                .save(consumer, rl("compact_water_collector"));
 
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NC_ITEMS.get("nitrogen_collector").get())
@@ -648,7 +649,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('B', forgeDust(Materials.pyrolitic_carbon))
                 .define('I', forgePlate(Materials.beryllium))
                 .unlockedBy("item", has(NC_PARTS.get("plate_advanced").get()))
-                .save(consumer, new ResourceLocation(MODID, "nitrogen_collector"));
+                .save(consumer, rl("nitrogen_collector"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NC_ITEMS.get("compact_nitrogen_collector").get())
                 .pattern("CCC")
@@ -657,7 +658,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('C', NC_ITEMS.get("nitrogen_collector").get())
                 .define('I', forgePlate(Materials.beryllium))
                 .unlockedBy("item", has(NC_ITEMS.get("nitrogen_collector").get()))
-                .save(consumer, new ResourceLocation(MODID, "compact_nitrogen_collector"));
+                .save(consumer, rl("compact_nitrogen_collector"));
 
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NC_ITEMS.get("helium_collector").get())
@@ -669,7 +670,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('B', forgePlate(Materials.thorium))
                 .define('I', forgeIngot(Materials.thorium))
                 .unlockedBy("item", has(NC_PARTS.get("plate_advanced").get()))
-                .save(consumer, new ResourceLocation(MODID, "helium_collector"));
+                .save(consumer, rl("helium_collector"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NC_ITEMS.get("compact_helium_collector").get())
                 .pattern("CCC")
@@ -678,7 +679,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('C', NC_ITEMS.get("helium_collector").get())
                 .define('I', forgePlate(Materials.cobalt))
                 .unlockedBy("item", has(NC_ITEMS.get("helium_collector").get()))
-                .save(consumer, new ResourceLocation(MODID, "compact_helium_collector"));
+                .save(consumer, rl("compact_helium_collector"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, HEV_HELMET.get())
                 .pattern(" T ")
@@ -688,7 +689,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('B', LITHIUM_ION_CELL.get())
                 .define('T', NC_PARTS.get("plate_extreme").get())
                 .unlockedBy("item", has(NC_PARTS.get("plate_extreme").get()))
-                .save(consumer, new ResourceLocation(MODID, "hev_helmet"));
+                .save(consumer, rl("hev_helmet"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, HEV_BOOTS.get())
                 .pattern("   ")
@@ -698,7 +699,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('B', LITHIUM_ION_CELL.get())
                 .define('T', NC_PARTS.get("plate_extreme").get())
                 .unlockedBy("item", has(NC_PARTS.get("plate_extreme").get()))
-                .save(consumer, new ResourceLocation(MODID, "hev_boots"));
+                .save(consumer, rl("hev_boots"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, HEV_PANTS.get())
                 .pattern("TTT")
@@ -708,7 +709,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('B', LITHIUM_ION_CELL.get())
                 .define('T', NC_PARTS.get("plate_extreme").get())
                 .unlockedBy("item", has(NC_PARTS.get("plate_extreme").get()))
-                .save(consumer, new ResourceLocation(MODID, "hev_pants"));
+                .save(consumer, rl("hev_pants"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, HEV_CHEST.get())
                 .pattern("THT")
@@ -718,7 +719,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('B', LITHIUM_ION_CELL.get())
                 .define('T', NC_PARTS.get("plate_extreme").get())
                 .unlockedBy("item", has(NC_PARTS.get("plate_extreme").get()))
-                .save(consumer, new ResourceLocation(MODID, "hev_chest"));
+                .save(consumer, rl("hev_chest"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, TOUGH_HELMET.get())
                 .pattern("TTT")
@@ -726,7 +727,7 @@ public class NCRecipes extends RecipeProvider {
                 .pattern("   ")
                 .define('T', forgeIngot(Materials.tough_alloy))
                 .unlockedBy("item", has(forgeIngot(Materials.tough_alloy)))
-                .save(consumer, new ResourceLocation(MODID, "tough_helmet"));
+                .save(consumer, rl("tough_helmet"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, TOUGH_BOOTS.get())
                 .pattern("   ")
@@ -734,7 +735,7 @@ public class NCRecipes extends RecipeProvider {
                 .pattern("T T")
                 .define('T', forgeIngot(Materials.tough_alloy))
                 .unlockedBy("item", has(forgeIngot(Materials.tough_alloy)))
-                .save(consumer, new ResourceLocation(MODID, "tough_boots"));
+                .save(consumer, rl("tough_boots"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, TOUGH_PANTS.get())
                 .pattern("TTT")
@@ -742,7 +743,7 @@ public class NCRecipes extends RecipeProvider {
                 .pattern("T T")
                 .define('T', forgeIngot(Materials.tough_alloy))
                 .unlockedBy("item", has(forgeIngot(Materials.tough_alloy)))
-                .save(consumer, new ResourceLocation(MODID, "tough_pants"));
+                .save(consumer, rl("tough_pants"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, TOUGH_CHEST.get())
                 .pattern("T T")
@@ -750,7 +751,7 @@ public class NCRecipes extends RecipeProvider {
                 .pattern("TTT")
                 .define('T', forgeIngot(Materials.tough_alloy))
                 .unlockedBy("item", has(forgeIngot(Materials.tough_alloy)))
-                .save(consumer, new ResourceLocation(MODID, "tough_chest"));
+                .save(consumer, rl("tough_chest"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, HAZMAT_MASK.get())
                 .pattern("BIB")
@@ -762,7 +763,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('L', LEATHER_HELMET)
                 .define('B', ALL_NC_ITEMS.get("bioplastic").get())
                 .unlockedBy("item", has(NC_SHIELDING.get("light").get()))
-                .save(consumer, new ResourceLocation(MODID, "hazmat_head"));
+                .save(consumer, rl("hazmat_head"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, HAZMAT_CHEST.get())
                 .pattern("BWB")
@@ -773,7 +774,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('L', LEATHER_CHESTPLATE)
                 .define('B', ALL_NC_ITEMS.get("bioplastic").get())
                 .unlockedBy("item", has(NC_SHIELDING.get("light").get()))
-                .save(consumer, new ResourceLocation(MODID, "hazmat_chest"));
+                .save(consumer, rl("hazmat_chest"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, HAZMAT_PANTS.get())
                 .pattern("YYY")
@@ -783,7 +784,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('W', YELLOW_WOOL)
                 .define('L', LEATHER_LEGGINGS)
                 .unlockedBy("item", has(NC_SHIELDING.get("light").get()))
-                .save(consumer, new ResourceLocation(MODID, "hazmat_pants"));
+                .save(consumer, rl("hazmat_pants"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, HAZMAT_BOOTS.get())
                 .pattern("BIB")
@@ -795,7 +796,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('B', ALL_NC_ITEMS.get("bioplastic").get())
                 .define('I', forgeIngot(Materials.steel))
                 .unlockedBy("item", has(NC_SHIELDING.get("light").get()))
-                .save(consumer, new ResourceLocation(MODID, "hazmat_boots"));
+                .save(consumer, rl("hazmat_boots"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NC_SHIELDING.get("light").get())
                 .pattern("III")
@@ -805,7 +806,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('C', forgePlate(Materials.graphite))
                 .define('L', forgePlate(Materials.lead))
                 .unlockedBy("item", has(forgePlate(Materials.lead)))
-                .save(consumer, new ResourceLocation(MODID, "light_shielding"));
+                .save(consumer, rl("light_shielding"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NC_SHIELDING.get("medium").get())
                 .pattern("BBB")
@@ -816,7 +817,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('P', NC_PARTS.get("plate_basic").get())
                 .define('R', NC_SHIELDING.get("light").get())
                 .unlockedBy("item", has(NC_SHIELDING.get("light").get()))
-                .save(consumer, new ResourceLocation(MODID, "medium_shielding"));
+                .save(consumer, rl("medium_shielding"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NC_SHIELDING.get("heavy").get())
                 .pattern("BBB")
@@ -827,7 +828,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('P', NC_PARTS.get("plate_du").get())
                 .define('R', NC_SHIELDING.get("medium").get())
                 .unlockedBy("item", has(NC_SHIELDING.get("medium").get()))
-                .save(consumer, new ResourceLocation(MODID, "heavy_shielding"));
+                .save(consumer, rl("heavy_shielding"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NC_SHIELDING.get("dps").get())
                 .pattern("BBB")
@@ -838,7 +839,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('P', NC_PARTS.get("plate_elite").get())
                 .define('R', NC_SHIELDING.get("heavy").get())
                 .unlockedBy("item", has(NC_SHIELDING.get("heavy").get()))
-                .save(consumer, new ResourceLocation(MODID, "dps_shielding"));
+                .save(consumer, rl("dps_shielding"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NC_FOOD.get("rad_x").get())
                 .pattern("BIB")
@@ -848,7 +849,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('R', ALL_NC_ITEMS.get("radaway").get())
                 .define('I', forgeDust(Materials.potassium_iodide))
                 .unlockedBy("item", has(forgeDust(Materials.potassium_iodide)))
-                .save(consumer, new ResourceLocation(MODID, "rad_x"));
+                .save(consumer, rl("rad_x"));
 
         SimpleCookingRecipeBuilder.smelting(NcIngredient.of(COCOA_BEANS),
                         RecipeCategory.MISC,
@@ -877,7 +878,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('G', ALL_NC_ITEMS.get("gelatin").get())
                 .define('B', NC_PARTS.get("bioplastic").get())
                 .unlockedBy("item", has(ALL_NC_ITEMS.get("gelatin").get()))
-                .save(consumer, new ResourceLocation(MODID, "dosimeter"));
+                .save(consumer, rl("dosimeter"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, GEIGER_COUNTER.get())
                 .pattern("SFF")
@@ -890,7 +891,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('R', forgeDust("redstone"))
                 .define('B', NC_PARTS.get("bioplastic").get())
                 .unlockedBy("item", has(forgeIngot(Materials.ferroboron)))
-                .save(consumer, new ResourceLocation(MODID, "geiger_counter"));
+                .save(consumer, rl("geiger_counter"));
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ALL_NC_ITEMS.get("smore").get())
                 .requires(NCItems.ALL_NC_ITEMS.get("graham_cracker").get())
@@ -898,7 +899,7 @@ public class NCRecipes extends RecipeProvider {
                 .requires(NCItems.ALL_NC_ITEMS.get("marshmallow").get())
                 .requires(NCItems.ALL_NC_ITEMS.get("graham_cracker").get())
                 .unlockedBy("item", has(NCItems.ALL_NC_ITEMS.get("graham_cracker").get()))
-                .save(consumer, new ResourceLocation(MODID, "smore"));
+                .save(consumer, rl("smore"));
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ALL_NC_ITEMS.get("moresmore").get())
                 .requires(NCItems.ALL_NC_ITEMS.get("smore").get())
@@ -906,7 +907,7 @@ public class NCRecipes extends RecipeProvider {
                 .requires(NCItems.ALL_NC_ITEMS.get("marshmallow").get())
                 .requires(NCItems.ALL_NC_ITEMS.get("smore").get())
                 .unlockedBy("item", has(NCItems.ALL_NC_ITEMS.get("smore").get()))
-                .save(consumer, new ResourceLocation(MODID, "moresmore"));
+                .save(consumer, rl("moresmore"));
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ALL_NC_ITEMS.get("foursmore").get())
                 .requires(NCItems.ALL_NC_ITEMS.get("moresmore").get())
@@ -914,7 +915,7 @@ public class NCRecipes extends RecipeProvider {
                 .requires(NCItems.ALL_NC_ITEMS.get("marshmallow").get())
                 .requires(NCItems.ALL_NC_ITEMS.get("moresmore").get())
                 .unlockedBy("item", has(NCItems.ALL_NC_ITEMS.get("moresmore").get()))
-                .save(consumer, new ResourceLocation(MODID, "foursmore"));
+                .save(consumer, rl("foursmore"));
     }
 
     private void parts(Consumer<FinishedRecipe> consumer) {
@@ -926,7 +927,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('T', forgePlate(Materials.thorium))
                 .define('I', forgeIngot("iron"))
                 .unlockedBy("item", has(forgePlate(Materials.thorium)))
-                .save(consumer, new ResourceLocation(MODID, "spaxelhoe_thorium"));
+                .save(consumer, rl("spaxelhoe_thorium"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ALL_NC_ITEMS.get("upgrade_speed").get())
                 .pattern("LRL")
@@ -936,7 +937,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('R', forgeDust("redstone"))
                 .define('P', HEAVY_WEIGHTED_PRESSURE_PLATE)
                 .unlockedBy("item", has(HEAVY_WEIGHTED_PRESSURE_PLATE))
-                .save(consumer, new ResourceLocation(MODID, "upgrade_speed"));
+                .save(consumer, rl("upgrade_speed"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ALL_NC_ITEMS.get("upgrade_energy").get())
                 .pattern("ORO")
@@ -946,7 +947,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('R', forgeDust(Materials.quartz))
                 .define('P', LIGHT_WEIGHTED_PRESSURE_PLATE)
                 .unlockedBy("item", has(HEAVY_WEIGHTED_PRESSURE_PLATE))
-                .save(consumer, new ResourceLocation(MODID, "upgrade_energy"));
+                .save(consumer, rl("upgrade_energy"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NC_PARTS.get("plate_basic").get(), 2)
                 .pattern("LG")
@@ -954,7 +955,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('L', forgeIngot(Materials.lead))
                 .define('G', forgeDust(Materials.graphite))
                 .unlockedBy("item", has(forgeIngot(Materials.lead)))
-                .save(consumer, new ResourceLocation(MODID, "plate_basic"));
+                .save(consumer, rl("plate_basic"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NC_PARTS.get("plate_basic").get(), 2)
                 .pattern("GL")
@@ -962,7 +963,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('L', forgeIngot(Materials.lead))
                 .define('G', forgeDust(Materials.graphite))
                 .unlockedBy("item", has(forgeIngot(Materials.lead)))
-                .save(consumer, new ResourceLocation(MODID, "plate_basic2"));
+                .save(consumer, rl("plate_basic2"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NC_PARTS.get("plate_advanced").get(), 2)
                 .pattern(" P ")
@@ -972,7 +973,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('P', NC_PARTS.get("plate_basic").get())
                 .define('T', forgeIngot(Materials.tough_alloy))
                 .unlockedBy("item", has(NC_PARTS.get("plate_basic").get()))
-                .save(consumer, new ResourceLocation(MODID, "plate_advanced"));
+                .save(consumer, rl("plate_advanced"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NC_PARTS.get("plate_du").get())
                 .pattern("SUS")
@@ -982,7 +983,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('P', NC_PARTS.get("plate_advanced").get())
                 .define('S', forgeDust(Materials.sulfur))
                 .unlockedBy("item", has(NC_PARTS.get("plate_advanced").get()))
-                .save(consumer, new ResourceLocation(MODID, "plate_du"));
+                .save(consumer, rl("plate_du"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NC_PARTS.get("plate_elite").get())
                 .pattern("RBR")
@@ -992,7 +993,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('P', NC_PARTS.get("plate_du").get())
                 .define('B', forgeIngot(Materials.boron))
                 .unlockedBy("item", has(NC_PARTS.get("plate_du").get()))
-                .save(consumer, new ResourceLocation(MODID, "plate_elite"));
+                .save(consumer, rl("plate_elite"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NC_PARTS.get("plate_extreme").get())
                 .pattern("RBR")
@@ -1002,7 +1003,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('P', NC_PARTS.get("plate_elite").get())
                 .define('B', forgeIngot(Materials.extreme))
                 .unlockedBy("item", has(NC_PARTS.get("plate_elite").get()))
-                .save(consumer, new ResourceLocation(MODID, "plate_extreme"));
+                .save(consumer, rl("plate_extreme"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NC_PARTS.get("coil_copper").get())
                 .pattern("CC ")
@@ -1011,7 +1012,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('C', forgeIngot(Materials.copper))
                 .define('I', forgeIngot(Materials.iron))
                 .unlockedBy("item", has(forgeIngot(Materials.copper)))
-                .save(consumer, new ResourceLocation(MODID, "coil_copper"));
+                .save(consumer, rl("coil_copper"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NC_PARTS.get("coil_magnesium_diboride").get())
                 .pattern("MM ")
@@ -1020,7 +1021,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('M', forgeIngot(Materials.magnesium_diboride))
                 .define('T', forgeIngot(Materials.tough_alloy))
                 .unlockedBy("item", has(forgeIngot(Materials.magnesium_diboride)))
-                .save(consumer, new ResourceLocation(MODID, "coil_magnesium_diboride"));
+                .save(consumer, rl("coil_magnesium_diboride"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NC_PARTS.get("servo").get())
                 .pattern("F F")
@@ -1031,7 +1032,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('R', REDSTONE)
                 .define('C', forgeIngot(Materials.copper))
                 .unlockedBy("item", has(forgeIngot(Materials.ferroboron)))
-                .save(consumer, new ResourceLocation(MODID, "servo"));
+                .save(consumer, rl("servo"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NC_PARTS.get("motor").get())
                 .pattern("SSG")
@@ -1042,7 +1043,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('I', forgeIngot(Materials.iron))
                 .define('C', NC_PARTS.get("coil_copper").get())
                 .unlockedBy("item", has(NC_PARTS.get("coil_copper").get()))
-                .save(consumer, new ResourceLocation(MODID, "motor"));
+                .save(consumer, rl("motor"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NC_PARTS.get("actuator").get())
                 .pattern("  S")
@@ -1053,7 +1054,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('C', forgeIngot(Materials.copper))
                 .define('P', PISTON)
                 .unlockedBy("item", has(PISTON))
-                .save(consumer, new ResourceLocation(MODID, "actuator"));
+                .save(consumer, rl("actuator"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NC_PARTS.get("chassis").get())
                 .pattern("LSL")
@@ -1063,7 +1064,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('L', forgeIngot(Materials.lead))
                 .define('T', forgeIngot(Materials.tough_alloy))
                 .unlockedBy("item", has(forgeIngot(Materials.tough_alloy)))
-                .save(consumer, new ResourceLocation(MODID, "chassis"));
+                .save(consumer, rl("chassis"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NC_PARTS.get("empty_frame").get())
                 .pattern("PTP")
@@ -1073,7 +1074,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('P', NC_PARTS.get("plate_basic").get())
                 .define('T', forgeIngot(Materials.tin))
                 .unlockedBy("item", has(NC_PARTS.get("plate_basic").get()))
-                .save(consumer, new ResourceLocation(MODID, "empty_frame"));
+                .save(consumer, rl("empty_frame"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NC_PARTS.get("steel_frame").get())
                 .pattern("STS")
@@ -1083,7 +1084,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('T', forgeIngot(Materials.tough_alloy))
                 .define('B', forgeIngot(Materials.bronze))
                 .unlockedBy("item", has(forgeIngot(Materials.tough_alloy)))
-                .save(consumer, new ResourceLocation(MODID, "steel_frame"));
+                .save(consumer, rl("steel_frame"));
 
     }
 
@@ -1179,7 +1180,7 @@ public class NCRecipes extends RecipeProvider {
                 .unlockedBy("item", has(FISSION_BLOCKS.get("empty_heat_sink").get()))
                 .save(consumer);
 
-        for(String name: FissionBlocks.heatsinks.keySet()) {
+        for(String name: heatsinks.keySet()) {
             if(name.matches(".*water.*|.*liquid.*|.*empty.*|.*cryotheum.*")) {
                 continue;
             }

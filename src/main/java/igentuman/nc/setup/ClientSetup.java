@@ -55,8 +55,8 @@ import igentuman.nc.client.renderer.BlackholeRenderer;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
-import static igentuman.nc.multiblock.fission.FissionReactor.FISSION_CONTROLLER_CONTAINER;
-import static igentuman.nc.multiblock.fission.FissionReactor.FISSION_PORT_CONTAINER;
+import static igentuman.nc.multiblock.fission.FissionReactorRegistration.FISSION_CONTROLLER_CONTAINER;
+import static igentuman.nc.multiblock.fission.FissionReactorRegistration.FISSION_PORT_CONTAINER;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BE;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_CORE_CONTAINER;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.*;

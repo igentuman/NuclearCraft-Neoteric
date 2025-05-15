@@ -24,10 +24,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.util.TextUtils.__;
 
 public class SideConfigSlotSelectionScreen<T extends NCProcessorContainer<T>> extends AbstractContainerScreen<T> implements IProgressScreen {
-    protected final ResourceLocation GUI = new ResourceLocation(MODID, "textures/gui/window_no_inventory.png");
+    protected final ResourceLocation GUI = rl("textures/gui/window_no_inventory.png");
     protected int relX;
     protected int relY;
 

@@ -22,11 +22,12 @@ import java.util.List;
 import java.util.Optional;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.util.TextUtils.__;
 import static igentuman.nc.util.TextUtils.formatEnergy;
 
 public class EXPLScreen extends AbstractContainerScreen<EXPLContainer> {
-    protected final ResourceLocation GUI = new ResourceLocation(MODID, "textures/gui/small_window.png");
+    protected final ResourceLocation GUI = rl("textures/gui/small_window.png");
     protected int relX;
     protected int relY;
     private int xCenter;

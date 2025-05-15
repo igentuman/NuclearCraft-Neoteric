@@ -3,7 +3,7 @@ package igentuman.nc.block.fission;
 import igentuman.nc.block.entity.fission.FissionPortBE;
 import igentuman.nc.container.FissionPortContainer;
 import igentuman.nc.multiblock.MultiblockHandler;
-import igentuman.nc.multiblock.fission.FissionReactor;
+import igentuman.nc.multiblock.fission.FissionReactorRegistration;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -71,7 +71,7 @@ public class FissionPort extends HorizontalDirectionalBlock implements EntityBlo
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
-        return FissionReactor.FISSION_BE.get("fission_reactor_port").get().create(pPos, pState);
+        return FissionReactorRegistration.FISSION_BE.get("fission_reactor_port").get().create(pPos, pState);
     }
 
     @Override
@@ -132,7 +132,9 @@ public class FissionPort extends HorizontalDirectionalBlock implements EntityBlo
     }
 
     @Override
-    public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor){
-        MultiblockHandler.instance.trackBlockChange(pos);
+    public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor) {
+        super.onNeighborChange(state, level, pos, neighbor);
+        if(level.isClientSide()) return;
+        MultiblockHandler.get(((Level)level).dimension()).trackBlockChange(pos);
     }
 }

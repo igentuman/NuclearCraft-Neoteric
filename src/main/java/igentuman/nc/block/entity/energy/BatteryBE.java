@@ -1,21 +1,17 @@
 package igentuman.nc.block.entity.energy;
 
-import igentuman.nc.NuclearCraft;
 import igentuman.api.nc.SideModeToggleable;
+import igentuman.nc.NuclearCraft;
 import igentuman.nc.content.energy.BatteryBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 import org.jetbrains.annotations.NotNull;
@@ -26,6 +22,7 @@ import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static igentuman.nc.handler.config.CommonConfig.ENERGY_STORAGE;
+import static net.minecraftforge.common.capabilities.ForgeCapabilities.ENERGY;
 
 public class BatteryBE extends NCEnergy {
 
@@ -53,7 +50,7 @@ public class BatteryBE extends NCEnergy {
 
     @Override
     public void tickServer() {
-        if(NuclearCraft.instance.isNcBeStopped) return;
+        if(NuclearCraft.instance.isNcBeStopped || isRemoved()) return;
         super.tickServer();
         transferEnergy();
         if(chargeCooldown > 0) chargeCooldown--;
@@ -71,7 +68,7 @@ public class BatteryBE extends NCEnergy {
             ) continue;
             BlockEntity be = level.getExistingBlockEntity(worldPosition.relative(direction));
             if (be != null) {
-                IEnergyStorage sideEnergy = be.getCapability(ForgeCapabilities.ENERGY, direction.getOpposite()).orElse(null);
+                IEnergyStorage sideEnergy = be.getCapability(ENERGY, direction.getOpposite()).orElse(null);
                 if(sideEnergy == null) continue;
                 if (capacity.get() > 0 && sideConfig.get(direction.ordinal()) == SideModeToggleable.SideMode.OUT) {
                     int accepted = sideEnergy.receiveEnergy(Math.min(capacity.get(), getEnergyTransferPerTick()), false);
@@ -84,30 +81,17 @@ public class BatteryBE extends NCEnergy {
         }
         if(capacity.get() != energyStorage().getEnergyStored()) {
             energyStorage().setEnergy(capacity.get());
-            level.setBlockAndUpdate(worldPosition, getBlockState());
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+            setChanged();
         }
     }
 
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (cap == ForgeCapabilities.ENERGY && (side != null && sideConfig.get(side.ordinal()) != SideModeToggleable.SideMode.DISABLED)) {
+        if (cap == ENERGY && (side != null && sideConfig.get(side.ordinal()) != SideModeToggleable.SideMode.DISABLED)) {
             return getEnergy().cast();
         }
         return super.getCapability(cap, side);
-    }
-
-    @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        int oldEnergy = energyStorage().getEnergyStored();
-
-        CompoundTag tag = pkt.getTag();
-        handleUpdateTag(tag);
-        if (oldEnergy != energyStorage().getEnergyStored()) {
-            level.setBlockAndUpdate(worldPosition, getBlockState());
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
-        }
     }
 
     @Override
@@ -153,13 +137,10 @@ public class BatteryBE extends NCEnergy {
                 sideConfig.remove(i);
                 sideConfig.put(i, newMode);
             }
-
         }
         if(changed) {
             requestModelDataUpdate();
-            if(level == null) return;
-            level.setBlockAndUpdate(worldPosition, getBlockState());
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+            setChanged();
         }
     }
 
@@ -172,8 +153,6 @@ public class BatteryBE extends NCEnergy {
     public SideModeToggleable.SideMode toggleSideConfig(int direction) {
         sideConfig.put(direction, SideModeToggleable.SideMode.values()[(sideConfig.get(direction).ordinal() + 1) % 4]);
         setChanged();
-        level.setBlockAndUpdate(worldPosition, getBlockState());
-        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
         return sideConfig.get(direction);
     }
 
@@ -181,8 +160,7 @@ public class BatteryBE extends NCEnergy {
         if(chargeCooldown > 0) return;
         chargeCooldown = 600;
         energyStorage.addEnergy(ENERGY_STORAGE.LIGHTNING_ROD_CHARGE.get());
-        level.setBlockAndUpdate(worldPosition, getBlockState());
-        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+        setChanged();
         BlockPos pos = worldPosition;
         Direction direction = Direction.UP;
         Direction.Axis direction$axis = direction.getAxis();

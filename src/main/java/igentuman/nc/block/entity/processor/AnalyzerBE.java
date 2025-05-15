@@ -1,13 +1,12 @@
 package igentuman.nc.block.entity.processor;
 
 import igentuman.nc.content.processors.Processors;
-import igentuman.nc.handler.OreVeinProvider;
+import igentuman.nc.util.insitu_leaching.OreVeinProvider;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.recipes.type.OreVeinRecipe;
 import igentuman.nc.util.annotation.NothingNullByDefault;
-import net.minecraft.client.particle.Particle;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;

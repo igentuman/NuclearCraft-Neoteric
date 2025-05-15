@@ -1,6 +1,11 @@
 package igentuman.nc.multiblock.fusion;
 
-import igentuman.nc.block.fusion.*;
+import igentuman.nc.block.entity.fusion.FusionCoreBE;
+import igentuman.nc.block.entity.fusion.FusionCoreProxyBE;
+import igentuman.nc.block.fusion.FusionCasingBlock;
+import igentuman.nc.block.fusion.FusionConnectorBlock;
+import igentuman.nc.block.fusion.FusionCoreBlock;
+import igentuman.nc.block.fusion.FusionCoreProxyBlock;
 import igentuman.nc.container.FusionCoreContainer;
 import igentuman.nc.item.FusionCoreItem;
 import net.minecraft.tags.TagKey;
@@ -14,10 +19,10 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.registries.RegistryObject;
-import igentuman.nc.block.entity.fusion.*;
+
 import java.util.HashMap;
 
-import static igentuman.nc.multiblock.fission.FissionBlocks.REACTOR_BLOCKS_PROPERTIES;
+import static igentuman.nc.multiblock.fission.FissionReactorRegistration.REACTOR_BLOCKS_PROPERTIES;
 import static igentuman.nc.setup.registration.NCItems.ALL_NC_ITEMS;
 import static igentuman.nc.setup.registration.Registries.*;
 import static igentuman.nc.setup.registration.Tags.blockTag;

@@ -17,6 +17,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.Objects;
 
+import static igentuman.nc.util.NcUtils.rlFromString;
+
 public class Coord4D {
 
     private final int x;
@@ -51,7 +53,7 @@ public class Coord4D {
 
     public static Coord4D read(CompoundTag tag) {
         return new Coord4D(tag.getInt(NBTConstants.X), tag.getInt(NBTConstants.Y), tag.getInt(NBTConstants.Z),
-              ResourceKey.create(Registries.DIMENSION, new ResourceLocation(tag.getString(NBTConstants.DIMENSION))));
+              ResourceKey.create(Registries.DIMENSION, rlFromString(tag.getString(NBTConstants.DIMENSION))));
     }
 
     public static Coord4D read(FriendlyByteBuf dataStream) {

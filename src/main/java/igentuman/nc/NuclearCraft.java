@@ -51,36 +51,36 @@ public class NuclearCraft {
     public static NuclearCraft instance;
     private final PacketHandler packetHandler;
 
-    public static void registerConfigs()
+    public static void registerConfigs(FMLJavaModLoadingContext context)
     {
         preFetchProcessorsConfig();
         unpackFilesFromFolderToConfig("data/nuclearcraft/fission_fuel", "NuclearCraft/fission_fuel");
         unpackFilesFromFolderToConfig("data/nuclearcraft/heat_sinks", "NuclearCraft/heat_sinks");
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, MaterialsConfig.spec, "NuclearCraft/materials.toml");
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, OreGenConfig.spec, "NuclearCraft/ore_generation.toml");
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, CommonConfig.spec, "NuclearCraft/common.toml");
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, KugelblitzConfig.spec, "NuclearCraft/kugelblitz.toml");
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ProcessorsConfig.spec, "NuclearCraft/processors.toml");
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, FissionConfig.spec, "NuclearCraft/fission.toml");
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, FusionConfig.spec, "NuclearCraft/fusion.toml");
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, TurbineConfig.spec, "NuclearCraft/turbine.toml");
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, RadiationConfig.spec, "NuclearCraft/radiation.toml");
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, WorldConfig.spec, "NuclearCraft/world.toml");
+        context.registerConfig(ModConfig.Type.COMMON, MaterialsConfig.spec, "NuclearCraft/materials.toml");
+        context.registerConfig(ModConfig.Type.COMMON, OreGenConfig.spec, "NuclearCraft/ore_generation.toml");
+        context.registerConfig(ModConfig.Type.COMMON, CommonConfig.spec, "NuclearCraft/common.toml");
+        context.registerConfig(ModConfig.Type.COMMON, KugelblitzConfig.spec, "NuclearCraft/kugelblitz.toml");
+        context.registerConfig(ModConfig.Type.COMMON, ProcessorsConfig.spec, "NuclearCraft/processors.toml");
+        context.registerConfig(ModConfig.Type.COMMON, FissionConfig.spec, "NuclearCraft/fission.toml");
+        context.registerConfig(ModConfig.Type.COMMON, FusionConfig.spec, "NuclearCraft/fusion.toml");
+        context.registerConfig(ModConfig.Type.COMMON, TurbineConfig.spec, "NuclearCraft/turbine.toml");
+        context.registerConfig(ModConfig.Type.COMMON, RadiationConfig.spec, "NuclearCraft/radiation.toml");
+        context.registerConfig(ModConfig.Type.COMMON, WorldConfig.spec, "NuclearCraft/world.toml");
     }
 
 
 
-    public NuclearCraft() {
+    public NuclearCraft(FMLJavaModLoadingContext context) {
         instance = this;
-        IEventBus modbus = FMLJavaModLoadingContext.get().getModEventBus();
-        registerConfigs();
+        IEventBus modbus = context.getModEventBus();
+        registerConfigs(context);
         packetHandler = new PacketHandler();
         //forceLoadConfig();
         MinecraftForge.EVENT_BUS.addListener(this::serverStopped);
         MinecraftForge.EVENT_BUS.addListener(this::serverStarted);
         MinecraftForge.EVENT_BUS.addListener(this::gameShuttingDownEvent);
         ModSetup.setup();
-        Registration.init();
+        Registration.init(context);
 
 
         MinecraftForge.EVENT_BUS.addListener(this::registerCommands);
@@ -112,7 +112,12 @@ public class NuclearCraft {
 
     public static ResourceLocation rl(String path)
     {
-        return new ResourceLocation(MODID, path);
+        return ResourceLocation.tryBuild(MODID, path);
+    }
+
+    public static ResourceLocation forgeRl(String path)
+    {
+        return ResourceLocation.tryBuild("forge", path);
     }
 
     private void serverStopped(ServerStoppedEvent event) {

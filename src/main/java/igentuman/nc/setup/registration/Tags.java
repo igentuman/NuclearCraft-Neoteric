@@ -5,8 +5,11 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
+
 import java.util.HashMap;
-import static igentuman.nc.NuclearCraft.MODID;
+
+import static igentuman.nc.NuclearCraft.forgeRl;
+import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.setup.registration.Registries.BLOCK_REGISTRY;
 import static igentuman.nc.setup.registration.Registries.ITEM_REGISTRY;
 
@@ -24,20 +27,20 @@ public class Tags {
     public static HashMap<String, TagKey<Block>> BLOCK_TAGS = new HashMap<>();
     public static HashMap<String, TagKey<Fluid>> GASES_TAG = new HashMap<>();
     public static HashMap<String, TagKey<Fluid>> LIQUIDS_TAG = new HashMap<>();
-    public static TagKey<Item> PLATE_TAG = TagKey.create(ITEM_REGISTRY, new ResourceLocation("forge", "plates"));
+    public static TagKey<Item> PLATE_TAG = TagKey.create(ITEM_REGISTRY, ResourceLocation.tryBuild("forge", "plates"));
     public static TagKey<Item> PARTS_TAG = itemTag("parts");
-    public static TagKey<Item> ISOTOPE_TAG = TagKey.create(ITEM_REGISTRY, new ResourceLocation("forge", "isotopes"));
+    public static TagKey<Item> ISOTOPE_TAG = TagKey.create(ITEM_REGISTRY, ResourceLocation.tryBuild("forge", "isotopes"));
     public static TagKey<Item> NC_ISOTOPE_TAG = itemTag("isotopes");
     public static TagKey<Item> NC_FUEL_TAG = itemTag("reactor_fuel");
     public static TagKey<Item> NC_DEPLETED_FUEL_TAG = itemTag("reactor_fuel");
     public static TagKey<Item> NC_FUELS_TAG = itemTag("reactor_fuel");
 
     public static TagKey<Block> blockTag(String name) {
-        return TagKey.create(BLOCK_REGISTRY, new ResourceLocation(MODID, name));
+        return TagKey.create(BLOCK_REGISTRY, rl(name));
     }
 
     public static TagKey<Item> itemTag(String name) {
-        return TagKey.create(ITEM_REGISTRY, new ResourceLocation(MODID, name));
+        return TagKey.create(ITEM_REGISTRY, rl(name));
     }
 
     public static void addIngotTag(String name) {
@@ -71,49 +74,49 @@ public class Tags {
     public static TagKey<Item> forgeIngot(String name)
     {
 
-        return TagKey.create(ITEM_REGISTRY, new ResourceLocation("forge:ingots/"+name));
+        return TagKey.create(ITEM_REGISTRY, forgeRl("ingots/"+name));
     }
 
     public static TagKey<Item> forgeGem(String name)
     {
-        return TagKey.create(ITEM_REGISTRY, new ResourceLocation("forge:gems/"+name));
+        return TagKey.create(ITEM_REGISTRY, forgeRl("gems/"+name));
     }
 
     public static TagKey<Item> forgeNugget(String name)
     {
-        return TagKey.create(ITEM_REGISTRY, new ResourceLocation("forge:nuggets/"+name));
+        return TagKey.create(ITEM_REGISTRY, forgeRl("nuggets/"+name));
     }
 
     public static TagKey<Item> forgeBlock(String name)
     {
-        return TagKey.create(ITEM_REGISTRY, new ResourceLocation("forge:storage_blocks/"+name));
+        return TagKey.create(ITEM_REGISTRY, forgeRl("storage_blocks/"+name));
     }
 
     public static TagKey<Item> forgeOre(String name)
     {
-        return TagKey.create(ITEM_REGISTRY, new ResourceLocation("forge:ores/"+name));
+        return TagKey.create(ITEM_REGISTRY, forgeRl("ores/"+name));
     }
 
     public static TagKey<Item> forgeBucket(String name)
     {
-        return TagKey.create(ITEM_REGISTRY, new ResourceLocation("forge:buckets/"+name));
+        return TagKey.create(ITEM_REGISTRY, forgeRl("buckets/"+name));
     }
 
     public static TagKey<Item> forgeChunk(String name)
     {
-        return TagKey.create(ITEM_REGISTRY, new ResourceLocation("forge:raw_materials/"+name));
+        return TagKey.create(ITEM_REGISTRY, forgeRl("raw_materials/"+name));
     }
 
     public static TagKey<Item> forgeDust(String name)
     {
-        return TagKey.create(ITEM_REGISTRY, new ResourceLocation("forge:dusts/"+name));
+        return TagKey.create(ITEM_REGISTRY, forgeRl("dusts/"+name));
     }
 
     public static TagKey<Item> forgePlate(String name) {
-        return TagKey.create(ITEM_REGISTRY, new ResourceLocation("forge:plates/"+name));
+        return TagKey.create(ITEM_REGISTRY, forgeRl("plates/"+name));
     }
 
     public static TagKey<Item> forgeDye(String name) {
-        return TagKey.create(ITEM_REGISTRY, new ResourceLocation("forge:dye/"+name));
+        return TagKey.create(ITEM_REGISTRY, forgeRl("dye/"+name));
     }
 }

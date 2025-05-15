@@ -29,6 +29,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import static igentuman.nc.setup.registration.Registries.ITEM_REGISTRY;
+import static igentuman.nc.util.NcUtils.rlFromString;
 
 public class NcIngredient extends Ingredient {
 
@@ -59,10 +60,10 @@ public class NcIngredient extends Ingredient {
 
     public static NcIngredient of(String name) {
          if(name.contains("#")) {
-            TagKey<Item> tag = TagKey.create(ITEM_REGISTRY, new ResourceLocation(name.replace("#","")));
+            TagKey<Item> tag = TagKey.create(ITEM_REGISTRY, rlFromString(name.replace("#","")));
             return of(tag);
          }
-         return of(ForgeRegistries.ITEMS.getValue(new ResourceLocation(name)));
+         return of(ForgeRegistries.ITEMS.getValue(rlFromString(name)));
     }
 
     public String getName() {

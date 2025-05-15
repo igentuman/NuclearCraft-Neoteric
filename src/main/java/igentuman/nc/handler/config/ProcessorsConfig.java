@@ -1,23 +1,12 @@
 package igentuman.nc.handler.config;
 
-import igentuman.nc.content.Electromagnets;
-import igentuman.nc.content.RFAmplifier;
-import igentuman.nc.content.energy.BatteryBlocks;
-import igentuman.nc.content.energy.RTGs;
-import igentuman.nc.content.energy.SolarPanels;
-import igentuman.nc.content.fuel.FuelManager;
 import igentuman.nc.content.processors.Processors;
-import igentuman.nc.content.storage.BarrelBlocks;
-import igentuman.nc.multiblock.fission.FissionBlocks;
-import igentuman.nc.multiblock.turbine.TurbineRegistration;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-
-import static igentuman.nc.world.dimension.Dimensions.WASTELAIND_ID;
 
 public class ProcessorsConfig {
     public static <T> List<T> toList(Collection<T> vals)

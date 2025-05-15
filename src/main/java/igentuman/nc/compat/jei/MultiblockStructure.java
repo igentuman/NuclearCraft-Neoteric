@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import static igentuman.nc.util.NcUtils.rlFromString;
 import static net.minecraft.world.level.block.state.StateHolder.PROPERTIES_TAG;
 
 public class MultiblockStructure {
@@ -37,7 +38,7 @@ public class MultiblockStructure {
                         
                         BlockPos pos = new BlockPos(x, y, z);
                         String blockId = state.getString("Name");
-                        Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(blockId));
+                        Block block = ForgeRegistries.BLOCKS.getValue(rlFromString(blockId));
                         
                         if (block != null) {
                             BlockState bs = block.defaultBlockState();

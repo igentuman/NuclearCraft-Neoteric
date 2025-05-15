@@ -24,6 +24,7 @@ import java.util.stream.Stream;
 import static igentuman.nc.handler.config.MaterialsConfig.MATERIAL_PRODUCTS;
 import static igentuman.nc.setup.registration.Registries.BLOCK_REGISTRY;
 import static igentuman.nc.setup.registration.Registries.ITEM_REGISTRY;
+import static igentuman.nc.util.NcUtils.rlFromString;
 
 public class TagUtil {
 
@@ -68,7 +69,7 @@ public class TagUtil {
     public static List<Block> getBlocksByTagKey(String key)
     {
         List<Block> tmp = new ArrayList<>();
-        TagKey<Block> tag = TagKey.create(BLOCK_REGISTRY, new ResourceLocation(key));
+        TagKey<Block> tag = TagKey.create(BLOCK_REGISTRY, rlFromString(key));
         for(Block holder : ForgeRegistries.BLOCKS.tags().getTag(tag).stream().toList()) {
             tmp.add(holder);
         }
@@ -90,7 +91,7 @@ public class TagUtil {
     public static List<Item> getItemsByTagKey(String key)
     {
         List<Item> tmp = new ArrayList<>();
-        TagKey<Item> tag = TagKey.create(ITEM_REGISTRY, new ResourceLocation(key));
+        TagKey<Item> tag = TagKey.create(ITEM_REGISTRY, rlFromString(key));
         for(Item holder : ForgeRegistries.ITEMS.tags().getTag(tag).stream().toList()) {
             tmp.add(holder);
         }

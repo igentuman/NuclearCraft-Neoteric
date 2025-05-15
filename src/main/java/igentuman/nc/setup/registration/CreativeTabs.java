@@ -4,7 +4,6 @@ import igentuman.nc.block.*;
 import igentuman.nc.content.materials.Materials;
 import igentuman.nc.content.materials.Ores;
 import igentuman.nc.content.processors.Processors;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -14,7 +13,8 @@ import net.minecraftforge.registries.RegistryObject;
 import java.util.*;
 
 import static igentuman.nc.NuclearCraft.debugLog;
-import static igentuman.nc.multiblock.fission.FissionReactor.FISSION_BLOCKS;
+import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
+import static igentuman.nc.multiblock.fission.FissionReactorRegistration.FISSION_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BLOCKS;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.EXPL_BLOCK;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BLOCKS;
@@ -45,6 +45,13 @@ public class CreativeTabs {
                     .displayItems((displayParams, output) -> KUGELBLITZ_BLOCKS.values().forEach(itemlike -> output.accept(new ItemStack(itemlike.get()))))
                     .icon(() -> new ItemStack(KUGELBLITZ_BLOCKS.get("chamber_terminal").get()))
                     .title(__("itemGroup.nuclearcraft_kugelblitz"))
+                    .build());
+
+    public static final RegistryObject<CreativeModeTab> ACCELERATOR_TAB = CREATIVE_TABS.register("accelerator",
+            () ->  CreativeModeTab.builder()
+                    .displayItems((displayParams, output) -> ACCELERATOR_BLOCKS.values().forEach(itemlike -> output.accept(new ItemStack(itemlike.get()))))
+                    .icon(() -> new ItemStack(ACCELERATOR_BLOCKS.get("linear_accelerator_controller").get()))
+                    .title(__("itemGroup.nuclearcraft_accelerator"))
                     .build());
 
     public static final RegistryObject<CreativeModeTab> NC_BLOCKS_TAB = CREATIVE_TABS.register("nc_blocks",

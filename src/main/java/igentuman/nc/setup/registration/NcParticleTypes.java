@@ -1,6 +1,5 @@
 package igentuman.nc.setup.registration;
 
-import igentuman.nc.NuclearCraft;
 import igentuman.nc.client.particle.FusionBeamParticleData;
 import igentuman.nc.client.particle.FusionBeamParticleType;
 import igentuman.nc.registry.ParticleTypeRegistryObject;

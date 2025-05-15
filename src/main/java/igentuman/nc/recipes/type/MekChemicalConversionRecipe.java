@@ -1,22 +1,18 @@
 package igentuman.nc.recipes.type;
 
-import igentuman.nc.handler.OreVeinProvider;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.ingredient.creator.FluidStackIngredientCreator;
 import igentuman.nc.util.TagUtil;
 import mekanism.api.MekanismAPI;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
-import mekanism.common.registration.impl.GasDeferredRegister;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
@@ -30,8 +26,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static igentuman.nc.NuclearCraft.forgeRl;
 import static igentuman.nc.NuclearCraft.rl;
-import static igentuman.nc.setup.registration.NCItems.NC_PARTS;
+import static igentuman.nc.util.NcUtils.rlFromString;
 import static net.minecraft.world.item.Items.BUCKET;
 
 public class MekChemicalConversionRecipe extends NcRecipe {
@@ -48,7 +45,7 @@ public class MekChemicalConversionRecipe extends NcRecipe {
     }
 
     public MekChemicalConversionRecipe(ChemicalStack<?> input, FluidStack outputFluid) {
-        super(new ResourceLocation("mek_chemical_conversion"), new ItemStackIngredient[0], new ItemStackIngredient[0], 1, 1, 1, 1);
+        super(rl("mek_chemical_conversion"), new ItemStackIngredient[0], new ItemStackIngredient[0], 1, 1, 1, 1);
         this.inputChemical = input;
         this.outputFluid = outputFluid;
     }
@@ -56,7 +53,7 @@ public class MekChemicalConversionRecipe extends NcRecipe {
     public static FluidStack getStackByTagCode(String name)
     {
         ITagManager<Fluid> tagManager = TagUtil.manager(ForgeRegistries.FLUIDS);
-        TagKey<Fluid> key = tagManager.createTagKey(new ResourceLocation("forge", name));
+        TagKey<Fluid> key = tagManager.createTagKey(forgeRl(name));
         ITag<Fluid> fluidITag = TagUtil.tag(ForgeRegistries.FLUIDS, key);
         if(fluidITag.isEmpty()) {
             return FluidStack.EMPTY;

@@ -10,6 +10,7 @@ import igentuman.nc.compat.oc2.FusionReactorDevice;
 import igentuman.nc.handler.event.client.BlockOverlayHandler;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.SlotModePair;
+import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.fusion.FusionReactorRegistration;
 import igentuman.nc.multiblock.fusion.FusionReactorMultiblock;
 import igentuman.nc.radiation.data.RadiationManager;
@@ -184,6 +185,7 @@ public class FusionCoreBE extends MultiblockControllerBE {
         if(redstoneMode > SignalSource.EFFICIENCY) {
             redstoneMode = SignalSource.ENERGY;
         }
+        MultiblockHandler.get(getLevel().dimension()).addIgnoreToUpdate(getBlockPos());
         setChanged();
         level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_NEIGHBORS);
     }
@@ -345,14 +347,7 @@ public class FusionCoreBE extends MultiblockControllerBE {
             SoundHandler.stopTileSound(getBlockPos());
             currentSound = null;
         }
-        if(currentSound == null || !Minecraft.getInstance().getSoundManager().isActive(currentSound)) {
-            if(currentSound != null && currentSound.getLocation().equals(FUSION_READY.get().getLocation())) {
-                return;
-            }
-
-            playSoundCooldown = 20;
-            currentSound = SoundHandler.startTileSound(FUSION_READY.get(), SoundSource.BLOCKS, 0.8f, level.getRandom(), getBlockPos());
-        }
+        playSound(FUSION_READY, 0.7f);
     }
 
     protected boolean isReady() {
@@ -369,14 +364,7 @@ public class FusionCoreBE extends MultiblockControllerBE {
             SoundHandler.stopTileSound(getBlockPos());
             currentSound = null;
         }
-        if((currentSound == null || !Minecraft.getInstance().getSoundManager().isActive(currentSound))) {
-            if(currentSound != null && currentSound.getLocation().equals(FUSION_RUNNING.get().getLocation())) {
-                return;
-            }
-
-            playSoundCooldown = 20;
-            currentSound = SoundHandler.startTileSound(FUSION_RUNNING.get(), SoundSource.BLOCKS, 0.5f, level.getRandom(), getBlockPos());
-        }
+        playSound(FUSION_RUNNING, 0.5f);
     }
 
     @Override
@@ -405,9 +393,11 @@ public class FusionCoreBE extends MultiblockControllerBE {
                 updateAnalogSignal();
             }
             try {
+                MultiblockHandler.get(getLevel().dimension()).addIgnoreToUpdate(getBlockPos());
+                setChanged();
                 assert level != null;
                 level.setBlockAndUpdate(worldPosition, getBlockState().setValue(POWERED, powered));
-                level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(POWERED, powered), Block.UPDATE_ALL);
+                level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(POWERED, powered), Block.UPDATE_NEIGHBORS);
             } catch (NullPointerException ignore) {}
         }
         controllerEnabled = false;
@@ -595,13 +585,7 @@ public class FusionCoreBE extends MultiblockControllerBE {
             SoundHandler.stopTileSound(getBlockPos());
             currentSound = null;
         }
-        if(currentSound == null || !Minecraft.getInstance().getSoundManager().isActive(currentSound)) {
-            if(currentSound != null && currentSound.getLocation().equals(FUSION_CHARGING.get().getLocation())) {
-                return;
-            }
-            playSoundCooldown = 20;
-            currentSound = SoundHandler.startTileSound(FUSION_CHARGING.get(), SoundSource.BLOCKS, 0.5f, level.getRandom(), getBlockPos());
-        }
+        playSound(FUSION_CHARGING, 0.7f);
     }
 
     protected boolean updateCharacteristics() {

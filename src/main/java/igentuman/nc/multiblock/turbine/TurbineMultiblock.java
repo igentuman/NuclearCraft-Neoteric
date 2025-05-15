@@ -67,7 +67,7 @@ public class TurbineMultiblock extends AbstractNCMultiblock {
                 new TurbineController(turbineControllerBE)
         );
         id = "turbine_"+turbineControllerBE.getBlockPos().toShortString();
-        MultiblockHandler.instance.addMultiblock(this);
+        MultiblockHandler.get(turbineControllerBE.getLevel().dimension()).addMultiblock(this);
     }
 
     public List<Block> validCornerBlocks() {

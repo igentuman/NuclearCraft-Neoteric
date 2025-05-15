@@ -3,7 +3,6 @@ package igentuman.nc.util;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import igentuman.nc.NuclearCraft;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.util.math.FloatingLong;
 import net.minecraft.core.particles.ParticleType;
@@ -30,7 +29,7 @@ import java.util.*;
 
 import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.handler.config.MaterialsConfig.MATERIAL_PRODUCTS;
-import static igentuman.nc.multiblock.fission.FissionReactor.FISSION_BLOCKS;
+import static igentuman.nc.multiblock.fission.FissionReactorRegistration.FISSION_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BLOCKS;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
 import static igentuman.nc.setup.registration.NCBlocks.*;
@@ -46,6 +45,10 @@ public final class NcUtils {
 
     public static ResourceLocation getName(ParticleType<?> element) {
         return getName(ForgeRegistries.PARTICLE_TYPES, element);
+    }
+
+    public static ResourceLocation rlFromString(String name) {
+        return ResourceLocation.tryParse(name);
     }
 
     public static ResourceLocation getName(Item element) {

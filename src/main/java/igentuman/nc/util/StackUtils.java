@@ -3,6 +3,7 @@ package igentuman.nc.util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.AirItem;
@@ -10,6 +11,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
@@ -20,8 +22,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static igentuman.nc.setup.registration.NCItems.MULTITOOL;
+import static igentuman.nc.setup.registration.Registries.ITEM_REGISTRY;
+import static igentuman.nc.util.NcUtils.rlFromString;
 
 public final class StackUtils {
 
@@ -41,9 +46,20 @@ public final class StackUtils {
               new BlockHitResult(Vec3.ZERO, Direction.UP, pos, false))));
     }
 
+    public static List<String> getItemsByTagKey(String key)
+    {
+        List<String> tmp = new ArrayList<>();
+        TagKey<Item> tag = TagKey.create(ITEM_REGISTRY, rlFromString(key));
+        Ingredient ing = Ingredient.fromValues(Stream.of(new Ingredient.TagValue(tag)));
+        for (ItemStack item: ing.getItems()) {
+            tmp.add(item.getItem().toString());
+        }
+        return tmp;
+    }
+
 
     public static Item getItemByRegistryName(String id) {
-        return ForgeRegistries.ITEMS.getValue(new ResourceLocation(id));
+        return ForgeRegistries.ITEMS.getValue(rlFromString(id));
     }
 
     private static final List<Item> allowedTools = new ArrayList<>();

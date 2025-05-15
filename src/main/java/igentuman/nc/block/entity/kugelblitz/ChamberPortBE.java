@@ -100,7 +100,7 @@ public class ChamberPortBE extends NuclearCraftBE implements MultiblockAttachabl
         }
 
         if(updated) {
-            MultiblockHandler.instance.addIgnoreToUpdate(getBlockPos());
+            MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
             setChanged();
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
         }
@@ -240,7 +240,7 @@ public class ChamberPortBE extends NuclearCraftBE implements MultiblockAttachabl
         if(comparatorMode > SignalSource.TRANSFORMATION_ENERGY_RATE) {
             comparatorMode = SignalSource.ENERGY;
         }
-        MultiblockHandler.instance.addIgnoreToUpdate(getBlockPos());
+        MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
         setChanged();
         level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
     }

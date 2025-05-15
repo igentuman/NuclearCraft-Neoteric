@@ -25,6 +25,7 @@ import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.recipes.NcRecipeType.RECIPE_TYPES;
 
@@ -49,8 +50,8 @@ public class Registries {
     public static final DeferredRegister<MobEffect> EFFECTS = DeferredRegister.create(ForgeRegistries.MOB_EFFECTS, MODID);
     public static final RecipeSerializerDeferredRegister RECIPE_SERIALIZERS = new RecipeSerializerDeferredRegister(NuclearCraft.MODID);
 
-    public static void init() {
-        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+    public static void init(FMLJavaModLoadingContext context) {
+        IEventBus bus = context.getModEventBus();
         BLOCKS.register(bus);
         ITEMS.register(bus);
         FLUIDS.register(bus);

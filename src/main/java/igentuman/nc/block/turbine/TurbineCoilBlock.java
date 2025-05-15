@@ -34,6 +34,7 @@ import java.util.Objects;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.handler.event.client.InputEvents.DESCRIPTIONS_SHOW;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BE;
+import static igentuman.nc.util.NcUtils.rlFromString;
 import static igentuman.nc.util.TextUtils.__;
 import static igentuman.nc.util.TextUtils.convertToName;
 
@@ -81,7 +82,7 @@ public class TurbineCoilBlock extends Block implements EntityBlock {
             String id = code;
             if(!id.contains(":")) {
                 id = MODID+":"+id;
-                Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(id));
+                Block block = ForgeRegistries.BLOCKS.getValue(rlFromString(id));
                 names.add(block.getName().getString());
             } else {
                 names.add(convertToName(id.split(":")[1]));
@@ -146,20 +147,24 @@ public class TurbineCoilBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor){
-        MultiblockHandler.instance.trackBlockChange(neighbor);
+    public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor) {
+        super.onNeighborChange(state, level, pos, neighbor);
+        if(level.isClientSide()) return;
+        MultiblockHandler.get(((Level)level).dimension()).trackBlockChange(neighbor);
     }
 
     @Override
     public void onPlace(BlockState pState, Level pLevel, BlockPos pPos, BlockState pOldState, boolean pMovedByPiston) {
         super.onPlace(pState, pLevel, pPos, pOldState, pMovedByPiston);
-        MultiblockHandler.instance.trackBlockChange(pPos);
+        if(pLevel.isClientSide()) return;
+        MultiblockHandler.get(pLevel.dimension()).trackBlockChange(pPos);
     }
 
     @Override
     public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
         super.onRemove(state, level, pos, newState, isMoving);
-        MultiblockHandler.instance.trackBlockChange(pos);
+        if(level.isClientSide()) return;
+        MultiblockHandler.get(level.dimension()).trackBlockChange(pos);
     }
 
     @Override

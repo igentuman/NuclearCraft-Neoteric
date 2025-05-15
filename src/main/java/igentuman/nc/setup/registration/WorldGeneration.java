@@ -70,7 +70,7 @@ public class WorldGeneration {
     public static class StructurePlacer {
         public static void placeStructure(ServerLevel level, BlockPos pos, String name) {
             // Load the structure
-            ResourceLocation structureLocation = new ResourceLocation(MODID, name);
+            ResourceLocation structureLocation = rl(name);
             StructureTemplate template = StructureLoader.loadStructure(level, structureLocation);
 
             if (template == null) {

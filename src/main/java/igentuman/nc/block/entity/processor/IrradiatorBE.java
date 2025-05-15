@@ -84,7 +84,7 @@ public class IrradiatorBE extends NCProcessorBE implements MultiblockAttachable 
 
     @Override
     public void setChanged() {
-        MultiblockHandler.instance.addIgnoreToUpdate(getBlockPos());
+        MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
         super.setChanged();
         wasUpdated = true;
     }
@@ -120,7 +120,7 @@ public class IrradiatorBE extends NCProcessorBE implements MultiblockAttachable 
     @Deprecated
     public void upadteMultiblockConnection()
     {
-        AbstractNCMultiblock mb = MultiblockHandler.instance.getMultiblockByPos(getBlockPos());
+        AbstractNCMultiblock mb = MultiblockHandler.get(level.dimension()).getMultiblockByPos(getBlockPos());
         if(mb != null) {
             if(mb.isFormed()) {
                 if(mb.controller() != null) {

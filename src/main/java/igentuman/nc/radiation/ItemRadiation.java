@@ -20,6 +20,7 @@ import static igentuman.nc.setup.registration.NCEnergyBlocks.ENERGY_BLOCKS;
 import static igentuman.nc.setup.registration.NCItems.NC_DUSTS;
 import static igentuman.nc.setup.registration.NCItems.NC_INGOTS;
 import static igentuman.nc.util.NcUtils.getNCBlock;
+import static igentuman.nc.util.NcUtils.rlFromString;
 import static igentuman.nc.util.TagUtil.getBlocksByTagKey;
 import static net.minecraft.world.item.Items.AIR;
 
@@ -145,7 +146,7 @@ public class ItemRadiation {
         if(!name.contains(":")) {
             name = MODID +":" + name;
         }
-        ResourceLocation itemKey = new ResourceLocation(name.replace("/", "_"));
+        ResourceLocation itemKey = rlFromString(name.replace("/", "_"));
         return ForgeRegistries.ITEMS.getValue(itemKey);
     }
 

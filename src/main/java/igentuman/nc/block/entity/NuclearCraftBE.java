@@ -151,8 +151,8 @@ public class NuclearCraftBE extends BlockEntity {
         }
         if((currentSound == null || !Minecraft.getInstance().getSoundManager().isActive(currentSound))) {
             if(currentSound != null && currentSound.getLocation().equals(sound.get().getLocation())) {
-                if (!Minecraft.getInstance().getSoundManager().isActive(currentSound)) {
-                    SoundHandler.playSound(currentSound);
+                if (!Minecraft.getInstance().getSoundManager().isActive(currentSound) && SoundHandler.isClientPlayerInRange(currentSound)) {
+                    currentSound = SoundHandler.startTileSound(sound.get(), SoundSource.BLOCKS, volume, level.getRandom(), getBlockPos());
                 }
                 return;
             }
@@ -502,15 +502,7 @@ public class NuclearCraftBE extends BlockEntity {
 
     @Override
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        CompoundTag tag = pkt.getTag();
-        int oldEnergy = 0;
-        if (energyStorage() != null) {
-            oldEnergy = energyStorage().getEnergyStored();
-        }
-        handleUpdateTag(tag);
-        if (energyStorage() != null && oldEnergy != energyStorage().getEnergyStored()) {
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
-        }
+        handleUpdateTag(pkt.getTag());
     }
 
     public void setPlayer(ServerPlayer player) {
@@ -521,6 +513,5 @@ public class NuclearCraftBE extends BlockEntity {
     }
 
     public void tickServer() {
-
     }
 }

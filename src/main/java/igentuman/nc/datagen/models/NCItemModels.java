@@ -1,6 +1,6 @@
 package igentuman.nc.datagen.models;
 
-import igentuman.nc.multiblock.fission.FissionReactor;
+import igentuman.nc.multiblock.fission.FissionReactorRegistration;
 import igentuman.nc.setup.registration.*;
 import igentuman.nc.content.storage.BarrelBlocks;
 import igentuman.nc.content.storage.ContainerBlocks;
@@ -15,6 +15,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.NuclearCraft.forgeRl;
+import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_CORE_PROXY;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BLOCKS;
@@ -73,8 +75,8 @@ public class NCItemModels extends ItemModelProvider {
         for(String name: NCBlocks.MULTI_BLOCKS.keySet()) {
             withExistingParent(MULTIBLOCK_ITEMS.get(name).getId().getPath(), modLoc("block/multiblock/"+name));
         }
-        for(String name: FissionReactor.FISSION_BLOCKS.keySet()) {
-            withExistingParent(FissionReactor.FISSION_BLOCK_ITEMS.get(name).getId().getPath(), modLoc("block/multiblock/"+name));
+        for(String name: FissionReactorRegistration.FISSION_BLOCKS.keySet()) {
+            withExistingParent(FissionReactorRegistration.FISSION_BLOCK_ITEMS.get(name).getId().getPath(), modLoc("block/multiblock/"+name));
         }
         for(String name: TURBINE_BLOCKS.keySet()) {
             withExistingParent(TURBINE_BLOCKS.get(name).getId().getPath(), modLoc("block/multiblock/"+name));
@@ -85,6 +87,9 @@ public class NCItemModels extends ItemModelProvider {
         }
         for(String name: KUGELBLITZ_BLOCKS.keySet()) {
             withExistingParent(KUGELBLITZ_BLOCKS.get(name).getId().getPath(), modLoc("block/multiblock/"+name));
+        }
+        for(String name: ACCELERATOR_BLOCKS.keySet()) {
+            withExistingParent(ACCELERATOR_BLOCKS.get(name).getId().getPath(), modLoc("block/multiblock/"+name));
         }
         withExistingParent(FUSION_CORE_PROXY.getId().getPath(), modLoc("item/fusion_core"));
     }
@@ -117,7 +122,7 @@ public class NCItemModels extends ItemModelProvider {
 
     private ResourceLocation forgeLoc(String s)
     {
-        return new ResourceLocation("forge", s);
+        return forgeRl(s);
     }
 
     private void createBucket(NCFluids.FluidEntry entry)

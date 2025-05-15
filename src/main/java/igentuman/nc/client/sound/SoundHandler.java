@@ -37,77 +37,6 @@ public class SoundHandler {
     }
     private static final Long2ObjectMap<SoundInstance> soundMap = new Long2ObjectOpenHashMap<>();
     private static SoundEngine soundEngine;
-    private static boolean hadPlayerSounds;
-
-    public static void clearPlayerSounds() {
-
-    }
-
-    public static void clearPlayerSounds(UUID uuid) {
-
-    }
-
-    private static void startSound(LevelAccessor world, UUID uuid, Map<UUID, PlayerSound> knownSounds, Function<Player, PlayerSound> soundCreator) {
-        if (knownSounds.containsKey(uuid)) {
-            if (playerSoundsEnabled()) {
-                //Check if it needs to be restarted
-                restartSounds(knownSounds.get(uuid));
-            }
-        } else {
-            Player player = world.getPlayerByUUID(uuid);
-            if (player != null) {
-                PlayerSound sound = soundCreator.apply(player);
-                playSound(sound);
-                knownSounds.put(uuid, sound);
-            }
-        }
-    }
-
-    @SafeVarargs
-    private static void startSounds(LevelAccessor world, UUID uuid, Map<UUID, PlayerSound[]> knownSounds, Function<Player, PlayerSound>... soundCreators) {
-        if (knownSounds.containsKey(uuid)) {
-            if (playerSoundsEnabled()) {
-                restartSounds(knownSounds.get(uuid));
-            }
-        } else {
-            Player player = world.getPlayerByUUID(uuid);
-            if (player != null) {
-                PlayerSound[] sounds = new PlayerSound[soundCreators.length];
-                for (int i = 0; i < soundCreators.length; i++) {
-                    playSound(sounds[i] = soundCreators[i].apply(player));
-                }
-                knownSounds.put(uuid, sounds);
-            }
-        }
-    }
-
-    private static void restartSounds(PlayerSound... sounds) {
-        for (PlayerSound sound : sounds) {
-            if (!sound.isStopped() && soundEngine != null) {
-                playSound(sound);
-            }
-        }
-    }
-
-    public static void restartSounds() {
-        boolean hasPlayerSounds = playerSoundsEnabled();
-        if (hasPlayerSounds != hadPlayerSounds) {
-            hadPlayerSounds = hasPlayerSounds;
-            if (hasPlayerSounds) {
-
-            }
-        }
-    }
-
-
-
-    private static boolean playerSoundsEnabled() {
-        return getVolume(SoundSource.MASTER) > 0 && getVolume(SoundSource.PLAYERS) > 0;
-    }
-
-    private static float getVolume(SoundSource category) {
-        return Minecraft.getInstance().options.getSoundSourceVolume(category);
-    }
 
     public static void playSound(SoundEventRegistryObject<?> soundEventRO) {
         playSound(soundEventRO.get());
@@ -149,7 +78,7 @@ public class SoundHandler {
         }
     }
 
-    private static boolean isClientPlayerInRange(SoundInstance sound) {
+    public static boolean isClientPlayerInRange(SoundInstance sound) {
         if (sound.isRelative() || sound.getAttenuation() == SoundInstance.Attenuation.NONE) {
             return true;
         }
@@ -202,7 +131,7 @@ public class SoundHandler {
             this.x = pos.getX() + 0.5F;
             this.y = pos.getY() + 0.5F;
             this.z = pos.getZ() + 0.5F;
-            this.volume = this.originalVolume;
+            this.volume = this.originalVolume * distanceToPlayerMultiplier(this);
             this.looping = true;
             this.delay = 0;
         }
@@ -220,13 +149,21 @@ public class SoundHandler {
                 SoundInstance s = ForgeHooksClient.playSound(soundEngine, this);
 
                 if (s == this) {
-                    volume = originalVolume * 1;
+                    volume = originalVolume;
                 } else if (s == null) {
                     stop();
                 } else {
                     volume = s.getVolume() * 1;
                 }
+                volume *= distanceToPlayerMultiplier(s);
             }
+        }
+
+        private float distanceToPlayerMultiplier(SoundInstance sound) {
+            if(sound == null) return 1F;
+            Player player = Minecraft.getInstance().player;
+            double distance = player.position().distanceToSqr(sound.getX(), sound.getY(), sound.getZ());
+            return Math.max(0.0F, Math.min(1.0F, 1F - (float) distance/400.0F));
         }
 
 

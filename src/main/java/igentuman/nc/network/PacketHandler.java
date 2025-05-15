@@ -18,15 +18,12 @@ public class PacketHandler extends BasePacketHandler {
     @Override
     public void initialize() {
         //Client to server messages
-
         registerClientToServer(PacketSliderChanged.class, PacketSliderChanged::decode);
         registerClientToServer(PacketGuiButtonPress.class, PacketGuiButtonPress::decode);
         registerClientToServer(PacketSideConfigToggle.class, PacketSideConfigToggle::decode);
         registerClientToServer(PacketFlushSlotContent.class, PacketFlushSlotContent::decode);
 
-
         //Server to client messages
-
         registerServerToClient(PacketWorldRadiationData.class, PacketWorldRadiationData::decode);
         registerServerToClient(PacketPlayerRadiationData.class, PacketPlayerRadiationData::decode);
     }

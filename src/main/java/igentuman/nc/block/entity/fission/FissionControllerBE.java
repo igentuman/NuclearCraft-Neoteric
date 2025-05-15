@@ -8,12 +8,11 @@ import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.SlotModePair;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.item.ItemFuel;
-import igentuman.nc.multiblock.fission.FissionBlocks;
-import igentuman.nc.multiblock.fission.FissionReactor;
 import igentuman.nc.multiblock.fission.FissionReactorMultiblock;
+import igentuman.nc.multiblock.fission.FissionReactorRegistration;
 import igentuman.nc.radiation.ItemRadiation;
 import igentuman.nc.radiation.data.RadiationManager;
-import igentuman.nc.recipes.*;
+import igentuman.nc.recipes.NcRecipeType;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.type.NcRecipe;
@@ -41,7 +40,6 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
@@ -51,7 +49,8 @@ import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.compat.oc2.FissionReactorDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.handler.config.CommonConfig.ENERGY_GENERATION;
 import static igentuman.nc.handler.config.FissionConfig.FISSION_CONFIG;
-import static igentuman.nc.multiblock.fission.FissionReactor.FISSION_BLOCKS;
+import static igentuman.nc.multiblock.fission.FissionReactorRegistration.FISSION_BLOCKS;
+import static igentuman.nc.multiblock.fission.FissionReactorRegistration.heatsinks;
 import static igentuman.nc.setup.registration.FissionFuel.ITEM_PROPERTIES;
 import static igentuman.nc.setup.registration.NCSounds.FISSION_REACTOR;
 import static igentuman.nc.setup.registration.NcParticleTypes.RADIATION;
@@ -119,8 +118,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
     private List<ItemStack> allowedInputs;
 
     public FissionControllerBE(BlockPos pPos, BlockState pBlockState) {
-        super(FissionReactor.FISSION_BE.get(NAME).get(),pPos, pBlockState);
-        multiblock = new FissionReactorMultiblock(this);
+        super(FissionReactorRegistration.FISSION_BE.get(NAME).get(),pPos, pBlockState);
         contentHandler = new SidedContentHandler(
                 1, 1,
                 1+activeCoolersTypes().size(), 1);
@@ -136,7 +134,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
         for(String type: activeCoolersTypes()) {
             contentHandler().setAllowedInputFluids(
                     1+activeCoolersTypes().indexOf(type),
-                    () -> FissionBlocks.heatsinks.get(type).getAllowedFluids()
+                    () -> heatsinks.get(type).getAllowedFluids()
                 );
             contentHandler().fluidCapability.setGlobalMode(2+activeCoolersTypes().indexOf(type), SlotModePair.SlotMode.PULL);
         }
@@ -165,7 +163,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
 
     private List<String> activeCoolersTypes() {
         List<String> types = new ArrayList<>();
-        for(String name: FissionBlocks.heatsinks.keySet()) {
+        for(String name: heatsinks.keySet()) {
             if(name.contains("active") && !name.contains("empty")) {
                 types.add(name.replace("active_", ""));
             }

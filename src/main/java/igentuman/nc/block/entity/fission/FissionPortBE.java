@@ -7,7 +7,7 @@ import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.multiblock.AbstractNCMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;
-import igentuman.nc.multiblock.fission.FissionReactor;
+import igentuman.nc.multiblock.fission.FissionReactorRegistration;
 import igentuman.nc.multiblock.fission.FissionReactorMultiblock;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
@@ -28,6 +28,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static igentuman.nc.compat.oc2.FissionReactorDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.util.ModUtil.*;
+import static net.minecraftforge.common.capabilities.ForgeCapabilities.ENERGY;
 
 public class FissionPortBE extends NuclearCraftBE implements MultiblockAttachable {
 
@@ -45,7 +46,7 @@ public class FissionPortBE extends NuclearCraftBE implements MultiblockAttachabl
     protected FissionControllerBE controller;
 
     public FissionPortBE(BlockPos pPos, BlockState pBlockState) {
-        super(FissionReactor.FISSION_BE.get(NAME).get(), pPos, pBlockState);
+        super(FissionReactorRegistration.FISSION_BE.get(NAME).get(), pPos, pBlockState);
     }
     public Direction getFacing() {
         return getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);
@@ -63,43 +64,52 @@ public class FissionPortBE extends NuclearCraftBE implements MultiblockAttachabl
         return multiblock;
     }
 
-    public void tickServer() {
-        if (NuclearCraft.instance.isNcBeStopped) return;
-        if (getMultiblock() == null || controller() == null) return;
-        int wasSignal = analogSignal;
-        boolean updated = sendOutPower();
+    private boolean updateController() {
         if (controller != controller()) {
             controller = controller();
             controllerPos = BlockPos.ZERO;
             if (controller != null) {
                 controllerPos = controller.getBlockPos();
             }
-            updated = true;
+            return true;
         }
         if (isSteamMode != controller().isSteamMode) {
             isSteamMode = controller().isSteamMode;
-            updated = true;
+            return true;
         }
+        return false;
+    }
 
+    public void tickServer() {
+        if (NuclearCraft.instance.isNcBeStopped || isRemoved() || getMultiblock() == null || controller() == null) return;
+        int wasSignal = analogSignal;
+        boolean updated = sendOutPower();
+        updated = updateController() || updated;
         if (level.getGameTime() % 10 == 0) {
             updateAnalogSignal();
-            if (itemHandler() != null) {
-                Direction dir = getFacing();
-                itemHandler().pushItems(dir, true, worldPosition);
-                itemHandler().pullItems(dir, true, worldPosition);
-            }
+            updated = pushPull() || updated;
             updated = wasSignal != analogSignal || updated;
-        }
-        switch (redstoneMode) {
-            case SignalSource.SWITCH -> controller().toggleReactor(analogSignal > 0);
-            case SignalSource.MODERATOR -> controller().adjustModerator(analogSignal);
+            switch (redstoneMode) {
+                case SignalSource.SWITCH -> controller().toggleReactor(analogSignal > 0);
+                case SignalSource.MODERATOR -> controller().adjustModerator(analogSignal);
+            }
         }
 
         if (updated) {
-            MultiblockHandler.instance.addIgnoreToUpdate(getBlockPos());
+            MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
             setChanged();
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_NEIGHBORS);
         }
+    }
+
+    private boolean pushPull() {
+        boolean pushed = false;
+        if (itemHandler() != null) {
+            Direction dir = getFacing();
+            pushed = itemHandler().pushItems(dir, true, worldPosition);
+            pushed = itemHandler().pullItems(dir, true, worldPosition) || pushed;
+        }
+        return pushed;
     }
 
     private void updateAnalogSignal() {
@@ -144,7 +154,7 @@ public class FissionPortBE extends NuclearCraftBE implements MultiblockAttachabl
         if (cap == ForgeCapabilities.FLUID_HANDLER && controller().canAcceptFluid()) {
             return controller().getCapability(cap, side);
         }
-        if (cap == ForgeCapabilities.ENERGY && !controller().isSteamMode) {
+        if (cap == ENERGY && !controller().isSteamMode) {
             return controller().getEnergy().cast();
         }
 
@@ -186,12 +196,11 @@ public class FissionPortBE extends NuclearCraftBE implements MultiblockAttachabl
                 if (be == null) {
                     continue;
                 }
-                boolean doContinue = be.getCapability(ForgeCapabilities.ENERGY, direction.getOpposite()).map(handler -> {
+                boolean doContinue = be.getCapability(ENERGY, direction.getOpposite()).map(handler -> {
                             if (handler.canReceive()) {
-                                int received = handler.receiveEnergy(Math.min(capacity.get(), controller().energyStorage().getMaxEnergyStored()), false);
+                                int received = handler.receiveEnergy(Math.min(capacity.get(), getMaxEnergyStored()), false);
                                 capacity.addAndGet(-received);
                                 controller().energyStorage().consumeEnergy(received);
-                                setChanged();
                                 return capacity.get() > 0;
                             } else {
                                 return true;
@@ -270,6 +279,7 @@ public class FissionPortBE extends NuclearCraftBE implements MultiblockAttachabl
             redstoneMode = SignalSource.ENERGY;
         }
         analogSignal = 0;
+        MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
         setChanged();
         level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
     }

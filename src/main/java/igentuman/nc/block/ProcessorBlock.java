@@ -39,13 +39,11 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
-import static igentuman.nc.multiblock.fission.FissionReactor.TRANSPARENT_BLOCKS;
 import static igentuman.nc.util.TextUtils.__;
 
 public class ProcessorBlock extends HorizontalDirectionalBlock implements EntityBlock {

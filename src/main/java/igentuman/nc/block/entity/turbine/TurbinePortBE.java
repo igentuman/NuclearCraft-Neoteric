@@ -7,6 +7,7 @@ import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -74,7 +75,7 @@ public class TurbinePortBE extends TurbineBE {
         }
 
         if(updated || (level.getGameTime() % 40 == 0 && controller().controllerEnabled)) {
-            MultiblockHandler.instance.addIgnoreToUpdate(getBlockPos());
+            MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
             setChanged();
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_NEIGHBORS);
         }

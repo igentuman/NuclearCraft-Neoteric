@@ -18,9 +18,9 @@ public class GameEvents {
     public static final RegistryObject<GameEvent> BLACKHOLE_VIBRATION =
             GAME_EVENTS.register("blackhole_vibration", () -> new GameEvent("blackhole_vibration", 32));
 
-    public static void init()
+    public static void init(FMLJavaModLoadingContext context)
     {
-        GAME_EVENTS.register(FMLJavaModLoadingContext.get().getModEventBus());
+        GAME_EVENTS.register(context.getModEventBus());
     }
 
     public static void commonSetup() {

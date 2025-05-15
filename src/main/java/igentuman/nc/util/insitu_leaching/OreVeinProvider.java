@@ -1,4 +1,4 @@
-package igentuman.nc.handler;
+package igentuman.nc.util.insitu_leaching;
 
 import igentuman.nc.recipes.NcRecipeType;
 import igentuman.nc.recipes.type.OreVeinRecipe;

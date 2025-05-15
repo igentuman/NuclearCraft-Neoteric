@@ -6,6 +6,7 @@ import igentuman.nc.item.*;
 import igentuman.nc.item.Tiers;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.RegistryObject;
 
 import java.util.Arrays;

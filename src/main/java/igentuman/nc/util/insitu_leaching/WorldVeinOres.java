@@ -1,6 +1,5 @@
 package igentuman.nc.util.insitu_leaching;
 
-import igentuman.nc.handler.OreVeinProvider;
 import igentuman.nc.recipes.type.OreVeinRecipe;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;

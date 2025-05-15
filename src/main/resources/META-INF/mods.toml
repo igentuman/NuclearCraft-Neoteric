@@ -6,7 +6,7 @@ modId="nuclearcraft"
 version="${file.jarVersion}" 
 displayName="Nuclearcraft Neoteric" 
 logoFile="logo.png"
-credits="tomdodd4598"
+credits="tomdodd4598, Lach01298"
 authors="igentuman"
 description='''
 A complex nuclear engineering mod for Minecraft

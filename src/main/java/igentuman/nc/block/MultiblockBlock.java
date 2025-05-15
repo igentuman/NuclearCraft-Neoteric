@@ -13,7 +13,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
-import static igentuman.nc.multiblock.fission.FissionReactor.TRANSPARENT_BLOCKS;
+import static igentuman.nc.multiblock.fission.FissionReactorRegistration.TRANSPARENT_BLOCKS;
 
 public class MultiblockBlock extends Block {
 
@@ -38,20 +38,23 @@ public class MultiblockBlock extends Block {
     }
 
     @Override
-    public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor){
-        MultiblockHandler.instance.trackBlockChange(neighbor);
+    public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor) {
+        super.onNeighborChange(state, level, pos, neighbor);
+        if(level.isClientSide()) return;
+        MultiblockHandler.get(((Level)level).dimension()).trackBlockChange(neighbor);
     }
 
     @Override
     public void onPlace(BlockState pState, Level pLevel, BlockPos pPos, BlockState pOldState, boolean pMovedByPiston) {
         super.onPlace(pState, pLevel, pPos, pOldState, pMovedByPiston);
-        MultiblockHandler.instance.trackBlockChange(pPos);
+        MultiblockHandler.get(pLevel.dimension()).trackBlockChange(pPos);
     }
 
     @Override
     public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
         super.onRemove(state, level, pos, newState, isMoving);
-        MultiblockHandler.instance.trackBlockChange(pos);
+        if(level.isClientSide()) return;
+        MultiblockHandler.get(level.dimension()).trackBlockChange(pos);
     }
 
     @Override

@@ -71,7 +71,7 @@ public class KugelblitzMultiblock extends AbstractNCMultiblock {
     public KugelblitzMultiblock(ChamberTerminalBE be) {
         super(getBlocksByTagKey(CASING_BLOCKS.location().toString()), List.of(KUGELBLITZ_BLOCKS.get("black_hole").get(), AIR), new KugelblitzController(be));
         id = "chamber_"+be.getBlockPos().toShortString();
-        MultiblockHandler.instance.addMultiblock(this);
+        MultiblockHandler.get(be.getLevel().dimension()).addMultiblock(this);
     }
 
     @Override

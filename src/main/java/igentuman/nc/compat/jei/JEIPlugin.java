@@ -8,6 +8,13 @@ import igentuman.nc.block.entity.turbine.TurbineControllerBE;
 import igentuman.nc.client.NcClient;
 import igentuman.nc.client.gui.fission.FissionControllerScreen;
 import igentuman.nc.client.gui.processor.NCProcessorScreen;
+import igentuman.nc.compat.jei.ingredient.ParticleStackHelper;
+import igentuman.nc.compat.jei.ingredient.ParticleStackListFactory;
+import igentuman.nc.compat.jei.ingredient.ParticleStackRenderer;
+import igentuman.nc.compat.jei.ingredient.ParticleType;
+import igentuman.nc.content.particles.Particle;
+import igentuman.nc.content.particles.ParticleStack;
+import igentuman.nc.content.particles.Particles;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.recipes.AbstractRecipe;
 import igentuman.nc.recipes.NcRecipeType;
@@ -20,10 +27,7 @@ import mezz.jei.api.gui.handlers.IGuiClickableArea;
 import mezz.jei.api.gui.handlers.IGuiContainerHandler;
 import mezz.jei.api.recipe.IRecipeManager;
 import mezz.jei.api.recipe.RecipeType;
-import mezz.jei.api.registration.IGuiHandlerRegistration;
-import mezz.jei.api.registration.IRecipeCatalystRegistration;
-import mezz.jei.api.registration.IRecipeCategoryRegistration;
-import mezz.jei.api.registration.IRecipeRegistration;
+import mezz.jei.api.registration.*;
 import mezz.jei.api.runtime.IJeiRuntime;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -48,14 +52,14 @@ import static net.minecraft.world.item.Items.AIR;
 public  class JEIPlugin implements IModPlugin {
     public static HashMap<String, RecipeType<? extends NcRecipe>> recipeTypes;
 
-    public static final RecipeType<ChamberTerminalBE.Recipe> KUGELBLITZ = new RecipeType<>(new ResourceLocation(MODID, "kugelblitz_chamber"), ChamberTerminalBE.Recipe.class);
-    public static final RecipeType<FissionControllerBE.Recipe> FISSION = new RecipeType<>(new ResourceLocation(MODID, FissionControllerBE.NAME), FissionControllerBE.Recipe.class);
-    public static final RecipeType<FusionCoreBE.Recipe> FUSION = new RecipeType<>(new ResourceLocation(MODID, "fusion_core"), FusionCoreBE.Recipe.class);
-    public static final RecipeType<FusionCoreBE.FusionCoolantRecipe> FUSION_COOLANT = new RecipeType<>(new ResourceLocation(MODID, "fusion_coolant"), FusionCoreBE.FusionCoolantRecipe.class);
-    public static final RecipeType<FissionControllerBE.FissionBoilingRecipe> FISSION_BOILING = new RecipeType<>(new ResourceLocation(MODID, "fission_boiling"), FissionControllerBE.FissionBoilingRecipe.class);
-    public static final RecipeType<TurbineControllerBE.Recipe> TURBINE_CONTROLLER = new RecipeType<>(new ResourceLocation(MODID, TurbineControllerBE.NAME), TurbineControllerBE.Recipe.class);
-    public static final RecipeType<MekChemicalConversionRecipe> CHEMICAL_TO_FLUID = new RecipeType<>(new ResourceLocation(MODID, "mek_chemical_to_fluid"), MekChemicalConversionRecipe.class);;
-    public static final RecipeType<OreVeinRecipe> ORE_VEINS = new RecipeType<>(new ResourceLocation(MODID, "nc_ore_veins"), OreVeinRecipe.class);
+    public static final RecipeType<ChamberTerminalBE.Recipe> KUGELBLITZ = new RecipeType<>(rl("kugelblitz_chamber"), ChamberTerminalBE.Recipe.class);
+    public static final RecipeType<FissionControllerBE.Recipe> FISSION = new RecipeType<>(rl(FissionControllerBE.NAME), FissionControllerBE.Recipe.class);
+    public static final RecipeType<FusionCoreBE.Recipe> FUSION = new RecipeType<>(rl("fusion_core"), FusionCoreBE.Recipe.class);
+    public static final RecipeType<FusionCoreBE.FusionCoolantRecipe> FUSION_COOLANT = new RecipeType<>(rl("fusion_coolant"), FusionCoreBE.FusionCoolantRecipe.class);
+    public static final RecipeType<FissionControllerBE.FissionBoilingRecipe> FISSION_BOILING = new RecipeType<>(rl("fission_boiling"), FissionControllerBE.FissionBoilingRecipe.class);
+    public static final RecipeType<TurbineControllerBE.Recipe> TURBINE_CONTROLLER = new RecipeType<>(rl(TurbineControllerBE.NAME), TurbineControllerBE.Recipe.class);
+    public static final RecipeType<MekChemicalConversionRecipe> CHEMICAL_TO_FLUID = new RecipeType<>(rl("mek_chemical_to_fluid"), MekChemicalConversionRecipe.class);;
+    public static final RecipeType<OreVeinRecipe> ORE_VEINS = new RecipeType<>(rl("nc_ore_veins"), OreVeinRecipe.class);
 
     private static HashMap<String, RecipeType<? extends NcRecipe>> getRecipeTypes() {
         if (recipeTypes == null) {
@@ -64,7 +68,7 @@ public  class JEIPlugin implements IModPlugin {
                 if (Processors.all().containsKey(name) && !Processors.all().get(name).isRegistered()) {
                     continue;
                 }
-                recipeTypes.put(name, new RecipeType<>(new ResourceLocation(MODID, name), RECIPE_CLASSES.get(name)));
+                recipeTypes.put(name, new RecipeType<>(rl(name), RECIPE_CLASSES.get(name)));
             }
         }
         return recipeTypes;
@@ -72,7 +76,15 @@ public  class JEIPlugin implements IModPlugin {
 
 
     public ResourceLocation getPluginUid() {
-        return new ResourceLocation(MODID, "jei_plugin");
+        return rl("jei_plugin");
+    }
+
+    @Override
+    public void registerIngredients(IModIngredientRegistration registration) {
+        List<ParticleStack> particleStacks = ParticleStackListFactory.create();
+        ParticleStackHelper particleStackHelper = new ParticleStackHelper();
+        ParticleStackRenderer particleStackRenderer = new ParticleStackRenderer();
+        registration.register(ParticleType.Particle, particleStacks, particleStackHelper, particleStackRenderer);
     }
 
     @Override
@@ -108,6 +120,9 @@ public  class JEIPlugin implements IModPlugin {
 
         registration.addRecipeCategories(
                 new MultiblockStructureCategory(registration.getJeiHelpers().getGuiHelper())
+        );
+        registration.addRecipeCategories(
+                new ParticleInfoCategory(registration.getJeiHelpers().getGuiHelper())
         );
     }
 
@@ -158,11 +173,21 @@ public  class JEIPlugin implements IModPlugin {
             if(isMekanismLoaded()) {
                 registration.addRecipes(getRecipeType(CHEMICAL_TO_FLUID), MekChemicalConversionRecipe.getRecipes());
             }
+
             List<MultiblockStructureRecipe> multiblockRecipes = loadMultiblockStructures();
             registration.addRecipes(MultiblockStructureCategory.TYPE, multiblockRecipes);
+            registration.addRecipes(ParticleInfoCategory.TYPE, particleRecipes());
         } catch (IllegalArgumentException ex) {
             LOGGER.error("Error registering recipes for JEI: " + ex.getMessage());
         }
+    }
+
+    private List<ParticleRecipe> particleRecipes() {
+        List<ParticleRecipe> recipes = new ArrayList<>();
+        for (Particle particle : Particles.list.values()) {
+            recipes.add(new ParticleRecipe(rl(particle.getName()), particle));
+        }
+        return recipes;
     }
 
     private List<MultiblockStructureRecipe> loadMultiblockStructures() {

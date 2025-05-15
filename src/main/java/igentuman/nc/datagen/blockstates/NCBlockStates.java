@@ -1,6 +1,5 @@
 package igentuman.nc.datagen.blockstates;
 
-import igentuman.nc.multiblock.fission.FissionBlocks;
 import igentuman.nc.multiblock.turbine.TurbineRegistration;
 import igentuman.nc.setup.registration.NCEnergyBlocks;
 import igentuman.nc.content.storage.BarrelBlocks;
@@ -21,7 +20,8 @@ import java.util.function.Function;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.client.block.BatteryBlockLoader.BATTERY_LOADER;
-import static igentuman.nc.multiblock.fission.FissionReactor.FISSION_BLOCKS;
+import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
+import static igentuman.nc.multiblock.fission.FissionReactorRegistration.*;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_CORE_PROXY;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BLOCKS;
@@ -52,6 +52,30 @@ public class NCBlockStates extends BlockStateProvider {
         storageBlocks();
         fusionReactor();
         kugelblitz();
+        accelerator();
+    }
+
+    private void accelerator() {
+        horizontalBlock(ACCELERATOR_BLOCKS.get("accelerator_beam_port").get(),
+                st -> multiBlockModel(ACCELERATOR_BLOCKS.get("accelerator_beam_port").get(), "accelerator/accelerator_beam_port")
+        );
+        horizontalBlock(ACCELERATOR_BLOCKS.get("accelerator_ion_source_port").get(),
+                st -> multiBlockModel(ACCELERATOR_BLOCKS.get("accelerator_ion_source_port").get(), "accelerator/accelerator_ion_source_port")
+        );
+        horizontalBlock(ACCELERATOR_BLOCKS.get("accelerator_port").get(),
+                st -> multiBlockModel(ACCELERATOR_BLOCKS.get("accelerator_port").get(), "accelerator/accelerator_port")
+        );
+       horizontalBlock(ACCELERATOR_BLOCKS.get("linear_accelerator_controller").get(),
+                st -> controllerModel(st, sidedModel(ACCELERATOR_BLOCKS.get("linear_accelerator_controller").get(), "accelerator/controller"))
+        );
+       horizontalBlock(ACCELERATOR_BLOCKS.get("synthrotron_controller").get(),
+                st -> controllerModel(st, sidedModel(ACCELERATOR_BLOCKS.get("synthrotron_controller").get(), "accelerator/controller"))
+        );
+
+        simpleBlock(ACCELERATOR_BLOCKS.get("accelerator_casing").get(), multiBlockModel(ACCELERATOR_BLOCKS.get("accelerator_casing").get(), "accelerator/accelerator_casing"));
+        simpleBlock(ACCELERATOR_BLOCKS.get("accelerator_casing_glass").get(), multiBlockModel(ACCELERATOR_BLOCKS.get("accelerator_casing_glass").get(), "accelerator/accelerator_casing_glass"));
+        simpleBlock(ACCELERATOR_BLOCKS.get("accelerator_beam").get(), multiBlockModel(ACCELERATOR_BLOCKS.get("accelerator_beam").get(), "accelerator/accelerator_beam"));
+
     }
 
     private void turbine() {
@@ -142,13 +166,13 @@ public class NCBlockStates extends BlockStateProvider {
     }
 
     private void heatSinks() {
-        for (String name: FissionBlocks.heatsinks.keySet()) {
+        for (String name: heatsinks.keySet()) {
             simpleBlock(FISSION_BLOCKS.get(name+"_heat_sink").get(), multiBlockModel(FISSION_BLOCKS.get(name+"_heat_sink").get(), "heat_sink/"+name));
         }
     }
 
     private void fissionReactor() {
-        for (String name: FissionBlocks.reactor) {
+        for (String name: reactor) {
             if(name.matches(".*port.*")) {
                 horizontalBlock(FISSION_BLOCKS.get("fission_reactor_" + name).get(), multiBlockModel(FISSION_BLOCKS.get("fission_reactor_" + name).get(), "fission/" + name));
             } else if(name.matches(".*controller.*")) {
@@ -263,6 +287,10 @@ public class NCBlockStates extends BlockStateProvider {
             type = "turbine";
         } else if(st.getBlock() == KUGELBLITZ_BLOCKS.get("chamber_terminal").get()) {
             type = "kugelblitz";
+        } else if(st.getBlock() == ACCELERATOR_BLOCKS.get("linear_accelerator_controller").get()) {
+            type = "accelerator";
+        } else if(st.getBlock() == ACCELERATOR_BLOCKS.get("synthrotron_controller").get()) {
+            type = "accelerator";
         }
         BlockModelBuilder result = models()
                 .getBuilder("block/multiblock/"+key(st.getBlock()).getPath()+powered)
@@ -380,9 +408,9 @@ public class NCBlockStates extends BlockStateProvider {
         }
         BlockModelBuilder model = models().cubeAll(
                 blockPath+key(block).getPath(),
-                        new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/" + name.getPath()));
+                        ResourceLocation.tryBuild(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/" + name.getPath()));
         if(name.getPath().matches(".*glass|.*cell.*|.*photon.*|.*event_horizon_stabilizer.*|.*quantum_transformer.*")) {
-            model.renderType(new ResourceLocation("cutout"));
+            model.renderType(ResourceLocation.tryBuild("minecraft","cutout"));
         }
         return model;
     }
@@ -394,9 +422,9 @@ public class NCBlockStates extends BlockStateProvider {
         }
         BlockModelBuilder m = models().cubeAll(
                 "block/multiblock/"+key(block).getPath(),
-                new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath));
+                ResourceLocation.tryBuild(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath));
         if(subPath.matches(".*glass|.*cell.*|.*photon.*|.*event_horizon_stabilizer.*|.*quantum_transformer.*")) {
-            m.renderType(new ResourceLocation("cutout"));
+            m.renderType(ResourceLocation.tryBuild("minecraft","cutout"));
         }
         return m;
     }
@@ -421,12 +449,12 @@ public class NCBlockStates extends BlockStateProvider {
         }
         return models().cube(
                 blockPath+key(block).getPath(),
-                new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/top"),
-                new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/bottom"),
-                new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/" + name.getPath()),
-                new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/back"),
-                new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/side"),
-                new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/side")
+                ResourceLocation.tryBuild(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/top"),
+                ResourceLocation.tryBuild(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/bottom"),
+                ResourceLocation.tryBuild(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/" + name.getPath()),
+                ResourceLocation.tryBuild(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/back"),
+                ResourceLocation.tryBuild(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/side"),
+                ResourceLocation.tryBuild(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/side")
         ).texture("particle", ModelProvider.BLOCK_FOLDER + "/"+subPath+"/side");
     }
 
@@ -435,12 +463,12 @@ public class NCBlockStates extends BlockStateProvider {
 
         BlockModelBuilder model =  models().cube(
                 key(block).getPath(),
-                new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"side"),
-                new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"top"),
-                new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"side"),
-                new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"side"),
-                new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"side"),
-                new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"side")
+                ResourceLocation.tryBuild(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"side"),
+                ResourceLocation.tryBuild(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"top"),
+                ResourceLocation.tryBuild(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"side"),
+                ResourceLocation.tryBuild(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"side"),
+                ResourceLocation.tryBuild(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"side"),
+                ResourceLocation.tryBuild(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"side")
         );
 
         model.texture("particle", ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"top");

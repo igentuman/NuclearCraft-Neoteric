@@ -27,7 +27,7 @@ import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.util.TextUtils.__;
 
 public class SideConfigScreen<T extends NCProcessorContainer<T>> extends AbstractContainerScreen<T> {
-    protected final ResourceLocation GUI = new ResourceLocation(MODID, "textures/gui/small_window.png");
+    protected final ResourceLocation GUI = rl("textures/gui/small_window.png");
     protected int relX;
     protected int relY;
 

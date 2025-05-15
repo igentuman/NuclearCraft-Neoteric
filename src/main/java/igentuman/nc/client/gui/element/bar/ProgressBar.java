@@ -10,11 +10,12 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.NuclearCraft.rl;
 
 public class ProgressBar extends NCGuiElement {
 
     public int bar = 0;
-    protected static ResourceLocation ATLAS = new ResourceLocation(MODID, "textures/gui/progress.png");
+    protected static ResourceLocation ATLAS = rl("textures/gui/progress.png");
     IProgressScreen container;
 
     public static List<int[]> bars = List.of(

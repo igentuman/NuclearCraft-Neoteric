@@ -24,6 +24,7 @@ import static igentuman.nc.setup.registration.NCFluids.ALL_FLUID_ENTRIES;
 import static igentuman.nc.setup.registration.NCItems.*;
 import static igentuman.nc.setup.registration.Tags.*;
 import static igentuman.nc.util.DataGenUtil.*;
+import static igentuman.nc.util.NcUtils.rlFromString;
 import static net.minecraft.world.item.Items.AIR;
 import static net.minecraft.world.item.Items.BARRIER;
 
@@ -61,7 +62,7 @@ public abstract class AbstractRecipeProvider {
     }
 
     protected static ItemStack stack(String item, int count) {
-        return new ItemStack(ForgeRegistries.ITEMS.getValue(new ResourceLocation(item)), count);
+        return new ItemStack(ForgeRegistries.ITEMS.getValue(rlFromString(item)), count);
     }
 
     public static ItemStack[] stackArray(ItemStack... stacks) {
@@ -204,7 +205,7 @@ public abstract class AbstractRecipeProvider {
             key = name.split(":")[0];
             name = name.split(":")[1];
         }
-        return TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(), new ResourceLocation(key, name));
+        return TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(), ResourceLocation.tryBuild(key, name));
     }
 
     public static Item blockItem(String name)

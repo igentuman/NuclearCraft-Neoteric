@@ -1,31 +1,39 @@
 package igentuman.nc.multiblock.fission;
 
-import igentuman.nc.block.entity.fission.*;
+import com.google.gson.JsonArray;
+import igentuman.nc.block.entity.fission.FissionControllerBE;
+import igentuman.nc.block.entity.fission.FissionPortBE;
 import igentuman.nc.block.fission.*;
 import igentuman.nc.container.FissionControllerContainer;
 import igentuman.nc.container.FissionPortContainer;
+import igentuman.nc.util.JSONUtil;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.registries.RegistryObject;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import static igentuman.nc.multiblock.fission.FissionBlocks.REACTOR_BLOCKS_PROPERTIES;
-import static igentuman.nc.setup.registration.NCItems.ALL_NC_ITEMS;
-import static igentuman.nc.setup.registration.Registries.*;
 import java.util.regex.Pattern;
 
-public class FissionReactor {
+import static igentuman.nc.setup.registration.NCItems.ALL_NC_ITEMS;
+import static igentuman.nc.setup.registration.Registries.*;
+import static igentuman.nc.setup.registration.Tags.blockTag;
+import static igentuman.nc.setup.registration.Tags.itemTag;
+import static igentuman.nc.util.TagUtil.getBlocksByTagKey;
 
-    public static final Pattern TRANSPARENT_BLOCKS = Pattern.compile(".*glass|.*cell.*");
+public class FissionReactorRegistration {
+
+    public static final Pattern TRANSPARENT_BLOCKS = Pattern.compile(".*glass|.*cell.*|photon.*|.*stabilizer.*");
     public static final Item.Properties FISSION_ITEM_PROPS = new Item.Properties();
     public static final HashMap<String, RegistryObject<Block>> FISSION_BLOCKS = new HashMap<>();
     public static final HashMap<String, RegistryObject<BlockEntityType<? extends BlockEntity>>> FISSION_BE = new HashMap<>();
@@ -40,13 +48,32 @@ public class FissionReactor {
             () -> IForgeMenuType.create((windowId, inv, data) -> new FissionPortContainer(windowId, data.readBlockPos(), inv))
             );
 
+    public static final BlockBehaviour.Properties REACTOR_BLOCKS_PROPERTIES = BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(4f).requiresCorrectToolForDrops();
+
+    public static final TagKey<Block> MODERATORS_BLOCKS = blockTag("moderators");
+    public static final TagKey<Block> HEAT_SINK_BLOCKS = blockTag("heat_sinks");
+    public static final TagKey<Block> INNER_REACTOR_BLOCKS = blockTag("reactor_inner");
+    public static final TagKey<Item> MODERATORS_ITEMS = itemTag("moderators");
+    public static final TagKey<Block> CASING_BLOCKS = blockTag("fission_reactor_casing");
+    public static final TagKey<Item> CASING_ITEMS = itemTag("fission_reactor_casing");
+
+    public static final List<String> reactor =  Arrays.asList(
+            "casing",
+            "controller",
+            "irradiation_chamber",
+            "port",
+            "glass",
+            "solid_fuel_cell"
+            //"casing_slope"
+    );
+
     public static void init() {
         blocks();
     }
 
     public static void blocks()
     {
-        for(String name: FissionBlocks.reactor) {
+        for(String name: reactor) {
             String key = "fission_reactor_"+name;
             if(name.contains("controller")) {
                 FISSION_BLOCKS.put(key, BLOCKS.register(key, () -> new FissionControllerBlock(REACTOR_BLOCKS_PROPERTIES)));
@@ -80,14 +107,39 @@ public class FissionReactor {
             ALL_NC_ITEMS.put(key, FISSION_BLOCK_ITEMS.get(key));
         }
 
-        for(String name: FissionBlocks.heatsinks.keySet()) {
-            FISSION_BLOCKS.put(name+"_heat_sink", BLOCKS.register(name+"_heat_sink", () -> new HeatSinkBlock(REACTOR_BLOCKS_PROPERTIES, FissionBlocks.heatsinks.get(name))));
+        for(String name: heatsinks.keySet()) {
+            FISSION_BLOCKS.put(name+"_heat_sink", BLOCKS.register(name+"_heat_sink", () -> new HeatSinkBlock(REACTOR_BLOCKS_PROPERTIES, heatsinks.get(name))));
             FISSION_BLOCK_ITEMS.put(name+"_heat_sink", fromMultiblock(FISSION_BLOCKS.get(name+"_heat_sink")));
             ALL_NC_ITEMS.put(name+"_heat_sink", FISSION_BLOCK_ITEMS.get(name+"_heat_sink"));
             if(!name.matches("empty|active")) {
                 hsBlocks.add(FISSION_BLOCKS.get(name + "_heat_sink"));
             }
         }
+    }
+
+    public static final List<Block> blocks = moderators();
+
+    public static List<Block> moderators() {
+        return getBlocksByTagKey(MODERATORS_BLOCKS.location().toString());
+    }
+
+    public static final HashMap<String, HeatSinkDef> heatsinks = heatsinks();
+
+    public static HashMap<String, HeatSinkDef> heatsinks() {
+        HashMap<String, HeatSinkDef> tmp = new HashMap<>();
+        List<JsonArray> data = JSONUtil.loadAllJsonFromConfig("heat_sinks");
+        if(data == null) {
+            return tmp;
+        }
+        for (JsonArray array : data) {
+            for (int i = 0; i < array.size(); i++) {
+                HeatSinkDef heatSink = HeatSinkDef.of(array.get(i).getAsJsonObject());
+                if (heatSink != null) {
+                    tmp.put(heatSink.name, heatSink);
+                }
+            }
+        }
+        return tmp;
     }
 
     public static Block[] getHSBlocks() {

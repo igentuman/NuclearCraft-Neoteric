@@ -59,7 +59,7 @@ public abstract class AbstractNCMultiblock implements Multiblock {
     }
 
     public void dispose() {
-        MultiblockHandler.instance.removeMultiblock(this);
+        MultiblockHandler.get(getLevel().dimension()).removeMultiblock(this);
     }
 
     public List<Block> validCornerBlocks() {
@@ -478,9 +478,16 @@ public abstract class AbstractNCMultiblock implements Multiblock {
     }
 
     private boolean shouldRefreshCache(BlockState state, BlockPos pos, BlockPos neighbor) {
-        boolean isInTheList = allBlocks.contains(neighbor);
+        if (bottomLeft != null && topRight != null) {
+            if (neighbor.getX() < bottomLeft.getX() || neighbor.getY() < bottomLeft.getY() || neighbor.getZ() < bottomLeft.getZ() ||
+                    neighbor.getX() > topRight.getX() || neighbor.getY() > topRight.getY() || neighbor.getZ() > topRight.getZ()) {
+                return false;
+            }
+        }
+        if(!allBlocks.contains(neighbor)) {
+            return false;
+        }
         BlockEntity neighborBe = getBlockEntity(neighbor);
-        if (!isInTheList) return false; //ignore all blocks outside
         if (neighborBe instanceof MultiblockAttachable part) {
             return part.canInvalidateCache();
         }
@@ -488,29 +495,27 @@ public abstract class AbstractNCMultiblock implements Multiblock {
     }
 
     public void tick() {
-        //not letting to spam structure re-validation
-        if (hasToRefresh) {
-            refreshCooldown--;
-            if (refreshCooldown <= 0) {
-                refreshOuterCacheFlag = true;
-                refreshInnerCacheFlag = true;
-                validationResult = ValidationResult.INCOMPLETE;
-                innerValid = false;
-                outerValid = false;
-                isFormed = false;
-                hasToRefresh = false;
-                beCache.clear();
-                bsCache.clear();
-                refreshCooldown = 20;
-            }
+        if (!hasToRefresh) {
+            return;
         }
+        if(refreshCooldown-- >= 0) {;
+            return;
+        }
+        refreshOuterCacheFlag = true;
+        refreshInnerCacheFlag = true;
+        validationResult = ValidationResult.INCOMPLETE;
+        innerValid = false;
+        outerValid = false;
+        isFormed = false;
+        hasToRefresh = false;
+        beCache.clear();
+        bsCache.clear();
+        refreshCooldown = 20;
     }
 
     public void onBlockDestroyed(BlockState state, Level level, BlockPos pos, Explosion explosion) {
         controller.clearStats();
     }
-
-
 
     public boolean onBlockChange(BlockPos pos) {
         if (hasToRefresh) return true;

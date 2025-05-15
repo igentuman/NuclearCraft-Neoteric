@@ -2,7 +2,7 @@ package igentuman.nc.container;
 
 import igentuman.nc.block.entity.fission.FissionControllerBE;
 import igentuman.nc.container.elements.NCSlotItemHandler;
-import igentuman.nc.multiblock.fission.FissionReactor;
+import igentuman.nc.multiblock.fission.FissionReactorRegistration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -11,8 +11,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
@@ -31,7 +29,7 @@ public class FissionControllerContainer extends AbstractContainerMenu {
     protected final IItemHandler playerInventory;
 
     public FissionControllerContainer(int pContainerId, BlockPos pos, Inventory playerInventory) {
-        super(FissionReactor.FISSION_CONTROLLER_CONTAINER.get(), pContainerId);
+        super(FissionReactorRegistration.FISSION_CONTROLLER_CONTAINER.get(), pContainerId);
         this.playerEntity = playerInventory.player;
         this.playerInventory =  new InvWrapper(playerInventory);
         blockEntity = (FissionControllerBE) playerEntity.getCommandSenderWorld().getBlockEntity(pos);
@@ -80,7 +78,7 @@ public class FissionControllerContainer extends AbstractContainerMenu {
         return stillValid(
                 ContainerLevelAccess.create(blockEntity.getLevel(), blockEntity.getBlockPos()),
                 playerEntity,
-                FissionReactor.FISSION_BLOCKS.get(name).get()
+                FissionReactorRegistration.FISSION_BLOCKS.get(name).get()
         );
     }
 

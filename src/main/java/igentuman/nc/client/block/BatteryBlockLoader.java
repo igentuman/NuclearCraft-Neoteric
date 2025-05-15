@@ -19,25 +19,27 @@ import java.util.Set;
 import java.util.function.Function;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.NuclearCraft.rl;
+import static igentuman.nc.util.NcUtils.rlFromString;
 
 public class BatteryBlockLoader implements IGeometryLoader<BatteryBlockLoader.BatteryModelGeometry> {
 
-    public static final ResourceLocation BATTERY_LOADER = new ResourceLocation(MODID, "battery_loader");
+    public static final ResourceLocation BATTERY_LOADER = rl("battery_loader");
 
     @Override
     public BatteryModelGeometry read(JsonObject jsonObject, JsonDeserializationContext deserializationContext) throws JsonParseException {
         String side = jsonObject.get("textures").getAsJsonObject().get("down").getAsString();
         String up = jsonObject.get("textures").getAsJsonObject().get("up").getAsString();
 
-        Material sideDefault = ForgeHooksClient.getBlockMaterial(new ResourceLocation(side));
-        Material sideIn = ForgeHooksClient.getBlockMaterial(new ResourceLocation(side+ "_in"));
-        Material sideOut = ForgeHooksClient.getBlockMaterial(new ResourceLocation(side+ "_out"));
-        Material sideNone = ForgeHooksClient.getBlockMaterial(new ResourceLocation(side+ "_non"));
+        Material sideDefault = ForgeHooksClient.getBlockMaterial(rlFromString(side));
+        Material sideIn = ForgeHooksClient.getBlockMaterial(rlFromString(side+ "_in"));
+        Material sideOut = ForgeHooksClient.getBlockMaterial(rlFromString(side+ "_out"));
+        Material sideNone = ForgeHooksClient.getBlockMaterial(rlFromString(side+ "_non"));
 
-        Material topDefault = ForgeHooksClient.getBlockMaterial(new ResourceLocation(up));
-        Material topIn = ForgeHooksClient.getBlockMaterial(new ResourceLocation(up+ "_in"));
-        Material topOut = ForgeHooksClient.getBlockMaterial(new ResourceLocation(up+ "_out"));
-        Material topNone = ForgeHooksClient.getBlockMaterial(new ResourceLocation(up+ "_non"));
+        Material topDefault = ForgeHooksClient.getBlockMaterial(rlFromString(up));
+        Material topIn = ForgeHooksClient.getBlockMaterial(rlFromString(up+ "_in"));
+        Material topOut = ForgeHooksClient.getBlockMaterial(rlFromString(up+ "_out"));
+        Material topNone = ForgeHooksClient.getBlockMaterial(rlFromString(up+ "_non"));
 
         return new BatteryModelGeometry(sideDefault, sideIn, sideOut, sideNone, topDefault, topIn, topOut, topNone);
     }

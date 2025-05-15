@@ -17,6 +17,7 @@ import java.util.Objects;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
+import static igentuman.nc.util.NcUtils.rlFromString;
 
 @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ScientistHouseStructure {
@@ -25,7 +26,7 @@ public class ScientistHouseStructure {
     public static void onTagsUpdated(TagsUpdatedEvent ev) {
         if (ev.getUpdateCause() == TagsUpdatedEvent.UpdateCause.SERVER_DATA_LOAD) {
             for(String biome : new String[]{"plains", "snowy", "savanna", "desert", "taiga"}) {
-                addToPool(new ResourceLocation("village/" + biome + "/houses"), rl("scientist_house/" + biome), ev.getRegistryAccess());
+                addToPool(rlFromString("minecraft:village/" + biome + "/houses"), rl("scientist_house/" + biome), ev.getRegistryAccess());
 
             }
 

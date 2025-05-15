@@ -4,6 +4,7 @@ import igentuman.nc.content.materials.Materials;
 import igentuman.nc.item.ItemFuel;
 import igentuman.nc.content.fuel.FuelManager;
 import net.minecraft.world.item.Item;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.RegistryObject;
 import java.util.HashMap;
 import java.util.List;

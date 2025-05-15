@@ -205,7 +205,7 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
             }
         }
         setChanged();
-        MultiblockHandler.instance.addIgnoreToUpdate(getBlockPos());
+        MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
         level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(POWERED, controllerEnabled), Block.UPDATE_ALL);
         level.setBlockAndUpdate(worldPosition, getBlockState().setValue(POWERED, controllerEnabled));
     }
@@ -250,7 +250,7 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
         }
         if(refreshCacheFlag || changed) {
             try {
-                MultiblockHandler.instance.addIgnoreToUpdate(getBlockPos());
+                MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
                 level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(POWERED, controllerEnabled), Block.UPDATE_ALL);
                 level.setBlockAndUpdate(worldPosition, getBlockState().setValue(POWERED, controllerEnabled));
             } catch (NullPointerException ignored) {}

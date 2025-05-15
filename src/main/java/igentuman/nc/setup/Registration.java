@@ -1,33 +1,29 @@
 package igentuman.nc.setup;
 
-import com.mojang.serialization.Codec;
 import igentuman.nc.effect.RadiationResistance;
+import igentuman.nc.multiblock.accelerator.AcceleratorRegistration;
+import igentuman.nc.multiblock.fission.FissionReactorRegistration;
 import igentuman.nc.multiblock.fusion.FusionReactorRegistration;
 import igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration;
 import igentuman.nc.multiblock.turbine.TurbineRegistration;
-import igentuman.nc.multiblock.fission.FissionReactor;
 import igentuman.nc.recipes.NcRecipeSerializers;
 import igentuman.nc.recipes.NcRecipeType;
 import igentuman.nc.setup.registration.*;
-import igentuman.nc.world.structure.ScientistHouseStructure;
-import igentuman.nc.world.structure.PortalStructure;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
-import net.minecraft.world.level.levelgen.structure.Structure;
-import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.RegistryObject;
 
-import static igentuman.nc.setup.registration.Registries.*;
+import static igentuman.nc.setup.registration.Registries.EFFECTS;
 
 public class Registration {
 
     public static final RegistryObject<MobEffect> RADIATION_RESISTANCE = EFFECTS.register("radiation_resistance", () -> new RadiationResistance(MobEffectCategory.BENEFICIAL, 0xd4ffFF));
 
-    public static void init() {
-        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
-        Registries.init();
+    public static void init(FMLJavaModLoadingContext context) {
+        IEventBus bus = context.getModEventBus();
+        Registries.init(context);
         NCBlocks.init();
         NCStorageBlocks.init();
         NCItems.init();
@@ -36,22 +32,17 @@ public class Registration {
         WorldGeneration.register(bus);
         NCEnergyBlocks.init();
         NCProcessors.init();
-        FissionReactor.init();
+        FissionReactorRegistration.init();
         FusionReactorRegistration.init();
         KugelblitzRegistration.init();
         TurbineRegistration.init();
+        AcceleratorRegistration.init();
         CreativeTabs.init();
         NcRecipeSerializers.init();
         NcRecipeType.init();
         NcParticleTypes.init();
         NCSounds.init();
-        Villager.init();
-        GameEvents.init();
-    }
-
-    public static final RegistryObject<StructureType<?>> PORTAL = STRUCTURES.register("portal", () -> typeConvert(PortalStructure.CODEC));
-
-    private static <S extends Structure> StructureType<S> typeConvert(Codec<S> codec) {
-        return () -> codec;
+        Villager.init(context);
+        GameEvents.init(context);
     }
 }

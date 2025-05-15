@@ -69,12 +69,12 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
 
     public FissionReactorMultiblock(FissionControllerBE fissionControllerBE) {
         super(
-                getBlocksByTagKey(FissionBlocks.CASING_BLOCKS.location().toString()),
-                getBlocksByTagKey(FissionBlocks.INNER_REACTOR_BLOCKS.location().toString()),
+                getBlocksByTagKey(FissionReactorRegistration.CASING_BLOCKS.location().toString()),
+                getBlocksByTagKey(FissionReactorRegistration.INNER_REACTOR_BLOCKS.location().toString()),
                 new FissionReactorController(fissionControllerBE)
         );
         id = "fission_reactor_"+fissionControllerBE.getBlockPos().toShortString();
-        validModerators = getBlocksByTagKey(FissionBlocks.MODERATORS_BLOCKS.location().toString());
+        validModerators = getBlocksByTagKey(FissionReactorRegistration.MODERATORS_BLOCKS.location().toString());
         for(Block b: validModerators) {
             if(!WorldEvents.trackingBlocks.contains(b)) {
                 WorldEvents.trackingBlocks.add(b);
@@ -89,7 +89,7 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
             }
         }
         controllerBe = fissionControllerBE;
-        MultiblockHandler.instance.addMultiblock(this);
+        MultiblockHandler.get(getLevel().dimension()).addMultiblock(this);
     }
 
     public Map<BlockPos, HeatSinkBlock> validHeatSinks() {
@@ -145,12 +145,12 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
     }
 
     private double getCoolingByCoolant(String coolant, int amount) {
-        if(!FissionBlocks.heatsinks.containsKey("active_"+coolant)) {
+        if(!FissionReactorRegistration.heatsinks.containsKey("active_"+coolant)) {
             return 0;
         }
         int mbPerTick = FISSION_CONFIG.ACTIVE_HEATSINK_COOLANT_PER_TICK.get();
-        FissionBlocks.heatsinks.get("active_"+coolant);
-        return ((double)amount /(double)mbPerTick)*FissionBlocks.heatsinks.get("active_"+coolant).heat;
+        FissionReactorRegistration.heatsinks.get("active_"+coolant);
+        return ((double)amount /(double)mbPerTick)*FissionReactorRegistration.heatsinks.get("active_"+coolant).heat;
     }
 
     public boolean isModerator(BlockPos pos, Level level) {

@@ -2,6 +2,7 @@ package igentuman.nc.multiblock;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 
@@ -9,14 +10,24 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class MultiblockHandler {
-    public static final MultiblockHandler instance = new MultiblockHandler();
-    private MultiblockHandler() {
-    }
 
+    public static final ConcurrentHashMap<ResourceKey<Level>, MultiblockHandler> instances = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, AbstractNCMultiblock> multiblocks = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<Long, List<String>> chunkCache = new ConcurrentHashMap<>();
     private final Set<String> toRemove = Collections.synchronizedSet(new HashSet<>());
     public final Set<Long> ignoreUpdate = Collections.synchronizedSet(new HashSet<>());
+
+    private MultiblockHandler() {
+    }
+
+    public static MultiblockHandler get(ResourceKey<Level> dimension) {
+        if (instances.containsKey(dimension)) {
+            return instances.get(dimension);
+        }
+        MultiblockHandler handler = new MultiblockHandler();
+        instances.put(dimension, handler);
+        return handler;
+    }
 
     public void addMultiblock(AbstractNCMultiblock multiblock) {
         if (multiblock.controller() == null) {
@@ -102,7 +113,7 @@ public class MultiblockHandler {
         }
     }
 
-    public void tick() {
+    public void tick(Level level) {
         Set<String> tmp = multiblocks.keySet();
         for(String id: tmp) {
             AbstractNCMultiblock multiblock = multiblocks.get(id);

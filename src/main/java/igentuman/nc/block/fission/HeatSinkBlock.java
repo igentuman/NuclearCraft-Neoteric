@@ -1,8 +1,6 @@
 package igentuman.nc.block.fission;
 
 import igentuman.nc.block.MultiblockBlock;
-import igentuman.nc.multiblock.MultiblockHandler;
-import igentuman.nc.multiblock.fission.FissionBlocks;
 import igentuman.nc.multiblock.fission.HeatSinkDef;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
@@ -27,7 +25,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.handler.event.client.InputEvents.DESCRIPTIONS_SHOW;
+import static igentuman.nc.multiblock.fission.FissionReactorRegistration.heatsinks;
 import static igentuman.nc.util.TextUtils.__;
 import static igentuman.nc.util.TextUtils.convertToName;
 
@@ -105,8 +105,8 @@ public class HeatSinkBlock extends MultiblockBlock {
         for(String code: blocks) {
             String id = code;
             if(!id.contains(":")) {
-                id = MODID+":"+id;
-                Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(id));
+                ResourceLocation res = rl(id);
+                Block block = ForgeRegistries.BLOCKS.getValue(res);
                 names.add(block.getName().getString());
             } else {
                 names.add(convertToName(id.split(":")[1]));
@@ -120,7 +120,7 @@ public class HeatSinkBlock extends MultiblockBlock {
         if(item.toString().isEmpty()) return;
         if(item.toString().contains("empty")) return;
         type = item.toString().replace("_heat_sink", "");
-        def = FissionBlocks.heatsinks.get(type);
+        def = heatsinks.get(type);
         heat = def.getHeat();
     }
 

@@ -19,6 +19,18 @@ public class KugelblitzRecipes extends AbstractRecipeProvider {
                 "minecraft:ender_eye",
                 "minecraft:ender_pearl",
                 "minecraft:dragon_breath",
+                "#forge:raw_materials/iron",
+                "#forge:raw_materials/gold",
+                "#forge:raw_materials/copper",
+                "#forge:raw_materials/zinc",
+                "#forge:raw_materials/tungsten",
+                "#forge:raw_materials/titanium",
+                "#forge:raw_materials/tin",
+                "#forge:raw_materials/lead",
+                "#forge:raw_materials/silver",
+                "#forge:raw_materials/aluminum",
+                "#forge:raw_materials/uranium",
+                "#forge:raw_materials/thorium",
                 "#forge:ingots/iron",
                 "#forge:ingots/gold",
                 "#forge:ingots/copper",
@@ -39,8 +51,14 @@ public class KugelblitzRecipes extends AbstractRecipeProvider {
                 "#forge:gems/diamond",
                 "#forge:gems/ruby",
                 "#forge:gems/emerald",
+                "#forge:gems/lapis",
                 "#forge:gems/sapphire",
                 "#forge:gems/fluorite",
+                "#forge:dyes/blue",
+                "#forge:dyes/white",
+                "#forge:dyes/red",
+                "#forge:dyes/green",
+                "#forge:dyes/yellow",
                 "#forge:dusts/redstone",
                 "#forge:dusts/lapis",
                 "#forge:dusts/coal",
@@ -51,7 +69,9 @@ public class KugelblitzRecipes extends AbstractRecipeProvider {
         for(String name: items) {
             NcIngredient ingredient = NcIngredient.of(name);
             if(ingredient.isEmpty()) continue;
-            itemToItem(ingredient, ingredient);
+            double timeModifier = 1.0D;
+
+            itemToItem(ingredient, ingredient, timeModifier);
         }
     }
 }

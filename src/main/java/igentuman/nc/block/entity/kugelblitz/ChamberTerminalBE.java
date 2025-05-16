@@ -299,7 +299,7 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
             return;
         }
 
-        if(getLevel().getGameTime() % 2 == 0 || getLevel().random.nextInt(96) < getMultiblock().stabilizers()) {
+        if(getLevel().getGameTime() % 5 != 0 || getLevel().random.nextInt(96) < getMultiblock().stabilizers()) {
             return;
         }
 
@@ -349,10 +349,10 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
         int wasEvaporation = evaporation;
         int rate = (int) Math.max(1, energyConvertionRate * 100 / Math.log(fluxRegulators));
         if (recipeInfo().recipe() != null && !recipeInfo().isCompleted()) {
-            rate+= (int) ((100 - energyConvertionRate) * 100 / Math.log(transformers) );
+            rate+= (int) ((100 - energyConvertionRate) * 100 / Math.log(transformers));
         }
         rate = (int) Math.pow(rate, 1.2);
-        double massRatio = Math.log((double)MAX_MASS / Math.max(mass, MIN_MASS));
+        double massRatio = Math.log10((double)MAX_MASS / Math.max(mass, MIN_MASS));
         evaporation = (int)(rate * KUGELBLITZ_CONFIG.EVAPORATION_MULTIPLIER.get() * massRatio);
 
         if (blackholeStability < 20) {

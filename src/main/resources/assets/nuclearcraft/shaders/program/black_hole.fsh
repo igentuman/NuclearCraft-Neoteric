@@ -1,6 +1,7 @@
 #version 150
 
 uniform sampler2D DiffuseSampler;
+uniform sampler2D DepthSampler;
 
 in vec2 texCoord;
 in vec2 oneTexel;
@@ -9,6 +10,7 @@ uniform vec2 InSize;
 uniform vec2 BlurPos;
 uniform vec2 Radius;
 uniform vec2 BlurDir;
+uniform float BlackHoleDepth; // Add black hole depth uniform
 
 out vec4 fragColor;
 
@@ -24,6 +26,10 @@ float customSmoothstep(float edge0, float edge1, float x) {
 }
 
 void main() {
+    // Get the original pixel color and depth
+    vec4 originalColor = texture(DiffuseSampler, texCoord);
+    float originalDepth = texture(DepthSampler, texCoord).r;
+    
     // Radius.x = lens radius in pixels
     // Radius.y = magnification factor (values > 1.0 will magnify)
     float magnification = max(1.1, Radius.y); // Ensure minimum magnification
@@ -61,12 +67,15 @@ void main() {
     float innerRadius = lensRadiusUV * aspectRatio * (1.0 - featherAmount);
     float outerRadius = lensRadiusUV * aspectRatio;
     float glowRadius = outerRadius * 1.2;
-
-    // Calculate the original pixel color
-    vec4 originalColor = texture(DiffuseSampler, texCoord);
     
     // Quick exit if pixel is too far from center to be affected by any part of the effect
     if (distToCenter > glowRadius) {
+        fragColor = originalColor;
+        return;
+    }
+    
+    // If the current pixel is behind an object that's in front of the black hole, don't apply effect
+    if (originalDepth < BlackHoleDepth) {
         fragColor = originalColor;
         return;
     }
@@ -95,7 +104,9 @@ void main() {
         vec2 distortedCoord = rotatedCoord * distortionFactor;
         vec2 newTexCoord = vec2(distortedCoord.x / aspectRatio + BlurPos.x, distortedCoord.y + BlurPos.y);
 
+        // Sample the distorted position
         vec4 distortedColor = texture(DiffuseSampler, clamp(newTexCoord, 0.0, 1.0));
+        float distortedDepth = texture(DepthSampler, clamp(newTexCoord, 0.0, 1.0)).r;
 
         // Calculate darkness factor based on distance from center
         float darknessFactor = 0.0;
@@ -119,10 +130,18 @@ void main() {
             blendFactor = customSmoothstep(innerRadius * 0.9, outerRadius, distToCenter);
         }
 
-        resultColor = mix(distortedColor, originalColor, blendFactor);
+        // Only apply distortion if the distorted pixel is not behind an object
+        // In Minecraft, lower depth values are further from the camera
+        if (distortedDepth >= originalDepth || distortedDepth >= BlackHoleDepth) {
+            resultColor = mix(distortedColor, originalColor, blendFactor);
+        } else {
+            // If the distorted pixel is behind something, don't apply distortion
+            resultColor = originalColor;
+        }
     }
 
     if (glowFactor > 0.0) {
+        // Only apply glow if it doesn't interfere with objects in front
         resultColor.rgb = mix(resultColor.rgb, glowColor, glowFactor * (1.0 - distToCenter/glowRadius));
     }
 

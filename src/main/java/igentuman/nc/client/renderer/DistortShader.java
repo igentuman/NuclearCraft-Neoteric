@@ -106,6 +106,10 @@ public class DistortShader {
             pos1.z /= pos1.w;
         }
 
+        // Calculate the normalized depth value (0.0 to 1.0)
+        // In OpenGL/Minecraft, depth is in range [-1, 1] after projection, normalize to [0, 1]
+        float normalizedDepth = (pos1.z + 1.0f) * 0.5f;
+        
         // Check if in front of camera
         if (pos1.z > -1.0f && pos1.z < 1.0f) {
             // Calculate screen coordinates
@@ -128,6 +132,7 @@ public class DistortShader {
 
         effect.getUniform("BlurPos").set(blurX, blurY);
         effect.getUniform("Radius").set(radius, baseMagnification/scaleMult);
+        effect.getUniform("BlackHoleDepth").set(normalizedDepth);
         return true;
     }
 
@@ -145,15 +150,22 @@ public class DistortShader {
                 effect.getUniform("BlurDir").set(0.2f, 0.0f);
             }
 
+            // Enable depth testing but disable depth writing
+            RenderSystem.enableDepthTest();
             RenderSystem.depthMask(false);
+            
             for (BlockPos pos : blackhole.getPositions()) {
                 if(processBlackHole(mc, event, effect, pos)) {
                     blackholePostEffect.process(mc.getFrameTime());
                 }
             }
+            
             mc.getMainRenderTarget().bindWrite(false);
             blackholePostEffect.passes.get(blackholePostEffect.passes.size()-1).outTarget.bindRead();
+            
+            // Use standard depth function (GL_LEQUAL = 515)
             RenderSystem.depthFunc(515);
+            
             // Set up blending to preserve what's already in the framebuffer
             RenderSystem.enableBlend();
             RenderSystem.blendFuncSeparate(
@@ -173,6 +185,7 @@ public class DistortShader {
             bufferbuilder.vertex(0, 0, 0).uv(0, 1).endVertex();
             tesselator.end();
 
+            // Restore render state
             RenderSystem.depthFunc(515);
             RenderSystem.depthMask(true);
             RenderSystem.disableBlend();

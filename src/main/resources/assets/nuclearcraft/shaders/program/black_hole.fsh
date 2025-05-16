@@ -64,6 +64,13 @@ void main() {
 
     // Calculate the original pixel color
     vec4 originalColor = texture(DiffuseSampler, texCoord);
+    
+    // Quick exit if pixel is too far from center to be affected by any part of the effect
+    if (distToCenter > glowRadius) {
+        fragColor = originalColor;
+        return;
+    }
+    
     vec4 resultColor = originalColor;
 
     // Calculate purple glow effect that extends beyond the distortion

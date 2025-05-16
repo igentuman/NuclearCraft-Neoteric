@@ -97,7 +97,7 @@ public class BlackHoleBE extends NuclearCraftBE {
             setChanged();
             initDelay = 5;
             level.setBlockAndUpdate(worldPosition, getBlockState().setValue(ACTIVE, true));
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(ACTIVE, true), Block.UPDATE_ALL);
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(ACTIVE, true), Block.UPDATE_NEIGHBORS);
         }
         int wasDelay = initDelay;
         if (initDelay > 0) {
@@ -105,7 +105,7 @@ public class BlackHoleBE extends NuclearCraftBE {
             if (initDelay == 1) {
                 setChanged();
                 level.setBlockAndUpdate(worldPosition, getBlockState().setValue(ACTIVE, false));
-                level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(ACTIVE, false), Block.UPDATE_ALL);
+                level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(ACTIVE, false), Block.UPDATE_NEIGHBORS);
             }
         }
 

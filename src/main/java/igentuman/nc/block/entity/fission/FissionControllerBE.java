@@ -8,6 +8,7 @@ import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.SlotModePair;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.item.ItemFuel;
+import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.fission.FissionReactorMultiblock;
 import igentuman.nc.multiblock.fission.FissionReactorRegistration;
 import igentuman.nc.radiation.ItemRadiation;
@@ -379,6 +380,8 @@ public class FissionControllerBE extends MultiblockControllerBE {
         if(refreshCacheFlag || changed) {
             try {
                 assert level != null;
+                MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
+                setChanged();
                 level.setBlockAndUpdate(worldPosition, getBlockState().setValue(POWERED, powered));
                 level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(POWERED, powered), Block.UPDATE_ALL);
             } catch (NullPointerException ignored) {}

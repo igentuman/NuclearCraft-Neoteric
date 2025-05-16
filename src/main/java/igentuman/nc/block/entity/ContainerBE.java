@@ -76,7 +76,7 @@ public class ContainerBE extends NuclearCraftBE implements SideModeToggleable {
         if(wasRate != loadRate) {
             setChanged();
             level.setBlockAndUpdate(worldPosition, getBlockState());
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_NEIGHBORS);
         }
     }
 

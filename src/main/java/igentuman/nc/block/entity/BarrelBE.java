@@ -108,8 +108,9 @@ public class BarrelBE extends NuclearCraftBE implements SideModeToggleable {
             }
         }
         if(wasUpdated) {
+            setChanged();
             level.setBlockAndUpdate(worldPosition, getBlockState());
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_NEIGHBORS);
         }
     }
 
@@ -165,7 +166,7 @@ public class BarrelBE extends NuclearCraftBE implements SideModeToggleable {
             //requestModelDataUpdate();
             if(level == null) return;
             level.setBlockAndUpdate(worldPosition, getBlockState());
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_NEIGHBORS);
         }
     }
 

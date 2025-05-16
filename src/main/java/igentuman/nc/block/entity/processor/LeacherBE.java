@@ -89,8 +89,9 @@ public class LeacherBE extends NCProcessorBE {
         }
 
         if(lastState != leacherState) {
+            setChanged();
             level.setBlockAndUpdate(worldPosition, getBlockState().setValue(ACTIVE, isActive));
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(ACTIVE, isActive), Block.UPDATE_ALL);
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(ACTIVE, isActive), Block.UPDATE_NEIGHBORS);
         }
         if(leacherState == POSITION_IS_CORRECT) {
             super.tickServer();

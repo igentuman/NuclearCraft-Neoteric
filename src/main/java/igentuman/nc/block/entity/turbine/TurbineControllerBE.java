@@ -232,10 +232,12 @@ public class TurbineControllerBE extends MultiblockControllerBE {
         }
         refreshCacheFlag = !getMultiblock().isFormed()  || level.getGameTime() % 100 == 0;
         if(wasPowered != powered) {
+            setChanged();
             level.setBlockAndUpdate(worldPosition, getBlockState().setValue(POWERED, powered));
         }
         if(refreshCacheFlag || changed) {
             try {
+                setChanged();
                 level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(POWERED, powered), Block.UPDATE_ALL);
             } catch (NullPointerException ignored) {}
         }

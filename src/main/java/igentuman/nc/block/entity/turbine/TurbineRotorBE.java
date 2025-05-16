@@ -2,6 +2,7 @@ package igentuman.nc.block.entity.turbine;
 
 import igentuman.nc.block.turbine.TurbineBearingBlock;
 import igentuman.nc.block.turbine.TurbineRotorBlock;
+import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -58,6 +59,7 @@ public class TurbineRotorBE extends TurbineBE {
         BlockPos wasPos = controllerPos;
         if(wasPos != getControllerPos()) {
             controllerPos = getControllerPos();
+            MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
             level.setBlockAndUpdate(worldPosition, getBlockState().setValue(POWERED, getRotationSpeed() > 0));
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(POWERED, getRotationSpeed() > 0), Block.UPDATE_NEIGHBORS);
         }

@@ -205,7 +205,8 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
         if(refreshCacheFlag || changed) {
             try {
                 MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
-                level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(POWERED, controllerEnabled), Block.UPDATE_ALL);
+                setChanged();
+                level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(POWERED, controllerEnabled), Block.UPDATE_NEIGHBORS);
                 level.setBlockAndUpdate(worldPosition, getBlockState().setValue(POWERED, controllerEnabled));
             } catch (NullPointerException ignored) {}
         }

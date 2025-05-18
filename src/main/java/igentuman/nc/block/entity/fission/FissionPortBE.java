@@ -5,7 +5,7 @@ import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
-import igentuman.nc.multiblock.AbstractNCMultiblock;
+import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.fission.FissionReactorRegistration;
 import igentuman.nc.multiblock.fission.FissionReactorMultiblock;
@@ -222,7 +222,7 @@ public class FissionPortBE extends NuclearCraftBE implements MultiblockAttachabl
     }
 
     @Override
-    public void setMultiblock(AbstractNCMultiblock multiblock) {
+    public void setMultiblock(AbstractMultiblock multiblock) {
         this.multiblock = (FissionReactorMultiblock) multiblock;
     }
 

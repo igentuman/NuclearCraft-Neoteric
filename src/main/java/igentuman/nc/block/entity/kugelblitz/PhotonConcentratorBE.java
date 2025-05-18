@@ -3,29 +3,12 @@ package igentuman.nc.block.entity.kugelblitz;
 import igentuman.api.nc.multiblock.MultiblockAttachable;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.NuclearCraftBE;
-import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;
-import igentuman.nc.multiblock.AbstractNCMultiblock;
-import igentuman.nc.multiblock.MultiblockHandler;
+import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.kugelblitz.KugelblitzMultiblock;
 import igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import static igentuman.nc.util.ModUtil.isCcLoaded;
 
 public class PhotonConcentratorBE extends NuclearCraftBE implements MultiblockAttachable {
 
@@ -41,7 +24,7 @@ public class PhotonConcentratorBE extends NuclearCraftBE implements MultiblockAt
     }
 
     @Override
-    public void setMultiblock(AbstractNCMultiblock multiblock) {
+    public void setMultiblock(AbstractMultiblock multiblock) {
         this.multiblock = (KugelblitzMultiblock) multiblock;
     }
 

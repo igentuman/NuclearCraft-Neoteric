@@ -4,7 +4,7 @@ import igentuman.api.nc.multiblock.MultiblockAttachable;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;
-import igentuman.nc.multiblock.AbstractNCMultiblock;
+import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.kugelblitz.KugelblitzMultiblock;
 import igentuman.nc.util.annotation.NBTField;
@@ -55,7 +55,7 @@ public class ChamberPortBE extends NuclearCraftBE implements MultiblockAttachabl
     }
 
     @Override
-    public void setMultiblock(AbstractNCMultiblock multiblock) {
+    public void setMultiblock(AbstractMultiblock multiblock) {
         this.multiblock = (KugelblitzMultiblock) multiblock;
     }
 

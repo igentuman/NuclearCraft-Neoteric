@@ -8,6 +8,8 @@ import igentuman.nc.client.block.turbine.TurbineRotorRenderer;
 import igentuman.nc.client.gui.FusionCoreScreen;
 import igentuman.nc.client.gui.RedstoneDimmerScreen;
 import igentuman.nc.client.gui.StorageContainerScreen;
+import igentuman.nc.client.gui.accelerator.AcceleratorPortScreen;
+import igentuman.nc.client.gui.accelerator.LinearAcceleratorControllerScreen;
 import igentuman.nc.client.gui.fission.FissionPortScreen;
 import igentuman.nc.client.gui.kugelblitz.ChamberPortScreen;
 import igentuman.nc.client.gui.kugelblitz.ChamberTerminalScreen;
@@ -55,6 +57,8 @@ import igentuman.nc.client.renderer.BlackholeRenderer;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
+import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_PORT_CONTAINER;
+import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.LINEAR_ACCELERATOR_CONTROLLER_CONTAINER;
 import static igentuman.nc.multiblock.fission.FissionReactorRegistration.FISSION_CONTROLLER_CONTAINER;
 import static igentuman.nc.multiblock.fission.FissionReactorRegistration.FISSION_PORT_CONTAINER;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BE;
@@ -88,6 +92,8 @@ public class ClientSetup {
             MenuScreens.register(CHAMBER_PORT_CONTAINER.get(), ChamberPortScreen::new);
             MenuScreens.register(CHAMBER_TERMINAL_CONTAINER.get(), ChamberTerminalScreen::new);
             MenuScreens.register(REDSTONE_DIMMER_CONTAINER.get(), RedstoneDimmerScreen::new);
+            MenuScreens.register(LINEAR_ACCELERATOR_CONTROLLER_CONTAINER.get(), LinearAcceleratorControllerScreen::new);
+            MenuScreens.register(ACCELERATOR_PORT_CONTAINER.get(), AcceleratorPortScreen::new);
 
             for(String name: NCProcessors.PROCESSORS_CONTAINERS.keySet()) {
                 MenuScreens.register(NCProcessors.PROCESSORS_CONTAINERS.get(name).get(), Processors.all().get(name).getScreenConstructor());

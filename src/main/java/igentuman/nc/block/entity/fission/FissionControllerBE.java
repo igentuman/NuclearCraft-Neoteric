@@ -380,7 +380,6 @@ public class FissionControllerBE extends MultiblockControllerBE {
         if(refreshCacheFlag || changed) {
             try {
                 assert level != null;
-                MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
                 setChanged();
                 level.setBlockAndUpdate(worldPosition, getBlockState().setValue(POWERED, powered));
                 level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(POWERED, powered), Block.UPDATE_ALL);
@@ -410,40 +409,6 @@ public class FissionControllerBE extends MultiblockControllerBE {
         return (FissionReactorMultiblock) multiblock;
     }
 
-    private int delay = 20;
-
-    private void handleValidation() {
-        boolean wasFormed = getMultiblock().isFormed();
-        boolean assembled = wasFormed && isInternalValid && isCasingValid;
-        if (
-                (!assembled && getLevel().getGameTime() % delay == 0)
-                || (assembled && getLevel().getGameTime() % (delay* 8L) == 0 && hasRecipe())
-        ) {
-            Random rand = new Random(getBlockPos().asLong());
-            delay = rand.nextInt(80) + 80;
-
-            getMultiblock().validate();
-            isCasingValid = getMultiblock().isOuterValid();
-            if(isCasingValid) {
-                isInternalValid = getMultiblock().isInnerValid();
-            }
-            powered = false;
-            changed = true;
-            height = getMultiblock().height();
-            width = getMultiblock().width();
-            depth = getMultiblock().depth();
-            if(
-                    getMultiblock().isFormed()
-                    && contentHandler().fluidCapability.tanks.get(0).getCapacity() != 5000*height*width*depth
-            ) {
-                contentHandler().fluidCapability.tanks.get(0).setCapacity(5000*height*width*depth);
-                contentHandler().fluidCapability.tanks.get(1).setCapacity(5000*height*width*depth);
-            }
-        }
-
-        trackChanges(wasFormed, getMultiblock().isFormed());
-    }
-
     @Override
     public boolean canInvalidateCache() {
         return false;
@@ -464,12 +429,8 @@ public class FissionControllerBE extends MultiblockControllerBE {
                 }
             }
 
-            //1 mRad per fuel cell
             RadiationManager.get(getLevel()).addRadiation(getLevel(), 100000*fuelCellsCount, getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
             setRemoved();
-            //at any case if reactor still works we punish player
-            //heat = getMaxHeat();
-            //energyStorage.setEnergy((int) (energyStorage.getEnergyStored() - calculateEnergy()));
         }
 
     }

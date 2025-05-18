@@ -46,15 +46,16 @@ public class AcceleratorConfig {
                     .comment("Accelerators size scale.")
                     .comment("Defines size range for accelerators and affects calculations.")
                     .comment("Size chart according to the scale:")
-                    .comment("1 - min size = 5, max size = 250")
-                    .comment("2 - min size = 500, max size = 5000")
-                    .comment("3 - min size = 1000, max size = 10000")
+                    .comment("1 - min size = 6, max size = 100")
+                    .comment("2 - min size = 60, max size = 1000")
+                    .comment("3 - min size = 600, max size = 10000")
                     .defineInRange("scale_preset", 1, 1, 3);
 
             BEAM_ATTENUATION_RATE = builder
                     .comment("Beam attenuation rate.")
                     .comment("Defines how much focus is lost per block in the beamline.")
                     .comment("Default value is 0.02, which means 2% energy loss per block.")
+                    .comment("It also depends on scale preset")
                     .defineInRange("beam_attenuation_rate", 0.02, 0.0, 1.0);
 
             BEAM_SCALING = builder

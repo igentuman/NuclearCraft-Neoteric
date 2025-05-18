@@ -1,9 +1,10 @@
 package igentuman.nc.multiblock.kugelblitz;
 
+import igentuman.api.nc.multiblock.MultiblockAttachable;
 import igentuman.nc.block.entity.kugelblitz.BlackHoleBE;
 import igentuman.nc.block.entity.kugelblitz.ChamberTerminalBE;
 import igentuman.nc.block.entity.kugelblitz.PhotonConcentratorBE;
-import igentuman.nc.multiblock.AbstractNCMultiblock;
+import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.ValidationResult;
 import igentuman.nc.util.NCBlockPos;
@@ -22,7 +23,7 @@ import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLI
 import static igentuman.nc.util.TagUtil.getBlocksByTagKey;
 import static net.minecraft.world.level.block.Blocks.AIR;
 
-public class KugelblitzMultiblock extends AbstractNCMultiblock {
+public class KugelblitzMultiblock extends AbstractMultiblock {
 
     private ChamberTerminalBE controllerBe;
     private final HashMap<Direction, Long> pulseEnergy = new HashMap<>();
@@ -64,7 +65,7 @@ public class KugelblitzMultiblock extends AbstractNCMultiblock {
     }
 
     @Override
-    protected Direction getFacing() {
+    protected Direction getControllerDirection() {
         return controllerBE().getFacing();
     }
 
@@ -72,6 +73,12 @@ public class KugelblitzMultiblock extends AbstractNCMultiblock {
         super(getBlocksByTagKey(CASING_BLOCKS.location().toString()), List.of(KUGELBLITZ_BLOCKS.get("black_hole").get(), AIR), new KugelblitzController(be));
         id = "chamber_"+be.getBlockPos().toShortString();
         MultiblockHandler.get(be.getLevel().dimension()).addMultiblock(this);
+    }
+
+    @Override
+    public void onControllerRemoved() {
+        removeBlackHole();
+        super.onControllerRemoved();
     }
 
     @Override
@@ -131,7 +138,7 @@ public class KugelblitzMultiblock extends AbstractNCMultiblock {
             left = i;
         }
         int forward = depth() == 8 ? -4 : -3;
-        BlockPos l = getLeftPos(left-2).relative(getFacing(), forward);
+        BlockPos l = getLeftPos(left-2).relative(getControllerDirection(), forward);
         BlockPos topCenter = new BlockPos(l.getX(), topY, l.getZ());
         if(!(getLevel().getExistingBlockEntity(topCenter) instanceof PhotonConcentratorBE)) {
             validationResult = ValidationResult.PHOTON_CONCENTRATOR;
@@ -406,6 +413,7 @@ public class KugelblitzMultiblock extends AbstractNCMultiblock {
     }
 
     public void removeBlackHole() {
+        getLevel().setBlock(getCenter(), AIR.defaultBlockState(), 3);
         blackHole = null;
     }
 }

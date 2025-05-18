@@ -1,6 +1,6 @@
 package igentuman.nc.container;
 
-import igentuman.nc.block.entity.turbine.TurbinePortBE;
+import igentuman.nc.block.entity.accelerator.AcceleratorPortBE;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -20,23 +20,23 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 
 import static igentuman.nc.NuclearCraft.MODID;
-import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
-import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_PORT_CONTAINER;
+import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
+import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_PORT_CONTAINER;
 import static igentuman.nc.util.TextUtils.__;
 
 public class AcceleratorPortContainer extends AbstractContainerMenu {
 
-    protected final TurbinePortBE portBE;
+    protected final AcceleratorPortBE portBE;
     protected final Player playerEntity;
-    protected final String name = "turbine_port";
+    protected final String name = "accelerator_port";
     private int slotIndex = 0;
     protected final IItemHandler playerInventory;
 
     public AcceleratorPortContainer(int pContainerId, BlockPos pos, Inventory playerInventory) {
-        super(TURBINE_PORT_CONTAINER.get(), pContainerId);
+        super(ACCELERATOR_PORT_CONTAINER.get(), pContainerId);
         this.playerEntity = playerInventory.player;
         this.playerInventory =  new InvWrapper(playerInventory);
-        portBE = (TurbinePortBE) playerEntity.getCommandSenderWorld().getBlockEntity(pos);
+        portBE = (AcceleratorPortBE) playerEntity.getCommandSenderWorld().getBlockEntity(pos);
         layoutPlayerInventorySlots();
     }
 
@@ -91,7 +91,7 @@ public class AcceleratorPortContainer extends AbstractContainerMenu {
         return stillValid(
                 ContainerLevelAccess.create(Objects.requireNonNull(portBE.getLevel()), portBE.getBlockPos()),
                 playerEntity,
-                TURBINE_BLOCKS.get(name).get()
+                ACCELERATOR_BLOCKS.get(name).get()
         );
     }
 

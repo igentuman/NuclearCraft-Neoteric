@@ -243,6 +243,14 @@ public class BlockOverlayHandler {
         renderTypeBuffer.endBatch(RenderType.lines());
     }
 
+    public static void removeFromOutline(NCBlockPos pos, boolean instant) {
+        if (instant) {
+            outlineBlocks.remove(pos);
+        } else {
+            removeFromOutline(pos);
+        }
+    }
+
     public void addQuad(Matrix4f matrixPos, Matrix3f matrixNormal, VertexConsumer renderBuffer,
                         Vector3f blpos, Vector3f brpos, Vector3f trpos, Vector3f tlpos,
                         Vec2 blUVpos, Vec2 brUVpos, Vec2 trUVpos, Vec2 tlUVpos,

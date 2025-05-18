@@ -2,14 +2,13 @@ package igentuman.nc.block.entity.processor;
 
 import igentuman.nc.block.entity.fission.FissionControllerBE;
 import igentuman.nc.content.processors.Processors;
-import igentuman.nc.multiblock.AbstractNCMultiblock;
+import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.api.nc.multiblock.MultiblockAttachable;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.radiation.data.RadiationManager;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.type.NcRecipe;
-import igentuman.nc.util.CustomEnergyStorage;
 import igentuman.nc.util.annotation.NBTField;
 import igentuman.nc.util.annotation.NothingNullByDefault;
 import net.minecraft.core.BlockPos;
@@ -19,7 +18,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class IrradiatorBE extends NCProcessorBE implements MultiblockAttachable {
 
-    private AbstractNCMultiblock multiblock;
+    private AbstractMultiblock multiblock;
     private FissionControllerBE controller;
     @NBTField
     public int irradiativeFlux = 0;
@@ -38,7 +37,7 @@ public class IrradiatorBE extends NCProcessorBE implements MultiblockAttachable 
     }
 
     @Override
-    public void setMultiblock(AbstractNCMultiblock multiblock) {
+    public void setMultiblock(AbstractMultiblock multiblock) {
         this.multiblock = multiblock;
         if (multiblock != null) {
             if(multiblock.controller() != null) {
@@ -55,7 +54,7 @@ public class IrradiatorBE extends NCProcessorBE implements MultiblockAttachable 
     }
 
     @Override
-    public AbstractNCMultiblock getMultiblock() {
+    public AbstractMultiblock getMultiblock() {
         return multiblock;
     }
 
@@ -120,7 +119,7 @@ public class IrradiatorBE extends NCProcessorBE implements MultiblockAttachable 
     @Deprecated
     public void upadteMultiblockConnection()
     {
-        AbstractNCMultiblock mb = MultiblockHandler.get(level.dimension()).getMultiblockByPos(getBlockPos());
+        AbstractMultiblock mb = MultiblockHandler.get(level.dimension()).getMultiblockByPos(getBlockPos());
         if(mb != null) {
             if(mb.isFormed()) {
                 if(mb.controller() != null) {

@@ -1,14 +1,10 @@
 package igentuman.nc.block.entity.kugelblitz;
 
 import igentuman.nc.block.entity.NuclearCraftBE;
-import igentuman.nc.block.entity.fusion.FusionCoreProxyBE;
 import igentuman.nc.client.particle.FusionBeamParticleData;
-import igentuman.nc.multiblock.AbstractNCMultiblock;
-import igentuman.nc.multiblock.MultiblockHandler;
+import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.kugelblitz.KugelblitzMultiblock;
-import igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration;
 import igentuman.nc.util.CustomEnergyStorage;
-import igentuman.nc.util.NCBlockPos;
 import igentuman.nc.util.annotation.NBTField;
 import mekanism.api.math.FloatingLong;
 import net.minecraft.core.BlockPos;
@@ -22,13 +18,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.registries.ForgeRegistries;
 
-import static igentuman.nc.block.fission.FissionControllerBlock.POWERED;
 import static igentuman.nc.handler.config.KugelblitzConfig.KUGELBLITZ_CONFIG;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.EXPL_BE;
 import static igentuman.nc.setup.registration.NCSounds.LASER_SHOOT;
-import static igentuman.nc.util.ModUtil.isMekanismLoaded;
+import static igentuman.nc.util.ModUtil.isMekanismGeneratorsLoaded;
 import static net.minecraft.world.level.block.DirectionalBlock.FACING;
 
 public class EXPLBE extends NuclearCraftBE {
@@ -186,7 +180,7 @@ public class EXPLBE extends NuclearCraftBE {
             BlockPos pos = getBlockPos().relative(getFacing(), i);
             BlockEntity be = level.getExistingBlockEntity(pos);
             if (be instanceof PhotonConcentratorBE photonConcentrator) {
-                AbstractNCMultiblock multiblock = photonConcentrator.getMultiblock();
+                AbstractMultiblock multiblock = photonConcentrator.getMultiblock();
                 if (multiblock instanceof KugelblitzMultiblock kugelblitzMultiblock) {
                     BlockPos center = kugelblitzMultiblock.getCenter();
                     for(Direction direction : Direction.values()) {
@@ -226,13 +220,13 @@ public class EXPLBE extends NuclearCraftBE {
             BlockPos pos = getBlockPos().relative(getFacing(), i);
             BlockEntity be = level.getExistingBlockEntity(pos);
             if (be instanceof PhotonConcentratorBE photonConcentrator) {
-                AbstractNCMultiblock multiblock = photonConcentrator.getMultiblock();
+                AbstractMultiblock multiblock = photonConcentrator.getMultiblock();
                 if (multiblock instanceof KugelblitzMultiblock kugelblitzMultiblock) {
                     kugelblitzMultiblock.addPulseEnergy(aggregatedEnergy, getFacing());
                     break;
                 }
             }
-            if (isMekanismLoaded() && be instanceof mekanism.generators.common.tile.fusion.TileEntityLaserFocusMatrix matrixBe) {
+            if (isMekanismGeneratorsLoaded() && be instanceof mekanism.generators.common.tile.fusion.TileEntityLaserFocusMatrix matrixBe) {
                 matrixBe.receiveLaserEnergy(FloatingLong.create(aggregatedEnergy / 10));
                 break;
             }

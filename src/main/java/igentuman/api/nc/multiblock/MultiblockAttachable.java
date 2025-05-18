@@ -1,13 +1,13 @@
 package igentuman.api.nc.multiblock;
 
-import igentuman.nc.multiblock.AbstractNCMultiblock;
+import igentuman.nc.multiblock.AbstractMultiblock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
-public interface MultiblockAttachable<M extends AbstractNCMultiblock, BE extends BlockEntity> {
+public interface MultiblockAttachable<M extends AbstractMultiblock, BE extends BlockEntity> {
 
     /**
      * Sets the multiblock instance for this block

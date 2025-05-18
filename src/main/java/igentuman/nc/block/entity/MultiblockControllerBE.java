@@ -4,7 +4,7 @@ import igentuman.api.nc.multiblock.MultiblockAttachable;
 import igentuman.nc.handler.event.client.BlockOverlayHandler;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
-import igentuman.nc.multiblock.AbstractNCMultiblock;
+import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.ValidationResult;
 import igentuman.nc.util.CustomEnergyStorage;
@@ -17,9 +17,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 
-import static igentuman.nc.NuclearCraft.debugLog;
-
-public class MultiblockControllerBE extends NuclearCraftBE implements MultiblockAttachable<AbstractNCMultiblock, MultiblockControllerBE> {
+public class MultiblockControllerBE extends NuclearCraftBE implements MultiblockAttachable<AbstractMultiblock, MultiblockControllerBE> {
 
     @NBTField
     public int height = 1;
@@ -33,7 +31,7 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
     public boolean isInternalValid = false;
     public boolean refreshCacheFlag = true;
     public byte validationRuns = 0;
-    protected AbstractNCMultiblock multiblock;
+    protected AbstractMultiblock multiblock;
     public BlockPos errorBlockPos = BlockPos.ZERO;
     public ValidationResult validationResult = ValidationResult.INCOMPLETE;
     public boolean controllerEnabled = false;
@@ -43,7 +41,7 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
     }
 
     @Override
-    public void setMultiblock(AbstractNCMultiblock multiblock) {
+    public void setMultiblock(AbstractMultiblock multiblock) {
         this.multiblock = multiblock;
     }
 
@@ -53,7 +51,7 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
     }
 
     @Override
-    public AbstractNCMultiblock getMultiblock() {
+    public AbstractMultiblock getMultiblock() {
         return multiblock;
     }
 
@@ -64,9 +62,6 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
 
     public void invalidateCache()
     {
-        getMultiblock().refreshInnerCacheFlag = true;
-        getMultiblock().refreshOuterCacheFlag = true;
-        getMultiblock().isFormed = false;
         getMultiblock().hasToRefresh = true;
         isCasingValid = false;
         isInternalValid = false;
@@ -144,6 +139,21 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
         }
     }
 
+    protected void handleValidation() {
+        boolean wasFormed = isInternalValid && isCasingValid;
+        validationResult = getMultiblock().validationResult;
+        if(!errorBlockPos.equals(getMultiblock().errorBlockPos)) {
+            errorBlockPos = getMultiblock().errorBlockPos;
+            changed = true;
+        }
+        isInternalValid = getMultiblock().isInnerValid();
+        isCasingValid = getMultiblock().isOuterValid();
+        height = getMultiblock().height();
+        width = getMultiblock().width();
+        depth = getMultiblock().depth();
+        trackChanges(wasFormed, getMultiblock().isFormed());
+    }
+
     @Override
     public void setChanged() {
         MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
@@ -174,7 +184,11 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
         if (tag.contains("Info")) {
             CompoundTag infoTag = tag.getCompound("Info");
             if (!isCasingValid || !isInternalValid) {
-                errorBlockPos = BlockPos.of(infoTag.getLong("erroredBlock"));
+                BlockPos tmp = BlockPos.of(infoTag.getLong("erroredBlock"));
+                if(!tmp.equals(errorBlockPos) && level.isClientSide()) {
+                    BlockOverlayHandler.removeFromOutline(NCBlockPos.copy(errorBlockPos), true);
+                }
+                errorBlockPos = tmp;
                 validationResult = ValidationResult.byId(infoTag.getInt("validationId"));
             } else {
                 validationResult = ValidationResult.VALID;

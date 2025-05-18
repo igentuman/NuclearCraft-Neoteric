@@ -20,15 +20,16 @@ import java.util.regex.Pattern;
 
 import static igentuman.nc.NuclearCraft.debugLog;
 
-public abstract class AbstractNCMultiblock implements Multiblock {
+public abstract class AbstractMultiblock implements Multiblock {
 
     public boolean hasToRefresh = true;
+    public BlockPos errorBlockPos = BlockPos.ZERO;
     protected int refreshCooldown = 20;
     protected int height;
     protected int width;
     protected int depth;
     protected MultiblockController controller;
-    public ValidationResult validationResult;
+    public ValidationResult validationResult = ValidationResult.INCOMPLETE;
     public String id;
     public int topCasing = 0;
     public int bottomCasing = 0;
@@ -37,9 +38,7 @@ public abstract class AbstractNCMultiblock implements Multiblock {
     protected NCBlockPos bottomLeft;
     protected NCBlockPos topRight;
     protected boolean outerValid = false;
-    public boolean refreshOuterCacheFlag = true;
-    public boolean refreshInnerCacheFlag = true;
-    public boolean isFormed = false;
+    protected boolean isFormed = false;
     protected boolean innerValid = false;
     protected final List<Block> validOuterBlocks;
     protected final List<Block> validInnerBlocks;
@@ -47,15 +46,17 @@ public abstract class AbstractNCMultiblock implements Multiblock {
     protected final HashMap<Long, BlockEntity> beCache = new HashMap<>();
     protected final HashMap<Long, BlockState> bsCache = new HashMap<>();
     protected final List<BlockPos> allBlocks = new ArrayList<>();
-    protected BlockPos controllerPos;
+    protected NCBlockPos controllerPos;
+    protected NCBlockPos initialPos;
+    protected Direction multiblockDirection;
     private static final Pattern SPECIAL_BLOCKS = Pattern.compile(".*(fusion_proxy|fusion_core|controller|port|irradiator|rotor|chamber_terminal).*");
     private static final Pattern CONTROLLERS = Pattern.compile(".*(controller|terminal).*");
 
-    protected AbstractNCMultiblock(List<Block> validOuterBlocks, List<Block> validInnerBlocks, MultiblockController controller) {
+    protected AbstractMultiblock(List<Block> validOuterBlocks, List<Block> validInnerBlocks, MultiblockController controller) {
         this.validOuterBlocks = validOuterBlocks;
         this.validInnerBlocks = validInnerBlocks;
         this.controller = controller;
-        controllerPos = controller().controllerBE().getBlockPos();
+        controllerPos = NCBlockPos.of(controller().controllerBE().getBlockPos());
     }
 
     public void dispose() {
@@ -111,39 +112,42 @@ public abstract class AbstractNCMultiblock implements Multiblock {
         return controller().controllerBE().getLevel();
     }
 
-    protected BlockPos controllerPos() {
+    protected NCBlockPos initialPos() {
         if (controllerPos == null) {
-            controllerPos = controller().controllerBE().getBlockPos();
+            controllerPos = NCBlockPos.copy(controller().controllerBE().getBlockPos());
         }
-        return  NCBlockPos.of(controllerPos);
+        if (initialPos == null) {
+            initialPos = NCBlockPos.copy(controllerPos);
+        }
+        return initialPos.revert();
     }
 
     public BlockPos getBottomLeftBlock() {
-        if (controllerPos instanceof NCBlockPos) {
-            ((NCBlockPos) controllerPos).revert();
+        if (controllerPos != null) {
+            controllerPos.revert();
         }
-        return getLeftPos(leftCasing).below(bottomCasing).relative(getFacing(), -depth+1);
+        return new BlockPos(getLeftPos(leftCasing).below(bottomCasing).relative(getControllerDirection(), -depth+1));
     }
 
     public BlockPos getBottomLeftInnerBlock() {
-        if (controllerPos instanceof NCBlockPos) {
-            ((NCBlockPos) controllerPos).revert();
+        if (controllerPos != null) {
+            controllerPos.revert();
         }
-        return new BlockPos(getLeftPos(leftCasing-1).below(bottomCasing-1).relative(getFacing(), -depth+2));
+        return new BlockPos(getLeftPos(leftCasing-1).below(bottomCasing-1).relative(getControllerDirection(), -depth+2));
     }
 
     public BlockPos getTopRightBlock() {
-        if (controllerPos instanceof NCBlockPos) {
-            ((NCBlockPos) controllerPos).revert();
+        if (controllerPos != null) {
+            controllerPos.revert();
         }
-        return getRightPos(rightCasing).above(topCasing);
+        return new BlockPos(getRightPos(rightCasing).above(topCasing));
     }
 
     public BlockPos getTopRightInnerBlock() {
-        if (controllerPos instanceof NCBlockPos) {
-            ((NCBlockPos) controllerPos).revert();
+        if (controllerPos != null) {
+            controllerPos.revert();
         }
-        return new BlockPos(getRightPos(rightCasing-1).above(topCasing-1).relative(getFacing(), -1));
+        return new BlockPos(getRightPos(rightCasing-1).above(topCasing-1).relative(getControllerDirection(), -1));
     }
 
     public BlockPos getCenterBlock() {
@@ -197,20 +201,20 @@ public abstract class AbstractNCMultiblock implements Multiblock {
     public int resolveHeight()
     {
         for (int i = 1; i < maxHeight(); i++) {
-            if (!isValidForOuter(controllerPos().above(i))) {
+            if (!isValidForOuter(initialPos().above(i))) {
                 topCasing = i - 1;
                 height = i;
                 break;
             }
-            updateDimensions(controllerPos().above(i));
+            updateDimensions(initialPos().above(i));
         }
         for (int i = 1; i < maxHeight(); i++) {
-            if (!isValidForOuter(controllerPos().below(i))) {
+            if (!isValidForOuter(initialPos().below(i))) {
                 bottomCasing = i - 1;
                 height += i - 1;
                 break;
             }
-            updateDimensions(controllerPos().below(i));
+            updateDimensions(initialPos().below(i));
         }
 
         return height;
@@ -219,20 +223,20 @@ public abstract class AbstractNCMultiblock implements Multiblock {
     public int resolveWidth()
     {
         for(int i = 1; i<maxWidth(); i++) {
-            if (!isValidForOuter(getLeftPos(i))) {
+            if (!isValidForOuter(getLeftPos(i).above(topCasing))) {
                 leftCasing = i-1;
                 width = i;
+                updateDimensions(getLeftPos(i-1).above(topCasing));
                 break;
             }
-            updateDimensions(getLeftPos(i));
         }
         for(int i = 1; i<maxWidth(); i++) {
-            if (!isValidForOuter(getRightPos(i))) {
+            if (!isValidForOuter(getRightPos(i).above(topCasing))) {
                 rightCasing = i-1;
                 width += i-1;
+                updateDimensions(getRightPos(i-1).above(topCasing));
                 break;
             }
-            updateDimensions(getRightPos(i));
         }
         return width;
     }
@@ -251,7 +255,7 @@ public abstract class AbstractNCMultiblock implements Multiblock {
 
     public void resolveDimensions()
     {
-        if (getFacing() ==null)  return;
+        if (getMultiblockDirection() == null)  return;
         resolveHeight();
         resolveDepth();
         resolveWidth();
@@ -259,7 +263,7 @@ public abstract class AbstractNCMultiblock implements Multiblock {
 
     @Override
     public void validateOuter() {
-
+        outerValid = false;
         resolveDimensions();
         if (width < minWidth() || height < minHeight() || depth < minDepth())
         {
@@ -275,20 +279,20 @@ public abstract class AbstractNCMultiblock implements Multiblock {
             for(int x = 0; x < width; x++) {
                 for (int z = 0; z < depth; z++) {
                     if (y == 0 || x == 0 || z == 0 || y == height-1 || x == width-1 || z == depth-1) {
-                        if (!isValidForOuter(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getFacing(), -z))) {
+                        if (!isValidForOuter(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getControllerDirection(), -z))) {
                             validationResult = ValidationResult.WRONG_OUTER;
-                            controller().setErroredBlock(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getFacing(), -z));
+                            errorBlockPos = new BlockPos(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getControllerDirection(), -z));
                             return;
                         }
-                        processOuterBlock(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getFacing(), -z));
+                        processOuterBlock(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getControllerDirection(), -z));
                         //validate corner blocks
                         if (((y == 0 || y == height-1) && (z == 0 || z == depth - 1))
                         || ((y == 0 || y == height-1) && (x == 0 || x == width - 1))
                         || ((z == 0 || z == depth-1) && (x == 0 || x == width - 1))
                         ) {
-                            if (!isValidCorner(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getFacing(), -z))) {
+                            if (!isValidCorner(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getControllerDirection(), -z))) {
                                 validationResult = ValidationResult.WRONG_CORNER;
-                                controller().setErroredBlock(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getFacing(), -z));
+                                errorBlockPos = new BlockPos(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getControllerDirection(), -z));
                                 return;
                             }
                         }
@@ -300,6 +304,7 @@ public abstract class AbstractNCMultiblock implements Multiblock {
             validationResult = ValidationResult.TOO_MANY_CONTROLLERS;
             return;
         }
+        outerValid = true;
         validationResult = ValidationResult.VALID;
     }
 
@@ -332,25 +337,21 @@ public abstract class AbstractNCMultiblock implements Multiblock {
     }
 
     public void validateInner() {
-
-        if (!outerValid) {
-            invalidateStats();
-            return;
-        }
+        innerValid = false;
         for(int y = 1; y < resolveHeight()-1; y++) {
             for(int x = 1; x < resolveWidth()-1; x++) {
                 for (int z = 1; z < resolveDepth()-1; z++) {
-                    NCBlockPos toCheck = new NCBlockPos(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getFacing(), -z));
+                    NCBlockPos toCheck = new NCBlockPos(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getControllerDirection(), -z));
                     if (!isValidForInner(toCheck)) {
                         validationResult = ValidationResult.WRONG_INNER;
-                        controller().setErroredBlock(toCheck);
+                        errorBlockPos = new BlockPos(toCheck);
                         return;
                     }
                     processInnerBlock(toCheck.copy());
                 }
             }
         }
-
+        innerValid = true;
         validationResult =  ValidationResult.VALID;
     }
 
@@ -396,7 +397,7 @@ public abstract class AbstractNCMultiblock implements Multiblock {
     }
 
     public BlockPos getForwardPos(int i) {
-        return controllerPos().relative(getFacing(), -i);
+        return initialPos().relative(getControllerDirection(), -i);
     }
 
     public BlockPos getLeftPos(int i)
@@ -410,29 +411,34 @@ public abstract class AbstractNCMultiblock implements Multiblock {
     }
 
     public BlockPos getSidePos(int i) {
-        return switch (getFacing().ordinal()) {
-            case 3 -> controllerPos().east(i);
-            case 5 -> controllerPos().north(i);
-            case 2 -> controllerPos().west(i);
-            case 4 -> controllerPos().south(i);
+        return switch (getMultiblockDirection().ordinal()) {
+            case 3 -> initialPos().revert().east(i);
+            case 5 -> initialPos().revert().north(i);
+            case 2 -> initialPos().revert().west(i);
+            case 4 -> initialPos().revert().south(i);
             default -> null;
         };
     }
 
-    protected abstract Direction getFacing();
+    protected abstract Direction getControllerDirection();
+
+    protected Direction getMultiblockDirection() {
+        if(multiblockDirection == null) {
+            multiblockDirection = getControllerDirection();
+        }
+        return multiblockDirection;
+    }
 
     @Override
     public void validate() {
         topRight = null;
         bottomLeft = null;
         validationResult = ValidationResult.INCOMPLETE;
-        refreshOuterCacheFlag = true;
-        refreshInnerCacheFlag = true;
         allBlocks.clear();
         controllers.clear();
         bsCache.clear();
         beCache.clear();
-
+        validateOuter();
         if (isOuterValid()) {
             validateInner();
         } else{
@@ -445,24 +451,15 @@ public abstract class AbstractNCMultiblock implements Multiblock {
         } else {
             controller.clearStats();
         }
-        debugLog("NC multiblock was validated at " + controllerPos().toShortString());
+        hasToRefresh = !isFormed;
+        debugLog("NC multiblock was validated at " + initialPos().toShortString() + " " + getLevel().getGameTime() + " " + validationResult);
     }
 
     public boolean isInnerValid() {
-        if (refreshInnerCacheFlag) {
-            validateInner();
-            refreshInnerCacheFlag = !validationResult.isValid;
-            innerValid = validationResult.isValid;
-        }
         return innerValid;
     }
 
     public boolean isOuterValid() {
-        if (refreshOuterCacheFlag) {
-            validateOuter();
-            refreshOuterCacheFlag = !validationResult.isValid;
-            outerValid = validationResult.isValid;
-        }
         return outerValid;
     }
 
@@ -493,16 +490,19 @@ public abstract class AbstractNCMultiblock implements Multiblock {
         }
         return true;
     }
+    boolean canTick = true;
 
     public void tick() {
+        if(!canTick) return;
+
         if (!hasToRefresh) {
             return;
         }
-        if(refreshCooldown-- >= 0) {;
+        if(refreshCooldown-- >= 0) {
             return;
         }
-        refreshOuterCacheFlag = true;
-        refreshInnerCacheFlag = true;
+        canTick = false;
+
         validationResult = ValidationResult.INCOMPLETE;
         innerValid = false;
         outerValid = false;
@@ -510,7 +510,9 @@ public abstract class AbstractNCMultiblock implements Multiblock {
         hasToRefresh = false;
         beCache.clear();
         bsCache.clear();
-        refreshCooldown = 20;
+        refreshCooldown = 10;
+        validate();
+        canTick = true;
     }
 
     public void onBlockDestroyed(BlockState state, Level level, BlockPos pos, Explosion explosion) {
@@ -571,5 +573,9 @@ public abstract class AbstractNCMultiblock implements Multiblock {
 
     public boolean containsPos(BlockPos pos) {
         return allBlocks.contains(pos);
+    }
+
+    public boolean isValidForTicking() {
+        return controller() != null && controller().controllerBE() != null;
     }
 }

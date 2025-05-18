@@ -1,8 +1,7 @@
 package igentuman.nc.block.accelerator;
 
 import igentuman.nc.block.entity.accelerator.LinearAcceleratorControllerBE;
-import igentuman.nc.block.entity.kugelblitz.ChamberTerminalBE;
-import igentuman.nc.container.ChamberTerminalContainer;
+import igentuman.nc.container.LinearAcceleratorContainer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -39,7 +38,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BE;
-import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BE;
 import static igentuman.nc.util.TextUtils.__;
 
 public class LinearAcceleratorControllerBlock extends HorizontalDirectionalBlock implements EntityBlock {
@@ -83,7 +81,7 @@ public class LinearAcceleratorControllerBlock extends HorizontalDirectionalBlock
         if (!level.isClientSide()) {
             BlockEntity be = level.getExistingBlockEntity(pos);
 
-            if (be instanceof ChamberTerminalBE)  {
+            if (be instanceof LinearAcceleratorControllerBE)  {
                 MenuProvider containerProvider = new MenuProvider() {
                     @Override
                     public Component getDisplayName() {
@@ -92,7 +90,7 @@ public class LinearAcceleratorControllerBlock extends HorizontalDirectionalBlock
 
                     @Override
                     public AbstractContainerMenu createMenu(int windowId, @NotNull Inventory playerInventory, @NotNull Player playerEntity) {
-                            return new ChamberTerminalContainer(windowId, pos, playerInventory);
+                            return new LinearAcceleratorContainer(windowId, pos, playerInventory);
                     }
                 };
                 NetworkHooks.openScreen((ServerPlayer) player, containerProvider, be.getBlockPos());

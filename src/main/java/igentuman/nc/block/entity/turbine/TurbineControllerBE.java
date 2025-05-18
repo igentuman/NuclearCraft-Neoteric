@@ -245,6 +245,15 @@ public class TurbineControllerBE extends MultiblockControllerBE {
         controllerEnabled = false;
     }
 
+    @Override
+    protected void handleValidation() {
+        super.handleValidation();
+        coilsEfficiency = getMultiblock().coilsEfficiency;
+        activeCoils = getMultiblock().activeCoils;
+        blades = getMultiblock().blades;
+        flow = getMultiblock().flow;
+    }
+
     public List<FluidStack> getAllowedInputFluids()
     {
         if(allowedInputs == null) {
@@ -264,46 +273,6 @@ public class TurbineControllerBE extends MultiblockControllerBE {
             multiblock = new TurbineMultiblock(this);
         }
         return (TurbineMultiblock) multiblock;
-    }
-
-
-    private void handleValidation() {
-        if(multiblock == null) return;
-        if (level.getGameTime() % 40 == 0) {
-            ValidationResult wasResult = validationResult;
-            boolean wasFormed = getMultiblock().isFormed();
-            if (!wasFormed || !isInternalValid || !isCasingValid) {
-                activeCoils = 0;
-                coilsEfficiency = 0;
-                flow = 0;
-                getMultiblock().validate();
-                isCasingValid = getMultiblock().isOuterValid();
-                if (isCasingValid) {
-                    isInternalValid = getMultiblock().isInnerValid();
-                }
-                powered = false;
-                changed = true;
-            }
-            validationResult = getMultiblock().validationResult;
-            if (validationResult.id != wasResult.id) {
-                changed = true;
-            }
-            if (activeCoils != getMultiblock().activeCoils) {
-                changed = true;
-                activeCoils = getMultiblock().activeCoils;
-                coilsEfficiency = getMultiblock().coilsEfficiency;
-            }
-
-            if (flow != getMultiblock().flow) {
-                changed = true;
-                flow = getMultiblock().flow;
-                blades = getMultiblock().blades;
-            }
-            height = getMultiblock().height();
-            width = getMultiblock().width();
-            depth = getMultiblock().depth();
-            trackChanges(wasFormed, getMultiblock().isFormed());
-        }
     }
 
     public float bladesEfficiency()

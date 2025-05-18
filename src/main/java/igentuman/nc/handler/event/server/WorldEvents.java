@@ -3,17 +3,20 @@ package igentuman.nc.handler.event.server;
 import igentuman.nc.block.turbine.TurbineBladeBlock;
 import igentuman.nc.item.HEVItem;
 import igentuman.nc.item.HazmatItem;
+import igentuman.nc.multiblock.MultiblockExecutorManager;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.radiation.data.RadiationEvents;
 import igentuman.nc.recipes.ingredient.creator.IngredientCreatorAccess;
 import igentuman.nc.setup.registration.Villager;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.trading.MerchantOffer;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -24,6 +27,7 @@ import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.event.level.ChunkEvent;
 import net.minecraftforge.event.level.LevelEvent;
+import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.event.village.WandererTradesEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -32,6 +36,12 @@ import net.minecraftforge.fml.common.Mod;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.content.materials.Materials.*;
@@ -47,6 +57,9 @@ import static net.minecraft.world.item.Items.*;
 public class WorldEvents {
 
     public final static List<Block> trackingBlocks = new ArrayList<>();
+    
+    // Thread pool manager for handling multiblock ticking
+
 
     public WorldEvents() {
 
@@ -109,7 +122,8 @@ public class WorldEvents {
     @SubscribeEvent
     public void worldLoadEvent(LevelEvent.Load event) {
         if (!event.getLevel().isClientSide()) {
-
+            // Ensure the executor is initialized when a world is loaded
+            MultiblockExecutorManager.getExecutor();
         }
     }
 
@@ -123,7 +137,12 @@ public class WorldEvents {
     @SubscribeEvent
     public void onTick(LevelTickEvent event) {
         if (event.side.isServer() && event.phase == Phase.END) {
-            MultiblockHandler.get(event.level.dimension()).tick(event.level);
+            if(event.isCanceled() || event.level.getGameTime() % 2 != 0) return;
+            
+            final Level level = event.level;
+            
+            MultiblockHandler.get(level.dimension()).tick(level);
+            
             RadiationEvents.onWorldTick(event);
         }
     }
@@ -181,5 +200,11 @@ public class WorldEvents {
 
     private static void consumeEnergy(ItemStack stack, int i) {
         stack.getCapability(ForgeCapabilities.ENERGY).ifPresent(handler -> handler.extractEnergy(i, false));
+    }
+    
+    @SubscribeEvent
+    public static void onServerStopping(ServerStoppingEvent event) {
+        // Shutdown the executor service gracefully when the server is stopping
+        MultiblockExecutorManager.shutdown();
     }
 }

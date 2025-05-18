@@ -425,7 +425,7 @@ public class NCLanguageProvider extends LanguageProvider {
 
     private void multiblocks() {
         for(String name: ACCELERATOR_BLOCKS.keySet()) {
-            String title = convertToName(name);
+            String title = "(WIP) " + convertToName(name);
             add(ACCELERATOR_BLOCKS.get(name).get(), title);
         }
         for(String name: KUGELBLITZ_BLOCKS.keySet()) {

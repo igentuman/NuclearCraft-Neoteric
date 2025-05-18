@@ -37,7 +37,6 @@ public class TurbineCoilBE extends TurbineBE {
             } catch (NullPointerException ignore) {
                 isValid = false;
             }
-            refreshCacheFlag = true;
         }
        return isValid();
     }
@@ -60,7 +59,7 @@ public class TurbineCoilBE extends TurbineBE {
         if(NuclearCraft.instance.isNcBeStopped) return;
         super.tickServer();
         if(getMultiblock() != null) {
-            if (refreshCacheFlag) {
+            if (!isValid) {
                 for (Direction dir : Direction.values()) {
                     BlockEntity be = Objects.requireNonNull(getLevel()).getExistingBlockEntity(getBlockPos().relative(dir));
                     BlockState bs = getLevel().getBlockState(getBlockPos().relative(dir));
@@ -76,7 +75,6 @@ public class TurbineCoilBE extends TurbineBE {
                     }
                 }
                 isValid(true);
-                refreshCacheFlag = false;
             }
         }
     }
@@ -88,7 +86,7 @@ public class TurbineCoilBE extends TurbineBE {
 
     public double getEfficiency() {
         if(efficiency == 0) {
-            efficiency = def.getEfficiency();
+            efficiency = def().getEfficiency();
         }
         return efficiency;
     }
@@ -98,7 +96,6 @@ public class TurbineCoilBE extends TurbineBE {
     }
 
     public void validatePlacement() {
-        refreshCacheFlag = true;
         tickServer();
     }
 }

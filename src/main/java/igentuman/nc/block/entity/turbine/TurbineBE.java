@@ -1,7 +1,7 @@
 package igentuman.nc.block.entity.turbine;
 
 import igentuman.nc.block.entity.NuclearCraftBE;
-import igentuman.nc.multiblock.AbstractNCMultiblock;
+import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.api.nc.multiblock.MultiblockAttachable;
 import igentuman.nc.multiblock.turbine.TurbineRegistration;
 import igentuman.nc.multiblock.turbine.TurbineMultiblock;
@@ -12,8 +12,6 @@ public class TurbineBE extends NuclearCraftBE implements MultiblockAttachable {
 
     protected TurbineMultiblock multiblock;
     public static String NAME;
-    public boolean refreshCacheFlag = true;
-    public byte validationRuns = 0;
     public TurbineControllerBE controller;
 
     public TurbineBE(BlockPos pPos, BlockState pBlockState, String name) {
@@ -21,7 +19,7 @@ public class TurbineBE extends NuclearCraftBE implements MultiblockAttachable {
     }
 
     @Override
-    public void setMultiblock(AbstractNCMultiblock multiblock) {
+    public void setMultiblock(AbstractMultiblock multiblock) {
         this.multiblock = (TurbineMultiblock) multiblock;
     }
 
@@ -41,20 +39,6 @@ public class TurbineBE extends NuclearCraftBE implements MultiblockAttachable {
     @Override
     public boolean canInvalidateCache() {
         return true;
-    }
-
-    public void invalidateCache()
-    {
-        refreshCacheFlag = true;
-        validationRuns = 0;
-    }
-
-    public void tickClient() {
-
-    }
-
-    public void tickServer() {
-
     }
 
     @Override

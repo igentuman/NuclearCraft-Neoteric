@@ -1,16 +1,17 @@
 package igentuman.nc;
 
 import igentuman.nc.handler.command.CommandNcPatrons;
+import igentuman.nc.handler.command.CommandNcVeinCheck;
 import igentuman.nc.handler.command.NCRadiationCommand;
 import igentuman.nc.handler.command.StructureCommand;
 import igentuman.nc.handler.config.*;
 import igentuman.nc.handler.event.server.WorldEvents;
-import igentuman.nc.handler.command.CommandNcVeinCheck;
+import igentuman.nc.multiblock.MultiblockHandler;
+import igentuman.nc.network.PacketHandler;
 import igentuman.nc.radiation.data.PlayerRadiation;
 import igentuman.nc.radiation.data.RadiationEvents;
 import igentuman.nc.radiation.data.RadiationManager;
 import igentuman.nc.radiation.data.WorldRadiation;
-import igentuman.nc.network.PacketHandler;
 import igentuman.nc.setup.ClientSetup;
 import igentuman.nc.setup.ModSetup;
 import igentuman.nc.setup.Registration;
@@ -28,7 +29,6 @@ import net.minecraftforge.event.server.ServerStoppedEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
@@ -60,6 +60,7 @@ public class NuclearCraft {
         context.registerConfig(ModConfig.Type.COMMON, OreGenConfig.spec, "NuclearCraft/ore_generation.toml");
         context.registerConfig(ModConfig.Type.COMMON, CommonConfig.spec, "NuclearCraft/common.toml");
         context.registerConfig(ModConfig.Type.COMMON, KugelblitzConfig.spec, "NuclearCraft/kugelblitz.toml");
+        context.registerConfig(ModConfig.Type.COMMON, AcceleratorConfig.spec, "NuclearCraft/accelerator.toml");
         context.registerConfig(ModConfig.Type.COMMON, ProcessorsConfig.spec, "NuclearCraft/processors.toml");
         context.registerConfig(ModConfig.Type.COMMON, FissionConfig.spec, "NuclearCraft/fission.toml");
         context.registerConfig(ModConfig.Type.COMMON, FusionConfig.spec, "NuclearCraft/fusion.toml");
@@ -81,7 +82,6 @@ public class NuclearCraft {
         MinecraftForge.EVENT_BUS.addListener(this::gameShuttingDownEvent);
         ModSetup.setup();
         Registration.init(context);
-
 
         MinecraftForge.EVENT_BUS.addListener(this::registerCommands);
         modbus.addListener(ModSetup::init);
@@ -126,6 +126,7 @@ public class NuclearCraft {
         RadiationEvents.stopTracking();
         WorldVeinsProvider.stopTracking();
         for(ServerLevel level: event.getServer().getAllLevels()) {
+            MultiblockHandler.get(level.dimension()).clear();
             RadiationManager.clear(level);
         }
     }

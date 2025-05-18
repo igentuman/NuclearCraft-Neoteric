@@ -24,6 +24,10 @@ public class NCBlockPos extends BlockPos {
         return new NCBlockPos(pos.getX(), pos.getY(), pos.getZ());
     }
 
+    public static NCBlockPos copy(BlockPos pos) {
+        return new NCBlockPos(pos.getX(), pos.getY(), pos.getZ());
+    }
+
     public NCBlockPos(int x, int y, int z) {
         super(x, y, z);
         origX = x;

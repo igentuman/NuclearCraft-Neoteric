@@ -6,8 +6,8 @@ import igentuman.nc.block.fission.FissionFuelCellBlock;
 import igentuman.nc.block.fission.HeatSinkBlock;
 import igentuman.nc.block.fission.IrradiationChamberBlock;
 import igentuman.nc.handler.event.server.WorldEvents;
+import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;
-import igentuman.nc.multiblock.AbstractNCMultiblock;
 import igentuman.nc.multiblock.ValidationResult;
 import igentuman.nc.util.NCBlockPos;
 import net.minecraft.core.BlockPos;
@@ -20,7 +20,7 @@ import java.util.*;
 import static igentuman.nc.handler.config.FissionConfig.FISSION_CONFIG;
 import static igentuman.nc.util.TagUtil.getBlocksByTagKey;
 
-public class FissionReactorMultiblock extends AbstractNCMultiblock {
+public class FissionReactorMultiblock extends AbstractMultiblock {
 
     private int irradiationConnections = 0;
     private final List<Block> validModerators;
@@ -228,10 +228,10 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
         for(int y = 1; y < height-1; y++) {
             for(int x = 1; x < width-1; x++) {
                 for (int z = 1; z < depth-1; z++) {
-                    NCBlockPos toCheck = new NCBlockPos(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getFacing(), -z));
+                    NCBlockPos toCheck = new NCBlockPos(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getControllerDirection(), -z));
                     if (!isValidForInner(toCheck)) {
                         validationResult = ValidationResult.WRONG_INNER;
-                        controller().setErroredBlock(new BlockPos(toCheck));
+                        errorBlockPos = new BlockPos(toCheck);
                         return;
                     }
                     processInnerBlock(new BlockPos(toCheck));
@@ -253,7 +253,7 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
         for(int y = 1; y < height-1; y++) {
             for(int x = 1; x < width-1; x++) {
                 for (int z = 1; z < depth-1; z++) {
-                    NCBlockPos toCheck = new NCBlockPos(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getFacing(), -z));
+                    NCBlockPos toCheck = new NCBlockPos(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getControllerDirection(), -z));
                     if (isFuelCell(toCheck)) {
                         addDirectFuelCellConnection(new BlockPos(toCheck));
                         addIfNotExists(new BlockPos(toCheck), fuelCells);
@@ -403,12 +403,12 @@ public class FissionReactorMultiblock extends AbstractNCMultiblock {
         controllerBE().moderatorAttachments = 0;
     }
 
-    protected Direction getFacing() {
+    protected Direction getControllerDirection() {
         return controllerBE().getFacing();
     }
 
     public double countCooling(boolean forceCheck) {
-        if(refreshInnerCacheFlag || forceCheck) {
+        if(forceCheck) {
             heatSinkCooling = 0;
             for (HeatSinkBlock hs : validHeatSinks().values()) {
                 heatSinkCooling += hs.heat;

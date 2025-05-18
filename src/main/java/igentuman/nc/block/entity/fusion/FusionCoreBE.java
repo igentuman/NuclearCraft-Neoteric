@@ -29,7 +29,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -809,11 +812,26 @@ public class FusionCoreBE extends MultiblockControllerBE {
     private void meltDown() {
         double explosionRadius = FUSION_CONFIG.EXPLOSION_RADIUS.get();
         if (explosionRadius > 0) {
-            BlockPos pos = getBlockPos();
-/*            getLevel().explode(null,
+            BlockPos pos = getRandomPosAtRing();
+            getLevel().explode((Entity) null,
                     pos.getX(), pos.getY(), pos.getZ(),
-                    1, true, Explosion.BlockInteraction.NONE);*/
+                    (float) explosionRadius, Level.ExplosionInteraction.TNT);
         }
+    }
+
+    private BlockPos getRandomPosAtRing() {
+        BlockPos pos = getBlockPos();
+        int x = (int) (Math.random() * size * 2 - size);
+        int z = (int) (Math.random() * size * 2 - size);
+        int y = 0;
+        if (Math.abs(x) > Math.abs(z)) {
+            y = x;
+            x = 0;
+        } else {
+            y = z;
+            z = 0;
+        }
+        return pos.offset(x, 0, z);
     }
 
     public boolean hasRedstoneSignal() {

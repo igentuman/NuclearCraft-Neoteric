@@ -6,7 +6,7 @@ import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.block.entity.kugelblitz.BlackHoleBE;
 import igentuman.nc.block.entity.kugelblitz.ChamberTerminalBE;
 import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;
-import igentuman.nc.multiblock.AbstractNCMultiblock;
+import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.kugelblitz.KugelblitzMultiblock;
 import igentuman.nc.util.annotation.NBTField;
@@ -28,7 +28,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static igentuman.nc.compat.oc2.FusionReactorDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BE;
-import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BE;
 import static igentuman.nc.util.ModUtil.isCcLoaded;
 import static igentuman.nc.util.ModUtil.isOC2Loaded;
 
@@ -58,7 +57,7 @@ public class AcceleratorPortBE extends NuclearCraftBE implements MultiblockAttac
     }
 
     @Override
-    public void setMultiblock(AbstractNCMultiblock multiblock) {
+    public void setMultiblock(AbstractMultiblock multiblock) {
         this.multiblock = (KugelblitzMultiblock) multiblock;
     }
 

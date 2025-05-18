@@ -20,7 +20,7 @@ import static igentuman.nc.util.TextUtils.__;
 public class AcceleratorBlock extends MultiblockBlock {
 
     public AcceleratorBlock(Properties pProperties) {
-        super(Properties.of().sound(SoundType.METAL).strength(8f, 3600000f));
+        super(pProperties.strength(8f, 3600000f));
     }
 
     @Override

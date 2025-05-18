@@ -5,7 +5,7 @@ import igentuman.nc.block.RFAmplifierBlock;
 import igentuman.nc.block.entity.fusion.FusionCoreBE;
 import igentuman.nc.block.fusion.FusionConnectorBlock;
 import igentuman.nc.multiblock.MultiblockHandler;
-import igentuman.nc.multiblock.AbstractNCMultiblock;
+import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.ValidationResult;
 import igentuman.nc.util.NCBlockPos;
 import net.minecraft.core.BlockPos;
@@ -23,7 +23,7 @@ import static igentuman.nc.util.TagUtil.getBlocksByTagKey;
 import static net.minecraft.core.Direction.*;
 import static net.minecraft.world.level.block.Blocks.AIR;
 
-public class FusionReactorMultiblock extends AbstractNCMultiblock {
+public class FusionReactorMultiblock extends AbstractMultiblock {
 
     public int magnetsEfficiency = 0;
     public int rfEfficiency = 0;
@@ -389,7 +389,7 @@ public class FusionReactorMultiblock extends AbstractNCMultiblock {
     }
 
     @Override
-    protected Direction getFacing() {
+    protected Direction getControllerDirection() {
         return UP;
     }
 

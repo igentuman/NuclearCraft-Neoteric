@@ -402,34 +402,6 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
         return (KugelblitzMultiblock) multiblock;
     }
 
-    private void handleValidation() {
-        if(multiblock == null) return;
-        ValidationResult wasResult = validationResult;
-        boolean wasFormed = this.getMultiblock().isFormed();
-        if (!wasFormed || !isInternalValid || !isCasingValid) {
-            reValidateCounter++;
-            if(reValidateCounter < 40) {
-                return;
-            }
-            reValidateCounter = 0;
-            this.getMultiblock().validate();
-            isCasingValid = this.getMultiblock().isOuterValid();
-            if(isCasingValid) {
-                isInternalValid = this.getMultiblock().isInnerValid();
-            }
-            changed = true;
-        }
-        validationResult = this.getMultiblock().validationResult;
-        if(validationResult.id != wasResult.id) {
-            changed = true;
-        }
-
-        height = this.getMultiblock().height();
-        width = this.getMultiblock().width();
-        depth = this.getMultiblock().depth();
-        trackChanges(wasFormed, this.getMultiblock().isFormed());
-    }
-
     @Override
     public boolean canInvalidateCache() {
         return false;

@@ -4,8 +4,8 @@ import igentuman.nc.block.entity.turbine.*;
 import igentuman.nc.block.turbine.TurbineBearingBlock;
 import igentuman.nc.block.turbine.TurbineBladeBlock;
 import igentuman.nc.block.turbine.TurbineRotorBlock;
+import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;
-import igentuman.nc.multiblock.AbstractNCMultiblock;
 import igentuman.nc.multiblock.ValidationResult;
 import igentuman.nc.util.NCBlockPos;
 import net.minecraft.core.BlockPos;
@@ -21,7 +21,7 @@ import static igentuman.nc.handler.config.TurbineConfig.TURBINE_CONFIG;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.*;
 import static igentuman.nc.util.TagUtil.getBlocksByTagKey;
 
-public class TurbineMultiblock extends AbstractNCMultiblock {
+public class TurbineMultiblock extends AbstractMultiblock {
 
     public Direction turbineDirection;
     public boolean isRotorValid = false;
@@ -189,13 +189,13 @@ public class TurbineMultiblock extends AbstractNCMultiblock {
                 return width() == depth() && width() % 2 != 0;
             case NORTH:
             case SOUTH:
-                if(getFacing().getAxis().equals(Direction.Axis.Z)) {
+                if(getControllerDirection().getAxis().equals(Direction.Axis.Z)) {
                     return height() == width() && height() % 2 != 0;
                 }
                 return depth() == height() && height() % 2 != 0;
             case EAST:
             case WEST:
-                if(getFacing().getAxis().equals(Direction.Axis.X)) {
+                if(getControllerDirection().getAxis().equals(Direction.Axis.X)) {
                     return height() == width() && height() % 2 != 0;
                 }
                 return height() == depth() && height() % 2 != 0;
@@ -254,7 +254,7 @@ public class TurbineMultiblock extends AbstractNCMultiblock {
         controller().clearStats();
     }
 
-    protected Direction getFacing() {
+    protected Direction getControllerDirection() {
         return ((TurbineControllerBE)controller().controllerBE()).getFacing();
     }
 

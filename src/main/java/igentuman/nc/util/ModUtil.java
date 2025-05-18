@@ -5,6 +5,7 @@ import net.minecraftforge.fml.ModList;
 public class ModUtil {
     protected static boolean initialized = false;
     protected static boolean isMekanismLoadeed;
+    protected static boolean isMekanismGeneratorsLoadeed;
     protected static boolean ccLoaded;
     protected static boolean ieLoaded;
     protected static boolean gtLoaded;
@@ -15,6 +16,7 @@ public class ModUtil {
             return;
         initialized = true;
         isMekanismLoadeed = ModList.get().isLoaded("mekanism");
+        isMekanismGeneratorsLoadeed = ModList.get().isLoaded("mekanismgenerators");
         oc2Loaded = ModList.get().isLoaded("oc2r");
         ccLoaded = ModList.get().isLoaded("computercraft");
         ieLoaded = ModList.get().isLoaded("immersiveengineering");
@@ -29,6 +31,11 @@ public class ModUtil {
     public static boolean isMekanismLoaded() {
         initialize();
         return isMekanismLoadeed;
+    }
+
+    public static boolean isMekanismGeneratorsLoaded() {
+        initialize();
+        return isMekanismGeneratorsLoadeed;
     }
 
     public static boolean isCcLoaded() {

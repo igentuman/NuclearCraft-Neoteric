@@ -97,7 +97,7 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
     {
         if(allowedInputs == null) {
             allowedInputs = new ArrayList<>();
-            for(NcRecipe recipe: NcRecipeType.getAllRecipesFor("kugelblitz_chamber", getLevel())) {
+            for(NcRecipe recipe: NcRecipeType.getAllRecipesFor("linear_accelerator_controller", getLevel())) {
                 for(Ingredient ingredient: recipe.getItemIngredients()) {
                     allowedInputs.addAll(List.of(ingredient.getItems()));
                 }
@@ -227,34 +227,6 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
             multiblock = new LinearAcceleratorMultiblock(this);
         }
         return (LinearAcceleratorMultiblock) multiblock;
-    }
-
-    private void handleValidation() {
-        if(multiblock == null) return;
-        ValidationResult wasResult = validationResult;
-        boolean wasFormed = this.getMultiblock().isFormed();
-        if (!wasFormed || !isInternalValid || !isCasingValid) {
-            reValidateCounter++;
-            if(reValidateCounter < 40) {
-                return;
-            }
-            reValidateCounter = 0;
-            this.getMultiblock().validate();
-            isCasingValid = this.getMultiblock().isOuterValid();
-            if(isCasingValid) {
-                isInternalValid = this.getMultiblock().isInnerValid();
-            }
-            changed = true;
-        }
-        validationResult = this.getMultiblock().validationResult;
-        if(validationResult.id != wasResult.id) {
-            changed = true;
-        }
-
-        height = this.getMultiblock().height();
-        width = this.getMultiblock().width();
-        depth = this.getMultiblock().depth();
-        trackChanges(wasFormed, this.getMultiblock().isFormed());
     }
 
     @Override

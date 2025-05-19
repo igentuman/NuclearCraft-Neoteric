@@ -25,11 +25,8 @@ public class TurbineBladeBE extends TurbineBE {
     @Override
     public void tickServer() {
         if(NuclearCraft.instance.isNcBeStopped) return;
-        super.tickServer();
         boolean wasActive = isActive;
-
         isActive = getMultiblock() != null && controller() != null && getMultiblock().isFormed();
-
         if(wasActive != isActive || getLevel().getGameTime() % 20 == 0) {
             level.setBlockAndUpdate(worldPosition, getBlockState().setValue(HIDDEN, isActive));
         }

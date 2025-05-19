@@ -431,6 +431,7 @@ public abstract class AbstractMultiblock implements Multiblock {
 
     @Override
     public void validate() {
+        long startTime = System.currentTimeMillis();
         topRight = null;
         bottomLeft = null;
         validationResult = ValidationResult.INCOMPLETE;
@@ -442,6 +443,7 @@ public abstract class AbstractMultiblock implements Multiblock {
         if (isOuterValid()) {
             validateInner();
         } else{
+            innerValid = false;
             invalidateStats();
         }
         innerValid = validationResult.isValid;
@@ -452,7 +454,9 @@ public abstract class AbstractMultiblock implements Multiblock {
             controller.clearStats();
         }
         hasToRefresh = !isFormed;
-        debugLog("NC multiblock was validated at " + initialPos().toShortString() + " " + getLevel().getGameTime() + " " + validationResult);
+        
+        long elapsedTime = System.currentTimeMillis() - startTime;
+        debugLog("NCN validation " + initialPos().toShortString() + " in " + elapsedTime + "ms " + validationResult);
     }
 
     public boolean isInnerValid() {

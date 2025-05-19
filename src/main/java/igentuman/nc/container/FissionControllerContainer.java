@@ -178,6 +178,10 @@ public class FissionControllerContainer extends AbstractContainerMenu {
         return roundFormat(blockEntity.efficiency);
     }
 
+    public double getRawEfficiency() {
+        return blockEntity.efficiency;
+    }
+
     public String getNetHeat() {
         return roundFormat(blockEntity.heatPerTick-blockEntity.heatSinkCooling-blockEntity.activeCooling);
     }
@@ -222,7 +226,7 @@ public class FissionControllerContainer extends AbstractContainerMenu {
         return blockEntity.getBlockPos();
     }
 
-    public boolean getMode() {
+    public boolean isBoilingMode() {
         return blockEntity.isSteamMode;
     }
 
@@ -249,5 +253,9 @@ public class FissionControllerContainer extends AbstractContainerMenu {
 
     public int getMaxBoilingRate() {
         return blockEntity.maxSteamOutput;
+    }
+
+    public int getBoilingPenalty() {
+        return (int) blockEntity.boilingPenalty;
     }
 }

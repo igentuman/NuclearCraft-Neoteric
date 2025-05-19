@@ -38,6 +38,7 @@ import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Objects;
 
 import static igentuman.nc.util.TextUtils.__;
 
@@ -107,7 +108,6 @@ public class FissionControllerBlock extends HorizontalDirectionalBlock implement
             return (lvl, pos, blockState, t) -> {
                 if (t instanceof FissionControllerBE tile) {
                     tile.tickClient();
-                    level.setBlock(pos, blockState.setValue(POWERED, tile.powered), 3);
                 }
             };
         }
@@ -123,6 +123,7 @@ public class FissionControllerBlock extends HorizontalDirectionalBlock implement
         if(level.isClientSide()) return;
         Level world = (Level) level;
         MultiblockHandler.get(world.dimension()).trackBlockChange(pos);
+        BlockEntity be = world.getExistingBlockEntity(pos);
     }
 
     @Override

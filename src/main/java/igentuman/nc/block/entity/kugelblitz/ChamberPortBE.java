@@ -102,7 +102,7 @@ public class ChamberPortBE extends NuclearCraftBE implements MultiblockAttachabl
         if(updated) {
             MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
             setChanged();
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+            level.updateNeighborsAt(worldPosition, getBlockState().getBlock());
         }
     }
 

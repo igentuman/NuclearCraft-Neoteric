@@ -407,6 +407,12 @@ public class FusionReactorMultiblock extends AbstractMultiblock {
         }
     }
 
+    @Override
+    public void resolveDimensions()
+    {
+
+    }
+
     public void recalculateCharacteristics() {
         magneticFieldStrength = 0;
         magnetsPower = 0;

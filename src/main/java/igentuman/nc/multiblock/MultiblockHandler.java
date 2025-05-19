@@ -19,6 +19,7 @@ public class MultiblockHandler {
     private final ConcurrentHashMap<Long, List<String>> chunkCache = new ConcurrentHashMap<>();
     private final Set<String> toRemove = Collections.synchronizedSet(new HashSet<>());
     public final Set<Long> ignoreUpdate = Collections.synchronizedSet(new HashSet<>());
+    public final Set<Long> changedBlocks = Collections.synchronizedSet(new HashSet<>());
 
     private MultiblockHandler() {
     }
@@ -84,35 +85,45 @@ public class MultiblockHandler {
         }
     }
 
-    public void trackBlockChange(BlockPos pos) {
-        if (pos == null || multiblocks.isEmpty()) {
-            return;
-        }
-        if (ignoreUpdate.remove(pos.asLong())) {
-            return;
-        }
-        //Iterate chunk cache first for better performance
-        long chunkPos = new ChunkPos(pos.getX() >> 4, pos.getZ() >> 4).toLong();
-        if (chunkCache.containsKey(chunkPos)) {
-            List<String> list = chunkCache.get(chunkPos);
-            for (String id : list) {
-                AbstractMultiblock multiblock = multiblocks.get(id);
+    public void trackAllChanges() {
+        for(long packedPos: changedBlocks) {
+            BlockPos pos = BlockPos.of(packedPos);
+            //Iterate chunk cache first for better performance
+            long chunkPos = new ChunkPos(pos.getX() >> 4, pos.getZ() >> 4).toLong();
+            if (chunkCache.containsKey(chunkPos)) {
+                List<String> list = chunkCache.get(chunkPos);
+                for (String id : list) {
+                    AbstractMultiblock multiblock = multiblocks.get(id);
+                    if (multiblock == null) {
+                        continue;
+                    }
+                    if (multiblock.onBlockChange(pos)) {
+                        return;
+                    }
+                }
+            }
+            List<AbstractMultiblock> tmp = new ArrayList<>(multiblocks.values());
+            for(AbstractMultiblock multiblock: tmp) {
                 if (multiblock == null) {
                     continue;
                 }
                 if (multiblock.onBlockChange(pos)) {
-                    return;
+                    break;
                 }
             }
         }
-        List<AbstractMultiblock> tmp = new ArrayList<>(multiblocks.values());
-        for(AbstractMultiblock multiblock: tmp) {
-            if (multiblock == null) {
-                continue;
-            }
-            if (multiblock.onBlockChange(pos)) {
-                break;
-            }
+        changedBlocks.clear();
+    }
+
+    public void trackBlockChange(BlockPos pos) {
+        if (pos == null || multiblocks.isEmpty()) {
+            return;
+        }
+        if (ignoreUpdate.contains(pos.asLong())) {
+            return;
+        }
+        if(!changedBlocks.contains(pos.asLong())) {
+            changedBlocks.add(pos.asLong());
         }
     }
 
@@ -130,6 +141,7 @@ public class MultiblockHandler {
     private final Set<String> deferredValidations = Collections.synchronizedSet(new HashSet<>());
     
     public void tick(Level level) {
+        trackAllChanges();
         Set<String> tmp = multiblocks.keySet();
         List<CompletableFuture<Void>> futures = new ArrayList<>();
         validationsThisTick = 0;

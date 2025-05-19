@@ -2338,6 +2338,7 @@
   "processor.recipe.radiation": "Process Radiation: %s uRad",
   "processor_side_config.title": "Select Slot",
   "processor_slot_mode.title": "Slot Mode",
+  "reactor.boiling_penalty": "Boiling Penalty: %s H/t",
   "reactor.cooling": "Cooling: %s H/t",
   "reactor.forge_energy_per_tick": "FE Gen: %s FE/t",
   "reactor.fuel_cells": "Fuel Cells: %s",

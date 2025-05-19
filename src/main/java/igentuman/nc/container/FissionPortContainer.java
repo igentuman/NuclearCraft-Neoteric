@@ -142,8 +142,8 @@ public class FissionPortContainer extends AbstractContainerMenu {
         return portBE.getFluidTank(i);
     }
 
-    public boolean getMode() {
-        return portBE.getMode();
+    public boolean isBoilingMode() {
+        return portBE.isBoilingMode();
     }
 
     public int getSteamPerTick() {

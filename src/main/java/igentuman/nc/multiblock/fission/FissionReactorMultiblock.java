@@ -22,10 +22,10 @@ import static igentuman.nc.util.TagUtil.getBlocksByTagKey;
 
 public class FissionReactorMultiblock extends AbstractMultiblock {
 
-    private int irradiationConnections = 0;
+    public int irradiationConnections = 0;
     private final List<Block> validModerators;
     public final HashMap<BlockPos, HeatSinkBlock> validHeatSinks = new HashMap<>();
-    private final List<BlockPos> moderators = new ArrayList<>();
+    public final List<BlockPos> moderators = new ArrayList<>();
     private final List<BlockPos> irradiators = new ArrayList<>();
     public final List<BlockPos> heatSinks = new ArrayList<>();
     public final List<BlockPos> fuelCells = new ArrayList<>();
@@ -39,7 +39,7 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
     private boolean delayedValidationFlag = false;
     private int fuelCellMultiplier = 0;
     private int moderatorCellMultiplier = 0;
-    private int moderatorAttachments = 0;
+    public int moderatorAttachments = 0;
 
     @Override
     public int maxHeight() {
@@ -207,6 +207,7 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
         moderatorAttachments = 0;
         fuelCellMultiplier = 0;
         moderatorCellMultiplier = 0;
+        irradiationConnections = 0;
         super.validate();
     }
 
@@ -221,6 +222,7 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
         moderatorCellMultiplier = 0;
         fuelCellMultiplier = 0;
         moderatorAttachments = 0;
+        irradiationConnections = 0;
         collectFuelCells();
         controllerBE().moderatorCellMultiplier = moderatorCellMultiplier;
         controllerBE().fuelCellMultiplier = fuelCellMultiplier;
@@ -245,8 +247,6 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
 
         validationResult =  ValidationResult.VALID;
         heatSinkCooling = countCooling(true);
-        controllerBE().moderatorsCount = moderators.size();
-        controllerBE().irradiationConnections = irradiationConnections;
     }
 
     private void collectFuelCells() {

@@ -146,6 +146,7 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
             errorBlockPos = getMultiblock().errorBlockPos;
             changed = true;
         }
+
         isInternalValid = getMultiblock().isInnerValid();
         isCasingValid = getMultiblock().isOuterValid();
         height = getMultiblock().height();
@@ -156,7 +157,7 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
 
     @Override
     public void setChanged() {
-        MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
+        MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(new BlockPos(getBlockPos()));
         super.setChanged();
         wasUpdated = true;
         changed = true;

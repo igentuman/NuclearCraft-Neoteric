@@ -40,8 +40,10 @@ public class FissionPortBE extends NuclearCraftBE implements MultiblockAttachabl
     public byte redstoneMode = SignalSource.HEAT;
     @NBTField
     public BlockPos controllerPos;
-    @NBTField
     public boolean isSteamMode = false;
+    @NBTField
+    public boolean connected = false;
+
     protected FissionReactorMultiblock multiblock;
     protected FissionControllerBE controller;
 
@@ -69,7 +71,7 @@ public class FissionPortBE extends NuclearCraftBE implements MultiblockAttachabl
             controller = controller();
             controllerPos = BlockPos.ZERO;
             if (controller != null) {
-                controllerPos = controller.getBlockPos();
+                controllerPos = new BlockPos(controller.getBlockPos());
             }
             return true;
         }
@@ -83,22 +85,26 @@ public class FissionPortBE extends NuclearCraftBE implements MultiblockAttachabl
     public void tickServer() {
         if (NuclearCraft.instance.isNcBeStopped || isRemoved() || getMultiblock() == null || controller() == null) return;
         int wasSignal = analogSignal;
-        boolean updated = sendOutPower();
-        updated = updateController() || updated;
+        boolean wasConnected = connected;
+        sendOutPower();
+        boolean updated = updateController();
+        if(level.getGameTime() % 20 == 0) {
+            pushPull();
+        }
         if (level.getGameTime() % 10 == 0) {
             updateAnalogSignal();
-            updated = pushPull() || updated;
+
             updated = wasSignal != analogSignal || updated;
             switch (redstoneMode) {
                 case SignalSource.SWITCH -> controller().toggleReactor(analogSignal > 0);
                 case SignalSource.MODERATOR -> controller().adjustModerator(analogSignal);
             }
         }
-
-        if (updated) {
+        connected = getMultiblock().isFormed();
+        if (updated || wasConnected != connected) {
             MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
             setChanged();
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_NEIGHBORS);
+            level.updateNeighborsAt(worldPosition, getBlockState().getBlock());
         }
     }
 
@@ -289,7 +295,7 @@ public class FissionPortBE extends NuclearCraftBE implements MultiblockAttachabl
         return controller().getFluidTank(i);
     }
 
-    public boolean getMode() {
+    public boolean isBoilingMode() {
         if (controller() == null) return false;
         return controller().isSteamMode;
     }

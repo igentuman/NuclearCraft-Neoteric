@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.client.gui.element.fluid.FluidTankRenderer.TooltipMode.SHOW_AMOUNT_AND_CAPACITY;
 import static igentuman.nc.util.TextUtils.__;
@@ -121,7 +120,7 @@ public class FissionControllerScreen extends AbstractContainerScreen<FissionCont
         if (modeBtn == null) {
             init();
         }
-        modeBtn.setMode(getMenu().getMode());
+        modeBtn.setMode(getMenu().isBoilingMode());
         modeBtn.setTimer(getMenu().getModeTimer());
         for(NCGuiElement widget: widgets) {
             widget.draw(graphics, mouseX, mouseY, partialTicks);
@@ -148,7 +147,7 @@ public class FissionControllerScreen extends AbstractContainerScreen<FissionCont
             checkboxInterior.addTooltip(__("reactor.reactivity", container().getReactivity()));
             checkboxInterior.addTooltip(__("reactor.irradiators_connections", container().getIrradiatorsConnections()));
         }
-        if(!getMenu().getMode()) {
+        if(!getMenu().isBoilingMode()) {
             energyBar.draw(graphics, mouseX, mouseY, partialTicks);
         } else {
             coolantBar.draw(graphics, mouseX, mouseY, partialTicks);
@@ -172,11 +171,12 @@ public class FissionControllerScreen extends AbstractContainerScreen<FissionCont
                 interiorTootip = applyFormat(__("reactor.fuel_cells", getFuelCellsCount()), ChatFormatting.GOLD);
 
                 if(container().hasRecipe() && !container().getEfficiency().equals("NaN")) {
+                    int color = container().getRawEfficiency() > 0 ? 0x8AFF8A : 0xCCCCCC;
                     graphics.pose().pushPose();
                     graphics.pose().scale(0.5f, 0.5f, 0.5f);
-                    graphics.drawString(font, __("fission_reactor.efficiency", container().getEfficiency()), 35*2, 82*2, 0x8AFF8A);
-                    graphics.drawString(font, __("fission_reactor.net_heat", container().getNetHeat()), 35*2, 72*2, 0x8AFF8A);
-                    graphics.drawString(font, __("fission_reactor.heat_multiplier", container().getHeatMultiplier()), 35*2, 62*2, 0x8AFF8A);
+                    graphics.drawString(font, __("fission_reactor.efficiency", container().getEfficiency()), 35*2, 82*2, color);
+                    graphics.drawString(font, __("fission_reactor.net_heat", container().getNetHeat()), 35*2, 72*2, color);
+                    graphics.drawString(font, __("fission_reactor.heat_multiplier", container().getHeatMultiplier()), 35*2, 62*2, color);
                     graphics.pose().popPose();
                 }
             } else {
@@ -224,6 +224,9 @@ public class FissionControllerScreen extends AbstractContainerScreen<FissionCont
         heatBar.addTooltip(__("reactor.cooling", container().getCooling()).withStyle(ChatFormatting.AQUA));
         heatBar.addTooltip(__("reactor.heating", container().getHeating()).withStyle(ChatFormatting.RED));
         heatBar.addTooltip(__("reactor.net_heat", container().getNetHeat()).withStyle(ChatFormatting.GOLD));
+        if(container().isBoilingMode()) {
+            heatBar.addTooltip(__("reactor.boiling_penalty", container().getBoilingPenalty()).withStyle(ChatFormatting.YELLOW));
+        }
         for(NCGuiElement widget: widgets) {
            if(widget.isMouseOver(pMouseX, pMouseY)) {
                graphics.renderTooltip(font, widget.getTooltips(),
@@ -238,7 +241,7 @@ public class FissionControllerScreen extends AbstractContainerScreen<FissionCont
             graphics.renderTooltip(font, checkboxInterior.getTooltips(),
                     Optional.empty(), pMouseX, pMouseY);
         }
-        if(!container().getMode()) {
+        if(!container().isBoilingMode()) {
             energyBar.clearTooltips();
             energyBar.addTooltip(__("reactor.forge_energy_per_tick", container().energyPerTick()));
             if(energyBar.isMouseOver(pMouseX, pMouseY+10)) {

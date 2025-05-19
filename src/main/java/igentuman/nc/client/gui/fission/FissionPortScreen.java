@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.client.gui.element.fluid.FluidTankRenderer.TooltipMode.SHOW_AMOUNT_AND_CAPACITY;
 import static igentuman.nc.util.TextUtils.__;
@@ -93,7 +92,7 @@ public class FissionPortScreen extends AbstractContainerScreen<FissionPortContai
         for(NCGuiElement widget: widgets) {
             widget.draw(graphics, mouseX, mouseY, partialTicks);
         }
-        if(!getMenu().getMode()) {
+        if(!getMenu().isBoilingMode()) {
             energyBar.draw(graphics, mouseX, mouseY, partialTicks);
         } else {
             coolantBar.draw(graphics, mouseX, mouseY, partialTicks);
@@ -135,7 +134,7 @@ public class FissionPortScreen extends AbstractContainerScreen<FissionPortContai
            }
         }
 
-        if(!container().getMode()) {
+        if(!container().isBoilingMode()) {
             energyBar.clearTooltips();
             energyBar.addTooltip(__("reactor.forge_energy_per_tick", container().energyPerTick()));
             if(energyBar.isMouseOver(pMouseX, pMouseY+10)) {

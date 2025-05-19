@@ -1,6 +1,5 @@
 package igentuman.nc.block.entity.turbine;
 
-import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.turbine.TurbineBearingBlock;
 import igentuman.nc.multiblock.turbine.CoilDef;
 import igentuman.nc.multiblock.turbine.TurbineRegistration;
@@ -38,7 +37,7 @@ public class TurbineCoilBE extends TurbineBE {
                 isValid = false;
             }
         }
-       return isValid();
+       return isValid;
     }
 
     private CoilDef def() {
@@ -54,10 +53,24 @@ public class TurbineCoilBE extends TurbineBE {
         return isValid;
     }
 
-    @Override
-    public void tickServer() {
-        if(NuclearCraft.instance.isNcBeStopped) return;
-        super.tickServer();
+    public void setCoilDef(CoilDef def) {
+        this.def = def;
+        this.efficiency = def.getEfficiency();
+    }
+
+    public double getEfficiency() {
+        if(efficiency == 0) {
+            efficiency = def().getEfficiency();
+        }
+        return efficiency;
+    }
+
+    public double getRealEfficiency() {
+        if(!isValid()) return 0;
+        return getEfficiency();
+    }
+
+    public void validatePlacement() {
         if(getMultiblock() != null) {
             if (!isValid) {
                 for (Direction dir : Direction.values()) {
@@ -77,25 +90,5 @@ public class TurbineCoilBE extends TurbineBE {
                 isValid(true);
             }
         }
-    }
-
-    public void setCoilDef(CoilDef def) {
-        this.def = def;
-        this.efficiency = def.getEfficiency();
-    }
-
-    public double getEfficiency() {
-        if(efficiency == 0) {
-            efficiency = def().getEfficiency();
-        }
-        return efficiency;
-    }
-    public double getRealEfficiency() {
-        if(!isValid()) return 0;
-        return getEfficiency();
-    }
-
-    public void validatePlacement() {
-        tickServer();
     }
 }

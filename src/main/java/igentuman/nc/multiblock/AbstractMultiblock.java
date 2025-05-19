@@ -453,7 +453,7 @@ public abstract class AbstractMultiblock implements Multiblock {
         } else {
             controller.clearStats();
         }
-        hasToRefresh = !isFormed;
+        //hasToRefresh = !isFormed;
         
         long elapsedTime = System.currentTimeMillis() - startTime;
         debugLog("NCN validation " + initialPos().toShortString() + " in " + elapsedTime + "ms " + validationResult);
@@ -553,6 +553,9 @@ public abstract class AbstractMultiblock implements Multiblock {
                 controller.clearStats();
             }
             return true;
+        }
+        if(!isFormed) {
+            hasToRefresh = true;
         }
         return false;
     }

@@ -98,7 +98,7 @@ public class MultiblockHandler {
                         continue;
                     }
                     if (multiblock.onBlockChange(pos)) {
-                        return;
+                        break;
                     }
                 }
             }

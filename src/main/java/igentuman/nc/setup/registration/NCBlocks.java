@@ -49,17 +49,19 @@ public class NCBlocks {
     public static final Item.Properties ORE_ITEM_PROPERTIES = new Item.Properties();
     public static final Item.Properties MULTIBLOCK_ITEM_PROPERTIES = new Item.Properties();
     public static final RegistryObject<Block> PORTAL_BLOCK = BLOCKS.register("portal", PortalBlock::new);
+    public static final RegistryObject<Block> WASTELAND_EARTH = BLOCKS.register("wasteland_earth", () -> new Block(BlockBehaviour.Properties.of().sound(SoundType.GRAVEL).strength(1.5f).requiresCorrectToolForDrops()));
     public static final RegistryObject<Block> REDSTONE_DIMMER_BLOCK = BLOCKS.register("redstone_dimmer", RedstoneDimmerBlock::new);
     public static final RegistryObject<Item> REDSTONE_DIMMER_ITEM_BLOCK = fromBlock(REDSTONE_DIMMER_BLOCK);
     public static final RegistryObject<BlockEntityType<RedstoneDimmerBE>> REDSTONE_DIMMER_BE = BLOCK_ENTITIES.register("redstone_dimmer",
             () -> BlockEntityType.Builder.of(RedstoneDimmerBE::new, REDSTONE_DIMMER_BLOCK.get()).build(null));
     public static final RegistryObject<Block> MUSHROOM_BLOCK = BLOCKS.register("glowing_mushroom", () -> new GlowingMushroomBlock(
-            BlockBehaviour.Properties.of().sound(SoundType.GRASS).noCollission().instabreak().randomTicks().lightLevel($ -> 10)
+            BlockBehaviour.Properties.of().sound(SoundType.GRASS).noCollission().instabreak().randomTicks().lightLevel($ -> 5)
             ));
     public static final RegistryObject<MenuType<RedstoneDImmerContainer>> REDSTONE_DIMMER_CONTAINER = CONTAINERS.register("redstone_dimmer",
             () -> IForgeMenuType.create((windowId, inv, data) -> new RedstoneDImmerContainer(windowId, data.readBlockPos(), inv)));
     public static final RegistryObject<Item> MUSHROOM_ITEM = fromBlock(MUSHROOM_BLOCK);
     public static final RegistryObject<Item> PORTAL_ITEM = fromBlock(PORTAL_BLOCK);
+    public static final RegistryObject<Item> WASTELAND_EARTH_ITEM = fromBlock(WASTELAND_EARTH);
     public static TagKey<Block> DECAY_GEN_BLOCK = blockTag("decay_gen_block");
 
     public static void init() {

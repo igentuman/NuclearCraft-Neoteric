@@ -172,6 +172,7 @@ public class CreativeTabs {
         items.add(new ItemStack(GEIGER_COUNTER.get()));
         items.add(new ItemStack(LITHIUM_ION_CELL.get()));
         items.add(new ItemStack(MUSHROOM_BLOCK.get()));
+        items.add(new ItemStack(WASTELAND_EARTH.get()));
         return items;
     }
 

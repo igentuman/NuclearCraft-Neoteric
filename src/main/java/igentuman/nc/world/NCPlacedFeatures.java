@@ -30,6 +30,7 @@ public class NCPlacedFeatures {
             map.put(name, registerKey(name + "_placed"));
         }
         map.put("glowing_mushroom", registerKey("glowing_mushroom_placed"));
+        map.put("glowing_mushroom_wasteland", registerKey("glowing_mushroom_wasteland_placed"));
         return map;
     }
 
@@ -60,6 +61,11 @@ public class NCPlacedFeatures {
                 configuredFeatures.getOrThrow(ORE_CONFIGURED_FEATURES.get("glowing_mushroom")),
                 List.of(
                         RarityFilter.onAverageOnceEvery(2), InSquarePlacement.spread(), PlacementUtils.FULL_RANGE, BiomeFilter.biome()
+                ));
+        register(context, PLACED_FEATURES.get("glowing_mushroom_wasteland"),
+                configuredFeatures.getOrThrow(ORE_CONFIGURED_FEATURES.get("glowing_mushroom_wasteland")),
+                List.of(
+                        RarityFilter.onAverageOnceEvery(3), InSquarePlacement.spread(), PlacementUtils.FULL_RANGE
                 ));
     }
 

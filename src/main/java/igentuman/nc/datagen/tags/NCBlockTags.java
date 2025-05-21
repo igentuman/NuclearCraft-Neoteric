@@ -190,7 +190,9 @@ public class NCBlockTags extends BlockTagsProvider {
             tag(BlockTags.NEEDS_IRON_TOOL).add(FUSION_BLOCKS.get(block).get());
         }
         tag(BlockTags.MINEABLE_WITH_PICKAXE).add(FUSION_CORE_PROXY.get());
+        tag(BlockTags.MINEABLE_WITH_PICKAXE).add(WASTELAND_EARTH.get());
         tag(BlockTags.NEEDS_IRON_TOOL).add(FUSION_CORE_PROXY.get());
+        tag(BlockTags.NEEDS_IRON_TOOL).add(WASTELAND_EARTH.get());
     }
 
     @Override

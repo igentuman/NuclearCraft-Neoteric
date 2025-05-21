@@ -24,6 +24,7 @@ import java.util.List;
 
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.setup.registration.NCBlocks.MUSHROOM_BLOCK;
+import static igentuman.nc.setup.registration.NCBlocks.WASTELAND_EARTH;
 import static net.minecraft.world.level.block.Blocks.*;
 
 public class NCConfiguredFeatures {
@@ -36,6 +37,7 @@ public class NCConfiguredFeatures {
             features.put(name, registerKey(name + "_ore"));
         }
         features.put("glowing_mushroom", registerKey("glowing_mushroom_feature"));
+        features.put("glowing_mushroom_wasteland", registerKey("glowing_mushroom_wasteland_feature"));
         return features;
     }
 
@@ -75,6 +77,12 @@ public class NCConfiguredFeatures {
                         new SimpleBlockConfiguration(BlockStateProvider.simple(MUSHROOM_BLOCK.get())),
                         List.of(SOUL_SOIL, SOUL_SAND, GLOWSTONE)
                         )
+        );
+        register(context, ORE_CONFIGURED_FEATURES.get("glowing_mushroom_wasteland"), Feature.RANDOM_PATCH,
+                FeatureUtils.simplePatchConfiguration(Feature.SIMPLE_BLOCK,
+                        new SimpleBlockConfiguration(BlockStateProvider.simple(MUSHROOM_BLOCK.get())),
+                        List.of(WASTELAND_EARTH.get())
+                )
         );
     }
 

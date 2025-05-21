@@ -38,7 +38,7 @@ public class NCBlockStates extends BlockStateProvider {
 
     @Override
     protected void registerStatesAndModels() {
-        portal();
+        wasteland();
         ores();
         blocks();
         processors();
@@ -368,11 +368,12 @@ public class NCBlockStates extends BlockStateProvider {
         }
     }
 
-    private void portal() {
+    private void wasteland() {
         Block block = PORTAL_BLOCK.get();
         ResourceLocation side = modLoc("block/portal");
         ResourceLocation top = modLoc("block/portal");
         simpleBlock(block, models().cube(PORTAL_BLOCK.getId().getPath(), side, top, side, side, side, side));
+        simpleBlock(WASTELAND_EARTH.get());
     }
 
     private ResourceLocation key(Block block) {

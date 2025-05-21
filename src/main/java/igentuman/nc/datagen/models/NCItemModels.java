@@ -55,6 +55,7 @@ public class NCItemModels extends ItemModelProvider {
         storageBlocks();
         
         withExistingParent(NCBlocks.PORTAL_ITEM.getId().getPath(), modLoc("block/portal"));
+        withExistingParent(NCBlocks.WASTELAND_EARTH.getId().getPath(), modLoc("block/wasteland_earth"));
 
         singleTexture(MULTITOOL.getId().getPath(),
                 mcLoc("item/generated"),

@@ -1,14 +1,19 @@
 package igentuman.nc.datagen.tags;
 
 import net.minecraft.core.HolderLookup;
-
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.TagsProvider;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BiomeTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.setup.registration.WorldGeneration.WASTELAND;
+import static igentuman.nc.setup.registration.WorldGeneration.WASTELAND_BIOME;
 
 public class NCBiomeTags extends TagsProvider<Biome> {
 
@@ -18,13 +23,14 @@ public class NCBiomeTags extends TagsProvider<Biome> {
 
     @Override
     protected void addTags(HolderLookup.Provider provider) {
-        ForgeRegistries.BIOMES.getValues().forEach(biome -> {
-
-        });
+        // Add Wasteland to its custom tag
+        tag(WASTELAND).addOptional(WASTELAND_BIOME.location());
+        tag(Tags.Biomes.IS_WASTELAND).addOptional(WASTELAND_BIOME.location());
     }
 
     @Override
     public String getName() {
-        return "NuclearCraft Tags";
+        return "NuclearCraft Biome Tags";
     }
 }
+

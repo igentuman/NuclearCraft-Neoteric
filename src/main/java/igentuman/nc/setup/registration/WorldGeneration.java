@@ -3,11 +3,13 @@ package igentuman.nc.setup.registration;
 import com.mojang.serialization.Codec;
 import igentuman.nc.world.BiomeFilterNether;
 import igentuman.nc.world.OrePlacementModifier;
+import igentuman.nc.world.biome.WastelandBiome;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
@@ -18,6 +20,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegisterEvent;
 import net.minecraftforge.registries.RegistryObject;
 
@@ -25,7 +28,11 @@ import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
 
 public class WorldGeneration {
-   public static final ResourceKey<Biome> WASTELAND_BIOME = makeKey("wasteland");
+    public static final DeferredRegister<Biome> BIOMES = DeferredRegister.create(Registries.BIOME, MODID);
+    public static final TagKey<Biome> WASTELAND = TagKey.create(ForgeRegistries.BIOMES.getRegistryKey(), rl("wasteland"));
+
+    public static final ResourceKey<Biome> WASTELAND_BIOME = makeKey("wasteland");
+    public static final RegistryObject<Biome> WASTELAND_old = BIOMES.register("wasteland", () -> WastelandBiome.create());
 
     public static final DeferredRegister<PlacementModifierType<?>> PLACEMENT_MODIFIERS =
             DeferredRegister.create(Registries.PLACEMENT_MODIFIER_TYPE, MODID);
@@ -50,6 +57,7 @@ public class WorldGeneration {
 
     public static void register(IEventBus eventBus) {
         PLACEMENT_MODIFIERS.register(eventBus);
+        BIOMES.register(eventBus);
     }
 
     public static <P extends PlacementModifier> PlacementModifierType<P> placement(Codec<P> codec) {

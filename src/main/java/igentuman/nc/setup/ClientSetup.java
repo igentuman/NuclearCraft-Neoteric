@@ -16,17 +16,21 @@ import igentuman.nc.client.gui.kugelblitz.ChamberTerminalScreen;
 import igentuman.nc.client.gui.kugelblitz.EXPLScreen;
 import igentuman.nc.client.gui.turbine.TurbineControllerScreen;
 import igentuman.nc.client.gui.turbine.TurbinePortScreen;
+import igentuman.nc.client.model.ModelFeralGhoul;
 import igentuman.nc.client.particle.FusionBeamParticle;
 import igentuman.nc.client.particle.RadiationParticle;
 import igentuman.nc.client.gui.fission.FissionControllerScreen;
 import igentuman.nc.client.renderer.DistortShader;
+import igentuman.nc.client.renderer.FeralGhoulRenderer;
 import igentuman.nc.client.sound.SoundHandler;
 import igentuman.nc.content.energy.BatteryBlocks;
+import igentuman.nc.entity.EntityFeralGhoul;
 import igentuman.nc.handler.event.client.*;
 import igentuman.nc.radiation.client.ClientRadiationData;
 import igentuman.nc.radiation.client.RadiationOverlay;
 import igentuman.nc.radiation.client.WhiteNoiseOverlay;
 import igentuman.nc.content.processors.Processors;
+import igentuman.nc.setup.registration.Entities;
 import igentuman.nc.setup.registration.NCEnergyBlocks;
 import igentuman.nc.setup.registration.NCFluids;
 import igentuman.nc.setup.registration.NCProcessors;
@@ -35,6 +39,9 @@ import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
+import net.minecraft.client.renderer.entity.EntityRenderers;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.renderer.item.ItemPropertyFunction;
 import net.minecraft.resources.ResourceLocation;
@@ -43,6 +50,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
 import net.minecraftforge.client.event.RegisterItemDecorationsEvent;
@@ -82,6 +90,10 @@ public class ClientSetup {
             BlockEntityRenderers.register(EXPL_BE.get(), EXPLRenderer::new);
             BlockEntityRenderers.register(TURBINE_BE.get("turbine_rotor_shaft").get(), TurbineRotorRenderer::new);
             BlockEntityRenderers.register(KUGELBLITZ_BE.get("black_hole").get(), BlackholeRenderer::new);
+            
+            // Register the Feral Ghoul renderer
+            EntityRenderers.register(Entities.FERAL_GHOUL.get(), FeralGhoulRenderer::new);
+            
             MenuScreens.register(STORAGE_CONTAINER.get(), StorageContainerScreen::new);
             MenuScreens.register(FUSION_CORE_CONTAINER.get(), FusionCoreScreen::new);
             MenuScreens.register(EXPL_CONTAINER.get(), EXPLScreen::new);
@@ -159,5 +171,10 @@ public class ClientSetup {
         for(String name: BatteryBlocks.all().keySet()) {
             event.register(NCEnergyBlocks.BLOCK_ITEMS.get(name).get(), BatteryBlockItemDecorator.INSTANCE);
         }
+    }
+    
+    @SubscribeEvent
+    public static void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
+        event.registerLayerDefinition(ModelFeralGhoul.LAYER_LOCATION, ModelFeralGhoul::createBodyLayer);
     }
 }

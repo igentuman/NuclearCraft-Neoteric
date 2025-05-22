@@ -8,6 +8,7 @@ import igentuman.nc.content.energy.SolarPanels;
 import igentuman.nc.content.materials.Materials;
 import igentuman.nc.content.materials.Blocks;
 import igentuman.nc.content.materials.Ores;
+import igentuman.nc.entity.EntityFeralGhoul;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.inventory.MenuType;
@@ -30,6 +31,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static igentuman.nc.setup.registration.Entities.FERAL_GHOUL;
 import static igentuman.nc.setup.registration.NCItems.*;
 import static igentuman.nc.setup.registration.Registries.*;
 import static igentuman.nc.setup.registration.Tags.*;
@@ -49,7 +51,9 @@ public class NCBlocks {
     public static final Item.Properties ORE_ITEM_PROPERTIES = new Item.Properties();
     public static final Item.Properties MULTIBLOCK_ITEM_PROPERTIES = new Item.Properties();
     public static final RegistryObject<Block> PORTAL_BLOCK = BLOCKS.register("portal", PortalBlock::new);
-    public static final RegistryObject<Block> WASTELAND_EARTH = BLOCKS.register("wasteland_earth", () -> new Block(BlockBehaviour.Properties.of().sound(SoundType.GRAVEL).strength(1.5f).requiresCorrectToolForDrops()));
+    public static final RegistryObject<Block> WASTELAND_EARTH = BLOCKS.register("wasteland_earth", () -> new Block(BlockBehaviour.Properties.of().sound(SoundType.GRAVEL).strength(1.5f).requiresCorrectToolForDrops().isValidSpawn((blockState, blockGetter, blockPos, entityType) -> {
+        return entityType == FERAL_GHOUL.get();
+    })));
     public static final RegistryObject<Block> REDSTONE_DIMMER_BLOCK = BLOCKS.register("redstone_dimmer", RedstoneDimmerBlock::new);
     public static final RegistryObject<Item> REDSTONE_DIMMER_ITEM_BLOCK = fromBlock(REDSTONE_DIMMER_BLOCK);
     public static final RegistryObject<BlockEntityType<RedstoneDimmerBE>> REDSTONE_DIMMER_BE = BLOCK_ENTITIES.register("redstone_dimmer",

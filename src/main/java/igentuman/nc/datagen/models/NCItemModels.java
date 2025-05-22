@@ -53,7 +53,7 @@ public class NCItemModels extends ItemModelProvider {
         fuel();
         isotopes();
         storageBlocks();
-        
+        withExistingParent(FERAL_GHOUL_SPAWN_EGG.getId().getPath(), mcLoc("item/template_spawn_egg"));
         withExistingParent(NCBlocks.PORTAL_ITEM.getId().getPath(), modLoc("block/portal"));
         withExistingParent(NCBlocks.WASTELAND_EARTH.getId().getPath(), modLoc("block/wasteland_earth"));
 

@@ -33,6 +33,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("itemGroup." + MODID+"_turbine", "NuclearCraft Turbine");
         add("itemGroup." + MODID+"_kugelblitz", "NuclearCraft Kugelblitz");
         add("itemGroup." + MODID+"_accelerator", "NuclearCraft Accelerator");
+        add("entity.nuclearcraft.feral_ghoul", "Feral Ghoul");
         ores();
         ingots();
         plates();
@@ -230,6 +231,9 @@ public class NCLanguageProvider extends LanguageProvider {
         add("music.end_of_the_world", "End of the World");
         add("music.wanderer", "Wanderer");
         add("music.money_for_nothing", "Money For Nothing");
+
+        add("sound_event.nuclearcraft.feral_ghoul.idle", "Feral Ghoul idle");
+        add("sound_event.nuclearcraft.feral_ghoul.death", "Feral Ghoul death");
 
         add("sound_event.nuclearcraft.item.geiger_1", "Geiger Counter Ticks Level 1 Intensity");
         add("sound_event.nuclearcraft.item.geiger_2", "Geiger Counter Ticks Level 2 Intensity");
@@ -788,6 +792,7 @@ public class NCLanguageProvider extends LanguageProvider {
         for(String name: NCItems.NC_ITEMS.keySet()) {
             add(NCItems.NC_ITEMS.get(name).get(), convertToName(name));
         }
+        add("item."+MODID+".feral_ghoul_spawn_egg", "Feral Ghoul Spawn Egg");
         add("item."+MODID+".wanderer.desc", "Wanderer");
         add("item."+MODID+".end_of_the_world.desc", "End of the World");
         add("item."+MODID+".hyperspace.desc", "Hyperspace");

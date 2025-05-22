@@ -4,11 +4,13 @@ import net.minecraft.core.HolderGetter;
 import net.minecraft.data.worldgen.BiomeDefaultFeatures;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.data.worldgen.placement.VegetationPlacements;
+import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.biome.*;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 
+import static igentuman.nc.setup.registration.Entities.FERAL_GHOUL;
 import static igentuman.nc.setup.registration.WorldGeneration.WASTELAND_BIOME;
 
 public class WastelandBiome {
@@ -38,7 +40,8 @@ public class WastelandBiome {
         biomeBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_DEAD_BUSH);
 
         MobSpawnSettings.Builder spawnBuilder = new MobSpawnSettings.Builder();
-
+        MobSpawnSettings.SpawnerData spawner = new MobSpawnSettings.SpawnerData(FERAL_GHOUL.get(), 100, 1, 7);
+        spawnBuilder.addSpawn(MobCategory.MONSTER, spawner);
         return new Biome.BiomeBuilder()
                 .temperature(1.5F)  // Hot temperature
                 .downfall(0.2F)     // No rainfall
@@ -60,6 +63,9 @@ public class WastelandBiome {
     public static Biome create() {
         // This method is a simplified version for biome registration
         BiomeGenerationSettings.PlainBuilder builder = new BiomeGenerationSettings.PlainBuilder();
+        MobSpawnSettings.Builder spawnBuilder = new MobSpawnSettings.Builder();
+        MobSpawnSettings.SpawnerData spawner = new MobSpawnSettings.SpawnerData(FERAL_GHOUL.get(), 100, 1, 7);
+        spawnBuilder.addSpawn(MobCategory.MONSTER, spawner);
         return new Biome.BiomeBuilder()
                 .temperature(1.5F)  // Hot temperature
                 .downfall(0.2F)     // No rainfall
@@ -73,10 +79,8 @@ public class WastelandBiome {
                         .foliageColorOverride(3882286)
                         .ambientMoodSound(AmbientMoodSettings.LEGACY_CAVE_SETTINGS)
                         .build())
-                .mobSpawnSettings(new MobSpawnSettings.Builder().build())
-                .generationSettings(
-                        builder
-                        .build())
+                .mobSpawnSettings(spawnBuilder.build())
+                .generationSettings(builder.build())
                 .build();
     }
 }

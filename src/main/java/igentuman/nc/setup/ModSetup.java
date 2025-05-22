@@ -16,6 +16,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.setup.registration.Entities.registerSpawnPlacements;
 
 @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ModSetup {
@@ -35,6 +36,7 @@ public class ModSetup {
     public static void init(FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
             //Dimensions.register();
+            registerSpawnPlacements();
             GameEvents.commonSetup();
         });
         NuclearCraft.packetHandler().initialize();

@@ -53,6 +53,18 @@
     ],
     "subtitle": "sound_event.nuclearcraft.fusion.switch"
   },
+  "feral_ghoul_death": {
+    "sounds": [
+      "nuclearcraft:entity/feral_ghoul_death"
+    ],
+    "subtitle": "sound_event.nuclearcraft.feral_ghoul.death"
+  },
+  "feral_ghoul_charge": {
+    "sounds": [
+      "nuclearcraft:entity/feral_ghoul_charge"
+    ],
+    "subtitle": "sound_event.nuclearcraft.feral_ghoul.idle"
+  },
   "charge_energy": {
     "sounds": [
       "nuclearcraft:item/charge_energy"

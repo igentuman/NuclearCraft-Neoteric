@@ -80,11 +80,17 @@
     "axolotls": [],
     "creature": [],
     "misc": [],
-    "monster": [],
+    "monster": [
+      {
+        "type": "nuclearcraft:feral_ghoul",
+        "maxCount": 7,
+        "minCount": 1,
+        "weight": 100
+      }
+    ],
     "underground_water_creature": [],
     "water_ambient": [],
     "water_creature": []
   },
   "temperature": 1.5
 }
-

@@ -6,6 +6,7 @@ import igentuman.nc.item.*;
 import igentuman.nc.item.Tiers;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
+import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.RegistryObject;
 
@@ -13,6 +14,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import static igentuman.nc.setup.registration.Entities.FERAL_GHOUL;
 import static igentuman.nc.setup.registration.NCSounds.SOUND_MAP;
 import static igentuman.nc.setup.registration.Registries.ITEMS;
 import static igentuman.nc.setup.registration.Tags.*;
@@ -44,7 +46,8 @@ public class NCItems {
     public static final Item.Properties HAZMAT_PROPS = new Item.Properties().stacksTo(1).durability(250);
     public static final Item.Properties TOUGH_PROPS = new Item.Properties().stacksTo(1).durability(2500).fireResistant();
     public static final Item.Properties HEV_PROPS = new Item.Properties().stacksTo(1).durability(5500).fireResistant();
-
+    public static final RegistryObject<Item> FERAL_GHOUL_SPAWN_EGG = ITEMS.register("feral_ghoul_spawn_egg",
+            () -> new ForgeSpawnEggItem(FERAL_GHOUL, 0x7e9680, 0xc5d1c5, new Item.Properties()));
     public static final RegistryObject<Item> HAZMAT_MASK =
             ITEMS.register("hazmat_mask", () -> new HazmatItem(ArmorMaterials.HAZMAT, ArmorItem.Type.HELMET, HAZMAT_PROPS));
     public static final RegistryObject<Item> HAZMAT_CHEST =

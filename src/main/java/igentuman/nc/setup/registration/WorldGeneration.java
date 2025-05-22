@@ -3,7 +3,7 @@ package igentuman.nc.setup.registration;
 import com.mojang.serialization.Codec;
 import igentuman.nc.world.BiomeFilterNether;
 import igentuman.nc.world.OrePlacementModifier;
-import igentuman.nc.world.biome.WastelandBiome;
+import igentuman.nc.world.structure.WastelandStructureFeature;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -21,7 +21,6 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegisterEvent;
 import net.minecraftforge.registries.RegistryObject;
 
 import static igentuman.nc.NuclearCraft.MODID;
@@ -32,7 +31,6 @@ public class WorldGeneration {
     public static final TagKey<Biome> WASTELAND = TagKey.create(ForgeRegistries.BIOMES.getRegistryKey(), rl("wasteland"));
 
     public static final ResourceKey<Biome> WASTELAND_BIOME = makeKey("wasteland");
-    public static final RegistryObject<Biome> WASTELAND_old = BIOMES.register("wasteland", () -> WastelandBiome.create());
 
     public static final DeferredRegister<PlacementModifierType<?>> PLACEMENT_MODIFIERS =
             DeferredRegister.create(Registries.PLACEMENT_MODIFIER_TYPE, MODID);
@@ -43,16 +41,8 @@ public class WorldGeneration {
     public static final RegistryObject<PlacementModifierType<?>> VEGETATION_MODIFIER =
             PLACEMENT_MODIFIERS.register("nc_vegetation_modifier", () -> placement(BiomeFilterNether.CODEC));
 
-
     private static ResourceKey<Biome> makeKey(String name) {
         return ResourceKey.create(Registries.BIOME, rl(name));
-    }
-    public static void registerExtraStuff(RegisterEvent evt) {
-/*        if (evt.getRegistryKey().equals(Registries.BIOME_SOURCE)) {
-            Registry.register(BuiltInRegistries.BIOME_SOURCE, "nuclearcraft_wasteland", WastelandBiomeProvider.CODEC);
-        } else if (evt.getRegistryKey().equals(Registries.CHUNK_GENERATOR)) {
-            Registry.register(BuiltInRegistries.CHUNK_GENERATOR, "nuclearcraft_wasteland", NuclearcraftChunkGenerator.CODEC);
-        }*/
     }
 
     public static void register(IEventBus eventBus) {
@@ -65,6 +55,7 @@ public class WorldGeneration {
     }
 
     public static void init() {
+        WastelandStructureFeature.init();
     }
 
     public static class StructureLoader {

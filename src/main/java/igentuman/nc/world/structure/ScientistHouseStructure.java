@@ -27,9 +27,7 @@ public class ScientistHouseStructure {
         if (ev.getUpdateCause() == TagsUpdatedEvent.UpdateCause.SERVER_DATA_LOAD) {
             for(String biome : new String[]{"plains", "snowy", "savanna", "desert", "taiga"}) {
                 addToPool(rlFromString("minecraft:village/" + biome + "/houses"), rl("scientist_house/" + biome), ev.getRegistryAccess());
-
             }
-
         }
     }
 

@@ -15,6 +15,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.levelgen.structure.StructureType;
@@ -49,6 +50,7 @@ public class Registries {
     public static final DeferredRegister<RecipeSerializer<?>> SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, MODID);
     public static final DeferredRegister<MobEffect> EFFECTS = DeferredRegister.create(ForgeRegistries.MOB_EFFECTS, MODID);
     public static final RecipeSerializerDeferredRegister RECIPE_SERIALIZERS = new RecipeSerializerDeferredRegister(NuclearCraft.MODID);
+    public static final DeferredRegister<ConfiguredFeature<?, ?>> CONFIGURED = DeferredRegister.create(net.minecraft.core.registries.Registries.CONFIGURED_FEATURE, MODID);
 
     public static void init(FMLJavaModLoadingContext context) {
         IEventBus bus = context.getModEventBus();
@@ -70,5 +72,6 @@ public class Registries {
         RECIPE_TYPES.register(bus);
         CREATIVE_TABS.register(bus);
         SOUND_EVENTS.register(bus);
+        CONFIGURED.register(bus);
     }
 }

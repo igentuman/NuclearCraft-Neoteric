@@ -58,8 +58,6 @@ public class WorldEvents {
 
     public final static List<Block> trackingBlocks = new ArrayList<>();
     
-    // Thread pool manager for handling multiblock ticking
-
 
     public WorldEvents() {
 

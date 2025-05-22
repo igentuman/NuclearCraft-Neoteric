@@ -9,14 +9,13 @@
     "MekRadiationManager",
     "TagLoaderMixin",
     "TemplatePoolAccess",
-    "VanillaBiomeParametersInvoker",
-    "VanillaBiomeParametersMixin"
+    "OverworldBiomeBuilderInvoker",
+    "OverworldBiomeBuilderMixin"
   ],
   "server": [
 
   ],
   "client": [
-
 
   ],
   "minVersion": "0.8"

@@ -3,17 +3,13 @@ package igentuman.nc.datagen.tags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.TagsProvider;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.BiomeTags;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import static igentuman.nc.NuclearCraft.MODID;
-import static igentuman.nc.setup.registration.WorldGeneration.WASTELAND;
-import static igentuman.nc.setup.registration.WorldGeneration.WASTELAND_BIOME;
+import static igentuman.nc.setup.registration.WorldGeneration.*;
 
 public class NCBiomeTags extends TagsProvider<Biome> {
 

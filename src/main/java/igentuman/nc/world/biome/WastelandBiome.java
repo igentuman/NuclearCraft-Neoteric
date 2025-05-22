@@ -13,6 +13,9 @@ import static igentuman.nc.setup.registration.WorldGeneration.WASTELAND_BIOME;
 
 public class WastelandBiome {
 
+    public static void bootstrap() {
+
+    }
     public static void bootstrap(BootstapContext<Biome> context) {
         HolderGetter<PlacedFeature> placedFeatures = context.lookup(net.minecraft.core.registries.Registries.PLACED_FEATURE);
         HolderGetter<ConfiguredWorldCarver<?>> worldCarvers = context.lookup(net.minecraft.core.registries.Registries.CONFIGURED_CARVER);

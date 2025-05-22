@@ -44,5 +44,6 @@ public class Registration {
         NCSounds.init();
         Villager.init(context);
         GameEvents.init(context);
+        WorldGeneration.init();
     }
 }

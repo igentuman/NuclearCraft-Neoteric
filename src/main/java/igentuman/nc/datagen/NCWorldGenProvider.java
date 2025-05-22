@@ -2,7 +2,10 @@ package igentuman.nc.datagen;
 
 import igentuman.nc.world.NCConfiguredFeatures;
 import igentuman.nc.world.NCPlacedFeatures;
-import igentuman.nc.world.biome.*;
+import igentuman.nc.world.biome.NCBiomeModifier;
+import igentuman.nc.world.biome.NCDensityFunction;
+import igentuman.nc.world.biome.NCSurfaceRuleData;
+import igentuman.nc.world.biome.WastelandBiome;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;

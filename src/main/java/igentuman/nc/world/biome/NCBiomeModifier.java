@@ -8,7 +8,6 @@ import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.level.levelgen.GenerationStep;
-import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.world.BiomeModifier;
 import net.minecraftforge.common.world.ForgeBiomeModifiers;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -17,7 +16,7 @@ import java.util.HashMap;
 
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.setup.registration.WorldGeneration.WASTELAND;
-import static igentuman.nc.world.NCPlacedFeatures.PLACED_FEATURES;
+import static igentuman.nc.world.NCPlacedFeatures.PLACED_FEATURES_KEYS;
 
 public class NCBiomeModifier {
 
@@ -42,32 +41,32 @@ public class NCBiomeModifier {
             if(ore.config().dimensions.contains(0)) {
                 context.register(BIOME_MODIFIERS.get(name), new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
                         biomes.getOrThrow(BiomeTags.IS_OVERWORLD),
-                        HolderSet.direct(placedFeatures.getOrThrow(PLACED_FEATURES.get(name))),
+                        HolderSet.direct(placedFeatures.getOrThrow(PLACED_FEATURES_KEYS.get(name))),
                         GenerationStep.Decoration.UNDERGROUND_ORES));
             }
             if(ore.config().dimensions.contains(-1)) {
                 context.register(BIOME_MODIFIERS.get(name), new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
                         biomes.getOrThrow(BiomeTags.IS_NETHER),
-                        HolderSet.direct(placedFeatures.getOrThrow(PLACED_FEATURES.get(name))),
+                        HolderSet.direct(placedFeatures.getOrThrow(PLACED_FEATURES_KEYS.get(name))),
                         GenerationStep.Decoration.UNDERGROUND_ORES));
             }
 
             if(ore.config().dimensions.contains(1)) {
                 context.register(BIOME_MODIFIERS.get(name), new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
                         biomes.getOrThrow(BiomeTags.IS_END),
-                        HolderSet.direct(placedFeatures.getOrThrow(PLACED_FEATURES.get(name))),
+                        HolderSet.direct(placedFeatures.getOrThrow(PLACED_FEATURES_KEYS.get(name))),
                         GenerationStep.Decoration.UNDERGROUND_ORES));
             }
         }
 
         context.register(BIOME_MODIFIERS.get("glowing_mushroom"), new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
                 biomes.getOrThrow(BiomeTags.IS_NETHER),
-                HolderSet.direct(placedFeatures.getOrThrow(PLACED_FEATURES.get("glowing_mushroom"))),
+                HolderSet.direct(placedFeatures.getOrThrow(PLACED_FEATURES_KEYS.get("glowing_mushroom"))),
                 GenerationStep.Decoration.UNDERGROUND_DECORATION));
 
         context.register(BIOME_MODIFIERS.get("glowing_mushroom_wasteland"), new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
                 biomes.getOrThrow(WASTELAND),
-                HolderSet.direct(placedFeatures.getOrThrow(PLACED_FEATURES.get("glowing_mushroom_wasteland"))),
+                HolderSet.direct(placedFeatures.getOrThrow(PLACED_FEATURES_KEYS.get("glowing_mushroom_wasteland"))),
                 GenerationStep.Decoration.VEGETAL_DECORATION));
     }
 

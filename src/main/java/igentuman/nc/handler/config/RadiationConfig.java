@@ -163,7 +163,7 @@ public class RadiationConfig {
 
             BIOME_RADIATION = builder
                     .comment("Natural radiation per biome: uRad", "Format: biome_id|radiation")
-                    .define("biome_radiation", List.of("nuclearcraft:wasteland|2000", "minecraft:nether_wastes|500"), o -> o instanceof ArrayList);
+                    .define("biome_radiation", List.of("nuclearcraft:wasteland|20000", "minecraft:nether_wastes|500"), o -> o instanceof ArrayList);
 
             DIMENSION_RADIATION = builder
                     .comment("Natural radiation per dimension: uRad", "Format: dim_id|radiation")

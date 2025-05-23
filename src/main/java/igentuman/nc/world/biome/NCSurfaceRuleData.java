@@ -40,9 +40,79 @@ public class NCSurfaceRuleData {
     }
 
     public static final ResourceKey<NoiseGeneratorSettings> WASTELAND_NOISE_GEN = ResourceKey.create(Registries.NOISE_SETTINGS, rl("wasteland"));
+    public static final ResourceKey<NoiseGeneratorSettings> CUSTOM_OVERWORLD_NOISE_GEN = ResourceKey.create(Registries.NOISE_SETTINGS, rl("custom_overworld"));
 
     public static void bootstrap(BootstapContext<NoiseGeneratorSettings> context) {
         context.register(WASTELAND_NOISE_GEN, makeNoiseSettings(context));
+        context.register(CUSTOM_OVERWORLD_NOISE_GEN, makeCustomOverworldNoiseSettings(context));
+    }
+    
+    /**
+     * Creates a custom NoiseGeneratorSettings that inherits from OVERWORLD but overrides specific properties
+     */
+    public static NoiseGeneratorSettings makeCustomOverworldNoiseSettings(BootstapContext<NoiseGeneratorSettings> context) {
+        // Get the OVERWORLD NoiseGeneratorSettings
+        HolderGetter<NoiseGeneratorSettings> noiseGenSettings = context.lookup(Registries.NOISE_SETTINGS);
+        NoiseGeneratorSettings overworldSettings = NoiseGeneratorSettings.overworld(context, false, false);
+        
+        // Create a custom NoiseSettings with different height values
+        NoiseSettings customNoiseSettings = NoiseSettings.create(
+                0,
+                256,  // height (same as overworld)
+                1,    // custom horizontal size (smaller than overworld's 2)
+                2     // vertical size (same as overworld)
+        );
+        
+        // Create a custom NoiseRouter with modified values
+        NoiseRouter overworldRouter = overworldSettings.noiseRouter();
+        NoiseRouter customRouter = new NoiseRouter(
+                overworldRouter.barrierNoise(),
+                overworldRouter.fluidLevelFloodednessNoise(),
+                overworldRouter.fluidLevelSpreadNoise(),
+                overworldRouter.lavaNoise(),
+                // Modify the temperature to create different terrain
+                DensityFunctions.add(
+                    overworldRouter.temperature(),
+                    DensityFunctions.constant(0.5)
+                ),
+                // Modify the vegetation to create different biome distribution
+                DensityFunctions.mul(
+                    overworldRouter.vegetation(),
+                    DensityFunctions.constant(1.2)
+                ),
+                overworldRouter.continents(),
+                overworldRouter.erosion(),
+                overworldRouter.depth(),
+                overworldRouter.ridges(),
+                // Modify initial density for different terrain shape
+                DensityFunctions.add(
+                    overworldRouter.initialDensityWithoutJaggedness(),
+                    DensityFunctions.constant(0.1)
+                ),
+
+                DensityFunctions.add(
+                    overworldRouter.initialDensityWithoutJaggedness(),
+                    DensityFunctions.constant(0.1)
+                ),
+                overworldRouter.veinToggle(),
+                overworldRouter.veinRidged(),
+                overworldRouter.veinGap()
+        );
+        
+        // Create the custom NoiseGeneratorSettings
+        return new NoiseGeneratorSettings(
+                customNoiseSettings,
+                overworldSettings.defaultBlock(),
+                overworldSettings.defaultFluid(),
+                customRouter,
+                overworldSettings.surfaceRule(),
+                overworldSettings.spawnTarget(),
+                45,
+                overworldSettings.disableMobGeneration(),
+                overworldSettings.aquifersEnabled(),
+                overworldSettings.oreVeinsEnabled(),
+                overworldSettings.useLegacyRandomSource()
+        );
     }
 
     public static NoiseGeneratorSettings makeNoiseSettings(BootstapContext<NoiseGeneratorSettings> context) {

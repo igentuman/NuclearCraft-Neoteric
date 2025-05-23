@@ -55,6 +55,6 @@
         }
       ]
     },
-    "settings": "minecraft:overworld"
+    "settings": "nuclearcraft:custom_overworld"
   }
 }

@@ -73,7 +73,7 @@ public class WastelandStructureFeature extends Feature<NoneFeatureConfiguration>
                     String rarityStr = fileName.replaceAll(".*?([0-9]+)$", "$1");
                     rarityValue = Integer.parseInt(rarityStr);
                 }
-                int rarityIndex = 100 - Math.abs(rarityValue);
+                int rarityIndex = 11 - Math.abs(rarityValue);
                 for(int i = 0; i < rarityIndex; i++) {
                     structures.add(ResourceLocation.tryParse(location.toString()));
                 }
@@ -92,7 +92,7 @@ public class WastelandStructureFeature extends Feature<NoneFeatureConfiguration>
                         String rarityStr = fileName.replaceAll(".*?([0-9]+)$", "$1");
                         rarityValue = Integer.parseInt(rarityStr);
                     }
-                    int rarityIndex = 100 - Math.abs(rarityValue);
+                    int rarityIndex = 11 - Math.abs(rarityValue);
                     for(int i = 0; i < rarityIndex; i++) {
                         structures.add(ResourceLocation.tryParse(location.toString()));
                     }

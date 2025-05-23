@@ -97,9 +97,7 @@ public class MultiblockHandler {
                     if (multiblock == null) {
                         continue;
                     }
-                    if (multiblock.onBlockChange(pos)) {
-                        break;
-                    }
+                    multiblock.onBlockChange(pos);
                 }
             }
             List<AbstractMultiblock> tmp = new ArrayList<>(multiblocks.values());

@@ -1,8 +1,10 @@
 package igentuman.nc.block;
 
 import igentuman.nc.world.dimension.Dimensions;
+import igentuman.nc.world.dimension.ModTeleporter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -17,9 +19,11 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
+import static igentuman.nc.world.dimension.Dimensions.WASTELAND_KEY;
+
 public class PortalBlock extends Block {
 
-    private static final VoxelShape SHAPE = Shapes.box(0, 0, 0, 1, .8, 1);
+    private static final VoxelShape SHAPE = Shapes.box(0, 0, 0, 1, .5, 1);
 
     public PortalBlock() {
         super(Properties.of()
@@ -35,16 +39,26 @@ public class PortalBlock extends Block {
 
     @Override
     public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
+
         if (entity instanceof ServerPlayer player) {
-            if (level.dimension().equals(Dimensions.WASTELAND)) {
-                teleportTo(player, pos.north(), Level.OVERWORLD);
-            } else {
-                teleportTo(player, pos.north(), Dimensions.WASTELAND);
-            }
+            teleportTo(player, pos.north());
         }
     }
 
-    private void teleportTo(ServerPlayer player, BlockPos pos, ResourceKey<Level> id) {
-        ServerLevel world = player.getServer().getLevel(id);
+    private void teleportTo(Entity player, BlockPos pPos) {
+        if (player.level() instanceof ServerLevel serverlevel) {
+            MinecraftServer minecraftserver = serverlevel.getServer();
+            ResourceKey<Level> resourcekey = player.level().dimension() == Dimensions.WASTELAND ?
+                    Level.OVERWORLD : Dimensions.WASTELAND;
+
+            ServerLevel portalDimension = minecraftserver.getLevel(resourcekey);
+            if (portalDimension != null && !player.isPassenger()) {
+                if(resourcekey == Dimensions.WASTELAND) {
+                    player.changeDimension(portalDimension, new ModTeleporter(pPos));
+                } else {
+                    player.changeDimension(portalDimension, new ModTeleporter(pPos));
+                }
+            }
+        }
     }
 }

@@ -34,6 +34,10 @@ public class NCPlacedFeatures {
         HashMap<String, ResourceKey<PlacedFeature>> map = new HashMap<>();
         for(String name: Ores.all().keySet()) {
             map.put(name, registerKey(name + "_placed"));
+            map.put(name+"_wasteland", registerKey(name + "_wasteland_placed"));
+        }
+        for(String name: List.of("uranium", "thorium")) {
+            map.put(name+"_additional_wasteland", registerKey(name + "_additional_wasteland_placed"));
         }
         map.put("glowing_mushroom", registerKey("glowing_mushroom_placed"));
         map.put("glowing_mushroom_wasteland", registerKey("glowing_mushroom_wasteland_placed"));
@@ -44,10 +48,13 @@ public class NCPlacedFeatures {
     public static void bootstrap(BootstapContext<PlacedFeature> context) {
         HolderGetter<ConfiguredFeature<?, ?>> configuredFeatures = context.lookup(Registries.CONFIGURED_FEATURE);
 
-        for(String name: Ores.registered().keySet()) {
+        for(String name: Ores.all().keySet()) {
             NCOre ore = Ores.all().get(name);
             if(ore.dimensions.contains(0)) {
                 register(context, PLACED_FEATURES_KEYS.get(name), configuredFeatures.getOrThrow(CONFIGURED_FEATURES.get(name)),
+                        OreGenerator.orePlacement(new OrePlacementModifier(name),
+                                HeightRangePlacement.uniform(VerticalAnchor.absolute(ore.config().height[0]), VerticalAnchor.absolute(ore.config().height[1]))));
+                register(context, PLACED_FEATURES_KEYS.get(name+"_wasteland"), configuredFeatures.getOrThrow(CONFIGURED_FEATURES.get(name+"_wasteland")),
                         OreGenerator.orePlacement(new OrePlacementModifier(name),
                                 HeightRangePlacement.uniform(VerticalAnchor.absolute(ore.config().height[0]), VerticalAnchor.absolute(ore.config().height[1]))));
             }
@@ -62,6 +69,12 @@ public class NCPlacedFeatures {
                         OreGenerator.orePlacement(new OrePlacementModifier(name),
                                 HeightRangePlacement.uniform(VerticalAnchor.absolute(ore.config().height[0]), VerticalAnchor.absolute(ore.config().height[1]))));
             }
+        }
+        for(String name: List.of("uranium", "thorium")) {
+            NCOre ore = Ores.all().get(name);
+            register(context, PLACED_FEATURES_KEYS.get(name+"_additional_wasteland"), configuredFeatures.getOrThrow(CONFIGURED_FEATURES.get(name+"_additional_wasteland")),
+                    OreGenerator.orePlacement(new OrePlacementModifier(name),
+                            HeightRangePlacement.uniform(VerticalAnchor.absolute(ore.config().height[0]), VerticalAnchor.absolute(ore.config().height[1]))));
         }
 
         register(context, PLACED_FEATURES_KEYS.get("glowing_mushroom"),

@@ -65,7 +65,17 @@ public class NCOre {
                     NuclearCraft.LOGGER.warn("Error while loading dimensions ore config for " + name + "!");
                 }
             } catch (Exception e) {
-                NuclearCraft.LOGGER.error("Error while loading ore config for " + name + "!");
+                int id = Ores.all().keySet().stream().toList().indexOf(name);
+                registered = (boolean) ORE_CONFIG.ORES.get(name).register.getDefault();
+                veinSize = (int) ORE_CONFIG.ORES.get(name).veinSize.getDefault();
+                height[0] = (int) ORE_CONFIG.ORES.get(name).min_height.getDefault();
+                height[1] = (int) ORE_CONFIG.ORES.get(name).max_height.getDefault();
+                initialized = true;
+                try {
+                    dimensions = (List<Integer>) ((ArrayList<?>) ORE_CONFIG.ORES.get(name).dimensions.getDefault()).stream().toList();
+                } catch (Exception e1) {
+                    NuclearCraft.LOGGER.warn("Error while loading dimensions ore config for " + name + "!");
+                }
             }
         }
         return this;

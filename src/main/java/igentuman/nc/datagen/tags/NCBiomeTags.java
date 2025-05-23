@@ -10,6 +10,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.setup.registration.WorldGeneration.*;
+import static net.minecraft.tags.BiomeTags.IS_OVERWORLD;
 
 public class NCBiomeTags extends TagsProvider<Biome> {
 
@@ -19,9 +20,10 @@ public class NCBiomeTags extends TagsProvider<Biome> {
 
     @Override
     protected void addTags(HolderLookup.Provider provider) {
-        // Add Wasteland to its custom tag
         tag(WASTELAND).addOptional(WASTELAND_BIOME.location());
         tag(Tags.Biomes.IS_WASTELAND).addOptional(WASTELAND_BIOME.location());
+        tag(IS_OVERWORLD).addOptional(WASTELAND_BIOME.location());
+        tag(IS_OVERWORLD).addOptional(WASTELAND.location());
     }
 
     @Override

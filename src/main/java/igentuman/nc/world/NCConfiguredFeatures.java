@@ -27,6 +27,7 @@ import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.setup.registration.NCBlocks.MUSHROOM_BLOCK;
 import static igentuman.nc.setup.registration.NCBlocks.WASTELAND_EARTH;
 import static igentuman.nc.setup.registration.Registries.CONFIGURED;
+import static igentuman.nc.world.dimension.Dimensions.WASTELAIND_ID;
 import static igentuman.nc.world.structure.WastelandStructureFeature.WASTELAND_RUINS_FEATURE;
 import static net.minecraft.world.level.block.Blocks.*;
 
@@ -39,6 +40,10 @@ public class NCConfiguredFeatures {
         HashMap<String, ResourceKey<ConfiguredFeature<?,?>>> features = new HashMap<>();
         for(String name: Ores.all().keySet()) {
             features.put(name, registerKey(name + "_ore"));
+            features.put(name+"_wasteland", registerKey(name + "_wasteland_ore"));
+        }
+        for(String name: List.of("uranium", "thorium")) {
+            features.put(name+"_additional_wasteland", registerKey(name + "_additional_wasteland_ore"));
         }
         features.put("glowing_mushroom", registerKey("glowing_mushroom_feature"));
         features.put("glowing_mushroom_wasteland", registerKey("glowing_mushroom_wasteland_feature"));
@@ -66,7 +71,11 @@ public class NCConfiguredFeatures {
                 }
 
                 register(context, CONFIGURED_FEATURES.get(name), Feature.ORE, new OreConfiguration(overworld, 9));
+                if(ore.config().dimensions.contains(WASTELAIND_ID)) {
+                    register(context, CONFIGURED_FEATURES.get(name+"_wasteland"), Feature.ORE, new OreConfiguration(overworld, 2));
+                }
             }
+
             if(ore.config().dimensions.contains(-1)) {
                 register(context, CONFIGURED_FEATURES.get(name), Feature.ORE, new OreConfiguration(netherrackReplacables,
                         ore.block().defaultBlockState(), 9));
@@ -76,6 +85,11 @@ public class NCConfiguredFeatures {
                 register(context, CONFIGURED_FEATURES.get(name), Feature.ORE, new OreConfiguration(endReplaceables,
                         ore.block().defaultBlockState(), 9));
             }
+        }
+        for(String name: List.of("uranium", "thorium")) {
+            NCOre ore = Ores.all().get(name);
+            register(context, CONFIGURED_FEATURES.get(name+"_additional_wasteland"), Feature.ORE, new OreConfiguration(stoneReplaceable,
+                    ore.block().defaultBlockState(), 9));
         }
         register(context, CONFIGURED_FEATURES.get("glowing_mushroom"), Feature.RANDOM_PATCH,
                 FeatureUtils.simplePatchConfiguration(Feature.SIMPLE_BLOCK,

@@ -2,6 +2,7 @@ package igentuman.nc.world;
 
 import com.mojang.serialization.Codec;
 import igentuman.nc.setup.registration.WorldGeneration;
+import igentuman.nc.world.dimension.Dimensions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
@@ -22,6 +23,7 @@ import java.util.stream.Stream;
 
 import static dev.latvian.mods.rhino.TopLevel.Builtins.Array;
 import static igentuman.nc.handler.config.OreGenConfig.ORE_CONFIG;
+import static igentuman.nc.setup.registration.WorldGeneration.WASTELAND_BIOME;
 import static net.minecraft.core.registries.Registries.DIMENSION;
 import static net.minecraft.core.registries.Registries.DIMENSION_TYPE;
 
@@ -70,6 +72,10 @@ public class OrePlacementModifier extends PlacementModifier {
         int actualCount = determinePlacementCount(context, random);
         int x = (pos.getX() >> 4 << 4) + random.nextInt(16);
         int z = (pos.getZ() >> 4 << 4) + random.nextInt(16);
+        if(actualCount == 0) {
+            return Stream.empty();
+        }
+
         return Stream.generate(() -> new BlockPos(
                 x,
                 minHeight + random.nextInt(maxHeight - minHeight + 1),
@@ -95,7 +101,7 @@ public class OrePlacementModifier extends PlacementModifier {
             return dimsCache.get(level.getLevel().dimension());
         }
         for (int dim : dims) {
-            if (level.getServer().registryAccess().registry(DIMENSION).get().getHolder(dim).get().is(level.getLevel().dimension())) {
+            if (level.getLevel().dimensionTypeId() == Dimensions.WASTELAND_DIM_TYPE || level.getServer().registryAccess().registry(DIMENSION).get().getHolder(dim).get().is(level.getLevel().dimension())) {
                 dimsCache.put(level.getLevel().dimension(), true);
                 return true;
             }

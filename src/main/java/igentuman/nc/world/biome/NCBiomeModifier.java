@@ -13,6 +13,7 @@ import net.minecraftforge.common.world.ForgeBiomeModifiers;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.HashMap;
+import java.util.List;
 
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.setup.registration.WorldGeneration.WASTELAND;
@@ -26,6 +27,10 @@ public class NCBiomeModifier {
         HashMap<String, ResourceKey<BiomeModifier>> map = new HashMap<>();
         for(String name: Ores.all().keySet()) {
             map.put(name, registerKey(name + "_biome_modifier"));
+            map.put(name + "_wasteland", registerKey(name + "wasteland_biome_modifier"));
+        }
+        for(String name: List.of("uranium", "thorium")) {
+            map.put(name + "_additional_wasteland", registerKey(name + "_additional_wasteland_biome_modifier"));
         }
         map.put("glowing_mushroom", registerKey("glowing_mushroom_biome_modifier"));
         map.put("glowing_mushroom_wasteland", registerKey("glowing_mushroom_wasteland_biome_modifier"));
@@ -43,6 +48,10 @@ public class NCBiomeModifier {
                         biomes.getOrThrow(BiomeTags.IS_OVERWORLD),
                         HolderSet.direct(placedFeatures.getOrThrow(PLACED_FEATURES_KEYS.get(name))),
                         GenerationStep.Decoration.UNDERGROUND_ORES));
+                context.register(BIOME_MODIFIERS.get(name+"_wasteland"), new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
+                        biomes.getOrThrow(WASTELAND),
+                        HolderSet.direct(placedFeatures.getOrThrow(PLACED_FEATURES_KEYS.get(name+"_wasteland"))),
+                        GenerationStep.Decoration.UNDERGROUND_ORES));
             }
             if(ore.config().dimensions.contains(-1)) {
                 context.register(BIOME_MODIFIERS.get(name), new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
@@ -57,6 +66,13 @@ public class NCBiomeModifier {
                         HolderSet.direct(placedFeatures.getOrThrow(PLACED_FEATURES_KEYS.get(name))),
                         GenerationStep.Decoration.UNDERGROUND_ORES));
             }
+        }
+
+        for(String name: List.of("uranium", "thorium")) {
+            context.register(BIOME_MODIFIERS.get(name+"_additional_wasteland"), new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
+                    biomes.getOrThrow(WASTELAND),
+                    HolderSet.direct(placedFeatures.getOrThrow(PLACED_FEATURES_KEYS.get(name+"_additional_wasteland"))),
+                    GenerationStep.Decoration.UNDERGROUND_ORES));
         }
 
         context.register(BIOME_MODIFIERS.get("glowing_mushroom"), new ForgeBiomeModifiers.AddFeaturesBiomeModifier(

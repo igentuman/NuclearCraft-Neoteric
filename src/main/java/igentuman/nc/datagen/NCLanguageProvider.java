@@ -901,5 +901,6 @@ public class NCLanguageProvider extends LanguageProvider {
             add(NC_RF_AMPLIFIERS.get(name).get(), convertToName(name));
         }
         add("block."+MODID+".redstone_dimmer", "Redstone Dimmer");
+        add("block."+MODID+".portal", "Wasteland Portal");
     }
 }

@@ -1,22 +1,76 @@
 package igentuman.nc.world.dimension;
 
+import com.mojang.datafixers.util.Pair;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.*;
+import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
+import net.minecraft.world.level.dimension.DimensionType;
+import net.minecraft.world.level.dimension.LevelStem;
+import net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator;
+import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 
-import static igentuman.nc.NuclearCraft.MODID;
+import java.util.List;
+import java.util.OptionalLong;
+
 import static igentuman.nc.NuclearCraft.rl;
+import static igentuman.nc.setup.registration.WorldGeneration.WASTELAND_BIOME;
 
 public class Dimensions {
 
-    public static final ResourceKey<Level> WASTELAND = ResourceKey.create(Registries.DIMENSION, rl("wasteland"));
     public static int WASTELAIND_ID = -4848;
+    public static final ResourceKey<Level> WASTELAND = ResourceKey.create(Registries.DIMENSION, rl("wasteland"));
+    public static final ResourceKey<LevelStem> WASTELAND_KEY = ResourceKey.create(Registries.LEVEL_STEM, rl("wasteland"));
+    public static final ResourceKey<DimensionType> WASTELAND_DIM_TYPE = ResourceKey.create(Registries.DIMENSION_TYPE, rl("wasteland_type"));
 
-    public static void register() {
-/*        Registry.register(Registries.CHUNK_GENERATOR, new ResourceLocation(MODID, "wasteland_chunkgen"),
-                NuclearcraftChunkGenerator.CODEC);
-        Registry.register(Registry.BIOME_SOURCE, new ResourceLocation(MODID, "biomes"),
-                WastelandBiomeProvider.CODEC);*/
+    public static void bootstrapType(BootstapContext<DimensionType> context) {
+        context.register(WASTELAND_DIM_TYPE, new DimensionType(
+                OptionalLong.empty(),
+                true,
+                false,
+                true,
+                false,
+                1.0,
+                true,
+                false,
+                0,
+                256,
+                256,
+                BlockTags.INFINIBURN_OVERWORLD,
+                BuiltinDimensionTypes.OVERWORLD_EFFECTS,
+                0.8f,
+                new DimensionType.MonsterSettings(false, false, ConstantInt.of(0), 0)));
+    }
+
+    public static void bootstrapStem(BootstapContext<LevelStem> context) {
+        HolderGetter<Biome> biomeRegistry = context.lookup(Registries.BIOME);
+        HolderGetter<DimensionType> dimTypes = context.lookup(Registries.DIMENSION_TYPE);
+        HolderGetter<NoiseGeneratorSettings> noiseGenSettings = context.lookup(Registries.NOISE_SETTINGS);
+
+        NoiseBasedChunkGenerator wrappedChunkGenerator = new NoiseBasedChunkGenerator(
+                new FixedBiomeSource(biomeRegistry.getOrThrow(WASTELAND_BIOME)),
+                noiseGenSettings.getOrThrow(NoiseGeneratorSettings.OVERWORLD));
+
+        NoiseBasedChunkGenerator noiseBasedChunkGenerator = new NoiseBasedChunkGenerator(
+                MultiNoiseBiomeSource.createFromList(
+                        new Climate.ParameterList<>(List.of(Pair.of(
+                                        Climate.parameters(1.2F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F), biomeRegistry.getOrThrow(WASTELAND_BIOME)),
+                                Pair.of(
+                                        Climate.parameters(1.9F, 0.2F, 0.0F, 0.2F, 0.0F, 0.0F, 0.0F), biomeRegistry.getOrThrow(Biomes.DESERT)),
+                                Pair.of(
+                                        Climate.parameters(1.3F, 0.6F, 0.1F, 0.1F, 0.0F, 0.0F, 0.0F), biomeRegistry.getOrThrow(WASTELAND_BIOME)),
+                                Pair.of(
+                                        Climate.parameters(2F, 0.3F, 0.2F, 0.1F, 0.0F, 0.0F, 0.0F), biomeRegistry.getOrThrow(WASTELAND_BIOME))
+                        ))),
+                noiseGenSettings.getOrThrow(NoiseGeneratorSettings.OVERWORLD));
+
+        LevelStem stem = new LevelStem(dimTypes.getOrThrow(WASTELAND_DIM_TYPE), noiseBasedChunkGenerator);
+
+        context.register(WASTELAND_KEY, stem);
     }
 }

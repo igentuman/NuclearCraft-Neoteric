@@ -69,14 +69,11 @@ public class NuclearCraft {
         context.registerConfig(ModConfig.Type.COMMON, WorldConfig.spec, "NuclearCraft/world.toml");
     }
 
-
-
     public NuclearCraft(FMLJavaModLoadingContext context) {
         instance = this;
         IEventBus modbus = context.getModEventBus();
         registerConfigs(context);
         packetHandler = new PacketHandler();
-        //forceLoadConfig();
         MinecraftForge.EVENT_BUS.addListener(this::serverStopped);
         MinecraftForge.EVENT_BUS.addListener(this::serverStarted);
         MinecraftForge.EVENT_BUS.addListener(this::gameShuttingDownEvent);

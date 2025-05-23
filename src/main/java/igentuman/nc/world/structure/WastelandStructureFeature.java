@@ -1,10 +1,8 @@
 package igentuman.nc.world.structure;
 
 import com.mojang.serialization.Codec;
-import igentuman.nc.setup.registration.WorldGeneration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.WorldGenRegion;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.ServerLevelAccessor;
@@ -19,12 +17,10 @@ import net.minecraftforge.registries.RegistryObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static igentuman.nc.NuclearCraft.*;
+import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.setup.registration.Registries.FEATURE_REGISTER;
 import static igentuman.nc.setup.registration.WorldGeneration.WASTELAND;
 

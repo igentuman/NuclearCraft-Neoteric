@@ -75,8 +75,8 @@ public class WorldEvents {
         List<VillagerTrades.ItemListing> rareTrades = event.getRareTrades();
 
         genericTrades.add((pTrader, pRandom) -> new MerchantOffer(
-                new ItemStack(Items.EMERALD, 16),
-                new ItemStack(NC_ISOTOPES.get("plutonium239").get(), 1),
+                new ItemStack(Items.EMERALD, 8),
+                new ItemStack(NC_ISOTOPES.get(plutonium239).get(), 1),
                 8, 2, 0.2f));
     }
 

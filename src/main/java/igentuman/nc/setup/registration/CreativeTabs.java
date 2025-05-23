@@ -155,6 +155,7 @@ public class CreativeTabs {
         items.addAll(itemStacks(NC_DEPLETED_FUEL.values()));
         items.add(new ItemStack(HEV_HELMET.get()));
         items.add(new ItemStack(FERAL_GHOUL_SPAWN_EGG.get()));
+        items.add(new ItemStack(PORTAL_BLOCK.get()));
         items.add(new ItemStack(HEV_CHEST.get()));
         items.add(new ItemStack(HEV_PANTS.get()));
         items.add(new ItemStack(HEV_BOOTS.get()));

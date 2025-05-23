@@ -227,7 +227,8 @@ public class NCSurfaceRuleData {
     }
 
     private static SurfaceRules.ConditionSource surfaceNoiseAbove(double p_194809_) {
-        return SurfaceRules.noiseCondition(Noises.SURFACE, p_194809_ / 8.25D, Double.MAX_VALUE);
+        // Use a much larger divisor for extremely smooth transitions between surface types
+        return SurfaceRules.noiseCondition(Noises.SURFACE, p_194809_ / 35.0D, Double.MAX_VALUE);
     }
 
     public static SurfaceRules.RuleSource wastelandSurface() {

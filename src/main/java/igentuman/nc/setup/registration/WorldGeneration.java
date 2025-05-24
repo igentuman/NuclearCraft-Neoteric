@@ -3,6 +3,7 @@ package igentuman.nc.setup.registration;
 import com.mojang.serialization.Codec;
 import igentuman.nc.world.BiomeFilterNether;
 import igentuman.nc.world.OrePlacementModifier;
+import igentuman.nc.world.structure.WastelandPortalFeature;
 import igentuman.nc.world.structure.WastelandStructureFeature;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
@@ -56,6 +57,7 @@ public class WorldGeneration {
 
     public static void init() {
         WastelandStructureFeature.init();
+        WastelandPortalFeature.init();
     }
 
     public static class StructureLoader {

@@ -5,6 +5,7 @@ import igentuman.nc.NuclearCraft;
 import igentuman.nc.registry.ParticleTypeDeferredRegister;
 import igentuman.nc.registry.RecipeSerializerDeferredRegister;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffect;
@@ -18,6 +19,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
+import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.world.BiomeModifier;
@@ -51,6 +53,7 @@ public class Registries {
     public static final DeferredRegister<MobEffect> EFFECTS = DeferredRegister.create(ForgeRegistries.MOB_EFFECTS, MODID);
     public static final RecipeSerializerDeferredRegister RECIPE_SERIALIZERS = new RecipeSerializerDeferredRegister(NuclearCraft.MODID);
     public static final DeferredRegister<ConfiguredFeature<?, ?>> CONFIGURED = DeferredRegister.create(net.minecraft.core.registries.Registries.CONFIGURED_FEATURE, MODID);
+    public static final DeferredRegister<PlacementModifierType<?>> PLACEMENT_MODIFIER = DeferredRegister.create(net.minecraft.core.registries.Registries.PLACEMENT_MODIFIER_TYPE, MODID);
 
     public static void init(FMLJavaModLoadingContext context) {
         IEventBus bus = context.getModEventBus();
@@ -73,5 +76,6 @@ public class Registries {
         CREATIVE_TABS.register(bus);
         SOUND_EVENTS.register(bus);
         CONFIGURED.register(bus);
+        PLACEMENT_MODIFIER.register(bus);
     }
 }

@@ -1,9 +1,9 @@
 {
-  "feature": "nuclearcraft:wasteland_ruins",
+  "feature": "nuclearcraft:wasteland_portal",
   "placement": [
     {
       "type": "minecraft:rarity_filter",
-      "chance": 30
+      "chance": 40
     },
     {
       "type": "minecraft:heightmap",

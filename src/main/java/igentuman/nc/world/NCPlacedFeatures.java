@@ -3,12 +3,14 @@ package igentuman.nc.world;
 import igentuman.nc.content.materials.Ores;
 import igentuman.nc.world.ore.NCOre;
 import igentuman.nc.world.ore.OreGenerator;
+import igentuman.nc.world.placement.HeightmapChunkPlacement;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.placement.*;
@@ -21,14 +23,13 @@ import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.setup.registration.Registries.PLACED_FEATURES;
 import static igentuman.nc.world.NCConfiguredFeatures.CONFIGURED_FEATURES;
 import static igentuman.nc.world.NCConfiguredFeatures.CONFIGURED_WASTELAND_RUINS;
+import static igentuman.nc.world.placement.NCPlacementModifierTypes.HEIGHTMAP_CHUNK;
+
 
 public class NCPlacedFeatures {
 
     public static final HashMap<String, ResourceKey<PlacedFeature>> PLACED_FEATURES_KEYS = initPlaceFeatures();
-
     public static final RegistryObject<PlacedFeature> WASTELAND_RUINS_PLACED_FEATURE = PLACED_FEATURES.register("wasteland_ruins", () -> new PlacedFeature(CONFIGURED_WASTELAND_RUINS.getHolder().get(), List.of()));
-
-
 
     private static HashMap<String, ResourceKey<PlacedFeature>> initPlaceFeatures() {
         HashMap<String, ResourceKey<PlacedFeature>> map = new HashMap<>();
@@ -42,6 +43,8 @@ public class NCPlacedFeatures {
         map.put("glowing_mushroom", registerKey("glowing_mushroom_placed"));
         map.put("glowing_mushroom_wasteland", registerKey("glowing_mushroom_wasteland_placed"));
         map.put("wasteland_ruins", registerKey("wasteland_ruins"));
+        map.put("wasteland_portal", registerKey("wasteland_portal"));
+        map.put("wasteland_surface", registerKey("wasteland_surface"));
         return map;
     }
 
@@ -92,7 +95,19 @@ public class NCPlacedFeatures {
         register(context, PLACED_FEATURES_KEYS.get("wasteland_ruins"),
                 configuredFeatures.getOrThrow(CONFIGURED_FEATURES.get("wasteland_ruins")),
                 List.of(
-                        RarityFilter.onAverageOnceEvery(30), InSquarePlacement.spread(), BiomeFilter.biome()
+                        RarityFilter.onAverageOnceEvery(30), HeightmapPlacement.onHeightmap(Heightmap.Types.WORLD_SURFACE_WG)
+                ));
+
+        register(context, PLACED_FEATURES_KEYS.get("wasteland_portal"),
+                configuredFeatures.getOrThrow(CONFIGURED_FEATURES.get("wasteland_portal")),
+                List.of(
+                        RarityFilter.onAverageOnceEvery(40),  HeightmapPlacement.onHeightmap(Heightmap.Types.WORLD_SURFACE_WG)
+                ));
+
+        register(context, PLACED_FEATURES_KEYS.get("wasteland_surface"),
+                configuredFeatures.getOrThrow(CONFIGURED_FEATURES.get("wasteland_surface")),
+                List.of(
+                        HeightmapChunkPlacement.onHeightmap(Heightmap.Types.WORLD_SURFACE_WG)
                 ));
     }
 

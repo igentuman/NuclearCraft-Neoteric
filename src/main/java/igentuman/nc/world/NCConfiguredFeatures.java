@@ -26,6 +26,7 @@ import static igentuman.nc.setup.registration.NCBlocks.MUSHROOM_BLOCK;
 import static igentuman.nc.setup.registration.NCBlocks.WASTELAND_EARTH;
 import static igentuman.nc.setup.registration.Registries.CONFIGURED;
 import static igentuman.nc.world.dimension.Dimensions.WASTELAND_ID;
+import static igentuman.nc.world.structure.WastelandPortalFeature.WASTELAND_PORTAL_FEATURE;
 import static igentuman.nc.world.structure.WastelandStructureFeature.WASTELAND_RUINS_FEATURE;
 import static net.minecraft.world.level.block.Blocks.*;
 
@@ -46,6 +47,8 @@ public class NCConfiguredFeatures {
         features.put("glowing_mushroom", registerKey("glowing_mushroom_feature"));
         features.put("glowing_mushroom_wasteland", registerKey("glowing_mushroom_wasteland_feature"));
         features.put("wasteland_ruins", registerKey("wasteland_ruins"));
+        features.put("wasteland_surface", registerKey("wasteland_surface"));
+        features.put("wasteland_portal", registerKey("wasteland_portal"));
         return features;
     }
 
@@ -104,6 +107,13 @@ public class NCConfiguredFeatures {
 
         register(context, CONFIGURED_FEATURES.get("wasteland_ruins"), WASTELAND_RUINS_FEATURE.get(),
                 new NoneFeatureConfiguration()
+        );
+        register(context, CONFIGURED_FEATURES.get("wasteland_portal"), WASTELAND_PORTAL_FEATURE.get(),
+                new NoneFeatureConfiguration()
+        );
+
+        register(context, CONFIGURED_FEATURES.get("wasteland_surface"), Feature.SIMPLE_BLOCK,
+                new SimpleBlockConfiguration(BlockStateProvider.simple(WASTELAND_EARTH.get()))
         );
     }
 

@@ -1,0 +1,9 @@
+{
+  "feature": "nuclearcraft:wasteland_surface",
+  "placement": [
+    {
+      "type": "nuclearcraft:heightmap_chunk",
+      "heightmap": "WORLD_SURFACE_WG"
+    }
+  ]
+}

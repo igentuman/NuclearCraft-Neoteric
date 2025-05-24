@@ -9,6 +9,7 @@ import igentuman.nc.multiblock.turbine.TurbineRegistration;
 import igentuman.nc.recipes.NcRecipeSerializers;
 import igentuman.nc.recipes.NcRecipeType;
 import igentuman.nc.setup.registration.*;
+import igentuman.nc.world.placement.NCPlacementModifierTypes;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -45,5 +46,6 @@ public class Registration {
         Villager.init(context);
         GameEvents.init(context);
         WorldGeneration.init();
+        NCPlacementModifierTypes.init();
     }
 }

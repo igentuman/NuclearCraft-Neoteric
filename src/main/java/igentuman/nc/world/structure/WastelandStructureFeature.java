@@ -31,17 +31,6 @@ public class WastelandStructureFeature extends Feature<NoneFeatureConfiguration>
             () -> new WastelandStructureFeature(NoneFeatureConfiguration.CODEC)
     );
 
-    private static HashMap<String, RegistryObject<Feature<NoneFeatureConfiguration>>> registerFeatures() {
-        HashMap<String, RegistryObject<Feature<NoneFeatureConfiguration>>> features = new HashMap<>();
-        
-        features.put("wasteland_structures", FEATURE_REGISTER.register(
-                "wasteland_structures",
-                () -> new WastelandStructureFeature(NoneFeatureConfiguration.CODEC)
-        ));
-        
-        return features;
-    }
-
     public WastelandStructureFeature(Codec<NoneFeatureConfiguration> codec) {
         super(codec);
     }
@@ -102,8 +91,7 @@ public class WastelandStructureFeature extends Feature<NoneFeatureConfiguration>
         
         // Log the found structures
         if (!structures.isEmpty()) {
-            debugLog("Found " + structures.size() + " wasteland structures: " +
-                    structures.stream().map(ResourceLocation::toString).collect(Collectors.joining(", ")));
+            debugLog("Wasteland structures pool size: " + structures.size());
         }
         
         return structures;

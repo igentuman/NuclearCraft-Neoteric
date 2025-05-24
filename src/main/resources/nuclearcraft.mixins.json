@@ -11,9 +11,9 @@
     "TemplatePoolAccess",
     "OverworldBiomeBuilderInvoker",
     "OverworldBiomeBuilderMixin"
+
   ],
   "server": [
-
   ],
   "client": [
 

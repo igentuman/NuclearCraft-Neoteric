@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static igentuman.nc.world.dimension.Dimensions.WASTELAIND_ID;
+import static igentuman.nc.world.dimension.Dimensions.WASTELAND_ID;
 
 public class Ores {
 
@@ -33,7 +33,7 @@ public class Ores {
     public static HashMap<String, NCOre> all()
     {
         if(all == null) {
-            int wasteland = WASTELAIND_ID;
+            int wasteland = WASTELAND_ID;
             all = new HashMap<>();
             for (NCMaterial m: Materials.ores().values()) {
                 int min = 4;

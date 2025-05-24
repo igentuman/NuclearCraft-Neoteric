@@ -31,19 +31,15 @@ public class NCSurfaceRuleData {
 
     private static final SurfaceRules.RuleSource BEDROCK = makeStateRule(Blocks.BEDROCK);
     private static final SurfaceRules.RuleSource GRASS_BLOCK = makeStateRule(WASTELAND_EARTH.get());
-    private static final SurfaceRules.RuleSource DIRT = makeStateRule(Blocks.ROOTED_DIRT);
-    private static final SurfaceRules.RuleSource PODZOL = makeStateRule(Blocks.PODZOL);
     private static final SurfaceRules.RuleSource COARSE_DIRT = makeStateRule(Blocks.COARSE_DIRT);
 
     private static SurfaceRules.RuleSource makeStateRule(Block block) {
         return SurfaceRules.state(block.defaultBlockState());
     }
 
-    public static final ResourceKey<NoiseGeneratorSettings> WASTELAND_NOISE_GEN = ResourceKey.create(Registries.NOISE_SETTINGS, rl("wasteland"));
     public static final ResourceKey<NoiseGeneratorSettings> CUSTOM_OVERWORLD_NOISE_GEN = ResourceKey.create(Registries.NOISE_SETTINGS, rl("custom_overworld"));
 
     public static void bootstrap(BootstapContext<NoiseGeneratorSettings> context) {
-        context.register(WASTELAND_NOISE_GEN, makeNoiseSettings(context));
         context.register(CUSTOM_OVERWORLD_NOISE_GEN, makeCustomOverworldNoiseSettings(context));
     }
     
@@ -58,9 +54,9 @@ public class NCSurfaceRuleData {
         // Create a custom NoiseSettings with different height values
         NoiseSettings customNoiseSettings = NoiseSettings.create(
                 0,
-                256,  // height (same as overworld)
-                1,    // custom horizontal size (smaller than overworld's 2)
-                2     // vertical size (same as overworld)
+                256,
+                4,
+                1
         );
         
         // Create a custom NoiseRouter with modified values
@@ -70,30 +66,14 @@ public class NCSurfaceRuleData {
                 overworldRouter.fluidLevelFloodednessNoise(),
                 overworldRouter.fluidLevelSpreadNoise(),
                 overworldRouter.lavaNoise(),
-                // Modify the temperature to create different terrain
-                DensityFunctions.add(
-                    overworldRouter.temperature(),
-                    DensityFunctions.constant(0.5)
-                ),
-                // Modify the vegetation to create different biome distribution
-                DensityFunctions.mul(
-                    overworldRouter.vegetation(),
-                    DensityFunctions.constant(1.2)
-                ),
+                overworldRouter.temperature(),
+                overworldRouter.vegetation(),
                 overworldRouter.continents(),
                 overworldRouter.erosion(),
                 overworldRouter.depth(),
                 overworldRouter.ridges(),
-                // Modify initial density for different terrain shape
-                DensityFunctions.add(
-                    overworldRouter.initialDensityWithoutJaggedness(),
-                    DensityFunctions.constant(0.1)
-                ),
-
-                DensityFunctions.add(
-                    overworldRouter.initialDensityWithoutJaggedness(),
-                    DensityFunctions.constant(0.1)
-                ),
+                overworldRouter.initialDensityWithoutJaggedness(),
+                overworldRouter.initialDensityWithoutJaggedness(),
                 overworldRouter.veinToggle(),
                 overworldRouter.veinRidged(),
                 overworldRouter.veinGap()
@@ -104,155 +84,51 @@ public class NCSurfaceRuleData {
                 customNoiseSettings,
                 overworldSettings.defaultBlock(),
                 overworldSettings.defaultFluid(),
-                customRouter,
-                overworldSettings.surfaceRule(),
+                overworldSettings.noiseRouter(),
+                customOverworldSurface(),
                 overworldSettings.spawnTarget(),
-                45,
+                35,
                 overworldSettings.disableMobGeneration(),
                 overworldSettings.aquifersEnabled(),
                 overworldSettings.oreVeinsEnabled(),
                 overworldSettings.useLegacyRandomSource()
         );
     }
-
-    public static NoiseGeneratorSettings makeNoiseSettings(BootstapContext<NoiseGeneratorSettings> context) {
-        HolderGetter<DensityFunction> densityFunctions = context.lookup(Registries.DENSITY_FUNCTION);
-        DensityFunction finalDensity = new DensityFunctions.HolderHolder(densityFunctions.getOrThrow(WASTELAND_TERRAIN));
-
-        NoiseSettings tfNoise = NoiseSettings.create(
-                -64,
-                384,
-                2,
-                2
+    
+    /**
+     * Creates a custom surface rule for the custom overworld that uses wasteland_earth as the top surface
+     */
+    public static SurfaceRules.RuleSource customOverworldSurface() {
+        SurfaceRules.RuleSource bedrockLayer = SurfaceRules.ifTrue(
+            SurfaceRules.verticalGradient("bedrock_floor", VerticalAnchor.bottom(), VerticalAnchor.aboveBottom(6)),
+            BEDROCK
         );
-
-        // Create a more varied noise router using our custom density function
-        return new NoiseGeneratorSettings(
-                tfNoise,
-                STONE.defaultBlockState(),
-                Blocks.AIR.defaultBlockState(),
-                new NoiseRouter(
-                        // Initial density
-                        finalDensity,
-                        // Final density
-                        finalDensity,
-                        // Continents
-                        finalDensity,
-                        // Erosion
-                        finalDensity,
-                        finalDensity,
-                        finalDensity,
-                        // Depth
-                        finalDensity,
-                        // Ridges
-                        finalDensity,
-                        // Initial density without jaggedness
-                        finalDensity,
-                        // Final density without jaggedness
-                        finalDensity,
-                        // Jagged features
-                        DensityFunctions.zero(),
-                        // Offset
-                        DensityFunctions.constant(0.0D),
-                        // Factor
-                        DensityFunctions.constant(1.0D),
-                        // Jaggedness
-                        DensityFunctions.zero(),
-                        // Depth
-                        DensityFunctions.zero()
-                ),
-                tfSurface(),
-                List.of(),
-                60,
-                false,
-                false,
-                true,
-                false
+        
+        // Use wasteland_earth for the top surface
+        SurfaceRules.RuleSource wastelandEarthLayer = SurfaceRules.state(WASTELAND_EARTH.get().defaultBlockState());
+        
+        // Create a surface rule that uses wasteland_earth for the top layer
+        SurfaceRules.RuleSource topSurface = SurfaceRules.ifTrue(
+            SurfaceRules.ON_FLOOR,
+            SurfaceRules.ifTrue(
+                SurfaceRules.waterBlockCheck(-1, 0),
+                wastelandEarthLayer
+            )
         );
-    }
-
-    public static SurfaceRules.RuleSource tfSurface() {
-        SurfaceRules.RuleSource bedrockLayer = SurfaceRules.ifTrue(SurfaceRules.verticalGradient("bedrock_floor", VerticalAnchor.bottom(), VerticalAnchor.aboveBottom(5)), BEDROCK);
-
+        
+        // Use rooted dirt for the layer beneath
+        SurfaceRules.RuleSource underSurface = SurfaceRules.ifTrue(
+            SurfaceRules.UNDER_FLOOR,
+            SurfaceRules.ifTrue(
+                SurfaceRules.stoneDepthCheck(0, false, 3, CaveSurface.FLOOR),
+                    COARSE_DIRT
+            )
+        );
+        
         return SurfaceRules.sequence(
-                bedrockLayer,
-                highlandsSurface(),
-                overworldLikeFloor(),
-                wastelandSurface()
-        );
-    }
-
-    @NotNull
-    private static SurfaceRules.RuleSource highlandsSurface() {
-        SurfaceRules.RuleSource podzolFloor = SurfaceRules.sequence(
-                SurfaceRules.ifTrue(SurfaceRules.waterBlockCheck(-1, 0), PODZOL),
-                DIRT
-        );
-
-        SurfaceRules.RuleSource highlandsSoil = SurfaceRules.ifTrue(SurfaceRules.ON_FLOOR, SurfaceRules.sequence(
-                SurfaceRules.ifTrue(surfaceNoiseAbove(2.25D), COARSE_DIRT),
-                SurfaceRules.ifTrue(surfaceNoiseAbove(-2.25D), podzolFloor)
-        ));
-
-        return SurfaceRules.ifTrue(SurfaceRules.isBiome(WASTELAND_BIOME), highlandsSoil);
-    }
-
-    @NotNull
-    private static SurfaceRules.RuleSource overworldLikeFloor() {
-        SurfaceRules.RuleSource grassAboveSeaLevel = SurfaceRules.ifTrue(SurfaceRules.yStartCheck(VerticalAnchor.absolute(-4), 1), GRASS_BLOCK);
-        SurfaceRules.RuleSource grassSurface = SurfaceRules.ifTrue(SurfaceRules.waterBlockCheck(-1, 0), grassAboveSeaLevel);
-
-        SurfaceRules.RuleSource underwaterSurface = SurfaceRules.ifTrue(
-                SurfaceRules.not(SurfaceRules.yStartCheck(VerticalAnchor.absolute(-4), 1)),
-                SurfaceRules.ifTrue(
-                        SurfaceRules.not(SurfaceRules.waterBlockCheck(-1, 0)),
-                        DIRT
-                )
-        );
-
-        SurfaceRules.RuleSource onFloor = SurfaceRules.ifTrue(SurfaceRules.ON_FLOOR, SurfaceRules.sequence(
-                grassSurface,
-                underwaterSurface
-        ));
-
-        SurfaceRules.RuleSource underFloor = SurfaceRules.ifTrue(
-                SurfaceRules.waterStartCheck(-6, -1),
-                SurfaceRules.ifTrue(
-                        SurfaceRules.yStartCheck(VerticalAnchor.absolute(-4), 1),
-                        SurfaceRules.ifTrue(SurfaceRules.UNDER_FLOOR, DIRT)
-                )
-        );
-
-        return SurfaceRules.sequence(onFloor, underFloor);
-    }
-
-    private static SurfaceRules.ConditionSource surfaceNoiseAbove(double p_194809_) {
-        // Use a much larger divisor for extremely smooth transitions between surface types
-        return SurfaceRules.noiseCondition(Noises.SURFACE, p_194809_ / 35.0D, Double.MAX_VALUE);
-    }
-
-    public static SurfaceRules.RuleSource wastelandSurface() {
-        SurfaceRules.RuleSource wastelandEarthLayer = SurfaceRules.state(NCBlocks.WASTELAND_EARTH.get().defaultBlockState());
-        SurfaceRules.RuleSource rootedDirtLayer = SurfaceRules.state(Blocks.ROOTED_DIRT.defaultBlockState());
-
-        return SurfaceRules.sequence(
-                SurfaceRules.ifTrue(
-                        SurfaceRules.isBiome(WorldGeneration.WASTELAND_BIOME),
-                        SurfaceRules.ifTrue(
-                                SurfaceRules.ON_FLOOR,
-                                wastelandEarthLayer
-                        )
-                ),
-                SurfaceRules.ifTrue(
-                        SurfaceRules.isBiome(WorldGeneration.WASTELAND_BIOME),
-                        SurfaceRules.ifTrue(
-                                SurfaceRules.UNDER_FLOOR,
-                                SurfaceRules.ifTrue(
-                                        SurfaceRules.stoneDepthCheck(0, false, 3, CaveSurface.FLOOR),
-                                        rootedDirtLayer
-                                )
-                        )
-                )
+            bedrockLayer,
+            topSurface,
+            underSurface
         );
     }
 }

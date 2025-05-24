@@ -96,7 +96,7 @@ repositories {
 dependencies {
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
     minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
-
+    runtimeOnly fg.deobf("curse.maven:construction-wand-399558:4684054")
     runtimeOnly fg.deobf("curse.maven:spark-361579:4738952")
 /*    implementation fg.deobf("com.lowdragmc.ldlib:ldlib-forge-${mc_version}:${ldlib_version}") {
         transitive = false

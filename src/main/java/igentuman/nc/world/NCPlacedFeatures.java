@@ -92,7 +92,7 @@ public class NCPlacedFeatures {
         register(context, PLACED_FEATURES_KEYS.get("wasteland_ruins"),
                 configuredFeatures.getOrThrow(CONFIGURED_FEATURES.get("wasteland_ruins")),
                 List.of(
-                        RarityFilter.onAverageOnceEvery(20), InSquarePlacement.spread(), BiomeFilter.biome()
+                        RarityFilter.onAverageOnceEvery(30), InSquarePlacement.spread(), BiomeFilter.biome()
                 ));
     }
 

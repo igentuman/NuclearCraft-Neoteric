@@ -7,8 +7,12 @@ import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.valueproviders.ConstantInt;
+import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.biome.*;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.Biomes;
+import net.minecraft.world.level.biome.Climate;
+import net.minecraft.world.level.biome.MultiNoiseBiomeSource;
 import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.dimension.LevelStem;
@@ -24,13 +28,13 @@ import static igentuman.nc.world.biome.NCSurfaceRuleData.CUSTOM_OVERWORLD_NOISE_
 
 public class Dimensions {
 
-    public static int WASTELAIND_ID = -4848;
+    public static final int WASTELAND_ID = -4848;
     public static final ResourceKey<Level> WASTELAND = ResourceKey.create(Registries.DIMENSION, rl("wasteland"));
     public static final ResourceKey<LevelStem> WASTELAND_KEY = ResourceKey.create(Registries.LEVEL_STEM, rl("wasteland"));
     public static final ResourceKey<DimensionType> WASTELAND_DIM_TYPE = ResourceKey.create(Registries.DIMENSION_TYPE, rl("wasteland_type"));
-    
+
     public static void bootstrapType(BootstapContext<DimensionType> context) {
-        // Register Wasteland dimension type
+        // Register Wasteland dimension type with dynamic time like the Overworld
         context.register(WASTELAND_DIM_TYPE, new DimensionType(
                 OptionalLong.empty(),
                 true,
@@ -45,8 +49,8 @@ public class Dimensions {
                 256,
                 BlockTags.INFINIBURN_OVERWORLD,
                 BuiltinDimensionTypes.OVERWORLD_EFFECTS,
-                0.8f,
-                new DimensionType.MonsterSettings(false, false, ConstantInt.of(0), 0)));
+                0f,
+                new DimensionType.MonsterSettings(false, false, UniformInt.of(0, 7), 0)));
     }
 
     public static void bootstrapStem(BootstapContext<LevelStem> context) {
@@ -71,3 +75,4 @@ public class Dimensions {
         context.register(WASTELAND_KEY, wastelandStem);
     }
 }
+

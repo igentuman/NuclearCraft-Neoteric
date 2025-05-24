@@ -15,19 +15,17 @@ import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvi
 import net.minecraft.world.level.levelgen.structure.templatesystem.BlockMatchTest;
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
-import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.setup.registration.NCBlocks.MUSHROOM_BLOCK;
 import static igentuman.nc.setup.registration.NCBlocks.WASTELAND_EARTH;
 import static igentuman.nc.setup.registration.Registries.CONFIGURED;
-import static igentuman.nc.world.dimension.Dimensions.WASTELAIND_ID;
+import static igentuman.nc.world.dimension.Dimensions.WASTELAND_ID;
 import static igentuman.nc.world.structure.WastelandStructureFeature.WASTELAND_RUINS_FEATURE;
 import static net.minecraft.world.level.block.Blocks.*;
 
@@ -71,7 +69,7 @@ public class NCConfiguredFeatures {
                 }
 
                 register(context, CONFIGURED_FEATURES.get(name), Feature.ORE, new OreConfiguration(overworld, 9));
-                if(ore.config().dimensions.contains(WASTELAIND_ID)) {
+                if(ore.config().dimensions.contains(WASTELAND_ID)) {
                     register(context, CONFIGURED_FEATURES.get(name+"_wasteland"), Feature.ORE, new OreConfiguration(overworld, 2));
                 }
             }

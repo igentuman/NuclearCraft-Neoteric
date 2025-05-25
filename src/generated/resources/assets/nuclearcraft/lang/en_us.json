@@ -267,6 +267,7 @@
   "energy.per_tick": "Energy Per Tick: %s FE/t",
   "entity.minecraft.villager.nuclearcraft.nuclear_scientist": "Nuclear Scientist",
   "entity.nuclearcraft.feral_ghoul": "Feral Ghoul",
+  "entity.nuclearcraft.feral_ghoul_boss": "Boss of the Wasteland",
   "fission.casing.reactor_incomplete": "Reactor Incomplete",
   "fission.casing.wrong.block": "Wrong block at: %s",
   "fission.interior.no_fuel_cells": "No Fuel Cells Found",

@@ -1,6 +1,8 @@
 package igentuman.nc.setup.registration;
 
 import igentuman.nc.entity.EntityFeralGhoul;
+import igentuman.nc.entity.EntityFeralGhoulBoss;
+import igentuman.nc.entity.EntityWastelandProjectile;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.SpawnPlacements;
@@ -22,15 +24,41 @@ public class Entities {
                             .sized(0.6f, 1.95f)
                             .build("feral_ghoul"));
     
+    @SuppressWarnings("unchecked")
+    public static final RegistryObject<EntityType<EntityFeralGhoulBoss>> FERAL_GHOUL_BOSS =
+            Registries.ENTITIES.register("feral_ghoul_boss",
+                    () -> EntityType.Builder.<EntityFeralGhoulBoss>of(EntityFeralGhoulBoss::new, MobCategory.MONSTER)
+                            .sized(0.9f, 2.9f)  // 50% larger than regular ghoul
+                            .fireImmune()       // Boss is immune to fire damage
+                            .build("feral_ghoul_boss"));
+
+    // Wasteland projectile entity
+    @SuppressWarnings("unchecked")
+    public static final RegistryObject<EntityType<EntityWastelandProjectile>> WASTELAND_PROJECTILE =
+            Registries.ENTITIES.register("wasteland_projectile",
+                    () -> EntityType.Builder.<EntityWastelandProjectile>of((type, level) ->
+                            new EntityWastelandProjectile(type, level), MobCategory.MISC)
+                            .sized(0.25F, 0.25F)
+                            .clientTrackingRange(4)
+                            .updateInterval(10)
+                            .build("wasteland_projectile"));
+
     public static void registerSpawnPlacements() {
         SpawnPlacements.register(FERAL_GHOUL.get(), 
                 SpawnPlacements.Type.NO_RESTRICTIONS,
                 Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 EntityFeralGhoul::checkFeralGhoulSpawnRules);
+
+        // Boss variant uses the same spawn rules but will be spawned programmatically
+        SpawnPlacements.register(FERAL_GHOUL_BOSS.get(),
+                SpawnPlacements.Type.NO_RESTRICTIONS,
+                Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                EntityFeralGhoulBoss::checkFeralGhoulBossSpawnRules);
     }
     
     @SubscribeEvent
     public static void registerAttributes(EntityAttributeCreationEvent event) {
         event.put(FERAL_GHOUL.get(), EntityFeralGhoul.createAttributes().build());
+        event.put(FERAL_GHOUL_BOSS.get(), EntityFeralGhoulBoss.createAttributes().build());
     }
 }

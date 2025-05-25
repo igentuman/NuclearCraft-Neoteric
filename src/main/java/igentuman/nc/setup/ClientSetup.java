@@ -22,6 +22,7 @@ import igentuman.nc.client.particle.RadiationParticle;
 import igentuman.nc.client.gui.fission.FissionControllerScreen;
 import igentuman.nc.client.renderer.DistortShader;
 import igentuman.nc.client.renderer.FeralGhoulRenderer;
+import igentuman.nc.client.renderer.WastelandProjectileRenderer;
 import igentuman.nc.client.sound.SoundHandler;
 import igentuman.nc.content.energy.BatteryBlocks;
 import igentuman.nc.entity.EntityFeralGhoul;
@@ -90,10 +91,8 @@ public class ClientSetup {
             BlockEntityRenderers.register(EXPL_BE.get(), EXPLRenderer::new);
             BlockEntityRenderers.register(TURBINE_BE.get("turbine_rotor_shaft").get(), TurbineRotorRenderer::new);
             BlockEntityRenderers.register(KUGELBLITZ_BE.get("black_hole").get(), BlackholeRenderer::new);
-            
-            // Register the Feral Ghoul renderer
             EntityRenderers.register(Entities.FERAL_GHOUL.get(), FeralGhoulRenderer::new);
-            
+            EntityRenderers.register(Entities.WASTELAND_PROJECTILE.get(), WastelandProjectileRenderer::new);
             MenuScreens.register(STORAGE_CONTAINER.get(), StorageContainerScreen::new);
             MenuScreens.register(FUSION_CORE_CONTAINER.get(), FusionCoreScreen::new);
             MenuScreens.register(EXPL_CONTAINER.get(), EXPLScreen::new);

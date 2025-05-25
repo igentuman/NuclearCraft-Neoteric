@@ -34,6 +34,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("itemGroup." + MODID+"_kugelblitz", "NuclearCraft Kugelblitz");
         add("itemGroup." + MODID+"_accelerator", "NuclearCraft Accelerator");
         add("entity.nuclearcraft.feral_ghoul", "Feral Ghoul");
+        add("entity.nuclearcraft.feral_ghoul_boss", "Boss of the Wasteland");
         ores();
         ingots();
         plates();

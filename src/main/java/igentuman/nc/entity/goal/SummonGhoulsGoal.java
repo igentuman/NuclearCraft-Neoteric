@@ -1,21 +1,21 @@
 package igentuman.nc.entity.goal;
 
-import igentuman.nc.entity.EntityFeralGhoulBoss;
+import igentuman.nc.entity.EntityWastelandBoss;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
 
 import java.util.EnumSet;
 
-import static igentuman.nc.entity.EntityFeralGhoulBoss.SUMMON_RANGE;
+import static igentuman.nc.entity.EntityWastelandBoss.SUMMON_RANGE;
 
 /**
      * Goal that handles summoning feral ghouls near the target
      */
 public class SummonGhoulsGoal extends Goal {
-    private final EntityFeralGhoulBoss boss;
+    private final EntityWastelandBoss boss;
     private int summonAnimationTick;
 
-    public SummonGhoulsGoal(EntityFeralGhoulBoss boss) {
+    public SummonGhoulsGoal(EntityWastelandBoss boss) {
         this.boss = boss;
         this.setFlags(EnumSet.of(Goal.Flag.MOVE));
     }

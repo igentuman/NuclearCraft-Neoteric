@@ -1,14 +1,13 @@
 package igentuman.nc.entity.goal;
 
-import igentuman.nc.entity.EntityFeralGhoulBoss;
+import igentuman.nc.entity.EntityWastelandBoss;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.phys.Vec3;
 
 import java.util.EnumSet;
 
 public class RangedAttackGoal extends Goal {
-    private final EntityFeralGhoulBoss boss;
+    private final EntityWastelandBoss boss;
     private LivingEntity target;
     private int timeUntilNextAttack = 0;
     private final float minAttackDistance;
@@ -17,10 +16,10 @@ public class RangedAttackGoal extends Goal {
     private boolean strafingBackwards = false;
     private int strafingTime = -1;
 
-    public RangedAttackGoal(EntityFeralGhoulBoss boss) {
+    public RangedAttackGoal(EntityWastelandBoss boss) {
         this.boss = boss;
-        this.minAttackDistance = EntityFeralGhoulBoss.MIN_RANGED_ATTACK_DISTANCE;
-        this.maxAttackDistance = EntityFeralGhoulBoss.MAX_RANGED_ATTACK_DISTANCE;
+        this.minAttackDistance = EntityWastelandBoss.MIN_RANGED_ATTACK_DISTANCE;
+        this.maxAttackDistance = EntityWastelandBoss.MAX_RANGED_ATTACK_DISTANCE;
         this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
     }
 

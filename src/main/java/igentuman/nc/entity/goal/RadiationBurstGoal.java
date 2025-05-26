@@ -1,18 +1,18 @@
 package igentuman.nc.entity.goal;
 
-import igentuman.nc.entity.EntityFeralGhoulBoss;
+import igentuman.nc.entity.EntityWastelandBoss;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
 
 import java.util.EnumSet;
 
-import static igentuman.nc.entity.EntityFeralGhoulBoss.RADIATION_BURST_RANGE;
+import static igentuman.nc.entity.EntityWastelandBoss.RADIATION_BURST_RANGE;
 
 public class RadiationBurstGoal extends Goal {
-    private final EntityFeralGhoulBoss boss;
+    private final EntityWastelandBoss boss;
     private int attackAnimationTick;
 
-    public RadiationBurstGoal(EntityFeralGhoulBoss boss) {
+    public RadiationBurstGoal(EntityWastelandBoss boss) {
         this.boss = boss;
         this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
     }

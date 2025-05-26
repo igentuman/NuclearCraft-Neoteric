@@ -72,7 +72,7 @@ public class EntityWastelandProjectile extends ThrowableProjectile {
             this.level().broadcastEntityEvent(this, (byte)3);
 
             // Play sound
-            this.playSound(SoundEvents.GENERIC_EXPLODE, 0.8F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
+            this.playSound(SoundEvents.GENERIC_EXPLODE, 0.8F, 0.6F / (this.random.nextFloat() * 0.2F + 0.9F));
 
             this.discard();
         }

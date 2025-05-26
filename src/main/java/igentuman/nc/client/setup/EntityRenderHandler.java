@@ -1,9 +1,9 @@
 package igentuman.nc.client.setup;
 
 import igentuman.nc.client.model.ModelFeralGhoul;
-import igentuman.nc.client.model.ModelFeralGhoulBoss;
-import igentuman.nc.client.renderer.FeralGhoulBossRenderer;
+import igentuman.nc.client.model.ModelWastelandBoss;
 import igentuman.nc.client.renderer.FeralGhoulRenderer;
+import igentuman.nc.client.renderer.WastelandBossRenderer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -19,13 +19,13 @@ public class EntityRenderHandler {
     @SubscribeEvent
     public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(FERAL_GHOUL.get(), FeralGhoulRenderer::new);
-        event.registerEntityRenderer(FERAL_GHOUL_BOSS.get(), FeralGhoulBossRenderer::new);
+        event.registerEntityRenderer(FERAL_GHOUL_BOSS.get(), WastelandBossRenderer::new);
     }
 
     @SubscribeEvent
     public static void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
         // Register the model layers
         event.registerLayerDefinition(ModelFeralGhoul.LAYER_LOCATION, ModelFeralGhoul::createBodyLayer);
-        event.registerLayerDefinition(ModelFeralGhoulBoss.LAYER_LOCATION, ModelFeralGhoulBoss::createBodyLayer);
+        event.registerLayerDefinition(ModelWastelandBoss.LAYER_LOCATION, ModelWastelandBoss::createBodyLayer);
     }
 }

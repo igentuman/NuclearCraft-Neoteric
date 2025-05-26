@@ -15,10 +15,6 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import static igentuman.nc.setup.registration.NCBlocks.WASTELAND_EARTH;
 
-/**
- * Renderer for the Wasteland Projectile entity
- * Displays a rotating block model of wasteland_earth
- */
 public class WastelandProjectileRenderer extends EntityRenderer<EntityWastelandProjectile> {
     private final BlockRenderDispatcher blockRenderer;
 
@@ -32,10 +28,8 @@ public class WastelandProjectileRenderer extends EntityRenderer<EntityWastelandP
     public void render(EntityWastelandProjectile entity, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
         BlockState blockstate = WASTELAND_EARTH.get().defaultBlockState();
 
-        // Save current matrix state
         poseStack.pushPose();
 
-        // Scale down the block to appropriate size for a projectile
         float scale = 0.5F;
         poseStack.scale(scale, scale, scale);
 
@@ -45,10 +39,8 @@ public class WastelandProjectileRenderer extends EntityRenderer<EntityWastelandP
         poseStack.mulPose(Axis.YP.rotationDegrees(rotationVertical));
         poseStack.mulPose(Axis.ZN.rotationDegrees(rotationHorizontal));
 
-        // Center the block model
         poseStack.translate(-0.5D, -0.25D, -0.5D);
 
-        // Render the block
         Minecraft.getInstance().getBlockRenderer().renderSingleBlock(
                 blockstate,
                 poseStack,
@@ -56,17 +48,12 @@ public class WastelandProjectileRenderer extends EntityRenderer<EntityWastelandP
                 packedLight,
                 OverlayTexture.NO_OVERLAY
         );
-
-        // Restore matrix state
         poseStack.popPose();
-
-        // Call the superclass render method
         super.render(entity, entityYaw, partialTick, poseStack, buffer, packedLight);
     }
 
     @Override
     public ResourceLocation getTextureLocation(EntityWastelandProjectile entity) {
-        // Return block atlas texture, though this is not directly used for block rendering
         return TextureAtlas.LOCATION_BLOCKS;
     }
 }

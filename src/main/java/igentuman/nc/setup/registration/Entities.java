@@ -1,7 +1,7 @@
 package igentuman.nc.setup.registration;
 
 import igentuman.nc.entity.EntityFeralGhoul;
-import igentuman.nc.entity.EntityFeralGhoulBoss;
+import igentuman.nc.entity.EntityWastelandBoss;
 import igentuman.nc.entity.EntityWastelandProjectile;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -25,9 +25,9 @@ public class Entities {
                             .build("feral_ghoul"));
     
     @SuppressWarnings("unchecked")
-    public static final RegistryObject<EntityType<EntityFeralGhoulBoss>> FERAL_GHOUL_BOSS =
+    public static final RegistryObject<EntityType<EntityWastelandBoss>> FERAL_GHOUL_BOSS =
             Registries.ENTITIES.register("feral_ghoul_boss",
-                    () -> EntityType.Builder.<EntityFeralGhoulBoss>of(EntityFeralGhoulBoss::new, MobCategory.MONSTER)
+                    () -> EntityType.Builder.<EntityWastelandBoss>of(EntityWastelandBoss::new, MobCategory.MONSTER)
                             .sized(0.9f, 2.9f)  // 50% larger than regular ghoul
                             .fireImmune()       // Boss is immune to fire damage
                             .build("feral_ghoul_boss"));
@@ -53,12 +53,12 @@ public class Entities {
         SpawnPlacements.register(FERAL_GHOUL_BOSS.get(),
                 SpawnPlacements.Type.NO_RESTRICTIONS,
                 Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                EntityFeralGhoulBoss::checkFeralGhoulBossSpawnRules);
+                EntityWastelandBoss::checkFeralGhoulBossSpawnRules);
     }
     
     @SubscribeEvent
     public static void registerAttributes(EntityAttributeCreationEvent event) {
         event.put(FERAL_GHOUL.get(), EntityFeralGhoul.createAttributes().build());
-        event.put(FERAL_GHOUL_BOSS.get(), EntityFeralGhoulBoss.createAttributes().build());
+        event.put(FERAL_GHOUL_BOSS.get(), EntityWastelandBoss.createAttributes().build());
     }
 }

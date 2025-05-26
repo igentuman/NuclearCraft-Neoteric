@@ -385,12 +385,12 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
 
             for (LivingEntity entity : nearbyEntities) {
                 double distance = entity.distanceTo(this);
-                float damageAmount = 8.0f * (1.0f - (float)(distance / SLAM_ATTACK_RANGE));
+                float damageAmount = 10.0f * (1.0f - (float)(distance / SLAM_ATTACK_RANGE));
 
                 entity.hurt(this.damageSources().mobAttack(this), damageAmount);
 
                 Vec3 knockbackDirection = entity.position().subtract(this.position()).normalize();
-                double distanceMult = Math.log(SLAM_ATTACK_RANGE/distance)+0.4;
+                double distanceMult = Math.log(SLAM_ATTACK_RANGE/distance)+0.6;
                 entity.setDeltaMovement(
                     knockbackDirection.x * distanceMult,
                     1 * distanceMult,

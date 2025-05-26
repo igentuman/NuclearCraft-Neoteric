@@ -45,7 +45,7 @@ public class SlamAttackGoal extends Goal {
         if (attackAnimationTick > 0) {
             attackAnimationTick--;
         }
-        if(attackAnimationTick == 5) {
+        if(attackAnimationTick == 10) {
             boss.executeSlamAttack();
         }
     }

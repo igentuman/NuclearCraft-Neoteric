@@ -133,6 +133,6 @@ public class RangeAttackAnimation implements BossAnimation {
     //in seconds
     @Override
     public float getAnimationDuration() {
-        return 2.5f*2;
+        return 2.5f*4;
     }
 }

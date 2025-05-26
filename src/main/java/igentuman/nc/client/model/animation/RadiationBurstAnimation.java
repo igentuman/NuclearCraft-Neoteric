@@ -67,6 +67,6 @@ public class RadiationBurstAnimation implements BossAnimation {
     // Animation duration in seconds
     @Override
     public float getAnimationDuration() {
-        return 2f*2;
+        return 2f*20;
     }
 }

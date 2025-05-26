@@ -8,6 +8,7 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 
+import java.util.List;
 import java.util.Optional;
 
 import static igentuman.nc.NuclearCraft.debugLog;
@@ -82,12 +83,9 @@ public class ModelWastelandBoss<T extends EntityWastelandBoss> extends HumanoidM
 		return LayerDefinition.create(meshdefinition, 128, 128);
 	}
 
-	public Optional<ModelPart> getAnyDescendantWithName(String pName) {
-		return pName.equals("root") ? Optional.of(this.root) : this.root.getAllParts().filter((p_233400_) -> p_233400_.hasChild(pName)).findFirst().map((p_233397_) -> p_233397_.getChild(pName));
-	}
 	@Override
 	protected Iterable<ModelPart> bodyParts() {
-		return java.util.List.of(this.body, this.rightArm, this.leftArm, this.rightLeg, this.leftLeg);
+		return List.of(this.body, this.rightArm, this.leftArm, this.rightLeg, this.leftLeg);
 	}
 
 	@Override
@@ -143,7 +141,7 @@ public class ModelWastelandBoss<T extends EntityWastelandBoss> extends HumanoidM
 
 	@Override
 	protected Iterable<ModelPart> headParts() {
-		return java.util.List.of(this.head);
+		return List.of(this.head);
 	}
 
 	private void animateWithDefinition(BossAnimation animation, float time) {
@@ -166,6 +164,9 @@ public class ModelWastelandBoss<T extends EntityWastelandBoss> extends HumanoidM
 				break;
 			case 7: // Ranged attack
 				runAnimation(RangeAttackAnimation.instance);
+				break;
+			case 8: // Regular attack
+				runAnimation(AttackAnimation.instance);
 				break;
 		}
 	}

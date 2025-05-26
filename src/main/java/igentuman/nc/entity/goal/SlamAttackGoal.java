@@ -30,21 +30,23 @@ public class SlamAttackGoal extends Goal {
 
         // Check if target is within range and boss has line of sight
         return boss.distanceTo(target) < SLAM_ATTACK_RANGE + 1.0F &&
-                boss.random.nextInt(20) == 0 &&
-                boss.getSensing().hasLineOfSight(target);
+                boss.random.nextInt(20) == 0;
     }
 
     @Override
     public void start() {
         boss.getNavigation().stop();
-        boss.executeSlamAttack();
-        attackAnimationTick = 20; // Animation duration
+        attackAnimationTick = 15;
+        boss.level().broadcastEntityEvent(boss, (byte) 4);
     }
 
     @Override
     public void tick() {
         if (attackAnimationTick > 0) {
             attackAnimationTick--;
+        }
+        if(attackAnimationTick == 5) {
+            boss.executeSlamAttack();
         }
     }
 

@@ -1,6 +1,7 @@
 package igentuman.nc.entity;
 
 import igentuman.nc.client.renderer.WastelandBossRenderer;
+import igentuman.nc.client.sound.GeigerSound;
 import igentuman.nc.entity.goal.RadiationBurstGoal;
 import igentuman.nc.entity.goal.RangedAttackGoal;
 import igentuman.nc.entity.goal.SlamAttackGoal;
@@ -25,7 +26,6 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
-import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
@@ -44,6 +44,7 @@ import java.util.Random;
 
 import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.setup.registration.Entities.FERAL_GHOUL_BOSS;
+import static igentuman.nc.setup.registration.NCSounds.GEIGER_SOUNDS;
 import static igentuman.nc.setup.registration.WorldGeneration.WASTELAND;
 
 public class EntityWastelandBoss extends EntityFeralGhoul {
@@ -52,16 +53,16 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
     public static final int BOSS_RADIATION_AMOUNT = 20000000;
     public static final float SLAM_ATTACK_RANGE = 8.0F;
     public static final int SLAM_ATTACK_COOLDOWN = 80; // 4 seconds
-    public static final int RADIATION_BURST_COOLDOWN = 160; // 8 seconds
+    public static final int RADIATION_BURST_COOLDOWN = 60; // 8 seconds
     public static final float RADIATION_BURST_RANGE = 8.0F;
     public static final int RADIATION_BURST_AMOUNT = 10000000;
-    public static final int SUMMON_COOLDOWN = 480; // 24 seconds
-    public static final float SUMMON_RANGE = 8.0F;
+    public static final int SUMMON_COOLDOWN = 120; // 24 seconds
+    public static final float SUMMON_RANGE = 16.0F;
     public static final int MAX_SUMMONS = 8;
     // Ranged attack parameters
     public static final int RANGED_ATTACK_COOLDOWN = 40; // 6 seconds
     public static final float MIN_RANGED_ATTACK_DISTANCE = 8.0F;
-    public static final float MAX_RANGED_ATTACK_DISTANCE = 48.0F;
+    public static final float MAX_RANGED_ATTACK_DISTANCE = 64.0F;
 
     public int slamAttackCooldownRemaining = 0;
     public int radiationBurstCooldownRemaining = 0;
@@ -91,17 +92,17 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
     @Override
     protected void registerGoals() {
        // super.registerGoals();
-        this.goalSelector.addGoal(1, new FeralGhoulVaultGoal(this));
+        this.goalSelector.addGoal(4, new FeralGhoulVaultGoal(this));
         this.goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 1.0D));
-        this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
-        this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
+        this.goalSelector.addGoal(0, new LookAtPlayerGoal(this, Player.class, 64.0F));
+        this.goalSelector.addGoal(19, new RandomLookAroundGoal(this));
 
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
-        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
-        this.goalSelector.addGoal(14, new SlamAttackGoal(this));
-        this.goalSelector.addGoal(17, new RadiationBurstGoal(this));
-        this.goalSelector.addGoal(18, new SummonGhoulsGoal(this));
-        this.goalSelector.addGoal(19, new RangedAttackGoal(this));
+        this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, true));
+        this.goalSelector.addGoal(8, new SlamAttackGoal(this));
+        //this.goalSelector.addGoal(6, new RadiationBurstGoal(this));
+        //this.goalSelector.addGoal(18, new SummonGhoulsGoal(this));
+        //this.goalSelector.addGoal(19, new RangedAttackGoal(this));
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -123,12 +124,14 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
         if (!Monster.checkMonsterSpawnRules(entityType, level, spawnType, pos, random)) {
             return false;
         }
+        //todo implement specific conditions for spawning the boss
 
         return level.getBiome(pos).is(WASTELAND);
     }
 
     @Override
     public boolean doHurtTarget(Entity pEntity) {
+        this.level().broadcastEntityEvent(this, (byte) 8);
         boolean attackResult = super.doHurtTarget(pEntity);
 
         if (attackResult && pEntity instanceof Player player) {
@@ -178,47 +181,37 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
         if (radiationBurstCooldownRemaining <= 0 && !isExecutingAttack) {
             isExecutingAttack = true;
 
-            // Visual and sound effects
-            this.level().broadcastEntityEvent(this, (byte) 5); // Custom entity event for clients to show animation
-            this.playSound(SoundEvents.WITHER_SHOOT, 0.7F, 0.6F);
+            this.playSound(GEIGER_SOUNDS.get(2).get(), 0.7F, 1F);
 
-            // Apply radiation to nearby players
             AABB radiationBox = this.getBoundingBox().inflate(RADIATION_BURST_RANGE);
             List<Player> nearbyPlayers = this.level().getEntitiesOfClass(Player.class, radiationBox);
 
-            // Spawn radiation particles throughout the affected area
             if (this.level() instanceof ServerLevel serverLevel) {
-                // Create particles in a circular pattern around the boss
                 double entityY = this.getY() + 0.5;
                 Vec3 center = this.position();
 
-                // Create a dome of particles
-                for (int i = 0; i < 50; i++) { // Number of particles to spawn
-                    double angle = random.nextDouble() * Math.PI * 2; // Random angle
-                    double radius = random.nextDouble() * RADIATION_BURST_RANGE; // Random radius within burst range
-                    double height = random.nextDouble() * 2.5; // Random height up to 2.5 blocks
+                for (int i = 0; i < 50; i++) {
+                    double angle = random.nextDouble() * Math.PI * 2;
+                    double radius = random.nextDouble() * RADIATION_BURST_RANGE;
+                    double height = random.nextDouble() * 3;
 
-                    // Calculate position for this particle
                     double xPos = center.x + radius * Math.cos(angle);
                     double yPos = entityY + height+1;
                     double zPos = center.z + radius * Math.sin(angle);
 
-                    // Calculate velocity - particles should move outward and upward
                     double xVel = (xPos - center.x) * 0.05;
                     double yVel = random.nextDouble() * 0.05;
                     double zVel = (zPos - center.z) * 0.05;
 
-                    // Spawn the particle
                     serverLevel.sendParticles(
                             NcParticleTypes.RADIATION.get(),
                             xPos, yPos, zPos,
-                            1, // count - just one particle per position
+                            1,
                             xVel, yVel, zVel,
-                            0.02 // speed
+                            0.02
                     );
                 }
 
-                // Create an expanding ring of particles at ground level
                 for (int ring = 0; ring < 3; ring++) {
                     double ringRadius = (ring + 1) * (RADIATION_BURST_RANGE / 3);
                     int particlesInRing = 20 + (ring * 10);
@@ -226,7 +219,7 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
                     for (int i = 0; i < particlesInRing; i++) {
                         double angle = (Math.PI * 2 * i) / particlesInRing;
                         double xPos = center.x + ringRadius * Math.cos(angle);
-                        double yPos = center.y + 0.1; // Just above ground level
+                        double yPos = center.y + 0.2;
                         double zPos = center.z + ringRadius * Math.sin(angle);
 
                         serverLevel.sendParticles(
@@ -246,12 +239,10 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
                     radiation.setRadiation(currentRadiation + RADIATION_BURST_AMOUNT);
                 });
 
-                // Apply negative effects
-                player.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 140, 0));
-                player.addEffect(new MobEffectInstance(MobEffects.POISON, 80, 0));
+                player.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 20, 0));
+                player.addEffect(new MobEffectInstance(MobEffects.POISON, 10, 0));
             }
 
-            // Set cooldown
             radiationBurstCooldownRemaining = RADIATION_BURST_COOLDOWN;
             isExecutingAttack = false;
         }
@@ -348,18 +339,14 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
         if (slamAttackCooldownRemaining <= 0 && !isExecutingAttack) {
             isExecutingAttack = true;
 
-            // Visual and sound effects
-            this.level().broadcastEntityEvent(this, (byte) 4); // Custom entity event for clients to show animation
-            this.playSound(SoundEvents.GENERIC_EXPLODE, 1.0F, 0.8F);
+            this.playSound(SoundEvents.GENERIC_EXPLODE, 1.0F, 0.1F);
 
-            // Create position for particle effects
             double entityX = this.getX();
             double entityY = this.getY();
             double entityZ = this.getZ();
             ServerLevel serverLevel = (ServerLevel) this.level();
             RandomSource random = this.getRandom();
 
-            // Create ground impact particles - dust and smoke in a circular pattern
             for (int i = 0; i < 40; i++) {
                 double angle = random.nextDouble() * Math.PI * 2;
                 double distance = random.nextDouble() * SLAM_ATTACK_RANGE;
@@ -367,11 +354,9 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
                 double yPos = entityY + 0.1;
                 double zPos = entityZ + Math.sin(angle) * distance;
 
-                // Velocity for the particles - moving outward from impact
                 double xVel = Math.cos(angle) * 0.15;
                 double zVel = Math.sin(angle) * 0.15;
 
-                // Mix of particles for better effect
                 if (i % 3 == 0) {
                     serverLevel.sendParticles(
                             ParticleTypes.LARGE_SMOKE,
@@ -391,6 +376,30 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
                 }
             }
 
+            AABB affectedArea = this.getBoundingBox().inflate(SLAM_ATTACK_RANGE);
+            List<LivingEntity> nearbyEntities = this.level().getEntitiesOfClass(
+                    LivingEntity.class,
+                    affectedArea,
+                    entity -> entity != this
+            );
+
+            for (LivingEntity entity : nearbyEntities) {
+                double distance = entity.distanceTo(this);
+                float damageAmount = 8.0f * (1.0f - (float)(distance / SLAM_ATTACK_RANGE));
+
+                entity.hurt(this.damageSources().mobAttack(this), damageAmount);
+
+                Vec3 knockbackDirection = entity.position().subtract(this.position()).normalize();
+                double distanceMult = Math.log(SLAM_ATTACK_RANGE/distance)+0.4;
+                entity.setDeltaMovement(
+                    knockbackDirection.x * distanceMult,
+                    1 * distanceMult,
+                    knockbackDirection.z * distanceMult
+                );
+            }
+
+            isExecutingAttack = false;
+            slamAttackCooldownRemaining = SLAM_ATTACK_COOLDOWN;
         }
     }
 
@@ -400,20 +409,13 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
     public void executeRangedAttack() {
         if (rangedAttackCooldownRemaining <= 0 && !isExecutingAttack && !this.level().isClientSide()) {
             isExecutingAttack = true;
-
-            // Visual and sound effects
-            this.level().broadcastEntityEvent(this, (byte) 7); // Custom entity event for clients to show animation
-            this.playSound(SoundEvents.WITHER_SHOOT, 1.0F, 0.3F);
-
-            // Find target
+            this.playSound(SoundEvents.WITHER_SHOOT, 1.0F, 0.2F);
             LivingEntity target = this.getTarget();
             if (target != null && target.isAlive()) {
-                // Calculate direction and velocity
                 Vec3 eyePos = new Vec3(this.getX(), this.getEyeY(), this.getZ());
                 Vec3 targetPos = new Vec3(target.getX(), target.getEyeY(), target.getZ());
                 Vec3 direction = targetPos.subtract(eyePos).normalize();
 
-                // Lead the target based on its movement
                 Vec3 targetVelocity = target.getDeltaMovement();
                 double distance = target.distanceTo(this);
                 double velocityScale = 3;
@@ -421,7 +423,6 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
                 Vec3 predictedPos = targetPos.add(targetVelocity.x * timeToHit, 0, targetVelocity.z * timeToHit);
                 Vec3 adjustedDirection = predictedPos.subtract(eyePos).normalize();
 
-                // Create and shoot projectile
                 EntityWastelandProjectile projectile = new EntityWastelandProjectile(this.level(), this);
                 projectile.setPos(
                         this.getX() + direction.x * 0.5,
@@ -442,7 +443,6 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
                 this.level().addFreshEntity(projectile);
             }
 
-            // Set cooldown
             rangedAttackCooldownRemaining = RANGED_ATTACK_COOLDOWN;
             isExecutingAttack = false;
         }
@@ -455,7 +455,7 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
 
     @Override
     public void handleEntityEvent(byte pId) {
-        if (pId == 4 || pId == 5 || pId == 6 || pId == 7) {
+        if (pId == 4 || pId == 5 || pId == 6 || pId == 7 || pId == 8) {
             if (this.level().isClientSide()) {
                 if (Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(this) instanceof WastelandBossRenderer renderer) {
                     renderer.getModel().handleEntityEvent(pId);
@@ -484,3 +484,4 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
         return super.getDimensions(pose).scale(1.5f, 1.5f);
     }
 }
+

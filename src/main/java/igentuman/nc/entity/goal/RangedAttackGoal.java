@@ -15,6 +15,7 @@ public class RangedAttackGoal extends Goal {
     private boolean strafingClockwise = false;
     private boolean strafingBackwards = false;
     private int strafingTime = -1;
+    private int animationTimeout = 0;
 
     public RangedAttackGoal(EntityWastelandBoss boss) {
         this.boss = boss;
@@ -47,6 +48,7 @@ public class RangedAttackGoal extends Goal {
     public void start() {
         super.start();
         boss.setAggressive(true);
+        animationTimeout = 80;
     }
 
     @Override
@@ -55,11 +57,14 @@ public class RangedAttackGoal extends Goal {
         target = null;
         timeUntilNextAttack = 0;
         boss.setAggressive(false);
+        boss.level().broadcastEntityEvent(boss, (byte) 7);
     }
 
     @Override
     public void tick() {
-        // Make sure we still have a valid target
+        if(animationTimeout > 0) {
+            animationTimeout--;
+        }
         if (target == null || !target.isAlive()) {
             return;
         }
@@ -94,23 +99,18 @@ public class RangedAttackGoal extends Goal {
             this.strafingBackwards = false;
         }
 
-        // Apply strafing movement when in proper attack range
         if (distanceToTarget <= maxAttackDistance * maxAttackDistance &&
             distanceToTarget >= minAttackDistance * minAttackDistance * 0.75) {
             boss.getMoveControl().strafe(strafingBackwards ? -0.5F : 0.5F,
                                         strafingClockwise ? 0.5F : -0.5F);
             boss.lookAt(target, 30.0F, 30.0F);
         } else {
-            // If we're out of range, move toward the target normally
             boss.getNavigation().moveTo(target, 1.0);
         }
 
-        // Always keep looking at the target
         boss.getLookControl().setLookAt(target, 30.0F, 30.0F);
 
-        // Perform the attack if we can see the target and cooldown has expired
-        if (canSeeTarget && boss.rangedAttackCooldownRemaining <= 0 && !boss.isExecutingAttack) {
-            // Execute the ranged attack
+        if (animationTimeout < 10 && canSeeTarget && boss.rangedAttackCooldownRemaining < 1 && !boss.isExecutingAttack) {
             boss.executeRangedAttack();
         }
     }

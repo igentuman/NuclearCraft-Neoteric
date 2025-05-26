@@ -30,14 +30,14 @@ public class RadiationBurstGoal extends Goal {
 
         // Check if target is within range and boss randomly decides to attack
         return boss.distanceTo(target) < RADIATION_BURST_RANGE &&
-                boss.random.nextInt(30) == 0;
+                boss.random.nextInt(20) == 0;
     }
 
     @Override
     public void start() {
         boss.getNavigation().stop();
-        boss.executeRadiationBurst();
-        attackAnimationTick = 30; // Animation duration
+        attackAnimationTick = 30;
+        boss.level().broadcastEntityEvent(boss, (byte) 5);
     }
 
     @Override
@@ -45,7 +45,7 @@ public class RadiationBurstGoal extends Goal {
         if (attackAnimationTick > 0) {
             attackAnimationTick--;
             if (attackAnimationTick == 15) {
-                // Do burst halfway through animation
+                boss.executeRadiationBurst();
                 boss.lookAt(boss.getTarget(), 100.0F, 100.0F);
             }
         }

@@ -1,7 +1,6 @@
 package igentuman.nc.entity;
 
 import igentuman.nc.client.renderer.WastelandBossRenderer;
-import igentuman.nc.client.sound.GeigerSound;
 import igentuman.nc.entity.goal.RadiationBurstGoal;
 import igentuman.nc.entity.goal.RangedAttackGoal;
 import igentuman.nc.entity.goal.SlamAttackGoal;
@@ -26,14 +25,17 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.AABB;
@@ -42,7 +44,6 @@ import net.minecraft.world.phys.Vec3;
 import java.util.List;
 import java.util.Random;
 
-import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.setup.registration.Entities.FERAL_GHOUL_BOSS;
 import static igentuman.nc.setup.registration.NCSounds.GEIGER_SOUNDS;
 import static igentuman.nc.setup.registration.WorldGeneration.WASTELAND;
@@ -57,11 +58,11 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
     public static final float RADIATION_BURST_RANGE = 8.0F;
     public static final int RADIATION_BURST_AMOUNT = 10000000;
     public static final int SUMMON_COOLDOWN = 120; // 24 seconds
-    public static final float SUMMON_RANGE = 16.0F;
+    public static final float SUMMON_RANGE = 32.0F;
     public static final int MAX_SUMMONS = 8;
     // Ranged attack parameters
-    public static final int RANGED_ATTACK_COOLDOWN = 40; // 6 seconds
-    public static final float MIN_RANGED_ATTACK_DISTANCE = 8.0F;
+    public static final int RANGED_ATTACK_COOLDOWN = 20;
+    public static final float MIN_RANGED_ATTACK_DISTANCE = 16.0F;
     public static final float MAX_RANGED_ATTACK_DISTANCE = 64.0F;
 
     public int slamAttackCooldownRemaining = 0;
@@ -85,34 +86,34 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
     @SuppressWarnings("unchecked")
     public EntityWastelandBoss(EntityType<?> entityType, Level level) {
         super(entityType, level);
-        this.xpReward = 50;
+        this.xpReward = 150;
         this.refreshDimensions();
+        this.setPersistenceRequired();
     }
 
     @Override
     protected void registerGoals() {
-       // super.registerGoals();
-        this.goalSelector.addGoal(4, new FeralGhoulVaultGoal(this));
-        this.goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 1.0D));
-        this.goalSelector.addGoal(0, new LookAtPlayerGoal(this, Player.class, 64.0F));
-        this.goalSelector.addGoal(19, new RandomLookAroundGoal(this));
-
+        this.goalSelector.addGoal(1, new FeralGhoulVaultGoal(this));
+        this.goalSelector.addGoal(7, new MeleeAttackGoal(this, 1.0D, true));
+        this.goalSelector.addGoal(9, new WaterAvoidingRandomStrollGoal(this, 1.0D));
+        this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 64.0F));
+        this.goalSelector.addGoal(20, new RandomLookAroundGoal(this));
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
         this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, true));
-        this.goalSelector.addGoal(8, new SlamAttackGoal(this));
-        //this.goalSelector.addGoal(6, new RadiationBurstGoal(this));
-        //this.goalSelector.addGoal(18, new SummonGhoulsGoal(this));
-        //this.goalSelector.addGoal(19, new RangedAttackGoal(this));
+        this.goalSelector.addGoal(5, new SlamAttackGoal(this));
+        this.goalSelector.addGoal(3, new RadiationBurstGoal(this));
+        this.goalSelector.addGoal(4, new SummonGhoulsGoal(this));
+        this.goalSelector.addGoal(2, new RangedAttackGoal(this));
     }
 
     public static AttributeSupplier.Builder createAttributes() {
         return Zombie.createAttributes()
                 .add(Attributes.MAX_HEALTH, 200.0D)
                 .add(Attributes.MOVEMENT_SPEED, 0.40F)
-                .add(Attributes.ATTACK_DAMAGE, 1.0D)
+                .add(Attributes.ATTACK_DAMAGE, 20.0D)
                 .add(Attributes.FOLLOW_RANGE, 70.0D)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 0.8D)
-                .add(Attributes.ARMOR, 7.0D);
+                .add(Attributes.ARMOR, 10.0D);
     }
 
     public static boolean checkFeralGhoulBossSpawnRules(EntityType<EntityWastelandBoss> entityType,
@@ -255,14 +256,10 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
         if (summonCooldownRemaining <= 0 && !isExecutingAttack && !this.level().isClientSide()) {
             isExecutingAttack = true;
 
-            // Visual and sound effects
-            this.level().broadcastEntityEvent(this, (byte) 6); // Custom entity event for clients to show animation
             this.playSound(SoundEvents.VEX_CHARGE, 1.0F, 0.7F);
 
-            // Find potential target near which to spawn ghouls
             LivingEntity target = this.getTarget();
             if (target != null && target.isAlive()) {
-                // Count existing feral ghouls
                 int existingGhouls = 0;
                 List<EntityFeralGhoul> nearbyGhouls = this.level().getEntitiesOfClass(
                         EntityFeralGhoul.class,
@@ -271,14 +268,10 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
                 );
                 existingGhouls = nearbyGhouls.size();
 
-                // Calculate number of ghouls to spawn
                 int spawnCount = Math.min(MAX_SUMMONS, MAX_SUMMONS - existingGhouls);
 
                 if (spawnCount > 0) {
-                    debugLog("Feral Ghoul Boss is summoning " + spawnCount + " ghouls near " + target.getName().getString());
-                    // Find positions around the target
                     for (int i = 0; i < spawnCount; i++) {
-                        // Calculate a random position within range of the target
                         double angle = random.nextDouble() * Math.PI * 2;
                         double distance = 2.0 + random.nextDouble() * (SUMMON_RANGE - 2.0);
                         double xOffset = Math.sin(angle) * distance;
@@ -290,20 +283,17 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
                                 (int) (target.getZ() + zOffset)
                         );
 
-                        // Check if the position is valid (has space and solid ground)
                         if (this.level().getBlockState(spawnPos).isAir() &&
                                 this.level().getBlockState(spawnPos.below()).isSolid()) {
 
-                            // Spawn the ghoul
                             EntityFeralGhoul ghoul = new EntityFeralGhoul(this.level());
                             ghoul.setPos(spawnPos.getX() + 0.5, spawnPos.getY(), spawnPos.getZ() + 0.5);
                             ghoul.setTarget(target);
 
-                            // Add visual effect for spawning
                             this.level().addParticle(
-                                    ParticleTypes.CRIT,
+                                    ParticleTypes.ANGRY_VILLAGER,
                                     spawnPos.getX() + 0.5,
-                                    spawnPos.getY() + 0.5,
+                                    spawnPos.getY() + 1.5,
                                     spawnPos.getZ() + 0.5,
                                     0, 0.1, 0
                             );
@@ -422,17 +412,20 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
                 double timeToHit = distance / velocityScale;
                 Vec3 predictedPos = targetPos.add(targetVelocity.x * timeToHit, 0, targetVelocity.z * timeToHit);
                 Vec3 adjustedDirection = predictedPos.subtract(eyePos).normalize();
+                double inaccuracy = 0.1;
+                double verticalAdjustment = Math.log10(distance) * 0.05;
 
-                EntityWastelandProjectile projectile = new EntityWastelandProjectile(this.level(), this);
-                projectile.setPos(
-                        this.getX() + direction.x * 0.5,
-                        this.getEyeY() - 0.2,
-                        this.getZ() + direction.z * 0.5
+                Vec3 rightVector = new Vec3(direction.z, 0, -direction.x).normalize().scale(0.750);
+                Vec3 leftVector = rightVector.scale(-0.750);
+
+                EntityWastelandProjectile leftProjectile = new EntityWastelandProjectile(this.level(), this);
+                leftProjectile.setPos(
+                        this.getX() + leftVector.x * 1.0 + direction.x * 0.5,
+                        this.getEyeY() - 0.3,
+                        this.getZ() + leftVector.z * 1.0 + direction.z * 0.5
                 );
 
-                double inaccuracy = 0.05;
-                double verticalAdjustment = Math.log10(distance) * 0.05;
-                projectile.shoot(
+                leftProjectile.shoot(
                         adjustedDirection.x,
                         adjustedDirection.y + verticalAdjustment,
                         adjustedDirection.z,
@@ -440,7 +433,24 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
                         (float) inaccuracy
                 );
 
-                this.level().addFreshEntity(projectile);
+                this.level().addFreshEntity(leftProjectile);
+
+                EntityWastelandProjectile rightProjectile = new EntityWastelandProjectile(this.level(), this);
+                rightProjectile.setPos(
+                        this.getX() + rightVector.x * 1.0 + direction.x * 0.5,
+                        this.getEyeY() - 0.3,
+                        this.getZ() + rightVector.z * 1.0 + direction.z * 0.5
+                );
+
+                rightProjectile.shoot(
+                        adjustedDirection.x,
+                        adjustedDirection.y + verticalAdjustment,
+                        adjustedDirection.z,
+                        (float) velocityScale,
+                        (float) inaccuracy
+                );
+
+                this.level().addFreshEntity(rightProjectile);
             }
 
             rangedAttackCooldownRemaining = RANGED_ATTACK_COOLDOWN;
@@ -451,6 +461,22 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
     @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
+    }
+
+    /**
+     * Prevents this boss entity from despawning naturally
+     */
+    @Override
+    public boolean removeWhenFarAway(double distanceToClosestPlayer) {
+        return false;
+    }
+
+    /**
+     * Makes this entity persistent even when chunks unload
+     */
+    @Override
+    public boolean isPersistenceRequired() {
+        return true;
     }
 
     @Override
@@ -484,4 +510,3 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
         return super.getDimensions(pose).scale(1.5f, 1.5f);
     }
 }
-

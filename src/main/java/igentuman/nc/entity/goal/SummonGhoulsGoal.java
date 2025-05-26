@@ -14,6 +14,7 @@ import static igentuman.nc.entity.EntityWastelandBoss.SUMMON_RANGE;
 public class SummonGhoulsGoal extends Goal {
     private final EntityWastelandBoss boss;
     private int summonAnimationTick;
+    private boolean summoned = false;
 
     public SummonGhoulsGoal(EntityWastelandBoss boss) {
         this.boss = boss;
@@ -41,19 +42,22 @@ public class SummonGhoulsGoal extends Goal {
     @Override
     public void start() {
         boss.getNavigation().stop();
-        boss.executeSummonAttack();
-        summonAnimationTick = 40; // Animation duration
+        boss.level().broadcastEntityEvent(boss, (byte) 6);
+        summonAnimationTick = 40;
+        summoned = false;
     }
 
     @Override
     public void tick() {
         if (summonAnimationTick > 0) {
             summonAnimationTick--;
-
-            // Boss should look at players during the summoning animation
             if (boss.getTarget() != null && summonAnimationTick % 10 == 0) {
                 boss.lookAt(boss.getTarget(), 100.0F, 100.0F);
             }
+        }
+        if(summonAnimationTick < 20 && !summoned) {
+            boss.executeSummonAttack();
+            summoned = true;
         }
     }
 

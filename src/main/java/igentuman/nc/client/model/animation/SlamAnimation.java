@@ -22,45 +22,33 @@ public class SlamAnimation implements BossAnimation {
             // Phase 1: Raising arms up
             float raisingProgress = normalizedTime / raiseArmsPhase;
 
-            // Arms go up
-            float armRotation = Mth.lerp(raisingProgress, 0f, -2.0f); // Negative value to rotate upward
+            float armRotation = Mth.lerp(raisingProgress, 0f, -2.0f);
             boss.rightArm.xRot = armRotation;
             boss.leftArm.xRot = armRotation;
-
-            // Body leans back slightly to counterbalance
             boss.body.xRot = Mth.lerp(raisingProgress, 0f, -0.2f);
-            boss.head.xRot = Mth.lerp(raisingProgress, 0f, 0.3f); // Head looks up
+            boss.head.xRot = Mth.lerp(raisingProgress, 0f, 0.3f);
         }
         else if (normalizedTime < windupPhase) {
             // Phase 2: Brief pause at top with slight anticipatory motion
             float pauseProgress = (normalizedTime - raiseArmsPhase) / (windupPhase - raiseArmsPhase);
-
-            // Arms at top position with slight movement
-            float armPauseMovement = Mth.sin(pauseProgress * 6.28f) * 0.1f; // Small oscillation
+            float armPauseMovement = Mth.sin(pauseProgress * 6.28f) * 0.1f;
             boss.rightArm.xRot = -2.0f + armPauseMovement;
             boss.leftArm.xRot = -2.0f + armPauseMovement;
 
-            // Body positioning with slight anticipatory motion
             float bodyAnticipation = Mth.sin(pauseProgress * 3.14f) * 0.05f;
-            boss.body.xRot = -0.2f - bodyAnticipation; // Slight additional lean back
-            boss.head.xRot = 0.3f + bodyAnticipation; // Head adjusts with body
+            boss.body.xRot = -0.2f - bodyAnticipation;
+            boss.head.xRot = 0.3f + bodyAnticipation;
         }
         else if (normalizedTime < slamPhase) {
             // Phase 3: Quick slam down
             float slamProgress = (normalizedTime - windupPhase) / (slamPhase - windupPhase);
-
-            // Arms quickly slam down with proper positioning
             float armRotation = Mth.lerp(slamProgress, -2.0f, -1.5f); // From up to past neutral (overextended)
             boss.rightArm.xRot = armRotation;
             boss.leftArm.xRot = armRotation;
-
-            // Arm position changes during slam
             boss.rightArm.y = Mth.lerp(slamProgress, 0.0f, 6.5f); // Move down
             boss.rightArm.z = Mth.lerp(slamProgress, 0.0f, -7.0f); // Move forward
             boss.leftArm.y = Mth.lerp(slamProgress, 0.0f, 6.5f);
             boss.leftArm.z = Mth.lerp(slamProgress, 0.0f, -7.0f);
-
-            // Body lunges forward with the slam
             boss.body.xRot = Mth.lerp(slamProgress, -0.2f, 1.7f);
             boss.head.xRot = Mth.lerp(slamProgress, 0.3f, 1.7f); // Head looks down
             boss.head.z = Mth.lerp(slamProgress, 0f, -4.5f); // Head moves forward slightly

@@ -27,7 +27,8 @@ public class DataGenerators {
         NcIngredient.ping();
         generator.addProvider(event.includeServer(), new NCRecipes(generator));
         generator.addProvider(event.includeServer(), new LootTableProvider(generator.getPackOutput(), Collections.emptySet(),
-                List.of(new LootTableProvider.SubProviderEntry(NCLootTables::new, LootContextParamSets.BLOCK))));
+                List.of(new LootTableProvider.SubProviderEntry(NCLootTables::new, LootContextParamSets.BLOCK),
+                        new LootTableProvider.SubProviderEntry(NCEntityLootTables::new, LootContextParamSets.ENTITY))));
 
         NCBlockTags blockTags = new NCBlockTags(generator, event);
 
@@ -46,3 +47,4 @@ public class DataGenerators {
 
     }
 }
+

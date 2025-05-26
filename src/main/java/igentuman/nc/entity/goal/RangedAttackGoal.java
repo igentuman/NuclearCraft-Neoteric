@@ -9,19 +9,15 @@ import java.util.EnumSet;
 public class RangedAttackGoal extends Goal {
     private final EntityWastelandBoss boss;
     private LivingEntity target;
-    private int timeUntilNextAttack = 0;
     private final float minAttackDistance;
     private final float maxAttackDistance;
-    private boolean strafingClockwise = false;
-    private boolean strafingBackwards = false;
-    private int strafingTime = -1;
     private int animationTimeout = 0;
-
+    private boolean executed = false;
     public RangedAttackGoal(EntityWastelandBoss boss) {
         this.boss = boss;
         this.minAttackDistance = EntityWastelandBoss.MIN_RANGED_ATTACK_DISTANCE;
         this.maxAttackDistance = EntityWastelandBoss.MAX_RANGED_ATTACK_DISTANCE;
-        this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
+        this.setFlags(EnumSet.of(Goal.Flag.LOOK));
     }
 
     @Override
@@ -32,7 +28,6 @@ public class RangedAttackGoal extends Goal {
         }
 
         double distanceToTarget = boss.distanceToSqr(target);
-        // Use ranged attack only when target is between min and max attack distance
         return boss.rangedAttackCooldownRemaining <= 0 &&
                !boss.isExecutingAttack &&
                distanceToTarget >= minAttackDistance * minAttackDistance &&
@@ -41,23 +36,24 @@ public class RangedAttackGoal extends Goal {
 
     @Override
     public boolean canContinueToUse() {
-        return this.canUse() || !boss.getNavigation().isDone();
+        return animationTimeout > 0 && target != null && target.isAlive();
     }
 
     @Override
     public void start() {
         super.start();
         boss.setAggressive(true);
-        animationTimeout = 80;
+        animationTimeout = 70;
+        boss.level().broadcastEntityEvent(boss, (byte) 7);
+        executed = false;
     }
 
     @Override
     public void stop() {
         super.stop();
         target = null;
-        timeUntilNextAttack = 0;
         boss.setAggressive(false);
-        boss.level().broadcastEntityEvent(boss, (byte) 7);
+        executed = false;
     }
 
     @Override
@@ -68,49 +64,9 @@ public class RangedAttackGoal extends Goal {
         if (target == null || !target.isAlive()) {
             return;
         }
-
-        double distanceToTarget = boss.distanceToSqr(target);
-        boolean canSeeTarget = boss.getSensing().hasLineOfSight(target);
-
-        // Update strafing behavior
-        if (canSeeTarget) {
-            // Increment strafing counter
-            ++this.strafingTime;
-        } else {
-            // Reset strafing counter if target not visible
-            this.strafingTime = -1;
-        }
-
-        // Change strafing direction occasionally
-        if (this.strafingTime >= 20) {
-            if (boss.getRandom().nextFloat() < 0.3) {
-                this.strafingClockwise = !this.strafingClockwise;
-            }
-            if (boss.getRandom().nextFloat() < 0.3) {
-                this.strafingBackwards = !this.strafingBackwards;
-            }
-            this.strafingTime = 0;
-        }
-
-        // Determine if we should move backwards based on distance
-        if (distanceToTarget < (minAttackDistance * 0.75) * (minAttackDistance * 0.75)) {
-            this.strafingBackwards = true;
-        } else if (distanceToTarget > minAttackDistance * minAttackDistance) {
-            this.strafingBackwards = false;
-        }
-
-        if (distanceToTarget <= maxAttackDistance * maxAttackDistance &&
-            distanceToTarget >= minAttackDistance * minAttackDistance * 0.75) {
-            boss.getMoveControl().strafe(strafingBackwards ? -0.5F : 0.5F,
-                                        strafingClockwise ? 0.5F : -0.5F);
-            boss.lookAt(target, 30.0F, 30.0F);
-        } else {
-            boss.getNavigation().moveTo(target, 1.0);
-        }
-
         boss.getLookControl().setLookAt(target, 30.0F, 30.0F);
-
-        if (animationTimeout < 10 && canSeeTarget && boss.rangedAttackCooldownRemaining < 1 && !boss.isExecutingAttack) {
+        if (animationTimeout < 60 && !executed) {
+            executed = true;
             boss.executeRangedAttack();
         }
     }

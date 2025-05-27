@@ -14,6 +14,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.*;
 
@@ -24,18 +26,18 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
 
     public int irradiationConnections = 0;
     private final List<Block> validModerators;
-    public final HashMap<BlockPos, HeatSinkBlock> validHeatSinks = new HashMap<>();
-    public final List<BlockPos> moderators = new ArrayList<>();
-    private final List<BlockPos> irradiators = new ArrayList<>();
-    public final List<BlockPos> heatSinks = new ArrayList<>();
-    public final List<BlockPos> fuelCells = new ArrayList<>();
+    public final HashMap<Long, HeatSinkBlock> validHeatSinks = new HashMap<>();
+    public final List<Long> moderators = new ArrayList<>();
+    private final List<Long> irradiators = new ArrayList<>();
+    public final List<Long> heatSinks = new ArrayList<>();
+    public final List<Long> fuelCells = new ArrayList<>();
     private double heatSinkCooling = 0;
     public double activeCooling = 0;
     private FissionControllerBE controllerBe;
-    private final List<BlockPos> directFuelCellConnectionPos = new ArrayList<>();
-    private final List<BlockPos> secondFuelCellConnectionPos = new ArrayList<>();
+    private final List<Long> directFuelCellConnectionPos = new ArrayList<>();
+    private final List<Long> secondFuelCellConnectionPos = new ArrayList<>();
     public final HashMap<String, Integer> coolantPerTick = new HashMap<>();
-    private final List<BlockPos> delayedValidation = new ArrayList<>();
+    private final List<Long> delayedValidation = new ArrayList<>();
     private boolean delayedValidationFlag = false;
     private int fuelCellMultiplier = 0;
     private int moderatorCellMultiplier = 0;
@@ -92,13 +94,14 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
         MultiblockHandler.get(getLevel().dimension()).addMultiblock(this);
     }
 
-    public Map<BlockPos, HeatSinkBlock> validHeatSinks() {
+    public Map<Long, HeatSinkBlock> validHeatSinks() {
         if(validHeatSinks.isEmpty()) {
-            for(BlockPos hpos: heatSinks) {
+            for(long packedPos: heatSinks) {
+                BlockPos hpos = BlockPos.of(packedPos);
                 Block block = getBlockState(hpos).getBlock();
                 if(block instanceof HeatSinkBlock hs) {
-                    if(hs.isValid(getLevel(), hpos)) {
-                        validHeatSinks.put(hpos, hs);
+                    if(hs.isValid(getLevel(), hpos, this)) {
+                        validHeatSinks.put(packedPos, hs);
                         if(hs.isActive()) {
                             addActiveCoolant(hs.def.name.replace("active_", ""));
                         }
@@ -153,37 +156,39 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
         return ((double)amount /(double)mbPerTick)*FissionReactorRegistration.heatsinks.get("active_"+coolant).heat;
     }
 
-    public boolean isModerator(BlockPos pos, Level level) {
-        return  validModerators.contains(level.getBlockState(pos).getBlock());
-    }
-
     public boolean isModerator(BlockPos pos) {
         return  validModerators.contains(getBlockState(pos).getBlock());
     }
 
     public boolean isIrradiator(BlockPos pos) {
-        return  getBlockState(pos).getBlock() instanceof IrradiationChamberBlock;
+        BlockState bs = getBlockState(pos);
+        if (bs == null) {
+            return false;
+        }
+        return  bs.getBlock() instanceof IrradiationChamberBlock;
     }
 
     protected boolean isHeatSink(BlockPos pos) {
-        return getBlockState(pos).getBlock() instanceof HeatSinkBlock;
+        BlockState bs = getBlockState(pos);
+        if (bs == null) {
+            return false;
+        }
+        return bs.getBlock() instanceof HeatSinkBlock;
     }
 
     protected boolean isFuelCell(BlockPos pos) {
-        return getBlockState(pos).getBlock() instanceof FissionFuelCellBlock;
-    }
-
-    private void addIfNotExists(BlockPos pos, List<BlockPos> list) {
-        if(!list.contains(pos)) {
-            list.add(pos);
+        BlockState bs = getBlockState(pos);
+        if (bs == null) {
+            return false;
         }
+        return bs.getBlock() instanceof FissionFuelCellBlock;
     }
 
     private boolean isAttachedToFuelCell(BlockPos toCheck) {
-        if (directFuelCellConnectionPos.contains(toCheck)) {
+        if (directFuelCellConnectionPos.contains(toCheck.asLong())) {
             return true;
         }
-        if (secondFuelCellConnectionPos.contains(toCheck)) {
+        if (secondFuelCellConnectionPos.contains(toCheck.asLong())) {
             return true;
         }
 
@@ -192,10 +197,10 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
                 addDirectFuelCellConnection((toCheck.relative(d)));
                 return true;
             }
-            if (directFuelCellConnectionPos.contains(toCheck)) {
+            if (directFuelCellConnectionPos.contains(toCheck.asLong())) {
                 return true;
             }
-            if (secondFuelCellConnectionPos.contains(toCheck)) {
+            if (secondFuelCellConnectionPos.contains(toCheck.asLong())) {
                 return true;
             }
         }
@@ -204,10 +209,12 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
 
     @Override
     public void validate() {
+        heatSinkCooling = 0;
         moderatorAttachments = 0;
         fuelCellMultiplier = 0;
         moderatorCellMultiplier = 0;
         irradiationConnections = 0;
+        validHeatSinks.clear();
         super.validate();
     }
 
@@ -241,7 +248,8 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
             }
         }
         delayedValidationFlag = true;
-        for(BlockPos pos: delayedValidation) {
+        for(long packedPos: delayedValidation) {
+            BlockPos pos = BlockPos.of(packedPos);
             processInnerBlock(pos);
         }
 
@@ -300,7 +308,7 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
                 return true;
             } else {
                 if(!delayedValidationFlag) {
-                    delayedValidation.add(new BlockPos(toCheck));
+                    delayedValidation.add(toCheck.asLong());
                 }
             }
         }
@@ -334,13 +342,13 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
                 && getTopRightBlock().getX() <= pos.getX()
                 && getTopRightBlock().getY() <= pos.getY()
                 && getTopRightBlock().getZ() <= pos.getZ()
-                && !allBlocks.contains(pos)
+                && !allBlocks.contains(pos.asLong())
         ) {
             return false;
         }
 
         if (toCheck.equals(FissionFuelCellBlock.class)) {
-            return directFuelCellConnectionPos.contains(pos) || secondFuelCellConnectionPos.contains(pos);
+            return directFuelCellConnectionPos.contains(pos.asLong()) || secondFuelCellConnectionPos.contains(pos.asLong());
         }
         return false;
     }
@@ -349,7 +357,7 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
         int count = 0;
         for(Direction d : Direction.values()) {
             if(isModerator(toCheck.relative(d))) {
-                addIfNotExists(new BlockPos(toCheck.relative(d)), moderators);
+                addIfNotExists(toCheck.relative(d), moderators);
                 addSecondConnectionsToFuelCell(new BlockPos(toCheck.relative(d)));
                 count++;
             }
@@ -384,17 +392,35 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
         return count;
     }
 
+    @Override
+    public void removeFromCacheIfChanged(BlockPos pos) {
+        long packedPos = pos.asLong();
+        if (beCache.containsKey(packedPos)) {
+            BlockEntity be = getLevel().getExistingBlockEntity(pos);
+            if(be != beCache.get(packedPos) || (be != null && be.isRemoved())) {
+                beCache.remove(packedPos);
+                allBlocks.remove(packedPos);
+            }
+        }
+        if (bsCache.containsKey(packedPos)) {
+            BlockState bs = getLevel().getBlockState(pos);
+            BlockState cachedState = bsCache.get(packedPos);
+            if(cachedState == null || !bs.is(bsCache.get(packedPos).getBlock())) {
+                bsCache.remove(packedPos);
+                allBlocks.remove(packedPos);
+                moderators.remove(packedPos);
+                heatSinks.remove(packedPos);
+                fuelCells.remove(packedPos);
+                directFuelCellConnectionPos.remove(packedPos);
+                secondFuelCellConnectionPos.remove(packedPos);
+            }
+        }
+    }
+
     public void invalidateStats()
     {
         controller().clearStats();
-        moderators.clear();
-        irradiators.clear();
-        fuelCells.clear();
-        heatSinks.clear();
-        validHeatSinks.clear();
         coolantPerTick.clear();
-        directFuelCellConnectionPos.clear();
-        secondFuelCellConnectionPos.clear();
         delayedValidation.clear();
         irradiationConnections = 0;
         delayedValidationFlag = false;

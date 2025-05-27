@@ -202,7 +202,7 @@ public class MultiblockHandler {
             toRemove.clear();
         }
         long elapsedTime = System.currentTimeMillis() - startTime;
-        debugLog("Multiblocks tick() "+elapsedTime+"ms");
+       // debugLog("Multiblocks tick() "+elapsedTime+"ms");
     }
 
     /**

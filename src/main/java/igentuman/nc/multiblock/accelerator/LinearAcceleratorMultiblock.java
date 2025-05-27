@@ -101,10 +101,7 @@ public class LinearAcceleratorMultiblock extends AbstractMultiblock {
         topRight = null;
         bottomLeft = null;
         validationResult = ValidationResult.INCOMPLETE;
-        allBlocks.clear();
         controllers.clear();
-        bsCache.clear();
-        beCache.clear();
         width = 0;
         depth = 0;
         height = 0;

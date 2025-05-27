@@ -16,6 +16,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
 import static igentuman.nc.NuclearCraft.debugLog;
@@ -24,7 +25,6 @@ public abstract class AbstractMultiblock implements Multiblock {
 
     public boolean hasToRefresh = true;
     public BlockPos errorBlockPos = BlockPos.ZERO;
-    protected int refreshCooldown = 20;
     protected int height;
     protected int width;
     protected int depth;
@@ -45,7 +45,7 @@ public abstract class AbstractMultiblock implements Multiblock {
     protected final List<BlockPos> controllers = new ArrayList<>();
     protected final HashMap<Long, BlockEntity> beCache = new HashMap<>();
     protected final HashMap<Long, BlockState> bsCache = new HashMap<>();
-    protected final List<BlockPos> allBlocks = new ArrayList<>();
+    protected final List<Long> allBlocks = new ArrayList<>();
     protected NCBlockPos controllerPos;
     protected NCBlockPos initialPos;
     protected Direction multiblockDirection;
@@ -112,6 +112,12 @@ public abstract class AbstractMultiblock implements Multiblock {
         return controller().controllerBE().getLevel();
     }
 
+    protected void addIfNotExists(BlockPos pos, List<Long> list) {
+        if(!list.contains(pos.asLong())) {
+            list.add(pos.asLong());
+        }
+    }
+
     protected NCBlockPos initialPos() {
         if (controllerPos == null) {
             controllerPos = NCBlockPos.copy(controller().controllerBE().getBlockPos());
@@ -160,7 +166,7 @@ public abstract class AbstractMultiblock implements Multiblock {
         );
     }
 
-    protected BlockState getBlockState(BlockPos pos) {
+    public BlockState getBlockState(BlockPos pos) {
         if (bsCache.containsKey(pos.asLong())) {
             return bsCache.get(pos.asLong());
         }
@@ -330,7 +336,7 @@ public abstract class AbstractMultiblock implements Multiblock {
     protected void processOuterBlock(BlockPos pos) {
         attachMultiblock(pos);
         updateDimensions(pos);
-        allBlocks.add(new BlockPos(pos));
+        addIfNotExists(pos, allBlocks);
         if (CONTROLLERS.matcher(getBlockState(pos).getBlock().asItem().toString()).matches()) {
             controllers.add(pos);
         }
@@ -356,7 +362,7 @@ public abstract class AbstractMultiblock implements Multiblock {
     }
 
     protected boolean processInnerBlock(BlockPos toCheck) {
-        allBlocks.add(new BlockPos(toCheck));
+        addIfNotExists(toCheck, allBlocks);
         attachMultiblock(toCheck);
         return true;
     }
@@ -386,14 +392,23 @@ public abstract class AbstractMultiblock implements Multiblock {
     }
 
     public void onControllerRemoved() {
-        for(BlockPos b: allBlocks) {
-            if (!isLoaded(b)) continue;
-            BlockEntity be = getBlockEntity(b);
-            if (be instanceof MultiblockAttachable multiblockAttachable) {
+        for(long packedPos: allBlocks) {
+            if (!isLoaded(BlockPos.of(packedPos))) continue;
+            BlockEntity be = getBlockEntity(packedPos);
+            if (be instanceof MultiblockAttachable<?,?> multiblockAttachable) {
                 multiblockAttachable.setMultiblock(null);
             }
         }
         dispose();
+    }
+
+    private BlockEntity getBlockEntity(long packedPos) {
+        if (beCache.containsKey(packedPos)) {
+            return beCache.get(packedPos);
+        }
+        BlockEntity be = getLevel().getBlockEntity(BlockPos.of(packedPos));
+        beCache.put(packedPos, be);
+        return be;
     }
 
     public BlockPos getForwardPos(int i) {
@@ -435,10 +450,10 @@ public abstract class AbstractMultiblock implements Multiblock {
         topRight = null;
         bottomLeft = null;
         validationResult = ValidationResult.INCOMPLETE;
-        allBlocks.clear();
+        //allBlocks.clear();
         controllers.clear();
-        bsCache.clear();
-        beCache.clear();
+        //bsCache.clear();
+        //beCache.clear();
         validateOuter();
         if (isOuterValid()) {
             validateInner();
@@ -502,28 +517,41 @@ public abstract class AbstractMultiblock implements Multiblock {
         if (!hasToRefresh) {
             return;
         }
-/*        if(refreshCooldown-- >= 0) {
-            return;
-        }*/
-        canTick = false;
 
+        canTick = false;
         validationResult = ValidationResult.INCOMPLETE;
         innerValid = false;
         outerValid = false;
         isFormed = false;
         hasToRefresh = false;
-        beCache.clear();
-        bsCache.clear();
-       // refreshCooldown = 10;
         validate();
         canTick = true;
     }
 
+    public void removeFromCacheIfChanged(BlockPos pos) {
+        if (beCache.containsKey(pos.asLong())) {
+            BlockEntity be = getLevel().getBlockEntity(pos);
+            if(be != beCache.get(pos.asLong())) {
+                beCache.remove(pos.asLong());
+                allBlocks.remove(pos.asLong());
+            }
+        }
+        if (bsCache.containsKey(pos.asLong())) {
+            BlockState bs = getLevel().getBlockState(pos);
+            if(!bs.is(bsCache.get(pos.asLong()).getBlock())) {
+                bsCache.remove(pos.asLong());
+                allBlocks.remove(pos.asLong());
+            }
+        }
+    }
+
     public void onBlockDestroyed(BlockState state, Level level, BlockPos pos, Explosion explosion) {
+        removeFromCacheIfChanged(pos);
         controller.clearStats();
     }
 
     public boolean onBlockChange(BlockPos pos) {
+        removeFromCacheIfChanged(pos);
         if (hasToRefresh) return true;
         if (containsPos(pos)) {
             BlockState targetBlock = getBlockState(pos);

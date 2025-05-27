@@ -104,7 +104,7 @@ dependencies {
     implementation fg.deobf("com.tterrag.registrate:Registrate:${registrate_version}") {
         transitive = false
     }*/
-
+    runtimeOnly fg.deobf("curse.maven:ctm-267602:5983309")
     implementation fg.deobf("curse.maven:immersive-engineering-231951:5224387")
 
     implementation fg.deobf("curse.maven:the-lost-cities-269024:6174986")

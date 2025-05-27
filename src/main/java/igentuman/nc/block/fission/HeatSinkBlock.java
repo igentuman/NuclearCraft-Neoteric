@@ -1,6 +1,7 @@
 package igentuman.nc.block.fission;
 
 import igentuman.nc.block.MultiblockBlock;
+import igentuman.nc.multiblock.fission.FissionReactorMultiblock;
 import igentuman.nc.multiblock.fission.HeatSinkDef;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
@@ -24,7 +25,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import java.util.ArrayList;
 import java.util.List;
 
-import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.handler.event.client.InputEvents.DESCRIPTIONS_SHOW;
 import static igentuman.nc.multiblock.fission.FissionReactorRegistration.heatsinks;
@@ -131,7 +131,7 @@ public class HeatSinkBlock extends MultiblockBlock {
             Block block = level.getBlockState(pos).getBlock();
             if(block instanceof HeatSinkBlock) {
                 int id = level.random.nextInt(10);
-                if(isValid(level, pos)) {
+                if(isValid(level, pos, null)) {
                     player.sendSystemMessage(__("message.heat_sink.valid"+id));
                 } else {
                     player.sendSystemMessage(__("message.heat_sink.invalid"+id));
@@ -157,8 +157,8 @@ public class HeatSinkBlock extends MultiblockBlock {
         }
     }
 
-    public boolean isValid(Level level, BlockPos pos) {
-        return def.getValidator().isValid(level, pos);
+    public boolean isValid(Level level, BlockPos pos, FissionReactorMultiblock multiblock) {
+        return def.getValidator().isValid(level, pos, multiblock);
     }
 
     public boolean isActive() {

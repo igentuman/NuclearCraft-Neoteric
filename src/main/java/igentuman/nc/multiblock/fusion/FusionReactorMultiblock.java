@@ -144,18 +144,18 @@ public class FusionReactorMultiblock extends AbstractMultiblock {
         if(level() == null) {
             return AIR;
         }
-        return level().getBlockState(pos).getBlock();
+        return getBlockState(pos).getBlock();
     }
 
     private void processFunctionalBlock(NCBlockPos pos)
     {
         if(getBlock(pos) instanceof ElectromagnetBlock magnet) {
             electromagnets.put(pos.copy(), magnet);
-            allBlocks.add(pos.copy());
+            addIfNotExists(pos, allBlocks);
             updateDimensions(pos);
         } else if(getBlock(pos) instanceof RFAmplifierBlock amplifier) {
             amplifiers.put(pos.copy(), amplifier);
-            allBlocks.add(pos.copy());
+            addIfNotExists(pos, allBlocks);
             updateDimensions(pos);
         }
     }
@@ -256,7 +256,7 @@ public class FusionReactorMultiblock extends AbstractMultiblock {
             for(int i = 0; i < steps; i++) {
                 assert startPosInnerWall != null;
                 if(isValidForOuter(startPosInnerWall.revert().relative(dir, i))) {
-                    allBlocks.add(new NCBlockPos(startPosInnerWall));
+                    addIfNotExists(startPosInnerWall, allBlocks);
                 } else {
                     ringValid = false;
                     validationResult = ValidationResult.WRONG_OUTER;
@@ -268,7 +268,7 @@ public class FusionReactorMultiblock extends AbstractMultiblock {
             for(int i = 0; i < steps+2; i++) {
                 assert startPosOuterWall != null;
                 if(isValidForOuter(startPosOuterWall.revert().relative(dir, i))) {
-                    allBlocks.add(new NCBlockPos(startPosOuterWall));
+                    addIfNotExists(startPosOuterWall, allBlocks);
                 } else {
                     ringValid = false;
                     validationResult = ValidationResult.WRONG_OUTER;
@@ -277,7 +277,7 @@ public class FusionReactorMultiblock extends AbstractMultiblock {
                 }
                 assert startPosBottomWall != null;
                 if(isValidForOuter(startPosBottomWall.revert().relative(dir, i))) {
-                    allBlocks.add(new NCBlockPos(startPosBottomWall));
+                    addIfNotExists(startPosBottomWall, allBlocks);
                 } else {
                     ringValid = false;
                     validationResult = ValidationResult.WRONG_OUTER;
@@ -286,7 +286,7 @@ public class FusionReactorMultiblock extends AbstractMultiblock {
                 }
                 assert startPosTopWall != null;
                 if(isValidForOuter(startPosTopWall.revert().relative(dir, i))) {
-                    allBlocks.add(new NCBlockPos(startPosTopWall));
+                    addIfNotExists(startPosTopWall, allBlocks);
                 } else {
                     ringValid = false;
                     validationResult = ValidationResult.WRONG_OUTER;
@@ -306,7 +306,7 @@ public class FusionReactorMultiblock extends AbstractMultiblock {
             int connectors = 0;
             for(Direction side: List.of(NORTH, EAST, Direction.SOUTH, Direction.WEST)) {
                 if(getBlockState(pos.revert().relative(side, i)).getBlock() instanceof FusionConnectorBlock) {
-                    allBlocks.add(new NCBlockPos(pos));
+                    addIfNotExists(pos, allBlocks);
                     connectors++;
                 }
             }

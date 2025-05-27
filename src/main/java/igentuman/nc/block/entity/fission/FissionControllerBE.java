@@ -391,7 +391,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
         }
         changed = powered != wasPowered || changed;
         refreshCacheFlag = !getMultiblock().isFormed();
-        if(refreshCacheFlag || changed) {
+        if(refreshCacheFlag || changed || getLevel().getGameTime() % 40 == 0) {
             try {
                 assert level != null;
                 setChanged();
@@ -440,13 +440,14 @@ public class FissionControllerBE extends MultiblockControllerBE {
     private void handleMeltdown() {
         if (heat >= getMaxHeat()) {
             BlockPos explosionPos = getBlockPos().relative(getFacing(), 2);
-            List<BlockPos> fuelCells = new ArrayList<>(getMultiblock().fuelCells);
+            List<Long> fuelCells = new ArrayList<>(getMultiblock().fuelCells);
             if (FISSION_CONFIG.EXPLOSION_RADIUS.get() == 0) {
                 getLevel().explode(null, explosionPos.getX(), explosionPos.getY(), explosionPos.getZ(), 2F, Level.ExplosionInteraction.NONE);
             } else {
                 getLevel().explode(null, explosionPos.getX(), explosionPos.getY(), explosionPos.getZ(), FISSION_CONFIG.EXPLOSION_RADIUS.get().floatValue(), Level.ExplosionInteraction.TNT);
                 getLevel().setBlock(explosionPos, NCFluids.getBlock("corium"), 1);
-                for (BlockPos pos : fuelCells) {
+                for (long packedPos : fuelCells) {
+                    BlockPos pos = BlockPos.of(packedPos);
                     getLevel().explode(null, pos.getX(), pos.getY(), pos.getZ(), 2, Level.ExplosionInteraction.TNT);
                     getLevel().setBlock(pos, NCFluids.getBlock("corium"), 1);
                 }

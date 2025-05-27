@@ -155,7 +155,7 @@ public class WorldEvents {
             
             RadiationEvents.onWorldTick(event);
             long elapsedTime = System.currentTimeMillis() - startTime;
-            debugLog("level.tick "+elapsedTime+"ms");
+          //  debugLog("level.tick "+elapsedTime+"ms");
         }
     }
 

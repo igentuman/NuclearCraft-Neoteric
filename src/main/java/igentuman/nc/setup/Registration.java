@@ -9,6 +9,7 @@ import igentuman.nc.multiblock.turbine.TurbineRegistration;
 import igentuman.nc.recipes.NcRecipeSerializers;
 import igentuman.nc.recipes.NcRecipeType;
 import igentuman.nc.setup.registration.*;
+import igentuman.nc.world.dimension.Dimensions;
 import igentuman.nc.world.placement.NCPlacementModifierTypes;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -30,7 +31,6 @@ public class Registration {
         NCItems.init();
         FissionFuel.init();
         NCFluids.init();
-        WorldGeneration.register(bus);
         NCEnergyBlocks.init();
         NCProcessors.init();
         FissionReactorRegistration.init();

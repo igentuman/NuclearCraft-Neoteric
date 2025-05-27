@@ -15,6 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.function.Consumer;
 
+import static igentuman.nc.handler.config.WorldConfig.BIOME_CONFIG;
 import static igentuman.nc.setup.registration.WorldGeneration.WASTELAND_BIOME;
 
 @Mixin(OverworldBiomeBuilder.class)
@@ -39,6 +40,7 @@ public class OverworldBiomeBuilderMixin {
 
     @Inject(at = @At("RETURN"), method = "addLowSlice")
     private void GE$writeLowBiomes(Consumer<Pair<Climate.ParameterPoint, ResourceKey<Biome>>> consumer, Climate.Parameter weirdness, CallbackInfo ci) {
+        if(!BIOME_CONFIG.registerWasteland.get()) return;
         injectBiome(consumer, Climate.Parameter.span(this.temperatures[3], this.temperatures[4]), this.FULL_RANGE, Climate.Parameter.span(this.nearInlandContinentalness, this.midInlandContinentalness), this.erosions[6], weirdness, 0.0f, WASTELAND_BIOME);
         for (int i = 3; i < this.temperatures.length; ++i) {
             for (int j = 0; j < 1; ++j) {
@@ -49,6 +51,7 @@ public class OverworldBiomeBuilderMixin {
 
     @Inject(at = @At("RETURN"), method = "addMidSlice")
     private void GE$writeMidBiomes(Consumer<Pair<Climate.ParameterPoint, ResourceKey<Biome>>> parameters, Climate.Parameter weirdness, CallbackInfo ci) {
+        if(!BIOME_CONFIG.registerWasteland.get()) return;
         for (int i = 3; i < this.temperatures.length; ++i) {
             for (int j = 0; j < 1; ++j) {
                 injectBiome(parameters, this.temperatures[i], this.humidities[j], Climate.Parameter.span(this.nearInlandContinentalness, this.midInlandContinentalness), this.erosions[4], weirdness, 0.0F, WASTELAND_BIOME);
@@ -58,6 +61,7 @@ public class OverworldBiomeBuilderMixin {
 
     @Inject(at = @At("RETURN"), method = "addHighSlice")
     private void GE$writeHighBiomes(Consumer<Pair<Climate.ParameterPoint, ResourceKey<Biome>>> parameters, Climate.Parameter weirdness, CallbackInfo ci) {
+        if(!BIOME_CONFIG.registerWasteland.get()) return;
         for (int i = 3; i < this.temperatures.length; ++i) {
             for (int j = 0; j < 1; ++j) {
                 injectBiome(parameters, this.temperatures[i], this.humidities[j], Climate.Parameter.span(this.nearInlandContinentalness, this.midInlandContinentalness), this.erosions[4], weirdness, 0.0F, WASTELAND_BIOME);

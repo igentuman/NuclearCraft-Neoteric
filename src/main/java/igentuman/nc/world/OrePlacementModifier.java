@@ -4,8 +4,6 @@ import com.mojang.serialization.Codec;
 import igentuman.nc.setup.registration.WorldGeneration;
 import igentuman.nc.world.dimension.Dimensions;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
@@ -13,19 +11,15 @@ import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.levelgen.placement.PlacementContext;
 import net.minecraft.world.level.levelgen.placement.PlacementModifier;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static dev.latvian.mods.rhino.TopLevel.Builtins.Array;
 import static igentuman.nc.handler.config.OreGenConfig.ORE_CONFIG;
-import static igentuman.nc.setup.registration.WorldGeneration.WASTELAND_BIOME;
+import static igentuman.nc.world.dimension.Dimensions.WASTELAND_DIM_TYPE;
 import static net.minecraft.core.registries.Registries.DIMENSION;
-import static net.minecraft.core.registries.Registries.DIMENSION_TYPE;
 
 public class OrePlacementModifier extends PlacementModifier {
 
@@ -101,7 +95,7 @@ public class OrePlacementModifier extends PlacementModifier {
             return dimsCache.get(level.getLevel().dimension());
         }
         for (int dim : dims) {
-            if (level.getLevel().dimensionTypeId() == Dimensions.WASTELAND_DIM_TYPE || level.getServer().registryAccess().registry(DIMENSION).get().getHolder(dim).get().is(level.getLevel().dimension())) {
+            if (level.getLevel().dimensionTypeId() == WASTELAND_DIM_TYPE || level.getServer().registryAccess().registry(DIMENSION).get().getHolder(dim).get().is(level.getLevel().dimension())) {
                 dimsCache.put(level.getLevel().dimension(), true);
                 return true;
             }

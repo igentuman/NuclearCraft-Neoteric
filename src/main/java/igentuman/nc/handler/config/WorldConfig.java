@@ -15,6 +15,7 @@ public class WorldConfig {
     }
     private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
     public static final DimensionConfig DIMENSION_CONFIG = new DimensionConfig(BUILDER);
+    public static final BiomeConfig BIOME_CONFIG = new BiomeConfig(BUILDER);
     public static final ForgeConfigSpec spec = BUILDER.build();
     private static boolean loaded = false;
     private static List<Runnable> loadActions = new ArrayList<>();
@@ -38,16 +39,24 @@ public class WorldConfig {
 
     public static class DimensionConfig {
         public ForgeConfigSpec.ConfigValue<Boolean> registerWasteland;
-        public ForgeConfigSpec.ConfigValue<Integer> wastelandID;
 
         public DimensionConfig(ForgeConfigSpec.Builder builder) {
             builder.push("Dimension");
             registerWasteland = builder
                     .comment("Register Wasteland Dimension")
                     .define("wasteland", true);
-            wastelandID = builder
-                    .comment("Dimension ID for Wasteland")
-                    .define("wastelandID", WASTELAND_ID);
+            builder.pop();
+        }
+    }
+
+    public static class BiomeConfig {
+        public ForgeConfigSpec.ConfigValue<Boolean> registerWasteland;
+
+        public BiomeConfig(ForgeConfigSpec.Builder builder) {
+            builder.push("Biome");
+            registerWasteland = builder
+                    .comment("Generate Wasteland Biome in Overworld")
+                    .define("wasteland", true);
             builder.pop();
         }
     }

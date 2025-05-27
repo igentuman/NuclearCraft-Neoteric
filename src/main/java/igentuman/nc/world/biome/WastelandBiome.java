@@ -17,20 +17,14 @@ import static igentuman.nc.world.NCPlacedFeatures.PLACED_FEATURES_KEYS;
 
 public class WastelandBiome {
 
-    public static void bootstrap() {
-
-    }
     public static void bootstrap(BootstapContext<Biome> context) {
         HolderGetter<PlacedFeature> placedFeatures = context.lookup(net.minecraft.core.registries.Registries.PLACED_FEATURE);
         HolderGetter<ConfiguredWorldCarver<?>> worldCarvers = context.lookup(net.minecraft.core.registries.Registries.CONFIGURED_CARVER);
-        // Register the wasteland biome
         context.register(WASTELAND_BIOME, createWastelandBiome(placedFeatures, worldCarvers));
     }
 
     private static Biome createWastelandBiome(HolderGetter<PlacedFeature> placedFeatures, HolderGetter<ConfiguredWorldCarver<?>> worldCarvers) {
-        // Create biome generation settings builder
         BiomeGenerationSettings.Builder biomeBuilder = new BiomeGenerationSettings.Builder(placedFeatures, worldCarvers);
-        //biomeBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, PLACED_FEATURES.get("glowing_mushroom_wasteland"));
         BiomeDefaultFeatures.addDefaultCarversAndLakes(biomeBuilder);
         BiomeDefaultFeatures.addDefaultCrystalFormations(biomeBuilder);
         BiomeDefaultFeatures.addDefaultMonsterRoom(biomeBuilder);
@@ -66,7 +60,6 @@ public class WastelandBiome {
     }
 
     public static Biome create() {
-        // This method is a simplified version for biome registration
         BiomeGenerationSettings.PlainBuilder builder = new BiomeGenerationSettings.PlainBuilder();
         MobSpawnSettings.Builder spawnBuilder = new MobSpawnSettings.Builder();
         MobSpawnSettings.SpawnerData spawner = new MobSpawnSettings.SpawnerData(FERAL_GHOUL.get(), 100, 1, 7);

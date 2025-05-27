@@ -9,6 +9,10 @@
             "type": "forge:tag_empty",
             "tag": "forge:raw_materials/zinc"
           }
+        },
+        {
+          "type": "forge:mod_loaded",
+          "modid": "industrialforegoing"
         }
       ],
       "recipe": {

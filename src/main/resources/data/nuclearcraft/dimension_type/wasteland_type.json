@@ -1,4 +1,9 @@
 {
+  "forge:conditions": [
+    {
+      "type": "nuclearcraft:wasteland_enabled"
+    }
+  ],
   "ambient_light": 0.0,
   "bed_works": true,
   "coordinate_scale": 1.0,

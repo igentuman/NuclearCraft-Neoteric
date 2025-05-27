@@ -17,6 +17,7 @@ import igentuman.nc.setup.ModSetup;
 import igentuman.nc.setup.Registration;
 import igentuman.nc.util.insitu_leaching.WorldVeinOres;
 import igentuman.nc.util.insitu_leaching.WorldVeinsProvider;
+import igentuman.nc.world.dimension.Dimensions;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.api.distmarker.Dist;
@@ -79,11 +80,11 @@ public class NuclearCraft {
         MinecraftForge.EVENT_BUS.addListener(this::gameShuttingDownEvent);
         ModSetup.setup();
         Registration.init(context);
-
         MinecraftForge.EVENT_BUS.addListener(this::registerCommands);
         modbus.addListener(ModSetup::init);
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> modbus.addListener(ClientSetup::init));
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> modbus.addListener(this::registerClientEventHandlers));
+        //modbus.addListener(Dimensions::registerDimensions);
     }
 
     public static PacketHandler packetHandler() {

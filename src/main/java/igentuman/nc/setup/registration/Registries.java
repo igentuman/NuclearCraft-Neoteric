@@ -14,8 +14,10 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
@@ -54,6 +56,9 @@ public class Registries {
     public static final RecipeSerializerDeferredRegister RECIPE_SERIALIZERS = new RecipeSerializerDeferredRegister(NuclearCraft.MODID);
     public static final DeferredRegister<ConfiguredFeature<?, ?>> CONFIGURED = DeferredRegister.create(net.minecraft.core.registries.Registries.CONFIGURED_FEATURE, MODID);
     public static final DeferredRegister<PlacementModifierType<?>> PLACEMENT_MODIFIER = DeferredRegister.create(net.minecraft.core.registries.Registries.PLACEMENT_MODIFIER_TYPE, MODID);
+    public static final DeferredRegister<DimensionType> DIMENSION_TYPE = DeferredRegister.create(net.minecraft.core.registries.Registries.DIMENSION_TYPE, MODID);
+    public static final DeferredRegister<PlacementModifierType<?>> PLACEMENT_MODIFIERS = DeferredRegister.create(net.minecraft.core.registries.Registries.PLACEMENT_MODIFIER_TYPE, MODID);
+    public static final DeferredRegister<Biome> BIOMES = DeferredRegister.create(net.minecraft.core.registries.Registries.BIOME, MODID);
 
     public static void init(FMLJavaModLoadingContext context) {
         IEventBus bus = context.getModEventBus();
@@ -77,5 +82,8 @@ public class Registries {
         SOUND_EVENTS.register(bus);
         CONFIGURED.register(bus);
         PLACEMENT_MODIFIER.register(bus);
+        DIMENSION_TYPE.register(bus);
+        PLACEMENT_MODIFIERS.register(bus);
+        BIOMES.register(bus);
     }
 }

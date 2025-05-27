@@ -1,4 +1,9 @@
 {
+  "forge:conditions": [
+    {
+      "type": "nuclearcraft:wasteland_enabled"
+    }
+  ],
   "type": "nuclearcraft:wasteland_type",
   "generator": {
     "type": "minecraft:noise",

@@ -502,9 +502,9 @@ public abstract class AbstractMultiblock implements Multiblock {
         if (!hasToRefresh) {
             return;
         }
-        if(refreshCooldown-- >= 0) {
+/*        if(refreshCooldown-- >= 0) {
             return;
-        }
+        }*/
         canTick = false;
 
         validationResult = ValidationResult.INCOMPLETE;
@@ -514,7 +514,7 @@ public abstract class AbstractMultiblock implements Multiblock {
         hasToRefresh = false;
         beCache.clear();
         bsCache.clear();
-        refreshCooldown = 10;
+       // refreshCooldown = 10;
         validate();
         canTick = true;
     }

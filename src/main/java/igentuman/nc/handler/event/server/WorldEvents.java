@@ -10,6 +10,7 @@ import igentuman.nc.recipes.ingredient.creator.IngredientCreatorAccess;
 import igentuman.nc.setup.registration.Villager;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.entity.player.Player;
@@ -44,6 +45,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.content.materials.Materials.*;
 import static igentuman.nc.setup.registration.FissionFuel.NC_FUEL;
 import static igentuman.nc.setup.registration.FissionFuel.NC_ISOTOPES;
@@ -132,16 +134,28 @@ public class WorldEvents {
         }
     }
 
+    private CompletableFuture<Void> validationFuture;
+
     @SubscribeEvent
     public void onTick(LevelTickEvent event) {
         if (event.side.isServer() && event.phase == Phase.END) {
-            if(event.isCanceled() || event.level.getGameTime() % 2 != 0) return;
-            
-            final Level level = event.level;
-            
-            MultiblockHandler.get(level.dimension()).tick(level);
+            if(event.isCanceled() || event.level.getGameTime() % 10 != 0) return;
+            long startTime = System.currentTimeMillis();
+            final ServerLevel level = (ServerLevel) event.level;
+            if(level.getChunkSource().getLoadedChunksCount() < 1) {
+                return;
+            }
+            if (validationFuture != null && !validationFuture.isDone()) {
+                return;
+            }
+            validationFuture = CompletableFuture.runAsync(
+                    () -> MultiblockHandler.get(level.dimension()).tick(level),
+                    MultiblockExecutorManager.getExecutor()
+            );
             
             RadiationEvents.onWorldTick(event);
+            long elapsedTime = System.currentTimeMillis() - startTime;
+            debugLog("level.tick "+elapsedTime+"ms");
         }
     }
 

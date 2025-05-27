@@ -21,6 +21,7 @@ public class MultiblockHandler {
     public final Set<Long> ignoreUpdate = Collections.synchronizedSet(new HashSet<>());
     public final Set<Long> changedBlocks = Collections.synchronizedSet(new HashSet<>());
 
+
     private MultiblockHandler() {
     }
 
@@ -86,7 +87,7 @@ public class MultiblockHandler {
     }
 
     public void trackAllChanges() {
-        for(long packedPos: changedBlocks) {
+        for (long packedPos : changedBlocks) {
             BlockPos pos = BlockPos.of(packedPos);
             //Iterate chunk cache first for better performance
             long chunkPos = new ChunkPos(pos.getX() >> 4, pos.getZ() >> 4).toLong();
@@ -101,7 +102,7 @@ public class MultiblockHandler {
                 }
             }
             List<AbstractMultiblock> tmp = new ArrayList<>(multiblocks.values());
-            for(AbstractMultiblock multiblock: tmp) {
+            for (AbstractMultiblock multiblock : tmp) {
                 if (multiblock == null) {
                     continue;
                 }
@@ -120,120 +121,90 @@ public class MultiblockHandler {
         if (ignoreUpdate.contains(pos.asLong())) {
             return;
         }
-        if(!changedBlocks.contains(pos.asLong())) {
+        if (!changedBlocks.contains(pos.asLong())) {
             changedBlocks.add(pos.asLong());
         }
     }
 
     /**
      * Ticks all multiblocks in this handler
+     *
      * @param level The level to use for operations (can be null, will use controller's level if null)
      */
-    private final ConcurrentHashMap<String, CompletableFuture<Void>> tickFutures = new ConcurrentHashMap<>();
-    
-    // Track the number of multiblocks that need validation this tick
-    private int validationsThisTick = 0;
-    // Maximum number of multiblocks to validate per tick
-    private static final int MAX_VALIDATIONS_PER_TICK = 5;
-    // Track multiblocks that need validation but were deferred
-    private final Set<String> deferredValidations = Collections.synchronizedSet(new HashSet<>());
-    
     public void tick(Level level) {
+        long startTime = System.currentTimeMillis();
+        // First process any block changes
         trackAllChanges();
-        Set<String> tmp = multiblocks.keySet();
-        List<CompletableFuture<Void>> futures = new ArrayList<>();
-        validationsThisTick = 0;
-        
-        // First process any deferred validations from previous ticks
-        if (!deferredValidations.isEmpty()) {
-            Iterator<String> iterator = deferredValidations.iterator();
-            while (iterator.hasNext() && validationsThisTick < MAX_VALIDATIONS_PER_TICK) {
-                String id = iterator.next();
-                iterator.remove();
-                
+
+        // Collect multiblocks that need validation
+        List<String> needsValidation = new ArrayList<>();
+        for (String id : multiblocks.keySet()) {
+            AbstractMultiblock multiblock = multiblocks.get(id);
+            if (multiblock != null && multiblock.hasToRefresh && multiblock.isLoaded() && multiblock.isValidForTicking()) {
+                needsValidation.add(id);
+            }
+        }
+
+
+        // Process all validations for this level in a single thread
+        if (!needsValidation.isEmpty()) {
+
+            for (String id : needsValidation) {
                 AbstractMultiblock multiblock = multiblocks.get(id);
                 if (multiblock == null || !multiblock.isValidForTicking()) {
                     toRemove.add(id);
                     continue;
                 }
-                
-                if (multiblock.hasToRefresh && multiblock.isLoaded()) {
-                    scheduleMultiblockTick(id, multiblock, futures);
-                    validationsThisTick++;
+
+                try {
+                    multiblock.tick();
+                } catch (Exception e) {
+                    debugLog("Error during multiblock validation for " + id + ": " + e.getMessage());
+                    e.printStackTrace();
                 }
             }
+
         }
-        
-        // Process regular ticks for all multiblocks
-        for(String id: tmp) {
+
+        // Process regular ticks for all multiblocks (non-validation processing)
+        for (String id : multiblocks.keySet()) {
             AbstractMultiblock multiblock = multiblocks.get(id);
             if (multiblock == null || !multiblock.isValidForTicking()) {
                 toRemove.add(id);
                 continue;
             }
-            
-            // Check if there's an existing future for this multiblock and if it's still running
-            CompletableFuture<Void> existingFuture = tickFutures.get(id);
-            if (existingFuture != null && !existingFuture.isDone()) {
-                // Previous tick is still running, skip this multiblock
-                continue;
-            }
-            
+
             if (multiblock.isLoaded()) {
                 if (multiblock.controller().controllerBE().isRemoved()) {
                     toRemove.add(id);
                     continue;
                 }
-                
-                // If this multiblock needs validation and we've hit our limit, defer it
-                if (multiblock.hasToRefresh && validationsThisTick >= MAX_VALIDATIONS_PER_TICK) {
-                    deferredValidations.add(id);
-                    continue;
+
+                // Only do non-validation related tasks here
+                if (!multiblock.hasToRefresh) {
+                    // Fast path for already validated multiblocks
+                    try {
+                        multiblock.tick();
+                    } catch (Exception e) {
+                        debugLog("Error during multiblock tick for " + id + ": " + e.getMessage());
+                        e.printStackTrace();
+                    }
                 }
-                
-                // If this multiblock needs validation, increment our counter
-                if (multiblock.hasToRefresh) {
-                    validationsThisTick++;
-                }
-                
-                scheduleMultiblockTick(id, multiblock, futures);
             }
         }
-        
-        // Clean up completed futures
-        tickFutures.entrySet().removeIf(entry -> entry.getValue().isDone());
-        
+
+        // Cleanup
         if (!toRemove.isEmpty()) {
-            for(String id: toRemove) {
+            for (String id : toRemove) {
                 multiblocks.remove(id);
                 removeFromChunkCache(id);
-                tickFutures.remove(id);
-                deferredValidations.remove(id);
             }
             toRemove.clear();
         }
-        
-        // Log if we have many deferred validations
-        if (deferredValidations.size() > 20) {
-            debugLog("Warning: " + deferredValidations.size() + " multiblocks waiting for validation");
-        }
+        long elapsedTime = System.currentTimeMillis() - startTime;
+        debugLog("Multiblocks tick() "+elapsedTime+"ms");
     }
-    
-    private void scheduleMultiblockTick(String id, AbstractMultiblock multiblock, List<CompletableFuture<Void>> futures) {
-        // Run the tick asynchronously using the executor
-        CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
-            try {
-                multiblock.tick();
-            } catch (Exception e) {
-                debugLog("Error during async multiblock tick for " + id + ": " + e.getMessage());
-                e.printStackTrace();
-            }
-        }, MultiblockExecutorManager.getExecutor());
-        
-        tickFutures.put(id, future);
-        futures.add(future);
-    }
-    
+
     /**
      * Ticks all multiblocks in this handler using the controller's level
      * For backward compatibility
@@ -246,7 +217,6 @@ public class MultiblockHandler {
         String id = multiblock.getId();
         multiblocks.remove(id);
         removeFromChunkCache(id);
-        tickFutures.remove(id);
     }
 
     public boolean checkAttachmentToBlock(Class<?> toCheck, Level level, BlockPos pos, Direction dir) {
@@ -267,7 +237,7 @@ public class MultiblockHandler {
                 }
             }
         }
-        for(AbstractMultiblock multiblock: multiblocks.values()) {
+        for (AbstractMultiblock multiblock : multiblocks.values()) {
             if (multiblock == null) {
                 continue;
             }
@@ -289,6 +259,9 @@ public class MultiblockHandler {
                 AbstractMultiblock multiblock = multiblocks.get(id);
                 if (multiblock == null) {
                     continue;
+                }
+                if (multiblock.containsPos(pos)) {
+                    return multiblock;
                 }
             }
         }
@@ -313,6 +286,5 @@ public class MultiblockHandler {
         chunkCache.clear();
         toRemove.clear();
         ignoreUpdate.clear();
-        tickFutures.clear();
     }
 }

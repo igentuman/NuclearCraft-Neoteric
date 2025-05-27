@@ -23,10 +23,8 @@ public class MultiblockExecutorManager {
 
     public static synchronized ExecutorService getExecutor() {
         if (executor == null || executor.isShutdown() || executor.isTerminated()) {
-            // Use a bounded queue to prevent memory issues with too many tasks
             BlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<>(MAX_QUEUE_SIZE);
             
-            // Create a thread pool with a limited number of threads
             executor = new ThreadPoolExecutor(
                 CORE_THREAD_COUNT,
                 MAX_THREAD_COUNT,
@@ -36,7 +34,7 @@ public class MultiblockExecutorManager {
                 threadFactory,
                 new ThreadPoolExecutor.CallerRunsPolicy()
             );
-            
+            executor.prestartAllCoreThreads();
             // Add monitoring for large queue sizes
             executor.setRejectedExecutionHandler((r, e) -> {
                 debugLog("Warning: Multiblock task queue is full! Running task in main thread.");

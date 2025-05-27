@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static igentuman.nc.setup.registration.Registries.ITEMS;
+import static igentuman.nc.setup.registration.Tags.*;
 
 public class FissionFuel {
 
@@ -43,12 +44,14 @@ public class FissionFuel {
                 NC_FUEL.put(List.of("fuel", name, subType, "ni"), fuel(name, subType, "_ni"));
                 NC_FUEL.put(List.of("fuel", name, subType, "za"), fuel(name, subType, "_za"));
                 NC_FUEL.put(List.of("fuel", name, subType, "tr"), fuel(name, subType, "_tr"));
+                REACTOR_FUEL_TAG.put(name + subType, itemTag("reactor_fuel/" + name + "/" + subType));
 
                 NC_DEPLETED_FUEL.put(List.of("depleted", name, subType, ""), depletedFuel(name, subType, ""));
                 NC_DEPLETED_FUEL.put(List.of("depleted", name, subType, "ox"), depletedFuel(name, subType, "_ox"));
                 NC_DEPLETED_FUEL.put(List.of("depleted", name, subType, "ni"), depletedFuel(name, subType, "_ni"));
                 NC_DEPLETED_FUEL.put(List.of("depleted", name, subType, "za"), depletedFuel(name, subType, "_za"));
                 NC_DEPLETED_FUEL.put(List.of("depleted", name, subType, "tr"), depletedFuel(name, subType, "_tr"));
+                REACTOR_DEPLETED_FUEL_TAG.put(name + subType, itemTag("depleted_reactor_fuel/" + name + "/" + subType));
             }
         }
     }
@@ -57,6 +60,7 @@ public class FissionFuel {
         for(String name: Materials.isotopes()) {
             for(String type: new String[]{"", "_za", "_ox","_ni"}) {
                 NC_ISOTOPES.put(name+type, ITEMS.register(name.replace("/", "_")+type, () -> new Item(ITEM_PROPERTIES)));
+                NC_ISOTOPE_TAG.put(name, itemTag("isotopes/" + name));
                 if(name.matches("xenorium.*|quantite")) {
                     break;
                 }

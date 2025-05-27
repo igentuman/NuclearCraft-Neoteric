@@ -60,17 +60,17 @@ public class NCItemTags extends ItemTagsProvider {
 
     private void isotopes() {
         for(String name: FissionFuel.NC_ISOTOPES.keySet()) {
-            tag(ISOTOPE_TAG).add(FissionFuel.NC_ISOTOPES.get(name).get());
+            tag(NC_ISOTOPE_TAG.get(name.replaceAll("_ox|_ni|_za", ""))).add(FissionFuel.NC_ISOTOPES.get(name).get());
         }
     }
 
     private void fuel() {
         for(List<String> name: FissionFuel.NC_FUEL.keySet()) {
-            tag(NC_FUEL_TAG).add(FissionFuel.NC_FUEL.get(name).get());
+            tag(REACTOR_FUEL_TAG.get(name.get(1)+name.get(2))).add(FissionFuel.NC_FUEL.get(name).get());
         }
 
         for(List<String> name: FissionFuel.NC_DEPLETED_FUEL.keySet()) {
-            tag(NC_DEPLETED_FUEL_TAG).add(FissionFuel.NC_DEPLETED_FUEL.get(name).get());
+            tag(REACTOR_DEPLETED_FUEL_TAG.get(name.get(1)+name.get(2))).add(FissionFuel.NC_DEPLETED_FUEL.get(name).get());
         }
     }
 

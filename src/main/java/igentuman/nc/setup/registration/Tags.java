@@ -1,6 +1,5 @@
 package igentuman.nc.setup.registration;
 
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -15,25 +14,23 @@ import static igentuman.nc.setup.registration.Registries.ITEM_REGISTRY;
 
 public class Tags {
 
-    public static HashMap<String, TagKey<Item>> INGOTS_TAG = new HashMap<>();
-    public static HashMap<String, TagKey<Item>> CHUNKS_TAG = new HashMap<>();
-    public static HashMap<String, TagKey<Item>> GEMS_TAG = new HashMap<>();
-    public static HashMap<String, TagKey<Item>> NUGGETS_TAG = new HashMap<>();
-    public static HashMap<String, TagKey<Item>> PLATES_TAG = new HashMap<>();
-    public static HashMap<String, TagKey<Item>> DUSTS_TAG = new HashMap<>();
-    public static HashMap<String, TagKey<Item>> ORE_ITEM_TAGS = new HashMap<>();
-    public static HashMap<String, TagKey<Item>> BLOCK_ITEM_TAGS = new HashMap<>();
-    public static HashMap<String, TagKey<Block>> ORE_TAGS = new HashMap<>();
-    public static HashMap<String, TagKey<Block>> BLOCK_TAGS = new HashMap<>();
-    public static HashMap<String, TagKey<Fluid>> GASES_TAG = new HashMap<>();
-    public static HashMap<String, TagKey<Fluid>> LIQUIDS_TAG = new HashMap<>();
-    public static TagKey<Item> PLATE_TAG = TagKey.create(ITEM_REGISTRY, ResourceLocation.tryBuild("forge", "plates"));
-    public static TagKey<Item> PARTS_TAG = itemTag("parts");
-    public static TagKey<Item> ISOTOPE_TAG = TagKey.create(ITEM_REGISTRY, ResourceLocation.tryBuild("forge", "isotopes"));
-    public static TagKey<Item> NC_ISOTOPE_TAG = itemTag("isotopes");
-    public static TagKey<Item> NC_FUEL_TAG = itemTag("reactor_fuel");
-    public static TagKey<Item> NC_DEPLETED_FUEL_TAG = itemTag("reactor_fuel");
-    public static TagKey<Item> NC_FUELS_TAG = itemTag("reactor_fuel");
+    public final static HashMap<String, TagKey<Item>> INGOTS_TAG = new HashMap<>();
+    public final static HashMap<String, TagKey<Item>> CHUNKS_TAG = new HashMap<>();
+    public final static HashMap<String, TagKey<Item>> GEMS_TAG = new HashMap<>();
+    public final static HashMap<String, TagKey<Item>> NUGGETS_TAG = new HashMap<>();
+    public final static HashMap<String, TagKey<Item>> PLATES_TAG = new HashMap<>();
+    public final static HashMap<String, TagKey<Item>> DUSTS_TAG = new HashMap<>();
+    public final static HashMap<String, TagKey<Item>> ORE_ITEM_TAGS = new HashMap<>();
+    public final static HashMap<String, TagKey<Item>> BLOCK_ITEM_TAGS = new HashMap<>();
+    public final static HashMap<String, TagKey<Block>> ORE_TAGS = new HashMap<>();
+    public final static HashMap<String, TagKey<Block>> BLOCK_TAGS = new HashMap<>();
+    public final static HashMap<String, TagKey<Fluid>> GASES_TAG = new HashMap<>();
+    public final static HashMap<String, TagKey<Fluid>> LIQUIDS_TAG = new HashMap<>();
+    public final static TagKey<Item> PLATE_TAG = TagKey.create(ITEM_REGISTRY, forgeRl("plates"));
+    public final static TagKey<Item> PARTS_TAG = itemTag("parts");
+    public final static HashMap<String, TagKey<Item>> NC_ISOTOPE_TAG = new HashMap<>();
+    public final static HashMap<String, TagKey<Item>> REACTOR_FUEL_TAG = new HashMap<>();
+    public final static HashMap<String, TagKey<Item>> REACTOR_DEPLETED_FUEL_TAG = new HashMap<>();
 
     public static TagKey<Block> blockTag(String name) {
         return TagKey.create(BLOCK_REGISTRY, rl(name));
@@ -73,7 +70,6 @@ public class Tags {
 
     public static TagKey<Item> forgeIngot(String name)
     {
-
         return TagKey.create(ITEM_REGISTRY, forgeRl("ingots/"+name));
     }
 

@@ -100,7 +100,7 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
 
     public Map<Long, HeatSinkBlock> validHeatSinks() {
         if(validHeatSinks.isEmpty()) {
-            for(long packedPos: heatSinks) {
+            for(long packedPos: allHeatSinks) {
                 BlockPos hpos = BlockPos.of(packedPos);
                 Block block = getBlockState(hpos).getBlock();
                 if(block instanceof HeatSinkBlock hs) {
@@ -219,7 +219,7 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
         moderatorCellMultiplier = 0;
         irradiationConnections = 0;
         validHeatSinks.clear();
-
+        coolantPerTick.clear();
         allHeatSinks.clear();
         allModerators.clear();
         validIrradiators.clear();
@@ -261,6 +261,7 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
             processInnerBlock(pos);
         }
 
+
         validationResult =  ValidationResult.VALID;
         heatSinkCooling = countCooling(true);
     }
@@ -289,6 +290,7 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
         for(Direction d : Direction.values()) {
             if(isHeatSink(toCheck.relative(d))) {
                 addIfNotExists(toCheck.relative(d), allHeatSinks);
+                addIfNotExists(toCheck.relative(d), heatSinks);
                 addSecondConnectionsToFuelCell(toCheck.relative(d));
             }
         }
@@ -370,7 +372,7 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
             if(isModerator(toCheck.relative(d))) {
                 addIfNotExists(toCheck.relative(d), allModerators);
                 addIfNotExists(toCheck.relative(d), moderators);
-                addSecondConnectionsToFuelCell(new BlockPos(toCheck.relative(d)));
+                addSecondConnectionsToFuelCell(toCheck.relative(d));
                 count++;
             }
         }
@@ -452,6 +454,7 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
 
     public double countCooling(boolean forceCheck) {
         if(forceCheck) {
+            //validHeatSinks();
             heatSinkCooling = 0;
             for (HeatSinkBlock hs : validHeatSinks().values()) {
                 heatSinkCooling += hs.heat;

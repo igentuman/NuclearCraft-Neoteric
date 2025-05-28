@@ -1,5 +1,6 @@
 package igentuman.nc.network.toServer;
 
+import igentuman.nc.block.entity.MultiblockControllerBE;
 import igentuman.nc.block.entity.fission.FissionControllerBE;
 import igentuman.nc.block.entity.fission.FissionPortBE;
 import igentuman.nc.block.entity.fusion.FusionCoreBE;
@@ -50,10 +51,16 @@ public class PacketGuiButtonPress implements INcPacket {
                 processor.toggleRedstoneMode();
                 break;
             case ReactorMode.BTN_ID:
-                if (!(be instanceof FissionControllerBE port)) {
+                if (!(be instanceof FissionControllerBE controller)) {
                     return;
                 }
-                port.toggleMode();
+                controller.toggleMode();
+                break;
+            case Button.MultiblockAnalyze.BTN_ID:
+                if (!(be instanceof MultiblockControllerBE controller)) {
+                    return;
+                }
+                controller.runAnalyze();
                 break;
             case ReactorPortRedstoneModeButton.BTN_ID:
                 if (!(be instanceof FissionPortBE port)) {

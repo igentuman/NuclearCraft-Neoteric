@@ -67,19 +67,21 @@ public class FissionPortBE extends NuclearCraftBE implements MultiblockAttachabl
     }
 
     private boolean updateController() {
+        boolean result = false;
         if (controller != controller()) {
             controller = controller();
             controllerPos = BlockPos.ZERO;
-            if (controller != null) {
-                controllerPos = new BlockPos(controller.getBlockPos());
-            }
-            return true;
+            result = true;
+        }
+        if (controller != null) {
+            controllerPos = new BlockPos(controller.getBlockPos());
+            result = true;
         }
         if (isSteamMode != controller().isSteamMode) {
             isSteamMode = controller().isSteamMode;
-            return true;
+            result = true;
         }
-        return false;
+        return result;
     }
 
     public void tickServer() {

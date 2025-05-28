@@ -49,6 +49,7 @@ public class FissionControllerScreen extends AbstractContainerScreen<FissionCont
     private VerticalBar coolantBar;
     private VerticalBar hotCoolantBar;
     private Button.ReactorMode modeBtn;
+    private Button.MultiblockAnalyze analyzeBtn;
 
     public Component casingTootip = Component.empty();
     public Component interiorTootip = Component.empty();
@@ -92,7 +93,9 @@ public class FissionControllerScreen extends AbstractContainerScreen<FissionCont
         widgets.add(heatBar);
         widgets.add(new ProgressBar(74, 35, this,  7));
         modeBtn = new Button.ReactorMode(150, 54, this, menu.getPosition());
+        analyzeBtn = new Button.MultiblockAnalyze(150, 30, this, menu.getPosition());
         widgets.add(modeBtn);
+        widgets.add(analyzeBtn);
     }
 
     protected FluidTank getFluidTank(int i) {
@@ -122,6 +125,7 @@ public class FissionControllerScreen extends AbstractContainerScreen<FissionCont
         }
         modeBtn.setMode(getMenu().isBoilingMode());
         modeBtn.setTimer(getMenu().getModeTimer());
+        analyzeBtn.setEnabled(container().canAnalyze());
         for(NCGuiElement widget: widgets) {
             widget.draw(graphics, mouseX, mouseY, partialTicks);
         }

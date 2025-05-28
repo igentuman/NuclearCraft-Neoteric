@@ -1,5 +1,7 @@
 package igentuman.nc.setup;
 
+import igentuman.nc.container.FissionControllerContainer;
+import igentuman.nc.container.MultiblockControllerContailer;
 import igentuman.nc.effect.RadiationResistance;
 import igentuman.nc.multiblock.accelerator.AcceleratorRegistration;
 import igentuman.nc.multiblock.fission.FissionReactorRegistration;
@@ -13,16 +15,21 @@ import igentuman.nc.world.dimension.Dimensions;
 import igentuman.nc.world.placement.NCPlacementModifierTypes;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.RegistryObject;
 
+import static igentuman.nc.setup.registration.Registries.CONTAINERS;
 import static igentuman.nc.setup.registration.Registries.EFFECTS;
 
 public class Registration {
 
     public static final RegistryObject<MobEffect> RADIATION_RESISTANCE = EFFECTS.register("radiation_resistance", () -> new RadiationResistance(MobEffectCategory.BENEFICIAL, 0xd4ffFF));
-
+    public static final RegistryObject<MenuType<MultiblockControllerContailer>> MULTIBLOCK_REPORT_CONTAINER = CONTAINERS.register("multilblock_report_container",
+            () -> IForgeMenuType.create((windowId, inv, data) -> new MultiblockControllerContailer(windowId, data.readBlockPos(), inv))
+    );
     public static void init(FMLJavaModLoadingContext context) {
         IEventBus bus = context.getModEventBus();
         Registries.init(context);

@@ -349,6 +349,18 @@ public class NCLanguageProvider extends LanguageProvider {
     }
 
     private void labels() {
+        add("multiblock.analyze.report", "Multiblock Report");
+        add("report.nc.1.reactor_all_moderators", "All Moderators: %s");
+        add("report.nc.2.reactor_moderators", "Valid Moderators: %s");
+        add("report.nc.3.reactor_moderator_attachments", "Moderator Attachments: %s");
+        add("report.nc.4.reactor_all_heat_sinks", "All Heat Sinks: %s");
+        add("report.nc.5.reactor_heat_sinks", "Valid Heat Sinks: %s");
+        add("report.nc.6.active_cooling_heatsinks", "Active Cooling Heat Sinks: %s");
+        add("report.nc.7.all_irradiators", "All Irradiators: %s");
+        add("report.nc.8.irradiators", "Valid Irradiators: %s");
+        add("report.nc.9.ports", "Ports: %s");
+        add("report.nc.10.reactor_fuel_cells", "Fuel Cells: %s");
+        add("report.nc.11.has_recipe", "Has Recipe: %s");
         add("jei.category.nuclearcraft.multiblock_structure", "NuclearCraft Multiblocks");
         add("jei.recipe.nc.turbine", "Turbine");
         add("jei.recipe.nc.fusion_reactor", "Fusion Reactor");
@@ -515,7 +527,8 @@ public class NCLanguageProvider extends LanguageProvider {
         add("tooltip.nuclearcraft.particlestack.focus_loss", "Focus Loss: %s/Block");
         add("tooltip.nuclearcraft.particlestack.travel_distance", "Travel Distance: %s Blocks");
         add("tooltip.nuclearcraft.particlestack.empty", "No Particles");
-
+        add("tooltip.nc.analyze", "Analyze structure");
+        add("tooltip.nc.analyze.descr", "Refresh multiblock data, analyze and provide more details");
         add("multiblock.build_in_chunk.advise", "Consider building structure within one chunk for better performance");
 
         add("decay_generator.fe_generation", "Result FE generation depends on attached blocks radiation");

@@ -123,6 +123,18 @@ public class FissionControllerBE extends MultiblockControllerBE {
     private double envCooling = 0.0D;
     @NBTField
     public double boilingPenalty = 0;
+    @NBTField
+    public int connectedPorts = 0;
+    @NBTField
+    public int allModerators = 0;
+    @NBTField
+    public int allHeatSinks = 0;
+    @NBTField
+    public int activeCoolingHeatsinks = 0;
+    @NBTField
+    public int validIrradiators = 0;
+    @NBTField
+    public int allIrradiators = 0;
 
     public FissionControllerBE(BlockPos pPos, BlockState pBlockState) {
         super(FissionReactorRegistration.FISSION_BE.get(NAME).get(),pPos, pBlockState);
@@ -358,8 +370,9 @@ public class FissionControllerBE extends MultiblockControllerBE {
             controllerEnabled = false;
             return;
         }
-        boilingPenalty = 0;
         changed = false;
+        super.tickServer();
+        boilingPenalty = 0;
         hopToggleMode();
         boolean wasFormed = getMultiblock().isFormed();
         boolean wasEnabled = controllerEnabled;
@@ -405,12 +418,34 @@ public class FissionControllerBE extends MultiblockControllerBE {
         irradiationHeat = 0;
     }
 
+    @Override
+    public HashMap<String, String> getAnalyzeReport() {
+        HashMap<String, String> report = new HashMap<>();
+        report.put("report.nc.1.reactor_all_moderators", String.valueOf(allModerators));
+        report.put("report.nc.2.reactor_moderators", String.valueOf(moderatorsCount));
+        report.put("report.nc.3.reactor_moderator_attachments", String.valueOf(moderatorAttachments));
+        report.put("report.nc.4.reactor_all_heat_sinks", String.valueOf(allHeatSinks));
+        report.put("report.nc.5.reactor_heat_sinks", String.valueOf(heatSinksCount));
+        report.put("report.nc.6.active_cooling_heatsinks", String.valueOf(activeCoolingHeatsinks));
+        report.put("report.nc.7.all_irradiators", String.valueOf(allIrradiators));
+        report.put("report.nc.8.irradiators", String.valueOf(validIrradiators));
+        report.put("report.nc.9.ports", String.valueOf(connectedPorts));
+        report.put("report.nc.10.reactor_fuel_cells", String.valueOf(fuelCellsCount));
+        report.put("report.nc.11.has_recipe", String.valueOf(recipeInfo().recipe != null));
+        return report;
+    }
+
     protected void handleValidation() {
         super.handleValidation();
         moderatorAttachments = getMultiblock().moderatorAttachments;
         irradiationConnections = getMultiblock().irradiationConnections;
-        heatSinksCount = getMultiblock().heatSinks.size();
+        heatSinksCount = getMultiblock().validHeatSinks.size();
         moderatorsCount = getMultiblock().moderators.size();
+        connectedPorts = getMultiblock().connectedPorts;
+        allHeatSinks = getMultiblock().allHeatSinks.size();
+        allModerators = getMultiblock().allModerators.size();
+        allIrradiators = getMultiblock().irradiators.size();
+        validIrradiators = getMultiblock().validIrradiators.size();
     }
 
     private void hopToggleMode() {

@@ -1,28 +1,25 @@
 package igentuman.nc.client.gui.element.button;
 
 import igentuman.nc.NuclearCraft;
-import igentuman.nc.client.gui.kugelblitz.EXPLScreen;
-import igentuman.nc.client.gui.processor.side.SideConfigSlotSelectionScreen;
-import igentuman.nc.client.gui.turbine.TurbinePortScreen;
-import igentuman.nc.container.NCProcessorContainer;
+import igentuman.nc.client.gui.MultiblockAnalyzeReportScreen;
 import igentuman.nc.client.gui.element.NCGuiElement;
+import igentuman.nc.client.gui.processor.side.SideConfigSlotSelectionScreen;
+import igentuman.nc.container.MultiblockControllerContailer;
 import igentuman.nc.network.toServer.PacketGuiButtonPress;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button.Builder;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
-import net.minecraft.client.gui.components.Button.Builder;
 import java.util.ArrayList;
 import java.util.List;
 
-import static igentuman.nc.NuclearCraft.MODID;
-import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.util.TextUtils.__;
 
 public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
@@ -68,6 +65,10 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
     public boolean onPress() {
         btn.onPress();
         return true;
+    }
+
+    public void setEnabled(boolean b) {
+        btn.active = b;
     }
 
     public static class SideConfig extends Button {
@@ -126,7 +127,7 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
     }
 
     public static class CloseConfig extends Button {
-        public <T extends NCProcessorContainer> CloseConfig(int xPos, int yPos, AbstractContainerScreen<T> screen) {
+        public <T extends AbstractContainerMenu> CloseConfig(int xPos, int yPos, AbstractContainerScreen<T> screen) {
             super(xPos, yPos, screen, 71);
             height = 18;
             width = 18;
@@ -171,6 +172,41 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
             btn = new ImageButton(X(), Y(), width, height, 220, 184 - (y+1) * 36, 18, TEXTURE, pButton -> {
                 NuclearCraft.packetHandler().sendToServer(new PacketGuiButtonPress(pos, BTN_ID));
             });
+        }
+
+        public void setTimer(int modeTimer) {
+            timer = modeTimer;
+        }
+    }
+
+    public static class MultiblockAnalyze extends Button {
+        private final BlockPos pos;
+        public static final int BTN_ID = 777;
+        public byte strength = 0;
+        public int timer = 2000;
+
+        public MultiblockAnalyze(int xPos, int yPos, AbstractContainerScreen<?> screen, BlockPos pos) {
+            super(xPos, yPos, screen, BTN_ID);
+            MultiblockControllerContailer container = new MultiblockControllerContailer(pos);
+            this.pos = pos;
+            height = 18;
+            width = 18;
+            btn = new ImageButton(X(), Y(), width, height, 184, 112, 18, TEXTURE, pButton -> {
+                NuclearCraft.packetHandler().sendToServer(new PacketGuiButtonPress(pos, BTN_ID));
+                Minecraft.getInstance().forceSetScreen(new MultiblockAnalyzeReportScreen<>(screen, container));
+            });
+        }
+
+        public List<Component> getTooltips() {
+            List<Component> list = new ArrayList<>(List.of(
+                    __("tooltip.nc.analyze")
+            ));
+            if(timer < 2000) {
+                list.add(__("gui.nc.reactor_mode.timer", timer/20));
+            } else {
+                list.add(__("tooltip.nc.analyze.descr"));
+            }
+            return list;
         }
 
         public void setTimer(int modeTimer) {

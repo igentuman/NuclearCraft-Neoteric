@@ -258,4 +258,8 @@ public class FissionControllerContainer extends AbstractContainerMenu {
     public int getBoilingPenalty() {
         return (int) blockEntity.boilingPenalty;
     }
+
+    public boolean canAnalyze() {
+        return blockEntity.analyzeDelay < 1;
+    }
 }

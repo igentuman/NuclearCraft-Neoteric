@@ -17,6 +17,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class MultiblockControllerBE extends NuclearCraftBE implements MultiblockAttachable<AbstractMultiblock, MultiblockControllerBE> {
 
     @NBTField
@@ -31,10 +34,15 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
     public boolean isInternalValid = false;
     public boolean refreshCacheFlag = true;
     public byte validationRuns = 0;
+    @NBTField
+    public int analyzeDelay = 0;
+
     protected AbstractMultiblock multiblock;
     public BlockPos errorBlockPos = BlockPos.ZERO;
     public ValidationResult validationResult = ValidationResult.INCOMPLETE;
     public boolean controllerEnabled = false;
+    @NBTField
+    private boolean displayDetailedDataFlag = false;
 
     public MultiblockControllerBE(BlockEntityType<?> pType, BlockPos pPos, BlockState pBlockState) {
         super(pType, pPos, pBlockState);
@@ -100,7 +108,9 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
     }
 
     public void tickServer() {
-
+        if(analyzeDelay > 0) {
+            analyzeDelay--;
+        }
     }
 
     public void tickClient() {
@@ -211,5 +221,20 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
             tag.remove("Info");
             tag.put("Info", infoTag);
         }
+    }
+
+    public void runAnalyze() {
+        if (analyzeDelay > 0) {
+            return;
+        }
+        analyzeDelay = 100;
+        if (getMultiblock() != null) {
+            getMultiblock().wipeCache();
+            displayDetailedDataFlag = true;
+        }
+    }
+
+    public HashMap<String, String> getAnalyzeReport() {
+        return new HashMap<>();
     }
 }

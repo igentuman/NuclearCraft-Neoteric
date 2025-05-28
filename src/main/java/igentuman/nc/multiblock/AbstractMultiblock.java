@@ -25,6 +25,7 @@ public abstract class AbstractMultiblock implements Multiblock {
 
     public boolean hasToRefresh = true;
     public BlockPos errorBlockPos = BlockPos.ZERO;
+    public int connectedPorts = 0;
     protected int height;
     protected int width;
     protected int depth;
@@ -97,6 +98,10 @@ public abstract class AbstractMultiblock implements Multiblock {
 
     public boolean isFormed() {
         return isFormed;
+    }
+
+    public boolean isPort(BlockState bs) {
+        return bs.getBlock().asItem().toString().contains("port");
     }
 
     @Override
@@ -340,6 +345,9 @@ public abstract class AbstractMultiblock implements Multiblock {
         if (CONTROLLERS.matcher(getBlockState(pos).getBlock().asItem().toString()).matches()) {
             controllers.add(pos);
         }
+        if (isPort(getBlockState(pos))) {
+            connectedPorts++;
+        }
     }
 
     public void validateInner() {
@@ -446,14 +454,12 @@ public abstract class AbstractMultiblock implements Multiblock {
 
     @Override
     public void validate() {
+        connectedPorts = 0;
         long startTime = System.currentTimeMillis();
         topRight = null;
         bottomLeft = null;
         validationResult = ValidationResult.INCOMPLETE;
-        //allBlocks.clear();
         controllers.clear();
-        //bsCache.clear();
-        //beCache.clear();
         validateOuter();
         if (isOuterValid()) {
             validateInner();
@@ -500,11 +506,11 @@ public abstract class AbstractMultiblock implements Multiblock {
                 return false;
             }
         }
-        if(!allBlocks.contains(neighbor)) {
+        if(!allBlocks.contains(neighbor.asLong())) {
             return false;
         }
         BlockEntity neighborBe = getBlockEntity(neighbor);
-        if (neighborBe instanceof MultiblockAttachable part) {
+        if (neighborBe instanceof MultiblockAttachable<?,?> part) {
             return part.canInvalidateCache();
         }
         return true;
@@ -607,10 +613,28 @@ public abstract class AbstractMultiblock implements Multiblock {
     }
 
     public boolean containsPos(BlockPos pos) {
-        return allBlocks.contains(pos);
+        return allBlocks.contains(pos.asLong());
     }
 
     public boolean isValidForTicking() {
         return controller() != null && controller().controllerBE() != null;
+    }
+
+    public void wipeCache() {
+        hasToRefresh = true;
+        beCache.clear();
+        bsCache.clear();
+        allBlocks.clear();
+        controllers.clear();
+        bottomLeft = null;
+        topRight = null;
+        errorBlockPos = BlockPos.ZERO;
+        validationResult = ValidationResult.INCOMPLETE;
+        isFormed = false;
+        innerValid = false;
+        outerValid = false;
+        height = 0;
+        width = 0;
+        depth = 0;
     }
 }

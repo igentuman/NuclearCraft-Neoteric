@@ -108,7 +108,7 @@ public class FissionConfig {
 
             MODERATOR_HEAT_MULTIPLIER = builder
                     .comment("Each attachment of moderator to fuel cell will increase fuel heat generation by given percent value.")
-                    .defineInRange("moderator_heat_multiplier", 33.34D, 0D, 1000D);
+                    .defineInRange("moderator_heat_multiplier", 33.33D, 0D, 1000D);
 
             BOILING_MULTIPLIER = builder
                     .comment("Rate at which steam recipes produced.")
@@ -124,7 +124,7 @@ public class FissionConfig {
 
             ACTIVE_HEATSINK_COOLANT_PER_TICK = builder
                     .comment("How much coolant active heat sink will consume per tick.")
-                    .defineInRange("active_heatsink_coolant_per_tick", 100, 1, 10000);
+                    .defineInRange("active_heatsink_coolant_per_tick", 10, 1, 10000);
 
             builder.pop();
         }

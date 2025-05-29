@@ -446,6 +446,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
         allModerators = getMultiblock().allModerators.size();
         allIrradiators = getMultiblock().irradiators.size();
         validIrradiators = getMultiblock().validIrradiators.size();
+        activeCoolingHeatsinks = getMultiblock().activeCoolers.size();
     }
 
     private void hopToggleMode() {
@@ -608,7 +609,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
     }
 
     public double heatPerTick() {
-        heatPerTick = recipeInfo().heat * Math.max(fuelCellsCount, fuelCellMultiplier) + moderatorsHeat() + irradiationHeat;
+        heatPerTick = recipeInfo().heat * (fuelCellsCount + fuelCellMultiplier) + moderatorsHeat() + irradiationHeat;
         return heatPerTick;
     }
 
@@ -618,7 +619,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
 
     private int calculateEnergy() {
         energyPerTick = (int) (
-                (recipeInfo().energy * Math.max(1, Math.abs(fuelCellMultiplier-fuelCellsCount)) + moderatorsFE())
+                (recipeInfo().energy * Math.max(1, Math.abs(fuelCellMultiplier+fuelCellsCount)) + moderatorsFE())
                 * (heatMultiplier() + collectedHeatMultiplier() - 1)
                 * FISSION_CONFIG.FE_GENERATION_MULTIPLIER.get()/10D
                 * ENERGY_GENERATION.GENERATION_MULTIPLIER.get()
@@ -686,8 +687,11 @@ public class FissionControllerBE extends MultiblockControllerBE {
     }
 
     public double calculateEfficiency() {
-
-        return (double) calculateEnergy() / recipeInfo.energy * 100D;
+        double mult = fuelCellsCount;
+        if(fuelCellMultiplier > fuelCellsCount) {
+            mult = (double) fuelCellMultiplier / fuelCellsCount;
+        }
+        return (double) calculateEnergy() / (recipeInfo.energy * mult / 100);
     }
 
     public double getNetHeat() {

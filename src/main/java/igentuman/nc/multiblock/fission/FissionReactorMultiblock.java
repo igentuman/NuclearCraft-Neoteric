@@ -34,6 +34,7 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
     public final List<Long> fuelCells = new ArrayList<>();
     public final List<Long> allModerators = new ArrayList<>();
     public final List<Long> validIrradiators = new ArrayList<>();
+    public final List<Long> activeCoolers = new ArrayList<>();
     private double heatSinkCooling = 0;
     public double activeCooling = 0;
     public final List<Long> allHeatSinks = new ArrayList<>();
@@ -107,6 +108,7 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
                     if(hs.isValid(getLevel(), hpos, this)) {
                         validHeatSinks.put(packedPos, hs);
                         if(hs.isActive()) {
+                            activeCoolers.add(packedPos);
                             addActiveCoolant(hs.def.name.replace("active_", ""));
                         }
                     }
@@ -223,6 +225,7 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
         allHeatSinks.clear();
         allModerators.clear();
         validIrradiators.clear();
+        activeCoolers.clear();
         super.validate();
     }
 
@@ -275,7 +278,7 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
                         addDirectFuelCellConnection(new BlockPos(toCheck));
                         addIfNotExists(new BlockPos(toCheck), fuelCells);
                         int modAttachments = countAttachedModeratorsToFuelCell(new BlockPos(toCheck));
-                        fuelCellMultiplier += countAdjacentFuelCells(NCBlockPos.of(toCheck), 3);
+                        fuelCellMultiplier += countAdjacentFuelCells(NCBlockPos.of(toCheck), 2);
                         moderatorCellMultiplier += (countAdjacentFuelCells(NCBlockPos.of(toCheck), 1)+1)*modAttachments;
                         moderatorAttachments += modAttachments;
                         indexDirectHeatSinks(new BlockPos(toCheck));
@@ -306,7 +309,9 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
 
     @Override
     protected boolean processInnerBlock(BlockPos toCheck) {
+        addIfNotExists(toCheck, allBlocks);
         if(isFuelCell(toCheck)) {
+            addDirectFuelCellConnection(new BlockPos(toCheck));
             return true;
         }
         if(isModerator(toCheck)) {
@@ -395,16 +400,23 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
     private int countAdjacentFuelCells(NCBlockPos toCheck, int step) {
         int count = 0;
         for (Direction d : Direction.values()) {
-            if (isFuelCell(toCheck.revert().relative(d))) {
-                count+=step;
-                continue;
-            }
-            if(isModerator(toCheck.revert().relative(d))) {
-                addIfNotExists(toCheck.revert().relative(d), allModerators);
-                if(isFuelCell(toCheck.revert().relative(d, 2))) {
+            for(int l = 1; l < 6; l++) {
+                if (isFuelCell(toCheck.revert().relative(d, l))) {
                     count += step;
+                    break;
+                }
+
+                if(isModerator(toCheck.revert().relative(d, l))) {
+                    addIfNotExists(toCheck.revert().relative(d), allModerators);
+                    if(isFuelCell(toCheck.revert().relative(d, l + 1))) {
+                        count += step;
+                        break;
+                    }
                 }
             }
+        }
+        if(count == 0) {
+            count = 1;
         }
         return count;
     }

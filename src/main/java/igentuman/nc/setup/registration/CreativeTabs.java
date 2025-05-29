@@ -190,6 +190,7 @@ public class CreativeTabs {
         }
         items.addAll(blockStacks(NC_BLOCKS.values()));
         items.add(new ItemStack(REDSTONE_DIMMER_ITEM_BLOCK.get()));
+        items.add(new ItemStack(MULTIBLOCK_BUILDER_BLOCK.get()));
         items.add(new ItemStack(EXPL_BLOCK.get()));
         items.addAll(blockStacks(NC_ELECTROMAGNETS.values()));
         items.addAll(blockStacks(NC_RF_AMPLIFIERS.values()));

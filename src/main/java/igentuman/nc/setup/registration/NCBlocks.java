@@ -1,6 +1,8 @@
 package igentuman.nc.setup.registration;
 
+import igentuman.nc.block.entity.MultiblockBuilderBE;
 import igentuman.nc.block.entity.RedstoneDimmerBE;
+import igentuman.nc.container.MultiblockBuilderContainer;
 import igentuman.nc.container.RedstoneDImmerContainer;
 import igentuman.nc.content.Electromagnets;
 import igentuman.nc.content.RFAmplifier;
@@ -58,11 +60,18 @@ public class NCBlocks {
     public static final RegistryObject<Item> REDSTONE_DIMMER_ITEM_BLOCK = fromBlock(REDSTONE_DIMMER_BLOCK);
     public static final RegistryObject<BlockEntityType<RedstoneDimmerBE>> REDSTONE_DIMMER_BE = BLOCK_ENTITIES.register("redstone_dimmer",
             () -> BlockEntityType.Builder.of(RedstoneDimmerBE::new, REDSTONE_DIMMER_BLOCK.get()).build(null));
+
+    public static final RegistryObject<Block> MULTIBLOCK_BUILDER_BLOCK = BLOCKS.register("multiblock_builder", MultiblockBuilderBlock::new);
+    public static final RegistryObject<Item> MULTIBLOCK_BUILDER_ITEM_BLOCK = fromBlock(MULTIBLOCK_BUILDER_BLOCK);
+    public static final RegistryObject<BlockEntityType<MultiblockBuilderBE>> MULTIBLOCK_BUILDER_BE = BLOCK_ENTITIES.register("multiblock_builder",
+            () -> BlockEntityType.Builder.of(MultiblockBuilderBE::new, MULTIBLOCK_BUILDER_BLOCK.get()).build(null));
     public static final RegistryObject<Block> MUSHROOM_BLOCK = BLOCKS.register("glowing_mushroom", () -> new GlowingMushroomBlock(
             BlockBehaviour.Properties.of().sound(SoundType.GRASS).noCollission().instabreak().randomTicks().lightLevel($ -> 5)
             ));
     public static final RegistryObject<MenuType<RedstoneDImmerContainer>> REDSTONE_DIMMER_CONTAINER = CONTAINERS.register("redstone_dimmer",
             () -> IForgeMenuType.create((windowId, inv, data) -> new RedstoneDImmerContainer(windowId, data.readBlockPos(), inv)));
+    public static final RegistryObject<MenuType<MultiblockBuilderContainer>> MULTIBLOCK_BUILDER_CONTAINER = CONTAINERS.register("multiblock_builder",
+            () -> IForgeMenuType.create((windowId, inv, data) -> new MultiblockBuilderContainer(windowId, data.readBlockPos(), inv)));
     public static final RegistryObject<Item> MUSHROOM_ITEM = fromBlock(MUSHROOM_BLOCK);
     public static final RegistryObject<Item> PORTAL_ITEM = fromBlock(PORTAL_BLOCK);
     public static final RegistryObject<Item> WASTELAND_EARTH_ITEM = fromBlock(WASTELAND_EARTH);

@@ -586,6 +586,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("reactor.max_boiling_rate","Max rate: %s mB/t");
 
         add("nc.redstone_dimmer.description", "Adjusts redstone output power based on impulses received from the left or right sides.");
+        add("nc.multiblock_builder.description", "For automated building.");
         add("tooltip.nc.fusion_connector.descr", "Used to connect fusion core and toroidal reactor chamber");
         add("tooltip.nc.fusion_casing.descr", "Used to build toroidal fusion reactor chamber");
         add("tooltip.nc.rf_amplifier.not_found","No RF Amplifiers attached");
@@ -915,6 +916,7 @@ public class NCLanguageProvider extends LanguageProvider {
             add(NC_RF_AMPLIFIERS.get(name).get(), convertToName(name));
         }
         add("block."+MODID+".redstone_dimmer", "Redstone Dimmer");
+        add("block."+MODID+".multiblock_builder", "Multiblock Builder");
         add("block."+MODID+".portal", "Wasteland Portal");
     }
 }

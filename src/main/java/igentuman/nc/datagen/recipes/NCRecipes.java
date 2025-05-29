@@ -161,6 +161,18 @@ public class NCRecipes extends RecipeProvider {
     }
 
     private void fusionBlocks(Consumer<FinishedRecipe> consumer) {
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, MULTIBLOCK_BUILDER_BLOCK.get())
+                .pattern("LPL")
+                .pattern("CMC")
+                .pattern("LPL")
+                .define('C', BEACON)
+                .define('M', NC_PARTS.get("chassis").get())
+                .define('P', REPEATER)
+                .define('L',  NC_PARTS.get("plate_basic").get())
+                .group(MODID+"_builder")
+                .unlockedBy("item", has(NC_PARTS.get("chassis").get()))
+                .save(consumer);
+
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, REDSTONE_DIMMER_BLOCK.get())
                 .pattern("LPL")
                 .pattern("CMC")

@@ -120,6 +120,7 @@ public class NCBlockTags extends BlockTagsProvider {
     }
 
     private void blocks() {
+        tag(BlockTags.MINEABLE_WITH_PICKAXE).add(MULTIBLOCK_BUILDER_BLOCK.get());
         tag(BlockTags.MINEABLE_WITH_PICKAXE).add(REDSTONE_DIMMER_BLOCK.get());
         tag(BlockTags.NEEDS_IRON_TOOL).add(REDSTONE_DIMMER_BLOCK.get());
 

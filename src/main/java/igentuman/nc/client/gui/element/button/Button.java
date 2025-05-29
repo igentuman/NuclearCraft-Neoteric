@@ -2,10 +2,13 @@ package igentuman.nc.client.gui.element.button;
 
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.client.gui.MultiblockAnalyzeReportScreen;
+import igentuman.nc.client.gui.MultiblockBuilderScreen;
 import igentuman.nc.client.gui.element.NCGuiElement;
 import igentuman.nc.client.gui.processor.side.SideConfigSlotSelectionScreen;
 import igentuman.nc.container.MultiblockControllerContailer;
+import igentuman.nc.network.toServer.PacketBuildMultiblock;
 import igentuman.nc.network.toServer.PacketGuiButtonPress;
+import igentuman.nc.util.builder.ReactorDesignParser;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button.Builder;
@@ -16,10 +19,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.level.block.Block;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
+import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.util.TextUtils.__;
 
 public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
@@ -205,6 +211,88 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
                 list.add(__("gui.nc.reactor_mode.timer", timer/20));
             } else {
                 list.add(__("tooltip.nc.analyze.descr"));
+            }
+            return list;
+        }
+
+        public void setTimer(int modeTimer) {
+            timer = modeTimer;
+        }
+    }
+
+    public static class InsertJson extends Button {
+        private final BlockPos pos;
+        public static final int BTN_ID = 888;
+        public byte strength = 0;
+        public int timer = 2000;
+
+
+        public InsertJson(int xPos, int yPos, MultiblockBuilderScreen screen, BlockPos pos) {
+            super(xPos, yPos, screen, BTN_ID);
+            this.pos = pos;
+            height = 18;
+            width = 18;
+            btn = new ImageButton(X(), Y(), width, height, 184, 112, 18, TEXTURE, pButton -> {
+                try {
+                    String jsonText = Minecraft.getInstance().keyboardHandler.getClipboard();
+                    if (jsonText != null && !jsonText.isEmpty()) {
+                        screen.jsonText = jsonText;
+                        screen.blockMap = ReactorDesignParser.parseStructure(jsonText);
+                    }
+                } catch (Exception e) {
+                    debugLog("Error getting clipboard data");
+                }
+            });
+        }
+
+        public List<Component> getTooltips() {
+            List<Component> list = new ArrayList<>(List.of(
+                    __("tooltip.nc.paste_json")
+            ));
+            if(timer < 2000) {
+                list.add(__("gui.nc.reactor_mode.timer", timer/20));
+            } else {
+                list.add(__("tooltip.nc.paste_json.descr"));
+            }
+            return list;
+        }
+
+        public void setTimer(int modeTimer) {
+            timer = modeTimer;
+        }
+    }
+    public static class Build extends Button {
+        private final BlockPos pos;
+        public static final int BTN_ID = 889;
+        public byte strength = 0;
+        public int timer = 2000;
+        public MultiblockBuilderScreen screen;
+
+        public void draw(GuiGraphics transform, int mX, int mY, float pTicks) {
+            if(screen.blockMap.isEmpty()) return;
+            super.draw(transform, mX, mY, pTicks);
+        }
+
+
+        public Build(int xPos, int yPos, MultiblockBuilderScreen screen, BlockPos pos) {
+            super(xPos, yPos, screen, BTN_ID);
+            this.screen = screen;
+            this.pos = pos;
+            height = 18;
+            width = 18;
+            btn = new ImageButton(X(), Y(), width, height, 184, 112, 18, TEXTURE, pButton -> {
+                NuclearCraft.packetHandler().sendToServer(new PacketBuildMultiblock(pos, screen.blockMap));
+            });
+        }
+
+        public List<Component> getTooltips() {
+            List<Component> list = new ArrayList<>(List.of(
+                    __("tooltip.nc.paste_json")
+            ));
+            if(timer < 2000) {
+                list.add(__("gui.nc.reactor_mode.timer", timer/20));
+            } else {
+                list.add(__("tooltip.nc.paste_json.descr"));
             }
             return list;
         }

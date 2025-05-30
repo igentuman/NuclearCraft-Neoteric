@@ -232,7 +232,7 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
             this.pos = pos;
             height = 18;
             width = 18;
-            btn = new ImageButton(X(), Y(), width, height, 184, 112, 18, TEXTURE, pButton -> {
+            btn = new ImageButton(X(), Y(), width, height, 144, 220, 18, TEXTURE, pButton -> {
                 try {
                     String jsonText = Minecraft.getInstance().keyboardHandler.getClipboard();
                     if (jsonText != null && !jsonText.isEmpty()) {
@@ -280,7 +280,7 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
             this.pos = pos;
             height = 18;
             width = 18;
-            btn = new ImageButton(X(), Y(), width, height, 184, 112, 18, TEXTURE, pButton -> {
+            btn = new ImageButton(X(), Y(), width, height, 162, 220, 18, TEXTURE, pButton -> {
                 NuclearCraft.packetHandler().sendToServer(new PacketBuildMultiblock(pos, screen.blockMap));
             });
         }

@@ -38,6 +38,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.setup.registration.NCBlocks.MULTIBLOCK_BUILDER_BE;
 import static igentuman.nc.util.TextUtils.__;
 
@@ -90,7 +91,7 @@ public class MultiblockBuilderBlock extends HorizontalDirectionalBlock implement
                 MenuProvider containerProvider = new MenuProvider() {
                     @Override
                     public Component getDisplayName() {
-                        return __("nc.redstone_dimmer.title");
+                        return __("block."+MODID+".multiblock_builder");
                     }
 
                     @Override
@@ -130,7 +131,7 @@ public class MultiblockBuilderBlock extends HorizontalDirectionalBlock implement
     @Override
     public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag) {
         if(asItem().toString().contains("empty") || this.asItem().equals(Items.AIR)) return;
-        list.add(TextUtils.applyFormat(__("nc.redstone_dimmer.description"), ChatFormatting.AQUA));
+        list.add(TextUtils.applyFormat(__("nc.multiblock_builder.description"), ChatFormatting.AQUA));
     }
 
 }

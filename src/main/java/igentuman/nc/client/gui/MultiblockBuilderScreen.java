@@ -6,12 +6,12 @@ import igentuman.nc.client.gui.element.button.Button;
 import igentuman.nc.container.MultiblockBuilderContainer;
 import igentuman.nc.util.annotation.NothingNullByDefault;
 import igentuman.nc.util.builder.MultiblockRenderer;
-import igentuman.nc.util.builder.ReactorDesignParser;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.FormattedText;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.level.block.Block;
@@ -25,7 +25,7 @@ import static igentuman.nc.NuclearCraft.rl;
 @NothingNullByDefault
 public class MultiblockBuilderScreen extends AbstractContainerScreen<MultiblockBuilderContainer> {
 
-    protected final ResourceLocation GUI = rl("textures/gui/window_no_inventory.png");
+    protected final ResourceLocation GUI = rl("textures/gui/multiblock_builder.png");
     public List<NCGuiElement> widgets = new ArrayList<>();
     public String jsonText = "";
     private Button.InsertJson insertBtn;
@@ -35,8 +35,8 @@ public class MultiblockBuilderScreen extends AbstractContainerScreen<MultiblockB
     public HashMap<BlockPos, Block> blockMap = new HashMap<>();
     public MultiblockBuilderScreen(MultiblockBuilderContainer container, Inventory inv, Component name) {
         super(container, inv, name);
-        imageWidth = 180;
-        imageHeight = 180;
+        imageWidth = 178;
+        imageHeight = 238;
     }
 
     protected void updateRelativeCords()
@@ -51,8 +51,8 @@ public class MultiblockBuilderScreen extends AbstractContainerScreen<MultiblockB
         super.init();
         Minecraft mc = Minecraft.getInstance();
         updateRelativeCords();
-        insertBtn = new Button.InsertJson(150, 30, this, menu.getPosition());
-        buildBtn = new Button.Build(150, 60, this, menu.getPosition());
+        insertBtn = new Button.InsertJson(150, 7, this, menu.getPosition());
+        buildBtn = new Button.Build(128, 7, this, menu.getPosition());
         widgets.clear();
         widgets.add(insertBtn);
         widgets.add(buildBtn);
@@ -67,9 +67,10 @@ public class MultiblockBuilderScreen extends AbstractContainerScreen<MultiblockB
     @Override
     protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
         Minecraft mc = Minecraft.getInstance();
-        graphics.drawString(mc.font, this.title, 8, 6, 4210752);
-        graphics.drawString(mc.font, this.jsonText, 8, 20, 4210752);
-
+        graphics.drawWordWrap(mc.font, this.title, 8, 6, 100, 4210752);
+        if(!blockMap.isEmpty()) {
+            graphics.drawWordWrap(mc.font, FormattedText.of(MultiblockRenderer.getSize(blockMap).toShortString().replace(", ", "x")), 8, 16, 100, 4210752);
+        }
     }
 
     private void renderWidgets(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
@@ -96,7 +97,7 @@ public class MultiblockBuilderScreen extends AbstractContainerScreen<MultiblockB
         graphics.blit(GUI, relX, relY, 0, 0, this.imageWidth, this.imageHeight);
         renderWidgets(graphics, partialTicks, mouseX, mouseY);
         if(!blockMap.isEmpty()) {
-            MultiblockRenderer.render(blockMap, graphics.pose(), relX+10, relY+60, 40, 40);
+            MultiblockRenderer.render(blockMap, graphics.pose(), relX+20, relY+40, 45, 45);
         }
     }
 }

@@ -70,6 +70,9 @@ public class ReactorDesignParser {
         if(FISSION_BLOCKS.containsKey(componentType + "_heat_sink")) {
             return FISSION_BLOCKS.get(componentType + "_heat_sink").get();
         }
+        if(FISSION_BLOCKS.containsKey("liquid_" + componentType + "_heat_sink")) {
+            return FISSION_BLOCKS.get("liquid_" + componentType + "_heat_sink").get();
+        }
         if(NC_BLOCKS.containsKey(componentType + "_block")) {
             return NC_BLOCKS.get(componentType + "_block").get();
         }

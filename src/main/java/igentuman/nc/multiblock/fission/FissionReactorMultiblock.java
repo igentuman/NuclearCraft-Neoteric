@@ -404,19 +404,12 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
                 if (isFuelCell(toCheck.revert().relative(d, l))) {
                     count += step;
                     break;
-                }
-
-                if(isModerator(toCheck.revert().relative(d, l))) {
+                } else if (isModerator(toCheck.revert().relative(d, l))) {
                     addIfNotExists(toCheck.revert().relative(d), allModerators);
-                    if(isFuelCell(toCheck.revert().relative(d, l + 1))) {
-                        count += step;
-                        break;
-                    }
+                } else {
+                    break;
                 }
             }
-        }
-        if(count == 0) {
-            count = 1;
         }
         return count;
     }

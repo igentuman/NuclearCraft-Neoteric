@@ -139,6 +139,10 @@ public class FissionControllerBE extends MultiblockControllerBE {
     public double cellsHeatMult = 0;
     @NBTField
     public double moderatorsHeatMult = 0;
+    @NBTField
+    public double cellsEnergyMult = 0;
+    @NBTField
+    public double moderatorsEnergyMult = 0;
 
     public FissionControllerBE(BlockPos pPos, BlockState pBlockState) {
         super(FissionReactorRegistration.FISSION_BE.get(NAME).get(),pPos, pBlockState);
@@ -640,7 +644,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
 
     private int calculateEnergy() {
         energyPerTick = (int) (
-                (recipeInfo().energy * Math.max(1, Math.abs(fuelCellMultiplier+fuelCellsCount)) + moderatorsFE())
+                (recipeInfo().energy * (cellsEnergyMult + moderatorsFE()))
                 * (heatMultiplier() + collectedHeatMultiplier() - 1)
                 * FISSION_CONFIG.FE_GENERATION_MULTIPLIER.get()/10D
                 * ENERGY_GENERATION.GENERATION_MULTIPLIER.get()
@@ -654,7 +658,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
     }
 
     public double moderatorsFE() {
-        return getModerationLevel() * recipeInfo().energy * moderatorAttachments * (FISSION_CONFIG.MODERATOR_FE_MULTIPLIER.get() / 100);
+        return getModerationLevel() * moderatorsEnergyMult;
     }
 
     @Override

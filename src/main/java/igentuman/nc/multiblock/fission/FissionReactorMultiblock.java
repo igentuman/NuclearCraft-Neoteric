@@ -42,6 +42,8 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
     protected final List<Long> allHeatSinks = new ArrayList<>();
     protected double cellsHeatMult = 0.0D;
     protected double moderatorsHeatMult = 0.0D;
+    protected double cellsEnergyMult = 0.0D;
+    protected double moderatorsEnergyMult = 0.0D;
     protected final List<Long> directFuelCellConnectionPos = new ArrayList<>();
     protected final List<Long> secondFuelCellConnectionPos = new ArrayList<>();
     public final HashMap<String, Integer> coolantPerTick = new HashMap<>();
@@ -214,6 +216,8 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
         controllerBE().fuelCellsCount = fuelCells.size();
         controllerBE().cellsHeatMult = cellsHeatMult;
         controllerBE().moderatorsHeatMult = moderatorsHeatMult;
+        controllerBE().cellsEnergyMult = cellsEnergyMult;
+        controllerBE().moderatorsEnergyMult = moderatorsEnergyMult;
         heatSinkCooling = countCooling(true);
         controllerBE().setChanged();
     }
@@ -273,12 +277,16 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
     private void indexFuelCellAttachments() {
         cellsHeatMult = 0D;
         moderatorsHeatMult = 0D;
+        cellsEnergyMult = 0D;
+        moderatorsEnergyMult = 0D;
         for(long pos: fuelCells) {
             extraFuelCells = 0;
             extraFuelCells += countAdjacentFuelCells(BlockPos.of(pos));
             cellsHeatMult += (extraFuelCells + 1D)*(extraFuelCells + 2D)/2D;
+            cellsEnergyMult += extraFuelCells + 1D;
             int moderators = getFuelCellModerators(pos);
             moderatorsHeatMult += moderators * (extraFuelCells+1D)*(FISSION_CONFIG.MODERATOR_HEAT_MULTIPLIER.get() / 100);
+            moderatorsEnergyMult += moderators * (extraFuelCells+1D)*(FISSION_CONFIG.MODERATOR_FE_MULTIPLIER.get() / 100);
         }
     }
 
@@ -472,6 +480,8 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
         controllerBE().activeCoolingHeatsinks = 0;
         controllerBE().connectedPorts = 0;
         controllerBE().moderatorsHeatMult = 0;
+        controllerBE().cellsEnergyMult = 0;
+        controllerBE().moderatorsEnergyMult = 0;
         controllerBE().cellsHeatMult = 0;
         controllerBE().bottomLeft = BlockPos.ZERO;
         controllerBE().topRight = BlockPos.ZERO;

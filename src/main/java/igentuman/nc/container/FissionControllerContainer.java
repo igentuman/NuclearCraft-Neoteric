@@ -124,7 +124,7 @@ public class FissionControllerContainer extends AbstractContainerMenu {
     }
 
     public double getHeat() {
-        return blockEntity.heat;
+        return Math.floor(blockEntity.heat);
     }
 
     public double getProgress() {

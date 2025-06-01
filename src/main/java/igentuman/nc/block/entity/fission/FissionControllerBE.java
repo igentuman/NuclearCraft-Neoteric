@@ -136,7 +136,9 @@ public class FissionControllerBE extends MultiblockControllerBE {
     @NBTField
     public int allIrradiators = 0;
     @NBTField
-    public double heatMult = 0;
+    public double cellsHeatMult = 0;
+    @NBTField
+    public double moderatorsHeatMult = 0;
 
     public FissionControllerBE(BlockPos pPos, BlockState pBlockState) {
         super(FissionReactorRegistration.FISSION_BE.get(NAME).get(),pPos, pBlockState);
@@ -554,7 +556,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
             return;
         }
 
-        for(BlockPos blockPos: BlockPos.betweenClosed(bottomLeft, topRight)) {
+        for(BlockPos blockPos: BlockPos.betweenClosed(bottomLeft.offset(1,1,1), topRight.offset(-1, -1, -1))) {
             if(level.random.nextBoolean()) {
                 level.addParticle(RADIATION.get(), blockPos.getX()+level.random.nextFloat(), blockPos.getY()+level.random.nextFloat(), blockPos.getZ()+level.random.nextFloat(), 0, -0.05f, 0);
             }
@@ -628,7 +630,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
     }
 
     public double heatPerTick() {
-        heatPerTick = recipeInfo().heat * heatMult + moderatorsHeat() + irradiationHeat;
+        heatPerTick = recipeInfo().heat * (cellsHeatMult + moderatorsHeat()) + irradiationHeat;
         return heatPerTick;
     }
 
@@ -648,7 +650,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
     }
 
     public double moderatorsHeat() {
-        return Math.max(0.1, getModerationLevel());
+        return Math.max(0.1, getModerationLevel())*moderatorsHeatMult;
     }
 
     public double moderatorsFE() {

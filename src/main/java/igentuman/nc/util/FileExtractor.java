@@ -1,5 +1,9 @@
 package igentuman.nc.util;
 
+import com.electronwill.nightconfig.core.CommentedConfig;
+import com.electronwill.nightconfig.core.file.FileConfig;
+import net.minecraftforge.fml.loading.FMLPaths;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,10 +17,7 @@ import java.util.HashMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import com.electronwill.nightconfig.core.CommentedConfig;
-import com.electronwill.nightconfig.core.file.FileConfig;
-import igentuman.nc.NuclearCraft;
-import net.minecraftforge.fml.loading.FMLPaths;
+import static igentuman.nc.NuclearCraft.LOGGER;
 
 public class FileExtractor {
 
@@ -75,7 +76,7 @@ public class FileExtractor {
         try {
 
             File jarFile = new File(jarPath);
-            NuclearCraft.LOGGER.error("JAR file path: " + jarFile.getAbsolutePath());
+            LOGGER.debug("JAR file path: " + jarFile.getAbsolutePath());
             // Open the JAR file and iterate through its entries
             try (ZipFile zipFile = new ZipFile(jarFile)) {
                 Enumeration<? extends ZipEntry> entries = zipFile.entries();
@@ -83,7 +84,12 @@ public class FileExtractor {
                 while (entries.hasMoreElements()) {
                     ZipEntry entry = entries.nextElement();
                     String entryName = entry.getName();
-
+                    File version = new File(targetFolder, "version.txt");
+                    int currentVersion = 1;
+                    int versionId = 0;
+                    if(version.exists()) {
+                        versionId = Integer.parseInt(Files.readString(version.toPath()));
+                    }
                     // Check if the entry is inside the desired folder
                     if (entryName.startsWith(sourceFolderPath) && !entry.isDirectory()) {
                         // Calculate the relative path and target file name
@@ -97,11 +103,11 @@ public class FileExtractor {
 
                         // Copy the file from the JAR to the config folder
                         try (InputStream inputStream = zipFile.getInputStream(entry)) {
-                            if(targetFile.exists()) {
+                            if(targetFile.exists() || versionId >= currentVersion) {
                                 continue;
                             }
                             Files.copy(inputStream, targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                            System.out.println("Extracted file " + relativeFileName + " to config folder.");
+                            LOGGER.debug("Extracted file " + relativeFileName + " to config folder.");
                         } catch (IOException e) {
                             if(targetFolder.listFiles().length == 0) {
                                 System.err.println("Failed to extract files to " + targetFolder.getPath());
@@ -120,15 +126,15 @@ public class FileExtractor {
                     for (File file : files) {
                         File targetFile = new File(targetFolder, file.getName());
                         Files.copy(file.toPath(), targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                        System.out.println("Extracted file " + file.getName() + " to config folder.");
+                        LOGGER.debug("Extracted file " + file.getName() + " to config folder.");
                     }
                 } catch (IOException ex) {
-                    ex.printStackTrace();
+                    LOGGER.debug(ex.toString());
                 }
             } else {
-                e.printStackTrace();
+                LOGGER.debug(e.toString());
             }
-            e.printStackTrace();
+            LOGGER.debug(e.toString());
         }
     }
 }

@@ -19,6 +19,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.*;
 
+import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.handler.config.FissionConfig.FISSION_CONFIG;
 import static igentuman.nc.util.TagUtil.getBlocksByTagKey;
 
@@ -39,7 +40,8 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
     protected final List<Long> validIrradiators = new ArrayList<>();
     protected final List<Long> activeCoolers = new ArrayList<>();
     protected final List<Long> allHeatSinks = new ArrayList<>();
-    protected double heatMult = 0.0D;
+    protected double cellsHeatMult = 0.0D;
+    protected double moderatorsHeatMult = 0.0D;
     protected final List<Long> directFuelCellConnectionPos = new ArrayList<>();
     protected final List<Long> secondFuelCellConnectionPos = new ArrayList<>();
     public final HashMap<String, Integer> coolantPerTick = new HashMap<>();
@@ -190,7 +192,7 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
             return;
         }
         //Stage 2: Validate moderators and count attachments
-        indexModerators();
+        //indexModerators();
         //Stage 3: count fuel cell attachments
         indexFuelCellAttachments();
         //Stage 4: index irradiators and count irradiation lines
@@ -210,7 +212,8 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
         controllerBE().connectedPorts = connectedPorts;
         controllerBE().extraFuelCells = extraFuelCells;
         controllerBE().fuelCellsCount = fuelCells.size();
-        controllerBE().heatMult = heatMult;
+        controllerBE().cellsHeatMult = cellsHeatMult;
+        controllerBE().moderatorsHeatMult = moderatorsHeatMult;
         heatSinkCooling = countCooling(true);
         controllerBE().setChanged();
     }
@@ -237,7 +240,7 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
             if(isHeatSinkValid(hsPos)) {
                 HeatSinkBlock hb = (HeatSinkBlock) getBlockState(pos).getBlock();
                 addIfNotExists(pos, heatSinks);
-                validHeatSinks.put(pos, (HeatSinkBlock) getBlockState(pos).getBlock());
+                validHeatSinks.put(pos, hb);
                 addSecondConnectionsToFuelCell(hsPos);
                 if(hb.isActive()) {
                     addIfNotExists(pos, activeCoolers);
@@ -256,6 +259,8 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
                 if(hb.isActive()) {
                     addIfNotExists(pos, activeCoolers);
                 }
+            } else {
+                debugLog("Invalid: " + hsPos.toShortString() + " - " + getBlockState(pos).getBlock().asItem());
             }
         }
     }
@@ -266,13 +271,14 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
     }
 
     private void indexFuelCellAttachments() {
-        heatMult = 0D;
+        cellsHeatMult = 0D;
+        moderatorsHeatMult = 0D;
         for(long pos: fuelCells) {
             extraFuelCells = 0;
             extraFuelCells += countAdjacentFuelCells(BlockPos.of(pos));
-            heatMult += (extraFuelCells + 1D)*(extraFuelCells + 2D)/2D;
+            cellsHeatMult += (extraFuelCells + 1D)*(extraFuelCells + 2D)/2D;
             int moderators = getFuelCellModerators(pos);
-            heatMult += moderators * (extraFuelCells+1D)*(FISSION_CONFIG.MODERATOR_HEAT_MULTIPLIER.get() / 100);
+            moderatorsHeatMult += moderators * (extraFuelCells+1D)*(FISSION_CONFIG.MODERATOR_HEAT_MULTIPLIER.get() / 100);
         }
     }
 
@@ -282,7 +288,8 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
         for(Direction d : Direction.values()) {
             BlockPos toCheck = fuelCellPos.relative(d);
             if(isModerator(toCheck)) {
-                addIfNotExists(toCheck.asLong(), allModerators);
+                addIfNotExists(toCheck.asLong(), moderators);
+                addDirectFuelCellConnection(toCheck);
                 count++;
             }
         }
@@ -464,6 +471,8 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
         controllerBE().allHeatSinks = 0;
         controllerBE().activeCoolingHeatsinks = 0;
         controllerBE().connectedPorts = 0;
+        controllerBE().moderatorsHeatMult = 0;
+        controllerBE().cellsHeatMult = 0;
         controllerBE().bottomLeft = BlockPos.ZERO;
         controllerBE().topRight = BlockPos.ZERO;
         controllerBE().setChanged();

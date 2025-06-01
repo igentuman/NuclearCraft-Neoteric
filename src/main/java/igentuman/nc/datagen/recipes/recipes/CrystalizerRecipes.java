@@ -18,7 +18,7 @@ public class CrystalizerRecipes extends AbstractRecipeProvider {
     public static void generate(Consumer<FinishedRecipe> consumer) {
         CrystalizerRecipes.consumer = consumer;
         ID = Processors.CRYSTALLIZER;
-        itemsAndFluids(fluidIngredient("minecraft:water", 1000), ingredient(NC_ITEMS.get("salt").get()), 0.5D, 2.5D);
+        itemsAndFluids(fluidIngredient("minecraft:water", 2000), ingredient(NC_ITEMS.get("salt").get()), 2.5D, 2.5D);
         itemsAndFluids(fluidIngredient("redstone", 144), ingredient(REDSTONE), 0.5D, 0.5D);
         itemsAndFluids(fluidIngredient("glowstone", 144), ingredient(GLOWSTONE_DUST), 0.5D, 0.5D);
         itemsAndFluids(fluidIngredient(Materials.lapis, 144), ingredient(LAPIS_LAZULI));

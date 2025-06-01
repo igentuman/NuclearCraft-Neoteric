@@ -98,7 +98,7 @@ public class RecipeInfo implements INBTSerializable<Tag> {
 
     public boolean process(double multiplier) {
         if(isStuck()) return false;
-        //check if ticksProcessed is not NaN
+        //todo this is stupid hack
         if(Double.isNaN(ticksProcessed)) {
             ticksProcessed = 0;
         }

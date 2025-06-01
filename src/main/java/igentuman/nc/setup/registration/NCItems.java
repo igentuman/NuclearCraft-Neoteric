@@ -224,6 +224,8 @@ public class NCItems {
             }
             ALL_NC_ITEMS.put(name, NC_ITEMS.get(name));
         }
+        DUSTS_TAG.put("salt", forgeDust("salt"));
+        DUSTS_TAG.put("sodium_chloride", forgeDust("sodium_chloride"));
 
         registerUpgrades();
     }

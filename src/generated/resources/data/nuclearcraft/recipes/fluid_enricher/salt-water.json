@@ -18,7 +18,7 @@
       "tag": "forge:chlorine"
     }
   ],
-  "powerModifier": 1.0,
+  "powerModifier": 2.0,
   "radiation": 1.0,
-  "timeModifier": 1.0
+  "timeModifier": 2.0
 }

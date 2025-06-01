@@ -361,6 +361,12 @@ public class NCLanguageProvider extends LanguageProvider {
         add("report.nc.9.ports", "Ports: %s");
         add("report.nc.10.reactor_fuel_cells", "Fuel Cells: %s");
         add("report.nc.11.has_recipe", "Has Recipe: %s");
+        add("report.nc.1.fusion_size", "Fusion Reactor Size: %s");
+        add("report.nc.2.magnets", "Magnets: %s");
+        add("report.nc.3.amplifiers", "RF Amplifiers: %s");
+        add("report.nc.4.fusion_rf_amplification", "RF Amplification: %s");
+        add("report.nc.5.casing_blocks", "Casing Blocks: %s");
+        add("report.nc.6.connectors", "Connectors: %s");
         add("jei.category.nuclearcraft.multiblock_structure", "NuclearCraft Multiblocks");
         add("jei.recipe.nc.turbine", "Turbine");
         add("jei.recipe.nc.fusion_reactor", "Fusion Reactor");
@@ -920,3 +926,4 @@ public class NCLanguageProvider extends LanguageProvider {
         add("block."+MODID+".portal", "Wasteland Portal");
     }
 }
+

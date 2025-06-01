@@ -113,6 +113,8 @@ public class NCItemTags extends ItemTagsProvider {
             tag(Tags.Items.DUSTS).add(NC_DUSTS.get(name).get());
             tag(DUSTS_TAG.get(name)).add(NC_DUSTS.get(name).get());
         }
+        tag(DUSTS_TAG.get("salt")).add(NC_ITEMS.get("salt").get());
+        tag(DUSTS_TAG.get("sodium_chloride")).add(NC_ITEMS.get("salt").get());
     }
 
     private void chunks() {

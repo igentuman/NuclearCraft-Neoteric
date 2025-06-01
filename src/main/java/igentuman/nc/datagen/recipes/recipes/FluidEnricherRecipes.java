@@ -36,7 +36,8 @@ public class FluidEnricherRecipes extends AbstractRecipeProvider {
         add(
                 fluidIngredient("minecraft:water", 500),
                 ingredient(NC_ITEMS.get("salt").get(), 3),
-                fluidIngredient("chlorine", 500)
+                fluidIngredient("chlorine", 500),
+                2D, 2D
         );
 
         add(

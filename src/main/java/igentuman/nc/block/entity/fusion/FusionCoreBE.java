@@ -84,6 +84,12 @@ public class FusionCoreBE extends MultiblockControllerBE {
     @NBTField
     public double magneticFieldStrength = 0;
     @NBTField
+    public int magnets = 0;
+    @NBTField
+    public int connectors = 0;
+    @NBTField
+    public int casingBlocks = 0;
+    @NBTField
     public int magnetsPower = 0;
     @NBTField
     public int maxMagnetsTemp = 0;
@@ -103,13 +109,13 @@ public class FusionCoreBE extends MultiblockControllerBE {
     public long plasmaTemperature = 0;
     public long chargeAmount = 0;
     @NBTField
-    protected int rfEfficiency = 0;
+    public int rfEfficiency = 0;
     @NBTField
-    protected int magnetsEfficiency = 0;
+    public int magnetsEfficiency = 0;
     @NBTField
     protected double lastKnownOptimalTemp = 1000000;
 
-    protected int updateSpan = 20;
+    protected FusionCoolantRecipe coolantRecipe;
     protected final LazyOptional<IEnergyStorage> energy;
     public final SidedContentHandler contentHandler;
     public final CustomEnergyStorage energyStorage;
@@ -119,7 +125,6 @@ public class FusionCoreBE extends MultiblockControllerBE {
     public Recipe recipe;
     public HashMap<String, Recipe> cachedRecipes = new HashMap<>();
     protected boolean initialized = false;
-    protected int reValidateCounter = 40;
     protected boolean refreshCacheFlag;
     protected List<FluidStack> allowedInputs;
     protected FusionCoreProxyBE[] proxyBES;
@@ -257,39 +262,11 @@ public class FusionCoreBE extends MultiblockControllerBE {
 
     public void handleValidation()
     {
-        boolean wasFormed = getMultiblock().isFormed();
-        boolean wasPowered = powered;
-        isCasingValid = getMultiblock().isOuterValid();
-        isInternalValid = getMultiblock().isInnerValid();
-
-        if (!wasFormed) {
-            reValidateCounter++;
-            if(reValidateCounter < 40) {
-                return;
-            }
-            reValidateCounter = 0;
-            getMultiblock().validate();
-            powered = false;
-        }
-
-        changed = wasPowered != powered || wasFormed != getMultiblock().isFormed();
-        trackChanges(updateCharacteristics());
-        size = getMultiblock().isFormed() ? multiblock.width() : 0;
-        refreshCacheFlag = !getMultiblock().isFormed();
-        if(getMultiblock().isFormed() != wasFormed) {
+        super.handleValidation();
+        /*if(getMultiblock().isFormed() != wasFormed) {
             contentHandler().fluidCapability.tanks.get(2).setCapacity(50000*size);
             contentHandler().fluidCapability.tanks.get(7).setCapacity(50000*size);
-        }
-    }
-
-    protected void periodicalUpdate()
-    {
-        updateSpan--;
-        if(updateSpan < 0) {
-            updateSpan = 20;
-            changed = true;
-            setChanged();
-        }
+        }*/
     }
 
     public void tickClient() {
@@ -310,7 +287,6 @@ public class FusionCoreBE extends MultiblockControllerBE {
         if(isReady()) {
             if(energyPerTick > 0 && plasmaTemperature > 0) {
                 playRunningSound();
-               // BlockOverlayHandler.addFusionReactor(getBlockPos());
                 return;
             }
             playReadySound();
@@ -381,12 +357,8 @@ public class FusionCoreBE extends MultiblockControllerBE {
             block.placeProxyBlocks(getBlockState(), level, worldPosition, this);
         }
         tickProxyBlocks();
-
         super.tickServer();
-
         handleValidation();
-        periodicalUpdate();
-
         simulateReaction();
         sendOutPower();
         handleMeltdown();
@@ -396,7 +368,6 @@ public class FusionCoreBE extends MultiblockControllerBE {
                 updateAnalogSignal();
             }
             try {
-                MultiblockHandler.get(getLevel().dimension()).addIgnoreToUpdate(getBlockPos());
                 setChanged();
                 assert level != null;
                 level.setBlockAndUpdate(worldPosition, getBlockState().setValue(POWERED, powered));
@@ -548,7 +519,7 @@ public class FusionCoreBE extends MultiblockControllerBE {
         if (!getMultiblock().isFormed()) {
             return;
         }
-        controllerEnabled = (hasRedstoneSignal() || controllerEnabled) && getMultiblock().isReadyToProcess();
+        controllerEnabled = (hasRedstoneSignal() || controllerEnabled) && getMultiblock().isFormed();
         controllerEnabled = !forceShutdown && controllerEnabled;
         updateCharge();
         controllerEnabled = functionalBlocksCharge == 100 && controllerEnabled;
@@ -591,36 +562,15 @@ public class FusionCoreBE extends MultiblockControllerBE {
         playSound(FUSION_CHARGING, 0.7f);
     }
 
-    protected boolean updateCharacteristics() {
-        boolean hasChanges =
-                magneticFieldStrength != getMultiblock().magneticFieldStrength
-                || rfEfficiency != getMultiblock().rfEfficiency
-                || magnetsEfficiency != getMultiblock().magnetsEfficiency
-                || maxMagnetsTemp != getMultiblock().maxMagnetsTemp
-                || rfAmplification != getMultiblock().rfAmplification*rfAmplifierRatio()
-                || rfAmplifiersPower != getMultiblock().rfAmplifiersPower*rfAmplifierRatio()
-                || minRFAmplifiersTemp != getMultiblock().maxRFAmplifiersTemp;
-        rfEfficiency = getMultiblock().rfEfficiency;
-        amplifiers = getMultiblock().amplifiers.size();
-        magnetsEfficiency = getMultiblock().magnetsEfficiency;
-        magneticFieldStrength = getMultiblock().magneticFieldStrength;
-        magnetsPower = getMultiblock().magnetsPower;
-        maxMagnetsTemp = getMultiblock().maxMagnetsTemp;
-        rfAmplification = (int) (getMultiblock().rfAmplification*rfAmplifierRatio());
-        rfAmplifiersPower = (int) (getMultiblock().rfAmplifiersPower*rfAmplifierRatio());
-        minRFAmplifiersTemp = getMultiblock().maxRFAmplifiersTemp;
-        if(hasChanges) {
-            currentRfAmplification = rfAmplification;
-        }
-        return hasChanges;
-    }
-
     @Override
     public FusionReactorMultiblock getMultiblock() {
+        if(multiblock == null) {
+            multiblock = new FusionReactorMultiblock(this);
+        }
         return (FusionReactorMultiblock) multiblock;
     }
 
-    protected double rfAmplifierRatio() {
+    public double rfAmplifierRatio() {
         return Math.max(0, Math.min((((double)rfAmplificationRatio/100)*(double)amplificationAdjustment/100), 1D));
     }
 
@@ -861,11 +811,10 @@ public class FusionCoreBE extends MultiblockControllerBE {
     {
         if(buttonId == 0) {
             amplificationAdjustment = Math.min(100, Math.max(ratio, 1));
-            changed = updateCharacteristics();
+            changed = getMultiblock().updateCharacteristics();
         }
     }
 
-    protected FusionCoolantRecipe coolantRecipe;
     public boolean hasCoolant() {
         FluidStack coolant = contentHandler().fluidCapability.getFluidInSlot(2);
         if(coolant.isEmpty()) {
@@ -894,6 +843,22 @@ public class FusionCoreBE extends MultiblockControllerBE {
 
     public boolean isRunning() {
         return powered && energyPerTick > 0 && plasmaTemperature > 0 && efficiency > 0;
+    }
+
+    public boolean canAnalyze() {
+        return analyzeDelay < 1;
+    }
+
+    @Override
+    public HashMap<String, String> getAnalyzeReport() {
+        HashMap<String, String> report = new HashMap<>();
+        report.put("report.nc.1.fusion_size", String.valueOf(size));
+        report.put("report.nc.2.magnets", String.valueOf(magnets));
+        report.put("report.nc.3.amplifiers", String.valueOf(amplifiers));
+        report.put("report.nc.4.fusion_rf_amplification", String.valueOf(rfAmplification));
+        report.put("report.nc.5.casing_blocks", String.valueOf(casingBlocks));
+        report.put("report.nc.6.connectors", String.valueOf(connectors));
+        return report;
     }
 
     public static class Recipe extends NcRecipe {

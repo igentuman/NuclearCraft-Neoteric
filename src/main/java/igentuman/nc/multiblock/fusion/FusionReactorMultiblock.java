@@ -7,12 +7,14 @@ import igentuman.nc.block.fusion.FusionConnectorBlock;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.ValidationResult;
+import igentuman.nc.setup.registration.NCFluids;
 import igentuman.nc.util.NCBlockPos;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.HashMap;
@@ -25,29 +27,23 @@ import static net.minecraft.world.level.block.Blocks.AIR;
 
 public class FusionReactorMultiblock extends AbstractMultiblock {
 
-    public int magnetsEfficiency = 0;
-    public int rfEfficiency = 0;
+    protected int magnetsEfficiency = 0;
+    protected int rfEfficiency = 0;
     protected FusionCoreBE controllerBE;
     protected int length = 0;
-    public double magneticFieldStrength = 0;
-    public int magnetsPower = 0;
-    public int maxMagnetsTemp = 0;
+    protected double magneticFieldStrength = 0;
+    protected int magnetsPower = 0;
+    protected int maxMagnetsTemp = 0;
     //KEV
-    public int rfAmplification = 0;
-    public int rfAmplifiersPower = 0;
-    public int maxRFAmplifiersTemp = 0;
+    protected int rfAmplification = 0;
+    protected int rfAmplifiersPower = 0;
+    protected int maxRFAmplifiersTemp = 0;
     protected boolean connectorsValid = false;
     protected boolean ringValid = false;
-    protected boolean needToCollectFunctionalBlocks = true;
-    public boolean needToRecalculateCharacteristics = true;
-
-    public boolean isReadyToProcess()
-    {
-        return isFormed && outerValid && innerValid && !needToRecalculateCharacteristics && !needToCollectFunctionalBlocks;
-    }
-
-    protected HashMap<BlockPos, ElectromagnetBlock> electromagnets = new HashMap<>();
-    public HashMap<BlockPos, RFAmplifierBlock> amplifiers = new HashMap<>();
+    protected int connectorsCount = 0;
+    protected int casingBlocks = 0;
+    protected final HashMap<Long, ElectromagnetBlock> electromagnets = new HashMap<>();
+    protected final HashMap<Long, RFAmplifierBlock> amplifiers = new HashMap<>();
 
     public FusionReactorMultiblock(FusionCoreBE core) {
         super(
@@ -114,10 +110,54 @@ public class FusionReactorMultiblock extends AbstractMultiblock {
         return validInnerBlocks;
     }
 
+    protected FusionCoreBE controllerBE() {
+        if (controllerBe == null) {
+            controllerBe = controller().controllerBE();
+        }
+        return (FusionCoreBE) controllerBe;
+    }
+    public boolean updateCharacteristics() {
+        boolean hasChanges =
+                controllerBE().magneticFieldStrength != magneticFieldStrength
+                        || controllerBE().rfEfficiency != rfEfficiency
+                        || controllerBE().magnetsEfficiency != magnetsEfficiency
+                        || controllerBE().maxMagnetsTemp != maxMagnetsTemp
+                        || controllerBE().rfAmplification != rfAmplification*controllerBE().rfAmplifierRatio()
+                        || controllerBE().rfAmplifiersPower != rfAmplifiersPower*controllerBE().rfAmplifierRatio()
+                        || controllerBE().minRFAmplifiersTemp != maxRFAmplifiersTemp;
+        controllerBE().rfEfficiency = rfEfficiency;
+        controllerBE().amplifiers = amplifiers.size();
+        controllerBE().magnetsEfficiency = magnetsEfficiency;
+        controllerBE().magneticFieldStrength = magneticFieldStrength;
+        controllerBE().magnetsPower = magnetsPower;
+        controllerBE().maxMagnetsTemp = maxMagnetsTemp;
+        controllerBE().rfAmplification = (int) (rfAmplification*controllerBE().rfAmplifierRatio());
+        controllerBE().rfAmplifiersPower = (int) (rfAmplifiersPower*controllerBE().rfAmplifierRatio());
+        controllerBE().minRFAmplifiersTemp = maxRFAmplifiersTemp;
+        controllerBE().connectors = connectorsCount;
+        controllerBE().magnets = electromagnets.size();
+        controllerBE().amplifiers = amplifiers.size();
+        controllerBE().casingBlocks = casingBlocks;
+        controllerBE().size = length;
+        if(hasChanges) {
+            controllerBE().currentRfAmplification = rfAmplification;
+            controllerBE.setChanged();
+        }
+        return hasChanges;
+    }
+
     @Override
     public void validateOuter() {
-        validateConnectors();
+        resolveDimensions();
+        if(!validationResult.isValid) {
+            clearStats();
+            return;
+        }
         validateRing();
+        if(!validationResult.isValid) {
+            clearStats();
+            return;
+        }
         outerValid = ringValid && connectorsValid;
         if(outerValid) {
             validationResult =  ValidationResult.VALID;
@@ -127,34 +167,29 @@ public class FusionReactorMultiblock extends AbstractMultiblock {
     @Override
     public void validate() {
         super.validate();
-        needToCollectFunctionalBlocks = isFormed;
+        collectFunctionalParts();
+        recalculateCharacteristics();
+        updateCharacteristics();
     }
 
     @Override
     public void onBlockDestroyed(BlockState state, Level level, BlockPos pos, Explosion explosion) {
+        super.onBlockDestroyed(state, level, pos, explosion);
         if(controllerBE.plasmaTemperature > 100000) {
           /*  level.explode(null,
                     pos.getX(), pos.getY(), pos.getZ(),
                     1, true, Explosion.BlockInteraction.KEEP);*/
         }
-        controller.clearStats();
-    }
-
-    private Block getBlock(BlockPos pos) {
-        if(level() == null) {
-            return AIR;
-        }
-        return getBlockState(pos).getBlock();
     }
 
     private void processFunctionalBlock(NCBlockPos pos)
     {
         if(getBlock(pos) instanceof ElectromagnetBlock magnet) {
-            electromagnets.put(pos.copy(), magnet);
+            electromagnets.put(pos.asLong(), magnet);
             addIfNotExists(pos, allBlocks);
             updateDimensions(pos);
         } else if(getBlock(pos) instanceof RFAmplifierBlock amplifier) {
-            amplifiers.put(pos.copy(), amplifier);
+            amplifiers.put(pos.asLong(), amplifier);
             addIfNotExists(pos, allBlocks);
             updateDimensions(pos);
         }
@@ -210,6 +245,8 @@ public class FusionReactorMultiblock extends AbstractMultiblock {
     }
 
     private void validateRing() {
+        casingBlocks = 0;
+        validationResult = ValidationResult.VALID;
         NCBlockPos pos = new NCBlockPos(controllerBE.getBlockPos().relative(UP));
         ringValid = true;
         for(Direction side: List.of(NORTH, EAST, SOUTH, WEST)) {
@@ -220,7 +257,6 @@ public class FusionReactorMultiblock extends AbstractMultiblock {
             NCBlockPos startPosOuterWall = null;
             NCBlockPos startPosBottomWall = null;
             NCBlockPos startPosTopWall = null;
-            Level level = controllerBE.getLevel();
             //position to left corner of the ring
             switch (side) {
                 case NORTH -> {
@@ -257,6 +293,7 @@ public class FusionReactorMultiblock extends AbstractMultiblock {
                 assert startPosInnerWall != null;
                 if(isValidForOuter(startPosInnerWall.revert().relative(dir, i))) {
                     addIfNotExists(startPosInnerWall, allBlocks);
+                    casingBlocks++;
                 } else {
                     ringValid = false;
                     validationResult = ValidationResult.WRONG_OUTER;
@@ -269,6 +306,7 @@ public class FusionReactorMultiblock extends AbstractMultiblock {
                 assert startPosOuterWall != null;
                 if(isValidForOuter(startPosOuterWall.revert().relative(dir, i))) {
                     addIfNotExists(startPosOuterWall, allBlocks);
+                    casingBlocks++;
                 } else {
                     ringValid = false;
                     validationResult = ValidationResult.WRONG_OUTER;
@@ -278,6 +316,7 @@ public class FusionReactorMultiblock extends AbstractMultiblock {
                 assert startPosBottomWall != null;
                 if(isValidForOuter(startPosBottomWall.revert().relative(dir, i))) {
                     addIfNotExists(startPosBottomWall, allBlocks);
+                    casingBlocks++;
                 } else {
                     ringValid = false;
                     validationResult = ValidationResult.WRONG_OUTER;
@@ -287,6 +326,7 @@ public class FusionReactorMultiblock extends AbstractMultiblock {
                 assert startPosTopWall != null;
                 if(isValidForOuter(startPosTopWall.revert().relative(dir, i))) {
                     addIfNotExists(startPosTopWall, allBlocks);
+                    casingBlocks++;
                 } else {
                     ringValid = false;
                     validationResult = ValidationResult.WRONG_OUTER;
@@ -298,15 +338,17 @@ public class FusionReactorMultiblock extends AbstractMultiblock {
     }
 
     private void validateConnectors() {
-        NCBlockPos pos = new NCBlockPos(controllerBE.getBlockPos().above());
-
+        validationResult = ValidationResult.VALID;
+        NCBlockPos pos = new NCBlockPos(controllerBE().getBlockPos().above());
+        connectorsCount = 0;
         length = 1;
         connectorsValid = true;
         for(int i = 2; i <= maxWidth()/2+1; i++) {
             int connectors = 0;
             for(Direction side: List.of(NORTH, EAST, Direction.SOUTH, Direction.WEST)) {
-                if(getBlockState(pos.revert().relative(side, i)).getBlock() instanceof FusionConnectorBlock) {
+                if(getBlockState(pos.revert().relative(side, i), true).getBlock() instanceof FusionConnectorBlock) {
                     addIfNotExists(pos, allBlocks);
+                    connectorsCount++;
                     connectors++;
                 }
             }
@@ -370,14 +412,7 @@ public class FusionReactorMultiblock extends AbstractMultiblock {
 
     @Override
     protected boolean processInnerBlock(BlockPos toCheck) {
-        return validInnerBlocks.contains(level().getBlockState(toCheck).getBlock());
-    }
-
-    private Level level() {
-        if(controllerBE == null) {
-            return null;
-        }
-        return controllerBE.getLevel();
+        return validInnerBlocks.contains(getBlockState(toCheck).getBlock());
     }
 
     @Override
@@ -385,7 +420,6 @@ public class FusionReactorMultiblock extends AbstractMultiblock {
         length = 0;
         controller().clearStats();
         isFormed = false;
-        hasToRefresh = true;
     }
 
     @Override
@@ -396,21 +430,16 @@ public class FusionReactorMultiblock extends AbstractMultiblock {
     public void tick() {
         super.tick();
         if(isFormed) {
-            if(needToCollectFunctionalBlocks) {
-                collectFunctionalParts();
-                needToCollectFunctionalBlocks = false;
-                needToRecalculateCharacteristics = true;
-            } else if(needToRecalculateCharacteristics){
-                recalculateCharacteristics();
-                needToRecalculateCharacteristics = false;
-            }
+            //updateCharacteristics();
         }
     }
 
     @Override
     public void resolveDimensions()
     {
-
+        validateConnectors();
+        topRight = NCBlockPos.of(validationResult.isValid ? controllerBE.getBlockPos().relative(UP, 2).relative(EAST, length+3).relative(SOUTH, length+3) : BlockPos.ZERO);
+        bottomLeft = NCBlockPos.of(validationResult.isValid ? controllerBE.getBlockPos().relative(WEST, length+3).relative(NORTH, length+3) : BlockPos.ZERO);
     }
 
     public void recalculateCharacteristics() {
@@ -440,29 +469,5 @@ public class FusionReactorMultiblock extends AbstractMultiblock {
             }
         }
         rfEfficiency = (int) (rEfficiency / amplifiers.size());
-    }
-
-    @Override
-    public void onNeighborChange(BlockState state, BlockPos pos, BlockPos neighbor) {
-        super.onNeighborChange(state, pos, neighbor);
-        if(!hasToRefresh && componentChanged(neighbor)) {
-            needToCollectFunctionalBlocks = true;
-        }
-    }
-
-    private boolean componentChanged(BlockPos neighbor) {
-        //known component changed
-        if(electromagnets.containsKey(neighbor) || amplifiers.containsKey(neighbor)) {
-            return true;
-        }
-        Block changedBlock = level().getBlockState(neighbor).getBlock();
-        //new added
-        if(
-                changedBlock instanceof ElectromagnetBlock
-                || changedBlock instanceof RFAmplifierBlock
-        ) {
-            return true;
-        }
-        return false;
     }
 }

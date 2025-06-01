@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import static igentuman.nc.NuclearCraft.debugLog;
+import static net.minecraft.world.level.block.Blocks.AIR;
 
 public abstract class AbstractMultiblock implements Multiblock {
 
@@ -188,6 +189,14 @@ public abstract class AbstractMultiblock implements Multiblock {
         return state;
     }
 
+    protected BlockState getBlockState(NCBlockPos relative, boolean force) {
+        BlockState bs = getBlockState(relative);
+        if(bs.isAir() && force) {
+            bs = getLevel().getBlockState(relative);
+        }
+        return bs;
+    }
+
     public BlockState getBlockState(BlockPos pos) {
         if (bsCache.containsKey(pos.asLong())) {
             return bsCache.get(pos.asLong());
@@ -279,6 +288,13 @@ public abstract class AbstractMultiblock implements Multiblock {
             updateDimensions(getForwardPos(i).above(topCasing));
         }
         return depth;
+    }
+
+    protected Block getBlock(BlockPos pos) {
+        if(getLevel() == null) {
+            return AIR;
+        }
+        return getBlockState(pos).getBlock();
     }
 
     protected MultiblockControllerBE controllerBE() {
@@ -583,9 +599,12 @@ public abstract class AbstractMultiblock implements Multiblock {
     }
 
     public boolean onBlockChange(BlockPos pos) {
-        removeFromCacheIfChanged(pos);
-        if (hasToRefresh) return true;
+        if (hasToRefresh) {
+            removeFromCacheIfChanged(pos);
+            return true;
+        }
         if (containsPos(pos)) {
+            removeFromCacheIfChanged(pos);
             BlockState targetBlock = getBlockState(pos);
             if (SPECIAL_BLOCKS.matcher(targetBlock.getBlock().getDescriptionId()).matches()) {
                 if (getLevel().getBlockState(pos).is(targetBlock.getBlock())) {
@@ -602,6 +621,7 @@ public abstract class AbstractMultiblock implements Multiblock {
         if (bottomLeft == null || topRight == null) return false;
         if (pos.getX() >= bottomLeft.getX() && pos.getY() >= bottomLeft.getY() && pos.getZ() >= bottomLeft.getZ()
                 && pos.getX() <= topRight.getX() && pos.getY() <= topRight.getY() && pos.getZ() <= topRight.getZ()) {
+            removeFromCacheIfChanged(pos);
             Block targetBlock = getBlockState(pos).getBlock();
             if (SPECIAL_BLOCKS.matcher(targetBlock.getDescriptionId()).matches()) {
                 if (getLevel().getBlockState(pos).is(targetBlock)) {

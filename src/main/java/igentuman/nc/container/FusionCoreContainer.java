@@ -218,4 +218,8 @@ public class FusionCoreContainer extends AbstractContainerMenu {
     public byte analogSignal() {
         return blockEntity.analogSignal;
     }
+
+    public boolean canAnalyze() {
+        return blockEntity.canAnalyze();
+    }
 }

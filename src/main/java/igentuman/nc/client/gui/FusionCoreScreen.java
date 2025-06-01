@@ -35,6 +35,7 @@ public class FusionCoreScreen extends AbstractContainerScreen<FusionCoreContaine
     private int xCenter;
     private Checkbox checklist;
     private Button.FusionReactorRedstoneModeButton redstoneConfigBtn;
+    private Button.MultiblockAnalyze analyzeBtn;
 
     public FusionCoreContainer container()
     {
@@ -82,7 +83,9 @@ public class FusionCoreScreen extends AbstractContainerScreen<FusionCoreContaine
         rfAmplifierSlider = new SliderHorizontal(64, 40, 119, this, menu.getBlockPos());
         rfAmplifierSlider.slideTo(container().getAmlificationAdjustment());
         redstoneConfigBtn = new Button.FusionReactorRedstoneModeButton(169, 83, this, menu.getBlockPos());
+        analyzeBtn = new Button.MultiblockAnalyze(190, 105, this, menu.getBlockPos());
         widgets.add(redstoneConfigBtn);
+        widgets.add(analyzeBtn);
         widgets.add(rfAmplifierSlider);
         widgets.add(heatBar);
         widgets.add(plasmaHeatBar);
@@ -118,6 +121,7 @@ public class FusionCoreScreen extends AbstractContainerScreen<FusionCoreContaine
     private void renderWidgets(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
         redstoneConfigBtn.setMode(getComparatorMode());
         redstoneConfigBtn.strength = getAnalogSignalStrength();
+        analyzeBtn.setEnabled(container().canAnalyze());
         for(NCGuiElement widget: widgets) {
             widget.draw(graphics, mouseX, mouseY, partialTicks);
         }
@@ -232,6 +236,7 @@ public class FusionCoreScreen extends AbstractContainerScreen<FusionCoreContaine
         super.mouseClicked(pMouseX, pMouseY, pButton);
         redstoneConfigBtn.mouseClicked(pMouseX, pMouseY, pButton);
         rfAmplifierSlider.mouseClicked(pMouseX, pMouseY, pButton);
+        analyzeBtn.mouseClicked(pMouseX, pMouseY, pButton);
         return false;
     }
 

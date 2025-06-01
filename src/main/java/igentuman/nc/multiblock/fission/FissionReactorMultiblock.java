@@ -183,7 +183,6 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
             clearStats();
             return;
         }
-        resolveDimensions();
         extraFuelCells = 0;
         moderatorAttachments = 0;
         irradiationLines = 0;

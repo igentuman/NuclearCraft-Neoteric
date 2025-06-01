@@ -219,7 +219,7 @@ public class FissionControllerContainer extends AbstractContainerMenu {
     }
 
     public int getIrradiatorsConnections() {
-        return blockEntity.irradiationConnections;
+        return blockEntity.irradiationLines;
     }
 
     public BlockPos getPosition() {

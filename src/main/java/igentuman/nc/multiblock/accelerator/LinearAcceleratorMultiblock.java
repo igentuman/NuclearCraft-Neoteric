@@ -63,7 +63,7 @@ public class LinearAcceleratorMultiblock extends AbstractMultiblock {
         };
     }
 
-    private LinearAcceleratorControllerBE controllerBE() {
+    protected LinearAcceleratorControllerBE controllerBE() {
         if (controllerBe == null) {
             controllerBe = (LinearAcceleratorControllerBE) controller().controllerBE();
         }
@@ -76,7 +76,7 @@ public class LinearAcceleratorMultiblock extends AbstractMultiblock {
     }
 
     @Override
-    public void invalidateStats() {
+    public void clearStats() {
         controller().clearStats();
     }
 

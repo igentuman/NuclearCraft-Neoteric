@@ -8,7 +8,6 @@ import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.SlotModePair;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.item.ItemFuel;
-import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.fission.FissionReactorMultiblock;
 import igentuman.nc.multiblock.fission.FissionReactorRegistration;
 import igentuman.nc.radiation.ItemRadiation;
@@ -31,7 +30,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
@@ -99,7 +97,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
     @NBTField
     public double heatMultiplier = 0;
     @NBTField
-    public int irradiationConnections = 0;
+    public int irradiationLines = 0;
     @NBTField
     public double efficiency = 0;
     @NBTField
@@ -107,9 +105,11 @@ public class FissionControllerBE extends MultiblockControllerBE {
     @NBTField
     public boolean powered = false;
     @NBTField
-    private double steamRate;
+    public double steamRate;
     @NBTField
     public int steamPerTick = 0;
+    @NBTField
+    public int extraFuelCells = 0;
     protected boolean forceShutdown = false;
     public int fuelCellMultiplier = 1;
     public int moderatorCellMultiplier = 1;
@@ -135,6 +135,8 @@ public class FissionControllerBE extends MultiblockControllerBE {
     public int validIrradiators = 0;
     @NBTField
     public int allIrradiators = 0;
+    @NBTField
+    public double heatMult = 0;
 
     public FissionControllerBE(BlockPos pPos, BlockState pBlockState) {
         super(FissionReactorRegistration.FISSION_BE.get(NAME).get(),pPos, pBlockState);
@@ -437,16 +439,6 @@ public class FissionControllerBE extends MultiblockControllerBE {
 
     protected void handleValidation() {
         super.handleValidation();
-        moderatorAttachments = getMultiblock().moderatorAttachments;
-        irradiationConnections = getMultiblock().irradiationConnections;
-        heatSinksCount = getMultiblock().validHeatSinks.size();
-        moderatorsCount = getMultiblock().moderators.size();
-        connectedPorts = getMultiblock().connectedPorts;
-        allHeatSinks = getMultiblock().allHeatSinks.size();
-        allModerators = getMultiblock().allModerators.size();
-        allIrradiators = getMultiblock().irradiators.size();
-        validIrradiators = getMultiblock().validIrradiators.size();
-        activeCoolingHeatsinks = getMultiblock().activeCoolers.size();
     }
 
     private void hopToggleMode() {
@@ -494,7 +486,38 @@ public class FissionControllerBE extends MultiblockControllerBE {
         }
     }
 
+    private void tickActiveHeatSinks() {
+        double calculatedCooling = 0;
+        for(String coolant: getMultiblock().coolantPerTick.keySet()) {
+            int amount = getMultiblock().coolantPerTick.get(coolant);
+            if(amount == 0) {
+                continue;
+            }
+            if(!hasEnoughCoolant(coolant, amount)) {
+                calculatedCooling -= getCoolingByCoolant(coolant, amount);
+                continue;
+            }
+            if (heat > 0 || isProcessing()) {
+                drainCoolant(coolant, amount);
+            }
+        }
+        if (calculatedCooling != activeCooling) {
+            activeCooling = calculatedCooling;
+            setChanged();
+        }
+    }
+
+    private double getCoolingByCoolant(String coolant, int amount) {
+        if(!FissionReactorRegistration.heatsinks.containsKey("active_"+coolant)) {
+            return 0;
+        }
+        int mbPerTick = FISSION_CONFIG.ACTIVE_HEATSINK_COOLANT_PER_TICK.get();
+        FissionReactorRegistration.heatsinks.get("active_"+coolant);
+        return ((double)amount /(double)mbPerTick)*FissionReactorRegistration.heatsinks.get("active_"+coolant).heat;
+    }
+
     private boolean coolDown() {
+        tickActiveHeatSinks();
         double wasHeat = heat;
         heat -= coolingPerTick();
         if(isSteamMode) {
@@ -526,16 +549,12 @@ public class FissionControllerBE extends MultiblockControllerBE {
         if(getMultiblock() == null || efficiency <= 0) {
             return;
         }
-        if(!getMultiblock().isFormed()) {
-            getMultiblock().validate();
-        }
+
         if(level.getGameTime()  % (level.random.nextInt(10)+5) != 0) {
             return;
         }
-        BlockPos topBlock = getMultiblock().getTopRightInnerBlock();
-        BlockPos bottomLeft = getMultiblock().getBottomLeftInnerBlock();
 
-        for(BlockPos blockPos: BlockPos.betweenClosed(bottomLeft, topBlock)) {
+        for(BlockPos blockPos: BlockPos.betweenClosed(bottomLeft, topRight)) {
             if(level.random.nextBoolean()) {
                 level.addParticle(RADIATION.get(), blockPos.getX()+level.random.nextFloat(), blockPos.getY()+level.random.nextFloat(), blockPos.getZ()+level.random.nextFloat(), 0, -0.05f, 0);
             }
@@ -609,7 +628,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
     }
 
     public double heatPerTick() {
-        heatPerTick = recipeInfo().heat * (fuelCellsCount + fuelCellMultiplier) + moderatorsHeat() + irradiationHeat;
+        heatPerTick = recipeInfo().heat * heatMult + moderatorsHeat() + irradiationHeat;
         return heatPerTick;
     }
 
@@ -629,11 +648,11 @@ public class FissionControllerBE extends MultiblockControllerBE {
     }
 
     public double moderatorsHeat() {
-        return Math.max(0.1, getModerationLevel()) * recipeInfo().heat * moderatorCellMultiplier * (FISSION_CONFIG.MODERATOR_HEAT_MULTIPLIER.get() / 100);
+        return Math.max(0.1, getModerationLevel());
     }
 
     public double moderatorsFE() {
-        return getModerationLevel() * recipeInfo().energy * moderatorCellMultiplier * (FISSION_CONFIG.MODERATOR_FE_MULTIPLIER.get() / 100);
+        return getModerationLevel() * recipeInfo().energy * moderatorAttachments * (FISSION_CONFIG.MODERATOR_FE_MULTIPLIER.get() / 100);
     }
 
     @Override
@@ -688,8 +707,8 @@ public class FissionControllerBE extends MultiblockControllerBE {
 
     public double calculateEfficiency() {
         double mult = fuelCellsCount;
-        if(fuelCellMultiplier > fuelCellsCount) {
-            mult = (double) fuelCellMultiplier / fuelCellsCount;
+        if(extraFuelCells > fuelCellsCount) {
+            mult = (double) extraFuelCells / fuelCellsCount;
         }
         return (double) calculateEnergy() / (recipeInfo.energy * mult / 100);
     }
@@ -761,7 +780,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
     }
 
     public void addIrradiationHeat() {
-        irradiationHeat += irradiationConnections * 15;
+        irradiationHeat += irradiationLines * 15;
     }
 
     public void enableReactor() {

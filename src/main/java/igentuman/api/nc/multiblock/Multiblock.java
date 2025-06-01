@@ -81,5 +81,5 @@ public interface Multiblock {
     /**
      * Invalidates the stats of the multiblock, in case of updates
      */
-    void invalidateStats();
+    void clearStats();
 }

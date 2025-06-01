@@ -249,7 +249,7 @@ public class TurbineMultiblock extends AbstractMultiblock {
     }
 
 
-    public void invalidateStats()
+    public void clearStats()
     {
         controller().clearStats();
     }

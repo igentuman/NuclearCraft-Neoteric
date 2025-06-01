@@ -381,7 +381,7 @@ public class FusionReactorMultiblock extends AbstractMultiblock {
     }
 
     @Override
-    public void invalidateStats() {
+    public void clearStats() {
         length = 0;
         controller().clearStats();
         isFormed = false;

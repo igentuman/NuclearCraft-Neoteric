@@ -36,7 +36,10 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
     public byte validationRuns = 0;
     @NBTField
     public int analyzeDelay = 0;
-
+    @NBTField
+    public BlockPos bottomLeft = BlockPos.ZERO;
+    @NBTField
+    public BlockPos topRight = BlockPos.ZERO;
     protected AbstractMultiblock multiblock;
     public BlockPos errorBlockPos = BlockPos.ZERO;
     public ValidationResult validationResult = ValidationResult.INCOMPLETE;
@@ -152,7 +155,7 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
     protected void handleValidation() {
         boolean wasFormed = isInternalValid && isCasingValid;
         validationResult = getMultiblock().validationResult;
-        if(!errorBlockPos.equals(getMultiblock().errorBlockPos)) {
+        if(errorBlockPos == null || !errorBlockPos.equals(getMultiblock().errorBlockPos)) {
             errorBlockPos = getMultiblock().errorBlockPos;
             changed = true;
         }

@@ -1,6 +1,5 @@
 package igentuman.nc.multiblock.kugelblitz;
 
-import igentuman.api.nc.multiblock.MultiblockAttachable;
 import igentuman.nc.block.entity.kugelblitz.BlackHoleBE;
 import igentuman.nc.block.entity.kugelblitz.ChamberTerminalBE;
 import igentuman.nc.block.entity.kugelblitz.PhotonConcentratorBE;
@@ -53,7 +52,7 @@ public class KugelblitzMultiblock extends AbstractMultiblock {
         return 9;
     }
 
-    private ChamberTerminalBE controllerBE() {
+    protected ChamberTerminalBE controllerBE() {
         if (controllerBe == null) {
             controllerBe = (ChamberTerminalBE) controller().controllerBE();
         }
@@ -196,7 +195,7 @@ public class KugelblitzMultiblock extends AbstractMultiblock {
 
     public void validateInner() {
         if (!outerValid) {
-            invalidateStats();
+            clearStats();
             return;
         }
         if (centerBlockPos == null || centerBlockPos.equals(BlockPos.ZERO)) {
@@ -387,7 +386,7 @@ public class KugelblitzMultiblock extends AbstractMultiblock {
     }
 
     @Override
-    public void invalidateStats() {
+    public void clearStats() {
         pulseEnergy.clear();
     }
 

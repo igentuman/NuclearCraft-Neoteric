@@ -3,6 +3,8 @@ package igentuman.nc.multiblock;
 import igentuman.api.nc.multiblock.MultiblockAttachable;
 import igentuman.api.nc.multiblock.Multiblock;
 import igentuman.api.nc.multiblock.MultiblockController;
+import igentuman.nc.block.entity.MultiblockControllerBE;
+import igentuman.nc.block.entity.fission.FissionControllerBE;
 import igentuman.nc.util.NCBlockPos;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -16,7 +18,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
 import static igentuman.nc.NuclearCraft.debugLog;
@@ -50,6 +51,7 @@ public abstract class AbstractMultiblock implements Multiblock {
     protected NCBlockPos controllerPos;
     protected NCBlockPos initialPos;
     protected Direction multiblockDirection;
+    protected MultiblockControllerBE controllerBe;
     private static final Pattern SPECIAL_BLOCKS = Pattern.compile(".*(fusion_proxy|fusion_core|controller|port|irradiator|rotor|chamber_terminal).*");
     private static final Pattern CONTROLLERS = Pattern.compile(".*(controller|terminal).*");
 
@@ -123,6 +125,12 @@ public abstract class AbstractMultiblock implements Multiblock {
         }
     }
 
+    protected void addIfNotExists(long pos, List<Long> list) {
+        if(!list.contains(pos)) {
+            list.add(pos);
+        }
+    }
+
     protected NCBlockPos initialPos() {
         if (controllerPos == null) {
             controllerPos = NCBlockPos.copy(controller().controllerBE().getBlockPos());
@@ -171,6 +179,15 @@ public abstract class AbstractMultiblock implements Multiblock {
         );
     }
 
+    public BlockState getBlockState(long pos) {
+        if (bsCache.containsKey(pos)) {
+            return bsCache.get(pos);
+        }
+        BlockState state = getLevel().getBlockState(BlockPos.of(pos));
+        bsCache.put(pos, state);
+        return state;
+    }
+
     public BlockState getBlockState(BlockPos pos) {
         if (bsCache.containsKey(pos.asLong())) {
             return bsCache.get(pos.asLong());
@@ -198,15 +215,15 @@ public abstract class AbstractMultiblock implements Multiblock {
         return false;
     }
 
+    public boolean isValidForInner(BlockState bs)
+    {
+        return bs.isAir() || validInnerBlocks().contains(bs.getBlock());
+    }
+
     public boolean isValidForInner(BlockPos pos)
     {
         if (getLevel() == null) return false;
-        try {
-            BlockState bs = getBlockState(pos);
-            if (bs.isAir()) return true;
-            return  validInnerBlocks().contains(bs.getBlock());
-        } catch (NullPointerException ignored) { }
-        return false;
+        return isValidForInner(getBlockState(pos));
     }
 
     public int resolveHeight()
@@ -264,12 +281,21 @@ public abstract class AbstractMultiblock implements Multiblock {
         return depth;
     }
 
+    protected MultiblockControllerBE controllerBE() {
+        if (controllerBe == null) {
+            controllerBe = controller().controllerBE();
+        }
+        return controllerBe;
+    }
+
     public void resolveDimensions()
     {
         if (getMultiblockDirection() == null)  return;
         resolveHeight();
         resolveDepth();
         resolveWidth();
+        controllerBE().topRight = getTopRightBlock();
+        controllerBE().bottomLeft = getBottomLeftBlock();
     }
 
     @Override
@@ -465,7 +491,7 @@ public abstract class AbstractMultiblock implements Multiblock {
             validateInner();
         } else{
             innerValid = false;
-            invalidateStats();
+            clearStats();
         }
         innerValid = validationResult.isValid;
         isFormed = outerValid && innerValid;

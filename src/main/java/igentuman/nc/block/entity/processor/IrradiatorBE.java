@@ -70,7 +70,7 @@ public class IrradiatorBE extends NCProcessorBE implements MultiblockAttachable 
         fuelMultiplier = 0;
         //upadteMultiblockConnection();
         if (controller() != null && controller().isProcessing()) {
-            irradiativeFlux = controller().irradiationConnections;
+            irradiativeFlux = controller().irradiationLines;
             fuelMultiplier = controller().recipeInfo.recipe().getRadiation()*10000;
         }
         if(speedMultiplier() > 0) {

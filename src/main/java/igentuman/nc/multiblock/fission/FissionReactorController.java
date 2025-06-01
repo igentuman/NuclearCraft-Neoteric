@@ -26,6 +26,6 @@ public class FissionReactorController implements MultiblockController {
         controllerBE().fuelCellsCount = 0;
         controllerBE().fuelCellMultiplier = 0;
         controllerBE().moderatorCellMultiplier = 0;
-        controllerBE().irradiationConnections = 0;
+        controllerBE().irradiationLines = 0;
     }
 }

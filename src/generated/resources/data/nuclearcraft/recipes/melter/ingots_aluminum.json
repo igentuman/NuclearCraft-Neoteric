@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "amount": 144,
-      "tag": "forge:aluminum"
+      "amount": 90,
+      "tag": "forge:molten_aluminum"
     }
   ],
   "powerModifier": 1.0,

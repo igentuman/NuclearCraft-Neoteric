@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import static igentuman.nc.datagen.recipes.NCRecipes.MOLTEN_INGOT;
 import static igentuman.nc.setup.registration.NCItems.ALL_NC_ITEMS;
 
 public class ExtractorRecipes extends AbstractRecipeProvider {
@@ -16,7 +17,7 @@ public class ExtractorRecipes extends AbstractRecipeProvider {
     public static void generate(Consumer<FinishedRecipe> consumer) {
         ExtractorRecipes.consumer = consumer;
         ID = Processors.EXTRACTOR;
-        add(ingredient(ALL_NC_ITEMS.get("ground_cocoa_nibs").get()), ingredient(ALL_NC_ITEMS.get("cocoa_solids").get()), fluidIngredient("cocoa_butter", 144));
+        add(ingredient(ALL_NC_ITEMS.get("ground_cocoa_nibs").get()), ingredient(ALL_NC_ITEMS.get("cocoa_solids").get()), fluidIngredient("cocoa_butter", MOLTEN_INGOT));
 
     }
 

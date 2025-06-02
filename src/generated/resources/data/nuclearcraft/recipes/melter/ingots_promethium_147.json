@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "amount": 144,
-      "tag": "forge:promethium_147"
+      "amount": 90,
+      "tag": "forge:molten_promethium_147"
     }
   ],
   "powerModifier": 1.0,

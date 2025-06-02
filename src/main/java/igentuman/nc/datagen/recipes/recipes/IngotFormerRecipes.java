@@ -1,5 +1,6 @@
 package igentuman.nc.datagen.recipes.recipes;
 
+import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.NcIngredient;
 import igentuman.nc.recipes.ingredient.creator.IngredientCreatorAccess;
 import igentuman.nc.content.processors.Processors;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import static igentuman.nc.datagen.recipes.NCRecipes.MOLTEN_INGOT;
 import static igentuman.nc.setup.registration.FissionFuel.*;
 import static net.minecraft.world.item.Items.*;
 
@@ -26,7 +28,7 @@ public class IngotFormerRecipes extends AbstractRecipeProvider {
         for(String name: Materials.all().keySet()) {
             NCMaterial material = Materials.all().get(name);
             if(material.fluid && !material.isGas && material.ingot) {
-                add(ingotStack(name), fluidStack(name, 144));
+                add(ingotIngredient(name), fluidIngredient("molten_"+name, MOLTEN_INGOT));
             }
         }
 
@@ -36,7 +38,7 @@ public class IngotFormerRecipes extends AbstractRecipeProvider {
                 if(!NC_ISOTOPES.containsKey(key)) {
                     continue;
                 }
-                add(ingredient(NC_ISOTOPES.get(key).get()), fluidStack(key, 144));
+                add(ingredient(NC_ISOTOPES.get(key).get()), fluidIngredient(key, MOLTEN_INGOT));
             }
         }
 
@@ -51,28 +53,31 @@ public class IngotFormerRecipes extends AbstractRecipeProvider {
                         keyStr += "_";
                     }
                     keyStr+= type;
-                    add(ingredient(NC_FUEL.get(key).get()), fluidStack(keyStr, 144));
+                    add(ingredient(NC_FUEL.get(key).get()), fluidStackIngredient(keyStr, MOLTEN_INGOT));
                 }
             }
         }
 
-        add(ingredient(COPPER_INGOT), fluidStack(Materials.copper, 144));
-        add(ingredient(IRON_INGOT), fluidStack(Materials.iron, 144));
-        add(ingredient(GOLD_INGOT), fluidStack(Materials.gold, 144));
+        add(ingredient(COPPER_INGOT), fluidIngredient("molten_"+Materials.copper, MOLTEN_INGOT));
+        add(ingredient(IRON_INGOT), fluidIngredient("molten_"+Materials.iron, MOLTEN_INGOT));
+        add(ingredient(GOLD_INGOT), fluidIngredient("molten_"+Materials.gold, MOLTEN_INGOT));
 
-        add(gemStack(Materials.boron_arsenide), fluidStack(Materials.boron_arsenide, 144));
-        add(ingredient(OBSIDIAN), fluidStack(Materials.obsidian, 288), 2D, 2D);
+        add(gemStack(Materials.boron_arsenide), fluidStack(Materials.boron_arsenide, MOLTEN_INGOT));
+        add(ingredient(OBSIDIAN), fluidStack(Materials.obsidian, MOLTEN_INGOT*2), 2D, 2D);
 
-        add(ingredient(NCItems.NC_ITEMS.get("ground_cocoa_nibs").get()), fluidStack("chocolate_liquor", 144), 0.25D, 0.5D);
-        add(ingredient(NCItems.NC_ITEMS.get("cocoa_butter").get()), fluidStack("cocoa_butter", 144), 0.25D, 0.5D);
-        add(ingredient(NCItems.NC_ITEMS.get("unsweetened_chocolate").get()), fluidStack("unsweetened_chocolate", 144), 0.25D, 0.5D);
-        add(ingredient(NCItems.NC_FOOD.get("dark_chocolate").get()), fluidStack("dark_chocolate", 144), 0.25D, 0.5D);
-        add(ingredient(NCItems.NC_FOOD.get("milk_chocolate").get()), fluidStack("milk_chocolate", 144), 0.25D, 0.5D);
-        add(ingredient(NCItems.NC_ITEMS.get("gelatin").get()), fluidStack("gelatin", 144), 0.5D, 0.5D);
-        add(ingredient(NCItems.NC_FOOD.get("marshmallow").get()), fluidStack("marshmallow", 144), 0.5D, 0.5D);
+        add(ingredient(NCItems.NC_ITEMS.get("ground_cocoa_nibs").get()), fluidIngredient("chocolate_liquor", MOLTEN_INGOT), 0.25D, 0.5D);
+        add(ingredient(NCItems.NC_ITEMS.get("cocoa_butter").get()), fluidIngredient("cocoa_butter", MOLTEN_INGOT), 0.25D, 0.5D);
+        add(ingredient(NCItems.NC_ITEMS.get("unsweetened_chocolate").get()), fluidIngredient("unsweetened_chocolate", MOLTEN_INGOT), 0.25D, 0.5D);
+        add(ingredient(NCItems.NC_FOOD.get("dark_chocolate").get()), fluidIngredient("dark_chocolate", MOLTEN_INGOT), 0.25D, 0.5D);
+        add(ingredient(NCItems.NC_FOOD.get("milk_chocolate").get()), fluidIngredient("milk_chocolate", MOLTEN_INGOT), 0.25D, 0.5D);
+        add(ingredient(NCItems.NC_ITEMS.get("gelatin").get()), fluidIngredient("gelatin", MOLTEN_INGOT), 0.5D, 0.5D);
+        add(ingredient(NCItems.NC_FOOD.get("marshmallow").get()), fluidIngredient("marshmallow", MOLTEN_INGOT), 0.5D, 0.5D);
     }
 
     protected static void add(NcIngredient outputItem, FluidStack inputFluid, double...modifiers) {
         itemsAndFluids(new ArrayList<>(), List.of(outputItem), List.of(IngredientCreatorAccess.fluid().from(inputFluid)), new ArrayList<>(), modifiers);
+    }
+    protected static void add(NcIngredient outputItem, FluidStackIngredient inputFluid, double...modifiers) {
+        itemsAndFluids(new ArrayList<>(), List.of(outputItem), List.of(inputFluid), new ArrayList<>(), modifiers);
     }
 }

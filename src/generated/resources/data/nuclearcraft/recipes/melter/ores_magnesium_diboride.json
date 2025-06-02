@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "amount": 288,
-      "tag": "forge:magnesium_diboride"
+      "amount": 240,
+      "tag": "forge:molten_magnesium_diboride"
     }
   ],
   "powerModifier": 1.0,

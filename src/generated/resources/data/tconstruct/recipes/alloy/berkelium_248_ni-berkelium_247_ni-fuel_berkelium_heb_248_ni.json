@@ -1,0 +1,24 @@
+{
+  "type": "tconstruct:alloy",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    }
+  ],
+  "inputs": [
+    {
+      "amount": 90,
+      "tag": "forge:berkelium/248_ni"
+    },
+    {
+      "amount": 180,
+      "tag": "forge:berkelium/247_ni"
+    }
+  ],
+  "result": {
+    "amount": 90,
+    "tag": "forge:fuel_berkelium_heb_248_ni"
+  },
+  "temperature": 800
+}

@@ -2,11 +2,11 @@
   "type": "nuclearcraft:fusion_core",
   "inputFluids": [
     {
-      "amount": 1296,
+      "amount": 810,
       "tag": "forge:lithium/7"
     },
     {
-      "amount": 1296,
+      "amount": 810,
       "tag": "forge:quantite"
     }
   ],

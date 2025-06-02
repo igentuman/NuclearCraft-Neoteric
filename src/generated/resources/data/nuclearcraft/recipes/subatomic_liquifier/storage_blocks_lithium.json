@@ -7,11 +7,11 @@
   ],
   "outputFluids": [
     {
-      "amount": 72,
+      "amount": 810,
       "tag": "forge:subliquid_matter"
     }
   ],
   "powerModifier": 1.0,
   "radiation": 1.0,
-  "timeModifier": 3.0
+  "timeModifier": 4.0
 }

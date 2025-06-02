@@ -38,6 +38,9 @@ import static net.minecraft.world.item.Items.*;
 
 public class NCRecipes extends RecipeProvider {
 
+    public final static int MOLTEN_NUGGET = 10;
+    public final static int MOLTEN_INGOT = 90;
+    public final static int MOLTEN_BLOCK = 810;
     public NCRecipes(DataGenerator generatorIn) {
         super(generatorIn.getPackOutput());
     }

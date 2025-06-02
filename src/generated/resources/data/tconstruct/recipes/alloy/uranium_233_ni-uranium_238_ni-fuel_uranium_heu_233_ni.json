@@ -1,0 +1,24 @@
+{
+  "type": "tconstruct:alloy",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    }
+  ],
+  "inputs": [
+    {
+      "amount": 90,
+      "tag": "forge:uranium/233_ni"
+    },
+    {
+      "amount": 180,
+      "tag": "forge:uranium/238_ni"
+    }
+  ],
+  "result": {
+    "amount": 90,
+    "tag": "forge:fuel_uranium_heu_233_ni"
+  },
+  "temperature": 800
+}

@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "amount": 288,
-      "tag": "forge:iron"
+      "amount": 240,
+      "tag": "forge:molten_iron"
     }
   ],
   "powerModifier": 1.0,

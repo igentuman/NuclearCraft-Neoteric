@@ -2,17 +2,17 @@
   "type": "nuclearcraft:chemical_reactor",
   "inputFluids": [
     {
-      "amount": 48,
+      "amount": 30,
       "tag": "forge:americium/242_ox"
     },
     {
-      "amount": 432,
+      "amount": 270,
       "tag": "forge:americium/243_ox"
     }
   ],
   "outputFluids": [
     {
-      "amount": 144,
+      "amount": 90,
       "tag": "forge:fuel_americium_lea_242_ox"
     }
   ],

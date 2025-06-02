@@ -1,0 +1,18 @@
+{
+  "type": "tconstruct:melting",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    }
+  ],
+  "ingredient": {
+    "item": "nuclearcraft:milk_chocolate"
+  },
+  "result": {
+    "amount": 90,
+    "tag": "forge:milk_chocolate"
+  },
+  "temperature": 100,
+  "time": 10
+}

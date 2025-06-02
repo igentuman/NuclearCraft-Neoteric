@@ -119,7 +119,7 @@ public class FusionConfig {
 
             EXPLOSION_RADIUS = builder
                     .comment("Explosion size if reactor overheats. 4 - TNT size. Set to 0 to disable explosion.")
-                    .defineInRange("reactor_explosion_radius", 4f, 0.0f, 20f);
+                    .defineInRange("reactor_explosion_radius", 2f, 0.0f, 10f);
 
             MINIMAL_MAGNETIC_FIELD = builder
                     .comment("Minimal magnetic field required to operate reactor. (Depends on reactor size).")

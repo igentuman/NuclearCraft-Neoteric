@@ -1,0 +1,24 @@
+{
+  "type": "tconstruct:alloy",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    }
+  ],
+  "inputs": [
+    {
+      "amount": 30,
+      "tag": "forge:neptunium/236_ni"
+    },
+    {
+      "amount": 270,
+      "tag": "forge:neptunium/237_ni"
+    }
+  ],
+  "result": {
+    "amount": 90,
+    "tag": "forge:fuel_neptunium_len_236_ni"
+  },
+  "temperature": 800
+}

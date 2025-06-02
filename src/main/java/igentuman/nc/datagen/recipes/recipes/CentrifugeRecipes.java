@@ -9,6 +9,8 @@ import net.minecraftforge.fluids.FluidStack;
 import java.util.List;
 import java.util.function.Consumer;
 
+import static igentuman.nc.datagen.recipes.NCRecipes.*;
+
 public class CentrifugeRecipes extends AbstractRecipeProvider {
 
     public static void generate(Consumer<FinishedRecipe> consumer) {
@@ -53,8 +55,8 @@ public class CentrifugeRecipes extends AbstractRecipeProvider {
         add(
                 fluidIngredient(Materials.uranium, 160),
                 List.of(
-                        fluidIngredient(Materials.uranium238, 144),
-                        fluidIngredient(Materials.uranium235, 16)
+                        fluidIngredient(Materials.uranium238, MOLTEN_INGOT),
+                        fluidIngredient(Materials.uranium235, MOLTEN_NUGGET)
                 ), 0.9D
         );
 
@@ -64,8 +66,8 @@ public class CentrifugeRecipes extends AbstractRecipeProvider {
                         fluidIngredient(Materials.uranium238, 300),
                         fluidIngredient(Materials.uranium235, 80),
                         fluidIngredient(Materials.uranium233, 80),
-                        fluidIngredient("hydrofluoric_acid", 16),
-                        fluidIngredient("sulfuric_acid", 16)
+                        fluidIngredient("hydrofluoric_acid", MOLTEN_NUGGET),
+                        fluidIngredient("sulfuric_acid", MOLTEN_NUGGET)
 
                 ), 1.9D
         );
@@ -83,241 +85,241 @@ public class CentrifugeRecipes extends AbstractRecipeProvider {
         );
 
         add(
-                moltenFuelIngredient(List.of("depleted", "americium", "hea-242", ""), 1296),
+                moltenFuelIngredient(List.of("depleted", "americium", "hea-242", ""), MOLTEN_BLOCK),
                 List.of(
-                        fluidIngredient(Materials.americium243, 432), fluidIngredient(Materials.curium243, 144),
-                        fluidIngredient(Materials.curium246, 288), fluidIngredient(Materials.berkelium247, 144),
-                        fluidIngredient(Materials.molybdenum, 144), fluidIngredient(Materials.promethium_147, 144)
+                        fluidIngredient(Materials.americium243, MOLTEN_INGOT*3), fluidIngredient(Materials.curium243, MOLTEN_INGOT),
+                        fluidIngredient(Materials.curium246, MOLTEN_INGOT*2), fluidIngredient(Materials.berkelium247, MOLTEN_INGOT),
+                        fluidIngredient(Materials.molybdenum, MOLTEN_INGOT), fluidIngredient(Materials.promethium_147, MOLTEN_INGOT)
                 ),1.5D
         );
 
         add(
-                moltenFuelIngredient(List.of("depleted", "americium", "lea-242", ""), 1296),
+                moltenFuelIngredient(List.of("depleted", "americium", "lea-242", ""), MOLTEN_BLOCK),
                 List.of(
-                        fluidIngredient(Materials.americium243, 432), fluidIngredient(Materials.curium243, 144),
-                        fluidIngredient(Materials.curium246, 432), fluidIngredient(Materials.berkelium248, 144),
-                        fluidIngredient(Materials.molybdenum, 144), fluidIngredient(Materials.promethium_147, 144)
+                        fluidIngredient(Materials.americium243, MOLTEN_INGOT*3), fluidIngredient(Materials.curium243, MOLTEN_INGOT),
+                        fluidIngredient(Materials.curium246, MOLTEN_INGOT*3), fluidIngredient(Materials.berkelium248, MOLTEN_INGOT),
+                        fluidIngredient(Materials.molybdenum, MOLTEN_INGOT), fluidIngredient(Materials.promethium_147, MOLTEN_INGOT)
                 ),0.5D
         );
 
         add(
-                moltenFuelIngredient(List.of("depleted", "thorium", "tbu", ""), 1296),
+                moltenFuelIngredient(List.of("depleted", "thorium", "tbu", ""), MOLTEN_BLOCK),
                 List.of(
-                        fluidIngredient(Materials.uranium233, 144), fluidIngredient(Materials.uranium238, 720),
-                        fluidIngredient(Materials.neptunium236, 144), fluidIngredient(Materials.neptunium237, 144),
-                        fluidIngredient(Materials.strontium_90, 144), fluidIngredient(Materials.caesium_137, 144)
+                        fluidIngredient(Materials.uranium233, MOLTEN_INGOT), fluidIngredient(Materials.uranium238, MOLTEN_INGOT*5),
+                        fluidIngredient(Materials.neptunium236, MOLTEN_INGOT), fluidIngredient(Materials.neptunium237, MOLTEN_INGOT),
+                        fluidIngredient(Materials.strontium_90, MOLTEN_INGOT), fluidIngredient(Materials.caesium_137, MOLTEN_INGOT)
                 ),0.5D
         );
 
         add(
-                moltenFuelIngredient(List.of("depleted", "uranium", "leu-233", ""), 1296),
+                moltenFuelIngredient(List.of("depleted", "uranium", "leu-233", ""), MOLTEN_BLOCK),
                 List.of(
-                        fluidIngredient(Materials.uranium238, 720), fluidIngredient(Materials.plutonium241, 144),
-                        fluidIngredient(Materials.plutonium242, 144), fluidIngredient(Materials.americium243, 144),
-                        fluidIngredient(Materials.strontium_90, 144), fluidIngredient(Materials.caesium_137, 144)
+                        fluidIngredient(Materials.uranium238, MOLTEN_INGOT*5), fluidIngredient(Materials.plutonium241, MOLTEN_INGOT),
+                        fluidIngredient(Materials.plutonium242, MOLTEN_INGOT), fluidIngredient(Materials.americium243, MOLTEN_INGOT),
+                        fluidIngredient(Materials.strontium_90, MOLTEN_INGOT), fluidIngredient(Materials.caesium_137, MOLTEN_INGOT)
                 ),0.5D
         );
 
         add(
-                moltenFuelIngredient(List.of("depleted", "uranium", "heu-233", ""), 1296),
+                moltenFuelIngredient(List.of("depleted", "uranium", "heu-233", ""), MOLTEN_BLOCK),
                 List.of(
-                        fluidIngredient(Materials.uranium235, 144), fluidIngredient(Materials.uranium238, 288),
-                        fluidIngredient(Materials.plutonium242, 432), fluidIngredient(Materials.americium243, 144),
-                        fluidIngredient(Materials.strontium_90, 144), fluidIngredient(Materials.caesium_137, 144)
+                        fluidIngredient(Materials.uranium235, MOLTEN_INGOT), fluidIngredient(Materials.uranium238, MOLTEN_INGOT*2),
+                        fluidIngredient(Materials.plutonium242, MOLTEN_INGOT*3), fluidIngredient(Materials.americium243, MOLTEN_INGOT),
+                        fluidIngredient(Materials.strontium_90, MOLTEN_INGOT), fluidIngredient(Materials.caesium_137, MOLTEN_INGOT)
                 ),1.5D
         );
 
         add(
-                moltenFuelIngredient(List.of("depleted", "uranium", "leu-235", ""), 1296),
+                moltenFuelIngredient(List.of("depleted", "uranium", "leu-235", ""), MOLTEN_BLOCK),
                 List.of(
-                        fluidIngredient(Materials.uranium238, 576), fluidIngredient(Materials.plutonium239, 144),
-                        fluidIngredient(Materials.plutonium242, 144), fluidIngredient(Materials.americium243, 144),
-                        fluidIngredient(Materials.strontium_90, 144), fluidIngredient(Materials.caesium_137, 144)
+                        fluidIngredient(Materials.uranium238, MOLTEN_INGOT*4), fluidIngredient(Materials.plutonium239, MOLTEN_INGOT),
+                        fluidIngredient(Materials.plutonium242, MOLTEN_INGOT), fluidIngredient(Materials.americium243, MOLTEN_INGOT),
+                        fluidIngredient(Materials.strontium_90, MOLTEN_INGOT), fluidIngredient(Materials.caesium_137, MOLTEN_INGOT)
                 ),0.5D
         );
 
         add(
-                moltenFuelIngredient(List.of("depleted", "uranium", "heu-235", ""), 1296),
+                moltenFuelIngredient(List.of("depleted", "uranium", "heu-235", ""), MOLTEN_BLOCK),
                 List.of(
-                        fluidIngredient(Materials.uranium238, 288), fluidIngredient(Materials.plutonium239, 144),
-                        fluidIngredient(Materials.plutonium242, 432), fluidIngredient(Materials.americium243, 144),
-                        fluidIngredient(Materials.strontium_90, 144), fluidIngredient(Materials.caesium_137, 144)
+                        fluidIngredient(Materials.uranium238, MOLTEN_INGOT*2), fluidIngredient(Materials.plutonium239, MOLTEN_INGOT),
+                        fluidIngredient(Materials.plutonium242, MOLTEN_INGOT*3), fluidIngredient(Materials.americium243, MOLTEN_INGOT),
+                        fluidIngredient(Materials.strontium_90, MOLTEN_INGOT), fluidIngredient(Materials.caesium_137, MOLTEN_INGOT)
                 ),1.5D
         );
 
         add(
-                moltenFuelIngredient(List.of("depleted", "neptunium", "len-236", ""), 1296),
+                moltenFuelIngredient(List.of("depleted", "neptunium", "len-236", ""), MOLTEN_BLOCK),
                 List.of(
-                        fluidIngredient(Materials.uranium238, 576), fluidIngredient(Materials.neptunium237, 144),
-                        fluidIngredient(Materials.plutonium241, 144), fluidIngredient(Materials.plutonium242, 144),
-                        fluidIngredient(Materials.molybdenum, 144), fluidIngredient(Materials.caesium_137, 144)
+                        fluidIngredient(Materials.uranium238, MOLTEN_INGOT*4), fluidIngredient(Materials.neptunium237, MOLTEN_INGOT),
+                        fluidIngredient(Materials.plutonium241, MOLTEN_INGOT), fluidIngredient(Materials.plutonium242, MOLTEN_INGOT),
+                        fluidIngredient(Materials.molybdenum, MOLTEN_INGOT), fluidIngredient(Materials.caesium_137, MOLTEN_INGOT)
                 ),0.5D
         );
 
         add(
-                moltenFuelIngredient(List.of("depleted", "neptunium", "hen-236", ""), 1296),
+                moltenFuelIngredient(List.of("depleted", "neptunium", "hen-236", ""), MOLTEN_BLOCK),
                 List.of(
-                        fluidIngredient(Materials.uranium238, 576), fluidIngredient(Materials.plutonium238, 144),
-                        fluidIngredient(Materials.plutonium241, 144), fluidIngredient(Materials.plutonium242, 144),
-                        fluidIngredient(Materials.molybdenum, 144), fluidIngredient(Materials.caesium_137, 144)
+                        fluidIngredient(Materials.uranium238, MOLTEN_INGOT*4), fluidIngredient(Materials.plutonium238, MOLTEN_INGOT),
+                        fluidIngredient(Materials.plutonium241, MOLTEN_INGOT), fluidIngredient(Materials.plutonium242, MOLTEN_INGOT),
+                        fluidIngredient(Materials.molybdenum, MOLTEN_INGOT), fluidIngredient(Materials.caesium_137, MOLTEN_INGOT)
                 ),1.5D
         );
 
         add(
-                moltenFuelIngredient(List.of("depleted", "plutonium", "lep-239", ""), 1296),
+                moltenFuelIngredient(List.of("depleted", "plutonium", "lep-239", ""), MOLTEN_BLOCK),
                 List.of(
-                        fluidIngredient(Materials.curium246, 576), fluidIngredient(Materials.americium243, 144),
-                        fluidIngredient(Materials.americium242, 144), fluidIngredient(Materials.plutonium242, 720),
-                        fluidIngredient(Materials.strontium_90, 144), fluidIngredient(Materials.caesium_137, 144)
+                        fluidIngredient(Materials.curium246, MOLTEN_INGOT*4), fluidIngredient(Materials.americium243, MOLTEN_INGOT),
+                        fluidIngredient(Materials.americium242, MOLTEN_INGOT), fluidIngredient(Materials.plutonium242, MOLTEN_INGOT*5),
+                        fluidIngredient(Materials.strontium_90, MOLTEN_INGOT), fluidIngredient(Materials.caesium_137, MOLTEN_INGOT)
                 ),0.5D
         );
 
         add(
-                moltenFuelIngredient(List.of("depleted", "plutonium", "hep-239", ""), 1296),
+                moltenFuelIngredient(List.of("depleted", "plutonium", "hep-239", ""), MOLTEN_BLOCK),
                 List.of(
-                        fluidIngredient(Materials.americium243, 576), fluidIngredient(Materials.plutonium238, 144),
-                        fluidIngredient(Materials.plutonium241, 144), fluidIngredient(Materials.americium242, 144),
-                        fluidIngredient(Materials.caesium_137, 144), fluidIngredient(Materials.strontium_90, 144)
+                        fluidIngredient(Materials.americium243, MOLTEN_INGOT*4), fluidIngredient(Materials.plutonium238, MOLTEN_INGOT),
+                        fluidIngredient(Materials.plutonium241, MOLTEN_INGOT), fluidIngredient(Materials.americium242, MOLTEN_INGOT),
+                        fluidIngredient(Materials.caesium_137, MOLTEN_INGOT), fluidIngredient(Materials.strontium_90, MOLTEN_INGOT)
                 ),1.5D
         );
 
         add(
-                moltenFuelIngredient(List.of("depleted", "plutonium", "lep-241", ""), 1296),
+                moltenFuelIngredient(List.of("depleted", "plutonium", "lep-241", ""), MOLTEN_BLOCK),
                 List.of(
-                        fluidIngredient(Materials.plutonium242, 720), fluidIngredient(Materials.americium243, 144),
-                        fluidIngredient(Materials.curium246, 144), fluidIngredient(Materials.berkelium247, 144),
-                        fluidIngredient(Materials.promethium_147, 144), fluidIngredient(Materials.caesium_137, 144)
+                        fluidIngredient(Materials.plutonium242, MOLTEN_INGOT*5), fluidIngredient(Materials.americium243, MOLTEN_INGOT),
+                        fluidIngredient(Materials.curium246, MOLTEN_INGOT), fluidIngredient(Materials.berkelium247, MOLTEN_INGOT),
+                        fluidIngredient(Materials.promethium_147, MOLTEN_INGOT), fluidIngredient(Materials.caesium_137, MOLTEN_INGOT)
                 ),0.5D
         );
 
         add(
-                moltenFuelIngredient(List.of("depleted", "plutonium", "hep-241", ""), 1296),
+                moltenFuelIngredient(List.of("depleted", "plutonium", "hep-241", ""), MOLTEN_BLOCK),
                 List.of(
-                        fluidIngredient(Materials.americium243, 576), fluidIngredient(Materials.curium243, 144),
-                        fluidIngredient(Materials.americium242, 144), fluidIngredient(Materials.plutonium241, 144),
-                        fluidIngredient(Materials.strontium_90, 144), fluidIngredient(Materials.caesium_137, 144)
+                        fluidIngredient(Materials.americium243, MOLTEN_INGOT*4), fluidIngredient(Materials.curium243, MOLTEN_INGOT),
+                        fluidIngredient(Materials.americium242, MOLTEN_INGOT), fluidIngredient(Materials.plutonium241, MOLTEN_INGOT),
+                        fluidIngredient(Materials.strontium_90, MOLTEN_INGOT), fluidIngredient(Materials.caesium_137, MOLTEN_INGOT)
                 ),1.5D
         );
 
         add(
-                moltenFuelIngredient(List.of("depleted", "mixed", "mix-239", ""), 1296),
+                moltenFuelIngredient(List.of("depleted", "mixed", "mix-239", ""), MOLTEN_BLOCK),
                 List.of(
-                        fluidIngredient(Materials.uranium238, 576), fluidIngredient(Materials.plutonium239, 144),
-                        fluidIngredient(Materials.plutonium242, 144), fluidIngredient(Materials.americium243, 144),
-                        fluidIngredient(Materials.strontium_90, 144), fluidIngredient(Materials.caesium_137, 144)
+                        fluidIngredient(Materials.uranium238, MOLTEN_INGOT*4), fluidIngredient(Materials.plutonium239, MOLTEN_INGOT),
+                        fluidIngredient(Materials.plutonium242, MOLTEN_INGOT), fluidIngredient(Materials.americium243, MOLTEN_INGOT),
+                        fluidIngredient(Materials.strontium_90, MOLTEN_INGOT), fluidIngredient(Materials.caesium_137, MOLTEN_INGOT)
                 ),0.5D
         );
 
         add(
-                moltenFuelIngredient(List.of("depleted", "mixed", "mix-241", ""), 1296),
+                moltenFuelIngredient(List.of("depleted", "mixed", "mix-241", ""), MOLTEN_BLOCK),
                 List.of(
-                        fluidIngredient(Materials.uranium238, 576), fluidIngredient(Materials.neptunium237, 144),
-                        fluidIngredient(Materials.plutonium241, 144), fluidIngredient(Materials.plutonium242, 144),
-                        fluidIngredient(Materials.molybdenum, 144), fluidIngredient(Materials.caesium_137, 144)
+                        fluidIngredient(Materials.uranium238, MOLTEN_INGOT*4), fluidIngredient(Materials.neptunium237, MOLTEN_INGOT),
+                        fluidIngredient(Materials.plutonium241, MOLTEN_INGOT), fluidIngredient(Materials.plutonium242, MOLTEN_INGOT),
+                        fluidIngredient(Materials.molybdenum, MOLTEN_INGOT), fluidIngredient(Materials.caesium_137, MOLTEN_INGOT)
                 ),0.5D
         );
 
         add(
-                moltenFuelIngredient(List.of("depleted", "curium", "lecm-243", ""), 1296),
+                moltenFuelIngredient(List.of("depleted", "curium", "lecm-243", ""), MOLTEN_BLOCK),
                 List.of(
-                        fluidIngredient(Materials.curium246, 576), fluidIngredient(Materials.curium247, 144),
-                        fluidIngredient(Materials.berkelium247, 288), fluidIngredient(Materials.berkelium248, 144),
-                        fluidIngredient(Materials.molybdenum, 144), fluidIngredient(Materials.promethium_147, 144)
+                        fluidIngredient(Materials.curium246, MOLTEN_INGOT*4), fluidIngredient(Materials.curium247, MOLTEN_INGOT),
+                        fluidIngredient(Materials.berkelium247, MOLTEN_INGOT*2), fluidIngredient(Materials.berkelium248, MOLTEN_INGOT),
+                        fluidIngredient(Materials.molybdenum, MOLTEN_INGOT), fluidIngredient(Materials.promethium_147, MOLTEN_INGOT)
                 ),0.5D
         );
 
         add(
-                moltenFuelIngredient(List.of("depleted", "curium", "hecm-243", ""), 1296),
+                moltenFuelIngredient(List.of("depleted", "curium", "hecm-243", ""), MOLTEN_BLOCK),
                 List.of(
-                        fluidIngredient(Materials.curium245, 432), fluidIngredient(Materials.curium245, 144),
-                        fluidIngredient(Materials.berkelium247, 288), fluidIngredient(Materials.berkelium248, 144),
-                        fluidIngredient(Materials.molybdenum, 144), fluidIngredient(Materials.promethium_147, 144)
+                        fluidIngredient(Materials.curium245, MOLTEN_INGOT*3), fluidIngredient(Materials.curium245, MOLTEN_INGOT),
+                        fluidIngredient(Materials.berkelium247, MOLTEN_INGOT*2), fluidIngredient(Materials.berkelium248, MOLTEN_INGOT),
+                        fluidIngredient(Materials.molybdenum, MOLTEN_INGOT), fluidIngredient(Materials.promethium_147, MOLTEN_INGOT)
                 ),1.5D
         );
 
         add(
-                moltenFuelIngredient(List.of("depleted", "curium", "lecm-245", ""), 1296),
+                moltenFuelIngredient(List.of("depleted", "curium", "lecm-245", ""), MOLTEN_BLOCK),
                 List.of(
-                        fluidIngredient(Materials.curium246, 576), fluidIngredient(Materials.curium247, 144),
-                        fluidIngredient(Materials.berkelium247, 288), fluidIngredient(Materials.californium249, 144),
-                        fluidIngredient(Materials.molybdenum, 144), fluidIngredient(Materials.europium_155, 144)
+                        fluidIngredient(Materials.curium246, MOLTEN_INGOT*4), fluidIngredient(Materials.curium247, MOLTEN_INGOT),
+                        fluidIngredient(Materials.berkelium247, MOLTEN_INGOT*2), fluidIngredient(Materials.californium249, MOLTEN_INGOT),
+                        fluidIngredient(Materials.molybdenum, MOLTEN_INGOT), fluidIngredient(Materials.europium_155, MOLTEN_INGOT)
                 ),0.5D
         );
 
         add(
-                moltenFuelIngredient(List.of("depleted", "curium", "hecm-245", ""), 1296),
+                moltenFuelIngredient(List.of("depleted", "curium", "hecm-245", ""), MOLTEN_BLOCK),
                 List.of(
-                        fluidIngredient(Materials.curium246, 432), fluidIngredient(Materials.curium247, 144),
-                        fluidIngredient(Materials.berkelium247, 288), fluidIngredient(Materials.californium249, 144),
-                        fluidIngredient(Materials.molybdenum, 144), fluidIngredient(Materials.europium_155, 144)
+                        fluidIngredient(Materials.curium246, MOLTEN_INGOT*3), fluidIngredient(Materials.curium247, MOLTEN_INGOT),
+                        fluidIngredient(Materials.berkelium247, MOLTEN_INGOT*2), fluidIngredient(Materials.californium249, MOLTEN_INGOT),
+                        fluidIngredient(Materials.molybdenum, MOLTEN_INGOT), fluidIngredient(Materials.europium_155, MOLTEN_INGOT)
                 ),1.5D
         );
 
         add(
-                moltenFuelIngredient(List.of("depleted", "curium", "lecm-247", ""), 1296),
+                moltenFuelIngredient(List.of("depleted", "curium", "lecm-247", ""), MOLTEN_BLOCK),
                 List.of(
-                        fluidIngredient(Materials.curium246, 720), fluidIngredient(Materials.berkelium247, 144),
-                        fluidIngredient(Materials.californium249, 144), fluidIngredient(Materials.berkelium248, 144),
-                        fluidIngredient(Materials.molybdenum, 144), fluidIngredient(Materials.europium_155, 144)
+                        fluidIngredient(Materials.curium246, MOLTEN_INGOT*5), fluidIngredient(Materials.berkelium247, MOLTEN_INGOT),
+                        fluidIngredient(Materials.californium249, MOLTEN_INGOT), fluidIngredient(Materials.berkelium248, MOLTEN_INGOT),
+                        fluidIngredient(Materials.molybdenum, MOLTEN_INGOT), fluidIngredient(Materials.europium_155, MOLTEN_INGOT)
                 ),0.5D
         );
 
         add(
-                moltenFuelIngredient(List.of("depleted", "curium", "hecm-247", ""), 1296),
+                moltenFuelIngredient(List.of("depleted", "curium", "hecm-247", ""), MOLTEN_BLOCK),
                 List.of(
-                        fluidIngredient(Materials.californium251, 144), fluidIngredient(Materials.californium249, 144),
-                        fluidIngredient(Materials.berkelium247, 576), fluidIngredient(Materials.berkelium248, 144),
-                        fluidIngredient(Materials.molybdenum, 144), fluidIngredient(Materials.europium_155, 144)
+                        fluidIngredient(Materials.californium251, MOLTEN_INGOT), fluidIngredient(Materials.californium249, MOLTEN_INGOT),
+                        fluidIngredient(Materials.berkelium247, MOLTEN_INGOT*4), fluidIngredient(Materials.berkelium248, MOLTEN_INGOT),
+                        fluidIngredient(Materials.molybdenum, MOLTEN_INGOT), fluidIngredient(Materials.europium_155, MOLTEN_INGOT)
                 ),1.5D
         );
 
         add(
-                moltenFuelIngredient(List.of("depleted", "berkelium", "leb-248", ""), 1296),
+                moltenFuelIngredient(List.of("depleted", "berkelium", "leb-248", ""), MOLTEN_BLOCK),
                 List.of(
-                        fluidIngredient(Materials.berkelium247, 720), fluidIngredient(Materials.berkelium248, 144),
-                        fluidIngredient(Materials.californium249, 144), fluidIngredient(Materials.californium251, 144),
-                        fluidIngredient(Materials.ruthenium_106, 144), fluidIngredient(Materials.promethium_147, 144)
+                        fluidIngredient(Materials.berkelium247, MOLTEN_INGOT*5), fluidIngredient(Materials.berkelium248, MOLTEN_INGOT),
+                        fluidIngredient(Materials.californium249, MOLTEN_INGOT), fluidIngredient(Materials.californium251, MOLTEN_INGOT),
+                        fluidIngredient(Materials.ruthenium_106, MOLTEN_INGOT), fluidIngredient(Materials.promethium_147, MOLTEN_INGOT)
                 ),0.5D
         );
 
         add(
-                moltenFuelIngredient(List.of("depleted", "berkelium", "heb-248", ""), 1296),
+                moltenFuelIngredient(List.of("depleted", "berkelium", "heb-248", ""), MOLTEN_BLOCK),
                 List.of(
-                        fluidIngredient(Materials.berkelium248, 144), fluidIngredient(Materials.californium249, 144),
-                        fluidIngredient(Materials.californium251, 288), fluidIngredient(Materials.californium252, 3),
-                        fluidIngredient(Materials.ruthenium_106, 144), fluidIngredient(Materials.promethium_147, 144)
+                        fluidIngredient(Materials.berkelium248, MOLTEN_INGOT), fluidIngredient(Materials.californium249, MOLTEN_INGOT),
+                        fluidIngredient(Materials.californium251, MOLTEN_INGOT*2), fluidIngredient(Materials.californium252, 3),
+                        fluidIngredient(Materials.ruthenium_106, MOLTEN_INGOT), fluidIngredient(Materials.promethium_147, MOLTEN_INGOT)
                 ),1.5D
         );
 
         add(
-                moltenFuelIngredient(List.of("depleted", "californium", "lecf-249", ""), 1296),
+                moltenFuelIngredient(List.of("depleted", "californium", "lecf-249", ""), MOLTEN_BLOCK),
                 List.of(
-                        fluidIngredient(Materials.californium252, 1152),
-                        fluidIngredient(Materials.ruthenium_106, 144), fluidIngredient(Materials.promethium_147, 144)
+                        fluidIngredient(Materials.californium252, MOLTEN_INGOT*8),
+                        fluidIngredient(Materials.ruthenium_106, MOLTEN_INGOT), fluidIngredient(Materials.promethium_147, MOLTEN_INGOT)
                 ),0.5D
         );
 
         add(
-                moltenFuelIngredient(List.of("depleted", "californium", "hecf-249", ""), 1296),
+                moltenFuelIngredient(List.of("depleted", "californium", "hecf-249", ""), MOLTEN_BLOCK),
                 List.of(
-                        fluidIngredient(Materials.californium252, 864), fluidIngredient(Materials.californium250, 288),
-                        fluidIngredient(Materials.ruthenium_106, 144), fluidIngredient(Materials.promethium_147, 144)
+                        fluidIngredient(Materials.californium252, MOLTEN_INGOT*6), fluidIngredient(Materials.californium250, MOLTEN_INGOT*2),
+                        fluidIngredient(Materials.ruthenium_106, MOLTEN_INGOT), fluidIngredient(Materials.promethium_147, MOLTEN_INGOT)
                 ),1.5D
         );
 
         add(
-                moltenFuelIngredient(List.of("depleted", "californium", "lecf-251", ""), 1296),
+                moltenFuelIngredient(List.of("depleted", "californium", "lecf-251", ""), MOLTEN_BLOCK),
                 List.of(
-                        fluidIngredient(Materials.californium252, 1152),
-                        fluidIngredient(Materials.ruthenium_106, 144), fluidIngredient(Materials.promethium_147, 144)
+                        fluidIngredient(Materials.californium252, MOLTEN_INGOT*8),
+                        fluidIngredient(Materials.ruthenium_106, MOLTEN_INGOT), fluidIngredient(Materials.promethium_147, MOLTEN_INGOT)
                 ),0.5D
         );
 
         add(
-                moltenFuelIngredient(List.of("depleted", "californium", "hecf-251", ""), 1296),
+                moltenFuelIngredient(List.of("depleted", "californium", "hecf-251", ""), MOLTEN_BLOCK),
                 List.of(
-                        fluidIngredient(Materials.californium252, 1008),
-                        fluidIngredient(Materials.ruthenium_106, 144), fluidIngredient(Materials.promethium_147, 144)
+                        fluidIngredient(Materials.californium252, MOLTEN_INGOT*7),
+                        fluidIngredient(Materials.ruthenium_106, MOLTEN_INGOT), fluidIngredient(Materials.promethium_147, MOLTEN_INGOT)
                 ),1.5D
         );
 

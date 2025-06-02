@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "amount": 288,
-      "tag": "forge:purpur"
+      "amount": 240,
+      "tag": "forge:molten_purpur"
     }
   ],
   "powerModifier": 1.0,

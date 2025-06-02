@@ -1,0 +1,18 @@
+{
+  "type": "tconstruct:melting",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    }
+  ],
+  "ingredient": {
+    "tag": "forge:dusts/polonium"
+  },
+  "result": {
+    "amount": 90,
+    "tag": "forge:polonium"
+  },
+  "temperature": 700,
+  "time": 40
+}

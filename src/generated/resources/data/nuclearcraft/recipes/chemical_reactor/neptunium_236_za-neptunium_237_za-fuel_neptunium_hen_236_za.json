@@ -2,17 +2,17 @@
   "type": "nuclearcraft:chemical_reactor",
   "inputFluids": [
     {
-      "amount": 144,
+      "amount": 90,
       "tag": "forge:neptunium/236_za"
     },
     {
-      "amount": 288,
+      "amount": 180,
       "tag": "forge:neptunium/237_za"
     }
   ],
   "outputFluids": [
     {
-      "amount": 144,
+      "amount": 90,
       "tag": "forge:fuel_neptunium_hen_236_za"
     }
   ],

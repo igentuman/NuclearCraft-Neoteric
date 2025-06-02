@@ -13,7 +13,7 @@
   ],
   "outputFluids": [
     {
-      "amount": 144,
+      "amount": 90,
       "tag": "forge:potassium_iodide"
     }
   ],

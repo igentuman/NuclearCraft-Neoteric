@@ -117,7 +117,7 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
     }
 
     public void tickClient() {
-        if(!isCasingValid && !isInternalValid && errorBlockPos != null && errorBlockPos != BlockPos.ZERO) {
+        if((!isCasingValid || !isInternalValid) && !errorBlockPos.equals(BlockPos.ZERO)) {
             BlockOverlayHandler.addToOutline(new NCBlockPos(errorBlockPos.getX(), errorBlockPos.getY(), errorBlockPos.getZ()));
         }
     }
@@ -127,17 +127,12 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
         super.load(tag);
         if (tag.contains("Info")) {
             CompoundTag infoTag = tag.getCompound("Info");
-            if (!isCasingValid || !isInternalValid) {
-                if(tag.contains("erroredBlock")) {
-                    errorBlockPos = BlockPos.of(infoTag.getLong("erroredBlock"));
-                } else {
-                    errorBlockPos = BlockPos.ZERO;
-                }
-                validationResult = ValidationResult.byId(infoTag.getInt("validationId"));
+            if(infoTag.contains("erroredBlock")) {
+                errorBlockPos = BlockPos.of(infoTag.getLong("erroredBlock"));
             } else {
-                validationResult = ValidationResult.VALID;
                 errorBlockPos = BlockPos.ZERO;
             }
+            validationResult = ValidationResult.byId(infoTag.getInt("validationId"));
         }
     }
 
@@ -182,11 +177,10 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
         if (tag.contains("Info")) {
             CompoundTag infoTag = tag.getCompound("Info");
             infoTag.putInt("validationId", validationResult.id);
-            if(errorBlockPos instanceof BlockPos) {
-                infoTag.putLong("erroredBlock", errorBlockPos.asLong());
-            } else {
-                infoTag.putLong("erroredBlock", 0);
+            if(errorBlockPos == null) {
+                errorBlockPos = BlockPos.ZERO;
             }
+            infoTag.putLong("erroredBlock", errorBlockPos.asLong());
             tag.remove("Info");
             tag.put("Info", infoTag);
         }
@@ -197,16 +191,15 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
         super.loadClientData(tag);
         if (tag.contains("Info")) {
             CompoundTag infoTag = tag.getCompound("Info");
-            if (!isCasingValid || !isInternalValid) {
-                BlockPos tmp = BlockPos.of(infoTag.getLong("erroredBlock"));
-                if(!tmp.equals(errorBlockPos) && level.isClientSide()) {
-                    BlockOverlayHandler.removeFromOutline(NCBlockPos.copy(errorBlockPos), true);
-                }
-                errorBlockPos = tmp;
-                validationResult = ValidationResult.byId(infoTag.getInt("validationId"));
-            } else {
-                validationResult = ValidationResult.VALID;
+            BlockPos tmp = BlockPos.ZERO;
+            if(infoTag.contains("erroredBlock")) {
+                tmp = BlockPos.of(infoTag.getLong("erroredBlock"));
             }
+            if(!tmp.equals(errorBlockPos) && level.isClientSide()) {
+                BlockOverlayHandler.removeFromOutline(NCBlockPos.copy(errorBlockPos), true);
+            }
+            errorBlockPos = tmp;
+            validationResult = ValidationResult.byId(infoTag.getInt("validationId"));
         }
     }
 
@@ -216,11 +209,10 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
         if (tag.contains("Info")) {
             CompoundTag infoTag = tag.getCompound("Info");
             infoTag.putInt("validationId", validationResult.id);
-            if(errorBlockPos instanceof BlockPos) {
-                infoTag.putLong("erroredBlock", errorBlockPos.asLong());
-            } else {
-                infoTag.putLong("erroredBlock", 0);
+            if(errorBlockPos == null) {
+                errorBlockPos = BlockPos.ZERO;
             }
+            infoTag.putLong("erroredBlock", errorBlockPos.asLong());
             tag.remove("Info");
             tag.put("Info", infoTag);
         }

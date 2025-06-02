@@ -1,0 +1,24 @@
+{
+  "type": "tconstruct:alloy",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    }
+  ],
+  "inputs": [
+    {
+      "amount": 90,
+      "tag": "forge:unsweetened_chocolate"
+    },
+    {
+      "amount": 45,
+      "tag": "forge:sugar"
+    }
+  ],
+  "result": {
+    "amount": 90,
+    "tag": "forge:dark_chocolate"
+  },
+  "temperature": 200
+}

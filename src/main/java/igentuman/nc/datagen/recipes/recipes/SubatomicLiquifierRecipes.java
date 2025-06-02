@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import static igentuman.nc.content.materials.Materials.subliquid_matter;
+import static igentuman.nc.datagen.recipes.NCRecipes.MOLTEN_BLOCK;
+import static igentuman.nc.datagen.recipes.NCRecipes.MOLTEN_INGOT;
 
 public class SubatomicLiquifierRecipes extends AbstractRecipeProvider {
 
@@ -19,17 +21,17 @@ public class SubatomicLiquifierRecipes extends AbstractRecipeProvider {
                     List.of(dustIngredient(type)),
                     List.of(),
                     List.of(),
-                    List.of(fluidIngredient(subliquid_matter, 8)));
+                    List.of(fluidIngredient(subliquid_matter, MOLTEN_INGOT)));
             itemsAndFluids(
                     List.of(ingotIngredient(type)),
                     List.of(),
                     List.of(),
-                    List.of(fluidIngredient(subliquid_matter, 8)), 1.2D);
+                    List.of(fluidIngredient(subliquid_matter, MOLTEN_INGOT)), 1.2D);
             itemsAndFluids(
                     List.of(blockIngredient(type)),
                     List.of(),
                     List.of(),
-                    List.of(fluidIngredient(subliquid_matter, 72)), 3.0D);
+                    List.of(fluidIngredient(subliquid_matter, MOLTEN_BLOCK)), 4.0D);
         }
     }
 }

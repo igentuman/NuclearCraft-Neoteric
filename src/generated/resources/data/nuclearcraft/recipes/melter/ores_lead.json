@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "amount": 288,
-      "tag": "forge:lead"
+      "amount": 240,
+      "tag": "forge:molten_lead"
     }
   ],
   "powerModifier": 1.0,

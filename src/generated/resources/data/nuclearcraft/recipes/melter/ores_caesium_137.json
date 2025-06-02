@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "amount": 288,
-      "tag": "forge:caesium_137"
+      "amount": 240,
+      "tag": "forge:molten_caesium_137"
     }
   ],
   "powerModifier": 1.0,

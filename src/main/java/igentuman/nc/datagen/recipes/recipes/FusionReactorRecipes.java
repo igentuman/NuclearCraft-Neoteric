@@ -8,6 +8,8 @@ import net.minecraftforge.fluids.FluidStack;
 import java.util.List;
 import java.util.function.Consumer;
 
+import static igentuman.nc.datagen.recipes.NCRecipes.MOLTEN_INGOT;
+
 public class FusionReactorRecipes extends AbstractRecipeProvider {
 
     public static void generate(Consumer<FinishedRecipe> consumer) {
@@ -70,7 +72,7 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
         add(
                 List.of(
                         fluidIngredient("hydrogen", 1000),
-                        fluidIngredient("lithium/6", 144)
+                        fluidIngredient("lithium/6", MOLTEN_INGOT)
                 ),
                 List.of(
                         fluidIngredient("tritium", 500),
@@ -83,7 +85,7 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
         add(
                 List.of(
                         fluidIngredient("hydrogen", 1000),
-                        fluidIngredient("lithium/7", 144)
+                        fluidIngredient("lithium/7", MOLTEN_INGOT)
                 ),
                 List.of(
                         fluidIngredient("helium", 500),
@@ -96,7 +98,7 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
         add(
                 List.of(
                         fluidIngredient("hydrogen", 1000),
-                        fluidIngredient("quantite", 144)
+                        fluidIngredient("quantite", MOLTEN_INGOT)
                 ),
                 List.of(
                         fluidIngredient("helium", 1000*3/4),
@@ -123,7 +125,7 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
         add(
                 List.of(
                         fluidIngredient("deuterium", 1000),
-                        fluidIngredient("lithium/6", 144)
+                        fluidIngredient("lithium/6", MOLTEN_INGOT)
                 ),
                 List.of(
                         fluidIngredient("helium", 500),
@@ -136,7 +138,7 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
         add(
                 List.of(
                         fluidIngredient("deuterium", 1000),
-                        fluidIngredient("lithium/7", 144)
+                        fluidIngredient("lithium/7", MOLTEN_INGOT)
                 ),
                 List.of(
                         fluidIngredient("helium", 500),
@@ -149,7 +151,7 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
         add(
                 List.of(
                         fluidIngredient("deuterium", 1000),
-                        fluidIngredient("quantite", 144)
+                        fluidIngredient("quantite", MOLTEN_INGOT)
                 ),
                 List.of(
                         fluidIngredient("helium", 1000*6/4),
@@ -173,7 +175,7 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
         add(
                 List.of(
                         fluidIngredient("tritium", 1000),
-                        fluidIngredient("lithium/6", 144)
+                        fluidIngredient("lithium/6", MOLTEN_INGOT)
                 ),
                 List.of(
                         fluidIngredient("helium", 1000),
@@ -184,7 +186,7 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
         add(
                 List.of(
                         fluidIngredient("tritium", 1000),
-                        fluidIngredient("lithium/7", 144)
+                        fluidIngredient("lithium/7", MOLTEN_INGOT)
                 ),
                 List.of(
                         fluidIngredient("helium", 1000),
@@ -195,7 +197,7 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
         add(
                 List.of(
                         fluidIngredient("tritium", 1000),
-                        fluidIngredient("quantite", 144)
+                        fluidIngredient("quantite", MOLTEN_INGOT)
                 ),
                 List.of(
                         fluidIngredient("helium", 1000*6/4),
@@ -205,7 +207,7 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
 
         add(
                 List.of(fluidIngredient("helium_3", 1000),
-                        fluidIngredient("lithium/6", 144)
+                        fluidIngredient("lithium/6", MOLTEN_INGOT)
                 ),
                 List.of(
                         fluidIngredient("hydrogen", 500),
@@ -217,7 +219,7 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
 
         add(
                 List.of(fluidIngredient("helium_3", 1000),
-                        fluidIngredient("lithium/7", 144)
+                        fluidIngredient("lithium/7", MOLTEN_INGOT)
                 ),
                 List.of(
                         fluidIngredient("deuterium", 500),
@@ -229,7 +231,7 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
 
         add(
                 List.of(fluidIngredient("helium_3", 1000),
-                        fluidIngredient("quantite", 144)
+                        fluidIngredient("quantite", MOLTEN_INGOT)
                 ),
                 List.of(
                         fluidIngredient("deuterium", 500),
@@ -240,8 +242,8 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
         );
 
         add(
-                List.of(fluidIngredient("lithium/6", 144*4),
-                        fluidIngredient("xenorium298", 144*4)
+                List.of(fluidIngredient("lithium/6", MOLTEN_INGOT*4),
+                        fluidIngredient("xenorium298", MOLTEN_INGOT*4)
                 ),
                 List.of(
                         fluidIngredient("helium", 1000*6/2),
@@ -250,8 +252,8 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
         );
 
         add(
-                List.of(fluidIngredient("lithium/6", 144*7),
-                        fluidIngredient("quantite", 144*7)
+                List.of(fluidIngredient("lithium/6", MOLTEN_INGOT*7),
+                        fluidIngredient("quantite", MOLTEN_INGOT*7)
                 ),
                 List.of(
                         fluidIngredient("helium", 1000*2),
@@ -260,8 +262,8 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
         );
 
         add(
-                List.of(fluidIngredient("lithium/7", 144*9),
-                        fluidIngredient("quantite", 144*9)
+                List.of(fluidIngredient("lithium/7", MOLTEN_INGOT*9),
+                        fluidIngredient("quantite", MOLTEN_INGOT*9)
                 ),
                 List.of(
                         fluidIngredient("helium", 1000*2),

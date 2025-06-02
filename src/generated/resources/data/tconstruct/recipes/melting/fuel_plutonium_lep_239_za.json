@@ -1,0 +1,18 @@
+{
+  "type": "tconstruct:melting",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    }
+  ],
+  "ingredient": {
+    "item": "nuclearcraft:fuel_plutonium_lep_239_za"
+  },
+  "result": {
+    "amount": 90,
+    "fluid": "nuclearcraft:fuel_plutonium_lep_239_za"
+  },
+  "temperature": 700,
+  "time": 40
+}

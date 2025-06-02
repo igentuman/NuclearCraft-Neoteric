@@ -1,0 +1,18 @@
+{
+  "type": "tconstruct:melting",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    }
+  ],
+  "ingredient": {
+    "item": "nuclearcraft:gelatin"
+  },
+  "result": {
+    "amount": 90,
+    "tag": "forge:gelatin"
+  },
+  "temperature": 150,
+  "time": 10
+}

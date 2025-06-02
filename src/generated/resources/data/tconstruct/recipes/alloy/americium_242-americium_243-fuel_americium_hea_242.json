@@ -1,0 +1,24 @@
+{
+  "type": "tconstruct:alloy",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    }
+  ],
+  "inputs": [
+    {
+      "amount": 90,
+      "tag": "forge:americium/242"
+    },
+    {
+      "amount": 180,
+      "tag": "forge:americium/243"
+    }
+  ],
+  "result": {
+    "amount": 90,
+    "tag": "forge:fuel_americium_hea_242"
+  },
+  "temperature": 800
+}

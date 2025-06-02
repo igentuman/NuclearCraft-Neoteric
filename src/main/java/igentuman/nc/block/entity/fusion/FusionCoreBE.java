@@ -270,7 +270,6 @@ public class FusionCoreBE extends MultiblockControllerBE {
     }
 
     public void tickClient() {
-        BlockOverlayHandler.removeFusionReactor(getBlockPos());
         super.tickClient();
         if(!isCasingValid) {
             stopSound();
@@ -752,7 +751,7 @@ public class FusionCoreBE extends MultiblockControllerBE {
         if(!isCasingValid) {
             return;
         }
-        if (reactorHeat > getMaxHeat() && plasmaTemperature > 1000) {
+        if (reactorHeat > getMaxHeat() && plasmaTemperature > 10000) {
             meltDown();
             plasmaTemperature /= 5D;
             reactorHeat /= 2D;
@@ -771,17 +770,13 @@ public class FusionCoreBE extends MultiblockControllerBE {
 
     private BlockPos getRandomPosAtRing() {
         BlockPos pos = getBlockPos();
-        int x = (int) (Math.random() * size * 2 - size);
-        int z = (int) (Math.random() * size * 2 - size);
-        int y = 0;
-        if (Math.abs(x) > Math.abs(z)) {
-            y = x;
-            x = 0;
-        } else {
-            y = z;
-            z = 0;
-        }
-        return pos.offset(x, 0, z);
+        int xDir = getLevel().random.nextBoolean() ? 1 : -1;
+        int zDir = getLevel().random.nextBoolean() ? 1 : -1;
+        int x = xDir * size;
+        int z = zDir * size;
+        int y = 1;
+
+        return pos.offset(x, y, z);
     }
 
     public boolean hasRedstoneSignal() {

@@ -1,0 +1,18 @@
+{
+  "type": "tconstruct:melting",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    }
+  ],
+  "ingredient": {
+    "item": "nuclearcraft:curium_247_ox"
+  },
+  "result": {
+    "amount": 90,
+    "tag": "forge:curium/247_ox"
+  },
+  "temperature": 700,
+  "time": 30
+}

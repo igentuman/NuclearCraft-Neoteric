@@ -13,6 +13,12 @@ archivesBaseName = "NuclearCraft-${mc_version}"
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
+idea {
+    module {
+        downloadJavadoc = true
+        downloadSources = true
+    }
+}
 minecraft {
     mappings channel: 'parchment', version: "${mappings_version}-${mc_version}"
      accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
@@ -96,6 +102,8 @@ repositories {
 dependencies {
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
     minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
+    runtimeOnly fg.deobf("curse.maven:mantle-74924:6603205")
+    //runtimeOnly fg.deobf("curse.maven:tinkers-construct-74072:6603344")
     runtimeOnly fg.deobf("curse.maven:construction-wand-399558:4684054")
     runtimeOnly fg.deobf("curse.maven:spark-361579:4738952")
 /*    implementation fg.deobf("com.lowdragmc.ldlib:ldlib-forge-${mc_version}:${ldlib_version}") {
@@ -107,7 +115,7 @@ dependencies {
     runtimeOnly fg.deobf("curse.maven:ctm-267602:5983309")
     implementation fg.deobf("curse.maven:immersive-engineering-231951:5224387")
 
-    implementation fg.deobf("curse.maven:the-lost-cities-269024:6174986")
+    runtimeOnly fg.deobf("curse.maven:the-lost-cities-269024:6174986")
     compileOnly fg.deobf("mezz.jei:jei-${mc_version}-common-api:${jei_version}")
     compileOnly fg.deobf("mezz.jei:jei-${mc_version}-forge-api:${jei_version}")
     implementation fg.deobf("mezz.jei:jei-${mc_version}-forge:${jei_version}")
@@ -196,6 +204,17 @@ test {
     useJUnitPlatform()
 }
 
+tasks.named('processResources', ProcessResources).configure {
+    var replaceProperties = [
+            'version': version,
+    ]
+    inputs.properties replaceProperties
+
+    filesMatching(['META-INF/mods.toml', 'pack.mcmeta']) {
+        expand replaceProperties + [project: project]
+    }
+}
+
 shadowJar {
     finalizedBy 'reobfShadowJar'
 
@@ -208,7 +227,7 @@ shadowJar {
                 "Specification-Vendor"  : "igentuman",
                 "Specification-Version" : "${project.version}",
                 "Implementation-Title"  : "${project.name}",
-                "Implementation-Version": "${project.version}",
+                "Implementation-Version": "${version}",
                 "Implementation-Vendor" : "igentuman",
                 "MixinConfigs"          : "nuclearcraft.mixins.json"
         ])

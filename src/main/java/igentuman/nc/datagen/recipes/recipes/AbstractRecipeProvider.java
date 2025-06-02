@@ -1,7 +1,9 @@
 package igentuman.nc.datagen.recipes.recipes;
 
 import igentuman.nc.datagen.recipes.builder.NcRecipeBuilder;
+import igentuman.nc.datagen.recipes.builder.TConstructRecipeBuilder;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
+import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.ingredient.NcIngredient;
 import igentuman.nc.recipes.ingredient.creator.IngredientCreatorAccess;
 import igentuman.nc.setup.registration.FissionFuel;
@@ -157,6 +159,24 @@ public abstract class AbstractRecipeProvider {
                 .build(consumer);
     }
 
+    public static void tconstructMelt(List<NcIngredient> input, List<FluidStackIngredient> output, boolean useInputForId, int temperature, int time) {
+        TConstructRecipeBuilder.get(ID)
+                .items(input, List.of())
+                .fluids(List.of(), output)
+                .useInputForId(useInputForId)
+                .temperature(temperature)
+                .time(time)
+                .build(consumer);
+    }
+
+    public static void tconstructAlloy(List<FluidStackIngredient> input, List<FluidStackIngredient> output, boolean useInputForId, int temperature) {
+        TConstructRecipeBuilder.get(ID)
+                .fluids(input, output)
+                .useInputForId(useInputForId)
+                .temperature(temperature)
+                .build(consumer);
+    }
+
 
     public static void fluidsAndFluids(List<FluidStackIngredient> input, List<FluidStackIngredient> output, double...params) {
         double timeModifier = params.length>0 ? params[0] : 1.0;
@@ -196,6 +216,18 @@ public abstract class AbstractRecipeProvider {
                 .items(inputItems, outputItems)
                 .fluids(inputFluids, outputFluids)
                 .modifiers(timeModifier, radiation, powerModifier)
+                .build(consumer);
+    }
+
+    public static void tconstructCasting(
+            List<NcIngredient> inputItems, List<NcIngredient> outputItems,
+            List<FluidStackIngredient> inputFluids, List<FluidStackIngredient> outputFluids,
+            int coolingTime) {
+        TConstructRecipeBuilder.get(ID)
+                .items(inputItems, outputItems)
+                .fluids(inputFluids, outputFluids)
+                .cast()
+                .coolingTime(coolingTime)
                 .build(consumer);
     }
 

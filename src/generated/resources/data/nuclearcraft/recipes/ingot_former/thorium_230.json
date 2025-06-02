@@ -2,8 +2,8 @@
   "type": "nuclearcraft:ingot_former",
   "inputFluids": [
     {
-      "amount": 144,
-      "fluid": "nuclearcraft:thorium_230"
+      "amount": 90,
+      "tag": "forge:thorium/230"
     }
   ],
   "output": [

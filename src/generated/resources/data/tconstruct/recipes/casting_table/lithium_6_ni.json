@@ -1,0 +1,20 @@
+{
+  "type": "tconstruct:casting_table",
+  "cast": {
+    "tag": "tconstruct:casts/multi_use/ingot"
+  },
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    }
+  ],
+  "cooling_time": 40,
+  "fluid": {
+    "amount": 90,
+    "tag": "forge:lithium/6_ni"
+  },
+  "result": {
+    "item": "nuclearcraft:lithium_6_ni"
+  }
+}

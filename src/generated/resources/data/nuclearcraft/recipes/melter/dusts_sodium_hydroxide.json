@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "amount": 144,
-      "tag": "forge:sodium_hydroxide"
+      "amount": 90,
+      "tag": "forge:molten_sodium_hydroxide"
     }
   ],
   "powerModifier": 1.0,

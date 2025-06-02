@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "amount": 216,
-      "tag": "forge:uranium"
+      "amount": 120,
+      "tag": "forge:molten_uranium"
     }
   ],
   "powerModifier": 1.0,

@@ -1,0 +1,24 @@
+{
+  "type": "tconstruct:alloy",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    }
+  ],
+  "inputs": [
+    {
+      "amount": 90,
+      "tag": "forge:plutonium/241_ox"
+    },
+    {
+      "amount": 180,
+      "tag": "forge:plutonium/242_ox"
+    }
+  ],
+  "result": {
+    "amount": 90,
+    "tag": "forge:fuel_plutonium_hep_241_ox"
+  },
+  "temperature": 800
+}

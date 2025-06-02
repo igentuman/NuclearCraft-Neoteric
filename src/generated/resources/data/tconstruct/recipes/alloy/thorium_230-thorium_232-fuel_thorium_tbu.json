@@ -1,0 +1,24 @@
+{
+  "type": "tconstruct:alloy",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    }
+  ],
+  "inputs": [
+    {
+      "amount": 30,
+      "tag": "forge:thorium/230"
+    },
+    {
+      "amount": 270,
+      "tag": "forge:thorium/232"
+    }
+  ],
+  "result": {
+    "amount": 90,
+    "tag": "forge:fuel_thorium_tbu"
+  },
+  "temperature": 800
+}

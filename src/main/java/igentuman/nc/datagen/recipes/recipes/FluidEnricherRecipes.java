@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import static igentuman.nc.datagen.recipes.NCRecipes.MOLTEN_INGOT;
 import static igentuman.nc.setup.registration.NCBlocks.MUSHROOM_ITEM;
 import static igentuman.nc.setup.registration.NCItems.NC_ITEMS;
 import static net.minecraft.world.level.material.Fluids.WATER;
@@ -24,7 +25,7 @@ public class FluidEnricherRecipes extends AbstractRecipeProvider {
         add(
                 fluidIngredient(Materials.potassium_hydroxide, 4000),
                 dustIngredient(Materials.iodine),
-                fluidIngredient(Materials.potassium_iodide, 144)
+                fluidIngredient(Materials.potassium_iodide, MOLTEN_INGOT)
         );
 
         add(
@@ -41,9 +42,9 @@ public class FluidEnricherRecipes extends AbstractRecipeProvider {
         );
 
         add(
-                fluidIngredient("oxygen", 144),
+                fluidIngredient("oxygen", MOLTEN_INGOT),
                 dustIngredient(Materials.uranium),
-                fluidIngredient("uranium_oxide", 432)
+                fluidIngredient("uranium_oxide", MOLTEN_INGOT*3)
         );
 
         add(

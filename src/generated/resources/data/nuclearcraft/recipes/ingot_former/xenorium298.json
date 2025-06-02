@@ -2,8 +2,8 @@
   "type": "nuclearcraft:ingot_former",
   "inputFluids": [
     {
-      "amount": 144,
-      "fluid": "nuclearcraft:xenorium298"
+      "amount": 90,
+      "tag": "forge:xenorium298"
     }
   ],
   "output": [

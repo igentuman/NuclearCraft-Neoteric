@@ -4,17 +4,15 @@ import igentuman.nc.block.ElectromagnetBlock;
 import igentuman.nc.block.RFAmplifierBlock;
 import igentuman.nc.block.entity.fusion.FusionCoreBE;
 import igentuman.nc.block.fusion.FusionConnectorBlock;
-import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.AbstractMultiblock;
+import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.ValidationResult;
-import igentuman.nc.setup.registration.NCFluids;
 import igentuman.nc.util.NCBlockPos;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.HashMap;
@@ -167,9 +165,21 @@ public class FusionReactorMultiblock extends AbstractMultiblock {
     @Override
     public void validate() {
         super.validate();
+        handleMeltdown();
         collectFunctionalParts();
         recalculateCharacteristics();
         updateCharacteristics();
+        if(validationResult.isValid) {
+            errorBlockPos = BlockPos.ZERO;
+        }
+    }
+
+    private void handleMeltdown() {
+        if(!validationResult.isValid && controllerBE().plasmaTemperature > 100000) {
+            controllerBE().plasmaTemperature = 0;
+            getLevel().explode(null, errorBlockPos.getX(), errorBlockPos.getY(), errorBlockPos.getZ(),
+                    2f, true, Level.ExplosionInteraction.TNT);
+        }
     }
 
     @Override
@@ -297,7 +307,7 @@ public class FusionReactorMultiblock extends AbstractMultiblock {
                 } else {
                     ringValid = false;
                     validationResult = ValidationResult.WRONG_OUTER;
-                    controller().setErroredBlock(startPosInnerWall);
+                    errorBlockPos = new BlockPos(startPosInnerWall);
                     return;
                 }
             }
@@ -310,7 +320,7 @@ public class FusionReactorMultiblock extends AbstractMultiblock {
                 } else {
                     ringValid = false;
                     validationResult = ValidationResult.WRONG_OUTER;
-                    controller().setErroredBlock(startPosOuterWall);
+                    errorBlockPos = new BlockPos(startPosOuterWall);
                     return;
                 }
                 assert startPosBottomWall != null;
@@ -320,7 +330,7 @@ public class FusionReactorMultiblock extends AbstractMultiblock {
                 } else {
                     ringValid = false;
                     validationResult = ValidationResult.WRONG_OUTER;
-                    controller().setErroredBlock(startPosBottomWall);
+                    errorBlockPos = new BlockPos(startPosBottomWall);
                     return;
                 }
                 assert startPosTopWall != null;
@@ -330,7 +340,7 @@ public class FusionReactorMultiblock extends AbstractMultiblock {
                 } else {
                     ringValid = false;
                     validationResult = ValidationResult.WRONG_OUTER;
-                    controller().setErroredBlock(startPosTopWall);
+                    errorBlockPos = new BlockPos(startPosTopWall);
                     return;
                 }
             }
@@ -343,6 +353,7 @@ public class FusionReactorMultiblock extends AbstractMultiblock {
         connectorsCount = 0;
         length = 1;
         connectorsValid = true;
+        BlockPos possibleErrorPos = BlockPos.ZERO;
         for(int i = 2; i <= maxWidth()/2+1; i++) {
             int connectors = 0;
             for(Direction side: List.of(NORTH, EAST, Direction.SOUTH, Direction.WEST)) {
@@ -350,6 +361,8 @@ public class FusionReactorMultiblock extends AbstractMultiblock {
                     addIfNotExists(pos, allBlocks);
                     connectorsCount++;
                     connectors++;
+                } else {
+                    possibleErrorPos = new BlockPos(pos);
                 }
             }
             if(connectors == 4) {
@@ -357,7 +370,7 @@ public class FusionReactorMultiblock extends AbstractMultiblock {
             } else {
                 if (connectors != 0) {
                     connectorsValid = false;
-                    controller().setErroredBlock(pos);
+                    errorBlockPos = possibleErrorPos;
                     validationResult = ValidationResult.INCOMPLETE;
                 } else {
                     connectorsValid = true;
@@ -402,7 +415,7 @@ public class FusionReactorMultiblock extends AbstractMultiblock {
                 if(!processInnerBlock(innerRingStartPos.revert().relative(dir, i))) {
                     innerValid = false;
                     validationResult = ValidationResult.WRONG_INNER;
-                    controller().setErroredBlock(innerRingStartPos);
+                    errorBlockPos = new BlockPos(innerRingStartPos);
                     return;
                 }
             }

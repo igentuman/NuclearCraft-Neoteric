@@ -2,8 +2,8 @@
   "type": "nuclearcraft:ingot_former",
   "inputFluids": [
     {
-      "amount": 144,
-      "fluid": "nuclearcraft:quantite"
+      "amount": 90,
+      "tag": "forge:quantite"
     }
   ],
   "output": [

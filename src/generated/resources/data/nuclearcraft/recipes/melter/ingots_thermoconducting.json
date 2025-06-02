@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "amount": 144,
-      "tag": "forge:thermoconducting"
+      "amount": 90,
+      "tag": "forge:molten_thermoconducting"
     }
   ],
   "powerModifier": 1.0,

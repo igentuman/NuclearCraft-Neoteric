@@ -1,0 +1,24 @@
+{
+  "type": "tconstruct:alloy",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    }
+  ],
+  "inputs": [
+    {
+      "amount": 30,
+      "tag": "forge:curium/243_za"
+    },
+    {
+      "amount": 270,
+      "tag": "forge:curium/246_za"
+    }
+  ],
+  "result": {
+    "amount": 90,
+    "tag": "forge:fuel_curium_lecm_243_za"
+  },
+  "temperature": 800
+}

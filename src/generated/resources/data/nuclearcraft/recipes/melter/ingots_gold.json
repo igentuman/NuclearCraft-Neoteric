@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "amount": 144,
-      "tag": "forge:gold"
+      "amount": 90,
+      "tag": "forge:molten_gold"
     }
   ],
   "powerModifier": 1.0,

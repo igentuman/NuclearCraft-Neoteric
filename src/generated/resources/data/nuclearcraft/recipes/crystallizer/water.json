@@ -2,7 +2,7 @@
   "type": "nuclearcraft:crystallizer",
   "inputFluids": [
     {
-      "amount": 2000,
+      "amount": 10000,
       "tag": "minecraft:water"
     }
   ],

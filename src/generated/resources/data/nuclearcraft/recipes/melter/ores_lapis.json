@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "amount": 288,
-      "tag": "forge:lapis"
+      "amount": 240,
+      "tag": "forge:molten_lapis"
     }
   ],
   "powerModifier": 1.0,

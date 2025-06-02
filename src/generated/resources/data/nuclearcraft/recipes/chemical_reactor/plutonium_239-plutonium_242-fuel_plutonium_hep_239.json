@@ -2,17 +2,17 @@
   "type": "nuclearcraft:chemical_reactor",
   "inputFluids": [
     {
-      "amount": 144,
+      "amount": 90,
       "tag": "forge:plutonium/239"
     },
     {
-      "amount": 288,
+      "amount": 180,
       "tag": "forge:plutonium/242"
     }
   ],
   "outputFluids": [
     {
-      "amount": 144,
+      "amount": 90,
       "tag": "forge:fuel_plutonium_hep_239"
     }
   ],

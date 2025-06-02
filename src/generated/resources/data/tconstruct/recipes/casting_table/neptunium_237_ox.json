@@ -1,0 +1,20 @@
+{
+  "type": "tconstruct:casting_table",
+  "cast": {
+    "tag": "tconstruct:casts/multi_use/ingot"
+  },
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    }
+  ],
+  "cooling_time": 40,
+  "fluid": {
+    "amount": 90,
+    "tag": "forge:neptunium/237_ox"
+  },
+  "result": {
+    "item": "nuclearcraft:neptunium_237_ox"
+  }
+}

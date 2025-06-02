@@ -369,7 +369,6 @@ public class FissionControllerBE extends MultiblockControllerBE {
         } else {
             stopSound();
         }
-       // level.setBlockAndUpdate(worldPosition, getBlockState().setValue(POWERED, efficiency > 0 && controllerEnabled));
     }
 
     public void tickServer() {

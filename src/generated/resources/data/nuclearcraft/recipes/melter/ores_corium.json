@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "amount": 288,
-      "tag": "forge:corium"
+      "amount": 240,
+      "tag": "forge:molten_corium"
     }
   ],
   "powerModifier": 1.0,

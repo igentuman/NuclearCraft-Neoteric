@@ -1,0 +1,24 @@
+{
+  "type": "tconstruct:alloy",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    }
+  ],
+  "inputs": [
+    {
+      "amount": 30,
+      "tag": "forge:plutonium/241_ni"
+    },
+    {
+      "amount": 270,
+      "tag": "forge:plutonium/242_ni"
+    }
+  ],
+  "result": {
+    "amount": 90,
+    "tag": "forge:fuel_plutonium_lep_241_ni"
+  },
+  "temperature": 800
+}

@@ -1,0 +1,18 @@
+{
+  "type": "tconstruct:melting",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    }
+  ],
+  "ingredient": {
+    "item": "nuclearcraft:marshmallow"
+  },
+  "result": {
+    "amount": 90,
+    "tag": "forge:marshmallow"
+  },
+  "temperature": 100,
+  "time": 10
+}

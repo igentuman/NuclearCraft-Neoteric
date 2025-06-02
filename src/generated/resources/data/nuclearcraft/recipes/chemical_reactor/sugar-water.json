@@ -2,7 +2,7 @@
   "type": "nuclearcraft:chemical_reactor",
   "inputFluids": [
     {
-      "amount": 72,
+      "amount": 45,
       "tag": "forge:sugar"
     },
     {

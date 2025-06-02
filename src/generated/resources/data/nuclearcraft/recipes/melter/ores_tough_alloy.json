@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "amount": 288,
-      "tag": "forge:tough_alloy"
+      "amount": 240,
+      "tag": "forge:molten_tough_alloy"
     }
   ],
   "powerModifier": 1.0,

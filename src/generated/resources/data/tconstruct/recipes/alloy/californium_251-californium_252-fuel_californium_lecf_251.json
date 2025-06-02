@@ -1,0 +1,24 @@
+{
+  "type": "tconstruct:alloy",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    }
+  ],
+  "inputs": [
+    {
+      "amount": 30,
+      "tag": "forge:californium/251"
+    },
+    {
+      "amount": 270,
+      "tag": "forge:californium/252"
+    }
+  ],
+  "result": {
+    "amount": 90,
+    "tag": "forge:fuel_californium_lecf_251"
+  },
+  "temperature": 800
+}

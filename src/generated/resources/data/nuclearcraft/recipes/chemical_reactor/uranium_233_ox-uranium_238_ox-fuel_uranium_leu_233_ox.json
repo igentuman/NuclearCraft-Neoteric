@@ -2,17 +2,17 @@
   "type": "nuclearcraft:chemical_reactor",
   "inputFluids": [
     {
-      "amount": 48,
+      "amount": 30,
       "tag": "forge:uranium/233_ox"
     },
     {
-      "amount": 432,
+      "amount": 270,
       "tag": "forge:uranium/238_ox"
     }
   ],
   "outputFluids": [
     {
-      "amount": 144,
+      "amount": 90,
       "tag": "forge:fuel_uranium_leu_233_ox"
     }
   ],

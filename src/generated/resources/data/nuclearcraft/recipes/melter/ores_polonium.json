@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "amount": 288,
-      "tag": "forge:polonium"
+      "amount": 240,
+      "tag": "forge:molten_polonium"
     }
   ],
   "powerModifier": 1.0,

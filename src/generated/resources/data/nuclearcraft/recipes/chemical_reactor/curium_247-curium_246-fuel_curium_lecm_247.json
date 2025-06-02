@@ -2,17 +2,17 @@
   "type": "nuclearcraft:chemical_reactor",
   "inputFluids": [
     {
-      "amount": 48,
+      "amount": 30,
       "tag": "forge:curium/247"
     },
     {
-      "amount": 432,
+      "amount": 270,
       "tag": "forge:curium/246"
     }
   ],
   "outputFluids": [
     {
-      "amount": 144,
+      "amount": 90,
       "tag": "forge:fuel_curium_lecm_247"
     }
   ],

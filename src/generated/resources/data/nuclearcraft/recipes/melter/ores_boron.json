@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "amount": 288,
-      "tag": "forge:boron"
+      "amount": 240,
+      "tag": "forge:molten_boron"
     }
   ],
   "powerModifier": 1.0,

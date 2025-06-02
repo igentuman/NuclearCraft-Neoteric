@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import static igentuman.nc.datagen.recipes.NCRecipes.MOLTEN_INGOT;
+import static igentuman.nc.datagen.recipes.NCRecipes.MOLTEN_NUGGET;
 import static igentuman.nc.setup.registration.FissionFuel.NC_ISOTOPES;
 import static net.minecraft.world.item.Items.*;
 
@@ -26,17 +28,17 @@ public class MelterRecipes extends AbstractRecipeProvider {
         for(String name: Materials.all().keySet()) {
             NCMaterial material = Materials.all().get(name);
             if(material.fluid && !material.isGas) {
-                add(dustIngredient(name), fluidIngredient(name, 144));
-                add(ingotIngredient(name), fluidIngredient(name, 144));
-                add(oreIngredient(name), fluidIngredient(name, 288));
-                add(chunkIngredient(name), fluidIngredient(name, 216));
+                add(dustIngredient(name), fluidIngredient("molten_"+name, MOLTEN_INGOT));
+                add(ingotIngredient(name), fluidIngredient("molten_"+name, MOLTEN_INGOT));
+                add(oreIngredient(name), fluidIngredient("molten_"+name, MOLTEN_INGOT*2+MOLTEN_NUGGET*6));
+                add(chunkIngredient(name), fluidIngredient("molten_"+name, MOLTEN_INGOT+MOLTEN_NUGGET*3));
             }
         }
 
-        add(dustIngredient(Materials.polonium), fluidIngredient(Materials.polonium, 144));
-        add(dustIngredient(Materials.sulfur), fluidIngredient(Materials.sulfur, 144));
-        add(ingredient(REDSTONE), fluidIngredient("redstone", 144));
-        add(ingredient(GLOWSTONE_DUST), fluidIngredient("glowstone", 144));
+        add(dustIngredient(Materials.polonium), fluidIngredient(Materials.polonium, MOLTEN_INGOT));
+        add(dustIngredient(Materials.sulfur), fluidIngredient(Materials.sulfur, MOLTEN_INGOT));
+        add(ingredient(REDSTONE), fluidIngredient("redstone", MOLTEN_INGOT));
+        add(ingredient(GLOWSTONE_DUST), fluidIngredient("glowstone", MOLTEN_INGOT));
 
 
         for (String name: Materials.isotopes()) {
@@ -45,7 +47,7 @@ public class MelterRecipes extends AbstractRecipeProvider {
                 if(!NC_ISOTOPES.containsKey(key)) {
                     continue;
                 }
-                add(ingredient(NC_ISOTOPES.get(key).get()), fluidIngredient(key, 144));
+                add(ingredient(NC_ISOTOPES.get(key).get()), fluidIngredient(key, MOLTEN_INGOT));
             }
         }
 
@@ -60,30 +62,30 @@ public class MelterRecipes extends AbstractRecipeProvider {
                         keyStr += "_";
                     }
                     keyStr+= type;
-                    add(ingredient(FissionFuel.NC_FUEL.get(key).get()), fluidStackIngredient(keyStr, 144));
+                    add(ingredient(FissionFuel.NC_FUEL.get(key).get()), fluidStackIngredient(keyStr, MOLTEN_INGOT));
 
                     key = List.of("depleted", name, subType, type);
                     keyStr = "depleted_"+keyStr;
-                    add(ingredient(FissionFuel.NC_DEPLETED_FUEL.get(key).get()), fluidStackIngredient(keyStr, 144));
+                    add(ingredient(FissionFuel.NC_DEPLETED_FUEL.get(key).get()), fluidStackIngredient(keyStr, MOLTEN_INGOT));
                 }
             }
         }
 
-        add(dustIngredient(Materials.sulfur), fluidIngredient(Materials.sulfur, 144), 0.5D, 3D);
-        add(dustIngredient(Materials.sodium_hydroxide), fluidIngredient(Materials.sodium_hydroxide, 144));
-        add(dustIngredient(Materials.potassium_hydroxide), fluidIngredient(Materials.potassium_hydroxide, 144));
-        add(dustIngredient(Materials.arsenic), fluidIngredient(Materials.arsenic, 144));
-        add(gemIngredient(Materials.boron_arsenide), fluidIngredient(Materials.boron_arsenide, 144));
-        add(ingredient(OBSIDIAN), fluidIngredient(Materials.obsidian, 288), 2D, 2D);
+        add(dustIngredient(Materials.sulfur), fluidIngredient(Materials.sulfur, MOLTEN_INGOT), 0.5D, 3D);
+        add(dustIngredient(Materials.sodium_hydroxide), fluidIngredient(Materials.sodium_hydroxide, MOLTEN_INGOT));
+        add(dustIngredient(Materials.potassium_hydroxide), fluidIngredient(Materials.potassium_hydroxide, MOLTEN_INGOT));
+        add(dustIngredient(Materials.arsenic), fluidIngredient(Materials.arsenic, MOLTEN_INGOT));
+        add(gemIngredient(Materials.boron_arsenide), fluidIngredient(Materials.boron_arsenide, MOLTEN_INGOT));
+        add(ingredient(OBSIDIAN), fluidIngredient(Materials.obsidian, MOLTEN_INGOT*2), 2D, 2D);
 
-        add(ingredient(NCItems.NC_ITEMS.get("ground_cocoa_nibs").get()), fluidIngredient("chocolate_liquor", 144), 0.25D, 0.5D);
-        add(ingredient(NCItems.NC_ITEMS.get("cocoa_butter").get()), fluidIngredient("cocoa_butter", 144), 0.25D, 0.5D);
-        add(ingredient(NCItems.NC_ITEMS.get("unsweetened_chocolate").get()), fluidIngredient("unsweetened_chocolate", 144), 0.25D, 0.5D);
-        add(ingredient(NCItems.NC_FOOD.get("dark_chocolate").get()), fluidIngredient("dark_chocolate", 144), 0.25D, 0.5D);
-        add(ingredient(NCItems.NC_FOOD.get("milk_chocolate").get()), fluidIngredient("milk_chocolate", 144), 0.25D, 0.5D);
-        add(ingredient(SUGAR), fluidIngredient("sugar", 144), 0.5D, 0.5D);
-        add(ingredient(NCItems.NC_ITEMS.get("gelatin").get()), fluidIngredient("gelatin", 144), 0.5D, 0.5D);
-        add(ingredient(NCItems.NC_FOOD.get("marshmallow").get()), fluidIngredient("marshmallow", 144), 0.5D, 0.5D);
+        add(ingredient(NCItems.NC_ITEMS.get("ground_cocoa_nibs").get()), fluidIngredient("chocolate_liquor", MOLTEN_INGOT), 0.25D, 0.5D);
+        add(ingredient(NCItems.NC_ITEMS.get("cocoa_butter").get()), fluidIngredient("cocoa_butter", MOLTEN_INGOT), 0.25D, 0.5D);
+        add(ingredient(NCItems.NC_ITEMS.get("unsweetened_chocolate").get()), fluidIngredient("unsweetened_chocolate", MOLTEN_INGOT), 0.25D, 0.5D);
+        add(ingredient(NCItems.NC_FOOD.get("dark_chocolate").get()), fluidIngredient("dark_chocolate", MOLTEN_INGOT), 0.25D, 0.5D);
+        add(ingredient(NCItems.NC_FOOD.get("milk_chocolate").get()), fluidIngredient("milk_chocolate", MOLTEN_INGOT), 0.25D, 0.5D);
+        add(ingredient(SUGAR), fluidIngredient("sugar", MOLTEN_INGOT), 0.5D, 0.5D);
+        add(ingredient(NCItems.NC_ITEMS.get("gelatin").get()), fluidIngredient("gelatin", MOLTEN_INGOT), 0.5D, 0.5D);
+        add(ingredient(NCItems.NC_FOOD.get("marshmallow").get()), fluidIngredient("marshmallow", MOLTEN_INGOT), 0.5D, 0.5D);
 
     }
 

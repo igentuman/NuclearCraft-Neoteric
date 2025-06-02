@@ -2,8 +2,8 @@
   "type": "nuclearcraft:ingot_former",
   "inputFluids": [
     {
-      "amount": 144,
-      "fluid": "nuclearcraft:plutonium_242_ox"
+      "amount": 90,
+      "tag": "forge:plutonium/242_ox"
     }
   ],
   "output": [

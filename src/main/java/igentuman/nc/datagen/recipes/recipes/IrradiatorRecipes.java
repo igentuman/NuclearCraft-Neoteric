@@ -10,6 +10,7 @@ import net.minecraftforge.common.Tags;
 import java.util.List;
 import java.util.function.Consumer;
 
+import static igentuman.nc.datagen.recipes.NCRecipes.MOLTEN_INGOT;
 import static net.minecraft.world.level.block.Blocks.*;
 
 
@@ -23,7 +24,7 @@ public class IrradiatorRecipes extends AbstractRecipeProvider {
         itemsAndFluids(
                 List.of(ingredient(Item.byBlock(COBBLESTONE))),
                 List.of(ingredient(Item.byBlock(NETHERRACK))),
-                List.of(fluidIngredient("redstone", 72)),
+                List.of(fluidIngredient("redstone", MOLTEN_INGOT/2)),
                 List.of(), 0.5D);
         itemToItem(ingredient(Tags.Items.SAND, 1), NcIngredient.stack(stack(GLOWSTONE, 1)), 3D);
         itemToItem(dustIngredient(Materials.tbp), dustIngredient(Materials.protactinium_233), 2.5D);

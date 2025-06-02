@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "amount": 144,
-      "tag": "forge:enderium"
+      "amount": 90,
+      "tag": "forge:molten_enderium"
     }
   ],
   "powerModifier": 1.0,

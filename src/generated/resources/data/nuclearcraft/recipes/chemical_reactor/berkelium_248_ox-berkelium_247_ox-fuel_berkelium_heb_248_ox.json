@@ -2,17 +2,17 @@
   "type": "nuclearcraft:chemical_reactor",
   "inputFluids": [
     {
-      "amount": 144,
+      "amount": 90,
       "tag": "forge:berkelium/248_ox"
     },
     {
-      "amount": 288,
+      "amount": 180,
       "tag": "forge:berkelium/247_ox"
     }
   ],
   "outputFluids": [
     {
-      "amount": 144,
+      "amount": 90,
       "tag": "forge:fuel_berkelium_heb_248_ox"
     }
   ],

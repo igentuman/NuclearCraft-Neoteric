@@ -19,6 +19,7 @@ import net.minecraft.world.level.block.Block;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.util.TextUtils.__;
@@ -54,7 +55,7 @@ public class MultiblockBuilderScreen extends AbstractContainerScreen<MultiblockB
         Minecraft mc = Minecraft.getInstance();
         updateRelativeCords();
         insertBtn = new Button.InsertJson(128, 7, this, menu.getPosition());
-        buildBtn = new Button.Build(116, 7, this, menu.getPosition());
+        buildBtn = new Button.Build(110, 7, this, menu.getPosition());
         linkBtn = new Button.Link(150, 7, this, menu.getPosition(), "https://discord.gg/fGBZj3haga",
                 List.of(
                         __("tooltip.nc.link.designs"),
@@ -80,6 +81,7 @@ public class MultiblockBuilderScreen extends AbstractContainerScreen<MultiblockB
         if(!blockMap.isEmpty()) {
             graphics.drawWordWrap(mc.font, FormattedText.of(MultiblockRenderer.getSize(blockMap).toShortString().replace(", ", "x")), 8, 16, 100, 4210752);
         }
+        renderTooltips(graphics, mouseX-relX, mouseY-relY);
     }
 
     private void renderWidgets(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
@@ -107,6 +109,15 @@ public class MultiblockBuilderScreen extends AbstractContainerScreen<MultiblockB
         renderWidgets(graphics, partialTicks, mouseX, mouseY);
         if(!blockMap.isEmpty()) {
             MultiblockRenderer.render(blockMap, graphics.pose(), relX+20, relY+40, 45, 45);
+        }
+    }
+
+    private void renderTooltips(GuiGraphics graphics, int pMouseX, int pMouseY) {
+        for(NCGuiElement widget: widgets) {
+            if(widget.isMouseOver(pMouseX, pMouseY)) {
+                graphics.renderTooltip(font, widget.getTooltips(),
+                        Optional.empty(), pMouseX, pMouseY);
+            }
         }
     }
 }

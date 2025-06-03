@@ -82,7 +82,7 @@ public class FissionReactorRegistration {
                                 .of(FissionControllerBE::new, FISSION_BLOCKS.get(key).get())
                                 .build(null)));
             } else if(name.contains("port")) {
-                FISSION_BLOCKS.put(key, BLOCKS.register(key, () -> new FissionPort(REACTOR_BLOCKS_PROPERTIES)));
+                FISSION_BLOCKS.put(key, BLOCKS.register(key, () -> new FissionPortBlock(REACTOR_BLOCKS_PROPERTIES)));
                 FISSION_BE.put(key, BLOCK_ENTITIES.register(key,
                         () -> BlockEntityType.Builder
                                 .of(FissionPortBE::new, FISSION_BLOCKS.get(key).get())

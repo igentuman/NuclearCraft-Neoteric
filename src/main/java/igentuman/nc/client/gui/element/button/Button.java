@@ -246,14 +246,10 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
         }
 
         public List<Component> getTooltips() {
-            List<Component> list = new ArrayList<>(List.of(
-                    __("tooltip.nc.paste_json")
-            ));
-            if(timer < 2000) {
-                list.add(__("gui.nc.reactor_mode.timer", timer/20));
-            } else {
-                list.add(__("tooltip.nc.paste_json.descr"));
-            }
+            List<Component> list = List.of(
+                    __("tooltip.nc.paste_json"),
+                    __("tooltip.nc.paste_json.descr")
+            );
             return list;
         }
 
@@ -286,15 +282,13 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
         }
 
         public List<Component> getTooltips() {
-            List<Component> list = new ArrayList<>(List.of(
-                    __("tooltip.nc.paste_json")
-            ));
-            if(timer < 2000) {
-                list.add(__("gui.nc.reactor_mode.timer", timer/20));
-            } else {
-                list.add(__("tooltip.nc.paste_json.descr"));
+            List<Component> list = List.of(
+                    __("tooltip.nc.build")
+            );
+            if(visible && active) {
+                return list;
             }
-            return list;
+            return List.of();
         }
 
         public void setTimer(int modeTimer) {

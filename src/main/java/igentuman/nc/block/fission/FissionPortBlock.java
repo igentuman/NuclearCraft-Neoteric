@@ -43,15 +43,15 @@ import static igentuman.nc.util.TextUtils.__;
 import static igentuman.nc.util.TextUtils.applyFormat;
 import static net.minecraft.network.chat.Component.translatable;
 
-public class FissionPort extends HorizontalDirectionalBlock implements EntityBlock {
+public class FissionPortBlock extends HorizontalDirectionalBlock implements EntityBlock {
     public static final DirectionProperty HORIZONTAL_FACING = FACING;
-    public FissionPort() {
+    public FissionPortBlock() {
         this(Properties.of()
                 .sound(SoundType.METAL)
                 .strength(2.0f)
                 .requiresCorrectToolForDrops());
     }
-    public FissionPort(Properties pProperties) {
+    public FissionPortBlock(Properties pProperties) {
         super(pProperties.sound(SoundType.METAL));
         this.registerDefaultState(
                 this.stateDefinition.any()

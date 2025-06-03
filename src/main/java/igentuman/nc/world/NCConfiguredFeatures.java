@@ -26,6 +26,7 @@ import static igentuman.nc.setup.registration.NCBlocks.MUSHROOM_BLOCK;
 import static igentuman.nc.setup.registration.NCBlocks.WASTELAND_EARTH;
 import static igentuman.nc.setup.registration.Registries.CONFIGURED;
 import static igentuman.nc.world.dimension.Dimensions.WASTELAND_ID;
+import static igentuman.nc.world.structure.WastelandBossLairFeature.WASTELAND_BOSS_LAIR_FEATURE;
 import static igentuman.nc.world.structure.WastelandPortalFeature.WASTELAND_PORTAL_FEATURE;
 import static igentuman.nc.world.structure.WastelandStructureFeature.WASTELAND_RUINS_FEATURE;
 import static net.minecraft.world.level.block.Blocks.*;
@@ -49,6 +50,7 @@ public class NCConfiguredFeatures {
         features.put("wasteland_ruins", registerKey("wasteland_ruins"));
         features.put("wasteland_surface", registerKey("wasteland_surface"));
         features.put("wasteland_portal", registerKey("wasteland_portal"));
+        features.put("wasteland_boss_lair", registerKey("wasteland_boss_lair"));
         return features;
     }
 
@@ -109,6 +111,10 @@ public class NCConfiguredFeatures {
                 new NoneFeatureConfiguration()
         );
         register(context, CONFIGURED_FEATURES.get("wasteland_portal"), WASTELAND_PORTAL_FEATURE.get(),
+                new NoneFeatureConfiguration()
+        );
+        
+        register(context, CONFIGURED_FEATURES.get("wasteland_boss_lair"), WASTELAND_BOSS_LAIR_FEATURE.get(),
                 new NoneFeatureConfiguration()
         );
 

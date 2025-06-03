@@ -44,6 +44,7 @@ public class NCPlacedFeatures {
         map.put("glowing_mushroom_wasteland", registerKey("glowing_mushroom_wasteland_placed"));
         map.put("wasteland_ruins", registerKey("wasteland_ruins"));
         map.put("wasteland_portal", registerKey("wasteland_portal"));
+        map.put("wasteland_boss_lair", registerKey("wasteland_boss_lair"));
         map.put("wasteland_surface", registerKey("wasteland_surface"));
         return map;
     }
@@ -95,13 +96,19 @@ public class NCPlacedFeatures {
         register(context, PLACED_FEATURES_KEYS.get("wasteland_ruins"),
                 configuredFeatures.getOrThrow(CONFIGURED_FEATURES.get("wasteland_ruins")),
                 List.of(
-                        RarityFilter.onAverageOnceEvery(30), HeightmapPlacement.onHeightmap(Heightmap.Types.WORLD_SURFACE_WG)
+                        RarityFilter.onAverageOnceEvery(300), HeightmapPlacement.onHeightmap(Heightmap.Types.WORLD_SURFACE_WG)
                 ));
 
         register(context, PLACED_FEATURES_KEYS.get("wasteland_portal"),
                 configuredFeatures.getOrThrow(CONFIGURED_FEATURES.get("wasteland_portal")),
                 List.of(
-                        RarityFilter.onAverageOnceEvery(40),  HeightmapPlacement.onHeightmap(Heightmap.Types.WORLD_SURFACE_WG)
+                        RarityFilter.onAverageOnceEvery(300),  HeightmapPlacement.onHeightmap(Heightmap.Types.WORLD_SURFACE_WG)
+                ));
+                
+        register(context, PLACED_FEATURES_KEYS.get("wasteland_boss_lair"),
+                configuredFeatures.getOrThrow(CONFIGURED_FEATURES.get("wasteland_boss_lair")),
+                List.of(
+                        RarityFilter.onAverageOnceEvery(700),  HeightmapPlacement.onHeightmap(Heightmap.Types.WORLD_SURFACE_WG)
                 ));
 
         register(context, PLACED_FEATURES_KEYS.get("wasteland_surface"),

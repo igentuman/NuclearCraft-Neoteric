@@ -274,6 +274,13 @@ public class NCLanguageProvider extends LanguageProvider {
         add("advancement.nc.leacher", "Leacher");
         add("advancement.nc.leacher.desc", "Craft a Leacher to extract minerals using acids");
 
+        // Wasteland advancements
+        add("advancement.nc.wasteland", "Wasteland");
+        add("advancement.nc.wasteland.desc", "Enter the desolate Wasteland biome");
+        
+        add("advancement.nc.wasteland_boss", "Wasteland Conqueror");
+        add("advancement.nc.wasteland_boss.desc", "Defeat the Boss of the Wasteland");
+
         // Basic machines
         add("advancement.nc.manufactory", "Manufactory");
         add("advancement.nc.manufactory.desc", "Craft a Manufactory to process ores and other materials");
@@ -525,7 +532,9 @@ public class NCLanguageProvider extends LanguageProvider {
     }
 
     private void tooltips() {
-
+        add("tooltip.nc.build", "Build Multiblock");
+        add("tooltip.nc.paste_json", "Paste JSON");
+        add("tooltip.nc.paste_json.descr", "File content or file itself");
         add("tooltip.nc.wiki", "Open WIKI");
         add("tooltip.nc.link.designs", "Reactor Bots Discord");
         add("tooltip.nc.link.designs.descr", "Place where you can generate reactors");
@@ -926,7 +935,7 @@ public class NCLanguageProvider extends LanguageProvider {
             add(NC_RF_AMPLIFIERS.get(name).get(), convertToName(name));
         }
         add("block."+MODID+".redstone_dimmer", "Redstone Dimmer");
-        add("block."+MODID+".multiblock_builder", "Multiblock Builder");
+        add("block."+MODID+".multiblock_builder", "Creative Multiblock Builder");
         add("block."+MODID+".portal", "Wasteland Portal");
     }
 }

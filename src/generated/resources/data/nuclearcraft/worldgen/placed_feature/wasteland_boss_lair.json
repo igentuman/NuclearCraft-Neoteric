@@ -1,9 +1,9 @@
 {
-  "feature": "nuclearcraft:wasteland_ruins",
+  "feature": "nuclearcraft:wasteland_boss_lair",
   "placement": [
     {
       "type": "minecraft:rarity_filter",
-      "chance": 300
+      "chance": 700
     },
     {
       "type": "minecraft:heightmap",

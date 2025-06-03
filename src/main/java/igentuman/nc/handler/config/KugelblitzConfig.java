@@ -41,9 +41,14 @@ public class KugelblitzConfig {
         public ForgeConfigSpec.ConfigValue<Double> GENERATION_MULTIPLIER;
         public ForgeConfigSpec.ConfigValue<Double> EVAPORATION_MULTIPLIER;
         public ForgeConfigSpec.ConfigValue<Long> EXPL_CHARGE;
+        public ForgeConfigSpec.ConfigValue<Boolean> BLACKHOLE_SHADER;
 
         public GeneralConfig(ForgeConfigSpec.Builder builder) {
             builder.comment("Settings for Fusion Reactor").push("general");
+
+            BLACKHOLE_SHADER = builder
+                    .comment("Enable blachole dstortion shader.")
+                    .define("blackhole_shader", true);
 
             EXPL_CHARGE = builder
                     .comment("EXPL FE requirement.")

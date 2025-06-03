@@ -33,6 +33,7 @@ public class NCBiomeModifier {
             map.put(name + "_additional_wasteland", registerKey(name + "_additional_wasteland_biome_modifier"));
         }
         map.put("wasteland_portal", registerKey("wasteland_portal"));
+        map.put("wasteland_boss_lair", registerKey("wasteland_boss_lair"));
         map.put("glowing_mushroom", registerKey("glowing_mushroom_biome_modifier"));
         map.put("glowing_mushroom_wasteland", registerKey("glowing_mushroom_wasteland_biome_modifier"));
         return map;
@@ -89,6 +90,11 @@ public class NCBiomeModifier {
         context.register(BIOME_MODIFIERS.get("wasteland_portal"), new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
                 biomes.getOrThrow(WASTELAND),
                 HolderSet.direct(placedFeatures.getOrThrow(PLACED_FEATURES_KEYS.get("wasteland_portal"))),
+                GenerationStep.Decoration.SURFACE_STRUCTURES));
+
+        context.register(BIOME_MODIFIERS.get("wasteland_boss_lair"), new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
+                biomes.getOrThrow(WASTELAND),
+                HolderSet.direct(placedFeatures.getOrThrow(PLACED_FEATURES_KEYS.get("wasteland_boss_lair"))),
                 GenerationStep.Decoration.SURFACE_STRUCTURES));
 
     }

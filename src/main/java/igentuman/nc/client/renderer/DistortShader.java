@@ -24,6 +24,7 @@ import java.util.Set;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.client.renderer.NCShaders.blackholePostEffect;
+import static igentuman.nc.handler.config.KugelblitzConfig.KUGELBLITZ_CONFIG;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BLOCKS;
 
 @Mod.EventBusSubscriber(modid = MODID, value = Dist.CLIENT)
@@ -141,6 +142,7 @@ public class DistortShader {
         if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_CUTOUT_BLOCKS) return;
         Minecraft mc = Minecraft.getInstance();
 
+        if(!KUGELBLITZ_CONFIG.BLACKHOLE_SHADER.get()) return;
         if (blackholePostEffect != null) {
             EffectInstance effect = blackholePostEffect.passes.get(0).getEffect();
 

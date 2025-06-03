@@ -1,7 +1,7 @@
 {
   "display": {
     "icon": {
-      "item": "nuclearcraft:uranium_ore"
+      "item": "nuclearcraft:uranium_ingot"
     },
     "title": {
       "translate": "advancement.nc.root"
@@ -21,7 +21,7 @@
       "conditions": {
         "items": [
           {
-            "tag": "forge:ores/uranium"
+            "tag": "forge:ingots/uranium"
           }
         ]
       }

@@ -131,12 +131,6 @@ public class TurbineMultiblock extends AbstractMultiblock {
     }
 
     @Override
-    public void tick() {
-        super.tick();
-        TurbineControllerBE controller = (TurbineControllerBE) controller().controllerBE();
-    }
-
-    @Override
     protected boolean processInnerBlock(BlockPos toCheck) {
         BlockState bs = getBlockState(toCheck);
         if(bs.isAir()) return true;
@@ -161,8 +155,6 @@ public class TurbineMultiblock extends AbstractMultiblock {
             coilPositions.add(new NCBlockPos(pos));
         }
     }
-
-
 
     public void countCoils() {
         activeCoils = 0;
@@ -248,7 +240,6 @@ public class TurbineMultiblock extends AbstractMultiblock {
         return bearingConnected && getBlockEntity(getCenterBlock()) instanceof TurbineRotorBE;
     }
 
-
     public void clearStats()
     {
         controller().clearStats();
@@ -257,5 +248,4 @@ public class TurbineMultiblock extends AbstractMultiblock {
     protected Direction getControllerDirection() {
         return ((TurbineControllerBE)controller().controllerBE()).getFacing();
     }
-
 }

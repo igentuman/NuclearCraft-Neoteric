@@ -113,14 +113,14 @@ public class TurbineRotorBlock extends DirectionalBlock implements EntityBlock {
     public void onPlace(BlockState pState, Level pLevel, BlockPos pPos, BlockState pOldState, boolean pMovedByPiston) {
         super.onPlace(pState, pLevel, pPos, pOldState, pMovedByPiston);
         if(pLevel.isClientSide()) return;
-        MultiblockHandler.get(pLevel.dimension()).trackBlockChange(pPos);
+        MultiblockHandler.get(pLevel.dimension()).trackBlockChange(pPos, true);
     }
 
     @Override
     public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
         super.onRemove(state, level, pos, newState, isMoving);
         if(level.isClientSide()) return;
-        MultiblockHandler.get(level.dimension()).trackBlockChange(pos);
+        MultiblockHandler.get(level.dimension()).trackBlockChange(pos, true);
     }
 
     @Override

@@ -2,6 +2,7 @@ package igentuman.nc.block.kugelblitz;
 
 import igentuman.nc.block.entity.kugelblitz.ChamberPortBE;
 import igentuman.nc.container.ChamberPortContainer;
+import igentuman.nc.multiblock.MultiblockHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -14,6 +15,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
@@ -110,4 +112,25 @@ public class ChamberPortBlock extends HorizontalDirectionalBlock implements Enti
             }
         };
     }
+
+    @Override
+    public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor) {
+        super.onNeighborChange(state, level, pos, neighbor);
+        if(level.isClientSide()) return;
+        MultiblockHandler.get(((Level)level).dimension()).trackBlockChange(pos);
+    }
+
+    @Override
+    public void onPlace(BlockState pState, Level pLevel, BlockPos pPos, BlockState pOldState, boolean pMovedByPiston) {
+        super.onPlace(pState, pLevel, pPos, pOldState, pMovedByPiston);
+        MultiblockHandler.get(pLevel.dimension()).trackBlockChange(pPos, true);
+    }
+
+    @Override
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
+        super.onRemove(state, level, pos, newState, isMoving);
+        if(level.isClientSide()) return;
+        MultiblockHandler.get(level.dimension()).trackBlockChange(pos, true);
+    }
+
 }

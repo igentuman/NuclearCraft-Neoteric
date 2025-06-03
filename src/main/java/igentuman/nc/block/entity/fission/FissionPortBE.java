@@ -7,8 +7,8 @@ import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;
-import igentuman.nc.multiblock.fission.FissionReactorRegistration;
 import igentuman.nc.multiblock.fission.FissionReactorMultiblock;
+import igentuman.nc.multiblock.fission.FissionReactorRegistration;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -77,7 +77,7 @@ public class FissionPortBE extends NuclearCraftBE implements MultiblockAttachabl
             controllerPos = new BlockPos(controller.getBlockPos());
             result = true;
         }
-        if (isSteamMode != controller().isSteamMode) {
+        if (controller() != null && isSteamMode != controller().isSteamMode) {
             isSteamMode = controller().isSteamMode;
             result = true;
         }
@@ -85,15 +85,16 @@ public class FissionPortBE extends NuclearCraftBE implements MultiblockAttachabl
     }
 
     public void tickServer() {
-        if (NuclearCraft.instance.isNcBeStopped || isRemoved() || getMultiblock() == null || controller() == null) return;
+        if (NuclearCraft.instance.isNcBeStopped || isRemoved()) return;
+
         int wasSignal = analogSignal;
         boolean wasConnected = connected;
         sendOutPower();
         boolean updated = updateController();
-        if(level.getGameTime() % 20 == 0) {
+        if(level.getGameTime() % 20 == 0 && controller() != null) {
             pushPull();
         }
-        if (level.getGameTime() % 10 == 0) {
+        if (level.getGameTime() % 10 == 0 && controller() != null) {
             updateAnalogSignal();
 
             updated = wasSignal != analogSignal || updated;
@@ -102,11 +103,14 @@ public class FissionPortBE extends NuclearCraftBE implements MultiblockAttachabl
                 case SignalSource.MODERATOR -> controller().adjustModerator(analogSignal);
             }
         }
-        connected = getMultiblock().isFormed();
+        connected = getMultiblock() != null && getMultiblock().isFormed();
         if (updated || wasConnected != connected) {
-            MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
+            if(connected) {
+                MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
+            }
             setChanged();
             level.updateNeighborsAt(worldPosition, getBlockState().getBlock());
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
         }
     }
 
@@ -226,12 +230,21 @@ public class FissionPortBE extends NuclearCraftBE implements MultiblockAttachabl
 
     @Override
     public boolean canInvalidateCache() {
-        return false;
+        return true;
     }
 
     @Override
     public void setMultiblock(AbstractMultiblock multiblock) {
+        if(this.multiblock == multiblock) {
+            return;
+        }
         this.multiblock = (FissionReactorMultiblock) multiblock;
+        if (this.multiblock != null) {
+            controllerPos = this.multiblock.controller().controllerBE().getBlockPos();
+            controller = (FissionControllerBE) this.multiblock.controller().controllerBE();
+            setChanged();
+            level.updateNeighborsAt(worldPosition, getBlockState().getBlock());
+        }
     }
 
     @Override

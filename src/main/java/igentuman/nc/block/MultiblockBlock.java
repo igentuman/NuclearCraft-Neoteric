@@ -38,6 +38,11 @@ public class MultiblockBlock extends Block {
     }
 
     @Override
+    public float getShadeBrightness(BlockState pState, BlockGetter pLevel, BlockPos pPos) {
+        return TRANSPARENT_BLOCKS.matcher(asItem().toString()).matches() ? 1.0F : super.getShadeBrightness(pState, pLevel, pPos);
+    }
+
+    @Override
     public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor) {
         super.onNeighborChange(state, level, pos, neighbor);
         if(level.isClientSide()) return;
@@ -59,6 +64,6 @@ public class MultiblockBlock extends Block {
 
     @Override
     public boolean propagatesSkylightDown(BlockState pState, BlockGetter pLevel, BlockPos pPos) {
-        return asItem().toString().contains("glass");
+        return TRANSPARENT_BLOCKS.matcher(asItem().toString()).matches();
     }
 }

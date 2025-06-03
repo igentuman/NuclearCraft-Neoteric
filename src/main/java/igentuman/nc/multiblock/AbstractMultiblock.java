@@ -38,8 +38,8 @@ public abstract class AbstractMultiblock implements Multiblock {
     public int bottomCasing = 0;
     public int leftCasing = 0;
     public int rightCasing = 0;
-    protected NCBlockPos bottomLeft;
-    protected NCBlockPos topRight;
+    protected BlockPos bottomLeft;
+    protected BlockPos topRight;
     protected boolean outerValid = false;
     protected boolean isFormed = false;
     protected boolean innerValid = false;
@@ -149,25 +149,11 @@ public abstract class AbstractMultiblock implements Multiblock {
         return new BlockPos(getLeftPos(leftCasing).below(bottomCasing).relative(getControllerDirection(), -depth+1));
     }
 
-    public BlockPos getBottomLeftInnerBlock() {
-        if (controllerPos != null) {
-            controllerPos.revert();
-        }
-        return new BlockPos(getLeftPos(leftCasing-1).below(bottomCasing-1).relative(getControllerDirection(), -depth+2));
-    }
-
     public BlockPos getTopRightBlock() {
         if (controllerPos != null) {
             controllerPos.revert();
         }
         return new BlockPos(getRightPos(rightCasing).above(topCasing));
-    }
-
-    public BlockPos getTopRightInnerBlock() {
-        if (controllerPos != null) {
-            controllerPos.revert();
-        }
-        return new BlockPos(getRightPos(rightCasing-1).above(topCasing-1).relative(getControllerDirection(), -1));
     }
 
     public BlockPos getCenterBlock() {
@@ -197,6 +183,13 @@ public abstract class AbstractMultiblock implements Multiblock {
         return bs;
     }
 
+    public BlockState getCachedBlockState(BlockPos pos) {
+        if (bsCache.containsKey(pos.asLong())) {
+            return bsCache.get(pos.asLong());
+        }
+        return null;
+    }
+
     public BlockState getBlockState(BlockPos pos) {
         if (bsCache.containsKey(pos.asLong())) {
             return bsCache.get(pos.asLong());
@@ -217,7 +210,6 @@ public abstract class AbstractMultiblock implements Multiblock {
 
     public boolean isValidCorner(BlockPos pos)
     {
-        if (getLevel() == null) return false;
         try {
             return  validCornerBlocks().contains(getBlockState(pos).getBlock());
         } catch (NullPointerException ignored) { }
@@ -243,7 +235,6 @@ public abstract class AbstractMultiblock implements Multiblock {
                 height = i;
                 break;
             }
-            updateDimensions(initialPos().above(i));
         }
         for (int i = 1; i < maxHeight(); i++) {
             if (!isValidForOuter(initialPos().below(i))) {
@@ -251,7 +242,6 @@ public abstract class AbstractMultiblock implements Multiblock {
                 height += i - 1;
                 break;
             }
-            updateDimensions(initialPos().below(i));
         }
 
         return height;
@@ -263,7 +253,6 @@ public abstract class AbstractMultiblock implements Multiblock {
             if (!isValidForOuter(getLeftPos(i).above(topCasing))) {
                 leftCasing = i-1;
                 width = i;
-                updateDimensions(getLeftPos(i-1).above(topCasing));
                 break;
             }
         }
@@ -271,7 +260,6 @@ public abstract class AbstractMultiblock implements Multiblock {
             if (!isValidForOuter(getRightPos(i).above(topCasing))) {
                 rightCasing = i-1;
                 width += i-1;
-                updateDimensions(getRightPos(i-1).above(topCasing));
                 break;
             }
         }
@@ -285,7 +273,6 @@ public abstract class AbstractMultiblock implements Multiblock {
                 depth = i;
                 break;
             }
-            updateDimensions(getForwardPos(i).above(topCasing));
         }
         return depth;
     }
@@ -310,8 +297,10 @@ public abstract class AbstractMultiblock implements Multiblock {
         resolveHeight();
         resolveDepth();
         resolveWidth();
-        controllerBE().topRight = getTopRightBlock();
-        controllerBE().bottomLeft = getBottomLeftBlock();
+        topRight = getTopRightBlock();
+        bottomLeft = getBottomLeftBlock();
+        controllerBE().topRight = new BlockPos(topRight);
+        controllerBE().bottomLeft = new BlockPos(bottomLeft);
     }
 
     @Override
@@ -361,33 +350,16 @@ public abstract class AbstractMultiblock implements Multiblock {
         validationResult = ValidationResult.VALID;
     }
 
-    protected void updateDimensions(BlockPos pos) {
-        if (topRight == null) {
-            topRight = new NCBlockPos(pos);
-        }
-        if (bottomLeft == null) {
-            bottomLeft = new NCBlockPos(pos);
-        }
-        if (pos.getX() <= bottomLeft.getX() && pos.getY() <= bottomLeft.getY() && pos.getZ() <= bottomLeft.getZ()) {
-            bottomLeft.x(pos.getX());
-            bottomLeft.y(pos.getY());
-            bottomLeft.z(pos.getZ());
-        }
-        if (pos.getX() >= topRight.getX() && pos.getY() >= topRight.getY() && pos.getZ() >= topRight.getZ()) {
-            topRight.x(pos.getX());
-            topRight.y(pos.getY());
-            topRight.z(pos.getZ());
-        }
-    }
-
     protected void processOuterBlock(BlockPos pos) {
         attachMultiblock(pos);
-        updateDimensions(pos);
         addIfNotExists(pos, allBlocks);
         if (CONTROLLERS.matcher(getBlockState(pos).getBlock().asItem().toString()).matches()) {
             controllers.add(pos);
         }
         if (isPort(getBlockState(pos))) {
+            if(getBlockEntity(pos) instanceof MultiblockControllerBE attachableBe) {
+                attachableBe.setMultiblock(this);
+            }
             connectedPorts++;
         }
     }
@@ -581,14 +553,13 @@ public abstract class AbstractMultiblock implements Multiblock {
             BlockEntity be = getLevel().getBlockEntity(pos);
             if(be != beCache.get(pos.asLong())) {
                 beCache.remove(pos.asLong());
-                allBlocks.remove(pos.asLong());
             }
         }
         if (bsCache.containsKey(pos.asLong())) {
             BlockState bs = getLevel().getBlockState(pos);
-            if(!bs.is(bsCache.get(pos.asLong()).getBlock())) {
+            BlockState cachedBs = bsCache.get(pos.asLong());
+            if(cachedBs == null || !bs.is(cachedBs.getBlock())) {
                 bsCache.remove(pos.asLong());
-                allBlocks.remove(pos.asLong());
             }
         }
     }
@@ -599,39 +570,41 @@ public abstract class AbstractMultiblock implements Multiblock {
     }
 
     public boolean onBlockChange(BlockPos pos) {
+        removeFromCacheIfChanged(pos);
         if (hasToRefresh) {
-            removeFromCacheIfChanged(pos);
             return true;
         }
         if (containsPos(pos)) {
-            removeFromCacheIfChanged(pos);
-            BlockState targetBlock = getBlockState(pos);
-            if (SPECIAL_BLOCKS.matcher(targetBlock.getBlock().getDescriptionId()).matches()) {
-                if (getLevel().getBlockState(pos).is(targetBlock.getBlock())) {
+            BlockState cachedState = getCachedBlockState(pos);
+            BlockState actualState = getBlockState(pos);
+            if(cachedState == null) {
+                hasToRefresh = true;
+                return true;
+            }
+            if (SPECIAL_BLOCKS.matcher(cachedState.getBlock().getDescriptionId()).matches()) {
+                if (actualState.is(cachedState.getBlock())) {
                     return true;
                 }
             }
             hasToRefresh = true;
-            if(getLevel().getBlockState(pos).isAir()) {
-                controller.clearStats();
-            }
             return true;
         }
         resolveDimensions();
         if (bottomLeft == null || topRight == null) return false;
         if (pos.getX() >= bottomLeft.getX() && pos.getY() >= bottomLeft.getY() && pos.getZ() >= bottomLeft.getZ()
                 && pos.getX() <= topRight.getX() && pos.getY() <= topRight.getY() && pos.getZ() <= topRight.getZ()) {
-            removeFromCacheIfChanged(pos);
-            Block targetBlock = getBlockState(pos).getBlock();
-            if (SPECIAL_BLOCKS.matcher(targetBlock.getDescriptionId()).matches()) {
-                if (getLevel().getBlockState(pos).is(targetBlock)) {
+            BlockState cachedState = getCachedBlockState(pos);
+            BlockState actualState = getBlockState(pos);
+            if(cachedState == null) {
+                hasToRefresh = true;
+                return true;
+            }
+            if (SPECIAL_BLOCKS.matcher(cachedState.getBlock().getDescriptionId()).matches()) {
+                if (actualState.is(cachedState.getBlock())) {
                     return true;
                 }
             }
             hasToRefresh = true;
-            if(getLevel().getBlockState(pos).isAir()) {
-                controller.clearStats();
-            }
             return true;
         }
         if(!isFormed) {

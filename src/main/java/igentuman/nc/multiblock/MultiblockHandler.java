@@ -114,6 +114,13 @@ public class MultiblockHandler {
         changedBlocks.clear();
     }
 
+    public void trackBlockChange(BlockPos pos, boolean force) {
+        if(force) {
+            ignoreUpdate.remove(pos.asLong());
+        }
+        trackBlockChange(pos);
+    }
+
     public void trackBlockChange(BlockPos pos) {
         if (pos == null || multiblocks.isEmpty()) {
             return;
@@ -135,7 +142,6 @@ public class MultiblockHandler {
         long startTime = System.currentTimeMillis();
         // First process any block changes
         trackAllChanges();
-
         // Collect multiblocks that need validation
         List<String> needsValidation = new ArrayList<>();
         for (String id : multiblocks.keySet()) {
@@ -287,4 +293,5 @@ public class MultiblockHandler {
         toRemove.clear();
         ignoreUpdate.clear();
     }
+
 }

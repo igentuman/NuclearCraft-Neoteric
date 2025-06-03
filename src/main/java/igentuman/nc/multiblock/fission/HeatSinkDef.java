@@ -258,13 +258,7 @@ public class HeatSinkDef {
         private boolean isMoreThan(int s, String[] condition, Level level, BlockPos pos, AbstractMultiblock multiblock) {
             int counter = 0;
             for (Direction dir: Direction.values()) {
-                BlockState target = null;
-                if(multiblock != null) {
-                    target = multiblock.getBlockState(pos.relative(dir));
-                }
-                if(target == null){
-                    target = level.getBlockState(pos.relative(dir));
-                }
+                BlockState target = getBlockState(level, pos.relative(dir), multiblock);
                 if(blocks.get(condition).contains(target.getBlock())) {
                     if(mustCheckFuelCellConnection(condition) && !validateFuelCellAttachment(level, multiblock, pos, pos.relative(dir))) {
                         continue;

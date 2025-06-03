@@ -228,11 +228,7 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
         super.tickServer();
         boolean wasEnabled = controllerEnabled;
         handleValidation();
-        controllerEnabled = getMultiblock().isFormed() && hasBlackhole();
-
-        fluxRegulators = getMultiblock().fluxRegulators();
-        transformers = getMultiblock().transformers();
-        stabilizers = getMultiblock().stabilizers();
+        controllerEnabled = getMultiblock().getBlackHole() instanceof BlackHoleBE;
         if (controllerEnabled) {
             trackChanges(contentHandler().tick());
             long wasMass = mass;
@@ -244,15 +240,20 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
             if(!isBlackHoleStable()) {
                  getLevel().gameEvent(null, BLACKHOLE_VIBRATION.get(), getMultiblock().getCenter());
             }
+        } else if(mass > 0) {
+            mass = 0;
+            feeding = 0;
+            evaporation = 0;
+            energyPerTick = 0;
+            changed = true;
         }
-        refreshCacheFlag = !getMultiblock().isFormed();
         if(wasEnabled != controllerEnabled) {
            setChanged();
         }
-        if(refreshCacheFlag || changed) {
+        if(changed) {
             try {
                 setChanged();
-                level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(POWERED, controllerEnabled), Block.UPDATE_NEIGHBORS);
+                level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(POWERED, controllerEnabled), Block.UPDATE_CLIENTS);
                 level.setBlockAndUpdate(worldPosition, getBlockState().setValue(POWERED, controllerEnabled));
             } catch (NullPointerException ignored) {}
         }

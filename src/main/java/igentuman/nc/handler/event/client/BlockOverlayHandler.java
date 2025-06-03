@@ -1,9 +1,10 @@
 package igentuman.nc.handler.event.client;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.*;
 import igentuman.api.nc.SideModeToggleable;
 import igentuman.nc.block.entity.NuclearCraftBE;
+import igentuman.nc.block.entity.fission.FissionControllerBE;
 import igentuman.nc.block.entity.fusion.FusionCoreBE;
 import igentuman.nc.client.renderer.DistortShader;
 import igentuman.nc.item.QNP;
@@ -60,6 +61,7 @@ public class BlockOverlayHandler {
 
     private static int outlineCooldown = 5;
     private final static HashList<BlockPos> highlightsToRemove = new HashList<>();
+    public final static HashList<FissionControllerBE> reactors = new HashList<>();
 
     public static void register(FMLClientSetupEvent event) {
         MinecraftForge.EVENT_BUS.addListener(BlockOverlayHandler::blockOverlayEvent);
@@ -100,6 +102,10 @@ public class BlockOverlayHandler {
         if(e.getStage().equals(RenderLevelStageEvent.Stage.AFTER_PARTICLES)) {
             gameRenderer.resetProjectionMatrix(e.getProjectionMatrix());
             if (player.level().isClientSide) {
+                for (FissionControllerBE reactor : reactors) {
+                    //todo enable this later
+                    //renderFilledBox(e.getPoseStack(), reactor.getGlowAABB(), 0.1f, 0.6f, 0.7f, 0.2f, reactor.getBlockPos(), player.blockPosition());
+                }
                 if (outlineBlocks.isEmpty()) return;
                 for (BlockPos pos: outlineBlocks) {
                     if(pos.equals(BlockPos.ZERO)) continue;
@@ -241,6 +247,80 @@ public class BlockOverlayHandler {
         });
 
         renderTypeBuffer.endBatch(RenderType.lines());
+    }
+
+    public static void renderFilledBox(PoseStack poseStack, AABB box, float r, float g, float b, float alpha, BlockPos pos, BlockPos player) {
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+
+        // Get camera position for proper translation
+        Vec3 cam = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
+        double camX = cam.x, camY = cam.y, camZ = cam.z;
+
+        // Push matrix to apply transformations
+        poseStack.pushPose();
+
+        // Important: Don't translate to the block position since the AABB already contains world coordinates
+        // Just translate relative to camera
+        poseStack.translate(-camX, -camY, -camZ);
+
+        Tesselator tesselator = Tesselator.getInstance();
+        BufferBuilder buffer = tesselator.getBuilder();
+
+        buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+
+        Matrix4f matrix = poseStack.last().pose();
+
+        // Use the box coordinates directly - they're already in world space
+        float x1 = (float) box.minX;
+        float y1 = (float) box.minY;
+        float z1 = (float) box.minZ;
+        float x2 = (float) box.maxX;
+        float y2 = (float) box.maxY;
+        float z2 = (float) box.maxZ;
+
+        // Bottom face
+        buffer.vertex(matrix, x1, y1, z1).color(r, g, b, alpha).endVertex();
+        buffer.vertex(matrix, x2, y1, z1).color(r, g, b, alpha).endVertex();
+        buffer.vertex(matrix, x2, y1, z2).color(r, g, b, alpha).endVertex();
+        buffer.vertex(matrix, x1, y1, z2).color(r, g, b, alpha).endVertex();
+
+        // Top face
+        buffer.vertex(matrix, x1, y2, z1).color(r, g, b, alpha).endVertex();
+        buffer.vertex(matrix, x1, y2, z2).color(r, g, b, alpha).endVertex();
+        buffer.vertex(matrix, x2, y2, z2).color(r, g, b, alpha).endVertex();
+        buffer.vertex(matrix, x2, y2, z1).color(r, g, b, alpha).endVertex();
+
+        // North
+        buffer.vertex(matrix, x1, y1, z1).color(r, g, b, alpha).endVertex();
+        buffer.vertex(matrix, x1, y2, z1).color(r, g, b, alpha).endVertex();
+        buffer.vertex(matrix, x2, y2, z1).color(r, g, b, alpha).endVertex();
+        buffer.vertex(matrix, x2, y1, z1).color(r, g, b, alpha).endVertex();
+
+        // South
+        buffer.vertex(matrix, x2, y1, z2).color(r, g, b, alpha).endVertex();
+        buffer.vertex(matrix, x2, y2, z2).color(r, g, b, alpha).endVertex();
+        buffer.vertex(matrix, x1, y2, z2).color(r, g, b, alpha).endVertex();
+        buffer.vertex(matrix, x1, y1, z2).color(r, g, b, alpha).endVertex();
+
+        // West
+        buffer.vertex(matrix, x1, y1, z2).color(r, g, b, alpha).endVertex();
+        buffer.vertex(matrix, x1, y2, z2).color(r, g, b, alpha).endVertex();
+        buffer.vertex(matrix, x1, y2, z1).color(r, g, b, alpha).endVertex();
+        buffer.vertex(matrix, x1, y1, z1).color(r, g, b, alpha).endVertex();
+
+        // East
+        buffer.vertex(matrix, x2, y1, z1).color(r, g, b, alpha).endVertex();
+        buffer.vertex(matrix, x2, y2, z1).color(r, g, b, alpha).endVertex();
+        buffer.vertex(matrix, x2, y2, z2).color(r, g, b, alpha).endVertex();
+        buffer.vertex(matrix, x2, y1, z2).color(r, g, b, alpha).endVertex();
+
+        tesselator.end();
+
+        // Pop the matrix stack to restore previous state
+        poseStack.popPose();
+        RenderSystem.disableBlend();
     }
 
     public static void removeFromOutline(NCBlockPos pos, boolean instant) {

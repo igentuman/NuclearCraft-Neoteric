@@ -440,7 +440,6 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
             BlockEntity be = getLevel().getExistingBlockEntity(pos);
             if(be != beCache.get(packedPos) || (be != null && be.isRemoved())) {
                 beCache.remove(packedPos);
-                allBlocks.remove(packedPos);
             }
         }
         if (bsCache.containsKey(packedPos)) {
@@ -448,8 +447,6 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
             BlockState cachedState = bsCache.get(packedPos);
             if(cachedState == null || !bs.is(bsCache.get(packedPos).getBlock())) {
                 bsCache.remove(packedPos);
-                bsCache.put(packedPos, bs);
-                allBlocks.remove(packedPos);
                 moderators.remove(packedPos);
                 heatSinks.remove(packedPos);
                 allModerators.remove(packedPos);

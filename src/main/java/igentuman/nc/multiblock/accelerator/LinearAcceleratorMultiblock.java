@@ -86,7 +86,6 @@ public class LinearAcceleratorMultiblock extends AbstractMultiblock {
                 width = i;
                 break;
             }
-            updateDimensions(getForwardPos(i).above(topCasing));
             width = i + 1;
         }
         if(isValidForOuter(getForwardPos(5).above(topCasing))) {
@@ -134,14 +133,12 @@ public class LinearAcceleratorMultiblock extends AbstractMultiblock {
                     depth = i;
                     break;
                 }
-                updateDimensions(getLeftPos(i));
             }
             for(int i = 1; i<maxDepth(); i++) {
                 if (!isValidForOuter(getRightPos(i).above(topCasing))) {
                     depth += i-1;
                     break;
                 }
-                updateDimensions(getRightPos(i));
             }
 
             //determine multiblock facing, multiblock facing always towards positive coordinates

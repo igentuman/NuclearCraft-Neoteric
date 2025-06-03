@@ -92,12 +92,16 @@ public class FissionReactorRegistration {
             } else {
                 BlockBehaviour.Properties props;
                 if(TRANSPARENT_BLOCKS.matcher(key).matches()) {
-                    props = BlockBehaviour.Properties.of().sound(SoundType.GLASS).strength(1f).requiresCorrectToolForDrops().noOcclusion();
+                    props = BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(3f).requiresCorrectToolForDrops().noOcclusion();
                 } else {
                     props = REACTOR_BLOCKS_PROPERTIES;
                 }
                 if(key.matches(".*glass|.*casing.*")) {
-                    FISSION_BLOCKS.put(key, BLOCKS.register(key, () -> new FissionCasingBlock(props)));
+                    if(key.contains("glass")) {
+                        FISSION_BLOCKS.put(key, BLOCKS.register(key, () -> new FissionCasingBlock(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(3f).requiresCorrectToolForDrops().noOcclusion())));
+                    } else {
+                        FISSION_BLOCKS.put(key, BLOCKS.register(key, () -> new FissionCasingBlock(props)));
+                    }
                 }
                 if(key.matches(".*cell")) {
                     FISSION_BLOCKS.put(key, BLOCKS.register(key, () -> new FissionFuelCellBlock(props)));

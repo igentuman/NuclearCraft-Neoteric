@@ -4,6 +4,7 @@ import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.MultiblockControllerBE;
 import igentuman.nc.compat.cc.SolidFissionReactorPeripheral;
 import igentuman.nc.compat.oc2.FissionReactorDevice;
+import igentuman.nc.handler.event.client.BlockOverlayHandler;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.SlotModePair;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
@@ -29,6 +30,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -54,6 +57,7 @@ import static igentuman.nc.setup.registration.FissionFuel.ITEM_PROPERTIES;
 import static igentuman.nc.setup.registration.NCSounds.FISSION_REACTOR;
 import static igentuman.nc.setup.registration.NcParticleTypes.RADIATION;
 import static igentuman.nc.util.ModUtil.*;
+import static net.minecraft.core.Direction.UP;
 import static net.minecraft.world.item.Items.AIR;
 import static net.minecraftforge.common.capabilities.ForgeCapabilities.*;
 
@@ -360,10 +364,14 @@ public class FissionControllerBE extends MultiblockControllerBE {
     public void tickClient() {
         super.tickClient();
         if(!isCasingValid || !isInternalValid) {
+            BlockOverlayHandler.reactors.remove(this);
             stopSound();
             return;
         }
         if(efficiency > 0) {
+            if(!BlockOverlayHandler.reactors.contains(this)) {
+                BlockOverlayHandler.reactors.add(this);
+            }
             spawnParticles();
             playSound(FISSION_REACTOR, 0.2f);
         } else {
@@ -558,10 +566,11 @@ public class FissionControllerBE extends MultiblockControllerBE {
         if(level.getGameTime()  % (level.random.nextInt(10)+5) != 0) {
             return;
         }
-
-        for(BlockPos blockPos: BlockPos.betweenClosed(bottomLeft.offset(1,1,1), topRight.offset(-1, -1, -1))) {
+        BlockPos topRightInner = topRight.relative(getFacing(), -1).below().relative(getFacing().getClockWise(),1);
+        BlockPos bottomLeftInner = bottomLeft.relative(getFacing(), 1).above().relative(getFacing().getCounterClockWise(),1);
+        for(BlockPos blockPos: BlockPos.betweenClosed(bottomLeftInner, topRightInner)) {
             if(level.random.nextBoolean()) {
-                level.addParticle(RADIATION.get(), blockPos.getX()+level.random.nextFloat(), blockPos.getY()+level.random.nextFloat(), blockPos.getZ()+level.random.nextFloat(), 0, -0.05f, 0);
+                level.addParticle(RADIATION.get(), true, blockPos.getX()+level.random.nextFloat(), blockPos.getY()+level.random.nextFloat(), blockPos.getZ()+level.random.nextFloat(), 0, -0.05f, 0);
             }
         }
     }
@@ -858,6 +867,17 @@ public class FissionControllerBE extends MultiblockControllerBE {
                 return;
             }
         }
+    }
+
+    public AABB getGlowAABB() {
+        if (bottomLeft.equals(BlockPos.ZERO) || topRight.equals(BlockPos.ZERO)) {
+            return new AABB(0, 0, 0, 0, 0, 0);
+        }
+        Vec3 topRightInner = new Vec3(topRight.getX(), topRight.getY(), topRight.getZ());
+        topRightInner = topRightInner.relative(getFacing(), 0.05D).relative(UP, 0.05D).relative(getFacing().getClockWise(),-0.05D);
+        Vec3 bottomLeftInner = new Vec3(bottomLeft.getX(), bottomLeft.getY(), bottomLeft.getZ());
+        bottomLeftInner = bottomLeftInner.relative(getFacing(), 0.95D).relative(UP, 0.95D).relative(getFacing().getCounterClockWise(),0.95D);
+        return new AABB(bottomLeftInner, topRightInner);
     }
 
     public static class Recipe extends NcRecipe {

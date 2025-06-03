@@ -526,6 +526,9 @@ public class NCLanguageProvider extends LanguageProvider {
 
     private void tooltips() {
 
+        add("tooltip.nc.wiki", "Open WIKI");
+        add("tooltip.nc.link.designs", "Reactor Bots Discord");
+        add("tooltip.nc.link.designs.descr", "Place where you can generate reactors");
         add("tooltip.nuclearcraft.particlestack.name", "Type: %s");
         add("tooltip.nuclearcraft.particlestack.amount", "Amount: %s");
         add("tooltip.nuclearcraft.particlestack.mean_energy", "Energy: %s");
@@ -789,6 +792,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("validation.structure.wrong_proportions", "Wrong proportions");
         add("validation.structure.wrong_blades", "Wrong blades placement");
         add("validation.structure.photon_concentrator", "Incorrect Photon Concentrators placement");
+        add("validation.structure.asymetric_walls", "Walls are asymetric");
         add("solar_panel.fe_generation", "Daytime Gen: %s FE/t");
         add("fission_port.descr", "One port for everything: Fluids, items, redstone, computers, etc...");
         add("irradiation_chamber.descr", "Irradiates items with neutron flux. \r\nHas to be placed in one line with moderator and fuel cell behind it.");

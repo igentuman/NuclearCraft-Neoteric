@@ -3,6 +3,7 @@ package igentuman.nc.block.entity.kugelblitz;
 import igentuman.api.nc.multiblock.MultiblockAttachable;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.NuclearCraftBE;
+import igentuman.nc.block.entity.fission.FissionControllerBE;
 import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;
 import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;
@@ -56,7 +57,16 @@ public class ChamberPortBE extends NuclearCraftBE implements MultiblockAttachabl
 
     @Override
     public void setMultiblock(AbstractMultiblock multiblock) {
+        if(this.multiblock == multiblock) {
+            return;
+        }
         this.multiblock = (KugelblitzMultiblock) multiblock;
+        if (this.multiblock != null) {
+            controllerPos = this.multiblock.controller().controllerBE().getBlockPos();
+            controller = (ChamberTerminalBE) this.multiblock.controller().controllerBE();
+            setChanged();
+            level.updateNeighborsAt(worldPosition, getBlockState().getBlock());
+        }
     }
 
     @Override
@@ -95,13 +105,13 @@ public class ChamberPortBE extends NuclearCraftBE implements MultiblockAttachabl
         Direction dir = getFacing();
 
         if(fluidHandler() != null) {
-            //updated = fluidHandler().pushFluids(dir, false, worldPosition) || updated;
             updated = fluidHandler().pullFluids(dir, false, worldPosition) || updated;
         }
 
         if(updated) {
             MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
             setChanged();
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
             level.updateNeighborsAt(worldPosition, getBlockState().getBlock());
         }
     }

@@ -8,6 +8,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.GlassBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -21,7 +22,7 @@ public class FusionCasingBlock extends MultiblockBlock {
     public FusionCasingBlock() {
         this(Properties.of()
                 .sound(SoundType.METAL)
-                .strength(2.0f)
+                .strength(3.0f)
                 .noOcclusion()
                 .requiresCorrectToolForDrops());
     }

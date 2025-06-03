@@ -41,6 +41,9 @@ public class TextUtils
 
 	public static String roundFormat(double value)
 	{
+		if(Math.round(value) == 0) {
+			return "0";
+		}
 		String preffix = "";
 		if(value < 1 && value > 0) {
 			preffix = "0";

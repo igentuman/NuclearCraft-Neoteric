@@ -182,26 +182,14 @@ public class FusionReactorMultiblock extends AbstractMultiblock {
         }
     }
 
-    @Override
-    public void onBlockDestroyed(BlockState state, Level level, BlockPos pos, Explosion explosion) {
-        super.onBlockDestroyed(state, level, pos, explosion);
-        if(controllerBE.plasmaTemperature > 100000) {
-          /*  level.explode(null,
-                    pos.getX(), pos.getY(), pos.getZ(),
-                    1, true, Explosion.BlockInteraction.KEEP);*/
-        }
-    }
-
     private void processFunctionalBlock(NCBlockPos pos)
     {
         if(getBlock(pos) instanceof ElectromagnetBlock magnet) {
             electromagnets.put(pos.asLong(), magnet);
             addIfNotExists(pos, allBlocks);
-            updateDimensions(pos);
         } else if(getBlock(pos) instanceof RFAmplifierBlock amplifier) {
             amplifiers.put(pos.asLong(), amplifier);
             addIfNotExists(pos, allBlocks);
-            updateDimensions(pos);
         }
     }
 
@@ -307,7 +295,9 @@ public class FusionReactorMultiblock extends AbstractMultiblock {
                 } else {
                     ringValid = false;
                     validationResult = ValidationResult.WRONG_OUTER;
-                    errorBlockPos = new BlockPos(startPosInnerWall);
+                    if(casingBlocks > 0 || length > 1) {
+                        errorBlockPos = new BlockPos(startPosInnerWall);
+                    }
                     return;
                 }
             }

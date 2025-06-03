@@ -50,6 +50,7 @@ public class FissionControllerScreen extends AbstractContainerScreen<FissionCont
     private VerticalBar hotCoolantBar;
     private Button.ReactorMode modeBtn;
     private Button.MultiblockAnalyze analyzeBtn;
+    private Button.Link linkBtn;
 
     public Component casingTootip = Component.empty();
     public Component interiorTootip = Component.empty();
@@ -79,7 +80,6 @@ public class FissionControllerScreen extends AbstractContainerScreen<FissionCont
 
     protected void init() {
         super.init();
-        Minecraft mc = Minecraft.getInstance();
         updateRelativeCords();
         widgets.clear();
         checkboxCasing = new Checkbox(imageWidth-19, 80, this,  isCasingValid());
@@ -92,10 +92,14 @@ public class FissionControllerScreen extends AbstractContainerScreen<FissionCont
         steamTank = new FluidTankRenderer(getFluidTank(1), SHOW_AMOUNT_AND_CAPACITY,6, 73, 27, 17);
         widgets.add(heatBar);
         widgets.add(new ProgressBar(74, 35, this,  7));
-        modeBtn = new Button.ReactorMode(150, 54, this, menu.getPosition());
-        analyzeBtn = new Button.MultiblockAnalyze(150, 30, this, menu.getPosition());
+        modeBtn = new Button.ReactorMode(150, 60, this, menu.getPosition());
+        analyzeBtn = new Button.MultiblockAnalyze(150, 38, this, menu.getPosition());
+        linkBtn = new Button.Link(150, 14, this, menu.getPosition(), "https://ftb.fandom.com/wiki/NuclearCraft:_Neoteric#Fission_Reactor_+_Irradiator",
+                List.of(__("tooltip.nc.wiki"))
+        );
         widgets.add(modeBtn);
         widgets.add(analyzeBtn);
+        widgets.add(linkBtn);
     }
 
     protected FluidTank getFluidTank(int i) {
@@ -120,7 +124,7 @@ public class FissionControllerScreen extends AbstractContainerScreen<FissionCont
     }
 
     private void renderWidgets(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
-        if (modeBtn == null) {
+        if (modeBtn == null || linkBtn == null) {
             init();
         }
         modeBtn.setMode(getMenu().isBoilingMode());

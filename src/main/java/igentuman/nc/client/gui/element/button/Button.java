@@ -302,6 +302,40 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
         }
     }
 
+    public static class Link extends Button {
+        private final BlockPos pos;
+        public static final int BTN_ID = 890;
+        public byte strength = 0;
+        public AbstractContainerScreen<?> screen;
+        public String link = "";
+        public List<Component> tooltips = new ArrayList<>();
+
+        public void draw(GuiGraphics transform, int mX, int mY, float pTicks) {
+            super.draw(transform, mX, mY, pTicks);
+        }
+
+        public Link(int xPos, int yPos, AbstractContainerScreen<?> screen, BlockPos pos, String link, List<Component> tooltips) {
+            super(xPos, yPos, screen, BTN_ID);
+            this.screen = screen;
+            this.link = link;
+            this.pos = pos;
+            this.tooltips = tooltips;
+            height = 18;
+            width = 18;
+            btn = new ImageButton(X(), Y(), width, height, 126, 220, 18, TEXTURE, pButton -> {
+                try {
+                    net.minecraft.Util.getPlatform().openUri(link);
+                } catch (Exception e) {
+                    debugLog("Failed to open link: " + link);
+                }
+            });
+        }
+
+        public List<Component> getTooltips() {
+            return tooltips;
+        }
+    }
+
     public static class FusionReactorRedstoneModeButton extends ReactorPortRedstoneModeButton {
         public static final int BTN_ID = 73;
         public FusionReactorRedstoneModeButton(int xPos, int yPos, AbstractContainerScreen<?> screen, BlockPos pos) {

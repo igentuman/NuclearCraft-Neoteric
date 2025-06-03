@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static igentuman.nc.NuclearCraft.rl;
+import static igentuman.nc.util.TextUtils.__;
 
 @NothingNullByDefault
 public class MultiblockBuilderScreen extends AbstractContainerScreen<MultiblockBuilderContainer> {
@@ -30,6 +31,7 @@ public class MultiblockBuilderScreen extends AbstractContainerScreen<MultiblockB
     public String jsonText = "";
     private Button.InsertJson insertBtn;
     private Button.Build buildBtn;
+    private Button.Link linkBtn;
     protected int relX;
     protected int relY;
     public HashMap<BlockPos, Block> blockMap = new HashMap<>();
@@ -51,9 +53,16 @@ public class MultiblockBuilderScreen extends AbstractContainerScreen<MultiblockB
         super.init();
         Minecraft mc = Minecraft.getInstance();
         updateRelativeCords();
-        insertBtn = new Button.InsertJson(150, 7, this, menu.getPosition());
-        buildBtn = new Button.Build(128, 7, this, menu.getPosition());
+        insertBtn = new Button.InsertJson(128, 7, this, menu.getPosition());
+        buildBtn = new Button.Build(116, 7, this, menu.getPosition());
+        linkBtn = new Button.Link(150, 7, this, menu.getPosition(), "https://discord.gg/fGBZj3haga",
+                List.of(
+                        __("tooltip.nc.link.designs"),
+                        __("tooltip.nc.link.designs.descr")
+                )
+        );
         widgets.clear();
+        widgets.add(linkBtn);
         widgets.add(insertBtn);
         widgets.add(buildBtn);
     }

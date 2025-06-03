@@ -61,7 +61,7 @@ public class EXPLBE extends NuclearCraftBE {
     }
 
     protected void renderBeam() {
-        sendBeamData(new FusionBeamParticleData(getFacing(), KUGELBLITZ_CONFIG.LASER_DISTANCE.get(), (float) (aggregatedEnergy/((double)KUGELBLITZ_CONFIG.EXPL_CHARGE.get()))*0.5f),
+        sendBeamData(new FusionBeamParticleData(getFacing(), getActualLaserDistance()+1, (float) (aggregatedEnergy/((double)KUGELBLITZ_CONFIG.EXPL_CHARGE.get()))*0.5f),
                 getBlockPos().relative(getFacing())
         );
     }
@@ -213,23 +213,34 @@ public class EXPLBE extends NuclearCraftBE {
         }
     }
 
-    private void transferEnergy() {
-        if (energyTransfered) return;
-        energyTransfered = true;
+    private int getActualLaserDistance() {
         for (int i = 4; i <= KUGELBLITZ_CONFIG.LASER_DISTANCE.get()+4; i++) {
             BlockPos pos = getBlockPos().relative(getFacing(), i);
             BlockEntity be = level.getExistingBlockEntity(pos);
-            if (be instanceof PhotonConcentratorBE photonConcentrator) {
-                AbstractMultiblock multiblock = photonConcentrator.getMultiblock();
-                if (multiblock instanceof KugelblitzMultiblock kugelblitzMultiblock) {
-                    kugelblitzMultiblock.addPulseEnergy(aggregatedEnergy, getFacing());
-                    break;
-                }
+            if (be instanceof PhotonConcentratorBE) {
+                return i;
             }
-            if (isMekanismGeneratorsLoaded() && be instanceof mekanism.generators.common.tile.fusion.TileEntityLaserFocusMatrix matrixBe) {
-                matrixBe.receiveLaserEnergy(FloatingLong.create(aggregatedEnergy / 10));
-                break;
+            if (isMekanismGeneratorsLoaded() && be instanceof mekanism.generators.common.tile.fusion.TileEntityLaserFocusMatrix) {
+                return i;
             }
+        }
+        return KUGELBLITZ_CONFIG.LASER_DISTANCE.get();
+    }
+
+    private void transferEnergy() {
+        if (energyTransfered) return;
+        energyTransfered = true;
+        BlockPos pos = getBlockPos().relative(getFacing(), getActualLaserDistance());
+        BlockEntity be = level.getExistingBlockEntity(pos);
+        if (be instanceof PhotonConcentratorBE photonConcentrator) {
+            AbstractMultiblock multiblock = photonConcentrator.getMultiblock();
+            if (multiblock instanceof KugelblitzMultiblock kugelblitzMultiblock) {
+                kugelblitzMultiblock.addPulseEnergy(aggregatedEnergy, getFacing());
+                return;
+            }
+        }
+        if (isMekanismGeneratorsLoaded() && be instanceof mekanism.generators.common.tile.fusion.TileEntityLaserFocusMatrix matrixBe) {
+            matrixBe.receiveLaserEnergy(FloatingLong.create(aggregatedEnergy / 10));
         }
     }
 

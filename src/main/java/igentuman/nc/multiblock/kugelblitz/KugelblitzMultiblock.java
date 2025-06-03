@@ -9,6 +9,7 @@ import igentuman.nc.multiblock.ValidationResult;
 import igentuman.nc.util.NCBlockPos;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -24,14 +25,15 @@ import static net.minecraft.world.level.block.Blocks.AIR;
 
 public class KugelblitzMultiblock extends AbstractMultiblock {
 
-    private ChamberTerminalBE controllerBe;
-    private final HashMap<Direction, Long> pulseEnergy = new HashMap<>();
-    private BlackHoleBE blackHole;
-    private boolean collectingEnergy = true;
-    private BlockPos centerBlockPos;
-    private int transformers = 0;
-    private int fluxRegulators = 0;
-    private int stabilizers = 0;
+    protected ChamberTerminalBE controllerBe;
+    protected final HashMap<Direction, Long> pulseEnergy = new HashMap<>();
+    protected final List<Block> validCornerBlocks;
+    protected BlackHoleBE blackHole;
+    protected boolean collectingEnergy = true;
+    protected BlockPos centerBlockPos;
+    protected int transformers = 0;
+    protected int fluxRegulators = 0;
+    protected int stabilizers = 0;
 
     public int maxHeight() {
         return 9;
@@ -60,6 +62,14 @@ public class KugelblitzMultiblock extends AbstractMultiblock {
     }
 
     public BlackHoleBE getBlackHole() {
+        if(blackHole == null && getCenter() != null) {
+            BlockEntity be = getLevel().getBlockEntity(getCenter());
+            if(be instanceof BlackHoleBE) {
+                blackHole = (BlackHoleBE) be;
+            } else {
+                return null;
+            }
+        }
         return blackHole;
     }
 
@@ -72,14 +82,16 @@ public class KugelblitzMultiblock extends AbstractMultiblock {
         super(getBlocksByTagKey(CASING_BLOCKS.location().toString()), List.of(KUGELBLITZ_BLOCKS.get("black_hole").get(), AIR), new KugelblitzController(be));
         id = "chamber_"+be.getBlockPos().toShortString();
         MultiblockHandler.get(be.getLevel().dimension()).addMultiblock(this);
+        validCornerBlocks = List.of(KUGELBLITZ_BLOCKS.get("neutronium_frame").get(), KUGELBLITZ_BLOCKS.get("chamber_terminal").get(), KUGELBLITZ_BLOCKS.get("chamber_port").get());
     }
 
     @Override
-    public void onControllerRemoved() {
-        removeBlackHole();
-        super.onControllerRemoved();
+    public void validate() {
+        super.validate();
+        if( !outerValid || !innerValid) {
+            removeBlackHole();
+        }
     }
-
     @Override
     public int resolveDepth()
     {
@@ -105,12 +117,14 @@ public class KugelblitzMultiblock extends AbstractMultiblock {
         fluxRegulators = 0;
         stabilizers = 0;
         transformers = 0;
-        centerBlockPos = BlockPos.ZERO;
+        errorBlockPos = BlockPos.ZERO;
         bottomLeft = null;
         topRight = null;
+        controllers.clear();
         resolveWidth();
         resolveHeight();
         resolveDepth();
+        outerValid = false;
         if(height() != 1 && width() != 5) {
             validationResult = ValidationResult.INCOMPLETE;
             return;
@@ -158,7 +172,7 @@ public class KugelblitzMultiblock extends AbstractMultiblock {
                 || !isWallValid(topWall, getWallBlocks(Direction.Axis.Z, topCenter.below(5).north(5)))
                 || !isWallValid(topWall, getWallBlocks(Direction.Axis.Z, topCenter.below(5).south(5)))
         ) {
-            validationResult = ValidationResult.INCOMPLETE;
+            validationResult = ValidationResult.ASYMETRIC_WALLS;
             return;
         }
 
@@ -191,6 +205,7 @@ public class KugelblitzMultiblock extends AbstractMultiblock {
         bottomLeft = NCBlockPos.of(topCenter.offset(-3, -3, -3));
         topRight = NCBlockPos.of(topCenter.offset(3, 0, 3));
         validationResult = ValidationResult.VALID;
+        outerValid = true;
     }
 
     public void validateInner() {
@@ -217,7 +232,7 @@ public class KugelblitzMultiblock extends AbstractMultiblock {
 
                         if (!isValidForInner(pos)) {
                             validationResult = ValidationResult.WRONG_INNER;
-                            controller().setErroredBlock(pos);
+                            errorBlockPos = new BlockPos(pos);
                             return;
                         }
 
@@ -226,8 +241,19 @@ public class KugelblitzMultiblock extends AbstractMultiblock {
                 }
             }
         }
-
+        controllerBE().controllerEnabled = isFormed();
+        controllerBE().fluxRegulators = fluxRegulators();
+        controllerBE().transformers = transformers();
+        controllerBE().stabilizers = stabilizers();
+        controllerBE().setChanged();
         validationResult =  ValidationResult.VALID;
+        errorBlockPos = BlockPos.ZERO;
+        innerValid = true;
+    }
+
+    @Override
+    public List<Block> validCornerBlocks() {
+        return validCornerBlocks;
     }
 
     private boolean isCornersValid(BlockPos center) {
@@ -260,8 +286,8 @@ public class KugelblitzMultiblock extends AbstractMultiblock {
                     posToCheck = center.offset(i, j, 0);
                 }
 
-                if (!isValidForOuter(posToCheck)) {
-                    controller().setErroredBlock(posToCheck);
+                if (!isValidCorner(posToCheck)) {
+                    errorBlockPos = new BlockPos(posToCheck);
                     return false;
                 }
                 processOuterBlock(posToCheck);
@@ -296,9 +322,9 @@ public class KugelblitzMultiblock extends AbstractMultiblock {
                 } else {
                     newPos = center.offset(i, j, 0);
                 }
-                BlockState bs = getLevel().getBlockState(newPos);
+                BlockState bs = getBlockState(newPos);
                 if (bs.isAir() || !isValidForOuter(newPos)) {
-                    controller().setErroredBlock(newPos);
+                    errorBlockPos = new BlockPos(newPos);
                     return blocks;
                 }
                 if (bs.is(KUGELBLITZ_BLOCKS.get("quantum_transformer").get())) {
@@ -320,9 +346,6 @@ public class KugelblitzMultiblock extends AbstractMultiblock {
 
     @Override
     public void tick() {
-        //innerValid = controllerBE().isInternalValid;
-        //outerValid = controllerBE().isCasingValid;
-        //isFormed = outerValid && innerValid;
         super.tick();
         handleBlackHole();
         if(!pulseEnergy.isEmpty() && collectingEnergy) {
@@ -380,7 +403,9 @@ public class KugelblitzMultiblock extends AbstractMultiblock {
             }
             if (energyTransfered) {
                 getLevel().setBlockAndUpdate(getCenter(), KUGELBLITZ_BLOCKS.get("black_hole").get().defaultBlockState());
-                controllerBE().mass = (long) (MIN_MASS*2*getLevel().random.nextDouble()/0.5D);
+                blackHole = (BlackHoleBE) getLevel().getBlockEntity(getCenter());
+                controllerBE().mass = (long) (MIN_MASS*(1+getLevel().random.nextDouble()));
+                controllerBE().setChanged();
             }
         }
     }
@@ -388,6 +413,11 @@ public class KugelblitzMultiblock extends AbstractMultiblock {
     @Override
     public void clearStats() {
         pulseEnergy.clear();
+        controllerBE().controllerEnabled = false;
+        controllerBE().fluxRegulators = 0;
+        controllerBE().transformers = 0;
+        controllerBE().stabilizers = 0;
+        controllerBE().setChanged();
     }
 
     public BlockPos getCenter() {
@@ -412,6 +442,11 @@ public class KugelblitzMultiblock extends AbstractMultiblock {
     }
 
     public void removeBlackHole() {
+        if(blackHole != null) {
+            getLevel().setBlock(blackHole.getBlockPos(), AIR.defaultBlockState(), 3);
+            blackHole = null;
+            return;
+        }
         getLevel().setBlock(getCenter(), AIR.defaultBlockState(), 3);
         blackHole = null;
     }

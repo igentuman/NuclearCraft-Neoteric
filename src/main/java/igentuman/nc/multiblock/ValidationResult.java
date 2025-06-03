@@ -15,7 +15,9 @@ public enum ValidationResult {
     WRONG_CORNER(false,10, "validation.structure.wrong_corner"),
     WRONG_BLADES(false,11, "validation.structure.wrong_blades"),
     PHOTON_CONCENTRATOR(false,12, "validation.structure.photon_concentrator"),
-    INCORRECT_CONTROLLER_PLACEMENT(false,13, "validation.structure.incorrect_controller_placement");
+    INCORRECT_CONTROLLER_PLACEMENT(false,13, "validation.structure.incorrect_controller_placement"),
+    ASYMETRIC_WALLS(false,14, "validation.structure.asymetric_walls"),
+    ;
 
     public boolean isValid;
     public int id;

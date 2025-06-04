@@ -1,7 +1,10 @@
 package igentuman.nc.block.entity.energy;
 
+import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import igentuman.api.nc.SideModeToggleable;
 import igentuman.nc.NuclearCraft;
+import igentuman.nc.block.entity.NuclearCraftBE;
+import igentuman.nc.compat.gregtech.GTEnergyContainer;
 import igentuman.nc.content.energy.BatteryBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -22,6 +25,7 @@ import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static igentuman.nc.handler.config.CommonConfig.ENERGY_STORAGE;
+import static igentuman.nc.util.ModUtil.isGtLoaded;
 import static net.minecraftforge.common.capabilities.ForgeCapabilities.ENERGY;
 
 public class BatteryBE extends NCEnergy {
@@ -88,6 +92,11 @@ public class BatteryBE extends NCEnergy {
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
+        if(isGtLoaded() && (side != null && sideConfig.get(side.ordinal()) != SideModeToggleable.SideMode.DISABLED)) {
+            if(cap == com.gregtechceu.gtceu.api.capability.forge.GTCapability.CAPABILITY_ENERGY_CONTAINER) {
+                return getGTEnergy(this, side).cast();
+            }
+        }
         if (cap == ENERGY && (side != null && sideConfig.get(side.ordinal()) != SideModeToggleable.SideMode.DISABLED)) {
             return getEnergy().cast();
         }

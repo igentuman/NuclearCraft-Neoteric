@@ -1,7 +1,9 @@
 package igentuman.nc.block.entity;
 
+import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import igentuman.api.nc.SideModeToggleable;
 import igentuman.nc.client.sound.SoundHandler;
+import igentuman.nc.compat.gregtech.GTEnergyContainer;
 import igentuman.nc.handler.CatalystHandler;
 import igentuman.nc.handler.UpgradesHandler;
 import igentuman.nc.handler.sided.SidedContentHandler;
@@ -41,6 +43,8 @@ import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.util.*;
 
+import static com.gregtechceu.gtceu.api.capability.forge.GTCapability.CAPABILITY_ENERGY_CONTAINER;
+import static igentuman.nc.util.ModUtil.isGtLoaded;
 import static igentuman.nc.util.ModUtil.isMekanismLoaded;
 
 public class NuclearCraftBE extends BlockEntity {
@@ -331,9 +335,15 @@ public class NuclearCraftBE extends BlockEntity {
         }
     }
 
+
+    protected LazyOptional<IEnergyContainer> getGTEnergy(NuclearCraftBE energyHolder, @Nullable Direction side) {
+        return GTEnergyContainer.wrapped(energyHolder.energyStorage(), side).cast();
+    }
+
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
+
         if (cap == ForgeCapabilities.ENERGY && energyStorage() != null) {
             return getEnergy().cast();
         }

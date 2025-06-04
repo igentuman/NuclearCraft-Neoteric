@@ -10,12 +10,19 @@ public class CustomEnergyStorage extends EnergyStorage {
     public boolean wasUpdated = true;
     private int receivedEnergy = 0;
     private boolean limit = false;
-
+    private final long outputAmerage;
+    private final long outputVoltage;
+    private final long inputAmerage;
+    private final long inputVoltage;
     public CustomEnergyStorage(int capacity, int maxTransfer) {
         this(capacity, maxTransfer, 0);
     }
     public CustomEnergyStorage(int capacity, int maxTransfer, int maxExtract) {
         super(capacity, maxTransfer, maxExtract);
+        this.outputAmerage = maxExtract / 4L;
+        this.outputVoltage = maxExtract / 4L;
+        this.inputAmerage = maxTransfer / 4L;
+        this.inputVoltage = maxTransfer / 4L;
     }
     public CustomEnergyStorage(int capacity, int maxTransfer, int maxExtract, boolean limit) {
         this(capacity, maxTransfer, maxExtract);
@@ -112,5 +119,21 @@ public class CustomEnergyStorage extends EnergyStorage {
 
     public void tick() {
         receivedEnergy = 0;
+    }
+
+    public long getGTOutputAmperage() {
+        return outputAmerage;
+    }
+
+    public long getGTOuputVoltage() {
+        return outputVoltage;
+    }
+
+    public long getGTInputAmperage() {
+        return inputAmerage;
+    }
+
+    public long getGTInputVoltage() {
+        return inputVoltage;
     }
 }

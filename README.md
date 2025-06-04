@@ -27,6 +27,9 @@ This is a re-creation of old but gold NuclearCraft on a modern MC version
 - [x] Patchouli Guidebook
 - [x] Kugelblitz
 - [x] Custom Villager
+- [x] Wasteland Biome
+- [x] Wasteland Dimension
+- [x] Entities
 
 ### Download here: https://curseforge.com/minecraft/mc-mods/nuclearcraft-neoteric
 ### Development builds: Go to Actions Tab and download the latest artifact
@@ -40,9 +43,6 @@ This is a re-creation of old but gold NuclearCraft on a modern MC version
 - [ ] Crafting Automation
 - [ ] Reactor Design Hub
 - [ ] Heat Exchanger
-- [ ] Entities
-- [ ] Wasteland Biome
-- [ ] Wasteland Dimension
 
 
 # CREDITS

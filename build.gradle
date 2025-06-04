@@ -97,11 +97,22 @@ repositories {
             includeGroup "com.github.rtyley"
         }
     }
+
+    maven {
+        name = 'GTCEu Maven'
+        url = 'https://maven.gtceu.com'
+        content {
+            includeGroup 'com.gregtechceu.gtceu'
+        }
+    }
 }
 
 dependencies {
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
     minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
+    implementation fg.deobf("com.gregtechceu.gtceu:gtceu-${mc_version}:${gtm_version}"){
+        transitive = false
+    }
     runtimeOnly fg.deobf("curse.maven:mantle-74924:6603205")
     //runtimeOnly fg.deobf("curse.maven:tinkers-construct-74072:6603344")
     runtimeOnly fg.deobf("curse.maven:construction-wand-399558:4684054")

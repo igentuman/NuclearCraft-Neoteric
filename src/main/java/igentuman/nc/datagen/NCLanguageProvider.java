@@ -377,7 +377,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("jei.category.nuclearcraft.multiblock_structure", "NuclearCraft Multiblocks");
         add("jei.recipe.nc.turbine", "Turbine");
         add("jei.recipe.nc.fusion_reactor", "Fusion Reactor");
-        add("jei.recipe.nc.fission_reactor", "Fusion Reactor");
+        add("jei.recipe.nc.fission_reactor", "Fission Reactor");
         add("jei.recipe.nc.kugelblitz_chamber", "Kugelblitz Chamber");
         add("jei.recipe.nc.leacher", "Leacher Setup");
         add("entity.minecraft.villager.nuclearcraft.nuclear_scientist", "Nuclear Scientist");

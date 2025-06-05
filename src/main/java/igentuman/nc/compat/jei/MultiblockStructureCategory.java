@@ -57,7 +57,7 @@ public class MultiblockStructureCategory implements IRecipeCategory<MultiblockSt
 
     public MultiblockStructureCategory(IGuiHelper guiHelper) {
         this.background = guiHelper.createBlankDrawable(160, 120);
-        this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(NC_FOOD.get("smore").get()));
+        this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(NC_FOOD.get("moresmore").get()));
         this.title = Component.translatable("jei.category." + MODID + ".multiblock_structure");
         this.renderer = new MultiblockRenderer();
     }

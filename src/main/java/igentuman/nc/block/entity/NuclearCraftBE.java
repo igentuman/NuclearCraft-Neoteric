@@ -6,6 +6,7 @@ import igentuman.nc.client.sound.SoundHandler;
 import igentuman.nc.compat.gregtech.GTEnergyContainer;
 import igentuman.nc.handler.CatalystHandler;
 import igentuman.nc.handler.UpgradesHandler;
+import igentuman.nc.handler.config.CommonConfig;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.recipes.NcRecipeType;
@@ -44,8 +45,11 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 import static com.gregtechceu.gtceu.api.capability.forge.GTCapability.CAPABILITY_ENERGY_CONTAINER;
+import static igentuman.nc.handler.config.CommonConfig.GTCEU_CONFIG;
+import static igentuman.nc.handler.config.CommonConfig.MISC_CONFIG;
 import static igentuman.nc.util.ModUtil.isGtLoaded;
 import static igentuman.nc.util.ModUtil.isMekanismLoaded;
+import static net.minecraftforge.common.capabilities.ForgeCapabilities.ENERGY;
 
 public class NuclearCraftBE extends BlockEntity {
 
@@ -335,6 +339,11 @@ public class NuclearCraftBE extends BlockEntity {
         }
     }
 
+    public boolean isGTEUCapEnabled() {
+        return GTCEU_CONFIG.COMPATIBILITY.get() == CommonConfig.GTCEUCompatibility.ONLY_GTCEU
+                || GTCEU_CONFIG.COMPATIBILITY.get() == CommonConfig.GTCEUCompatibility.GTCEU_AND_FE;
+    }
+
 
     protected LazyOptional<IEnergyContainer> getGTEnergy(NuclearCraftBE energyHolder, @Nullable Direction side) {
         return GTEnergyContainer.wrapped(energyHolder.energyStorage(), side).cast();
@@ -343,9 +352,22 @@ public class NuclearCraftBE extends BlockEntity {
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-
-        if (cap == ForgeCapabilities.ENERGY && energyStorage() != null) {
-            return getEnergy().cast();
+        if(isGtLoaded()) {
+            if (cap == com.gregtechceu.gtceu.api.capability.forge.GTCapability.CAPABILITY_ENERGY_CONTAINER && energyStorage() != null) {
+                if (isGTEUCapEnabled()) {
+                    if (side != null && sideConfig.get(side.ordinal()) != SideModeToggleable.SideMode.DISABLED)
+                        return getGTEnergy(this, side).cast();
+                } else {
+                    return LazyOptional.empty();
+                }
+            }
+        }
+        if (cap == ENERGY && energyStorage() != null) {
+            if(GTCEU_CONFIG.COMPATIBILITY.get() != CommonConfig.GTCEUCompatibility.ONLY_GTCEU) {
+                return getEnergy().cast();
+            } else {
+                return LazyOptional.empty();
+            }
         }
         if (cap == ForgeCapabilities.ITEM_HANDLER && contentHandler() != null) {
             return contentHandler().getItemCapability(side);

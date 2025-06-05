@@ -84,7 +84,7 @@ public class FissionConfig {
 
             MAX_SIZE = builder
                     .comment("Reactor max size.")
-                    .defineInRange("max_size", 16, 5, 24);
+                    .defineInRange("max_size", 16, 5, 32);
 
             EXPLOSION_RADIUS = builder
                     .comment("Explosion size if reactor overheats. 4 - TNT size. Set to 0 to disable explosion.")

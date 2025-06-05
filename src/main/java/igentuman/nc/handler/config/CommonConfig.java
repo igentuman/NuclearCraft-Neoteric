@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+
 public class CommonConfig {
     public static <T> List<T> toList(Collection<T> vals)
     {
@@ -20,6 +21,7 @@ public class CommonConfig {
     public static final EnergyGenerationConfig ENERGY_GENERATION = new EnergyGenerationConfig(BUILDER);
     public static final EnergyStorageConfig ENERGY_STORAGE = new EnergyStorageConfig(BUILDER);
     public static final MiscConfig MISC_CONFIG = new MiscConfig(BUILDER);
+    public static final GTCEUCompatibilityConfig GTCEU_CONFIG = new GTCEUCompatibilityConfig(BUILDER);
 
     public static final StorageBlocksConfig STORAGE_BLOCKS = new StorageBlocksConfig(BUILDER);
     public static final ForgeConfigSpec spec = BUILDER.build();
@@ -43,7 +45,6 @@ public class CommonConfig {
             loadActions.add(action);
     }
 
-
     public static class EnergyGenerationConfig {
         public ForgeConfigSpec.ConfigValue<List<Boolean>> REGISTER_SOLAR_PANELS;
         public ForgeConfigSpec.ConfigValue<List<Integer>> SOLAR_PANELS_GENERATION;
@@ -53,6 +54,7 @@ public class CommonConfig {
         public ForgeConfigSpec.ConfigValue<Integer> STEAM_TURBINE;
         public ForgeConfigSpec.ConfigValue<Integer> DECAY_GENERATOR;
         public ForgeConfigSpec.ConfigValue<Double> GENERATION_MULTIPLIER;
+
 
 
         public EnergyGenerationConfig(ForgeConfigSpec.Builder builder) {
@@ -162,6 +164,11 @@ public class CommonConfig {
             return BatteryBlocks.all().get(code).config().getStorage();
         }
     }
+    public enum GTCEUCompatibility {
+        ONLY_FE,
+        ONLY_GTCEU,
+        GTCEU_AND_FE
+    }
 
     public static class MiscConfig {
         public ForgeConfigSpec.ConfigValue<Boolean> DEBUG_LOG;
@@ -181,6 +188,68 @@ public class CommonConfig {
                     .comment("This is why each multiblock periodically re-check it's structure.")
                     .comment("Disable if you have performance issues with multiblocks.")
                     .define("scheduled_validation", true);
+
+            builder.pop();
+        }
+    }
+
+    public static class GTCEUCompatibilityConfig {
+
+        public ForgeConfigSpec.ConfigValue<GTCEUCompatibility> COMPATIBILITY;
+        public ForgeConfigSpec.ConfigValue<Boolean> OVERCHARGE_EXPLOSIONS;
+        public ForgeConfigSpec.ConfigValue<Boolean> ALLOW_GTCEU_INPUT_ONLY;
+        public ForgeConfigSpec.ConfigValue<Integer> FISSION_REACTOR_PORT_TIER;
+        public ForgeConfigSpec.ConfigValue<Integer> FUSION_REACTOR_ENERGY_TIER;
+        public ForgeConfigSpec.ConfigValue<Integer> KUGELBLITZ_ENERGY_TIER;
+        public ForgeConfigSpec.ConfigValue<Integer> ACCELERATORS_ENERGY_TIER;
+        public ForgeConfigSpec.ConfigValue<Integer> PROCESSOR_ENERGY_TIER;
+        public ForgeConfigSpec.ConfigValue<Integer> ENERGY_UPGRADES_NEEDED_TO_NEXT_TIER;
+
+        public GTCEUCompatibilityConfig(ForgeConfigSpec.Builder builder) {
+            builder.push("GregTech Energy Compatibility");
+
+            COMPATIBILITY = builder
+                    .comment("ONLY_FE - Only FE energy system is used")
+                    .comment("ONLY_GTCEU - Only GregTech Energy system is used")
+                    .comment("GTCEU_AND_FE - Both systems are used, but GTCEU is preferred")
+                    .defineEnum("gregtech_energy_compatibility", GTCEUCompatibility.GTCEU_AND_FE);
+
+            ALLOW_GTCEU_INPUT_ONLY = builder
+                    .comment("This only counts if GTCEU is supported")
+                    .comment("If true, all NC energy blocks will only accept GTCEU energy as input")
+                    .comment("But generators, reactors and batteries will still output FE energy")
+                    .define("as_input_only", false);
+
+            OVERCHARGE_EXPLOSIONS = builder
+                    .comment("This only counts if GTCEU is supported")
+                    .comment("Explode machines when input energy is more than max input")
+                    .comment("This doesn't count FE energy input")
+                    .define("gregtech_energy_overcharge_explosions", true);
+
+            FISSION_REACTOR_PORT_TIER = builder
+                    .comment("This only counts if GTCEU is supported")
+                    .define("fission_reactor_port_tier", 9);
+
+            FUSION_REACTOR_ENERGY_TIER = builder
+                    .comment("This only counts if GTCEU is supported")
+                    .define("fusion_reactor_energy_tier", 10);
+
+            KUGELBLITZ_ENERGY_TIER = builder
+                    .comment("This only counts if GTCEU is supported")
+                    .define("kugelblitz_energy_tier", 10);
+
+            ACCELERATORS_ENERGY_TIER = builder
+                    .comment("This only counts if GTCEU is supported")
+                    .define("accelerators_energy_tier", 10);
+
+            PROCESSOR_ENERGY_TIER = builder
+                    .comment("This only counts if GTCEU is supported")
+                    .define("processor_energy_tier", 2);
+
+            ENERGY_UPGRADES_NEEDED_TO_NEXT_TIER = builder
+                    .comment("This only counts if GTCEU is supported")
+                    .comment("How many energy upgrades are needed for processor to reach next energy tier")
+                    .defineInRange("energy_upgrades_for_next_tier", 8, 4, 64);
 
             builder.pop();
         }

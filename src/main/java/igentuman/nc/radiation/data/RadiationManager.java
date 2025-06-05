@@ -118,4 +118,8 @@ public class RadiationManager extends SavedData {
             MekanismRadiation.radiate(x, y, z, appliedRadiation/1000, level);
         }
     }
+
+    public void clearChunk(int x, int z) {
+        worldRadiation.chunkRadiation.remove(pack(x,z));
+    }
 }

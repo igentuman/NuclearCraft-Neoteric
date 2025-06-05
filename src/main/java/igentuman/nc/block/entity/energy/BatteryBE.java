@@ -6,6 +6,7 @@ import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.compat.gregtech.GTEnergyContainer;
 import igentuman.nc.content.energy.BatteryBlocks;
+import igentuman.nc.handler.config.CommonConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustParticleOptions;
@@ -24,7 +25,7 @@ import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static igentuman.nc.handler.config.CommonConfig.ENERGY_STORAGE;
+import static igentuman.nc.handler.config.CommonConfig.*;
 import static igentuman.nc.util.ModUtil.isGtLoaded;
 import static net.minecraftforge.common.capabilities.ForgeCapabilities.ENERGY;
 
@@ -92,13 +93,22 @@ public class BatteryBE extends NCEnergy {
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if(isGtLoaded() && (side != null && sideConfig.get(side.ordinal()) != SideModeToggleable.SideMode.DISABLED)) {
-            if(cap == com.gregtechceu.gtceu.api.capability.forge.GTCapability.CAPABILITY_ENERGY_CONTAINER) {
-                return getGTEnergy(this, side).cast();
+        if(isGtLoaded()) {
+            if (cap == com.gregtechceu.gtceu.api.capability.forge.GTCapability.CAPABILITY_ENERGY_CONTAINER) {
+                if (isGTEUCapEnabled()) {
+                    if (side != null && sideConfig.get(side.ordinal()) != SideModeToggleable.SideMode.DISABLED) {
+                        return getGTEnergy(this, side).cast();
+                    }
+                }
             }
         }
-        if (cap == ENERGY && (side != null && sideConfig.get(side.ordinal()) != SideModeToggleable.SideMode.DISABLED)) {
-            return getEnergy().cast();
+
+        if (cap == ENERGY && GTCEU_CONFIG.COMPATIBILITY.get() != CommonConfig.GTCEUCompatibility.ONLY_GTCEU) {
+            if (side != null && sideConfig.get(side.ordinal()) != SideModeToggleable.SideMode.DISABLED) {
+                return getEnergy().cast();
+            } else {
+                return LazyOptional.empty();
+            }
         }
         return super.getCapability(cap, side);
     }

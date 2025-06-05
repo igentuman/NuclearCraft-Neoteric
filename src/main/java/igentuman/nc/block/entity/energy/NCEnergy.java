@@ -1,6 +1,8 @@
 package igentuman.nc.block.entity.energy;
 
+import igentuman.api.nc.SideModeToggleable;
 import igentuman.nc.block.entity.NuclearCraftBE;
+import igentuman.nc.handler.config.CommonConfig;
 import igentuman.nc.setup.registration.NCEnergyBlocks;
 import igentuman.nc.util.CustomEnergyStorage;
 import net.minecraft.core.BlockPos;
@@ -21,6 +23,11 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import static igentuman.nc.handler.config.CommonConfig.GTCEU_CONFIG;
+import static igentuman.nc.handler.config.CommonConfig.MISC_CONFIG;
+import static igentuman.nc.util.ModUtil.isGtLoaded;
+import static net.minecraftforge.common.capabilities.ForgeCapabilities.ENERGY;
 
 public class NCEnergy extends NuclearCraftBE {
 
@@ -102,7 +109,14 @@ public class NCEnergy extends NuclearCraftBE {
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (cap == ForgeCapabilities.ENERGY) {
+        if(isGtLoaded()) {
+            if (cap == com.gregtechceu.gtceu.api.capability.forge.GTCapability.CAPABILITY_ENERGY_CONTAINER) {
+                if (isGTEUCapEnabled()) {
+                    return getGTEnergy(this, side).cast();
+                }
+            }
+        }
+        if (cap == ENERGY && GTCEU_CONFIG.COMPATIBILITY.get() != CommonConfig.GTCEUCompatibility.ONLY_GTCEU) {
             return getEnergy().cast();
         }
         return super.getCapability(cap, side);

@@ -9,6 +9,8 @@ import net.minecraft.world.level.block.Block;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.net.URI;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,14 +22,29 @@ import static net.minecraft.world.level.block.Blocks.AIR;
 
 public class ReactorDesignParser {
 
+    public static String resolvePath(String input) throws Exception {
+        if (input.startsWith("file://")) {
+            return Paths.get(new URI(input)).toAbsolutePath().toString();
+        } else {
+            return Paths.get(input).toAbsolutePath().toString();
+        }
+    }
+
     public static HashMap<BlockPos, Block> parseStructure(String input) {
         HashMap<BlockPos, Block> blockMap = new HashMap<>();
 
         JsonElement jsonElement = null;
-        try {
-            jsonElement = JsonParser.parseReader(new FileReader(input));
-        } catch (FileNotFoundException e) {
 
+        String resolvedPath = input;
+
+        try {
+            resolvedPath = resolvePath(input);
+        } catch (Exception ignored) {
+        }
+
+        try {
+            jsonElement = JsonParser.parseReader(new FileReader(resolvedPath));
+        } catch (FileNotFoundException ignored) {
         }
 
         try {

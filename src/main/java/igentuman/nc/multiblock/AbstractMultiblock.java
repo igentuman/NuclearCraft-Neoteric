@@ -229,14 +229,14 @@ public abstract class AbstractMultiblock implements Multiblock {
 
     public int resolveHeight()
     {
-        for (int i = 1; i < maxHeight(); i++) {
+        for (int i = 1; i <= maxHeight()+1; i++) {
             if (!isValidForOuter(initialPos().above(i))) {
                 topCasing = i - 1;
                 height = i;
                 break;
             }
         }
-        for (int i = 1; i < maxHeight(); i++) {
+        for (int i = 1; i <= maxHeight()+1; i++) {
             if (!isValidForOuter(initialPos().below(i))) {
                 bottomCasing = i - 1;
                 height += i - 1;
@@ -249,14 +249,14 @@ public abstract class AbstractMultiblock implements Multiblock {
 
     public int resolveWidth()
     {
-        for(int i = 1; i<maxWidth(); i++) {
+        for(int i = 1; i <= maxWidth()+1; i++) {
             if (!isValidForOuter(getLeftPos(i).above(topCasing))) {
                 leftCasing = i-1;
                 width = i;
                 break;
             }
         }
-        for(int i = 1; i<maxWidth(); i++) {
+        for(int i = 1; i <= maxWidth()+1; i++) {
             if (!isValidForOuter(getRightPos(i).above(topCasing))) {
                 rightCasing = i-1;
                 width += i-1;
@@ -268,7 +268,7 @@ public abstract class AbstractMultiblock implements Multiblock {
 
     public int resolveDepth()
     {
-        for(int i = 1; i<maxDepth(); i++) {
+        for(int i = 1; i <= maxDepth()+1; i++) {
             if (!isValidForOuter(getForwardPos(i).above(topCasing))) {
                 depth = i;
                 break;

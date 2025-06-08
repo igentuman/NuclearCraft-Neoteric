@@ -58,7 +58,6 @@ public class RadiationManager extends SavedData {
             long wasRadiation = 0;
             long playerRadiation = 0;
             if (player instanceof ServerPlayer serverPlayer) {
-                if(serverPlayer.isSpectator() || serverPlayer.isCreative()) return;
                 int playerChunkX = player.chunkPosition().x;
                 int playerChunkZ = player.chunkPosition().z;
                 long id = pack(playerChunkX, playerChunkZ);
@@ -71,10 +70,11 @@ public class RadiationManager extends SavedData {
 
                 if(worldRadiation.chunkRadiation.get(id) != null) {
                     NuclearCraft.packetHandler().sendTo(new PacketWorldRadiationData(id, worldRadiation.chunkRadiation.get(id)), serverPlayer);
-                } else if(wasRadiation != playerRadiation) {
+                } else if(!(serverPlayer.isSpectator() && serverPlayer.isCreative()) && wasRadiation != playerRadiation) {
                     NuclearCraft.packetHandler().sendTo(new PacketPlayerRadiationData(playerRadiation), serverPlayer);
                 }
             }
+
         });
         tickCounter--;
         if (tickCounter == RADIATION_CONFIG.RADIATION_UPDATE_INTERVAL.get()/2) {

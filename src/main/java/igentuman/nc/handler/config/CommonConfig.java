@@ -204,9 +204,6 @@ public class CommonConfig {
         public ForgeConfigSpec.ConfigValue<Boolean> OVERCHARGE_EXPLOSIONS;
         public ForgeConfigSpec.ConfigValue<GTCEUTier> FISSION_REACTOR_TIER;
         public ForgeConfigSpec.ConfigValue<GTCEUTier> TURBINE_ENERGY_TIER;
-        public ForgeConfigSpec.ConfigValue<GTCEUTier> BATTERY_BASE_TIER;
-        public ForgeConfigSpec.ConfigValue<GTCEUTier> SOLARS_BASE_TIER;
-        public ForgeConfigSpec.ConfigValue<GTCEUTier> RTGS_BASE_TIER;
         public ForgeConfigSpec.ConfigValue<GTCEUTier> FUSION_REACTOR_ENERGY_TIER;
         public ForgeConfigSpec.ConfigValue<GTCEUTier> KUGELBLITZ_ENERGY_TIER;
         public ForgeConfigSpec.ConfigValue<GTCEUTier> ACCELERATORS_ENERGY_TIER;
@@ -231,21 +228,6 @@ public class CommonConfig {
                     .comment("Explode machines when input energy is more than max input")
                     .comment("This doesn't count FE energy input")
                     .define("gregtech_energy_overcharge_explosions", true);
-
-            BATTERY_BASE_TIER = builder
-                    .comment("This only counts if GTCEU is supported")
-                    .comment("This tier applies to basic voltaic pile, and others will have +1 tier each")
-                    .define("batteries_base_tier", LV);
-
-            SOLARS_BASE_TIER = builder
-                    .comment("This only counts if GTCEU is supported")
-                    .comment("This tier applies to basic solar panel, and others will have +1 tier each")
-                    .define("solars_base_tier", ULV);
-
-            RTGS_BASE_TIER = builder
-                    .comment("This only counts if GTCEU is supported")
-                    .comment("This tier applies to basic uranium rtg, and others will have +1 tier each")
-                    .define("rtgs_base_tier", LV);
 
             FISSION_REACTOR_TIER = builder
                     .comment("This only counts if GTCEU is supported")

@@ -2,6 +2,7 @@ package igentuman.nc.block;
 
 import igentuman.nc.block.entity.energy.NCEnergy;
 import igentuman.nc.content.energy.RTGs;
+import igentuman.nc.content.energy.SolarPanels;
 import igentuman.nc.setup.registration.NCEnergyBlocks;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
@@ -23,6 +24,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+import static igentuman.nc.block.entity.NuclearCraftBE.isGTEUCapEnabled;
+import static igentuman.nc.compat.gregtech.GTUtils.*;
+import static igentuman.nc.util.ModUtil.isGtLoaded;
 import static igentuman.nc.util.TextUtils.__;
 
 public class RTGBlock extends Block implements EntityBlock {
@@ -72,7 +76,14 @@ public class RTGBlock extends Block implements EntityBlock {
 
     public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag)
     {
-        list.add(TextUtils.applyFormat(__("rtg.fe_generation", TextUtils.numberFormat(RTGs.all().get(code()).config().getActualGeneration())), ChatFormatting.GOLD));
+        int generation = RTGs.all().get(code()).config().getActualGeneration();
+        if(isGtLoaded() && isGTEUCapEnabled()) {
+            list.add(__("tooltip.nc.energy_eu_generation", formatEUEnergy(generation)).withStyle(ChatFormatting.GOLD));
+            list.add(__("tooltip.nc.energy_eu_tier", formatEUTier(generation)).withStyle(ChatFormatting.GOLD));
+        }
+        if(!isGtLoaded() || !isOnlyGTCEUCapEnabled()) {
+            list.add(TextUtils.applyFormat(__("rtg.fe_generation", TextUtils.numberFormat(generation)), ChatFormatting.BLUE));
+        }
     }
 
     public boolean registered() {

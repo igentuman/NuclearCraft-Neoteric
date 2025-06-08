@@ -11,7 +11,10 @@ import net.minecraft.world.level.block.Block;
 
 import java.util.List;
 
-import static igentuman.nc.util.TextUtils.applyFormat;
+import static igentuman.nc.block.entity.NuclearCraftBE.isGTEUCapEnabled;
+import static igentuman.nc.compat.gregtech.GTUtils.*;
+import static igentuman.nc.util.ModUtil.isGtLoaded;
+import static igentuman.nc.util.TextUtils.*;
 import static net.minecraft.network.chat.Component.translatable;
 
 public class RFAmplifierBlock extends MultiblockBlock {
@@ -43,9 +46,14 @@ public class RFAmplifierBlock extends MultiblockBlock {
     }
     public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag)
     {
-        list.add(applyFormat(
-                translatable("tooltip.nc.rf_amplifier.power", TextUtils.numberFormat(prefab().getPower())),
-                ChatFormatting.DARK_AQUA));
+        if(isGtLoaded() && isGTEUCapEnabled()) {
+            list.add(__("tooltip.nc.eu_amplifier.power", formatEUEnergy(prefab().getPower())).withStyle(ChatFormatting.GOLD));
+        }
+        if(!isGtLoaded() || !isOnlyGTCEUCapEnabled()) {
+            list.add(applyFormat(
+                    translatable("tooltip.nc.rf_amplifier.power", TextUtils.numberFormat(prefab().getPower())),
+                    ChatFormatting.DARK_AQUA));
+        }
         list.add(applyFormat(
                 translatable("tooltip.nc.rf_amplifier.voltage", TextUtils.numberFormat((double) prefab().getVoltage() /1000)),
                 ChatFormatting.DARK_BLUE));

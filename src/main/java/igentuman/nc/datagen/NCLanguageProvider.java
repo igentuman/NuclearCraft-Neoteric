@@ -532,6 +532,13 @@ public class NCLanguageProvider extends LanguageProvider {
     }
 
     private void tooltips() {
+        add("tooltip.nc.upgrade_energy.tier","+1 Energy Tier for every %s Upgrades");
+        add("tooltip.nc.eu_energy_stored","EU Stored: %s / %s");
+        add("tooltip.nc.energy_base_eu_tier", "Base EU Tier: %s");
+        add("tooltip.nc.energy_eu_tier", "EU Tier: %s");
+        add("tooltip.nc.energy_eu_capacity", "EU Capacity: %s");
+        add("tooltip.nc.energy_eu_generation", "EU Generation: %s/t");
+        add("tooltip.nc.eu_amplifier.power", "EU Required: %s/t");
         add("tooltip.nc.build", "Build Multiblock");
         add("tooltip.nc.paste_json", "Paste JSON");
         add("tooltip.nc.paste_json.descr", "File content or file itself");
@@ -744,6 +751,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("multiblock.casing.complete", "Multiblock Casing Complete");
         add("multiblock.casing.incomplete", "Multiblock Casing Incomplete");
         add("energy.bar.amount", "Total FE: %s / %s");
+        add("tooltip.eu.bar.amount", "Total EU: %s / %s");
         add("reactor.internal_usage", "Internal usage: %s FE/t");
         add("coolant.bar.amount", "Coolant: %s / %s mB");
         add("hot_coolant.bar.amount", "Heated Coolant: %s / %s mB");
@@ -778,6 +786,8 @@ public class NCLanguageProvider extends LanguageProvider {
         add("speed.multiplier", "Speed Multiplier: x%s");
         add("energy.multiplier", "Energy Multiplier: x%s");
         add("energy.per_tick", "Energy Per Tick: %s FE/t");
+        add("tooltip.eu.tier", "Energy Tier: %s");
+        add("tooltip.eu.per_tick", "Energy Per Tick: %s EU/t");
 
         add("reactor.cooling", "Cooling: %s H/t");
         add("reactor.heating", "Heat Gen: %s H/t");

@@ -16,8 +16,11 @@ import net.minecraftforge.items.wrapper.InvWrapper;
 import org.jetbrains.annotations.NotNull;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.block.entity.NuclearCraftBE.isGTEUCapEnabled;
+import static igentuman.nc.compat.gregtech.GTUtils.convert2EU;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_CORE_PROXY;
+import static igentuman.nc.util.ModUtil.isGtLoaded;
 import static igentuman.nc.util.TextUtils.*;
 
 public class FusionCoreContainer extends AbstractContainerMenu {
@@ -71,7 +74,7 @@ public class FusionCoreContainer extends AbstractContainerMenu {
     }
 
     public int getEnergy() {
-        return blockEntity.energyStorage.getEnergyStored();
+        return energy2Display(blockEntity.energyStorage.getEnergyStored());
     }
 
     public double getHeat() {
@@ -102,7 +105,7 @@ public class FusionCoreContainer extends AbstractContainerMenu {
     }
 
     public int getMaxEnergy() {
-        return blockEntity.energyStorage.getMaxEnergyStored();
+        return energy2Display(blockEntity.energyStorage().getMaxEnergyStored());
     }
 
     public double getMaxHeat() {
@@ -114,7 +117,7 @@ public class FusionCoreContainer extends AbstractContainerMenu {
     }
 
     public int energyPerTick() {
-        return blockEntity.energyPerTick;
+        return energy2Display(blockEntity.energyPerTick);
     }
 
     public boolean hasRecipe() {
@@ -196,7 +199,7 @@ public class FusionCoreContainer extends AbstractContainerMenu {
     }
 
     public int requiredEnergy() {
-        return blockEntity.rfAmplifiersPower+blockEntity.magnetsPower;
+        return energy2Display(blockEntity.rfAmplifiersPower+blockEntity.magnetsPower);
     }
 
     public boolean isRunning() {

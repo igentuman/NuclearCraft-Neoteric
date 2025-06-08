@@ -35,12 +35,20 @@ public class RTGBE extends NCEnergy {
         }
     }
 
+    public long getInputEnergyTier() {
+        return RTGs.all().get(getName()).getEnergyTier().ordinal();
+    }
+
+    public long getOutputEnergyTier() {
+        return RTGs.all().get(getName()).getEnergyTier().ordinal();
+    }
+
     @Override
     protected int getEnergyMaxStorage() {
         return RTGs.all().get(getName()).config().getActualGeneration();
     }
     @Override
     protected int getEnergyTransferPerTick() {
-        return Math.min(RTGs.all().get(getName()).config().getActualGeneration(), energyStorage.getEnergyStored());
+        return RTGs.all().get(getName()).config().getActualGeneration();
     }
 }

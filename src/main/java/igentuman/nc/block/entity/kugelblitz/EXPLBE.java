@@ -19,6 +19,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 
+import static igentuman.nc.handler.config.CommonConfig.GTCEU_CONFIG;
 import static igentuman.nc.handler.config.KugelblitzConfig.KUGELBLITZ_CONFIG;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.EXPL_BE;
 import static igentuman.nc.setup.registration.NCSounds.LASER_SHOOT;
@@ -44,6 +45,8 @@ public class EXPLBE extends NuclearCraftBE {
     public EXPLBE(BlockPos pPos, BlockState pBlockState) {
         super(EXPL_BE.get(), pPos, pBlockState);
         energyStorage = createEnergy();
+        energyStorage.setInputEnergyTier(GTCEU_CONFIG.KUGELBLITZ_ENERGY_TIER.get().ordinal());
+        energyStorage.setOutputEnergyTier(GTCEU_CONFIG.KUGELBLITZ_ENERGY_TIER.get().ordinal());
         energy = LazyOptional.of(() -> energyStorage);
     }
 

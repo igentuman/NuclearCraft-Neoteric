@@ -44,6 +44,11 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
+import static igentuman.nc.block.entity.NuclearCraftBE.isGTEUCapEnabled;
+import static igentuman.nc.compat.gregtech.GTUtils.formatEUEnergy;
+import static igentuman.nc.compat.gregtech.GTUtils.formatEUTier;
+import static igentuman.nc.handler.config.CommonConfig.GTCEU_CONFIG;
+import static igentuman.nc.util.ModUtil.isGtLoaded;
 import static igentuman.nc.util.TextUtils.__;
 
 public class ProcessorBlock extends HorizontalDirectionalBlock implements EntityBlock {
@@ -158,11 +163,4 @@ public class ProcessorBlock extends HorizontalDirectionalBlock implements Entity
             }
         };
     }
-
-    @Override
-    public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag) {
-        if(asItem().toString().contains("empty") || this.asItem().equals(Items.AIR)) return;
-        list.add(TextUtils.applyFormat(__("processor.description."+processorCode()), ChatFormatting.AQUA));
-    }
-
 }

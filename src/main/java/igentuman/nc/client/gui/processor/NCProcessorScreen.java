@@ -29,6 +29,9 @@ import java.util.Optional;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
+import static igentuman.nc.block.entity.NuclearCraftBE.isGTEUCapEnabled;
+import static igentuman.nc.compat.gregtech.GTUtils.formatEUEnergy;
+import static igentuman.nc.util.ModUtil.isGtLoaded;
 import static igentuman.nc.util.TextUtils.*;
 
 public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractContainerScreen<T> implements IProgressScreen {
@@ -186,7 +189,12 @@ public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractC
                     }
                     widget.addTooltip(applyFormat(__("speed.multiplier", menu.speedMultiplier()), ChatFormatting.RED));
                     widget.addTooltip(applyFormat(__("energy.multiplier", menu.energyMultiplier()), ChatFormatting.GOLD));
-                    widget.addTooltip(applyFormat(__("energy.per_tick", scaledFormat(menu.energyPerTick())), ChatFormatting.YELLOW));
+                    if(isGtLoaded() && isGTEUCapEnabled()) {
+                        widget.addTooltip(applyFormat(__("tooltip.eu.per_tick", scaledFormat(menu.energyPerTick())), ChatFormatting.YELLOW));
+                        widget.addTooltip(applyFormat(__("tooltip.eu.tier", menu.getTier()), ChatFormatting.YELLOW));
+                    } else {
+                        widget.addTooltip(applyFormat(__("energy.per_tick", scaledFormat(menu.energyPerTick())), ChatFormatting.YELLOW));
+                    }
                 }
                 graphics.renderTooltip(font, widget.getTooltips(),
                         Optional.empty(), pMouseX, pMouseY);

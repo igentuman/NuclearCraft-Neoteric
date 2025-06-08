@@ -8,6 +8,7 @@ import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;
 import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.kugelblitz.KugelblitzMultiblock;
+import igentuman.nc.util.CustomEnergyStorage;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -25,10 +26,12 @@ import javax.annotation.Nullable;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static igentuman.nc.compat.gregtech.GTUtils.*;
 import static igentuman.nc.compat.oc2.FusionReactorDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BE;
-import static igentuman.nc.util.ModUtil.isCcLoaded;
-import static igentuman.nc.util.ModUtil.isOC2Loaded;
+import static igentuman.nc.util.ModUtil.*;
+import static igentuman.nc.util.ModUtil.isGtLoaded;
+import static net.minecraftforge.common.capabilities.ForgeCapabilities.ENERGY;
 
 public class ChamberPortBE extends NuclearCraftBE implements MultiblockAttachable {
 
@@ -83,29 +86,28 @@ public class ChamberPortBE extends NuclearCraftBE implements MultiblockAttachabl
     public void tickServer() {
         if(NuclearCraft.instance.isNcBeStopped || isRemoved()) return;
         super.tickServer();
-        if(getMultiblock() == null || controller() == null) return;
         int wasSignal = analogSignal;
-        boolean updated = sendOutPower();
-        if(controllerPos == null) {
-            controllerPos = controller().getBlockPos();
-            updated = true;
-            setChanged();
+        if(getMultiblock() != null || controller() != null) {
+            sendOutPower();
         }
-        if(hasRedstoneSignal()) {
+        boolean updated = updateController();
+        if(hasRedstoneSignal() && controller() != null) {
             controller().controllerEnabled = true;
         }
 
-        updateAnalogSignal();
+        if(controller() != null) {
+            updateAnalogSignal();
 
-        updated = wasSignal != analogSignal || updated;
-        switch (comparatorMode) {
-            case SignalSource.FREQUENCY -> controller().frequency = analogSignal;
-            case SignalSource.TRANSFORMATION_ENERGY_RATE -> controller().energyConvertionRate = analogSignal/15*100;
-        }
-        Direction dir = getFacing();
+            updated = wasSignal != analogSignal || updated;
+            switch (comparatorMode) {
+                case SignalSource.FREQUENCY -> controller().frequency = analogSignal;
+                case SignalSource.TRANSFORMATION_ENERGY_RATE -> controller().energyConvertionRate = analogSignal/15*100;
+            }
+            Direction dir = getFacing();
 
-        if(fluidHandler() != null) {
-            updated = fluidHandler().pullFluids(dir, false, worldPosition) || updated;
+            if(fluidHandler() != null) {
+                updated = fluidHandler().pullFluids(dir, false, worldPosition) || updated;
+            }
         }
 
         if(updated) {
@@ -114,6 +116,50 @@ public class ChamberPortBE extends NuclearCraftBE implements MultiblockAttachabl
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
             level.updateNeighborsAt(worldPosition, getBlockState().getBlock());
         }
+    }
+
+    private boolean updateController() {
+        boolean result = false;
+        if (controller != controller()) {
+            controller = controller();
+            controllerPos = BlockPos.ZERO;
+            result = true;
+        }
+        if (controller != null) {
+            controllerPos = new BlockPos(controller.getBlockPos());
+            result = true;
+        }
+
+        return result;
+    }
+
+    protected void transferEnergyToSide(Direction direction) {
+        AtomicInteger capacity = new AtomicInteger(controller().energyStorage().getEnergyStored());
+        if (capacity.get() <= 0) {
+            return; // No energy to transfer
+        }
+        BlockEntity be = level.getExistingBlockEntity(worldPosition.relative(direction));
+        if (be == null || be instanceof ChamberPortBE) {
+            return;
+        }
+        if((isGtLoaded() && isGTEUCapEnabled())) {
+            transferEU(controller(), be, controller().energyStorage(), direction);
+        }
+        if(isGtLoaded() && isOnlyGTCEUCapEnabled()) {
+            return;
+        }
+        be.getCapability(ForgeCapabilities.ENERGY, direction.getOpposite()).map(handler -> {
+                    if (handler.canReceive()) {
+                        int received = handler.receiveEnergy(Math.min(capacity.get(), controller().energyStorage().getEnergyStored()), false);
+                        capacity.addAndGet(-received);
+                        controller().energyStorage().consumeEnergy(received);
+                        setChanged();
+                        return capacity.get() > 0;
+                    } else {
+                        return true;
+                    }
+                }
+        );
     }
 
     private void updateAnalogSignal() {
@@ -168,8 +214,19 @@ public class ChamberPortBE extends NuclearCraftBE implements MultiblockAttachabl
         if (cap == ForgeCapabilities.FLUID_HANDLER) {
             return controller().getCapability(cap, side);
         }
-        if (cap == ForgeCapabilities.ENERGY) {
-            return  controller().getCapability(cap, side);
+        if(isGtLoaded()) {
+            if (cap == com.gregtechceu.gtceu.api.capability.forge.GTCapability.CAPABILITY_ENERGY_CONTAINER) {
+                if (isGTEUCapEnabled()) {
+                    return getGTEnergy(controller(), side).cast();
+                }
+            }
+        }
+        if (cap == ENERGY) {
+            if(!isOnlyGTCEUCapEnabled()) {
+                return controller().getEnergy().cast();
+            } else {
+                return LazyOptional.empty();
+            }
         }
         if(isCcLoaded()) {
             if(cap == dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL) {
@@ -183,35 +240,6 @@ public class ChamberPortBE extends NuclearCraftBE implements MultiblockAttachabl
             }
         }
         return super.getCapability(cap, side);
-    }
-
-    protected boolean sendOutPower() {
-        if(getMultiblock() == null) return false;
-        AtomicInteger capacity = new AtomicInteger(controller().energyStorage().getEnergyStored());
-        if (capacity.get() > 0) {
-            for (Direction direction : Direction.values()) {
-                BlockEntity be = getLevel().getExistingBlockEntity(worldPosition.relative(direction));
-                if (be != null) {
-                    boolean doContinue = be.getCapability(ForgeCapabilities.ENERGY, direction.getOpposite()).map(handler -> {
-                                if (handler.canReceive()) {
-                                    int received = handler.receiveEnergy(Math.min(capacity.get(), controller().energyStorage().getMaxEnergyStored()), false);
-                                    capacity.addAndGet(-received);
-                                    controller().energyStorage().consumeEnergy(received);
-                                    setChanged();
-                                    return capacity.get() > 0;
-                                } else {
-                                    return true;
-                                }
-                            }
-                    ).orElse(true);
-                    if (!doContinue) {
-                        return true;
-                    }
-                }
-            }
-            return true;
-        }
-        return false;
     }
 
     @Override

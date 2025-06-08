@@ -42,6 +42,7 @@ import igentuman.nc.compat.cc.TurbinePeripheral;
 import static igentuman.nc.block.fission.FissionControllerBlock.POWERED;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.handler.config.CommonConfig.ENERGY_GENERATION;
+import static igentuman.nc.handler.config.CommonConfig.GTCEU_CONFIG;
 import static igentuman.nc.handler.config.TurbineConfig.TURBINE_CONFIG;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
 import static igentuman.nc.setup.registration.NCSounds.TURBINE;
@@ -94,6 +95,8 @@ public class TurbineControllerBE extends MultiblockControllerBE {
         contentHandler().setBlockEntity(this);
         contentHandler().setAllowedInputFluids(0, this::getAllowedInputFluids);
         energyStorage = createEnergy();
+        energyStorage.setInputEnergyTier(GTCEU_CONFIG.TURBINE_ENERGY_TIER.get().ordinal());
+        energyStorage.setOutputEnergyTier(GTCEU_CONFIG.TURBINE_ENERGY_TIER.get().ordinal());
         energy = LazyOptional.of(() -> energyStorage);
     }
 

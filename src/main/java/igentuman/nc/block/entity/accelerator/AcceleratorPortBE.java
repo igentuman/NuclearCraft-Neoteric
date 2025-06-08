@@ -77,7 +77,8 @@ public class AcceleratorPortBE extends NuclearCraftBE implements MultiblockAttac
         super.tickServer();
         if(getMultiblock() == null || controller() == null) return;
         int wasSignal = analogSignal;
-        boolean updated = sendOutPower();
+        boolean updated = false;
+        sendOutPower();
         if(controllerPos == null) {
             controllerPos = controller().getBlockPos();
             updated = true;
@@ -105,6 +106,12 @@ public class AcceleratorPortBE extends NuclearCraftBE implements MultiblockAttac
             MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
             setChanged();
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+        }
+    }
+
+    protected void sendOutPower() {
+        for (Direction direction : Direction.values()) {
+            pullEnergyFromSide(direction);
         }
     }
 
@@ -175,35 +182,6 @@ public class AcceleratorPortBE extends NuclearCraftBE implements MultiblockAttac
             }
         }
         return super.getCapability(cap, side);
-    }
-
-    protected boolean sendOutPower() {
-        if(getMultiblock() == null) return false;
-        AtomicInteger capacity = new AtomicInteger(controller().energyStorage().getEnergyStored());
-        if (capacity.get() > 0) {
-            for (Direction direction : Direction.values()) {
-                BlockEntity be = getLevel().getExistingBlockEntity(worldPosition.relative(direction));
-                if (be != null) {
-                    boolean doContinue = be.getCapability(ForgeCapabilities.ENERGY, direction.getOpposite()).map(handler -> {
-                                if (handler.canReceive()) {
-                                    int received = handler.receiveEnergy(Math.min(capacity.get(), controller().energyStorage().getMaxEnergyStored()), false);
-                                    capacity.addAndGet(-received);
-                                    controller().energyStorage().consumeEnergy(received);
-                                    setChanged();
-                                    return capacity.get() > 0;
-                                } else {
-                                    return true;
-                                }
-                            }
-                    ).orElse(true);
-                    if (!doContinue) {
-                        return true;
-                    }
-                }
-            }
-            return true;
-        }
-        return false;
     }
 
     @Override

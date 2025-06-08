@@ -1,5 +1,6 @@
 package igentuman.nc.item;
 
+import igentuman.nc.content.energy.BatteryBlocks;
 import igentuman.nc.handler.ItemEnergyHandler;
 import igentuman.nc.util.CapabilityUtils;
 import igentuman.nc.util.CustomEnergyStorage;
@@ -18,7 +19,10 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import javax.annotation.Nonnull;
 import java.util.List;
 
+import static igentuman.nc.block.entity.NuclearCraftBE.isGTEUCapEnabled;
+import static igentuman.nc.compat.gregtech.GTUtils.*;
 import static igentuman.nc.handler.config.CommonConfig.ENERGY_STORAGE;
+import static igentuman.nc.util.ModUtil.isGtLoaded;
 import static igentuman.nc.util.TextUtils.__;
 import static igentuman.nc.util.TextUtils.formatEnergy;
 
@@ -76,7 +80,13 @@ public class BatteryBlockItem extends BlockItem
 	@Override
 	public void appendHoverText(ItemStack stack, @javax.annotation.Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
-		list.add(__("tooltip.nc.energy_stored", formatEnergy(getEnergy(stack).getEnergyStored()), formatEnergy(getEnergy(stack).getMaxEnergyStored())).withStyle(ChatFormatting.BLUE));
+		if(isGtLoaded() && isGTEUCapEnabled()) {
+			list.add(__("tooltip.nc.eu_energy_stored", formatEUEnergy(getEnergy(stack).getEnergyStored()), formatEUEnergy(getEnergyMaxStorage())).withStyle(ChatFormatting.GOLD));
+			list.add(__("tooltip.nc.energy_eu_tier", BatteryBlocks.all().get(toString()).getEnergyTier()).withStyle(ChatFormatting.GOLD));
+		}
+		if(!isGtLoaded() || !isOnlyGTCEUCapEnabled()) {
+			list.add(__("tooltip.nc.energy_stored", formatEnergy(getEnergy(stack).getEnergyStored()), formatEnergy(getEnergyMaxStorage())).withStyle(ChatFormatting.BLUE));
+		}
 		list.add(__("tooltip.nc.use_multitool").withStyle(ChatFormatting.YELLOW));
 	}
 }

@@ -5,6 +5,7 @@ import igentuman.nc.container.elements.NCSlotItemHandler;
 import igentuman.nc.content.processors.ProcessorPrefab;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.content.processors.config.ProcessorSlots;
+import igentuman.nc.handler.config.CommonConfig;
 import igentuman.nc.setup.registration.NCItems;
 import igentuman.nc.setup.registration.NCProcessors;
 import igentuman.nc.handler.sided.SlotModePair;
@@ -247,5 +248,9 @@ public class NCProcessorContainer<T extends AbstractContainerMenu> extends Abstr
 
     public int getParallelProcessing() {
         return blockEntity.parallelRecipes();
+    }
+
+    public CommonConfig.GTCEUCompatibilityConfig.GTCEUTier getTier() {
+        return CommonConfig.GTCEUCompatibilityConfig.GTCEUTier.values()[blockEntity.getTier()];
     }
 }

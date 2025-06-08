@@ -1,32 +1,55 @@
 package igentuman.nc.util;
 
+import igentuman.nc.block.entity.NuclearCraftBE;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.Tag;
 import net.minecraftforge.energy.EnergyStorage;
+
+import static igentuman.nc.compat.gregtech.GTUtils.tierByFe;
 
 public class CustomEnergyStorage extends EnergyStorage {
 
     public boolean wasUpdated = true;
     private int receivedEnergy = 0;
     private boolean limit = false;
-    private final long outputAmerage;
-    private final long outputVoltage;
-    private final long inputAmerage;
-    private final long inputVoltage;
+    private long outputAmerage;
+    private long outputVoltage;
+    private long inputAmerage;
+    private long inputVoltage;
+    public static final long[] V = new long[] { 8, 32, 128, 512, 2048, 8192, 32768, 131072, 524288, 2097152, 8388608,
+            33554432, 134217728, 536870912, 2147483648L };
     public CustomEnergyStorage(int capacity, int maxTransfer) {
         this(capacity, maxTransfer, 0);
     }
-    public CustomEnergyStorage(int capacity, int maxTransfer, int maxExtract) {
+
+    public CustomEnergyStorage(int capacity, int maxTransfer, int maxExtract, long outputAmerage, long outputVoltage, long inputAmerage, long inputVoltage) {
         super(capacity, maxTransfer, maxExtract);
-        this.outputAmerage = maxExtract / 4L;
-        this.outputVoltage = maxExtract / 4L;
-        this.inputAmerage = maxTransfer / 4L;
-        this.inputVoltage = maxTransfer / 4L;
+        this.outputAmerage = outputAmerage;
+        this.outputVoltage = V[(int) outputVoltage];;
+        this.inputAmerage = inputAmerage*2;
+        this.inputVoltage = V[(int) inputVoltage];
     }
+
+    public CustomEnergyStorage(int capacity, int maxTransfer, int maxExtract) {
+        this(capacity, maxTransfer, maxExtract, tierByFe(maxExtract), tierByFe(maxExtract), tierByFe(maxTransfer), tierByFe(maxTransfer));
+    }
+
     public CustomEnergyStorage(int capacity, int maxTransfer, int maxExtract, boolean limit) {
         this(capacity, maxTransfer, maxExtract);
         this.limit = limit;
+    }
+
+    public CustomEnergyStorage setInputEnergyTier(long value) {
+        this.inputAmerage = value*2;
+        this.inputVoltage = V[(int) value];
+        return this;
+    }
+
+    public CustomEnergyStorage setOutputEnergyTier(long value) {
+        this.outputAmerage = value;
+        this.outputVoltage = V[(int) value];
+        return this;
     }
 
     protected void onEnergyChanged() {

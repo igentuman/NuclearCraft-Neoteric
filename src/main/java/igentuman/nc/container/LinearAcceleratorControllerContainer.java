@@ -19,8 +19,7 @@ import net.minecraftforge.items.wrapper.InvWrapper;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.CHAMBER_TERMINAL_CONTAINER;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BLOCKS;
-import static igentuman.nc.util.TextUtils.__;
-import static igentuman.nc.util.TextUtils.roundFormat;
+import static igentuman.nc.util.TextUtils.*;
 
 public class LinearAcceleratorControllerContainer extends AbstractContainerMenu {
 
@@ -122,7 +121,7 @@ public class LinearAcceleratorControllerContainer extends AbstractContainerMenu 
     }
 
     public int getEnergy() {
-        return blockEntity.energyStorage.getEnergyStored();
+        return energy2Display(blockEntity.energyStorage.getEnergyStored());
     }
 
 
@@ -158,7 +157,7 @@ public class LinearAcceleratorControllerContainer extends AbstractContainerMenu 
     }
 
     public int getMaxEnergy() {
-        return blockEntity.energyStorage.getMaxEnergyStored();
+        return energy2Display(blockEntity.energyStorage.getMaxEnergyStored());
     }
 
     public String getEfficiency() {
@@ -166,7 +165,7 @@ public class LinearAcceleratorControllerContainer extends AbstractContainerMenu 
     }
 
     public int energyPerTick() {
-        return blockEntity.energyPerTick;
+        return energy2Display(blockEntity.energyPerTick);
     }
 
     public boolean hasRecipe() {

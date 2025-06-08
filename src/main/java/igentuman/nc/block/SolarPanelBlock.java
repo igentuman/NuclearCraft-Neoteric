@@ -24,8 +24,12 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+import static igentuman.nc.block.entity.NuclearCraftBE.isGTEUCapEnabled;
+import static igentuman.nc.compat.gregtech.GTUtils.*;
 import static igentuman.nc.setup.registration.NCEnergyBlocks.ENERGY_BE;
+import static igentuman.nc.util.ModUtil.isGtLoaded;
 import static igentuman.nc.util.TextUtils.__;
+import static igentuman.nc.util.TextUtils.formatEnergy;
 
 public class SolarPanelBlock extends Block implements EntityBlock {
     public SolarPanelBlock() {
@@ -78,7 +82,14 @@ public class SolarPanelBlock extends Block implements EntityBlock {
 
     public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag)
     {
-        list.add(TextUtils.applyFormat(__("solar_panel.fe_generation", TextUtils.numberFormat(SolarPanels.all().get(asItem().toString().replace("solar_panel_","")).getActualGeneration())), ChatFormatting.GOLD));
+        int generation = SolarPanels.all().get(asItem().toString().replace("solar_panel_","")).getActualGeneration();
+        if(isGtLoaded() && isGTEUCapEnabled()) {
+            list.add(__("tooltip.nc.energy_eu_generation", formatEUEnergy(generation)).withStyle(ChatFormatting.GOLD));
+            list.add(__("tooltip.nc.energy_eu_tier", SolarPanels.all().get(asItem().toString().replace("solar_panel_","")).getEnergyTier()).withStyle(ChatFormatting.GOLD));
+        }
+        if(!isGtLoaded() || !isOnlyGTCEUCapEnabled()) {
+            list.add(TextUtils.applyFormat(__("solar_panel.fe_generation", TextUtils.numberFormat(generation)), ChatFormatting.BLUE));
+        }
     }
 
     public boolean registered() {

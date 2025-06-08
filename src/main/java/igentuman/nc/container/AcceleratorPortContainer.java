@@ -23,6 +23,7 @@ import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_PORT_CONTAINER;
 import static igentuman.nc.util.TextUtils.__;
+import static igentuman.nc.util.TextUtils.energy2Display;
 
 public class AcceleratorPortContainer extends AbstractContainerMenu {
 
@@ -123,15 +124,15 @@ public class AcceleratorPortContainer extends AbstractContainerMenu {
         addSlotBox(playerInventory, leftCol, topRow, 9, 18, 3, 18);
     }
     public int getEnergy() {
-        return portBE.getEnergyStored();
+        return energy2Display(portBE.getEnergyStored());
     }
 
     public int getMaxEnergy() {
-        return portBE.getMaxEnergyStored();
+        return energy2Display(portBE.getMaxEnergyStored());
     }
 
     public int energyPerTick() {
-        return portBE.energyPerTick();
+        return energy2Display(portBE.energyPerTick());
     }
 
     public byte getComparatorMode() {

@@ -26,7 +26,7 @@ public class DecayGeneratorBE extends NCEnergy {
 
     public DecayGeneratorBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, getName(pBlockState));
-        energyStorage.setMaxCapacity(2000);
+        energyStorage.setMaxCapacity(2048);
     }
 
     public static String getName(BlockState pBlockState) {

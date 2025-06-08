@@ -19,6 +19,7 @@ import net.minecraftforge.items.wrapper.InvWrapper;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.util.TextUtils.__;
+import static igentuman.nc.util.TextUtils.energy2Display;
 
 public class FissionPortContainer extends AbstractContainerMenu {
     protected final FissionPortBE portBE;
@@ -115,7 +116,7 @@ public class FissionPortContainer extends AbstractContainerMenu {
     }
 
     public int getEnergy() {
-        return portBE.getEnergyStored();
+        return energy2Display(portBE.getEnergyStored());
     }
 
     public double getProgress() {
@@ -123,11 +124,11 @@ public class FissionPortContainer extends AbstractContainerMenu {
     }
 
     public int getMaxEnergy() {
-        return portBE.getMaxEnergyStored();
+        return energy2Display(portBE.getMaxEnergyStored());
     }
 
     public int energyPerTick() {
-        return portBE.energyPerTick();
+        return energy2Display(portBE.energyPerTick());
     }
 
     public byte getComparatorMode() {

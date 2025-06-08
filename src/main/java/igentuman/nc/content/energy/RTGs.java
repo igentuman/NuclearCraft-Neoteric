@@ -14,16 +14,16 @@ import static igentuman.nc.handler.config.CommonConfig.ENERGY_GENERATION;
 
 public class RTGs {
 
-    private static HashMap<String, RTGPrefab> all = new HashMap<>();
-    private static HashMap<String, RTGPrefab> registered = new HashMap<>();
+    private static final HashMap<String, RTGPrefab> all = new HashMap<>();
+    private static final HashMap<String, RTGPrefab> registered = new HashMap<>();
 
     public static HashMap<String, RTGPrefab> all() {
         if(all.isEmpty()) {
             //radiation in pRads
-            all.put("uranium_rtg", new RTGPrefab("uranium_rtg",100, 560).setBlockEntity(RTGBE::new));
-            all.put("americium_rtg", new RTGPrefab("americium_rtg",400, 57800).setBlockEntity(RTGBE::new));
-            all.put("plutonium_rtg", new RTGPrefab("plutonium_rtg",1200, 200000).setBlockEntity(RTGBE::new));
-            all.put("californium_rtg", new RTGPrefab("californium_rtg",4000, 1900000).setBlockEntity(RTGBE::new));
+            all.put("uranium_rtg", new RTGPrefab("uranium_rtg",112, 560, 0).setBlockEntity(RTGBE::new));
+            all.put("americium_rtg", new RTGPrefab("americium_rtg",448, 57800, 1).setBlockEntity(RTGBE::new));
+            all.put("plutonium_rtg", new RTGPrefab("plutonium_rtg",1792, 200000, 2).setBlockEntity(RTGBE::new));
+            all.put("californium_rtg", new RTGPrefab("californium_rtg",4096, 1900000, 3).setBlockEntity(RTGBE::new));
         }
         return all;
     }
@@ -68,11 +68,13 @@ public class RTGs {
         private final String name;
         protected int generation = 0;
         protected int radiation = 0;
+        protected int tier = 0;
 
-        public RTGPrefab(String name, int generation, int radiation) {
+        public RTGPrefab(String name, int generation, int radiation, int tier) {
             this.generation = generation;
             this.radiation = radiation;
             this.name = name;
+            this.tier = tier;
         }
 
         public int getGeneration() {
@@ -119,6 +121,10 @@ public class RTGs {
 
         public int getActualGeneration() {
             return (int) (config().generation * ENERGY_GENERATION.GENERATION_MULTIPLIER.get());
+        }
+
+        public CommonConfig.GTCEUCompatibilityConfig.GTCEUTier getEnergyTier() {
+            return CommonConfig.GTCEUCompatibilityConfig.GTCEUTier.values()[tier];
         }
     }
 }

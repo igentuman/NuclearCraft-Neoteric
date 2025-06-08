@@ -1,16 +1,16 @@
 package igentuman.nc.client.gui.element.bar;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import igentuman.nc.client.gui.FusionCoreScreen;
 import igentuman.nc.client.gui.IVerticalBarScreen;
 import igentuman.nc.client.gui.element.NCGuiElement;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 
 import java.util.List;
 import java.util.function.Supplier;
 
+import static igentuman.nc.block.entity.NuclearCraftBE.isGTEUCapEnabled;
+import static igentuman.nc.util.ModUtil.isGtLoaded;
 import static igentuman.nc.util.TextUtils.__;
 import static igentuman.nc.util.TextUtils.scaledFormat;
 
@@ -97,7 +97,11 @@ public class VerticalBar extends NCGuiElement {
         public Energy(int x, int y, IVerticalBarScreen screen,  int maxEnergy) {
             super(x, y, screen, maxEnergy);
             xOffset = 96;
-            hintKey = "energy.bar.amount";
+            if(isGtLoaded() && isGTEUCapEnabled()) {
+                hintKey = "tooltip.eu.bar.amount";
+            } else {
+                hintKey = "energy.bar.amount";
+            }
         }
 
         @Override
@@ -114,7 +118,11 @@ public class VerticalBar extends NCGuiElement {
             height = 97;
             backgroundXoffset = 146;
 
-            hintKey = "energy.bar.amount";
+            if(isGtLoaded() && isGTEUCapEnabled()) {
+                hintKey = "tooltip.eu.bar.amount";
+            } else {
+                hintKey = "energy.bar.amount";
+            }
         }
 
         @Override

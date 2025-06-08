@@ -49,7 +49,10 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 import static igentuman.nc.block.fission.FissionControllerBlock.POWERED;
+import static igentuman.nc.compat.gregtech.GTUtils.getGTEnergy;
+import static igentuman.nc.compat.gregtech.GTUtils.isOnlyGTCEUCapEnabled;
 import static igentuman.nc.compat.oc2.FusionReactorDevice.DEVICE_CAPABILITY;
+import static igentuman.nc.handler.config.CommonConfig.GTCEU_CONFIG;
 import static igentuman.nc.handler.config.FusionConfig.FUSION_CONFIG;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BE;
 import static igentuman.nc.setup.registration.NCSounds.*;
@@ -132,6 +135,8 @@ public class FusionCoreBE extends MultiblockControllerBE {
     public FusionCoreBE(BlockPos pPos, BlockState pBlockState) {
         super(FUSION_BE.get("fusion_core").get(), pPos, pBlockState);
         energyStorage = createEnergy();
+        energyStorage.setInputEnergyTier(GTCEU_CONFIG.FUSION_REACTOR_ENERGY_TIER.get().ordinal());
+        energyStorage.setOutputEnergyTier(GTCEU_CONFIG.FUSION_REACTOR_ENERGY_TIER.get().ordinal());
         energy = LazyOptional.of(() -> energyStorage);
         contentHandler = new SidedContentHandler(
                 0, 0,
@@ -215,7 +220,17 @@ public class FusionCoreBE extends MultiblockControllerBE {
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
+        if(isGtLoaded()) {
+            if (cap == com.gregtechceu.gtceu.api.capability.forge.GTCapability.CAPABILITY_ENERGY_CONTAINER) {
+                if (isGTEUCapEnabled()) {
+                    return getGTEnergy(this, side).cast();
+                }
+            }
+        }
         if (cap == ForgeCapabilities.ENERGY) {
+            if(isGtLoaded() && isOnlyGTCEUCapEnabled()) {
+                return LazyOptional.empty();
+            }
             return getEnergy().cast();
         }
 

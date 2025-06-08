@@ -1,12 +1,9 @@
 package igentuman.nc.block.entity;
 
-import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import igentuman.api.nc.SideModeToggleable;
 import igentuman.nc.client.sound.SoundHandler;
-import igentuman.nc.compat.gregtech.GTEnergyContainer;
 import igentuman.nc.handler.CatalystHandler;
 import igentuman.nc.handler.UpgradesHandler;
-import igentuman.nc.handler.config.CommonConfig;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.recipes.NcRecipeType;
@@ -27,7 +24,6 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -43,10 +39,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.gregtechceu.gtceu.api.capability.forge.GTCapability.CAPABILITY_ENERGY_CONTAINER;
+import static igentuman.nc.compat.gregtech.GTUtils.*;
+import static igentuman.nc.handler.config.CommonConfig.GTCEUCompatibilityConfig.GTCEUCompatibility.GTCEU_AND_FE;
+import static igentuman.nc.handler.config.CommonConfig.GTCEUCompatibilityConfig.GTCEUCompatibility.ONLY_GTCEU;
 import static igentuman.nc.handler.config.CommonConfig.GTCEU_CONFIG;
-import static igentuman.nc.handler.config.CommonConfig.MISC_CONFIG;
 import static igentuman.nc.util.ModUtil.isGtLoaded;
 import static igentuman.nc.util.ModUtil.isMekanismLoaded;
 import static net.minecraftforge.common.capabilities.ForgeCapabilities.ENERGY;
@@ -86,6 +84,71 @@ public class NuclearCraftBE extends BlockEntity {
         byteFields = initFields(byte.class);
         longFields = initFields(long.class);
         recipeInfo = new RecipeInfo();
+    }
+
+    protected void sendOutPower() {
+        for (Direction direction : Direction.values()) {
+            transferEnergyToSide(direction);
+        }
+    }
+
+    protected void pullEnergyFromSide(Direction direction) {
+        BlockEntity be = level.getExistingBlockEntity(worldPosition.relative(direction));
+        if (be == null) {
+            return;
+        }
+        if(isGtLoaded() && isOnlyGTCEUCapEnabled()) {
+            return;
+        }
+        be.getCapability(ForgeCapabilities.ENERGY, direction.getOpposite()).map(handler -> {
+                    if (handler.canExtract()) {
+                        int canReceive = energyStorage().receiveEnergy(handler.getEnergyStored(), true);
+                        if (canReceive > 0) {
+                            int received = energyStorage().receiveEnergy(canReceive, false);
+                            handler.extractEnergy(received, false);
+                        }
+                        setChanged();
+                        return true;
+                    }
+                    return true;
+                }
+        );
+    }
+
+    protected void transferEnergyToSide(Direction direction) {
+        if (energyStorage().getEnergyStored() <= 0) {
+            return; // No energy to transfer
+        }
+        BlockEntity be = level.getExistingBlockEntity(worldPosition.relative(direction));
+        if (be == null) {
+            return;
+        }
+        if((isGtLoaded() && isGTEUCapEnabled())) {
+            transferEU(this, be, energyStorage(), direction);
+        }
+        if(isGtLoaded() && isOnlyGTCEUCapEnabled()) {
+            return;
+        }
+        be.getCapability(ForgeCapabilities.ENERGY, direction.getOpposite()).map(handler -> {
+                    if (handler.canReceive()) {
+                        int received = handler.receiveEnergy(Math.min(energyStorage().getEnergyStored(), energyStorage().getEnergyStored()), false);
+                        energyStorage().consumeEnergy(received);
+                        setChanged();
+                        return energyStorage().getEnergyStored() > 0;
+                    } else {
+                        return true;
+                    }
+                }
+        );
+    }
+
+    //for the moment input and output energy tiers are the same
+    public long getInputEnergyTier() {
+        return 2L; // Default to 2, can be overridden in subclasses
+    }
+
+    public long getOutputEnergyTier() {
+        return 2L; // Default to 2, can be overridden in subclasses
     }
 
     public SidedContentHandler contentHandler() {
@@ -339,15 +402,13 @@ public class NuclearCraftBE extends BlockEntity {
         }
     }
 
-    public boolean isGTEUCapEnabled() {
-        return GTCEU_CONFIG.COMPATIBILITY.get() == CommonConfig.GTCEUCompatibility.ONLY_GTCEU
-                || GTCEU_CONFIG.COMPATIBILITY.get() == CommonConfig.GTCEUCompatibility.GTCEU_AND_FE;
+    public static boolean isGTEUCapEnabled() {
+        return GTCEU_CONFIG.COMPATIBILITY.get() == ONLY_GTCEU
+                || GTCEU_CONFIG.COMPATIBILITY.get() == GTCEU_AND_FE;
     }
 
 
-    protected LazyOptional<IEnergyContainer> getGTEnergy(NuclearCraftBE energyHolder, @Nullable Direction side) {
-        return GTEnergyContainer.wrapped(energyHolder.energyStorage(), side).cast();
-    }
+
 
     @Nonnull
     @Override
@@ -363,7 +424,7 @@ public class NuclearCraftBE extends BlockEntity {
             }
         }
         if (cap == ENERGY && energyStorage() != null) {
-            if(GTCEU_CONFIG.COMPATIBILITY.get() != CommonConfig.GTCEUCompatibility.ONLY_GTCEU) {
+            if(GTCEU_CONFIG.COMPATIBILITY.get() != ONLY_GTCEU) {
                 return getEnergy().cast();
             } else {
                 return LazyOptional.empty();
@@ -545,5 +606,8 @@ public class NuclearCraftBE extends BlockEntity {
     }
 
     public void tickServer() {
+    }
+
+    public void handleOverVoltage() {
     }
 }

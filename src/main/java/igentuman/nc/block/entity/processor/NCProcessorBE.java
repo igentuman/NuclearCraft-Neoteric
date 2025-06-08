@@ -29,6 +29,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -49,6 +50,7 @@ import java.util.Objects;
 
 import static igentuman.nc.block.ProcessorBlock.ACTIVE;
 import static igentuman.nc.compat.oc2.ProcessorDevice.DEVICE_CAPABILITY;
+import static igentuman.nc.handler.config.CommonConfig.GTCEU_CONFIG;
 import static igentuman.nc.handler.config.ProcessorsConfig.PROCESSOR_CONFIG;
 import static igentuman.nc.setup.registration.NCItems.NC_ITEMS;
 import static igentuman.nc.util.ModUtil.*;
@@ -97,6 +99,8 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
                 prefab().getSlotsConfig().getInputFluids(), prefab().getSlotsConfig().getOutputFluids());
         contentHandler.setBlockEntity(this);
         energyStorage = createEnergy();
+        energyStorage.setInputEnergyTier(GTCEU_CONFIG.PROCESSOR_ENERGY_TIER.get().ordinal());
+        energyStorage.setOutputEnergyTier(GTCEU_CONFIG.PROCESSOR_ENERGY_TIER.get().ordinal());
         energy = LazyOptional.of(() -> energyStorage);
         upgradesHandler = createUpgradesHandler();
         handler = LazyOptional.of(() -> upgradesHandler);
@@ -104,6 +108,12 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
         contentHandler().setAllowedInputItems(this::getAllowedInputItems);
         for(int i = 0; i < prefab().getSlotsConfig().getInputFluids(); i++) {
             contentHandler().setAllowedInputFluids(i, this::getAllowedInputFluids);
+        }
+    }
+
+    public void handleOverVoltage() {
+        if(GTCEU_CONFIG.OVERCHARGE_EXPLOSIONS.get()) {
+            level.explode(null, worldPosition.getX() + 0.5, worldPosition.getY() + 0.5, worldPosition.getZ() + 0.5, 2F, true, Level.ExplosionInteraction.TNT);
         }
     }
 
@@ -462,7 +472,7 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
     }
 
     public int energyMultiplier() {
-        double speedMult = speedMultiplier() + ((parallelRecipes()-1) / 4D);
+        double speedMult = speedMultiplier() + ((parallelRecipes()-1) / 2D);
         energyMultiplier = (int) Math.max(speedMult, Math.pow(speedMult-1, 2)+speedMult-Math.pow(getEnergyUpgrades(),2));
         return energyMultiplier;
     }
@@ -568,5 +578,15 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
             allowedItems.add(stack.getItem());
         }
         return allowedItems;
+    }
+
+    public void upgradesUpdated() {
+        int tier = GTCEU_CONFIG.PROCESSOR_ENERGY_TIER.get().ordinal()+(getEnergyUpgrades()-1)/GTCEU_CONFIG.ENERGY_UPGRADES_NEEDED_TO_NEXT_TIER.get();
+        energyStorage().setInputEnergyTier(tier).setOutputEnergyTier(tier);
+        setChanged();
+    }
+
+    public int getTier() {
+        return GTCEU_CONFIG.PROCESSOR_ENERGY_TIER.get().ordinal()+(getEnergyUpgrades()-1)/GTCEU_CONFIG.ENERGY_UPGRADES_NEEDED_TO_NEXT_TIER.get();
     }
 }

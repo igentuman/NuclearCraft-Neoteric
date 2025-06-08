@@ -19,16 +19,16 @@ public class AbstractSolarPanel extends NCEnergy {
             return;
         }
         if(getLevel().canSeeSky(getBlockPos().offset(0, 1, 0)) && !getLevel().isRainingAt(getBlockPos().offset(0, 1, 0)) && getLevel().isDay()) {
-            energyStorage.addEnergy(energyStorage.getMaxEnergyStored());//panels do not have internal buffer
+            energyStorage.addEnergy(getEnergyTransferPerTick());
         }
     }
 
     @Override
     protected int getEnergyMaxStorage() {
-        return SolarPanels.all().get(getName().split("/")[1]).getActualGeneration();
+        return SolarPanels.all().get(getName().split("/")[1]).getActualGeneration()*10;
     }
     @Override
     protected int getEnergyTransferPerTick() {
-        return Math.min(SolarPanels.all().get(getName().split("/")[1]).getActualGeneration(), energyStorage.getEnergyStored());
+        return SolarPanels.all().get(getName().split("/")[1]).getActualGeneration();
     }
 }

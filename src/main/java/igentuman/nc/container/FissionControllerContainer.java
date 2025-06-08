@@ -120,7 +120,7 @@ public class FissionControllerContainer extends AbstractContainerMenu {
     }
 
     public int getEnergy() {
-        return blockEntity.energyStorage.getEnergyStored();
+        return energy2Display(blockEntity.energyStorage.getEnergyStored());
     }
 
     public double getHeat() {
@@ -167,7 +167,7 @@ public class FissionControllerContainer extends AbstractContainerMenu {
     }
 
     public int getMaxEnergy() {
-        return blockEntity.energyStorage.getMaxEnergyStored();
+        return energy2Display(blockEntity.energyStorage.getMaxEnergyStored());
     }
 
     public double getMaxHeat() {

@@ -48,8 +48,11 @@ import java.util.*;
 
 import static igentuman.nc.block.fission.FissionControllerBlock.POWERED;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
+import static igentuman.nc.compat.gregtech.GTUtils.getGTEnergy;
+import static igentuman.nc.compat.gregtech.GTUtils.isOnlyGTCEUCapEnabled;
 import static igentuman.nc.compat.oc2.FissionReactorDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.handler.config.CommonConfig.ENERGY_GENERATION;
+import static igentuman.nc.handler.config.CommonConfig.GTCEU_CONFIG;
 import static igentuman.nc.handler.config.FissionConfig.FISSION_CONFIG;
 import static igentuman.nc.multiblock.fission.FissionReactorRegistration.FISSION_BLOCKS;
 import static igentuman.nc.multiblock.fission.FissionReactorRegistration.heatsinks;
@@ -171,6 +174,8 @@ public class FissionControllerBE extends MultiblockControllerBE {
         }
         contentHandler().setAllowedInputItems(this::getAllowedInputItems);
         energyStorage = createEnergy();
+        energyStorage.setInputEnergyTier(GTCEU_CONFIG.FISSION_REACTOR_TIER.get().ordinal());
+        energyStorage.setOutputEnergyTier(GTCEU_CONFIG.FISSION_REACTOR_TIER.get().ordinal());
         energy = LazyOptional.of(() -> energyStorage);
     }
 
@@ -330,9 +335,23 @@ public class FissionControllerBE extends MultiblockControllerBE {
         if (cap == FLUID_HANDLER && canAcceptFluid()) {
             return contentHandler().getFluidCapability(side);
         }
-        if (cap == ENERGY && !isSteamMode && side == null) {
-            return energy.cast();
+
+        if(isGtLoaded()) {
+            if (cap == com.gregtechceu.gtceu.api.capability.forge.GTCapability.CAPABILITY_ENERGY_CONTAINER) {
+                if (isGTEUCapEnabled() && !isSteamMode && side == null) {
+                    return getGTEnergy(this, side).cast();
+                }
+            }
         }
+        if (cap == ENERGY && !isSteamMode && side == null) {
+            if(!isOnlyGTCEUCapEnabled()) {
+                return getEnergy().cast();
+            } else {
+                return LazyOptional.empty();
+            }
+        }
+
+
         if(isOC2Loaded()) {
             if(cap == DEVICE_CAPABILITY) {
                 return getOCDevice(cap, side);

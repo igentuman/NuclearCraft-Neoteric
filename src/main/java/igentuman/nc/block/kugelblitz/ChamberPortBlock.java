@@ -3,6 +3,7 @@ package igentuman.nc.block.kugelblitz;
 import igentuman.nc.block.entity.kugelblitz.ChamberPortBE;
 import igentuman.nc.container.ChamberPortContainer;
 import igentuman.nc.multiblock.MultiblockHandler;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -13,7 +14,11 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
@@ -33,7 +38,12 @@ import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
+
+import static igentuman.nc.block.entity.NuclearCraftBE.isGTEUCapEnabled;
+import static igentuman.nc.handler.config.CommonConfig.GTCEU_CONFIG;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BE;
+import static igentuman.nc.util.ModUtil.isGtLoaded;
 import static igentuman.nc.util.TextUtils.__;
 
 public class ChamberPortBlock extends HorizontalDirectionalBlock implements EntityBlock {
@@ -133,4 +143,11 @@ public class ChamberPortBlock extends HorizontalDirectionalBlock implements Enti
         MultiblockHandler.get(level.dimension()).trackBlockChange(pos, true);
     }
 
+    @Override
+    public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag) {
+        if(isGtLoaded() && isGTEUCapEnabled()) {
+            list.add(__("tooltip.nc.energy_eu_tier", GTCEU_CONFIG.KUGELBLITZ_ENERGY_TIER.get()).withStyle(ChatFormatting.GOLD));
+        }
+        list.add(__("multiblock.build_in_chunk.advise").withStyle(ChatFormatting.GREEN));
+    }
 }

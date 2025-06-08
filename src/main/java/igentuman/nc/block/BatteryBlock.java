@@ -32,7 +32,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+import static igentuman.nc.block.entity.NuclearCraftBE.isGTEUCapEnabled;
+import static igentuman.nc.compat.gregtech.GTUtils.*;
 import static igentuman.nc.handler.config.CommonConfig.ENERGY_STORAGE;
+import static igentuman.nc.util.ModUtil.isGtLoaded;
 import static igentuman.nc.util.StackUtils.isMultiTool;
 import static igentuman.nc.util.TextUtils.__;
 import static igentuman.nc.util.TextUtils.formatEnergy;
@@ -138,15 +141,6 @@ public class BatteryBlock extends Block implements EntityBlock {
             itemEntity.setDefaultPickUpDelay();
             pLevel.addFreshEntity(itemEntity);
         }
-    }
-
-    @Override
-    public void appendHoverText(ItemStack stack, @javax.annotation.Nullable BlockGetter world, List<Component> list, TooltipFlag flag)
-    {
-        int storage = ENERGY_STORAGE.getCapacityFor(asItem().toString());
-
-        list.add(__("tooltip.nc.energy_capacity", formatEnergy(storage)).withStyle(ChatFormatting.BLUE));
-        list.add(__("tooltip.nc.use_multitool").withStyle(ChatFormatting.YELLOW));
     }
 
     public boolean registered() {

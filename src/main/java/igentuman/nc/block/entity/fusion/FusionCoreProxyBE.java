@@ -24,6 +24,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Objects;
 
+import static igentuman.nc.compat.gregtech.GTUtils.*;
 import static igentuman.nc.compat.oc2.FusionReactorDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_CORE_PROXY_BE;
 import static igentuman.nc.util.ModUtil.*;
@@ -159,7 +160,17 @@ public class FusionCoreProxyBE extends NuclearCraftBE implements MultiblockAttac
         if (cap == ForgeCapabilities.FLUID_HANDLER) {
             return controller().getCapability(cap, side);
         }
+        if(isGtLoaded()) {
+            if (cap == com.gregtechceu.gtceu.api.capability.forge.GTCapability.CAPABILITY_ENERGY_CONTAINER) {
+                if (isGTEUCapEnabled()) {
+                    return getGTEnergy(controller(), side).cast();
+                }
+            }
+        }
         if (cap == ForgeCapabilities.ENERGY) {
+            if(isGtLoaded() && isOnlyGTCEUCapEnabled()) {
+                return LazyOptional.empty();
+            }
             return controller().getCapability(cap, side);
         }
         if(isCcLoaded()) {
@@ -202,13 +213,23 @@ public class FusionCoreProxyBE extends NuclearCraftBE implements MultiblockAttac
         for(Direction side: List.of(Direction.UP, Direction.DOWN)) {
             if(getCoreBE().energyStorage().getEnergyStored() > required) {
                 BlockEntity be = getLevel().getExistingBlockEntity(getBlockPos().relative(side));
-                if(be instanceof BlockEntity && !(be instanceof FusionCoreProxyBE) && !(be instanceof FusionCoreBE)) {
-                    IEnergyStorage r = be.getCapability(ForgeCapabilities.ENERGY, side.getOpposite()).orElse(null);
-                    if(r == null) break;
-                    if(r.canReceive()) {
-                        int recieved = r.receiveEnergy(getCoreBE().energyStorage().getEnergyStored()-required, false);
-                        getCoreBE().energyStorage().setEnergy(getCoreBE().energyStorage().getEnergyStored()-recieved);
-                    }
+
+                if(!(be instanceof BlockEntity) || (be instanceof FusionCoreProxyBE) || (be instanceof FusionCoreBE)) {
+                    continue;
+                }
+                if((isGtLoaded() && isGTEUCapEnabled())) {
+                    transferEU(controller(), be, controller().energyStorage(), side);
+                }
+                if(isGtLoaded() && isOnlyGTCEUCapEnabled()) {
+                    return;
+                }
+
+                IEnergyStorage r = be.getCapability(ForgeCapabilities.ENERGY, side.getOpposite()).orElse(null);
+                if(r == null) break;
+                if(r.canReceive()) {
+                    int recieved = r.receiveEnergy(getCoreBE().energyStorage().getEnergyStored()-required, false);
+                    getCoreBE().energyStorage().setEnergy(getCoreBE().energyStorage().getEnergyStored()-recieved);
+                    controller().setChanged();
                 }
             }
         }

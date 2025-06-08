@@ -20,6 +20,7 @@ import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.LINEAR_ACCELERATOR_CONTROLLER_CONTAINER;
 import static igentuman.nc.util.TextUtils.__;
+import static igentuman.nc.util.TextUtils.energy2Display;
 
 public class LinearAcceleratorContainer extends AbstractContainerMenu {
 
@@ -121,7 +122,7 @@ public class LinearAcceleratorContainer extends AbstractContainerMenu {
     }
 
     public int getEnergy() {
-        return blockEntity.energyStorage.getEnergyStored();
+        return energy2Display(blockEntity.energyStorage.getEnergyStored());
     }
 
 
@@ -157,7 +158,7 @@ public class LinearAcceleratorContainer extends AbstractContainerMenu {
     }
 
     public int getMaxEnergy() {
-        return blockEntity.energyStorage.getMaxEnergyStored();
+        return energy2Display(blockEntity.energyStorage.getMaxEnergyStored());
     }
 
     public boolean hasRecipe() {

@@ -1,31 +1,27 @@
 package igentuman.nc.block.entity.energy;
 
-import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import igentuman.api.nc.SideModeToggleable;
 import igentuman.nc.NuclearCraft;
-import igentuman.nc.block.entity.NuclearCraftBE;
-import igentuman.nc.compat.gregtech.GTEnergyContainer;
 import igentuman.nc.content.energy.BatteryBlocks;
-import igentuman.nc.handler.config.CommonConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.IEnergyStorage;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.HashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
-import static igentuman.nc.handler.config.CommonConfig.*;
+import static igentuman.nc.compat.gregtech.GTUtils.getGTEnergy;
+import static igentuman.nc.compat.gregtech.GTUtils.isOnlyGTCEUCapEnabled;
+import static igentuman.nc.handler.config.CommonConfig.ENERGY_STORAGE;
 import static igentuman.nc.util.ModUtil.isGtLoaded;
 import static net.minecraftforge.common.capabilities.ForgeCapabilities.ENERGY;
 
@@ -65,30 +61,15 @@ public class BatteryBE extends NCEnergy {
      * Push/pull energy to adjacent blocks
      */
     protected void transferEnergy() {
-        AtomicInteger capacity = new AtomicInteger(energyStorage().getEnergyStored());
         for (Direction direction : Direction.values()) {
-            if(
-                    sideConfig.get(direction.ordinal()) == SideModeToggleable.SideMode.DISABLED ||
-                    sideConfig.get(direction.ordinal()) == SideModeToggleable.SideMode.DEFAULT
-            ) continue;
-            BlockEntity be = level.getExistingBlockEntity(worldPosition.relative(direction));
-            if (be != null) {
-                IEnergyStorage sideEnergy = be.getCapability(ENERGY, direction.getOpposite()).orElse(null);
-                if(sideEnergy == null) continue;
-                if (capacity.get() > 0 && sideConfig.get(direction.ordinal()) == SideModeToggleable.SideMode.OUT) {
-                    int accepted = sideEnergy.receiveEnergy(Math.min(capacity.get(), getEnergyTransferPerTick()), false);
-                    capacity.addAndGet(-accepted);
-                } else if (capacity.get() < getEnergyMaxStorage() && sideConfig.get(direction.ordinal()) == SideModeToggleable.SideMode.IN) {
-                    int extracted = sideEnergy.extractEnergy(Math.min(getEnergyTransferPerTick(), getEnergyMaxStorage() - capacity.get()), false);
-                    capacity.addAndGet(extracted);
-                }
+            switch (sideConfig.get(direction.ordinal())) {
+                case OUT -> transferEnergyToSide(direction);
+                case IN -> pullEnergyFromSide(direction);
             }
         }
-        if(capacity.get() != energyStorage().getEnergyStored()) {
-            energyStorage().setEnergy(capacity.get());
-            setChanged();
-        }
     }
+
+
 
     @Nonnull
     @Override
@@ -103,11 +84,14 @@ public class BatteryBE extends NCEnergy {
             }
         }
 
-        if (cap == ENERGY && GTCEU_CONFIG.COMPATIBILITY.get() != CommonConfig.GTCEUCompatibility.ONLY_GTCEU) {
+        if (cap == ENERGY) {
             if (side != null && sideConfig.get(side.ordinal()) != SideModeToggleable.SideMode.DISABLED) {
-                return getEnergy().cast();
-            } else {
-                return LazyOptional.empty();
+                if (!isOnlyGTCEUCapEnabled()) {
+                    return getEnergy().cast();
+
+                } else {
+                    return LazyOptional.empty();
+                }
             }
         }
         return super.getCapability(cap, side);
@@ -120,6 +104,16 @@ public class BatteryBE extends NCEnergy {
 
     public int getMaxTransfer() {
         return getEnergyMaxStorage();
+    }
+
+    @Override
+    public long getInputEnergyTier() {
+        return BatteryBlocks.all().get(getBlockState().getBlock().asItem().toString()).getEnergyTier().ordinal();
+    }
+
+    @Override
+    public long getOutputEnergyTier() {
+        return BatteryBlocks.all().get(getBlockState().getBlock().asItem().toString()).getEnergyTier().ordinal();
     }
 
     protected int getEnergyMaxStorage() {
@@ -172,6 +166,7 @@ public class BatteryBE extends NCEnergy {
     public SideModeToggleable.SideMode toggleSideConfig(int direction) {
         sideConfig.put(direction, SideModeToggleable.SideMode.values()[(sideConfig.get(direction).ordinal() + 1) % 4]);
         setChanged();
+        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
         return sideConfig.get(direction);
     }
 

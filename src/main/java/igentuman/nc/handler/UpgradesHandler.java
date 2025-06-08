@@ -21,7 +21,12 @@ public class UpgradesHandler extends ItemStackHandler {
     @Override
     protected void onContentsChanged(int slot) {
         wasUpdated = true;
-        be.setChanged();
+        be.upgradesUpdated();
+    }
+
+    protected void onLoad()
+    {
+        be.upgradesUpdated();
     }
 
     @Override

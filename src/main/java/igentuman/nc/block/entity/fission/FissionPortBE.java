@@ -9,6 +9,7 @@ import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.fission.FissionReactorMultiblock;
 import igentuman.nc.multiblock.fission.FissionReactorRegistration;
+import igentuman.nc.util.CustomEnergyStorage;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -26,6 +27,7 @@ import javax.annotation.Nullable;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static igentuman.nc.compat.gregtech.GTUtils.*;
 import static igentuman.nc.compat.oc2.FissionReactorDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.util.ModUtil.*;
 import static net.minecraftforge.common.capabilities.ForgeCapabilities.ENERGY;
@@ -89,7 +91,9 @@ public class FissionPortBE extends NuclearCraftBE implements MultiblockAttachabl
 
         int wasSignal = analogSignal;
         boolean wasConnected = connected;
-        sendOutPower();
+        if(getMultiblock() != null && controller() != null) {
+            sendOutPower();
+        }
         boolean updated = updateController();
         if(level.getGameTime() % 20 == 0 && controller() != null) {
             pushPull();
@@ -127,13 +131,13 @@ public class FissionPortBE extends NuclearCraftBE implements MultiblockAttachabl
     private void updateAnalogSignal() {
         switch (redstoneMode) {
             case SignalSource.ENERGY:
-                analogSignal = (byte) (controller().energyStorage.getEnergyStored() * 15 / controller().energyStorage.getMaxEnergyStored());
+                analogSignal = (byte) (controller().energyStorage().getEnergyStored() * 15 / controller().energyStorage().getMaxEnergyStored());
                 break;
             case SignalSource.HEAT:
                 analogSignal = (byte) (controller().heat * 15 / controller().getMaxHeat());
                 break;
             case SignalSource.PROGRESS:
-                analogSignal = (byte) (controller().recipeInfo.ticksProcessed * 15 / controller().recipeInfo.ticks);
+                analogSignal = (byte) (controller().recipeInfo().ticksProcessed * 15 / controller().recipeInfo().ticks);
                 break;
             case SignalSource.ITEMS:
                 analogSignal = (byte) (itemHandler().getStackInSlot(0).getCount() * 15 / itemHandler().getStackInSlot(0).getMaxStackSize());
@@ -144,6 +148,33 @@ public class FissionPortBE extends NuclearCraftBE implements MultiblockAttachabl
                 analogSignal = (byte) (Math.max(0, getRedstoneSignal()));
                 break;
         }
+    }
+
+    protected void transferEnergyToSide(Direction direction) {
+        if (getEnergyStored() <= 0) {
+            return; // No energy to transfer
+        }
+        BlockEntity be = level.getExistingBlockEntity(worldPosition.relative(direction));
+        if (be == null || be instanceof FissionPortBE) {
+            return;
+        }
+        if((isGtLoaded() && isGTEUCapEnabled())) {
+            transferEU(controller(), be, controller().energyStorage(), direction);
+        }
+        if(isGtLoaded() && isOnlyGTCEUCapEnabled()) {
+            return;
+        }
+        be.getCapability(ForgeCapabilities.ENERGY, direction.getOpposite()).map(handler -> {
+                    if (handler.canReceive()) {
+                        int received = handler.receiveEnergy(getEnergyStored(), false);
+                        controller().energyStorage().consumeEnergy(received);
+                        controller().setChanged();
+                        return getEnergyStored() > 0;
+                    } else {
+                        return true;
+                    }
+                }
+        );
     }
 
     protected ItemCapabilityHandler itemHandler()
@@ -166,8 +197,19 @@ public class FissionPortBE extends NuclearCraftBE implements MultiblockAttachabl
         if (cap == ForgeCapabilities.FLUID_HANDLER && controller().canAcceptFluid()) {
             return controller().getCapability(cap, side);
         }
-        if (cap == ENERGY && !controller().isSteamMode) {
-            return controller().getEnergy().cast();
+        if(isGtLoaded()) {
+            if (cap == com.gregtechceu.gtceu.api.capability.forge.GTCapability.CAPABILITY_ENERGY_CONTAINER) {
+                if (isGTEUCapEnabled() && !isSteamMode) {
+                    return getGTEnergy(controller(), side).cast();
+                }
+            }
+        }
+        if (cap == ENERGY && !isSteamMode) {
+            if(!isOnlyGTCEUCapEnabled()) {
+                return controller().getEnergy().cast();
+            } else {
+                return LazyOptional.empty();
+            }
         }
 
         if (isMekanismLoaded() && isSteamMode) {
@@ -197,35 +239,6 @@ public class FissionPortBE extends NuclearCraftBE implements MultiblockAttachabl
             }
         }
         return super.getCapability(cap, side);
-    }
-
-    protected boolean sendOutPower() {
-        if (getMultiblock() == null) return false;
-        AtomicInteger capacity = new AtomicInteger(controller().energyStorage().getEnergyStored());
-        if (capacity.get() > 0) {
-            for (Direction direction : Direction.values()) {
-                BlockEntity be = getLevel().getExistingBlockEntity(worldPosition.relative(direction));
-                if (be == null) {
-                    continue;
-                }
-                boolean doContinue = be.getCapability(ENERGY, direction.getOpposite()).map(handler -> {
-                            if (handler.canReceive()) {
-                                int received = handler.receiveEnergy(Math.min(capacity.get(), getMaxEnergyStored()), false);
-                                capacity.addAndGet(-received);
-                                controller().energyStorage().consumeEnergy(received);
-                                return capacity.get() > 0;
-                            } else {
-                                return true;
-                            }
-                        }
-                ).orElse(true);
-                if (!doContinue) {
-                    return true;
-                }
-            }
-            return true;
-        }
-        return false;
     }
 
     @Override

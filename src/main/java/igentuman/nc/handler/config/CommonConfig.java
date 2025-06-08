@@ -8,8 +8,11 @@ import igentuman.nc.content.storage.ContainerBlocks;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+
+import static igentuman.nc.handler.config.CommonConfig.GTCEUCompatibilityConfig.GTCEUTier.*;
 
 
 public class CommonConfig {
@@ -86,11 +89,11 @@ public class CommonConfig {
 
             STEAM_TURBINE = builder
                     .comment("Steam turbine (one block) base power gen")
-                    .define("steam_turbine_power_gen", 50);
+                    .define("steam_turbine_power_gen", 80);
 
             DECAY_GENERATOR = builder
                     .comment("Decay Generator base power gen")
-                    .define("decay_generator_power_gen", 100);
+                    .define("decay_generator_power_gen", 128);
 
             builder.pop();
         }
@@ -135,7 +138,7 @@ public class CommonConfig {
             builder.push("energy_storage");
 
             LIGHTNING_ROD_CHARGE = builder
-                    .define("ligtning_rod_charge", 1000000);
+                    .define("ligtning_rod_charge", 1048576);
 
             REGISTER_ENERGY_BLOCK = builder
                     .comment("Allow block registration: " + String.join(", ", BatteryBlocks.all().keySet()))
@@ -146,10 +149,10 @@ public class CommonConfig {
                     .define("energy_block_storage", BatteryBlocks.initialPower(), o -> o instanceof ArrayList);
 
             LITHIUM_ION_BATTERY_STORAGE = builder
-                    .define("lithium_ion_battery_storage", 1000000);
+                    .define("lithium_ion_battery_storage", 1048576);
 
             QNP_ENERGY_STORAGE = builder
-                    .define("qnp_energy_storage", 2000000);
+                    .define("qnp_energy_storage", 2097152);
 
             QNP_ENERGY_PER_BLOCK = builder
                     .define("qnp_energy_per_block", 200);
@@ -164,11 +167,7 @@ public class CommonConfig {
             return BatteryBlocks.all().get(code).config().getStorage();
         }
     }
-    public enum GTCEUCompatibility {
-        ONLY_FE,
-        ONLY_GTCEU,
-        GTCEU_AND_FE
-    }
+
 
     public static class MiscConfig {
         public ForgeConfigSpec.ConfigValue<Boolean> DEBUG_LOG;
@@ -194,19 +193,32 @@ public class CommonConfig {
     }
 
     public static class GTCEUCompatibilityConfig {
+        public enum GTCEUCompatibility {
+            ONLY_FE, ONLY_GTCEU, GTCEU_AND_FE
+        }
+        public enum GTCEUTier {
+            ULV, LV, MV, HV, EV, IV, LuV, ZPM, UV, UHV, UEV, UIV, UXV, OpV, MAX
+        }
 
         public ForgeConfigSpec.ConfigValue<GTCEUCompatibility> COMPATIBILITY;
         public ForgeConfigSpec.ConfigValue<Boolean> OVERCHARGE_EXPLOSIONS;
-        public ForgeConfigSpec.ConfigValue<Boolean> ALLOW_GTCEU_INPUT_ONLY;
-        public ForgeConfigSpec.ConfigValue<Integer> FISSION_REACTOR_PORT_TIER;
-        public ForgeConfigSpec.ConfigValue<Integer> FUSION_REACTOR_ENERGY_TIER;
-        public ForgeConfigSpec.ConfigValue<Integer> KUGELBLITZ_ENERGY_TIER;
-        public ForgeConfigSpec.ConfigValue<Integer> ACCELERATORS_ENERGY_TIER;
-        public ForgeConfigSpec.ConfigValue<Integer> PROCESSOR_ENERGY_TIER;
+        public ForgeConfigSpec.ConfigValue<GTCEUTier> FISSION_REACTOR_TIER;
+        public ForgeConfigSpec.ConfigValue<GTCEUTier> TURBINE_ENERGY_TIER;
+        public ForgeConfigSpec.ConfigValue<GTCEUTier> BATTERY_BASE_TIER;
+        public ForgeConfigSpec.ConfigValue<GTCEUTier> SOLARS_BASE_TIER;
+        public ForgeConfigSpec.ConfigValue<GTCEUTier> RTGS_BASE_TIER;
+        public ForgeConfigSpec.ConfigValue<GTCEUTier> FUSION_REACTOR_ENERGY_TIER;
+        public ForgeConfigSpec.ConfigValue<GTCEUTier> KUGELBLITZ_ENERGY_TIER;
+        public ForgeConfigSpec.ConfigValue<GTCEUTier> ACCELERATORS_ENERGY_TIER;
+        public ForgeConfigSpec.ConfigValue<GTCEUTier> PROCESSOR_ENERGY_TIER;
         public ForgeConfigSpec.ConfigValue<Integer> ENERGY_UPGRADES_NEEDED_TO_NEXT_TIER;
 
         public GTCEUCompatibilityConfig(ForgeConfigSpec.Builder builder) {
             builder.push("GregTech Energy Compatibility");
+            List<String> tiers = Arrays.stream(GTCEUTier.values())
+                    .map(GTCEUTier::name)
+                    .toList();
+            builder.comment("Tiers: " + String.join(", ", tiers));
 
             COMPATIBILITY = builder
                     .comment("ONLY_FE - Only FE energy system is used")
@@ -214,42 +226,55 @@ public class CommonConfig {
                     .comment("GTCEU_AND_FE - Both systems are used, but GTCEU is preferred")
                     .defineEnum("gregtech_energy_compatibility", GTCEUCompatibility.GTCEU_AND_FE);
 
-            ALLOW_GTCEU_INPUT_ONLY = builder
-                    .comment("This only counts if GTCEU is supported")
-                    .comment("If true, all NC energy blocks will only accept GTCEU energy as input")
-                    .comment("But generators, reactors and batteries will still output FE energy")
-                    .define("as_input_only", false);
-
             OVERCHARGE_EXPLOSIONS = builder
                     .comment("This only counts if GTCEU is supported")
                     .comment("Explode machines when input energy is more than max input")
                     .comment("This doesn't count FE energy input")
                     .define("gregtech_energy_overcharge_explosions", true);
 
-            FISSION_REACTOR_PORT_TIER = builder
+            BATTERY_BASE_TIER = builder
                     .comment("This only counts if GTCEU is supported")
-                    .define("fission_reactor_port_tier", 9);
+                    .comment("This tier applies to basic voltaic pile, and others will have +1 tier each")
+                    .define("batteries_base_tier", LV);
+
+            SOLARS_BASE_TIER = builder
+                    .comment("This only counts if GTCEU is supported")
+                    .comment("This tier applies to basic solar panel, and others will have +1 tier each")
+                    .define("solars_base_tier", ULV);
+
+            RTGS_BASE_TIER = builder
+                    .comment("This only counts if GTCEU is supported")
+                    .comment("This tier applies to basic uranium rtg, and others will have +1 tier each")
+                    .define("rtgs_base_tier", LV);
+
+            FISSION_REACTOR_TIER = builder
+                    .comment("This only counts if GTCEU is supported")
+                    .define("fission_reactor_energy_tier", EV);
+
+            TURBINE_ENERGY_TIER = builder
+                    .comment("This only counts if GTCEU is supported")
+                    .define("turbine_energy_tier", EV);
 
             FUSION_REACTOR_ENERGY_TIER = builder
                     .comment("This only counts if GTCEU is supported")
-                    .define("fusion_reactor_energy_tier", 10);
+                    .define("fusion_reactor_energy_tier", IV);
 
             KUGELBLITZ_ENERGY_TIER = builder
                     .comment("This only counts if GTCEU is supported")
-                    .define("kugelblitz_energy_tier", 10);
+                    .define("kugelblitz_energy_tier", LuV);
 
             ACCELERATORS_ENERGY_TIER = builder
                     .comment("This only counts if GTCEU is supported")
-                    .define("accelerators_energy_tier", 10);
+                    .define("accelerators_energy_tier", LuV);
 
             PROCESSOR_ENERGY_TIER = builder
                     .comment("This only counts if GTCEU is supported")
-                    .define("processor_energy_tier", 2);
+                    .define("processor_energy_tier", MV);
 
             ENERGY_UPGRADES_NEEDED_TO_NEXT_TIER = builder
                     .comment("This only counts if GTCEU is supported")
                     .comment("How many energy upgrades are needed for processor to reach next energy tier")
-                    .defineInRange("energy_upgrades_for_next_tier", 8, 4, 64);
+                    .defineInRange("energy_upgrades_for_next_tier", 16, 8, 64);
 
             builder.pop();
         }

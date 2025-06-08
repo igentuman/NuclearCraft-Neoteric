@@ -3,6 +3,7 @@ package igentuman.nc.compat.gregtech;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
 import com.gregtechceu.gtceu.utils.GTMath;
+import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.util.CustomEnergyStorage;
 import net.minecraft.core.Direction;
 import net.minecraftforge.common.util.LazyOptional;
@@ -12,18 +13,23 @@ public class GTEnergyContainer implements IEnergyContainer {
     protected final CustomEnergyStorage feStorage;
     protected Direction side;
     private long feBuffer;
+    private NuclearCraftBE owner;
 
-    public GTEnergyContainer(CustomEnergyStorage feStorage, Direction side) {
+    public GTEnergyContainer(CustomEnergyStorage feStorage, Direction side, NuclearCraftBE tile) {
         this.feStorage = feStorage;
         this.side = side;
+        this.owner = tile;
     }
 
-    public static LazyOptional<GTEnergyContainer> wrapped(CustomEnergyStorage feStorage, Direction side) {
-        return LazyOptional.of(() -> new GTEnergyContainer(feStorage, side));
+    public static LazyOptional<GTEnergyContainer> wrapped(CustomEnergyStorage feStorage, Direction side, NuclearCraftBE tile) {
+        return LazyOptional.of(() -> new GTEnergyContainer(feStorage, side, tile));
     }
 
     @Override
     public long acceptEnergyFromNetwork(Direction side, long voltage, long amperage) {
+        if(voltage > getInputVoltage()) {
+            owner.handleOverVoltage();
+        }
         int receive = 0;
         if (feBuffer > 0) {
 
@@ -117,7 +123,7 @@ public class GTEnergyContainer implements IEnergyContainer {
 
     @Override
     public boolean outputsEnergy(Direction side) {
-        return feStorage.canReceive();
+        return feStorage.canExtract();
     }
 
     @Override

@@ -21,8 +21,7 @@ import java.util.Objects;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.CHAMBER_PORT_CONTAINER;
-import static igentuman.nc.util.TextUtils.__;
-import static igentuman.nc.util.TextUtils.roundFormat;
+import static igentuman.nc.util.TextUtils.*;
 
 public class ChamberPortContainer extends AbstractContainerMenu {
     protected final ChamberPortBE blockEntity;
@@ -90,15 +89,15 @@ public class ChamberPortContainer extends AbstractContainerMenu {
     }
 
     public int getMaxEnergy() {
-        return 0;
+        return energy2Display(blockEntity.getMaxEnergyStored());
     }
 
     public double getEnergy() {
-        return 0;
+        return energy2Display(blockEntity.getEnergyStored());
     }
 
     public int energyPerTick() {
-        return blockEntity.energyPerTick();
+        return energy2Display(blockEntity.energyPerTick());
     }
 
     public double getProgress() {

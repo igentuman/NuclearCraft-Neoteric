@@ -8,6 +8,10 @@ import net.minecraft.network.chat.Style;
 import java.text.DecimalFormat;
 import java.util.Locale;
 
+import static igentuman.nc.block.entity.NuclearCraftBE.isGTEUCapEnabled;
+import static igentuman.nc.compat.gregtech.GTUtils.convert2EU;
+import static igentuman.nc.util.ModUtil.isGtLoaded;
+
 public class TextUtils
 {
 	public static MutableComponent __(String text, Object... pArgs)
@@ -64,6 +68,13 @@ public class TextUtils
 			return "0";
 		}
 		return  preffix+df.format(value);
+	}
+
+	public static int energy2Display(int energy) {
+		if(isGtLoaded() && isGTEUCapEnabled()) {
+			return convert2EU(energy);
+		}
+		return energy;
 	}
 
 	public static String scaledFormat(double value)

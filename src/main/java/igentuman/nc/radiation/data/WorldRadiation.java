@@ -12,7 +12,6 @@ import static igentuman.nc.handler.config.RadiationConfig.RADIATION_CONFIG;
 public class WorldRadiation implements IWorldRadiationCapability {
 
     private final double decaySpeed = ((double) RADIATION_CONFIG.DECAY_SPEED.get())/10000;
-    private final double spreadGate = RADIATION_CONFIG.SPREAD_GATE.get();
     public HashMap<Long, Long> chunkRadiation = new HashMap<>();
     public HashMap<Long, Long> updatedChunks = new HashMap<>();
     public HashMap<Long, Long> newChunks = new HashMap<>();
@@ -71,26 +70,16 @@ public class WorldRadiation implements IWorldRadiationCapability {
         int timestamp = unpackZ(chunkRadiation.get(id));
         int curTimestamp = (int) (getServerTime() / 20);
         int radiationChange = (int) ((curTimestamp - timestamp) * decaySpeed);
-        //if(radiationChange == 0) return;
         radiation -= radiationChange;
-        //if radiation is less than 100, remove it from the map
         if (radiation < 100) {
-            chunkRadiation.remove(id);//still sending 0 radiation to client, so he will remove it from the map
+            chunkRadiation.remove(id);
             updatedChunks.put(id, pack(0, curTimestamp));
             return;
         }
         radiation = Math.min(radiation, 5000000);
-        boolean toSpread = radiation > spreadGate;
-        if(toSpread) {//if it spreads, then it looses
-            radiation = (int)(0.99 * radiation);
-        }
         long radiationData = pack(radiation, curTimestamp);
         chunkRadiation.replace(id, radiationData);
         updatedChunks.put(id, radiationData);
-        //spread radiation around only if it is greater than 5 mRad
-        if (toSpread) {
-            spreadAround(x, z, radiation);
-        }
     }
 
     //returns amount of actually added radiation in mRads
@@ -100,7 +89,6 @@ public class WorldRadiation implements IWorldRadiationCapability {
         long id = pack(x, z);
         int curTimestamp = (int) (getServerTime() / 20);
         int newRadiation = (int) (radiation*1000000);
-        //if radiation is disabled we still run all radiation events, but not saving data
         if(!RADIATION_CONFIG.ENABLED.get()) return 0;
         if(chunkRadiation.containsKey(id)) {
             int curRadiation = unpackX(chunkRadiation.get(id));
@@ -121,37 +109,6 @@ public class WorldRadiation implements IWorldRadiationCapability {
 
     private long getServerTime() {
         return level.getGameTime();
-    }
-
-
-    private void spreadAround(int chunkX, int chunkZ, int radiation) {
-        for(int i = -1; i <= 1; i++) {
-            for(int j = -1; j <= 1; j++) {
-                long id = pack(chunkX + i, chunkZ + j);
-                if(updatedChunks.containsKey(id)) {
-                    continue;
-                }
-                if(chunkRadiation.containsKey(id)) {
-                    int curRadiation = unpackX(chunkRadiation.get(id));
-                    int curTimestamp = unpackZ(chunkRadiation.get(id));
-                    if(curRadiation > radiation*0.5) {
-                        continue;
-                    }
-                    //if chunk already have radiation we use average value
-                    int newRadiation = (int) ((curRadiation + radiation * RADIATION_CONFIG.SPREAD_MULTIPLIER.get()/5)/2);
-                    chunkRadiation.replace(id, pack(newRadiation, curTimestamp));
-                }
-                else {
-                    int curTimestamp = (int) (getServerTime() / 20);
-                    chunkRadiation.put(id, pack((int) (radiation * RADIATION_CONFIG.SPREAD_MULTIPLIER.get()), curTimestamp));
-                }
-                if(updatedChunks.containsKey(id)) {
-                    updatedChunks.replace(id, chunkRadiation.get(id));
-                } else {
-                    updatedChunks.put(id, chunkRadiation.get(id));
-                }
-            }
-        }
     }
 
     @Override

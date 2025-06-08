@@ -100,11 +100,11 @@ public class RadiationConfig {
                     .defineInRange("background_radiation", 50, 0, 10000);
 
             SPREAD_MULTIPLIER = builder
-                    .comment("Spread multiplier. How much radiation spreads from chunk to chunk per simulation. Bigger values might cause lag.")
+                    .comment("Spread multiplier. [DEPRECATED - Radiation spread has been disabled]")
                     .defineInRange("spread_multiplier", 0.3d, 0.01d, 0.9d);
 
             SPREAD_GATE = builder
-                    .comment("If chunk radiation (uRad) less than this value it won't affect chunks nearby.", "Bigger values - less lag, but less accurate radiation spread.")
+                    .comment("Radiation spread gate. [DEPRECATED - Radiation spread has been disabled]")
                     .defineInRange("spread_gate", 1000, 100, 100000);
 
             DECAY_SPEED = builder
@@ -170,7 +170,7 @@ public class RadiationConfig {
                     .define("dimension_radiation", List.of("nuclearcraft:wasteland|200000", "minecraft:the_nether|1000"), o -> o instanceof ArrayList);
 
             RADIATION_UPDATE_INTERVAL = builder
-                    .comment("Interval between radiation updates in ticks. 20 ticks = 1 second.", "Bigger interval - less lag, but less accurate radiation spread.")
+                    .comment("Interval between radiation updates in ticks. 20 ticks = 1 second.", "Bigger interval - less lag, but less accurate radiation decay.")
                     .defineInRange("update_interval", 40, 2, 1000);
 
             MEKANISM_RADIATION_INTEGRATION = builder

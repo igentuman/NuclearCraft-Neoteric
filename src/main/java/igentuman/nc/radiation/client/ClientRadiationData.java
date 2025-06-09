@@ -1,25 +1,20 @@
 package igentuman.nc.radiation.client;
 
-import java.util.HashMap;
-import java.util.Map;
+import igentuman.nc.radiation.data.WorldRadiation;
 
-import static igentuman.nc.radiation.data.WorldRadiation.pack;
-import static igentuman.nc.radiation.data.WorldRadiation.unpackX;
+import java.util.HashMap;
+
+import static igentuman.nc.client.NcClient.tryGetClientWorld;
 
 public class ClientRadiationData {
 
-    public static Map<Long, Long> radiationData = new HashMap<>();
     protected static int currentRadiation = 0;
+    protected static WorldRadiation worldRadiation = new WorldRadiation();
     protected static long playerRadiation = 0;
 
-    public static void setWorldRadiation(Map<Long, Long> radiation) {
-        for(long id: radiation.keySet()) {
-            if(radiationData.containsKey(id)) {
-                radiationData.replace(id, radiation.get(id));
-            } else {
-                radiationData.put(id, radiation.get(id));
-            }
-        }
+    public static void setWorldRadiation(HashMap<Long, Long> radiation) {
+        worldRadiation.chunkRadiation = radiation;
+        worldRadiation.level = tryGetClientWorld();
     }
 
     public static int getCurrentWorldRadiation() {
@@ -27,12 +22,7 @@ public class ClientRadiationData {
     }
 
     public static void setCurrentChunk(int x, int z) {
-        long id = pack(x, z);
-        if(radiationData.containsKey(id)) {
-            currentRadiation = unpackX(radiationData.get(id));
-        } else {
-            currentRadiation = 0;
-        }
+        currentRadiation = worldRadiation.getChunkRadiation(x, z);
     }
 
     public static void setPlayerRadiation(long radiation) {

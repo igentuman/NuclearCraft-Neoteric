@@ -2409,6 +2409,7 @@
   "sound_event.nuclearcraft.item.geiger_3": "Geiger Counter Ticks Level 3 Intensity",
   "sound_event.nuclearcraft.item.geiger_4": "Geiger Counter Ticks Level 4 Intensity",
   "sound_event.nuclearcraft.item.geiger_5": "Geiger Counter Ticks Level 5 Intensity",
+  "sound_event.nuclearcraft.item.geiger_6": "Geiger Counter Ticks Max Intensity",
   "sound_event.nuclearcraft.turbine": "Turbine is spinning",
   "speed.multiplier": "Speed Multiplier: x%s",
   "speed.parallel_processing": "Parallel processing: x%s",

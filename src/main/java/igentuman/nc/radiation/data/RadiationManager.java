@@ -58,9 +58,6 @@ public class RadiationManager extends SavedData {
             long wasRadiation = 0;
             long playerRadiation = 0;
             if (player instanceof ServerPlayer serverPlayer) {
-                int playerChunkX = player.chunkPosition().x;
-                int playerChunkZ = player.chunkPosition().z;
-                long id = pack(playerChunkX, playerChunkZ);
                 PlayerRadiation playerRadiationCap = serverPlayer.getCapability(PlayerRadiationProvider.PLAYER_RADIATION).orElse(null);
                 if(playerRadiationCap != null) {
                     wasRadiation = playerRadiationCap.getRadiation();
@@ -68,9 +65,9 @@ public class RadiationManager extends SavedData {
                     playerRadiation = playerRadiationCap.getRadiation();
                 }
 
-                if(worldRadiation.chunkRadiation.get(id) != null) {
-                    NuclearCraft.packetHandler().sendTo(new PacketWorldRadiationData(id, worldRadiation.chunkRadiation.get(id)), serverPlayer);
-                } else if(!(serverPlayer.isSpectator() && serverPlayer.isCreative()) && wasRadiation != playerRadiation) {
+                if(level.getGameTime() % 20 == 0) {
+                    NuclearCraft.packetHandler().sendTo(new PacketWorldRadiationData(worldRadiation.chunkRadiation), serverPlayer);
+                } else if(wasRadiation != playerRadiation) {
                     NuclearCraft.packetHandler().sendTo(new PacketPlayerRadiationData(playerRadiation), serverPlayer);
                 }
             }
@@ -121,5 +118,9 @@ public class RadiationManager extends SavedData {
 
     public void clearChunk(int x, int z) {
         worldRadiation.chunkRadiation.remove(pack(x,z));
+    }
+
+    public void addRadiation(Level level, double v, BlockPos worldPosition) {
+        addRadiation(level, v, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ());
     }
 }

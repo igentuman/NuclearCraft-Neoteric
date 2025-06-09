@@ -22,11 +22,10 @@ public class DecayGeneratorBE extends NCEnergy {
     private int[] ticks = new int[6];
     public Block leadBlock;
     public int decayDuration = 36000; // 30 minutes
-    protected int radiationTimer = 40;
 
     public DecayGeneratorBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, getName(pBlockState));
-        energyStorage.setMaxCapacity(2048);
+        energyStorage.setMaxCapacity(ENERGY_GENERATION.DECAY_GENERATOR.get()*32);
     }
 
     public static String getName(BlockState pBlockState) {
@@ -91,18 +90,16 @@ public class DecayGeneratorBE extends NCEnergy {
     public void tickServer() {
         if(NuclearCraft.instance.isNcBeStopped || isRemoved()) return;
         super.tickServer();
-        energyStorage.setEnergy(getEnergyFromConnectedBlocks());
+        energyStorage.addEnergy(getEnergyFromConnectedBlocks());
         sendOutPower();
-        radiationTimer--;
-        if(radiationTimer <= 0) {
-            radiationTimer = 40;
-            RadiationManager.get(getLevel()).addRadiation(getLevel(), (double) RTGs.all().get("uranium_rtg").config().getRadiation() /500000000, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ());
+        if(getLevel().getGameTime() % 40 == 0) {
+            RadiationManager.get(getLevel()).addRadiation(getLevel(), (double) RTGs.all().get("uranium_rtg").config().getRadiation() / 500000000, worldPosition);
         }
     }
 
     @Override
     protected int getEnergyMaxStorage() {
-        return ENERGY_GENERATION.DECAY_GENERATOR.get();
+        return ENERGY_GENERATION.DECAY_GENERATOR.get()*32;
     }
     @Override
     protected int getEnergyTransferPerTick() {

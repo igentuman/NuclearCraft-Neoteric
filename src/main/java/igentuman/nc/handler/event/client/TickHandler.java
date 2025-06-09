@@ -150,7 +150,6 @@ public class TickHandler {
 
     @FunctionalInterface
     private interface StageRenderer {
-
         void render(Camera camera, MultiBufferSource.BufferSource renderer, PoseStack poseStack, int renderTick, float partialTick);
     }
 }

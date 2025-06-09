@@ -43,12 +43,12 @@ public class WorldRadiation implements IWorldRadiationCapability {
             radiation += unpackX(chunkRadiation.get(id));
         }
 
-        radiation += iterateNearByChunks(chunkX, chunkZ);
+        radiation += iterateNearbyChunks(chunkX, chunkZ);
 
         return radiation;
     }
 
-    private int iterateNearByChunks(int chunkX, int chunkZ) {
+    private int iterateNearbyChunks(int chunkX, int chunkZ) {
         int radius = 7;
         int radiation = 0;
         for (int x = chunkX - radius; x <= chunkX + radius; x++) {
@@ -57,12 +57,13 @@ public class WorldRadiation implements IWorldRadiationCapability {
                     continue;
                 }
                 long id = pack(x, z);
+                int chunkRadiationValue = 0;
                 if (chunkRadiation.containsKey(id)) {
-                    double distance = Math.log(Math.pow(chunkX - x, 2) + Math.pow(chunkZ - z, 2) + 2D);
-                    double multiplier = 1.0 / Math.max(1.0, distance);
-                    int chunkRadiationValue = unpackX(chunkRadiation.get(id));
-                    radiation += (int)(chunkRadiationValue * multiplier);
+                    chunkRadiationValue = unpackX(chunkRadiation.get(id));
                 }
+                double distance = Math.log(Math.pow(chunkX - x, 2) + Math.pow(chunkZ - z, 2) + 2D);
+                double multiplier = 1.0 / Math.max(1.0, distance);
+                radiation += (int)((chunkRadiationValue + (double) naturalRadiation(x, z) / 5) * multiplier);
             }
         }
         return radiation;

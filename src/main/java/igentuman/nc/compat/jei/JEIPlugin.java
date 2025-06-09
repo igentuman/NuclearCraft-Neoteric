@@ -84,7 +84,8 @@ public  class JEIPlugin implements IModPlugin {
         List<ParticleStack> particleStacks = ParticleStackListFactory.create();
         ParticleStackHelper particleStackHelper = new ParticleStackHelper();
         ParticleStackRenderer particleStackRenderer = new ParticleStackRenderer();
-        registration.register(ParticleType.Particle, particleStacks, particleStackHelper, particleStackRenderer);
+        //todo future implementation Accelerators #215
+        //registration.register(ParticleType.Particle, particleStacks, particleStackHelper, particleStackRenderer);
     }
 
     @Override
@@ -121,9 +122,10 @@ public  class JEIPlugin implements IModPlugin {
         registration.addRecipeCategories(
                 new MultiblockStructureCategory(registration.getJeiHelpers().getGuiHelper())
         );
-        registration.addRecipeCategories(
+        //todo future implementation Accelerators #215
+        /*registration.addRecipeCategories(
                 new ParticleInfoCategory(registration.getJeiHelpers().getGuiHelper())
-        );
+        );*/
     }
 
     public <TYPE> RecipeType<TYPE> getRecipeType(String name) {
@@ -176,7 +178,8 @@ public  class JEIPlugin implements IModPlugin {
 
             List<MultiblockStructureRecipe> multiblockRecipes = loadMultiblockStructures();
             registration.addRecipes(MultiblockStructureCategory.TYPE, multiblockRecipes);
-            registration.addRecipes(ParticleInfoCategory.TYPE, particleRecipes());
+            //todo future implementation Accelerators #215
+            //registration.addRecipes(ParticleInfoCategory.TYPE, particleRecipes());
         } catch (IllegalArgumentException ex) {
             LOGGER.error("Error registering recipes for JEI: " + ex.getMessage());
         }

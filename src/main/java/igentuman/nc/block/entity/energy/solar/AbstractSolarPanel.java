@@ -25,7 +25,7 @@ public class AbstractSolarPanel extends NCEnergy {
 
     @Override
     protected int getEnergyMaxStorage() {
-        return SolarPanels.all().get(getName().split("/")[1]).getActualGeneration()*10;
+        return SolarPanels.all().get(getName().split("/")[1]).getActualGeneration()*32;
     }
     @Override
     protected int getEnergyTransferPerTick() {

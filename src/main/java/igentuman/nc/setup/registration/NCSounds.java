@@ -47,7 +47,8 @@ public final class NCSounds {
                 SOUND_EVENTS.register("geiger_2", () -> SoundEvent.createVariableRangeEvent(rl( "geiger_2"))),
                 SOUND_EVENTS.register("geiger_3", () -> SoundEvent.createVariableRangeEvent(rl( "geiger_3"))),
                 SOUND_EVENTS.register("geiger_4", () -> SoundEvent.createVariableRangeEvent(rl( "geiger_4"))),
-                SOUND_EVENTS.register("geiger_5", () -> SoundEvent.createVariableRangeEvent(rl( "geiger_5")))
+                SOUND_EVENTS.register("geiger_5", () -> SoundEvent.createVariableRangeEvent(rl( "geiger_5"))),
+                SOUND_EVENTS.register("geiger_6", () -> SoundEvent.createVariableRangeEvent(rl( "geiger_6")))
         );
     }
 

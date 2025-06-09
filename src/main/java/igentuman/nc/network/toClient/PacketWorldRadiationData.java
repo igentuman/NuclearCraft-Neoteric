@@ -10,14 +10,14 @@ import java.util.Map;
 
 public class PacketWorldRadiationData implements INcPacket {
 
-    private final Map<Long, Long> radiation;
+    private final HashMap<Long, Long> radiation;
 
     public PacketWorldRadiationData(long id, Long aLong) {
         radiation = new HashMap<>();
         radiation.put(id, aLong);
     }
 
-    public PacketWorldRadiationData(Map<Long, Long> radiation) {
+    public PacketWorldRadiationData(HashMap<Long, Long> radiation) {
         this.radiation = radiation;
     }
 
@@ -39,7 +39,7 @@ public class PacketWorldRadiationData implements INcPacket {
 
     public static PacketWorldRadiationData decode(FriendlyByteBuf buffer) {
         int size = buffer.readInt();
-        Map<Long, Long> radiation = new HashMap<>();
+        HashMap<Long, Long> radiation = new HashMap<>();
         for(int i = 0; i < size; i++) {
             radiation.put(buffer.readLong(), buffer.readLong());
         }

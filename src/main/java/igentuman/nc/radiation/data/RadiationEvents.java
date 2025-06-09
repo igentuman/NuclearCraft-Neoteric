@@ -116,7 +116,7 @@ public class RadiationEvents {
         if (state != null && !state.isAir()) {
             double radiation = FluidRadiation.byFluid(state.getFluidState().getType());
             if(radiation > 0.001) {
-                // RadiationManager.get((Level) event.getLevel()).addRadiation((Level) event.getLevel(), radiation/5, event.getLiquidPos().getX(), event.getLiquidPos().getY(), event.getLiquidPos().getZ());
+                 RadiationManager.get((Level) event.getLevel()).addRadiation((Level) event.getLevel(), radiation/5, event.getLiquidPos());
             }
         }
     }
@@ -141,7 +141,7 @@ public class RadiationEvents {
                 if(entity.isAlive()) {
                     double radiation = ItemRadiation.byItem(entity.getItem().getItem());
                     if(radiation > 0.001) {
-                        RadiationManager.get(world).addRadiation(world, radiation/5, entity.blockPosition().getX(), entity.blockPosition().getY(), entity.blockPosition().getZ());
+                        RadiationManager.get(world).addRadiation(world, radiation/5, entity.blockPosition());
                     }
                 } else {
                     droppedRadioactiveItems.remove(i);

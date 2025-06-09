@@ -21,17 +21,14 @@ public class RTGBE extends NCEnergy {
         return getBlockState().getBlock().asItem().toString();
     }
 
-    protected int radiationTimer = 40;
     @Override
     public void tickServer() {
         if(NuclearCraft.instance.isNcBeStopped || isRemoved()) return;
         super.tickServer();
-        energyStorage.setEnergy(getEnergyMaxStorage());
+        energyStorage.addEnergy(getEnergyTransferPerTick());
         sendOutPower();
-        radiationTimer--;
-        if(radiationTimer <= 0) {
-            radiationTimer = 40;
-            RadiationManager.get(getLevel()).addRadiation(getLevel(), (double) RTGs.all().get(getName()).config().getRadiation() /500000000, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ());
+        if(getLevel().getGameTime() % 40 == 0) {
+            RadiationManager.get(getLevel()).addRadiation(getLevel(), (double) RTGs.all().get(getName()).config().getRadiation() / 500000000, worldPosition);
         }
     }
 
@@ -45,7 +42,7 @@ public class RTGBE extends NCEnergy {
 
     @Override
     protected int getEnergyMaxStorage() {
-        return RTGs.all().get(getName()).config().getActualGeneration();
+        return RTGs.all().get(getName()).config().getActualGeneration()*32;
     }
     @Override
     protected int getEnergyTransferPerTick() {

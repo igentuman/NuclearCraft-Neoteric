@@ -130,7 +130,6 @@ public class WorldEvents {
     @SubscribeEvent
     public void onTick(ServerTickEvent event) {
         if (event.side.isServer() && event.phase == Phase.END) {
-            //MultiblockHandler.instance.tick();
         }
     }
 
@@ -140,7 +139,6 @@ public class WorldEvents {
     public void onTick(LevelTickEvent event) {
         if (event.side.isServer() && event.phase == Phase.END) {
             if(event.isCanceled() || event.level.getGameTime() % 10 != 0) return;
-            long startTime = System.currentTimeMillis();
             final ServerLevel level = (ServerLevel) event.level;
             if(level.getChunkSource().getLoadedChunksCount() < 1) {
                 return;
@@ -152,10 +150,7 @@ public class WorldEvents {
                     () -> MultiblockHandler.get(level.dimension()).tick(level),
                     MultiblockExecutorManager.getExecutor()
             );
-           // MultiblockHandler.get(level.dimension()).tick(level);
             RadiationEvents.onWorldTick(event);
-            long elapsedTime = System.currentTimeMillis() - startTime;
-          //  debugLog("level.tick "+elapsedTime+"ms");
         }
     }
 

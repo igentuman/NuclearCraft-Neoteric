@@ -5,17 +5,14 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import igentuman.nc.radiation.data.RadiationManager;
-import igentuman.nc.setup.registration.WorldGeneration;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.core.BlockPos;
+import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
 
 import static igentuman.nc.handler.config.RadiationConfig.RADIATION_CONFIG;
+import static igentuman.nc.radiation.data.PlayerRadiationProvider.PLAYER_RADIATION;
 import static igentuman.nc.util.TextUtils.__;
 
 public class NCRadiationCommand {
@@ -27,13 +24,38 @@ public class NCRadiationCommand {
                             builder.suggest("disable");
                             builder.suggest("enable");
                             builder.suggest("clear_all");
-                            builder.suggest("clear_chunk");
+                            builder.suggest("clear_player");
                             return builder.buildFuture();
                         })
                         .requires(cs -> cs.hasPermission(3))
                         .executes(NCRadiationCommand::executeCommand)
+                        .then(Commands.argument("player", EntityArgument.player())
+                                .requires(cs -> cs.hasPermission(3))
+                                .executes(NCRadiationCommand::executeCommandWithPlayer)
+                        )
                 )
         );
+    }
+
+    private static int executeCommandWithPlayer(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        ServerPlayer executor = context.getSource().getPlayerOrException();
+        if (!executor.hasPermissions(3)) {
+            executor.sendSystemMessage(__("commands.nuclearcraft.no_permission"));
+            return 1;
+        }
+        
+        String action = StringArgumentType.getString(context, "action");
+        
+        if ("clear_player".equals(action)) {
+            ServerPlayer targetPlayer = EntityArgument.getPlayer(context, "player");
+            targetPlayer.getCapability(PLAYER_RADIATION).ifPresent(playerRadiation -> {
+                playerRadiation.setRadiation(0);
+            });
+            executor.sendSystemMessage(Component.literal("Cleared player radiation " + targetPlayer.getName().getString()));
+            return 1;
+        } else {
+            return executeCommand(context);
+        }
     }
 
     private static int executeCommand(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
@@ -57,15 +79,11 @@ public class NCRadiationCommand {
                 RadiationManager.get(player.level()).clear(player.level());
                 player.sendSystemMessage(Component.literal("Radiation cleared!"));
                 break;
-            case "clear_chunk":
-                RadiationManager.get(player.level()).clearChunk(player.blockPosition().getX() >> 4, player.blockPosition().getZ() >> 4);
-                player.sendSystemMessage(Component.literal("Radiation chunk cleared!"));
-                break;
             default:
                 context.getSource().sendFailure(Component.literal("Invalid action: " + action));
-                return 0; // Command failed
+                return 0;
         }
 
-        return 1; // Command succeeded
+        return 1;
     }
 }

@@ -65,11 +65,11 @@ public class ParticleStackRenderer  implements IIngredientRenderer<ParticleStack
 		RenderSystem.enableDepthTest();
 		graphics.pose().pushPose();
 		graphics.pose().translate((float)posX, (float)posY, 0.0F);
-		drawParticle(graphics, 0, 0, particleStack); // Use 0,0 since we've already translated
+		drawParticle(graphics, 0, 0, particleStack);
 		if (overlay != null) {
 			graphics.pose().pushPose();
 			graphics.pose().translate(0, 0, 200);
-			overlay.draw(graphics, 0, 0); // Use 0,0 since we've already translated
+			overlay.draw(graphics, 0, 0);
 			graphics.pose().popPose();
 		}
 		graphics.pose().popPose();
@@ -86,9 +86,9 @@ public class ParticleStackRenderer  implements IIngredientRenderer<ParticleStack
 	public void getTooltip(ITooltipBuilder tooltip, ParticleStack ingredient, TooltipFlag tooltipFlag) {
 		IIngredientRenderer.super.getTooltip(tooltip, ingredient, tooltipFlag);
 		tooltip.add(__(ingredient.getParticle().getUnlocalizedName()));
-		tooltip.add(__("tooltip.nuclearcraft.particlestack.amount", Units.getSIFormat(ingredient.getAmount(),"pu")).withStyle(ChatFormatting.GRAY));
-		tooltip.add(__("tooltip.nuclearcraft.particlestack.mean_energy",Units.getParticleEnergy(ingredient.getMeanEnergy())).withStyle(ChatFormatting.GRAY));
-		tooltip.add(__("tooltip.nuclearcraft.particlestack.focus",Units.getSIFormat(ingredient.getFocus(),"")).withStyle(ChatFormatting.GRAY));
+		//tooltip.add(__("tooltip.nuclearcraft.particlestack.amount", Units.getSIFormat(ingredient.getAmount(),"pu")).withStyle(ChatFormatting.GRAY));
+		//tooltip.add(__("tooltip.nuclearcraft.particlestack.mean_energy",Units.getParticleEnergy(ingredient.getMeanEnergy())).withStyle(ChatFormatting.GRAY));
+		//tooltip.add(__("tooltip.nuclearcraft.particlestack.focus",Units.getSIFormat(ingredient.getFocus(),"")).withStyle(ChatFormatting.GRAY));
 	}
 
 	private void drawParticle(GuiGraphics graphics, final int xPosition, final int yPosition,

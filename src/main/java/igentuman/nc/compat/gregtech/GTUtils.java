@@ -65,7 +65,7 @@ public class GTUtils {
     }
 
     public static void transferEU(NuclearCraftBE nuclearCraftBE, BlockEntity be, CustomEnergyStorage energyStorage, Direction direction) {
-        int amps = (int) (energyStorage.getEnergyStored() / (energyStorage.getGTOutputAmperage() * energyStorage.getGTOuputVoltage() * EU2FERatio()));
+        int amps = (int) (energyStorage.getEnergyStored() / (energyStorage.getGTOuputVoltage() * EU2FERatio()));
         amps = (int) Math.min(amps, energyStorage.getGTOutputAmperage());
         if(amps < 1) {
             return;

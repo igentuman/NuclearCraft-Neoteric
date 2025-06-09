@@ -241,6 +241,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("sound_event.nuclearcraft.item.geiger_3", "Geiger Counter Ticks Level 3 Intensity");
         add("sound_event.nuclearcraft.item.geiger_4", "Geiger Counter Ticks Level 4 Intensity");
         add("sound_event.nuclearcraft.item.geiger_5", "Geiger Counter Ticks Level 5 Intensity");
+        add("sound_event.nuclearcraft.item.geiger_6", "Geiger Counter Ticks Max Intensity");
 
         add("sound_event.nuclearcraft.fusion.ready", "Fusion Reactor Ready");
         add("sound_event.nuclearcraft.fusion.running", "Fusion Reactor Running");

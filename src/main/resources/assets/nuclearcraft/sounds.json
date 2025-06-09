@@ -101,6 +101,12 @@
     ],
     "subtitle": "sound_event.nuclearcraft.item.geiger_5"
   },
+  "geiger_6": {
+    "sounds": [
+      "nuclearcraft:item/geiger_6"
+    ],
+    "subtitle": "sound_event.nuclearcraft.item.geiger_6"
+  },
   "music.wanderer": {
     "category": "record",
     "subtitle": "music.wanderer",

@@ -1,12 +1,17 @@
 package igentuman.nc.block.entity;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import igentuman.nc.handler.event.client.BlockOverlayHandler;
 import igentuman.nc.multiblock.fission.FissionReactorRegistration;
 import igentuman.nc.util.annotation.NBTField;
+import igentuman.nc.util.builder.MultiblockRenderer;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,6 +25,7 @@ public class MultiblockBuilderBE extends NuclearCraftBE {
 
     @NBTField
     public int output = 0;
+    public HashMap<BlockPos, Block> blockMap = new HashMap<>();
 
     private Direction facing;
 
@@ -28,13 +34,32 @@ public class MultiblockBuilderBE extends NuclearCraftBE {
     }
 
     public void tickClient() {
+        if(isRemoved() || blockMap.isEmpty()) {
+            return;
+        }
+        Vec3i size = MultiblockRenderer.getSize(blockMap);
+        AABB boundingBox = new AABB(0,0,0, size.getX()+2, size.getY()+2, size.getZ()+2);
+        int offset = switch (getFacing()) {
+            case NORTH -> 1;
+            case SOUTH -> size.getZ()+2;
+            case EAST -> size.getX()+2;
+            case WEST -> 1;
+            default -> 0;
+        };
+        BlockOverlayHandler.addBoxToOutline(boundingBox,  0.5f, 0.9f, 0.9f, 0.8f, getBlockPos().relative(getFacing().getOpposite(), offset));
     }
 
     public void tickServer() {
         if (getLevel().getGameTime() % 2 == 0) {
             return;
         }
+    }
 
+    public void setBlockMap(HashMap<BlockPos, Block> blockMap) {
+        if (getLevel().isClientSide()) {
+            removeOverlayBox();
+        }
+        this.blockMap = blockMap;
     }
 
     private int getRightSignal() {
@@ -80,30 +105,67 @@ public class MultiblockBuilderBE extends NuclearCraftBE {
                 }
             }
         }
+
+        int offset = switch (getFacing()) {
+            case NORTH -> 1;
+            case SOUTH -> size.getZ()+2;
+            case EAST -> size.getX()+2;
+            case WEST -> 1;
+            default -> 0;
+        };
+        BlockPos globalPos = getBlockPos().relative(getFacing().getOpposite(), offset);
         for(Map.Entry<BlockPos, Block> entry : blockMap.entrySet()) {
             BlockPos localPos = entry.getKey();
-            BlockPos globalPos = getBlockPos().relative(UP, localPos.getY());
+            BlockPos placementPos = globalPos.relative(UP, localPos.getY());
+
             switch (getFacing()) {
                 case NORTH -> {
-                    globalPos = globalPos.relative(SOUTH, -localPos.getZ()-1).relative(WEST, -localPos.getX()-1);
+                    placementPos = placementPos.relative(SOUTH, localPos.getZ()).relative(WEST, -localPos.getX());
                 }
                 case SOUTH -> {
-                    globalPos = globalPos.relative(NORTH, localPos.getZ()+1).relative(WEST, localPos.getX()+1);
+                    placementPos = placementPos.relative(NORTH, -localPos.getZ()).relative(WEST, -localPos.getX());
                 }
                 case EAST -> {
-                    globalPos = globalPos.relative(WEST, -localPos.getX()-1).relative(NORTH, -localPos.getZ()-1);
+                    placementPos = placementPos.relative(WEST, -localPos.getX()).relative(NORTH, -localPos.getZ());
                 }
                 case WEST -> {
-                    globalPos = globalPos.relative(EAST, localPos.getX()+1).relative(NORTH, localPos.getZ()+1);
+                    placementPos = placementPos.relative(EAST, localPos.getX()).relative(SOUTH, localPos.getZ());
                 }
             }
 
             if(localPos.equals(BlockPos.ZERO)) {
-                getLevel().setBlock(globalPos, entry.getValue().defaultBlockState().setValue(HORIZONTAL_FACING, getFacing()), 3);
+                Direction controllerFacing = switch (getFacing()) {
+                    case NORTH -> NORTH;
+                    case SOUTH -> NORTH;
+                    case EAST -> WEST;
+                    case WEST -> WEST;
+                    default -> UP; // Fallback, should not happen
+                };
+                getLevel().setBlock(placementPos, entry.getValue().defaultBlockState().setValue(HORIZONTAL_FACING, controllerFacing), 3);
             } else {
-                getLevel().setBlock(globalPos, entry.getValue().defaultBlockState(), 3);
+                getLevel().setBlock(placementPos, entry.getValue().defaultBlockState(), 3);
             }
         }
+    }
+
+    public void removeOverlayBox() {
+        Vec3i size = MultiblockRenderer.getSize(blockMap);
+        int offset = switch (getFacing()) {
+            case NORTH -> 1;
+            case SOUTH -> size.getZ()+2;
+            case EAST -> size.getX()+2;
+            case WEST -> 1;
+            default -> 0;
+        };
+        BlockOverlayHandler.removeBoxFromOutline(getBlockPos().relative(getFacing().getOpposite(), offset));
+    }
+
+    @Override
+    public void setRemoved() {
+        if (getLevel().isClientSide()) {
+            removeOverlayBox();
+        }
+        super.setRemoved();
     }
 
     /**

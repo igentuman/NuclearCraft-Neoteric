@@ -46,6 +46,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -61,6 +62,7 @@ public class BlockOverlayHandler {
 
     private static int outlineCooldown = 5;
     private final static HashList<BlockPos> highlightsToRemove = new HashList<>();
+    private final static HashMap<Long, RenderBox> boxes = new HashMap<>();
     public final static HashList<FissionControllerBE> reactors = new HashList<>();
 
     public static void register(FMLClientSetupEvent event) {
@@ -105,6 +107,9 @@ public class BlockOverlayHandler {
                 for (FissionControllerBE reactor : reactors) {
                     //todo enable this later
                     //renderFilledBox(e.getPoseStack(), reactor.getGlowAABB(), 0.1f, 0.6f, 0.7f, 0.2f, reactor.getBlockPos(), player.blockPosition());
+                }
+                for(RenderBox box: boxes.values()) {
+                    drawBoundingBoxAtBlockPos(e.getPoseStack(), box.boundingBox, box.red, box.green, box.blue, box.alpha, box.relative, player.blockPosition());
                 }
                 if (outlineBlocks.isEmpty()) return;
                 for (BlockPos pos: outlineBlocks) {
@@ -329,6 +334,37 @@ public class BlockOverlayHandler {
         } else {
             removeFromOutline(pos);
         }
+    }
+
+    public static void removeBoxFromOutline(BlockPos blockPos) {
+        if (boxes.containsKey(blockPos.asLong())) {
+            boxes.remove(blockPos.asLong());
+        }
+    }
+
+    private static class RenderBox {
+        public final AABB boundingBox;
+        public final float red;
+        public final float green;
+        public final float blue;
+        public final float alpha;
+        public final BlockPos relative;
+
+        public RenderBox(AABB boundingBox, float red, float green, float blue, float alpha, BlockPos relative) {
+            this.boundingBox = boundingBox;
+            this.red = red;
+            this.green = green;
+            this.blue = blue;
+            this.alpha = alpha;
+            this.relative = relative;
+        }
+    }
+
+    public static void addBoxToOutline(AABB boundingBox, float v, float v1, float v2, float v3, BlockPos pos) {
+        if(boxes.containsKey(pos.asLong())) {
+            return; // already added
+        }
+        boxes.put(pos.asLong(), new RenderBox(boundingBox, v, v1, v2, v3, pos));
     }
 
     public void addQuad(Matrix4f matrixPos, Matrix3f matrixNormal, VertexConsumer renderBuffer,

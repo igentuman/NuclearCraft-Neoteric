@@ -8,10 +8,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.HashMap;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.setup.registration.NCBlocks.*;
@@ -81,5 +84,16 @@ public class MultiblockBuilderContainer extends AbstractContainerMenu {
 
     public BlockPos getPosition() {
         return blockEntity.getBlockPos();
+    }
+
+    public void setBlocksMap(HashMap<BlockPos, Block> blockMap) {
+        blockEntity.setBlockMap(blockMap);
+    }
+
+    public HashMap<BlockPos, Block> getBlocksMap() {
+        if (blockEntity.blockMap == null) {
+            blockEntity.blockMap = new HashMap<>();
+        }
+        return blockEntity.blockMap;
     }
 }

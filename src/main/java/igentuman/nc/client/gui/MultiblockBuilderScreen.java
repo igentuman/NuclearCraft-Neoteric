@@ -4,17 +4,20 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import igentuman.nc.client.gui.element.NCGuiElement;
 import igentuman.nc.client.gui.element.button.Button;
 import igentuman.nc.container.MultiblockBuilderContainer;
+import igentuman.nc.handler.event.client.BlockOverlayHandler;
 import igentuman.nc.util.annotation.NothingNullByDefault;
 import igentuman.nc.util.builder.MultiblockRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.phys.AABB;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,6 +57,7 @@ public class MultiblockBuilderScreen extends AbstractContainerScreen<MultiblockB
         super.init();
         Minecraft mc = Minecraft.getInstance();
         updateRelativeCords();
+        blockMap = getMenu().getBlocksMap();
         insertBtn = new Button.InsertJson(128, 7, this, menu.getPosition());
         buildBtn = new Button.Build(110, 7, this, menu.getPosition());
         linkBtn = new Button.Link(150, 7, this, menu.getPosition(), "https://discord.gg/fGBZj3haga",
@@ -77,9 +81,10 @@ public class MultiblockBuilderScreen extends AbstractContainerScreen<MultiblockB
     @Override
     protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
         Minecraft mc = Minecraft.getInstance();
-        graphics.drawWordWrap(mc.font, this.title, 8, 6, 100, 4210752);
         if(!blockMap.isEmpty()) {
-            graphics.drawWordWrap(mc.font, FormattedText.of(MultiblockRenderer.getSize(blockMap).toShortString().replace(", ", "x")), 8, 16, 100, 4210752);
+            graphics.drawWordWrap(mc.font, FormattedText.of(MultiblockRenderer.getSize(blockMap).toShortString().replace(", ", "x")), 8, 6, 150, 4210752);
+        } else {
+            graphics.drawWordWrap(mc.font, this.title, 8, 6, 100, 4210752);
         }
         renderTooltips(graphics, mouseX-relX, mouseY-relY);
     }
@@ -110,6 +115,7 @@ public class MultiblockBuilderScreen extends AbstractContainerScreen<MultiblockB
         if(!blockMap.isEmpty()) {
             MultiblockRenderer.render(blockMap, graphics.pose(), relX+20, relY+40, 45, 45);
         }
+        getMenu().setBlocksMap(blockMap);
     }
 
     private void renderTooltips(GuiGraphics graphics, int pMouseX, int pMouseY) {

@@ -104,11 +104,11 @@ public class FissionConfig {
 
             MODERATOR_FE_MULTIPLIER = builder
                     .comment("Each attachment of moderator to fuel cell will increase fuel FE generation by given percent value.")
-                    .defineInRange("moderator_fe_multiplier", 16.67D, 0D, 1000D);
+                    .defineInRange("moderator_fe_multiplier", 16.666666667D, 0D, 1000D);
 
             MODERATOR_HEAT_MULTIPLIER = builder
                     .comment("Each attachment of moderator to fuel cell will increase fuel heat generation by given percent value.")
-                    .defineInRange("moderator_heat_multiplier", 33.33D, 0D, 1000D);
+                    .defineInRange("moderator_heat_multiplier", 33.33333333D, 0D, 1000D);
 
             BOILING_MULTIPLIER = builder
                     .comment("Rate at which steam recipes produced.")

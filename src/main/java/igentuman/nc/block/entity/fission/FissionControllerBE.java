@@ -402,6 +402,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
     }
 
     public void tickServer() {
+        heatMultiplier = 0;
         if(NuclearCraft.instance.isNcBeStopped || isRemoved()) {
             irradiationHeat = 0;
             controllerEnabled = false;
@@ -565,7 +566,6 @@ public class FissionControllerBE extends MultiblockControllerBE {
     public float speed = 0.001f;
 
     private boolean processReaction() {
-        heatMultiplier = heatMultiplier() + collectedHeatMultiplier() - 1;
         if(recipeInfo().recipe != null && recipeInfo().isCompleted()) {
             if(contentHandler().itemHandler.getStackInSlot(0).equals(ItemStack.EMPTY)) {
                 recipeInfo().clear();
@@ -585,15 +585,19 @@ public class FissionControllerBE extends MultiblockControllerBE {
             return;
         }
 
-        if(level.getGameTime()  % (level.random.nextInt(10)+5) != 0) {
+        if(level.getGameTime()  % (level.random.nextInt(5)+1) != 0) {
             return;
         }
         BlockPos topRightInner = topRight.relative(getFacing(), -1).below().relative(getFacing().getClockWise(),1);
         BlockPos bottomLeftInner = bottomLeft.relative(getFacing(), 1).above().relative(getFacing().getCounterClockWise(),1);
-        for(BlockPos blockPos: BlockPos.betweenClosed(bottomLeftInner, topRightInner)) {
-            if(level.random.nextBoolean()) {
-                level.addParticle(RADIATION.get(), true, blockPos.getX()+level.random.nextFloat(), blockPos.getY()+level.random.nextFloat(), blockPos.getZ()+level.random.nextFloat(), 0, -0.05f, 0);
-            }
+        int minX = Math.min(topRightInner.getX(), bottomLeftInner.getX());
+        int minY = Math.min(topRightInner.getY(), bottomLeftInner.getY());
+        int minZ = Math.min(topRightInner.getZ(), bottomLeftInner.getZ());
+        int maxX = Math.max(topRightInner.getX(), bottomLeftInner.getX());
+        int maxY = Math.max(topRightInner.getY(), bottomLeftInner.getY());
+        int maxZ = Math.max(topRightInner.getZ(), bottomLeftInner.getZ());
+        for(BlockPos blockPos: BlockPos.randomBetweenClosed(level.random, width+height+depth, minX, minY, minZ, maxX, maxY, maxZ)) {
+            level.addParticle(RADIATION.get(), true, blockPos.getX()+level.random.nextFloat(), blockPos.getY()+level.random.nextFloat(), blockPos.getZ()+level.random.nextFloat(), 0, -0.05f, 0);
         }
     }
 
@@ -638,9 +642,14 @@ public class FissionControllerBE extends MultiblockControllerBE {
     }
 
     public double heatMultiplier() {
-        double h = heatPerTick();
-        double c = Math.max(1, coolingPerTick());
-        return Math.log10(h / c) / (1 + Math.exp(h / c * FISSION_CONFIG.HEAT_MULTIPLIER.get())) + 1;
+        if(heatMultiplier == 0) {
+            double h = heatPerTick();
+            double c = Math.max(1, coolingPerTick());
+            heatMultiplier = Math.log10(h / c) / (1 + Math.exp(h / c * FISSION_CONFIG.HEAT_MULTIPLIER.get())) + 1;
+            //round heatMultiplier to 2 digits
+            heatMultiplier = Math.round(heatMultiplier * 100.0) / 100.0;
+        }
+        return heatMultiplier;
     }
 
     public double collectedHeatMultiplier() {
@@ -746,7 +755,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
         if(extraFuelCells > fuelCellsCount) {
             mult = (double) extraFuelCells / fuelCellsCount;
         }
-        return (double) calculateEnergy() / (recipeInfo.energy * mult / 100);
+        return (double) energyPerTick / (recipeInfo.energy * mult / 100);
     }
 
     public double getNetHeat() {

@@ -2120,6 +2120,8 @@
   "message.heat_sink.valid9": "This meets our standards very well",
   "message.nc.barrel.side_config": "Mode: %s",
   "message.nc.battery.side_config": "Mode: %s",
+  "message.nc.debug_logging.disable": "Disabled debug logging",
+  "message.nc.debug_logging.enable": "Enabled debug logging",
   "message.nc.geiger_radiation_measure": "Radiation Level: %s",
   "message.nc.player_radiation_contamination": "Radiation Dose: %s",
   "multiblock.analyze.report": "Multiblock Report",

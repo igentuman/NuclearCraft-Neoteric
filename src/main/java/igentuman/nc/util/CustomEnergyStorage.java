@@ -1,6 +1,5 @@
 package igentuman.nc.util;
 
-import igentuman.nc.block.entity.NuclearCraftBE;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.Tag;
@@ -13,10 +12,11 @@ public class CustomEnergyStorage extends EnergyStorage {
     public boolean wasUpdated = true;
     private int receivedEnergy = 0;
     private boolean limit = false;
-    private long outputAmerage;
+    private long outputAmperage;
     private long outputVoltage;
-    private long inputAmerage;
+    private long inputAmperage;
     private long inputVoltage;
+
     public static final long[] V = new long[] { 8, 32, 128, 512, 2048, 8192, 32768, 131072, 524288, 2097152, 8388608,
             33554432, 134217728, 536870912, 2147483648L };
     public CustomEnergyStorage(int capacity, int maxTransfer) {
@@ -25,9 +25,9 @@ public class CustomEnergyStorage extends EnergyStorage {
 
     public CustomEnergyStorage(int capacity, int maxTransfer, int maxExtract, long outputAmerage, long outputVoltage, long inputAmerage, long inputVoltage) {
         super(capacity, maxTransfer, maxExtract);
-        this.outputAmerage = outputAmerage;
+        this.outputAmperage = outputAmerage;
         this.outputVoltage = V[(int) outputVoltage];;
-        this.inputAmerage = inputAmerage*2;
+        this.inputAmperage = inputAmerage*2;
         this.inputVoltage = V[(int) inputVoltage];
     }
 
@@ -40,14 +40,24 @@ public class CustomEnergyStorage extends EnergyStorage {
         this.limit = limit;
     }
 
+    public CustomEnergyStorage setInputAmperage(long value) {
+        this.inputAmperage = value;
+        return this;
+    }
+
+    public CustomEnergyStorage setOutputAmperage(long value) {
+        this.outputAmperage = value;
+        return this;
+    }
+
     public CustomEnergyStorage setInputEnergyTier(long value) {
-        this.inputAmerage = value*2;
+        this.inputAmperage = value*2;
         this.inputVoltage = V[(int) value];
         return this;
     }
 
     public CustomEnergyStorage setOutputEnergyTier(long value) {
-        this.outputAmerage = value;
+        this.outputAmperage = value;
         this.outputVoltage = V[(int) value];
         return this;
     }
@@ -145,7 +155,7 @@ public class CustomEnergyStorage extends EnergyStorage {
     }
 
     public long getGTOutputAmperage() {
-        return outputAmerage;
+        return outputAmperage;
     }
 
     public long getGTOuputVoltage() {
@@ -153,7 +163,7 @@ public class CustomEnergyStorage extends EnergyStorage {
     }
 
     public long getGTInputAmperage() {
-        return inputAmerage;
+        return inputAmperage;
     }
 
     public long getGTInputVoltage() {

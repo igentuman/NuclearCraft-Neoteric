@@ -95,8 +95,10 @@ public class TurbineControllerBE extends MultiblockControllerBE {
         contentHandler().setBlockEntity(this);
         contentHandler().setAllowedInputFluids(0, this::getAllowedInputFluids);
         energyStorage = createEnergy();
-        energyStorage.setInputEnergyTier(GTCEU_CONFIG.TURBINE_ENERGY_TIER.get().ordinal());
-        energyStorage.setOutputEnergyTier(GTCEU_CONFIG.TURBINE_ENERGY_TIER.get().ordinal());
+        energyStorage.setInputEnergyTier(GTCEU_CONFIG.TURBINE_ENERGY_TIER.get().ordinal())
+                .setOutputEnergyTier(GTCEU_CONFIG.TURBINE_ENERGY_TIER.get().ordinal())
+                .setInputAmperage(0)
+                .setOutputAmperage(16);
         energy = LazyOptional.of(() -> energyStorage);
     }
 

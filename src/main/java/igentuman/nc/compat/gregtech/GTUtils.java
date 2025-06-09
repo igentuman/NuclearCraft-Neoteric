@@ -39,6 +39,7 @@ public class GTUtils {
         return TextUtils.numberFormat(energy)+" EU";
     }
 
+    //todo usually tier is defined for each container separately, keep it return 3 just in case if no tier is defined
     public static long tierByFe(int fe) {
         long tier = 3L;
         /*while (fe % 4 == 0) {

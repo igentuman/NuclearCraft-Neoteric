@@ -24,19 +24,14 @@ public class FluidTags extends FluidTagsProvider
 	{
 		for(String name: NC_MATERIALS.keySet()) {
 			tag(LIQUIDS_TAG.get(name)).add(NC_MATERIALS.get(name).getStill());
-			tag(LIQUIDS_TAG.get(name)).add(NC_MATERIALS.get(name).getFlowing());
 
 			if (LIQUIDS_TAG.containsKey("molten_" + name)) {
-				tag(LIQUIDS_TAG.get("molten_" + name)).add(NC_MATERIALS.get(name).getFlowing());
 				tag(LIQUIDS_TAG.get("molten_" + name)).add(NC_MATERIALS.get(name).getStill());
 			}
 		}
 		for(String name: NC_GASES.keySet()) {
 			tag(LIQUIDS_TAG.get(name)).add(NC_GASES.get(name).getStill());
-			tag(LIQUIDS_TAG.get(name)).add(NC_GASES.get(name).getFlowing());
-
 			tag(Fluids.GASEOUS).add(NC_GASES.get(name).getStill());
-			tag(Fluids.GASEOUS).add(NC_GASES.get(name).getFlowing());
 		}
 	}
 }

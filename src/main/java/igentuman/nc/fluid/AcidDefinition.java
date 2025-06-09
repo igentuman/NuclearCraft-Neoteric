@@ -6,7 +6,7 @@ public class AcidDefinition {
     public int density = 200;
     public int color = 0xCCFFFFFF;
     public int damage = 3;
-    public int temperature = 400;
+    public int temperature = 300;
 
     public AcidDefinition(String name, int density, int color, int damage) {
         this.name = name;

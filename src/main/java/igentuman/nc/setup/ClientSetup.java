@@ -112,7 +112,7 @@ public class ClientSetup {
                 if (entity instanceof Player) {
                     if(!((Player) entity).getInventory().contains(new ItemStack(GEIGER_COUNTER.get()))) return 0;
                     ClientRadiationData.setCurrentChunk(entity.chunkPosition().x, entity.chunkPosition().z);
-                    return (int)((float)ClientRadiationData.getCurrentWorldRadiation()/200000);
+                    return ClientRadiationData.radiationStage();
                 }
                 return 0;
             });

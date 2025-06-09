@@ -97,7 +97,7 @@ public class RadiationConfig {
 
             NATURAL_RADIATION = builder
                     .comment("General background radiation everywhere (pRad).","Total radiation = background_radiation + dimension_radiation + chunk_radiation + in-game exposure")
-                    .defineInRange("background_radiation", 10, 0, 10000);
+                    .defineInRange("background_radiation", 20, 0, 10000);
 
             DECAY_SPEED = builder
                     .comment("How fast contamination decays (pRad/s).")

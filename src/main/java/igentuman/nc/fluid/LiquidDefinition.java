@@ -6,7 +6,7 @@ public class LiquidDefinition {
     public int density = 400;
     public int color = 0xCCFFFFFF;
     public int damage = 0;
-    public int temperature = 440;
+    public int temperature = 300;
 
     public LiquidDefinition(String name, int density, int color, int damage) {
         this.name = name;

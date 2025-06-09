@@ -63,7 +63,7 @@ public class WorldRadiation implements IWorldRadiationCapability {
                 }
                 double distance = Math.log(Math.pow(chunkX - x, 2) + Math.pow(chunkZ - z, 2) + 2D);
                 double multiplier = 1.0 / Math.max(1.0, distance);
-                radiation += (int)((chunkRadiationValue + (double) naturalRadiation(x, z) / 5) * multiplier);
+                radiation += (int)((chunkRadiationValue + (double) naturalRadiation(x, z) / 5) * Math.pow(multiplier, 3));
             }
         }
         return radiation;

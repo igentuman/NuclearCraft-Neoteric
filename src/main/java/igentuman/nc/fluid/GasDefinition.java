@@ -15,8 +15,9 @@ public class GasDefinition {
         this.damage = damage;
     }
 
-    public GasDefinition(String name, int color) {
+    public GasDefinition(String name, int color, int temperature) {
         this.name = name;
         this.color = color;
+        this.temperature = temperature;
     }
 }

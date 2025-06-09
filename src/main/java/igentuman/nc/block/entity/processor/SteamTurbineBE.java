@@ -8,13 +8,10 @@ import igentuman.nc.util.CustomEnergyStorage;
 import igentuman.nc.util.annotation.NBTField;
 import igentuman.nc.util.annotation.NothingNullByDefault;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import java.util.concurrent.atomic.AtomicInteger;
+
 import static igentuman.nc.handler.config.CommonConfig.ENERGY_GENERATION;
 
 public class SteamTurbineBE extends NCProcessorBE {
@@ -32,7 +29,7 @@ public class SteamTurbineBE extends NCProcessorBE {
     {
         sendOutPower();
         efficiency = Math.max(0.0001, Math.min(10, efficiency));
-        if(energyStorage.getEnergyStored()>=energyStorage.getMaxEnergyStored()) {
+        if(energyStorage().getEnergyStored()>=energyStorage().getMaxEnergyStored()) {
             return;
         }
         super.tickServer();
@@ -45,11 +42,11 @@ public class SteamTurbineBE extends NCProcessorBE {
         }
         if(!hasRecipe()) return;
 
-        if (!recipeInfo.process(speedMultiplier()*efficiency)) {
+        if (!recipeInfo().process(speedMultiplier()*efficiency)) {
             return;
         }
         efficiency += 0.0004;
-        energyStorage.addEnergy((int) (getEnergyTransferPerTick()*recipe.getEnergy()*ENERGY_GENERATION.GENERATION_MULTIPLIER.get()));
+        energyStorage().addEnergy((int) (getEnergyTransferPerTick()*recipe.getEnergy()*ENERGY_GENERATION.GENERATION_MULTIPLIER.get()));
     }
 
     @Override
@@ -69,40 +66,8 @@ public class SteamTurbineBE extends NCProcessorBE {
         };
     }
 
-    public int energyToSend()
-    {
-        return Math.min(energyStorage.getEnergyStored(), getEnergyTransferPerTick());
-    }
-
-    protected void sendOutPower() {
-        if(energyStorage.getEnergyStored() == 0) return;
-        AtomicInteger capacity = new AtomicInteger(energyStorage.getEnergyStored());
-        if (capacity.get() > 0) {
-            for (Direction direction : Direction.values()) {
-                BlockEntity be = level.getExistingBlockEntity(worldPosition.relative(direction));
-                if (be != null) {
-                    boolean doContinue = be.getCapability(ForgeCapabilities.ENERGY, direction.getOpposite()).map(handler -> {
-                                if (handler.canReceive()) {
-                                    int received = handler.receiveEnergy(Math.min(capacity.get(), energyToSend()), false);
-                                    capacity.addAndGet(-received);
-                                    energyStorage.consumeEnergy(received);
-                                    setChanged();
-                                    return capacity.get() > 0;
-                                } else {
-                                    return true;
-                                }
-                            }
-                    ).orElse(true);
-                    if (!doContinue) {
-                        return;
-                    }
-                }
-            }
-        }
-    }
-
     protected int getEnergyMaxStorage() {
-        return getEnergyTransferPerTick()*10;
+        return getEnergyTransferPerTick()*32;
     }
 
     protected int getEnergyTransferPerTick() {

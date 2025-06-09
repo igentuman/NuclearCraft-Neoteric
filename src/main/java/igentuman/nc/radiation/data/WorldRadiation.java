@@ -26,12 +26,44 @@ public class WorldRadiation implements IWorldRadiationCapability {
         return worldRadiation;
     }
 
+    public int chunkRadiation(int chunkX, int chunkZ) {
+        int radiation = 0;
+        long id = pack(chunkX, chunkZ);
+        if (chunkRadiation.containsKey(id)) {
+            radiation += unpackX(chunkRadiation.get(id));
+        }
+        return radiation;
+    }
+
     @Override
     public int getChunkRadiation(int chunkX, int chunkZ) {
         long id = pack(chunkX, chunkZ);
         int radiation = naturalRadiation(chunkX, chunkZ);
         if (chunkRadiation.containsKey(id)) {
             radiation += unpackX(chunkRadiation.get(id));
+        }
+
+        radiation += iterateNearByChunks(chunkX, chunkZ);
+
+        return radiation;
+    }
+
+    private int iterateNearByChunks(int chunkX, int chunkZ) {
+        int radius = 7;
+        int radiation = 0;
+        for (int x = chunkX - radius; x <= chunkX + radius; x++) {
+            for (int z = chunkZ - radius; z <= chunkZ + radius; z++) {
+                if (x == chunkX && z == chunkZ) {
+                    continue;
+                }
+                long id = pack(x, z);
+                if (chunkRadiation.containsKey(id)) {
+                    double distance = Math.log(Math.pow(chunkX - x, 2) + Math.pow(chunkZ - z, 2) + 2D);
+                    double multiplier = 1.0 / Math.max(1.0, distance);
+                    int chunkRadiationValue = unpackX(chunkRadiation.get(id));
+                    radiation += (int)(chunkRadiationValue * multiplier);
+                }
+            }
         }
         return radiation;
     }
@@ -47,13 +79,6 @@ public class WorldRadiation implements IWorldRadiationCapability {
         {
             updateChunkRadiation(id);
         }
-    }
-
-    @Override
-    public void updateChunkRadiation(int x, int z)
-    {
-        long id = pack(x, z);
-        updateChunkRadiation(id);
     }
 
     @Override

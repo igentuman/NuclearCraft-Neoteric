@@ -53,6 +53,16 @@ public class GTUtils {
         return GTEnergyContainer.wrapped(energyHolder.energyStorage(), side, energyHolder).cast();
     }
 
+    public static int convert2FE(long eu) {
+        long converted = eu * FE2EURatio();
+        if(converted > Integer.MAX_VALUE) {
+            return Integer.MAX_VALUE;
+        }
+        if(converted < Integer.MIN_VALUE) {
+            return Integer.MIN_VALUE;
+        }
+        return (int) converted;
+    }
     public static int convert2EU(int fe) {
         return (int) (fe / FE2EURatio());
     }
@@ -80,5 +90,11 @@ public class GTUtils {
                 nuclearCraftBE.setChanged();
             }
         }
+    }
+
+    public static int getMaxOutputFE(GTCEUTier gtceuTier) {
+        long voltage = CustomEnergyStorage.V[gtceuTier.ordinal()];
+        long amperage = 16;
+        return convert2FE(voltage * amperage);
     }
 }

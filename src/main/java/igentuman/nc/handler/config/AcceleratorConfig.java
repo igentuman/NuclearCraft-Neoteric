@@ -35,9 +35,9 @@ public class AcceleratorConfig {
     }
 
     public static class GeneralConfig {
-        public ForgeConfigSpec.ConfigValue<Integer> SCALE;
-        public ForgeConfigSpec.ConfigValue<Double> BEAM_ATTENUATION_RATE;
-        public ForgeConfigSpec.ConfigValue<Double> BEAM_SCALING;
+        public final ForgeConfigSpec.ConfigValue<Integer> SCALE;
+        public final ForgeConfigSpec.ConfigValue<Double> BEAM_ATTENUATION_RATE;
+        public final ForgeConfigSpec.ConfigValue<Double> BEAM_SCALING;
 
         public GeneralConfig(ForgeConfigSpec.Builder builder) {
             builder.comment("Settings for accelerators").push("general");

@@ -1,7 +1,9 @@
 package igentuman.nc.block.turbine;
 
 import igentuman.nc.block.entity.turbine.TurbineControllerBE;
+import igentuman.nc.compat.gregtech.GTUtils;
 import igentuman.nc.container.TurbineControllerContainer;
+import igentuman.nc.handler.config.CommonConfig;
 import igentuman.nc.multiblock.MultiblockHandler;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -44,6 +46,7 @@ import static igentuman.nc.handler.config.CommonConfig.GTCEU_CONFIG;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BE;
 import static igentuman.nc.util.ModUtil.isGtLoaded;
 import static igentuman.nc.util.TextUtils.__;
+import static igentuman.nc.util.TextUtils.formatEnergy;
 
 public class TurbineControllerBlock extends HorizontalDirectionalBlock implements EntityBlock {
     public static final DirectionProperty HORIZONTAL_FACING = FACING;
@@ -126,6 +129,9 @@ public class TurbineControllerBlock extends HorizontalDirectionalBlock implement
     public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag) {
         if(isGtLoaded() && isGTEUCapEnabled()) {
             list.add(__("tooltip.nc.energy_eu_tier", GTCEU_CONFIG.TURBINE_ENERGY_TIER.get()).withStyle(ChatFormatting.GOLD));
+        }
+        if(isGtLoaded() && GTCEU_CONFIG.COMPATIBILITY.get() == CommonConfig.GTCEUCompatibilityConfig.GTCEUCompatibility.GTCEU_AND_FE && GTCEU_CONFIG.LIMIT_FE_OUTPUT.get()) {
+            list.add(__("tooltip.nc.max_fe_extract_per_tick", formatEnergy(GTUtils.getMaxOutputFE(GTCEU_CONFIG.TURBINE_ENERGY_TIER.get()))).withStyle(ChatFormatting.GOLD));
         }
         list.add(__("multiblock.build_in_chunk.advise").withStyle(ChatFormatting.GREEN));
     }

@@ -535,6 +535,7 @@ public class NCLanguageProvider extends LanguageProvider {
     }
 
     private void tooltips() {
+        add("tooltip.nc.max_fe_extract_per_tick","FE/t output: %s");
         add("tooltip.nc.upgrade_energy.tier","+1 Energy Tier for every %s Upgrades");
         add("tooltip.nc.eu_energy_stored","EU Stored: %s / %s");
         add("tooltip.nc.energy_base_eu_tier", "Base EU Tier: %s");

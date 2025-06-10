@@ -37,11 +37,11 @@ public class KugelblitzConfig {
     }
 
     public static class GeneralConfig {
-        public ForgeConfigSpec.ConfigValue<Integer> LASER_DISTANCE;
-        public ForgeConfigSpec.ConfigValue<Double> GENERATION_MULTIPLIER;
-        public ForgeConfigSpec.ConfigValue<Double> EVAPORATION_MULTIPLIER;
-        public ForgeConfigSpec.ConfigValue<Long> EXPL_CHARGE;
-        public ForgeConfigSpec.ConfigValue<Boolean> BLACKHOLE_SHADER;
+        public final ForgeConfigSpec.ConfigValue<Integer> LASER_DISTANCE;
+        public final ForgeConfigSpec.ConfigValue<Double> GENERATION_MULTIPLIER;
+        public final ForgeConfigSpec.ConfigValue<Double> EVAPORATION_MULTIPLIER;
+        public final ForgeConfigSpec.ConfigValue<Long> EXPL_CHARGE;
+        public final ForgeConfigSpec.ConfigValue<Boolean> BLACKHOLE_SHADER;
 
         public GeneralConfig(ForgeConfigSpec.Builder builder) {
             builder.comment("Settings for Fusion Reactor").push("general");

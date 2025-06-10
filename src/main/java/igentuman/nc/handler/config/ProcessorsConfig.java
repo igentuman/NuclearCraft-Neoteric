@@ -38,12 +38,12 @@ public class ProcessorsConfig {
     }
 
     public static class InSituLeachingConfig {
-        public ForgeConfigSpec.ConfigValue<Boolean> ENABLE_VEINS;
-        public ForgeConfigSpec.ConfigValue<List<Integer>> VEIN_BLOCKS_AMOUNT;
-        public ForgeConfigSpec.ConfigValue<Integer> VEINS_RARITY;
-        public ForgeConfigSpec.ConfigValue<Boolean> RANDOMIZED_ORES;
-        public ForgeConfigSpec.ConfigValue<Boolean> ADD_IE_VEINS;
-        public ForgeConfigSpec.ConfigValue<Boolean> ALLOW_TO_LEACH_IE_VEINS;
+        public final ForgeConfigSpec.ConfigValue<Boolean> ENABLE_VEINS;
+        public final ForgeConfigSpec.ConfigValue<List<Integer>> VEIN_BLOCKS_AMOUNT;
+        public final ForgeConfigSpec.ConfigValue<Integer> VEINS_RARITY;
+        public final ForgeConfigSpec.ConfigValue<Boolean> RANDOMIZED_ORES;
+        public final ForgeConfigSpec.ConfigValue<Boolean> ADD_IE_VEINS;
+        public final ForgeConfigSpec.ConfigValue<Boolean> ALLOW_TO_LEACH_IE_VEINS;
 
 
         public InSituLeachingConfig(ForgeConfigSpec.Builder builder) {
@@ -80,18 +80,18 @@ public class ProcessorsConfig {
     }
 
     public static class ProcessorConfig {
-        public ForgeConfigSpec.ConfigValue<Integer> GT_AMPERAGE;
-        public ForgeConfigSpec.ConfigValue<Integer> GT_SUPPORT;
-        public ForgeConfigSpec.ConfigValue<Boolean> GT_EXPLODE;
-        public ForgeConfigSpec.ConfigValue<Integer> BASE_TIME;
-        public ForgeConfigSpec.ConfigValue<Integer> BASE_POWER;
-        public ForgeConfigSpec.ConfigValue<Integer> SKIP_TICKS;
+        public final ForgeConfigSpec.ConfigValue<Integer> GT_AMPERAGE;
+        public final ForgeConfigSpec.ConfigValue<Integer> GT_SUPPORT;
+        public final ForgeConfigSpec.ConfigValue<Boolean> GT_EXPLODE;
+        public final ForgeConfigSpec.ConfigValue<Integer> BASE_TIME;
+        public final ForgeConfigSpec.ConfigValue<Integer> BASE_POWER;
+        public final ForgeConfigSpec.ConfigValue<Integer> SKIP_TICKS;
         public HashMap<String, ProcessorConfigSpec> PROCESSOR_CONFIG;
 
         public static class ProcessorConfigSpec {
-            public ForgeConfigSpec.ConfigValue<Boolean> register;
-            public ForgeConfigSpec.ConfigValue<Integer> base_power;
-            public ForgeConfigSpec.ConfigValue<Integer> base_time;
+            public final ForgeConfigSpec.ConfigValue<Boolean> register;
+            public final ForgeConfigSpec.ConfigValue<Integer> base_power;
+            public final ForgeConfigSpec.ConfigValue<Integer> base_time;
 
             public ProcessorConfigSpec(ForgeConfigSpec.Builder builder, boolean register, int base_power, int base_time) {
                 this.register = builder.define("register", register);

@@ -36,9 +36,9 @@ public class FissionConfig {
     }
 
     public static class FuelConfig {
-        public ForgeConfigSpec.ConfigValue<Double> HEAT_MULTIPLIER;
-        public ForgeConfigSpec.ConfigValue<Double> FUEL_HEAT_MULTIPLIER;
-        public ForgeConfigSpec.ConfigValue<Double> DEPLETION_MULTIPLIER;
+        public final ForgeConfigSpec.ConfigValue<Double> HEAT_MULTIPLIER;
+        public final ForgeConfigSpec.ConfigValue<Double> FUEL_HEAT_MULTIPLIER;
+        public final ForgeConfigSpec.ConfigValue<Double> DEPLETION_MULTIPLIER;
 
         public FuelConfig(ForgeConfigSpec.Builder builder) {
             builder.comment("Settings for reactor fuel").push("reactor_fuel");
@@ -61,19 +61,19 @@ public class FissionConfig {
     }
 
     public static class FissionReactorConfig {
-        public ForgeConfigSpec.ConfigValue<Integer> MIN_SIZE;
-        public ForgeConfigSpec.ConfigValue<Integer> MAX_SIZE;
-        public ForgeConfigSpec.ConfigValue<Double> HEAT_MULTIPLIER;
-        public ForgeConfigSpec.ConfigValue<Double> HEAT_MULTIPLIER_CAP;
-        public ForgeConfigSpec.ConfigValue<Double> MODERATOR_FE_MULTIPLIER;
-        public ForgeConfigSpec.ConfigValue<Double> MODERATOR_HEAT_MULTIPLIER;
-        public ForgeConfigSpec.ConfigValue<Double> EXPLOSION_RADIUS;
-        public ForgeConfigSpec.ConfigValue<Double> HEAT_CAPACITY;
+        public final ForgeConfigSpec.ConfigValue<Integer> MIN_SIZE;
+        public final ForgeConfigSpec.ConfigValue<Integer> MAX_SIZE;
+        public final ForgeConfigSpec.ConfigValue<Double> HEAT_MULTIPLIER;
+        public final ForgeConfigSpec.ConfigValue<Double> HEAT_MULTIPLIER_CAP;
+        public final ForgeConfigSpec.ConfigValue<Double> MODERATOR_FE_MULTIPLIER;
+        public final ForgeConfigSpec.ConfigValue<Double> MODERATOR_HEAT_MULTIPLIER;
+        public final ForgeConfigSpec.ConfigValue<Double> EXPLOSION_RADIUS;
+        public final ForgeConfigSpec.ConfigValue<Double> HEAT_CAPACITY;
 
-        public ForgeConfigSpec.ConfigValue<Double> FE_GENERATION_MULTIPLIER;
-        public ForgeConfigSpec.ConfigValue<Double> BOILING_MULTIPLIER;
-        public ForgeConfigSpec.ConfigValue<Boolean> ACTIVE_HEATSINK_PRIME;
-        public ForgeConfigSpec.ConfigValue<Integer> ACTIVE_HEATSINK_COOLANT_PER_TICK;
+        public final ForgeConfigSpec.ConfigValue<Double> FE_GENERATION_MULTIPLIER;
+        public final ForgeConfigSpec.ConfigValue<Double> BOILING_MULTIPLIER;
+        public final ForgeConfigSpec.ConfigValue<Boolean> ACTIVE_HEATSINK_PRIME;
+        public final ForgeConfigSpec.ConfigValue<Integer> ACTIVE_HEATSINK_COOLANT_PER_TICK;
 
         public FissionReactorConfig(ForgeConfigSpec.Builder builder) {
             builder.comment("Settings for Fission Reactor").push("fission_reactor");

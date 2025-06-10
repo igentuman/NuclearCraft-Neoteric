@@ -2,7 +2,9 @@ package igentuman.nc.block.fusion;
 
 import igentuman.nc.block.entity.fusion.FusionCoreBE;
 import igentuman.nc.block.entity.fusion.FusionCoreProxyBE;
+import igentuman.nc.compat.gregtech.GTUtils;
 import igentuman.nc.container.FusionCoreContainer;
+import igentuman.nc.handler.config.CommonConfig;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -44,6 +46,7 @@ import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BE
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_CORE_PROXY;
 import static igentuman.nc.util.ModUtil.isGtLoaded;
 import static igentuman.nc.util.TextUtils.__;
+import static igentuman.nc.util.TextUtils.formatEnergy;
 
 public class FusionCoreBlock extends FusionBeBlock {
     public static final BooleanProperty ACTIVE = BlockStateProperties.POWERED;
@@ -174,6 +177,9 @@ public class FusionCoreBlock extends FusionBeBlock {
         if(asItem().toString().contains("empty") || this.asItem().equals(Items.AIR)) return;
         if(isGtLoaded() && isGTEUCapEnabled()) {
             list.add(__("tooltip.nc.energy_eu_tier", GTCEU_CONFIG.FUSION_REACTOR_ENERGY_TIER.get()).withStyle(ChatFormatting.GOLD));
+        }
+        if(isGtLoaded() && GTCEU_CONFIG.COMPATIBILITY.get() == CommonConfig.GTCEUCompatibilityConfig.GTCEUCompatibility.GTCEU_AND_FE && GTCEU_CONFIG.LIMIT_FE_OUTPUT.get()) {
+            list.add(__("tooltip.nc.max_fe_extract_per_tick", formatEnergy(GTUtils.getMaxOutputFE(GTCEU_CONFIG.FUSION_REACTOR_ENERGY_TIER.get()))).withStyle(ChatFormatting.GOLD));
         }
         list.add(__("multiblock.build_in_chunk.advise").withStyle(ChatFormatting.GREEN));
     }

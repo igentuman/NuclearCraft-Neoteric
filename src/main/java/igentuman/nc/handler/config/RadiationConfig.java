@@ -36,20 +36,18 @@ public class RadiationConfig {
     }
 
     public static class RadiationConf {
-        public ForgeConfigSpec.ConfigValue<Boolean> ENABLED;
-        public ForgeConfigSpec.ConfigValue<Integer> SPREAD_GATE;
-        public ForgeConfigSpec.ConfigValue<Integer> NATURAL_RADIATION;
-        public ForgeConfigSpec.ConfigValue<Double> SPREAD_MULTIPLIER;
-        public ForgeConfigSpec.ConfigValue<Integer> DECAY_SPEED;
-        public ForgeConfigSpec.ConfigValue<Integer> DECAY_SPEED_FOR_PLAYER;
-        public ForgeConfigSpec.ConfigValue<Double> GAIN_SPEED_FOR_PLAYER;
-        public ForgeConfigSpec.ConfigValue<List<String>> ITEM_RADIATION;
-        public ForgeConfigSpec.ConfigValue<List<String>> RADIATION_REMOVAL_ITEMS;
-        public ForgeConfigSpec.ConfigValue<List<String>> ARMOR_PROTECTION;
-        public ForgeConfigSpec.ConfigValue<List<String>> BIOME_RADIATION;
-        public ForgeConfigSpec.ConfigValue<List<String>> DIMENSION_RADIATION;
-        public ForgeConfigSpec.ConfigValue<Integer> RADIATION_UPDATE_INTERVAL;
-        public ForgeConfigSpec.ConfigValue<Boolean> MEKANISM_RADIATION_INTEGRATION;
+        public final ForgeConfigSpec.ConfigValue<Boolean> ENABLED;
+        public final ForgeConfigSpec.ConfigValue<Integer> NATURAL_RADIATION;
+        public final ForgeConfigSpec.ConfigValue<Integer> DECAY_SPEED;
+        public final ForgeConfigSpec.ConfigValue<Integer> DECAY_SPEED_FOR_PLAYER;
+        public final ForgeConfigSpec.ConfigValue<Double> GAIN_SPEED_FOR_PLAYER;
+        public final ForgeConfigSpec.ConfigValue<List<String>> ITEM_RADIATION;
+        public final ForgeConfigSpec.ConfigValue<List<String>> RADIATION_REMOVAL_ITEMS;
+        public final ForgeConfigSpec.ConfigValue<List<String>> ARMOR_PROTECTION;
+        public final ForgeConfigSpec.ConfigValue<List<String>> BIOME_RADIATION;
+        public final ForgeConfigSpec.ConfigValue<List<String>> DIMENSION_RADIATION;
+        public final ForgeConfigSpec.ConfigValue<Integer> RADIATION_UPDATE_INTERVAL;
+        public final ForgeConfigSpec.ConfigValue<Boolean> MEKANISM_RADIATION_INTEGRATION;
         protected HashMap<String, Integer> biomeRadiationMap;
         public int biomeRadiation(String id)
         {

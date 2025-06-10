@@ -3,12 +3,10 @@ package igentuman.nc.block.entity.turbine;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;
 import igentuman.nc.multiblock.MultiblockHandler;
-import igentuman.nc.util.CustomEnergyStorage;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -21,7 +19,6 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static igentuman.nc.compat.gregtech.GTUtils.*;
 import static igentuman.nc.util.ModUtil.isCcLoaded;
@@ -111,7 +108,7 @@ public class TurbinePortBE extends TurbineBE {
         }
         be.getCapability(ForgeCapabilities.ENERGY, direction.getOpposite()).map(handler -> {
                     if (handler.canReceive()) {
-                        int received = handler.receiveEnergy(getEnergyStored(), false);
+                        int received = handler.receiveEnergy(Math.min(controller().energyStorage().getMaxExtract(), getEnergyStored()), false);
                         controller().energyStorage().consumeEnergy(received);
                         setChanged();
                         return getEnergyStored() > 0;

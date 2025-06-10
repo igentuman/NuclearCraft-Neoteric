@@ -41,7 +41,7 @@ public class MaterialsConfig {
         public List<ForgeConfigSpec.ConfigValue<Boolean>> PLATES;
         public List<ForgeConfigSpec.ConfigValue<Boolean>> DUSTS;
         public List<ForgeConfigSpec.ConfigValue<Boolean>> GEMS;
-        public ForgeConfigSpec.ConfigValue<List<String>> MODS_PRIORITY;
+        public final ForgeConfigSpec.ConfigValue<List<String>> MODS_PRIORITY;
 
         public MaterialProductsConfig(ForgeConfigSpec.Builder builder) {
 

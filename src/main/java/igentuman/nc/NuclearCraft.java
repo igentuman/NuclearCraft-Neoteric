@@ -145,7 +145,7 @@ public class NuclearCraft {
 
     public static void debugLog(String message) {
         if (MISC_CONFIG.DEBUG_LOG.get()) {
-            LOGGER.debug(message);
+            LOGGER.info(message);
         }
     }
 }

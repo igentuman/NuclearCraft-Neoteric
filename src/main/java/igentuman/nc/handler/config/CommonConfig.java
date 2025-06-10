@@ -49,14 +49,14 @@ public class CommonConfig {
     }
 
     public static class EnergyGenerationConfig {
-        public ForgeConfigSpec.ConfigValue<List<Boolean>> REGISTER_SOLAR_PANELS;
-        public ForgeConfigSpec.ConfigValue<List<Integer>> SOLAR_PANELS_GENERATION;
-        public ForgeConfigSpec.ConfigValue<List<Boolean>> REGISTER_RTG;
-        public ForgeConfigSpec.ConfigValue<List<Integer>> RTG_GENERATION;
-        public ForgeConfigSpec.ConfigValue<List<Integer>> RTG_RADIATION;
-        public ForgeConfigSpec.ConfigValue<Integer> STEAM_TURBINE;
-        public ForgeConfigSpec.ConfigValue<Integer> DECAY_GENERATOR;
-        public ForgeConfigSpec.ConfigValue<Double> GENERATION_MULTIPLIER;
+        public final ForgeConfigSpec.ConfigValue<List<Boolean>> REGISTER_SOLAR_PANELS;
+        public final ForgeConfigSpec.ConfigValue<List<Integer>> SOLAR_PANELS_GENERATION;
+        public final ForgeConfigSpec.ConfigValue<List<Boolean>> REGISTER_RTG;
+        public final ForgeConfigSpec.ConfigValue<List<Integer>> RTG_GENERATION;
+        public final ForgeConfigSpec.ConfigValue<List<Integer>> RTG_RADIATION;
+        public final ForgeConfigSpec.ConfigValue<Integer> STEAM_TURBINE;
+        public final ForgeConfigSpec.ConfigValue<Integer> DECAY_GENERATOR;
+        public final ForgeConfigSpec.ConfigValue<Double> GENERATION_MULTIPLIER;
 
 
 
@@ -100,9 +100,9 @@ public class CommonConfig {
     }
 
     public static class StorageBlocksConfig {
-        public ForgeConfigSpec.ConfigValue<List<Boolean>> REGISTER_BARREL;
-        public ForgeConfigSpec.ConfigValue<List<Boolean>> REGISTER_CONTAINER;
-        public ForgeConfigSpec.ConfigValue<List<Integer>> BARREL_CAPACITY;
+        public final ForgeConfigSpec.ConfigValue<List<Boolean>> REGISTER_BARREL;
+        public final ForgeConfigSpec.ConfigValue<List<Boolean>> REGISTER_CONTAINER;
+        public final ForgeConfigSpec.ConfigValue<List<Integer>> BARREL_CAPACITY;
 
         public StorageBlocksConfig(ForgeConfigSpec.Builder builder) {
 
@@ -127,12 +127,12 @@ public class CommonConfig {
     }
 
     public static class EnergyStorageConfig {
-        public ForgeConfigSpec.ConfigValue<List<Boolean>> REGISTER_ENERGY_BLOCK;
-        public ForgeConfigSpec.ConfigValue<List<Integer>> ENERGY_BLOCK_STORAGE;
-        public ForgeConfigSpec.ConfigValue<Integer> LITHIUM_ION_BATTERY_STORAGE;
-        public ForgeConfigSpec.ConfigValue<Integer> QNP_ENERGY_STORAGE;
-        public ForgeConfigSpec.ConfigValue<Integer> LIGHTNING_ROD_CHARGE;
-        public ForgeConfigSpec.ConfigValue<Integer> QNP_ENERGY_PER_BLOCK;
+        public final ForgeConfigSpec.ConfigValue<List<Boolean>> REGISTER_ENERGY_BLOCK;
+        public final ForgeConfigSpec.ConfigValue<List<Integer>> ENERGY_BLOCK_STORAGE;
+        public final ForgeConfigSpec.ConfigValue<Integer> LITHIUM_ION_BATTERY_STORAGE;
+        public final ForgeConfigSpec.ConfigValue<Integer> QNP_ENERGY_STORAGE;
+        public final ForgeConfigSpec.ConfigValue<Integer> LIGHTNING_ROD_CHARGE;
+        public final ForgeConfigSpec.ConfigValue<Integer> QNP_ENERGY_PER_BLOCK;
 
         public EnergyStorageConfig(ForgeConfigSpec.Builder builder) {
             builder.push("energy_storage");
@@ -170,8 +170,8 @@ public class CommonConfig {
 
 
     public static class MiscConfig {
-        public ForgeConfigSpec.ConfigValue<Boolean> DEBUG_LOG;
-        public ForgeConfigSpec.ConfigValue<Boolean> SCHEDULED_VALIDATION;
+        public final ForgeConfigSpec.ConfigValue<Boolean> DEBUG_LOG;
+        public final ForgeConfigSpec.ConfigValue<Boolean> SCHEDULED_VALIDATION;
 
         public MiscConfig(ForgeConfigSpec.Builder builder) {
             builder.push("Misc");
@@ -200,15 +200,16 @@ public class CommonConfig {
             ULV, LV, MV, HV, EV, IV, LuV, ZPM, UV, UHV, UEV, UIV, UXV, OpV, MAX
         }
 
-        public ForgeConfigSpec.ConfigValue<GTCEUCompatibility> COMPATIBILITY;
-        public ForgeConfigSpec.ConfigValue<Boolean> OVERCHARGE_EXPLOSIONS;
-        public ForgeConfigSpec.ConfigValue<GTCEUTier> FISSION_REACTOR_TIER;
-        public ForgeConfigSpec.ConfigValue<GTCEUTier> TURBINE_ENERGY_TIER;
-        public ForgeConfigSpec.ConfigValue<GTCEUTier> FUSION_REACTOR_ENERGY_TIER;
-        public ForgeConfigSpec.ConfigValue<GTCEUTier> KUGELBLITZ_ENERGY_TIER;
-        public ForgeConfigSpec.ConfigValue<GTCEUTier> ACCELERATORS_ENERGY_TIER;
-        public ForgeConfigSpec.ConfigValue<GTCEUTier> PROCESSOR_ENERGY_TIER;
-        public ForgeConfigSpec.ConfigValue<Integer> ENERGY_UPGRADES_NEEDED_TO_NEXT_TIER;
+        public final ForgeConfigSpec.ConfigValue<GTCEUCompatibility> COMPATIBILITY;
+        public final ForgeConfigSpec.ConfigValue<Boolean> OVERCHARGE_EXPLOSIONS;
+        public final ForgeConfigSpec.ConfigValue<Boolean> LIMIT_FE_OUTPUT;
+        public final ForgeConfigSpec.ConfigValue<GTCEUTier> FISSION_REACTOR_TIER;
+        public final ForgeConfigSpec.ConfigValue<GTCEUTier> TURBINE_ENERGY_TIER;
+        public final ForgeConfigSpec.ConfigValue<GTCEUTier> FUSION_REACTOR_ENERGY_TIER;
+        public final ForgeConfigSpec.ConfigValue<GTCEUTier> KUGELBLITZ_ENERGY_TIER;
+        public final ForgeConfigSpec.ConfigValue<GTCEUTier> ACCELERATORS_ENERGY_TIER;
+        public final ForgeConfigSpec.ConfigValue<GTCEUTier> PROCESSOR_ENERGY_TIER;
+        public final ForgeConfigSpec.ConfigValue<Integer> ENERGY_UPGRADES_NEEDED_TO_NEXT_TIER;
 
         public GTCEUCompatibilityConfig(ForgeConfigSpec.Builder builder) {
             builder.push("GregTech Energy Compatibility");
@@ -223,15 +224,21 @@ public class CommonConfig {
                     .comment("GTCEU_AND_FE - Both systems are used, but GTCEU is preferred")
                     .defineEnum("gregtech_energy_compatibility", GTCEUCompatibility.GTCEU_AND_FE);
 
+            FISSION_REACTOR_TIER = builder
+                    .comment("This only counts if GTCEU is supported")
+                    .define("fission_reactor_energy_tier", EV);
+            
             OVERCHARGE_EXPLOSIONS = builder
                     .comment("This only counts if GTCEU is supported")
                     .comment("Explode machines when input energy is more than max input")
                     .comment("This doesn't count FE energy input")
                     .define("gregtech_energy_overcharge_explosions", true);
 
-            FISSION_REACTOR_TIER = builder
-                    .comment("This only counts if GTCEU is supported")
-                    .define("fission_reactor_energy_tier", EV);
+            LIMIT_FE_OUTPUT = builder
+                    .comment("This only counts if GTCEU_AND_FE compatibility used")
+                    .comment("Output FE/t will be limited to max GTCEU output")
+                    .comment("Formula: FE/t = voltage * amperage * (EU to FE convertion rate, usually 4)")
+                    .define("limit_fe_output", false);
 
             TURBINE_ENERGY_TIER = builder
                     .comment("This only counts if GTCEU is supported")

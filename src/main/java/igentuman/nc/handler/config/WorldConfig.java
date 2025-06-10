@@ -38,7 +38,7 @@ public class WorldConfig {
     }
 
     public static class DimensionConfig {
-        public ForgeConfigSpec.ConfigValue<Boolean> registerWasteland;
+        public final ForgeConfigSpec.ConfigValue<Boolean> registerWasteland;
 
         public DimensionConfig(ForgeConfigSpec.Builder builder) {
             builder.push("Dimension");
@@ -50,7 +50,7 @@ public class WorldConfig {
     }
 
     public static class BiomeConfig {
-        public ForgeConfigSpec.ConfigValue<Boolean> registerWasteland;
+        public final ForgeConfigSpec.ConfigValue<Boolean> registerWasteland;
 
         public BiomeConfig(ForgeConfigSpec.Builder builder) {
             builder.push("Biome");

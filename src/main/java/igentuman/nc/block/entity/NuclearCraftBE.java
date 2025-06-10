@@ -131,7 +131,7 @@ public class NuclearCraftBE extends BlockEntity {
         }
         be.getCapability(ForgeCapabilities.ENERGY, direction.getOpposite()).map(handler -> {
                     if (handler.canReceive()) {
-                        int received = handler.receiveEnergy(Math.min(energyStorage().getEnergyStored(), energyStorage().getEnergyStored()), false);
+                        int received = handler.receiveEnergy(Math.min(energyStorage().getMaxExtract(), energyStorage().getEnergyStored()), false);
                         energyStorage().consumeEnergy(received);
                         setChanged();
                         return energyStorage().getEnergyStored() > 0;

@@ -9,7 +9,6 @@ import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.fission.FissionReactorMultiblock;
 import igentuman.nc.multiblock.fission.FissionReactorRegistration;
-import igentuman.nc.util.CustomEnergyStorage;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -25,7 +24,6 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static igentuman.nc.compat.gregtech.GTUtils.*;
 import static igentuman.nc.compat.oc2.FissionReactorDevice.DEVICE_CAPABILITY;
@@ -166,7 +164,7 @@ public class FissionPortBE extends NuclearCraftBE implements MultiblockAttachabl
         }
         be.getCapability(ForgeCapabilities.ENERGY, direction.getOpposite()).map(handler -> {
                     if (handler.canReceive()) {
-                        int received = handler.receiveEnergy(getEnergyStored(), false);
+                        int received = handler.receiveEnergy(Math.min(controller().energyStorage().getMaxExtract(), getEnergyStored()), false);
                         controller().energyStorage().consumeEnergy(received);
                         controller().setChanged();
                         return getEnergyStored() > 0;

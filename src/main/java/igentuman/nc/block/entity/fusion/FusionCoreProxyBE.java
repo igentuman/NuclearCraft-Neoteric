@@ -225,10 +225,11 @@ public class FusionCoreProxyBE extends NuclearCraftBE implements MultiblockAttac
                 }
 
                 IEnergyStorage r = be.getCapability(ForgeCapabilities.ENERGY, side.getOpposite()).orElse(null);
-                if(r == null) break;
+                if(r == null) continue;
                 if(r.canReceive()) {
-                    int recieved = r.receiveEnergy(getCoreBE().energyStorage().getEnergyStored()-required, false);
-                    getCoreBE().energyStorage().setEnergy(getCoreBE().energyStorage().getEnergyStored()-recieved);
+                    int available = getCoreBE().energyStorage().getEnergyStored()-required;
+                    int recieved = r.receiveEnergy(Math.min(available, getCoreBE().energyStorage().getMaxExtract()), false);
+                    getCoreBE().energyStorage().consumeEnergy(recieved);
                     controller().setChanged();
                 }
             }

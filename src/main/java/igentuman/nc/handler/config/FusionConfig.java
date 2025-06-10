@@ -39,10 +39,10 @@ public class FusionConfig {
     }
 
     public static class RFAmplifierConfig {
-        public ForgeConfigSpec.ConfigValue<List<Boolean>> REGISTERED;
-        public ForgeConfigSpec.ConfigValue<List<Integer>> POWER;
-        public ForgeConfigSpec.ConfigValue<List<Integer>> HEAT;
-        public ForgeConfigSpec.ConfigValue<List<Integer>> VOLTAGE;
+        public final ForgeConfigSpec.ConfigValue<List<Boolean>> REGISTERED;
+        public final ForgeConfigSpec.ConfigValue<List<Integer>> POWER;
+        public final ForgeConfigSpec.ConfigValue<List<Integer>> HEAT;
+        public final ForgeConfigSpec.ConfigValue<List<Integer>> VOLTAGE;
 
         public RFAmplifierConfig(ForgeConfigSpec.Builder builder) {
             builder.comment("Settings for RF Amplifiers").push("rf_amplifiers");
@@ -69,10 +69,10 @@ public class FusionConfig {
     }
 
     public static class ElectromagnetsConfig {
-        public ForgeConfigSpec.ConfigValue<List<Boolean>> REGISTERED;
-        public ForgeConfigSpec.ConfigValue<List<Integer>> POWER;
-        public ForgeConfigSpec.ConfigValue<List<Integer>> HEAT;
-        public ForgeConfigSpec.ConfigValue<List<Double>> MAGNETIC_FIELD;
+        public final ForgeConfigSpec.ConfigValue<List<Boolean>> REGISTERED;
+        public final ForgeConfigSpec.ConfigValue<List<Integer>> POWER;
+        public final ForgeConfigSpec.ConfigValue<List<Integer>> HEAT;
+        public final ForgeConfigSpec.ConfigValue<List<Double>> MAGNETIC_FIELD;
 
         public ElectromagnetsConfig(ForgeConfigSpec.Builder builder) {
             builder.comment("Settings for Electromagnets").push("electromagnets");
@@ -99,12 +99,12 @@ public class FusionConfig {
     }
 
     public static class FusionReactorConfig {
-        public ForgeConfigSpec.ConfigValue<Integer> MIN_SIZE;
-        public ForgeConfigSpec.ConfigValue<Integer> MAX_SIZE;
-        public ForgeConfigSpec.ConfigValue<Double> MINIMAL_MAGNETIC_FIELD;
-        public ForgeConfigSpec.ConfigValue<Double> RF_AMPLIFICATION_MULTIPLIER;
-        public ForgeConfigSpec.ConfigValue<Double> PLASMA_TO_ENERGY_CONVERTION;
-        public ForgeConfigSpec.ConfigValue<Double> EXPLOSION_RADIUS;
+        public final ForgeConfigSpec.ConfigValue<Integer> MIN_SIZE;
+        public final ForgeConfigSpec.ConfigValue<Integer> MAX_SIZE;
+        public final ForgeConfigSpec.ConfigValue<Double> MINIMAL_MAGNETIC_FIELD;
+        public final ForgeConfigSpec.ConfigValue<Double> RF_AMPLIFICATION_MULTIPLIER;
+        public final ForgeConfigSpec.ConfigValue<Double> PLASMA_TO_ENERGY_CONVERTION;
+        public final ForgeConfigSpec.ConfigValue<Double> EXPLOSION_RADIUS;
 
         public FusionReactorConfig(ForgeConfigSpec.Builder builder) {
             builder.comment("Settings for Fusion Reactor").push("fusion_reactor");

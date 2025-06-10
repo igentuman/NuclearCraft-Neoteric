@@ -278,8 +278,6 @@ public class FissionControllerBE extends MultiblockControllerBE {
             FluidStack currentCoolant = contentHandler().fluidCapability.getFluidInSlot(0);
             FluidStack currentOutput = contentHandler().fluidCapability.getFluidInSlot(1);
             if(!steam.isFluidEqual(currentOutput) && !currentOutput.isEmpty()) {
-                //No room? Heat up
-                //heat += coolingPerTick();
                 boilingPenalty = coolingPerTick();
                 return;
             }

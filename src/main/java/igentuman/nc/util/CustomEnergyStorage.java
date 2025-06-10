@@ -1,11 +1,16 @@
 package igentuman.nc.util;
 
+import igentuman.nc.handler.config.CommonConfig;
+import igentuman.nc.handler.config.CommonConfig.GTCEUCompatibilityConfig.GTCEUCompatibility;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.Tag;
 import net.minecraftforge.energy.EnergyStorage;
 
-import static igentuman.nc.compat.gregtech.GTUtils.tierByFe;
+import static igentuman.nc.block.entity.NuclearCraftBE.isGTEUCapEnabled;
+import static igentuman.nc.compat.gregtech.GTUtils.*;
+import static igentuman.nc.handler.config.CommonConfig.GTCEU_CONFIG;
+import static igentuman.nc.util.ModUtil.isGtLoaded;
 
 public class CustomEnergyStorage extends EnergyStorage {
 
@@ -46,6 +51,10 @@ public class CustomEnergyStorage extends EnergyStorage {
     }
 
     public CustomEnergyStorage setOutputAmperage(long value) {
+        //as only multiblock storages calls this method, we are applying limit for multiblock storages only
+        if(isGtLoaded() && GTCEU_CONFIG.COMPATIBILITY.get() == GTCEUCompatibility.GTCEU_AND_FE && GTCEU_CONFIG.LIMIT_FE_OUTPUT.get()) {
+            maxExtract = convert2FE(value * outputVoltage);
+        }
         this.outputAmperage = value;
         return this;
     }
@@ -168,5 +177,9 @@ public class CustomEnergyStorage extends EnergyStorage {
 
     public long getGTInputVoltage() {
         return inputVoltage;
+    }
+
+    public int getMaxExtract() {
+        return maxExtract;
     }
 }

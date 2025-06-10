@@ -46,11 +46,11 @@ public class OreGenConfig {
 
         public static class OreGenSpec {
 
-            public ForgeConfigSpec.ConfigValue<Boolean> register;
-            public ForgeConfigSpec.ConfigValue<List<Integer>> dimensions;
-            public ForgeConfigSpec.ConfigValue<Integer> veinSize;
-            public ForgeConfigSpec.ConfigValue<Integer> min_height;
-            public ForgeConfigSpec.ConfigValue<Integer> max_height;
+            public final ForgeConfigSpec.ConfigValue<Boolean> register;
+            public final ForgeConfigSpec.ConfigValue<List<Integer>> dimensions;
+            public final ForgeConfigSpec.ConfigValue<Integer> veinSize;
+            public final ForgeConfigSpec.ConfigValue<Integer> min_height;
+            public final ForgeConfigSpec.ConfigValue<Integer> max_height;
 
             OreGenSpec(ForgeConfigSpec.Builder builder, boolean register, List<Integer> dimensions, int veinSize, int min_height, int max_height) {
                 this.register = builder.define("register", register);

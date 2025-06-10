@@ -134,8 +134,7 @@ public class ChamberPortBE extends NuclearCraftBE implements MultiblockAttachabl
     }
 
     protected void transferEnergyToSide(Direction direction) {
-        AtomicInteger capacity = new AtomicInteger(controller().energyStorage().getEnergyStored());
-        if (capacity.get() <= 0) {
+        if (controller().energyStorage().getEnergyStored() <= 0) {
             return; // No energy to transfer
         }
         BlockEntity be = level.getExistingBlockEntity(worldPosition.relative(direction));
@@ -150,11 +149,10 @@ public class ChamberPortBE extends NuclearCraftBE implements MultiblockAttachabl
         }
         be.getCapability(ForgeCapabilities.ENERGY, direction.getOpposite()).map(handler -> {
                     if (handler.canReceive()) {
-                        int received = handler.receiveEnergy(Math.min(capacity.get(), controller().energyStorage().getEnergyStored()), false);
-                        capacity.addAndGet(-received);
+                        int received = handler.receiveEnergy(Math.min(controller().energyStorage().getMaxExtract(), getEnergyStored()), false);
                         controller().energyStorage().consumeEnergy(received);
                         setChanged();
-                        return capacity.get() > 0;
+                        return getEnergyStored() > 0;
                     } else {
                         return true;
                     }

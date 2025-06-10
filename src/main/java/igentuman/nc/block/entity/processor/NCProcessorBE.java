@@ -241,6 +241,7 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
     public void handleRecipeOutput() {
         if (hasRecipe() && (recipeInfo().isCompleted() || recipeInfo().isStuck())) {
             if (recipeInfo().handleOutputs(contentHandler())) {
+                recipeInfo().stuck = false;
                 updateRecipe();
             } else {
                 recipeInfo().stuck = true;

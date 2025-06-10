@@ -137,7 +137,7 @@ public class NcRecipeType<RECIPE extends NcRecipe> implements RecipeType<RECIPE>
                     new ItemStackIngredient[]{output},
                     new FluidStackIngredient[0],
                     new FluidStackIngredient[0],
-                    recipe.getCookingTime()/1000D, 1, 1, 1));
+                    recipe.getCookingTime()/2000D, 1, 1, 1));
         }
         return recipes;
     }

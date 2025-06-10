@@ -35,6 +35,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("itemGroup." + MODID+"_accelerator", "NuclearCraft Accelerator");
         add("entity.nuclearcraft.feral_ghoul", "Feral Ghoul");
         add("entity.nuclearcraft.feral_ghoul_boss", "Boss of the Wasteland");
+        add("biome.nuclearcraft.wasteland", "Wasteland");
         ores();
         ingots();
         plates();
@@ -951,6 +952,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("block."+MODID+".redstone_dimmer", "Redstone Dimmer");
         add("block."+MODID+".multiblock_builder", "Creative Multiblock Builder");
         add("block."+MODID+".portal", "Wasteland Portal");
+        add("block."+MODID+".wasteland_earth", "Wasteland Earth");
     }
 }
 

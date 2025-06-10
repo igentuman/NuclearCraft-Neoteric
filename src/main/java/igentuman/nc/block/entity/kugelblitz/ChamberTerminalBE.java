@@ -65,6 +65,8 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
     @NBTField
     public long feeding = 0;
     @NBTField
+    public BlockPos blackholePos = BlockPos.ZERO;
+    @NBTField
     public int energyPerTick = 0;
     @NBTField
     public double efficiency = 0;

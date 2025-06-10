@@ -3,6 +3,7 @@ package igentuman.nc.datagen;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.LanguageProvider;
 
+import static igentuman.nc.setup.registration.FissionFuel.NC_ISOTOPES;
 import static igentuman.nc.setup.registration.NCFluids.NC_MATERIALS;
 import static igentuman.nc.setup.registration.NCItems.*;
 import static igentuman.nc.util.TextUtils.convertToName;
@@ -37,6 +38,9 @@ public class EmiLangProvider extends LanguageProvider {
         }
         for(String name: NC_CHUNKS.keySet()) {
             add("tag.item.c.raw_material."+name, convertToName(name)+" Raw");
+        }
+        for(String name: NC_ISOTOPES.keySet()) {
+            add("tag.item.c.isotope."+name, convertToName(name));
         }
     }
 }

@@ -246,6 +246,7 @@ public class KugelblitzMultiblock extends AbstractMultiblock {
         controllerBE().fluxRegulators = fluxRegulators();
         controllerBE().transformers = transformers();
         controllerBE().stabilizers = stabilizers();
+        controllerBE().blackholePos = getCenter();
         controllerBE().setChanged();
         validationResult =  ValidationResult.VALID;
         errorBlockPos = BlockPos.ZERO;

@@ -96,19 +96,19 @@ public class NCPlacedFeatures {
         register(context, PLACED_FEATURES_KEYS.get("wasteland_ruins"),
                 configuredFeatures.getOrThrow(CONFIGURED_FEATURES.get("wasteland_ruins")),
                 List.of(
-                        RarityFilter.onAverageOnceEvery(300), HeightmapPlacement.onHeightmap(Heightmap.Types.WORLD_SURFACE_WG)
+                        RarityFilter.onAverageOnceEvery(250), HeightmapPlacement.onHeightmap(Heightmap.Types.WORLD_SURFACE_WG)
                 ));
 
         register(context, PLACED_FEATURES_KEYS.get("wasteland_portal"),
                 configuredFeatures.getOrThrow(CONFIGURED_FEATURES.get("wasteland_portal")),
                 List.of(
-                        RarityFilter.onAverageOnceEvery(300),  HeightmapPlacement.onHeightmap(Heightmap.Types.WORLD_SURFACE_WG)
+                        RarityFilter.onAverageOnceEvery(400),  HeightmapPlacement.onHeightmap(Heightmap.Types.WORLD_SURFACE_WG)
                 ));
                 
         register(context, PLACED_FEATURES_KEYS.get("wasteland_boss_lair"),
                 configuredFeatures.getOrThrow(CONFIGURED_FEATURES.get("wasteland_boss_lair")),
                 List.of(
-                        RarityFilter.onAverageOnceEvery(700),  HeightmapPlacement.onHeightmap(Heightmap.Types.WORLD_SURFACE_WG)
+                        RarityFilter.onAverageOnceEvery(800),  HeightmapPlacement.onHeightmap(Heightmap.Types.WORLD_SURFACE_WG)
                 ));
 
         register(context, PLACED_FEATURES_KEYS.get("wasteland_surface"),

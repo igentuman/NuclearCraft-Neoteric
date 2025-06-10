@@ -10,6 +10,7 @@ public class ModUtil {
     protected static boolean ieLoaded;
     protected static boolean gtLoaded;
     protected static boolean oc2Loaded;
+    protected static boolean kubeJsLoaded;
     protected static void initialize()
     {
         if(initialized)
@@ -21,6 +22,12 @@ public class ModUtil {
         ccLoaded = ModList.get().isLoaded("computercraft");
         ieLoaded = ModList.get().isLoaded("immersiveengineering");
         gtLoaded = ModList.get().isLoaded("gtceu");
+        kubeJsLoaded = ModList.get().isLoaded("kubejs");
+    }
+
+    public static boolean isKubeJsLoaded() {
+        initialize();
+        return kubeJsLoaded;
     }
 
     public static boolean isOC2Loaded() {

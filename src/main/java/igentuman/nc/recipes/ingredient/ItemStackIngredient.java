@@ -6,6 +6,10 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
+import static net.minecraft.world.item.Items.BARRIER;
+
 public abstract class ItemStackIngredient implements InputIngredient<@NotNull ItemStack> {
 
     protected int amount;
@@ -21,5 +25,10 @@ public abstract class ItemStackIngredient implements InputIngredient<@NotNull It
             throw new IllegalArgumentException("Amount cannot be negative");
         }
         this.amount = i;
+    }
+
+    public boolean isValid() {
+        List<@NotNull ItemStack> representations = getRepresentations();
+        return !representations.isEmpty() && !representations.get(0).isEmpty() && !representations.get(0).is(BARRIER);
     }
 }

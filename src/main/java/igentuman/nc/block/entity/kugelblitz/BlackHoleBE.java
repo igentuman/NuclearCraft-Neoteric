@@ -1,20 +1,23 @@
 package igentuman.nc.block.entity.kugelblitz;
 
 import igentuman.nc.block.entity.NuclearCraftBE;
+import igentuman.nc.compat.kubejs.NCKubeJsEvents;
 import igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageSources;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.AABB;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.Event;
 
 import java.util.List;
 
@@ -22,6 +25,7 @@ import static igentuman.nc.block.kugelblitz.BlackHoleBlock.ACTIVE;
 import static igentuman.nc.client.renderer.DistortShader.blackhole;
 import static igentuman.nc.setup.registration.NCSounds.BLACKHOLE_IDLE;
 import static igentuman.nc.setup.registration.NCSounds.BLACKHOLE_SPAWN;
+import static igentuman.nc.util.ModUtil.isKubeJsLoaded;
 import static net.minecraft.world.level.block.Blocks.AIR;
 
 public class BlackHoleBE extends NuclearCraftBE {
@@ -35,7 +39,7 @@ public class BlackHoleBE extends NuclearCraftBE {
     @NBTField
     public int initDelay = 0;
     public int spawnDelay = 0;
-
+    private boolean hasEntities = false;
     public BlackHoleBE(BlockPos pPos, BlockState pBlockState) {
         super(KugelblitzRegistration.KUGELBLITZ_BE.get(NAME).get(), pPos, pBlockState);
     }
@@ -115,9 +119,11 @@ public class BlackHoleBE extends NuclearCraftBE {
         handleClosestEntities();
     }
 
+
     private void handleClosestEntities() {
-        if (getLevel().getGameTime() % 2 != 0) return;
+        if(!hasEntities && getLevel().getGameTime() % 10 != 0) return;
         double radius = 5.0;
+        double consumeRadius = 1.1;
 
         double centerX = worldPosition.getX() + 0.5;
         double centerY = worldPosition.getY() + 0.5;
@@ -129,39 +135,71 @@ public class BlackHoleBE extends NuclearCraftBE {
         );
 
         List<Entity> entities = level.getEntitiesOfClass(Entity.class, boundingBox);
-
+        
+        hasEntities = !entities.isEmpty();
+        
         for (Entity entity : entities) {
             double dx = centerX - entity.getX();
             double dy = centerY - entity.getY();
             double dz = centerZ - entity.getZ();
 
             double distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+            
+            if (distance < 1.1) {
+                consumeEntity(entity);
+                continue;
+            }
 
-            if (distance < 0.1) continue;
-
+            // Normalize direction vector
             double factor = 1.0 / distance;
             dx *= factor;
             dy *= factor;
             dz *= factor;
 
-            double pullStrength = (1.0 - distance / radius) * 10f;
-
+            double pullStrength = Math.min(3.0, 0.8 * (1.0 - Math.pow(distance / radius, 2)));
+            
+            if (entity instanceof ItemEntity) {
+                pullStrength *= 1.5;
+            }
+            
             entity.setDeltaMovement(
                     entity.getDeltaMovement().x + dx * pullStrength,
                     entity.getDeltaMovement().y + dy * pullStrength,
                     entity.getDeltaMovement().z + dz * pullStrength
             );
+            
+            double maxSpeed = 1.0;
+            double currentSpeed = entity.getDeltaMovement().length();
+            if (currentSpeed > maxSpeed) {
+                entity.setDeltaMovement(
+                        entity.getDeltaMovement().scale(maxSpeed / currentSpeed)
+                );
+            }
 
-            if (entity instanceof ItemEntity) {
-                if (distance < 2) {
-                    entity.discard();
+            if (distance < consumeRadius) {
+                consumeEntity(entity);
+            }
+        }
+    }
+    
+    /**
+     * Consumes an entity that has been pulled into the black hole
+     */
+    private void consumeEntity(Entity entity) {
+        if (entity instanceof ItemEntity) {
+            entity.remove(Entity.RemovalReason.CHANGED_DIMENSION);
+        } else if (entity instanceof LivingEntity livingEntity) {
+            if (livingEntity instanceof ServerPlayer) {
+                PlayerEnterBlackholeEvent event = new PlayerEnterBlackholeEvent((ServerPlayer) livingEntity, getBlockPos(), getLevel());
+                MinecraftForge.EVENT_BUS.post(event);
+                if(isKubeJsLoaded()) {
+                    NCKubeJsEvents.onPlayerEnterBlackhole(event);
                 }
-            } else if (entity instanceof LivingEntity livingEntity && distance < 2) {
-                if(livingEntity.getHealth() < 1024) {
-                    livingEntity.discard();
-                } else {
-                    livingEntity.hurt(level.damageSources().magic(), 1024.0F);
-                }
+                if(event.isCanceled()) return;
+                entity.kill();
+
+            } else {
+                entity.kill();
             }
         }
     }
@@ -179,5 +217,37 @@ public class BlackHoleBE extends NuclearCraftBE {
     public void evaporate() {
         setRemoved();
         getLevel().setBlockAndUpdate(getBlockPos(), AIR.defaultBlockState());
+    }
+
+
+    public class PlayerEnterBlackholeEvent extends Event {
+
+        @Override
+        public boolean isCancelable() {
+            return true;
+        }
+
+        public ServerPlayer getPlayer() {
+            return player;
+        }
+
+        public BlockPos getBlackholePos() {
+            return blackholePos;
+        }
+
+        public Level getLevel() {
+            return level;
+        }
+
+        private final ServerPlayer player;
+        private final BlockPos blackholePos;
+        private final Level level;
+
+        public PlayerEnterBlackholeEvent(ServerPlayer player, BlockPos blackholePos, Level level) {
+            this.player = player;
+            this.blackholePos = blackholePos;
+            this.level = level;
+        }
+
     }
 }

@@ -17,6 +17,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
@@ -26,11 +27,16 @@ import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLI
 
 public class BlackHoleBlock extends Block implements EntityBlock {
 
+    private static final VoxelShape SHAPE = Shapes.box(.4, .4, .4, .6, .6, .6);
     public BlackHoleBlock(Properties pProperties) {
         super(pProperties.sound(SoundType.ANVIL).strength(-1f, 3600000f).noOcclusion().lightLevel(state -> state.getValue(ACTIVE) ? 15 : 10));
     }
     public static final BooleanProperty ACTIVE = BlockStateProperties.POWERED;
 
+    @Override
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        return SHAPE;
+    }
     @Override
     public RenderShape getRenderShape(BlockState pState) {
         return RenderShape.INVISIBLE;

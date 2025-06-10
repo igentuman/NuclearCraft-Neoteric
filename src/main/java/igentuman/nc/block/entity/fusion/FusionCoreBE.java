@@ -378,7 +378,10 @@ public class FusionCoreBE extends MultiblockControllerBE {
         simulateReaction();
         sendOutPower();
         handleMeltdown();
-
+        if(recipe == null && plasmaTemperature > 0) {
+            changePlasmaTemperature(-(long) (plasmaTemperature / 10D));
+            changed = true;
+        }
         if(refreshCacheFlag || changed) {
             if(level.getGameTime() % 10 == 0) {
                 updateAnalogSignal();

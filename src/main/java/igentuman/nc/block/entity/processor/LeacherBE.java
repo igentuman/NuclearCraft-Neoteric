@@ -216,18 +216,18 @@ public class LeacherBE extends NCProcessorBE {
     @Override
     public void processRecipe() {
         if(!hasCatalyst()) return;
+        if(contentHandler().itemHandler.getStackInSlot(0).isEmpty()) {
+            gatherOre();
+        }
         super.processRecipe();
-    }
-
-    @Override
-    public void updateRecipe() {
-        gatherOre();
-        super.updateRecipe();
     }
 
     public void gatherOre()
     {
-        if(!contentHandler().itemHandler.getStackInSlot(0).isEmpty()) {
+        if(
+                !contentHandler().itemHandler.getStackInSlot(0).isEmpty()
+                && !contentHandler().itemHandler.getStackInSlot(0).is(BARRIER)
+        ) {
             return;
         }
         if(!hasCatalyst()) {

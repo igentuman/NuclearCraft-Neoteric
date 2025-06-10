@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Random;
 
 import static igentuman.nc.setup.registration.NCItems.NC_PARTS;
+import static net.minecraft.world.item.Items.BARRIER;
 
 public class OreVeinRecipe extends NcRecipe {
     public OreVeinRecipe(ResourceLocation id, ItemStackIngredient[] input, ItemStackIngredient[] output, FluidStackIngredient[] inputFluids, FluidStackIngredient[] outputFluids, double timeModifier, double powerModifier, double radiation, double rarityModifier) {
@@ -25,7 +26,9 @@ public class OreVeinRecipe extends NcRecipe {
     public HashMap<ItemStackIngredient, Integer> getItemsPool() {
         if(itemsPool.isEmpty()) {
             for(ItemStackIngredient item : inputItems) {
-                itemsPool.put(item, item.getAmount());
+                if(item.isValid()) {
+                    itemsPool.put(item, item.getAmount());
+                }
             }
         }
         return itemsPool;
@@ -47,7 +50,7 @@ public class OreVeinRecipe extends NcRecipe {
     }
 
     public ItemStack getRandomOre(ServerLevel level, int x, int z, int id) {
-        int score = OreVeinProvider.get(level).rand(x, z, id, gameTimeSeed(level)).nextInt(100);
+        int score = OreVeinProvider.get(level).rand(x, z, id, gameTimeSeed(level)).nextInt(50)+50;
         roll = 1;
         ItemStack ore = getOreByScore(score, level, x, z).copy();
         ore.setCount(1);

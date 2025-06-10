@@ -38,13 +38,12 @@ public class NuclearFurnaceBE extends NCProcessorBE {
 
             boolean hasFuel = getFuelItems().contains(contentHandler.itemHandler.getStackInSlot(1).getItem());
             if (hasFuel) {
-                burnTime = 400;
+                burnTime = 500;
                 if(getFuelItems().contains(contentHandler.itemHandler.getStackInSlot(1).getItem())) {
                     contentHandler.itemHandler.extractItem(1, 1, false);
                 }
             }
         }
-
     }
 
     @Override

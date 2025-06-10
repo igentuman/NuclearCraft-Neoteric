@@ -4,6 +4,7 @@ import igentuman.nc.block.entity.kugelblitz.ChamberTerminalBE;
 import igentuman.nc.compat.gregtech.GTUtils;
 import igentuman.nc.container.ChamberTerminalContainer;
 import igentuman.nc.handler.config.CommonConfig;
+import igentuman.nc.multiblock.MultiblockHandler;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -45,6 +46,7 @@ import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLI
 import static igentuman.nc.util.ModUtil.isGtLoaded;
 import static igentuman.nc.util.TextUtils.__;
 import static igentuman.nc.util.TextUtils.formatEnergy;
+import static net.minecraft.world.level.block.Blocks.AIR;
 
 public class ChamberTerminalBlock extends HorizontalDirectionalBlock implements EntityBlock {
     public static final DirectionProperty HORIZONTAL_FACING = FACING;
@@ -121,6 +123,16 @@ public class ChamberTerminalBlock extends HorizontalDirectionalBlock implements 
                 tile.tickServer();
             }
         };
+    }
+
+    @Override
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
+        super.onRemove(state, level, pos, newState, isMoving);
+        if(level.isClientSide() || newState.is(this)) return;
+        BlockEntity be = level.getExistingBlockEntity(pos);
+        if (be instanceof ChamberTerminalBE chamberTerminalBE) {
+            level.setBlock(chamberTerminalBE.blackholePos, AIR.defaultBlockState(), 3);
+        }
     }
 
     @Override

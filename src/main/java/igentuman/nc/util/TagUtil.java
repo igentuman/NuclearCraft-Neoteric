@@ -14,10 +14,7 @@ import net.minecraftforge.registries.tags.IReverseTag;
 import net.minecraftforge.registries.tags.ITag;
 import net.minecraftforge.registries.tags.ITagManager;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -66,9 +63,9 @@ public class TagUtil {
         return FluidStack.loadFluidStackFromNBT(tag);
     }
 
-    public static List<Block> getBlocksByTagKey(String key)
+    public static HashSet<Block> getBlocksByTagKey(String key)
     {
-        List<Block> tmp = new ArrayList<>();
+        HashSet<Block> tmp = new HashSet<>();
         TagKey<Block> tag = TagKey.create(BLOCK_REGISTRY, rlFromString(key));
         for(Block holder : ForgeRegistries.BLOCKS.tags().getTag(tag).stream().toList()) {
             tmp.add(holder);
@@ -85,7 +82,10 @@ public class TagUtil {
                 }
             }
         }
-        return getBlocksByTagKey(key).get(0);
+        return getBlocksByTagKey(key).stream()
+                .filter(block -> block != Blocks.AIR)
+                .findFirst()
+                .orElse(Blocks.AIR);
     }
 
     public static List<Item> getItemsByTagKey(String key)

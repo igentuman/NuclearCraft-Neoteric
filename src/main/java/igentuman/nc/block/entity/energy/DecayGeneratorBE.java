@@ -10,6 +10,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import static igentuman.nc.handler.config.CommonConfig.ENERGY_GENERATION;
@@ -41,7 +42,7 @@ public class DecayGeneratorBE extends NCEnergy {
 
     private List<Block> getAllowedBlocks() {
         if(allowedBlocks.isEmpty()) {
-            allowedBlocks = getBlocksByTagKey(DECAY_GEN_BLOCK.location().toString());
+            allowedBlocks = getBlocksByTagKey(DECAY_GEN_BLOCK.location().toString()).stream().toList();
         }
         return allowedBlocks;
     }

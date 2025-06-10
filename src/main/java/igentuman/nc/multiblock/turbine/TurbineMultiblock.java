@@ -15,6 +15,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import static igentuman.nc.handler.config.TurbineConfig.TURBINE_CONFIG;
@@ -70,8 +71,8 @@ public class TurbineMultiblock extends AbstractMultiblock {
         MultiblockHandler.get(turbineControllerBE.getLevel().dimension()).addMultiblock(this);
     }
 
-    public List<Block> validCornerBlocks() {
-        return List.of(TURBINE_BLOCKS.get("turbine_casing").get());
+    public HashSet<Block> validCornerBlocks() {
+        return new HashSet<>(List.of(TURBINE_BLOCKS.get("turbine_casing").get()));
     }
 
     public void validateInner() {

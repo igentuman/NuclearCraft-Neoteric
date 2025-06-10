@@ -143,14 +143,15 @@ public class WorldEvents {
             if(level.getChunkSource().getLoadedChunksCount() < 1) {
                 return;
             }
-            if (validationFuture != null && !validationFuture.isDone()) {
+            MultiblockHandler.get(level.dimension()).tick(level);
+            /*if (validationFuture != null && !validationFuture.isDone()) {
                 return;
             }
             validationFuture = CompletableFuture.runAsync(
                     () -> MultiblockHandler.get(level.dimension()).tick(level),
                     MultiblockExecutorManager.getExecutor()
             );
-            RadiationEvents.onWorldTick(event);
+            RadiationEvents.onWorldTick(event);*/
         }
     }
 

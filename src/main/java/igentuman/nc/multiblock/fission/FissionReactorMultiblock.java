@@ -30,25 +30,24 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
     protected int moderatorAttachments = 0;
     protected double heatSinkCooling = 0;
     protected double activeCooling = 0;
-    protected final List<Block> validModerators;
+    protected final HashSet<Block> validModerators;
     protected final HashMap<Long, HeatSinkBlock> validHeatSinks = new HashMap<>();
-    protected final List<Long> moderators = new ArrayList<>();
-    protected final List<Long> irradiators = new ArrayList<>();
-    protected final List<Long> heatSinks = new ArrayList<>();
-    public final List<Long> fuelCells = new ArrayList<>();
-    protected final List<Long> allModerators = new ArrayList<>();
-    protected final List<Long> validIrradiators = new ArrayList<>();
-    protected final List<Long> activeCoolers = new ArrayList<>();
-    protected final List<Long> allHeatSinks = new ArrayList<>();
+    protected final HashSet<Long> moderators = new HashSet<>();
+    protected final HashSet<Long> irradiators = new HashSet<>();
+    protected final HashSet<Long> heatSinks = new HashSet<>();
+    public final HashSet<Long> fuelCells = new HashSet<>();
+    protected final HashSet<Long> allModerators = new HashSet<>();
+    protected final HashSet<Long> validIrradiators = new HashSet<>();
+    protected final HashSet<Long> activeCoolers = new HashSet<>();
+    protected final HashSet<Long> allHeatSinks = new HashSet<>();
     protected double cellsHeatMult = 0.0D;
     protected double moderatorsHeatMult = 0.0D;
     protected double cellsEnergyMult = 0.0D;
     protected double moderatorsEnergyMult = 0.0D;
-    protected final List<Long> directFuelCellConnectionPos = new ArrayList<>();
-    protected final List<Long> secondFuelCellConnectionPos = new ArrayList<>();
+    protected final HashSet<Long> directFuelCellConnectionPos = new HashSet<>();
+    protected final HashSet<Long> secondFuelCellConnectionPos = new HashSet<>();
     public final HashMap<String, Integer> coolantPerTick = new HashMap<>();
-    protected final List<Long> delayedValidation = new ArrayList<>();
-
+    protected final HashSet<Long> delayedValidation = new HashSet<>();
 
     @Override
     public int maxHeight() {
@@ -186,21 +185,33 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
         extraFuelCells = 0;
         moderatorAttachments = 0;
         irradiationLines = 0;
+        long start = System.currentTimeMillis();
         //Stage 1: Index all inner blocks
         indexInnerBlocks();
+        long end = System.currentTimeMillis();
+        debugLog("indexInnerBlocks() " + (end - start) + " ms");
+        debugLog("bsMisses: " + bsMisses);
         if(validationResult != ValidationResult.VALID) {
             clearStats();
             return;
         }
-        //Stage 2: Validate moderators and count attachments
-        //indexModerators();
-        //Stage 3: count fuel cell attachments
+        start = System.currentTimeMillis();
+        //Stage 2: count fuel cell attachments
         indexFuelCellAttachments();
-        //Stage 4: index irradiators and count irradiation lines
+        end = System.currentTimeMillis();
+        debugLog("indexFuelCellAttachments() " + (end - start) + " ms");
+        //Stage 3: index irradiators and count irradiation lines
+        start = System.currentTimeMillis();
         indexIrradiators();
-        //Stage 5: count heat sinks and their cooling
+        end = System.currentTimeMillis();
+        debugLog("indexIrradiators() " + (end - start) + " ms");
+        //Stage 4: count heat sinks and their cooling
+        start = System.currentTimeMillis();
         indexHeatSinks();
-        //Stage 6: update controller stats
+        end = System.currentTimeMillis();
+        debugLog("indexHeatSinks() " + (end - start) + " ms");
+        debugLog("bsMisses 2: " + bsMisses);
+        //Stage 5: update controller stats
         controllerBE().irradiationLines = irradiationLines;
         controllerBE().allIrradiators = irradiators.size();
         controllerBE().validIrradiators = validIrradiators.size();
@@ -303,35 +314,18 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
         return count;
     }
 
-    private void indexModerators() {
-        moderatorAttachments = 0;
-        for(long pos: allModerators) {
-            BlockPos moderatorPos = BlockPos.of(pos);
-            int attachments = getFuelCellModerators(moderatorPos);
-            if(attachments > 0) {
-                addIfNotExists(pos, moderators);
-            }
-            moderatorAttachments += attachments;
-        }
-    }
-
-    private int getFuelCellModerators(BlockPos moderatorPos) {
-        int count = 0;
-        for(Direction d : Direction.values()) {
-            BlockPos toCheck = moderatorPos.relative(d);
-            if(isFuelCell(toCheck)) {
-                addIfNotExists(moderatorPos, directFuelCellConnectionPos);
-                count++;
-            }
-        }
-        return count;
-    }
-
     private void indexInnerBlocks() {
+        NCBlockPos toCheck = new NCBlockPos(initialPos());
         for(int y = 1; y < height - 1; y++) {
             for (int x = 1; x < width - 1; x++) {
                 for (int z = 1; z < depth - 1; z++) {
-                    NCBlockPos toCheck = new NCBlockPos(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getControllerDirection(), -z));
+                    switch (getMultiblockDirection().ordinal()) {
+                        case 3 -> toCheck.revert().east(x - leftCasing);
+                        case 5 -> toCheck.revert().north(x - leftCasing);
+                        case 2 -> toCheck.revert().west(x - leftCasing);
+                        case 4 -> toCheck.revert().south(x - leftCasing);
+                    }
+                    toCheck.above(y - bottomCasing).relative(getControllerDirection(), -z);
                     if(!processInnerBlock(toCheck)) {
                         validationResult = ValidationResult.WRONG_INNER;
                         errorBlockPos = new BlockPos(toCheck);

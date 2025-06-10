@@ -27,8 +27,7 @@ import static igentuman.nc.setup.registration.NCItems.*;
 import static igentuman.nc.setup.registration.NCProcessors.PROCESSORS;
 import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCKS;
 import static igentuman.nc.setup.registration.Registries.CREATIVE_TABS;
-import static igentuman.nc.util.TagUtil.getBlocksByTagKey;
-import static igentuman.nc.util.TagUtil.getItemsByTagKey;
+import static igentuman.nc.util.TagUtil.*;
 import static igentuman.nc.util.TextUtils.__;
 
 public class CreativeTabs {
@@ -56,7 +55,7 @@ public class CreativeTabs {
 
     public static final RegistryObject<CreativeModeTab> NC_BLOCKS_TAB = CREATIVE_TABS.register("nc_blocks",
             () ->  CreativeModeTab.builder()
-            .icon(() -> new ItemStack(getBlocksByTagKey("forge:storage_blocks/uranium").get(0)))
+            .icon(() -> new ItemStack(getSingleBlockByTagKey("forge:storage_blocks/uranium")))
             .displayItems((displayParams, output) -> getBlocks().forEach(output::accept))
             .title(__("itemGroup.nuclearcraft_blocks"))
             .build());

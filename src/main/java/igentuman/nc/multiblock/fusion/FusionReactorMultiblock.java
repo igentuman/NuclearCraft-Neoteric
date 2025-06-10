@@ -10,12 +10,11 @@ import igentuman.nc.multiblock.ValidationResult;
 import igentuman.nc.util.NCBlockPos;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import static igentuman.nc.handler.config.FusionConfig.FUSION_CONFIG;
@@ -46,7 +45,7 @@ public class FusionReactorMultiblock extends AbstractMultiblock {
     public FusionReactorMultiblock(FusionCoreBE core) {
         super(
                 getBlocksByTagKey(FusionReactorRegistration.CASING_BLOCKS.location().toString()),
-                List.of(AIR),
+                new HashSet<>(List.of(AIR)),
                 new FusionReactorController(core));
         controllerBE = core;
         id = "fusion_reactor_"+controllerBE.getBlockPos().toShortString();
@@ -99,12 +98,12 @@ public class FusionReactorMultiblock extends AbstractMultiblock {
     }
 
     @Override
-    public final List<Block> validOuterBlocks() {
+    public final HashSet<Block> validOuterBlocks() {
         return validOuterBlocks;
     }
 
     @Override
-    public List<Block> validInnerBlocks() {
+    public HashSet<Block> validInnerBlocks() {
         return validInnerBlocks;
     }
 

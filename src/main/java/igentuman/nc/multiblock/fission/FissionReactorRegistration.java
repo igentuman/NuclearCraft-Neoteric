@@ -19,10 +19,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.registries.RegistryObject;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Pattern;
 
 import static igentuman.nc.setup.registration.NCItems.ALL_NC_ITEMS;
@@ -121,9 +118,9 @@ public class FissionReactorRegistration {
         }
     }
 
-    public static final List<Block> blocks = moderators();
+    public static final HashSet<Block> blocks = moderators();
 
-    public static List<Block> moderators() {
+    public static HashSet<Block> moderators() {
         return getBlocksByTagKey(MODERATORS_BLOCKS.location().toString());
     }
 

@@ -54,18 +54,10 @@ public class TurbinePortBE extends TurbineBE {
         super.tickServer();
 
         int wasSignal = analogSignal;
-        boolean updated = false;
         if(getMultiblock() != null || controller() != null) {
             sendOutPower();
         }
-        if(controller != controller()) {
-            controller = controller();
-            controllerPos = BlockPos.ZERO;
-            if(controller != null) {
-                controllerPos = controller.getBlockPos();
-            }
-            updated = true;
-        }
+        boolean updated = updateController();
         if(hasRedstoneSignal()) {
             controller().controllerEnabled = true;
         }
@@ -76,7 +68,7 @@ public class TurbinePortBE extends TurbineBE {
 
         Direction dir = getFacing();
 
-        if(fluidHandler() != null) {
+        if(controller() != null && fluidHandler() != null) {
             updated = fluidHandler().pushFluids(dir, false, worldPosition) || updated;
             updated = fluidHandler().pullFluids(dir, false, worldPosition) || updated;
         }
@@ -87,6 +79,20 @@ public class TurbinePortBE extends TurbineBE {
             level.updateNeighborsAt(worldPosition, getBlockState().getBlock());
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
         }
+    }
+
+    private boolean updateController() {
+        boolean result = false;
+        if (controller != controller()) {
+            controller = controller();
+            controllerPos = BlockPos.ZERO;
+            result = true;
+        }
+        if (controller != null) {
+            controllerPos = new BlockPos(controller.getBlockPos());
+            result = true;
+        }
+        return result;
     }
 
     protected void transferEnergyToSide(Direction direction) {
@@ -116,6 +122,10 @@ public class TurbinePortBE extends TurbineBE {
         );
     }
     private void updateAnalogSignal() {
+        if(controller() == null) {
+            analogSignal = 0;
+            return;
+        }
         switch (comparatorMode) {
             case SignalSource.ENERGY:
                 analogSignal = (byte) (controller().energyStorage().getEnergyStored() * 15 / controller().energyStorage().getMaxEnergyStored());

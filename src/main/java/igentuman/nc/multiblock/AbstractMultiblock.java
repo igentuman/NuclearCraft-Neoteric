@@ -4,7 +4,6 @@ import igentuman.api.nc.multiblock.MultiblockAttachable;
 import igentuman.api.nc.multiblock.Multiblock;
 import igentuman.api.nc.multiblock.MultiblockController;
 import igentuman.nc.block.entity.MultiblockControllerBE;
-import igentuman.nc.block.entity.fission.FissionControllerBE;
 import igentuman.nc.util.NCBlockPos;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -15,9 +14,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.regex.Pattern;
 
 import static igentuman.nc.NuclearCraft.debugLog;
@@ -43,12 +41,12 @@ public abstract class AbstractMultiblock implements Multiblock {
     protected boolean outerValid = false;
     protected boolean isFormed = false;
     protected boolean innerValid = false;
-    protected final List<Block> validOuterBlocks;
-    protected final List<Block> validInnerBlocks;
-    protected final List<BlockPos> controllers = new ArrayList<>();
+    protected final HashSet<Block> validOuterBlocks;
+    protected final HashSet<Block> validInnerBlocks;
+    protected final HashSet<BlockPos> controllers = new HashSet<>();
     protected final HashMap<Long, BlockEntity> beCache = new HashMap<>();
     protected final HashMap<Long, BlockState> bsCache = new HashMap<>();
-    protected final List<Long> allBlocks = new ArrayList<>();
+    protected final HashSet<Long> allBlocks = new HashSet<>();
     protected NCBlockPos controllerPos;
     protected NCBlockPos initialPos;
     protected Direction multiblockDirection;
@@ -56,7 +54,7 @@ public abstract class AbstractMultiblock implements Multiblock {
     private static final Pattern SPECIAL_BLOCKS = Pattern.compile(".*(fusion_proxy|fusion_core|controller|port|irradiator|rotor|chamber_terminal).*");
     private static final Pattern CONTROLLERS = Pattern.compile(".*(controller|terminal).*");
 
-    protected AbstractMultiblock(List<Block> validOuterBlocks, List<Block> validInnerBlocks, MultiblockController controller) {
+    protected AbstractMultiblock(HashSet<Block> validOuterBlocks, HashSet<Block> validInnerBlocks, MultiblockController controller) {
         this.validOuterBlocks = validOuterBlocks;
         this.validInnerBlocks = validInnerBlocks;
         this.controller = controller;
@@ -67,7 +65,7 @@ public abstract class AbstractMultiblock implements Multiblock {
         MultiblockHandler.get(getLevel().dimension()).removeMultiblock(this);
     }
 
-    public List<Block> validCornerBlocks() {
+    public HashSet<Block> validCornerBlocks() {
         return validOuterBlocks;
     }
 
@@ -108,10 +106,10 @@ public abstract class AbstractMultiblock implements Multiblock {
     }
 
     @Override
-    public List<Block> validOuterBlocks() { return validOuterBlocks;  }
+    public HashSet<Block> validOuterBlocks() { return validOuterBlocks;  }
 
     @Override
-    public List<Block> validInnerBlocks() { return validInnerBlocks; }
+    public HashSet<Block> validInnerBlocks() { return validInnerBlocks; }
 
     protected Level getLevel() {
         if (controller() == null || controller().controllerBE() == null) {
@@ -120,16 +118,12 @@ public abstract class AbstractMultiblock implements Multiblock {
         return controller().controllerBE().getLevel();
     }
 
-    protected void addIfNotExists(BlockPos pos, List<Long> list) {
-        if(!list.contains(pos.asLong())) {
-            list.add(pos.asLong());
-        }
+    protected void addIfNotExists(BlockPos pos, HashSet<Long> list) {
+        list.add(pos.asLong());
     }
 
-    protected void addIfNotExists(long pos, List<Long> list) {
-        if(!list.contains(pos)) {
-            list.add(pos);
-        }
+    protected void addIfNotExists(long pos, HashSet<Long> list) {
+        list.add(pos);
     }
 
     protected NCBlockPos initialPos() {
@@ -194,6 +188,7 @@ public abstract class AbstractMultiblock implements Multiblock {
         if (bsCache.containsKey(pos.asLong())) {
             return bsCache.get(pos.asLong());
         }
+        bsMisses++;
         BlockState state = getLevel().getBlockState(pos);
         bsCache.put(pos.asLong(), state);
         return state;
@@ -449,10 +444,10 @@ public abstract class AbstractMultiblock implements Multiblock {
 
     public BlockPos getSidePos(int i) {
         return switch (getMultiblockDirection().ordinal()) {
-            case 3 -> initialPos().revert().east(i);
-            case 5 -> initialPos().revert().north(i);
-            case 2 -> initialPos().revert().west(i);
-            case 4 -> initialPos().revert().south(i);
+            case 3 -> initialPos().east(i);
+            case 5 -> initialPos().north(i);
+            case 2 -> initialPos().west(i);
+            case 4 -> initialPos().south(i);
             default -> null;
         };
     }
@@ -466,15 +461,19 @@ public abstract class AbstractMultiblock implements Multiblock {
         return multiblockDirection;
     }
 
+    public int bsMisses = 0;
     @Override
     public void validate() {
         connectedPorts = 0;
+        bsMisses = 0;
         long startTime = System.currentTimeMillis();
         topRight = null;
         bottomLeft = null;
         validationResult = ValidationResult.INCOMPLETE;
         controllers.clear();
+        long start = System.currentTimeMillis();
         validateOuter();
+        debugLog("validateOuter() " + (System.currentTimeMillis() - start) + "ms ");
         if (isOuterValid()) {
             validateInner();
         } else{

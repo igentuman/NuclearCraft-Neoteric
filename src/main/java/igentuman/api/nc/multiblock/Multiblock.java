@@ -1,7 +1,8 @@
 package igentuman.api.nc.multiblock;
 
 import net.minecraft.world.level.block.Block;
-import java.util.List;
+
+import java.util.HashSet;
 
 public interface Multiblock {
 
@@ -43,16 +44,14 @@ public interface Multiblock {
     int minDepth();
 
     /**
-     *
      * Returns list of blocks that are valid for the outer part of the multiblock
      */
-    List<Block> validOuterBlocks();
+    HashSet<Block> validOuterBlocks();
 
     /**
-     *
      * Returns list of blocks that are valid for the inner part of the multiblock
      */
-    List<Block> validInnerBlocks();
+    HashSet<Block> validInnerBlocks();
 
     /**
      * Do not call this method directly, use validate() instead

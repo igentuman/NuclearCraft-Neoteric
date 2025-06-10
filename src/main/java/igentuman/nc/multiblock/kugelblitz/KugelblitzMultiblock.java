@@ -15,6 +15,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import static igentuman.nc.block.entity.kugelblitz.BlackHoleBE.MIN_MASS;
@@ -27,7 +28,7 @@ public class KugelblitzMultiblock extends AbstractMultiblock {
 
     protected ChamberTerminalBE controllerBe;
     protected final HashMap<Direction, Long> pulseEnergy = new HashMap<>();
-    protected final List<Block> validCornerBlocks;
+    protected final HashSet<Block> validCornerBlocks;
     protected BlackHoleBE blackHole;
     protected boolean collectingEnergy = true;
     protected BlockPos centerBlockPos;
@@ -79,10 +80,10 @@ public class KugelblitzMultiblock extends AbstractMultiblock {
     }
 
     public KugelblitzMultiblock(ChamberTerminalBE be) {
-        super(getBlocksByTagKey(CASING_BLOCKS.location().toString()), List.of(KUGELBLITZ_BLOCKS.get("black_hole").get(), AIR), new KugelblitzController(be));
+        super(getBlocksByTagKey(CASING_BLOCKS.location().toString()), new HashSet<>(List.of(KUGELBLITZ_BLOCKS.get("black_hole").get(), AIR)), new KugelblitzController(be));
         id = "chamber_"+be.getBlockPos().toShortString();
         MultiblockHandler.get(be.getLevel().dimension()).addMultiblock(this);
-        validCornerBlocks = List.of(KUGELBLITZ_BLOCKS.get("neutronium_frame").get(), KUGELBLITZ_BLOCKS.get("chamber_terminal").get(), KUGELBLITZ_BLOCKS.get("chamber_port").get());
+        validCornerBlocks = new HashSet<>(List.of(KUGELBLITZ_BLOCKS.get("neutronium_frame").get(), KUGELBLITZ_BLOCKS.get("chamber_terminal").get(), KUGELBLITZ_BLOCKS.get("chamber_port").get()));
     }
 
     @Override
@@ -252,7 +253,7 @@ public class KugelblitzMultiblock extends AbstractMultiblock {
     }
 
     @Override
-    public List<Block> validCornerBlocks() {
+    public HashSet<Block> validCornerBlocks() {
         return validCornerBlocks;
     }
 

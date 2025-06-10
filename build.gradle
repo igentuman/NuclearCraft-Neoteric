@@ -31,7 +31,7 @@ minecraft {
             property 'mixin.env.remapRefMap', 'true'
             property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
             property 'forge.enabledGameTestNamespaces', 'nuclearcraft'
-
+            args '--width', '1920', '--height', '1080'
             mods {
                 nuclearcraft {
                     source sourceSets.main

@@ -730,10 +730,7 @@ public class FusionCoreBE extends MultiblockControllerBE {
                 recipe = (Recipe) recipeInfo().recipe();
             }
             if (recipe.handleOutputs(contentHandler)) {
-                recipeInfo().clear();
-                if(contentHandler().fluidCapability.getFluidInSlot(0).isEmpty()) {
-                    recipe = null;
-                }
+                updateRecipe();
             } else {
                 recipeInfo().stuck = true;
             }
@@ -742,6 +739,19 @@ public class FusionCoreBE extends MultiblockControllerBE {
     }
 
     protected void updateRecipe() {
+        //check if last recipe is still valid
+        if(recipe != null) {
+            if(recipe.test(contentHandler())) {
+                recipeInfo().ticksProcessed = 0;
+                if (recipeInfo().consumeInputs(contentHandler())) {
+                    return;
+                }
+                recipe = null;
+                recipeInfo().clear();
+            } else {
+                recipeInfo().clear();
+            }
+        }
         recipe = getRecipe();
         if (recipe != null) {
             recipeInfo().setRecipe(recipe);
@@ -750,7 +760,12 @@ public class FusionCoreBE extends MultiblockControllerBE {
             recipeInfo().heat = ((Recipe)recipeInfo().recipe()).getHeat();
             recipeInfo().radiation = recipeInfo().recipe().getRadiation();
             recipeInfo().be = this;
-            recipe.consumeInputs(contentHandler, 1);
+            if(!recipe.consumeInputs(contentHandler, 1)) {
+                recipeInfo().clear();
+                recipe = null;
+            }
+        } else {
+            recipeInfo().clear();
         }
     }
 

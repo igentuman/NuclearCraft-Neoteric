@@ -162,6 +162,20 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
     }
 
     public void updateRecipe() {
+        //check if last recipe is still valid
+        if(recipe != null) {
+            if(recipe.test(contentHandler())) {
+                recipeInfo().ticksProcessed = 0;
+                recipeInfo().setParallelProcessing(parallelRecipes());
+                if (recipeInfo().consumeInputs(contentHandler())) {
+                    return;
+                }
+                recipe = null;
+                recipeInfo().clear();
+            } else {
+                recipeInfo().clear();
+            }
+        }
         recipe = getRecipe();
         if (recipe != null) {
             recipeInfo().setRecipe(recipe);
@@ -174,6 +188,8 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
                 recipe = null;
                 recipeInfo().clear();
             }
+        } else {
+            recipeInfo().clear();
         }
     }
 
@@ -223,9 +239,9 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
     }
 
     public void handleRecipeOutput() {
-        if (hasRecipe() && recipeInfo().isCompleted()) {
+        if (hasRecipe() && (recipeInfo().isCompleted() || recipeInfo().isStuck())) {
             if (recipeInfo().handleOutputs(contentHandler())) {
-                recipeInfo().clear();
+                updateRecipe();
             } else {
                 recipeInfo().stuck = true;
             }

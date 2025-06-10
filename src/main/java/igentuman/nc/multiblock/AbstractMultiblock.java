@@ -188,7 +188,6 @@ public abstract class AbstractMultiblock implements Multiblock {
         if (bsCache.containsKey(pos.asLong())) {
             return bsCache.get(pos.asLong());
         }
-        bsMisses++;
         BlockState state = getLevel().getBlockState(pos);
         bsCache.put(pos.asLong(), state);
         return state;
@@ -461,19 +460,15 @@ public abstract class AbstractMultiblock implements Multiblock {
         return multiblockDirection;
     }
 
-    public int bsMisses = 0;
     @Override
     public void validate() {
         connectedPorts = 0;
-        bsMisses = 0;
         long startTime = System.currentTimeMillis();
         topRight = null;
         bottomLeft = null;
         validationResult = ValidationResult.INCOMPLETE;
         controllers.clear();
-        long start = System.currentTimeMillis();
         validateOuter();
-        debugLog("validateOuter() " + (System.currentTimeMillis() - start) + "ms ");
         if (isOuterValid()) {
             validateInner();
         } else{
@@ -487,8 +482,7 @@ public abstract class AbstractMultiblock implements Multiblock {
         } else {
             controller.clearStats();
         }
-        //hasToRefresh = !isFormed;
-        
+
         long elapsedTime = System.currentTimeMillis() - startTime;
         debugLog("NCN validation " + initialPos().toShortString() + " in " + elapsedTime + "ms " + validationResult);
     }

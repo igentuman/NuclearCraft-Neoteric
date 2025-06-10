@@ -413,7 +413,7 @@ public class TurbineControllerBE extends MultiblockControllerBE {
                 recipe = (Recipe) recipeInfo().recipe();
             }
             if (recipe.handleOutputs(contentHandler())) {
-                recipeInfo().clear();
+                updateRecipe();
                 if(contentHandler().fluidCapability.getFluidInSlot(0).isEmpty()) {
                     recipe = null;
                 }
@@ -451,6 +451,15 @@ public class TurbineControllerBE extends MultiblockControllerBE {
 
 
     private void updateRecipe() {
+        //check if last recipe is still valid
+        if(recipe != null) {
+            if(recipe.test(contentHandler())) {
+                recipeInfo().ticksProcessed = 0;
+                return;
+            } else {
+                recipeInfo().clear();
+            }
+        }
         recipe = getRecipe();
         if (recipe != null) {
             recipeInfo().setRecipe(recipe);
@@ -458,6 +467,8 @@ public class TurbineControllerBE extends MultiblockControllerBE {
             recipeInfo().energy = recipeInfo().recipe.getEnergy();
             recipeInfo().be = this;
             //recipe.consumeInputs(contentHandler);
+        } else {
+            recipeInfo().clear();
         }
     }
 

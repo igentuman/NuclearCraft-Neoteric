@@ -6,10 +6,6 @@ import igentuman.nc.item.HazmatItem;
 import igentuman.nc.multiblock.MultiblockExecutorManager;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.radiation.data.RadiationEvents;
-import igentuman.nc.recipes.ingredient.creator.IngredientCreatorAccess;
-import igentuman.nc.setup.registration.Villager;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.npc.VillagerTrades;
@@ -17,7 +13,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.trading.MerchantOffer;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -38,29 +33,18 @@ import net.minecraftforge.fml.common.Mod;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static igentuman.nc.NuclearCraft.MODID;
-import static igentuman.nc.NuclearCraft.debugLog;
-import static igentuman.nc.content.materials.Materials.*;
-import static igentuman.nc.setup.registration.FissionFuel.NC_FUEL;
+import static igentuman.nc.content.materials.Materials.plutonium239;
 import static igentuman.nc.setup.registration.FissionFuel.NC_ISOTOPES;
-import static igentuman.nc.setup.registration.NCItems.*;
-import static igentuman.nc.setup.registration.Tags.*;
+import static igentuman.nc.setup.registration.NCItems.HEV_BOOTS;
 import static igentuman.nc.setup.registration.Villager.addVillagerTrades;
-import static igentuman.nc.util.NcUtils.getItemStackByModPriority;
-import static net.minecraft.world.item.Items.*;
 
 @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class WorldEvents {
 
     public final static List<Block> trackingBlocks = new ArrayList<>();
     
-
     public WorldEvents() {
 
     }
@@ -143,15 +127,14 @@ public class WorldEvents {
             if(level.getChunkSource().getLoadedChunksCount() < 1) {
                 return;
             }
-            MultiblockHandler.get(level.dimension()).tick(level);
-            /*if (validationFuture != null && !validationFuture.isDone()) {
+            if (validationFuture != null && !validationFuture.isDone()) {
                 return;
             }
             validationFuture = CompletableFuture.runAsync(
                     () -> MultiblockHandler.get(level.dimension()).tick(level),
                     MultiblockExecutorManager.getExecutor()
             );
-            RadiationEvents.onWorldTick(event);*/
+            RadiationEvents.onWorldTick(event);
         }
     }
 

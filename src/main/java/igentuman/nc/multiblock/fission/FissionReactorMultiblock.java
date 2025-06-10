@@ -185,32 +185,18 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
         extraFuelCells = 0;
         moderatorAttachments = 0;
         irradiationLines = 0;
-        long start = System.currentTimeMillis();
         //Stage 1: Index all inner blocks
         indexInnerBlocks();
-        long end = System.currentTimeMillis();
-        debugLog("indexInnerBlocks() " + (end - start) + " ms");
-        debugLog("bsMisses: " + bsMisses);
         if(validationResult != ValidationResult.VALID) {
             clearStats();
             return;
         }
-        start = System.currentTimeMillis();
-        //Stage 2: count fuel cell attachments
+        //Stage 2: count fuel cell attachments and moderators
         indexFuelCellAttachments();
-        end = System.currentTimeMillis();
-        debugLog("indexFuelCellAttachments() " + (end - start) + " ms");
         //Stage 3: index irradiators and count irradiation lines
-        start = System.currentTimeMillis();
         indexIrradiators();
-        end = System.currentTimeMillis();
-        debugLog("indexIrradiators() " + (end - start) + " ms");
         //Stage 4: count heat sinks and their cooling
-        start = System.currentTimeMillis();
         indexHeatSinks();
-        end = System.currentTimeMillis();
-        debugLog("indexHeatSinks() " + (end - start) + " ms");
-        debugLog("bsMisses 2: " + bsMisses);
         //Stage 5: update controller stats
         controllerBE().irradiationLines = irradiationLines;
         controllerBE().allIrradiators = irradiators.size();
@@ -274,7 +260,7 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
                     addIfNotExists(pos, activeCoolers);
                 }
             } else {
-                debugLog("Invalid: " + hsPos.toShortString() + " - " + getBlockState(pos).getBlock().asItem());
+                debugLog("Invalid heatsink: " + hsPos.toShortString() + " - " + getBlockState(pos).getBlock().asItem());
             }
         }
     }

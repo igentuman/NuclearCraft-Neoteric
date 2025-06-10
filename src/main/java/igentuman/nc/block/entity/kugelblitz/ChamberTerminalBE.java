@@ -453,10 +453,7 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
             }
             int id = getIngredientId(recipe.getResultItem());
             if (recipe.handleOutputs(contentHandler(), orderedOutputs.get(id))) {
-                recipeInfo().clear();
-                if(contentHandler().itemHandler.getStackInSlot(0).isEmpty()) {
-                    recipe = null;
-                }
+                updateRecipe();
             } else {
                 recipeInfo.stuck = true;
             }
@@ -474,6 +471,19 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
     }
 
     private void updateRecipe() {
+        //check if last recipe is still valid
+        if(recipe != null) {
+            if(recipe.test(contentHandler())) {
+                recipeInfo().ticksProcessed = 0;
+                if (recipeInfo().consumeInputs(contentHandler())) {
+                    return;
+                }
+                recipe = null;
+                recipeInfo().clear();
+            } else {
+                recipeInfo().clear();
+            }
+        }
         recipe = getRecipe();
         if (recipe != null) {
             recipeInfo().setRecipe(recipe);
@@ -484,6 +494,8 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
                 recipe = null;
                 recipeInfo().clear();
             }
+        } else {
+            recipeInfo().clear();
         }
     }
 

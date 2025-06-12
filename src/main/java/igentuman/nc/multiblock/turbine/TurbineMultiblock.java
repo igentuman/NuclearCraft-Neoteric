@@ -1,5 +1,7 @@
 package igentuman.nc.multiblock.turbine;
 
+import igentuman.api.nc.multiblock.MultiblockController;
+import igentuman.nc.block.entity.MultiblockControllerBE;
 import igentuman.nc.block.entity.turbine.*;
 import igentuman.nc.block.turbine.TurbineBearingBlock;
 import igentuman.nc.block.turbine.TurbineBladeBlock;
@@ -28,12 +30,12 @@ public class TurbineMultiblock extends AbstractMultiblock {
     public boolean isRotorValid = false;
     public final List<BlockPos> bearingPositions = new ArrayList<>();
     public final List<BlockPos> rotorPositions = new ArrayList<>();
-    public final List<BlockPos> coilPositions = new ArrayList<>();
+    public final HashSet<BlockPos> coilPositions = new HashSet<>();
     public float flow = 0;
     public int activeCoils = 0;
     public double coilsEfficiency = 0;
     public int blades = 0;
-    private final List<BlockPos> bladePositions = new ArrayList<>();
+    private final HashSet<BlockPos> bladePositions = new HashSet<>();
 
     @Override
     public int maxHeight() {
@@ -93,11 +95,18 @@ public class TurbineMultiblock extends AbstractMultiblock {
         bearingPositions.clear();
         bladePositions.clear();
         super.validate();
+        errorBlockPos = bottomLeft;
+        if(!validationResult.isValid) {
+            clearStats();
+            return;
+        }
         if(!validateProportions()) {
             validationResult = ValidationResult.WRONG_PROPORTIONS;
             innerValid = false;
             outerValid = false;
             isFormed = false;
+            clearStats();
+            return;
         } else {
             countCoils();
             countBlades();
@@ -106,8 +115,31 @@ public class TurbineMultiblock extends AbstractMultiblock {
                 innerValid = false;
                 outerValid = false;
                 isFormed = false;
+                clearStats();
+                return;
             }
         }
+        controllerBE().topRight = topRight;
+        controllerBE().bottomLeft = bottomLeft;
+        controllerBE().orientation = turbineDirection;
+        controllerBE().coilsEfficiency = coilsEfficiency;
+        controllerBE().activeCoils = activeCoils;
+        controllerBE().blades = blades;
+        controllerBE().flow = flow;
+        controllerBE().bearingPos = bearingPositions.get(0);
+    }
+
+    @Override
+    public TurbineController controller() {
+        return (TurbineController) controller;
+    }
+
+    @Override
+    protected TurbineControllerBE controllerBE() {
+        if (controllerBe == null) {
+            controllerBe = controller().controllerBE();
+        }
+        return (TurbineControllerBE) controllerBe;
     }
 
     private void countBlades() {
@@ -247,6 +279,6 @@ public class TurbineMultiblock extends AbstractMultiblock {
     }
 
     protected Direction getControllerDirection() {
-        return ((TurbineControllerBE)controller().controllerBE()).getFacing();
+        return controller().controllerBE().getFacing();
     }
 }

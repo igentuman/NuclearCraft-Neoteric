@@ -237,10 +237,14 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler implements
 
 
     public FluidStack insertFluidInternal(int i, FluidStack toInsert, boolean doInsert) {
+        if(toInsert.isEmpty()) {
+            return FluidStack.EMPTY;
+        }
         FluidStack stack = getFluidInSlot(i);
         if(stack.isEmpty() || stack.isFluidEqual(toInsert)) {
             int filled = tanks.get(i).fill(toInsert, doInsert ? EXECUTE: SIMULATE);
             FluidStack result = toInsert.copy();
+
             result.shrink(filled);
             if(result.getAmount() == toInsert.getAmount() && filled > 0) {
                 result.shrink(filled);

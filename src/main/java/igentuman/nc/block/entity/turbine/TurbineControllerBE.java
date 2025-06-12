@@ -3,9 +3,9 @@ package igentuman.nc.block.entity.turbine;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.MultiblockControllerBE;
 import igentuman.nc.client.sound.SoundHandler;
+import igentuman.nc.compat.cc.TurbinePeripheral;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.SlotModePair;
-import igentuman.nc.multiblock.ValidationResult;
 import igentuman.nc.multiblock.turbine.TurbineMultiblock;
 import igentuman.nc.multiblock.turbine.TurbineRegistration;
 import igentuman.nc.recipes.NcRecipeType;
@@ -14,11 +14,9 @@ import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.util.CustomEnergyStorage;
 import igentuman.nc.util.annotation.NBTField;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -37,7 +35,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
-import igentuman.nc.compat.cc.TurbinePeripheral;
 
 import static igentuman.nc.block.fission.FissionControllerBlock.POWERED;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
@@ -47,7 +44,8 @@ import static igentuman.nc.handler.config.TurbineConfig.TURBINE_CONFIG;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
 import static igentuman.nc.setup.registration.NCSounds.TURBINE;
 import static igentuman.nc.util.ModUtil.isCcLoaded;
-import static net.minecraft.core.particles.ParticleTypes.*;
+import static net.minecraft.core.particles.ParticleTypes.CLOUD;
+import static net.minecraft.world.level.block.Blocks.AIR;
 import static net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE;
 
 public class TurbineControllerBE extends MultiblockControllerBE {
@@ -57,6 +55,8 @@ public class TurbineControllerBE extends MultiblockControllerBE {
     public final CustomEnergyStorage energyStorage;
     protected final LazyOptional<IEnergyStorage> energy;
 
+    @NBTField
+    public BlockPos bearingPos = BlockPos.ZERO;
     @NBTField
     public Direction orientation = Direction.NORTH;
     @NBTField
@@ -133,19 +133,19 @@ public class TurbineControllerBE extends MultiblockControllerBE {
 
     public BlockPos getBlockPosForSteam()
     {
-        if(!getMultiblock().isFormed()) {
-            getMultiblock().validate();
+        BlockPos start = bearingPos.relative(orientation, 1);
+        if(!getLevel().getBlockState(start).is(AIR)) {
+            return start;
+        } else {
+            start = bearingPos.relative(orientation.getOpposite(), width-1);
         }
-        BlockPos start = worldPosition;
-        if(!getMultiblock().bearingPositions.isEmpty()) {
-            for (int i = 0; i < getMultiblock().bearingPositions.size(); i++) {
-                start = new BlockPos(getMultiblock().bearingPositions.get(i));
-                BlockEntity be = getLevel().getExistingBlockEntity(start.relative(orientation));
-                if(!(be instanceof TurbineRotorBE)) {
-                    return start;
-                }
+        /*for (int i = 0; i < getMultiblock().bearingPositions.size(); i++) {
+            start = new BlockPos(getMultiblock().bearingPositions.get(i));
+            BlockEntity be = getLevel().getExistingBlockEntity(start.relative(orientation));
+            if(!(be instanceof TurbineRotorBE)) {
+                return start;
             }
-        }
+        }*/
         return start;
     }
 
@@ -250,15 +250,6 @@ public class TurbineControllerBE extends MultiblockControllerBE {
         controllerEnabled = false;
     }
 
-    @Override
-    protected void handleValidation() {
-        super.handleValidation();
-        coilsEfficiency = getMultiblock().coilsEfficiency;
-        activeCoils = getMultiblock().activeCoils;
-        blades = getMultiblock().blades;
-        flow = getMultiblock().flow;
-    }
-
     public List<FluidStack> getAllowedInputFluids()
     {
         if(allowedInputs == null) {
@@ -347,9 +338,9 @@ public class TurbineControllerBE extends MultiblockControllerBE {
     }
 
     private void spawnSteamParticles() {
-        if (level.isClientSide && level.getGameTime() % 4 == 0) {
-            BlockPos pos = getBlockPosForSteam().relative(orientation.getOpposite(), 1);
-            for(BlockPos source:  getBlocks(pos, getMultiblock().turbineDirection.getAxis())){
+        if (level.getGameTime() % 4 == 0) {
+            BlockPos pos = getBlockPosForSteam();
+            for(BlockPos source:  getBlocks(pos, orientation.getAxis())){
                 for (int i = 0; i < 3; i++) {
                     double x = source.getX() + 0.4f + level.random.nextGaussian() * 0.2;
                     double y = source.getY() + 0.7f + level.random.nextGaussian() * 0.2;
@@ -357,7 +348,7 @@ public class TurbineControllerBE extends MultiblockControllerBE {
                     float ySpeed = 0;
                     float zSpeed = 0;
                     float xSpeed = 0;
-                    switch (getMultiblock().turbineDirection) {
+                    switch (orientation) {
                         case UP:
                             ySpeed = 0.2f + (float)(height)*0.02f;
                             break;

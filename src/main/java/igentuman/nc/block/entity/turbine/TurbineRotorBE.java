@@ -128,9 +128,6 @@ public class TurbineRotorBE extends TurbineBE {
         if(getController() == null) {
             return false;
         }
-        if(getController().getMultiblock() == null) {
-            return false;
-        }
         if(getController() instanceof TurbineControllerBE && getController().isRemoved()) {
             return false;
         }

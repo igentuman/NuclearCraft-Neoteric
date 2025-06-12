@@ -192,7 +192,7 @@ public class TurbinePortBE extends TurbineBE {
             return (TurbineControllerBE) getLevel().getExistingBlockEntity(controllerPos);
         }
         try {
-            return (TurbineControllerBE) getMultiblock().controller().controllerBE();
+            return  getMultiblock().controller().controllerBE();
         } catch (NullPointerException e) {
             if(controllerPos != null) {
                 return (TurbineControllerBE) getLevel().getExistingBlockEntity(controllerPos);

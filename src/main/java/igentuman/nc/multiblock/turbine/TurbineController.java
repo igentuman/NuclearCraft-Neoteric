@@ -2,6 +2,8 @@ package igentuman.nc.multiblock.turbine;
 
 import igentuman.nc.block.entity.turbine.TurbineControllerBE;
 import igentuman.api.nc.multiblock.MultiblockController;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 
 public class TurbineController implements MultiblockController {
 
@@ -19,5 +21,12 @@ public class TurbineController implements MultiblockController {
     public void clearStats() {
         controllerBE().isInternalValid = false;
         controllerBE().isCasingValid = false;
+        controllerBE().topRight = BlockPos.ZERO;
+        controllerBE().bottomLeft = BlockPos.ZERO;
+        controllerBE().orientation = Direction.NORTH;
+        controllerBE().coilsEfficiency = 0;
+        controllerBE().activeCoils = 0;
+        controllerBE().blades = 0;
+        controllerBE().flow = 0;
     }
 }

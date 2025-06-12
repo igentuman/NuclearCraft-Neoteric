@@ -55,21 +55,39 @@ public class NCBlockTags extends BlockTagsProvider {
                 ACCELERATOR_BLOCKS.get("accelerator_casing").get(),
                 ACCELERATOR_BLOCKS.get("accelerator_casing_glass").get(),
                 ACCELERATOR_BLOCKS.get("synthrotron_controller").get(),
+                ACCELERATOR_BLOCKS.get("linear_accelerator_controller").get(),
                 ACCELERATOR_BLOCKS.get("accelerator_port").get(),
                 ACCELERATOR_BLOCKS.get("accelerator_beam_port").get(),
                 ACCELERATOR_BLOCKS.get("accelerator_ion_source_port").get()
          );
         tag(AcceleratorRegistration.ACCELERATOR_INNER_BLOCKS).add(
-                ACCELERATOR_BLOCKS.get("accelerator_beam").get()
+                ACCELERATOR_BLOCKS.get("accelerator_beam").get(),
+                ACCELERATOR_BLOCKS.get("electromagnet_yoke").get()
         );
         for(RegistryObject<Block> magnet: NC_ELECTROMAGNETS.values()) {
             tag(AcceleratorRegistration.ACCELERATOR_INNER_BLOCKS).add(
                     magnet.get()
             );
         }
-        for(Block heatsink: FissionReactorRegistration.getHSBlocks()) {
+        for(RegistryObject<Block> magnet: NC_RF_AMPLIFIERS.values()) {
             tag(AcceleratorRegistration.ACCELERATOR_INNER_BLOCKS).add(
-                    heatsink
+                    magnet.get()
+            );
+        }
+
+        for(Block cooler: AcceleratorRegistration.getCoolerBlocks()) {
+            tag(AcceleratorRegistration.ACCELERATOR_INNER_BLOCKS).add(
+                    cooler
+            );
+        }
+        for(RegistryObject<Block> magnet: NC_ELECTROMAGNETS.values()) {
+            tag(ELECTROMAGNETS).add(
+                    magnet.get()
+            );
+        }
+        for(RegistryObject<Block> amplifier: NC_RF_AMPLIFIERS.values()) {
+            tag(AMPLIFIERS).add(
+                    amplifier.get()
             );
         }
         tag(FusionReactorRegistration.CASING_BLOCKS).add(

@@ -59,4 +59,8 @@ public class ElectromagnetBlock extends MultiblockBlock {
                 translatable("tooltip.nc.electromagnet.max_temp", numberFormat((double) prefab().getMaxTemp() /1000)),
                 ChatFormatting.RED));
     }
+
+    public int getHeatRate() {
+        return prefab().getHeatRate();
+    }
 }

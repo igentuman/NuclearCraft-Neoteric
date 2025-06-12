@@ -68,4 +68,7 @@ public class RFAmplifierBlock extends MultiblockBlock {
                 ChatFormatting.RED));
     }
 
+    public int getHeatRate() {
+        return prefab().getHeatRate();
+    }
 }

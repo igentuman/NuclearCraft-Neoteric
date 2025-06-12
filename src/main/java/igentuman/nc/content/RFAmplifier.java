@@ -137,5 +137,9 @@ public class RFAmplifier {
         public int getHeat() {
             return heat;
         }
+
+        public int getHeatRate() {
+            return 100; //todo implement heat rate
+        }
     }
 }

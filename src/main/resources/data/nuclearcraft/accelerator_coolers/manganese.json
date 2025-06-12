@@ -1,0 +1,5 @@
+[{
+  "type": "manganese",
+  "heat": 180,
+  "placement_rule": ["goold_cooler","quartz_cooler"]
+}]

@@ -1,5 +1,6 @@
 package igentuman.nc.datagen.tags;
 
+import igentuman.nc.multiblock.accelerator.AcceleratorRegistration;
 import igentuman.nc.multiblock.fission.FissionReactorRegistration;
 import igentuman.nc.multiblock.fusion.FusionReactorRegistration;
 import igentuman.nc.setup.registration.FissionFuel;
@@ -8,15 +9,20 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.BlockTagsProvider;
 import net.minecraftforge.data.event.GatherDataEvent;
+import net.minecraftforge.registries.RegistryObject;
 
 import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.multiblock.fission.FissionReactorRegistration.CASING_ITEMS;
 import static igentuman.nc.multiblock.fission.FissionReactorRegistration.MODERATORS_ITEMS;
+import static igentuman.nc.setup.registration.NCBlocks.NC_ELECTROMAGNETS;
+import static igentuman.nc.setup.registration.NCBlocks.NC_RF_AMPLIFIERS;
 import static igentuman.nc.setup.registration.NCItems.*;
 import static igentuman.nc.setup.registration.Tags.*;
 
@@ -40,6 +46,18 @@ public class NCItemTags extends ItemTagsProvider {
         fuel();
         isotopes();
         disks();
+        for(RegistryObject<Item> magnet: NC_ELECTROMAGNETS_ITEMS.values()) {
+            tag(ELECTROMAGNETS_ITEMS).add(magnet.get());
+            tag(AcceleratorRegistration.ACCELERATOR_INNER_ITEMS).add(
+                    magnet.get()
+            );
+        }
+        for(RegistryObject<Item> amplifier: NC_RF_AMPLIFIERS_ITEMS.values()) {
+            tag(AMPLIFIERS_ITEMS).add(amplifier.get());
+            tag(AcceleratorRegistration.ACCELERATOR_INNER_ITEMS).add(
+                    amplifier.get()
+            );
+        }
         tag(FusionReactorRegistration.CASING_ITEMS).add(
                 FusionReactorRegistration.FUSION_ITEMS.get("fusion_reactor_casing").get(),
                 FusionReactorRegistration.FUSION_ITEMS.get("fusion_reactor_casing_glass").get());

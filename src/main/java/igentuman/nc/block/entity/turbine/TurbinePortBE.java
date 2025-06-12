@@ -70,7 +70,7 @@ public class TurbinePortBE extends TurbineBE {
             updated = fluidHandler().pullFluids(dir, false, worldPosition) || updated;
         }
 
-        if(updated || (level.getGameTime() % 40 == 0 && controller().controllerEnabled)) {
+        if(updated || (level.getGameTime() % 40 == 0 && controller() != null && controller().controllerEnabled)) {
             MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
             setChanged();
             level.updateNeighborsAt(worldPosition, getBlockState().getBlock());

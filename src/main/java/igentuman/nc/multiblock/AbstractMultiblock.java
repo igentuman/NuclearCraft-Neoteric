@@ -45,8 +45,8 @@ public abstract class AbstractMultiblock implements Multiblock {
     protected final HashSet<Block> validInnerBlocks;
     protected final HashSet<BlockPos> controllers = new HashSet<>();
     protected final HashMap<Long, BlockEntity> beCache = new HashMap<>();
-    protected final HashMap<Long, BlockState> bsCache = new HashMap<>();
-    protected final HashSet<Long> allBlocks = new HashSet<>();
+    protected final HashMap<Long, BlockState> bsCache = new HashMap<>(10000);
+    protected final HashSet<Long> allBlocks = new HashSet<>(10000);
     protected NCBlockPos controllerPos;
     protected NCBlockPos initialPos;
     protected Direction multiblockDirection;
@@ -161,8 +161,9 @@ public abstract class AbstractMultiblock implements Multiblock {
     }
 
     public BlockState getBlockState(long pos) {
-        if (bsCache.containsKey(pos)) {
-            return bsCache.get(pos);
+        BlockState cached = bsCache.get(pos);
+        if (cached != null) {
+            return cached;
         }
         BlockState state = getLevel().getBlockState(BlockPos.of(pos));
         bsCache.put(pos, state);
@@ -185,11 +186,12 @@ public abstract class AbstractMultiblock implements Multiblock {
     }
 
     public BlockState getBlockState(BlockPos pos) {
-        if (bsCache.containsKey(pos.asLong())) {
-            return bsCache.get(pos.asLong());
+        final long packedPos = pos.asLong();
+        if (bsCache.containsKey(packedPos)) {
+            return bsCache.get(packedPos);
         }
         BlockState state = getLevel().getBlockState(pos);
-        bsCache.put(pos.asLong(), state);
+        bsCache.put(packedPos, state);
         return state;
     }
 
@@ -315,13 +317,6 @@ public abstract class AbstractMultiblock implements Multiblock {
             for(int x = 0; x < width; x++) {
                 for (int z = 0; z < depth; z++) {
                     if (y == 0 || x == 0 || z == 0 || y == height-1 || x == width-1 || z == depth-1) {
-                        if (!isValidForOuter(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getControllerDirection(), -z))) {
-                            validationResult = ValidationResult.WRONG_OUTER;
-                            errorBlockPos = new BlockPos(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getControllerDirection(), -z));
-                            return;
-                        }
-                        processOuterBlock(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getControllerDirection(), -z));
-                        //validate corner blocks
                         if (((y == 0 || y == height-1) && (z == 0 || z == depth - 1))
                         || ((y == 0 || y == height-1) && (x == 0 || x == width - 1))
                         || ((z == 0 || z == depth-1) && (x == 0 || x == width - 1))
@@ -331,7 +326,13 @@ public abstract class AbstractMultiblock implements Multiblock {
                                 errorBlockPos = new BlockPos(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getControllerDirection(), -z));
                                 return;
                             }
+                        } else if (!isValidForOuter(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getControllerDirection(), -z))) {
+                            validationResult = ValidationResult.WRONG_OUTER;
+                            errorBlockPos = new BlockPos(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getControllerDirection(), -z));
+                            return;
                         }
+
+                        processOuterBlock(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getControllerDirection(), -z));
                     }
                 }
             }
@@ -522,14 +523,10 @@ public abstract class AbstractMultiblock implements Multiblock {
         }
         return true;
     }
-    boolean canTick = true;
+    protected boolean canTick = true;
 
     public void tick() {
-        if(!canTick) return;
-
-        if (!hasToRefresh) {
-            return;
-        }
+        if(!canTick || !hasToRefresh) return;
 
         canTick = false;
         validationResult = ValidationResult.INCOMPLETE;
@@ -546,6 +543,7 @@ public abstract class AbstractMultiblock implements Multiblock {
             BlockEntity be = getLevel().getBlockEntity(pos);
             if(be != beCache.get(pos.asLong())) {
                 beCache.remove(pos.asLong());
+                hasToRefresh = true;
             }
         }
         if (bsCache.containsKey(pos.asLong())) {
@@ -553,6 +551,7 @@ public abstract class AbstractMultiblock implements Multiblock {
             BlockState cachedBs = bsCache.get(pos.asLong());
             if(cachedBs == null || !bs.is(cachedBs.getBlock())) {
                 bsCache.remove(pos.asLong());
+                hasToRefresh = true;
             }
         }
     }

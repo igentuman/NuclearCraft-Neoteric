@@ -1,0 +1,5 @@
+[{
+  "type": "redstone",
+  "heat": 115,
+  "placement_rule": ["#nuclearcraft:amplifiers","#nuclearcraft:electromagnets"]
+}]

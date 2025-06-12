@@ -42,7 +42,9 @@ public class OverworldBiomeBuilderMixin {
     private void GE$writeLowBiomes(Consumer<Pair<Climate.ParameterPoint, ResourceKey<Biome>>> consumer, Climate.Parameter weirdness, CallbackInfo ci) {
         try {
             if (!BIOME_CONFIG.registerWasteland.get()) return;
-        } catch (Exception ignore) { }
+        } catch (Exception ignore) {
+            return;
+        }
         injectBiome(consumer, Climate.Parameter.span(this.temperatures[3], this.temperatures[4]), this.FULL_RANGE, Climate.Parameter.span(this.nearInlandContinentalness, this.midInlandContinentalness), this.erosions[6], weirdness, 0.0f, WASTELAND_BIOME);
         for (int i = 3; i < this.temperatures.length; ++i) {
             for (int j = 0; j < 1; ++j) {
@@ -55,7 +57,9 @@ public class OverworldBiomeBuilderMixin {
     private void GE$writeMidBiomes(Consumer<Pair<Climate.ParameterPoint, ResourceKey<Biome>>> parameters, Climate.Parameter weirdness, CallbackInfo ci) {
         try {
             if (!BIOME_CONFIG.registerWasteland.get()) return;
-        } catch (Exception ignore) { }
+        } catch (Exception ignore) {
+            return;
+        }
         for (int i = 3; i < this.temperatures.length; ++i) {
             for (int j = 0; j < 1; ++j) {
                 injectBiome(parameters, this.temperatures[i], this.humidities[j], Climate.Parameter.span(this.nearInlandContinentalness, this.midInlandContinentalness), this.erosions[4], weirdness, 0.0F, WASTELAND_BIOME);
@@ -67,7 +71,9 @@ public class OverworldBiomeBuilderMixin {
     private void GE$writeHighBiomes(Consumer<Pair<Climate.ParameterPoint, ResourceKey<Biome>>> parameters, Climate.Parameter weirdness, CallbackInfo ci) {
         try {
             if(!BIOME_CONFIG.registerWasteland.get()) return;
-        } catch (Exception ignore) { }
+        } catch (Exception ignore) {
+            return;
+        }
         for (int i = 3; i < this.temperatures.length; ++i) {
             for (int j = 0; j < 1; ++j) {
                 injectBiome(parameters, this.temperatures[i], this.humidities[j], Climate.Parameter.span(this.nearInlandContinentalness, this.midInlandContinentalness), this.erosions[4], weirdness, 0.0F, WASTELAND_BIOME);

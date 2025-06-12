@@ -2,18 +2,12 @@ package igentuman.nc.block.entity.accelerator;
 
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.MultiblockControllerBE;
-import igentuman.nc.block.entity.kugelblitz.BlackHoleBE;
-import igentuman.nc.compat.cc.KugelblitzPeripheral;
 import igentuman.nc.compat.cc.LinearAcceleratorPeripheral;
-import igentuman.nc.compat.oc2.KugelblitzDevice;
 import igentuman.nc.compat.oc2.LinearAcceleratorDevice;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.SlotModePair;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
-import igentuman.nc.multiblock.MultiblockHandler;
-import igentuman.nc.multiblock.ValidationResult;
 import igentuman.nc.multiblock.accelerator.LinearAcceleratorMultiblock;
-import igentuman.nc.multiblock.kugelblitz.KugelblitzMultiblock;
 import igentuman.nc.recipes.NcRecipeType;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
@@ -24,7 +18,6 @@ import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
@@ -42,22 +35,14 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
-import static igentuman.nc.block.entity.kugelblitz.BlackHoleBE.MAX_MASS;
-import static igentuman.nc.block.entity.kugelblitz.BlackHoleBE.MIN_MASS;
 import static igentuman.nc.block.fission.FissionControllerBlock.POWERED;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.compat.oc2.FissionReactorDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.content.materials.Materials.subliquid_matter;
-import static igentuman.nc.handler.config.CommonConfig.ENERGY_GENERATION;
-import static igentuman.nc.handler.config.KugelblitzConfig.KUGELBLITZ_CONFIG;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BE;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
-import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BE;
-import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BLOCKS;
-import static igentuman.nc.setup.registration.GameEvents.BLACKHOLE_VIBRATION;
 import static igentuman.nc.util.ModUtil.isCcLoaded;
 import static igentuman.nc.util.ModUtil.isOC2Loaded;
-import static net.minecraft.world.level.block.Blocks.AIR;
 
 public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
 
@@ -68,7 +53,35 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
     protected final LazyOptional<IEnergyStorage> energy;
 
     @NBTField
+    public int coolers;
+    @NBTField
     public boolean controllerEnabled = false;
+    @NBTField
+    public int amplifiers = 0;
+    @NBTField
+    public int quadroupoles = 0;
+    @NBTField
+    public int dipoles = 0;
+    @NBTField
+    public double focus = 0;
+    @NBTField
+    public int maxTemperature = 0;
+    @NBTField
+    public int heatRate = 0;
+    @NBTField
+    public int heat = 0;
+    @NBTField
+    public double efficiency = 0;
+    @NBTField
+    public double quadStrength = 0;
+    @NBTField
+    public double dipoleStrength = 0;
+    @NBTField
+    public long acceleratingVoltage = 0;
+    @NBTField
+    public int energyRequired = 0;
+    @NBTField
+    public int coolingRate = 0;
 
     protected Direction facing;
     public Recipe recipe;
@@ -76,6 +89,7 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
     private List<ItemStack> allowedInputs;
     private final List<ItemStack> orderedOutputs = new ArrayList<>();
     private List<FluidStack> allowedInputFluids;
+
 
     public LinearAcceleratorControllerBE(BlockPos pPos, BlockState pBlockState) {
         super(ACCELERATOR_BE.get(NAME).get(), pPos, pBlockState);
@@ -118,7 +132,7 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
     }
 
     private CustomEnergyStorage createEnergy() {
-        return new CustomEnergyStorage(100000000, 0, 100000000) {
+        return new CustomEnergyStorage(100000000, 100000000, 0) {
             @Override
             protected void onEnergyChanged() {
                 setChanged();
@@ -204,7 +218,6 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
         }
         if(refreshCacheFlag || changed) {
             try {
-                MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
                 setChanged();
                 level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(POWERED, controllerEnabled), Block.UPDATE_NEIGHBORS);
                 level.setBlockAndUpdate(worldPosition, getBlockState().setValue(POWERED, controllerEnabled));

@@ -4,8 +4,10 @@ import igentuman.nc.content.ArmorMaterials;
 import igentuman.nc.content.materials.*;
 import igentuman.nc.item.*;
 import igentuman.nc.item.Tiers;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.RegistryObject;
@@ -83,7 +85,8 @@ public class NCItems {
     public static final RegistryObject<Item> QNP = ITEMS.register("qnp", () -> new QNP(Tiers.QNP, 11, 2F, ONE_ITEM_PROPERTIES));
     public static final RegistryObject<Item> MULTITOOL = ITEMS.register("multitool", () -> new MultitoolItem(ONE_ITEM_PROPERTIES));
     public static final RegistryObject<Item> UNKNOWN_INGREDIENT = ITEMS.register("unknown_ingredient", () -> new Item(ONE_ITEM_PROPERTIES));
-
+    public static final TagKey<Item> AMPLIFIERS_ITEMS = itemTag("amplifiers");
+    public static final TagKey<Item> ELECTROMAGNETS_ITEMS = itemTag("electromagnets");
     public static RegistryObject<Item> registerItem(String name) {
         return ITEMS.register(name, () -> new Item(ITEM_PROPERTIES));
     }

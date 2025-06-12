@@ -21,6 +21,7 @@ import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.client.block.BatteryBlockLoader.BATTERY_LOADER;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
+import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.COOLERS;
 import static igentuman.nc.multiblock.fission.FissionReactorRegistration.*;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_CORE_PROXY;
@@ -47,6 +48,7 @@ public class NCBlockStates extends BlockStateProvider {
         rtgs();
         materialFluidBlocks();
         heatSinks();
+        coolers();
         fissionReactor();
         turbine();
         storageBlocks();
@@ -72,6 +74,7 @@ public class NCBlockStates extends BlockStateProvider {
                 st -> controllerModel(st, sidedModel(ACCELERATOR_BLOCKS.get("synthrotron_controller").get(), "accelerator/controller"))
         );
 
+        simpleBlock(ACCELERATOR_BLOCKS.get("electromagnet_yoke").get(), multiBlockModel(ACCELERATOR_BLOCKS.get("electromagnet_yoke").get(), "accelerator/electromagnet_yoke"));
         simpleBlock(ACCELERATOR_BLOCKS.get("accelerator_casing").get(), multiBlockModel(ACCELERATOR_BLOCKS.get("accelerator_casing").get(), "accelerator/accelerator_casing"));
         simpleBlock(ACCELERATOR_BLOCKS.get("accelerator_casing_glass").get(), multiBlockModel(ACCELERATOR_BLOCKS.get("accelerator_casing_glass").get(), "accelerator/accelerator_casing_glass"));
         simpleBlock(ACCELERATOR_BLOCKS.get("accelerator_beam").get(), multiBlockModel(ACCELERATOR_BLOCKS.get("accelerator_beam").get(), "accelerator/accelerator_beam"));
@@ -162,6 +165,12 @@ public class NCBlockStates extends BlockStateProvider {
             simpleBlock(
                     STORAGE_BLOCKS.get(name).get(),
                     models().getExistingFile(modLoc("block/container/"+name)));
+        }
+    }
+
+    private void coolers() {
+        for (String name: COOLERS.keySet()) {
+            simpleBlock(ACCELERATOR_BLOCKS.get(name+"_cooler").get(), multiBlockModel(ACCELERATOR_BLOCKS.get(name+"_cooler").get(), "accelerator/cooler/"+name));
         }
     }
 

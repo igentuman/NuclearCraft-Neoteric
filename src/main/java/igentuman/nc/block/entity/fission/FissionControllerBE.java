@@ -482,6 +482,10 @@ public class FissionControllerBE extends MultiblockControllerBE {
             if (toggleModeTimer < 1) {
                 toggleModeTimer = 2000;
                 isSteamMode = !isSteamMode;
+                if(isSteamMode) {
+                    contentHandler().fluidCapability.tanks.get(0).setCapacity((height+width+depth)*2_000_000);
+                    contentHandler().fluidCapability.tanks.get(1).setCapacity((height+width+depth)*2_000_000);
+                }
             }
         }
     }

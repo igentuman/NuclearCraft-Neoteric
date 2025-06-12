@@ -1,0 +1,5 @@
+[{
+  "type": "gold",
+  "heat": 95,
+  "placement_rule": ["iron_cooler>2"]
+}]

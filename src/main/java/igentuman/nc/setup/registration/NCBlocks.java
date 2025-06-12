@@ -76,6 +76,8 @@ public class NCBlocks {
     public static final RegistryObject<Item> PORTAL_ITEM = fromBlock(PORTAL_BLOCK);
     public static final RegistryObject<Item> WASTELAND_EARTH_ITEM = fromBlock(WASTELAND_EARTH);
     public static TagKey<Block> DECAY_GEN_BLOCK = blockTag("decay_gen_block");
+    public static final TagKey<Block> AMPLIFIERS = blockTag("amplifiers");
+    public static final TagKey<Block> ELECTROMAGNETS = blockTag("electromagnets");
 
     public static void init() {
         registerOres();

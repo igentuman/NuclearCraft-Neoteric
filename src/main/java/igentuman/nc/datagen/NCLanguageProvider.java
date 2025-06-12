@@ -10,6 +10,10 @@ import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
+import static igentuman.nc.multiblock.fission.FissionReactorRegistration.FISSION_BLOCKS;
+import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BLOCKS;
+import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_CORE_PROXY;
+import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.EXPL_PROXY_BLOCK;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BLOCKS;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
 import static igentuman.nc.setup.registration.NCBlocks.*;
@@ -466,19 +470,20 @@ public class NCLanguageProvider extends LanguageProvider {
             String title = convertToName(name);
             add(KUGELBLITZ_BLOCKS.get(name).get(), title);
         }
-        for(String name: FissionReactorRegistration.FISSION_BLOCKS.keySet()) {
+        for(String name: FISSION_BLOCKS.keySet()) {
             String title = convertToName(name);
-            add(FissionReactorRegistration.FISSION_BLOCKS.get(name).get(), title);
+            add(FISSION_BLOCKS.get(name).get(), title);
         }
         for(String name: TURBINE_BLOCKS.keySet()) {
             String title = convertToName(name);
             add(TURBINE_BLOCKS.get(name).get(), title);
         }
-        for(String name: FusionReactorRegistration.FUSION_BLOCKS.keySet()) {
+        for(String name: FUSION_BLOCKS.keySet()) {
             String title = convertToName(name);
-            add(FusionReactorRegistration.FUSION_BLOCKS.get(name).get(), title);
+            add(FUSION_BLOCKS.get(name).get(), title);
         }
-        add(FusionReactorRegistration.FUSION_CORE_PROXY.get(), "Fusion Reactor Core");
+        add(FUSION_CORE_PROXY.get(), "Fusion Reactor Core");
+        add(EXPL_PROXY_BLOCK.get(), "EXPL");
     }
 
     private void storageBlocks() {
@@ -536,6 +541,14 @@ public class NCLanguageProvider extends LanguageProvider {
     }
 
     private void tooltips() {
+        add("tooltip.nc.accelerator.strength", "Magnet Strength: %s T");
+        add("tooltip.nc.accelerator.efficiency", "Efficiency: %s");
+        add("tooltip.nc.accelerator.focus", "Focus: %s");
+        add("tooltip.nc.accelerator.quadroupoles", "Quadrupoles: %s");
+        add("tooltip.nc.accelerator.dipoles", "Dipoles: %s");
+        add("tooltip.nc.accelerator.voltage", "Voltage: %sV");
+        add("tooltip.nc.accelerator.amplifiers", "Amplifiers: %s");
+        add("tooltip.nc.accelerator.coolers", "Coolers: %s");
         add("tooltip.nc.max_fe_extract_per_tick","FE/t output: %s");
         add("tooltip.nc.upgrade_energy.tier","+1 Energy Tier for every %s Upgrades");
         add("tooltip.nc.eu_energy_stored","EU Stored: %s / %s");

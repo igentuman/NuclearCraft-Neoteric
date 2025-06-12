@@ -14,7 +14,6 @@ import igentuman.nc.setup.ModSetup;
 import igentuman.nc.setup.Registration;
 import igentuman.nc.util.insitu_leaching.WorldVeinOres;
 import igentuman.nc.util.insitu_leaching.WorldVeinsProvider;
-import igentuman.nc.world.dimension.Dimensions;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.api.distmarker.Dist;
@@ -54,6 +53,7 @@ public class NuclearCraft {
         preFetchProcessorsConfig();
         unpackFilesFromFolderToConfig("data/nuclearcraft/fission_fuel", "NuclearCraft/fission_fuel");
         unpackFilesFromFolderToConfig("data/nuclearcraft/heat_sinks", "NuclearCraft/heat_sinks");
+        unpackFilesFromFolderToConfig("data/nuclearcraft/accelerator_coolers", "NuclearCraft/accelerator_coolers");
         context.registerConfig(ModConfig.Type.COMMON, MaterialsConfig.spec, "NuclearCraft/materials.toml");
         context.registerConfig(ModConfig.Type.COMMON, OreGenConfig.spec, "NuclearCraft/ore_generation.toml");
         context.registerConfig(ModConfig.Type.COMMON, CommonConfig.spec, "NuclearCraft/common.toml");
@@ -81,7 +81,6 @@ public class NuclearCraft {
         modbus.addListener(ModSetup::init);
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> modbus.addListener(ClientSetup::init));
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> modbus.addListener(this::registerClientEventHandlers));
-        //modbus.addListener(Dimensions::registerDimensions);
     }
 
     public static PacketHandler packetHandler() {

@@ -110,11 +110,11 @@ repositories {
 dependencies {
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
     minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
-    implementation fg.deobf("com.gregtechceu.gtceu:gtceu-${mc_version}:${gtm_version}"){
+    compileOnly fg.deobf("com.gregtechceu.gtceu:gtceu-${mc_version}:${gtm_version}"){
         transitive = false
     }
-    runtimeOnly fg.deobf("curse.maven:mantle-74924:6603205")
-    //runtimeOnly fg.deobf("curse.maven:tinkers-construct-74072:6603344")
+    //compileOnly fg.deobf("curse.maven:mantle-74924:6603205")
+    //compileOnly fg.deobf("curse.maven:tinkers-construct-74072:6603344")
     runtimeOnly fg.deobf("curse.maven:construction-wand-399558:4684054")
     runtimeOnly fg.deobf("curse.maven:spark-361579:4738952")
 /*    implementation fg.deobf("com.lowdragmc.ldlib:ldlib-forge-${mc_version}:${ldlib_version}") {
@@ -124,7 +124,7 @@ dependencies {
         transitive = false
     }*/
     runtimeOnly fg.deobf("curse.maven:ctm-267602:5983309")
-    implementation fg.deobf("curse.maven:immersive-engineering-231951:5224387")
+    compileOnly fg.deobf("curse.maven:immersive-engineering-231951:5224387")
 
     runtimeOnly fg.deobf("curse.maven:the-lost-cities-269024:6174986")
     compileOnly fg.deobf("mezz.jei:jei-${mc_version}-common-api:${jei_version}")
@@ -140,14 +140,14 @@ dependencies {
         transitive = false
     }
 
-    implementation fg.deobf("dev.latvian.mods:kubejs-forge:${kubejs_version}"){
+    compileOnly fg.deobf("dev.latvian.mods:kubejs-forge:${kubejs_version}"){
         transitive = false
     }
 
-    implementation fg.deobf("dev.latvian.mods:rhino-forge:${rhino_version}"){
+    compileOnly fg.deobf("dev.latvian.mods:rhino-forge:${rhino_version}"){
         transitive = false
     }
-    implementation fg.deobf("dev.architectury:architectury-forge:${architectury_version}")
+    compileOnly fg.deobf("dev.architectury:architectury-forge:${architectury_version}")
     //implementation fg.deobf("curse.maven:ftb-library-forge-404465:5282375")
     //implementation fg.deobf("curse.maven:ftb-teams-forge-404468:5267190")
     //implementation fg.deobf("curse.maven:ftb-chunks-forge-314906:5267364")

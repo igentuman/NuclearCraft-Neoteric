@@ -123,4 +123,30 @@ public class MathUtils {
         }
         return elements.get(index % elements.size());
     }
+
+    public static int min(int... values) {
+        if (values == null || values.length == 0) {
+            throw new IllegalArgumentException("Values cannot be null or empty");
+        }
+        int min = values[0];
+        for (int value : values) {
+            if (value < min) {
+                min = value;
+            }
+        }
+        return min;
+    }
+
+    public static int max(int... values) {
+        if (values == null || values.length == 0) {
+            throw new IllegalArgumentException("Values cannot be null or empty");
+        }
+        int max = values[0];
+        for (int value : values) {
+            if (value > max) {
+                max = value;
+            }
+        }
+        return max;
+    }
 }

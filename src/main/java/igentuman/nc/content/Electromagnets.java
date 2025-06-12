@@ -132,5 +132,9 @@ public class Electromagnets {
         public int getMaxTemp() {
             return maxTemp;
         }
+
+        public int getHeatRate() {
+            return 100; // TODO: make it configurable
+        }
     }
 }

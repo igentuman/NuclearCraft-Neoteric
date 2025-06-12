@@ -4,12 +4,9 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import igentuman.nc.client.gui.IProgressScreen;
 import igentuman.nc.client.gui.IVerticalBarScreen;
 import igentuman.nc.client.gui.element.NCGuiElement;
-import igentuman.nc.client.gui.element.bar.ProgressBar;
 import igentuman.nc.client.gui.element.bar.VerticalBar;
 import igentuman.nc.client.gui.element.button.Checkbox;
-import igentuman.nc.client.gui.element.fluid.FluidTankRenderer;
 import igentuman.nc.container.LinearAcceleratorContainer;
-import igentuman.nc.container.TurbineControllerContainer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -25,12 +22,11 @@ import java.util.List;
 import java.util.Optional;
 
 import static igentuman.nc.NuclearCraft.rl;
-import static igentuman.nc.handler.config.TurbineConfig.TURBINE_CONFIG;
 import static igentuman.nc.util.TextUtils.__;
 import static igentuman.nc.util.TextUtils.applyFormat;
 
 public class LinearAcceleratorControllerScreen extends AbstractContainerScreen<LinearAcceleratorContainer> implements IProgressScreen, IVerticalBarScreen {
-    protected final ResourceLocation GUI = rl("textures/gui/turbine/controller.png");
+    protected final ResourceLocation GUI = rl("textures/gui/accelerators/linear_controller.png");
     protected int relX;
     protected int relY;
     private int xCenter;
@@ -44,13 +40,14 @@ public class LinearAcceleratorControllerScreen extends AbstractContainerScreen<L
     public Checkbox checkboxCasing;
     public Checkbox checkboxInterior;
     private VerticalBar energyBar;
+    private VerticalBar heatBar;
     public Component casingTootip = Component.empty();
     public Component interiorTootip = Component.empty();
 
     public LinearAcceleratorControllerScreen(LinearAcceleratorContainer container, Inventory inv, Component name) {
         super(container, inv, name);
-        imageWidth = 176;
-        imageHeight = 176;
+        imageWidth = 196;
+        imageHeight = 109;
     }
 
     protected void updateRelativeCords()
@@ -68,10 +65,9 @@ public class LinearAcceleratorControllerScreen extends AbstractContainerScreen<L
         widgets.clear();
         checkboxCasing = new Checkbox(imageWidth-19, 80, this,  isCasingValid());
         checkboxInterior =  new Checkbox(imageWidth-32, 80, this,  isInteriorValid());
-        widgets.add(new ProgressBar(74, 35, this,  7));
-        energyBar = new VerticalBar.Energy(17, 16,  this, container().getMaxEnergy());
-        addWidget(FluidTankRenderer.tank(getFluidTank(0)).id(0).size(18, 18).pos(56, 35).canVoid());
-        addWidget(FluidTankRenderer.tank(getFluidTank(1)).id(1).size(24, 24).pos(112, 31).canVoid());
+        //widgets.add(new ProgressBar(74, 35, this,  7));
+        energyBar = new VerticalBar.Energy(7, 5,  this, container().getMaxEnergy());
+        heatBar = new VerticalBar.Energy(17, 5,  this, container().getMaxHeat());
     }
 
     protected void addWidget(NCGuiElement widget)
@@ -120,7 +116,12 @@ public class LinearAcceleratorControllerScreen extends AbstractContainerScreen<L
         }
         checkboxInterior.addTooltip(interiorTootip);
         if(isInteriorValid() && isCasingValid()) {
-//            checkboxInterior.addTooltip(__("turbine.blades.flow", container().getFlow()*TURBINE_CONFIG.BLADE_FLOW.get()));
+            checkboxInterior.addTooltip(__("tooltip.nc.accelerator.focus", container().getFocus()));
+            checkboxInterior.addTooltip(__("tooltip.nc.accelerator.quadroupoles", container().getQuadroupoles()));
+            checkboxInterior.addTooltip(__("tooltip.nc.accelerator.dipoles", container().getDipoles()));
+            checkboxInterior.addTooltip(__("tooltip.nc.accelerator.voltage", container().getVoltage()));
+            checkboxInterior.addTooltip(__("tooltip.nc.accelerator.amplifiers", container().getAmplifiers()));
+            checkboxInterior.addTooltip(__("tooltip.nc.accelerator.coolers", container().getCoolers()));
         }
         energyBar.draw(graphics, mouseX, mouseY, partialTicks);
     }
@@ -136,9 +137,9 @@ public class LinearAcceleratorControllerScreen extends AbstractContainerScreen<L
 
         if(isCasingValid()) {
             if (isInteriorValid()) {
-                /*if(container().getRealFlow() != 0 && !container().getEfficiency().equals("0") && container().isRunning()) {
-                 //   graphics.drawString(font, __("turbine.efficiency", container().getEfficiency()), 35, 82, 0xffffff);
-                }*/
+                 graphics.drawString(font, __("tooltip.nc.accelerator.voltage", container().getVoltage()), 37, 50, 0xffffff);
+                 graphics.drawString(font, __("tooltip.nc.accelerator.efficiency", container().getEfficiency()), 37, 60, 0xffffff);
+                 graphics.drawString(font, __("tooltip.nc.accelerator.strength", container().getStrength()), 37, 70, 0xffffff);
             } else {
                 interiorTootip = applyFormat(__(getValidationResultKey(), getValidationResultData()), ChatFormatting.RED);
             }

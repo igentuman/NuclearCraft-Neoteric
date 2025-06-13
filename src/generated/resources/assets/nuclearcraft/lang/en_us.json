@@ -2555,6 +2555,7 @@
   "tooltip.nuclearcraft.particlestack.mean_energy": "Energy: %s",
   "tooltip.nuclearcraft.particlestack.name": "Type: %s",
   "tooltip.nuclearcraft.particlestack.travel_distance": "Travel Distance: %s Blocks",
+  "tooltip.structure.sizes": "Structure sizes: Min %s - Max: %s",
   "tooltip.toggle_description_keys": "Toggle description: CTRL+N",
   "tooltip.turbine.max_energy": "Max FE gen: %s",
   "tooltip.turbine.max_eu_energy": "Max EU gen: %s",

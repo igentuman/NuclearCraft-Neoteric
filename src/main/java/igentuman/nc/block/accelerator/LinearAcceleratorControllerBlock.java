@@ -37,6 +37,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+import static igentuman.nc.handler.config.AcceleratorConfig.ACCELERATOR_CONFIG;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BE;
 import static igentuman.nc.util.TextUtils.__;
 
@@ -117,9 +118,23 @@ public class LinearAcceleratorControllerBlock extends HorizontalDirectionalBlock
         };
     }
 
+    public int maxDepth() {
+        return switch (ACCELERATOR_CONFIG.SCALE.get()) {
+            case 2 -> 1000;
+            case 3 -> 10000;
+            default -> 100;
+        };
+    }
+    public int minDepth() {
+        return switch (ACCELERATOR_CONFIG.SCALE.get()) {
+            case 2 -> 60;
+            case 3 -> 600;
+            default -> 6;
+        };
+    }
 
     @Override
     public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag) {
-        list.add(__("multiblock.build_in_chunk.advise").withStyle(ChatFormatting.GREEN));
+        list.add(__("tooltip.structure.sizes", "5x5x"+minDepth(), "5x5x"+maxDepth()).withStyle(ChatFormatting.ITALIC));
     }
 }

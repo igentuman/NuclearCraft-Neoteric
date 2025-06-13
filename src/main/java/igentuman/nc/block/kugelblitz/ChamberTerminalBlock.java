@@ -144,5 +144,6 @@ public class ChamberTerminalBlock extends HorizontalDirectionalBlock implements 
             list.add(__("tooltip.nc.max_fe_extract_per_tick", formatEnergy(GTUtils.getMaxOutputFE(GTCEU_CONFIG.KUGELBLITZ_ENERGY_TIER.get()))).withStyle(ChatFormatting.GOLD));
         }
         list.add(__("multiblock.build_in_chunk.advise").withStyle(ChatFormatting.GREEN));
+        list.add(__("tooltip.structure.sizes", "11x11x11", "11x11x11").withStyle(ChatFormatting.ITALIC));
     }
 }

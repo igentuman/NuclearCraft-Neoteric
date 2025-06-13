@@ -44,6 +44,7 @@ import java.util.Objects;
 
 import static igentuman.nc.block.entity.NuclearCraftBE.isGTEUCapEnabled;
 import static igentuman.nc.handler.config.CommonConfig.GTCEU_CONFIG;
+import static igentuman.nc.handler.config.FissionConfig.FISSION_CONFIG;
 import static igentuman.nc.util.ModUtil.isGtLoaded;
 import static igentuman.nc.util.TextUtils.__;
 import static igentuman.nc.util.TextUtils.formatEnergy;
@@ -141,5 +142,8 @@ public class FissionControllerBlock extends HorizontalDirectionalBlock implement
             list.add(__("tooltip.nc.max_fe_extract_per_tick", formatEnergy(GTUtils.getMaxOutputFE(GTCEU_CONFIG.FISSION_REACTOR_TIER.get()))).withStyle(ChatFormatting.GOLD));
         }
         list.add(__("multiblock.build_in_chunk.advise").withStyle(ChatFormatting.GREEN));
+        int max = FISSION_CONFIG.MAX_SIZE.get();
+        int min = FISSION_CONFIG.MIN_SIZE.get();
+        list.add(__("tooltip.structure.sizes", min+"x"+min+"x"+min, max+"x"+max+"x"+max).withStyle(ChatFormatting.ITALIC));
     }
 }

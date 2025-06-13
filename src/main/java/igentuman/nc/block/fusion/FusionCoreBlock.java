@@ -42,6 +42,7 @@ import java.util.List;
 
 import static igentuman.nc.block.entity.NuclearCraftBE.isGTEUCapEnabled;
 import static igentuman.nc.handler.config.CommonConfig.GTCEU_CONFIG;
+import static igentuman.nc.handler.config.FusionConfig.FUSION_CONFIG;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BE;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_CORE_PROXY;
 import static igentuman.nc.util.ModUtil.isGtLoaded;
@@ -182,5 +183,8 @@ public class FusionCoreBlock extends FusionBeBlock {
             list.add(__("tooltip.nc.max_fe_extract_per_tick", formatEnergy(GTUtils.getMaxOutputFE(GTCEU_CONFIG.FUSION_REACTOR_ENERGY_TIER.get()))).withStyle(ChatFormatting.GOLD));
         }
         list.add(__("multiblock.build_in_chunk.advise").withStyle(ChatFormatting.GREEN));
+        int min = FUSION_CONFIG.MIN_SIZE.get();
+        int max = FUSION_CONFIG.MAX_SIZE.get();
+        list.add(__("tooltip.structure.sizes", min+"x3x"+min, max+"x3x"+max).withStyle(ChatFormatting.ITALIC));
     }
 }

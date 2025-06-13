@@ -43,6 +43,7 @@ import java.util.List;
 
 import static igentuman.nc.block.entity.NuclearCraftBE.isGTEUCapEnabled;
 import static igentuman.nc.handler.config.CommonConfig.GTCEU_CONFIG;
+import static igentuman.nc.handler.config.TurbineConfig.TURBINE_CONFIG;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BE;
 import static igentuman.nc.util.ModUtil.isGtLoaded;
 import static igentuman.nc.util.TextUtils.__;
@@ -134,6 +135,9 @@ public class TurbineControllerBlock extends HorizontalDirectionalBlock implement
             list.add(__("tooltip.nc.max_fe_extract_per_tick", formatEnergy(GTUtils.getMaxOutputFE(GTCEU_CONFIG.TURBINE_ENERGY_TIER.get()))).withStyle(ChatFormatting.GOLD));
         }
         list.add(__("multiblock.build_in_chunk.advise").withStyle(ChatFormatting.GREEN));
+        int min = TURBINE_CONFIG.MIN_SIZE.get();
+        int max = TURBINE_CONFIG.MAX_SIZE.get();
+        list.add(__("tooltip.structure.sizes", min+"x"+min+"x"+min, max+"x"+max+"x"+max).withStyle(ChatFormatting.ITALIC));
     }
 
     @Override

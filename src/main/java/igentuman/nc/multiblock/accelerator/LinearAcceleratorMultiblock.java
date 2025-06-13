@@ -393,7 +393,7 @@ public class LinearAcceleratorMultiblock extends AbstractMultiblock {
             case 2 -> indexInnerBlocks();
             case 3 -> indexCoolers();
         }
-        debugLog("Accelerator validate stage " + stage + " " + initialPos().toShortString() + " in " + (System.nanoTime() - startTime)/1000 + "ns " + validationResult);
+        debugLog("Accelerator validate stage " + stage + " " + initialPos().toShortString() + " in " + (System.nanoTime() - startTime)/1000000 + "ms " + validationResult);
         if(stage < FINAL_STAGE) {
             hasToRefresh = true;
             return;
@@ -467,7 +467,6 @@ public class LinearAcceleratorMultiblock extends AbstractMultiblock {
             coolers.put(pos.asLong(), cooler);
         }
         addIfNotExists(pos, allBlocks);
-        attachMultiblock(pos);
         return true;
     }
 }

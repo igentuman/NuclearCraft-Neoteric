@@ -6,6 +6,7 @@ import igentuman.nc.item.HazmatItem;
 import igentuman.nc.multiblock.MultiblockExecutorManager;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.radiation.data.RadiationEvents;
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.npc.VillagerTrades;
@@ -13,6 +14,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.trading.MerchantOffer;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -114,6 +116,7 @@ public class WorldEvents {
     @SubscribeEvent
     public void onTick(ServerTickEvent event) {
         if (event.side.isServer() && event.phase == Phase.END) {
+
         }
     }
 
@@ -124,6 +127,25 @@ public class WorldEvents {
         if (event.side.isServer() && event.phase == Phase.END) {
             if(event.isCanceled() || event.level.getGameTime() % 10 != 0) return;
             final ServerLevel level = (ServerLevel) event.level;
+            //todo remove, this for testing purposes only
+/*
+            List<BlockState> blocks = new ArrayList<>();
+            for(int x = -2; x < 3; x++) {
+                for(int y = -2; y < 3; y++) {
+                    //blocks.add(level.getBlockState(new BlockPos(250+x, -58+y, -1022)));
+                }
+            }
+            for(int i = 0; i < 9000; i++) {
+                int id = 0;
+                for(int x = -2; x < 3; x++) {
+                    for(int y = -2; y < 3; y++) {
+                       // level.setBlock(new BlockPos(250+x, -58+y, -1023-i), blocks.get(id), Block.UPDATE_ALL);
+                        id++;
+                    }
+                }
+            }
+*/
+
             if(level.getChunkSource().getLoadedChunksCount() < 1) {
                 return;
             }

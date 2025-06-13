@@ -21,6 +21,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
@@ -52,6 +53,7 @@ import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLI
 import static igentuman.nc.setup.registration.GameEvents.BLACKHOLE_VIBRATION;
 import static igentuman.nc.util.ModUtil.isCcLoaded;
 import static igentuman.nc.util.ModUtil.isOC2Loaded;
+import static igentuman.nc.util.StackUtils.resolveStackByModPriority;
 import static net.minecraft.world.level.block.Blocks.AIR;
 
 public class ChamberTerminalBE extends MultiblockControllerBE {
@@ -122,7 +124,7 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
             allowedInputs = new ArrayList<>();
             for(NcRecipe recipe: NcRecipeType.getAllRecipesFor("kugelblitz_chamber", getLevel())) {
                 for(Ingredient ingredient: recipe.getItemIngredients()) {
-                    allowedInputs.addAll(List.of(ingredient.getItems()));
+                    allowedInputs.add(resolveStackByModPriority(ingredient.getItems()));
                 }
             }
         }
@@ -453,9 +455,15 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
             if(recipe == null) {
                 recipe = (Recipe) recipeInfo().recipe();
             }
-            int id = getIngredientId(recipe.getResultItem());
-            if (recipe.handleOutputs(contentHandler(), orderedOutputs.get(id))) {
-                updateRecipe();
+            ItemStack output;
+            if(!recipe.getResultItem().is(recipe.getInputItem().getItem())) {
+                output = recipe.getResultItem();
+            } else {
+                int id = getIngredientId(recipe.getResultItem());
+                output = orderedOutputs.get(id);
+            }
+            if (recipe.handleOutputs(contentHandler(), output)) {
+                recipeInfo().clear();
             } else {
                 recipeInfo.stuck = true;
             }
@@ -464,8 +472,8 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
     }
 
     private int getIngredientId(@NotNull ItemStack resultItem) {
-        for(int i = 0; i < allowedInputs.size(); i++) {
-            if(allowedInputs.get(i).is(resultItem.getItem())) {
+        for(int i = 0; i < getAllowedRandomInputs().size(); i++) {
+            if(getAllowedRandomInputs().get(i).is(resultItem.getItem())) {
                 return i;
             }
         }
@@ -512,12 +520,25 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
 
         if(orderedOutputs.isEmpty()) {
             //shuffle outputs dependently on seed
-            orderedOutputs.addAll(getAllowedInputItems());
+            orderedOutputs.addAll(getAllowedRandomInputs());
             Random seededRandom = new Random(seed);
             Collections.shuffle(orderedOutputs, seededRandom);
         }
         //result item exists only if frequency is matches seed based random frequency
         return frequency == getTargetFrequencyForItem(recipe.getResultItem(), seed);
+    }
+
+    private List<ItemStack> getAllowedRandomInputs() {
+        List<ItemStack> inputs = new ArrayList<>();
+        for(NcRecipe recipe: NcRecipeType.getAllRecipesFor("kugelblitz_chamber", getLevel())) {
+            for(Ingredient ingredient: recipe.getItemIngredients()) {
+                ItemStack itemStack = resolveStackByModPriority(ingredient.getItems());
+                if(recipe.getResultItem().is(itemStack.getItem())) {
+                    inputs.add(itemStack);
+                }
+            }
+        }
+        return inputs;
     }
 
     public boolean recipeIsStuck() {
@@ -614,5 +635,9 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
         }
 
         public double getEnergy() { return powerModifier * 1000; }
+
+        public ItemStack getInputItem() {
+            return resolveStackByModPriority(getItemIngredients().get(0).getItems());
+        }
     }
 }

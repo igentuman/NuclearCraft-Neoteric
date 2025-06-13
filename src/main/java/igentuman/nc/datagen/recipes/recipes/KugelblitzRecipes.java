@@ -65,7 +65,7 @@ public class KugelblitzRecipes extends AbstractRecipeProvider {
                 "#forge:dusts/glowstone",
                 "#forge:blocks/wool"
         );
-
+        itemToItem(ingotStack("tough_alloy"), dustStack("bscco", 1), 2);
         for(String name: items) {
             NcIngredient ingredient = NcIngredient.of(name);
             if(ingredient.isEmpty()) continue;

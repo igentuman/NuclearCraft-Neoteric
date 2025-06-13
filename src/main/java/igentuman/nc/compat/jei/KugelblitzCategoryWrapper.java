@@ -28,6 +28,7 @@ import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.setup.registration.NCItems.UNKNOWN_INGREDIENT;
+import static igentuman.nc.util.StackUtils.resolveStackByModPriority;
 import static igentuman.nc.util.TextUtils.__;
 import static net.minecraft.world.item.Items.AIR;
 
@@ -106,7 +107,11 @@ public class KugelblitzCategoryWrapper<T extends ChamberTerminalBE.Recipe> imple
                     .buildAnimated(timer.get(d), IDrawableAnimated.StartDirection.LEFT));
         }
         for(int i = 0; i < recipe.getItemIngredients().size(); i++) {
-            builder.addSlot(RecipeIngredientRole.INPUT, 11+18*i, 7).addIngredients(NcIngredient.of(UNKNOWN_INGREDIENT.get()));
+            if(recipe.getResultItem().is(resolveStackByModPriority(recipe.getItemIngredients().get(i).getItems()).getItem())) {
+                builder.addSlot(RecipeIngredientRole.INPUT, 11+18*i, 7).addIngredients(NcIngredient.of(UNKNOWN_INGREDIENT.get()));
+            } else {
+                builder.addSlot(RecipeIngredientRole.INPUT, 11+18*i, 7).addIngredients(recipe.getItemIngredients().get(i));
+            }
         }
 
         builder.addSlot(RecipeIngredientRole.OUTPUT, 74, 7).addItemStack(recipe.getResultItem());

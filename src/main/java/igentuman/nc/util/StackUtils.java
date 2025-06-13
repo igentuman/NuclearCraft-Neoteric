@@ -2,7 +2,6 @@ package igentuman.nc.util;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -24,8 +23,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static igentuman.nc.handler.config.MaterialsConfig.MATERIAL_PRODUCTS;
 import static igentuman.nc.setup.registration.NCItems.MULTITOOL;
 import static igentuman.nc.setup.registration.Registries.ITEM_REGISTRY;
+import static igentuman.nc.util.NcUtils.getModId;
 import static igentuman.nc.util.NcUtils.rlFromString;
 
 public final class StackUtils {
@@ -38,6 +39,17 @@ public final class StackUtils {
             return ItemStack.EMPTY;
         }
         return ItemHandlerHelper.copyStackWithSize(stack, size);
+    }
+
+    public static ItemStack resolveStackByModPriority(ItemStack[] items) {
+        for(String mod: MATERIAL_PRODUCTS.MODS_PRIORITY.get()) {
+            for(ItemStack item: items) {
+                if(getModId(item).equals(mod)) {
+                    return item;
+                }
+            }
+        }
+        return items[0];
     }
 
     @Nullable

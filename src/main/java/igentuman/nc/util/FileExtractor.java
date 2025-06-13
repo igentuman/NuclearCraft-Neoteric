@@ -2,6 +2,7 @@ package igentuman.nc.util;
 
 import com.electronwill.nightconfig.core.CommentedConfig;
 import com.electronwill.nightconfig.core.file.FileConfig;
+import igentuman.nc.NuclearCraft;
 import net.minecraftforge.fml.loading.FMLPaths;
 
 import java.io.File;
@@ -55,6 +56,7 @@ public class FileExtractor {
     public static void unpackFilesFromFolderToConfig(String sourceFolderPath, String targetFolderName) {
         // Get the Minecraft config directory
         Path configDir = FMLPaths.CONFIGDIR.get();
+        int currentVersion = 1;
 
         // Define the target folder inside the config directory
         File targetFolder = new File(configDir.toFile(), targetFolderName);
@@ -76,20 +78,19 @@ public class FileExtractor {
         try {
 
             File jarFile = new File(jarPath);
-            LOGGER.debug("JAR file path: " + jarFile.getAbsolutePath());
+            LOGGER.info("JAR file path: " + jarFile.getAbsolutePath());
             // Open the JAR file and iterate through its entries
             try (ZipFile zipFile = new ZipFile(jarFile)) {
                 Enumeration<? extends ZipEntry> entries = zipFile.entries();
-
+                File version = new File(targetFolder, "version.txt");
+                int versionId = 0;
+                if(version.exists()) {
+                    versionId = Integer.parseInt(Files.readString(version.toPath()));
+                }
                 while (entries.hasMoreElements()) {
                     ZipEntry entry = entries.nextElement();
                     String entryName = entry.getName();
-                    File version = new File(targetFolder, "version.txt");
-                    int currentVersion = 1;
-                    int versionId = 0;
-                    if(version.exists()) {
-                        versionId = Integer.parseInt(Files.readString(version.toPath()));
-                    }
+
                     // Check if the entry is inside the desired folder
                     if (entryName.startsWith(sourceFolderPath) && !entry.isDirectory()) {
                         // Calculate the relative path and target file name
@@ -103,16 +104,15 @@ public class FileExtractor {
 
                         // Copy the file from the JAR to the config folder
                         try (InputStream inputStream = zipFile.getInputStream(entry)) {
-                            if(targetFile.exists() || versionId >= currentVersion) {
-                                continue;
+                            if(!targetFile.exists() || versionId < currentVersion) {
+                                Files.copy(inputStream, targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                                LOGGER.info("Extracted file " + relativeFileName + " to config folder.");
                             }
-                            Files.copy(inputStream, targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                            LOGGER.debug("Extracted file " + relativeFileName + " to config folder.");
+
                         } catch (IOException e) {
                             if(targetFolder.listFiles().length == 0) {
                                 System.err.println("Failed to extract files to " + targetFolder.getPath());
                             }
-                           // e.printStackTrace();
                         }
                     }
                 }
@@ -121,20 +121,26 @@ public class FileExtractor {
             //if jarPath is directory then copy files from source folder to target folder
             if(new File(jarPath).isDirectory()) {
                 try {
+                    File version = new File(targetFolder, "version.txt");
+                    int versionId = 0;
+                    if(version.exists()) {
+                        versionId = Integer.parseInt(Files.readString(version.toPath()));
+                    }
                     File sourceFolder = new File(jarPath + sourceFolderPath);
                     File[] files = sourceFolder.listFiles();
                     for (File file : files) {
                         File targetFile = new File(targetFolder, file.getName());
-                        Files.copy(file.toPath(), targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                        LOGGER.debug("Extracted file " + file.getName() + " to config folder.");
+                        if(!file.exists() || versionId < currentVersion) {
+                            Files.copy(file.toPath(), targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                            LOGGER.info("Extracted file " + file.getName() + " to config folder.");
+                        }
                     }
                 } catch (IOException ex) {
-                    LOGGER.debug(ex.toString());
+                    LOGGER.error(ex.toString());
                 }
             } else {
-                LOGGER.debug(e.toString());
+                LOGGER.error(e.toString());
             }
-            LOGGER.debug(e.toString());
         }
     }
 }

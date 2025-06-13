@@ -214,8 +214,11 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
         controllerBE().moderatorsHeatMult = moderatorsHeatMult;
         controllerBE().cellsEnergyMult = cellsEnergyMult;
         controllerBE().moderatorsEnergyMult = moderatorsEnergyMult;
+        controllerBE().height = height;
+        controllerBE().width = width;
+        controllerBE().depth = depth;
         heatSinkCooling = countCooling(true);
-        controllerBE().setChanged();
+        controllerBE().refresh();
     }
 
     private void indexIrradiators() {

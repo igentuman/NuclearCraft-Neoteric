@@ -19,7 +19,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.common.capabilities.Capability;
@@ -62,6 +61,10 @@ public class TurbineControllerBE extends MultiblockControllerBE {
     @NBTField
     public int energyPerTick = 0;
     @NBTField
+    public int maxFlow = 0;
+    @NBTField
+    public int maxEnergy = 0;
+    @NBTField
     public int realFlow = 0;
     @NBTField
     public double coilsEfficiency = 0;
@@ -79,6 +82,7 @@ public class TurbineControllerBE extends MultiblockControllerBE {
     public int blades = 0;
     @NBTField
     public double efficiency = 0;
+
     protected Direction facing;
     public Recipe recipe;
     public HashMap<String, Recipe> cachedRecipes = new HashMap<>();
@@ -131,6 +135,11 @@ public class TurbineControllerBE extends MultiblockControllerBE {
         };
     }
 
+    public void calculateMaxEnergy()
+    {
+        maxEnergy = (int)(Math.sqrt(((long)maxFlow+1)*((long)maxFlow+2)/2D)*TURBINE_CONFIG.ENERGY_GEN.get()*getEfficiencyRate()*ENERGY_GENERATION.GENERATION_MULTIPLIER.get());
+    }
+
     public BlockPos getBlockPosForSteam()
     {
         BlockPos start = bearingPos.relative(orientation, 1);
@@ -139,13 +148,6 @@ public class TurbineControllerBE extends MultiblockControllerBE {
         } else {
             start = bearingPos.relative(orientation.getOpposite(), width-1);
         }
-        /*for (int i = 0; i < getMultiblock().bearingPositions.size(); i++) {
-            start = new BlockPos(getMultiblock().bearingPositions.get(i));
-            BlockEntity be = getLevel().getExistingBlockEntity(start.relative(orientation));
-            if(!(be instanceof TurbineRotorBE)) {
-                return start;
-            }
-        }*/
         return start;
     }
 
@@ -210,7 +212,6 @@ public class TurbineControllerBE extends MultiblockControllerBE {
             stopSound();
         }
     }
-    protected int reValidateCounter = 0;
 
     public void tickServer() {
         rotationSpeed = 0;
@@ -307,9 +308,6 @@ public class TurbineControllerBE extends MultiblockControllerBE {
 
     public List<BlockPos> getBlocks(BlockPos pos, Direction.Axis axis) {
         List<BlockPos> positions = new ArrayList<>();
-        int y = pos.getY();
-        int z = pos.getZ();
-        int x = pos.getX();
         switch (axis) {
             case X:
                 // Generate positions around the BlockPos on the YZ plane
@@ -338,38 +336,38 @@ public class TurbineControllerBE extends MultiblockControllerBE {
     }
 
     private void spawnSteamParticles() {
-        if (level.getGameTime() % 4 == 0) {
+        if (level.getGameTime() % (int)(Math.log(1/(getRotationSpeed()+0.001D))+1) == 0) {
             BlockPos pos = getBlockPosForSteam();
             for(BlockPos source:  getBlocks(pos, orientation.getAxis())){
                 for (int i = 0; i < 3; i++) {
                     double x = source.getX() + 0.4f + level.random.nextGaussian() * 0.2;
                     double y = source.getY() + 0.7f + level.random.nextGaussian() * 0.2;
-                    double z = source.getZ() - 0.4f + level.random.nextGaussian() * 0.2;
+                    double z = source.getZ() + 0.4f + level.random.nextGaussian() * 0.2;
                     float ySpeed = 0;
                     float zSpeed = 0;
                     float xSpeed = 0;
                     switch (orientation) {
                         case UP:
-                            ySpeed = 0.2f + (float)(height)*0.02f;
+                            ySpeed = 0.05f + (float)(height-1)*0.03f;
                             break;
                         case DOWN:
-                            ySpeed = -0.1f - (float)(height)*0.02f;
+                            ySpeed = -0.05f - (float)(height-1)*0.03f;
                             break;
                         case NORTH:
-                            zSpeed = -0.1f - (float)(depth)*0.02f;
-                            z += 0.5;
+                            zSpeed = -0.05f - (float)(depth-1)*0.03f;
+                            z -= 0.5;
                             break;
                         case SOUTH:
-                            zSpeed = 0.1f + (float)(depth)*0.02f;
-                            z += 0.5;
+                            zSpeed = 0.05f + (float)(depth-1)*0.03f;
+                            z -= 0.5;
                             break;
                         case EAST:
-                            xSpeed = 0.1f + (float)(width)*0.02f;
-                            z += 0.5;
+                            xSpeed = 0.05f + (float)(width-1)*0.03f;
+                            z -= 0.5;
                             break;
                         case WEST:
-                            xSpeed = -0.1f - (float)(width)*0.02f;
-                            z += 0.5;
+                            xSpeed = -0.05f - (float)(width-1)*0.03f;
+                            z -= 0.5;
                             break;
                     }
                     level.addParticle(CLOUD, x, y, z, xSpeed, ySpeed, zSpeed);
@@ -381,11 +379,11 @@ public class TurbineControllerBE extends MultiblockControllerBE {
     private boolean process() {
         recipeInfo().process(1);
         flow = Math.max(1, flow);
-        float realFlow = (float)getRealFlow();
+        double realFlow = getRealFlow();
         if(realFlow > 0) {
-            this.realFlow = (int) Math.min(realFlow, getMaxFlow());
+            this.realFlow = (int) Math.min(realFlow, maxFlow);
         }
-        rotationSpeed = (rotationSpeed*4+realFlow/(flow*TURBINE_CONFIG.BLADE_FLOW.get()))/5f;
+        rotationSpeed = (float) ((rotationSpeed*4+realFlow/(flow*TURBINE_CONFIG.BLADE_FLOW.get()))/5f);
         energyStorage().addEnergy(calculateEnergy());
         efficiency = calculateEfficiency();
         handleRecipeOutput();
@@ -394,8 +392,8 @@ public class TurbineControllerBE extends MultiblockControllerBE {
         return true;
     }
 
-    private float getMaxFlow() {
-        return flow*TURBINE_CONFIG.BLADE_FLOW.get();
+    public void calculateMaxFlow() {
+        maxFlow = (int) (flow*TURBINE_CONFIG.BLADE_FLOW.get()*(Math.pow(Math.log10(flow), 2.8)));
     }
 
     private void handleRecipeOutput() {
@@ -423,7 +421,7 @@ public class TurbineControllerBE extends MultiblockControllerBE {
     public int getRealFlow()
     {
         int wasFlow = realFlow;
-        float cleanFlow = Math.min(flow*TURBINE_CONFIG.BLADE_FLOW.get(), getFluidTank(0).getFluidAmount());
+        double cleanFlow = Math.min(maxFlow, getFluidTank(0).getFluidAmount());
         realFlow = (int) (cleanFlow / coilsDrag());
         if(wasFlow != realFlow) {
             changed = true;
@@ -433,7 +431,7 @@ public class TurbineControllerBE extends MultiblockControllerBE {
 
     private int calculateEnergy() {
         int wasEnergy = energyPerTick;
-        energyPerTick = (int)(realFlow*TURBINE_CONFIG.ENERGY_GEN.get()*getEfficiencyRate()*ENERGY_GENERATION.GENERATION_MULTIPLIER.get()/7);
+        energyPerTick = (int)(Math.sqrt(((long)getRealFlow()+1)*((long)getRealFlow()+2)/2D)*TURBINE_CONFIG.ENERGY_GEN.get()*getEfficiencyRate()*ENERGY_GENERATION.GENERATION_MULTIPLIER.get()*recipeInfo().energy/2);
         if(wasEnergy != energyPerTick) {
             changed = true;
         }
@@ -511,7 +509,16 @@ public class TurbineControllerBE extends MultiblockControllerBE {
     }
 
     public int getFlowRatio() {
-        return (int) (((float) realFlow / getMaxFlow())*100);
+        return (int) (((float) realFlow / maxFlow)*100);
+    }
+
+    public void refresh() {
+        double multiplier = ((double) Math.round(Math.log(height*width*depth)*10)/10)-1;
+        contentHandler().fluidCapability.tanks.get(0).setCapacity((int) (Math.pow(multiplier, 2)*1_000_000));
+        contentHandler().fluidCapability.tanks.get(1).setCapacity((int) (Math.pow(multiplier, 2)*1_000_000));
+        calculateMaxFlow();
+        calculateMaxEnergy();
+        setChanged();
     }
 
     public static class Recipe extends NcRecipe {

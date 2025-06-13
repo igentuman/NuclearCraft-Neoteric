@@ -72,6 +72,8 @@ public class FissionControllerBE extends MultiblockControllerBE {
     protected final LazyOptional<IEnergyStorage> energy;
 
     @NBTField
+    public double maxHeat = 0;
+    @NBTField
     public boolean isSteamMode = false;
     @NBTField
     public double heat = 0;
@@ -269,7 +271,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
         if(getNetHeat() < 0) {
             cooling = heatPerTick;
         }
-        double heatEff =  cooling * FISSION_CONFIG.BOILING_MULTIPLIER.get() * boilingEfficiency() * 0.00005D * heatMultiplier;
+        double heatEff =  cooling * FISSION_CONFIG.BOILING_MULTIPLIER.get()/100D * heatMultiplier;
 
         if(hasCoolant()) {
             FluidStack steam = boilingRecipe.getOutputFluids().get(0);
@@ -291,7 +293,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
             steamPerTick = Math.max(ops*steam.getAmount(), 0);
             if(steamPerTick == 0) {
                 heat += heatPerTick;
-                boilingPenalty = coolingPerTick();
+                boilingPenalty = coolingPerTick()*0.75;
                 return;
             }
             contentHandler().fluidCapability.tanks.get(0).drain(ops*coolant.getAmount(), IFluidHandler.FluidAction.EXECUTE);
@@ -301,13 +303,10 @@ public class FissionControllerBE extends MultiblockControllerBE {
             contentHandler().fluidCapability.tanks.get(1).fill(out, IFluidHandler.FluidAction.EXECUTE);
             changed = true;
             if(ops < Math.floor(conversion)) {
-                heat += coolingPerTick()/(conversion - ops);
-                boilingPenalty = coolingPerTick()/(conversion - ops);
-            } else {
-                boilingPenalty = 0;
+                boilingPenalty = coolingPerTick()*(conversion/ops)-coolingPerTick();
             }
         } else {
-            boilingPenalty = heatSinksCooling();
+            boilingPenalty = coolingPerTick()*0.75;
         }
     }
     public void toggleMode() {
@@ -482,10 +481,6 @@ public class FissionControllerBE extends MultiblockControllerBE {
             if (toggleModeTimer < 1) {
                 toggleModeTimer = 2000;
                 isSteamMode = !isSteamMode;
-                if(isSteamMode) {
-                    contentHandler().fluidCapability.tanks.get(0).setCapacity((height+width+depth)*2_000_000);
-                    contentHandler().fluidCapability.tanks.get(1).setCapacity((height+width+depth)*2_000_000);
-                }
             }
         }
     }
@@ -656,7 +651,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
     }
 
     public double coolingPerTick() {
-        return heatSinksCooling() + environmentCooling();
+        return heatSinksCooling() + environmentCooling() - boilingPenalty;
     }
 
     public double environmentCooling() {
@@ -668,7 +663,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
 
     public double heatSinksCooling() {
         heatSinkCooling = getMultiblock().countCooling(refreshCacheFlag);
-        return heatSinkCooling+activeCooling-boilingPenalty;
+        return heatSinkCooling+activeCooling;
     }
 
     public double heatPerTick() {
@@ -756,7 +751,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
     }
 
     public double getMaxHeat() {
-        return FISSION_CONFIG.HEAT_CAPACITY.get();
+        return maxHeat;
     }
 
     public double boilingEfficiency() {
@@ -764,7 +759,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
         if(fuelCellMultiplier > fuelCellsCount) {
             mult = (double) fuelCellMultiplier / fuelCellsCount;
         }
-        return (double) calculateEnergy() / (recipeInfo.energy * mult / 100);
+        return heatPerTick / (recipeInfo.heat * mult / 100);
     }
 
     public double calculateEfficiency() {
@@ -926,6 +921,14 @@ public class FissionControllerBE extends MultiblockControllerBE {
         Vec3 bottomLeftInner = new Vec3(bottomLeft.getX(), bottomLeft.getY(), bottomLeft.getZ());
         bottomLeftInner = bottomLeftInner.relative(getFacing(), 0.95D).relative(UP, 0.95D).relative(getFacing().getCounterClockWise(),0.95D);
         return new AABB(bottomLeftInner, topRightInner);
+    }
+
+    public void refresh() {
+        double multiplier = ((double) Math.round(Math.log(height*width*depth)*10)/10)-1;
+        maxHeat = FISSION_CONFIG.HEAT_CAPACITY.get()*multiplier;
+        contentHandler().fluidCapability.tanks.get(0).setCapacity((int) (Math.pow(multiplier, 2)*1_000_000));
+        contentHandler().fluidCapability.tanks.get(1).setCapacity((int) (Math.pow(multiplier, 2)*1_000_000));
+        setChanged();
     }
 
     public static class Recipe extends NcRecipe {

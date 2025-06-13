@@ -229,7 +229,7 @@ public class NCFluids {
 
         items.put("steam", new GasDefinition("steam", 0xCC929292, 373));
         items.put("high_pressure_steam", new GasDefinition("high_pressure_steam", 0xCCBDBDBD, 383));
-        items.put("exhaust_steam", new GasDefinition("exhaust_steam", 0xCC7E7E7E, 272));
+        items.put("exhaust_steam", new GasDefinition("exhaust_steam", 0xCC7E7E7E, 292));
         items.put("low_pressure_steam", new GasDefinition("low_pressure_steam", 0xCCA8A8A8, 272));
         items.put("low_quality_steam", new GasDefinition("low_quality_steam", 0xCC828282, 272));
         items.put("argon", new GasDefinition("argon", 0xCCFF75DD, 87));

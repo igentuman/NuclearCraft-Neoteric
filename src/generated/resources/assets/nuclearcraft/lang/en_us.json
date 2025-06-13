@@ -2556,6 +2556,8 @@
   "tooltip.nuclearcraft.particlestack.name": "Type: %s",
   "tooltip.nuclearcraft.particlestack.travel_distance": "Travel Distance: %s Blocks",
   "tooltip.toggle_description_keys": "Toggle description: CTRL+N",
+  "tooltip.turbine.max_energy": "Max FE gen: %s",
+  "tooltip.turbine.max_eu_energy": "Max EU gen: %s",
   "tooltip.upgrade_energy": "Reduce energy consumption and increase energy buffer",
   "tooltip.upgrade_speed": "Increases recipe speed and energy consumption",
   "tooltip.upgrade_stack": "Improved speed upgrade with parallel processing",

@@ -160,4 +160,12 @@ public class TurbineControllerContainer extends AbstractContainerMenu {
     public BlockPos getPosition() {
         return blockEntity.getBlockPos();
     }
+
+    public int getMaxFlow() {
+        return blockEntity.maxFlow;
+    }
+
+    public int getMaxEnergyGen() {
+        return blockEntity.maxEnergy;
+    }
 }

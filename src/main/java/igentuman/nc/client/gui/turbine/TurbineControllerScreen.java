@@ -26,9 +26,11 @@ import java.util.Optional;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
+import static igentuman.nc.block.entity.NuclearCraftBE.isGTEUCapEnabled;
+import static igentuman.nc.compat.gregtech.GTUtils.formatEUEnergy;
 import static igentuman.nc.handler.config.TurbineConfig.TURBINE_CONFIG;
-import static igentuman.nc.util.TextUtils.__;
-import static igentuman.nc.util.TextUtils.applyFormat;
+import static igentuman.nc.util.ModUtil.isGtLoaded;
+import static igentuman.nc.util.TextUtils.*;
 
 public class TurbineControllerScreen extends AbstractContainerScreen<TurbineControllerContainer> implements IProgressScreen, IVerticalBarScreen {
     protected final ResourceLocation GUI = rl("textures/gui/turbine/controller.png");
@@ -122,7 +124,12 @@ public class TurbineControllerScreen extends AbstractContainerScreen<TurbineCont
         checkboxInterior.addTooltip(interiorTootip);
         if(isInteriorValid() && isCasingValid()) {
             checkboxInterior.addTooltip(__("turbine.active.coils", container().getActiveCoils()));
-            checkboxInterior.addTooltip(__("turbine.blades.flow", container().getFlow()*TURBINE_CONFIG.BLADE_FLOW.get()));
+            checkboxInterior.addTooltip(__("turbine.blades.flow", container().getMaxFlow()));
+            if(isGtLoaded() && isGTEUCapEnabled()) {
+                checkboxInterior.addTooltip(__("tooltip.turbine.max_eu_energy", formatEUEnergy(container().getMaxEnergyGen())));
+            } else {
+                checkboxInterior.addTooltip(__("tooltip.turbine.max_energy", formatEnergy(container().getMaxEnergyGen())));
+            }
         }
         energyBar.draw(graphics, mouseX, mouseY, partialTicks);
     }

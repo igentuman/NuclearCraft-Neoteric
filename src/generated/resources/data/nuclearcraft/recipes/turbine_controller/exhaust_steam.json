@@ -2,17 +2,17 @@
   "type": "nuclearcraft:turbine_controller",
   "inputFluids": [
     {
-      "amount": 1000,
-      "tag": "forge:steam"
+      "amount": 5000,
+      "tag": "forge:exhaust_steam"
     }
   ],
   "outputFluids": [
     {
-      "amount": 1000,
-      "tag": "minecraft:water"
+      "amount": 5000,
+      "tag": "forge:technical_water"
     }
   ],
-  "powerModifier": 0.75,
+  "powerModifier": 0.1,
   "radiation": 1.0,
   "timeModifier": 1.0
 }

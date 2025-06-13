@@ -541,6 +541,8 @@ public class NCLanguageProvider extends LanguageProvider {
     }
 
     private void tooltips() {
+        add("tooltip.turbine.max_eu_energy", "Max EU gen: %s");
+        add("tooltip.turbine.max_energy", "Max FE gen: %s");
         add("tooltip.nc.accelerator.strength", "Magnet Strength: %s T");
         add("tooltip.nc.accelerator.efficiency", "Efficiency: %s");
         add("tooltip.nc.accelerator.focus", "Focus: %s");

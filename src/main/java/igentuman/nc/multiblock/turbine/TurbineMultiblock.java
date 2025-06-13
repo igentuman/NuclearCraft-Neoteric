@@ -127,6 +127,7 @@ public class TurbineMultiblock extends AbstractMultiblock {
         controllerBE().blades = blades;
         controllerBE().flow = flow;
         controllerBE().bearingPos = bearingPositions.get(0);
+        controllerBE().refresh();
     }
 
     @Override

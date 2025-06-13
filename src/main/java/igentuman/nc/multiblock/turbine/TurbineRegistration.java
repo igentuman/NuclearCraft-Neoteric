@@ -59,7 +59,7 @@ public class TurbineRegistration {
         HashMap<String, CoilDef> tmp = new HashMap<>();
         tmp.put("copper", new CoilDef("copper", 110, "turbine_gold_coil"));
         tmp.put("magnesium", new CoilDef("magnesium", 86, "turbine_bearing"));
-        tmp.put("silver", new CoilDef("silver", 112, "turbine_magnesium_coil", "turbine_gold_coil"));
+        tmp.put("silver", new CoilDef("silver", 112, "turbine_magnesium_coil|turbine_gold_coil"));
         tmp.put("gold", new CoilDef("gold", 104, "turbine_beryllium_coil"));
         tmp.put("beryllium", new CoilDef("beryllium", 90, "turbine_magnesium_coil"));
         tmp.put("aluminum", new CoilDef("aluminum", 98, "turbine_gold_coil|turbine_magnesium_coil|turbine_beryllium_coil|turbine_gold_coil|turbine_copper_coil"));

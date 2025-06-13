@@ -336,7 +336,7 @@ public class TurbineControllerBE extends MultiblockControllerBE {
     }
 
     private void spawnSteamParticles() {
-        if (level.getGameTime() % (int)(Math.log(1/(getRotationSpeed()+0.001D))+1) == 0) {
+        if (level.getGameTime() % Math.ceil(Math.log(1/(getRotationSpeed()+0.001D))+1) == 0) {
             BlockPos pos = getBlockPosForSteam();
             for(BlockPos source:  getBlocks(pos, orientation.getAxis())){
                 for (int i = 0; i < 3; i++) {

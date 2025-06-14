@@ -43,6 +43,7 @@ import static igentuman.nc.block.entity.kugelblitz.BlackHoleBE.MAX_MASS;
 import static igentuman.nc.block.entity.kugelblitz.BlackHoleBE.MIN_MASS;
 import static igentuman.nc.block.fission.FissionControllerBlock.POWERED;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
+import static igentuman.nc.compat.gregtech.GTUtils.getGTEnergy;
 import static igentuman.nc.compat.oc2.FissionReactorDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.content.materials.Materials.subliquid_matter;
 import static igentuman.nc.handler.config.CommonConfig.ENERGY_GENERATION;
@@ -51,8 +52,7 @@ import static igentuman.nc.handler.config.KugelblitzConfig.KUGELBLITZ_CONFIG;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BE;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BLOCKS;
 import static igentuman.nc.setup.registration.GameEvents.BLACKHOLE_VIBRATION;
-import static igentuman.nc.util.ModUtil.isCcLoaded;
-import static igentuman.nc.util.ModUtil.isOC2Loaded;
+import static igentuman.nc.util.ModUtil.*;
 import static igentuman.nc.util.StackUtils.resolveStackByModPriority;
 import static net.minecraft.world.level.block.Blocks.AIR;
 
@@ -187,9 +187,17 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
         if (cap == ForgeCapabilities.FLUID_HANDLER) {
             return contentHandler().getFluidCapability(null);
         }
+        if(isGtLoaded()) {
+            if (cap == com.gregtechceu.gtceu.api.capability.forge.GTCapability.CAPABILITY_ENERGY_CONTAINER) {
+                if (isGTEUCapEnabled()) {
+                    return getGTEnergy(this, side).cast();
+                }
+            }
+        }
         if (cap == ForgeCapabilities.ENERGY) {
             return getEnergy().cast();
         }
+
         if(isCcLoaded()) {
             if(cap == dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL) {
                 return getPeripheral(cap, side);

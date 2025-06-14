@@ -171,7 +171,7 @@ public class CommonConfig {
 
     public static class MiscConfig {
         public final ForgeConfigSpec.ConfigValue<Boolean> DEBUG_LOG;
-        public final ForgeConfigSpec.ConfigValue<Boolean> SCHEDULED_VALIDATION;
+        public final ForgeConfigSpec.ConfigValue<Boolean> EXPERIMENTAL_BLOCK_INDEXING;
 
         public MiscConfig(ForgeConfigSpec.Builder builder) {
             builder.push("Misc");
@@ -180,13 +180,11 @@ public class CommonConfig {
                     .comment("Debug logging. Enable in case of issues to collect more data")
                     .define("debug_logging", false);
 
-            SCHEDULED_VALIDATION = builder
-                    .comment("Enable periodical re-validation of multiblocks.")
-                    .comment("Multiblocks are tracking block changes and re-validate structure if needed.")
-                    .comment("But it is possible when some events won't be tracked properly.")
-                    .comment("This is why each multiblock periodically re-check it's structure.")
-                    .comment("Disable if you have performance issues with multiblocks.")
-                    .define("scheduled_validation", true);
+            EXPERIMENTAL_BLOCK_INDEXING = builder
+                    .comment("Speeds up blocks indexing of multiblocks")
+                    .comment("Gives big performance boost for large multiblocks")
+                    .comment("Disable in case of issues")
+                    .define("experimental_block_indexing", true);
 
             builder.pop();
         }

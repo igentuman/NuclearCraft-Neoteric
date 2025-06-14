@@ -5,20 +5,26 @@ import igentuman.api.nc.multiblock.Multiblock;
 import igentuman.api.nc.multiblock.MultiblockController;
 import igentuman.nc.block.entity.MultiblockControllerBE;
 import igentuman.nc.util.NCBlockPos;
+import igentuman.nc.util.math.MathUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.LevelChunkSection;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.regex.Pattern;
 
 import static igentuman.nc.NuclearCraft.debugLog;
+import static igentuman.nc.handler.config.CommonConfig.MISC_CONFIG;
 import static net.minecraft.world.level.block.Blocks.AIR;
 
 public abstract class AbstractMultiblock implements Multiblock {
@@ -223,6 +229,49 @@ public abstract class AbstractMultiblock implements Multiblock {
         return isValidForInner(getBlockState(pos));
     }
 
+    public void cacheBlockStates() {
+        if(!MISC_CONFIG.EXPERIMENTAL_BLOCK_INDEXING.get()) {
+            return;
+        }
+        int minX = bottomLeft.getX();
+        int minY = bottomLeft.getY();
+        int minZ = bottomLeft.getZ();
+        int maxX = topRight.getX();
+        int maxY = topRight.getY();
+        int maxZ = topRight.getZ();
+        ServerLevel serverLevel = (ServerLevel) getLevel();
+        ChunkAccess currentChunk = null;
+        int lastChunkX = Integer.MIN_VALUE;
+        int lastChunkZ = Integer.MIN_VALUE;
+
+        for (int x = minX; x <= maxX; x++) {
+            int chunkX = x >> 4;
+            for (int z = minZ; z <= maxZ; z++) {
+                int chunkZ = z >> 4;
+                if (chunkX != lastChunkX || chunkZ != lastChunkZ) {
+                    currentChunk = serverLevel.getChunkSource().getChunk(chunkX, chunkZ, true);
+                    lastChunkX = chunkX;
+                    lastChunkZ = chunkZ;
+                }
+                if (currentChunk == null) continue;
+
+                for (int y = minY; y <= maxY; y++) {
+                    int sectionIndex = serverLevel.getSectionIndex(y);
+                    LevelChunkSection section = currentChunk.getSections()[sectionIndex];
+                    if (section == null || section.hasOnlyAir()) continue;
+
+                    int localX = x & 15;
+                    int localY = y & 15;
+                    int localZ = z & 15;
+
+                    BlockState state = section.getBlockState(localX, localY, localZ);
+
+                    bsCache.put(BlockPos.asLong(x, y, z), state);
+                }
+            }
+        }
+    }
+
     public int resolveHeight()
     {
         for (int i = 1; i <= maxHeight()+1; i++) {
@@ -313,6 +362,17 @@ public abstract class AbstractMultiblock implements Multiblock {
             validationResult = ValidationResult.TOO_BIG;
             return;
         }
+        BlockPos leftFront = new NCBlockPos(getLeftPos(leftCasing));
+        BlockPos leftBack = new NCBlockPos(getLeftPos(leftCasing).relative(getControllerDirection(), -depth+1));
+        BlockPos rightFront = new NCBlockPos(getRightPos(rightCasing));
+        BlockPos rightBack = new NCBlockPos(getRightPos(rightCasing).relative(getControllerDirection(), -depth+1));
+        int minX = MathUtils.min(leftFront.getX(), rightFront.getX(), leftBack.getX(), rightBack.getX());
+        int minZ = MathUtils.min(leftFront.getZ(), rightFront.getZ(), leftBack.getZ(), rightBack.getZ());
+        int maxX = MathUtils.max(leftFront.getX(), rightFront.getX(), leftBack.getX(), rightBack.getX());
+        int maxZ = MathUtils.max(leftFront.getZ(), rightFront.getZ(), leftBack.getZ(), rightBack.getZ());
+        bottomLeft = new NCBlockPos(minX, leftFront.getY() - bottomCasing, minZ);
+        topRight = new NCBlockPos(maxX, leftFront.getY() + topCasing, maxZ);
+        cacheBlockStates();
         for(int y = 0; y < height; y++) {
             for(int x = 0; x < width; x++) {
                 for (int z = 0; z < depth; z++) {

@@ -170,6 +170,17 @@ public class LinearAcceleratorMultiblock extends AbstractMultiblock {
             }
         }
 
+        BlockPos leftFront = new NCBlockPos(getLeftPos(leftCasing));
+        BlockPos leftBack = new NCBlockPos(getLeftPos(leftCasing).relative(getControllerDirection(), -depth+1));
+        BlockPos rightFront = new NCBlockPos(getRightPos(rightCasing));
+        BlockPos rightBack = new NCBlockPos(getRightPos(rightCasing).relative(getControllerDirection(), -depth+1));
+        int minX = MathUtils.min(leftFront.getX(), rightFront.getX(), leftBack.getX(), rightBack.getX());
+        int minZ = MathUtils.min(leftFront.getZ(), rightFront.getZ(), leftBack.getZ(), rightBack.getZ());
+        int maxX = MathUtils.max(leftFront.getX(), rightFront.getX(), leftBack.getX(), rightBack.getX());
+        int maxZ = MathUtils.max(leftFront.getZ(), rightFront.getZ(), leftBack.getZ(), rightBack.getZ());
+        bottomLeft = new NCBlockPos(minX, leftFront.getY() - bottomCasing, minZ);
+        topRight = new NCBlockPos(maxX, leftFront.getY() + topCasing, maxZ);
+        cacheBlockStates();
         for(int y = 0; y < height; y++) {
             for(int x = 0; x < width; x++) {
                 for (int z = 0; z < depth; z++) {
@@ -196,16 +207,7 @@ public class LinearAcceleratorMultiblock extends AbstractMultiblock {
         }
 
 
-        BlockPos leftFront = new NCBlockPos(getLeftPos(leftCasing));
-        BlockPos leftBack = new NCBlockPos(getLeftPos(leftCasing).relative(getControllerDirection(), -depth+1));
-        BlockPos rightFront = new NCBlockPos(getRightPos(rightCasing));
-        BlockPos rightBack = new NCBlockPos(getRightPos(rightCasing).relative(getControllerDirection(), -depth+1));
-        int minX = MathUtils.min(leftFront.getX(), rightFront.getX(), leftBack.getX(), rightBack.getX());
-        int minZ = MathUtils.min(leftFront.getZ(), rightFront.getZ(), leftBack.getZ(), rightBack.getZ());
-        int maxX = MathUtils.max(leftFront.getX(), rightFront.getX(), leftBack.getX(), rightBack.getX());
-        int maxZ = MathUtils.max(leftFront.getZ(), rightFront.getZ(), leftBack.getZ(), rightBack.getZ());
-        bottomLeft = new NCBlockPos(minX, leftFront.getY() - bottomCasing, minZ);
-        topRight = new NCBlockPos(maxX, leftFront.getY() + topCasing, maxZ);
+
         if(maxX - minX == 4) {
             centerPos = new NCBlockPos((minX + maxX) / 2, bottomLeft.getY() + 2, minZ);
             multiblockDirection = Direction.NORTH;

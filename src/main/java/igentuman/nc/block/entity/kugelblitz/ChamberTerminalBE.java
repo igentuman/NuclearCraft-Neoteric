@@ -485,7 +485,7 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
         if(recipe != null) {
             if(recipe.test(contentHandler())) {
                 recipeInfo().ticksProcessed = 0;
-                if (recipeInfo().consumeInputs(contentHandler())) {
+                if (hasResultItem(recipe) && recipeInfo().consumeInputs(contentHandler())) {
                     return;
                 }
                 recipe = null;
@@ -500,7 +500,7 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
             recipeInfo().ticks = ((Recipe)recipeInfo().recipe()).getBaseTime();
             recipeInfo().energy = recipeInfo().recipe.getEnergy();
             recipeInfo().be = this;
-            if (!recipeInfo().consumeInputs(contentHandler())) {
+            if (hasResultItem(recipe) && !recipeInfo().consumeInputs(contentHandler())) {
                 recipe = null;
                 recipeInfo().clear();
             }

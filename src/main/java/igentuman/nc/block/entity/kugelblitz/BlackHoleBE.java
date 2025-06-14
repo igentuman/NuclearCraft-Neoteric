@@ -44,6 +44,10 @@ public class BlackHoleBE extends NuclearCraftBE {
         super(KugelblitzRegistration.KUGELBLITZ_BE.get(NAME).get(), pPos, pBlockState);
     }
 
+    public void setRemoved() {
+        super.setRemoved();
+    }
+
     public void tickClient() {
         if(isRemoved()) {
             blackhole.remove(getBlockPos());

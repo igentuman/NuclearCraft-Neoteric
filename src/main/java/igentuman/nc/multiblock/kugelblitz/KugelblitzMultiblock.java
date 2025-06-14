@@ -1,5 +1,6 @@
 package igentuman.nc.multiblock.kugelblitz;
 
+import igentuman.api.nc.multiblock.MultiblockAttachable;
 import igentuman.nc.block.entity.kugelblitz.BlackHoleBE;
 import igentuman.nc.block.entity.kugelblitz.ChamberTerminalBE;
 import igentuman.nc.block.entity.kugelblitz.PhotonConcentratorBE;
@@ -35,6 +36,7 @@ public class KugelblitzMultiblock extends AbstractMultiblock {
     protected int transformers = 0;
     protected int fluxRegulators = 0;
     protected int stabilizers = 0;
+    public boolean initialized = false;
 
     public int maxHeight() {
         return 9;
@@ -89,9 +91,10 @@ public class KugelblitzMultiblock extends AbstractMultiblock {
     @Override
     public void validate() {
         super.validate();
-        if( !outerValid || !innerValid) {
+        if(initialized && (!outerValid || !innerValid)) {
             removeBlackHole();
         }
+        initialized = true;
     }
     @Override
     public int resolveDepth()
@@ -451,5 +454,11 @@ public class KugelblitzMultiblock extends AbstractMultiblock {
         }
         getLevel().setBlock(getCenter(), AIR.defaultBlockState(), 3);
         blackHole = null;
+    }
+
+    @Override
+    public void onControllerRemoved() {
+        removeBlackHole();
+        super.onControllerRemoved();
     }
 }

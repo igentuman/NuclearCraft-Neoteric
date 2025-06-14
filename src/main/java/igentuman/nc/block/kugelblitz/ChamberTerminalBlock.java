@@ -129,10 +129,7 @@ public class ChamberTerminalBlock extends HorizontalDirectionalBlock implements 
     public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
         super.onRemove(state, level, pos, newState, isMoving);
         if(level.isClientSide() || newState.is(this)) return;
-        BlockEntity be = level.getExistingBlockEntity(pos);
-        if (be instanceof ChamberTerminalBE chamberTerminalBE) {
-            level.setBlock(chamberTerminalBE.blackholePos, AIR.defaultBlockState(), 3);
-        }
+        MultiblockHandler.get(level.dimension()).onControllerRemoved(pos);
     }
 
     @Override

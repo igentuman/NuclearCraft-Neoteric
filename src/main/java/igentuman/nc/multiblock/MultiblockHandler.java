@@ -138,7 +138,6 @@ public class MultiblockHandler {
      * @param level The level to use for operations (can be null, will use controller's level if null)
      */
     public void tick(Level level) {
-        long startTime = System.currentTimeMillis();
         // First process any block changes
         trackAllChanges();
         // Collect multiblocks that need validation
@@ -206,8 +205,6 @@ public class MultiblockHandler {
             }
             toRemove.clear();
         }
-        long elapsedTime = System.currentTimeMillis() - startTime;
-       // debugLog("Multiblocks tick() "+elapsedTime+"ms");
     }
 
     /**
@@ -293,4 +290,10 @@ public class MultiblockHandler {
         ignoreUpdate.clear();
     }
 
+    public void onControllerRemoved(BlockPos pos) {
+        AbstractMultiblock multiblock = getMultiblockByPos(pos);
+        if(multiblock != null) {
+            multiblock.onControllerRemoved();
+        }
+    }
 }

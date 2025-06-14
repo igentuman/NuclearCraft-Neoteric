@@ -19,6 +19,7 @@ import igentuman.nc.util.CustomEnergyStorage;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
@@ -131,6 +132,10 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
         return allowedInputs;
     }
 
+    @Override
+    public void load(CompoundTag tag) {
+        super.load(tag);
+    }
 
     @Override
     public String getName() {
@@ -242,10 +247,11 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
             return;
         }
         changed = false;
+        if(!getMultiblock().initialized) return;
         super.tickServer();
         boolean wasEnabled = controllerEnabled;
         handleValidation();
-        controllerEnabled = getMultiblock().getBlackHole() instanceof BlackHoleBE;
+        controllerEnabled = isCasingValid && isInternalValid && mass > 0;
         if (controllerEnabled) {
             trackChanges(contentHandler().tick());
             long wasMass = mass;
@@ -281,14 +287,7 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
     }
 
     public boolean hasBlackhole() {
-        if(getMultiblock().getBlackHole() instanceof BlackHoleBE) {
-            if(getMultiblock().getBlackHole().isRemoved()) {
-                getMultiblock().removeBlackHole();
-                return false;
-            }
-            return true;
-        }
-        return false;
+        return getMultiblock().getBlackHole() instanceof BlackHoleBE;
     }
 
     private void updateBlackhole()

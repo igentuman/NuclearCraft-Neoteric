@@ -136,17 +136,6 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
         }
     }
 
-    @Override
-    public void setRemoved() {
-        super.setRemoved();
-        if(getLevel().isClientSide()) {
-            return;
-        }
-        if(getMultiblock() != null) {
-            getMultiblock().onControllerRemoved();
-        }
-    }
-
     protected void handleValidation() {
         boolean wasFormed = isInternalValid && isCasingValid;
         validationResult = getMultiblock().validationResult;

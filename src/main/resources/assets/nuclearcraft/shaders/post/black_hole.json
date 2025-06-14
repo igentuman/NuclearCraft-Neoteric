@@ -4,7 +4,7 @@
   ],
   "passes": [
     {
-      "name": "nuclearcraft:black_hole",
+      "name": "black_hole",
       "intarget": "minecraft:main",
       "outtarget": "swap",
       "auxtargets": [
@@ -33,7 +33,7 @@
       ]
     },
     {
-      "name": "nuclearcraft:black_hole",
+      "name": "black_hole",
       "intarget": "swap",
       "outtarget": "minecraft:main",
       "auxtargets": [

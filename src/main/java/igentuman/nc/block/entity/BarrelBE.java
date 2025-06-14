@@ -41,7 +41,7 @@ public class BarrelBE extends NuclearCraftBE implements SideModeToggleable {
     }
 
     private NcFluidTank createTank() {
-        return new NcFluidTank(BarrelBlocks.all().get(getName()).config().getCapacity()) {
+        return new NcFluidTank(BarrelBlocks.all().get(getName()).config().getCapacity()*1000) {
             @Override
             public void setFluid(FluidStack fluid) {
                 super.setFluid(fluid);

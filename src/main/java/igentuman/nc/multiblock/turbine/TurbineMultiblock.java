@@ -95,7 +95,6 @@ public class TurbineMultiblock extends AbstractMultiblock {
         bearingPositions.clear();
         bladePositions.clear();
         super.validate();
-        errorBlockPos = bottomLeft;
         if(!validationResult.isValid) {
             clearStats();
             return;

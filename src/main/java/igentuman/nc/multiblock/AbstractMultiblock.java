@@ -412,7 +412,7 @@ public abstract class AbstractMultiblock implements Multiblock {
             controllers.add(pos);
         }
         if (isPort(getBlockState(pos))) {
-            if(getBlockEntity(pos) instanceof MultiblockControllerBE attachableBe) {
+            if(getBlockEntity(pos) instanceof MultiblockAttachable attachableBe) {
                 attachableBe.setMultiblock(this);
             }
             connectedPorts++;

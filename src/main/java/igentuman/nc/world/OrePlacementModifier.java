@@ -32,7 +32,7 @@ public class OrePlacementModifier extends PlacementModifier {
     private int amount;
     private int minHeight;
     private int maxHeight;
-    private List<Integer> dims;
+    private List<String> dims;
     private HashMap<ResourceKey<Level>, Boolean> dimsCache = new HashMap<>();
 
     public OrePlacementModifier(String name) {
@@ -94,8 +94,8 @@ public class OrePlacementModifier extends PlacementModifier {
         if (dimsCache.containsKey(level.getLevel().dimension())) {
             return dimsCache.get(level.getLevel().dimension());
         }
-        for (int dim : dims) {
-            if (level.getLevel().dimensionTypeId() == WASTELAND_DIM_TYPE || level.getServer().registryAccess().registry(DIMENSION).get().getHolder(dim).get().is(level.getLevel().dimension())) {
+        for (String dim : dims) {
+            if (level.getLevel().dimension().location().toString().equals(dim)) {
                 dimsCache.put(level.getLevel().dimension(), true);
                 return true;
             }

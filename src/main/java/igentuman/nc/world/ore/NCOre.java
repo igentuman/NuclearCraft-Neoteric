@@ -14,7 +14,7 @@ public class NCOre {
     public boolean initialized = false;
     public String name;
     public int color;
-    public List<Integer> dimensions;
+    public List<String> dimensions;
     public int veinSize;
 
     public int veinAmount;
@@ -44,7 +44,7 @@ public class NCOre {
         return new NCOre(name);
     }
 
-    public NCOre dim(Integer ...dim) {
+    public NCOre dim(String ...dim) {
         dimensions = List.of(dim);
         return this;
     }
@@ -60,7 +60,7 @@ public class NCOre {
                 height[1] = (int) ORE_CONFIG.ORES.get(name).max_height.get();
                 initialized = true;
                 try {
-                    dimensions = (List<Integer>) ((ArrayList<?>) ORE_CONFIG.ORES.get(name).dimensions.get()).stream().toList();
+                    dimensions = (List<String>) ((ArrayList<?>) ORE_CONFIG.ORES.get(name).dimensions.get()).stream().toList();
                 } catch (Exception e) {
                     NuclearCraft.LOGGER.warn("Error while loading dimensions ore config for " + name + "!");
                 }
@@ -72,7 +72,7 @@ public class NCOre {
                 height[1] = (int) ORE_CONFIG.ORES.get(name).max_height.getDefault();
                 initialized = true;
                 try {
-                    dimensions = (List<Integer>) ((ArrayList<?>) ORE_CONFIG.ORES.get(name).dimensions.getDefault()).stream().toList();
+                    dimensions = (List<String>) ((ArrayList<?>) ORE_CONFIG.ORES.get(name).dimensions.getDefault()).stream().toList();
                 } catch (Exception e1) {
                     NuclearCraft.LOGGER.warn("Error while loading dimensions ore config for " + name + "!");
                 }

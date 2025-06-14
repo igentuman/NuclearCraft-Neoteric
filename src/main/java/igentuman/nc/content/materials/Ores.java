@@ -33,7 +33,7 @@ public class Ores {
     public static HashMap<String, NCOre> all()
     {
         if(all == null) {
-            int wasteland = WASTELAND_ID;
+
             all = new HashMap<>();
             for (NCMaterial m: Materials.ores().values()) {
                 int min = 4;
@@ -44,7 +44,7 @@ public class Ores {
                 if(!m.normal_ore && !m.nether_ore && !m.end_ore) {
                     max = 0;
                 }
-                all.put(m.name, NCOre.get(m.name).vein(7, 3).height(min, max).dim(0, wasteland));
+                all.put(m.name, NCOre.get(m.name).vein(7, 3).height(min, max).dim("minecraft:overworld", "nuclearcraft:wasteland"));
             }
         }
         return all;
@@ -95,10 +95,10 @@ public class Ores {
         return tmp;
     }
 
-    public static List<List<Integer>> initialOreDimensions() {
-        List<List<Integer>> tmp = new ArrayList<>();
+    public static List<List<String>> initialOreDimensions() {
+        List<List<String>> tmp = new ArrayList<>();
         for(NCOre ore: all().values()) {
-            List<Integer> t = ore.dimensions;
+            List<String> t = ore.dimensions;
             tmp.add(t);
         }
         return tmp;

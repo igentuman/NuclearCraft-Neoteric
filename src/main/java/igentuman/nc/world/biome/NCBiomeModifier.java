@@ -45,7 +45,7 @@ public class NCBiomeModifier {
 
         for(String name: Ores.registered().keySet()) {
             NCOre ore = Ores.all().get(name);
-            if(ore.config().dimensions.contains(0)) {
+            if(ore.config().dimensions.contains("minecraft:overworld")) {
                 context.register(BIOME_MODIFIERS.get(name), new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
                         biomes.getOrThrow(BiomeTags.IS_OVERWORLD),
                         HolderSet.direct(placedFeatures.getOrThrow(PLACED_FEATURES_KEYS.get(name))),
@@ -55,14 +55,14 @@ public class NCBiomeModifier {
                         HolderSet.direct(placedFeatures.getOrThrow(PLACED_FEATURES_KEYS.get(name+"_wasteland"))),
                         GenerationStep.Decoration.UNDERGROUND_ORES));
             }
-            if(ore.config().dimensions.contains(-1)) {
+            if(ore.config().dimensions.contains("minecraft:nether")) {
                 context.register(BIOME_MODIFIERS.get(name), new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
                         biomes.getOrThrow(BiomeTags.IS_NETHER),
                         HolderSet.direct(placedFeatures.getOrThrow(PLACED_FEATURES_KEYS.get(name))),
                         GenerationStep.Decoration.UNDERGROUND_ORES));
             }
 
-            if(ore.config().dimensions.contains(1)) {
+            if(ore.config().dimensions.contains("minecraft:the_end")) {
                 context.register(BIOME_MODIFIERS.get(name), new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
                         biomes.getOrThrow(BiomeTags.IS_END),
                         HolderSet.direct(placedFeatures.getOrThrow(PLACED_FEATURES_KEYS.get(name))),

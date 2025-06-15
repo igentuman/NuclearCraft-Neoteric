@@ -23,7 +23,6 @@ import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.setup.registration.Registries.PLACED_FEATURES;
 import static igentuman.nc.world.NCConfiguredFeatures.CONFIGURED_FEATURES;
 import static igentuman.nc.world.NCConfiguredFeatures.CONFIGURED_WASTELAND_RUINS;
-import static igentuman.nc.world.placement.NCPlacementModifierTypes.HEIGHTMAP_CHUNK;
 
 
 public class NCPlacedFeatures {
@@ -54,7 +53,7 @@ public class NCPlacedFeatures {
 
         for(String name: Ores.all().keySet()) {
             NCOre ore = Ores.all().get(name);
-            if(ore.dimensions.contains(0)) {
+            if(ore.dimensions.contains("minecraft:overworld")) {
                 register(context, PLACED_FEATURES_KEYS.get(name), configuredFeatures.getOrThrow(CONFIGURED_FEATURES.get(name)),
                         OreGenerator.orePlacement(new OrePlacementModifier(name),
                                 HeightRangePlacement.uniform(VerticalAnchor.absolute(ore.config().height[0]), VerticalAnchor.absolute(ore.config().height[1]))));
@@ -62,13 +61,13 @@ public class NCPlacedFeatures {
                         OreGenerator.orePlacement(new OrePlacementModifier(name),
                                 HeightRangePlacement.uniform(VerticalAnchor.absolute(ore.config().height[0]), VerticalAnchor.absolute(ore.config().height[1]))));
             }
-            if(ore.dimensions.contains(-1)) {
+            if(ore.dimensions.contains("minecraft:nether")) {
                 register(context, PLACED_FEATURES_KEYS.get(name), configuredFeatures.getOrThrow(CONFIGURED_FEATURES.get(name)),
                         OreGenerator.orePlacement(new OrePlacementModifier(name),
                                 HeightRangePlacement.uniform(VerticalAnchor.absolute(ore.config().height[0]), VerticalAnchor.absolute(ore.config().height[1]))));
             }
 
-            if(ore.dimensions.contains(1)) {
+            if(ore.dimensions.contains("minecraft:the_end")) {
                 register(context, PLACED_FEATURES_KEYS.get(name), configuredFeatures.getOrThrow(CONFIGURED_FEATURES.get(name)),
                         OreGenerator.orePlacement(new OrePlacementModifier(name),
                                 HeightRangePlacement.uniform(VerticalAnchor.absolute(ore.config().height[0]), VerticalAnchor.absolute(ore.config().height[1]))));

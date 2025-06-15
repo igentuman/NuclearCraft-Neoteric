@@ -25,7 +25,6 @@ import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.setup.registration.NCBlocks.MUSHROOM_BLOCK;
 import static igentuman.nc.setup.registration.NCBlocks.WASTELAND_EARTH;
 import static igentuman.nc.setup.registration.Registries.CONFIGURED;
-import static igentuman.nc.world.dimension.Dimensions.WASTELAND_ID;
 import static igentuman.nc.world.structure.WastelandBossLairFeature.WASTELAND_BOSS_LAIR_FEATURE;
 import static igentuman.nc.world.structure.WastelandPortalFeature.WASTELAND_PORTAL_FEATURE;
 import static igentuman.nc.world.structure.WastelandStructureFeature.WASTELAND_RUINS_FEATURE;
@@ -63,7 +62,7 @@ public class NCConfiguredFeatures {
         for(String name: Ores.registered().keySet()) {
             NCOre ore = Ores.all().get(name);
 
-            if(ore.dimensions.contains(0)) {
+            if(ore.dimensions.contains("minecraft:overworld")) {
                 List<OreConfiguration.TargetBlockState> overworld = new ArrayList<>();
                 if(ore.config().height[1] > 0) {
                     overworld.add(OreConfiguration.target(stoneReplaceable,
@@ -74,17 +73,17 @@ public class NCConfiguredFeatures {
                 }
 
                 register(context, CONFIGURED_FEATURES.get(name), Feature.ORE, new OreConfiguration(overworld, 9));
-                if(ore.config().dimensions.contains(WASTELAND_ID)) {
+                if(ore.config().dimensions.contains("nuclearcraft:wasteland")) {
                     register(context, CONFIGURED_FEATURES.get(name+"_wasteland"), Feature.ORE, new OreConfiguration(overworld, 2));
                 }
             }
 
-            if(ore.config().dimensions.contains(-1)) {
+            if(ore.config().dimensions.contains("minecraft:nether")) {
                 register(context, CONFIGURED_FEATURES.get(name), Feature.ORE, new OreConfiguration(netherrackReplacables,
                         ore.block().defaultBlockState(), 9));
             }
 
-            if(ore.config().dimensions.contains(1)) {
+            if(ore.config().dimensions.contains("minecraft:the_end")) {
                 register(context, CONFIGURED_FEATURES.get(name), Feature.ORE, new OreConfiguration(endReplaceables,
                         ore.block().defaultBlockState(), 9));
             }

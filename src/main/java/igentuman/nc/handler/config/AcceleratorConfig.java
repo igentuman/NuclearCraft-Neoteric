@@ -13,6 +13,7 @@ public class AcceleratorConfig {
     }
     private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
     public static final GeneralConfig ACCELERATOR_CONFIG = new GeneralConfig(BUILDER);
+    public static final ParticleChamberConfig PARTICLE_CHAMBER_CONFIG = new ParticleChamberConfig(BUILDER);
     public static final ForgeConfigSpec spec = BUILDER.build();
     private static boolean loaded = false;
     private static List<Runnable> loadActions = new ArrayList<>();
@@ -32,6 +33,25 @@ public class AcceleratorConfig {
             action.run();
         else
             loadActions.add(action);
+    }
+
+    public static class ParticleChamberConfig {
+        public final ForgeConfigSpec.ConfigValue<Integer> MIN_SIZE;
+        public final ForgeConfigSpec.ConfigValue<Integer> MAX_SIZE;
+
+        public ParticleChamberConfig(ForgeConfigSpec.Builder builder) {
+            builder.comment("Particle chamber").push("particle_chamber");
+
+            MIN_SIZE = builder
+                    .comment("Min size.")
+                    .defineInRange("min_size", 5, 5, 11);
+
+            MAX_SIZE = builder
+                    .comment("Max size.")
+                    .defineInRange("max_size", 11, 7, 11);
+
+            builder.pop();
+        }
     }
 
     public static class GeneralConfig {

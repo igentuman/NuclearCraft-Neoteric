@@ -4,6 +4,7 @@ import igentuman.nc.container.FissionControllerContainer;
 import igentuman.nc.container.MultiblockControllerContailer;
 import igentuman.nc.effect.RadiationResistance;
 import igentuman.nc.multiblock.accelerator.AcceleratorRegistration;
+import igentuman.nc.multiblock.accelerator.TargetChamberRegistration;
 import igentuman.nc.multiblock.fission.FissionReactorRegistration;
 import igentuman.nc.multiblock.fusion.FusionReactorRegistration;
 import igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration;
@@ -45,6 +46,7 @@ public class Registration {
         KugelblitzRegistration.init();
         TurbineRegistration.init();
         AcceleratorRegistration.init();
+        TargetChamberRegistration.init();
         CreativeTabs.init();
         NcRecipeSerializers.init();
         NcRecipeType.init();

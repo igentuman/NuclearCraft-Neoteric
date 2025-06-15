@@ -1,5 +1,6 @@
 package igentuman.nc;
 
+import igentuman.nc.content.particles.CapabilityParticleStackHandler;
 import igentuman.nc.handler.command.*;
 import igentuman.nc.handler.config.*;
 import igentuman.nc.handler.event.server.WorldEvents;
@@ -140,6 +141,7 @@ public class NuclearCraft {
         event.register(WorldRadiation.class);
         event.register(PlayerRadiation.class);
         event.register(WorldVeinOres.class);
+        event.register(CapabilityParticleStackHandler.class);
     }
 
     public static void debugLog(String message) {

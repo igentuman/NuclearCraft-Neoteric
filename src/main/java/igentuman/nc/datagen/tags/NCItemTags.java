@@ -10,7 +10,6 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.BlockTagsProvider;
 import net.minecraftforge.data.event.GatherDataEvent;
@@ -21,8 +20,6 @@ import java.util.List;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.multiblock.fission.FissionReactorRegistration.CASING_ITEMS;
 import static igentuman.nc.multiblock.fission.FissionReactorRegistration.MODERATORS_ITEMS;
-import static igentuman.nc.setup.registration.NCBlocks.NC_ELECTROMAGNETS;
-import static igentuman.nc.setup.registration.NCBlocks.NC_RF_AMPLIFIERS;
 import static igentuman.nc.setup.registration.NCItems.*;
 import static igentuman.nc.setup.registration.Tags.*;
 

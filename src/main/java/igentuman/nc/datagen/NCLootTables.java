@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
+import static igentuman.nc.multiblock.accelerator.TargetChamberRegistration.TARGET_CHAMBER_BLOCKS;
 import static igentuman.nc.multiblock.fission.FissionReactorRegistration.FISSION_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BLOCKS;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BLOCKS;
@@ -33,6 +34,7 @@ public class NCLootTables extends BaseLootTableProvider {
         NC_BLOCKS.values().forEach(this::add);
         NC_MATERIAL_BLOCKS.values().forEach(this::add);
         ACCELERATOR_BLOCKS.values().forEach(this::add);
+        TARGET_CHAMBER_BLOCKS.values().forEach(this::add);
         KUGELBLITZ_BLOCKS.values().forEach(this::add);
         FISSION_BLOCKS.values().forEach(this::add);
         TURBINE_BLOCKS.values().forEach(this::add);
@@ -81,6 +83,7 @@ public class NCLootTables extends BaseLootTableProvider {
         all.addAll(TURBINE_BLOCKS.values().stream().map(RegistryObject::get).toList());
         all.addAll(KUGELBLITZ_BLOCKS.values().stream().map(RegistryObject::get).toList());
         all.addAll(ACCELERATOR_BLOCKS.values().stream().map(RegistryObject::get).toList());
+        all.addAll(TARGET_CHAMBER_BLOCKS.values().stream().map(RegistryObject::get).toList());
         all.addAll(PROCESSORS.values().stream().map(RegistryObject::get).toList());
         all.addAll(ENERGY_BLOCKS.values().stream().map(RegistryObject::get).toList());
         all.addAll(STORAGE_BLOCKS.values().stream().map(RegistryObject::get).toList());

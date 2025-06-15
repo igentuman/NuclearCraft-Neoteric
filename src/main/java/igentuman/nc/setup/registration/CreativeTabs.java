@@ -14,6 +14,7 @@ import java.util.*;
 
 import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
+import static igentuman.nc.multiblock.accelerator.TargetChamberRegistration.TARGET_CHAMBER_BLOCKS;
 import static igentuman.nc.multiblock.fission.FissionReactorRegistration.FISSION_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BLOCKS;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.EXPL_BLOCK;
@@ -48,10 +49,11 @@ public class CreativeTabs {
 
     public static final RegistryObject<CreativeModeTab> ACCELERATOR_TAB = CREATIVE_TABS.register("accelerator",
             () ->  CreativeModeTab.builder()
-                    .displayItems((displayParams, output) -> ACCELERATOR_BLOCKS.values().forEach(itemlike -> output.accept(new ItemStack(itemlike.get()))))
+                    .displayItems((displayParams, output) -> acceleratorBlocks().forEach(output::accept))
                     .icon(() -> new ItemStack(ACCELERATOR_BLOCKS.get("linear_accelerator_controller").get()))
                     .title(__("itemGroup.nuclearcraft_accelerator"))
                     .build());
+
 
     public static final RegistryObject<CreativeModeTab> NC_BLOCKS_TAB = CREATIVE_TABS.register("nc_blocks",
             () ->  CreativeModeTab.builder()
@@ -174,6 +176,17 @@ public class CreativeTabs {
         items.add(new ItemStack(LITHIUM_ION_CELL.get()));
         items.add(new ItemStack(MUSHROOM_BLOCK.get()));
         items.add(new ItemStack(WASTELAND_EARTH.get()));
+        return items;
+    }
+
+    private static List<ItemStack> acceleratorBlocks() {
+        List<ItemStack> items = new ArrayList<>();
+        for(RegistryObject<Block> block: ACCELERATOR_BLOCKS.values()) {
+            items.add(new ItemStack(block.get()));
+        }
+        for(RegistryObject<Block> block: TARGET_CHAMBER_BLOCKS.values()) {
+            items.add(new ItemStack(block.get()));
+        }
         return items;
     }
 

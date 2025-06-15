@@ -2,6 +2,7 @@ package igentuman.nc.content.particles;
 
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 /**
@@ -286,13 +287,4 @@ public class ParticleStorage implements IParticleStorage, IParticleStackHandler
 		}
 		return null;	
 	}
-
-	
-	
-	
-	
-	
-	
-	
-	
 }

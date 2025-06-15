@@ -29,9 +29,9 @@ import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELE
 import static igentuman.nc.util.ModUtil.isCcLoaded;
 import static igentuman.nc.util.ModUtil.isOC2Loaded;
 
-public class AcceleratorPortBE extends NuclearCraftBE implements MultiblockAttachable {
+public class TargetChamberBeamPortBE extends NuclearCraftBE implements MultiblockAttachable {
 
-    public static String NAME = "accelerator_port";
+    public static String NAME = "target_chamber_beam_port";
     @NBTField
     public byte analogSignal = 0;
     @NBTField
@@ -43,7 +43,7 @@ public class AcceleratorPortBE extends NuclearCraftBE implements MultiblockAttac
     public byte validationRuns = 0;
     public LinearAcceleratorControllerBE controller;
 
-    public AcceleratorPortBE(BlockPos pPos, BlockState pBlockState) {
+    public TargetChamberBeamPortBE(BlockPos pPos, BlockState pBlockState) {
         super(ACCELERATOR_BE.get(NAME).get(), pPos, pBlockState);
     }
     public Direction getFacing() {

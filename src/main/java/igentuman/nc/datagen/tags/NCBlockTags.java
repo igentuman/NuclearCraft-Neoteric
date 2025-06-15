@@ -20,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
+import static igentuman.nc.multiblock.accelerator.TargetChamberRegistration.*;
 import static igentuman.nc.multiblock.fission.FissionReactorRegistration.*;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_CORE_PROXY;
@@ -42,6 +43,17 @@ public class NCBlockTags extends BlockTagsProvider {
         blocks();
         machines();
         tag(MODERATORS_BLOCKS).add(NCBlocks.NC_MATERIAL_BLOCKS.get("graphite").get(), NCBlocks.NC_MATERIAL_BLOCKS.get("beryllium").get());
+        tag(TARGET_CHAMBER_CASING_BLOCKS).add(
+                TARGET_CHAMBER_BLOCKS.get("target_chamber_casing").get(),
+                TARGET_CHAMBER_BLOCKS.get("target_chamber_casing_glass").get(),
+                TARGET_CHAMBER_BLOCKS.get("target_chamber_controller").get(),
+                TARGET_CHAMBER_BLOCKS.get("target_chamber_port").get(),
+                TARGET_CHAMBER_BLOCKS.get("target_chamber_beam_port").get()
+        );
+        tag(TARGET_CHAMBER_INNER_BLOCKS).add(
+                ACCELERATOR_BLOCKS.get("accelerator_beam").get(),
+                TARGET_CHAMBER_BLOCKS.get("target_chamber_camera").get()
+        );
         tag(KugelblitzRegistration.CASING_BLOCKS).add(
                 KUGELBLITZ_BLOCKS.get("neutronium_frame").get(),
                 KUGELBLITZ_BLOCKS.get("chamber_port").get(),
@@ -59,7 +71,7 @@ public class NCBlockTags extends BlockTagsProvider {
                 ACCELERATOR_BLOCKS.get("accelerator_port").get(),
                 ACCELERATOR_BLOCKS.get("accelerator_beam_port").get(),
                 ACCELERATOR_BLOCKS.get("accelerator_ion_source_port").get()
-         );
+        );
         tag(AcceleratorRegistration.ACCELERATOR_INNER_BLOCKS).add(
                 ACCELERATOR_BLOCKS.get("accelerator_beam").get(),
                 ACCELERATOR_BLOCKS.get("electromagnet_yoke").get()

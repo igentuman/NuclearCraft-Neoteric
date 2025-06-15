@@ -1,0 +1,6 @@
+{
+  "parent": "nuclearcraft:block/multiblock/target_chamber_controller",
+  "textures": {
+    "north": "nuclearcraft:block/particle_chamber/controller/target_chamber_controller_powered"
+  }
+}

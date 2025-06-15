@@ -4,6 +4,9 @@ import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.MultiblockControllerBE;
 import igentuman.nc.compat.cc.LinearAcceleratorPeripheral;
 import igentuman.nc.compat.oc2.LinearAcceleratorDevice;
+import igentuman.nc.content.particles.CapabilityParticleStackHandler;
+import igentuman.nc.content.particles.IParticleStackHandler;
+import igentuman.nc.content.particles.ParticleStorage;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.SlotModePair;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
@@ -17,6 +20,7 @@ import igentuman.nc.util.CustomEnergyStorage;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -39,6 +43,7 @@ import static igentuman.nc.block.fission.FissionControllerBlock.POWERED;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.compat.oc2.FissionReactorDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.content.materials.Materials.subliquid_matter;
+import static igentuman.nc.content.particles.CapabilityParticleStackHandler.PARTICLE_HANDLER_CAPABILITY;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BE;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
 import static igentuman.nc.util.ModUtil.isCcLoaded;
@@ -51,6 +56,8 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
     public final CustomEnergyStorage energyStorage;
     private LazyOptional<LinearAcceleratorPeripheral> peripheralCap;
     protected final LazyOptional<IEnergyStorage> energy;
+    protected final LazyOptional<IParticleStackHandler> particleHandler;
+    protected final ParticleStorage particleStorage;
 
     @NBTField
     public int coolers;
@@ -87,7 +94,6 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
     public Recipe recipe;
     public HashMap<String, Recipe> cachedRecipes = new HashMap<>();
     private List<ItemStack> allowedInputs;
-    private final List<ItemStack> orderedOutputs = new ArrayList<>();
     private List<FluidStack> allowedInputFluids;
 
 
@@ -105,6 +111,8 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
         contentHandler().setAllowedInputItems(this::getAllowedInputItems);
         contentHandler.setBlockEntity(this);
         contentHandler.setAllowedInputFluids(0, this::getAllowedInputFluids);
+        particleStorage = new ParticleStorage();
+        particleHandler = CapabilityParticleStackHandler.createHandler(particleStorage);
     }
 
     public List<ItemStack> getAllowedInputItems()
@@ -168,6 +176,9 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if (cap == ForgeCapabilities.FLUID_HANDLER) {
+            return contentHandler().getFluidCapability(null);
+        }
+        if (cap == PARTICLE_HANDLER_CAPABILITY) {
             return contentHandler().getFluidCapability(null);
         }
         if (cap == ForgeCapabilities.ENERGY) {
@@ -278,7 +289,7 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
                 recipe = (Recipe) recipeInfo().recipe();
             }
             int id = getIngredientId(recipe.getResultItem());
-            if (recipe.handleOutputs(contentHandler(), orderedOutputs.get(id))) {
+            if (recipe.handleOutputs(contentHandler())) {
                 recipeInfo().clear();
                 if(contentHandler().itemHandler.getStackInSlot(0).isEmpty()) {
                     recipe = null;
@@ -312,12 +323,6 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
             }
         }
     }
-
-    private int getTargetFrequencyForItem(ItemStack input, long seed) {
-        Random rand = new Random(seed + input.getItem().toString().hashCode());
-        return rand.nextInt(15);
-    }
-
 
     public boolean recipeIsStuck() {
         return recipeInfo().isStuck();
@@ -376,6 +381,41 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
 
     public FluidTank getFluidTank(int i) {
         return contentHandler().fluidCapability.tanks.get(i);
+    }
+
+    @Override
+    public void load(CompoundTag tag) {
+        super.load(tag);
+        if (tag.contains("Info")) {
+            CompoundTag infoTag = tag.getCompound("Info");
+            particleStorage.readFromNBT(infoTag.getCompound("particle_storage"));
+        }
+    }
+
+    @Override
+    public void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
+        if (tag.contains("Info")) {
+            CompoundTag infoTag = tag.getCompound("Info");
+            infoTag.put("particle_storage", particleStorage.writeToNBT(new CompoundTag()));
+        }
+    }
+
+    @Override
+    public void loadClientData(CompoundTag tag) {
+        super.loadClientData(tag);
+        if (tag.contains("Info")) {
+            CompoundTag infoTag = tag.getCompound("Info");
+            particleStorage.readFromNBT(infoTag.getCompound("particle_storage"));
+        }
+    }
+    @Override
+    protected void saveClientData(CompoundTag tag) {
+        super.saveClientData(tag);
+        if (tag.contains("Info")) {
+            CompoundTag infoTag = tag.getCompound("Info");
+            infoTag.put("particle_storage", particleStorage.writeToNBT(new CompoundTag()));
+        }
     }
 
     public static class Recipe extends NcRecipe {

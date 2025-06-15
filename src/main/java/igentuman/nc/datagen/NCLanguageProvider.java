@@ -1,7 +1,5 @@
 package igentuman.nc.datagen;
 
-import igentuman.nc.multiblock.fission.FissionReactorRegistration;
-import igentuman.nc.multiblock.fusion.FusionReactorRegistration;
 import igentuman.nc.setup.registration.*;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.LanguageProvider;
@@ -10,6 +8,7 @@ import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
+import static igentuman.nc.multiblock.accelerator.TargetChamberRegistration.TARGET_CHAMBER_BLOCKS;
 import static igentuman.nc.multiblock.fission.FissionReactorRegistration.FISSION_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_CORE_PROXY;
@@ -465,6 +464,10 @@ public class NCLanguageProvider extends LanguageProvider {
         for(String name: ACCELERATOR_BLOCKS.keySet()) {
             String title = "(WIP) " + convertToName(name);
             add(ACCELERATOR_BLOCKS.get(name).get(), title);
+        }
+        for(String name: TARGET_CHAMBER_BLOCKS.keySet()) {
+            String title = "(WIP) " + convertToName(name);
+            add(TARGET_CHAMBER_BLOCKS.get(name).get(), title);
         }
         for(String name: KUGELBLITZ_BLOCKS.keySet()) {
             String title = convertToName(name);

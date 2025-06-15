@@ -22,6 +22,7 @@ import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.client.block.BatteryBlockLoader.BATTERY_LOADER;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.COOLERS;
+import static igentuman.nc.multiblock.accelerator.TargetChamberRegistration.TARGET_CHAMBER_BLOCKS;
 import static igentuman.nc.multiblock.fission.FissionReactorRegistration.*;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_CORE_PROXY;
@@ -55,6 +56,7 @@ public class NCBlockStates extends BlockStateProvider {
         fusionReactor();
         kugelblitz();
         accelerator();
+        targetChamber();
     }
 
     private void accelerator() {
@@ -78,7 +80,22 @@ public class NCBlockStates extends BlockStateProvider {
         simpleBlock(ACCELERATOR_BLOCKS.get("accelerator_casing").get(), multiBlockModel(ACCELERATOR_BLOCKS.get("accelerator_casing").get(), "accelerator/accelerator_casing"));
         simpleBlock(ACCELERATOR_BLOCKS.get("accelerator_casing_glass").get(), multiBlockModel(ACCELERATOR_BLOCKS.get("accelerator_casing_glass").get(), "accelerator/accelerator_casing_glass"));
         simpleBlock(ACCELERATOR_BLOCKS.get("accelerator_beam").get(), multiBlockModel(ACCELERATOR_BLOCKS.get("accelerator_beam").get(), "accelerator/accelerator_beam"));
+    }
 
+    private void targetChamber() {
+        horizontalBlock(TARGET_CHAMBER_BLOCKS.get("target_chamber_beam_port").get(),
+                st -> multiBlockModel(TARGET_CHAMBER_BLOCKS.get("target_chamber_beam_port").get(), "particle_chamber/beam_port")
+        );
+        horizontalBlock(TARGET_CHAMBER_BLOCKS.get("target_chamber_port").get(),
+                st -> multiBlockModel(TARGET_CHAMBER_BLOCKS.get("target_chamber_port").get(), "particle_chamber/port")
+        );
+       horizontalBlock(TARGET_CHAMBER_BLOCKS.get("target_chamber_controller").get(),
+                st -> controllerModel(st, sidedModel(TARGET_CHAMBER_BLOCKS.get("target_chamber_controller").get(), "particle_chamber/target_chamber_controller"))
+        );
+
+        simpleBlock(TARGET_CHAMBER_BLOCKS.get("target_chamber_camera").get(), multiBlockModel(TARGET_CHAMBER_BLOCKS.get("target_chamber_camera").get(), "particle_chamber/camera"));
+        simpleBlock(TARGET_CHAMBER_BLOCKS.get("target_chamber_casing").get(), multiBlockModel(TARGET_CHAMBER_BLOCKS.get("target_chamber_casing").get(), "particle_chamber/casing"));
+        simpleBlock(TARGET_CHAMBER_BLOCKS.get("target_chamber_casing_glass").get(), multiBlockModel(TARGET_CHAMBER_BLOCKS.get("target_chamber_casing_glass").get(), "particle_chamber/glass"));
     }
 
     private void turbine() {
@@ -300,6 +317,8 @@ public class NCBlockStates extends BlockStateProvider {
             type = "accelerator";
         } else if(st.getBlock() == ACCELERATOR_BLOCKS.get("thoroidal_accelerator_controller").get()) {
             type = "accelerator";
+        } else if(st.getBlock() == TARGET_CHAMBER_BLOCKS.get("target_chamber_controller").get()) {
+            type = "particle_chamber";
         }
         BlockModelBuilder result = models()
                 .getBuilder("block/multiblock/"+key(st.getBlock()).getPath()+powered)

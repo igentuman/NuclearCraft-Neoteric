@@ -70,8 +70,8 @@ public class NCBlockStates extends BlockStateProvider {
        horizontalBlock(ACCELERATOR_BLOCKS.get("linear_accelerator_controller").get(),
                 st -> controllerModel(st, sidedModel(ACCELERATOR_BLOCKS.get("linear_accelerator_controller").get(), "accelerator/controller"))
         );
-       horizontalBlock(ACCELERATOR_BLOCKS.get("synthrotron_controller").get(),
-                st -> controllerModel(st, sidedModel(ACCELERATOR_BLOCKS.get("synthrotron_controller").get(), "accelerator/controller"))
+       horizontalBlock(ACCELERATOR_BLOCKS.get("thoroidal_accelerator_controller").get(),
+                st -> controllerModel(st, sidedModel(ACCELERATOR_BLOCKS.get("thoroidal_accelerator_controller").get(), "accelerator/controller"))
         );
 
         simpleBlock(ACCELERATOR_BLOCKS.get("electromagnet_yoke").get(), multiBlockModel(ACCELERATOR_BLOCKS.get("electromagnet_yoke").get(), "accelerator/electromagnet_yoke"));
@@ -298,7 +298,7 @@ public class NCBlockStates extends BlockStateProvider {
             type = "kugelblitz";
         } else if(st.getBlock() == ACCELERATOR_BLOCKS.get("linear_accelerator_controller").get()) {
             type = "accelerator";
-        } else if(st.getBlock() == ACCELERATOR_BLOCKS.get("synthrotron_controller").get()) {
+        } else if(st.getBlock() == ACCELERATOR_BLOCKS.get("thoroidal_accelerator_controller").get()) {
             type = "accelerator";
         }
         BlockModelBuilder result = models()

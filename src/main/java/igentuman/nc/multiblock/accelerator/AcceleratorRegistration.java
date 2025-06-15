@@ -7,11 +7,9 @@ import igentuman.nc.block.accelerator.CoolerBlock;
 import igentuman.nc.block.accelerator.LinearAcceleratorControllerBlock;
 import igentuman.nc.block.entity.accelerator.AcceleratorPortBE;
 import igentuman.nc.block.entity.accelerator.LinearAcceleratorControllerBE;
+import igentuman.nc.block.entity.accelerator.ThoroidalAcceleratorControllerBE;
 import igentuman.nc.block.fission.HeatSinkBlock;
-import igentuman.nc.container.AcceleratorPortContainer;
-import igentuman.nc.container.ChamberPortContainer;
-import igentuman.nc.container.ChamberTerminalContainer;
-import igentuman.nc.container.LinearAcceleratorContainer;
+import igentuman.nc.container.*;
 import igentuman.nc.multiblock.fission.HeatSinkDef;
 import igentuman.nc.util.JSONUtil;
 import net.minecraft.tags.TagKey;
@@ -53,6 +51,9 @@ public class AcceleratorRegistration {
     public static final RegistryObject<MenuType<LinearAcceleratorContainer>> LINEAR_ACCELERATOR_CONTROLLER_CONTAINER = CONTAINERS.register("linear_accelerator_controller",
             () -> IForgeMenuType.create((windowId, inv, data) -> new LinearAcceleratorContainer(windowId, data.readBlockPos(), inv))
     );
+    public static final RegistryObject<MenuType<ThoroidalAcceleratorContainer>> THOROIDAL_ACCELERATOR_CONTROLLER_CONTAINER = CONTAINERS.register("thoroidal_accelerator_controller",
+            () -> IForgeMenuType.create((windowId, inv, data) -> new ThoroidalAcceleratorContainer(windowId, data.readBlockPos(), inv))
+    );
     public static final RegistryObject<MenuType<AcceleratorPortContainer>> ACCELERATOR_PORT_CONTAINER = CONTAINERS.register("accelerator_port",
             () -> IForgeMenuType.create((windowId, inv, data) -> new AcceleratorPortContainer(windowId, data.readBlockPos(), inv))
     );
@@ -67,7 +68,7 @@ public class AcceleratorRegistration {
         registerSimpleBlock("accelerator_casing_glass");
         registerSimpleBlock("accelerator_beam");
         registerOrientedBlock("linear_accelerator_controller");
-        registerOrientedBlock("synthrotron_controller");
+        registerOrientedBlock("thoroidal_accelerator_controller");
         registerOrientedBlock("accelerator_port");
         registerOrientedBlock("accelerator_beam_port");
         registerOrientedBlock("accelerator_ion_source_port");
@@ -92,9 +93,9 @@ public class AcceleratorRegistration {
                         () -> BlockEntityType.Builder.of(LinearAcceleratorControllerBE::new, ACCELERATOR_BLOCKS.get("linear_accelerator_controller").get())
                                 .build(null)));
 
-        ACCELERATOR_BE.put("synthrotron_controller",
-                BLOCK_ENTITIES.register("synthrotron_controller",
-                        () -> BlockEntityType.Builder.of(LinearAcceleratorControllerBE::new, ACCELERATOR_BLOCKS.get("synthrotron_controller").get())
+        ACCELERATOR_BE.put("thoroidal_accelerator_controller",
+                BLOCK_ENTITIES.register("thoroidal_accelerator_controller",
+                        () -> BlockEntityType.Builder.of(ThoroidalAcceleratorControllerBE::new, ACCELERATOR_BLOCKS.get("thoroidal_accelerator_controller").get())
                                 .build(null)));
 
         for(String name: COOLERS.keySet()) {
@@ -113,7 +114,7 @@ public class AcceleratorRegistration {
                 : ACCELERATOR_BLOCK_PROPERTIES;
         if(key.contains("linear_accelerator_controller")) {
             ACCELERATOR_BLOCKS.put(key, BLOCKS.register(key, () -> new LinearAcceleratorControllerBlock(props)));
-        } else if(key.contains("synthrotron_controller")) {
+        } else if(key.contains("thoroidal_accelerator_controller")) {
             ACCELERATOR_BLOCKS.put(key, BLOCKS.register(key, () -> new LinearAcceleratorControllerBlock(props)));
         } else {
             ACCELERATOR_BLOCKS.put(key, BLOCKS.register(key, () -> new AcceleratorOrientedBlock(props)));

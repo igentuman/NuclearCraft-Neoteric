@@ -6,12 +6,12 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "nuclearcraft:synthrotron_controller"
+          "name": "nuclearcraft:thoroidal_accelerator_controller"
         }
       ],
       "name": "block",
       "rolls": 1.0
     }
   ],
-  "random_sequence": "nuclearcraft:blocks/synthrotron_controller"
+  "random_sequence": "nuclearcraft:blocks/thoroidal_accelerator_controller"
 }

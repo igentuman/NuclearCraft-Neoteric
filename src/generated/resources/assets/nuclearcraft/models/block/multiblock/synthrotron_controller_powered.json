@@ -1,6 +1,0 @@
-{
-  "parent": "nuclearcraft:block/multiblock/synthrotron_controller",
-  "textures": {
-    "north": "nuclearcraft:block/accelerator/controller/synthrotron_controller_powered"
-  }
-}

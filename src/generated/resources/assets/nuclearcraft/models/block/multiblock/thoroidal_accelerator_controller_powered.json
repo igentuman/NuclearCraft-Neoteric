@@ -1,0 +1,6 @@
+{
+  "parent": "nuclearcraft:block/multiblock/thoroidal_accelerator_controller",
+  "textures": {
+    "north": "nuclearcraft:block/accelerator/controller/thoroidal_accelerator_controller_powered"
+  }
+}

@@ -3,7 +3,7 @@
   "textures": {
     "down": "nuclearcraft:block/accelerator/controller/top",
     "east": "nuclearcraft:block/accelerator/controller/side",
-    "north": "nuclearcraft:block/accelerator/controller/synthrotron_controller",
+    "north": "nuclearcraft:block/accelerator/controller/thoroidal_accelerator_controller",
     "particle": "nuclearcraft:block/accelerator/controller/side",
     "south": "nuclearcraft:block/accelerator/controller/back",
     "up": "nuclearcraft:block/accelerator/controller/bottom",

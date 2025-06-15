@@ -54,7 +54,7 @@ public class NCBlockTags extends BlockTagsProvider {
                 ACCELERATOR_BLOCKS.get("accelerator_ion_source_port").get(),
                 ACCELERATOR_BLOCKS.get("accelerator_casing").get(),
                 ACCELERATOR_BLOCKS.get("accelerator_casing_glass").get(),
-                ACCELERATOR_BLOCKS.get("synthrotron_controller").get(),
+                ACCELERATOR_BLOCKS.get("thoroidal_accelerator_controller").get(),
                 ACCELERATOR_BLOCKS.get("linear_accelerator_controller").get(),
                 ACCELERATOR_BLOCKS.get("accelerator_port").get(),
                 ACCELERATOR_BLOCKS.get("accelerator_beam_port").get(),

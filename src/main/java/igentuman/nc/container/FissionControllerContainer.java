@@ -18,6 +18,7 @@ import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.handler.config.FissionConfig.FISSION_CONFIG;
 import static igentuman.nc.util.TextUtils.*;
 
 public class FissionControllerContainer extends AbstractContainerMenu {
@@ -227,6 +228,9 @@ public class FissionControllerContainer extends AbstractContainerMenu {
     }
 
     public boolean isBoilingMode() {
+        if(!FISSION_CONFIG.BOILING_ENABLED.get()) {
+            return false;
+        }
         return blockEntity.isSteamMode;
     }
 

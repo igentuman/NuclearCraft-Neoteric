@@ -310,6 +310,10 @@ public class FissionControllerBE extends MultiblockControllerBE {
         }
     }
     public void toggleMode() {
+        if(!FISSION_CONFIG.BOILING_ENABLED.get()) {
+            isSteamMode = false;
+            return;
+        }
         toggleModeTimer = 200;
     }
 
@@ -475,6 +479,10 @@ public class FissionControllerBE extends MultiblockControllerBE {
     }
 
     private void hopToggleMode() {
+        if(!FISSION_CONFIG.BOILING_ENABLED.get()) {
+            isSteamMode = false;
+            return;
+        }
         if(toggleModeTimer < 201) {
             toggleModeTimer--;
             changed = true;

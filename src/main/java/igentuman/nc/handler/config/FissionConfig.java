@@ -72,6 +72,7 @@ public class FissionConfig {
 
         public final ForgeConfigSpec.ConfigValue<Double> FE_GENERATION_MULTIPLIER;
         public final ForgeConfigSpec.ConfigValue<Double> BOILING_MULTIPLIER;
+        public final ForgeConfigSpec.ConfigValue<Boolean> BOILING_ENABLED;
         public final ForgeConfigSpec.ConfigValue<Boolean> ACTIVE_HEATSINK_PRIME;
         public final ForgeConfigSpec.ConfigValue<Integer> ACTIVE_HEATSINK_COOLANT_PER_TICK;
 
@@ -109,6 +110,10 @@ public class FissionConfig {
             MODERATOR_HEAT_MULTIPLIER = builder
                     .comment("Each attachment of moderator to fuel cell will increase fuel heat generation by given percent value.")
                     .defineInRange("moderator_heat_multiplier", 33.33333333D, 0D, 1000D);
+
+            BOILING_ENABLED = builder
+                    .comment("If you don't need reactor boiling mode, just disable.")
+                    .define("supports_boiling_mode", true);
 
             BOILING_MULTIPLIER = builder
                     .comment("Rate at which steam recipes produced.")

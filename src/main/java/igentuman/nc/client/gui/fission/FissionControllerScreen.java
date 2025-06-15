@@ -25,6 +25,7 @@ import java.util.Optional;
 
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.client.gui.element.fluid.FluidTankRenderer.TooltipMode.SHOW_AMOUNT_AND_CAPACITY;
+import static igentuman.nc.handler.config.FissionConfig.FISSION_CONFIG;
 import static igentuman.nc.util.TextUtils.__;
 import static igentuman.nc.util.TextUtils.applyFormat;
 
@@ -97,7 +98,9 @@ public class FissionControllerScreen extends AbstractContainerScreen<FissionCont
         linkBtn = new Button.Link(150, 14, this, menu.getPosition(), "https://ftb.fandom.com/wiki/NuclearCraft:_Neoteric#Fission_Reactor_+_Irradiator",
                 List.of(__("tooltip.nc.wiki"))
         );
-        widgets.add(modeBtn);
+        if(FISSION_CONFIG.BOILING_ENABLED.get()) {
+            widgets.add(modeBtn);
+        }
         widgets.add(analyzeBtn);
         widgets.add(linkBtn);
     }

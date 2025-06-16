@@ -3,10 +3,12 @@ package igentuman.nc.client.gui.accelerator;
 import com.mojang.blaze3d.systems.RenderSystem;
 import igentuman.nc.client.gui.IProgressScreen;
 import igentuman.nc.client.gui.IVerticalBarScreen;
+import igentuman.nc.client.gui.element.GuiParticle;
 import igentuman.nc.client.gui.element.NCGuiElement;
 import igentuman.nc.client.gui.element.bar.VerticalBar;
 import igentuman.nc.client.gui.element.button.Checkbox;
 import igentuman.nc.container.LinearAcceleratorContainer;
+import igentuman.nc.content.particles.ParticleStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -22,6 +24,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static igentuman.nc.NuclearCraft.rl;
+import static igentuman.nc.content.particles.ParticleStack.getParticleStack;
 import static igentuman.nc.util.TextUtils.__;
 import static igentuman.nc.util.TextUtils.applyFormat;
 
@@ -43,6 +46,7 @@ public class LinearAcceleratorControllerScreen extends AbstractContainerScreen<L
     private VerticalBar heatBar;
     public Component casingTootip = Component.empty();
     public Component interiorTootip = Component.empty();
+    public GuiParticle guiParticle;
 
     public LinearAcceleratorControllerScreen(LinearAcceleratorContainer container, Inventory inv, Component name) {
         super(container, inv, name);
@@ -68,6 +72,7 @@ public class LinearAcceleratorControllerScreen extends AbstractContainerScreen<L
         //widgets.add(new ProgressBar(74, 35, this,  7));
         energyBar = new VerticalBar.Energy(7, 5,  this, container().getMaxEnergy());
         heatBar = new VerticalBar.Energy(17, 5,  this, container().getMaxHeat());
+        guiParticle = new GuiParticle();
     }
 
     protected void addWidget(NCGuiElement widget)
@@ -174,6 +179,17 @@ public class LinearAcceleratorControllerScreen extends AbstractContainerScreen<L
         updateRelativeCords();
         graphics.blit(GUI, relX, relY, 0, 0, this.imageWidth, this.imageHeight);
         renderWidgets(graphics, partialTicks, mouseX, mouseY);
+        if(hasParticle()) {
+            guiParticle.drawParticleStack(graphics, getParticleStack(), relX + 40, relY + 22);
+        }
+    }
+
+    private boolean hasParticle() {
+        return container().hasParticle();
+    }
+
+    private ParticleStack getParticleStack() {
+        return container().getParticleStack();
     }
 
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {

@@ -19,7 +19,7 @@ public interface IItemParticleAmount
 	{
 		CompoundTag nbt = getStorageNBT(stack);
 		if (!nbt.contains("particle_capacity")) {
-			return 0;
+			return moleAmount;
 		}
 		
 		return nbt.getInt("particle_capacity");
@@ -48,7 +48,7 @@ public interface IItemParticleAmount
 		if(stack.getItem() instanceof IItemParticleAmount)
 		{
 			CompoundTag nbt = getStorageNBT(stack);
-            nbt.putInt("particle_amount", Math.min(amount, getCapacity(stack)));
+            nbt.putInt("particle_amount", Math.max(amount, getCapacity(stack)));
 		}
 	}
 	
@@ -113,8 +113,8 @@ public interface IItemParticleAmount
 		if (!nbt.contains("particle_storage"))
 		{
 			CompoundTag storage = new CompoundTag();
-			storage.putInt("particle_amount", 0);
-			storage.putInt("particle_capacity", moleAmount);
+			storage.putInt("particle_amount", ParticleSources.getCapacity(stack));
+			storage.putInt("particle_capacity", ParticleSources.getCapacity(stack));
 			nbt.put("particle_storage", storage);
 		}
 		return nbt.getCompound("particle_storage");
@@ -134,7 +134,7 @@ public interface IItemParticleAmount
 		if (!nbt.contains("particle_storage"))
 		{
 			CompoundTag storage =  new CompoundTag();
-			storage.putInt("particle_amount", 0);
+			storage.putInt("particle_amount", moleAmount);
 			storage.putInt("particle_capacity", item.getItemCapacity(stack));
 			nbt.put("particle_storage",storage);
 			stack.setTag(nbt);
@@ -145,5 +145,8 @@ public interface IItemParticleAmount
 			stack.setTag(nbt);
 		}
 	}
-	
+
+	default ParticleStack getParticleStack(ItemStack stack) {
+		return new ParticleStack(getParticle(stack), 10000, 0, 0);
+	}
 }

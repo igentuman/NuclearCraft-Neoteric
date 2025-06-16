@@ -37,8 +37,8 @@ public class LinearAcceleratorDevice {
         }
 
         @Callback
-        public final boolean hasRecipe() {
-            return terminal.hasRecipe();
+        public final boolean hasParticle() {
+            return terminal.hasParticle;
         }
 
 

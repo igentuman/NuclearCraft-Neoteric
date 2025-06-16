@@ -1,6 +1,7 @@
 package igentuman.nc.container;
 
 import igentuman.nc.block.entity.accelerator.LinearAcceleratorControllerBE;
+import igentuman.nc.content.particles.ParticleStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -91,8 +92,8 @@ public class LinearAcceleratorContainer extends AbstractContainerMenu {
         return energy2Display(blockEntity.energyStorage.getMaxEnergyStored());
     }
 
-    public boolean hasRecipe() {
-        return blockEntity.hasRecipe();
+    public boolean hasParticle() {
+        return blockEntity.hasParticle;
     }
 
     public BlockPos getPosition() {
@@ -145,5 +146,9 @@ public class LinearAcceleratorContainer extends AbstractContainerMenu {
 
     public double getStrength() {
         return blockEntity.quadStrength + blockEntity.dipoleStrength;
+    }
+
+    public ParticleStack getParticleStack() {
+        return blockEntity.getParticleStack();
     }
 }

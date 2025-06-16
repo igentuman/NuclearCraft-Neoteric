@@ -7,7 +7,6 @@ import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;
 import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.accelerator.AbstractAcceleratorMultiblock;
-import igentuman.nc.multiblock.kugelblitz.KugelblitzMultiblock;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -29,9 +28,9 @@ import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELE
 import static igentuman.nc.util.ModUtil.isCcLoaded;
 import static igentuman.nc.util.ModUtil.isOC2Loaded;
 
-public class AcceleratorPortBE extends NuclearCraftBE implements MultiblockAttachable {
+public class AcceleratorIonSourcePortBE extends NuclearCraftBE implements MultiblockAttachable {
 
-    public static String NAME = "accelerator_port";
+    public static String NAME = "accelerator_ion_source_port";
     @NBTField
     public byte analogSignal = 0;
     @NBTField
@@ -43,7 +42,7 @@ public class AcceleratorPortBE extends NuclearCraftBE implements MultiblockAttac
     public byte validationRuns = 0;
     public LinearAcceleratorControllerBE controller;
 
-    public AcceleratorPortBE(BlockPos pPos, BlockState pBlockState) {
+    public AcceleratorIonSourcePortBE(BlockPos pPos, BlockState pBlockState) {
         super(ACCELERATOR_BE.get(NAME).get(), pPos, pBlockState);
     }
     public Direction getFacing() {
@@ -155,7 +154,7 @@ public class AcceleratorPortBE extends NuclearCraftBE implements MultiblockAttac
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if(controller() == null) return super.getCapability(cap, side);
         if (cap == PARTICLE_HANDLER_CAPABILITY) {
-            return controller().getCapability(cap, side);
+            return LazyOptional.empty();
         }
         if (cap == ForgeCapabilities.ITEM_HANDLER) {
             return controller().getCapability(cap, side);

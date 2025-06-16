@@ -1,49 +1,21 @@
 package igentuman.nc.multiblock.accelerator;
 
-import igentuman.nc.block.ElectromagnetBlock;
-import igentuman.nc.block.RFAmplifierBlock;
-import igentuman.nc.block.accelerator.CoolerBlock;
 import igentuman.nc.block.entity.accelerator.ThoroidalAcceleratorControllerBE;
-import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.ValidationResult;
 import igentuman.nc.util.BlockPosInstance;
 import igentuman.nc.util.math.MathUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
-import java.util.HashMap;
-
 import static igentuman.nc.NuclearCraft.debugLog;
-import static igentuman.nc.handler.config.AcceleratorConfig.ACCELERATOR_CONFIG;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.*;
 import static igentuman.nc.util.TagUtil.getBlocksByTagKey;
 
-public class ThoroidalAcceleratorMultiblock extends AbstractMultiblock {
+public class ThoroidalAcceleratorMultiblock extends AbstractAcceleratorMultiblock {
 
-    private static final int FINAL_STAGE = 4;
     private ThoroidalAcceleratorControllerBE controllerBe;
-    private BlockPosInstance centerPos;
-    protected final HashMap<Long, ElectromagnetBlock> electromagnets = new HashMap<>(1000);
-    protected final HashMap<Long, RFAmplifierBlock> amplifiers = new HashMap<>(1000);
-    protected final HashMap<Long, CoolerBlock> coolers = new HashMap<>(1000);
-    protected int dipolesCount = 0;
-    protected int quadrupolesCount = 0;
-    private final int[] yCoords = new int[]{1, 3, 2, 2, 1, 3, 3, 1};
-    private final int[] xCoords = new int[]{2, 2, 1, 3, 1, 3, 1, 3};
-    private double focus = 0.0;
-    private int maxTemperature = 0;
-    private int heatRate = 0;
-    private double efficiency = 0.0;
-    private double quadStrength = 0.0;
-    private double dipoleStrength = 0.0;
-    private long acceleratingVoltage = 0;
-    private int energyRequired = 0;
-    private int coolingRate = 0;
-    private int validCoolers = 0;
-
 
     public ThoroidalAcceleratorMultiblock(ThoroidalAcceleratorControllerBE controller) {
         super(
@@ -54,40 +26,6 @@ public class ThoroidalAcceleratorMultiblock extends AbstractMultiblock {
         id = "linear_accelerator_"+controller.getBlockPos().toShortString();
         controllerBe = controller;
         MultiblockHandler.get(getLevel().dimension()).addMultiblock(this);
-    }
-
-    private int stage = 0;
-    @Override
-    public int maxHeight() {
-        return 5;
-    }
-    @Override
-    public int minHeight() {
-        return 5;
-    }
-    @Override
-    public int maxWidth() {
-        return maxDepth();
-    }
-    @Override
-    public int minWidth() {
-        return minDepth();
-    }
-    @Override
-    public int maxDepth() {
-        return switch (ACCELERATOR_CONFIG.SCALE.get()) {
-            case 2 -> 1000;
-            case 3 -> 10000;
-            default -> 100;
-        };
-    }
-    @Override
-    public int minDepth() {
-        return switch (ACCELERATOR_CONFIG.SCALE.get()) {
-            case 2 -> 60;
-            case 3 -> 600;
-            default -> 6;
-        };
     }
 
     @Override
@@ -104,26 +42,8 @@ public class ThoroidalAcceleratorMultiblock extends AbstractMultiblock {
     }
 
     @Override
-    protected Direction getControllerDirection() {
-        return controllerBE().getFacing();
-    }
-
-    @Override
     public void clearStats() {
         controller().clearStats();
-    }
-
-    public boolean isControllerPlacedOnSide() {
-       return depth == 5;
-    }
-
-    @Override
-    public boolean isValidCorner(BlockPos pos)
-    {
-        try {
-            return getBlockState(pos).is(ACCELERATOR_BLOCKS.get("accelerator_casing").get());
-        } catch (NullPointerException ignored) { }
-        return false;
     }
 
     @Override
@@ -271,121 +191,6 @@ public class ThoroidalAcceleratorMultiblock extends AbstractMultiblock {
         stage = 3;
     }
 
-    private boolean indexSlice(int z) {
-        //first of all it checks center blocks and then corner blocks
-        int magnetCount = 0;
-        boolean nextMustBeMagnet = false;
-        boolean nextMustBeAmplifier = false;
-        double magnetStrength = 0;
-        for(int i = 0; i < xCoords.length; i++ ) {
-            int x = xCoords[i];
-            int y = yCoords[i];
-            BlockPos toCheck = new BlockPos(getSidePos(leftCasing - x).above(y - bottomCasing).relative(multiblockDirection, z));
-            BlockState bs = getBlockState(toCheck);
-            addIfNotExists(toCheck, allBlocks);
-            if (!isValidForInner(bs)) {
-                validationResult = ValidationResult.WRONG_INNER;
-                errorBlockPos = new BlockPos(toCheck);
-                return false;
-            }
-            if(isMagnet(bs)) {
-                if((i > 4 || nextMustBeAmplifier)) {
-                    validationResult = ValidationResult.WRONG_INNER;
-                    errorBlockPos = new BlockPos(toCheck);
-                    return false;
-                }
-                electromagnets.put(toCheck.asLong(), (ElectromagnetBlock) bs.getBlock());
-                maxTemperature = Math.min(maxTemperature, ((ElectromagnetBlock) bs.getBlock()).getMaxTemperature());
-                heatRate+= ((ElectromagnetBlock) bs.getBlock()).getHeatRate();
-                energyRequired+= ((ElectromagnetBlock) bs.getBlock()).getPower();
-                efficiency+= ((ElectromagnetBlock) bs.getBlock()).getEfficiency();
-                magnetStrength+= ((ElectromagnetBlock) bs.getBlock()).getStrength();
-                magnetCount++;
-                nextMustBeMagnet = magnetCount % 2 != 0 && (i == 0 || i == 2);
-            }
-            if(isAmplifier(bs)) {
-                if(nextMustBeMagnet) {
-                    validationResult = ValidationResult.WRONG_INNER;
-                    errorBlockPos = new BlockPos(toCheck);
-                    return false;
-                }
-                acceleratingVoltage+= ((RFAmplifierBlock) bs.getBlock()).getAmplification();
-                energyRequired+= ((RFAmplifierBlock) bs.getBlock()).getPower();
-                heatRate+= ((RFAmplifierBlock) bs.getBlock()).getHeatRate();
-                efficiency+= ((RFAmplifierBlock) bs.getBlock()).getEfficiency();
-                maxTemperature = Math.min(maxTemperature, ((RFAmplifierBlock) bs.getBlock()).getMaxTemperature());
-                nextMustBeAmplifier = true;
-                amplifiers.put(toCheck.asLong(), (RFAmplifierBlock) bs.getBlock());
-                continue;
-            }
-            if(isCooler(bs)) {
-                coolers.put(toCheck.asLong(), (CoolerBlock) bs.getBlock());
-                if(nextMustBeMagnet || nextMustBeAmplifier) {
-                    validationResult = ValidationResult.WRONG_INNER;
-                    errorBlockPos = new BlockPos(toCheck);
-                    return false;
-                }
-                continue;
-            }
-            if(nextMustBeAmplifier) {
-                validationResult = ValidationResult.WRONG_INNER;
-                errorBlockPos = new BlockPos(toCheck);
-                return false;
-            }
-
-            if(i == 1 && magnetCount == 1) {
-                validationResult = ValidationResult.WRONG_INNER;
-                int yy = isMagnet(bs) ? 2 : 0;
-                errorBlockPos = new BlockPos(toCheck.below(yy));
-                return false;
-            }
-            if(i == 3 && (magnetCount == 3 || magnetCount == 1)) {
-                validationResult = ValidationResult.WRONG_INNER;
-                int xx = isMagnet(bs) ? 2 : i;
-                errorBlockPos = new BlockPos(new BlockPos(getSidePos(leftCasing - xCoords[xx]).above(y - bottomCasing).relative(multiblockDirection, z)));
-                return false;
-            }
-        }
-        switch (magnetCount) {
-            case 4 -> {
-                quadrupolesCount++;
-                quadStrength += magnetStrength;
-            }
-            case 2 -> {
-                dipolesCount++;
-                dipoleStrength += magnetStrength;
-            }
-        }
-        return true;
-    }
-
-    private boolean isCooler(BlockState bs) {
-        return bs.getBlock() instanceof CoolerBlock;
-    }
-
-    private boolean isAmplifier(BlockState bs) {
-        return bs.getBlock() instanceof RFAmplifierBlock;
-    }
-
-    private boolean isMagnet(BlockState bs) {
-        return bs.getBlock() instanceof ElectromagnetBlock;
-    }
-
-    public void tick() {
-        if(!canTick || !hasToRefresh) return;
-
-        canTick = false;
-        validationResult = ValidationResult.INCOMPLETE;
-        if(stage == 0) {
-            innerValid = false;
-            outerValid = false;
-            isFormed = false;
-        }
-        hasToRefresh = false;
-        validate();
-        canTick = true;
-    }
-
     @Override
     public void validate() {
         long startTime = System.nanoTime();
@@ -427,48 +232,5 @@ public class ThoroidalAcceleratorMultiblock extends AbstractMultiblock {
         controllerBE().setChanged();
 
         stage = 0;
-    }
-
-    private void indexCoolers() {
-        innerValid = true;
-        coolingRate = 0;
-        validCoolers = 0;
-        validationResult =  ValidationResult.VALID;
-        stage = FINAL_STAGE;
-        for (Long pos : coolers.keySet()) {
-            CoolerBlock cooler = coolers.get(pos);
-            if(cooler.isValid(getLevel(), BlockPos.of(pos), this)) {
-                coolingRate += cooler.def.heat;
-                validCoolers++;
-            }
-        }
-    }
-
-    private void validateBeam() {
-        stage = FINAL_STAGE;
-        for(int i = 1; i < Math.max(depth, width)-1; i++) {
-            if(!getBlockState(centerPos.revert().relative(multiblockDirection, -i)).is(ACCELERATOR_BLOCKS.get("accelerator_beam").get())) {
-                validationResult = ValidationResult.WRONG_INNER;
-                errorBlockPos = new BlockPosInstance(centerPos);
-                return;
-            }
-        }
-        innerValid = true;
-        validationResult =  ValidationResult.VALID;
-        centerPos.revert();
-        stage = 2;
-    }
-
-    protected boolean processInnerBlock(BlockPos pos) {
-        Block block = getBlock(pos);
-        if(block instanceof ElectromagnetBlock magnet) {
-            electromagnets.put(pos.asLong(), magnet);
-        } else if(block instanceof RFAmplifierBlock amplifier) {
-            amplifiers.put(pos.asLong(), amplifier);
-        } else if(block instanceof CoolerBlock cooler) {
-            coolers.put(pos.asLong(), cooler);
-        }
-        addIfNotExists(pos, allBlocks);
-        return true;
     }
 }

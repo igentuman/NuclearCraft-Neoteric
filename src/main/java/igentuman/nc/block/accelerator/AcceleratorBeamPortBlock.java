@@ -1,9 +1,8 @@
 package igentuman.nc.block.accelerator;
 
+import igentuman.nc.block.entity.accelerator.AcceleratorBeamPortBE;
 import igentuman.nc.block.entity.accelerator.AcceleratorPortBE;
-import igentuman.nc.block.entity.kugelblitz.ChamberPortBE;
 import igentuman.nc.container.AcceleratorPortContainer;
-import igentuman.nc.container.ChamberPortContainer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -34,21 +33,21 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BE;
-import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BE;
 import static igentuman.nc.util.TextUtils.__;
 
-public class AcceleratorPortBlock extends HorizontalDirectionalBlock implements EntityBlock {
+public class AcceleratorBeamPortBlock extends HorizontalDirectionalBlock implements EntityBlock {
     public static final DirectionProperty HORIZONTAL_FACING = FACING;
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
-    public static final String NAME = "accelerator_port";
+    public static final String NAME = "accelerator_beam_port";
 
-    public AcceleratorPortBlock() {
+    public AcceleratorBeamPortBlock() {
         this(Properties.of()
                 .sound(SoundType.METAL)
                 .strength(8f, 3600000f)
                 .requiresCorrectToolForDrops());
     }
-    public AcceleratorPortBlock(Properties pProperties) {
+
+    public AcceleratorBeamPortBlock(Properties pProperties) {
         super(pProperties.sound(SoundType.METAL));
         this.registerDefaultState(
                 this.stateDefinition.any()
@@ -56,6 +55,7 @@ public class AcceleratorPortBlock extends HorizontalDirectionalBlock implements 
                         .setValue(POWERED, false)
         );
     }
+
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
@@ -73,42 +73,18 @@ public class AcceleratorPortBlock extends HorizontalDirectionalBlock implements 
         return ACCELERATOR_BE.get(NAME).get().create(pPos, pState);
     }
 
-    @Override
-    public InteractionResult use(@NotNull BlockState state, Level level, @NotNull BlockPos pos, @NotNull Player player, InteractionHand hand, BlockHitResult result) {
-
-        if (!level.isClientSide()) {
-            BlockEntity be = level.getExistingBlockEntity(pos);
-
-            if (be instanceof AcceleratorPortBE)  {
-                MenuProvider containerProvider = new MenuProvider() {
-                    @Override
-                    public Component getDisplayName() {
-                        return __(NAME);
-                    }
-
-                    @Override
-                    public AbstractContainerMenu createMenu(int windowId, @NotNull Inventory playerInventory, @NotNull Player playerEntity) {
-                            return new AcceleratorPortContainer(windowId, pos, playerInventory);
-                    }
-                };
-                NetworkHooks.openScreen((ServerPlayer) player, containerProvider, be.getBlockPos());
-            }
-        }
-        return InteractionResult.SUCCESS;
-    }
-
     @javax.annotation.Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, @NotNull BlockState state, @NotNull BlockEntityType<T> type) {
         if (level.isClientSide()) {
             return (lvl, pos, blockState, t) -> {
-                if (t instanceof AcceleratorPortBE tile) {
+                if (t instanceof AcceleratorBeamPortBE tile) {
                     tile.tickClient();
                 }
             };
         }
         return (lvl, pos, blockState, t)-> {
-            if (t instanceof AcceleratorPortBE tile) {
+            if (t instanceof AcceleratorBeamPortBE tile) {
                 tile.tickServer();
             }
         };

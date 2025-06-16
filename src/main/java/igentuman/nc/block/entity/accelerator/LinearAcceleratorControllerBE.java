@@ -6,10 +6,12 @@ import igentuman.nc.compat.cc.LinearAcceleratorPeripheral;
 import igentuman.nc.compat.oc2.LinearAcceleratorDevice;
 import igentuman.nc.content.particles.CapabilityParticleStackHandler;
 import igentuman.nc.content.particles.IParticleStackHandler;
+import igentuman.nc.content.particles.ParticleStack;
 import igentuman.nc.content.particles.ParticleStorage;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.SlotModePair;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
+import igentuman.nc.item.ParticleSourceItem;
 import igentuman.nc.multiblock.accelerator.LinearAcceleratorMultiblock;
 import igentuman.nc.recipes.NcRecipeType;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
@@ -22,8 +24,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -33,6 +35,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
+import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -46,6 +49,8 @@ import static igentuman.nc.content.materials.Materials.subliquid_matter;
 import static igentuman.nc.content.particles.CapabilityParticleStackHandler.PARTICLE_HANDLER_CAPABILITY;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BE;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
+import static igentuman.nc.setup.registration.NCItems.ION_SOURCES;
+import static igentuman.nc.util.Equations.*;
 import static igentuman.nc.util.ModUtil.isCcLoaded;
 import static igentuman.nc.util.ModUtil.isOC2Loaded;
 
@@ -59,6 +64,8 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
     protected final LazyOptional<IParticleStackHandler> particleHandler;
     protected final ParticleStorage particleStorage;
 
+    @NBTField
+    public boolean hasParticle = false;
     @NBTField
     public int coolers;
     @NBTField
@@ -103,7 +110,7 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
         energy = LazyOptional.of(() -> energyStorage);
         contentHandler = new SidedContentHandler(
                 1, 1,
-                1, 1, 10000);
+                1, 1, 1000);
         contentHandler().itemHandler.setGlobalMode(0, SlotModePair.SlotMode.PULL);
         contentHandler().itemHandler.setGlobalMode(1, SlotModePair.SlotMode.PUSH);
         contentHandler.fluidCapability.setGlobalMode(0, SlotModePair.SlotMode.INPUT);
@@ -119,10 +126,8 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
     {
         if(allowedInputs == null) {
             allowedInputs = new ArrayList<>();
-            for(NcRecipe recipe: NcRecipeType.getAllRecipesFor("linear_accelerator_controller", getLevel())) {
-                for(Ingredient ingredient: recipe.getItemIngredients()) {
-                    allowedInputs.addAll(List.of(ingredient.getItems()));
-                }
+            for(RegistryObject<Item> item: ION_SOURCES.values()) {
+                allowedInputs.add(new ItemStack(item.get()));
             }
         }
         return allowedInputs;
@@ -179,7 +184,7 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
             return contentHandler().getFluidCapability(null);
         }
         if (cap == PARTICLE_HANDLER_CAPABILITY) {
-            return contentHandler().getFluidCapability(null);
+            return particleHandler.cast();
         }
         if (cap == ForgeCapabilities.ENERGY) {
             return getEnergy().cast();
@@ -220,9 +225,10 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
         if (controllerEnabled) {
             trackChanges(contentHandler().tick());
             handleMeltdown();
-            trackChanges(processRecipe());
-            handleRecipeOutput();
+            trackChanges(accelerateParticle());
         }
+        heat -= coolingRate;
+
         refreshCacheFlag = !getMultiblock().isFormed();
         if(wasEnabled != controllerEnabled) {
            setChanged();
@@ -262,74 +268,44 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
 
     }
 
-    private boolean processRecipe() {
-        if(recipeInfo().recipe != null && recipeInfo().isCompleted()) {
-            if(contentHandler().itemHandler.getStackInSlot(0).isEmpty()) {
-                recipeInfo().clear();
-            }
+    private boolean accelerateParticle() {
+        hasParticle = false;
+        if(particleStorage.getParticle() == null) {
+            getParticleFromSourceItem();
         }
-        if (!hasRecipe()) {
-            updateRecipe();
+        if(particleStorage.getParticle() == null) {
+            return false;
         }
-        if (hasRecipe()) {
-            return process();
+        if(!drainEnergy()) {
+            //return false;
         }
-        return false;
-    }
-
-    private boolean process() {
-        double multiplier = 1;
-        recipeInfo().process(multiplier);
+        ParticleStack particleStack = particleStorage.getParticle();
+        particleStack.setFocus(focusGain(focus, particleStack)-focusLoss(Math.max(width, depth), particleStack));
+        particleStack.setMeanEnergy(linacEnergyGain(acceleratingVoltage, particleStack));
+        heat += heatRate;
+        hasParticle = true;
+        getMultiblock().extractParticle(particleStack);
         return true;
     }
 
-    private void handleRecipeOutput() {
-        if (hasRecipe() && recipeInfo().isCompleted()) {
-            if(recipe == null) {
-                recipe = (Recipe) recipeInfo().recipe();
-            }
-            int id = getIngredientId(recipe.getResultItem());
-            if (recipe.handleOutputs(contentHandler())) {
-                recipeInfo().clear();
-                if(contentHandler().itemHandler.getStackInSlot(0).isEmpty()) {
-                    recipe = null;
-                }
-            } else {
-                recipeInfo.stuck = true;
-            }
-            setChanged();
+    private boolean drainEnergy() {
+        if(energyStorage().getEnergyStored() < energyRequired) {
+            return false;
         }
+        energyStorage().extractEnergy(energyRequired, false);
+        return true;
     }
 
-    private int getIngredientId(@NotNull ItemStack resultItem) {
-        for(int i = 0; i < allowedInputs.size(); i++) {
-            if(allowedInputs.get(i).is(resultItem.getItem())) {
-                return i;
+    private void getParticleFromSourceItem() {
+        ItemStack stack = contentHandler().itemHandler.getStackInSlot(0);
+        if(stack.getItem() instanceof ParticleSourceItem sourceItem) {
+            stack = sourceItem.use(stack, 10000);
+            ParticleStack particle = sourceItem.getParticleStack(stack);
+            if (particle != null) {
+                particleStorage.setParticleStack(particle);
+                contentHandler().itemHandler.setStackInSlot(0, stack);
             }
         }
-        return 0;
-    }
-
-    private void updateRecipe() {
-        recipe = getRecipe();
-        if (recipe != null) {
-            recipeInfo().setRecipe(recipe);
-            recipeInfo().ticks = ((Recipe)recipeInfo().recipe()).getBaseTime();
-            recipeInfo().energy = recipeInfo().recipe.getEnergy();
-            recipeInfo().be = this;
-            if (!recipeInfo().consumeInputs(contentHandler())) {
-                recipe = null;
-                recipeInfo().clear();
-            }
-        }
-    }
-
-    public boolean recipeIsStuck() {
-        return recipeInfo().isStuck();
-    }
-
-    public boolean hasRecipe() {
-        return recipeInfo().recipe() != null;
     }
 
     public Direction getFacing() {
@@ -356,7 +332,7 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
     }
 
     public boolean isProcessing() {
-        return hasRecipe() && recipeInfo().ticksProcessed > 0 && !recipeInfo.isCompleted();
+        return hasParticle && controllerEnabled;
     }
 
     @Override
@@ -416,6 +392,10 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
             CompoundTag infoTag = tag.getCompound("Info");
             infoTag.put("particle_storage", particleStorage.writeToNBT(new CompoundTag()));
         }
+    }
+
+    public ParticleStack getParticleStack() {
+        return particleStorage.getParticle();
     }
 
     public static class Recipe extends NcRecipe {

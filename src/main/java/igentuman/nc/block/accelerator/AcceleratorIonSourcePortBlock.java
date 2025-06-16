@@ -1,8 +1,9 @@
 package igentuman.nc.block.accelerator;
 
+import igentuman.nc.block.entity.accelerator.AcceleratorIonSourcePortBE;
 import igentuman.nc.block.entity.accelerator.AcceleratorPortBE;
 import igentuman.nc.block.entity.kugelblitz.ChamberPortBE;
-import igentuman.nc.container.AcceleratorPortContainer;
+import igentuman.nc.container.AcceleratorIonSourcePortContainer;
 import igentuman.nc.container.ChamberPortContainer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -34,21 +35,20 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BE;
-import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BE;
 import static igentuman.nc.util.TextUtils.__;
 
-public class AcceleratorPortBlock extends HorizontalDirectionalBlock implements EntityBlock {
+public class AcceleratorIonSourcePortBlock extends HorizontalDirectionalBlock implements EntityBlock {
     public static final DirectionProperty HORIZONTAL_FACING = FACING;
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
-    public static final String NAME = "accelerator_port";
+    public static final String NAME = "accelerator_ion_source_port";
 
-    public AcceleratorPortBlock() {
+    public AcceleratorIonSourcePortBlock() {
         this(Properties.of()
                 .sound(SoundType.METAL)
                 .strength(8f, 3600000f)
                 .requiresCorrectToolForDrops());
     }
-    public AcceleratorPortBlock(Properties pProperties) {
+    public AcceleratorIonSourcePortBlock(Properties pProperties) {
         super(pProperties.sound(SoundType.METAL));
         this.registerDefaultState(
                 this.stateDefinition.any()
@@ -79,7 +79,7 @@ public class AcceleratorPortBlock extends HorizontalDirectionalBlock implements 
         if (!level.isClientSide()) {
             BlockEntity be = level.getExistingBlockEntity(pos);
 
-            if (be instanceof AcceleratorPortBE)  {
+            if (be instanceof AcceleratorIonSourcePortBE)  {
                 MenuProvider containerProvider = new MenuProvider() {
                     @Override
                     public Component getDisplayName() {
@@ -88,7 +88,7 @@ public class AcceleratorPortBlock extends HorizontalDirectionalBlock implements 
 
                     @Override
                     public AbstractContainerMenu createMenu(int windowId, @NotNull Inventory playerInventory, @NotNull Player playerEntity) {
-                            return new AcceleratorPortContainer(windowId, pos, playerInventory);
+                            return new AcceleratorIonSourcePortContainer(windowId, pos, playerInventory);
                     }
                 };
                 NetworkHooks.openScreen((ServerPlayer) player, containerProvider, be.getBlockPos());
@@ -102,13 +102,13 @@ public class AcceleratorPortBlock extends HorizontalDirectionalBlock implements 
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, @NotNull BlockState state, @NotNull BlockEntityType<T> type) {
         if (level.isClientSide()) {
             return (lvl, pos, blockState, t) -> {
-                if (t instanceof AcceleratorPortBE tile) {
+                if (t instanceof AcceleratorIonSourcePortBE tile) {
                     tile.tickClient();
                 }
             };
         }
         return (lvl, pos, blockState, t)-> {
-            if (t instanceof AcceleratorPortBE tile) {
+            if (t instanceof AcceleratorIonSourcePortBE tile) {
                 tile.tickServer();
             }
         };

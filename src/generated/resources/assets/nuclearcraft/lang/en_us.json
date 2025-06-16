@@ -2478,6 +2478,7 @@
   "tooltip.eu.per_tick": "Energy Per Tick: %s EU/t",
   "tooltip.eu.tier": "Energy Tier: %s",
   "tooltip.ion_source.amount": "Amount: %spu / %spu",
+  "tooltip.ion_source.particle": "Particle: %s",
   "tooltip.kugelblitz.block_event_horizon_stabilizer": "Helps to stabilize blackhole",
   "tooltip.kugelblitz.block_neutronium_frame": "Casing block of Kugelblitz Chamber",
   "tooltip.kugelblitz.block_quantum_flux_regulator": "Increases FE generation of Kugelblitz Chamber",

@@ -39,8 +39,8 @@ public class LinearAcceleratorPeripheral implements IPeripheral {
     }
 
     @LuaFunction
-    public final boolean hasRecipe() {
-        return controller.hasRecipe();
+    public final boolean hasParticle() {
+        return controller.hasParticle;
     }
 
     @LuaFunction

@@ -8,6 +8,7 @@ import igentuman.nc.client.block.turbine.TurbineRotorRenderer;
 import igentuman.nc.client.gui.FusionCoreScreen;
 import igentuman.nc.client.gui.RedstoneDimmerScreen;
 import igentuman.nc.client.gui.StorageContainerScreen;
+import igentuman.nc.client.gui.accelerator.AcceleratorIonSourcePortScreen;
 import igentuman.nc.client.gui.accelerator.AcceleratorPortScreen;
 import igentuman.nc.client.gui.accelerator.LinearAcceleratorControllerScreen;
 import igentuman.nc.client.gui.accelerator.TargetChamberControllerScreen;
@@ -100,6 +101,7 @@ public class ClientSetup {
             MenuScreens.register(LINEAR_ACCELERATOR_CONTROLLER_CONTAINER.get(), LinearAcceleratorControllerScreen::new);
             MenuScreens.register(THOROIDAL_ACCELERATOR_CONTROLLER_CONTAINER.get(), ThoroidalAcceleratorControllerScreen::new);
             MenuScreens.register(ACCELERATOR_PORT_CONTAINER.get(), AcceleratorPortScreen::new);
+            MenuScreens.register(ACCELERATOR_ION_SOURCE_PORT_CONTAINER.get(), AcceleratorIonSourcePortScreen::new);
             MenuScreens.register(TARGET_CHAMBER_CONTROLLER_CONTAINER.get(), TargetChamberControllerScreen::new);
 
             for(String name: NCProcessors.PROCESSORS_CONTAINERS.keySet()) {

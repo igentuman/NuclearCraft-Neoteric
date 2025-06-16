@@ -545,6 +545,7 @@ public class NCLanguageProvider extends LanguageProvider {
     }
 
     private void tooltips() {
+        add("tooltip.ion_source.particle", "Particle: %s");
         add("tooltip.ion_source.amount", "Amount: %spu / %spu");
         add("tooltip.target_chamber.detectors", "Detectors: %s");
         add("report.nc.1.target_chamber.all_detectors", "All Detectors: %s");

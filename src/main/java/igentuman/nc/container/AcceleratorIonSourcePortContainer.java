@@ -1,5 +1,6 @@
 package igentuman.nc.container;
 
+import igentuman.nc.block.entity.accelerator.AcceleratorIonSourcePortBE;
 import igentuman.nc.block.entity.accelerator.AcceleratorPortBE;
 import igentuman.nc.container.elements.NCSlotItemHandler;
 import net.minecraft.core.BlockPos;
@@ -22,24 +23,23 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 
 import static igentuman.nc.NuclearCraft.MODID;
-import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
-import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_PORT_CONTAINER;
+import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.*;
 import static igentuman.nc.util.TextUtils.__;
 import static igentuman.nc.util.TextUtils.energy2Display;
 
-public class AcceleratorPortContainer extends AbstractContainerMenu {
+public class AcceleratorIonSourcePortContainer extends AbstractContainerMenu {
 
-    protected final AcceleratorPortBE portBE;
+    protected final AcceleratorIonSourcePortBE portBE;
     protected final Player playerEntity;
-    protected final String name = "accelerator_port";
+    protected final String name = "accelerator_ion_source_port";
     private int slotIndex = 0;
     protected final IItemHandler playerInventory;
 
-    public AcceleratorPortContainer(int pContainerId, BlockPos pos, Inventory playerInventory) {
-        super(ACCELERATOR_PORT_CONTAINER.get(), pContainerId);
+    public AcceleratorIonSourcePortContainer(int pContainerId, BlockPos pos, Inventory playerInventory) {
+        super(ACCELERATOR_ION_SOURCE_PORT_CONTAINER.get(), pContainerId);
         this.playerEntity = playerInventory.player;
         this.playerInventory =  new InvWrapper(playerInventory);
-        portBE = (AcceleratorPortBE) playerEntity.getCommandSenderWorld().getBlockEntity(pos);
+        portBE = (AcceleratorIonSourcePortBE) playerEntity.getCommandSenderWorld().getBlockEntity(pos);
         layoutPlayerInventorySlots();
         portBE.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
             addSlot(new NCSlotItemHandler.Input(h, 0, 56, 35));

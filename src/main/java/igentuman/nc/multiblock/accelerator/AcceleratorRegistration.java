@@ -1,16 +1,15 @@
 package igentuman.nc.multiblock.accelerator;
 
 import com.google.gson.JsonArray;
-import igentuman.nc.block.accelerator.AcceleratorBlock;
-import igentuman.nc.block.accelerator.AcceleratorOrientedBlock;
-import igentuman.nc.block.accelerator.CoolerBlock;
-import igentuman.nc.block.accelerator.LinearAcceleratorControllerBlock;
+import igentuman.nc.block.accelerator.*;
+import igentuman.nc.block.entity.accelerator.AcceleratorIonSourcePortBE;
 import igentuman.nc.block.entity.accelerator.AcceleratorPortBE;
 import igentuman.nc.block.entity.accelerator.LinearAcceleratorControllerBE;
 import igentuman.nc.block.entity.accelerator.ThoroidalAcceleratorControllerBE;
-import igentuman.nc.block.fission.HeatSinkBlock;
-import igentuman.nc.container.*;
-import igentuman.nc.multiblock.fission.HeatSinkDef;
+import igentuman.nc.container.AcceleratorIonSourcePortContainer;
+import igentuman.nc.container.AcceleratorPortContainer;
+import igentuman.nc.container.LinearAcceleratorContainer;
+import igentuman.nc.container.ThoroidalAcceleratorContainer;
 import igentuman.nc.util.JSONUtil;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.inventory.MenuType;
@@ -31,7 +30,6 @@ import java.util.regex.Pattern;
 import static igentuman.nc.setup.registration.NCBlocks.fromMultiblock;
 import static igentuman.nc.setup.registration.NCItems.ALL_NC_ITEMS;
 import static igentuman.nc.setup.registration.Registries.*;
-import static igentuman.nc.setup.registration.Registries.CONTAINERS;
 import static igentuman.nc.setup.registration.Tags.blockTag;
 import static igentuman.nc.setup.registration.Tags.itemTag;
 
@@ -56,6 +54,9 @@ public class AcceleratorRegistration {
     );
     public static final RegistryObject<MenuType<AcceleratorPortContainer>> ACCELERATOR_PORT_CONTAINER = CONTAINERS.register("accelerator_port",
             () -> IForgeMenuType.create((windowId, inv, data) -> new AcceleratorPortContainer(windowId, data.readBlockPos(), inv))
+    );
+    public static final RegistryObject<MenuType<AcceleratorIonSourcePortContainer>> ACCELERATOR_ION_SOURCE_PORT_CONTAINER = CONTAINERS.register("accelerator_ion_source_port",
+            () -> IForgeMenuType.create((windowId, inv, data) -> new AcceleratorIonSourcePortContainer(windowId, data.readBlockPos(), inv))
     );
 
     public static final HashMap<String,CoolerDef> COOLERS = coolers();
@@ -85,7 +86,7 @@ public class AcceleratorRegistration {
 
         ACCELERATOR_BE.put("accelerator_ion_source_port",
                 BLOCK_ENTITIES.register("accelerator_ion_source_port",
-                        () -> BlockEntityType.Builder.of(AcceleratorPortBE::new, ACCELERATOR_BLOCKS.get("accelerator_ion_source_port").get())
+                        () -> BlockEntityType.Builder.of(AcceleratorIonSourcePortBE::new, ACCELERATOR_BLOCKS.get("accelerator_ion_source_port").get())
                                 .build(null)));
 
         ACCELERATOR_BE.put("linear_accelerator_controller",
@@ -112,12 +113,18 @@ public class AcceleratorRegistration {
         BlockBehaviour.Properties props = TRANSPARENT_BLOCKS_PATTERN.matcher(key).matches()
                 ? NO_OCCLUSION_BLOCK_PROPS
                 : ACCELERATOR_BLOCK_PROPERTIES;
-        if(key.contains("linear_accelerator_controller")) {
-            ACCELERATOR_BLOCKS.put(key, BLOCKS.register(key, () -> new LinearAcceleratorControllerBlock(props)));
-        } else if(key.contains("thoroidal_accelerator_controller")) {
-            ACCELERATOR_BLOCKS.put(key, BLOCKS.register(key, () -> new LinearAcceleratorControllerBlock(props)));
-        } else {
-            ACCELERATOR_BLOCKS.put(key, BLOCKS.register(key, () -> new AcceleratorOrientedBlock(props)));
+        switch (key) {
+            case "linear_accelerator_controller" ->
+                    ACCELERATOR_BLOCKS.put(key, BLOCKS.register(key, () -> new LinearAcceleratorControllerBlock(props)));
+            case "thoroidal_accelerator_controller" ->
+                    ACCELERATOR_BLOCKS.put(key, BLOCKS.register(key, () -> new ThoroidalAcceleratorControllerBlock(props)));
+            case "accelerator_ion_source_port" ->
+                    ACCELERATOR_BLOCKS.put(key, BLOCKS.register(key, () -> new AcceleratorIonSourcePortBlock(props)));
+            case "accelerator_port" ->
+                    ACCELERATOR_BLOCKS.put(key, BLOCKS.register(key, () -> new AcceleratorPortBlock(props)));
+            case "accelerator_beam_port" ->
+                    ACCELERATOR_BLOCKS.put(key, BLOCKS.register(key, () -> new AcceleratorBeamPortBlock(props)));
+            default -> ACCELERATOR_BLOCKS.put(key, BLOCKS.register(key, () -> new AcceleratorOrientedBlock(props)));
         }
         ACCELERATOR_ITEMS.put(key, fromMultiblock(ACCELERATOR_BLOCKS.get(key)));
         ALL_NC_ITEMS.put(key, ACCELERATOR_ITEMS.get(key));

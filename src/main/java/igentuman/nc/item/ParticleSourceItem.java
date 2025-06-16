@@ -2,11 +2,10 @@ package igentuman.nc.item;
 
 import igentuman.nc.content.particles.IItemParticleAmount;
 import igentuman.nc.content.particles.ParticleSources;
-import igentuman.nc.content.particles.ParticleStack;
-import igentuman.nc.util.TextUtils;
 import igentuman.nc.util.math.MathUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -43,7 +42,13 @@ public class ParticleSourceItem extends Item implements IItemParticleAmount {
     @Override
     public int getBarWidth(ItemStack stack)
     {
-        return (int) (1 - MathUtils.clamp((long) ((double) getAmountStored(stack) / getItemCapacity(stack)), 0L, 1L));
+        return (int) (int) Math.min(13, 13*(double) getAmountStored(stack) / getItemCapacity(stack));
+    }
+
+    @Override
+    public int getBarColor(@NotNull ItemStack pStack)
+    {
+        return Mth.hsvToRgb(Math.max(0.0F, getBarWidth(pStack)/(float)MAX_BAR_WIDTH)/3.0F, 1.0F, 1.0F);
     }
 
     @Override

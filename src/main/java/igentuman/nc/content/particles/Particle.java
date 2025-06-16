@@ -1,11 +1,13 @@
 package igentuman.nc.content.particles;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.util.TextUtils.__;
 
 /**
  *
@@ -135,6 +137,10 @@ public class Particle
 	public String getUnlocalizedName()
     {
 		return MODID + ".particle." + this.name + ".name";
+	}
+	public Component getLocalizedName()
+    {
+		return __(MODID + ".particle." + this.name + ".name");
 	}
 
 	public ResourceLocation getTexture()

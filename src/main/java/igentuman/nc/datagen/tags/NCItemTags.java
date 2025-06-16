@@ -43,6 +43,7 @@ public class NCItemTags extends ItemTagsProvider {
         fuel();
         isotopes();
         disks();
+        ionSources();
         for(RegistryObject<Item> magnet: NC_ELECTROMAGNETS_ITEMS.values()) {
             tag(ELECTROMAGNETS_ITEMS).add(magnet.get());
             tag(AcceleratorRegistration.ACCELERATOR_INNER_ITEMS).add(
@@ -65,6 +66,12 @@ public class NCItemTags extends ItemTagsProvider {
                 FissionReactorRegistration.FISSION_BLOCK_ITEMS.get("fission_reactor_glass").get(),
                 FissionReactorRegistration.FISSION_BLOCK_ITEMS.get("fission_reactor_port").get()
         );
+    }
+
+    private void ionSources() {
+        for(String name: ION_SOURCES.keySet()) {
+            tag(ION_SOURCE_TAG.get(name)).add(ION_SOURCES.get(name).get());
+        }
     }
 
     private void disks() {

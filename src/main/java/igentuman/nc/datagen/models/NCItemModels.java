@@ -47,6 +47,7 @@ public class NCItemModels extends ItemModelProvider {
         gems();
         parts();
         records();
+        particleSources();
         food();
         armor();
         items();
@@ -194,6 +195,14 @@ public class NCItemModels extends ItemModelProvider {
             singleTexture(NCItems.NC_ITEMS.get(name).getId().getPath(),
                     mcLoc("item/generated"),
                     "layer0", modLoc("item/"+name));
+        }
+    }
+
+    private void particleSources() {
+        for(String name: ION_SOURCES.keySet()) {
+            singleTexture(NCItems.ION_SOURCES.get(name).getId().getPath(),
+                    mcLoc("item/generated"),
+                    "layer0", modLoc("item/particle_sources/"+name));
         }
     }
 

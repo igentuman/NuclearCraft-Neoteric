@@ -22,7 +22,7 @@ public final class ParticleStackListFactory
 	{
 		List<ParticleStack> particleStacks = new ArrayList<>();
 
-		Map<String, Particle> registeredParticles = Particles.list;
+		Map<String, Particle> registeredParticles = Particles.particles;
 		for (Particle particle : registeredParticles.values())
 		{
 			ParticleStack particleStack = new ParticleStack(particle, 0, 0, 0);

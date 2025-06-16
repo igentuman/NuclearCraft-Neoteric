@@ -2,6 +2,7 @@ package igentuman.nc.setup;
 
 import igentuman.nc.container.FissionControllerContainer;
 import igentuman.nc.container.MultiblockControllerContailer;
+import igentuman.nc.content.particles.ParticleSources;
 import igentuman.nc.effect.RadiationResistance;
 import igentuman.nc.multiblock.accelerator.AcceleratorRegistration;
 import igentuman.nc.multiblock.accelerator.TargetChamberRegistration;
@@ -34,6 +35,7 @@ public class Registration {
     public static void init(FMLJavaModLoadingContext context) {
         IEventBus bus = context.getModEventBus();
         Registries.init(context);
+        ParticleSources.init();
         NCBlocks.init();
         NCStorageBlocks.init();
         NCItems.init();

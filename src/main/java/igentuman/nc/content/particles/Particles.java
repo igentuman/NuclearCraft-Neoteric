@@ -13,7 +13,7 @@ import static igentuman.nc.NuclearCraft.rl;
 
 public class Particles
 {
-	public static final Map<String,Particle> list = new HashMap<>();
+	public static final Map<String,Particle> particles = new HashMap<>();
 	
 	private static ResourceLocation particleLoc(String name){
 		return rl("textures/particles/" + name + ".png");
@@ -112,9 +112,9 @@ public class Particles
 	
 	public static void registerParticle(Particle particle)
 	{
-		if(!list.containsKey(particle.getName()))
+		if(!particles.containsKey(particle.getName()))
 		{
-			list.put(particle.getName(), particle);
+			particles.put(particle.getName(), particle);
 		}
 		else
 		{
@@ -128,12 +128,12 @@ public class Particles
 	{
 		if(name != null)
 		{
-			if (!list.containsKey(name))
+			if (!particles.containsKey(name))
 			{
 				debugLog("there is no particle with name " + name);
 				return null;
 			}
-			return list.get(name);
+			return particles.get(name);
 		}
 		return null;
 	}

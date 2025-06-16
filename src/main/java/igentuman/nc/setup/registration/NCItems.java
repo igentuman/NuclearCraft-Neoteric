@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import static igentuman.nc.content.particles.ParticleSources.sources;
 import static igentuman.nc.setup.registration.Entities.FERAL_GHOUL;
 import static igentuman.nc.setup.registration.NCSounds.SOUND_MAP;
 import static igentuman.nc.setup.registration.Registries.ITEMS;
@@ -28,6 +29,7 @@ public class NCItems {
 
     public static HashMap<String, RegistryObject<Item>> NC_RECORDS = new HashMap<>();
     public static HashMap<String, RegistryObject<Item>> NC_PARTS = new HashMap<>();
+    public static HashMap<String, RegistryObject<Item>> ION_SOURCES = new HashMap<>();
     public static HashMap<String, RegistryObject<Item>> NC_SHIELDING = new HashMap<>();
     public static HashMap<String, RegistryObject<Item>> NC_ITEMS = new HashMap<>();
     public static HashMap<String, RegistryObject<Item>> NC_GEMS = new HashMap<>();
@@ -133,8 +135,16 @@ public class NCItems {
         registerFood();
         registerRecords();
         registerShielding();
+        registerParticleSources();
     }
 
+    private static void registerParticleSources() {
+        for(String name: sources.keySet()) {
+            ION_SOURCES.put(name, ITEMS.register(name, () -> new ParticleSourceItem(new Item.Properties())));
+            ALL_NC_ITEMS.put(name, ION_SOURCES.get(name));
+            ION_SOURCE_TAG.put(name, itemTag("ion_sources/"+name.replace("source_", "")));
+        }
+    }
 
 
     private static void registerRecords() {

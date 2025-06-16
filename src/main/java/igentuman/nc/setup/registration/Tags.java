@@ -20,6 +20,7 @@ public class Tags {
     public final static HashMap<String, TagKey<Item>> NUGGETS_TAG = new HashMap<>();
     public final static HashMap<String, TagKey<Item>> PLATES_TAG = new HashMap<>();
     public final static HashMap<String, TagKey<Item>> DUSTS_TAG = new HashMap<>();
+    public final static HashMap<String, TagKey<Item>> ION_SOURCE_TAG = new HashMap<>();
     public final static HashMap<String, TagKey<Item>> ORE_ITEM_TAGS = new HashMap<>();
     public final static HashMap<String, TagKey<Item>> BLOCK_ITEM_TAGS = new HashMap<>();
     public final static HashMap<String, TagKey<Block>> ORE_TAGS = new HashMap<>();
@@ -101,6 +102,11 @@ public class Tags {
     public static TagKey<Item> forgeChunk(String name)
     {
         return TagKey.create(ITEM_REGISTRY, forgeRl("raw_materials/"+name));
+    }
+
+    public static TagKey<Item> forgeIonSource(String name)
+    {
+        return TagKey.create(ITEM_REGISTRY, forgeRl("ion_source/"+name));
     }
 
     public static TagKey<Item> forgeDust(String name)

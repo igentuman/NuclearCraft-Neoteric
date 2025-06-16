@@ -51,6 +51,7 @@ public class NCLanguageProvider extends LanguageProvider {
         food();
         armor();
         records();
+        particleSources();
         tools();
         items();
         fuel();
@@ -544,6 +545,7 @@ public class NCLanguageProvider extends LanguageProvider {
     }
 
     private void tooltips() {
+        add("tooltip.ion_source.amount", "Amount: %spu / %spu");
         add("tooltip.target_chamber.detectors", "Detectors: %s");
         add("report.nc.1.target_chamber.all_detectors", "All Detectors: %s");
         add("report.nc.1.target_chamber.valid_detectors", "Valid Detectors: %s");
@@ -876,6 +878,12 @@ public class NCLanguageProvider extends LanguageProvider {
     private void isotopes() {
         for(String name: FissionFuel.NC_ISOTOPES.keySet()) {
             add(FissionFuel.NC_ISOTOPES.get(name).get(), convertToName(name));
+        }
+    }
+
+    private void particleSources() {
+        for(String name: ION_SOURCES.keySet()) {
+            add(NCItems.ION_SOURCES.get(name).get(), convertToName(name));
         }
     }
 

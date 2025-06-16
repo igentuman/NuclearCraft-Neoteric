@@ -1,6 +1,5 @@
 package igentuman.nc.compat.jei;
 
-import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.fission.FissionControllerBE;
 import igentuman.nc.block.entity.fusion.FusionCoreBE;
 import igentuman.nc.block.entity.kugelblitz.ChamberTerminalBE;
@@ -11,7 +10,6 @@ import igentuman.nc.client.gui.processor.NCProcessorScreen;
 import igentuman.nc.compat.jei.ingredient.ParticleStackHelper;
 import igentuman.nc.compat.jei.ingredient.ParticleStackListFactory;
 import igentuman.nc.compat.jei.ingredient.ParticleStackRenderer;
-import igentuman.nc.compat.jei.ingredient.ParticleType;
 import igentuman.nc.content.particles.Particle;
 import igentuman.nc.content.particles.ParticleStack;
 import igentuman.nc.content.particles.Particles;
@@ -44,9 +42,7 @@ import java.util.*;
 
 import static igentuman.nc.NuclearCraft.*;
 import static igentuman.nc.compat.GlobalVars.*;
-import static igentuman.nc.setup.registration.NCItems.NC_FOOD;
 import static igentuman.nc.util.ModUtil.isMekanismLoaded;
-import static net.minecraft.world.item.Items.AIR;
 
 @JeiPlugin
 public  class JEIPlugin implements IModPlugin {
@@ -187,7 +183,7 @@ public  class JEIPlugin implements IModPlugin {
 
     private List<ParticleRecipe> particleRecipes() {
         List<ParticleRecipe> recipes = new ArrayList<>();
-        for (Particle particle : Particles.list.values()) {
+        for (Particle particle : Particles.particles.values()) {
             recipes.add(new ParticleRecipe(rl(particle.getName()), particle));
         }
         return recipes;

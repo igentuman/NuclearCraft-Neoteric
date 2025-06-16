@@ -49,7 +49,7 @@ public class CreativeTabs {
 
     public static final RegistryObject<CreativeModeTab> ACCELERATOR_TAB = CREATIVE_TABS.register("accelerator",
             () ->  CreativeModeTab.builder()
-                    .displayItems((displayParams, output) -> acceleratorBlocks().forEach(output::accept))
+                    .displayItems((displayParams, output) -> acceleratorStuff().forEach(output::accept))
                     .icon(() -> new ItemStack(ACCELERATOR_BLOCKS.get("linear_accelerator_controller").get()))
                     .title(__("itemGroup.nuclearcraft_accelerator"))
                     .build());
@@ -179,13 +179,16 @@ public class CreativeTabs {
         return items;
     }
 
-    private static List<ItemStack> acceleratorBlocks() {
+    private static List<ItemStack> acceleratorStuff() {
         List<ItemStack> items = new ArrayList<>();
         for(RegistryObject<Block> block: ACCELERATOR_BLOCKS.values()) {
             items.add(new ItemStack(block.get()));
         }
         for(RegistryObject<Block> block: TARGET_CHAMBER_BLOCKS.values()) {
             items.add(new ItemStack(block.get()));
+        }
+        for(RegistryObject<Item> item: ION_SOURCES.values()) {
+            items.add(new ItemStack(item.get()));
         }
         return items;
     }

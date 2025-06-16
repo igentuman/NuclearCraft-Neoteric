@@ -4,12 +4,11 @@ import igentuman.api.nc.multiblock.MultiblockAttachable;
 import igentuman.api.nc.multiblock.Multiblock;
 import igentuman.api.nc.multiblock.MultiblockController;
 import igentuman.nc.block.entity.MultiblockControllerBE;
-import igentuman.nc.util.NCBlockPos;
+import igentuman.nc.util.BlockPosInstance;
 import igentuman.nc.util.math.MathUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.Mth;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
@@ -53,8 +52,8 @@ public abstract class AbstractMultiblock implements Multiblock {
     protected final HashMap<Long, BlockEntity> beCache = new HashMap<>();
     protected final HashMap<Long, BlockState> bsCache = new HashMap<>(10000);
     protected final HashSet<Long> allBlocks = new HashSet<>(10000);
-    protected NCBlockPos controllerPos;
-    protected NCBlockPos initialPos;
+    protected BlockPosInstance controllerPos;
+    protected BlockPosInstance initialPos;
     protected Direction multiblockDirection;
     protected MultiblockControllerBE controllerBe;
     private static final Pattern SPECIAL_BLOCKS = Pattern.compile(".*(fusion_proxy|fusion_core|controller|port|irradiator|rotor|chamber_terminal).*");
@@ -64,7 +63,7 @@ public abstract class AbstractMultiblock implements Multiblock {
         this.validOuterBlocks = validOuterBlocks;
         this.validInnerBlocks = validInnerBlocks;
         this.controller = controller;
-        controllerPos = NCBlockPos.of(controller().controllerBE().getBlockPos());
+        controllerPos = BlockPosInstance.of(controller().controllerBE().getBlockPos());
     }
 
     public void dispose() {
@@ -132,12 +131,12 @@ public abstract class AbstractMultiblock implements Multiblock {
         list.add(pos);
     }
 
-    protected NCBlockPos initialPos() {
+    protected BlockPosInstance initialPos() {
         if (controllerPos == null) {
-            controllerPos = NCBlockPos.copy(controller().controllerBE().getBlockPos());
+            controllerPos = BlockPosInstance.copy(controller().controllerBE().getBlockPos());
         }
         if (initialPos == null) {
-            initialPos = NCBlockPos.copy(controllerPos);
+            initialPos = BlockPosInstance.copy(controllerPos);
         }
         return initialPos.revert();
     }
@@ -176,7 +175,7 @@ public abstract class AbstractMultiblock implements Multiblock {
         return state;
     }
 
-    protected BlockState getBlockState(NCBlockPos relative, boolean force) {
+    protected BlockState getBlockState(BlockPosInstance relative, boolean force) {
         BlockState bs = getBlockState(relative);
         if(bs.isAir() && force) {
             bs = getLevel().getBlockState(relative);
@@ -274,14 +273,14 @@ public abstract class AbstractMultiblock implements Multiblock {
 
     public int resolveHeight()
     {
-        for (int i = 1; i <= maxHeight()+1; i++) {
+        for (int i = 1; i <= maxHeight()+2; i++) {
             if (!isValidForOuter(initialPos().above(i))) {
                 topCasing = i - 1;
                 height = i;
                 break;
             }
         }
-        for (int i = 1; i <= maxHeight()+1; i++) {
+        for (int i = 1; i <= maxHeight()+2; i++) {
             if (!isValidForOuter(initialPos().below(i))) {
                 bottomCasing = i - 1;
                 height += i - 1;
@@ -294,14 +293,14 @@ public abstract class AbstractMultiblock implements Multiblock {
 
     public int resolveWidth()
     {
-        for(int i = 1; i <= maxWidth()+1; i++) {
+        for(int i = 1; i <= maxWidth()+2; i++) {
             if (!isValidForOuter(getLeftPos(i).above(topCasing))) {
                 leftCasing = i-1;
                 width = i;
                 break;
             }
         }
-        for(int i = 1; i <= maxWidth()+1; i++) {
+        for(int i = 1; i <= maxWidth()+2; i++) {
             if (!isValidForOuter(getRightPos(i).above(topCasing))) {
                 rightCasing = i-1;
                 width += i-1;
@@ -313,8 +312,8 @@ public abstract class AbstractMultiblock implements Multiblock {
 
     public int resolveDepth()
     {
-        for(int i = 1; i <= maxDepth()+1; i++) {
-            if (!isValidForOuter(getForwardPos(i).above(topCasing))) {
+        for(int i = 1; i <= maxDepth()+2; i++) {
+            if (!isValidForOuter(getForwardPos(i).below(bottomCasing))) {
                 depth = i;
                 break;
             }
@@ -362,16 +361,16 @@ public abstract class AbstractMultiblock implements Multiblock {
             validationResult = ValidationResult.TOO_BIG;
             return;
         }
-        BlockPos leftFront = new NCBlockPos(getLeftPos(leftCasing));
-        BlockPos leftBack = new NCBlockPos(getLeftPos(leftCasing).relative(getControllerDirection(), -depth+1));
-        BlockPos rightFront = new NCBlockPos(getRightPos(rightCasing));
-        BlockPos rightBack = new NCBlockPos(getRightPos(rightCasing).relative(getControllerDirection(), -depth+1));
+        BlockPos leftFront = new BlockPosInstance(getLeftPos(leftCasing));
+        BlockPos leftBack = new BlockPosInstance(getLeftPos(leftCasing).relative(getControllerDirection(), -depth+1));
+        BlockPos rightFront = new BlockPosInstance(getRightPos(rightCasing));
+        BlockPos rightBack = new BlockPosInstance(getRightPos(rightCasing).relative(getControllerDirection(), -depth+1));
         int minX = MathUtils.min(leftFront.getX(), rightFront.getX(), leftBack.getX(), rightBack.getX());
         int minZ = MathUtils.min(leftFront.getZ(), rightFront.getZ(), leftBack.getZ(), rightBack.getZ());
         int maxX = MathUtils.max(leftFront.getX(), rightFront.getX(), leftBack.getX(), rightBack.getX());
         int maxZ = MathUtils.max(leftFront.getZ(), rightFront.getZ(), leftBack.getZ(), rightBack.getZ());
-        bottomLeft = new NCBlockPos(minX, leftFront.getY() - bottomCasing, minZ);
-        topRight = new NCBlockPos(maxX, leftFront.getY() + topCasing, maxZ);
+        bottomLeft = new BlockPosInstance(minX, leftFront.getY() - bottomCasing, minZ);
+        topRight = new BlockPosInstance(maxX, leftFront.getY() + topCasing, maxZ);
         cacheBlockStates();
         for(int y = 0; y < height; y++) {
             for(int x = 0; x < width; x++) {
@@ -424,7 +423,7 @@ public abstract class AbstractMultiblock implements Multiblock {
         for(int y = 1; y < resolveHeight()-1; y++) {
             for(int x = 1; x < resolveWidth()-1; x++) {
                 for (int z = 1; z < resolveDepth()-1; z++) {
-                    NCBlockPos toCheck = new NCBlockPos(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getControllerDirection(), -z));
+                    BlockPosInstance toCheck = new BlockPosInstance(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getControllerDirection(), -z));
                     if (!isValidForInner(toCheck)) {
                         validationResult = ValidationResult.WRONG_INNER;
                         errorBlockPos = new BlockPos(toCheck);

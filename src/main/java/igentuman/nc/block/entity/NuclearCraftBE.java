@@ -10,7 +10,7 @@ import igentuman.nc.recipes.NcRecipeType;
 import igentuman.nc.recipes.RecipeInfo;
 import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.util.CustomEnergyStorage;
-import igentuman.nc.util.NCBlockPos;
+import igentuman.nc.util.BlockPosInstance;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SoundInstance;
@@ -39,7 +39,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static igentuman.nc.compat.gregtech.GTUtils.*;
 import static igentuman.nc.handler.config.CommonConfig.GTCEUCompatibilityConfig.GTCEUCompatibility.GTCEU_AND_FE;
@@ -52,7 +51,7 @@ import static net.minecraftforge.common.capabilities.ForgeCapabilities.ENERGY;
 public class NuclearCraftBE extends BlockEntity {
 
     protected final String name;
-    protected NCBlockPos bePos;
+    protected BlockPosInstance bePos;
     protected boolean changed;
     protected SoundInstance currentSound;
     protected int playSoundCooldown = 0;

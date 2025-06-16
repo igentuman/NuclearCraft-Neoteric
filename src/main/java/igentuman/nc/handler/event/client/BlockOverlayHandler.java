@@ -6,9 +6,8 @@ import igentuman.api.nc.SideModeToggleable;
 import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.block.entity.fission.FissionControllerBE;
 import igentuman.nc.block.entity.fusion.FusionCoreBE;
-import igentuman.nc.client.renderer.DistortShader;
 import igentuman.nc.item.QNP;
-import igentuman.nc.util.NCBlockPos;
+import igentuman.nc.util.BlockPosInstance;
 import igentuman.nc.util.collection.HashList;
 import net.minecraft.client.Camera;
 import net.minecraft.client.CameraType;
@@ -45,7 +44,6 @@ import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -328,7 +326,7 @@ public class BlockOverlayHandler {
         RenderSystem.disableBlend();
     }
 
-    public static void removeFromOutline(NCBlockPos pos, boolean instant) {
+    public static void removeFromOutline(BlockPosInstance pos, boolean instant) {
         if (instant) {
             outlineBlocks.remove(pos);
         } else {
@@ -401,16 +399,16 @@ public class BlockOverlayHandler {
         }
     }
 
-    public static void addToOutline(NCBlockPos ncBlockPos) {
-        if(!outlineBlocks.contains(ncBlockPos)) {
-            outlineBlocks.add(ncBlockPos);
-            highlightsToRemove.remove(ncBlockPos);
+    public static void addToOutline(BlockPosInstance blockPosInstance) {
+        if(!outlineBlocks.contains(blockPosInstance)) {
+            outlineBlocks.add(blockPosInstance);
+            highlightsToRemove.remove(blockPosInstance);
         }
     }
 
-    public static void removeFromOutline(NCBlockPos ncBlockPos) {
-        if(!highlightsToRemove.contains(ncBlockPos)) {
-            highlightsToRemove.add(ncBlockPos);
+    public static void removeFromOutline(BlockPosInstance blockPosInstance) {
+        if(!highlightsToRemove.contains(blockPosInstance)) {
+            highlightsToRemove.add(blockPosInstance);
         }
     }
 }

@@ -4,7 +4,7 @@ import igentuman.nc.content.processors.Processors;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.type.NcRecipe;
-import igentuman.nc.util.NCBlockPos;
+import igentuman.nc.util.BlockPosInstance;
 import igentuman.nc.util.annotation.NothingNullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
@@ -32,7 +32,7 @@ public class PumpBE extends NCProcessorBE {
 
     //just check if it has solid blocks below and is not busy on other recipes
     public boolean isInSituValid() {
-        NCBlockPos pos = NCBlockPos.of(getBlockPos());
+        BlockPosInstance pos = BlockPosInstance.of(getBlockPos());
         for (int i = 0; i < 2; i++) {
             if (!level.getBlockState(pos.below()).isSolidRender(level, pos)) {
                 return false;

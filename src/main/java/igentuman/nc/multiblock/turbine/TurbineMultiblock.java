@@ -1,7 +1,5 @@
 package igentuman.nc.multiblock.turbine;
 
-import igentuman.api.nc.multiblock.MultiblockController;
-import igentuman.nc.block.entity.MultiblockControllerBE;
 import igentuman.nc.block.entity.turbine.*;
 import igentuman.nc.block.turbine.TurbineBearingBlock;
 import igentuman.nc.block.turbine.TurbineBladeBlock;
@@ -9,7 +7,7 @@ import igentuman.nc.block.turbine.TurbineRotorBlock;
 import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.ValidationResult;
-import igentuman.nc.util.NCBlockPos;
+import igentuman.nc.util.BlockPosInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
@@ -167,12 +165,12 @@ public class TurbineMultiblock extends AbstractMultiblock {
     protected boolean processInnerBlock(BlockPos toCheck) {
         BlockState bs = getBlockState(toCheck);
         if(bs.isAir()) return true;
-        super.processInnerBlock(new NCBlockPos(toCheck));
+        super.processInnerBlock(new BlockPosInstance(toCheck));
         if(bs.getBlock() instanceof TurbineRotorBlock) {
-            rotorPositions.add(new NCBlockPos(toCheck));
+            rotorPositions.add(new BlockPosInstance(toCheck));
         }
         if(bs.getBlock() instanceof TurbineBladeBlock) {
-            bladePositions.add(new NCBlockPos(toCheck));
+            bladePositions.add(new BlockPosInstance(toCheck));
         }
         return true;
     }
@@ -182,10 +180,10 @@ public class TurbineMultiblock extends AbstractMultiblock {
         BlockEntity be = getBlockEntity(pos);
         BlockState bs = getBlockState(pos);
         if(bs.getBlock() instanceof TurbineBearingBlock) {
-            bearingPositions.add(new NCBlockPos(pos));
+            bearingPositions.add(new BlockPosInstance(pos));
         }
         if(be instanceof TurbineCoilBE) {
-            coilPositions.add(new NCBlockPos(pos));
+            coilPositions.add(new BlockPosInstance(pos));
         }
     }
 

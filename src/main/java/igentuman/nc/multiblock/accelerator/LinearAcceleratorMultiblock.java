@@ -7,7 +7,7 @@ import igentuman.nc.block.entity.accelerator.LinearAcceleratorControllerBE;
 import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.ValidationResult;
-import igentuman.nc.util.NCBlockPos;
+import igentuman.nc.util.BlockPosInstance;
 import igentuman.nc.util.math.MathUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -25,7 +25,7 @@ public class LinearAcceleratorMultiblock extends AbstractMultiblock {
 
     private static final int FINAL_STAGE = 4;
     private LinearAcceleratorControllerBE controllerBe;
-    private NCBlockPos centerPos;
+    private BlockPosInstance centerPos;
     protected final HashMap<Long, ElectromagnetBlock> electromagnets = new HashMap<>(1000);
     protected final HashMap<Long, RFAmplifierBlock> amplifiers = new HashMap<>(1000);
     protected final HashMap<Long, CoolerBlock> coolers = new HashMap<>(1000);
@@ -132,7 +132,7 @@ public class LinearAcceleratorMultiblock extends AbstractMultiblock {
         bottomLeft = null;
         validationResult = ValidationResult.INCOMPLETE;
         stage = FINAL_STAGE;
-        initialPos = NCBlockPos.copy(controller().controllerBE().getBlockPos());
+        initialPos = BlockPosInstance.copy(controller().controllerBE().getBlockPos());
         multiblockDirection = null;
         controllers.clear();
         connectedPorts = 0;
@@ -170,16 +170,16 @@ public class LinearAcceleratorMultiblock extends AbstractMultiblock {
             }
         }
 
-        BlockPos leftFront = new NCBlockPos(getLeftPos(leftCasing));
-        BlockPos leftBack = new NCBlockPos(getLeftPos(leftCasing).relative(getControllerDirection(), -depth+1));
-        BlockPos rightFront = new NCBlockPos(getRightPos(rightCasing));
-        BlockPos rightBack = new NCBlockPos(getRightPos(rightCasing).relative(getControllerDirection(), -depth+1));
+        BlockPos leftFront = new BlockPosInstance(getLeftPos(leftCasing));
+        BlockPos leftBack = new BlockPosInstance(getLeftPos(leftCasing).relative(getControllerDirection(), -depth+1));
+        BlockPos rightFront = new BlockPosInstance(getRightPos(rightCasing));
+        BlockPos rightBack = new BlockPosInstance(getRightPos(rightCasing).relative(getControllerDirection(), -depth+1));
         int minX = MathUtils.min(leftFront.getX(), rightFront.getX(), leftBack.getX(), rightBack.getX());
         int minZ = MathUtils.min(leftFront.getZ(), rightFront.getZ(), leftBack.getZ(), rightBack.getZ());
         int maxX = MathUtils.max(leftFront.getX(), rightFront.getX(), leftBack.getX(), rightBack.getX());
         int maxZ = MathUtils.max(leftFront.getZ(), rightFront.getZ(), leftBack.getZ(), rightBack.getZ());
-        bottomLeft = new NCBlockPos(minX, leftFront.getY() - bottomCasing, minZ);
-        topRight = new NCBlockPos(maxX, leftFront.getY() + topCasing, maxZ);
+        bottomLeft = new BlockPosInstance(minX, leftFront.getY() - bottomCasing, minZ);
+        topRight = new BlockPosInstance(maxX, leftFront.getY() + topCasing, maxZ);
         cacheBlockStates();
         for(int y = 0; y < height; y++) {
             for(int x = 0; x < width; x++) {
@@ -209,30 +209,30 @@ public class LinearAcceleratorMultiblock extends AbstractMultiblock {
 
 
         if(maxX - minX == 4) {
-            centerPos = new NCBlockPos((minX + maxX) / 2, bottomLeft.getY() + 2, minZ);
+            centerPos = new BlockPosInstance((minX + maxX) / 2, bottomLeft.getY() + 2, minZ);
             multiblockDirection = Direction.NORTH;
         }
         if(maxZ - minZ == 4) {
-            centerPos = new NCBlockPos(minX, bottomLeft.getY() + 2, (minZ+maxZ)/2);
+            centerPos = new BlockPosInstance(minX, bottomLeft.getY() + 2, (minZ+maxZ)/2);
             multiblockDirection = Direction.WEST;
         }
 
         BlockState bs = getBlockState(centerPos);
         if(!bs.is(ACCELERATOR_BLOCKS.get("accelerator_beam_port").get()) && !bs.is(ACCELERATOR_BLOCKS.get("accelerator_ion_source_port").get())) {
             validationResult = ValidationResult.WRONG_BLOCK;
-            errorBlockPos = new NCBlockPos(centerPos);
+            errorBlockPos = new BlockPosInstance(centerPos);
             return;
         }
-        BlockPos ionSourcePos = bs.is(ACCELERATOR_BLOCKS.get("accelerator_ion_source_port").get()) ? new NCBlockPos(centerPos) : BlockPos.ZERO;
+        BlockPos ionSourcePos = bs.is(ACCELERATOR_BLOCKS.get("accelerator_ion_source_port").get()) ? new BlockPosInstance(centerPos) : BlockPos.ZERO;
         bs = getBlockState(centerPos.offset(0,0, maxZ-minZ));
         if(!bs.is(ACCELERATOR_BLOCKS.get("accelerator_beam_port").get()) && !bs.is(ACCELERATOR_BLOCKS.get("accelerator_ion_source_port").get())) {
             validationResult = ValidationResult.WRONG_BLOCK;
-            errorBlockPos = new NCBlockPos(centerPos);
+            errorBlockPos = new BlockPosInstance(centerPos);
             return;
         }
         if(!ionSourcePos.equals(BlockPos.ZERO) && bs.is(ACCELERATOR_BLOCKS.get("accelerator_ion_source_port").get())) {
             validationResult = ValidationResult.WRONG_BLOCK;
-            errorBlockPos = new NCBlockPos(centerPos);
+            errorBlockPos = new BlockPosInstance(centerPos);
             return;
         }
 
@@ -449,7 +449,7 @@ public class LinearAcceleratorMultiblock extends AbstractMultiblock {
         for(int i = 1; i < Math.max(depth, width)-1; i++) {
             if(!getBlockState(centerPos.revert().relative(multiblockDirection, -i)).is(ACCELERATOR_BLOCKS.get("accelerator_beam").get())) {
                 validationResult = ValidationResult.WRONG_INNER;
-                errorBlockPos = new NCBlockPos(centerPos);
+                errorBlockPos = new BlockPosInstance(centerPos);
                 return;
             }
         }

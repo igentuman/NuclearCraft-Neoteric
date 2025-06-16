@@ -8,7 +8,7 @@ import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.ValidationResult;
 import igentuman.nc.util.CustomEnergyStorage;
-import igentuman.nc.util.NCBlockPos;
+import igentuman.nc.util.BlockPosInstance;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -18,7 +18,6 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 
 import java.util.HashMap;
-import java.util.Map;
 
 public class MultiblockControllerBE extends NuclearCraftBE implements MultiblockAttachable<AbstractMultiblock, MultiblockControllerBE> {
 
@@ -118,7 +117,7 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
 
     public void tickClient() {
         if((!isCasingValid || !isInternalValid) && !errorBlockPos.equals(BlockPos.ZERO)) {
-            BlockOverlayHandler.addToOutline(new NCBlockPos(errorBlockPos.getX(), errorBlockPos.getY(), errorBlockPos.getZ()));
+            BlockOverlayHandler.addToOutline(new BlockPosInstance(errorBlockPos.getX(), errorBlockPos.getY(), errorBlockPos.getZ()));
         }
     }
 
@@ -185,7 +184,7 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
                 tmp = BlockPos.of(infoTag.getLong("erroredBlock"));
             }
             if(!tmp.equals(errorBlockPos) && level.isClientSide()) {
-                BlockOverlayHandler.removeFromOutline(NCBlockPos.copy(errorBlockPos), true);
+                BlockOverlayHandler.removeFromOutline(BlockPosInstance.copy(errorBlockPos), true);
             }
             errorBlockPos = tmp;
             validationResult = ValidationResult.byId(infoTag.getInt("validationId"));

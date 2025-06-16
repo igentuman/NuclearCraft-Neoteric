@@ -7,7 +7,7 @@ import igentuman.nc.block.fusion.FusionConnectorBlock;
 import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.ValidationResult;
-import igentuman.nc.util.NCBlockPos;
+import igentuman.nc.util.BlockPosInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
@@ -181,7 +181,7 @@ public class FusionReactorMultiblock extends AbstractMultiblock {
         }
     }
 
-    private void processFunctionalBlock(NCBlockPos pos)
+    private void processFunctionalBlock(BlockPosInstance pos)
     {
         if(getBlock(pos) instanceof ElectromagnetBlock magnet) {
             electromagnets.put(pos.asLong(), magnet);
@@ -195,34 +195,34 @@ public class FusionReactorMultiblock extends AbstractMultiblock {
     public void collectFunctionalParts() {
         electromagnets.clear();
         amplifiers.clear();
-        NCBlockPos pos = new NCBlockPos(controllerBE.getBlockPos());
+        BlockPosInstance pos = new BlockPosInstance(controllerBE.getBlockPos());
         for(Direction side: List.of(NORTH, EAST, SOUTH, WEST)) {
             Direction dir = side;
             int steps = length*2+3;
             int shift = length+1;
-            NCBlockPos startPosInnerWall = null;
-            NCBlockPos startPosOuterWall = null;
+            BlockPosInstance startPosInnerWall = null;
+            BlockPosInstance startPosOuterWall = null;
             //position to left corner of the ring
             switch (side) {
                 case NORTH -> {
                     dir = EAST;
-                    startPosInnerWall = new NCBlockPos(pos.revert().relative(NORTH, shift).relative(WEST, shift));
-                    startPosOuterWall = new NCBlockPos(pos.revert().relative(NORTH, 2+shift).relative(WEST, 1+shift));
+                    startPosInnerWall = new BlockPosInstance(pos.revert().relative(NORTH, shift).relative(WEST, shift));
+                    startPosOuterWall = new BlockPosInstance(pos.revert().relative(NORTH, 2+shift).relative(WEST, 1+shift));
                 }
                 case SOUTH -> {
                     dir = WEST;
-                    startPosInnerWall = new NCBlockPos(pos.revert().relative(SOUTH, shift).relative(EAST, shift));
-                    startPosOuterWall = new NCBlockPos(pos.revert().relative(SOUTH, 2+shift).relative(EAST, 1+shift));
+                    startPosInnerWall = new BlockPosInstance(pos.revert().relative(SOUTH, shift).relative(EAST, shift));
+                    startPosOuterWall = new BlockPosInstance(pos.revert().relative(SOUTH, 2+shift).relative(EAST, 1+shift));
                 }
                 case WEST -> {
                     dir = SOUTH;
-                    startPosInnerWall = new NCBlockPos(pos.revert().relative(WEST, shift).relative(NORTH, shift));
-                    startPosOuterWall = new NCBlockPos(pos.revert().relative(WEST, 2+shift).relative(NORTH, 1+shift));
+                    startPosInnerWall = new BlockPosInstance(pos.revert().relative(WEST, shift).relative(NORTH, shift));
+                    startPosOuterWall = new BlockPosInstance(pos.revert().relative(WEST, 2+shift).relative(NORTH, 1+shift));
                 }
                 case EAST -> {
                     dir = NORTH;
-                    startPosInnerWall = new NCBlockPos(pos.revert().relative(EAST, shift).relative(SOUTH, shift));
-                    startPosOuterWall = new NCBlockPos(pos.revert().relative(EAST, 2+shift).relative(SOUTH, 1+shift));
+                    startPosInnerWall = new BlockPosInstance(pos.revert().relative(EAST, shift).relative(SOUTH, shift));
+                    startPosOuterWall = new BlockPosInstance(pos.revert().relative(EAST, 2+shift).relative(SOUTH, 1+shift));
                 }
             }
             if(startPosInnerWall == null || startPosOuterWall == null) {
@@ -244,45 +244,45 @@ public class FusionReactorMultiblock extends AbstractMultiblock {
     private void validateRing() {
         casingBlocks = 0;
         validationResult = ValidationResult.VALID;
-        NCBlockPos pos = new NCBlockPos(controllerBE.getBlockPos().relative(UP));
+        BlockPosInstance pos = new BlockPosInstance(controllerBE.getBlockPos().relative(UP));
         ringValid = true;
         for(Direction side: List.of(NORTH, EAST, SOUTH, WEST)) {
             Direction dir = side;
             int steps = length*2+3;
             int shift = length+1;
-            NCBlockPos startPosInnerWall = null;
-            NCBlockPos startPosOuterWall = null;
-            NCBlockPos startPosBottomWall = null;
-            NCBlockPos startPosTopWall = null;
+            BlockPosInstance startPosInnerWall = null;
+            BlockPosInstance startPosOuterWall = null;
+            BlockPosInstance startPosBottomWall = null;
+            BlockPosInstance startPosTopWall = null;
             //position to left corner of the ring
             switch (side) {
                 case NORTH -> {
                     dir = EAST;
-                    startPosInnerWall = new NCBlockPos(pos.revert().relative(NORTH, shift).relative(WEST, shift));
-                    startPosOuterWall = new NCBlockPos(pos.revert().relative(NORTH, 2+shift).relative(WEST, 1+shift));
-                    startPosBottomWall = new NCBlockPos(pos.revert().relative(NORTH, 1+shift).relative(WEST, 1+shift).relative(DOWN));
-                    startPosTopWall = new NCBlockPos(pos.revert().relative(NORTH, 1+shift).relative(WEST, 1+shift).relative(UP));
+                    startPosInnerWall = new BlockPosInstance(pos.revert().relative(NORTH, shift).relative(WEST, shift));
+                    startPosOuterWall = new BlockPosInstance(pos.revert().relative(NORTH, 2+shift).relative(WEST, 1+shift));
+                    startPosBottomWall = new BlockPosInstance(pos.revert().relative(NORTH, 1+shift).relative(WEST, 1+shift).relative(DOWN));
+                    startPosTopWall = new BlockPosInstance(pos.revert().relative(NORTH, 1+shift).relative(WEST, 1+shift).relative(UP));
                 }
                 case SOUTH -> {
                     dir = WEST;
-                    startPosInnerWall = new NCBlockPos(pos.revert().relative(SOUTH, shift).relative(EAST, shift));
-                    startPosOuterWall = new NCBlockPos(pos.revert().relative(SOUTH, 2+shift).relative(EAST, 1+shift));
-                    startPosBottomWall = new NCBlockPos(pos.revert().relative(SOUTH, 1+shift).relative(EAST, 1+shift).relative(DOWN));
-                    startPosTopWall = new NCBlockPos(pos.revert().relative(SOUTH, 1+shift).relative(EAST, 1+shift).relative(UP));
+                    startPosInnerWall = new BlockPosInstance(pos.revert().relative(SOUTH, shift).relative(EAST, shift));
+                    startPosOuterWall = new BlockPosInstance(pos.revert().relative(SOUTH, 2+shift).relative(EAST, 1+shift));
+                    startPosBottomWall = new BlockPosInstance(pos.revert().relative(SOUTH, 1+shift).relative(EAST, 1+shift).relative(DOWN));
+                    startPosTopWall = new BlockPosInstance(pos.revert().relative(SOUTH, 1+shift).relative(EAST, 1+shift).relative(UP));
                 }
                 case WEST -> {
                     dir = SOUTH;
-                    startPosInnerWall = new NCBlockPos(pos.revert().relative(WEST, shift).relative(NORTH, shift));
-                    startPosOuterWall = new NCBlockPos(pos.revert().relative(WEST, 2+shift).relative(NORTH, 1+shift));
-                    startPosBottomWall = new NCBlockPos(pos.revert().relative(WEST, 1+shift).relative(NORTH, 1+shift).relative(DOWN));
-                    startPosTopWall = new NCBlockPos(pos.revert().relative(WEST, 1+shift).relative(NORTH, 1+shift).relative(UP));
+                    startPosInnerWall = new BlockPosInstance(pos.revert().relative(WEST, shift).relative(NORTH, shift));
+                    startPosOuterWall = new BlockPosInstance(pos.revert().relative(WEST, 2+shift).relative(NORTH, 1+shift));
+                    startPosBottomWall = new BlockPosInstance(pos.revert().relative(WEST, 1+shift).relative(NORTH, 1+shift).relative(DOWN));
+                    startPosTopWall = new BlockPosInstance(pos.revert().relative(WEST, 1+shift).relative(NORTH, 1+shift).relative(UP));
                 }
                 case EAST -> {
                     dir = NORTH;
-                    startPosInnerWall = new NCBlockPos(pos.revert().relative(EAST, shift).relative(SOUTH, shift));
-                    startPosOuterWall = new NCBlockPos(pos.revert().relative(EAST, 2+shift).relative(SOUTH, 1+shift));
-                    startPosBottomWall = new NCBlockPos(pos.revert().relative(EAST, 1+shift).relative(SOUTH, 1+shift).relative(DOWN));
-                    startPosTopWall = new NCBlockPos(pos.revert().relative(EAST, 1+shift).relative(SOUTH, 1+shift).relative(UP));
+                    startPosInnerWall = new BlockPosInstance(pos.revert().relative(EAST, shift).relative(SOUTH, shift));
+                    startPosOuterWall = new BlockPosInstance(pos.revert().relative(EAST, 2+shift).relative(SOUTH, 1+shift));
+                    startPosBottomWall = new BlockPosInstance(pos.revert().relative(EAST, 1+shift).relative(SOUTH, 1+shift).relative(DOWN));
+                    startPosTopWall = new BlockPosInstance(pos.revert().relative(EAST, 1+shift).relative(SOUTH, 1+shift).relative(UP));
                 }
             }
             //inner wall
@@ -338,7 +338,7 @@ public class FusionReactorMultiblock extends AbstractMultiblock {
 
     private void validateConnectors() {
         validationResult = ValidationResult.VALID;
-        NCBlockPos pos = new NCBlockPos(controllerBE().getBlockPos().above());
+        BlockPosInstance pos = new BlockPosInstance(controllerBE().getBlockPos().above());
         connectorsCount = 0;
         length = 1;
         connectorsValid = true;
@@ -372,31 +372,31 @@ public class FusionReactorMultiblock extends AbstractMultiblock {
     @Override
     public void validateInner() {
         if(!outerValid) return;
-        NCBlockPos pos = new NCBlockPos(controllerBE.getBlockPos().relative(UP));
+        BlockPosInstance pos = new BlockPosInstance(controllerBE.getBlockPos().relative(UP));
         innerValid = true;
         for(Direction side: List.of(NORTH, EAST, SOUTH, WEST)) {
             Direction dir = side;
             int steps = length*2+3;
             int shift = length+2;
-            NCBlockPos innerRingStartPos = null;
+            BlockPosInstance innerRingStartPos = null;
             Level level = controllerBE.getLevel();
             //position to left corner of the ring
             switch (side) {
                 case NORTH -> {
                     dir = EAST;
-                    innerRingStartPos = new NCBlockPos(pos.revert().relative(NORTH, shift).relative(WEST, shift));
+                    innerRingStartPos = new BlockPosInstance(pos.revert().relative(NORTH, shift).relative(WEST, shift));
                 }
                 case SOUTH -> {
                     dir = WEST;
-                    innerRingStartPos = new NCBlockPos(pos.revert().relative(SOUTH, shift).relative(EAST, shift));
+                    innerRingStartPos = new BlockPosInstance(pos.revert().relative(SOUTH, shift).relative(EAST, shift));
                 }
                 case WEST -> {
                     dir = SOUTH;
-                    innerRingStartPos = new NCBlockPos(pos.revert().relative(WEST, shift).relative(NORTH, shift));
+                    innerRingStartPos = new BlockPosInstance(pos.revert().relative(WEST, shift).relative(NORTH, shift));
                 }
                 case EAST -> {
                     dir = NORTH;
-                    innerRingStartPos = new NCBlockPos(pos.revert().relative(EAST, shift).relative(SOUTH, shift));
+                    innerRingStartPos = new BlockPosInstance(pos.revert().relative(EAST, shift).relative(SOUTH, shift));
                 }
             }
             for(int i = 0; i < steps; i++) {
@@ -440,8 +440,8 @@ public class FusionReactorMultiblock extends AbstractMultiblock {
     public void resolveDimensions()
     {
         validateConnectors();
-        topRight = NCBlockPos.of(validationResult.isValid ? controllerBE.getBlockPos().relative(UP, 2).relative(EAST, length+3).relative(SOUTH, length+3) : BlockPos.ZERO);
-        bottomLeft = NCBlockPos.of(validationResult.isValid ? controllerBE.getBlockPos().relative(WEST, length+3).relative(NORTH, length+3) : BlockPos.ZERO);
+        topRight = BlockPosInstance.of(validationResult.isValid ? controllerBE.getBlockPos().relative(UP, 2).relative(EAST, length+3).relative(SOUTH, length+3) : BlockPos.ZERO);
+        bottomLeft = BlockPosInstance.of(validationResult.isValid ? controllerBE.getBlockPos().relative(WEST, length+3).relative(NORTH, length+3) : BlockPos.ZERO);
     }
 
     public void recalculateCharacteristics() {

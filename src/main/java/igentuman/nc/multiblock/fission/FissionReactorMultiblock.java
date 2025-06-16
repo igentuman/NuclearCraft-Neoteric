@@ -9,7 +9,7 @@ import igentuman.nc.handler.event.server.WorldEvents;
 import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.ValidationResult;
-import igentuman.nc.util.NCBlockPos;
+import igentuman.nc.util.BlockPosInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
@@ -187,16 +187,25 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
         irradiationLines = 0;
         //Stage 1: Index all inner blocks
         indexInnerBlocks();
+        debugLog("stage 1 :"+validationResult);
+        debugLog("Top Right: " + getTopRightBlock().toShortString());
+        debugLog("Bottom Left: " + getBottomLeftBlock().toShortString());
         if(validationResult != ValidationResult.VALID) {
             clearStats();
             return;
         }
         //Stage 2: count fuel cell attachments and moderators
         indexFuelCellAttachments();
+        debugLog("stage 2 :"+validationResult);
         //Stage 3: index irradiators and count irradiation lines
         indexIrradiators();
+        debugLog("stage 3 :"+validationResult);
+
         //Stage 4: count heat sinks and their cooling
         indexHeatSinks();
+        debugLog("stage 4 :"+validationResult);
+        debugLog("Top Right: " + getTopRightBlock().toShortString());
+        debugLog("Bottom Left: " + getBottomLeftBlock().toShortString());
         //Stage 5: update controller stats
         controllerBE().irradiationLines = irradiationLines;
         controllerBE().allIrradiators = irradiators.size();
@@ -304,20 +313,20 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
     }
 
     private void indexInnerBlocks() {
-        NCBlockPos toCheck = new NCBlockPos(initialPos());
+        BlockPos thePos = initialPos().copy();
+        debugLog("height="+height+" width="+width+" depth="+depth);
         for(int y = 1; y < height - 1; y++) {
             for (int x = 1; x < width - 1; x++) {
                 for (int z = 1; z < depth - 1; z++) {
-                    switch (getMultiblockDirection().ordinal()) {
-                        case 3 -> toCheck.revert().east(x - leftCasing);
-                        case 5 -> toCheck.revert().north(x - leftCasing);
-                        case 2 -> toCheck.revert().west(x - leftCasing);
-                        case 4 -> toCheck.revert().south(x - leftCasing);
+                    switch (getControllerDirection().ordinal()) {
+                        case 3 -> thePos = initialPos().copy().east(x - leftCasing).above(y - bottomCasing).relative(getControllerDirection(), -z);
+                        case 5 -> thePos = initialPos().copy().north(x - leftCasing).above(y - bottomCasing).relative(getControllerDirection(), -z);
+                        case 2 -> thePos = initialPos().copy().west(x - leftCasing).above(y - bottomCasing).relative(getControllerDirection(), -z);
+                        case 4 -> thePos = initialPos().copy().south(x - leftCasing).above(y - bottomCasing).relative(getControllerDirection(), -z);
                     }
-                    toCheck.above(y - bottomCasing).relative(getControllerDirection(), -z);
-                    if(!processInnerBlock(toCheck)) {
+                    if(!processInnerBlock(thePos)) {
                         validationResult = ValidationResult.WRONG_INNER;
-                        errorBlockPos = new BlockPos(toCheck);
+                        errorBlockPos = new BlockPos(thePos);
                         return;
                     }
                 }

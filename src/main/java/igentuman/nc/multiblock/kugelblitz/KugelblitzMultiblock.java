@@ -1,13 +1,12 @@
 package igentuman.nc.multiblock.kugelblitz;
 
-import igentuman.api.nc.multiblock.MultiblockAttachable;
 import igentuman.nc.block.entity.kugelblitz.BlackHoleBE;
 import igentuman.nc.block.entity.kugelblitz.ChamberTerminalBE;
 import igentuman.nc.block.entity.kugelblitz.PhotonConcentratorBE;
 import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.ValidationResult;
-import igentuman.nc.util.NCBlockPos;
+import igentuman.nc.util.BlockPosInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
@@ -206,8 +205,8 @@ public class KugelblitzMultiblock extends AbstractMultiblock {
             return;
         }
         centerBlockPos = topCenter.below(5);
-        bottomLeft = NCBlockPos.of(topCenter.offset(-3, -3, -3));
-        topRight = NCBlockPos.of(topCenter.offset(3, 0, 3));
+        bottomLeft = BlockPosInstance.of(topCenter.offset(-3, -3, -3));
+        topRight = BlockPosInstance.of(topCenter.offset(3, 0, 3));
         validationResult = ValidationResult.VALID;
         outerValid = true;
     }

@@ -5,7 +5,7 @@ import igentuman.nc.block.entity.accelerator.TargetChamberControllerBE;
 import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.ValidationResult;
-import igentuman.nc.util.NCBlockPos;
+import igentuman.nc.util.BlockPosInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
@@ -184,7 +184,7 @@ public class TargetChamberMultiblock extends AbstractMultiblock {
     }
 
     private void indexInnerBlocks() {
-        NCBlockPos toCheck = new NCBlockPos(initialPos());
+        BlockPosInstance toCheck = new BlockPosInstance(initialPos());
         for(int y = 1; y < height - 1; y++) {
             for (int x = 1; x < width - 1; x++) {
                 for (int z = 1; z < depth - 1; z++) {

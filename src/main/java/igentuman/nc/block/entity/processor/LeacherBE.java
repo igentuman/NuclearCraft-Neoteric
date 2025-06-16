@@ -9,7 +9,7 @@ import igentuman.nc.recipes.NcRecipeType;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.type.NcRecipe;
-import igentuman.nc.util.NCBlockPos;
+import igentuman.nc.util.BlockPosInstance;
 import igentuman.nc.util.annotation.NBTField;
 import igentuman.nc.util.annotation.NothingNullByDefault;
 import igentuman.nc.util.insitu_leaching.WorldVeinsManager;
@@ -118,10 +118,10 @@ public class LeacherBE extends NCProcessorBE {
         ChunkPos chunkPos = new ChunkPos(getBlockPos());
         boolean isClientSide = Objects.requireNonNull(getLevel()).isClientSide;
         if(isClientSide) {
-            BlockOverlayHandler.removeFromOutline(new NCBlockPos(chunkPos.getMinBlockX(), worldPosition.getY(), chunkPos.getMinBlockZ()));
-            BlockOverlayHandler.removeFromOutline(new NCBlockPos(chunkPos.getMinBlockX(), worldPosition.getY(), chunkPos.getMaxBlockZ()));
-            BlockOverlayHandler.removeFromOutline(new NCBlockPos(chunkPos.getMaxBlockX(), worldPosition.getY(), chunkPos.getMaxBlockZ()));
-            BlockOverlayHandler.removeFromOutline(new NCBlockPos(chunkPos.getMaxBlockX(), worldPosition.getY(), chunkPos.getMinBlockZ()));
+            BlockOverlayHandler.removeFromOutline(new BlockPosInstance(chunkPos.getMinBlockX(), worldPosition.getY(), chunkPos.getMinBlockZ()));
+            BlockOverlayHandler.removeFromOutline(new BlockPosInstance(chunkPos.getMinBlockX(), worldPosition.getY(), chunkPos.getMaxBlockZ()));
+            BlockOverlayHandler.removeFromOutline(new BlockPosInstance(chunkPos.getMaxBlockX(), worldPosition.getY(), chunkPos.getMaxBlockZ()));
+            BlockOverlayHandler.removeFromOutline(new BlockPosInstance(chunkPos.getMaxBlockX(), worldPosition.getY(), chunkPos.getMinBlockZ()));
         }
     }
 
@@ -155,7 +155,7 @@ public class LeacherBE extends NCProcessorBE {
         handleState();
     }
 
-    public boolean isPumpValid(NCBlockPos pos, int id) {
+    public boolean isPumpValid(BlockPosInstance pos, int id) {
         for (int y = 0; y < 2; y++) {
             BlockEntity be = getLevel().getExistingBlockEntity(pos.below());
             if (be instanceof PumpBE) {
@@ -170,40 +170,40 @@ public class LeacherBE extends NCProcessorBE {
         ChunkPos chunkPos = new ChunkPos(getBlockPos());
         boolean isClientSide = Objects.requireNonNull(getLevel()).isClientSide;
         pumpsAreValid = isPumpValid(
-                new NCBlockPos(chunkPos.getMinBlockX(), worldPosition.getY()+1, chunkPos.getMinBlockZ()),
+                new BlockPosInstance(chunkPos.getMinBlockX(), worldPosition.getY()+1, chunkPos.getMinBlockZ()),
                 0
         );
         if(!pumpsAreValid) {
             if(isClientSide) {
-                BlockOverlayHandler.addToOutline(new NCBlockPos(chunkPos.getMinBlockX(), worldPosition.getY(), chunkPos.getMinBlockZ()));
+                BlockOverlayHandler.addToOutline(new BlockPosInstance(chunkPos.getMinBlockX(), worldPosition.getY(), chunkPos.getMinBlockZ()));
             }
         }
         if(!isPumpValid(
-                new NCBlockPos(chunkPos.getMinBlockX(), worldPosition.getY()+1, chunkPos.getMaxBlockZ()),
+                new BlockPosInstance(chunkPos.getMinBlockX(), worldPosition.getY()+1, chunkPos.getMaxBlockZ()),
                 1
         )) {
             pumpsAreValid = false;
             if(isClientSide) {
-                BlockOverlayHandler.addToOutline(new NCBlockPos(chunkPos.getMinBlockX(), worldPosition.getY(), chunkPos.getMaxBlockZ()));
+                BlockOverlayHandler.addToOutline(new BlockPosInstance(chunkPos.getMinBlockX(), worldPosition.getY(), chunkPos.getMaxBlockZ()));
             }
         }
 
         if(!isPumpValid(
-                new NCBlockPos(chunkPos.getMaxBlockX(), worldPosition.getY()+1, chunkPos.getMaxBlockZ()),
+                new BlockPosInstance(chunkPos.getMaxBlockX(), worldPosition.getY()+1, chunkPos.getMaxBlockZ()),
                 2
         )) {
             if(isClientSide) {
-                BlockOverlayHandler.addToOutline(new NCBlockPos(chunkPos.getMaxBlockX(), worldPosition.getY(), chunkPos.getMaxBlockZ()));
+                BlockOverlayHandler.addToOutline(new BlockPosInstance(chunkPos.getMaxBlockX(), worldPosition.getY(), chunkPos.getMaxBlockZ()));
             }
             pumpsAreValid = false;
         }
 
         if(!isPumpValid(
-                new NCBlockPos(chunkPos.getMaxBlockX(), worldPosition.getY()+1, chunkPos.getMinBlockZ()),
+                new BlockPosInstance(chunkPos.getMaxBlockX(), worldPosition.getY()+1, chunkPos.getMinBlockZ()),
                 3
         )) {
             if(isClientSide) {
-                BlockOverlayHandler.addToOutline(new NCBlockPos(chunkPos.getMaxBlockX(), worldPosition.getY(), chunkPos.getMinBlockZ()));
+                BlockOverlayHandler.addToOutline(new BlockPosInstance(chunkPos.getMaxBlockX(), worldPosition.getY(), chunkPos.getMinBlockZ()));
             }
             pumpsAreValid = false;
         }
@@ -293,7 +293,7 @@ public class LeacherBE extends NCProcessorBE {
             if(currentMiningTimeout > 200) {
                 currentMiningTimeout = 0;
 
-                currentMiningPos = new NCBlockPos(getBlockPos().getX(), getBlockPos().getY()-1, getBlockPos().getZ());
+                currentMiningPos = new BlockPosInstance(getBlockPos().getX(), getBlockPos().getY()-1, getBlockPos().getZ());
             } else {
                 currentMiningTimeout++;
                 return ItemStack.EMPTY;
@@ -329,7 +329,7 @@ public class LeacherBE extends NCProcessorBE {
         int startY = currentMiningPos.getY();
         int startX = new ChunkPos(currentMiningPos).getMinBlockX();
         int startZ = new ChunkPos(currentMiningPos).getMinBlockZ();
-        NCBlockPos tempMiningPos = new NCBlockPos(currentMiningPos);
+        BlockPosInstance tempMiningPos = new BlockPosInstance(currentMiningPos);
         for(int y = startY; y > getLevel().getMinBuildHeight(); y--) {
            for(int x = 0; x < 16; x++) {
                for(int z = 0; z < 16; z++) {

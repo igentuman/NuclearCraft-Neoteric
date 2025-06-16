@@ -7,7 +7,6 @@ import igentuman.nc.client.particle.FusionBeamParticleData;
 import igentuman.nc.client.sound.SoundHandler;
 import igentuman.nc.compat.cc.FusionReactorPeripheral;
 import igentuman.nc.compat.oc2.FusionReactorDevice;
-import igentuman.nc.handler.event.client.BlockOverlayHandler;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.SlotModePair;
 import igentuman.nc.multiblock.MultiblockHandler;
@@ -19,19 +18,16 @@ import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.util.CustomEnergyStorage;
-import igentuman.nc.util.NCBlockPos;
+import igentuman.nc.util.BlockPosInstance;
 import igentuman.nc.util.annotation.NBTField;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -321,7 +317,7 @@ public class FusionCoreBE extends MultiblockControllerBE {
     }
 
     protected void renderBeam() {
-        NCBlockPos pos = new NCBlockPos(getBlockPos().above());
+        BlockPosInstance pos = new BlockPosInstance(getBlockPos().above());
         int beamLength = size*2+4;
         sendBeamData(new FusionBeamParticleData(Direction.EAST, beamLength, 0.35f),
                 pos.revert().relative(Direction.NORTH, size+2).relative(Direction.WEST, size+2)

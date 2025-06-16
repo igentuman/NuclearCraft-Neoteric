@@ -3,6 +3,7 @@ package igentuman.nc.util.math;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Vec3i;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -51,6 +52,14 @@ public class Pos3D extends Vec3 {
         double y = translation.x * matrix[4] + translation.y * matrix[5] + translation.z * matrix[6] + matrix[7];
         double z = translation.x * matrix[8] + translation.y * matrix[9] + translation.z * matrix[10] + matrix[11];
         return new Pos3D(x, y, z);
+    }
+
+    public static int getTaxiDistance(BlockPos a, BlockPos b)
+    {
+        int x = Math.abs(a.getX()- b.getX());
+        int y = Math.abs(a.getY()- b.getY());
+        int z = Math.abs(a.getZ()- b.getZ());
+        return x+y+z;
     }
 
     public static double[] getRotationMatrix(float angle, Pos3D axis) {

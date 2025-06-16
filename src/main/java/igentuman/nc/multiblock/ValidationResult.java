@@ -18,6 +18,7 @@ public enum ValidationResult {
     INCORRECT_CONTROLLER_PLACEMENT(false,13, "validation.structure.incorrect_controller_placement"),
     ASYMETRIC_WALLS(false,14, "validation.structure.asymetric_walls"),
     WRONG_BLOCK(false,15, "validation.structure.wrong_block"),
+    NO_DETECTORS(false,16, "validation.structure.no_detectors"),
     ;
 
     public boolean isValid;

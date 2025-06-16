@@ -7,8 +7,7 @@ import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;
-import igentuman.nc.multiblock.fission.FissionReactorMultiblock;
-import igentuman.nc.multiblock.fission.FissionReactorRegistration;
+import igentuman.nc.multiblock.accelerator.TargetChamberMultiblock;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -25,14 +24,16 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Objects;
 
-import static igentuman.nc.compat.gregtech.GTUtils.*;
-import static igentuman.nc.compat.oc2.FissionReactorDevice.DEVICE_CAPABILITY;
+import static igentuman.nc.compat.gregtech.GTUtils.getGTEnergy;
+import static igentuman.nc.compat.gregtech.GTUtils.isOnlyGTCEUCapEnabled;
+import static igentuman.nc.compat.oc2.TargetChamberDevice.DEVICE_CAPABILITY;
+import static igentuman.nc.multiblock.accelerator.TargetChamberRegistration.TARGET_CHAMBER_BE;
 import static igentuman.nc.util.ModUtil.*;
 import static net.minecraftforge.common.capabilities.ForgeCapabilities.ENERGY;
 
 public class TargetChamberPortBE extends NuclearCraftBE implements MultiblockAttachable {
 
-    public static final String NAME = "fission_reactor_port";
+    public static final String NAME = "target_chamber_beam_port";
 
     @NBTField
     public byte analogSignal = 0;
@@ -44,11 +45,11 @@ public class TargetChamberPortBE extends NuclearCraftBE implements MultiblockAtt
     @NBTField
     public boolean connected = false;
 
-    protected FissionReactorMultiblock multiblock;
+    protected TargetChamberMultiblock multiblock;
     protected TargetChamberControllerBE controller;
 
     public TargetChamberPortBE(BlockPos pPos, BlockState pBlockState) {
-        super(FissionReactorRegistration.FISSION_BE.get(NAME).get(), pPos, pBlockState);
+        super(TARGET_CHAMBER_BE.get(NAME).get(), pPos, pBlockState);
     }
     public Direction getFacing() {
         return getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);
@@ -62,7 +63,7 @@ public class TargetChamberPortBE extends NuclearCraftBE implements MultiblockAtt
         return Objects.requireNonNull(getLevel()).getBestNeighborSignal(worldPosition);
     }
 
-    public FissionReactorMultiblock getMultiblock() {
+    public TargetChamberMultiblock getMultiblock() {
         return multiblock;
     }
 
@@ -97,9 +98,8 @@ public class TargetChamberPortBE extends NuclearCraftBE implements MultiblockAtt
             updateAnalogSignal();
 
             updated = wasSignal != analogSignal || updated;
-            switch (redstoneMode) {
-                case SignalSource.SWITCH -> controller().toggleReactor(analogSignal > 0);
-                case SignalSource.MODERATOR -> controller().adjustModerator(analogSignal);
+            if (redstoneMode == SignalSource.SWITCH) {
+                controller().toggleReactor(analogSignal > 0);
             }
         }
         connected = getMultiblock() != null && getMultiblock().isFormed();
@@ -128,48 +128,21 @@ public class TargetChamberPortBE extends NuclearCraftBE implements MultiblockAtt
             case SignalSource.ENERGY:
                 analogSignal = (byte) (controller().energyStorage().getEnergyStored() * 15 / controller().energyStorage().getMaxEnergyStored());
                 break;
-            case SignalSource.HEAT:
-                analogSignal = (byte) (controller().heat * 15 / controller().getMaxHeat());
-                break;
             case SignalSource.PROGRESS:
                 analogSignal = (byte) (controller().recipeInfo().ticksProcessed * 15 / controller().recipeInfo().ticks);
                 break;
             case SignalSource.ITEMS:
                 analogSignal = (byte) (itemHandler().getStackInSlot(0).getCount() * 15 / itemHandler().getStackInSlot(0).getMaxStackSize());
                 break;
-            case SignalSource.MODERATOR:
-                analogSignal = (byte) (Math.max(1, getRedstoneSignal()));
             case SignalSource.SWITCH:
                 analogSignal = (byte) (Math.max(0, getRedstoneSignal()));
                 break;
         }
     }
 
+    @Override
     protected void transferEnergyToSide(Direction direction) {
-        if (getEnergyStored() <= 0) {
-            return; // No energy to transfer
-        }
-        BlockEntity be = level.getExistingBlockEntity(worldPosition.relative(direction));
-        if (be == null || be instanceof TargetChamberPortBE) {
-            return;
-        }
-        if((isGtLoaded() && isGTEUCapEnabled())) {
-            transferEU(controller(), be, controller().energyStorage(), direction);
-        }
-        if(isGtLoaded() && isOnlyGTCEUCapEnabled()) {
-            return;
-        }
-        be.getCapability(ForgeCapabilities.ENERGY, direction.getOpposite()).map(handler -> {
-                    if (handler.canReceive()) {
-                        int received = handler.receiveEnergy(Math.min(controller().energyStorage().getMaxExtract(), getEnergyStored()), false);
-                        controller().energyStorage().consumeEnergy(received);
-                        controller().setChanged();
-                        return getEnergyStored() > 0;
-                    } else {
-                        return true;
-                    }
-                }
-        );
+        return;
     }
 
     protected ItemCapabilityHandler itemHandler()
@@ -228,7 +201,7 @@ public class TargetChamberPortBE extends NuclearCraftBE implements MultiblockAtt
         if(this.multiblock == multiblock) {
             return;
         }
-        this.multiblock = (FissionReactorMultiblock) multiblock;
+        this.multiblock = (TargetChamberMultiblock) multiblock;
         if (this.multiblock != null) {
             controllerPos = this.multiblock.controller().controllerBE().getBlockPos();
             controller = (TargetChamberControllerBE) this.multiblock.controller().controllerBE();
@@ -271,7 +244,7 @@ public class TargetChamberPortBE extends NuclearCraftBE implements MultiblockAtt
 
     public double getDepletionProgress() {
         if (controller() == null) return 0;
-        return controller().getDepletionProgress();
+        return controller().getRecipeProgress();
     }
 
     public int getMaxEnergyStored() {

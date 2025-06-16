@@ -1,7 +1,8 @@
 package igentuman.nc.block.accelerator;
 
-import igentuman.nc.block.entity.accelerator.LinearAcceleratorControllerBE;
+import igentuman.nc.block.entity.accelerator.TargetChamberControllerBE;
 import igentuman.nc.container.LinearAcceleratorContainer;
+import igentuman.nc.container.TargetChamberControllerContainer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -38,13 +39,15 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 import static igentuman.nc.handler.config.AcceleratorConfig.ACCELERATOR_CONFIG;
+import static igentuman.nc.handler.config.AcceleratorConfig.PARTICLE_CHAMBER_CONFIG;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BE;
+import static igentuman.nc.multiblock.accelerator.TargetChamberRegistration.TARGET_CHAMBER_BE;
 import static igentuman.nc.util.TextUtils.__;
 
 public class TargetChamberControllerBlock extends HorizontalDirectionalBlock implements EntityBlock {
     public static final DirectionProperty HORIZONTAL_FACING = FACING;
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
-    public static final String NAME = "linear_accelerator_controller";
+    public static final String NAME = "target_chamber_controller";
     public TargetChamberControllerBlock() {
         this(Properties.of()
                 .sound(SoundType.METAL)
@@ -73,7 +76,7 @@ public class TargetChamberControllerBlock extends HorizontalDirectionalBlock imp
     @Nullable
     @Override
     public BlockEntity newBlockEntity(@NotNull BlockPos pPos, @NotNull BlockState pState) {
-        return ACCELERATOR_BE.get(NAME).get().create(pPos, pState);
+        return TARGET_CHAMBER_BE.get(NAME).get().create(pPos, pState);
     }
 
     @Override
@@ -82,7 +85,7 @@ public class TargetChamberControllerBlock extends HorizontalDirectionalBlock imp
         if (!level.isClientSide()) {
             BlockEntity be = level.getExistingBlockEntity(pos);
 
-            if (be instanceof LinearAcceleratorControllerBE)  {
+            if (be instanceof TargetChamberControllerBE)  {
                 MenuProvider containerProvider = new MenuProvider() {
                     @Override
                     public Component getDisplayName() {
@@ -91,7 +94,7 @@ public class TargetChamberControllerBlock extends HorizontalDirectionalBlock imp
 
                     @Override
                     public AbstractContainerMenu createMenu(int windowId, @NotNull Inventory playerInventory, @NotNull Player playerEntity) {
-                            return new LinearAcceleratorContainer(windowId, pos, playerInventory);
+                            return new TargetChamberControllerContainer(windowId, pos, playerInventory);
                     }
                 };
                 NetworkHooks.openScreen((ServerPlayer) player, containerProvider, be.getBlockPos());
@@ -105,36 +108,28 @@ public class TargetChamberControllerBlock extends HorizontalDirectionalBlock imp
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, @NotNull BlockState state, @NotNull BlockEntityType<T> type) {
         if (level.isClientSide()) {
             return (lvl, pos, blockState, t) -> {
-                if (t instanceof LinearAcceleratorControllerBE tile) {
+                if (t instanceof TargetChamberControllerBE tile) {
                     tile.tickClient();
                     level.setBlock(pos, blockState.setValue(POWERED, tile.controllerEnabled), 3);
                 }
             };
         }
         return (lvl, pos, blockState, t)-> {
-            if (t instanceof LinearAcceleratorControllerBE tile) {
+            if (t instanceof TargetChamberControllerBE tile) {
                 tile.tickServer();
             }
         };
     }
 
-    public int maxDepth() {
-        return switch (ACCELERATOR_CONFIG.SCALE.get()) {
-            case 2 -> 1000;
-            case 3 -> 10000;
-            default -> 100;
-        };
+    public int maxSize() {
+        return PARTICLE_CHAMBER_CONFIG.MAX_SIZE.get();
     }
-    public int minDepth() {
-        return switch (ACCELERATOR_CONFIG.SCALE.get()) {
-            case 2 -> 60;
-            case 3 -> 600;
-            default -> 6;
-        };
+    public int minSize() {
+        return PARTICLE_CHAMBER_CONFIG.MIN_SIZE.get();
     }
 
     @Override
     public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag) {
-        list.add(__("tooltip.structure.sizes", "5x5x"+minDepth(), "5x5x"+maxDepth()).withStyle(ChatFormatting.ITALIC));
+        list.add(__("tooltip.structure.sizes", minSize()+"x"+minSize()+"x"+minSize(), maxSize()+"x"+maxSize()+"x"+maxSize()).withStyle(ChatFormatting.ITALIC));
     }
 }

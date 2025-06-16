@@ -124,12 +124,8 @@ public class TargetChamberControllerContainer extends AbstractContainerMenu {
         return energy2Display(blockEntity.energyStorage.getEnergyStored());
     }
 
-    public double getHeat() {
-        return Math.floor(blockEntity.heat);
-    }
-
     public double getProgress() {
-        return blockEntity.getDepletionProgress();
+        return blockEntity.getRecipeProgress();
     }
 
     private void addSlotRange(IItemHandler handler, int x, int y, int amount, int dx) {
@@ -157,10 +153,6 @@ public class TargetChamberControllerContainer extends AbstractContainerMenu {
 
     public int getMaxEnergy() {
         return energy2Display(blockEntity.energyStorage.getMaxEnergyStored());
-    }
-
-    public double getMaxHeat() {
-        return blockEntity.getMaxHeat();
     }
 
     public String getEfficiency() {
@@ -192,5 +184,9 @@ public class TargetChamberControllerContainer extends AbstractContainerMenu {
     }
     public boolean canAnalyze() {
         return blockEntity.analyzeDelay < 1;
+    }
+
+    public int getDetectors() {
+        return blockEntity.detectorsCount;
     }
 }

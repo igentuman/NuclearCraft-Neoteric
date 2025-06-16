@@ -44,17 +44,10 @@ public class TargetChamberPeripheral implements IPeripheral {
         return chamber.hasRecipe();
     }
     @LuaFunction
-    public final int getDepletionProgress()
+    public final int getRecipeProgress()
     {
-        return (int) (chamber.getDepletionProgress()*100);
+        return (int) (chamber.getRecipeProgress()*100);
     }
-
-    @LuaFunction
-    public final double getMaxHeatCapacity()
-    {
-        return chamber.getMaxHeat();
-    }
-
     @LuaFunction
     public final void enableReactor()
     {
@@ -77,12 +70,6 @@ public class TargetChamberPeripheral implements IPeripheral {
     public final int getEnergyStored()
     {
         return chamber.energyStorage().getEnergyStored();
-    }
-
-    @LuaFunction
-    public final int getHeatStored()
-    {
-        return (int) chamber.heat;
     }
 
     @LuaFunction

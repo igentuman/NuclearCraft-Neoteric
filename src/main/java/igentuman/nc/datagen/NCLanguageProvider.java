@@ -544,6 +544,12 @@ public class NCLanguageProvider extends LanguageProvider {
     }
 
     private void tooltips() {
+        add("tooltip.target_chamber.detectors", "Detectors: %s");
+        add("report.nc.1.target_chamber.all_detectors", "All Detectors: %s");
+        add("report.nc.1.target_chamber.valid_detectors", "Valid Detectors: %s");
+        add("tooltip.detector.distance", "Max distance to chamber camera: %s");
+        add("tooltip.detector.power", "FE required: %s/t");
+        add("tooltip.detector.efficiency", "Efficiency: %s%%");
         add("tooltip.structure.sizes", "Structure sizes: Min %s - Max: %s");
         add("tooltip.turbine.max_eu_energy", "Max EU gen: %s");
         add("tooltip.turbine.max_energy", "Max FE gen: %s");

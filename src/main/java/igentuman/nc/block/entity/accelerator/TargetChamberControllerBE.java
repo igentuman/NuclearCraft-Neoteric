@@ -2,70 +2,53 @@ package igentuman.nc.block.entity.accelerator;
 
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.MultiblockControllerBE;
-import igentuman.nc.compat.cc.SolidFissionReactorPeripheral;
 import igentuman.nc.compat.cc.TargetChamberPeripheral;
-import igentuman.nc.compat.oc2.FissionReactorDevice;
 import igentuman.nc.compat.oc2.TargetChamberDevice;
 import igentuman.nc.handler.event.client.BlockOverlayHandler;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.SlotModePair;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
-import igentuman.nc.item.ItemFuel;
 import igentuman.nc.multiblock.accelerator.TargetChamberMultiblock;
-import igentuman.nc.multiblock.fission.FissionReactorMultiblock;
-import igentuman.nc.multiblock.fission.FissionReactorRegistration;
-import igentuman.nc.radiation.ItemRadiation;
 import igentuman.nc.radiation.data.RadiationManager;
 import igentuman.nc.recipes.NcRecipeType;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.type.NcRecipe;
-import igentuman.nc.setup.registration.NCFluids;
 import igentuman.nc.util.CustomEnergyStorage;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
 
-import static igentuman.nc.block.fission.FissionControllerBlock.POWERED;
+import static igentuman.nc.block.accelerator.TargetChamberControllerBlock.POWERED;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.compat.gregtech.GTUtils.getGTEnergy;
 import static igentuman.nc.compat.gregtech.GTUtils.isOnlyGTCEUCapEnabled;
 import static igentuman.nc.compat.oc2.FissionReactorDevice.DEVICE_CAPABILITY;
-import static igentuman.nc.handler.config.CommonConfig.ENERGY_GENERATION;
 import static igentuman.nc.handler.config.CommonConfig.GTCEU_CONFIG;
-import static igentuman.nc.handler.config.FissionConfig.FISSION_CONFIG;
-import static igentuman.nc.multiblock.fission.FissionReactorRegistration.FISSION_BLOCKS;
-import static igentuman.nc.multiblock.fission.FissionReactorRegistration.heatsinks;
-import static igentuman.nc.setup.registration.FissionFuel.ITEM_PROPERTIES;
+import static igentuman.nc.multiblock.accelerator.TargetChamberRegistration.TARGET_CHAMBER_BE;
+import static igentuman.nc.multiblock.accelerator.TargetChamberRegistration.TARGET_CHAMBER_BLOCKS;
 import static igentuman.nc.setup.registration.NCSounds.FISSION_REACTOR;
 import static igentuman.nc.setup.registration.NcParticleTypes.RADIATION;
 import static igentuman.nc.util.ModUtil.*;
-import static net.minecraft.core.Direction.UP;
-import static net.minecraft.world.item.Items.AIR;
-import static net.minecraftforge.common.capabilities.ForgeCapabilities.*;
+import static net.minecraftforge.common.capabilities.ForgeCapabilities.ENERGY;
+import static net.minecraftforge.common.capabilities.ForgeCapabilities.ITEM_HANDLER;
 
 public class TargetChamberControllerBE extends MultiblockControllerBE {
 
@@ -74,10 +57,6 @@ public class TargetChamberControllerBE extends MultiblockControllerBE {
     public final CustomEnergyStorage energyStorage;
     protected final LazyOptional<IEnergyStorage> energy;
 
-    @NBTField
-    public double maxHeat = 0;
-    @NBTField
-    public double heat = 0;
     @NBTField
     public int detectorsCount = 0;
     @NBTField
@@ -99,7 +78,7 @@ public class TargetChamberControllerBE extends MultiblockControllerBE {
     public int allDetectors = 0;
 
     public TargetChamberControllerBE(BlockPos pPos, BlockState pBlockState) {
-        super(FissionReactorRegistration.FISSION_BE.get(NAME).get(),pPos, pBlockState);
+        super(TARGET_CHAMBER_BE.get(NAME).get(),pPos, pBlockState);
         contentHandler = new SidedContentHandler(
                 1, 1,
                 0, 0);
@@ -132,16 +111,6 @@ public class TargetChamberControllerBE extends MultiblockControllerBE {
             }
         }
         return allowedInputs;
-    }
-
-    private List<String> activeCoolersTypes() {
-        List<String> types = new ArrayList<>();
-        for(String name: heatsinks.keySet()) {
-            if(name.contains("active") && !name.contains("empty")) {
-                types.add(name.replace("active_", ""));
-            }
-        }
-        return types;
     }
 
     @Override
@@ -225,21 +194,6 @@ public class TargetChamberControllerBE extends MultiblockControllerBE {
         return super.getCapability(cap, side);
     }
 
-    public void tickClient() {
-        super.tickClient();
-        if(!isCasingValid || !isInternalValid) {
-            BlockOverlayHandler.reactors.remove(this);
-            stopSound();
-            return;
-        }
-        if(efficiency > 0) {
-            spawnParticles();
-            playSound(FISSION_REACTOR, 0.2f);
-        } else {
-            stopSound();
-        }
-    }
-
     public void tickServer() {
 
         if(NuclearCraft.instance.isNcBeStopped || isRemoved()) {
@@ -256,7 +210,6 @@ public class TargetChamberControllerBE extends MultiblockControllerBE {
 
         controllerEnabled = hasRedstoneSignal() && getMultiblock().isFormed();
         controllerEnabled = !forceShutdown && controllerEnabled;
-        //do not allow change reactor state during cooldown or heating up
         if(controllerEnabled != wasEnabled) {
             controllerEnabled = wasEnabled;
         }
@@ -286,8 +239,8 @@ public class TargetChamberControllerBE extends MultiblockControllerBE {
     @Override
     public HashMap<String, String> getAnalyzeReport() {
         HashMap<String, String> report = new HashMap<>();
-        report.put("report.nc.1.reactor_all_moderators", String.valueOf(allDetectors));
-        report.put("report.nc.2.reactor_moderators", String.valueOf(detectorsCount));
+        report.put("report.nc.1.target_chamber.all_detectors", String.valueOf(allDetectors));
+        report.put("report.nc.2.target_chamber.valid_detectors", String.valueOf(detectorsCount));
         report.put("report.nc.11.has_recipe", String.valueOf(recipeInfo().recipe != null));
         return report;
     }
@@ -297,11 +250,11 @@ public class TargetChamberControllerBE extends MultiblockControllerBE {
     }
 
     @Override
-    public FissionReactorMultiblock getMultiblock() {
+    public TargetChamberMultiblock getMultiblock() {
         if(multiblock == null) {
             multiblock = new TargetChamberMultiblock(this);
         }
-        return (FissionReactorMultiblock) multiblock;
+        return (TargetChamberMultiblock) multiblock;
     }
 
     @Override
@@ -432,13 +385,10 @@ public class TargetChamberControllerBE extends MultiblockControllerBE {
         return facing;
     }
 
-    public double getDepletionProgress() {
+    public double getRecipeProgress() {
         return recipeInfo().getProgress();
     }
 
-    public double getMaxHeat() {
-        return maxHeat;
-    }
 
     public boolean hasRedstoneSignal() {
         if(getLevel().getGameTime() % 10 == 0) {
@@ -486,19 +436,8 @@ public class TargetChamberControllerBE extends MultiblockControllerBE {
         return Objects.requireNonNull(getLevel()).getBestNeighborSignal(worldPosition);
     }
 
-    private double targetModerationLevel = 1D;
-
-    public void adjustModerator(int redstoneSignal) {
-        BigDecimal bd = BigDecimal.valueOf((double) redstoneSignal / 15);
-        bd = bd.setScale(1, RoundingMode.HALF_UP);
-        targetModerationLevel = bd.doubleValue();
-    }
 
     public void refresh() {
-        double multiplier = ((double) Math.round(Math.log(height*width*depth)*10)/10)-1;
-        maxHeat = FISSION_CONFIG.HEAT_CAPACITY.get()*multiplier;
-        contentHandler().fluidCapability.tanks.get(0).setCapacity((int) (Math.pow(multiplier, 2)*1_000_000));
-        contentHandler().fluidCapability.tanks.get(1).setCapacity((int) (Math.pow(multiplier, 2)*1_000_000));
         setChanged();
     }
 
@@ -517,12 +456,12 @@ public class TargetChamberControllerBE extends MultiblockControllerBE {
 
         @Override
         public @NotNull String getGroup() {
-            return FISSION_BLOCKS.get(codeId).get().getName().getString();
+            return TARGET_CHAMBER_BLOCKS.get(codeId).get().getName().getString();
         }
 
         @Override
         public @NotNull ItemStack getToastSymbol() {
-            return new ItemStack(FISSION_BLOCKS.get(codeId).get());
+            return new ItemStack(TARGET_CHAMBER_BLOCKS.get(codeId).get());
         }
     }
 }

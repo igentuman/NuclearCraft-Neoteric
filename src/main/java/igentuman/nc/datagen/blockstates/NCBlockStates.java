@@ -23,6 +23,7 @@ import static igentuman.nc.client.block.BatteryBlockLoader.BATTERY_LOADER;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.COOLERS;
 import static igentuman.nc.multiblock.accelerator.TargetChamberRegistration.TARGET_CHAMBER_BLOCKS;
+import static igentuman.nc.multiblock.accelerator.TargetChamberRegistration.TARGET_CHAMBER_DETECTORS;
 import static igentuman.nc.multiblock.fission.FissionReactorRegistration.*;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_CORE_PROXY;
@@ -92,7 +93,9 @@ public class NCBlockStates extends BlockStateProvider {
        horizontalBlock(TARGET_CHAMBER_BLOCKS.get("target_chamber_controller").get(),
                 st -> controllerModel(st, sidedModel(TARGET_CHAMBER_BLOCKS.get("target_chamber_controller").get(), "particle_chamber/target_chamber_controller"))
         );
-
+        for(String name: TARGET_CHAMBER_DETECTORS.keySet()) {
+            simpleBlock(TARGET_CHAMBER_BLOCKS.get(name).get(), multiBlockModel(TARGET_CHAMBER_BLOCKS.get(name).get(), "particle_chamber/"+name));
+        }
         simpleBlock(TARGET_CHAMBER_BLOCKS.get("target_chamber_camera").get(), multiBlockModel(TARGET_CHAMBER_BLOCKS.get("target_chamber_camera").get(), "particle_chamber/camera"));
         simpleBlock(TARGET_CHAMBER_BLOCKS.get("target_chamber_casing").get(), multiBlockModel(TARGET_CHAMBER_BLOCKS.get("target_chamber_casing").get(), "particle_chamber/casing"));
         simpleBlock(TARGET_CHAMBER_BLOCKS.get("target_chamber_casing_glass").get(), multiBlockModel(TARGET_CHAMBER_BLOCKS.get("target_chamber_casing_glass").get(), "particle_chamber/glass"));

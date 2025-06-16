@@ -16,6 +16,7 @@ import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.registries.RegistryObject;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import static igentuman.nc.setup.registration.NCBlocks.fromMultiblock;
@@ -36,6 +37,7 @@ public class TargetChamberRegistration {
     public static final TagKey<Item> TARGET_CHAMBER_INNER_ITEMS = itemTag("target_chamber_inner");
     public static final TagKey<Item> TARGET_CHAMBER_CASING_ITEMS = itemTag("target_chamber_casing");
     public static final Pattern TRANSPARENT_BLOCKS_PATTERN = Pattern.compile(".*glass.*");
+    public static final HashMap<String, DetectorDef> TARGET_CHAMBER_DETECTORS = new HashMap<>();
 
     public static final RegistryObject<MenuType<TargetChamberControllerContainer>> TARGET_CHAMBER_CONTROLLER_CONTAINER = CONTAINERS.register("target_chamber_controller",
             () -> IForgeMenuType.create((windowId, inv, data) -> new TargetChamberControllerContainer(windowId, data.readBlockPos(), inv))
@@ -44,7 +46,20 @@ public class TargetChamberRegistration {
             () -> IForgeMenuType.create((windowId, inv, data) -> new TargetChamberControllerContainer(windowId, data.readBlockPos(), inv))
     );
 
+    public static List<DetectorDef> detectors() {
+        return List.of(
+                DetectorDef.make("bubble_chamber", 0.075D, 200, 2),
+                DetectorDef.make("silicon_tracker", 0.15D, 2000, 1),
+                DetectorDef.make("wire_chamber", 0.1D, 1000, 2),
+                DetectorDef.make("em_calorimeter", 0.05D, 200, 3),
+                DetectorDef.make("hadron_calorimeter", 0.025D, 100, 4)
+        );
+    }
+
     public static void init() {
+        for(DetectorDef def : detectors()) {
+            registerDetector(def.name, def);
+        }
         registerSimpleBlock("target_chamber_camera");
         registerSimpleBlock("target_chamber_casing");
         registerSimpleBlock("target_chamber_casing_glass");
@@ -81,6 +96,16 @@ public class TargetChamberRegistration {
         if(key.equals("target_chamber_beam_port")) {
             TARGET_CHAMBER_BLOCKS.put(key, BLOCKS.register(key, () -> new TargetChamberBeamPortBlock(props)));
         }
+        TARGET_CHAMBER_ITEMS.put(key, fromMultiblock(TARGET_CHAMBER_BLOCKS.get(key)));
+        ALL_NC_ITEMS.put(key, TARGET_CHAMBER_ITEMS.get(key));
+    }
+
+    private static void registerDetector(String key, DetectorDef def) {
+        BlockBehaviour.Properties props = TRANSPARENT_BLOCKS_PATTERN.matcher(key).matches()
+                ? NO_OCCLUSION_BLOCK_PROPS
+                : TARGET_CHAMBER_BLOCK_PROPERTIES;
+        TARGET_CHAMBER_BLOCKS.put(key, BLOCKS.register(key, () -> new DetectorBlock(props, def)));
+        TARGET_CHAMBER_DETECTORS.put(key, def);
         TARGET_CHAMBER_ITEMS.put(key, fromMultiblock(TARGET_CHAMBER_BLOCKS.get(key)));
         ALL_NC_ITEMS.put(key, TARGET_CHAMBER_ITEMS.get(key));
     }

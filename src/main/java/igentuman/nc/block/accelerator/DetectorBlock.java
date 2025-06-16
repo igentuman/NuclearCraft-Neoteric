@@ -2,40 +2,30 @@ package igentuman.nc.block.accelerator;
 
 import igentuman.nc.block.MultiblockBlock;
 import igentuman.nc.multiblock.AbstractMultiblock;
-import igentuman.nc.multiblock.accelerator.CoolerDef;
+import igentuman.nc.multiblock.accelerator.DetectorDef;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.registries.ForgeRegistries;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import static igentuman.nc.NuclearCraft.rl;
-import static igentuman.nc.handler.event.client.InputEvents.DESCRIPTIONS_SHOW;
-import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.COOLERS;
+import static igentuman.nc.multiblock.accelerator.TargetChamberRegistration.TARGET_CHAMBER_DETECTORS;
 import static igentuman.nc.util.TextUtils.__;
-import static igentuman.nc.util.TextUtils.convertToName;
+import static igentuman.nc.util.math.Pos3D.getTaxiDistance;
 
 public class DetectorBlock extends MultiblockBlock {
 
-    public double heat = 0;
+    public double efficiency = 0;
+    public int power = 0;
+    public int distance = 0;
     public String type = "";
-    public CoolerDef def;
+    public DetectorDef def;
 
     public DetectorBlock() {
         this(Properties.of()
@@ -49,111 +39,33 @@ public class DetectorBlock extends MultiblockBlock {
         initParams();
     }
 
-    public Component placementRule;
-
-    public DetectorBlock(Properties reactorBlocksProperties, CoolerDef def) {
+    public DetectorBlock(Properties reactorBlocksProperties, DetectorDef def) {
         super(reactorBlocksProperties);
         this.type = def.name;
         this.def = def;
-        this.heat = def.getHeat();
-    }
-
-    public Component getPlacementRule()
-    {
-        if(placementRule == null) {
-            List<String> lines = new ArrayList<>();
-            int i = 0;
-            if (def.getValidator() instanceof CoolerDef.Validator) {
-                for (String[] condition : def.getValidator().blockLines().keySet()) {
-                    if (i > 0) {
-                        lines.add(__("heat_sink.and").getString());
-                    }
-                    String blocksLine = String.join(" "+__("heat_sink.or").getString()+" ", getBlockNames(condition[2]));
-                    switch (condition[0]) {
-                        case ">":
-                            lines.add(__("heat_sink.atleast"+(condition[1].equals("1") ? "":"s") , condition[1], blocksLine).getString());
-                            break;
-                        case "-":
-                            lines.add(__("heat_sink.between", condition[1], blocksLine).getString());
-                            break;
-                        case "=":
-                            lines.add(__("heat_sink.exact"+(condition[1].equals("1") ? "":"s"), condition[1], blocksLine).getString());
-                            break;
-                        case "<":
-                            lines.add(__("heat_sink.less_than", condition[1], blocksLine).getString());
-                            break;
-                        case "^":
-                            lines.add(__("heat_sink.in_corner", condition[1], blocksLine).getString());
-                            break;
-                    }
-                    i++;
-                }
-                placementRule = __("heat_sink.placement.rule", String.join(" ", lines));
-            } else {
-                placementRule = __("heat_sink.placement.error");
-            }
-        }
-        return placementRule;
-    }
-
-    private List<String> getBlockNames(String rawLine) {
-
-        List<String> names = new ArrayList<>();
-        String[] conditionParts = rawLine.split("=|-|>|<|\\^");
-        String[] blocks = conditionParts[0].split("\\|");
-
-        for(String code: blocks) {
-            String id = code;
-            if(!id.contains(":")) {
-                ResourceLocation res = rl(id);
-                Block block = ForgeRegistries.BLOCKS.getValue(res);
-                names.add(block.getName().getString());
-            } else {
-                names.add(convertToName(id.split(":")[1]));
-            }
-        }
-        return names;
+        this.efficiency = def.efficiency;
+        this.power = def.power;
+        this.distance = def.distance;
     }
 
     private void initParams() {
-        Item item = Item.byBlock(this);
-        if(item.toString().isEmpty()) return;
-        if(item.toString().contains("empty")) return;
-        type = item.toString().replace("_cooler", "");
-        def = COOLERS.get(type);
-        heat = def.getHeat();
-    }
-
-    @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
-        if(!player.getItemInHand(hand).isEmpty()) return InteractionResult.FAIL;
-        if (!level.isClientSide()) {
-            Block block = level.getBlockState(pos).getBlock();
-            if(block instanceof DetectorBlock) {
-                int id = level.random.nextInt(10);
-                if(isValid(level, pos, null)) {
-                    player.sendSystemMessage(__("message.heat_sink.valid"+id));
-                } else {
-                    player.sendSystemMessage(__("message.heat_sink.invalid"+id));
-                }
-            }
-        }
-        return InteractionResult.SUCCESS;
+        type = asItem().toString();
+        def = TARGET_CHAMBER_DETECTORS.get(type);
+        power = def.power;
+        efficiency = def.efficiency;
+        distance = def.distance;
     }
 
     @Override
     public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag) {
         if(asItem().toString().contains("empty")) return;
         initParams();
-        list.add(TextUtils.applyFormat(__("heat_sink.heat.descr", TextUtils.numberFormat(heat)), ChatFormatting.GOLD));
-        if(DESCRIPTIONS_SHOW) {
-            list.add(TextUtils.applyFormat(getPlacementRule(), ChatFormatting.AQUA));
-        } else {
-            list.add(TextUtils.applyFormat(__("tooltip.toggle_description_keys"), ChatFormatting.GRAY));
-        }
+        list.add(TextUtils.applyFormat(__("tooltip.detector.distance", distance), ChatFormatting.GOLD));
+        list.add(TextUtils.applyFormat(__("tooltip.detector.power", power), ChatFormatting.GOLD));
+        list.add(TextUtils.applyFormat(__("tooltip.detector.efficiency", efficiency*100), ChatFormatting.GOLD));
     }
 
     public boolean isValid(Level level, BlockPos pos, AbstractMultiblock multiblock) {
-        return def.getValidator().isValid(level, pos, multiblock);
+        return getTaxiDistance(multiblock.getCenterBlock(), pos) <= distance;
     }
 }

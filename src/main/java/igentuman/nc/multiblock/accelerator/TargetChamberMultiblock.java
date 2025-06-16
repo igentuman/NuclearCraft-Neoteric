@@ -15,18 +15,20 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 import static igentuman.nc.handler.config.AcceleratorConfig.PARTICLE_CHAMBER_CONFIG;
-import static igentuman.nc.multiblock.accelerator.TargetChamberRegistration.TARGET_CHAMBER_CASING_BLOCKS;
-import static igentuman.nc.multiblock.accelerator.TargetChamberRegistration.TARGET_CHAMBER_INNER_BLOCKS;
+import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
+import static igentuman.nc.multiblock.accelerator.TargetChamberRegistration.*;
 import static igentuman.nc.util.TagUtil.getBlocksByTagKey;
 
 public class TargetChamberMultiblock extends AbstractMultiblock {
 
     protected final HashMap<Long, DetectorBlock> validDetectors = new HashMap<>();
     protected final HashSet<Long> allDetectors = new HashSet<>();
-    protected double cellsHeatMult = 0.0D;
+    public double efficiency = 0;
+    public int power = 0;
 
     @Override
     public int maxHeight() {
@@ -97,6 +99,24 @@ public class TargetChamberMultiblock extends AbstractMultiblock {
     }
 
     @Override
+    public void validateOuter() {
+        super.validateOuter();
+        if(!validationResult.isValid) {
+            return;
+        }
+        if(
+                height() % 2 == 0 || width() % 2 == 0 || depth() % 2 == 0
+                || (height() != width() || height() != depth() || width() != depth())
+        ) {
+            validationResult = ValidationResult.WRONG_PROPORTIONS;
+            outerValid = false;
+            return;
+        }
+        outerValid = true;
+        validationResult = ValidationResult.VALID;
+    }
+
+    @Override
     public void validate() {
         validDetectors.clear();
         allDetectors.clear();
@@ -106,43 +126,61 @@ public class TargetChamberMultiblock extends AbstractMultiblock {
     @Override
     public void validateInner()
     {
+        efficiency = 0;
+        power = 0;
         if(!outerValid) {
             clearStats();
             return;
         }
 
-        //Stage 1: Index all inner blocks
         indexInnerBlocks();
-        if(validationResult != ValidationResult.VALID) {
+        if(!validationResult.isValid) {
             clearStats();
             return;
         }
-        //Stage 4: count heat sinks and their cooling
-        indexDetectors();
-        //Stage 5: update controller stats
+        if(!getBlockState(getCenterBlock()).is(TARGET_CHAMBER_BLOCKS.get("target_chamber_camera").get())) {
+            validationResult = ValidationResult.WRONG_INNER;
+            errorBlockPos = getCenterBlock();
+            clearStats();
+            return;
+        }
+        validateBeamLines();
         controllerBE().allDetectors = allDetectors.size();
+        controllerBE().efficiency = efficiency;
+        controllerBE().energyPerTick = power;
         controllerBE().connectedPorts = connectedPorts;
         controllerBE().detectorsCount = validDetectors.size();
         controllerBE().height = height;
         controllerBE().width = width;
         controllerBE().depth = depth;
+        if(validDetectors.isEmpty()) {
+            validationResult = ValidationResult.NO_DETECTORS;
+            errorBlockPos = getCenterBlock();
+            clearStats();
+            return;
+        }
         controllerBE().refresh();
     }
 
-    private void indexDetectors() {
-        validDetectors.clear();
-        for(long pos: allDetectors) {
-            BlockPos hsPos = BlockPos.of(pos);
-            if(isDetectorValid(hsPos)) {
-                DetectorBlock hb = (DetectorBlock) getBlockState(pos).getBlock();
-                validDetectors.put(pos, hb);
+    private void validateBeamLines() {
+        for(Direction dir: List.of(Direction.WEST, Direction.EAST, Direction.NORTH, Direction.SOUTH)) {
+            BlockPos pos = getCenterBlock();
+            for(int i = 1; i < width() / 2; i++) {
+                pos = pos.relative(dir, i);
+                BlockState bs = getBlockState(pos);
+                if(!bs.is(ACCELERATOR_BLOCKS.get("accelerator_beam").get())) {
+                    validationResult = ValidationResult.WRONG_INNER;
+                    errorBlockPos = pos;
+                    return;
+                }
+            }
+            BlockState bs = getBlockState(getCenterBlock().relative(dir, width() / 2));
+            if(!bs.is(TARGET_CHAMBER_BLOCKS.get("target_chamber_beam_port").get())) {
+                validationResult = ValidationResult.NO_PORT;
+                errorBlockPos = getCenterBlock().relative(dir, width() / 2);
+                return;
             }
         }
-    }
-
-    private boolean isDetectorValid(BlockPos pos) {
-        DetectorBlock hb = (DetectorBlock) getBlockState(pos).getBlock();
-        return hb.isValid(getLevel(), pos, this);
     }
 
     private void indexInnerBlocks() {
@@ -183,6 +221,12 @@ public class TargetChamberMultiblock extends AbstractMultiblock {
         final BlockState bs = getBlockState(toCheck);
 
         if(isDetector(bs)) {
+            DetectorBlock detectorBlock = (DetectorBlock) bs.getBlock();
+            if(detectorBlock.isValid(getLevel(), toCheck, this)) {
+                efficiency += detectorBlock.efficiency;
+                power += detectorBlock.power;
+                validDetectors.put(toCheck.asLong(), detectorBlock);
+            }
             addIfNotExists(toCheck, allDetectors);
             return true;
         }

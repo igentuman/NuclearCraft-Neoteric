@@ -4,7 +4,7 @@
 		"type":"ctm",
 		"layer":"SOLID",
 		"textures":[
-			"qmd:blocks/accelerator/frame_ctm"
+			"nuclearcraft:block/accelerator/accelerator_frame_ctm"
 		]
 	}
 }

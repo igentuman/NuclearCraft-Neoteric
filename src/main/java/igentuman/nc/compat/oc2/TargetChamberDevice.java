@@ -44,13 +44,7 @@ public class TargetChamberDevice {
         @Callback
         public final int getDepletionProgress()
         {
-            return (int) (reactor.getDepletionProgress()*100);
-        }
-
-        @Callback
-        public final double getMaxHeatCapacity()
-        {
-            return reactor.getMaxHeat();
+            return (int) (reactor.getRecipeProgress()*100);
         }
 
         @Callback
@@ -71,17 +65,10 @@ public class TargetChamberDevice {
             return reactor.energyPerTick;
         }
 
-
         @Callback
         public final int getEnergyStored()
         {
             return reactor.energyStorage.getEnergyStored();
-        }
-
-        @Callback
-        public final int getHeatStored()
-        {
-            return (int) reactor.heat;
         }
 
         @Callback

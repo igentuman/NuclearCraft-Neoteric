@@ -351,16 +351,19 @@ public abstract class AbstractMultiblock implements Multiblock {
     public void validateOuter() {
         outerValid = false;
         resolveDimensions();
-        if (width < minWidth() || height < minHeight() || depth < minDepth())
-        {
-            validationResult = ValidationResult.TOO_SMALL;
-            return;
-        }
+
         if (width > maxWidth() || height > maxHeight() || depth > maxDepth())
         {
             validationResult = ValidationResult.TOO_BIG;
             return;
         }
+
+        if (width < minWidth() || height < minHeight() || depth < minDepth())
+        {
+            validationResult = ValidationResult.TOO_SMALL;
+            return;
+        }
+
         BlockPos leftFront = new BlockPosInstance(getLeftPos(leftCasing));
         BlockPos leftBack = new BlockPosInstance(getLeftPos(leftCasing).relative(getControllerDirection(), -depth+1));
         BlockPos rightFront = new BlockPosInstance(getRightPos(rightCasing));

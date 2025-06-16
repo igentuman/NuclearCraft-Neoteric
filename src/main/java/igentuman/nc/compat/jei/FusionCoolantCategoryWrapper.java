@@ -26,8 +26,10 @@ import java.util.List;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
+import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BLOCKS;
 import static igentuman.nc.util.TextUtils.__;
 import static net.minecraft.world.item.Items.AIR;
+import static net.minecraft.world.item.Items.BARRIER;
 
 @SuppressWarnings("removal")
 public class FusionCoolantCategoryWrapper<T extends FusionCoreBE.FusionCoolantRecipe> implements IRecipeCategory<T> {
@@ -47,9 +49,9 @@ public class FusionCoolantCategoryWrapper<T extends FusionCoreBE.FusionCoolantRe
         this.guiHelper = guiHelper;
         this.background = guiHelper.createDrawable(TEXTURE, 0, 0, 105, 32);
         if(CATALYSTS.containsKey(getRecipeType().getUid().getPath())) {
-            this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, CATALYSTS.get(getRecipeType().getUid().getPath()).get(0));
+            this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(FUSION_BLOCKS.get("fusion_reactor_core").get()));
         } else{
-            this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(AIR));
+            this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(BARRIER));
         }
     }
 

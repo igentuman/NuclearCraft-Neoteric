@@ -25,8 +25,10 @@ import java.util.List;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
+import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
 import static igentuman.nc.util.TextUtils.__;
 import static net.minecraft.world.item.Items.AIR;
+import static net.minecraft.world.item.Items.BARRIER;
 
 @SuppressWarnings("removal")
 public class TurbineControllerCategoryWrapper<T extends TurbineControllerBE.Recipe> implements IRecipeCategory<T> {
@@ -46,9 +48,9 @@ public class TurbineControllerCategoryWrapper<T extends TurbineControllerBE.Reci
         this.guiHelper = guiHelper;
         this.background = guiHelper.createDrawable(TEXTURE, 0, 0, 105, 32);
         if(CATALYSTS.containsKey(getRecipeType().getUid().getPath())) {
-            this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, CATALYSTS.get(getRecipeType().getUid().getPath()).get(0));
+            this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(TURBINE_BLOCKS.get("turbine_controller").get()));
         } else{
-            this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(AIR));
+            this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(BARRIER));
         }
     }
 

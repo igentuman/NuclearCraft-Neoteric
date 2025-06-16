@@ -2,6 +2,7 @@ package igentuman.nc.compat.jei;
 
 import igentuman.nc.block.entity.fission.FissionControllerBE;
 import igentuman.nc.compat.jei.util.TickTimer;
+import igentuman.nc.multiblock.fission.FissionReactorRegistration;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -25,9 +26,11 @@ import java.util.List;
 
 import static igentuman.nc.NuclearCraft.*;
 import static igentuman.nc.compat.GlobalVars.*;
+import static igentuman.nc.multiblock.fission.FissionReactorRegistration.FISSION_BLOCKS;
 import static igentuman.nc.util.TextUtils.__;
 import static igentuman.nc.util.TextUtils.numberFormat;
 import static net.minecraft.world.item.Items.AIR;
+import static net.minecraft.world.item.Items.BARRIER;
 
 @SuppressWarnings("removal")
 public class FissionCategoryWrapper<T extends FissionControllerBE.Recipe> implements IRecipeCategory<T> {
@@ -47,9 +50,9 @@ public class FissionCategoryWrapper<T extends FissionControllerBE.Recipe> implem
         this.guiHelper = guiHelper;
         this.background = guiHelper.createDrawable(TEXTURE, 0, 0, 98, 30);
         if(CATALYSTS.containsKey(getRecipeType().getUid().getPath())) {
-            this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, CATALYSTS.get(getRecipeType().getUid().getPath()).get(0));
+            this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(FISSION_BLOCKS.get("fission_reactor_controller").get()));
         } else{
-            this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(AIR));
+            this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(BARRIER));
         }
     }
 

@@ -33,6 +33,7 @@ import static igentuman.nc.client.gui.element.bar.ProgressBar.bars;
 import static igentuman.nc.compat.GlobalVars.*;
 import static igentuman.nc.util.TextUtils.__;
 import static net.minecraft.world.item.Items.AIR;
+import static net.minecraft.world.item.Items.BARRIER;
 
 @SuppressWarnings("removal")
 public class ProcessorCategoryWrapper<T extends NcRecipe> implements IRecipeCategory<T> {
@@ -65,7 +66,7 @@ public class ProcessorCategoryWrapper<T extends NcRecipe> implements IRecipeCate
         if(CATALYSTS.containsKey(getRecipeType().getUid().getPath())) {
             this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, CATALYSTS.get(getRecipeType().getUid().getPath()).get(0));
         } else{
-            this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(AIR));
+            this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(BARRIER));
         }
     }
 

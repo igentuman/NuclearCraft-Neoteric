@@ -21,6 +21,7 @@ import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.util.TextUtils.__;
 import static net.minecraft.world.item.Items.AIR;
+import static net.minecraft.world.item.Items.BARRIER;
 
 @SuppressWarnings("removal")
 public class OreVeinCategoryWrapper<T extends OreVeinRecipe> implements IRecipeCategory<T> {
@@ -39,7 +40,7 @@ public class OreVeinCategoryWrapper<T extends OreVeinRecipe> implements IRecipeC
         if(CATALYSTS.containsKey(getRecipeType().getUid().getPath())) {
             this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, CATALYSTS.get(getRecipeType().getUid().getPath()).get(0));
         } else{
-            this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(AIR));
+            this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(BARRIER));
         }
 
     }

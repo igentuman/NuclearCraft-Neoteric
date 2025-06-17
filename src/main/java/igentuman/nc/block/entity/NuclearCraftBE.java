@@ -118,6 +118,7 @@ public class NuclearCraftBE extends BlockEntity {
         if (energyStorage().getEnergyStored() <= 0) {
             return; // No energy to transfer
         }
+        int wasEnergy = energyStorage().getEnergyStored();
         BlockEntity be = level.getExistingBlockEntity(worldPosition.relative(direction));
         if (be == null) {
             return;
@@ -128,9 +129,14 @@ public class NuclearCraftBE extends BlockEntity {
         if(isGtLoaded() && isOnlyGTCEUCapEnabled()) {
             return;
         }
+        int extracted = wasEnergy - energyStorage().getEnergyStored();
+        if(extracted >= energyStorage().getMaxExtract()) {
+            return;
+        }
+        int canExtract = energyStorage().getMaxExtract() - extracted;
         be.getCapability(ForgeCapabilities.ENERGY, direction.getOpposite()).map(handler -> {
                     if (handler.canReceive()) {
-                        int received = handler.receiveEnergy(Math.min(energyStorage().getMaxExtract(), energyStorage().getEnergyStored()), false);
+                        int received = handler.receiveEnergy(Math.min(canExtract, energyStorage().getEnergyStored()), false);
                         energyStorage().consumeEnergy(received);
                         setChanged();
                         return energyStorage().getEnergyStored() > 0;

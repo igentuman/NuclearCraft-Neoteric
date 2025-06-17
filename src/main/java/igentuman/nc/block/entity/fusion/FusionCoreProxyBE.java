@@ -213,10 +213,11 @@ public class FusionCoreProxyBE extends NuclearCraftBE implements MultiblockAttac
         for(Direction side: List.of(Direction.UP, Direction.DOWN)) {
             if(getCoreBE().energyStorage().getEnergyStored() > required) {
                 BlockEntity be = getLevel().getExistingBlockEntity(getBlockPos().relative(side));
-
                 if(!(be instanceof BlockEntity) || (be instanceof FusionCoreProxyBE) || (be instanceof FusionCoreBE)) {
                     continue;
                 }
+                int wasEnergy = getCoreBE().energyStorage().getEnergyStored();
+
                 if((isGtLoaded() && isGTEUCapEnabled())) {
                     transferEU(controller(), be, controller().energyStorage(), side);
                 }
@@ -226,8 +227,13 @@ public class FusionCoreProxyBE extends NuclearCraftBE implements MultiblockAttac
 
                 IEnergyStorage r = be.getCapability(ForgeCapabilities.ENERGY, side.getOpposite()).orElse(null);
                 if(r == null) continue;
+                int extracted = wasEnergy - getCoreBE().energyStorage().getEnergyStored();
+                if(extracted >= controller().energyStorage().getMaxExtract()) {
+                    return;
+                }
+                int canExtract = controller().energyStorage().getMaxExtract() - extracted;
                 if(r.canReceive()) {
-                    int available = getCoreBE().energyStorage().getEnergyStored()-required;
+                    int available = getCoreBE().energyStorage().getEnergyStored()-required-canExtract;
                     int recieved = r.receiveEnergy(Math.min(available, getCoreBE().energyStorage().getMaxExtract()), false);
                     getCoreBE().energyStorage().consumeEnergy(recieved);
                     controller().setChanged();

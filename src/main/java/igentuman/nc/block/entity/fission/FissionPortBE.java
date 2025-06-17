@@ -152,6 +152,7 @@ public class FissionPortBE extends NuclearCraftBE implements MultiblockAttachabl
         if (getEnergyStored() <= 0) {
             return; // No energy to transfer
         }
+        int wasEnergy = getEnergyStored();
         BlockEntity be = level.getExistingBlockEntity(worldPosition.relative(direction));
         if (be == null || be instanceof FissionPortBE) {
             return;
@@ -162,9 +163,17 @@ public class FissionPortBE extends NuclearCraftBE implements MultiblockAttachabl
         if(isGtLoaded() && isOnlyGTCEUCapEnabled()) {
             return;
         }
+        if(wasEnergy - getEnergyStored() >= controller().energyStorage().getMaxExtract()) {
+            return;
+        }
+        int extracted = wasEnergy - controller().energyStorage().getEnergyStored();
+        if(extracted >= controller().energyStorage().getMaxExtract()) {
+            return;
+        }
+        int canExtract = controller().energyStorage().getMaxExtract() - extracted;
         be.getCapability(ForgeCapabilities.ENERGY, direction.getOpposite()).map(handler -> {
                     if (handler.canReceive()) {
-                        int received = handler.receiveEnergy(Math.min(controller().energyStorage().getMaxExtract(), getEnergyStored()), false);
+                        int received = handler.receiveEnergy(canExtract, false);
                         controller().energyStorage().consumeEnergy(received);
                         controller().setChanged();
                         return getEnergyStored() > 0;

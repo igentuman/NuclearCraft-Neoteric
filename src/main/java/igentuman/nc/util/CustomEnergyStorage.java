@@ -52,7 +52,7 @@ public class CustomEnergyStorage extends EnergyStorage {
 
     public CustomEnergyStorage setOutputAmperage(long value) {
         //as only multiblock storages calls this method, we are applying limit for multiblock storages only
-        if(isGtLoaded() && GTCEU_CONFIG.COMPATIBILITY.get() == GTCEUCompatibility.GTCEU_AND_FE && GTCEU_CONFIG.LIMIT_FE_OUTPUT.get()) {
+        if(isGtLoaded() && isGTEUCapEnabled() && GTCEU_CONFIG.LIMIT_FE_OUTPUT.get()) {
             maxExtract = convert2FE(value * outputVoltage);
         }
         this.outputAmperage = value;

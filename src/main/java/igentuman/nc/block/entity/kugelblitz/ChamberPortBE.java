@@ -4,6 +4,7 @@ import igentuman.api.nc.multiblock.MultiblockAttachable;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.block.entity.fission.FissionControllerBE;
+import igentuman.nc.block.entity.fission.FissionPortBE;
 import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;
 import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;
@@ -134,11 +135,12 @@ public class ChamberPortBE extends NuclearCraftBE implements MultiblockAttachabl
     }
 
     protected void transferEnergyToSide(Direction direction) {
-        if (controller().energyStorage().getEnergyStored() <= 0) {
+        if (getEnergyStored() <= 0) {
             return; // No energy to transfer
         }
+        int wasEnergy = getEnergyStored();
         BlockEntity be = level.getExistingBlockEntity(worldPosition.relative(direction));
-        if (be == null || be instanceof ChamberPortBE) {
+        if (be == null || be instanceof FissionPortBE) {
             return;
         }
         if((isGtLoaded() && isGTEUCapEnabled())) {
@@ -147,11 +149,19 @@ public class ChamberPortBE extends NuclearCraftBE implements MultiblockAttachabl
         if(isGtLoaded() && isOnlyGTCEUCapEnabled()) {
             return;
         }
+        if(wasEnergy - getEnergyStored() >= controller().energyStorage().getMaxExtract()) {
+            return;
+        }
+        int extracted = wasEnergy - controller().energyStorage().getEnergyStored();
+        if(extracted >= controller().energyStorage().getMaxExtract()) {
+            return;
+        }
+        int canExtract = controller().energyStorage().getMaxExtract() - extracted;
         be.getCapability(ForgeCapabilities.ENERGY, direction.getOpposite()).map(handler -> {
                     if (handler.canReceive()) {
-                        int received = handler.receiveEnergy(Math.min(controller().energyStorage().getMaxExtract(), getEnergyStored()), false);
+                        int received = handler.receiveEnergy(canExtract, false);
                         controller().energyStorage().consumeEnergy(received);
-                        setChanged();
+                        controller().setChanged();
                         return getEnergyStored() > 0;
                     } else {
                         return true;

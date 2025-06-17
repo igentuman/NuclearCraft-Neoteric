@@ -151,4 +151,8 @@ public class LinearAcceleratorContainer extends AbstractContainerMenu {
     public ParticleStack getParticleStack() {
         return blockEntity.getParticleStack();
     }
+
+    public int maxCoolant() {
+        return 10000; // TODO: get from config
+    }
 }

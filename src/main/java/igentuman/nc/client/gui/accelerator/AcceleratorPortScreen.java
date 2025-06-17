@@ -27,7 +27,7 @@ import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.util.TextUtils.__;
 
 public class AcceleratorPortScreen extends AbstractContainerScreen<AcceleratorPortContainer> implements IProgressScreen, IVerticalBarScreen {
-    protected final ResourceLocation GUI = rl("textures/gui/turbine/port.png");
+    protected final ResourceLocation GUI = rl("textures/gui/accelerators/accelerator_source.png");
     protected int relX;
     protected int relY;
     private int xCenter;
@@ -67,12 +67,10 @@ public class AcceleratorPortScreen extends AbstractContainerScreen<AcceleratorPo
         Minecraft mc = Minecraft.getInstance();
         updateRelativeCords();
         widgets.clear();
-        energyBar = new VerticalBar.Energy(17, 16,  this, container().getMaxEnergy());
-        widgets.add(new ProgressBar(74, 35, this,  7));
-        redstoneConfigBtn = new Button.TurbinePortRedstoneModeButton(150, 74, this, menu.getPosition());
+        redstoneConfigBtn = new Button.TurbinePortRedstoneModeButton(150, 54, this, menu.getPosition());
         widgets.add(redstoneConfigBtn);
-        addWidget(FluidTankRenderer.tank(getFluidTank(0)).id(0).size(18, 18).pos(56, 35).canVoid());
-        addWidget(FluidTankRenderer.tank(getFluidTank(1)).id(1).size(24, 24).pos(112, 31).canVoid());
+        energyBar = new VerticalBar.Energy(7, 6,  this, container().getMaxEnergy());
+        addWidget(FluidTankRenderer.tank(getFluidTank(0)).id(0).size(18, 18).pos(80, 45).canVoid());
     }
 
     protected FluidTank getFluidTank(int i) {

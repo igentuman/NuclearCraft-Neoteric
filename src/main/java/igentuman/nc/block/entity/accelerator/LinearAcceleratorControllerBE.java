@@ -282,6 +282,7 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
         ParticleStack particleStack = particleStorage.getParticle();
         particleStack.setFocus(focusGain(focus, particleStack)-focusLoss(Math.max(width, depth), particleStack));
         particleStack.setMeanEnergy(linacEnergyGain(acceleratingVoltage, particleStack));
+        particleStorage.setParticleStack(particleStack);
         heat += heatRate;
         hasParticle = true;
         getMultiblock().extractParticle(particleStack);

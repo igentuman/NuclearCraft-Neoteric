@@ -35,8 +35,8 @@ public class AbstractAcceleratorMultiblock extends AbstractMultiblock {
     protected final HashMap<Long, CoolerBlock> coolers = new HashMap<>(1000);
     protected int dipolesCount = 0;
     protected int quadrupolesCount = 0;
-    protected final int[] yCoords = new int[]{1, 3, 2, 2, 1, 3, 3, 1};
-    protected final int[] xCoords = new int[]{2, 2, 1, 3, 1, 3, 1, 3};
+    protected final int[] yCoords = new int[]{-1, 1, 0, 0, 1, 1, 1, -1};
+    protected final int[] xCoords = new int[]{0, 0, -1, 1, 1, 1, -1, 1};
     protected double focus = 0.0;
     protected int maxTemperature = 0;
     protected int heatRate = 0;
@@ -265,7 +265,8 @@ public class AbstractAcceleratorMultiblock extends AbstractMultiblock {
         for(int i = 0; i < xCoords.length; i++ ) {
             int x = xCoords[i];
             int y = yCoords[i];
-            BlockPos toCheck = new BlockPos(getSidePos(leftCasing - x).above(y - bottomCasing).relative(multiblockDirection, z));
+            BlockPos toCheck = new BlockPos(getSidePos(x).above(y).relative(multiblockDirection, z));
+
             BlockState bs = getBlockState(toCheck);
             addIfNotExists(toCheck, allBlocks);
             if (!isValidForInner(bs)) {

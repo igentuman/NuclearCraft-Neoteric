@@ -3,82 +3,64 @@ package igentuman.nc.client.gui.element;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import igentuman.nc.content.particles.ParticleStack;
+import igentuman.nc.util.Units;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-public class GuiParticle
-{
-	private int width = 16;
-	private int height = 16;
-	private GuiGraphics graphics;
+import static igentuman.nc.util.TextUtils.__;
 
-	
-	public GuiParticle(GuiGraphics graphics)
-	{
-		this.graphics = graphics;
+public class GuiParticle extends NCGuiElement {
+
+	public int x;
+	public int y;
+
+	public GuiParticle(int pX, int pY) {
+		super(pX, pY, 16, 16, Component.empty());
+		this.x = pX;
+		this.y = pY;
+		this.width = 16;
+		this.height = 16;
 	}
 
-	public GuiParticle() {
-	}
-
-	public void drawParticleStack(@NotNull GuiGraphics graphics, ParticleStack particleStack, int x, int y)
+	public void drawParticleStack(@NotNull GuiGraphics graphics, ParticleStack particleStack)
 	{
-		this.graphics = graphics;
-		if(particleStack == null)
-		{
-			return;
-		}
-		if(particleStack.getParticle() == null)
-		{
+		if(particleStack == null || particleStack.getParticle() == null) {
 			return;
 		}
 
 		RenderSystem.setShaderTexture(0,particleStack.getParticle().getTexture());
-		this.graphics.pose().pushPose();
-		this.graphics.blit(particleStack.getParticle().getTexture(), x, y, 0, 0, 16, 16, 16, 16);
-		this.graphics.pose().popPose();
+		graphics.pose().pushPose();
+		graphics.pose().translate(RELATIVE_X, RELATIVE_Y, 0);
+		graphics.blit(particleStack.getParticle().getTexture(), x, y, 0, 0, 16, 16, 16, 16);
+		graphics.pose().popPose();
 	}
 
-	private void drawToolTip(ParticleStack stack,int mouseX, int mouseY, boolean showFocus)
-	{
-		List<String> text = new ArrayList<String>();
-		/*text.add(applyStyle(stack.getParticle().getLocalizedName()));
-		text.add(TextFormatting.GRAY + Lang.localize("gui.qmd.particlestack.amount",Units.getSIFormat(stack.getAmount(),"pu")));
-		text.add(TextFormatting.GRAY + Lang.localize("gui.qmd.particlestack.mean_energy",Units.getParticleEnergy(stack.getMeanEnergy())));
-		if(showFocus)
-		{
-			DecimalFormat df = new DecimalFormat("#.####");
-			text.add(TextFormatting.GRAY + Lang.localize("gui.qmd.particlestack.focus",df.format(stack.getFocus())));
+	public void renderTooltip(GuiGraphics graphics, ParticleStack particleStack, int pMouseX, int pMouseY) {
+		if(particleStack == null || particleStack.getParticle() == null) {
+			return;
 		}
-		screen.drawHoveringText(text, mouseX, mouseY);*/
-		
+		List<Component> text = new ArrayList<>();
+		text.add(particleStack.getParticle().getLocalizedName());
+		text.add(__("tooltip.nuclearcraft.particlestack.amount",Units.getSIFormat(particleStack.getAmount(),"pu")).withStyle(ChatFormatting.GRAY));
+		text.add(__("tooltip.nuclearcraft.particlestack.mean_energy", Units.getParticleEnergy(particleStack.getMeanEnergy())).withStyle(ChatFormatting.GRAY));
+		DecimalFormat df = new DecimalFormat("#.####");
+		text.add(__("tooltip.nuclearcraft.particlestack.focus",df.format(particleStack.getFocus())).withStyle(ChatFormatting.GRAY));
+		graphics.renderTooltip(Minecraft.getInstance().font, text, Optional.empty(), pMouseX, pMouseY);
 	}
-	
-	public void drawToolTipBox(ParticleStack particleStack, int x, int y,int mouseX, int mouseY)
-	{
-		if (mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height)
-		{
-			
-			drawToolTip(particleStack, mouseX, mouseY, false);
-		}
+
+	@Override
+	public boolean isMouseOver(double pMouseX, double pMouseY) {
+		return pMouseX >= (double)x && pMouseY >= (double)y && pMouseX < (double)(x + width) && pMouseY < (double)(y + height);
 	}
-	
-	public void drawToolTipBoxwithFocus(ParticleStack particleStack, int x, int y,int mouseX, int mouseY)
-	{
-		if(particleStack != null)
-		{
-			if(particleStack.getParticle() != null)
-			{
-				if (mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height)
-				{
-					
-					drawToolTip(particleStack, mouseX, mouseY, true);
-				}
-			}
-		}
-		
-	}
+
 }
+
+

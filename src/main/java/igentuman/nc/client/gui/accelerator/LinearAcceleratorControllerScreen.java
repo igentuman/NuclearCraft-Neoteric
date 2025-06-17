@@ -44,6 +44,7 @@ public class LinearAcceleratorControllerScreen extends AbstractContainerScreen<L
     public Checkbox checkboxInterior;
     private VerticalBar energyBar;
     private VerticalBar heatBar;
+    private VerticalBar coolantBar;
     public Component casingTootip = Component.empty();
     public Component interiorTootip = Component.empty();
     public GuiParticle guiParticle;
@@ -70,9 +71,10 @@ public class LinearAcceleratorControllerScreen extends AbstractContainerScreen<L
         checkboxCasing = new Checkbox(imageWidth-19, 80, this,  isCasingValid());
         checkboxInterior =  new Checkbox(imageWidth-32, 80, this,  isInteriorValid());
         //widgets.add(new ProgressBar(74, 35, this,  7));
-        energyBar = new VerticalBar.Energy(7, 5,  this, container().getMaxEnergy());
-        heatBar = new VerticalBar.Energy(17, 5,  this, container().getMaxHeat());
-        guiParticle = new GuiParticle();
+        energyBar = new VerticalBar.Energy(7, 20,  this, container().getMaxEnergy());
+        heatBar = new VerticalBar.Heat(17, 20,  this, container().getMaxHeat());
+        coolantBar = new VerticalBar.Coolant(27, 20,  this, container().maxCoolant());
+        guiParticle = new GuiParticle(40, 21);
     }
 
     protected void addWidget(NCGuiElement widget)
@@ -129,6 +131,11 @@ public class LinearAcceleratorControllerScreen extends AbstractContainerScreen<L
             checkboxInterior.addTooltip(__("tooltip.nc.accelerator.coolers", container().getCoolers()));
         }
         energyBar.draw(graphics, mouseX, mouseY, partialTicks);
+        heatBar.draw(graphics, mouseX, mouseY, partialTicks);
+        coolantBar.draw(graphics, mouseX, mouseY, partialTicks);
+        if(hasParticle()) {
+            guiParticle.drawParticleStack(graphics, getParticleStack());
+        }
     }
 
     @Override
@@ -179,9 +186,6 @@ public class LinearAcceleratorControllerScreen extends AbstractContainerScreen<L
         updateRelativeCords();
         graphics.blit(GUI, relX, relY, 0, 0, this.imageWidth, this.imageHeight);
         renderWidgets(graphics, partialTicks, mouseX, mouseY);
-        if(hasParticle()) {
-            guiParticle.drawParticleStack(graphics, getParticleStack(), relX + 40, relY + 22);
-        }
     }
 
     private boolean hasParticle() {
@@ -208,6 +212,11 @@ public class LinearAcceleratorControllerScreen extends AbstractContainerScreen<L
                graphics.renderTooltip(font, widget.getTooltips(),
                        Optional.empty(), pMouseX, pMouseY);
            }
+        }
+        if(guiParticle.isMouseOver(pMouseX, pMouseY)) {
+            if(hasParticle()) {
+                guiParticle.renderTooltip(graphics, getParticleStack(), pMouseX, pMouseY);
+            }
         }
         if(checkboxCasing.isMouseOver(pMouseX, pMouseY)) {
             graphics.renderTooltip(font, checkboxCasing.getTooltips(),

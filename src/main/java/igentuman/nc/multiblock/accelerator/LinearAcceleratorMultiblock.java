@@ -10,6 +10,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 
 import static igentuman.nc.NuclearCraft.debugLog;
+import static igentuman.nc.handler.config.AcceleratorConfig.ACCELERATOR_CONFIG;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.*;
 import static igentuman.nc.util.TagUtil.getBlocksByTagKey;
 
@@ -55,6 +56,7 @@ public class LinearAcceleratorMultiblock extends AbstractAcceleratorMultiblock {
     public void validateOuter() {
         topRight = null;
         bottomLeft = null;
+        initialPos = null;
         validationResult = ValidationResult.INCOMPLETE;
         stage = FINAL_STAGE;
         initialPos = BlockPosInstance.copy(controller().controllerBE().getBlockPos());
@@ -135,29 +137,25 @@ public class LinearAcceleratorMultiblock extends AbstractAcceleratorMultiblock {
 
         if(maxX - minX == 4) {
             centerPos = new BlockPosInstance((minX + maxX) / 2, bottomLeft.getY() + 2, minZ);
-            multiblockDirection = Direction.NORTH;
+            multiblockDirection = Direction.SOUTH;
         }
         if(maxZ - minZ == 4) {
             centerPos = new BlockPosInstance(minX, bottomLeft.getY() + 2, (minZ+maxZ)/2);
-            multiblockDirection = Direction.WEST;
+            multiblockDirection = Direction.EAST;
         }
-
+        //check first beam end
         BlockState bs = getBlockState(centerPos);
         if(!bs.is(ACCELERATOR_BLOCKS.get("accelerator_beam_port").get()) && !bs.is(ACCELERATOR_BLOCKS.get("accelerator_ion_source_port").get())) {
             validationResult = ValidationResult.WRONG_BLOCK;
             errorBlockPos = new BlockPosInstance(centerPos);
             return;
         }
+
         BlockPos ionSourcePos = bs.is(ACCELERATOR_BLOCKS.get("accelerator_ion_source_port").get()) ? new BlockPosInstance(centerPos) : BlockPos.ZERO;
-        if(maxX - minX == 4) {
-            centerPos = new BlockPosInstance((minX + maxX) / 2, bottomLeft.getY() + 2, maxZ);
-            multiblockDirection = Direction.NORTH;
-        }
-        if(maxZ - minZ == 4) {
-            centerPos = new BlockPosInstance(maxX, bottomLeft.getY() + 2, (minZ+maxZ)/2);
-            multiblockDirection = Direction.WEST;
-        }
-        bs = getBlockState(centerPos);
+        initialPos = BlockPosInstance.copy(centerPos);
+
+        bs = getBlockState(centerPos.relative(multiblockDirection, Math.max(width-1, depth-1)));
+
         if(!bs.is(ACCELERATOR_BLOCKS.get("accelerator_beam_port").get()) && !bs.is(ACCELERATOR_BLOCKS.get("accelerator_ion_source_port").get())) {
             validationResult = ValidationResult.WRONG_BLOCK;
             errorBlockPos = new BlockPosInstance(centerPos);
@@ -169,11 +167,11 @@ public class LinearAcceleratorMultiblock extends AbstractAcceleratorMultiblock {
             return;
         }
 
-        centerPos.revert();
         if (controllers.size() > 1) {
             validationResult = ValidationResult.TOO_MANY_CONTROLLERS;
             return;
         }
+
         validationResult = ValidationResult.VALID;
         outerValid = true;
         stage = 1;
@@ -196,7 +194,7 @@ public class LinearAcceleratorMultiblock extends AbstractAcceleratorMultiblock {
         }
 
         isFormed = outerValid && innerValid;
-
+        focus = quadStrength + dipoleStrength/2D;
         if (isFormed) {
             validationResult = ValidationResult.VALID;
             errorBlockPos = BlockPos.ZERO;

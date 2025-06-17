@@ -74,9 +74,7 @@ public class ParticleStorage implements IParticleStorage, IParticleStackHandler
 		if (particleStack != null)
 		{
 			particleStack.writeToNBT(tag);
-		}
-		else
-		{
+		} else {
 			new ParticleStack().writeToNBT(tag);
 		}
 		nbt.put("particle_stack", tag);

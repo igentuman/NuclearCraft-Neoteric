@@ -42,8 +42,8 @@ public class AcceleratorPortContainer extends AbstractContainerMenu {
         portBE = (AcceleratorPortBE) playerEntity.getCommandSenderWorld().getBlockEntity(pos);
         layoutPlayerInventorySlots();
         portBE.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
-            addSlot(new NCSlotItemHandler.Input(h, 0, 56, 35));
-            addSlot(new NCSlotItemHandler.Output(h, 1, 116, 35));
+            addSlot(new NCSlotItemHandler.Input(h, 0, 71, 26));
+            addSlot(new NCSlotItemHandler.Output(h, 1, 89, 26));
         });
     }
 
@@ -124,7 +124,7 @@ public class AcceleratorPortContainer extends AbstractContainerMenu {
 
     protected void layoutPlayerInventorySlots() {
         int leftCol = 8;
-        int topRow = 153;
+        int topRow = 142;
         addSlotRange(playerInventory, leftCol, topRow, 9, 18);
         topRow -= 58;
         addSlotBox(playerInventory, leftCol, topRow, 9, 18, 3, 18);

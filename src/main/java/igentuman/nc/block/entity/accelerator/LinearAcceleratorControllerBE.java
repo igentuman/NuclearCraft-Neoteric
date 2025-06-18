@@ -4,10 +4,7 @@ import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.MultiblockControllerBE;
 import igentuman.nc.compat.cc.LinearAcceleratorPeripheral;
 import igentuman.nc.compat.oc2.LinearAcceleratorDevice;
-import igentuman.nc.content.particles.CapabilityParticleStackHandler;
-import igentuman.nc.content.particles.IParticleStackHandler;
-import igentuman.nc.content.particles.ParticleStack;
-import igentuman.nc.content.particles.ParticleStorage;
+import igentuman.nc.content.particles.*;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.SlotModePair;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
@@ -34,6 +31,7 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.NotNull;
@@ -45,7 +43,6 @@ import java.util.*;
 import static igentuman.nc.block.fission.FissionControllerBlock.POWERED;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.compat.oc2.FissionReactorDevice.DEVICE_CAPABILITY;
-import static igentuman.nc.content.materials.Materials.subliquid_matter;
 import static igentuman.nc.content.particles.CapabilityParticleStackHandler.PARTICLE_HANDLER_CAPABILITY;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BE;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
@@ -250,7 +247,9 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
     {
         if(allowedInputFluids == null) {
             allowedInputFluids = new ArrayList<>();
-            allowedInputFluids.addAll(IngredientCreatorAccess.fluid().from(subliquid_matter, 1).getRepresentations());
+            for(String name: ParticleSources.fluidSources.keySet()) {
+                allowedInputFluids.addAll(IngredientCreatorAccess.fluid().from(name, 1).getRepresentations());
+            }
         }
         return allowedInputFluids;
     }
@@ -275,7 +274,7 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
     private boolean accelerateParticle() {
         hasParticle = false;
         if(particleStorage.getParticle() == null) {
-            getParticleFromSourceItem();
+            getParticleFromIonSource();
         }
         if(particleStorage.getParticle() == null) {
             return false;
@@ -301,7 +300,7 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
         return true;
     }
 
-    private void getParticleFromSourceItem() {
+    private void getParticleFromIonSource() {
         ItemStack stack = contentHandler().itemHandler.getStackInSlot(0);
         if(stack.getItem() instanceof ParticleSourceItem sourceItem) {
             stack = sourceItem.use(stack, 10000);
@@ -310,7 +309,17 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
                 particleStorage.setParticleStack(particle);
                 contentHandler().itemHandler.setStackInSlot(0, stack);
             }
+        } else {
+            FluidStack fluidStack = contentHandler().fluidHandler.getFluidInSlot(0);
+            if (fluidStack != null && !fluidStack.isEmpty()) {
+                ParticleStack particle = ParticleSources.getParticleFromFluid(fluidStack);
+                if (particle != null) {
+                    particleStorage.setParticleStack(particle);
+                    contentHandler().fluidHandler.tanks.get(0).drain(1, IFluidHandler.FluidAction.EXECUTE);
+                }
+            }
         }
+
     }
 
     public Direction getFacing() {

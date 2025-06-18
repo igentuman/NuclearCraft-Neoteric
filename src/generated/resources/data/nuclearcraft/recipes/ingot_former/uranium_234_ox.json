@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:ingot_former",
+  "inputFluids": [
+    {
+      "amount": 90,
+      "tag": "forge:uranium/234_ox"
+    }
+  ],
+  "output": [
+    {
+      "item": "nuclearcraft:uranium_234_ox"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

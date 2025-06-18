@@ -30,6 +30,7 @@ public class Tags {
     public final static TagKey<Item> PLATE_TAG = TagKey.create(ITEM_REGISTRY, forgeRl("plates"));
     public final static TagKey<Item> PARTS_TAG = itemTag("parts");
     public final static HashMap<String, TagKey<Item>> NC_ISOTOPE_TAG = new HashMap<>();
+    public final static HashMap<String, TagKey<Item>> NC_WASTE_TAG = new HashMap<>();
     public final static HashMap<String, TagKey<Item>> REACTOR_FUEL_TAG = new HashMap<>();
     public final static HashMap<String, TagKey<Item>> REACTOR_DEPLETED_FUEL_TAG = new HashMap<>();
 

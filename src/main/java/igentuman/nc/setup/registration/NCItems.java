@@ -280,7 +280,14 @@ public class NCItems {
                 "steel_frame",
                 "coil_copper",
                 "coil_magnesium_diboride",
-                "coil_bscco"
+                "coil_bscco",
+                "advanced_processor",
+                "basic_processor",
+                "elite_processor",
+                "silicon_boule",
+                "silicon_n_doped",
+                "silicon_p_doped",
+                "silicon_wafer"
         );
         for(String name: parts) {
             if(name.equals("research_paper")) {
@@ -290,6 +297,7 @@ public class NCItems {
             }
             ALL_NC_ITEMS.put(name, NC_PARTS.get(name));
         }
+        
     }
 
     private static void registerGems() {

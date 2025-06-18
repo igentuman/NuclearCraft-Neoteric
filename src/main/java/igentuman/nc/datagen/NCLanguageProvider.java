@@ -35,7 +35,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("itemGroup." + MODID+"_fluids", "NuclearCraft Fluids");
         add("itemGroup." + MODID+"_turbine", "NuclearCraft Turbine");
         add("itemGroup." + MODID+"_kugelblitz", "NuclearCraft Kugelblitz");
-        add("itemGroup." + MODID+"_accelerator", "NuclearCraft Accelerator");
+        add("itemGroup." + MODID+"_accelerator", "NuclearCraft Accelerators");
         add("entity.nuclearcraft.feral_ghoul", "Feral Ghoul");
         add("entity.nuclearcraft.feral_ghoul_boss", "Boss of the Wasteland");
         add("biome.nuclearcraft.wasteland", "Wasteland");
@@ -57,6 +57,7 @@ public class NCLanguageProvider extends LanguageProvider {
         fuel();
         tooltips();
         isotopes();
+        waste();
         shielding();
         buckets();
         fluids();
@@ -404,6 +405,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("fusion_core", "Fusion Reactor Core");
         add("fusion_core.efficiency", "Efficiency: %s%%");
         add("nc_jei_cat.fusion_core", "Fusion Reactor");
+        add("nc_jei_cat.target_chamber", "Target Chamber");
         add("nc_jei_cat.kugelblitz_chamber", "Quantum Transformation");
         add("nc_jei_cat.turbine", "Turbine");
         add("nc_jei_cat.fusion_coolant", "Fusion Reactor Coolant");
@@ -874,6 +876,12 @@ public class NCLanguageProvider extends LanguageProvider {
         add("item."+MODID+".end_of_the_world.desc", "End of the World");
         add("item."+MODID+".hyperspace.desc", "Hyperspace");
         add("item."+MODID+".money_for_nothing.desc", "Money For Nothing");
+    }
+
+    private void waste() {
+        for(String name: FissionFuel.NC_WASTE.keySet()) {
+            add(FissionFuel.NC_WASTE.get(name).get(), convertToName(name));
+        }
     }
 
     private void isotopes() {

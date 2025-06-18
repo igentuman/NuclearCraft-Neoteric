@@ -42,6 +42,7 @@ public class NCItemTags extends ItemTagsProvider {
         parts();
         fuel();
         isotopes();
+        waste();
         disks();
         ionSources();
         for(RegistryObject<Item> magnet: NC_ELECTROMAGNETS_ITEMS.values()) {
@@ -77,6 +78,12 @@ public class NCItemTags extends ItemTagsProvider {
     private void disks() {
         for(String name: NC_RECORDS.keySet()) {
             tag(ItemTags.MUSIC_DISCS).add(NC_RECORDS.get(name).get());
+        }
+    }
+
+    private void waste() {
+        for(String name: FissionFuel.NC_WASTE.keySet()) {
+            tag(NC_WASTE_TAG.get(name)).add(FissionFuel.NC_WASTE.get(name).get());
         }
     }
 

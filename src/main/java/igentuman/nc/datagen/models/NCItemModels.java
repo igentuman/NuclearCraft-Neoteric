@@ -23,6 +23,7 @@ import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_CO
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BLOCKS;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
 import static igentuman.nc.setup.registration.FissionFuel.NC_ISOTOPES;
+import static igentuman.nc.setup.registration.FissionFuel.NC_WASTE;
 import static igentuman.nc.setup.registration.NCItems.*;
 
 public class NCItemModels extends ItemModelProvider {
@@ -54,6 +55,7 @@ public class NCItemModels extends ItemModelProvider {
         shielding();
         fuel();
         isotopes();
+        waste();
         storageBlocks();
         withExistingParent(FERAL_GHOUL_SPAWN_EGG.getId().getPath(), mcLoc("item/template_spawn_egg"));
         withExistingParent(NCBlocks.PORTAL_ITEM.getId().getPath(), modLoc("block/portal"));
@@ -178,6 +180,14 @@ public class NCItemModels extends ItemModelProvider {
             singleTexture(FissionFuel.NC_DEPLETED_FUEL.get(name).getId().getPath(),
                     mcLoc("item/generated"),
                     "layer0", modLoc("item/fuel/"+subPath));
+        }
+    }
+
+    private void waste() {
+        for(String name: NC_WASTE.keySet()) {
+            singleTexture(NC_WASTE.get(name).getId().getPath(),
+                    mcLoc("item/generated"),
+                    "layer0", modLoc("item/material/waste/"+name));
         }
     }
 

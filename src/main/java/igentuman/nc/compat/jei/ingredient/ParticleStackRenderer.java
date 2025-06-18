@@ -86,9 +86,13 @@ public class ParticleStackRenderer  implements IIngredientRenderer<ParticleStack
 	public void getTooltip(ITooltipBuilder tooltip, ParticleStack ingredient, TooltipFlag tooltipFlag) {
 		IIngredientRenderer.super.getTooltip(tooltip, ingredient, tooltipFlag);
 		tooltip.add(__(ingredient.getParticle().getUnlocalizedName()));
-		//tooltip.add(__("tooltip.nuclearcraft.particlestack.amount", Units.getSIFormat(ingredient.getAmount(),"pu")).withStyle(ChatFormatting.GRAY));
-		//tooltip.add(__("tooltip.nuclearcraft.particlestack.mean_energy",Units.getParticleEnergy(ingredient.getMeanEnergy())).withStyle(ChatFormatting.GRAY));
-		//tooltip.add(__("tooltip.nuclearcraft.particlestack.focus",Units.getSIFormat(ingredient.getFocus(),"")).withStyle(ChatFormatting.GRAY));
+		tooltip.add(__("tooltip.nuclearcraft.particlestack.amount", Units.getSIFormat(ingredient.getAmount(),"pu")).withStyle(ChatFormatting.GRAY));
+		if(ingredient.getMeanEnergy() > 0) {
+			tooltip.add(__("tooltip.nuclearcraft.particlestack.mean_energy", Units.getParticleEnergy(ingredient.getMeanEnergy())).withStyle(ChatFormatting.GRAY));
+		}
+		if(ingredient.getFocus() > 0) {
+			tooltip.add(__("tooltip.nuclearcraft.particlestack.focus", Units.getSIFormat(ingredient.getFocus(), "")).withStyle(ChatFormatting.GRAY));
+		}
 	}
 
 	private void drawParticle(GuiGraphics graphics, final int xPosition, final int yPosition,

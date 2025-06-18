@@ -55,8 +55,10 @@ public class ParticleSourceItem extends Item implements IItemParticleAmount {
     public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
     {
         ParticleSourceItem particleItem = (ParticleSourceItem) stack.getItem();
-        list.add(applyFormat(__("tooltip.ion_source.particle", particleItem.getParticleName(stack)), ChatFormatting.GOLD));
-        list.add(applyFormat(__("tooltip.ion_source.amount", scaledFormat(particleItem.getAmountStored(stack)), scaledFormat(particleItem.getItemCapacity(stack))), ChatFormatting.GOLD));
+        if(particleItem.getParticle(stack) != null) {
+            list.add(applyFormat(__("tooltip.ion_source.particle", particleItem.getParticleName(stack)), ChatFormatting.GOLD));
+            list.add(applyFormat(__("tooltip.ion_source.amount", scaledFormat(particleItem.getAmountStored(stack)), scaledFormat(particleItem.getItemCapacity(stack))), ChatFormatting.GOLD));
+        }
     }
 
     private Component getParticleName(ItemStack stack) {

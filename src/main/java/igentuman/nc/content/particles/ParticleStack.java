@@ -20,7 +20,7 @@ public class ParticleStack
 	
 	public ParticleStack()
 	{
-		this.particle =null;
+		this.particle = null;
 		this.amount = 0;
 		this.meanEnergy = 0;
 		this.focus= 0;

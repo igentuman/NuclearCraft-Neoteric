@@ -27,6 +27,9 @@ public interface IItemParticleAmount
 
 	default Particle getParticle(ItemStack stack)
 	{
+		if(sources.get(stack.getItem().toString()).getParticle() == null) {
+			return null;
+		}
 		CompoundTag nbt = getStorageNBT(stack);
 		if (!nbt.contains("particle")) {
 			nbt.putString("particle", sources.get(stack.getItem().toString()).getParticle().name);

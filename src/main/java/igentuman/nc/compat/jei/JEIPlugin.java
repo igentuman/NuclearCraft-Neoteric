@@ -13,11 +13,13 @@ import igentuman.nc.compat.jei.ingredient.ParticleStackListFactory;
 import igentuman.nc.compat.jei.ingredient.ParticleStackRenderer;
 import igentuman.nc.compat.jei.ingredient.ParticleType;
 import igentuman.nc.content.particles.Particle;
+import igentuman.nc.content.particles.ParticleSources;
 import igentuman.nc.content.particles.ParticleStack;
 import igentuman.nc.content.particles.Particles;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.recipes.AbstractRecipe;
 import igentuman.nc.recipes.NcRecipeType;
+import igentuman.nc.recipes.ingredient.creator.IngredientCreatorAccess;
 import igentuman.nc.recipes.type.MekChemicalConversionRecipe;
 import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.recipes.type.OreVeinRecipe;
@@ -45,6 +47,8 @@ import java.util.*;
 
 import static igentuman.nc.NuclearCraft.*;
 import static igentuman.nc.compat.GlobalVars.*;
+import static igentuman.nc.setup.registration.NCFluids.ALL_FLUID_ENTRIES;
+import static igentuman.nc.setup.registration.NCItems.ION_SOURCES;
 import static igentuman.nc.util.ModUtil.isMekanismLoaded;
 
 @JeiPlugin
@@ -125,6 +129,9 @@ public  class JEIPlugin implements IModPlugin {
         registration.addRecipeCategories(
                 new ParticleInfoCategory(registration.getJeiHelpers().getGuiHelper())
         );
+        registration.addRecipeCategories(
+                new ParticleSourceCategory(registration.getJeiHelpers().getGuiHelper())
+        );
     }
 
     public <TYPE> RecipeType<TYPE> getRecipeType(String name) {
@@ -181,9 +188,25 @@ public  class JEIPlugin implements IModPlugin {
             List<MultiblockStructureRecipe> multiblockRecipes = loadMultiblockStructures();
             registration.addRecipes(MultiblockStructureCategory.TYPE, multiblockRecipes);
             registration.addRecipes(ParticleInfoCategory.TYPE, particleRecipes());
+            registration.addRecipes(ParticleSourceCategory.TYPE, particleSourceRecipes());
         } catch (IllegalArgumentException ex) {
             LOGGER.error("Error registering recipes for JEI: " + ex.getMessage());
         }
+    }
+
+    private List<ParticleSourceRecipe> particleSourceRecipes() {
+        List<ParticleSourceRecipe> recipes = new ArrayList<>();
+        for (String item: ParticleSources.sources.keySet()) {
+            if(ParticleSources.sources.get(item).getParticle() == null) {
+                continue;
+            }
+            recipes.add(new ParticleSourceRecipe(rl(item), new ItemStack(ION_SOURCES.get(item).get()), null, ParticleSources.sources.get(item).getParticle()));
+        }
+
+        for (String fluid: ParticleSources.fluidSources.keySet()) {
+            recipes.add(new ParticleSourceRecipe(rl(fluid), null, IngredientCreatorAccess.fluid().from(fluid, 1).getRepresentations().get(0), ParticleSources.fluidSources.get(fluid).getParticle()));
+        }
+        return recipes;
     }
 
     private List<ParticleRecipe> particleRecipes() {

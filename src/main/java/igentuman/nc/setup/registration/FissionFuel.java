@@ -18,11 +18,13 @@ public class FissionFuel {
     public static HashMap<List<String>, RegistryObject<Item>> NC_FUEL = new HashMap<>();
     public static HashMap<List<String>, RegistryObject<Item>> NC_DEPLETED_FUEL = new HashMap<>();
     public static HashMap<String, RegistryObject<Item>>  NC_ISOTOPES = new HashMap<>();
+    public static HashMap<String, RegistryObject<Item>>  NC_WASTE = new HashMap<>();
 
     public static void init()
     {
         registerFuel();
         registerIsotopes();
+        registerWaste();
     }
 
     public static RegistryObject<Item> fuel(String name, String type, String subType)
@@ -56,12 +58,19 @@ public class FissionFuel {
         }
     }
 
+    public static void registerWaste() {
+        for(String name: Materials.waste()) {
+            NC_WASTE.put(name, ITEMS.register(name+"_spallation_waste", () -> new Item(ITEM_PROPERTIES)));
+            NC_WASTE_TAG.put(name, itemTag("waste/" + name));
+        }
+    }
+
     public static void registerIsotopes() {
         for(String name: Materials.isotopes()) {
             for(String type: new String[]{"", "_za", "_ox","_ni"}) {
                 NC_ISOTOPES.put(name+type, ITEMS.register(name.replace("/", "_")+type, () -> new Item(ITEM_PROPERTIES)));
                 NC_ISOTOPE_TAG.put(name, itemTag("isotopes/" + name));
-                if(name.matches("xenorium.*|quantite")) {
+                if(name.matches("xenorium.*|quantite|beryllium.*|calcium.*|iridium.*|magnesium.*|sodium.*|cobalt.*")) {
                     break;
                 }
             }

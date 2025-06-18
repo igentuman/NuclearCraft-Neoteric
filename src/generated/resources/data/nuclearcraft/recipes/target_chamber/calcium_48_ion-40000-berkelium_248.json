@@ -1,0 +1,46 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "crossSection": 0.02,
+  "input": [
+    {
+      "item": "nuclearcraft:berkelium_248"
+    }
+  ],
+  "inputParticles": [
+    {
+      "amount": 1,
+      "focus": 2.0,
+      "meanEnergy": 40000,
+      "particle": "calcium_48_ion"
+    }
+  ],
+  "maxEnergy": 50000,
+  "output": [
+    {
+      "item": "nuclearcraft:copernicium_291"
+    }
+  ],
+  "outputParticles": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "meanEnergy": 1,
+      "particle": "alpha"
+    },
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "meanEnergy": 1,
+      "particle": "neutron"
+    },
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "meanEnergy": 2,
+      "particle": "electron_neutrino"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

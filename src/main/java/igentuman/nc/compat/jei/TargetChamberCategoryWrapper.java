@@ -93,21 +93,21 @@ public class TargetChamberCategoryWrapper<T extends TargetChamberControllerBE.Re
         for(int i = 0; i < recipe.inputParticles.length; i++) {
             builder.addSlot(RecipeIngredientRole.INPUT, 8+18*i, 36).addIngredient(ParticleType.Particle, recipe.inputParticles[i]);
         }
-        List<Vec2> positionMap = List.of(new Vec2(76, 5), new Vec2(130, 36), new Vec2(76, 90));
+        List<Vec2> positionMap = List.of(new Vec2(76, 5), new Vec2(136, 36), new Vec2(76, 68));
         for(int i = 0; i < recipe.outputParticles.length; i++) {
             Vec2 pos = positionMap.get(i);
             builder.addSlot(RecipeIngredientRole.OUTPUT, (int) pos.x, (int) pos.y).addIngredient(ParticleType.Particle, recipe.outputParticles[i]);
         }
 
         if(recipe.getInputFluids().length > 0) {
-            builder.addSlot(RecipeIngredientRole.INPUT, 43, 46)
+            builder.addSlot(RecipeIngredientRole.INPUT, 43, 45)
                     .addIngredients(ForgeTypes.FLUID_STACK, recipe.getInputFluids(0))
                     .setFluidRenderer(recipe.getInputFluids()[0].getAmount(), false, 16, 16);
             guiHelper.createDrawable(rl("textures/gui/widgets.png"), 18, 0, 18, 18);
         }
 
         if(recipe.getOutputFluids().size() > 0) {
-            builder.addSlot(RecipeIngredientRole.OUTPUT, 101, 46)
+            builder.addSlot(RecipeIngredientRole.OUTPUT, 101, 45)
                     .addIngredients(ForgeTypes.FLUID_STACK, recipe.getOutputFluids(0))
                     .setFluidRenderer(recipe.getOutputFluids().get(0).getAmount(), false, 16, 16);
             guiHelper.createDrawable(rl("textures/gui/widgets.png"), 18, 0, 18, 18);

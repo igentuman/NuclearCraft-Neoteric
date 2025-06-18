@@ -61,6 +61,7 @@ public class Materials extends MaterialsManager {
     public final static String molybdenum = "molybdenum";
     public final static String polonium = "polonium";
     public final static String promethium_147 = "promethium_147";
+    public final static String protactinium_231 = "protactinium_231";
     public final static String protactinium_233 = "protactinium_233";
     public final static String radium = "radium";
     public final static String ruthenium_106 = "ruthenium_106";
@@ -126,11 +127,14 @@ public class Materials extends MaterialsManager {
     public final static String thorium230 = "thorium/230";
     public final static String thorium232 = "thorium/232";
     public final static String uranium233 = "uranium/233";
+    public final static String uranium234 = "uranium/234";
     public final static String uranium235 = "uranium/235";
     public final static String uranium238 = "uranium/238";
+    public final static String copernicium291 = "copernicium/291";
     public final static String supercold_ice = "supercold_ice";
 
     public static final HashMap<String, Double> isotopes = new HashMap<>();
+    public static List<String> waste = new ArrayList<>();
     public final static String potassium_iodide = "potassium_iodide";
     public final static String iodine = "iodine";
     public final static String calcium = "calcium";
@@ -160,6 +164,13 @@ public class Materials extends MaterialsManager {
     public final static String subliquid_matter = "subliquid_matter";
     public final static String xenorium298 = "xenorium298";
     public final static String quantite = "quantite";
+    public final static String beryllium_7 = "beryllium_7";
+    public final static String calcium_48 = "calcium_48";
+    public final static String cobalt_60 = "cobalt_60";
+    public final static String iridium_192 = "iridium_192";
+    public final static String magnesium_24 = "magnesium_24";
+    public final static String magnesium_26 = "magnesium_26";
+    public final static String sodium_22 = "sodium_22";
     public static String bscco = "bscco";
     public static List<String> slurries;
 
@@ -272,6 +283,7 @@ public class Materials extends MaterialsManager {
             all.put(thallium, NCMaterial.dust(thallium));
             all.put(gadolinium, NCMaterial.dust(gadolinium));
             all.put(polonium, NCMaterial.dust(polonium).fluid(true, 800).color(0xFF15755B));
+            all.put(protactinium_231, NCMaterial.dust(protactinium_231));
             all.put(protactinium_233, NCMaterial.dust(protactinium_233));
             all.put(radium, NCMaterial.dust(radium));
             all.put(tbp, NCMaterial.dust(tbp));
@@ -307,6 +319,7 @@ public class Materials extends MaterialsManager {
     {
         if(!isotopes.isEmpty()) return new ArrayList<>(isotopes.keySet());
         isotopes.put(americium241, 0.02);
+        isotopes.put(copernicium291, 0.32);
         isotopes.put(americium242, 0.07);
         isotopes.put(americium243, 0.0013);
         isotopes.put(berkelium247, 0.0075);
@@ -332,11 +345,49 @@ public class Materials extends MaterialsManager {
         isotopes.put(thorium230, 0.0009);
         isotopes.put(thorium232, 0.002);
         isotopes.put(uranium233, 0.003);
+        isotopes.put(uranium234, 0.013);
         isotopes.put(uranium235, 0.02);
         isotopes.put(uranium238, 0.0002);
         isotopes.put(xenorium298, 1.2);
         isotopes.put(quantite, 0.3);
+        isotopes.put(beryllium_7, 0.1);
+        isotopes.put(calcium_48, 0.1);
+        isotopes.put(cobalt_60, 0.1);
+        isotopes.put(iridium_192, 0.1);
+        isotopes.put(magnesium_24, 0.1);
+        isotopes.put(magnesium_26, 0.1);
+        isotopes.put(sodium_22, 0.1);
         return isotopes();
+    }
+
+    public static List<String> waste()
+    {
+        if(!waste.isEmpty()) return waste;
+        waste = List.of(
+                "americium",
+                "berkelium",
+                "bismuth",
+                "californium",
+                "curium",
+                "gold",
+                "hafnium",
+                "iridium",
+                "lead",
+                "mercury",
+                "neptunium",
+                "osmium",
+                "platinum",
+                "plutonium",
+                "polonium",
+                "protactinium",
+                "radium",
+                "thorium",
+                "tungsten",
+                "uranium",
+                "heavy",
+                "light"
+        );
+        return waste;
     }
 
     public static List<String> slurries() {

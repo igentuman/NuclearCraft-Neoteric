@@ -6,12 +6,12 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "nuclearcraft:accelerator_beam"
+          "name": "nuclearcraft:particle_beam"
         }
       ],
       "name": "block",
       "rolls": 1.0
     }
   ],
-  "random_sequence": "nuclearcraft:blocks/accelerator_beam"
+  "random_sequence": "nuclearcraft:blocks/particle_beam"
 }

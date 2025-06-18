@@ -17,7 +17,7 @@ import static igentuman.nc.handler.config.CommonConfig.ENERGY_GENERATION;
 public class SteamTurbineBE extends NCProcessorBE {
 
     @NBTField
-    protected double efficiency = 0.001;
+    public double efficiency = 0.001;
 
     public SteamTurbineBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, Processors.STEAM_TURBINE);

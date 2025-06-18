@@ -68,6 +68,11 @@ public class NuclearCraft {
         context.registerConfig(ModConfig.Type.COMMON, WorldConfig.spec, "NuclearCraft/world.toml");
     }
 
+    @Deprecated
+    public NuclearCraft() {
+        this(FMLJavaModLoadingContext.get());
+    }
+
     public NuclearCraft(FMLJavaModLoadingContext context) {
         instance = this;
         IEventBus modbus = context.getModEventBus();

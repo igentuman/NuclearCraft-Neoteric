@@ -3,11 +3,10 @@ package igentuman.nc.block.entity.accelerator;
 import igentuman.api.nc.multiblock.MultiblockAttachable;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.NuclearCraftBE;
-import igentuman.nc.block.entity.kugelblitz.BlackHoleBE;
 import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;
 import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;
-import igentuman.nc.multiblock.kugelblitz.KugelblitzMultiblock;
+import igentuman.nc.multiblock.accelerator.TargetChamberMultiblock;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -25,7 +24,7 @@ import java.util.Objects;
 
 import static igentuman.nc.compat.oc2.FusionReactorDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.content.particles.CapabilityParticleStackHandler.PARTICLE_HANDLER_CAPABILITY;
-import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BE;
+import static igentuman.nc.multiblock.accelerator.TargetChamberRegistration.TARGET_CHAMBER_BE;
 import static igentuman.nc.util.ModUtil.isCcLoaded;
 import static igentuman.nc.util.ModUtil.isOC2Loaded;
 
@@ -38,13 +37,13 @@ public class TargetChamberBeamPortBE extends NuclearCraftBE implements Multibloc
     public byte comparatorMode = SignalSource.ENERGY;
     @NBTField
     public BlockPos controllerPos;
-    protected KugelblitzMultiblock multiblock;
+    protected TargetChamberMultiblock multiblock;
     public boolean refreshCacheFlag = true;
     public byte validationRuns = 0;
-    public LinearAcceleratorControllerBE controller;
+    public TargetChamberControllerBE controller;
 
     public TargetChamberBeamPortBE(BlockPos pPos, BlockState pBlockState) {
-        super(ACCELERATOR_BE.get(NAME).get(), pPos, pBlockState);
+        super(TARGET_CHAMBER_BE.get(NAME).get(), pPos, pBlockState);
     }
     public Direction getFacing() {
         return getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);
@@ -56,11 +55,11 @@ public class TargetChamberBeamPortBE extends NuclearCraftBE implements Multibloc
 
     @Override
     public void setMultiblock(AbstractMultiblock multiblock) {
-        this.multiblock = (KugelblitzMultiblock) multiblock;
+        this.multiblock = (TargetChamberMultiblock) multiblock;
     }
 
     @Override
-    public KugelblitzMultiblock getMultiblock() {
+    public TargetChamberMultiblock getMultiblock() {
         return multiblock;
     }
 
@@ -76,7 +75,6 @@ public class TargetChamberBeamPortBE extends NuclearCraftBE implements Multibloc
         if(getMultiblock() == null || controller() == null) return;
         int wasSignal = analogSignal;
         boolean updated = false;
-        sendOutPower();
         if(controllerPos == null) {
             controllerPos = controller().getBlockPos();
             updated = true;
@@ -89,10 +87,9 @@ public class TargetChamberBeamPortBE extends NuclearCraftBE implements Multibloc
         updateAnalogSignal();
 
         updated = wasSignal != analogSignal || updated;
-        switch (comparatorMode) {
-            case SignalSource.FREQUENCY -> controller().heatRate = analogSignal;
+        /*switch (comparatorMode) {
             case SignalSource.TRANSFORMATION_ENERGY_RATE -> controller().heatRate = analogSignal/15*100;
-        }
+        }*/
         Direction dir = getFacing();
 
         if(fluidHandler() != null) {
@@ -106,12 +103,6 @@ public class TargetChamberBeamPortBE extends NuclearCraftBE implements Multibloc
         }
     }
 
-    protected void sendOutPower() {
-        for (Direction direction : Direction.values()) {
-            pullEnergyFromSide(direction);
-        }
-    }
-
     private void updateAnalogSignal() {
         if(controller() == null) {
             analogSignal = 0;
@@ -120,9 +111,6 @@ public class TargetChamberBeamPortBE extends NuclearCraftBE implements Multibloc
         switch (comparatorMode) {
             case SignalSource.ENERGY:
                 analogSignal = (byte) (controller().energyStorage().getEnergyStored() * 15 / controller().energyStorage().getMaxEnergyStored());
-                break;
-            case SignalSource.MASS:
-                analogSignal = (byte) (controller().heatRate * 15 / BlackHoleBE.MAX_MASS);
                 break;
             case SignalSource.PROGRESS:
                 analogSignal = (byte) (getProgress()/100D * 15);
@@ -145,7 +133,7 @@ public class TargetChamberBeamPortBE extends NuclearCraftBE implements Multibloc
 
     protected FluidCapabilityHandler fluidHandler()
     {
-        return controller().contentHandler().fluidCapability;
+        return controller().contentHandler().fluidHandler;
     }
 
     protected <T> LazyOptional<T> fluidHandler(@Nullable Direction side)
@@ -184,16 +172,16 @@ public class TargetChamberBeamPortBE extends NuclearCraftBE implements Multibloc
     }
 
     @Override
-    public LinearAcceleratorControllerBE controller() {
+    public TargetChamberControllerBE controller() {
         if(NuclearCraft.instance.isNcBeStopped || (!getLevel().isClientSide() && getLevel().getServer() != null && !getLevel().getServer().isRunning())) return null;
         if(getLevel().isClientSide && controllerPos != null) {
-            return (LinearAcceleratorControllerBE) getLevel().getExistingBlockEntity(controllerPos);
+            return (TargetChamberControllerBE) getLevel().getExistingBlockEntity(controllerPos);
         }
         try {
-            return (LinearAcceleratorControllerBE) getMultiblock().controller().controllerBE();
+            return (TargetChamberControllerBE) getMultiblock().controller().controllerBE();
         } catch (NullPointerException e) {
             if(controllerPos != null) {
-                return (LinearAcceleratorControllerBE) getLevel().getExistingBlockEntity(controllerPos);
+                return (TargetChamberControllerBE) getLevel().getExistingBlockEntity(controllerPos);
             }
             return null;
         }
@@ -211,7 +199,7 @@ public class TargetChamberBeamPortBE extends NuclearCraftBE implements Multibloc
 
     public int energyPerTick() {
         if(controller() == null) return 0;
-        return controller().heatRate;
+        return controller().energyPerTick;
     }
 
     public void toggleComparatorMode() {
@@ -233,7 +221,6 @@ public class TargetChamberBeamPortBE extends NuclearCraftBE implements Multibloc
         if(controller() == null) return 0;
         return controller().recipeInfo().getProgress();
     }
-
 
     public static class SignalSource {
         public static final byte ENERGY = 1;

@@ -1,5 +1,6 @@
 package igentuman.nc.datagen.recipes.recipes;
 
+import igentuman.nc.content.particles.ParticleStack;
 import igentuman.nc.datagen.recipes.builder.NcRecipeBuilder;
 import igentuman.nc.datagen.recipes.builder.TConstructRecipeBuilder;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
@@ -177,6 +178,20 @@ public abstract class AbstractRecipeProvider {
                 .build(consumer);
     }
 
+
+    public static void targetChamber(
+            List<FluidStackIngredient> inputFluids, List<NcIngredient> inputItems,
+            List<ParticleStack> inputParticles, List<ParticleStack> outputParticles,
+            List<FluidStackIngredient> outputFluids, List<NcIngredient> outputItems, long maxEnergy, double crossSection) {
+        NcRecipeBuilder.get(ID)
+                .items(inputItems, outputItems)
+                .fluids(inputFluids, outputFluids)
+                .particles(inputParticles, outputParticles)
+                .maxEnergy(maxEnergy)
+                .crossSection(crossSection)
+                .modifiers(1D, 1D, 1D)
+                .build(consumer);
+    }
 
     public static void fluidsAndFluids(List<FluidStackIngredient> input, List<FluidStackIngredient> output, double...params) {
         double timeModifier = params.length>0 ? params[0] : 1.0;

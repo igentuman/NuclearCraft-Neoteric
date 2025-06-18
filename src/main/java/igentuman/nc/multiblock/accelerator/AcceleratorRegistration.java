@@ -2,10 +2,7 @@ package igentuman.nc.multiblock.accelerator;
 
 import com.google.gson.JsonArray;
 import igentuman.nc.block.accelerator.*;
-import igentuman.nc.block.entity.accelerator.AcceleratorIonSourcePortBE;
-import igentuman.nc.block.entity.accelerator.AcceleratorPortBE;
-import igentuman.nc.block.entity.accelerator.LinearAcceleratorControllerBE;
-import igentuman.nc.block.entity.accelerator.ThoroidalAcceleratorControllerBE;
+import igentuman.nc.block.entity.accelerator.*;
 import igentuman.nc.container.AcceleratorIonSourcePortContainer;
 import igentuman.nc.container.AcceleratorPortContainer;
 import igentuman.nc.container.LinearAcceleratorContainer;
@@ -67,7 +64,7 @@ public class AcceleratorRegistration {
         registerSimpleBlock("accelerator_casing");
         registerSimpleBlock("electromagnet_yoke");
         registerSimpleBlock("accelerator_casing_glass");
-        registerSimpleBlock("accelerator_beam");
+        registerSimpleBlock("particle_beam");
         registerOrientedBlock("linear_accelerator_controller");
         registerOrientedBlock("thoroidal_accelerator_controller");
         registerOrientedBlock("accelerator_port");
@@ -81,7 +78,7 @@ public class AcceleratorRegistration {
 
         ACCELERATOR_BE.put("accelerator_beam_port",
                 BLOCK_ENTITIES.register("accelerator_beam_port",
-                        () -> BlockEntityType.Builder.of(AcceleratorPortBE::new, ACCELERATOR_BLOCKS.get("accelerator_beam_port").get())
+                        () -> BlockEntityType.Builder.of(AcceleratorBeamPortBE::new, ACCELERATOR_BLOCKS.get("accelerator_beam_port").get())
                                 .build(null)));
 
         ACCELERATOR_BE.put("accelerator_ion_source_port",

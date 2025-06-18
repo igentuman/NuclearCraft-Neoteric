@@ -25,6 +25,7 @@ import java.util.*;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
 
+@SuppressWarnings("unchecked")
 public class NcRecipeType<RECIPE extends NcRecipe> implements RecipeType<RECIPE>,
         INcRecipeTypeProvider<RECIPE> {
 
@@ -40,6 +41,7 @@ public class NcRecipeType<RECIPE extends NcRecipe> implements RecipeType<RECIPE>
         recipes.put("fusion_coolant", register("fusion_coolant"));
         recipes.put("fission_boiling", register("fission_boiling"));
         recipes.put("kugelblitz_chamber", register("kugelblitz_chamber"));
+        recipes.put("target_chamber", register("target_chamber"));
         recipes.put(TurbineControllerBE.NAME, register(TurbineControllerBE.NAME));
 
         for(String processorName: Processors.all().keySet()) {

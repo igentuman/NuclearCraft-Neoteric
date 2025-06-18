@@ -3,10 +3,13 @@ package igentuman.nc.block.accelerator;
 import igentuman.nc.block.entity.accelerator.AcceleratorBeamPortBE;
 import igentuman.nc.block.entity.accelerator.AcceleratorPortBE;
 import igentuman.nc.container.AcceleratorPortContainer;
+import igentuman.nc.multiblock.MultiblockHandler;
+import igentuman.nc.util.PortMode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
@@ -27,17 +30,19 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BE;
+import static igentuman.nc.util.PortMode.PORT_MODE;
+import static igentuman.nc.util.StackUtils.isMultiTool;
 import static igentuman.nc.util.TextUtils.__;
 
 public class AcceleratorBeamPortBlock extends HorizontalDirectionalBlock implements EntityBlock {
     public static final DirectionProperty HORIZONTAL_FACING = FACING;
-    public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
     public static final String NAME = "accelerator_beam_port";
 
     public AcceleratorBeamPortBlock() {
@@ -52,8 +57,23 @@ public class AcceleratorBeamPortBlock extends HorizontalDirectionalBlock impleme
         this.registerDefaultState(
                 this.stateDefinition.any()
                         .setValue(HORIZONTAL_FACING, Direction.NORTH)
-                        .setValue(POWERED, false)
+                        .setValue(PORT_MODE, PortMode.Mode.INPUT)
         );
+    }
+
+    @Override
+    public @NotNull InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
+        if (!level.isClientSide()) {
+            if(isMultiTool(player.getItemInHand(hand))) {
+                PortMode.Mode mode = state.getValue(PORT_MODE);
+                PortMode.Mode newMode = mode.next();
+                MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(pos);
+                level.setBlockAndUpdate(pos, state.setValue(PORT_MODE, newMode));
+                player.sendSystemMessage(__("message.nc.barrel.side_config", newMode));
+                return InteractionResult.SUCCESS;
+            }
+        }
+        return InteractionResult.SUCCESS;
     }
 
     @Override
@@ -64,7 +84,7 @@ public class AcceleratorBeamPortBlock extends HorizontalDirectionalBlock impleme
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(BlockStateProperties.HORIZONTAL_FACING)
-                .add(BlockStateProperties.POWERED);
+                .add(PORT_MODE);
     }
 
     @Nullable

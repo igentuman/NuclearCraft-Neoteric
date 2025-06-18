@@ -237,7 +237,7 @@ public class LeacherBE extends NCProcessorBE {
 
         catalyst = catalystHandler().getStackInSlot(0);
         ItemStack ore = ItemStack.EMPTY;
-        if(contentHandler().fluidCapability.getFluidInSlot(0).isEmpty()) {
+        if(contentHandler().fluidHandler.getFluidInSlot(0).isEmpty()) {
             leacherState = NO_ACID;
             return;
         }

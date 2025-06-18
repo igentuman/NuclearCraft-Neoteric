@@ -152,7 +152,7 @@ public class TargetChamberPortBE extends NuclearCraftBE implements MultiblockAtt
 
     protected FluidCapabilityHandler fluidHandler()
     {
-        return controller().contentHandler().fluidCapability;
+        return controller().contentHandler().fluidHandler;
     }
 
     @Nonnull

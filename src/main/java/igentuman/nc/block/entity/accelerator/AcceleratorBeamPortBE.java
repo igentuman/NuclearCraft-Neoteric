@@ -3,11 +3,12 @@ package igentuman.nc.block.entity.accelerator;
 import igentuman.api.nc.multiblock.MultiblockAttachable;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.NuclearCraftBE;
-import igentuman.nc.block.entity.kugelblitz.BlackHoleBE;
+import igentuman.nc.content.particles.ParticleStack;
 import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;
 import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;
-import igentuman.nc.multiblock.kugelblitz.KugelblitzMultiblock;
+import igentuman.nc.multiblock.accelerator.AbstractAcceleratorMultiblock;
+import igentuman.nc.util.Equations;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -26,6 +27,7 @@ import java.util.Objects;
 import static igentuman.nc.compat.oc2.FusionReactorDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.content.particles.CapabilityParticleStackHandler.PARTICLE_HANDLER_CAPABILITY;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BE;
+import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
 import static igentuman.nc.util.ModUtil.isCcLoaded;
 import static igentuman.nc.util.ModUtil.isOC2Loaded;
 
@@ -38,7 +40,7 @@ public class AcceleratorBeamPortBE extends NuclearCraftBE implements MultiblockA
     public byte comparatorMode = SignalSource.ENERGY;
     @NBTField
     public BlockPos controllerPos;
-    protected KugelblitzMultiblock multiblock;
+    protected AbstractAcceleratorMultiblock multiblock;
     public boolean refreshCacheFlag = true;
     public byte validationRuns = 0;
     public LinearAcceleratorControllerBE controller;
@@ -56,11 +58,11 @@ public class AcceleratorBeamPortBE extends NuclearCraftBE implements MultiblockA
 
     @Override
     public void setMultiblock(AbstractMultiblock multiblock) {
-        this.multiblock = (KugelblitzMultiblock) multiblock;
+        this.multiblock = (AbstractAcceleratorMultiblock) multiblock;
     }
 
     @Override
-    public KugelblitzMultiblock getMultiblock() {
+    public AbstractAcceleratorMultiblock getMultiblock() {
         return multiblock;
     }
 
@@ -121,9 +123,6 @@ public class AcceleratorBeamPortBE extends NuclearCraftBE implements MultiblockA
             case SignalSource.ENERGY:
                 analogSignal = (byte) (controller().energyStorage().getEnergyStored() * 15 / controller().energyStorage().getMaxEnergyStored());
                 break;
-            case SignalSource.MASS:
-                analogSignal = (byte) (controller().heatRate * 15 / BlackHoleBE.MAX_MASS);
-                break;
             case SignalSource.PROGRESS:
                 analogSignal = (byte) (getProgress()/100D * 15);
                 break;
@@ -145,7 +144,7 @@ public class AcceleratorBeamPortBE extends NuclearCraftBE implements MultiblockA
 
     protected FluidCapabilityHandler fluidHandler()
     {
-        return controller().contentHandler().fluidCapability;
+        return controller().contentHandler().fluidHandler;
     }
 
     protected <T> LazyOptional<T> fluidHandler(@Nullable Direction side)
@@ -232,6 +231,49 @@ public class AcceleratorBeamPortBE extends NuclearCraftBE implements MultiblockA
     public double getProgress() {
         if(controller() == null) return 0;
         return controller().recipeInfo().getProgress();
+    }
+
+    public void extractParticle(ParticleStack particleStack) {
+        if(controller() == null || particleStack == null || particleStack.getAmount() <= 0) return;
+        
+        Direction facing = getFacing();
+        BlockPos currentPos = worldPosition.relative(facing);
+        int maxDistance = 16;
+        
+        for (int distance = 0; distance < maxDistance; distance++) {
+
+            BlockState blockState = level.getBlockState(currentPos);
+            if (blockState.is(ACCELERATOR_BLOCKS.get("particle_beam").get())) {
+                currentPos = currentPos.relative(facing);
+                continue;
+            }
+            
+            if (level.getBlockEntity(currentPos) instanceof AcceleratorBeamPortBE targetPort) {
+                if (targetPort.getFacing() == facing.getOpposite()) {
+                    if (targetPort.controller() != null) {
+                        particleStack.setFocus(Equations.focusLoss(distance, particleStack));
+                        targetPort.controller().getCapability(PARTICLE_HANDLER_CAPABILITY, facing.getOpposite())
+                                .ifPresent(handler -> {
+                                    handler.reciveParticle(facing.getOpposite(), particleStack);
+                                });
+                    }
+                }
+                break;
+            } else if (level.getBlockEntity(currentPos) instanceof TargetChamberBeamPortBE targetPort) {
+                if (targetPort.getFacing() == facing.getOpposite()) {
+                    if (targetPort.controller() != null) {
+                        particleStack.setFocus(Equations.focusLoss(distance, particleStack));
+                        targetPort.controller().getCapability(PARTICLE_HANDLER_CAPABILITY, facing.getOpposite())
+                                .ifPresent(handler -> {
+                                    handler.reciveParticle(facing.getOpposite(), particleStack);
+                                });
+                    }
+                }
+                break;
+            } else {
+                break;
+            }
+        }
     }
 
 

@@ -2,6 +2,7 @@ package igentuman.nc.container;
 
 import igentuman.nc.block.entity.accelerator.TargetChamberControllerBE;
 import igentuman.nc.container.elements.NCSlotItemHandler;
+import igentuman.nc.content.particles.ParticleStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -36,8 +37,8 @@ public class TargetChamberControllerContainer extends AbstractContainerMenu {
         blockEntity = (TargetChamberControllerBE) playerEntity.getCommandSenderWorld().getBlockEntity(pos);
         layoutPlayerInventorySlots();
         blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
-            addSlot(new NCSlotItemHandler.Input(h, 0, 56, 35));
-            addSlot(new NCSlotItemHandler.Output(h, 1, 116, 35));
+            addSlot(new NCSlotItemHandler.Input(h, 0, 53, 38));
+            addSlot(new NCSlotItemHandler.Output(h, 1, 113, 38));
         });
     }
 
@@ -145,7 +146,7 @@ public class TargetChamberControllerContainer extends AbstractContainerMenu {
 
     protected void layoutPlayerInventorySlots() {
         int leftCol = 8;
-        int topRow = 153;
+        int topRow = 176;
         addSlotRange(playerInventory, leftCol, topRow, 9, 18);
         topRow -= 58;
         addSlotBox(playerInventory, leftCol, topRow, 9, 18, 3, 18);
@@ -188,5 +189,17 @@ public class TargetChamberControllerContainer extends AbstractContainerMenu {
 
     public int getDetectors() {
         return blockEntity.detectorsCount;
+    }
+
+    public boolean hasParticle() {
+        return blockEntity.hasParticle;
+    }
+
+    public ParticleStack getParticleStack() {
+        return blockEntity.getParticleStack();
+    }
+
+    public ParticleStack getOutputParticle(int i) {
+        return blockEntity.getOutputParticle(i);
     }
 }

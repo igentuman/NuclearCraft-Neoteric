@@ -156,7 +156,7 @@ public class TurbinePortBE extends TurbineBE {
 
     protected FluidCapabilityHandler fluidHandler()
     {
-        return controller().contentHandler().fluidCapability;
+        return controller().contentHandler().fluidHandler;
     }
 
     @Nonnull

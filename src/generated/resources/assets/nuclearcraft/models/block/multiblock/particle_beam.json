@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:block/cube_all",
   "textures": {
-    "all": "nuclearcraft:block/accelerator/accelerator_beam"
+    "all": "nuclearcraft:block/accelerator/particle_beam"
   }
 }

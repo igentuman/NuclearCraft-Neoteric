@@ -2,18 +2,17 @@ package igentuman.nc.datagen.recipes.builder;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import igentuman.nc.content.particles.ParticleStack;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.NcIngredient;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.function.Consumer;
 
-import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
 
 public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
@@ -22,10 +21,13 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
     private List<NcIngredient> outputItems = List.of();
     private List<FluidStackIngredient> inputFluids = List.of();
     private List<FluidStackIngredient> outputFluids = List.of();
+    private List<ParticleStack> inputParticles = List.of();
+    private List<ParticleStack> outputParticles = List.of();
     private static NcRecipeBuilder instance;
     private double timeModifier = 1D;
     private double radiation = 1D;
     private double powerModifier = 1D;
+    private long maxEnergy = 0L;
 
     public double coolingRate = 0;
     public double heatRequired = 0;
@@ -34,6 +36,7 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
     private double rarityModifier = 1D;
     private double temperature = 0D;
     private List<String> outputItemsText = List.of();
+    private double crossSection = 0;
 
     protected NcRecipeBuilder(String id) {
         super(ncSerializer(id));
@@ -88,6 +91,9 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
     public ResourceLocation getRecipeId()
     {
         StringBuilder name = new StringBuilder();
+        for (ParticleStack in: inputParticles) {
+            name.append(in.getParticle().getName()).append("-").append(in.getMeanEnergy()).append("-");
+        }
         for (NcIngredient in: inputItems) {
             name.append(in.getName()).append("-");
         }
@@ -136,6 +142,22 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
         return this;
     }
 
+    public NcRecipeBuilder particles(List<ParticleStack> inputParticles, List<ParticleStack> outputParticles) {
+        this.inputParticles = inputParticles;
+        this.outputParticles = outputParticles;
+        return this;
+    }
+
+    public NcRecipeBuilder maxEnergy(long maxEnergy) {
+        this.maxEnergy = maxEnergy;
+        return this;
+    }
+
+    public NcRecipeBuilder crossSection(double crossSection) {
+        this.crossSection = crossSection;
+        return this;
+    }
+
     public class NcRecipeResult extends RecipeResult {
 
         protected NcRecipeResult(ResourceLocation id) {
@@ -179,6 +201,13 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
             if(!inputFluids.isEmpty()) {
                 json.add("inputFluids", inputJson);
             }
+            if(!inputParticles.isEmpty()) {
+                inputJson = new JsonArray();
+                for(ParticleStack in: inputParticles) {
+                    inputJson.add(in.serialize());
+                }
+                json.add("inputParticles", inputJson);
+            }
 
             outJson = new JsonArray();
             if(!outputFluids.isEmpty()) {
@@ -186,6 +215,14 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
                     outJson.add(out.serialize());
                 }
                 json.add("outputFluids", outJson);
+            }
+
+            if(!outputParticles.isEmpty()) {
+                inputJson = new JsonArray();
+                for(ParticleStack in: outputParticles) {
+                    inputJson.add(in.serialize());
+                }
+                json.add("outputParticles", inputJson);
             }
             if(heatRequired > 0) {
                 json.addProperty("heatRequired", heatRequired);
@@ -207,6 +244,12 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
             }
             if(temperature != 0D) {
                 json.addProperty("temperature", temperature);
+            }
+            if(!inputParticles.isEmpty()) {
+                maxEnergy = maxEnergy > 0 ? maxEnergy : inputParticles.get(0).getMeanEnergy()*2;
+                crossSection = crossSection > 0 ? crossSection : 5;
+                json.addProperty("maxEnergy", maxEnergy);
+                json.addProperty("crossSection", crossSection);
             }
         }
     }

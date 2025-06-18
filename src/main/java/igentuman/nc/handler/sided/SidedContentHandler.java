@@ -28,7 +28,7 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
     public final int outputFluidSlots;
     public final ItemCapabilityHandler itemHandler;
     public final LazyOptional<ItemCapabilityHandler> itemCapability;
-    public final FluidCapabilityHandler fluidCapability;
+    public final FluidCapabilityHandler fluidHandler;
 
     public NuclearCraftBE blockEntity;
     public boolean hasPush = false;
@@ -59,11 +59,11 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
                 inputTankSize = tankCapacities[0];
                 if(tankCapacities.length > 1) outputTankSize = tankCapacities[1];
             }
-            fluidCapability = new FluidCapabilityHandler(inputFluidSlots, outputFluidSlots, inputTankSize, outputTankSize);
-            fluidCapability.tile = blockEntity;
-            fluidCapability.sidedContentHandler = this;
+            fluidHandler = new FluidCapabilityHandler(inputFluidSlots, outputFluidSlots, inputTankSize, outputTankSize);
+            fluidHandler.tile = blockEntity;
+            fluidHandler.sidedContentHandler = this;
         } else {
-            fluidCapability = null;
+            fluidHandler = null;
         }
     }
 
@@ -90,8 +90,8 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
         if(itemHandler != null) {
             nbt.put("itemHandler", itemHandler.serializeNBT());
         }
-        if(fluidCapability != null) {
-            nbt.put("fluidHandler", fluidCapability.serializeNBT());
+        if(fluidHandler != null) {
+            nbt.put("fluidHandler", fluidHandler.serializeNBT());
         }
         return nbt;
     }
@@ -101,8 +101,8 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
         if(itemHandler != null) {
             itemHandler.deserializeNBT(((CompoundTag) nbt).getCompound("itemHandler"));
         }
-        if(fluidCapability != null) {
-            fluidCapability.deserializeNBT(((CompoundTag) nbt).getCompound("fluidHandler"));
+        if(fluidHandler != null) {
+            fluidHandler.deserializeNBT(((CompoundTag) nbt).getCompound("fluidHandler"));
         }
     }
 
@@ -112,13 +112,13 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
     }
 
     public <T> LazyOptional<T> getFluidCapability(Direction side) {
-        if(hasFluidCapability(side)) return fluidCapability.getCapability(side).cast();
+        if(hasFluidCapability(side)) return fluidHandler.getCapability(side).cast();
         return LazyOptional.empty();
     }
 
     public boolean hasFluidCapability(Direction side) {
         if(inputFluidSlots+outputFluidSlots == 0) return false;
-        return side == null || fluidCapability.sideMap.get(side.ordinal()).length > 0;
+        return side == null || fluidHandler.sideMap.get(side.ordinal()).length > 0;
     }
 
     public boolean hasItemCapability(Direction side) {
@@ -132,11 +132,11 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
     public int toggleSideConfig(int slotId, int direction) {
         try {
             if (slotId < inputFluidSlots) {
-                return fluidCapability.toggleMode(getSlotIdFromGlobalId(slotId), direction);
+                return fluidHandler.toggleMode(getSlotIdFromGlobalId(slotId), direction);
             } else if (slotId < inputFluidSlots + inputItemSlots) {
                 return itemHandler.toggleMode(getSlotIdFromGlobalId(slotId), direction);
             } else if (slotId < inputFluidSlots + inputItemSlots + outputFluidSlots) {
-                return fluidCapability.toggleMode(getSlotIdFromGlobalId(slotId) + inputFluidSlots, direction);
+                return fluidHandler.toggleMode(getSlotIdFromGlobalId(slotId) + inputFluidSlots, direction);
             } else if (slotId < inputFluidSlots + outputFluidSlots + inputItemSlots + outputItemSlots) {
                 return itemHandler.toggleMode(getSlotIdFromGlobalId(slotId) + inputItemSlots, direction);
             }
@@ -148,8 +148,8 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
 
     public <RECIPE extends AbstractRecipe> void setBlockEntity(NuclearCraftBE blockEntity) {
         this.blockEntity = blockEntity;
-        if(fluidCapability != null) {
-            fluidCapability.tile = blockEntity;
+        if(fluidHandler != null) {
+            fluidHandler.tile = blockEntity;
         }
         if(itemHandler != null) {
             itemHandler.tile = blockEntity;
@@ -173,13 +173,13 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
         try {
             if (getSlotType(slotId) == INPUT) {
                 if (slotId < inputFluidSlots) {
-                    return fluidCapability.getMode(getSlotIdFromGlobalId(slotId), direction);
+                    return fluidHandler.getMode(getSlotIdFromGlobalId(slotId), direction);
                 }
                 return itemHandler.getMode(getSlotIdFromGlobalId(slotId), direction);
             }
 
             if (slotId < inputFluidSlots + inputItemSlots + outputFluidSlots) {
-                return fluidCapability.getMode(getSlotIdFromGlobalId(slotId) + inputFluidSlots, direction);
+                return fluidHandler.getMode(getSlotIdFromGlobalId(slotId) + inputFluidSlots, direction);
             }
             return itemHandler.getMode(getSlotIdFromGlobalId(slotId) + inputItemSlots, direction);
         } catch (NullPointerException|IndexOutOfBoundsException e) {
@@ -211,8 +211,8 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
 
     private boolean hasPush() {
         boolean result = false;
-        if(fluidCapability != null) {
-            result = fluidCapability.hasPush();
+        if(fluidHandler != null) {
+            result = fluidHandler.hasPush();
         }
         if(itemHandler != null) {
             result = result || itemHandler.hasPush();
@@ -222,8 +222,8 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
 
     private boolean hasPull() {
         boolean result = false;
-        if(fluidCapability != null) {
-            result = fluidCapability.hasPull();
+        if(fluidHandler != null) {
+            result = fluidHandler.hasPull();
         }
         if(itemHandler != null) {
             result = result || itemHandler.hasPull();
@@ -233,12 +233,12 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
 
 
     private boolean canPush() {
-        return hasPush && (itemHandler != null && itemHandler.canPush() || fluidCapability != null && fluidCapability.canPush());
+        return hasPush && (itemHandler != null && itemHandler.canPush() || fluidHandler != null && fluidHandler.canPush());
     }
 
 
     private boolean canPull() {
-        return hasPull && (itemHandler != null && itemHandler.canPull() || fluidCapability != null && fluidCapability.canPull());
+        return hasPull && (itemHandler != null && itemHandler.canPull() || fluidHandler != null && fluidHandler.canPull());
     }
 
     public void push(Direction side) {
@@ -246,8 +246,8 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
         if(itemHandler != null) {
             updated = itemHandler.pushItems(side) || updated;
         }
-        if(fluidCapability != null) {
-            updated = fluidCapability.pushFluids(side) || updated;
+        if(fluidHandler != null) {
+            updated = fluidHandler.pushFluids(side) || updated;
         }
         if(updated) lastPushSide = side;
     }
@@ -257,8 +257,8 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
         if(itemHandler != null) {
             updated = itemHandler.pullItems(side) || updated;
         }
-        if(fluidCapability != null) {
-            updated = fluidCapability.pullFluids(side) || updated;
+        if(fluidHandler != null) {
+            updated = fluidHandler.pullFluids(side) || updated;
         }
         if(updated) lastPullSide = side;
     }
@@ -268,7 +268,7 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
             itemHandler.holdedInputs.clear();
         }
         if(hasFluidCapability(null)) {
-            fluidCapability.holdedInputs.clear();
+            fluidHandler.holdedInputs.clear();
         }
     }
 
@@ -278,8 +278,8 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
         if(itemHandler != null) {
             cacheKey += itemHandler.getCacheKey();
         }
-        if(fluidCapability != null) {
-            cacheKey += fluidCapability.getCacheKey();
+        if(fluidHandler != null) {
+            cacheKey += fluidHandler.getCacheKey();
         }
         return cacheKey;
     }
@@ -288,8 +288,8 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
         if(itemHandler != null) {
             itemHandler.sideMapUpdated = true;
         }
-        if(fluidCapability != null) {
-            fluidCapability.sideMapUpdated = true;
+        if(fluidHandler != null) {
+            fluidHandler.sideMapUpdated = true;
         }
     }
 
@@ -300,12 +300,12 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
     }
 
     public void setAllowedInputFluids(int slotId, Supplier<List<FluidStack>> allowedInputFluids) {
-        if(fluidCapability != null) {
-            if(fluidCapability.allowedFluids == null) {
-                fluidCapability.allowedFluids = new HashMap<>();
+        if(fluidHandler != null) {
+            if(fluidHandler.allowedFluids == null) {
+                fluidHandler.allowedFluids = new HashMap<>();
             }
-            fluidCapability.allowedFluids.remove(slotId);
-            fluidCapability.allowedFluids.put(slotId, allowedInputFluids);
+            fluidHandler.allowedFluids.remove(slotId);
+            fluidHandler.allowedFluids.put(slotId, allowedInputFluids);
         }
     }
 
@@ -313,13 +313,13 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
         try {
             if (getSlotType(slotId) == INPUT) {
                 if (slotId < inputFluidSlots) {
-                    fluidCapability.voidSlot(getSlotIdFromGlobalId(slotId));
+                    fluidHandler.voidSlot(getSlotIdFromGlobalId(slotId));
                 }
                 itemHandler.voidSlot(getSlotIdFromGlobalId(slotId));
             }
 
             if (slotId < inputFluidSlots + inputItemSlots + outputFluidSlots) {
-                fluidCapability.voidSlot(getSlotIdFromGlobalId(slotId) + inputFluidSlots);
+                fluidHandler.voidSlot(getSlotIdFromGlobalId(slotId) + inputFluidSlots);
             }
             itemHandler.voidSlot(getSlotIdFromGlobalId(slotId) + inputItemSlots);
         } catch (NullPointerException|IndexOutOfBoundsException ignored) { }
@@ -329,13 +329,13 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
         try {
             if (getSlotType(slotId) == INPUT) {
                 if (slotId < inputFluidSlots) {
-                    return fluidCapability.getSlotContent(getSlotIdFromGlobalId(slotId));
+                    return fluidHandler.getSlotContent(getSlotIdFromGlobalId(slotId));
                 }
                 return itemHandler.getSlotContent(getSlotIdFromGlobalId(slotId));
             }
 
             if (slotId < inputFluidSlots + inputItemSlots + outputFluidSlots) {
-                return fluidCapability.getSlotContent(getSlotIdFromGlobalId(slotId) + inputFluidSlots);
+                return fluidHandler.getSlotContent(getSlotIdFromGlobalId(slotId) + inputFluidSlots);
             }
             return itemHandler.getSlotContent(getSlotIdFromGlobalId(slotId) + inputItemSlots);
         } catch (NullPointerException|IndexOutOfBoundsException e) {
@@ -346,7 +346,7 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
     public <T> T gasConverter(Direction side) {
         if(gasConverter == null) {
             gasConverter = new Gas2FluidConverter();
-            gasConverter.setFluidHandler(fluidCapability);
+            gasConverter.setFluidHandler(fluidHandler);
         }
         return (T) gasConverter.forSide(side);
     }
@@ -354,14 +354,14 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
     public <T> T getSlurryConverter(Direction side) {
         if(slurryConverter == null) {
             slurryConverter = new Slurry2FluidConverter();
-            slurryConverter.setFluidHandler(fluidCapability);
+            slurryConverter.setFluidHandler(fluidHandler);
         }
         return (T) slurryConverter.forSide(side);
     }
 
     public void voidFluidSlot(int slotId) {
-        if(fluidCapability != null) {
-            fluidCapability.voidSlot(slotId);
+        if(fluidHandler != null) {
+            fluidHandler.voidSlot(slotId);
         }
     }
 
@@ -371,9 +371,9 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
                 if(!itemHandler.getStackInSlot(i).isEmpty()) return false;
             }
         }
-        if(fluidCapability != null) {
+        if(fluidHandler != null) {
             for(int i = 0; i < inputFluidSlots; i++) {
-                if(!fluidCapability.getFluidInSlot(i).isEmpty()) return false;
+                if(!fluidHandler.getFluidInSlot(i).isEmpty()) return false;
             }
         }
         return true;

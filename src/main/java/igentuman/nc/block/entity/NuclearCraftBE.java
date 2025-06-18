@@ -392,7 +392,7 @@ public class NuclearCraftBE extends BlockEntity {
     }
 
     public FluidTank getFluidTank(int i) {
-        return contentHandler().fluidCapability.tanks.get(i);
+        return contentHandler().fluidHandler.tanks.get(i);
     }
 
     @Override

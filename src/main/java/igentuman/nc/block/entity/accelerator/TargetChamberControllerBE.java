@@ -4,7 +4,10 @@ import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.MultiblockControllerBE;
 import igentuman.nc.compat.cc.TargetChamberPeripheral;
 import igentuman.nc.compat.oc2.TargetChamberDevice;
-import igentuman.nc.handler.event.client.BlockOverlayHandler;
+import igentuman.nc.content.particles.CapabilityParticleStackHandler;
+import igentuman.nc.content.particles.IParticleStackHandler;
+import igentuman.nc.content.particles.ParticleStack;
+import igentuman.nc.content.particles.ParticleStorage;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.SlotModePair;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
@@ -14,10 +17,12 @@ import igentuman.nc.recipes.NcRecipeType;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.type.NcRecipe;
+import igentuman.nc.recipes.type.TargetChamberRecipe;
 import igentuman.nc.util.CustomEnergyStorage;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -36,19 +41,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
+import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.block.accelerator.TargetChamberControllerBlock.POWERED;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.compat.gregtech.GTUtils.getGTEnergy;
 import static igentuman.nc.compat.gregtech.GTUtils.isOnlyGTCEUCapEnabled;
-import static igentuman.nc.compat.oc2.FissionReactorDevice.DEVICE_CAPABILITY;
+import static igentuman.nc.compat.oc2.TargetChamberDevice.DEVICE_CAPABILITY;
+import static igentuman.nc.content.particles.CapabilityParticleStackHandler.PARTICLE_HANDLER_CAPABILITY;
+import static igentuman.nc.content.particles.Particles.neutron;
 import static igentuman.nc.handler.config.CommonConfig.GTCEU_CONFIG;
 import static igentuman.nc.multiblock.accelerator.TargetChamberRegistration.TARGET_CHAMBER_BE;
 import static igentuman.nc.multiblock.accelerator.TargetChamberRegistration.TARGET_CHAMBER_BLOCKS;
-import static igentuman.nc.setup.registration.NCSounds.FISSION_REACTOR;
 import static igentuman.nc.setup.registration.NcParticleTypes.RADIATION;
 import static igentuman.nc.util.ModUtil.*;
-import static net.minecraftforge.common.capabilities.ForgeCapabilities.ENERGY;
-import static net.minecraftforge.common.capabilities.ForgeCapabilities.ITEM_HANDLER;
+import static net.minecraftforge.common.capabilities.ForgeCapabilities.*;
 
 public class TargetChamberControllerBE extends MultiblockControllerBE {
 
@@ -56,6 +62,8 @@ public class TargetChamberControllerBE extends MultiblockControllerBE {
     public final SidedContentHandler contentHandler;
     public final CustomEnergyStorage energyStorage;
     protected final LazyOptional<IEnergyStorage> energy;
+    protected final LazyOptional<IParticleStackHandler> particleHandler;
+    protected final ParticleStorage particleStorage;
 
     @NBTField
     public int detectorsCount = 0;
@@ -76,15 +84,19 @@ public class TargetChamberControllerBE extends MultiblockControllerBE {
     public boolean hasRedstoneSignal = false;
     @NBTField
     public int allDetectors = 0;
+    @NBTField
+    public boolean hasParticle = false;
 
     public TargetChamberControllerBE(BlockPos pPos, BlockState pBlockState) {
         super(TARGET_CHAMBER_BE.get(NAME).get(),pPos, pBlockState);
         contentHandler = new SidedContentHandler(
                 1, 1,
-                0, 0);
+                1, 1);
         contentHandler().setBlockEntity(this);
         contentHandler().itemHandler.setGlobalMode(0, SlotModePair.SlotMode.PULL);
         contentHandler().itemHandler.setGlobalMode(1, SlotModePair.SlotMode.PUSH);
+        contentHandler().fluidHandler.setGlobalMode(0, SlotModePair.SlotMode.PULL);
+        contentHandler().fluidHandler.setGlobalMode(1, SlotModePair.SlotMode.PUSH);
         contentHandler().setAllowedInputItems(this::getAllowedInputItems);
         energyStorage = createEnergy();
         energyStorage
@@ -93,6 +105,9 @@ public class TargetChamberControllerBE extends MultiblockControllerBE {
                 .setInputAmperage(16)
                 .setOutputAmperage(0);
         energy = LazyOptional.of(() -> energyStorage);
+        particleStorage = new ParticleStorage();
+        particleStorage.setTileEntity(this);
+        particleHandler = CapabilityParticleStackHandler.createHandler(particleStorage);
     }
 
     @Override
@@ -111,6 +126,41 @@ public class TargetChamberControllerBE extends MultiblockControllerBE {
             }
         }
         return allowedInputs;
+    }
+
+    @Override
+    public void load(CompoundTag tag) {
+        super.load(tag);
+        if (tag.contains("Info")) {
+            CompoundTag infoTag = tag.getCompound("Info");
+            particleStorage.readFromNBT(infoTag.getCompound("particle_storage"));
+        }
+    }
+
+    @Override
+    public void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
+        if (tag.contains("Info")) {
+            CompoundTag infoTag = tag.getCompound("Info");
+            infoTag.put("particle_storage", particleStorage.writeToNBT(new CompoundTag()));
+        }
+    }
+
+    @Override
+    public void loadClientData(CompoundTag tag) {
+        super.loadClientData(tag);
+        if (tag.contains("Info")) {
+            CompoundTag infoTag = tag.getCompound("Info");
+            particleStorage.readFromNBT(infoTag.getCompound("particle_storage"));
+        }
+    }
+    @Override
+    protected void saveClientData(CompoundTag tag) {
+        super.saveClientData(tag);
+        if (tag.contains("Info")) {
+            CompoundTag infoTag = tag.getCompound("Info");
+            infoTag.put("particle_storage", particleStorage.writeToNBT(new CompoundTag()));
+        }
     }
 
     @Override
@@ -159,6 +209,15 @@ public class TargetChamberControllerBE extends MultiblockControllerBE {
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
+
+        if (cap == PARTICLE_HANDLER_CAPABILITY) {
+            return particleHandler.cast();
+        }
+
+        if (cap == FLUID_HANDLER) {
+            return contentHandler().getFluidCapability(side);
+        }
+
         if (cap == ITEM_HANDLER) {
             return contentHandler().getItemCapability(side);
         }
@@ -200,6 +259,7 @@ public class TargetChamberControllerBE extends MultiblockControllerBE {
             controllerEnabled = false;
             return;
         }
+
         changed = false;
         super.tickServer();
         boolean wasFormed = getMultiblock().isFormed();
@@ -207,7 +267,8 @@ public class TargetChamberControllerBE extends MultiblockControllerBE {
         boolean wasPowered = powered;
 
         handleValidation();
-
+        hasParticle = particleStorage.getParticleStack() != null;
+        trackChanges(hasParticle);
         controllerEnabled = hasRedstoneSignal() && getMultiblock().isFormed();
         controllerEnabled = !forceShutdown && controllerEnabled;
         if(controllerEnabled != wasEnabled) {
@@ -441,16 +502,24 @@ public class TargetChamberControllerBE extends MultiblockControllerBE {
         setChanged();
     }
 
-    public static class Recipe extends NcRecipe {
+    public ParticleStack getParticleStack() {
+        return particleStorage.getParticle();
+    }
 
-        public Recipe(ResourceLocation id, ItemStackIngredient[] input, ItemStackIngredient[] output, FluidStackIngredient[] inputFluids, FluidStackIngredient[] outputFluids, double timeModifier, double powerModifier, double heatModifier, double rarity) {
-            super(id, input, output, timeModifier, powerModifier, heatModifier, rarity);
-            CATALYSTS.put(codeId, List.of(getToastSymbol()));
+    public ParticleStack getOutputParticle(int i) {
+        return getRecipe() != null ? getRecipe().getOutputParticle(i) : null;
+    }
+
+    public static class Recipe extends TargetChamberRecipe {
+
+        public Recipe(ResourceLocation id, ItemStackIngredient[] input, ItemStackIngredient[] output, FluidStackIngredient[] inputFluids, FluidStackIngredient[] outputFluids, ParticleStack[] inputParticles, ParticleStack[] outputParticles, long maxEnergy, double crossSection) {
+            super(id, input, output, inputFluids, outputFluids, inputParticles, outputParticles, maxEnergy, crossSection);
+            CATALYSTS.put(NAME, List.of(getToastSymbol()));
         }
 
         @Override
         public String getCodeId() {
-            return NAME;
+            return "target_chamber";
         }
 
 
@@ -461,7 +530,11 @@ public class TargetChamberControllerBE extends MultiblockControllerBE {
 
         @Override
         public @NotNull ItemStack getToastSymbol() {
-            return new ItemStack(TARGET_CHAMBER_BLOCKS.get(codeId).get());
+            return new ItemStack(TARGET_CHAMBER_BLOCKS.get(NAME).get());
+        }
+
+        public ParticleStack getOutputParticle(int i) {
+            return i < outputParticles.length ? outputParticles[i] : null;
         }
     }
 }

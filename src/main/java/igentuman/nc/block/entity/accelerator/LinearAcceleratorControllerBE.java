@@ -65,6 +65,8 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
     protected final ParticleStorage particleStorage;
 
     @NBTField
+    public BlockPos ionSourcePos = BlockPos.ZERO;
+    @NBTField
     public boolean hasParticle = false;
     @NBTField
     public int coolers;
@@ -113,12 +115,13 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
                 1, 1, 1000);
         contentHandler().itemHandler.setGlobalMode(0, SlotModePair.SlotMode.PULL);
         contentHandler().itemHandler.setGlobalMode(1, SlotModePair.SlotMode.PUSH);
-        contentHandler.fluidCapability.setGlobalMode(0, SlotModePair.SlotMode.INPUT);
-        contentHandler.fluidCapability.setGlobalMode(1, SlotModePair.SlotMode.OUTPUT);
+        contentHandler().fluidHandler.setGlobalMode(0, SlotModePair.SlotMode.INPUT);
+        contentHandler().fluidHandler.setGlobalMode(1, SlotModePair.SlotMode.OUTPUT);
         contentHandler().setAllowedInputItems(this::getAllowedInputItems);
-        contentHandler.setBlockEntity(this);
-        contentHandler.setAllowedInputFluids(0, this::getAllowedInputFluids);
+        contentHandler().setBlockEntity(this);
+        contentHandler().setAllowedInputFluids(0, this::getAllowedInputFluids);
         particleStorage = new ParticleStorage();
+        particleStorage.setTileEntity(this);
         particleHandler = CapabilityParticleStackHandler.createHandler(particleStorage);
     }
 
@@ -220,6 +223,7 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
         super.tickServer();
         boolean wasEnabled = controllerEnabled;
         handleValidation();
+        particleStorage.extractParticle(null);
         controllerEnabled = getMultiblock().isFormed() && hasRedstoneSignal();
 
         if (controllerEnabled) {
@@ -357,7 +361,7 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
     }
 
     public FluidTank getFluidTank(int i) {
-        return contentHandler().fluidCapability.tanks.get(i);
+        return contentHandler().fluidHandler.tanks.get(i);
     }
 
     @Override

@@ -51,7 +51,7 @@ public class NCBlockTags extends BlockTagsProvider {
                 TARGET_CHAMBER_BLOCKS.get("target_chamber_beam_port").get()
         );
         tag(TARGET_CHAMBER_INNER_BLOCKS).add(
-                ACCELERATOR_BLOCKS.get("accelerator_beam").get(),
+                ACCELERATOR_BLOCKS.get("particle_beam").get(),
                 TARGET_CHAMBER_BLOCKS.get("target_chamber_camera").get()
         );
         tag(KugelblitzRegistration.CASING_BLOCKS).add(
@@ -73,7 +73,7 @@ public class NCBlockTags extends BlockTagsProvider {
                 ACCELERATOR_BLOCKS.get("accelerator_ion_source_port").get()
         );
         tag(AcceleratorRegistration.ACCELERATOR_INNER_BLOCKS).add(
-                ACCELERATOR_BLOCKS.get("accelerator_beam").get(),
+                ACCELERATOR_BLOCKS.get("particle_beam").get(),
                 ACCELERATOR_BLOCKS.get("electromagnet_yoke").get()
         );
         for(RegistryObject<Block> magnet: NC_ELECTROMAGNETS.values()) {

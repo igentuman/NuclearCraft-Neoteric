@@ -8,7 +8,6 @@ import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.SlotModePair;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.multiblock.MultiblockHandler;
-import igentuman.nc.multiblock.ValidationResult;
 import igentuman.nc.multiblock.kugelblitz.KugelblitzMultiblock;
 import igentuman.nc.recipes.NcRecipeType;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
@@ -22,7 +21,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
@@ -113,7 +111,7 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
                 1, 0, 1000);
         contentHandler().itemHandler.setGlobalMode(0, SlotModePair.SlotMode.PULL);
         contentHandler().itemHandler.setGlobalMode(1, SlotModePair.SlotMode.PUSH);
-        contentHandler.fluidCapability.setGlobalMode(0, SlotModePair.SlotMode.INPUT);
+        contentHandler.fluidHandler.setGlobalMode(0, SlotModePair.SlotMode.INPUT);
         contentHandler().setAllowedInputItems(this::getAllowedInputItems);
         contentHandler.setBlockEntity(this);
         contentHandler.setAllowedInputFluids(0, this::getAllowedInputFluids);
@@ -298,9 +296,9 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
             energyPerTick = 0;
             return;
         }
-        feeding = contentHandler().fluidCapability.getFluidInSlot(0).getAmount() * 10L;
+        feeding = contentHandler().fluidHandler.getFluidInSlot(0).getAmount() * 10L;
         mass += feeding;
-        contentHandler.fluidCapability.voidSlot(0);
+        contentHandler.fluidHandler.voidSlot(0);
         updateEnergyGeneration();
         updateEvaporation();
         mass -= evaporation;
@@ -604,7 +602,7 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
     }
 
     public FluidTank getFluidTank(int i) {
-        return contentHandler().fluidCapability.tanks.get(i);
+        return contentHandler().fluidHandler.tanks.get(i);
     }
 
     public void handleLaserBurst() {

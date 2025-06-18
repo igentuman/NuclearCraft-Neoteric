@@ -1,6 +1,7 @@
 package igentuman.nc.multiblock.accelerator;
 
 import igentuman.nc.block.accelerator.*;
+import igentuman.nc.block.entity.accelerator.TargetChamberBeamPortBE;
 import igentuman.nc.block.entity.accelerator.TargetChamberControllerBE;
 import igentuman.nc.block.entity.accelerator.TargetChamberPortBE;
 import igentuman.nc.container.TargetChamberControllerContainer;
@@ -74,7 +75,7 @@ public class TargetChamberRegistration {
 
         TARGET_CHAMBER_BE.put("target_chamber_beam_port",
                 BLOCK_ENTITIES.register("target_chamber_beam_port",
-                        () -> BlockEntityType.Builder.of(TargetChamberPortBE::new, TARGET_CHAMBER_BLOCKS.get("target_chamber_beam_port").get())
+                        () -> BlockEntityType.Builder.of(TargetChamberBeamPortBE::new, TARGET_CHAMBER_BLOCKS.get("target_chamber_beam_port").get())
                                 .build(null)));
 
         TARGET_CHAMBER_BE.put("target_chamber_controller",

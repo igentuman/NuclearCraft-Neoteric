@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import igentuman.nc.NuclearCraft;
+import igentuman.nc.content.particles.ParticleStack;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.type.EmptyRecipe;
@@ -91,6 +92,27 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerial
             }
 
             return outputFluids;
+    }
+
+    protected ParticleStack[] particleStacksFromJson(JsonObject json, String fieldName, ResourceLocation recipeId) {
+        ParticleStack[] inputParticles = new ParticleStack[0];
+
+        if (json.has(fieldName)) {
+            if (GsonHelper.isArrayNode(json, fieldName)) {
+                JsonElement input = GsonHelper.getAsJsonArray(json, fieldName);
+                inputParticles = new ParticleStack[input.getAsJsonArray().size()];
+                int i = 0;
+                for (JsonElement in : input.getAsJsonArray()) {
+                    inputParticles[i] = ParticleStack.fromJSON(in);
+                    i++;
+                }
+            } else {
+                JsonElement inputJson = GsonHelper.getAsJsonObject(json, fieldName);
+                inputParticles = new ParticleStack[1];
+                inputParticles[0] = ParticleStack.fromJSON(inputJson);
+            }
+        }
+        return inputParticles;
     }
 
     protected ItemStackIngredient[] inputItemsFromJson(JsonObject json, ResourceLocation recipeId) {

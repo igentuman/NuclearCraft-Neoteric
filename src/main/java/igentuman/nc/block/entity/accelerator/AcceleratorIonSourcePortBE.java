@@ -141,7 +141,7 @@ public class AcceleratorIonSourcePortBE extends NuclearCraftBE implements Multib
 
     protected FluidCapabilityHandler fluidHandler()
     {
-        return controller().contentHandler().fluidCapability;
+        return controller().contentHandler().fluidHandler;
     }
 
     protected <T> LazyOptional<T> fluidHandler(@Nullable Direction side)

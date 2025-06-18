@@ -4,16 +4,19 @@ import igentuman.api.nc.multiblock.MultiblockController;
 import igentuman.nc.block.ElectromagnetBlock;
 import igentuman.nc.block.RFAmplifierBlock;
 import igentuman.nc.block.accelerator.CoolerBlock;
+import igentuman.nc.block.entity.accelerator.AcceleratorBeamPortBE;
 import igentuman.nc.block.entity.accelerator.LinearAcceleratorControllerBE;
 import igentuman.nc.content.particles.ParticleStack;
 import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.ValidationResult;
 import igentuman.nc.util.BlockPosInstance;
+import igentuman.nc.util.PortMode;
 import igentuman.nc.util.math.MathUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.HashMap;
@@ -22,6 +25,7 @@ import java.util.HashSet;
 import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.handler.config.AcceleratorConfig.ACCELERATOR_CONFIG;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.*;
+import static igentuman.nc.util.PortMode.PORT_MODE;
 import static igentuman.nc.util.TagUtil.getBlocksByTagKey;
 
 public class AbstractAcceleratorMultiblock extends AbstractMultiblock {
@@ -33,6 +37,7 @@ public class AbstractAcceleratorMultiblock extends AbstractMultiblock {
     protected final HashMap<Long, ElectromagnetBlock> electromagnets = new HashMap<>(1000);
     protected final HashMap<Long, RFAmplifierBlock> amplifiers = new HashMap<>(1000);
     protected final HashMap<Long, CoolerBlock> coolers = new HashMap<>(1000);
+    protected HashSet<Long> beamPorts = new HashSet<>();
     protected int dipolesCount = 0;
     protected int quadrupolesCount = 0;
     protected final int[] yCoords = new int[]{-1, 1, 0, 0, 1, 1, 1, -1};
@@ -123,6 +128,7 @@ public class AbstractAcceleratorMultiblock extends AbstractMultiblock {
         width = 0;
         depth = 0;
         height = 0;
+        beamPorts.clear();
         outerValid = false;
         resolveHeight();
         if(height != maxHeight()) {
@@ -207,6 +213,9 @@ public class AbstractAcceleratorMultiblock extends AbstractMultiblock {
             errorBlockPos = new BlockPosInstance(centerPos);
             return;
         }
+        if(bs.is(ACCELERATOR_BLOCKS.get("accelerator_beam_port").get())) {
+            beamPorts.add(centerPos.asLong());
+        }
         ionSourcePos = bs.is(ACCELERATOR_BLOCKS.get("accelerator_ion_source_port").get()) ? new BlockPosInstance(centerPos) : BlockPos.ZERO;
         outputBeamPort = bs.is(ACCELERATOR_BLOCKS.get("accelerator_beam_port").get()) ? new BlockPosInstance(centerPos) : BlockPos.ZERO;
         bs = getBlockState(centerPos.offset(0,0, maxZ-minZ));
@@ -221,6 +230,9 @@ public class AbstractAcceleratorMultiblock extends AbstractMultiblock {
             return;
         }
         outputBeamPort = bs.is(ACCELERATOR_BLOCKS.get("accelerator_beam_port").get()) && outputBeamPort.equals(BlockPos.ZERO) ? new BlockPosInstance(centerPos) : BlockPos.ZERO;
+        if(bs.is(ACCELERATOR_BLOCKS.get("accelerator_beam_port").get())) {
+            beamPorts.add(centerPos.asLong());
+        }
         centerPos.revert();
         if (controllers.size() > 1) {
             validationResult = ValidationResult.TOO_MANY_CONTROLLERS;
@@ -390,7 +402,7 @@ public class AbstractAcceleratorMultiblock extends AbstractMultiblock {
     protected void validateBeam() {
         stage = FINAL_STAGE;
         for(int i = 1; i < Math.max(depth, width)-1; i++) {
-            if(!getBlockState(centerPos.revert().relative(multiblockDirection, i)).is(ACCELERATOR_BLOCKS.get("accelerator_beam").get())) {
+            if(!getBlockState(centerPos.revert().relative(multiblockDirection, i)).is(ACCELERATOR_BLOCKS.get("particle_beam").get())) {
                 validationResult = ValidationResult.WRONG_INNER;
                 errorBlockPos = new BlockPosInstance(centerPos);
                 return;
@@ -416,6 +428,16 @@ public class AbstractAcceleratorMultiblock extends AbstractMultiblock {
     }
 
     public void extractParticle(ParticleStack particleStack) {
-
+        for (long pos : beamPorts) {
+            BlockPosInstance portPos = BlockPosInstance.of(pos);
+            BlockState bs = getBlockState(portPos);
+            if (!bs.is(ACCELERATOR_BLOCKS.get("accelerator_beam_port").get())) continue;
+            if(bs.getValue(PORT_MODE).equals(PortMode.Mode.OUTPUT)) {
+                BlockEntity be = getBlockEntity(portPos);
+                if(be instanceof AcceleratorBeamPortBE port) {
+                    port.extractParticle(particleStack);
+                }
+            }
+        }
     }
 }

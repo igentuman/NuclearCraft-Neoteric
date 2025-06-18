@@ -7,12 +7,10 @@ import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;
 import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.accelerator.AbstractAcceleratorMultiblock;
-import igentuman.nc.multiblock.kugelblitz.KugelblitzMultiblock;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.common.capabilities.Capability;
@@ -24,11 +22,11 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Objects;
 
-import static igentuman.nc.compat.gregtech.GTUtils.isOnlyGTCEUCapEnabled;
 import static igentuman.nc.compat.oc2.FusionReactorDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.content.particles.CapabilityParticleStackHandler.PARTICLE_HANDLER_CAPABILITY;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BE;
-import static igentuman.nc.util.ModUtil.*;
+import static igentuman.nc.util.ModUtil.isCcLoaded;
+import static igentuman.nc.util.ModUtil.isOC2Loaded;
 
 public class AcceleratorPortBE extends NuclearCraftBE implements MultiblockAttachable {
 
@@ -142,7 +140,7 @@ public class AcceleratorPortBE extends NuclearCraftBE implements MultiblockAttac
 
     protected FluidCapabilityHandler fluidHandler()
     {
-        return controller().contentHandler().fluidCapability;
+        return controller().contentHandler().fluidHandler;
     }
 
     protected <T> LazyOptional<T> fluidHandler(@Nullable Direction side)

@@ -3,13 +3,11 @@ package igentuman.nc.block.entity.kugelblitz;
 import igentuman.api.nc.multiblock.MultiblockAttachable;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.NuclearCraftBE;
-import igentuman.nc.block.entity.fission.FissionControllerBE;
 import igentuman.nc.block.entity.fission.FissionPortBE;
 import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;
 import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.kugelblitz.KugelblitzMultiblock;
-import igentuman.nc.util.CustomEnergyStorage;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -25,7 +23,6 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static igentuman.nc.compat.gregtech.GTUtils.*;
 import static igentuman.nc.compat.oc2.FusionReactorDevice.DEVICE_CAPABILITY;
@@ -203,7 +200,7 @@ public class ChamberPortBE extends NuclearCraftBE implements MultiblockAttachabl
 
     protected FluidCapabilityHandler fluidHandler()
     {
-        return controller().contentHandler().fluidCapability;
+        return controller().contentHandler().fluidHandler;
     }
 
     protected <T> LazyOptional<T> fluidHandler(@Nullable Direction side)

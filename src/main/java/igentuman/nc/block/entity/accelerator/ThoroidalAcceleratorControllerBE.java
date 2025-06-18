@@ -100,8 +100,8 @@ public class ThoroidalAcceleratorControllerBE extends MultiblockControllerBE {
                 1, 1, 10000);
         contentHandler().itemHandler.setGlobalMode(0, SlotModePair.SlotMode.PULL);
         contentHandler().itemHandler.setGlobalMode(1, SlotModePair.SlotMode.PUSH);
-        contentHandler.fluidCapability.setGlobalMode(0, SlotModePair.SlotMode.INPUT);
-        contentHandler.fluidCapability.setGlobalMode(1, SlotModePair.SlotMode.OUTPUT);
+        contentHandler.fluidHandler.setGlobalMode(0, SlotModePair.SlotMode.INPUT);
+        contentHandler.fluidHandler.setGlobalMode(1, SlotModePair.SlotMode.OUTPUT);
         contentHandler().setAllowedInputItems(this::getAllowedInputItems);
         contentHandler.setBlockEntity(this);
         contentHandler.setAllowedInputFluids(0, this::getAllowedInputFluids);
@@ -375,7 +375,7 @@ public class ThoroidalAcceleratorControllerBE extends MultiblockControllerBE {
     }
 
     public FluidTank getFluidTank(int i) {
-        return contentHandler().fluidCapability.tanks.get(i);
+        return contentHandler().fluidHandler.tanks.get(i);
     }
 
     public static class Recipe extends NcRecipe {

@@ -1,11 +1,13 @@
 package igentuman.nc.block.accelerator;
 
+import igentuman.nc.block.entity.accelerator.TargetChamberBeamPortBE;
 import igentuman.nc.block.entity.accelerator.TargetChamberPortBE;
 import igentuman.nc.block.entity.fission.FissionPortBE;
 import igentuman.nc.compat.gregtech.GTUtils;
 import igentuman.nc.container.FissionPortContainer;
 import igentuman.nc.handler.config.CommonConfig;
 import igentuman.nc.multiblock.MultiblockHandler;
+import igentuman.nc.util.PortMode;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -45,6 +47,8 @@ import static igentuman.nc.block.entity.NuclearCraftBE.isGTEUCapEnabled;
 import static igentuman.nc.handler.config.CommonConfig.GTCEU_CONFIG;
 import static igentuman.nc.multiblock.accelerator.TargetChamberRegistration.TARGET_CHAMBER_BE;
 import static igentuman.nc.util.ModUtil.isGtLoaded;
+import static igentuman.nc.util.PortMode.PORT_MODE;
+import static igentuman.nc.util.StackUtils.isMultiTool;
 import static igentuman.nc.util.TextUtils.*;
 import static net.minecraft.network.chat.Component.translatable;
 
@@ -61,6 +65,7 @@ public class TargetChamberBeamPortBlock extends HorizontalDirectionalBlock imple
         this.registerDefaultState(
                 this.stateDefinition.any()
                         .setValue(HORIZONTAL_FACING, Direction.NORTH)
+                        .setValue(PORT_MODE, PortMode.Mode.INPUT)
         );
     }
     @Override
@@ -70,34 +75,26 @@ public class TargetChamberBeamPortBlock extends HorizontalDirectionalBlock imple
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(BlockStateProperties.HORIZONTAL_FACING);
+        builder.add(BlockStateProperties.HORIZONTAL_FACING)
+                .add(PORT_MODE);
     }
 
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
-        return TARGET_CHAMBER_BE.get("target_chamber_port").get().create(pPos, pState);
+        return TARGET_CHAMBER_BE.get("target_chamber_beam_port").get().create(pPos, pState);
     }
 
     @Override
     public @NotNull InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
-
         if (!level.isClientSide()) {
-            BlockEntity be = level.getExistingBlockEntity(pos);
-
-            if (be instanceof TargetChamberPortBE port)  {
-                MenuProvider containerProvider = new MenuProvider() {
-                    @Override
-                    public Component getDisplayName() {
-                        return translatable("block.nuclearcraft.fission_reactor_port");
-                    }
-
-                    @Override
-                    public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity) {
-                        return new FissionPortContainer(windowId, pos, playerInventory);
-                    }
-                };
-                NetworkHooks.openScreen((ServerPlayer) player, containerProvider, be.getBlockPos());
+            if(isMultiTool(player.getItemInHand(hand))) {
+                PortMode.Mode mode = state.getValue(PORT_MODE);
+                PortMode.Mode newMode = mode.next();
+                level.setBlockAndUpdate(pos, state.setValue(PORT_MODE, newMode));
+                MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(pos);
+                player.sendSystemMessage(__("message.nc.barrel.side_config", newMode));
+                return InteractionResult.SUCCESS;
             }
         }
         return InteractionResult.SUCCESS;
@@ -108,13 +105,13 @@ public class TargetChamberBeamPortBlock extends HorizontalDirectionalBlock imple
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         if (level.isClientSide()) {
             return (lvl, pos, blockState, t) -> {
-                if (t instanceof FissionPortBE tile) {
+                if (t instanceof TargetChamberBeamPortBE tile) {
                     tile.tickClient();
                 }
             };
         }
         return (lvl, pos, blockState, t)-> {
-            if (t instanceof FissionPortBE tile) {
+            if (t instanceof TargetChamberBeamPortBE tile) {
                 tile.tickServer();
             }
         };
@@ -124,9 +121,6 @@ public class TargetChamberBeamPortBlock extends HorizontalDirectionalBlock imple
     {
         if(isGtLoaded() && isGTEUCapEnabled()) {
             list.add(__("tooltip.nc.energy_eu_tier", GTCEU_CONFIG.FISSION_REACTOR_TIER.get()).withStyle(ChatFormatting.GOLD));
-        }
-        if(isGtLoaded() && GTCEU_CONFIG.COMPATIBILITY.get() == CommonConfig.GTCEUCompatibilityConfig.GTCEUCompatibility.GTCEU_AND_FE && GTCEU_CONFIG.LIMIT_FE_OUTPUT.get()) {
-            list.add(__("tooltip.nc.max_fe_extract_per_tick", formatEnergy(GTUtils.getMaxOutputFE(GTCEU_CONFIG.FISSION_REACTOR_TIER.get()))).withStyle(ChatFormatting.GOLD));
         }
         list.add(applyFormat(translatable("fission_port.descr"), ChatFormatting.GOLD));
         list.add(__("multiblock.build_in_chunk.advise").withStyle(ChatFormatting.GREEN));

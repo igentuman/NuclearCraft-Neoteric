@@ -168,7 +168,7 @@ public class TargetChamberMultiblock extends AbstractMultiblock {
             for(int i = 1; i < width() / 2; i++) {
                 pos = pos.relative(dir, i);
                 BlockState bs = getBlockState(pos);
-                if(!bs.is(ACCELERATOR_BLOCKS.get("accelerator_beam").get())) {
+                if(!bs.is(ACCELERATOR_BLOCKS.get("particle_beam").get())) {
                     validationResult = ValidationResult.WRONG_INNER;
                     errorBlockPos = pos;
                     return;

@@ -1,5 +1,6 @@
 package igentuman.nc.recipes.type;
 
+import igentuman.nc.content.particles.ParticleStack;
 import igentuman.nc.recipes.AbstractRecipe;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
@@ -17,20 +18,23 @@ import static igentuman.nc.compat.GlobalVars.RECIPE_CLASSES;
 import static net.minecraft.world.item.Items.BARRIER;
 
 @NothingNullByDefault
-public abstract class NcRecipe extends AbstractRecipe {
+public abstract class TargetChamberRecipe extends NcRecipe {
 
-    public double rarityModifier;
+    public long maxEnergy;
+    public double crossSection;
+    public ParticleStack[] inputParticles;
+    public ParticleStack[] outputParticles;
 
-    public NcRecipe(
+    public TargetChamberRecipe(
             ResourceLocation id,
             ItemStackIngredient[] inputItems,
             ItemStackIngredient[] outputItems,
             FluidStackIngredient[] inputFluids,
             FluidStackIngredient[] outputFluids,
-            double timeModifier,
-            double powerModifier,
-            double radiationModifier,
-            double rarityModifier
+            ParticleStack[] inputParticles,
+            ParticleStack[] outputParticles,
+            long maxEnergy,
+            double crossSection
     ) {
 
         super(id);
@@ -38,47 +42,13 @@ public abstract class NcRecipe extends AbstractRecipe {
         this.outputItems = outputItems;
         this.inputFluids = inputFluids;
         this.outputFluids = outputFluids;
+        this.inputParticles = inputParticles;
+        this.outputParticles = outputParticles;
+        this.maxEnergy = maxEnergy;
+        this.crossSection = crossSection;
 
-        this.timeModifier = timeModifier;
-        this.powerModifier = powerModifier;
-        this.radiationModifier = radiationModifier;
-        this.rarityModifier = rarityModifier;
         CATALYSTS.put(codeId, List.of(getToastSymbol()));
         RECIPE_CLASSES.put(codeId, getClass());
-    }
-
-
-    public NcRecipe(
-            ResourceLocation id,
-            ItemStackIngredient[] inputItems,
-            ItemStackIngredient[] outputItems,
-            double timeModifier,
-            double powerModifier,
-            double radiationModifier,
-            double rarityModifier
-    ) {
-        this(id, inputItems, outputItems, new FluidStackIngredient[0], new FluidStackIngredient[0], timeModifier, powerModifier, radiationModifier, rarityModifier);
-    }
-
-    public NcRecipe(
-            ResourceLocation id,
-            FluidStackIngredient[] inputFluids,
-            FluidStackIngredient[] outputFluids,
-            double timeModifier,
-            double powerModifier,
-            double radiationModifier,
-            double rarityModifier
-    ) {
-            this(id, new ItemStackIngredient[0], new ItemStackIngredient[0], inputFluids, outputFluids, timeModifier, powerModifier, radiationModifier, rarityModifier);
-    }
-
-    public NcRecipe(ResourceLocation id) {
-        super(id);
-    }
-
-    public static ItemStackIngredient getBarrier()
-    {
-        return IngredientCreatorAccess.item().from(new ItemStack(BARRIER));
     }
 
     protected FluidStackIngredient getEmptyFluid()
@@ -120,8 +90,11 @@ public abstract class NcRecipe extends AbstractRecipe {
             output.write(buffer);
         }
 
-        buffer.writeDouble(timeModifier);
-        buffer.writeDouble(powerModifier);
-        buffer.writeDouble(radiationModifier);
+        buffer.writeInt(inputParticles.length);
+        for (ParticleStack input : inputParticles) {
+            input.writeBuffer(buffer);
+        }
+        buffer.writeLong(maxEnergy);
+        buffer.writeDouble(crossSection);
     }
 }

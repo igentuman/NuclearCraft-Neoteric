@@ -1,5 +1,6 @@
 package igentuman.nc.compat.jei;
 
+import igentuman.nc.block.entity.accelerator.TargetChamberControllerBE;
 import igentuman.nc.block.entity.fission.FissionControllerBE;
 import igentuman.nc.block.entity.fusion.FusionCoreBE;
 import igentuman.nc.block.entity.kugelblitz.ChamberTerminalBE;
@@ -10,6 +11,7 @@ import igentuman.nc.client.gui.processor.NCProcessorScreen;
 import igentuman.nc.compat.jei.ingredient.ParticleStackHelper;
 import igentuman.nc.compat.jei.ingredient.ParticleStackListFactory;
 import igentuman.nc.compat.jei.ingredient.ParticleStackRenderer;
+import igentuman.nc.compat.jei.ingredient.ParticleType;
 import igentuman.nc.content.particles.Particle;
 import igentuman.nc.content.particles.ParticleStack;
 import igentuman.nc.content.particles.Particles;
@@ -19,6 +21,7 @@ import igentuman.nc.recipes.NcRecipeType;
 import igentuman.nc.recipes.type.MekChemicalConversionRecipe;
 import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.recipes.type.OreVeinRecipe;
+import igentuman.nc.recipes.type.TargetChamberRecipe;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.gui.handlers.IGuiClickableArea;
@@ -48,6 +51,7 @@ import static igentuman.nc.util.ModUtil.isMekanismLoaded;
 public  class JEIPlugin implements IModPlugin {
     public static HashMap<String, RecipeType<? extends NcRecipe>> recipeTypes;
 
+    public static final RecipeType<TargetChamberControllerBE.Recipe> TARGET_CHAMBER = new RecipeType<>(rl("target_chamber"), TargetChamberControllerBE.Recipe.class);
     public static final RecipeType<ChamberTerminalBE.Recipe> KUGELBLITZ = new RecipeType<>(rl("kugelblitz_chamber"), ChamberTerminalBE.Recipe.class);
     public static final RecipeType<FissionControllerBE.Recipe> FISSION = new RecipeType<>(rl(FissionControllerBE.NAME), FissionControllerBE.Recipe.class);
     public static final RecipeType<FusionCoreBE.Recipe> FUSION = new RecipeType<>(rl("fusion_core"), FusionCoreBE.Recipe.class);
@@ -80,8 +84,7 @@ public  class JEIPlugin implements IModPlugin {
         List<ParticleStack> particleStacks = ParticleStackListFactory.create();
         ParticleStackHelper particleStackHelper = new ParticleStackHelper();
         ParticleStackRenderer particleStackRenderer = new ParticleStackRenderer();
-        //todo future implementation Accelerators #215
-        //registration.register(ParticleType.Particle, particleStacks, particleStackHelper, particleStackRenderer);
+        registration.register(ParticleType.Particle, particleStacks, particleStackHelper, particleStackRenderer);
     }
 
     @Override
@@ -111,6 +114,7 @@ public  class JEIPlugin implements IModPlugin {
         registration.addRecipeCategories(new TurbineControllerCategoryWrapper<>(registration.getJeiHelpers().getGuiHelper(), TURBINE_CONTROLLER));
         registration.addRecipeCategories(new FissionCategoryWrapper<>(registration.getJeiHelpers().getGuiHelper(), FISSION));
         registration.addRecipeCategories(new KugelblitzCategoryWrapper<>(registration.getJeiHelpers().getGuiHelper(), KUGELBLITZ));
+        registration.addRecipeCategories(new TargetChamberCategoryWrapper<>(registration.getJeiHelpers().getGuiHelper(), TARGET_CHAMBER));
         if(isMekanismLoaded()) {
             registration.addRecipeCategories(new MekChemicalConversionCategoryWrapper<>(registration.getJeiHelpers().getGuiHelper(), CHEMICAL_TO_FLUID));
         }
@@ -118,10 +122,9 @@ public  class JEIPlugin implements IModPlugin {
         registration.addRecipeCategories(
                 new MultiblockStructureCategory(registration.getJeiHelpers().getGuiHelper())
         );
-        //todo future implementation Accelerators #215
-        /*registration.addRecipeCategories(
+        registration.addRecipeCategories(
                 new ParticleInfoCategory(registration.getJeiHelpers().getGuiHelper())
-        );*/
+        );
     }
 
     public <TYPE> RecipeType<TYPE> getRecipeType(String name) {
@@ -138,7 +141,7 @@ public  class JEIPlugin implements IModPlugin {
             for (String name : getRecipeTypes().keySet()) {
                 if(List.of(
                         "fusion_core", "fusion_coolant",
-                        "fission_reactor_controller", "fission_boiling",
+                        "fission_reactor_controller", "fission_boiling", "target_chamber",
                         "nc_ore_veins", "turbine_controller", "kugelblitz_chamber"
                 ).contains(name)) {
                     continue;
@@ -147,6 +150,9 @@ public  class JEIPlugin implements IModPlugin {
                         getRecipeType(name),
                         NcRecipeType.ALL_RECIPES.get(name).getRecipes(NcClient.tryGetClientWorld()));
             }
+            registration.addRecipes(
+                    getRecipeType(TARGET_CHAMBER),
+                    NcRecipeType.ALL_RECIPES.get("target_chamber").getRecipes(NcClient.tryGetClientWorld()));
             registration.addRecipes(
                     getRecipeType(KUGELBLITZ),
                     NcRecipeType.ALL_RECIPES.get("kugelblitz_chamber").getRecipes(NcClient.tryGetClientWorld()));
@@ -174,8 +180,7 @@ public  class JEIPlugin implements IModPlugin {
 
             List<MultiblockStructureRecipe> multiblockRecipes = loadMultiblockStructures();
             registration.addRecipes(MultiblockStructureCategory.TYPE, multiblockRecipes);
-            //todo future implementation Accelerators #215
-            //registration.addRecipes(ParticleInfoCategory.TYPE, particleRecipes());
+            registration.addRecipes(ParticleInfoCategory.TYPE, particleRecipes());
         } catch (IllegalArgumentException ex) {
             LOGGER.error("Error registering recipes for JEI: " + ex.getMessage());
         }

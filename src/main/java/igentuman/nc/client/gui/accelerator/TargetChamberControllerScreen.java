@@ -3,12 +3,15 @@ package igentuman.nc.client.gui.accelerator;
 import com.mojang.blaze3d.systems.RenderSystem;
 import igentuman.nc.client.gui.IProgressScreen;
 import igentuman.nc.client.gui.IVerticalBarScreen;
+import igentuman.nc.client.gui.element.GuiParticle;
 import igentuman.nc.client.gui.element.NCGuiElement;
 import igentuman.nc.client.gui.element.bar.ProgressBar;
 import igentuman.nc.client.gui.element.bar.VerticalBar;
 import igentuman.nc.client.gui.element.button.Button;
 import igentuman.nc.client.gui.element.button.Checkbox;
+import igentuman.nc.client.gui.element.fluid.FluidTankRenderer;
 import igentuman.nc.container.TargetChamberControllerContainer;
+import igentuman.nc.content.particles.ParticleStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -42,14 +45,19 @@ public class TargetChamberControllerScreen extends AbstractContainerScreen<Targe
     private VerticalBar energyBar;
     private Button.MultiblockAnalyze analyzeBtn;
     private Button.Link linkBtn;
-
+    public GuiParticle guiParticle;
+    public List<GuiParticle> outputParticles = new ArrayList<>();
     public Component casingTootip = Component.empty();
     public Component interiorTootip = Component.empty();
 
     public TargetChamberControllerScreen(TargetChamberControllerContainer container, Inventory inv, Component name) {
         super(container, inv, name);
         imageWidth = 176;
-        imageHeight = 176;
+        imageHeight = 200;
+        guiParticle = new GuiParticle(18, 46);
+        outputParticles.add(new GuiParticle(86, 15));
+        outputParticles.add(new GuiParticle(146, 46));
+        outputParticles.add(new GuiParticle(86, 78));
     }
 
     protected void updateRelativeCords()
@@ -73,16 +81,19 @@ public class TargetChamberControllerScreen extends AbstractContainerScreen<Targe
         super.init();
         updateRelativeCords();
         widgets.clear();
-        checkboxCasing = new Checkbox(imageWidth-19, 80, this,  isCasingValid());
-        checkboxInterior =  new Checkbox(imageWidth-32, 80, this,  isInteriorValid());
-        energyBar = new VerticalBar.Energy(17, 16,  this, container().getMaxEnergy());
-        //widgets.add(new ProgressBar(74, 35, this,  7));
-        analyzeBtn = new Button.MultiblockAnalyze(150, 38, this, menu.getPosition());
+        checkboxCasing = new Checkbox(imageWidth-18, 105, this,  isCasingValid());
+        checkboxInterior =  new Checkbox(imageWidth-31, 105, this,  isInteriorValid());
+        energyBar = new VerticalBar.Energy(7, 16,  this, container().getMaxEnergy());
+        widgets.add(new ProgressBar(71, 47, this,  8));
+        analyzeBtn = new Button.MultiblockAnalyze(150, 78, this, menu.getPosition());
         linkBtn = new Button.Link(150, 14, this, menu.getPosition(), "https://ftb.fandom.com/wiki/NuclearCraft:_Neoteric#Fission_Reactor_+_Irradiator",
                 List.of(__("tooltip.nc.wiki"))
         );
+        addWidget(FluidTankRenderer.tank(getFluidTank(0)).id(0).size(18, 18).pos(53, 58).canVoid());
+        addWidget(FluidTankRenderer.tank(getFluidTank(0)).id(0).size(18, 18).pos(113, 58).canVoid());
         widgets.add(analyzeBtn);
         widgets.add(linkBtn);
+
     }
 
     protected FluidTank getFluidTank(int i) {
@@ -130,11 +141,27 @@ public class TargetChamberControllerScreen extends AbstractContainerScreen<Targe
             checkboxInterior.addTooltip(__("tooltip.target_chamber.detectors", container().getDetectors()));
         }
         energyBar.draw(graphics, mouseX, mouseY, partialTicks);
+        if(hasParticle()) {
+            guiParticle.drawParticleStack(graphics, getParticleStack());
+        }
+        int i = 0;
+        for (GuiParticle particle : outputParticles) {
+            particle.drawParticleStack(graphics, getOutputParticle(i));
+            i++;
+        }
+    }
+
+    private boolean hasParticle() {
+        return container().hasParticle();
+    }
+
+    private ParticleStack getParticleStack() {
+        return container().getParticleStack();
     }
 
     @Override
     protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
-        graphics.drawCenteredString(font,  menu.getTitle(), imageWidth/2, titleLabelY, 0xffffff);
+        graphics.drawCenteredString(font,  menu.getTitle(), imageWidth/2, 5, 0xffffff);
         if(isCasingValid()) {
             casingTootip = applyFormat(__("reactor.size", getMultiblockHeight(), getMultiblockWidth(), getMultiblockDepth()), ChatFormatting.GOLD);
         } else {
@@ -201,12 +228,28 @@ public class TargetChamberControllerScreen extends AbstractContainerScreen<Targe
             graphics.renderTooltip(font, checkboxInterior.getTooltips(),
                     Optional.empty(), pMouseX, pMouseY);
         }
+        if(guiParticle.isMouseOver(pMouseX, pMouseY)) {
+            if(hasParticle()) {
+                guiParticle.renderTooltip(graphics, getParticleStack(), pMouseX, pMouseY);
+            }
+        }
+        int i = 0;
+        for (GuiParticle particle : outputParticles) {
+            if(particle.isMouseOver(pMouseX, pMouseY)) {
+                particle.renderTooltip(graphics, getOutputParticle(i), pMouseX, pMouseY);
+            }
+            i++;
+        }
         energyBar.clearTooltips();
         energyBar.addTooltip(__("reactor.forge_energy_per_tick", container().energyPerTick()));
         if(energyBar.isMouseOver(pMouseX, pMouseY+10)) {
             graphics.renderTooltip(font, energyBar.getTooltips(),
                     Optional.empty(), pMouseX, pMouseY);
         }
+    }
+
+    private ParticleStack getOutputParticle(int i) {
+        return container().getOutputParticle(i);
     }
 
     @Override

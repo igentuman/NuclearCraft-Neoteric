@@ -3,7 +3,7 @@
   "textures": {
     "down": "nuclearcraft:block/particle_chamber/beam_port/top",
     "east": "nuclearcraft:block/particle_chamber/beam_port/side",
-    "north": "nuclearcraft:block/particle_chamber/beam_port/target_chamber_beam_port",
+    "north": "nuclearcraft:block/particle_chamber/beam_port/input",
     "particle": "nuclearcraft:block/particle_chamber/beam_port/side",
     "south": "nuclearcraft:block/particle_chamber/beam_port/back",
     "up": "nuclearcraft:block/particle_chamber/beam_port/bottom",

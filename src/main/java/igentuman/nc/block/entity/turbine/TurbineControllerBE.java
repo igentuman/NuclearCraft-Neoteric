@@ -94,8 +94,8 @@ public class TurbineControllerBE extends MultiblockControllerBE {
         contentHandler = new SidedContentHandler(
                 0, 0,
                 1, 1, 1000, 10000);
-        contentHandler().fluidCapability.setGlobalMode(0, SlotModePair.SlotMode.INPUT);
-        contentHandler().fluidCapability.setGlobalMode(1, SlotModePair.SlotMode.OUTPUT);
+        contentHandler().fluidHandler.setGlobalMode(0, SlotModePair.SlotMode.INPUT);
+        contentHandler().fluidHandler.setGlobalMode(1, SlotModePair.SlotMode.OUTPUT);
         contentHandler().setBlockEntity(this);
         contentHandler().setAllowedInputFluids(0, this::getAllowedInputFluids);
         energyStorage = createEnergy();
@@ -160,7 +160,7 @@ public class TurbineControllerBE extends MultiblockControllerBE {
 
     @Override
     public Recipe getRecipe() {
-        if(contentHandler().fluidCapability.tanks.get(0).isEmpty()) return null;
+        if(contentHandler().fluidHandler.tanks.get(0).isEmpty()) return null;
         return (Recipe) super.getRecipe();
     }
 
@@ -293,7 +293,7 @@ public class TurbineControllerBE extends MultiblockControllerBE {
 
     private boolean processRecipe() {
         if(recipeInfo().recipe != null && recipeInfo().isCompleted()) {
-            if(contentHandler().fluidCapability.getFluidInSlot(0).isEmpty()) {
+            if(contentHandler().fluidHandler.getFluidInSlot(0).isEmpty()) {
                 recipeInfo().clear();
             }
         }
@@ -387,7 +387,7 @@ public class TurbineControllerBE extends MultiblockControllerBE {
         energyStorage().addEnergy(calculateEnergy());
         efficiency = calculateEfficiency();
         handleRecipeOutput();
-        contentHandler().fluidCapability.tanks.get(0).drain(this.realFlow, EXECUTE);
+        contentHandler().fluidHandler.tanks.get(0).drain(this.realFlow, EXECUTE);
 
         return true;
     }
@@ -403,7 +403,7 @@ public class TurbineControllerBE extends MultiblockControllerBE {
             }
             if (recipe.handleOutputs(contentHandler())) {
                 updateRecipe();
-                if(contentHandler().fluidCapability.getFluidInSlot(0).isEmpty()) {
+                if(contentHandler().fluidHandler.getFluidInSlot(0).isEmpty()) {
                     recipe = null;
                 }
             } else {
@@ -514,8 +514,8 @@ public class TurbineControllerBE extends MultiblockControllerBE {
 
     public void refresh() {
         double multiplier = ((double) Math.round(Math.log(height*width*depth)*10)/10)-1;
-        contentHandler().fluidCapability.tanks.get(0).setCapacity((int) (Math.pow(multiplier, 2)*1_000_000));
-        contentHandler().fluidCapability.tanks.get(1).setCapacity((int) (Math.pow(multiplier, 2)*1_000_000));
+        contentHandler().fluidHandler.tanks.get(0).setCapacity((int) (Math.pow(multiplier, 2)*1_000_000));
+        contentHandler().fluidHandler.tanks.get(1).setCapacity((int) (Math.pow(multiplier, 2)*1_000_000));
         calculateMaxFlow();
         calculateMaxEnergy();
         setChanged();
@@ -556,10 +556,10 @@ public class TurbineControllerBE extends MultiblockControllerBE {
             TurbineControllerBE be = (TurbineControllerBE)contentHandler.blockEntity;
             int flow = be.realFlow;
             ratio = (double)flow/(double)getInputFluids(0).get(0).getAmount();
-            FluidStack holded = contentHandler.fluidCapability.getFluidInSlot(0).copy();
+            FluidStack holded = contentHandler.fluidHandler.getFluidInSlot(0).copy();
             holded.setAmount(flow);
-            contentHandler.fluidCapability.holdedInputs.add(holded);
-            contentHandler.fluidCapability.tanks.get(0).drain(flow, EXECUTE);
+            contentHandler.fluidHandler.holdedInputs.add(holded);
+            contentHandler.fluidHandler.tanks.get(0).drain(flow, EXECUTE);
             return false;
         }
 
@@ -572,7 +572,7 @@ public class TurbineControllerBE extends MultiblockControllerBE {
             ratio = (double)flow/(double)getInputFluids(0).get(0).getAmount();
             int toPush = (int) (outputFluid.getAmount()*ratio);
             toOutput.setAmount(toPush);
-            return contentHandler.fluidCapability.insertFluidInternal(1, toOutput, true).getAmount() != toPush;
+            return contentHandler.fluidHandler.insertFluidInternal(1, toOutput, true).getAmount() != toPush;
         }
     }
 }

@@ -141,24 +141,24 @@ public class FusionCoreBE extends MultiblockControllerBE {
                 3, 5, 10, 50);
         contentHandler().setBlockEntity(this);
         //fuel
-        contentHandler().fluidCapability.setGlobalMode(0, SlotModePair.SlotMode.INPUT);
-        contentHandler().fluidCapability.setGlobalMode(1, SlotModePair.SlotMode.INPUT);
+        contentHandler().fluidHandler.setGlobalMode(0, SlotModePair.SlotMode.INPUT);
+        contentHandler().fluidHandler.setGlobalMode(1, SlotModePair.SlotMode.INPUT);
         //coolant
-        contentHandler().fluidCapability.setGlobalMode(2, SlotModePair.SlotMode.INPUT);
+        contentHandler().fluidHandler.setGlobalMode(2, SlotModePair.SlotMode.INPUT);
 
         //products
-        contentHandler().fluidCapability.setGlobalMode(3, SlotModePair.SlotMode.OUTPUT);
-        contentHandler().fluidCapability.setGlobalMode(4, SlotModePair.SlotMode.OUTPUT);
-        contentHandler().fluidCapability.setGlobalMode(5, SlotModePair.SlotMode.OUTPUT);
-        contentHandler().fluidCapability.setGlobalMode(6, SlotModePair.SlotMode.OUTPUT);
+        contentHandler().fluidHandler.setGlobalMode(3, SlotModePair.SlotMode.OUTPUT);
+        contentHandler().fluidHandler.setGlobalMode(4, SlotModePair.SlotMode.OUTPUT);
+        contentHandler().fluidHandler.setGlobalMode(5, SlotModePair.SlotMode.OUTPUT);
+        contentHandler().fluidHandler.setGlobalMode(6, SlotModePair.SlotMode.OUTPUT);
         //hot coolant
-        contentHandler().fluidCapability.setGlobalMode(7, SlotModePair.SlotMode.OUTPUT);
+        contentHandler().fluidHandler.setGlobalMode(7, SlotModePair.SlotMode.OUTPUT);
         contentHandler().setAllowedInputFluids(0, this::getAllowedInputFluids);
         contentHandler().setAllowedInputFluids(1, this::getAllowedInputFluids);
         contentHandler().setAllowedInputFluids(2, this::getAllowedCoolants);
         contentHandler().setAllowedInputFluids(7, this::getAllowedCoolantsOutput);
-        contentHandler().fluidCapability.tanks.get(2).setCapacity(100000);
-        contentHandler().fluidCapability.tanks.get(7).setCapacity(100000);
+        contentHandler().fluidHandler.tanks.get(2).setCapacity(100000);
+        contentHandler().fluidHandler.tanks.get(7).setCapacity(100000);
     }
 
     protected CustomEnergyStorage createEnergy() {
@@ -277,8 +277,8 @@ public class FusionCoreBE extends MultiblockControllerBE {
     {
         super.handleValidation();
         /*if(getMultiblock().isFormed() != wasFormed) {
-            contentHandler().fluidCapability.tanks.get(2).setCapacity(50000*size);
-            contentHandler().fluidCapability.tanks.get(7).setCapacity(50000*size);
+            contentHandler().fluidHandler.tanks.get(2).setCapacity(50000*size);
+            contentHandler().fluidHandler.tanks.get(7).setCapacity(50000*size);
         }*/
     }
 
@@ -595,7 +595,7 @@ public class FusionCoreBE extends MultiblockControllerBE {
             if(reactorHeat > coolantRecipe.getCoolingRate()) {
                 int coolantNeeded = (int) (reactorHeat/coolantRecipe.getCoolingRate());
                 int coolantPerOp = coolantRecipe.getInputFluids()[0].getAmount();
-                int availableCoolant = contentHandler().fluidCapability.tanks.get(2).getFluidAmount();
+                int availableCoolant = contentHandler().fluidHandler.tanks.get(2).getFluidAmount();
                 int possibleOps = availableCoolant/coolantPerOp;
                 int actualOps = Math.min(possibleOps, coolantNeeded*coolantPerOp);
                 changeReactorHeat(-(coolantRecipe.getCoolingRate() / size) * actualOps);
@@ -618,15 +618,15 @@ public class FusionCoreBE extends MultiblockControllerBE {
     }
 
     protected void extractCoolant(int ops) {
-        contentHandler().fluidCapability.tanks.get(2).drain(coolantRecipe.getInputFluids()[0].getAmount()*ops, EXECUTE);
+        contentHandler().fluidHandler.tanks.get(2).drain(coolantRecipe.getInputFluids()[0].getAmount()*ops, EXECUTE);
         FluidStack output = coolantRecipe.getOutputFluids().get(0).copy();
         output.setAmount(output.getAmount()*ops);
-        contentHandler().fluidCapability.tanks.get(7).fill(output, EXECUTE);
+        contentHandler().fluidHandler.tanks.get(7).fill(output, EXECUTE);
     }
 
     protected boolean processReaction() {
         if(recipeInfo().recipe != null && recipeInfo().isCompleted()) {
-            if(contentHandler().fluidCapability.getFluidInSlot(0).equals(FluidStack.EMPTY)) {
+            if(contentHandler().fluidHandler.getFluidInSlot(0).equals(FluidStack.EMPTY)) {
                 recipeInfo().clear();
             }
         }
@@ -770,7 +770,7 @@ public class FusionCoreBE extends MultiblockControllerBE {
 
     @Override
     public Recipe getRecipe() {
-        if(contentHandler().fluidCapability.getFluidInSlot(0).isEmpty() || contentHandler().fluidCapability.getFluidInSlot(0).isEmpty()) return null;
+        if(contentHandler().fluidHandler.getFluidInSlot(0).isEmpty() || contentHandler().fluidHandler.getFluidInSlot(0).isEmpty()) return null;
         return (Recipe) super.getRecipe();
     }
 
@@ -827,8 +827,8 @@ public class FusionCoreBE extends MultiblockControllerBE {
     }
 
     public void voidFuel() {
-        contentHandler().fluidCapability.tanks.get(0).setFluid(FluidStack.EMPTY);
-        contentHandler().fluidCapability.tanks.get(1).setFluid(FluidStack.EMPTY);
+        contentHandler().fluidHandler.tanks.get(0).setFluid(FluidStack.EMPTY);
+        contentHandler().fluidHandler.tanks.get(1).setFluid(FluidStack.EMPTY);
         contentHandler().clearHolded();
     }
 
@@ -842,7 +842,7 @@ public class FusionCoreBE extends MultiblockControllerBE {
     }
 
     public boolean hasCoolant() {
-        FluidStack coolant = contentHandler().fluidCapability.getFluidInSlot(2);
+        FluidStack coolant = contentHandler().fluidHandler.getFluidInSlot(2);
         if(coolant.isEmpty()) {
             coolantRecipe = null;
             return false;

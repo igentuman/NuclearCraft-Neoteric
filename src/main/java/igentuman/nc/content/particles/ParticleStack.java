@@ -1,7 +1,11 @@
 package igentuman.nc.content.particles;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import igentuman.nc.util.math.MathUtils;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import org.jetbrains.annotations.NotNull;
 
 /**
  *  * source https://github.com/Lach01298/QMD
@@ -59,7 +63,40 @@ public class ParticleStack
 		
 	}
 
-	
+	public static ParticleStack fromJSON(JsonElement in) {
+		if (in == null || !in.isJsonObject()) {
+			return null;
+		}
+		JsonObject json = in.getAsJsonObject();
+		String particleName = json.get("particle").getAsString();
+		int amount = json.get("amount").getAsInt();
+		long meanEnergy = json.get("meanEnergy").getAsLong();
+		double focus = json.get("focus").getAsDouble();
+
+		return new ParticleStack(Particles.getParticleFromName(particleName), amount, meanEnergy, focus);
+	}
+
+	public static ParticleStack readBuffer(@NotNull FriendlyByteBuf buffer) {
+		String particleName = buffer.readUtf();
+		int amount = buffer.readInt();
+		long meanEnergy = buffer.readLong();
+		double focus = buffer.readDouble();
+
+		return new ParticleStack(Particles.getParticleFromName(particleName), amount, meanEnergy, focus);
+	}
+
+	public void writeBuffer(FriendlyByteBuf buffer) {
+		if (particle != null) {
+			buffer.writeUtf(particle.getName());
+		} else {
+			buffer.writeUtf("");
+		}
+		buffer.writeInt(amount);
+		buffer.writeLong(meanEnergy);
+		buffer.writeDouble(focus);
+	}
+
+
 	public Particle getParticle()
 	{
 		return particle;
@@ -232,5 +269,17 @@ public class ParticleStack
 		}
 		return false;
 	}
-	
+
+	public JsonObject serialize() {
+		JsonObject json = new JsonObject();
+		if (particle != null) {
+			json.addProperty("particle", particle.getName());
+		}
+		json.addProperty("amount", amount);
+		json.addProperty("meanEnergy", meanEnergy);
+		json.addProperty("focus", focus);
+		return json;
+	}
+
+
 }

@@ -49,7 +49,7 @@ public class FusionCoolantCategoryWrapper<T extends FusionCoreBE.FusionCoolantRe
         this.guiHelper = guiHelper;
         this.background = guiHelper.createDrawable(TEXTURE, 0, 0, 105, 32);
         if(CATALYSTS.containsKey(getRecipeType().getUid().getPath())) {
-            this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(FUSION_BLOCKS.get("fusion_reactor_core").get()));
+            this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(FUSION_BLOCKS.get("fusion_core").get()));
         } else{
             this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(BARRIER));
         }

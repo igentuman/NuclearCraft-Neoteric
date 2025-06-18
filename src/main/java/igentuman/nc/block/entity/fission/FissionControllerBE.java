@@ -159,12 +159,12 @@ public class FissionControllerBE extends MultiblockControllerBE {
                 1, 1,
                 1+activeCoolersTypes().size(), 1);
         contentHandler().setBlockEntity(this);
-        contentHandler().fluidCapability.setGlobalMode(0, SlotModePair.SlotMode.PULL);
-        contentHandler().fluidCapability.setGlobalMode(1, SlotModePair.SlotMode.PUSH);
+        contentHandler().fluidHandler.setGlobalMode(0, SlotModePair.SlotMode.PULL);
+        contentHandler().fluidHandler.setGlobalMode(1, SlotModePair.SlotMode.PUSH);
         contentHandler().itemHandler.setGlobalMode(0, SlotModePair.SlotMode.PULL);
         contentHandler().itemHandler.setGlobalMode(1, SlotModePair.SlotMode.PUSH);
-        contentHandler().fluidCapability.tanks.get(0).setCapacity(10000);
-        contentHandler().fluidCapability.tanks.get(1).setCapacity(10000);
+        contentHandler().fluidHandler.tanks.get(0).setCapacity(10000);
+        contentHandler().fluidHandler.tanks.get(1).setCapacity(10000);
         contentHandler().setAllowedInputFluids(0, this::getAllowedCoolants);
         contentHandler().setAllowedInputFluids(1, this::getAllowedCoolantsOutput);
         for(String type: activeCoolersTypes()) {
@@ -172,7 +172,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
                     1+activeCoolersTypes().indexOf(type),
                     () -> heatsinks.get(type).getAllowedFluids()
                 );
-            contentHandler().fluidCapability.setGlobalMode(2+activeCoolersTypes().indexOf(type), SlotModePair.SlotMode.PULL);
+            contentHandler().fluidHandler.setGlobalMode(2+activeCoolersTypes().indexOf(type), SlotModePair.SlotMode.PULL);
         }
         contentHandler().setAllowedInputItems(this::getAllowedInputItems);
         energyStorage = createEnergy();
@@ -277,13 +277,13 @@ public class FissionControllerBE extends MultiblockControllerBE {
             FluidStack steam = boilingRecipe.getOutputFluids().get(0);
             FluidStack coolant = boilingRecipe.getInputFluids(0).get(0);
             double conversion = heatEff/boilingRecipe.conversionRate();
-            FluidStack currentCoolant = contentHandler().fluidCapability.getFluidInSlot(0);
-            FluidStack currentOutput = contentHandler().fluidCapability.getFluidInSlot(1);
+            FluidStack currentCoolant = contentHandler().fluidHandler.getFluidInSlot(0);
+            FluidStack currentOutput = contentHandler().fluidHandler.getFluidInSlot(1);
             if(!steam.isFluidEqual(currentOutput) && !currentOutput.isEmpty()) {
                 boilingPenalty = coolingPerTick();
                 return;
             }
-            double capacity = contentHandler().fluidCapability.tanks.get(1).getCapacity() - currentOutput.getAmount();
+            double capacity = contentHandler().fluidHandler.tanks.get(1).getCapacity() - currentOutput.getAmount();
             maxSteamOutput = (int) (steam.getAmount()*conversion);
             int ops = (int) (capacity/steam.getAmount());
             capacity = ops*steam.getAmount();
@@ -296,11 +296,11 @@ public class FissionControllerBE extends MultiblockControllerBE {
                 boilingPenalty = coolingPerTick()*0.75;
                 return;
             }
-            contentHandler().fluidCapability.tanks.get(0).drain(ops*coolant.getAmount(), IFluidHandler.FluidAction.EXECUTE);
+            contentHandler().fluidHandler.tanks.get(0).drain(ops*coolant.getAmount(), IFluidHandler.FluidAction.EXECUTE);
             FluidStack out = steam.copy();
             out.setAmount(ops*steam.getAmount());
 
-            contentHandler().fluidCapability.tanks.get(1).fill(out, IFluidHandler.FluidAction.EXECUTE);
+            contentHandler().fluidHandler.tanks.get(1).fill(out, IFluidHandler.FluidAction.EXECUTE);
             changed = true;
             if(ops < Math.floor(conversion)) {
                 boilingPenalty = coolingPerTick()*(conversion/ops)-coolingPerTick();
@@ -819,7 +819,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
     }
 
     public boolean hasCoolant() {
-        FluidStack coolant = contentHandler().fluidCapability.getFluidInSlot(0);
+        FluidStack coolant = contentHandler().fluidHandler.getFluidInSlot(0);
         if(coolant.isEmpty()) {
             boilingRecipe = null;
             return false;
@@ -901,8 +901,8 @@ public class FissionControllerBE extends MultiblockControllerBE {
     }
 
     public boolean hasEnoughCoolant(String coolant, int amount) {
-        for(int i = 0; i < contentHandler().fluidCapability.tanks.size(); i++) {
-            FluidStack stack = contentHandler().fluidCapability.tanks.get(i).getFluid();
+        for(int i = 0; i < contentHandler().fluidHandler.tanks.size(); i++) {
+            FluidStack stack = contentHandler().fluidHandler.tanks.get(i).getFluid();
             if(ForgeRegistries.FLUIDS.getKey(stack.getFluid()).getPath().equals(coolant) && stack.getAmount() >= amount) {
                 return true;
             }
@@ -911,10 +911,10 @@ public class FissionControllerBE extends MultiblockControllerBE {
     }
 
     public void drainCoolant(String coolant, int amount) {
-        for(int i = 0; i < contentHandler().fluidCapability.tanks.size(); i++) {
-            FluidStack stack = contentHandler().fluidCapability.tanks.get(i).getFluid();
+        for(int i = 0; i < contentHandler().fluidHandler.tanks.size(); i++) {
+            FluidStack stack = contentHandler().fluidHandler.tanks.get(i).getFluid();
             if(ForgeRegistries.FLUIDS.getKey(stack.getFluid()).getPath().equals(coolant) && stack.getAmount() >= amount) {
-                contentHandler().fluidCapability.tanks.get(i).drain(amount, IFluidHandler.FluidAction.EXECUTE);
+                contentHandler().fluidHandler.tanks.get(i).drain(amount, IFluidHandler.FluidAction.EXECUTE);
                 return;
             }
         }
@@ -934,8 +934,8 @@ public class FissionControllerBE extends MultiblockControllerBE {
     public void refresh() {
         double multiplier = ((double) Math.round(Math.log(height*width*depth)*10)/10)-1;
         maxHeat = FISSION_CONFIG.HEAT_CAPACITY.get()*multiplier;
-        contentHandler().fluidCapability.tanks.get(0).setCapacity((int) (Math.pow(multiplier, 2)*1_000_000));
-        contentHandler().fluidCapability.tanks.get(1).setCapacity((int) (Math.pow(multiplier, 2)*1_000_000));
+        contentHandler().fluidHandler.tanks.get(0).setCapacity((int) (Math.pow(multiplier, 2)*1_000_000));
+        contentHandler().fluidHandler.tanks.get(1).setCapacity((int) (Math.pow(multiplier, 2)*1_000_000));
         setChanged();
     }
 

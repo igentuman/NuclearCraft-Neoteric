@@ -61,9 +61,9 @@ public class NCBlockStates extends BlockStateProvider {
     }
 
     private void accelerator() {
-        horizontalBlock(ACCELERATOR_BLOCKS.get("accelerator_beam_port").get(),
+        /*horizontalBlock(ACCELERATOR_BLOCKS.get("accelerator_beam_port").get(),
                 st -> multiBlockModel(ACCELERATOR_BLOCKS.get("accelerator_beam_port").get(), "accelerator/accelerator_beam_port")
-        );
+        );*/
         horizontalBlock(ACCELERATOR_BLOCKS.get("accelerator_ion_source_port").get(),
                 st -> multiBlockModel(ACCELERATOR_BLOCKS.get("accelerator_ion_source_port").get(), "accelerator/accelerator_ion_source_port")
         );
@@ -80,13 +80,13 @@ public class NCBlockStates extends BlockStateProvider {
         simpleBlock(ACCELERATOR_BLOCKS.get("electromagnet_yoke").get(), multiBlockModel(ACCELERATOR_BLOCKS.get("electromagnet_yoke").get(), "accelerator/electromagnet_yoke"));
         simpleBlock(ACCELERATOR_BLOCKS.get("accelerator_casing").get(), multiBlockModel(ACCELERATOR_BLOCKS.get("accelerator_casing").get(), "accelerator/accelerator_casing"));
         simpleBlock(ACCELERATOR_BLOCKS.get("accelerator_casing_glass").get(), multiBlockModel(ACCELERATOR_BLOCKS.get("accelerator_casing_glass").get(), "accelerator/accelerator_casing_glass"));
-        simpleBlock(ACCELERATOR_BLOCKS.get("accelerator_beam").get(), multiBlockModel(ACCELERATOR_BLOCKS.get("accelerator_beam").get(), "accelerator/accelerator_beam"));
+        simpleBlock(ACCELERATOR_BLOCKS.get("particle_beam").get(), multiBlockModel(ACCELERATOR_BLOCKS.get("particle_beam").get(), "accelerator/particle_beam"));
     }
 
     private void targetChamber() {
-        horizontalBlock(TARGET_CHAMBER_BLOCKS.get("target_chamber_beam_port").get(),
+        /*horizontalBlock(TARGET_CHAMBER_BLOCKS.get("target_chamber_beam_port").get(),
                 st -> multiBlockModel(TARGET_CHAMBER_BLOCKS.get("target_chamber_beam_port").get(), "particle_chamber/beam_port")
-        );
+        );*/
         horizontalBlock(TARGET_CHAMBER_BLOCKS.get("target_chamber_port").get(),
                 st -> multiBlockModel(TARGET_CHAMBER_BLOCKS.get("target_chamber_port").get(), "particle_chamber/port")
         );

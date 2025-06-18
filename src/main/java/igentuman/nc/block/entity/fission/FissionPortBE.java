@@ -191,7 +191,7 @@ public class FissionPortBE extends NuclearCraftBE implements MultiblockAttachabl
 
     protected FluidCapabilityHandler fluidHandler()
     {
-        return controller().contentHandler().fluidCapability;
+        return controller().contentHandler().fluidHandler;
     }
 
     @Nonnull

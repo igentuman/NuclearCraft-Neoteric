@@ -2,7 +2,6 @@ package igentuman.nc.content.particles;
 
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 /**
@@ -18,7 +17,7 @@ public class ParticleStorage implements IParticleStorage, IParticleStackHandler
 	protected long maxEnergy;
 	protected long minEnergy;
 	protected int capacity;
-
+	protected Direction sourceDir = Direction.UP;
 	
 	public ParticleStorage(ParticleStack stack, long maxEnergy, int capacity, long minEnergy)
 	{
@@ -66,6 +65,7 @@ public class ParticleStorage implements IParticleStorage, IParticleStackHandler
 		this.maxEnergy = nbt.getLong("maxEnergy");
 		this.capacity = nbt.getInt("capacity");
 		this.minEnergy = nbt.getLong("minEnergy");
+		this.sourceDir = Direction.byName(nbt.getString("sourceDir"));
 	}
 
 	public CompoundTag writeToNBT(CompoundTag nbt)
@@ -81,6 +81,11 @@ public class ParticleStorage implements IParticleStorage, IParticleStackHandler
 		nbt.putLong("maxEnergy", maxEnergy);
 		nbt.putInt("capacity", capacity);
 		nbt.putLong("minEnergy", minEnergy);
+		if(sourceDir == null)
+		{
+			sourceDir = Direction.UP;
+		}
+		nbt.putString("sourceDir", sourceDir.name());
 		return nbt;
 	}
 	
@@ -102,13 +107,11 @@ public class ParticleStorage implements IParticleStorage, IParticleStackHandler
 			readFromNBT(tag);
 		}
 	}
-	
-	
+
 	public void setParticleStack(ParticleStack stack)
 	{
 		this.particleStack = stack;
-
-	}	
+	}
 	
 	public void setTileEntity(BlockEntity tile)
 	{
@@ -139,6 +142,7 @@ public class ParticleStorage implements IParticleStorage, IParticleStackHandler
 						
 						particleStack.setMeanEnergy((stack.getMeanEnergy() * stack.getAmount() + particleStack.getMeanEnergy() * particleStack.getAmount())/ (stack.getAmount() + particleStack.getAmount()));
 						particleStack.addAmount(stack.getAmount());
+						sourceDir = side != null ? side : Direction.UP;
 						return true;
 					}
 				}
@@ -221,7 +225,7 @@ public class ParticleStorage implements IParticleStorage, IParticleStackHandler
 	@Override
 	public ParticleStack extractParticle(Direction side)
 	{
-		if (canExtractParticle(side))
+		if ((sourceDir == null || !sourceDir.equals(side)) && canExtractParticle(side))
 		{
 			ParticleStack stack = this.particleStack;
 			this.particleStack = null;
@@ -233,7 +237,7 @@ public class ParticleStorage implements IParticleStorage, IParticleStackHandler
 	@Override
 	public ParticleStack extractParticle(Direction side, Particle type)
 	{
-		if (canExtractParticle(side))
+		if ((sourceDir == null || !sourceDir.equals(side)) && canExtractParticle(side))
 		{
 			if (particleStack.getParticle() == type)
 			{
@@ -246,7 +250,7 @@ public class ParticleStorage implements IParticleStorage, IParticleStackHandler
 	@Override
 	public ParticleStack extractParticle(Direction side, int amount)
 	{
-		if(canExtractParticle(side))
+		if((sourceDir == null || !sourceDir.equals(side)) && canExtractParticle(side))
 		{
 			ParticleStack stack = particleStack.copy();
 			if(particleStack.getAmount() > amount)
@@ -266,7 +270,7 @@ public class ParticleStorage implements IParticleStorage, IParticleStackHandler
 	public ParticleStack extractParticle(Direction side, Particle type, int Amount)
 	{
 
-		if (canExtractParticle(side))
+		if (!sourceDir.equals(side) && canExtractParticle(side))
 		{
 			if (particleStack.getParticle() == type)
 			{

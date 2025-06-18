@@ -247,6 +247,7 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
     private void indexHeatSinks() {
         validHeatSinks.clear();
         delayedValidation.clear();
+        coolantPerTick.clear();
         for(long pos: allHeatSinks) {
             BlockPos hsPos = BlockPos.of(pos);
             if(isHeatSinkValid(hsPos)) {
@@ -256,6 +257,7 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
                 addSecondConnectionsToFuelCell(hsPos);
                 if(hb.isActive()) {
                     addIfNotExists(pos, activeCoolers);
+                    addActiveCoolant(hb.def.name.replace("active_", ""));
                 }
             } else {
                 addIfNotExists(pos, delayedValidation);

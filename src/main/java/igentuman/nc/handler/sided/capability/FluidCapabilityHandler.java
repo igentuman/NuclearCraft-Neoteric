@@ -199,7 +199,7 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler implements
         if(outputAllowed(i, null)) {
             FluidStack stack = getFluidInSlot(i);
             if(stack.isEmpty()) return true;
-            return stack.isFluidEqual(fluid);
+            return stack.isFluidEqual(fluid) && stack.getAmount() < tanks.get(i).getCapacity();
         }
         return false;
     }

@@ -169,7 +169,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
         contentHandler().setAllowedInputFluids(1, this::getAllowedCoolantsOutput);
         for(String type: activeCoolersTypes()) {
             contentHandler().setAllowedInputFluids(
-                    1+activeCoolersTypes().indexOf(type),
+                    2+activeCoolersTypes().indexOf(type),
                     () -> heatsinks.get(type).getAllowedFluids()
                 );
             contentHandler().fluidHandler.setGlobalMode(2+activeCoolersTypes().indexOf(type), SlotModePair.SlotMode.PULL);
@@ -901,7 +901,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
     }
 
     public boolean hasEnoughCoolant(String coolant, int amount) {
-        for(int i = 0; i < contentHandler().fluidHandler.tanks.size(); i++) {
+        for(int i = 2; i < contentHandler().fluidHandler.tanks.size(); i++) {
             FluidStack stack = contentHandler().fluidHandler.tanks.get(i).getFluid();
             if(ForgeRegistries.FLUIDS.getKey(stack.getFluid()).getPath().equals(coolant) && stack.getAmount() >= amount) {
                 return true;
@@ -911,7 +911,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
     }
 
     public void drainCoolant(String coolant, int amount) {
-        for(int i = 0; i < contentHandler().fluidHandler.tanks.size(); i++) {
+        for(int i = 2; i < contentHandler().fluidHandler.tanks.size(); i++) {
             FluidStack stack = contentHandler().fluidHandler.tanks.get(i).getFluid();
             if(ForgeRegistries.FLUIDS.getKey(stack.getFluid()).getPath().equals(coolant) && stack.getAmount() >= amount) {
                 contentHandler().fluidHandler.tanks.get(i).drain(amount, IFluidHandler.FluidAction.EXECUTE);

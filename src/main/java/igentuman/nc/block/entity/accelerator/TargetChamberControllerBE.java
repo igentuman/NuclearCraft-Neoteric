@@ -41,14 +41,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
-import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.block.accelerator.TargetChamberControllerBlock.POWERED;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.compat.gregtech.GTUtils.getGTEnergy;
 import static igentuman.nc.compat.gregtech.GTUtils.isOnlyGTCEUCapEnabled;
 import static igentuman.nc.compat.oc2.TargetChamberDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.content.particles.CapabilityParticleStackHandler.PARTICLE_HANDLER_CAPABILITY;
-import static igentuman.nc.content.particles.Particles.neutron;
 import static igentuman.nc.handler.config.CommonConfig.GTCEU_CONFIG;
 import static igentuman.nc.multiblock.accelerator.TargetChamberRegistration.TARGET_CHAMBER_BE;
 import static igentuman.nc.multiblock.accelerator.TargetChamberRegistration.TARGET_CHAMBER_BLOCKS;
@@ -119,7 +117,7 @@ public class TargetChamberControllerBE extends MultiblockControllerBE {
     {
         if(allowedInputs == null) {
             allowedInputs = new ArrayList<>();
-            for(NcRecipe recipe: NcRecipeType.getAllRecipesFor(getName(), getLevel())) {
+            for(NcRecipe recipe: NcRecipeType.getAllRecipesFor("target_chamber", getLevel())) {
                 for(Ingredient ingredient: recipe.getItemIngredients()) {
                     allowedInputs.addAll(List.of(ingredient.getItems()));
                 }
@@ -143,6 +141,7 @@ public class TargetChamberControllerBE extends MultiblockControllerBE {
         if (tag.contains("Info")) {
             CompoundTag infoTag = tag.getCompound("Info");
             infoTag.put("particle_storage", particleStorage.writeToNBT(new CompoundTag()));
+            particleStorage.extractParticle(null);
         }
     }
 
@@ -160,6 +159,7 @@ public class TargetChamberControllerBE extends MultiblockControllerBE {
         if (tag.contains("Info")) {
             CompoundTag infoTag = tag.getCompound("Info");
             infoTag.put("particle_storage", particleStorage.writeToNBT(new CompoundTag()));
+            particleStorage.extractParticle(null);
         }
     }
 
@@ -398,13 +398,42 @@ public class TargetChamberControllerBE extends MultiblockControllerBE {
     @Override
     public Recipe getRecipe() {
         if(contentHandler().itemHandler.getStackInSlot(0).equals(ItemStack.EMPTY)) return null;
-        return (Recipe) super.getRecipe();
+        Recipe cachedRecipe = getCachedRecipe();
+        if(cachedRecipe != null) return cachedRecipe;
+        if(!NcRecipeType.ALL_RECIPES.containsKey("target_chamber")) return null;
+        for(NcRecipe recipe: NcRecipeType.getAllRecipesFor("target_chamber", getLevel())) {
+            if(((Recipe)recipe).test(contentHandler(), particleStorage)) {
+                addToCache(recipe);
+                return (Recipe) recipe;
+            }
+        }
+        return null;
     }
+
+    public Recipe getCachedRecipe() {
+        String key = contentHandler().getCacheKey()+particleStorage.getCacheKey();
+        if(cachedRecipes.containsKey(key) && cachedRecipes.get(key) instanceof Recipe recipeTest) {
+            if(recipeTest.test(contentHandler(), particleStorage)) {
+                return recipeTest;
+            }
+        }
+        return null;
+    }
+
+    protected void addToCache(NcRecipe recipe) {
+        String key = contentHandler().getCacheKey()+particleStorage.getCacheKey();
+        if(cachedRecipes.containsKey(key)) {
+            cachedRecipes.replace(key, recipe);
+        } else {
+            cachedRecipes.put(key, recipe);
+        }
+    }
+
 
     protected void updateRecipe() {
         //check if last recipe is still valid
         if(recipe != null) {
-            if(recipe.test(contentHandler())) {
+            if(((Recipe)recipe).test(contentHandler(), particleStorage)) {
                 recipeInfo().ticksProcessed = 0;
                 if (recipeInfo().consumeInputs(contentHandler())) {
                     return;
@@ -418,7 +447,7 @@ public class TargetChamberControllerBE extends MultiblockControllerBE {
         recipe = getRecipe();
         if (recipe != null) {
             recipeInfo().setRecipe(recipe);
-            recipeInfo().ticks = (int) ((Recipe)recipeInfo().recipe()).getTimeModifier();
+            recipeInfo().ticks = 10000;
             recipeInfo().energy = recipeInfo().recipe().getEnergy();
             recipeInfo().radiation = recipeInfo().recipe().getRadiation();
             recipeInfo().be = this;
@@ -535,6 +564,32 @@ public class TargetChamberControllerBE extends MultiblockControllerBE {
 
         public ParticleStack getOutputParticle(int i) {
             return i < outputParticles.length ? outputParticles[i] : null;
+        }
+
+        public boolean test(SidedContentHandler sidedContentHandler, ParticleStorage particleStorage) {
+            return super.test(sidedContentHandler) && testParticle(particleStorage);
+        }
+
+        private boolean testParticle(ParticleStorage particleStorage) {
+            if (inputParticles == null || inputParticles.length == 0) {
+                return true;
+            }
+            ParticleStack particleStack = particleStorage.getParticle();
+            if (particleStack == null) {
+                return false;
+            }
+            for (ParticleStack inputParticle : inputParticles) {
+                if (inputParticle.getParticle().equals(particleStack.getParticle())) {
+                    if (
+                            inputParticle.getMeanEnergy() <= particleStack.getMeanEnergy()
+                            && maxEnergy >= particleStack.getMeanEnergy()
+                            && inputParticle.getFocus() <= particleStack.getFocus()
+                    ) {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
     }
 }

@@ -274,6 +274,7 @@ public class AbstractAcceleratorMultiblock extends AbstractMultiblock {
         boolean nextMustBeMagnet = false;
         boolean nextMustBeAmplifier = false;
         double magnetStrength = 0;
+        double amplification = 0;
         for(int i = 0; i < xCoords.length; i++ ) {
             int x = xCoords[i];
             int y = yCoords[i];
@@ -307,7 +308,7 @@ public class AbstractAcceleratorMultiblock extends AbstractMultiblock {
                     errorBlockPos = new BlockPos(toCheck);
                     return false;
                 }
-                acceleratingVoltage+= ((RFAmplifierBlock) bs.getBlock()).getAmplification();
+                amplification+= ((RFAmplifierBlock) bs.getBlock()).getAmplification();
                 energyRequired+= ((RFAmplifierBlock) bs.getBlock()).getPower();
                 heatRate+= ((RFAmplifierBlock) bs.getBlock()).getHeatRate();
                 efficiency+= ((RFAmplifierBlock) bs.getBlock()).getEfficiency();
@@ -347,13 +348,14 @@ public class AbstractAcceleratorMultiblock extends AbstractMultiblock {
         switch (magnetCount) {
             case 4 -> {
                 quadrupolesCount++;
-                quadStrength += magnetStrength;
+                quadStrength += magnetStrength/4D;
             }
             case 2 -> {
                 dipolesCount++;
-                dipoleStrength += magnetStrength;
+                dipoleStrength += magnetStrength/2D;
             }
         }
+        acceleratingVoltage += amplification/8D;
         return true;
     }
 

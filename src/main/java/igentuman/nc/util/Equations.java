@@ -43,7 +43,7 @@ public class Equations
 		if (stack != null)
 		{
 			Particle particle = stack.getParticle();
-			return (long) (cavityVoltage * Math.abs(particle.getCharge()));
+			return (long) (cavityVoltage * Math.abs(particle.getCharge()))/1000;
 		}
 		return 0;
 	}

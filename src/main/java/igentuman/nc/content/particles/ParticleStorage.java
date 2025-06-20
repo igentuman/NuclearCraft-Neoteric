@@ -289,4 +289,8 @@ public class ParticleStorage implements IParticleStorage, IParticleStackHandler
 		}
 		return null;	
 	}
+
+    public String getCacheKey() {
+		return particleStack == null || particleStack.getParticle() == null ? "" : particleStack.getParticle().getName();
+    }
 }

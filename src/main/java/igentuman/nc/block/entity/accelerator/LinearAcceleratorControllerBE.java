@@ -220,7 +220,7 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
         super.tickServer();
         boolean wasEnabled = controllerEnabled;
         handleValidation();
-        particleStorage.extractParticle(null);
+
         controllerEnabled = getMultiblock().isFormed() && hasRedstoneSignal();
 
         if (controllerEnabled) {
@@ -388,6 +388,7 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
         if (tag.contains("Info")) {
             CompoundTag infoTag = tag.getCompound("Info");
             infoTag.put("particle_storage", particleStorage.writeToNBT(new CompoundTag()));
+            particleStorage.extractParticle(null);
         }
     }
 
@@ -405,6 +406,7 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
         if (tag.contains("Info")) {
             CompoundTag infoTag = tag.getCompound("Info");
             infoTag.put("particle_storage", particleStorage.writeToNBT(new CompoundTag()));
+            particleStorage.extractParticle(null);
         }
     }
 

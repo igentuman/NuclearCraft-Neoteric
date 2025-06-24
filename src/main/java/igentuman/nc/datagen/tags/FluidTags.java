@@ -29,6 +29,9 @@ public class FluidTags extends FluidTagsProvider
 				tag(LIQUIDS_TAG.get("molten_" + name)).add(NC_MATERIALS.get(name).getStill());
 			}
 		}
+		tag(LIQUIDS_TAG.get("molten_aluminium")).add(NC_MATERIALS.get("aluminum").getStill());
+		tag(LIQUIDS_TAG.get("aluminium")).add(NC_MATERIALS.get("aluminum").getStill());
+
 		for(String name: NC_GASES.keySet()) {
 			tag(LIQUIDS_TAG.get(name)).add(NC_GASES.get(name).getStill());
 			tag(Fluids.GASEOUS).add(NC_GASES.get(name).getStill());

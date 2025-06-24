@@ -197,6 +197,8 @@ public class NCFluids {
             NC_MATERIALS.put(name, FluidEntry.makeMoltenLiquid(name, Materials.fluids().get(name).color));
             LIQUIDS_TAG.put("molten_" + name, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(),  forgeRl("molten_" + name)));
         }
+        LIQUIDS_TAG.put("aluminium", TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(),  forgeRl("aluminium")));
+        LIQUIDS_TAG.put("molten_aluminium", TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(),  forgeRl("molten_aluminium")));
     }
 
     private static void fuel() {

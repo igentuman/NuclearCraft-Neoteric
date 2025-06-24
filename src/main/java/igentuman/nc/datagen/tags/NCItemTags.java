@@ -121,6 +121,7 @@ public class NCItemTags extends ItemTagsProvider {
             tag(Tags.Items.INGOTS).add(NC_INGOTS.get(name).get());
             tag(INGOTS_TAG.get(name)).add(NC_INGOTS.get(name).get());
         }
+        tag(INGOTS_TAG.get("aluminium")).add(NC_INGOTS.get("aluminum").get());
     }
 
     private void nuggets() {
@@ -128,6 +129,7 @@ public class NCItemTags extends ItemTagsProvider {
             tag(Tags.Items.NUGGETS).add(NC_NUGGETS.get(name).get());
             tag(NUGGETS_TAG.get(name)).add(NC_NUGGETS.get(name).get());
         }
+        tag(NUGGETS_TAG.get("aluminium")).add(NC_NUGGETS.get("aluminum").get());
     }
 
     private void plates() {
@@ -135,6 +137,7 @@ public class NCItemTags extends ItemTagsProvider {
             tag(PLATE_TAG).add(NCItems.NC_PLATES.get(name).get());
             tag(PLATES_TAG.get(name)).add(NCItems.NC_PLATES.get(name).get());
         }
+        tag(PLATES_TAG.get("aluminium")).add(NC_PLATES.get("aluminum").get());
     }
 
     private void dusts() {
@@ -142,6 +145,7 @@ public class NCItemTags extends ItemTagsProvider {
             tag(Tags.Items.DUSTS).add(NC_DUSTS.get(name).get());
             tag(DUSTS_TAG.get(name)).add(NC_DUSTS.get(name).get());
         }
+        tag(DUSTS_TAG.get("aluminium")).add(NC_DUSTS.get("aluminum").get());
         tag(DUSTS_TAG.get("salt")).add(NC_ITEMS.get("salt").get());
         tag(DUSTS_TAG.get("sodium_chloride")).add(NC_ITEMS.get("salt").get());
     }

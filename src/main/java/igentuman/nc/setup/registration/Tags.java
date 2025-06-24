@@ -43,22 +43,37 @@ public class Tags {
     }
 
     public static void addIngotTag(String name) {
+        if(name.equals("aluminum")) {
+            INGOTS_TAG.put("aluminium", forgeIngot("aluminium"));
+        }
         INGOTS_TAG.put(name, forgeIngot(name));
     }
 
     public static void addNuggetTag(String name) {
+        if(name.equals("aluminum")) {
+            NUGGETS_TAG.put("aluminium", forgeNugget("aluminium"));
+        }
         NUGGETS_TAG.put(name, forgeNugget(name));
     }
 
     public static void addPlateTag(String name) {
+        if(name.equals("aluminum")) {
+            PLATES_TAG.put("aluminium", forgePlate("aluminium"));
+        }
         PLATES_TAG.put(name, forgePlate(name));
     }
 
     public static void addOreTag(String name) {
+        if(name.equals("aluminum")) {
+            ORE_ITEM_TAGS.put("aluminium", forgeOre("aluminium"));
+        }
         ORE_ITEM_TAGS.put(name, forgeOre(name));
     }
 
     public static void addDustTag(String name) {
+        if(name.equals("aluminum")) {
+            DUSTS_TAG.put("aluminium", forgeDust("aluminium"));
+        }
         DUSTS_TAG.put(name, forgeDust(name));
     }
 
@@ -67,6 +82,9 @@ public class Tags {
     }
 
     public static void addChunkTag(String name) {
+        if(name.equals("aluminum")) {
+            CHUNKS_TAG.put("aluminium", forgeChunk("aluminium"));
+        }
         CHUNKS_TAG.put(name, forgeChunk(name));
     }
 

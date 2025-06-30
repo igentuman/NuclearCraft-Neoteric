@@ -8,6 +8,8 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.inventory.MenuType;
@@ -59,9 +61,11 @@ public class Registries {
     public static final DeferredRegister<DimensionType> DIMENSION_TYPE = DeferredRegister.create(net.minecraft.core.registries.Registries.DIMENSION_TYPE, MODID);
     public static final DeferredRegister<PlacementModifierType<?>> PLACEMENT_MODIFIERS = DeferredRegister.create(net.minecraft.core.registries.Registries.PLACEMENT_MODIFIER_TYPE, MODID);
     public static final DeferredRegister<Biome> BIOMES = DeferredRegister.create(net.minecraft.core.registries.Registries.BIOME, MODID);
+    public static final DeferredRegister<DamageType> DAMAGE_SOURCE = DeferredRegister.create(net.minecraft.core.registries.Registries.DAMAGE_TYPE, MODID);
 
     public static void init(FMLJavaModLoadingContext context) {
         IEventBus bus = context.getModEventBus();
+        DAMAGE_SOURCE.register(bus);
         BLOCKS.register(bus);
         ITEMS.register(bus);
         FLUIDS.register(bus);

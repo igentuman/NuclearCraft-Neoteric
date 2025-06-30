@@ -1,7 +1,7 @@
 package igentuman.nc.setup;
 
-import igentuman.nc.container.FissionControllerContainer;
 import igentuman.nc.container.MultiblockControllerContailer;
+import igentuman.nc.content.NCRadiationDamageSource;
 import igentuman.nc.content.particles.ParticleSources;
 import igentuman.nc.effect.RadiationResistance;
 import igentuman.nc.multiblock.accelerator.AcceleratorRegistration;
@@ -13,7 +13,6 @@ import igentuman.nc.multiblock.turbine.TurbineRegistration;
 import igentuman.nc.recipes.NcRecipeSerializers;
 import igentuman.nc.recipes.NcRecipeType;
 import igentuman.nc.setup.registration.*;
-import igentuman.nc.world.dimension.Dimensions;
 import igentuman.nc.world.placement.NCPlacementModifierTypes;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -43,6 +42,7 @@ public class Registration {
         NCFluids.init();
         NCEnergyBlocks.init();
         NCProcessors.init();
+        NCRadiationDamageSource.init();
         FissionReactorRegistration.init();
         FusionReactorRegistration.init();
         KugelblitzRegistration.init();

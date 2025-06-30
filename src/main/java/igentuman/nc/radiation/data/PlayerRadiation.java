@@ -4,6 +4,7 @@ import igentuman.nc.content.NCRadiationDamageSource;
 import igentuman.nc.radiation.ItemRadiation;
 import igentuman.nc.radiation.ItemShielding;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
@@ -119,7 +120,7 @@ public class PlayerRadiation implements IPlayerRadiationCapability {
     {
         if(radiation >= maxPlayerRadiation) {
             radiation = radiation/3;
-            player.hurt(NCRadiationDamageSource.RADIATION, 1000000);
+            player.hurt(NCRadiationDamageSource.RADIATION((ServerPlayer) player), 1000000);
             return;
         }
         if(radiation >= maxPlayerRadiation*0.66) {

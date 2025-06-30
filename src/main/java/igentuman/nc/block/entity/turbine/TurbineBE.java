@@ -1,14 +1,12 @@
 package igentuman.nc.block.entity.turbine;
 
-import igentuman.nc.block.entity.NuclearCraftBE;
-import igentuman.nc.block.entity.fission.FissionControllerBE;
-import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.api.nc.multiblock.MultiblockAttachable;
-import igentuman.nc.multiblock.turbine.TurbineRegistration;
+import igentuman.nc.block.entity.NuclearCraftBE;
+import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.turbine.TurbineMultiblock;
+import igentuman.nc.multiblock.turbine.TurbineRegistration;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class TurbineBE extends NuclearCraftBE implements MultiblockAttachable {
@@ -30,7 +28,7 @@ public class TurbineBE extends NuclearCraftBE implements MultiblockAttachable {
         this.multiblock = (TurbineMultiblock) multiblock;
         if (this.multiblock != null) {
             controllerPos = this.multiblock.controller().controllerBE().getBlockPos();
-            controller = (TurbineControllerBE) this.multiblock.controller().controllerBE();
+            controller = this.multiblock.controller().controllerBE();
             setChanged();
             level.updateNeighborsAt(worldPosition, getBlockState().getBlock());
         }
@@ -39,7 +37,7 @@ public class TurbineBE extends NuclearCraftBE implements MultiblockAttachable {
     @Override
     public TurbineControllerBE controller() {
         try {
-            return (TurbineControllerBE) getMultiblock().controller().controllerBE();
+            return getMultiblock().controller().controllerBE();
         } catch (NullPointerException ignore) {
             return null;
         }

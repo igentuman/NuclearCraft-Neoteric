@@ -88,7 +88,6 @@ public class TargetChamberSerializer<RECIPE extends TargetChamberRecipe> extends
     @Override
     public RECIPE fromNetwork(@NotNull ResourceLocation recipeId, @NotNull FriendlyByteBuf buffer) {
         try {
-
             ItemStackIngredient[] inputItems = readItems(buffer);
             ItemStackIngredient[] outputItems = readItems(buffer);
             FluidStackIngredient[] inputFluids = readFluids(buffer);

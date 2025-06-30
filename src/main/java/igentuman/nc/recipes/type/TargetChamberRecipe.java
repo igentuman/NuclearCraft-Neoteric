@@ -94,6 +94,12 @@ public abstract class TargetChamberRecipe extends NcRecipe {
         for (ParticleStack input : inputParticles) {
             input.writeBuffer(buffer);
         }
+
+        buffer.writeInt(outputParticles.length);
+        for (ParticleStack input : outputParticles) {
+            input.writeBuffer(buffer);
+        }
+
         buffer.writeLong(maxEnergy);
         buffer.writeDouble(crossSection);
     }

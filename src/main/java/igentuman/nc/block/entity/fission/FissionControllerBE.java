@@ -177,8 +177,8 @@ public class FissionControllerBE extends MultiblockControllerBE {
         contentHandler().setAllowedInputItems(this::getAllowedInputItems);
         energyStorage = createEnergy();
         energyStorage
-                .setInputEnergyTier(GTCEU_CONFIG.FISSION_REACTOR_TIER.get().ordinal())
-                .setOutputEnergyTier(GTCEU_CONFIG.FISSION_REACTOR_TIER.get().ordinal())
+                .setInputEnergyTier(GTCEU_CONFIG.FISSION_REACTOR_TIER.get().ordinal()+ upgrade_tier)
+                .setOutputEnergyTier(GTCEU_CONFIG.FISSION_REACTOR_TIER.get().ordinal()+ upgrade_tier)
                 .setInputAmperage(0)
                 .setOutputAmperage(16);
         energy = LazyOptional.of(() -> energyStorage);

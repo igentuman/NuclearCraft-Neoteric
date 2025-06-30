@@ -3,12 +3,9 @@ package igentuman.nc.setup;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.content.particles.Particles;
 import igentuman.nc.radiation.data.RadiationEvents;
-import igentuman.nc.recipes.type.RadShieldingRecipe;
-import igentuman.nc.recipes.type.ResetNbtRecipe;
 import igentuman.nc.setup.registration.GameEvents;
 import igentuman.nc.util.WastelandEnabledCondition;
 import igentuman.nc.util.insitu_leaching.WorldVeinsProvider;
-import igentuman.nc.world.dimension.Dimensions;
 import igentuman.nc.world.structure.ScientistHouseStructure;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
@@ -17,6 +14,7 @@ import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.setup.registration.Entities.registerSpawnPlacements;
 

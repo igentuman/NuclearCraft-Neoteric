@@ -1,5 +1,6 @@
 package igentuman.nc.block.fusion;
 
+import igentuman.nc.block.entity.MultiblockControllerBE;
 import igentuman.nc.block.entity.fusion.FusionCoreBE;
 import igentuman.nc.block.entity.fusion.FusionCoreProxyBE;
 import igentuman.nc.compat.gregtech.GTUtils;
@@ -7,12 +8,14 @@ import igentuman.nc.container.FusionCoreContainer;
 import igentuman.nc.handler.config.CommonConfig;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -177,7 +180,7 @@ public class FusionCoreBlock extends FusionBeBlock {
     public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag) {
         if(asItem().toString().contains("empty") || this.asItem().equals(Items.AIR)) return;
         if(isGtLoaded() && isGTEUCapEnabled()) {
-            list.add(__("tooltip.nc.energy_eu_tier", GTCEU_CONFIG.FUSION_REACTOR_ENERGY_TIER.get()).withStyle(ChatFormatting.GOLD));
+            list.add(__("tooltip.nc.energy_eu_tier", getTier(pStack)).withStyle(ChatFormatting.GOLD));
         }
         if(isGtLoaded() && GTCEU_CONFIG.COMPATIBILITY.get() == CommonConfig.GTCEUCompatibilityConfig.GTCEUCompatibility.GTCEU_AND_FE && GTCEU_CONFIG.LIMIT_FE_OUTPUT.get()) {
             list.add(__("tooltip.nc.max_fe_extract_per_tick", formatEnergy(GTUtils.getMaxOutputFE(GTCEU_CONFIG.FUSION_REACTOR_ENERGY_TIER.get()))).withStyle(ChatFormatting.GOLD));
@@ -186,5 +189,22 @@ public class FusionCoreBlock extends FusionBeBlock {
         int min = FUSION_CONFIG.MIN_SIZE.get();
         int max = FUSION_CONFIG.MAX_SIZE.get();
         list.add(__("tooltip.structure.sizes", min+"x3x"+min, max+"x3x"+max).withStyle(ChatFormatting.ITALIC));
+    }
+
+    private CommonConfig.GTCEUCompatibilityConfig.GTCEUTier getTier(ItemStack pStack) {
+        return CommonConfig.GTCEUCompatibilityConfig.GTCEUTier.byId(GTCEU_CONFIG.FUSION_REACTOR_ENERGY_TIER.get().ordinal()+pStack.getOrCreateTag().getInt("energy_tier"));
+    }
+
+    @Override
+    public void setPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+        super.setPlacedBy(world, pos, state, placer, stack);
+
+        if (stack.hasTag()) {
+            MultiblockControllerBE tileEntity = (MultiblockControllerBE) world.getExistingBlockEntity(pos);
+            CompoundTag nbtData = stack.getTag();
+            CompoundTag tag = new CompoundTag();
+            tag.put("Info", nbtData);
+            tileEntity.load(tag);
+        }
     }
 }

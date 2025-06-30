@@ -4,6 +4,7 @@ import igentuman.nc.block.entity.accelerator.AcceleratorPortBE;
 import igentuman.nc.block.entity.kugelblitz.ChamberPortBE;
 import igentuman.nc.container.AcceleratorPortContainer;
 import igentuman.nc.container.ChamberPortContainer;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -14,7 +15,10 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
@@ -33,9 +37,15 @@ import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
+
+import static igentuman.nc.block.entity.NuclearCraftBE.isGTEUCapEnabled;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BE;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BE;
+import static igentuman.nc.util.ModUtil.isGtLoaded;
 import static igentuman.nc.util.TextUtils.__;
+import static igentuman.nc.util.TextUtils.applyFormat;
+import static net.minecraft.network.chat.Component.translatable;
 
 public class AcceleratorPortBlock extends HorizontalDirectionalBlock implements EntityBlock {
     public static final DirectionProperty HORIZONTAL_FACING = FACING;
@@ -95,6 +105,14 @@ public class AcceleratorPortBlock extends HorizontalDirectionalBlock implements 
             }
         }
         return InteractionResult.SUCCESS;
+    }
+
+    public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag)
+    {
+        if(isGtLoaded() && isGTEUCapEnabled()) {
+            list.add(__("tooltip.nc.energy_eu_tier.depends_on_controller").withStyle(ChatFormatting.GOLD));
+        }
+        list.add(applyFormat(translatable("fission_port.descr"), ChatFormatting.GOLD));
     }
 
     @javax.annotation.Nullable

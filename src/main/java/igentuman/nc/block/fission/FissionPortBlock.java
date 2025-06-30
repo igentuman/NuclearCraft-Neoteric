@@ -5,7 +5,6 @@ import igentuman.nc.compat.gregtech.GTUtils;
 import igentuman.nc.container.FissionPortContainer;
 import igentuman.nc.handler.config.CommonConfig;
 import igentuman.nc.multiblock.MultiblockHandler;
-import igentuman.nc.multiblock.fission.FissionReactorRegistration;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -42,9 +41,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 import static igentuman.nc.block.entity.NuclearCraftBE.isGTEUCapEnabled;
-import static igentuman.nc.compat.gregtech.GTUtils.convert2FE;
-import static igentuman.nc.compat.gregtech.GTUtils.formatEUTier;
 import static igentuman.nc.handler.config.CommonConfig.GTCEU_CONFIG;
+import static igentuman.nc.multiblock.fission.FissionReactorRegistration.FISSION_BE;
 import static igentuman.nc.util.ModUtil.isGtLoaded;
 import static igentuman.nc.util.TextUtils.*;
 import static net.minecraft.network.chat.Component.translatable;
@@ -77,7 +75,7 @@ public class FissionPortBlock extends HorizontalDirectionalBlock implements Enti
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
-        return FissionReactorRegistration.FISSION_BE.get("fission_reactor_port").get().create(pPos, pState);
+        return FISSION_BE.get("fission_reactor_port").get().create(pPos, pState);
     }
 
     @Override
@@ -124,10 +122,7 @@ public class FissionPortBlock extends HorizontalDirectionalBlock implements Enti
     public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag)
     {
         if(isGtLoaded() && isGTEUCapEnabled()) {
-            list.add(__("tooltip.nc.energy_eu_tier", GTCEU_CONFIG.FISSION_REACTOR_TIER.get()).withStyle(ChatFormatting.GOLD));
-        }
-        if(isGtLoaded() && GTCEU_CONFIG.COMPATIBILITY.get() == CommonConfig.GTCEUCompatibilityConfig.GTCEUCompatibility.GTCEU_AND_FE && GTCEU_CONFIG.LIMIT_FE_OUTPUT.get()) {
-            list.add(__("tooltip.nc.max_fe_extract_per_tick", formatEnergy(GTUtils.getMaxOutputFE(GTCEU_CONFIG.FISSION_REACTOR_TIER.get()))).withStyle(ChatFormatting.GOLD));
+            list.add(__("tooltip.nc.energy_eu_tier.depends_on_controller").withStyle(ChatFormatting.GOLD));
         }
         list.add(applyFormat(translatable("fission_port.descr"), ChatFormatting.GOLD));
         list.add(__("multiblock.build_in_chunk.advise").withStyle(ChatFormatting.GREEN));

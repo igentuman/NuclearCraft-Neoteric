@@ -44,6 +44,7 @@ import static igentuman.nc.block.fission.FissionControllerBlock.POWERED;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.compat.oc2.FissionReactorDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.content.particles.CapabilityParticleStackHandler.PARTICLE_HANDLER_CAPABILITY;
+import static igentuman.nc.handler.config.CommonConfig.GTCEU_CONFIG;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BE;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
 import static igentuman.nc.setup.registration.NCItems.ION_SOURCES;
@@ -106,6 +107,11 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
     public LinearAcceleratorControllerBE(BlockPos pPos, BlockState pBlockState) {
         super(ACCELERATOR_BE.get(NAME).get(), pPos, pBlockState);
         energyStorage = createEnergy();
+        energyStorage
+                .setInputEnergyTier(GTCEU_CONFIG.ACCELERATORS_ENERGY_TIER.get().ordinal()+ upgrade_tier)
+                .setOutputEnergyTier(GTCEU_CONFIG.ACCELERATORS_ENERGY_TIER.get().ordinal()+ upgrade_tier)
+                .setInputAmperage(0)
+                .setOutputAmperage(16);
         energy = LazyOptional.of(() -> energyStorage);
         contentHandler = new SidedContentHandler(
                 1, 1,

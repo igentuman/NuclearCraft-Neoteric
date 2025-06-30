@@ -2,12 +2,15 @@ package igentuman.nc.block.entity.fusion;
 
 import igentuman.api.nc.multiblock.MultiblockAttachable;
 import igentuman.nc.NuclearCraft;
+import igentuman.nc.block.entity.MultiblockControllerBE;
 import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.fusion.FusionReactorMultiblock;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.stats.Stats;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -133,7 +136,10 @@ public class FusionCoreProxyBE extends NuclearCraftBE implements MultiblockAttac
         if(corePos != null) {
             BlockState st = level.getBlockState(corePos);
             if(st.equals(Blocks.AIR.defaultBlockState())) return;
+
             ItemStack core = new ItemStack(st.getBlock().asItem());
+            core.getOrCreateTag().putInt("upgrade_tier", getCoreBE().upgrade_tier);
+
             level.removeBlock(corePos, false);
             Block.popResource(level, corePos, core);
         }

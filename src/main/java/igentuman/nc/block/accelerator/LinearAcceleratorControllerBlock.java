@@ -1,7 +1,9 @@
 package igentuman.nc.block.accelerator;
 
+import igentuman.nc.block.MultiblockControllerBlock;
 import igentuman.nc.block.entity.accelerator.LinearAcceleratorControllerBE;
 import igentuman.nc.container.LinearAcceleratorContainer;
+import igentuman.nc.handler.config.CommonConfig;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -15,21 +17,14 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
@@ -37,13 +32,15 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+import static igentuman.nc.block.entity.NuclearCraftBE.isGTEUCapEnabled;
 import static igentuman.nc.handler.config.AcceleratorConfig.ACCELERATOR_CONFIG;
+import static igentuman.nc.handler.config.CommonConfig.GTCEU_CONFIG;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BE;
+import static igentuman.nc.util.ModUtil.isGtLoaded;
 import static igentuman.nc.util.TextUtils.__;
 
-public class LinearAcceleratorControllerBlock extends HorizontalDirectionalBlock implements EntityBlock {
-    public static final DirectionProperty HORIZONTAL_FACING = FACING;
-    public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
+public class LinearAcceleratorControllerBlock extends MultiblockControllerBlock implements EntityBlock {
+
     public static final String NAME = "linear_accelerator_controller";
     public LinearAcceleratorControllerBlock() {
         this(Properties.of()
@@ -58,16 +55,6 @@ public class LinearAcceleratorControllerBlock extends HorizontalDirectionalBlock
                         .setValue(HORIZONTAL_FACING, Direction.NORTH)
                         .setValue(POWERED, false)
         );
-    }
-    @Override
-    public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
-    }
-
-    @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(BlockStateProperties.HORIZONTAL_FACING)
-                .add(BlockStateProperties.POWERED);
     }
 
     @Nullable
@@ -135,6 +122,13 @@ public class LinearAcceleratorControllerBlock extends HorizontalDirectionalBlock
 
     @Override
     public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag) {
+        if(isGtLoaded() && isGTEUCapEnabled()) {
+            list.add(__("tooltip.nc.energy_eu_tier", getTier(pStack)).withStyle(ChatFormatting.GOLD));
+        }
         list.add(__("tooltip.structure.sizes", "5x5x"+minDepth(), "5x5x"+maxDepth()).withStyle(ChatFormatting.ITALIC));
+    }
+
+    private CommonConfig.GTCEUCompatibilityConfig.GTCEUTier getTier(ItemStack pStack) {
+        return CommonConfig.GTCEUCompatibilityConfig.GTCEUTier.byId(GTCEU_CONFIG.ACCELERATORS_ENERGY_TIER.get().ordinal()+pStack.getOrCreateTag().getInt("energy_tier"));
     }
 }

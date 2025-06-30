@@ -101,8 +101,8 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
     public ChamberTerminalBE(BlockPos pPos, BlockState pBlockState) {
         super(KUGELBLITZ_BE.get(NAME).get(), pPos, pBlockState);
         energyStorage = createEnergy();
-        energyStorage.setInputEnergyTier(GTCEU_CONFIG.KUGELBLITZ_ENERGY_TIER.get().ordinal())
-                .setOutputEnergyTier(GTCEU_CONFIG.KUGELBLITZ_ENERGY_TIER.get().ordinal())
+        energyStorage.setInputEnergyTier(GTCEU_CONFIG.KUGELBLITZ_ENERGY_TIER.get().ordinal()+ upgrade_tier)
+                .setOutputEnergyTier(GTCEU_CONFIG.KUGELBLITZ_ENERGY_TIER.get().ordinal()+ upgrade_tier)
                 .setInputAmperage(0)
                 .setOutputAmperage(16);
         energy = LazyOptional.of(() -> energyStorage);

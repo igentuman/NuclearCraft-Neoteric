@@ -14,6 +14,7 @@ import igentuman.nc.content.processors.Processors;
 import igentuman.nc.recipes.type.ResetNbtRecipe;
 import igentuman.nc.registry.RecipeSerializerRegistryObject;
 import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
+import igentuman.nc.recipes.type.EnergyUpgradeRecipe;
 
 import java.util.HashMap;
 
@@ -24,6 +25,7 @@ public class NcRecipeSerializers {
     private NcRecipeSerializers() {
     }
 
+    public static final RecipeSerializerRegistryObject<EnergyUpgradeRecipe> ENERGY_UPGRADE = RECIPE_SERIALIZERS.register("energy_upgrade", () -> new SimpleCraftingRecipeSerializer<>(EnergyUpgradeRecipe::new));
     public static final RecipeSerializerRegistryObject<RadShieldingRecipe> SHIELDING = RECIPE_SERIALIZERS.register("shielding", () -> new SimpleCraftingRecipeSerializer<>(RadShieldingRecipe::new));
     public static final RecipeSerializerRegistryObject<ResetNbtRecipe> RESET_NBT = RECIPE_SERIALIZERS.register("reset_nbt", () -> new SimpleCraftingRecipeSerializer<>(ResetNbtRecipe::new));
 

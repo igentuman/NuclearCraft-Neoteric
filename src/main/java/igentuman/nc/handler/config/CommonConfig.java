@@ -195,7 +195,14 @@ public class CommonConfig {
             ONLY_FE, ONLY_GTCEU, GTCEU_AND_FE
         }
         public enum GTCEUTier {
-            ULV, LV, MV, HV, EV, IV, LuV, ZPM, UV, UHV, UEV, UIV, UXV, OpV, MAX
+            ULV, LV, MV, HV, EV, IV, LuV, ZPM, UV, UHV, UEV, UIV, UXV, OpV, MAX;
+
+            public static GTCEUTier byId(int energyTier) {
+                if (energyTier < 0 || energyTier >= GTCEUTier.values().length) {
+                    return GTCEUTier.MAX;
+                }
+                return GTCEUTier.values()[energyTier];
+            }
         }
 
         public final ForgeConfigSpec.ConfigValue<GTCEUCompatibility> COMPATIBILITY;

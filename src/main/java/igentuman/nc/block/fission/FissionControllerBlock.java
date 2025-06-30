@@ -1,5 +1,6 @@
 package igentuman.nc.block.fission;
 
+import igentuman.nc.block.MultiblockControllerBlock;
 import igentuman.nc.block.entity.fission.FissionControllerBE;
 import igentuman.nc.compat.gregtech.GTUtils;
 import igentuman.nc.container.FissionControllerContainer;
@@ -19,28 +20,20 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Objects;
 
 import static igentuman.nc.block.entity.NuclearCraftBE.isGTEUCapEnabled;
 import static igentuman.nc.handler.config.CommonConfig.GTCEU_CONFIG;
@@ -49,9 +42,7 @@ import static igentuman.nc.util.ModUtil.isGtLoaded;
 import static igentuman.nc.util.TextUtils.__;
 import static igentuman.nc.util.TextUtils.formatEnergy;
 
-public class FissionControllerBlock extends HorizontalDirectionalBlock implements EntityBlock {
-    public static final DirectionProperty HORIZONTAL_FACING = FACING;
-    public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
+public class FissionControllerBlock extends MultiblockControllerBlock implements EntityBlock {
 
     public FissionControllerBlock() {
         this(Properties.of()
@@ -66,16 +57,6 @@ public class FissionControllerBlock extends HorizontalDirectionalBlock implement
                         .setValue(HORIZONTAL_FACING, Direction.NORTH)
                         .setValue(POWERED, false)
         );
-    }
-    @Override
-    public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
-    }
-
-    @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(BlockStateProperties.HORIZONTAL_FACING)
-                .add(BlockStateProperties.POWERED);
     }
 
     @Nullable
@@ -136,7 +117,7 @@ public class FissionControllerBlock extends HorizontalDirectionalBlock implement
     @Override
     public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag) {
         if(isGtLoaded() && isGTEUCapEnabled()) {
-            list.add(__("tooltip.nc.energy_eu_tier", GTCEU_CONFIG.FISSION_REACTOR_TIER.get()).withStyle(ChatFormatting.GOLD));
+            list.add(__("tooltip.nc.energy_eu_tier", getTier(pStack)).withStyle(ChatFormatting.GOLD));
         }
         if(isGtLoaded() && GTCEU_CONFIG.COMPATIBILITY.get() == CommonConfig.GTCEUCompatibilityConfig.GTCEUCompatibility.GTCEU_AND_FE && GTCEU_CONFIG.LIMIT_FE_OUTPUT.get()) {
             list.add(__("tooltip.nc.max_fe_extract_per_tick", formatEnergy(GTUtils.getMaxOutputFE(GTCEU_CONFIG.FISSION_REACTOR_TIER.get()))).withStyle(ChatFormatting.GOLD));
@@ -145,5 +126,9 @@ public class FissionControllerBlock extends HorizontalDirectionalBlock implement
         int max = FISSION_CONFIG.MAX_SIZE.get();
         int min = FISSION_CONFIG.MIN_SIZE.get();
         list.add(__("tooltip.structure.sizes", min+"x"+min+"x"+min, max+"x"+max+"x"+max).withStyle(ChatFormatting.ITALIC));
+    }
+
+    private CommonConfig.GTCEUCompatibilityConfig.GTCEUTier getTier(ItemStack pStack) {
+        return CommonConfig.GTCEUCompatibilityConfig.GTCEUTier.byId(GTCEU_CONFIG.FISSION_REACTOR_TIER.get().ordinal()+pStack.getOrCreateTag().getInt("upgrade_tier"));
     }
 }

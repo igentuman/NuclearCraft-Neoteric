@@ -23,7 +23,6 @@ public class RadShieldingRecipe extends CustomRecipe {
         super(id, CraftingBookCategory.EQUIPMENT);
     }
 
-
     @Override
     public boolean matches(CraftingContainer inv, Level world) {
         ItemStack shielding = ItemStack.EMPTY;

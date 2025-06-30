@@ -131,8 +131,8 @@ public class FusionCoreBE extends MultiblockControllerBE {
     public FusionCoreBE(BlockPos pPos, BlockState pBlockState) {
         super(FUSION_BE.get("fusion_core").get(), pPos, pBlockState);
         energyStorage = createEnergy();
-        energyStorage.setInputEnergyTier(GTCEU_CONFIG.FUSION_REACTOR_ENERGY_TIER.get().ordinal())
-                .setOutputEnergyTier(GTCEU_CONFIG.FUSION_REACTOR_ENERGY_TIER.get().ordinal())
+        energyStorage.setInputEnergyTier(GTCEU_CONFIG.FUSION_REACTOR_ENERGY_TIER.get().ordinal()+ upgrade_tier)
+                .setOutputEnergyTier(GTCEU_CONFIG.FUSION_REACTOR_ENERGY_TIER.get().ordinal()+ upgrade_tier)
                 .setInputAmperage(4)
                 .setOutputAmperage(16);
         energy = LazyOptional.of(() -> energyStorage);

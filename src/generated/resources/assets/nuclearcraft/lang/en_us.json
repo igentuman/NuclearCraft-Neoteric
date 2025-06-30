@@ -2606,6 +2606,8 @@
   "tooltip.nc.energy_eu_capacity": "EU Capacity: %s",
   "tooltip.nc.energy_eu_generation": "EU Generation: %s/t",
   "tooltip.nc.energy_eu_tier": "EU Tier: %s",
+  "tooltip.nc.energy_eu_tier.depends_on_controller": "EU Tier inherits Tier from Controller",
+  "tooltip.nc.energy_eu_tier.depends_on_terminal": "EU Tier inherits Tier from Terminal",
   "tooltip.nc.energy_stored": "Energy Stored: %s / %s",
   "tooltip.nc.eu_amplifier.power": "EU Required: %s/t",
   "tooltip.nc.eu_energy_stored": "EU Stored: %s / %s",

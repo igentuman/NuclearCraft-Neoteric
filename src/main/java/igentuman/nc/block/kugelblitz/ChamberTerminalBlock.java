@@ -1,5 +1,6 @@
 package igentuman.nc.block.kugelblitz;
 
+import igentuman.nc.block.MultiblockControllerBlock;
 import igentuman.nc.block.entity.kugelblitz.ChamberTerminalBE;
 import igentuman.nc.compat.gregtech.GTUtils;
 import igentuman.nc.container.ChamberTerminalContainer;
@@ -23,7 +24,6 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -31,8 +31,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
@@ -46,11 +44,9 @@ import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLI
 import static igentuman.nc.util.ModUtil.isGtLoaded;
 import static igentuman.nc.util.TextUtils.__;
 import static igentuman.nc.util.TextUtils.formatEnergy;
-import static net.minecraft.world.level.block.Blocks.AIR;
 
-public class ChamberTerminalBlock extends HorizontalDirectionalBlock implements EntityBlock {
-    public static final DirectionProperty HORIZONTAL_FACING = FACING;
-    public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
+public class ChamberTerminalBlock extends MultiblockControllerBlock implements EntityBlock {
+
     public static final String NAME = "chamber_terminal";
     public ChamberTerminalBlock() {
         this(Properties.of()
@@ -135,12 +131,16 @@ public class ChamberTerminalBlock extends HorizontalDirectionalBlock implements 
     @Override
     public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag) {
         if(isGtLoaded() && isGTEUCapEnabled()) {
-            list.add(__("tooltip.nc.energy_eu_tier", GTCEU_CONFIG.KUGELBLITZ_ENERGY_TIER.get()).withStyle(ChatFormatting.GOLD));
+            list.add(__("tooltip.nc.energy_eu_tier", getTier(pStack)).withStyle(ChatFormatting.GOLD));
         }
         if(isGtLoaded() && GTCEU_CONFIG.COMPATIBILITY.get() == CommonConfig.GTCEUCompatibilityConfig.GTCEUCompatibility.GTCEU_AND_FE && GTCEU_CONFIG.LIMIT_FE_OUTPUT.get()) {
             list.add(__("tooltip.nc.max_fe_extract_per_tick", formatEnergy(GTUtils.getMaxOutputFE(GTCEU_CONFIG.KUGELBLITZ_ENERGY_TIER.get()))).withStyle(ChatFormatting.GOLD));
         }
         list.add(__("multiblock.build_in_chunk.advise").withStyle(ChatFormatting.GREEN));
         list.add(__("tooltip.structure.sizes", "11x11x11", "11x11x11").withStyle(ChatFormatting.ITALIC));
+    }
+
+    private CommonConfig.GTCEUCompatibilityConfig.GTCEUTier getTier(ItemStack pStack) {
+        return CommonConfig.GTCEUCompatibilityConfig.GTCEUTier.byId(GTCEU_CONFIG.KUGELBLITZ_ENERGY_TIER.get().ordinal()+pStack.getOrCreateTag().getInt("energy_tier"));
     }
 }

@@ -124,10 +124,7 @@ public class TargetChamberPortBlock extends HorizontalDirectionalBlock implement
     public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag)
     {
         if(isGtLoaded() && isGTEUCapEnabled()) {
-            list.add(__("tooltip.nc.energy_eu_tier", GTCEU_CONFIG.FISSION_REACTOR_TIER.get()).withStyle(ChatFormatting.GOLD));
-        }
-        if(isGtLoaded() && GTCEU_CONFIG.COMPATIBILITY.get() == CommonConfig.GTCEUCompatibilityConfig.GTCEUCompatibility.GTCEU_AND_FE && GTCEU_CONFIG.LIMIT_FE_OUTPUT.get()) {
-            list.add(__("tooltip.nc.max_fe_extract_per_tick", formatEnergy(GTUtils.getMaxOutputFE(GTCEU_CONFIG.FISSION_REACTOR_TIER.get()))).withStyle(ChatFormatting.GOLD));
+            list.add(__("tooltip.nc.energy_eu_tier.depends_on_controller").withStyle(ChatFormatting.GOLD));
         }
         list.add(applyFormat(translatable("fission_port.descr"), ChatFormatting.GOLD));
         list.add(__("multiblock.build_in_chunk.advise").withStyle(ChatFormatting.GREEN));

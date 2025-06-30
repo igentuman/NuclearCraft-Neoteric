@@ -24,6 +24,8 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
     @NBTField
     public int height = 1;
     @NBTField
+    public int upgrade_tier = 0;
+    @NBTField
     public int width = 1;
     @NBTField
     public int depth = 1;

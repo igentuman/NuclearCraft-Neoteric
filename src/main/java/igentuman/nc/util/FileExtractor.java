@@ -56,6 +56,7 @@ public class FileExtractor {
     public static void unpackFilesFromFolderToConfig(String sourceFolderPath, String targetFolderName) {
         // Get the Minecraft config directory
         Path configDir = FMLPaths.CONFIGDIR.get();
+
         int currentVersion = 1;
 
         // Define the target folder inside the config directory
@@ -104,8 +105,9 @@ public class FileExtractor {
 
                         // Copy the file from the JAR to the config folder
                         try (InputStream inputStream = zipFile.getInputStream(entry)) {
-                            if(!targetFile.exists() || versionId < currentVersion) {
-                                Files.copy(inputStream, targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                            //todo reading version from txt in live is broken in some cases
+                            if(!targetFile.exists()/* || versionId < currentVersion*/) {
+                                Files.copy(inputStream, targetFile.toPath());
                                 LOGGER.info("Extracted file " + relativeFileName + " to config folder.");
                             }
 
@@ -144,3 +146,4 @@ public class FileExtractor {
         }
     }
 }
+

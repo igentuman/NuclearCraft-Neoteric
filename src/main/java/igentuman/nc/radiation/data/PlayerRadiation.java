@@ -102,14 +102,16 @@ public class PlayerRadiation implements IPlayerRadiationCapability {
         int chunkRadiation = worldRadiation.getChunkRadiation(player.chunkPosition().x, player.chunkPosition().z);
         double intensityMult = Math.max(0.5, Math.sqrt(chunkRadiation / 1000000.0));
         double shieldingRate = Math.max(0.001, 0.7 - getRadiationShielding(player)/100.0);
+        long wasRadiation = radiation;
         if(chunkRadiation > radiation) {
-            radiation = (int) (((chunkRadiation + radiation)/2D * intensityMult * RADIATION_CONFIG.GAIN_SPEED_FOR_PLAYER.get()) * shieldingRate + radiation);
+            radiation = (int) (((chunkRadiation + radiation)/1.1D * intensityMult * RADIATION_CONFIG.GAIN_SPEED_FOR_PLAYER.get()) * shieldingRate + radiation);
         } else {
-            radiation = (int) (((chunkRadiation + radiation)/5D * intensityMult * RADIATION_CONFIG.GAIN_SPEED_FOR_PLAYER.get()) * shieldingRate + radiation);
+            radiation = (int) (((chunkRadiation + radiation)/3D * intensityMult * RADIATION_CONFIG.GAIN_SPEED_FOR_PLAYER.get()) * shieldingRate + radiation);
         }
         if(player instanceof Player) {
             radiation += (int) (getInventoryRadiation((Player) player) * shieldingRate);
         }
+        radiation = (wasRadiation + radiation)/2;
         radiation -= (int) decaySpeed;
         radiation = Math.min(maxPlayerRadiation, Math.max(0, radiation));
         assert player instanceof Player;

@@ -64,7 +64,6 @@ public class NCRecipes extends RecipeProvider {
         CustomRecipes.generate(consumer);
         SpecialRecipeBuilder.build(consumer, NcRecipeSerializers.SHIELDING);
         SpecialRecipeBuilder.build(consumer, NcRecipeSerializers.RESET_NBT);
-        SpecialRecipeBuilder.build(consumer, NcRecipeSerializers.ENERGY_UPGRADE);
     }
 
     private void kugelBlitzBlocks(Consumer<FinishedRecipe> consumer) {

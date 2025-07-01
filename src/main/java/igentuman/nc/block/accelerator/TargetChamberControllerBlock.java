@@ -122,6 +122,6 @@ public class TargetChamberControllerBlock extends MultiblockControllerBlock impl
 
 
     private CommonConfig.GTCEUCompatibilityConfig.GTCEUTier getTier(ItemStack pStack) {
-        return CommonConfig.GTCEUCompatibilityConfig.GTCEUTier.byId(GTCEU_CONFIG.ACCELERATORS_ENERGY_TIER.get().ordinal()+pStack.getOrCreateTag().getInt("energy_tier"));
+        return CommonConfig.GTCEUCompatibilityConfig.GTCEUTier.byId(GTCEU_CONFIG.ACCELERATORS_ENERGY_TIER.get().ordinal()+pStack.getOrCreateTag().getInt("upgrade_tier"));
     }
 }

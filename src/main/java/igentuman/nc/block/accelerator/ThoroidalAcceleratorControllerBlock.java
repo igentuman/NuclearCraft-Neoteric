@@ -2,6 +2,7 @@ package igentuman.nc.block.accelerator;
 
 import igentuman.nc.block.entity.accelerator.ThoroidalAcceleratorControllerBE;
 import igentuman.nc.container.ThoroidalAcceleratorContainer;
+import igentuman.nc.handler.config.CommonConfig;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -37,8 +38,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+import static igentuman.nc.block.entity.NuclearCraftBE.isGTEUCapEnabled;
 import static igentuman.nc.handler.config.AcceleratorConfig.ACCELERATOR_CONFIG;
+import static igentuman.nc.handler.config.CommonConfig.GTCEU_CONFIG;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BE;
+import static igentuman.nc.util.ModUtil.isGtLoaded;
 import static igentuman.nc.util.TextUtils.__;
 
 public class ThoroidalAcceleratorControllerBlock extends HorizontalDirectionalBlock implements EntityBlock {
@@ -135,6 +139,13 @@ public class ThoroidalAcceleratorControllerBlock extends HorizontalDirectionalBl
 
     @Override
     public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag) {
+        if(isGtLoaded() && isGTEUCapEnabled()) {
+            list.add(__("tooltip.nc.energy_eu_tier", getTier(pStack)).withStyle(ChatFormatting.GOLD));
+        }
         list.add(__("tooltip.structure.sizes", "5x5x"+minDepth(), "5x5x"+maxDepth()).withStyle(ChatFormatting.ITALIC));
+    }
+
+    private CommonConfig.GTCEUCompatibilityConfig.GTCEUTier getTier(ItemStack pStack) {
+        return CommonConfig.GTCEUCompatibilityConfig.GTCEUTier.byId(GTCEU_CONFIG.ACCELERATORS_ENERGY_TIER.get().ordinal()+pStack.getOrCreateTag().getInt("upgrade_tier"));
     }
 }

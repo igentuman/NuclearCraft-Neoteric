@@ -192,7 +192,7 @@ public class FusionCoreBlock extends FusionBeBlock {
     }
 
     private CommonConfig.GTCEUCompatibilityConfig.GTCEUTier getTier(ItemStack pStack) {
-        return CommonConfig.GTCEUCompatibilityConfig.GTCEUTier.byId(GTCEU_CONFIG.FUSION_REACTOR_ENERGY_TIER.get().ordinal()+pStack.getOrCreateTag().getInt("energy_tier"));
+        return CommonConfig.GTCEUCompatibilityConfig.GTCEUTier.byId(GTCEU_CONFIG.FUSION_REACTOR_ENERGY_TIER.get().ordinal()+pStack.getOrCreateTag().getInt("upgrade_tier"));
     }
 
     @Override

@@ -141,6 +141,6 @@ public class ChamberTerminalBlock extends MultiblockControllerBlock implements E
     }
 
     private CommonConfig.GTCEUCompatibilityConfig.GTCEUTier getTier(ItemStack pStack) {
-        return CommonConfig.GTCEUCompatibilityConfig.GTCEUTier.byId(GTCEU_CONFIG.KUGELBLITZ_ENERGY_TIER.get().ordinal()+pStack.getOrCreateTag().getInt("energy_tier"));
+        return CommonConfig.GTCEUCompatibilityConfig.GTCEUTier.byId(GTCEU_CONFIG.KUGELBLITZ_ENERGY_TIER.get().ordinal()+pStack.getOrCreateTag().getInt("upgrade_tier"));
     }
 }

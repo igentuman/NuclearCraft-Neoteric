@@ -1,0 +1,36 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "nuclearcraft:gtceu_compat_enabled"
+        }
+      ],
+      "recipe": {
+        "category": "misc",
+        "group": "nuclearcraft_target_chamber_tier1",
+        "type": "minecraft:crafting_shaped",
+        "key": {
+          "B": {
+            "item": "nuclearcraft:target_chamber_controller",
+            "nbt": "{}"
+          },
+          "I": {
+            "item": "nuclearcraft:upgrade_energy"
+          }
+        },
+        "pattern": [
+          "III",
+          "IBI",
+          "III"
+        ],
+        "result": {
+          "item": "nuclearcraft:target_chamber_controller",
+          "nbt": "{upgrade_tier:1}"
+        },
+        "show_notification": true
+      }
+    }
+  ]
+}

@@ -4,6 +4,7 @@ import igentuman.nc.NuclearCraft;
 import igentuman.nc.content.particles.Particles;
 import igentuman.nc.radiation.data.RadiationEvents;
 import igentuman.nc.setup.registration.GameEvents;
+import igentuman.nc.util.GTCEUCompatibilityCondition;
 import igentuman.nc.util.WastelandEnabledCondition;
 import igentuman.nc.util.insitu_leaching.WorldVeinsProvider;
 import igentuman.nc.world.structure.ScientistHouseStructure;
@@ -36,6 +37,7 @@ public class ModSetup {
     public static void init(FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
             CraftingHelper.register(new WastelandEnabledCondition.Serializer());
+            CraftingHelper.register(new GTCEUCompatibilityCondition.Serializer());
             registerSpawnPlacements();
             GameEvents.commonSetup();
         });

@@ -5,17 +5,16 @@ import com.mojang.blaze3d.vertex.*;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.client.gui.element.NCGuiElement;
 import igentuman.nc.network.toServer.PacketFlushSlotContent;
-import igentuman.nc.network.toServer.PacketSideConfigToggle;
+import igentuman.nc.network.toServer.PacketHandleFluidSlotClick;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
@@ -33,6 +32,7 @@ import java.util.List;
 
 import static igentuman.nc.handler.event.client.InputEvents.SHIFT_PRESSED;
 import static igentuman.nc.util.TextUtils.__;
+import static net.minecraftforge.common.capabilities.ForgeCapabilities.FLUID_HANDLER_ITEM;
 
 // CREDIT: https://github.com/mezz/JustEnoughItems by mezz
 // Under MIT-License: https://github.com/mezz/JustEnoughItems/blob/1.19/LICENSE.txt
@@ -94,12 +94,21 @@ public class FluidTankRenderer extends NCGuiElement {
     @Override
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
         if(X() <= pMouseX && pMouseX < X() + width && Y() <= pMouseY && pMouseY < Y() + height) {
-           if(tank != null && !tank.isEmpty() && SHIFT_PRESSED) {
+            if(tank != null && !tank.isEmpty() && SHIFT_PRESSED) {
                NuclearCraft.packetHandler().sendToServer(new PacketFlushSlotContent(getPosition(), slotId));
                return true;
-           }
+            }
+            Player player = Minecraft.getInstance().player;
+            if(tank != null && player != null && draggingFluidItem(player)) {
+                NuclearCraft.packetHandler().sendToServer(new PacketHandleFluidSlotClick(getPosition(), slotId, player.containerMenu.getCarried()));
+                return true;
+            }
         }
         return false;
+    }
+
+    private boolean draggingFluidItem(Player player) {
+        return player.containerMenu.getCarried().getCapability(FLUID_HANDLER_ITEM).isPresent();
     }
 
     public FluidTankRenderer(FluidTank tank, int width, int height, int x, int y) {

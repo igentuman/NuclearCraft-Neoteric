@@ -7,8 +7,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -19,7 +20,9 @@ import java.util.*;
 import java.util.function.Supplier;
 
 import static igentuman.nc.handler.sided.SlotModePair.SlotMode.*;
+import static net.minecraft.world.item.Items.BUCKET;
 import static net.minecraftforge.common.capabilities.ForgeCapabilities.FLUID_HANDLER;
+import static net.minecraftforge.common.capabilities.ForgeCapabilities.FLUID_HANDLER_ITEM;
 import static net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE;
 import static net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.SIMULATE;
 
@@ -283,6 +286,41 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler implements
 
     public void voidSlot(int slotId) {
         tanks.get(slotId).setFluid(FluidStack.EMPTY);
+    }
+
+    public void handleFluidItemClick(int slotId, ItemStack stack, ServerPlayer player) {
+        stack.getCapability(FLUID_HANDLER_ITEM).ifPresent(handler -> {
+            FluidStack fluidInItem = handler.getFluidInTank(0);
+            if(fluidInItem.isEmpty() && tanks.get(slotId).isEmpty()) return;
+            if(!fluidInItem.isEmpty() && isValidForInputSlot(slotId, fluidInItem)) {
+                FluidStack remaining = insertFluidInternal(slotId, fluidInItem, false);
+                if(!remaining.isEmpty() && handler.getContainer().is(BUCKET)) {
+                    return;
+                }
+                remaining = insertFluidInternal(slotId, fluidInItem.copy(), true);
+                handler.drain(fluidInItem.getAmount() - remaining.getAmount(), EXECUTE);
+                if(handler.getContainer().is(BUCKET)) {
+                    player.containerMenu.setCarried(new ItemStack(BUCKET));
+                    return;
+                }
+                player.containerMenu.setCarried(stack);
+                return;
+            }
+            if(fluidInItem.isEmpty() || (fluidInItem.isFluidEqual(tanks.get(slotId).getFluid()))) {
+                FluidStack tankFluid = tanks.get(slotId).getFluid();
+                if(tankFluid.isEmpty()) {
+                    return;
+                }
+                int filled = handler.fill(tankFluid, SIMULATE);
+                if(filled == 0 || (filled != 1000 && handler.getContainer().is(BUCKET))) {
+                    return;
+                }
+                filled = handler.fill(tankFluid, EXECUTE);
+                tanks.get(slotId).drain(filled, EXECUTE);
+                player.containerMenu.setCarried(handler.getContainer());
+                return;
+            }
+        });
     }
 
     public Object[] getSlotContent(int slotIdFromGlobalId) {

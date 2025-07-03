@@ -26,6 +26,7 @@ import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -577,6 +578,12 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
         }
     }
 
+    public void handleFluidItemClick(int slotId, ItemStack stack, ServerPlayer player) {
+        if(contentHandler() != null) {
+            contentHandler().handleFluidItemClick(slotId, stack, player);
+        }
+    }
+
     public boolean isInputAllowed(ItemStack stack) {
         for(ItemStack allowed: getAllowedInputItems()) {
             if(ItemStack.isSameItem(allowed, stack)) {
@@ -606,4 +613,6 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
     public int getTier() {
         return GTCEU_CONFIG.PROCESSOR_ENERGY_TIER.get().ordinal()+(getEnergyUpgrades()-1)/GTCEU_CONFIG.ENERGY_UPGRADES_NEEDED_TO_NEXT_TIER.get();
     }
+
+
 }

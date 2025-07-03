@@ -9,6 +9,7 @@ import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
@@ -364,6 +365,13 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
             fluidHandler.voidSlot(slotId);
         }
     }
+
+    public void handleFluidItemClick(int slotId, ItemStack stack, ServerPlayer player) {
+        if(fluidHandler != null) {
+            fluidHandler.handleFluidItemClick(slotId, stack, player);
+        }
+    }
+
 
     public boolean isInputEmpty() {
         if(itemHandler != null) {

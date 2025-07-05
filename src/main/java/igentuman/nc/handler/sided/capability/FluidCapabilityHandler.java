@@ -292,7 +292,7 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler implements
         stack.getCapability(FLUID_HANDLER_ITEM).ifPresent(handler -> {
             FluidStack fluidInItem = handler.getFluidInTank(0);
             if(fluidInItem.isEmpty() && tanks.get(slotId).isEmpty()) return;
-            if(!fluidInItem.isEmpty() && isValidForInputSlot(slotId, fluidInItem)) {
+            if(!fluidInItem.isEmpty() && isValidSlotFluid(slotId, fluidInItem) && isValidForInputSlot(slotId, fluidInItem)) {
                 FluidStack remaining = insertFluidInternal(slotId, fluidInItem, false);
                 if(!remaining.isEmpty() && handler.getContainer().is(BUCKET)) {
                     return;

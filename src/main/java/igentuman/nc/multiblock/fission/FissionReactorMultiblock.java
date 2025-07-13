@@ -31,7 +31,7 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
     protected double heatSinkCooling = 0;
     protected double activeCooling = 0;
     protected final HashSet<Block> validModerators;
-    protected final HashMap<Long, HeatSinkBlock> validHeatSinks = new HashMap<>();
+    public final HashMap<Long, HeatSinkBlock> validHeatSinks = new HashMap<>();
     protected final HashSet<Long> moderators = new HashSet<>();
     protected final HashSet<Long> irradiators = new HashSet<>();
     protected final HashSet<Long> heatSinks = new HashSet<>();
@@ -263,19 +263,34 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
                 addIfNotExists(pos, delayedValidation);
             }
         }
-        for (long pos: delayedValidation) {
-            BlockPos hsPos = BlockPos.of(pos);
-            if(isHeatSinkValid(hsPos)) {
-                HeatSinkBlock hb = (HeatSinkBlock) getBlockState(pos).getBlock();
-                validHeatSinks.put(pos, hb);
-                addIfNotExists(pos, heatSinks);
-                addSecondConnectionsToFuelCell(hsPos);
-                if(hb.isActive()) {
-                    addIfNotExists(pos, activeCoolers);
+        int hsReTryCounter = 0;
+        while (!delayedValidation.isEmpty() || hsReTryCounter < 4) {
+            hsReTryCounter++;
+            List<Long> delayedAgain = new ArrayList<>();
+            debugLog("Re-trying heat sink validation, attempt: " + hsReTryCounter + " - " + delayedValidation.size() + " heat sinks to validate.");
+            for (long pos: delayedValidation) {
+                BlockPos hsPos = BlockPos.of(pos);
+                if(isHeatSinkValid(hsPos)) {
+                    HeatSinkBlock hb = (HeatSinkBlock) getBlockState(pos).getBlock();
+                    validHeatSinks.put(pos, hb);
+                    addIfNotExists(pos, heatSinks);
+                    addSecondConnectionsToFuelCell(hsPos);
+                    if(hb.isActive()) {
+                        addIfNotExists(pos, activeCoolers);
+                    }
+                } else {
+                    debugLog("Invalid heatsink: " + hsPos.toShortString() + " - " + getBlockState(pos).getBlock().asItem());
+                    delayedAgain.add(pos);
                 }
-            } else {
-                debugLog("Invalid heatsink: " + hsPos.toShortString() + " - " + getBlockState(pos).getBlock().asItem());
             }
+            if(delayedAgain.isEmpty()) {
+                debugLog("All heat sinks validated successfully.");
+                break;
+            }
+            // Shuffle the delayed validation list to avoid potential infinite loops in case of a cyclic dependency
+            Collections.shuffle(delayedAgain);
+            delayedValidation.clear();
+            delayedValidation.addAll(delayedAgain);
         }
     }
 

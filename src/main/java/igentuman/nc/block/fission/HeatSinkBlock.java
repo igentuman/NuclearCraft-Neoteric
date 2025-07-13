@@ -1,6 +1,8 @@
 package igentuman.nc.block.fission;
 
 import igentuman.nc.block.MultiblockBlock;
+import igentuman.nc.multiblock.AbstractMultiblock;
+import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.fission.FissionReactorMultiblock;
 import igentuman.nc.multiblock.fission.HeatSinkDef;
 import igentuman.nc.util.TextUtils;
@@ -131,7 +133,12 @@ public class HeatSinkBlock extends MultiblockBlock {
             Block block = level.getBlockState(pos).getBlock();
             if(block instanceof HeatSinkBlock) {
                 int id = level.random.nextInt(10);
-                if(isValid(level, pos, null)) {
+                AbstractMultiblock mb = MultiblockHandler.get(level.dimension()).getMultiblockByPos(pos);
+                FissionReactorMultiblock fissionReactorMultiblock = null;
+                if(mb instanceof FissionReactorMultiblock fsmb) {
+                    fissionReactorMultiblock = fsmb;
+                }
+                if(isValid(level, pos, fissionReactorMultiblock)) {
                     player.sendSystemMessage(__("message.heat_sink.valid"+id));
                 } else {
                     player.sendSystemMessage(__("message.heat_sink.invalid"+id));

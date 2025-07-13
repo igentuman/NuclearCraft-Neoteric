@@ -4,8 +4,10 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.fission.FissionFuelCellBlock;
+import igentuman.nc.block.fission.HeatSinkBlock;
 import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;
+import igentuman.nc.multiblock.fusion.FusionReactorMultiblock;
 import igentuman.nc.util.TagUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -131,7 +133,7 @@ public class HeatSinkDef {
             this.blockLines = conditions;
         }
 
-        public boolean isValid(Level level, BlockPos pos, AbstractMultiblock multiblock)
+        public boolean isValid(Level level, BlockPos pos, FissionReactorMultiblock multiblock)
         {
             boolean result = false;
             BlockPos p = new BlockPos(pos);
@@ -209,10 +211,17 @@ public class HeatSinkDef {
             return false;
         }
 
-        private boolean isExact(int s, String[] condition, Level level, BlockPos pos, AbstractMultiblock multiblock) {
+        private boolean isExact(int s, String[] condition, Level level, BlockPos pos, FissionReactorMultiblock multiblock) {
             int counter = 0;
             for (Direction dir: Direction.values()) {
-                if(blocks.get(condition).contains(getBlockState(level, pos.relative(dir), multiblock).getBlock())) {
+                BlockState target = getBlockState(level, pos.relative(dir), multiblock);
+                if(blocks.get(condition).contains(target.getBlock())) {
+                    //check if target is heat sink block, if it so, it must be valid as well
+                    boolean targetValid = true;
+                    if(target.getBlock() instanceof HeatSinkBlock) {
+                        targetValid = multiblock.validHeatSinks.keySet().contains(pos.relative(dir).asLong());
+                    }
+                    if(!targetValid) continue;
                     if(mustCheckFuelCellConnection(condition) && !validateFuelCellAttachment(level, multiblock, pos, pos.relative(dir) )) {
                         continue;
                     }
@@ -237,10 +246,17 @@ public class HeatSinkDef {
             return false;
         }
 
-        private boolean isLessThan(int s, String[] condition, Level level, BlockPos pos, AbstractMultiblock multiblock) {
+        private boolean isLessThan(int s, String[] condition, Level level, BlockPos pos, FissionReactorMultiblock multiblock) {
             int counter = 0;
             for (Direction dir: Direction.values()) {
-                if(blocks.get(condition).contains(getBlockState(level, pos.relative(dir), multiblock).getBlock())) {
+                BlockState target = getBlockState(level, pos.relative(dir), multiblock);
+                if(blocks.get(condition).contains(target.getBlock())) {
+                    //check if target is heat sink block, if it so, it must be valid as well
+                    boolean targetValid = true;
+                    if(target.getBlock() instanceof HeatSinkBlock) {
+                        targetValid = multiblock.validHeatSinks.keySet().contains(pos.relative(dir).asLong());
+                    }
+                    if(!targetValid) continue;
                     if(mustCheckFuelCellConnection(condition) && !validateFuelCellAttachment(level, multiblock, pos, pos.relative(dir))) {
                         continue;
                     }
@@ -255,11 +271,17 @@ public class HeatSinkDef {
             return !condition[2].contains("casing");
         }
 
-        private boolean isMoreThan(int s, String[] condition, Level level, BlockPos pos, AbstractMultiblock multiblock) {
+        private boolean isMoreThan(int s, String[] condition, Level level, BlockPos pos, FissionReactorMultiblock multiblock) {
             int counter = 0;
             for (Direction dir: Direction.values()) {
                 BlockState target = getBlockState(level, pos.relative(dir), multiblock);
                 if(blocks.get(condition).contains(target.getBlock())) {
+                    //check if target is heat sink block, if it so, it must be valid as well
+                    boolean targetValid = true;
+                    if(target.getBlock() instanceof HeatSinkBlock) {
+                        targetValid = multiblock.validHeatSinks.keySet().contains(pos.relative(dir).asLong());
+                    }
+                    if(!targetValid) continue;
                     if(mustCheckFuelCellConnection(condition) && !validateFuelCellAttachment(level, multiblock, pos, pos.relative(dir))) {
                         continue;
                     }

@@ -7,7 +7,6 @@ import igentuman.nc.block.fission.FissionFuelCellBlock;
 import igentuman.nc.block.fission.HeatSinkBlock;
 import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;
-import igentuman.nc.multiblock.fusion.FusionReactorMultiblock;
 import igentuman.nc.util.TagUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -139,7 +138,7 @@ public class HeatSinkDef {
             BlockPos p = new BlockPos(pos);
             for(String[] condition: blocks().keySet()) {
                 result = switch (condition[0]) {
-                    case ">" -> isMoreThan(Integer.parseInt(condition[1]), condition, level, p, multiblock);
+                    case ">" -> isAtLeast(Integer.parseInt(condition[1]), condition, level, p, multiblock);
                     case "<" -> isLessThan(Integer.parseInt(condition[1]), condition, level, p, multiblock);
                     case "-" -> isBetween(condition, level, p, multiblock);
                     case "=" -> isExact(Integer.parseInt(condition[1]), condition, level, p, multiblock);
@@ -221,6 +220,9 @@ public class HeatSinkDef {
                     if(target.getBlock() instanceof HeatSinkBlock) {
                         targetValid = multiblock.validHeatSinks.keySet().contains(pos.relative(dir).asLong());
                     }
+                    if(multiblock.isModerator(target) && !multiblock.moderators.contains(pos.relative(dir).asLong())) {
+                        targetValid = false;
+                    }
                     if(!targetValid) continue;
                     if(mustCheckFuelCellConnection(condition) && !validateFuelCellAttachment(level, multiblock, pos, pos.relative(dir) )) {
                         continue;
@@ -256,6 +258,9 @@ public class HeatSinkDef {
                     if(target.getBlock() instanceof HeatSinkBlock) {
                         targetValid = multiblock.validHeatSinks.keySet().contains(pos.relative(dir).asLong());
                     }
+                    if(multiblock.isModerator(target) && !multiblock.moderators.contains(pos.relative(dir).asLong())) {
+                        targetValid = false;
+                    }
                     if(!targetValid) continue;
                     if(mustCheckFuelCellConnection(condition) && !validateFuelCellAttachment(level, multiblock, pos, pos.relative(dir))) {
                         continue;
@@ -271,7 +276,7 @@ public class HeatSinkDef {
             return !condition[2].contains("casing");
         }
 
-        private boolean isMoreThan(int s, String[] condition, Level level, BlockPos pos, FissionReactorMultiblock multiblock) {
+        private boolean isAtLeast(int s, String[] condition, Level level, BlockPos pos, FissionReactorMultiblock multiblock) {
             int counter = 0;
             for (Direction dir: Direction.values()) {
                 BlockState target = getBlockState(level, pos.relative(dir), multiblock);
@@ -280,6 +285,9 @@ public class HeatSinkDef {
                     boolean targetValid = true;
                     if(target.getBlock() instanceof HeatSinkBlock) {
                         targetValid = multiblock.validHeatSinks.keySet().contains(pos.relative(dir).asLong());
+                    }
+                    if(multiblock.isModerator(target) && !multiblock.moderators.contains(pos.relative(dir).asLong())) {
+                        targetValid = false;
                     }
                     if(!targetValid) continue;
                     if(mustCheckFuelCellConnection(condition) && !validateFuelCellAttachment(level, multiblock, pos, pos.relative(dir))) {

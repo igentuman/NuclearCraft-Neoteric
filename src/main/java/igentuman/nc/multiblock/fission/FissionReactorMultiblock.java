@@ -264,7 +264,7 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
             }
         }
         int hsReTryCounter = 0;
-        while (!delayedValidation.isEmpty() || hsReTryCounter < 4) {
+        while (!delayedValidation.isEmpty() && hsReTryCounter < 4) {
             hsReTryCounter++;
             List<Long> delayedAgain = new ArrayList<>();
             debugLog("Re-trying heat sink validation, attempt: " + hsReTryCounter + " - " + delayedValidation.size() + " heat sinks to validate.");
@@ -401,6 +401,7 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
     }
 
     public boolean checkAttachmentToBlock(Class<?> toCheck, Level level, BlockPos pos, Direction dir) {
+        pos = pos.relative(dir);
         if (
                 getBottomLeftBlock().getX() >= pos.getX()
                 && getBottomLeftBlock().getY() >= pos.getX()
@@ -414,7 +415,7 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
         }
 
         if (toCheck.equals(FissionFuelCellBlock.class)) {
-            return directFuelCellConnectionPos.contains(pos.asLong()) || secondFuelCellConnectionPos.contains(pos.asLong());
+            return directFuelCellConnectionPos.contains(pos.asLong()) || (secondFuelCellConnectionPos.contains(pos.asLong()) && !getBlockState(pos).isAir());
         }
         return false;
     }

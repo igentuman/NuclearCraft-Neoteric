@@ -27,6 +27,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.handler.config.RadiationConfig.RADIATION_CONFIG;
 
 public class RadiationEvents {
@@ -51,7 +52,7 @@ public class RadiationEvents {
         }
         int radiation = RadiationCleaningItems.byItem(stack.getItem());
         if(radiation == 0) return;
-        PlayerRadiation radCap = entity.getCapability(PlayerRadiationProvider.PLAYER_RADIATION).orElse(null);
+        IPlayerRadiationCapability radCap = entity.getCapability(PlayerRadiationProvider.PLAYER_RADIATION).orElse(null);
        /* if(radCap != null) {
             if(stack.getItem().toString().contains("radaway")) {
                 if(entity.hasEffect(RADIATION_RESISTANCE.get())) {
@@ -91,9 +92,7 @@ public class RadiationEvents {
 
     public static void attachPlayerRadiation(final AttachCapabilitiesEvent<Entity> event) {
         if(event.getObject() instanceof PlayerEntity) {
-            if (!event.getObject().getCapability(PlayerRadiationProvider.PLAYER_RADIATION).isPresent()) {
-                event.addCapability(new ResourceLocation(MODID, "radiation"), new PlayerRadiationProvider());
-            }
+            event.addCapability(rl( "radiation"), new PlayerRadiationProvider());
         }
     }
 
@@ -102,7 +101,7 @@ public class RadiationEvents {
             // We need to copyFrom the capabilities
             event.getOriginal().getCapability(PlayerRadiationProvider.PLAYER_RADIATION).ifPresent(oldStore -> {
                 event.getEntity().getCapability(PlayerRadiationProvider.PLAYER_RADIATION).ifPresent(newStore -> {
-                    newStore.copyFrom(oldStore);
+                    newStore.setRadiation(oldStore.getRadiation());
                 });
             });
         }

@@ -12,9 +12,11 @@ import javax.annotation.Nullable;
 
 import javax.annotation.Nonnull;
 
+import static igentuman.nc.NuclearCraft.rl;
+
 public class PlayerRadiationProvider implements ICapabilityProvider, INBTSerializable<CompoundNBT> {
-    @CapabilityInject(PlayerRadiation.class)
-    public static Capability<PlayerRadiation> PLAYER_RADIATION;
+    @CapabilityInject(IPlayerRadiationCapability.class)
+    public static Capability<IPlayerRadiationCapability> PLAYER_RADIATION;
     private PlayerRadiation playerRadiation = createPlayerRadiation();
     private final LazyOptional<PlayerRadiation> opt = LazyOptional.of(() -> createPlayerRadiation());
 

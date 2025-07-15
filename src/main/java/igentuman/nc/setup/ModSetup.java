@@ -1,6 +1,9 @@
 package igentuman.nc.setup;
 
 import igentuman.nc.NuclearCraft;
+import igentuman.nc.radiation.data.IPlayerRadiationCapability;
+import igentuman.nc.radiation.data.PlayerRadiation;
+import igentuman.nc.radiation.data.PlayerRadiationProvider;
 import igentuman.nc.radiation.data.RadiationEvents;
 import igentuman.nc.recipes.type.RadShieldingRecipe;
 import igentuman.nc.recipes.type.ResetNbtRecipe;
@@ -8,6 +11,7 @@ import igentuman.nc.world.ore.Generator;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -30,6 +34,7 @@ public class ModSetup {
     public static void init(FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
           //  Dimensions.register();
+            CapabilityManager.INSTANCE.register(IPlayerRadiationCapability.class, new PlayerRadiationStorage(), PlayerRadiation::new);
             initOreGeneration();
         });
         NuclearCraft.packetHandler().initialize();

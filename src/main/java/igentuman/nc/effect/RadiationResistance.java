@@ -31,10 +31,10 @@ public class RadiationResistance extends Effect {
 
     public void applyEffectTick(LivingEntity ent, int id)
     {
-        PlayerRadiation radCap = ent.getCapability(PlayerRadiationProvider.PLAYER_RADIATION).orElse(null);
-        if(radCap == null) {
-            return;
-        }
-        radCap.setRadiation(radCap.getRadiation() - id/1000);
+        ent.getCapability(PlayerRadiationProvider.PLAYER_RADIATION).ifPresent(
+                cap -> cap.setRadiation(
+                        Math.max(cap.getRadiation() - id/1000, 0)
+                )
+        );
     }
 }

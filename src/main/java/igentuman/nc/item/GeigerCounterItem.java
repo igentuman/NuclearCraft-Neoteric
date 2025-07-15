@@ -28,7 +28,7 @@ public class GeigerCounterItem extends Item
 		if (!world.isClientSide()) {
 			WorldRadiation worldRadiation = RadiationManager.get(world).getWorldRadiation();
 			int radiation = worldRadiation.getChunkRadiation(player.xChunk, player.zChunk);
-			player.sendMessage(new TranslationTextComponent("message.nc.geiger_radiation_measure", format(radiation)), UUID.randomUUID());
+			player.sendMessage(new TranslationTextComponent("message.nc.geiger_radiation_measure", format(radiation)), player.getUUID());
 			//CriteriaTriggers.USING_ITEM.trigger((ServerPlayer) player, stack);
 		}
 		return ActionResult.sidedSuccess(stack, world.isClientSide);

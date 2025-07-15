@@ -13,14 +13,16 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.storage.DimensionSavedDataManager;
 import net.minecraft.world.storage.WorldSavedData;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import org.antlr.v4.runtime.misc.NotNull;
 
 import javax.annotation.Nonnull;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import static igentuman.nc.handler.config.RadiationConfig.RADIATION_CONFIG;
 import static igentuman.nc.radiation.data.WorldRadiation.pack;
-import static igentuman.nc.radiation.data.WorldRadiationProvider.WORLD_RADIATION;
 
 public class RadiationManager extends WorldSavedData {
 
@@ -55,20 +57,25 @@ public class RadiationManager extends WorldSavedData {
     }
 
     public void tick(World level) {
+        Capability<IPlayerRadiationCapability> radCap = PlayerRadiationProvider.PLAYER_RADIATION;
+        if(radCap == null) {
+            return; // No radiation capability available
+        }
         level.players().forEach(player -> {
             if (player instanceof ServerPlayerEntity) {
                 int playerChunkX = ((ServerPlayerEntity) player).xChunk;
                 int playerChunkZ = ((ServerPlayerEntity) player).zChunk;
                 long id = pack(playerChunkX, playerChunkZ);
-                PlayerRadiation playerRadiationCap = player.getCapability(PlayerRadiationProvider.PLAYER_RADIATION).orElse(null);
-                int playerRadiation = 0;
-                if(playerRadiationCap != null) {
-                    playerRadiationCap.updateRadiation(level, player);
-                    playerRadiation = playerRadiationCap.getRadiation();
-                }
+                AtomicInteger playerRadiation = new AtomicInteger();
+                player.getCapability(PlayerRadiationProvider.PLAYER_RADIATION).ifPresent(
+                        cap -> {
+                            cap.updateRadiation(level, player);
+                            playerRadiation.set(cap.getRadiation());
+                        }
+                );
 
                 if(worldRadiation.chunkRadiation.get(id) != null) {
-                    NuclearCraft.packetHandler().sendTo(new PacketRadiationData(id, worldRadiation.chunkRadiation.get(id), playerRadiation), (ServerPlayerEntity) player);
+                    NuclearCraft.packetHandler().sendTo(new PacketRadiationData(id, worldRadiation.chunkRadiation.get(id), playerRadiation.get()), (ServerPlayerEntity) player);
                 }
             }
         });

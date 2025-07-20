@@ -35,11 +35,10 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
     public final HashMap<Long, HeatSinkBlock> validHeatSinks = new HashMap<>();
     protected final HashSet<Long> moderators = new HashSet<>();
     protected final HashSet<Long> irradiators = new HashSet<>();
-    protected final HashSet<Long> heatSinks = new HashSet<>();
     public final HashSet<Long> fuelCells = new HashSet<>();
     protected final HashSet<Long> allModerators = new HashSet<>();
     protected final HashSet<Long> validIrradiators = new HashSet<>();
-    protected final HashSet<Long> activeCoolers = new HashSet<>();
+    protected final HashSet<Long> activeHeatSinks = new HashSet<>();
     protected final HashSet<Long> allHeatSinks = new HashSet<>();
     protected final HashMap<String, HashSet<BlockPos>> indexedHeatSinks = new HashMap<>();
     protected final HashMap<BlockPos, String> reversedIndexedHeatSinks = new HashMap<>();
@@ -102,31 +101,18 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
         MultiblockHandler.get(getLevel().dimension()).addMultiblock(this);
     }
 
-    public Map<Long, HeatSinkBlock> validHeatSinks() {
-        if(validHeatSinks.isEmpty()) {
-            for(long packedPos: allHeatSinks) {
-                BlockPos hpos = BlockPos.of(packedPos);
-                Block block = getBlockState(hpos).getBlock();
-                if(block instanceof HeatSinkBlock hs) {
-                    if(hs.isValid(getLevel(), hpos, this)) {
-                        validHeatSinks.put(packedPos, hs);
-                        if(hs.isActive()) {
-                            activeCoolers.add(packedPos);
-                            addActiveCoolant(hs.def.name.replace("active_", ""));
-                        }
-                    }
-                }
-            }
-        }
-        controllerBE().heatSinksCount = validHeatSinks.size();
-        return validHeatSinks;
-    }
-
     private void addActiveCoolant(String name) {
         if(!coolantPerTick.containsKey(name)) {
             coolantPerTick.put(name, 0);
         }
         coolantPerTick.replace(name, coolantPerTick.get(name)+FISSION_CONFIG.ACTIVE_HEATSINK_COOLANT_PER_TICK.get());
+    }
+
+    private void removeActiveCoolant(String name) {
+        coolantPerTick.replace(name, coolantPerTick.get(name)-FISSION_CONFIG.ACTIVE_HEATSINK_COOLANT_PER_TICK.get());
+        if (coolantPerTick.get(name) == 0) {
+            coolantPerTick.remove(name);
+        }
     }
 
     @Override
@@ -175,7 +161,7 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
         reversedIndexedHeatSinks.clear();
         allModerators.clear();
         validIrradiators.clear();
-        activeCoolers.clear();
+        activeHeatSinks.clear();
         super.validate();
     }
 
@@ -214,9 +200,9 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
         controllerBE().irradiationLines = irradiationLines;
         controllerBE().allIrradiators = irradiators.size();
         controllerBE().validIrradiators = validIrradiators.size();
-        controllerBE().heatSinksCount = heatSinks.size();
+        controllerBE().heatSinksCount = validHeatSinks.size();
         controllerBE().allHeatSinks = allHeatSinks.size();
-        controllerBE().activeCoolingHeatsinks = activeCoolers.size();
+        controllerBE().activeCoolingHeatsinks = activeHeatSinks.size();
         controllerBE().moderatorsCount = moderators.size();
         controllerBE().allModerators = allModerators.size();
         controllerBE().moderatorAttachments = moderatorAttachments;
@@ -265,14 +251,20 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
             long pos = hsPos.asLong();
             if (isHeatSinkValid(hsPos)) {
                 HeatSinkBlock hb = validHeatSinks.get(pos);
-                addIfNotExists(pos, heatSinks);
                 addSecondConnectionsToFuelCell(hsPos);
                 if(hb.isActive()) {
-                    addIfNotExists(pos, activeCoolers);
-                    addActiveCoolant(hb.def.name.replace("active_", ""));
+                    if (!activeHeatSinks.contains(pos)) {
+                        addActiveCoolant(hb.def.name.replace("active_", ""));
+                    }
+                    addIfNotExists(pos, activeHeatSinks);
                 }
             } else {
+                if (activeHeatSinks.contains(pos)) {
+                    activeHeatSinks.remove(pos);
+                    removeActiveCoolant(validHeatSinks.get(pos).def.name.replace("active_", ""));
+                }
                 validHeatSinks.remove(pos);
+                removeSecondConnectionsToFuelCell(hsPos);
             }
         }
     }
@@ -379,6 +371,13 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
         }
     }
 
+    private void removeSecondConnectionsToFuelCell(BlockPos toCheck) {
+        secondFuelCellConnectionPos.remove(toCheck.asLong());
+        for(Direction d : Direction.values()) {
+            secondFuelCellConnectionPos.remove(toCheck.relative(d).asLong());
+        }
+    }
+
     private void addDirectFuelCellConnection(BlockPos toCheck) {
         addIfNotExists(toCheck, directFuelCellConnectionPos);
         for(Direction d : Direction.values()) {
@@ -449,13 +448,13 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
                     moderators.remove(pPos);
                     allModerators.remove(pPos);
                 }
-                heatSinks.remove(packedPos);
                 String posHeatSink = reversedIndexedHeatSinks.get(pos);
                 reversedIndexedHeatSinks.remove(pos);
                 indexedHeatSinks.get(posHeatSink).remove(pos);
                 if (indexedHeatSinks.get(posHeatSink).isEmpty()) {
                     indexedHeatSinks.remove(posHeatSink);
                 }
+                activeHeatSinks.remove(packedPos);
                 allModerators.remove(packedPos);
                 allHeatSinks.remove(packedPos);
                 fuelCells.remove(packedPos);
@@ -498,7 +497,7 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
     public double countCooling(boolean forceCheck) {
         if(forceCheck) {
             heatSinkCooling = 0;
-            for (HeatSinkBlock hs : validHeatSinks().values()) {
+            for (HeatSinkBlock hs : validHeatSinks.values()) {
                 heatSinkCooling += hs.heat;
             }
         }

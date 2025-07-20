@@ -24,6 +24,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.handler.config.FissionConfig.FISSION_CONFIG;
 import static igentuman.nc.util.NcUtils.rlFromString;
 import static igentuman.nc.util.StackUtils.getItemsByTagKey;
 import static igentuman.nc.util.TagUtil.getFirstMatchingFluidByTag;
@@ -95,14 +96,25 @@ public class HeatSinkDef {
 
     private List<String> collectBlocks(String[] blocks) {
         List<String> tmp = new ArrayList<>();
+        Pattern activeCheck = Pattern.compile("^(?!.*active_).+_heat_sink$");
         for(String block: blocks) {
             if(block.contains("#")) {
                 tmp.addAll(getItemsByTagKey(block.replace("#","")));
             } else {
+                String blockName = block;
                 if(!block.contains(":")) {
-                    block = MODID+":"+block;
+                    blockName = MODID + ":" + block;
                 }
-                tmp.add(block);
+                tmp.add(blockName);
+                if (FISSION_CONFIG.ACTIVE_HEATSINK_PRIME.get() && activeCheck.matcher(block).matches()) {
+                    if (block.contains(":")) {
+                        String[] blockParts = block.split(":");
+                        blockName = blockParts[0] + ":active_" + blockParts[1];
+                    } else {
+                        blockName = MODID + ":active_" + block;
+                    }
+                    tmp.add(blockName);
+                }
             }
         }
         return tmp;

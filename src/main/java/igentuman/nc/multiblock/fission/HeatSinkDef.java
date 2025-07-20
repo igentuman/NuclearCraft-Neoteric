@@ -190,13 +190,27 @@ public class HeatSinkDef {
             return target;
         }
 
-        private boolean inCorner(int qty, String[] condition, Level level, BlockPos pos, AbstractMultiblock multiblock) {
+        private boolean validatePlacement(String[] condition, Level level, FissionReactorMultiblock multiblock, BlockPos ...pos) {
+            BlockState target = getBlockState(level, pos[0], multiblock);
+            if (blocks.get(condition).contains(target.getBlock())) {
+                if (target.getBlock() instanceof HeatSinkBlock && !multiblock.validHeatSinks.containsKey(pos[0].asLong())) {
+                    return false;
+                }
+                if (multiblock.isModerator(target) && !multiblock.moderators.contains(pos[0].asLong())) {
+                    return false;
+                }
+                return mustCheckFuelCellConnection(condition) || validateFuelCellAttachment(level, multiblock, pos);
+            }
+            return false;
+        }
+
+        private boolean inCorner(int qty, String[] condition, Level level, BlockPos pos, FissionReactorMultiblock multiblock) {
             int initial = blocks.get(condition).contains(getBlockState(level, pos.above(1), multiblock).getBlock()) ? 1 : 0;
             initial = blocks.get(condition).contains(getBlockState(level, pos.below(1), multiblock).getBlock()) ? 1 : initial;
             int[] matches = new int[4];
             int i = 0;
             for (Direction dir: List.of(Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST)) {
-                if(blocks.get(condition).contains(getBlockState(level, pos.relative(dir), multiblock).getBlock())) {
+                if(validatePlacement(condition, level, multiblock, pos.relative(dir))) {
                     if(1+initial >= qty) return true;
                     matches[i] = 1;
                 }
@@ -213,20 +227,7 @@ public class HeatSinkDef {
         private boolean isExact(int s, String[] condition, Level level, BlockPos pos, FissionReactorMultiblock multiblock) {
             int counter = 0;
             for (Direction dir: Direction.values()) {
-                BlockState target = getBlockState(level, pos.relative(dir), multiblock);
-                if(blocks.get(condition).contains(target.getBlock())) {
-                    //check if target is heat sink block, if it so, it must be valid as well
-                    boolean targetValid = true;
-                    if(target.getBlock() instanceof HeatSinkBlock) {
-                        targetValid = multiblock.validHeatSinks.keySet().contains(pos.relative(dir).asLong());
-                    }
-                    if(multiblock.isModerator(target) && !multiblock.moderators.contains(pos.relative(dir).asLong())) {
-                        targetValid = false;
-                    }
-                    if(!targetValid) continue;
-                    if(mustCheckFuelCellConnection(condition) && !validateFuelCellAttachment(level, multiblock, pos, pos.relative(dir) )) {
-                        continue;
-                    }
+                if(validatePlacement(condition, level, multiblock, pos.relative(dir))) {
                     counter++;
                     if(counter > s) return false;
                 }
@@ -234,13 +235,11 @@ public class HeatSinkDef {
             return counter == s;
         }
 
-        private boolean isBetween(String[] condition, Level level, BlockPos pos, AbstractMultiblock multiblock) {
+        private boolean isBetween(String[] condition, Level level, BlockPos pos, FissionReactorMultiblock multiblock) {
             for (Direction dir: Direction.values()) {
                 if(
-                        blocks.get(condition).contains(getBlockState(level, pos.relative(dir), multiblock).getBlock()) &&
-                                blocks.get(condition).contains(getBlockState(level, pos.relative(dir.getOpposite()), multiblock).getBlock()) &&
-                                validateFuelCellAttachment(level, multiblock, pos, pos.relative(dir)) &&
-                                validateFuelCellAttachment(level, multiblock, pos, pos.relative(dir.getOpposite()))
+                        validatePlacement(condition, level, multiblock, pos.relative(dir)) &&
+                        validatePlacement(condition, level, multiblock, pos.relative(dir.getOpposite()))
                 ) {
                     return true;
                 }
@@ -251,20 +250,7 @@ public class HeatSinkDef {
         private boolean isLessThan(int s, String[] condition, Level level, BlockPos pos, FissionReactorMultiblock multiblock) {
             int counter = 0;
             for (Direction dir: Direction.values()) {
-                BlockState target = getBlockState(level, pos.relative(dir), multiblock);
-                if(blocks.get(condition).contains(target.getBlock())) {
-                    //check if target is heat sink block, if it so, it must be valid as well
-                    boolean targetValid = true;
-                    if(target.getBlock() instanceof HeatSinkBlock) {
-                        targetValid = multiblock.validHeatSinks.keySet().contains(pos.relative(dir).asLong());
-                    }
-                    if(multiblock.isModerator(target) && !multiblock.moderators.contains(pos.relative(dir).asLong())) {
-                        targetValid = false;
-                    }
-                    if(!targetValid) continue;
-                    if(mustCheckFuelCellConnection(condition) && !validateFuelCellAttachment(level, multiblock, pos, pos.relative(dir))) {
-                        continue;
-                    }
+                if(validatePlacement(condition, level, multiblock, pos.relative(dir))) {
                     counter++;
                     if(counter >= s) return false;
                 }
@@ -273,26 +259,13 @@ public class HeatSinkDef {
         }
 
         private boolean mustCheckFuelCellConnection(String[] condition) {
-            return !condition[2].contains("casing");
+            return condition[2].contains("casing");
         }
 
         private boolean isAtLeast(int s, String[] condition, Level level, BlockPos pos, FissionReactorMultiblock multiblock) {
             int counter = 0;
             for (Direction dir: Direction.values()) {
-                BlockState target = getBlockState(level, pos.relative(dir), multiblock);
-                if(blocks.get(condition).contains(target.getBlock())) {
-                    //check if target is heat sink block, if it so, it must be valid as well
-                    boolean targetValid = true;
-                    if(target.getBlock() instanceof HeatSinkBlock) {
-                        targetValid = multiblock.validHeatSinks.keySet().contains(pos.relative(dir).asLong());
-                    }
-                    if(multiblock.isModerator(target) && !multiblock.moderators.contains(pos.relative(dir).asLong())) {
-                        targetValid = false;
-                    }
-                    if(!targetValid) continue;
-                    if(mustCheckFuelCellConnection(condition) && !validateFuelCellAttachment(level, multiblock, pos, pos.relative(dir))) {
-                        continue;
-                    }
+                if(validatePlacement(condition, level, multiblock, pos.relative(dir))) {
                     counter++;
                     if(counter >= s) return true;
                 }

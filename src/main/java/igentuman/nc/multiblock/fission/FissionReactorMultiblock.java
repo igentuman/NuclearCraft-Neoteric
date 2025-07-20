@@ -16,6 +16,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.*;
 
@@ -40,6 +41,8 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
     protected final HashSet<Long> validIrradiators = new HashSet<>();
     protected final HashSet<Long> activeCoolers = new HashSet<>();
     protected final HashSet<Long> allHeatSinks = new HashSet<>();
+    protected final HashMap<String, HashSet<BlockPos>> indexedHeatSinks = new HashMap<>();
+    protected final HashMap<BlockPos, String> reversedIndexedHeatSinks = new HashMap<>();
     protected double cellsHeatMult = 0.0D;
     protected double moderatorsHeatMult = 0.0D;
     protected double cellsEnergyMult = 0.0D;
@@ -47,7 +50,6 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
     protected final HashSet<Long> directFuelCellConnectionPos = new HashSet<>();
     protected final HashSet<Long> secondFuelCellConnectionPos = new HashSet<>();
     public final HashMap<String, Integer> coolantPerTick = new HashMap<>();
-    protected final HashSet<Long> delayedValidation = new HashSet<>();
 
     @Override
     public int maxHeight() {
@@ -169,6 +171,8 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
         validHeatSinks.clear();
         coolantPerTick.clear();
         allHeatSinks.clear();
+        indexedHeatSinks.clear();
+        reversedIndexedHeatSinks.clear();
         allModerators.clear();
         validIrradiators.clear();
         activeCoolers.clear();
@@ -246,51 +250,30 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
 
     private void indexHeatSinks() {
         validHeatSinks.clear();
-        delayedValidation.clear();
         coolantPerTick.clear();
-        for(long pos: allHeatSinks) {
-            BlockPos hsPos = BlockPos.of(pos);
-            if(isHeatSinkValid(hsPos)) {
-                HeatSinkBlock hb = (HeatSinkBlock) getBlockState(pos).getBlock();
+        ArrayList<BlockPos> sortedHeatSinks = new ArrayList<>();
+        for (String toCheck: FissionReactorRegistration.hsSchedule) {
+            if (indexedHeatSinks.containsKey(toCheck)) {
+                HashSet<BlockPos> posSet = indexedHeatSinks.get(toCheck);
+                sortedHeatSinks.addAll(posSet);
+                for (BlockPos hsPos: posSet) {
+                    validHeatSinks.put(hsPos.asLong(), (HeatSinkBlock) getBlockState(hsPos).getBlock());
+                }
+            }
+        }
+        for (BlockPos hsPos: sortedHeatSinks) {
+            long pos = hsPos.asLong();
+            if (isHeatSinkValid(hsPos)) {
+                HeatSinkBlock hb = validHeatSinks.get(pos);
                 addIfNotExists(pos, heatSinks);
-                validHeatSinks.put(pos, hb);
                 addSecondConnectionsToFuelCell(hsPos);
                 if(hb.isActive()) {
                     addIfNotExists(pos, activeCoolers);
                     addActiveCoolant(hb.def.name.replace("active_", ""));
                 }
             } else {
-                addIfNotExists(pos, delayedValidation);
+                validHeatSinks.remove(pos);
             }
-        }
-        int hsReTryCounter = 0;
-        while (!delayedValidation.isEmpty() && hsReTryCounter < 4) {
-            hsReTryCounter++;
-            List<Long> delayedAgain = new ArrayList<>();
-            debugLog("Re-trying heat sink validation, attempt: " + hsReTryCounter + " - " + delayedValidation.size() + " heat sinks to validate.");
-            for (long pos: delayedValidation) {
-                BlockPos hsPos = BlockPos.of(pos);
-                if(isHeatSinkValid(hsPos)) {
-                    HeatSinkBlock hb = (HeatSinkBlock) getBlockState(pos).getBlock();
-                    validHeatSinks.put(pos, hb);
-                    addIfNotExists(pos, heatSinks);
-                    addSecondConnectionsToFuelCell(hsPos);
-                    if(hb.isActive()) {
-                        addIfNotExists(pos, activeCoolers);
-                    }
-                } else {
-                    debugLog("Invalid heatsink: " + hsPos.toShortString() + " - " + getBlockState(pos).getBlock().asItem());
-                    delayedAgain.add(pos);
-                }
-            }
-            if(delayedAgain.isEmpty()) {
-                debugLog("All heat sinks validated successfully.");
-                break;
-            }
-            // Shuffle the delayed validation list to avoid potential infinite loops in case of a cyclic dependency
-            Collections.shuffle(delayedAgain);
-            delayedValidation.clear();
-            delayedValidation.addAll(delayedAgain);
         }
     }
 
@@ -375,6 +358,9 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
             return true;
         }
         if(isHeatSink(bs)) {
+            String name = String.valueOf(ForgeRegistries.BLOCKS.getKey(bs.getBlock()));
+            indexedHeatSinks.computeIfAbsent(name, k -> new HashSet<>()).add(toCheck);
+            reversedIndexedHeatSinks.put(toCheck, name);
             addIfNotExists(toCheck, allHeatSinks);
             return true;
         }
@@ -458,7 +444,18 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
             if(cachedState == null || !bs.is(bsCache.get(packedPos).getBlock())) {
                 bsCache.remove(packedPos);
                 moderators.remove(packedPos);
+                for (Direction dir: Direction.values()) {
+                    long pPos = pos.relative(dir).asLong();
+                    moderators.remove(pPos);
+                    allModerators.remove(pPos);
+                }
                 heatSinks.remove(packedPos);
+                String posHeatSink = reversedIndexedHeatSinks.get(pos);
+                reversedIndexedHeatSinks.remove(pos);
+                indexedHeatSinks.get(posHeatSink).remove(pos);
+                if (indexedHeatSinks.get(posHeatSink).isEmpty()) {
+                    indexedHeatSinks.remove(posHeatSink);
+                }
                 allModerators.remove(packedPos);
                 allHeatSinks.remove(packedPos);
                 fuelCells.remove(packedPos);

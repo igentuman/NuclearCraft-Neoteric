@@ -7,6 +7,7 @@ import igentuman.nc.block.fission.*;
 import igentuman.nc.container.FissionControllerContainer;
 import igentuman.nc.container.FissionPortContainer;
 import igentuman.nc.util.JSONUtil;
+import igentuman.nc.multiblock.ValidationScheduler;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
@@ -22,6 +23,7 @@ import net.minecraftforge.registries.RegistryObject;
 import java.util.*;
 import java.util.regex.Pattern;
 
+import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.setup.registration.NCItems.ALL_NC_ITEMS;
 import static igentuman.nc.setup.registration.Registries.*;
 import static igentuman.nc.setup.registration.Tags.blockTag;
@@ -36,7 +38,7 @@ public class FissionReactorRegistration {
     public static final HashMap<String, RegistryObject<BlockEntityType<? extends BlockEntity>>> FISSION_BE = new HashMap<>();
     public static final HashMap<String, RegistryObject<Item>> FISSION_BLOCK_ITEMS = new HashMap<>();
     private static final List<RegistryObject<Block>> hsBlocks = new ArrayList<>();
-
+    public static final List<String> hsSchedule = new ArrayList<>();
     public static final RegistryObject<MenuType<FissionControllerContainer>> FISSION_CONTROLLER_CONTAINER = CONTAINERS.register("fission_reactor_controller",
             () -> IForgeMenuType.create((windowId, inv, data) -> new FissionControllerContainer(windowId, data.readBlockPos(), inv))
             );
@@ -128,6 +130,7 @@ public class FissionReactorRegistration {
 
     public static HashMap<String, HeatSinkDef> heatsinks() {
         HashMap<String, HeatSinkDef> tmp = new HashMap<>();
+        ValidationScheduler scheduler = new ValidationScheduler();
         List<JsonArray> data = JSONUtil.loadAllJsonFromConfig("heat_sinks");
         if(data == null) {
             return tmp;
@@ -137,9 +140,23 @@ public class FissionReactorRegistration {
                 HeatSinkDef heatSink = HeatSinkDef.of(array.get(i).getAsJsonObject());
                 if (heatSink != null) {
                     tmp.put(heatSink.name, heatSink);
+                    String name = heatSink.name;
+                    if (!name.contains(":")) {
+                        name = MODID + ":" + name;
+                    }
+                    for (String rule: heatSink.rules) {
+                        String[] conditionParts = rule.split("=|-|>|<|\\^");
+                        for (String block: conditionParts[0].split("\\|")) {
+                            if (!block.contains(":")) {
+                                block = MODID + ":" + block;
+                            }
+                            scheduler.graphAddEdge(name + "_heat_sink", block);
+                        }
+                    }
                 }
             }
         }
+        hsSchedule.addAll(scheduler.getSchedule());
         return tmp;
     }
 

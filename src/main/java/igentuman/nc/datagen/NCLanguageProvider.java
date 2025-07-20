@@ -773,13 +773,13 @@ public class NCLanguageProvider extends LanguageProvider {
         add("fuel.description","Used in Fission Reactors. Use Fuel Ports to Load/Unload. \r\nActual FE generation depends on Reactor Efficiency.");
         add("heat_sink.heat.descr", "Cooling Rate: %s H/t");
         add("heat_sink.placement.rule", "Must be placed %s");
-        add("heat_sink.between", "between %s and %s");
+        add("heat_sink.between", "between %s %s");
         add("heat_sink.atleast", "next to at least %s %s");
         add("heat_sink.atleasts", "next to at least %s %s blocks");
-        add("heat_sink.exact", "next to exact %s %s");
-        add("heat_sink.exacts", "next to exact %s %s blocks");
-        add("heat_sink.less_than", "next to less than %s %s blocks");
-        add("heat_sink.in_corner", "in corner of %s %s blocks");
+        add("heat_sink.exact", "next to exactly %s %s");
+        add("heat_sink.exacts", "next to exactly %s %s blocks");
+        add("heat_sink.less_than", "next to less than %s %s");
+        add("heat_sink.in_corner", "in the corner of %s %s blocks");
         add("heat_sink.or", "or");
         add("heat_sink.and", "and");
         add("heat_sink.placement.error", "Error during placement rule generation");

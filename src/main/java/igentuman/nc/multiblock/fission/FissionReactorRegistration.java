@@ -132,6 +132,7 @@ public class FissionReactorRegistration {
         HashMap<String, HeatSinkDef> tmp = new HashMap<>();
         ValidationScheduler scheduler = new ValidationScheduler();
         List<JsonArray> data = JSONUtil.loadAllJsonFromConfig("heat_sinks");
+        Pattern activeCheck = Pattern.compile("^(?!.*active_).+_heat_sink$");
         if(data == null) {
             return tmp;
         }
@@ -147,10 +148,20 @@ public class FissionReactorRegistration {
                     for (String rule: heatSink.rules) {
                         String[] conditionParts = rule.split("=|-|>|<|\\^");
                         for (String block: conditionParts[0].split("\\|")) {
+                            String blockName = block;
                             if (!block.contains(":")) {
-                                block = MODID + ":" + block;
+                                blockName = MODID + ":" + block;
                             }
-                            scheduler.graphAddEdge(name + "_heat_sink", block);
+                            scheduler.graphAddEdge(name + "_heat_sink", blockName);
+                            if (activeCheck.matcher(block).matches()) {
+                                if (block.contains(":")) {
+                                    String[] blockParts = block.split(":");
+                                    blockName = blockParts[0] + ":active_" + blockParts[1];
+                                } else {
+                                    blockName = MODID + ":active_" + block;
+                                }
+                                scheduler.graphAddEdge(name + "_heat_sink", blockName);
+                            }
                         }
                     }
                 }

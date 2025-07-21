@@ -35,6 +35,8 @@ public class HeatSinkDef {
     public String name = "";
     public String[] rules;
     protected Validator validator;
+    public final Pattern COND_FUNC = Pattern.compile("=|-|>|<|\\^");
+    public final Pattern ACTIVE_CHECK = Pattern.compile("^(?!.*active_).+_heat_sink$");
 
     public static HeatSinkDef of(JsonObject asJsonObject) {
         HeatSinkDef def = new HeatSinkDef();
@@ -81,8 +83,7 @@ public class HeatSinkDef {
     }
 
     private String getConditionFunc(String rule) {
-        Pattern func = Pattern.compile("=|-|>|<|\\^");
-        Matcher matcher = func.matcher(rule);
+        Matcher matcher = COND_FUNC.matcher(rule);
         List<String> matches = new ArrayList<>();
         String funcType = ">";
         while (matcher.find()) {
@@ -96,7 +97,6 @@ public class HeatSinkDef {
 
     private List<String> collectBlocks(String[] blocks) {
         List<String> tmp = new ArrayList<>();
-        Pattern activeCheck = Pattern.compile("^(?!.*active_).+_heat_sink$");
         for(String block: blocks) {
             if(block.contains("#")) {
                 tmp.addAll(getItemsByTagKey(block.replace("#","")));
@@ -106,7 +106,7 @@ public class HeatSinkDef {
                     blockName = MODID + ":" + block;
                 }
                 tmp.add(blockName);
-                if (FISSION_CONFIG.ACTIVE_HEATSINK_PRIME.get() && activeCheck.matcher(block).matches()) {
+                if (FISSION_CONFIG.ACTIVE_HEATSINK_PRIME.get() && ACTIVE_CHECK.matcher(block).matches()) {
                     if (block.contains(":")) {
                         String[] blockParts = block.split(":");
                         blockName = blockParts[0] + ":active_" + blockParts[1];

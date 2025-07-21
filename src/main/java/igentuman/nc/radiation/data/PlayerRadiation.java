@@ -106,7 +106,7 @@ public class PlayerRadiation implements IPlayerRadiationCapability {
         if(chunkRadiation > radiation) {
             radiation = (int) (((chunkRadiation + radiation)/1.1D * intensityMult * RADIATION_CONFIG.GAIN_SPEED_FOR_PLAYER.get()) * shieldingRate + radiation);
         } else {
-            radiation = (int) (((chunkRadiation + radiation)/3D * intensityMult * RADIATION_CONFIG.GAIN_SPEED_FOR_PLAYER.get()) * shieldingRate + radiation);
+            radiation = (int) (radiation + (chunkRadiation * 0.5D * RADIATION_CONFIG.GAIN_SPEED_FOR_PLAYER.get() * shieldingRate));
         }
         if(player instanceof Player) {
             radiation += (int) (getInventoryRadiation((Player) player) * shieldingRate);

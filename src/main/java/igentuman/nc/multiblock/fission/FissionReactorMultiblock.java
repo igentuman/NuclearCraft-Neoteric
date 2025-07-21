@@ -162,6 +162,11 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
         allModerators.clear();
         validIrradiators.clear();
         activeHeatSinks.clear();
+        allBlocks.clear();
+        fuelCells.clear();
+        irradiators.clear();
+        directFuelCellConnectionPos.clear();
+        secondFuelCellConnectionPos.clear();
         super.validate();
     }
 
@@ -447,6 +452,8 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
                     long pPos = pos.relative(dir).asLong();
                     moderators.remove(pPos);
                     allModerators.remove(pPos);
+                    directFuelCellConnectionPos.remove(pPos);
+                    secondFuelCellConnectionPos.remove(pPos);
                 }
                 String posHeatSink = reversedIndexedHeatSinks.get(pos);
                 reversedIndexedHeatSinks.remove(pos);

@@ -152,6 +152,8 @@ public class FissionControllerBE extends MultiblockControllerBE {
     public double cellsEnergyMult = 0;
     @NBTField
     public double moderatorsEnergyMult = 0;
+    private List<FluidStack>  allowedCoolants;
+    private List<FluidStack>  allowedCoolantOutputs;
 
     public FissionControllerBE(BlockPos pPos, BlockState pBlockState) {
         super(FissionReactorRegistration.FISSION_BE.get(NAME).get(),pPos, pBlockState);
@@ -213,17 +215,22 @@ public class FissionControllerBE extends MultiblockControllerBE {
     }
 
     protected List<FluidStack> getAllowedCoolantsOutput() {
-        List<FluidStack> allowedCoolants = new ArrayList<>();
-        for(FissionBoilingRecipe recipe : getBoilingRecipes()) {
-            allowedCoolants.addAll(recipe.getOutputFluids(0));
+        if(allowedCoolantOutputs == null) {
+            allowedCoolantOutputs = new ArrayList<>();
+            for(FissionBoilingRecipe recipe : getBoilingRecipes()) {
+                allowedCoolantOutputs.addAll(recipe.getOutputFluids(0));
+            }
         }
-        return allowedCoolants;
+        return allowedCoolantOutputs;
     }
 
     protected List<FluidStack> getAllowedCoolants() {
-        List<FluidStack> allowedCoolants = new ArrayList<>();
-        for(FissionBoilingRecipe recipe : getBoilingRecipes()) {
-            allowedCoolants.addAll(recipe.getInputFluids(0));
+        if(!isSteamMode) return List.of();
+        if(allowedCoolants == null) {
+            allowedCoolants = new ArrayList<>();
+            for (FissionBoilingRecipe recipe : getBoilingRecipes()) {
+                allowedCoolants.addAll(recipe.getInputFluids(0));
+            }
         }
         return allowedCoolants;
     }

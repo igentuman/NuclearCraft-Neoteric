@@ -37,7 +37,7 @@ public class HeatSinkDef {
     protected Validator validator;
     public final Pattern COND_FUNC = Pattern.compile("=|-|>|<|\\^");
     public final Pattern ACTIVE_CHECK = Pattern.compile("^(?!.*active_).+_heat_sink$");
-
+    private List<FluidStack> allowedFluids;
     public static HeatSinkDef of(JsonObject asJsonObject) {
         HeatSinkDef def = new HeatSinkDef();
         try {
@@ -125,7 +125,10 @@ public class HeatSinkDef {
     }
 
     public List<FluidStack> getAllowedFluids() {
-        return getFluidByTagKey("forge:"+name);
+        if(allowedFluids == null) {
+            allowedFluids = getFluidByTagKey("forge:"+name);
+        }
+        return allowedFluids;
     }
 
     private List<FluidStack> getFluidByTagKey(String name) {

@@ -231,13 +231,16 @@ public class FissionControllerScreen extends AbstractContainerScreen<FissionCont
     }
 
     private void renderTooltips(GuiGraphics graphics, int pMouseX, int pMouseY) {
-        heatBar.clearTooltips();
-        heatBar.addTooltip(__("reactor.cooling", container().getCooling()).withStyle(ChatFormatting.AQUA));
-        heatBar.addTooltip(__("reactor.heating", container().getHeating()).withStyle(ChatFormatting.RED));
-        heatBar.addTooltip(__("reactor.net_heat", container().getNetHeat()).withStyle(ChatFormatting.GOLD));
-        if(container().isBoilingMode()) {
-            heatBar.addTooltip(__("reactor.boiling_penalty", container().getBoilingPenalty()).withStyle(ChatFormatting.YELLOW));
+        if(heatBar.isMouseOver(pMouseX, pMouseY)) {
+            heatBar.clearTooltips();
+            heatBar.addTooltip(__("reactor.cooling", container().getCooling()).withStyle(ChatFormatting.AQUA));
+            heatBar.addTooltip(__("reactor.heating", container().getHeating()).withStyle(ChatFormatting.RED));
+            heatBar.addTooltip(__("reactor.net_heat", container().getNetHeat()).withStyle(ChatFormatting.GOLD));
+            if(container().isBoilingMode()) {
+                heatBar.addTooltip(__("reactor.boiling_penalty", container().getBoilingPenalty()).withStyle(ChatFormatting.YELLOW));
+            }
         }
+
         for(NCGuiElement widget: widgets) {
            if(widget.isMouseOver(pMouseX, pMouseY)) {
                graphics.renderTooltip(font, widget.getTooltips(),

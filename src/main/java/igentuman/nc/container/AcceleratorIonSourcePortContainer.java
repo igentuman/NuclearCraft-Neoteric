@@ -3,6 +3,7 @@ package igentuman.nc.container;
 import igentuman.nc.block.entity.accelerator.AcceleratorIonSourcePortBE;
 import igentuman.nc.block.entity.accelerator.AcceleratorPortBE;
 import igentuman.nc.container.elements.NCSlotItemHandler;
+import igentuman.nc.handler.config.CommonConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -151,5 +152,13 @@ public class AcceleratorIonSourcePortContainer extends AbstractContainerMenu {
 
     public FluidTank getFluidTank(int i) {
         return portBE.getFluidTank(i);
+    }
+
+    public int getEnergyRequired() {
+        return portBE.getEnergyRequired();
+    }
+
+    public CommonConfig.GTCEUCompatibilityConfig.GTCEUTier getTier() {
+        return portBE.getTier();
     }
 }

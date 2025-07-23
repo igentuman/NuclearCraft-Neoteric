@@ -414,7 +414,7 @@ public abstract class AbstractMultiblock implements Multiblock {
             controllers.add(pos);
         }
         if (isPort(getBlockState(pos))) {
-            if(getBlockEntity(pos) instanceof MultiblockAttachable attachableBe) {
+            if(getBlockEntity(pos, true) instanceof MultiblockAttachable attachableBe) {
                 attachableBe.setMultiblock(this);
             }
             connectedPorts++;
@@ -450,12 +450,18 @@ public abstract class AbstractMultiblock implements Multiblock {
         attachMultiblock(getBlockEntity(pos));
     }
 
-    protected BlockEntity getBlockEntity(BlockPos pos) {
+    protected BlockEntity getBlockEntity(BlockPos pos, boolean...forceFlag) {
+        boolean force = forceFlag.length > 0 && forceFlag[0];
         if (beCache.containsKey(pos.asLong())) {
+            if(force) {
+                beCache.put(pos.asLong(), getLevel().getExistingBlockEntity(pos));
+            }
             return beCache.get(pos.asLong());
         }
         BlockEntity be = getLevel().getExistingBlockEntity(pos);
-        beCache.put(pos.asLong(), be);
+        if(!getBlockState(pos).isAir()) {
+            beCache.put(pos.asLong(), be);
+        }
         return be;
     }
 

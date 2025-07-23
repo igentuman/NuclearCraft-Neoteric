@@ -3,6 +3,7 @@ package igentuman.nc.block.entity.accelerator;
 import igentuman.api.nc.multiblock.MultiblockAttachable;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.NuclearCraftBE;
+import igentuman.nc.handler.config.CommonConfig;
 import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;
 import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;
@@ -24,6 +25,8 @@ import java.util.Objects;
 
 import static igentuman.nc.compat.oc2.FusionReactorDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.content.particles.CapabilityParticleStackHandler.PARTICLE_HANDLER_CAPABILITY;
+import static igentuman.nc.handler.config.AcceleratorConfig.ACCELERATOR_CONFIG;
+import static igentuman.nc.handler.config.CommonConfig.GTCEU_CONFIG;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BE;
 import static igentuman.nc.util.ModUtil.isCcLoaded;
 import static igentuman.nc.util.ModUtil.isOC2Loaded;
@@ -228,6 +231,16 @@ public class AcceleratorIonSourcePortBE extends NuclearCraftBE implements Multib
     public double getProgress() {
         if(controller() == null) return 0;
         return controller().recipeInfo().getProgress();
+    }
+
+    public int getEnergyRequired() {
+        if(controller() == null) return 0;
+        return controller().energyRequired;
+    }
+
+    public CommonConfig.GTCEUCompatibilityConfig.GTCEUTier getTier() {
+        if(controller() == null) return GTCEU_CONFIG.ACCELERATORS_ENERGY_TIER.get();
+        return controller().getTier();
     }
 
 

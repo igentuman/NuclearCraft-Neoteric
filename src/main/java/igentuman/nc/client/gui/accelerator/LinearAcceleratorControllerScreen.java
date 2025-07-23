@@ -24,7 +24,9 @@ import java.util.List;
 import java.util.Optional;
 
 import static igentuman.nc.NuclearCraft.rl;
+import static igentuman.nc.block.entity.NuclearCraftBE.isGTEUCapEnabled;
 import static igentuman.nc.content.particles.ParticleStack.getParticleStack;
+import static igentuman.nc.util.ModUtil.isGtLoaded;
 import static igentuman.nc.util.TextUtils.*;
 
 public class LinearAcceleratorControllerScreen extends AbstractContainerScreen<LinearAcceleratorContainer> implements IProgressScreen, IVerticalBarScreen {
@@ -225,15 +227,26 @@ public class LinearAcceleratorControllerScreen extends AbstractContainerScreen<L
             graphics.renderTooltip(font, checkboxInterior.getTooltips(),
                     Optional.empty(), pMouseX, pMouseY);
         }
-        if(container().getMaxEnergy() > 0) {
+
+        if(heatBar.isMouseOver(pMouseX, pMouseY)) {
+            heatBar.clearTooltips();
+            heatBar.addTooltip(__("reactor.cooling", container().getCooling()).withStyle(ChatFormatting.AQUA));
+            heatBar.addTooltip(__("reactor.heating", container().getHeating()).withStyle(ChatFormatting.RED));
+            heatBar.addTooltip(__("reactor.net_heat", container().getNetHeat()).withStyle(ChatFormatting.GOLD));
+            graphics.renderTooltip(font, heatBar.getTooltips(),
+                    Optional.empty(), pMouseX, pMouseY);
+        }
+
+        if(energyBar.isMouseOver(pMouseX, pMouseY)) {
             energyBar.clearTooltips();
-           /* if (container().isRunning()) {
-                energyBar.addTooltip(__("reactor.forge_energy_per_tick", container().energyPerTick()));
-            }*/
-            if(energyBar.isMouseOver(pMouseX, pMouseY)) {
-                graphics.renderTooltip(font, energyBar.getTooltips(),
-                        Optional.empty(), pMouseX, pMouseY);
+            if(isGtLoaded() && isGTEUCapEnabled()) {
+                energyBar.addTooltip(applyFormat(__("tooltip.eu.per_tick", scaledFormat(menu.getEnergyRequired())), ChatFormatting.YELLOW));
+                energyBar.addTooltip(applyFormat(__("tooltip.eu.tier", menu.getTier()), ChatFormatting.YELLOW));
+            } else {
+                energyBar.addTooltip(applyFormat(__("energy.per_tick", scaledFormat(container().getEnergyRequired())).withStyle(ChatFormatting.AQUA)));
             }
+            graphics.renderTooltip(font, energyBar.getTooltips(),
+                    Optional.empty(), pMouseX, pMouseY);
         }
     }
 
@@ -244,7 +257,7 @@ public class LinearAcceleratorControllerScreen extends AbstractContainerScreen<L
 
     @Override
     public double getHeat() {
-        return 0;
+        return container().getHeat();
     }
 
     @Override

@@ -5,6 +5,7 @@ import igentuman.nc.block.entity.MultiblockControllerBE;
 import igentuman.nc.compat.cc.LinearAcceleratorPeripheral;
 import igentuman.nc.compat.oc2.LinearAcceleratorDevice;
 import igentuman.nc.content.particles.*;
+import igentuman.nc.handler.config.CommonConfig;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.SlotModePair;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
@@ -102,7 +103,6 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
     public HashMap<String, Recipe> cachedRecipes = new HashMap<>();
     private List<ItemStack> allowedInputs;
     private List<FluidStack> allowedInputFluids;
-
 
     public LinearAcceleratorControllerBE(BlockPos pPos, BlockState pBlockState) {
         super(ACCELERATOR_BE.get(NAME).get(), pPos, pBlockState);
@@ -235,12 +235,12 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
             trackChanges(accelerateParticle());
         }
         heat -= coolingRate;
-
+        heat = Math.max(0, heat);
         refreshCacheFlag = !getMultiblock().isFormed();
         if(wasEnabled != controllerEnabled) {
            setChanged();
         }
-        if(refreshCacheFlag || changed) {
+        if(refreshCacheFlag || changed || getLevel().getGameTime() % 20 == 0) {
             try {
                 setChanged();
                 level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(POWERED, controllerEnabled), Block.UPDATE_NEIGHBORS);
@@ -279,6 +279,9 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
 
     private boolean accelerateParticle() {
         hasParticle = false;
+        if(energyStorage().getEnergyStored() < energyRequired) {
+            return false;
+        }
         if(particleStorage.getParticle() == null) {
             getParticleFromIonSource();
         }
@@ -286,7 +289,7 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
             return false;
         }
         if(!drainEnergy()) {
-            //return false;
+            return false;
         }
         ParticleStack particleStack = particleStorage.getParticle();
         particleStack.setFocus(focusGain(focus, particleStack)-focusLoss(Math.max(width, depth), particleStack));
@@ -418,6 +421,10 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
 
     public ParticleStack getParticleStack() {
         return particleStorage.getParticle();
+    }
+
+    public CommonConfig.GTCEUCompatibilityConfig.GTCEUTier getTier() {
+        return GTCEU_CONFIG.ACCELERATORS_ENERGY_TIER.get();
     }
 
     public static class Recipe extends NcRecipe {

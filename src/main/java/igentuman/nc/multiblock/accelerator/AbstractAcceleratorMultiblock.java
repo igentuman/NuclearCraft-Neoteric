@@ -5,10 +5,8 @@ import igentuman.nc.block.ElectromagnetBlock;
 import igentuman.nc.block.RFAmplifierBlock;
 import igentuman.nc.block.accelerator.CoolerBlock;
 import igentuman.nc.block.entity.accelerator.AcceleratorBeamPortBE;
-import igentuman.nc.block.entity.accelerator.LinearAcceleratorControllerBE;
 import igentuman.nc.content.particles.ParticleStack;
 import igentuman.nc.multiblock.AbstractMultiblock;
-import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.ValidationResult;
 import igentuman.nc.util.BlockPosInstance;
 import igentuman.nc.util.PortMode;
@@ -22,11 +20,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.handler.config.AcceleratorConfig.ACCELERATOR_CONFIG;
-import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.*;
+import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
 import static igentuman.nc.util.PortMode.PORT_MODE;
-import static igentuman.nc.util.TagUtil.getBlocksByTagKey;
 
 public class AbstractAcceleratorMultiblock extends AbstractMultiblock {
 
@@ -280,7 +276,6 @@ public class AbstractAcceleratorMultiblock extends AbstractMultiblock {
             int y = yCoords[i];
             BlockPos toCheck = new BlockPos(getSidePos(x).above(y).relative(multiblockDirection, z));
             BlockState bs = getBlockState(toCheck);
-            debugLog(toCheck.toShortString());
             addIfNotExists(toCheck, allBlocks);
             if (!isValidForInner(bs)) {
                 validationResult = ValidationResult.WRONG_INNER;

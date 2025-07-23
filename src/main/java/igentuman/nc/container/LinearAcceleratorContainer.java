@@ -155,4 +155,28 @@ public class LinearAcceleratorContainer extends AbstractContainerMenu {
     public int maxCoolant() {
         return 10000; // TODO: get from config
     }
+
+    public double getHeat() {
+        return blockEntity.heat;
+    }
+
+    public int getEnergyRequired() {
+        return blockEntity.energyRequired;
+    }
+
+    public Object getTier() {
+        return blockEntity.getTier();
+    }
+
+    public int getCooling() {
+        return blockEntity.coolingRate;
+    }
+
+    public int getHeating() {
+        return blockEntity.heatRate;
+    }
+
+    public int getNetHeat() {
+        return blockEntity.heatRate - blockEntity.coolingRate;
+    }
 }

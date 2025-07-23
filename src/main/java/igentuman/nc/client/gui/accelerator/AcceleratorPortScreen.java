@@ -10,6 +10,7 @@ import igentuman.nc.client.gui.element.button.Button;
 import igentuman.nc.client.gui.element.fluid.FluidTankRenderer;
 import igentuman.nc.container.AcceleratorPortContainer;
 import igentuman.nc.container.TurbinePortContainer;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -24,7 +25,9 @@ import java.util.List;
 import java.util.Optional;
 
 import static igentuman.nc.NuclearCraft.rl;
-import static igentuman.nc.util.TextUtils.__;
+import static igentuman.nc.block.entity.NuclearCraftBE.isGTEUCapEnabled;
+import static igentuman.nc.util.ModUtil.isGtLoaded;
+import static igentuman.nc.util.TextUtils.*;
 
 public class AcceleratorPortScreen extends AbstractContainerScreen<AcceleratorPortContainer> implements IProgressScreen, IVerticalBarScreen {
     protected final ResourceLocation GUI = rl("textures/gui/accelerators/accelerator_source.png");
@@ -128,14 +131,18 @@ public class AcceleratorPortScreen extends AbstractContainerScreen<AcceleratorPo
            }
         }
 
-        if(container().getMaxEnergy() > 0) {
+        if(energyBar.isMouseOver(pMouseX, pMouseY)) {
             energyBar.clearTooltips();
-            energyBar.addTooltip(__("reactor.forge_energy_per_tick", container().energyPerTick()));
-            if(energyBar.isMouseOver(pMouseX, pMouseY)) {
-                graphics.renderTooltip(font, energyBar.getTooltips(),
-                        Optional.empty(), pMouseX, pMouseY);
+            if(isGtLoaded() && isGTEUCapEnabled()) {
+                energyBar.addTooltip(applyFormat(__("tooltip.eu.per_tick", scaledFormat(menu.getEnergyRequired())), ChatFormatting.YELLOW));
+                energyBar.addTooltip(applyFormat(__("tooltip.eu.tier", menu.getTier()), ChatFormatting.YELLOW));
+            } else {
+                energyBar.addTooltip(applyFormat(__("energy.per_tick", scaledFormat(container().getEnergyRequired())).withStyle(ChatFormatting.AQUA)));
             }
+            graphics.renderTooltip(font, energyBar.getTooltips(),
+                    Optional.empty(), pMouseX, pMouseY);
         }
+
     }
 
     @Override

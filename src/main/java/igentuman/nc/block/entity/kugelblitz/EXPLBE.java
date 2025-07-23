@@ -23,6 +23,7 @@ import static igentuman.nc.handler.config.CommonConfig.GTCEU_CONFIG;
 import static igentuman.nc.handler.config.KugelblitzConfig.KUGELBLITZ_CONFIG;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.EXPL_BE;
 import static igentuman.nc.setup.registration.NCSounds.LASER_SHOOT;
+import static igentuman.nc.util.ModUtil.isBfrLoaded;
 import static igentuman.nc.util.ModUtil.isMekanismGeneratorsLoaded;
 import static net.minecraft.world.level.block.DirectionalBlock.FACING;
 
@@ -226,6 +227,9 @@ public class EXPLBE extends NuclearCraftBE {
             if (isMekanismGeneratorsLoaded() && be instanceof mekanism.generators.common.tile.fusion.TileEntityLaserFocusMatrix) {
                 return i;
             }
+            if (isBfrLoaded() && be instanceof igentuman.bfr.common.tile.fusion.TileEntityLaserFocusMatrix) {
+                return i;
+            }
         }
         return KUGELBLITZ_CONFIG.LASER_DISTANCE.get();
     }
@@ -243,6 +247,9 @@ public class EXPLBE extends NuclearCraftBE {
             }
         }
         if (isMekanismGeneratorsLoaded() && be instanceof mekanism.generators.common.tile.fusion.TileEntityLaserFocusMatrix matrixBe) {
+            matrixBe.receiveLaserEnergy(FloatingLong.create(aggregatedEnergy / 10));
+        }
+        if (isBfrLoaded() && be instanceof igentuman.bfr.common.tile.fusion.TileEntityLaserFocusMatrix matrixBe) {
             matrixBe.receiveLaserEnergy(FloatingLong.create(aggregatedEnergy / 10));
         }
     }

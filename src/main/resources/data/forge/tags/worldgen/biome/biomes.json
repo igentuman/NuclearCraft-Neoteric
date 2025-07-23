@@ -1,0 +1,10 @@
+{
+  "values": [
+    "#forge:is_dry",
+    "#forge:is_wet",
+    "#forge:is_hot",
+    "#forge:is_cold",
+    "#forge:is_rare",
+    "#forge:is_water"
+  ]
+}

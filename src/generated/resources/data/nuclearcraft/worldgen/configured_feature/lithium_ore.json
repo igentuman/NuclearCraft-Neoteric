@@ -15,6 +15,24 @@
       },
       {
         "state": {
+          "Name": "nuclearcraft:lithium_ore"
+        },
+        "target": {
+          "block": "minecraft:netherrack",
+          "predicate_type": "minecraft:block_match"
+        }
+      },
+      {
+        "state": {
+          "Name": "nuclearcraft:lithium_ore"
+        },
+        "target": {
+          "block": "minecraft:end_stone",
+          "predicate_type": "minecraft:block_match"
+        }
+      },
+      {
+        "state": {
           "Name": "nuclearcraft:lithium_deepslate_ore"
         },
         "target": {

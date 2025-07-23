@@ -6,8 +6,12 @@ import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BiomeTags;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.GenerationStep;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.world.BiomeModifier;
 import net.minecraftforge.common.world.ForgeBiomeModifiers;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -42,12 +46,12 @@ public class NCBiomeModifier {
     public static void bootstrap(BootstapContext<BiomeModifier> context) {
         var placedFeatures = context.lookup(Registries.PLACED_FEATURE);
         var biomes = context.lookup(Registries.BIOME);
-
+        TagKey<Biome> everyBiome = TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath("forge", "biomes"));
         for(String name: Ores.registered().keySet()) {
             NCOre ore = Ores.all().get(name);
             if(ore.config().dimensions.contains("minecraft:overworld")) {
                 context.register(BIOME_MODIFIERS.get(name), new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
-                        biomes.getOrThrow(BiomeTags.IS_OVERWORLD),
+                        biomes.getOrThrow(everyBiome),
                         HolderSet.direct(placedFeatures.getOrThrow(PLACED_FEATURES_KEYS.get(name))),
                         GenerationStep.Decoration.UNDERGROUND_ORES));
                 context.register(BIOME_MODIFIERS.get(name+"_wasteland"), new ForgeBiomeModifiers.AddFeaturesBiomeModifier(

@@ -26,7 +26,7 @@ public class NCWorldGenProvider extends DatapackBuiltinEntriesProvider {
             //.add(Registries.DIMENSION_TYPE, Dimensions::bootstrapType)
             //.add(Registries.LEVEL_STEM, Dimensions::bootstrapStem)
             .add(Registries.DENSITY_FUNCTION, NCDensityFunction::bootstrap)
-            .add(Registries.NOISE_SETTINGS, NCSurfaceRuleData::bootstrap)
+            //.add(Registries.NOISE_SETTINGS, NCSurfaceRuleData::bootstrap)
             .add(ForgeRegistries.Keys.BIOME_MODIFIERS, NCBiomeModifier::bootstrap);
 
 

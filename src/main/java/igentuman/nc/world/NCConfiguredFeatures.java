@@ -67,6 +67,10 @@ public class NCConfiguredFeatures {
                 if(ore.config().height[1] > 0) {
                     overworld.add(OreConfiguration.target(stoneReplaceable,
                             Ores.all().get(name).block().defaultBlockState()));
+                    overworld.add(OreConfiguration.target(netherrackReplacables,
+                            Ores.all().get(name).block().defaultBlockState()));
+                    overworld.add(OreConfiguration.target(endReplaceables,
+                            Ores.all().get(name).block().defaultBlockState()));
                 }
                 if(ore.config().height[0] < 0) {
                     overworld.add(OreConfiguration.target(deepslateReplaceables, ore.block("_deepslate").defaultBlockState()));

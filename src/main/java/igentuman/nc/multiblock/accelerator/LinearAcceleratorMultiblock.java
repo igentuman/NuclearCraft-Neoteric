@@ -204,6 +204,7 @@ public class LinearAcceleratorMultiblock extends AbstractAcceleratorMultiblock {
             validationResult = ValidationResult.VALID;
             errorBlockPos = BlockPos.ZERO;
             controllerBE().ionSourcePos = ionSourcePos;
+            controllerBE().beamLength = beamLength;
             controllerBE().amplifiers = amplifiers.size();
             controllerBE().coolers = validCoolers;
             controllerBE().quadroupoles = quadrupolesCount;

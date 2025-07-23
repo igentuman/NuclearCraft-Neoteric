@@ -251,7 +251,7 @@ public class AcceleratorBeamPortBE extends NuclearCraftBE implements MultiblockA
             if (level.getBlockEntity(currentPos) instanceof AcceleratorBeamPortBE targetPort) {
                 if (targetPort.getFacing() == facing.getOpposite()) {
                     if (targetPort.controller() != null) {
-                        particleStack.setFocus(Equations.focusLoss(distance, particleStack));
+                        particleStack.addFocus(-Equations.focusLoss(distance-1, particleStack));
                         targetPort.controller().getCapability(PARTICLE_HANDLER_CAPABILITY, facing.getOpposite())
                                 .ifPresent(handler -> {
                                     handler.reciveParticle(facing.getOpposite(), particleStack);
@@ -262,7 +262,7 @@ public class AcceleratorBeamPortBE extends NuclearCraftBE implements MultiblockA
             } else if (level.getBlockEntity(currentPos) instanceof TargetChamberBeamPortBE targetPort) {
                 if (targetPort.getFacing() == facing.getOpposite()) {
                     if (targetPort.controller() != null) {
-                        particleStack.setFocus(Equations.focusLoss(distance, particleStack));
+                        particleStack.addFocus(-Equations.focusLoss(distance-1, particleStack));
                         targetPort.controller().getCapability(PARTICLE_HANDLER_CAPABILITY, facing.getOpposite())
                                 .ifPresent(handler -> {
                                     handler.reciveParticle(facing.getOpposite(), particleStack);

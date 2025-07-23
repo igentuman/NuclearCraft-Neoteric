@@ -47,6 +47,7 @@ public class AbstractAcceleratorMultiblock extends AbstractMultiblock {
     protected long acceleratingVoltage = 0;
     protected int energyRequired = 0;
     protected int coolingRate = 0;
+    protected int beamLength = 0;
     protected int validCoolers = 0;
     protected int stage = 0;
 
@@ -398,12 +399,14 @@ public class AbstractAcceleratorMultiblock extends AbstractMultiblock {
 
     protected void validateBeam() {
         stage = FINAL_STAGE;
+        beamLength = 2;
         for(int i = 1; i < Math.max(depth, width)-1; i++) {
             if(!getBlockState(centerPos.revert().relative(multiblockDirection, i)).is(ACCELERATOR_BLOCKS.get("particle_beam").get())) {
                 validationResult = ValidationResult.WRONG_INNER;
                 errorBlockPos = new BlockPosInstance(centerPos);
                 return;
             }
+            beamLength++;
         }
         innerValid = true;
         validationResult =  ValidationResult.VALID;

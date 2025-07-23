@@ -22,6 +22,7 @@ public class LinearAcceleratorController implements MultiblockController {
         controllerBE().isCasingValid = false;
         controllerBE().amplifiers = 0;
         controllerBE().coolers = 0;
+        controllerBE().beamLength = 0;
         controllerBE().quadroupoles = 0;
         controllerBE().dipoles = 0;
         controllerBE().focus = 0;

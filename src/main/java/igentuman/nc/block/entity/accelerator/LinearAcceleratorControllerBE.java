@@ -73,6 +73,8 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
     @NBTField
     public int coolers;
     @NBTField
+    public int beamLength = 0;
+    @NBTField
     public boolean controllerEnabled = false;
     @NBTField
     public int amplifiers = 0;
@@ -401,7 +403,7 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
             return false;
         }
         ParticleStack particleStack = particleStorage.getParticle();
-        particleStack.setFocus(focusGain(focus, particleStack)-focusLoss(Math.max(width, depth), particleStack));
+        particleStack.addFocus(focusGain(focus, particleStack)-focusLoss(beamLength, particleStack));
         particleStack.setMeanEnergy(linacEnergyGain(acceleratingVoltage, particleStack));
         particleStorage.setParticleStack(particleStack);
         heat += heatRate;
@@ -424,6 +426,7 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
             stack = sourceItem.use(stack, 10000);
             ParticleStack particle = sourceItem.getParticleStack(stack);
             if (particle != null) {
+                particle.addFocus(0.4);
                 particleStorage.setParticleStack(particle);
                 contentHandler().itemHandler.setStackInSlot(0, stack);
             }

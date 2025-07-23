@@ -2289,6 +2289,7 @@
   "nc.ore_vein.spodumene": "Vein of Spodumene",
   "nc.ore_vein.uraninite": "Vein of Uraninite",
   "nc.redstone_dimmer.description": "Adjusts redstone output power based on impulses received from the left or right sides.",
+  "nc_jei_cat.accelerator_coolant": "Accelerator Coolant",
   "nc_jei_cat.alloy_smelter": "Alloy Smelter",
   "nc_jei_cat.analyzer": "Analyzer",
   "nc_jei_cat.assembler": "Assembler",

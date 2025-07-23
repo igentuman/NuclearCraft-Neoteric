@@ -154,9 +154,7 @@ public class AcceleratorPortBE extends NuclearCraftBE implements MultiblockAttac
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if(controller() == null) return super.getCapability(cap, side);
-        if (cap == PARTICLE_HANDLER_CAPABILITY) {
-            return controller().getCapability(cap, side);
-        }
+
         if (cap == ForgeCapabilities.ITEM_HANDLER) {
             return controller().getCapability(cap, side);
         }

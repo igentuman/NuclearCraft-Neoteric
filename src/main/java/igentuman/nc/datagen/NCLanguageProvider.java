@@ -404,6 +404,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("block.nuclearcraft.glowing_mushroom", "Glowing Mushroom");
         add("fusion_core", "Fusion Reactor Core");
         add("fusion_core.efficiency", "Efficiency: %s%%");
+        add("nc_jei_cat.accelerator_coolant", "Accelerator Coolant");
         add("nc_jei_cat.fusion_core", "Fusion Reactor");
         add("nc_jei_cat.target_chamber", "Target Chamber");
         add("nc_jei_cat.kugelblitz_chamber", "Quantum Transformation");

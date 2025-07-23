@@ -49,5 +49,6 @@ public class CustomRecipes extends NCRecipes {
         TConstructAlloyingRecipes.generate(consumer);
         TConstructCastingRecipes.generate(consumer);
         TConstructMeltingRecipes.generate(consumer);
+        AcceleratorCoolantRecipes.generate(consumer);
     }
 }

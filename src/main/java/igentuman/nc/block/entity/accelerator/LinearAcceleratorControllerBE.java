@@ -10,7 +10,9 @@ import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.SlotModePair;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.item.ParticleSourceItem;
+import igentuman.nc.multiblock.accelerator.AcceleratorRegistration;
 import igentuman.nc.multiblock.accelerator.LinearAcceleratorMultiblock;
+import igentuman.nc.multiblock.fusion.FusionReactorRegistration;
 import igentuman.nc.recipes.NcRecipeType;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
@@ -52,6 +54,7 @@ import static igentuman.nc.setup.registration.NCItems.ION_SOURCES;
 import static igentuman.nc.util.Equations.*;
 import static igentuman.nc.util.ModUtil.isCcLoaded;
 import static igentuman.nc.util.ModUtil.isOC2Loaded;
+import static net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE;
 
 public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
 
@@ -103,6 +106,10 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
     public HashMap<String, Recipe> cachedRecipes = new HashMap<>();
     private List<ItemStack> allowedInputs;
     private List<FluidStack> allowedInputFluids;
+    protected CoolantRecipe coolantRecipe;
+    protected List<CoolantRecipe> coolantRecipes;
+    private List<FluidStack> allowedCoolants;
+    private List<FluidStack> allowedCoolantsOutput;
 
     public LinearAcceleratorControllerBE(BlockPos pPos, BlockState pBlockState) {
         super(ACCELERATOR_BE.get(NAME).get(), pPos, pBlockState);
@@ -115,14 +122,24 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
         energy = LazyOptional.of(() -> energyStorage);
         contentHandler = new SidedContentHandler(
                 1, 1,
-                1, 1, 1000);
+                1, 3, 1000);
         contentHandler().itemHandler.setGlobalMode(0, SlotModePair.SlotMode.PULL);
         contentHandler().itemHandler.setGlobalMode(1, SlotModePair.SlotMode.PUSH);
+        // Particle source fluid input
         contentHandler().fluidHandler.setGlobalMode(0, SlotModePair.SlotMode.INPUT);
+        // Product output
         contentHandler().fluidHandler.setGlobalMode(1, SlotModePair.SlotMode.OUTPUT);
+        // Coolant input
+        contentHandler().fluidHandler.setGlobalMode(2, SlotModePair.SlotMode.INPUT);
+        // Hot coolant output
+        contentHandler().fluidHandler.setGlobalMode(3, SlotModePair.SlotMode.OUTPUT);
         contentHandler().setAllowedInputItems(this::getAllowedInputItems);
         contentHandler().setBlockEntity(this);
         contentHandler().setAllowedInputFluids(0, this::getAllowedInputFluids);
+        contentHandler().setAllowedInputFluids(2, this::getAllowedCoolants);
+        contentHandler().setAllowedInputFluids(3, this::getAllowedCoolantsOutput);
+        contentHandler().fluidHandler.tanks.get(2).setCapacity(100000);
+        contentHandler().fluidHandler.tanks.get(3).setCapacity(100000);
         particleStorage = new ParticleStorage();
         particleStorage.setTileEntity(this);
         particleHandler = CapabilityParticleStackHandler.createHandler(particleStorage);
@@ -187,7 +204,7 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if (cap == ForgeCapabilities.FLUID_HANDLER) {
-            return contentHandler().getFluidCapability(null);
+            return contentHandler().getFluidCapability(side);
         }
         if (cap == PARTICLE_HANDLER_CAPABILITY) {
             return particleHandler.cast();
@@ -234,8 +251,11 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
             handleMeltdown();
             trackChanges(accelerateParticle());
         }
+        // Passive cooling
         heat -= coolingRate;
         heat = Math.max(0, heat);
+        // Coolant cooling
+        coolantCoolDown();
         refreshCacheFlag = !getMultiblock().isFormed();
         if(wasEnabled != controllerEnabled) {
            setChanged();
@@ -260,6 +280,33 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
         return allowedInputFluids;
     }
 
+    public List<CoolantRecipe> getCoolantRecipes() {
+        if(coolantRecipes == null) {
+            coolantRecipes = (List<CoolantRecipe>) NcRecipeType.getAllRecipesFor("accelerator_coolant", getLevel());
+        }
+        return coolantRecipes;
+    }
+
+    protected List<FluidStack> getAllowedCoolants() {
+        if(allowedCoolants == null) {
+            allowedCoolants = new ArrayList<>();
+            for(CoolantRecipe recipe : getCoolantRecipes()) {
+                allowedCoolants.addAll(recipe.getInputFluids(0));
+            }
+        }
+        return allowedCoolants;
+    }
+
+    protected List<FluidStack> getAllowedCoolantsOutput() {
+        if(allowedCoolantsOutput == null) {
+            allowedCoolantsOutput = new ArrayList<>();
+            for(CoolantRecipe recipe : getCoolantRecipes()) {
+                allowedCoolantsOutput.addAll(recipe.getOutputFluids(0));
+            }
+        }
+        return allowedCoolantsOutput;
+    }
+
     @Override
     public LinearAcceleratorMultiblock getMultiblock() {
         if(multiblock == null) {
@@ -273,8 +320,70 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
         return false;
     }
 
+    public boolean hasCoolant() {
+        FluidStack coolant = contentHandler().fluidHandler.getFluidInSlot(2);
+        if(coolant.isEmpty()) {
+            coolantRecipe = null;
+            return false;
+        }
+        if(coolantRecipe == null) {
+            for(CoolantRecipe recipe: getCoolantRecipes()) {
+                if(recipe.getInputFluids()[0].test(coolant)) {
+                    coolantRecipe = recipe;
+                    return true;
+                }
+            }
+        } else {
+            if(!coolantRecipe.getInputFluids()[0].test(coolant)) {
+                coolantRecipe = null;
+                return false;
+            }
+        }
+        return coolantRecipe instanceof CoolantRecipe;
+    }
+
     private void handleMeltdown() {
 
+    }
+
+    protected void coolantCoolDown() {
+        if(hasCoolant() && heat > 0) {
+            double coolantNeededRatio = (double) coolingRate / coolantRecipe.getCoolingRate();
+            int coolantPerOp = coolantRecipe.getInputFluids()[0].getAmount();
+            int coolantNeeded = (int) Math.ceil(coolantNeededRatio * coolantPerOp);
+            
+            int availableCoolant = contentHandler().fluidHandler.tanks.get(2).getFluidAmount();
+            
+            if(availableCoolant >= coolantNeeded) {
+                // We have enough coolant to provide full cooling
+                int opsNeeded = Math.max(1, coolantNeeded / coolantPerOp);
+                double actualCooling = Math.min(coolingRate, heat);
+                
+                heat -= (int) actualCooling;
+                heat = Math.max(0, heat);
+                
+                extractCoolant(opsNeeded);
+            } else if(availableCoolant >= coolantPerOp) {
+                // We have some coolant but not enough for full cooling
+                int possibleOps = availableCoolant / coolantPerOp;
+                double partialCooling = (possibleOps * coolantPerOp * coolantRecipe.getCoolingRate()) / coolantPerOp;
+                double actualCooling = Math.min(partialCooling, heat);
+                
+                heat -= (int) actualCooling;
+                heat = Math.max(0, heat);
+                
+                extractCoolant(possibleOps);
+            }
+        }
+    }
+
+    protected void extractCoolant(int ops) {
+        if(coolantRecipe != null) {
+            contentHandler().fluidHandler.tanks.get(2).drain(coolantRecipe.getInputFluids()[0].getAmount() * ops, EXECUTE);
+            FluidStack output = coolantRecipe.getOutputFluids().get(0).copy();
+            output.setAmount(output.getAmount() * ops);
+            contentHandler().fluidHandler.tanks.get(3).fill(output, EXECUTE);
+        }
     }
 
     private boolean accelerateParticle() {
@@ -454,5 +563,33 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
         }
 
         public double getEnergy() { return powerModifier * 1000; }
+    }
+
+    public static class CoolantRecipe extends NcRecipe {
+        protected double coolingRate;
+
+        public CoolantRecipe(ResourceLocation id, ItemStackIngredient[] input, ItemStackIngredient[] output, FluidStackIngredient[] inputFluids, FluidStackIngredient[] outputFluids, double temperature, double powerModifier, double radiation, double rar) {
+            super(id, input, output, inputFluids, outputFluids, temperature, powerModifier, radiation, rar);
+            coolingRate = temperature;
+        }
+
+        @Override
+        public @NotNull String getGroup() {
+            return "accelerator_coolant";
+        }
+
+        @Override
+        public String getCodeId() {
+            return "accelerator_coolant";
+        }
+
+        @Override
+        public @NotNull ItemStack getToastSymbol() {
+            return new ItemStack(ACCELERATOR_BLOCKS.get("accelerator_port").get());
+        }
+
+        public double getCoolingRate() {
+            return Math.max(rarityModifier, 1);
+        }
     }
 }

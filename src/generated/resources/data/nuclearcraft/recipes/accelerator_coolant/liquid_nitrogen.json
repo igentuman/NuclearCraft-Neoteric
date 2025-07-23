@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:accelerator_coolant",
+  "coolingRate": 25.0,
+  "inputFluids": [
+    {
+      "amount": 10,
+      "tag": "forge:liquid_nitrogen"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 10,
+      "tag": "forge:nitrogen"
+    }
+  ]
+}

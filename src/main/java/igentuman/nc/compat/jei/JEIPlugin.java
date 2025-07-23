@@ -1,5 +1,6 @@
 package igentuman.nc.compat.jei;
 
+import igentuman.nc.block.entity.accelerator.LinearAcceleratorControllerBE;
 import igentuman.nc.block.entity.accelerator.TargetChamberControllerBE;
 import igentuman.nc.block.entity.fission.FissionControllerBE;
 import igentuman.nc.block.entity.fusion.FusionCoreBE;
@@ -47,6 +48,7 @@ import java.util.*;
 
 import static igentuman.nc.NuclearCraft.*;
 import static igentuman.nc.compat.GlobalVars.*;
+import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
 import static igentuman.nc.setup.registration.NCFluids.ALL_FLUID_ENTRIES;
 import static igentuman.nc.setup.registration.NCItems.ION_SOURCES;
 import static igentuman.nc.util.ModUtil.isMekanismLoaded;
@@ -60,6 +62,7 @@ public  class JEIPlugin implements IModPlugin {
     public static final RecipeType<FissionControllerBE.Recipe> FISSION = new RecipeType<>(rl(FissionControllerBE.NAME), FissionControllerBE.Recipe.class);
     public static final RecipeType<FusionCoreBE.Recipe> FUSION = new RecipeType<>(rl("fusion_core"), FusionCoreBE.Recipe.class);
     public static final RecipeType<FusionCoreBE.FusionCoolantRecipe> FUSION_COOLANT = new RecipeType<>(rl("fusion_coolant"), FusionCoreBE.FusionCoolantRecipe.class);
+    public static final RecipeType<LinearAcceleratorControllerBE.CoolantRecipe> ACCELERATOR_COOLANT = new RecipeType<>(rl("accelerator_coolant"), LinearAcceleratorControllerBE.CoolantRecipe.class);
     public static final RecipeType<FissionControllerBE.FissionBoilingRecipe> FISSION_BOILING = new RecipeType<>(rl("fission_boiling"), FissionControllerBE.FissionBoilingRecipe.class);
     public static final RecipeType<TurbineControllerBE.Recipe> TURBINE_CONTROLLER = new RecipeType<>(rl(TurbineControllerBE.NAME), TurbineControllerBE.Recipe.class);
     public static final RecipeType<MekChemicalConversionRecipe> CHEMICAL_TO_FLUID = new RecipeType<>(rl("mek_chemical_to_fluid"), MekChemicalConversionRecipe.class);;
@@ -114,6 +117,7 @@ public  class JEIPlugin implements IModPlugin {
         registration.addRecipeCategories(new OreVeinCategoryWrapper<>(registration.getJeiHelpers().getGuiHelper(), ORE_VEINS));
         registration.addRecipeCategories(new FusionCategoryWrapper<>(registration.getJeiHelpers().getGuiHelper(), FUSION));
         registration.addRecipeCategories(new FusionCoolantCategoryWrapper<>(registration.getJeiHelpers().getGuiHelper(), FUSION_COOLANT));
+        registration.addRecipeCategories(new AcceleratorCoolantCategoryWrapper<>(registration.getJeiHelpers().getGuiHelper(), ACCELERATOR_COOLANT));
         registration.addRecipeCategories(new FissionBoilingCategoryWrapper<>(registration.getJeiHelpers().getGuiHelper(), FISSION_BOILING));
         registration.addRecipeCategories(new TurbineControllerCategoryWrapper<>(registration.getJeiHelpers().getGuiHelper(), TURBINE_CONTROLLER));
         registration.addRecipeCategories(new FissionCategoryWrapper<>(registration.getJeiHelpers().getGuiHelper(), FISSION));
@@ -169,6 +173,9 @@ public  class JEIPlugin implements IModPlugin {
             registration.addRecipes(
                     getRecipeType(FUSION_COOLANT),
                     NcRecipeType.ALL_RECIPES.get("fusion_coolant").getRecipes(NcClient.tryGetClientWorld()));
+            registration.addRecipes(
+                    getRecipeType(ACCELERATOR_COOLANT),
+                    NcRecipeType.ALL_RECIPES.get("accelerator_coolant").getRecipes(NcClient.tryGetClientWorld()));
             registration.addRecipes(
                     getRecipeType(FISSION),
                     NcRecipeType.ALL_RECIPES.get(FissionControllerBE.NAME).getRecipes(NcClient.tryGetClientWorld()));
@@ -275,6 +282,8 @@ public  class JEIPlugin implements IModPlugin {
             registry.addRecipeCatalyst(CATALYSTS.get(FissionControllerBE.NAME).get(0), FISSION);
         }
 
+        registry.addRecipeCatalyst(ACCELERATOR_BLOCKS.get("linear_accelerator_controller").get(), ACCELERATOR_COOLANT);
+        registry.addRecipeCatalyst(ACCELERATOR_BLOCKS.get("thoroidal_accelerator_controller").get(), ACCELERATOR_COOLANT);
         if(CATALYSTS.containsKey("nc_ore_veins")) {
             registry.addRecipeCatalyst(CATALYSTS.get("nc_ore_veins").get(0), ORE_VEINS);
         }

@@ -39,6 +39,7 @@ public class NcRecipeType<RECIPE extends NcRecipe> implements RecipeType<RECIPE>
         recipes.put("nc_ore_veins", register("nc_ore_veins"));
         recipes.put("fusion_core", register("fusion_core"));
         recipes.put("fusion_coolant", register("fusion_coolant"));
+        recipes.put("accelerator_coolant", register("accelerator_coolant"));
         recipes.put("fission_boiling", register("fission_boiling"));
         recipes.put("kugelblitz_chamber", register("kugelblitz_chamber"));
         recipes.put("target_chamber", register("target_chamber"));

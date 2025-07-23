@@ -7,6 +7,7 @@ import igentuman.nc.client.gui.element.GuiParticle;
 import igentuman.nc.client.gui.element.NCGuiElement;
 import igentuman.nc.client.gui.element.bar.VerticalBar;
 import igentuman.nc.client.gui.element.button.Checkbox;
+import igentuman.nc.client.gui.element.fluid.FluidTankRenderer;
 import igentuman.nc.container.LinearAcceleratorContainer;
 import igentuman.nc.content.particles.ParticleStack;
 import net.minecraft.ChatFormatting;
@@ -25,6 +26,7 @@ import java.util.Optional;
 
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.block.entity.NuclearCraftBE.isGTEUCapEnabled;
+import static igentuman.nc.client.gui.element.fluid.FluidTankRenderer.TooltipMode.SHOW_AMOUNT_AND_CAPACITY;
 import static igentuman.nc.content.particles.ParticleStack.getParticleStack;
 import static igentuman.nc.util.ModUtil.isGtLoaded;
 import static igentuman.nc.util.TextUtils.*;
@@ -76,6 +78,7 @@ public class LinearAcceleratorControllerScreen extends AbstractContainerScreen<L
         heatBar = new VerticalBar.Heat(17, 20,  this, container().getMaxHeat());
         coolantBar = new VerticalBar.Coolant(27, 20,  this, container().maxCoolant());
         guiParticle = new GuiParticle(40, 21);
+        widgets.add(new FluidTankRenderer(getFluidTank(2), SHOW_AMOUNT_AND_CAPACITY,6, 73, 28, 21));
     }
 
     protected void addWidget(NCGuiElement widget)

@@ -156,12 +156,12 @@ dependencies {
     //runtimeOnly fg.deobf("com.blamejared.crafttweaker:CraftTweaker-forge-${mc_version}:${ct_version}")
 
     compileOnly fg.deobf("curse.maven:emi-580555:5872526")
-    runtimeOnly fg.deobf("curse.maven:large-ore-deposits-318833:6251845") {
+    /*runtimeOnly fg.deobf("curse.maven:large-ore-deposits-318833:6251845") {
         transitive = false
     }
     runtimeOnly fg.deobf("curse.maven:forgeendertech-244844:6030567"){
         transitive = false
-    }
+    }*/
     compileOnly fg.deobf("curse.maven:better-fusion-reactor-for-mekanism-602409:6794834")
     implementation fg.deobf("mekanism:Mekanism:${mc_version}-${mekanism_version}")
     implementation fg.deobf("mekanism:Mekanism:${mc_version}-${mekanism_version}:generators")

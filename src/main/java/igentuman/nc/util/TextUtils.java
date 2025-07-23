@@ -43,6 +43,11 @@ public class TextUtils
 		return  preffix+df.format(value);
 	}
 
+	public static String numberFormat(String value)
+	{
+		return numberFormat(Double.parseDouble(value));
+	}
+
 	public static String roundFormat(double value)
 	{
 		if(Math.round(value) == 0) {

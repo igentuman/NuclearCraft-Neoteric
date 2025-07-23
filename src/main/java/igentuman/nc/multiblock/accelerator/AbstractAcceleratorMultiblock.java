@@ -257,7 +257,7 @@ public class AbstractAcceleratorMultiblock extends AbstractMultiblock {
         dipoleStrength = 0;
         focus = 0.0;
         energyRequired = 0;
-        for (int z = 1; z < depth-1; z++) {
+        for (int z = 1; z < Math.max(depth, width)-1; z++) {
             if(!indexSlice(z)) {
                 return;
             }
@@ -279,8 +279,8 @@ public class AbstractAcceleratorMultiblock extends AbstractMultiblock {
             int x = xCoords[i];
             int y = yCoords[i];
             BlockPos toCheck = new BlockPos(getSidePos(x).above(y).relative(multiblockDirection, z));
-
             BlockState bs = getBlockState(toCheck);
+            debugLog(toCheck.toShortString());
             addIfNotExists(toCheck, allBlocks);
             if (!isValidForInner(bs)) {
                 validationResult = ValidationResult.WRONG_INNER;

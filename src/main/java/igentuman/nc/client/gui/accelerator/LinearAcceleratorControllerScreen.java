@@ -25,8 +25,7 @@ import java.util.Optional;
 
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.content.particles.ParticleStack.getParticleStack;
-import static igentuman.nc.util.TextUtils.__;
-import static igentuman.nc.util.TextUtils.applyFormat;
+import static igentuman.nc.util.TextUtils.*;
 
 public class LinearAcceleratorControllerScreen extends AbstractContainerScreen<LinearAcceleratorContainer> implements IProgressScreen, IVerticalBarScreen {
     protected final ResourceLocation GUI = rl("textures/gui/accelerators/linear_controller.png");
@@ -150,8 +149,8 @@ public class LinearAcceleratorControllerScreen extends AbstractContainerScreen<L
         if(isCasingValid()) {
             if (isInteriorValid()) {
                  graphics.drawString(font, __("tooltip.nc.accelerator.voltage", container().getVoltage()), 37, 50, 0xffffff);
-                 graphics.drawString(font, __("tooltip.nc.accelerator.efficiency", container().getEfficiency()), 37, 60, 0xffffff);
-                 graphics.drawString(font, __("tooltip.nc.accelerator.strength", container().getStrength()), 37, 70, 0xffffff);
+                 graphics.drawString(font, __("tooltip.nc.accelerator.efficiency", numberFormat(container().getEfficiency())+"%"), 37, 60, 0xffffff);
+                 graphics.drawString(font, __("tooltip.nc.accelerator.strength", numberFormat(container().getStrength())), 37, 70, 0xffffff);
             } else {
                 interiorTootip = applyFormat(__(getValidationResultKey(), getValidationResultData()), ChatFormatting.RED);
             }

@@ -132,8 +132,8 @@ public class LinearAcceleratorContainer extends AbstractContainerMenu {
         return blockEntity.quadroupoles;
     }
 
-    public String getEfficiency() {
-        return blockEntity.efficiency + "%";
+    public Double getEfficiency() {
+        return blockEntity.efficiency;
     }
 
     public int getAmplifiers() {

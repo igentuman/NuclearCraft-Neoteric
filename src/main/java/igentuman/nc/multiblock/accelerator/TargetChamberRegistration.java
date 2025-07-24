@@ -5,6 +5,7 @@ import igentuman.nc.block.target_chamber.entity.TargetChamberControllerBE;
 import igentuman.nc.block.target_chamber.entity.TargetChamberPortBE;
 import igentuman.nc.block.target_chamber.*;
 import igentuman.nc.container.TargetChamberControllerContainer;
+import igentuman.nc.container.TargetChamberPortContainer;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
@@ -43,8 +44,8 @@ public class TargetChamberRegistration {
     public static final RegistryObject<MenuType<TargetChamberControllerContainer>> TARGET_CHAMBER_CONTROLLER_CONTAINER = CONTAINERS.register("target_chamber_controller",
             () -> IForgeMenuType.create((windowId, inv, data) -> new TargetChamberControllerContainer(windowId, data.readBlockPos(), inv))
     );
-    public static final RegistryObject<MenuType<TargetChamberControllerContainer>> TARGET_CHAMBER_PORT_CONTAINER = CONTAINERS.register("target_chamber_port",
-            () -> IForgeMenuType.create((windowId, inv, data) -> new TargetChamberControllerContainer(windowId, data.readBlockPos(), inv))
+    public static final RegistryObject<MenuType<TargetChamberPortContainer>> TARGET_CHAMBER_PORT_CONTAINER = CONTAINERS.register("target_chamber_port",
+            () -> IForgeMenuType.create((windowId, inv, data) -> new TargetChamberPortContainer(windowId, data.readBlockPos(), inv))
     );
 
     public static List<DetectorDef> detectors() {

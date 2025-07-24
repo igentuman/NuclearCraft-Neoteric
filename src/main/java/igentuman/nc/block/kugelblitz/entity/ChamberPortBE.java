@@ -3,7 +3,6 @@ package igentuman.nc.block.kugelblitz.entity;
 import igentuman.api.nc.multiblock.MultiblockAttachable;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.NuclearCraftBE;
-import igentuman.nc.block.fission.entity.FissionPortBE;
 import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;
 import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;
@@ -137,7 +136,7 @@ public class ChamberPortBE extends NuclearCraftBE implements MultiblockAttachabl
         }
         int wasEnergy = getEnergyStored();
         BlockEntity be = level.getExistingBlockEntity(worldPosition.relative(direction));
-        if (be == null || be instanceof FissionPortBE) {
+        if (be == null || be instanceof ChamberPortBE) {
             return;
         }
         if((isGtLoaded() && isGTEUCapEnabled())) {

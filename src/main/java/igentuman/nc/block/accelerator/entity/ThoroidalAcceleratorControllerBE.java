@@ -35,9 +35,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
-import static igentuman.nc.block.fission.FissionControllerBlock.POWERED;
+import static igentuman.nc.block.accelerator.ThoroidalAcceleratorControllerBlock.POWERED;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
-import static igentuman.nc.compat.oc2.FissionReactorDevice.DEVICE_CAPABILITY;
+import static igentuman.nc.compat.oc2.ThoroidalAcceleratorDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.content.materials.Materials.subliquid_matter;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BE;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;

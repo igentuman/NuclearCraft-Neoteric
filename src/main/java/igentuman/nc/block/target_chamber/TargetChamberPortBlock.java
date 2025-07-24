@@ -1,8 +1,7 @@
 package igentuman.nc.block.target_chamber;
 
 import igentuman.nc.block.target_chamber.entity.TargetChamberPortBE;
-import igentuman.nc.block.fission.entity.FissionPortBE;
-import igentuman.nc.container.FissionPortContainer;
+import igentuman.nc.container.TargetChamberPortContainer;
 import igentuman.nc.multiblock.MultiblockHandler;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -86,12 +85,12 @@ public class TargetChamberPortBlock extends HorizontalDirectionalBlock implement
                 MenuProvider containerProvider = new MenuProvider() {
                     @Override
                     public Component getDisplayName() {
-                        return translatable("block.nuclearcraft.fission_reactor_port");
+                        return translatable("block.nuclearcraft.target_chamber_port");
                     }
 
                     @Override
                     public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity) {
-                        return new FissionPortContainer(windowId, pos, playerInventory);
+                        return new TargetChamberPortContainer(windowId, pos, playerInventory);
                     }
                 };
                 NetworkHooks.openScreen((ServerPlayer) player, containerProvider, be.getBlockPos());
@@ -105,13 +104,13 @@ public class TargetChamberPortBlock extends HorizontalDirectionalBlock implement
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         if (level.isClientSide()) {
             return (lvl, pos, blockState, t) -> {
-                if (t instanceof FissionPortBE tile) {
+                if (t instanceof TargetChamberPortBE tile) {
                     tile.tickClient();
                 }
             };
         }
         return (lvl, pos, blockState, t)-> {
-            if (t instanceof FissionPortBE tile) {
+            if (t instanceof TargetChamberPortBE tile) {
                 tile.tickServer();
             }
         };
@@ -133,7 +132,7 @@ public class TargetChamberPortBlock extends HorizontalDirectionalBlock implement
 
     @Override
     public int getAnalogOutputSignal(BlockState pBlockState, Level pLevel, BlockPos pPos) {
-        return pLevel.getExistingBlockEntity(pPos) instanceof FissionPortBE be ? be.analogSignal : 0;
+        return pLevel.getExistingBlockEntity(pPos) instanceof TargetChamberPortBE be ? be.analogSignal : 0;
     }
 
     @Override

@@ -6,13 +6,10 @@ import igentuman.nc.client.block.fusion.FusionCoreRenderer;
 import igentuman.nc.client.block.kugelblitz.EXPLRenderer;
 import igentuman.nc.client.block.turbine.TurbineRotorRenderer;
 import igentuman.nc.client.gui.FusionCoreScreen;
+import igentuman.nc.client.gui.MultiblockBuilderScreen;
 import igentuman.nc.client.gui.RedstoneDimmerScreen;
 import igentuman.nc.client.gui.StorageContainerScreen;
-import igentuman.nc.client.gui.accelerator.AcceleratorIonSourcePortScreen;
-import igentuman.nc.client.gui.accelerator.AcceleratorPortScreen;
-import igentuman.nc.client.gui.accelerator.LinearAcceleratorControllerScreen;
-import igentuman.nc.client.gui.accelerator.TargetChamberControllerScreen;
-import igentuman.nc.client.gui.accelerator.ThoroidalAcceleratorControllerScreen;
+import igentuman.nc.client.gui.accelerator.*;
 import igentuman.nc.client.gui.fission.FissionControllerScreen;
 import igentuman.nc.client.gui.fission.FissionPortScreen;
 import igentuman.nc.client.gui.kugelblitz.ChamberPortScreen;
@@ -55,12 +52,12 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.registries.RegistryObject;
-import igentuman.nc.client.gui.MultiblockBuilderScreen;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.*;
 import static igentuman.nc.multiblock.accelerator.TargetChamberRegistration.TARGET_CHAMBER_CONTROLLER_CONTAINER;
+import static igentuman.nc.multiblock.accelerator.TargetChamberRegistration.TARGET_CHAMBER_PORT_CONTAINER;
 import static igentuman.nc.multiblock.fission.FissionReactorRegistration.FISSION_CONTROLLER_CONTAINER;
 import static igentuman.nc.multiblock.fission.FissionReactorRegistration.FISSION_PORT_CONTAINER;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BE;
@@ -103,6 +100,7 @@ public class ClientSetup {
             MenuScreens.register(ACCELERATOR_PORT_CONTAINER.get(), AcceleratorPortScreen::new);
             MenuScreens.register(ACCELERATOR_ION_SOURCE_PORT_CONTAINER.get(), AcceleratorIonSourcePortScreen::new);
             MenuScreens.register(TARGET_CHAMBER_CONTROLLER_CONTAINER.get(), TargetChamberControllerScreen::new);
+            MenuScreens.register(TARGET_CHAMBER_PORT_CONTAINER.get(), TargetChamberPortScreen::new);
 
             for(String name: NCProcessors.PROCESSORS_CONTAINERS.keySet()) {
                 MenuScreens.register(NCProcessors.PROCESSORS_CONTAINERS.get(name).get(), Processors.all().get(name).getScreenConstructor());

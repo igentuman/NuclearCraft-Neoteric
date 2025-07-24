@@ -61,7 +61,7 @@ public class TargetChamberControllerBE extends MultiblockControllerBE {
     public final CustomEnergyStorage energyStorage;
     protected final LazyOptional<IEnergyStorage> energy;
     protected final LazyOptional<IParticleStackHandler> particleHandler;
-    protected final ParticleStorage particleStorage;
+    public final ParticleStorage particleStorage;
 
     @NBTField
     public int detectorsCount = 0;
@@ -174,7 +174,7 @@ public class TargetChamberControllerBE extends MultiblockControllerBE {
     }
 
     private CustomEnergyStorage createEnergy() {
-        return new CustomEnergyStorage(100000000, 0, 100000000) {
+        return new CustomEnergyStorage(100000000, 100000000, 0) {
             @Override
             protected void onEnergyChanged() {
                 setChanged();

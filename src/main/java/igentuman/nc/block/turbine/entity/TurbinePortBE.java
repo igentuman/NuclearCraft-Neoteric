@@ -1,7 +1,6 @@
 package igentuman.nc.block.turbine.entity;
 
 import igentuman.nc.NuclearCraft;
-import igentuman.nc.block.fission.entity.FissionPortBE;
 import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.util.annotation.NBTField;
@@ -99,7 +98,7 @@ public class TurbinePortBE extends TurbineBE {
         }
         int wasEnergy = getEnergyStored();
         BlockEntity be = level.getExistingBlockEntity(worldPosition.relative(direction));
-        if (be == null || be instanceof FissionPortBE) {
+        if (be == null || be instanceof TurbinePortBE) {
             return;
         }
         if((isGtLoaded() && isGTEUCapEnabled())) {

@@ -3,6 +3,7 @@ package igentuman.nc.block.target_chamber.entity;
 import igentuman.api.nc.multiblock.MultiblockAttachable;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.NuclearCraftBE;
+import igentuman.nc.content.particles.ParticleStack;
 import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.multiblock.AbstractMultiblock;
@@ -33,7 +34,7 @@ import static net.minecraftforge.common.capabilities.ForgeCapabilities.ENERGY;
 
 public class TargetChamberPortBE extends NuclearCraftBE implements MultiblockAttachable {
 
-    public static final String NAME = "target_chamber_beam_port";
+    public static final String NAME = "target_chamber_port";
 
     @NBTField
     public byte analogSignal = 0;
@@ -257,6 +258,15 @@ public class TargetChamberPortBE extends NuclearCraftBE implements MultiblockAtt
         return controller().energyPerTick;
     }
 
+    public ParticleStack getParticleStack() {
+        if (controller() == null) return null;
+        return controller().particleStorage.getParticle();
+    }
+
+    public ParticleStack getOutputParticle(int i) {
+        return (controller() != null && controller().getRecipe() != null) ? controller().getRecipe().getOutputParticle(i) : null;
+    }
+
     public void toggleRedstoneMode() {
         redstoneMode++;
         if (redstoneMode > SignalSource.MODERATOR) {
@@ -271,6 +281,11 @@ public class TargetChamberPortBE extends NuclearCraftBE implements MultiblockAtt
     public FluidTank getFluidTank(int i) {
         if (controller() == null) return null;
         return controller().getFluidTank(i);
+    }
+
+    public boolean hasParticle() {
+        if (controller() == null) return false;
+        return controller().hasParticle;
     }
 
     public static class SignalSource {

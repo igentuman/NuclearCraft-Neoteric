@@ -38,12 +38,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
+import static igentuman.nc.block.kugelblitz.ChamberPortBlock.POWERED;
 import static igentuman.nc.block.kugelblitz.entity.BlackHoleBE.MAX_MASS;
 import static igentuman.nc.block.kugelblitz.entity.BlackHoleBE.MIN_MASS;
-import static igentuman.nc.block.fission.FissionControllerBlock.POWERED;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.compat.gregtech.GTUtils.getGTEnergy;
-import static igentuman.nc.compat.oc2.FissionReactorDevice.DEVICE_CAPABILITY;
+import static igentuman.nc.compat.oc2.KugelblitzDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.content.materials.Materials.subliquid_matter;
 import static igentuman.nc.handler.config.CommonConfig.ENERGY_GENERATION;
 import static igentuman.nc.handler.config.CommonConfig.GTCEU_CONFIG;

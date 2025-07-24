@@ -2,6 +2,7 @@ package igentuman.nc.container;
 
 import igentuman.nc.block.target_chamber.entity.TargetChamberPortBE;
 import igentuman.nc.container.elements.NCSlotItemHandler;
+import igentuman.nc.content.particles.ParticleStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -11,6 +12,7 @@ import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
@@ -36,8 +38,8 @@ public class TargetChamberPortContainer extends AbstractContainerMenu {
         slotIndex = 0;
         layoutPlayerInventorySlots();
         portBE.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
-            addSlot(new NCSlotItemHandler.Input(h, 0, 56, 35));
-            addSlot(new NCSlotItemHandler.Output(h, 1, 116, 35));
+            addSlot(new NCSlotItemHandler.Input(h, 0, 53, 38));
+            addSlot(new NCSlotItemHandler.Output(h, 1, 111, 38));
         });
     }
 
@@ -109,7 +111,7 @@ public class TargetChamberPortContainer extends AbstractContainerMenu {
 
     protected void layoutPlayerInventorySlots() {
         int leftCol = 8;
-        int topRow = 153;
+        int topRow = 176;
         addSlotRange(playerInventory, leftCol, topRow, 9, 18);
         topRow -= 58;
         addSlotBox(playerInventory, leftCol, topRow, 9, 18, 3, 18);
@@ -137,5 +139,21 @@ public class TargetChamberPortContainer extends AbstractContainerMenu {
 
     public byte getAnalogSignalStrength() {
         return portBE.analogSignal;
+    }
+
+    public FluidTank getFluidTank(int i) {
+        return portBE.getFluidTank(i);
+    }
+
+    public boolean hasParticle() {
+        return portBE.hasParticle();
+    }
+
+    public ParticleStack getParticleStack() {
+        return portBE.getParticleStack();
+    }
+
+    public ParticleStack getOutputParticle(int i) {
+        return portBE.getOutputParticle(i);
     }
 }

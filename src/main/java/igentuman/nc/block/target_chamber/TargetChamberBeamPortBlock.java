@@ -1,7 +1,6 @@
 package igentuman.nc.block.target_chamber;
 
 import igentuman.nc.block.target_chamber.entity.TargetChamberBeamPortBE;
-import igentuman.nc.block.fission.entity.FissionPortBE;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.util.PortMode;
 import net.minecraft.ChatFormatting;
@@ -110,21 +109,7 @@ public class TargetChamberBeamPortBlock extends HorizontalDirectionalBlock imple
 
     public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag)
     {
-        if(isGtLoaded() && isGTEUCapEnabled()) {
-            list.add(__("tooltip.nc.energy_eu_tier", GTCEU_CONFIG.FISSION_REACTOR_TIER.get()).withStyle(ChatFormatting.GOLD));
-        }
-        list.add(applyFormat(translatable("fission_port.descr"), ChatFormatting.GOLD));
         list.add(__("multiblock.build_in_chunk.advise").withStyle(ChatFormatting.GREEN));
-    }
-
-    @Override
-    public boolean hasAnalogOutputSignal(BlockState pState) {
-        return true;
-    }
-
-    @Override
-    public int getAnalogOutputSignal(BlockState pBlockState, Level pLevel, BlockPos pPos) {
-        return pLevel.getExistingBlockEntity(pPos) instanceof FissionPortBE be ? be.analogSignal : 0;
     }
 
     @Override

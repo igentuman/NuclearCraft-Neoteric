@@ -3,8 +3,6 @@ package igentuman.nc.block.accelerator;
 import igentuman.nc.block.MultiblockBlock;
 import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.accelerator.CoolerDef;
-import igentuman.nc.multiblock.fission.FissionReactorMultiblock;
-import igentuman.nc.multiblock.fission.HeatSinkDef;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -30,7 +28,6 @@ import java.util.List;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.handler.event.client.InputEvents.DESCRIPTIONS_SHOW;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.COOLERS;
-import static igentuman.nc.multiblock.fission.FissionReactorRegistration.heatsinks;
 import static igentuman.nc.util.TextUtils.__;
 import static igentuman.nc.util.TextUtils.convertToName;
 

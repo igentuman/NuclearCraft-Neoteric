@@ -1,6 +1,7 @@
 modLoader="javafml"
 loaderVersion="[43.3.10,)"
 license="MIT"
+issueTrackerURL="https://github.com/igentuman/NuclearCraft-Neoteric/issues"
 [[mods]] 
 modId="nuclearcraft"
 version="${version}"

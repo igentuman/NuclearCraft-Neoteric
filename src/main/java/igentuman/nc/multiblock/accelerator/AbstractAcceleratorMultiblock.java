@@ -13,6 +13,7 @@ import igentuman.nc.util.PortMode;
 import igentuman.nc.util.math.MathUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -367,7 +368,7 @@ public class AbstractAcceleratorMultiblock extends AbstractMultiblock {
         return bs.getBlock() instanceof ElectromagnetBlock;
     }
 
-    public void tick() {
+    public void tick(Level level) {
         if(!canTick || !hasToRefresh) return;
 
         canTick = false;

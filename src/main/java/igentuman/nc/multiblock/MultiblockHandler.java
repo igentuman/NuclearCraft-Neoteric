@@ -161,7 +161,7 @@ public class MultiblockHandler {
                 }
 
                 try {
-                    multiblock.tick();
+                    multiblock.tick(level);
                 } catch (Exception e) {
                     debugLog("Error during multiblock validation for " + id + ": " + e.getMessage());
                     e.printStackTrace();
@@ -188,7 +188,7 @@ public class MultiblockHandler {
                 if (!multiblock.hasToRefresh) {
                     // Fast path for already validated multiblocks
                     try {
-                        multiblock.tick();
+                        multiblock.tick(level);
                     } catch (Exception e) {
                         debugLog("Error during multiblock tick for " + id + ": " + e.getMessage());
                         e.printStackTrace();

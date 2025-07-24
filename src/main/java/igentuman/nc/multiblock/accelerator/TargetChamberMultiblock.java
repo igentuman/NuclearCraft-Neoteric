@@ -86,8 +86,8 @@ public class TargetChamberMultiblock extends AbstractMultiblock {
 
 
     @Override
-    public void tick() {
-        super.tick();
+    public void tick(Level level) {
+        super.tick(level);
     }
 
     protected boolean isDetector(BlockState bs) {

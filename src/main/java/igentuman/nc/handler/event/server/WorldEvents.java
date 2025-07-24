@@ -124,8 +124,8 @@ public class WorldEvents {
 
     @SubscribeEvent
     public void onTick(LevelTickEvent event) {
-        if (event.side.isServer() && event.phase == Phase.END) {
-            if(event.isCanceled() || event.level.getGameTime() % 10 != 0) return;
+        if (event.side.isServer() && event.phase == Phase.START && event.haveTime()) {
+            if(event.isCanceled() || event.level.getGameTime() % 5 != 0) return;
             final ServerLevel level = (ServerLevel) event.level;
             //todo remove, this for testing purposes only
 /*

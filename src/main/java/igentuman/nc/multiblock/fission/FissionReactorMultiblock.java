@@ -9,7 +9,6 @@ import igentuman.nc.handler.event.server.WorldEvents;
 import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.ValidationResult;
-import igentuman.nc.util.BlockPosInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
@@ -116,8 +115,8 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
     }
 
     @Override
-    public void tick() {
-        super.tick();
+    public void tick(Level level) {
+        super.tick(level);
     }
 
     public boolean isModerator(BlockState bs) {

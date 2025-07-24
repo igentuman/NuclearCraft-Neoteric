@@ -9,6 +9,7 @@ import igentuman.nc.multiblock.ValidationResult;
 import igentuman.nc.util.BlockPosInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -349,8 +350,8 @@ public class KugelblitzMultiblock extends AbstractMultiblock {
     }
 
     @Override
-    public void tick() {
-        super.tick();
+    public void tick(Level level) {
+        super.tick(level);
         handleBlackHole();
         if(!pulseEnergy.isEmpty() && collectingEnergy) {
             collectingEnergy = false;

@@ -58,6 +58,7 @@ public abstract class AbstractMultiblock implements Multiblock {
     protected MultiblockControllerBE controllerBe;
     private static final Pattern SPECIAL_BLOCKS = Pattern.compile(".*(fusion_proxy|fusion_core|controller|port|irradiator|rotor|chamber_terminal).*");
     private static final Pattern CONTROLLERS = Pattern.compile(".*(controller|terminal).*");
+    private Level level;
 
     protected AbstractMultiblock(HashSet<Block> validOuterBlocks, HashSet<Block> validInnerBlocks, MultiblockController controller) {
         this.validOuterBlocks = validOuterBlocks;
@@ -117,6 +118,7 @@ public abstract class AbstractMultiblock implements Multiblock {
     public HashSet<Block> validInnerBlocks() { return validInnerBlocks; }
 
     protected Level getLevel() {
+        if(level instanceof ServerLevel) return  level;
         if (controller() == null || controller().controllerBE() == null) {
             return null;
         }
@@ -593,9 +595,9 @@ public abstract class AbstractMultiblock implements Multiblock {
     }
     protected boolean canTick = true;
 
-    public void tick() {
+    public void tick(Level level) {
         if(!canTick || !hasToRefresh) return;
-
+        this.level = level;
         canTick = false;
         validationResult = ValidationResult.INCOMPLETE;
         innerValid = false;

@@ -1,7 +1,7 @@
 package igentuman.nc.multiblock.fusion;
 
-import igentuman.nc.block.entity.fusion.FusionCoreBE;
-import igentuman.nc.block.entity.fusion.FusionCoreProxyBE;
+import igentuman.nc.block.fusion.entity.FusionCoreBE;
+import igentuman.nc.block.fusion.entity.FusionCoreProxyBE;
 import igentuman.nc.block.fusion.FusionCasingBlock;
 import igentuman.nc.block.fusion.FusionConnectorBlock;
 import igentuman.nc.block.fusion.FusionCoreBlock;

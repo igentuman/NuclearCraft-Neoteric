@@ -1,9 +1,7 @@
 package igentuman.nc.block.fission;
 
-import igentuman.nc.block.entity.fission.FissionPortBE;
-import igentuman.nc.compat.gregtech.GTUtils;
+import igentuman.nc.block.fission.entity.FissionPortBE;
 import igentuman.nc.container.FissionPortContainer;
-import igentuman.nc.handler.config.CommonConfig;
 import igentuman.nc.multiblock.MultiblockHandler;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -41,7 +39,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 import static igentuman.nc.block.entity.NuclearCraftBE.isGTEUCapEnabled;
-import static igentuman.nc.handler.config.CommonConfig.GTCEU_CONFIG;
 import static igentuman.nc.multiblock.fission.FissionReactorRegistration.FISSION_BE;
 import static igentuman.nc.util.ModUtil.isGtLoaded;
 import static igentuman.nc.util.TextUtils.*;

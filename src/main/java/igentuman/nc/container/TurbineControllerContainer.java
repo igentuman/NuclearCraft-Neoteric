@@ -1,6 +1,6 @@
 package igentuman.nc.container;
 
-import igentuman.nc.block.entity.turbine.TurbineControllerBE;
+import igentuman.nc.block.turbine.entity.TurbineControllerBE;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;

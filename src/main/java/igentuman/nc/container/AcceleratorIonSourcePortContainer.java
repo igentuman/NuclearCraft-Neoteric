@@ -1,7 +1,6 @@
 package igentuman.nc.container;
 
-import igentuman.nc.block.entity.accelerator.AcceleratorIonSourcePortBE;
-import igentuman.nc.block.entity.accelerator.AcceleratorPortBE;
+import igentuman.nc.block.accelerator.entity.AcceleratorIonSourcePortBE;
 import igentuman.nc.container.elements.NCSlotItemHandler;
 import igentuman.nc.handler.config.CommonConfig;
 import net.minecraft.core.BlockPos;

@@ -1,7 +1,6 @@
 package igentuman.nc.block.kugelblitz;
 
-import igentuman.nc.block.entity.kugelblitz.BlackHoleBE;
-import igentuman.nc.block.entity.kugelblitz.EXPLProxyBE;
+import igentuman.nc.block.kugelblitz.entity.BlackHoleBE;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;

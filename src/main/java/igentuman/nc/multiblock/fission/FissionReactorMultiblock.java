@@ -1,10 +1,10 @@
 package igentuman.nc.multiblock.fission;
 
-import igentuman.nc.block.entity.fission.*;
 import igentuman.nc.block.fission.FissionCasingBlock;
 import igentuman.nc.block.fission.FissionFuelCellBlock;
 import igentuman.nc.block.fission.HeatSinkBlock;
 import igentuman.nc.block.fission.IrradiationChamberBlock;
+import igentuman.nc.block.fission.entity.FissionControllerBE;
 import igentuman.nc.handler.event.server.WorldEvents;
 import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;

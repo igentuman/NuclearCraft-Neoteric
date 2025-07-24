@@ -1,6 +1,6 @@
 package igentuman.nc.container;
 
-import igentuman.nc.block.entity.accelerator.TargetChamberPortBE;
+import igentuman.nc.block.target_chamber.entity.TargetChamberPortBE;
 import igentuman.nc.container.elements.NCSlotItemHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;

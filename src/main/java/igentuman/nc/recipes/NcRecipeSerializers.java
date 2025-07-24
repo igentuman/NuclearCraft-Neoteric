@@ -1,12 +1,12 @@
 package igentuman.nc.recipes;
 
-import igentuman.nc.block.entity.accelerator.LinearAcceleratorControllerBE;
-import igentuman.nc.block.entity.accelerator.TargetChamberControllerBE;
-import igentuman.nc.block.entity.fission.FissionControllerBE;
-import igentuman.nc.block.entity.fusion.FusionCoreBE;
-import igentuman.nc.block.entity.fusion.FusionCoreBE.FusionCoolantRecipe;
-import igentuman.nc.block.entity.kugelblitz.ChamberTerminalBE;
-import igentuman.nc.block.entity.turbine.TurbineControllerBE;
+import igentuman.nc.block.accelerator.entity.LinearAcceleratorControllerBE;
+import igentuman.nc.block.target_chamber.entity.TargetChamberControllerBE;
+import igentuman.nc.block.fission.entity.FissionControllerBE;
+import igentuman.nc.block.fusion.entity.FusionCoreBE;
+import igentuman.nc.block.fusion.entity.FusionCoreBE.FusionCoolantRecipe;
+import igentuman.nc.block.kugelblitz.entity.ChamberTerminalBE;
+import igentuman.nc.block.turbine.entity.TurbineControllerBE;
 import igentuman.nc.recipes.serializers.*;
 import igentuman.nc.recipes.type.OreVeinRecipe;
 import igentuman.nc.recipes.type.RadShieldingRecipe;

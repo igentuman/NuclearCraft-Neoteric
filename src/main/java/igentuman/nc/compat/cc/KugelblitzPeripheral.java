@@ -3,7 +3,7 @@ package igentuman.nc.compat.cc;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.lua.LuaFunction;
 import dan200.computercraft.api.peripheral.IPeripheral;
-import igentuman.nc.block.entity.kugelblitz.ChamberTerminalBE;
+import igentuman.nc.block.kugelblitz.entity.ChamberTerminalBE;
 
 import javax.annotation.Nonnull;
 

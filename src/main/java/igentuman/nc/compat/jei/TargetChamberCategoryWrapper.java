@@ -1,8 +1,7 @@
 package igentuman.nc.compat.jei;
 
-import igentuman.nc.block.entity.accelerator.TargetChamberControllerBE;
+import igentuman.nc.block.target_chamber.entity.TargetChamberControllerBE;
 import igentuman.nc.compat.jei.ingredient.ParticleType;
-import igentuman.nc.compat.jei.util.TickTimer;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -20,7 +19,6 @@ import net.minecraft.world.phys.Vec2;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;

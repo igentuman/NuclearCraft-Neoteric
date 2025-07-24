@@ -1,7 +1,7 @@
 package igentuman.nc.multiblock.accelerator;
 
 import igentuman.api.nc.multiblock.MultiblockController;
-import igentuman.nc.block.entity.accelerator.LinearAcceleratorControllerBE;
+import igentuman.nc.block.accelerator.entity.LinearAcceleratorControllerBE;
 
 public class LinearAcceleratorController implements MultiblockController {
 

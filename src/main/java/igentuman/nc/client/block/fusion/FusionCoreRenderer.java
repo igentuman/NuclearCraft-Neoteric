@@ -1,7 +1,7 @@
 package igentuman.nc.client.block.fusion;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import igentuman.nc.block.entity.fusion.FusionCoreBE;
+import igentuman.nc.block.fusion.entity.FusionCoreBE;
 import igentuman.nc.block.fusion.FusionCoreBlock;
 import igentuman.nc.util.annotation.NothingNullByDefault;
 import net.minecraft.Util;

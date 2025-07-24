@@ -2,7 +2,7 @@ package igentuman.nc.compat.cc;
 
 import dan200.computercraft.api.lua.LuaFunction;
 import dan200.computercraft.api.peripheral.IPeripheral;
-import igentuman.nc.block.entity.accelerator.LinearAcceleratorControllerBE;
+import igentuman.nc.block.accelerator.entity.LinearAcceleratorControllerBE;
 import javax.annotation.Nonnull;
 
 public class LinearAcceleratorPeripheral implements IPeripheral {

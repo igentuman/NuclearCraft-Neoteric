@@ -1,6 +1,6 @@
 package igentuman.nc.container;
 
-import igentuman.nc.block.entity.accelerator.TargetChamberControllerBE;
+import igentuman.nc.block.target_chamber.entity.TargetChamberControllerBE;
 import igentuman.nc.container.elements.NCSlotItemHandler;
 import igentuman.nc.content.particles.ParticleStack;
 import net.minecraft.core.BlockPos;

@@ -2,7 +2,7 @@ package igentuman.nc.compat.cc;
 
 import dan200.computercraft.api.lua.LuaFunction;
 import dan200.computercraft.api.peripheral.IPeripheral;
-import igentuman.nc.block.entity.accelerator.TargetChamberControllerBE;
+import igentuman.nc.block.target_chamber.entity.TargetChamberControllerBE;
 
 import javax.annotation.Nonnull;
 

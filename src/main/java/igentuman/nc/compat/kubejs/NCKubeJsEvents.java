@@ -5,7 +5,7 @@ import dev.latvian.mods.kubejs.event.EventHandler;
 import dev.latvian.mods.kubejs.event.EventJS;
 import dev.latvian.mods.kubejs.event.EventResult;
 import dev.latvian.mods.kubejs.script.ScriptType;
-import igentuman.nc.block.entity.kugelblitz.BlackHoleBE;
+import igentuman.nc.block.kugelblitz.entity.BlackHoleBE;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;

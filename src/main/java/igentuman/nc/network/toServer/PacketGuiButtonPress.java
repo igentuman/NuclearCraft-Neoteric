@@ -1,14 +1,14 @@
 package igentuman.nc.network.toServer;
 
 import igentuman.nc.block.entity.MultiblockControllerBE;
-import igentuman.nc.block.entity.fission.FissionControllerBE;
-import igentuman.nc.block.entity.fission.FissionPortBE;
-import igentuman.nc.block.entity.fusion.FusionCoreBE;
-import igentuman.nc.block.entity.fusion.FusionCoreProxyBE;
-import igentuman.nc.block.entity.kugelblitz.ChamberPortBE;
-import igentuman.nc.block.entity.kugelblitz.EXPLBE;
+import igentuman.nc.block.fission.entity.FissionControllerBE;
+import igentuman.nc.block.fission.entity.FissionPortBE;
+import igentuman.nc.block.fusion.entity.FusionCoreBE;
+import igentuman.nc.block.fusion.entity.FusionCoreProxyBE;
+import igentuman.nc.block.kugelblitz.entity.ChamberPortBE;
+import igentuman.nc.block.kugelblitz.entity.EXPLBE;
 import igentuman.nc.block.entity.processor.NCProcessorBE;
-import igentuman.nc.block.entity.turbine.TurbinePortBE;
+import igentuman.nc.block.turbine.entity.TurbinePortBE;
 import igentuman.nc.client.gui.element.button.Button;
 import igentuman.nc.client.gui.element.button.Button.ReactorPortRedstoneModeButton;
 import igentuman.nc.client.gui.element.button.Button.ReactorMode;

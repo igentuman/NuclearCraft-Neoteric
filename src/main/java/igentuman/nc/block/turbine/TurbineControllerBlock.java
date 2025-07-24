@@ -1,7 +1,7 @@
 package igentuman.nc.block.turbine;
 
 import igentuman.nc.block.MultiblockControllerBlock;
-import igentuman.nc.block.entity.turbine.TurbineControllerBE;
+import igentuman.nc.block.turbine.entity.TurbineControllerBE;
 import igentuman.nc.compat.gregtech.GTUtils;
 import igentuman.nc.container.TurbineControllerContainer;
 import igentuman.nc.handler.config.CommonConfig;

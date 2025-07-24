@@ -1,7 +1,7 @@
 package igentuman.nc.compat.oc2;
 
 import dan200.computercraft.api.lua.LuaException;
-import igentuman.nc.block.entity.kugelblitz.ChamberTerminalBE;
+import igentuman.nc.block.kugelblitz.entity.ChamberTerminalBE;
 import li.cil.oc2.api.bus.device.Device;
 import li.cil.oc2.api.bus.device.object.Callback;
 import li.cil.oc2.api.bus.device.object.NamedDevice;

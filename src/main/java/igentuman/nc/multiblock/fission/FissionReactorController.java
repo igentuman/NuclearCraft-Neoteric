@@ -1,7 +1,7 @@
 package igentuman.nc.multiblock.fission;
 
 import igentuman.api.nc.multiblock.MultiblockController;
-import igentuman.nc.block.entity.fission.FissionControllerBE;
+import igentuman.nc.block.fission.entity.FissionControllerBE;
 
 public class FissionReactorController implements MultiblockController {
 

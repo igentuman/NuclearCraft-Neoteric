@@ -1,9 +1,8 @@
 package igentuman.nc.block.turbine;
 
-import igentuman.nc.block.entity.turbine.TurbineBE;
-import igentuman.nc.block.entity.turbine.TurbineBladeBE;
+import igentuman.nc.block.turbine.entity.TurbineBE;
+import igentuman.nc.block.turbine.entity.TurbineBladeBE;
 import igentuman.nc.multiblock.turbine.BladeDef;
-import igentuman.nc.multiblock.turbine.CoilDef;
 import igentuman.nc.multiblock.turbine.TurbineRegistration;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
@@ -12,7 +11,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -39,7 +37,6 @@ import static igentuman.nc.handler.config.TurbineConfig.TURBINE_CONFIG;
 import static igentuman.nc.handler.event.client.InputEvents.DESCRIPTIONS_SHOW;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BE;
 import static igentuman.nc.util.TextUtils.__;
-import static net.minecraft.world.level.block.Blocks.ANVIL;
 import static net.minecraft.world.level.block.Blocks.IRON_BARS;
 
 public class TurbineBladeBlock extends DirectionalBlock implements EntityBlock {

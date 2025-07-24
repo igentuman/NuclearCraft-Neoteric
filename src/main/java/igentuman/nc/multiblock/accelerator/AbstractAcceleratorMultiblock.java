@@ -4,7 +4,7 @@ import igentuman.api.nc.multiblock.MultiblockController;
 import igentuman.nc.block.ElectromagnetBlock;
 import igentuman.nc.block.RFAmplifierBlock;
 import igentuman.nc.block.accelerator.CoolerBlock;
-import igentuman.nc.block.entity.accelerator.AcceleratorBeamPortBE;
+import igentuman.nc.block.accelerator.entity.AcceleratorBeamPortBE;
 import igentuman.nc.content.particles.ParticleStack;
 import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.ValidationResult;

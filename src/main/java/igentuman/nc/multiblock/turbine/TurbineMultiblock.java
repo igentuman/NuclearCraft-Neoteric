@@ -1,9 +1,12 @@
 package igentuman.nc.multiblock.turbine;
 
-import igentuman.nc.block.entity.turbine.*;
 import igentuman.nc.block.turbine.TurbineBearingBlock;
 import igentuman.nc.block.turbine.TurbineBladeBlock;
 import igentuman.nc.block.turbine.TurbineRotorBlock;
+import igentuman.nc.block.turbine.entity.TurbineBladeBE;
+import igentuman.nc.block.turbine.entity.TurbineCoilBE;
+import igentuman.nc.block.turbine.entity.TurbineControllerBE;
+import igentuman.nc.block.turbine.entity.TurbineRotorBE;
 import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.ValidationResult;

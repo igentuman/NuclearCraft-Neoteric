@@ -2,7 +2,7 @@ package igentuman.nc.compat.cc;
 
 import dan200.computercraft.api.lua.LuaFunction;
 import dan200.computercraft.api.peripheral.IPeripheral;
-import igentuman.nc.block.entity.turbine.TurbineControllerBE;
+import igentuman.nc.block.turbine.entity.TurbineControllerBE;
 
 import javax.annotation.Nonnull;
 

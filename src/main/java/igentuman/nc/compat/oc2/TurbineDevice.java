@@ -1,6 +1,6 @@
 package igentuman.nc.compat.oc2;
 
-import igentuman.nc.block.entity.turbine.TurbineControllerBE;
+import igentuman.nc.block.turbine.entity.TurbineControllerBE;
 import li.cil.oc2.api.bus.device.Device;
 import li.cil.oc2.api.bus.device.object.Callback;
 import li.cil.oc2.api.bus.device.object.NamedDevice;

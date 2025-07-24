@@ -1,6 +1,6 @@
 package igentuman.nc.block.turbine;
 
-import igentuman.nc.block.entity.turbine.TurbineBE;
+import igentuman.nc.block.turbine.entity.TurbineBE;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
@@ -28,9 +28,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Objects;
 
-import static igentuman.nc.handler.event.client.InputEvents.DESCRIPTIONS_SHOW;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BE;
 import static igentuman.nc.util.TextUtils.__;
 

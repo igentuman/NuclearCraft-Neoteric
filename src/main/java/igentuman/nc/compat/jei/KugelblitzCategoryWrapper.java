@@ -1,6 +1,6 @@
 package igentuman.nc.compat.jei;
 
-import igentuman.nc.block.entity.kugelblitz.ChamberTerminalBE;
+import igentuman.nc.block.kugelblitz.entity.ChamberTerminalBE;
 import igentuman.nc.compat.jei.util.TickTimer;
 import igentuman.nc.recipes.ingredient.NcIngredient;
 import mezz.jei.api.constants.VanillaTypes;
@@ -27,12 +27,10 @@ import java.util.List;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
-import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BLOCKS;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BLOCKS;
 import static igentuman.nc.setup.registration.NCItems.UNKNOWN_INGREDIENT;
 import static igentuman.nc.util.StackUtils.resolveStackByModPriority;
 import static igentuman.nc.util.TextUtils.__;
-import static net.minecraft.world.item.Items.AIR;
 import static net.minecraft.world.item.Items.BARRIER;
 
 @SuppressWarnings("removal")

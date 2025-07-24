@@ -1,6 +1,6 @@
 package igentuman.nc.container;
 
-import igentuman.nc.block.entity.accelerator.LinearAcceleratorControllerBE;
+import igentuman.nc.block.accelerator.entity.LinearAcceleratorControllerBE;
 import igentuman.nc.content.particles.ParticleStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;

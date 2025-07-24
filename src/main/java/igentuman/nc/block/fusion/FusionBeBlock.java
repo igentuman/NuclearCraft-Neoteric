@@ -1,8 +1,7 @@
 package igentuman.nc.block.fusion;
 
 import igentuman.api.nc.multiblock.MultiblockAttachable;
-import igentuman.nc.block.entity.fusion.FusionCoreProxyBE;
-import igentuman.nc.multiblock.AbstractMultiblock;
+import igentuman.nc.block.fusion.entity.FusionCoreProxyBE;
 import igentuman.nc.multiblock.fusion.FusionReactorRegistration;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;

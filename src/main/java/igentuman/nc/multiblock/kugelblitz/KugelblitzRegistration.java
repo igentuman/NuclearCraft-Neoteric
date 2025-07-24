@@ -1,7 +1,7 @@
 package igentuman.nc.multiblock.kugelblitz;
 
-import igentuman.nc.block.entity.kugelblitz.*;
 import igentuman.nc.block.kugelblitz.*;
+import igentuman.nc.block.kugelblitz.entity.*;
 import igentuman.nc.container.ChamberPortContainer;
 import igentuman.nc.container.ChamberTerminalContainer;
 import igentuman.nc.container.EXPLContainer;

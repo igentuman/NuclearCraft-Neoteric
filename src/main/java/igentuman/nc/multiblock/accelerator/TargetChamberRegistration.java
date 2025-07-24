@@ -1,9 +1,9 @@
 package igentuman.nc.multiblock.accelerator;
 
-import igentuman.nc.block.accelerator.*;
-import igentuman.nc.block.entity.accelerator.TargetChamberBeamPortBE;
-import igentuman.nc.block.entity.accelerator.TargetChamberControllerBE;
-import igentuman.nc.block.entity.accelerator.TargetChamberPortBE;
+import igentuman.nc.block.target_chamber.entity.TargetChamberBeamPortBE;
+import igentuman.nc.block.target_chamber.entity.TargetChamberControllerBE;
+import igentuman.nc.block.target_chamber.entity.TargetChamberPortBE;
+import igentuman.nc.block.target_chamber.*;
 import igentuman.nc.container.TargetChamberControllerContainer;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.inventory.MenuType;

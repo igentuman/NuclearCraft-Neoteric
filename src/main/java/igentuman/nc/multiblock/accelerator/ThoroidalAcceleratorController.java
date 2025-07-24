@@ -1,7 +1,7 @@
 package igentuman.nc.multiblock.accelerator;
 
 import igentuman.api.nc.multiblock.MultiblockController;
-import igentuman.nc.block.entity.accelerator.ThoroidalAcceleratorControllerBE;
+import igentuman.nc.block.accelerator.entity.ThoroidalAcceleratorControllerBE;
 
 public class ThoroidalAcceleratorController implements MultiblockController {
 

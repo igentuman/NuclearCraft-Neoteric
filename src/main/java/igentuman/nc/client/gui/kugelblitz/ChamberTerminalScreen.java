@@ -23,10 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
-import static igentuman.nc.block.entity.kugelblitz.BlackHoleBE.MAX_MASS;
-import static igentuman.nc.block.entity.kugelblitz.BlackHoleBE.MIN_MASS;
+import static igentuman.nc.block.kugelblitz.entity.BlackHoleBE.MAX_MASS;
+import static igentuman.nc.block.kugelblitz.entity.BlackHoleBE.MIN_MASS;
 import static igentuman.nc.util.TextUtils.*;
 
 public class ChamberTerminalScreen extends AbstractContainerScreen<ChamberTerminalContainer> implements IProgressScreen, IVerticalBarScreen {

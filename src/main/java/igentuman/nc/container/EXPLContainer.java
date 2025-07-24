@@ -1,9 +1,8 @@
 package igentuman.nc.container;
 
 import igentuman.nc.NuclearCraft;
-import igentuman.nc.block.entity.kugelblitz.EXPLBE;
+import igentuman.nc.block.kugelblitz.entity.EXPLBE;
 import igentuman.nc.network.toServer.PacketGuiButtonPress;
-import igentuman.nc.network.toServer.PacketSliderChanged;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -11,10 +10,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.SlotItemHandler;
-import net.minecraftforge.items.wrapper.InvWrapper;
 import org.jetbrains.annotations.NotNull;
 
 import static igentuman.nc.NuclearCraft.MODID;

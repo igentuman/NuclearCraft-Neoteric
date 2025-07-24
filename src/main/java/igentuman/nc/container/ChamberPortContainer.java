@@ -1,6 +1,6 @@
 package igentuman.nc.container;
 
-import igentuman.nc.block.entity.kugelblitz.ChamberPortBE;
+import igentuman.nc.block.kugelblitz.entity.ChamberPortBE;
 import igentuman.nc.container.elements.NCSlotItemHandler;
 import igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration;
 import net.minecraft.core.BlockPos;

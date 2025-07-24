@@ -1,7 +1,7 @@
 
 package igentuman.nc.datagen.recipes.recipes;
 
-import igentuman.nc.block.entity.fission.FissionControllerBE;
+import igentuman.nc.block.fission.entity.FissionControllerBE;
 import igentuman.nc.datagen.recipes.builder.NcRecipeBuilder;
 import igentuman.nc.recipes.ingredient.NcIngredient;
 import igentuman.nc.setup.registration.FissionFuel;

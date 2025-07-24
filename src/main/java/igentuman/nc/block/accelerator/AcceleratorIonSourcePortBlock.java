@@ -1,10 +1,7 @@
 package igentuman.nc.block.accelerator;
 
-import igentuman.nc.block.entity.accelerator.AcceleratorIonSourcePortBE;
-import igentuman.nc.block.entity.accelerator.AcceleratorPortBE;
-import igentuman.nc.block.entity.kugelblitz.ChamberPortBE;
+import igentuman.nc.block.accelerator.entity.AcceleratorIonSourcePortBE;
 import igentuman.nc.container.AcceleratorIonSourcePortContainer;
-import igentuman.nc.container.ChamberPortContainer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;

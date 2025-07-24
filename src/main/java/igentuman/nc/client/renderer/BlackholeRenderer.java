@@ -1,20 +1,15 @@
 package igentuman.nc.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import igentuman.nc.block.entity.kugelblitz.BlackHoleBE;
+import igentuman.nc.block.kugelblitz.entity.BlackHoleBE;
 import igentuman.nc.util.Color;
 import igentuman.nc.util.CustomEffect;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Matrix3f;
-import org.joml.Matrix4f;
 
 import java.util.Random;
 

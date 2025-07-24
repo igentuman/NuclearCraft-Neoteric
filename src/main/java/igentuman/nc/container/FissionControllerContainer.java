@@ -1,6 +1,6 @@
 package igentuman.nc.container;
 
-import igentuman.nc.block.entity.fission.FissionControllerBE;
+import igentuman.nc.block.fission.entity.FissionControllerBE;
 import igentuman.nc.container.elements.NCSlotItemHandler;
 import igentuman.nc.multiblock.fission.FissionReactorRegistration;
 import net.minecraft.core.BlockPos;

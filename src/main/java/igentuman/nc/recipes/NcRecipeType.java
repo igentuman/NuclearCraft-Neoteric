@@ -1,8 +1,8 @@
 package igentuman.nc.recipes;
 
-import igentuman.nc.block.entity.fission.FissionControllerBE;
+import igentuman.nc.block.fission.entity.FissionControllerBE;
 import igentuman.nc.block.entity.processor.NuclearFurnaceBE;
-import igentuman.nc.block.entity.turbine.TurbineControllerBE;
+import igentuman.nc.block.turbine.entity.TurbineControllerBE;
 import igentuman.nc.client.NcClient;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;

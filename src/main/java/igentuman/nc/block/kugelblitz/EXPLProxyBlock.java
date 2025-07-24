@@ -1,7 +1,7 @@
 package igentuman.nc.block.kugelblitz;
 
-import igentuman.nc.block.entity.kugelblitz.EXPLBE;
-import igentuman.nc.block.entity.kugelblitz.EXPLProxyBE;
+import igentuman.nc.block.kugelblitz.entity.EXPLBE;
+import igentuman.nc.block.kugelblitz.entity.EXPLProxyBE;
 import igentuman.nc.container.EXPLContainer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -15,7 +15,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;

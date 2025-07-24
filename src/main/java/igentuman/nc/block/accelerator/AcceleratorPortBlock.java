@@ -1,9 +1,7 @@
 package igentuman.nc.block.accelerator;
 
-import igentuman.nc.block.entity.accelerator.AcceleratorPortBE;
-import igentuman.nc.block.entity.kugelblitz.ChamberPortBE;
+import igentuman.nc.block.accelerator.entity.AcceleratorPortBE;
 import igentuman.nc.container.AcceleratorPortContainer;
-import igentuman.nc.container.ChamberPortContainer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -41,7 +39,6 @@ import java.util.List;
 
 import static igentuman.nc.block.entity.NuclearCraftBE.isGTEUCapEnabled;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BE;
-import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BE;
 import static igentuman.nc.util.ModUtil.isGtLoaded;
 import static igentuman.nc.util.TextUtils.__;
 import static igentuman.nc.util.TextUtils.applyFormat;

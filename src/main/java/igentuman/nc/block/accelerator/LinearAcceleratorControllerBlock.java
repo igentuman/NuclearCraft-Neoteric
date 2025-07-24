@@ -1,7 +1,7 @@
 package igentuman.nc.block.accelerator;
 
 import igentuman.nc.block.MultiblockControllerBlock;
-import igentuman.nc.block.entity.accelerator.LinearAcceleratorControllerBE;
+import igentuman.nc.block.accelerator.entity.LinearAcceleratorControllerBE;
 import igentuman.nc.container.LinearAcceleratorContainer;
 import igentuman.nc.handler.config.CommonConfig;
 import net.minecraft.ChatFormatting;

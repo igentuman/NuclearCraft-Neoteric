@@ -1,7 +1,6 @@
 package igentuman.nc.block.turbine;
 
-import igentuman.nc.block.entity.turbine.TurbineBE;
-import igentuman.nc.block.entity.turbine.TurbineCoilBE;
+import igentuman.nc.block.turbine.entity.TurbineCoilBE;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.turbine.CoilDef;
 import igentuman.nc.multiblock.turbine.TurbineRegistration;
@@ -9,7 +8,6 @@ import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -29,7 +27,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.handler.event.client.InputEvents.DESCRIPTIONS_SHOW;

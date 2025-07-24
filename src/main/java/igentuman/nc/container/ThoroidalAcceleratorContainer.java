@@ -1,6 +1,6 @@
 package igentuman.nc.container;
 
-import igentuman.nc.block.entity.accelerator.ThoroidalAcceleratorControllerBE;
+import igentuman.nc.block.accelerator.entity.ThoroidalAcceleratorControllerBE;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;

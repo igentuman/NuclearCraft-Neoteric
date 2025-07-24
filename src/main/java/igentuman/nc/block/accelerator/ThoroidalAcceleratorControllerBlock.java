@@ -1,6 +1,6 @@
 package igentuman.nc.block.accelerator;
 
-import igentuman.nc.block.entity.accelerator.ThoroidalAcceleratorControllerBE;
+import igentuman.nc.block.accelerator.entity.ThoroidalAcceleratorControllerBE;
 import igentuman.nc.container.ThoroidalAcceleratorContainer;
 import igentuman.nc.handler.config.CommonConfig;
 import net.minecraft.ChatFormatting;

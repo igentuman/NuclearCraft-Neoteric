@@ -1,7 +1,7 @@
 package igentuman.nc.block.kugelblitz;
 
-import igentuman.nc.block.entity.kugelblitz.EXPLBE;
-import igentuman.nc.block.entity.kugelblitz.EXPLProxyBE;
+import igentuman.nc.block.kugelblitz.entity.EXPLBE;
+import igentuman.nc.block.kugelblitz.entity.EXPLProxyBE;
 import igentuman.nc.container.EXPLContainer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;

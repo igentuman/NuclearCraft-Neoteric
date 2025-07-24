@@ -1,6 +1,6 @@
 package igentuman.nc.multiblock.accelerator;
 
-import igentuman.nc.block.entity.accelerator.ThoroidalAcceleratorControllerBE;
+import igentuman.nc.block.accelerator.entity.ThoroidalAcceleratorControllerBE;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.ValidationResult;
 import igentuman.nc.util.BlockPosInstance;

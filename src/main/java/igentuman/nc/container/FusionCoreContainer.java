@@ -1,6 +1,6 @@
 package igentuman.nc.container;
 
-import igentuman.nc.block.entity.fusion.FusionCoreBE;
+import igentuman.nc.block.fusion.entity.FusionCoreBE;
 import igentuman.nc.multiblock.fusion.FusionReactorRegistration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -16,11 +16,8 @@ import net.minecraftforge.items.wrapper.InvWrapper;
 import org.jetbrains.annotations.NotNull;
 
 import static igentuman.nc.NuclearCraft.MODID;
-import static igentuman.nc.block.entity.NuclearCraftBE.isGTEUCapEnabled;
-import static igentuman.nc.compat.gregtech.GTUtils.convert2EU;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_CORE_PROXY;
-import static igentuman.nc.util.ModUtil.isGtLoaded;
 import static igentuman.nc.util.TextUtils.*;
 
 public class FusionCoreContainer extends AbstractContainerMenu {

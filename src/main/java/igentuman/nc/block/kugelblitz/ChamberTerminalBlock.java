@@ -1,7 +1,7 @@
 package igentuman.nc.block.kugelblitz;
 
 import igentuman.nc.block.MultiblockControllerBlock;
-import igentuman.nc.block.entity.kugelblitz.ChamberTerminalBE;
+import igentuman.nc.block.kugelblitz.entity.ChamberTerminalBE;
 import igentuman.nc.compat.gregtech.GTUtils;
 import igentuman.nc.container.ChamberTerminalContainer;
 import igentuman.nc.handler.config.CommonConfig;

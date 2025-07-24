@@ -2,7 +2,7 @@ package igentuman.nc.compat.cc;
 
 import dan200.computercraft.api.lua.LuaFunction;
 import dan200.computercraft.api.peripheral.IPeripheral;
-import igentuman.nc.block.entity.fission.FissionControllerBE;
+import igentuman.nc.block.fission.entity.FissionControllerBE;
 
 import javax.annotation.Nonnull;
 

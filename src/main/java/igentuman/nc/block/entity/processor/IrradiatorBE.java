@@ -1,6 +1,6 @@
 package igentuman.nc.block.entity.processor;
 
-import igentuman.nc.block.entity.fission.FissionControllerBE;
+import igentuman.nc.block.fission.entity.FissionControllerBE;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.api.nc.multiblock.MultiblockAttachable;

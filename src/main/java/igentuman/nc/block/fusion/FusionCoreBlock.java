@@ -1,8 +1,8 @@
 package igentuman.nc.block.fusion;
 
 import igentuman.nc.block.entity.MultiblockControllerBE;
-import igentuman.nc.block.entity.fusion.FusionCoreBE;
-import igentuman.nc.block.entity.fusion.FusionCoreProxyBE;
+import igentuman.nc.block.fusion.entity.FusionCoreBE;
+import igentuman.nc.block.fusion.entity.FusionCoreProxyBE;
 import igentuman.nc.compat.gregtech.GTUtils;
 import igentuman.nc.container.FusionCoreContainer;
 import igentuman.nc.handler.config.CommonConfig;

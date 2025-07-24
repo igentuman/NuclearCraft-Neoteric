@@ -1,7 +1,7 @@
 package igentuman.nc.multiblock.accelerator;
 
-import igentuman.nc.block.accelerator.DetectorBlock;
-import igentuman.nc.block.entity.accelerator.TargetChamberControllerBE;
+import igentuman.nc.block.target_chamber.DetectorBlock;
+import igentuman.nc.block.target_chamber.entity.TargetChamberControllerBE;
 import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.ValidationResult;

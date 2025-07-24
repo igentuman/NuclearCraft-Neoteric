@@ -1,11 +1,9 @@
 package igentuman.nc.multiblock.turbine;
 
-import igentuman.nc.block.entity.turbine.TurbineCoilBE;
+import igentuman.nc.block.turbine.entity.TurbineCoilBE;
 import igentuman.nc.util.TagUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -24,7 +22,6 @@ import java.util.stream.Stream;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.handler.config.TurbineConfig.TURBINE_CONFIG;
-import static igentuman.nc.setup.registration.Registries.BLOCK_REGISTRY;
 import static igentuman.nc.setup.registration.Registries.ITEM_REGISTRY;
 import static igentuman.nc.util.NcUtils.rlFromString;
 

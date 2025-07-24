@@ -1,11 +1,11 @@
 package igentuman.nc.compat.jei;
 
-import igentuman.nc.block.entity.accelerator.LinearAcceleratorControllerBE;
-import igentuman.nc.block.entity.accelerator.TargetChamberControllerBE;
-import igentuman.nc.block.entity.fission.FissionControllerBE;
-import igentuman.nc.block.entity.fusion.FusionCoreBE;
-import igentuman.nc.block.entity.kugelblitz.ChamberTerminalBE;
-import igentuman.nc.block.entity.turbine.TurbineControllerBE;
+import igentuman.nc.block.accelerator.entity.LinearAcceleratorControllerBE;
+import igentuman.nc.block.target_chamber.entity.TargetChamberControllerBE;
+import igentuman.nc.block.fission.entity.FissionControllerBE;
+import igentuman.nc.block.fusion.entity.FusionCoreBE;
+import igentuman.nc.block.kugelblitz.entity.ChamberTerminalBE;
+import igentuman.nc.block.turbine.entity.TurbineControllerBE;
 import igentuman.nc.client.NcClient;
 import igentuman.nc.client.gui.fission.FissionControllerScreen;
 import igentuman.nc.client.gui.processor.NCProcessorScreen;
@@ -24,7 +24,6 @@ import igentuman.nc.recipes.ingredient.creator.IngredientCreatorAccess;
 import igentuman.nc.recipes.type.MekChemicalConversionRecipe;
 import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.recipes.type.OreVeinRecipe;
-import igentuman.nc.recipes.type.TargetChamberRecipe;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.gui.handlers.IGuiClickableArea;
@@ -49,7 +48,6 @@ import java.util.*;
 import static igentuman.nc.NuclearCraft.*;
 import static igentuman.nc.compat.GlobalVars.*;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
-import static igentuman.nc.setup.registration.NCFluids.ALL_FLUID_ENTRIES;
 import static igentuman.nc.setup.registration.NCItems.ION_SOURCES;
 import static igentuman.nc.util.ModUtil.isMekanismLoaded;
 

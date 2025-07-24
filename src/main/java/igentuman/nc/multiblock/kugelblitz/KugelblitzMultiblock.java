@@ -1,8 +1,8 @@
 package igentuman.nc.multiblock.kugelblitz;
 
-import igentuman.nc.block.entity.kugelblitz.BlackHoleBE;
-import igentuman.nc.block.entity.kugelblitz.ChamberTerminalBE;
-import igentuman.nc.block.entity.kugelblitz.PhotonConcentratorBE;
+import igentuman.nc.block.kugelblitz.entity.BlackHoleBE;
+import igentuman.nc.block.kugelblitz.entity.ChamberTerminalBE;
+import igentuman.nc.block.kugelblitz.entity.PhotonConcentratorBE;
 import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.ValidationResult;
@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-import static igentuman.nc.block.entity.kugelblitz.BlackHoleBE.MIN_MASS;
+import static igentuman.nc.block.kugelblitz.entity.BlackHoleBE.MIN_MASS;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.CASING_BLOCKS;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BLOCKS;
 import static igentuman.nc.util.TagUtil.getBlocksByTagKey;

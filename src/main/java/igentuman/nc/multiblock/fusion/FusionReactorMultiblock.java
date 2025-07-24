@@ -2,7 +2,7 @@ package igentuman.nc.multiblock.fusion;
 
 import igentuman.nc.block.ElectromagnetBlock;
 import igentuman.nc.block.RFAmplifierBlock;
-import igentuman.nc.block.entity.fusion.FusionCoreBE;
+import igentuman.nc.block.fusion.entity.FusionCoreBE;
 import igentuman.nc.block.fusion.FusionConnectorBlock;
 import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;

@@ -1,7 +1,6 @@
 package igentuman.nc.compat.jei;
 
-import igentuman.nc.block.entity.accelerator.LinearAcceleratorControllerBE;
-import igentuman.nc.block.entity.fusion.FusionCoreBE;
+import igentuman.nc.block.accelerator.entity.LinearAcceleratorControllerBE;
 import igentuman.nc.compat.jei.util.TickTimer;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.forge.ForgeTypes;
@@ -28,7 +27,6 @@ import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
-import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BLOCKS;
 import static igentuman.nc.util.TextUtils.__;
 import static net.minecraft.world.item.Items.BARRIER;
 

@@ -1,7 +1,7 @@
 package igentuman.nc.block.fusion;
 
-import igentuman.nc.block.entity.fusion.FusionCoreBE;
-import igentuman.nc.block.entity.fusion.FusionCoreProxyBE;
+import igentuman.nc.block.fusion.entity.FusionCoreBE;
+import igentuman.nc.block.fusion.entity.FusionCoreProxyBE;
 import igentuman.nc.container.FusionCoreContainer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;

@@ -2,7 +2,7 @@ package igentuman.nc.multiblock.accelerator;
 
 import com.google.gson.JsonArray;
 import igentuman.nc.block.accelerator.*;
-import igentuman.nc.block.entity.accelerator.*;
+import igentuman.nc.block.accelerator.entity.*;
 import igentuman.nc.container.AcceleratorIonSourcePortContainer;
 import igentuman.nc.container.AcceleratorPortContainer;
 import igentuman.nc.container.LinearAcceleratorContainer;

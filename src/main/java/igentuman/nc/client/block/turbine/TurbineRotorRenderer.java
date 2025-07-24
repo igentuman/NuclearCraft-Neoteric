@@ -2,7 +2,7 @@ package igentuman.nc.client.block.turbine;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Transformation;
-import igentuman.nc.block.entity.turbine.TurbineRotorBE;
+import igentuman.nc.block.turbine.entity.TurbineRotorBE;
 import igentuman.nc.block.turbine.TurbineRotorBlock;
 import igentuman.nc.util.annotation.NothingNullByDefault;
 import net.minecraft.Util;

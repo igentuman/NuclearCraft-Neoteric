@@ -1,8 +1,7 @@
 package igentuman.nc.compat.jei;
 
-import igentuman.nc.block.entity.fission.FissionControllerBE;
+import igentuman.nc.block.fission.entity.FissionControllerBE;
 import igentuman.nc.compat.jei.util.TickTimer;
-import igentuman.nc.multiblock.fission.FissionReactorRegistration;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -29,7 +28,6 @@ import static igentuman.nc.compat.GlobalVars.*;
 import static igentuman.nc.multiblock.fission.FissionReactorRegistration.FISSION_BLOCKS;
 import static igentuman.nc.util.TextUtils.__;
 import static igentuman.nc.util.TextUtils.numberFormat;
-import static net.minecraft.world.item.Items.AIR;
 import static net.minecraft.world.item.Items.BARRIER;
 
 @SuppressWarnings("removal")

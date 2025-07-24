@@ -1,7 +1,7 @@
 package igentuman.nc.block.fission;
 
 import igentuman.nc.block.MultiblockControllerBlock;
-import igentuman.nc.block.entity.fission.FissionControllerBE;
+import igentuman.nc.block.fission.entity.FissionControllerBE;
 import igentuman.nc.compat.gregtech.GTUtils;
 import igentuman.nc.container.FissionControllerContainer;
 import igentuman.nc.handler.config.CommonConfig;

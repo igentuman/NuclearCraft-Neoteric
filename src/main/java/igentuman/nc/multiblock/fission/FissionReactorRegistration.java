@@ -1,8 +1,8 @@
 package igentuman.nc.multiblock.fission;
 
 import com.google.gson.JsonArray;
-import igentuman.nc.block.entity.fission.FissionControllerBE;
-import igentuman.nc.block.entity.fission.FissionPortBE;
+import igentuman.nc.block.fission.entity.FissionControllerBE;
+import igentuman.nc.block.fission.entity.FissionPortBE;
 import igentuman.nc.block.fission.*;
 import igentuman.nc.container.FissionControllerContainer;
 import igentuman.nc.container.FissionPortContainer;

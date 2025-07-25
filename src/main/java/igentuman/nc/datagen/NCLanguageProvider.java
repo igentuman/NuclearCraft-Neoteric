@@ -728,7 +728,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("tooltip.toggle_description_keys","Toggle description: CTRL+N");
         add("fuel.heat.descr","Base Heat Gen: %s H/t");
         add("message.nc.battery.side_config","Mode: %s");
-        add("message.nc.barrel.side_config","Mode: %s");
+        add("message.nc.switch_side.mode","Mode: %s");
         add("gui.nc.reactor_comparator_config.tooltip_1","Comparator: Energy Stored");
         add("gui.nc.turbine_comparator_config.tooltip_0","Comparator: Energy Stored");
         add("gui.nc.turbine_comparator_config.tooltip_2","Comparator: Overflow");

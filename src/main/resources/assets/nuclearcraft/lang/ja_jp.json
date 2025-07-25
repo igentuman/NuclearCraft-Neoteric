@@ -1988,7 +1988,7 @@
   "message.heat_sink.valid7": "細部への こだわりが 印象的でした まる",
   "message.heat_sink.valid8": "これは私たちのアプリケーションに最適です",
   "message.heat_sink.valid9": "これは私たちの基準を非常によく満たしています",
-  "message.nc.barrel.side_config": "モード: %s",
+  "message.nc.switch_side.mode": "モード: %s",
   "message.nc.battery.side_config": "モード: %s",
   "message.nc.geiger_radiation_measure": "放射線レベル: %s",
   "message.nc.player_radiation_contamination": "放射線量: %s",

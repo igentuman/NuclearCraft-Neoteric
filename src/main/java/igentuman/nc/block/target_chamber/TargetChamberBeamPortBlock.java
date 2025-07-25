@@ -83,7 +83,7 @@ public class TargetChamberBeamPortBlock extends HorizontalDirectionalBlock imple
                 PortMode.Mode newMode = mode.next();
                 level.setBlockAndUpdate(pos, state.setValue(PORT_MODE, newMode));
                 MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(pos);
-                player.sendSystemMessage(__("message.nc.barrel.side_config", newMode));
+                player.sendSystemMessage(__("message.nc.switch_side.mode", newMode));
                 return InteractionResult.SUCCESS;
             }
         }

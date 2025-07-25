@@ -82,7 +82,7 @@ public class BarrelBlock extends Block implements EntityBlock {
                     dirToChange = dirToChange.getOpposite();
                 }
                 SideModeToggleable.SideMode mode = be.toggleSideConfig(dirToChange.ordinal());
-                player.sendSystemMessage(__("message.nc.barrel.side_config", mode.name()));
+                player.sendSystemMessage(__("message.nc.switch_side.mode", mode.name()));
             } else
             if(!handStack.equals(ItemStack.EMPTY)) {
                 if(handStack.getItem() instanceof BucketItem) {

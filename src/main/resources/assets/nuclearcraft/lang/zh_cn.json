@@ -1960,7 +1960,7 @@
   "message.heat_sink.valid7": "对细节的把握令人印象深刻",
   "message.heat_sink.valid8": "这非常适合应用",
   "message.heat_sink.valid9": "这非常符合我们的标准",
-  "message.nc.barrel.side_config": "模式: %s",
+  "message.nc.switch_side.mode": "模式: %s",
   "message.nc.battery.side_config": "模式: %s",
   "message.nc.geiger_radiation_measure": "辐射水平: %s",
   "message.nc.player_radiation_contamination": "辐射剂量: %s",

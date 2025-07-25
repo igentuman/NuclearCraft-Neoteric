@@ -80,7 +80,7 @@ public class ContainerBlock extends Block implements EntityBlock {
                     dirToChange = dirToChange.getOpposite();
                 }
                 SideModeToggleable.SideMode mode = be.toggleSideConfig(dirToChange.ordinal());
-                player.sendSystemMessage(__("message.nc.barrel.side_config", mode.name()));
+                player.sendSystemMessage(__("message.nc.switch_side.mode", mode.name()));
             } else {
                 MenuProvider containerProvider = new MenuProvider() {
                     @Override

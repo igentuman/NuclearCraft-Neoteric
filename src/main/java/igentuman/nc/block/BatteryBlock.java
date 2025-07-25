@@ -68,7 +68,7 @@ public class BatteryBlock extends Block implements EntityBlock {
                         dirToChange = dirToChange.getOpposite();
                     }
                     SideModeToggleable.SideMode mode = batteryBE.toggleSideConfig(dirToChange.ordinal());
-                    player.sendSystemMessage(__("message.nc.barrel.side_config", mode.name()));
+                    player.sendSystemMessage(__("message.nc.switch_side.mode", mode.name()));
                 } else {
                     player.sendSystemMessage(__("tooltip.nc.energy_stored", formatEnergy(batteryBE.energyStorage.getEnergyStored()), formatEnergy(batteryBE.energyStorage.getMaxEnergyStored())).withStyle(ChatFormatting.BLUE));
                 }

@@ -1806,7 +1806,7 @@
   "message.heat_sink.valid7": "Внимание к деталям впечатляет",
   "message.heat_sink.valid8": "Это идеально подходит для нашего применения",
   "message.heat_sink.valid9": "Это отлично соответствует нашим стандартам",
-  "message.nc.barrel.side_config": "Режим: %s",
+  "message.nc.switch_side.mode": "Режим: %s",
   "message.nc.battery.side_config": "Режим: %s",
   "message.nc.geiger_radiation_measure": "Уровень радиации: %s",
   "message.nc.player_radiation_contamination": "Доза радиации: %s",

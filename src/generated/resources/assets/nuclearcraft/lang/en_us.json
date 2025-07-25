@@ -2253,7 +2253,7 @@
   "message.heat_sink.valid7": "Attention to detail is impressive",
   "message.heat_sink.valid8": "This is a perfect fit for our application",
   "message.heat_sink.valid9": "This meets our standards very well",
-  "message.nc.barrel.side_config": "Mode: %s",
+  "message.nc.switch_side.mode": "Mode: %s",
   "message.nc.battery.side_config": "Mode: %s",
   "message.nc.debug_logging.disable": "Disabled debug logging",
   "message.nc.debug_logging.enable": "Enabled debug logging",

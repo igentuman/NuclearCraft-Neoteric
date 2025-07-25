@@ -425,6 +425,7 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
             ParticleStack particle = sourceItem.getParticleStack(stack);
             if (particle != null) {
                 particle.addFocus(0.4);
+                particle.setAmount(10000);
                 particleStorage.setParticleStack(particle);
                 contentHandler().itemHandler.setStackInSlot(0, stack);
             }
@@ -433,6 +434,8 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
             if (fluidStack != null && !fluidStack.isEmpty()) {
                 ParticleStack particle = ParticleSources.getParticleFromFluid(fluidStack);
                 if (particle != null) {
+                    particle.addFocus(0.4);
+                    particle.setAmount(10000);
                     particleStorage.setParticleStack(particle);
                     contentHandler().fluidHandler.tanks.get(0).drain(1, IFluidHandler.FluidAction.EXECUTE);
                 }

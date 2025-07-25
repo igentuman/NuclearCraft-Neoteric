@@ -8,7 +8,7 @@
   ],
   "inputParticles": [
     {
-      "amount": 1,
+      "amount": 50000000,
       "focus": 1.0,
       "meanEnergy": 5500,
       "particle": "photon"

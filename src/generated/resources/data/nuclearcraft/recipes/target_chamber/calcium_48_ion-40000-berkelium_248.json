@@ -8,7 +8,7 @@
   ],
   "inputParticles": [
     {
-      "amount": 1,
+      "amount": 50000000,
       "focus": 2.0,
       "meanEnergy": 40000,
       "particle": "calcium_48_ion"

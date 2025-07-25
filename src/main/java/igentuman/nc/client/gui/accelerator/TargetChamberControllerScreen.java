@@ -114,7 +114,6 @@ public class TargetChamberControllerScreen extends AbstractContainerScreen<Targe
         this.renderBackground(graphics);
         super.render(graphics, mouseX, mouseY, partialTicks);
         this.renderTooltip(graphics, mouseX, mouseY);
-        graphics.renderItem(container().getInputStack(), relX+82, relY+20);
     }
 
     private void renderWidgets(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {

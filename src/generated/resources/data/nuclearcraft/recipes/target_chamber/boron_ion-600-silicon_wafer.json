@@ -8,7 +8,7 @@
   ],
   "inputParticles": [
     {
-      "amount": 1,
+      "amount": 1000000,
       "focus": 2.0,
       "meanEnergy": 600,
       "particle": "boron_ion"

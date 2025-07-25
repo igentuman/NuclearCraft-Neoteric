@@ -131,6 +131,7 @@ public class ParticleStorage implements IParticleStorage, IParticleStackHandler
 			if(particleStack == null)
 			{
 				particleStack = stack.copy();
+				tile.setChanged();
 				return true;
 			}
 			if(particleStack.getParticle() == stack.getParticle())

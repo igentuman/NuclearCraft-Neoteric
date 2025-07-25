@@ -161,23 +161,23 @@ public class AcceleratorBeamPortBE extends NuclearCraftBE implements MultiblockA
             return controller().getCapability(cap, side);
         }
         if (cap == ForgeCapabilities.ITEM_HANDLER) {
-            return controller().getCapability(cap, side);
+            return LazyOptional.empty();
         }
         if (cap == ForgeCapabilities.FLUID_HANDLER) {
-            return controller().getCapability(cap, side);
+            return LazyOptional.empty();
         }
         if (cap == ForgeCapabilities.ENERGY) {
-            return  controller().getCapability(cap, side);
+            return LazyOptional.empty();
         }
         if(isCcLoaded()) {
             if(cap == dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL) {
-                return controller().getPeripheral(cap, side);
+                return LazyOptional.empty();
             }
         }
 
         if(isOC2Loaded()) {
             if(cap == DEVICE_CAPABILITY) {
-                return controller().getOCDevice(cap, side);
+                return LazyOptional.empty();
             }
         }
         return super.getCapability(cap, side);
@@ -264,7 +264,7 @@ public class AcceleratorBeamPortBE extends NuclearCraftBE implements MultiblockA
                 if (targetPort.getFacing() == facing.getOpposite()) {
                     if (targetPort.controller() != null) {
                         particleStack.addFocus(-Equations.focusLoss(distance-1, particleStack));
-                        targetPort.controller().getCapability(PARTICLE_HANDLER_CAPABILITY, facing.getOpposite())
+                        targetPort.getCapability(PARTICLE_HANDLER_CAPABILITY, facing.getOpposite())
                                 .ifPresent(handler -> {
                                     handler.reciveParticle(facing.getOpposite(), particleStack);
                                 });

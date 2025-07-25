@@ -8,7 +8,7 @@
   ],
   "inputParticles": [
     {
-      "amount": 100000,
+      "amount": 1410065408,
       "focus": 0.1,
       "meanEnergy": 2000000,
       "particle": "positron"

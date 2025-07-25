@@ -8,7 +8,7 @@
   ],
   "inputParticles": [
     {
-      "amount": 1,
+      "amount": 5000000,
       "focus": 1.0,
       "meanEnergy": 4600,
       "particle": "proton"

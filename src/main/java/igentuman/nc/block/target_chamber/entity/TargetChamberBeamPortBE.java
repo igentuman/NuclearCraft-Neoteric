@@ -145,27 +145,28 @@ public class TargetChamberBeamPortBE extends NuclearCraftBE implements Multibloc
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if(controller() == null) return super.getCapability(cap, side);
+        if(isCcLoaded()) {
+            if(cap == dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL) {
+                return LazyOptional.empty();
+            }
+        }
+        if (cap == ForgeCapabilities.ITEM_HANDLER) {
+            return LazyOptional.empty();
+        }
+        if (cap == ForgeCapabilities.FLUID_HANDLER) {
+            return LazyOptional.empty();
+        }
+        if (cap == ForgeCapabilities.ENERGY) {
+            return LazyOptional.empty();
+        }
         if (cap == PARTICLE_HANDLER_CAPABILITY) {
             return controller().getCapability(cap, side);
         }
-        if (cap == ForgeCapabilities.ITEM_HANDLER) {
-            return controller().getCapability(cap, side);
-        }
-        if (cap == ForgeCapabilities.FLUID_HANDLER) {
-            return controller().getCapability(cap, side);
-        }
-        if (cap == ForgeCapabilities.ENERGY) {
-            return  controller().getCapability(cap, side);
-        }
-        if(isCcLoaded()) {
-            if(cap == dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL) {
-                return controller().getPeripheral(cap, side);
-            }
-        }
+
 
         if(isOC2Loaded()) {
             if(cap == DEVICE_CAPABILITY) {
-                return controller().getOCDevice(cap, side);
+                return LazyOptional.empty();
             }
         }
         return super.getCapability(cap, side);

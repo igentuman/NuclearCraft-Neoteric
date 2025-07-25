@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import static igentuman.nc.content.materials.Materials.*;
+import static igentuman.nc.content.particles.ParticleSources.moleAmount;
 import static igentuman.nc.content.particles.Particles.*;
 import static igentuman.nc.setup.registration.FissionFuel.NC_WASTE;
 import static igentuman.nc.setup.registration.NCItems.NC_PARTS;
@@ -206,10 +207,14 @@ public class TargetChamberRecipes extends AbstractRecipeProvider {
     }
 
     private static void targetChamberItems(NcIngredient inputItems, ParticleStack inputParticle, List<ParticleStack> outputParticles, NcIngredient outputItems, long maxEnergy, double crossSection) {
+        int recpieAmount = (int) (moleAmount/crossSection);
+        inputParticle.setAmount(inputParticle.getAmount()*recpieAmount);
         targetChamber(List.of(), List.of(inputItems), List.of(inputParticle), outputParticles, List.of(), List.of(outputItems), maxEnergy, crossSection);
     }
 
     private static void targetChamberFluids(List<FluidStackIngredient> inputFluids, ParticleStack inputParticle, List<ParticleStack> outputParticles, List<FluidStackIngredient> outputFluids, long maxEnergy, double crossSection) {
+        int recpieAmount = (int) (moleAmount/crossSection);
+        inputParticle.setAmount(inputParticle.getAmount()*recpieAmount);
         targetChamber(inputFluids, List.of(), List.of(inputParticle), outputParticles, outputFluids, List.of(), maxEnergy, crossSection);
     }
 }

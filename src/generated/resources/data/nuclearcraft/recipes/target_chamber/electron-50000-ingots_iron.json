@@ -8,7 +8,7 @@
   ],
   "inputParticles": [
     {
-      "amount": 1,
+      "amount": 100000000,
       "focus": 1.0,
       "meanEnergy": 50000,
       "particle": "electron"

@@ -165,17 +165,17 @@ public class AcceleratorIonSourcePortBE extends NuclearCraftBE implements Multib
             return controller().getCapability(cap, side);
         }
         if (cap == ForgeCapabilities.ENERGY) {
-            return  controller().getCapability(cap, side);
+            return LazyOptional.empty();
         }
         if(isCcLoaded()) {
             if(cap == dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL) {
-                return controller().getPeripheral(cap, side);
+                return LazyOptional.empty();
             }
         }
 
         if(isOC2Loaded()) {
             if(cap == DEVICE_CAPABILITY) {
-                return controller().getOCDevice(cap, side);
+                return LazyOptional.empty();
             }
         }
         return super.getCapability(cap, side);

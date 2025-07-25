@@ -141,7 +141,6 @@ public class TargetChamberControllerBE extends MultiblockControllerBE {
         if (tag.contains("Info")) {
             CompoundTag infoTag = tag.getCompound("Info");
             infoTag.put("particle_storage", particleStorage.writeToNBT(new CompoundTag()));
-            particleStorage.extractParticle(null);
         }
     }
 
@@ -159,7 +158,6 @@ public class TargetChamberControllerBE extends MultiblockControllerBE {
         if (tag.contains("Info")) {
             CompoundTag infoTag = tag.getCompound("Info");
             infoTag.put("particle_storage", particleStorage.writeToNBT(new CompoundTag()));
-            particleStorage.extractParticle(null);
         }
     }
 
@@ -271,9 +269,6 @@ public class TargetChamberControllerBE extends MultiblockControllerBE {
         trackChanges(hasParticle);
         controllerEnabled = hasRedstoneSignal() && getMultiblock().isFormed();
         controllerEnabled = !forceShutdown && controllerEnabled;
-        if(controllerEnabled != wasEnabled) {
-            controllerEnabled = wasEnabled;
-        }
         if (getMultiblock().isFormed()) {
             trackChanges(contentHandler().tick());
             if(controllerEnabled) {
@@ -295,6 +290,7 @@ public class TargetChamberControllerBE extends MultiblockControllerBE {
 
             } catch (NullPointerException ignored) {}
         }
+        particleStorage.setParticleStack(null);
     }
 
     @Override
@@ -340,33 +336,12 @@ public class TargetChamberControllerBE extends MultiblockControllerBE {
         return false;
     }
 
-    private void spawnParticles() {
-        if(getMultiblock() == null || efficiency <= 0) {
-            return;
-        }
-
-        if(level.getGameTime()  % (level.random.nextInt(5)+1) != 0) {
-            return;
-        }
-        BlockPos topRightInner = topRight.relative(getFacing(), -1).below().relative(getFacing().getClockWise(),1);
-        BlockPos bottomLeftInner = bottomLeft.relative(getFacing(), 1).above().relative(getFacing().getCounterClockWise(),1);
-        int minX = Math.min(topRightInner.getX(), bottomLeftInner.getX());
-        int minY = Math.min(topRightInner.getY(), bottomLeftInner.getY());
-        int minZ = Math.min(topRightInner.getZ(), bottomLeftInner.getZ());
-        int maxX = Math.max(topRightInner.getX(), bottomLeftInner.getX());
-        int maxY = Math.max(topRightInner.getY(), bottomLeftInner.getY());
-        int maxZ = Math.max(topRightInner.getZ(), bottomLeftInner.getZ());
-        for(BlockPos blockPos: BlockPos.randomBetweenClosed(level.random, width+height+depth, minX, minY, minZ, maxX, maxY, maxZ)) {
-            level.addParticle(RADIATION.get(), true, blockPos.getX()+level.random.nextFloat(), blockPos.getY()+level.random.nextFloat(), blockPos.getZ()+level.random.nextFloat(), 0, -0.05f, 0);
-        }
-    }
-
     private boolean process() {
 
         if(recipeInfo().be == null) {
             recipeInfo().be = this;
         }
-        recipeInfo().process(1);
+        recipeInfo().process(particleStorage.getParticle().getAmount()*((Recipe)recipe).crossSection);
         if(recipeInfo().radiation != 1D) {
             RadiationManager.get(getLevel()).addRadiation(getLevel(), recipeInfo().radiation/10000, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ());
         }
@@ -447,7 +422,7 @@ public class TargetChamberControllerBE extends MultiblockControllerBE {
         recipe = getRecipe();
         if (recipe != null) {
             recipeInfo().setRecipe(recipe);
-            recipeInfo().ticks = 10000;
+            recipeInfo().ticks = ((Recipe)recipe).getAmount();
             recipeInfo().energy = recipeInfo().recipe().getEnergy();
             recipeInfo().radiation = recipeInfo().recipe().getRadiation();
             recipeInfo().be = this;
@@ -590,6 +565,13 @@ public class TargetChamberControllerBE extends MultiblockControllerBE {
                 }
             }
             return false;
+        }
+
+        public int getAmount() {
+            if (inputParticles == null || inputParticles.length == 0) {
+                return 10000;
+            }
+            return inputParticles[0].getAmount();
         }
     }
 }

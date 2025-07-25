@@ -8,7 +8,7 @@
   ],
   "inputParticles": [
     {
-      "amount": 1,
+      "amount": 40000000,
       "focus": 1.0,
       "meanEnergy": 150000,
       "particle": "pion_minus"

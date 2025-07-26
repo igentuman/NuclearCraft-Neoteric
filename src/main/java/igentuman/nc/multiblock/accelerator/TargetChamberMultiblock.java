@@ -126,7 +126,7 @@ public class TargetChamberMultiblock extends AbstractMultiblock {
     @Override
     public void validateInner()
     {
-        efficiency = 0;
+        efficiency = 1;
         power = 0;
         if(!outerValid) {
             clearStats();
@@ -146,7 +146,7 @@ public class TargetChamberMultiblock extends AbstractMultiblock {
         }
         validateBeamLines();
         controllerBE().allDetectors = allDetectors.size();
-        controllerBE().efficiency = efficiency;
+        controllerBE().efficiency = efficiency*100;
         controllerBE().energyPerTick = power;
         controllerBE().connectedPorts = connectedPorts;
         controllerBE().detectorsCount = validDetectors.size();

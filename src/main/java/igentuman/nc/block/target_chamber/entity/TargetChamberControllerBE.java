@@ -341,20 +341,19 @@ public class TargetChamberControllerBE extends MultiblockControllerBE {
         if(recipeInfo().be == null) {
             recipeInfo().be = this;
         }
-        recipeInfo().process(particleStorage.getParticle().getAmount()*((Recipe)recipe).crossSection);
+        if(particleStorage.getParticle() == null) {
+            return false;
+        }
+        recipeInfo().process(particleStorage.getParticle().getAmount()*((Recipe)recipe).crossSection * efficiency / 100D);
         if(recipeInfo().radiation != 1D) {
             RadiationManager.get(getLevel()).addRadiation(getLevel(), recipeInfo().radiation/10000, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ());
         }
 
         handleRecipeOutput();
 
-        efficiency = calculateEfficiency();
         return true;
     }
 
-    private double calculateEfficiency() {
-        return 0;
-    }
 
     private void handleRecipeOutput() {
         if (hasRecipe() && recipeInfo().isCompleted()) {

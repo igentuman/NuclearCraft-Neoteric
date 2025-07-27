@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_accelerator",
+  "key": {
+    "E": {
+      "item": "nuclearcraft:elite_processor"
+    },
+    "I": {
+      "item": "nuclearcraft:tungsten_filament"
+    },
+    "L": {
+      "item": "nuclearcraft:laser_assembly"
+    },
+    "P": {
+      "item": "nuclearcraft:plate_elite"
+    }
+  },
+  "pattern": [
+    "LPL",
+    "EIE",
+    "LPL"
+  ],
+  "result": {
+    "item": "nuclearcraft:accelerator_ion_source_port"
+  },
+  "show_notification": true
+}

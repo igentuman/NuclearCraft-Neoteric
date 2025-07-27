@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_target_chamber",
+  "key": {
+    "S": {
+      "tag": "forge:plates/netherite"
+    },
+    "T": {
+      "tag": "forge:ingots/tungsten"
+    }
+  },
+  "pattern": [
+    "STS",
+    "T T",
+    "STS"
+  ],
+  "result": {
+    "count": 4,
+    "item": "nuclearcraft:target_chamber_casing"
+  },
+  "show_notification": true
+}

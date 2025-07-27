@@ -466,11 +466,14 @@ public class NCLanguageProvider extends LanguageProvider {
 
     private void multiblocks() {
         for(String name: ACCELERATOR_BLOCKS.keySet()) {
-            String title = "(WIP) " + convertToName(name);
+            String title = convertToName(name);
+            if(name.contains("thoroid")) {
+                title = "(WIP) " + title;
+            }
             add(ACCELERATOR_BLOCKS.get(name).get(), title);
         }
         for(String name: TARGET_CHAMBER_BLOCKS.keySet()) {
-            String title = "(WIP) " + convertToName(name);
+            String title = convertToName(name);
             add(TARGET_CHAMBER_BLOCKS.get(name).get(), title);
         }
         for(String name: KUGELBLITZ_BLOCKS.keySet()) {

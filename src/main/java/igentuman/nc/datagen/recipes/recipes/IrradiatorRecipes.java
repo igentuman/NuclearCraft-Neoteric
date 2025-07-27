@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import static igentuman.nc.datagen.recipes.NCRecipes.MOLTEN_INGOT;
+import static igentuman.nc.setup.registration.NCItems.NC_PARTS;
 import static net.minecraft.world.level.block.Blocks.*;
 
 
@@ -27,6 +28,7 @@ public class IrradiatorRecipes extends AbstractRecipeProvider {
                 List.of(fluidIngredient("redstone", MOLTEN_INGOT/2)),
                 List.of(), 0.5D);
         itemToItem(ingredient(Tags.Items.SAND, 1), NcIngredient.stack(stack(GLOWSTONE, 1)), 3D);
+        itemToItem(ingredient(NC_PARTS.get("silicon_wafer").get(), 1), NcIngredient.stack(stack(NC_PARTS.get("silicon_n_doped").get(), 1)), 0.75D);
         itemToItem(dustIngredient(Materials.tbp), dustIngredient(Materials.protactinium_233), 2.5D);
         itemToItem(dustIngredient(Materials.bismuth), dustIngredient(Materials.polonium), 2D);
         itemToItem(ingotIngredient(Materials.platinum), ingotIngredient(Materials.neutronium), 10D);

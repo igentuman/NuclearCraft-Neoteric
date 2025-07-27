@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "nuclearcraft_accelerator",
+  "ingredients": [
+    {
+      "item": "nuclearcraft:accelerator_casing"
+    },
+    {
+      "tag": "forge:glass"
+    }
+  ],
+  "result": {
+    "item": "nuclearcraft:accelerator_casing_glass"
+  }
+}

@@ -287,7 +287,13 @@ public class NCItems {
                 "silicon_boule",
                 "silicon_n_doped",
                 "silicon_p_doped",
-                "silicon_wafer"
+                "silicon_wafer",
+                "empty_detector",
+                "wire_chamber_casing",
+                "scintillator_pwo",
+                "scintillator_plastic",
+                "laser_assembly",
+                "wire_gold_tungsten"
         );
         for(String name: parts) {
             if(name.equals("research_paper")) {

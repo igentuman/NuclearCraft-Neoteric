@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "nuclearcraft_target_chamber",
+  "ingredients": [
+    {
+      "item": "nuclearcraft:target_chamber_casing_glass"
+    }
+  ],
+  "result": {
+    "item": "nuclearcraft:target_chamber_casing"
+  }
+}

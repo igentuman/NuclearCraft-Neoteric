@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_target_chamber",
+  "key": {
+    "C": {
+      "item": "nuclearcraft:wire_chamber_casing"
+    },
+    "W": {
+      "item": "nuclearcraft:wire_gold_tungsten"
+    }
+  },
+  "pattern": [
+    "WWW",
+    "WCW",
+    "WWW"
+  ],
+  "result": {
+    "item": "nuclearcraft:wire_chamber"
+  },
+  "show_notification": true
+}

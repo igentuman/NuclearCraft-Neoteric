@@ -50,6 +50,12 @@ public abstract class AbstractRecipeProvider {
         return NcIngredient.stack(stack(item, count));
     }
 
+    protected static NcIngredient ingredient(Block item, int...pCount) {
+        int count = 1;
+        if(pCount.length > 0) count = pCount[0];
+        return NcIngredient.stack(stack(item, count));
+    }
+
     protected static NcIngredient blockStack(String name, int...pCount) {
         int count = 1;
         if(pCount.length > 0) count = pCount[0];

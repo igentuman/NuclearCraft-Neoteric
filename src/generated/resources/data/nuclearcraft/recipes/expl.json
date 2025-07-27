@@ -16,7 +16,7 @@
       "item": "nuclearcraft:niobium_titanium_rf_amplifier"
     },
     "P": {
-      "tag": "forge:storage_blocks/amethyst"
+      "item": "nuclearcraft:laser_assembly"
     }
   },
   "pattern": [

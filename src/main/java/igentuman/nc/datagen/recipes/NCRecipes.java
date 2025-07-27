@@ -21,6 +21,9 @@ import java.util.function.Consumer;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.datagen.recipes.recipes.AbstractRecipeProvider.dustIngredient;
+import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
+import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.coolers;
+import static igentuman.nc.multiblock.accelerator.TargetChamberRegistration.TARGET_CHAMBER_BLOCKS;
 import static igentuman.nc.multiblock.fission.FissionReactorRegistration.FISSION_BLOCKS;
 import static igentuman.nc.multiblock.fission.FissionReactorRegistration.heatsinks;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BLOCKS;
@@ -60,10 +63,382 @@ public class NCRecipes extends RecipeProvider {
         fusionBlocks(consumer);
         turbineBlocks(consumer);
         kugelBlitzBlocks(consumer);
+        acceleratorBlocks(consumer);
+        targetChamberBlocks(consumer);
+        acceleratorItems(consumer);
         FuelRecipes.generate(consumer);
         CustomRecipes.generate(consumer);
         SpecialRecipeBuilder.build(consumer, NcRecipeSerializers.SHIELDING);
         SpecialRecipeBuilder.build(consumer, NcRecipeSerializers.RESET_NBT);
+    }
+
+    private void acceleratorItems(Consumer<FinishedRecipe> consumer) {
+        // Empty cooler (using steel instead of stainless steel as per current mod)
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ACCELERATOR_BLOCKS.get("empty_cooler").get(), 8)
+                .pattern("STS")
+                .pattern("SHS")
+                .pattern("STS")
+                .define('S', forgeIngot(Materials.steel))
+                .define('T', forgeIngot(Materials.tough_alloy))
+                .define('H', forgeIngot(Materials.thermoconducting))
+                .group(MODID+"_accelerator")
+                .unlockedBy("item", has(forgeIngot(Materials.steel)))
+                .save(consumer, rl("empty_cooler"));
+
+        // Detector casing
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NC_PARTS.get("empty_detector").get(), 4)
+                .pattern("STS")
+                .pattern("SBS")
+                .pattern("STS")
+                .define('S', forgeIngot(Materials.steel))
+                .define('T', forgeIngot(Materials.tungsten))
+                .define('B', NC_PARTS.get("basic_processor").get())
+                .group(MODID+"_accelerator")
+                .unlockedBy("item", has(NC_PARTS.get("basic_processor").get()))
+                .save(consumer, rl("empty_detector"));
+
+        // Wire chamber casing
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NC_PARTS.get("wire_chamber_casing").get())
+                .pattern("WWW")
+                .pattern("ACA")
+                .pattern("WWW")
+                .define('W', NC_PARTS.get("wire_gold_tungsten").get())
+                .define('A', NC_PARTS.get("advanced_processor").get())
+                .define('C', NC_PARTS.get("empty_detector").get())
+                .group(MODID+"_accelerator")
+                .unlockedBy("item", has(NC_PARTS.get("empty_detector").get()))
+                .save(consumer, rl("wire_chamber_casing"));
+
+        // Scintillator PWO
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NC_PARTS.get("scintillator_pwo").get())
+                .pattern("PPP")
+                .pattern("PWP")
+                .pattern("PPP")
+                .define('P', forgeDust(Materials.lead))
+                .define('W', forgeDust(Materials.tungsten))
+                .group(MODID+"_accelerator")
+                .unlockedBy("item", has(forgeDust(Materials.tungsten)))
+                .save(consumer, rl("scintillator_pwo"));
+
+        // Scintillator plastic
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NC_PARTS.get("scintillator_plastic").get())
+                .pattern("PPP")
+                .pattern("PBP")
+                .pattern("PPP")
+                .define('P', NC_PARTS.get("bioplastic").get())
+                .define('B', forgeDust(Materials.boron))
+                .group(MODID+"_accelerator")
+                .unlockedBy("item", has(NC_PARTS.get("bioplastic").get()))
+                .save(consumer, rl("scintillator_plastic"));
+
+        // Laser assembly
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NC_PARTS.get("laser_assembly").get())
+                .pattern("GRG")
+                .pattern("RDR")
+                .pattern("GRG")
+                .define('G', GLASS)
+                .define('R', AMETHYST_SHARD)
+                .define('D', DIAMOND)
+                .group(MODID+"_accelerator")
+                .unlockedBy("item", has(DIAMOND))
+                .save(consumer, rl("laser_assembly"));
+
+        // Tungsten filament source
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ION_SOURCES.get("tungsten_filament").get())
+                .pattern("TTT")
+                .pattern("TWT")
+                .pattern("TTT")
+                .define('T', forgeIngot(Materials.tungsten))
+                .define('W', NC_PARTS.get("wire_gold_tungsten").get())
+                .group(MODID+"_accelerator")
+                .unlockedBy("item", has(forgeIngot(Materials.tungsten)))
+                .save(consumer, rl("tungsten_filament_source"));
+
+        // Wire gold tungsten
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NC_PARTS.get("wire_gold_tungsten").get(), 4)
+                .pattern("GWG")
+                .define('G', forgeIngot(Materials.gold))
+                .define('W', forgeIngot(Materials.tungsten))
+                .group(MODID+"_accelerator")
+                .unlockedBy("item", has(forgeIngot(Materials.tungsten)))
+                .save(consumer, rl("wire_gold_tungsten"));
+
+    }
+
+    private void targetChamberBlocks(Consumer<FinishedRecipe> consumer) {
+        // Target chamber controller
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, TARGET_CHAMBER_BLOCKS.get("target_chamber_controller").get())
+                .pattern("PTP")
+                .pattern("BFB")
+                .pattern("PTP")
+                .define('P', NC_PARTS.get("plate_elite").get())
+                .define('T', forgeIngot(Materials.tough_alloy))
+                .define('B', NC_PARTS.get("basic_processor").get())
+                .define('F', TARGET_CHAMBER_BLOCKS.get("target_chamber_casing").get())
+                .group(MODID+"_target_chamber")
+                .unlockedBy("item", has(NC_PARTS.get("plate_elite").get()))
+                .save(consumer, rl("target_chamber_controller"));
+
+        // Target chamber casing
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, TARGET_CHAMBER_BLOCKS.get("target_chamber_casing").get(), 4)
+                .pattern("STS")
+                .pattern("T T")
+                .pattern("STS")
+                .define('S', forgePlate(Materials.netherite))
+                .define('T', forgeIngot(Materials.tungsten))
+                .group(MODID+"_target_chamber")
+                .unlockedBy("item", has(NC_PARTS.get("basic_processor").get()))
+                .save(consumer, rl("target_chamber_casing"));
+
+        // Target chamber casing glass (shapeless conversion)
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, TARGET_CHAMBER_BLOCKS.get("target_chamber_casing_glass").get())
+                .requires(TARGET_CHAMBER_BLOCKS.get("target_chamber_casing").get())
+                .requires(Tags.Items.GLASS)
+                .group(MODID+"_target_chamber")
+                .unlockedBy("item", has(TARGET_CHAMBER_BLOCKS.get("target_chamber_casing").get()))
+                .save(consumer, rl("target_chamber_casing_glass"));
+
+        // Target chamber casing from glass (reverse conversion)
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, TARGET_CHAMBER_BLOCKS.get("target_chamber_casing").get())
+                .requires(TARGET_CHAMBER_BLOCKS.get("target_chamber_casing_glass").get())
+                .group(MODID+"_target_chamber")
+                .unlockedBy("item", has(TARGET_CHAMBER_BLOCKS.get("target_chamber_casing_glass").get()))
+                .save(consumer, rl("target_chamber_casing_from_glass"));
+
+        // Target chamber port
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, TARGET_CHAMBER_BLOCKS.get("target_chamber_port").get(), 4)
+                .pattern("THT")
+                .pattern("VFV")
+                .pattern("THT")
+                .define('T', forgeIngot(Materials.tungsten))
+                .define('H', HOPPER)
+                .define('V', NC_PARTS.get("servo").get())
+                .define('F', NC_PARTS.get("steel_frame").get())
+                .group(MODID+"_target_chamber")
+                .unlockedBy("item", has(NC_PARTS.get("servo").get()))
+                .save(consumer, rl("target_chamber_port"));
+
+        // Target chamber beam port
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, TARGET_CHAMBER_BLOCKS.get("target_chamber_beam_port").get(), 4)
+                .pattern("STS")
+                .pattern("BFB")
+                .pattern("STS")
+                .define('S', forgeIngot(Materials.steel))
+                .define('T', forgeIngot(Materials.tungsten))
+                .define('B', ACCELERATOR_BLOCKS.get("particle_beam").get())
+                .define('F', NC_PARTS.get("steel_frame").get())
+                .group(MODID+"_target_chamber")
+                .unlockedBy("item", has(ACCELERATOR_BLOCKS.get("particle_beam").get()))
+                .save(consumer, rl("target_chamber_beam_port"));
+
+        // Target chamber camera
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, TARGET_CHAMBER_BLOCKS.get("target_chamber_camera").get())
+                .pattern("NSN")
+                .pattern("NCN")
+                .pattern("NSN")
+                .define('S', forgeIngot(Materials.steel))
+                .define('C', NC_PARTS.get("chassis").get())
+                .define('N', forgeIngot(Materials.tin))
+                .group(MODID+"_target_chamber")
+                .unlockedBy("item", has(NC_PARTS.get("chassis").get()))
+                .save(consumer, rl("target_chamber_camera"));
+
+        // Detectors
+        // EM Calorimeter
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, TARGET_CHAMBER_BLOCKS.get("em_calorimeter").get())
+                .pattern("SSS")
+                .pattern("SCS")
+                .pattern("SSS")
+                .define('S', NC_PARTS.get("scintillator_pwo").get())
+                .define('C', NC_PARTS.get("empty_detector").get())
+                .group(MODID+"_target_chamber")
+                .unlockedBy("item", has(NC_PARTS.get("empty_detector").get()))
+                .save(consumer, rl("em_calorimeter"));
+
+        // Hadron Calorimeter
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, TARGET_CHAMBER_BLOCKS.get("hadron_calorimeter").get())
+                .pattern("SSS")
+                .pattern("SCS")
+                .pattern("SSS")
+                .define('S', NC_PARTS.get("scintillator_plastic").get())
+                .define('C', NC_PARTS.get("empty_detector").get())
+                .group(MODID+"_target_chamber")
+                .unlockedBy("item", has(NC_PARTS.get("empty_detector").get()))
+                .save(consumer, rl("hadron_calorimeter"));
+
+        // Silicon Tracker
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, TARGET_CHAMBER_BLOCKS.get("silicon_tracker").get())
+                .pattern("BAB")
+                .pattern("ACA")
+                .pattern("BAB")
+                .define('B', NC_PARTS.get("basic_processor").get())
+                .define('A', NC_PARTS.get("advanced_processor").get())
+                .define('C', NC_PARTS.get("empty_detector").get())
+                .group(MODID+"_target_chamber")
+                .unlockedBy("item", has(NC_PARTS.get("empty_detector").get()))
+                .save(consumer, rl("silicon_tracker"));
+
+        // Wire Chamber
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, TARGET_CHAMBER_BLOCKS.get("wire_chamber").get())
+                .pattern("WWW")
+                .pattern("WCW")
+                .pattern("WWW")
+                .define('W', NC_PARTS.get("wire_gold_tungsten").get())
+                .define('C', NC_PARTS.get("wire_chamber_casing").get())
+                .group(MODID+"_target_chamber")
+                .unlockedBy("item", has(NC_PARTS.get("wire_chamber_casing").get()))
+                .save(consumer, rl("wire_chamber"));
+
+        // Bubble Chamber
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, TARGET_CHAMBER_BLOCKS.get("bubble_chamber").get())
+                .pattern("GGG")
+                .pattern("GCG")
+                .pattern("GGG")
+                .define('G', GLASS)
+                .define('C', NC_PARTS.get("empty_detector").get())
+                .group(MODID+"_target_chamber")
+                .unlockedBy("item", has(NC_PARTS.get("empty_detector").get()))
+                .save(consumer, rl("bubble_chamber"));
+    }
+
+    private void acceleratorBlocks(Consumer<FinishedRecipe> consumer) {
+
+        for(String name: coolers().keySet()) {
+            if(name.matches(".*water.*|.*liquid.*|.*empty.*|.*cryotheum.*")) {
+                continue;
+            }
+            TagKey<Item> i = forgeDust(name.replace("active_", ""));
+            if(name.contains("slime")) {
+                i = Tags.Items.SLIMEBALLS;
+            }
+            if(name.contains("nether_brick")) {
+                i = Tags.Items.INGOTS_NETHER_BRICK;
+            }
+            Block empty = ACCELERATOR_BLOCKS.get("empty_cooler").get();
+
+            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ACCELERATOR_BLOCKS.get(name+"_cooler").get())
+                    .pattern(" I ")
+                    .pattern("IBI")
+                    .pattern(" I ")
+                    .define('I', Ingredient.of(i))
+                    .define('B', empty)
+                    .group(MODID+"_accelerator")
+                    .unlockedBy("item", has(empty))
+                    .save(consumer);
+
+        }
+        // Accelerator casing
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ACCELERATOR_BLOCKS.get("accelerator_casing").get(), 4)
+                .pattern("STS")
+                .pattern("T T")
+                .pattern("STS")
+                .define('S', forgePlate(Materials.cobalt))
+                .define('T', forgeIngot(Materials.tough_alloy))
+                .group(MODID+"_accelerator")
+                .unlockedBy("item", has(NC_PARTS.get("basic_processor").get()))
+                .save(consumer, rl("accelerator_casing"));
+
+        // Accelerator casing glass (shapeless conversion)
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ACCELERATOR_BLOCKS.get("accelerator_casing_glass").get())
+                .requires(ACCELERATOR_BLOCKS.get("accelerator_casing").get())
+                .requires(Tags.Items.GLASS)
+                .group(MODID+"_accelerator")
+                .unlockedBy("item", has(ACCELERATOR_BLOCKS.get("accelerator_casing").get()))
+                .save(consumer, rl("accelerator_casing_glass"));
+
+        // Accelerator casing from glass (reverse conversion)
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ACCELERATOR_BLOCKS.get("accelerator_casing").get())
+                .requires(ACCELERATOR_BLOCKS.get("accelerator_casing_glass").get())
+                .group(MODID+"_accelerator")
+                .unlockedBy("item", has(ACCELERATOR_BLOCKS.get("accelerator_casing_glass").get()))
+                .save(consumer, rl("accelerator_casing_from_glass"));
+
+        // Linear accelerator controller
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ACCELERATOR_BLOCKS.get("linear_accelerator_controller").get())
+                .pattern("PEP")
+                .pattern("BFB")
+                .pattern("PEP")
+                .define('P', NC_PARTS.get("plate_elite").get())
+                .define('E', forgeIngot(Materials.extreme))
+                .define('B', NC_PARTS.get("basic_processor").get())
+                .define('F', ACCELERATOR_BLOCKS.get("accelerator_casing").get())
+                .group(MODID+"_accelerator")
+                .unlockedBy("item", has(NC_PARTS.get("plate_elite").get()))
+                .save(consumer, rl("linear_accelerator_controller"));
+
+        // Thoroidal accelerator controller (ring accelerator)
+        /*ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ACCELERATOR_BLOCKS.get("thoroidal_accelerator_controller").get())
+                .pattern("PEP")
+                .pattern("AFA")
+                .pattern("PEP")
+                .define('P', NC_PARTS.get("plate_elite").get())
+                .define('E', forgeIngot(Materials.extreme))
+                .define('A', NC_PARTS.get("advanced_processor").get())
+                .define('F', ACCELERATOR_BLOCKS.get("accelerator_casing").get())
+                .group(MODID+"_accelerator")
+                .unlockedBy("item", has(NC_PARTS.get("plate_elite").get()))
+                .save(consumer, rl("thoroidal_accelerator_controller"));*/
+
+        // Accelerator port
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ACCELERATOR_BLOCKS.get("accelerator_port").get(), 4)
+                .pattern("SHS")
+                .pattern("VFV")
+                .pattern("SHS")
+                .define('S', forgeIngot(Materials.steel))
+                .define('H', HOPPER)
+                .define('V', NC_PARTS.get("servo").get())
+                .define('F', NC_PARTS.get("steel_frame").get())
+                .group(MODID+"_accelerator")
+                .unlockedBy("item", has(NC_PARTS.get("servo").get()))
+                .save(consumer, rl("accelerator_port"));
+
+        // Accelerator beam port
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ACCELERATOR_BLOCKS.get("accelerator_beam_port").get(), 4)
+                .pattern("STS")
+                .pattern("BFB")
+                .pattern("STS")
+                .define('S', forgeIngot(Materials.steel))
+                .define('T', forgeIngot(Materials.tough_alloy))
+                .define('B', ACCELERATOR_BLOCKS.get("particle_beam").get())
+                .define('F', NC_PARTS.get("steel_frame").get())
+                .group(MODID+"_accelerator")
+                .unlockedBy("item", has(ACCELERATOR_BLOCKS.get("particle_beam").get()))
+                .save(consumer, rl("accelerator_beam_port"));
+
+        // Particle beam
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ACCELERATOR_BLOCKS.get("particle_beam").get(), 3)
+                .pattern("SSS")
+                .pattern("BBB")
+                .pattern("SSS")
+                .define('S', forgeIngot(Materials.steel))
+                .define('B', GLASS)
+                .group(MODID+"_accelerator")
+                .unlockedBy("item", has(forgeIngot(Materials.steel)))
+                .save(consumer, rl("particle_beam"));
+
+        // Accelerator ion source port
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ACCELERATOR_BLOCKS.get("accelerator_ion_source_port").get())
+                .pattern("LPL")
+                .pattern("EIE")
+                .pattern("LPL")
+                .define('L', NC_PARTS.get("laser_assembly").get())
+                .define('P', NC_PARTS.get("plate_elite").get())
+                .define('E', NC_PARTS.get("elite_processor").get())
+                .define('I', ION_SOURCES.get("tungsten_filament").get())
+                .group(MODID+"_accelerator")
+                .unlockedBy("item", has(NC_PARTS.get("laser_assembly").get()))
+                .save(consumer, rl("accelerator_ion_source_port"));
+
+        // Electromagnet yoke
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ACCELERATOR_BLOCKS.get("electromagnet_yoke").get(), 4)
+                .pattern("III")
+                .pattern("IFI")
+                .pattern("III")
+                .define('I', forgeIngot(Materials.iron))
+                .define('F', NC_PARTS.get("steel_frame").get())
+                .group(MODID+"_accelerator")
+                .unlockedBy("item", has(NC_PARTS.get("steel_frame").get()))
+                .save(consumer, rl("electromagnet_yoke"));
     }
 
     private void kugelBlitzBlocks(Consumer<FinishedRecipe> consumer) {
@@ -73,7 +448,7 @@ public class NCRecipes extends RecipeProvider {
                 .pattern("LBL")
                 .define('C', NC_ELECTROMAGNETS.get("niobium_titanium_electromagnet").get())
                 .define('M', NC_RF_AMPLIFIERS.get("niobium_titanium_rf_amplifier").get())
-                .define('P', forgeBlock("amethyst"))
+                .define('P', NC_PARTS.get("laser_assembly").get())
                 .define('B', ENERGY_BLOCKS.get("elite_lithium_ion_battery").get())
                 .define('L',  forgePlate("cobalt"))
                 .group(MODID+"_kugelblitz")

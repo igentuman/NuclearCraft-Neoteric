@@ -216,6 +216,10 @@ public class NCBlockTags extends BlockTagsProvider {
             tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ACCELERATOR_BLOCKS.get(block).get());
             tag(BlockTags.NEEDS_IRON_TOOL).add(ACCELERATOR_BLOCKS.get(block).get());
         }
+        for(String block: TARGET_CHAMBER_BLOCKS.keySet()) {
+            tag(BlockTags.MINEABLE_WITH_PICKAXE).add(TARGET_CHAMBER_BLOCKS.get(block).get());
+            tag(BlockTags.NEEDS_IRON_TOOL).add(TARGET_CHAMBER_BLOCKS.get(block).get());
+        }
         for(String block: FUSION_BLOCKS.keySet()) {
             tag(BlockTags.MINEABLE_WITH_PICKAXE).add(FUSION_BLOCKS.get(block).get());
             tag(BlockTags.NEEDS_IRON_TOOL).add(FUSION_BLOCKS.get(block).get());

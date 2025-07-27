@@ -15,6 +15,7 @@ import java.util.function.Consumer;
 import static igentuman.nc.setup.registration.FissionFuel.NC_FUEL;
 import static igentuman.nc.setup.registration.FissionFuel.NC_ISOTOPES;
 import static igentuman.nc.setup.registration.NCItems.ALL_NC_ITEMS;
+import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
 import static net.minecraft.world.item.Items.ICE;
 
 
@@ -134,6 +135,37 @@ public class FluidInfuserRecipes extends AbstractRecipeProvider {
                 fluidIngredient("radaway_slow", 250),
                 ingredient(ALL_NC_ITEMS.get("bioplastic").get(), 2),
                 ingredient(ALL_NC_ITEMS.get("radaway_slow").get())
+        );
+
+        // Accelerator cooler recipes
+        add(
+                fluidIngredient("minecraft:water", 1000),
+                ingredient(ACCELERATOR_BLOCKS.get("empty_cooler").get()),
+                ingredient(ACCELERATOR_BLOCKS.get("water_cooler").get())
+        );
+
+        add(
+                fluidIngredient("liquid_helium", 1000),
+                ingredient(ACCELERATOR_BLOCKS.get("empty_cooler").get()),
+                ingredient(ACCELERATOR_BLOCKS.get("liquid_helium_cooler").get())
+        );
+
+        add(
+                fluidIngredient("liquid_nitrogen", 1000),
+                ingredient(ACCELERATOR_BLOCKS.get("empty_cooler").get()),
+                ingredient(ACCELERATOR_BLOCKS.get("liquid_nitrogen_cooler").get())
+        );
+
+        add(
+                fluidIngredient("cryotheum", 1000),
+                ingredient(ACCELERATOR_BLOCKS.get("empty_cooler").get()),
+                ingredient(ACCELERATOR_BLOCKS.get("cryotheum_cooler").get())
+        );
+
+        add(
+                fluidIngredient("enderium", 576), // 4 ingots worth (144 * 4 = 576)
+                ingredient(ACCELERATOR_BLOCKS.get("empty_cooler").get()),
+                ingredient(ACCELERATOR_BLOCKS.get("enderium_cooler").get())
         );
 
     }

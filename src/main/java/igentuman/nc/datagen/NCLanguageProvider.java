@@ -422,7 +422,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("label.kugelblitz.feeding", "Feeding Rate: %s");
         add("label.kugelblitz.energy_gen", "FE Gen");
 
-        add("reactor.size", "Structure size: %sx%sx%s");
+        add("tooltip.nc.structure.size", "Structure size: %sx%sx%s");
         add("fission.casing.wrong.block", "Wrong block at: %s");
         add("fission_reactor.efficiency", "Efficiency: %s%%");
         add("fission_reactor.net_heat", "Net Heat: %s H/t");
@@ -823,7 +823,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("speed.parallel_processing", "Parallel processing: x%s");
         add("speed.multiplier", "Speed Multiplier: x%s");
         add("energy.multiplier", "Energy Multiplier: x%s");
-        add("energy.per_tick", "Energy Per Tick: %s FE/t");
+        add("tooltip.nc.energy.per_tick", "Energy Per Tick: %s FE/t");
         add("tooltip.eu.tier", "Energy Tier: %s");
         add("tooltip.eu.per_tick", "Energy Per Tick: %s EU/t");
 

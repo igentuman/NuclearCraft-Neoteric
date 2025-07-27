@@ -407,6 +407,7 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
         heat += heatRate;
         hasParticle = true;
         getMultiblock().extractParticle(particleStack);
+        energyStorage().consumeEnergy(energyRequired);
         return true;
     }
 

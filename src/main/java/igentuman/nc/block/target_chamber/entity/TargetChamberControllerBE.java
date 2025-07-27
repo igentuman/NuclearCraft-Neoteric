@@ -348,7 +348,7 @@ public class TargetChamberControllerBE extends MultiblockControllerBE {
         if(recipeInfo().radiation != 1D) {
             RadiationManager.get(getLevel()).addRadiation(getLevel(), recipeInfo().radiation/10000, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ());
         }
-
+        energyStorage().consumeEnergy(energyPerTick);
         handleRecipeOutput();
 
         return true;

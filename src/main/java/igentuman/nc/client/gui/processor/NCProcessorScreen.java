@@ -193,7 +193,7 @@ public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractC
                         widget.addTooltip(applyFormat(__("tooltip.eu.per_tick", scaledFormat(menu.energyPerTick())), ChatFormatting.YELLOW));
                         widget.addTooltip(applyFormat(__("tooltip.eu.tier", menu.getTier()), ChatFormatting.YELLOW));
                     } else {
-                        widget.addTooltip(applyFormat(__("energy.per_tick", scaledFormat(menu.energyPerTick())), ChatFormatting.YELLOW));
+                        widget.addTooltip(applyFormat(__("tooltip.nc.energy.per_tick", scaledFormat(menu.energyPerTick())), ChatFormatting.YELLOW));
                     }
                 }
                 graphics.renderTooltip(font, widget.getTooltips(),

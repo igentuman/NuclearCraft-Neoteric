@@ -162,7 +162,7 @@ public class TargetChamberControllerScreen extends AbstractContainerScreen<Targe
     protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
         graphics.drawCenteredString(font,  menu.getTitle(), imageWidth/2, 5, 0xffffff);
         if(isCasingValid()) {
-            casingTootip = applyFormat(__("reactor.size", getMultiblockHeight(), getMultiblockWidth(), getMultiblockDepth()), ChatFormatting.GOLD);
+            casingTootip = applyFormat(__("tooltip.nc.structure.size", getMultiblockHeight(), getMultiblockWidth(), getMultiblockDepth()), ChatFormatting.GOLD);
         } else {
             casingTootip = applyFormat(__(getValidationResultKey(), getValidationResultData()), ChatFormatting.RED);
         }
@@ -240,7 +240,7 @@ public class TargetChamberControllerScreen extends AbstractContainerScreen<Targe
             i++;
         }
         energyBar.clearTooltips();
-        energyBar.addTooltip(__("reactor.forge_energy_per_tick", container().energyPerTick()));
+        energyBar.addTooltip(__("tooltip.nc.energy.per_tick", container().energyPerTick()));
         if(energyBar.isMouseOver(pMouseX, pMouseY+10)) {
             graphics.renderTooltip(font, energyBar.getTooltips(),
                     Optional.empty(), pMouseX, pMouseY);

@@ -104,7 +104,7 @@ public class TargetChamberPortBE extends NuclearCraftBE implements MultiblockAtt
             }
         }
         connected = getMultiblock() != null && getMultiblock().isFormed();
-        if (updated || wasConnected != connected) {
+        if (updated || wasConnected != connected || getLevel().getGameTime() % 20 == 0) {
             if(connected) {
                 MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
             }
@@ -199,13 +199,12 @@ public class TargetChamberPortBE extends NuclearCraftBE implements MultiblockAtt
 
     @Override
     public void setMultiblock(AbstractMultiblock multiblock) {
-        if(this.multiblock == multiblock) {
-            return;
-        }
+        if(multiblock == this.multiblock) return;
         this.multiblock = (TargetChamberMultiblock) multiblock;
         if (this.multiblock != null) {
             controllerPos = this.multiblock.controller().controllerBE().getBlockPos();
             controller = (TargetChamberControllerBE) this.multiblock.controller().controllerBE();
+            MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
             setChanged();
             level.updateNeighborsAt(worldPosition, getBlockState().getBlock());
         }

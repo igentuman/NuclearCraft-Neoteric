@@ -56,7 +56,15 @@ public class AcceleratorPortBE extends NuclearCraftBE implements MultiblockAttac
 
     @Override
     public void setMultiblock(AbstractMultiblock multiblock) {
+        if(multiblock == this.multiblock) return;
         this.multiblock = (AbstractAcceleratorMultiblock) multiblock;
+        if (this.multiblock != null) {
+            controllerPos = this.multiblock.controller().controllerBE().getBlockPos();
+            controller = (LinearAcceleratorControllerBE) this.multiblock.controller().controllerBE();
+            MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
+            setChanged();
+            level.updateNeighborsAt(worldPosition, getBlockState().getBlock());
+        }
     }
 
     @Override
@@ -99,10 +107,11 @@ public class AcceleratorPortBE extends NuclearCraftBE implements MultiblockAttac
             updated = fluidHandler().pullFluids(dir, false, worldPosition) || updated;
         }
 
-        if(updated) {
+        if(updated || getLevel().getGameTime() % 20 == 0) {
             MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
             setChanged();
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+            level.updateNeighborsAt(worldPosition, getBlockState().getBlock());
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
         }
     }
 

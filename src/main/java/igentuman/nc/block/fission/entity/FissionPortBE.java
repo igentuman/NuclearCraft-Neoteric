@@ -262,6 +262,7 @@ public class FissionPortBE extends NuclearCraftBE implements MultiblockAttachabl
         if (this.multiblock != null) {
             controllerPos = this.multiblock.controller().controllerBE().getBlockPos();
             controller = (FissionControllerBE) this.multiblock.controller().controllerBE();
+            MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
             setChanged();
             level.updateNeighborsAt(worldPosition, getBlockState().getBlock());
         }

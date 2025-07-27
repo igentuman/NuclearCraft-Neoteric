@@ -46,6 +46,9 @@ public class TargetChamberControllerScreen extends AbstractContainerScreen<Targe
     private Button.MultiblockAnalyze analyzeBtn;
     private Button.Link linkBtn;
     public GuiParticle guiParticle;
+    public GuiParticle outputParticle1;
+    public GuiParticle outputParticle2;
+    public GuiParticle outputParticle3;
     public List<GuiParticle> outputParticles = new ArrayList<>();
     public Component casingTootip = Component.empty();
     public Component interiorTootip = Component.empty();
@@ -55,6 +58,9 @@ public class TargetChamberControllerScreen extends AbstractContainerScreen<Targe
         imageWidth = 176;
         imageHeight = 200;
         guiParticle = new GuiParticle(18, 46);
+        outputParticle1 = new GuiParticle(28, 46);
+        outputParticle2 = new GuiParticle(28, 46);
+        outputParticle3 = new GuiParticle(28, 46);
         outputParticles.add(new GuiParticle(86, 15));
         outputParticles.add(new GuiParticle(146, 46));
         outputParticles.add(new GuiParticle(86, 78));
@@ -143,11 +149,17 @@ public class TargetChamberControllerScreen extends AbstractContainerScreen<Targe
         if(hasParticle()) {
             guiParticle.drawParticleStack(graphics, getParticleStack());
         }
-        int i = 0;
-        for (GuiParticle particle : outputParticles) {
-            particle.drawParticleStack(graphics, getOutputParticle(i));
-            i++;
+        if(container().hasRecipe()) {
+            int i = 0;
+            for (GuiParticle particle : outputParticles) {
+                particle.drawParticleStack(graphics, getOutputParticle(i));
+                i++;
+            }
         }
+    }
+
+    private ParticleStack getOutputParticleStack(int i) {
+        return container().getOutputParticle(i);
     }
 
     private boolean hasParticle() {

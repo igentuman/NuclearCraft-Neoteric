@@ -1,11 +1,14 @@
 package igentuman.nc.multiblock.accelerator;
 
 import igentuman.nc.block.target_chamber.DetectorBlock;
+import igentuman.nc.block.target_chamber.entity.TargetChamberBeamPortBE;
 import igentuman.nc.block.target_chamber.entity.TargetChamberControllerBE;
+import igentuman.nc.content.particles.ParticleStack;
 import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.ValidationResult;
 import igentuman.nc.util.BlockPosInstance;
+import igentuman.nc.util.PortMode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
@@ -21,6 +24,7 @@ import java.util.Map;
 import static igentuman.nc.handler.config.AcceleratorConfig.PARTICLE_CHAMBER_CONFIG;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
 import static igentuman.nc.multiblock.accelerator.TargetChamberRegistration.*;
+import static igentuman.nc.util.PortMode.PORT_MODE;
 import static igentuman.nc.util.TagUtil.getBlocksByTagKey;
 
 public class TargetChamberMultiblock extends AbstractMultiblock {
@@ -29,6 +33,7 @@ public class TargetChamberMultiblock extends AbstractMultiblock {
     protected final HashSet<Long> allDetectors = new HashSet<>();
     public double efficiency = 0;
     public int power = 0;
+    public final HashMap<Long, BlockEntity> beamPorts = new HashMap<>();
 
     @Override
     public int maxHeight() {
@@ -174,11 +179,14 @@ public class TargetChamberMultiblock extends AbstractMultiblock {
                     return;
                 }
             }
-            BlockState bs = getBlockState(getCenterBlock().relative(dir, width() / 2));
+            BlockPos target = getCenterBlock().relative(dir, width() / 2);
+            BlockState bs = getBlockState(target);
             if(!bs.is(TARGET_CHAMBER_BLOCKS.get("target_chamber_beam_port").get())) {
                 validationResult = ValidationResult.NO_PORT;
-                errorBlockPos = getCenterBlock().relative(dir, width() / 2);
+                errorBlockPos = new BlockPos(target);
                 return;
+            } else {
+                beamPorts.put(target.asLong(), getBlockEntity(target));
             }
         }
     }
@@ -280,5 +288,22 @@ public class TargetChamberMultiblock extends AbstractMultiblock {
 
     protected Direction getControllerDirection() {
         return controllerBE().getFacing();
+    }
+
+    public void extractParticle(int id, ParticleStack outputParticle) {
+        int i = -1;
+        for(long pos: beamPorts.keySet()) {
+            if(getBlockState(pos).getValue(PORT_MODE) == PortMode.Mode.OUTPUT) {
+                BlockEntity be = beamPorts.get(pos);
+                i++;
+                if(id != i) {
+                    continue;
+                }
+
+                if(be instanceof TargetChamberBeamPortBE port) {
+                    port.extractParticle(outputParticle);
+                }
+            }
+        }
     }
 }

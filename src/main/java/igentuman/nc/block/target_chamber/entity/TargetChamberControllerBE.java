@@ -291,6 +291,7 @@ public class TargetChamberControllerBE extends MultiblockControllerBE {
             } catch (NullPointerException ignored) {}
         }
         particleStorage.setParticleStack(null);
+        particleStorage.outputParticles.clear();
     }
 
     @Override
@@ -345,6 +346,7 @@ public class TargetChamberControllerBE extends MultiblockControllerBE {
             return false;
         }
         recipeInfo().process(particleStorage.getParticle().getAmount()*((Recipe)recipe).crossSection * efficiency / 100D);
+        extractParticles();
         if(recipeInfo().radiation != 1D) {
             RadiationManager.get(getLevel()).addRadiation(getLevel(), recipeInfo().radiation/10000, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ());
         }
@@ -352,6 +354,16 @@ public class TargetChamberControllerBE extends MultiblockControllerBE {
         handleRecipeOutput();
 
         return true;
+    }
+
+    private void extractParticles() {
+        int id = 0;
+        for (ParticleStack outputParticle : ((Recipe)recipeInfo().recipe()).outputParticles) {
+            if (outputParticle != null && outputParticle.getAmount() > 0) {
+                getMultiblock().extractParticle(id, outputParticle);
+                particleStorage.outputParticles.add(outputParticle);
+            }
+        }
     }
 
 
@@ -510,7 +522,10 @@ public class TargetChamberControllerBE extends MultiblockControllerBE {
     }
 
     public ParticleStack getOutputParticle(int i) {
-        return getRecipe() != null ? getRecipe().getOutputParticle(i) : null;
+        if (!hasRecipe()) {
+            return null;
+        }
+        return ((Recipe)recipeInfo().recipe).outputParticles.length > i ? ((Recipe)recipeInfo().recipe).outputParticles[i] : null;
     }
 
     public static class Recipe extends TargetChamberRecipe {

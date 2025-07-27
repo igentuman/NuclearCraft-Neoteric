@@ -6,6 +6,7 @@ import igentuman.nc.client.gui.IVerticalBarScreen;
 import igentuman.nc.client.gui.element.GuiParticle;
 import igentuman.nc.client.gui.element.NCGuiElement;
 import igentuman.nc.client.gui.element.bar.VerticalBar;
+import igentuman.nc.client.gui.element.button.Button;
 import igentuman.nc.client.gui.element.button.Checkbox;
 import igentuman.nc.client.gui.element.fluid.FluidTankRenderer;
 import igentuman.nc.container.LinearAcceleratorContainer;
@@ -51,6 +52,7 @@ public class LinearAcceleratorControllerScreen extends AbstractContainerScreen<L
     public Component casingTootip = Component.empty();
     public Component interiorTootip = Component.empty();
     public GuiParticle guiParticle;
+    private Button.MultiblockAnalyze analyzeBtn;
 
     public LinearAcceleratorControllerScreen(LinearAcceleratorContainer container, Inventory inv, Component name) {
         super(container, inv, name);
@@ -78,6 +80,8 @@ public class LinearAcceleratorControllerScreen extends AbstractContainerScreen<L
         heatBar = new VerticalBar.Heat(17, 20,  this, container().getMaxHeat());
         coolantBar = new VerticalBar.Coolant(27, 20,  this, container().maxCoolant());
         guiParticle = new GuiParticle(40, 21);
+        analyzeBtn = new Button.MultiblockAnalyze(150, 78, this, menu.getPosition());
+        widgets.add(analyzeBtn);
         widgets.add(new FluidTankRenderer(getFluidTank(2), SHOW_AMOUNT_AND_CAPACITY,6, 73, 28, 21));
     }
 

@@ -2,11 +2,14 @@ package igentuman.nc.block.target_chamber.entity;
 
 import igentuman.api.nc.multiblock.MultiblockAttachable;
 import igentuman.nc.NuclearCraft;
+import igentuman.nc.block.accelerator.entity.AcceleratorBeamPortBE;
 import igentuman.nc.block.entity.NuclearCraftBE;
+import igentuman.nc.content.particles.ParticleStack;
 import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;
 import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.accelerator.TargetChamberMultiblock;
+import igentuman.nc.util.Equations;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -24,6 +27,7 @@ import java.util.Objects;
 
 import static igentuman.nc.compat.oc2.FusionReactorDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.content.particles.CapabilityParticleStackHandler.PARTICLE_HANDLER_CAPABILITY;
+import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
 import static igentuman.nc.multiblock.accelerator.TargetChamberRegistration.TARGET_CHAMBER_BE;
 import static igentuman.nc.util.ModUtil.isCcLoaded;
 import static igentuman.nc.util.ModUtil.isOC2Loaded;
@@ -39,7 +43,6 @@ public class TargetChamberBeamPortBE extends NuclearCraftBE implements Multibloc
     public BlockPos controllerPos;
     protected TargetChamberMultiblock multiblock;
     public boolean refreshCacheFlag = true;
-    public byte validationRuns = 0;
     public TargetChamberControllerBE controller;
 
     public TargetChamberBeamPortBE(BlockPos pPos, BlockState pBlockState) {
@@ -221,6 +224,47 @@ public class TargetChamberBeamPortBE extends NuclearCraftBE implements Multibloc
     public double getProgress() {
         if(controller() == null) return 0;
         return controller().recipeInfo().getProgress();
+    }
+
+    public void extractParticle(ParticleStack particleStack) {
+        Direction facing = getFacing();
+        BlockPos currentPos = worldPosition.relative(facing);
+        int maxDistance = 16;
+
+        for (int distance = 0; distance < maxDistance; distance++) {
+
+            BlockState blockState = level.getBlockState(currentPos);
+            if (blockState.is(ACCELERATOR_BLOCKS.get("particle_beam").get())) {
+                currentPos = currentPos.relative(facing);
+                continue;
+            }
+
+            if (level.getBlockEntity(currentPos) instanceof AcceleratorBeamPortBE targetPort) {
+                if (targetPort.getFacing() == facing.getOpposite()) {
+                    if (targetPort.controller() != null) {
+                        particleStack.addFocus(-Equations.focusLoss(distance-1, particleStack));
+                        targetPort.controller().getCapability(PARTICLE_HANDLER_CAPABILITY, facing.getOpposite())
+                                .ifPresent(handler -> {
+                                    handler.reciveParticle(facing.getOpposite(), particleStack);
+                                });
+                    }
+                }
+                break;
+            } else if (level.getBlockEntity(currentPos) instanceof TargetChamberBeamPortBE targetPort) {
+                if (targetPort.getFacing() == facing.getOpposite()) {
+                    if (targetPort.controller() != null) {
+                        particleStack.addFocus(-Equations.focusLoss(distance-1, particleStack));
+                        targetPort.getCapability(PARTICLE_HANDLER_CAPABILITY, facing.getOpposite())
+                                .ifPresent(handler -> {
+                                    handler.reciveParticle(facing.getOpposite(), particleStack);
+                                });
+                    }
+                }
+                break;
+            } else {
+                break;
+            }
+        }
     }
 
     public static class SignalSource {

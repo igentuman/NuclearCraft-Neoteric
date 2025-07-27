@@ -267,6 +267,7 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
                 level.setBlockAndUpdate(worldPosition, getBlockState().setValue(POWERED, controllerEnabled));
             } catch (NullPointerException ignored) {}
         }
+        //particleStorage.clear();
     }
 
     public List<FluidStack> getAllowedInputFluids()
@@ -386,6 +387,14 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
         }
     }
 
+    @Override
+    public HashMap<String, String> getAnalyzeReport() {
+        HashMap<String, String> report = new HashMap<>();
+        report.put("report.nc.1.accelerator.all_coolers", String.valueOf(getMultiblock().coolers.size()));
+        report.put("report.nc.2.accelerator.valid_coolers", String.valueOf(getMultiblock().validCoolers));
+        return report;
+    }
+
     private boolean accelerateParticle() {
         hasParticle = false;
         if(energyStorage().getEnergyStored() < energyRequired) {
@@ -407,7 +416,6 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
         heat += heatRate;
         hasParticle = true;
         getMultiblock().extractParticle(particleStack);
-        energyStorage().consumeEnergy(energyRequired);
         return true;
     }
 
@@ -511,7 +519,7 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
         if (tag.contains("Info")) {
             CompoundTag infoTag = tag.getCompound("Info");
             infoTag.put("particle_storage", particleStorage.writeToNBT(new CompoundTag()));
-            particleStorage.extractParticle(null);
+            particleStorage.clear();
         }
     }
 
@@ -529,7 +537,7 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
         if (tag.contains("Info")) {
             CompoundTag infoTag = tag.getCompound("Info");
             infoTag.put("particle_storage", particleStorage.writeToNBT(new CompoundTag()));
-            particleStorage.extractParticle(null);
+            particleStorage.clear();
         }
     }
 

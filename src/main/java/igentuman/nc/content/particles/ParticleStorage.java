@@ -4,6 +4,9 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * The base particle storage class
  * 
@@ -13,6 +16,7 @@ public class ParticleStorage implements IParticleStorage, IParticleStackHandler
 {
 
 	protected ParticleStack particleStack;
+	public List<ParticleStack> outputParticles = new ArrayList<>();
 	protected BlockEntity tile;
 	protected long maxEnergy;
 	protected long minEnergy;
@@ -66,6 +70,23 @@ public class ParticleStorage implements IParticleStorage, IParticleStackHandler
 		this.capacity = nbt.getInt("capacity");
 		this.minEnergy = nbt.getLong("minEnergy");
 		this.sourceDir = Direction.byName(nbt.getString("sourceDir"));
+		int outputCount = nbt.getInt("outputParticlesCount");
+		this.outputParticles = new java.util.ArrayList<>(outputCount);
+		if (nbt.contains("outputParticles"))
+		{
+			CompoundTag outputs = nbt.getCompound("outputParticles");
+			for(int i = 0; i < outputCount; i++)
+			{
+				if(outputs.contains("particle_"+i))
+				{
+					ParticleStack stack = ParticleStack.loadParticleStackFromNBT(outputs.getCompound("particle_"+i));
+					if(stack != null)
+					{
+						outputParticles.add(stack);
+					}
+				}
+			}
+		}
 	}
 
 	public CompoundTag writeToNBT(CompoundTag nbt)
@@ -81,6 +102,13 @@ public class ParticleStorage implements IParticleStorage, IParticleStackHandler
 		nbt.putLong("maxEnergy", maxEnergy);
 		nbt.putInt("capacity", capacity);
 		nbt.putLong("minEnergy", minEnergy);
+		nbt.putInt("outputParticlesCount", outputParticles.size());
+		CompoundTag outputs = new CompoundTag();
+		int id = 0;
+		for(ParticleStack stack : outputParticles) {
+			outputs.put("particle_"+id, stack.writeToNBT(outputs));
+		}
+		nbt.put("outputParticles", outputs);
 		if(sourceDir == null)
 		{
 			sourceDir = Direction.UP;
@@ -294,4 +322,9 @@ public class ParticleStorage implements IParticleStorage, IParticleStackHandler
     public String getCacheKey() {
 		return particleStack == null || particleStack.getParticle() == null ? "" : particleStack.getParticle().getName();
     }
+
+	public void clear() {
+		particleStack = null;
+		outputParticles.clear();
+	}
 }

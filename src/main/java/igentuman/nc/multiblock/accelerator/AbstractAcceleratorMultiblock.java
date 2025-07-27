@@ -33,7 +33,7 @@ public class AbstractAcceleratorMultiblock extends AbstractMultiblock {
     protected BlockPos outputBeamPort = BlockPos.ZERO;
     protected final HashMap<Long, ElectromagnetBlock> electromagnets = new HashMap<>(1000);
     protected final HashMap<Long, RFAmplifierBlock> amplifiers = new HashMap<>(1000);
-    protected final HashMap<Long, CoolerBlock> coolers = new HashMap<>(1000);
+    public final HashMap<Long, CoolerBlock> coolers = new HashMap<>(1000);
     protected HashSet<Long> beamPorts = new HashSet<>();
     protected int dipolesCount = 0;
     protected int quadrupolesCount = 0;
@@ -49,7 +49,7 @@ public class AbstractAcceleratorMultiblock extends AbstractMultiblock {
     protected int energyRequired = 0;
     protected int coolingRate = 0;
     protected int beamLength = 0;
-    protected int validCoolers = 0;
+    public int validCoolers = 0;
     protected int stage = 0;
 
     protected AbstractAcceleratorMultiblock(HashSet<Block> validOuterBlocks, HashSet<Block> validInnerBlocks, MultiblockController controller) {

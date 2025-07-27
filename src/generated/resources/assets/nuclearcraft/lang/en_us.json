@@ -2507,6 +2507,8 @@
   "reactor.net_heat": "Net Heat: %s H/t",
   "reactor.reactivity": "Reactivity: %s%%",
   "reactor.steam_per_tick": "Boiling rate: %s mB/t",
+  "report.nc.1.accelerator.all_coolers": "All Coolers: %s",
+  "report.nc.1.accelerator.valid_coolers": "Valid Coolers: %s",
   "report.nc.1.fusion_size": "Fusion Reactor Size: %s",
   "report.nc.1.reactor_all_moderators": "All Moderators: %s",
   "report.nc.1.target_chamber.all_detectors": "All Detectors: %s",

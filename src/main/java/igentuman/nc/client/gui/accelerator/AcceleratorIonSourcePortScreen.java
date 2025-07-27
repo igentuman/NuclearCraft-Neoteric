@@ -34,7 +34,6 @@ public class AcceleratorIonSourcePortScreen extends AbstractContainerScreen<Acce
     protected int relX;
     protected int relY;
     private int xCenter;
-    private Button.TurbinePortRedstoneModeButton redstoneConfigBtn;
 
     public AcceleratorIonSourcePortContainer container()
     {
@@ -71,7 +70,7 @@ public class AcceleratorIonSourcePortScreen extends AbstractContainerScreen<Acce
         updateRelativeCords();
         widgets.clear();
         energyBar = new VerticalBar.Energy(7, 6,  this, container().getMaxEnergy());
-        addWidget(FluidTankRenderer.tank(getFluidTank(0)).id(0).size(18, 18).pos(80, 45).canVoid());
+        addWidget(FluidTankRenderer.tank(getFluidTank(0)).id(0).size(16, 16).pos(80, 43).canVoid());
     }
 
     protected FluidTank getFluidTank(int i) {

@@ -299,7 +299,6 @@ public class TargetChamberControllerBE extends MultiblockControllerBE {
         HashMap<String, String> report = new HashMap<>();
         report.put("report.nc.1.target_chamber.all_detectors", String.valueOf(allDetectors));
         report.put("report.nc.2.target_chamber.valid_detectors", String.valueOf(detectorsCount));
-        report.put("report.nc.11.has_recipe", String.valueOf(recipeInfo().recipe != null));
         return report;
     }
 

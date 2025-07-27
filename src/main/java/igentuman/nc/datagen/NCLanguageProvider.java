@@ -366,6 +366,10 @@ public class NCLanguageProvider extends LanguageProvider {
 
     private void labels() {
         add("multiblock.analyze.report", "Multiblock Report");
+        add("report.nc.1.target_chamber.all_detectors", "All Detectors: %s");
+        add("report.nc.1.target_chamber.valid_detectors", "Valid Detectors: %s");
+        add("report.nc.1.accelerator.all_coolers", "All Coolers: %s");
+        add("report.nc.1.accelerator.valid_coolers", "Valid Coolers: %s");
         add("report.nc.1.reactor_all_moderators", "All Moderators: %s");
         add("report.nc.2.reactor_moderators", "Valid Moderators: %s");
         add("report.nc.3.reactor_moderator_attachments", "Moderator Attachments: %s");
@@ -556,8 +560,6 @@ public class NCLanguageProvider extends LanguageProvider {
         add("tooltip.ion_source.particle", "Particle: %s");
         add("tooltip.ion_source.amount", "Amount: %spu / %spu");
         add("tooltip.target_chamber.detectors", "Detectors: %s");
-        add("report.nc.1.target_chamber.all_detectors", "All Detectors: %s");
-        add("report.nc.1.target_chamber.valid_detectors", "Valid Detectors: %s");
         add("tooltip.detector.distance", "Max distance to chamber camera: %s");
         add("tooltip.detector.power", "FE required: %s/t");
         add("tooltip.detector.efficiency", "Efficiency: %s%%");

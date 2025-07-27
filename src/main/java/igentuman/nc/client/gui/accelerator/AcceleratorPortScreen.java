@@ -70,10 +70,10 @@ public class AcceleratorPortScreen extends AbstractContainerScreen<AcceleratorPo
         Minecraft mc = Minecraft.getInstance();
         updateRelativeCords();
         widgets.clear();
-        redstoneConfigBtn = new Button.TurbinePortRedstoneModeButton(150, 54, this, menu.getPosition());
-        widgets.add(redstoneConfigBtn);
+        //redstoneConfigBtn = new Button.TurbinePortRedstoneModeButton(150, 54, this, menu.getPosition());
+        //widgets.add(redstoneConfigBtn);
         energyBar = new VerticalBar.Energy(7, 6,  this, container().getMaxEnergy());
-        addWidget(FluidTankRenderer.tank(getFluidTank(0)).id(0).size(18, 18).pos(80, 45).canVoid());
+        addWidget(FluidTankRenderer.tank(getFluidTank(0)).id(0).size(16, 16).pos(80, 43).canVoid());
     }
 
     protected FluidTank getFluidTank(int i) {
@@ -89,8 +89,8 @@ public class AcceleratorPortScreen extends AbstractContainerScreen<AcceleratorPo
     }
 
     private void renderWidgets(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
-        redstoneConfigBtn.setMode(getMenu().getComparatorMode());
-        redstoneConfigBtn.strength = getMenu().getAnalogSignalStrength();
+        //redstoneConfigBtn.setMode(getMenu().getComparatorMode());
+        //redstoneConfigBtn.strength = getMenu().getAnalogSignalStrength();
         for(NCGuiElement widget: widgets) {
             widget.draw(graphics, mouseX, mouseY, partialTicks);
         }

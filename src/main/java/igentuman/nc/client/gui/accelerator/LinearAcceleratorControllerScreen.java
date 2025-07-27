@@ -80,7 +80,7 @@ public class LinearAcceleratorControllerScreen extends AbstractContainerScreen<L
         heatBar = new VerticalBar.Heat(17, 20,  this, container().getMaxHeat());
         coolantBar = new VerticalBar.Coolant(27, 20,  this, container().maxCoolant());
         guiParticle = new GuiParticle(40, 21);
-        analyzeBtn = new Button.MultiblockAnalyze(150, 78, this, menu.getPosition());
+        analyzeBtn = new Button.MultiblockAnalyze(170, 60, this, menu.getPosition());
         widgets.add(analyzeBtn);
         widgets.add(new FluidTankRenderer(getFluidTank(2), SHOW_AMOUNT_AND_CAPACITY,6, 73, 28, 21));
     }

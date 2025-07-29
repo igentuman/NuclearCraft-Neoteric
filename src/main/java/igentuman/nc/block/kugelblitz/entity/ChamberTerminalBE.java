@@ -425,7 +425,7 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
     private void handleMeltdown() {
         if(mass > MAX_MASS) {
             if (getMultiblock().isFormed() && hasBlackhole()) {
-                getMultiblock().getBlackHole().meltdown();
+                ((BlackHoleBE)getMultiblock().getBlackHole()).meltdown();
                 mass = 0;
                 feeding = 0;
                 energyPerTick = 0;

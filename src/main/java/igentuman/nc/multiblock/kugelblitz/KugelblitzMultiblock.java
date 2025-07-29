@@ -64,16 +64,9 @@ public class KugelblitzMultiblock extends AbstractMultiblock {
         return controllerBe;
     }
 
-    public BlackHoleBE getBlackHole() {
-        if(blackHole == null && getCenter() != null) {
-            BlockEntity be = getLevel().getBlockEntity(getCenter());
-            if(be instanceof BlackHoleBE) {
-                blackHole = (BlackHoleBE) be;
-            } else {
-                return null;
-            }
-        }
-        return blackHole;
+    public BlockEntity getBlackHole() {
+        if(getCenter() == null || getCenter().equals(BlockPos.ZERO)) return null;
+        return getBlockEntity(getCenter());
     }
 
     @Override

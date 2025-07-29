@@ -92,6 +92,7 @@ public class AcceleratorPortBE extends NuclearCraftBE implements MultiblockAttac
         }
         if(hasRedstoneSignal()) {
             controller().controllerEnabled = true;
+            controller.redstoneLevel = getRedstoneSignal();
         }
 
         updateAnalogSignal();

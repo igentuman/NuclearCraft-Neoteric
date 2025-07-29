@@ -18,6 +18,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 public class MultiblockControllerBE extends NuclearCraftBE implements MultiblockAttachable<AbstractMultiblock, MultiblockControllerBE> {
 
@@ -54,6 +55,10 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
 
     public int getBaseGTEnergyTier() {
         return 0;
+    }
+
+    public int getRedstoneSignal() {
+        return Objects.requireNonNull(getLevel()).getBestNeighborSignal(worldPosition);
     }
 
     @Override

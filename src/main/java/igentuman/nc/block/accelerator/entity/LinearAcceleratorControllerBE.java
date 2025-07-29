@@ -252,8 +252,10 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
         super.tickServer();
         boolean wasEnabled = controllerEnabled;
         handleValidation();
-
-        controllerEnabled = getMultiblock().isFormed() && hasRedstoneSignal();
+        if(redstoneLevel < 1) {
+            redstoneLevel = getRedstoneSignal();
+        }
+        controllerEnabled = getMultiblock().isFormed() && redstoneLevel > 0;
 
         if (controllerEnabled) {
             trackChanges(contentHandler().tick());
@@ -419,8 +421,8 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
             return false;
         }
         ParticleStack particleStack = particleStorage.getParticle();
-        particleStack.addFocus(focusGain(focus, particleStack)*(redstoneLevel / 15d)-focusLoss(beamLength, particleStack));
-        particleStack.setMeanEnergy(linacEnergyGain(acceleratingVoltage, particleStack));
+        particleStack.addFocus(focusGain(focus, particleStack)-focusLoss(beamLength, particleStack));
+        particleStack.setMeanEnergy((long)(linacEnergyGain(acceleratingVoltage, particleStack)*(redstoneLevel / 15d)));
         particleStorage.setParticleStack(particleStack);
         heat += heatRate;
         hasParticle = true;

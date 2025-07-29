@@ -110,7 +110,7 @@ repositories {
 dependencies {
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
     minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
-    compileOnly fg.deobf("com.gregtechceu.gtceu:gtceu-${mc_version}:${gtm_version}"){
+    implementation fg.deobf("com.gregtechceu.gtceu:gtceu-${mc_version}:${gtm_version}"){
         transitive = false
     }
     //compileOnly fg.deobf("curse.maven:mantle-74924:6603205")

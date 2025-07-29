@@ -72,7 +72,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
     protected final LazyOptional<IEnergyStorage> energy;
 
     @NBTField
-    public double maxHeat = 0;
+    public double maxHeat = FISSION_CONFIG.HEAT_CAPACITY.getDefault();
     @NBTField
     public boolean isSteamMode = false;
     @NBTField
@@ -514,7 +514,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
     }
 
     private void handleMeltdown() {
-        if (heat >= getMaxHeat()) {
+        if (heat > getMaxHeat()) {
             BlockPos explosionPos = getBlockPos().relative(getFacing(), 2);
             List<Long> fuelCells = new ArrayList<>(getMultiblock().fuelCells);
             if (FISSION_CONFIG.EXPLOSION_RADIUS.get() == 0) {
@@ -939,7 +939,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
     }
 
     public void refresh() {
-        double multiplier = ((double) Math.round(Math.log(height*width*depth)*10)/10)-1;
+        double multiplier = Math.max(1, ((double) Math.round(Math.log(height*width*depth)*10)/10)-1);
         maxHeat = FISSION_CONFIG.HEAT_CAPACITY.get()*multiplier;
         contentHandler().fluidHandler.tanks.get(0).setCapacity((int) (Math.pow(multiplier, 2)*1_000_000));
         contentHandler().fluidHandler.tanks.get(1).setCapacity((int) (Math.pow(multiplier, 2)*1_000_000));

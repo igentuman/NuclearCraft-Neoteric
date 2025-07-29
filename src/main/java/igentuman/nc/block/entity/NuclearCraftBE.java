@@ -272,7 +272,10 @@ public class NuclearCraftBE extends BlockEntity {
                 }
             }
             for (Field f : directionFields) {
-                tag.putString(f.getName(), ((Direction) f.get(this)).getName());
+                Direction direction = (Direction) f.get(this);
+                if (direction != null) {
+                    tag.putString(f.getName(), direction.getName());
+                }
             }
             for (Field f : booleanFields) {
                 tag.putBoolean(f.getName(), f.getBoolean(this));
@@ -281,7 +284,10 @@ public class NuclearCraftBE extends BlockEntity {
                 tag.putInt(f.getName(), f.getInt(this));
             }
             for (Field f : stringFields) {
-                tag.putString(f.getName(), (String) f.get(this));
+                String value = (String) f.get(this);
+                if (value != null) {
+                    tag.putString(f.getName(), value);
+                }
             }
             for (Field f : doubleFields) {
                 tag.putDouble(f.getName(), f.getDouble(this));
@@ -296,15 +302,22 @@ public class NuclearCraftBE extends BlockEntity {
                 tag.putLong(f.getName(), f.getLong(this));
             }
             for (Field f : intArrayFields) {
-                tag.putIntArray(f.getName(), (int[]) f.get(this));
+                int[] array = (int[]) f.get(this);
+                if (array != null) {
+                    tag.putIntArray(f.getName(), array);
+                }
             }
             for (Field f : stringArrayFields) {
                 String[] stringArray = (String[]) f.get(this);
-                ListTag tagList = new ListTag();
-                for (String string : stringArray) {
-                    tagList.add(StringTag.valueOf(string));
+                if (stringArray != null) {
+                    ListTag tagList = new ListTag();
+                    for (String string : stringArray) {
+                        if (string != null) {
+                            tagList.add(StringTag.valueOf(string));
+                        }
+                    }
+                    tag.put(f.getName(), tagList);
                 }
-                tag.put(f.getName(), tagList);
             }
         } catch (IllegalAccessException ignore) { }
     }
@@ -327,42 +340,64 @@ public class NuclearCraftBE extends BlockEntity {
     public void readTagData(CompoundTag tag) {
         try {
             for(Field f: directionFields) {
-                f.set(this, Direction.byName(tag.getString(f.getName())));
+                if (tag.contains(f.getName())) {
+                    f.set(this, Direction.byName(tag.getString(f.getName())));
+                }
             }
             for(Field f: blockPosFields) {
-                f.set(this, BlockPos.of(tag.getLong(f.getName())));
+                if (tag.contains(f.getName())) {
+                    f.set(this, BlockPos.of(tag.getLong(f.getName())));
+                }
             }
             for(Field f: booleanFields) {
-                f.setBoolean(this, tag.getBoolean(f.getName()));
+                if (tag.contains(f.getName())) {
+                    f.setBoolean(this, tag.getBoolean(f.getName()));
+                }
             }
             for(Field f: intFields) {
-                f.setInt(this, tag.getInt(f.getName()));
+                if (tag.contains(f.getName())) {
+                    f.setInt(this, tag.getInt(f.getName()));
+                }
             }
             for(Field f: stringFields) {
-                f.set(this, tag.getString(f.getName()));
+                if (tag.contains(f.getName())) {
+                    f.set(this, tag.getString(f.getName()));
+                }
             }
             for(Field f: doubleFields) {
-                f.setDouble(this, tag.getDouble(f.getName()));
+                if (tag.contains(f.getName())) {
+                    f.setDouble(this, tag.getDouble(f.getName()));
+                }
             }
             for(Field f: floatFields) {
-                f.setFloat(this, tag.getFloat(f.getName()));
+                if (tag.contains(f.getName())) {
+                    f.setFloat(this, tag.getFloat(f.getName()));
+                }
             }
             for(Field f: byteFields) {
-                f.setByte(this, tag.getByte(f.getName()));
+                if (tag.contains(f.getName())) {
+                    f.setByte(this, tag.getByte(f.getName()));
+                }
             }
             for(Field f: longFields) {
-                f.setLong(this, tag.getLong(f.getName()));
-            }
-            for(Field f: intArrayFields) {
-                f.set(this, tag.getIntArray(f.getName()));
-            }
-            for(Field f: intArrayFields) {
-                ListTag tagList = tag.getList(f.getName(), 8);
-                String[] stringArray = new String[tagList.size()];
-                for (int i = 0; i < tagList.size(); i++) {
-                    stringArray[i] = tagList.getString(i);
+                if (tag.contains(f.getName())) {
+                    f.setLong(this, tag.getLong(f.getName()));
                 }
-                f.set(this, stringArray);
+            }
+            for(Field f: intArrayFields) {
+                if (tag.contains(f.getName())) {
+                    f.set(this, tag.getIntArray(f.getName()));
+                }
+            }
+            for(Field f: stringArrayFields) {
+                if (tag.contains(f.getName())) {
+                    ListTag tagList = tag.getList(f.getName(), 8);
+                    String[] stringArray = new String[tagList.size()];
+                    for (int i = 0; i < tagList.size(); i++) {
+                        stringArray[i] = tagList.getString(i);
+                    }
+                    f.set(this, stringArray);
+                }
             }
         } catch (IllegalAccessException ignore) { }
     }

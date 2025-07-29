@@ -39,6 +39,7 @@ import static igentuman.nc.block.accelerator.ThoroidalAcceleratorControllerBlock
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.compat.oc2.ThoroidalAcceleratorDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.content.materials.Materials.subliquid_matter;
+import static igentuman.nc.handler.config.CommonConfig.GTCEU_CONFIG;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BE;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
 import static igentuman.nc.util.ModUtil.isCcLoaded;
@@ -95,6 +96,11 @@ public class ThoroidalAcceleratorControllerBE extends MultiblockControllerBE {
         super(ACCELERATOR_BE.get(NAME).get(), pPos, pBlockState);
         energyStorage = createEnergy();
         energy = LazyOptional.of(() -> energyStorage);
+        energyStorage
+                .setInputEnergyTier(getBaseGTEnergyTier())
+                .setOutputEnergyTier(0)
+                .setInputAmperage(16)
+                .setOutputAmperage(0);
         contentHandler = new SidedContentHandler(
                 1, 1,
                 1, 1, 10000);
@@ -105,6 +111,11 @@ public class ThoroidalAcceleratorControllerBE extends MultiblockControllerBE {
         contentHandler().setAllowedInputItems(this::getAllowedInputItems);
         contentHandler.setBlockEntity(this);
         contentHandler.setAllowedInputFluids(0, this::getAllowedInputFluids);
+    }
+
+    @Override
+    public int getBaseGTEnergyTier() {
+        return GTCEU_CONFIG.ACCELERATORS_ENERGY_TIER.get().ordinal();
     }
 
     public List<ItemStack> getAllowedInputItems()

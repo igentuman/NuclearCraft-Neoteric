@@ -52,6 +52,10 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
         super(pType, pPos, pBlockState);
     }
 
+    public int getBaseGTEnergyTier() {
+        return 0;
+    }
+
     @Override
     public void setMultiblock(AbstractMultiblock multiblock) {
         this.multiblock = multiblock;
@@ -221,5 +225,16 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
 
     public HashMap<String, String> getAnalyzeReport() {
         return new HashMap<>();
+    }
+
+    public void updateEnergyTier(int upgradeTier) {
+        if(energyStorage().getGTOutputAmperage() > 0) {
+            energyStorage().setOutputEnergyTier(getBaseGTEnergyTier() + upgradeTier);
+        }
+        if(energyStorage().getGTInputAmperage() > 0) {
+            energyStorage().setInputEnergyTier(getBaseGTEnergyTier() + upgradeTier);
+        }
+
+        setChanged();
     }
 }

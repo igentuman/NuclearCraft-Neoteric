@@ -98,7 +98,7 @@ public class TargetChamberControllerBE extends MultiblockControllerBE {
         contentHandler().setAllowedInputItems(this::getAllowedInputItems);
         energyStorage = createEnergy();
         energyStorage
-                .setInputEnergyTier(GTCEU_CONFIG.ACCELERATORS_ENERGY_TIER.get().ordinal())
+                .setInputEnergyTier(getBaseGTEnergyTier())
                 .setOutputEnergyTier(0)
                 .setInputAmperage(16)
                 .setOutputAmperage(0);
@@ -106,6 +106,11 @@ public class TargetChamberControllerBE extends MultiblockControllerBE {
         particleStorage = new ParticleStorage();
         particleStorage.setTileEntity(this);
         particleHandler = CapabilityParticleStackHandler.createHandler(particleStorage);
+    }
+
+    @Override
+    public int getBaseGTEnergyTier() {
+        return GTCEU_CONFIG.ACCELERATORS_ENERGY_TIER.get().ordinal();
     }
 
     @Override

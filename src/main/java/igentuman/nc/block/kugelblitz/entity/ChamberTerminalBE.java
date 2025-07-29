@@ -101,8 +101,8 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
     public ChamberTerminalBE(BlockPos pPos, BlockState pBlockState) {
         super(KUGELBLITZ_BE.get(NAME).get(), pPos, pBlockState);
         energyStorage = createEnergy();
-        energyStorage.setInputEnergyTier(GTCEU_CONFIG.KUGELBLITZ_ENERGY_TIER.get().ordinal()+ upgrade_tier)
-                .setOutputEnergyTier(GTCEU_CONFIG.KUGELBLITZ_ENERGY_TIER.get().ordinal()+ upgrade_tier)
+        energyStorage.setInputEnergyTier(0)
+                .setOutputEnergyTier(getBaseGTEnergyTier())
                 .setInputAmperage(0)
                 .setOutputAmperage(16);
         energy = LazyOptional.of(() -> energyStorage);
@@ -115,6 +115,11 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
         contentHandler().setAllowedInputItems(this::getAllowedInputItems);
         contentHandler.setBlockEntity(this);
         contentHandler.setAllowedInputFluids(0, this::getAllowedInputFluids);
+    }
+
+    @Override
+    public int getBaseGTEnergyTier() {
+        return GTCEU_CONFIG.KUGELBLITZ_ENERGY_TIER.get().ordinal();
     }
 
     public List<ItemStack> getAllowedInputItems()

@@ -65,6 +65,8 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
     protected final ParticleStorage particleStorage;
 
     @NBTField
+    public int heatMax = 0;
+    @NBTField
     public BlockPos ionSourcePos = BlockPos.ZERO;
     @NBTField
     public boolean hasParticle = false;
@@ -100,6 +102,8 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
     public int energyRequired = 0;
     @NBTField
     public int coolingRate = 0;
+    @NBTField
+    public double redstoneLevel = 0;
 
     protected Direction facing;
     public Recipe recipe;
@@ -115,10 +119,10 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
         super(ACCELERATOR_BE.get(NAME).get(), pPos, pBlockState);
         energyStorage = createEnergy();
         energyStorage
-                .setInputEnergyTier(GTCEU_CONFIG.ACCELERATORS_ENERGY_TIER.get().ordinal()+ upgrade_tier)
-                .setOutputEnergyTier(GTCEU_CONFIG.ACCELERATORS_ENERGY_TIER.get().ordinal()+ upgrade_tier)
-                .setInputAmperage(0)
-                .setOutputAmperage(16);
+                .setInputEnergyTier(getBaseGTEnergyTier())
+                .setOutputEnergyTier(0)
+                .setInputAmperage(16)
+                .setOutputAmperage(0);
         energy = LazyOptional.of(() -> energyStorage);
         contentHandler = new SidedContentHandler(
                 1, 1,
@@ -143,6 +147,11 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
         particleStorage = new ParticleStorage();
         particleStorage.setTileEntity(this);
         particleHandler = CapabilityParticleStackHandler.createHandler(particleStorage);
+    }
+
+    @Override
+    public int getBaseGTEnergyTier() {
+        return GTCEU_CONFIG.ACCELERATORS_ENERGY_TIER.get().ordinal();
     }
 
     public List<ItemStack> getAllowedInputItems()
@@ -410,7 +419,7 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
             return false;
         }
         ParticleStack particleStack = particleStorage.getParticle();
-        particleStack.addFocus(focusGain(focus, particleStack)-focusLoss(beamLength, particleStack));
+        particleStack.addFocus(focusGain(focus, particleStack)*(redstoneLevel / 15d)-focusLoss(beamLength, particleStack));
         particleStack.setMeanEnergy(linacEnergyGain(acceleratingVoltage, particleStack));
         particleStorage.setParticleStack(particleStack);
         heat += heatRate;
@@ -547,6 +556,11 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
 
     public CommonConfig.GTCEUCompatibilityConfig.GTCEUTier getTier() {
         return GTCEU_CONFIG.ACCELERATORS_ENERGY_TIER.get();
+    }
+
+    //todo implement
+    public int getMinEnergy() {
+        return 0;
     }
 
     public static class Recipe extends NcRecipe {

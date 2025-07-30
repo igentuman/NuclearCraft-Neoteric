@@ -129,25 +129,23 @@ public class RadiationEvents {
         if (event.level.isClientSide) {
             return;
         }
-        if (event.phase == TickEvent.Phase.START) {
+        if (!event.haveTime()) {
             return;
         }
         Level world = event.level;
         RadiationManager manager = RadiationManager.get(event.level);
-        if (!world.isClientSide) {
-            int size = droppedRadioactiveItems.size();
-            for(int i = 0; i < size; i++) {
-                ItemEntity entity = droppedRadioactiveItems.get(i);
-                if(entity.isAlive()) {
-                    double radiation = ItemRadiation.byItem(entity.getItem().getItem());
-                    if(radiation > 0.001) {
-                        RadiationManager.get(world).addRadiation(world, radiation/5, entity.blockPosition());
-                    }
-                } else {
-                    droppedRadioactiveItems.remove(i);
-                    i--;
-                    size--;
+        int size = droppedRadioactiveItems.size();
+        for(int i = 0; i < size; i++) {
+            ItemEntity entity = droppedRadioactiveItems.get(i);
+            if(entity.isAlive()) {
+                double radiation = ItemRadiation.byItem(entity.getItem().getItem());
+                if(radiation > 0.001) {
+                    RadiationManager.get(world).addRadiation(world, radiation/5, entity.blockPosition());
                 }
+            } else {
+                droppedRadioactiveItems.remove(i);
+                i--;
+                size--;
             }
         }
         manager.tick(event.level);

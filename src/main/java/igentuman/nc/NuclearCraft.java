@@ -27,6 +27,8 @@ import net.minecraftforge.event.server.ServerStoppedEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.ModContainer;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
@@ -55,17 +57,19 @@ public class NuclearCraft {
         unpackFilesFromFolderToConfig("data/nuclearcraft/fission_fuel", "NuclearCraft/fission_fuel");
         unpackFilesFromFolderToConfig("data/nuclearcraft/heat_sinks", "NuclearCraft/heat_sinks");
         unpackFilesFromFolderToConfig("data/nuclearcraft/accelerator_coolers", "NuclearCraft/accelerator_coolers");
-        context.registerConfig(ModConfig.Type.COMMON, MaterialsConfig.spec, "NuclearCraft/materials.toml");
-        context.registerConfig(ModConfig.Type.COMMON, OreGenConfig.spec, "NuclearCraft/ore_generation.toml");
-        context.registerConfig(ModConfig.Type.COMMON, CommonConfig.spec, "NuclearCraft/common.toml");
-        context.registerConfig(ModConfig.Type.COMMON, KugelblitzConfig.spec, "NuclearCraft/kugelblitz.toml");
-        context.registerConfig(ModConfig.Type.COMMON, AcceleratorConfig.spec, "NuclearCraft/accelerator.toml");
-        context.registerConfig(ModConfig.Type.COMMON, ProcessorsConfig.spec, "NuclearCraft/processors.toml");
-        context.registerConfig(ModConfig.Type.COMMON, FissionConfig.spec, "NuclearCraft/fission.toml");
-        context.registerConfig(ModConfig.Type.COMMON, FusionConfig.spec, "NuclearCraft/fusion.toml");
-        context.registerConfig(ModConfig.Type.COMMON, TurbineConfig.spec, "NuclearCraft/turbine.toml");
-        context.registerConfig(ModConfig.Type.COMMON, RadiationConfig.spec, "NuclearCraft/radiation.toml");
-        context.registerConfig(ModConfig.Type.COMMON, WorldConfig.spec, "NuclearCraft/world.toml");
+
+        ModContainer container = ModLoadingContext.get().getActiveContainer();
+        container.addConfig(new ModConfig(ModConfig.Type.COMMON, MaterialsConfig.spec, container,"NuclearCraft/materials.toml"));
+        container.addConfig(new ModConfig(ModConfig.Type.COMMON, OreGenConfig.spec, container,"NuclearCraft/ore_generation.toml"));
+        container.addConfig(new ModConfig(ModConfig.Type.COMMON, CommonConfig.spec, container,"NuclearCraft/common.toml"));
+        container.addConfig(new ModConfig(ModConfig.Type.COMMON, KugelblitzConfig.spec, container,"NuclearCraft/kugelblitz.toml"));
+        container.addConfig(new ModConfig(ModConfig.Type.COMMON, AcceleratorConfig.spec, container,"NuclearCraft/accelerator.toml"));
+        container.addConfig(new ModConfig(ModConfig.Type.COMMON, ProcessorsConfig.spec, container,"NuclearCraft/processors.toml"));
+        container.addConfig(new ModConfig(ModConfig.Type.COMMON, FissionConfig.spec, container,"NuclearCraft/fission.toml"));
+        container.addConfig(new ModConfig(ModConfig.Type.COMMON, FusionConfig.spec, container,"NuclearCraft/fusion.toml"));
+        container.addConfig(new ModConfig(ModConfig.Type.COMMON, TurbineConfig.spec, container,"NuclearCraft/turbine.toml"));
+        container.addConfig(new ModConfig(ModConfig.Type.COMMON, RadiationConfig.spec, container,"NuclearCraft/radiation.toml"));
+        container.addConfig(new ModConfig(ModConfig.Type.COMMON, WorldConfig.spec, container,"NuclearCraft/world.toml"));
     }
 
     @Deprecated

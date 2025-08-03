@@ -37,11 +37,14 @@ public class EXPLBE extends NuclearCraftBE {
     public int pulseTime = 0;
     @NBTField
     public long aggregatedEnergy = 0;
+    public boolean activatedByOther = false;
+    KugelblitzMultiblock chamber = null;
 
     protected final LazyOptional<IEnergyStorage> energy;
     public final CustomEnergyStorage energyStorage;
     private EXPLProxyBE[] proxyBES;
     private boolean energyTransfered = false;
+    private boolean allLasersBurst = false;
 
     public EXPLBE(BlockPos pPos, BlockState pBlockState) {
         super(EXPL_BE.get(), pPos, pBlockState);
@@ -149,7 +152,7 @@ public class EXPLBE extends NuclearCraftBE {
         if (activated && hasEnoughEnergy()) {
             if (pulseTime == 0) {
                 pulseTime = 90;
-                if(activated && inputRedstoneSignal == 0) {
+                if(activated && inputRedstoneSignal == 0 && !activatedByOther) {
                     findAndPulseOtherLasers();
                 }
             }
@@ -165,6 +168,7 @@ public class EXPLBE extends NuclearCraftBE {
             }
             if(pulseTime < 33 && pulseTime > 30) {
                 transferEnergy();
+                activatedByOther = false;
             }
             if (pulseTime < 10) {
                 aggregatedEnergy = 0;
@@ -180,12 +184,14 @@ public class EXPLBE extends NuclearCraftBE {
     }
 
     private void findAndPulseOtherLasers() {
+        int activatedLasers = 1;
         for (int i = 4; i <= KUGELBLITZ_CONFIG.LASER_DISTANCE.get()+4; i++) {
             BlockPos pos = getBlockPos().relative(getFacing(), i);
             BlockEntity be = level.getExistingBlockEntity(pos);
             if (be instanceof PhotonConcentratorBE photonConcentrator) {
                 AbstractMultiblock multiblock = photonConcentrator.getMultiblock();
                 if (multiblock instanceof KugelblitzMultiblock kugelblitzMultiblock) {
+                    chamber = kugelblitzMultiblock;
                     BlockPos center = kugelblitzMultiblock.getCenter();
                     for(Direction direction : Direction.values()) {
                         if(direction == getFacing().getOpposite()) {
@@ -194,7 +200,8 @@ public class EXPLBE extends NuclearCraftBE {
                         for(int j = 10; j < KUGELBLITZ_CONFIG.LASER_DISTANCE.get() + 10; j++) {
                             BlockEntity be2 = level.getExistingBlockEntity(center.relative(direction, j));
                             if(be2 instanceof EXPLBE expl) {
-                                expl.activate();
+                                expl.activate(true);
+                                activatedLasers++;
                                 break;
                             }
                         }
@@ -205,12 +212,14 @@ public class EXPLBE extends NuclearCraftBE {
                 break;
             }
         }
+        allLasersBurst = activatedLasers == 6 && chamber != null;
     }
 
-    public void activate() {
+    public void activate(boolean activatedByOther) {
         if(hasEnoughEnergy()) {
             if (pulseTime == 0) {
                 pulseTime = 90;
+                this.activatedByOther = true;
                 activated = true;
                 setChanged();
             }
@@ -239,12 +248,9 @@ public class EXPLBE extends NuclearCraftBE {
         energyTransfered = true;
         BlockPos pos = getBlockPos().relative(getFacing(), getActualLaserDistance());
         BlockEntity be = level.getExistingBlockEntity(pos);
-        if (be instanceof PhotonConcentratorBE photonConcentrator) {
-            AbstractMultiblock multiblock = photonConcentrator.getMultiblock();
-            if (multiblock instanceof KugelblitzMultiblock kugelblitzMultiblock) {
-                kugelblitzMultiblock.addPulseEnergy(aggregatedEnergy, getFacing());
-                return;
-            }
+        if(allLasersBurst) {
+            chamber.gotLaserBurst();
+            allLasersBurst = false;
         }
         if (isMekanismGeneratorsLoaded() && be instanceof mekanism.generators.common.tile.fusion.TileEntityLaserFocusMatrix matrixBe) {
             matrixBe.receiveLaserEnergy(FloatingLong.create(aggregatedEnergy / 10));

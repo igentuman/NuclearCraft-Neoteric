@@ -24,6 +24,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.common.capabilities.Capability;
@@ -89,7 +90,9 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
     public int blackholeStability = 100;
     @NBTField
     public int stabilizers = 0;
-
+    @NBTField
+    public HashMap<Direction, Long> pulseEnergy = new HashMap<>();
+    protected boolean collectingEnergy = true;
 
     protected Direction facing;
     public Recipe recipe;
@@ -97,6 +100,7 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
     private List<ItemStack> allowedInputs;
     private final List<ItemStack> orderedOutputs = new ArrayList<>();
     private List<FluidStack> allowedInputFluids;
+    public boolean gotLaserBurst = false;
 
     public ChamberTerminalBE(BlockPos pPos, BlockState pBlockState) {
         super(KUGELBLITZ_BE.get(NAME).get(), pPos, pBlockState);
@@ -254,6 +258,9 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
         super.tickServer();
         boolean wasEnabled = controllerEnabled;
         handleValidation();
+        if(isCasingValid && isInternalValid) {
+            handleLaserBurst();
+        }
         controllerEnabled = isCasingValid && isInternalValid && mass > 0;
         if (controllerEnabled) {
             trackChanges(contentHandler().tick());
@@ -611,11 +618,54 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
     }
 
     public void handleLaserBurst() {
+        if(!gotLaserBurst) return;
+        if(!hasBlackhole()) {
+            handleBlackHole();
+            return;
+        }
         blackholeStability += 50 + getLevel().random.nextInt(50);
         if (blackholeStability > 100) {
             blackholeStability = 100;
         }
         mass += (getLevel().random.nextInt(200)+200) * 10000L;
+        gotLaserBurst = false;
+    }
+
+    private void handleBlackHole() {
+        if(getMultiblock().getCenter() == null) {
+            if(getMultiblock().blackHole != null) {
+                getMultiblock().blackHole = null;
+                getMultiblock().blackHole.getLevel().setBlockAndUpdate(getMultiblock().blackHole.getBlockPos(), AIR.defaultBlockState());
+            }
+            return;
+        }
+        if(getMultiblock().blackHole == null && getLevel() != null) {
+            BlockEntity be = getLevel().getBlockEntity(getMultiblock().getCenter());
+            if(be instanceof BlackHoleBE) {
+                getMultiblock().blackHole = (BlackHoleBE) be;
+            }
+        }
+        if(!(getMultiblock().isFormed() || isCasingValid) && getMultiblock().blackHole != null) {
+            BlockPos pos = getMultiblock().blackHole.getBlockPos();
+            getMultiblock().blackHole = null;
+            getLevel().setBlockAndUpdate(pos, AIR.defaultBlockState());
+            mass = 0;
+            feeding = 0;
+            energyPerTick = 0;
+            evaporation = 0;
+            setChanged();
+        }
+        if (!hasBlackhole()) {
+            getLevel().setBlockAndUpdate(getMultiblock().getCenter(), KUGELBLITZ_BLOCKS.get("black_hole").get().defaultBlockState());
+            getMultiblock().blackHole = (BlackHoleBE) getLevel().getBlockEntity(getMultiblock().getCenter());
+            mass = (long) (MIN_MASS*(1+getLevel().random.nextDouble()));
+            gotLaserBurst = false;
+            setChanged();
+        }
+    }
+
+    public boolean gotLaserBurst() {
+        return gotLaserBurst;
     }
 
     public static class Recipe extends NcRecipe {

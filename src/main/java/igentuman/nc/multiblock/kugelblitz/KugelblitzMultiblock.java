@@ -28,10 +28,9 @@ import static net.minecraft.world.level.block.Blocks.AIR;
 public class KugelblitzMultiblock extends AbstractMultiblock {
 
     protected ChamberTerminalBE controllerBe;
-    protected final HashMap<Direction, Long> pulseEnergy = new HashMap<>();
     protected final HashSet<Block> validCornerBlocks;
-    protected BlackHoleBE blackHole;
-    protected boolean collectingEnergy = true;
+    public BlackHoleBE blackHole;
+
     protected BlockPos centerBlockPos;
     protected int transformers = 0;
     protected int fluxRegulators = 0;
@@ -66,7 +65,7 @@ public class KugelblitzMultiblock extends AbstractMultiblock {
 
     public BlockEntity getBlackHole() {
         if(getCenter() == null || getCenter().equals(BlockPos.ZERO)) return null;
-        return getBlockEntity(getCenter());
+        return getLevel().getExistingBlockEntity(getCenter());
     }
 
     @Override
@@ -345,72 +344,12 @@ public class KugelblitzMultiblock extends AbstractMultiblock {
     @Override
     public void tick(Level level) {
         super.tick(level);
-        handleBlackHole();
-        if(!pulseEnergy.isEmpty() && collectingEnergy) {
-            collectingEnergy = false;
-            return;
-        }
-        if(blackHole != null && !pulseEnergy.isEmpty()) {
-            boolean energyTransfered = true;
-            for (Direction direction : Direction.values()) {
-                if(!pulseEnergy.containsKey(direction)) {
-                    energyTransfered = false;
-                    break;
-                }
-            }
-            if(energyTransfered) {
-                controllerBE().handleLaserBurst();
-            }
-        }
-        collectingEnergy = true;
-        pulseEnergy.clear();
     }
 
-    private void handleBlackHole() {
-        if(getCenter() == null) {
-            if(blackHole != null) {
-                blackHole = null;
-                blackHole.getLevel().setBlockAndUpdate(blackHole.getBlockPos(), AIR.defaultBlockState());
-            }
-            return;
-        }
-        if(blackHole == null && getLevel() != null) {
-            BlockEntity be = getLevel().getBlockEntity(getCenter());
-            if(be instanceof BlackHoleBE) {
-                blackHole = (BlackHoleBE) be;
-            }
-        }
-        if(!(isFormed() || controllerBE().isCasingValid) && blackHole != null) {
-            BlockPos pos = blackHole.getBlockPos();
-            blackHole = null;
-            getLevel().setBlockAndUpdate(pos, AIR.defaultBlockState());
-            controllerBE().mass = 0;
-            controllerBE().feeding = 0;
-            controllerBE().energyPerTick = 0;
-            controllerBE().evaporation = 0;
-            controllerBE().setChanged();
-        }
-        if (blackHole == null) {
-            boolean energyTransfered = true;
-            //validate if all pulse energy is transferred
-            for (Direction direction : Direction.values()) {
-                if(!pulseEnergy.containsKey(direction)) {
-                    energyTransfered = false;
-                    break;
-                }
-            }
-            if (energyTransfered) {
-                getLevel().setBlockAndUpdate(getCenter(), KUGELBLITZ_BLOCKS.get("black_hole").get().defaultBlockState());
-                blackHole = (BlackHoleBE) getLevel().getBlockEntity(getCenter());
-                controllerBE().mass = (long) (MIN_MASS*(1+getLevel().random.nextDouble()));
-                controllerBE().setChanged();
-            }
-        }
-    }
+
 
     @Override
     public void clearStats() {
-        pulseEnergy.clear();
         controllerBE().controllerEnabled = false;
         controllerBE().fluxRegulators = 0;
         controllerBE().transformers = 0;
@@ -420,11 +359,6 @@ public class KugelblitzMultiblock extends AbstractMultiblock {
 
     public BlockPos getCenter() {
         return centerBlockPos;
-    }
-
-    public void addPulseEnergy(long pulseEnergy, Direction facing) {
-        collectingEnergy = true;
-        this.pulseEnergy.put(facing, pulseEnergy);
     }
 
     public int fluxRegulators() {
@@ -453,5 +387,9 @@ public class KugelblitzMultiblock extends AbstractMultiblock {
     public void onControllerRemoved() {
         removeBlackHole();
         super.onControllerRemoved();
+    }
+
+    public void gotLaserBurst() {
+        controllerBE().gotLaserBurst = true;
     }
 }

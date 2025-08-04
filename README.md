@@ -2,6 +2,9 @@
 This is a re-creation of old but gold NuclearCraft on a modern MC version
 
 [![Build Mod Job](https://github.com/igentuman/NuclearCraft-Neoteric/actions/workflows/gradle.yml/badge.svg?branch=1.20)](https://github.com/igentuman/NuclearCraft-Neoteric/actions/workflows/gradle.yml)
+[![https://cf.way2muchnoise.eu/full_840010_downloads.svg](https://cf.way2muchnoise.eu/full_840010_downloads.svg)](https://www.curseforge.com/minecraft/mc-mods/nuclearcraft-neoteric)
+[![https://cf.way2muchnoise.eu/versions/840010.svg](https://cf.way2muchnoise.eu/versions/840010.svg)](https://www.curseforge.com/minecraft/mc-mods/nuclearcraft-neoteric)
+
 
 # ROADMAP
 - [x] Ore Generation

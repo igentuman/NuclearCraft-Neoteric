@@ -216,6 +216,14 @@ public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
                         }
                     }
                 }
+                if(cachedOutputItems.isEmpty()) {
+                    for(ItemStack item: items) {
+                        if(!item.isEmpty() && !item.is(BARRIER)) {
+                            cachedOutputItems.add(item);
+                            break;
+                        }
+                    }
+                }
             }
         }
         return cachedOutputItems;

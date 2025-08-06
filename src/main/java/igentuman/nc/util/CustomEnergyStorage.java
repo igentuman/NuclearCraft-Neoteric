@@ -180,6 +180,9 @@ public class CustomEnergyStorage extends EnergyStorage {
     }
 
     public int getMaxExtract() {
+        if(isGtLoaded() && isGTEUCapEnabled()) {
+            return convert2FE(outputAmperage * outputVoltage);
+        }
         return maxExtract;
     }
 }

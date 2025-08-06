@@ -170,7 +170,7 @@ public class FissionPortBE extends NuclearCraftBE implements MultiblockAttachabl
         if(extracted >= controller().energyStorage().getMaxExtract()) {
             return;
         }
-        int canExtract = controller().energyStorage().getMaxExtract() - extracted;
+        int canExtract = Math.min(controller().energyStorage().getMaxExtract() - extracted, getEnergyStored());
         be.getCapability(ForgeCapabilities.ENERGY, direction.getOpposite()).map(handler -> {
                     if (handler.canReceive()) {
                         int received = handler.receiveEnergy(canExtract, false);

@@ -234,7 +234,7 @@ public class FusionCoreProxyBE extends NuclearCraftBE implements MultiblockAttac
                 if(extracted >= controller().energyStorage().getMaxExtract()) {
                     return;
                 }
-                int canExtract = controller().energyStorage().getMaxExtract() - extracted;
+                int canExtract = Math.min(controller().energyStorage().getMaxExtract() - extracted,  controller().energyStorage().getEnergyStored());
                 if(r.canReceive()) {
                     int available = getCoreBE().energyStorage().getEnergyStored()-required-canExtract;
                     int recieved = r.receiveEnergy(Math.min(available, getCoreBE().energyStorage().getMaxExtract()), false);

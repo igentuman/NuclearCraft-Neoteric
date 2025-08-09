@@ -136,7 +136,7 @@ public class BarrelBlock extends Block implements EntityBlock {
                 if(fluid == null || fluid.isEmpty()) {
                     player.sendSystemMessage(__("tooltip.nc.liquid_empty", formatLiquid(storage)).withStyle(ChatFormatting.BLUE));
                 } else {
-                    player.sendSystemMessage(__("tooltip.nc.liquid_stored", fluid.getDisplayName(), formatLiquid(fluid.getAmount()), formatLiquid(storage)).withStyle(ChatFormatting.BLUE));
+                    player.sendSystemMessage(__("tooltip.nc.liquid_stored", fluid.getDisplayName(), formatLiquid(fluid.getAmount()), formatLiquid(storage*1000)).withStyle(ChatFormatting.BLUE));
                 }
             }
         }
@@ -211,7 +211,7 @@ public class BarrelBlock extends Block implements EntityBlock {
     @Override
     public void appendHoverText(ItemStack stack, @javax.annotation.Nullable BlockGetter world, List<Component> list, TooltipFlag flag)
     {
-        int storage = BarrelBlocks.all().get(code()).config().getCapacity();
+        int storage = BarrelBlocks.all().get(code()).config().getCapacity() * 1000;
 
         list.add(__("tooltip.nc.liquid_capacity", formatLiquid(storage)).withStyle(ChatFormatting.BLUE));
         list.add(__("tooltip.nc.use_multitool").withStyle(ChatFormatting.YELLOW));

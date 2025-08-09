@@ -75,10 +75,10 @@ public class BarrelBlockItem extends BlockItem
 	@Override
 	public void appendHoverText(ItemStack stack, @javax.annotation.Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
-		int storage = BarrelBlocks.all().get(code()).config().getCapacity();
+		int storage = BarrelBlocks.all().get(code()).config().getCapacity() * 1000;
 		FluidStack fluid = getFluid(stack).getFluidInTank(0);
 		if(fluid == null || fluid.isFluidEqual(FluidStack.EMPTY)) {
-			list.add(__("tooltip.nc.liquid_empty", formatLiquid(storage)).withStyle(ChatFormatting.BLUE));
+			list.add(__("tooltip.nc.liquid_capacity", formatLiquid(storage)).withStyle(ChatFormatting.BLUE));
 		} else {
 			list.add(__("tooltip.nc.liquid_stored", fluid.getDisplayName(), formatLiquid(fluid.getAmount()), formatLiquid(storage)).withStyle(ChatFormatting.BLUE));
 		}

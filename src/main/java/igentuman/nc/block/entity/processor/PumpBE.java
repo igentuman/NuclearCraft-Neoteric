@@ -26,6 +26,7 @@ public class PumpBE extends NCProcessorBE {
             recipeInfo().energy = getBasePower() * recipe.getEnergy();
             recipeInfo().radiation = recipeInfo.recipe.getRadiation();
             recipeInfo().be = this;
+            recipeInfo().ticksProcessed = 0;
            // recipe.extractInputs(contentHandler);
         }
     }

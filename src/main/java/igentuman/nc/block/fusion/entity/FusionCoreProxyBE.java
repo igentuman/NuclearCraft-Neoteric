@@ -24,6 +24,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Objects;
 
+import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.compat.gregtech.GTUtils.*;
 import static igentuman.nc.compat.oc2.FusionReactorDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_CORE_PROXY_BE;
@@ -237,7 +238,14 @@ public class FusionCoreProxyBE extends NuclearCraftBE implements MultiblockAttac
                 int canExtract = Math.min(controller().energyStorage().getMaxExtract() - extracted,  controller().energyStorage().getEnergyStored());
                 if(r.canReceive()) {
                     int available = getCoreBE().energyStorage().getEnergyStored()-required-canExtract;
-                    int recieved = r.receiveEnergy(Math.min(available, getCoreBE().energyStorage().getMaxExtract()), false);
+                    if(available < 0) return;
+                    int recieved = 0;
+                    try {
+                        recieved = r.receiveEnergy(Math.min(available, getCoreBE().energyStorage().getMaxExtract()), false);
+                    } catch (Exception e) {
+                        debugLog("Entity failed to receive FE at: " + be.getBlockPos().toShortString());
+                        return;
+                    }
                     getCoreBE().energyStorage().consumeEnergy(recieved);
                     controller().setChanged();
                 }

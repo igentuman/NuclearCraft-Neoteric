@@ -84,6 +84,7 @@ public class FusionCoreScreen extends AbstractContainerScreen<FusionCoreContaine
         rfAmplifierSlider.slideTo(container().getAmlificationAdjustment());
         redstoneConfigBtn = new Button.FusionReactorRedstoneModeButton(169, 83, this, menu.getBlockPos());
         analyzeBtn = new Button.MultiblockAnalyze(190, 105, this, menu.getBlockPos());
+        widgets.add(new Button.ReportIssue(6, 150, this, menu.getBlockPos()));
         widgets.add(redstoneConfigBtn);
         widgets.add(analyzeBtn);
         widgets.add(rfAmplifierSlider);

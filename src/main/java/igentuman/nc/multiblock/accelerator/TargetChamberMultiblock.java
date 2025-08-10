@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.handler.config.AcceleratorConfig.PARTICLE_CHAMBER_CONFIG;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
 import static igentuman.nc.multiblock.accelerator.TargetChamberRegistration.*;
@@ -105,51 +106,91 @@ public class TargetChamberMultiblock extends AbstractMultiblock {
 
     @Override
     public void validateOuter() {
+        debugLog("Starting target chamber outer validation");
+        
         super.validateOuter();
         if(!validationResult.isValid) {
+            debugLog("Base outer validation failed with result: " + validationResult);
             return;
         }
+        
+        debugLog("Checking target chamber proportions - " + width() + "x" + height() + "x" + depth());
+        
         if(
                 height() % 2 == 0 || width() % 2 == 0 || depth() % 2 == 0
                 || (height() != width() || height() != depth() || width() != depth())
         ) {
+            debugLog("Proportion validation failed - dimensions must be odd and equal (cube)");
+            debugLog("Current: " + width() + "x" + height() + "x" + depth() + 
+                    " (even dimensions: H=" + (height() % 2 == 0) + 
+                    ", W=" + (width() % 2 == 0) + 
+                    ", D=" + (depth() % 2 == 0) + ")");
             validationResult = ValidationResult.WRONG_PROPORTIONS;
             outerValid = false;
             return;
         }
+        
         outerValid = true;
         validationResult = ValidationResult.VALID;
+        debugLog("Target chamber outer validation completed successfully");
     }
 
     @Override
     public void validate() {
+        debugLog("=== Starting Target Chamber validation at " + controllerPos.toShortString() + " ===");
+        
         validDetectors.clear();
         allDetectors.clear();
+        
+        debugLog("Cleared target chamber specific caches");
         super.validate();
+        
+        if(validationResult.isValid) {
+            debugLog("Target chamber validation completed successfully");
+            debugLog("Detectors - All: " + allDetectors.size() + 
+                    ", Valid: " + validDetectors.size() + 
+                    ", Efficiency: " + String.format("%.2f%%", efficiency * 100) + 
+                    ", Power: " + power);
+        } else {
+            debugLog("Target chamber validation failed with result: " + validationResult);
+        }
     }
 
     @Override
     public void validateInner()
     {
+        debugLog("Starting target chamber inner validation");
+        
         efficiency = 1;
         power = 0;
         if(!outerValid) {
+            debugLog("Skipping inner validation - outer validation failed");
             clearStats();
             return;
         }
 
+        debugLog("Indexing inner blocks for target chamber");
         indexInnerBlocks();
         if(!validationResult.isValid) {
+            debugLog("Inner block indexing failed with result: " + validationResult);
             clearStats();
             return;
         }
+        
+        debugLog("Checking center block for camera at " + getCenterBlock().toShortString());
         if(!getBlockState(getCenterBlock()).is(TARGET_CHAMBER_BLOCKS.get("target_chamber_camera").get())) {
+            debugLog("Center block validation failed - expected camera, found: " + 
+                    getBlockState(getCenterBlock()).getBlock().getDescriptionId());
             validationResult = ValidationResult.WRONG_INNER;
             errorBlockPos = getCenterBlock();
             clearStats();
             return;
         }
+        
+        debugLog("Validating beam lines");
         validateBeamLines();
+        
+        // Update controller stats
         controllerBE().allDetectors = allDetectors.size();
         controllerBE().efficiency = efficiency*100;
         controllerBE().energyPerTick = power;
@@ -157,6 +198,9 @@ public class TargetChamberMultiblock extends AbstractMultiblock {
         controllerBE().detectorsCount = validDetectors.size();
         controllerBE().height = height;
         controllerBE().width = width;
+        
+        debugLog("Target chamber inner validation completed - Efficiency: " + String.format("%.2f%%", efficiency * 100) + 
+                ", Power: " + power + ", Detectors: " + validDetectors.size() + "/" + allDetectors.size());
         controllerBE().depth = depth;
         if(validDetectors.isEmpty()) {
             validationResult = ValidationResult.NO_DETECTORS;

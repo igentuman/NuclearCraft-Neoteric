@@ -92,6 +92,7 @@ public class FissionControllerScreen extends AbstractContainerScreen<FissionCont
         coolantTank = new FluidTankRenderer(getFluidTank(0), SHOW_AMOUNT_AND_CAPACITY,6, 73, 18, 17);
         steamTank = new FluidTankRenderer(getFluidTank(1), SHOW_AMOUNT_AND_CAPACITY,6, 73, 27, 17);
         widgets.add(heatBar);
+        widgets.add(new Button.ReportIssue(163, 6, this, menu.getPosition()));
         widgets.add(new ProgressBar(74, 35, this,  7));
         modeBtn = new Button.ReactorMode(150, 60, this, menu.getPosition());
         analyzeBtn = new Button.MultiblockAnalyze(150, 38, this, menu.getPosition());

@@ -7,6 +7,7 @@ import igentuman.nc.client.gui.IVerticalBarScreen;
 import igentuman.nc.client.gui.element.NCGuiElement;
 import igentuman.nc.client.gui.element.bar.ProgressBar;
 import igentuman.nc.client.gui.element.bar.VerticalBar;
+import igentuman.nc.client.gui.element.button.Button;
 import igentuman.nc.client.gui.element.button.Checkbox;
 import igentuman.nc.client.gui.element.fluid.FluidTankRenderer;
 import igentuman.nc.container.TurbineControllerContainer;
@@ -72,6 +73,7 @@ public class TurbineControllerScreen extends AbstractContainerScreen<TurbineCont
         checkboxCasing = new Checkbox(imageWidth-19, 80, this,  isCasingValid());
         checkboxInterior =  new Checkbox(imageWidth-32, 80, this,  isInteriorValid());
         widgets.add(new ProgressBar(74, 35, this,  7));
+        widgets.add(new Button.ReportIssue(163, 6, this, menu.getPosition()));
         energyBar = new VerticalBar.Energy(17, 16,  this, container().getMaxEnergy());
         addWidget(FluidTankRenderer.tank(getFluidTank(0)).id(0).size(18, 18).pos(56, 35).canVoid());
         addWidget(FluidTankRenderer.tank(getFluidTank(1)).id(1).size(24, 24).pos(112, 31).canVoid());

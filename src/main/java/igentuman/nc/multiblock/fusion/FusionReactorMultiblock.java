@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.handler.config.FusionConfig.FUSION_CONFIG;
 import static igentuman.nc.util.TagUtil.getBlocksByTagKey;
 import static net.minecraft.core.Direction.*;
@@ -145,31 +146,67 @@ public class FusionReactorMultiblock extends AbstractMultiblock {
 
     @Override
     public void validateOuter() {
+        debugLog("Starting fusion reactor outer validation");
+        
         resolveDimensions();
+        debugLog("Resolved fusion reactor dimensions - Length: " + length);
+        
         if(!validationResult.isValid) {
+            debugLog("Dimension resolution failed with result: " + validationResult);
             clearStats();
             return;
         }
+        
+        debugLog("Validating fusion reactor ring structure");
         validateRing();
+        debugLog("Ring validation - Ring valid: " + ringValid + 
+                ", Connectors valid: " + connectorsValid + 
+                ", Connectors count: " + connectorsCount + 
+                ", Casing blocks: " + casingBlocks);
+        
         if(!validationResult.isValid) {
+            debugLog("Ring validation failed with result: " + validationResult);
             clearStats();
             return;
         }
+        
         outerValid = ringValid && connectorsValid;
         if(outerValid) {
-            validationResult =  ValidationResult.VALID;
+            validationResult = ValidationResult.VALID;
+            debugLog("Fusion reactor outer validation completed successfully");
+        } else {
+            debugLog("Fusion reactor outer validation failed - Ring valid: " + ringValid + ", Connectors valid: " + connectorsValid);
         }
     }
 
     @Override
     public void validate() {
+        debugLog("=== Starting Fusion Reactor validation at " + controllerPos.toShortString() + " ===");
+        debugLog("Target length: " + length);
+        
         super.validate();
+        
+        debugLog("Handling potential meltdown conditions");
         handleMeltdown();
+        
+        debugLog("Collecting functional parts (electromagnets and RF amplifiers)");
         collectFunctionalParts();
+        debugLog("Found " + electromagnets.size() + " electromagnets and " + amplifiers.size() + " RF amplifiers");
+        
+        debugLog("Recalculating fusion reactor characteristics");
         recalculateCharacteristics();
-        updateCharacteristics();
+        debugLog("Magnetic field strength: " + String.format("%.2f", magneticFieldStrength) + 
+                ", RF efficiency: " + rfEfficiency + 
+                ", Magnets efficiency: " + magnetsEfficiency);
+        
+        boolean hasChanges = updateCharacteristics();
+        debugLog("Updated controller characteristics - Changes detected: " + hasChanges);
+        
         if(validationResult.isValid) {
             errorBlockPos = BlockPos.ZERO;
+            debugLog("Fusion reactor validation completed successfully");
+        } else {
+            debugLog("Fusion reactor validation failed with result: " + validationResult);
         }
     }
 

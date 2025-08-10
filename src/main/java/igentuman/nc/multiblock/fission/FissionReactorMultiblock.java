@@ -149,6 +149,8 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
 
     @Override
     public void validate() {
+        debugLog("=== Starting Fission Reactor validation at " + controllerPos.toShortString() + " ===");
+        
         heatSinkCooling = 0;
         moderatorAttachments = 0;
         extraFuelCells = 0;
@@ -166,6 +168,8 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
         irradiators.clear();
         directFuelCellConnectionPos.clear();
         secondFuelCellConnectionPos.clear();
+        
+        debugLog("Cleared fission reactor specific caches and counters");
         super.validate();
     }
 
@@ -180,26 +184,38 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
         moderatorAttachments = 0;
         irradiationLines = 0;
         //Stage 1: Index all inner blocks
+        debugLog("Stage 1: Indexing inner blocks");
         indexInnerBlocks();
-        debugLog("stage 1 :"+validationResult);
-        debugLog("Top Right: " + getTopRightBlock().toShortString());
-        debugLog("Bottom Left: " + getBottomLeftBlock().toShortString());
+        debugLog("Stage 1 complete - Result: " + validationResult + 
+                ", Fuel cells: " + fuelCells.size() + 
+                ", Moderators: " + allModerators.size() + 
+                ", Heat sinks: " + allHeatSinks.size() + 
+                ", Irradiators: " + irradiators.size());
         if(validationResult != ValidationResult.VALID) {
             clearStats();
             return;
         }
+        
         //Stage 2: count fuel cell attachments and moderators
+        debugLog("Stage 2: Indexing fuel cell attachments");
         indexFuelCellAttachments();
-        debugLog("stage 2 :"+validationResult);
+        debugLog("Stage 2 complete - Extra fuel cells: " + extraFuelCells + 
+                ", Moderator attachments: " + moderatorAttachments + 
+                ", Cells heat mult: " + String.format("%.2f", cellsHeatMult) + 
+                ", Cells energy mult: " + String.format("%.2f", cellsEnergyMult));
+        
         //Stage 3: index irradiators and count irradiation lines
+        debugLog("Stage 3: Indexing irradiators");
         indexIrradiators();
-        debugLog("stage 3 :"+validationResult);
+        debugLog("Stage 3 complete - Irradiation lines: " + irradiationLines + 
+                ", Valid irradiators: " + validIrradiators.size() + "/" + irradiators.size());
 
         //Stage 4: count heat sinks and their cooling
+        debugLog("Stage 4: Indexing heat sinks");
         indexHeatSinks();
-        debugLog("stage 4 :"+validationResult);
-        debugLog("Top Right: " + getTopRightBlock().toShortString());
-        debugLog("Bottom Left: " + getBottomLeftBlock().toShortString());
+        debugLog("Stage 4 complete - Valid heat sinks: " + validHeatSinks.size() + "/" + allHeatSinks.size() + 
+                ", Active heat sinks: " + activeHeatSinks.size() + 
+                ", Coolant types: " + coolantPerTick.size());
         //Stage 5: update controller stats
         controllerBE().irradiationLines = irradiationLines;
         controllerBE().allIrradiators = irradiators.size();

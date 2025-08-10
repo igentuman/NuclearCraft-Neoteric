@@ -17,6 +17,7 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.Block;
@@ -26,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static igentuman.nc.NuclearCraft.debugLog;
+import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.util.TextUtils.__;
 
 public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
@@ -220,6 +222,40 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
         }
     }
 
+    public static class ReportIssue extends Button {
+        private final BlockPos pos;
+        public static final int BTN_ID = 889;
+        public byte strength = 0;
+        public int timer = 2000;
+        private final ResourceLocation BTN_TEXTURE = rl("textures/gui/buttons/bug.png");
+
+        public ReportIssue(int xPos, int yPos, AbstractContainerScreen<?> screen, BlockPos pos) {
+            super(xPos, yPos, screen, BTN_ID);
+            this.pos = pos;
+            height = 8;
+            width = 8;
+            String link = "https://github.com/igentuman/NuclearCraft-Neoteric/issues/new?template=bug_report.md";
+            btn = new ImageButton(X(), Y(), width, height, 0, 0, 8, BTN_TEXTURE, 8, 16, pButton -> {
+                try {
+                    net.minecraft.Util.getPlatform().openUri(link);
+                } catch (Exception e) {
+                    debugLog("Failed to open link: " + link);
+                }
+            });
+        }
+
+        public List<Component> getTooltips() {
+            List<Component> list = List.of(
+                    __("tooltip.nc.report_issue")
+            );
+            return list;
+        }
+
+        public void setTimer(int modeTimer) {
+            timer = modeTimer;
+        }
+    }
+
     public static class InsertJson extends Button {
         private final BlockPos pos;
         public static final int BTN_ID = 888;
@@ -257,6 +293,7 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
             timer = modeTimer;
         }
     }
+
     public static class Build extends Button {
         private final BlockPos pos;
         public static final int BTN_ID = 889;

@@ -21,6 +21,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.handler.config.AcceleratorConfig.ACCELERATOR_CONFIG;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
 import static igentuman.nc.util.PortMode.PORT_MODE;
@@ -115,6 +116,8 @@ public class AbstractAcceleratorMultiblock extends AbstractMultiblock {
 
     @Override
     public void validateOuter() {
+        debugLog("Starting accelerator outer validation at " + controllerPos.toShortString());
+        
         topRight = null;
         bottomLeft = null;
         validationResult = ValidationResult.INCOMPLETE;
@@ -128,31 +131,44 @@ public class AbstractAcceleratorMultiblock extends AbstractMultiblock {
         height = 0;
         beamPorts.clear();
         outerValid = false;
+        
+        debugLog("Resolving accelerator dimensions");
         resolveHeight();
+        debugLog("Resolved height: " + height + " (required: " + maxHeight() + ")");
+        
         if(height != maxHeight()) {
+            debugLog("Height validation failed - expected " + maxHeight() + ", got " + height);
             validationResult = ValidationResult.INCOMPLETE;
             return;
         }
+        
         resolveDepth();
         resolveWidth();
+        debugLog("Resolved dimensions: " + width + "x" + height + "x" + depth + " (WxHxD)");
+        
         final boolean controllerOnSide = isControllerPlacedOnSide();
+        debugLog("Controller placement - On side: " + controllerOnSide);
 
         if(controllerOnSide) {
             if(width > maxWidth()) {
+                debugLog("Width too big for side placement: " + width + " > " + maxWidth());
                 validationResult = ValidationResult.TOO_BIG;
                 return;
             }
             if(width < minWidth()) {
+                debugLog("Width too small for side placement: " + width + " < " + minWidth());
                 validationResult = ValidationResult.TOO_SMALL;
                 return;
             }
         }
         if(!controllerOnSide) {
             if(depth > maxDepth()) {
+                debugLog("Depth too big for end placement: " + depth + " > " + maxDepth());
                 validationResult = ValidationResult.TOO_BIG;
                 return;
             }
             if(depth < minDepth()) {
+                debugLog("Depth too small for end placement: " + depth + " < " + minDepth());
                 validationResult = ValidationResult.TOO_SMALL;
                 return;
             }

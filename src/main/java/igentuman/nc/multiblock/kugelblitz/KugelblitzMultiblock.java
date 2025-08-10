@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.block.kugelblitz.entity.BlackHoleBE.MIN_MASS;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.CASING_BLOCKS;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BLOCKS;
@@ -82,10 +83,25 @@ public class KugelblitzMultiblock extends AbstractMultiblock {
 
     @Override
     public void validate() {
+        debugLog("=== Starting Kugelblitz Chamber validation at " + controllerPos.toShortString() + " ===");
+        debugLog("Initialized: " + initialized + ", Target size: 9x9x9");
+        
         super.validate();
+        
         if(initialized && (!outerValid || !innerValid)) {
+            debugLog("Kugelblitz chamber became invalid - removing black hole");
             removeBlackHole();
         }
+        
+        if(validationResult.isValid) {
+            debugLog("Kugelblitz chamber validation completed successfully");
+            debugLog("Components - Transformers: " + transformers + 
+                    ", Flux regulators: " + fluxRegulators + 
+                    ", Stabilizers: " + stabilizers);
+        } else {
+            debugLog("Kugelblitz chamber validation failed with result: " + validationResult);
+        }
+        
         initialized = true;
     }
     @Override

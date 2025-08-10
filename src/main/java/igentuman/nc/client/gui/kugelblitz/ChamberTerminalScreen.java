@@ -7,6 +7,7 @@ import igentuman.nc.client.gui.IVerticalBarScreen;
 import igentuman.nc.client.gui.element.NCGuiElement;
 import igentuman.nc.client.gui.element.bar.ProgressBar;
 import igentuman.nc.client.gui.element.bar.VerticalBar;
+import igentuman.nc.client.gui.element.button.Button;
 import igentuman.nc.client.gui.element.button.Checkbox;
 import igentuman.nc.client.gui.element.button.SliderHorizontal;
 import igentuman.nc.container.ChamberTerminalContainer;
@@ -99,6 +100,7 @@ public class ChamberTerminalScreen extends AbstractContainerScreen<ChamberTermin
         frequencySlider.slideTo((int) (container().getFrequency()/0.15D));
         energyTransferRateSlider.slideTo(container().getEnergyRate());
         widgets.add(energyTransferRateSlider);
+        widgets.add(new Button.ReportIssue(6, 150, this, menu.getBlockPos()));
         widgets.add(frequencySlider);
         widgets.add(new ProgressBar(152, 81, this,  2));
         widgets.add(new TooltipArea(6, 48, 30, 10).setTooltipKey("tooltip.kugelblitz.stability_info"));

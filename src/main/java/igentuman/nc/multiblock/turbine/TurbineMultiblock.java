@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.handler.config.TurbineConfig.TURBINE_CONFIG;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.*;
 import static igentuman.nc.util.TagUtil.getBlocksByTagKey;
@@ -79,24 +80,46 @@ public class TurbineMultiblock extends AbstractMultiblock {
     }
 
     public void validateInner() {
-        if(!outerValid) return;
+        if(!outerValid) {
+            debugLog("Skipping inner validation - outer validation failed");
+            return;
+        }
+        
+        debugLog("Starting turbine inner validation");
         super.validateInner();
+        
+        debugLog("Detecting turbine orientation");
         detectOrientation();
+        debugLog("Turbine direction: " + (turbineDirection != null ? turbineDirection.getName() : "null"));
+        
+        debugLog("Validating rotor configuration");
         isRotorValid = validateRotor();
+        debugLog("Rotor validation result: " + isRotorValid + 
+                ", Bearings: " + bearingPositions.size() + 
+                ", Rotors: " + rotorPositions.size() + 
+                ", Blades: " + blades);
+        
         if(!isRotorValid) {
-            validationResult =  ValidationResult.WRONG_INNER;
+            debugLog("Rotor validation failed - setting result to WRONG_INNER");
+            validationResult = ValidationResult.WRONG_INNER;
         }
     }
 
     @Override
     public void validate()
     {
+        debugLog("=== Starting Turbine validation at " + controllerPos.toShortString() + " ===");
+        
         coilPositions.clear();
         rotorPositions.clear();
         bearingPositions.clear();
         bladePositions.clear();
+        
+        debugLog("Cleared turbine specific caches and counters");
         super.validate();
+        
         if(!validationResult.isValid) {
+            debugLog("Turbine validation failed with result: " + validationResult);
             clearStats();
             return;
         }

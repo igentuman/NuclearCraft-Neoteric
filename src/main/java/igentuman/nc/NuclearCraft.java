@@ -28,6 +28,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModContainer;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -50,6 +51,7 @@ public class NuclearCraft {
     public static final String MODID = "nuclearcraft";
     public static NuclearCraft instance;
     private final PacketHandler packetHandler;
+    private static boolean isBetaBuild = false;
 
     public static void registerConfigs(FMLJavaModLoadingContext context)
     {
@@ -91,6 +93,7 @@ public class NuclearCraft {
         modbus.addListener(ModSetup::init);
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> modbus.addListener(ClientSetup::init));
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> modbus.addListener(this::registerClientEventHandlers));
+        isBetaBuild = ModList.get().getModFileById("nuclearcraft").getMods().get(0).getVersion().getQualifier().contains("beta");
     }
 
     public static PacketHandler packetHandler() {
@@ -154,7 +157,7 @@ public class NuclearCraft {
     }
 
     public static void debugLog(String message) {
-        if (MISC_CONFIG.DEBUG_LOG.get()) {
+        if (MISC_CONFIG.DEBUG_LOG.get() || isBetaBuild) {
             LOGGER.info(message);
         }
     }

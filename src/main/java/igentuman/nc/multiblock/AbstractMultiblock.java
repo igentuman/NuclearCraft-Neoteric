@@ -65,10 +65,31 @@ public abstract class AbstractMultiblock implements Multiblock {
         this.validInnerBlocks = validInnerBlocks;
         this.controller = controller;
         controllerPos = BlockPosInstance.of(controller().controllerBE().getBlockPos());
+        
+        debugLog("Created " + getClass().getSimpleName() + " at " + controllerPos.toShortString() + 
+                " with " + validOuterBlocks.size() + " valid outer blocks and " + 
+                validInnerBlocks.size() + " valid inner blocks");
     }
 
     public void dispose() {
+        debugLog("Disposing multiblock " + getClass().getSimpleName() + " at " + controllerPos.toShortString());
         MultiblockHandler.get(getLevel().dimension()).removeMultiblock(this);
+    }
+    
+    /**
+     * Debug method to log all valid block types for this multiblock
+     */
+    public void logValidBlocks() {
+        debugLog("=== Valid blocks for " + getClass().getSimpleName() + " ===");
+        debugLog("Valid outer blocks (" + validOuterBlocks.size() + "):");
+        for (Block block : validOuterBlocks) {
+            debugLog("  - " + block.getDescriptionId());
+        }
+        debugLog("Valid inner blocks (" + validInnerBlocks.size() + "):");
+        for (Block block : validInnerBlocks) {
+            debugLog("  - " + block.getDescriptionId());
+        }
+        debugLog("=== End valid blocks ===");
     }
 
     public HashSet<Block> validCornerBlocks() {
@@ -204,10 +225,21 @@ public abstract class AbstractMultiblock implements Multiblock {
 
     public boolean isValidForOuter(BlockPos pos)
     {
-        if (getLevel() == null) return false;
+        if (getLevel() == null) {
+            debugLog("Level is null when checking outer block at " + pos.toShortString());
+            return false;
+        }
         try {
-            return  validOuterBlocks().contains(getBlockState(pos).getBlock());
-        } catch (NullPointerException ignored) { }
+            Block block = getBlockState(pos).getBlock();
+            boolean isValid = validOuterBlocks().contains(block);
+            if (!isValid) {
+                debugLog("Invalid outer block at " + pos.toShortString() + ": " + block.getDescriptionId() + 
+                        " (expected one of " + validOuterBlocks().size() + " valid outer blocks)");
+            }
+            return isValid;
+        } catch (NullPointerException e) { 
+            debugLog("NullPointerException when checking outer block at " + pos.toShortString() + ": " + e.getMessage());
+        }
         return false;
     }
 
@@ -226,24 +258,41 @@ public abstract class AbstractMultiblock implements Multiblock {
 
     public boolean isValidForInner(BlockPos pos)
     {
-        if (getLevel() == null) return false;
-        return isValidForInner(getBlockState(pos));
+        if (getLevel() == null) {
+            debugLog("Level is null when checking inner block at " + pos.toShortString());
+            return false;
+        }
+        BlockState state = getBlockState(pos);
+        boolean isValid = isValidForInner(state);
+        if (!isValid) {
+            debugLog("Invalid inner block at " + pos.toShortString() + ": " + state.getBlock().getDescriptionId() + 
+                    " (expected air or one of " + validInnerBlocks().size() + " valid inner blocks)");
+        }
+        return isValid;
     }
 
     public void cacheBlockStates() {
         if(!MISC_CONFIG.EXPERIMENTAL_BLOCK_INDEXING.get()) {
+            debugLog("Block indexing disabled, skipping cache");
             return;
         }
+        
+        long startTime = System.currentTimeMillis();
         int minX = bottomLeft.getX();
         int minY = bottomLeft.getY();
         int minZ = bottomLeft.getZ();
         int maxX = topRight.getX();
         int maxY = topRight.getY();
         int maxZ = topRight.getZ();
+        
+        debugLog("Caching block states for area: " + minX + "," + minY + "," + minZ + " to " + maxX + "," + maxY + "," + maxZ);
+        
         ServerLevel serverLevel = (ServerLevel) getLevel();
         ChunkAccess currentChunk = null;
         int lastChunkX = Integer.MIN_VALUE;
         int lastChunkZ = Integer.MIN_VALUE;
+        int cachedBlocks = 0;
+        int chunksProcessed = 0;
 
         for (int x = minX; x <= maxX; x++) {
             int chunkX = x >> 4;
@@ -253,6 +302,7 @@ public abstract class AbstractMultiblock implements Multiblock {
                     currentChunk = serverLevel.getChunkSource().getChunk(chunkX, chunkZ, true);
                     lastChunkX = chunkX;
                     lastChunkZ = chunkZ;
+                    chunksProcessed++;
                 }
                 if (currentChunk == null) continue;
 
@@ -268,17 +318,24 @@ public abstract class AbstractMultiblock implements Multiblock {
                     BlockState state = section.getBlockState(localX, localY, localZ);
 
                     bsCache.put(BlockPos.asLong(x, y, z), state);
+                    cachedBlocks++;
                 }
             }
         }
+        
+        long elapsedTime = System.currentTimeMillis() - startTime;
+        debugLog("Cached " + cachedBlocks + " block states from " + chunksProcessed + " chunks in " + elapsedTime + "ms");
     }
 
     public int resolveHeight()
     {
+        debugLog("Resolving height from position " + initialPos().toShortString());
+        
         for (int i = 1; i <= maxHeight()+2; i++) {
             if (!isValidForOuter(initialPos().above(i))) {
                 topCasing = i - 1;
                 height = i;
+                debugLog("Found top boundary at offset " + i + ", topCasing=" + topCasing);
                 break;
             }
         }
@@ -286,19 +343,24 @@ public abstract class AbstractMultiblock implements Multiblock {
             if (!isValidForOuter(initialPos().below(i))) {
                 bottomCasing = i - 1;
                 height += i - 1;
+                debugLog("Found bottom boundary at offset " + i + ", bottomCasing=" + bottomCasing);
                 break;
             }
         }
 
+        debugLog("Resolved height: " + height + " (top=" + topCasing + ", bottom=" + bottomCasing + ")");
         return height;
     }
 
     public int resolveWidth()
     {
+        debugLog("Resolving width from position " + initialPos().toShortString());
+        
         for(int i = 1; i <= maxWidth()+2; i++) {
             if (!isValidForOuter(getLeftPos(i).above(topCasing))) {
                 leftCasing = i-1;
                 width = i;
+                debugLog("Found left boundary at offset " + i + ", leftCasing=" + leftCasing);
                 break;
             }
         }
@@ -306,20 +368,28 @@ public abstract class AbstractMultiblock implements Multiblock {
             if (!isValidForOuter(getRightPos(i).above(topCasing))) {
                 rightCasing = i-1;
                 width += i-1;
+                debugLog("Found right boundary at offset " + i + ", rightCasing=" + rightCasing);
                 break;
             }
         }
+        
+        debugLog("Resolved width: " + width + " (left=" + leftCasing + ", right=" + rightCasing + ")");
         return width;
     }
 
     public int resolveDepth()
     {
+        debugLog("Resolving depth from position " + initialPos().toShortString());
+        
         for(int i = 1; i <= maxDepth()+2; i++) {
             if (!isValidForOuter(getForwardPos(i).below(bottomCasing))) {
                 depth = i;
+                debugLog("Found depth boundary at offset " + i);
                 break;
             }
         }
+        
+        debugLog("Resolved depth: " + depth);
         return depth;
     }
 
@@ -352,17 +422,22 @@ public abstract class AbstractMultiblock implements Multiblock {
     @Override
     public void validateOuter() {
         outerValid = false;
+        debugLog("Starting outer validation for multiblock at " + controllerPos.toShortString() + " (Type: " + getClass().getSimpleName() + ")");
+        
         resolveDimensions();
+        debugLog("Resolved dimensions: " + width + "x" + height + "x" + depth + " (WxHxD)");
 
         if (width > maxWidth() || height > maxHeight() || depth > maxDepth())
         {
             validationResult = ValidationResult.TOO_BIG;
+            debugLog("Validation failed - TOO_BIG: " + width + "x" + height + "x" + depth + " exceeds max " + maxWidth() + "x" + maxHeight() + "x" + maxDepth());
             return;
         }
 
         if (width < minWidth() || height < minHeight() || depth < minDepth())
         {
             validationResult = ValidationResult.TOO_SMALL;
+            debugLog("Validation failed - TOO_SMALL: " + width + "x" + height + "x" + depth + " below min " + minWidth() + "x" + minHeight() + "x" + minDepth());
             return;
         }
 
@@ -376,37 +451,66 @@ public abstract class AbstractMultiblock implements Multiblock {
         int maxZ = MathUtils.max(leftFront.getZ(), rightFront.getZ(), leftBack.getZ(), rightBack.getZ());
         bottomLeft = new BlockPosInstance(minX, leftFront.getY() - bottomCasing, minZ);
         topRight = new BlockPosInstance(maxX, leftFront.getY() + topCasing, maxZ);
+        debugLog("Calculated bounds: bottomLeft=" + bottomLeft.toShortString() + ", topRight=" + topRight.toShortString());
+        
         cacheBlockStates();
+        debugLog("Cached block states for validation area");
+        
+        int totalOuterBlocks = 0;
+        int validOuterBlocks = 0;
+        int cornerBlocks = 0;
+        int validCornerBlocks = 0;
+        
         for(int y = 0; y < height; y++) {
             for(int x = 0; x < width; x++) {
                 for (int z = 0; z < depth; z++) {
                     if (y == 0 || x == 0 || z == 0 || y == height-1 || x == width-1 || z == depth-1) {
+                        BlockPos currentPos = getSidePos(x - leftCasing).above(y - bottomCasing).relative(getControllerDirection(), -z);
+                        totalOuterBlocks++;
+                        
                         if (((y == 0 || y == height-1) && (z == 0 || z == depth - 1))
                         || ((y == 0 || y == height-1) && (x == 0 || x == width - 1))
                         || ((z == 0 || z == depth-1) && (x == 0 || x == width - 1))
                         ) {
-                            if (!isValidCorner(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getControllerDirection(), -z))) {
+                            cornerBlocks++;
+                            if (!isValidCorner(currentPos)) {
                                 validationResult = ValidationResult.WRONG_CORNER;
-                                errorBlockPos = new BlockPos(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getControllerDirection(), -z));
+                                errorBlockPos = new BlockPos(currentPos);
+                                debugLog("Validation failed - WRONG_CORNER at " + currentPos.toShortString() + 
+                                        " - Expected corner block, found: " + getBlockState(currentPos).getBlock().getDescriptionId());
                                 return;
                             }
-                        } else if (!isValidForOuter(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getControllerDirection(), -z))) {
+                            validCornerBlocks++;
+                        } else if (!isValidForOuter(currentPos)) {
                             validationResult = ValidationResult.WRONG_OUTER;
-                            errorBlockPos = new BlockPos(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getControllerDirection(), -z));
+                            errorBlockPos = new BlockPos(currentPos);
+                            debugLog("Validation failed - WRONG_OUTER at " + currentPos.toShortString() + 
+                                    " - Expected outer block, found: " + getBlockState(currentPos).getBlock().getDescriptionId());
                             return;
+                        } else {
+                            validOuterBlocks++;
                         }
 
-                        processOuterBlock(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getControllerDirection(), -z));
+                        processOuterBlock(currentPos);
                     }
                 }
             }
         }
+        
+        debugLog("Outer block validation complete - Total: " + totalOuterBlocks + 
+                ", Valid outer: " + validOuterBlocks + ", Corner blocks: " + cornerBlocks + 
+                ", Valid corners: " + validCornerBlocks);
+        
         if (controllers.size() > 1) {
             validationResult = ValidationResult.TOO_MANY_CONTROLLERS;
+            debugLog("Validation failed - TOO_MANY_CONTROLLERS: Found " + controllers.size() + " controllers");
             return;
         }
+        
+        debugLog("Found " + connectedPorts + " connected ports");
         outerValid = true;
         validationResult = ValidationResult.VALID;
+        debugLog("Outer validation completed successfully");
     }
 
     protected void processOuterBlock(BlockPos pos) {
@@ -425,21 +529,43 @@ public abstract class AbstractMultiblock implements Multiblock {
 
     public void validateInner() {
         innerValid = false;
+        debugLog("Starting inner validation for multiblock at " + controllerPos.toShortString());
+        
+        int totalInnerBlocks = 0;
+        int validInnerBlocks = 0;
+        int airBlocks = 0;
+        
         for(int y = 1; y < resolveHeight()-1; y++) {
             for(int x = 1; x < resolveWidth()-1; x++) {
                 for (int z = 1; z < resolveDepth()-1; z++) {
                     BlockPosInstance toCheck = new BlockPosInstance(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getControllerDirection(), -z));
+                    totalInnerBlocks++;
+                    
                     if (!isValidForInner(toCheck)) {
                         validationResult = ValidationResult.WRONG_INNER;
                         errorBlockPos = new BlockPos(toCheck);
+                        debugLog("Validation failed - WRONG_INNER at " + toCheck.toShortString() + 
+                                " - Invalid inner block: " + getBlockState(toCheck).getBlock().getDescriptionId());
                         return;
                     }
+                    
+                    if (getBlockState(toCheck).isAir()) {
+                        airBlocks++;
+                    } else {
+                        validInnerBlocks++;
+                    }
+                    
                     processInnerBlock(toCheck.copy());
                 }
             }
         }
+        
+        debugLog("Inner validation complete - Total: " + totalInnerBlocks + 
+                ", Valid inner blocks: " + validInnerBlocks + ", Air blocks: " + airBlocks);
+        
         innerValid = true;
-        validationResult =  ValidationResult.VALID;
+        validationResult = ValidationResult.VALID;
+        debugLog("Inner validation completed successfully");
     }
 
     protected boolean processInnerBlock(BlockPos toCheck) {
@@ -535,27 +661,45 @@ public abstract class AbstractMultiblock implements Multiblock {
     public void validate() {
         connectedPorts = 0;
         long startTime = System.currentTimeMillis();
+        debugLog("=== Starting full validation for " + getClass().getSimpleName() + " at " + initialPos().toShortString() + " ===");
+        
         topRight = null;
         bottomLeft = null;
         validationResult = ValidationResult.INCOMPLETE;
         controllers.clear();
+        
+        // Clear caches for fresh validation
+        bsCache.clear();
+        beCache.clear();
+        allBlocks.clear();
+        
+        debugLog("Cleared validation caches and reset state");
+        
         validateOuter();
         if (isOuterValid()) {
+            debugLog("Outer validation passed, proceeding to inner validation");
             validateInner();
         } else{
+            debugLog("Outer validation failed with result: " + validationResult + 
+                    (errorBlockPos != null ? " at " + errorBlockPos.toShortString() : ""));
             innerValid = false;
             clearStats();
         }
+        
         innerValid = validationResult.isValid;
         isFormed = outerValid && innerValid;
+        
         if (isFormed) {
             validationResult = ValidationResult.VALID;
+            debugLog("Multiblock formation successful!");
         } else {
             controller.clearStats();
+            debugLog("Multiblock formation failed - Outer valid: " + outerValid + ", Inner valid: " + innerValid);
         }
 
         long elapsedTime = System.currentTimeMillis() - startTime;
-        debugLog("NCN validation " + initialPos().toShortString() + " in " + elapsedTime + "ms " + validationResult);
+        debugLog("=== Validation completed for " + getClass().getSimpleName() + " at " + initialPos().toShortString() + 
+                " in " + elapsedTime + "ms - Result: " + validationResult + " ===");
     }
 
     public boolean isInnerValid() {
@@ -599,6 +743,9 @@ public abstract class AbstractMultiblock implements Multiblock {
         if(!canTick || !hasToRefresh) return;
         this.level = level;
         canTick = false;
+        
+        debugLog("Tick triggered validation for " + getClass().getSimpleName() + " at " + controllerPos.toShortString());
+        
         validationResult = ValidationResult.INCOMPLETE;
         innerValid = false;
         outerValid = false;
@@ -636,10 +783,12 @@ public abstract class AbstractMultiblock implements Multiblock {
         if (hasToRefresh) {
             return true;
         }
+        
         if (containsPos(pos)) {
             BlockState cachedState = getCachedBlockState(pos);
             BlockState actualState = getBlockState(pos);
             if(cachedState == null) {
+                debugLog("Block change detected inside multiblock at " + pos.toShortString() + " - no cached state, triggering refresh");
                 hasToRefresh = true;
                 return true;
             }
@@ -648,16 +797,22 @@ public abstract class AbstractMultiblock implements Multiblock {
                     return true;
                 }
             }
+            debugLog("Block change detected inside multiblock at " + pos.toShortString() + 
+                    " - changed from " + cachedState.getBlock().getDescriptionId() + 
+                    " to " + actualState.getBlock().getDescriptionId() + ", triggering refresh");
             hasToRefresh = true;
             return true;
         }
+        
         resolveDimensions();
         if (bottomLeft == null || topRight == null) return false;
+        
         if (pos.getX() >= bottomLeft.getX() && pos.getY() >= bottomLeft.getY() && pos.getZ() >= bottomLeft.getZ()
                 && pos.getX() <= topRight.getX() && pos.getY() <= topRight.getY() && pos.getZ() <= topRight.getZ()) {
             BlockState cachedState = getCachedBlockState(pos);
             BlockState actualState = getBlockState(pos);
             if(cachedState == null) {
+                debugLog("Block change detected in multiblock bounds at " + pos.toShortString() + " - no cached state, triggering refresh");
                 hasToRefresh = true;
                 return true;
             }
@@ -666,10 +821,15 @@ public abstract class AbstractMultiblock implements Multiblock {
                     return true;
                 }
             }
+            debugLog("Block change detected in multiblock bounds at " + pos.toShortString() + 
+                    " - changed from " + cachedState.getBlock().getDescriptionId() + 
+                    " to " + actualState.getBlock().getDescriptionId() + ", triggering refresh");
             hasToRefresh = true;
             return true;
         }
+        
         if(!isFormed) {
+            debugLog("Block change detected near unformed multiblock at " + pos.toShortString() + ", triggering refresh");
             hasToRefresh = true;
         }
         return false;

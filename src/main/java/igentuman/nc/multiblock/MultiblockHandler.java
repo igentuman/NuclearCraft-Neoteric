@@ -39,8 +39,10 @@ public class MultiblockHandler {
         }
         if (!multiblocks.containsKey(multiblock.getId())) {
             multiblocks.put(multiblock.getId(), multiblock);
+            debugLog("Added new multiblock: " + multiblock.getId() + " (" + multiblock.getClass().getSimpleName() + ")");
         } else {
             multiblocks.putIfAbsent(multiblock.getId(), multiblock);
+            debugLog("Multiblock already exists: " + multiblock.getId());
         }
         addToChunkCache(multiblock);
     }
@@ -74,6 +76,7 @@ public class MultiblockHandler {
 
     public void addMultiblock(AbstractMultiblock multiblock, boolean force) {
         if (multiblocks.containsKey(multiblock.getId()) && force) {
+            debugLog("Force replacing existing multiblock: " + multiblock.getId());
             multiblocks.get(multiblock.getId()).dispose();
         }
         addMultiblock(multiblock);
@@ -129,6 +132,7 @@ public class MultiblockHandler {
         }
         if (!changedBlocks.contains(pos.asLong())) {
             changedBlocks.add(pos.asLong());
+            debugLog("Tracking block change at " + pos.toShortString() + " (total tracked: " + changedBlocks.size() + ")");
         }
     }
 
@@ -139,7 +143,11 @@ public class MultiblockHandler {
      */
     public void tick(Level level) {
         // First process any block changes
+        if (!changedBlocks.isEmpty()) {
+            debugLog("Processing " + changedBlocks.size() + " block changes for multiblocks");
+        }
         trackAllChanges();
+        
         // Collect multiblocks that need validation
         List<String> needsValidation = new ArrayList<>();
         for (String id : multiblocks.keySet()) {
@@ -149,9 +157,9 @@ public class MultiblockHandler {
             }
         }
 
-
         // Process all validations for this level in a single thread
         if (!needsValidation.isEmpty()) {
+            debugLog("Processing validation for " + needsValidation.size() + " multiblocks");
 
             for (String id : needsValidation) {
                 AbstractMultiblock multiblock = multiblocks.get(id);
@@ -199,6 +207,7 @@ public class MultiblockHandler {
 
         // Cleanup
         if (!toRemove.isEmpty()) {
+            debugLog("Removing " + toRemove.size() + " invalid multiblocks: " + toRemove);
             for (String id : toRemove) {
                 multiblocks.remove(id);
                 removeFromChunkCache(id);
@@ -217,6 +226,7 @@ public class MultiblockHandler {
 
     public void removeMultiblock(AbstractMultiblock multiblock) {
         String id = multiblock.getId();
+        debugLog("Removing multiblock: " + id + " (" + multiblock.getClass().getSimpleName() + ")");
         multiblocks.remove(id);
         removeFromChunkCache(id);
     }
@@ -293,7 +303,10 @@ public class MultiblockHandler {
     public void onControllerRemoved(BlockPos pos) {
         AbstractMultiblock multiblock = getMultiblockByPos(pos);
         if(multiblock != null) {
+            debugLog("Controller removed at " + pos.toShortString() + " for multiblock: " + multiblock.getId());
             multiblock.onControllerRemoved();
+        } else {
+            debugLog("Controller removed at " + pos.toShortString() + " but no multiblock found");
         }
     }
 }

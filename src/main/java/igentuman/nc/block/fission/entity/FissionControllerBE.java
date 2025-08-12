@@ -46,6 +46,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
 
+import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.block.fission.FissionControllerBlock.POWERED;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.compat.gregtech.GTUtils.getGTEnergy;
@@ -154,7 +155,8 @@ public class FissionControllerBE extends MultiblockControllerBE {
     public double moderatorsEnergyMult = 0;
     private List<FluidStack>  allowedCoolants;
     private List<FluidStack>  allowedCoolantOutputs;
-
+    @NBTField
+    public boolean canAcceptFluids = false;
     public FissionControllerBE(BlockPos pPos, BlockState pBlockState) {
         super(FissionReactorRegistration.FISSION_BE.get(NAME).get(),pPos, pBlockState);
         contentHandler = new SidedContentHandler(
@@ -276,9 +278,13 @@ public class FissionControllerBE extends MultiblockControllerBE {
 
     public void boil()
     {
+        debugLog("Boil start - Resetting steamPerTick from " + steamPerTick + " to 0, boilingPenalty from " + boilingPenalty + " to 0");
         steamPerTick = 0;
         boilingPenalty = 0;
-        if(!isProcessing()) return;
+        if(!isProcessing()) {
+            debugLog("Not processing - exiting boil method");
+            return;
+        }
         double cooling = coolingPerTick();
         if(getNetHeat() < 0) {
             cooling = heatPerTick;
@@ -415,8 +421,13 @@ public class FissionControllerBE extends MultiblockControllerBE {
     }
 
     public void tickServer() {
+
+        debugLog("Tick start - controllerBE instance: "+this.toString());
+        debugLog("Tick start - FuelCells: " + fuelCellsCount + ", Moderators: " + moderatorsCount +
+                ", HeatSinks: " + heatSinksCount + ", Formed: " + getMultiblock().isFormed());
         heatMultiplier = 0;
         if(NuclearCraft.instance.isNcBeStopped || isRemoved()) {
+            debugLog("Reactor stopped or removed - resetting irradiationHeat and controllerEnabled");
             irradiationHeat = 0;
             controllerEnabled = false;
             return;
@@ -429,7 +440,11 @@ public class FissionControllerBE extends MultiblockControllerBE {
         boolean wasEnabled = controllerEnabled;
         boolean wasPowered = powered;
 
+        debugLog("Pre-validation stats - FuelCells: " + fuelCellsCount + ", Moderators: " + moderatorsCount + 
+                ", HeatSinks: " + heatSinksCount + ", Formed: " + wasFormed);
         handleValidation();
+        debugLog("Post-validation stats - FuelCells: " + fuelCellsCount + ", Moderators: " + moderatorsCount + 
+                ", HeatSinks: " + heatSinksCount + ", Formed: " + getMultiblock().isFormed());
 
         controllerEnabled = hasRedstoneSignal() && getMultiblock().isFormed();
         controllerEnabled = !forceShutdown && controllerEnabled;
@@ -455,6 +470,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
         }
         changed = powered != wasPowered || changed;
         refreshCacheFlag = !getMultiblock().isFormed();
+        canAcceptFluids = getMultiblock().coolantPerTick.size() > 0;
         if(refreshCacheFlag || changed || getLevel().getGameTime() % 40 == 0) {
             try {
                 assert level != null;
@@ -466,6 +482,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
 
             } catch (NullPointerException ignored) {}
         }
+        debugLog("Tick end - Resetting irradiationHeat from " + irradiationHeat + " to 0");
         irradiationHeat = 0;
     }
 
@@ -487,7 +504,11 @@ public class FissionControllerBE extends MultiblockControllerBE {
     }
 
     protected void handleValidation() {
+        debugLog("handleValidation - Current multiblock formed: " + getMultiblock().isFormed() +
+                ", RefreshCacheFlag: " + refreshCacheFlag);
         super.handleValidation();
+        debugLog("handleValidation - Multiblock formed: " + getMultiblock().isFormed() +
+                ", InternalValid: " + isInternalValid + ", CasingValid: " + isCasingValid);
     }
 
     private void hopToggleMode() {
@@ -507,6 +528,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
 
     @Override
     public FissionReactorMultiblock getMultiblock() {
+        if(getLevel().isClientSide()) return null;
         if(multiblock == null) {
             multiblock = new FissionReactorMultiblock(this);
         }
@@ -619,25 +641,39 @@ public class FissionControllerBE extends MultiblockControllerBE {
     }
 
     private boolean process() {
+        debugLog("Processing - FuelCells: " + fuelCellsCount + ", ReactivityLevel: " + reactivityLevel + 
+                ", ControllerEnabled: " + controllerEnabled + ", HeatMultiplier: " + heatMultiplier());
+        
         reactivityLevel += controllerEnabled ? 1 : -1;
         reactivityLevel = Math.max(0, Math.min(reactivityLevel, 100));
         if(recipeInfo().be == null) {
             recipeInfo().be = this;
         }
-        recipeInfo().process(fuelCellsCount * (heatMultiplier() + collectedHeatMultiplier() - 1) * reactivityLevel/100D);
+        
+        double processAmount = fuelCellsCount * (heatMultiplier() + collectedHeatMultiplier() - 1) * reactivityLevel/100D;
+        debugLog("Process amount calculation - FuelCells: " + fuelCellsCount + " * (HeatMult: " + 
+                heatMultiplier() + " + CollectedHeatMult: " + collectedHeatMultiplier() + " - 1) * ReactivityLevel: " + 
+                reactivityLevel + "/100 = " + processAmount);
+        
+        recipeInfo().process(processAmount);
         if(recipeInfo().radiation != 1D) {
             RadiationManager.get(getLevel()).addRadiation(getLevel(), recipeInfo().radiation/10000, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ());
         }
         if (!recipeInfo().isCompleted()) {
             if(!isSteamMode) {
-                energyStorage.addEnergy(calculateEnergy());
+                int energyGenerated = calculateEnergy();
+                debugLog("Energy generated: " + energyGenerated + " FE/t");
+                energyStorage.addEnergy(energyGenerated);
             }
-            heat += calculateHeat();
+            double heatGenerated = calculateHeat();
+            debugLog("Heat generated: " + heatGenerated + " H/t, Current heat: " + heat);
+            heat += heatGenerated;
         }
 
         handleRecipeOutput();
 
         efficiency = calculateEfficiency();
+        debugLog("Process complete - Efficiency: " + efficiency + ", Heat: " + heat + ", Energy: " + energyPerTick);
         return true;
     }
 
@@ -662,6 +698,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
             heatMultiplier = Math.log10(h / c) / (1 + Math.exp(h / c * FISSION_CONFIG.HEAT_MULTIPLIER.get())) + 1;
             //round heatMultiplier to 2 digits
             heatMultiplier = Math.round(heatMultiplier * 100.0) / 100.0;
+            debugLog("Calculated heatMultiplier: " + heatMultiplier + " (heat/tick: " + h + ", cooling/tick: " + c + ")");
         }
         return heatMultiplier;
     }
@@ -909,7 +946,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
     }
 
     public boolean canAcceptFluid() {
-        return isSteamMode || getMultiblock().coolantPerTick.size() > 0;
+        return isSteamMode || canAcceptFluids;
     }
 
     public boolean hasEnoughCoolant(String coolant, int amount) {
@@ -949,6 +986,8 @@ public class FissionControllerBE extends MultiblockControllerBE {
         contentHandler().fluidHandler.tanks.get(0).setCapacity((int) (Math.pow(multiplier, 2)*1_000_000));
         contentHandler().fluidHandler.tanks.get(1).setCapacity((int) (Math.pow(multiplier, 2)*1_000_000));
         setChanged();
+        level.setBlockAndUpdate(worldPosition, getBlockState().setValue(POWERED, false));
+        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(POWERED, false), Block.UPDATE_ALL);
     }
 
     public static class Recipe extends NcRecipe {

@@ -177,6 +177,7 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
     public void validateInner()
     {
         if(!outerValid) {
+            debugLog("VALIDATION FAILED - Outer structure invalid, clearing stats");
             clearStats();
             return;
         }
@@ -192,6 +193,7 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
                 ", Heat sinks: " + allHeatSinks.size() + 
                 ", Irradiators: " + irradiators.size());
         if(validationResult != ValidationResult.VALID) {
+            debugLog("VALIDATION FAILED - Inner structure invalid: " + validationResult + ", clearing stats");
             clearStats();
             return;
         }
@@ -217,6 +219,15 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
                 ", Active heat sinks: " + activeHeatSinks.size() + 
                 ", Coolant types: " + coolantPerTick.size());
         //Stage 5: update controller stats
+        debugLog("UPDATING CONTROLLER STATS - Setting values:");
+        debugLog("  FuelCells: " + fuelCells.size() + " (was: " + controllerBE().fuelCellsCount + ")");
+        debugLog("  Moderators: " + moderators.size() + " (was: " + controllerBE().moderatorsCount + ")");
+        debugLog("  HeatSinks: " + validHeatSinks.size() + " (was: " + controllerBE().heatSinksCount + ")");
+        debugLog("  AllHeatSinks: " + allHeatSinks.size() + " (was: " + controllerBE().allHeatSinks + ")");
+        debugLog("  ActiveCoolingHeatsinks: " + activeHeatSinks.size() + " (was: " + controllerBE().activeCoolingHeatsinks + ")");
+        debugLog("  CellsHeatMult: " + cellsHeatMult + " (was: " + controllerBE().cellsHeatMult + ")");
+        debugLog("  CellsEnergyMult: " + cellsEnergyMult + " (was: " + controllerBE().cellsEnergyMult + ")");
+        
         controllerBE().irradiationLines = irradiationLines;
         controllerBE().allIrradiators = irradiators.size();
         controllerBE().validIrradiators = validIrradiators.size();
@@ -237,6 +248,14 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
         controllerBE().width = width;
         controllerBE().depth = depth;
         heatSinkCooling = countCooling(true);
+        
+        debugLog("CONTROLLER STATS UPDATED - Final values:");
+        debugLog("  FuelCells: " + controllerBE().fuelCellsCount);
+        debugLog("  Moderators: " + controllerBE().moderatorsCount);
+        debugLog("  HeatSinks: " + controllerBE().heatSinksCount);
+        debugLog("  HeatSinkCooling: " + heatSinkCooling);
+        debugLog("  ControllerBE instance: " + controllerBE().toString());
+        debugLog("  ControllerBE side: " + controllerBE().getLevel().isClientSide());
         controllerBE().refresh();
     }
 

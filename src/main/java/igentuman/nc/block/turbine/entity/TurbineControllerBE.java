@@ -271,6 +271,7 @@ public class TurbineControllerBE extends MultiblockControllerBE {
 
     @Override
     public TurbineMultiblock getMultiblock() {
+        if(getLevel().isClientSide()) return null;
         if(multiblock == null) {
             multiblock = new TurbineMultiblock(this);
         }

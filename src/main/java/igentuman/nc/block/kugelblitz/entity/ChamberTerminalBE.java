@@ -423,6 +423,7 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
 
     @Override
     public KugelblitzMultiblock getMultiblock() {
+        if(getLevel().isClientSide()) return null;
         if(multiblock == null) {
             multiblock = new KugelblitzMultiblock(this);
         }

@@ -321,6 +321,7 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
 
     @Override
     public LinearAcceleratorMultiblock getMultiblock() {
+        if(getLevel().isClientSide()) return null;
         if(multiblock == null) {
             multiblock = new LinearAcceleratorMultiblock(this);
         }

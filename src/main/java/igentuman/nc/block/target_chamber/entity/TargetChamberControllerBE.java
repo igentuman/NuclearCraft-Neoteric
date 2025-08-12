@@ -313,6 +313,7 @@ public class TargetChamberControllerBE extends MultiblockControllerBE {
 
     @Override
     public TargetChamberMultiblock getMultiblock() {
+        if(getLevel().isClientSide()) return null;
         if(multiblock == null) {
             multiblock = new TargetChamberMultiblock(this);
         }

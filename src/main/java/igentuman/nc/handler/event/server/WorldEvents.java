@@ -127,6 +127,8 @@ public class WorldEvents {
         if (event.side.isServer() && event.phase == Phase.START && event.haveTime()) {
             if(event.isCanceled() || event.level.getGameTime() % 5 != 0) return;
             final ServerLevel level = (ServerLevel) event.level;
+            RadiationEvents.onWorldTick(event);
+
             //todo remove, this for testing purposes only
 /*
             List<BlockState> blocks = new ArrayList<>();
@@ -156,7 +158,6 @@ public class WorldEvents {
                     () -> MultiblockHandler.get(level.dimension()).tick(level),
                     MultiblockExecutorManager.getExecutor()
             );
-            RadiationEvents.onWorldTick(event);
         }
     }
 

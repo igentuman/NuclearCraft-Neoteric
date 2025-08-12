@@ -584,6 +584,7 @@ public class FusionCoreBE extends MultiblockControllerBE {
 
     @Override
     public FusionReactorMultiblock getMultiblock() {
+        if(getLevel().isClientSide()) return null;
         if(multiblock == null) {
             multiblock = new FusionReactorMultiblock(this);
         }

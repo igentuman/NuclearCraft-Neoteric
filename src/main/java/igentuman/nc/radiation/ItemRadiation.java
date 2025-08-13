@@ -66,6 +66,7 @@ public class ItemRadiation {
         for(String name: Materials.isotopes()) {
             for(String type: List.of("", "_ox", "_ni", "_za", "_tr")) {
                 add(name+type, Materials.isotopes.get(name));
+                if(name.matches("xenorium.*|quantite.*")) break;
             }
         }
         for(Block block: getBlocksByTagKey("forge:storage_blocks/uranium")) {
@@ -90,6 +91,7 @@ public class ItemRadiation {
                     Item isotope2 = getIsotope(name, String.valueOf(FuelManager.all().get(name).get(subType).getDefault().isotopes[1]), type);
                     double radiation = ItemRadiation.byItem(isotope1)*isotope1Cnt + ItemRadiation.byItem(isotope2)*isotope2Cnt;
                     add(FissionFuel.NC_FUEL.get(List.of("fuel", name, subType, type)).get(), radiation/2);
+                    if(name.matches("xenorium.*|quantite.*")) break;
                 }
             }
         }
@@ -107,6 +109,7 @@ public class ItemRadiation {
                     Item isotope2 = getIsotope(name, String.valueOf(FuelManager.all().get(name).get(subType).getDefault().isotopes[1]), type);
                     double radiation = ItemRadiation.byItem(isotope1)*isotope1Cnt + ItemRadiation.byItem(isotope2)*isotope2Cnt;
                     add(FissionFuel.NC_DEPLETED_FUEL.get(List.of("depleted", name, subType, type)).get(), radiation/1.5);
+                    if(name.matches("xenorium.*|quantite.*")) break;
                 }
             }
         }

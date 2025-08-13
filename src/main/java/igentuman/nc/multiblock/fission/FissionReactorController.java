@@ -1,13 +1,14 @@
 package igentuman.nc.multiblock.fission;
 
 import igentuman.api.nc.multiblock.MultiblockController;
+import igentuman.nc.block.entity.MultiblockControllerBE;
 import igentuman.nc.block.fission.entity.FissionControllerBE;
 
 import static igentuman.nc.NuclearCraft.debugLog;
 
 public class FissionReactorController implements MultiblockController {
 
-    protected final FissionControllerBE controllerBE;
+    protected FissionControllerBE controllerBE;
 
     public FissionReactorController(FissionControllerBE fissionControllerBE) {
         controllerBE = fissionControllerBE;
@@ -39,5 +40,10 @@ public class FissionReactorController implements MultiblockController {
         controllerBE().moderatorsHeatMult = 0;
         
         debugLog("STATS CLEARED - All counts reset to 0");
+    }
+
+    @Override
+    public void setControllerBe(MultiblockControllerBE multiblockControllerBE) {
+        controllerBE = (FissionControllerBE) multiblockControllerBE;
     }
 }

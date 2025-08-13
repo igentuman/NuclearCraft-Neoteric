@@ -41,6 +41,7 @@ public class FluidInfuserRecipes extends AbstractRecipeProvider {
             }
 
             for (String name : FuelManager.all().keySet()) {
+                if(name.matches("xenorium.*|quantite.*")) continue;
                 for (String subType : FuelManager.all().get(name).keySet()) {
                     List<String> key = List.of("fuel", name, subType, "");
                     List<String> keyResult = List.of("fuel", name, subType, type);

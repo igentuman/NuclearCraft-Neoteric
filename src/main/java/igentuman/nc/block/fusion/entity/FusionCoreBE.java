@@ -44,6 +44,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
+import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.block.fission.FissionControllerBlock.POWERED;
 import static igentuman.nc.compat.gregtech.GTUtils.getGTEnergy;
 import static igentuman.nc.compat.gregtech.GTUtils.isOnlyGTCEUCapEnabled;
@@ -584,7 +585,10 @@ public class FusionCoreBE extends MultiblockControllerBE {
 
     @Override
     public FusionReactorMultiblock getMultiblock() {
-        if(getLevel().isClientSide()) return null;
+        if(getLevel().isClientSide()) {
+            debugLog("Trying to access multiblock from client");
+            return null;
+        }
         if(multiblock == null) {
             multiblock = new FusionReactorMultiblock(this);
         }

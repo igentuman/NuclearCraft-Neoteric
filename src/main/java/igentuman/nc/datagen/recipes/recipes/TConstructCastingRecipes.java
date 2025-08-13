@@ -49,6 +49,7 @@ public class TConstructCastingRecipes extends AbstractRecipeProvider {
                     }
                     keyStr+= type;
                     add(ingredient(NC_FUEL.get(key).get()), fluidStackIngredient(keyStr, MOLTEN_INGOT), 50);
+                    if(name.matches("xenorium.*|quantite.*")) break;
                 }
             }
         }

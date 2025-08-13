@@ -8,7 +8,9 @@ import igentuman.nc.setup.registration.NCItems;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.ItemTagsProvider;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.BlockTagsProvider;
@@ -18,9 +20,12 @@ import net.minecraftforge.registries.RegistryObject;
 import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.NuclearCraft.rl;
+import static igentuman.nc.content.materials.Materials.neutronium;
 import static igentuman.nc.multiblock.fission.FissionReactorRegistration.CASING_ITEMS;
 import static igentuman.nc.multiblock.fission.FissionReactorRegistration.MODERATORS_ITEMS;
 import static igentuman.nc.setup.registration.NCItems.*;
+import static igentuman.nc.setup.registration.Registries.ITEM_REGISTRY;
 import static igentuman.nc.setup.registration.Tags.*;
 
 public class NCItemTags extends ItemTagsProvider {
@@ -67,6 +72,8 @@ public class NCItemTags extends ItemTagsProvider {
                 FissionReactorRegistration.FISSION_BLOCK_ITEMS.get("fission_reactor_glass").get(),
                 FissionReactorRegistration.FISSION_BLOCK_ITEMS.get("fission_reactor_port").get()
         );
+        /*tag(TagKey.create(ITEM_REGISTRY, ResourceLocation.fromNamespaceAndPath("mysticalagradditions", "neutronium_ingot")))
+                .add(NC_INGOTS.get(neutronium).get());*/
     }
 
     private void ionSources() {

@@ -67,6 +67,7 @@ public class MelterRecipes extends AbstractRecipeProvider {
                     key = List.of("depleted", name, subType, type);
                     keyStr = "depleted_"+keyStr;
                     add(ingredient(FissionFuel.NC_DEPLETED_FUEL.get(key).get()), fluidStackIngredient(keyStr, MOLTEN_INGOT));
+                    if(name.matches("xenorium.*|quantite.*")) break;
                 }
             }
         }

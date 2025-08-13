@@ -39,6 +39,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
+import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.block.kugelblitz.ChamberPortBlock.POWERED;
 import static igentuman.nc.block.kugelblitz.entity.BlackHoleBE.MAX_MASS;
 import static igentuman.nc.block.kugelblitz.entity.BlackHoleBE.MIN_MASS;
@@ -423,7 +424,10 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
 
     @Override
     public KugelblitzMultiblock getMultiblock() {
-        if(getLevel().isClientSide()) return null;
+        if(getLevel().isClientSide()) {
+            debugLog("Trying to access multiblock from client");
+            return null;
+        }
         if(multiblock == null) {
             multiblock = new KugelblitzMultiblock(this);
         }

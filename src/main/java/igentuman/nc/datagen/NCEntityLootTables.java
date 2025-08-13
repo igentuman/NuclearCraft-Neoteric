@@ -32,7 +32,7 @@ public class NCEntityLootTables extends EntityLootSubProvider {
         this.add(FERAL_GHOUL_BOSS.get(), LootTable.lootTable()
                 .withPool(LootPool.lootPool()
                         .setRolls(ConstantValue.exactly(1))
-                        .add(LootItem.lootTableItem(NC_ISOTOPES.get("xenorium298").get())
+                        .add(LootItem.lootTableItem(NC_ISOTOPES.get("xenorium/298").get())
                                 .apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 1.0F)))
                                 .apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0.0F, 1.0F))))
                 )

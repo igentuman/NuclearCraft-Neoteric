@@ -262,6 +262,14 @@ public class FuelReprocessorRecipes extends AbstractRecipeProvider {
             );
         }
 
+        add(
+                fuelIngredient(List.of("depleted", "xenorium", "xen-298", ""), 1),
+                List.of(
+                        isotopeStack(Materials.quantite, 1),
+                        isotopeStack(Materials.berkelium247), dustIngredient(Materials.promethium_147)
+                ), 5.5D
+        );
+
     }
 
     private static void addString(NcIngredient input, List<String> output, double...modifiers) {

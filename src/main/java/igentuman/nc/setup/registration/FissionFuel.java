@@ -38,22 +38,27 @@ public class FissionFuel {
                 () -> new Item(ITEM_PROPERTIES));
     }
 
+
+
     private static void registerFuel() {
         for (String name: FuelManager.all().keySet()) {
             for(String subType: FuelManager.all().get(name).keySet()) {
                 NC_FUEL.put(List.of("fuel", name, subType, ""), fuel(name, subType, ""));
+                REACTOR_FUEL_TAG.put(name + subType, itemTag("reactor_fuel/" + name + "/" + subType));
+
+                NC_DEPLETED_FUEL.put(List.of("depleted", name, subType, ""), depletedFuel(name, subType, ""));
+                REACTOR_DEPLETED_FUEL_TAG.put(name + subType, itemTag("depleted_reactor_fuel/" + name + "/" + subType));
+
+                if(name.matches("xenorium.*|quantite.*")) break;
                 NC_FUEL.put(List.of("fuel", name, subType, "ox"), fuel(name, subType, "_ox"));
                 NC_FUEL.put(List.of("fuel", name, subType, "ni"), fuel(name, subType, "_ni"));
                 NC_FUEL.put(List.of("fuel", name, subType, "za"), fuel(name, subType, "_za"));
                 NC_FUEL.put(List.of("fuel", name, subType, "tr"), fuel(name, subType, "_tr"));
-                REACTOR_FUEL_TAG.put(name + subType, itemTag("reactor_fuel/" + name + "/" + subType));
 
-                NC_DEPLETED_FUEL.put(List.of("depleted", name, subType, ""), depletedFuel(name, subType, ""));
                 NC_DEPLETED_FUEL.put(List.of("depleted", name, subType, "ox"), depletedFuel(name, subType, "_ox"));
                 NC_DEPLETED_FUEL.put(List.of("depleted", name, subType, "ni"), depletedFuel(name, subType, "_ni"));
                 NC_DEPLETED_FUEL.put(List.of("depleted", name, subType, "za"), depletedFuel(name, subType, "_za"));
                 NC_DEPLETED_FUEL.put(List.of("depleted", name, subType, "tr"), depletedFuel(name, subType, "_tr"));
-                REACTOR_DEPLETED_FUEL_TAG.put(name + subType, itemTag("depleted_reactor_fuel/" + name + "/" + subType));
             }
         }
     }

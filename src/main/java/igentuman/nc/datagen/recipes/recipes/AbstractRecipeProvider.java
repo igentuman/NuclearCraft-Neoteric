@@ -21,10 +21,12 @@ import net.minecraftforge.registries.ForgeRegistries;
 import java.util.List;
 import java.util.function.Consumer;
 
+import static igentuman.nc.NuclearCraft.forgeRl;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.setup.registration.FissionFuel.*;
 import static igentuman.nc.setup.registration.NCFluids.ALL_FLUID_ENTRIES;
 import static igentuman.nc.setup.registration.NCItems.*;
+import static igentuman.nc.setup.registration.Registries.ITEM_REGISTRY;
 import static igentuman.nc.setup.registration.Tags.*;
 import static igentuman.nc.util.DataGenUtil.*;
 import static igentuman.nc.util.NcUtils.rlFromString;
@@ -340,6 +342,13 @@ public abstract class AbstractRecipeProvider {
         int count = 1;
         if(pCount.length > 0) count = pCount[0];
         return ingredient(forgeBlock(name), count);
+    }
+
+    public static NcIngredient forgeIngredient(String name, int...pCount)
+    {
+        int count = 1;
+        if(pCount.length > 0) count = pCount[0];
+        return ingredient(TagKey.create(ITEM_REGISTRY, forgeRl(name)), count);
     }
 
     public static NcIngredient dustIngredient(String name, int...pCount)

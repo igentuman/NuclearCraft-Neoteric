@@ -101,6 +101,7 @@ public class Materials extends MaterialsManager {
     public final static String sodium_hydroxide = "sodium_hydroxide";
     public final static String carbon_manganese = "carbon_manganese";
     public final static String silicon = "silicon";
+    public final static String xenorium298 = "xenorium/298";
     public final static String americium241 = "americium/241";
     public final static String americium242 = "americium/242";
     public final static String americium243 = "americium/243";
@@ -162,7 +163,6 @@ public class Materials extends MaterialsManager {
     public final static String super_alloy = "super_alloy";
     public final static String tungsten_carbide = "tungsten_carbide";
     public final static String subliquid_matter = "subliquid_matter";
-    public final static String xenorium298 = "xenorium298";
     public final static String quantite = "quantite";
     public final static String beryllium_7 = "beryllium_7";
     public final static String calcium_48 = "calcium_48";

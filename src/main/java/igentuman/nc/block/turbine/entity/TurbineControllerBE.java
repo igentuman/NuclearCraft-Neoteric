@@ -35,6 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
+import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.block.fission.FissionControllerBlock.POWERED;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.handler.config.CommonConfig.ENERGY_GENERATION;
@@ -271,7 +272,10 @@ public class TurbineControllerBE extends MultiblockControllerBE {
 
     @Override
     public TurbineMultiblock getMultiblock() {
-        if(getLevel().isClientSide()) return null;
+        if(getLevel().isClientSide()) {
+            debugLog("Trying to access multiblock from client");
+            return null;
+        }
         if(multiblock == null) {
             multiblock = new TurbineMultiblock(this);
         }

@@ -148,6 +148,7 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
 
     protected void handleValidation() {
         boolean wasFormed = isInternalValid && isCasingValid;
+        getMultiblock().controller().setControllerBe(this);
         validationResult = getMultiblock().validationResult;
         if(errorBlockPos == null || !errorBlockPos.equals(getMultiblock().errorBlockPos)) {
             errorBlockPos = getMultiblock().errorBlockPos;

@@ -23,7 +23,7 @@ public class ThoroidalAcceleratorMultiblock extends AbstractAcceleratorMultibloc
                 getBlocksByTagKey(ACCELERATOR_INNER_BLOCKS.location().toString()),
                 new ThoroidalAcceleratorController(controller)
         );
-        id = "linear_accelerator_"+controller.getBlockPos().toShortString();
+        id = "thoroidal_accelerator_"+controller.getBlockPos().toShortString();
         controllerBe = controller;
         MultiblockHandler.get(getLevel().dimension()).addMultiblock(this);
     }
@@ -42,6 +42,11 @@ public class ThoroidalAcceleratorMultiblock extends AbstractAcceleratorMultibloc
     }
 
     @Override
+    protected Direction getControllerDirection() {
+        return controllerBE().getFacing();
+    }
+
+    @Override
     public void clearStats() {
         controller().clearStats();
     }
@@ -50,6 +55,8 @@ public class ThoroidalAcceleratorMultiblock extends AbstractAcceleratorMultibloc
     public void validateOuter() {
         topRight = null;
         bottomLeft = null;
+        initialPos = null;
+        beamPorts.clear();
         validationResult = ValidationResult.INCOMPLETE;
         stage = FINAL_STAGE;
         initialPos = BlockPosInstance.copy(controller().controllerBE().getBlockPos());
@@ -130,21 +137,30 @@ public class ThoroidalAcceleratorMultiblock extends AbstractAcceleratorMultibloc
 
         if(maxX - minX == 4) {
             centerPos = new BlockPosInstance((minX + maxX) / 2, bottomLeft.getY() + 2, minZ);
-            multiblockDirection = Direction.NORTH;
+            multiblockDirection = Direction.SOUTH;
         }
         if(maxZ - minZ == 4) {
             centerPos = new BlockPosInstance(minX, bottomLeft.getY() + 2, (minZ+maxZ)/2);
-            multiblockDirection = Direction.WEST;
+            multiblockDirection = Direction.EAST;
         }
-
+        //check first beam end
         BlockState bs = getBlockState(centerPos);
+        if(bs.is(ACCELERATOR_BLOCKS.get("accelerator_beam_port").get())) {
+            beamPorts.add(centerPos.asLong());
+        }
         if(!bs.is(ACCELERATOR_BLOCKS.get("accelerator_beam_port").get()) && !bs.is(ACCELERATOR_BLOCKS.get("accelerator_ion_source_port").get())) {
             validationResult = ValidationResult.WRONG_BLOCK;
             errorBlockPos = new BlockPosInstance(centerPos);
             return;
         }
-        BlockPos ionSourcePos = bs.is(ACCELERATOR_BLOCKS.get("accelerator_ion_source_port").get()) ? new BlockPosInstance(centerPos) : BlockPos.ZERO;
-        bs = getBlockState(centerPos.offset(0,0, maxZ-minZ));
+
+        ionSourcePos = bs.is(ACCELERATOR_BLOCKS.get("accelerator_ion_source_port").get()) ? new BlockPosInstance(centerPos) : BlockPos.ZERO;
+        initialPos = BlockPosInstance.copy(centerPos);
+
+        bs = getBlockState(centerPos.relative(multiblockDirection, Math.max(width-1, depth-1)));
+        if(bs.is(ACCELERATOR_BLOCKS.get("accelerator_beam_port").get())) {
+            beamPorts.add(centerPos.asLong());
+        }
         if(!bs.is(ACCELERATOR_BLOCKS.get("accelerator_beam_port").get()) && !bs.is(ACCELERATOR_BLOCKS.get("accelerator_ion_source_port").get())) {
             validationResult = ValidationResult.WRONG_BLOCK;
             errorBlockPos = new BlockPosInstance(centerPos);
@@ -156,39 +172,15 @@ public class ThoroidalAcceleratorMultiblock extends AbstractAcceleratorMultibloc
             return;
         }
 
-        centerPos.revert();
         if (controllers.size() > 1) {
             validationResult = ValidationResult.TOO_MANY_CONTROLLERS;
             return;
         }
+
         validationResult = ValidationResult.VALID;
         outerValid = true;
         stage = 1;
         hasToRefresh = true;
-    }
-
-    public void indexInnerBlocks() {
-        stage = FINAL_STAGE;
-        innerValid = false;
-        acceleratingVoltage = 0;
-        heatRate = 0;
-        maxTemperature = Integer.MAX_VALUE;
-        efficiency = 0.0;
-        quadrupolesCount = 0;
-        dipolesCount = 0;
-        quadStrength = 0;
-        dipoleStrength = 0;
-        focus = 0.0;
-        energyRequired = 0;
-        for (int z = 1; z < depth-1; z++) {
-            if(!indexSlice(z)) {
-                return;
-            }
-        }
-
-        innerValid = true;
-        validationResult =  ValidationResult.VALID;
-        stage = 3;
     }
 
     @Override
@@ -207,10 +199,12 @@ public class ThoroidalAcceleratorMultiblock extends AbstractAcceleratorMultibloc
         }
 
         isFormed = outerValid && innerValid;
-
+        focus = quadStrength + dipoleStrength/2D;
         if (isFormed) {
             validationResult = ValidationResult.VALID;
             errorBlockPos = BlockPos.ZERO;
+            controllerBE().ionSourcePos = ionSourcePos;
+            controllerBE().beamLength = beamLength;
             controllerBE().amplifiers = amplifiers.size();
             controllerBE().coolers = validCoolers;
             controllerBE().quadroupoles = quadrupolesCount;

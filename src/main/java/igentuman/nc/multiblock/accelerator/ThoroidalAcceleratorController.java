@@ -2,10 +2,11 @@ package igentuman.nc.multiblock.accelerator;
 
 import igentuman.api.nc.multiblock.MultiblockController;
 import igentuman.nc.block.accelerator.entity.ThoroidalAcceleratorControllerBE;
+import igentuman.nc.block.entity.MultiblockControllerBE;
 
 public class ThoroidalAcceleratorController implements MultiblockController {
 
-    protected final ThoroidalAcceleratorControllerBE controllerBE;
+    protected ThoroidalAcceleratorControllerBE controllerBE;
 
     public ThoroidalAcceleratorController(ThoroidalAcceleratorControllerBE controller) {
         controllerBE = controller;
@@ -33,5 +34,10 @@ public class ThoroidalAcceleratorController implements MultiblockController {
         controllerBE().acceleratingVoltage = 0;
         controllerBE().energyRequired = 0;
         controllerBE().coolingRate = 0;
+    }
+
+    @Override
+    public void setControllerBe(MultiblockControllerBE multiblockControllerBE) {
+        controllerBE = (ThoroidalAcceleratorControllerBE)multiblockControllerBE;
     }
 }

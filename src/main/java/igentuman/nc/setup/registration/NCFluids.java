@@ -220,6 +220,7 @@ public class NCFluids {
                     NC_MATERIALS.put("depleted_"+key,
                             FluidEntry.makeMoltenLiquid("depleted_"+key.replace("-","_"), colorDepleted));
                     LIQUIDS_TAG.put("depleted_"+key, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(), forgeRl("depleted_"+key.replace("-","_"))));
+                    if(name.matches("xenorium.*|quantite.*|")) break;
                 }
             }
         }
@@ -281,6 +282,7 @@ public class NCFluids {
                 NC_MATERIALS.put(name+type,
                         FluidEntry.makeMoltenLiquid(name.replace("/", "_")+type,color));
                 LIQUIDS_TAG.put(name+type, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(),  forgeRl(name+type)));
+                if(name.matches("xenorium.*|quantite.*|")) break;
             }
         }
     }

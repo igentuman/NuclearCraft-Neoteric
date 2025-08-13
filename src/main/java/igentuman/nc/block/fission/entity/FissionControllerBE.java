@@ -46,6 +46,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
 
+import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.block.fission.FissionControllerBlock.POWERED;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.compat.gregtech.GTUtils.getGTEnergy;
@@ -508,7 +509,10 @@ public class FissionControllerBE extends MultiblockControllerBE {
 
     @Override
     public FissionReactorMultiblock getMultiblock() {
-        if(getLevel().isClientSide()) return null;
+        if(getLevel().isClientSide()) {
+            debugLog("Trying to access multiblock from client");
+            return null;
+        }
         if(multiblock == null) {
             multiblock = new FissionReactorMultiblock(this);
         }
@@ -600,7 +604,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
     }
 
     private void spawnParticles() {
-        if(getMultiblock() == null || efficiency <= 0) {
+        if(!isCasingValid || !isInternalValid || efficiency <= 0) {
             return;
         }
 

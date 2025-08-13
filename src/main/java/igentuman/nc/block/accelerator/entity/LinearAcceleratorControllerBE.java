@@ -41,6 +41,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
+import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.block.accelerator.AcceleratorPortBlock.POWERED;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.compat.oc2.LinearAcceleratorDevice.DEVICE_CAPABILITY;
@@ -321,7 +322,10 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
 
     @Override
     public LinearAcceleratorMultiblock getMultiblock() {
-        if(getLevel().isClientSide()) return null;
+        if(getLevel().isClientSide()) {
+            debugLog("Trying to access multiblock from client");
+            return null;
+        }
         if(multiblock == null) {
             multiblock = new LinearAcceleratorMultiblock(this);
         }

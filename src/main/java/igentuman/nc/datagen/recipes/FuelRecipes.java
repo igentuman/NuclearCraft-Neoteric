@@ -47,37 +47,37 @@ public class FuelRecipes extends NCRecipes {
 
         for (String name: FuelManager.all().keySet()) {
             for(String subType: FuelManager.all().get(name).keySet()) {
-                for (String type : new String[]{"ox", "ni", "za"}) {
-                    List<String> key = List.of("fuel", name, subType, type);
-                    SimpleCookingRecipeBuilder.smelting(Ingredient.of(NC_FUEL.get(key).get()),
-                                    RecipeCategory.MISC,
-                                    NC_FUEL.get(List.of("fuel", name, subType, "")).get(), 1.0f, 100)
-                            .unlockedBy("item", inventoryTrigger(ItemPredicate.Builder.item().of( NC_FUEL.get(List.of("fuel", name, subType, "")).get()).build()))
-                            .save(consumer, MODID + "_fuel_" + name+subType + type + "_sml");
+                if(!name.matches("xenorium.*|quantite.*")) {
+                    for (String type : new String[]{"ox", "ni", "za"}) {
+                        List<String> key = List.of("fuel", name, subType, type);
+                        SimpleCookingRecipeBuilder.smelting(Ingredient.of(NC_FUEL.get(key).get()),
+                                        RecipeCategory.MISC,
+                                        NC_FUEL.get(List.of("fuel", name, subType, "")).get(), 1.0f, 100)
+                                .unlockedBy("item", inventoryTrigger(ItemPredicate.Builder.item().of(NC_FUEL.get(List.of("fuel", name, subType, "")).get()).build()))
+                                .save(consumer, MODID + "_fuel_" + name + subType + type + "_sml");
 
-                    key = List.of("depleted", name, subType, type);
-                    SimpleCookingRecipeBuilder.smelting(Ingredient.of(FissionFuel.NC_DEPLETED_FUEL.get(key).get()),
-                                    RecipeCategory.MISC,
-                                    FissionFuel.NC_DEPLETED_FUEL.get(List.of("depleted", name, subType, "")).get(), 1.0f, 100)
-                            .unlockedBy("item", inventoryTrigger(ItemPredicate.Builder.item().of( FissionFuel.NC_DEPLETED_FUEL.get(List.of("depleted", name, subType, "")).get()).build()))
-                            .save(consumer, MODID + "_depleted_" + name+subType + type + "_sml");
+                        key = List.of("depleted", name, subType, type);
+                        SimpleCookingRecipeBuilder.smelting(Ingredient.of(FissionFuel.NC_DEPLETED_FUEL.get(key).get()),
+                                        RecipeCategory.MISC,
+                                        FissionFuel.NC_DEPLETED_FUEL.get(List.of("depleted", name, subType, "")).get(), 1.0f, 100)
+                                .unlockedBy("item", inventoryTrigger(ItemPredicate.Builder.item().of(FissionFuel.NC_DEPLETED_FUEL.get(List.of("depleted", name, subType, "")).get()).build()))
+                                .save(consumer, MODID + "_depleted_" + name + subType + type + "_sml");
+                    }
+                    fuelPelletRecipe(consumer, name, subType, "ox",
+                            FuelManager.all().get(name).get(subType).getOxide().isotopes[0],
+                            FuelManager.all().get(name).get(subType).getOxide().isotopes[1]);
+
+                    fuelPelletRecipe(consumer, name, subType, "ni",
+                            FuelManager.all().get(name).get(subType).getNitride().isotopes[0],
+                            FuelManager.all().get(name).get(subType).getNitride().isotopes[1]);
+
+                    fuelPelletRecipe(consumer, name, subType, "za",
+                            FuelManager.all().get(name).get(subType).getZirconiumAlloy().isotopes[0],
+                            FuelManager.all().get(name).get(subType).getZirconiumAlloy().isotopes[1]);
                 }
-
                 fuelPelletRecipe(consumer, name, subType, "",
                         FuelManager.all().get(name).get(subType).getDefault().isotopes[0],
                         FuelManager.all().get(name).get(subType).getDefault().isotopes[1]);
-
-                fuelPelletRecipe(consumer, name, subType, "ox",
-                        FuelManager.all().get(name).get(subType).getOxide().isotopes[0],
-                        FuelManager.all().get(name).get(subType).getOxide().isotopes[1]);
-
-                fuelPelletRecipe(consumer, name, subType, "ni",
-                        FuelManager.all().get(name).get(subType).getNitride().isotopes[0],
-                        FuelManager.all().get(name).get(subType).getNitride().isotopes[1]);
-
-                fuelPelletRecipe(consumer, name, subType, "za",
-                        FuelManager.all().get(name).get(subType).getZirconiumAlloy().isotopes[0],
-                        FuelManager.all().get(name).get(subType).getZirconiumAlloy().isotopes[1]);
             }
         }
 

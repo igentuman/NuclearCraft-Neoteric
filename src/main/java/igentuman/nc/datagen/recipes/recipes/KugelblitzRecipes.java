@@ -14,7 +14,7 @@ public class KugelblitzRecipes extends AbstractRecipeProvider {
         KugelblitzRecipes.consumer = consumer;
         ID = "kugelblitz_chamber";
         List<String> items = List.of(
-                "nuclearcraft:xenorium298",
+                "nuclearcraft:xenorium_298",
                 "minecraft:nether_star",
                 "minecraft:ender_eye",
                 "minecraft:ender_pearl",

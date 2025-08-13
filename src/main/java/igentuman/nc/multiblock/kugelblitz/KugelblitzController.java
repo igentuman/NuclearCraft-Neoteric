@@ -1,12 +1,13 @@
 package igentuman.nc.multiblock.kugelblitz;
 
 import igentuman.api.nc.multiblock.MultiblockController;
+import igentuman.nc.block.entity.MultiblockControllerBE;
 import igentuman.nc.block.kugelblitz.entity.ChamberTerminalBE;
 import net.minecraft.core.BlockPos;
 
 public class KugelblitzController  implements MultiblockController {
 
-    private final ChamberTerminalBE controllerBE;
+    private ChamberTerminalBE controllerBE;
 
     public KugelblitzController(ChamberTerminalBE be) {
         controllerBE = be;
@@ -26,5 +27,10 @@ public class KugelblitzController  implements MultiblockController {
     @Override
     public void setErroredBlock(BlockPos relative) {
         controllerBE().errorBlockPos = relative;
+    }
+
+    @Override
+    public void setControllerBe(MultiblockControllerBE multiblockControllerBE) {
+        controllerBE = (ChamberTerminalBE)multiblockControllerBE;
     }
 }

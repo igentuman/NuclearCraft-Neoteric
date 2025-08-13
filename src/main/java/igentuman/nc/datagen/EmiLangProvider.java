@@ -6,6 +6,7 @@ import net.minecraftforge.common.data.LanguageProvider;
 import static igentuman.nc.setup.registration.FissionFuel.NC_ISOTOPES;
 import static igentuman.nc.setup.registration.NCFluids.NC_MATERIALS;
 import static igentuman.nc.setup.registration.NCItems.*;
+import static igentuman.nc.setup.registration.Tags.*;
 import static igentuman.nc.util.TextUtils.convertToName;
 
 public class EmiLangProvider extends LanguageProvider {
@@ -41,6 +42,16 @@ public class EmiLangProvider extends LanguageProvider {
         }
         for(String name: NC_ISOTOPES.keySet()) {
             add("tag.item.c.isotope."+name, convertToName(name));
+        }
+        for(String name: NC_WASTE_TAG.keySet()) {
+            add("tag.item.c.waste."+name, convertToName(name));
+        }
+        for(String name: REACTOR_FUEL_TAG.keySet()) {
+            add("tag.item.c.fuel."+name, convertToName(name));
+        }
+
+        for(String name: REACTOR_DEPLETED_FUEL_TAG.keySet()) {
+            add("tag.item.c.delpeted_fuel."+name, convertToName(name));
         }
     }
 }

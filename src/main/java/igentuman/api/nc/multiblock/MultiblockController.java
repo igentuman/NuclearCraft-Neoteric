@@ -13,4 +13,6 @@ public interface MultiblockController {
     default void setErroredBlock(BlockPos relative) {
         controllerBE().errorBlockPos = relative;
     };
+
+    void setControllerBe(MultiblockControllerBE multiblockControllerBE);
 }

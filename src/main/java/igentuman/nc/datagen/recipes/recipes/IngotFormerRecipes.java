@@ -54,6 +54,7 @@ public class IngotFormerRecipes extends AbstractRecipeProvider {
                     }
                     keyStr+= type;
                     add(ingredient(NC_FUEL.get(key).get()), fluidStackIngredient(keyStr, MOLTEN_INGOT));
+                    if(name.matches("xenorium.*|quantite.*")) break;
                 }
             }
         }

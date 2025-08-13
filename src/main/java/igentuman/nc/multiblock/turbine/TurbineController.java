@@ -1,5 +1,6 @@
 package igentuman.nc.multiblock.turbine;
 
+import igentuman.nc.block.entity.MultiblockControllerBE;
 import igentuman.nc.block.turbine.entity.TurbineControllerBE;
 import igentuman.api.nc.multiblock.MultiblockController;
 import net.minecraft.core.BlockPos;
@@ -7,7 +8,7 @@ import net.minecraft.core.Direction;
 
 public class TurbineController implements MultiblockController {
 
-    protected final TurbineControllerBE controllerBE;
+    protected TurbineControllerBE controllerBE;
     public TurbineController(TurbineControllerBE turbineControllerBE) {
         controllerBE = turbineControllerBE;
     }
@@ -28,5 +29,10 @@ public class TurbineController implements MultiblockController {
         controllerBE().activeCoils = 0;
         controllerBE().blades = 0;
         controllerBE().flow = 0;
+    }
+
+    @Override
+    public void setControllerBe(MultiblockControllerBE multiblockControllerBE) {
+        controllerBE = (TurbineControllerBE)multiblockControllerBE;
     }
 }

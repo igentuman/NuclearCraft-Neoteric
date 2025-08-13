@@ -73,6 +73,41 @@ public class NCLanguageProvider extends LanguageProvider {
     }
 
     private void particles() {
+        add("emi.category.nuclearcraft.ingot_former", "Ingot Former");
+        add("emi.category.nuclearcraft.fusion_coolant", "Fusion Reactor Coolant");
+        add("emi.category.nuclearcraft.fusion_core", "Fusion Reactor");
+        add("emi.category.nuclearcraft.crystallizer", "Crystallizer");
+        add("emi.category.nuclearcraft.fluid_infuser", "Fluid Infuser");
+        add("emi.category.nuclearcraft.manufactory", "Manufactory");
+        add("emi.category.nuclearcraft.rock_crusher", "Rock Crusher");
+        add("emi.category.nuclearcraft.irradiator", "Irradiator");
+        add("emi.category.nuclearcraft.pressurizer", "Pressuruzer");
+        add("emi.category.nuclearcraft.melter", "Melter");
+        add("emi.category.nuclearcraft.nc_ore_veins", "Ore Veins");
+        add("emi.category.nuclearcraft.gas_scrubber", "Gas Scrubber");
+        add("emi.category.nuclearcraft.centrifuge", "Centrifuge");
+        add("emi.category.nuclearcraft.electrolyzer", "Electrolyzer");
+        add("emi.category.nuclearcraft.subatomic_liquifier", "Sub-atomic liquifier");
+        add("emi.category.nuclearcraft.pump", "Pump");
+        add("emi.category.nuclearcraft.nuclear_furnace", "Nuclear Furnace");
+        add("emi.category.nuclearcraft.fluid_enricher", "Fluid Enricher");
+        add("emi.category.nuclearcraft.fission_reactor_controller", "Fission Reactor");
+        add("emi.category.nuclearcraft.decay_hastener", "Decay Hastener");
+        add("emi.category.nuclearcraft.fission_boiling", "Fission Boiling");
+        add("emi.category.nuclearcraft.accelerator_coolant", "Accelerator Coolant");
+        add("emi.category.nuclearcraft.analyzer", "Analyzer");
+        add("emi.category.nuclearcraft.target_chamber", "Target Chamber");
+        add("emi.category.nuclearcraft.kugelblitz_chamber", "Kugelblitz Chamber");
+        add("emi.category.nuclearcraft.turbine_controller", "Turbine Controller");
+        add("emi.category.nuclearcraft.assembler", "Assembler");
+        add("emi.category.nuclearcraft.isotope_separator", "Isotope Separator");
+        add("emi.category.nuclearcraft.chemical_reactor", "Chemical Reactor");
+        add("emi.category.nuclearcraft.alloy_smelter", "Alloy Smelter");
+        add("emi.category.nuclearcraft.extractor", "Extractor");
+        add("emi.category.nuclearcraft.steam_turbine", "Steam Turbine");
+        add("emi.category.nuclearcraft.leacher", "Leacher");
+        add("emi.category.nuclearcraft.supercooler", "Supercooler");
+        add("emi.category.nuclearcraft.fuel_reprocessor", "");
         add("gui.nuclearcraft.jei.particle.mass", "Mass: %s");
         add("jei.category.nuclearcraft.particle_info", "Particle Info");
         add("gui.nuclearcraft.jei.particle.charge", "Charge: %s");

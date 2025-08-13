@@ -110,7 +110,7 @@ repositories {
 dependencies {
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
     minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
-    implementation fg.deobf("com.gregtechceu.gtceu:gtceu-${mc_version}:${gtm_version}"){
+    compileOnly fg.deobf("com.gregtechceu.gtceu:gtceu-${mc_version}:${gtm_version}"){
         transitive = false
     }
     //compileOnly fg.deobf("curse.maven:mantle-74924:6603205")
@@ -129,7 +129,7 @@ dependencies {
     runtimeOnly fg.deobf("curse.maven:the-lost-cities-269024:6174986")
     compileOnly fg.deobf("mezz.jei:jei-${mc_version}-common-api:${jei_version}")
     compileOnly fg.deobf("mezz.jei:jei-${mc_version}-forge-api:${jei_version}")
-    implementation fg.deobf("mezz.jei:jei-${mc_version}-forge:${jei_version}")
+    compileOnly fg.deobf("mezz.jei:jei-${mc_version}-forge:${jei_version}")
 
     //runtimeOnly fg.deobf("curse.maven:ctm-267602:4393695")
 
@@ -155,7 +155,7 @@ dependencies {
     //runtimeOnly fg.deobf("curse.maven:nbtedit-reborn-678133:4420565")
     //runtimeOnly fg.deobf("com.blamejared.crafttweaker:CraftTweaker-forge-${mc_version}:${ct_version}")
 
-    compileOnly fg.deobf("curse.maven:emi-580555:5872526")
+    implementation fg.deobf("curse.maven:emi-580555:5872526")
     /*runtimeOnly fg.deobf("curse.maven:large-ore-deposits-318833:6251845") {
         transitive = false
     }

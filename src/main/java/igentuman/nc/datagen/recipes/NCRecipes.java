@@ -1863,6 +1863,17 @@ public class NCRecipes extends RecipeProvider {
 
     private void processors(Consumer<FinishedRecipe> consumer)
     {
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NCProcessors.PROCESSORS.get(Processors.SUBATOMIC_LIQUIFIER).get())
+                .pattern("PYP")
+                .pattern("PCP")
+                .pattern("PMP")
+                .define('C', NCProcessors.PROCESSORS.get("chemical_reactor").get())
+                .define('Y', NCProcessors.PROCESSORS.get("centrifuge").get())
+                .define('P', NC_PARTS.get("plate_extreme").get())
+                .define('M', NCProcessors.PROCESSORS.get("centrifuge").get())
+                .group(MODID+"_machines")
+                .unlockedBy("item", has(NC_PARTS.get("plate_extreme").get()))
+                .save(consumer);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NCProcessors.PROCESSORS.get("analyzer").get())
                 .pattern("PYP")

@@ -145,6 +145,7 @@ public class CreativeTabs {
         items.addAll(itemStacks(NC_RECORDS.values()));
         items.addAll(itemStacks(NC_FOOD.values()));
         items.addAll(itemStacks(NC_SHIELDING.values()));
+        items.addAll(itemStacks(NC_WASTE.values()));
         items.addAll(onlyEnabledItems("ingot", NC_INGOTS));
         items.addAll(onlyEnabledItems("chunk",NC_CHUNKS));
         items.addAll(onlyEnabledItems("dust",NC_DUSTS));

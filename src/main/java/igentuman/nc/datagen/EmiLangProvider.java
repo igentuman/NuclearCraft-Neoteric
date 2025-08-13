@@ -20,6 +20,8 @@ public class EmiLangProvider extends LanguageProvider {
 
         for(String name: NC_MATERIALS.keySet()) {
             add("tag.fluid.c."+name, convertToName(name));
+            add("tag.item.c."+name, convertToName(name));
+            add("tag.item.nuclearcraft."+name.replace("/", "."), convertToName(name));
         }
         for(String name: NC_INGOTS.keySet()) {
             add("tag.item.c."+name+"_ingots", convertToName(name)+" Ingots");
@@ -41,17 +43,17 @@ public class EmiLangProvider extends LanguageProvider {
             add("tag.item.c.raw_material."+name, convertToName(name)+" Raw");
         }
         for(String name: NC_ISOTOPES.keySet()) {
-            add("tag.item.c.isotope."+name, convertToName(name));
+            add("tag.item.nuclearcraft.isotopes."+name.replace("/","."), convertToName(name));
         }
         for(String name: NC_WASTE_TAG.keySet()) {
-            add("tag.item.c.waste."+name, convertToName(name));
+            add("tag.item.nuclearcraft.waste."+name, convertToName(name));
         }
         for(String name: REACTOR_FUEL_TAG.keySet()) {
-            add("tag.item.c.fuel."+name, convertToName(name));
+            add("tag.item.nuclearcraft.reactor_fuel."+name.replace("/","."), convertToName(name));
         }
 
         for(String name: REACTOR_DEPLETED_FUEL_TAG.keySet()) {
-            add("tag.item.c.delpeted_fuel."+name, convertToName(name));
+            add("tag.item.nuclearcraft.depleted_reactor_fuel."+name.replace("/","."), convertToName(name));
         }
     }
 }

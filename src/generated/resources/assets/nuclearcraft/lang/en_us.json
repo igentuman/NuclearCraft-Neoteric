@@ -2528,6 +2528,7 @@
   "processor.description.pump": "Pumps fluids and gasses from environment.",
   "processor.description.rock_crusher": "Produces dusts from rocks.",
   "processor.description.steam_turbine": "Produce energy with power of steam.",
+  "processor.description.subatomic_liquifier": "Decompose elements.",
   "processor.description.supercooler": "Cools down fluids and gases.",
   "processor.recipe.duration": "Process Duration: %s t",
   "processor.recipe.power": "Process Power: %s FE/t",

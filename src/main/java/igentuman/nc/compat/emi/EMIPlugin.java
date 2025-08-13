@@ -16,6 +16,7 @@ import igentuman.nc.content.processors.Processors;
 import igentuman.nc.recipes.NcRecipeType;
 import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.recipes.type.OreVeinRecipe;
+import igentuman.nc.util.ModUtil;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.HashMap;
@@ -49,6 +50,7 @@ public class EMIPlugin implements EmiPlugin {
     
     private void registerProcessorCategories(EmiRegistry registry) {
         for (String name : RECIPE_CLASSES.keySet()) {
+            if(name.equals(Processors.NUCLEAR_FURNACE)) continue;
             if (Processors.all().containsKey(name) && !Processors.all().get(name).isRegistered()) {
                 continue;
             }
@@ -85,15 +87,17 @@ public class EMIPlugin implements EmiPlugin {
                 registry.addRecipe(new KugelblitzEmiCategory(chamberRecipe));
             }
         }
-        
-        // Register Target Chamber category
-        registry.addCategory(TargetChamberEmiCategory.CATEGORY);
-        CATEGORIES.put("target_chamber", TargetChamberEmiCategory.CATEGORY);
-        
-        var targetChamberRecipes = NcRecipeType.ALL_RECIPES.get("target_chamber").getRecipes(NcClient.tryGetClientWorld());
-        for (var recipe : targetChamberRecipes) {
-            if (recipe instanceof TargetChamberControllerBE.Recipe targetRecipe) {
-                registry.addRecipe(new TargetChamberEmiCategory(targetRecipe));
+
+        if(!ModUtil.isJEILoaded()) {
+            // Register Target Chamber category
+            registry.addCategory(TargetChamberEmiCategory.CATEGORY);
+            CATEGORIES.put("target_chamber", TargetChamberEmiCategory.CATEGORY);
+
+            var targetChamberRecipes = NcRecipeType.ALL_RECIPES.get("target_chamber").getRecipes(NcClient.tryGetClientWorld());
+            for (var recipe : targetChamberRecipes) {
+                if (recipe instanceof TargetChamberControllerBE.Recipe targetRecipe) {
+                    registry.addRecipe(new TargetChamberEmiCategory(targetRecipe));
+                }
             }
         }
         

@@ -42,6 +42,10 @@ public class PumpBE extends NCProcessorBE {
         return !hasRecipe();
     }
 
+    public boolean hasRecipe() {
+        return recipeInfo().recipe != null && getRecipe() != null;
+    }
+
     @NothingNullByDefault
     public static class Recipe extends NcRecipe {
         public Recipe(ResourceLocation id,

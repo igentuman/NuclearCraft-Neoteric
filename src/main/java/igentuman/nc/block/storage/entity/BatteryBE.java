@@ -1,7 +1,8 @@
-package igentuman.nc.block.entity.energy;
+package igentuman.nc.block.storage.entity;
 
 import igentuman.api.nc.SideModeToggleable;
 import igentuman.nc.NuclearCraft;
+import igentuman.nc.block.entity.energy.NCEnergy;
 import igentuman.nc.content.energy.BatteryBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

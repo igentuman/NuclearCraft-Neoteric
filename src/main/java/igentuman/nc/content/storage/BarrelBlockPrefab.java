@@ -1,6 +1,6 @@
 package igentuman.nc.content.storage;
 
-import igentuman.nc.block.entity.BarrelBE;
+import igentuman.nc.block.storage.entity.BarrelBE;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 

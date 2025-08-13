@@ -1,7 +1,7 @@
-package igentuman.nc.block;
+package igentuman.nc.block.storage;
 
 import igentuman.api.nc.SideModeToggleable;
-import igentuman.nc.block.entity.ContainerBE;
+import igentuman.nc.block.storage.entity.ContainerBE;
 import igentuman.nc.container.StorageContainerContainer;
 import igentuman.nc.content.storage.ContainerBlocks;
 import igentuman.nc.setup.registration.NCStorageBlocks;

@@ -1,6 +1,6 @@
 package igentuman.nc.mixin;
 
-import igentuman.nc.block.entity.energy.BatteryBE;
+import igentuman.nc.block.storage.entity.BatteryBE;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.LightningRodBlock;

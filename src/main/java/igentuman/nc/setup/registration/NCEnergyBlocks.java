@@ -1,6 +1,6 @@
 package igentuman.nc.setup.registration;
 
-import igentuman.nc.block.BatteryBlock;
+import igentuman.nc.block.storage.BatteryBlock;
 import igentuman.nc.block.DecayGeneratorBlock;
 import igentuman.nc.block.RTGBlock;
 import igentuman.nc.block.SolarPanelBlock;

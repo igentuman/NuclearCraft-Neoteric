@@ -1,6 +1,7 @@
-package igentuman.nc.block.entity;
+package igentuman.nc.block.storage.entity;
 
 import igentuman.api.nc.SideModeToggleable;
+import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.handler.ItemStorageCapabilityHandler;
 import igentuman.nc.content.storage.ContainerBlocks;
 import net.minecraft.core.BlockPos;

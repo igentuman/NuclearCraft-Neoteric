@@ -1,6 +1,9 @@
 package igentuman.nc.setup.registration;
 
 import igentuman.nc.block.*;
+import igentuman.nc.block.storage.BarrelBlock;
+import igentuman.nc.block.storage.BatteryBlock;
+import igentuman.nc.block.storage.ContainerBlock;
 import igentuman.nc.content.materials.Materials;
 import igentuman.nc.content.materials.Ores;
 import igentuman.nc.content.processors.Processors;

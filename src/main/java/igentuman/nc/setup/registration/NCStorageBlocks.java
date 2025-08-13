@@ -1,7 +1,7 @@
 package igentuman.nc.setup.registration;
 
-import igentuman.nc.block.BarrelBlock;
-import igentuman.nc.block.ContainerBlock;
+import igentuman.nc.block.storage.BarrelBlock;
+import igentuman.nc.block.storage.ContainerBlock;
 import igentuman.nc.container.StorageContainerContainer;
 import igentuman.nc.content.storage.BarrelBlocks;
 import igentuman.nc.content.storage.ContainerBlocks;

@@ -2,7 +2,7 @@ package igentuman.nc.client.block;
 
 import com.mojang.math.Transformation;
 import igentuman.api.nc.SideModeToggleable;
-import igentuman.nc.block.entity.energy.BatteryBE;
+import igentuman.nc.block.storage.entity.BatteryBE;
 import igentuman.nc.util.ClientTools;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;

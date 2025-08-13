@@ -1,7 +1,7 @@
 package igentuman.nc.content.energy;
 
 import igentuman.nc.NuclearCraft;
-import igentuman.nc.block.entity.energy.BatteryBE;
+import igentuman.nc.block.storage.entity.BatteryBE;
 import igentuman.nc.block.entity.energy.NCEnergy;
 import igentuman.nc.handler.config.CommonConfig;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import static igentuman.nc.handler.config.CommonConfig.ENERGY_STORAGE;
-import static igentuman.nc.handler.config.CommonConfig.GTCEU_CONFIG;
 
 public class BatteryBlocks {
 

@@ -1,10 +1,9 @@
-package igentuman.nc.block;
+package igentuman.nc.block.storage;
 
 import igentuman.api.nc.SideModeToggleable;
-import igentuman.nc.block.entity.BarrelBE;
+import igentuman.nc.block.storage.entity.BarrelBE;
 import igentuman.nc.setup.registration.NCStorageBlocks;
 import igentuman.nc.content.storage.BarrelBlocks;
-import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

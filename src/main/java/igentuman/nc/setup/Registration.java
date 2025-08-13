@@ -3,6 +3,7 @@ package igentuman.nc.setup;
 import igentuman.nc.container.MultiblockControllerContailer;
 import igentuman.nc.content.NCRadiationDamageSource;
 import igentuman.nc.content.particles.ParticleSources;
+import igentuman.nc.effect.RadiationDecay;
 import igentuman.nc.effect.RadiationResistance;
 import igentuman.nc.multiblock.accelerator.AcceleratorRegistration;
 import igentuman.nc.multiblock.accelerator.TargetChamberRegistration;
@@ -28,6 +29,7 @@ import static igentuman.nc.setup.registration.Registries.EFFECTS;
 public class Registration {
 
     public static final RegistryObject<MobEffect> RADIATION_RESISTANCE = EFFECTS.register("radiation_resistance", () -> new RadiationResistance(MobEffectCategory.BENEFICIAL, 0xd4ffFF));
+    public static final RegistryObject<MobEffect> RADIATION_DECAY = EFFECTS.register("radiation_decay", () -> new RadiationDecay(MobEffectCategory.BENEFICIAL, 0xd4ffFF));
     public static final RegistryObject<MenuType<MultiblockControllerContailer>> MULTIBLOCK_REPORT_CONTAINER = CONTAINERS.register("multilblock_report_container",
             () -> IForgeMenuType.create((windowId, inv, data) -> new MultiblockControllerContailer(windowId, data.readBlockPos(), inv))
     );

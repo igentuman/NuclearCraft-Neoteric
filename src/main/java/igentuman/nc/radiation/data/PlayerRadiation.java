@@ -29,7 +29,7 @@ public class PlayerRadiation implements IPlayerRadiationCapability {
 
     private int contaminationStage = 0;
 
-    public static int maxPlayerRadiation = 500000000;
+    public static long maxPlayerRadiation = 500000000;
 
     public PlayerRadiation() {
     }
@@ -50,9 +50,8 @@ public class PlayerRadiation implements IPlayerRadiationCapability {
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
-        CompoundTag radiationTag = nbt.getCompound("radiation");
-        radiation = radiationTag.getLong("radiation");
-        timestamp = radiationTag.getInt("timestamp");
+        radiation = nbt.getLong("radiation");
+        timestamp = nbt.getInt("timestamp");
     }
 
     public void copyFrom(PlayerRadiation source) {
@@ -63,7 +62,7 @@ public class PlayerRadiation implements IPlayerRadiationCapability {
     public int getInventoryRadiation(Player player) {
         int rad = 0;
         for(ItemStack itemStack: player.getInventory().items) {
-            rad += (int) (ItemRadiation.byItem(itemStack.getItem())*1000000);
+            rad += (int) (ItemRadiation.byItem(itemStack.getItem())*1000000*(itemStack.getCount()+1)*0.75D);
         }
         return rad/5;//player is not getting radiation instantly
     }
@@ -103,11 +102,10 @@ public class PlayerRadiation implements IPlayerRadiationCapability {
         double intensityMult = Math.max(0.5, Math.sqrt(chunkRadiation / 1000000.0));
         double shieldingRate = Math.max(0.001, 0.7 - getRadiationShielding(player)/100.0);
         long wasRadiation = radiation;
-        if(chunkRadiation > radiation) {
-            radiation = (int) (((chunkRadiation + radiation)/1.1D * intensityMult * RADIATION_CONFIG.GAIN_SPEED_FOR_PLAYER.get()) * shieldingRate + radiation);
-        } else {
-            radiation = (int) (radiation + (chunkRadiation * 0.5D * RADIATION_CONFIG.GAIN_SPEED_FOR_PLAYER.get() * shieldingRate));
+        if(chunkRadiation < radiation) {
+            intensityMult *= 0.5d;
         }
+        radiation = (int) ((chunkRadiation * intensityMult * RADIATION_CONFIG.GAIN_SPEED_FOR_PLAYER.get()) * shieldingRate + radiation);
         if(player instanceof Player) {
             radiation += (int) (getInventoryRadiation((Player) player) * shieldingRate);
         }

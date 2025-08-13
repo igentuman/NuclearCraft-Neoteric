@@ -8,9 +8,9 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.Nullable;
 
-public class RadiationResistance extends MobEffect {
+public class RadiationDecay extends MobEffect {
 
-    public RadiationResistance(MobEffectCategory pCategory, int pColor) {
+    public RadiationDecay(MobEffectCategory pCategory, int pColor) {
         super(pCategory, pColor);
     }
 

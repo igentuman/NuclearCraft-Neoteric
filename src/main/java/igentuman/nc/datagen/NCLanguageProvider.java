@@ -728,6 +728,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("tooltip.nc.liquid_stored","Stored: %s %s / %s");
         add("tooltip.nc.liquid_capacity","Capacity: %s");
         add("effect.nuclearcraft.radiation_resistance","Radiation Resistance");
+        add("effect.nuclearcraft.radiation_decay","Radiation Decay");
         add("leacher.tooltip.valid_pump","Pump - Ok");
         add("leacher.tooltip.invalid_pump","Pump in the corner not found");
         add("processor.description.nuclear_furnace","Fast furnace what uses uranium ingots as fuel.");

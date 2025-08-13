@@ -29,6 +29,7 @@ import java.util.List;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.handler.config.RadiationConfig.RADIATION_CONFIG;
+import static igentuman.nc.setup.Registration.RADIATION_DECAY;
 import static igentuman.nc.setup.Registration.RADIATION_RESISTANCE;
 
 public class RadiationEvents {
@@ -52,10 +53,10 @@ public class RadiationEvents {
             return;
         }
         long radiation = RadiationCleaningItems.byItem(stack.getItem());
-        if(radiation == 0) return;
+
         PlayerRadiation radCap = entity.getCapability(PlayerRadiationProvider.PLAYER_RADIATION).orElse(null);
         if(radCap != null) {
-            if(stack.getItem().toString().contains("radaway")) {
+            if(stack.getItem().toString().equals("radaway")) {
                 if(entity.hasEffect(RADIATION_RESISTANCE.get())) {
                     entity.removeEffect(RADIATION_RESISTANCE.get());
                 }
@@ -65,7 +66,13 @@ public class RadiationEvents {
                     entity.removeEffect(RADIATION_RESISTANCE.get());
                 }
                 entity.addEffect(new MobEffectInstance(RADIATION_RESISTANCE.get(), 1200, 2, false, true));
+            } else if(stack.getItem().toString().contains("radaway_slow")) {
+                if(entity.hasEffect(RADIATION_DECAY.get())) {
+                    entity.removeEffect(RADIATION_DECAY.get());
+                }
+                entity.addEffect(new MobEffectInstance(RADIATION_DECAY.get(), 2400, 1, false, true));
             }
+            if(radiation == 0) return;
             radCap.setRadiation(Math.max(0, radCap.getRadiation() - radiation/1000));
             if(ModUtil.isMekanismLoaded() && RADIATION_CONFIG.MEKANISM_RADIATION_INTEGRATION.get()) {
                 MekanismRadiation.addEntityRadiation((Player) entity, -radiation/10000000);

@@ -35,7 +35,7 @@ public class RadiationOverlay {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, RADIATION_BAR_TEXTURE);
         poseStack.blit(RADIATION_BAR_TEXTURE,4, y - 15,0,0,94,11,256,256);
-        int maxRadiationBar = PlayerRadiation.maxPlayerRadiation;
+        long maxRadiationBar = PlayerRadiation.maxPlayerRadiation;
         int barWidth = (int) Math.min(128, radiation * 90 / maxRadiationBar);
         RenderSystem.setShaderTexture(0, RADIATION_BAR_TEXTURE);
         poseStack.blit(RADIATION_BAR_TEXTURE,6,y - 13,0,11, barWidth,8,256,256);

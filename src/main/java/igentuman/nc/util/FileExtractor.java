@@ -105,7 +105,6 @@ public class FileExtractor {
 
                         // Copy the file from the JAR to the config folder
                         try (InputStream inputStream = zipFile.getInputStream(entry)) {
-                            //todo reading version from txt in live is broken in some cases
                             if(!targetFile.exists()/* || versionId < currentVersion*/) {
                                 Files.copy(inputStream, targetFile.toPath());
                                 LOGGER.info("Extracted file " + relativeFileName + " to config folder.");
@@ -132,7 +131,7 @@ public class FileExtractor {
                     File[] files = sourceFolder.listFiles();
                     for (File file : files) {
                         File targetFile = new File(targetFolder, file.getName());
-                        if(!file.exists() || versionId < currentVersion) {
+                        if(!targetFile.exists()/* || versionId < currentVersion*/) {
                             Files.copy(file.toPath(), targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
                             LOGGER.info("Extracted file " + file.getName() + " to config folder.");
                         }

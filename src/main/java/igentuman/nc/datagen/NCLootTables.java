@@ -35,7 +35,11 @@ public class NCLootTables extends BaseLootTableProvider {
         NC_MATERIAL_BLOCKS.values().forEach(this::add);
         ACCELERATOR_BLOCKS.values().forEach(this::add);
         TARGET_CHAMBER_BLOCKS.values().forEach(this::add);
-        KUGELBLITZ_BLOCKS.values().forEach(this::add);
+        KUGELBLITZ_BLOCKS.values().forEach(block -> {
+            if (!block.get().asItem().toString().equals("black_hole")) {
+                add(block);
+            }
+        });
         FISSION_BLOCKS.values().forEach(this::add);
         TURBINE_BLOCKS.values().forEach(this::add);
         FUSION_BLOCKS.values().forEach(this::add);
@@ -81,7 +85,8 @@ public class NCLootTables extends BaseLootTableProvider {
         all.addAll(FISSION_BLOCKS.values().stream().map(RegistryObject::get).toList());
         all.addAll(FUSION_BLOCKS.values().stream().map(RegistryObject::get).toList());
         all.addAll(TURBINE_BLOCKS.values().stream().map(RegistryObject::get).toList());
-        all.addAll(KUGELBLITZ_BLOCKS.values().stream().map(RegistryObject::get).toList());
+        List<Block> kugelblitzBlocks = KUGELBLITZ_BLOCKS.values().stream().map(RegistryObject::get).toList();
+        all.addAll(kugelblitzBlocks.stream().filter(block -> !block.asItem().toString().contains("black_hole")).toList());
         all.addAll(ACCELERATOR_BLOCKS.values().stream().map(RegistryObject::get).toList());
         all.addAll(TARGET_CHAMBER_BLOCKS.values().stream().map(RegistryObject::get).toList());
         all.addAll(PROCESSORS.values().stream().map(RegistryObject::get).toList());

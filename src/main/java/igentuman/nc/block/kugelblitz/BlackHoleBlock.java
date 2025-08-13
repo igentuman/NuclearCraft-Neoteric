@@ -4,8 +4,18 @@ import igentuman.nc.block.kugelblitz.entity.BlackHoleBE;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
+import net.minecraft.world.entity.boss.wither.WitherBoss;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.WitherSkull;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -15,12 +25,24 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.PushReaction;
+import net.minecraft.world.level.storage.loot.BuiltInLootTables;
+import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Collections;
+import java.util.List;
 
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BE;
 
@@ -28,7 +50,7 @@ public class BlackHoleBlock extends Block implements EntityBlock {
 
     private static final VoxelShape SHAPE = Shapes.box(.4, .4, .4, .6, .6, .6);
     public BlackHoleBlock(Properties pProperties) {
-        super(pProperties.sound(SoundType.ANVIL).strength(-1f, 3600000f).noOcclusion().lightLevel(state -> state.getValue(ACTIVE) ? 15 : 10));
+        super(pProperties.sound(SoundType.ANVIL).strength(-1f, 3600000f).noOcclusion().noLootTable().noCollission().lightLevel(state -> state.getValue(ACTIVE) ? 15 : 10));
     }
     public static final BooleanProperty ACTIVE = BlockStateProperties.POWERED;
 
@@ -65,6 +87,57 @@ public class BlackHoleBlock extends Block implements EntityBlock {
     @Override
     public int getLightEmission(BlockState state, BlockGetter level, BlockPos pos) {
         return state.getValue(ACTIVE) ? 15 : 10;
+    }
+
+    @Override
+    public boolean canHarvestBlock(BlockState state, BlockGetter level, BlockPos pos, Player player)
+    {
+        return false;
+    }
+
+    @Override
+    public boolean dropFromExplosion(Explosion pExplosion) {
+        return false;
+    }
+
+    @Override
+    public boolean canBeReplaced(BlockState pState, Fluid pFluid) {
+        return false;
+    }
+
+
+    /** @deprecated */
+    @Deprecated
+    public List<ItemStack> getDrops(BlockState pState, LootParams.Builder pParams) {
+        return List.of();
+    }
+
+    @Override
+    public boolean canEntityDestroy(BlockState state, BlockGetter level, BlockPos pos, Entity entity)
+    {
+        return false;
+    }
+
+    @Override
+    public boolean canDropFromExplosion(BlockState state, BlockGetter level, BlockPos pos, Explosion explosion)
+    {
+        return false;
+    }
+
+    @Override
+    public void fallOn(Level pLevel, BlockState pState, BlockPos pPos, Entity pEntity, float pFallDistance) {
+        pEntity.causeFallDamage(pFallDistance, 100.0F, pEntity.damageSources().fall());
+    }
+
+    @Override
+    public boolean canBeReplaced(BlockState pState, BlockPlaceContext pUseContext) {
+        return false;
+    }
+
+    @Override
+    public PushReaction getPistonPushReaction(BlockState state)
+    {
+        return null;
     }
 
     @Override

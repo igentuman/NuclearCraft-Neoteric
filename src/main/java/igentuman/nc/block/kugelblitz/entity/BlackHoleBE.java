@@ -5,6 +5,7 @@ import igentuman.nc.compat.kubejs.NCKubeJsEvents;
 import igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
@@ -13,6 +14,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.MinecraftForge;
@@ -120,6 +122,17 @@ public class BlackHoleBE extends NuclearCraftBE {
             setChanged();
         }
         handleClosestEntities();
+        evaporateClosestBlocks();
+    }
+
+    private void evaporateClosestBlocks() {
+        if((getLevel().getGameTime() & 5) == 0) {
+            for (Direction direction : Direction.values()) {
+                if(!level.getBlockState(worldPosition.relative(direction)).isAir()) {
+                    level.setBlock(worldPosition.relative(direction), Blocks.AIR.defaultBlockState(), 3);
+                }
+            }
+        }
     }
 
 

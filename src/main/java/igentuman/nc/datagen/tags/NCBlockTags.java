@@ -209,6 +209,7 @@ public class NCBlockTags extends BlockTagsProvider {
             tag(BlockTags.NEEDS_IRON_TOOL).add(TURBINE_BLOCKS.get(block).get());
         }
         for(String block: KUGELBLITZ_BLOCKS.keySet()) {
+            if(block.equals("black_hole")) continue;
             tag(BlockTags.MINEABLE_WITH_PICKAXE).add(KUGELBLITZ_BLOCKS.get(block).get());
             tag(BlockTags.NEEDS_DIAMOND_TOOL).add(KUGELBLITZ_BLOCKS.get(block).get());
         }

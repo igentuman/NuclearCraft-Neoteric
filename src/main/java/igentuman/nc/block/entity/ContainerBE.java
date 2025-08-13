@@ -109,7 +109,7 @@ public class ContainerBE extends NuclearCraftBE implements SideModeToggleable {
                         }
                         case IN -> {
                             for(int i = 0; i < cap.getSlots(); i++) {
-                                ItemStack stack = cap.getStackInSlot(i);
+                                ItemStack stack = cap.extractItem(i, 64, true);
                                 if(stack.isEmpty()) continue;
                                 ItemStack copy = stack.copy();
                                 for(int j = 0; j < inventory.getSlots(); j++) {

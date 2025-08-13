@@ -7,6 +7,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
@@ -29,6 +30,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -94,7 +96,52 @@ public class EXPLBlock extends DirectionalBlock implements EntityBlock {
     @Override
     public void onPlace(BlockState pState, Level pLevel, BlockPos pPos, BlockState pOldState, boolean pIsMoving) {
         super.onPlace(pState, pLevel, pPos, pOldState, pIsMoving);
-        placeProxyBlocks(pState, pLevel, pPos);
+        if(canPlace(pState, pPos, pLevel)) {
+            placeProxyBlocks(pState, pLevel, pPos);
+        } else {
+            if(pLevel instanceof ServerLevel serverLevel) {
+                ItemStack core = new ItemStack(pState.getBlock().asItem());
+                Block.popResource(serverLevel, pPos, core);
+                serverLevel.destroyBlock(pPos, false);
+
+            }
+        }
+    }
+
+    private boolean canPlace(BlockState pState, BlockPos pPos, Level pLevel) {
+        Direction facing = pState.getValue(FACING);
+        int minX = -1, maxX = 0, minY = -1, minZ = 2, maxY = 4, maxZ = 2;
+        switch (facing) {
+            case UP:
+                minX = -1; minY = 0; minZ = -1; maxX = 2;  maxY = 4; maxZ = 2;
+                break;
+            case DOWN:
+                minX = -1; minY = -3; minZ = -1; maxX = 2; maxY = 1; maxZ = 2;
+                break;
+            case NORTH:
+                minX = -1; minY = -1; minZ = -3; maxX = 2; maxY = 2; maxZ = 1;
+                break;
+            case SOUTH:
+                minX = -1; minY = -1; minZ = 0; maxX = 2; maxY = 2; maxZ = 4;
+                break;
+            case WEST:
+                minX = -3; minY = -1; minZ = -1; maxX = 1; maxY = 2; maxZ = 2;
+                break;
+            case EAST:
+                minX = 0; minY = -1; minZ = -1; maxX = 4; maxY = 2; maxZ = 2;
+                break;
+        }
+
+        for (int x = minX; x < maxX; x++) {
+            for (int z = minZ; z < maxZ; z++) {
+                for (int y = minY; y < maxY; y++) {
+                    BlockPos pos = pPos.offset(x, y, z);
+                    if (pPos.equals(pos)) continue;
+                    if(!pLevel.getBlockState(pos).isAir()) return false;
+                }
+            }
+        }
+        return true;
     }
 
     @Override
@@ -135,7 +182,9 @@ public class EXPLBlock extends DirectionalBlock implements EntityBlock {
                 for (int y = minY; y < maxY; y++) {
                     BlockPos pos = pPos.offset(x, y, z);
                     if (pPos.equals(pos)) continue;
-                    pLevel.removeBlock(pos, false);
+                    if(pLevel.getBlockEntity(pos) instanceof EXPLProxyBE) {
+                        pLevel.removeBlock(pos, false);
+                    }
                 }
             }
         }

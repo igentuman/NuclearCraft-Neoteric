@@ -12,18 +12,31 @@ import igentuman.nc.block.kugelblitz.entity.ChamberTerminalBE;
 import igentuman.nc.block.target_chamber.entity.TargetChamberControllerBE;
 import igentuman.nc.block.turbine.entity.TurbineControllerBE;
 import igentuman.nc.client.NcClient;
+import igentuman.nc.compat.emi.ingredient.ParticleEmiStack;
+import igentuman.nc.compat.emi.ingredient.ParticleEmiStackRenderer;
+import igentuman.nc.compat.jei.ParticleRecipe;
+import igentuman.nc.compat.jei.ParticleSourceRecipe;
+import igentuman.nc.content.particles.ParticleStack;
+import igentuman.nc.content.particles.ParticleSources;
+import igentuman.nc.content.particles.Particles;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.recipes.NcRecipeType;
 import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.recipes.type.OreVeinRecipe;
+import igentuman.nc.setup.registration.NCFluids;
 import igentuman.nc.util.ModUtil;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.compat.GlobalVars.RECIPE_CLASSES;
+import static igentuman.nc.NuclearCraft.rl;
+import static igentuman.nc.setup.registration.NCItems.ION_SOURCES;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
 import static igentuman.nc.multiblock.fission.FissionReactorRegistration.FISSION_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BLOCKS;
@@ -38,11 +51,20 @@ public class EMIPlugin implements EmiPlugin {
     
     @Override
     public void register(EmiRegistry registry) {
+        // Register ParticleStack renderer
+        registerParticleStackRenderer(registry);
+        
         // Register processor categories
         registerProcessorCategories(registry);
         
         // Register special multiblock categories
         registerMultiblockCategories(registry);
+        
+        // Register particle source category
+        registerParticleSourceCategory(registry);
+        
+        // Register particle info category
+        registerParticleInfoCategory(registry);
         
         // Register workstations
         registerWorkstations(registry);
@@ -182,6 +204,9 @@ public class EMIPlugin implements EmiPlugin {
     private void registerWorkstations(EmiRegistry registry) {
         // Register workstations for all categories
         for (Map.Entry<String, EmiRecipeCategory> entry : CATEGORIES.entrySet()) {
+            if(entry.equals(ParticleInfoEmiCategory.CATEGORY)) {
+                continue;
+            }
             String name = entry.getKey();
             EmiRecipeCategory category = entry.getValue();
             
@@ -215,8 +240,84 @@ public class EMIPlugin implements EmiPlugin {
                 return EmiStack.of(new ItemStack(TURBINE_BLOCKS.get("turbine_controller").get()));
             case "nc_ore_veins":
                 return EmiStack.of(new ItemStack(net.minecraft.world.item.Items.DIAMOND_PICKAXE));
+            case "particle_source_info":
+                return EmiStack.of(new ItemStack(ACCELERATOR_BLOCKS.get("linear_accelerator_controller").get()));
             default:
                 return EmiStack.of(new ItemStack(BARRIER));
+        }
+    }
+    
+    private void registerParticleSourceCategory(EmiRegistry registry) {
+        // Register Particle Source category
+        registry.addCategory(ParticleSourceEmiCategory.CATEGORY);
+        CATEGORIES.put("particle_source_info", ParticleSourceEmiCategory.CATEGORY);
+        
+        // Generate and register particle source recipes
+        List<ParticleSourceRecipe> particleSourceRecipes = particleSourceRecipes();
+        for (ParticleSourceRecipe recipe : particleSourceRecipes) {
+            registry.addRecipe(new ParticleSourceEmiCategory(recipe));
+        }
+    }
+    
+    private List<ParticleSourceRecipe> particleSourceRecipes() {
+        List<ParticleSourceRecipe> recipes = new ArrayList<>();
+        
+        // Add item-based particle sources
+        for (String item : ParticleSources.sources.keySet()) {
+            if (ParticleSources.sources.get(item).getParticle() == null) {
+                continue;
+            }
+            recipes.add(new ParticleSourceRecipe(
+                rl(item), 
+                new ItemStack(ION_SOURCES.get(item).get()), 
+                null, 
+                ParticleSources.sources.get(item).getParticle()
+            ));
+        }
+
+        // Add fluid-based particle sources
+        for (String fluid : ParticleSources.fluidSources.keySet()) {
+            if (NCFluids.NC_GASES.containsKey(fluid)) {
+                recipes.add(new ParticleSourceRecipe(
+                    rl(fluid), 
+                    null, 
+                    new FluidStack(NCFluids.NC_GASES.get(fluid).still().get(), 1000), 
+                    ParticleSources.fluidSources.get(fluid).getParticle()
+                ));
+            }
+        }
+        
+        return recipes;
+    }
+    
+    private void registerParticleInfoCategory(EmiRegistry registry) {
+        // Register Particle Info category
+        registry.addCategory(ParticleInfoEmiCategory.CATEGORY);
+        CATEGORIES.put("particle_info", ParticleInfoEmiCategory.CATEGORY);
+        
+        // Generate and register particle info recipes
+        List<ParticleRecipe> particleInfoRecipes = particleInfoRecipes();
+        for (ParticleRecipe recipe : particleInfoRecipes) {
+            registry.addRecipe(new ParticleInfoEmiCategory(recipe));
+        }
+    }
+    
+    private List<ParticleRecipe> particleInfoRecipes() {
+        List<ParticleRecipe> recipes = new ArrayList<>();
+        
+        // Add all particles as info recipes
+        for (var particle : Particles.particles.values()) {
+            recipes.add(new ParticleRecipe(rl("/"+particle.getName()), particle));
+        }
+        
+        return recipes;
+    }
+    
+    private void registerParticleStackRenderer(EmiRegistry registry) {
+        // Add all particles to EMI registry
+        for (var particle : Particles.particles.values()) {
+            ParticleStack particleStack = new ParticleStack(particle, 1);
+            registry.addEmiStack(new ParticleEmiStack(particleStack));
         }
     }
 }

@@ -21,6 +21,6 @@ public class TargetChamberCameraBlock extends MultiblockBlock {
     @Override
     public void appendHoverText(ItemStack pStack, @Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag) {
         //list.add(__("tooltip.kugelblitz.block_" + pStack.getItem()).withStyle(ChatFormatting.AQUA));
-        list.add(__("tooltip.target_chamber.camera").withStyle(ChatFormatting.GREEN));
+        list.add(__("tooltip.nc.target_chamber.camera").withStyle(ChatFormatting.GREEN));
     }
 }

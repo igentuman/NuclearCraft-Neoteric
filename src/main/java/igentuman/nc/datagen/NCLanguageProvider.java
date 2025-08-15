@@ -108,6 +108,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("emi.category.nuclearcraft.leacher", "Leacher");
         add("emi.category.nuclearcraft.supercooler", "Supercooler");
         add("emi.category.nuclearcraft.fuel_reprocessor", "");
+        add("emi.category.nuclearcraft.particle_info", "Particle Info");
         add("gui.nuclearcraft.jei.particle.mass", "Mass: %s");
         add("jei.category.nuclearcraft.particle_info", "Particle Info");
         add("gui.nuclearcraft.jei.particle.charge", "Charge: %s");
@@ -731,6 +732,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("effect.nuclearcraft.radiation_decay","Radiation Decay");
         add("leacher.tooltip.valid_pump","Pump - Ok");
         add("leacher.tooltip.invalid_pump","Pump in the corner not found");
+        add("tooltip.nc.target_chamber.camera","Center of Target Chamber structure");
         add("processor.description.nuclear_furnace","Fast furnace what uses uranium ingots as fuel.");
         add("processor.description.alloy_smelter","Smelts and alloys items.");
         add("processor.description.centrifuge","Separates fluids into their components.");

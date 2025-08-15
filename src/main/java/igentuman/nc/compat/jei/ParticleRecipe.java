@@ -5,6 +5,8 @@ import igentuman.nc.content.particles.ParticleStack;
 import mezz.jei.api.ingredients.IIngredientType;
 import net.minecraft.resources.ResourceLocation;
 
+import static igentuman.nc.NuclearCraft.rl;
+
 /**
  * source https://github.com/Lach01298/QMD
  */

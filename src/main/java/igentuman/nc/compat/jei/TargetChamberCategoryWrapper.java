@@ -51,18 +51,6 @@ public class TargetChamberCategoryWrapper<T extends TargetChamberControllerBE.Re
     }
 
     @Override
-    public @NotNull List<Component> getTooltipStrings(T recipe, IRecipeSlotsView recipeSlotsView, double mouseX, double mouseY) {
-        List<Component> lines = new ArrayList<>();
-        if(mouseX > 29 && mouseX < 65 && mouseY > 8 && mouseY < 24) {
-            //lines.add(__("fission.recipe.duration", (int)(recipe.getTimeModifier()*20)).withStyle(ChatFormatting.AQUA));
-            //lines.add(__("fission.recipe.power", (int)recipe.getEnergy()).withStyle(ChatFormatting.RED));
-            //lines.add(__("fission.recipe.radiation", numberFormat(recipe.getRadiation()*1000000)).withStyle(ChatFormatting.GREEN));
-            //lines.add(__("fission.recipe.heat", (int)recipe.getHeat()).withStyle(ChatFormatting.GOLD));
-        }
-        return lines;
-    }
-
-    @Override
     public @NotNull RecipeType<T> getRecipeType() {
         return recipeType;
     }

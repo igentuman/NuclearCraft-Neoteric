@@ -10,6 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
 
+import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.util.TextUtils.__;
 
@@ -54,7 +55,7 @@ public class ParticleEmiStack extends EmiStack {
     @Override
     public ResourceLocation getId() {
         if (particleStack.getParticle() != null) {
-            return rl(particleStack.getParticle().getName());
+            return rl("particle/"+particleStack.getParticle().getName());
         }
         return rl("empty");
     }
@@ -77,6 +78,7 @@ public class ParticleEmiStack extends EmiStack {
         
         java.util.List<Component> tooltip = new java.util.ArrayList<>();
         tooltip.add(__(particleStack.getParticle().getUnlocalizedName()));
+        tooltip.add(Component.literal(MODID+":particle/"+particleStack.getParticle().getName()).withStyle(ChatFormatting.DARK_GRAY));
         tooltip.add(__("tooltip.nuclearcraft.particlestack.amount", Units.getSIFormat(particleStack.getAmount(),"pu")).withStyle(ChatFormatting.GRAY));
         
         if (particleStack.getMeanEnergy() > 0) {
@@ -94,6 +96,7 @@ public class ParticleEmiStack extends EmiStack {
     public List<ClientTooltipComponent> getTooltip() {
         java.util.List<ClientTooltipComponent> tooltip = new java.util.ArrayList<>();
         tooltip.add(ClientTooltipComponent.create(__(particleStack.getParticle().getUnlocalizedName()).getVisualOrderText()));
+        tooltip.add(ClientTooltipComponent.create(Component.literal(MODID+":particle/"+particleStack.getParticle().getName()).withStyle(ChatFormatting.DARK_GRAY).getVisualOrderText()));
         tooltip.add(ClientTooltipComponent.create(__("tooltip.nuclearcraft.particlestack.amount", Units.getSIFormat(particleStack.getAmount(),"pu")).withStyle(ChatFormatting.GRAY).getVisualOrderText()));
 
         if (particleStack.getMeanEnergy() > 0) {
@@ -142,7 +145,7 @@ public class ParticleEmiStack extends EmiStack {
         if (isEmpty()) {
             return "Empty ParticleStack";
         }
-        return particleStack.getParticle().getName() + " x" + getAmount();
+        return particleStack.getParticle().getName();
     }
     
     /**

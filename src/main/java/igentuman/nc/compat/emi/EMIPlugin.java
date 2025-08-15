@@ -13,11 +13,10 @@ import igentuman.nc.block.target_chamber.entity.TargetChamberControllerBE;
 import igentuman.nc.block.turbine.entity.TurbineControllerBE;
 import igentuman.nc.client.NcClient;
 import igentuman.nc.compat.emi.ingredient.ParticleEmiStack;
-import igentuman.nc.compat.emi.ingredient.ParticleEmiStackRenderer;
 import igentuman.nc.compat.jei.ParticleRecipe;
 import igentuman.nc.compat.jei.ParticleSourceRecipe;
-import igentuman.nc.content.particles.ParticleStack;
 import igentuman.nc.content.particles.ParticleSources;
+import igentuman.nc.content.particles.ParticleStack;
 import igentuman.nc.content.particles.Particles;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.recipes.NcRecipeType;
@@ -33,15 +32,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.compat.GlobalVars.RECIPE_CLASSES;
-import static igentuman.nc.NuclearCraft.rl;
-import static igentuman.nc.setup.registration.NCItems.ION_SOURCES;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
 import static igentuman.nc.multiblock.fission.FissionReactorRegistration.FISSION_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BLOCKS;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BLOCKS;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
+import static igentuman.nc.setup.registration.NCItems.ION_SOURCES;
 import static net.minecraft.world.item.Items.BARRIER;
 
 @EmiEntrypoint

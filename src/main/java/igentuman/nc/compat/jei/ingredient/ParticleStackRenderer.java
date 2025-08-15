@@ -86,7 +86,8 @@ public class ParticleStackRenderer  implements IIngredientRenderer<ParticleStack
 	public void getTooltip(ITooltipBuilder tooltip, ParticleStack ingredient, TooltipFlag tooltipFlag) {
 		IIngredientRenderer.super.getTooltip(tooltip, ingredient, tooltipFlag);
 		tooltip.add(__(ingredient.getParticle().getUnlocalizedName()));
-		tooltip.add(__("tooltip.nuclearcraft.particlestack.amount", Units.getSIFormat(ingredient.getAmount(),"pu")).withStyle(ChatFormatting.GRAY));
+		tooltip.add(Component.literal("nuclearcraft:particle/"+ingredient.getParticle().getName()).withStyle(ChatFormatting.DARK_GRAY));
+        tooltip.add(__("tooltip.nuclearcraft.particlestack.amount", Units.getSIFormat(ingredient.getAmount(),"pu")).withStyle(ChatFormatting.GRAY));
 		if(ingredient.getMeanEnergy() > 0) {
 			tooltip.add(__("tooltip.nuclearcraft.particlestack.mean_energy", Units.getParticleEnergy(ingredient.getMeanEnergy())).withStyle(ChatFormatting.GRAY));
 		}

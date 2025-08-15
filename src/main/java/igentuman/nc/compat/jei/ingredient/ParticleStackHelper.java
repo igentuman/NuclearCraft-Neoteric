@@ -11,6 +11,7 @@ import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nullable;
 
+import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
 
 /**
@@ -35,7 +36,7 @@ public class ParticleStackHelper implements IIngredientHelper<ParticleStack>
 	public String getUniqueId(ParticleStack ingredient, UidContext uidContext)
 	{
 
-		return "particle:" + ingredient.getParticle().getName();
+		return MODID+":particle/" + ingredient.getParticle().getName();
 	}
 
 	@Override

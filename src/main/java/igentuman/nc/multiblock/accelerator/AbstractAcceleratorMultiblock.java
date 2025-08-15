@@ -38,8 +38,8 @@ public class AbstractAcceleratorMultiblock extends AbstractMultiblock {
     protected HashSet<Long> beamPorts = new HashSet<>();
     protected int dipolesCount = 0;
     protected int quadrupolesCount = 0;
-    protected final int[] yCoords = new int[]{-1, 1, 0, 0, 1, 1, 1, -1};
-    protected final int[] xCoords = new int[]{0, 0, -1, 1, 1, 1, -1, 1};
+    protected final int[] xCoords = new int[]{ 0, 0, -1, 1, 1, -1, -1,  1};
+    protected final int[] yCoords = new int[]{-1, 1,  0, 0, 1, -1,  1, -1};
     protected double focus = 0.0;
     protected int maxTemperature = 0;
     protected int heatRate = 0;

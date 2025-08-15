@@ -406,8 +406,8 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
     @Override
     public HashMap<String, String> getAnalyzeReport() {
         HashMap<String, String> report = new HashMap<>();
-        report.put("report.nc.1.accelerator.all_coolers", String.valueOf(getMultiblock().coolers.size()));
-        report.put("report.nc.2.accelerator.valid_coolers", String.valueOf(getMultiblock().validCoolers));
+        //report.put("report.nc.1.accelerator.all_coolers", String.valueOf(getMultiblock().coolers.size()));
+        //report.put("report.nc.2.accelerator.valid_coolers", String.valueOf(getMultiblock().validCoolers));
         return report;
     }
 
@@ -426,6 +426,9 @@ public class LinearAcceleratorControllerBE extends MultiblockControllerBE {
             return false;
         }
         ParticleStack particleStack = particleStorage.getParticle();
+        if(particleStack == null || particleStack.isEmpty()) {
+            return false;
+        }
         particleStack.addFocus(focusGain(focus, particleStack)-focusLoss(beamLength, particleStack));
         particleStack.setMeanEnergy((long)(linacEnergyGain(acceleratingVoltage, particleStack)*(redstoneLevel / 15d)));
         particleStorage.setParticleStack(particleStack);

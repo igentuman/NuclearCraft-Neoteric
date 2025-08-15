@@ -109,6 +109,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("emi.category.nuclearcraft.supercooler", "Supercooler");
         add("emi.category.nuclearcraft.fuel_reprocessor", "");
         add("emi.category.nuclearcraft.particle_info", "Particle Info");
+        add("emi.category.nuclearcraft.kugelblitz_info", "Kugelblitz Info");
         add("gui.nuclearcraft.jei.particle.mass", "Mass: %s");
         add("jei.category.nuclearcraft.particle_info", "Particle Info");
         add("gui.nuclearcraft.jei.particle.charge", "Charge: %s");
@@ -429,6 +430,9 @@ public class NCLanguageProvider extends LanguageProvider {
         add("jei.recipe.nc.fission_reactor", "Fission Reactor");
         add("jei.recipe.nc.kugelblitz_chamber", "Kugelblitz Chamber");
         add("jei.recipe.nc.leacher", "Leacher Setup");
+        add("jei.info.nuclearcraft.kugelblitz.description", "Kugelblitz chamber allows to transform items using black hole quantum fields.");
+        add("jei.info.nuclearcraft.kugelblitz.problem", "The problem is, we don't know transformation recipes, we can only know what it can produce.");
+        add("jei.info.nuclearcraft.kugelblitz.input_output", "What kugelblitz transformation produce is what it can take as input");
         add("entity.minecraft.villager.nuclearcraft.nuclear_scientist", "Nuclear Scientist");
         add("block.nuclearcraft.expl", "EXPL");
         add("gui.nuclearcraft:button.burst", "Activate");

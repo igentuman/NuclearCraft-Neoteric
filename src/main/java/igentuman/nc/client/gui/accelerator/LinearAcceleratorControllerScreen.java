@@ -81,7 +81,7 @@ public class LinearAcceleratorControllerScreen extends AbstractContainerScreen<L
         coolantBar = new VerticalBar.Coolant(27, 20,  this, container().maxCoolant());
         guiParticle = new GuiParticle(40, 21);
         analyzeBtn = new Button.MultiblockAnalyze(170, 60, this, menu.getPosition());
-        widgets.add(new Button.ReportIssue(150, 15, this, menu.getPosition()));
+        widgets.add(new Button.ReportIssue(180, 15, this, menu.getPosition()));
         widgets.add(analyzeBtn);
         widgets.add(new FluidTankRenderer(getFluidTank(2), SHOW_AMOUNT_AND_CAPACITY,6, 73, 28, 21));
     }
@@ -132,7 +132,7 @@ public class LinearAcceleratorControllerScreen extends AbstractContainerScreen<L
         }
         checkboxInterior.addTooltip(interiorTootip);
         if(isInteriorValid() && isCasingValid()) {
-            checkboxInterior.addTooltip(__("tooltip.nc.accelerator.focus", container().getFocus()));
+            checkboxInterior.addTooltip(__("tooltip.nc.accelerator.focus", numberFormat(container().getFocus())));
             checkboxInterior.addTooltip(__("tooltip.nc.accelerator.quadroupoles", container().getQuadroupoles()));
             checkboxInterior.addTooltip(__("tooltip.nc.accelerator.dipoles", container().getDipoles()));
             checkboxInterior.addTooltip(__("tooltip.nc.accelerator.voltage", container().getVoltage()));

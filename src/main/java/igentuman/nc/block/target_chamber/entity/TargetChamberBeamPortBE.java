@@ -10,6 +10,7 @@ import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.accelerator.TargetChamberMultiblock;
 import igentuman.nc.util.Equations;
+import igentuman.nc.util.PortMode;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -31,6 +32,7 @@ import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELE
 import static igentuman.nc.multiblock.accelerator.TargetChamberRegistration.TARGET_CHAMBER_BE;
 import static igentuman.nc.util.ModUtil.isCcLoaded;
 import static igentuman.nc.util.ModUtil.isOC2Loaded;
+import static igentuman.nc.util.PortMode.PORT_MODE;
 
 public class TargetChamberBeamPortBE extends NuclearCraftBE implements MultiblockAttachable {
 
@@ -240,7 +242,7 @@ public class TargetChamberBeamPortBE extends NuclearCraftBE implements Multibloc
             }
 
             if (level.getBlockEntity(currentPos) instanceof AcceleratorBeamPortBE targetPort) {
-                if (targetPort.getFacing() == facing.getOpposite()) {
+                if (targetPort.getFacing() == facing.getOpposite() && targetPort.getBlockState().getValue(PORT_MODE) == PortMode.Mode.INPUT) {
                     if (targetPort.controller() != null) {
                         particleStack.addFocus(-Equations.focusLoss(distance-1, particleStack));
                         targetPort.controller().getCapability(PARTICLE_HANDLER_CAPABILITY, facing.getOpposite())
@@ -251,7 +253,7 @@ public class TargetChamberBeamPortBE extends NuclearCraftBE implements Multibloc
                 }
                 break;
             } else if (level.getBlockEntity(currentPos) instanceof TargetChamberBeamPortBE targetPort) {
-                if (targetPort.getFacing() == facing.getOpposite()) {
+                if (targetPort.getFacing() == facing.getOpposite() && targetPort.getBlockState().getValue(PORT_MODE) == PortMode.Mode.INPUT) {
                     if (targetPort.controller() != null) {
                         particleStack.addFocus(-Equations.focusLoss(distance-1, particleStack));
                         targetPort.getCapability(PARTICLE_HANDLER_CAPABILITY, facing.getOpposite())

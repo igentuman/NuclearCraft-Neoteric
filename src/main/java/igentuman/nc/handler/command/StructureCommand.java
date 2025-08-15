@@ -26,6 +26,8 @@ public class StructureCommand  {
                             builder.suggest("fission_reactor");
                             builder.suggest("fusion_reactor");
                             builder.suggest("kugelblitz_chamber");
+                            builder.suggest("linear_accelerator");
+                            builder.suggest("target_chamber");
                             builder.suggest("turbine");
                             return builder.buildFuture();
                         })
@@ -48,10 +50,38 @@ public class StructureCommand  {
             case "fusion_reactor" -> placeFusionReactor(player);
             case "kugelblitz_chamber" -> placeKugelblitzChamber(player);
             case "turbine" -> placeTurbine(player);
+            case "linear_accelerator" -> placeLinearAccelerator(player);
+            case "target_chamber" -> placeTargetChamber(player);
             default -> context.getSource().sendFailure(Component.literal("Invalid structure: " + structure));
         }
 
         return 1; // Command succeeded
+    }
+
+    private static void placeLinearAccelerator(ServerPlayer player) {
+        double rayTraceRange = 30.0D;
+        HitResult hitResult = player.pick(rayTraceRange, 0.0F, false);
+        if (hitResult.getType() == HitResult.Type.BLOCK) {
+            BlockHitResult blockHitResult = (BlockHitResult) hitResult;
+            BlockPos blockPos = blockHitResult.getBlockPos().offset(-2, 1, -2);
+            WorldGeneration.StructurePlacer.placeStructure((ServerLevel) player.level(), blockPos, "linear_accelerator");
+            player.sendSystemMessage(Component.literal("Placing Linear Accelerator!"));
+        } else {
+            player.sendSystemMessage(Component.literal("No block targeted!"));
+        }
+    }
+
+    private static void placeTargetChamber(ServerPlayer player) {
+        double rayTraceRange = 30.0D;
+        HitResult hitResult = player.pick(rayTraceRange, 0.0F, false);
+        if (hitResult.getType() == HitResult.Type.BLOCK) {
+            BlockHitResult blockHitResult = (BlockHitResult) hitResult;
+            BlockPos blockPos = blockHitResult.getBlockPos().offset(-2, 1, -2);
+            WorldGeneration.StructurePlacer.placeStructure((ServerLevel) player.level(), blockPos, "target_chamber");
+            player.sendSystemMessage(Component.literal("Placing Linear Accelerator!"));
+        } else {
+            player.sendSystemMessage(Component.literal("No block targeted!"));
+        }
     }
 
     private static void placeKugelblitzChamber(ServerPlayer player) {

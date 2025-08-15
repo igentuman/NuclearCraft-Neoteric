@@ -2,25 +2,18 @@ package igentuman.nc.handler.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import igentuman.nc.recipes.type.OreVeinRecipe;
-import igentuman.nc.util.insitu_leaching.WorldVeinsManager;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.commands.arguments.EntityArgument;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.Level;
-import net.minecraftforge.common.MinecraftForge;
 
 import static igentuman.nc.handler.config.CommonConfig.MISC_CONFIG;
 import static igentuman.nc.util.TextUtils.__;
 
-public class CommandNCDebug {
+public class DebugCommand {
 
-    private CommandNCDebug() {}
+    private DebugCommand() {}
 
     public static void register(CommandDispatcher<CommandSourceStack> command) {
         command.register(Commands.literal("nc_debug")
@@ -31,7 +24,7 @@ public class CommandNCDebug {
                             return builder.buildFuture();
                         })
                         .requires(cs -> cs.hasPermission(3))
-                        .executes(CommandNCDebug::execute)
+                        .executes(DebugCommand::execute)
                 )
         );
     }

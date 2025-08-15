@@ -60,7 +60,7 @@ public class LinearAcceleratorContainer extends AbstractContainerMenu {
     }
 
     public int getDepth() {
-        return blockEntity.getDepth();
+        return blockEntity.beamLength;
     }
 
     public int getWidth() {

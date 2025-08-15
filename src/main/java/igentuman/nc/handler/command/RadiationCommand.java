@@ -15,7 +15,7 @@ import static igentuman.nc.handler.config.RadiationConfig.RADIATION_CONFIG;
 import static igentuman.nc.radiation.data.PlayerRadiationProvider.PLAYER_RADIATION;
 import static igentuman.nc.util.TextUtils.__;
 
-public class NCRadiationCommand {
+public class RadiationCommand {
 
     public static void register(CommandDispatcher<CommandSourceStack> command) {
         command.register(Commands.literal("nc_radiation")
@@ -28,10 +28,10 @@ public class NCRadiationCommand {
                             return builder.buildFuture();
                         })
                         .requires(cs -> cs.hasPermission(3))
-                        .executes(NCRadiationCommand::executeCommand)
+                        .executes(RadiationCommand::executeCommand)
                         .then(Commands.argument("player", EntityArgument.player())
                                 .requires(cs -> cs.hasPermission(3))
-                                .executes(NCRadiationCommand::executeCommandWithPlayer)
+                                .executes(RadiationCommand::executeCommandWithPlayer)
                         )
                 )
         );

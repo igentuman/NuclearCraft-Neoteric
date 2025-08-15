@@ -107,11 +107,11 @@ public class NuclearCraft {
     }
 
     private void registerCommands(RegisterCommandsEvent event) {
-        event.getDispatcher().register(CommandNcVeinCheck.register());
-        event.getDispatcher().register(CommandNcPatrons.register());
+        event.getDispatcher().register(VeinCheckCommand.register());
+        event.getDispatcher().register(PatronsCommand.register());
         StructureCommand.register(event.getDispatcher());
-        NCRadiationCommand.register(event.getDispatcher());
-        CommandNCDebug.register(event.getDispatcher());
+        RadiationCommand.register(event.getDispatcher());
+        DebugCommand.register(event.getDispatcher());
     }
 
     private void registerClientEventHandlers(FMLClientSetupEvent event) {

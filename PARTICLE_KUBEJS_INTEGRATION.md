@@ -65,3 +65,11 @@ ServerEvents.recipes(event => {
     focus: 0.8               // Focus value (double, represents inverse area of beam)
 }
 ```
+
+## Hiding particle in JEI
+```javascript
+JEIEvents.hideCustom(event => {
+    var particleType = Java.loadClass('igentuman.nc.compat.jei.ingredient.ParticleType').Particle;
+    event.get(particleType).hide('nuclearcraft:particle/proton');
+})
+```

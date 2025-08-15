@@ -5,7 +5,6 @@ import igentuman.nc.recipes.type.OreVeinRecipe;
 import igentuman.nc.util.insitu_leaching.WorldVeinsManager;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
@@ -13,12 +12,12 @@ import net.minecraftforge.common.MinecraftForge;
 
 import static igentuman.nc.util.TextUtils.__;
 
-public class CommandNcVeinCheck {
+public class VeinCheckCommand {
 
-    private CommandNcVeinCheck() {}
+    private VeinCheckCommand() {}
 
     public static LiteralArgumentBuilder<CommandSourceStack> register() {
-        MinecraftForge.EVENT_BUS.register(CommandNcVeinCheck.class);
+        MinecraftForge.EVENT_BUS.register(VeinCheckCommand.class);
         return Commands.literal("nc_vein_check")
                 .requires(cs -> cs.hasPermission(3))
                 .executes(ctx -> {

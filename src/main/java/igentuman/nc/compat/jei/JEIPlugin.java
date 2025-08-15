@@ -26,6 +26,7 @@ import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.recipes.type.OreVeinRecipe;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
+import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.handlers.IGuiClickableArea;
 import mezz.jei.api.gui.handlers.IGuiContainerHandler;
 import mezz.jei.api.recipe.IRecipeManager;
@@ -36,6 +37,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -48,8 +50,11 @@ import java.util.*;
 import static igentuman.nc.NuclearCraft.*;
 import static igentuman.nc.compat.GlobalVars.*;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
+import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BLOCKS;
 import static igentuman.nc.setup.registration.NCItems.ION_SOURCES;
+import static igentuman.nc.setup.registration.NCItems.UNKNOWN_INGREDIENT;
 import static igentuman.nc.util.ModUtil.isMekanismLoaded;
+import static igentuman.nc.util.TextUtils.__;
 
 @JeiPlugin
 public  class JEIPlugin implements IModPlugin {
@@ -194,6 +199,17 @@ public  class JEIPlugin implements IModPlugin {
             registration.addRecipes(MultiblockStructureCategory.TYPE, multiblockRecipes);
             registration.addRecipes(ParticleInfoCategory.TYPE, particleRecipes());
             registration.addRecipes(ParticleSourceCategory.TYPE, particleSourceRecipes());
+            
+            // Add ingredient info for chamber terminal
+            registration.addIngredientInfo(
+                List.of(new ItemStack(KUGELBLITZ_BLOCKS.get("chamber_terminal").get()), new ItemStack(UNKNOWN_INGREDIENT.get())),
+                VanillaTypes.ITEM_STACK,
+                __("jei.info.nuclearcraft.kugelblitz.description"),
+                Component.literal(""),
+                __("jei.info.nuclearcraft.kugelblitz.problem"),
+                Component.literal(""),
+                __("jei.info.nuclearcraft.kugelblitz.input_output")
+            );
         } catch (IllegalArgumentException ex) {
             LOGGER.error("Error registering recipes for JEI: " + ex.getMessage());
         }

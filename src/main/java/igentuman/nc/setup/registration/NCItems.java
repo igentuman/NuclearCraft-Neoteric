@@ -44,7 +44,7 @@ public class NCItems {
     public static HashMap<String, RegistryObject<Item>> NC_RF_AMPLIFIERS_ITEMS = new HashMap<>();
     public static HashMap<String, RegistryObject<Item>> MULTIBLOCK_ITEMS = new HashMap<>();
     public static final Item.Properties ITEM_PROPERTIES = new Item.Properties();
-    public static final Item.Properties ONE_ITEM_PROPERTIES = new Item.Properties().stacksTo(1);
+    public static final Item.Properties ONE_ITEM_PROPERTIES = new Item.Properties().stacksTo(1).setNoRepair();
     public static final Item.Properties THORIUM_PAXEL_PROPS = new Item.Properties().stacksTo(1).durability(5000).fireResistant();
     public static final Item.Properties TOUGH_PAXEL_PROPS = new Item.Properties().stacksTo(1).durability(9000).fireResistant();
     public static final Item.Properties HAZMAT_PROPS = new Item.Properties().stacksTo(1).durability(250);
@@ -140,7 +140,7 @@ public class NCItems {
 
     private static void registerParticleSources() {
         for(String name: sources.keySet()) {
-            ION_SOURCES.put(name, ITEMS.register(name, () -> new ParticleSourceItem(new Item.Properties())));
+            ION_SOURCES.put(name, ITEMS.register(name, () -> new ParticleSourceItem(new Item.Properties().stacksTo(1))));
             ALL_NC_ITEMS.put(name, ION_SOURCES.get(name));
             ION_SOURCE_TAG.put(name, itemTag("ion_sources/"+name.replace("source_", "")));
         }

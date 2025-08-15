@@ -2,6 +2,7 @@ package igentuman.nc.setup;
 
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.content.particles.Particles;
+import igentuman.nc.handler.config.AcceleratorConfig;
 import igentuman.nc.radiation.data.RadiationEvents;
 import igentuman.nc.setup.registration.GameEvents;
 import igentuman.nc.util.GTCEUCompatibilityCondition;

@@ -27,6 +27,9 @@ public interface IItemParticleAmount
 
 	default Particle getParticle(ItemStack stack)
 	{
+        if(!sources.containsKey(stack.getItem().toString())) {
+            return null;
+        }
 		if(sources.get(stack.getItem().toString()).getParticle() == null) {
 			return null;
 		}
@@ -51,7 +54,7 @@ public interface IItemParticleAmount
 		if(stack.getItem() instanceof IItemParticleAmount)
 		{
 			CompoundTag nbt = getStorageNBT(stack);
-            nbt.putInt("particle_amount", Math.max(amount, getCapacity(stack)));
+            nbt.putInt("particle_amount", Math.min(amount, getCapacity(stack)));
 		}
 	}
 	

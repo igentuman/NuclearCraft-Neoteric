@@ -1,5 +1,6 @@
 package igentuman.nc.block.target_chamber;
 
+import igentuman.nc.block.entity.MultiblockControllerBE;
 import igentuman.nc.block.target_chamber.entity.TargetChamberBeamPortBE;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.util.PortMode;
@@ -116,6 +117,9 @@ public class TargetChamberBeamPortBlock extends HorizontalDirectionalBlock imple
     public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor) {
         super.onNeighborChange(state, level, pos, neighbor);
         if(level.isClientSide()) return;
+        if(level.getExistingBlockEntity(neighbor) instanceof MultiblockControllerBE) {
+            return;
+        }
         MultiblockHandler.get(((Level)level).dimension()).trackBlockChange(pos);
     }
 

@@ -125,14 +125,15 @@ dependencies {
     implementation fg.deobf("com.tterrag.registrate:Registrate:${registrate_version}") {
         transitive = false
     }*/
+    implementation fg.deobf("curse.maven:multi-builder-tool-827020:6877370")
     runtimeOnly fg.deobf("curse.maven:ctm-267602:5983309")
     compileOnly fg.deobf("curse.maven:immersive-engineering-231951:5224387")
 
     runtimeOnly fg.deobf("curse.maven:the-lost-cities-269024:6174986")
     compileOnly fg.deobf("mezz.jei:jei-${mc_version}-common-api:${jei_version}")
     compileOnly fg.deobf("mezz.jei:jei-${mc_version}-forge-api:${jei_version}")
-    implementation fg.deobf("mezz.jei:jei-${mc_version}-forge:${jei_version}")
-    compileOnly fg.deobf("curse.maven:emi-580555:5872526")
+    compileOnly fg.deobf("mezz.jei:jei-${mc_version}-forge:${jei_version}")
+    implementation fg.deobf("curse.maven:emi-580555:5872526")
     //runtimeOnly fg.deobf("curse.maven:ctm-267602:4393695")
 
     compileOnly fg.deobf("mcjty.theoneprobe:theoneprobe:${top_version}:api") {

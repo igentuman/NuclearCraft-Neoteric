@@ -41,6 +41,7 @@ import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BL
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BLOCKS;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
 import static igentuman.nc.setup.registration.NCItems.ION_SOURCES;
+import static igentuman.nc.setup.registration.NCItems.UNKNOWN_INGREDIENT;
 import static net.minecraft.world.item.Items.BARRIER;
 
 @EmiEntrypoint
@@ -64,6 +65,9 @@ public class EMIPlugin implements EmiPlugin {
         
         // Register particle info category
         registerParticleInfoCategory(registry);
+        
+        // Register kugelblitz info category
+        registerKugelblitzInfoCategory(registry);
         
         // Register workstations
         registerWorkstations(registry);
@@ -203,10 +207,13 @@ public class EMIPlugin implements EmiPlugin {
     private void registerWorkstations(EmiRegistry registry) {
         // Register workstations for all categories
         for (Map.Entry<String, EmiRecipeCategory> entry : CATEGORIES.entrySet()) {
-            if(entry.equals(ParticleInfoEmiCategory.CATEGORY)) {
+            String name = entry.getKey();
+            
+            // Skip info categories that don't need workstations
+            if (name.equals("particle_info") || name.equals("kugelblitz_info")) {
                 continue;
             }
-            String name = entry.getKey();
+            
             EmiRecipeCategory category = entry.getValue();
             
             EmiStack workstation = getWorkstationForCategory(name);
@@ -299,6 +306,23 @@ public class EMIPlugin implements EmiPlugin {
         for (ParticleRecipe recipe : particleInfoRecipes) {
             registry.addRecipe(new ParticleInfoEmiCategory(recipe));
         }
+    }
+    
+    private void registerKugelblitzInfoCategory(EmiRegistry registry) {
+        // Register Kugelblitz Info category
+        registry.addCategory(KugelblitzInfoEmiCategory.CATEGORY);
+        CATEGORIES.put("kugelblitz_info", KugelblitzInfoEmiCategory.CATEGORY);
+        
+        // Add info recipes for chamber terminal and unknown ingredient
+        registry.addRecipe(new KugelblitzInfoEmiCategory(
+            rl("/kugelblitz_chamber_terminal_info"),
+            new ItemStack(KUGELBLITZ_BLOCKS.get("chamber_terminal").get())
+        ));
+        
+        registry.addRecipe(new KugelblitzInfoEmiCategory(
+            rl("/unknown_ingredient_info"),
+            new ItemStack(UNKNOWN_INGREDIENT.get())
+        ));
     }
     
     private List<ParticleRecipe> particleInfoRecipes() {

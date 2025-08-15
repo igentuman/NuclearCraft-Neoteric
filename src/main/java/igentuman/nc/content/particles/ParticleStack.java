@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import igentuman.nc.util.math.MathUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -13,7 +14,8 @@ import org.jetbrains.annotations.NotNull;
 public class ParticleStack
 {
 
-	private Particle particle;
+    public static final ParticleStack EMPTY = new ParticleStack();
+    private Particle particle;
 	private int amount;
 	private long meanEnergy;
 	private double focus;			//Basically inverse area of the beam
@@ -282,4 +284,7 @@ public class ParticleStack
 	}
 
 
+    public boolean isEmpty() {
+        return particle == null;
+    }
 }

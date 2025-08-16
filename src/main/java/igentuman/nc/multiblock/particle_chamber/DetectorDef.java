@@ -1,4 +1,4 @@
-package igentuman.nc.multiblock.accelerator;
+package igentuman.nc.multiblock.particle_chamber;
 
 public class DetectorDef {
 

@@ -8,6 +8,7 @@ import igentuman.nc.util.math.MathUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 
 import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.*;
@@ -107,7 +108,8 @@ public class ThoroidalAcceleratorMultiblock extends AbstractAcceleratorMultibloc
         int maxZ = MathUtils.max(leftFront.getZ(), rightFront.getZ(), leftBack.getZ(), rightBack.getZ());
         bottomLeft = new BlockPosInstance(minX, leftFront.getY() - bottomCasing, minZ);
         topRight = new BlockPosInstance(maxX, leftFront.getY() + topCasing, maxZ);
-        cacheBlockStates();
+        AABB excludeArea = new AABB(new BlockPos(bottomLeft).offset(5, 0, 5), new BlockPos(topRight).offset(-5, 0, -5));
+        cacheBlockStates(excludeArea);
         for(int y = 0; y < height; y++) {
             for(int x = 0; x < width; x++) {
                 for (int z = 0; z < depth; z++) {

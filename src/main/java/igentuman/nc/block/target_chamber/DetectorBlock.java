@@ -2,7 +2,7 @@ package igentuman.nc.block.target_chamber;
 
 import igentuman.nc.block.MultiblockBlock;
 import igentuman.nc.multiblock.AbstractMultiblock;
-import igentuman.nc.multiblock.accelerator.DetectorDef;
+import igentuman.nc.multiblock.particle_chamber.DetectorDef;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -15,7 +15,7 @@ import net.minecraft.world.level.block.SoundType;
 
 import java.util.List;
 
-import static igentuman.nc.multiblock.accelerator.TargetChamberRegistration.TARGET_CHAMBER_DETECTORS;
+import static igentuman.nc.multiblock.particle_chamber.TargetChamberRegistration.TARGET_CHAMBER_DETECTORS;
 import static igentuman.nc.util.TextUtils.__;
 import static igentuman.nc.util.math.Pos3D.getTaxiDistance;
 

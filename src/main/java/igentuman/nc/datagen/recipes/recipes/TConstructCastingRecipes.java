@@ -28,6 +28,7 @@ public class TConstructCastingRecipes extends AbstractRecipeProvider {
 
 
         for (String name: Materials.isotopes()) {
+            if(name.contains("xen")) continue;
             for(String type: new String[] {"", "_ox", "_ni", "_za"}) {
                 String key = name+type;
                 if(!NC_ISOTOPES.containsKey(key)) {
@@ -38,6 +39,7 @@ public class TConstructCastingRecipes extends AbstractRecipeProvider {
         }
 
         for (String name: FuelManager.all().keySet()) {
+            if(name.contains("xen")) continue;
             for(String subType: FuelManager.all().get(name).keySet()) {
                 for (String type : new String[]{"", "za", "ox","ni"}) {
 

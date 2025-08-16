@@ -107,7 +107,7 @@ public class LinearAcceleratorMultiblock extends AbstractAcceleratorMultiblock {
         int maxZ = MathUtils.max(leftFront.getZ(), rightFront.getZ(), leftBack.getZ(), rightBack.getZ());
         bottomLeft = new BlockPosInstance(minX, leftFront.getY() - bottomCasing, minZ);
         topRight = new BlockPosInstance(maxX, leftFront.getY() + topCasing, maxZ);
-        cacheBlockStates();
+        cacheBlockStates(null);
         for(int y = 0; y < height; y++) {
             for(int x = 0; x < width; x++) {
                 for (int z = 0; z < depth; z++) {

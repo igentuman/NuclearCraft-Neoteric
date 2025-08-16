@@ -18,8 +18,8 @@ import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
 import static igentuman.nc.NuclearCraft.MODID;
-import static igentuman.nc.multiblock.accelerator.TargetChamberRegistration.TARGET_CHAMBER_BLOCKS;
-import static igentuman.nc.multiblock.accelerator.TargetChamberRegistration.TARGET_CHAMBER_CONTROLLER_CONTAINER;
+import static igentuman.nc.multiblock.particle_chamber.TargetChamberRegistration.TARGET_CHAMBER_BLOCKS;
+import static igentuman.nc.multiblock.particle_chamber.TargetChamberRegistration.TARGET_CHAMBER_CONTROLLER_CONTAINER;
 import static igentuman.nc.util.TextUtils.*;
 
 public class TargetChamberControllerContainer extends AbstractContainerMenu {

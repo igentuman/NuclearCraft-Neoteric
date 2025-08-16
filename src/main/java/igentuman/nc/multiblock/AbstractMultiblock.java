@@ -17,6 +17,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.LevelChunkSection;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -271,7 +273,7 @@ public abstract class AbstractMultiblock implements Multiblock {
         return isValid;
     }
 
-    public void cacheBlockStates() {
+    public void cacheBlockStates(AABB excludeArea) {
         if(!MISC_CONFIG.EXPERIMENTAL_BLOCK_INDEXING.get()) {
             debugLog("Block indexing disabled, skipping cache");
             return;
@@ -314,7 +316,9 @@ public abstract class AbstractMultiblock implements Multiblock {
                     int localX = x & 15;
                     int localY = y & 15;
                     int localZ = z & 15;
-
+                    if(excludeArea != null && excludeArea.contains(new Vec3(x,y,z))) {
+                        continue;
+                    }
                     BlockState state = section.getBlockState(localX, localY, localZ);
 
                     bsCache.put(BlockPos.asLong(x, y, z), state);
@@ -453,7 +457,7 @@ public abstract class AbstractMultiblock implements Multiblock {
         topRight = new BlockPosInstance(maxX, leftFront.getY() + topCasing, maxZ);
         debugLog("Calculated bounds: bottomLeft=" + bottomLeft.toShortString() + ", topRight=" + topRight.toShortString());
         
-        cacheBlockStates();
+        cacheBlockStates(null);
         debugLog("Cached block states for validation area");
         
         int totalOuterBlocks = 0;

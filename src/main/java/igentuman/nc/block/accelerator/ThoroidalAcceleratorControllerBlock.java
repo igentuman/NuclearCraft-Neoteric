@@ -142,6 +142,7 @@ public class ThoroidalAcceleratorControllerBlock extends HorizontalDirectionalBl
         if(isGtLoaded() && isGTEUCapEnabled()) {
             list.add(__("tooltip.nc.energy_eu_tier", getTier(pStack)).withStyle(ChatFormatting.GOLD));
         }
+        list.add(__("tooltip.structure.controller.outer_wall").withStyle(ChatFormatting.LIGHT_PURPLE));
         list.add(__("tooltip.structure.sizes", "5x5x"+minDepth(), "5x5x"+maxDepth()).withStyle(ChatFormatting.ITALIC));
     }
 

@@ -69,7 +69,7 @@ public class TConstructAlloyingRecipes extends AbstractRecipeProvider {
 
         for (String name: FuelManager.all().keySet()) {
             for(String subType: FuelManager.all().get(name).keySet()) {
-                if(name.contains("mixed")) {
+                if(name.contains("mixed") || name.contains("xen")) {
                     continue;
                 }
                 fuelMixRecipe(name, subType,

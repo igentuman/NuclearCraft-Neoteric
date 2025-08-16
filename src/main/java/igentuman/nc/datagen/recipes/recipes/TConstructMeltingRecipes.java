@@ -35,6 +35,7 @@ public class TConstructMeltingRecipes extends AbstractRecipeProvider {
 
 
         for (String name: Materials.isotopes()) {
+            if(name.contains("xen")) continue;
             for(String type: new String[] {"", "_ox", "_ni", "_za"}) {
                 String key = name+type;
                 if(!NC_ISOTOPES.containsKey(key)) {

@@ -1,4 +1,4 @@
-package igentuman.nc.multiblock.accelerator;
+package igentuman.nc.multiblock.particle_chamber;
 
 import igentuman.api.nc.multiblock.MultiblockController;
 import igentuman.nc.block.entity.MultiblockControllerBE;

@@ -1,4 +1,4 @@
-package igentuman.nc.multiblock.accelerator;
+package igentuman.nc.multiblock.particle_chamber;
 
 import igentuman.nc.block.target_chamber.entity.TargetChamberBeamPortBE;
 import igentuman.nc.block.target_chamber.entity.TargetChamberControllerBE;

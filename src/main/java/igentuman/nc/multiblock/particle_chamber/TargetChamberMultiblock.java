@@ -1,4 +1,4 @@
-package igentuman.nc.multiblock.accelerator;
+package igentuman.nc.multiblock.particle_chamber;
 
 import igentuman.nc.block.target_chamber.DetectorBlock;
 import igentuman.nc.block.target_chamber.entity.TargetChamberBeamPortBE;
@@ -24,7 +24,7 @@ import java.util.Map;
 import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.handler.config.AcceleratorConfig.PARTICLE_CHAMBER_CONFIG;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
-import static igentuman.nc.multiblock.accelerator.TargetChamberRegistration.*;
+import static igentuman.nc.multiblock.particle_chamber.TargetChamberRegistration.*;
 import static igentuman.nc.util.PortMode.PORT_MODE;
 import static igentuman.nc.util.TagUtil.getBlocksByTagKey;
 

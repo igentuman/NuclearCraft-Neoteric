@@ -16,7 +16,7 @@ import java.util.List;
 
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
-import static igentuman.nc.multiblock.accelerator.TargetChamberRegistration.TARGET_CHAMBER_BLOCKS;
+import static igentuman.nc.multiblock.particle_chamber.TargetChamberRegistration.TARGET_CHAMBER_BLOCKS;
 import static net.minecraft.world.item.Items.BARRIER;
 
 public class TargetChamberEmiCategory extends BasicEmiRecipe {

@@ -121,13 +121,24 @@ public class WorldEvents {
     }
 
     private CompletableFuture<Void> validationFuture;
+    private CompletableFuture<Void> radiationFuture;
 
     @SubscribeEvent
     public void onTick(LevelTickEvent event) {
         if (event.side.isServer() && event.phase == Phase.START && event.haveTime()) {
             if(event.isCanceled() || event.level.getGameTime() % 5 != 0) return;
             final ServerLevel level = (ServerLevel) event.level;
-            RadiationEvents.onWorldTick(event);
+
+            if(event.level.getGameTime() % 10 == 0) {
+                if (radiationFuture != null && !radiationFuture.isDone()) {
+                    // Previous radiation processing is still running, skip this tick
+                } else {
+                    radiationFuture = CompletableFuture.runAsync(
+                            () -> RadiationEvents.onWorldTick(event),
+                            MultiblockExecutorManager.getExecutor()
+                    );
+                }
+            }
 
             //todo remove, this for testing purposes only
 /*

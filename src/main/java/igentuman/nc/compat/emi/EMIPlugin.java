@@ -113,19 +113,17 @@ public class EMIPlugin implements EmiPlugin {
             }
         }
 
-        if(!ModUtil.isJEILoaded()) {
             // Register Target Chamber category
-            registry.addCategory(TargetChamberEmiCategory.CATEGORY);
-            CATEGORIES.put("target_chamber", TargetChamberEmiCategory.CATEGORY);
+        registry.addCategory(TargetChamberEmiCategory.CATEGORY);
+        CATEGORIES.put("target_chamber", TargetChamberEmiCategory.CATEGORY);
 
-            var targetChamberRecipes = NcRecipeType.ALL_RECIPES.get("target_chamber").getRecipes(NcClient.tryGetClientWorld());
-            for (var recipe : targetChamberRecipes) {
-                if (recipe instanceof TargetChamberControllerBE.Recipe targetRecipe) {
-                    registry.addRecipe(new TargetChamberEmiCategory(targetRecipe));
-                }
+        var targetChamberRecipes = NcRecipeType.ALL_RECIPES.get("target_chamber").getRecipes(NcClient.tryGetClientWorld());
+        for (var recipe : targetChamberRecipes) {
+            if (recipe instanceof TargetChamberControllerBE.Recipe targetRecipe) {
+                registry.addRecipe(new TargetChamberEmiCategory(targetRecipe));
             }
         }
-        
+
         // Register Fusion category
         registry.addCategory(FusionEmiCategory.CATEGORY);
         CATEGORIES.put("fusion_core", FusionEmiCategory.CATEGORY);

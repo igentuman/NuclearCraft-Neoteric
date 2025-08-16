@@ -36,6 +36,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
+import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.compat.oc2.ThoroidalAcceleratorDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.content.materials.Materials.subliquid_matter;
 import static igentuman.nc.handler.config.CommonConfig.GTCEU_CONFIG;
@@ -430,6 +431,10 @@ public class ThoroidalAcceleratorControllerBE extends MultiblockControllerBE {
 
     @Override
     public ThoroidalAcceleratorMultiblock getMultiblock() {
+        if(getLevel().isClientSide()) {
+            debugLog("Trying to access multiblock from client");
+            return null;
+        }
         if(multiblock == null) {
             multiblock = new ThoroidalAcceleratorMultiblock(this);
         }

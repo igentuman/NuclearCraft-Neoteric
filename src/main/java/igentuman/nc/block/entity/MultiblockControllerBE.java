@@ -83,6 +83,9 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
 
     public void invalidateCache()
     {
+        if(getLevel().isClientSide()) {
+            return;
+        }
         getMultiblock().hasToRefresh = true;
         isCasingValid = false;
         isInternalValid = false;

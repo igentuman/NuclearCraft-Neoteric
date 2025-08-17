@@ -204,10 +204,10 @@ public class WorldEvents {
                     event.setAmount(event.getAmount()/10F);
                 }
             }
-            if(event.getSource() != null && event.getSource().is(DamageTypes.FALL)) {
+            if(event.getSource() != null && (event.getSource().is(DamageTypes.FALL) || event.getSource().is(DamageTypes.STALAGMITE) || event.getSource().is(DamageTypes.HOT_FLOOR))) {
                 player.getArmorSlots().forEach(stack -> {
                     if(stack.getItem().equals(HEV_BOOTS.get()) && isCharged(stack)) {
-                        consumeEnergy(stack, 1000);
+                        consumeEnergy(stack, 1000 * (event.getSource().is(DamageTypes.STALAGMITE) || event.getSource().is(DamageTypes.HOT_FLOOR) ? 2 : 1));
                         event.setCanceled(true);
                         return;
                     }

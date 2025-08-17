@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(LightningRodBlock.class)
 public class LightningRodBlockMixin {
 
-    @Inject(method = "onLightningStrike", at = @At("TAIL"), remap = false)
+    @Inject(method = "onLightningStrike", at = @At("TAIL"))
     private void onLightningStrike(BlockState pState, Level pLevel, BlockPos pPos, CallbackInfo ci) {
         BlockEntity blockEntity = pLevel.getBlockEntity(pPos.below());
         if (blockEntity instanceof BatteryBE batteryBE) {

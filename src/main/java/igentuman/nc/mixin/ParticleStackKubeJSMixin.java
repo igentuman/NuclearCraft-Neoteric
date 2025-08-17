@@ -4,7 +4,7 @@ import igentuman.nc.content.particles.ParticleStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
-@Mixin(ParticleStack.class)
+@Mixin(value = ParticleStack.class, remap = false)
 public class ParticleStackKubeJSMixin {
     
     public ParticleStack kjs$withCount(int count) {

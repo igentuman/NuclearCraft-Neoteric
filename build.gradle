@@ -109,6 +109,7 @@ repositories {
 
 dependencies {
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+    implementation 'org.spongepowered:mixin:0.8.5'
     minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
 
     compileOnly fg.deobf("com.gregtechceu.gtceu:gtceu-${mc_version}:${gtm_version}"){
@@ -249,7 +250,8 @@ shadowJar {
                 "Implementation-Title"  : "${project.name}",
                 "Implementation-Version": "${version}",
                 "Implementation-Vendor" : "igentuman",
-                "MixinConfigs"          : "nuclearcraft.mixins.json"
+                "MixinConfigs"          : "nuclearcraft.mixins.json",
+                "MixinConnector"        : "igentuman.nc.mixin.NuclearCraftMixinConnector"
         ])
     }
 

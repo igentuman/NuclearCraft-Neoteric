@@ -18,7 +18,7 @@ import static igentuman.nc.util.NcUtils.rlFromString;
 
 @Mixin(TagLoader.class)
 public class TagLoaderMixin {
-    @Inject(method = "load", at = @At("TAIL"), cancellable = true, remap = false)
+    @Inject(method = "load", at = @At("TAIL"), cancellable = true)
     private void load(CallbackInfoReturnable<Map<ResourceLocation, List<TagLoader.EntryWithSource>>> callback) {
         Map<ResourceLocation, List<TagLoader.EntryWithSource>> map = callback.getReturnValue();
 

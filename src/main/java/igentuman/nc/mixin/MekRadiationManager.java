@@ -17,7 +17,7 @@ import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.handler.config.RadiationConfig.RADIATION_CONFIG;
 import static igentuman.nc.radiation.data.PlayerRadiation.getRadiationShielding;
 
-@Mixin(RadiationManager.class)
+@Mixin(value = RadiationManager.class, remap = false)
 public abstract class MekRadiationManager {
 
     public boolean isMekRadiationEnabled()

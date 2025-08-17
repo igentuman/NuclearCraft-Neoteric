@@ -15,6 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.function.Consumer;
 
+import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.handler.config.WorldConfig.BIOME_CONFIG;
 import static igentuman.nc.setup.registration.WorldGeneration.WASTELAND_BIOME;
 
@@ -38,7 +39,7 @@ public class OverworldBiomeBuilderMixin {
     @Shadow @Final private Climate.Parameter FULL_RANGE;
 
 
-    @Inject(at = @At("RETURN"), method = "addLowSlice", remap = false)
+    @Inject(at = @At("RETURN"), method = "addLowSlice")
     private void GE$writeLowBiomes(Consumer<Pair<Climate.ParameterPoint, ResourceKey<Biome>>> consumer, Climate.Parameter weirdness, CallbackInfo ci) {
         try {
             if (!BIOME_CONFIG.registerWasteland.get()) return;
@@ -53,7 +54,7 @@ public class OverworldBiomeBuilderMixin {
         }
     }
 
-    @Inject(at = @At("RETURN"), method = "addMidSlice", remap = false)
+    @Inject(at = @At("RETURN"), method = "addMidSlice")
     private void GE$writeMidBiomes(Consumer<Pair<Climate.ParameterPoint, ResourceKey<Biome>>> parameters, Climate.Parameter weirdness, CallbackInfo ci) {
         try {
             if (!BIOME_CONFIG.registerWasteland.get()) return;
@@ -67,7 +68,7 @@ public class OverworldBiomeBuilderMixin {
         }
     }
 
-    @Inject(at = @At("RETURN"), method = "addHighSlice", remap = false)
+    @Inject(at = @At("RETURN"), method = "addHighSlice")
     private void GE$writeHighBiomes(Consumer<Pair<Climate.ParameterPoint, ResourceKey<Biome>>> parameters, Climate.Parameter weirdness, CallbackInfo ci) {
         try {
             if(!BIOME_CONFIG.registerWasteland.get()) return;

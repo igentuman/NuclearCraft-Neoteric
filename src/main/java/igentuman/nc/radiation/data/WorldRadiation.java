@@ -119,7 +119,7 @@ public class WorldRadiation implements IWorldRadiationCapability {
         if(chunkRadiation.containsKey(id)) {
             int curRadiation = unpackX(chunkRadiation.get(id));
             if(curRadiation > newRadiation) {
-                newRadiation = newRadiation/10;
+                newRadiation = newRadiation/20;
             }
             newRadiation = curRadiation + newRadiation;
             chunkRadiation.replace(id, pack(newRadiation, curTimestamp));

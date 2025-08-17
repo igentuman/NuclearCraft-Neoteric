@@ -14,24 +14,10 @@
     "OverworldBiomeBuilderMixin"
   ],
   "server": [
-    "KubeJSRecipesEventJSMixin",
-    "LightningRodBlockMixin",
-    "MekRadiationManager",
-    "ParticleStackKubeJSMixin",
-    "TagLoaderMixin",
-    "TemplatePoolAccess",
-    "OverworldBiomeBuilderInvoker",
-    "OverworldBiomeBuilderMixin"
+
   ],
   "client": [
-    "KubeJSRecipesEventJSMixin",
-    "LightningRodBlockMixin",
-    "MekRadiationManager",
-    "ParticleStackKubeJSMixin",
-    "TagLoaderMixin",
-    "TemplatePoolAccess",
-    "OverworldBiomeBuilderInvoker",
-    "OverworldBiomeBuilderMixin"
+
   ],
   "minVersion": "0.8"
 }

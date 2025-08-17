@@ -2649,6 +2649,7 @@
   "tooltip.nc.build": "Build Multiblock",
   "tooltip.nc.chunk_position": "Chunk Position: %s",
   "tooltip.nc.content_saved": "Content Saved",
+  "tooltip.nc.decay_generator_allowed.desc": "Can be used with Decay Generator",
   "tooltip.nc.description.efficiency": "Efficiency: %s%%",
   "tooltip.nc.description.expansion": "Expansion: %s%%",
   "tooltip.nc.electromagnet.heat": "Heat: %s H/t",

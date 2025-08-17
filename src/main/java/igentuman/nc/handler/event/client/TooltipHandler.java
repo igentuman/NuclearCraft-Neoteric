@@ -14,13 +14,18 @@ import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.handler.config.CommonConfig.ENERGY_STORAGE;
 import static igentuman.nc.handler.config.FissionConfig.FISSION_CONFIG;
 import static igentuman.nc.multiblock.fission.FissionReactorRegistration.moderators;
+import static igentuman.nc.setup.registration.NCBlocks.DECAY_GEN_BLOCK;
+import static igentuman.nc.util.TagUtil.getBlocksByTagKey;
 import static igentuman.nc.util.TextUtils.__;
 import static net.minecraft.world.item.Items.FILLED_MAP;
 import static net.minecraft.world.item.Items.LIGHTNING_ROD;
@@ -28,9 +33,18 @@ import static net.minecraft.world.item.Items.LIGHTNING_ROD;
 @Mod.EventBusSubscriber(modid = MODID, value = Dist.CLIENT)
 public class TooltipHandler {
     private static ItemTooltipEvent processedEvent;
+    private static List<Block> allowedForDecayGenerator = new ArrayList<>();
     public static void register(FMLClientSetupEvent event) {
         MinecraftForge.EVENT_BUS.addListener(TooltipHandler::handle);
     }
+
+    private static List<Block> getAllowedDecayGeneratorBlocks() {
+        if(allowedForDecayGenerator.isEmpty()) {
+            allowedForDecayGenerator = getBlocksByTagKey(DECAY_GEN_BLOCK.location().toString()).stream().toList();
+        }
+        return allowedForDecayGenerator;
+    }
+
     @SubscribeEvent
     public static void handle(ItemTooltipEvent event) {
         if(event.equals(processedEvent)) return;
@@ -41,8 +55,15 @@ public class TooltipHandler {
             addRadiationLevelTooltip(event, item);
             addShieldingTooltip(event, event.getItemStack());
             addRadiationCleaningEffect(event, event.getItemStack());
+            addDecayGeneratorTooltip(event, event.getItemStack());
         }
         addModeratorTooltip(event, event.getItemStack());
+    }
+
+    private static void addDecayGeneratorTooltip(ItemTooltipEvent event, @NotNull ItemStack itemStack) {
+        if(!getAllowedDecayGeneratorBlocks().stream().filter(block -> {return block.asItem().equals(itemStack.getItem());}).toList().isEmpty()) {
+            event.getToolTip().add(__("tooltip.nc.decay_generator_allowed.desc").withStyle(ChatFormatting.GOLD));
+        }
     }
 
     private static void addModeratorTooltip(ItemTooltipEvent event, ItemStack itemStack) {

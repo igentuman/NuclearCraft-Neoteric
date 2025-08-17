@@ -227,6 +227,10 @@ public final class NcUtils {
                 return map.get(name).get();
             }
         }
+        if(NC_MATERIAL_BLOCKS.containsKey(name))
+        {
+            return NC_MATERIAL_BLOCKS.get(name).get();
+        }
 
         return Blocks.AIR;
     }

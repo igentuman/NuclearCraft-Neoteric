@@ -161,7 +161,13 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
 
     @Override
     public boolean isItemValid(int slot, @NotNull ItemStack stack) {
-        return isValidInputItem(stack);
+        if(isValidInputItem(stack)) {
+            return true;
+        }
+        if(validItemsForSlot.containsKey(slot)) {
+            return validItemsForSlot.get(slot).contains(stack.getItem());
+        }
+        return false;
     }
 
     private int isValidForAnyInputSlot(ItemStack stack) {
@@ -289,6 +295,7 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
         }
         if (!validForSlot) return false;
         if (side == null) {
+        //todo remove
             return i == isValidForAnyInputSlot(stack);
         }
         SidedContentHandler.RelativeDirection relativeDirection = SidedContentHandler.RelativeDirection.toRelative(side, getFacing());

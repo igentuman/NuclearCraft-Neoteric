@@ -8,6 +8,7 @@ import igentuman.nc.multiblock.kugelblitz.KugelblitzMultiblock;
 import igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class PhotonConcentratorBE extends NuclearCraftBE implements MultiblockAttachable {
@@ -59,5 +60,11 @@ public class PhotonConcentratorBE extends NuclearCraftBE implements MultiblockAt
             }
         }
         return controller;
+    }
+
+    public void gotEnergy(Direction facing) {
+        if(!getLevel().isClientSide()) {
+            controller().gotEnergy(facing);
+        }
     }
 }

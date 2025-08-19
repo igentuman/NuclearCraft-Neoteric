@@ -252,6 +252,9 @@ public class EXPLBE extends NuclearCraftBE {
             chamber.gotLaserBurst();
             allLasersBurst = false;
         }
+        if (be instanceof PhotonConcentratorBE photonConcentratorBE) {
+            photonConcentratorBE.gotEnergy(getFacing());
+        }
         if (isMekanismGeneratorsLoaded() && be instanceof mekanism.generators.common.tile.fusion.TileEntityLaserFocusMatrix matrixBe) {
             matrixBe.receiveLaserEnergy(FloatingLong.create(aggregatedEnergy / 10));
         }

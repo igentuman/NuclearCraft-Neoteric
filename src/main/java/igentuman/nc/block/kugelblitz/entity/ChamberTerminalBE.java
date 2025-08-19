@@ -91,9 +91,8 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
     public int blackholeStability = 100;
     @NBTField
     public int stabilizers = 0;
-    @NBTField
     public HashMap<Direction, Long> pulseEnergy = new HashMap<>();
-    protected boolean collectingEnergy = true;
+    public int collectingEnergy = 2;
 
     protected Direction facing;
     public Recipe recipe;
@@ -260,6 +259,14 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
         boolean wasEnabled = controllerEnabled;
         handleValidation();
         if(isCasingValid && isInternalValid) {
+            collectingEnergy--;
+            if(collectingEnergy < 0) {
+                collectingEnergy = 2;
+                if(pulseEnergy.size() == 6) {
+                    gotLaserBurst = true;
+                }
+                pulseEnergy.clear();
+            }
             handleLaserBurst();
         }
         controllerEnabled = isCasingValid && isInternalValid && mass > 0;
@@ -671,6 +678,11 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
 
     public boolean gotLaserBurst() {
         return gotLaserBurst;
+    }
+
+    public void gotEnergy(Direction facing) {
+        pulseEnergy.put(facing, 1L);
+        collectingEnergy = 2;
     }
 
     public static class Recipe extends NcRecipe {

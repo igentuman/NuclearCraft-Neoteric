@@ -128,7 +128,7 @@ dependencies {
     }*/
     implementation fg.deobf("curse.maven:multi-builder-tool-827020:6877370")
     runtimeOnly fg.deobf("curse.maven:ctm-267602:5983309")
-    compileOnly fg.deobf("curse.maven:immersive-engineering-231951:5224387")
+    implementation fg.deobf("curse.maven:immersive-engineering-231951:5224387")
 
     runtimeOnly fg.deobf("curse.maven:the-lost-cities-269024:6174986")
     compileOnly fg.deobf("mezz.jei:jei-${mc_version}-common-api:${jei_version}")

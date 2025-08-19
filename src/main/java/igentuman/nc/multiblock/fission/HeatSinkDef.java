@@ -208,11 +208,13 @@ public class HeatSinkDef {
         private boolean validatePlacement(String[] condition, Level level, FissionReactorMultiblock multiblock, BlockPos ...pos) {
             BlockState target = getBlockState(level, pos[0], multiblock);
             if (blocks.get(condition).contains(target.getBlock())) {
-                if (target.getBlock() instanceof HeatSinkBlock && !multiblock.validHeatSinks.containsKey(pos[0].asLong())) {
-                    return false;
-                }
-                if (multiblock.isModerator(target) && !multiblock.moderators.contains(pos[0].asLong())) {
-                    return false;
+                if(multiblock != null) {
+                    if (target.getBlock() instanceof HeatSinkBlock && !multiblock.validHeatSinks.containsKey(pos[0].asLong())) {
+                        return false;
+                    }
+                    if (multiblock.isModerator(target) && !multiblock.moderators.contains(pos[0].asLong())) {
+                        return false;
+                    }
                 }
                 return mustCheckFuelCellConnection(condition) || validateFuelCellAttachment(level, multiblock, pos);
             }

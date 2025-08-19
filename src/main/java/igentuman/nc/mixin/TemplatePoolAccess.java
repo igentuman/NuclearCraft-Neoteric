@@ -12,14 +12,14 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin({StructureTemplatePool.class})
 public interface TemplatePoolAccess {
-    @Accessor
+    @Accessor("rawTemplates")
     List<Pair<StructurePoolElement, Integer>> getRawTemplates();
 
-    @Accessor
+    @Accessor("rawTemplates")
     @Final
     @Mutable
     void setRawTemplates(List<Pair<StructurePoolElement, Integer>> var1);
 
-    @Accessor
+    @Accessor("templates")
     ObjectArrayList<StructurePoolElement> getTemplates();
 }

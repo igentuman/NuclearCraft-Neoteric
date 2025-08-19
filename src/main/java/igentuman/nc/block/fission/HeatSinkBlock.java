@@ -137,6 +137,7 @@ public class HeatSinkBlock extends MultiblockBlock {
                 FissionReactorMultiblock fissionReactorMultiblock = null;
                 if(mb instanceof FissionReactorMultiblock fsmb) {
                     fissionReactorMultiblock = fsmb;
+                    fissionReactorMultiblock.validateInner(true);
                 }
                 if(isValid(level, pos, fissionReactorMultiblock)) {
                     player.sendSystemMessage(__("message.heat_sink.valid"+id));

@@ -75,6 +75,8 @@ public class ThoroidalAcceleratorMultiblock extends AbstractAcceleratorMultibloc
         }
         resolveDepth();
         resolveWidth();
+
+
         final boolean controllerOnSide = isControllerPlacedOnSide();
 
         if(controllerOnSide) {
@@ -97,6 +99,8 @@ public class ThoroidalAcceleratorMultiblock extends AbstractAcceleratorMultibloc
                 return;
             }
         }
+        //at this point we know some structure parameters, but we need to check all edges
+
 
         BlockPos leftFront = new BlockPosInstance(getLeftPos(leftCasing));
         BlockPos leftBack = new BlockPosInstance(getLeftPos(leftCasing).relative(getControllerDirection(), -depth+1));

@@ -61,6 +61,7 @@ public abstract class AbstractMultiblock implements Multiblock {
     private static final Pattern SPECIAL_BLOCKS = Pattern.compile(".*(fusion_proxy|fusion_core|controller|port|irradiator|rotor|chamber_terminal).*");
     private static final Pattern CONTROLLERS = Pattern.compile(".*(controller|terminal).*");
     private Level level;
+    protected AABB structureBounds;
 
     protected AbstractMultiblock(HashSet<Block> validOuterBlocks, HashSet<Block> validInnerBlocks, MultiblockController controller) {
         this.validOuterBlocks = validOuterBlocks;
@@ -423,6 +424,11 @@ public abstract class AbstractMultiblock implements Multiblock {
         controllerBE().bottomLeft = new BlockPos(bottomLeft);
     }
 
+    public void updateAABB()
+    {
+        structureBounds = new AABB(bottomLeft, topRight);
+    }
+
     @Override
     public void validateOuter() {
         outerValid = false;
@@ -515,6 +521,7 @@ public abstract class AbstractMultiblock implements Multiblock {
         outerValid = true;
         validationResult = ValidationResult.VALID;
         debugLog("Outer validation completed successfully");
+        updateAABB();
     }
 
     protected void processOuterBlock(BlockPos pos) {
@@ -532,6 +539,10 @@ public abstract class AbstractMultiblock implements Multiblock {
     }
 
     public void validateInner() {
+        validateInner(false);
+    }
+
+    public void validateInner(boolean force) {
         innerValid = false;
         debugLog("Starting inner validation for multiblock at " + controllerPos.toShortString());
         
@@ -858,7 +869,12 @@ public abstract class AbstractMultiblock implements Multiblock {
     }
 
     public boolean containsPos(BlockPos pos) {
-        return allBlocks.contains(pos.asLong());
+        return allBlocks.contains(pos.asLong()) || inAABB(pos);
+    }
+
+    private boolean inAABB(BlockPos pos) {
+        if(structureBounds == null) return false;
+        return structureBounds.contains(pos.getCenter());
     }
 
     public boolean isValidForTicking() {

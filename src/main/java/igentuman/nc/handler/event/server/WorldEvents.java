@@ -140,25 +140,6 @@ public class WorldEvents {
                 }
             }
 
-            //todo remove, this for testing purposes only
-/*
-            List<BlockState> blocks = new ArrayList<>();
-            for(int x = -2; x < 3; x++) {
-                for(int y = -2; y < 3; y++) {
-                    //blocks.add(level.getBlockState(new BlockPos(250+x, -58+y, -1022)));
-                }
-            }
-            for(int i = 0; i < 9000; i++) {
-                int id = 0;
-                for(int x = -2; x < 3; x++) {
-                    for(int y = -2; y < 3; y++) {
-                       // level.setBlock(new BlockPos(250+x, -58+y, -1023-i), blocks.get(id), Block.UPDATE_ALL);
-                        id++;
-                    }
-                }
-            }
-*/
-
             if(level.getChunkSource().getLoadedChunksCount() < 1) {
                 return;
             }
@@ -172,60 +153,6 @@ public class WorldEvents {
         }
     }
 
-    public static int getHEVProtectionRate(Player player) {
-        int rate = 0;
-        for(ItemStack stack : player.getArmorSlots()) {
-            if((stack.getItem() instanceof HEVItem) && isCharged(stack)) {
-                rate++;
-            }
-        }
-        return rate;
-    }
-
-    public static boolean isFullyEquipped(Player player) {
-        for(ItemStack stack : player.getArmorSlots()) {
-            if(!(stack.getItem() instanceof HazmatItem) && !(stack.getItem() instanceof HEVItem)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public static boolean isCharged(ItemStack item)
-    {
-        return item.getCapability(ForgeCapabilities.ENERGY).map(handler -> handler.getEnergyStored() > 0).orElse(false);
-    }
-
-    @SubscribeEvent
-    public static void onPlayerDamage(LivingHurtEvent event) {
-        if (event.getEntity() instanceof Player player) {
-            if (event.getSource() != null && event.getSource().is(DamageTypes.MAGIC)) {
-                if(isFullyEquipped(player)) {
-                    event.setAmount(event.getAmount()/10F);
-                }
-            }
-            if(event.getSource() != null && (event.getSource().is(DamageTypes.FALL) || event.getSource().is(DamageTypes.STALAGMITE) || event.getSource().is(DamageTypes.HOT_FLOOR))) {
-                player.getArmorSlots().forEach(stack -> {
-                    if(stack.getItem().equals(HEV_BOOTS.get()) && isCharged(stack)) {
-                        consumeEnergy(stack, 1000 * (event.getSource().is(DamageTypes.STALAGMITE) || event.getSource().is(DamageTypes.HOT_FLOOR) ? 2 : 1));
-                        event.setCanceled(true);
-                        return;
-                    }
-                });
-            }
-            int protectionRate = getHEVProtectionRate(player);
-            if(protectionRate > 0) {
-                event.setAmount(event.getAmount() - (event.getAmount() * (protectionRate * 0.1F)));
-                for(ItemStack stack : player.getArmorSlots()) {
-                    consumeEnergy(stack, 1000);
-                }
-            }
-        }
-    }
-
-    private static void consumeEnergy(ItemStack stack, int i) {
-        stack.getCapability(ForgeCapabilities.ENERGY).ifPresent(handler -> handler.extractEnergy(i, false));
-    }
     
     @SubscribeEvent
     public static void onServerStopping(ServerStoppingEvent event) {

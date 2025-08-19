@@ -3,6 +3,7 @@ package igentuman.nc.setup;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.content.particles.Particles;
 import igentuman.nc.handler.config.AcceleratorConfig;
+import igentuman.nc.handler.event.server.PlayerEvents;
 import igentuman.nc.radiation.data.RadiationEvents;
 import igentuman.nc.setup.registration.GameEvents;
 import igentuman.nc.util.GTCEUCompatibilityCondition;
@@ -31,6 +32,7 @@ public class ModSetup {
         bus.addGenericListener(Level.class, RadiationEvents::attachWorldRadiation);
         bus.addGenericListener(Level.class, WorldVeinsProvider::attachVeinCapability);
         bus.register(NuclearCraft.worldTickHandler);
+        bus.register(new PlayerEvents());
         bus.register(new RadiationEvents());
         bus.register(new ScientistHouseStructure());
     }

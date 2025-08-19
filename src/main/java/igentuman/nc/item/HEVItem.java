@@ -62,17 +62,15 @@ public class HEVItem extends ArmorItem {
 
     @Override
     public void onInventoryTick(ItemStack st, Level level, Player player, int slotIndex, int selectedIndex) {
-        if(slotIndex <= EquipmentSlot.HEAD.getIndex() && slotIndex >= 0) {
-            if (charged(st)) {
-                if (st.getItem().equals(HEV_CHEST.get())) {
-                    player.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 1, 1, false, false));
-                }
-                if (st.getItem().equals(HEV_HELMET.get())) {
-                    player.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING, 1, 1, false, false));
-                }
-                if (st.getItem().equals(HEV_PANTS.get())) {
-                    player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 1, 1, false, false));
-                }
+        if (charged(st)) {
+            if (st.is(HEV_CHEST.get()) && player.getItemBySlot(EquipmentSlot.CHEST).equals(st)) {
+                player.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 1, 1, false, false));
+            }
+            if (st.is(HEV_HELMET.get()) && player.getItemBySlot(EquipmentSlot.HEAD).equals(st)) {
+                player.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING, 1, 1, false, false));
+            }
+            if (st.is(HEV_PANTS.get()) && player.getItemBySlot(EquipmentSlot.LEGS).equals(st)) {
+                player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 1, 1, false, false));
             }
         }
     }

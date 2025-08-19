@@ -6,7 +6,7 @@ import igentuman.nc.block.accelerator.entity.*;
 import igentuman.nc.container.AcceleratorIonSourcePortContainer;
 import igentuman.nc.container.AcceleratorPortContainer;
 import igentuman.nc.container.LinearAcceleratorContainer;
-import igentuman.nc.container.ThoroidalAcceleratorContainer;
+import igentuman.nc.container.RingAcceleratorContainer;
 import igentuman.nc.util.JSONUtil;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.inventory.MenuType;
@@ -46,8 +46,8 @@ public class AcceleratorRegistration {
     public static final RegistryObject<MenuType<LinearAcceleratorContainer>> LINEAR_ACCELERATOR_CONTROLLER_CONTAINER = CONTAINERS.register("linear_accelerator_controller",
             () -> IForgeMenuType.create((windowId, inv, data) -> new LinearAcceleratorContainer(windowId, data.readBlockPos(), inv))
     );
-    public static final RegistryObject<MenuType<ThoroidalAcceleratorContainer>> THOROIDAL_ACCELERATOR_CONTROLLER_CONTAINER = CONTAINERS.register("thoroidal_accelerator_controller",
-            () -> IForgeMenuType.create((windowId, inv, data) -> new ThoroidalAcceleratorContainer(windowId, data.readBlockPos(), inv))
+    public static final RegistryObject<MenuType<RingAcceleratorContainer>> THOROIDAL_ACCELERATOR_CONTROLLER_CONTAINER = CONTAINERS.register("ring_accelerator_controller",
+            () -> IForgeMenuType.create((windowId, inv, data) -> new RingAcceleratorContainer(windowId, data.readBlockPos(), inv))
     );
     public static final RegistryObject<MenuType<AcceleratorPortContainer>> ACCELERATOR_PORT_CONTAINER = CONTAINERS.register("accelerator_port",
             () -> IForgeMenuType.create((windowId, inv, data) -> new AcceleratorPortContainer(windowId, data.readBlockPos(), inv))
@@ -66,7 +66,7 @@ public class AcceleratorRegistration {
         registerSimpleBlock("accelerator_casing_glass");
         registerSimpleBlock("particle_beam");
         registerOrientedBlock("linear_accelerator_controller");
-        registerOrientedBlock("thoroidal_accelerator_controller");
+        registerOrientedBlock("ring_accelerator_controller");
         registerOrientedBlock("accelerator_port");
         registerOrientedBlock("accelerator_beam_port");
         registerOrientedBlock("accelerator_ion_source_port");
@@ -91,9 +91,9 @@ public class AcceleratorRegistration {
                         () -> BlockEntityType.Builder.of(LinearAcceleratorControllerBE::new, ACCELERATOR_BLOCKS.get("linear_accelerator_controller").get())
                                 .build(null)));
 
-        ACCELERATOR_BE.put("thoroidal_accelerator_controller",
-                BLOCK_ENTITIES.register("thoroidal_accelerator_controller",
-                        () -> BlockEntityType.Builder.of(ThoroidalAcceleratorControllerBE::new, ACCELERATOR_BLOCKS.get("thoroidal_accelerator_controller").get())
+        ACCELERATOR_BE.put("ring_accelerator_controller",
+                BLOCK_ENTITIES.register("ring_accelerator_controller",
+                        () -> BlockEntityType.Builder.of(RingAcceleratorControllerBE::new, ACCELERATOR_BLOCKS.get("ring_accelerator_controller").get())
                                 .build(null)));
 
         for(String name: COOLERS.keySet()) {
@@ -113,8 +113,8 @@ public class AcceleratorRegistration {
         switch (key) {
             case "linear_accelerator_controller" ->
                     ACCELERATOR_BLOCKS.put(key, BLOCKS.register(key, () -> new LinearAcceleratorControllerBlock(props)));
-            case "thoroidal_accelerator_controller" ->
-                    ACCELERATOR_BLOCKS.put(key, BLOCKS.register(key, () -> new ThoroidalAcceleratorControllerBlock(props)));
+            case "ring_accelerator_controller" ->
+                    ACCELERATOR_BLOCKS.put(key, BLOCKS.register(key, () -> new RingAcceleratorControllerBlock(props)));
             case "accelerator_ion_source_port" ->
                     ACCELERATOR_BLOCKS.put(key, BLOCKS.register(key, () -> new AcceleratorIonSourcePortBlock(props)));
             case "accelerator_port" ->

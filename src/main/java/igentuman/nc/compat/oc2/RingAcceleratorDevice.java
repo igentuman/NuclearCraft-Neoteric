@@ -1,6 +1,6 @@
 package igentuman.nc.compat.oc2;
 
-import igentuman.nc.block.accelerator.entity.ThoroidalAcceleratorControllerBE;
+import igentuman.nc.block.accelerator.entity.RingAcceleratorControllerBE;
 import li.cil.oc2.api.bus.device.Device;
 import li.cil.oc2.api.bus.device.object.Callback;
 import li.cil.oc2.api.bus.device.object.NamedDevice;
@@ -15,16 +15,16 @@ import java.util.Collection;
 
 import static java.util.Collections.singletonList;
 
-public class ThoroidalAcceleratorDevice {
+public class RingAcceleratorDevice {
 
     public static final Capability<Device> DEVICE_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {
     });
 
-    public static RPCDevice createDevice(ThoroidalAcceleratorControllerBE blockEntity) {
+    public static RPCDevice createDevice(RingAcceleratorControllerBE blockEntity) {
         return new ObjectDevice(new NCFChamberTerminalRecord(blockEntity));
     }
 
-    public record NCFChamberTerminalRecord(ThoroidalAcceleratorControllerBE terminal) implements NamedDevice {
+    public record NCFChamberTerminalRecord(RingAcceleratorControllerBE terminal) implements NamedDevice {
 
         @Callback
         public final boolean isFormed() {
@@ -36,10 +36,6 @@ public class ThoroidalAcceleratorDevice {
             return "nc_linear_accelerator";
         }
 
-        @Callback
-        public final boolean hasRecipe() {
-            return terminal.hasRecipe();
-        }
 
 
         @Callback

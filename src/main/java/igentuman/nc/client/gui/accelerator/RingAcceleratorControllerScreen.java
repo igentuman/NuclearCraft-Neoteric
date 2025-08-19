@@ -3,10 +3,14 @@ package igentuman.nc.client.gui.accelerator;
 import com.mojang.blaze3d.systems.RenderSystem;
 import igentuman.nc.client.gui.IProgressScreen;
 import igentuman.nc.client.gui.IVerticalBarScreen;
+import igentuman.nc.client.gui.element.GuiParticle;
 import igentuman.nc.client.gui.element.NCGuiElement;
 import igentuman.nc.client.gui.element.bar.VerticalBar;
+import igentuman.nc.client.gui.element.button.Button;
 import igentuman.nc.client.gui.element.button.Checkbox;
-import igentuman.nc.container.ThoroidalAcceleratorContainer;
+import igentuman.nc.client.gui.element.fluid.FluidTankRenderer;
+import igentuman.nc.container.RingAcceleratorContainer;
+import igentuman.nc.content.particles.ParticleStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -22,16 +26,18 @@ import java.util.List;
 import java.util.Optional;
 
 import static igentuman.nc.NuclearCraft.rl;
-import static igentuman.nc.util.TextUtils.__;
-import static igentuman.nc.util.TextUtils.applyFormat;
+import static igentuman.nc.block.entity.NuclearCraftBE.isGTEUCapEnabled;
+import static igentuman.nc.client.gui.element.fluid.FluidTankRenderer.TooltipMode.SHOW_AMOUNT_AND_CAPACITY;
+import static igentuman.nc.util.ModUtil.isGtLoaded;
+import static igentuman.nc.util.TextUtils.*;
 
-public class ThoroidalAcceleratorControllerScreen extends AbstractContainerScreen<ThoroidalAcceleratorContainer> implements IProgressScreen, IVerticalBarScreen {
+public class RingAcceleratorControllerScreen extends AbstractContainerScreen<RingAcceleratorContainer> implements IProgressScreen, IVerticalBarScreen {
     protected final ResourceLocation GUI = rl("textures/gui/accelerators/linear_controller.png");
     protected int relX;
     protected int relY;
     private int xCenter;
 
-    public ThoroidalAcceleratorContainer container()
+    public RingAcceleratorContainer container()
     {
         return menu;
     }
@@ -41,10 +47,13 @@ public class ThoroidalAcceleratorControllerScreen extends AbstractContainerScree
     public Checkbox checkboxInterior;
     private VerticalBar energyBar;
     private VerticalBar heatBar;
+    private VerticalBar coolantBar;
     public Component casingTootip = Component.empty();
     public Component interiorTootip = Component.empty();
+    public GuiParticle guiParticle;
+    private Button.MultiblockAnalyze analyzeBtn;
 
-    public ThoroidalAcceleratorControllerScreen(ThoroidalAcceleratorContainer container, Inventory inv, Component name) {
+    public RingAcceleratorControllerScreen(RingAcceleratorContainer container, Inventory inv, Component name) {
         super(container, inv, name);
         imageWidth = 196;
         imageHeight = 109;
@@ -66,8 +75,14 @@ public class ThoroidalAcceleratorControllerScreen extends AbstractContainerScree
         checkboxCasing = new Checkbox(imageWidth-19, 80, this,  isCasingValid());
         checkboxInterior =  new Checkbox(imageWidth-32, 80, this,  isInteriorValid());
         //widgets.add(new ProgressBar(74, 35, this,  7));
-        energyBar = new VerticalBar.Energy(7, 5,  this, container().getMaxEnergy());
-        heatBar = new VerticalBar.Energy(17, 5,  this, container().getMaxHeat());
+        energyBar = new VerticalBar.Energy(7, 20,  this, container().getMaxEnergy());
+        heatBar = new VerticalBar.Heat(17, 20,  this, container().getMaxHeat());
+        coolantBar = new VerticalBar.Coolant(27, 20,  this, container().maxCoolant());
+        guiParticle = new GuiParticle(40, 21);
+        analyzeBtn = new Button.MultiblockAnalyze(170, 60, this, menu.getPosition());
+        widgets.add(new Button.ReportIssue(180, 15, this, menu.getPosition()));
+        widgets.add(analyzeBtn);
+        widgets.add(new FluidTankRenderer(getFluidTank(2), SHOW_AMOUNT_AND_CAPACITY,6, 73, 28, 21));
     }
 
     protected void addWidget(NCGuiElement widget)
@@ -116,7 +131,7 @@ public class ThoroidalAcceleratorControllerScreen extends AbstractContainerScree
         }
         checkboxInterior.addTooltip(interiorTootip);
         if(isInteriorValid() && isCasingValid()) {
-            checkboxInterior.addTooltip(__("tooltip.nc.accelerator.focus", container().getFocus()));
+            checkboxInterior.addTooltip(__("tooltip.nc.accelerator.focus", numberFormat(container().getFocus())));
             checkboxInterior.addTooltip(__("tooltip.nc.accelerator.quadroupoles", container().getQuadroupoles()));
             checkboxInterior.addTooltip(__("tooltip.nc.accelerator.dipoles", container().getDipoles()));
             checkboxInterior.addTooltip(__("tooltip.nc.accelerator.voltage", container().getVoltage()));
@@ -124,28 +139,37 @@ public class ThoroidalAcceleratorControllerScreen extends AbstractContainerScree
             checkboxInterior.addTooltip(__("tooltip.nc.accelerator.coolers", container().getCoolers()));
         }
         energyBar.draw(graphics, mouseX, mouseY, partialTicks);
+        heatBar.draw(graphics, mouseX, mouseY, partialTicks);
+        coolantBar.draw(graphics, mouseX, mouseY, partialTicks);
+        if(hasParticle()) {
+            guiParticle.drawParticleStack(graphics, getParticleStack());
+        }
     }
 
     @Override
     protected void renderLabels(@NotNull GuiGraphics graphics, int mouseX, int mouseY) {
         graphics.drawCenteredString(font,  menu.getTitle(), imageWidth/2, titleLabelY, 0xffffff);
         if(isCasingValid()) {
-            casingTootip = applyFormat(__("tooltip.nc.structure.size", getMultiblockHeight(), getMultiblockWidth(), getMultiblockDepth()), ChatFormatting.GOLD);
+            casingTootip = applyFormat(__("tooltip.nc.accelerator.beam", getBeamLength()), ChatFormatting.GOLD);
         } else {
             casingTootip = applyFormat(__(getValidationResultKey(), getValidationResultData()), ChatFormatting.RED);
         }
 
         if(isCasingValid()) {
             if (isInteriorValid()) {
-                 graphics.drawString(font, __("tooltip.nc.accelerator.voltage", container().getVoltage()), 37, 50, 0xffffff);
-                 graphics.drawString(font, __("tooltip.nc.accelerator.efficiency", container().getEfficiency()), 37, 60, 0xffffff);
-                 graphics.drawString(font, __("tooltip.nc.accelerator.strength", container().getStrength()), 37, 70, 0xffffff);
+                graphics.drawString(font, __("tooltip.nc.accelerator.voltage", container().getVoltage()), 37, 50, 0xffffff);
+                graphics.drawString(font, __("tooltip.nc.accelerator.efficiency", numberFormat(container().getEfficiency())+"%"), 37, 60, 0xffffff);
+                graphics.drawString(font, __("tooltip.nc.accelerator.strength", numberFormat(container().getStrength())), 37, 70, 0xffffff);
             } else {
                 interiorTootip = applyFormat(__(getValidationResultKey(), getValidationResultData()), ChatFormatting.RED);
             }
         }
 
         renderTooltips(graphics, mouseX-relX, mouseY-relY);
+    }
+
+    private int getBeamLength() {
+        return container().getBeamLength();
     }
 
     private Object getValidationResultData() {
@@ -176,6 +200,14 @@ public class ThoroidalAcceleratorControllerScreen extends AbstractContainerScree
         renderWidgets(graphics, partialTicks, mouseX, mouseY);
     }
 
+    private boolean hasParticle() {
+        return container().hasParticle();
+    }
+
+    private ParticleStack getParticleStack() {
+        return container().getParticleStack();
+    }
+
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
         for(NCGuiElement widget : widgets) {
             if(widget.mouseClicked(pMouseX, pMouseY, pButton)) {
@@ -188,10 +220,15 @@ public class ThoroidalAcceleratorControllerScreen extends AbstractContainerScree
     private void renderTooltips(GuiGraphics graphics, int pMouseX, int pMouseY) {
 
         for(NCGuiElement widget: widgets) {
-           if(widget.isMouseOver(pMouseX, pMouseY)) {
-               graphics.renderTooltip(font, widget.getTooltips(),
-                       Optional.empty(), pMouseX, pMouseY);
-           }
+            if(widget.isMouseOver(pMouseX, pMouseY)) {
+                graphics.renderTooltip(font, widget.getTooltips(),
+                        Optional.empty(), pMouseX, pMouseY);
+            }
+        }
+        if(guiParticle.isMouseOver(pMouseX, pMouseY)) {
+            if(hasParticle()) {
+                guiParticle.renderTooltip(graphics, getParticleStack(), pMouseX, pMouseY);
+            }
         }
         if(checkboxCasing.isMouseOver(pMouseX, pMouseY)) {
             graphics.renderTooltip(font, checkboxCasing.getTooltips(),
@@ -201,15 +238,26 @@ public class ThoroidalAcceleratorControllerScreen extends AbstractContainerScree
             graphics.renderTooltip(font, checkboxInterior.getTooltips(),
                     Optional.empty(), pMouseX, pMouseY);
         }
-        if(container().getMaxEnergy() > 0) {
+
+        if(heatBar.isMouseOver(pMouseX, pMouseY)) {
+            heatBar.clearTooltips();
+            heatBar.addTooltip(__("reactor.cooling", container().getCooling()).withStyle(ChatFormatting.AQUA));
+            heatBar.addTooltip(__("reactor.heating", container().getHeating()).withStyle(ChatFormatting.RED));
+            heatBar.addTooltip(__("reactor.net_heat", container().getNetHeat()).withStyle(ChatFormatting.GOLD));
+            graphics.renderTooltip(font, heatBar.getTooltips(),
+                    Optional.empty(), pMouseX, pMouseY);
+        }
+
+        if(energyBar.isMouseOver(pMouseX, pMouseY)) {
             energyBar.clearTooltips();
-           /* if (container().isRunning()) {
-                energyBar.addTooltip(__("reactor.forge_energy_per_tick", container().energyPerTick()));
-            }*/
-            if(energyBar.isMouseOver(pMouseX, pMouseY)) {
-                graphics.renderTooltip(font, energyBar.getTooltips(),
-                        Optional.empty(), pMouseX, pMouseY);
+            if(isGtLoaded() && isGTEUCapEnabled()) {
+                energyBar.addTooltip(applyFormat(__("tooltip.eu.per_tick", scaledFormat(menu.getEnergyRequired())), ChatFormatting.YELLOW));
+                energyBar.addTooltip(applyFormat(__("tooltip.eu.tier", menu.getTier()), ChatFormatting.YELLOW));
+            } else {
+                energyBar.addTooltip(applyFormat(__("tooltip.nc.energy.per_tick", scaledFormat(container().getEnergyRequired())).withStyle(ChatFormatting.AQUA)));
             }
+            graphics.renderTooltip(font, energyBar.getTooltips(),
+                    Optional.empty(), pMouseX, pMouseY);
         }
     }
 
@@ -220,7 +268,7 @@ public class ThoroidalAcceleratorControllerScreen extends AbstractContainerScree
 
     @Override
     public double getHeat() {
-        return 0;
+        return container().getHeat();
     }
 
     @Override

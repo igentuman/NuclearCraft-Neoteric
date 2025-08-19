@@ -1,6 +1,7 @@
 package igentuman.nc.container;
 
-import igentuman.nc.block.accelerator.entity.ThoroidalAcceleratorControllerBE;
+import igentuman.nc.block.accelerator.entity.RingAcceleratorControllerBE;
+import igentuman.nc.content.particles.ParticleStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -16,18 +17,18 @@ import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.*;
 import static igentuman.nc.util.TextUtils.*;
 
-public class ThoroidalAcceleratorContainer extends AbstractContainerMenu {
+public class RingAcceleratorContainer extends AbstractContainerMenu {
 
-    protected final ThoroidalAcceleratorControllerBE blockEntity;
+    protected final RingAcceleratorControllerBE blockEntity;
     protected final Player playerEntity;
-    protected final String name = "thoroidal_accelerator_controller";
+    protected final String name = "ring_accelerator_controller";
     protected final IItemHandler playerInventory;
 
-    public ThoroidalAcceleratorContainer(int pContainerId, BlockPos pos, Inventory playerInventory) {
+    public RingAcceleratorContainer(int pContainerId, BlockPos pos, Inventory playerInventory) {
         super(THOROIDAL_ACCELERATOR_CONTROLLER_CONTAINER.get(), pContainerId);
         this.playerEntity = playerInventory.player;
         this.playerInventory =  new InvWrapper(playerInventory);
-        blockEntity = (ThoroidalAcceleratorControllerBE) playerEntity.getCommandSenderWorld().getBlockEntity(pos);
+        blockEntity = (RingAcceleratorControllerBE) playerEntity.getCommandSenderWorld().getBlockEntity(pos);
     }
 
     @Override
@@ -58,7 +59,7 @@ public class ThoroidalAcceleratorContainer extends AbstractContainerMenu {
     }
 
     public int getDepth() {
-        return blockEntity.getDepth();
+        return blockEntity.beamLength;
     }
 
     public int getWidth() {
@@ -90,8 +91,8 @@ public class ThoroidalAcceleratorContainer extends AbstractContainerMenu {
         return energy2Display(blockEntity.energyStorage.getMaxEnergyStored());
     }
 
-    public boolean hasRecipe() {
-        return blockEntity.hasRecipe();
+    public boolean hasParticle() {
+        return blockEntity.hasParticle;
     }
 
     public BlockPos getPosition() {
@@ -130,8 +131,8 @@ public class ThoroidalAcceleratorContainer extends AbstractContainerMenu {
         return blockEntity.quadroupoles;
     }
 
-    public String getEfficiency() {
-        return blockEntity.efficiency + "%";
+    public Double getEfficiency() {
+        return blockEntity.efficiency;
     }
 
     public int getAmplifiers() {
@@ -144,5 +145,41 @@ public class ThoroidalAcceleratorContainer extends AbstractContainerMenu {
 
     public double getStrength() {
         return blockEntity.quadStrength + blockEntity.dipoleStrength;
+    }
+
+    public ParticleStack getParticleStack() {
+        return blockEntity.getParticleStack();
+    }
+
+    public int maxCoolant() {
+        return 10000; // TODO: get from config
+    }
+
+    public double getHeat() {
+        return blockEntity.heat;
+    }
+
+    public int getEnergyRequired() {
+        return blockEntity.energyRequired;
+    }
+
+    public Object getTier() {
+        return blockEntity.getTier();
+    }
+
+    public int getCooling() {
+        return blockEntity.coolingRate;
+    }
+
+    public int getHeating() {
+        return blockEntity.heatRate;
+    }
+
+    public int getNetHeat() {
+        return blockEntity.heatRate - blockEntity.coolingRate;
+    }
+
+    public int getBeamLength() {
+        return blockEntity.beamLength;
     }
 }

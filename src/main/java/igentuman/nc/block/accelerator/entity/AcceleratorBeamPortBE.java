@@ -184,16 +184,16 @@ public class AcceleratorBeamPortBE extends NuclearCraftBE implements MultiblockA
     }
 
     @Override
-    public LinearAcceleratorControllerBE controller() {
+    public AbstractAcceleratorControllerBE controller() {
         if(NuclearCraft.instance.isNcBeStopped || (!getLevel().isClientSide() && getLevel().getServer() != null && !getLevel().getServer().isRunning())) return null;
         if(getLevel().isClientSide && controllerPos != null) {
-            return (LinearAcceleratorControllerBE) getLevel().getExistingBlockEntity(controllerPos);
+            return (AbstractAcceleratorControllerBE) getLevel().getExistingBlockEntity(controllerPos);
         }
         try {
-            return (LinearAcceleratorControllerBE) getMultiblock().controller().controllerBE();
+            return (AbstractAcceleratorControllerBE) getMultiblock().controller().controllerBE();
         } catch (NullPointerException e) {
             if(controllerPos != null) {
-                return (LinearAcceleratorControllerBE) getLevel().getExistingBlockEntity(controllerPos);
+                return (AbstractAcceleratorControllerBE) getLevel().getExistingBlockEntity(controllerPos);
             }
             return null;
         }

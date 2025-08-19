@@ -1,7 +1,7 @@
 package igentuman.nc.block.accelerator;
 
-import igentuman.nc.block.accelerator.entity.ThoroidalAcceleratorControllerBE;
-import igentuman.nc.container.ThoroidalAcceleratorContainer;
+import igentuman.nc.block.accelerator.entity.RingAcceleratorControllerBE;
+import igentuman.nc.container.RingAcceleratorContainer;
 import igentuman.nc.handler.config.CommonConfig;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -45,17 +45,17 @@ import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELE
 import static igentuman.nc.util.ModUtil.isGtLoaded;
 import static igentuman.nc.util.TextUtils.__;
 
-public class ThoroidalAcceleratorControllerBlock extends HorizontalDirectionalBlock implements EntityBlock {
+public class RingAcceleratorControllerBlock extends HorizontalDirectionalBlock implements EntityBlock {
     public static final DirectionProperty HORIZONTAL_FACING = FACING;
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
-    public static final String NAME = "thoroidal_accelerator_controller";
-    public ThoroidalAcceleratorControllerBlock() {
+    public static final String NAME = "ring_accelerator_controller";
+    public RingAcceleratorControllerBlock() {
         this(Properties.of()
                 .sound(SoundType.METAL)
                 .strength(8f, 3600000f)
                 .requiresCorrectToolForDrops());
     }
-    public ThoroidalAcceleratorControllerBlock(Properties pProperties) {
+    public RingAcceleratorControllerBlock(Properties pProperties) {
         super(pProperties.sound(SoundType.METAL));
         this.registerDefaultState(
                 this.stateDefinition.any()
@@ -86,7 +86,7 @@ public class ThoroidalAcceleratorControllerBlock extends HorizontalDirectionalBl
         if (!level.isClientSide()) {
             BlockEntity be = level.getExistingBlockEntity(pos);
 
-            if (be instanceof ThoroidalAcceleratorControllerBE)  {
+            if (be instanceof RingAcceleratorControllerBE)  {
                 MenuProvider containerProvider = new MenuProvider() {
                     @Override
                     public Component getDisplayName() {
@@ -95,7 +95,7 @@ public class ThoroidalAcceleratorControllerBlock extends HorizontalDirectionalBl
 
                     @Override
                     public AbstractContainerMenu createMenu(int windowId, @NotNull Inventory playerInventory, @NotNull Player playerEntity) {
-                            return new ThoroidalAcceleratorContainer(windowId, pos, playerInventory);
+                            return new RingAcceleratorContainer(windowId, pos, playerInventory);
                     }
                 };
                 NetworkHooks.openScreen((ServerPlayer) player, containerProvider, be.getBlockPos());
@@ -109,14 +109,14 @@ public class ThoroidalAcceleratorControllerBlock extends HorizontalDirectionalBl
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, @NotNull BlockState state, @NotNull BlockEntityType<T> type) {
         if (level.isClientSide()) {
             return (lvl, pos, blockState, t) -> {
-                if (t instanceof ThoroidalAcceleratorControllerBE tile) {
+                if (t instanceof RingAcceleratorControllerBE tile) {
                     tile.tickClient();
                     level.setBlock(pos, blockState.setValue(POWERED, tile.controllerEnabled), 3);
                 }
             };
         }
         return (lvl, pos, blockState, t)-> {
-            if (t instanceof ThoroidalAcceleratorControllerBE tile) {
+            if (t instanceof RingAcceleratorControllerBE tile) {
                 tile.tickServer();
             }
         };

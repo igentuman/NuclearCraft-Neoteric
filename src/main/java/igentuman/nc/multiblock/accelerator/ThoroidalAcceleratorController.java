@@ -1,19 +1,19 @@
 package igentuman.nc.multiblock.accelerator;
 
 import igentuman.api.nc.multiblock.MultiblockController;
-import igentuman.nc.block.accelerator.entity.ThoroidalAcceleratorControllerBE;
+import igentuman.nc.block.accelerator.entity.RingAcceleratorControllerBE;
 import igentuman.nc.block.entity.MultiblockControllerBE;
 
 public class ThoroidalAcceleratorController implements MultiblockController {
 
-    protected ThoroidalAcceleratorControllerBE controllerBE;
+    protected RingAcceleratorControllerBE controllerBE;
 
-    public ThoroidalAcceleratorController(ThoroidalAcceleratorControllerBE controller) {
+    public ThoroidalAcceleratorController(RingAcceleratorControllerBE controller) {
         controllerBE = controller;
     }
 
     @Override
-    public ThoroidalAcceleratorControllerBE controllerBE() {
+    public RingAcceleratorControllerBE controllerBE() {
         return controllerBE;
     }
 
@@ -38,6 +38,6 @@ public class ThoroidalAcceleratorController implements MultiblockController {
 
     @Override
     public void setControllerBe(MultiblockControllerBE multiblockControllerBE) {
-        controllerBE = (ThoroidalAcceleratorControllerBE)multiblockControllerBE;
+        controllerBE = (RingAcceleratorControllerBE)multiblockControllerBE;
     }
 }

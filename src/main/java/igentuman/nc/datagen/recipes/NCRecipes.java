@@ -366,7 +366,7 @@ public class NCRecipes extends RecipeProvider {
                 .save(consumer, rl("linear_accelerator_controller"));
 
         // Thoroidal accelerator controller (ring accelerator)
-        /*ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ACCELERATOR_BLOCKS.get("thoroidal_accelerator_controller").get())
+        /*ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ACCELERATOR_BLOCKS.get("ring_accelerator_controller").get())
                 .pattern("PEP")
                 .pattern("AFA")
                 .pattern("PEP")
@@ -376,7 +376,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('F', ACCELERATOR_BLOCKS.get("accelerator_casing").get())
                 .group(MODID+"_accelerator")
                 .unlockedBy("item", has(NC_PARTS.get("plate_elite").get()))
-                .save(consumer, rl("thoroidal_accelerator_controller"));*/
+                .save(consumer, rl("ring_accelerator_controller"));*/
 
         // Accelerator port
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ACCELERATOR_BLOCKS.get("accelerator_port").get(), 4)

@@ -41,7 +41,7 @@ public class AcceleratorPortBE extends NuclearCraftBE implements MultiblockAttac
     protected AbstractAcceleratorMultiblock multiblock;
     public boolean refreshCacheFlag = true;
     public byte validationRuns = 0;
-    public LinearAcceleratorControllerBE controller;
+    public AbstractAcceleratorControllerBE controller;
 
     public AcceleratorPortBE(BlockPos pPos, BlockState pBlockState) {
         super(ACCELERATOR_BE.get(NAME).get(), pPos, pBlockState);
@@ -60,7 +60,7 @@ public class AcceleratorPortBE extends NuclearCraftBE implements MultiblockAttac
         this.multiblock = (AbstractAcceleratorMultiblock) multiblock;
         if (this.multiblock != null) {
             controllerPos = this.multiblock.controller().controllerBE().getBlockPos();
-            controller = (LinearAcceleratorControllerBE) this.multiblock.controller().controllerBE();
+            controller = (AbstractAcceleratorControllerBE) this.multiblock.controller().controllerBE();
             MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
             setChanged();
             level.updateNeighborsAt(worldPosition, getBlockState().getBlock());
@@ -188,16 +188,16 @@ public class AcceleratorPortBE extends NuclearCraftBE implements MultiblockAttac
     }
 
     @Override
-    public LinearAcceleratorControllerBE controller() {
+    public AbstractAcceleratorControllerBE controller() {
         if(NuclearCraft.instance.isNcBeStopped || (!getLevel().isClientSide() && getLevel().getServer() != null && !getLevel().getServer().isRunning())) return null;
         if(getLevel().isClientSide && controllerPos != null) {
-            return (LinearAcceleratorControllerBE) getLevel().getExistingBlockEntity(controllerPos);
+            return (AbstractAcceleratorControllerBE) getLevel().getExistingBlockEntity(controllerPos);
         }
         try {
-            return (LinearAcceleratorControllerBE) getMultiblock().controller().controllerBE();
+            return (AbstractAcceleratorControllerBE) getMultiblock().controller().controllerBE();
         } catch (NullPointerException e) {
             if(controllerPos != null) {
-                return (LinearAcceleratorControllerBE) getLevel().getExistingBlockEntity(controllerPos);
+                return (AbstractAcceleratorControllerBE) getLevel().getExistingBlockEntity(controllerPos);
             }
             return null;
         }

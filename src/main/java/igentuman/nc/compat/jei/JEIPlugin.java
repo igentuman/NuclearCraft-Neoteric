@@ -297,7 +297,7 @@ public  class JEIPlugin implements IModPlugin {
         }
 
         registry.addRecipeCatalyst(ACCELERATOR_BLOCKS.get("linear_accelerator_controller").get(), ACCELERATOR_COOLANT);
-        registry.addRecipeCatalyst(ACCELERATOR_BLOCKS.get("thoroidal_accelerator_controller").get(), ACCELERATOR_COOLANT);
+        registry.addRecipeCatalyst(ACCELERATOR_BLOCKS.get("ring_accelerator_controller").get(), ACCELERATOR_COOLANT);
         if(CATALYSTS.containsKey("nc_ore_veins")) {
             registry.addRecipeCatalyst(CATALYSTS.get("nc_ore_veins").get(0), ORE_VEINS);
         }

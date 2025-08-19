@@ -1,6 +1,9 @@
 package igentuman.nc.radiation.client;
 
+import igentuman.nc.client.NcClient;
 import igentuman.nc.radiation.data.WorldRadiation;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.Level;
 
 import java.util.HashMap;
 
@@ -9,12 +12,12 @@ import static igentuman.nc.client.NcClient.tryGetClientWorld;
 public class ClientRadiationData {
 
     protected static int currentRadiation = 0;
-    protected static WorldRadiation worldRadiation = new WorldRadiation();
+    protected static HashMap<ResourceKey<Level>,WorldRadiation> worldRadiation = new HashMap<>();
     protected static long playerRadiation = 0;
 
     public static void setWorldRadiation(HashMap<Long, Long> radiation) {
-        worldRadiation.chunkRadiation = radiation;
-        worldRadiation.level = tryGetClientWorld();
+        worldRadiation.remove(NcClient.tryGetClientWorld().dimension());
+        worldRadiation.put(NcClient.tryGetClientWorld().dimension(), new WorldRadiation(radiation));
     }
 
     public static int radiationStage() {
@@ -31,8 +34,11 @@ public class ClientRadiationData {
         return Math.max(0, currentRadiation);
     }
 
-    public static void setCurrentChunk(int x, int z) {
-        currentRadiation = worldRadiation.getChunkRadiation(x, z);
+    public static void setCurrentChunk(int x, int z, Level level) {
+        if (!worldRadiation.containsKey(level.dimension())) {
+            worldRadiation.put(level.dimension(), new WorldRadiation());
+        }
+        currentRadiation = worldRadiation.get(level.dimension()).getChunkRadiation(x, z);
     }
 
     public static void setPlayerRadiation(long radiation) {

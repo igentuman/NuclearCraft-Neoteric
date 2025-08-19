@@ -60,11 +60,11 @@ public class PlayerRadiation implements IPlayerRadiationCapability {
     }
 
     public int getInventoryRadiation(Player player) {
-        int rad = 0;
+        long rad = 0;
         for(ItemStack itemStack: player.getInventory().items) {
             rad += (int) (ItemRadiation.byItem(itemStack.getItem())*1000000*(itemStack.getCount()+1)*0.75D);
         }
-        return rad/5;//player is not getting radiation instantly
+        return Math.toIntExact(Math.min(rad / 5, Integer.MAX_VALUE));//player is not getting radiation instantly
     }
 
     public static int getRadiationShielding(LivingEntity player, String...modFilter)
@@ -119,7 +119,6 @@ public class PlayerRadiation implements IPlayerRadiationCapability {
     public void updateContaminationStage(Player player)
     {
         if(radiation >= maxPlayerRadiation) {
-            radiation = radiation/3;
             player.hurt(NCRadiationDamageSource.RADIATION((ServerPlayer) player), 1000000);
             return;
         }

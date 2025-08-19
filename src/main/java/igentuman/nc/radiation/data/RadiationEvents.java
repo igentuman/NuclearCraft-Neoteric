@@ -23,6 +23,7 @@ import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -35,7 +36,7 @@ import static igentuman.nc.setup.Registration.RADIATION_RESISTANCE;
 public class RadiationEvents {
 
     public static boolean isTracking = false;
-    private static List<ItemEntity> droppedRadioactiveItems = new LinkedList<>();
+    private static HashMap<Level, List<ItemEntity>> droppedRadioactiveItems = new HashMap<>();
 
     public static void attachWorldRadiation(final AttachCapabilitiesEvent<Level> event) {
         if (!event.getObject().getCapability(WorldRadiationProvider.WORLD_RADIATION).isPresent()) {
@@ -83,6 +84,7 @@ public class RadiationEvents {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onEntitySpawn(EntityJoinLevelEvent event) {
+        if(event.getLevel().isClientSide()) return;
         Entity entity = event.getEntity();
         if (entity instanceof ItemEntity) {
             ItemStack stack = ((ItemEntity) entity).getItem();
@@ -92,7 +94,9 @@ public class RadiationEvents {
             double radiation = ItemRadiation.byItem(stack.getItem());
             if(radiation > 0.001) {
                 RadiationManager.get(event.getLevel()).addRadiation(event.getLevel(), stack.getCount()*radiation/5, entity.blockPosition().getX(), entity.blockPosition().getY(), entity.blockPosition().getZ());
-                droppedRadioactiveItems.add((ItemEntity) entity);
+                List<ItemEntity> items = droppedRadioactiveItems.computeIfAbsent(event.getLevel(), k -> new LinkedList<>());
+                items.add((ItemEntity) entity);
+                droppedRadioactiveItems.put(event.getLevel(), items);
             }
         }
     }
@@ -129,28 +133,24 @@ public class RadiationEvents {
     }
 
     public static void onWorldTick(TickEvent.LevelTickEvent event) {
-        if(!isTracking) {
-            return;
-        }
-        // Don't do anything client side
-        if (event.level.isClientSide) {
-            return;
-        }
-        if (!event.haveTime()) {
+        if(!isTracking || event.level.isClientSide) {
             return;
         }
         Level world = event.level;
+        if(!droppedRadioactiveItems.containsKey(world)) {
+            droppedRadioactiveItems.put(world, new LinkedList<>());
+        }
         RadiationManager manager = RadiationManager.get(event.level);
-        int size = droppedRadioactiveItems.size();
+        int size = droppedRadioactiveItems.get(world).size();
         for(int i = 0; i < size; i++) {
-            ItemEntity entity = droppedRadioactiveItems.get(i);
+            ItemEntity entity = droppedRadioactiveItems.get(world).get(i);
             if(entity.isAlive()) {
                 double radiation = ItemRadiation.byItem(entity.getItem().getItem());
                 if(radiation > 0.001) {
                     RadiationManager.get(world).addRadiation(world, radiation/5, entity.blockPosition());
                 }
             } else {
-                droppedRadioactiveItems.remove(i);
+                droppedRadioactiveItems.get(world).remove(i);
                 i--;
                 size--;
             }

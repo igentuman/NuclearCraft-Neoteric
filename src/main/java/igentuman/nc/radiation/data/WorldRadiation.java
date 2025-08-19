@@ -20,6 +20,10 @@ public class WorldRadiation implements IWorldRadiationCapability {
     public WorldRadiation() {
     }
 
+    public WorldRadiation(HashMap<Long, Long> radiation) {
+        this.chunkRadiation = radiation;
+    }
+
     public static WorldRadiation deserialize(CompoundTag radiation) {
         WorldRadiation worldRadiation = new WorldRadiation();
         worldRadiation.deserializeNBT(radiation);
@@ -114,14 +118,14 @@ public class WorldRadiation implements IWorldRadiationCapability {
         this.level = level;
         long id = pack(x, z);
         int curTimestamp = (int) (getServerTime() / 20);
-        int newRadiation = (int) (radiation*1000000);
+        int newRadiation = (int) Math.min(radiation*1000000, Integer.MAX_VALUE);
         if(!RADIATION_CONFIG.ENABLED.get()) return 0;
         if(chunkRadiation.containsKey(id)) {
             int curRadiation = unpackX(chunkRadiation.get(id));
             if(curRadiation > newRadiation) {
                 newRadiation = newRadiation/20;
             }
-            newRadiation = curRadiation + newRadiation;
+            newRadiation = Math.min(curRadiation + newRadiation, Integer.MAX_VALUE);
             chunkRadiation.replace(id, pack(newRadiation, curTimestamp));
         }
 

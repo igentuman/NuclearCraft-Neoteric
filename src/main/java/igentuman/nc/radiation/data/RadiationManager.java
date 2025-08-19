@@ -7,6 +7,7 @@ import igentuman.nc.network.toClient.PacketWorldRadiationData;
 import igentuman.nc.util.ModUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
@@ -17,6 +18,10 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+
 import static igentuman.nc.handler.config.RadiationConfig.RADIATION_CONFIG;
 import static igentuman.nc.radiation.data.WorldRadiation.pack;
 
@@ -24,7 +29,7 @@ public class RadiationManager extends SavedData {
 
     private WorldRadiation worldRadiation;
     private int tickCounter = RADIATION_CONFIG.RADIATION_UPDATE_INTERVAL.get();
-
+    private static final HashMap<ResourceKey<Level>, RadiationManager> instances = new HashMap<>();
     public static void clear(Level level) {
         get(level).worldRadiation.chunkRadiation.clear();
         get(level).worldRadiation.updatedChunks.clear();
@@ -48,8 +53,12 @@ public class RadiationManager extends SavedData {
         if (level.isClientSide) {
             throw new RuntimeException("Don't access this client-side!");
         }
+        if(instances.containsKey(level.dimension())) {
+            return instances.get(level.dimension());
+        }
         DimensionDataStorage storage = ((ServerLevel)level).getDataStorage();
-        return storage.computeIfAbsent(RadiationManager::new, RadiationManager::new, "nc_world_radiation");
+        instances.put(level.dimension(), storage.computeIfAbsent(RadiationManager::new, RadiationManager::new, "nc_world_radiation"));
+        return instances.get(level.dimension());
     }
 
     public void tick(Level level) {
@@ -65,11 +74,8 @@ public class RadiationManager extends SavedData {
                     playerRadiation = playerRadiationCap.getRadiation();
                 }
 
-                if(level.getGameTime() % 20 == 0) {
-                    NuclearCraft.packetHandler().sendTo(new PacketWorldRadiationData(worldRadiation.chunkRadiation), serverPlayer);
-                } else if(wasRadiation != playerRadiation) {
-                    NuclearCraft.packetHandler().sendTo(new PacketPlayerRadiationData(playerRadiation), serverPlayer);
-                }
+                NuclearCraft.packetHandler().sendTo(new PacketWorldRadiationData(worldRadiation.chunkRadiation), serverPlayer);
+                NuclearCraft.packetHandler().sendTo(new PacketPlayerRadiationData(playerRadiation), serverPlayer);
             }
 
         });

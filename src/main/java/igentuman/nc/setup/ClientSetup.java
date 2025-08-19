@@ -115,7 +115,7 @@ public class ClientSetup {
             setPropertyOverride(GEIGER_COUNTER.get(), rl("radiation"), (stack, world, entity, seed) -> {
                 if (entity instanceof Player) {
                     if(!((Player) entity).getInventory().contains(new ItemStack(GEIGER_COUNTER.get()))) return 0;
-                    ClientRadiationData.setCurrentChunk(entity.chunkPosition().x, entity.chunkPosition().z);
+                    ClientRadiationData.setCurrentChunk(entity.chunkPosition().x, entity.chunkPosition().z, entity.level());
                     return ClientRadiationData.radiationStage();
                 }
                 return 0;

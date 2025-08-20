@@ -112,7 +112,7 @@ dependencies {
     implementation 'org.spongepowered:mixin:0.8.5'
     minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
 
-    compileOnly fg.deobf("com.gregtechceu.gtceu:gtceu-${mc_version}:${gtm_version}"){
+    implementation fg.deobf("com.gregtechceu.gtceu:gtceu-${mc_version}:${gtm_version}"){
         transitive = false
     }
     //implementation fg.deobf("curse.maven:configured-457570:5180900")

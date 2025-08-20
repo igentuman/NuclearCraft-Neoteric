@@ -881,7 +881,8 @@ public class NCLanguageProvider extends LanguageProvider {
         add("reactor.heating", "Heat Gen: %s H/t");
         add("reactor.net_heat", "Net Heat: %s H/t");
         add("reactor.boiling_penalty", "Boiling Penalty: %s H/t");
-        add("reactor.forge_energy_per_tick", "FE Gen: %s FE/t");
+        add("tooltip.nc.forge_energy_per_tick", "FE Gen: %s FE/t");
+        add("tooltip.nc.eu_per_tick", "EU Gen: %s EU/t");
         add("reactor.heat_sinks_count", "Active Heat Sinks: %s");
         add("reactor.moderators_count", "Active Moderators: %s");
         add("reactor.moderation_level", "Moderation Level: %s%%");

@@ -204,7 +204,7 @@ public class FissionControllerContainer extends AbstractContainerMenu {
     }
 
     public int energyPerTick() {
-        return blockEntity.energyPerTick;
+        return energy2Display(blockEntity.energyPerTick);
     }
 
     public String getHeatMultiplier() {

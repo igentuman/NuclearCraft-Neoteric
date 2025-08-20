@@ -287,7 +287,7 @@ public class FusionCoreScreen extends AbstractContainerScreen<FusionCoreContaine
                     Optional.empty(), pMouseX, pMouseY);
         }
         energyBar.clearTooltips();
-        energyBar.addTooltip(__("reactor.forge_energy_per_tick", scaledFormat(container().energyPerTick())));
+        energyBar.addTooltip(__("tooltip.nc.forge_energy_per_tick", scaledFormat(container().energyPerTick())));
         energyBar.addTooltip(__("reactor.internal_usage", scaledFormat(container().requiredEnergy())).withStyle(ChatFormatting.RED));
         if(energyBar.isMouseOver(pMouseX, pMouseY)) {
             graphics.renderTooltip(font, energyBar.getTooltips(),

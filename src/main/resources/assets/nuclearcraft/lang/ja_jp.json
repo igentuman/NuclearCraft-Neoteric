@@ -2083,7 +2083,7 @@
   "processor_side_config.title": "スロットを選択",
   "processor_slot_mode.title": "スロットモード",
   "reactor.cooling": "冷却: %s H/t",
-  "reactor.forge_energy_per_tick": "FE発電: %s FE/t",
+  "tooltip.nc.forge_energy_per_tick": "FE発電: %s FE/t",
   "reactor.fuel_cells": "核燃料セル: %s",
   "reactor.heat_sinks_count": "アクティブヒートシンクs: %s",
   "reactor.heating": "発熱: %s H/t",

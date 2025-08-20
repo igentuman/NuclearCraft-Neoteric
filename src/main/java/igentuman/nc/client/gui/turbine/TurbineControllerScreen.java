@@ -216,7 +216,7 @@ public class TurbineControllerScreen extends AbstractContainerScreen<TurbineCont
         if(container().getMaxEnergy() > 0) {
             energyBar.clearTooltips();
             if (container().isRunning()) {
-                energyBar.addTooltip(__("reactor.forge_energy_per_tick", container().energyPerTick()));
+                energyBar.addTooltip(__(energyGenLine(), container().energyPerTick()));
             }
             if(energyBar.isMouseOver(pMouseX, pMouseY)) {
                 graphics.renderTooltip(font, energyBar.getTooltips(),

@@ -27,6 +27,14 @@ public class TextUtils
 		return component.copy().setStyle(style);
 	}
 
+    public static String energyGenLine()
+    {
+        if(ModUtil.isGtLoaded() && isGTEUCapEnabled()) {
+            return "tooltip.nc.eu_per_tick";
+        }
+        return "tooltip.nc.forge_energy_per_tick";
+    }
+
 	public static String numberFormat(double value)
 	{
 		String preffix = "";

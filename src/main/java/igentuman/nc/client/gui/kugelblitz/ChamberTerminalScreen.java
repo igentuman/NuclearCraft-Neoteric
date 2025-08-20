@@ -230,7 +230,7 @@ public class ChamberTerminalScreen extends AbstractContainerScreen<ChamberTermin
                     Optional.empty(), pMouseX, pMouseY);
         }
         energyBar.clearTooltips();
-        energyBar.addTooltip(__("reactor.forge_energy_per_tick", formatEnergy(container().energyPerTick())));
+        energyBar.addTooltip(__(energyGenLine(), container().energyPerTick()));
         if(energyBar.isMouseOver(pMouseX, pMouseY+10)) {
             graphics.renderTooltip(font, energyBar.getTooltips(),
                     Optional.empty(), pMouseX, pMouseY);

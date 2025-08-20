@@ -23,6 +23,7 @@ import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_PORT_CONTAINER;
 import static igentuman.nc.util.TextUtils.__;
+import static igentuman.nc.util.TextUtils.energy2Display;
 
 public class TurbinePortContainer extends AbstractContainerMenu {
 
@@ -127,11 +128,11 @@ public class TurbinePortContainer extends AbstractContainerMenu {
     }
 
     public int getMaxEnergy() {
-        return portBE.getMaxEnergyStored();
+        return energy2Display(portBE.getMaxEnergyStored());
     }
 
     public int energyPerTick() {
-        return portBE.energyPerTick();
+        return energy2Display(portBE.energyPerTick());
     }
 
     public byte getComparatorMode() {

@@ -2050,7 +2050,7 @@
   "processor_side_config.title": "选择槽位",
   "processor_slot_mode.title": "槽位模式",
   "reactor.cooling": "冷却速率: %s H/t",
-  "reactor.forge_energy_per_tick": "发电量: %s FE/t",
+  "tooltip.nc.forge_energy_per_tick": "发电量: %s FE/t",
   "reactor.fuel_cells": "燃料单元: %s",
   "reactor.heat_sinks_count": "可用散热器: %s",
   "reactor.heating": "产热: %s H/t",

@@ -19,8 +19,7 @@ import java.util.Objects;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_CONTROLLER_CONTAINER;
-import static igentuman.nc.util.TextUtils.__;
-import static igentuman.nc.util.TextUtils.roundFormat;
+import static igentuman.nc.util.TextUtils.*;
 
 public class TurbineControllerContainer extends AbstractContainerMenu {
 
@@ -118,7 +117,7 @@ public class TurbineControllerContainer extends AbstractContainerMenu {
     }
 
     public int getMaxEnergy() {
-        return blockEntity.energyStorage.getMaxEnergyStored();
+        return energy2Display(blockEntity.energyStorage.getMaxEnergyStored());
     }
 
     public String getEfficiency() {
@@ -126,7 +125,7 @@ public class TurbineControllerContainer extends AbstractContainerMenu {
     }
 
     public int energyPerTick() {
-        return blockEntity.energyPerTick;
+        return energy2Display(blockEntity.energyPerTick);
     }
 
     public boolean hasRecipe() {

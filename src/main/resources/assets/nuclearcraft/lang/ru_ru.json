@@ -1886,7 +1886,7 @@
   "multiblock.casing.complete": "Каркас завершен",
   "multiblock.casing.incomplete": "Каркас не завершен",
   "reactor.cooling": "Охлаждение: %s H/t",
-  "reactor.forge_energy_per_tick": "Генерация FE: %s FE/t",
+  "tooltip.nc.forge_energy_per_tick": "Генерация FE: %s FE/t",
   "reactor.fuel_cells": "Топливные ячейки: %s",
   "reactor.heat_sinks_count": "Активные кулеры: %s",
   "reactor.heating": "Генерация тепла: %s H/t",

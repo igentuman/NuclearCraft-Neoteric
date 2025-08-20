@@ -25,9 +25,10 @@ import java.util.Optional;
 
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.client.gui.element.fluid.FluidTankRenderer.TooltipMode.SHOW_AMOUNT_AND_CAPACITY;
+import static igentuman.nc.compat.gregtech.GTUtils.isOnlyGTCEUCapEnabled;
 import static igentuman.nc.handler.config.FissionConfig.FISSION_CONFIG;
-import static igentuman.nc.util.TextUtils.__;
-import static igentuman.nc.util.TextUtils.applyFormat;
+import static igentuman.nc.util.ModUtil.isGtLoaded;
+import static igentuman.nc.util.TextUtils.*;
 
 public class FissionControllerScreen extends AbstractContainerScreen<FissionControllerContainer> implements IProgressScreen, IVerticalBarScreen {
     protected final ResourceLocation GUI = rl("textures/gui/fission/controller.png");
@@ -258,7 +259,7 @@ public class FissionControllerScreen extends AbstractContainerScreen<FissionCont
         }
         if(!container().isBoilingMode()) {
             energyBar.clearTooltips();
-            energyBar.addTooltip(__("reactor.forge_energy_per_tick", container().energyPerTick()));
+            energyBar.addTooltip(__(energyGenLine(), container().energyPerTick()));
             if(energyBar.isMouseOver(pMouseX, pMouseY+10)) {
                 graphics.renderTooltip(font, energyBar.getTooltips(),
                         Optional.empty(), pMouseX, pMouseY);

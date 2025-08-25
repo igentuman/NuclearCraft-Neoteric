@@ -125,7 +125,7 @@ public class WorldRadiation implements IWorldRadiationCapability {
             if(curRadiation > newRadiation) {
                 newRadiation = newRadiation/20;
             }
-            newRadiation = Math.min(curRadiation + newRadiation, Integer.MAX_VALUE);
+            newRadiation = Math.max(0, Math.min(curRadiation + newRadiation, Integer.MAX_VALUE));
             chunkRadiation.replace(id, pack(newRadiation, curTimestamp));
         }
 

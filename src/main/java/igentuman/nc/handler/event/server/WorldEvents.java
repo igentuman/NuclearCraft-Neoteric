@@ -1,27 +1,19 @@
 package igentuman.nc.handler.event.server;
 
 import igentuman.nc.block.turbine.TurbineBladeBlock;
-import igentuman.nc.item.HEVItem;
-import igentuman.nc.item.HazmatItem;
 import igentuman.nc.multiblock.MultiblockExecutorManager;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.radiation.data.RadiationEvents;
-import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.npc.VillagerTrades;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.trading.MerchantOffer;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.event.TickEvent.LevelTickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.ServerTickEvent;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.event.level.ChunkEvent;
 import net.minecraftforge.event.level.LevelEvent;
@@ -39,7 +31,6 @@ import java.util.concurrent.CompletableFuture;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.content.materials.Materials.plutonium239;
 import static igentuman.nc.setup.registration.FissionFuel.NC_ISOTOPES;
-import static igentuman.nc.setup.registration.NCItems.HEV_BOOTS;
 import static igentuman.nc.setup.registration.Villager.addVillagerTrades;
 
 @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)

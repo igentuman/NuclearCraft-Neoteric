@@ -81,7 +81,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("emi.category.nuclearcraft.manufactory", "Manufactory");
         add("emi.category.nuclearcraft.rock_crusher", "Rock Crusher");
         add("emi.category.nuclearcraft.irradiator", "Irradiator");
-        add("emi.category.nuclearcraft.pressurizer", "Pressuruzer");
+        add("emi.category.nuclearcraft.pressurizer", "Pressurizer");
         add("emi.category.nuclearcraft.melter", "Melter");
         add("emi.category.nuclearcraft.nc_ore_veins", "Ore Veins");
         add("emi.category.nuclearcraft.gas_scrubber", "Gas Scrubber");
@@ -428,6 +428,8 @@ public class NCLanguageProvider extends LanguageProvider {
         add("jei.recipe.nc.turbine", "Turbine");
         add("jei.recipe.nc.fusion_reactor", "Fusion Reactor");
         add("jei.recipe.nc.fission_reactor", "Fission Reactor");
+        add("jei.recipe.nc.target_chamber", "Target Chamber");
+        add("jei.recipe.nc.linear_accelerator", "Linear Accelerator");
         add("jei.recipe.nc.kugelblitz_chamber", "Kugelblitz Chamber");
         add("jei.recipe.nc.leacher", "Leacher Setup");
         add("jei.info.nuclearcraft.kugelblitz.description", "Kugelblitz chamber allows to transform items using black hole quantum fields.");
@@ -509,12 +511,16 @@ public class NCLanguageProvider extends LanguageProvider {
     }
 
     private void multiblocks() {
+        String prefix = "";
         for(String name: ACCELERATOR_BLOCKS.keySet()) {
+            if(name.contains("cooler")) {
+                prefix = "Accelerator ";
+            }
             String title = convertToName(name);
-            if(name.contains("thoroid")) {
+            if(name.contains("ring")) {
                 title = "(WIP) " + title;
             }
-            add(ACCELERATOR_BLOCKS.get(name).get(), title);
+            add(ACCELERATOR_BLOCKS.get(name).get(), prefix+title);
         }
         for(String name: TARGET_CHAMBER_BLOCKS.keySet()) {
             String title = convertToName(name);
@@ -525,8 +531,12 @@ public class NCLanguageProvider extends LanguageProvider {
             add(KUGELBLITZ_BLOCKS.get(name).get(), title);
         }
         for(String name: FISSION_BLOCKS.keySet()) {
+            prefix = "";
+            if(name.contains("heat_sink")) {
+                prefix = "Fission Reactor ";
+            }
             String title = convertToName(name);
-            add(FISSION_BLOCKS.get(name).get(), title);
+            add(FISSION_BLOCKS.get(name).get(), prefix+title);
         }
         for(String name: TURBINE_BLOCKS.keySet()) {
             String title = convertToName(name);

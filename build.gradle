@@ -115,6 +115,8 @@ dependencies {
     implementation fg.deobf("com.gregtechceu.gtceu:gtceu-${mc_version}:${gtm_version}"){
         transitive = false
     }
+
+    compileOnly fg.deobf("curse.maven:masterful-machinery-423476:5818581")
     //implementation fg.deobf("curse.maven:configured-457570:5180900")
     //compileOnly fg.deobf("curse.maven:mantle-74924:6603205")
     //compileOnly fg.deobf("curse.maven:tinkers-construct-74072:6603344")
@@ -133,8 +135,8 @@ dependencies {
     runtimeOnly fg.deobf("curse.maven:the-lost-cities-269024:6174986")
     compileOnly fg.deobf("mezz.jei:jei-${mc_version}-common-api:${jei_version}")
     compileOnly fg.deobf("mezz.jei:jei-${mc_version}-forge-api:${jei_version}")
-    compileOnly fg.deobf("mezz.jei:jei-${mc_version}-forge:${jei_version}")
-    implementation fg.deobf("curse.maven:emi-580555:5872526")
+    implementation fg.deobf("mezz.jei:jei-${mc_version}-forge:${jei_version}")
+    compileOnly fg.deobf("curse.maven:emi-580555:5872526")
     //runtimeOnly fg.deobf("curse.maven:ctm-267602:4393695")
 
     compileOnly fg.deobf("mcjty.theoneprobe:theoneprobe:${top_version}:api") {

@@ -7,8 +7,7 @@ import net.minecraft.data.recipes.FinishedRecipe;
 
 import java.util.function.Consumer;
 
-import static igentuman.nc.setup.registration.NCItems.ALL_NC_ITEMS;
-import static igentuman.nc.setup.registration.NCItems.NC_CHUNKS;
+import static igentuman.nc.setup.registration.NCItems.*;
 import static igentuman.nc.setup.registration.Tags.GEMS_TAG;
 import static igentuman.nc.setup.registration.Tags.INGOTS_TAG;
 import static net.minecraft.world.item.Items.*;
@@ -31,6 +30,7 @@ public class ManufactoryRecipes extends AbstractRecipeProvider {
                 itemToItem(gemIngredient(name), dustIngredient(name), 1.5D);
             }
         }
+        itemToItem(ingredient(NC_PARTS.get("silicon_boule").get()), ingredient(NC_PARTS.get("silicon_wafer").get(), 2));
         itemToItem(ingredient(RAW_IRON), dustIngredient(Materials.iron, 2));
         itemToItem(ingredient(RAW_COPPER), dustIngredient(Materials.copper, 2));
         itemToItem(ingredient(RAW_GOLD), dustIngredient(Materials.gold, 2));

@@ -13,6 +13,7 @@ import static igentuman.nc.setup.registration.NCBlocks.NC_BLOCKS;
 import static igentuman.nc.setup.registration.NCBlocks.NC_MATERIAL_BLOCKS;
 import static igentuman.nc.setup.registration.NCItems.*;
 import static igentuman.nc.setup.registration.Tags.INGOTS_TAG;
+import static igentuman.nc.setup.registration.Tags.forgeIngot;
 import static net.minecraft.world.item.Items.*;
 
 public class PressurizerRecipes extends AbstractRecipeProvider {
@@ -26,6 +27,7 @@ public class PressurizerRecipes extends AbstractRecipeProvider {
                 itemToItem(ingredient(ingotTag(name)), plateStack(name));
             }
         }
+        itemToItem(ingredient(forgeIngot("silicon_carbide"), 3), ingredient(NC_PARTS.get("silicon_boule").get()));
         itemToItem(ingredient(IRON_INGOT), plateStack(Materials.iron));
         itemToItem(ingredient(COPPER_INGOT), plateStack(Materials.copper));
 

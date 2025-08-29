@@ -9,6 +9,8 @@ import net.minecraft.world.item.Item;
 import java.util.List;
 import java.util.function.Consumer;
 
+import static igentuman.nc.setup.registration.NCItems.NC_PARTS;
+import static igentuman.nc.setup.registration.Tags.forgeGem;
 import static igentuman.nc.setup.registration.Tags.forgeOre;
 import static net.minecraft.world.item.Items.*;
 
@@ -17,6 +19,11 @@ public class RockCrusherRecipes extends AbstractRecipeProvider {
     public static void generate(Consumer<FinishedRecipe> consumer) {
         RockCrusherRecipes.consumer = consumer;
         ID = Processors.ROCK_CRUSHER;
+
+        add(
+                ingredient(GRAVEL, 4),
+                List.of(ingredient(SAND, 1), ingredient(forgeGem("silicon")))
+        );
 
         add(
                 ingredient(forgeOre("cobalt"), 4),

@@ -134,7 +134,6 @@ public class LinearAcceleratorControllerScreen extends AbstractContainerScreen<L
         if(isInteriorValid() && isCasingValid()) {
             checkboxInterior.addTooltip(__("tooltip.nc.accelerator.focus", numberFormat(container().getFocus())));
             checkboxInterior.addTooltip(__("tooltip.nc.accelerator.quadroupoles", container().getQuadroupoles()));
-            checkboxInterior.addTooltip(__("tooltip.nc.accelerator.dipoles", container().getDipoles()));
             checkboxInterior.addTooltip(__("tooltip.nc.accelerator.voltage", container().getVoltage()));
             checkboxInterior.addTooltip(__("tooltip.nc.accelerator.amplifiers", container().getAmplifiers()));
             checkboxInterior.addTooltip(__("tooltip.nc.accelerator.coolers", container().getCoolers()));

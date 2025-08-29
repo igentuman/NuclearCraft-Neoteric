@@ -19,8 +19,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 import java.util.List;
 
-import static igentuman.nc.NuclearCraft.MODID;
-import static igentuman.nc.NuclearCraft.rl;
+import static igentuman.nc.NuclearCraft.*;
 import static igentuman.nc.content.materials.Materials.neutronium;
 import static igentuman.nc.multiblock.fission.FissionReactorRegistration.CASING_ITEMS;
 import static igentuman.nc.multiblock.fission.FissionReactorRegistration.MODERATORS_ITEMS;
@@ -127,6 +126,9 @@ public class NCItemTags extends ItemTagsProvider {
         for(String name: NC_INGOTS.keySet()) {
             tag(Tags.Items.INGOTS).add(NC_INGOTS.get(name).get());
             tag(INGOTS_TAG.get(name)).add(NC_INGOTS.get(name).get());
+            tag(INGOTS_TAG.get(name)).add(NC_INGOTS.get(name).get());
+            TagKey<Item> C_INGOTS = TagKey.create(ITEM_REGISTRY, resourceLoc("ingots/"+name));
+            tag(C_INGOTS).add(NC_INGOTS.get(name).get());
         }
         tag(INGOTS_TAG.get("aluminium")).add(NC_INGOTS.get("aluminum").get());
     }
@@ -135,6 +137,8 @@ public class NCItemTags extends ItemTagsProvider {
         for(String name: NC_NUGGETS.keySet()) {
             tag(Tags.Items.NUGGETS).add(NC_NUGGETS.get(name).get());
             tag(NUGGETS_TAG.get(name)).add(NC_NUGGETS.get(name).get());
+            TagKey<Item> C_NUGGETS = TagKey.create(ITEM_REGISTRY, resourceLoc("nuggets/"+name));
+            tag(C_NUGGETS).add(NC_NUGGETS.get(name).get());
         }
         tag(NUGGETS_TAG.get("aluminium")).add(NC_NUGGETS.get("aluminum").get());
     }
@@ -143,6 +147,8 @@ public class NCItemTags extends ItemTagsProvider {
         for(String name: NCItems.NC_PLATES.keySet()) {
             tag(PLATE_TAG).add(NCItems.NC_PLATES.get(name).get());
             tag(PLATES_TAG.get(name)).add(NCItems.NC_PLATES.get(name).get());
+            TagKey<Item> C_PLATES = TagKey.create(ITEM_REGISTRY, resourceLoc("plates/"+name));
+            tag(C_PLATES).add(NC_PLATES.get(name).get());
         }
         tag(PLATES_TAG.get("aluminium")).add(NC_PLATES.get("aluminum").get());
     }
@@ -151,6 +157,8 @@ public class NCItemTags extends ItemTagsProvider {
         for(String name: NC_DUSTS.keySet()) {
             tag(Tags.Items.DUSTS).add(NC_DUSTS.get(name).get());
             tag(DUSTS_TAG.get(name)).add(NC_DUSTS.get(name).get());
+            TagKey<Item> C_DUSTS = TagKey.create(ITEM_REGISTRY, resourceLoc("dusts/"+name));
+            tag(C_DUSTS).add(NC_DUSTS.get(name).get());
         }
         tag(DUSTS_TAG.get("aluminium")).add(NC_DUSTS.get("aluminum").get());
         tag(DUSTS_TAG.get("salt")).add(NC_ITEMS.get("salt").get());
@@ -167,6 +175,8 @@ public class NCItemTags extends ItemTagsProvider {
     private void ores() {
         for(String ore: ORE_BLOCK_ITEMS.keySet()) {
             tag(Tags.Items.ORES).add(ORE_BLOCK_ITEMS.get(ore).get());
+            TagKey<Item> C_DUSTS = TagKey.create(ITEM_REGISTRY, resourceLoc("ores/"+ore));
+            tag(C_DUSTS).add(ORE_BLOCK_ITEMS.get(ore).get());
             tag(ORE_ITEM_TAGS.get(ore.replaceAll("_deepslate|_end|_nether", ""))).add(ORE_BLOCK_ITEMS.get(ore).get());
         }
     }

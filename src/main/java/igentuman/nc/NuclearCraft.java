@@ -128,6 +128,11 @@ public class NuclearCraft {
         return ResourceLocation.tryBuild("forge", path);
     }
 
+    public static ResourceLocation resourceLoc(String path)
+    {
+        return ResourceLocation.tryBuild("c", path);
+    }
+
     private void serverStopped(ServerStoppedEvent event) {
         NuclearCraft.instance.isNcBeStopped = true;
         //stop capability tracking

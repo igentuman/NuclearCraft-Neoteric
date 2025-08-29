@@ -568,7 +568,7 @@ public class NCRecipes extends RecipeProvider {
                 .pattern("LPL")
                 .define('C', NCProcessors.PROCESSORS.get(Processors.CHEMICAL_REACTOR).get())
                 .define('M', NC_PARTS.get("chassis").get())
-                .define('P', NC_PARTS.get("coil_magnesium_diboride").get())
+                .define('P', NC_PARTS.get("silicon_n_doped").get())
                 .define('L',  NC_PARTS.get("plate_elite").get())
                 .group(MODID+"_fusion")
                 .unlockedBy("item", has(NC_PARTS.get("chassis").get()))

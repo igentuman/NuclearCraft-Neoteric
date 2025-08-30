@@ -1,6 +1,7 @@
 package igentuman.nc.block.accelerator;
 
 import igentuman.nc.block.MultiblockBlock;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -14,8 +15,11 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nullable;
 import java.util.List;
 
+import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.TRANSPARENT_BLOCKS_PATTERN;
 import static igentuman.nc.util.TextUtils.__;
+import static igentuman.nc.util.TextUtils.applyFormat;
+import static net.minecraft.network.chat.Component.translatable;
 
 public class AcceleratorBlock extends MultiblockBlock {
 
@@ -41,7 +45,8 @@ public class AcceleratorBlock extends MultiblockBlock {
 
     @Override
     public void appendHoverText(ItemStack pStack, @Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag) {
-        //list.add(__("tooltip.kugelblitz.block_" + pStack.getItem()).withStyle(ChatFormatting.AQUA));
-        //list.add(__("multiblock.build_in_chunk.advise").withStyle(ChatFormatting.GREEN));
+        if(pStack.is(ACCELERATOR_BLOCKS.get("particle_beam").get().asItem())) {
+            list.add(applyFormat(__("tooltip.nc.particle_beam.desc"), ChatFormatting.GOLD));
+        }
     }
 }

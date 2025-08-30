@@ -2366,7 +2366,7 @@
   "nc_jei_cat.isotope_separator": "Сепаратор изотопов",
   "nc_jei_cat.kugelblitz_chamber": "Квантовая трансформация",
   "nc_jei_cat.leacher": "Выщелачиватель",
-  "nc_jei_cat.manufactory": "Фабрика",
+  "nc_jei_cat.manufactory": "Мануфактура",
   "nc_jei_cat.mek_chemical_conversion": "NC - GAS -> Конверсия",
   "nc_jei_cat.melter": "Плавильня",
   "nc_jei_cat.nc_ore_veins": "Жилы руды",
@@ -2752,5 +2752,6 @@
   "validation.structure.wrong_corner": "Неправильный угловой блок на позиции: %s",
   "validation.structure.wrong_inner": "Неправильный блок на позиции: %s",
   "validation.structure.wrong_outer": "Неправильный корпус на позиции: %s",
-  "validation.structure.wrong_proportions": "Неправильные пропорции"
+  "validation.structure.wrong_proportions": "Неправильные пропорции",
+  "tooltip.nc.particle_beam.desc": "Для формирования пути пучка частиц в центре ускорителей"
 }

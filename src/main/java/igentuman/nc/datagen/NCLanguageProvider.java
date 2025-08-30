@@ -616,6 +616,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("tooltip.detector.efficiency", "Efficiency: %s%%");
         add("tooltip.structure.sizes", "Structure sizes: Min %s - Max: %s");
         add("tooltip.turbine.max_eu_energy", "Max EU gen: %s");
+        add("tooltip.nc.particle_beam.desc", "Forms the central beam line for particle accelerators.");
         add("tooltip.turbine.max_energy", "Max FE gen: %s");
         add("tooltip.nc.report_issue", "Report a Bug");
         add("tooltip.nc.accelerator.strength", "Magnet Strength: %s T");

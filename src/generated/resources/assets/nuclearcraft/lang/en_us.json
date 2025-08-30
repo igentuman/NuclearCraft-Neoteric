@@ -2685,6 +2685,7 @@
   "tooltip.nc.moderator.desc": "Fission Reactor moderator. Has to be placed next to fuel cell. \n Each adjacent with fuel cell adds +%s%% efficiency and +%s%% heat gen",
   "tooltip.nc.multitool.desc": "Commonly used to config sides of batteries, barrels, ports...",
   "tooltip.nc.multitool.shift.desc": "Sneak + RBM to config back side",
+  "tooltip.nc.particle_beam.desc": "Forms the central beam line for particle accelerators.",
   "tooltip.nc.paste_json": "Paste JSON",
   "tooltip.nc.paste_json.descr": "File content or file itself",
   "tooltip.nc.qnp_mode": "Mode: %s",

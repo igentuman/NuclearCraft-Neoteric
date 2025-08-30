@@ -264,6 +264,6 @@ public class FusionCoreProxyBE extends NuclearCraftBE implements MultiblockAttac
     }
 
     public int getAnalogSignal() {
-        return getCoreBE().analogSignal;
+        return getCoreBE() == null ? 0 : getCoreBE().analogSignal;
     }
 }

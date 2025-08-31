@@ -49,6 +49,12 @@ public class FluidTankRenderer extends NCGuiElement {
     protected boolean canVoid = false;
     protected final FluidTank tank;
 
+    public FluidTankRenderer(FluidTank tank, int id, TooltipMode tooltipMode, int width, int height, int x, int y, boolean canVoid) {
+        this(tank, tooltipMode, width, height, x, y);
+        this.canVoid = canVoid;
+        this.slotId = id;
+    }
+
     public static FluidTankRenderer tank(FluidTank fluidTank) {
         return new FluidTankRenderer(fluidTank, 16, 16, 0, 0);
     }

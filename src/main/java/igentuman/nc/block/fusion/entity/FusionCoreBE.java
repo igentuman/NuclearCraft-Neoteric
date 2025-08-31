@@ -897,6 +897,13 @@ public class FusionCoreBE extends MultiblockControllerBE {
         return report;
     }
 
+    public void voidFluidSlot(int slotId) {
+        if(contentHandler() != null) {
+            contentHandler().voidFluidSlot(slotId);
+            setChanged();
+        }
+    }
+
     public static class Recipe extends NcRecipe {
         public Recipe(ResourceLocation id, ItemStackIngredient[] input, ItemStackIngredient[] output, FluidStackIngredient[] inputFluids, FluidStackIngredient[] outputFluids, double timeModifier, double powerModifier, double radiation, double temperature) {
             super(id, input, output, inputFluids, outputFluids, timeModifier, powerModifier, radiation, temperature);

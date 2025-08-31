@@ -222,4 +222,8 @@ public class FusionCoreContainer extends AbstractContainerMenu {
     public boolean canAnalyze() {
         return blockEntity.canAnalyze();
     }
+
+    public BlockPos getPosition() {
+        return blockEntity.getBlockPos();
+    }
 }

@@ -2,6 +2,7 @@
 package igentuman.nc.network.toServer;
 
 import igentuman.nc.block.entity.processor.NCProcessorBE;
+import igentuman.nc.block.fusion.entity.FusionCoreBE;
 import igentuman.nc.block.turbine.entity.TurbineControllerBE;
 import igentuman.nc.block.turbine.entity.TurbinePortBE;
 import igentuman.nc.network.INcPacket;
@@ -41,6 +42,10 @@ public class PacketFlushSlotContent implements INcPacket {
             return;
         }
         if((be instanceof TurbinePortBE ncBe)) {
+            ncBe.voidFluidSlot(slotId);
+            return;
+        }
+        if((be instanceof FusionCoreBE ncBe)) {
             ncBe.voidFluidSlot(slotId);
             return;
         }

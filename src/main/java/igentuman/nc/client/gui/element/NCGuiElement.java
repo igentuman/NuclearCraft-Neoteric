@@ -2,6 +2,7 @@ package igentuman.nc.client.gui.element;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import igentuman.nc.client.gui.FusionCoreScreen;
 import igentuman.nc.client.gui.processor.NCProcessorScreen;
 import igentuman.nc.client.gui.turbine.TurbineControllerScreen;
 import igentuman.nc.client.gui.turbine.TurbinePortScreen;
@@ -85,6 +86,9 @@ public class NCGuiElement extends AbstractWidget {
         }
         if(screen instanceof TurbinePortScreen processorScreen) {
             return processorScreen.getMenu().getPosition();
+        }
+        if(screen instanceof FusionCoreScreen coreScreen) {
+            return coreScreen.getMenu().getPosition();
         }
         return BlockPos.ZERO;
     }

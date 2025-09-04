@@ -2753,5 +2753,7 @@
   "validation.structure.wrong_inner": "Неправильный блок на позиции: %s",
   "validation.structure.wrong_outer": "Неправильный корпус на позиции: %s",
   "validation.structure.wrong_proportions": "Неправильные пропорции",
-  "tooltip.nc.particle_beam.desc": "Для формирования пути пучка частиц в центре ускорителей"
+  "tooltip.nc.particle_beam.desc": "Для формирования пути пучка частиц в центре ускорителей",
+  "tooltip.nc.magnet.disable": "Выключить автоподбор",
+  "tooltip.nc.magnet.enable": "Включить автоподбор"
 }

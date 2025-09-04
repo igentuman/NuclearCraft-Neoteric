@@ -8,7 +8,7 @@ import igentuman.nc.handler.sided.SlotModePair;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.recipes.NcRecipeType;
 import igentuman.nc.recipes.ingredient.creator.IngredientCreatorAccess;
-import igentuman.nc.util.CustomEnergyStorage;
+import igentuman.nc.util.capability.CustomEnergyStorage;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

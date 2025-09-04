@@ -2,7 +2,7 @@ package igentuman.nc.block.entity.energy;
 
 import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.setup.registration.NCEnergyBlocks;
-import igentuman.nc.util.CustomEnergyStorage;
+import igentuman.nc.util.capability.CustomEnergyStorage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;

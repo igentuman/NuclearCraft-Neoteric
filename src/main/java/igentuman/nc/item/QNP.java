@@ -2,8 +2,8 @@ package igentuman.nc.item;
 
 import igentuman.nc.handler.ItemEnergyHandler;
 import igentuman.nc.setup.registration.NcParticleTypes;
-import igentuman.nc.util.CapabilityUtils;
-import igentuman.nc.util.CustomEnergyStorage;
+import igentuman.nc.util.capability.CapabilityUtils;
+import igentuman.nc.util.capability.CustomEnergyStorage;
 import igentuman.nc.util.RayTraceUtils;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
@@ -53,7 +53,6 @@ import static igentuman.nc.block.entity.NuclearCraftBE.isGTEUCapEnabled;
 import static igentuman.nc.compat.gregtech.GTUtils.formatEUEnergy;
 import static igentuman.nc.compat.gregtech.GTUtils.isOnlyGTCEUCapEnabled;
 import static igentuman.nc.handler.config.CommonConfig.ENERGY_STORAGE;
-import static igentuman.nc.handler.config.CommonConfig.GTCEU_CONFIG;
 import static igentuman.nc.setup.registration.NCSounds.ITEM_CHARGED;
 import static igentuman.nc.util.AreaUtil.getArea;
 import static igentuman.nc.util.ModUtil.isGtLoaded;

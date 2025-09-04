@@ -9,7 +9,7 @@ import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.recipes.NcRecipeType;
 import igentuman.nc.recipes.RecipeInfo;
 import igentuman.nc.recipes.type.NcRecipe;
-import igentuman.nc.util.CustomEnergyStorage;
+import igentuman.nc.util.capability.CustomEnergyStorage;
 import igentuman.nc.util.BlockPosInstance;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.client.Minecraft;

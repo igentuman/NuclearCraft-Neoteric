@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
 import com.gregtechceu.gtceu.utils.GTMath;
 import igentuman.nc.block.entity.NuclearCraftBE;
-import igentuman.nc.util.CustomEnergyStorage;
+import igentuman.nc.util.capability.CustomEnergyStorage;
 import net.minecraft.core.Direction;
 import net.minecraftforge.common.util.LazyOptional;
 

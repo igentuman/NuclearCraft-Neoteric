@@ -4,7 +4,7 @@ import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.client.particle.FusionBeamParticleData;
 import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.kugelblitz.KugelblitzMultiblock;
-import igentuman.nc.util.CustomEnergyStorage;
+import igentuman.nc.util.capability.CustomEnergyStorage;
 import igentuman.nc.util.annotation.NBTField;
 import mekanism.api.math.FloatingLong;
 import net.minecraft.core.BlockPos;

@@ -46,13 +46,13 @@ public class StorageContainerContainer<T extends AbstractContainerMenu> extends 
          case 12 -> xShift = 32;
          case 13 -> xShift = 41;
       }
-      y += 24;
+      y += 23;
       for(int i1 = 0; i1 < 3; ++i1) {
          for(int k1 = 0; k1 < 9; ++k1) {
             this.addSlot(new Slot(pPlayerInventory, k1 + i1 * 9 + 9, xShift + k1 * 18, y + i1 * 18));
          }
       }
-      y += 18*3+2;
+      y += 18*3+4;
       for(int j1 = 0; j1 < 9; ++j1) {
          this.addSlot(new Slot(pPlayerInventory, j1, xShift + j1 * 18, y));
       }
@@ -71,7 +71,7 @@ public class StorageContainerContainer<T extends AbstractContainerMenu> extends 
     * Determines whether supplied player can use this container
     */
    public boolean stillValid(Player pPlayer) {
-      return true;
+      return pPlayer.getOnPos().distSqr(blockEntity.getBlockPos()) <= 64.0D;
    }
 
    /**

@@ -1,28 +1,18 @@
 package igentuman.nc.block.accelerator.entity;
 
 import igentuman.nc.NuclearCraft;
-import igentuman.nc.block.entity.MultiblockControllerBE;
 import igentuman.nc.compat.cc.LinearAcceleratorPeripheral;
 import igentuman.nc.compat.oc2.LinearAcceleratorDevice;
 import igentuman.nc.content.particles.*;
-import igentuman.nc.handler.config.CommonConfig;
-import igentuman.nc.handler.sided.SidedContentHandler;
-import igentuman.nc.handler.sided.SlotModePair;
-import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.item.ParticleSourceItem;
 import igentuman.nc.multiblock.accelerator.LinearAcceleratorMultiblock;
 import igentuman.nc.recipes.NcRecipeType;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
-import igentuman.nc.recipes.ingredient.creator.IngredientCreatorAccess;
 import igentuman.nc.recipes.type.NcRecipe;
-import igentuman.nc.util.CustomEnergyStorage;
-import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -30,11 +20,8 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -46,14 +33,11 @@ import static igentuman.nc.block.accelerator.AcceleratorPortBlock.POWERED;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.compat.oc2.LinearAcceleratorDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.content.particles.CapabilityParticleStackHandler.PARTICLE_HANDLER_CAPABILITY;
-import static igentuman.nc.handler.config.CommonConfig.GTCEU_CONFIG;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BE;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
-import static igentuman.nc.setup.registration.NCItems.ION_SOURCES;
 import static igentuman.nc.util.Equations.*;
 import static igentuman.nc.util.ModUtil.isCcLoaded;
 import static igentuman.nc.util.ModUtil.isOC2Loaded;
-import static net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE;
 
 public class LinearAcceleratorControllerBE extends AbstractAcceleratorControllerBE {
 

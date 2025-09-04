@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.handler.config.CommonConfig.GTCEUCompatibilityConfig.GTCEUTier;
-import igentuman.nc.util.CustomEnergyStorage;
+import igentuman.nc.util.capability.CustomEnergyStorage;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;

@@ -7,7 +7,7 @@ import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.ValidationResult;
-import igentuman.nc.util.CustomEnergyStorage;
+import igentuman.nc.util.capability.CustomEnergyStorage;
 import igentuman.nc.util.BlockPosInstance;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;

@@ -1,8 +1,7 @@
 package igentuman.nc.item;
 
 import igentuman.nc.content.storage.BarrelBlocks;
-import igentuman.nc.util.CapabilityUtils;
-import igentuman.nc.util.TextUtils;
+import igentuman.nc.util.capability.CapabilityUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;

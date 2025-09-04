@@ -1,7 +1,5 @@
-package igentuman.nc.util;
+package igentuman.nc.util.capability;
 
-import igentuman.nc.handler.config.CommonConfig;
-import igentuman.nc.handler.config.CommonConfig.GTCEUCompatibilityConfig.GTCEUCompatibility;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.Tag;

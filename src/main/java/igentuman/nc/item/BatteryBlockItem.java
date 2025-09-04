@@ -2,8 +2,8 @@ package igentuman.nc.item;
 
 import igentuman.nc.content.energy.BatteryBlocks;
 import igentuman.nc.handler.ItemEnergyHandler;
-import igentuman.nc.util.CapabilityUtils;
-import igentuman.nc.util.CustomEnergyStorage;
+import igentuman.nc.util.capability.CapabilityUtils;
+import igentuman.nc.util.capability.CustomEnergyStorage;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;

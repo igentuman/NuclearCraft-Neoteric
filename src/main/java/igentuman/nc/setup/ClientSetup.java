@@ -5,10 +5,7 @@ import igentuman.nc.client.block.BatteryBlockLoader;
 import igentuman.nc.client.block.fusion.FusionCoreRenderer;
 import igentuman.nc.client.block.kugelblitz.EXPLRenderer;
 import igentuman.nc.client.block.turbine.TurbineRotorRenderer;
-import igentuman.nc.client.gui.FusionCoreScreen;
-import igentuman.nc.client.gui.MultiblockBuilderScreen;
-import igentuman.nc.client.gui.RedstoneDimmerScreen;
-import igentuman.nc.client.gui.StorageContainerScreen;
+import igentuman.nc.client.gui.*;
 import igentuman.nc.client.gui.accelerator.*;
 import igentuman.nc.client.gui.fission.FissionControllerScreen;
 import igentuman.nc.client.gui.fission.FissionPortScreen;
@@ -68,6 +65,7 @@ import static igentuman.nc.setup.registration.NCBlocks.MULTIBLOCK_BUILDER_CONTAI
 import static igentuman.nc.setup.registration.NCBlocks.REDSTONE_DIMMER_CONTAINER;
 import static igentuman.nc.setup.registration.NCItems.GEIGER_COUNTER;
 import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_CONTAINER;
+import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_ITEM_CONTAINER;
 import static igentuman.nc.setup.registration.Registries.FLUIDS;
 import static net.minecraftforge.eventbus.api.EventPriority.LOWEST;
 
@@ -85,6 +83,7 @@ public class ClientSetup {
             EntityRenderers.register(Entities.FERAL_GHOUL.get(), FeralGhoulRenderer::new);
             EntityRenderers.register(Entities.WASTELAND_PROJECTILE.get(), WastelandProjectileRenderer::new);
             MenuScreens.register(STORAGE_CONTAINER.get(), StorageContainerScreen::new);
+            MenuScreens.register(STORAGE_ITEM_CONTAINER.get(), StorageContainerItemScreen::new);
             MenuScreens.register(FUSION_CORE_CONTAINER.get(), FusionCoreScreen::new);
             MenuScreens.register(EXPL_CONTAINER.get(), EXPLScreen::new);
             MenuScreens.register(TURBINE_CONTROLLER_CONTAINER.get(), TurbineControllerScreen::new);

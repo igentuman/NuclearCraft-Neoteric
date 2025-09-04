@@ -1,4 +1,4 @@
-package igentuman.nc.util;
+package igentuman.nc.util.capability;
 
 import net.minecraft.core.Direction;
 import net.minecraftforge.common.capabilities.Capability;

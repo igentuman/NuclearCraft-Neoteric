@@ -1,6 +1,7 @@
 package igentuman.nc.client.gui.element.button;
 
 import igentuman.nc.NuclearCraft;
+import igentuman.nc.client.NcClient;
 import igentuman.nc.client.gui.MultiblockAnalyzeReportScreen;
 import igentuman.nc.client.gui.MultiblockBuilderScreen;
 import igentuman.nc.client.gui.element.NCGuiElement;
@@ -18,12 +19,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.level.block.Block;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import static igentuman.nc.NuclearCraft.debugLog;
@@ -77,6 +75,19 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
 
     public void setEnabled(boolean b) {
         btn.active = b;
+    }
+
+    @Override
+    public boolean isMouseOver(double pMouseX, double pMouseY) {
+        return this.active && this.visible && pMouseX >= (double)X() && pMouseY >= (double)Y() && pMouseX < (double)(X() + this.width) && pMouseY < (double)(Y() + this.height);
+    }
+
+    @Override
+    public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
+        if(X() <= pMouseX && pMouseX < X() + width && Y() <= pMouseY && pMouseY < Y() + height) {
+            return onPress();
+        }
+        return false;
     }
 
     public static class SideConfig extends Button {
@@ -142,6 +153,47 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
             btn = new ImageButton(X(), Y(), width, height, 202, 220, 18, TEXTURE, pButton -> {
                 this.screen.onClose();
             });
+        }
+    }
+
+    public static class Magnet extends Button {
+        public static final int BTN_ID = 184;
+        public boolean enabled = false;
+        public byte strength = 0;
+
+        public Magnet(int xPos, int yPos, AbstractContainerScreen<?> screen) {
+            super(xPos, yPos, screen, BTN_ID);
+            height = 18;
+            width = 18;
+            btn = new ImageButton(X(), Y(), width, height, 184, 112, 18, TEXTURE, pButton -> {
+                NuclearCraft.packetHandler().sendToServer(new PacketGuiButtonPress(NcClient.tryGetClientPlayer(), BTN_ID));
+            });
+        }
+
+        public List<Component> getTooltips() {
+            String mode = "enable";
+            if(enabled) mode = "disable";
+            List<Component> list = new ArrayList<>(List.of(
+                    __("tooltip.nc.magnet."+mode)
+            ));
+            return list;
+        }
+
+        public void setEnabled(boolean flag) {
+            enabled = flag;
+            int y = flag ? 1 : 0;
+            btn = new ImageButton(X(), Y(), width, height, 184, 112 - (y+1) * 36, 18, TEXTURE, pButton -> {
+                NuclearCraft.packetHandler().sendToServer(new PacketGuiButtonPress(NcClient.tryGetClientPlayer(), BTN_ID));
+            });
+        }
+
+        public void refreshPosition() {
+            setEnabled(enabled);
+        }
+
+        @Override
+        public boolean isMouseOver(double pMouseX, double pMouseY) {
+            return this.active && this.visible && pMouseX >= (double)x && pMouseY >= (double)y && pMouseX < (double)(x + this.width) && pMouseY < (double)(y + this.height);
         }
     }
 

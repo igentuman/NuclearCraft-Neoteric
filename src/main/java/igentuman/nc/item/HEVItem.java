@@ -2,8 +2,8 @@ package igentuman.nc.item;
 
 import igentuman.nc.content.ArmorMaterials;
 import igentuman.nc.handler.ItemEnergyHandler;
-import igentuman.nc.util.CapabilityUtils;
-import igentuman.nc.util.CustomEnergyStorage;
+import igentuman.nc.util.capability.CapabilityUtils;
+import igentuman.nc.util.capability.CustomEnergyStorage;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
@@ -22,7 +22,6 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 import java.util.List;
 
-import static igentuman.nc.handler.config.CommonConfig.ENERGY_STORAGE;
 import static igentuman.nc.setup.registration.NCItems.*;
 import static igentuman.nc.util.TextUtils.__;
 

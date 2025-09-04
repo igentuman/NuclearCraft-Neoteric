@@ -609,6 +609,8 @@ public class NCLanguageProvider extends LanguageProvider {
         add("tooltip.nc.energy_eu_tier.depends_on_terminal", "EU Tier inherits Tier from Terminal");
         add("tooltip.nc.energy_eu_tier.depends_on_controller", "EU Tier inherits Tier from Controller");
         add("tooltip.ion_source.particle", "Particle: %s");
+        add("tooltip.nc.magnet.disable", "Disable Auto-pickup");
+        add("tooltip.nc.magnet.enable", "Enable Auto-pickup");
         add("tooltip.ion_source.amount", "Amount: %spu / %spu");
         add("tooltip.target_chamber.detectors", "Detectors: %s");
         add("tooltip.detector.distance", "Max distance to chamber camera: %s");

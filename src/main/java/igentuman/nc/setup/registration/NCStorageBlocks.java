@@ -3,6 +3,7 @@ package igentuman.nc.setup.registration;
 import igentuman.nc.block.storage.BarrelBlock;
 import igentuman.nc.block.storage.ContainerBlock;
 import igentuman.nc.container.StorageContainerContainer;
+import igentuman.nc.container.StorageContainerItemContainer;
 import igentuman.nc.content.storage.BarrelBlocks;
 import igentuman.nc.content.storage.ContainerBlocks;
 import igentuman.nc.item.BarrelBlockItem;
@@ -30,6 +31,8 @@ public class NCStorageBlocks {
     public static HashMap<String, RegistryObject<BlockEntityType<? extends BlockEntity>>> STORAGE_BE = new HashMap<>();
     public static final RegistryObject<MenuType<StorageContainerContainer<?>>> STORAGE_CONTAINER = CONTAINERS.register("storage_container",
             () -> IForgeMenuType.create((windowId, inv, data) -> new StorageContainerContainer<>(windowId, data.readBlockPos(), inv)));
+    public static final RegistryObject<MenuType<StorageContainerItemContainer<?>>> STORAGE_ITEM_CONTAINER = CONTAINERS.register("storage_item_container",
+            () -> IForgeMenuType.create((windowId, inv, data) -> new StorageContainerItemContainer<>(windowId, data.readBlockPos(), inv, data.readInt())));
     public static void init() {
         registerBlocks();
         registerBlockEntities();

@@ -61,6 +61,7 @@ public class NuclearCraft {
         unpackFilesFromFolderToConfig("data/nuclearcraft/accelerator_coolers", "NuclearCraft/accelerator_coolers");
 
         ModContainer container = ModLoadingContext.get().getActiveContainer();
+        container.addConfig(new ModConfig(ModConfig.Type.CLIENT, ClientConfig.spec, container,"NuclearCraft/client.toml"));
         container.addConfig(new ModConfig(ModConfig.Type.COMMON, MaterialsConfig.spec, container,"NuclearCraft/materials.toml"));
         container.addConfig(new ModConfig(ModConfig.Type.COMMON, OreGenConfig.spec, container,"NuclearCraft/ore_generation.toml"));
         container.addConfig(new ModConfig(ModConfig.Type.COMMON, CommonConfig.spec, container,"NuclearCraft/common.toml"));

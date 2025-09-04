@@ -13,6 +13,7 @@ import igentuman.nc.block.target_chamber.entity.TargetChamberControllerBE;
 import igentuman.nc.block.turbine.entity.TurbineControllerBE;
 import igentuman.nc.client.NcClient;
 import igentuman.nc.compat.emi.ingredient.ParticleEmiStack;
+import igentuman.nc.handler.config.ClientConfig;
 import igentuman.nc.compat.jei.ParticleRecipe;
 import igentuman.nc.compat.jei.ParticleSourceRecipe;
 import igentuman.nc.content.particles.ParticleSources;
@@ -335,10 +336,11 @@ public class EMIPlugin implements EmiPlugin {
     }
     
     private void registerParticleStackRenderer(EmiRegistry registry) {
-        // Add all particles to EMI registry
-        for (var particle : Particles.particles.values()) {
-            ParticleStack particleStack = new ParticleStack(particle, 1);
-            registry.addEmiStack(new ParticleEmiStack(particleStack));
+        if (!ClientConfig.MISC_CONFIG.HIDE_PARTICLES.get()) {
+            for (var particle : Particles.particles.values()) {
+                ParticleStack particleStack = new ParticleStack(particle, 1);
+                registry.addEmiStack(new ParticleEmiStack(particleStack));
+            }
         }
     }
 }

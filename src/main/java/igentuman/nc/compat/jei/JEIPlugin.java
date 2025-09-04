@@ -18,6 +18,7 @@ import igentuman.nc.content.particles.ParticleSources;
 import igentuman.nc.content.particles.ParticleStack;
 import igentuman.nc.content.particles.Particles;
 import igentuman.nc.content.processors.Processors;
+import igentuman.nc.handler.config.ClientConfig;
 import igentuman.nc.recipes.AbstractRecipe;
 import igentuman.nc.recipes.NcRecipeType;
 import igentuman.nc.recipes.ingredient.creator.IngredientCreatorAccess;
@@ -109,6 +110,11 @@ public  class JEIPlugin implements IModPlugin {
             if(recipeManager.getRecipeType(categoryToHide).isPresent()) {
                 recipeManager.hideRecipeCategory(recipeManager.getRecipeType(categoryToHide).get());
             }
+        }
+        
+        if (ClientConfig.MISC_CONFIG.HIDE_PARTICLES.get()) {
+            List<ParticleStack> particleStacks = ParticleStackListFactory.create();
+            jeiRuntime.getIngredientManager().removeIngredientsAtRuntime(ParticleType.Particle, particleStacks);
         }
     }
 

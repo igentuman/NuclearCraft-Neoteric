@@ -9,8 +9,7 @@ import net.minecraft.world.level.block.Blocks;
 
 import java.util.function.Consumer;
 
-import static igentuman.nc.setup.registration.NCBlocks.NC_BLOCKS;
-import static igentuman.nc.setup.registration.NCBlocks.NC_MATERIAL_BLOCKS;
+import static igentuman.nc.setup.registration.NCBlocks.*;
 import static igentuman.nc.setup.registration.NCItems.*;
 import static igentuman.nc.setup.registration.Tags.INGOTS_TAG;
 import static igentuman.nc.setup.registration.Tags.forgeIngot;
@@ -30,6 +29,7 @@ public class PressurizerRecipes extends AbstractRecipeProvider {
         itemToItem(ingredient(forgeIngot("silicon_carbide"), 3), ingredient(NC_PARTS.get("silicon_boule").get()));
         itemToItem(ingredient(IRON_INGOT), plateStack(Materials.iron));
         itemToItem(ingredient(COPPER_INGOT), plateStack(Materials.copper));
+        itemToItem(ingredient(WASTELAND_EARTH.get(), 32), ingredient(PORTAL_BLOCK.get()), 2D);
 
         itemToItem(isotopeIngredient(Materials.americium241, 9), ingredient(NC_MATERIAL_BLOCKS.get("americium241").get().asItem()));
         itemToItem(dustIngredient(Materials.polonium, 1), forgeIngredient("pellets/polonium"));

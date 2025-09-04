@@ -2755,5 +2755,7 @@
   "validation.structure.wrong_proportions": "Неправильные пропорции",
   "tooltip.nc.particle_beam.desc": "Для формирования пути пучка частиц в центре ускорителей",
   "tooltip.nc.magnet.disable": "Выключить автоподбор",
-  "tooltip.nc.magnet.enable": "Включить автоподбор"
+  "tooltip.nc.magnet.enable": "Включить автоподбор",
+  "tooltip.nc.wasteland.disabled": "Пустоши отключены",
+  "tooltip.nc.wasteland.portal.descr": "Телепортирует игрока в пустоши"
 }

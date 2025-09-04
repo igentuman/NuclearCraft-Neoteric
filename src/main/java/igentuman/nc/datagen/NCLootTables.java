@@ -43,6 +43,9 @@ public class NCLootTables extends BaseLootTableProvider {
         FISSION_BLOCKS.values().forEach(this::add);
         TURBINE_BLOCKS.values().forEach(this::add);
         FUSION_BLOCKS.values().forEach(this::add);
+        add(MUSHROOM_BLOCK.get(), block -> createSimpleTable("block", MUSHROOM_BLOCK.get()));
+        add(WASTELAND_EARTH.get(), block -> createSimpleTable("block", WASTELAND_EARTH.get()));
+        add(PORTAL_BLOCK.get(), block -> createSimpleTable("block", PORTAL_BLOCK.get()));
     }
 
     private void add(RegistryObject<Block> regBlock) {
@@ -65,8 +68,6 @@ public class NCLootTables extends BaseLootTableProvider {
         for(String name: NC_RF_AMPLIFIERS.keySet()) {
             add(NC_RF_AMPLIFIERS.get(name).get(), block -> createSimpleTable("block", NC_RF_AMPLIFIERS.get(name).get()));
         }
-        add(MUSHROOM_BLOCK.get(), block -> createSimpleTable("block", MUSHROOM_BLOCK.get()));
-        add(WASTELAND_EARTH.get(), block -> createSimpleTable("block", WASTELAND_EARTH.get()));
     }
 
     @Override
@@ -96,6 +97,7 @@ public class NCLootTables extends BaseLootTableProvider {
         all.addAll(NC_RF_AMPLIFIERS.values().stream().map(RegistryObject::get).toList());
         all.add(MUSHROOM_BLOCK.get());
         all.add(WASTELAND_EARTH.get());
+        all.add(PORTAL_BLOCK.get());
         return all;
     }
 }

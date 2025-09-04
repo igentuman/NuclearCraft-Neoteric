@@ -2721,6 +2721,8 @@
   "tooltip.nc.upgrade_energy.tier": "+1 Energy Tier for every %s Upgrades",
   "tooltip.nc.use_in_leacher": "Item can be used in Leacher",
   "tooltip.nc.use_multitool": "Use Multitool to config sides",
+  "tooltip.nc.wasteland.disabled": "Wasteland dimension is disabled",
+  "tooltip.nc.wasteland.portal.descr": "Teleport to Wasteland dimension",
   "tooltip.nc.wiki": "Open WIKI",
   "tooltip.nuclearcraft.particlestack.amount": "Amount: %s",
   "tooltip.nuclearcraft.particlestack.empty": "No Particles",

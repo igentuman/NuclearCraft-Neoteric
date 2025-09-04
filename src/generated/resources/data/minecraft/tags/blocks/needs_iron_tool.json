@@ -231,6 +231,7 @@
     "nuclearcraft:fusion_reactor_connector",
     "nuclearcraft:fusion_reactor_casing_glass",
     "nuclearcraft:fusion_reactor_core_proxy",
-    "nuclearcraft:wasteland_earth"
+    "nuclearcraft:wasteland_earth",
+    "nuclearcraft:portal"
   ]
 }

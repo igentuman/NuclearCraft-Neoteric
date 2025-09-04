@@ -90,6 +90,11 @@ public class QNP extends PickaxeItem
 		return ENERGY_STORAGE.QNP_ENERGY_STORAGE.get();
 	}
 
+    @Override
+    public boolean canPerformAction(ItemStack stack, net.minecraftforge.common.ToolAction toolAction) {
+        return super.canPerformAction(stack, toolAction) && enoughEnergy(stack);
+    }
+
 	@Override
 	public int getBarWidth(@NotNull ItemStack stack) {
 		CustomEnergyStorage energyStorage = getEnergy(stack);
@@ -275,7 +280,7 @@ public class QNP extends PickaxeItem
 	@Override
 	public float getDestroySpeed(@NotNull ItemStack stack, @NotNull BlockState state) {
 		int efficiency = getEnchantmentLevel(stack, Enchantments.BLOCK_EFFICIENCY);
-		if(getEnergy(stack).getEnergyStored() > energyPerBlock(stack)) return getTier().getSpeed() + efficiency*0.5F;
+		if(enoughEnergy(stack)) return getTier().getSpeed() + efficiency*0.5F;
 		return 0.1F;
 	}
 
@@ -321,7 +326,7 @@ public class QNP extends PickaxeItem
 			ItemStack tool = pPlayer.getItemInHand(pUsedHand);
 			Mode miningMode = Mode.values()[(getMode(tool).ordinal()+1)%Mode.values().length];
 			tool.getOrCreateTag().putInt("mode", miningMode.ordinal());
-			pPlayer.sendSystemMessage(__("tooltip.nc.qnp_mode", __("tooltip.mode." + miningMode.getName())).withStyle(ChatFormatting.GREEN));
+			pPlayer.sendSystemMessage(__("tooltip.nc.qnp_mode", miningMode.getName()).withStyle(ChatFormatting.GREEN));
 			return InteractionResultHolder.success(pPlayer.getItemInHand(pUsedHand));
 		}
 		return super.use(pLevel, pPlayer, pUsedHand);
@@ -357,10 +362,12 @@ public class QNP extends PickaxeItem
 	}
 
 	public enum Mode {
-		ONE_BLOCK("one_block", 0, false),
+		ONE_BLOCK("1", 0, false),
 		THREE_BY_THREE("3x3", 1, false),
 		THREE_BY_THREE_BY_THREE("3x3x3", 1, true),
 		FIVE_BY_FIVE("5x5", 2, false),
+		FIVE_BY_FIVE_BY_FIVE("5x5x5", 2, true),
+		SEVEN_BY_SEVEN("7x7", 3, false),
 		VEIN_MINER("vein", 0, false);
 
 		private final String name;

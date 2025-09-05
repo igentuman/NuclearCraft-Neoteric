@@ -5,6 +5,7 @@ import igentuman.nc.entity.goal.RadiationBurstGoal;
 import igentuman.nc.entity.goal.RangedAttackGoal;
 import igentuman.nc.entity.goal.SlamAttackGoal;
 import igentuman.nc.entity.goal.SummonGhoulsGoal;
+import igentuman.nc.entity.goal.ThrowSpamGoal;
 import igentuman.nc.radiation.data.PlayerRadiationProvider;
 import igentuman.nc.setup.registration.NcParticleTypes;
 import net.minecraft.client.Minecraft;
@@ -65,11 +66,20 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
     public static final int RANGED_ATTACK_COOLDOWN = 20;
     public static final float MIN_RANGED_ATTACK_DISTANCE = 8.0F;
     public static final float MAX_RANGED_ATTACK_DISTANCE = 64.0F;
+    // Throw spam attack parameters
+    public static final int THROW_SPAM_COOLDOWN = 300; // 15 seconds
+    public static final int THROW_SPAM_DURATION = 200; // 10 seconds
+    public static final int THROW_SPAM_INTERVAL = 8; // Throw every 8 ticks (0.4 seconds)
+    public static final float THROW_SPAM_RANGE = 32.0F;
 
     public int slamAttackCooldownRemaining = 0;
     public int radiationBurstCooldownRemaining = 0;
     public int summonCooldownRemaining = 0;
     public int rangedAttackCooldownRemaining = 0;
+    public int throwSpamCooldownRemaining = 0;
+    public int throwSpamDurationRemaining = 0;
+    public int throwSpamIntervalRemaining = 0;
+    public boolean hasEnteredEnragedState = false;
     public final Random random = new Random();
     public boolean isExecutingAttack = false;
 
@@ -115,6 +125,7 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
         this.goalSelector.addGoal(3, new RadiationBurstGoal(this));
         this.goalSelector.addGoal(4, new SummonGhoulsGoal(this));
         this.goalSelector.addGoal(2, new RangedAttackGoal(this));
+        this.goalSelector.addGoal(1, new ThrowSpamGoal(this));
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -183,6 +194,27 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
 
         if (rangedAttackCooldownRemaining > 0) {
             rangedAttackCooldownRemaining--;
+        }
+
+        if (throwSpamCooldownRemaining > 0) {
+            throwSpamCooldownRemaining--;
+        }
+
+        if (throwSpamDurationRemaining > 0) {
+            throwSpamDurationRemaining--;
+            if (throwSpamIntervalRemaining > 0) {
+                throwSpamIntervalRemaining--;
+            }
+        }
+
+        // Check for enraged state transition
+        if (!hasEnteredEnragedState && isEnraged()) {
+            hasEnteredEnragedState = true;
+            // Play dramatic enrage sound
+            this.playSound(BOSS_ANGRY.get(), 1.5F, 0.6F);
+            this.playSound(SoundEvents.ENDER_DRAGON_GROWL, 1.0F, 0.8F);
+            // Broadcast entity event for potential client-side effects
+            this.level().broadcastEntityEvent(this, (byte) 10); // Custom enrage event
         }
     }
 
@@ -469,6 +501,98 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
             rangedAttackCooldownRemaining = RANGED_ATTACK_COOLDOWN;
             isExecutingAttack = false;
         }
+    }
+
+    /**
+     * Execute throw spam attack - rapidly throws blocks at the target for 10 seconds
+     * Only available when boss health is below 50% (enraged state)
+     */
+    public void executeThrowSpamAttack() {
+        if (throwSpamCooldownRemaining <= 0 && !isExecutingAttack && !this.level().isClientSide()) {
+            // Start the throw spam attack
+            isExecutingAttack = true;
+            throwSpamDurationRemaining = THROW_SPAM_DURATION;
+            throwSpamIntervalRemaining = 0; // Start throwing immediately
+            
+            this.playSound(BOSS_ANGRY.get(), 1.2F, 0.7F);
+            this.playSound(SoundEvents.WITHER_AMBIENT, 1.2F, 0.4F);
+            this.playSound(SoundEvents.RAVAGER_ROAR, 0.8F, 0.6F);
+            
+            throwSpamCooldownRemaining = THROW_SPAM_COOLDOWN;
+            isExecutingAttack = false;
+        }
+    }
+
+    /**
+     * Throw a single projectile during spam attack
+     */
+    public void throwSpamProjectile() {
+        if (throwSpamDurationRemaining > 0 && throwSpamIntervalRemaining <= 0 && !this.level().isClientSide()) {
+            LivingEntity target = this.getTarget();
+            if (target != null && target.isAlive() && target.distanceTo(this) <= THROW_SPAM_RANGE) {
+                
+                // Play throwing sound
+                this.playSound(SoundEvents.WITHER_SHOOT, 0.5F, 1.2F + random.nextFloat() * 0.4F);
+                
+                Vec3 eyePos = new Vec3(this.getX(), this.getEyeY(), this.getZ());
+                Vec3 targetPos = new Vec3(target.getX(), target.getEyeY(), target.getZ());
+                Vec3 direction = targetPos.subtract(eyePos).normalize();
+
+                // Add some randomness to make it less predictable
+                double inaccuracy = 0.3;
+                double velocityScale = 2.5 + random.nextDouble() * 1.0;
+                
+                // Predict target movement for better accuracy
+                Vec3 targetVelocity = target.getDeltaMovement();
+                double distance = target.distanceTo(this);
+                double timeToHit = distance / velocityScale;
+                Vec3 predictedPos = targetPos.add(targetVelocity.x * timeToHit, 0, targetVelocity.z * timeToHit);
+                Vec3 adjustedDirection = predictedPos.subtract(eyePos).normalize();
+                
+                // Add vertical adjustment for arc
+                double verticalAdjustment = Math.log10(distance) * 0.08;
+
+                EntityWastelandProjectile projectile = new EntityWastelandProjectile(this.level(), this);
+                
+                // Randomize spawn position slightly
+                double offsetX = (random.nextDouble() - 0.5) * 1.5;
+                double offsetZ = (random.nextDouble() - 0.5) * 1.5;
+                
+                projectile.setPos(
+                        this.getX() + offsetX + direction.x * 0.5,
+                        this.getEyeY() + 0.5,
+                        this.getZ() + offsetZ + direction.z * 0.5
+                );
+
+                projectile.shoot(
+                        adjustedDirection.x,
+                        adjustedDirection.y + verticalAdjustment,
+                        adjustedDirection.z,
+                        (float) velocityScale,
+                        (float) inaccuracy
+                );
+
+                this.level().addFreshEntity(projectile);
+                
+                // Reset interval timer
+                throwSpamIntervalRemaining = THROW_SPAM_INTERVAL;
+            }
+        }
+    }
+
+    /**
+     * Check if the boss is currently executing the throw spam attack
+     */
+    public boolean isThrowSpamActive() {
+        return throwSpamDurationRemaining > 0;
+    }
+
+    /**
+     * Check if the boss is in enraged state (below 50% health)
+     * This unlocks the throw spam attack
+     */
+    public boolean isEnraged() {
+        return getHealth() / getMaxHealth() < 0.5f;
     }
 
     @Override

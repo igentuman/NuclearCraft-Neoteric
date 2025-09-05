@@ -77,7 +77,7 @@ public class NCPlacedFeatures {
             NCOre ore = Ores.all().get(name);
             register(context, PLACED_FEATURES_KEYS.get(name+"_additional_wasteland"), configuredFeatures.getOrThrow(CONFIGURED_FEATURES.get(name+"_additional_wasteland")),
                     OreGenerator.orePlacement(new OrePlacementModifier(name),
-                            HeightRangePlacement.uniform(VerticalAnchor.absolute(ore.config().height[0]), VerticalAnchor.absolute(ore.config().height[1]))));
+                            HeightRangePlacement.uniform(VerticalAnchor.absolute(1), VerticalAnchor.absolute(ore.config().height[1]))));
         }
 
         register(context, PLACED_FEATURES_KEYS.get("glowing_mushroom"),

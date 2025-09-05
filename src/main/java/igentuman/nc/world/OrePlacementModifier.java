@@ -69,10 +69,9 @@ public class OrePlacementModifier extends PlacementModifier {
         if(actualCount == 0) {
             return Stream.empty();
         }
-
         return Stream.generate(() -> new BlockPos(
                 x,
-                minHeight + random.nextInt(maxHeight - minHeight + 1),
+                minHeight + random.nextInt(maxHeight - Math.max(minHeight, context.getMinGenY()) + 1),
                 z
         )).limit(actualCount);
     }

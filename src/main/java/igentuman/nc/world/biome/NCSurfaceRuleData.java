@@ -100,7 +100,7 @@ public class NCSurfaceRuleData {
      */
     public static SurfaceRules.RuleSource customOverworldSurface() {
         SurfaceRules.RuleSource bedrockLayer = SurfaceRules.ifTrue(
-            SurfaceRules.verticalGradient("bedrock_floor", VerticalAnchor.bottom(), VerticalAnchor.aboveBottom(6)),
+            SurfaceRules.verticalGradient("bedrock_floor", VerticalAnchor.bottom(), VerticalAnchor.aboveBottom(3)),
             BEDROCK
         );
         

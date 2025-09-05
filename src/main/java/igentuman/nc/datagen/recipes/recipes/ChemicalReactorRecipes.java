@@ -18,6 +18,7 @@ import java.util.function.Consumer;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.datagen.recipes.NCRecipes.MOLTEN_INGOT;
+import static igentuman.nc.datagen.recipes.NCRecipes.MOLTEN_NUGGET;
 import static net.minecraft.world.level.material.Fluids.WATER;
 
 public class ChemicalReactorRecipes extends AbstractRecipeProvider {
@@ -440,6 +441,247 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
                 List.of(
                         fluidIngredient("milk_chocolate", MOLTEN_INGOT*2)
                 ), 0.5D, 0.5D
+        );
+
+        // Alloy smelter recipe analogs - molten metal reactions
+        add(
+                List.of(
+                        fluidIngredient(Materials.iron, MOLTEN_INGOT),
+                        fluidIngredient(Materials.chromium, MOLTEN_INGOT*4)
+                ),
+                List.of(
+                        fluidIngredient(Materials.nichrome, MOLTEN_INGOT*5)
+                ), 0.5D, 0.5D
+        );
+
+        add(
+                List.of(
+                        fluidIngredient(Materials.osmium, MOLTEN_INGOT*3),
+                        fluidIngredient(Materials.iridium, MOLTEN_INGOT)
+                ),
+                List.of(
+                        fluidIngredient(Materials.osmiridium, MOLTEN_INGOT*4)
+                ), 0.5D, 0.5D
+        );
+
+        add(
+                List.of(
+                        fluidIngredient(Materials.carbon_manganese, MOLTEN_INGOT),
+                        fluidIngredient(Materials.titanium, MOLTEN_INGOT*11)
+                ),
+                List.of(
+                        fluidIngredient(Materials.sic_sic_cmc, MOLTEN_INGOT*12)
+                ), 0.5D, 0.5D
+        );
+
+        add(
+                List.of(
+                        fluidIngredient(Materials.niobium, MOLTEN_INGOT),
+                        fluidIngredient(Materials.titanium, MOLTEN_INGOT)
+                ),
+                List.of(
+                        fluidIngredient(Materials.niobium_titanium, MOLTEN_INGOT)
+                ), 0.5D, 0.5D
+        );
+
+        add(
+                List.of(
+                        fluidIngredient(Materials.niobium, MOLTEN_INGOT*2),
+                        fluidIngredient(Materials.tin, MOLTEN_INGOT)
+                ),
+                List.of(
+                        fluidIngredient(Materials.niobium_tin, MOLTEN_INGOT*3)
+                ), 0.5D, 0.5D
+        );
+
+        add(
+                List.of(
+                        fluidIngredient(Materials.gold, MOLTEN_INGOT),
+                        fluidIngredient(Materials.silver, MOLTEN_INGOT)
+                ),
+                List.of(
+                        fluidIngredient(Materials.electrum, MOLTEN_INGOT*2)
+                ), 0.5D, 0.5D
+        );
+
+        add(
+                List.of(
+                        fluidIngredient(Materials.steel, MOLTEN_INGOT),
+                        fluidIngredient(Materials.chromium, MOLTEN_INGOT)
+                ),
+                List.of(
+                        fluidIngredient(Materials.stainless_steel, MOLTEN_INGOT*2)
+                ), 0.5D, 0.5D
+        );
+
+        add(
+                List.of(
+                        fluidIngredient(Materials.extreme, MOLTEN_INGOT),
+                        fluidIngredient(Materials.boron_arsenide, MOLTEN_INGOT)
+                ),
+                List.of(
+                        fluidIngredient(Materials.thermoconducting, MOLTEN_INGOT*2)
+                ), 0.5D, 0.5D
+        );
+
+        add(
+                List.of(
+                        fluidIngredient(Materials.coal, MOLTEN_INGOT*3),
+                        fluidIngredient(Materials.iron, MOLTEN_INGOT)
+                ),
+                List.of(
+                        fluidIngredient(Materials.steel, MOLTEN_INGOT)
+                ), 0.5D, 0.5D
+        );
+
+        add(
+                List.of(
+                        fluidIngredient(Materials.copper, MOLTEN_INGOT*3),
+                        fluidIngredient(Materials.tin, MOLTEN_INGOT)
+                ),
+                List.of(
+                        fluidIngredient(Materials.bronze, MOLTEN_INGOT*4)
+                ), 0.5D, 0.5D
+        );
+
+        add(
+                List.of(
+                        fluidIngredient(Materials.boron, MOLTEN_INGOT),
+                        fluidIngredient(Materials.steel, MOLTEN_INGOT)
+                ),
+                List.of(
+                        fluidIngredient(Materials.ferroboron, MOLTEN_INGOT*2)
+                ), 0.5D, 0.5D
+        );
+
+        add(
+                List.of(
+                        fluidIngredient(Materials.graphite, MOLTEN_INGOT),
+                        fluidIngredient(Materials.diamond, MOLTEN_INGOT)
+                ),
+                List.of(
+                        fluidIngredient(Materials.hard_carbon, MOLTEN_INGOT*2)
+                ), 0.5D, 0.5D
+        );
+
+        add(
+                List.of(
+                        fluidIngredient(Materials.ferroboron, MOLTEN_INGOT),
+                        fluidIngredient(Materials.lithium, MOLTEN_INGOT)
+                ),
+                List.of(
+                        fluidIngredient(Materials.tough_alloy, MOLTEN_INGOT*2)
+                ), 0.5D, 0.5D
+        );
+
+        add(
+                List.of(
+                        fluidIngredient(Materials.magnesium, MOLTEN_INGOT),
+                        fluidIngredient(Materials.boron, MOLTEN_INGOT*2)
+                ),
+                List.of(
+                        fluidIngredient(Materials.magnesium_diboride, MOLTEN_INGOT*3)
+                ), 0.5D, 0.5D
+        );
+
+        add(
+                List.of(
+                        fluidIngredient(Materials.lithium, MOLTEN_INGOT),
+                        fluidIngredient(Materials.manganese_dioxide, MOLTEN_INGOT)
+                ),
+                List.of(
+                        fluidIngredient(Materials.lithium_manganese_dioxide, MOLTEN_INGOT*2)
+                ), 0.5D, 0.5D
+        );
+
+        add(
+                List.of(
+                        fluidIngredient(Materials.copper, MOLTEN_INGOT*3),
+                        fluidIngredient(Materials.silver, MOLTEN_INGOT)
+                ),
+                List.of(
+                        fluidIngredient(Materials.shibuichi, MOLTEN_INGOT*4)
+                ), 0.5D, 0.5D
+        );
+
+        add(
+                List.of(
+                        fluidIngredient(Materials.tin, MOLTEN_INGOT*3),
+                        fluidIngredient(Materials.silver, MOLTEN_INGOT)
+                ),
+                List.of(
+                        fluidIngredient(Materials.tin_silver, MOLTEN_INGOT*4)
+                ), 0.5D, 0.5D
+        );
+
+        add(
+                List.of(
+                        fluidIngredient(Materials.lead, MOLTEN_INGOT*3),
+                        fluidIngredient(Materials.platinum, MOLTEN_INGOT)
+                ),
+                List.of(
+                        fluidIngredient(Materials.lead_platinum, MOLTEN_INGOT*4)
+                ), 0.5D, 0.5D
+        );
+
+        add(
+                List.of(
+                        fluidIngredient(Materials.tough_alloy, MOLTEN_INGOT),
+                        fluidIngredient(Materials.hard_carbon, MOLTEN_INGOT)
+                ),
+                List.of(
+                        fluidIngredient(Materials.extreme, MOLTEN_INGOT*2)
+                ), 0.5D, 0.5D
+        );
+
+        add(
+                List.of(
+                        fluidIngredient(Materials.silicon, MOLTEN_INGOT),
+                        fluidIngredient(Materials.graphite, MOLTEN_INGOT)
+                ),
+                List.of(
+                        fluidIngredient(Materials.silicon_carbide, MOLTEN_INGOT*2)
+                ), 0.5D, 0.5D
+        );
+
+        add(
+                List.of(
+                        fluidIngredient(Materials.manganese, MOLTEN_INGOT),
+                        fluidIngredient(Materials.graphite, MOLTEN_INGOT)
+                ),
+                List.of(
+                        fluidIngredient(Materials.carbon_manganese, MOLTEN_INGOT*2)
+                ), 1.5D, 1.5D
+        );
+
+        add(
+                List.of(
+                        fluidIngredient(Materials.zirconium, MOLTEN_INGOT*7),
+                        fluidIngredient(Materials.tin, MOLTEN_INGOT)
+                ),
+                List.of(
+                        fluidIngredient(Materials.zircaloy, MOLTEN_INGOT*8)
+                ), 0.5D, 0.5D
+        );
+
+        add(
+                List.of(
+                        fluidIngredient(Materials.iron, MOLTEN_INGOT*15),
+                        fluidIngredient(Materials.carbon_manganese, MOLTEN_INGOT)
+                ),
+                List.of(
+                        fluidIngredient(Materials.hsla_steel, MOLTEN_INGOT*16)
+                ), 1.5D, 1.5D
+        );
+
+        add(
+                List.of(
+                        fluidIngredient(Materials.molybdenum, MOLTEN_INGOT*15),
+                        fluidIngredient(Materials.zirconium, MOLTEN_INGOT)
+                ),
+                List.of(
+                        fluidIngredient(Materials.zirconium_molybdenum, MOLTEN_INGOT*16)
+                ), 1.5D, 1.5D
         );
 
         for (String name: FuelManager.all().keySet()) {

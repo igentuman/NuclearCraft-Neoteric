@@ -1,0 +1,22 @@
+{
+  "type": "nuclearcraft:chemical_reactor",
+  "inputFluids": [
+    {
+      "amount": 1350,
+      "tag": "forge:molybdenum"
+    },
+    {
+      "amount": 90,
+      "tag": "forge:zirconium"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 1440,
+      "tag": "forge:zirconium_molybdenum"
+    }
+  ],
+  "powerModifier": 1.5,
+  "radiation": 1.0,
+  "timeModifier": 1.5
+}

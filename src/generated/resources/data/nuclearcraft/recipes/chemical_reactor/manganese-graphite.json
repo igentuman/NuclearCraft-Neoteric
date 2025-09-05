@@ -1,0 +1,22 @@
+{
+  "type": "nuclearcraft:chemical_reactor",
+  "inputFluids": [
+    {
+      "amount": 90,
+      "tag": "forge:manganese"
+    },
+    {
+      "amount": 90,
+      "tag": "forge:graphite"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 180,
+      "tag": "forge:carbon_manganese"
+    }
+  ],
+  "powerModifier": 1.5,
+  "radiation": 1.0,
+  "timeModifier": 1.5
+}

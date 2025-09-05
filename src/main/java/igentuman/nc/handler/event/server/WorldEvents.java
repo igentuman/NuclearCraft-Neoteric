@@ -4,6 +4,7 @@ import igentuman.nc.block.turbine.TurbineBladeBlock;
 import igentuman.nc.multiblock.MultiblockExecutorManager;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.radiation.data.RadiationEvents;
+import igentuman.nc.util.RadiationExecutorManager;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.item.ItemStack;
@@ -101,6 +102,7 @@ public class WorldEvents {
         if (!event.getLevel().isClientSide()) {
             // Ensure the executor is initialized when a world is loaded
             MultiblockExecutorManager.getExecutor();
+            RadiationExecutorManager.getExecutor();
         }
     }
 
@@ -116,17 +118,15 @@ public class WorldEvents {
 
     @SubscribeEvent
     public void onTick(LevelTickEvent event) {
-        if (event.side.isServer() && event.phase == Phase.START && event.haveTime()) {
+        if (event.side.isServer() && event.phase == Phase.START) {
             if(event.isCanceled() || event.level.getGameTime() % 5 != 0) return;
             final ServerLevel level = (ServerLevel) event.level;
 
             if(event.level.getGameTime() % 10 == 0) {
-                if (radiationFuture != null && !radiationFuture.isDone()) {
-                    // Previous radiation processing is still running, skip this tick
-                } else {
+                if (radiationFuture == null || radiationFuture.isDone()) {
                     radiationFuture = CompletableFuture.runAsync(
                             () -> RadiationEvents.onWorldTick(event),
-                            MultiblockExecutorManager.getExecutor()
+                            RadiationExecutorManager.getExecutor()
                     );
                 }
             }
@@ -149,5 +149,6 @@ public class WorldEvents {
     public static void onServerStopping(ServerStoppingEvent event) {
         // Shutdown the executor service gracefully when the server is stopping
         MultiblockExecutorManager.shutdown();
+        RadiationExecutorManager.shutdown();
     }
 }

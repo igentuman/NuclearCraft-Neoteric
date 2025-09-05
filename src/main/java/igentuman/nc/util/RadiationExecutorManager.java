@@ -1,11 +1,11 @@
-package igentuman.nc.multiblock;
+package igentuman.nc.util;
 
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static igentuman.nc.NuclearCraft.debugLog;
 
-public class MultiblockExecutorManager {
+public class RadiationExecutorManager {
     private static ThreadPoolExecutor executor;
     private static final int MAX_THREAD_COUNT = Math.max(2, Runtime.getRuntime().availableProcessors() / 2);
     private static final int CORE_THREAD_COUNT = Math.max(1, Runtime.getRuntime().availableProcessors() / 2);
@@ -15,7 +15,7 @@ public class MultiblockExecutorManager {
 
         @Override
         public Thread newThread(Runnable r) {
-            Thread thread = new Thread(r, "NCN-Multiblocks-" + threadNumber.getAndIncrement());
+            Thread thread = new Thread(r, "NCN-Radiation-" + threadNumber.getAndIncrement());
             thread.setDaemon(true);
             return thread;
         }
@@ -28,7 +28,7 @@ public class MultiblockExecutorManager {
             executor = new ThreadPoolExecutor(
                 CORE_THREAD_COUNT,
                 MAX_THREAD_COUNT,
-                600L,
+                60L,
                 TimeUnit.SECONDS,
                 workQueue,
                 threadFactory,
@@ -37,7 +37,7 @@ public class MultiblockExecutorManager {
             executor.prestartAllCoreThreads();
             // Add monitoring for large queue sizes
             executor.setRejectedExecutionHandler((r, e) -> {
-                debugLog("Warning: Multiblock task queue is full! Running task in main thread.");
+                debugLog("Warning: Radiation task queue is full! Running task in main thread.");
                 if (!e.isShutdown()) {
                     r.run();
                 }

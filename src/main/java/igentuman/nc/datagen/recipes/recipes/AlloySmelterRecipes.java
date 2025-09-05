@@ -58,9 +58,9 @@ public class AlloySmelterRecipes extends AbstractRecipeProvider {
         doubleToItem(ID, dustIngredient(Materials.zirconium, 7), dustIngredient(Materials.tin),
                 ingotStack(Materials.zircaloy, 8));
         doubleToItem(ID, dustIngredient(Materials.iron, 15), dustIngredient(Materials.carbon_manganese),
-                ingotStack(Materials.hsla_steel, MOLTEN_NUGGET),8D, 2D);
+                ingotStack(Materials.hsla_steel, 16),8D, 2D);
         doubleToItem(ID, dustIngredient(Materials.molybdenum, 15), dustIngredient(Materials.zirconium),
-                ingotStack(Materials.zirconium_molybdenum, MOLTEN_NUGGET),8D, 2D);
+                ingotStack(Materials.zirconium_molybdenum, 16),8D, 2D);
 
         doubleToItem(ID, ingotIngredient(Materials.osmium, 3), ingotIngredient(Materials.iridium, 1),
                 ingotStack(Materials.osmiridium, 4), 4D);
@@ -105,6 +105,6 @@ public class AlloySmelterRecipes extends AbstractRecipeProvider {
         doubleToItem(ID, ingotIngredient(Materials.iron, 15), ingotIngredient(Materials.carbon_manganese),
                 ingotStack(Materials.hsla_steel, MOLTEN_NUGGET),8.5D, 2.5D);
         doubleToItem(ID, ingotIngredient(Materials.molybdenum, 15), ingotIngredient(Materials.zirconium),
-                ingotStack(Materials.zirconium_molybdenum, MOLTEN_NUGGET),8.5D, 2.5D);
+                ingotStack(Materials.zirconium_molybdenum, 16),8.5D, 2.5D);
     }
 }

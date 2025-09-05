@@ -5,8 +5,6 @@ import igentuman.nc.content.materials.Materials;
 import net.minecraft.data.recipes.FinishedRecipe;
 import java.util.function.Consumer;
 
-import static igentuman.nc.datagen.recipes.NCRecipes.MOLTEN_NUGGET;
-
 public class AlloySmelterRecipes extends AbstractRecipeProvider {
 
     public static void generate(Consumer<FinishedRecipe> consumer) {
@@ -103,7 +101,7 @@ public class AlloySmelterRecipes extends AbstractRecipeProvider {
         doubleToItem(ID, ingotIngredient(Materials.zirconium, 7), ingotIngredient(Materials.tin),
                 ingotStack(Materials.zircaloy, 8), 1.5D);
         doubleToItem(ID, ingotIngredient(Materials.iron, 15), ingotIngredient(Materials.carbon_manganese),
-                ingotStack(Materials.hsla_steel, MOLTEN_NUGGET),8.5D, 2.5D);
+                ingotStack(Materials.hsla_steel, 16),8.5D, 2.5D);
         doubleToItem(ID, ingotIngredient(Materials.molybdenum, 15), ingotIngredient(Materials.zirconium),
                 ingotStack(Materials.zirconium_molybdenum, 16),8.5D, 2.5D);
     }

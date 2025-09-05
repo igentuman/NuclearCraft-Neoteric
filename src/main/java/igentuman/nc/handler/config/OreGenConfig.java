@@ -63,7 +63,11 @@ public class OreGenConfig {
 
         private OreGenSpec buildOreConfig(ForgeConfigSpec.Builder builder, String name) {
             builder.push(name).comment("Ore generation settings for " + name);
-            OreGenSpec oreGen = new OreGenSpec(builder, true, Ores.all().get(name).dimensions, Ores.all().get(name).veinSize, Ores.all().get(name).height[0], Ores.all().get(name).height[1]);
+            int veinSize = Ores.all().get(name).veinSize;
+            if(name.equals("platinum")) {
+                veinSize = 3;
+            }
+            OreGenSpec oreGen = new OreGenSpec(builder, true, Ores.all().get(name).dimensions, veinSize, Ores.all().get(name).height[0], Ores.all().get(name).height[1]);
             builder.pop();
             return oreGen;
         }

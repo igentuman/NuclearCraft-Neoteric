@@ -53,6 +53,30 @@
     ],
     "subtitle": "sound_event.nuclearcraft.fusion.switch"
   },
+  "boss_angry": {
+    "sounds": [
+      "nuclearcraft:entity/boss_angry"
+    ],
+    "subtitle": "sound_event.nuclearcraft.boss_angry"
+  },
+  "boss_hit": {
+    "sounds": [
+      "nuclearcraft:entity/boss_hit"
+    ],
+    "subtitle": "sound_event.nuclearcraft.boss_hit"
+  },
+  "boss_idle": {
+    "sounds": [
+      "nuclearcraft:entity/boss_idle"
+    ],
+    "subtitle": "sound_event.nuclearcraft.boss_idle"
+  },
+  "boss_action": {
+    "sounds": [
+      "nuclearcraft:entity/boss_action"
+    ],
+    "subtitle": "sound_event.nuclearcraft.boss_action"
+  },
   "feral_ghoul_death": {
     "sounds": [
       "nuclearcraft:entity/feral_ghoul_death"

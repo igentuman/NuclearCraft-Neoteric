@@ -1,5 +1,7 @@
 {
   "values": [
+    "nuclearcraft:platinum_deepslate_ore",
+    "nuclearcraft:platinum_block",
     "nuclearcraft:quantum_flux_regulator",
     "nuclearcraft:chamber_port",
     "nuclearcraft:chamber_terminal",

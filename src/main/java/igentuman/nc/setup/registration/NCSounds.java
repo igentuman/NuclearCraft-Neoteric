@@ -13,6 +13,10 @@ public final class NCSounds {
     }
 
     public static final List<RegistryObject<SoundEvent>> GEIGER_SOUNDS = initGeigerSounds();
+    public static final RegistryObject<SoundEvent> BOSS_ANGRY = SOUND_EVENTS.register("boss_angry", () -> SoundEvent.createVariableRangeEvent(rl( "boss_angry")));
+    public static final RegistryObject<SoundEvent> BOSS_ACTION = SOUND_EVENTS.register("boss_action", () -> SoundEvent.createVariableRangeEvent(rl( "boss_action")));
+    public static final RegistryObject<SoundEvent> BOSS_HIT = SOUND_EVENTS.register("boss_hit", () -> SoundEvent.createVariableRangeEvent(rl( "boss_hit")));
+    public static final RegistryObject<SoundEvent> BOSS_IDLE = SOUND_EVENTS.register("boss_idle", () -> SoundEvent.createVariableRangeEvent(rl( "boss_idle")));
     public static final RegistryObject<SoundEvent> FERAL_GHOUL_CHARGE = SOUND_EVENTS.register("feral_ghoul_charge", () -> SoundEvent.createVariableRangeEvent(rl( "feral_ghoul_charge")));
     public static final RegistryObject<SoundEvent> FERAL_GHOUL_DEATH = SOUND_EVENTS.register("feral_ghoul_death", () -> SoundEvent.createVariableRangeEvent(rl( "feral_ghoul_death")));
     public static final RegistryObject<SoundEvent> ITEM_CHARGED = SOUND_EVENTS.register("charge_energy", () -> SoundEvent.createVariableRangeEvent(rl( "charge_energy")));

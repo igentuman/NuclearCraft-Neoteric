@@ -142,7 +142,15 @@ public class NCBlockTags extends BlockTagsProvider {
     private void ores() {
         for(String ore: NCBlocks.ORE_BLOCKS.keySet()) {
             tag(BlockTags.MINEABLE_WITH_PICKAXE).add(NCBlocks.ORE_BLOCKS.get(ore).get());
-            tag(BlockTags.NEEDS_IRON_TOOL).add(NCBlocks.ORE_BLOCKS.get(ore).get());
+            if(ore.contains("platinum")) {
+                tag(BlockTags.NEEDS_DIAMOND_TOOL).add(ORE_BLOCKS.get(ore).get());
+            } else {
+                if(ore.matches("tin|lead")) {
+                    tag(BlockTags.NEEDS_STONE_TOOL).add(ORE_BLOCKS.get(ore).get());
+                } else {
+                    tag(BlockTags.NEEDS_IRON_TOOL).add(ORE_BLOCKS.get(ore).get());
+                }
+            }
             tag(Tags.Blocks.ORES).add(NCBlocks.ORE_BLOCKS.get(ore).get());
             tag(ORE_TAGS.get(ore.replaceAll("_deepslate|_end|_nether","")))
                     .add(NCBlocks.ORE_BLOCKS.get(ore).get());
@@ -156,7 +164,11 @@ public class NCBlockTags extends BlockTagsProvider {
 
         for(String block: NCBlocks.NC_BLOCKS.keySet()) {
             tag(BlockTags.MINEABLE_WITH_PICKAXE).add(NCBlocks.NC_BLOCKS.get(block).get());
-            tag(BlockTags.NEEDS_IRON_TOOL).add(NCBlocks.NC_BLOCKS.get(block).get());
+            if(block.contains("platinum")) {
+                tag(BlockTags.NEEDS_DIAMOND_TOOL).add(NC_BLOCKS.get(block).get());
+            } else {
+                tag(BlockTags.NEEDS_IRON_TOOL).add(NC_BLOCKS.get(block).get());
+            }
             tag(Tags.Blocks.STORAGE_BLOCKS).add(NCBlocks.NC_BLOCKS.get(block).get());
             if(BLOCK_TAGS.get(block) != null) {
                 tag(BLOCK_TAGS.get(block)).add(NCBlocks.NC_BLOCKS.get(block).get());
@@ -164,7 +176,11 @@ public class NCBlockTags extends BlockTagsProvider {
         }
         for(String block: NC_MATERIAL_BLOCKS.keySet()) {
             tag(BlockTags.MINEABLE_WITH_PICKAXE).add(NC_MATERIAL_BLOCKS.get(block).get());
-            tag(BlockTags.NEEDS_IRON_TOOL).add(NC_MATERIAL_BLOCKS.get(block).get());
+            if(block.contains("platinum")) {
+                tag(BlockTags.NEEDS_DIAMOND_TOOL).add(NC_MATERIAL_BLOCKS.get(block).get());
+            } else {
+                tag(BlockTags.NEEDS_IRON_TOOL).add(NC_MATERIAL_BLOCKS.get(block).get());
+            }
             tag(Tags.Blocks.STORAGE_BLOCKS).add(NC_MATERIAL_BLOCKS.get(block).get());
             if(BLOCK_TAGS.get(block) != null) {
                 tag(BLOCK_TAGS.get(block)).add(NC_MATERIAL_BLOCKS.get(block).get());

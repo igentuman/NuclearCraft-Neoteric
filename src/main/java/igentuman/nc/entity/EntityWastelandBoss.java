@@ -14,6 +14,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.BossEvent;
@@ -45,7 +46,7 @@ import java.util.List;
 import java.util.Random;
 
 import static igentuman.nc.setup.registration.Entities.FERAL_GHOUL_BOSS;
-import static igentuman.nc.setup.registration.NCSounds.GEIGER_SOUNDS;
+import static igentuman.nc.setup.registration.NCSounds.*;
 import static igentuman.nc.setup.registration.WorldGeneration.WASTELAND;
 
 public class EntityWastelandBoss extends EntityFeralGhoul {
@@ -53,7 +54,7 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
     // Boss parameters
     public static final int BOSS_RADIATION_AMOUNT = 20000000;
     public static final float SLAM_ATTACK_RANGE = 8.0F;
-    public static final int SLAM_ATTACK_COOLDOWN = 80; // 4 seconds
+    public static final int SLAM_ATTACK_COOLDOWN = 60; // 4 seconds
     public static final int RADIATION_BURST_COOLDOWN = 60; // 8 seconds
     public static final float RADIATION_BURST_RANGE = 8.0F;
     public static final int RADIATION_BURST_AMOUNT = 10000000;
@@ -62,7 +63,7 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
     public static final int MAX_SUMMONS = 8;
     // Ranged attack parameters
     public static final int RANGED_ATTACK_COOLDOWN = 20;
-    public static final float MIN_RANGED_ATTACK_DISTANCE = 16.0F;
+    public static final float MIN_RANGED_ATTACK_DISTANCE = 8.0F;
     public static final float MAX_RANGED_ATTACK_DISTANCE = 64.0F;
 
     public int slamAttackCooldownRemaining = 0;
@@ -86,9 +87,19 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
     @SuppressWarnings("unchecked")
     public EntityWastelandBoss(EntityType<?> entityType, Level level) {
         super(entityType, level);
-        this.xpReward = 150;
+        this.xpReward = 250;
         this.refreshDimensions();
         this.setPersistenceRequired();
+    }
+
+    @Override
+    protected SoundEvent getAmbientSound() {
+        return BOSS_IDLE.get();
+    }
+
+    @Override
+    protected SoundEvent getHurtSound(DamageSource pDamageSource) {
+        return BOSS_HIT.get();
     }
 
     @Override
@@ -108,12 +119,12 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
 
     public static AttributeSupplier.Builder createAttributes() {
         return Zombie.createAttributes()
-                .add(Attributes.MAX_HEALTH, 200.0D)
+                .add(Attributes.MAX_HEALTH, 250.0D)
                 .add(Attributes.MOVEMENT_SPEED, 0.40F)
                 .add(Attributes.ATTACK_DAMAGE, 20.0D)
                 .add(Attributes.FOLLOW_RANGE, 70.0D)
-                .add(Attributes.KNOCKBACK_RESISTANCE, 0.8D)
-                .add(Attributes.ARMOR, 10.0D);
+                .add(Attributes.KNOCKBACK_RESISTANCE, 2.8D)
+                .add(Attributes.ARMOR, 20.0D);
     }
 
     public static boolean checkFeralGhoulBossSpawnRules(EntityType<EntityWastelandBoss> entityType,
@@ -181,7 +192,7 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
     public void executeRadiationBurst() {
         if (radiationBurstCooldownRemaining <= 0 && !isExecutingAttack) {
             isExecutingAttack = true;
-
+            this.playSound(BOSS_ANGRY.get(), 0.7F, 1.0F);
             this.playSound(GEIGER_SOUNDS.get(2).get(), 0.7F, 1F);
 
             AABB radiationBox = this.getBoundingBox().inflate(RADIATION_BURST_RANGE);
@@ -255,7 +266,7 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
     public void executeSummonAttack() {
         if (summonCooldownRemaining <= 0 && !isExecutingAttack && !this.level().isClientSide()) {
             isExecutingAttack = true;
-
+            this.playSound(BOSS_ANGRY.get(), 0.4F, 0.4F);
             this.playSound(SoundEvents.VEX_CHARGE, 1.0F, 0.7F);
 
             LivingEntity target = this.getTarget();
@@ -329,6 +340,7 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
         if (slamAttackCooldownRemaining <= 0 && !isExecutingAttack) {
             isExecutingAttack = true;
 
+            this.playSound(BOSS_ACTION.get(), 1.4F, 0.9F);
             this.playSound(SoundEvents.GENERIC_EXPLODE, 1.0F, 0.1F);
 
             double entityX = this.getX();
@@ -399,6 +411,7 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
     public void executeRangedAttack() {
         if (rangedAttackCooldownRemaining <= 0 && !isExecutingAttack && !this.level().isClientSide()) {
             isExecutingAttack = true;
+            this.playSound(BOSS_ACTION.get(), 1.4F, 0.9F);
             this.playSound(SoundEvents.WITHER_SHOOT, 1.0F, 0.2F);
             LivingEntity target = this.getTarget();
             if (target != null && target.isAlive()) {
@@ -494,13 +507,16 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
 
     @Override
     public boolean isInvulnerableTo(DamageSource source) {
-        return source.is(DamageTypes.WITHER) || super.isInvulnerableTo(source);
+        return source.is(DamageTypes.IN_FIRE) || source.is(DamageTypes.ON_FIRE) || source.is(DamageTypes.WITHER) || super.isInvulnerableTo(source);
     }
 
     @Override
     public boolean hurt(DamageSource pSource, float pAmount) {
         if (pSource.getDirectEntity() instanceof AbstractArrow) {
-            pAmount = pAmount * 0.5F;
+            pAmount = pAmount * 0.25F;
+        }
+        if (pSource.is(DamageTypes.EXPLOSION)) {
+            pAmount = pAmount * 0.25F;
         }
         return super.hurt(pSource, pAmount);
     }

@@ -299,7 +299,12 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
                 representations.add(new FluidStack(fluid, amount));
             }
             if(representations.isEmpty()) {
-                NuclearCraft.LOGGER.error("Fluid Tag {} is empty!", tag.getKey().location());
+                Fluid fallbackFluid = TagUtil.getFirstMatchingFluidByTag(tag.getKey().location().toString());
+                if (fallbackFluid != FluidStack.EMPTY.getFluid()) {
+                    representations.add(new FluidStack(fallbackFluid, amount));
+                } else {
+                    NuclearCraft.LOGGER.error("No fluid found for tag {}", tag.getKey().location());
+                }
             }
             return representations;
         }

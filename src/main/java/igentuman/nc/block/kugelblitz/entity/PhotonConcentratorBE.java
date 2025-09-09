@@ -4,12 +4,15 @@ import igentuman.api.nc.multiblock.MultiblockAttachable;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.multiblock.AbstractMultiblock;
+import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.kugelblitz.KugelblitzMultiblock;
 import igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
+
+import static igentuman.nc.NuclearCraft.debugLog;
 
 public class PhotonConcentratorBE extends NuclearCraftBE implements MultiblockAttachable {
 
@@ -59,11 +62,25 @@ public class PhotonConcentratorBE extends NuclearCraftBE implements MultiblockAt
                 controller = (ChamberTerminalBE) getLevel().getExistingBlockEntity(controllerPos);
             }
         }
+        if(controller == null) {
+            AbstractMultiblock mb = MultiblockHandler.get(level.dimension()).getMultiblockByPos(worldPosition);
+            if(mb instanceof KugelblitzMultiblock kmb) {
+                controller = (ChamberTerminalBE) kmb.controller().controllerBE();
+                if(controller != null && controllerPos != controller.getBlockPos()) {
+                    controllerPos = controller.getBlockPos();
+                    setChanged();
+                }
+            }
+        }
         return controller;
     }
 
     public void gotEnergy(Direction facing) {
         if(!getLevel().isClientSide()) {
+            if(controller() == null) {
+                debugLog("No controller found for PhotonConcentrator at "+worldPosition.toShortString());
+                return;
+            }
             controller().gotEnergy(facing);
         }
     }

@@ -20,11 +20,12 @@ import org.jetbrains.annotations.NotNull;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
+import static igentuman.nc.multiblock.fission.FissionReactorRegistration.CASING_BLOCKS;
+import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.*;
 import static igentuman.nc.multiblock.particle_chamber.TargetChamberRegistration.*;
 import static igentuman.nc.multiblock.fission.FissionReactorRegistration.*;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_CORE_PROXY;
-import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BLOCKS;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
 import static igentuman.nc.setup.registration.NCBlocks.*;
 import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCKS;
@@ -244,9 +245,13 @@ public class NCBlockTags extends BlockTagsProvider {
         tag(BlockTags.MINEABLE_WITH_PICKAXE).add(FUSION_CORE_PROXY.get());
         tag(BlockTags.MINEABLE_WITH_PICKAXE).add(WASTELAND_EARTH.get());
         tag(BlockTags.MINEABLE_WITH_PICKAXE).add(PORTAL_BLOCK.get());
+        tag(BlockTags.MINEABLE_WITH_PICKAXE).add(EXPL_BLOCK.get());
+        tag(BlockTags.MINEABLE_WITH_PICKAXE).add(EXPL_PROXY_BLOCK.get());
         tag(BlockTags.NEEDS_IRON_TOOL).add(FUSION_CORE_PROXY.get());
         tag(BlockTags.NEEDS_IRON_TOOL).add(WASTELAND_EARTH.get());
         tag(BlockTags.NEEDS_IRON_TOOL).add(PORTAL_BLOCK.get());
+        tag(BlockTags.NEEDS_IRON_TOOL).add(EXPL_BLOCK.get());
+        tag(BlockTags.NEEDS_IRON_TOOL).add(EXPL_PROXY_BLOCK.get());
     }
 
     @Override

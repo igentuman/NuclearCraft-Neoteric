@@ -240,6 +240,8 @@
     "nuclearcraft:fusion_reactor_casing_glass",
     "nuclearcraft:fusion_reactor_core_proxy",
     "nuclearcraft:wasteland_earth",
-    "nuclearcraft:portal"
+    "nuclearcraft:portal",
+    "nuclearcraft:expl",
+    "nuclearcraft:expl_proxy_block"
   ]
 }

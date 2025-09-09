@@ -9,15 +9,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
+import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.*;
 import static igentuman.nc.multiblock.particle_chamber.TargetChamberRegistration.TARGET_CHAMBER_BLOCKS;
 import static igentuman.nc.multiblock.fission.FissionReactorRegistration.FISSION_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BLOCKS;
-import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BLOCKS;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
 import static igentuman.nc.setup.registration.NCBlocks.*;
 import static igentuman.nc.setup.registration.NCEnergyBlocks.ENERGY_BLOCKS;
 import static igentuman.nc.setup.registration.NCProcessors.PROCESSORS;
 import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCKS;
+import static net.minecraft.world.level.block.Blocks.AIR;
 
 public class NCLootTables extends BaseLootTableProvider {
 
@@ -68,6 +69,8 @@ public class NCLootTables extends BaseLootTableProvider {
         for(String name: NC_RF_AMPLIFIERS.keySet()) {
             add(NC_RF_AMPLIFIERS.get(name).get(), block -> createSimpleTable("block", NC_RF_AMPLIFIERS.get(name).get()));
         }
+        add(EXPL_BLOCK.get(), block -> createSimpleTable("block", EXPL_BLOCK.get()));
+        add(EXPL_PROXY_BLOCK.get(), block -> createSimpleTable("block", AIR));
     }
 
     @Override
@@ -95,6 +98,8 @@ public class NCLootTables extends BaseLootTableProvider {
         all.addAll(STORAGE_BLOCKS.values().stream().map(RegistryObject::get).toList());
         all.addAll(NC_ELECTROMAGNETS.values().stream().map(RegistryObject::get).toList());
         all.addAll(NC_RF_AMPLIFIERS.values().stream().map(RegistryObject::get).toList());
+        all.add(EXPL_PROXY_BLOCK.get());
+        all.add(EXPL_BLOCK.get());
         all.add(MUSHROOM_BLOCK.get());
         all.add(WASTELAND_EARTH.get());
         all.add(PORTAL_BLOCK.get());

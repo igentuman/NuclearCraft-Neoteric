@@ -22,6 +22,7 @@ public class RadiationCommand {
                 .then(Commands.argument("action", StringArgumentType.word())
                         .suggests((context, builder) -> {
                             builder.suggest("disable");
+                            builder.suggest("set");
                             builder.suggest("enable");
                             builder.suggest("clear_all");
                             builder.suggest("clear_player");
@@ -33,6 +34,9 @@ public class RadiationCommand {
                                 .requires(cs -> cs.hasPermission(3))
                                 .executes(RadiationCommand::executeCommandWithPlayer)
                         )
+                        .then(Commands.argument("value", new net.minecraft.commands.arguments.RangeArgument.Ints())
+                                .executes(RadiationCommand::executeSetRadiation)
+                        )
                 )
         );
     }
@@ -43,9 +47,9 @@ public class RadiationCommand {
             executor.sendSystemMessage(__("commands.nuclearcraft.no_permission"));
             return 1;
         }
-        
+
         String action = StringArgumentType.getString(context, "action");
-        
+
         if ("clear_player".equals(action)) {
             ServerPlayer targetPlayer = EntityArgument.getPlayer(context, "player");
             targetPlayer.getCapability(PLAYER_RADIATION).ifPresent(playerRadiation -> {
@@ -53,9 +57,13 @@ public class RadiationCommand {
             });
             executor.sendSystemMessage(Component.literal("Cleared player radiation " + targetPlayer.getName().getString()));
             return 1;
-        } else {
-            return executeCommand(context);
         }
+        if ("set".equals(action)) {
+            executeSetRadiation(context);
+            return 1;
+        }
+
+        return executeCommand(context);
     }
 
     private static int executeCommand(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
@@ -84,6 +92,29 @@ public class RadiationCommand {
                 return 0;
         }
 
+        return 1;
+    }
+
+    private static int executeSetRadiation(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        ServerPlayer player = context.getSource().getPlayerOrException();
+        if (!player.hasPermissions(3)) {
+            player.sendSystemMessage(__("commands.nuclearcraft.no_permission"));
+            return 1;
+        }
+        String action = StringArgumentType.getString(context, "action");
+        if (!"set".equals(action)) {
+            context.getSource().sendFailure(Component.literal("Invalid action for value argument: " + action));
+            return 0;
+        }
+        int value = 0;
+        try {
+            value = Math.max(0, Integer.parseInt(context.getInput().split(" ")[2]));
+        } catch (Exception ex) {
+            context.getSource().sendFailure(Component.literal("Invalid action for value argument: " + action));
+            return 0;
+        }
+        RadiationManager.get(player.level()).setChunkRadiation(player.blockPosition(), value);
+        player.sendSystemMessage(Component.literal("Set your radiation to " + value));
         return 1;
     }
 }

@@ -94,7 +94,11 @@ public class NuclearCraft {
         modbus.addListener(ModSetup::init);
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> modbus.addListener(ClientSetup::init));
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> modbus.addListener(this::registerClientEventHandlers));
-        isBetaBuild = ModList.get().getModFileById("nuclearcraft").getMods().get(0).getVersion().getQualifier().contains("beta");
+        try {
+            isBetaBuild = ModList.get().getModFileById("nuclearcraft").getMods().get(0).getVersion().getQualifier().contains("beta");
+        } catch (Exception e) {
+            isBetaBuild = false;
+        }
     }
 
     public static PacketHandler packetHandler() {

@@ -129,4 +129,9 @@ public class RadiationManager extends SavedData {
     public void addRadiation(Level level, double v, BlockPos worldPosition) {
         addRadiation(level, v, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ());
     }
+
+    public void setChunkRadiation(BlockPos blockPos, int value) {
+        worldRadiation.setChunkRadiation(blockPos, value);
+        setDirty();
+    }
 }

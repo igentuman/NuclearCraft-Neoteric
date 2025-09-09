@@ -1,0 +1,7 @@
+{
+	"name": "Particle Chambers",
+	"description": "Smashing particles",
+	"icon": "nuclearcraft:target_chamber_controller",
+    "parent": "nuclearcraft:multiblocks",
+	"sortnum": 0
+}

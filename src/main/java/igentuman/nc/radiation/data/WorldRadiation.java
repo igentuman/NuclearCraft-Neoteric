@@ -183,4 +183,12 @@ public class WorldRadiation implements IWorldRadiationCapability {
         radiation += RADIATION_CONFIG.dimensionRadiation(level.dimension().location().toString());
         return radiation;
     }
+
+    public void setChunkRadiation(BlockPos blockPos, int value) {
+        long id = pack(blockPos.getX() >> 4, blockPos.getZ() >> 4);
+        int curTimestamp = (int) (getServerTime() / 20);
+        int newRadiation = Math.min(value*1000, Integer.MAX_VALUE);
+        chunkRadiation.put(id, pack(newRadiation, curTimestamp));
+        updatedChunks.put(id, pack(newRadiation, curTimestamp));
+    }
 }

@@ -14,6 +14,7 @@ import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BL
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_CORE_PROXY;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.EXPL_PROXY_BLOCK;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BLOCKS;
+import static igentuman.nc.multiblock.particle_chamber.TargetChamberRegistration.TARGET_CHAMBER_DETECTORS;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
 import static igentuman.nc.setup.registration.NCBlocks.*;
 import static igentuman.nc.setup.registration.NCItems.*;
@@ -73,6 +74,8 @@ public class NCLanguageProvider extends LanguageProvider {
     }
 
     private void particles() {
+        add("report.nc.validation_count", "Validations: %s");
+        add("report.nc.validation_duration", "Validated in: %s ms");
         add("emi.category.nuclearcraft.ingot_former", "Ingot Former");
         add("emi.category.nuclearcraft.fusion_coolant", "Fusion Reactor Coolant");
         add("emi.category.nuclearcraft.fusion_core", "Fusion Reactor");
@@ -513,6 +516,7 @@ public class NCLanguageProvider extends LanguageProvider {
     private void multiblocks() {
         String prefix = "";
         for(String name: ACCELERATOR_BLOCKS.keySet()) {
+            prefix = "";
             if(name.contains("cooler")) {
                 prefix = "Accelerator ";
             }
@@ -524,6 +528,9 @@ public class NCLanguageProvider extends LanguageProvider {
         }
         for(String name: TARGET_CHAMBER_BLOCKS.keySet()) {
             String title = convertToName(name);
+            if(TARGET_CHAMBER_DETECTORS.containsKey(name)) {
+                title += " Detector";
+            }
             add(TARGET_CHAMBER_BLOCKS.get(name).get(), title);
         }
         for(String name: KUGELBLITZ_BLOCKS.keySet()) {

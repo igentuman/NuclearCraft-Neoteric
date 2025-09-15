@@ -1,5 +1,6 @@
 package igentuman.nc.compat.emi;
 
+import dev.emi.emi.api.EmiApi;
 import dev.emi.emi.api.EmiEntrypoint;
 import dev.emi.emi.api.EmiPlugin;
 import dev.emi.emi.api.EmiRegistry;
@@ -12,6 +13,7 @@ import igentuman.nc.block.kugelblitz.entity.ChamberTerminalBE;
 import igentuman.nc.block.target_chamber.entity.TargetChamberControllerBE;
 import igentuman.nc.block.turbine.entity.TurbineControllerBE;
 import igentuman.nc.client.NcClient;
+import igentuman.nc.client.gui.processor.NCProcessorScreen;
 import igentuman.nc.compat.emi.ingredient.ParticleEmiStack;
 import igentuman.nc.handler.config.ClientConfig;
 import igentuman.nc.compat.jei.ParticleRecipe;
@@ -25,6 +27,7 @@ import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.recipes.type.OreVeinRecipe;
 import igentuman.nc.setup.registration.NCFluids;
 import igentuman.nc.util.ModUtil;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -49,7 +52,24 @@ import static net.minecraft.world.item.Items.BARRIER;
 public class EMIPlugin implements EmiPlugin {
     
     private static final Map<String, EmiRecipeCategory> CATEGORIES = new HashMap<>();
-    
+
+    public static void displayRecipes(AbstractContainerScreen<?> screen) {
+        EmiRecipeCategory cat = getRecipeCategory(screen);
+        if(cat != null) {
+            EmiApi.displayRecipeCategory(cat);
+        }
+    }
+
+    private static EmiRecipeCategory getRecipeCategory(AbstractContainerScreen<?> screen) {
+        if(screen instanceof NCProcessorScreen processorScreen) {
+            if(CATEGORIES.containsKey(processorScreen.getRecipeTypeName())) {
+                return CATEGORIES.get(processorScreen.getRecipeTypeName());
+            }
+        }
+
+        return null;
+    }
+
     @Override
     public void register(EmiRegistry registry) {
         // Register ParticleStack renderer

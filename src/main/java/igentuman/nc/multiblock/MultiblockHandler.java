@@ -3,10 +3,12 @@ package igentuman.nc.multiblock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static igentuman.nc.NuclearCraft.debugLog;
@@ -19,6 +21,8 @@ public class MultiblockHandler {
     private final Set<String> toRemove = Collections.synchronizedSet(new HashSet<>());
     public final Set<Long> ignoreUpdate = Collections.synchronizedSet(new HashSet<>());
     public final Set<Long> changedBlocks = Collections.synchronizedSet(new HashSet<>());
+    private static CompletableFuture<Void> validationFuture;
+    private static CompletableFuture<Void> multiblockValidationFuture;
 
 
     private MultiblockHandler() {
@@ -31,6 +35,26 @@ public class MultiblockHandler {
         MultiblockHandler handler = new MultiblockHandler();
         instances.put(dimension, handler);
         return handler;
+    }
+
+    public static void tickMultiblockAsync(ServerLevel level, AbstractMultiblock multiblock) {
+        if (multiblockValidationFuture != null && !multiblockValidationFuture.isDone()) {
+            return;
+        }
+        multiblockValidationFuture = CompletableFuture.runAsync(
+                () -> MultiblockHandler.get(level.dimension()).tick(level, multiblock),
+                MultiblockExecutorManager.getExecutor()
+        );
+    }
+
+    public static void tickAsync(ServerLevel level) {
+        if (validationFuture != null && !validationFuture.isDone()) {
+            return;
+        }
+        validationFuture = CompletableFuture.runAsync(
+                () -> MultiblockHandler.get(level.dimension()).tick(level),
+                MultiblockExecutorManager.getExecutor()
+        );
     }
 
     public void addMultiblock(AbstractMultiblock multiblock) {
@@ -134,6 +158,19 @@ public class MultiblockHandler {
             changedBlocks.add(pos.asLong());
             debugLog("Tracking block change at " + pos.toShortString() + " (total tracked: " + changedBlocks.size() + ")");
         }
+    }
+
+    public void tick(Level level, AbstractMultiblock multiblock) {
+        if(!multiblocks.containsKey(multiblock.getId())) {
+            addMultiblock(multiblock, false);
+        }
+        if(multiblocks.get(multiblock.getId()) != multiblock) {
+            addMultiblock(multiblock, true);
+        }
+        for (long packedPos : changedBlocks) {
+            multiblock.onBlockChange(BlockPos.of(packedPos));
+        }
+        multiblock.tick(level);
     }
 
     /**

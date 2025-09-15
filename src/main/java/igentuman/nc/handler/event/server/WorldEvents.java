@@ -113,34 +113,14 @@ public class WorldEvents {
         }
     }
 
-    private CompletableFuture<Void> validationFuture;
-    private CompletableFuture<Void> radiationFuture;
 
     @SubscribeEvent
     public void onTick(LevelTickEvent event) {
         if (event.side.isServer() && event.phase == Phase.START) {
-            if(event.isCanceled() || event.level.getGameTime() % 5 != 0) return;
+            if(event.isCanceled() || event.level.getGameTime() % 5 != 0 || event.level.getChunkSource().getLoadedChunksCount() < 1) return;
             final ServerLevel level = (ServerLevel) event.level;
-
-            if(event.level.getGameTime() % 10 == 0) {
-                if (radiationFuture == null || radiationFuture.isDone()) {
-                    radiationFuture = CompletableFuture.runAsync(
-                            () -> RadiationEvents.onWorldTick(event),
-                            RadiationExecutorManager.getExecutor()
-                    );
-                }
-            }
-
-            if(level.getChunkSource().getLoadedChunksCount() < 1) {
-                return;
-            }
-            if (validationFuture != null && !validationFuture.isDone()) {
-                return;
-            }
-            validationFuture = CompletableFuture.runAsync(
-                    () -> MultiblockHandler.get(level.dimension()).tick(level),
-                    MultiblockExecutorManager.getExecutor()
-            );
+            RadiationEvents.tickAsync(event);
+            MultiblockHandler.tickAsync(level);
         }
     }
 

@@ -62,4 +62,13 @@ public class MultiblockControllerContailer extends AbstractContainerMenu {
     public HashMap<String, String> getReportItems() {
         return blockEntity.getAnalyzeReport();
     }
+
+    public long validationDuration() {
+        return blockEntity.validationTime;
+    }
+
+
+    public long validationCount() {
+        return blockEntity.validationsCounter;
+    }
 }

@@ -14,6 +14,7 @@ public class ModUtil {
     protected static boolean kubeJsLoaded;
     protected static boolean isJEILoaded;
     protected static boolean isMMLoaded;
+    protected static boolean isEMILoaded;
     protected static void initialize()
     {
         if(initialized)
@@ -29,6 +30,12 @@ public class ModUtil {
         kubeJsLoaded = ModList.get().isLoaded("kubejs");
         isJEILoaded = ModList.get().isLoaded("jei");
         isMMLoaded = ModList.get().isLoaded("mm");
+        isEMILoaded = ModList.get().isLoaded("emi");
+    }
+
+    public static boolean isEMILoaded() {
+        initialize();
+        return isEMILoaded;
     }
 
     public static boolean isMMLoaded() {

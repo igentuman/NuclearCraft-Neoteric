@@ -713,7 +713,9 @@ public abstract class AbstractMultiblock implements Multiblock {
         }
 
         long elapsedTime = System.currentTimeMillis() - startTime;
-        debugLog("=== Validation completed for " + getClass().getSimpleName() + " at " + initialPos().toShortString() + 
+        controllerBE().validationTime = elapsedTime;
+        controllerBE().validationsCounter++;
+        debugLog("=== Validation completed for " + getClass().getSimpleName() + " at " + initialPos().toShortString() +
                 " in " + elapsedTime + "ms - Result: " + validationResult + " ===");
     }
 

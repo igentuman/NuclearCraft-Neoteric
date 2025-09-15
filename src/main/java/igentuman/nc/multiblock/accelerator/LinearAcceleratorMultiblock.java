@@ -185,7 +185,7 @@ public class LinearAcceleratorMultiblock extends AbstractAcceleratorMultiblock {
 
     @Override
     public void validate() {
-        long startTime = System.nanoTime();
+        long startTime = System.currentTimeMillis();
         switch (stage) {
             case 0 -> validateOuter();
             case 1 -> validateBeam();
@@ -197,7 +197,7 @@ public class LinearAcceleratorMultiblock extends AbstractAcceleratorMultiblock {
             hasToRefresh = true;
             return;
         }
-
+        long elapsedTime = System.currentTimeMillis() - startTime;
         isFormed = outerValid && innerValid;
         focus = quadStrength + dipoleStrength/2D;
         if (isFormed) {
@@ -218,6 +218,8 @@ public class LinearAcceleratorMultiblock extends AbstractAcceleratorMultiblock {
             controllerBE().acceleratingVoltage = acceleratingVoltage;
             controllerBE().energyRequired = energyRequired;
             controllerBE().coolingRate = coolingRate;
+            controllerBE().validationTime = elapsedTime;
+            controllerBE().validationsCounter++;
             hasToRefresh = false;
         } else {
             clearStats();

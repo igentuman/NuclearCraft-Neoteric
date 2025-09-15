@@ -6,6 +6,7 @@ import igentuman.nc.client.gui.MultiblockAnalyzeReportScreen;
 import igentuman.nc.client.gui.MultiblockBuilderScreen;
 import igentuman.nc.client.gui.element.NCGuiElement;
 import igentuman.nc.client.gui.processor.side.SideConfigSlotSelectionScreen;
+import igentuman.nc.compat.emi.EMIPlugin;
 import igentuman.nc.container.MultiblockControllerContailer;
 import igentuman.nc.network.toServer.PacketBuildMultiblock;
 import igentuman.nc.network.toServer.PacketGuiButtonPress;
@@ -26,6 +27,7 @@ import java.util.List;
 
 import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.NuclearCraft.rl;
+import static igentuman.nc.util.ModUtil.isEMILoaded;
 import static igentuman.nc.util.TextUtils.__;
 
 public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
@@ -79,7 +81,7 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
 
     @Override
     public boolean isMouseOver(double pMouseX, double pMouseY) {
-        return this.active && this.visible && pMouseX >= (double)X() && pMouseY >= (double)Y() && pMouseX < (double)(X() + this.width) && pMouseY < (double)(Y() + this.height);
+        return this.active && this.visible && pMouseX >= (double)x && pMouseY >= (double)y && pMouseX < (double)(x + this.width) && pMouseY < (double)(y + this.height);
     }
 
     @Override
@@ -136,7 +138,9 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
             height = 18;
             width = 18;
             btn = new ImageButton(X(), Y(), width, height, 238, 76, 18, TEXTURE, pButton -> {
-
+                if(isEMILoaded()) {
+                    EMIPlugin.displayRecipes(screen);
+                }
             });
         }
 
@@ -189,11 +193,6 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
 
         public void refreshPosition() {
             setEnabled(enabled);
-        }
-
-        @Override
-        public boolean isMouseOver(double pMouseX, double pMouseY) {
-            return this.active && this.visible && pMouseX >= (double)x && pMouseY >= (double)y && pMouseX < (double)(x + this.width) && pMouseY < (double)(y + this.height);
         }
     }
 

@@ -4,7 +4,7 @@
   "group": "nuclearcraft_accelerator",
   "key": {
     "E": {
-      "item": "nuclearcraft:elite_processor"
+      "item": "nuclearcraft:basic_processor"
     },
     "I": {
       "item": "nuclearcraft:tungsten_filament"

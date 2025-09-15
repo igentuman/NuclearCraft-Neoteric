@@ -118,6 +118,9 @@ public class MultiblockAnalyzeReportScreen<T extends MultiblockControllerContail
             graphics.drawWordWrap(font, __(record, reportItems.get(record)), 20, y, 250, ChatFormatting.DARK_GRAY.getColor());
             y += 12;
         }
+        graphics.drawWordWrap(font, __("report.nc.validation_duration", container().validationDuration()), 20, y, 250, ChatFormatting.DARK_GRAY.getColor());
+        y += 12;
+        graphics.drawWordWrap(font, __("report.nc.validation_count", container().validationCount()), 20, y, 250, ChatFormatting.DARK_GRAY.getColor());
         graphics.pose().scale(1f, 1f, 1f);
         graphics.pose().popPose();
     }

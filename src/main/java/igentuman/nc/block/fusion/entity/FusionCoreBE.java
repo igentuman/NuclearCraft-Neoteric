@@ -374,8 +374,8 @@ public class FusionCoreBE extends MultiblockControllerBE {
             FusionCoreBlock block = (FusionCoreBlock) getBlockState().getBlock();
             block.placeProxyBlocks(getBlockState(), level, worldPosition, this);
         }
-        tickProxyBlocks();
         super.tickServer();
+        tickProxyBlocks();
         handleValidation();
         simulateReaction();
         sendOutPower();

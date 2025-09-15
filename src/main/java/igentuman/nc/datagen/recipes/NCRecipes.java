@@ -422,7 +422,7 @@ public class NCRecipes extends RecipeProvider {
                 .pattern("LPL")
                 .define('L', NC_PARTS.get("laser_assembly").get())
                 .define('P', NC_PARTS.get("plate_elite").get())
-                .define('E', NC_PARTS.get("elite_processor").get())
+                .define('E', NC_PARTS.get("basic_processor").get())
                 .define('I', ION_SOURCES.get("tungsten_filament").get())
                 .group(MODID+"_accelerator")
                 .unlockedBy("item", has(NC_PARTS.get("laser_assembly").get()))

@@ -12,6 +12,7 @@ import igentuman.nc.util.BlockPosInstance;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.util.LazyOptional;
@@ -48,6 +49,11 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
     public boolean controllerEnabled = false;
     @NBTField
     private boolean displayDetailedDataFlag = false;
+    protected long lastTickTime = 0;
+    @NBTField
+    public long validationsCounter = 0;
+    @NBTField
+    public long validationTime = 0;
 
     public MultiblockControllerBE(BlockEntityType<?> pType, BlockPos pPos, BlockState pBlockState) {
         super(pType, pPos, pBlockState);
@@ -126,6 +132,10 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
     public void tickServer() {
         if(analyzeDelay > 0) {
             analyzeDelay--;
+        }
+        assert level != null;
+        if(level.getGameTime() % 100 == 0) {
+            MultiblockHandler.tickMultiblockAsync((ServerLevel) level, getMultiblock());
         }
     }
 

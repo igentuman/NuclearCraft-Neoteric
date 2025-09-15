@@ -149,8 +149,6 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
 
     @Override
     public void validate() {
-        debugLog("=== Starting Fission Reactor validation at " + controllerPos.toShortString() + " ===");
-        
         heatSinkCooling = 0;
         moderatorAttachments = 0;
         extraFuelCells = 0;
@@ -169,7 +167,6 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
         directFuelCellConnectionPos.clear();
         secondFuelCellConnectionPos.clear();
         
-        debugLog("Cleared fission reactor specific caches and counters");
         super.validate();
         updateAABB();
     }
@@ -190,11 +187,6 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
         //Stage 1: Index all inner blocks
         debugLog("Stage 1: Indexing inner blocks");
         indexInnerBlocks();
-        debugLog("Stage 1 complete - Result: " + validationResult + 
-                ", Fuel cells: " + fuelCells.size() + 
-                ", Moderators: " + allModerators.size() + 
-                ", Heat sinks: " + allHeatSinks.size() + 
-                ", Irradiators: " + irradiators.size());
         if(validationResult != ValidationResult.VALID) {
             debugLog("VALIDATION FAILED - Inner structure invalid: " + validationResult + ", clearing stats");
             clearStats();

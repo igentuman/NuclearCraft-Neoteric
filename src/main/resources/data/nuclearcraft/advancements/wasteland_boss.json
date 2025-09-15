@@ -16,23 +16,28 @@
   },
   "parent": "nuclearcraft:wasteland",
   "criteria": {
-    "kill_feral_ghoul_boss": {
-      "trigger": "minecraft:player_killed_entity",
+    "nuclearcraft:feral_ghoul_boss": {
       "conditions": {
-        "condition": "minecraft:entity_properties",
-        "entity": "this",
-        "predicate": {
-          "type": "nuclearcraft:feral_ghoul_boss"
-        }
-      }
+        "entity": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "type": "nuclearcraft:feral_ghoul_boss"
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:player_killed_entity"
     }
   },
   "requirements": [
     [
-      "kill_feral_ghoul_boss"
+      "nuclearcraft:feral_ghoul_boss"
     ]
   ],
   "rewards": {
     "experience": 100
   }
 }
+

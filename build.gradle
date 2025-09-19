@@ -131,8 +131,11 @@ dependencies {
     implementation fg.deobf("curse.maven:multi-builder-tool-827020:6877370")
     runtimeOnly fg.deobf("curse.maven:ctm-267602:5983309")
     compileOnly fg.deobf("curse.maven:immersive-engineering-231951:5224387")
-
+    implementation fg.deobf("curse.maven:thermal-foundation-222880:5443583")
+    implementation fg.deobf("curse.maven:thermal-expansion-69163:5372749")
+    implementation fg.deobf("curse.maven:cofh-core-69162:5374122")
     implementation fg.deobf("curse.maven:refined-storage-243076:4844585")
+
     compileOnly fg.deobf("curse.maven:the-lost-cities-269024:6174986")
     compileOnly fg.deobf("mezz.jei:jei-${mc_version}-common-api:${jei_version}")
     compileOnly fg.deobf("mezz.jei:jei-${mc_version}-forge-api:${jei_version}")

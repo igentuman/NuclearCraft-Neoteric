@@ -1,0 +1,28 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "thermal_expansion"
+        }
+      ],
+      "recipe": {
+        "type": "nuclearcraft:extractor",
+        "ingredient": {
+          "item": "minecraft:honeycomb"
+        },
+        "outputFluids": [
+          {
+            "item": "cofh_core:honey",
+            "amount": 100
+          }
+        ],
+        "powerModifier": 0.5,
+        "radiation": 1.0,
+        "timeModifier": 0.5
+      }
+    }
+  ]
+}

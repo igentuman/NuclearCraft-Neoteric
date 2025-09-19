@@ -1,0 +1,35 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "ae2"
+        }
+      ],
+      "recipe": {
+        "type": "nuclearcraft:assembler",
+        "input": [
+          {
+            "item": "ae2:printed_engineering_processor"
+          },
+          {
+            "tag": "forge:dusts/energetic_blend"
+          },
+          {
+            "item": "ae2:printed_silicon"
+          }
+        ],
+        "output": [
+          {
+            "item": "ae2:engineering_processor"
+          }
+        ],
+        "powerModifier": 5.0,
+        "radiation": 1.0,
+        "timeModifier": 2.0
+      }
+    }
+  ]
+}

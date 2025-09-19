@@ -5,12 +5,16 @@ import igentuman.nc.content.materials.Materials;
 import net.minecraft.data.recipes.FinishedRecipe;
 import java.util.function.Consumer;
 
+import static net.minecraft.world.item.Items.NETHERITE_INGOT;
+import static net.minecraft.world.item.Items.NETHERITE_SCRAP;
+
 public class AlloySmelterRecipes extends AbstractRecipeProvider {
 
     public static void generate(Consumer<FinishedRecipe> consumer) {
         AlloySmelterRecipes.consumer = consumer;
         ID = Processors.ALLOY_SMELTER;
-
+        doubleToItem(ID, dustIngredient(Materials.netherite, 3), dustIngredient(Materials.gold, 3),
+                ingredient(NETHERITE_INGOT, 1), 2D);
         doubleToItem(ID, dustIngredient(Materials.iron, 1), dustIngredient(Materials.chromium, 4),
                 ingotStack(Materials.nichrome, 5), 2D);
         doubleToItem(ID, dustIngredient(Materials.osmium, 3), dustIngredient(Materials.iridium, 1),

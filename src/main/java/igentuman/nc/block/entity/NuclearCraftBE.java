@@ -68,20 +68,60 @@ public class NuclearCraftBE extends BlockEntity {
     public HashMap<String, NcRecipe> cachedRecipes = new HashMap<>();
     protected LazyOptional<IEnergyStorage> energy;
 
+    //all fields
+    private final List<Field> booleanFields;
+    private final List<Field> intFields;
+    private final List<Field> intArrayFields;
+    private final List<Field> doubleFields;
+    private final List<Field> stringFields;
+    private final List<Field> stringArrayFields;
+    private final List<Field> floatFields;
+    private final List<Field> byteFields;
+    private final List<Field> longFields;
+    private final List<Field> blockPosFields;
+    private final List<Field> directionFields;
+
+    //sync always fields
+    private final List<Field> booleanFieldsS;
+    private final List<Field> intFieldsS;
+    private final List<Field> intArrayFieldsS;
+    private final List<Field> doubleFieldsS;
+    private final List<Field> stringFieldsS;
+    private final List<Field> stringArrayFieldsS;
+    private final List<Field> floatFieldsS;
+    private final List<Field> byteFieldsS;
+    private final List<Field> longFieldsS;
+    private final List<Field> blockPosFieldsS;
+    private final List<Field> directionFieldsS;
+
+
     public NuclearCraftBE(BlockEntityType<?> pType, BlockPos pPos, BlockState pBlockState) {
         super(pType, pPos, pBlockState);
         name = getName(pBlockState);
-        directionFields = initFields(Direction.class);
-        booleanFields = initFields(boolean.class);
-        intFields = initFields(int.class);
-        intArrayFields = initFields(int[].class);
-        doubleFields = initFields(double.class);
-        stringFields = initFields(String.class);
-        stringArrayFields = initFields(String[].class);
-        blockPosFields = initFields(BlockPos.class);
-        floatFields = initFields(float.class);
-        byteFields = initFields(byte.class);
-        longFields = initFields(long.class);
+        directionFields = initFields(Direction.class, false);
+        booleanFields = initFields(boolean.class, false);
+        intFields = initFields(int.class, false);
+        intArrayFields = initFields(int[].class, false);
+        doubleFields = initFields(double.class, false);
+        stringFields = initFields(String.class, false);
+        stringArrayFields = initFields(String[].class, false);
+        blockPosFields = initFields(BlockPos.class, false);
+        floatFields = initFields(float.class, false);
+        byteFields = initFields(byte.class, false);
+        longFields = initFields(long.class, false);
+
+        directionFieldsS = initFields(Direction.class, true);
+        booleanFieldsS = initFields(boolean.class, true);
+        intFieldsS = initFields(int.class, true);
+        intArrayFieldsS = initFields(int[].class, true);
+        doubleFieldsS = initFields(double.class, true);
+        stringFieldsS = initFields(String.class, true);
+        stringArrayFieldsS = initFields(String[].class, true);
+        blockPosFieldsS = initFields(BlockPos.class, true);
+        floatFieldsS = initFields(float.class, true);
+        byteFieldsS = initFields(byte.class, true);
+        longFieldsS = initFields(long.class, true);
+
         recipeInfo = new RecipeInfo();
     }
 
@@ -252,19 +292,7 @@ public class NuclearCraftBE extends BlockEntity {
         changed = was || changed;
     }
 
-    private final List<Field> booleanFields;
-    private final List<Field> intFields;
-    private final List<Field> intArrayFields;
-    private final List<Field> doubleFields;
-    private final List<Field> stringFields;
-    private final List<Field> stringArrayFields;
-    private final List<Field> floatFields;
-    private final List<Field> byteFields;
-    private final List<Field> longFields;
-    private final List<Field> blockPosFields;
-    private final List<Field> directionFields;
-
-    public void saveTagData(CompoundTag tag) {
+    public void saveFullTagData(CompoundTag tag) {
         try {
             for (Field f : blockPosFields) {
                 if((f.get(this)) != null) {
@@ -402,7 +430,7 @@ public class NuclearCraftBE extends BlockEntity {
         } catch (IllegalAccessException ignore) { }
     }
 
-    private List<Field> initFields(Class<?> fieldClass) {
+    private List<Field> initFields(Class<?> fieldClass, boolean syncAlways) {
         List<Field> fields = new ArrayList<>();
         for (Field field : getClass().getFields()) {
             if (!field.isAnnotationPresent(NBTField.class)) {
@@ -573,7 +601,7 @@ public class NuclearCraftBE extends BlockEntity {
         if(playerUID != null) {
             tag.putUUID("playerUID", playerUID);
         }
-        saveTagData(infoTag);
+        saveFullTagData(infoTag);
         tag.put("Info", infoTag);
     }
 
@@ -603,7 +631,7 @@ public class NuclearCraftBE extends BlockEntity {
         if (energyStorage() != null) {
             infoTag.putInt("energy", energyStorage().getEnergyStored());
         }
-        saveTagData(infoTag);
+        saveFullTagData(infoTag);
         tag.put("Info", infoTag);
     }
 

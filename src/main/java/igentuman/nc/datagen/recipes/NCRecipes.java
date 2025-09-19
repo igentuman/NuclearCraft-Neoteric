@@ -1011,8 +1011,9 @@ public class NCRecipes extends RecipeProvider {
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NC_ITEMS.get("water_collector").get())
                 .pattern("PIP")
-                .pattern("B B")
+                .pattern("GBG")
                 .pattern("PIP")
+                .define('G', forgePlate(Materials.thermoconducting))
                 .define('P', NC_PARTS.get("plate_basic").get())
                 .define('B', NAUTILUS_SHELL)
                 .define('I', WATER_BUCKET)

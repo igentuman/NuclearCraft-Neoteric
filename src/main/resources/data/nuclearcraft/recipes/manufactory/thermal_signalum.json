@@ -1,0 +1,28 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "thermal_expansion"
+        }
+      ],
+      "recipe": {
+        "type": "nuclearcraft:manufactory",
+        "input": [{
+          "tag": "forge:ingots/signalum"
+        }],
+        "output": [
+          {
+            "item": "thermal:signalum_dust",
+            "count": 1
+          }
+        ],
+        "powerModifier": 0.5,
+        "radiation": 1.0,
+        "timeModifier": 0.5
+      }
+    }
+  ]
+}

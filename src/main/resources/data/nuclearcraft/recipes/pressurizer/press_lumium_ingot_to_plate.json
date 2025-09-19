@@ -1,0 +1,30 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "thermal_expansion"
+        }
+      ],
+      "recipe": {
+        "type": "nuclearcraft:pressurizer",
+        "input": [
+          {
+            "tag": "forge:ingots/lumium"
+          }
+        ],
+        "output": [
+          {
+            "item": "thermal:lumium_plate",
+            "count": 1
+          }
+        ],
+        "powerModifier": 0.5,
+        "radiation": 1.0,
+        "timeModifier": 0.5
+      }
+    }
+  ]
+}

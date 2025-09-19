@@ -41,20 +41,46 @@ public class MultiblockHandler {
         if (multiblockValidationFuture != null && !multiblockValidationFuture.isDone()) {
             return;
         }
+        // Reset future reference if it completed exceptionally
+        if (multiblockValidationFuture != null && multiblockValidationFuture.isCompletedExceptionally()) {
+            multiblockValidationFuture = null;
+        }
         multiblockValidationFuture = CompletableFuture.runAsync(
-                () -> MultiblockHandler.get(level.dimension()).tick(level, multiblock),
+                () -> {
+                    try {
+                        MultiblockHandler.get(level.dimension()).tick(level, multiblock);
+                    } catch (Exception e) {
+                        debugLog("Exception in multiblock async tick: " + e.getMessage());
+                    }
+                },
                 MultiblockExecutorManager.getExecutor()
-        );
+        ).exceptionally(throwable -> {
+            debugLog("Unhandled exception in multiblock async tick: " + throwable.getMessage());
+            return null;
+        });
     }
 
     public static void tickAsync(ServerLevel level) {
         if (validationFuture != null && !validationFuture.isDone()) {
             return;
         }
+        // Reset future reference if it completed exceptionally
+        if (validationFuture != null && validationFuture.isCompletedExceptionally()) {
+            validationFuture = null;
+        }
         validationFuture = CompletableFuture.runAsync(
-                () -> MultiblockHandler.get(level.dimension()).tick(level),
+                () -> {
+                    try {
+                        MultiblockHandler.get(level.dimension()).tick(level);
+                    } catch (Exception e) {
+                        debugLog("Exception in async tick: " + e.getMessage());
+                    }
+                },
                 MultiblockExecutorManager.getExecutor()
-        );
+        ).exceptionally(throwable -> {
+            debugLog("Unhandled exception in async tick: " + throwable.getMessage());
+            return null;
+        });
     }
 
     public void addMultiblock(AbstractMultiblock multiblock) {

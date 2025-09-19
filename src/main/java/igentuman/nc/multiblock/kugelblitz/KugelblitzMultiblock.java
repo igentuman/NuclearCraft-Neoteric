@@ -362,11 +362,11 @@ public class KugelblitzMultiblock extends AbstractMultiblock {
     @Override
     public void tick(Level level) {
         super.tick(level);
-        if(level.getGameTime() % 4 == 0) {
-            for(Direction dir: Direction.values()) {
-                if(getBlockEntity(getCenter().relative(dir, 5)) instanceof PhotonConcentratorBE pcBE) {
-                    pcBE.setMultiblock(this);
-                }
+        //multiblock is not formed
+        if(centerBlockPos == null) return;
+        for(Direction dir: Direction.values()) {
+            if(getBlockEntity(getCenter().relative(dir, 5)) instanceof PhotonConcentratorBE pcBE) {
+                pcBE.setMultiblock(this);
             }
         }
     }

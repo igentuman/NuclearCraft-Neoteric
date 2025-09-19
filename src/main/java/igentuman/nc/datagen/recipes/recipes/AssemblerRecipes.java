@@ -133,7 +133,7 @@ public class AssemblerRecipes extends AbstractRecipeProvider {
         itemsToItems(
                 List.of(
                         ingredient(NC_ITEMS.get("compact_water_collector").get(),4),
-                        ingredient(HEART_OF_THE_SEA),
+                        ingredient(CONDUIT),
                         plateIngredient(Materials.platinum, 4),
                         ingredient(NC_PARTS.get("motor").get())
                 ),

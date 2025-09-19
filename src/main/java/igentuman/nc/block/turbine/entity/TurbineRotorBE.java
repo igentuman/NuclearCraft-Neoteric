@@ -16,7 +16,7 @@ import java.util.List;
 import static igentuman.nc.block.fission.FissionControllerBlock.POWERED;
 
 public class TurbineRotorBE extends TurbineBE {
-    @NBTField
+    @NBTField(syncAlways = true)
     public BlockPos controllerPos = BlockPos.ZERO;
     private float rotation = 0;
 
@@ -45,7 +45,7 @@ public class TurbineRotorBE extends TurbineBE {
 
     @Override
     protected void saveClientData(CompoundTag tag) {
-        saveTagData(tag);
+        saveFullTagData(tag);
     }
 
     @Override

@@ -227,7 +227,7 @@ public class TurbinePortBE extends TurbineBE {
     @Override
     public void saveAdditional(CompoundTag tag) {
         CompoundTag infoTag = new CompoundTag();
-        saveTagData(infoTag);
+        saveFullTagData(infoTag);
         tag.put("Info", infoTag);
     }
 
@@ -243,7 +243,7 @@ public class TurbinePortBE extends TurbineBE {
     protected void saveClientData(CompoundTag tag) {
         CompoundTag infoTag = new CompoundTag();
         tag.put("Info", infoTag);
-        saveTagData(infoTag);
+        saveFullTagData(infoTag);
     }
 
     public int getEnergyStored() {

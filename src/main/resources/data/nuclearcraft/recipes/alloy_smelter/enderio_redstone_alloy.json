@@ -1,0 +1,33 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "enderio"
+        }
+      ],
+      "recipe": {
+        "type": "nuclearcraft:alloy_smelter",
+        "input": [
+          {
+            "tag": "forge:dusts/redstone"
+          },
+          {
+            "tag": "forge:silicon"
+          }
+        ],
+        "output": [
+          {
+            "count": 1,
+            "item": "enderio:redstone_alloy_ingot"
+          }
+        ],
+        "powerModifier": 2.4,
+        "radiation": 1.0,
+        "timeModifier": 2.0
+      }
+    }
+  ]
+}

@@ -538,7 +538,7 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
         data.put("Content", contentHandler().serializeNBT());
         data.put("Energy", energyStorage().serializeNBT());
         CompoundTag infoTag = new CompoundTag();
-        saveTagData(infoTag);
+        saveFullTagData(infoTag);
         infoTag.put("upgrades", upgradesHandler().serializeNBT());
         infoTag.put("catalyst", catalystHandler().serializeNBT());
         infoTag.put("recipeInfo", recipeInfo().serializeNBT());

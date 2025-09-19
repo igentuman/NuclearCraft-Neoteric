@@ -15,6 +15,7 @@ public class ModUtil {
     protected static boolean isJEILoaded;
     protected static boolean isMMLoaded;
     protected static boolean isEMILoaded;
+    protected static boolean isRsLoaded;
     protected static void initialize()
     {
         if(initialized)
@@ -31,6 +32,7 @@ public class ModUtil {
         isJEILoaded = ModList.get().isLoaded("jei");
         isMMLoaded = ModList.get().isLoaded("mm");
         isEMILoaded = ModList.get().isLoaded("emi");
+        isRsLoaded = ModList.get().isLoaded("refinedstorage");
     }
 
     public static boolean isEMILoaded() {
@@ -87,5 +89,10 @@ public class ModUtil {
     public static boolean isGtLoaded() {
         initialize();
         return gtLoaded;
+    }
+
+    public static boolean isRefinedStorageLoaded() {
+        initialize();
+        return isRsLoaded;
     }
 }

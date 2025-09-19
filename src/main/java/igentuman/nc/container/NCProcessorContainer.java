@@ -253,4 +253,8 @@ public class NCProcessorContainer<T extends AbstractContainerMenu> extends Abstr
     public CommonConfig.GTCEUCompatibilityConfig.GTCEUTier getTier() {
         return CommonConfig.GTCEUCompatibilityConfig.GTCEUTier.values()[blockEntity.getTier()];
     }
+
+    public Player getPlayer() {
+        return playerEntity;
+    }
 }

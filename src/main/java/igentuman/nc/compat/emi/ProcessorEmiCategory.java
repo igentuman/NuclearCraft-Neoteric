@@ -138,4 +138,8 @@ public class ProcessorEmiCategory extends BasicEmiRecipe {
         
         return new EmiRecipeCategory(id, icon);
     }
+
+    public NcRecipe getRecipe() {
+        return recipe;
+    }
 }

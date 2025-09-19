@@ -132,6 +132,7 @@ dependencies {
     runtimeOnly fg.deobf("curse.maven:ctm-267602:5983309")
     compileOnly fg.deobf("curse.maven:immersive-engineering-231951:5224387")
 
+    implementation fg.deobf("curse.maven:refined-storage-243076:4844585")
     compileOnly fg.deobf("curse.maven:the-lost-cities-269024:6174986")
     compileOnly fg.deobf("mezz.jei:jei-${mc_version}-common-api:${jei_version}")
     compileOnly fg.deobf("mezz.jei:jei-${mc_version}-forge-api:${jei_version}")

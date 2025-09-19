@@ -15,6 +15,7 @@ import igentuman.nc.block.turbine.entity.TurbineControllerBE;
 import igentuman.nc.client.NcClient;
 import igentuman.nc.client.gui.processor.NCProcessorScreen;
 import igentuman.nc.compat.emi.ingredient.ParticleEmiStack;
+import igentuman.nc.compat.refined_storage.ProcessorEmiRecipeHandlerRS;
 import igentuman.nc.handler.config.ClientConfig;
 import igentuman.nc.compat.jei.ParticleRecipe;
 import igentuman.nc.compat.jei.ParticleSourceRecipe;
@@ -26,8 +27,10 @@ import igentuman.nc.recipes.NcRecipeType;
 import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.recipes.type.OreVeinRecipe;
 import igentuman.nc.setup.registration.NCFluids;
+import igentuman.nc.setup.registration.NCProcessors;
 import igentuman.nc.util.ModUtil;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -46,6 +49,7 @@ import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLI
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
 import static igentuman.nc.setup.registration.NCItems.ION_SOURCES;
 import static igentuman.nc.setup.registration.NCItems.UNKNOWN_INGREDIENT;
+
 import static net.minecraft.world.item.Items.BARRIER;
 
 @EmiEntrypoint
@@ -92,6 +96,9 @@ public class EMIPlugin implements EmiPlugin {
         
         // Register workstations
         registerWorkstations(registry);
+        
+        // Register recipe handlers
+        registerRecipeHandlers(registry);
     }
     
     private void registerProcessorCategories(EmiRegistry registry) {
@@ -342,6 +349,16 @@ public class EMIPlugin implements EmiPlugin {
             rl("/unknown_ingredient_info"),
             new ItemStack(UNKNOWN_INGREDIENT.get())
         ));
+    }
+    
+    private void registerRecipeHandlers(EmiRegistry registry) {
+        for(String name: NCProcessors.PROCESSORS_CONTAINERS.keySet()) {
+            var menuType = NCProcessors.PROCESSORS_CONTAINERS.get(name).get();
+            registry.addRecipeHandler((MenuType) menuType, new ProcessorEmiRecipeHandler<>());
+        }
+        if(ModUtil.isRefinedStorageLoaded()) {
+            registry.addRecipeHandler(com.refinedmods.refinedstorage.RSContainerMenus.GRID.get(), new ProcessorEmiRecipeHandlerRS<>());
+        }
     }
     
     private List<ParticleRecipe> particleInfoRecipes() {

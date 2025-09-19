@@ -9,6 +9,7 @@ import igentuman.nc.block.turbine.entity.TurbineControllerBE;
 import igentuman.nc.client.NcClient;
 import igentuman.nc.client.gui.fission.FissionControllerScreen;
 import igentuman.nc.client.gui.processor.NCProcessorScreen;
+import igentuman.nc.compat.jei.ProcessorRecipeTransferHandler;
 import igentuman.nc.compat.jei.ingredient.ParticleStackHelper;
 import igentuman.nc.compat.jei.ingredient.ParticleStackListFactory;
 import igentuman.nc.compat.jei.ingredient.ParticleStackRenderer;
@@ -289,6 +290,15 @@ public  class JEIPlugin implements IModPlugin {
             addRecipeClickArea(registration, NCProcessorScreen.class, 67, 74, 18, 18, getRecipeType(name));
         }
         registration.addRecipeClickArea(FissionControllerScreen.class,72, 38, 36, 26, FISSION);
+    }
+
+    @Override
+    public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration) {
+        // Register recipe transfer handlers for all processor types
+        for (String name : getRecipeTypes().keySet()) {
+            if (!Processors.all().containsKey(name)) continue;
+            registration.addRecipeTransferHandler(new ProcessorRecipeTransferHandler<>(getRecipeType(name)), getRecipeType(name));
+        }
     }
 
     @Override

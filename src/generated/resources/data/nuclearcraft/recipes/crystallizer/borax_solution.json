@@ -2,7 +2,7 @@
   "type": "nuclearcraft:crystallizer",
   "inputFluids": [
     {
-      "amount": 90,
+      "amount": 250,
       "tag": "forge:borax_solution"
     }
   ],

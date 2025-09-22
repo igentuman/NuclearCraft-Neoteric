@@ -54,6 +54,8 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
     public long validationsCounter = 0;
     @NBTField
     public long validationTime = 0;
+    @NBTField
+    public long multiblockTicksCounter = 0;
 
     public MultiblockControllerBE(BlockEntityType<?> pType, BlockPos pPos, BlockState pBlockState) {
         super(pType, pPos, pBlockState);

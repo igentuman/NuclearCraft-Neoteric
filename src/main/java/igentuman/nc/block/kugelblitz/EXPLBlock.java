@@ -285,6 +285,6 @@ public class EXPLBlock extends DirectionalBlock implements EntityBlock {
         if(isGtLoaded() && isGTEUCapEnabled()) {
             list.add(__("tooltip.nc.energy_eu_tier", GTCEU_CONFIG.KUGELBLITZ_ENERGY_TIER.get()).withStyle(ChatFormatting.GOLD));
         }
-        list.add(__("tooltip.expl").withStyle(ChatFormatting.GREEN));
+        list.add(__("tooltip.nc.expl").withStyle(ChatFormatting.GREEN));
     }
 }

@@ -90,12 +90,6 @@ public class TargetChamberMultiblock extends AbstractMultiblock {
         return validDetectors;
     }
 
-
-    @Override
-    public void tick(Level level) {
-        super.tick(level);
-    }
-
     protected boolean isDetector(BlockState bs) {
         return bs.getBlock() instanceof DetectorBlock;
     }

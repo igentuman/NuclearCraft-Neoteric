@@ -117,7 +117,7 @@ public class WorldEvents {
     @SubscribeEvent
     public void onTick(LevelTickEvent event) {
         if (event.side.isServer() && event.phase == Phase.START) {
-            if(event.isCanceled() || event.level.getGameTime() % 5 != 0 || event.level.getChunkSource().getLoadedChunksCount() < 1) return;
+            if(event.level.getGameTime() % 5 != 0 || event.level.getChunkSource().getLoadedChunksCount() < 1) return;
             final ServerLevel level = (ServerLevel) event.level;
             RadiationEvents.tickAsync(event);
             MultiblockHandler.tickAsync(level);

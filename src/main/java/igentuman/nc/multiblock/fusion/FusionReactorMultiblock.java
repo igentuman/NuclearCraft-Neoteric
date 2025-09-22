@@ -466,13 +466,6 @@ public class FusionReactorMultiblock extends AbstractMultiblock {
         return UP;
     }
 
-    public void tick(Level level) {
-        super.tick(level);
-        if(isFormed) {
-            //updateCharacteristics();
-        }
-    }
-
     @Override
     public void resolveDimensions()
     {

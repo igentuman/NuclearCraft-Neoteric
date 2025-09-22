@@ -114,11 +114,6 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
         }
     }
 
-    @Override
-    public void tick(Level level) {
-        super.tick(level);
-    }
-
     public boolean isModerator(BlockState bs) {
         return validModerators.contains(bs.getBlock());
     }

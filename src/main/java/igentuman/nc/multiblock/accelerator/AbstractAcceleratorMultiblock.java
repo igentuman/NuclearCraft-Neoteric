@@ -385,6 +385,9 @@ public class AbstractAcceleratorMultiblock extends AbstractMultiblock {
     }
 
     public void tick(Level level) {
+        if(controllerBE() != null) {
+            controllerBE().multiblockTicksCounter++;
+        }
         if(!canTick || !hasToRefresh) return;
 
         canTick = false;

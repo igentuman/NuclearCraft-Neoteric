@@ -71,4 +71,8 @@ public class MultiblockControllerContailer extends AbstractContainerMenu {
     public long validationCount() {
         return blockEntity.validationsCounter;
     }
+
+    public long ticksCount() {
+        return blockEntity.multiblockTicksCounter;
+    }
 }

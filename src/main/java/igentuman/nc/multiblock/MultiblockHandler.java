@@ -21,8 +21,7 @@ public class MultiblockHandler {
     private final Set<String> toRemove = Collections.synchronizedSet(new HashSet<>());
     public final Set<Long> ignoreUpdate = Collections.synchronizedSet(new HashSet<>());
     public final Set<Long> changedBlocks = Collections.synchronizedSet(new HashSet<>());
-    private static CompletableFuture<Void> validationFuture;
-    private static CompletableFuture<Void> multiblockValidationFuture;
+    private CompletableFuture<Void> validationFuture;
 
 
     private MultiblockHandler() {
@@ -38,17 +37,18 @@ public class MultiblockHandler {
     }
 
     public static void tickMultiblockAsync(ServerLevel level, AbstractMultiblock multiblock) {
-        if (multiblockValidationFuture != null && !multiblockValidationFuture.isDone()) {
+        MultiblockHandler handler = get(level.dimension());
+        if (multiblock.getValidationFuture() != null && !multiblock.getValidationFuture().isDone()) {
             return;
         }
         // Reset future reference if it completed exceptionally
-        if (multiblockValidationFuture != null && multiblockValidationFuture.isCompletedExceptionally()) {
-            multiblockValidationFuture = null;
+        if (multiblock.getValidationFuture() != null && multiblock.getValidationFuture().isCompletedExceptionally()) {
+            multiblock.setValidationFuture(null);
         }
-        multiblockValidationFuture = CompletableFuture.runAsync(
+        multiblock.setValidationFuture(CompletableFuture.runAsync(
                 () -> {
                     try {
-                        MultiblockHandler.get(level.dimension()).tick(level, multiblock);
+                        handler.tick(level, multiblock);
                     } catch (Exception e) {
                         debugLog("Exception in multiblock async tick: " + e.getMessage());
                     }
@@ -57,18 +57,18 @@ public class MultiblockHandler {
         ).exceptionally(throwable -> {
             debugLog("Unhandled exception in multiblock async tick: " + throwable.getMessage());
             return null;
-        });
+        }));
     }
 
     public static void tickAsync(ServerLevel level) {
-        if (validationFuture != null && !validationFuture.isDone()) {
+        if (get(level.dimension()).validationFuture != null && !get(level.dimension()).validationFuture.isDone()) {
             return;
         }
         // Reset future reference if it completed exceptionally
-        if (validationFuture != null && validationFuture.isCompletedExceptionally()) {
-            validationFuture = null;
+        if (get(level.dimension()).validationFuture != null && get(level.dimension()).validationFuture.isCompletedExceptionally()) {
+            get(level.dimension()).validationFuture = null;
         }
-        validationFuture = CompletableFuture.runAsync(
+        get(level.dimension()).validationFuture = CompletableFuture.runAsync(
                 () -> {
                     try {
                         MultiblockHandler.get(level.dimension()).tick(level);
@@ -352,6 +352,11 @@ public class MultiblockHandler {
     }
 
     public void clear() {
+        // Cancel any running futures to prevent memory leaks
+        if (validationFuture != null && !validationFuture.isDone()) {
+            validationFuture.cancel(true);
+        }
+        
         for (AbstractMultiblock multiblock : multiblocks.values()) {
             if (multiblock != null) {
                 multiblock.dispose();
@@ -361,6 +366,10 @@ public class MultiblockHandler {
         chunkCache.clear();
         toRemove.clear();
         ignoreUpdate.clear();
+        changedBlocks.clear();
+        
+        // Clear future references
+        validationFuture = null;
     }
 
     public void onControllerRemoved(BlockPos pos) {
@@ -371,5 +380,17 @@ public class MultiblockHandler {
         } else {
             debugLog("Controller removed at " + pos.toShortString() + " but no multiblock found");
         }
+    }
+    
+    /**
+     * Clears all dimension handlers and their futures.
+     * Should be called when the server shuts down to prevent memory leaks.
+     */
+    public static void clearAll() {
+        debugLog("Clearing all multiblock handlers for " + instances.size() + " dimensions");
+        for (MultiblockHandler handler : instances.values()) {
+            handler.clear();
+        }
+        instances.clear();
     }
 }

@@ -22,6 +22,7 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
 
 import static igentuman.nc.NuclearCraft.debugLog;
@@ -62,6 +63,7 @@ public abstract class AbstractMultiblock implements Multiblock {
     private static final Pattern CONTROLLERS = Pattern.compile(".*(controller|terminal).*");
     private Level level;
     protected AABB structureBounds;
+    private CompletableFuture<Void> validationFuture;
 
     protected AbstractMultiblock(HashSet<Block> validOuterBlocks, HashSet<Block> validInnerBlocks, MultiblockController controller) {
         this.validOuterBlocks = validOuterBlocks;
@@ -76,7 +78,28 @@ public abstract class AbstractMultiblock implements Multiblock {
 
     public void dispose() {
         debugLog("Disposing multiblock " + getClass().getSimpleName() + " at " + controllerPos.toShortString());
+        
+        // Cancel any running validation future to prevent memory leaks
+        if (validationFuture != null && !validationFuture.isDone()) {
+            validationFuture.cancel(true);
+        }
+        validationFuture = null;
+        
         MultiblockHandler.get(getLevel().dimension()).removeMultiblock(this);
+    }
+    
+    /**
+     * Gets the validation future for this multiblock
+     */
+    public CompletableFuture<Void> getValidationFuture() {
+        return validationFuture;
+    }
+    
+    /**
+     * Sets the validation future for this multiblock
+     */
+    public void setValidationFuture(CompletableFuture<Void> validationFuture) {
+        this.validationFuture = validationFuture;
     }
     
     /**
@@ -757,6 +780,9 @@ public abstract class AbstractMultiblock implements Multiblock {
     protected boolean canTick = true;
 
     public void tick(Level level) {
+        if(controllerBE() != null) {
+            controllerBE().multiblockTicksCounter++;
+        }
         if(!canTick || !hasToRefresh) return;
         this.level = level;
         canTick = false;

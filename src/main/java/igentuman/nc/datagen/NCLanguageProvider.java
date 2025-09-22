@@ -421,6 +421,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("report.nc.9.ports", "Ports: %s");
         add("report.nc.10.reactor_fuel_cells", "Fuel Cells: %s");
         add("report.nc.11.has_recipe", "Has Recipe: %s");
+        add("report.nc.multiblock_ticks_count", "Multiblock ticks: %s");
         add("report.nc.1.fusion_size", "Fusion Reactor Size: %s");
         add("report.nc.2.magnets", "Magnets: %s");
         add("report.nc.3.amplifiers", "RF Amplifiers: %s");
@@ -618,6 +619,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("tooltip.nc.wasteland.disabled", "Wasteland dimension is disabled");
         add("tooltip.nc.wasteland.portal.descr", "Teleport to Wasteland dimension");
         add("tooltip.ion_source.particle", "Particle: %s");
+        add("tooltip.nc.expl", "Produce powerful beam of light. Shooting 6 beams into single point can create black hole inside Kugelblitz Chamber.");
         add("tooltip.nc.magnet.disable", "Disable Auto-pickup");
         add("tooltip.nc.magnet.enable", "Enable Auto-pickup");
         add("tooltip.ion_source.amount", "Amount: %spu / %spu");

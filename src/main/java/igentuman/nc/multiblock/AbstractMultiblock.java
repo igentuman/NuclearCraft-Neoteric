@@ -449,6 +449,9 @@ public abstract class AbstractMultiblock implements Multiblock {
 
     public void updateAABB()
     {
+        if(bottomLeft == null || topRight == null) {
+            findCorners();
+        }
         structureBounds = new AABB(bottomLeft, topRight);
     }
 
@@ -474,18 +477,8 @@ public abstract class AbstractMultiblock implements Multiblock {
             return;
         }
 
-        BlockPos leftFront = new BlockPosInstance(getLeftPos(leftCasing));
-        BlockPos leftBack = new BlockPosInstance(getLeftPos(leftCasing).relative(getControllerDirection(), -depth+1));
-        BlockPos rightFront = new BlockPosInstance(getRightPos(rightCasing));
-        BlockPos rightBack = new BlockPosInstance(getRightPos(rightCasing).relative(getControllerDirection(), -depth+1));
-        int minX = MathUtils.min(leftFront.getX(), rightFront.getX(), leftBack.getX(), rightBack.getX());
-        int minZ = MathUtils.min(leftFront.getZ(), rightFront.getZ(), leftBack.getZ(), rightBack.getZ());
-        int maxX = MathUtils.max(leftFront.getX(), rightFront.getX(), leftBack.getX(), rightBack.getX());
-        int maxZ = MathUtils.max(leftFront.getZ(), rightFront.getZ(), leftBack.getZ(), rightBack.getZ());
-        bottomLeft = new BlockPosInstance(minX, leftFront.getY() - bottomCasing, minZ);
-        topRight = new BlockPosInstance(maxX, leftFront.getY() + topCasing, maxZ);
-        debugLog("Calculated bounds: bottomLeft=" + bottomLeft.toShortString() + ", topRight=" + topRight.toShortString());
-        
+        findCorners();
+
         cacheBlockStates(null);
         debugLog("Cached block states for validation area");
         
@@ -545,6 +538,20 @@ public abstract class AbstractMultiblock implements Multiblock {
         validationResult = ValidationResult.VALID;
         debugLog("Outer validation completed successfully");
         updateAABB();
+    }
+
+    private void findCorners() {
+        BlockPos leftFront = new BlockPosInstance(getLeftPos(leftCasing));
+        BlockPos leftBack = new BlockPosInstance(getLeftPos(leftCasing).relative(getControllerDirection(), -depth+1));
+        BlockPos rightFront = new BlockPosInstance(getRightPos(rightCasing));
+        BlockPos rightBack = new BlockPosInstance(getRightPos(rightCasing).relative(getControllerDirection(), -depth+1));
+        int minX = MathUtils.min(leftFront.getX(), rightFront.getX(), leftBack.getX(), rightBack.getX());
+        int minZ = MathUtils.min(leftFront.getZ(), rightFront.getZ(), leftBack.getZ(), rightBack.getZ());
+        int maxX = MathUtils.max(leftFront.getX(), rightFront.getX(), leftBack.getX(), rightBack.getX());
+        int maxZ = MathUtils.max(leftFront.getZ(), rightFront.getZ(), leftBack.getZ(), rightBack.getZ());
+        bottomLeft = new BlockPosInstance(minX, leftFront.getY() - bottomCasing, minZ);
+        topRight = new BlockPosInstance(maxX, leftFront.getY() + topCasing, maxZ);
+        debugLog("Calculated bounds: bottomLeft=" + bottomLeft.toShortString() + ", topRight=" + topRight.toShortString());
     }
 
     protected void processOuterBlock(BlockPos pos) {

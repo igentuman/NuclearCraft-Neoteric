@@ -136,6 +136,8 @@ dependencies {
     implementation fg.deobf("curse.maven:cofh-core-69162:5374122")
     implementation fg.deobf("curse.maven:refined-storage-243076:4844585")
 
+    implementation fg.deobf("curse.maven:flib-661261:6369719")
+    implementation fg.deobf("curse.maven:cyclic-239286:6373460")
     compileOnly fg.deobf("curse.maven:the-lost-cities-269024:6174986")
     compileOnly fg.deobf("mezz.jei:jei-${mc_version}-common-api:${jei_version}")
     compileOnly fg.deobf("mezz.jei:jei-${mc_version}-forge-api:${jei_version}")

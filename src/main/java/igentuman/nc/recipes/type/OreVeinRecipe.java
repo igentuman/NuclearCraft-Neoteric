@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Random;
 
+import static igentuman.nc.NuclearCraft.currentTick;
 import static igentuman.nc.setup.registration.NCItems.NC_PARTS;
 import static net.minecraft.world.item.Items.BARRIER;
 
@@ -45,7 +46,7 @@ public class OreVeinRecipe extends NcRecipe {
     }
 
     private int gameTimeSeed(ServerLevel level) {
-        Random rand = new Random(level.getGameTime());
+        Random rand = new Random(currentTick);
         return rand.nextInt();
     }
 

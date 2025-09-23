@@ -22,6 +22,7 @@ import net.minecraftforge.eventbus.api.Event;
 
 import java.util.List;
 
+import static igentuman.nc.NuclearCraft.currentTick;
 import static igentuman.nc.block.kugelblitz.BlackHoleBlock.ACTIVE;
 import static igentuman.nc.client.renderer.DistortShader.blackhole;
 import static igentuman.nc.setup.registration.NCSounds.BLACKHOLE_IDLE;
@@ -126,7 +127,7 @@ public class BlackHoleBE extends NuclearCraftBE {
     }
 
     private void evaporateClosestBlocks() {
-        if((getLevel().getGameTime() & 5) == 0) {
+        if((currentTick & 5) == 0) {
             for (Direction direction : Direction.values()) {
                 if(!level.getBlockState(worldPosition.relative(direction)).isAir()) {
                     level.setBlock(worldPosition.relative(direction), Blocks.AIR.defaultBlockState(), 3);
@@ -137,7 +138,7 @@ public class BlackHoleBE extends NuclearCraftBE {
 
 
     private void handleClosestEntities() {
-        if(!hasEntities && getLevel().getGameTime() % 10 != 0) return;
+        if(!hasEntities && currentTick % 10 != 0) return;
         double radius = 5.0;
         double consumeRadius = 1.1;
 

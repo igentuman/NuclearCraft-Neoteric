@@ -16,6 +16,7 @@ import net.minecraft.world.phys.AABB;
 import java.util.HashMap;
 import java.util.Map;
 
+import static igentuman.nc.NuclearCraft.currentTick;
 import static igentuman.nc.block.RedstoneDimmerBlock.HORIZONTAL_FACING;
 import static igentuman.nc.multiblock.fission.FissionReactorRegistration.FISSION_BLOCKS;
 import static igentuman.nc.setup.registration.NCBlocks.MULTIBLOCK_BUILDER_BE;
@@ -50,7 +51,7 @@ public class MultiblockBuilderBE extends NuclearCraftBE {
     }
 
     public void tickServer() {
-        if (getLevel().getGameTime() % 2 == 0) {
+        if (currentTick % 2 == 0) {
             return;
         }
     }

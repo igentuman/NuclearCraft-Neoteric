@@ -39,6 +39,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
+import static igentuman.nc.NuclearCraft.currentTick;
 import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.block.kugelblitz.ChamberPortBlock.POWERED;
 import static igentuman.nc.block.kugelblitz.entity.BlackHoleBE.MAX_MASS;
@@ -334,7 +335,7 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
             return;
         }
 
-        if(getLevel().getGameTime() % 5 != 0 || getLevel().random.nextInt(96) < getMultiblock().stabilizers()) {
+        if(currentTick % 5 != 0 || getLevel().random.nextInt(96) < getMultiblock().stabilizers()) {
             return;
         }
 

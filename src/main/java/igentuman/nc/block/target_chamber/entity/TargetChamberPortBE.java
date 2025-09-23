@@ -25,6 +25,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Objects;
 
+import static igentuman.nc.NuclearCraft.currentTick;
 import static igentuman.nc.compat.gregtech.GTUtils.getGTEnergy;
 import static igentuman.nc.compat.gregtech.GTUtils.isOnlyGTCEUCapEnabled;
 import static igentuman.nc.compat.oc2.TargetChamberDevice.DEVICE_CAPABILITY;
@@ -92,10 +93,10 @@ public class TargetChamberPortBE extends NuclearCraftBE implements MultiblockAtt
             sendOutPower();
         }
         boolean updated = updateController();
-        if(level.getGameTime() % 20 == 0 && controller() != null) {
+        if(currentTick % 20 == 0 && controller() != null) {
             pushPull();
         }
-        if (level.getGameTime() % 10 == 0 && controller() != null) {
+        if (currentTick % 10 == 0 && controller() != null) {
             updateAnalogSignal();
 
             updated = wasSignal != analogSignal || updated;
@@ -104,7 +105,7 @@ public class TargetChamberPortBE extends NuclearCraftBE implements MultiblockAtt
             }
         }
         connected = getMultiblock() != null && getMultiblock().isFormed();
-        if (updated || wasConnected != connected || getLevel().getGameTime() % 20 == 0) {
+        if (updated || wasConnected != connected || currentTick % 20 == 0) {
             if(connected) {
                 MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
             }

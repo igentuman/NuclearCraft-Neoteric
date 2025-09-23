@@ -21,6 +21,8 @@ import net.minecraftforge.energy.IEnergyStorage;
 import java.util.HashMap;
 import java.util.Objects;
 
+import static igentuman.nc.NuclearCraft.currentTick;
+
 public class MultiblockControllerBE extends NuclearCraftBE implements MultiblockAttachable<AbstractMultiblock, MultiblockControllerBE> {
 
     @NBTField
@@ -136,7 +138,7 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
             analyzeDelay--;
         }
         assert level != null;
-        if(level.getGameTime() % 100 == 0) {
+        if(currentTick % 100 == 0) {
             MultiblockHandler.tickMultiblockAsync((ServerLevel) level, getMultiblock());
         }
     }

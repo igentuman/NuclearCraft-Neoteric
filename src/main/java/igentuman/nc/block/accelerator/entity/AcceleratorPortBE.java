@@ -23,6 +23,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Objects;
 
+import static igentuman.nc.NuclearCraft.currentTick;
 import static igentuman.nc.compat.oc2.FusionReactorDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.handler.config.CommonConfig.GTCEU_CONFIG;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BE;
@@ -108,7 +109,7 @@ public class AcceleratorPortBE extends NuclearCraftBE implements MultiblockAttac
             updated = fluidHandler().pullFluids(dir, false, worldPosition) || updated;
         }
 
-        if(updated || getLevel().getGameTime() % 20 == 0) {
+        if(updated || currentTick % 20 == 0) {
             MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
             setChanged();
             level.updateNeighborsAt(worldPosition, getBlockState().getBlock());

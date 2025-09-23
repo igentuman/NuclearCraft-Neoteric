@@ -25,6 +25,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Objects;
 
+import static igentuman.nc.NuclearCraft.currentTick;
 import static igentuman.nc.compat.gregtech.GTUtils.*;
 import static igentuman.nc.compat.oc2.FissionReactorDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.util.ModUtil.*;
@@ -93,10 +94,10 @@ public class FissionPortBE extends NuclearCraftBE implements MultiblockAttachabl
             sendOutPower();
         }
         boolean updated = updateController();
-        if(level.getGameTime() % 20 == 0 && controller() != null) {
+        if(currentTick % 20 == 0 && controller() != null) {
             pushPull();
         }
-        if (level.getGameTime() % 10 == 0 && controller() != null) {
+        if (currentTick % 10 == 0 && controller() != null) {
             updateAnalogSignal();
 
             updated = wasSignal != analogSignal || updated;

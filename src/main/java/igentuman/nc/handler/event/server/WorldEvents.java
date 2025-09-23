@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.NuclearCraft.currentTick;
 import static igentuman.nc.content.materials.Materials.plutonium239;
 import static igentuman.nc.setup.registration.FissionFuel.NC_ISOTOPES;
 import static igentuman.nc.setup.registration.Villager.addVillagerTrades;
@@ -109,7 +110,7 @@ public class WorldEvents {
     @SubscribeEvent
     public void onTick(ServerTickEvent event) {
         if (event.side.isServer() && event.phase == Phase.END) {
-
+            currentTick++;
         }
     }
 
@@ -117,7 +118,7 @@ public class WorldEvents {
     @SubscribeEvent
     public void onTick(LevelTickEvent event) {
         if (event.side.isServer() && event.phase == Phase.START) {
-            if(event.level.getGameTime() % 5 != 0 || event.level.getChunkSource().getLoadedChunksCount() < 1) return;
+            if(currentTick % 5 != 0 || event.level.getChunkSource().getLoadedChunksCount() < 1) return;
             final ServerLevel level = (ServerLevel) event.level;
             RadiationEvents.tickAsync(event);
             MultiblockHandler.tickAsync(level);

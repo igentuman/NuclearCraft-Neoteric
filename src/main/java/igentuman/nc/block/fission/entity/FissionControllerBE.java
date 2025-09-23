@@ -46,6 +46,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
 
+import static igentuman.nc.NuclearCraft.currentTick;
 import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.block.fission.FissionControllerBlock.POWERED;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
@@ -461,7 +462,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
         changed = powered != wasPowered || changed;
         refreshCacheFlag = !getMultiblock().isFormed();
         canAcceptFluids = getMultiblock().coolantPerTick.size() > 0;
-        if(refreshCacheFlag || changed || getLevel().getGameTime() % 40 == 0) {
+        if(refreshCacheFlag || changed || currentTick % 40 == 0) {
             try {
                 assert level != null;
                 setChanged();
@@ -608,7 +609,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
             return;
         }
 
-        if(level.getGameTime()  % (level.random.nextInt(5)+1) != 0) {
+        if(currentTick  % (level.random.nextInt(5)+1) != 0) {
             return;
         }
         BlockPos topRightInner = topRight.relative(getFacing(), -1).below().relative(getFacing().getClockWise(),1);
@@ -806,7 +807,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
     }
 
     public boolean hasRedstoneSignal() {
-        if(getLevel().getGameTime() % 10 == 0) {
+        if(currentTick % 10 == 0) {
             hasRedstoneSignal = getLevel().hasNeighborSignal(getBlockPos());
         }
         return enabledByController || hasRedstoneSignal;

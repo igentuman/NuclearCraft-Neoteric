@@ -7,6 +7,7 @@ import net.minecraft.world.level.Level;
 
 import java.util.HashMap;
 
+import static igentuman.nc.NuclearCraft.currentTick;
 import static igentuman.nc.handler.config.RadiationConfig.RADIATION_CONFIG;
 
 public class WorldRadiation implements IWorldRadiationCapability {

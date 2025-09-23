@@ -24,6 +24,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Objects;
 
+import static igentuman.nc.NuclearCraft.currentTick;
 import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.compat.gregtech.GTUtils.*;
 import static igentuman.nc.compat.oc2.FusionReactorDevice.DEVICE_CAPABILITY;
@@ -79,7 +80,7 @@ public class FusionCoreProxyBE extends NuclearCraftBE implements MultiblockAttac
 
     public void tickServer()
     {
-        if(getLevel().getGameTime() % 20 == 0) {
+        if(currentTick % 20 == 0) {
             validateCore();
         }
         if(!(core instanceof FusionCoreBE)) {

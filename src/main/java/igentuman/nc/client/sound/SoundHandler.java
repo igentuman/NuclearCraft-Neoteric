@@ -29,6 +29,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.NuclearCraft.currentTick;
 
 @Mod.EventBusSubscriber(modid = MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class SoundHandler {
@@ -139,7 +140,7 @@ public class SoundHandler {
         @Override
         @SuppressWarnings("UnstableApiUsage")
         public void tick() {
-            if (Minecraft.getInstance().level.getGameTime() % checkInterval == 0) {
+            if (currentTick % checkInterval == 0) {
                 if (!isClientPlayerInRange(this)) {
                     //If the player is not in range of hearing this sound anymore; go ahead and shutdown
                     stop();

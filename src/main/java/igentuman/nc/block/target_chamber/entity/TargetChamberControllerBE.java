@@ -41,6 +41,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
+import static igentuman.nc.NuclearCraft.currentTick;
 import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.block.target_chamber.TargetChamberControllerBlock.POWERED;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
@@ -284,7 +285,7 @@ public class TargetChamberControllerBE extends MultiblockControllerBE {
         }
         changed = powered != wasPowered || changed;
         refreshCacheFlag = !getMultiblock().isFormed();
-        if(refreshCacheFlag || changed || getLevel().getGameTime() % 40 == 0) {
+        if(refreshCacheFlag || changed || currentTick % 40 == 0) {
             try {
                 assert level != null;
                 setChanged();
@@ -475,7 +476,7 @@ public class TargetChamberControllerBE extends MultiblockControllerBE {
 
 
     public boolean hasRedstoneSignal() {
-        if(getLevel().getGameTime() % 10 == 0) {
+        if(currentTick % 10 == 0) {
             hasRedstoneSignal = getLevel().hasNeighborSignal(getBlockPos());
         }
         return enabledByController || hasRedstoneSignal;

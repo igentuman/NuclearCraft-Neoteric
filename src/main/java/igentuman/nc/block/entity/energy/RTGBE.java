@@ -6,6 +6,8 @@ import igentuman.nc.content.energy.RTGs;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 
+import static igentuman.nc.NuclearCraft.currentTick;
+
 public class RTGBE extends NCEnergy {
 
     public RTGBE(BlockPos pPos, BlockState pBlockState) {
@@ -27,7 +29,7 @@ public class RTGBE extends NCEnergy {
         super.tickServer();
         energyStorage.addEnergy(getEnergyTransferPerTick());
         sendOutPower();
-        if(getLevel().getGameTime() % 40 == 0) {
+        if(currentTick % 40 == 0) {
             RadiationManager.get(getLevel()).addRadiation(getLevel(), (double) RTGs.all().get(getName()).config().getRadiation() / 500000000, worldPosition);
         }
     }

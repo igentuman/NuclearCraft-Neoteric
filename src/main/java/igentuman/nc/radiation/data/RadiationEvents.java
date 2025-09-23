@@ -28,6 +28,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+import static igentuman.nc.NuclearCraft.currentTick;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.handler.config.RadiationConfig.RADIATION_CONFIG;
 import static igentuman.nc.setup.Registration.RADIATION_DECAY;
@@ -47,7 +48,7 @@ public class RadiationEvents {
     }
 
     public static void tickAsync(TickEvent.LevelTickEvent event) {
-        if(event.level.getGameTime() % 10 == 0) {
+        if(currentTick % 10 == 0) {
             if (radiationFuture == null || radiationFuture.isDone()) {
                 radiationFuture = CompletableFuture.runAsync(
                         () -> RadiationEvents.onWorldTick(event),

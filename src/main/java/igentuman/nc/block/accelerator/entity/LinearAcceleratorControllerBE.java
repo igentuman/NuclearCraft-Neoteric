@@ -28,6 +28,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
+import static igentuman.nc.NuclearCraft.currentTick;
 import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.block.accelerator.AcceleratorPortBlock.POWERED;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
@@ -148,7 +149,7 @@ public class LinearAcceleratorControllerBE extends AbstractAcceleratorController
         if(wasEnabled != controllerEnabled) {
            setChanged();
         }
-        if(refreshCacheFlag || changed || getLevel().getGameTime() % 20 == 0) {
+        if(refreshCacheFlag || changed || currentTick % 20 == 0) {
             try {
                 setChanged();
                 level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(POWERED, controllerEnabled), Block.UPDATE_NEIGHBORS);

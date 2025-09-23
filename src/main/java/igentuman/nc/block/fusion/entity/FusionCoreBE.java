@@ -44,6 +44,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
+import static igentuman.nc.NuclearCraft.currentTick;
 import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.block.fission.FissionControllerBlock.POWERED;
 import static igentuman.nc.compat.gregtech.GTUtils.getGTEnergy;
@@ -351,7 +352,6 @@ public class FusionCoreBE extends MultiblockControllerBE {
         return isCasingValid
                 && rfAmplifiersPower > 0
                 && magnetsPower > 0
-                && hasCoolant()
                 && hasRecipe()
                 && functionalBlocksCharge > 99;
     }
@@ -385,7 +385,7 @@ public class FusionCoreBE extends MultiblockControllerBE {
             changed = true;
         }
         if(refreshCacheFlag || changed) {
-            if(level.getGameTime() % 10 == 0) {
+            if(currentTick % 10 == 0) {
                 updateAnalogSignal();
             }
             try {

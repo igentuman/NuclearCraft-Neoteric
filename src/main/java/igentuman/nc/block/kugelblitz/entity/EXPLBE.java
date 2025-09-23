@@ -245,6 +245,7 @@ public class EXPLBE extends NuclearCraftBE {
 
     private void transferEnergy() {
         if (energyTransfered) return;
+        killEntitiesInBeam();
         energyTransfered = true;
         BlockPos pos = getBlockPos().relative(getFacing(), getActualLaserDistance());
         BlockEntity be = level.getExistingBlockEntity(pos);
@@ -256,10 +257,25 @@ public class EXPLBE extends NuclearCraftBE {
             photonConcentratorBE.gotEnergy(getFacing());
         }
         if (isMekanismGeneratorsLoaded() && be instanceof mekanism.generators.common.tile.fusion.TileEntityLaserFocusMatrix matrixBe) {
-            matrixBe.receiveLaserEnergy(FloatingLong.create(aggregatedEnergy / 10));
+            matrixBe.receiveLaserEnergy(FloatingLong.create(aggregatedEnergy*5));
         }
         if (isBfrLoaded() && be instanceof igentuman.bfr.common.tile.fusion.TileEntityLaserFocusMatrix matrixBe) {
-            matrixBe.receiveLaserEnergy(FloatingLong.create(aggregatedEnergy / 10));
+            matrixBe.receiveLaserEnergy(FloatingLong.create(aggregatedEnergy*5));
+        }
+    }
+
+    private void killEntitiesInBeam() {
+        Direction facing = getFacing();
+        int distance = getActualLaserDistance();
+        
+        for (int i = 1; i < distance; i++) {
+            BlockPos pos = getBlockPos().relative(facing, i);
+            level.getEntitiesOfClass(net.minecraft.world.entity.LivingEntity.class,
+                new net.minecraft.world.phys.AABB(pos), 
+                entity -> entity != null && entity.isAlive())
+                .forEach(entity -> {
+                    entity.hurt(level.damageSources().magic(), 1000.0f);
+                });
         }
     }
 

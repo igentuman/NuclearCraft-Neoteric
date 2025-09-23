@@ -52,6 +52,7 @@ public class NuclearCraft {
     public static NuclearCraft instance;
     private final PacketHandler packetHandler;
     private static boolean isBetaBuild = false;
+    public static long currentTick = 0;
 
     public static void registerConfigs(FMLJavaModLoadingContext context)
     {
@@ -154,6 +155,7 @@ public class NuclearCraft {
 
     private void serverStarted(ServerStartedEvent event) {
         NuclearCraft.instance.isNcBeStopped = false;
+        currentTick = 0;
         RadiationEvents.startTracking();
         WorldVeinsProvider.startTracking();
     }

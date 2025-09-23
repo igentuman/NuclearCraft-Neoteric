@@ -20,6 +20,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Objects;
 
+import static igentuman.nc.NuclearCraft.currentTick;
 import static igentuman.nc.compat.gregtech.GTUtils.*;
 import static igentuman.nc.util.ModUtil.isCcLoaded;
 import static igentuman.nc.util.ModUtil.isGtLoaded;
@@ -70,7 +71,7 @@ public class TurbinePortBE extends TurbineBE {
             updated = fluidHandler().pullFluids(dir, false, worldPosition) || updated;
         }
 
-        if(updated || (level.getGameTime() % 40 == 0 && controller() != null && controller().controllerEnabled)) {
+        if(updated || (currentTick % 40 == 0 && controller() != null && controller().controllerEnabled)) {
             MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
             setChanged();
             level.updateNeighborsAt(worldPosition, getBlockState().getBlock());

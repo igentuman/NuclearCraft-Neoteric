@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import static igentuman.nc.NuclearCraft.currentTick;
 import static igentuman.nc.handler.config.CommonConfig.ENERGY_GENERATION;
 import static igentuman.nc.setup.registration.NCBlocks.DECAY_GEN_BLOCK;
 import static igentuman.nc.util.TagUtil.getBlocksByTagKey;
@@ -93,7 +94,7 @@ public class DecayGeneratorBE extends NCEnergy {
         super.tickServer();
         energyStorage.addEnergy(getEnergyFromConnectedBlocks());
         sendOutPower();
-        if(getLevel().getGameTime() % 40 == 0) {
+        if(currentTick % 40 == 0) {
             RadiationManager.get(getLevel()).addRadiation(getLevel(), (double) RTGs.all().get("uranium_rtg").config().getRadiation() / 500000000, worldPosition);
         }
     }

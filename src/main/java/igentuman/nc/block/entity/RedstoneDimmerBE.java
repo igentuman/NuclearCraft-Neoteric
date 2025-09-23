@@ -5,6 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 
+import static igentuman.nc.NuclearCraft.currentTick;
 import static igentuman.nc.block.RedstoneDimmerBlock.HORIZONTAL_FACING;
 import static igentuman.nc.block.RedstoneDimmerBlock.LEVEL;
 import static igentuman.nc.setup.registration.NCBlocks.REDSTONE_DIMMER_BE;
@@ -30,7 +31,7 @@ public class RedstoneDimmerBE extends NuclearCraftBE {
     }
 
     public void tickServer() {
-        if (getLevel().getGameTime() % 2 == 0) {
+        if (currentTick % 2 == 0) {
             return;
         }
         facing = getBlockState().getValue(HORIZONTAL_FACING);

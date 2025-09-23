@@ -35,6 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
+import static igentuman.nc.NuclearCraft.currentTick;
 import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.block.fission.FissionControllerBlock.POWERED;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
@@ -242,7 +243,7 @@ public class TurbineControllerBE extends MultiblockControllerBE {
             }
             handleMeltdown();
         }
-        refreshCacheFlag = !getMultiblock().isFormed()  || level.getGameTime() % 100 == 0;
+        refreshCacheFlag = !getMultiblock().isFormed()  || currentTick % 100 == 0;
         if(wasPowered != powered) {
             setChanged();
             level.setBlockAndUpdate(worldPosition, getBlockState().setValue(POWERED, powered));
@@ -346,7 +347,7 @@ public class TurbineControllerBE extends MultiblockControllerBE {
     }
 
     private void spawnSteamParticles() {
-        if (level.getGameTime() % Math.ceil(Math.log(1/(getRotationSpeed()+0.001D))+1) == 0) {
+        if (currentTick % Math.ceil(Math.log(1/(getRotationSpeed()+0.001D))+1) == 0) {
             BlockPos pos = getBlockPosForSteam();
             for(BlockPos source:  getBlocks(pos, orientation.getAxis())){
                 for (int i = 0; i < 3; i++) {

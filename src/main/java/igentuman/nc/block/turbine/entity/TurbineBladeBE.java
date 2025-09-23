@@ -10,6 +10,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
+import static igentuman.nc.NuclearCraft.currentTick;
 import static igentuman.nc.block.turbine.TurbineBladeBlock.HIDDEN;
 import static net.minecraft.world.item.Items.AIR;
 
@@ -27,7 +28,7 @@ public class TurbineBladeBE extends TurbineBE {
         if(NuclearCraft.instance.isNcBeStopped) return;
         boolean wasActive = isActive;
         isActive = getMultiblock() != null && controller() != null && getMultiblock().isFormed();
-        if(wasActive != isActive || getLevel().getGameTime() % 20 == 0) {
+        if(wasActive != isActive || currentTick % 20 == 0) {
             level.setBlockAndUpdate(worldPosition, getBlockState().setValue(HIDDEN, isActive));
         }
     }

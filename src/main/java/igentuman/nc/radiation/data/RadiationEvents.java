@@ -1,6 +1,7 @@
 package igentuman.nc.radiation.data;
 
 import igentuman.nc.compat.mekanism.MekanismRadiation;
+import igentuman.nc.handler.config.RadiationConfig;
 import igentuman.nc.radiation.FluidRadiation;
 import igentuman.nc.radiation.ItemRadiation;
 import igentuman.nc.radiation.RadiationCleaningItems;
@@ -48,7 +49,7 @@ public class RadiationEvents {
     }
 
     public static void tickAsync(TickEvent.LevelTickEvent event) {
-        if(currentTick % 10 == 0) {
+        if(currentTick % 10 == 0 && RADIATION_CONFIG.ENABLED.get()) {
             if (radiationFuture == null || radiationFuture.isDone()) {
                 radiationFuture = CompletableFuture.runAsync(
                         () -> RadiationEvents.onWorldTick(event),

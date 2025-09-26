@@ -23,6 +23,10 @@ import igentuman.nc.content.particles.ParticleSources;
 import igentuman.nc.content.particles.ParticleStack;
 import igentuman.nc.content.particles.Particles;
 import igentuman.nc.content.processors.Processors;
+import igentuman.nc.multiblock.accelerator.AcceleratorRegistration;
+import igentuman.nc.multiblock.accelerator.CoolerDef;
+import igentuman.nc.multiblock.fission.FissionReactorRegistration;
+import igentuman.nc.multiblock.fission.HeatSinkDef;
 import igentuman.nc.recipes.NcRecipeType;
 import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.recipes.type.OreVeinRecipe;
@@ -93,6 +97,12 @@ public class EMIPlugin implements EmiPlugin {
         
         // Register kugelblitz info category
         registerKugelblitzInfoCategory(registry);
+        
+        // Register heat sink placement category
+        registerHeatSinkPlacementCategory(registry);
+        
+        // Register cooler placement category
+        registerCoolerPlacementCategory(registry);
         
         // Register workstations
         registerWorkstations(registry);
@@ -274,6 +284,10 @@ public class EMIPlugin implements EmiPlugin {
                 return EmiStack.of(new ItemStack(net.minecraft.world.item.Items.DIAMOND_PICKAXE));
             case "particle_source_info":
                 return EmiStack.of(new ItemStack(ACCELERATOR_BLOCKS.get("linear_accelerator_controller").get()));
+            case "heat_sink_placement":
+                return EmiStack.of(new ItemStack(FISSION_BLOCKS.get("empty_heat_sink").get()));
+            case "cooler_placement":
+                return EmiStack.of(new ItemStack(ACCELERATOR_BLOCKS.get("empty_cooler").get()));
             default:
                 return EmiStack.of(new ItemStack(BARRIER));
         }
@@ -349,6 +363,76 @@ public class EMIPlugin implements EmiPlugin {
             rl("/unknown_ingredient_info"),
             new ItemStack(UNKNOWN_INGREDIENT.get())
         ));
+    }
+    
+    private void registerHeatSinkPlacementCategory(EmiRegistry registry) {
+        // Register Heat Sink Placement category
+        registry.addCategory(HeatSinkPlacementEmiCategory.CATEGORY);
+        CATEGORIES.put("heat_sink_placement", HeatSinkPlacementEmiCategory.CATEGORY);
+        
+        // Generate and register heat sink placement recipes
+        List<HeatSinkPlacementEmiRecipe> heatSinkPlacementRecipes = heatSinkPlacementRecipes();
+        for (HeatSinkPlacementEmiRecipe recipe : heatSinkPlacementRecipes) {
+            registry.addRecipe(new HeatSinkPlacementEmiCategory(recipe));
+        }
+    }
+    
+    private List<HeatSinkPlacementEmiRecipe> heatSinkPlacementRecipes() {
+        List<HeatSinkPlacementEmiRecipe> recipes = new ArrayList<>();
+        
+        for (Map.Entry<String, HeatSinkDef> entry : FissionReactorRegistration.heatsinks.entrySet()) {
+            String heatSinkName = entry.getKey();
+            HeatSinkDef heatSinkDef = entry.getValue();
+            
+            // Skip empty and active heat sinks as they don't have placement rules
+            if (heatSinkName.equals("empty") || heatSinkName.equals("active")) {
+                continue;
+            }
+            
+            // Get the heat sink item
+            String blockKey = heatSinkName + "_heat_sink";
+            if (FissionReactorRegistration.FISSION_BLOCKS.containsKey(blockKey)) {
+                ItemStack heatSinkItem = new ItemStack(FissionReactorRegistration.FISSION_BLOCKS.get(blockKey).get());
+                recipes.add(new HeatSinkPlacementEmiRecipe(rl(blockKey), heatSinkDef, heatSinkItem));
+            }
+        }
+        
+        return recipes;
+    }
+    
+    private void registerCoolerPlacementCategory(EmiRegistry registry) {
+        // Register Cooler Placement category
+        registry.addCategory(CoolerPlacementEmiCategory.CATEGORY);
+        CATEGORIES.put("cooler_placement", CoolerPlacementEmiCategory.CATEGORY);
+        
+        // Generate and register cooler placement recipes
+        List<CoolerPlacementEmiRecipe> coolerPlacementRecipes = coolerPlacementRecipes();
+        for (CoolerPlacementEmiRecipe recipe : coolerPlacementRecipes) {
+            registry.addRecipe(new CoolerPlacementEmiCategory(recipe));
+        }
+    }
+    
+    private List<CoolerPlacementEmiRecipe> coolerPlacementRecipes() {
+        List<CoolerPlacementEmiRecipe> recipes = new ArrayList<>();
+        
+        for (Map.Entry<String, CoolerDef> entry : AcceleratorRegistration.COOLERS.entrySet()) {
+            String coolerName = entry.getKey();
+            CoolerDef coolerDef = entry.getValue();
+            
+            // Skip empty coolers as they don't have placement rules
+            if (coolerName.equals("empty")) {
+                continue;
+            }
+            
+            // Get the cooler item
+            String blockKey = coolerName + "_cooler";
+            if (AcceleratorRegistration.ACCELERATOR_BLOCKS.containsKey(blockKey)) {
+                ItemStack coolerItem = new ItemStack(AcceleratorRegistration.ACCELERATOR_BLOCKS.get(blockKey).get());
+                recipes.add(new CoolerPlacementEmiRecipe(rl(blockKey), coolerDef, coolerItem));
+            }
+        }
+        
+        return recipes;
     }
     
     private void registerRecipeHandlers(EmiRegistry registry) {

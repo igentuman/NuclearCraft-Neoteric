@@ -534,7 +534,8 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
     public double countCooling(boolean forceCheck) {
         if(forceCheck) {
             heatSinkCooling = 0;
-            for (HeatSinkBlock hs : validHeatSinks.values()) {
+            Collection<HeatSinkBlock> heatSinks = validHeatSinks.values();
+            for (HeatSinkBlock hs : heatSinks) {
                 heatSinkCooling += hs.heat;
             }
         }

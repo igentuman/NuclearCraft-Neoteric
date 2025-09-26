@@ -82,9 +82,9 @@ public class NCBlockTags extends BlockTagsProvider {
                     magnet.get()
             );
         }
-        for(RegistryObject<Block> magnet: NC_RF_AMPLIFIERS.values()) {
+        for(RegistryObject<Block> block: NC_RF_AMPLIFIERS.values()) {
             tag(AcceleratorRegistration.ACCELERATOR_INNER_BLOCKS).add(
-                    magnet.get()
+                    block.get()
             );
         }
 

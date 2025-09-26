@@ -7,7 +7,7 @@
   ],
   "outputFluids": [
     {
-      "amount": 90,
+      "amount": 450,
       "tag": "forge:subliquid_matter"
     }
   ],

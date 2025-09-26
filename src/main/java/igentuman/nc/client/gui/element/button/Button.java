@@ -22,6 +22,10 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
+import java.awt.Desktop;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +41,57 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
 
     protected net.minecraft.client.gui.components.Button btn;
     protected Component tooltipKey = Component.empty();
+
+    /**
+     * Safely opens a URL using multiple fallback methods
+     * @param url The URL to open
+     * @return true if successful, false otherwise
+     */
+    public static boolean openUrl(String url) {
+        try {
+            // Method 1: Try Desktop API (most reliable)
+            if (Desktop.isDesktopSupported()) {
+                Desktop desktop = Desktop.getDesktop();
+                if (desktop.isSupported(Desktop.Action.BROWSE)) {
+                    desktop.browse(new URI(url));
+                    return true;
+                }
+            }
+        } catch (IOException | URISyntaxException e) {
+            debugLog("Desktop API failed: " + e.getMessage());
+        }
+
+        try {
+            // Method 2: Try Minecraft's platform method as fallback
+            net.minecraft.Util.getPlatform().openUri(url);
+            return true;
+        } catch (Exception e) {
+            debugLog("Minecraft platform method failed: " + e.getMessage());
+        }
+
+        try {
+            // Method 3: Try system-specific commands as last resort
+            String os = System.getProperty("os.name").toLowerCase();
+            Runtime runtime = Runtime.getRuntime();
+            
+            if (os.contains("win")) {
+                runtime.exec("rundll32 url.dll,FileProtocolHandler " + url);
+            } else if (os.contains("mac")) {
+                runtime.exec("open " + url);
+            } else if (os.contains("nix") || os.contains("nux")) {
+                runtime.exec("xdg-open " + url);
+            } else {
+                debugLog("Unsupported operating system: " + os);
+                return false;
+            }
+            return true;
+        } catch (IOException e) {
+            debugLog("System command failed: " + e.getMessage());
+        }
+
+        debugLog("All URL opening methods failed for: " + url);
+        return false;
+    }
 
     public Button(int xPos, int yPos, T screen, int id)  {
         super(xPos, yPos, 18, 18, Component.empty());
@@ -287,9 +342,7 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
             width = 8;
             String link = "https://github.com/igentuman/NuclearCraft-Neoteric/issues/new?template=bug_report.md";
             btn = new ImageButton(X(), Y(), width, height, 0, 0, 8, BTN_TEXTURE, 8, 16, pButton -> {
-                try {
-                    net.minecraft.Util.getPlatform().openUri(link);
-                } catch (Exception e) {
+                if (!openUrl(link)) {
                     debugLog("Failed to open link: " + link);
                 }
             });
@@ -405,9 +458,7 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
             height = 18;
             width = 18;
             btn = new ImageButton(X(), Y(), width, height, 126, 220, 18, TEXTURE, pButton -> {
-                try {
-                    net.minecraft.Util.getPlatform().openUri(link);
-                } catch (Exception e) {
+                if (!openUrl(link)) {
                     debugLog("Failed to open link: " + link);
                 }
             });

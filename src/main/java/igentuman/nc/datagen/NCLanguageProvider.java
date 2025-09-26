@@ -76,6 +76,7 @@ public class NCLanguageProvider extends LanguageProvider {
     private void particles() {
         add("report.nc.validation_count", "Validations: %s");
         add("report.nc.validation_duration", "Validated in: %s ms");
+        add("emi.category.nuclearcraft.cooler_placement", "Cooler Placement");
         add("emi.category.nuclearcraft.ingot_former", "Ingot Former");
         add("emi.category.nuclearcraft.fusion_coolant", "Fusion Reactor Coolant");
         add("emi.category.nuclearcraft.fusion_core", "Fusion Reactor");
@@ -102,6 +103,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("emi.category.nuclearcraft.target_chamber", "Target Chamber");
         add("emi.category.nuclearcraft.kugelblitz_chamber", "Kugelblitz Chamber");
         add("emi.category.nuclearcraft.turbine_controller", "Turbine Controller");
+        add("emi.category.nuclearcraft.heat_sink_placement", "Heat Sink Placement");
         add("emi.category.nuclearcraft.assembler", "Assembler");
         add("emi.category.nuclearcraft.isotope_separator", "Isotope Separator");
         add("emi.category.nuclearcraft.chemical_reactor", "Chemical Reactor");
@@ -115,6 +117,8 @@ public class NCLanguageProvider extends LanguageProvider {
         add("emi.category.nuclearcraft.kugelblitz_info", "Kugelblitz Info");
         add("gui.nuclearcraft.jei.particle.mass", "Mass: %s");
         add("jei.category.nuclearcraft.particle_info", "Particle Info");
+        add("jei.category.nuclearcraft.heat_sink_placement", "Heat Sink Placement");
+        add("jei.category.nuclearcraft.cooler_placement", "Cooler Placement");
         add("gui.nuclearcraft.jei.particle.charge", "Charge: %s");
         add("gui.nuclearcraft.jei.particle.spin", "Spin: %s");
         add("gui.nuclearcraft.jei.particle.colour", "Feels Strong Force: %s");

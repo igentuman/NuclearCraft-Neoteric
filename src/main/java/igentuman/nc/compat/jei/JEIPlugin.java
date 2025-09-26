@@ -26,6 +26,10 @@ import igentuman.nc.recipes.ingredient.creator.IngredientCreatorAccess;
 import igentuman.nc.recipes.type.MekChemicalConversionRecipe;
 import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.recipes.type.OreVeinRecipe;
+import igentuman.nc.multiblock.accelerator.AcceleratorRegistration;
+import igentuman.nc.multiblock.accelerator.CoolerDef;
+import igentuman.nc.multiblock.fission.FissionReactorRegistration;
+import igentuman.nc.multiblock.fission.HeatSinkDef;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaTypes;
@@ -72,6 +76,8 @@ public  class JEIPlugin implements IModPlugin {
     public static final RecipeType<TurbineControllerBE.Recipe> TURBINE_CONTROLLER = new RecipeType<>(rl(TurbineControllerBE.NAME), TurbineControllerBE.Recipe.class);
     public static final RecipeType<MekChemicalConversionRecipe> CHEMICAL_TO_FLUID = new RecipeType<>(rl("mek_chemical_to_fluid"), MekChemicalConversionRecipe.class);;
     public static final RecipeType<OreVeinRecipe> ORE_VEINS = new RecipeType<>(rl("nc_ore_veins"), OreVeinRecipe.class);
+    public static final RecipeType<HeatSinkPlacementRecipe> HEAT_SINK_PLACEMENT = new RecipeType<>(rl("heat_sink_placement"), HeatSinkPlacementRecipe.class);
+    public static final RecipeType<CoolerPlacementRecipe> COOLER_PLACEMENT = new RecipeType<>(rl("cooler_placement"), CoolerPlacementRecipe.class);
 
     private static HashMap<String, RecipeType<? extends NcRecipe>> getRecipeTypes() {
         if (recipeTypes == null) {
@@ -146,6 +152,12 @@ public  class JEIPlugin implements IModPlugin {
         registration.addRecipeCategories(
                 new ParticleSourceCategory(registration.getJeiHelpers().getGuiHelper())
         );
+        registration.addRecipeCategories(
+                new HeatSinkPlacementCategory(registration.getJeiHelpers().getGuiHelper())
+        );
+        registration.addRecipeCategories(
+                new CoolerPlacementCategory(registration.getJeiHelpers().getGuiHelper())
+        );
     }
 
     public <TYPE> RecipeType<TYPE> getRecipeType(String name) {
@@ -206,6 +218,8 @@ public  class JEIPlugin implements IModPlugin {
             registration.addRecipes(MultiblockStructureCategory.TYPE, multiblockRecipes);
             registration.addRecipes(ParticleInfoCategory.TYPE, particleRecipes());
             registration.addRecipes(ParticleSourceCategory.TYPE, particleSourceRecipes());
+            registration.addRecipes(HeatSinkPlacementCategory.TYPE, heatSinkPlacementRecipes());
+            registration.addRecipes(CoolerPlacementCategory.TYPE, coolerPlacementRecipes());
             
             // Add ingredient info for chamber terminal
             registration.addIngredientInfo(
@@ -242,6 +256,52 @@ public  class JEIPlugin implements IModPlugin {
         for (Particle particle : Particles.particles.values()) {
             recipes.add(new ParticleRecipe(rl(particle.getName()), particle));
         }
+        return recipes;
+    }
+
+    private List<HeatSinkPlacementRecipe> heatSinkPlacementRecipes() {
+        List<HeatSinkPlacementRecipe> recipes = new ArrayList<>();
+        
+        for (Map.Entry<String, HeatSinkDef> entry : FissionReactorRegistration.heatsinks.entrySet()) {
+            String heatSinkName = entry.getKey();
+            HeatSinkDef heatSinkDef = entry.getValue();
+            
+            // Skip empty and active heat sinks as they don't have placement rules
+            if (heatSinkName.equals("empty") || heatSinkName.equals("active")) {
+                continue;
+            }
+            
+            // Get the heat sink item
+            String blockKey = heatSinkName + "_heat_sink";
+            if (FissionReactorRegistration.FISSION_BLOCKS.containsKey(blockKey)) {
+                ItemStack heatSinkItem = new ItemStack(FissionReactorRegistration.FISSION_BLOCKS.get(blockKey).get());
+                recipes.add(new HeatSinkPlacementRecipe(rl(blockKey), heatSinkDef, heatSinkItem));
+            }
+        }
+        
+        return recipes;
+    }
+
+    private List<CoolerPlacementRecipe> coolerPlacementRecipes() {
+        List<CoolerPlacementRecipe> recipes = new ArrayList<>();
+        
+        for (Map.Entry<String, CoolerDef> entry : AcceleratorRegistration.COOLERS.entrySet()) {
+            String coolerName = entry.getKey();
+            CoolerDef coolerDef = entry.getValue();
+            
+            // Skip empty coolers as they don't have placement rules
+            if (coolerName.equals("empty")) {
+                continue;
+            }
+            
+            // Get the cooler item
+            String blockKey = coolerName + "_cooler";
+            if (AcceleratorRegistration.ACCELERATOR_BLOCKS.containsKey(blockKey)) {
+                ItemStack coolerItem = new ItemStack(AcceleratorRegistration.ACCELERATOR_BLOCKS.get(blockKey).get());
+                recipes.add(new CoolerPlacementRecipe(rl(blockKey), coolerDef, coolerItem));
+            }
+        }
+        
         return recipes;
     }
 

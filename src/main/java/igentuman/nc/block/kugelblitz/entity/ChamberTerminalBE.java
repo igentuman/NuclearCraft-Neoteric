@@ -255,8 +255,8 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
             return;
         }
         changed = false;
-        if(!getMultiblock().initialized) return;
         super.tickServer();
+        if(!getMultiblock().initialized) return;
         boolean wasEnabled = controllerEnabled;
         handleValidation();
         if(isCasingValid && isInternalValid) {
@@ -675,10 +675,6 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
             gotLaserBurst = false;
             setChanged();
         }
-    }
-
-    public boolean gotLaserBurst() {
-        return gotLaserBurst;
     }
 
     public void gotEnergy(Direction facing) {

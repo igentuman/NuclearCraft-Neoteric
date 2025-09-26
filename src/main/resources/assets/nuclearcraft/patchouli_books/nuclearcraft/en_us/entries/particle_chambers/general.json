@@ -1,6 +1,6 @@
 {
 	"name": "Particle Chambers",
-	"icon": "nuclearcraft:particle_chamber_casing",
+	"icon": "nuclearcraft:target_chamber_casing",
 	"category": "nuclearcraft:particle_chambers",
 	"sortnum": 0,
 	"pages": [

@@ -1,6 +1,6 @@
 {
   "name": "Radiation Detection",
-  "icon": "nuclearcraft:radiation_badge",
+  "icon": "nuclearcraft:dosimeter",
   "category": "nuclearcraft:items",
   "sortnum": 0,
   "pages": [

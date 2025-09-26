@@ -1,0 +1,18 @@
+{
+  "type": "nuclearcraft:subatomic_liquifier",
+  "inputFluids": [
+    {
+      "amount": 90,
+      "tag": "forge:californium/250"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 900,
+      "tag": "forge:subliquid_matter"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 3.0
+}

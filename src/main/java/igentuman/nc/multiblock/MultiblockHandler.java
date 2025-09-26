@@ -60,25 +60,24 @@ public class MultiblockHandler {
         }));
     }
 
-    public static void tickAsync(ServerLevel level) {
+    public static void trackChangesAsync(ServerLevel level) {
         if (get(level.dimension()).validationFuture != null && !get(level.dimension()).validationFuture.isDone()) {
             return;
         }
-        // Reset future reference if it completed exceptionally
         if (get(level.dimension()).validationFuture != null && get(level.dimension()).validationFuture.isCompletedExceptionally()) {
             get(level.dimension()).validationFuture = null;
         }
         get(level.dimension()).validationFuture = CompletableFuture.runAsync(
                 () -> {
                     try {
-                        MultiblockHandler.get(level.dimension()).tick(level);
+                        MultiblockHandler.get(level.dimension()).trackAllChanges();
                     } catch (Exception e) {
-                        debugLog("Exception in async tick: " + e.getMessage());
+                        debugLog("Exception in async trackChangesAsync: " + e.getMessage());
                     }
                 },
                 MultiblockExecutorManager.getExecutor()
         ).exceptionally(throwable -> {
-            debugLog("Unhandled exception in async tick: " + throwable.getMessage());
+            debugLog("Unhandled exception in trackChangesAsync: " + throwable.getMessage());
             return null;
         });
     }
@@ -139,6 +138,12 @@ public class MultiblockHandler {
     }
 
     public void trackAllChanges() {
+        ConcurrentHashMap.KeySetView<String, AbstractMultiblock> tmp = multiblocks.keySet();
+        for (String id : tmp) {
+            if(shouldRemove(id)) {
+                removeMultiblock(multiblocks.get(id));
+            }
+        }
         for (long packedPos : changedBlocks) {
             BlockPos pos = BlockPos.of(packedPos);
             //Iterate chunk cache first for better performance
@@ -153,8 +158,8 @@ public class MultiblockHandler {
                     multiblock.onBlockChange(pos);
                 }
             }
-            List<AbstractMultiblock> tmp = new ArrayList<>(multiblocks.values());
-            for (AbstractMultiblock multiblock : tmp) {
+            Collection<AbstractMultiblock> multiblockCollection = multiblocks.values();
+            for (AbstractMultiblock multiblock : multiblockCollection) {
                 if (multiblock == null) {
                     continue;
                 }
@@ -164,6 +169,14 @@ public class MultiblockHandler {
             }
         }
         changedBlocks.clear();
+    }
+
+    private boolean shouldRemove(String id) {
+        return !multiblocks.containsKey(id)
+                || multiblocks.get(id) == null
+                || multiblocks.get(id).controllerBE() == null
+                || multiblocks.get(id).controllerBE().isRemoved()
+                ;
     }
 
     public void trackBlockChange(BlockPos pos, boolean force) {
@@ -191,100 +204,14 @@ public class MultiblockHandler {
             addMultiblock(multiblock, false);
         }
         if(multiblocks.get(multiblock.getId()) != multiblock) {
-            addMultiblock(multiblock, true);
-        }
-        for (long packedPos : changedBlocks) {
-            multiblock.onBlockChange(BlockPos.of(packedPos));
+            if(multiblocks.get(multiblock.getId()) != null) {
+                removeMultiblock(multiblocks.get(multiblock.getId()));
+            } else {
+                multiblocks.remove(multiblock.getId());
+            }
+            multiblocks.put(multiblock.getId(), multiblock);
         }
         multiblock.tick(level);
-    }
-
-    /**
-     * Ticks all multiblocks in this handler
-     *
-     * @param level The level to use for operations (can be null, will use controller's level if null)
-     */
-    public void tick(Level level) {
-        // First process any block changes
-        if (!changedBlocks.isEmpty()) {
-            debugLog("Processing " + changedBlocks.size() + " block changes for multiblocks");
-        }
-        trackAllChanges();
-        
-        // Collect multiblocks that need validation
-        List<String> needsValidation = new ArrayList<>();
-        for (String id : multiblocks.keySet()) {
-            AbstractMultiblock multiblock = multiblocks.get(id);
-            if (multiblock != null && multiblock.hasToRefresh && multiblock.isLoaded() && multiblock.isValidForTicking()) {
-                needsValidation.add(id);
-            }
-        }
-
-        // Process all validations for this level in a single thread
-        if (!needsValidation.isEmpty()) {
-            debugLog("Processing validation for " + needsValidation.size() + " multiblocks");
-
-            for (String id : needsValidation) {
-                AbstractMultiblock multiblock = multiblocks.get(id);
-                if (multiblock == null || !multiblock.isValidForTicking()) {
-                    toRemove.add(id);
-                    continue;
-                }
-
-                try {
-                    multiblock.tick(level);
-                } catch (Exception e) {
-                    debugLog("Error during multiblock validation for " + id + ": " + e.getMessage());
-                    e.printStackTrace();
-                }
-            }
-
-        }
-
-        // Process regular ticks for all multiblocks (non-validation processing)
-        for (String id : multiblocks.keySet()) {
-            AbstractMultiblock multiblock = multiblocks.get(id);
-            if (multiblock == null || !multiblock.isValidForTicking()) {
-                toRemove.add(id);
-                continue;
-            }
-
-            if (multiblock.isLoaded()) {
-                if (multiblock.controller().controllerBE().isRemoved()) {
-                    toRemove.add(id);
-                    continue;
-                }
-
-                // Only do non-validation related tasks here
-                if (!multiblock.hasToRefresh) {
-                    // Fast path for already validated multiblocks
-                    try {
-                        multiblock.tick(level);
-                    } catch (Exception e) {
-                        debugLog("Error during multiblock tick for " + id + ": " + e.getMessage());
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-
-        // Cleanup
-        if (!toRemove.isEmpty()) {
-            debugLog("Removing " + toRemove.size() + " invalid multiblocks: " + toRemove);
-            for (String id : toRemove) {
-                multiblocks.remove(id);
-                removeFromChunkCache(id);
-            }
-            toRemove.clear();
-        }
-    }
-
-    /**
-     * Ticks all multiblocks in this handler using the controller's level
-     * For backward compatibility
-     */
-    public void tick() {
-        tick(null);
     }
 
     public void removeMultiblock(AbstractMultiblock multiblock) {

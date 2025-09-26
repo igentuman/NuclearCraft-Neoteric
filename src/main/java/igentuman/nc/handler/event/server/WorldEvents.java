@@ -26,6 +26,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -38,7 +39,7 @@ import static igentuman.nc.setup.registration.Villager.addVillagerTrades;
 @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class WorldEvents {
 
-    public final static List<Block> trackingBlocks = new ArrayList<>();
+    public final static LinkedList<Block> trackingBlocks = new LinkedList<>();
     
     public WorldEvents() {
 
@@ -61,7 +62,7 @@ public class WorldEvents {
                 8, 2, 0.2f));
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onBlockBreak(BlockEvent.BreakEvent event) {
         if(event.getPlayer().level().isClientSide()) return;
         BlockState state = event.getState();
@@ -98,7 +99,7 @@ public class WorldEvents {
 
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void worldLoadEvent(LevelEvent.Load event) {
         if (!event.getLevel().isClientSide()) {
             // Ensure the executor is initialized when a world is loaded
@@ -107,26 +108,26 @@ public class WorldEvents {
         }
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onTick(ServerTickEvent event) {
-        if (event.side.isServer() && event.phase == Phase.END) {
+        if (event.side.isServer() && event.phase == Phase.START) {
             currentTick++;
         }
     }
 
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onTick(LevelTickEvent event) {
         if (event.side.isServer() && event.phase == Phase.START) {
             if(currentTick % 5 != 0 || event.level.getChunkSource().getLoadedChunksCount() < 1) return;
             final ServerLevel level = (ServerLevel) event.level;
             RadiationEvents.tickAsync(event);
-            MultiblockHandler.tickAsync(level);
+            MultiblockHandler.trackChangesAsync(level);
         }
     }
 
     
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onServerStopping(ServerStoppingEvent event) {
         // Shutdown the executor service gracefully when the server is stopping
         MultiblockExecutorManager.shutdown();

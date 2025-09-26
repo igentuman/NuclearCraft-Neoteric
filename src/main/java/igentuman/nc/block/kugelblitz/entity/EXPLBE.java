@@ -193,11 +193,14 @@ public class EXPLBE extends NuclearCraftBE {
                 if (multiblock instanceof KugelblitzMultiblock kugelblitzMultiblock) {
                     chamber = kugelblitzMultiblock;
                     BlockPos center = kugelblitzMultiblock.getCenter();
+                    if(center == null) {
+                        center = pos.relative(getFacing(), 5);
+                    }
                     for(Direction direction : Direction.values()) {
                         if(direction == getFacing().getOpposite()) {
                             continue;
                         }
-                        for(int j = 10; j < KUGELBLITZ_CONFIG.LASER_DISTANCE.get() + 10; j++) {
+                        for(int j = 10; j < KUGELBLITZ_CONFIG.LASER_DISTANCE.get() + 20; j++) {
                             BlockEntity be2 = level.getExistingBlockEntity(center.relative(direction, j));
                             if(be2 instanceof EXPLBE expl) {
                                 expl.activate(true);

@@ -25,6 +25,7 @@ import java.util.List;
 import static igentuman.nc.NuclearCraft.currentTick;
 import static igentuman.nc.block.kugelblitz.BlackHoleBlock.ACTIVE;
 import static igentuman.nc.client.renderer.DistortShader.blackhole;
+import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BLOCKS;
 import static igentuman.nc.setup.registration.NCSounds.BLACKHOLE_IDLE;
 import static igentuman.nc.setup.registration.NCSounds.BLACKHOLE_SPAWN;
 import static igentuman.nc.util.ModUtil.isKubeJsLoaded;
@@ -124,6 +125,18 @@ public class BlackHoleBE extends NuclearCraftBE {
         }
         handleClosestEntities();
         evaporateClosestBlocks();
+        evaporateIfNotInsideChamber();
+    }
+
+    private void evaporateIfNotInsideChamber() {
+        for(Direction dir: Direction.values()) {
+            BlockPos pos = worldPosition.relative(dir, 5);
+            BlockState state = level.getBlockState(pos);
+            if(!state.is(KUGELBLITZ_BLOCKS.get("photon_concentrator").get())) {
+                evaporate();
+                return;
+            }
+        }
     }
 
     private void evaporateClosestBlocks() {

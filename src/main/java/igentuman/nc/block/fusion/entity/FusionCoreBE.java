@@ -400,6 +400,10 @@ public class FusionCoreBE extends MultiblockControllerBE {
     }
 
     private void tickProxyBlocks() {
+        //if no recipe - tick only 5 times per second
+        if(!hasRecipe() && currentTick % 5 == 0) {
+            return;
+        }
         for(FusionCoreProxyBE proxy: getProxies()) {
             if(proxy == null) continue;
             proxy.forceTickServer(this);

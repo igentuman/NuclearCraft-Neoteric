@@ -44,7 +44,7 @@ public class ChamberTerminalScreen extends AbstractContainerScreen<ChamberTermin
     public Checkbox checkboxCasing;
     public Checkbox checkboxInterior;
     private VerticalBar energyBar;
-
+    private Button.MultiblockAnalyze analyzeBtn;
     public Component casingTootip = Component.empty();
     public Component interiorTootip = Component.empty();
 
@@ -99,6 +99,8 @@ public class ChamberTerminalScreen extends AbstractContainerScreen<ChamberTermin
         frequencySlider = new SliderHorizontal(6, 90, 119, this, menu.getBlockPos(), 1);
         frequencySlider.slideTo((int) (container().getFrequency()/0.15D));
         energyTransferRateSlider.slideTo(container().getEnergyRate());
+        analyzeBtn = new Button.MultiblockAnalyze(6, 162, this, menu.getBlockPos());
+        widgets.add(analyzeBtn);
         widgets.add(energyTransferRateSlider);
         widgets.add(new Button.ReportIssue(6, 150, this, menu.getBlockPos()));
         widgets.add(frequencySlider);
@@ -126,6 +128,7 @@ public class ChamberTerminalScreen extends AbstractContainerScreen<ChamberTermin
     }
 
     private void renderWidgets(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
+        analyzeBtn.setEnabled(container().canAnalyze());
         for(NCGuiElement widget: widgets) {
             widget.draw(graphics, mouseX, mouseY, partialTicks);
         }

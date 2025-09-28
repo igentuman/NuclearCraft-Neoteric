@@ -129,6 +129,7 @@ public class WorldEvents {
     
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onServerStopping(ServerStoppingEvent event) {
+        MultiblockHandler.clearAll();
         // Shutdown the executor service gracefully when the server is stopping
         MultiblockExecutorManager.shutdown();
         RadiationExecutorManager.shutdown();

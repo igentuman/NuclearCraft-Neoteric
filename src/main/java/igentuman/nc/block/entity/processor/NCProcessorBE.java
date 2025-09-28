@@ -392,6 +392,10 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
         }
         boolean updated = forceUpdate();
         boolean wasActive = isActive;
+        //if no recipe - tick only 5 times per second
+        if(!hasRecipe() && level.getGameTime() % 5 == 0) {
+           return;
+        }
         processRecipe();
         handleRecipeOutput();
         updated = updated || contentHandler().tick();

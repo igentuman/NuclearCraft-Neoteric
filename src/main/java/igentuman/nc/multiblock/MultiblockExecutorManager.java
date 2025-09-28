@@ -1,5 +1,7 @@
 package igentuman.nc.multiblock;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -14,8 +16,9 @@ public class MultiblockExecutorManager {
         private final AtomicInteger threadNumber = new AtomicInteger(1);
 
         @Override
-        public Thread newThread(Runnable r) {
+        public Thread newThread(@NotNull Runnable r) {
             Thread thread = new Thread(r, "NCN-Multiblocks-" + threadNumber.getAndIncrement());
+            thread.setPriority(Thread.MAX_PRIORITY - 1);
             thread.setDaemon(true);
             return thread;
         }

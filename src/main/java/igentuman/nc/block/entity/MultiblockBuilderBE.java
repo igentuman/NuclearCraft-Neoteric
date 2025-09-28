@@ -50,12 +50,6 @@ public class MultiblockBuilderBE extends NuclearCraftBE {
         BlockOverlayHandler.addBoxToOutline(boundingBox,  0.5f, 0.9f, 0.9f, 0.8f, getBlockPos().relative(getFacing().getOpposite(), offset));
     }
 
-    public void tickServer() {
-        if (currentTick % 2 == 0) {
-            return;
-        }
-    }
-
     public void setBlockMap(HashMap<BlockPos, Block> blockMap) {
         if (getLevel().isClientSide()) {
             removeOverlayBox();

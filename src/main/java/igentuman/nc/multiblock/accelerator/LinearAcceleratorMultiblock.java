@@ -185,14 +185,15 @@ public class LinearAcceleratorMultiblock extends AbstractAcceleratorMultiblock {
 
     @Override
     public void validate() {
+        isValidating = true;
         long startTime = System.currentTimeMillis();
         switch (stage) {
             case 0 -> validateOuter();
             case 1 -> validateBeam();
             case 2 -> indexInnerBlocks();
-            case 3 -> indexCoolers();
+            case 3 -> veryfyCoolers();
         }
-        debugLog("Accelerator validate stage " + stage + " " + initialPos().toShortString() + " in " + (System.nanoTime() - startTime)/1000000 + "ms " + validationResult);
+        debugLog("Accelerator validate stage " + stage + " " + initialPos().toShortString() + " in " + (System.currentTimeMillis() - startTime) + "ms " + validationResult);
         if(stage < FINAL_STAGE) {
             hasToRefresh = true;
             return;
@@ -228,5 +229,6 @@ public class LinearAcceleratorMultiblock extends AbstractAcceleratorMultiblock {
         controllerBE().setChanged();
 
         stage = 0;
+        isValidating = false;
     }
 }

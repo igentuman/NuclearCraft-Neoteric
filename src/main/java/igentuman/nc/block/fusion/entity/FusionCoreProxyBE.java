@@ -87,7 +87,10 @@ public class FusionCoreProxyBE extends NuclearCraftBE implements MultiblockAttac
             level.removeBlock(worldPosition, false);
             return;
         }
-
+        //if no recipe - tick only 5 times per second
+        if(currentTick % 5 == 0 && !core.hasRecipe()) {
+            return;
+        }
         if(wasSignal != core.analogSignal) {
             wasSignal = core.analogSignal;
             MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
@@ -127,6 +130,7 @@ public class FusionCoreProxyBE extends NuclearCraftBE implements MultiblockAttac
         if(wasCore != core) {
             MultiblockHandler.get(getLevel().dimension()).addIgnoreToUpdate(getBlockPos());
             setChanged();
+            level.updateNeighborsAt(worldPosition, getBlockState().getBlock());
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
         }
     }

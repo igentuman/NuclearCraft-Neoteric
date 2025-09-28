@@ -342,10 +342,25 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
             width = 8;
             String link = "https://github.com/igentuman/NuclearCraft-Neoteric/issues/new?template=bug_report.md";
             btn = new ImageButton(X(), Y(), width, height, 0, 0, 8, BTN_TEXTURE, 8, 16, pButton -> {
-                if (!openUrl(link)) {
-                    debugLog("Failed to open link: " + link);
+                if (!copyToBuffer(link)) {
+                    //debugLog("Failed to open link: " + link);
                 }
             });
+        }
+
+        private boolean copyToBuffer(String link) {
+            try {
+                // Get the system clipboard
+                java.awt.datatransfer.Clipboard clipboard = java.awt.Toolkit.getDefaultToolkit().getSystemClipboard();
+                // Create a string selection with the link
+                java.awt.datatransfer.StringSelection stringSelection = new java.awt.datatransfer.StringSelection(link);
+                // Set the clipboard contents
+                clipboard.setContents(stringSelection, null);
+                return true;
+            } catch (Exception e) {
+                debugLog("Failed to copy link to clipboard: " + e.getMessage());
+                return false;
+            }
         }
 
         public List<Component> getTooltips() {

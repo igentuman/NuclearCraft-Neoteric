@@ -93,7 +93,7 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
     @NBTField
     public int stabilizers = 0;
     public HashMap<Direction, Long> pulseEnergy = new HashMap<>();
-    public int collectingEnergy = 2;
+    public int collectingEnergy = 10;
 
     protected Direction facing;
     public Recipe recipe;
@@ -262,7 +262,7 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
         if(isCasingValid && isInternalValid) {
             collectingEnergy--;
             if(collectingEnergy < 0) {
-                collectingEnergy = 2;
+                collectingEnergy = 10;
                 if(pulseEnergy.size() == 6) {
                     gotLaserBurst = true;
                 }
@@ -299,6 +299,15 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
                 level.setBlockAndUpdate(worldPosition, getBlockState().setValue(POWERED, controllerEnabled));
             } catch (NullPointerException ignored) {}
         }
+    }
+
+    @Override
+    public HashMap<String, String> getAnalyzeReport() {
+        HashMap<String, String> report = new HashMap<>();
+        report.put("report.nc.1.stabilizers", String.valueOf(stabilizers));
+        report.put("report.nc.2.flux_regulators", String.valueOf(fluxRegulators));
+        report.put("report.nc.3.transformers", String.valueOf(transformers));
+        return report;
     }
 
     private boolean isBlackHoleStable() {
@@ -658,7 +667,7 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
                 getMultiblock().blackHole = (BlackHoleBE) be;
             }
         }
-        if(!(getMultiblock().isFormed() || isCasingValid) && getMultiblock().blackHole != null) {
+        if(!getMultiblock().isValidating() && !(getMultiblock().isFormed() || isCasingValid) && getMultiblock().blackHole != null) {
             BlockPos pos = getMultiblock().blackHole.getBlockPos();
             getMultiblock().blackHole = null;
             getLevel().setBlockAndUpdate(pos, AIR.defaultBlockState());
@@ -679,7 +688,11 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
 
     public void gotEnergy(Direction facing) {
         pulseEnergy.put(facing, 1L);
-        collectingEnergy = 2;
+        collectingEnergy = 10;
+    }
+
+    public boolean canAnalyze() {
+        return analyzeDelay < 1;
     }
 
     public static class Recipe extends NcRecipe {

@@ -112,7 +112,7 @@ dependencies {
     implementation 'org.spongepowered:mixin:0.8.5'
     minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
 
-    compileOnly fg.deobf("com.gregtechceu.gtceu:gtceu-${mc_version}:${gtm_version}"){
+    implementation fg.deobf("com.gregtechceu.gtceu:gtceu-${mc_version}:${gtm_version}"){
         transitive = false
     }
 
@@ -128,7 +128,7 @@ dependencies {
     implementation fg.deobf("com.tterrag.registrate:Registrate:${registrate_version}") {
         transitive = false
     }*/
-    implementation fg.deobf("curse.maven:multi-builder-tool-827020:6877370")
+    implementation fg.deobf("curse.maven:multi-builder-tool-827020:7041820")
     runtimeOnly fg.deobf("curse.maven:ctm-267602:5983309")
     compileOnly fg.deobf("curse.maven:immersive-engineering-231951:5224387")
     implementation fg.deobf("curse.maven:thermal-foundation-222880:5443583")

@@ -467,15 +467,17 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
     public void removeFromCacheIfChanged(BlockPos pos) {
         long packedPos = pos.asLong();
         if (beCache.containsKey(packedPos)) {
-            BlockEntity be = getLevel().getExistingBlockEntity(pos);
+            BlockEntity be = getBlockEntityFromChunk(pos);
             if(be != beCache.get(packedPos) || (be != null && be.isRemoved())) {
                 beCache.remove(packedPos);
+                hasToRefresh = true;
             }
         }
         if (bsCache.containsKey(packedPos)) {
-            BlockState bs = getLevel().getBlockState(pos);
+            BlockState bs = getBlockStateFromChunk(pos);
             BlockState cachedState = bsCache.get(packedPos);
             if(cachedState == null || !bs.is(bsCache.get(packedPos).getBlock())) {
+                hasToRefresh = true;
                 bsCache.remove(packedPos);
                 moderators.remove(packedPos);
                 for (Direction dir: Direction.values()) {
@@ -487,8 +489,10 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
                 }
                 String posHeatSink = reversedIndexedHeatSinks.get(pos);
                 reversedIndexedHeatSinks.remove(pos);
-                indexedHeatSinks.get(posHeatSink).remove(pos);
-                if (indexedHeatSinks.get(posHeatSink).isEmpty()) {
+                if(indexedHeatSinks.containsKey(posHeatSink)) {
+                    indexedHeatSinks.get(posHeatSink).remove(pos);
+                }
+                if (indexedHeatSinks.containsKey(posHeatSink) && indexedHeatSinks.get(posHeatSink).isEmpty()) {
                     indexedHeatSinks.remove(posHeatSink);
                 }
                 activeHeatSinks.remove(packedPos);

@@ -50,7 +50,6 @@ public class TurbinePortBE extends TurbineBE {
     public void tickServer() {
         if(NuclearCraft.instance.isNcBeStopped) return;
         super.tickServer();
-
         int wasSignal = analogSignal;
         if(getMultiblock() != null || controller() != null) {
             sendOutPower();
@@ -99,7 +98,7 @@ public class TurbinePortBE extends TurbineBE {
         }
         int wasEnergy = getEnergyStored();
         BlockEntity be = level.getExistingBlockEntity(worldPosition.relative(direction));
-        if (be == null || be instanceof TurbinePortBE) {
+        if (be == null || be instanceof TurbinePortBE || be instanceof TurbineControllerBE) {
             return;
         }
         if((isGtLoaded() && isGTEUCapEnabled())) {

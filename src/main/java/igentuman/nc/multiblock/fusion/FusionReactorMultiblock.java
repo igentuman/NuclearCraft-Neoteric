@@ -181,9 +181,7 @@ public class FusionReactorMultiblock extends AbstractMultiblock {
 
     @Override
     public void validate() {
-        debugLog("=== Starting Fusion Reactor validation at " + controllerPos.toShortString() + " ===");
-        debugLog("Target length: " + length);
-        
+
         super.validate();
         
         debugLog("Handling potential meltdown conditions");

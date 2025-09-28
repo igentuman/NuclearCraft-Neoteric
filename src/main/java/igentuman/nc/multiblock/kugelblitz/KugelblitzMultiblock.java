@@ -84,8 +84,7 @@ public class KugelblitzMultiblock extends AbstractMultiblock {
     @Override
     public void validate() {
         debugLog("=== Starting Kugelblitz Chamber validation at " + controllerPos.toShortString() + " ===");
-        debugLog("Initialized: " + initialized + ", Target size: 9x9x9");
-        
+
         super.validate();
         
         if(initialized && (!outerValid || !innerValid)) {
@@ -94,7 +93,6 @@ public class KugelblitzMultiblock extends AbstractMultiblock {
         }
         
         if(validationResult.isValid) {
-            debugLog("Kugelblitz chamber validation completed successfully");
             debugLog("Components - Transformers: " + transformers + 
                     ", Flux regulators: " + fluxRegulators + 
                     ", Stabilizers: " + stabilizers);

@@ -171,7 +171,6 @@ public class CommonConfig {
 
     public static class MiscConfig {
         public final ForgeConfigSpec.ConfigValue<Boolean> DEBUG_LOG;
-        public final ForgeConfigSpec.ConfigValue<Boolean> EXPERIMENTAL_BLOCK_INDEXING;
 
         public MiscConfig(ForgeConfigSpec.Builder builder) {
             builder.push("Misc");
@@ -179,12 +178,6 @@ public class CommonConfig {
             DEBUG_LOG = builder
                     .comment("Debug logging. Enable in case of issues to collect more data")
                     .define("debug_logging", false);
-
-            EXPERIMENTAL_BLOCK_INDEXING = builder
-                    .comment("Speeds up blocks indexing of multiblocks")
-                    .comment("Gives big performance boost for large multiblocks")
-                    .comment("Disable in case of issues")
-                    .define("experimental_block_indexing", true);
 
             builder.pop();
         }

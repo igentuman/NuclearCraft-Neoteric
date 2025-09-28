@@ -93,6 +93,10 @@ public class FissionPortBE extends NuclearCraftBE implements MultiblockAttachabl
         if(getMultiblock() != null && controller() != null) {
             sendOutPower();
         }
+        //if no recipe - tick only 5 times per second
+        if(currentTick % 5 == 0 && controller() != null && !controller().hasRecipe()) {
+            return;
+        }
         boolean updated = updateController();
         if(currentTick % 20 == 0 && controller() != null) {
             pushPull();
@@ -155,7 +159,7 @@ public class FissionPortBE extends NuclearCraftBE implements MultiblockAttachabl
         }
         int wasEnergy = getEnergyStored();
         BlockEntity be = level.getExistingBlockEntity(worldPosition.relative(direction));
-        if (be == null || be instanceof FissionPortBE) {
+        if (be == null || be instanceof FissionPortBE || be instanceof FissionControllerBE) {
             return;
         }
         if((isGtLoaded() && isGTEUCapEnabled())) {

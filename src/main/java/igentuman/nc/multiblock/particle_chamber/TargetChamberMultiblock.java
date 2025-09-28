@@ -131,12 +131,8 @@ public class TargetChamberMultiblock extends AbstractMultiblock {
 
     @Override
     public void validate() {
-        debugLog("=== Starting Target Chamber validation at " + controllerPos.toShortString() + " ===");
-        
         validDetectors.clear();
         allDetectors.clear();
-        
-        debugLog("Cleared target chamber specific caches");
         super.validate();
         
         if(validationResult.isValid) {

@@ -23,6 +23,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Objects;
 
+import static igentuman.nc.NuclearCraft.currentTick;
 import static igentuman.nc.compat.gregtech.GTUtils.*;
 import static igentuman.nc.compat.oc2.FusionReactorDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BE;
@@ -83,6 +84,10 @@ public class ChamberPortBE extends NuclearCraftBE implements MultiblockAttachabl
     public void tickServer() {
         if(NuclearCraft.instance.isNcBeStopped || isRemoved()) return;
         super.tickServer();
+        //if no blackhole - tick only 5 times per second
+        if(currentTick % 5 == 0 && controller() != null && !controller().hasBlackhole()) {
+            return;
+        }
         int wasSignal = analogSignal;
         if(getMultiblock() != null || controller() != null) {
             sendOutPower();
@@ -136,7 +141,7 @@ public class ChamberPortBE extends NuclearCraftBE implements MultiblockAttachabl
         }
         int wasEnergy = getEnergyStored();
         BlockEntity be = level.getExistingBlockEntity(worldPosition.relative(direction));
-        if (be == null || be instanceof ChamberPortBE) {
+        if (be == null || be instanceof ChamberPortBE || be instanceof ChamberTerminalBE) {
             return;
         }
         if((isGtLoaded() && isGTEUCapEnabled())) {

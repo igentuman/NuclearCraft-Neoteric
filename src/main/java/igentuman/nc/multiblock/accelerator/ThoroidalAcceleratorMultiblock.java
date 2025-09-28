@@ -397,7 +397,7 @@ public class ThoroidalAcceleratorMultiblock extends AbstractAcceleratorMultibloc
             case 0 -> validateOuter();
             case 1 -> validateBeam();
             case 2 -> indexInnerBlocks();
-            case 3 -> indexCoolers();
+            case 3 -> veryfyCoolers();
         }
         debugLog("Accelerator validate stage " + stage + " " + initialPos().toShortString() + " in " + (System.nanoTime() - startTime)/1000000 + "ms " + validationResult);
         if(stage < FINAL_STAGE) {

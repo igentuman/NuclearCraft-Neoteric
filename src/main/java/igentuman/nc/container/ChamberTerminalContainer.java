@@ -227,4 +227,8 @@ public class ChamberTerminalContainer extends AbstractContainerMenu {
     public int getStabilizers() {
         return blockEntity.stabilizers;
     }
+
+    public boolean canAnalyze() {
+        return blockEntity.canAnalyze();
+    }
 }

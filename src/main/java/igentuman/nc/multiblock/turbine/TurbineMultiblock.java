@@ -108,14 +108,11 @@ public class TurbineMultiblock extends AbstractMultiblock {
     @Override
     public void validate()
     {
-        debugLog("=== Starting Turbine validation at " + controllerPos.toShortString() + " ===");
-        
         coilPositions.clear();
         rotorPositions.clear();
         bearingPositions.clear();
         bladePositions.clear();
-        
-        debugLog("Cleared turbine specific caches and counters");
+
         super.validate();
         
         if(!validationResult.isValid) {

@@ -73,6 +73,9 @@ public class MultiblockHandler {
                         MultiblockHandler.get(level.dimension()).trackAllChanges();
                     } catch (Exception e) {
                         debugLog("Exception in async trackChangesAsync: " + e.getMessage());
+                        for(StackTraceElement element : e.getStackTrace()) {
+                            debugLog(element.toString());
+                        }
                     }
                 },
                 MultiblockExecutorManager.getExecutor()
@@ -146,26 +149,12 @@ public class MultiblockHandler {
         }
         for (long packedPos : changedBlocks) {
             BlockPos pos = BlockPos.of(packedPos);
-            //Iterate chunk cache first for better performance
-            long chunkPos = new ChunkPos(pos.getX() >> 4, pos.getZ() >> 4).toLong();
-            if (chunkCache.containsKey(chunkPos)) {
-                List<String> list = chunkCache.get(chunkPos);
-                for (String id : list) {
-                    AbstractMultiblock multiblock = multiblocks.get(id);
-                    if (multiblock == null) {
-                        continue;
-                    }
-                    multiblock.onBlockChange(pos);
-                }
-            }
             Collection<AbstractMultiblock> multiblockCollection = multiblocks.values();
             for (AbstractMultiblock multiblock : multiblockCollection) {
                 if (multiblock == null) {
                     continue;
                 }
-                if (multiblock.onBlockChange(pos)) {
-                    break;
-                }
+                multiblock.onBlockChange(pos);
             }
         }
         changedBlocks.clear();

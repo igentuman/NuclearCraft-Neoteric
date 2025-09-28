@@ -410,6 +410,9 @@ public class NCLanguageProvider extends LanguageProvider {
 
     private void labels() {
         add("multiblock.analyze.report", "Multiblock Report");
+        add("report.nc.1.stabilizers", "Stabilizers: %s");
+        add("report.nc.2.flux_regulators", "Flux Regulators: %s");
+        add("report.nc.3.transformers", "Transformers: %s");
         add("report.nc.1.target_chamber.all_detectors", "All Detectors: %s");
         add("report.nc.1.target_chamber.valid_detectors", "Valid Detectors: %s");
         add("report.nc.1.accelerator.all_coolers", "All Coolers: %s");
@@ -635,7 +638,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("tooltip.turbine.max_eu_energy", "Max EU gen: %s");
         add("tooltip.nc.particle_beam.desc", "Forms the central beam line for particle accelerators.");
         add("tooltip.turbine.max_energy", "Max FE gen: %s");
-        add("tooltip.nc.report_issue", "Report a Bug");
+        add("tooltip.nc.report_issue", "Copy link to post a bug");
         add("tooltip.nc.accelerator.strength", "Magnet Strength: %s T");
         add("tooltip.nc.accelerator.efficiency", "Efficiency: %s");
         add("tooltip.nc.accelerator.focus", "Focus: %s");

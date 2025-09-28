@@ -33,6 +33,7 @@ import java.util.concurrent.CompletableFuture;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.currentTick;
 import static igentuman.nc.content.materials.Materials.plutonium239;
+import static igentuman.nc.handler.config.WorldConfig.VILLAGE_CONFIG;
 import static igentuman.nc.setup.registration.FissionFuel.NC_ISOTOPES;
 import static igentuman.nc.setup.registration.Villager.addVillagerTrades;
 
@@ -52,7 +53,7 @@ public class WorldEvents {
 
     @SubscribeEvent
     public static void addCustomWanderingTrades(WandererTradesEvent event) {
-
+        if(!VILLAGE_CONFIG.addWandererTrades.get()) return;
         List<VillagerTrades.ItemListing> genericTrades = event.getGenericTrades();
         List<VillagerTrades.ItemListing> rareTrades = event.getRareTrades();
 

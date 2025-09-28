@@ -15,6 +15,7 @@ public class WorldConfig {
     }
     private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
     public static final DimensionConfig DIMENSION_CONFIG = new DimensionConfig(BUILDER);
+    public static final VillageConfig VILLAGE_CONFIG = new VillageConfig(BUILDER);
     public static final BiomeConfig BIOME_CONFIG = new BiomeConfig(BUILDER);
     public static final ForgeConfigSpec spec = BUILDER.build();
     private static boolean loaded = false;
@@ -35,6 +36,22 @@ public class WorldConfig {
             action.run();
         else
             loadActions.add(action);
+    }
+
+    public static class VillageConfig {
+        public final ForgeConfigSpec.ConfigValue<Boolean> generateScientistHouse;
+        public final ForgeConfigSpec.ConfigValue<Boolean> addWandererTrades;
+
+        public VillageConfig(ForgeConfigSpec.Builder builder) {
+            builder.push("Villages");
+            generateScientistHouse = builder
+                    .comment("Generate Scientist House in Villages")
+                    .define("scientist_house", true);
+            addWandererTrades = builder
+                    .comment("Add Wandering Trader trades")
+                    .define("wandering_trader_trades", true);
+            builder.pop();
+        }
     }
 
     public static class DimensionConfig {

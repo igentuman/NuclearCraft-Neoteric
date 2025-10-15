@@ -1,5 +1,6 @@
 package igentuman.nc.compat.emi;
 
+import appeng.menu.me.items.PatternEncodingTermMenu;
 import dev.emi.emi.api.EmiApi;
 import dev.emi.emi.api.EmiEntrypoint;
 import dev.emi.emi.api.EmiPlugin;
@@ -14,6 +15,7 @@ import igentuman.nc.block.target_chamber.entity.TargetChamberControllerBE;
 import igentuman.nc.block.turbine.entity.TurbineControllerBE;
 import igentuman.nc.client.NcClient;
 import igentuman.nc.client.gui.processor.NCProcessorScreen;
+import igentuman.nc.compat.ae2.ProcessorEmiRecipeHandlerAE2;
 import igentuman.nc.compat.emi.ingredient.ParticleEmiStack;
 import igentuman.nc.compat.refined_storage.ProcessorEmiRecipeHandlerRS;
 import igentuman.nc.handler.config.ClientConfig;
@@ -442,6 +444,10 @@ public class EMIPlugin implements EmiPlugin {
         }
         if(ModUtil.isRefinedStorageLoaded()) {
             registry.addRecipeHandler(com.refinedmods.refinedstorage.RSContainerMenus.GRID.get(), new ProcessorEmiRecipeHandlerRS<>());
+        }
+        if(ModUtil.isAE2Loaded()) {
+            registry.addRecipeHandler(PatternEncodingTermMenu.TYPE, new ProcessorEmiRecipeHandlerAE2<>());
+            registry.addRecipeHandler(PatternEncodingTermMenu.WIRELESS_TYPE, new ProcessorEmiRecipeHandlerAE2<>());
         }
     }
     

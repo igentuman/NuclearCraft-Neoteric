@@ -112,7 +112,7 @@ dependencies {
     implementation 'org.spongepowered:mixin:0.8.5'
     minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
 
-    implementation fg.deobf("com.gregtechceu.gtceu:gtceu-${mc_version}:${gtm_version}"){
+    compileOnly fg.deobf("com.gregtechceu.gtceu:gtceu-${mc_version}:${gtm_version}"){
         transitive = false
     }
 
@@ -128,22 +128,28 @@ dependencies {
     implementation fg.deobf("com.tterrag.registrate:Registrate:${registrate_version}") {
         transitive = false
     }*/
+    implementation fg.deobf("curse.maven:guideme-1173950:7013686") {
+        transitive = false
+    }
+    implementation fg.deobf("curse.maven:applied-energistics-2-223794:7096071") {
+        transitive = false
+    }
+    implementation fg.deobf("curse.maven:torcherino-236794:4722725")
     implementation fg.deobf("curse.maven:multi-builder-tool-827020:7041820")
     runtimeOnly fg.deobf("curse.maven:ctm-267602:5983309")
     compileOnly fg.deobf("curse.maven:immersive-engineering-231951:5224387")
     implementation fg.deobf("curse.maven:thermal-foundation-222880:5443583")
     implementation fg.deobf("curse.maven:thermal-expansion-69163:5372749")
     implementation fg.deobf("curse.maven:cofh-core-69162:5374122")
-    implementation fg.deobf("curse.maven:refined-storage-243076:4844585")
+    compileOnly fg.deobf("curse.maven:refined-storage-243076:4844585")
 
     implementation fg.deobf("curse.maven:flib-661261:6369719")
     implementation fg.deobf("curse.maven:cyclic-239286:6373460")
     compileOnly fg.deobf("curse.maven:the-lost-cities-269024:6174986")
     compileOnly fg.deobf("mezz.jei:jei-${mc_version}-common-api:${jei_version}")
     compileOnly fg.deobf("mezz.jei:jei-${mc_version}-forge-api:${jei_version}")
-    implementation fg.deobf("mezz.jei:jei-${mc_version}-forge:${jei_version}")
-    compileOnly fg.deobf("curse.maven:emi-580555:5872526")
-    //runtimeOnly fg.deobf("curse.maven:ctm-267602:4393695")
+    compileOnly fg.deobf("mezz.jei:jei-${mc_version}-forge:${jei_version}")
+    implementation fg.deobf("curse.maven:emi-580555:5872526")
 
     compileOnly fg.deobf("mcjty.theoneprobe:theoneprobe:${top_version}:api") {
         transitive = false

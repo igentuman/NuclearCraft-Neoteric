@@ -40,7 +40,6 @@ public class Registration {
         NCBlocks.init();
         NCStorageBlocks.init();
         NCItems.init();
-        FissionFuel.init();
         NCFluids.init();
         NCEnergyBlocks.init();
         NCProcessors.init();

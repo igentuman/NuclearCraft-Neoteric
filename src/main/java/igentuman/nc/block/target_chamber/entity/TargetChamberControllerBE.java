@@ -263,6 +263,11 @@ public class TargetChamberControllerBE extends MultiblockControllerBE {
             controllerEnabled = false;
             return;
         }
+        //Disallow boosters like torcherino
+        if(lastTickTime == level.getGameTime()) {
+            return;
+        }
+        lastTickTime = level.getGameTime();
 
         changed = false;
         super.tickServer();

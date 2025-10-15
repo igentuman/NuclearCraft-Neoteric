@@ -254,6 +254,11 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
         if(NuclearCraft.instance.isNcBeStopped || isRemoved()) {
             return;
         }
+        //Disallow boosters like torcherino
+        if(lastTickTime == level.getGameTime()) {
+            return;
+        }
+        lastTickTime = level.getGameTime();
         changed = false;
         super.tickServer();
         if(!getMultiblock().initialized) return;

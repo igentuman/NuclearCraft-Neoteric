@@ -69,6 +69,7 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
     protected int skippedTicks = 1;
     protected LazyOptional<ProcessorPeripheral> peripheralCap;
     protected final LazyOptional<IEnergyStorage> energy;
+    protected long lastTickTime = 0;
 
     @NBTField
     public int speedMultiplier = 1;
@@ -385,7 +386,7 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
 
     public void tickServer() {
         if(NuclearCraft.instance.isNcBeStopped || isRemoved()) return;
-        if(redstoneMode == 1 && !hasRedstoneSignal()) return;
+        if(redstoneMode == 1 && level.getGameTime() % 5 == 0 && !hasRedstoneSignal()) return;
         if(howMuchICanSkip() >= skippedTicks) {
             skippedTicks++;
             return;
@@ -397,6 +398,12 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
            return;
         }
         processRecipe();
+        if(lastTickTime == level.getGameTime()) {
+            //prevent double tick in case of block boosters like torcherino
+            //but we allow recipe progression boost
+            return;
+        }
+        lastTickTime = level.getGameTime();
         handleRecipeOutput();
         updated = updated || contentHandler().tick();
         if(updated || wasUpdated) {
@@ -423,6 +430,7 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
     }
 
     private boolean forceUpdate() {
+        if(lastTickTime == level.getGameTime()) return false;
         if(manualUpdateCounter > 0) {
             manualUpdateCounter--;
             return false;

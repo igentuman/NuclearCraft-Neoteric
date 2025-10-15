@@ -15,6 +15,11 @@ public class FuelDef {
     public int efficiency;
     public int forge_energy;
     public int[] isotopes;
+    
+    // Recipe modifiers for automatic recipe generation
+    public double timeModifier = 1.0;
+    public double powerModifier = 1.0;
+    public double radiationModifier = 1.0;
 
     public FuelDef(String group, String name, int forge_energy, double heat, int criticality, int depletion, int efficiency)
     {
@@ -29,6 +34,13 @@ public class FuelDef {
 
     public FuelDef isotopes(int... isotopes) {
         this.isotopes = isotopes;
+        return this;
+    }
+    
+    public FuelDef recipeModifiers(double timeModifier, double powerModifier, double radiationModifier) {
+        this.timeModifier = timeModifier;
+        this.powerModifier = powerModifier;
+        this.radiationModifier = radiationModifier;
         return this;
     }
 

@@ -68,6 +68,10 @@ public class IrradiatorBE extends NCProcessorBE implements MultiblockAttachable 
         double wasFuel = fuelMultiplier;
         irradiativeFlux = 0;
         fuelMultiplier = 0;
+        //allow only partial updates when irradiator boosted by torcherino
+        if(lastTickTime == level.getGameTime() && level.getRandom().nextDouble() < 0.05) {
+            return;
+        }
         //upadteMultiblockConnection();
         if (controller() != null && controller().isProcessing()) {
             irradiativeFlux = controller().irradiationLines;

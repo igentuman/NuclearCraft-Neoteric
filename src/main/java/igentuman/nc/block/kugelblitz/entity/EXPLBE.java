@@ -138,6 +138,11 @@ public class EXPLBE extends NuclearCraftBE {
 
     @Override
     public void tickServer() {
+        //Disallow boosters like torcherino
+        if(lastTickTime == level.getGameTime()) {
+            return;
+        }
+        lastTickTime = level.getGameTime();
         energyStorage().tick();
         long wasCharge = aggregatedEnergy;
         if(!hasEnoughEnergy()) {

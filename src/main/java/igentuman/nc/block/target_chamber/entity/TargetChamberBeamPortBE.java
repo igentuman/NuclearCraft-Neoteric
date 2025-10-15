@@ -76,6 +76,11 @@ public class TargetChamberBeamPortBE extends NuclearCraftBE implements Multibloc
     @Override
     public void tickServer() {
         if(NuclearCraft.instance.isNcBeStopped || isRemoved()) return;
+        //Disallow boosters like torcherino
+        if(lastTickTime == level.getGameTime()) {
+            return;
+        }
+        lastTickTime = level.getGameTime();
         super.tickServer();
         if(getMultiblock() == null || controller() == null) return;
         int wasSignal = analogSignal;

@@ -374,6 +374,11 @@ public class FusionCoreBE extends MultiblockControllerBE {
             FusionCoreBlock block = (FusionCoreBlock) getBlockState().getBlock();
             block.placeProxyBlocks(getBlockState(), level, worldPosition, this);
         }
+        //Disallow boosters like torcherino
+        if(lastTickTime == level.getGameTime()) {
+            return;
+        }
+        lastTickTime = level.getGameTime();
         super.tickServer();
         tickProxyBlocks();
         handleValidation();

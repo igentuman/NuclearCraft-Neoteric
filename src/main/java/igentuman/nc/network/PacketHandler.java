@@ -4,6 +4,7 @@ import igentuman.nc.NuclearCraft;
 import igentuman.nc.network.toClient.PacketPlayerRadiationData;
 import igentuman.nc.network.toClient.PacketWorldRadiationData;
 import igentuman.nc.network.toServer.*;
+import igentuman.nc.util.ModUtil;
 import net.minecraftforge.network.simple.SimpleChannel;
 
 public class PacketHandler extends BasePacketHandler {
@@ -25,6 +26,9 @@ public class PacketHandler extends BasePacketHandler {
         registerClientToServer(PacketHandleFluidSlotClick.class, PacketHandleFluidSlotClick::decode);
         registerClientToServer(PacketBuildMultiblock.class, PacketBuildMultiblock::decode);
         registerClientToServer(PacketRecipeTransfer.class, PacketRecipeTransfer::decode);
+        if(ModUtil.isAE2Loaded()) {
+            registerClientToServer(PacketAE2PatternTransfer.class, PacketAE2PatternTransfer::decode);
+        }
 
         //Server to client messages
         registerServerToClient(PacketWorldRadiationData.class, PacketWorldRadiationData::decode);

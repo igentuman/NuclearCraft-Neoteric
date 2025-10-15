@@ -103,6 +103,11 @@ public class BlackHoleBE extends NuclearCraftBE {
 
     public void tickServer() {
         if(isRemoved()) return;
+        //Disallow boosters like torcherino
+        if(lastTickTime == level.getGameTime()) {
+            return;
+        }
+        lastTickTime = level.getGameTime();
         if (!isInitialized) {
             isInitialized = true;
             setChanged();

@@ -55,6 +55,11 @@ public class TurbineRotorBE extends TurbineBE {
 
     @Override
     public void tickServer() {
+        //Disallow boosters like torcherino
+        if(lastTickTime == level.getGameTime()) {
+            return;
+        }
+        lastTickTime = level.getGameTime();
         super.tickServer();
         BlockPos wasPos = controllerPos;
         if(wasPos != getControllerPos()) {

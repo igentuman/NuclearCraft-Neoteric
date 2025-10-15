@@ -1,5 +1,6 @@
 package igentuman.nc.setup;
 
+import igentuman.nc.client.RuntimeFuelModelGenerator;
 import igentuman.nc.client.block.BatteryBlockItemDecorator;
 import igentuman.nc.client.block.BatteryBlockLoader;
 import igentuman.nc.client.block.fusion.FusionCoreRenderer;
@@ -104,6 +105,9 @@ public class ClientSetup {
             for(String name: NCProcessors.PROCESSORS_CONTAINERS.keySet()) {
                 MenuScreens.register(NCProcessors.PROCESSORS_CONTAINERS.get(name).get(), Processors.all().get(name).getScreenConstructor());
             }
+            
+            // Generate runtime models for custom fuels
+            RuntimeFuelModelGenerator.generateResources();
         });
 
         for(RegistryObject<Fluid> f : FLUIDS.getEntries())

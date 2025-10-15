@@ -1,5 +1,6 @@
 package igentuman.nc.block.turbine.entity;
 
+import igentuman.api.nc.multiblock.MultiblockAttachable;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;
 import igentuman.nc.multiblock.MultiblockHandler;
@@ -26,7 +27,7 @@ import static igentuman.nc.util.ModUtil.isCcLoaded;
 import static igentuman.nc.util.ModUtil.isGtLoaded;
 import static net.minecraftforge.common.capabilities.ForgeCapabilities.ENERGY;
 
-public class TurbinePortBE extends TurbineBE {
+public class TurbinePortBE extends TurbineBE implements MultiblockAttachable {
     public static String NAME = "turbine_port";
     @NBTField
     public byte analogSignal = 0;
@@ -49,6 +50,11 @@ public class TurbinePortBE extends TurbineBE {
     @Override
     public void tickServer() {
         if(NuclearCraft.instance.isNcBeStopped) return;
+        //Disallow boosters like torcherino
+        if(lastTickTime == level.getGameTime()) {
+            return;
+        }
+        lastTickTime = level.getGameTime();
         super.tickServer();
         int wasSignal = analogSignal;
         if(getMultiblock() != null || controller() != null) {

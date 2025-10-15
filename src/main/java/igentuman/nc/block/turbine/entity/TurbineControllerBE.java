@@ -225,6 +225,11 @@ public class TurbineControllerBE extends MultiblockControllerBE {
         if(NuclearCraft.instance.isNcBeStopped || isRemoved()) {
             return;
         }
+        //Disallow boosters like torcherino
+        if(lastTickTime == level.getGameTime()) {
+            return;
+        }
+        lastTickTime = level.getGameTime();
         changed = false;
         super.tickServer();
         boolean wasPowered = powered;

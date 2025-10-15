@@ -1,6 +1,7 @@
 package igentuman.nc.block.fission.entity;
 
 import igentuman.nc.NuclearCraft;
+import igentuman.nc.block.MultiblockPortBE;
 import igentuman.nc.block.entity.MultiblockControllerBE;
 import igentuman.nc.compat.cc.SolidFissionReactorPeripheral;
 import igentuman.nc.compat.oc2.FissionReactorDevice;
@@ -158,6 +159,8 @@ public class FissionControllerBE extends MultiblockControllerBE {
     private List<FluidStack>  allowedCoolantOutputs;
     @NBTField
     public boolean canAcceptFluids = false;
+    private boolean portsInitialized = false;
+
     public FissionControllerBE(BlockPos pPos, BlockState pBlockState) {
         super(FissionReactorRegistration.FISSION_BE.get(NAME).get(),pPos, pBlockState);
         contentHandler = new SidedContentHandler(
@@ -187,6 +190,15 @@ public class FissionControllerBE extends MultiblockControllerBE {
                 .setInputAmperage(0)
                 .setOutputAmperage(16);
         energy = LazyOptional.of(() -> energyStorage);
+    }
+
+    public void initializePorts()
+    {
+        if(portsInitialized) return;
+        portsInitialized = true;
+        for(MultiblockPortBE port: getMultiblock().getPorts()) {
+            port.pushPull();
+        }
     }
 
     @Override
@@ -427,6 +439,11 @@ public class FissionControllerBE extends MultiblockControllerBE {
             controllerEnabled = false;
             return;
         }
+        //Disallow boosters like torcherino
+        if(lastTickTime == level.getGameTime()) {
+            return;
+        }
+        lastTickTime = level.getGameTime();
         changed = false;
         super.tickServer();
         boilingPenalty = 0;
@@ -444,6 +461,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
             controllerEnabled = wasEnabled;
         }
         if (getMultiblock().isFormed()) {
+            initializePorts();
             trackChanges(updateModerationLevel());
             trackChanges(contentHandler().tick());
             if(controllerEnabled || reactivityLevel > 0) {

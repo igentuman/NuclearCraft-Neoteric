@@ -79,6 +79,11 @@ public class EXPLProxyBE extends NuclearCraftBE {
     }
 
     public void forceTickServer(EXPLBE core) {
+        //Disallow boosters like torcherino
+        if(lastTickTime == level.getGameTime()) {
+            return;
+        }
+        lastTickTime = level.getGameTime();
         this.core = core;
         core.inputRedstoneSignal =  Math.max(getLevel().getBestNeighborSignal(getBlockPos()), core.inputRedstoneSignal);
     }

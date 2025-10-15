@@ -1,8 +1,7 @@
 package igentuman.nc.block.fission.entity;
 
-import igentuman.api.nc.multiblock.MultiblockAttachable;
 import igentuman.nc.NuclearCraft;
-import igentuman.nc.block.entity.NuclearCraftBE;
+import igentuman.nc.block.MultiblockPortBE;
 import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.multiblock.AbstractMultiblock;
@@ -31,7 +30,7 @@ import static igentuman.nc.compat.oc2.FissionReactorDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.util.ModUtil.*;
 import static net.minecraftforge.common.capabilities.ForgeCapabilities.ENERGY;
 
-public class FissionPortBE extends NuclearCraftBE implements MultiblockAttachable {
+public class FissionPortBE extends MultiblockPortBE {
 
     public static final String NAME = "fission_reactor_port";
 
@@ -44,7 +43,7 @@ public class FissionPortBE extends NuclearCraftBE implements MultiblockAttachabl
     public boolean isSteamMode = false;
     @NBTField
     public boolean connected = false;
-
+    protected long lastTickTime = 0;
     protected FissionReactorMultiblock multiblock;
     protected FissionControllerBE controller;
 
@@ -90,6 +89,11 @@ public class FissionPortBE extends NuclearCraftBE implements MultiblockAttachabl
 
         int wasSignal = analogSignal;
         boolean wasConnected = connected;
+        //Disallow boosters like torcherino
+        if(lastTickTime == level.getGameTime()) {
+            return;
+        }
+        lastTickTime = level.getGameTime();
         if(getMultiblock() != null && controller() != null) {
             sendOutPower();
         }
@@ -121,7 +125,7 @@ public class FissionPortBE extends NuclearCraftBE implements MultiblockAttachabl
         }
     }
 
-    private boolean pushPull() {
+    public boolean pushPull() {
         boolean pushed = false;
         if (itemHandler() != null) {
             Direction dir = getFacing();

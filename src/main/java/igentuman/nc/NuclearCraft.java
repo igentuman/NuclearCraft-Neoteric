@@ -118,6 +118,7 @@ public class NuclearCraft {
         StructureCommand.register(event.getDispatcher());
         RadiationCommand.register(event.getDispatcher());
         DebugCommand.register(event.getDispatcher());
+        FuelModelsCommand.register(event.getDispatcher());
     }
 
     private void registerClientEventHandlers(FMLClientSetupEvent event) {

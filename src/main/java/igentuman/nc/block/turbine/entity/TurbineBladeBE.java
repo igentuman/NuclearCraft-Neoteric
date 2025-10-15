@@ -26,6 +26,11 @@ public class TurbineBladeBE extends TurbineBE {
     @Override
     public void tickServer() {
         if(NuclearCraft.instance.isNcBeStopped) return;
+        //Disallow boosters like torcherino
+        if(lastTickTime == level.getGameTime()) {
+            return;
+        }
+        lastTickTime = level.getGameTime();
         boolean wasActive = isActive;
         isActive = getMultiblock() != null && controller() != null && getMultiblock().isFormed();
         if(wasActive != isActive || currentTick % 20 == 0) {

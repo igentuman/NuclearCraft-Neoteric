@@ -2,6 +2,7 @@ package igentuman.nc.block.target_chamber.entity;
 
 import igentuman.api.nc.multiblock.MultiblockAttachable;
 import igentuman.nc.NuclearCraft;
+import igentuman.nc.block.MultiblockPortBE;
 import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.content.particles.ParticleStack;
 import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;
@@ -33,7 +34,7 @@ import static igentuman.nc.multiblock.particle_chamber.TargetChamberRegistration
 import static igentuman.nc.util.ModUtil.*;
 import static net.minecraftforge.common.capabilities.ForgeCapabilities.ENERGY;
 
-public class TargetChamberPortBE extends NuclearCraftBE implements MultiblockAttachable {
+public class TargetChamberPortBE extends MultiblockPortBE {
 
     public static final String NAME = "target_chamber_port";
 
@@ -86,7 +87,11 @@ public class TargetChamberPortBE extends NuclearCraftBE implements MultiblockAtt
 
     public void tickServer() {
         if (NuclearCraft.instance.isNcBeStopped || isRemoved()) return;
-
+        //Disallow boosters like torcherino
+        if(lastTickTime == level.getGameTime()) {
+            return;
+        }
+        lastTickTime = level.getGameTime();
         int wasSignal = analogSignal;
         boolean wasConnected = connected;
         if(getMultiblock() != null && controller() != null) {
@@ -115,7 +120,7 @@ public class TargetChamberPortBE extends NuclearCraftBE implements MultiblockAtt
         }
     }
 
-    private boolean pushPull() {
+    public boolean pushPull() {
         boolean pushed = false;
         if (itemHandler() != null) {
             Direction dir = getFacing();

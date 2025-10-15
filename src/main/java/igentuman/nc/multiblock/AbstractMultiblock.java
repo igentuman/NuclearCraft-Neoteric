@@ -3,7 +3,9 @@ package igentuman.nc.multiblock;
 import igentuman.api.nc.multiblock.MultiblockAttachable;
 import igentuman.api.nc.multiblock.Multiblock;
 import igentuman.api.nc.multiblock.MultiblockController;
+import igentuman.nc.block.MultiblockPortBE;
 import igentuman.nc.block.entity.MultiblockControllerBE;
+import igentuman.nc.block.fission.entity.FissionPortBE;
 import igentuman.nc.util.BlockPosInstance;
 import igentuman.nc.util.math.MathUtils;
 import net.minecraft.core.BlockPos;
@@ -22,6 +24,7 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
 
@@ -68,7 +71,7 @@ public abstract class AbstractMultiblock implements Multiblock {
     private CompletableFuture<Void> validationFuture;
     public boolean isValidating = true;
     protected boolean fullValidation = true;
-
+    public final HashSet<MultiblockPortBE> ports = new HashSet<>();
     protected AbstractMultiblock(HashSet<Block> validOuterBlocks, HashSet<Block> validInnerBlocks, MultiblockController controller) {
         this.validOuterBlocks = validOuterBlocks;
         this.validInnerBlocks = validInnerBlocks;
@@ -657,6 +660,7 @@ public abstract class AbstractMultiblock implements Multiblock {
             if(getBlockEntity(pos, true) instanceof MultiblockAttachable attachableBe) {
                 attachableBe.setMultiblock(this);
             }
+            ports.add((FissionPortBE) getBlockEntity(pos, true));
             connectedPorts++;
         }
     }
@@ -995,5 +999,9 @@ public abstract class AbstractMultiblock implements Multiblock {
 
     public boolean isValidating() {
         return isValidating;
+    }
+
+    public HashSet<MultiblockPortBE> getPorts() {
+        return ports;
     }
 }

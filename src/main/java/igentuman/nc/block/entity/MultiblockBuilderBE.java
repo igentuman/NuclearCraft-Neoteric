@@ -34,6 +34,21 @@ public class MultiblockBuilderBE extends NuclearCraftBE {
         super(MULTIBLOCK_BUILDER_BE.get(), pos, pBlockState);
     }
 
+    /**
+     * Simulating slow laggy block entity for tests
+     * @todo remove
+     */
+    /*public void tickServer() {
+        for(int x = 0; x < 48; x++) {
+            for(int y = 0; y < 48; y++) {
+                for(int z = 0; z < 48; z++) {
+                    level.getBlockState(worldPosition.offset(x,y,z)).getBlock();
+                    level.getBlockEntity(worldPosition.offset(x, y, z));
+                }
+            }
+        }
+    }*/
+
     public void tickClient() {
         if(isRemoved() || blockMap.isEmpty()) {
             return;

@@ -89,7 +89,10 @@ public class ItemRadiation {
                     }
                     Item isotope1 = getIsotope(name, String.valueOf(FuelManager.all().get(name).get(subType).getDefault().isotopes[0]), type);
                     Item isotope2 = getIsotope(name, String.valueOf(FuelManager.all().get(name).get(subType).getDefault().isotopes[1]), type);
-                    double radiation = ItemRadiation.byItem(isotope1)*isotope1Cnt + ItemRadiation.byItem(isotope2)*isotope2Cnt;
+                    double radiation = 50000;
+                    if(isotope1 != null && isotope2 != null) {
+                        radiation = ItemRadiation.byItem(isotope1)*isotope1Cnt + ItemRadiation.byItem(isotope2)*isotope2Cnt;
+                    }
                     add(FissionFuel.NC_FUEL.get(List.of("fuel", name, subType, type)).get(), radiation/2);
                     if(name.matches("xenorium.*|quantite.*")) break;
                 }
@@ -127,7 +130,10 @@ public class ItemRadiation {
                 }
             }
         }
-        return FissionFuel.NC_ISOTOPES.get(name+"/"+id+type).get();
+        if(FissionFuel.NC_ISOTOPES.containsKey(name+"/"+id+type)) {
+            return  FissionFuel.NC_ISOTOPES.get(name+"/"+id+type).get();
+        }
+        return null;
     }
 
     public static void add(String item, double radiation)

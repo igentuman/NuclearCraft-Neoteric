@@ -58,7 +58,6 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
     public long validationTime = 0;
     @NBTField
     public long multiblockTicksCounter = 0;
-
     public MultiblockControllerBE(BlockEntityType<?> pType, BlockPos pPos, BlockState pBlockState) {
         super(pType, pPos, pBlockState);
     }
@@ -138,7 +137,7 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
             analyzeDelay--;
         }
         assert level != null;
-        if(currentTick % 2 == 0) {
+        if(level.getGameTime() % 2 == 0) {
             MultiblockHandler.tickMultiblockAsync((ServerLevel) level, getMultiblock());
         }
     }

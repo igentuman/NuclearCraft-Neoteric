@@ -38,6 +38,7 @@ public class FusionCoreProxyBE extends NuclearCraftBE implements MultiblockAttac
     protected FusionCoreBE core;
     protected FusionReactorMultiblock multiblock;
     protected byte wasSignal = 0;
+    protected long lastTickTime = 0;
 
     public FusionCoreProxyBE(BlockPos pPos, BlockState pBlockState) {
         super(FUSION_CORE_PROXY_BE.get(), pPos, pBlockState);
@@ -80,6 +81,11 @@ public class FusionCoreProxyBE extends NuclearCraftBE implements MultiblockAttac
 
     public void tickServer()
     {
+        //Disallow boosters like torcherino
+        if(lastTickTime == level.getGameTime()) {
+            return;
+        }
+        lastTickTime = level.getGameTime();
         if(currentTick % 20 == 0) {
             validateCore();
         }

@@ -1,17 +1,29 @@
 package igentuman.nc.compat.kubejs;
 
 import dev.latvian.mods.kubejs.KubeJSPlugin;
+import dev.latvian.mods.kubejs.event.EventGroup;
+import dev.latvian.mods.kubejs.event.EventHandler;
 import dev.latvian.mods.kubejs.fluid.InputFluid;
 import dev.latvian.mods.kubejs.fluid.OutputFluid;
 import dev.latvian.mods.kubejs.item.InputItem;
 import dev.latvian.mods.kubejs.item.OutputItem;
+import dev.latvian.mods.kubejs.recipe.RecipeJS;
 import dev.latvian.mods.kubejs.recipe.RecipeKey;
+import dev.latvian.mods.kubejs.recipe.RecipesEventJS;
 import dev.latvian.mods.kubejs.recipe.component.FluidComponents;
 import dev.latvian.mods.kubejs.recipe.component.ItemComponents;
 import dev.latvian.mods.kubejs.recipe.component.NumberComponent;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchema;
 import dev.latvian.mods.kubejs.recipe.schema.RegisterRecipeSchemasEvent;
+import dev.latvian.mods.kubejs.script.ScriptType;
+import igentuman.nc.NuclearCraft;
 import igentuman.nc.recipes.NcRecipeType;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeManager;
+
+import java.util.List;
+import java.util.Map;
 
 import static igentuman.nc.NuclearCraft.MODID;
 
@@ -49,10 +61,21 @@ public class NuclearCraftKubeJSPlugin extends KubeJSPlugin {
         }
     }
 
+    @Override
+    public void injectRuntimeRecipes(RecipesEventJS event, RecipeManager manager, Map<ResourceLocation, Recipe<?>> recipesByName) {
+        NcRecipeType.invalidateCache();
+        NuclearCraft.LOGGER.warn("Injecting NuclearCraft KubeJS recipes");
+        List<RecipeJS> added = NCKubeJsEvents.generateCustomFuelRecipes(event);
+        for (RecipeJS recipe : added) {
+            recipesByName.put(recipe.id, recipe.createRecipe());
+        }
+    }
+
 
     @Override
     public void onServerReload() {
         NcRecipeType.invalidateCache();
+
     }
 
     @Override

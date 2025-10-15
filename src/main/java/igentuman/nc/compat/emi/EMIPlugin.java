@@ -395,7 +395,7 @@ public class EMIPlugin implements EmiPlugin {
             String blockKey = heatSinkName + "_heat_sink";
             if (FissionReactorRegistration.FISSION_BLOCKS.containsKey(blockKey)) {
                 ItemStack heatSinkItem = new ItemStack(FissionReactorRegistration.FISSION_BLOCKS.get(blockKey).get());
-                recipes.add(new HeatSinkPlacementEmiRecipe(rl(blockKey), heatSinkDef, heatSinkItem));
+                recipes.add(new HeatSinkPlacementEmiRecipe(rl("/"+blockKey), heatSinkDef, heatSinkItem));
             }
         }
         
@@ -430,7 +430,7 @@ public class EMIPlugin implements EmiPlugin {
             String blockKey = coolerName + "_cooler";
             if (AcceleratorRegistration.ACCELERATOR_BLOCKS.containsKey(blockKey)) {
                 ItemStack coolerItem = new ItemStack(AcceleratorRegistration.ACCELERATOR_BLOCKS.get(blockKey).get());
-                recipes.add(new CoolerPlacementEmiRecipe(rl(blockKey), coolerDef, coolerItem));
+                recipes.add(new CoolerPlacementEmiRecipe(rl("/"+blockKey), coolerDef, coolerItem));
             }
         }
         

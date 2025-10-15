@@ -2,6 +2,7 @@ package igentuman.nc.block.kugelblitz.entity;
 
 import igentuman.api.nc.multiblock.MultiblockAttachable;
 import igentuman.nc.NuclearCraft;
+import igentuman.nc.block.MultiblockPortBE;
 import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;
 import igentuman.nc.multiblock.AbstractMultiblock;
@@ -31,7 +32,7 @@ import static igentuman.nc.util.ModUtil.*;
 import static igentuman.nc.util.ModUtil.isGtLoaded;
 import static net.minecraftforge.common.capabilities.ForgeCapabilities.ENERGY;
 
-public class ChamberPortBE extends NuclearCraftBE implements MultiblockAttachable {
+public class ChamberPortBE extends MultiblockPortBE {
 
     public static String NAME = "chamber_port";
     @NBTField
@@ -84,6 +85,11 @@ public class ChamberPortBE extends NuclearCraftBE implements MultiblockAttachabl
     public void tickServer() {
         if(NuclearCraft.instance.isNcBeStopped || isRemoved()) return;
         super.tickServer();
+        //Disallow boosters like torcherino
+        if(lastTickTime == level.getGameTime()) {
+            return;
+        }
+        lastTickTime = level.getGameTime();
         //if no blackhole - tick only 5 times per second
         if(currentTick % 5 == 0 && controller() != null && !controller().hasBlackhole()) {
             return;

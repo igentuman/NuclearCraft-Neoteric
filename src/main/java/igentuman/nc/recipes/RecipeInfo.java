@@ -130,7 +130,29 @@ public class RecipeInfo implements INBTSerializable<Tag> {
     }
 
     public void setParallelProcessing(int i) {
-        this.parallelProcessing = i;
+        this.parallelProcessing = howMuchICanProcess(i);
+    }
+
+    private int howMuchICanProcess(int i) {
+        if(i == 1 || recipe == null) return 1;
+
+        int actualAmount = 1;
+        // Validate how many parallel recipes can actually be processed based on available inputs
+        // Check from the requested amount down to find the maximum feasible parallel processing
+        for(int attempt = i; attempt > 1; attempt--) {
+            if(recipe.hasEnoughToConsume(getContentHandler(), attempt)) {
+                actualAmount = attempt;
+                break;
+            }
+        }
+        return Math.min(actualAmount, i);
+    }
+    
+    private SidedContentHandler getContentHandler() {
+        if(be instanceof igentuman.nc.block.entity.processor.NCProcessorBE processor) {
+            return processor.contentHandler();
+        }
+        return null;
     }
 
     public boolean consumeInputs(SidedContentHandler contentHandler) {

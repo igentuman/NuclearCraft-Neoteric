@@ -3,7 +3,7 @@
   "input": [
     {
       "count": 3,
-      "tag": "forge:dusts/netherite"
+      "item": "minecraft:netherite_scrap"
     },
     {
       "count": 3,

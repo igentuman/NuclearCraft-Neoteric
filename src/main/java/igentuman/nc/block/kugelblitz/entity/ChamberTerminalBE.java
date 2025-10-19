@@ -389,7 +389,7 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
         energyPerTick = (int)(massRatio * 5000 * Math.log(energyConvertionRate*Math.log(fluxRegulators*4)+1));
         energyPerTick *= ENERGY_GENERATION.GENERATION_MULTIPLIER.get();
         energyPerTick *= KUGELBLITZ_CONFIG.GENERATION_MULTIPLIER.get();
-        energyStorage().addEnergy(energyPerTick);
+        energyStorage().addEnergy(energyPerTick*2);
         if (wasEnergy != energyPerTick) {
             setChanged();
         }

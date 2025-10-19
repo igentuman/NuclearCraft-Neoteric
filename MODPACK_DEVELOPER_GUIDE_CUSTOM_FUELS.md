@@ -2,15 +2,6 @@
 
 This guide explains how to add custom fission reactor fuels to NuclearCraft-Neoteric using KubeJS integration.
 
-## Table of Contents
-1. [Overview](#overview)
-2. [Quick Start](#quick-start)
-3. [Fuel Properties Explained](#fuel-properties-explained)
-4. [What Gets Generated Automatically](#what-gets-generated-automatically)
-5. [File Structure](#file-structure)
-6. [Advanced Usage](#advanced-usage)
-7. [Examples](#examples)
-
 ---
 
 ## Overview
@@ -25,12 +16,6 @@ NuclearCraft-Neoteric provides a powerful KubeJS integration that allows modpack
 - **Item tags** (for recipe compatibility)
 
 **Important:** Processing recipes (melter, ingot former, isotope separator, fluid infuser, assembler) are **NOT** automatically generated. You must create these yourself if needed.
-
-## Quick Start
-
-### Prerequisites
-- KubeJS installed in your modpack
-- Basic understanding of JavaScript and KubeJS events
 
 ### Basic Example
 

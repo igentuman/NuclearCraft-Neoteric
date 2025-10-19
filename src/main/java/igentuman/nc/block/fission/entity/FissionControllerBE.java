@@ -158,7 +158,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
     private List<FluidStack>  allowedCoolants;
     private List<FluidStack>  allowedCoolantOutputs;
     @NBTField
-    public boolean canAcceptFluids = false;
+    public boolean canAcceptFluids = true;
     private boolean portsInitialized = false;
 
     public FissionControllerBE(BlockPos pPos, BlockState pBlockState) {
@@ -479,7 +479,8 @@ public class FissionControllerBE extends MultiblockControllerBE {
         }
         changed = powered != wasPowered || changed;
         refreshCacheFlag = !getMultiblock().isFormed();
-        canAcceptFluids = getMultiblock().coolantPerTick.size() > 0;
+        //canAcceptFluids = getMultiblock().coolantPerTick.size() > 0;
+
         if(refreshCacheFlag || changed || currentTick % 40 == 0) {
             try {
                 assert level != null;

@@ -1,6 +1,5 @@
 package igentuman.nc.compat.emi;
 
-import appeng.menu.me.items.PatternEncodingTermMenu;
 import dev.emi.emi.api.EmiApi;
 import dev.emi.emi.api.EmiEntrypoint;
 import dev.emi.emi.api.EmiPlugin;
@@ -446,8 +445,8 @@ public class EMIPlugin implements EmiPlugin {
             registry.addRecipeHandler(com.refinedmods.refinedstorage.RSContainerMenus.GRID.get(), new ProcessorEmiRecipeHandlerRS<>());
         }
         if(ModUtil.isAE2Loaded()) {
-            registry.addRecipeHandler(PatternEncodingTermMenu.TYPE, new ProcessorEmiRecipeHandlerAE2<>());
-            registry.addRecipeHandler(PatternEncodingTermMenu.WIRELESS_TYPE, new ProcessorEmiRecipeHandlerAE2<>());
+            registry.addRecipeHandler(appeng.menu.me.items.PatternEncodingTermMenu.TYPE, new ProcessorEmiRecipeHandlerAE2<>());
+            registry.addRecipeHandler(appeng.menu.me.items.PatternEncodingTermMenu.WIRELESS_TYPE, new ProcessorEmiRecipeHandlerAE2<>());
         }
     }
     

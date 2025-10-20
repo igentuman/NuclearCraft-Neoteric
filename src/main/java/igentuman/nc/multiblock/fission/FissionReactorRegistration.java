@@ -3,9 +3,11 @@ package igentuman.nc.multiblock.fission;
 import com.google.gson.JsonArray;
 import igentuman.nc.block.fission.entity.FissionControllerBE;
 import igentuman.nc.block.fission.entity.FissionPortBE;
+import igentuman.nc.block.fission.entity.MSRControllerBE;
 import igentuman.nc.block.fission.*;
 import igentuman.nc.container.FissionControllerContainer;
 import igentuman.nc.container.FissionPortContainer;
+import igentuman.nc.container.MSRControllerContainer;
 import igentuman.nc.util.JSONUtil;
 import igentuman.nc.multiblock.ValidationScheduler;
 import net.minecraft.tags.TagKey;
@@ -47,6 +49,10 @@ public class FissionReactorRegistration {
             () -> IForgeMenuType.create((windowId, inv, data) -> new FissionPortContainer(windowId, data.readBlockPos(), inv))
             );
 
+    public static final RegistryObject<MenuType<MSRControllerContainer>> MSR_CONTROLLER_CONTAINER = CONTAINERS.register("msr_reactor_controller",
+            () -> IForgeMenuType.create((windowId, inv, data) -> new MSRControllerContainer(windowId, data.readBlockPos(), inv))
+            );
+
     public static final BlockBehaviour.Properties REACTOR_BLOCKS_PROPERTIES = BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(4f).requiresCorrectToolForDrops();
 
     public static final TagKey<Block> MODERATORS_BLOCKS = blockTag("moderators");
@@ -68,6 +74,7 @@ public class FissionReactorRegistration {
 
     public static void init() {
         blocks();
+        msrBlocks();
     }
 
     public static void blocks()
@@ -118,6 +125,20 @@ public class FissionReactorRegistration {
                 hsBlocks.add(FISSION_BLOCKS.get(name + "_heat_sink"));
             }
         }
+    }
+
+    public static void msrBlocks() {
+        String key = "msr_reactor_controller";
+        
+        // Register MSR Controller
+        FISSION_BLOCKS.put(key, BLOCKS.register(key, () -> new MSRControllerBlock(REACTOR_BLOCKS_PROPERTIES)));
+        FISSION_BE.put(key, BLOCK_ENTITIES.register(key,
+                () -> BlockEntityType.Builder
+                        .of(MSRControllerBE::new, FISSION_BLOCKS.get(key).get())
+                        .build(null)));
+
+        FISSION_BLOCK_ITEMS.put(key, fromMultiblock(FISSION_BLOCKS.get(key)));
+        ALL_NC_ITEMS.put(key, FISSION_BLOCK_ITEMS.get(key));
     }
 
     public static final HashSet<Block> blocks = moderators();

@@ -52,6 +52,7 @@ public class NCBlockStates extends BlockStateProvider {
         heatSinks();
         coolers();
         fissionReactor();
+        msrReactor();
         turbine();
         storageBlocks();
         fusionReactor();
@@ -218,6 +219,12 @@ public class NCBlockStates extends BlockStateProvider {
         }
     }
 
+    private void msrReactor() {
+        // MSR Controller
+        horizontalBlock(FISSION_BLOCKS.get("msr_reactor_controller").get(),
+                st -> controllerModel(st, sidedModel(FISSION_BLOCKS.get("msr_reactor_controller").get(), "fission/msr_controller"))
+        );
+    }
 
     private void fusionReactor() {
         //simpleBlock(FUSION_BLOCKS.get("fusion_core").get(), models().getExistingFile(rl("block/dummy")));
@@ -322,6 +329,8 @@ public class NCBlockStates extends BlockStateProvider {
             type = "accelerator";
         } else if(st.getBlock() == TARGET_CHAMBER_BLOCKS.get("target_chamber_controller").get()) {
             type = "particle_chamber";
+        } else if(st.getBlock() == FISSION_BLOCKS.get("msr_reactor_controller").get()) {
+            type = "fission";
         }
         BlockModelBuilder result = models()
                 .getBuilder("block/multiblock/"+key(st.getBlock()).getPath()+powered)

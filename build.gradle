@@ -128,13 +128,12 @@ dependencies {
     implementation fg.deobf("com.tterrag.registrate:Registrate:${registrate_version}") {
         transitive = false
     }*/
-    implementation fg.deobf("curse.maven:guideme-1173950:7013686") {
+    compileOnly fg.deobf("curse.maven:guideme-1173950:7013686") {
         transitive = false
     }
-    implementation fg.deobf("curse.maven:applied-energistics-2-223794:7096071") {
+    compileOnly fg.deobf("curse.maven:applied-energistics-2-223794:7096071") {
         transitive = false
     }
-    implementation fg.deobf("curse.maven:torcherino-236794:4722725")
     implementation fg.deobf("curse.maven:multi-builder-tool-827020:7041820")
     runtimeOnly fg.deobf("curse.maven:ctm-267602:5983309")
     compileOnly fg.deobf("curse.maven:immersive-engineering-231951:5224387")
@@ -158,11 +157,11 @@ dependencies {
         transitive = false
     }
 
-    implementation fg.deobf("dev.latvian.mods:kubejs-forge:${kubejs_version}"){
+    compileOnly fg.deobf("dev.latvian.mods:kubejs-forge:${kubejs_version}"){
         transitive = false
     }
 
-    implementation fg.deobf("dev.latvian.mods:rhino-forge:${rhino_version}"){
+    compileOnly fg.deobf("dev.latvian.mods:rhino-forge:${rhino_version}"){
         transitive = false
     }
     implementation fg.deobf("dev.architectury:architectury-forge:${architectury_version}")

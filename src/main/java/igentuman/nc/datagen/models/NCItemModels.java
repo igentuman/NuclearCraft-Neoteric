@@ -17,6 +17,8 @@ import java.util.List;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.forgeRl;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
+import static igentuman.nc.multiblock.fission.FissionReactorRegistration.FISSION_BLOCKS;
+import static igentuman.nc.multiblock.fission.FissionReactorRegistration.FISSION_BLOCK_ITEMS;
 import static igentuman.nc.multiblock.particle_chamber.TargetChamberRegistration.TARGET_CHAMBER_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_CORE_PROXY;
@@ -80,8 +82,11 @@ public class NCItemModels extends ItemModelProvider {
         for(String name: NCBlocks.MULTI_BLOCKS.keySet()) {
             withExistingParent(MULTIBLOCK_ITEMS.get(name).getId().getPath(), modLoc("block/multiblock/"+name));
         }
-        for(String name: FissionReactorRegistration.FISSION_BLOCKS.keySet()) {
-            withExistingParent(FissionReactorRegistration.FISSION_BLOCK_ITEMS.get(name).getId().getPath(), modLoc("block/multiblock/"+name));
+        for(String name: FISSION_BLOCKS.keySet()) {
+            withExistingParent(FISSION_BLOCK_ITEMS.get(name).getId().getPath(), modLoc("block/multiblock/"+name));
+        }
+        for(String name: FISSION_BLOCKS.keySet()) {
+            withExistingParent(FISSION_BLOCK_ITEMS.get(name).getId().getPath(), modLoc("block/multiblock/"+name));
         }
         for(String name: TURBINE_BLOCKS.keySet()) {
             withExistingParent(TURBINE_BLOCKS.get(name).getId().getPath(), modLoc("block/multiblock/"+name));

@@ -553,13 +553,10 @@ public class NCLanguageProvider extends LanguageProvider {
             String title = convertToName(name);
             add(FISSION_BLOCKS.get(name).get(), prefix+title);
         }
+
         for(String name: TURBINE_BLOCKS.keySet()) {
             String title = convertToName(name);
             add(TURBINE_BLOCKS.get(name).get(), title);
-        }
-        for(String name: FUSION_BLOCKS.keySet()) {
-            String title = convertToName(name);
-            add(FUSION_BLOCKS.get(name).get(), title);
         }
         add(FUSION_CORE_PROXY.get(), "Fusion Reactor Core");
         add(EXPL_PROXY_BLOCK.get(), "EXPL");

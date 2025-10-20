@@ -96,6 +96,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("emi.category.nuclearcraft.nuclear_furnace", "Nuclear Furnace");
         add("emi.category.nuclearcraft.fluid_enricher", "Fluid Enricher");
         add("emi.category.nuclearcraft.fission_reactor_controller", "Fission Reactor");
+        add("emi.category.nuclearcraft.msr_controller", "Molten Salt Reactor");
         add("emi.category.nuclearcraft.decay_hastener", "Decay Hastener");
         add("emi.category.nuclearcraft.fission_boiling", "Fission Boiling");
         add("emi.category.nuclearcraft.accelerator_coolant", "Accelerator Coolant");
@@ -469,6 +470,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("nc_jei_cat.fusion_coolant", "Fusion Reactor Coolant");
         add("nc_jei_cat.mek_chemical_conversion", "NC - GAS -> Fluid Conversion");
         add("nc_jei_cat.fission_boiling", "Boiling Reactor");
+        add("nc_jei_cat.msr_controller", "Molten Salt Reactor");
 
         add("label.kugelblitz.stability", "Stability: %s%%");
         add("label.kugelblitz.charge", "Charge: %s");
@@ -706,6 +708,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("fusion_core.recipe.radiation","Reaction Radiation: %s uRad");
         add("fusion_core.recipe.temperature","Optimal Temperature: %s MK");
 
+        add("fission.recipe.criticality","Criticality: %s");
         add("fission.recipe.power","Base Energy Generation: %s FE/t");
         add("fission.recipe.duration","Depletion Time: %s s");
         add("fission.recipe.radiation","Reaction Radiation: %s pRad");

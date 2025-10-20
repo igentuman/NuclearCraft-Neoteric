@@ -18,7 +18,7 @@ public class MSRControllerContainer extends AbstractContainerMenu {
 
     protected final MSRControllerBE blockEntity;
     protected final Player playerEntity;
-    protected final String name = "msr_reactor_controller";
+    protected final String name = "msr_controller";
     private int slotIndex = 0;
     protected final IItemHandler playerInventory;
 

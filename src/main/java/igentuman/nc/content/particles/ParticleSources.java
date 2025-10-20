@@ -1,5 +1,6 @@
 package igentuman.nc.content.particles;
 
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -10,12 +11,16 @@ import static igentuman.nc.content.particles.Particles.*;
 public class ParticleSources {
 
     public static final int moleAmount = 1000000;
-
+    private static boolean initialized = false;
+    public static void init(MinecraftServer server)
+    {}
     public final static HashMap<String, ParticleStack> sources = new HashMap<>();
     public final static HashMap<String, ParticleStack> fluidSources = new HashMap<>();
 
     public static void init()
     {
+        if(initialized) return;
+        initialized = true;
         sources.put("source_calcium_48", new ParticleStack(calcium_48_ion, 5 * moleAmount, 0,0));
         sources.put("source_iridium_192", new ParticleStack(positron, 1 * moleAmount, 0,0));
         sources.put("tungsten_filament", new ParticleStack(photon, 50 * moleAmount, 0,0));

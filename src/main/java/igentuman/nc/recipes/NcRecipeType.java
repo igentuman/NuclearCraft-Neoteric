@@ -2,6 +2,7 @@ package igentuman.nc.recipes;
 
 import igentuman.nc.block.fission.entity.FissionControllerBE;
 import igentuman.nc.block.entity.processor.NuclearFurnaceBE;
+import igentuman.nc.block.fission.entity.MSRControllerBE;
 import igentuman.nc.block.turbine.entity.TurbineControllerBE;
 import igentuman.nc.client.NcClient;
 import igentuman.nc.content.processors.Processors;
@@ -36,6 +37,7 @@ public class NcRecipeType<RECIPE extends NcRecipe> implements RecipeType<RECIPE>
     private static HashMap<String, RecipeTypeRegistryObject<? extends NcRecipe>> initializeRecipes() {
         HashMap<String, RecipeTypeRegistryObject<? extends NcRecipe>> recipes = new HashMap<>();
         recipes.put(FissionControllerBE.NAME, register(FissionControllerBE.NAME));
+        recipes.put(MSRControllerBE.NAME, register(MSRControllerBE.NAME));
         recipes.put("nc_ore_veins", register("nc_ore_veins"));
         recipes.put("fusion_core", register("fusion_core"));
         recipes.put("fusion_coolant", register("fusion_coolant"));

@@ -94,7 +94,7 @@ public class RuntimeFuelModelGenerator {
     private static void createLangFile() {
         try {
             Path gameDir = FMLPaths.GAMEDIR.get();
-            Path langPath = gameDir.resolve(LANG_PATH).resolve("en_us.json");
+            Path langPath = gameDir.resolve(LANG_PATH).resolve("en_gb.json");
             
             // Get custom fuels
             var customFuels = FissionFuel.getCustomFuels();

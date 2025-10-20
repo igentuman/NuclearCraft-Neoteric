@@ -8,6 +8,7 @@ import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.EmiStack;
 import igentuman.nc.block.accelerator.entity.LinearAcceleratorControllerBE;
 import igentuman.nc.block.fission.entity.FissionControllerBE;
+import igentuman.nc.block.fission.entity.MSRControllerBE;
 import igentuman.nc.block.fusion.entity.FusionCoreBE;
 import igentuman.nc.block.kugelblitz.entity.ChamberTerminalBE;
 import igentuman.nc.block.target_chamber.entity.TargetChamberControllerBE;
@@ -124,7 +125,7 @@ public class EMIPlugin implements EmiPlugin {
                 name.equals("fission_reactor_controller") || name.equals("fission_boiling") ||
                 name.equals("kugelblitz_chamber") || name.equals("target_chamber") ||
                 name.equals("turbine_controller") || name.equals("accelerator_coolant") ||
-                name.equals("nc_ore_veins")) {
+                name.equals("msr_controller") || name.equals("nc_ore_veins")) {
                 continue;
             }
             
@@ -206,6 +207,17 @@ public class EMIPlugin implements EmiPlugin {
                 registry.addRecipe(new FissionEmiCategory(fissionRecipe));
             }
         }
+
+        // Register MSR category
+        registry.addCategory(MSREmiCategory.CATEGORY);
+        CATEGORIES.put("msr_controller", MSREmiCategory.CATEGORY);
+
+        var msrRecipes = NcRecipeType.ALL_RECIPES.get("msr_controller").getRecipes(NcClient.tryGetClientWorld());
+        for (var recipe : msrRecipes) {
+            if (recipe instanceof MSRControllerBE.Recipe msrRecipe) {
+                registry.addRecipe(new MSREmiCategory(msrRecipe));
+            }
+        }
         
         // Register Fission Boiling category
         registry.addCategory(FissionBoilingEmiCategory.CATEGORY);
@@ -277,6 +289,8 @@ public class EMIPlugin implements EmiPlugin {
             case "accelerator_coolant":
                 return EmiStack.of(new ItemStack(ACCELERATOR_BLOCKS.get("linear_accelerator_controller").get()));
             case "fission_reactor_controller":
+            case "msr_controller":
+                return EmiStack.of(new ItemStack(FISSION_BLOCKS.get("msr_controller").get()));
             case "fission_boiling":
                 return EmiStack.of(new ItemStack(FISSION_BLOCKS.get("fission_reactor_controller").get()));
             case "turbine_controller":

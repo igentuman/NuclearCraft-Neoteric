@@ -31,7 +31,7 @@ public class MSRControllerScreen extends AbstractContainerScreen<MSRControllerCo
     protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
         super.renderLabels(graphics, mouseX, mouseY);
         
-        graphics.drawString(font, __("msr_reactor_controller"), 8, 6, 0x404040, false);
+        graphics.drawString(font, __("msr_controller"), 8, 6, 0x404040, false);
         
         String status = menu.isPowered() ? "Active" : "Inactive";
         graphics.drawString(font, __("Status: " + status), 8, 20, 0x404040, false);

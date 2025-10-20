@@ -52,12 +52,15 @@ public class NCFluids {
     public static final Set<NCBlocks.BlockEntry<? extends LiquidBlock>> ALL_FLUID_BLOCKS = new HashSet<>();
     public static HashMap<String, FluidEntry> NC_MATERIALS = new HashMap<>();
     public static HashMap<String, FluidEntry> NC_GASES = new HashMap<>();
+    private static boolean initialized = false;
 
     public static void register(IEventBus eventBus) {
         FLUIDS.register(eventBus);
     }
 
     public static void init() {
+        if(initialized) return;
+        initialized = true;
         materialFluids();
         gases();
         fuel();

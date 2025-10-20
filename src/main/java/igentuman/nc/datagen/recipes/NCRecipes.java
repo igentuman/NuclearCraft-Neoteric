@@ -1548,6 +1548,16 @@ public class NCRecipes extends RecipeProvider {
                 .unlockedBy("item", has(FISSION_BLOCKS.get("fission_reactor_casing").get()))
                 .save(consumer);
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, FISSION_BLOCKS.get("fission_reactor_msr_fuel_cell").get())
+                .pattern("TGT")
+                .pattern("G G")
+                .pattern("TGT")
+                .define('G', Tags.Items.GLASS)
+                .define('T', forgeIngot(Materials.tough_alloy))
+                .group(MODID+"_fission")
+                .unlockedBy("item", has(FISSION_BLOCKS.get("fission_reactor_casing").get()))
+                .save(consumer);
+
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, FISSION_BLOCKS.get("empty_heat_sink").get())
                 .pattern("TIT")
                 .pattern("ABA")
@@ -1601,17 +1611,17 @@ public class NCRecipes extends RecipeProvider {
 
     private void msrBlocks(Consumer<FinishedRecipe> consumer) {
         // MSR Controller
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, FISSION_BLOCKS.get("msr_reactor_controller").get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, FISSION_BLOCKS.get("msr_controller").get())
                 .pattern("LPL")
                 .pattern("TDT")
                 .pattern("LPL")
                 .define('P', NC_PARTS.get("plate_advanced").get())
                 .define('D', NCProcessors.PROCESSORS.get(Processors.DECAY_HASTENER).get())
-                .define('T', NC_PARTS.get("basic_electric_circuit").get())
+                .define('T', NCProcessors.PROCESSORS.get(Processors.CHEMICAL_REACTOR).get())
                 .define('L', FISSION_BLOCKS.get("fission_reactor_casing").get())
                 .group(MODID+"_msr")
                 .unlockedBy("item", has(NC_PARTS.get("plate_advanced").get()))
-                .save(consumer, rl("msr_reactor_controller"));
+                .save(consumer, rl("msr_controller"));
     }
 
     private void turbineBlocks(Consumer<FinishedRecipe> consumer) {

@@ -28,7 +28,7 @@ import static igentuman.nc.util.TextUtils.__;
 
 public class MSRControllerBlock extends MultiblockControllerBlock implements EntityBlock {
 
-    public static final String NAME = "msr_reactor_controller";
+    public static final String NAME = "msr_controller";
 
     public MSRControllerBlock() {
         this(Properties.of()
@@ -60,7 +60,7 @@ public class MSRControllerBlock extends MultiblockControllerBlock implements Ent
                 MenuProvider containerProvider = new MenuProvider() {
                     @Override
                     public Component getDisplayName() {
-                        return __("msr_reactor_controller");
+                        return __("msr_controller");
                     }
 
                     @Override

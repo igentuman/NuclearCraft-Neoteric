@@ -12,6 +12,9 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.handler.config.FissionConfig.FISSION_CONFIG;
 import static igentuman.nc.util.TagUtil.getBlocksByTagKey;
@@ -26,7 +29,7 @@ public class MSRMultiblock extends AbstractMultiblock {
     public MSRMultiblock(MSRControllerBE msrControllerBE) {
         super(
                 getBlocksByTagKey(FissionReactorRegistration.CASING_BLOCKS.location().toString()),
-                getBlocksByTagKey(FissionReactorRegistration.INNER_REACTOR_BLOCKS.location().toString()),
+                getInnerBlocks(),
                 new MSRController(msrControllerBE)
         );
         id = "msr_" + msrControllerBE.getBlockPos().toShortString();
@@ -41,6 +44,12 @@ public class MSRMultiblock extends AbstractMultiblock {
                 WorldEvents.trackingBlocks.add(b);
             }
         }
+    }
+
+    private static HashSet<Block> getInnerBlocks() {
+        HashSet<Block> innerBlocks = new HashSet<>();
+        innerBlocks.add(FissionReactorRegistration.FISSION_BLOCKS.get("msr_fuel_cell").get());
+        return innerBlocks;
     }
 
     @Override
@@ -155,7 +164,7 @@ public class MSRMultiblock extends AbstractMultiblock {
         
         energyPerTick = (int)(baseEnergyPerTick * efficiency);
         heatPerTick = baseHeatPerTick * efficiency;
-        
+
         // Update controller
         controller.connectedPorts = connectedPorts;
         controller.energyPerTick = energyPerTick;

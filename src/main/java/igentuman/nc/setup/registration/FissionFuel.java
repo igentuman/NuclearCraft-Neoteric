@@ -29,16 +29,16 @@ public class FissionFuel {
     public static HashMap<List<String>, RegistryObject<Item>> NC_DEPLETED_FUEL = new HashMap<>();
     public static HashMap<String, RegistryObject<Item>>  NC_ISOTOPES = new HashMap<>();
     public static HashMap<String, RegistryObject<Item>>  NC_WASTE = new HashMap<>();
-    
+    private static boolean initialized = false;
     // Store custom fuel definitions for recipe generation
     private static final List<FuelDef> CUSTOM_FUELS = new ArrayList<>();
 
-    @SubscribeEvent
-    public static void onConstruction(FMLConstructModEvent event) {
-        event.enqueueWork(FissionFuel::init);
-    }
+
+
     public static void init()
     {
+        if(initialized) return;
+        initialized = true;
         registerFuel();
         registerIsotopes();
         registerWaste();

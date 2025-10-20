@@ -49,7 +49,7 @@ public class FissionReactorRegistration {
             () -> IForgeMenuType.create((windowId, inv, data) -> new FissionPortContainer(windowId, data.readBlockPos(), inv))
             );
 
-    public static final RegistryObject<MenuType<MSRControllerContainer>> MSR_CONTROLLER_CONTAINER = CONTAINERS.register("msr_reactor_controller",
+    public static final RegistryObject<MenuType<MSRControllerContainer>> MSR_CONTROLLER_CONTAINER = CONTAINERS.register("msr_controller",
             () -> IForgeMenuType.create((windowId, inv, data) -> new MSRControllerContainer(windowId, data.readBlockPos(), inv))
             );
 
@@ -68,8 +68,8 @@ public class FissionReactorRegistration {
             "irradiation_chamber",
             "port",
             "glass",
-            "solid_fuel_cell"
-            //"casing_slope"
+            "solid_fuel_cell",
+            "msr_fuel_cell"
     );
 
     public static void init() {
@@ -128,7 +128,7 @@ public class FissionReactorRegistration {
     }
 
     public static void msrBlocks() {
-        String key = "msr_reactor_controller";
+        String key = "msr_controller";
         
         // Register MSR Controller
         FISSION_BLOCKS.put(key, BLOCKS.register(key, () -> new MSRControllerBlock(REACTOR_BLOCKS_PROPERTIES)));

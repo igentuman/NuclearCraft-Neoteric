@@ -221,8 +221,8 @@ public class NCBlockStates extends BlockStateProvider {
 
     private void msrReactor() {
         // MSR Controller
-        horizontalBlock(FISSION_BLOCKS.get("msr_reactor_controller").get(),
-                st -> controllerModel(st, sidedModel(FISSION_BLOCKS.get("msr_reactor_controller").get(), "fission/msr_controller"))
+        horizontalBlock(FISSION_BLOCKS.get("msr_controller").get(),
+                st -> controllerModel(st, sidedModel(FISSION_BLOCKS.get("msr_controller").get(), "fission/msr_controller"))
         );
     }
 
@@ -329,7 +329,7 @@ public class NCBlockStates extends BlockStateProvider {
             type = "accelerator";
         } else if(st.getBlock() == TARGET_CHAMBER_BLOCKS.get("target_chamber_controller").get()) {
             type = "particle_chamber";
-        } else if(st.getBlock() == FISSION_BLOCKS.get("msr_reactor_controller").get()) {
+        } else if(st.getBlock() == FISSION_BLOCKS.get("msr_controller").get()) {
             type = "fission";
         }
         BlockModelBuilder result = models()

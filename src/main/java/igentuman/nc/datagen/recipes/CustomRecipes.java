@@ -15,6 +15,7 @@ public class CustomRecipes extends NCRecipes {
         CustomRecipes.consumer = consumer;
         KugelblitzRecipes.generate(consumer);
         FissionRecipes.generate(consumer);
+        MSRRecipes.generate(consumer);
         ManufactoryRecipes.generate(consumer);
         DecayHastenerRecipes.generate(consumer);
         PressurizerRecipes.generate(consumer);

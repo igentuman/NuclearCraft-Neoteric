@@ -1,0 +1,17 @@
+{
+  "ctm": {
+    "ctm_version": 1,
+    "type": "CTM",
+    "layer": "SOLID",
+    "textures": [
+      "nuclearcraft:block/fission/msr_fuel_cell_ctm"
+    ],
+    "extra": {
+      "connect_to": [
+        {
+          "block": "nuclearcraft:msr_fuel_cell"
+        }
+      ]
+    }
+  }
+}

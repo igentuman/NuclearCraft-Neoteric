@@ -5,24 +5,39 @@ import igentuman.nc.block.MultiblockPortBE;
 import igentuman.nc.block.entity.MultiblockControllerBE;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.SlotModePair;
+import igentuman.nc.item.ItemFuel;
 import igentuman.nc.multiblock.fission.FissionReactorRegistration;
 import igentuman.nc.multiblock.fission.MSRMultiblock;
+import igentuman.nc.radiation.ItemRadiation;
+import igentuman.nc.recipes.ingredient.FluidStackIngredient;
+import igentuman.nc.recipes.ingredient.ItemStackIngredient;
+import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.util.capability.CustomEnergyStorage;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 import static igentuman.nc.NuclearCraft.currentTick;
 import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.block.fission.MSRControllerBlock.POWERED;
+import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.handler.config.FissionConfig.FISSION_CONFIG;
+import static igentuman.nc.multiblock.fission.FissionReactorRegistration.FISSION_BLOCKS;
+import static igentuman.nc.setup.registration.FissionFuel.ITEM_PROPERTIES;
+import static net.minecraft.world.item.Items.AIR;
 
 public class MSRControllerBE extends MultiblockControllerBE {
 
-    public static final String NAME = "msr_reactor_controller";
+    public static final String NAME = "msr_controller";
     public final SidedContentHandler contentHandler;
     public final CustomEnergyStorage energyStorage;
     protected final LazyOptional<IEnergyStorage> energy;
@@ -253,5 +268,72 @@ public class MSRControllerBE extends MultiblockControllerBE {
             hasRedstoneSignal = getLevel().hasNeighborSignal(getBlockPos());
         }
         return enabledByController || hasRedstoneSignal;
+    }
+
+    public static class Recipe extends NcRecipe {
+
+        public Recipe(ResourceLocation id, ItemStackIngredient[] input, ItemStackIngredient[] output, FluidStackIngredient[] inputFluids, FluidStackIngredient[] outputFluids, double timeModifier, double powerModifier, double heatModifier, double rarity) {
+            super(id, input, output, timeModifier, powerModifier, heatModifier, rarity);
+            CATALYSTS.put(codeId, List.of(getToastSymbol()));
+        }
+
+        @Override
+        public String getCodeId() {
+            return NAME;
+        }
+
+        protected ItemFuel fuelItem;
+
+        public ItemFuel getFuelItem() {
+            if(fuelItem == null) {
+                Item item = getFirstItemStackIngredient(0).getItem();
+                if( !(item instanceof ItemFuel) && !item.equals(AIR)) {
+                    fuelItem = new ItemFuel(ITEM_PROPERTIES, item.toString(), "", "");
+                    return fuelItem;
+                }
+                Item item1 = getFirstItemStackIngredient(0).getItem();
+                if(item1 instanceof ItemFuel) {
+                    fuelItem  = (ItemFuel) item1;
+                }
+            }
+            if(fuelItem.def == null) {
+                fuelItem.initDefinition();
+            }
+            return fuelItem;
+        }
+
+        @Override
+        public @NotNull String getGroup() {
+            return FISSION_BLOCKS.get(codeId).get().getName().getString();
+        }
+
+        @Override
+        public @NotNull ItemStack getToastSymbol() {
+            return new ItemStack(FISSION_BLOCKS.get(codeId).get());
+        }
+
+        public int getDepletionTime() {
+            if(getFuelItem() == null) return 0;
+            return (int) (getFuelItem().depletion()*20*timeModifier);
+        }
+
+        public double getEnergy() {
+            if(getFuelItem() == null) return 0;
+            return getFuelItem().forge_energy;
+        }
+
+        public double getHeat() {
+            if(getFuelItem() == null) return 0;
+            return getFuelItem().heat;
+        }
+
+        public double getCriticality() {
+            if(getFuelItem() == null) return 0;
+            return getFuelItem().criticality;
+        }
+
+        public double getRadiation() {
+            return ItemRadiation.byItem(getFuelItem())/20;
+        }
     }
 }

@@ -20,6 +20,8 @@ import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLConstructModEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.RegistryObject;
 
@@ -33,16 +35,23 @@ public class Registration {
     public static final RegistryObject<MenuType<MultiblockControllerContailer>> MULTIBLOCK_REPORT_CONTAINER = CONTAINERS.register("multilblock_report_container",
             () -> IForgeMenuType.create((windowId, inv, data) -> new MultiblockControllerContailer(windowId, data.readBlockPos(), inv))
     );
+
+    @SubscribeEvent
+    public static void onConstruction(FMLConstructModEvent event) {
+        event.enqueueWork(() -> {
+            ParticleSources.init();
+            FissionFuel.init();
+            NCFluids.init();
+        });
+    }
+
     public static void init(FMLJavaModLoadingContext context) {
-        IEventBus bus = context.getModEventBus();
         Registries.init(context);
-        ParticleSources.init();
-        NCBlocks.init();
         NCStorageBlocks.init();
-        NCItems.init();
+        NCBlocks.init();
+        ParticleSources.init();
+        FissionFuel.init();
         NCFluids.init();
-        NCEnergyBlocks.init();
-        NCProcessors.init();
         NCRadiationDamageSource.init();
         FissionReactorRegistration.init();
         FusionReactorRegistration.init();
@@ -51,13 +60,16 @@ public class Registration {
         AcceleratorRegistration.init();
         TargetChamberRegistration.init();
         CreativeTabs.init();
-        NcRecipeSerializers.init();
+        NCEnergyBlocks.init();
+        NCItems.init();
+        NCProcessors.init();
+        Villager.init(context);
+        NCSounds.init();
+        GameEvents.init(context);
         NcRecipeType.init();
         NcParticleTypes.init();
-        NCSounds.init();
-        Villager.init(context);
-        GameEvents.init(context);
         WorldGeneration.init();
+        NcRecipeSerializers.init();
         NCPlacementModifierTypes.init();
     }
 }

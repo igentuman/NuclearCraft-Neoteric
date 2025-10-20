@@ -1,6 +1,7 @@
 package igentuman.nc.compat.jei;
 
 import igentuman.nc.block.accelerator.entity.LinearAcceleratorControllerBE;
+import igentuman.nc.block.fission.entity.MSRControllerBE;
 import igentuman.nc.block.target_chamber.entity.TargetChamberControllerBE;
 import igentuman.nc.block.fission.entity.FissionControllerBE;
 import igentuman.nc.block.fusion.entity.FusionCoreBE;
@@ -8,6 +9,7 @@ import igentuman.nc.block.kugelblitz.entity.ChamberTerminalBE;
 import igentuman.nc.block.turbine.entity.TurbineControllerBE;
 import igentuman.nc.client.NcClient;
 import igentuman.nc.client.gui.fission.FissionControllerScreen;
+import igentuman.nc.client.gui.fission.MSRControllerScreen;
 import igentuman.nc.client.gui.processor.NCProcessorScreen;
 import igentuman.nc.compat.jei.ProcessorRecipeTransferHandler;
 import igentuman.nc.compat.jei.ingredient.ParticleStackHelper;
@@ -69,6 +71,7 @@ public  class JEIPlugin implements IModPlugin {
     public static final RecipeType<TargetChamberControllerBE.Recipe> TARGET_CHAMBER = new RecipeType<>(rl("target_chamber"), TargetChamberControllerBE.Recipe.class);
     public static final RecipeType<ChamberTerminalBE.Recipe> KUGELBLITZ = new RecipeType<>(rl("kugelblitz_chamber"), ChamberTerminalBE.Recipe.class);
     public static final RecipeType<FissionControllerBE.Recipe> FISSION = new RecipeType<>(rl(FissionControllerBE.NAME), FissionControllerBE.Recipe.class);
+    public static final RecipeType<MSRControllerBE.Recipe> MSR = new RecipeType<>(rl(MSRControllerBE.NAME), MSRControllerBE.Recipe.class);
     public static final RecipeType<FusionCoreBE.Recipe> FUSION = new RecipeType<>(rl("fusion_core"), FusionCoreBE.Recipe.class);
     public static final RecipeType<FusionCoreBE.FusionCoolantRecipe> FUSION_COOLANT = new RecipeType<>(rl("fusion_coolant"), FusionCoreBE.FusionCoolantRecipe.class);
     public static final RecipeType<LinearAcceleratorControllerBE.CoolantRecipe> ACCELERATOR_COOLANT = new RecipeType<>(rl("accelerator_coolant"), LinearAcceleratorControllerBE.CoolantRecipe.class);
@@ -137,6 +140,7 @@ public  class JEIPlugin implements IModPlugin {
         registration.addRecipeCategories(new FissionBoilingCategoryWrapper<>(registration.getJeiHelpers().getGuiHelper(), FISSION_BOILING));
         registration.addRecipeCategories(new TurbineControllerCategoryWrapper<>(registration.getJeiHelpers().getGuiHelper(), TURBINE_CONTROLLER));
         registration.addRecipeCategories(new FissionCategoryWrapper<>(registration.getJeiHelpers().getGuiHelper(), FISSION));
+        registration.addRecipeCategories(new MSRCategoryWrapper<>(registration.getJeiHelpers().getGuiHelper(), MSR));
         registration.addRecipeCategories(new KugelblitzCategoryWrapper<>(registration.getJeiHelpers().getGuiHelper(), KUGELBLITZ));
         registration.addRecipeCategories(new TargetChamberCategoryWrapper<>(registration.getJeiHelpers().getGuiHelper(), TARGET_CHAMBER));
         if(isMekanismLoaded()) {
@@ -174,7 +178,7 @@ public  class JEIPlugin implements IModPlugin {
             for (String name : getRecipeTypes().keySet()) {
                 if(List.of(
                         "fusion_core", "fusion_coolant",
-                        "fission_reactor_controller", "fission_boiling", "target_chamber",
+                        "fission_reactor_controller", "msr_controller", "fission_boiling", "target_chamber",
                         "nc_ore_veins", "turbine_controller", "kugelblitz_chamber"
                 ).contains(name)) {
                     continue;
@@ -198,6 +202,9 @@ public  class JEIPlugin implements IModPlugin {
             registration.addRecipes(
                     getRecipeType(ACCELERATOR_COOLANT),
                     NcRecipeType.ALL_RECIPES.get("accelerator_coolant").getRecipes(NcClient.tryGetClientWorld()));
+            registration.addRecipes(
+                    getRecipeType(MSR),
+                    NcRecipeType.ALL_RECIPES.get(MSRControllerBE.NAME).getRecipes(NcClient.tryGetClientWorld()));
             registration.addRecipes(
                     getRecipeType(FISSION),
                     NcRecipeType.ALL_RECIPES.get(FissionControllerBE.NAME).getRecipes(NcClient.tryGetClientWorld()));
@@ -350,6 +357,7 @@ public  class JEIPlugin implements IModPlugin {
             addRecipeClickArea(registration, NCProcessorScreen.class, 67, 74, 18, 18, getRecipeType(name));
         }
         registration.addRecipeClickArea(FissionControllerScreen.class,72, 38, 36, 26, FISSION);
+        registration.addRecipeClickArea(MSRControllerScreen.class,72, 38, 36, 26, MSR);
     }
 
     @Override
@@ -370,6 +378,9 @@ public  class JEIPlugin implements IModPlugin {
             }
         }
 
+        if(CATALYSTS.containsKey(MSRControllerBE.NAME)) {
+            registry.addRecipeCatalyst(CATALYSTS.get(MSRControllerBE.NAME).get(0), MSR);
+        }
         if(CATALYSTS.containsKey(FissionControllerBE.NAME)) {
             registry.addRecipeCatalyst(CATALYSTS.get(FissionControllerBE.NAME).get(0), FISSION);
         }

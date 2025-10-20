@@ -1,6 +1,7 @@
 package igentuman.nc.recipes;
 
 import igentuman.nc.block.accelerator.entity.LinearAcceleratorControllerBE;
+import igentuman.nc.block.fission.entity.MSRControllerBE;
 import igentuman.nc.block.target_chamber.entity.TargetChamberControllerBE;
 import igentuman.nc.block.fission.entity.FissionControllerBE;
 import igentuman.nc.block.fusion.entity.FusionCoreBE;
@@ -33,6 +34,7 @@ public class NcRecipeSerializers {
     private static HashMap<String, RecipeSerializerRegistryObject<? extends NcRecipe>> initSerializers() {
         HashMap<String, RecipeSerializerRegistryObject<? extends NcRecipe>> map = new HashMap<>();
         map.put("fusion_core", RECIPE_SERIALIZERS.register("fusion_core", () -> new FusionRecipeSerializer<>(FusionCoreBE.Recipe::new)));
+        map.put(MSRControllerBE.NAME, RECIPE_SERIALIZERS.register(MSRControllerBE.NAME, () -> new NcRecipeSerializer<>(MSRControllerBE.Recipe::new)));
         map.put(FissionControllerBE.NAME, RECIPE_SERIALIZERS.register(FissionControllerBE.NAME, () -> new NcRecipeSerializer<>(FissionControllerBE.Recipe::new)));
         map.put("kugelblitz_chamber", RECIPE_SERIALIZERS.register("kugelblitz_chamber", () -> new NcRecipeSerializer<>(ChamberTerminalBE.Recipe::new)));
         map.put("nc_ore_veins", RECIPE_SERIALIZERS.register("nc_ore_veins", () -> new OreVeinRecipeSerializer<>(OreVeinRecipe::new)));

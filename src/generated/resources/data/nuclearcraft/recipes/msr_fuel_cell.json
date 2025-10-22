@@ -16,7 +16,7 @@
     "TGT"
   ],
   "result": {
-    "item": "nuclearcraft:fission_reactor_msr_fuel_cell"
+    "item": "nuclearcraft:msr_fuel_cell"
   },
   "show_notification": true
 }

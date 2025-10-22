@@ -14,6 +14,7 @@ public class FissionConfig {
     private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
     public static final FuelConfig FUEL_CONFIG = new FuelConfig(BUILDER);
     public static final FissionReactorConfig FISSION_CONFIG = new FissionReactorConfig(BUILDER);
+    public static final MSRReactorConfig MSR_CONFIG = new MSRReactorConfig(BUILDER);
     public static final ForgeConfigSpec spec = BUILDER.build();
     private static boolean loaded = false;
     private static List<Runnable> loadActions = new ArrayList<>();
@@ -130,6 +131,21 @@ public class FissionConfig {
             ACTIVE_HEATSINK_COOLANT_PER_TICK = builder
                     .comment("How much coolant active heat sink will consume per tick.")
                     .defineInRange("active_heatsink_coolant_per_tick", 10, 1, 10000);
+
+            builder.pop();
+        }
+
+    }
+
+    public static class MSRReactorConfig {
+        public final ForgeConfigSpec.ConfigValue<Integer> PEBBLES_PER_FUEL_CELL;
+
+        public MSRReactorConfig(ForgeConfigSpec.Builder builder) {
+            builder.comment("Settings for Molten Salt Fission Reactor (MSR)").push("msr_reactor");
+
+            PEBBLES_PER_FUEL_CELL = builder
+                    .comment("Number of pebbles that can be stored per fuel cell. Determines the maximum pebble capacity.")
+                    .defineInRange("pebbles_per_fuel_cell", 4, 1, 100);
 
             builder.pop();
         }

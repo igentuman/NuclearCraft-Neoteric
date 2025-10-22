@@ -54,16 +54,23 @@ public class ItemFuel extends Item {
     public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
     {
         initDefinition();
+        if(subType.equals("_tr")) {
+            list.add(TextUtils.applyFormat(__("fuel.criticality.descr", criticality), ChatFormatting.RED));
+            list.add(TextUtils.applyFormat(__("fuel.efficiency.descr", efficiency), ChatFormatting.DARK_PURPLE));
+        } else {
+            list.add(TextUtils.applyFormat(__("fuel.forge_energy.descr", forge_energy), ChatFormatting.BLUE));
+        }
+        list.add(TextUtils.applyFormat(__("fuel.heat.descr", TextUtils.numberFormat(heat)), ChatFormatting.GOLD));
+        list.add(TextUtils.applyFormat(__("fuel.depletion.descr", depletion()), ChatFormatting.GREEN));
+
         if(!DESCRIPTIONS_SHOW) {
             list.add(TextUtils.applyFormat(__("tooltip.toggle_description_keys"), ChatFormatting.GRAY));
         } else {
-            list.add(TextUtils.applyFormat(__("fuel.heat.descr", TextUtils.numberFormat(heat)), ChatFormatting.GOLD));
-            //list.add(TextUtils.applyFormat(__("fuel.heat_boiling.descr", TextUtils.numberFormat(heat_boiling)), ChatFormatting.YELLOW));
-            list.add(TextUtils.applyFormat(__("fuel.forge_energy.descr", forge_energy), ChatFormatting.BLUE));
-            //list.add(TextUtils.applyFormat(__("fuel.criticality.descr", criticality), ChatFormatting.RED));
-            list.add(TextUtils.applyFormat(__("fuel.depletion.descr", depletion()), ChatFormatting.GREEN));
-            //list.add(TextUtils.applyFormat(__("fuel.efficiency.descr", efficiency), ChatFormatting.DARK_PURPLE));
-            list.add(TextUtils.applyFormat(__("fuel.description"), ChatFormatting.AQUA));
+            if(subType.equals("_tr")) {
+                list.add(TextUtils.applyFormat(__("tr_fuel.description"), ChatFormatting.AQUA));
+            } else {
+                list.add(TextUtils.applyFormat(__("fuel.description"), ChatFormatting.AQUA));
+            }
         }
     }
 

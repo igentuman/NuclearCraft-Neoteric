@@ -130,14 +130,25 @@ public class TConstructRecipeBuilder extends RecipeBuilder<TConstructRecipeBuild
             super(id);
         }
 
+        private JsonObject fluidTagNotEmpty(String tag) {
+            JsonObject forgeNot = new JsonObject();
+            forgeNot.addProperty("type", "forge:not");
+            JsonObject fluidTagNotEmpty = new JsonObject();
+            fluidTagNotEmpty.addProperty("type", "forge:fluid_tag_empty");
+            fluidTagNotEmpty.addProperty("tag", tag);
+            forgeNot.add("value", fluidTagNotEmpty);
+            return forgeNot;
+        }
+
         @Override
         public void serializeRecipeData(@NotNull JsonObject json) {
             JsonArray inputJson = new JsonArray();
-            JsonObject value = new JsonObject();
-            value.addProperty("type", "forge:mod_loaded");
-            value.addProperty("modid", "tconstruct");
+            JsonObject modLoaded = new JsonObject();
+            modLoaded.addProperty("type", "forge:mod_loaded");
+            modLoaded.addProperty("modid", "tconstruct");
             JsonArray conditions = new JsonArray();
-            conditions.add(value);
+            conditions.add(modLoaded);
+
             json.add("conditions", conditions);
 
             if(cast) {
@@ -162,6 +173,12 @@ public class TConstructRecipeBuilder extends RecipeBuilder<TConstructRecipeBuild
 
             inputJson = new JsonArray();
             for(FluidStackIngredient in: inputFluids) {
+                try {
+                    String tag = ((JsonObject) in.serialize()).get("tag").getAsString();
+                    if (tag != null) {
+                        conditions.add(fluidTagNotEmpty(tag));
+                    }
+                } catch (Exception ignore) {}
                 if(!cast) {
                     inputJson.add(in.serialize());
                 } else {
@@ -177,6 +194,12 @@ public class TConstructRecipeBuilder extends RecipeBuilder<TConstructRecipeBuild
 
             if(!outputFluids.isEmpty()) {
                 for (FluidStackIngredient out: outputFluids) {
+                    try {
+                        String tag = ((JsonObject) out.serialize()).get("tag").getAsString();
+                        if (tag != null) {
+                            conditions.add(fluidTagNotEmpty(tag));
+                        }
+                    } catch (Exception ignore) {}
                     json.add("result", out.serialize());
                     break;
                 }

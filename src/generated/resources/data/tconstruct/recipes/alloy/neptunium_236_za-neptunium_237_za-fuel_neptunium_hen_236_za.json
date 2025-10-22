@@ -4,6 +4,27 @@
     {
       "type": "forge:mod_loaded",
       "modid": "tconstruct"
+    },
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:fluid_tag_empty",
+        "tag": "forge:neptunium/236_za"
+      }
+    },
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:fluid_tag_empty",
+        "tag": "forge:neptunium/237_za"
+      }
+    },
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:fluid_tag_empty",
+        "tag": "forge:fuel_neptunium_hen_236_za"
+      }
     }
   ],
   "inputs": [

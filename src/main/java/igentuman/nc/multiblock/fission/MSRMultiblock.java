@@ -1,9 +1,7 @@
 package igentuman.nc.multiblock.fission;
 
-import igentuman.nc.block.fission.FissionCasingBlock;
 import igentuman.nc.block.fission.FissionFuelCellBlock;
 import igentuman.nc.block.fission.entity.MSRControllerBE;
-import igentuman.nc.handler.event.server.WorldEvents;
 import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.ValidationResult;
 import net.minecraft.core.BlockPos;
@@ -13,7 +11,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.HashSet;
-import java.util.Set;
 
 import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.handler.config.FissionConfig.FISSION_CONFIG;
@@ -22,9 +19,9 @@ import static igentuman.nc.util.TagUtil.getBlocksByTagKey;
 public class MSRMultiblock extends AbstractMultiblock {
 
     protected int fuelCellCount = 0;
+    protected int heatExchangerCount = 0;
+    protected final HashSet<Long> heatExchangers = new HashSet<>();
     protected double heatPerTick = 0;
-    protected int energyPerTick = 0;
-    protected double efficiency = 0;
 
     public MSRMultiblock(MSRControllerBE msrControllerBE) {
         super(
@@ -34,21 +31,12 @@ public class MSRMultiblock extends AbstractMultiblock {
         );
         id = "msr_" + msrControllerBE.getBlockPos().toShortString();
         controllerBe = msrControllerBE;
-        
-        // Track casing blocks for updates
-        for(Block b: validOuterBlocks()) {
-            if(b instanceof FissionCasingBlock) {
-                continue;
-            }
-            if(!WorldEvents.trackingBlocks.contains(b)) {
-                WorldEvents.trackingBlocks.add(b);
-            }
-        }
     }
 
     private static HashSet<Block> getInnerBlocks() {
         HashSet<Block> innerBlocks = new HashSet<>();
         innerBlocks.add(FissionReactorRegistration.FISSION_BLOCKS.get("msr_fuel_cell").get());
+        innerBlocks.add(FissionReactorRegistration.FISSION_BLOCKS.get("heat_exchanger").get());
         return innerBlocks;
     }
 
@@ -69,22 +57,30 @@ public class MSRMultiblock extends AbstractMultiblock {
 
     @Override
     public int minHeight() {
-        return FISSION_CONFIG.MIN_SIZE.get();
+        return FISSION_CONFIG.MIN_SIZE.get() + 2;
     }
 
     @Override
     public int minWidth() {
-        return FISSION_CONFIG.MIN_SIZE.get();
+        return FISSION_CONFIG.MIN_SIZE.get() + 2;
     }
 
     @Override
     public int minDepth() {
-        return FISSION_CONFIG.MIN_SIZE.get();
+        return FISSION_CONFIG.MIN_SIZE.get() + 2;
     }
 
     @Override
+    protected MSRControllerBE controllerBE() {
+        if (controllerBe == null) {
+            controllerBe = controller().controllerBE();
+        }
+        return (MSRControllerBE) controllerBe;
+    }
+    
+    @Override
     protected Direction getControllerDirection() {
-        return Direction.NORTH;
+        return controllerBE().getFacing();
     }
 
     @Override
@@ -100,14 +96,14 @@ public class MSRMultiblock extends AbstractMultiblock {
         }
         debugLog("Stage 1 complete - Height: " + height + ", Width: " + width + ", Depth: " + depth);
         
-        // Stage 2: Index fuel cells
-        debugLog("Stage 2: Indexing fuel cells");
-        indexFuelCells();
+        // Stage 2: Index fuel cells and heat exchangers
+        debugLog("Stage 2: Indexing fuel cells and heat exchangers");
+        indexInnerBlocks();
         if(validationResult != ValidationResult.VALID) {
             debugLog("Stage 2 FAILED - Invalid interior: " + validationResult);
             return;
         }
-        debugLog("Stage 2 complete - Fuel cells found: " + fuelCellCount);
+        debugLog("Stage 2 complete - Fuel cells found: " + fuelCellCount + ", Heat exchangers found: " + heatExchangerCount);
         
         // Stage 3: Update controller with calculated stats
         debugLog("Stage 3: Updating controller stats");
@@ -116,9 +112,13 @@ public class MSRMultiblock extends AbstractMultiblock {
         debugLog("=== MSR MULTIBLOCK VALIDATION COMPLETE ===");
     }
 
-    private void indexFuelCells() {
+    private void indexInnerBlocks() {
         fuelCellCount = 0;
+        heatExchangerCount = 0;
+        heatExchangers.clear();
         BlockPos thePos = initialPos().copy();
+        
+        Block heatExchangerBlock = FissionReactorRegistration.FISSION_BLOCKS.get("heat_exchanger").get();
         
         // Iterate through interior blocks (excluding outer casing layer)
         for(int y = 1; y < height - 1; y++) {
@@ -129,15 +129,18 @@ public class MSRMultiblock extends AbstractMultiblock {
                     BlockState state = getBlockState(checkPos);
                     Block block = state.getBlock();
                     
-                    // MSR interior must be ONLY fuel cells
+                    // MSR interior can contain fuel cells and heat exchangers
                     if(block instanceof FissionFuelCellBlock) {
                         fuelCellCount++;
+                    } else if(block == heatExchangerBlock) {
+                        heatExchangerCount++;
+                        heatExchangers.add(checkPos.asLong());
                     } else {
-                        // Invalid block in interior - MSR requires only fuel cells
+                        // Invalid block in interior
                         validationResult = ValidationResult.WRONG_INNER;
                         errorBlockPos = checkPos;
                         outerValid = false;
-                        debugLog("INVALID INTERIOR at " + checkPos + ": Found " + block.getName().getString() + ", expected fuel cells only");
+                        debugLog("INVALID INTERIOR at " + checkPos + ": Found " + block.getName().getString() + ", expected fuel cells or heat exchangers only");
                         return;
                     }
                 }
@@ -154,29 +157,20 @@ public class MSRMultiblock extends AbstractMultiblock {
         // Calculate stats based on fuel cell count and chamber size
         int chamberVolume = (width - 2) * (height - 2) * (depth - 2);
         
-        // Energy and heat generation scales with fuel cell count
-        double baseEnergyPerTick = fuelCellCount * 10.0;
+        // Heat generation scales with fuel cell count (primary output for steam generation)
         double baseHeatPerTick = fuelCellCount * 5.0;
-        
-        // Efficiency improves with larger chambers (better thermodynamics)
-        efficiency = 0.7 + (chamberVolume / (double)(chamberVolume + 100)) * 0.25;
-        efficiency = Math.min(efficiency, 0.95);
-        
-        energyPerTick = (int)(baseEnergyPerTick * efficiency);
-        heatPerTick = baseHeatPerTick * efficiency;
+        heatPerTick = baseHeatPerTick;
 
         // Update controller
         controller.connectedPorts = connectedPorts;
-        controller.energyPerTick = energyPerTick;
         controller.heatPerTick = heatPerTick;
-        controller.efficiency = efficiency;
         controller.maxHeat = chamberVolume * 10.0;
+        controller.heatExchangerCount = heatExchangerCount;
         
         debugLog("  FuelCells: " + fuelCellCount);
+        debugLog("  HeatExchangers: " + heatExchangerCount);
         debugLog("  ChamberVolume: " + chamberVolume);
-        debugLog("  EnergyPerTick: " + energyPerTick);
         debugLog("  HeatPerTick: " + heatPerTick);
-        debugLog("  Efficiency: " + String.format("%.2f%%", efficiency * 100));
         
         controller.setChanged();
     }
@@ -184,9 +178,9 @@ public class MSRMultiblock extends AbstractMultiblock {
     @Override
     public void clearStats() {
         fuelCellCount = 0;
-        energyPerTick = 0;
+        heatExchangerCount = 0;
+        heatExchangers.clear();
         heatPerTick = 0;
-        efficiency = 0;
         
         BlockEntity be = getLevel().getBlockEntity((BlockPos) controllerPos);
         if(be instanceof MSRControllerBE controller) {

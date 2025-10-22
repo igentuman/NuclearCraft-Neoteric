@@ -7,6 +7,13 @@
     {
       "type": "forge:mod_loaded",
       "modid": "tconstruct"
+    },
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:fluid_tag_empty",
+        "tag": "forge:californium/252_za"
+      }
     }
   ],
   "cooling_time": 40,

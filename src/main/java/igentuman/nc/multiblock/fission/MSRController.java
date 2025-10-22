@@ -23,9 +23,7 @@ public class MSRController implements MultiblockController {
     public void clearStats() {
         controllerBE().isInternalValid = false;
         controllerBE().isCasingValid = false;
-        controllerBE().energyPerTick = 0;
         controllerBE().heatPerTick = 0;
-        controllerBE().efficiency = 0;
         controllerBE().fuelCellsCount = 0;
         controllerBE().connectedPorts = 0;
         

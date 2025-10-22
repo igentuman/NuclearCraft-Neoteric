@@ -852,7 +852,8 @@ public class NCLanguageProvider extends LanguageProvider {
         add("fuel.depletion.descr","Base Depletion Time: %s sec");
         add("fuel.criticality.descr","Criticality Factor: %s N/t");
         add("fuel.efficiency.descr","Base Efficiency: %s%%");
-        add("fuel.description","Used in Fission Reactors. Use Fuel Ports to Load/Unload. \r\nActual FE generation depends on Reactor Efficiency.");
+        add("fuel.description","Used in Fission Reactors. Use Ports to Load/Unload. \r\nActual FE generation depends on Reactor Efficiency.");
+        add("tr_fuel.description","Used in Molten Salt Reactors. Use Ports to Load/Unload.");
         add("heat_sink.heat.descr", "Cooling Rate: %s H/t");
         add("heat_sink.placement.rule", "Must be placed %s");
         add("heat_sink.between", "between %s %s");

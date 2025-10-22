@@ -1548,7 +1548,7 @@ public class NCRecipes extends RecipeProvider {
                 .unlockedBy("item", has(FISSION_BLOCKS.get("fission_reactor_casing").get()))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, FISSION_BLOCKS.get("fission_reactor_msr_fuel_cell").get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, FISSION_BLOCKS.get("msr_fuel_cell").get())
                 .pattern("TGT")
                 .pattern("G G")
                 .pattern("TGT")

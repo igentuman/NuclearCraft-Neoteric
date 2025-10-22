@@ -4,6 +4,27 @@
     {
       "type": "forge:mod_loaded",
       "modid": "tconstruct"
+    },
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:fluid_tag_empty",
+        "tag": "forge:thorium/230_za"
+      }
+    },
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:fluid_tag_empty",
+        "tag": "forge:thorium/232_za"
+      }
+    },
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:fluid_tag_empty",
+        "tag": "forge:fuel_thorium_tbu_za"
+      }
     }
   ],
   "inputs": [

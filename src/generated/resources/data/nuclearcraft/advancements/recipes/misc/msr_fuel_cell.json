@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "nuclearcraft:fission_reactor_msr_fuel_cell"
+        "recipe": "nuclearcraft:msr_fuel_cell"
       },
       "trigger": "minecraft:recipe_unlocked"
     },
@@ -28,7 +28,7 @@
   ],
   "rewards": {
     "recipes": [
-      "nuclearcraft:fission_reactor_msr_fuel_cell"
+      "nuclearcraft:msr_fuel_cell"
     ]
   },
   "sends_telemetry_event": false

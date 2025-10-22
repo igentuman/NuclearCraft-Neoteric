@@ -42,7 +42,6 @@ public class FissionFuel {
         registerFuel();
         registerIsotopes();
         registerWaste();
-        registerRuntimeFuels();
     }
     
     /**
@@ -52,7 +51,7 @@ public class FissionFuel {
         return new ArrayList<>(CUSTOM_FUELS);
     }
 
-    private static void registerRuntimeFuels() {
+    public static void registerRuntimeFuels() {
         List<FuelDef> customFuels = new ArrayList<>();
         RegisterFissionFuelEvent event = new RegisterFissionFuelEvent(customFuels);
         MinecraftForge.EVENT_BUS.post(event);

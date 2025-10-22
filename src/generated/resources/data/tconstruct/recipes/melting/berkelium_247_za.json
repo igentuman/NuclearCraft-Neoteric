@@ -4,6 +4,13 @@
     {
       "type": "forge:mod_loaded",
       "modid": "tconstruct"
+    },
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:fluid_tag_empty",
+        "tag": "forge:berkelium/247_za"
+      }
     }
   ],
   "ingredient": {

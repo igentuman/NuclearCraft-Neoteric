@@ -4,6 +4,27 @@
     {
       "type": "forge:mod_loaded",
       "modid": "tconstruct"
+    },
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:fluid_tag_empty",
+        "tag": "forge:californium/251_ox"
+      }
+    },
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:fluid_tag_empty",
+        "tag": "forge:californium/252_ox"
+      }
+    },
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:fluid_tag_empty",
+        "tag": "forge:fuel_californium_hecf_251_ox"
+      }
     }
   ],
   "inputs": [

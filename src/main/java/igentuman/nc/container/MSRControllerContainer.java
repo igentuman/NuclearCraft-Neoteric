@@ -4,6 +4,7 @@ import igentuman.nc.block.fission.entity.MSRControllerBE;
 import igentuman.nc.container.elements.NCSlotItemHandler;
 import igentuman.nc.multiblock.fission.FissionReactorRegistration;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -13,6 +14,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
+
+import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.util.TextUtils.*;
 
 public class MSRControllerContainer extends AbstractContainerMenu {
 
@@ -28,10 +32,6 @@ public class MSRControllerContainer extends AbstractContainerMenu {
         this.playerInventory =  new InvWrapper(playerInventory);
         blockEntity = (MSRControllerBE) playerEntity.getCommandSenderWorld().getBlockEntity(pos);
         layoutPlayerInventorySlots();
-        blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
-            addSlot(new NCSlotItemHandler.Input(h, 0, 56, 35));
-            addSlot(new NCSlotItemHandler.Output(h, 1, 116, 35));
-        });
     }
 
     @Override
@@ -84,22 +84,6 @@ public class MSRControllerContainer extends AbstractContainerMenu {
         return blockEntity.maxHeat;
     }
 
-    public int getEnergy() {
-        return blockEntity.energyStorage.getEnergyStored();
-    }
-
-    public int getMaxEnergy() {
-        return blockEntity.energyStorage.getMaxEnergyStored();
-    }
-
-    public int getEnergyPerTick() {
-        return blockEntity.energyPerTick;
-    }
-
-    public double getEfficiency() {
-        return blockEntity.efficiency;
-    }
-
     public boolean isPowered() {
         return blockEntity.powered;
     }
@@ -125,5 +109,13 @@ public class MSRControllerContainer extends AbstractContainerMenu {
         addSlotRange(playerInventory, leftCol, topRow, 9, 18);
         topRow -= 58;
         addSlotBox(playerInventory, leftCol, topRow, 9, 18, 3, 18);
+    }
+
+    public Component getTitle() {
+        return __("block."+MODID+"."+name);
+    }
+
+    public String getHeating() {
+        return roundFormat(blockEntity.heatPerTick);
     }
 }

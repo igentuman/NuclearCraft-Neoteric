@@ -40,7 +40,7 @@ public class Registration {
     public static void onConstruction(FMLConstructModEvent event) {
         event.enqueueWork(() -> {
             ParticleSources.init();
-            FissionFuel.init();
+            FissionFuel.registerRuntimeFuels();;
             NCFluids.init();
         });
     }

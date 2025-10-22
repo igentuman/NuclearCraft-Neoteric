@@ -107,6 +107,7 @@ public class NCBlockTags extends BlockTagsProvider {
                 FUSION_BLOCKS.get("fusion_reactor_casing").get(),
                 FUSION_BLOCKS.get("fusion_reactor_casing_glass").get());
         tag(CASING_BLOCKS).add(
+                FISSION_BLOCKS.get("msr_controller").get(),
                 FISSION_BLOCKS.get("fission_reactor_casing").get(),
                 FISSION_BLOCKS.get("fission_reactor_controller").get(),
                 FISSION_BLOCKS.get("fission_reactor_glass").get(),

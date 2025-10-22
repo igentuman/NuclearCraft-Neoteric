@@ -68,8 +68,7 @@ public class FissionReactorRegistration {
             "irradiation_chamber",
             "port",
             "glass",
-            "solid_fuel_cell",
-            "msr_fuel_cell"
+            "solid_fuel_cell"
     );
 
     public static void init() {
@@ -139,6 +138,14 @@ public class FissionReactorRegistration {
 
         FISSION_BLOCK_ITEMS.put(key, fromMultiblock(FISSION_BLOCKS.get(key)));
         ALL_NC_ITEMS.put(key, FISSION_BLOCK_ITEMS.get(key));
+
+        FISSION_BLOCKS.put("msr_fuel_cell", BLOCKS.register("msr_fuel_cell", () -> new FissionFuelCellBlock(REACTOR_BLOCKS_PROPERTIES)));
+        FISSION_BLOCK_ITEMS.put("msr_fuel_cell", fromMultiblock(FISSION_BLOCKS.get("msr_fuel_cell")));
+        ALL_NC_ITEMS.put("msr_fuel_cell", FISSION_BLOCK_ITEMS.get("msr_fuel_cell"));
+
+        FISSION_BLOCKS.put("heat_exchanger", BLOCKS.register("heat_exchanger", () -> new Block(REACTOR_BLOCKS_PROPERTIES)));
+        FISSION_BLOCK_ITEMS.put("heat_exchanger", fromMultiblock(FISSION_BLOCKS.get("heat_exchanger")));
+        ALL_NC_ITEMS.put("heat_exchanger", FISSION_BLOCK_ITEMS.get("heat_exchanger"));
     }
 
     public static final HashSet<Block> blocks = moderators();

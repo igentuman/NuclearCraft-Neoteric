@@ -1,5 +1,6 @@
 package igentuman.nc.recipes;
 
+import igentuman.nc.block.entity.processor.NCProcessorBE;
 import igentuman.nc.client.NcClient;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.recipes.type.NcRecipe;
@@ -29,6 +30,7 @@ public class RecipeInfo implements INBTSerializable<Tag> {
     public NcRecipe recipe;
     public BlockEntity be;
     private String recipeId;
+    private SidedContentHandler contentHandler;
 
     public void setRecipe(NcRecipe recipe) {
         this.recipe = recipe;
@@ -149,10 +151,10 @@ public class RecipeInfo implements INBTSerializable<Tag> {
     }
     
     private SidedContentHandler getContentHandler() {
-        if(be instanceof igentuman.nc.block.entity.processor.NCProcessorBE processor) {
+        if(be instanceof NCProcessorBE processor) {
             return processor.contentHandler();
         }
-        return null;
+        return contentHandler;
     }
 
     public boolean consumeInputs(SidedContentHandler contentHandler) {
@@ -175,4 +177,7 @@ public class RecipeInfo implements INBTSerializable<Tag> {
         return true;
     }
 
+    public void setContentHandler(SidedContentHandler sidedContentHandler) {
+        this.contentHandler = sidedContentHandler;
+    }
 }

@@ -56,7 +56,6 @@ public class ItemFuel extends Item {
         initDefinition();
         if(subType.equals("_tr")) {
             list.add(TextUtils.applyFormat(__("fuel.criticality.descr", criticality), ChatFormatting.RED));
-            list.add(TextUtils.applyFormat(__("fuel.efficiency.descr", efficiency), ChatFormatting.DARK_PURPLE));
         } else {
             list.add(TextUtils.applyFormat(__("fuel.forge_energy.descr", forge_energy), ChatFormatting.BLUE));
         }

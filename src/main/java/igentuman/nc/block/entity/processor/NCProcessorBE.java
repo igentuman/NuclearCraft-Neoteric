@@ -99,7 +99,7 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
         contentHandler = new SidedContentHandler(
                 prefab().getSlotsConfig().getInputItems(), prefab().getSlotsConfig().getOutputItems(),
                 prefab().getSlotsConfig().getInputFluids(), prefab().getSlotsConfig().getOutputFluids());
-        contentHandler.setBlockEntity(this);
+        contentHandler().setBlockEntity(this);
         energyStorage = createEnergy();
         energyStorage.setInputEnergyTier(GTCEU_CONFIG.PROCESSOR_ENERGY_TIER.get().ordinal());
         energyStorage.setOutputEnergyTier(GTCEU_CONFIG.PROCESSOR_ENERGY_TIER.get().ordinal());
@@ -111,6 +111,7 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
         for(int i = 0; i < prefab().getSlotsConfig().getInputFluids(); i++) {
             contentHandler().setAllowedInputFluids(i, this::getAllowedInputFluids);
         }
+        recipeInfo().setContentHandler(contentHandler());
     }
 
     public void handleOverVoltage() {
@@ -167,6 +168,7 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
         //check if last recipe is still valid
         if(recipe != null) {
             if(recipe.test(contentHandler())) {
+                recipeInfo().setContentHandler(contentHandler());
                 recipeInfo().ticksProcessed = 0;
                 recipeInfo().setParallelProcessing(parallelRecipes());
                 if (recipeInfo().consumeInputs(contentHandler())) {

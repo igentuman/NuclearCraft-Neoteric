@@ -5,7 +5,6 @@ import igentuman.api.nc.multiblock.Multiblock;
 import igentuman.api.nc.multiblock.MultiblockController;
 import igentuman.nc.block.MultiblockPortBE;
 import igentuman.nc.block.entity.MultiblockControllerBE;
-import igentuman.nc.block.fission.entity.FissionPortBE;
 import igentuman.nc.util.BlockPosInstance;
 import igentuman.nc.util.math.MathUtils;
 import net.minecraft.core.BlockPos;
@@ -24,7 +23,6 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
 
@@ -660,7 +658,7 @@ public abstract class AbstractMultiblock implements Multiblock {
             if(getBlockEntity(pos, true) instanceof MultiblockAttachable attachableBe) {
                 attachableBe.setMultiblock(this);
             }
-            ports.add((FissionPortBE) getBlockEntity(pos, true));
+            ports.add((MultiblockPortBE) getBlockEntity(pos, true));
             connectedPorts++;
         }
     }

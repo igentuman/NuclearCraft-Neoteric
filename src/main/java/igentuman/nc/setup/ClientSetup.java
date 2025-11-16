@@ -117,7 +117,7 @@ public class ClientSetup {
             if(NCFluids.NC_GASES.containsKey(f.getId().getPath()))
                 ItemBlockRenderTypes.setRenderLayer(f.get(), RenderType.translucent());
 
-        event.enqueueWork(() -> {
+       /* event.enqueueWork(() -> {
             setPropertyOverride(GEIGER_COUNTER.get(), rl("radiation"), (stack, world, entity, seed) -> {
                 if (entity instanceof Player) {
                     if(!((Player) entity).getInventory().contains(new ItemStack(GEIGER_COUNTER.get()))) return 0;
@@ -126,7 +126,7 @@ public class ClientSetup {
                 }
                 return 0;
             });
-        });
+        });*/
     }
 
 

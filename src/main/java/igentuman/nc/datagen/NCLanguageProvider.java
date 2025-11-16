@@ -472,6 +472,9 @@ public class NCLanguageProvider extends LanguageProvider {
         add("nc_jei_cat.fission_boiling", "Boiling Reactor");
         add("nc_jei_cat.msr_controller", "Molten Salt Reactor");
 
+        add("label.nuclearcraft.energy_range", "Energy: %s - %s");
+        add("label.nuclearcraft.energy", "Energy: %s");
+        add("label.nuclearcraft.cross_section", "Cross-section: %s%%");
         add("label.kugelblitz.stability", "Stability: %s%%");
         add("label.kugelblitz.charge", "Charge: %s");
         add("label.kugelblitz.evaporation", "Evaporation Rate: %s");
@@ -551,6 +554,9 @@ public class NCLanguageProvider extends LanguageProvider {
             prefix = "";
             if(name.contains("heat_sink")) {
                 prefix = "Fission Reactor ";
+            }
+            if(name.contains("msr_")) {
+                prefix = "(WIP) ";
             }
             String title = convertToName(name);
             add(FISSION_BLOCKS.get(name).get(), prefix+title);

@@ -20,6 +20,7 @@ public class WhiteNoiseOverlay {
     private static final ResourceLocation NOISE = rl("textures/gui/overlay/white_noise.png");
 
     public static final IGuiOverlay WHITE_NOISE = (gui, poseStack, partialTicks, width, height) -> {
+        if(true) return;
         Player pl = NcClient.tryGetClientPlayer();
         if (pl == null) return;
         int radiation = ClientRadiationData.getCurrentWorldRadiation();

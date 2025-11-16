@@ -1,9 +1,11 @@
 package igentuman.nc.radiation.data;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
 
 import java.util.HashMap;
 
@@ -44,6 +46,7 @@ public class WorldRadiation implements IWorldRadiationCapability {
     public int getChunkRadiation(int chunkX, int chunkZ) {
         long id = pack(chunkX, chunkZ);
         int radiation = naturalRadiation(chunkX, chunkZ);
+        if(chunkRadiation.isEmpty()) return radiation;
         if (chunkRadiation.containsKey(id)) {
             radiation += unpackX(chunkRadiation.get(id));
         }
@@ -178,8 +181,9 @@ public class WorldRadiation implements IWorldRadiationCapability {
         if(level == null) {
             return radiation;
         }
-        String biomeId = level.getBiome(new BlockPos(chunkX*16, 0, chunkZ*16))
-                .unwrapKey().get().location().toString();
+        Holder<Biome> biome = level.getBiomeManager().getNoiseBiomeAtPosition(chunkX*16, 0, chunkZ*16);
+
+        String biomeId = biome.unwrapKey().get().location().toString();
         radiation += RADIATION_CONFIG.biomeRadiation(biomeId);
         radiation += RADIATION_CONFIG.dimensionRadiation(level.dimension().location().toString());
         return radiation;

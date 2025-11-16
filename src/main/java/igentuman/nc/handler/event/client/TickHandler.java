@@ -110,7 +110,7 @@ public class TickHandler {
 
     protected static GeigerSound geigerSound;
     public static void tickStart() {
-        if (minecraft.player == null) {
+        if (minecraft.player == null || true) {
             return;
         }
         GeigerSound toPlay = GeigerSound.create(minecraft.player);

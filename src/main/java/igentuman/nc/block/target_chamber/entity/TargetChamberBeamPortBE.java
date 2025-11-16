@@ -1,9 +1,8 @@
 package igentuman.nc.block.target_chamber.entity;
 
-import igentuman.api.nc.multiblock.MultiblockAttachable;
 import igentuman.nc.NuclearCraft;
+import igentuman.nc.block.MultiblockPortBE;
 import igentuman.nc.block.accelerator.entity.AcceleratorBeamPortBE;
-import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.content.particles.ParticleStack;
 import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;
 import igentuman.nc.multiblock.AbstractMultiblock;
@@ -34,7 +33,7 @@ import static igentuman.nc.util.ModUtil.isCcLoaded;
 import static igentuman.nc.util.ModUtil.isOC2Loaded;
 import static igentuman.nc.util.PortMode.PORT_MODE;
 
-public class TargetChamberBeamPortBE extends NuclearCraftBE implements MultiblockAttachable {
+public class TargetChamberBeamPortBE extends MultiblockPortBE {
 
     public static String NAME = "target_chamber_beam_port";
     @NBTField

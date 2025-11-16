@@ -121,8 +121,6 @@ public class PlayerEvents {
         return true;
     }
 
-
-
     public static boolean isCharged(ItemStack item)
     {
         return item.getCapability(ForgeCapabilities.ENERGY).map(handler -> handler.getEnergyStored() > 0).orElse(false);

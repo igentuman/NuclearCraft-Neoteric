@@ -1611,7 +1611,7 @@ public class NCRecipes extends RecipeProvider {
 
     private void msrBlocks(Consumer<FinishedRecipe> consumer) {
         // MSR Controller
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, FISSION_BLOCKS.get("msr_controller").get())
+        /*ShapedRecipeBuilder.shaped(RecipeCategory.MISC, FISSION_BLOCKS.get("msr_controller").get())
                 .pattern("LPL")
                 .pattern("TDT")
                 .pattern("LPL")
@@ -1621,7 +1621,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('L', FISSION_BLOCKS.get("fission_reactor_casing").get())
                 .group(MODID+"_msr")
                 .unlockedBy("item", has(NC_PARTS.get("plate_advanced").get()))
-                .save(consumer, rl("msr_controller"));
+                .save(consumer, rl("msr_controller"));*/
     }
 
     private void turbineBlocks(Consumer<FinishedRecipe> consumer) {

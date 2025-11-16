@@ -7,6 +7,8 @@ import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.WidgetHolder;
 import igentuman.nc.block.target_chamber.entity.TargetChamberControllerBE;
 import igentuman.nc.compat.emi.ingredient.ParticleEmiStack;
+import igentuman.nc.util.Units;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
@@ -17,6 +19,7 @@ import java.util.List;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.multiblock.particle_chamber.TargetChamberRegistration.TARGET_CHAMBER_BLOCKS;
+import static igentuman.nc.util.TextUtils.__;
 import static net.minecraft.world.item.Items.BARRIER;
 
 public class TargetChamberEmiCategory extends BasicEmiRecipe {
@@ -33,7 +36,7 @@ public class TargetChamberEmiCategory extends BasicEmiRecipe {
     private final TargetChamberControllerBE.Recipe recipe;
 
     public TargetChamberEmiCategory(TargetChamberControllerBE.Recipe recipe) {
-        super(CATEGORY, recipe.getId(), 160, 105);
+        super(CATEGORY, recipe.getId(), 160, 107);
         this.recipe = recipe;
         for (int i = 0; i < recipe.inputParticles.length; i++) {
             this.inputs.add(ParticleEmiStack.of(recipe.inputParticles[i]));
@@ -75,5 +78,30 @@ public class TargetChamberEmiCategory extends BasicEmiRecipe {
         }
         
         widgets.addSlot(EmiStack.of(recipe.getResultItem()), 101, 28).recipeContext(this);
+        
+        // Add labels (same as JEI version)
+        addLabels(widgets);
+    }
+    
+    private void addLabels(WidgetHolder widgets) {
+        if (recipe == null || recipe.inputParticles == null || recipe.inputParticles.length == 0) {
+            return;
+        }
+        
+        var inputParticle = recipe.inputParticles[0];
+        
+        int labelY = 77;
+        int labelX = 0;
+        
+        long minEnergy = inputParticle.getMeanEnergy() * 1000;
+        long maxEnergy = recipe.maxEnergy * 1000;
+        MutableComponent energyLabel = __("label.nuclearcraft.energy_range", Units.getSIFormat(minEnergy, "eV"), Units.getSIFormat(maxEnergy, "eV"));
+        if (minEnergy == maxEnergy) {
+            energyLabel = __("label.nuclearcraft.energy", Units.getSIFormat(minEnergy, "eV"));
+        }
+        
+        widgets.addText(__("tooltip.nuclearcraft.particlestack.focus", Units.getSIFormat(inputParticle.getFocus(), "")), labelX, labelY, 0xFFFFFF, false);
+        widgets.addText(__("label.nuclearcraft.cross_section", String.format("%.1f", recipe.crossSection * 100)), labelX, labelY + 10, 0xFFFFFF, false);
+        widgets.addText(energyLabel, labelX, labelY + 20, 0xFFFFFF, false);
     }
 }

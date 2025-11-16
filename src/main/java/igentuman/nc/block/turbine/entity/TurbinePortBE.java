@@ -1,9 +1,12 @@
 package igentuman.nc.block.turbine.entity;
 
-import igentuman.api.nc.multiblock.MultiblockAttachable;
 import igentuman.nc.NuclearCraft;
+import igentuman.nc.block.MultiblockPortBE;
 import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;
+import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;
+import igentuman.nc.multiblock.turbine.TurbineMultiblock;
+import igentuman.nc.multiblock.turbine.TurbineRegistration;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -27,18 +30,37 @@ import static igentuman.nc.util.ModUtil.isCcLoaded;
 import static igentuman.nc.util.ModUtil.isGtLoaded;
 import static net.minecraftforge.common.capabilities.ForgeCapabilities.ENERGY;
 
-public class TurbinePortBE extends TurbineBE implements MultiblockAttachable {
+public class TurbinePortBE extends MultiblockPortBE {
     public static String NAME = "turbine_port";
     @NBTField
     public byte analogSignal = 0;
     @NBTField
     public byte comparatorMode = SignalSource.OVERFLOW;
-
+    protected TurbineMultiblock multiblock;
     @NBTField
     public BlockPos controllerPos;
-
+    public TurbineControllerBE controller;
     public TurbinePortBE(BlockPos pPos, BlockState pBlockState) {
-        super(pPos, pBlockState, NAME);
+        super(TurbineRegistration.TURBINE_BE.get(NAME).get(), pPos, pBlockState);
+    }
+
+    @Override
+    public void setMultiblock(AbstractMultiblock multiblock) {
+        if(this.multiblock == multiblock) {
+            return;
+        }
+        this.multiblock = (TurbineMultiblock) multiblock;
+        if (this.multiblock != null) {
+            controllerPos = this.multiblock.controller().controllerBE().getBlockPos();
+            controller = this.multiblock.controller().controllerBE();
+            setChanged();
+            level.updateNeighborsAt(worldPosition, getBlockState().getBlock());
+        }
+    }
+
+
+    public TurbineMultiblock getMultiblock() {
+        return multiblock;
     }
     public Direction getFacing() {
         return getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);

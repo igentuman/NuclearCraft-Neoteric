@@ -2,15 +2,19 @@ package igentuman.nc.compat.jei;
 
 import igentuman.nc.block.target_chamber.entity.TargetChamberControllerBE;
 import igentuman.nc.compat.jei.ingredient.ParticleType;
+import igentuman.nc.util.Units;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -36,11 +40,12 @@ public class TargetChamberCategoryWrapper<T extends TargetChamberControllerBE.Re
     protected RecipeType<T> recipeType;
 
     IGuiHelper guiHelper;
+    private T currentRecipe;
 
     public TargetChamberCategoryWrapper(IGuiHelper guiHelper, RecipeType<T> recipeType) {
         this.recipeType = recipeType;
         this.guiHelper = guiHelper;
-        this.background = guiHelper.createDrawable(TEXTURE, 10, 10, 160, 105);
+        this.background = guiHelper.createDrawable(TEXTURE, 10, 10, 160, 107);
         if(CATALYSTS.containsKey(getRecipeType().getUid().getPath())) {
             this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(TARGET_CHAMBER_BLOCKS.get("target_chamber_controller").get()));
         } else{
@@ -70,6 +75,8 @@ public class TargetChamberCategoryWrapper<T extends TargetChamberControllerBE.Re
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, T recipe, IFocusGroup focuses) {
+        this.currentRecipe = recipe;
+        
         for(int i = 0; i < recipe.getItemIngredients().size(); i++) {
             builder.addSlot(RecipeIngredientRole.INPUT, 43+18*i, 28).addIngredients(recipe.getItemIngredients().get(i));
         }
@@ -90,7 +97,7 @@ public class TargetChamberCategoryWrapper<T extends TargetChamberControllerBE.Re
             guiHelper.createDrawable(rl("textures/gui/widgets.png"), 18, 0, 18, 18);
         }
 
-        if(recipe.getOutputFluids().size() > 0) {
+        if(!recipe.getOutputFluids().isEmpty()) {
             builder.addSlot(RecipeIngredientRole.OUTPUT, 101, 45)
                     .addIngredients(ForgeTypes.FLUID_STACK, recipe.getOutputFluids(0))
                     .setFluidRenderer(recipe.getOutputFluids().get(0).getAmount(), false, 16, 16);
@@ -98,5 +105,32 @@ public class TargetChamberCategoryWrapper<T extends TargetChamberControllerBE.Re
         }
 
         builder.addSlot(RecipeIngredientRole.OUTPUT, 101, 28).addItemStack(recipe.getResultItem());
+    }
+
+    @Override
+    public void draw(T recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+        drawLabels(recipe, guiGraphics);
+    }
+
+    private void drawLabels(T recipe, GuiGraphics guiGraphics) {
+        if (recipe == null || recipe.inputParticles == null || recipe.inputParticles.length == 0) {
+            return;
+        }
+        var font = Minecraft.getInstance().font;
+        var inputParticle = recipe.inputParticles[0];
+        
+        int labelY = 77;
+        int labelX = 0;
+        
+        long minEnergy = inputParticle.getMeanEnergy()*1000;
+        long maxEnergy = recipe.maxEnergy*1000;
+        String energyLabel = __("label.nuclearcraft.energy_range", Units.getSIFormat(minEnergy, "eV"), Units.getSIFormat(maxEnergy, "eV")).getString();
+        if(minEnergy == maxEnergy) {
+            energyLabel = __("label.nuclearcraft.energy", Units.getSIFormat(minEnergy, "eV")).getString();
+        }
+        // Cross-section
+        guiGraphics.drawString(font, __("tooltip.nuclearcraft.particlestack.focus", Units.getSIFormat(inputParticle.getFocus(), "")), labelX, labelY, 0xFFFFFF);
+        guiGraphics.drawString(font, __("label.nuclearcraft.cross_section", String.format("%.1f", recipe.crossSection*100)), labelX, labelY + 10, 0xFFFFFF);
+        guiGraphics.drawString(font, energyLabel, labelX, labelY + 20, 0xFFFFFF);
     }
 }

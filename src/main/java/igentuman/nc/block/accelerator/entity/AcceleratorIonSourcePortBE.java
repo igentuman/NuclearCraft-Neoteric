@@ -1,8 +1,7 @@
 package igentuman.nc.block.accelerator.entity;
 
-import igentuman.api.nc.multiblock.MultiblockAttachable;
 import igentuman.nc.NuclearCraft;
-import igentuman.nc.block.entity.NuclearCraftBE;
+import igentuman.nc.block.MultiblockPortBE;
 import igentuman.nc.handler.config.CommonConfig;
 import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;
 import igentuman.nc.multiblock.AbstractMultiblock;
@@ -31,7 +30,7 @@ import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELE
 import static igentuman.nc.util.ModUtil.isCcLoaded;
 import static igentuman.nc.util.ModUtil.isOC2Loaded;
 
-public class AcceleratorIonSourcePortBE extends NuclearCraftBE implements MultiblockAttachable {
+public class AcceleratorIonSourcePortBE extends MultiblockPortBE {
 
     public static String NAME = "accelerator_ion_source_port";
     @NBTField

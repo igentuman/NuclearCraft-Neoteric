@@ -1,5 +1,6 @@
 package igentuman.nc.recipes;
 
+import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.block.entity.processor.NCProcessorBE;
 import igentuman.nc.client.NcClient;
 import igentuman.nc.handler.sided.SidedContentHandler;
@@ -137,12 +138,14 @@ public class RecipeInfo implements INBTSerializable<Tag> {
 
     private int howMuchICanProcess(int i) {
         if(i == 1 || recipe == null) return 1;
+        SidedContentHandler handler = getContentHandler();
+        if(handler == null) return 1;
 
         int actualAmount = 1;
         // Validate how many parallel recipes can actually be processed based on available inputs
         // Check from the requested amount down to find the maximum feasible parallel processing
         for(int attempt = i; attempt > 1; attempt--) {
-            if(recipe.hasEnoughToConsume(getContentHandler(), attempt)) {
+            if(recipe.hasEnoughToConsume(handler, attempt)) {
                 actualAmount = attempt;
                 break;
             }
@@ -151,8 +154,8 @@ public class RecipeInfo implements INBTSerializable<Tag> {
     }
     
     private SidedContentHandler getContentHandler() {
-        if(be instanceof NCProcessorBE processor) {
-            return processor.contentHandler();
+        if(be instanceof NuclearCraftBE ncbe) {
+            return ncbe.contentHandler();
         }
         return contentHandler;
     }

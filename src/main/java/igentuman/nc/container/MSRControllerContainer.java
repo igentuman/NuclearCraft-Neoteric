@@ -32,6 +32,8 @@ public class MSRControllerContainer extends AbstractContainerMenu {
         this.playerInventory =  new InvWrapper(playerInventory);
         blockEntity = (MSRControllerBE) playerEntity.getCommandSenderWorld().getBlockEntity(pos);
         layoutPlayerInventorySlots();
+        addSlot(new NCSlotItemHandler.Input(blockEntity.contentHandler().itemHandler, 0, 56, 35));
+        addSlot(new NCSlotItemHandler.Output(blockEntity.contentHandler().itemHandler, 1, 116, 35));
     }
 
     @Override
@@ -77,15 +79,47 @@ public class MSRControllerContainer extends AbstractContainerMenu {
     }
 
     public double getHeat() {
-        return Math.floor(blockEntity.heat);
+        return blockEntity.temperature;
     }
 
     public double getMaxHeat() {
-        return blockEntity.maxHeat;
+        return MSRControllerBE.MAX_TEMPERATURE;
+    }
+
+    public double getPressure() {
+        return blockEntity.pressure;
+    }
+
+    public double getMaxPressure() {
+        return MSRControllerBE.PRESSURE_MAX;
+    }
+
+    public int getSalt() {
+        return (int) blockEntity.saltVolume;
+    }
+
+    public int getCoolant() {
+        return (int) blockEntity.coolantVolume;
+    }
+
+    public int getDepleted() {
+        return (int) blockEntity.depletedVolume;
+    }
+
+    public double getReactivity() {
+        return blockEntity.reactivity;
     }
 
     public boolean isPowered() {
         return blockEntity.powered;
+    }
+
+    public boolean isCritical() {
+        return blockEntity.isCritical;
+    }
+
+    public boolean isLocked() {
+        return blockEntity.portsLocked;
     }
 
     private void addSlotRange(IItemHandler handler, int x, int y, int amount, int dx) {

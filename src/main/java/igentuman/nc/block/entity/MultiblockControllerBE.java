@@ -137,7 +137,7 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
             analyzeDelay--;
         }
         assert level != null;
-        if(level.getGameTime() % 2 == 0) {
+        if(level.getGameTime() % 5 == 0) {
             MultiblockHandler.tickMultiblockAsync((ServerLevel) level, getMultiblock());
         }
     }

@@ -73,7 +73,7 @@ public class FissionPortBE extends MultiblockPortBE {
             controllerPos = BlockPos.ZERO;
             result = true;
         }
-        if (controller != null) {
+        if (controller != null && !controller.getBlockPos().equals(controllerPos)) {
             controllerPos = new BlockPos(controller.getBlockPos());
             result = true;
         }
@@ -97,10 +97,7 @@ public class FissionPortBE extends MultiblockPortBE {
         if(getMultiblock() != null && controller() != null) {
             sendOutPower();
         }
-        //if no recipe - tick only 5 times per second
-        if(currentTick % 5 == 0 && controller() != null && !controller().hasRecipe()) {
-            return;
-        }
+
         boolean updated = updateController();
         if(currentTick % 20 == 0 && controller() != null) {
             pushPull();
@@ -113,6 +110,10 @@ public class FissionPortBE extends MultiblockPortBE {
                 case SignalSource.SWITCH -> controller().toggleReactor(analogSignal > 0);
                 case SignalSource.MODERATOR -> controller().adjustModerator(analogSignal);
             }
+        }
+        //if no recipe - tick only 5 times per second
+        if(currentTick % 5 == 0 && controller() != null && !controller().hasRecipe()) {
+            return;
         }
         connected = getMultiblock() != null && getMultiblock().isFormed();
         if (updated || wasConnected != connected) {

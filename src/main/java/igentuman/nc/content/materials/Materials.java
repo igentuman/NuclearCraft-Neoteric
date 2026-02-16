@@ -152,6 +152,7 @@ public class Materials extends MaterialsManager {
     public final static String yttrium = "yttrium";
     public final static String potassium = "potassium";
     public final static String sodium = "sodium";
+    public final static String irradiated_sodium = "irradiated_sodium";
     public final static String strontium = "strontium";
     public final static String titanium = "titanium";
     public final static String tungsten = "tungsten";

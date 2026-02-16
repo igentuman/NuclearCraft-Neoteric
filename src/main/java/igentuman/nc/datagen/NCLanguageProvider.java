@@ -491,6 +491,13 @@ public class NCLanguageProvider extends LanguageProvider {
         add("fission.casing.reactor_incomplete", "Reactor Incomplete");
         add("fission_reactor.heat_multiplier", "Heat Multiplier: %sx");
 
+        add("msr.pressure.bar.amount", "Pressure: %s / %s");
+        add("msr.reactivity", "Reactivity: %s");
+        add("msr.status", "Status: %s");
+        add("msr.critical", "CRITICAL");
+        add("msr.subcritical", "SUBCRITICAL");
+        add("msr.locked", "PORTS LOCKED");
+
         add("turbine.efficiency", "Efficiency: %s%%");
         add("turbine.real_flow", "Real Flow: %smB");
         add("turbine.ratio", "Pressure: %s%%");

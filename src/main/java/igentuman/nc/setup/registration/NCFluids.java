@@ -128,6 +128,7 @@ public class NCFluids {
         items.put("condensate_water", new LiquidDefinition("condensate_water", 0x902F43F4, 300));
         items.put("emergency_coolant", new LiquidDefinition("emergency_coolant", 0x906DD0E7, 50));
         items.put("emergency_coolant_heated", new LiquidDefinition("emergency_coolant_heated", 0x90CDBEE7));
+        items.put(Materials.irradiated_sodium, new LiquidDefinition(Materials.irradiated_sodium, 0x90CDBEE7));
 
         for(LiquidDefinition liquid: items.values()) {
             LIQUIDS_TAG.put(liquid.name, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(),  forgeRl(liquid.name)));

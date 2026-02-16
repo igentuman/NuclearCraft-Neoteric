@@ -21,7 +21,6 @@ public class MSRMultiblock extends AbstractMultiblock {
     protected int fuelCellCount = 0;
     protected int heatExchangerCount = 0;
     protected final HashSet<Long> heatExchangers = new HashSet<>();
-    protected double heatPerTick = 0;
 
     public MSRMultiblock(MSRControllerBE msrControllerBE) {
         super(
@@ -135,7 +134,7 @@ public class MSRMultiblock extends AbstractMultiblock {
                     } else if(block == heatExchangerBlock) {
                         heatExchangerCount++;
                         heatExchangers.add(checkPos.asLong());
-                    } else {
+                    } else if(!state.isAir()) {
                         // Invalid block in interior
                         validationResult = ValidationResult.WRONG_INNER;
                         errorBlockPos = checkPos;
@@ -157,20 +156,15 @@ public class MSRMultiblock extends AbstractMultiblock {
         // Calculate stats based on fuel cell count and chamber size
         int chamberVolume = (width - 2) * (height - 2) * (depth - 2);
         
-        // Heat generation scales with fuel cell count (primary output for steam generation)
-        double baseHeatPerTick = fuelCellCount * 5.0;
-        heatPerTick = baseHeatPerTick;
-
         // Update controller
         controller.connectedPorts = connectedPorts;
-        controller.heatPerTick = heatPerTick;
-        controller.maxHeat = chamberVolume * 10.0;
+        controller.fuelCellsCount = fuelCellCount;
         controller.heatExchangerCount = heatExchangerCount;
+        controller.maxHeat = chamberVolume * 1000.0;
         
         debugLog("  FuelCells: " + fuelCellCount);
         debugLog("  HeatExchangers: " + heatExchangerCount);
         debugLog("  ChamberVolume: " + chamberVolume);
-        debugLog("  HeatPerTick: " + heatPerTick);
         
         controller.setChanged();
     }
@@ -180,7 +174,6 @@ public class MSRMultiblock extends AbstractMultiblock {
         fuelCellCount = 0;
         heatExchangerCount = 0;
         heatExchangers.clear();
-        heatPerTick = 0;
         
         BlockEntity be = getLevel().getBlockEntity((BlockPos) controllerPos);
         if(be instanceof MSRControllerBE controller) {

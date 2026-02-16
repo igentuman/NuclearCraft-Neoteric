@@ -121,7 +121,9 @@ public class NCBlockTags extends BlockTagsProvider {
                         NCBlocks.NC_MATERIAL_BLOCKS.get("graphite").get(),
                         NCBlocks.NC_MATERIAL_BLOCKS.get("beryllium").get(),
                         FISSION_BLOCKS.get("fission_reactor_irradiation_chamber").get(),
-                        FISSION_BLOCKS.get("fission_reactor_solid_fuel_cell").get()
+                        FISSION_BLOCKS.get("fission_reactor_solid_fuel_cell").get(),
+                        FISSION_BLOCKS.get("msr_fuel_cell").get(),
+                        FISSION_BLOCKS.get("heat_exchanger").get()
                 );
         tag(TurbineRegistration.CASING_BLOCKS).add(
                 TURBINE_BLOCKS.get("turbine_casing").get(),

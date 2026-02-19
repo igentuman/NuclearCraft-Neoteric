@@ -192,7 +192,7 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
             super(xPos, yPos, screen, 70);
             height = 18;
             width = 18;
-            btn = new ImageButton(X(), Y(), width, height, 238, 76, 18, TEXTURE, pButton -> {
+            btn = new ImageButton(X(), Y(), width, height, 220, 76, 18, TEXTURE, pButton -> {
                 if(isEMILoaded()) {
                     EMIPlugin.displayRecipes(screen);
                 }
@@ -534,7 +534,7 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
 
         public void setMode(byte redstoneMode) {
             mode = redstoneMode;
-            btn = new ImageButton(X(), Y(), width, height, 238, 256 - (redstoneMode+1) * 36, 18, TEXTURE, pButton -> {
+            btn = new ImageButton(X(), Y(), width, height, 238, 256 - (redstoneMode) * 36, 18, TEXTURE, pButton -> {
                 NuclearCraft.packetHandler().sendToServer(new PacketGuiButtonPress(pos, BTN_ID));
             });
         }

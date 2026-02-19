@@ -2,6 +2,7 @@ package igentuman.nc.datagen.recipes.recipes;
 
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.content.materials.Materials;
+import igentuman.nc.recipes.ingredient.NcIngredient;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -47,6 +48,8 @@ public class PressurizerRecipes extends AbstractRecipeProvider {
         itemToItem(dustIngredient(Materials.quartz), ingredient(Items.QUARTZ));
         itemToItem(dustIngredient(Materials.obsidian, 4), ingredient(Item.byBlock(Blocks.OBSIDIAN)));
         itemToItem(dustIngredient(Materials.boron_nitride), gemStack(Materials.boron_nitride));
+        itemToItem(dustIngredient(Materials.lapis), NcIngredient.of(LAPIS_LAZULI));
+        itemToItem(dustIngredient(Materials.emerald), NcIngredient.of(EMERALD));
         itemToItem(dustIngredient(Materials.fluorite), gemStack(Materials.fluorite));
         itemToItem(dustIngredient(Materials.villiaumite), gemStack(Materials.villiaumite));
         itemToItem(dustIngredient(Materials.carobbiite), gemStack(Materials.carobbiite));

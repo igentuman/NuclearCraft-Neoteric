@@ -1876,6 +1876,7 @@ public class NCRecipes extends RecipeProvider {
                         .unlockedBy("has_ore", inventoryTrigger(ItemPredicate.Builder.item().of(forgeDust(name)).build()))
                         .save(consumer, MODID+":blast_"+name+"_dust");
             }
+
             if(Materials.ingots().get(name).plate) {
                 SimpleCookingRecipeBuilder.smelting(Ingredient.of(forgePlate(name)),
                                 RecipeCategory.MISC,
@@ -1884,6 +1885,28 @@ public class NCRecipes extends RecipeProvider {
                         .save(consumer, MODID+"_"+name+"_plate");
             }
         }
+
+        SimpleCookingRecipeBuilder.smelting(Ingredient.of(forgeDust(Materials.gold)),
+                        RecipeCategory.MISC,
+                        GOLD_INGOT, 1.0f, 200)
+                .unlockedBy("has_ore", inventoryTrigger(ItemPredicate.Builder.item().of(forgeOre(Materials.gold)).build()))
+                .save(consumer, MODID+"_"+Materials.gold+"_ingot");
+        SimpleCookingRecipeBuilder.blasting(Ingredient.of(forgeDust(Materials.gold)),
+                        RecipeCategory.MISC,
+                        GOLD_INGOT, 1.0f, 100)
+                .unlockedBy("has_ore", inventoryTrigger(ItemPredicate.Builder.item().of(forgeOre(Materials.gold)).build()))
+                .save(consumer, MODID+":blast_"+Materials.gold+"_ingot");
+
+        SimpleCookingRecipeBuilder.smelting(Ingredient.of(forgeDust(Materials.copper)),
+                        RecipeCategory.MISC,
+                        COPPER_INGOT, 1.0f, 200)
+                .unlockedBy("has_ore", inventoryTrigger(ItemPredicate.Builder.item().of(forgeOre(Materials.copper)).build()))
+                .save(consumer, MODID+"_"+Materials.copper+"_ingot");
+        SimpleCookingRecipeBuilder.blasting(Ingredient.of(forgeDust(Materials.copper)),
+                        RecipeCategory.MISC,
+                        COPPER_INGOT, 1.0f, 100)
+                .unlockedBy("has_ore", inventoryTrigger(ItemPredicate.Builder.item().of(forgeOre(Materials.copper)).build()))
+                .save(consumer, MODID+":blast_"+Materials.copper+"_ingot");
 
     }
 

@@ -7,7 +7,7 @@ import igentuman.nc.client.gui.MultiblockBuilderScreen;
 import igentuman.nc.client.gui.element.NCGuiElement;
 import igentuman.nc.client.gui.processor.side.SideConfigSlotSelectionScreen;
 import igentuman.nc.compat.emi.EMIPlugin;
-import igentuman.nc.container.MultiblockControllerContailer;
+import igentuman.nc.container.MultiblockControllerContainer;
 import igentuman.nc.network.toServer.PacketBuildMultiblock;
 import igentuman.nc.network.toServer.PacketGuiButtonPress;
 import igentuman.nc.util.builder.ReactorDesignParser;
@@ -301,7 +301,7 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
 
         public MultiblockAnalyze(int xPos, int yPos, AbstractContainerScreen<?> screen, BlockPos pos) {
             super(xPos, yPos, screen, BTN_ID);
-            MultiblockControllerContailer container = new MultiblockControllerContailer(pos);
+            MultiblockControllerContainer container = new MultiblockControllerContainer(pos);
             this.pos = pos;
             height = 18;
             width = 18;

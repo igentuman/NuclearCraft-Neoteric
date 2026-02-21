@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import igentuman.nc.client.NcClient;
 import igentuman.nc.client.gui.element.NCGuiElement;
 import igentuman.nc.client.gui.element.button.Button;
-import igentuman.nc.container.MultiblockControllerContailer;
+import igentuman.nc.container.MultiblockControllerContainer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -21,7 +21,7 @@ import java.util.*;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.util.TextUtils.__;
 
-public class MultiblockAnalyzeReportScreen<T extends MultiblockControllerContailer> extends AbstractContainerScreen<T> {
+public class MultiblockAnalyzeReportScreen<T extends MultiblockControllerContainer> extends AbstractContainerScreen<T> {
     protected final ResourceLocation GUI = rl("textures/gui/window_no_inventory.png");
     protected int relX;
     protected int relY;
@@ -126,7 +126,7 @@ public class MultiblockAnalyzeReportScreen<T extends MultiblockControllerContail
         graphics.pose().popPose();
     }
 
-    private MultiblockControllerContailer container() {
+    private MultiblockControllerContainer container() {
         return this.getMenu();
     }
 

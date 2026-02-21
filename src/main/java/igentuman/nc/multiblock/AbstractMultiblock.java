@@ -32,6 +32,8 @@ import static net.minecraft.world.level.block.Blocks.AIR;
 
 public abstract class AbstractMultiblock implements Multiblock {
 
+    protected int failedValidations = 0;
+    protected boolean toDeleteFlag = false;
     public boolean hasToRefresh = true;
     public BlockPos errorBlockPos = BlockPos.ZERO;
     public int connectedPorts = 0;
@@ -79,6 +81,14 @@ public abstract class AbstractMultiblock implements Multiblock {
         debugLog("Created " + getClass().getSimpleName() + " at " + controllerPos.toShortString() + 
                 " with " + validOuterBlocks.size() + " valid outer blocks and " + 
                 validInnerBlocks.size() + " valid inner blocks");
+    }
+
+    public boolean isMarkedForRemoval() {
+        return toDeleteFlag;
+    }
+
+    public void setForRemoval() {
+        toDeleteFlag = true;
     }
 
     public void dispose() {
@@ -809,6 +819,11 @@ public abstract class AbstractMultiblock implements Multiblock {
 
     @Override
     public void validate() {
+        failedValidations++;
+        if(failedValidations > 10) {
+            toDeleteFlag = true;
+            return;
+        }
         isValidating = true;
         connectedPorts = 0;
         long startTime = System.currentTimeMillis();
@@ -836,6 +851,7 @@ public abstract class AbstractMultiblock implements Multiblock {
         isFormed = outerValid && innerValid;
         
         if (isFormed) {
+            failedValidations--;
             validationResult = ValidationResult.VALID;
             fullValidation = false;
             debugLog("Multiblock formation successful!");

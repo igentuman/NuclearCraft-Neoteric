@@ -325,6 +325,7 @@ public class TargetChamberControllerBE extends MultiblockControllerBE {
         }
         if(multiblock == null) {
             multiblock = new TargetChamberMultiblock(this);
+            validationsCounter = 0;
         }
         return (TargetChamberMultiblock) multiblock;
     }

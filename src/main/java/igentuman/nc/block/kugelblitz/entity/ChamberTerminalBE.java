@@ -452,6 +452,7 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
         }
         if(multiblock == null) {
             multiblock = new KugelblitzMultiblock(this);
+            validationsCounter = 0;
         }
         return (KugelblitzMultiblock) multiblock;
     }

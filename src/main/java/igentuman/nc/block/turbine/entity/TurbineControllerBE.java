@@ -284,6 +284,7 @@ public class TurbineControllerBE extends MultiblockControllerBE {
         }
         if(multiblock == null) {
             multiblock = new TurbineMultiblock(this);
+            validationsCounter = 0;
         }
         return (TurbineMultiblock) multiblock;
     }

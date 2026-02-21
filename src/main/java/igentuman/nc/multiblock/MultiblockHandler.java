@@ -38,6 +38,10 @@ public class MultiblockHandler {
 
     public static void tickMultiblockAsync(ServerLevel level, AbstractMultiblock multiblock) {
         MultiblockHandler handler = get(level.dimension());
+        if(multiblock.isMarkedForRemoval()) {
+            multiblock.dispose();
+            return;
+        }
         if (multiblock.getValidationFuture() != null && !multiblock.getValidationFuture().isDone()) {
             return;
         }

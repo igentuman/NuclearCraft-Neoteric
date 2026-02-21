@@ -12,17 +12,17 @@ import java.util.HashMap;
 
 import static igentuman.nc.setup.Registration.MULTIBLOCK_REPORT_CONTAINER;
 
-public class MultiblockControllerContailer extends AbstractContainerMenu {
+public class MultiblockControllerContainer extends AbstractContainerMenu {
     protected final MultiblockControllerBE blockEntity;
     protected final Player playerEntity;
 
-    public MultiblockControllerContailer(int pContainerId, BlockPos pos, Inventory playerInventory) {
+    public MultiblockControllerContainer(int pContainerId, BlockPos pos, Inventory playerInventory) {
         super(MULTIBLOCK_REPORT_CONTAINER.get(), pContainerId);
         this.playerEntity = playerInventory.player;
         blockEntity = (MultiblockControllerBE) playerEntity.getCommandSenderWorld().getBlockEntity(pos);
     }
 
-    public MultiblockControllerContailer(BlockPos pos) {
+    public MultiblockControllerContainer(BlockPos pos) {
         super(MULTIBLOCK_REPORT_CONTAINER.get(), 777);
         playerEntity = Minecraft.getInstance().player;
         blockEntity = (MultiblockControllerBE) playerEntity.getCommandSenderWorld().getBlockEntity(pos);

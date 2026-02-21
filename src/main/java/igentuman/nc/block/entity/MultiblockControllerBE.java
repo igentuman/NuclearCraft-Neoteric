@@ -139,6 +139,9 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
         assert level != null;
         if(level.getGameTime() % 5 == 0) {
             MultiblockHandler.tickMultiblockAsync((ServerLevel) level, getMultiblock());
+            if(multiblock != null && multiblock.isMarkedForRemoval()) {
+                multiblock = null;
+            }
         }
     }
 
@@ -241,6 +244,7 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
         analyzeDelay = 100;
         if (getMultiblock() != null) {
             getMultiblock().wipeCache();
+            getMultiblock().setForRemoval();
             displayDetailedDataFlag = true;
         }
     }

@@ -1,6 +1,6 @@
 package igentuman.nc.setup;
 
-import igentuman.nc.container.MultiblockControllerContailer;
+import igentuman.nc.container.MultiblockControllerContainer;
 import igentuman.nc.content.NCRadiationDamageSource;
 import igentuman.nc.content.particles.ParticleSources;
 import igentuman.nc.effect.RadiationDecay;
@@ -19,7 +19,6 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.common.extensions.IForgeMenuType;
-import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLConstructModEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -32,8 +31,8 @@ public class Registration {
 
     public static final RegistryObject<MobEffect> RADIATION_RESISTANCE = EFFECTS.register("radiation_resistance", () -> new RadiationResistance(MobEffectCategory.BENEFICIAL, 0xd4ffFF));
     public static final RegistryObject<MobEffect> RADIATION_DECAY = EFFECTS.register("radiation_decay", () -> new RadiationDecay(MobEffectCategory.BENEFICIAL, 0xd4ffFF));
-    public static final RegistryObject<MenuType<MultiblockControllerContailer>> MULTIBLOCK_REPORT_CONTAINER = CONTAINERS.register("multilblock_report_container",
-            () -> IForgeMenuType.create((windowId, inv, data) -> new MultiblockControllerContailer(windowId, data.readBlockPos(), inv))
+    public static final RegistryObject<MenuType<MultiblockControllerContainer>> MULTIBLOCK_REPORT_CONTAINER = CONTAINERS.register("multilblock_report_container",
+            () -> IForgeMenuType.create((windowId, inv, data) -> new MultiblockControllerContainer(windowId, data.readBlockPos(), inv))
     );
 
     @SubscribeEvent

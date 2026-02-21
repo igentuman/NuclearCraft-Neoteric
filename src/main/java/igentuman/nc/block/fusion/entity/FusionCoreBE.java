@@ -600,6 +600,7 @@ public class FusionCoreBE extends MultiblockControllerBE {
         }
         if(multiblock == null) {
             multiblock = new FusionReactorMultiblock(this);
+            validationsCounter = 0;
         }
         return (FusionReactorMultiblock) multiblock;
     }

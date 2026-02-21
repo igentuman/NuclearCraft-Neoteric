@@ -534,6 +534,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
             return null;
         }
         if(multiblock == null) {
+            validationsCounter = 0;
             multiblock = new FissionReactorMultiblock(this);
         }
         return (FissionReactorMultiblock) multiblock;

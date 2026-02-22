@@ -226,20 +226,20 @@ public class TargetChamberMultiblock extends AbstractMultiblock {
     }
 
     private void indexInnerBlocks() {
-        BlockPosInstance toCheck = new BlockPosInstance(initialPos());
+        BlockPos thePos = initialPos().copy();
+        debugLog("height="+height+" width="+width+" depth="+depth);
         for(int y = 1; y < height - 1; y++) {
             for (int x = 1; x < width - 1; x++) {
                 for (int z = 1; z < depth - 1; z++) {
-                    switch (getMultiblockDirection().ordinal()) {
-                        case 3 -> toCheck.revert().east(x - leftCasing);
-                        case 5 -> toCheck.revert().north(x - leftCasing);
-                        case 2 -> toCheck.revert().west(x - leftCasing);
-                        case 4 -> toCheck.revert().south(x - leftCasing);
+                    switch (getControllerDirection().ordinal()) {
+                        case 3 -> thePos = initialPos().copy().east(x - leftCasing).above(y - bottomCasing).relative(getControllerDirection(), -z);
+                        case 5 -> thePos = initialPos().copy().north(x - leftCasing).above(y - bottomCasing).relative(getControllerDirection(), -z);
+                        case 2 -> thePos = initialPos().copy().west(x - leftCasing).above(y - bottomCasing).relative(getControllerDirection(), -z);
+                        case 4 -> thePos = initialPos().copy().south(x - leftCasing).above(y - bottomCasing).relative(getControllerDirection(), -z);
                     }
-                    toCheck.above(y - bottomCasing).relative(getControllerDirection(), -z);
-                    if(!processInnerBlock(toCheck)) {
+                    if(!processInnerBlock(thePos)) {
                         validationResult = ValidationResult.WRONG_INNER;
-                        errorBlockPos = new BlockPos(toCheck);
+                        errorBlockPos = new BlockPos(thePos);
                         return;
                     }
                 }

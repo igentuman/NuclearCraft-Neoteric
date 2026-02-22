@@ -184,8 +184,10 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
 
     @Override
     public void setChanged() {
-        MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(new BlockPos(getBlockPos()));
-        super.setChanged();
+        if(level != null) {
+            MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
+            level.blockEntityChanged(getBlockPos());
+        }
         wasUpdated = true;
         changed = true;
     }

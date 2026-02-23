@@ -108,11 +108,16 @@ repositories {
 }
 
 dependencies {
-        annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
-        implementation 'org.spongepowered:mixin:0.8.5'
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+    implementation 'org.spongepowered:mixin:0.8.5'
     minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
 
     compileOnly fg.deobf("com.gregtechceu.gtceu:gtceu-${mc_version}:${gtm_version}"){
+        transitive = false
+    }
+    implementation fg.deobf("curse.maven:markdownmanual-502485:4873115")
+
+    implementation fg.deobf("curse.maven:tis-3d-238603:5266274") {
         transitive = false
     }
 

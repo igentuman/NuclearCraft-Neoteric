@@ -142,7 +142,7 @@ public class FissionPortBE extends MultiblockPortBE {
                 analogSignal = (byte) (controller().energyStorage().getEnergyStored() * 15 / controller().energyStorage().getMaxEnergyStored());
                 break;
             case SignalSource.HEAT:
-                analogSignal = (byte) (controller().heat * 15 / controller().getMaxHeat());
+                analogSignal = (byte) (getHeatStored() * 15 / getMaxHeat());
                 break;
             case SignalSource.PROGRESS:
                 analogSignal = (byte) (controller().recipeInfo().ticksProcessed * 15 / controller().recipeInfo().ticks);
@@ -156,6 +156,16 @@ public class FissionPortBE extends MultiblockPortBE {
                 analogSignal = (byte) (Math.max(0, getRedstoneSignal()));
                 break;
         }
+    }
+
+    public double getHeatStored() {
+        if(controller() == null) return 0;
+        return controller().heat;
+    }
+
+    public double getMaxHeat() {
+        if(controller() == null) return 0;
+        return controller().maxHeat;
     }
 
     protected void transferEnergyToSide(Direction direction) {
@@ -349,6 +359,11 @@ public class FissionPortBE extends MultiblockPortBE {
     public int getSteamPerTick() {
         if (controller() == null) return 0;
         return controller().steamPerTick;
+    }
+
+    public int getFuelCount() {
+        if(controller() == null) return 0;
+        return itemHandler().getStackInSlot(0).getCount();
     }
 
     public static class SignalSource {

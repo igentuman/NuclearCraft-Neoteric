@@ -102,6 +102,12 @@ public class KugelblitzMultiblock extends AbstractMultiblock {
         
         initialized = true;
     }
+
+    @Override
+    public void setForRemoval() {
+
+    }
+
     @Override
     public int resolveDepth()
     {

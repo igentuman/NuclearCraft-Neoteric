@@ -2,6 +2,7 @@ package igentuman.nc.block.turbine;
 
 import igentuman.nc.block.turbine.entity.TurbineBE;
 import igentuman.nc.multiblock.MultiblockHandler;
+import igentuman.nc.multiblock.turbine.TurbineRegistration;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -47,9 +48,18 @@ public class TurbineRotorBlock extends DirectionalBlock implements EntityBlock {
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         Level level = context.getLevel();
-        BlockState neighbor = level.getBlockState(context.getClickedPos().relative(context.getClickedFace().getOpposite()));
-        if(!neighbor.isAir() && neighbor.getBlock() instanceof TurbineRotorBlock) {
-            return this.defaultBlockState().setValue(FACING, neighbor.getValue(FACING)).setValue(ACTIVE, false);
+
+        for (Direction direction : Direction.values()) {
+            BlockState neighbor = level.getBlockState(context.getClickedPos().relative(direction));
+            if (neighbor.getBlock() instanceof TurbineRotorBlock) {
+                return this.defaultBlockState().setValue(FACING, neighbor.getValue(FACING)).setValue(ACTIVE, false);
+            }
+        }
+        for (Direction direction : Direction.values()) {
+            BlockState neighbor = level.getBlockState(context.getClickedPos().relative(direction));
+            if(neighbor.is(TurbineRegistration.TURBINE_BLOCKS.get("turbine_bearing").get())) {
+                return this.defaultBlockState().setValue(FACING, direction.getOpposite()).setValue(ACTIVE, false);
+            }
         }
         return this.defaultBlockState().setValue(FACING, context.getNearestLookingDirection().getOpposite());
     }

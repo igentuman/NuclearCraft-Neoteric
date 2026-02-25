@@ -25,6 +25,7 @@ import org.joml.Vector3f;
 import static com.mojang.math.Axis.*;
 import static igentuman.nc.block.turbine.TurbineBladeBlock.HIDDEN;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
+import static igentuman.nc.multiblock.turbine.TurbineRegistration.dummyBlade;
 import static net.minecraft.core.Direction.Axis.Y;
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.FACING;
 
@@ -32,8 +33,8 @@ import static net.minecraft.world.level.block.state.properties.BlockStatePropert
 public class TurbineRotorRenderer implements BlockEntityRenderer<BlockEntity> {
     private final BlockEntityRendererProvider.Context context;
     private TurbineRotorBE rotor;
-    public final BlockState bladeVertical;
-    public final BlockState bladeHorizontal;
+    public final BlockState bottomBlade;
+    public final BlockState leftBlade;
     public final BlockState bladeNorth;
     public final BakedModel verticalBladeModel;
     public final BakedModel horizontalBladeModel;
@@ -42,14 +43,14 @@ public class TurbineRotorRenderer implements BlockEntityRenderer<BlockEntity> {
     public TurbineRotorRenderer(BlockEntityRendererProvider.Context manager) {
         context = manager;
         BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
-        bladeVertical = TURBINE_BLOCKS.get("turbine_basic_rotor_blade").get()
-                .defaultBlockState().setValue(FACING, Direction.DOWN).setValue(HIDDEN, false);
-        bladeHorizontal = TURBINE_BLOCKS.get("turbine_basic_rotor_blade").get()
-                .defaultBlockState().setValue(FACING, Direction.UP).setValue(HIDDEN, false);
-        bladeNorth = TURBINE_BLOCKS.get("turbine_basic_rotor_blade").get()
-                .defaultBlockState().setValue(FACING, Direction.NORTH).setValue(HIDDEN, false);
-        verticalBladeModel = blockRenderer.getBlockModel(bladeVertical);
-        horizontalBladeModel = blockRenderer.getBlockModel(bladeHorizontal);
+        bottomBlade = dummyBlade.get()
+                .defaultBlockState().setValue(FACING, Direction.DOWN);
+        leftBlade = dummyBlade.get()
+                .defaultBlockState().setValue(FACING, Direction.UP);
+        bladeNorth = dummyBlade.get()
+                .defaultBlockState().setValue(FACING, Direction.SOUTH);
+        verticalBladeModel = blockRenderer.getBlockModel(bottomBlade);
+        horizontalBladeModel = blockRenderer.getBlockModel(leftBlade);
         northBladeModel = blockRenderer.getBlockModel(bladeNorth);
     }
     public float lastAngle = 0;
@@ -75,15 +76,15 @@ public class TurbineRotorRenderer implements BlockEntityRenderer<BlockEntity> {
         pPoseStack.pushPose();
 
         long time = Util.getMillis();
-        float step = rotorBe.getRotationSpeed() * 3f;
+        float step = rotorBe.getRotationSpeed() * 5f;
 
         float angle = time * step;
 
         angle %= 360;
         pPoseStack.translate(0.5, 0.5, 0.5);
         Direction facing = blockstate.getValue(TurbineRotorBlock.FACING);
-        Quaternionf rotation = new Quaternionf();
-        Quaternionf rotation2 = new Quaternionf();
+        Quaternionf rotation = null;
+        Quaternionf rotation2 = null;
         switch (facing) {
             case NORTH:
             case SOUTH:
@@ -127,13 +128,13 @@ public class TurbineRotorRenderer implements BlockEntityRenderer<BlockEntity> {
     private void renderBlade(Direction facing, PoseStack pPoseStack, MultiBufferSource buffer, int combinedOverlay, BlockRenderDispatcher blockRenderer, Quaternionf rotation, BakedModel blade) {
 
         pPoseStack.translate(0.5, 0.5, 0.5);
-        Transformation tr = new Transformation(new Vector3f(0, 0, 0), rotation, new Vector3f(1f, getAttachedBlades()+1, 1f), null);
-        BlockState theBlade = bladeVertical;
+        Transformation tr = new Transformation(new Vector3f(0, 0, 0), rotation, new Vector3f(1f, (getAttachedBlades()+1)/2f, 1f), null);
+        BlockState theBlade = bottomBlade;
         if(facing.getAxis() == Y) {
             tr = new Transformation(
                     new Vector3f(0, 0, 0),
                     rotation,
-                    new Vector3f(1f, 1f, getAttachedBlades() + 1),
+                    new Vector3f(1f, 1f, (getAttachedBlades()+1)/2f),
                     null
             );
             theBlade = bladeNorth;

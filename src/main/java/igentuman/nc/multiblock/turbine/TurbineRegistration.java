@@ -35,7 +35,7 @@ public class TurbineRegistration {
     public static final HashMap<String, BladeDef> blades = blades();
     public static final HashMap<String, CoilDef> coils = coils();
     private static HashMap<String, Double> efficiency;
-
+    public static final RegistryObject<Block> dummyBlade = addBlock("dummy_turbine_blade", () -> new TurbineDummyBladeBlock(TURBINE_BLOCKS_PROPERTIES));
     public static HashMap<String, BladeDef> blades() {
         if(blades != null) return blades;
         HashMap<String, BladeDef> tmp = new HashMap<>();
@@ -129,11 +129,9 @@ public class TurbineRegistration {
     public static Block[] getBladeBlocks() {
         Block[] blocks = new Block[4];
         int i = 0;
-        for (String name: TURBINE_BLOCKS.keySet()) {
-            if(name.contains("blade")) {
-                blocks[i] = TURBINE_BLOCKS.get(name).get();
-                i++;
-            }
+        for (String name: blades.keySet()) {
+            blocks[i] = TURBINE_BLOCKS.get("turbine_"+name).get();
+            i++;
         }
         return blocks;
     }

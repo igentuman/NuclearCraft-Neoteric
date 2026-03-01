@@ -51,11 +51,11 @@ This is a re-creation of old but gold NuclearCraft on a modern MC version
 # CREDITS
 [tomdodd4598](https://github.com/tomdodd4598) - For the original NC mod
 
-[Lach01298](https://github.com/Lach01298) - For the origina QMD mod
+[Lach01298](https://github.com/Lach01298) - For the original QMD mod
 
 # SUPPORT
 
-Thanks everyone for supporting this my other projects! 
+Thank you to everyone who supports this and my other projects! 
 If you want to support me, you can donate to my [Patreon](https://patreon.com/igentuman) or [Paypal](https://paypal.me/igentuman)
 
 # SPECIAL THANKS TO PATRONS:

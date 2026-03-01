@@ -2,6 +2,18 @@
 
 This document describes the KubeJS integration for ParticleStack in NuclearCraft Neoteric.
 
+### Adding custom particle sources for accelerators
+#### Use startup_scripts folder:
+```javascript
+NCKJSEvents.registerParticleSourceItem(event => {
+event.add('minecraft:diamond', 'proton', 1000000, 5000, 0.5)
+})
+
+NCKJSEvents.registerParticleSourceFluid(event => {
+event.add('water', 'alpha', 500000)
+})
+```
+
 ### Target Chamber Recipe Example
 ```javascript
 ServerEvents.recipes(event => {

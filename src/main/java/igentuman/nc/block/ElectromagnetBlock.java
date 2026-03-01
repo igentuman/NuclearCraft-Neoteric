@@ -61,6 +61,6 @@ public class ElectromagnetBlock extends MultiblockBlock {
     }
 
     public int getHeatRate() {
-        return prefab().getHeatRate();
+        return prefab().getHeat();
     }
 }

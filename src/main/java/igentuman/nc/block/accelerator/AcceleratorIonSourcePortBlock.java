@@ -2,6 +2,7 @@ package igentuman.nc.block.accelerator;
 
 import igentuman.nc.block.accelerator.entity.AcceleratorIonSourcePortBE;
 import igentuman.nc.container.AcceleratorIonSourcePortContainer;
+import igentuman.nc.multiblock.MultiblockHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -68,6 +69,19 @@ public class AcceleratorIonSourcePortBlock extends HorizontalDirectionalBlock im
     @Override
     public BlockEntity newBlockEntity(@NotNull BlockPos pPos, @NotNull BlockState pState) {
         return ACCELERATOR_BE.get(NAME).get().create(pPos, pState);
+    }
+
+    @Override
+    public void onPlace(BlockState pState, Level pLevel, BlockPos pPos, BlockState pOldState, boolean pMovedByPiston) {
+        super.onPlace(pState, pLevel, pPos, pOldState, pMovedByPiston);
+        MultiblockHandler.get(pLevel.dimension()).trackBlockChange(pPos, true);
+    }
+
+    @Override
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
+        super.onRemove(state, level, pos, newState, isMoving);
+        if(level.isClientSide()) return;
+        MultiblockHandler.get(level.dimension()).trackBlockChange(pos, true);
     }
 
     @Override

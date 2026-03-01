@@ -42,6 +42,7 @@ public class AbstractAcceleratorMultiblock extends AbstractMultiblock {
     protected final int[] yCoords = new int[]{-1, 1,  0, 0, 1, -1,  1, -1};
     protected double focus = 0.0;
     protected int maxTemperature = 0;
+    protected int maxHeat = 0;
     protected int heatRate = 0;
     protected double efficiency = 0.0;
     protected double quadStrength = 0.0;

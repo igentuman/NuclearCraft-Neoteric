@@ -362,4 +362,8 @@ public class AbstractAcceleratorControllerBE extends MultiblockControllerBE {
     public <T> LazyOptional<T> getOCDevice(Capability<T> cap, Direction side) {
         return LazyOptional.empty();
     }
+
+    public boolean isAcceleratorTooHot() {
+        return (heatRate - coolingRate) > maxTemperature;
+    }
 }

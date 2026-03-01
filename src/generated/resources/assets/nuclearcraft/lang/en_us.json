@@ -2782,5 +2782,6 @@
   "validation.structure.wrong_corner": "Wrong corner block at: %s",
   "validation.structure.wrong_inner": "Wrong Block at: %s",
   "validation.structure.wrong_outer": "Wrong Casing at: %s",
-  "validation.structure.wrong_proportions": "Wrong proportions"
+  "validation.structure.wrong_proportions": "Wrong proportions",
+  "tooltip.nc.accelerator.too_hot": "Accelerator is too hot"
 }

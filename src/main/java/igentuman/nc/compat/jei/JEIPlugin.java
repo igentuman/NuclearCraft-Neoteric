@@ -49,6 +49,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -59,10 +60,12 @@ import static igentuman.nc.NuclearCraft.*;
 import static igentuman.nc.compat.GlobalVars.*;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BLOCKS;
+import static igentuman.nc.radiation.ItemRadiation.getItemByName;
 import static igentuman.nc.setup.registration.NCItems.ION_SOURCES;
 import static igentuman.nc.setup.registration.NCItems.UNKNOWN_INGREDIENT;
 import static igentuman.nc.util.ModUtil.isMekanismLoaded;
 import static igentuman.nc.util.TextUtils.__;
+import static net.minecraft.world.item.Items.AIR;
 
 @JeiPlugin
 public  class JEIPlugin implements IModPlugin {
@@ -249,11 +252,25 @@ public  class JEIPlugin implements IModPlugin {
             if(ParticleSources.sources.get(item).getParticle() == null) {
                 continue;
             }
-            recipes.add(new ParticleSourceRecipe(rl(item), new ItemStack(ION_SOURCES.get(item).get()), null, ParticleSources.sources.get(item).getParticle()));
+            ResourceLocation resLoc = rl(item);
+            if(item.contains(":")) {
+                resLoc = ResourceLocation.tryParse(item);
+            }
+            Item sourceItem = AIR;
+            if(ION_SOURCES.containsKey(item)) {
+                sourceItem = ION_SOURCES.get(item).get();
+            } else {
+                sourceItem = getItemByName(item);
+            }
+            recipes.add(new ParticleSourceRecipe(resLoc, new ItemStack(sourceItem), null, ParticleSources.sources.get(item).getParticle()));
         }
 
         for (String fluid: ParticleSources.fluidSources.keySet()) {
-            recipes.add(new ParticleSourceRecipe(rl(fluid), null, IngredientCreatorAccess.fluid().from(fluid, 1).getRepresentations().get(0), ParticleSources.fluidSources.get(fluid).getParticle()));
+            ResourceLocation resLoc = rl(fluid);
+            if(fluid.contains(":")) {
+                resLoc = ResourceLocation.tryParse(fluid);
+            }
+            recipes.add(new ParticleSourceRecipe(resLoc, null, IngredientCreatorAccess.fluid().from(fluid, 1).getRepresentations().get(0), ParticleSources.fluidSources.get(fluid).getParticle()));
         }
         return recipes;
     }

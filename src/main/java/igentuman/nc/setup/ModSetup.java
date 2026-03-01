@@ -1,6 +1,7 @@
 package igentuman.nc.setup;
 
 import igentuman.nc.NuclearCraft;
+import igentuman.nc.content.particles.ParticleSources;
 import igentuman.nc.content.particles.Particles;
 import igentuman.nc.handler.event.server.PlayerEvents;
 import igentuman.nc.radiation.data.RadiationEvents;
@@ -44,6 +45,7 @@ public class ModSetup {
             CraftingHelper.register(new GTCEUCompatibilityCondition.Serializer());
             registerSpawnPlacements();
             GameEvents.commonSetup();
+            ParticleSources.registerRuntimeSources();
         });
         NuclearCraft.packetHandler().initialize();
     }

@@ -12,6 +12,7 @@ import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.type.NcRecipe;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -214,16 +215,30 @@ public class LinearAcceleratorControllerBE extends AbstractAcceleratorController
 
     private void getParticleFromIonSource() {
         ItemStack stack = contentHandler().itemHandler.getStackInSlot(0);
-        if(stack.getItem() instanceof ParticleSourceItem sourceItem) {
-            stack = sourceItem.use(stack, 10000);
-            ParticleStack particle = sourceItem.getParticleStack(stack);
-            if (particle != null) {
-                particle.addFocus(0.4);
-                particle.setAmount(10000);
-                particleStorage.setParticleStack(particle);
-                contentHandler().itemHandler.setStackInSlot(0, stack);
+        if(stack != null && !stack.isEmpty()) {
+            if (stack.getItem() instanceof ParticleSourceItem sourceItem) {
+                stack = sourceItem.use(stack, 10000);
+                ParticleStack particle = sourceItem.getParticleStack(stack);
+                if (particle != null) {
+                    particle.addFocus(0.4);
+                    particle.setAmount(10000);
+                    particleStorage.setParticleStack(particle);
+                    contentHandler().itemHandler.setStackInSlot(0, stack);
+                }
+            } else {
+                ParticleStack particle = ParticleSources.getParticleFromItem(stack);
+                if (particle != null && ParticleSources.getAmountStored(stack) >= 10000/stack.getCount()) {
+                    particle.addFocus(0.4);
+                    particle.setAmount(10000);
+                    particleStorage.setParticleStack(particle);
+                    ParticleSources.use(stack, 10000/stack.getCount());
+                    if(ParticleSources.getAmountStored(stack) < 10000/stack.getCount()) {
+                        stack = ItemStack.EMPTY;
+                    }
+                    contentHandler().itemHandler.setStackInSlot(0, stack);
+                }
             }
-        } else {
+        }else {
             FluidStack fluidStack = contentHandler().fluidHandler.getFluidInSlot(0);
             if (fluidStack != null && !fluidStack.isEmpty()) {
                 ParticleStack particle = ParticleSources.getParticleFromFluid(fluidStack);

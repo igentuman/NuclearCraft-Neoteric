@@ -31,7 +31,9 @@ import java.util.List;
 import java.util.Objects;
 
 import static igentuman.nc.handler.config.CommonConfig.GTCEU_CONFIG;
+import static igentuman.nc.radiation.ItemRadiation.getItemByName;
 import static igentuman.nc.setup.registration.NCItems.ION_SOURCES;
+import static net.minecraft.world.item.Items.AIR;
 import static net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE;
 
 public class AbstractAcceleratorControllerBE extends MultiblockControllerBE {
@@ -178,8 +180,14 @@ public class AbstractAcceleratorControllerBE extends MultiblockControllerBE {
     {
         if(allowedInputs == null) {
             allowedInputs = new ArrayList<>();
-            for(RegistryObject<Item> item: ION_SOURCES.values()) {
-                allowedInputs.add(new ItemStack(item.get()));
+            for(String item: ParticleSources.sources.keySet()) {
+                Item sourceItem = AIR;
+                if(ION_SOURCES.containsKey(item)) {
+                    sourceItem = ION_SOURCES.get(item).get();
+                } else {
+                    sourceItem = getItemByName(item);
+                }
+                allowedInputs.add(new ItemStack(sourceItem));
             }
         }
         return allowedInputs;

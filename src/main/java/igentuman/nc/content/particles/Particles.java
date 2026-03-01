@@ -104,9 +104,8 @@ public class Particles
 	public static Particle antidelta_plus_plus;
 	public static Particle delta_minus;
 	public static Particle antidelta_minus;
-	
-	
-	
+
+
 	//other
 	public static Particle glueball;
 	

@@ -27,15 +27,19 @@ public interface IItemParticleAmount
 
 	default Particle getParticle(ItemStack stack)
 	{
-        if(!sources.containsKey(stack.getItem().toString())) {
-            return null;
+        String key = stack.getItem().toString();
+        if(!sources.containsKey(key)) {
+            key = stack.getItemHolder().unwrap().left().get().location().toString();
+            if(!sources.containsKey(key)) {
+                return null;
+            }
         }
-		if(sources.get(stack.getItem().toString()).getParticle() == null) {
+		if(sources.get(key).getParticle() == null) {
 			return null;
 		}
 		CompoundTag nbt = getStorageNBT(stack);
 		if (!nbt.contains("particle")) {
-			nbt.putString("particle", sources.get(stack.getItem().toString()).getParticle().name);
+			nbt.putString("particle", sources.get(key).getParticle().name);
 		}
 		return particles.get(nbt.getString("particle"));
 	}

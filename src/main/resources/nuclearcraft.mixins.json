@@ -6,7 +6,9 @@
     "LightningRodBlockMixin",
     "TemplatePoolAccess",
     "OverworldBiomeBuilderInvoker",
-    "OverworldBiomeBuilderMixin"
+    "OverworldBiomeBuilderMixin",
+    "MekRadiationManager",
+    "MekRadiationUtil"
   ],
   "server": [
   ],

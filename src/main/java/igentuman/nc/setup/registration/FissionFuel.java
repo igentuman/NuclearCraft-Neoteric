@@ -21,7 +21,6 @@ import java.util.List;
 import static igentuman.nc.setup.registration.Registries.ITEMS;
 import static igentuman.nc.setup.registration.Tags.*;
 
-@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
 public class FissionFuel {
 
     public static final Item.Properties ITEM_PROPERTIES = new Item.Properties();
@@ -56,7 +55,7 @@ public class FissionFuel {
         RegisterFissionFuelEvent event = new RegisterFissionFuelEvent(customFuels);
         NeoForge.EVENT_BUS.post(event);
 
-        // KubeJS integration removed (no 1.21.1 port)
+        // TODO: KubeJS integration removed — waiting on KubeJS to port to NeoForge 1.21.1. Re-enable NCKubeJsEvents.onFissionFuelRegister(event) when available.
         
         // Register items and recipes for custom fuels
         for (FuelDef fuelDef : event.getFuels()) {

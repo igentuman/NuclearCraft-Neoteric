@@ -455,7 +455,7 @@ public class EMIPlugin implements EmiPlugin {
             var menuType = NCProcessors.PROCESSORS_CONTAINERS.get(name).get();
             registry.addRecipeHandler((MenuType) menuType, new ProcessorEmiRecipeHandler<>());
         }
-        // Refined Storage and AE2 integration removed (no 1.21.1 port)
+        // TODO: Refined Storage and AE2 EMI recipe handlers removed — waiting on RS and AE2 to port to NeoForge 1.21.1. Re-enable ProcessorEmiRecipeHandlerRS and ProcessorEmiRecipeHandlerAE2 when available.
     }
     
     private List<ParticleRecipe> particleInfoRecipes() {

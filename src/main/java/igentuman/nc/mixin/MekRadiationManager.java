@@ -1,10 +1,11 @@
+// Verified against Mekanism 10.7.18.84 for NeoForge 1.21.1:
+// - isRadiationEnabled() and radiate(Level, BlockPos, double) confirmed on RadiationManager
+// - getRadiationResistance(LivingEntity) MOVED to RadiationUtil — split into MekRadiationUtil mixin
 package igentuman.nc.mixin;
 
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.radiation.RadiationManager;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -12,9 +13,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.handler.config.RadiationConfig.RADIATION_CONFIG;
-import static igentuman.nc.radiation.data.PlayerRadiation.getRadiationShielding;
 
 @Mixin(value = RadiationManager.class, remap = false)
 public abstract class MekRadiationManager {
@@ -38,14 +37,6 @@ public abstract class MekRadiationManager {
         igentuman.nc.radiation.data.RadiationManager.get(level).addRadiation(level, magnitude*10, source.getX(), source.getY(), source.getZ());
         if(!isMekRadiationEnabled()) {
             callback.cancel();
-        }
-    }
-
-    @Inject(method = "getRadiationResistance(Lnet/minecraft/world/entity/LivingEntity;)D", at = @At("TAIL"), remap=false, cancellable = true)
-    private void getRadiationResistance(LivingEntity entity, CallbackInfoReturnable<Double> callback) {
-        if(entity instanceof Player player) {
-            double shieldingRate = (double) getRadiationShielding(player, MODID) / 10;
-            callback.setReturnValue(callback.getReturnValue()+shieldingRate);
         }
     }
 

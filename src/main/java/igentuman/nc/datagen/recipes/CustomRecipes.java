@@ -49,9 +49,10 @@ public class CustomRecipes extends NCRecipes {
         TurbineControllerRecipes.generate(consumer);
         SubatomicLiquifierRecipes.generate(consumer);
         TargetChamberRecipes.generate(consumer);
-        TConstructAlloyingRecipes.generate(consumer);
-        TConstructCastingRecipes.generate(consumer);
-        TConstructMeltingRecipes.generate(consumer);
+        // TODO: Tinker's Construct compat — disabled, waiting on TiC to port to NeoForge 1.21.1. Re-enable when available.
+        // TConstructAlloyingRecipes.generate(consumer);
+        // TConstructCastingRecipes.generate(consumer);
+        // TConstructMeltingRecipes.generate(consumer);
         AcceleratorCoolantRecipes.generate(consumer);
     }
 }

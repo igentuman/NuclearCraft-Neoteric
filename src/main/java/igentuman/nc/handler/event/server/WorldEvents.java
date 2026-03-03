@@ -43,10 +43,6 @@ public class WorldEvents {
 
     public final static LinkedList<Block> trackingBlocks = new LinkedList<>();
     
-    public WorldEvents() {
-
-    }
-
     @SubscribeEvent
     public static void addCustomTrades(VillagerTradesEvent event) {
         addVillagerTrades(event);
@@ -65,7 +61,7 @@ public class WorldEvents {
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void onBlockBreak(BlockEvent.BreakEvent event) {
+    public static void onBlockBreak(BlockEvent.BreakEvent event) {
         if(event.getPlayer().level().isClientSide()) return;
         BlockState state = event.getState();
         if(state == null) return;
@@ -75,7 +71,7 @@ public class WorldEvents {
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void onBlockPlace(BlockEvent.EntityPlaceEvent event) {
+    public static void onBlockPlace(BlockEvent.EntityPlaceEvent event) {
         if(event.getEntity().level().isClientSide()) return;
         boolean placed = true;
         BlockState state = event.getState();
@@ -92,17 +88,17 @@ public class WorldEvents {
     }
 
     @SubscribeEvent
-    public void chunkUnloadEvent(ChunkEvent.Unload event) {
+    public static void chunkUnloadEvent(ChunkEvent.Unload event) {
 
     }
 
     @SubscribeEvent
-    public void worldUnloadEvent(LevelEvent.Unload event) {
+    public static void worldUnloadEvent(LevelEvent.Unload event) {
 
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void worldLoadEvent(LevelEvent.Load event) {
+    public static void worldLoadEvent(LevelEvent.Load event) {
         if (!event.getLevel().isClientSide()) {
             // Ensure the executor is initialized when a world is loaded
             MultiblockExecutorManager.getExecutor();
@@ -111,20 +107,19 @@ public class WorldEvents {
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void onTick(ServerTickEvent.Pre event) {
+    public static void onServerTick(ServerTickEvent.Pre event) {
         currentTick++;
     }
 
-
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void onTick(LevelTickEvent.Pre event) {
+    public static void onLevelTick(LevelTickEvent.Pre event) {
+        if(event.getLevel().isClientSide()) return;
         if(currentTick % 5 != 0 || event.getLevel().getChunkSource().getLoadedChunksCount() < 1) return;
         final ServerLevel level = (ServerLevel) event.getLevel();
         RadiationEvents.tickAsync(event);
         MultiblockHandler.trackChangesAsync(level);
     }
 
-    
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onServerStopping(ServerStoppingEvent event) {
         MultiblockHandler.clearAll();

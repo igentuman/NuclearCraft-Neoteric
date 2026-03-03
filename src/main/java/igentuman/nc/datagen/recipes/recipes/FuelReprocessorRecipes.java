@@ -13,12 +13,8 @@ public class FuelReprocessorRecipes extends AbstractRecipeProvider {
         FuelReprocessorRecipes.consumer = consumer;
         ID = Processors.FUEL_REPROCESSOR;
 
-        addString(
-                ingotIngredient("cyanite", 3),
-                List.of(
-                        "bigreactors:blutonium_ingot"
-                ), 4.5D
-        );
+        // TODO: Big Reactors (Extreme Reactors) compat — disabled, waiting on Extreme Reactors to port to NeoForge 1.21.1. Re-enable when available.
+        // addString(ingotIngredient("cyanite", 3), List.of("bigreactors:blutonium_ingot"), 4.5D);
 
         for (String type: List.of("", "tr")) {
             add(

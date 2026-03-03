@@ -15,9 +15,9 @@ import static igentuman.nc.setup.registration.NCFluids.NC_MATERIALS;
 
 @EventBusSubscriber(modid = MODID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
 public class ColorHandler {
+    // No manual registration needed — @EventBusSubscriber(bus = Bus.MOD) + @SubscribeEvent
+    // handles registration on the correct (MOD) bus automatically.
     public static void register(FMLClientSetupEvent event) {
-        NeoForge.EVENT_BUS.addListener(ColorHandler::registerItemColorHandlers);
-        NeoForge.EVENT_BUS.addListener(ColorHandler::registerBlockColorHandlers);
     }
     @SubscribeEvent
     public static void registerItemColorHandlers(RegisterColorHandlersEvent.Item event) {

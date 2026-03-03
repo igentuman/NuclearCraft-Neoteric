@@ -12,7 +12,6 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import static com.mojang.blaze3d.platform.InputConstants.*;
 import static igentuman.nc.NuclearCraft.MODID;
 
-@EventBusSubscriber(modid = MODID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
 public class InputEvents {
 
     public static boolean DESCRIPTIONS_SHOW = false;
@@ -40,13 +39,13 @@ public class InputEvents {
         }
     }
 
-    public static void onScreenKeyPressed(ScreenEvent.KeyPressed event) {
+    public static void onScreenKeyPressed(ScreenEvent.KeyPressed.Pre event) {
         if (event.getKeyCode() == KEY_LSHIFT || event.getKeyCode() == KEY_RSHIFT) {
             SHIFT_PRESSED = true;
         }
     }
 
-    public static void onScreenKeyReleased(ScreenEvent.KeyReleased event) {
+    public static void onScreenKeyReleased(ScreenEvent.KeyReleased.Pre event) {
         if (event.getKeyCode() == KEY_LSHIFT || event.getKeyCode() == KEY_RSHIFT) {
             SHIFT_PRESSED = false;
         }

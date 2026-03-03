@@ -227,7 +227,7 @@ public class BlackHoleBE extends NuclearCraftBE {
             if (livingEntity instanceof ServerPlayer) {
                 PlayerEnterBlackholeEvent event = new PlayerEnterBlackholeEvent((ServerPlayer) livingEntity, getBlockPos(), getLevel());
                 NeoForge.EVENT_BUS.post(event);
-                // KubeJS integration removed (no 1.21.1 port)
+                // TODO: KubeJS integration removed — waiting on KubeJS to port to NeoForge 1.21.1. Re-enable NCKubeJsEvents.onPlayerEnterBlackhole(event) when available.
                 if(event.isCanceled()) return;
                 entity.kill();
 

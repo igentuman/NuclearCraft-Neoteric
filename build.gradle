@@ -52,13 +52,14 @@ runs {
 sourceSets {
     main {
         java {
-            exclude 'igentuman/nc/compat/oc2/**'
-            exclude 'igentuman/nc/compat/tis3d/**'
-            exclude 'igentuman/nc/compat/kubejs/**'
-            exclude 'igentuman/nc/compat/refined_storage/**'
-            exclude 'igentuman/nc/compat/ae2/**'
-            exclude 'igentuman/nc/network/toServer/PacketAE2PatternTransfer.java'
-            exclude 'igentuman/nc/mixin/KubeJSRecipesEventJSMixin.java'
+            // TODO: Compat modules excluded — waiting on these mods to port to NeoForge 1.21.1. Remove exclusions when available.
+            exclude 'igentuman/nc/compat/oc2/**'           // Open Computers 2
+            exclude 'igentuman/nc/compat/tis3d/**'         // TIS-3D
+            exclude 'igentuman/nc/compat/kubejs/**'        // KubeJS
+            exclude 'igentuman/nc/compat/refined_storage/**' // Refined Storage
+            exclude 'igentuman/nc/compat/ae2/**'           // Applied Energistics 2
+            exclude 'igentuman/nc/network/toServer/PacketAE2PatternTransfer.java' // AE2 (packet is migrated, just not wired)
+            exclude 'igentuman/nc/mixin/KubeJSRecipesEventJSMixin.java' // KubeJS mixin
         }
         resources { srcDir 'src/generated/resources' }
     }

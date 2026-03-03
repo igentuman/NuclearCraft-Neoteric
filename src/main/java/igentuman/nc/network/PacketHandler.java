@@ -34,7 +34,7 @@ public class PacketHandler {
         registrar.playToServer(PacketHandleFluidSlotClick.TYPE, PacketHandleFluidSlotClick.STREAM_CODEC, PacketHandleFluidSlotClick::handle);
         registrar.playToServer(PacketBuildMultiblock.TYPE, PacketBuildMultiblock.STREAM_CODEC, PacketBuildMultiblock::handle);
         registrar.playToServer(PacketRecipeTransfer.TYPE, PacketRecipeTransfer.STREAM_CODEC, PacketRecipeTransfer::handle);
-        // AE2 pattern transfer removed (no 1.21.1 port)
+        // TODO: AE2 pattern transfer removed — waiting on AE2 to port to NeoForge 1.21.1. Re-enable PacketAE2PatternTransfer registration when available (packet itself is already migrated).
 
         // Server to client messages
         registrar.playToClient(PacketWorldRadiationData.TYPE, PacketWorldRadiationData.STREAM_CODEC, PacketWorldRadiationData::handle);

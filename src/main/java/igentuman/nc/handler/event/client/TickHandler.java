@@ -101,7 +101,6 @@ public class TickHandler {
         NeoForge.EVENT_BUS.addListener(TickHandler::onTick);
         NeoForge.EVENT_BUS.register(new TickHandler());
     }
-    @SubscribeEvent
     public static void onTick(ClientTickEvent.Pre event) {
         tickStart();
     }

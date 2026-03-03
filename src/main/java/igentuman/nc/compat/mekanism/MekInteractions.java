@@ -45,8 +45,7 @@ public class MekInteractions {
                 return true;
             }
         }
-        // TODO: Mekanism capability lookup changed in NeoForge 1.21.1.
-        // Verify the correct Mekanism NeoForge 1.21.1 API for CONFIGURABLE capability lookup.
+        // Verified: Capabilities.CONFIGURABLE is a BlockCapability in Mekanism 10.7.18 for NeoForge 1.21.1
         IConfigurable config = be.getLevel() != null
                 ? be.getLevel().getCapability(Capabilities.CONFIGURABLE, be.getBlockPos(), side)
                 : null;
